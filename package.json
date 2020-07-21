@@ -1,0 +1,72 @@
+{
+  "name": "markdown-it-myst",
+  "version": "0.0.1",
+  "description": "Markdown parser for the MyST standard",
+  "author": "Rowan Cockett <rowan@iooxa.com>",
+  "homepage": "https://github.com/iooxa/markdown-it-myst",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "directories": {
+    "src": "src",
+    "test": "test"
+  },
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iooxa/markdown-it-myst.git"
+  },
+  "scripts": {
+    "prepublishOnly": "yarn run compile",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:clear": "jest --clearCache",
+    "build": "tsc",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.json",
+    "compile": "yarn run clean && tsc -p .",
+    "watch": "tsc -w -p .",
+    "clean": "rm -rf dist"
+  },
+  "bugs": {
+    "url": "https://github.com/iooxa/markdown-it-myst/issues"
+  },
+  "dependencies": {
+    "markdown-it": "^11.0.0",
+    "markdown-it-container": "^3.0.0",
+    "markdown-it-texmath": "^0.7.2"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.7.4",
+    "@sinonjs/fake-timers": "^6.0.1",
+    "@types/jest": "^25.2.3",
+    "@types/jsdom": "^12.2.4",
+    "@types/markdown-it": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^2.20.0",
+    "@typescript-eslint/parser": "^2.10.0",
+    "@types/markdown-it-container": "^2.0.3",
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-airbnb-typescript": "^6.3.1",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-config-react-app": "^5.2.1",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-jest": "^23.13.1",
+    "eslint-plugin-json": "^2.0.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-no-only-tests": "^2.4.0",
+    "eslint-plugin-no-skip-tests": "^1.1.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.17.0",
+    "jest": "^24.9.0",
+    "ts-jest": "^26.0.0",
+    "typescript": "^3.9.6"
+  }
+}
