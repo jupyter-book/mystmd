@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= htmlWebpackPlugin.options.title %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    #input, #output{
+      position: absolute;
+      top: 48px;
+      height: calc(100vh - 50px);
+      width: calc(50vw - 10px);
+      border-radius: 0;
+      outline: none;
+    }
+    #input{
+      left: 0;
+    }
+    #output{
+      right: 0;
+      overflow-y: scroll;
+    }
+  </style>
+</head>
+<body onload="init();">
+  <p>Examples:
+  <select id="examples">
+    <option value="markdown.generic">Generic Markdown</option>
+    <option value="blocks.target">Blocks Target</option>
+    <option value="directives.known">Known Directives</option>
+    <option value="roles.generic">Generic Roles</option>
+    <option value="roles.known">Known Roles</option>
+  </select>
+  </p>
+  <textarea id="input"></textarea>
+  <div id="output"></div>
+  <script>
+    let input, output, examples, myst;
+    const cache = {};
+    function render() {
+      const html = myst.render(input.value);
+      output.innerHTML = html;
+    }
+    async function getFixture(name) {
+      if (!cache[name]) {
+        const response = await fetch(`https://raw.githubusercontent.com/iooxa/markdown-it-myst/master/fixtures/${name}.md`)
+        const dataArray = await response.body.getReader().read();
+        const fixture = new TextDecoder("utf-8").decode(dataArray.value);
+        cache[name] = fixture.split('\n.\n\n').map((s) => s.split('\n.\n').slice(0,2).join('\n\n')).join('\n\n');
+      }
+      input.value = cache[name];
+      render();
+    }
+    function init() {
+      myst = MyST();
+      input = document.getElementById('input');
+      output = document.getElementById('output');
+      examples = document.getElementById('examples');
+      input.value = '# Hello World'
+      input.onchange = render;
+      input.onkeyup = render;
+      examples.onchange = (e) => getFixture(e.target.value);
+      getFixture('markdown.generic');
+    }
+  </script>
+</body>
+</html>

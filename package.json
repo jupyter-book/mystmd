@@ -6,6 +6,7 @@
   "homepage": "https://github.com/iooxa/markdown-it-myst",
   "license": "MIT",
   "main": "dist/index.js",
+  "unpkg": "dist/index.min.js",
   "types": "dist/index.d.ts",
   "directories": {
     "src": "src",
@@ -26,7 +27,9 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "test:clear": "jest --clearCache",
-    "build": "tsc",
+    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "dev": "webpack --config webpack.dev.js",
+    "build": "tsc; webpack --config webpack.prod.js",
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.json",
     "compile": "yarn run clean && tsc -p .",
     "watch": "tsc -w -p .",
@@ -46,9 +49,9 @@
     "@types/jest": "^25.2.3",
     "@types/jsdom": "^12.2.4",
     "@types/markdown-it": "^10.0.1",
+    "@types/markdown-it-container": "^2.0.3",
     "@typescript-eslint/eslint-plugin": "^2.20.0",
     "@typescript-eslint/parser": "^2.10.0",
-    "@types/markdown-it-container": "^2.0.3",
     "eslint": "^6.7.2",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-airbnb-base": "^14.0.0",
@@ -67,6 +70,13 @@
     "eslint-plugin-react": "^7.17.0",
     "jest": "^24.9.0",
     "ts-jest": "^26.0.0",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.6",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-merge": "^4.2.2",
+    "html-webpack-plugin": "^4.0.4",
+    "ts-loader": "^6.2.2",
+    "webpack-dev-server": "^3.11.0",
+    "express": "^4.17.1"
   }
 }
