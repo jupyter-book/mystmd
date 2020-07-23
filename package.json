@@ -1,6 +1,6 @@
 {
   "name": "markdown-it-myst",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Markdown parser for MyST markdown",
   "author": "Rowan Cockett <rowanc1@gmail.com>",
   "homepage": "https://github.com/executablebooks/markdown-it-myst",
