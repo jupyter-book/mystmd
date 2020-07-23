@@ -1,9 +1,9 @@
 {
   "name": "markdown-it-myst",
   "version": "0.0.1",
-  "description": "Markdown parser for the MyST standard",
-  "author": "Rowan Cockett <rowan@iooxa.com>",
-  "homepage": "https://github.com/iooxa/markdown-it-myst",
+  "description": "Markdown parser for MyST markdown",
+  "author": "Rowan Cockett <rowanc1@gmail.com>",
+  "homepage": "https://github.com/executablebooks/markdown-it-myst",
   "license": "MIT",
   "main": "dist/index.js",
   "unpkg": "dist/index.min.js",
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iooxa/markdown-it-myst.git"
+    "url": "git+https://github.com/executablebooks/markdown-it-myst.git"
   },
   "scripts": {
     "prepublishOnly": "yarn run compile",
@@ -36,7 +36,7 @@
     "clean": "rm -rf dist"
   },
   "bugs": {
-    "url": "https://github.com/iooxa/markdown-it-myst/issues"
+    "url": "https://github.com/executablebooks/markdown-it-myst/issues"
   },
   "dependencies": {
     "markdown-it": "^11.0.0",
