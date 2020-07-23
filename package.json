@@ -8,13 +8,6 @@
   "main": "dist/index.js",
   "unpkg": "dist/myst.min.js",
   "types": "dist/index.d.ts",
-  "directories": {
-    "src": "src",
-    "test": "test"
-  },
-  "files": [
-    "src"
-  ],
   "publishConfig": {
     "access": "public"
   },
