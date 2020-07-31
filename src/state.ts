@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import StateBlock from 'markdown-it/lib/rules_block/state_block';
 
 export type StateEnv = {
   targets: Record<string, {
@@ -9,7 +8,7 @@ export type StateEnv = {
   }>;
 };
 
-export function getStateEnv(state: StateBlock): StateEnv {
+export function getStateEnv(state: {env: any}): StateEnv {
   const env = state.env as StateEnv;
   if (!env.targets) env.targets = {};
   if (!state.env) state.env = env;

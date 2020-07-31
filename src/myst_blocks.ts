@@ -46,7 +46,7 @@ const render_myst_target: Renderer.RenderRule = (tokens, idx, opts, env: StateEn
 
 const addBlockTitles: RuleCore = (state) => {
   const { tokens } = state;
-  const env = state.env as StateEnv;
+  const env = getStateEnv(state);
   for (let index = 0; index < tokens.length; index += 1) {
     const prev = tokens[index - 1];
     const token = tokens[index];
@@ -62,7 +62,7 @@ const addBlockTitles: RuleCore = (state) => {
 
 const updateLinkHrefs: RuleCore = (state) => {
   const { tokens } = state;
-  const env = state.env as StateEnv;
+  const env = getStateEnv(state);
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
     if (token.type === 'inline' && token.children) {

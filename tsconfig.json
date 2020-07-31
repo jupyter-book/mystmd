@@ -23,7 +23,7 @@
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*", "tests"
+    "src/**/*"
   ],
   "exclude": [
     "**/*.spec.ts"
