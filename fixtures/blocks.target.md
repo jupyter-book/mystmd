@@ -22,6 +22,18 @@ Header with ID and labeled link:
 <p><a href="#ref-my_id" title="My Header">My Label</a></p>
 .
 
+Reference to a non-existent ID:
+.
+(my_id)=
+# My Header
+
+{ref}`Not There <my_ID>`
+.
+<span id="ref-my_id"></span>
+<h1>My Header</h1>
+<p><span style="background-color:red;" title="No reference 'my_ID' found.">Not There</span></p>
+.
+
 Header with ID and a markdown link:
 .
 (my_id)=

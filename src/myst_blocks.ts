@@ -4,7 +4,7 @@ import StateBlock from 'markdown-it/lib/rules_block/state_block';
 import Renderer from 'markdown-it/lib/renderer';
 import { escapeHtml } from 'markdown-it/lib/common/utils';
 import { RuleCore } from 'markdown-it/lib/parser_core';
-import { getStateEnv, StateEnv } from './state';
+import { getStateEnv, StateEnv, newTarget } from './state';
 
 const PATTERN = /^\(([a-zA-Z0-9|@<>*./_\-+:]{1,100})\)=\s*$/; // (my_id)=
 
@@ -26,12 +26,7 @@ function target(state: StateBlock, startLine: number, endLine: number, silent: b
   token.attrSet('id', id);
   token.map = [startLine, state.line];
 
-  const env = getStateEnv(state);
-  env.targets[id] = {
-    name: `ref-${escapeHtml(id)}`,
-    internal: true,
-  };
-
+  newTarget(state, id);
   return true;
 }
 
