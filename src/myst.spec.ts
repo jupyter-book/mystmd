@@ -26,8 +26,4 @@ describe('Markdown', () => {
     '```{warning} This is\n*directive* content\n```',
     '<aside class="callout warning"><header>Warning</header>\n<p>This is <em>directive</em> content</p>\n</aside>',
   ));
-  it('parses myst admonitions, ::: style', () => sameF(
-    ':::warning\nThis is *directive* content\n:::',
-    '<aside class="callout warning"><header>Warning</header>\n<p>This is <em>directive</em> content</p>\n</aside>',
-  ));
 });

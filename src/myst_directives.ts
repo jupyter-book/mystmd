@@ -13,10 +13,11 @@ const admonitionTitles = {
 };
 const DEFAULT_ADMONITION_CLASS = 'note';
 type AdmonitionTypes = keyof typeof admonitionTitles | 'admonition';
-const ADMONITIONS = /^\{?([a-z]*)\}?\s*(.*)$/;
+const ADMONITIONS = /^\{([a-z]*)\}\s*(.*)$/;
 const QUICK_PARAMETERS = /^:([a-z-]+):(.*)$/;
 
 const admonitions: ContainerOpts = {
+  marker: '`',
   validate(params) {
     const match = params.trim().match(ADMONITIONS);
     return match != null && admonitionTypes.has(match[1]);
@@ -99,7 +100,6 @@ const stripOptions: RuleCore = (state) => {
 
 export function myst_directives_plugin(md: MarkdownIt) {
   md.use(container, 'admonitions', admonitions);
-  md.use(container, 'admonitions', { ...admonitions, marker: '`' });
   md.core.ruler.after('block', 'strip_options', stripOptions);
   md.core.ruler.after('strip_options', 'clean_admonitions', cleanAdmonitions);
 }
