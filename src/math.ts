@@ -3,7 +3,7 @@ import MarkdownIt from 'markdown-it';
 import markdownTexMath from 'markdown-it-texmath';
 import { RenderRule } from 'markdown-it/lib/renderer';
 import { RuleCore } from 'markdown-it/lib/parser_core';
-import { getStateEnv, newEquation } from './state';
+import { newEquation } from './state';
 
 export function addMathRenderer(md: MarkdownIt) {
   const inline: RenderRule = (tokens, idx) => `<span class="math">\\(${tokens[idx].content}\\)</span>`;

@@ -37,3 +37,11 @@ In equation {eq}`best` we see that it is {eq}`cool`!
 <div class="math" id="eq-best">\[e=mc^2\] (2)</div>
 <p>In equation <a href="#eq-best">(2)</a> we see that it is <a href="#eq-cool">(1)</a>!</p>
 .
+
+
+References to non-existent equations look ok:
+.
+When there are no equations, this fails: {eq}`not-there`!
+.
+<p>When there are no equations, this fails: <span title="No equation 'not-there' found.">⚠️</span>!</p>
+.
