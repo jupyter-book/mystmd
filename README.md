@@ -3,9 +3,9 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/markdown-it-myst/blob/master/LICENSE)
 [![CI](https://github.com/executablebooks/markdown-it-myst/workflows/CI/badge.svg)](https://github.com/executablebooks/markdown-it-myst/actions)
 
-> :warning: **Note:** `markdown-it-myst` is pre-alpha, expect changes! (July, 2020)
+> :warning: **Note:** `markdown-it-myst` is pre-alpha, expect changes! (August, 2020)
 
-A javascript parser for MyST based on [markdown-it](https://github.com/markdown-it/markdown-it)
+A javascript parser for [MyST](https://myst-parser.readthedocs.io) based on [markdown-it](https://github.com/markdown-it/markdown-it)
 
 ## Goals
 * Provide a Javascript implementation of [MyST](https://myst-parser.readthedocs.io) markdown extensions
@@ -46,4 +46,23 @@ In a browser:
   </script>
 </body>
 </html>
+```
+
+## Developer Install
+
+For installing the package locally, we suggest [Yarn](https://yarnpkg.com/), which can be installed using these [instructions](https://yarnpkg.com/getting-started/install), you will need [node](https://nodejs.org/), both can use a global install on your system.
+
+Once you have `yarn` installed globally, navigate into this project folder and install the dependencies:
+
+```bash
+cd markdown-it-myst
+yarn install
+```
+
+The scripts for building, testing, and serving the project are in the [package.json](package.json), the main ones to use are:
+
+```bash
+yarn test   # Run the tests or `yarn test:watch` to run on any file changes
+yarn build  # Builds the library, including compiling the typescript, this adds the `dist` folder
+yarn start  # Starts a server for manually testing and playing with markdown-it-myst
 ```
