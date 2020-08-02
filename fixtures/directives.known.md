@@ -31,11 +31,11 @@ of an admonition on two lines.
 </aside>
 .
 
-[FIX] Note on a single line (see https://github.com/executablebooks/MyST-Parser/issues/154):
+[FIX] Note on a single line [See #154](https://github.com/executablebooks/MyST-Parser/issues/154)
 .
-```{note} An example of an admonition on a single line.
+```{danger} An example of an admonition on a single line.
 ```
 .
-<aside class="callout note"><header>Note</header>
+<aside class="callout danger"><header>Danger</header>
 </aside>
 .
