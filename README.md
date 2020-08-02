@@ -57,12 +57,19 @@ Once you have `yarn` installed globally, navigate into this project folder and i
 ```bash
 cd markdown-it-myst
 yarn install
+yarn start  # Start a development server to play with the library! 🚀
 ```
 
-The scripts for building, testing, and serving the project are in the [package.json](package.json), the main ones to use are:
+The scripts for building, testing, and serving the project are in the [package.json](package.json), the main ones to use are
+`yarn test`, `yarn build`, and `yarn start`.
 
-```bash
-yarn test   # Run the tests or `yarn test:watch` to run on any file changes
-yarn build  # Builds the library, including compiling the typescript, this adds the `dist` folder
-yarn start  # Starts a server for manually testing and playing with markdown-it-myst
-```
+### `yarn build`
+Builds the library, including compiling the typescript and bundling/minification to create `myst.min.js`.
+This outputs to the `dist` folder, and also includes all type definitions (`*.d.ts`).
+
+### `yarn test`
+Run the tests, these are mostly based on the [fixtures](fixtures) folder. You can also use `yarn test:watch` to run on any file changes.
+
+### `yarn start`
+Starts a server for manually testing and playing with `markdown-it-myst`, this uses a in-memory bundle of what would go in the `dist` folder.
+Note that this does not actually build the library!
