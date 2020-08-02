@@ -1,10 +1,17 @@
-import { getFixtures, getTokenizer } from './build';
+import MyST from '../src';
+import { getFixtures } from './build';
 
-const tokenizer = getTokenizer();
+const tokenizer = MyST();
 
 
 describe('Basic', () => {
   getFixtures('markdown.generic').forEach(([name, md, html]) => {
+    it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
+  });
+});
+
+describe('Math', () => {
+  getFixtures('markdown.math').forEach(([name, md, html]) => {
     it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
   });
 });

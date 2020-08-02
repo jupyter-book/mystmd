@@ -4,7 +4,7 @@ import StateBlock from 'markdown-it/lib/rules_block/state_block';
 import Renderer from 'markdown-it/lib/renderer';
 import { escapeHtml } from 'markdown-it/lib/common/utils';
 import { RuleCore } from 'markdown-it/lib/parser_core';
-import { getStateEnv, StateEnv } from './state';
+import { getStateEnv, StateEnv, newTarget } from './state';
 
 const PATTERN = /^\(([a-zA-Z0-9|@<>*./_\-+:]{1,100})\)=\s*$/; // (my_id)=
 
@@ -26,12 +26,7 @@ function target(state: StateBlock, startLine: number, endLine: number, silent: b
   token.attrSet('id', id);
   token.map = [startLine, state.line];
 
-  const env = getStateEnv(state);
-  env.targets[id] = {
-    name: `ref-${escapeHtml(id)}`,
-    internal: true,
-  };
-
+  newTarget(state, id);
   return true;
 }
 
@@ -46,7 +41,7 @@ const render_myst_target: Renderer.RenderRule = (tokens, idx, opts, env: StateEn
 
 const addBlockTitles: RuleCore = (state) => {
   const { tokens } = state;
-  const env = state.env as StateEnv;
+  const env = getStateEnv(state);
   for (let index = 0; index < tokens.length; index += 1) {
     const prev = tokens[index - 1];
     const token = tokens[index];
@@ -62,7 +57,7 @@ const addBlockTitles: RuleCore = (state) => {
 
 const updateLinkHrefs: RuleCore = (state) => {
   const { tokens } = state;
-  const env = state.env as StateEnv;
+  const env = getStateEnv(state);
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
     if (token.type === 'inline' && token.children) {
