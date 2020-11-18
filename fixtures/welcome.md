@@ -22,7 +22,7 @@ The project has the following goals:
 (start)=
 ## Getting Started
 
-You can create headings using between 1 and 6 `#`'s. For referencing content, there are two things you need!
+You can create headings using between 1-6 `#`'s. For referencing content, there are two things you need!
 
 ```myst
 (start)=
@@ -36,4 +36,28 @@ A reference to {ref}`"start" <start>` or {ref}`start` (which is this section!) i
 You can also use [Markdown](start) links (i.e. `[Markdown](start)` with the reference id as the link).
 
 ---
+
+## Admonitions
+
+```{admonition} Definition
+**Admonition**: An act or action of admonishing; authoritative counsel or warning. Mostly used in the 1800s and in [Sphinx documentation](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html).
+
+*Also known as* a **callout**.
+```
+
+Possible admonition types:
+* `attention`,
+* `caution`,
+* `danger`,
+* `error`,
+* `hint`,
+* `important`,
+* `note`,
+* `tip`,
+* `warning`,
+* `admonition`: Note this can take a `title` argument on the first line of the directive. This allows you to have a custom title.
+
+```{attention}
+This is an `attention` admonition. Try changing the directive to one of the options above.
+```
 
