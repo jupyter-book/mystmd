@@ -6,28 +6,47 @@ import { escapeHtml } from 'markdown-it/lib/common/utils';
 import { RuleCore } from 'markdown-it/lib/parser_core';
 import { getStateEnv, StateEnv, newTarget } from './state';
 
-const PATTERN = /^\(([a-zA-Z0-9|@<>*./_\-+:]{1,100})\)=\s*$/; // (my_id)=
+const COMMENT_PATTERN = /^%\s(.*)$/; // (my_id)=
+const TARGET_PATTERN = /^\(([a-zA-Z0-9|@<>*./_\-+:]{1,100})\)=\s*$/; // (my_id)=
 
-function target(state: StateBlock, startLine: number, endLine: number, silent: boolean) {
+function checkTarget(state: StateBlock, startLine: number, str: string, silent: boolean) {
+  const match = TARGET_PATTERN.exec(str);
+  if (match == null) return false;
+  if (silent) return true;
+  state.line = startLine + 1;
+  const token = state.push('myst_target', '', 0);
+  const id = match?.[1] ?? '';
+  token.attrSet('id', id);
+  token.map = [startLine, state.line];
+  newTarget(state, id);
+  return true;
+}
+
+function checkComment(state: StateBlock, startLine: number, str: string, silent: boolean) {
+  const match = COMMENT_PATTERN.exec(str);
+  if (match == null) return false;
+  if (silent) return true;
+  state.line = startLine + 1;
+  const token = state.push('myst_comment', '', 0);
+  const comment = match?.[1] ?? '';
+  token.attrSet('comment', comment);
+  token.map = [startLine, state.line];
+  return true;
+}
+
+const blockPlugins = [checkTarget, checkComment];
+
+function blocks(state: StateBlock, startLine: number, endLine: number, silent: boolean) {
   const pos = state.bMarks[startLine] + state.tShift[startLine];
   const maximum = state.eMarks[startLine];
 
   // if it's indented more than 3 spaces, it should be a code block
   if (state.sCount[startLine] - state.blkIndent >= 4) return false;
 
-  const match = PATTERN.exec(state.src.slice(pos, maximum));
-  if (match == null) return false;
-  if (silent) return true;
-
-  state.line = startLine + 1;
-
-  const token = state.push('myst_target', '', 0);
-  const id = match?.[1] ?? '';
-  token.attrSet('id', id);
-  token.map = [startLine, state.line];
-
-  newTarget(state, id);
-  return true;
+  const str = state.src.slice(pos, maximum);
+  return blockPlugins.reduce((complete, plugin) => (
+    complete || plugin(state, startLine, str, silent)
+  ), false);
 }
 
 const render_myst_target: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
@@ -35,6 +54,13 @@ const render_myst_target: Renderer.RenderRule = (tokens, idx, opts, env: StateEn
   const name = env.targets[ref]?.name;
   return (
     `<span id="${name}"></span>\n`
+  );
+};
+
+const render_myst_comment: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
+  const comment = tokens[idx].attrGet('comment') ?? '';
+  return (
+    `<!-- ${escapeHtml(comment)} -->\n`
   );
 };
 
@@ -78,11 +104,12 @@ const updateLinkHrefs: RuleCore = (state) => {
 export function myst_blocks_plugin(md: MarkdownIt) {
   md.block.ruler.before(
     'hr',
-    'myst_target',
-    target,
+    'myst_blocks',
+    blocks,
     { alt: ['paragraph', 'reference', 'blockquote', 'list', 'footnote_def'] },
   );
   md.core.ruler.after('block', 'add_block_titles', addBlockTitles);
   md.core.ruler.after('inline', 'update_link_hrefs', updateLinkHrefs);
   md.renderer.rules.myst_target = render_myst_target;
+  md.renderer.rules.myst_comment = render_myst_comment;
 }
