@@ -1,0 +1,66 @@
+aside.callout {
+  width: 95%;
+  margin: 1.5625em auto;
+  padding: 0 .6rem .8rem!important;
+  overflow: hidden;
+  page-break-inside: avoid;
+  border-left: .2rem solid #007bff;
+  border-radius: .1rem;
+  box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,.05), 0 0 0.05rem rgba(0,0,0,.1);
+}
+
+aside.callout > header {
+  position: relative;
+  margin: 0 -.6rem!important;
+  /* Changed the final from 2rem, without icon */
+  padding: .4rem .6rem .4rem 1rem;
+  font-weight: 700;
+  background-color: #e7f2fa;
+}
+
+aside.callout > p {
+  padding: 0 1.4rem;
+}
+
+abbr {
+  text-decoration: none;
+  border-bottom: 1px solid #ddd;
+  cursor: help;
+}
+
+a {
+  color: #0071bc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  font-size: 95%;
+  font-family: monospace;
+  color: #e83e8c;
+  word-wrap: break-word;
+}
+
+pre {
+  width: calc(100% - 20px - 3em);
+  padding: 10px;
+  background-color: #fafafa;
+  color: #222;
+  line-height: 1.2em;
+  border: 1px solid #c9c9c9;
+  margin: 1.5em 0;
+  box-shadow: 1px 1px 1px #d8d8d8;
+}
+pre > code {
+  font-size: 87.5%;
+  font-family: monospace;
+  color: #222;
+}
+
+hr {
+  width: 80%;
+  margin: 20px auto;
+}

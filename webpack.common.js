@@ -24,6 +24,7 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: 'fixtures', to: 'fixtures' },
+        { from: 'myst.css', to: 'myst.css' },
       ],
     }),
   ],
