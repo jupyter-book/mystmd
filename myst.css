@@ -22,6 +22,8 @@ aside.callout.attention {border-left-color: #fd7e14;}
 aside.callout.attention > header {background-color: #ffedcc;}
 aside.callout.caution {border-left-color: #fd7e14;}
 aside.callout.caution > header {background-color: #ffedcc;}
+aside.callout.warning {border-left-color: #dc3545;}
+aside.callout.warning > header {background-color: #fdf3f2;}
 aside.callout.danger {border-left-color: #dc3545;}
 aside.callout.danger > header {background-color: #fdf3f2;}
 aside.callout.error {border-left-color: #dc3545;}
@@ -34,8 +36,6 @@ aside.callout.note {border-left-color: #007bff;}
 aside.callout.note > header {background-color: #e7f2fa;}
 aside.callout.tip {border-left-color: #ffc107;}
 aside.callout.tip > header {background-color: #fff6dd;}
-aside.callout.warning {border-left-color: #dc3545;}
-aside.callout.warning > header {background-color: #fdf3f2;}
 
 aside.callout > p {
   padding: 0 1.4rem;
