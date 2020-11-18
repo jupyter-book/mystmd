@@ -25,10 +25,12 @@
       overflow-y: scroll;
     }
   </style>
+  <link rel="stylesheet" href="/myst.css">
 </head>
 <body onload="init();">
   <p>Examples:
   <select id="examples">
+    <option value="welcome">Welcome to markdown-it-myst</option>
     <option value="markdown.generic">Generic Markdown</option>
     <option value="markdown.math">Math Markdown</option>
     <option value="blocks.target">Blocks Target</option>
@@ -38,7 +40,7 @@
   </select>
   </p>
   <textarea id="input"></textarea>
-  <div id="output"></div>
+  <article id="output"></article>
   <script>
     let input, output, examples, myst;
     const cache = {};
@@ -48,7 +50,7 @@
     }
     async function getFixture(name) {
       if (!cache[name]) {
-        const response = await fetch(`https://raw.githubusercontent.com/iooxa/markdown-it-myst/master/fixtures/${name}.md`)
+        const response = await fetch(`/fixtures/${name}.md`)
         const dataArray = await response.body.getReader().read();
         const fixture = new TextDecoder("utf-8").decode(dataArray.value);
         cache[name] = fixture.split('\n.\n\n').map((s) => s.split('\n.\n').slice(0,2).join('\n\n')).join('\n\n');
@@ -65,7 +67,7 @@
       input.onchange = render;
       input.onkeyup = render;
       examples.onchange = (e) => getFixture(e.target.value);
-      getFixture('markdown.generic');
+      getFixture('welcome');
     }
   </script>
 </body>
