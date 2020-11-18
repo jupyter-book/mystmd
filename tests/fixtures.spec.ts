@@ -35,4 +35,14 @@ describe('Blocks', () => {
   getFixtures('blocks.target').forEach(([name, md, html]) => {
     it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
   });
+  getFixtures('blocks.comment').forEach(([name, md, html]) => {
+    it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
+  });
+});
+
+
+describe('Examples', () => {
+  getFixtures('examples.admonitions').forEach(([name, md, html]) => {
+    it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
+  });
 });
