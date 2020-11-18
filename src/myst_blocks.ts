@@ -6,8 +6,12 @@ import { escapeHtml } from 'markdown-it/lib/common/utils';
 import { RuleCore } from 'markdown-it/lib/parser_core';
 import { getStateEnv, StateEnv, newTarget } from './state';
 
-const COMMENT_PATTERN = /^%\s(.*)$/; // (my_id)=
-const TARGET_PATTERN = /^\(([a-zA-Z0-9|@<>*./_\-+:]{1,100})\)=\s*$/; // (my_id)=
+// % A comment
+const COMMENT_PATTERN = /^%\s(.*)$/;
+// (my_id)=
+const TARGET_PATTERN = /^\(([a-zA-Z0-9|@<>*./_\-+:]{1,100})\)=\s*$/;
+// +++ {"meta": "data"}
+const BLOCK_BREAK_PATTERN = /^\+\+\+\s?(\{.*\})?$/;
 
 function checkTarget(state: StateBlock, startLine: number, str: string, silent: boolean) {
   const match = TARGET_PATTERN.exec(str);
@@ -34,7 +38,25 @@ function checkComment(state: StateBlock, startLine: number, str: string, silent:
   return true;
 }
 
-const blockPlugins = [checkTarget, checkComment];
+function checkBlockBreak(state: StateBlock, startLine: number, str: string, silent: boolean) {
+  const match = BLOCK_BREAK_PATTERN.exec(str);
+  if (match == null) return false;
+  if (silent) return true;
+  state.line = startLine + 1;
+  const token = state.push('myst_block_break', '', 0);
+  const metadataString = match?.[1] ?? '{}';
+  let metadata = {};
+  try {
+    metadata = JSON.parse(metadataString);
+  } catch (error) {
+    console.warn('Could not parse metadata for block break: ', metadataString);
+  }
+  token.attrSet('metadata', JSON.stringify(metadata));
+  token.map = [startLine, state.line];
+  return true;
+}
+
+const blockPlugins = [checkTarget, checkComment, checkBlockBreak];
 
 function blocks(state: StateBlock, startLine: number, endLine: number, silent: boolean) {
   const pos = state.bMarks[startLine] + state.tShift[startLine];
@@ -61,6 +83,14 @@ const render_myst_comment: Renderer.RenderRule = (tokens, idx, opts, env: StateE
   const comment = tokens[idx].attrGet('comment') ?? '';
   return (
     `<!-- ${escapeHtml(comment)} -->\n`
+  );
+};
+
+const render_myst_block_break: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
+  const metadata = tokens[idx].attrGet('metadata') ?? '';
+  console.log('Not sure what to do with metadata for block break:', metadata);
+  return (
+    '<!-- Block Break -->\n'
   );
 };
 
@@ -112,4 +142,5 @@ export function myst_blocks_plugin(md: MarkdownIt) {
   md.core.ruler.after('inline', 'update_link_hrefs', updateLinkHrefs);
   md.renderer.rules.myst_target = render_myst_target;
   md.renderer.rules.myst_comment = render_myst_comment;
+  md.renderer.rules.myst_block_break = render_myst_block_break;
 }

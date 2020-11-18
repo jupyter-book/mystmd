@@ -38,6 +38,9 @@ describe('Blocks', () => {
   getFixtures('blocks.comment').forEach(([name, md, html]) => {
     it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
   });
+  getFixtures('blocks.break').forEach(([name, md, html]) => {
+    it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
+  });
 });
 
 
