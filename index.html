@@ -50,6 +50,7 @@
     function render() {
       const html = myst.render(input.value);
       output.innerHTML = html;
+      MathJax.typeset();
     }
     async function getFixture(name) {
       if (!cache[name]) {
@@ -72,6 +73,17 @@
       examples.onchange = (e) => getFixture(e.target.value);
       getFixture('welcome');
     }
+    // Setup Mathjax
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'],['\\[', '\\]']],
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
   </script>
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </body>
 </html>

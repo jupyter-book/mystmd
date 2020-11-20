@@ -33,15 +33,24 @@ $$e=mc^2$$ (best)
 In equation {eq}`best` we see that it is {eq}`cool`!
 .
 <p>This math is in a block:</p>
-<div class="math" id="eq-cool">\[Ax=b\] (1)</div>
-<div class="math" id="eq-best">\[e=mc^2\] (2)</div>
+<div class="math numbered" id="eq-cool" number="1">\[Ax=b\]</div>
+<div class="math numbered" id="eq-best" number="2">\[e=mc^2\]</div>
 <p>In equation <a href="#eq-best">(2)</a> we see that it is <a href="#eq-cool">(1)</a>!</p>
 .
-
 
 References to non-existent equations look ok:
 .
 When there are no equations, this fails: {eq}`not-there`!
 .
 <p>When there are no equations, this fails: <span title="No equation 'not-there' found.">⚠️</span>!</p>
+.
+
+You can use different things to cite with:
+.
+$$Ax=b$$ (matrix)
+
+You can cite with {numref}`matrix` or {ref}`matrix` or {eq}`matrix`.
+.
+<div class="math numbered" id="eq-matrix" number="1">\[Ax=b\]</div>
+<p>You can cite with <a href="#eq-matrix">Eq 1</a> or <a href="#eq-matrix">Eq 1</a> or <a href="#eq-matrix">(1)</a>.</p>
 .

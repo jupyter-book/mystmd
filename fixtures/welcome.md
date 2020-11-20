@@ -61,3 +61,22 @@ Possible admonition types:
 This is an `attention` admonition. Try changing the directive to one of the options above.
 ```
 
+## Figures
+
+```{figure} https://jupyterbook.org/_static/logo.png
+:name: jupyter-book-logo
+
+The Jupyter Book Logo!
+```
+
+You can see the the logo for JupyterBook in:
+* {ref}`Here <jupyter-book-logo>`
+* {ref}`jupyter-book-logo`
+* {numref}`jupyter-book-logo`
+* {numref}`In a Figure named %s <jupyter-book-logo>`
+
+## Math
+
+$$y = m \times x + b$$ (line)
+
+You can see in {eq}`line` that there is math!

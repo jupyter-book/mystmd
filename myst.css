@@ -89,3 +89,34 @@ blockquote {
   padding: 0.1rem 1rem;
   border-left: .2rem solid #aaa;
 }
+
+figure {
+  text-align: center;
+}
+
+figure.numbered > figcaption {
+  color: rgb(90, 90, 90);
+  font-size: 90%;
+}
+
+figure.numbered > figcaption:before {
+  content: 'Figure ' attr(number) ':';
+  font-weight: 700;
+  user-select: text;
+}
+
+figure.numbered > figcaption > p:first-child {
+  display: inline;
+}
+
+.math .MathJax {
+  outline: none;
+}
+div.math.numbered {
+  width: calc(100% - 50px);
+  margin: 0 auto;
+}
+div.math.numbered:before {
+  content: '(' attr(number) ')';
+  float: right;
+}

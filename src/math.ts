@@ -3,7 +3,7 @@ import MarkdownIt from 'markdown-it';
 import markdownTexMath from 'markdown-it-texmath';
 import { RenderRule } from 'markdown-it/lib/renderer';
 import { RuleCore } from 'markdown-it/lib/parser_core';
-import { newEquation } from './state';
+import { newTarget, TargetKind } from './state';
 
 export function addMathRenderer(md: MarkdownIt) {
   const inline: RenderRule = (tokens, idx) => `<span class="math">\\(${tokens[idx].content}\\)</span>`;
@@ -12,9 +12,9 @@ export function addMathRenderer(md: MarkdownIt) {
   const block: RenderRule = (tokens, idx) => `<div class="math">\\[${tokens[idx].content}\\]</div>\n`;
   const block_numbered: RenderRule = (tokens, idx) => {
     const token = tokens[idx];
-    const name = token.attrGet('name');
+    const id = token.attrGet('id');
     const number = token.attrGet('number');
-    return `<div class="math" id="${name}">\\[${token.content}\\] (${number})</div>\n`;
+    return `<div class="math numbered" id="${id}" number="${number}">\\[${token.content}\\]</div>\n`;
   };
   md.renderer.rules.math_inline = inline;
   md.renderer.rules.math_inline_double = inline_double;
@@ -28,8 +28,8 @@ const numberEquations: RuleCore = (state) => {
     const token = tokens[index];
     if (token.type === 'math_block_eqno') {
       const id = token.info;
-      const target = newEquation(state, id);
-      token.attrSet('name', target.name);
+      const target = newTarget(state, id, TargetKind.equation);
+      token.attrSet('id', target.id);
       token.attrSet('number', `${target.number}`);
     }
   }

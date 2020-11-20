@@ -4,7 +4,9 @@ import StateBlock from 'markdown-it/lib/rules_block/state_block';
 import Renderer from 'markdown-it/lib/renderer';
 import { escapeHtml } from 'markdown-it/lib/common/utils';
 import { RuleCore } from 'markdown-it/lib/parser_core';
-import { getStateEnv, StateEnv, newTarget } from './state';
+import {
+  getStateEnv, StateEnv, newTarget, TargetKind,
+} from './state';
 
 // % A comment
 const COMMENT_PATTERN = /^%\s(.*)$/;
@@ -22,7 +24,7 @@ function checkTarget(state: StateBlock, startLine: number, str: string, silent: 
   const id = match?.[1] ?? '';
   token.attrSet('id', id);
   token.map = [startLine, state.line];
-  newTarget(state, id);
+  newTarget(state, id, TargetKind.ref);
   return true;
 }
 
@@ -73,9 +75,10 @@ function blocks(state: StateBlock, startLine: number, endLine: number, silent: b
 
 const render_myst_target: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
   const ref = tokens[idx].attrGet('id') ?? '';
-  const name = env.targets[ref]?.name;
+  const id = env.targets[ref]?.id;
+  // TODO: This should be better as part of the next element, and then hide this
   return (
-    `<span id="${name}"></span>\n`
+    `<span id="${id}"></span>\n`
   );
 };
 
@@ -119,10 +122,10 @@ const updateLinkHrefs: RuleCore = (state) => {
     if (token.type === 'inline' && token.children) {
       token.children.forEach((t) => {
         if (t.type === 'link_open') {
-          const link = env.targets[t.attrGet('href') ?? ''];
-          if (link) {
-            t.attrSet('title', link.title ?? '');
-            t.attrSet('href', `#${link.name}`);
+          const target = env.targets[t.attrGet('href') ?? ''];
+          if (target) {
+            t.attrSet('title', target.title ?? '');
+            t.attrSet('href', `#${target.id}`);
           }
         }
       });

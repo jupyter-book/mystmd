@@ -74,10 +74,31 @@ const knownRoles: Record<string, RoleConstructor> = {
       const token = tokens[idx];
       const ref = token.attrGet('ref') ?? '';
       if (!env.targets[ref]) {
-        return `<span style="background-color:red;" title="No reference '${escapeHtml(ref)}' found.">${escapeHtml(token.content ?? '')}</span>`;
+        return `<span style="background-color:red;" title="No reference '${escapeHtml(ref)}' found.">${escapeHtml(token.content || `"${escapeHtml(ref)}" reference not found!`)}</span>`;
       }
-      const { name, title } = env.targets[ref] ?? {};
-      return `<a href="#${name}" title="${title}">${escapeHtml(token.content || (title ?? ''))}</a>`;
+      const { id, title, defaultReference } = env.targets[ref] ?? {};
+      return `<a href="#${id}"${title ? ` title="${title}"` : ''}>${escapeHtml(token.content || (title ?? '')) || defaultReference}</a>`;
+    },
+  },
+  numref: {
+    token: 'numref',
+    getAttrs(content) {
+      const match = REF_PATTERN.exec(content);
+      if (match == null) return { attrs: { ref: content }, content: '' };
+      const [, modified, ref] = match;
+      return { attrs: { ref: ref.trim() }, content: modified.trim() };
+    },
+    renderer: (tokens, idx, opts, env) => {
+      const token = tokens[idx];
+      const ref = token.attrGet('ref') ?? '';
+      if (!env.targets[ref]) {
+        return `<span style="background-color:red;" title="No reference '${escapeHtml(ref)}' found.">${escapeHtml(token.content || `"${escapeHtml(ref)}" reference not found!`)}</span>`;
+      }
+      const {
+        id, title, defaultReference, number,
+      } = env.targets[ref] ?? {};
+      const text = escapeHtml(token.content || (title ?? '')) || defaultReference;
+      return `<a href="#${id}"${title ? ` title="${title}"` : ''}>${text.replace('%s', String(number))}</a>`;
     },
   },
   eq: {
@@ -91,11 +112,11 @@ const knownRoles: Record<string, RoleConstructor> = {
     renderer: (tokens, idx, opts, env) => {
       const token = tokens[idx];
       const ref = token.attrGet('ref') ?? '';
-      const { kind, name, number } = env.targets[ref] ?? {};
+      const { kind, id, number } = env.targets[ref] ?? {};
       if (!env.targets[ref] || kind !== TargetKind.equation) {
         return `<span title="No equation '${escapeHtml(ref)}' found.">${escapeHtml(`${token.content ?? ''}⚠️`)}</span>`;
       }
-      return `<a href="#${name}">${escapeHtml(token.content)}(${number})</a>`;
+      return `<a href="#${id}">${escapeHtml(token.content)}(${number})</a>`;
     },
   },
 };
