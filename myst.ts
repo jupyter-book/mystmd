@@ -1,4 +1,4 @@
-import MyST from '.';
+import MyST from './src';
 
 declare global {
   interface Window {

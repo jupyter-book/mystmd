@@ -10,7 +10,7 @@ module.exports = {
     usedExports: true,
   },
   entry: {
-    app: './src/myst.ts',
+    app: './myst.ts',
   },
   externals: {
     katex: 'katex',
