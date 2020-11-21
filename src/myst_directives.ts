@@ -1,10 +1,10 @@
 /* eslint-disable no-param-reassign */
 import MarkdownIt from 'markdown-it';
 import container from 'markdown-it-container';
-import { escapeHtml } from 'markdown-it/lib/common/utils';
 import Token from 'markdown-it/lib/token';
 import { RuleCore } from 'markdown-it/lib/parser_core';
 import { newTarget, Target, TargetKind } from './state';
+import { toHTML } from './utils';
 
 type ContainerOpts = Parameters<typeof container>[2];
 
@@ -26,11 +26,16 @@ const admonitions: ContainerOpts = {
     return match != null && admonitionTypes.has(match[1]);
   },
   render(tokens, idx) {
-    const kind = tokens[idx].attrGet('kind') ?? 'note';
+    const token = tokens[idx];
+    const kind = token.attrGet('kind') ?? 'note';
     const className = kind === 'admonition' ? DEFAULT_ADMONITION_CLASS : kind;
-    const title = tokens[idx].attrGet('title') ?? '';
-    if (tokens[idx].nesting === 1) return `<aside class="callout ${className}"><header>${escapeHtml(title)}</header>\n`;
-    return '</aside>\n';
+    const title = token.attrGet('title') ?? '';
+    const [before, after] = toHTML([
+      'aside', { class: ['callout', className] },
+      ['header', { children: title }],
+      0,
+    ]);
+    return token.nesting === 1 ? before : after;
   },
 };
 
@@ -43,12 +48,14 @@ const figure: ContainerOpts = {
   },
   render(tokens, idx) {
     const token = tokens[idx];
-    if (token.nesting === 1) {
-      const src = token.attrGet('src') ?? '';
-      const target = token.meta.target as Target;
-      return `<figure id="${target.id}" class="numbered">\n<img src="${escapeHtml(src)}">\n<figcaption number="${target.number}">\n`;
-    }
-    return '</figcaption>\n</figure>\n';
+    const src = token.attrGet('src') ?? '';
+    const { id, number } = token.meta?.target as Target ?? {};
+    const [before, after] = toHTML([
+      'figure', { id, class: 'numbered' },
+      ['img', { src }],
+      ['figcaption', { number: String(number) }, 0],
+    ]);
+    return token.nesting === 1 ? before : after;
   },
 };
 
@@ -165,7 +172,7 @@ const numberFigures: RuleCore = (state) => {
     if (token.type === 'container_figure_open') {
       const { name } = token.meta?.attrs;
       const target = newTarget(state, name, TargetKind.figure);
-      token.meta.target = target;
+      token.meta = { ...token.meta, target };
     }
   }
   return true;
