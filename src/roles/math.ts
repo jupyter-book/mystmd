@@ -1,14 +1,10 @@
 import { RoleConstructor } from './types';
-import { toHTML } from '../utils';
+import { renderMath } from '../math';
 
 const roles = {
   math: {
     token: 'math_inline',
-    renderer: (tokens, idx) => {
-      const token = tokens[idx];
-      const [html] = toHTML(['span', { class: 'math', children: token.content }], { inline: true });
-      return html;
-    },
+    renderer: (tokens, idx) => renderMath(tokens[idx].content, false),
   } as RoleConstructor,
 };
 

@@ -1,12 +1,10 @@
-/* eslint-disable no-param-reassign */
 import MarkdownIt from 'markdown-it';
 import markdownTexMath from 'markdown-it-texmath';
-import { RenderRule } from 'markdown-it/lib/renderer';
 import { RuleCore } from 'markdown-it/lib/parser_core';
 import { newTarget, TargetKind, Target } from './state';
 import { toHTML } from './utils';
 
-const renderMath = (math: string, block: boolean, target?: Target) => {
+export const renderMath = (math: string, block: boolean, target?: Target) => {
   const { id, number } = target ?? {};
   const [html] = toHTML([block ? 'div' : 'span', {
     class: target ? ['math', 'numbered'] : 'math',
@@ -17,18 +15,15 @@ const renderMath = (math: string, block: boolean, target?: Target) => {
   return block ? `${html}\n` : html;
 };
 
-export function addMathRenderer(md: MarkdownIt) {
-  const inline: RenderRule = (tokens, idx) => renderMath(tokens[idx].content, false);
+export function addMathRenderers(md: MarkdownIt) {
+  const { renderer } = md;
+  renderer.rules.math_inline = (tokens, idx) => renderMath(tokens[idx].content, false);
   // Note: this will actually create invalid HTML
-  const inline_double: RenderRule = (tokens, idx) => renderMath(tokens[idx].content, true);
-  const block: RenderRule = (tokens, idx) => renderMath(tokens[idx].content, true);
-  const block_numbered: RenderRule = (tokens, idx) => (
+  renderer.rules.math_inline_double = (tokens, idx) => renderMath(tokens[idx].content, true);
+  renderer.rules.math_block = (tokens, idx) => renderMath(tokens[idx].content, true);
+  renderer.rules.math_block_eqno = (tokens, idx) => (
     renderMath(tokens[idx].content, true, tokens[idx].meta?.target)
   );
-  md.renderer.rules.math_inline = inline;
-  md.renderer.rules.math_inline_double = inline_double;
-  md.renderer.rules.math_block = block;
-  md.renderer.rules.math_block_eqno = block_numbered;
 }
 
 const numberEquations: RuleCore = (state) => {
@@ -50,5 +45,5 @@ export function myst_math_plugin(md: MarkdownIt) {
     delimiters: 'dollars',
   });
   md.core.ruler.after('block', 'number_equations', numberEquations);
-  addMathRenderer(md);
+  addMathRenderers(md);
 }
