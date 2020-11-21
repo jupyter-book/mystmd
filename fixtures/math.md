@@ -5,6 +5,13 @@ Math is wrapped in `$`: $e=mc^2$!
 <p>Math is wrapped in <code>$</code>: <span class="math">\(e=mc^2\)</span>!</p>
 .
 
+Inline math as a role:
+.
+Math is a role: {math}`e=mc^2`!
+.
+<p>Math is a role: <span class="math">\(e=mc^2\)</span>!</p>
+.
+
 Block math:
 .
 This math is in a block:
