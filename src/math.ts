@@ -3,19 +3,28 @@ import MarkdownIt from 'markdown-it';
 import markdownTexMath from 'markdown-it-texmath';
 import { RenderRule } from 'markdown-it/lib/renderer';
 import { RuleCore } from 'markdown-it/lib/parser_core';
-import { newTarget, TargetKind } from './state';
+import { newTarget, TargetKind, Target } from './state';
+import { toHTML } from './utils';
+
+const renderMath = (math: string, block: boolean, target?: Target) => {
+  const { id, number } = target ?? {};
+  const [html] = toHTML([block ? 'div' : 'span', {
+    class: target ? ['math', 'numbered'] : 'math',
+    id,
+    number,
+    children: block ? `\\[${math}\\]` : `\\(${math}\\)`,
+  }], { inline: true });
+  return block ? `${html}\n` : html;
+};
 
 export function addMathRenderer(md: MarkdownIt) {
-  const inline: RenderRule = (tokens, idx) => `<span class="math">\\(${tokens[idx].content}\\)</span>`;
+  const inline: RenderRule = (tokens, idx) => renderMath(tokens[idx].content, false);
   // Note: this will actually create invalid HTML
-  const inline_double: RenderRule = (tokens, idx) => `<div class="math">\\[${tokens[idx].content}\\]</div>`;
-  const block: RenderRule = (tokens, idx) => `<div class="math">\\[${tokens[idx].content}\\]</div>\n`;
-  const block_numbered: RenderRule = (tokens, idx) => {
-    const token = tokens[idx];
-    const id = token.attrGet('id');
-    const number = token.attrGet('number');
-    return `<div class="math numbered" id="${id}" number="${number}">\\[${token.content}\\]</div>\n`;
-  };
+  const inline_double: RenderRule = (tokens, idx) => renderMath(tokens[idx].content, true);
+  const block: RenderRule = (tokens, idx) => renderMath(tokens[idx].content, true);
+  const block_numbered: RenderRule = (tokens, idx) => (
+    renderMath(tokens[idx].content, true, tokens[idx].meta?.target)
+  );
   md.renderer.rules.math_inline = inline;
   md.renderer.rules.math_inline_double = inline_double;
   md.renderer.rules.math_block = block;
@@ -27,10 +36,9 @@ const numberEquations: RuleCore = (state) => {
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
     if (token.type === 'math_block_eqno') {
-      const id = token.info;
-      const target = newTarget(state, id, TargetKind.equation);
-      token.attrSet('id', target.id);
-      token.attrSet('number', `${target.number}`);
+      const name = token.info;
+      const target = newTarget(state, name, TargetKind.equation);
+      token.meta = { ...token.meta, target };
     }
   }
   return true;
