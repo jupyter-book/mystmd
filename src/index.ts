@@ -1,5 +1,5 @@
 import MarkdownIt from 'markdown-it';
-import { myst_role_plugin } from './myst_roles';
+import { myst_role_plugin } from './roles';
 import { myst_directives_plugin } from './myst_directives';
 import { myst_blocks_plugin } from './myst_blocks';
 import { myst_math_plugin } from './math';
