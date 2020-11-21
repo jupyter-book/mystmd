@@ -9,6 +9,9 @@
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": ".",
+    "lib": [
+      "es2019"
+    ],
     "paths": {
       "*": [
         "node_modules/*"
@@ -23,7 +26,7 @@
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "myst.ts"
   ],
   "exclude": [
     "**/*.spec.ts"
