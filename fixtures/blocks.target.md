@@ -31,7 +31,7 @@ Reference to a non-existent ID:
 .
 <span id="ref-my_id"></span>
 <h1>My Header</h1>
-<p><span style="background-color:red;" title="No reference 'my_ID' found.">Not There</span></p>
+<p><span class="error" title="The reference 'my_ID' was not found.">Reference 'my_ID' not found.</span></p>
 .
 
 Header with ID and a markdown link:
