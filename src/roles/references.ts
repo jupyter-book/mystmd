@@ -3,7 +3,7 @@ import Token from 'markdown-it/lib/token';
 import MarkdownIt from 'markdown-it';
 import { StateEnv, TargetKind } from '../state';
 import { toHTML } from '../utils';
-import { RoleConstructor } from './types';
+import { Role } from './types';
 
 const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Reference <ref>'
 
@@ -63,17 +63,17 @@ const roles = {
     token: 'ref',
     getAttrs: getReferenceAttrs,
     renderer: renderReference({ numbered: false, brackets: false }),
-  } as RoleConstructor,
+  } as Role,
   numref: {
     token: 'numref',
     getAttrs: getReferenceAttrs,
     renderer: renderReference({ numbered: true, brackets: false }),
-  } as RoleConstructor,
+  } as Role,
   eq: {
     token: 'eq',
     getAttrs: getReferenceAttrs,
     renderer: renderReference({ numbered: true, brackets: true, kind: TargetKind.equation }),
-  } as RoleConstructor,
+  } as Role,
 };
 
 export default roles;

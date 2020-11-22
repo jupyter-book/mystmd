@@ -1,4 +1,4 @@
-import { RoleConstructor } from './types';
+import { Role } from './types';
 import { toHTML } from '../utils';
 
 const roles = {
@@ -13,7 +13,7 @@ const roles = {
       ], { inline: true });
       return html;
     },
-  } as RoleConstructor,
+  } as Role,
 };
 
 export default roles;

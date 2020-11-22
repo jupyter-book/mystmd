@@ -25,10 +25,11 @@ export function addMathRenderers(md: MarkdownIt) {
   );
 }
 
-export function myst_math_plugin(md: MarkdownIt) {
+export function mathPlugin(md: MarkdownIt) {
   md.use(markdownTexMath, {
     engine: { renderToString: (s: string) => s }, // We are not going to render ever.
     delimiters: 'dollars',
   });
+  // Note: numbering of equations for `math_block_eqno` happens in the directives rules
   addMathRenderers(md);
 }

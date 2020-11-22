@@ -4,16 +4,15 @@ import container from 'markdown-it-container';
 import Token from 'markdown-it/lib/token';
 import { RuleCore } from 'markdown-it/lib/parser_core';
 import parseOptions from './options';
-import { DirectiveConstructor, Directives } from './types';
+import { Directive, Directives } from './types';
 import { newTarget, TargetKind } from '../state';
+import { toHTML } from '../utils';
 
 const DIRECTIVE_PATTERN = /^\{([a-z]*)\}\s*(.*)$/;
 
 type ContainerOpts = Parameters<typeof container>[2];
 
-function getDirective(
-  directives: Directives, kind: string | null,
-): DirectiveConstructor | undefined {
+function getDirective(directives: Directives, kind: string | null) {
   if (!kind) return undefined;
   return directives[kind];
 }
@@ -27,11 +26,13 @@ const directiveContainer = (directives: Directives): ContainerOpts => ({
     const directive = getDirective(directives, kind);
     return Boolean(directive);
   },
-  render(tokens, idx, opts, env, self) {
+  render(tokens, idx, options, env, self) {
     const token = tokens[idx];
     const kind = token.attrGet('kind') ?? '';
-    const directive = getDirective(directives, kind);
-    const [before, after] = directive?.renderer(tokens, idx, opts, env, self) ?? [];
+    const directive = getDirective(directives, kind) as Directive;
+    const { args, opts, target } = token.meta;
+    const htmlTemplate = directive.renderer(args, opts, target, tokens, idx, options, env, self);
+    const [before, after] = toHTML(htmlTemplate);
     return token.nesting === 1 ? before : after;
   },
 });
@@ -72,14 +73,15 @@ const parseArguments = (directives: Directives): RuleCore => (state) => {
       const directive = getDirective(directives, token.attrGet('kind'));
       if (!match || !directive) throw new Error('Shoud not be able to get into here without matching?');
       const info = match[2].trim();
-      const { attrs, content: modified } = directive.getArguments?.(info) ?? {};
-      Object.entries(attrs ?? {}).map(([k, v]) => token.attrSet(k, v));
+      const { args, content: modified } = directive.getArguments?.(info) ?? {};
+      token.meta = { ...token.meta, args };
       if (modified) bumpArguments = modified;
     }
-    if (token.type === 'container_directives_close') {
+    if (parent && token.type === 'container_directives_close') {
       // TODO: https://github.com/executablebooks/MyST-Parser/issues/154
       // If the bumped title needs to be rendered - put it here somehow.
       bumpArguments = '';
+      token.meta = parent.meta;
       parent = false;
     }
     if (parent && bumpArguments && token.type === 'inline') {
@@ -97,12 +99,13 @@ const numbering = (directives: Directives): RuleCore => (state) => {
     if (token.type === 'container_directives_open') {
       const directive = getDirective(directives, token.attrGet('kind'));
       if (directive?.numbered) {
-        const { name } = token.meta?.attrs;
+        const { name } = token.meta?.opts;
         const target = newTarget(state, name, directive.numbered);
-        token.meta = { ...token.meta, target };
+        token.meta.target = target;
       }
     }
     if (token.type === 'math_block_eqno') {
+      // This is parsed using the markdownTexMath library, and the name comes on the info:
       const name = token.info;
       const target = newTarget(state, name, TargetKind.equation);
       token.meta = { ...token.meta, target };

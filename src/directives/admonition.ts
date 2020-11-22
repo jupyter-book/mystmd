@@ -1,5 +1,4 @@
-import { toHTML } from '../utils';
-import { DirectiveConstructor } from './types';
+import { Directive } from './types';
 
 const admonitionTitles = {
   attention: 'Attention', caution: 'Caution', danger: 'Danger', error: 'Error', important: 'Important', hint: 'Hint', note: 'Note', seealso: 'See Also', tip: 'Tip', warning: 'Warning',
@@ -7,25 +6,39 @@ const admonitionTitles = {
 const DEFAULT_ADMONITION_CLASS = 'note';
 type AdmonitionTypes = keyof typeof admonitionTitles | 'admonition';
 
-const createAdmonition = (kind: AdmonitionTypes): DirectiveConstructor => {
+export type Args = {
+  title: string;
+};
+
+export type Opts = {
+  class: AdmonitionTypes;
+};
+
+const createAdmonition = (kind: AdmonitionTypes): Directive<Args, Opts> => {
   const className = kind === 'admonition' ? DEFAULT_ADMONITION_CLASS : kind;
   return {
     token: kind,
     getArguments: (info) => {
       const content = kind === 'admonition' ? '' : info;
       const title = kind === 'admonition' ? info : admonitionTitles[kind];
-      const attrs = { title };
-      return { attrs, content };
+      const args = { title };
+      return { args, content };
     },
-    getOptions: (data) => data,
-    renderer: (tokens, idx) => {
-      const token = tokens[idx];
-      const title = token.attrGet('title') ?? '';
-      return toHTML([
-        'aside', { class: ['callout', className] },
+    getOptions: (data) => {
+      const { class: overrideClass, ...rest } = data;
+      if (Object.keys(rest).length > 0) {
+        console.warn('Unknown admonition options');
+      }
+      return { class: overrideClass as AdmonitionTypes };
+    },
+    renderer: (args, opts) => {
+      const { title } = args;
+      const { class: overrideClass } = opts;
+      return [
+        'aside', { class: ['callout', overrideClass || className] },
         ['header', { children: title }],
         0,
-      ]);
+      ];
     },
   };
 };
