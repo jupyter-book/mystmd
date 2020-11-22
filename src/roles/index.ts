@@ -20,11 +20,11 @@ const getRoleAttrs = (roles: Roles) => (name: string, content: string) => {
 
 const addRenderers = (roles: Roles) => (md: MarkdownIt) => {
   const { renderer } = md;
-  Object.entries(roles).forEach(([, { token, renderer: tokenRendered }]) => {
+  Object.entries(roles).forEach(([, { token, renderer: tokenRenderer }]) => {
     // Early return if the role is already defined
     // e.g. math_inline might be better handled by another plugin
     if (md.renderer.rules[token]) return;
-    renderer.rules[token] = tokenRendered;
+    renderer.rules[token] = tokenRenderer;
   });
 };
 

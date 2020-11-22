@@ -53,7 +53,7 @@ function checkBlockBreak(state: StateBlock, startLine: number, str: string, sile
   } catch (error) {
     console.warn('Could not parse metadata for block break: ', metadataString);
   }
-  token.attrSet('metadata', JSON.stringify(metadata));
+  token.meta = { ...token.meta, metadata };
   token.map = [startLine, state.line];
   return true;
 }
@@ -90,7 +90,7 @@ const renderComment: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) =>
 };
 
 const renderBlockBreak: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
-  const metadata = tokens[idx].attrGet('metadata') ?? '';
+  const { metadata } = tokens[idx].meta;
   console.log('Not sure what to do with metadata for block break:', metadata);
   return (
     '<!-- Block Break -->\n'

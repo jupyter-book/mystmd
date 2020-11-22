@@ -1,4 +1,5 @@
 import { Directive } from './types';
+import { unusedOptionsWarning } from './utils';
 
 const admonitionTitles = {
   attention: 'Attention', caution: 'Caution', danger: 'Danger', error: 'Error', important: 'Important', hint: 'Hint', note: 'Note', seealso: 'See Also', tip: 'Tip', warning: 'Warning',
@@ -26,9 +27,7 @@ const createAdmonition = (kind: AdmonitionTypes): Directive<Args, Opts> => {
     },
     getOptions: (data) => {
       const { class: overrideClass, ...rest } = data;
-      if (Object.keys(rest).length > 0) {
-        console.warn('Unknown admonition options');
-      }
+      unusedOptionsWarning(kind, rest);
       return { class: overrideClass as AdmonitionTypes };
     },
     renderer: (args, opts) => {

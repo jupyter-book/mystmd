@@ -1,11 +1,13 @@
 import { TargetKind } from '../state';
 import { Directive } from './types';
+import { unusedOptionsWarning } from './utils';
 
 export type Args = {
   src: string;
 };
 
 export type Opts = {
+  name: string;
 };
 
 const figure = {
@@ -16,7 +18,11 @@ const figure = {
       const args = { src: info.trim() };
       return { args, content: '' };
     },
-    getOptions: (data) => data,
+    getOptions: (data) => {
+      const { name, ...rest } = data;
+      unusedOptionsWarning('figure', rest);
+      return { name };
+    },
     renderer: (args, opts, target) => {
       const { src } = args;
       const { id, number } = target ?? {};
