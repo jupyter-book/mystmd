@@ -11,15 +11,20 @@ import { Roles } from './roles/types';
 export type Options = {
   directives: Directives;
   roles: Roles;
+  math?: boolean;
 };
 
-const defaultOptions: Options = { directives, roles };
+const defaultPlugins: Options = { directives, roles, math: true };
+const defaultOpts: MarkdownIt.Options = { html: false };
 
-export default function MyST(opts: Options = defaultOptions) {
-  const tokenizer = MarkdownIt('commonmark', { html: false });
-  tokenizer.use(myst_math_plugin);
+export default function MyST(
+  plugins: Options = defaultPlugins,
+  opts: MarkdownIt.Options | undefined = defaultOpts,
+) {
+  const tokenizer = MarkdownIt('commonmark', opts);
+  if (plugins.math) tokenizer.use(myst_math_plugin);
   tokenizer.use(blocksPlugin);
-  tokenizer.use(directivesPlugin(opts.directives));
-  tokenizer.use(rolePlugin(opts.roles));
+  tokenizer.use(directivesPlugin(plugins.directives));
+  tokenizer.use(rolePlugin(plugins.roles));
   return tokenizer;
 }
