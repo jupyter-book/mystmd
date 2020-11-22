@@ -14,7 +14,8 @@ export enum DirectiveTokens {
 export type Directive<Args extends {} = {}, Opts extends {} = {}> = {
   token: string;
   numbered?: TargetKind;
-  skipParsing?: true;
+  skipParsing?: true; // Uses the fence instead of markdown-it-container. Does not parse internals.
+  autoNumber?: true; // Always give the directive a numbered reference (only works if numbered)
   getArguments: (info: string) => { args: Args; content?: string };
   getOptions: (data: Record<string, string>) => Opts;
   renderer: (

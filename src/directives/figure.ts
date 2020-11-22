@@ -14,6 +14,7 @@ const figure = {
   figure: {
     token: 'figure',
     numbered: TargetKind.figure,
+    autoNumber: true,
     getArguments: (info) => {
       const args = { src: info.trim() };
       return { args, content: '' };
