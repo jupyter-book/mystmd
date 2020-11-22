@@ -8,6 +8,14 @@
   "main": "dist/index.js",
   "unpkg": "dist/myst.min.js",
   "types": "dist/index.d.ts",
+  "keywords": [
+    "markdown-it-plugin",
+    "markdown-it",
+    "markdown",
+    "myst",
+    "jupyter",
+    "jupyter-book"
+  ],
   "publishConfig": {
     "access": "public"
   },
