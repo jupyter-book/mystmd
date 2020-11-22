@@ -14,6 +14,9 @@ describe('Math', () => {
   getFixtures('math').forEach(([name, md, html]) => {
     it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
   });
+  getFixtures('directives.math').forEach(([name, md, html]) => {
+    it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
+  });
 });
 
 describe('Roles', () => {

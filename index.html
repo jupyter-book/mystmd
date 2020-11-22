@@ -75,8 +75,10 @@
     // Setup Mathjax
     MathJax = {
       tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'],['\\[', '\\]']],
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']],
+        processEnvironments: false,
+        processRefs: false,
       },
       svg: {
         fontCache: 'global'
