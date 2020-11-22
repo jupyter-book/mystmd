@@ -18,8 +18,8 @@ const defaultOptions: Options = { directives, roles };
 export default function MyST(opts: Options = defaultOptions) {
   const tokenizer = MarkdownIt('commonmark', { html: false });
   tokenizer.use(myst_math_plugin);
-  tokenizer.use(myst_role_plugin(roles));
-  tokenizer.use(myst_directives_plugin(opts.directives));
   tokenizer.use(myst_blocks_plugin);
+  tokenizer.use(myst_directives_plugin(opts.directives));
+  tokenizer.use(myst_role_plugin(opts.roles));
   return tokenizer;
 }

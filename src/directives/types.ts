@@ -8,7 +8,7 @@ type Attrs = Record<string, any>;
 export type DirectiveConstructor = {
   token: string;
   numbered?: TargetKind;
-  getArguments: (content: string) => { attrs: Attrs; content?: string };
+  getArguments: (info: string) => { attrs: Attrs; content?: string };
   getOptions: (data: Record<string, string>) => Record<string, any>;
   renderer: (
     tokens: Token[], idx: number, options: MarkdownIt.Options, env: StateEnv, self: Renderer,
