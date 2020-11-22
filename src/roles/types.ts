@@ -7,12 +7,6 @@ type Attrs = Record<string, any>;
 
 export type Role = {
   token: string;
-  content: string;
-  attrs: Attrs;
-};
-
-export type RoleConstructor = {
-  token: string;
   attrs?: Attrs;
   getAttrs?: (content: string) => { attrs: Attrs; content?: string };
   renderer: (
@@ -20,4 +14,4 @@ export type RoleConstructor = {
   ) => string;
 };
 
-export type Roles = Record<string, RoleConstructor>;
+export type Roles = Record<string, Role>;

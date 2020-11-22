@@ -1,7 +1,7 @@
 import MarkdownIt from 'markdown-it';
 import StateInline from 'markdown-it/lib/rules_inline/state_inline';
 import generic from './generic';
-import { Role, Roles } from './types';
+import { Roles } from './types';
 
 // Ported from https://github.com/executablebooks/markdown-it-py/blob/master/markdown_it/extensions/myst_role/index.py
 // MIT License: https://github.com/executablebooks/markdown-it-py/blob/master/LICENSE
@@ -9,7 +9,7 @@ import { Role, Roles } from './types';
 // e.g. {role}`text`
 const ROLE_PATTERN = /^\{([a-zA-Z_\-+:]{1,36})\}(`+)(?!`)(.+?)(?<!`)\2(?!`)/;
 
-const getRole = (roles: Roles) => (name: string, content: string): Role => {
+const getRoleAttrs = (roles: Roles) => (name: string, content: string) => {
   const roleF = roles[name] ?? generic.myst_role;
   if (roleF.getAttrs) {
     const { attrs, content: modified } = roleF.getAttrs(content);
@@ -41,7 +41,7 @@ const myst_role = (roles: Roles) => (state: StateInline, silent: boolean) => {
   state.pos += str.length;
 
   if (!silent) {
-    const role = getRole(roles)(name, content);
+    const role = getRoleAttrs(roles)(name, content);
     const token = state.push(role.token, '', 0);
     Object.entries(role.attrs).map(([k, v]) => token.attrSet(k, v));
     token.meta = { name };

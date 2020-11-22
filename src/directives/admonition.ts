@@ -1,5 +1,4 @@
-import { toHTML } from '../utils';
-import { DirectiveConstructor } from './types';
+import { Directive } from './types';
 
 const admonitionTitles = {
   attention: 'Attention', caution: 'Caution', danger: 'Danger', error: 'Error', important: 'Important', hint: 'Hint', note: 'Note', seealso: 'See Also', tip: 'Tip', warning: 'Warning',
@@ -7,25 +6,25 @@ const admonitionTitles = {
 const DEFAULT_ADMONITION_CLASS = 'note';
 type AdmonitionTypes = keyof typeof admonitionTitles | 'admonition';
 
-const createAdmonition = (kind: AdmonitionTypes): DirectiveConstructor => {
+const createAdmonition = (kind: AdmonitionTypes): Directive => {
   const className = kind === 'admonition' ? DEFAULT_ADMONITION_CLASS : kind;
   return {
     token: kind,
     getArguments: (info) => {
       const content = kind === 'admonition' ? '' : info;
       const title = kind === 'admonition' ? info : admonitionTitles[kind];
-      const attrs = { title };
-      return { attrs, content };
+      const args = { title };
+      return { args, content };
     },
     getOptions: (data) => data,
     renderer: (tokens, idx) => {
       const token = tokens[idx];
       const title = token.attrGet('title') ?? '';
-      return toHTML([
+      return [
         'aside', { class: ['callout', className] },
         ['header', { children: title }],
         0,
-      ]);
+      ];
     },
   };
 };

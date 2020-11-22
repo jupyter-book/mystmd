@@ -1,6 +1,6 @@
 import Token from 'markdown-it/lib/token';
 import { RuleCore } from 'markdown-it/lib/parser_core';
-import { DirectiveConstructor, Directives } from './types';
+import { Directive, Directives } from './types';
 
 const QUICK_PARAMETERS = /^:([a-zA-Z0-9\-_]+):(.*)$/;
 
@@ -29,7 +29,7 @@ function stripYaml(content: string) {
 }
 
 function addDirectiveOptions(
-  directive: DirectiveConstructor, parent: Token, tokens: Token[], index: number,
+  directive: Directive, parent: Token, tokens: Token[], index: number,
 ) {
   const [open, token, close] = tokens.slice(index - 1, index + 2);
   const { content } = token;
@@ -41,7 +41,7 @@ function addDirectiveOptions(
   const { data, modified } = strip(token.content);
   const opts = directive.getOptions(data);
   // eslint-disable-next-line no-param-reassign
-  parent.meta = { ...parent.meta, attrs: opts };
+  parent.meta = { ...parent.meta, opts };
   token.content = modified;
   // Here we will stop the tags from rendering if there is no content that is not metadata
   // This stops empty paragraph tags from rendering.
@@ -54,7 +54,7 @@ function addDirectiveOptions(
 const parseOptions = (directives: Directives): RuleCore => (state) => {
   const { tokens } = state;
   let parent: Token | false = false;
-  let directive: DirectiveConstructor | false = false;
+  let directive: Directive | false = false;
   let gotOptions = false;
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
@@ -66,12 +66,12 @@ const parseOptions = (directives: Directives): RuleCore => (state) => {
     if (token.type === 'container_directives_close') {
       if (parent) {
         // Ensure there is metadata always defined for containers
-        parent.meta = { attrs: {}, ...parent.meta };
+        parent.meta = { opts: {}, ...parent.meta };
       }
       parent = false;
     }
     if (parent && !gotOptions && token.type === 'inline') {
-      addDirectiveOptions(directive as DirectiveConstructor, parent, tokens, index);
+      addDirectiveOptions(directive as Directive, parent, tokens, index);
       gotOptions = true;
     }
   }
