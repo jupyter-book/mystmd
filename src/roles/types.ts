@@ -19,3 +19,5 @@ export type RoleConstructor = {
     tokens: Token[], idx: number, options: MarkdownIt.Options, env: StateEnv, self: Renderer,
   ) => string;
 };
+
+export type Roles = Record<string, RoleConstructor>;
