@@ -66,6 +66,21 @@ This is a title
 </aside>
 .
 
+Admonition with overridding class name:
+.
+```{admonition} This is a title
+:class: tip
+An example of a general `admonition` with a custom _title_.
+```
+.
+<aside class="callout tip">
+<header>
+This is a title
+</header>
+<p>An example of a general <code>admonition</code> with a custom <em>title</em>.</p>
+</aside>
+.
+
 `attention` admonition:
 .
 ```{attention}

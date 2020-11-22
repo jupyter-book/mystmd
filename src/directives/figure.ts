@@ -1,5 +1,12 @@
-import { Target, TargetKind } from '../state';
+import { TargetKind } from '../state';
 import { Directive } from './types';
+
+export type Args = {
+  src: string;
+};
+
+export type Opts = {
+};
 
 const figure = {
   figure: {
@@ -10,17 +17,16 @@ const figure = {
       return { args, content: '' };
     },
     getOptions: (data) => data,
-    renderer: (tokens, idx) => {
-      const token = tokens[idx];
-      const src = token.attrGet('src') ?? '';
-      const { id, number } = token.meta?.target as Target ?? {};
+    renderer: (args, opts, target) => {
+      const { src } = args;
+      const { id, number } = target ?? {};
       return [
         'figure', { id, class: 'numbered' },
         ['img', { src }],
         ['figcaption', { number }, 0],
       ];
     },
-  } as Directive,
+  } as Directive<Args, Opts>,
 };
 
 export default figure;

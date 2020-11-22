@@ -66,7 +66,9 @@ const parseOptions = (directives: Directives): RuleCore => (state) => {
     if (token.type === 'container_directives_close') {
       if (parent) {
         // Ensure there is metadata always defined for containers
-        parent.meta = { opts: {}, ...parent.meta };
+        const meta = { opts: {}, ...parent.meta };
+        parent.meta = meta;
+        token.meta = meta;
       }
       parent = false;
     }

@@ -6,7 +6,15 @@ const admonitionTitles = {
 const DEFAULT_ADMONITION_CLASS = 'note';
 type AdmonitionTypes = keyof typeof admonitionTitles | 'admonition';
 
-const createAdmonition = (kind: AdmonitionTypes): Directive => {
+export type Args = {
+  title: string;
+};
+
+export type Opts = {
+  class: AdmonitionTypes;
+};
+
+const createAdmonition = (kind: AdmonitionTypes): Directive<Args, Opts> => {
   const className = kind === 'admonition' ? DEFAULT_ADMONITION_CLASS : kind;
   return {
     token: kind,
@@ -16,12 +24,18 @@ const createAdmonition = (kind: AdmonitionTypes): Directive => {
       const args = { title };
       return { args, content };
     },
-    getOptions: (data) => data,
-    renderer: (tokens, idx) => {
-      const token = tokens[idx];
-      const title = token.attrGet('title') ?? '';
+    getOptions: (data) => {
+      const { class: overrideClass, ...rest } = data;
+      if (Object.keys(rest).length > 0) {
+        console.warn('Unknown admonition options');
+      }
+      return { class: overrideClass as AdmonitionTypes };
+    },
+    renderer: (args, opts) => {
+      const { title } = args;
+      const { class: overrideClass } = opts;
       return [
-        'aside', { class: ['callout', className] },
+        'aside', { class: ['callout', overrideClass || className] },
         ['header', { children: title }],
         0,
       ];

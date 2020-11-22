@@ -26,11 +26,13 @@ const directiveContainer = (directives: Directives): ContainerOpts => ({
     const directive = getDirective(directives, kind);
     return Boolean(directive);
   },
-  render(tokens, idx, opts, env, self) {
+  render(tokens, idx, options, env, self) {
     const token = tokens[idx];
     const kind = token.attrGet('kind') ?? '';
     const directive = getDirective(directives, kind) as Directive;
-    const [before, after] = toHTML(directive.renderer(tokens, idx, opts, env, self));
+    const { args, opts, target } = token.meta;
+    const htmlTemplate = directive.renderer(args, opts, target, tokens, idx, options, env, self);
+    const [before, after] = toHTML(htmlTemplate);
     return token.nesting === 1 ? before : after;
   },
 });
@@ -72,13 +74,14 @@ const parseArguments = (directives: Directives): RuleCore => (state) => {
       if (!match || !directive) throw new Error('Shoud not be able to get into here without matching?');
       const info = match[2].trim();
       const { args, content: modified } = directive.getArguments?.(info) ?? {};
-      Object.entries(args ?? {}).map(([k, v]) => token.attrSet(k, v));
+      token.meta = { ...token.meta, args };
       if (modified) bumpArguments = modified;
     }
-    if (token.type === 'container_directives_close') {
+    if (parent && token.type === 'container_directives_close') {
       // TODO: https://github.com/executablebooks/MyST-Parser/issues/154
       // If the bumped title needs to be rendered - put it here somehow.
       bumpArguments = '';
+      token.meta = parent.meta;
       parent = false;
     }
     if (parent && bumpArguments && token.type === 'inline') {
@@ -98,7 +101,7 @@ const numbering = (directives: Directives): RuleCore => (state) => {
       if (directive?.numbered) {
         const { name } = token.meta?.opts;
         const target = newTarget(state, name, directive.numbered);
-        token.meta = { ...token.meta, target };
+        token.meta.target = target;
       }
     }
     if (token.type === 'math_block_eqno') {
