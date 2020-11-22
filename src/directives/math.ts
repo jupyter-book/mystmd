@@ -6,7 +6,7 @@ export type Args = {
 };
 
 export type Opts = {
-  label: string;
+  name: string; // Note you can also use `label` here.
 };
 
 const math = {
@@ -16,9 +16,10 @@ const math = {
     skipParsing: true,
     getArguments: () => ({ args: {}, content: '' }),
     getOptions: (data) => {
-      const { label, ...rest } = data;
+      // See https://github.com/sphinx-doc/sphinx/issues/8476
+      const { name, label, ...rest } = data;
       unusedOptionsWarning('math', rest);
-      return { label };
+      return { name: name || label };
     },
     renderer: (args, opts, target) => {
       const { id, number } = target ?? {};

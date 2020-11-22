@@ -68,7 +68,7 @@ function nextNumber(state: { env: any }, kind: TargetKind) {
 /** Create a new internal target.
  *
  * @param state MarkdownIt state that will be modified
- * @param id The reference id that will be used for the target
+ * @param name The reference name that will be used for the target. Note some directives use label.
  * @param kind The target kind: "ref", "equation", "code", "table" or "figure"
  */
 export function newTarget(state: { env: any }, name: string | undefined, kind: TargetKind) {

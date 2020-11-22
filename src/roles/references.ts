@@ -35,7 +35,8 @@ const renderReference = (
   } = target;
   let text = token.content || title || defaultReference;
   if (opts.numbered) {
-    text = text.replace('%s', String(number));
+    // See https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-numref
+    text = text.replace(/%s/g, String(number)).replace(/\{number\}/g, String(number));
   }
   if (opts.brackets) {
     text = `${token.content}(${number})`;

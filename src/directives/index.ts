@@ -142,20 +142,16 @@ const numbering = (directives: Directives): RuleCore => (state) => {
   const { tokens } = state;
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
-    if (token.type === DirectiveTokens.open) {
+    if (token.type === DirectiveTokens.open || token.type === DirectiveTokens.fence) {
       const directive = getDirective(directives, token.attrGet('kind'));
-      if (directive?.numbered) {
-        const { name, label } = token.meta?.opts;
-        const target = newTarget(state, name || label, directive.numbered);
-        token.meta.target = target;
-      }
-    }
-    if (token.type === DirectiveTokens.fence) {
-      const directive = getDirective(directives, token.attrGet('kind'));
-      const { name, label } = token.meta?.opts;
-      // Only number things if the directive supports numbering AND a name or label is provided
-      if (directive?.numbered && (name || label)) {
-        const target = newTarget(state, name || label, directive.numbered);
+      const { name } = token.meta?.opts;
+      /* Only number things if:
+       *    * the directive supports numbering
+       *    * AND a name is provided
+       *    * OR autoNumber for the directive is on
+       */
+      if (directive?.numbered && (name || directive?.autoNumber)) {
+        const target = newTarget(state, name, directive.numbered);
         token.meta.target = target;
       }
     }
