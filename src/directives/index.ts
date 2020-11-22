@@ -11,7 +11,6 @@ const DIRECTIVE_PATTERN = /^\{([a-z]*)\}\s*(.*)$/;
 
 type ContainerOpts = Parameters<typeof container>[2];
 
-
 function getDirective(
   directives: Directives, kind: string | null,
 ): DirectiveConstructor | undefined {
@@ -62,13 +61,13 @@ const setDirectiveKind = (directives: Directives): RuleCore => (state) => {
 
 const parseArguments = (directives: Directives): RuleCore => (state) => {
   const { tokens } = state;
-  let inContainer: Token | false = false;
+  let parent: Token | false = false;
   // If there is a title on the first line when not required, bump it to the first inline
   let bumpArguments = '';
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
     if (token.type === 'container_directives_open') {
-      inContainer = token;
+      parent = token;
       const match = token.info.trim().match(DIRECTIVE_PATTERN);
       const directive = getDirective(directives, token.attrGet('kind'));
       if (!match || !directive) throw new Error('Shoud not be able to get into here without matching?');
@@ -81,10 +80,9 @@ const parseArguments = (directives: Directives): RuleCore => (state) => {
       // TODO: https://github.com/executablebooks/MyST-Parser/issues/154
       // If the bumped title needs to be rendered - put it here somehow.
       bumpArguments = '';
-      // Set the kind on the closing container as well, as that will have to render the closing tags
-      inContainer = false;
+      parent = false;
     }
-    if (inContainer && bumpArguments && token.type === 'inline') {
+    if (parent && bumpArguments && token.type === 'inline') {
       token.content = `${bumpArguments} ${token.content}`;
       bumpArguments = '';
     }
