@@ -112,7 +112,7 @@ const numbering = (directives: Directives): RuleCore => (state) => {
 export const myst_directives_plugin = (directives: Directives) => (md: MarkdownIt) => {
   md.use(container, 'directives', directiveContainer(directives));
   md.core.ruler.after('block', 'directive_kind', setDirectiveKind(directives));
-  md.core.ruler.after('directive_kind', 'parse_directive_args', parseOptions(directives));
-  md.core.ruler.after('parse_directive_args', 'parse_directive_args', parseArguments(directives));
+  md.core.ruler.after('directive_kind', 'parse_directive_opts', parseOptions(directives));
+  md.core.ruler.after('parse_directive_opts', 'parse_directive_args', parseArguments(directives));
   md.core.ruler.after('parse_directive_args', 'numbering', numbering(directives));
 };
