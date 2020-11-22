@@ -5,7 +5,7 @@ import Token from 'markdown-it/lib/token';
 import { RuleCore } from 'markdown-it/lib/parser_core';
 import parseOptions from './options';
 import { DirectiveConstructor, Directives } from './types';
-import { newTarget } from '../state';
+import { newTarget, TargetKind } from '../state';
 
 const DIRECTIVE_PATTERN = /^\{([a-z]*)\}\s*(.*)$/;
 
@@ -101,6 +101,11 @@ const numbering = (directives: Directives): RuleCore => (state) => {
         const target = newTarget(state, name, directive.numbered);
         token.meta = { ...token.meta, target };
       }
+    }
+    if (token.type === 'math_block_eqno') {
+      const name = token.info;
+      const target = newTarget(state, name, TargetKind.equation);
+      token.meta = { ...token.meta, target };
     }
   }
   return true;
