@@ -40,6 +40,7 @@
     "markdown-it-texmath": "^0.7.2"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "^6.3.1",
     "@babel/plugin-proposal-optional-chaining": "^7.7.4",
     "@sinonjs/fake-timers": "^6.0.1",
     "@types/jest": "^25.2.3",

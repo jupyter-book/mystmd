@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 // const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
@@ -8,7 +10,7 @@ module.exports = {
     usedExports: true,
   },
   entry: {
-    app: './src/myst.ts',
+    app: './myst.ts',
   },
   externals: {
     katex: 'katex',
@@ -18,6 +20,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'markdown-it-myst',
       template: 'index.html',
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: 'fixtures', to: 'fixtures' },
+        { from: 'myst.css', to: 'myst.css' },
+      ],
     }),
   ],
   output: {

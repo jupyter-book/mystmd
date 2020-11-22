@@ -3,14 +3,26 @@
 import { escapeHtml } from 'markdown-it/lib/common/utils';
 
 export enum TargetKind {
-  ref='ref',
-  figure='fig',
-  equation='eq',
+  ref = 'ref',
+  equation = 'eq',
+  figure = 'fig',
+  table = 'table',
+  code = 'code',
 }
 
+const RefFormatter: { [kind: string]: (id: string, num?: number) => string } = {
+  ref(id) { return `[${id}]`; },
+  eq(id, num) { return `Eq ${num}`; },
+  fig(id, num) { return `Fig ${num}`; },
+  table(id, num) { return `Table ${num}`; },
+  code(id, num) { return `Code ${num}`; },
+};
+
 export type Target = {
+  id: string;
   name: string;
   kind: TargetKind;
+  defaultReference: string;
   title?: string;
   number?: number;
 };
@@ -19,58 +31,59 @@ export type StateEnv = {
   targets: Record<string, Target>;
   numbering: {
     eq: number;
+    fig: number;
+    table: number;
+    code: number;
   };
 };
 
 export function getStateEnv(state: {env: any}): StateEnv {
   const env = state.env as StateEnv;
   if (!env.targets) env.targets = {};
+  if (!env.numbering) {
+    env.numbering = {
+      eq: 0,
+      fig: 0,
+      table: 0,
+      code: 0,
+    };
+  }
   if (!state.env) state.env = env;
   return env;
 }
 
-/** Get the next equation number.
+/** Get the next number for an equation, figure, code or table
  *
- * Can input `{ numbering: { eq:100 } }` to start counting at a different numebr.
+ * Can input `{ numbering: { equation: 100 } }` to start counting at a different numebr.
  *
  * @param state MarkdownIt state that will be modified
  */
-function nextEquationNumber(state: { env: any }) {
-  const env = state.env as StateEnv;
-  if (!env.numbering) env.numbering = { eq: 0 };
-  if (!state.env) state.env = env;
-  env.numbering.eq += 1;
-  return env.numbering.eq;
+function nextNumber(state: { env: any }, kind: TargetKind) {
+  if (kind === TargetKind.ref) throw new Error('Targets are not numbered?');
+  const env = getStateEnv(state);
+  env.numbering[kind] += 1;
+  return env.numbering[kind];
 }
 
 /** Create a new internal target.
  *
  * @param state MarkdownIt state that will be modified
  * @param id The reference id that will be used for the target
+ * @param kind The target kind: "ref", "equation", "code", "table" or "figure"
  */
-export function newTarget(state: { env: any }, id: string) {
+export function newTarget(state: { env: any }, name: string | undefined, kind: TargetKind) {
   const env = getStateEnv(state);
+  const number = kind === TargetKind.ref ? undefined : nextNumber(state, kind);
+  // TODO: not sure about this - if name is not provided, then you get `fig-1` etc.
+  const useName = name ? escapeHtml(name) : `${kind}-${String(number)}`;
+  const id = name ? `${kind}-${escapeHtml(useName)}` : useName;
   const target: Target = {
-    name: `${TargetKind.ref}-${escapeHtml(id)}`,
-    kind: TargetKind.ref,
+    id,
+    name: useName,
+    defaultReference: RefFormatter[kind](id, number),
+    kind,
+    number,
   };
-  env.targets[id] = target;
-  return target;
-}
-
-/** Create a new referenced equation, which is numbered
- *
- * @param state MarkdownIt state that will be modified
- * @param id The reference id that will be used for the equation
- */
-export function newEquation(state: { env: any }, id: string) {
-  const env = getStateEnv(state);
-  const num = nextEquationNumber(state);
-  const target: Target = {
-    name: `${TargetKind.equation}-${escapeHtml(id)}`,
-    kind: TargetKind.equation,
-    number: num,
-  };
-  env.targets[id] = target;
+  env.targets[useName] = target;
   return target;
 }
