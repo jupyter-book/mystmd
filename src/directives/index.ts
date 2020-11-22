@@ -71,7 +71,7 @@ const parseArguments = (directives: Directives): RuleCore => (state) => {
       const match = token.info.trim().match(DIRECTIVE_PATTERN);
       const directive = getDirective(directives, token.attrGet('kind'));
       if (!match || !directive) throw new Error('Shoud not be able to get into here without matching?');
-      const info = (match[2] ?? '').trim();
+      const info = match[2].trim();
       const { attrs, content: modified } = directive.getArguments?.(info) ?? {};
       Object.entries(attrs ?? {}).map(([k, v]) => token.attrSet(k, v));
       if (modified) bumpArguments = modified;
