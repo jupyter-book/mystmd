@@ -15,4 +15,4 @@ export type Directive<Args extends {} = {}, Opts extends {} = {}> = {
   ) => HTMLOutputSpecArray;
 };
 
-export type Directives = Record<string, Directive>;
+export type Directives = Record<string, Directive<any, any>>;
