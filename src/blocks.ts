@@ -73,7 +73,7 @@ function blocks(state: StateBlock, startLine: number, endLine: number, silent: b
   ), false);
 }
 
-const render_myst_target: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
+const renderTarget: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
   const ref = tokens[idx].attrGet('id') ?? '';
   const id = env.targets[ref]?.id;
   // TODO: This should be better as part of the next element, and then hide this
@@ -82,14 +82,14 @@ const render_myst_target: Renderer.RenderRule = (tokens, idx, opts, env: StateEn
   );
 };
 
-const render_myst_comment: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
+const renderComment: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
   const comment = tokens[idx].attrGet('comment') ?? '';
   return (
     `<!-- ${escapeHtml(comment)} -->\n`
   );
 };
 
-const render_myst_block_break: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
+const renderBlockBreak: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
   const metadata = tokens[idx].attrGet('metadata') ?? '';
   console.log('Not sure what to do with metadata for block break:', metadata);
   return (
@@ -134,7 +134,7 @@ const updateLinkHrefs: RuleCore = (state) => {
   return true;
 };
 
-export function myst_blocks_plugin(md: MarkdownIt) {
+export function blocksPlugin(md: MarkdownIt) {
   md.block.ruler.before(
     'hr',
     'myst_blocks',
@@ -143,7 +143,7 @@ export function myst_blocks_plugin(md: MarkdownIt) {
   );
   md.core.ruler.after('block', 'add_block_titles', addBlockTitles);
   md.core.ruler.after('inline', 'update_link_hrefs', updateLinkHrefs);
-  md.renderer.rules.myst_target = render_myst_target;
-  md.renderer.rules.myst_comment = render_myst_comment;
-  md.renderer.rules.myst_block_break = render_myst_block_break;
+  md.renderer.rules.myst_target = renderTarget;
+  md.renderer.rules.myst_comment = renderComment;
+  md.renderer.rules.myst_block_break = renderBlockBreak;
 }

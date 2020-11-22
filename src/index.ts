@@ -1,7 +1,7 @@
 import MarkdownIt from 'markdown-it';
-import { myst_role_plugin } from './roles';
-import { myst_directives_plugin } from './directives';
-import { myst_blocks_plugin } from './myst_blocks';
+import { rolePlugin } from './roles';
+import { directivesPlugin } from './directives';
+import { blocksPlugin } from './blocks';
 import { myst_math_plugin } from './math';
 import directives from './directives/default';
 import roles from './roles/default';
@@ -18,8 +18,8 @@ const defaultOptions: Options = { directives, roles };
 export default function MyST(opts: Options = defaultOptions) {
   const tokenizer = MarkdownIt('commonmark', { html: false });
   tokenizer.use(myst_math_plugin);
-  tokenizer.use(myst_blocks_plugin);
-  tokenizer.use(myst_directives_plugin(opts.directives));
-  tokenizer.use(myst_role_plugin(opts.roles));
+  tokenizer.use(blocksPlugin);
+  tokenizer.use(directivesPlugin(opts.directives));
+  tokenizer.use(rolePlugin(opts.roles));
   return tokenizer;
 }

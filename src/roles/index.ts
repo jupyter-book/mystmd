@@ -50,7 +50,7 @@ const myst_role = (roles: Roles) => (state: StateInline, silent: boolean) => {
   return true;
 };
 
-export const myst_role_plugin = (roles: Roles) => (md: MarkdownIt) => {
+export const rolePlugin = (roles: Roles) => (md: MarkdownIt) => {
   md.inline.ruler.before('backticks', 'myst_role', myst_role(roles));
   addRenderers(roles)(md);
 };
