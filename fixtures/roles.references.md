@@ -16,6 +16,7 @@ The reference to {ref}`test3` and {ref}`test4`.
 {numref}`Hi 2 <test4>`
 {numref}`This is 1: %s <test3>`
 {numref}`This is 2: %s <test4>`
+{numref}`This is 2: {number} <test4>`
 .
 <figure id="fig-test3" class="numbered">
 <img src="https://jupyterbook.org/_static/logo.png">
@@ -35,5 +36,6 @@ The reference to {ref}`test3` and {ref}`test4`.
 <a href="#fig-test3" title="Fig 1">Hi 1</a>
 <a href="#fig-test4" title="Fig 2">Hi 2</a>
 <a href="#fig-test3" title="Fig 1">This is 1: 1</a>
+<a href="#fig-test4" title="Fig 2">This is 2: 2</a>
 <a href="#fig-test4" title="Fig 2">This is 2: 2</a></p>
 .
