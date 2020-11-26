@@ -2,23 +2,6 @@
 
 {abbr}`MyST (Markedly Structured Text)` is a flavor of markdown inspired from the Sphinx ecosystem and {abbr}`RST (reStructured Text)`.
 
-Any [CommonMark](https://commonmark.org/) markdown (such as [Jupyter Notebook](https://jupyter.org) markdown) is natively supported by the MyST parser. The goal of MyST *javascript* parser ([markdown-it-myst](https://github.com/executablebooks/markdown-it-myst)) is to have overlap with Sphinx ecosystem and {abbr}`RST (reStructured Text)` and provide a flexible renderer that can be used outside of the Sphinx ecosystem.
-
-```{important}
-For integration with **Sphinx**, use the Python reference implementation for MyST parser, which can be found at:
-
-<https://myst-parser.readthedocs.io/en/latest/>
-```
-
-The focus of the project is on components that are useful in rendering books, as this is a project associated with [JupyterBook](https://jupyterbook.org/) and the [Executable Books Project](https://executablebooks.org/).
-
-The project has the following goals:
-
-* Admonitions (callouts)
-* References and citations
-* Figures, with cross-references
-* Math and equations, with cross-references
-
 (start)=
 ## Getting Started
 

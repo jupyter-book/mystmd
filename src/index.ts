@@ -14,8 +14,8 @@ export type Options = {
   math?: boolean;
 };
 
-const defaultPlugins: Options = { directives, roles, math: true };
-const defaultOpts: MarkdownIt.Options = { html: false };
+export const defaultPlugins: Options = { directives, roles, math: true };
+export const defaultOpts: MarkdownIt.Options = { html: false };
 
 export default function MyST(
   plugins: Options = defaultPlugins,
