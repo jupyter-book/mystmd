@@ -28,7 +28,7 @@ const addRenderers = (roles: Roles) => (md: MarkdownIt) => {
   });
 };
 
-const myst_role = (roles: Roles) => (state: StateInline, silent: boolean) => {
+const mystRole = (roles: Roles) => (state: StateInline, silent: boolean) => {
   // Check if the role is escaped
   if (state.src.charCodeAt(state.pos - 1) === 0x5C) { /* \ */
     // TODO: this could be improved in the case of edge case '\\{'
@@ -51,6 +51,6 @@ const myst_role = (roles: Roles) => (state: StateInline, silent: boolean) => {
 };
 
 export const rolePlugin = (roles: Roles) => (md: MarkdownIt) => {
-  md.inline.ruler.before('backticks', 'myst_role', myst_role(roles));
+  md.inline.ruler.before('backticks', 'myst_role', mystRole(roles));
   addRenderers(roles)(md);
 };

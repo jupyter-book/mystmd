@@ -11,7 +11,9 @@ export enum DirectiveTokens {
   inline = 'inline',
 }
 
-export type Directive<Args extends {} = {}, Opts extends {} = {}> = {
+export type Directive<
+  Args extends Record<string, any>, Opts extends Record<string, any>,
+> = {
   token: string;
   numbered?: TargetKind;
   skipParsing?: true; // Uses the fence instead of markdown-it-container. Does not parse internals.
