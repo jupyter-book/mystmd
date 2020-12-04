@@ -30,7 +30,7 @@
 <body onload="init();">
   <p>Examples:
   <select id="examples">
-    <option value="welcome">Welcome to markdown-it-myst</option>
+    <option value="example">Welcome to markdown-it-myst</option>
     <option value="directives.admonitions">Admonition/Callout Examples</option>
     <option value="markdown.basic">Basic Markdown</option>
     <option value="math">Equations & Math</option>
@@ -70,7 +70,7 @@
       input.onchange = render;
       input.onkeyup = render;
       examples.onchange = (e) => getFixture(e.target.value);
-      getFixture('welcome');
+      getFixture('example');
     }
     // Setup Mathjax
     MathJax = {

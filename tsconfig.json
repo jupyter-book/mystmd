@@ -10,6 +10,7 @@
     "outDir": "dist",
     "baseUrl": ".",
     "lib": [
+      "DOM",
       "es2019"
     ],
     "paths": {
@@ -26,9 +27,9 @@
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*", "myst.ts"
+    "src/**/*",
+    "myst.ts"
   ],
   "exclude": [
-    "**/*.spec.ts"
   ]
 }

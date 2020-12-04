@@ -1,0 +1,13 @@
+.PHONY: build serve watch
+
+build:
+	jupyter-book build .
+
+watch:
+	nodemon -w './**' -e yml,md,ipynb --exec jupyter-book build .
+
+serve:
+	cd _build/html; python -m http.server 9000
+
+clean:
+	jupyter-book clean .

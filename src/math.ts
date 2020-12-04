@@ -20,9 +20,11 @@ export function addMathRenderers(md: MarkdownIt) {
   // Note: this will actually create invalid HTML
   renderer.rules.math_inline_double = (tokens, idx) => renderMath(tokens[idx].content, true);
   renderer.rules.math_block = (tokens, idx) => renderMath(tokens[idx].content, true);
+  renderer.rules.math_block_end = () => '';
   renderer.rules.math_block_eqno = (tokens, idx) => (
     renderMath(tokens[idx].content, true, tokens[idx].meta?.target)
   );
+  renderer.rules.math_block_eqno_end = () => '';
 }
 
 export function mathPlugin(md: MarkdownIt) {

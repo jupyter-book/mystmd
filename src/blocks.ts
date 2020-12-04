@@ -82,14 +82,14 @@ const renderTarget: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => 
   );
 };
 
-const renderComment: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
+const renderComment: Renderer.RenderRule = (tokens, idx) => {
   const comment = tokens[idx].attrGet('comment') ?? '';
   return (
     `<!-- ${escapeHtml(comment)} -->\n`
   );
 };
 
-const renderBlockBreak: Renderer.RenderRule = (tokens, idx, opts, env: StateEnv) => {
+const renderBlockBreak: Renderer.RenderRule = (tokens, idx) => {
   const { metadata } = tokens[idx].meta;
   console.log('Not sure what to do with metadata for block break:', metadata);
   return (
