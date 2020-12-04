@@ -10,6 +10,7 @@
     "outDir": "dist",
     "baseUrl": ".",
     "lib": [
+      "DOM",
       "es2019"
     ],
     "paths": {
