@@ -7,7 +7,15 @@ import { Roles } from './types';
 // MIT License: https://github.com/executablebooks/markdown-it-py/blob/master/LICENSE
 
 // e.g. {role}`text`
-const ROLE_PATTERN = /^\{([a-zA-Z_\-+:]{1,36})\}(`+)(?!`)(.+?)(?<!`)\2(?!`)/;
+let x: RegExp;
+try {
+  x = new RegExp('^\\{([a-zA-Z_\\-+:]{1,36})\\}(`+)(?!`)(.+?)(?<!`)\\2(?!`)');
+} catch (error) {
+  // Safari does not support negative look-behinds
+  // This is a slightly down-graded, as it does not require a space.
+  x = /^\{([a-zA-Z_\-+:]{1,36})\}(`+)(?!`)(.+?)\2(?!`)/;
+}
+const ROLE_PATTERN = x;
 
 const getRoleAttrs = (roles: Roles) => (name: string, content: string) => {
   const roleF = roles[name] ?? generic.myst_role;
