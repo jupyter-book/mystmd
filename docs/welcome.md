@@ -1,7 +1,7 @@
 # markdown-it-myst
 
 ```{danger}
-`markdown-it-myst` is pre-alpha, expect changes! (November, 2020)
+`markdown-it-myst` is pre-alpha, expect changes! (January, 2021)
 ```
 
 {abbr}`MyST (Markedly Structured Text)` is a flavor of markdown inspired from the Sphinx ecosystem and {abbr}`RST (reStructured Text)`.
