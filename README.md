@@ -5,7 +5,7 @@
 [![docs](https://github.com/executablebooks/markdown-it-myst/workflows/docs/badge.svg)](https://executablebooks.github.io/markdown-it-myst)
 [![demo](https://img.shields.io/badge/live-demo-blue)](https://executablebooks.github.io/markdown-it-myst/demo)
 
-> :warning: **Note:** `markdown-it-myst` is pre-alpha, expect changes! (August, 2020)
+> :warning: **Note:** `markdown-it-myst` is alpha, expect changes! (January, 2021)
 
 A javascript parser for [MyST](https://myst-parser.readthedocs.io) based on [markdown-it](https://github.com/markdown-it/markdown-it)
 
