@@ -18,14 +18,22 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.7
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
 
     - name: Install dependencies
       run: |
         pip install -r docs/doc-requirements.txt
+        yarn install
+
     # Build the book
     - name: Build the book
       run: |
+        yarn build
         cd docs; make build
+
     # Push the book's HTML to github-pages
     - name: GitHub Pages action
       uses: peaceiris/actions-gh-pages@v3.5.9
