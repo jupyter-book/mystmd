@@ -53,7 +53,7 @@
     }
     async function getFixture(name) {
       if (!cache[name]) {
-        const response = await fetch(`/fixtures/${name}.md`)
+        const response = await fetch(`fixtures/${name}.md`);
         const dataArray = await response.body.getReader().read();
         const fixture = new TextDecoder("utf-8").decode(dataArray.value);
         cache[name] = fixture.split('\n.\n\n').map((s) => s.split('\n.\n').slice(0,2).join('\n\n')).join('\n\n');
