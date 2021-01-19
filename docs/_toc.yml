@@ -2,7 +2,7 @@
 # Learn more at https://jupyterbook.org/customize/toc.html
 #
 
-- file: welcome
+- file: index
 - part: Get started
   chapters:
   - file: start
