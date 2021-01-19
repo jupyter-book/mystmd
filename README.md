@@ -3,7 +3,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/markdown-it-myst/blob/master/LICENSE)
 [![CI](https://github.com/executablebooks/markdown-it-myst/workflows/CI/badge.svg)](https://github.com/executablebooks/markdown-it-myst/actions)
 [![docs](https://github.com/executablebooks/markdown-it-myst/workflows/docs/badge.svg)](https://executablebooks.github.io/markdown-it-myst)
-[![demo](https://img.shields.io/badge/live-demo-blue)](https://executablebooks.github.io/markdown-it-myst/demo)
+[![demo](https://img.shields.io/badge/live-demo-blue)](https://executablebooks.github.io/markdown-it-myst/demo/index.html)
 
 > :warning: **Note:** `markdown-it-myst` is alpha, expect changes! (January, 2021)
 
