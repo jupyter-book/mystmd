@@ -2,7 +2,7 @@ import MarkdownIt from 'markdown-it';
 import { rolePlugin } from './roles';
 import { directivesPlugin } from './directives';
 import { blocksPlugin } from './blocks';
-import { mathPlugin } from './math';
+import { mathPlugin } from './math/math';
 import directives from './directives/default';
 import roles from './roles/default';
 import { Directives } from './directives/types';

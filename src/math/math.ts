@@ -1,18 +1,7 @@
 import MarkdownIt from 'markdown-it';
 import markdownTexMath from 'markdown-it-texmath';
-import { Target } from './state';
-import { toHTML } from './utils';
-
-export const renderMath = (math: string, block: boolean, target?: Target) => {
-  const { id, number } = target ?? {};
-  const [html] = toHTML([block ? 'div' : 'span', {
-    class: target ? ['math', 'numbered'] : 'math',
-    id,
-    number,
-    children: block ? `\\[${math}\\]` : `\\(${math}\\)`,
-  }], { inline: true });
-  return block ? `${html}\n` : html;
-};
+import amsmathPlugin from './amsmath';
+import { renderMath } from './utils';
 
 export function addMathRenderers(md: MarkdownIt) {
   const { renderer } = md;
@@ -32,6 +21,7 @@ export function mathPlugin(md: MarkdownIt) {
     engine: { renderToString: (s: string) => s }, // We are not going to render ever.
     delimiters: 'dollars',
   });
+  amsmathPlugin(md);
   // Note: numbering of equations for `math_block_eqno` happens in the directives rules
   addMathRenderers(md);
 }

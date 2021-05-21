@@ -1,5 +1,5 @@
 import { Role } from './types';
-import { renderMath } from '../math';
+import { renderMath } from '../math/utils';
 
 const roles = {
   math: {
