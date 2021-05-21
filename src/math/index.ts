@@ -16,7 +16,7 @@ export function addMathRenderers(md: MarkdownIt) {
   renderer.rules.math_block_eqno_end = () => '';
 }
 
-export function mathPlugin(md: MarkdownIt) {
+export function plugin(md: MarkdownIt) {
   md.use(markdownTexMath, {
     engine: { renderToString: (s: string) => s }, // We are not going to render ever.
     delimiters: 'dollars',
