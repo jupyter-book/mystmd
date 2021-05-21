@@ -17,6 +17,12 @@ describe('Math', () => {
   getFixtures('directives.math').forEach(([name, md, html]) => {
     it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
   });
+  getFixtures('math.ams').forEach(([name, md, html]) => {
+    it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
+  });
+  getFixtures('math.ams.integration').forEach(([name, md, html]) => {
+    it(name, () => expect(tokenizer.render(md)).toEqual(`${html}\n`));
+  });
 });
 
 describe('Roles', () => {
