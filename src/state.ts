@@ -38,7 +38,7 @@ export type StateEnv = {
 };
 
 export function getStateEnv(state: {env: any}): StateEnv {
-  const env = state.env as StateEnv;
+  const env = state.env as StateEnv ?? {};
   if (!env.targets) env.targets = {};
   if (!env.numbering) {
     env.numbering = {

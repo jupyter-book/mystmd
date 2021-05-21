@@ -6,20 +6,44 @@ Library structure:
 src/
 ├── blocks.ts           # Block level rules
 ├── directives          # All directives
-│   ├── index.ts
-│   ├── default.ts      # A dictionary of the default directives
+│   ├── index.ts        # { plugin, directives } a dictionary of the default directives
 │   ├── admonition.ts   # Admonition directives
 │   ├── figure.ts       # Figure directive
 │   └── ...
 └── roles               # All roles
-    ├── index.ts
-    ├── default.ts      # A dictionary of the default roles
+    ├── index.ts        # { plugin, roles }, a dictionary of the default roles
     ├── html.ts         # HTML roles, like abbr, sub, sup ...
     ├── math.ts         # Math role
     └── ...
 ├── index.ts            # Exports `MyST()` and default roles/directives
 ├── state.ts            # Handles reference numbering
 └── utils.ts
+```
+
+## Using `markdown-it-myst`
+
+There are two ways to use the library, you can use the `MyST` wrapper,
+which creates a `MarkdownIt` tokenizer for you:
+
+```javascript
+import { MyST } from 'markdown-it-myst';
+const myst = MyST(); // Can override options here!
+const html = myst.render(myString);
+```
+
+Alternatively, you can use this with other packages in a more granular way:
+
+```javascript
+import { plugins, roles, directives } from 'markdown-it-myst';
+
+// Somewhere create a markdownit tokenizer:
+const tokenizer = MarkdownIt('commonmark');
+
+// Later:
+tokenizer.use(plugins.math);
+tokenizer.use(plugins.blocks);
+tokenizer.use(plugins.directives(directives));
+tokenizer.use(plugins.roles(roles));
 ```
 
 ## Creating a New Directive

@@ -68,8 +68,8 @@ function blocks(state: StateBlock, startLine: number, endLine: number, silent: b
   if (state.sCount[startLine] - state.blkIndent >= 4) return false;
 
   const str = state.src.slice(pos, maximum);
-  return blockPlugins.reduce((complete, plugin) => (
-    complete || plugin(state, startLine, str, silent)
+  return blockPlugins.reduce((complete, plug) => (
+    complete || plug(state, startLine, str, silent)
   ), false);
 }
 
@@ -134,7 +134,7 @@ const updateLinkHrefs: RuleCore = (state) => {
   return true;
 };
 
-export function blocksPlugin(md: MarkdownIt) {
+export function plugin(md: MarkdownIt) {
   md.block.ruler.before(
     'hr',
     'myst_blocks',
