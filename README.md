@@ -22,7 +22,7 @@ npm install markdown-it-myst
 
 In a node environment:
 ```javascript
-import MyST from 'markdown-it-myst';
+import { MyST } from 'markdown-it-myst';
 
 const myst = MyST();
 const html = myst.render('# Hello to the world!');
