@@ -19,7 +19,7 @@ export const defaultOptions: Options = {
   markdownit: { html: false },
 };
 
-export default function MyST(
+function MyST(
   opts: Options = defaultOptions,
 ) {
   const tokenizer = MarkdownIt('commonmark', opts.markdownit);
@@ -29,3 +29,5 @@ export default function MyST(
   tokenizer.use(plugins.roles(roles));
   return tokenizer;
 }
+
+export { MyST };
