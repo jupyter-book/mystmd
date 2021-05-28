@@ -1,7 +1,7 @@
-import MarkdownIt from 'markdown-it';
-import Renderer from 'markdown-it/lib/renderer';
-import StateBlock from 'markdown-it/lib/rules_block/state_block';
-import { renderMath } from './utils';
+import MarkdownIt from 'markdown-it'
+import Renderer from 'markdown-it/lib/renderer'
+import StateBlock from 'markdown-it/lib/rules_block/state_block'
+import { renderMath } from './utils'
 
 // Taken from amsmath version 2.1
 // http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/required/amsmath/amsldoc.pdf
@@ -28,8 +28,8 @@ const ENVIRONMENTS = [
   'Vmatrix',
   // eqnarray is another math environment, it is not part of amsmath,
   // and note that it is better to use align or equation+split instead
-  'eqnarray',
-];
+  'eqnarray'
+]
 // other "non-top-level" environments:
 
 // 3.4 the split environment is for single equations that are too long to fit on one line
@@ -41,56 +41,61 @@ const ENVIRONMENTS = [
 // whose total width is the actual width of the contents;
 // thus they can be used as a component in a containing expression
 
-const RE_OPEN = new RegExp(`^\\\\begin{(${ENVIRONMENTS.join('|')})([*]?)}`);
+const RE_OPEN = new RegExp(`^\\\\begin{(${ENVIRONMENTS.join('|')})([*]?)}`)
 
 function matchEnvironment(string: string) {
-  const matchOpen = string.match(RE_OPEN);
-  if (!matchOpen) return null;
-  const [, environment, numbered] = matchOpen;
-  const end = `\\end{${environment}${numbered}}`;
-  const matchClose = string.indexOf(end);
-  if (matchClose === -1) return null;
-  return { environment, numbered, endpos: matchClose + end.length };
+  const matchOpen = string.match(RE_OPEN)
+  if (!matchOpen) return null
+  const [, environment, numbered] = matchOpen
+  const end = `\\end{${environment}${numbered}}`
+  const matchClose = string.indexOf(end)
+  if (matchClose === -1) return null
+  return { environment, numbered, endpos: matchClose + end.length }
 }
 
-function amsmathBlock(state: StateBlock, startLine: number, endLine: number, silent: boolean) {
+function amsmathBlock(
+  state: StateBlock,
+  startLine: number,
+  endLine: number,
+  silent: boolean
+) {
   // if it's indented more than 3 spaces, it should be a code block
-  if (state.sCount[startLine] - state.blkIndent >= 4) return false;
+  if (state.sCount[startLine] - state.blkIndent >= 4) return false
 
-  const begin = state.bMarks[startLine] + state.tShift[startLine];
+  const begin = state.bMarks[startLine] + state.tShift[startLine]
 
-  const outcome = matchEnvironment(state.src.slice(begin));
-  if (!outcome) return false;
-  const { environment, numbered } = outcome;
-  let { endpos } = outcome;
-  endpos += begin;
+  const outcome = matchEnvironment(state.src.slice(begin))
+  if (!outcome) return false
+  const { environment, numbered } = outcome
+  let { endpos } = outcome
+  endpos += begin
 
-  let line = startLine;
+  let line = startLine
   while (line < endLine) {
     if (endpos >= state.bMarks[line] && endpos <= state.eMarks[line]) {
       // line for end of block math found ...
       // eslint-disable-next-line no-param-reassign
-      state.line = line + 1;
-      break;
+      state.line = line + 1
+      break
     }
-    line += 1;
+    line += 1
   }
 
   if (!silent) {
-    const token = state.push('amsmath', 'math', 0);
-    token.block = true;
-    token.content = state.src.slice(begin, endpos);
-    token.meta = { environment, numbered };
-    token.map = [startLine, line];
+    const token = state.push('amsmath', 'math', 0)
+    token.block = true
+    token.content = state.src.slice(begin, endpos)
+    token.meta = { environment, numbered }
+    token.map = [startLine, line]
   }
 
-  return true;
+  return true
 }
 
 const renderAmsmathBlock: Renderer.RenderRule = (tokens, idx) => {
-  const token = tokens[idx];
-  return renderMath(token.content, true);
-};
+  const token = tokens[idx]
+  return renderMath(token.content, true)
+}
 
 /**
   Parses TeX math equations, without any surrounding delimiters,
@@ -102,15 +107,12 @@ const renderAmsmathBlock: Renderer.RenderRule = (tokens, idx) => {
     \end{gather*}
   ```
 */
-function amsmathPlugin(md: MarkdownIt) {
-  const { renderer } = md;
-  md.block.ruler.before(
-    'blockquote',
-    'amsmath',
-    amsmathBlock,
-    { alt: ['paragraph', 'reference', 'blockquote', 'list', 'footnote_def'] },
-  );
-  renderer.rules.amsmath = renderAmsmathBlock;
+function amsmathPlugin(md: MarkdownIt): void {
+  const { renderer } = md
+  md.block.ruler.before('blockquote', 'amsmath', amsmathBlock, {
+    alt: ['paragraph', 'reference', 'blockquote', 'list', 'footnote_def']
+  })
+  renderer.rules.amsmath = renderAmsmathBlock
 }
 
-export default amsmathPlugin;
+export default amsmathPlugin
