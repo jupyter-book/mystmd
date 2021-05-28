@@ -1,46 +1,56 @@
-import { Directive } from './types';
-import { unusedOptionsWarning } from './utils';
+import { Directive } from './types'
+import { unusedOptionsWarning } from './utils'
 
 const admonitionTitles = {
-  attention: 'Attention', caution: 'Caution', danger: 'Danger', error: 'Error', important: 'Important', hint: 'Hint', note: 'Note', seealso: 'See Also', tip: 'Tip', warning: 'Warning',
-};
-const DEFAULT_ADMONITION_CLASS = 'note';
-type AdmonitionTypes = keyof typeof admonitionTitles | 'admonition';
+  attention: 'Attention',
+  caution: 'Caution',
+  danger: 'Danger',
+  error: 'Error',
+  important: 'Important',
+  hint: 'Hint',
+  note: 'Note',
+  seealso: 'See Also',
+  tip: 'Tip',
+  warning: 'Warning'
+}
+const DEFAULT_ADMONITION_CLASS = 'note'
+type AdmonitionTypes = keyof typeof admonitionTitles | 'admonition'
 
 export type Args = {
-  title: string;
-};
+  title: string
+}
 
 export type Opts = {
-  class: AdmonitionTypes;
-};
+  class: AdmonitionTypes
+}
 
 const createAdmonition = (kind: AdmonitionTypes): Directive<Args, Opts> => {
-  const className = kind === 'admonition' ? DEFAULT_ADMONITION_CLASS : kind;
+  const className = kind === 'admonition' ? DEFAULT_ADMONITION_CLASS : kind
   return {
     token: kind,
-    getArguments: (info) => {
-      const content = kind === 'admonition' ? '' : info;
-      const title = kind === 'admonition' ? info : admonitionTitles[kind];
-      const args = { title };
-      return { args, content };
+    getArguments: info => {
+      const content = kind === 'admonition' ? '' : info
+      const title = kind === 'admonition' ? info : admonitionTitles[kind]
+      const args = { title }
+      return { args, content }
     },
-    getOptions: (data) => {
-      const { class: overrideClass, ...rest } = data;
-      unusedOptionsWarning(kind, rest);
-      return { class: overrideClass as AdmonitionTypes };
+    getOptions: data => {
+      const { class: overrideClass, ...rest } = data
+      unusedOptionsWarning(kind, rest)
+      return { class: overrideClass as AdmonitionTypes }
     },
     renderer: (args, opts) => {
-      const { title } = args;
-      const { class: overrideClass } = opts;
+      const { title } = args
+      const { class: overrideClass } = opts
       return [
-        'aside', { class: ['callout', overrideClass || className] },
+        'aside',
+        { class: ['callout', overrideClass || className] },
         ['header', { children: title }],
-        0,
-      ];
-    },
-  };
-};
+        0
+      ]
+    }
+  }
+}
 
 const admonitions = {
   admonition: createAdmonition('admonition'),
@@ -55,7 +65,7 @@ const admonitions = {
   note: createAdmonition('note'),
   seealso: createAdmonition('seealso'),
   tip: createAdmonition('tip'),
-  warning: createAdmonition('warning'),
-};
+  warning: createAdmonition('warning')
+}
 
-export default admonitions;
+export default admonitions
