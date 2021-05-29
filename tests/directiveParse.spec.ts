@@ -8,62 +8,79 @@ describe('directive parser', () => {
     expect(body).toEqual('')
   })
   it('parses a single arg directive', () => {
-    const { args, options, body } = parseStructure('arg with space', '', {
+    const output = parseStructure('arg with space', '', {
       required_arguments: 1,
       final_argument_whitespace: true
     })
-    expect(args).toEqual(['arg with space'])
-    expect(options).toEqual({})
-    expect(body).toEqual('')
+    expect(output).toEqual({
+      args: ['arg with space'],
+      options: {},
+      body: '',
+      bodyOffset: 1
+    })
   })
   it('parses a multi arg directive', () => {
-    const { args, options, body } = parseStructure('arg with space', '', {
+    const output = parseStructure('arg with space', '', {
       required_arguments: 2,
       final_argument_whitespace: true
     })
-    expect(args).toEqual(['arg', 'with space'])
-    expect(options).toEqual({})
-    expect(body).toEqual('')
+    expect(output).toEqual({
+      args: ['arg', 'with space'],
+      options: {},
+      body: '',
+      bodyOffset: 1
+    })
   })
   it('parses a directive with content only', () => {
-    const { args, options, body } = parseStructure('first line content', '', {
+    const output = parseStructure('first line content', '', {
       has_content: true
     })
-    expect(args).toEqual([])
-    expect(options).toEqual({})
-    expect(body).toEqual('first line content')
+    expect(output).toEqual({
+      args: [],
+      options: {},
+      body: 'first line content',
+      bodyOffset: 0
+    })
   })
   it('parses a directive with options as ---', () => {
-    const { args, options, body } = parseStructure('', '---\na: 1\n---', {})
-    expect(args).toEqual([])
-    expect(options).toEqual({ a: 1 })
-    expect(body).toEqual('')
+    const output = parseStructure('', '---\na: 1\n---', {})
+    expect(output).toEqual({
+      args: [],
+      options: { a: 1 },
+      body: '',
+      bodyOffset: 4
+    })
   })
   it('parses a directive with options as :', () => {
-    const { args, options, body } = parseStructure('', ':a: 1', {})
-    expect(args).toEqual([])
-    expect(options).toEqual({ a: 1 })
-    expect(body).toEqual('')
+    const output = parseStructure('', ':a: 1', {})
+    expect(output).toEqual({
+      args: [],
+      options: { a: 1 },
+      body: '',
+      bodyOffset: 3
+    })
   })
   it('parses a directive with options as --- and content', () => {
-    const { args, options, body } = parseStructure(
-      '',
-      '---\na: 1\n---\ncontent\nlines',
-      {
-        has_content: true
-      }
-    )
-    expect(args).toEqual([])
-    expect(options).toEqual({ a: 1 })
-    expect(body).toEqual('content\nlines')
-  })
-  it('parses a directive with options as : and content', () => {
-    const { args, options, body } = parseStructure('', ':a: 1\n\ncontent\nlines', {
+    const output = parseStructure('', '---\na: 1\n---\ncontent\nlines', {
       has_content: true
     })
-    expect(args).toEqual([])
-    expect(options).toEqual({ a: 1 })
-    expect(body).toEqual('content\nlines')
+    expect(output).toEqual({
+      args: [],
+      options: { a: 1 },
+      body: 'content\nlines',
+      bodyOffset: 4
+    })
+  })
+  it('parses a directive with options as : and content', () => {
+    const output = parseStructure('', ':a: 1\n\ncontent\nlines', {
+      has_content: true
+    })
+    expect(output).toEqual({
+      args: [],
+      options: { a: 1 },
+      body: 'content\nlines',
+      bodyOffset: 4
+    })
   })
 })
 

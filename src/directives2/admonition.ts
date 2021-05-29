@@ -124,21 +124,23 @@ const parseAdmonitions =
       let args
       let options
       let body
+      let bodyOffset
       try {
-        ;({ args, options, body } = parseStructure(
+        ;({ args, options, body, bodyOffset } = parseStructure(
           token.info,
           token.content,
           admonitions[token.info].spec
         ))
       } catch (error) {
         // TODO handle error (also discriminate DirectiveParsingError)
+        // Maybe change to a special "error" token
         continue
       }
       // The title is either specified directly or will be the first argument
       const title = admonitions[token.info].title || args[0] || ''
       // we want the title to be parsed as Markdown during the inline phase
       const titleToken = new Token('inline', '', 0)
-      titleToken.map = token.map ? [token.map[0], token.map[0]] : null
+      titleToken.map = token.map !== null ? [token.map[0], token.map[0]] : null
       titleToken.content = title
       titleToken.children = []
       // run a recursive parse on the content of the admonition upto this stage
@@ -146,11 +148,13 @@ const parseAdmonitions =
         state.md,
         'directive_admonition',
         body,
-        state.env
+        state.env,
+        token.map !== null ? token.map[0] + bodyOffset : bodyOffset
       )
       // now add the new tokens, in place of the original one
       // we create an overall container, then individual containers for the title and body
       const adToken = new Token('open_admonition', tags.main, 1)
+      adToken.map = token.map
       const classes = ['admonition', token.meta.args]
       if (options.class && options.class.length) {
         classes.push(...options.class)
@@ -163,6 +167,7 @@ const parseAdmonitions =
       newTokens.push(titleToken)
       newTokens.push(new Token('close_admonition_title', tags.title, -1))
       const adTokenBody = new Token('open_admonition_body', tags.body, 1)
+      adTokenBody.map = token.map !== null ? [token.map[0] + 1, token.map[1] - 1] : null
       adTokenBody.attrSet('class', 'admonition-body')
       newTokens.push(adTokenBody)
       newTokens.push(...bodyTokens)
@@ -178,7 +183,8 @@ function nestedCoreParse(
   md: MarkdownIt,
   pluginRuleName: string,
   src: string,
-  env: any
+  env: any,
+  initLine: number
 ): Token[] {
   // disable all core rules after pluginRuleName
   const tempDisabledCore: string[] = []
@@ -203,6 +209,12 @@ function nestedCoreParse(
     tokens = md.parse(src, env)
   } finally {
     md.core.ruler.enable(tempDisabledCore)
+  }
+  for (const token of tokens) {
+    token.map =
+      token.map !== null
+        ? [token.map[0] + initLine, token.map[1] + initLine]
+        : token.map
   }
   return tokens
 }

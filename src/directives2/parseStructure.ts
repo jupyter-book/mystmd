@@ -11,6 +11,7 @@ export interface IDirectiveStruct {
   args: string[]
   options: { [key: string]: any }
   body: string
+  bodyOffset: number
 }
 
 /** convert and validate an option value */
@@ -56,9 +57,14 @@ export default function parseStructure(
 ): IDirectiveStruct {
   const fullSpec = { ...DirectiveSpecDefaults, ...directiveSpec }
   let body = content.trim() ? content.split(/\r?\n/) : []
+  let bodyOffset = 0
   let options = {}
   if (Object.keys(fullSpec.option_spec || {})) {
-    ;[body, options] = parseDirectiveOptions(body, fullSpec, !skipValidation)
+    ;[body, options, bodyOffset] = parseDirectiveOptions(
+      body,
+      fullSpec,
+      !skipValidation
+    )
   }
   let args: string[] = []
   if (
@@ -67,6 +73,7 @@ export default function parseStructure(
     !Object.keys(options).length
   ) {
     if (firstLine) {
+      bodyOffset = 0
       body = [firstLine].concat(body)
     }
   } else {
@@ -80,7 +87,7 @@ export default function parseStructure(
   if (body.length && !fullSpec.has_content) {
     throw new DirectiveParsingError('Has content but content not allowed')
   }
-  return { args, options, body: body.join('\n') }
+  return { args, options, body: body.join('\n'), bodyOffset }
 }
 
 function parseDirectiveOptions(
@@ -89,8 +96,9 @@ function parseDirectiveOptions(
   fullSpec: IDirectiveSpec,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validate: boolean
-): [string[], { [key: string]: any }] {
+): [string[], { [key: string]: any }, number] {
   // instantiate options
+  let bodyOffset = 1
   let options: { [key: string]: any } = {}
   let yamlBlock: null | string[] = null
 
@@ -98,33 +106,39 @@ function parseDirectiveOptions(
 
   if (content.length && content[0].startsWith('---')) {
     // options contained in YAML block, ending with '---'
+    bodyOffset++
     const newContent: string[] = []
     yamlBlock = []
     let foundDivider = false
     for (const line of content.slice(1)) {
       if (line.startsWith('---')) {
+        bodyOffset++
         foundDivider = true
         continue
       }
       if (foundDivider) {
         newContent.push(line)
       } else {
+        bodyOffset++
         yamlBlock.push(line)
       }
     }
     content = newContent
   } else if (content.length && content[0].startsWith(':')) {
+    bodyOffset++
     const newContent: string[] = []
     yamlBlock = []
     let foundDivider = false
     for (const line of content) {
       if (!foundDivider && !line.startsWith(':')) {
+        bodyOffset++
         foundDivider = true
         continue
       }
       if (foundDivider) {
         newContent.push(line)
       } else {
+        bodyOffset++
         yamlBlock.push(line.slice(1))
       }
     }
@@ -146,7 +160,7 @@ function parseDirectiveOptions(
 
   // TODO apply OptionSpecConverter
 
-  return [content, options]
+  return [content, options, bodyOffset]
 }
 
 function parseDirectiveArguments(
