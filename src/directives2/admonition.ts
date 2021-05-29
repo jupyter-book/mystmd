@@ -155,7 +155,10 @@ const parseAdmonitions =
       // we create an overall container, then individual containers for the title and body
       const adToken = new Token('open_admonition', tags.main, 1)
       adToken.map = token.map
-      const classes = ['admonition', token.meta.args]
+      const classes = [token.info]
+      if (token.info !== 'admonition') {
+        classes.push('admonition')
+      }
       if (options.class && options.class.length) {
         classes.push(...options.class)
       }

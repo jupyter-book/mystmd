@@ -1,4 +1,5 @@
 import parseStructure from '../src/directives2/parseStructure'
+import { unchanged, class_option } from '../src/directives2/optionConverters'
 
 describe('directive parser', () => {
   it('parses a "null" directive (no args, content)', () => {
@@ -43,41 +44,45 @@ describe('directive parser', () => {
     })
   })
   it('parses a directive with options as ---', () => {
-    const output = parseStructure('', '---\na: 1\n---', {})
+    const output = parseStructure('', '---\na: 1\nb: class1 class2\n---', {
+      option_spec: { a: unchanged, b: class_option }
+    })
     expect(output).toEqual({
       args: [],
-      options: { a: 1 },
+      options: { a: '1', b: ['class1', 'class2'] },
       body: '',
-      bodyOffset: 4
+      bodyOffset: 5
     })
   })
   it('parses a directive with options as :', () => {
-    const output = parseStructure('', ':a: 1', {})
+    const output = parseStructure('', ':a: 1', { option_spec: { a: unchanged } })
     expect(output).toEqual({
       args: [],
-      options: { a: 1 },
+      options: { a: '1' },
       body: '',
       bodyOffset: 3
     })
   })
   it('parses a directive with options as --- and content', () => {
     const output = parseStructure('', '---\na: 1\n---\ncontent\nlines', {
-      has_content: true
+      has_content: true,
+      option_spec: { a: unchanged }
     })
     expect(output).toEqual({
       args: [],
-      options: { a: 1 },
+      options: { a: '1' },
       body: 'content\nlines',
       bodyOffset: 4
     })
   })
   it('parses a directive with options as : and content', () => {
     const output = parseStructure('', ':a: 1\n\ncontent\nlines', {
-      has_content: true
+      has_content: true,
+      option_spec: { a: unchanged }
     })
     expect(output).toEqual({
       args: [],
-      options: { a: 1 },
+      options: { a: '1' },
       body: 'content\nlines',
       bodyOffset: 4
     })

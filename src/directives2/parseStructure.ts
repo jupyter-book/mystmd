@@ -92,9 +92,7 @@ export default function parseStructure(
 
 function parseDirectiveOptions(
   content: string[],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fullSpec: IDirectiveSpec,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validate: boolean
 ): [string[], { [key: string]: any }, number] {
   // instantiate options
@@ -158,7 +156,28 @@ function parseDirectiveOptions(
     }
   }
 
-  // TODO apply OptionSpecConverter
+  if (!validate) {
+    return [content, options, bodyOffset]
+  }
+
+  for (const [name, value] of Object.entries(options)) {
+    const convertor = fullSpec.option_spec ? fullSpec.option_spec[name] : null
+    if (!convertor) {
+      throw new DirectiveParsingError(`Unknown option: ${name}`)
+    }
+    let converted_value = value
+    if (value === null || value === false) {
+      converted_value = ''
+    }
+    try {
+      converted_value = convertor(`${converted_value}`)
+    } catch (error) {
+      throw new DirectiveParsingError(
+        `Invalid option value: (option: '${name}'; value: ${value})\n${error}`
+      )
+    }
+    options[name] = converted_value
+  }
 
   return [content, options, bodyOffset]
 }
