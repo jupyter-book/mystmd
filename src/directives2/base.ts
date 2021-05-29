@@ -29,7 +29,7 @@
  * We first use this plugin to convert these token to directive_base tokens.
  * This is run as a core function,
  * soon after the body tokens have been parsed,
- * amd before handling of specific directives and the inline parsing.
+ * and before handling of specific directives and the inline parsing.
  * 
  * Note (annoyingly) sphinx's format for directives does not allow
  * us to generically identify the three components of a directive:
