@@ -45,6 +45,7 @@
     "url": "https://github.com/executablebooks/markdown-it-myst/issues"
   },
   "dependencies": {
+    "js-yaml": "^4.1.0",
     "markdown-it": "^12.0.2",
     "markdown-it-container": "^3.0.0",
     "markdown-it-texmath": "^0.8.0"
@@ -53,6 +54,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.12.7",
     "@sinonjs/fake-timers": "^6.0.1",
     "@types/jest": "^26.0.16",
+    "@types/js-yaml": "^4.0.1",
     "@types/jsdom": "^16.2.5",
     "@types/markdown-it": "^10.0.3",
     "@types/markdown-it-container": "^2.0.3",

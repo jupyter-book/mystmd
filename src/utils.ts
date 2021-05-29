@@ -26,7 +26,7 @@ type HTMLAttributes = {
 }
 
 // Same typing as prosemirror-model
-export interface HTMLOutputSpecArray {
+export interface IHTMLOutputSpecArray {
   0: string
   1?: HTMLOutputSpec | 0 | HTMLAttributes
   2?: HTMLOutputSpec | 0
@@ -43,7 +43,7 @@ type HTMLOutputSpecArrayInternal = [
   HTMLOutputSpec | 0 | HTMLAttributes,
   HTMLOutputSpec | 0
 ]
-export type HTMLOutputSpec = HTMLOutputSpecArray
+export type HTMLOutputSpec = IHTMLOutputSpecArray
 
 const formatAttr = (key: string, value: AttrTypes): string | null => {
   let v: string

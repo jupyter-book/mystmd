@@ -28,7 +28,8 @@
   },
   "include": [
     "src/**/*",
-    "myst.ts"
+    "myst.ts",
+    "tests/**/*",
   ],
   "exclude": [
   ]
