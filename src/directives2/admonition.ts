@@ -24,12 +24,21 @@ export const baseAdmonitionSpec = {
 }
 
 /** Data required to parse an admonition type */
-export type admonitionSettings = {
-  [key: string]: { spec: IDirectiveSpec; title?: string }
+export interface IAdmonitionSettings {
+  /** The mapping of directive names to their spec and title */
+  admonitions?: { [key: string]: { spec: IDirectiveSpec; title?: string } }
+  /** The HTML tags to apply for each component of the directive */
+  tags?: {
+    main: string
+    title: string
+    body: string
+  }
 }
 
 /** List of default admonitions */
-export const defaultAdmonitions: admonitionSettings = {
+export const defaultAdmonitions: {
+  [key: string]: { spec: IDirectiveSpec; title?: string }
+} = {
   admonition: {
     spec: {
       ...baseAdmonitionSpec,
@@ -78,20 +87,33 @@ export const defaultAdmonitions: admonitionSettings = {
   }
 }
 
+const defaultTags = {
+  main: 'aside',
+  title: 'div',
+  body: 'div'
+}
+
+/**
+ * @param md the markdown it instance
+ * @param settings setting for the plugin
+ *
+ */
 export default function pluginDirectiveAdmonition(
   md: MarkdownIt,
-  admonitions = defaultAdmonitions
+  settings: IAdmonitionSettings
 ): void {
   md.core.ruler.after(
     'directive_base',
     'directive_admonition',
-    parseAdmonitions(admonitions)
+    parseAdmonitions(settings)
   )
 }
 
 const parseAdmonitions =
-  (admonitions: admonitionSettings): RuleCore =>
+  (settings: IAdmonitionSettings): RuleCore =>
   state => {
+    const admonitions = settings?.admonitions || defaultAdmonitions
+    const tags = settings?.tags || defaultTags
     const newTokens: Token[] = []
     for (const token of state.tokens) {
       if (token.type !== 'directive_base' || !(token.info in admonitions)) {
@@ -128,24 +150,24 @@ const parseAdmonitions =
       )
       // now add the new tokens, in place of the original one
       // we create an overall container, then individual containers for the title and body
-      const adToken = new Token('open_admonition', 'aside', 1)
+      const adToken = new Token('open_admonition', tags.main, 1)
       const classes = ['admonition', token.meta.args]
       if (options.class && options.class.length) {
         classes.push(...options.class)
       }
       adToken.attrSet('class', classes.join(' '))
       newTokens.push(adToken)
-      const adTokenTitle = new Token('open_admonition_title', 'div', 1)
+      const adTokenTitle = new Token('open_admonition_title', tags.title, 1)
       adTokenTitle.attrSet('class', 'admonition-title')
       newTokens.push(adTokenTitle)
       newTokens.push(titleToken)
-      newTokens.push(new Token('close_admonition_title', 'div', -1))
-      const adTokenBody = new Token('open_admonition_body', 'div', 1)
+      newTokens.push(new Token('close_admonition_title', tags.title, -1))
+      const adTokenBody = new Token('open_admonition_body', tags.body, 1)
       adTokenBody.attrSet('class', 'admonition-body')
       newTokens.push(adTokenBody)
       newTokens.push(...bodyTokens)
-      newTokens.push(new Token('close_admonition_body', 'div', 1))
-      newTokens.push(new Token('close_admonition', 'aside', -1))
+      newTokens.push(new Token('close_admonition_body', tags.body, 1))
+      newTokens.push(new Token('close_admonition', tags.main, -1))
     }
     state.tokens = newTokens
     return true

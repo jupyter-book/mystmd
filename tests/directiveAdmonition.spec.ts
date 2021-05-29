@@ -11,7 +11,7 @@ describe('base directive plugin', () => {
   describe('creates admonition token when', () => {
     it('parses a matched admonition fence', () => {
       const tokens = mdit.parse(basicDirective, {})
-      console.log(tokens.map(token => JSON.stringify(token)))
+      // console.log(tokens.map(token => JSON.stringify(token)))
       expect(tokens.map(token => JSON.stringify(token))).toEqual([
         '{"type":"open_admonition","tag":"aside","attrs":[["class","admonition ' +
           '"]],"map":null,"nesting":1,"level":0,"children":null,"content":"","markup":"","info":"","meta":null,"block":false,"hidden":false}',
@@ -25,8 +25,8 @@ describe('base directive plugin', () => {
         '{"type":"close_admonition_body","tag":"div","attrs":null,"map":null,"nesting":1,"level":0,"children":null,"content":"","markup":"","info":"","meta":null,"block":false,"hidden":false}',
         '{"type":"close_admonition","tag":"aside","attrs":null,"map":null,"nesting":-1,"level":0,"children":null,"content":"","markup":"","info":"","meta":null,"block":false,"hidden":false}'
       ])
-      //   const html = mdit.render(nestedDirective)
-      //   console.log(html)
+      // const html = mdit.render(basicDirective)
+      // console.log(html)
     })
     it('parses a matched fence that includes a nested admonition', () => {
       const tokens = mdit.parse(nestedDirective, {})
@@ -55,8 +55,8 @@ describe('base directive plugin', () => {
         '{"type":"close_admonition_body","tag":"div","attrs":null,"map":null,"nesting":1,"level":0,"children":null,"content":"","markup":"","info":"","meta":null,"block":false,"hidden":false}',
         '{"type":"close_admonition","tag":"aside","attrs":null,"map":null,"nesting":-1,"level":0,"children":null,"content":"","markup":"","info":"","meta":null,"block":false,"hidden":false}'
       ])
-      //   const html = mdit.render(nestedDirective)
-      //   console.log(html)
+      // const html = mdit.render(nestedDirective)
+      // console.log(html)
     })
   })
 })
