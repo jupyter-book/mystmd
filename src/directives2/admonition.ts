@@ -127,7 +127,7 @@ const parseAdmonitions =
       let bodyOffset
       try {
         ;({ args, options, body, bodyOffset } = parseStructure(
-          token.info,
+          token.meta.arg || '',
           token.content,
           admonitions[token.info].spec
         ))
@@ -155,9 +155,9 @@ const parseAdmonitions =
       // we create an overall container, then individual containers for the title and body
       const adToken = new Token('open_admonition', tags.main, 1)
       adToken.map = token.map
-      const classes = [token.info]
+      let classes = [token.info]
       if (token.info !== 'admonition') {
-        classes.push('admonition')
+        classes = ['admonition', token.info]
       }
       if (options.class && options.class.length) {
         classes.push(...options.class)
