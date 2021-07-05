@@ -4580,6 +4580,11 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+markdown-it-amsmath@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/markdown-it-amsmath/-/markdown-it-amsmath-0.1.2.tgz#3fb3ac2b83679bc41221eb810d965cc838892489"
+  integrity sha512-iIM7IVjT6HkuEDAiXLWuoAcIkxrk795XkBzRN9jCKyZKWe5doTaUh1ZzevBx56WBpNZnOB+b3Z6H3Lhifd+0wA==
+
 markdown-it-container@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/markdown-it-container/-/markdown-it-container-3.0.0.tgz#1d19b06040a020f9a827577bb7dbf67aa5de9a5b"

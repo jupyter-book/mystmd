@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "markdown-it": "^12.0.2",
+    "markdown-it-amsmath": "^0.1.2",
     "markdown-it-container": "^3.0.0",
     "markdown-it-texmath": "^0.8.0"
   },

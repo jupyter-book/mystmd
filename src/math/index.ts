@@ -1,6 +1,6 @@
 import MarkdownIt from 'markdown-it'
 import markdownTexMath from 'markdown-it-texmath'
-import amsmathPlugin from './amsmath'
+import amsmathPlugin from 'markdown-it-amsmath'
 import { renderMath } from './utils'
 
 export function addMathRenderers(md: MarkdownIt): void {
@@ -21,7 +21,9 @@ export function plugin(md: MarkdownIt): void {
     engine: { renderToString: (s: string) => s }, // We are not going to render ever.
     delimiters: 'dollars'
   })
-  amsmathPlugin(md)
+  amsmathPlugin(md, {
+    renderer: content => `<div class="math">\\[\n${content}\n\\]</div>\n`
+  })
   // Note: numbering of equations for `math_block_eqno` happens in the directives rules
   addMathRenderers(md)
 }
