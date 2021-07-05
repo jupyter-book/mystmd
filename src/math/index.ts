@@ -1,5 +1,5 @@
 import MarkdownIt from 'markdown-it'
-import markdownTexMath from 'markdown-it-texmath'
+import markdownDollarmath from 'markdown-it-dollarmath'
 import amsmathPlugin from 'markdown-it-amsmath'
 import { renderMath } from './utils'
 
@@ -10,20 +10,15 @@ export function addMathRenderers(md: MarkdownIt): void {
   renderer.rules.math_inline_double = (tokens, idx) =>
     renderMath(tokens[idx].content, true)
   renderer.rules.math_block = (tokens, idx) => renderMath(tokens[idx].content, true)
-  renderer.rules.math_block_end = () => ''
-  renderer.rules.math_block_eqno = (tokens, idx) =>
+  renderer.rules.math_block_label = (tokens, idx) =>
     renderMath(tokens[idx].content, true, tokens[idx].meta?.target)
-  renderer.rules.math_block_eqno_end = () => ''
 }
 
 export function plugin(md: MarkdownIt): void {
-  md.use(markdownTexMath, {
-    engine: { renderToString: (s: string) => s }, // We are not going to render ever.
-    delimiters: 'dollars'
-  })
+  markdownDollarmath(md)
   amsmathPlugin(md, {
-    renderer: content => `<div class="math">\\[\n${content}\n\\]</div>\n`
+    renderer: content => renderMath(content, true)
   })
-  // Note: numbering of equations for `math_block_eqno` happens in the directives rules
+  // Note: numbering of equations for `math_block_label` happens in the directives rules
   addMathRenderers(md)
 }

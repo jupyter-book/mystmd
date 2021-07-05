@@ -188,7 +188,7 @@ const numbering =
           token.meta.target = target
         }
       }
-      if (token.type === 'math_block_eqno') {
+      if (token.type === 'math_block_label') {
         // This is parsed using the markdownTexMath library, and the name comes on the info:
         const name = token.info
         const target = newTarget(state, name, TargetKind.equation)
