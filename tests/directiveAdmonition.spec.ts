@@ -1,6 +1,6 @@
 import MarkdownIt from 'markdown-it'
-import pluginDirectiveBase from '../src/directives2/base'
-import pluginDirectiveAdmonition from '../src/directives2/admonition'
+import pluginDirectiveBase from '../src/directives/base'
+import pluginDirectiveAdmonition from '../src/directives/admonition'
 
 const basicDirective = '```{admonition} arg string\ncontent\n```'
 const noteDirective = '```{note}\ncontent\n```'

@@ -1,5 +1,5 @@
-import parseStructure from '../src/directives2/parseStructure'
-import { unchanged, class_option } from '../src/directives2/optionConverters'
+import parseStructure from '../src/directives/parseStructure'
+import { unchanged, class_option } from '../src/directives/optionConverters'
 
 describe('directive parser', () => {
   it('parses a "null" directive (no args, content)', () => {

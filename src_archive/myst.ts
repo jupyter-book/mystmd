@@ -2,7 +2,7 @@ import MarkdownIt from 'markdown-it'
 import * as plugins from './plugins'
 import { directives } from './directives'
 import { roles } from './roles'
-import { Directives } from './directives/types'
+import { Directives } from '../src_archive/directives/types'
 import { Roles } from './roles/types'
 
 export type Options = {

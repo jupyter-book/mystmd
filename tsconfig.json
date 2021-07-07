@@ -29,7 +29,7 @@
   "include": [
     "src/**/*",
     "myst.ts",
-    "tests/**/*",
+    "tests/**/*", "src_archive/directives", "src_archive/plugins.ts", "src_archive/options.ts", "src_archive/state.ts", "src_archive/myst.ts", "src_archive/math", "src_archive/roles", "src_archive/index.ts", "src_archive/blocks.ts",
   ],
   "exclude": [
   ]

@@ -5,6 +5,7 @@
  */
 
 import yaml from 'js-yaml'
+import { OptionSpecConverter } from './optionConverters'
 
 /** Structure of a directive */
 export interface IDirectiveStruct {
@@ -13,9 +14,6 @@ export interface IDirectiveStruct {
   body: string
   bodyOffset: number
 }
-
-/** convert and validate an option value */
-export type OptionSpecConverter = (value: any) => any
 
 /** Data required to parse a directive first line and content to its structure */
 export interface IDirectiveSpec {

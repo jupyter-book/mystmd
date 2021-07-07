@@ -2,6 +2,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /** Functions for converting and validating directive options */
 
+/** convert and validate an option value */
+export type OptionSpecConverter = (value: any) => any
+
 /** Adapted from docutils/nodes.py::make_id */
 function make_id(name: string): string {
   // TODO make more complete

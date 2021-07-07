@@ -1,8 +1,8 @@
 import Token from 'markdown-it/lib/token'
 import MarkdownIt from 'markdown-it'
 import Renderer from 'markdown-it/lib/renderer'
-import { IHTMLOutputSpecArray } from '../utils'
-import { StateEnv, TargetKind, Target } from '../state'
+import { IHTMLOutputSpecArray } from '../../src/utils'
+import { StateEnv, TargetKind, Target } from '../../src/state'
 
 export enum DirectiveTokens {
   open = 'container_directives_open',

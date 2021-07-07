@@ -62,6 +62,7 @@ Although a lot of this system is well designed, and we will certainly need to in
 - The conversion of roles/directives is performed in the same pass as with all other syntaxes. This leads to the AST being intrinsically "lossy" in that there is no way to recover what directives were in the original source text (see <https://github.com/executablebooks/rst-to-myst> where I had to re-write some of the parsing code to achieve this).
 - Role/directive/transform code is very "side-effect heavy", as in they directly mutate the document AST and environment. There is already plenty of literature out there explaining why this is not ideal (e.g. <https://softwareengineering.stackexchange.com/questions/15269/why-are-side-effects-considered-evil-in-functional-programming>), and in general we should strive towards a more functional programming paradigm.
 - Overall sphinx is quite difficult to run in a programmatic manner (as opposed to via the command-line)
+- Sphinx is quite tied to having files exist on a file system
 
 ## Markdown-it considerations
 
@@ -84,3 +85,10 @@ only nesting is with `inline` tokens, which have their own token streams in the 
 good to walk through, good for headings.
 
 options are static initial inputs, env is dynamic global state
+
+
+## Design
+
+Parse logger in
+
+- global configuration.

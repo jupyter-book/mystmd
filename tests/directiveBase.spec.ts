@@ -1,5 +1,5 @@
 import MarkdownIt from 'markdown-it'
-import pluginDirectiveBase from '../src/directives2/base'
+import pluginDirectiveBase from '../src/directives/base'
 
 const basicDirective = '```{name} arg string\ncontent\n```'
 

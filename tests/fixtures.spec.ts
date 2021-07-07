@@ -1,4 +1,4 @@
-import { MyST } from '../src';
+import { MyST } from '../src_archive';
 import { getFixtures } from './build';
 
 const tokenizer = MyST();

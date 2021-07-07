@@ -58,6 +58,8 @@ export default function pluginDirectiveBase(
 ): void {
   // TODO also convert colon-fences
   md.core.ruler.after('block', 'directive_base', convertFences(regex))
+
+  // basic renderer for unhandled directive tokens
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   md.renderer.rules.directive_base = (tokens, idx, options, env, slf) => {
     const token = tokens[idx]

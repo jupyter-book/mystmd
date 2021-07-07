@@ -1,9 +1,9 @@
-import { MyST } from './src';
+import { MyST } from './src_archive'
 
 declare global {
   interface Window {
-    MyST: typeof MyST;
+    MyST: typeof MyST
   }
 }
 
-window.MyST = MyST;
+window.MyST = MyST

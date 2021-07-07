@@ -1,7 +1,5 @@
 import MarkdownIt from 'markdown-it'
-import Renderer from 'markdown-it/lib/renderer'
 import StateBlock from 'markdown-it/lib/rules_block/state_block'
-import { renderMath } from './utils'
 
 // Taken from amsmath version 2.1
 // http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/required/amsmath/amsldoc.pdf
@@ -92,11 +90,6 @@ function amsmathBlock(
   return true
 }
 
-const renderAmsmathBlock: Renderer.RenderRule = (tokens, idx) => {
-  const token = tokens[idx]
-  return renderMath(token.content, true)
-}
-
 /**
   Parses TeX math equations, without any surrounding delimiters,
   only for top-level [amsmath](https://ctan.org/pkg/amsmath) environments:
@@ -108,11 +101,9 @@ const renderAmsmathBlock: Renderer.RenderRule = (tokens, idx) => {
   ```
 */
 function amsmathPlugin(md: MarkdownIt): void {
-  const { renderer } = md
   md.block.ruler.before('blockquote', 'amsmath', amsmathBlock, {
     alt: ['paragraph', 'reference', 'blockquote', 'list', 'footnote_def']
   })
-  renderer.rules.amsmath = renderAmsmathBlock
 }
 
 export default amsmathPlugin

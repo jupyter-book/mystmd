@@ -1,6 +1,6 @@
 import MarkdownIt from 'markdown-it'
 import markdownTexMath from 'markdown-it-texmath'
-import amsmathPlugin from './amsmath'
+import amsmathPlugin from '../../src/mditPlugins/amsmath'
 import { renderMath } from './utils'
 
 export function addMathRenderers(md: MarkdownIt): void {
