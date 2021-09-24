@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { Node as ProsemirrorNode, Schema, Mark } from 'prosemirror-model';
 import {
   Document,
