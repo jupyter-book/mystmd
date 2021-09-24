@@ -48,8 +48,9 @@ export function translateToJupyter(
     case KINDS.Output: {
       return output.toJupyter(block);
     }
+    default:
+      return null;
   }
-  return null;
 }
 
 export function translateFromJupyter(

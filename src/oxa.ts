@@ -65,7 +65,7 @@ export function oxaLink(
 function withVersion(project: string, block: string, version: string | null) {
   if (!version) return { project, block };
   const number = Number.parseInt(version, 10);
-  if (isNaN(number) || number < 1) return null;
+  if (Number.isNaN(number) || number < 1) return null;
   return { project, block, version: number };
 }
 

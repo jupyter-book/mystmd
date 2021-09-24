@@ -67,24 +67,6 @@ export interface AccessGrantNested extends BaseAccessGrant {
   children: string[];
 }
 
-export function accessFromDTO(id: ProjectAccessId | TeamAccessId, json: JsonObject): Access {
-  const newId =
-    'team' in id
-      ? ({ team: id.team, user: id.user } as TeamAccessId)
-      : ({ project: id.project, user: id.user } as ProjectAccessId);
-  return {
-    id: newId,
-    kind: json.kind ?? AccessKinds.user,
-    role: json.role ?? '',
-    team_member: json.team_member ?? false,
-    direct: directManifestFromDTO(json.direct ?? {}),
-    nested: nestedManifestFromDTO(json.nested ?? {}),
-    date_created: getDate(json.date_created),
-    date_modified: getDate(json.date_modified),
-    links: { ...json.links },
-  };
-}
-
 /*
   Grants access to the container and listed children or the direct block
   Grant id examples:
@@ -123,4 +105,22 @@ function nestedManifestFromDTO(json?: JsonObject): { [id: string]: AccessGrantNe
       },
     ]),
   );
+}
+
+export function accessFromDTO(id: ProjectAccessId | TeamAccessId, json: JsonObject): Access {
+  const newId =
+    'team' in id
+      ? ({ team: id.team, user: id.user } as TeamAccessId)
+      : ({ project: id.project, user: id.user } as ProjectAccessId);
+  return {
+    id: newId,
+    kind: json.kind ?? AccessKinds.user,
+    role: json.role ?? '',
+    team_member: json.team_member ?? false,
+    direct: directManifestFromDTO(json.direct ?? {}),
+    nested: nestedManifestFromDTO(json.nested ?? {}),
+    date_created: getDate(json.date_created),
+    date_modified: getDate(json.date_modified),
+    links: { ...json.links },
+  };
 }
