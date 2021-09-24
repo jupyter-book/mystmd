@@ -1,7 +1,5 @@
 import { Node as ProsemirrorNode } from 'prosemirror-model';
-import * as fs from 'fs';
 import { Packer, Document, HeadingLevel, ShadingType } from 'docx';
-import { Nodes } from '@curvenote/schema';
 import { Options, WordSerializer } from './serializer';
 
 function getLatexFromNode(node: ProsemirrorNode): string {
@@ -59,31 +57,21 @@ export const wordSerializer = new WordSerializer(
     list_item(state, node) {
       state.renderListItem(node);
     },
-    // // Presentational
-    // This should use SequentialIdentifier("Table")
+    // Presentational
     image(state, node) {
-      const { src } = node.attrs as Nodes.Image.Attrs;
+      const { src } = node.attrs;
       state.image(src);
       state.closeBlock(node);
     },
-    // // Technical
+    // Technical
     math(state, node) {
       state.math(getLatexFromNode(node), { inline: true });
     },
     equation(state, node) {
-      const { id, numbered } = node.attrs as Nodes.Equation.Attrs;
+      const { id, numbered } = node.attrs;
       state.math(getLatexFromNode(node), { inline: false, numbered, id });
       state.closeBlock(node);
     },
-    // cite: nodes.Cite.toMarkdown,
-    // cite_group: nodes.CiteGroup.toMarkdown,
-    // // Dynamic
-    // variable: nodes.Variable.toMarkdown,
-    // display: nodes.Display.toMarkdown,
-    // dynamic: nodes.Dynamic.toMarkdown,
-    // range: nodes.Range.toMarkdown,
-    // switch: nodes.Switch.toMarkdown,
-    // button: nodes.Button.toMarkdown,
   },
   {
     em() {
@@ -142,9 +130,6 @@ export function toWord(doc: ProsemirrorNode, opts: Options) {
   return wordSerializer.serialize(doc, opts);
 }
 
-// TODO: Probably remove from here, along with fs, can't be used in browser
-export function writeDocx(doc: Document, name: string) {
-  Packer.toBuffer(doc).then((buffer) => {
-    fs.writeFileSync(`${name}.docx`, buffer);
-  });
+export function writeDocx(doc: Document, write: (buffer: Buffer) => void) {
+  Packer.toBuffer(doc).then(write);
 }

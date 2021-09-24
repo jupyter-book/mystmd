@@ -1,5 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { Node as ProsemirrorNode, Schema } from 'prosemirror-model';
+import { Schema } from 'prosemirror-model';
 import { builders } from 'prosemirror-test-builder';
 import { schemas } from '@curvenote/schema';
 
@@ -26,24 +25,3 @@ export const tnodes = builders(schema, {
 });
 
 export const tdoc = (...args: Parameters<typeof tnodes.doc>) => tnodes.doc('', ...args);
-
-export function compare(
-  from: (text: string) => ProsemirrorNode,
-  to: (doc: ProsemirrorNode) => string,
-) {
-  function parse(text: string, doc: ProsemirrorNode) {
-    expect(from(text).toJSON()).toEqual(doc.toJSON());
-  }
-
-  function serialize(doc: ProsemirrorNode, text: string) {
-    const ctx = ' oncontextmenu="return false;"';
-    expect(to(doc).replace(ctx, '')).toEqual(text);
-  }
-
-  function same(text: string | { before: string; after: string }, doc: ProsemirrorNode) {
-    const { before, after } = typeof text === 'string' ? { before: text, after: text } : text;
-    parse(before, doc);
-    serialize(doc, after);
-  }
-  return same;
-}
