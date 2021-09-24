@@ -37,12 +37,12 @@
     "lint:format:fix": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
-    "@curvenote/schema": "^0.6.1",
     "buffer-image-size": "^0.6.4",
     "docx": "file:.yalc/docx",
     "prosemirror-model": "^1.14.3"
   },
   "devDependencies": {
+    "@curvenote/schema": "^0.6.1",
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
     "@types/jest": "^26.0.23",
     "@types/markdown-it": "^12.0.2",
