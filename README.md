@@ -25,6 +25,7 @@ const opts = {
 
 // Create a doc in memory, and then write it to disk
 const wordDocument = defaultDocxSerializer.serialize(state.doc, opts);
+
 writeDocx(wordDocument, (buffer) => {
   writeFileSync('HelloWorld.docx', buffer);
 });
