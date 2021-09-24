@@ -27,7 +27,7 @@ export type AlignOptions = 'left' | 'center' | 'right';
 export type NodeSerializer<S extends Schema = any> = Record<
   string,
   (
-    state: WordSerializerState<S>,
+    state: DocxSerializerState<S>,
     node: ProsemirrorNode<S>,
     parent: ProsemirrorNode<S>,
     index: number,
@@ -36,20 +36,20 @@ export type NodeSerializer<S extends Schema = any> = Record<
 
 export type MarkSerializer<S extends Schema = any> = Record<
   string,
-  (state: WordSerializerState<S>, node: ProsemirrorNode<S>, mark: Mark<S>) => IRunOptions
+  (state: DocxSerializerState<S>, node: ProsemirrorNode<S>, mark: Mark<S>) => IRunOptions
 >;
 
 export type Options = {
   getImageBuffer: (src: string) => Buffer;
 };
 
-type IMathOpts = {
+export type IMathOpts = {
   inline?: boolean;
   id?: string | null;
   numbered?: boolean;
 };
 
-export class WordSerializerState<S extends Schema = any> {
+export class DocxSerializerState<S extends Schema = any> {
   nodes: NodeSerializer<S>;
 
   options: Options;
@@ -274,7 +274,7 @@ export class WordSerializerState<S extends Schema = any> {
   }
 }
 
-export class WordSerializer<S extends Schema = any> {
+export class DocxSerializer<S extends Schema = any> {
   nodes: NodeSerializer<S>;
 
   marks: MarkSerializer<S>;
@@ -285,7 +285,7 @@ export class WordSerializer<S extends Schema = any> {
   }
 
   serialize(content: ProsemirrorNode<S>, options: Options) {
-    const state = new WordSerializerState<S>(this.nodes, this.marks, options);
+    const state = new DocxSerializerState<S>(this.nodes, this.marks, options);
     state.renderContent(content);
     const doc = new Document({
       numbering: {

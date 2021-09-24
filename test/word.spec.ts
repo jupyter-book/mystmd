@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { toWord, writeDocx } from '../src';
+import { defaultDocxSerializer, writeDocx } from '../src';
 import { tnodes, tdoc } from './build';
 
 const {
@@ -28,7 +28,7 @@ const imageBase64Data = `iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAACzVBMVEU
 
 describe('HTML', () => {
   it('serializes a paragraph', () => {
-    const w = toWord(
+    const w = defaultDocxSerializer.serialize(
       tdoc(
         h1('Welcome to ', code('prosemirror-docx'), strong('!!')),
         p('This is ', code('code'), br(), 'hello!'),
