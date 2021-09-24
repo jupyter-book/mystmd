@@ -99,7 +99,7 @@ export class DocxSerializerState<S extends Schema = any> {
   }
 
   renderInline(parent: ProsemirrorNode<S>) {
-    // Pop the stack overr to this object when we encounter a link, and close link restores it
+    // Pop the stack over to this object when we encounter a link, and closeLink restores it
     let currentLink: { link: string; stack: ParagraphChild[] } | undefined;
     const closeLink = () => {
       if (!currentLink) return;
