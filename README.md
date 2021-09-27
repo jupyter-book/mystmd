@@ -6,6 +6,14 @@
 
 Export a [prosemirror](https://prosemirror.net/) document to a Microsoft Word file, using [docx](https://docx.js.org/).
 
+![image](https://user-images.githubusercontent.com/913249/134953610-886047eb-2a21-4929-9a53-9a29d8f6184f.png)
+
+## Overview
+
+`prosemirror-docx` has a similar structure to [prosemirror-markdown](https://github.com/prosemirror/prosemirror-markdown), with a `DocxSerializerState` object that you write to as you walk the document. It is a light wrapper around https://docx.js.org/, which actually does the export. Currently `prosemirror-docx` is write only (i.e. can export to, but can’t read from `*.docx`), and has most of the basic nodes covered (see below).
+
+[Curvenote](https://curvenote.com) uses this to export from [@curvenote/editor](https://github.com/curvenote/editor) to word docs, but this library currently only has dependence on `docx`, `prosemirror-model` and `buffer-image-size` - and similar to `prosemirror-markdown`, the serialization schema can be edited externally (see `Extended usage` below).
+
 ## Basic usage
 
 ```ts
