@@ -1,8 +1,28 @@
-import { Document, Packer } from 'docx';
+import { Document, INumberingOptions, ISectionOptions, Packer, SectionType } from 'docx';
 import { Node as ProsemirrorNode } from 'prosemirror-model';
 
 export function createShortId() {
   return Math.random().toString(36).substr(2, 9);
+}
+
+export function createDocFromState(state: {
+  numbering: INumberingOptions['config'];
+  children: ISectionOptions['children'];
+}) {
+  const doc = new Document({
+    numbering: {
+      config: state.numbering,
+    },
+    sections: [
+      {
+        properties: {
+          type: SectionType.CONTINUOUS,
+        },
+        children: state.children,
+      },
+    ],
+  });
+  return doc;
 }
 
 export function writeDocx(doc: Document, write: (buffer: Buffer) => void) {

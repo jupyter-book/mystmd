@@ -1,10 +1,8 @@
 import { Node as ProsemirrorNode, Schema, Mark } from 'prosemirror-model';
 import {
-  Document,
   IParagraphOptions,
   IRunOptions,
   Paragraph,
-  SectionType,
   TextRun,
   ExternalHyperlink,
   ParagraphChild,
@@ -19,7 +17,7 @@ import {
 } from 'docx';
 import sizeOf from 'buffer-image-size';
 import { INumbering, createNumbering, NumberingStyles } from './numbering';
-import { createShortId } from './utils';
+import { createDocFromState, createShortId } from './utils';
 
 // This is duplicated from @curvenote/schema
 export type AlignOptions = 'left' | 'center' | 'right';
@@ -287,19 +285,7 @@ export class DocxSerializer<S extends Schema = any> {
   serialize(content: ProsemirrorNode<S>, options: Options) {
     const state = new DocxSerializerState<S>(this.nodes, this.marks, options);
     state.renderContent(content);
-    const doc = new Document({
-      numbering: {
-        config: state.numbering,
-      },
-      sections: [
-        {
-          properties: {
-            type: SectionType.CONTINUOUS,
-          },
-          children: state.children,
-        },
-      ],
-    });
+    const doc = createDocFromState(state);
     return doc;
   }
 }
