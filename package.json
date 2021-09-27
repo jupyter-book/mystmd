@@ -38,12 +38,12 @@
   },
   "dependencies": {
     "buffer-image-size": "^0.6.4",
-    "docx": "file:.yalc/docx",
+    "docx": "^7.0.0",
     "prosemirror-model": "^1.14.3"
   },
   "devDependencies": {
-    "@curvenote/schema": "^0.6.1",
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
+    "@curvenote/schema": "^0.6.1",
     "@types/jest": "^26.0.23",
     "@types/markdown-it": "^12.0.2",
     "@types/mocha": "^8.2.2",
