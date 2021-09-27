@@ -1,0 +1,79 @@
+{
+  "name": "curvenote-js-cli",
+  "version": "0.0.1",
+  "description": "Command line tools for Curvenote",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/curvenote/curvenote-js-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/curvenote/curvenote-js-cli/issues"
+  },
+  "homepage": "https://github.com/curvenote/curvenote-js-cli",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "version:output": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
+    "build": "yarn run clean && tsc -p .;rm -rf dist/test; mv dist/src/* dist; rmdir dist/src;",
+    "build:watch": "tsc -w -p .",
+    "prepublishOnly": "yarn version:output && yarn build",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:clear": "jest --clearCache",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.json",
+    "lint:format": "prettier --check \"src/**/*.ts\"",
+    "lint:format:fix": "prettier --write \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@curvenote/blocks": "^1.0.0",
+    "@curvenote/schema": "^0.6.1",
+    "@reduxjs/toolkit": "^1.6.1",
+    "@types/node-fetch": "^2.5.12",
+    "date-fns": "^2.21.2",
+    "jsdom": "^17.0.0",
+    "node-fetch": "^2.6.5",
+    "prosemirror-docx": "^0.0.2",
+    "redux": "^4.1.1"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.14.5",
+    "@types/jest": "^26.0.23",
+    "@types/jsdom": "^16.2.13",
+    "@types/markdown-it": "^12.0.2",
+    "@types/mocha": "^8.2.2",
+    "@types/prosemirror-model": "^1.13.2",
+    "@types/prosemirror-state": "^1.2.7",
+    "@types/prosemirror-test-builder": "^1.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
+    "eslint": "^7.29.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-flowtype": "^5.7.2",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-json": "^3.0.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-no-only-tests": "^2.6.0",
+    "eslint-plugin-no-skip-tests": "^1.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "jest": "^26.6.3",
+    "prettier": "^2.3.2",
+    "prosemirror-schema-basic": "^1.1.2",
+    "prosemirror-test-builder": "^1.0.4",
+    "ts-jest": "^26.5.6",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.3.4"
+  }
+}
