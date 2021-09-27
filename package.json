@@ -1,6 +1,6 @@
 {
   "name": "prosemirror-docx",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Export from a prosemirror document to Microsoft word",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
@@ -51,6 +51,7 @@
     "@types/prosemirror-test-builder": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
+    "date-fns": "^2.22.1",
     "eslint": "^7.29.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -72,7 +73,6 @@
     "prosemirror-schema-basic": "^1.1.2",
     "prosemirror-test-builder": "^1.0.4",
     "ts-jest": "^26.5.6",
-    "typescript": "^4.3.4",
-    "date-fns": "^2.22.1"
+    "typescript": "^4.3.4"
   }
 }
