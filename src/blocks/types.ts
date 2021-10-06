@@ -281,6 +281,7 @@ export type Artifact = {
   id: string;
   format_type: FormatTypes;
   template_id: string;
+  options: string;
   status_date: Date;
   status: ArtifactStatus;
   processing_stage: ArtifactProcessingStage;
@@ -302,6 +303,7 @@ export interface MessageAttributes {
   user_auth: string;
   format: FormatTypes;
   template_id: string;
+  options: string;
   project: string;
   block: string;
   version: string;
