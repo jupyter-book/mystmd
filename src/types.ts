@@ -90,6 +90,10 @@ export interface TaggedBlockDefinition {
   tag: string;
   required: boolean;
   description: string;
+  words?: {
+    min?: number;
+    max?: number;
+  };
   condition?: {
     option: string;
     value: string;
