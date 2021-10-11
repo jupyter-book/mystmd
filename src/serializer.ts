@@ -18,6 +18,8 @@ import {
   TableRow,
   TableCell,
   ITableCellOptions,
+  InternalHyperlink,
+  SimpleField,
 } from 'docx';
 import sizeOf from 'buffer-image-size';
 import { INumbering, createNumbering, NumberingStyles } from './numbering';
@@ -318,6 +320,15 @@ export class DocxSerializerState<S extends Schema = any> {
     this.current = [];
     delete this.nextParentParagraphOpts;
     this.children.push(paragraph);
+  }
+
+  createReference(id: string, before?: string, after?: string) {
+    const children: ParagraphChild[] = [];
+    if (before) children.push(new TextRun(before));
+    children.push(new SimpleField(`REF ${id} \\h`));
+    if (after) children.push(new TextRun(after));
+    const ref = new InternalHyperlink({ anchor: id, children });
+    this.current.push(ref);
   }
 }
 
