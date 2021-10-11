@@ -7,6 +7,10 @@ import {
 } from '@curvenote/blocks';
 import { RootState } from './reducers';
 
+export function selectUser(state: RootState, userId: string) {
+  return state.users[userId];
+}
+
 export function selectProject(state: RootState, projectId: ProjectId) {
   return state.projects[projectId];
 }

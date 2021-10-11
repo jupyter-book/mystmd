@@ -1,4 +1,6 @@
 import {
+  MyUser as MyUserDTO,
+  User as UserDTO,
   Project as ProjectDTO,
   Block as BlockDTO,
   ALL_BLOCKS,
@@ -8,9 +10,36 @@ import {
   projectFromDTO,
   blockFromDTO,
   versionFromDTO,
+  userFromDTO,
+  myUserFromDTO,
 } from '@curvenote/blocks';
 import { BaseTransfer } from './base';
-import { blocks, projects, versions } from './store';
+import { Session } from './session';
+import { users, blocks, projects, versions } from './store';
+
+export class MyUser extends BaseTransfer<string, MyUserDTO> {
+  constructor(session: Session) {
+    super(session, '');
+  }
+
+  kind = 'User';
+
+  $fromDTO = myUserFromDTO;
+
+  $createUrl = () => `/my/user`;
+
+  $recieve = users.actions.recieve;
+}
+
+export class User extends BaseTransfer<string, UserDTO> {
+  kind = 'User';
+
+  $fromDTO = userFromDTO;
+
+  $createUrl = () => `/users/${this.id}`;
+
+  $recieve = users.actions.recieve;
+}
 
 export class Project extends BaseTransfer<ProjectId, ProjectDTO> {
   kind = 'Project';

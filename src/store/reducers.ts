@@ -1,4 +1,5 @@
 import {
+  User as UserDTO,
   Project as ProjectDTO,
   Block as BlockDTO,
   blockIdToString,
@@ -7,6 +8,16 @@ import {
 } from '@curvenote/blocks';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
+
+export const users = createSlice({
+  name: 'users',
+  initialState: {} as Record<string, UserDTO>,
+  reducers: {
+    recieve(state, action: PayloadAction<UserDTO>) {
+      state[action.payload.id] = action.payload;
+    },
+  },
+});
 
 export const projects = createSlice({
   name: 'projects',
@@ -41,6 +52,7 @@ export const versions = createSlice({
 });
 
 export const rootReducer = combineReducers({
+  users: users.reducer,
   projects: projects.reducer,
   blocks: blocks.reducer,
   versions: versions.reducer,
