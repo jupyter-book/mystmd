@@ -12,6 +12,7 @@ import {
   versionFromDTO,
   userFromDTO,
   myUserFromDTO,
+  JsonObject,
 } from '@curvenote/blocks';
 import { BaseTransfer } from './base';
 import { Session } from './session';
@@ -61,10 +62,10 @@ export class Block extends BaseTransfer<BlockId, BlockDTO> {
   $recieve = blocks.actions.recieve;
 }
 
-export class Version extends BaseTransfer<VersionId, ALL_BLOCKS> {
+export class Version<T extends ALL_BLOCKS = ALL_BLOCKS> extends BaseTransfer<VersionId, T> {
   kind = 'Version';
 
-  $fromDTO = versionFromDTO;
+  $fromDTO = versionFromDTO as (versionId: VersionId, json: JsonObject) => T;
 
   $createUrl = () => `/blocks/${this.id.project}/${this.id.block}/versions/${this.id.version}`;
 

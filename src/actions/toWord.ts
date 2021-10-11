@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import path from 'path';
 import { VersionId, KINDS } from '@curvenote/blocks';
-import { defaultNodes, defaultMarks, DocxSerializerState, writeDocx } from 'prosemirror-docx';
+import { DocxSerializerState, writeDocx } from 'prosemirror-docx';
 import { Block, MyUser, Version } from '../models';
 import { Session } from '../session';
 import { getChildren } from './getChildren';
@@ -11,6 +11,7 @@ import {
   loadImagesToBuffers,
   walkArticle,
 } from '../word';
+import { getNodesAndMarks } from '../word/schema';
 
 export async function articleToWord(session: Session, versionId: VersionId) {
   const [me, block, version] = await Promise.all([
@@ -24,11 +25,7 @@ export async function articleToWord(session: Session, versionId: VersionId) {
   const article = await walkArticle(session, version.data);
   const buffers = await loadImagesToBuffers(article);
 
-  const nodes = {
-    ...defaultNodes,
-    aside: defaultNodes.blockquote,
-    callout: defaultNodes.blockquote,
-  };
+  const { nodes, marks } = getNodesAndMarks();
 
   const opts = {
     getImageBuffer(key: string) {
@@ -37,7 +34,7 @@ export async function articleToWord(session: Session, versionId: VersionId) {
     },
   };
 
-  const docxState = new DocxSerializerState(nodes, defaultMarks, opts);
+  const docxState = new DocxSerializerState(nodes, marks, opts);
 
   // Add the title
   docxState.renderContent(await createArticleTitle(session, block.data));
