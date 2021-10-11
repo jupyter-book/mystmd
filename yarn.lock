@@ -1569,10 +1569,10 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-docx@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/docx/-/docx-7.0.0.tgz#daadb54f18294cc7ce72c62307a016def429b319"
-  integrity sha512-tGj+RpVO0HqYXQQ6aIQzsUW9qqjYl9drT5OeilzkA56OS/yhVCcrJ/vQcvOWa45kT4OYN3Xrx80A9l9YFn89/Q==
+docx@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/docx/-/docx-7.1.1.tgz#1bc1fc55bae7e56aaeac72dd1504ee6cc2dd2f62"
+  integrity sha512-07V1mVSIQw4bnkLjQCJ39fkmPFpLuAdNPbDQT3ry9zxO4JW88C4DeqNkfseQEMPRMruXHO1eNhMRZmmwRxtTog==
   dependencies:
     "@types/node" "^16.0.0"
     jszip "^3.1.5"
