@@ -66,7 +66,6 @@ The `state` is the `DocxSerializerState` and has helper methods to interact with
 - heading (levels)
   - TODO: Support numbering of headings
 - blockquote
-  - TODO: No styles supported
 - code_block
   - TODO: No styles supported
 - horizontal_rule
@@ -77,10 +76,10 @@ The `state` is the `DocxSerializerState` and has helper methods to interact with
 - image
 - math
 - equations (numbered & unnumbered)
+- tables
 
 Planned:
 
-- Tables
 - Internal References (e.g. see Table 1)
 
 ## Supported Marks
