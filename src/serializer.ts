@@ -14,10 +14,18 @@ import {
   Bookmark,
   ImageRun,
   AlignmentType,
+  Table,
+  TableRow,
+  TableCell,
+  ITableCellOptions,
 } from 'docx';
 import sizeOf from 'buffer-image-size';
 import { INumbering, createNumbering, NumberingStyles } from './numbering';
 import { createDocFromState, createShortId } from './utils';
+
+type Mutable<T> = {
+  -readonly [k in keyof T]: T[k];
+};
 
 // This is duplicated from @curvenote/schema
 export type AlignOptions = 'left' | 'center' | 'right';
@@ -47,6 +55,8 @@ export type IMathOpts = {
   numbered?: boolean;
 };
 
+const MAX_IMAGE_WIDTH = 600;
+
 export class DocxSerializerState<S extends Schema = any> {
   nodes: NodeSerializer<S>;
 
@@ -54,7 +64,7 @@ export class DocxSerializerState<S extends Schema = any> {
 
   marks: MarkSerializer<S>;
 
-  children: Paragraph[];
+  children: (Paragraph | Table)[];
 
   numbering: INumbering[];
 
@@ -223,12 +233,14 @@ export class DocxSerializerState<S extends Schema = any> {
     });
   }
 
+  // not sure what this actually is, seems to be close for 8.5x11
+  maxImageWidth = MAX_IMAGE_WIDTH;
+
   image(src: string, widthPercent = 70, align: AlignOptions = 'center') {
     const buffer = this.options.getImageBuffer(src);
     const dimensions = sizeOf(buffer);
     const aspect = dimensions.height / dimensions.width;
-    const maxWidth = 600; // not sure what this actually is, seems to be close for 8.5x11
-    const width = maxWidth * (widthPercent / 100);
+    const width = this.maxImageWidth * (widthPercent / 100);
     this.current.push(
       new ImageRun({
         data: buffer,
@@ -252,6 +264,40 @@ export class DocxSerializerState<S extends Schema = any> {
     this.addParagraphOptions({
       alignment,
     });
+  }
+
+  table(node: ProsemirrorNode<S>) {
+    const actualChildren = this.children;
+    const rows: TableRow[] = [];
+    node.content.forEach(({ content: rowContent }) => {
+      const cells: TableCell[] = [];
+      // Check if all cells are headers in this row
+      let tableHeader = true;
+      rowContent.forEach((cell) => {
+        if (cell.type.name !== 'table_header') {
+          tableHeader = false;
+        }
+      });
+      // This scales images inside of tables
+      this.maxImageWidth = MAX_IMAGE_WIDTH / rowContent.childCount;
+      rowContent.forEach((cell) => {
+        this.children = [];
+        this.renderContent(cell);
+        const tableCellOpts: Mutable<ITableCellOptions> = { children: this.children };
+        const colspan = cell.attrs.colspan ?? 1;
+        const rowspan = cell.attrs.rowspan ?? 1;
+        if (colspan > 1) tableCellOpts.columnSpan = colspan;
+        if (rowspan > 1) tableCellOpts.rowSpan = rowspan;
+        cells.push(new TableCell(tableCellOpts));
+      });
+      rows.push(new TableRow({ children: cells, tableHeader }));
+    });
+    this.maxImageWidth = MAX_IMAGE_WIDTH;
+    const table = new Table({ rows });
+    actualChildren.push(table);
+    // If there are multiple tables, this seperates them
+    actualChildren.push(new Paragraph(''));
+    this.children = actualChildren;
   }
 
   captionLabel(id: string, kind: 'Figure' | 'Table') {

@@ -61,6 +61,9 @@ export const defaultNodes: NodeSerializer = {
     state.math(getLatexFromNode(node), { inline: false, numbered, id });
     state.closeBlock(node);
   },
+  table(state, node) {
+    state.table(node);
+  },
 };
 
 export const defaultMarks: MarkSerializer = {
