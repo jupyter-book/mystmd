@@ -1,73 +1,28 @@
 import * as fs from 'fs';
-import fetch from 'node-fetch';
-import { VersionId, KINDS, oxaLinkToId, oxaLink } from '@curvenote/blocks';
-import {
-  defaultNodes,
-  defaultMarks,
-  DocxSerializerState,
-  createDocFromState,
-  writeDocx,
-} from 'prosemirror-docx';
-import { nodeNames, Nodes } from '@curvenote/schema';
-import { Block, Version } from '../models';
+import path from 'path';
+import { VersionId, KINDS } from '@curvenote/blocks';
+import { defaultNodes, defaultMarks, DocxSerializerState, writeDocx } from 'prosemirror-docx';
+import { Block, MyUser, Version } from '../models';
 import { Session } from '../session';
 import { getChildren } from './getChildren';
-import { getEditorState } from './utils';
+import {
+  createArticleTitle,
+  createSingleDocument,
+  loadImagesToBuffers,
+  walkArticle,
+} from '../word';
 
 export async function articleToWord(session: Session, versionId: VersionId) {
-  await getChildren(session, versionId);
-  const block = await new Block(session, versionId).get();
-  const version = await new Version(session, versionId).get();
-  const { data } = version;
-  if (data.kind !== KINDS.Article) throw new Error('Not an article');
+  const [me, block, version] = await Promise.all([
+    new MyUser(session).get(),
+    new Block(session, versionId).get(),
+    new Version(session, versionId).get(),
+    getChildren(session, versionId),
+  ]);
+  if (version.data.kind !== KINDS.Article) throw new Error('Not an article');
 
-  const images: Record<string, Version> = {};
-
-  const states = await Promise.all(
-    data.order.map(async (k) => {
-      const srcId = data.children[k]?.src;
-      if (!srcId) return '';
-      const child = await new Version(session, srcId).get();
-      switch (child.data.kind) {
-        case KINDS.Content: {
-          const state = getEditorState(child.data.content);
-          state.doc.descendants((node) => {
-            switch (node.type.name) {
-              case nodeNames.image: {
-                const { src } = node.attrs as Nodes.Image.Attrs;
-                const id = oxaLinkToId(src)?.block as VersionId;
-                if (id) images[src] = new Version(session, id);
-                break;
-              }
-              default:
-                break;
-            }
-          });
-          return state;
-        }
-        case KINDS.Image: {
-          const state = getEditorState(child.data.caption ?? '', 'paragraph');
-          const key = oxaLink('', child.id);
-          if (key) images[key] = child;
-          return state;
-        }
-        default:
-          return null;
-      }
-    }),
-  );
-
-  const buffers: Record<string, Buffer> = {};
-
-  await Promise.all(
-    Object.entries(images).map(async ([key, image]) => {
-      await image.get();
-      if (image.data.kind !== KINDS.Image) return;
-      const response = await fetch(image.data.links.download);
-      const buffer = await response.buffer();
-      buffers[key] = buffer;
-    }),
-  );
+  const article = await walkArticle(session, version.data);
+  const buffers = await loadImagesToBuffers(article);
 
   const nodes = {
     ...defaultNodes,
@@ -83,12 +38,27 @@ export async function articleToWord(session: Session, versionId: VersionId) {
   };
 
   const docxState = new DocxSerializerState(nodes, defaultMarks, opts);
-  states.forEach((state) => {
+
+  // Add the title
+  docxState.renderContent(await createArticleTitle(session, block.data));
+  // Then render each block
+  article.states.forEach((state) => {
     if (!state) return;
     docxState.renderContent(state.doc);
   });
 
-  const doc = createDocFromState(docxState);
+  const styles = fs.readFileSync(path.join(__dirname, '../styles/simple.xml'), 'utf-8');
+
+  const doc = createSingleDocument(docxState, {
+    title: block.data.title,
+    description: block.data.description,
+    revision: `${version.id.version}`,
+    creator: `${me.data.display_name} on https://curvenote.com`,
+    lastModifiedBy: `${me.data.display_name} <${me.data.email}>`,
+    keywords: block.data.tags.join(', '),
+    externalStyles: styles,
+  });
+
   writeDocx(doc, (buffer) => {
     fs.writeFileSync(`hello.docx`, buffer);
   });

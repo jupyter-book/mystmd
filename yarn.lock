@@ -1713,6 +1713,17 @@ docx@^7.0.0:
     xml "^1.0.1"
     xml-js "^1.6.8"
 
+docx@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/docx/-/docx-7.1.1.tgz#1bc1fc55bae7e56aaeac72dd1504ee6cc2dd2f62"
+  integrity sha512-07V1mVSIQw4bnkLjQCJ39fkmPFpLuAdNPbDQT3ry9zxO4JW88C4DeqNkfseQEMPRMruXHO1eNhMRZmmwRxtTog==
+  dependencies:
+    "@types/node" "^16.0.0"
+    jszip "^3.1.5"
+    nanoid "^3.1.20"
+    xml "^1.0.1"
+    xml-js "^1.6.8"
+
 domexception@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/domexception/-/domexception-2.0.1.tgz#fb44aefba793e1574b0af6aed2801d057529f304"
