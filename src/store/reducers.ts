@@ -1,5 +1,6 @@
 import {
   User as UserDTO,
+  Team as TeamDTO,
   Project as ProjectDTO,
   Block as BlockDTO,
   blockIdToString,
@@ -14,6 +15,16 @@ export const users = createSlice({
   initialState: {} as Record<string, UserDTO>,
   reducers: {
     recieve(state, action: PayloadAction<UserDTO>) {
+      state[action.payload.id] = action.payload;
+    },
+  },
+});
+
+export const teams = createSlice({
+  name: 'teams',
+  initialState: {} as Record<string, TeamDTO>,
+  reducers: {
+    recieve(state, action: PayloadAction<TeamDTO>) {
       state[action.payload.id] = action.payload;
     },
   },
@@ -53,6 +64,7 @@ export const versions = createSlice({
 
 export const rootReducer = combineReducers({
   users: users.reducer,
+  teams: teams.reducer,
   projects: projects.reducer,
   blocks: blocks.reducer,
   versions: versions.reducer,
