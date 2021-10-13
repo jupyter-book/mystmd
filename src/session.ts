@@ -23,8 +23,8 @@ export class Session {
 
   $store: Store<RootState>;
 
-  constructor(token: string, opts: SessionOptions = {}) {
-    this.$headers.Authorization = `Bearer ${token}`;
+  constructor(token?: string, opts: SessionOptions = {}) {
+    if (token) this.$headers.Authorization = `Bearer ${token}`;
     this.API_URL = opts.apiUrl ?? 'https://api.curvenote.com';
     this.SITE_URL = opts.siteUrl ?? 'https://curvenote.com';
     this.$store = createStore(rootReducer);
