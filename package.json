@@ -1,5 +1,5 @@
 {
-  "name": "curvenote-js-cli",
+  "name": "curvenote",
   "version": "0.0.1",
   "description": "Command line tools for Curvenote",
   "author": "Rowan Cockett <rowan@curvenote.com>",
@@ -11,17 +11,21 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/curvenote-js-cli.git"
+    "url": "git+https://github.com/curvenote/curvenotejs.git"
   },
   "bugs": {
-    "url": "https://github.com/curvenote/curvenote-js-cli/issues"
+    "url": "https://github.com/curvenote/curvenotejs/issues"
   },
-  "homepage": "https://github.com/curvenote/curvenote-js-cli",
+  "bin": {
+    "curvenote": "./dist/cli/index.js"
+  },
+  "homepage": "https://github.com/curvenote/curvenotejs",
   "scripts": {
     "clean": "rm -rf dist",
     "version:output": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
-    "build": "yarn run clean && tsc -p .;rm -rf dist/test; mv dist/src/* dist; rmdir dist/src;",
+    "build": "yarn run clean && tsc -p .; cp -r ./src/styles ./dist/styles; cp -r ./src/images ./dist/images",
     "build:watch": "tsc -w -p .",
+    "cli:dev": "npm uninstall -g curvenote; npm link",
     "prepublishOnly": "yarn version:output && yarn build",
     "test": "jest",
     "test:watch": "jest --watchAll",
@@ -31,18 +35,20 @@
     "lint:format:fix": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
-    "@curvenote/blocks": "^1.0.0",
+    "@curvenote/blocks": "^1.0.2",
     "@curvenote/schema": "^0.6.1",
-    "@reduxjs/toolkit": "^1.6.1",
+    "@reduxjs/toolkit": "^1.6.2",
     "@types/node-fetch": "^2.5.12",
+    "chalk": "^4.1.2",
     "date-fns": "^2.21.2",
     "docx": "^7.1.1",
-    "jsdom": "^17.0.0",
+    "jsdom": "^18.0.0",
     "node-fetch": "^2.6.5",
-    "prosemirror-docx": "^0.0.2",
+    "prosemirror-docx": "^0.0.4",
     "prosemirror-model": "^1.14.3",
     "prosemirror-state": "^1.3.4",
-    "redux": "^4.1.1"
+    "redux": "^4.1.1",
+    "yargs": "^17.2.1"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",

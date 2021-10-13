@@ -41,14 +41,17 @@ export class BaseTransfer<ID, DTO extends { id: ID }> {
   }
 
   async get() {
+    const url = this.$createUrl();
     const fromSession = this.$selector?.(this.session.$store.getState(), this.id);
     if (fromSession) {
+      this.session.log.debug(`Loading ${this.kind} from cache: "${url}"`);
       this.data = fromSession;
       return this;
     }
-    const url = this.$createUrl();
+    this.session.log.debug(`Fetching ${this.kind}: "${url}"`);
     const { status, json } = await this.session.get(url);
-    if (status !== 200) throw new Error(`${this.kind}: Not found (${url})`);
+    if (status !== 200)
+      throw new Error(`${this.kind}: Not found (${url}) or you do not have access.`);
     this.data = json;
     return this;
   }

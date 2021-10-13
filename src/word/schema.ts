@@ -1,5 +1,6 @@
 import { oxaLinkToId } from '@curvenote/blocks';
 import { Nodes, ReferenceKind } from '@curvenote/schema';
+import { formatDatetime } from '@curvenote/schema/dist/nodes/time';
 import { defaultNodes, defaultMarks, NodeSerializer } from 'prosemirror-docx';
 
 export function getNodesAndMarks() {
@@ -41,6 +42,11 @@ export function getNodesAndMarks() {
         }
       });
       state.text(close);
+    },
+    time(state, node) {
+      const { datetime } = node.attrs as Nodes.Time.Attrs;
+      const { f } = formatDatetime(datetime);
+      state.text(f);
     },
   };
   return { nodes, marks: defaultMarks };

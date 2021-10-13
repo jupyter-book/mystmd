@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import { createStore, Store } from 'redux';
+import { basicLogger, Logger, LogLevel } from './logging';
 import { rootReducer, RootState } from './store';
 import CLIENT_VERSION from './version';
 
@@ -42,5 +43,11 @@ export class Session {
       status: response.status,
       json: await response.json(),
     };
+  }
+
+  $logger: Logger = basicLogger(LogLevel.info);
+
+  get log(): Logger {
+    return this.$logger;
   }
 }
