@@ -26,7 +26,6 @@
     "build": "yarn version:output; yarn run clean && tsc -p .; cp -r ./src/styles ./dist/styles; cp -r ./src/images ./dist/images",
     "build:watch": "yarn version:output; tsc -w -p .",
     "cli:dev": "npm uninstall -g curvenote; npm link",
-    "postinstall": "yarn version:output",
     "prepublishOnly": "yarn build",
     "test": "jest",
     "test:watch": "jest --watchAll",
