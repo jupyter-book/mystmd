@@ -1,7 +1,7 @@
 # `curvenote`
 
 [![curvenote on npm](https://img.shields.io/npm/v/curvenote.svg)](https://www.npmjs.com/package/curvenote)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/curvenotejs/blob/master/LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/curvenotejs/blob/main/LICENSE)
 ![CI](https://github.com/curvenote/curvenotejs/workflows/CI/badge.svg)
 
 ## Overview
