@@ -22,17 +22,17 @@
   "homepage": "https://github.com/curvenote/curvenotejs",
   "scripts": {
     "clean": "rm -rf dist",
-    "version:output": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
-    "build": "yarn version:output; yarn run clean && tsc -p .; cp -r ./src/styles ./dist/styles; cp -r ./src/images ./dist/images",
-    "build:watch": "yarn version:output; tsc -w -p .",
+    "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
+    "build": "yarn copy:version; yarn run clean && tsc -p .; cp -r ./src/styles ./dist/styles; cp -r ./src/images ./dist/images",
+    "build:watch": "yarn copy:version; tsc -w -p .",
     "cli:dev": "npm uninstall -g curvenote; npm link",
     "prepublishOnly": "yarn build",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
-    "test:clear": "jest --clearCache",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.json",
-    "lint:format": "prettier --check \"src/**/*.ts\"",
-    "lint:format:fix": "prettier --write \"src/**/*.ts\""
+    "test": "yarn copy:version; jest",
+    "test:watch": "yarn copy:version; jest --watchAll",
+    "test:clear": "yarn copy:version; jest --clearCache",
+    "lint": "yarn copy:version; eslint \"src/**/*.ts\" -c .eslintrc.json",
+    "lint:format": "yarn copy:version; prettier --check \"src/**/*.ts\"",
+    "lint:format:fix": "yarn copy:version; prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
     "@curvenote/blocks": "^1.0.2",
