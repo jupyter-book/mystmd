@@ -1,5 +1,6 @@
 import { Document, INumberingOptions, ISectionOptions, Packer, SectionType } from 'docx';
 import { Node as ProsemirrorNode } from 'prosemirror-model';
+import { IFootnotes } from './types';
 
 export function createShortId() {
   return Math.random().toString(36).substr(2, 9);
@@ -8,8 +9,10 @@ export function createShortId() {
 export function createDocFromState(state: {
   numbering: INumberingOptions['config'];
   children: ISectionOptions['children'];
+  footnotes?: IFootnotes;
 }) {
   const doc = new Document({
+    footnotes: state.footnotes,
     numbering: {
       config: state.numbering,
     },
