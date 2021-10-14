@@ -8,6 +8,12 @@ export function getNodesAndMarks() {
     ...defaultNodes,
     aside: defaultNodes.blockquote,
     callout: defaultNodes.blockquote,
+
+    iframe(state, node) {
+      state.text('[IFrame not supported]');
+      state.closeBlock(node);
+    },
+
     cite(state, node) {
       const { kind, key, text } = node.attrs as Nodes.Cite.Attrs;
       const oxa = oxaLinkToId(key);
@@ -50,6 +56,26 @@ export function getNodesAndMarks() {
     },
     footnote(state, node) {
       state.footnote(node);
+    },
+    // All the interactive nodes
+    variable(state, node) {
+      state.text('[Variable not supported]');
+      state.closeBlock(node);
+    },
+    display(state) {
+      state.text('[Display text not supported]');
+    },
+    dynamic(state) {
+      state.text('[Dynamic text not supported]');
+    },
+    range(state) {
+      state.text('[Range not supported]');
+    },
+    switch(state) {
+      state.text('[Switch not supported]');
+    },
+    button(state) {
+      state.text('[Switch not supported]');
     },
   };
   return { nodes, marks: defaultMarks };
