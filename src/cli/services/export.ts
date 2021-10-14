@@ -4,6 +4,7 @@ import { clirun } from './utils';
 
 export function makeWordExportCLI() {
   const command = new commander.Command('docx')
+    .alias('word')
     .description('Export a Microsoft Word document from a Curvenote link')
     .argument('<article>', 'A link to the Curvenote article (e.g. oxaLink or api link)')
     .argument('[output]', 'The document filename to export to', 'article.docx')

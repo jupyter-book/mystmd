@@ -48,6 +48,9 @@ export function getNodesAndMarks() {
       const { f } = formatDatetime(datetime);
       state.text(f);
     },
+    footnote(state, node) {
+      state.footnote(node);
+    },
   };
   return { nodes, marks: defaultMarks };
 }

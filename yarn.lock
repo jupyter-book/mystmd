@@ -358,10 +358,10 @@
   resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.0.2.tgz#7d24586d2b29e20263237a03783c0710bbe3c6c4"
   integrity sha512-71/1pxHXoZVaeJERip6cxm4VOrsOxwOjEa0sw9pX0+MuFcxG451UymWjSc6qQY1Fq/3pSUAtUsigU4xNtTCLDg==
 
-"@curvenote/schema@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.6.1.tgz#9f944d07a3b7a5d37bce40fdfa462e147a440f32"
-  integrity sha512-/pddnSrmOX+nuk9waFMbD+ZtNQ0T/du6Yzv8IcTCAbJvVleb0jCOk9/D55Qb+tZ4ZpYZkmNGQgEBMBvBs0V82w==
+"@curvenote/schema@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.7.0.tgz#745a44a98c04b458a5b2a2df116be65e7fb4c0d0"
+  integrity sha512-TY7FYp+Qp/F8yUCMeAySMqygDDWv29XqID9LgxDvxJchjGeC4I7dp3yhU/hUnBWUzv+8xH6G7og/6rHbi7Tu9A==
   dependencies:
     "@wordpress/wordcount" "^3.2.1"
     markdown-it "^12.2.0"
@@ -4331,10 +4331,10 @@ prosemirror-collab@^1.2.2:
   dependencies:
     prosemirror-state "^1.0.0"
 
-prosemirror-docx@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/prosemirror-docx/-/prosemirror-docx-0.0.4.tgz#da08422c78832db67eaeb5bad785bf753d2c2b22"
-  integrity sha512-5gHXzfogYWPpN6Eyfp4+hatjNqt0kNB3D+QM8ik/VFKxH4Vn3CtJw3eE1YjvyIJwvzv75QIOcSn+fKkeRbSW8w==
+prosemirror-docx@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/prosemirror-docx/-/prosemirror-docx-0.0.5.tgz#1d1500e2bd26c7ed8817565f331091190efaea78"
+  integrity sha512-TXwdBFHsHu9Fr5n6v5PoCvVD7pCOlFyrcELV11qsJ+uD0EF2nFyUa4lo1ID8Em1nXvWinZ/Z+QJn52YCOVdsEA==
   dependencies:
     buffer-image-size "^0.6.4"
     docx "^7.1.1"

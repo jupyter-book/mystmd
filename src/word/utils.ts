@@ -1,8 +1,9 @@
 import fetch from 'node-fetch';
 import { VersionId, KINDS, oxaLinkToId, oxaLink, Blocks } from '@curvenote/blocks';
-import { Document, INumberingOptions, ISectionOptions, SectionType } from 'docx';
+import { Document, SectionType } from 'docx';
 import { IPropertiesOptions } from 'docx/build/file/core-properties';
 import { nodeNames, Nodes } from '@curvenote/schema';
+import { DocxSerializerState } from 'prosemirror-docx';
 import { Session } from '../session';
 import { getEditorState } from '../actions/utils';
 import { Version } from '../models';
@@ -72,14 +73,12 @@ export async function loadImagesToBuffers(article: ArticleState) {
 }
 
 export function createSingleDocument(
-  state: {
-    numbering: INumberingOptions['config'];
-    children: ISectionOptions['children'];
-  },
+  state: DocxSerializerState,
   opts?: Omit<IPropertiesOptions, 'sections'>,
 ) {
   const doc = new Document({
     ...opts,
+    footnotes: state.footnotes,
     numbering: {
       config: state.numbering,
     },
