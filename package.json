@@ -1,6 +1,6 @@
 {
   "name": "prosemirror-docx",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Export from a prosemirror document to Microsoft word",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
