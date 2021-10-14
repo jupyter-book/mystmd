@@ -19,6 +19,13 @@ import {
 import { BaseTransfer } from './base';
 import { Session } from './session';
 import { users, teams, blocks, projects, versions } from './store';
+import {
+  selectBlock,
+  selectProject,
+  selectTeam,
+  selectUser,
+  selectVersion,
+} from './store/selectors';
 
 export class MyUser extends BaseTransfer<string, MyUserDTO> {
   constructor(session: Session) {
@@ -32,6 +39,8 @@ export class MyUser extends BaseTransfer<string, MyUserDTO> {
   $createUrl = () => `/my/user`;
 
   $recieve = users.actions.recieve;
+
+  // TODO: $selector for MyUser that looks at the session
 }
 
 export class User extends BaseTransfer<string, UserDTO> {
@@ -42,6 +51,8 @@ export class User extends BaseTransfer<string, UserDTO> {
   $createUrl = () => `/users/${this.id}`;
 
   $recieve = users.actions.recieve;
+
+  $selector = selectUser;
 }
 
 export class Team extends BaseTransfer<string, TeamDTO> {
@@ -52,6 +63,8 @@ export class Team extends BaseTransfer<string, TeamDTO> {
   $createUrl = () => `/teams/${this.id}`;
 
   $recieve = teams.actions.recieve;
+
+  $selector = selectTeam;
 }
 
 export class Project extends BaseTransfer<ProjectId, ProjectDTO> {
@@ -62,6 +75,8 @@ export class Project extends BaseTransfer<ProjectId, ProjectDTO> {
   $createUrl = () => `/projects/${this.id}`;
 
   $recieve = projects.actions.recieve;
+
+  $selector = selectProject;
 }
 
 export class Block extends BaseTransfer<BlockId, BlockDTO> {
@@ -72,6 +87,8 @@ export class Block extends BaseTransfer<BlockId, BlockDTO> {
   $createUrl = () => `/blocks/${this.id.project}/${this.id.block}`;
 
   $recieve = blocks.actions.recieve;
+
+  $selector = selectBlock;
 }
 
 export class Version<T extends ALL_BLOCKS = ALL_BLOCKS> extends BaseTransfer<VersionId, T> {
@@ -82,4 +99,6 @@ export class Version<T extends ALL_BLOCKS = ALL_BLOCKS> extends BaseTransfer<Ver
   $createUrl = () => `/blocks/${this.id.project}/${this.id.block}/versions/${this.id.version}`;
 
   $recieve = versions.actions.recieve;
+
+  $selector = selectVersion;
 }
