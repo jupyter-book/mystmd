@@ -37,11 +37,11 @@ export function chalkLogger(level: LogLevel): Logger {
   return {
     debug(...args: any) {
       if (level > LogLevel.debug) return;
-      log(chalk.white(...args));
+      log(chalk.dim(...args));
     },
     info(...args: any) {
       if (level > LogLevel.info) return;
-      log(chalk.white(...args));
+      log(chalk.reset(...args));
     },
     warn(...args: any) {
       if (level > LogLevel.warn) return;

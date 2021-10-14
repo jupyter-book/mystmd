@@ -1,3 +1,3 @@
-export * from './word';
-export * from './models';
 export { Session } from './session';
+export * from './models';
+export * from './word';

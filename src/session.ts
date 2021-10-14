@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import jwt from 'jsonwebtoken';
 import { createStore, Store } from 'redux';
 import { basicLogger, Logger, LogLevel } from './logging';
 import { rootReducer, RootState } from './store';
@@ -10,6 +11,21 @@ export type SessionOptions = {
   apiUrl?: string;
   siteUrl?: string;
 };
+
+function assertTokenWillWork(token: string, log: Logger) {
+  // This doesn't verify, but does check if it is going to work, for some early feedback
+  const decoded = jwt.decode(token);
+  if (!decoded || typeof decoded === 'string') {
+    throw new Error('Could not decode session token. Please ensure that the API token is valid.');
+  }
+  const timeLeft = (decoded.exp as number) * 1000 - Date.now();
+  if (timeLeft < 0) {
+    throw new Error('The API token has expired.');
+  }
+  if (timeLeft < 5 * 60 * 1000) {
+    log.warn('The token has less than ten minutes remaining');
+  }
+}
 
 export class Session {
   API_URL: string;
@@ -24,10 +40,15 @@ export class Session {
   $store: Store<RootState>;
 
   constructor(token?: string, opts: SessionOptions = {}) {
+    if (token) assertTokenWillWork(token, this.log);
     if (token) this.$headers.Authorization = `Bearer ${token}`;
     this.API_URL = opts.apiUrl ?? 'https://api.curvenote.com';
     this.SITE_URL = opts.siteUrl ?? 'https://curvenote.com';
     this.$store = createStore(rootReducer);
+  }
+
+  get isAnon() {
+    return !this.$headers.Authorization;
   }
 
   async get(url: string) {
