@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import path from 'path';
 import { VersionId, KINDS, oxaLinkToId } from '@curvenote/blocks';
 import { DocxSerializerState, writeDocx } from 'prosemirror-docx';
-import { Block, MyUser, Version } from '../models';
+import { Block, User, Version } from '../models';
 import { Session } from '../session';
 import { getChildren } from '../actions/getChildren';
 import { getNodesAndMarks } from './schema';
@@ -17,8 +17,7 @@ function assertEndsInDocx(filename: string) {
 
 export async function articleToWord(session: Session, versionId: VersionId, filename: string) {
   assertEndsInDocx(filename);
-  const [me, block, version] = await Promise.all([
-    new MyUser(session).get(),
+  const [block, version] = await Promise.all([
     new Block(session, versionId).get(),
     new Version(session, versionId).get(),
     getChildren(session, versionId), // This loads all the children quickly
@@ -26,6 +25,7 @@ export async function articleToWord(session: Session, versionId: VersionId, file
   if (version.data.kind !== KINDS.Article)
     throw new Error(`The export source must be of kind "Article" not ${version.data.kind}`);
 
+  const user = await new User(session, version.data.created_by).get();
   const article = await walkArticle(session, version.data);
   const buffers = await loadImagesToBuffers(article);
 
@@ -55,8 +55,8 @@ export async function articleToWord(session: Session, versionId: VersionId, file
     title: block.data.title,
     description: block.data.description,
     revision: `${version.id.version}`,
-    creator: `${me.data.display_name} on https://curvenote.com`,
-    lastModifiedBy: `${me.data.display_name} <${me.data.email}>`,
+    creator: `${user.data.display_name} on https://curvenote.com`,
+    lastModifiedBy: `${user.data.display_name} (@${user.data.username})`,
     keywords: block.data.tags.join(', '),
     externalStyles: styles,
   });
