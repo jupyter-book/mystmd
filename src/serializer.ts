@@ -20,14 +20,12 @@ import {
   ITableCellOptions,
   InternalHyperlink,
   SimpleField,
+  FootnoteReferenceRun,
 } from 'docx';
 import sizeOf from 'buffer-image-size';
-import { INumbering, createNumbering, NumberingStyles } from './numbering';
+import { createNumbering, NumberingStyles } from './numbering';
 import { createDocFromState, createShortId } from './utils';
-
-type Mutable<T> = {
-  -readonly [k in keyof T]: T[k];
-};
+import { IFootnotes, INumbering, Mutable } from './types';
 
 // This is duplicated from @curvenote/schema
 export type AlignOptions = 'left' | 'center' | 'right';
@@ -69,6 +67,8 @@ export class DocxSerializerState<S extends Schema = any> {
   children: (Paragraph | Table)[];
 
   numbering: INumbering[];
+
+  footnotes: IFootnotes = {};
 
   nextRunOpts?: IRunOptions;
 
@@ -309,6 +309,24 @@ export class DocxSerializerState<S extends Schema = any> {
         children: [new TextRun(`${kind} `), new SequentialIdentifier(kind)],
       }),
     );
+  }
+
+  $footnoteCounter = 0;
+
+  footnote(node: ProsemirrorNode<S>) {
+    const { current, nextRunOpts } = this;
+    // Delete everything and work with the footnote inline on the current
+    this.current = [];
+    delete this.nextRunOpts;
+
+    this.$footnoteCounter += 1;
+    this.renderInline(node);
+    this.footnotes[this.$footnoteCounter] = {
+      children: [new Paragraph({ children: this.current })],
+    };
+    this.current = current;
+    this.nextRunOpts = nextRunOpts;
+    this.current.push(new FootnoteReferenceRun(this.$footnoteCounter));
   }
 
   closeBlock(node: ProsemirrorNode<S>, props?: IParagraphOptions) {
