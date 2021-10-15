@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import { Session } from '../../..';
 import { chalkLogger, LogLevel } from '../../../logging';
 import { getToken } from './config';
@@ -10,17 +9,21 @@ export function anonSession(level = LogLevel.info) {
 }
 
 export function getSession(level = LogLevel.info): Session {
+  const logger = chalkLogger(level);
   const token = process.env.CURVENOTE_TOKEN || getToken();
   if (!token) {
-    // eslint-disable-next-line no-console
-    console.log(
-      chalk.yellow(
-        'No token was found in settings or CURVENOTE_TOKEN. Session is not authenticated.',
-      ),
-    );
+    logger.warn('No token was found in settings or CURVENOTE_TOKEN. Session is not authenticated.');
   }
-  const session = new Session(token);
-  session.$logger = chalkLogger(level);
+  let session;
+  try {
+    session = new Session(token);
+    session.$logger = logger;
+  } catch (error) {
+    logger.error((error as Error).message);
+    logger.info('You can remove your token using:');
+    logger.info('curvenote token remove');
+    process.exit(1);
+  }
   return session;
 }
 

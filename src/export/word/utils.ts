@@ -4,9 +4,9 @@ import { Document, SectionType } from 'docx';
 import { IPropertiesOptions } from 'docx/build/file/core-properties';
 import { nodeNames, Nodes } from '@curvenote/schema';
 import { DocxSerializerState } from 'prosemirror-docx';
-import { Session } from '../session';
-import { getEditorState } from '../actions/utils';
-import { Version } from '../models';
+import { Session } from '../../session';
+import { getEditorState } from '../../actions/utils';
+import { Version } from '../../models';
 import { createCurvenoteFooter } from './footers';
 
 type ArticleState = {

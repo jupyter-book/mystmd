@@ -1,14 +1,14 @@
 import * as fs from 'fs';
 import path from 'path';
-import { VersionId, KINDS, oxaLinkToId } from '@curvenote/blocks';
+import { VersionId, KINDS } from '@curvenote/blocks';
 import { DocxSerializerState, writeDocx } from 'prosemirror-docx';
-import { Block, User, Version } from '../models';
-import { Session } from '../session';
-import { getChildren } from '../actions/getChildren';
+import { Block, User, Version } from '../../models';
+import { Session } from '../../session';
+import { getChildren } from '../../actions/getChildren';
 import { getNodesAndMarks } from './schema';
-import { getLatestBlock } from '../actions/getLatest';
 import { createSingleDocument, loadImagesToBuffers, walkArticle } from './utils';
 import { createArticleTitle } from './titles';
+import { exportFromOxaLink } from '../utils';
 
 function assertEndsInDocx(filename: string) {
   if (!filename.endsWith('.docx'))
@@ -66,17 +66,4 @@ export async function articleToWord(session: Session, versionId: VersionId, file
   });
 }
 
-export async function oxaLinkToWord(session: Session, link: string, filename: string) {
-  assertEndsInDocx(filename);
-  const id = oxaLinkToId(link);
-  if (!id) throw new Error('The article ID provided could not be parsed.');
-  if ('version' in id.block) {
-    // Ensure that we actually get a correct ID, and then use the version supplied
-    const block = await new Block(session, id.block).get();
-    await articleToWord(session, { ...block.id, version: id.block.version }, filename);
-  } else {
-    // Here we will load up the latest version
-    const { version } = await getLatestBlock(session, id.block);
-    await articleToWord(session, version.id, filename);
-  }
-}
+export const oxaLinkToWord = exportFromOxaLink(articleToWord);

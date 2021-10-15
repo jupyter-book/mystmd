@@ -1,8 +1,8 @@
 import { getSchema } from '@curvenote/schema/dist/schemas';
 import { Node } from 'prosemirror-model';
 import { Block as BlockDTO } from '@curvenote/blocks';
-import { User } from '../models';
-import { Session } from '../session';
+import { User } from '../../models';
+import { Session } from '../../session';
 
 export async function createArticleTitle(session: Session, data: BlockDTO) {
   const schema = getSchema('full');
