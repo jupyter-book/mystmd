@@ -13,6 +13,8 @@ export function getSession(level = LogLevel.info): Session {
   const token = process.env.CURVENOTE_TOKEN || getToken();
   if (!token) {
     logger.warn('No token was found in settings or CURVENOTE_TOKEN. Session is not authenticated.');
+    logger.info('You can set a token with:');
+    logger.info('curvenote token set YOUR_API_TOKEN');
   }
   let session;
   try {
