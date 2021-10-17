@@ -12,8 +12,9 @@
 
 ```bash
 npm install -g curvenote
-export CURVENOTE_TOKEN="YOUR_TOKEN"
-curvenote word https://curvenote.com/@curvenote/blog/communicating-science communicating-science.docx
+curvenote token set YOUR_TOKEN
+curvenote export docx https://curvenote.com/@curvenote/blog/communicating-science communicating-science.docx
+curvenote export md https://curvenote.com/@curvenote/blog/version-control-for-scientists version-control.md
 ```
 
 ## Usage as a package
@@ -37,5 +38,6 @@ console.log(user.data.username);
 
 ## Supported Export
 
-- Word
-- Markdown
+- Microsoft Word (.docx)
+- Markdown (.md)
+- LaTeX (.tex)
