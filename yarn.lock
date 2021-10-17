@@ -358,10 +358,10 @@
   resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.0.2.tgz#7d24586d2b29e20263237a03783c0710bbe3c6c4"
   integrity sha512-71/1pxHXoZVaeJERip6cxm4VOrsOxwOjEa0sw9pX0+MuFcxG451UymWjSc6qQY1Fq/3pSUAtUsigU4xNtTCLDg==
 
-"@curvenote/schema@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.7.0.tgz#745a44a98c04b458a5b2a2df116be65e7fb4c0d0"
-  integrity sha512-TY7FYp+Qp/F8yUCMeAySMqygDDWv29XqID9LgxDvxJchjGeC4I7dp3yhU/hUnBWUzv+8xH6G7og/6rHbi7Tu9A==
+"@curvenote/schema@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.7.1.tgz#0661165a8649910fc4fae47413744f638b5a8ca8"
+  integrity sha512-KfHPbuzdPy8lI+AvCM8aY998g+bfrSi5idcuXtt3ZM4j5j2/6C4tW5kAfgfrQl0S/pZtCoy6dwkypVCWVDTMww==
   dependencies:
     "@wordpress/wordcount" "^3.2.1"
     markdown-it "^12.2.0"
