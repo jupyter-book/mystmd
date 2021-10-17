@@ -5,10 +5,18 @@ import { toMarkdown } from '@curvenote/schema';
 import { Block, Version, User } from '../../models';
 import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
-import { getEditorState } from '../../actions/utils';
-import { exportFromOxaLink } from '../utils';
+import { exportFromOxaLink, walkArticle, writeImagesToFiles } from '../utils';
 
-export async function articleToMarkdown(session: Session, versionId: VersionId, filename: string) {
+type Options = {
+  images?: string;
+};
+
+export async function articleToMarkdown(
+  session: Session,
+  versionId: VersionId,
+  filename: string,
+  opts?: Options,
+) {
   const [block, version] = await Promise.all([
     new Block(session, versionId).get(),
     new Version(session, versionId).get(),
@@ -25,27 +33,17 @@ export async function articleToMarkdown(session: Session, versionId: VersionId, 
   );
   const { data } = version;
   if (data.kind !== KINDS.Article) throw new Error('Not an article');
-  const content = await Promise.all(
-    data.order.map(async (k) => {
-      const srcId = data.children[k]?.src;
-      if (!srcId) return '';
-      const child = await new Version(session, srcId).get();
-      const blockData = { oxa: oxaLink('', srcId), pinned: false };
-      const blockString = `+++ ${JSON.stringify(blockData)}\n\n`;
-      switch (child.data.kind) {
-        case KINDS.Content: {
-          const state = getEditorState(child.data.content);
-          return blockString + toMarkdown(state.doc);
-        }
-        case KINDS.Image: {
-          const state = getEditorState(child.data.caption ?? '', 'paragraph');
-          return blockString + toMarkdown(state.doc);
-        }
-        default:
-          return '';
-      }
-    }),
-  );
+  const article = await walkArticle(session, data);
+
+  const imageFilenames = await writeImagesToFiles(article.images, opts?.images ?? 'images');
+
+  const content = article.children.map((child) => {
+    if (!child.version || !child.state) return '';
+    const blockData = { oxa: oxaLink('', child.version.id), pinned: false };
+    const md = toMarkdown(child.state.doc, { localizeImageSrc: (src) => imageFilenames[src] });
+    return `+++ ${JSON.stringify(blockData)}\n\n${md}`;
+  });
+
   const metadata = YAML.stringify({
     title: block.data.title,
     description: block.data.description,
