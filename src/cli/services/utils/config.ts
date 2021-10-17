@@ -1,5 +1,6 @@
 import path from 'path';
 import * as fs from 'fs';
+import chalk from 'chalk';
 import { MyUser, Session } from '../../..';
 
 function getConfigPath() {
@@ -35,12 +36,16 @@ export async function setToken(token: string) {
     fs.mkdirSync(path.dirname(configPath), { recursive: true });
   }
   fs.writeFileSync(configPath, JSON.stringify(data));
+  // eslint-disable-next-line no-console
+  console.log(chalk.green(`Token set for ${me.data.display_name} <${me.data.email}>.`));
 }
 
 export function deleteToken() {
   const configPath = getConfigPath();
-  if (!fs.existsSync(configPath)) throw new Error('There is no token set');
+  if (!fs.existsSync(configPath)) throw new Error('There is no token delete.');
   fs.unlinkSync(configPath);
+  // eslint-disable-next-line no-console
+  console.log(chalk.green(`Token has been deleted.`));
 }
 
 export function getToken(): string | undefined {
