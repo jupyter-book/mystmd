@@ -6,9 +6,10 @@ import { Block, User, Version } from '../../models';
 import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
 import { getNodesAndMarks } from './schema';
-import { createSingleDocument, loadImagesToBuffers, walkArticle } from './utils';
+import { loadImagesToBuffers, walkArticle } from '../utils';
 import { createArticleTitle } from './titles';
-import { exportFromOxaLink } from '../utils';
+import { exportFromOxaLink } from '../utils/exportWrapper';
+import { createSingleDocument } from './utils';
 
 function assertEndsInDocx(filename: string) {
   if (!filename.endsWith('.docx'))
@@ -27,7 +28,7 @@ export async function articleToWord(session: Session, versionId: VersionId, file
 
   const user = await new User(session, version.data.created_by).get();
   const article = await walkArticle(session, version.data);
-  const buffers = await loadImagesToBuffers(article);
+  const buffers = await loadImagesToBuffers(article.images);
 
   const { nodes, marks } = getNodesAndMarks();
 
@@ -43,7 +44,7 @@ export async function articleToWord(session: Session, versionId: VersionId, file
   // Add the title
   docxState.renderContent(await createArticleTitle(session, block.data));
   // Then render each block
-  article.states.forEach((state) => {
+  article.children.forEach(({ state }) => {
     if (!state) return;
     docxState.renderContent(state.doc);
   });
