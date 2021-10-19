@@ -66,10 +66,12 @@ export enum ArticleFormatTypes {
   jupyter = 'jupyter',
   md = 'md',
   pdf = 'pdf',
+  docx = 'docx',
 }
 
 export enum NotebookFormatTypes {
   jupyter = 'jupyter',
+  pdf = 'pdf',
 }
 
 export enum ImageFormatTypes {
@@ -104,7 +106,10 @@ export type FormatTypes =
   | NavigationFormatTypes
   | ReferenceFormatTypes;
 
-export type ExportableFormatTypes = ArticleFormatTypes.tex | ArticleFormatTypes.pdf;
+export type ExportableFormatTypes =
+  | ArticleFormatTypes.tex
+  | ArticleFormatTypes.pdf
+  | ArticleFormatTypes.docx;
 
 export type Language = string;
 
