@@ -1,6 +1,6 @@
 {
   "name": "@curvenote/blocks",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "description": "Schemas for the Curvenote API and data structures",
   "author": "Rowan Cockett <rowan@curvenote.com>",
