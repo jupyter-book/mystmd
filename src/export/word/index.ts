@@ -62,7 +62,7 @@ export async function articleToWord(session: Session, versionId: VersionId, file
     externalStyles: styles,
   });
 
-  writeDocx(doc, (buffer) => {
+  await writeDocx(doc, (buffer) => {
     fs.writeFileSync(filename, buffer);
   });
 }
