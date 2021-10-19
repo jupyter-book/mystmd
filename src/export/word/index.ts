@@ -1,7 +1,7 @@
 import * as fs from 'fs';
-import path from 'path';
 import { VersionId, KINDS } from '@curvenote/blocks';
 import { DocxSerializerState, writeDocx } from 'prosemirror-docx';
+import pkgpath from '../../pkgpath';
 import { Block, User, Version } from '../../models';
 import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
@@ -50,7 +50,7 @@ export async function articleToWord(session: Session, versionId: VersionId, file
   });
 
   // TODO: this could come from an existing word doc
-  const styles = fs.readFileSync(path.join(__dirname, '../styles/simple.xml'), 'utf-8');
+  const styles = fs.readFileSync(pkgpath('styles/simple.xml'), 'utf-8');
 
   const doc = createSingleDocument(docxState, {
     title: block.data.title,
