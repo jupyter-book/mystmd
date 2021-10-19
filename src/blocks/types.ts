@@ -258,10 +258,7 @@ export enum XClientName {
   python = 'Curvenote Python Client',
 }
 
-export interface Author {
-  plain: string | null;
-  user: string | null;
-}
+export type Author = { plain: string; user: null } | { user: string; plain: null };
 
 export enum ArtifactStatus {
   'processing' = 'processing',
