@@ -28,8 +28,12 @@ export function createDocFromState(state: {
   return doc;
 }
 
-export function writeDocx(doc: Document, write: (buffer: Buffer) => void) {
-  Packer.toBuffer(doc).then(write);
+export async function writeDocx(
+  doc: Document,
+  write: ((buffer: Buffer) => void) | ((buffer: Buffer) => Promise<void>),
+) {
+  const buffer = await Packer.toBuffer(doc);
+  return write(buffer);
 }
 
 export function getLatexFromNode(node: ProsemirrorNode): string {
