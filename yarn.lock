@@ -341,10 +341,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@curvenote/schema@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.6.1.tgz#9f944d07a3b7a5d37bce40fdfa462e147a440f32"
-  integrity sha512-/pddnSrmOX+nuk9waFMbD+ZtNQ0T/du6Yzv8IcTCAbJvVleb0jCOk9/D55Qb+tZ4ZpYZkmNGQgEBMBvBs0V82w==
+"@curvenote/schema@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.7.2.tgz#62de199faa7079b948b2269faec82f30e094b58d"
+  integrity sha512-uy4BXN/BQIupxzjp+/j0EB1urJUHVyqiD3QUhe43sYmClE4q6mP0Cujq+aEN/CNAWdtATJpWF4gSj+WiZZae+A==
   dependencies:
     "@wordpress/wordcount" "^3.2.1"
     markdown-it "^12.2.0"
