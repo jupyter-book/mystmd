@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import jwt from 'jsonwebtoken';
 import { createStore, Store } from 'redux';
+import { JsonObject } from '@curvenote/blocks';
 import { basicLogger, Logger, LogLevel } from './logging';
 import { rootReducer, RootState } from './store';
 import CLIENT_VERSION from './version';
@@ -59,6 +60,22 @@ export class Session {
         'Content-Type': 'application/json',
         ...this.$headers,
       },
+    });
+    return {
+      status: response.status,
+      json: await response.json(),
+    };
+  }
+
+  async post(url: string, data: JsonObject) {
+    if (url.startsWith(this.API_URL)) url = url.replace(this.API_URL, '');
+    const response = await fetch(`${this.API_URL}${url}`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.$headers,
+      },
+      body: JSON.stringify(data),
     });
     return {
       status: response.status,
