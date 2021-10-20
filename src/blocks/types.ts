@@ -94,6 +94,7 @@ export const FormatSet = new Set([
   'jupyter',
   'bibtex',
   'pdf',
+  'docx',
 ]);
 
 export type FormatTypes =
