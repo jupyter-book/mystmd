@@ -13,7 +13,13 @@ export function getNodesAndMarks() {
       state.text('[IFrame not supported]');
       state.closeBlock(node);
     },
-
+    figure(state, node) {
+      state.renderContent(node);
+    },
+    figcaption(state, node) {
+      state.renderInline(node);
+      state.closeBlock(node);
+    },
     cite(state, node) {
       const { kind, key, text } = node.attrs as Nodes.Cite.Attrs;
       const oxa = oxaLinkToId(key);
