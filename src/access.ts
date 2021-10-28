@@ -41,9 +41,12 @@ export type AccessId = ProjectAccessId | TeamAccessId | ManifestId;
 export interface PartialAccess {
   id: AccessId;
   role: ROLES;
-  team_member?: boolean;
   direct: { [id: string]: AccessGrantDirect };
   nested: { [id: string]: AccessGrantNested };
+  pending: boolean;
+  email: string | null;
+  name: string | null;
+  team_member?: boolean;
 }
 
 export interface Access extends PartialAccess {
@@ -119,6 +122,9 @@ export function accessFromDTO(id: ProjectAccessId | TeamAccessId, json: JsonObje
     team_member: json.team_member ?? false,
     direct: directManifestFromDTO(json.direct ?? {}),
     nested: nestedManifestFromDTO(json.nested ?? {}),
+    pending: json.pending ?? false,
+    email: json.email ?? null,
+    name: json.name ?? null,
     date_created: getDate(json.date_created),
     date_modified: getDate(json.date_modified),
     links: { ...json.links },
