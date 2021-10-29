@@ -33,6 +33,13 @@ export interface TeamMember {
   role: ROLES;
 }
 
+export type PendingTeamMember = TeamMember & {
+  pending: boolean;
+  email: string;
+  name: string;
+  notes: string;
+};
+
 export function teamFromDTO(id: string, json: JsonObject): Team {
   return {
     id,
