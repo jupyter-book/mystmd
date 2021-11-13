@@ -62,6 +62,10 @@ export interface User extends PartialUser {
   links: UserLinks;
 }
 
+export type SearchUser = Pick<User, 'id' | 'display_name' | 'username'> & {
+  links: { photo: string };
+};
+
 export interface MyUser extends User {
   email: string;
   email_verified: boolean;
