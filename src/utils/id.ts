@@ -26,7 +26,7 @@ export const stepListToString = (id: DraftId): string =>
   `${id.project}/${id.block}/${id.draft}/steps`;
 
 export const srcIdToString = (id: SrcId): string =>
-  `${id.project}/${id.block}/${id.version}/${id.draft}`;
+  `${id.project}/${id.block}/${id.version || null}/${id.draft}`;
 export const srcIdFromString = (str: string): SrcId => {
   const [project, block, versionS, draftS] = str.split('/');
   const draft = draftS === 'null' || draftS === '' ? null : draftS;
