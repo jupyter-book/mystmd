@@ -94,6 +94,10 @@ export interface TaggedBlockDefinition {
     min?: number;
     max?: number;
   };
+  chars?: {
+    min?: number;
+    max?: number;
+  };
   condition?: {
     option: string;
     value: string;
