@@ -262,6 +262,7 @@ export enum XClientName {
   app = 'Curvenote Web Client',
   ext = 'Curvenote Chrome Extension',
   python = 'Curvenote Python Client',
+  javascript = 'Curvenote Javascript Client',
 }
 
 export type Author = { plain: string; user: null } | { user: string; plain: null };
