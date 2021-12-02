@@ -125,6 +125,6 @@ export interface UserOptionDefinition {
   multiple?: boolean;
   condition?: {
     option: string;
-    value: string;
+    value: string | boolean;
   };
 }
