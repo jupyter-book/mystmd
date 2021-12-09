@@ -353,15 +353,15 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@curvenote/blocks@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.0.4.tgz#dfbb7dcb7c6e89d650b0d39ad9ae3f15faf3cd0e"
-  integrity sha512-p/v8Xf39F+UqRntka0Eod3PBws97ew5/i/7DDnPQazvDuKM+RFlCJ3EilH16GCv9eT/pyTO2vEaNGRfLG3G/fA==
+"@curvenote/blocks@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.0.8.tgz#4c0299d3b57850de64756b78ed40429bf77ddf88"
+  integrity sha512-bZ8A4fRWSqk42CPSDHvzXCsgs7AMOikrkgFMABJVZ5WIpGxLh84JwAo1GzfPh9CgZcXcPMg2micgflevr8Vd8w==
 
-"@curvenote/schema@^0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.8.0.tgz#e3597d52facd60f779304511c97c2a24fb903b70"
-  integrity sha512-N/1HDBmKYsJEQN/XmxI3yMKthmYraM5m13NwEgsd+yPaXf7N6ch4HzI7yipEAuhLIA3fmUTL0UNzPQsxrvzddQ==
+"@curvenote/schema@^0.9.2":
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.9.2.tgz#bb7db0eca41e47f96a88380fd0b5ae5f85f9ad64"
+  integrity sha512-/0+OIi+qHZZZiSg2Ci4SNp78bl6IqppeRLsiKpayHySmW+Ty8HZR2sm4ncR0GiXeRp/7Y3NWEre4LQPB7BRmtA==
   dependencies:
     "@wordpress/wordcount" "^3.2.2"
     markdown-it "^12.2.0"
@@ -3882,12 +3882,7 @@ ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-nanoid@^3.1.20:
-  version "3.1.29"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.29.tgz#214fb2d7a33e1a5bef4757b779dfaeb6a4e5aeb4"
-  integrity sha512-dW2pUSGZ8ZnCFIlBIA31SV8huOGCHb6OwzVCc7A69rb/a+SgPBwfmLvK5TKQ3INPbRkcI8a/Owo0XbiTNH19wg==
-
-nanoid@^3.1.30:
+nanoid@^3.1.20, nanoid@^3.1.30:
   version "3.1.30"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.30.tgz#63f93cc548d2a113dc5dfbc63bfa09e2b9b64362"
   integrity sha512-zJpuPDwOv8D2zq2WRoMe1HsfZthVewpel9CAvTfc/2mBD1uUT/agc5f7GHGWXlYkFvi1mVxe4IjvP2HNrop7nQ==
@@ -4362,14 +4357,7 @@ prosemirror-markdown@^1.6.0:
     markdown-it "^10.0.0"
     prosemirror-model "^1.0.0"
 
-prosemirror-model@^1.0.0, prosemirror-model@^1.14.3, prosemirror-model@^1.2.0, prosemirror-model@^1.8.1:
-  version "1.14.3"
-  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.14.3.tgz#a9c250d3c4023ddf10ecb41a0a7a130e9741d37e"
-  integrity sha512-yzZlBaSxfUPIIP6U5Edh5zKxJPZ5f7bwZRhiCuH3UYkWhj+P3d8swHsbuAMOu/iDatDc5J/Qs5Mb3++mZf+CvQ==
-  dependencies:
-    orderedmap "^1.1.0"
-
-prosemirror-model@^1.15.0:
+prosemirror-model@^1.0.0, prosemirror-model@^1.14.3, prosemirror-model@^1.15.0, prosemirror-model@^1.2.0, prosemirror-model@^1.8.1:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.15.0.tgz#23bc09098daa7c309dba90a76a1b989ce6f61405"
   integrity sha512-hQJv7SnIhlAy9ga3lhPPgaufhvCbQB9tHwscJ9E1H1pPHmN8w5V/lURueoYv9Kc3/bpNWoyHa8r3g//m7N0ChQ==

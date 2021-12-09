@@ -25,7 +25,7 @@
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "build": "yarn copy:version; yarn run clean && tsc -p .; cp -r ./src/styles ./dist/styles; cp -r ./src/images ./dist/images",
     "build:watch": "yarn copy:version; tsc -w -p .",
-    "cli:dev": "npm uninstall -g curvenote; npm link",
+    "dev:cli": "npm uninstall -g curvenote; npm run build; npm link",
     "prepublishOnly": "yarn build",
     "test": "yarn copy:version; jest",
     "test:watch": "yarn copy:version; jest --watchAll",
@@ -35,8 +35,8 @@
     "lint:format:fix": "yarn copy:version; prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
-    "@curvenote/blocks": "^1.0.4",
-    "@curvenote/schema": "^0.8.0",
+    "@curvenote/blocks": "^1.0.8",
+    "@curvenote/schema": "^0.9.2",
     "@reduxjs/toolkit": "^1.6.2",
     "@types/node-fetch": "^2.5.12",
     "chalk": "^4.1.2",

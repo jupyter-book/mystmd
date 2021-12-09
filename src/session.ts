@@ -1,12 +1,10 @@
 import fetch from 'node-fetch';
 import jwt from 'jsonwebtoken';
 import { createStore, Store } from 'redux';
-import { JsonObject } from '@curvenote/blocks';
+import { JsonObject, XClientName } from '@curvenote/blocks';
 import { basicLogger, Logger, LogLevel } from './logging';
 import { rootReducer, RootState } from './store';
 import CLIENT_VERSION from './version';
-
-const CLIENT_NAME = 'Curvenote Javascript Client';
 
 export type SessionOptions = {
   apiUrl?: string;
@@ -34,7 +32,7 @@ export class Session {
   SITE_URL: string;
 
   $headers: Record<string, string> = {
-    'X-Client-Name': CLIENT_NAME,
+    'X-Client-Name': XClientName.javascript,
     'X-Client-Version': CLIENT_VERSION,
   };
 
