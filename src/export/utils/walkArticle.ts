@@ -118,7 +118,6 @@ export async function writeImagesToFiles(images: ArticleState['images'], basePat
       const response = await fetch(image.data.links.download);
       const buffer = await response.buffer();
       const filename = makeUniqueFilename(basePath, block, image, takenFilenames);
-      console.log(filename);
       if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
       fs.writeFileSync(filename, buffer);
       filenames[key] = filename;
