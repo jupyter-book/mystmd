@@ -3,9 +3,11 @@ import {
   Team as TeamDTO,
   Project as ProjectDTO,
   Block as BlockDTO,
+  Draft as DraftDTO,
   blockIdToString,
   ALL_BLOCKS,
   versionIdToString,
+  draftIdToString,
 } from '@curvenote/blocks';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
@@ -62,12 +64,24 @@ export const versions = createSlice({
   },
 });
 
+export const drafts = createSlice({
+  name: 'drafts',
+  initialState: {} as Record<string, DraftDTO>,
+  reducers: {
+    recieve(state, action: PayloadAction<DraftDTO>) {
+      const key = draftIdToString(action.payload.id);
+      state[key] = action.payload;
+    },
+  },
+});
+
 export const rootReducer = combineReducers({
   users: users.reducer,
   teams: teams.reducer,
   projects: projects.reducer,
   blocks: blocks.reducer,
   versions: versions.reducer,
+  drafts: drafts.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
