@@ -25,7 +25,7 @@ export async function setToken(token: string) {
   try {
     me = await new MyUser(session).get();
   } catch (error) {
-    throw new Error('There was a problem with the token');
+    throw new Error(`There was a problem with the token for ${session.API_URL}`);
   }
   if (!me.data.email_verified) throw new Error('Your account is not activated');
   const configPath = getConfigPath();
