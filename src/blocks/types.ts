@@ -178,6 +178,7 @@ export interface PartialBlock {
   kind: KINDS;
   title: string;
   description: string;
+  caption: string | null;
   name: string | null;
   authors: Author[];
   tags: string[];
@@ -186,8 +187,6 @@ export interface PartialBlock {
 }
 
 export interface Block extends PartialBlock {
-  title: string;
-  description: string;
   published: boolean;
   published_versions: number[];
   latest_version: number | null;
@@ -208,6 +207,7 @@ export interface BaseVersion extends BasePartialVersion {
   kind: KINDS;
   title: string;
   description: string;
+  caption: string | null;
   created_by: string;
   date_created: Date;
   version: number;
@@ -216,7 +216,6 @@ export interface BaseVersion extends BasePartialVersion {
   links: VersionLinks;
 }
 
-// QUESTION: LinkedBlockId, or BlockID or ChildBlockId
 export type SrcId = {
   project: string;
   block: string;
@@ -224,14 +223,27 @@ export type SrcId = {
   draft: string | null;
 };
 
+export type Alignment = 'left' | 'center' | 'right';
+
+export interface FigureStyles {
+  width?: number;
+  align?: Alignment;
+  numbered?: boolean;
+  caption?: boolean;
+}
+
+export interface FormatOptions {
+  references?: CitationStyles | string;
+  figures?: FigureStyles & { label?: string };
+}
+
 export type BlockChild = {
   id: ChildId;
   src: SrcId;
+  style: FigureStyles | null;
 };
 
-export type NotebookCodeBlockChild = {
-  id: ChildId;
-  src: SrcId;
+export type NotebookCodeBlockChild = BlockChild & {
   output?: SrcId;
 };
 

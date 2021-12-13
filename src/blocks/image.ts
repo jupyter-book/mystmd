@@ -3,7 +3,7 @@ import { KINDS, BaseVersion, ImageFormatTypes, FileMetadata } from './types';
 
 // Code that has not yet been saved / versioned
 export type PartialImage = {
-  caption: string | null;
+  caption: string | null; // TODO remove once top level images caption implementation changes
   file_name: string | null;
 } & FileMetadata;
 

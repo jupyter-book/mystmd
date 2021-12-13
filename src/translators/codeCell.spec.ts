@@ -69,6 +69,7 @@ describe('Code Block Translators', () => {
       format: CodeFormatTypes.txt,
       title: 'Iooxa Code Block',
       description: 'That came from the database',
+      caption: '<p>That came from the database</p>',
       published: false,
       created_by: 'steve',
       date_created: new Date('2020-06-18T10:17:07.348Z'),

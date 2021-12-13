@@ -154,6 +154,7 @@ export function assertNever(x: never): never {
   return x;
 }
 
+// TODO move to common
 export function ensureConsistentChildren(oldOrder: string[], oldChildren: BlockChildDict) {
   const order = oldOrder.filter((childId: string) => Boolean(oldChildren[childId]));
   const children = order.reduce(

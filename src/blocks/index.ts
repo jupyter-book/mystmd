@@ -105,6 +105,7 @@ export function blockFromDTO(blockId: BlockId, json: JsonObject): Block {
     pending: json.pending ?? null,
     title: json.title ?? '',
     description: json.description ?? '',
+    caption: json.caption ?? '',
     published: (json.published_versions ?? []).length > 0,
     published_versions: json.published_versions ?? [],
     tags: getTags(json.tags),
