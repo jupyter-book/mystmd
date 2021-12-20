@@ -9,6 +9,10 @@ export const blockListToString = (id: ProjectId): string => `${id}/blocks`;
 export const blockIdToString = (id: BlockId): string => {
   return `${id.project}/${id.block}`;
 };
+export const blockIdFromString = (str: string): BlockId => {
+  const [project, block] = str.split('/');
+  return { project, block };
+};
 export const versionListToString = (id: BlockId): string => `${id.project}/${id.block}/versions`;
 export const versionIdToString = (id: VersionId): string =>
   `${id.project}/${id.block}/${id.version}`;
@@ -20,6 +24,11 @@ export const commentListToString = (id: BlockId): string => `${id.project}/${id.
 export const commentIdToString = (id: CommentId): string => {
   return `${id.project}/${id.block}/${id.comment}`;
 };
+export const commentIdFromString = (str: string): CommentId => {
+  const [project, block, comment] = str.split('/');
+  return { project, block, comment };
+};
+
 export const stepIdToString = (id: StepId): string =>
   `${id.project}/${id.block}/${id.draft}/${id.step}`;
 export const stepListToString = (id: DraftId): string =>
