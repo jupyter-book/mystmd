@@ -55,7 +55,7 @@ export async function articleToWord(session: Session, versionId: VersionId, file
   const doc = createSingleDocument(docxState, {
     title: block.data.title,
     description: block.data.description,
-    revision: `${version.id.version}`,
+    revision: version.id.version ?? 1,
     creator: `${user.data.display_name} on https://curvenote.com`,
     lastModifiedBy: `${user.data.display_name} (@${user.data.username})`,
     keywords: block.data.tags.join(', '),

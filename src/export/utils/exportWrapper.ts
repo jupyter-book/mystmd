@@ -1,5 +1,5 @@
 import { oxaLinkToId, VersionId } from '@curvenote/blocks';
-import { getLatestBlock } from '../../actions/getLatest';
+import { getLatestVersion } from '../../actions/getLatest';
 import { Block } from '../../models';
 import { Session } from '../../session';
 
@@ -21,7 +21,7 @@ export const exportFromOxaLink =
       await exportArticle(session, { ...block.id, version: id.block.version }, filename, opts);
     } else {
       // Here we will load up the latest version
-      const { version } = await getLatestBlock(session, id.block);
+      const { version } = await getLatestVersion(session, id.block);
       await exportArticle(session, version.id, filename, opts);
     }
   };
