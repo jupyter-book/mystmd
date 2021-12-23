@@ -18,7 +18,7 @@ export function getNodesAndMarks() {
     },
     figcaption(state, node) {
       state.renderInline(node);
-      state.closeBlock(node);
+      state.closeBlock(node, { style: 'Caption' });
     },
     cite(state, node) {
       const { kind, key, text } = node.attrs as Nodes.Cite.Attrs;

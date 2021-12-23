@@ -24,6 +24,9 @@ export function createSingleDocument(
         },
       },
     ],
+    features: {
+      updateFields: true,
+    },
   });
   return doc;
 }
