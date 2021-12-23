@@ -42,7 +42,8 @@ function outputHasImage(version: Version<Blocks.Output>) {
   }, false);
 }
 
-function getOutputImageSrc(version: Version<Blocks.Output>): string | null {
+function getImageSrc(version: Version<Blocks.Image | Blocks.Output>): string | null {
+  if (version.data.kind === KINDS.Image) return version.data.links.download;
   return version.data.outputs.reduce((found, { kind, link }) => {
     if (found) return found;
     if (kind === OutputSummaryKind.image) return link as string;
@@ -149,27 +150,14 @@ export async function walkArticle(session: Session, data: Blocks.Article): Promi
 
 export async function loadImagesToBuffers(images: ArticleState['images']) {
   const buffers: Record<string, Buffer> = {};
-
   await Promise.all(
     Object.entries(images).map(async ([key, version]) => {
       await version.get();
-      switch (version.data.kind) {
-        case KINDS.Image: {
-          const response = await fetch(version.data.links.download);
-          const buffer = await response.buffer();
-          buffers[key] = buffer;
-          break;
-        }
-        case KINDS.Output: {
-          const src = getOutputImageSrc(version as Version<Blocks.Output>) as string;
-          const response = await fetch(src);
-          const buffer = await response.buffer();
-          buffers[key] = buffer;
-          break;
-        }
-        default:
-          break;
-      }
+      const src = getImageSrc(version);
+      if (!src) return;
+      const response = await fetch(src);
+      const buffer = await response.buffer();
+      buffers[key] = buffer;
     }),
   );
   return buffers;
