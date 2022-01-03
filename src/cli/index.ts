@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 import commander from 'commander';
-import { makeAuthCLI, makeExportCLI, makeTokenCLI } from './services';
+import { addAuthCLI, addExportCLI, addTokenCLI } from './services';
 
 const program = new commander.Command();
-program.addCommand(makeExportCLI());
-program.addCommand(makeTokenCLI());
-program.addCommand(makeAuthCLI());
+addExportCLI(program);
+addTokenCLI(program);
+addAuthCLI(program);
 
+program.option('-d, --debug [file]', 'Log out any errors to the console or an optional file.');
 program.parse(process.argv);

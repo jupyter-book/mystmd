@@ -16,8 +16,12 @@ function assertEndsInDocx(filename: string) {
     throw new Error(`The filename must end with '.docx': "${filename}"`);
 }
 
-export async function articleToWord(session: Session, versionId: VersionId, filename: string) {
-  assertEndsInDocx(filename);
+export async function articleToWord(
+  session: Session,
+  versionId: VersionId,
+  opts: { filename: string },
+) {
+  assertEndsInDocx(opts.filename);
   const [block, version] = await Promise.all([
     new Block(session, versionId).get(),
     new Version(session, versionId).get(),
@@ -32,14 +36,12 @@ export async function articleToWord(session: Session, versionId: VersionId, file
 
   const { nodes, marks } = getNodesAndMarks();
 
-  const opts = {
+  const docxState = new DocxSerializerState(nodes, marks, {
     getImageBuffer(key: string) {
       if (!buffers[key]) throw new Error('Could not decode image from oxa link');
       return buffers[key];
     },
-  };
-
-  const docxState = new DocxSerializerState(nodes, marks, opts);
+  });
 
   // Add the title
   docxState.renderContent(await createArticleTitle(session, block.data));
@@ -63,7 +65,7 @@ export async function articleToWord(session: Session, versionId: VersionId, file
   });
 
   await writeDocx(doc, (buffer) => {
-    fs.writeFileSync(filename, buffer);
+    fs.writeFileSync(opts.filename, buffer);
   });
 }
 
