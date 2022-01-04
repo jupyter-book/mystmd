@@ -2,9 +2,9 @@ import fetch from 'node-fetch';
 import jwt from 'jsonwebtoken';
 import { createStore, Store } from 'redux';
 import { JsonObject, XClientName } from '@curvenote/blocks';
-import { basicLogger, Logger, LogLevel } from './logging';
-import { rootReducer, RootState } from './store';
-import CLIENT_VERSION from './version';
+import { basicLogger, Logger, LogLevel } from '../logging';
+import { rootReducer, RootState } from '../store';
+import CLIENT_VERSION from '../version';
 
 export type SessionOptions = {
   apiUrl?: string;

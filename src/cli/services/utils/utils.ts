@@ -2,7 +2,7 @@ import fs from 'fs';
 import { Command } from 'commander';
 import { Session } from '../../..';
 import { chalkLogger, LogLevel } from '../../../logging';
-import { getToken } from './config';
+import { getToken } from '../../../session';
 
 function getLogLevel(level: LogLevel | Command = LogLevel.info): LogLevel {
   let useLevel: LogLevel = typeof level === 'number' ? level : LogLevel.info;

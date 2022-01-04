@@ -18,7 +18,7 @@ import {
   FormatTypes,
 } from '@curvenote/blocks';
 import { BaseTransfer } from './base';
-import { Session } from './session';
+import { Session } from './session/session';
 import { users, teams, blocks, projects, versions } from './store';
 import {
   selectBlock,
