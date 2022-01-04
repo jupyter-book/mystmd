@@ -3,12 +3,18 @@ import util from 'util';
 import child_process from 'child_process';
 import { VersionId, KINDS, oxaLink, oxaLinkToId } from '@curvenote/blocks';
 import { toTex } from '@curvenote/schema';
+import os from 'os';
+import path from 'path';
 import { Version } from '../../models';
 import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
 import { exportFromOxaLink, walkArticle, writeImagesToFiles } from '../utils';
 
 const exec = util.promisify(child_process.exec);
+
+export function createTempFolder() {
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'curvenote'));
+}
 
 type Options = {
   filename: string;
@@ -48,7 +54,7 @@ export async function articleToTex(session: Session, versionId: VersionId, opts:
   // Write out the references
   const bibliography = Object.entries(article.references).map(([, { bibtex }]) => bibtex);
   const bibWithNewLine = `${bibliography.join('\n\n')}\n`;
-  // TODO: Provide option override
+  // TODO: Provide option override for name
   fs.writeFileSync('main.bib', bibWithNewLine);
 }
 
