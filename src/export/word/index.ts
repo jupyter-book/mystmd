@@ -1,72 +1,17 @@
-import * as fs from 'fs';
 import { VersionId, KINDS } from '@curvenote/blocks';
-import { DocxSerializerState, writeDocx } from 'prosemirror-docx';
-import pkgpath from '../../pkgpath';
 import { Block, User, Version } from '../../models';
 import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
-import { getNodesAndMarks } from './schema';
-import { loadImagesToBuffers, walkArticle, ArticleState } from '../utils';
-import { createArticleTitle } from './titles';
+import { loadImagesToBuffers, walkArticle } from '../utils';
 import { exportFromOxaLink } from '../utils/exportWrapper';
-import { createSingleDocument } from './utils';
+import { WordOptions, writeDefaultTemplate } from './template';
+
+export * from './schema';
+export type { WordOptions, LoadedArticle } from './template';
 
 function assertEndsInDocx(filename: string) {
   if (!filename.endsWith('.docx'))
     throw new Error(`The filename must end with '.docx': "${filename}"`);
-}
-
-interface WordOptions {
-  filename: string;
-  [key: string]: any;
-}
-
-export interface LoadedArticle {
-  session: Session;
-  user: User;
-  buffers: Record<string, Buffer>;
-  block: Block;
-  version: Version;
-  article: ArticleState;
-  opts: WordOptions;
-}
-
-async function writeDefaultTemplate(data: LoadedArticle) {
-  const { session, user, buffers, block, version, article, opts } = data;
-
-  const { nodes, marks } = getNodesAndMarks();
-
-  const docxState = new DocxSerializerState(nodes, marks, {
-    getImageBuffer(key: string) {
-      if (!buffers[key]) throw new Error('Could not decode image from oxa link');
-      return buffers[key];
-    },
-  });
-
-  // Add the title
-  docxState.renderContent(await createArticleTitle(session, block.data));
-  // Then render each block
-  article.children.forEach(({ state }) => {
-    if (!state) return;
-    docxState.renderContent(state.doc);
-  });
-
-  // TODO: this could come from an existing word doc
-  const styles = fs.readFileSync(pkgpath('styles/simple.xml'), 'utf-8');
-
-  const doc = createSingleDocument(docxState, {
-    title: block.data.title,
-    description: block.data.description,
-    revision: version.id.version ?? 1,
-    creator: `${user.data.display_name} on https://curvenote.com`,
-    lastModifiedBy: `${user.data.display_name} (@${user.data.username})`,
-    keywords: block.data.tags.join(', '),
-    externalStyles: styles,
-  });
-
-  await writeDocx(doc, (buffer) => {
-    fs.writeFileSync(opts.filename, buffer);
-  });
 }
 
 export async function articleToWord(
