@@ -5,11 +5,16 @@ import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
 import { loadImagesToBuffers, walkArticle } from '../utils';
 import { exportFromOxaLink } from '../utils/exportWrapper';
-import { WordOptions, defaultTemplate } from './template';
+import { defaultTemplate } from './template';
 import { writeDocx } from 'prosemirror-docx';
 
 export * from './schema';
-export type { WordOptions, LoadedArticle } from './template';
+export type { LoadedArticle } from './template';
+
+export type WordOptions = {
+  filename: string;
+  [key: string]: any;
+};
 
 function assertEndsInDocx(filename: string) {
   if (!filename.endsWith('.docx'))
@@ -22,7 +27,8 @@ export async function articleToWord(
   opts: WordOptions,
   documentCreator = defaultTemplate,
 ) {
-  assertEndsInDocx(opts.filename);
+  const { filename, ...docOpts } = opts;
+  assertEndsInDocx(filename);
   const [block, version] = await Promise.all([
     new Block(session, versionId).get(),
     new Version(session, versionId).get(),
@@ -42,11 +48,11 @@ export async function articleToWord(
     block,
     version,
     article,
-    opts,
+    opts: docOpts,
   });
 
   await writeDocx(doc, (buffer) => {
-    fs.writeFileSync(opts.filename, buffer);
+    fs.writeFileSync(filename, buffer);
   });
 }
 

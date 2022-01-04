@@ -9,11 +9,6 @@ import { ArticleState } from '../utils';
 import { createArticleTitle } from './titles';
 import { createSingleDocument } from './utils';
 
-export interface WordOptions {
-  filename: string;
-  [key: string]: any;
-}
-
 export interface LoadedArticle {
   session: Session;
   user: User;
@@ -21,7 +16,7 @@ export interface LoadedArticle {
   block: Block;
   version: Version;
   article: ArticleState;
-  opts: WordOptions;
+  opts: Record<string, any>;
 }
 
 // TODO: maybe move writing out?
