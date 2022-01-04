@@ -19,9 +19,8 @@ export interface LoadedArticle {
   opts: Record<string, any>;
 }
 
-// TODO: maybe move writing out?
 export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
-  const { session, user, buffers, block, version, article, opts } = data;
+  const { session, user, buffers, block, version, article } = data;
 
   const { nodes, marks } = getNodesAndMarks();
 
