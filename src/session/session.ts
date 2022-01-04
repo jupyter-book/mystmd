@@ -26,7 +26,7 @@ function assertTokenWillWork(token: string, log: Logger) {
   }
 }
 
-export function withQuery(url: string, query: Record<string, string> = {}) {
+function withQuery(url: string, query: Record<string, string> = {}) {
   const params = Object.entries(query ?? {})
     .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
     .join('&');
