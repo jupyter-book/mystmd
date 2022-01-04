@@ -6,7 +6,7 @@ import { Block, User, Version } from '../../models';
 import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
 import { getNodesAndMarks } from './schema';
-import { loadImagesToBuffers, walkArticle } from '../utils';
+import { loadImagesToBuffers, walkArticle, ArticleState } from '../utils';
 import { createArticleTitle } from './titles';
 import { exportFromOxaLink } from '../utils/exportWrapper';
 import { createSingleDocument } from './utils';
@@ -16,23 +16,23 @@ function assertEndsInDocx(filename: string) {
     throw new Error(`The filename must end with '.docx': "${filename}"`);
 }
 
-export async function articleToWord(
-  session: Session,
-  versionId: VersionId,
-  opts: { filename: string },
-) {
-  assertEndsInDocx(opts.filename);
-  const [block, version] = await Promise.all([
-    new Block(session, versionId).get(),
-    new Version(session, versionId).get(),
-    getChildren(session, versionId), // This loads all the children quickly
-  ]);
-  if (version.data.kind !== KINDS.Article)
-    throw new Error(`The export source must be of kind "Article" not ${version.data.kind}`);
+interface WordOptions {
+  filename: string;
+  [key: string]: any;
+}
 
-  const user = await new User(session, version.data.created_by).get();
-  const article = await walkArticle(session, version.data);
-  const buffers = await loadImagesToBuffers(article.images);
+interface LoadedArticle {
+  session: Session;
+  user: User;
+  buffers: Record<string, Buffer>;
+  block: Block;
+  version: Version;
+  article: ArticleState;
+  opts: WordOptions;
+}
+
+async function writeDefaultTemplate(data: LoadedArticle) {
+  const { session, user, buffers, block, version, article, opts } = data;
 
   const { nodes, marks } = getNodesAndMarks();
 
@@ -66,6 +66,38 @@ export async function articleToWord(
 
   await writeDocx(doc, (buffer) => {
     fs.writeFileSync(opts.filename, buffer);
+  });
+}
+
+export type TemplateWriter = typeof writeDefaultTemplate;
+
+export async function articleToWord(
+  session: Session,
+  versionId: VersionId,
+  opts: WordOptions,
+  templateWriter = writeDefaultTemplate,
+) {
+  assertEndsInDocx(opts.filename);
+  const [block, version] = await Promise.all([
+    new Block(session, versionId).get(),
+    new Version(session, versionId).get(),
+    getChildren(session, versionId), // This loads all the children quickly
+  ]);
+  if (version.data.kind !== KINDS.Article)
+    throw new Error(`The export source must be of kind "Article" not ${version.data.kind}`);
+
+  const user = await new User(session, version.data.created_by).get();
+  const article = await walkArticle(session, version.data);
+  const buffers = await loadImagesToBuffers(article.images);
+
+  await templateWriter({
+    session,
+    user,
+    buffers,
+    block,
+    version,
+    article,
+    opts,
   });
 }
 

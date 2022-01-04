@@ -17,7 +17,7 @@ import { getEditorState } from '../../actions/utils';
 import { Block, Version } from '../../models';
 import { getLatestVersion } from '../../actions/getLatest';
 
-type ArticleState = {
+export type ArticleState = {
   children: { state?: ReturnType<typeof getEditorState>; version?: Version }[];
   images: Record<string, Version<Blocks.Image | Blocks.Output>>;
   references: Record<string, { label: string; bibtex: string; version: Version<Blocks.Reference> }>;
