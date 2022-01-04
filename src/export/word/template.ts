@@ -1,5 +1,6 @@
 import * as fs from 'fs';
-import { DocxSerializerState, writeDocx } from 'prosemirror-docx';
+import { Document } from 'docx';
+import { DocxSerializerState } from 'prosemirror-docx';
 import pkgpath from '../../pkgpath';
 import { Block, User, Version } from '../../models';
 import { Session } from '../../session';
@@ -24,7 +25,7 @@ export interface LoadedArticle {
 }
 
 // TODO: maybe move writing out?
-export async function writeDefaultTemplate(data: LoadedArticle) {
+export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
   const { session, user, buffers, block, version, article, opts } = data;
 
   const { nodes, marks } = getNodesAndMarks();
@@ -57,7 +58,5 @@ export async function writeDefaultTemplate(data: LoadedArticle) {
     externalStyles: styles,
   });
 
-  await writeDocx(doc, (buffer) => {
-    fs.writeFileSync(opts.filename, buffer);
-  });
+  return doc;
 }

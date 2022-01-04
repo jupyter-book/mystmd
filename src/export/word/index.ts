@@ -1,10 +1,12 @@
+import fs from 'fs';
 import { VersionId, KINDS } from '@curvenote/blocks';
 import { Block, User, Version } from '../../models';
 import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
 import { loadImagesToBuffers, walkArticle } from '../utils';
 import { exportFromOxaLink } from '../utils/exportWrapper';
-import { WordOptions, writeDefaultTemplate } from './template';
+import { WordOptions, defaultTemplate } from './template';
+import { writeDocx } from 'prosemirror-docx';
 
 export * from './schema';
 export type { WordOptions, LoadedArticle } from './template';
@@ -18,7 +20,7 @@ export async function articleToWord(
   session: Session,
   versionId: VersionId,
   opts: WordOptions,
-  templateWriter = writeDefaultTemplate,
+  documentCreator = defaultTemplate,
 ) {
   assertEndsInDocx(opts.filename);
   const [block, version] = await Promise.all([
@@ -33,7 +35,7 @@ export async function articleToWord(
   const article = await walkArticle(session, version.data);
   const buffers = await loadImagesToBuffers(article.images);
 
-  await templateWriter({
+  const doc = await documentCreator({
     session,
     user,
     buffers,
@@ -41,6 +43,10 @@ export async function articleToWord(
     version,
     article,
     opts,
+  });
+
+  await writeDocx(doc, (buffer) => {
+    fs.writeFileSync(opts.filename, buffer);
   });
 }
 
