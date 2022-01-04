@@ -21,7 +21,7 @@ interface WordOptions {
   [key: string]: any;
 }
 
-interface LoadedArticle {
+export interface LoadedArticle {
   session: Session;
   user: User;
   buffers: Record<string, Buffer>;
@@ -68,8 +68,6 @@ async function writeDefaultTemplate(data: LoadedArticle) {
     fs.writeFileSync(opts.filename, buffer);
   });
 }
-
-export type TemplateWriter = typeof writeDefaultTemplate;
 
 export async function articleToWord(
   session: Session,
