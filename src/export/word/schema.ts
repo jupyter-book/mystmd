@@ -105,7 +105,6 @@ export function getNodesAndMarks(styles?: Styles) {
     callout(state, node) {
       state.renderContent(node, { ...defaultStyles.callout, ...styles?.callout });
     },
-
     iframe(state, node) {
       state.text('[IFrame not supported]');
       state.closeBlock(node, styles?.iframe);
