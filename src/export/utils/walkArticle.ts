@@ -9,6 +9,7 @@ import {
   Blocks,
   FigureStyles,
   OutputSummaryKind,
+  ReferenceFormatTypes,
 } from '@curvenote/blocks';
 import { DEFAULT_IMAGE_WIDTH, nodeNames, Nodes, ReferenceKind } from '@curvenote/schema';
 import { Session } from '../../session';
@@ -19,7 +20,7 @@ import { getLatestVersion } from '../../actions/getLatest';
 type ArticleState = {
   children: { state?: ReturnType<typeof getEditorState>; version?: Version }[];
   images: Record<string, Version<Blocks.Image | Blocks.Output>>;
-  references: Record<string, Version<Blocks.Reference>>;
+  references: Record<string, { label: string; bibtex: string; version: Version<Blocks.Reference> }>;
 };
 
 function getFigureHTML(
@@ -42,13 +43,16 @@ function outputHasImage(version: Version<Blocks.Output>) {
   }, false);
 }
 
-function getImageSrc(version: Version<Blocks.Image | Blocks.Output>): string | null {
-  if (version.data.kind === KINDS.Image) return version.data.links.download;
-  return version.data.outputs.reduce((found, { kind, link }) => {
-    if (found) return found;
-    if (kind === OutputSummaryKind.image) return link as string;
-    return null;
-  }, null as string | null);
+type ImageSrc = { src?: string; content_type?: string };
+
+function getImageSrc(version: Version<Blocks.Image | Blocks.Output>): ImageSrc {
+  if (version.data.kind === KINDS.Image)
+    return { src: version.data.links.download, content_type: version.data.content_type };
+  return version.data.outputs.reduce((found, { kind, link, content_type }) => {
+    if (found.src) return found;
+    if (kind === OutputSummaryKind.image) return { src: link, content_type };
+    return {};
+  }, {} as ImageSrc);
 }
 
 export async function walkArticle(session: Session, data: Blocks.Article): Promise<ArticleState> {
@@ -64,6 +68,10 @@ export async function walkArticle(session: Session, data: Blocks.Article): Promi
       if (!srcId) return {};
       const childBlock = await new Block(session, srcId).get();
       const childVersion = await new Version(session, srcId).get();
+
+      // Do not walk the content if it shouldn't be walked
+      if (new Set(childBlock.data.tags).has('no-export')) return {};
+
       switch (childVersion.data.kind) {
         case KINDS.Content: {
           const state = getEditorState(childVersion.data.content);
@@ -135,9 +143,18 @@ export async function walkArticle(session: Session, data: Blocks.Article): Promi
       const id = oxaLinkToId(key)?.block as VersionId;
       if (!id) return;
       // Always load the latest version for references!
-      const { version } = await getLatestVersion<Blocks.Reference>(session, id);
+      const { version } = await getLatestVersion<Blocks.Reference>(session, id, {
+        format: ReferenceFormatTypes.bibtex,
+      });
       if (version.data.kind !== KINDS.Reference) return;
-      references[key] = version;
+      const { content } = version.data;
+      // Extract the label: '@article{SimPEG2015,\n...' ➡️ 'SimPEG2015'
+      const label = content.slice(content.indexOf('{') + 1, content.indexOf(','));
+      references[key] = {
+        label,
+        bibtex: content,
+        version,
+      };
     }),
   );
 
@@ -153,7 +170,7 @@ export async function loadImagesToBuffers(images: ArticleState['images']) {
   await Promise.all(
     Object.entries(images).map(async ([key, version]) => {
       await version.get();
-      const src = getImageSrc(version);
+      const { src } = getImageSrc(version);
       if (!src) return;
       const response = await fetch(src);
       const buffer = await response.buffer();
@@ -172,18 +189,21 @@ function contentTypeToExt(contentType: string): string {
     case 'image/jpg':
     case 'image/jpeg':
       return 'jpg';
+    case 'application/json':
+      return 'json';
     default:
-      throw new Error(`ContentType: "${contentType}" is not recognized`);
+      throw new Error(`ContentType: "${contentType}" is not recognized as an extension.`);
   }
 }
 
 function makeUniqueFilename(
   basePath: string,
   block: Block,
+  content_type: string,
   version: Version<Blocks.Image | Blocks.Output>,
   taken: Set<string>,
 ): string {
-  const ext = contentTypeToExt(version.data.content_type);
+  const ext = contentTypeToExt(content_type);
   const filenames = [
     block.data.name,
     'file_name' in version.data ? version.data.file_name : '', // Output doesn't have a filename
@@ -207,10 +227,11 @@ export async function writeImagesToFiles(images: ArticleState['images'], basePat
   await Promise.all(
     Object.entries(images).map(async ([key, image]) => {
       const [block] = await Promise.all([new Block(image.session, image.id).get(), image.get()]);
-      if (image.data.kind !== KINDS.Image) return;
-      const response = await fetch(image.data.links.download);
+      const { src, content_type } = getImageSrc(image);
+      if (!src || !content_type) return;
+      const response = await fetch(src);
       const buffer = await response.buffer();
-      const filename = makeUniqueFilename(basePath, block, image, takenFilenames);
+      const filename = makeUniqueFilename(basePath, block, content_type, image, takenFilenames);
       if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
       fs.writeFileSync(filename, buffer);
       filenames[key] = filename;

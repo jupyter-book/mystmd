@@ -1,21 +1,27 @@
 import fs from 'fs';
-import { VersionId, KINDS, oxaLink } from '@curvenote/blocks';
+import util from 'util';
+import child_process from 'child_process';
+import { VersionId, KINDS, oxaLink, oxaLinkToId } from '@curvenote/blocks';
 import { toTex } from '@curvenote/schema';
+import os from 'os';
+import path from 'path';
 import { Version } from '../../models';
 import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
 import { exportFromOxaLink, walkArticle, writeImagesToFiles } from '../utils';
 
+const exec = util.promisify(child_process.exec);
+
+export function createTempFolder() {
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'curvenote'));
+}
+
 type Options = {
+  filename: string;
   images?: string;
 };
 
-export async function articleToTex(
-  session: Session,
-  versionId: VersionId,
-  filename: string,
-  opts?: Options,
-) {
+export async function articleToTex(session: Session, versionId: VersionId, opts: Options) {
   const [version] = await Promise.all([
     new Version(session, versionId).get(),
     getChildren(session, versionId),
@@ -28,12 +34,28 @@ export async function articleToTex(
 
   const content = article.children.map((child) => {
     if (!child.version || !child.state) return '';
-    const blockData = { oxa: oxaLink('', child.version.id), pinned: false };
-    const tex = toTex(child.state.doc, { localizeImageSrc: (src) => imageFilenames[src] });
-    return `%% ${JSON.stringify(blockData)}\n\n${tex}`;
+    const sep = oxaLink(session.SITE_URL, child.version.id);
+    const tex = toTex(child.state.doc, {
+      localizeImageSrc: (src) => imageFilenames[src],
+      localizeId: (id) => id.split('#')[1], // TODO: this is a hack
+      // TODO: needs to be expanded to look up
+      localizeCitation: (key) => article.references[key].label,
+      localizeLink: (href) => {
+        const oxa = oxaLinkToId(href);
+        if (!oxa) return href;
+        return oxaLink(session.SITE_URL, oxa.block, oxa) as string;
+      },
+    });
+    return `%% ${sep}\n\n${tex}`;
   });
   const file = content.join('\n\n');
-  fs.writeFileSync(filename, file);
+  fs.writeFileSync(opts.filename, file);
+
+  // Write out the references
+  const bibliography = Object.entries(article.references).map(([, { bibtex }]) => bibtex);
+  const bibWithNewLine = `${bibliography.join('\n\n')}\n`;
+  // TODO: Provide option override for name
+  fs.writeFileSync('main.bib', bibWithNewLine);
 }
 
 export const oxaLinkToTex = exportFromOxaLink(articleToTex);

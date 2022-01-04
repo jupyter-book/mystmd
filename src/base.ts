@@ -3,7 +3,11 @@ import { AnyAction } from '@reduxjs/toolkit';
 import { Session } from './session';
 import { RootState } from './store';
 
-export class BaseTransfer<ID, DTO extends { id: ID }> {
+export class BaseTransfer<
+  ID,
+  DTO extends { id: ID },
+  GetOptions extends Record<string, string> = Record<string, never>,
+> {
   kind = '';
 
   session: Session;
@@ -40,7 +44,7 @@ export class BaseTransfer<ID, DTO extends { id: ID }> {
     if (this.$recieve) this.session.$store.dispatch(this.$recieve(data));
   }
 
-  async get() {
+  async get(query?: GetOptions) {
     const url = this.$createUrl();
     const fromSession = this.$selector?.(this.session.$store.getState(), this.id);
     if (fromSession) {
@@ -49,7 +53,7 @@ export class BaseTransfer<ID, DTO extends { id: ID }> {
       return this;
     }
     this.session.log.debug(`Fetching ${this.kind}: "${url}"`);
-    const { status, json } = await this.session.get(url);
+    const { status, json } = await this.session.get(url, query);
     if (status !== 200)
       throw new Error(`${this.kind}: Not found (${url}) or you do not have access.`);
     this.data = json;

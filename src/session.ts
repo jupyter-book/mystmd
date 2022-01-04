@@ -26,6 +26,14 @@ function assertTokenWillWork(token: string, log: Logger) {
   }
 }
 
+export function withQuery(url: string, query: Record<string, string> = {}) {
+  const params = Object.entries(query ?? {})
+    .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+    .join('&');
+  if (params.length === 0) return url;
+  return url.indexOf('?') === -1 ? `${url}?${params}` : `${url}&${params}`;
+}
+
 export class Session {
   API_URL: string;
 
@@ -50,9 +58,10 @@ export class Session {
     return !this.$headers.Authorization;
   }
 
-  async get(url: string) {
-    if (url.startsWith(this.API_URL)) url = url.replace(this.API_URL, '');
-    const response = await fetch(`${this.API_URL}${url}`, {
+  async get(url: string, query?: Record<string, string>) {
+    const withBase = url.startsWith(this.API_URL) ? url : `${this.API_URL}${url}`;
+    const fullUrl = withQuery(withBase, query);
+    const response = await fetch(fullUrl, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',

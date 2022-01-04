@@ -1,4 +1,4 @@
-import commander from 'commander';
+import { Command } from 'commander';
 import { MyUser, Session } from '../..';
 import { clirun } from './utils';
 
@@ -11,8 +11,8 @@ async function checkAuth(session: Session) {
   session.log.info(`Logged in as @${me.data.username} <${me.data.email}>`);
 }
 
-export function makeAuthCLI() {
-  const command = new commander.Command('auth').description('Check if you are logged into the API');
-  command.command('list').description('List ').action(clirun(checkAuth));
-  return command;
+export function addAuthCLI(program: Command) {
+  const command = new Command('auth').description('Check if you are logged into the API');
+  command.command('list').description('List ').action(clirun(checkAuth, { program }));
+  program.addCommand(command);
 }

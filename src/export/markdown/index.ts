@@ -8,15 +8,11 @@ import { getChildren } from '../../actions/getChildren';
 import { exportFromOxaLink, walkArticle, writeImagesToFiles } from '../utils';
 
 type Options = {
+  filename: string;
   images?: string;
 };
 
-export async function articleToMarkdown(
-  session: Session,
-  versionId: VersionId,
-  filename: string,
-  opts?: Options,
-) {
+export async function articleToMarkdown(session: Session, versionId: VersionId, opts: Options) {
   const [block, version] = await Promise.all([
     new Block(session, versionId).get(),
     new Version(session, versionId).get(),
@@ -54,7 +50,7 @@ export async function articleToMarkdown(
   });
   const titleString = `---\n${metadata}---\n\n`;
   const file = titleString + content.join('\n\n');
-  fs.writeFileSync(filename, file);
+  fs.writeFileSync(opts.filename, file);
 }
 
 export const oxaLinkToMarkdown = exportFromOxaLink(articleToMarkdown);

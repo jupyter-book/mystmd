@@ -15,6 +15,7 @@ import {
   myUserFromDTO,
   JsonObject,
   teamFromDTO,
+  FormatTypes,
 } from '@curvenote/blocks';
 import { BaseTransfer } from './base';
 import { Session } from './session';
@@ -91,7 +92,13 @@ export class Block extends BaseTransfer<BlockId, BlockDTO> {
   $selector = selectBlock;
 }
 
-export class Version<T extends ALL_BLOCKS = ALL_BLOCKS> extends BaseTransfer<VersionId, T> {
+export type VersionQueryOpts = { format?: FormatTypes };
+
+export class Version<T extends ALL_BLOCKS = ALL_BLOCKS> extends BaseTransfer<
+  VersionId,
+  T,
+  VersionQueryOpts
+> {
   kind = 'Version';
 
   $fromDTO = versionFromDTO as (versionId: VersionId, json: JsonObject) => T;
