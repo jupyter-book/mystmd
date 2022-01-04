@@ -2,9 +2,9 @@ import fetch from 'node-fetch';
 import jwt from 'jsonwebtoken';
 import { createStore, Store } from 'redux';
 import { JsonObject, XClientName } from '@curvenote/blocks';
-import { basicLogger, Logger, LogLevel } from './logging';
-import { rootReducer, RootState } from './store';
-import CLIENT_VERSION from './version';
+import { basicLogger, Logger, LogLevel } from '../logging';
+import { rootReducer, RootState } from '../store';
+import CLIENT_VERSION from '../version';
 
 export type SessionOptions = {
   apiUrl?: string;
@@ -26,7 +26,7 @@ function assertTokenWillWork(token: string, log: Logger) {
   }
 }
 
-export function withQuery(url: string, query: Record<string, string> = {}) {
+function withQuery(url: string, query: Record<string, string> = {}) {
   const params = Object.entries(query ?? {})
     .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
     .join('&');

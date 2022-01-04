@@ -1,6 +1,6 @@
 import { JsonObject } from '@curvenote/blocks';
 import { AnyAction } from '@reduxjs/toolkit';
-import { Session } from './session';
+import { Session } from './session/session';
 import { RootState } from './store';
 
 export class BaseTransfer<
