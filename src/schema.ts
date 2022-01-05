@@ -100,7 +100,7 @@ export const defaultMarks: MarkSerializer = {
     return { subScript: true };
   },
   superscript() {
-    return { subScript: true };
+    return { superScript: true };
   },
   strikethrough() {
     // doubleStrike!
