@@ -7,7 +7,13 @@ import { Node } from 'prosemirror-model';
 
 interface Styles {
   paragraph?: IParagraphOptions;
-  heading?: IParagraphOptions;
+  [HeadingLevel.HEADING_1]?: IParagraphOptions;
+  [HeadingLevel.HEADING_2]?: IParagraphOptions;
+  [HeadingLevel.HEADING_3]?: IParagraphOptions;
+  [HeadingLevel.HEADING_4]?: IParagraphOptions;
+  [HeadingLevel.HEADING_5]?: IParagraphOptions;
+  [HeadingLevel.HEADING_6]?: IParagraphOptions;
+  [HeadingLevel.TITLE]?: IParagraphOptions;
   blockquote?: IParagraphOptions;
   code_block?: IParagraphOptions;
   image?: IParagraphOptions;
@@ -54,7 +60,7 @@ export function getNodesAndMarks(styles?: Styles) {
         HeadingLevel.HEADING_5,
         HeadingLevel.HEADING_6,
       ][node.attrs.level - 1];
-      state.closeBlock(node, { heading, ...styles?.heading });
+      state.closeBlock(node, { heading, ...styles?.[heading] });
     },
     blockquote(state, node) {
       state.renderContent(node, { ...defaultStyles.blockquote, ...styles?.blockquote });
