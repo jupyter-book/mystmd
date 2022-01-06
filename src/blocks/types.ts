@@ -232,10 +232,15 @@ export interface FigureStyles {
   caption?: boolean;
 }
 
-export interface FormatOptions {
-  references?: CitationStyles | string;
+export interface FigureFormatOptions {
   figures?: FigureStyles & { label?: string };
 }
+
+export interface ReferenceFormatOptions {
+  style: CitationStyles | string;
+}
+
+export type FormatOptions = FigureFormatOptions | ReferenceFormatOptions;
 
 export type BlockChild = {
   id: ChildId;

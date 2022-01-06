@@ -23,6 +23,7 @@ export * from './types';
 export { NotebookBlockMetadata } from './notebook';
 export { OutputSummaryKind, OutputSummary, OutputSummaryEntry } from './output';
 export { srcIdToJson } from './utils';
+export { RIS } from './reference';
 
 export const blocks: Record<
   KINDS,
