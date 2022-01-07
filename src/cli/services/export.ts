@@ -1,5 +1,6 @@
 import { Command, Option } from 'commander';
 import { oxaLinkToWord, oxaLinkToMarkdown, oxaLinkToTex } from '../..';
+import { oxaLinkToJupyterBook } from '../../export/jupyter-book';
 import { clirun } from './utils';
 
 function makeImageOption() {
@@ -40,6 +41,15 @@ function makeTexExportCLI(program: Command) {
   return command;
 }
 
+function makeJupyterBookExportCLI(program: Command) {
+  const command = new Command('jupyter-book')
+    .alias('jb')
+    .description('Export a jupyter-book project from a Curvenote link')
+    .argument('<project>', 'A link to the Curvenote project (e.g. oxaLink or projectId)')
+    .action(clirun(oxaLinkToJupyterBook, { program }));
+  return command;
+}
+
 export function addExportCLI(program: Command) {
   const command = new Command('export').description(
     'Export a Curvenote document to different formats',
@@ -47,5 +57,6 @@ export function addExportCLI(program: Command) {
   command.addCommand(makeWordExportCLI(program));
   command.addCommand(makeMarkdownExportCLI(program));
   command.addCommand(makeTexExportCLI(program));
+  command.addCommand(makeJupyterBookExportCLI(program));
   program.addCommand(command);
 }

@@ -6,6 +6,7 @@ import { Block, Version, User } from '../../models';
 import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
 import { exportFromOxaLink, walkArticle, writeImagesToFiles } from '../utils';
+import { localizationOptions } from '../utils/localizationOptions';
 
 type Options = {
   filename: string;
@@ -32,11 +33,11 @@ export async function articleToMarkdown(session: Session, versionId: VersionId, 
   const article = await walkArticle(session, data);
 
   const imageFilenames = await writeImagesToFiles(article.images, opts?.images ?? 'images');
-
+  const localization = localizationOptions(session, imageFilenames, article);
   const content = article.children.map((child) => {
     if (!child.version || !child.state) return '';
     const blockData = { oxa: oxaLink('', child.version.id), pinned: false };
-    const md = toMarkdown(child.state.doc, { localizeImageSrc: (src) => imageFilenames[src] });
+    const md = toMarkdown(child.state.doc, localization);
     return `+++ ${JSON.stringify(blockData)}\n\n${md}`;
   });
 
@@ -48,9 +49,16 @@ export async function articleToMarkdown(session: Session, versionId: VersionId, 
     name: block.data.name,
     oxa: oxaLink('', block.id),
   });
-  const titleString = `---\n${metadata}---\n\n`;
-  const file = titleString + content.join('\n\n');
+  // TODO: Remove the title when Jupyter Book allows title to be defined in the yaml.
+  // https://github.com/executablebooks/MyST-Parser/pull/492
+  const titleString = `---\n${metadata}---\n\n# ${block.data.title}\n\n`;
+  let file = titleString + content.join('\n\n');
+  if (Object.keys(article.references).length > 0) {
+    file += '\n\n### References\n\n```{bibliography}\n:filter: docname in docnames\n```';
+  }
+  file += '\n\n';
   fs.writeFileSync(opts.filename, file);
+  return article;
 }
 
 export const oxaLinkToMarkdown = exportFromOxaLink(articleToMarkdown);

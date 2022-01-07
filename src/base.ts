@@ -8,7 +8,7 @@ export class BaseTransfer<
   DTO extends { id: ID },
   GetOptions extends Record<string, string> = Record<string, never>,
 > {
-  kind = '';
+  modelKind = '';
 
   session: Session;
 
@@ -35,7 +35,7 @@ export class BaseTransfer<
 
   get data(): DTO {
     if (this.$data) return this.$data;
-    throw new Error(`${this.kind}: Must call "get" first`);
+    throw new Error(`${this.modelKind}: Must call "get" first`);
   }
 
   set data(data: DTO) {
@@ -48,14 +48,14 @@ export class BaseTransfer<
     const url = this.$createUrl();
     const fromSession = this.$selector?.(this.session.$store.getState(), this.id);
     if (fromSession) {
-      this.session.log.debug(`Loading ${this.kind} from cache: "${url}"`);
+      this.session.log.debug(`Loading ${this.modelKind} from cache: "${url}"`);
       this.data = fromSession;
       return this;
     }
-    this.session.log.debug(`Fetching ${this.kind}: "${url}"`);
+    this.session.log.debug(`Fetching ${this.modelKind}: "${url}"`);
     const { status, json } = await this.session.get(url, query);
     if (status !== 200)
-      throw new Error(`${this.kind}: Not found (${url}) or you do not have access.`);
+      throw new Error(`${this.modelKind}: Not found (${url}) or you do not have access.`);
     this.data = json;
     return this;
   }
