@@ -1,5 +1,5 @@
 import { oxaLinkToId } from '@curvenote/blocks';
-import { Nodes, ReferenceKind } from '@curvenote/schema';
+import { CaptionKind, Nodes, ReferenceKind } from '@curvenote/schema';
 import { formatDatetime } from '@curvenote/schema/dist/nodes/time';
 import { HeadingLevel, IParagraphOptions, IRunOptions } from 'docx';
 import { defaultMarks, NodeSerializer } from 'prosemirror-docx';
@@ -40,6 +40,22 @@ const defaultStyles: Styles = {
   callout: { style: 'IntenseQuote' },
   figcaption: { style: 'Caption' },
 };
+
+function figCaptionToWordCaption(kind: CaptionKind) {
+  switch (kind) {
+    case CaptionKind.fig:
+      return 'Figure';
+    case CaptionKind.table:
+      return 'Table';
+    case CaptionKind.code:
+      // This is a hack, I don't think word knows about other things!
+      return 'Figure';
+    case CaptionKind.eq:
+      return 'Figure';
+    default:
+      throw new Error(`Unknown figure caption of kind ${kind}`);
+  }
+}
 
 export function getNodesAndMarks(styles?: Styles) {
   const nodes: NodeSerializer = {
@@ -116,9 +132,20 @@ export function getNodesAndMarks(styles?: Styles) {
       state.closeBlock(node, styles?.iframe);
     },
     figure(state, node) {
+      const { id, numbered } = node.attrs as Nodes.Figure.Attrs;
+      // TODO: localize this ID
+      (state as any).nextCaptionId = id;
+      (state as any).nextCaptionNumbered = numbered;
       state.renderContent(node);
     },
     figcaption(state, node) {
+      const { kind } = node.attrs as Nodes.Figcaption.Attrs;
+      const id = (state as any).nextCaptionId;
+      const numbered = (state as any).nextCaptionNumbered;
+      if (numbered && kind) {
+        const captionKind = figCaptionToWordCaption(kind);
+        state.captionLabel(id, captionKind);
+      }
       state.renderInline(node);
       state.closeBlock(node, { ...defaultStyles.figcaption, ...styles?.figcaption });
     },
