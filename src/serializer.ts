@@ -215,10 +215,7 @@ export class DocxSerializerState<S extends Schema = any> {
         children: [new MathRun(latex)],
       }),
       new TextRun('\t('),
-      new Bookmark({
-        id,
-        children: [new SequentialIdentifier('Equation')],
-      }),
+      createReferenceBookmark(id, 'Equation'),
       new TextRun(')'),
     ];
     this.addParagraphOptions({
@@ -303,12 +300,7 @@ export class DocxSerializerState<S extends Schema = any> {
   }
 
   captionLabel(id: string, kind: 'Figure' | 'Table') {
-    this.current.push(
-      new Bookmark({
-        id,
-        children: [new TextRun(`${kind} `), new SequentialIdentifier(kind)],
-      }),
-    );
+    this.current.push(...[createReferenceBookmark(id, kind, `${kind} `), new TextRun(': ')]);
   }
 
   $footnoteCounter = 0;
@@ -348,6 +340,20 @@ export class DocxSerializerState<S extends Schema = any> {
     const ref = new InternalHyperlink({ anchor: id, children });
     this.current.push(ref);
   }
+}
+
+function createReferenceBookmark(
+  id: string,
+  kind: 'Equation' | 'Figure' | 'Table',
+  before?: string,
+  after?: string,
+) {
+  const textBefore = before ? [new TextRun(before)] : [];
+  const textAfter = after ? [new TextRun(after)] : [];
+  return new Bookmark({
+    id,
+    children: [...textBefore, new SequentialIdentifier(kind), ...textAfter],
+  });
 }
 
 export class DocxSerializer<S extends Schema = any> {
