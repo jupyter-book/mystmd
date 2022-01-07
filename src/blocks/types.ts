@@ -43,6 +43,7 @@ export enum CodeFormatTypes {
 export enum ReferenceFormatTypes {
   txt = 'txt',
   bibtex = 'bibtex',
+  html = 'html',
   json = 'json',
 }
 
