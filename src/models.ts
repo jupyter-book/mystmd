@@ -33,7 +33,7 @@ export class MyUser extends BaseTransfer<string, MyUserDTO> {
     super(session, '');
   }
 
-  kind = 'User';
+  modelKind = 'User';
 
   $fromDTO = myUserFromDTO;
 
@@ -45,7 +45,7 @@ export class MyUser extends BaseTransfer<string, MyUserDTO> {
 }
 
 export class User extends BaseTransfer<string, UserDTO> {
-  kind = 'User';
+  modelKind = 'User';
 
   $fromDTO = userFromDTO;
 
@@ -57,7 +57,7 @@ export class User extends BaseTransfer<string, UserDTO> {
 }
 
 export class Team extends BaseTransfer<string, TeamDTO> {
-  kind = 'Team';
+  modelKind = 'Team';
 
   $fromDTO = teamFromDTO;
 
@@ -69,7 +69,7 @@ export class Team extends BaseTransfer<string, TeamDTO> {
 }
 
 export class Project extends BaseTransfer<ProjectId, ProjectDTO> {
-  kind = 'Project';
+  modelKind = 'Project';
 
   $fromDTO = projectFromDTO;
 
@@ -81,7 +81,7 @@ export class Project extends BaseTransfer<ProjectId, ProjectDTO> {
 }
 
 export class Block extends BaseTransfer<BlockId, BlockDTO> {
-  kind = 'Block';
+  modelKind = 'Block';
 
   $fromDTO = blockFromDTO;
 
@@ -99,7 +99,7 @@ export class Version<T extends ALL_BLOCKS = ALL_BLOCKS> extends BaseTransfer<
   T,
   VersionQueryOpts
 > {
-  kind = 'Version';
+  modelKind = 'Version';
 
   $fromDTO = versionFromDTO as (versionId: VersionId, json: JsonObject) => T;
 

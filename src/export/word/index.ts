@@ -54,6 +54,8 @@ export async function articleToWord(
   await writeDocx(doc, (buffer) => {
     fs.writeFileSync(filename, buffer);
   });
+
+  return article;
 }
 
 export const oxaLinkToWord = exportFromOxaLink(articleToWord);

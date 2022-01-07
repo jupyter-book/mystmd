@@ -1,10 +1,17 @@
-import { oxaLinkToId, VersionId } from '@curvenote/blocks';
+import { oxaLinkToId, ProjectId, VersionId } from '@curvenote/blocks';
 import { getLatestVersion } from '../../actions/getLatest';
 import { Block } from '../../models';
 import { Session } from '../../session';
+import { ArticleState } from './walkArticle';
 
 export const exportFromOxaLink =
-  (exportArticle: (session: Session, id: VersionId, opts: { filename: string }) => Promise<void>) =>
+  (
+    exportArticle: (
+      session: Session,
+      id: VersionId,
+      opts: { filename: string },
+    ) => Promise<ArticleState>,
+  ) =>
   async (session: Session, link: string, filename: string, opts?: Record<string, string>) => {
     const id = oxaLinkToId(link);
     if (!id) throw new Error('The article ID provided could not be parsed.');
@@ -21,4 +28,29 @@ export const exportFromOxaLink =
       const { version } = await getLatestVersion(session, id.block);
       await exportArticle(session, version.id, { filename, ...opts });
     }
+  };
+
+const knownServices = new Set(['blocks', 'drafts', 'projects']);
+
+export const exportFromProjectLink =
+  (
+    exportProject: (session: Session, id: ProjectId, opts: Record<string, string>) => Promise<void>,
+  ) =>
+  async (session: Session, link: string, opts: Record<string, string>) => {
+    let projectId: string | null = null;
+    const id = oxaLinkToId(link);
+    if (id) {
+      projectId = id.block.project;
+    } else if (link.startsWith(session.API_URL)) {
+      const [service, project] = link.split('/').slice(3); // https://api.curvenote.com/{service}/{maybeProjectId}
+      if (!knownServices.has(service)) throw new Error('Unknown API URL for project.');
+      projectId = project;
+    } else if (link.startsWith(session.SITE_URL)) {
+      const [team, project] = link.split('/').slice(-2);
+      projectId = `${team}:${project}`;
+    } else {
+      projectId = link;
+    }
+    if (!projectId) throw new Error('The project ID provided could not be parsed.');
+    await exportProject(session, projectId, opts);
   };
