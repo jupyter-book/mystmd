@@ -57,6 +57,20 @@ export type IMathOpts = {
 
 const MAX_IMAGE_WIDTH = 600;
 
+function createReferenceBookmark(
+  id: string,
+  kind: 'Equation' | 'Figure' | 'Table',
+  before?: string,
+  after?: string,
+) {
+  const textBefore = before ? [new TextRun(before)] : [];
+  const textAfter = after ? [new TextRun(after)] : [];
+  return new Bookmark({
+    id,
+    children: [...textBefore, new SequentialIdentifier(kind), ...textAfter],
+  });
+}
+
 export class DocxSerializerState<S extends Schema = any> {
   nodes: NodeSerializer<S>;
 
@@ -340,20 +354,6 @@ export class DocxSerializerState<S extends Schema = any> {
     const ref = new InternalHyperlink({ anchor: id, children });
     this.current.push(ref);
   }
-}
-
-function createReferenceBookmark(
-  id: string,
-  kind: 'Equation' | 'Figure' | 'Table',
-  before?: string,
-  after?: string,
-) {
-  const textBefore = before ? [new TextRun(before)] : [];
-  const textAfter = after ? [new TextRun(after)] : [];
-  return new Bookmark({
-    id,
-    children: [...textBefore, new SequentialIdentifier(kind), ...textAfter],
-  });
 }
 
 export class DocxSerializer<S extends Schema = any> {
