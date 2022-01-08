@@ -48,9 +48,8 @@ function figCaptionToWordCaption(kind: CaptionKind) {
     case CaptionKind.table:
       return 'Table';
     case CaptionKind.code:
-      // This is a hack, I don't think word knows about other things!
-      return 'Figure';
     case CaptionKind.eq:
+      // This is a hack, I don't think word knows about other things!
       return 'Figure';
     default:
       throw new Error(`Unknown figure caption of kind ${kind}`);
