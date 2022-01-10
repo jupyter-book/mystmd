@@ -1,5 +1,6 @@
 import { JsonObject, BaseLinks } from './types';
 import { getDate } from './helpers';
+import { CitationStyles } from './blocks/types';
 
 export interface ProjectLinks extends BaseLinks {
   thumbnail?: string;
@@ -15,6 +16,9 @@ export interface PartialProject {
   title: string;
   description: string;
   visibility: ProjectVisibility;
+  settings: {
+    citationStyle: CitationStyles;
+  };
 }
 
 export type ProjectId = string;
@@ -45,6 +49,9 @@ export function projectFromDTO(projectId: ProjectId, json: JsonObject): Project 
     date_created: getDate(json.date_created),
     date_modified: getDate(json.date_modified),
     links: { ...json.links },
+    settings: json.settings ?? {
+      citationStyle: CitationStyles.apa,
+    },
   };
 }
 
@@ -55,5 +62,6 @@ export function cleanProjectForPosting(project: Project): Record<keyof PartialPr
     title: project.title,
     description: project.description,
     visibility: project.visibility,
+    settings: project.settings,
   };
 }
