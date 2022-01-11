@@ -88,7 +88,7 @@ function processMatch(
 
 function processLink(link: string | null): OxaLink {
   if (!link) return null;
-  const [myLink, myId] = link?.split('#');
+  const [myLink, myId] = link.split('#');
   const match = myLink?.match(blockMatch);
   const validId = myId?.match(idMatch);
   if (!match || (myId && !validId)) return null;
