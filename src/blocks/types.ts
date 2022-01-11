@@ -48,9 +48,9 @@ export enum ReferenceFormatTypes {
 }
 
 export enum CitationStyles {
-  'apa' = 'citation-apa',
-  'vancouver' = 'citation-vancouver',
-  'harvard' = 'citation-harvard1',
+  apa = 'apa',
+  vancouver = 'vancouver',
+  harvard = 'harvard',
 }
 
 export enum OutputFormatTypes {
