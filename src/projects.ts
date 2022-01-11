@@ -39,6 +39,12 @@ export interface Project extends PartialProject {
 
 export const DEFAULT_CITATION_STYLE = CitationStyles.apa;
 
+function projectSettingsFromDTO(json: JsonObject = {}): Project['settings'] {
+  return {
+    citation_style: json.citation_style ?? DEFAULT_CITATION_STYLE,
+  };
+}
+
 export function projectFromDTO(projectId: ProjectId, json: JsonObject): Project {
   return {
     id: projectId,
@@ -51,9 +57,7 @@ export function projectFromDTO(projectId: ProjectId, json: JsonObject): Project 
     date_created: getDate(json.date_created),
     date_modified: getDate(json.date_modified),
     links: { ...json.links },
-    settings: json.settings ?? {
-      citation_style: DEFAULT_CITATION_STYLE,
-    },
+    settings: projectSettingsFromDTO(json.settings),
   };
 }
 
