@@ -54,8 +54,12 @@ export class BaseTransfer<
     }
     this.session.log.debug(`Fetching ${this.modelKind}: "${url}"`);
     const { status, json } = await this.session.get(url, query);
-    if (status !== 200)
+    if (status !== 200) {
+      if ('message' in json) {
+        throw new Error(`${this.modelKind}: (${url}) ${json.message}`);
+      }
       throw new Error(`${this.modelKind}: Not found (${url}) or you do not have access.`);
+    }
     this.data = json;
     return this;
   }
