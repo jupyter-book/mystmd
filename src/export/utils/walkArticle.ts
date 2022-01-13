@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import fetch from 'node-fetch';
 import {
   VersionId,
@@ -16,11 +14,26 @@ import { Session } from '../../session';
 import { getEditorState } from '../../actions/utils';
 import { Block, Version } from '../../models';
 import { getLatestVersion } from '../../actions/getLatest';
+import { getImageSrc } from './getImageSrc';
+import { basekey } from './basekey';
+
+export interface ArticleStateChild {
+  state?: ReturnType<typeof getEditorState>;
+  version?: Version;
+  templateTags?: string[];
+}
+
+export interface ArticleStateReference {
+  label: string;
+  bibtex: string;
+  version: Version<Blocks.Reference>;
+}
 
 export type ArticleState = {
-  children: { state?: ReturnType<typeof getEditorState>; version?: Version }[];
+  children: ArticleStateChild[];
   images: Record<string, Version<Blocks.Image | Blocks.Output>>;
-  references: Record<string, { label: string; bibtex: string; version: Version<Blocks.Reference> }>;
+  references: Record<string, ArticleStateReference>;
+  tagged: Record<string, ArticleStateChild[]>;
 };
 
 function getFigureHTML(
@@ -43,23 +56,16 @@ function outputHasImage(version: Version<Blocks.Output>) {
   }, false);
 }
 
-type ImageSrc = { src?: string; content_type?: string };
-
-function getImageSrc(version: Version<Blocks.Image | Blocks.Output>): ImageSrc {
-  if (version.data.kind === KINDS.Image)
-    return { src: version.data.links.download, content_type: version.data.content_type };
-  return version.data.outputs.reduce((found, { kind, link, content_type }) => {
-    if (found.src) return found;
-    if (kind === OutputSummaryKind.image) return { src: link, content_type };
-    return {};
-  }, {} as ImageSrc);
-}
-
-export async function walkArticle(session: Session, data: Blocks.Article): Promise<ArticleState> {
+export async function walkArticle(
+  session: Session,
+  data: Blocks.Article,
+  templateTags: string[] = [],
+): Promise<ArticleState> {
   const images: ArticleState['images'] = {};
   const referenceKeys: Set<string> = new Set();
   const references: ArticleState['references'] = {};
 
+  const templateTagSet = new Set(templateTags); // ensure dedupe
   const children: ArticleState['children'] = await Promise.all(
     data.order.map(async (k) => {
       const articleChild = data.children[k];
@@ -75,7 +81,12 @@ export async function walkArticle(session: Session, data: Blocks.Article): Promi
       switch (childVersion.data.kind) {
         case KINDS.Content: {
           const state = getEditorState(childVersion.data.content);
-          return { state, version: childVersion };
+          const matchingTags = childBlock.data.tags.filter((t) => templateTagSet.has(t));
+          return {
+            state,
+            version: childVersion,
+            templateTags: matchingTags.length > 0 ? matchingTags : undefined,
+          };
         }
         case KINDS.Output:
         case KINDS.Image: {
@@ -150,7 +161,7 @@ export async function walkArticle(session: Session, data: Blocks.Article): Promi
       const { content } = version.data;
       // Extract the label: '@article{SimPEG2015,\n...' ➡️ 'SimPEG2015'
       const label = content.slice(content.indexOf('{') + 1, content.indexOf(','));
-      references[key] = {
+      references[basekey(key)] = {
         label,
         bibtex: content,
         version,
@@ -158,10 +169,21 @@ export async function walkArticle(session: Session, data: Blocks.Article): Promi
     }),
   );
 
+  const contentChildren = children.filter((c) => !c.templateTags);
+  const taggedChildren = children.filter((c) => c.templateTags);
+
+  const tagged = Array.from(templateTagSet).reduce<Record<string, ArticleStateChild[]>>(
+    (obj, tag) => {
+      return { ...obj, [tag]: taggedChildren.filter((c) => c.templateTags?.indexOf(tag) !== -1) };
+    },
+    {},
+  );
+
   return {
-    children,
+    children: contentChildren,
     images,
     references,
+    tagged,
   };
 }
 
@@ -178,65 +200,4 @@ export async function loadImagesToBuffers(images: ArticleState['images']) {
     }),
   );
   return buffers;
-}
-
-function contentTypeToExt(contentType: string): string {
-  switch (contentType) {
-    case 'image/gif':
-      return 'gif';
-    case 'image/png':
-      return 'png';
-    case 'image/jpg':
-    case 'image/jpeg':
-      return 'jpg';
-    case 'application/json':
-      return 'json';
-    default:
-      throw new Error(`ContentType: "${contentType}" is not recognized as an extension.`);
-  }
-}
-
-function makeUniqueFilename(
-  basePath: string,
-  block: Block,
-  content_type: string,
-  version: Version<Blocks.Image | Blocks.Output>,
-  taken: Set<string>,
-): string {
-  const ext = contentTypeToExt(content_type);
-  const filenames = [
-    block.data.name,
-    'file_name' in version.data ? version.data.file_name : '', // Output doesn't have a filename
-    `${version.id.project}-${version.id.block}-v${version.id.version}`,
-  ]
-    .map((filename) => {
-      if (!filename) return '';
-      let name = filename;
-      if (!name.endsWith(ext)) name += `.${ext}`;
-      const test = path.join(basePath, name);
-      if (taken.has(test)) return '';
-      return test;
-    })
-    .filter((n) => !!n);
-  return filenames[0];
-}
-
-export async function writeImagesToFiles(images: ArticleState['images'], basePath: string) {
-  const takenFilenames: Set<string> = new Set();
-  const filenames: Record<string, string> = {};
-  await Promise.all(
-    Object.entries(images).map(async ([key, image]) => {
-      const [block] = await Promise.all([new Block(image.session, image.id).get(), image.get()]);
-      const { src, content_type } = getImageSrc(image);
-      if (!src || !content_type) return;
-      const response = await fetch(src);
-      const buffer = await response.buffer();
-      const filename = makeUniqueFilename(basePath, block, content_type, image, takenFilenames);
-      if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
-      fs.writeFileSync(filename, buffer);
-      filenames[key] = filename;
-      takenFilenames.add(filename);
-    }),
-  );
-  return filenames;
 }

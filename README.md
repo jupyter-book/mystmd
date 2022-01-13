@@ -15,6 +15,23 @@ npm install -g curvenote
 curvenote token set YOUR_TOKEN
 curvenote export docx https://curvenote.com/@curvenote/blog/communicating-science communicating-science.docx
 curvenote export md https://curvenote.com/@curvenote/blog/version-control-for-scientists version-control.md
+curvenote export tex https://curvenote.com/@curvenote/blog/version-control-for-scientists version-control.tex -template plain_latex
+curvenote export pdf https://curvenote.com/@curvenote/blog/version-control-for-scientists version-control.pdf -template arxiv_nips
+```
+
+## Dependencies
+
+Exporting to:
+
+- LaTeX (`latex`|`tex`) with a template option specified
+- or to PDF
+
+Requires the [jtex](https://pypi.org/project/jtex/) python package to be installed and available on the user's `PATH`.
+
+With python 3.7 or greater installed, install `jtex` via pip:
+
+```bash
+  python -m pip install jtex
 ```
 
 ## Usage as a package
@@ -41,3 +58,4 @@ console.log(user.data.username);
 - Microsoft Word (.docx)
 - Markdown (.md)
 - LaTeX (.tex)
+- PDF (.pdf)

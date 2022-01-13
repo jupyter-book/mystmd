@@ -1,11 +1,22 @@
 import { Command, Option } from 'commander';
-import { oxaLinkToWord, oxaLinkToMarkdown, oxaLinkToTex } from '../..';
+import { oxaLinkToWord, oxaLinkToMarkdown, oxaLinkToTex, oxaLinkToPdf } from '../..';
 import { oxaLinkToJupyterBook } from '../../export/jupyter-book';
 import { clirun } from './utils';
 
 function makeImageOption() {
   return new Option('-i, --images <images>', 'Change the path to save the images to').default(
     'images',
+  );
+}
+
+function makeTemplateOption() {
+  return new Option('-t, --template <name>', 'Specify a template to apply during export');
+}
+
+function makeTemplateOptionsOption() {
+  return new Option(
+    '-o, --options <name>',
+    'Specify a `yaml` file containing optional data for the template',
   );
 }
 
@@ -37,7 +48,20 @@ function makeTexExportCLI(program: Command) {
     .argument('<article>', 'A link to the Curvenote article (e.g. oxaLink or api link)')
     .argument('[output]', 'The document filename to export to', 'main.tex')
     .addOption(makeImageOption())
+    .addOption(makeTemplateOption())
+    .addOption(makeTemplateOptionsOption())
     .action(clirun(oxaLinkToTex, { program }));
+  return command;
+}
+
+function makePdfExportCLI(program: Command) {
+  const command = new Command('pdf')
+    .description('Export a pdf file from a Curvenote link')
+    .argument('<article>', 'A link to the Curvenote article (e.g. oxaLink or api link)')
+    .argument('[output]', 'The document filename to export to', 'main.pdf')
+    .addOption(makeTemplateOption())
+    .addOption(makeTemplateOptionsOption())
+    .action(clirun(oxaLinkToPdf, { program }));
   return command;
 }
 
@@ -57,6 +81,7 @@ export function addExportCLI(program: Command) {
   command.addCommand(makeWordExportCLI(program));
   command.addCommand(makeMarkdownExportCLI(program));
   command.addCommand(makeTexExportCLI(program));
+  command.addCommand(makePdfExportCLI(program));
   command.addCommand(makeJupyterBookExportCLI(program));
   program.addCommand(command);
 }

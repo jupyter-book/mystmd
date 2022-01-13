@@ -16,16 +16,18 @@ import {
   JsonObject,
   teamFromDTO,
   FormatTypes,
+  TemplateSpec,
 } from '@curvenote/blocks';
 import { BaseTransfer } from './base';
 import { Session } from './session/session';
-import { users, teams, blocks, projects, versions } from './store';
+import { users, teams, blocks, projects, versions, templates } from './store';
 import {
   selectBlock,
   selectProject,
   selectTeam,
   selectUser,
   selectVersion,
+  selectTemplate,
 } from './store/selectors';
 
 export class MyUser extends BaseTransfer<string, MyUserDTO> {
@@ -108,4 +110,17 @@ export class Version<T extends ALL_BLOCKS = ALL_BLOCKS> extends BaseTransfer<
   $recieve = versions.actions.recieve;
 
   $selector = selectVersion;
+}
+
+export class Template extends BaseTransfer<string, TemplateSpec & { id: string }> {
+  modelKind = 'Template';
+
+  // TODO better unpacking and defaults on the dto contents
+  $fromDTO = (id: string, json: JsonObject) => ({ id, ...json } as TemplateSpec & { id: string });
+
+  $createUrl = () => `/templates/${this.id}`;
+
+  $recieve = templates.actions.recieve;
+
+  $selector = selectTemplate;
 }

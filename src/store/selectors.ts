@@ -32,3 +32,7 @@ export function selectVersion<T extends ALL_BLOCKS = ALL_BLOCKS>(
   const key = versionIdToString(versionId);
   return state.versions[key] as T;
 }
+
+export function selectTemplate(state: RootState, id: string) {
+  return state.templates[id];
+}

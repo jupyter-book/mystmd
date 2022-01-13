@@ -8,6 +8,7 @@ import {
   ALL_BLOCKS,
   versionIdToString,
   draftIdToString,
+  TemplateSpec,
 } from '@curvenote/blocks';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
@@ -75,6 +76,16 @@ export const drafts = createSlice({
   },
 });
 
+export const templates = createSlice({
+  name: 'templates',
+  initialState: {} as Record<string, TemplateSpec & { id: string }>,
+  reducers: {
+    recieve(state, action: PayloadAction<TemplateSpec & { id: string }>) {
+      state[action.payload.id] = action.payload;
+    },
+  },
+});
+
 export const rootReducer = combineReducers({
   users: users.reducer,
   teams: teams.reducer,
@@ -82,6 +93,7 @@ export const rootReducer = combineReducers({
   blocks: blocks.reducer,
   versions: versions.reducer,
   drafts: drafts.reducer,
+  templates: templates.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -33,7 +33,7 @@ export async function articleToMarkdown(session: Session, versionId: VersionId, 
   const article = await walkArticle(session, data);
 
   const imageFilenames = await writeImagesToFiles(article.images, opts?.images ?? 'images');
-  const localization = localizationOptions(session, imageFilenames, article);
+  const localization = localizationOptions(session, imageFilenames, article.references);
   const content = article.children.map((child) => {
     if (!child.version || !child.state) return '';
     const blockData = { oxa: oxaLink('', child.version.id), pinned: false };
