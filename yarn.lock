@@ -353,15 +353,15 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@curvenote/blocks@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.1.0.tgz#53a6683861e036f56d7119241efd4c8830dbd888"
-  integrity sha512-2WzVXcwdxhpoMRwXGVdQnRybLUbnhx/MowPFucng/dIWLXJHQC6cK1v/dRvoxjZdsB/u60S2eW1iFbWKrMm3+w==
+"@curvenote/blocks@1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.1.3.tgz#826f9c505391bcb20b57049c311daed496de96b9"
+  integrity sha512-2DFYN9FN6cE5MrtYzp5W0jwIt9KYPFwnu9tRIr3iChyThTA/KzsQwqP0170LWwhr4Hrwy6P+ozgsHfOH+PBNLQ==
 
-"@curvenote/schema@^0.11.1":
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.11.1.tgz#dcd4b38e02434e9d680cfad9165eabfafa9212b6"
-  integrity sha512-mjUoDg+3tNtigfOybve+TCj6WZPE5VgMqlHJAlpit1DnslQWZHwiI00TG8EEvKFGxmCnWS+faTnoYAguf7aInw==
+"@curvenote/schema@0.11.2":
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.11.2.tgz#c3975aea3861ee37f9d4fe710de0bbdfc291cf5f"
+  integrity sha512-2qL+ntLuC3A0ogQ4M0KzQkhXlqpGxvmpjtX0RqiWZ/5m1BpZrGeGjvAKXJcP0yS5vHa6LYdJbSzZqQ14A6vpBg==
   dependencies:
     "@wordpress/wordcount" "^3.2.2"
     markdown-it "^12.2.0"
