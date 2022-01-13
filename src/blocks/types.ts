@@ -233,15 +233,12 @@ export interface FigureStyles {
   caption?: boolean;
 }
 
+// TOOD move
 export interface FigureFormatOptions {
   figures?: FigureStyles & { label?: string };
 }
 
-export interface ReferenceFormatOptions {
-  style: CitationStyles | string;
-}
-
-export type FormatOptions = FigureFormatOptions | ReferenceFormatOptions;
+export type FormatOptions = FigureFormatOptions;
 
 export type BlockChild = {
   id: ChildId;
