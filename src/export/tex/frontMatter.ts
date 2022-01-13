@@ -2,7 +2,6 @@ import YAML from 'yaml';
 import { Author, Blocks, oxaLink } from '@curvenote/blocks';
 import { Session } from 'session';
 import { toTex } from '@curvenote/schema';
-import { strOptions } from 'yaml/types';
 import { Block, User, Version } from '../../models';
 import { getEditorState } from '../../actions/utils';
 
