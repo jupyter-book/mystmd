@@ -43,7 +43,7 @@ export interface Token extends PartialToken {
   has_been_used: boolean;
   date_created: Date;
   date_last_used: Date | null;
-  date_expires: Date;
+  date_expires: Date | null;
   links: TokenLinks;
   token?: string; // This is only included in a POST response.
 }
