@@ -161,11 +161,26 @@ export async function walkArticle(
       const { content } = version.data;
       // Extract the label: '@article{SimPEG2015,\n...' ➡️ 'SimPEG2015'
       const label = content.slice(content.indexOf('{') + 1, content.indexOf(','));
-      references[basekey(key)] = {
-        label,
-        bibtex: content,
-        version,
-      };
+
+      const existing = references[basekey(key)];
+      if (existing) {
+        const ve = existing.version.id.version;
+        const v = version.id.version;
+        // if existing, only update if incoming version is defined and greater than the existing
+        if (ve == null || ve < (v ?? 0)) {
+          references[basekey(key)] = {
+            label,
+            bibtex: content,
+            version,
+          };
+        }
+      } else {
+        references[basekey(key)] = {
+          label,
+          bibtex: content,
+          version,
+        };
+      }
     }),
   );
 
