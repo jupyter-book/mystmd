@@ -39,9 +39,9 @@ export interface Project extends PartialProject {
 
 export const DEFAULT_CITATION_STYLE = CitationStyles.apa;
 
-function projectSettingsFromDTO(json: JsonObject = {}): Project['settings'] {
+function projectSettingsFromDTO(settings?: Partial<Project['settings']>): Project['settings'] {
   return {
-    citation_style: json.citation_style ?? DEFAULT_CITATION_STYLE,
+    citation_style: settings?.citation_style ?? DEFAULT_CITATION_STYLE,
   };
 }
 
@@ -56,18 +56,7 @@ export function projectFromDTO(projectId: ProjectId, json: JsonObject): Project 
     visibility: json.visibility ?? ProjectVisibility.private,
     date_created: getDate(json.date_created),
     date_modified: getDate(json.date_modified),
-    links: { ...json.links },
     settings: projectSettingsFromDTO(json.settings),
-  };
-}
-
-export function cleanProjectForPosting(project: Project): Record<keyof PartialProject, any> {
-  return {
-    team: project.team,
-    name: project.name,
-    title: project.title,
-    description: project.description,
-    visibility: project.visibility,
-    settings: project.settings,
+    links: { ...json.links },
   };
 }
