@@ -6,6 +6,7 @@ export * from './oxa';
 export * from './helpers';
 export * from './access';
 export * from './users';
+export * from './tokens';
 export * from './teams';
 export * from './projects';
 export * from './blocks';
