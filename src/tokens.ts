@@ -33,6 +33,27 @@ export function ensureValidTokenExpiresIn(expiry?: TokenExpiresIn): TokenExpires
   }
 }
 
+export function tokenExpiryToSeconds(expiry: TokenExpiresIn): number | null {
+  switch (expiry) {
+    case TokenExpiresIn.oneDay:
+    case TokenExpiresIn.sevenDays:
+    case TokenExpiresIn.thirtyDays:
+    case TokenExpiresIn.sixtyDays:
+    case TokenExpiresIn.nintyDays:
+      return expiry * 24 * 3600;
+    case TokenExpiresIn.never:
+      return null;
+    default:
+      throw new Error('Undefined expiry');
+  }
+}
+
+export function tokenExpiryToDate(expiry: TokenExpiresIn): Date | null {
+  const seconds = tokenExpiryToSeconds(expiry);
+  if (seconds == null) return null;
+  return new Date(Date.now() + seconds * 1000);
+}
+
 export interface PartialToken {
   description: string;
 }
