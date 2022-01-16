@@ -10,12 +10,12 @@ import {
   ReferenceFormatTypes,
 } from '@curvenote/blocks';
 import { DEFAULT_IMAGE_WIDTH, nodeNames, Nodes, ReferenceKind } from '@curvenote/schema';
-import { Session } from '../../session';
 import { getEditorState } from '../../actions/utils';
 import { Block, Version } from '../../models';
 import { getLatestVersion } from '../../actions/getLatest';
 import { getImageSrc } from './getImageSrc';
 import { basekey } from './basekey';
+import { ISession } from '../../session/types';
 
 export interface ArticleStateChild {
   state?: ReturnType<typeof getEditorState>;
@@ -57,7 +57,7 @@ function outputHasImage(version: Version<Blocks.Output>) {
 }
 
 export async function walkArticle(
-  session: Session,
+  session: ISession,
   data: Blocks.Article,
   templateTags: string[] = [],
 ): Promise<ArticleState> {

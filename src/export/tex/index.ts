@@ -5,7 +5,7 @@ import { toTex } from '@curvenote/schema';
 import os from 'os';
 import path from 'path';
 import { Block, Version } from '../../models';
-import { Session } from '../../session';
+import { ISession } from '../../session/types';
 import { getChildren } from '../../actions/getChildren';
 import { localizationOptions } from '../utils/localizationOptions';
 import { writeBibtex } from '../utils/writeBibtex';
@@ -30,7 +30,7 @@ export function createTempFolder() {
 }
 
 function convertAndLocalizeChild(
-  session: Session,
+  session: ISession,
   child: ArticleStateChild,
   imageFilenames: Record<string, string>,
   references: Record<string, ArticleStateReference>,
@@ -54,7 +54,11 @@ function writeBlocksToFile(
   fs.writeFileSync(filename, `${file}\n`);
 }
 
-export async function articleToTex(session: Session, versionId: VersionId, opts: TexExportOptions) {
+export async function articleToTex(
+  session: ISession,
+  versionId: VersionId,
+  opts: TexExportOptions,
+) {
   throwIfTemplateButNoJtex(opts);
   const { tagged } = await fetchTemplateTaggedBlocks(session, opts);
   const templateOptions = loadTemplateOptions(opts);

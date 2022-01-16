@@ -2,7 +2,7 @@ import fs from 'fs';
 import { sync as which } from 'which';
 import YAML from 'yaml';
 import { Template } from '../../models';
-import { Session } from '../../session/session';
+import { ISession } from '../../session/types';
 import { TexExportOptions } from './types';
 
 export function throwIfTemplateButNoJtex(opts: TexExportOptions) {
@@ -14,7 +14,7 @@ export function throwIfTemplateButNoJtex(opts: TexExportOptions) {
 }
 
 export async function fetchTemplateTaggedBlocks(
-  session: Session,
+  session: ISession,
   opts: TexExportOptions,
 ): Promise<{ tagged: string[] }> {
   let tagged: string[] = [];

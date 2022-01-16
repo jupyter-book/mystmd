@@ -19,7 +19,7 @@ import {
   TemplateSpec,
 } from '@curvenote/blocks';
 import { BaseTransfer } from './base';
-import { Session } from './session/session';
+import { ISession } from './session/types';
 import { users, teams, blocks, projects, versions, templates } from './store';
 import {
   selectBlock,
@@ -31,7 +31,7 @@ import {
 } from './store/selectors';
 
 export class MyUser extends BaseTransfer<string, MyUserDTO> {
-  constructor(session: Session) {
+  constructor(session: ISession) {
     super(session, '');
   }
 

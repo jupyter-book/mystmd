@@ -1,8 +1,8 @@
 import { VersionId } from '@curvenote/blocks';
 import { Block, Version } from '../models';
-import { Session } from '../session';
+import { ISession } from '../session/types';
 
-export async function getChildren(session: Session, versionId: VersionId) {
+export async function getChildren(session: ISession, versionId: VersionId) {
   const { status, json } = await session.get(
     `/blocks/${versionId.project}/${versionId.block}/versions/${versionId.version}/children`,
   );

@@ -3,14 +3,14 @@ import { Document } from 'docx';
 import { DocxSerializerState } from 'prosemirror-docx';
 import pkgpath from '../../pkgpath';
 import { Block, User, Version } from '../../models';
-import { Session } from '../../session';
 import { getNodesAndMarks } from './schema';
 import { ArticleState } from '../utils';
 import { createArticleTitle } from './titles';
 import { createSingleDocument } from './utils';
+import { ISession } from '../../session/types';
 
 export interface LoadedArticle {
-  session: Session;
+  session: ISession;
   user: User;
   buffers: Record<string, Buffer>;
   block: Block;

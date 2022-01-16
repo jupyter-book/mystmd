@@ -1,8 +1,9 @@
 import { Command } from 'commander';
-import { MyUser, Session } from '../..';
+import { MyUser } from '../..';
+import { ISession } from '../../session/types';
 import { clirun } from './utils';
 
-async function checkAuth(session: Session) {
+async function checkAuth(session: ISession) {
   if (session.isAnon) {
     session.log.error('Your session is not authenticated.');
     return;

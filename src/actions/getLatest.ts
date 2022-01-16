@@ -1,9 +1,9 @@
 import { ALL_BLOCKS, BlockId } from '@curvenote/blocks';
 import { Block, Version, VersionQueryOpts } from '../models';
-import { Session } from '../session';
+import { ISession } from '../session/types';
 
 export async function getLatestVersion<T extends ALL_BLOCKS>(
-  session: Session,
+  session: ISession,
   blockId: BlockId,
   query?: VersionQueryOpts,
 ) {

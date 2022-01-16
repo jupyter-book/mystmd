@@ -3,6 +3,7 @@ import { Command } from 'commander';
 import { Session } from '../../..';
 import { chalkLogger, LogLevel } from '../../../logging';
 import { getToken } from '../../../session';
+import { ISession } from '../../../session/types';
 
 function getLogLevel(level: LogLevel | Command = LogLevel.info): LogLevel {
   let useLevel: LogLevel = typeof level === 'number' ? level : LogLevel.info;
@@ -13,8 +14,8 @@ function getLogLevel(level: LogLevel | Command = LogLevel.info): LogLevel {
 }
 
 export function anonSession(level?: LogLevel | Command) {
-  const session = new Session();
-  session.$logger = chalkLogger(getLogLevel(level));
+  const logger = chalkLogger(getLogLevel(level));
+  const session = new Session(undefined, { logger });
   return session;
 }
 
@@ -28,8 +29,7 @@ export function getSession(level?: LogLevel | Command): Session {
   }
   let session;
   try {
-    session = new Session(token);
-    session.$logger = logger;
+    session = new Session(token, { logger });
   } catch (error) {
     logger.error((error as Error).message);
     logger.info('You can remove your token using:');
@@ -41,9 +41,9 @@ export function getSession(level?: LogLevel | Command): Session {
 
 export function clirun(
   func:
-    | ((session: Session, ...args: any[]) => Promise<void>)
-    | ((session: Session, ...args: any[]) => void),
-  cli: { program: Command; session?: Session },
+    | ((session: ISession, ...args: any[]) => Promise<void>)
+    | ((session: ISession, ...args: any[]) => void),
+  cli: { program: Command; session?: ISession },
 ) {
   return async (...args: any[]) => {
     const useSession = cli.session ?? getSession(cli.program);

@@ -1,9 +1,9 @@
 import YAML from 'yaml';
 import { Author, Blocks, oxaLink } from '@curvenote/blocks';
-import { Session } from 'session';
 import { toTex } from '@curvenote/schema';
 import { Block, User, Version } from '../../models';
 import { getEditorState } from '../../actions/utils';
+import { ISession } from '../../session/types';
 
 function escapeLatex(maybeUnsafe: string): string {
   return toTex(getEditorState(`<p>${maybeUnsafe}</p>`).doc);
@@ -72,7 +72,7 @@ function getCorresponsingAuthorNames(options: {
 }
 
 async function toAuthorFields(
-  session: Session,
+  session: ISession,
   author: Author,
   corresponding: Set<string>,
 ): Promise<ExportAuthorModel> {
@@ -90,7 +90,7 @@ async function toAuthorFields(
 }
 
 export async function buildFrontMatter(
-  session: Session,
+  session: ISession,
   block: Block,
   version: Version<Blocks.Article>,
   tagged: Record<string, string>,
