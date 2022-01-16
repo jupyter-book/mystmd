@@ -4,12 +4,16 @@ import fs from 'fs';
 import util from 'util';
 import { exportFromOxaLink, exec } from '../utils';
 import { articleToTex } from '../tex';
-import { Session } from '../../session';
 import { TexExportOptions } from '../tex/types';
+import { ISession } from '../../session/types';
 
 const copyFile = util.promisify(fs.copyFile);
 
-export async function articleToPdf(session: Session, versionId: VersionId, opts: TexExportOptions) {
+export async function articleToPdf(
+  session: ISession,
+  versionId: VersionId,
+  opts: TexExportOptions,
+) {
   const basename = path.basename(opts.filename, path.extname(opts.filename));
   const tex_filename = `${basename}.tex`;
   const pdf_filename = `${basename}.pdf`;
@@ -26,17 +30,17 @@ export async function articleToPdf(session: Session, versionId: VersionId, opts:
   try {
     await exec(CMD);
   } catch (err) {
-    session.$logger.error(`Error while invoking mklatex: ${err}`);
+    session.log.error(`Error while invoking mklatex: ${err}`);
   }
 
   const built_pdf = path.join('_build', pdf_filename);
   if (!fs.existsSync(built_pdf)) {
-    session.$logger.error(`Could not find ${built_pdf} as expected, pdf export failed`);
+    session.log.error(`Could not find ${built_pdf} as expected, pdf export failed`);
     throw Error(`Could not find ${built_pdf} as expected, pdf export failed`);
   }
 
   await copyFile(built_pdf, pdf_filename);
-  session.$logger.debug(`Copied PDF file to ${pdf_filename}`);
+  session.log.debug(`Copied PDF file to ${pdf_filename}`);
 
   return article;
 }

@@ -1,18 +1,18 @@
 import { oxaLinkToId, ProjectId, VersionId } from '@curvenote/blocks';
 import { getLatestVersion } from '../../actions/getLatest';
 import { Block } from '../../models';
-import { Session } from '../../session';
+import { ISession } from '../../session/types';
 import { ArticleState } from './walkArticle';
 
 export const exportFromOxaLink =
   (
     exportArticle: (
-      session: Session,
+      session: ISession,
       id: VersionId,
       opts: { filename: string },
     ) => Promise<ArticleState>,
   ) =>
-  async (session: Session, link: string, filename: string, opts?: Record<string, string>) => {
+  async (session: ISession, link: string, filename: string, opts?: Record<string, string>) => {
     const id = oxaLinkToId(link);
     if (!id) throw new Error('The article ID provided could not be parsed.');
     if ('version' in id.block) {
@@ -34,9 +34,13 @@ const knownServices = new Set(['blocks', 'drafts', 'projects']);
 
 export const exportFromProjectLink =
   (
-    exportProject: (session: Session, id: ProjectId, opts: Record<string, string>) => Promise<void>,
+    exportProject: (
+      session: ISession,
+      id: ProjectId,
+      opts: Record<string, string>,
+    ) => Promise<void>,
   ) =>
-  async (session: Session, link: string, opts: Record<string, string>) => {
+  async (session: ISession, link: string, opts: Record<string, string>) => {
     let projectId: string | null = null;
     const id = oxaLinkToId(link);
     if (id) {

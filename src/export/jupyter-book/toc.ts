@@ -1,13 +1,14 @@
 import fs from 'fs';
 import YAML from 'yaml';
 import { Blocks } from '@curvenote/blocks';
-import { Block, Session, Version } from '../..';
+import { Block, Version } from '../..';
+import { ISession } from '../../session/types';
 
 interface Options {
   filename: string;
 }
 
-export async function writeTOC(session: Session, nav: Version<Blocks.Navigation>, opts?: Options) {
+export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation>, opts?: Options) {
   const { filename = '_toc.yml' } = opts ?? {};
   const items = await Promise.all(
     nav.data.items.map(async (item) => {

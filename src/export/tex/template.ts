@@ -2,7 +2,7 @@ import fs from 'fs';
 import { sync as which } from 'which';
 import YAML from 'yaml';
 import { Template } from '../../models';
-import { Session } from '../../session/session';
+import { ISession } from '../../session/types';
 import { TexExportOptions } from './types';
 
 export function throwIfTemplateButNoJtex(opts: TexExportOptions) {
@@ -14,15 +14,15 @@ export function throwIfTemplateButNoJtex(opts: TexExportOptions) {
 }
 
 export async function fetchTemplateTaggedBlocks(
-  session: Session,
+  session: ISession,
   opts: TexExportOptions,
 ): Promise<{ tagged: string[] }> {
   let tagged: string[] = [];
   if (opts.template) {
-    session.$logger.debug(`Fetching template spec for "${opts.template}"`);
+    session.log.debug(`Fetching template spec for "${opts.template}"`);
     const template = await new Template(session, opts.template).get();
     tagged = template.data.config.tagged.map((t) => t.id);
-    session.$logger.debug(
+    session.log.debug(
       `Template '${opts.template}' supports following tagged content: ${tagged.join(', ')}`,
     );
   }

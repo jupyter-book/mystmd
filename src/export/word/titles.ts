@@ -2,9 +2,9 @@ import { getSchema } from '@curvenote/schema/dist/schemas';
 import { Node } from 'prosemirror-model';
 import { Block as BlockDTO } from '@curvenote/blocks';
 import { User } from '../../models';
-import { Session } from '../../session';
+import { ISession } from '../../session/types';
 
-export async function createArticleTitle(session: Session, data: BlockDTO) {
+export async function createArticleTitle(session: ISession, data: BlockDTO) {
   const schema = getSchema('full');
   const header = schema.nodes.heading.createAndFill({ level: 1 }, schema.text(data.title)) as Node;
   // TODO: actually do a subtitle

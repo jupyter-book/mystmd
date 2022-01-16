@@ -1,30 +1,19 @@
 import fetch from 'node-fetch';
-import jwt from 'jsonwebtoken';
 import { createStore, Store } from 'redux';
-import { JsonObject, XClientName } from '@curvenote/blocks';
+import { JsonObject } from '@curvenote/blocks';
 import { basicLogger, Logger, LogLevel } from '../logging';
 import { rootReducer, RootState } from '../store';
-import CLIENT_VERSION from '../version';
+import { getHeaders, setSessionOrUserToken } from './tokens';
+import { ISession, Response, Tokens } from './types';
+
+const DEFAULT_API_URL = 'https://api.curvenote.com';
+const DEFAULT_SITE_URL = 'https://curvenote.com';
 
 export type SessionOptions = {
   apiUrl?: string;
   siteUrl?: string;
+  logger?: Logger;
 };
-
-function assertTokenWillWork(token: string, log: Logger) {
-  // This doesn't verify, but does check if it is going to work, for some early feedback
-  const decoded = jwt.decode(token);
-  if (!decoded || typeof decoded === 'string') {
-    throw new Error('Could not decode session token. Please ensure that the API token is valid.');
-  }
-  const timeLeft = (decoded.exp as number) * 1000 - Date.now();
-  if (timeLeft < 0) {
-    throw new Error('The API token has expired.');
-  }
-  if (timeLeft < 5 * 60 * 1000) {
-    log.warn('The token has less than ten minutes remaining');
-  }
-}
 
 function withQuery(url: string, query: Record<string, string> = {}) {
   const params = Object.entries(query ?? {})
@@ -34,38 +23,46 @@ function withQuery(url: string, query: Record<string, string> = {}) {
   return url.indexOf('?') === -1 ? `${url}?${params}` : `${url}&${params}`;
 }
 
-export class Session {
+export class Session implements ISession {
   API_URL: string;
 
   SITE_URL: string;
 
-  $headers: Record<string, string> = {
-    'X-Client-Name': XClientName.javascript,
-    'X-Client-Version': CLIENT_VERSION,
-  };
+  $tokens: Tokens;
 
-  $store: Store<RootState>;
+  store: Store<RootState>;
 
-  constructor(token?: string, opts: SessionOptions = {}) {
-    if (token) assertTokenWillWork(token, this.log);
-    if (token) this.$headers.Authorization = `Bearer ${token}`;
-    this.API_URL = opts.apiUrl ?? 'https://api.curvenote.com';
-    this.SITE_URL = opts.siteUrl ?? 'https://curvenote.com';
-    this.$store = createStore(rootReducer);
+  $logger: Logger;
+
+  get log(): Logger {
+    return this.$logger;
   }
 
   get isAnon() {
-    return !this.$headers.Authorization;
+    return !(this.$tokens.user || this.$tokens.session);
   }
 
-  async get(url: string, query?: Record<string, string>) {
+  constructor(token?: string, opts: SessionOptions = {}) {
+    this.$logger = opts.logger ?? basicLogger(LogLevel.info);
+    const { tokens, url } = setSessionOrUserToken(this.log, token);
+    this.$tokens = tokens;
+    this.API_URL = opts.apiUrl ?? url ?? DEFAULT_API_URL;
+    this.SITE_URL = opts.siteUrl ?? DEFAULT_SITE_URL;
+    if (this.API_URL !== DEFAULT_API_URL) {
+      this.log.warn(`Connecting to API at: "${this.API_URL}".`);
+    }
+    this.store = createStore(rootReducer);
+  }
+
+  async get(url: string, query?: Record<string, string>): Response {
     const withBase = url.startsWith(this.API_URL) ? url : `${this.API_URL}${url}`;
     const fullUrl = withQuery(withBase, query);
+    const headers = await getHeaders(this.log, this.$tokens);
     const response = await fetch(fullUrl, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
-        ...this.$headers,
+        ...headers,
       },
     });
     return {
@@ -74,13 +71,14 @@ export class Session {
     };
   }
 
-  async post(url: string, data: JsonObject) {
+  async post(url: string, data: JsonObject): Response {
     if (url.startsWith(this.API_URL)) url = url.replace(this.API_URL, '');
+    const headers = await getHeaders(this.log, this.$tokens);
     const response = await fetch(`${this.API_URL}${url}`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
-        ...this.$headers,
+        ...headers,
       },
       body: JSON.stringify(data),
     });
@@ -88,11 +86,5 @@ export class Session {
       status: response.status,
       json: await response.json(),
     };
-  }
-
-  $logger: Logger = basicLogger(LogLevel.info);
-
-  get log(): Logger {
-    return this.$logger;
   }
 }

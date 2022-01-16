@@ -1,6 +1,7 @@
 import { Blocks, KINDS } from '@curvenote/blocks';
-import { articleToMarkdown, Session, Version } from '../..';
+import { articleToMarkdown, Version } from '../..';
 import { getLatestVersion } from '../../actions/getLatest';
+import { ISession } from '../../session/types';
 import { ArticleState } from '../utils';
 import { writeBibtex } from '../utils/writeBibtex';
 
@@ -8,7 +9,11 @@ interface Options {
   bibtex?: string;
 }
 
-export async function exportAll(session: Session, nav: Version<Blocks.Navigation>, opts?: Options) {
+export async function exportAll(
+  session: ISession,
+  nav: Version<Blocks.Navigation>,
+  opts?: Options,
+) {
   const { bibtex = 'references.bib' } = opts ?? {};
   const blocks = await Promise.all(
     nav.data.items.map((item) => getLatestVersion(session, item.blockId)),

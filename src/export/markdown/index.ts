@@ -3,17 +3,17 @@ import YAML from 'yaml';
 import { VersionId, KINDS, oxaLink, formatDate } from '@curvenote/blocks';
 import { toMarkdown } from '@curvenote/schema';
 import { Block, Version, User } from '../../models';
-import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
 import { exportFromOxaLink, walkArticle, writeImagesToFiles } from '../utils';
 import { localizationOptions } from '../utils/localizationOptions';
+import { ISession } from '../../session/types';
 
 type Options = {
   filename: string;
   images?: string;
 };
 
-export async function articleToMarkdown(session: Session, versionId: VersionId, opts: Options) {
+export async function articleToMarkdown(session: ISession, versionId: VersionId, opts: Options) {
   const [block, version] = await Promise.all([
     new Block(session, versionId).get(),
     new Version(session, versionId).get(),

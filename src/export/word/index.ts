@@ -2,11 +2,11 @@ import fs from 'fs';
 import { VersionId, KINDS } from '@curvenote/blocks';
 import { writeDocx } from 'prosemirror-docx';
 import { Block, User, Version } from '../../models';
-import { Session } from '../../session';
 import { getChildren } from '../../actions/getChildren';
 import { loadImagesToBuffers, walkArticle } from '../utils';
 import { exportFromOxaLink } from '../utils/exportWrapper';
 import { defaultTemplate } from './template';
+import { ISession } from '../../session/types';
 
 export * from './schema';
 export type { LoadedArticle } from './template';
@@ -22,7 +22,7 @@ function assertEndsInDocx(filename: string) {
 }
 
 export async function articleToWord(
-  session: Session,
+  session: ISession,
   versionId: VersionId,
   opts: WordOptions,
   documentCreator = defaultTemplate,

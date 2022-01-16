@@ -1,6 +1,6 @@
 import { JsonObject } from '@curvenote/blocks';
 import { AnyAction } from '@reduxjs/toolkit';
-import { Session } from './session/session';
+import { ISession } from './session/types';
 import { RootState } from './store';
 
 export class BaseTransfer<
@@ -10,7 +10,7 @@ export class BaseTransfer<
 > {
   modelKind = '';
 
-  session: Session;
+  session: ISession;
 
   id: ID;
 
@@ -28,7 +28,7 @@ export class BaseTransfer<
 
   $recieve?: (dto: DTO) => AnyAction;
 
-  constructor(session: Session, id: ID) {
+  constructor(session: ISession, id: ID) {
     this.id = id;
     this.session = session;
   }
@@ -41,12 +41,12 @@ export class BaseTransfer<
   set data(data: DTO) {
     this.id = data.id;
     this.$data = this.$fromDTO(data.id, data);
-    if (this.$recieve) this.session.$store.dispatch(this.$recieve(data));
+    if (this.$recieve) this.session.store.dispatch(this.$recieve(data));
   }
 
   async get(query?: GetOptions) {
     const url = this.$createUrl();
-    const fromSession = this.$selector?.(this.session.$store.getState(), this.id);
+    const fromSession = this.$selector?.(this.session.store.getState(), this.id);
     if (fromSession) {
       this.session.log.debug(`Loading ${this.modelKind} from cache: "${url}"`);
       this.data = fromSession;
@@ -60,7 +60,7 @@ export class BaseTransfer<
       }
       throw new Error(`${this.modelKind}: Not found (${url}) or you do not have access.`);
     }
-    this.data = json;
+    this.data = json as any;
     return this;
   }
 }

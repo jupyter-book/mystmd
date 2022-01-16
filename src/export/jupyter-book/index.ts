@@ -1,17 +1,17 @@
 import { ProjectId, Blocks } from '@curvenote/blocks';
 import { Project } from '../../models';
-import { Session } from '../../session';
 import { exportFromProjectLink } from '../utils';
 import { getLatestVersion } from '../../actions/getLatest';
 import { writeTOC } from './toc';
 import { exportAll } from './exportAll';
 import { writeConfig } from './config';
+import { ISession } from '../../session/types';
 
 type Options = {
   something?: string;
 };
 
-export async function projectToJupyterBook(session: Session, projectId: ProjectId, opts: Options) {
+export async function projectToJupyterBook(session: ISession, projectId: ProjectId, opts: Options) {
   const [project, { version: nav }] = await Promise.all([
     new Project(session, projectId).get(),
     getLatestVersion<Blocks.Navigation>(session, { project: projectId, block: 'nav' }),

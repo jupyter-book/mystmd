@@ -1,11 +1,11 @@
 import { oxaLink, oxaLinkToId } from '@curvenote/blocks';
 import { SharedOptions } from '@curvenote/schema/dist/types';
-import { Session } from '../../session/session';
 import { ArticleState } from './walkArticle';
 import { basekey } from './basekey';
+import { ISession } from '../../session/types';
 
 export function localizationOptions(
-  session: Session,
+  session: ISession,
   imageFilenames: Record<string, string>,
   references: ArticleState['references'],
 ): SharedOptions {
