@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import { Logger } from '../logging';
 import CLIENT_VERSION from '../version';
-import { ISession, Tokens } from './types';
+import { Tokens } from './types';
 
 function decodeAndValidateToken(
   log: Logger,
@@ -70,15 +70,15 @@ export async function getSessionToken(log: Logger, tokens: Tokens): Promise<stri
   return json.session;
 }
 
-export async function getHeaders(session: ISession): Promise<Record<string, string>> {
+export async function getHeaders(log: Logger, tokens: Tokens): Promise<Record<string, string>> {
   const headers: Record<string, string> = {
     'X-Client-Name': XClientName.javascript,
     'X-Client-Version': CLIENT_VERSION,
   };
-  const sessionToken = await getSessionToken(session.$logger, session.$tokens);
-  if (sessionToken) {
-    session.$tokens.session = sessionToken;
-    headers.Authorization = `Bearer ${sessionToken}`;
+  const session = await getSessionToken(log, tokens);
+  if (session) {
+    tokens.session = session;
+    headers.Authorization = `Bearer ${session}`;
   }
   return headers;
 }

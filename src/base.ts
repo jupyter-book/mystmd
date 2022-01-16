@@ -41,12 +41,12 @@ export class BaseTransfer<
   set data(data: DTO) {
     this.id = data.id;
     this.$data = this.$fromDTO(data.id, data);
-    if (this.$recieve) this.session.$store.dispatch(this.$recieve(data));
+    if (this.$recieve) this.session.store.dispatch(this.$recieve(data));
   }
 
   async get(query?: GetOptions) {
     const url = this.$createUrl();
-    const fromSession = this.$selector?.(this.session.$store.getState(), this.id);
+    const fromSession = this.$selector?.(this.session.store.getState(), this.id);
     if (fromSession) {
       this.session.log.debug(`Loading ${this.modelKind} from cache: "${url}"`);
       this.data = fromSession;

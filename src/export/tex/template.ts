@@ -19,10 +19,10 @@ export async function fetchTemplateTaggedBlocks(
 ): Promise<{ tagged: string[] }> {
   let tagged: string[] = [];
   if (opts.template) {
-    session.$logger.debug(`Fetching template spec for "${opts.template}"`);
+    session.log.debug(`Fetching template spec for "${opts.template}"`);
     const template = await new Template(session, opts.template).get();
     tagged = template.data.config.tagged.map((t) => t.id);
-    session.$logger.debug(
+    session.log.debug(
       `Template '${opts.template}' supports following tagged content: ${tagged.join(', ')}`,
     );
   }

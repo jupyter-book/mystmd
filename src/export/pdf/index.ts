@@ -30,17 +30,17 @@ export async function articleToPdf(
   try {
     await exec(CMD);
   } catch (err) {
-    session.$logger.error(`Error while invoking mklatex: ${err}`);
+    session.log.error(`Error while invoking mklatex: ${err}`);
   }
 
   const built_pdf = path.join('_build', pdf_filename);
   if (!fs.existsSync(built_pdf)) {
-    session.$logger.error(`Could not find ${built_pdf} as expected, pdf export failed`);
+    session.log.error(`Could not find ${built_pdf} as expected, pdf export failed`);
     throw Error(`Could not find ${built_pdf} as expected, pdf export failed`);
   }
 
   await copyFile(built_pdf, pdf_filename);
-  session.$logger.debug(`Copied PDF file to ${pdf_filename}`);
+  session.log.debug(`Copied PDF file to ${pdf_filename}`);
 
   return article;
 }

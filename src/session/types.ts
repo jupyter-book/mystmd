@@ -12,17 +12,13 @@ export interface ISession {
 
   SITE_URL: string;
 
-  $tokens: Tokens;
-
-  $store: Store<RootState>;
+  store: Store<RootState>;
 
   isAnon: boolean;
 
   get(url: string, query?: Record<string, string>): Response;
 
   post(url: string, data: JsonObject): Response;
-
-  $logger: Logger;
 
   log: Logger;
 }

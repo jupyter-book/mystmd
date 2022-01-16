@@ -86,14 +86,14 @@ export async function articleToTex(
   const taggedFilenames: Record<string, string> = Object.entries(article.tagged)
     .filter(([tag, children]) => {
       if (children.length === 0) {
-        session.$logger.debug(`No tagged content found for "${tag}".`);
+        session.log.debug(`No tagged content found for "${tag}".`);
         return false;
       }
       return true;
     })
     .map(([tag, children]) => {
       const filename = `${tag}.tex`; // keep filenames relative to buildPath
-      session.$logger.debug(`Writing ${children.length} tagged block(s) to ${filename}`);
+      session.log.debug(`Writing ${children.length} tagged block(s) to ${filename}`);
       writeBlocksToFile(
         children,
         (child) => convertAndLocalizeChild(session, child, imageFilenames, article.references),
@@ -121,7 +121,7 @@ export async function articleToTex(
     ),
   );
 
-  session.$logger.debug('Writing main body of content to content.tex');
+  session.log.debug('Writing main body of content to content.tex');
   const content_tex = path.join(buildPath, 'content.tex');
   writeBlocksToFile(
     article.children,
@@ -130,20 +130,20 @@ export async function articleToTex(
     frontMatter,
   );
 
-  session.$logger.debug('Writing bib file');
+  session.log.debug('Writing bib file');
   // Write out the references
   await writeBibtex(article.references, path.join(buildPath, 'main.bib'));
 
   // run templating
   if (opts.template) {
-    session.$logger.debug('Running jtex');
+    session.log.debug('Running jtex');
     const CMD = `jtex render ${content_tex}`;
     try {
       await exec(CMD);
     } catch (err) {
-      session.$logger.error(`Error while invoking jtex: ${err}`);
+      session.log.error(`Error while invoking jtex: ${err}`);
     }
-    session.$logger.debug('jtex finished');
+    session.log.debug('jtex finished');
   }
 
   return article;

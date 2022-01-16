@@ -30,7 +30,7 @@ export class Session implements ISession {
 
   $tokens: Tokens;
 
-  $store: Store<RootState>;
+  store: Store<RootState>;
 
   $logger: Logger;
 
@@ -51,13 +51,13 @@ export class Session implements ISession {
     if (this.API_URL !== DEFAULT_API_URL) {
       this.log.warn(`Connecting to API at: "${this.API_URL}".`);
     }
-    this.$store = createStore(rootReducer);
+    this.store = createStore(rootReducer);
   }
 
   async get(url: string, query?: Record<string, string>): Response {
     const withBase = url.startsWith(this.API_URL) ? url : `${this.API_URL}${url}`;
     const fullUrl = withQuery(withBase, query);
-    const headers = await getHeaders(this);
+    const headers = await getHeaders(this.log, this.$tokens);
     const response = await fetch(fullUrl, {
       method: 'get',
       headers: {
@@ -73,7 +73,7 @@ export class Session implements ISession {
 
   async post(url: string, data: JsonObject): Response {
     if (url.startsWith(this.API_URL)) url = url.replace(this.API_URL, '');
-    const headers = await getHeaders(this);
+    const headers = await getHeaders(this.log, this.$tokens);
     const response = await fetch(`${this.API_URL}${url}`, {
       method: 'post',
       headers: {
