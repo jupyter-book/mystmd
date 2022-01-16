@@ -20,11 +20,11 @@ export function anonSession(level?: LogLevel | Command) {
 
 export function getSession(level?: LogLevel | Command): Session {
   const logger = chalkLogger(getLogLevel(level));
-  const token = process.env.CURVENOTE_TOKEN || getToken();
+  const token = getToken(logger);
   if (!token) {
     logger.warn('No token was found in settings or CURVENOTE_TOKEN. Session is not authenticated.');
     logger.info('You can set a token with:');
-    logger.info('curvenote token set YOUR_API_TOKEN');
+    logger.info('curvenote token set API_TOKEN');
   }
   let session;
   try {

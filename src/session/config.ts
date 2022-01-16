@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import chalk from 'chalk';
 import { MyUser } from '../models';
 import { Session } from './session';
+import { chalkLogger, Logger, LogLevel } from '../logging';
 
 function getConfigPath() {
   const pathArr: string[] = [];
@@ -37,19 +38,31 @@ export async function setToken(token: string) {
     fs.mkdirSync(path.dirname(configPath), { recursive: true });
   }
   fs.writeFileSync(configPath, JSON.stringify(data));
-  // eslint-disable-next-line no-console
-  console.log(chalk.green(`Token set for ${me.data.display_name} <${me.data.email}>.`));
+  session.log.info(chalk.green(`Token set for ${me.data.display_name} <${me.data.email}>.`));
 }
 
-export function deleteToken() {
+export function deleteToken(logger: Logger = chalkLogger(LogLevel.info)) {
   const configPath = getConfigPath();
-  if (!fs.existsSync(configPath)) throw new Error('There is no token delete.');
+  const env = process.env.CURVENOTE_TOKEN;
+  if (env) {
+    logger.error('Found CURVENOTE_TOKEN in your process. This command will *not* unset that.');
+    logger.info('To unset the token from your environment, try:');
+    logger.info('unset CURVENOTE_TOKEN');
+  }
+  if (!fs.existsSync(configPath)) {
+    logger.error('There was no token found in your config to delete.');
+    return;
+  }
   fs.unlinkSync(configPath);
-  // eslint-disable-next-line no-console
-  console.log(chalk.green(`Token has been deleted.`));
+  logger.info(chalk.green('Token has been deleted.'));
 }
 
-export function getToken(): string | undefined {
+export function getToken(logger: Logger = chalkLogger(LogLevel.info)): string | undefined {
+  const env = process.env.CURVENOTE_TOKEN;
+  if (env) {
+    logger.warn('Using the CURVENOTE_TOKEN env variable.');
+    return env;
+  }
   const configPath = getConfigPath();
   if (!fs.existsSync(configPath)) return undefined;
   try {

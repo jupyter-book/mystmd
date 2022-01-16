@@ -10,7 +10,7 @@ export function addTokenCLI(program: Command) {
     .command('set <token>')
     .description('Set a token and save to a config directory')
     .action(
-      clirun(async (_, token: string) => setToken(token), {
+      clirun(async (_session, token: string) => setToken(token), {
         program,
         session: anonSession(program),
       }),
@@ -19,6 +19,8 @@ export function addTokenCLI(program: Command) {
     .command('delete')
     .alias('remove')
     .description('Delete all tokens from the config directory')
-    .action(clirun(deleteToken, { program, session: anonSession(program) }));
+    .action(
+      clirun((session) => deleteToken(session.log), { program, session: anonSession(program) }),
+    );
   program.addCommand(command);
 }
