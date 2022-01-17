@@ -16,8 +16,8 @@ import {
   exportFromOxaLink,
   walkArticle,
   writeImagesToFiles,
-  exec,
   makeBuildPaths,
+  makeExecutable,
 } from '../utils';
 import { TexExportOptions } from './types';
 import {
@@ -147,7 +147,8 @@ export async function articleToTex(
     session.log.debug('Running JTEX...');
     const CMD = `jtex render ${content_tex}`;
     try {
-      await exec(CMD);
+      const jtex = makeExecutable(CMD, session.$logger);
+      await jtex();
     } catch (err) {
       session.log.error(`Error while invoking jtex: ${err}`);
     }
