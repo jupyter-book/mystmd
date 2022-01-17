@@ -54,7 +54,7 @@ export async function writeImagesToFiles(
 ) {
   const takenFilenames: Set<string> = new Set();
   const filenames: Record<string, string> = {};
-  await Promise.all(
+  const p = await Promise.all(
     Object.entries(images).map(async ([key, image]) => {
       const [block] = await Promise.all([new Block(image.session, image.id).get(), image.get()]);
       const { src, content_type } = getImageSrc(image);
@@ -70,10 +70,12 @@ export async function writeImagesToFiles(
       );
       const filename = path.join(buildPath ?? '', referencableFilename);
       if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
+      console.log(`Writing ${filename}`);
       fs.writeFileSync(filename, buffer);
       filenames[key] = referencableFilename;
       takenFilenames.add(referencableFilename);
     }),
   );
+
   return filenames;
 }
