@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import fetch from 'node-fetch';
 import { Blocks } from '@curvenote/blocks';
+import { Logger } from 'logging';
 import { Block, Version } from '../../models';
 import { ArticleState } from './walkArticle';
 import { getImageSrc } from './getImageSrc';
@@ -48,6 +49,7 @@ function makeUniqueFilename(
 }
 
 export async function writeImagesToFiles(
+  log: Logger,
   images: ArticleState['images'],
   basePath: string,
   buildPath?: string,
@@ -70,10 +72,12 @@ export async function writeImagesToFiles(
       );
       const filename = path.join(buildPath ?? '', referencableFilename);
       if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
+      log.debug(`Writing ${filename}`);
       fs.writeFileSync(filename, buffer);
       filenames[key] = referencableFilename;
       takenFilenames.add(referencableFilename);
     }),
   );
+
   return filenames;
 }

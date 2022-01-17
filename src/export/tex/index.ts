@@ -16,7 +16,8 @@ import {
   exportFromOxaLink,
   walkArticle,
   writeImagesToFiles,
-  exec,
+  makeBuildPaths,
+  makeExecutable,
 } from '../utils';
 import { TexExportOptions } from './types';
 import {
@@ -64,9 +65,12 @@ export async function articleToTex(
   const templateOptions = loadTemplateOptions(opts);
 
   // Only use a build path if no template && no pdf target requested
-  const buildPath = opts.useBuildFolder ?? !!opts.template ? '_build' : '.'; // TODO make not relative to CWD
-  if (!fs.existsSync(buildPath)) fs.mkdirSync(path.dirname(buildPath), { recursive: true });
+  session.log.debug('Starting articleToTex...');
+  session.log.debug(`With Options: ${JSON.stringify(opts)}`);
 
+  const { buildPath, outputFilename } = makeBuildPaths(session.log, opts);
+
+  session.log.debug('Fetching data from API...');
   const [block, version] = await Promise.all([
     new Block(session, convertToBlockId(versionId)).get(),
     new Version(session, versionId).get(),
@@ -75,14 +79,18 @@ export async function articleToTex(
   const { data } = version;
   if (data.kind !== KINDS.Article) throw new Error('Not an article');
 
+  session.log.debug('Start walkArticle...');
   const article = await walkArticle(session, data, tagged);
 
+  session.log.debug('Start localizing images..');
   const imageFilenames = await writeImagesToFiles(
+    session.log,
     article.images,
     opts?.images ?? 'images',
     buildPath,
   );
 
+  session.log.debug('Finding tagged content and write to files...');
   const taggedFilenames: Record<string, string> = Object.entries(article.tagged)
     .filter(([tag, children]) => {
       if (children.length === 0) {
@@ -103,6 +111,7 @@ export async function articleToTex(
     })
     .reduce((obj, { tag, filename }) => ({ ...obj, [tag]: filename }), {});
 
+  session.log.debug('Building front matter...');
   const frontMatter = stringifyFrontMatter(
     await buildFrontMatter(
       session,
@@ -111,8 +120,8 @@ export async function articleToTex(
       taggedFilenames,
       templateOptions,
       {
-        path: opts.texIsIntermediate ?? false ? '.' : '..', // TODO make not relative to CWD
-        filename: opts.filename,
+        path: opts.texIsIntermediate ?? false ? '.' : '..', // jtex path is always relative to the content file
+        filename: outputFilename,
         copy_images: true,
         single_file: false,
       },
@@ -121,7 +130,7 @@ export async function articleToTex(
     ),
   );
 
-  session.log.debug('Writing main body of content to content.tex');
+  session.log.debug('Writing main body of content to content.tex...');
   const content_tex = path.join(buildPath, 'content.tex');
   writeBlocksToFile(
     article.children,
@@ -130,20 +139,23 @@ export async function articleToTex(
     frontMatter,
   );
 
-  session.log.debug('Writing bib file');
+  session.log.debug('Writing bib file...');
   // Write out the references
   await writeBibtex(article.references, path.join(buildPath, 'main.bib'));
 
   // run templating
   if (opts.template) {
-    session.log.debug('Running jtex');
+    session.log.debug('Running JTEX...');
     const CMD = `jtex render ${content_tex}`;
     try {
-      await exec(CMD);
+      const jtex = makeExecutable(CMD, session.log);
+      await jtex();
     } catch (err) {
       session.log.error(`Error while invoking jtex: ${err}`);
     }
     session.log.debug('jtex finished');
+  } else {
+    session.log.debug('No template specified, JTEX not invoked!');
   }
 
   return article;
