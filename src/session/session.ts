@@ -71,11 +71,15 @@ export class Session implements ISession {
     };
   }
 
-  async post(url: string, data: JsonObject): Response {
+  async patch(url: string, data: JsonObject) {
+    return this.post(url, data, 'patch');
+  }
+
+  async post(url: string, data: JsonObject, method: 'post' | 'patch' = 'post'): Response {
     if (url.startsWith(this.API_URL)) url = url.replace(this.API_URL, '');
     const headers = await getHeaders(this.log, this.$tokens);
     const response = await fetch(`${this.API_URL}${url}`, {
-      method: 'post',
+      method,
       headers: {
         'Content-Type': 'application/json',
         ...headers,
