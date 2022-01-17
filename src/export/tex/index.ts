@@ -65,12 +65,12 @@ export async function articleToTex(
   const templateOptions = loadTemplateOptions(opts);
 
   // Only use a build path if no template && no pdf target requested
-  session.log.info('Starting articleToTex...');
-  session.log.info(`With Options: ${JSON.stringify(opts)}`);
+  session.log.debug('Starting articleToTex...');
+  session.log.debug(`With Options: ${JSON.stringify(opts)}`);
 
   const { buildPath, outputFilename } = makeBuildPaths(session.log, opts);
 
-  session.log.info('Fetching data from API...');
+  session.log.debug('Fetching data from API...');
   const [block, version] = await Promise.all([
     new Block(session, convertToBlockId(versionId)).get(),
     new Version(session, versionId).get(),
@@ -79,18 +79,18 @@ export async function articleToTex(
   const { data } = version;
   if (data.kind !== KINDS.Article) throw new Error('Not an article');
 
-  session.log.info('Start walkArticle...');
+  session.log.debug('Start walkArticle...');
   const article = await walkArticle(session, data, tagged);
 
-  session.log.info('Start localizing images..');
+  session.log.debug('Start localizing images..');
   const imageFilenames = await writeImagesToFiles(
-    session.$logger,
+    session.log,
     article.images,
     opts?.images ?? 'images',
     buildPath,
   );
 
-  session.log.info('Finding tagged content and write to files...');
+  session.log.debug('Finding tagged content and write to files...');
   const taggedFilenames: Record<string, string> = Object.entries(article.tagged)
     .filter(([tag, children]) => {
       if (children.length === 0) {
@@ -111,7 +111,7 @@ export async function articleToTex(
     })
     .reduce((obj, { tag, filename }) => ({ ...obj, [tag]: filename }), {});
 
-  session.log.info('Building front matter...');
+  session.log.debug('Building front matter...');
   const frontMatter = stringifyFrontMatter(
     await buildFrontMatter(
       session,

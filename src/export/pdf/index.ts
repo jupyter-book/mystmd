@@ -9,7 +9,11 @@ import { ISession } from '../../session/types';
 
 const copyFile = util.promisify(fs.copyFile);
 
-export async function articleToPdf(session: Session, versionId: VersionId, opts: TexExportOptions) {
+export async function articleToPdf(
+  session: ISession,
+  versionId: VersionId,
+  opts: TexExportOptions,
+) {
   const outputPath = path.dirname(opts.filename);
   const basename = path.basename(opts.filename, path.extname(opts.filename));
   const tex_filename = `${basename}.tex`;
@@ -38,9 +42,9 @@ export async function articleToPdf(session: Session, versionId: VersionId, opts:
   const built_pdf = path.join(buildPath, pdf_filename);
   if (fs.existsSync(built_pdf)) {
     await copyFile(built_pdf, outputPdfFile);
-    session.$logger.debug(`Copied PDF file to ${outputPdfFile}`);
+    session.log.debug(`Copied PDF file to ${outputPdfFile}`);
   } else {
-    session.$logger.error(`Could not find ${built_pdf} as expected, pdf export failed`);
+    session.log.error(`Could not find ${built_pdf} as expected, pdf export failed`);
     throw Error(`Could not find ${built_pdf} as expected, pdf export failed`);
   }
 

@@ -33,7 +33,7 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
   const article = await walkArticle(session, data);
 
   const imageFilenames = await writeImagesToFiles(
-    session.$logger,
+    session.log,
     article.images,
     opts?.images ?? 'images',
   );
