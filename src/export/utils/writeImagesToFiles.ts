@@ -56,7 +56,7 @@ export async function writeImagesToFiles(
 ) {
   const takenFilenames: Set<string> = new Set();
   const filenames: Record<string, string> = {};
-  const p = await Promise.all(
+  await Promise.all(
     Object.entries(images).map(async ([key, image]) => {
       const [block] = await Promise.all([new Block(image.session, image.id).get(), image.get()]);
       const { src, content_type } = getImageSrc(image);
