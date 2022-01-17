@@ -19,7 +19,7 @@ function makeExecWrapper(command: string, log: Logger) {
     callback?: (error: child_process.ExecException | null, stdout: string, stderr: string) => void,
   ) {
     const childProcess = child_process.exec(command, callback);
-    childProcess.stdout?.on('data', (data: any) => log.info(data));
+    childProcess.stdout?.on('data', (data: any) => log.debug(data));
     childProcess.stderr?.on('data', (data: any) => log.error(data));
     return childProcess;
   };

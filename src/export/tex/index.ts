@@ -84,6 +84,7 @@ export async function articleToTex(
 
   session.log.info('Start localizing images..');
   const imageFilenames = await writeImagesToFiles(
+    session.$logger,
     article.images,
     opts?.images ?? 'images',
     buildPath,
@@ -147,7 +148,7 @@ export async function articleToTex(
     session.log.debug('Running JTEX...');
     const CMD = `jtex render ${content_tex}`;
     try {
-      const jtex = makeExecutable(CMD, session.$logger);
+      const jtex = makeExecutable(CMD, session.log);
       await jtex();
     } catch (err) {
       session.log.error(`Error while invoking jtex: ${err}`);

@@ -14,8 +14,10 @@ export async function articleToPdf(session: Session, versionId: VersionId, opts:
   const basename = path.basename(opts.filename, path.extname(opts.filename));
   const tex_filename = `${basename}.tex`;
   const pdf_filename = `${basename}.pdf`;
+  const log_filename = `${basename}.log`;
   const targetTexFilePath = path.join(outputPath, tex_filename);
   const outputPdfFile = path.join(outputPath, pdf_filename);
+  const outputLogFile = path.join(outputPath, log_filename);
 
   const article = await articleToTex(session, versionId, {
     ...opts,
@@ -34,13 +36,18 @@ export async function articleToPdf(session: Session, versionId: VersionId, opts:
   }
 
   const built_pdf = path.join(buildPath, pdf_filename);
-  if (!fs.existsSync(built_pdf)) {
-    session.log.error(`Could not find ${built_pdf} as expected, pdf export failed`);
+  if (fs.existsSync(built_pdf)) {
+    await copyFile(built_pdf, outputPdfFile);
+    session.$logger.debug(`Copied PDF file to ${outputPdfFile}`);
+  } else {
+    session.$logger.error(`Could not find ${built_pdf} as expected, pdf export failed`);
     throw Error(`Could not find ${built_pdf} as expected, pdf export failed`);
   }
 
-  await copyFile(built_pdf, outputPdfFile);
-  session.log.debug(`Copied PDF file to ${outputPdfFile}`);
+  const built_log = path.join(buildPath, log_filename);
+  if (fs.existsSync(built_log)) {
+    await copyFile(built_log, outputLogFile);
+  }
 
   return article;
 }

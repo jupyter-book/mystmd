@@ -8,9 +8,9 @@ export function makeBuildPaths(log: Logger, opts: TexExportOptions) {
   const outputFilename = path.basename(opts.filename);
   const buildPath =
     opts.useBuildFolder ?? !!opts.template ? path.join(outputPath, '_build') : outputPath;
-  log.info(`Output Path ${outputPath}`);
-  log.info(`Filename ${outputFilename}`);
-  log.info(`Build path set to ${buildPath}`);
+  log.debug(`Output Path ${outputPath}`);
+  log.debug(`Filename ${outputFilename}`);
+  log.debug(`Build path set to ${buildPath}`);
   if (!fs.existsSync(buildPath)) fs.mkdirSync(path.dirname(buildPath), { recursive: true });
   return {
     buildPath,
