@@ -65,7 +65,6 @@ export async function articleToTex(
   const { tagged } = await fetchTemplateTaggedBlocks(session, opts);
   const templateOptions = loadTemplateOptions(opts);
 
-  // Only use a build path if no template && no pdf target requested
   session.log.debug('Starting articleToTex...');
   session.log.debug(`With Options: ${JSON.stringify(opts)}`);
 
@@ -106,7 +105,7 @@ export async function articleToTex(
       const processed = await Promise.all(
         gifs.map(async ([key, gif]) => {
           session.log.debug(`processing ${gif}`);
-          const png = await extractFirstFrameOfGif(gif, session.log);
+          const png = await extractFirstFrameOfGif(gif, session.log, buildPath);
           return { key, gif, png };
         }),
       );

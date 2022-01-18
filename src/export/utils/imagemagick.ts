@@ -7,11 +7,18 @@ export function isImageMagickAvailable() {
   return which('convert', { nothrow: true });
 }
 
-export async function extractFirstFrameOfGif(gif: string, log: Logger): Promise<string | null> {
+export async function extractFirstFrameOfGif(
+  gif: string,
+  log: Logger,
+  buildPath: string,
+): Promise<string | null> {
   const dirname = path.dirname(gif);
   const basename = path.basename(gif, path.extname(gif));
   const png = path.join(dirname, `${basename}.png`);
-  const convert = makeExecutable(`convert ${gif}[0] ${png}`, log);
+  const convert = makeExecutable(
+    `convert ${path.join(buildPath, gif)}[0] ${path.join(buildPath, png)}`,
+    log,
+  );
   try {
     await convert();
   } catch (err) {
