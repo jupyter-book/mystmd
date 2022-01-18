@@ -10,6 +10,7 @@ import {
   ReferenceFormatTypes,
 } from '@curvenote/blocks';
 import { DEFAULT_IMAGE_WIDTH, nodeNames, Nodes, ReferenceKind } from '@curvenote/schema';
+import { encode } from 'html-entities';
 import { getEditorState } from '../../actions/utils';
 import { Block, Version } from '../../models';
 import { getLatestVersion } from '../../actions/getLatest';
@@ -36,6 +37,12 @@ export type ArticleState = {
   tagged: Record<string, ArticleStateChild[]>;
 };
 
+function getCodeHTML(content: string, language: string, linenumbers: boolean) {
+  return `<pre language="${language}"${linenumbers ? ' linenumbers=""' : ''}><code>${encode(
+    content,
+  )}</code></pre>`;
+}
+
 function getFigureHTML(
   id: string,
   src: string,
@@ -48,6 +55,16 @@ function getFigureHTML(
   <img src="${src}" align="${align}" alt="${title}" width="${width}%">
   <figcaption kind="fig">${caption}</figcaption>
 </figure>`;
+}
+
+function extractSafeHtmlTable(version: Version<Blocks.Output>) {
+  // TODO parse with JSDOM?
+  return '<p>[Table]</p>';
+}
+
+function outputHasHtmlTable(version: Version<Blocks.Output>) {
+  // TODO check for text/html output, check is contains a table
+  return false;
 }
 
 function outputHasImage(version: Version<Blocks.Output>) {
@@ -88,14 +105,19 @@ export async function walkArticle(
             templateTags: matchingTags.length > 0 ? matchingTags : undefined,
           };
         }
-        case KINDS.Output:
+        case KINDS.Code: {
+          const version = childVersion as Version<Blocks.Code>;
+          const html = getCodeHTML(version.data.content, version.data.language, false);
+          const state = getEditorState(html);
+          return {
+            state,
+            version: childVersion,
+          };
+        }
         case KINDS.Image: {
           const key = oxaLink('', childVersion.id);
-          const version = childVersion as Version<Blocks.Image | Blocks.Output>;
+          const version = childVersion as Version<Blocks.Image>;
           if (!key) return {};
-          if (version.data.kind === KINDS.Output) {
-            if (!outputHasImage(version as Version<Blocks.Output>)) return {};
-          }
           const html = getFigureHTML(
             articleChild.id,
             key,
@@ -107,6 +129,30 @@ export async function walkArticle(
           const state = getEditorState(html);
           images[key] = version;
           return { state, version };
+        }
+        case KINDS.Output: {
+          const key = oxaLink('', childVersion.id);
+          const version = childVersion as Version<Blocks.Output>;
+          if (!key) return {};
+          if (outputHasImage(version as Version<Blocks.Output>)) {
+            const html = getFigureHTML(
+              articleChild.id,
+              key,
+              childVersion.data.title,
+              // Note: the caption is on the block!
+              childBlock.data.caption ?? '',
+              style,
+            );
+            const state = getEditorState(html);
+            images[key] = version;
+            return { state, version };
+          }
+          if (outputHasHtmlTable(version)) {
+            const html = extractSafeHtmlTable(version);
+            const state = getEditorState(html);
+            return { state, version };
+          }
+          return {};
         }
         default:
           return {};

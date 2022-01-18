@@ -42,6 +42,7 @@
     "commander": "^8.3.0",
     "date-fns": "^2.25.0",
     "docx": "^7.3.0",
+    "html-entities": "^2.3.2",
     "jsdom": "^18.0.0",
     "jsonwebtoken": "^8.5.1",
     "node-fetch": "^2.6.5",
