@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { VersionId, KINDS } from '@curvenote/blocks';
+import { VersionId, KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
 import { writeDocx } from 'prosemirror-docx';
 import { Block, User, Version } from '../../models';
 import { getChildren } from '../../actions/getChildren';
@@ -38,7 +38,7 @@ export async function articleToWord(
     throw new Error(`The export source must be of kind "Article" not ${version.data.kind}`);
 
   const user = await new User(session, version.data.created_by).get();
-  const article = await walkArticle(session, version.data);
+  const article = await walkArticle(session, version.data, [], ReferenceFormatTypes.html);
   const buffers = await loadImagesToBuffers(article.images);
 
   const doc = await documentCreator({

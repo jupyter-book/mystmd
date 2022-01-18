@@ -38,6 +38,10 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
     if (!state) return;
     docxState.renderContent(state.doc);
   });
+  Object.values(article.references).map(({ state }) => {
+    if (!state) return;
+    docxState.renderContent(state.doc);
+  });
 
   // TODO: this could come from an existing word doc
   const styles = fs.readFileSync(pkgpath('styles/simple.xml'), 'utf-8');

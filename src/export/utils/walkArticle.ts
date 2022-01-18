@@ -27,6 +27,7 @@ export interface ArticleStateReference {
   label: string;
   bibtex: string;
   version: Version<Blocks.Reference>;
+  state?: ReturnType<typeof getEditorState>;
 }
 
 export type ArticleState = {
@@ -60,6 +61,7 @@ export async function walkArticle(
   session: ISession,
   data: Blocks.Article,
   templateTags: string[] = [],
+  referenceFormat: ReferenceFormatTypes = ReferenceFormatTypes.bibtex,
 ): Promise<ArticleState> {
   const images: ArticleState['images'] = {};
   const referenceKeys: Set<string> = new Set();
@@ -155,7 +157,7 @@ export async function walkArticle(
       if (!id) return;
       // Always load the latest version for references!
       const { version } = await getLatestVersion<Blocks.Reference>(session, id, {
-        format: ReferenceFormatTypes.bibtex,
+        format: referenceFormat,
       });
       if (version.data.kind !== KINDS.Reference) return;
       const { content } = version.data;
@@ -163,6 +165,8 @@ export async function walkArticle(
       const label = content.slice(content.indexOf('{') + 1, content.indexOf(','));
 
       const existing = references[basekey(key)];
+      const state =
+        referenceFormat === ReferenceFormatTypes.html ? getEditorState(content) : undefined;
       if (existing) {
         const ve = existing.version.id.version;
         const v = version.id.version;
@@ -172,6 +176,7 @@ export async function walkArticle(
             label,
             bibtex: content,
             version,
+            state,
           };
         }
       } else {
@@ -179,6 +184,7 @@ export async function walkArticle(
           label,
           bibtex: content,
           version,
+          state,
         };
       }
     }),
