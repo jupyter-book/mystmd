@@ -1,12 +1,13 @@
 import * as fs from 'fs';
 import { Document } from 'docx';
+import { Node as ProsemirrorNode } from 'prosemirror-model';
 import { DocxSerializerState } from 'prosemirror-docx';
 import pkgpath from '../../pkgpath';
 import { Block, User, Version } from '../../models';
 import { getNodesAndMarks } from './schema';
 import { ArticleState } from '../utils';
-import { createArticleTitle } from './titles';
-import { createSingleDocument } from './utils';
+import { createArticleTitle, createReferenceTitle } from './titles';
+import { createSingleDocument, getDefaultSerializerOptions } from './utils';
 import { ISession } from '../../session/types';
 
 export interface LoadedArticle {
@@ -24,12 +25,7 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
 
   const { nodes, marks } = getNodesAndMarks();
 
-  const docxState = new DocxSerializerState(nodes, marks, {
-    getImageBuffer(key: string) {
-      if (!buffers[key]) throw new Error('Could not decode image from oxa link');
-      return buffers[key];
-    },
-  });
+  const docxState = new DocxSerializerState(nodes, marks, getDefaultSerializerOptions(buffers));
 
   // Add the title
   docxState.renderContent(await createArticleTitle(session, block.data));
@@ -37,6 +33,17 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
   article.children.forEach(({ state }) => {
     if (!state) return;
     docxState.renderContent(state.doc);
+  });
+
+  // render references with title if they exist
+  const referencesDocStates = Object.values(article.references)
+    .map(({ state }) => state?.doc)
+    .filter((docState): docState is ProsemirrorNode<any> => !!docState);
+  if (referencesDocStates.length > 0) {
+    docxState.renderContent(createReferenceTitle());
+  }
+  referencesDocStates.forEach((docState) => {
+    docxState.renderContent(docState);
   });
 
   // TODO: this could come from an existing word doc
