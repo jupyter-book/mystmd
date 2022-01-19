@@ -38,7 +38,7 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
     if (!state) return;
     docxState.renderContent(state.doc);
   });
-  Object.values(article.references).map(({ state }) => {
+  Object.values(article.references).forEach(({ state }) => {
     if (!state) return;
     docxState.renderContent(state.doc);
   });
