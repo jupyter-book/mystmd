@@ -11,7 +11,8 @@ import {
 } from '@curvenote/blocks';
 import { DEFAULT_IMAGE_WIDTH, nodeNames, Nodes, ReferenceKind } from '@curvenote/schema';
 import { encode } from 'html-entities';
-import { getEditorState } from '../../actions/utils';
+import { EditorState } from 'prosemirror-state';
+import { getEditorState, getEditorStateFromHTML } from '../../actions/utils';
 import { Block, Version } from '../../models';
 import { getLatestVersion } from '../../actions/getLatest';
 import { getImageSrc } from './getImageSrc';
@@ -57,14 +58,20 @@ function getFigureHTML(
 </figure>`;
 }
 
-function extractSafeHtmlTable(version: Version<Blocks.Output>) {
-  // TODO parse with JSDOM?
-  return '<p>[Table]</p>';
+function getEditorStateFromFirstHTMLOutput(version: Version<Blocks.Output>) {
+  return version.data.outputs.reduce<EditorState<any> | null>((state, { kind, content }) => {
+    if (state != null) return state;
+    if (kind === OutputSummaryKind.html && content) {
+      return getEditorStateFromHTML(content);
+    }
+    return null;
+  }, null);
 }
 
-function outputHasHtmlTable(version: Version<Blocks.Output>) {
-  // TODO check for text/html output, check is contains a table
-  return false;
+function outputHasHtml(version: Version<Blocks.Output>) {
+  return version.data.outputs.reduce((found, { kind, content }) => {
+    return found || (kind === OutputSummaryKind.html && content);
+  });
 }
 
 function outputHasImage(version: Version<Blocks.Output>) {
@@ -147,9 +154,9 @@ export async function walkArticle(
             images[key] = version;
             return { state, version };
           }
-          if (outputHasHtmlTable(version)) {
-            const html = extractSafeHtmlTable(version);
-            const state = getEditorState(html);
+          if (outputHasHtml(version)) {
+            const state = getEditorStateFromFirstHTMLOutput(version);
+            if (state == null) return {};
             return { state, version };
           }
           return {};
