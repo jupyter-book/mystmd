@@ -9,6 +9,7 @@ import { defaultTemplate } from './template';
 import { ISession } from '../../session/types';
 
 export * from './schema';
+export { getDefaultSerializerOptions } from './utils';
 export type { LoadedArticle } from './template';
 
 export type WordOptions = {

@@ -6,7 +6,7 @@ import { Block, User, Version } from '../../models';
 import { getNodesAndMarks } from './schema';
 import { ArticleState } from '../utils';
 import { createArticleTitle, createReferenceTitle } from './titles';
-import { createSingleDocument } from './utils';
+import { createSingleDocument, getDefaultSerializerOptions } from './utils';
 import { ISession } from '../../session/types';
 
 export interface LoadedArticle {
@@ -24,12 +24,7 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
 
   const { nodes, marks } = getNodesAndMarks();
 
-  const docxState = new DocxSerializerState(nodes, marks, {
-    getImageBuffer(key: string) {
-      if (!buffers[key]) throw new Error('Could not decode image from oxa link');
-      return buffers[key];
-    },
-  });
+  const docxState = new DocxSerializerState(nodes, marks, getDefaultSerializerOptions(buffers));
 
   // Add the title
   docxState.renderContent(await createArticleTitle(session, block.data));

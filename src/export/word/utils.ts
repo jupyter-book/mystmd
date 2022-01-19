@@ -30,3 +30,12 @@ export function createSingleDocument(
   });
   return doc;
 }
+
+export function getDefaultSerializerOptions(buffers: Record<string, Buffer>) {
+  return {
+    getImageBuffer(key: string) {
+      if (!buffers[key]) throw new Error('Could not decode image from oxa link');
+      return buffers[key];
+    },
+  };
+}
