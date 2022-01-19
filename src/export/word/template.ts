@@ -5,7 +5,7 @@ import pkgpath from '../../pkgpath';
 import { Block, User, Version } from '../../models';
 import { getNodesAndMarks } from './schema';
 import { ArticleState } from '../utils';
-import { createArticleTitle } from './titles';
+import { createArticleTitle, createReferenceTitle } from './titles';
 import { createSingleDocument } from './utils';
 import { ISession } from '../../session/types';
 
@@ -38,7 +38,12 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
     if (!state) return;
     docxState.renderContent(state.doc);
   });
-  Object.values(article.references).forEach(({ state }) => {
+
+  const references = Object.values(article.references);
+  if (references.length > 0) {
+    docxState.renderContent(createReferenceTitle());
+  }
+  references.forEach(({ state }) => {
     if (!state) return;
     docxState.renderContent(state.doc);
   });

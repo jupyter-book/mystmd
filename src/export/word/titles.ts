@@ -22,3 +22,13 @@ export async function createArticleTitle(session: ISession, data: BlockDTO) {
   const doc = schema.nodes.doc.createAndFill({}, [header, subtitle]) as Node;
   return doc;
 }
+
+export function createReferenceTitle() {
+  const schema = getSchema('full');
+  const header = schema.nodes.heading.createAndFill(
+    { level: 2 },
+    schema.text('References'),
+  ) as Node;
+  const doc = schema.nodes.doc.createAndFill({}, [header]) as Node;
+  return doc;
+}
