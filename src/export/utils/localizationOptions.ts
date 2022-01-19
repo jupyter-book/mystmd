@@ -11,7 +11,10 @@ export function localizationOptions(
 ): SharedOptions {
   return {
     localizeImageSrc: (src) => imageFilenames[src],
-    localizeId: (id) => id.split('#')[1], // TODO: this is a hack
+    localizeId: (maybeOxaLink: string) => {
+      const oxa = oxaLinkToId(maybeOxaLink);
+      return oxa?.id ?? oxa?.block.block ?? maybeOxaLink;
+    },
     localizeCitation: (key) => references[basekey(key)].label,
     localizeLink: (href) => {
       const oxa = oxaLinkToId(href);

@@ -119,7 +119,7 @@ export async function walkArticle(
           const version = childVersion as Version<Blocks.Image>;
           if (!key) return {};
           const html = getFigureHTML(
-            articleChild.id,
+            articleChild.src.block,
             key,
             childVersion.data.title,
             // Note: the caption is on the block!
