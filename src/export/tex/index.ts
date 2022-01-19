@@ -25,6 +25,7 @@ import {
   loadTemplateOptions,
   throwIfTemplateButNoJtex,
 } from './template';
+import { extractFirstFrameOfGif, isImageMagickAvailable } from '../utils/imagemagick';
 
 export function createTempFolder() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'curvenote'));
@@ -64,7 +65,6 @@ export async function articleToTex(
   const { tagged } = await fetchTemplateTaggedBlocks(session, opts);
   const templateOptions = loadTemplateOptions(opts);
 
-  // Only use a build path if no template && no pdf target requested
   session.log.debug('Starting articleToTex...');
   session.log.debug(`With Options: ${JSON.stringify(opts)}`);
 
@@ -89,6 +89,37 @@ export async function articleToTex(
     opts?.images ?? 'images',
     buildPath,
   );
+
+  session.log.debug('Processing GIFS if present...');
+  const gifs = Object.entries(imageFilenames).filter(([_, filename]) => {
+    const ext = path.extname(filename);
+    return ext.toLowerCase() === '.gif';
+  });
+  if (gifs.length > 0) {
+    if (!isImageMagickAvailable()) {
+      session.log.warn(
+        'GIF images are references, but Imagemagick.convert not available to convert them. This may result in invalid output and/or an invalid pdf file',
+      );
+    } else {
+      session.log.debug(`Processing ${gifs.length} GIFs`);
+      const processed = await Promise.all(
+        gifs.map(async ([key, gif]) => {
+          session.log.debug(`processing ${gif}`);
+          const png = await extractFirstFrameOfGif(gif, session.log, buildPath);
+          return { key, gif, png };
+        }),
+      );
+      processed.forEach(({ key, gif, png }) => {
+        if (png === null) {
+          session.log.error(
+            `Could not extract image from ${gif}, references to ${key} will be invalid`,
+          );
+          return;
+        }
+        imageFilenames[key] = png;
+      }, []);
+    }
+  }
 
   session.log.debug('Finding tagged content and write to files...');
   const taggedFilenames: Record<string, string> = Object.entries(article.tagged)

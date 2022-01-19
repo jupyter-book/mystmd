@@ -358,10 +358,10 @@
   resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.1.5.tgz#a062361da587a3468c3557413c773b4035525f62"
   integrity sha512-DWpeA3QahGTyFi0mwRbdzN1NZUOe5xLi6UQ+gP94EoK5mpWQV+ZI0oTy0qy+W3mNib34SYuCsqdrNW/DUOw+iw==
 
-"@curvenote/schema@0.11.2":
-  version "0.11.2"
-  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.11.2.tgz#c3975aea3861ee37f9d4fe710de0bbdfc291cf5f"
-  integrity sha512-2qL+ntLuC3A0ogQ4M0KzQkhXlqpGxvmpjtX0RqiWZ/5m1BpZrGeGjvAKXJcP0yS5vHa6LYdJbSzZqQ14A6vpBg==
+"@curvenote/schema@0.11.6":
+  version "0.11.6"
+  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.11.6.tgz#2c741a58d10a672fabb4499672713ae3d8c727a2"
+  integrity sha512-7yLKbnWwJWfMdPSnsYgsZxfgDQHw96dQDzswOv+s82IRO27YA55dnvWnV0VO3g6IXS2uP3H5SwL0lVWLatttcg==
   dependencies:
     "@wordpress/wordcount" "^3.2.2"
     markdown-it "^12.2.0"
@@ -2587,6 +2587,11 @@ html-encoding-sniffer@^3.0.0:
   integrity sha512-oWv4T4yJ52iKrufjnyZPkrN0CH3QnrUqdB6In1g5Fe1mia8GmF36gnfNySxoZtxD5+NmYw1EElVXiBk93UeskA==
   dependencies:
     whatwg-encoding "^2.0.0"
+
+html-entities@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/html-entities/-/html-entities-2.3.2.tgz#760b404685cb1d794e4f4b744332e3b00dcfe488"
+  integrity sha512-c3Ab/url5ksaT0WyleslpBEthOzWhrjQbg75y7XUsfSzi3Dgzt0l8w5e7DylRn15MTlMMD58dTfzddNS2kcAjQ==
 
 html-escaper@^2.0.0:
   version "2.0.2"
