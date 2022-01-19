@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { Document } from 'docx';
+import { Node as ProsemirrorNode } from 'prosemirror-model';
 import { DocxSerializerState } from 'prosemirror-docx';
 import pkgpath from '../../pkgpath';
 import { Block, User, Version } from '../../models';
@@ -34,13 +35,15 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
     docxState.renderContent(state.doc);
   });
 
-  const references = Object.values(article.references);
-  if (references.length > 0) {
+  // render references with title if they exist
+  const referencesDocStates = Object.values(article.references)
+    .map(({ state }) => state?.doc)
+    .filter((docState): docState is ProsemirrorNode<any> => !!docState);
+  if (referencesDocStates.length > 0) {
     docxState.renderContent(createReferenceTitle());
   }
-  references.forEach(({ state }) => {
-    if (!state) return;
-    docxState.renderContent(state.doc);
+  referencesDocStates.forEach((docState) => {
+    docxState.renderContent(docState);
   });
 
   // TODO: this could come from an existing word doc
