@@ -11,7 +11,10 @@ export function makeBuildPaths(log: Logger, opts: TexExportOptions) {
   log.debug(`Output Path ${outputPath}`);
   log.debug(`Filename ${outputFilename}`);
   log.debug(`Build path set to ${buildPath}`);
-  if (!fs.existsSync(buildPath)) fs.mkdirSync(path.dirname(buildPath), { recursive: true });
+  if (!fs.existsSync(buildPath)) {
+    log.debug(`Creating build path ${buildPath}`);
+    fs.mkdirSync(buildPath, { recursive: true });
+  }
   return {
     buildPath,
     outputPath,

@@ -91,7 +91,7 @@ export async function articleToTex(
   );
 
   session.log.debug('Processing GIFS if present...');
-  const gifs = Object.entries(imageFilenames).filter(([_, filename]) => {
+  const gifs = Object.entries(imageFilenames).filter(([, filename]) => {
     const ext = path.extname(filename);
     return ext.toLowerCase() === '.gif';
   });
@@ -132,11 +132,12 @@ export async function articleToTex(
     })
     .map(([tag, children]) => {
       const filename = `${tag}.tex`; // keep filenames relative to buildPath
-      session.log.debug(`Writing ${children.length} tagged block(s) to ${filename}`);
+      const pathname = path.join(buildPath, filename);
+      session.log.debug(`Writing ${children.length} tagged block(s) to ${pathname}`);
       writeBlocksToFile(
         children,
         (child) => convertAndLocalizeChild(session, child, imageFilenames, article.references),
-        path.join(buildPath, filename),
+        pathname,
       );
       return { tag, filename };
     })
