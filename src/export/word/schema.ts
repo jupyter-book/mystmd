@@ -21,7 +21,7 @@ interface Styles {
   callout?: IParagraphOptions;
   equation?: IParagraphOptions;
   iframe?: IParagraphOptions;
-  figcaption?: IParagraphOptions;
+  figcaption?: IParagraphOptions & { suffix?: string };
   time?: IRunOptions;
 }
 
@@ -141,9 +141,10 @@ export function getNodesAndMarks(styles?: Styles) {
       const { kind } = node.attrs as Nodes.Figcaption.Attrs;
       const id = (state as any).nextCaptionId;
       const numbered = (state as any).nextCaptionNumbered;
+      const options = styles?.figcaption?.suffix ? { suffix: styles.figcaption.suffix } : undefined;
       if (numbered && kind) {
         const captionKind = figCaptionToWordCaption(kind);
-        state.captionLabel(id, captionKind);
+        state.captionLabel(id, captionKind, options);
       }
       state.renderInline(node);
       state.closeBlock(node, { ...defaultStyles.figcaption, ...styles?.figcaption });
