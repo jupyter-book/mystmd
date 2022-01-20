@@ -313,8 +313,8 @@ export class DocxSerializerState<S extends Schema = any> {
     this.children = actualChildren;
   }
 
-  captionLabel(id: string, kind: 'Figure' | 'Table') {
-    this.current.push(...[createReferenceBookmark(id, kind, `${kind} `), new TextRun(': ')]);
+  captionLabel(id: string, kind: 'Figure' | 'Table', { suffix } = { suffix: ': ' }) {
+    this.current.push(...[createReferenceBookmark(id, kind, `${kind} `), new TextRun(suffix)]);
   }
 
   $footnoteCounter = 0;
