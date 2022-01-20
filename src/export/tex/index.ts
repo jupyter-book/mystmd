@@ -173,7 +173,7 @@ export async function articleToTex(
 
   session.log.debug('Writing bib file...');
   // Write out the references
-  await writeBibtex(article.references, path.join(buildPath, 'main.bib'));
+  await writeBibtex(session, article.references, path.join(buildPath, 'main.bib'));
 
   // run templating
   if (opts.template) {

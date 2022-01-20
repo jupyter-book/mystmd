@@ -29,5 +29,5 @@ export async function exportAll(
     (obj, a) => ({ ...obj, ...a?.references }),
     {} as ArticleState['references'],
   );
-  await writeBibtex(references, bibtex);
+  await writeBibtex(session, references, bibtex);
 }
