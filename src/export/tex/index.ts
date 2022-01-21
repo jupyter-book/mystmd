@@ -12,12 +12,12 @@ import { writeBibtex } from '../utils/writeBibtex';
 import { buildFrontMatter, stringifyFrontMatter } from './frontMatter';
 import {
   ArticleStateChild,
-  ArticleStateReference,
   exportFromOxaLink,
   walkArticle,
   writeImagesToFiles,
   makeBuildPaths,
   makeExecutable,
+  ArticleState,
 } from '../utils';
 import { TexExportOptions } from './types';
 import {
@@ -35,7 +35,7 @@ function convertAndLocalizeChild(
   session: ISession,
   child: ArticleStateChild,
   imageFilenames: Record<string, string>,
-  references: Record<string, ArticleStateReference>,
+  references: ArticleState['references'],
 ) {
   if (!child.version || !child.state) return '';
   const sep = oxaLink(session.SITE_URL, child.version.id);

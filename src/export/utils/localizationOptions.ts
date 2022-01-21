@@ -15,7 +15,13 @@ export function localizationOptions(
       const oxa = oxaLinkToId(maybeOxaLink);
       return oxa?.id ?? oxa?.block.block ?? maybeOxaLink;
     },
-    localizeCitation: (key) => references[basekey(key)].label,
+    localizeCitation: (key) => {
+      const label = references[basekey(key)]?.label;
+      if (label) return label;
+      session.log.error(`The reference for "${key}" was not loaded.`);
+      // Return something safe for latex and markdown
+      return 'unknownKey';
+    },
     localizeLink: (href) => {
       const oxa = oxaLinkToId(href);
       if (!oxa) return href;
