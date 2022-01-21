@@ -16,7 +16,7 @@ export async function projectToJupyterBook(session: ISession, projectId: Project
     new Project(session, projectId).get(),
     getLatestVersion<Blocks.Navigation>(session, { project: projectId, block: 'nav' }),
   ]);
-  writeConfig({
+  writeConfig(session, {
     title: project.data.title,
     author: project.data.team,
     url: `${session.SITE_URL}/@${project.data.team}/${project.data.name}`,

@@ -16,6 +16,8 @@ function contentTypeToExt(contentType: string): string {
     case 'image/jpg':
     case 'image/jpeg':
       return 'jpg';
+    case 'image/svg+xml':
+      return 'svg';
     case 'application/json':
       return 'json';
     default:

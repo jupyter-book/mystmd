@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { ISession } from '../../session/types';
 
 export interface Options {
   title: string;
@@ -46,6 +47,8 @@ repository:
 
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
 html:
+  # favicon: images/favicon.ico
+  # google_analytics_id: G-XXX or UA-XXX
   use_issues_button: true
   use_repository_button: true
   use_edit_page_button: true
@@ -54,7 +57,13 @@ html:
   return settings;
 }
 
-export function writeConfig(opts: Options) {
+export function writeConfig(session: ISession, opts: Options) {
+  const pathname = path.join('.', '_config.yml');
+  if (fs.existsSync(pathname)) {
+    session.log.debug(`The jupyter-book config already exists, ${pathname}, skipping write.`);
+    return;
+  }
+  session.log.debug(`Writing jupyter-book config: ${pathname}`);
   const config = createYaml(opts);
   fs.writeFileSync(path.join('.', '_config.yml'), config);
 }
