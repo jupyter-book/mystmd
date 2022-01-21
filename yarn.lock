@@ -4342,10 +4342,10 @@ prosemirror-collab@^1.2.2:
   dependencies:
     prosemirror-state "^1.0.0"
 
-prosemirror-docx@^0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/prosemirror-docx/-/prosemirror-docx-0.0.10.tgz#099fd67054438c72674154d3bbe5ef58bcb14814"
-  integrity sha512-mzO0HeYyHyYzrULHuyi+JCs39B7yww/cnY46Rr7Vi30q+IDJgWRSOC0gKwYW3+w2X8IIblfhxCz/217VPUDfWA==
+prosemirror-docx@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/prosemirror-docx/-/prosemirror-docx-0.0.11.tgz#2d43dd62b00f82f400b2530e2413d484bb5ea015"
+  integrity sha512-GqPl0F9DZufjJorAqEAD7XMeQjq4nCUgDsPtCtyHEKf3SZ67niqxmaokjgJPPvl3n778HZD3ASZ1/op7jZujdw==
   dependencies:
     buffer-image-size "^0.6.4"
     docx "^7.3.0"
