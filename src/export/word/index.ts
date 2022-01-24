@@ -3,7 +3,7 @@ import { VersionId, KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
 import { writeDocx } from 'prosemirror-docx';
 import { Block, User, Version } from '../../models';
 import { getChildren } from '../../actions/getChildren';
-import { loadImagesToBuffers, walkArticle } from '../utils';
+import { loadImagesToBuffers, walkArticle, assertEndsInExtension } from '../utils';
 import { exportFromOxaLink } from '../utils/exportWrapper';
 import { defaultTemplate } from './template';
 import { ISession } from '../../session/types';
@@ -17,11 +17,6 @@ export type WordOptions = {
   [key: string]: any;
 };
 
-function assertEndsInDocx(filename: string) {
-  if (!filename.endsWith('.docx'))
-    throw new Error(`The filename must end with '.docx': "${filename}"`);
-}
-
 export async function articleToWord(
   session: ISession,
   versionId: VersionId,
@@ -29,7 +24,7 @@ export async function articleToWord(
   documentCreator = defaultTemplate,
 ) {
   const { filename, ...docOpts } = opts;
-  assertEndsInDocx(filename);
+  assertEndsInExtension(filename, 'docx');
   const [block, version] = await Promise.all([
     new Block(session, versionId).get(),
     new Version(session, versionId).get(),
