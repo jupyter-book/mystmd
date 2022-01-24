@@ -1,7 +1,7 @@
 import fs from 'fs';
 import YAML from 'yaml';
 import { Blocks } from '@curvenote/blocks';
-import { Block, Version } from '../..';
+import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
 
 interface Options {
@@ -19,8 +19,12 @@ type JupyterBookChapter = {
   sections?: JupyterBookChapter[];
 };
 
+function getName(block: Block): string {
+  return block.data.name || block.id.block;
+}
+
 function recurseToc(item: FolderItem): JupyterBookChapter {
-  const chapter: JupyterBookChapter = { file: item.block.data.name as string };
+  const chapter: JupyterBookChapter = { file: getName(item.block) };
   if (item.children && item.children.length > 0) {
     chapter.sections = item.children.map(recurseToc);
   }
@@ -55,7 +59,7 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
 
   const tocData = {
     format: 'jb-book',
-    root: items[0].block.data.name,
+    root: getName(items[0].block),
     chapters: items.slice(1).map(recurseToc),
   };
 

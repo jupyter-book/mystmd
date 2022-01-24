@@ -58,6 +58,7 @@ export class Session implements ISession {
     const withBase = url.startsWith(this.API_URL) ? url : `${this.API_URL}${url}`;
     const fullUrl = withQuery(withBase, query);
     const headers = await getHeaders(this.log, this.$tokens);
+    this.log.debug(`GET ${url}`);
     const response = await fetch(fullUrl, {
       method: 'get',
       headers: {
@@ -78,6 +79,7 @@ export class Session implements ISession {
   async post(url: string, data: JsonObject, method: 'post' | 'patch' = 'post'): Response {
     if (url.startsWith(this.API_URL)) url = url.replace(this.API_URL, '');
     const headers = await getHeaders(this.log, this.$tokens);
+    this.log.debug(`${method.toUpperCase()} ${url}`);
     const response = await fetch(`${this.API_URL}${url}`, {
       method,
       headers: {

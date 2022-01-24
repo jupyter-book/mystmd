@@ -10,7 +10,7 @@ export const exportFromOxaLink =
       session: ISession,
       id: VersionId,
       opts: { filename: string },
-    ) => Promise<ArticleState>,
+    ) => Promise<ArticleState | void>,
   ) =>
   async (session: ISession, link: string, filename: string, opts?: Record<string, string>) => {
     const id = oxaLinkToId(link);

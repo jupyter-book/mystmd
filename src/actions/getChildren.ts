@@ -8,7 +8,7 @@ export async function getChildren(session: ISession, versionId: VersionId) {
   const { status, json } = await session.get(url);
   if (status !== 200) throw new Error('Could not get children');
   session.log.debug(
-    `Version children include ${json.blocks.items.length} block(s) and ${json.versions.items} version(s)`,
+    `Version children include ${json.blocks.items.length} block(s) and ${json.versions.items.length} version(s)`,
   );
   const blocks = json.blocks.items.map((item: any) => {
     const block = new Block(session, item.id);
