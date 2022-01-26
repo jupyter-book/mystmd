@@ -6,9 +6,10 @@ export async function writeBibtex(
   session: ISession,
   references: ArticleState['references'],
   filename = 'main.bib',
+  opts = { alwaysWriteFile: true },
 ) {
   const bibliography = Object.entries(references).map(([, { bibtex }]) => bibtex);
-  if (bibliography.length === 0) {
+  if (bibliography.length === 0 && !opts.alwaysWriteFile) {
     session.log.debug('No references to write for the project.');
     return;
   }
