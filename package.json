@@ -35,8 +35,8 @@
     "lint:format:fix": "yarn copy:version; prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
-    "@curvenote/blocks": "^1.1.5",
-    "@curvenote/schema": "^0.11.8",
+    "@curvenote/blocks": "1.1.6",
+    "@curvenote/schema": "0.11.8",
     "@reduxjs/toolkit": "^1.6.2",
     "chalk": "^4.1.2",
     "commander": "^8.3.0",
