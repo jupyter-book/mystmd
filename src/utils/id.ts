@@ -172,3 +172,9 @@ export function ensureConsistentChildren(oldOrder: string[], oldChildren: BlockC
   );
   return { order, children };
 }
+
+export function splitScopedTemplateId(scopedId: string) {
+  const [owner, templateId] = scopedId.split('/');
+  if (!templateId) throw Error(`Malformed scopedId: ${scopedId}`);
+  return { owner, templateId, isPrivate: owner !== 'public' };
+}

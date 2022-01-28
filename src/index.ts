@@ -13,3 +13,4 @@ export * from './blocks';
 export * from './drafts';
 export * from './comments';
 export * from './translators';
+export * from './templates';
