@@ -20,7 +20,13 @@ export async function fetchTemplateTaggedBlocks(
   let tagged: string[] = [];
   if (opts.template) {
     session.log.debug(`Fetching template spec for "${opts.template}"`);
-    const template = await new Template(session, opts.template).get();
+    let template;
+    try {
+      template = await new Template(session, `tex/${opts.template}`).get();
+    } catch (err) {
+      // TODO - remove after private templates deploy settles
+      template = await new Template(session, opts.template).get();
+    }
     tagged = template.data.config.tagged.map((t) => t.id);
     session.log.debug(
       `Template '${opts.template}' supports following tagged content: ${tagged.join(', ')}`,
