@@ -273,16 +273,16 @@ export enum NavListItemKindEnum {
 
 export interface NavListGroupItemDTO {
   id: string;
-  title: string;
   kind: NavListItemKindEnum.Group;
+  title: string;
 }
 
 export interface NavListBlockItemDTO {
   id: string;
-  parentId: string | null;
-  title: string;
-  blockId: BlockId;
   kind: NavListItemKindEnum.Item;
+  title: string;
+  parentId: string | null;
+  blockId: BlockId;
 }
 
 export type NavListItemDTO = NavListBlockItemDTO | NavListGroupItemDTO;

@@ -4,6 +4,8 @@ import {
   KINDS,
   NavigationFormatTypes,
   NavListItemDTO,
+  NavListBlockItemDTO,
+  NavListGroupItemDTO,
   NavListItemKindEnum,
 } from './types';
 
@@ -24,15 +26,21 @@ export function fromDTO(dto: JsonObject): PartialNavigation {
     items:
       dto.items.map((item: NavListItemDTO) => {
         if (item.kind === NavListItemKindEnum.Group) {
-          return item;
+          const navItem: NavListGroupItemDTO = {
+            id: item.id ?? '',
+            kind: NavListItemKindEnum.Group,
+            title: item.title ?? '',
+          };
+          return navItem;
         }
-        return {
+        const navItem: NavListBlockItemDTO = {
           id: item.id ?? '',
-          parentId: item.parentId ?? null,
-          title: item.title ?? '',
-          blockId: item.blockId ?? null,
           kind: NavListItemKindEnum.Item,
+          title: item.title ?? '',
+          parentId: item.parentId ?? null,
+          blockId: item.blockId ?? null,
         };
+        return navItem;
       }) ?? [],
   };
 }
