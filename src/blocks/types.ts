@@ -266,12 +266,26 @@ export type FileMetadata = {
   md5: string;
 };
 
-export interface NavListItemDTO {
+export enum NavListItemKindEnum {
+  Group = 'group',
+  Item = 'item',
+}
+
+export interface NavListGroupItemDTO {
   id: string;
-  parentId: string | null;
+  kind: NavListItemKindEnum.Group;
   title: string;
+}
+
+export interface NavListBlockItemDTO {
+  id: string;
+  kind: NavListItemKindEnum.Item;
+  title: string;
+  parentId: string | null;
   blockId: BlockId;
 }
+
+export type NavListItemDTO = NavListBlockItemDTO | NavListGroupItemDTO;
 
 export enum XClientName {
   app = 'Curvenote Web Client',
