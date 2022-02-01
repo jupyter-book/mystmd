@@ -72,7 +72,7 @@ function getEditorStateFromFirstHTMLOutput(version: Version<Blocks.Output>) {
 function outputHasHtml(version: Version<Blocks.Output>) {
   return version.data.outputs.reduce((found, { kind, content }) => {
     return found || (kind === OutputSummaryKind.html && content);
-  });
+  }, []);
 }
 
 function outputHasImage(version: Version<Blocks.Output>) {
