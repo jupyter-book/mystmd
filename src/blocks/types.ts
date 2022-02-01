@@ -287,10 +287,6 @@ export interface NavListBlockItemDTO {
 
 export type NavListItemDTO = NavListBlockItemDTO | NavListGroupItemDTO;
 
-export function isNavListBlockDTO(navItem: NavListItemDTO): navItem is NavListBlockItemDTO {
-  return navItem.kind === NavListItemKindEnum.Item;
-}
-
 export enum XClientName {
   app = 'Curvenote Web Client',
   ext = 'Curvenote Chrome Extension',
