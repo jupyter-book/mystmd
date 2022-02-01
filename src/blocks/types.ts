@@ -268,13 +268,13 @@ export type FileMetadata = {
 
 export enum NavListItemKindEnum {
   Group = 'group',
-  Item = 'item'
+  Item = 'item',
 }
 
 export interface NavListGroupItemDTO {
   id: string;
   title: string;
-  kind: NavListItemKindEnum.Group
+  kind: NavListItemKindEnum.Group;
 }
 
 export interface NavListBlockItemDTO {
@@ -282,10 +282,10 @@ export interface NavListBlockItemDTO {
   parentId: string | null;
   title: string;
   blockId: BlockId;
-  kind: NavListItemKindEnum.Item
+  kind: NavListItemKindEnum.Item;
 }
 
-export type NavListItemDTO = NavListBlockItemDTO | NavListGroupItemDTO
+export type NavListItemDTO = NavListBlockItemDTO | NavListGroupItemDTO;
 
 export function isNavListBlockDTO(navItem: NavListItemDTO): navItem is NavListBlockItemDTO {
   return navItem.kind === NavListItemKindEnum.Item;
