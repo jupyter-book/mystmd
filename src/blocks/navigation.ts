@@ -1,5 +1,5 @@
 import { JsonObject } from '../types';
-import { BaseVersion, KINDS, NavigationFormatTypes, NavListItemDTO } from './types';
+import { BaseVersion, KINDS, NavigationFormatTypes, NavListItemDTO, isNavListBlockDTO } from './types';
 
 export interface PartialNavigation {
   items: NavListItemDTO[];
@@ -18,9 +18,9 @@ export function fromDTO(dto: JsonObject): PartialNavigation {
     items:
       dto.items.map((item: NavListItemDTO) => ({
         id: item.id ?? '',
-        parentId: item.parentId ?? null,
+        parentId: (isNavListBlockDTO(item) && item.parentId) ?? null,
         title: item.title ?? '',
-        blockId: item.blockId ?? null,
+        blockId: (isNavListBlockDTO(item) && item.blockId) ?? null,
       })) ?? [],
   };
 }

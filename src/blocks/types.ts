@@ -266,11 +266,29 @@ export type FileMetadata = {
   md5: string;
 };
 
-export interface NavListItemDTO {
+export enum NavListItemKindEnum {
+  Group = 'group',
+  Item = 'item'
+}
+
+export interface NavListGroupItemDTO {
+  id: string;
+  title: string;
+  kind: NavListItemKindEnum.Group
+}
+
+export interface NavListBlockItemDTO {
   id: string;
   parentId: string | null;
   title: string;
   blockId: BlockId;
+  kind: NavListItemKindEnum.Item
+}
+
+export type NavListItemDTO = NavListBlockItemDTO | NavListGroupItemDTO
+
+export function isNavListBlockDTO(navItem: NavListItemDTO): navItem is NavListBlockItemDTO {
+  return navItem.kind === NavListItemKindEnum.Item;
 }
 
 export enum XClientName {
