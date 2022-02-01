@@ -1,4 +1,5 @@
 import { fromDTO } from './navigation';
+import { NavListItemKindEnum } from './types';
 
 const emptyDto = {
   items: [{}],
@@ -9,6 +10,7 @@ const defaultVersion = {
     {
       id: '',
       parentId: null,
+      kind: NavListItemKindEnum.Item,
       title: '',
       blockId: null,
     },
@@ -20,6 +22,7 @@ const dto1 = {
     {
       id: 'qwerty',
       parentId: null,
+      kind: NavListItemKindEnum.Item,
       title: 'Untitled',
       blockId: null,
     },
@@ -52,6 +55,7 @@ describe('Navigation Blocks', () => {
           {
             id: 'qwerty',
             title: 'Untitled',
+            kind: NavListItemKindEnum.Item,
             parentId: null,
             blockId: null,
           },
@@ -67,6 +71,7 @@ describe('Navigation Blocks', () => {
             parentId: 'abcdef',
             id: 'qwerty',
             title: 'Untitled',
+            kind: NavListItemKindEnum.Item,
             blockId: {
               projct: 'abc',
               block: 'xyz',
