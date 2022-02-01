@@ -1,7 +1,9 @@
 import fs from 'fs';
+import path from 'path';
 import YAML from 'yaml';
 import { VersionId, KINDS, oxaLink, formatDate } from '@curvenote/blocks';
 import { toMarkdown } from '@curvenote/schema';
+import { writeBibtex } from '../utils/writeBibtex';
 import { Block, Version, User } from '../../models';
 import { getChildren } from '../../actions/getChildren';
 import { exportFromOxaLink, walkArticle, writeImagesToFiles } from '../utils';
@@ -62,6 +64,16 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
   }
   file += '\n\n';
   fs.writeFileSync(opts.filename, file);
+
+  session.log.debug('Writing bib file...');
+  // Write out the references
+  await writeBibtex(
+    session,
+    article.references,
+    path.join(path.dirname(opts.filename), 'main.bib'),
+    { alwaysWriteFile: false },
+  );
+
   return article;
 }
 
