@@ -69,13 +69,13 @@ function getEditorStateFromFirstHTMLOutput(version: Version<Blocks.Output>) {
   }, null);
 }
 
-function outputHasHtml(version: Version<Blocks.Output>) {
+export function outputHasHtml(version: Version<Blocks.Output>) {
   return version.data.outputs.reduce((found, { kind, content }) => {
-    return found || (kind === OutputSummaryKind.html && content);
-  }, []);
+    return found || (kind === OutputSummaryKind.html && Boolean(content));
+  }, false);
 }
 
-function outputHasImage(version: Version<Blocks.Output>) {
+export function outputHasImage(version: Version<Blocks.Output>) {
   return version.data.outputs.reduce((found, { kind }) => {
     return found || kind === OutputSummaryKind.image;
   }, false);
