@@ -11,7 +11,6 @@ import {
 } from '@curvenote/blocks';
 import { DEFAULT_IMAGE_WIDTH, nodeNames, Nodes, ReferenceKind } from '@curvenote/schema';
 import { encode } from 'html-entities';
-import { EditorState } from 'prosemirror-state';
 import { getEditorState, getEditorStateFromHTML } from '../../actions/utils';
 import { Block, Version } from '../../models';
 import { getLatestVersion } from '../../actions/getLatest';
@@ -59,14 +58,19 @@ function getFigureHTML(
 </figure>`;
 }
 
-function getEditorStateFromFirstHTMLOutput(version: Version<Blocks.Output>) {
-  return version.data.outputs.reduce<EditorState<any> | null>((state, { kind, content }) => {
-    if (state != null) return state;
-    if (kind === OutputSummaryKind.html && content) {
-      return getEditorStateFromHTML(content);
-    }
-    return null;
-  }, null);
+async function getEditorStateFromFirstHTMLOutput(version: Version<Blocks.Output>) {
+  // find first
+  const htmlOutput = version.data.outputs.find(
+    (output) => output.kind === OutputSummaryKind.html && Boolean(output.content),
+  );
+  if (!htmlOutput) return null;
+  let { content } = htmlOutput;
+  if (htmlOutput.link) {
+    const response = await fetch(htmlOutput.link);
+    if (!response.ok) return null;
+    content = await response.text();
+  }
+  return content ? getEditorStateFromHTML(content) : null;
 }
 
 export function outputHasHtml(version: Version<Blocks.Output>) {
@@ -157,7 +161,7 @@ export async function walkArticle(
             return { state, version };
           }
           if (outputHasHtml(version)) {
-            const state = getEditorStateFromFirstHTMLOutput(version);
+            const state = await getEditorStateFromFirstHTMLOutput(version);
             if (state == null) return {};
             return { state, version };
           }
