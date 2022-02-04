@@ -28,7 +28,7 @@ export async function articleToWord(
   const [block, version] = await Promise.all([
     new Block(session, versionId).get(),
     new Version(session, versionId).get(),
-    getChildren(session, versionId), // This loads all the children quickly
+    getChildren(session, versionId), // This loads all the children quickly, but does not fetch
   ]);
   if (version.data.kind !== KINDS.Article)
     throw new Error(`The export source must be of kind "Article" not ${version.data.kind}`);
