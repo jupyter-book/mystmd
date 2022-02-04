@@ -11,6 +11,7 @@ import {
 } from '@curvenote/blocks';
 import { DEFAULT_IMAGE_WIDTH, nodeNames, Nodes, ReferenceKind } from '@curvenote/schema';
 import { encode } from 'html-entities';
+import Bottleneck from 'bottleneck';
 import { getEditorState, getEditorStateFromHTML } from '../../actions/utils';
 import { Block, Version } from '../../models';
 import { getLatestVersion } from '../../actions/getLatest';
@@ -95,6 +96,8 @@ export async function walkArticle(
   const referenceKeys: Set<string> = new Set();
   const references: ArticleState['references'] = {};
 
+  const limiter = new Bottleneck({ maxConcurrent: 20 });
+
   const templateTagSet = new Set(templateTags); // ensure dedupe
   const children: ArticleState['children'] = await Promise.all(
     data.order.map(async (k) => {
@@ -102,8 +105,9 @@ export async function walkArticle(
       const srcId = articleChild?.src;
       const style = articleChild?.style ?? {};
       if (!srcId) return {};
-      const childBlock = await new Block(session, srcId).get();
-      const childVersion = await new Version(session, srcId).get();
+
+      const childBlock = await limiter.schedule(() => new Block(session, srcId).get());
+      const childVersion = await limiter.schedule(() => new Version(session, srcId).get());
 
       // Do not walk the content if it shouldn't be walked
       if (new Set(childBlock.data.tags).has('no-export')) return {};
@@ -213,9 +217,11 @@ export async function walkArticle(
       const id = oxaLinkToId(key)?.block as VersionId;
       if (!id) return;
       // Always load the latest version for references!
-      const { version } = await getLatestVersion<Blocks.Reference>(session, id, {
-        format: referenceFormat,
-      });
+      const { version } = await limiter.schedule(() =>
+        getLatestVersion<Blocks.Reference>(session, id, {
+          format: referenceFormat,
+        }),
+      );
       if (version.data.kind !== KINDS.Reference) return;
       const { content } = version.data;
       // Extract the label: '@article{SimPEG2015,\n...' ➡️ 'SimPEG2015'
