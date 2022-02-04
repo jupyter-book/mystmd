@@ -92,11 +92,12 @@ export async function walkArticle(
   templateTags: string[] = [],
   referenceFormat: ReferenceFormatTypes = ReferenceFormatTypes.bibtex,
 ): Promise<ArticleState> {
+  session.log.debug('Starting walkArticle...');
   const images: ArticleState['images'] = {};
   const referenceKeys: Set<string> = new Set();
   const references: ArticleState['references'] = {};
 
-  const limiter = new Bottleneck({ maxConcurrent: 20 });
+  const limiter = new Bottleneck({ maxConcurrent: 25 });
 
   const templateTagSet = new Set(templateTags); // ensure dedupe
   const children: ArticleState['children'] = await Promise.all(
@@ -212,16 +213,24 @@ export async function walkArticle(
   });
 
   // Load all of the references
+  session.log.debug('Starting Reference Localizaton...');
   await Promise.all(
     [...referenceKeys].map(async (key) => {
       const id = oxaLinkToId(key)?.block as VersionId;
       if (!id) return;
       // Always load the latest version for references!
-      const { version } = await limiter.schedule(() =>
-        getLatestVersion<Blocks.Reference>(session, id, {
-          format: referenceFormat,
-        }),
-      );
+      let version;
+      try {
+        const blockAndVersion = await limiter.schedule(() =>
+          getLatestVersion<Blocks.Reference>(session, id, {
+            format: referenceFormat,
+          }),
+        );
+        version = blockAndVersion.version;
+      } catch (err) {
+        session.log.error(`Could not fetch latest version of reference - skipping ${key}`);
+        return;
+      }
       if (version.data.kind !== KINDS.Reference) return;
       const { content } = version.data;
       // Extract the label: '@article{SimPEG2015,\n...' ➡️ 'SimPEG2015'
