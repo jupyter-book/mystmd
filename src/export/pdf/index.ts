@@ -26,7 +26,7 @@ export async function articleToPdf(
   const article = await articleToTex(session, versionId, {
     ...opts,
     filename: targetTexFilePath,
-    template: opts.template ?? 'default',
+    template: opts.template ?? 'public/default',
     useBuildFolder: true,
     texIsIntermediate: true,
   });
