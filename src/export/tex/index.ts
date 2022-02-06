@@ -4,6 +4,7 @@ import { Blocks, VersionId, KINDS, oxaLink, convertToBlockId } from '@curvenote/
 import { toTex } from '@curvenote/schema';
 import os from 'os';
 import path from 'path';
+import { Logger } from 'logging';
 import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
 import { getChildren } from '../../actions/getChildren';
@@ -25,7 +26,8 @@ import {
   loadTemplateOptions,
   throwIfTemplateButNoJtex,
 } from './template';
-import { extractFirstFrameOfGif, isImageMagickAvailable } from '../utils/imagemagick';
+import * as inkscape from '../utils/inkscape';
+import * as imagemagick from '../utils/imagemagick';
 
 export function createTempFolder() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'curvenote'));
@@ -54,6 +56,47 @@ function writeBlocksToFile(
   const content = children.map(mapperFn);
   const file = header ? `${header}\n${content.join('\n\n')}` : content.join('\n\n');
   fs.writeFileSync(filename, `${file}\n`);
+}
+
+function filterFilenamesByExtension(filenames: Record<string, string>, ext: string) {
+  return Object.entries(filenames).filter(([, filename]) => {
+    return path.extname(filename).toLowerCase() === ext;
+  });
+}
+
+/**
+ * Process images into supported formats
+ *
+ * @param session
+ * @param imageFilenames - updated via side effect
+ * @param originals
+ * @param convertFn
+ * @param buildPath
+ */
+async function processImages(
+  session: ISession,
+  imageFilenames: Record<string, string>,
+  originals: [string, string][],
+  convertFn: (orig: string, log: Logger, buildPath: string) => Promise<string | null>,
+  buildPath: string,
+) {
+  session.log.debug(`Processing ${originals.length} GIFs`);
+  const processed = await Promise.all(
+    originals.map(async ([key, orig]) => {
+      session.log.debug(`processing ${orig}`);
+      const png = await imagemagick.extractFirstFrameOfGif(orig, session.log, buildPath);
+      return { key, orig, png };
+    }),
+  );
+  processed.forEach(({ key, orig, png }) => {
+    if (png === null) {
+      session.log.error(
+        `Could not extract image from ${orig}, references to ${key} will be invalid`,
+      );
+      return;
+    }
+    imageFilenames[key] = png;
+  }, []);
 }
 
 export async function articleToTex(
@@ -90,34 +133,47 @@ export async function articleToTex(
     buildPath,
   );
 
+  // TODO Dry up gif and svg processing
   session.log.debug('Processing GIFS if present...');
-  const gifs = Object.entries(imageFilenames).filter(([, filename]) => {
-    const ext = path.extname(filename);
-    return ext.toLowerCase() === '.gif';
-  });
+  const gifs = filterFilenamesByExtension(imageFilenames, '.gif');
   if (gifs.length > 0) {
-    if (!isImageMagickAvailable()) {
+    if (!imagemagick.isImageMagickAvailable()) {
       session.log.warn(
         'GIF images are references, but Imagemagick.convert not available to convert them. This may result in invalid output and/or an invalid pdf file',
       );
     } else {
       session.log.debug(`Processing ${gifs.length} GIFs`);
-      const processed = await Promise.all(
-        gifs.map(async ([key, gif]) => {
-          session.log.debug(`processing ${gif}`);
-          const png = await extractFirstFrameOfGif(gif, session.log, buildPath);
-          return { key, gif, png };
-        }),
+      await processImages(
+        session,
+        imageFilenames,
+        gifs,
+        imagemagick.extractFirstFrameOfGif,
+        buildPath,
       );
-      processed.forEach(({ key, gif, png }) => {
-        if (png === null) {
-          session.log.error(
-            `Could not extract image from ${gif}, references to ${key} will be invalid`,
-          );
-          return;
-        }
-        imageFilenames[key] = png;
-      }, []);
+    }
+  }
+
+  session.log.debug('Processing SVGs if present');
+  const svgs = filterFilenamesByExtension(imageFilenames, '.svg');
+  if (svgs.length > 0) {
+    if (opts.converter === 'imagemagick') {
+      if (!imagemagick.isImageMagickAvailable()) {
+        session.log.warn(
+          'SVGs need t be converted to pdf images, but imagemagick is not available to convert them. This may result in invalid output and/or an invalid pdf file',
+        );
+      } else {
+        session.log.debug(`Processing ${svgs.length} SVGs with IMAGEMAGICK to PNG`);
+      }
+      await processImages(session, imageFilenames, svgs, imagemagick.convertSVGToPNG, buildPath);
+    } else {
+      if (!inkscape.isInkscapeAvailable()) {
+        session.log.warn(
+          'SVGs need tobe converted to pdf images, but inkscape is not available to convert them. This may result in invalid output and/or an invalid pdf file',
+        );
+      } else {
+        session.log.debug(`Processing ${svgs.length} SVGs with INKSCAPE to PDF`);
+      }
+      await processImages(session, imageFilenames, svgs, inkscape.convertSVGToPDF, buildPath);
     }
   }
 

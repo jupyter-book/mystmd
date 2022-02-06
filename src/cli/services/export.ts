@@ -26,6 +26,13 @@ function makeTemplateOptionsOption() {
   );
 }
 
+function makeConverterOption() {
+  return new Option(
+    '-c, --converter <name>',
+    'Specify which converter to use for SVG processing (inkscape, imagemagick)',
+  ).default('inkscape');
+}
+
 function makeWordExportCLI(program: Command) {
   const command = new Command('docx')
     .alias('word')
@@ -56,6 +63,7 @@ function makeTexExportCLI(program: Command) {
     .addOption(makeImageOption())
     .addOption(makeTemplateOption())
     .addOption(makeTemplateOptionsOption())
+    .addOption(makeConverterOption())
     .action(clirun(oxaLinkToTex, { program }));
   return command;
 }
@@ -67,6 +75,7 @@ function makePdfExportCLI(program: Command) {
     .argument('[output]', 'The document filename to export to', 'main.pdf')
     .addOption(makeTemplateOption())
     .addOption(makeTemplateOptionsOption())
+    .addOption(makeConverterOption())
     .action(clirun(oxaLinkToPdf, { program }));
   return command;
 }
