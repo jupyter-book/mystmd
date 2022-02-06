@@ -3,3 +3,4 @@ node_modules/
 yalc.lock
 .yalc/
 *.docx
+.DS_Store
