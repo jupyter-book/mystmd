@@ -8,7 +8,18 @@ export async function writeBibtex(
   filename = 'main.bib',
   opts = { alwaysWriteFile: true },
 ) {
-  const bibliography = Object.entries(references).map(([, { bibtex }]) => bibtex);
+  const seen: string[] = [];
+  const bibliography = Object.entries(references)
+    .map(([, { label, bibtex }]) => {
+      if (seen.indexOf(label) !== -1) {
+        session.log.debug(`Dropping duplicate reference ${label}`);
+        return null;
+      }
+      seen.push(label);
+      return bibtex;
+    })
+    .filter((item: string | null) => item != null);
+
   if (bibliography.length === 0 && !opts.alwaysWriteFile) {
     session.log.debug('No references to write for the project.');
     return;
