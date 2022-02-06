@@ -27,3 +27,24 @@ export async function extractFirstFrameOfGif(
   }
   return png;
 }
+
+export async function convertSVGToPNG(
+  svg: string,
+  log: Logger,
+  buildPath: string,
+): Promise<string | null> {
+  const dirname = path.dirname(svg);
+  const basename = path.basename(svg, path.extname(svg));
+  const png = path.join(dirname, `${basename}.png`);
+  const convert = makeExecutable(
+    `convert ${path.join(buildPath, svg)} -density 600 ${path.join(buildPath, png)}`,
+    log,
+  );
+  try {
+    await convert();
+  } catch (err) {
+    log.error(`Could not convert from SVG to PNG ${err}`);
+    return null;
+  }
+  return png;
+}

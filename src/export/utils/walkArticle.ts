@@ -288,6 +288,7 @@ export async function loadImagesToBuffers(images: ArticleState['images']) {
       const { src } = getImageSrc(version);
       if (!src) return;
       const response = await fetch(src);
+      // TODO convert SVGs to PNG` with imagemagick
       const buffer = await response.buffer();
       buffers[key] = buffer;
     }),

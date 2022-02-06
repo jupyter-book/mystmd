@@ -5,4 +5,5 @@ export interface TexExportOptions {
   options?: string;
   useBuildFolder?: boolean;
   texIsIntermediate?: boolean;
+  converter?: 'inkscape' | 'imagemagick';
 }
