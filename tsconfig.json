@@ -10,7 +10,7 @@
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": "src",
-    "typeRoots": ["./node_modules/@types", "./types"],
+    "typeRoots": ["./types", "./node_modules/@types", "../../node_modules/@types"],
     "resolveJsonModule": true,
     "declaration": true,
     "skipLibCheck": true

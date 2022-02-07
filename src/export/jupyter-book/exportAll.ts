@@ -1,4 +1,4 @@
-import { Blocks, KINDS } from '@curvenote/blocks';
+import { Blocks, KINDS, NavListItemKindEnum } from '@curvenote/blocks';
 import { Version } from '../../models';
 import { articleToMarkdown } from '../markdown';
 import { getLatestVersion } from '../../actions/getLatest';
@@ -18,10 +18,16 @@ export async function exportAll(
 ) {
   const { bibtex = 'references.bib' } = opts ?? {};
   const blocks = await Promise.all(
-    nav.data.items.map((item) => getLatestVersion(session, item.blockId)),
+    nav.data.items.map((item) => {
+      if (item.kind === NavListItemKindEnum.Item)
+        return getLatestVersion(session, item.blockId).catch(() => null);
+      return null;
+    }),
   );
   const articles = await Promise.all(
-    blocks.map(async ({ block, version }) => {
+    blocks.map(async (blockData) => {
+      if (!blockData) return null;
+      const { block, version } = blockData;
       switch (block.data.kind) {
         case KINDS.Article: {
           const filename = `${block.data.name ?? block.id.block}.md`;
