@@ -80,7 +80,7 @@ async function processImages(
   convertFn: (orig: string, log: Logger, buildPath: string) => Promise<string | null>,
   buildPath: string,
 ) {
-  session.log.debug(`Processing ${originals.length} GIFs`);
+  session.log.debug(`Processing ${originals.length} items`);
   const processed = await Promise.all(
     originals.map(async ([key, orig]) => {
       session.log.debug(`processing ${orig}`);
