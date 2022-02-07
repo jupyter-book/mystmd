@@ -49,6 +49,7 @@ repository:
 html:
   # favicon: images/favicon.ico
   # google_analytics_id: G-XXX or UA-XXX
+  home_page_in_navbar: false
   use_issues_button: true
   use_repository_button: true
   use_edit_page_button: true

@@ -123,7 +123,7 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
     const tocData = {
       format: 'jb-book',
       root: getName(items[0].block as Block),
-      chapters: items.slice(1).map(recurseTocChapters),
+      chapters: itemsToChapters(items.slice(1)),
     };
     const toc = `${header}\n\n${YAML.stringify(tocData)}\n`;
     fs.writeFileSync(filename, toc);
