@@ -19,17 +19,16 @@ export async function fetchTemplateTaggedBlocks(
 ): Promise<{ tagged: string[] }> {
   let tagged: string[] = [];
   if (opts.template) {
-    session.log.debug(`Fetching template spec for "${opts.template}"`);
-    let template;
-    try {
-      template = await new Template(session, `tex/${opts.template}`).get();
-    } catch (err) {
-      // TODO - remove after private templates deploy settles
-      template = await new Template(session, opts.template).get();
+    session.log.debug(`Template: Fetching spec for '${opts.template}'`);
+    let requestedTemplate = opts.template.replace(/^tex\//g, '');
+    if (requestedTemplate.indexOf('/') === -1) {
+      requestedTemplate = `public/${requestedTemplate}`;
+      session.log.debug(`Template: Changing from '${opts.template}' to '${requestedTemplate}'`);
     }
+    const template = await new Template(session, `tex/${requestedTemplate}`).get();
     tagged = template.data.config.tagged.map((t) => t.id);
     session.log.debug(
-      `Template '${opts.template}' supports following tagged content: ${tagged.join(', ')}`,
+      `Template: '${opts.template}' supports following tagged content: ${tagged.join(', ')}`,
     );
   }
   return { tagged };
