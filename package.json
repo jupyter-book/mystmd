@@ -21,9 +21,9 @@
   },
   "homepage": "https://github.com/curvenote/curvenotejs",
   "scripts": {
-    "clean": "rm -rf dist",
+    "clean": "rimraf dist",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
-    "build": "yarn copy:version; yarn run clean && tsc -p .; cp -r ./src/styles ./dist/styles; cp -r ./src/images ./dist/images",
+    "build": "yarn copy:version; yarn run clean && tsc -p .; copyfiles ./src/styles/* ./dist/styles/*; copyfiles ./src/images/* ./dist/images/*",
     "build:watch": "yarn copy:version; tsc -w -p .",
     "dev:cli": "npm uninstall -g curvenote; npm run build; npm link",
     "prepublishOnly": "yarn build",
@@ -68,6 +68,7 @@
     "@types/which": "^2.0.1",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -88,6 +89,7 @@
     "prettier": "^2.4.1",
     "prosemirror-schema-basic": "^1.1.2",
     "prosemirror-test-builder": "^1.0.5",
+    "rimraf": "^3.0.2",
     "ts-jest": "^26.5.6",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4"
