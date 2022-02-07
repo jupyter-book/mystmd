@@ -214,7 +214,7 @@ export async function articleToTex(
         single_file: false,
       },
       opts.template ?? null,
-      'main.bib',
+      Object.keys(article.references).length > 0 ? 'main.bib' : null,
     ),
   );
 

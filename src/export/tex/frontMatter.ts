@@ -26,7 +26,7 @@ export interface LatexFrontMatter {
     template: string | null;
     strict: boolean;
     input: {
-      references: string;
+      references: string | null;
       tagged: Record<string, string>;
     };
     output: JtexOutputConfig;
@@ -46,7 +46,7 @@ export async function buildFrontMatter(
   options: Record<string, any>,
   output: JtexOutputConfig,
   template: string | null,
-  references = 'main.bib',
+  references: string | null = 'main.bib',
 ): Promise<LatexFrontMatter> {
   const model = await buildDocumentModel(session, block, version, options, escapeLatex);
   const data = {
