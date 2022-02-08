@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - run: npm run install
+      - run: npm install
       - run: npm run lint
 
   build:
@@ -43,7 +43,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm run install
+      - run: npm install
       - name: Run the tests and generate coverage reportst
         run: npm run test --coverage
       - name: Upload coverage to Codecov
