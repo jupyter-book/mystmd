@@ -358,12 +358,13 @@
   resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.1.7.tgz#5174a2685470e9507577ee20580baa01f53cd619"
   integrity sha512-Q7jIfYcEl+GSaWComV42/9OHxK7QhZY28KZkQkkTIEXICMG9UzvefirrdsRyWiXScWxjpo1I5xZ/d57Hf377Ng==
 
-"@curvenote/schema@0.11.8":
-  version "0.11.8"
-  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.11.8.tgz#66b8a7551b3f386b1982448fbbd7f663011aa8aa"
-  integrity sha512-pZ1vrZ0PgOKGzYuvTKQImrAlBLgtuuuwigQXYVTtSh1Ka0WzjcSC6DsPFocboqnz00HSz0ho4NdYhVqUaR97Sw==
+"@curvenote/schema@0.11.9":
+  version "0.11.9"
+  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.11.9.tgz#db407a99cd499609496e5fc2166b990a9062dae9"
+  integrity sha512-5FrGLgmuNwa+xXxoCoK+Z7odN80CGc0Y+06xim0nQEDpgTmDUwuj817pgymP9ZGRmYwu8hWxiRyju8mdmEJmjQ==
   dependencies:
     "@wordpress/wordcount" "^3.2.2"
+    js-yaml "^4.1.0"
     markdown-it "^12.2.0"
     markdown-it-myst "^0.0.9"
     nanoid "^3.1.30"
@@ -3419,6 +3420,13 @@ js-yaml@^3.13.1:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
+
+js-yaml@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
+  integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
+  dependencies:
+    argparse "^2.0.1"
 
 jsdom@^16.4.0:
   version "16.7.0"

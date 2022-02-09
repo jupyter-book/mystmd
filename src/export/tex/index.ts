@@ -159,7 +159,7 @@ export async function articleToTex(
     if (opts.converter === 'imagemagick') {
       if (!imagemagick.isImageMagickAvailable()) {
         session.log.warn(
-          'SVGs need t be converted to pdf images, but imagemagick is not available to convert them. This may result in invalid output and/or an invalid pdf file',
+          'SVGs need to be converted to pdf images, but imagemagick is not available to convert them. This may result in invalid output and/or an invalid pdf file',
         );
       } else {
         session.log.debug(`Processing ${svgs.length} SVGs with IMAGEMAGICK to PNG`);
@@ -168,7 +168,7 @@ export async function articleToTex(
     } else {
       if (!inkscape.isInkscapeAvailable()) {
         session.log.warn(
-          'SVGs need tobe converted to pdf images, but inkscape is not available to convert them. This may result in invalid output and/or an invalid pdf file',
+          'SVGs need to be converted to pdf images, but inkscape is not available to convert them. This may result in invalid output and/or an invalid pdf file',
         );
       } else {
         session.log.debug(`Processing ${svgs.length} SVGs with INKSCAPE to PDF`);
@@ -233,9 +233,9 @@ export async function articleToTex(
 
   // run templating
   if (opts.template) {
-    session.log.debug('Running JTEX...');
     const CMD = `jtex render ${content_tex}`;
     try {
+      session.log.debug('Running JTEX');
       const jtex = makeExecutable(CMD, session.log);
       await jtex();
     } catch (err) {

@@ -19,6 +19,7 @@ export async function articleToPdf(
   const tex_filename = `${basename}.tex`;
   const pdf_filename = `${basename}.pdf`;
   const log_filename = `${basename}.log`;
+  const tex_log_filename = `${basename}.shell.log`;
   const targetTexFilePath = path.join(outputPath, tex_filename);
   const outputPdfFile = path.join(outputPath, pdf_filename);
   const outputLogFile = path.join(outputPath, log_filename);
@@ -32,9 +33,11 @@ export async function articleToPdf(
   });
 
   const buildPath = path.join(outputPath, '_build');
-  const CMD = `cd ${buildPath};latexmk -f -xelatex -synctex=1 -interaction=nonstopmode -file-line-error -latexoption="-shell-escape" ${tex_filename}`;
+  const CMD = `cd ${buildPath};latexmk -f -xelatex -synctex=1 -interaction=batchmode -file-line-error -latexoption="-shell-escape" ${tex_filename} &> ${tex_log_filename}`;
   try {
+    session.log.debug(`Building LaTeX: logging output to ${tex_log_filename}`);
     await exec(CMD);
+    session.log.debug(`Done building LaTeX.`);
   } catch (err) {
     session.log.error(`Error while invoking mklatex: ${err}`);
   }
