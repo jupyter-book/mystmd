@@ -1,44 +1,41 @@
 # Getting Started
 
-## Usage
+`mystjs` allows you to parse and render MyST in both the browser or in a node environment. The parse creates an abstract syntax tree (AST)
 
-`markdown-it-myst` combines a number of [markdown-it](https://markdown-it.github.io/)
-extensions and configures them to parse MyST in both the browser or in a node environment.
+### Using a Browser
 
-### In a browser:
-
-You can download the latest package
+You can download the latest package hosted off of npm (e.g. using unpkg) or include a specific version of the minified libraries in your repository. The simplest function is to `render` some MyST markdown to a DOM element in your page.
 
 ```html
 <html>
-<head>
-  <script src="https://unpkg.com/markdown-it-myst"></script>
-</head>
-<body onload="init();">
-  <div id="output"></div>
-  <script>
-    function init() {
-      const myst = MyST();
-      const html = myst.render('# Hello to the world!');
-      document.getElementById('output').innerHTML = html;
-    }
-  </script>
-</body>
+  <head>
+    <script src="https://unpkg.com/markdown-it-myst"></script>
+  </head>
+  <body onload="init();">
+    <div id="output"></div>
+    <script>
+      function init() {
+        const myst = MyST()
+        const html = myst.render('# Hello to the world!')
+        document.getElementById('output').innerHTML = html
+      }
+    </script>
+  </body>
 </html>
 ```
 
-If you are building the project on your own, please follow the [](developer) and `yarn build` to create a bundle that you can include on your own.
+If you are building the project on your own, please follow the [](developer) and `npm run build` to create a bundle that you can include on your own.
 
-### In a node environment:
+### Using Node
 
 ```bash
-npm install markdown-it-myst # or use yarn
+npm install mystjs
 ```
 
 You can now import (or `require`) the library.
 
 ```javascript
-import MyST from 'markdown-it-myst';
+import MyST from 'mystjs';
 
 const myst = MyST();
 const html = myst.render('# Hello to the world!');

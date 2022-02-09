@@ -62,7 +62,7 @@ Once you have `npm` installed globally, navigate into this project folder and in
 
 ```bash
 cd mystjs
-yarn install
+npm install
 npm run start  # Start a development server to play with the library! 🚀
 ```
 

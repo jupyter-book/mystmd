@@ -1,13 +1,10 @@
-# Table of content
-# Learn more at https://jupyterbook.org/customize/toc.html
-#
-
-- file: index
-- part: Get started
-  chapters:
-  - file: start
-  - file: developer
-- part: Library
-  chapters:
-  - file: overview
-
+format: jb-book
+root: index
+parts:
+  - caption: Get started
+    chapters:
+      - file: start
+      - file: developer
+  - caption: Library
+    chapters:
+      - file: overview
