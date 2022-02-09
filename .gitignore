@@ -2,3 +2,5 @@ dist/
 node_modules/
 docs/_build/*
 coverage/
+.yalc/*
+yalc.lock
