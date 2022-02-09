@@ -19,13 +19,14 @@ import { getImageSrc } from './getImageSrc';
 import { basekey } from './basekey';
 import { ISession } from '../../session/types';
 
-export interface ArticleStateChild {
-  state?: ReturnType<typeof getEditorState>;
-  version?: Version;
+interface ArticleStateChild {
+  state: ReturnType<typeof getEditorState>;
+  block: Block;
+  version: Version;
   templateTags?: string[];
 }
 
-export interface ArticleStateReference {
+interface ArticleStateReference {
   label: string;
   bibtex: string;
   version: Version<Blocks.Reference>;
@@ -33,10 +34,10 @@ export interface ArticleStateReference {
 }
 
 export type ArticleState = {
-  children: ArticleStateChild[];
+  children: Partial<ArticleStateChild>[];
   images: Record<string, Version<Blocks.Image | Blocks.Output>>;
   references: Record<string, ArticleStateReference>;
-  tagged: Record<string, ArticleStateChild[]>;
+  tagged: Record<string, Partial<ArticleStateChild>[]>;
 };
 
 function getCodeHTML(content: string, language: string, linenumbers: boolean) {
@@ -119,6 +120,7 @@ export async function walkArticle(
           const matchingTags = childBlock.data.tags.filter((t) => templateTagSet.has(t));
           return {
             state,
+            block: childBlock,
             version: childVersion,
             templateTags: matchingTags.length > 0 ? matchingTags : undefined,
           };
@@ -129,6 +131,7 @@ export async function walkArticle(
           const state = getEditorState(html);
           return {
             state,
+            block: childBlock,
             version: childVersion,
           };
         }
@@ -146,7 +149,7 @@ export async function walkArticle(
           );
           const state = getEditorState(html);
           images[key] = version;
-          return { state, version };
+          return { state, block: childBlock, version };
         }
         case KINDS.Output: {
           const key = oxaLink('', childVersion.id);
@@ -163,12 +166,12 @@ export async function walkArticle(
             );
             const state = getEditorState(html);
             images[key] = version;
-            return { state, version };
+            return { state, block: childBlock, version };
           }
           if (outputHasHtml(version)) {
             const state = await getEditorStateFromFirstHTMLOutput(version);
             if (state == null) return {};
-            return { state, version };
+            return { state, block: childBlock, version };
           }
           return {};
         }
@@ -265,7 +268,7 @@ export async function walkArticle(
   const contentChildren = children.filter((c) => !c.templateTags);
   const taggedChildren = children.filter((c) => c.templateTags);
 
-  const tagged = Array.from(templateTagSet).reduce<Record<string, ArticleStateChild[]>>(
+  const tagged = Array.from(templateTagSet).reduce<Record<string, ArticleState['children']>>(
     (obj, tag) => {
       return { ...obj, [tag]: taggedChildren.filter((c) => c.templateTags?.indexOf(tag) !== -1) };
     },

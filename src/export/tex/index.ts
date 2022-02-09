@@ -12,7 +12,6 @@ import { localizationOptions } from '../utils/localizationOptions';
 import { writeBibtex } from '../utils/writeBibtex';
 import { buildFrontMatter, stringifyFrontMatter } from './frontMatter';
 import {
-  ArticleStateChild,
   exportFromOxaLink,
   walkArticle,
   writeImagesToFiles,
@@ -32,6 +31,8 @@ import * as imagemagick from '../utils/imagemagick';
 export function createTempFolder() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'curvenote'));
 }
+
+type ArticleStateChild = ArticleState['children'][0];
 
 function convertAndLocalizeChild(
   session: ISession,
