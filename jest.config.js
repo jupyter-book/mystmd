@@ -1,5 +1,5 @@
-export default {
-  preset: 'ts-jest/presets/default-esm', // or other ESM presets
+module.exports = {
+  preset: 'ts-jest/presets/default', // or other ESM presets
   extensionsToTreatAsEsm: ['.ts'],
   globals: {
     'ts-jest': {
@@ -9,4 +9,5 @@ export default {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
+  testPathIgnorePatterns: ['/node_modules/', '/.yalc/', '/dist/'],
 }

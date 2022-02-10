@@ -1,4 +1,5 @@
-title: inline abbreviation
+title: Inline Abbreviation
+section: Roles.HTML
 mdast:
   type: root
   children:

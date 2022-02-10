@@ -1,5 +1,5 @@
 import MarkdownIt from 'markdown-it'
-import docutilsPlugin from 'markdown-it-docutils'
+import { docutilsPlugin } from 'markdown-it-docutils'
 import { IOptions as IDocutilsOptions } from 'markdown-it-docutils'
 import * as plugins from './plugins'
 

@@ -8,7 +8,6 @@
   "main": "dist/src/index.js",
   "unpkg": "dist/myst.min.js",
   "types": "dist/src/index.d.ts",
-  "type": "module",
   "keywords": [
     "markdown-it-plugin",
     "markdown-it",
@@ -46,14 +45,11 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "hast-util-to-html": "^8.0.3",
     "markdown-it": "^12.3.2",
     "markdown-it-amsmath": "^0.2.0",
     "markdown-it-docutils": "file:.yalc/markdown-it-docutils",
     "markdown-it-dollarmath": "^0.3.0",
-    "mdast-util-to-hast": "^12.1.1",
     "rehype-stringify": "^9.0.3",
-    "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
     "unified": "^10.1.1",
     "unist-util-map": "^3.0.0",

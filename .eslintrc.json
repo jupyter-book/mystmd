@@ -20,20 +20,11 @@
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
-    "project": [
-      "./tsconfig.json"
-    ]
+    "project": ["./tsconfig.json"]
   },
-  "plugins": [
-    "@typescript-eslint",
-    "no-skip-tests",
-    "no-only-tests"
-  ],
+  "plugins": ["@typescript-eslint", "no-skip-tests", "no-only-tests"],
   "rules": {
-    "quotes": [
-      "error",
-      "single"
-    ],
+    "quotes": ["error", "single"],
     "prettier/prettier": [
       "error",
       {
@@ -43,16 +34,14 @@
     ],
     "import/prefer-default-export": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/camelcase": "off"
+    "@typescript-eslint/camelcase": "off",
+    "jest/no-export": "off",
+    "jest/valid-title": "off"
   },
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [
-          ".js",
-          ".ts",
-          ".spec.ts"
-        ]
+        "extensions": [".js", ".ts", ".spec.ts"]
       }
     }
   }

@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
+    "target": "es6",
+    "module": "es2015",
     "esModuleInterop": true,
-    "target": "ESNext",
     "noImplicitAny": true,
     "strict": true,
     "moduleResolution": "node",
@@ -18,6 +18,6 @@
     "declaration": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "myst.ts", "tests/mdast.spec.ts"],
+  "include": ["src/**/*", "tests/**/*"],
   "exclude": []
 }
