@@ -70,10 +70,10 @@ async function toHTML(doc: GenericNode): Promise<string> {
     .use(remarkRehype)
     .use(rehypeStringify)
     .process(JSON.stringify(doc))
-  mystToHast()(doc as any)
-  const hast = toHast(doc as any)
-  const html = toHtml(hast as any)
-  return html as string
+  // mystToHast()(doc as any)
+  // const hast = toHast(doc as any)
+  // const html = toHtml(hast as any)
+  return f.value as string
 }
 
 export enum ConversionDirections {
@@ -101,126 +101,35 @@ export type ConversionStructure = {
   conversions: Conversion[]
 }
 
-export function loadExample(filename: string): ConversionStructure {
-  const data = fs.readFileSync(filename, 'utf8')
-  const lines = data.split('\n')
-  let description = ''
-  let delimiter = ''
-  let mdast = ''
-  const conversions: Conversion[] = []
-  let content = ''
-  let format: ConversionFormats = ConversionFormats.myst
-  let direction: ConversionDirections = ConversionDirections.roundtrip
-  let newDelimiter
-  let newFormat
-  let newDirection
-  lines.forEach((line) => {
-    if (delimiter === '') {
-      if (line.split(' ')[1] === 'mdast') {
-        description = description.trim()
-        ;[delimiter] = line.split(' ')
-      } else {
-        description += `${line}\n`
-      }
-      return
-    }
-    ;[newDelimiter, newFormat, newDirection] = line.split(' ')
-    if (newDelimiter === delimiter) {
-      if (mdast === '') {
-        mdast = `${content.trim()}\n`
-      } else {
-        conversions.push({ content: content.trim(), direction, format })
-      }
-      content = ''
-      newDirection = newDirection || ConversionDirections.roundtrip
-      if (
-        !(newFormat in ConversionFormats) ||
-        !(newDirection in ConversionDirections)
-      ) {
-        throw Error(`Invalid format "${newFormat}" or direction "${newDirection}"`)
-      }
-      ;[format, direction] = [
-        newFormat as ConversionFormats,
-        newDirection as ConversionDirections,
-      ]
-    } else {
-      content += line
-      if (format !== ConversionFormats.html || !content.endsWith('>')) {
-        content += '\n'
-      }
-    }
-  })
-  if (mdast === '') {
-    mdast = content
-  } else {
-    conversions.push({ content: content.trim(), direction, format })
-  }
-  return { description, mdast, conversions }
+async function mystToMdast(myst: string, mdast: string) {
+  const newAst = toYAML(fromMarkdown(myst))
+  expect(newAst).toEqual(mdast)
 }
 
-function mystToMdast(mdast: string, myst: string, messagePrefix: string) {
-  const newMdast = toYAML(fromMarkdown(myst))
-  it(`${messagePrefix} myst -> mdast`, () => expect(newMdast).toEqual(mdast))
-}
-
-function mdastToMyst(mdast: string, myst: string, messagePrefix: string) {
-  const newMyst = myst
-  // TODO: toMarkdown
-  // const newMyst = toMarkdown(fromYAML(mdast))
-  it.skip(`${messagePrefix} mdast -> myst`, () => expect(newMyst).toEqual(myst))
-}
-
-function htmlToMdast(mdast: string, html: string, messagePrefix: string) {
-  const newMdast = mdast
-  // TODO: fromHTML
-  // const newMdast = toYAML(fromHTML(html, document, DOMParser))
-  it.skip(`${messagePrefix} html -> mdast`, () => expect(newMdast).toEqual(mdast))
-}
-
-async function mdastToHTML(mdast: string, html: string, messagePrefix: string) {
+async function mdastToHTML(mdast: string, html: string) {
   const newHTML = await toHTML(fromYAML(mdast))
-  it(`${messagePrefix} mdast -> html`, () => expect(newHTML).toEqual(html))
+  expect(newHTML).toEqual(html)
+}
+
+type TestCase = {
+  title: string
+  mdast: Root
+  myst: string
+  html: string
 }
 
 export function conversionTests(directory: string) {
   const dirSplit = directory.split(path.sep)
   describe(dirSplit[dirSplit.length - 1], () => {
-    let exportFcn
-    let importFcn
     const files = fs.readdirSync(directory)
     files.forEach((file) => {
-      if (!file.endsWith('.txt')) return
-      const structure = loadExample(path.join(directory, file))
-      describe(structure.description, () => {
-        structure.conversions.forEach(async (conversion) => {
-          switch (conversion.format) {
-            case ConversionFormats.myst:
-              exportFcn = mdastToMyst
-              importFcn = mystToMdast
-              break
-            case ConversionFormats.html:
-              exportFcn = mdastToHTML
-              importFcn = htmlToMdast
-              break
-            default:
-              throw Error(`Invalid format ${conversion.format}`)
-          }
-          switch (conversion.direction) {
-            case ConversionDirections.roundtrip:
-              await exportFcn(structure.mdast, conversion.content, 'roundtrip: ')
-              await importFcn(structure.mdast, conversion.content, '           ')
-              break
-            case ConversionDirections.export:
-              await exportFcn(structure.mdast, conversion.content, '  one way: ')
-              break
-            case ConversionDirections.import:
-              await importFcn(structure.mdast, conversion.content, '  one way: ')
-              break
-            default:
-              throw Error(`Invalid direction ${conversion.direction}`)
-          }
-        })
-      })
+      if (!file.endsWith('.yml')) return
+      const testYaml = fs.readFileSync(path.join(directory, file)).toString()
+      const testCase = yaml.load(testYaml) as TestCase
+      const { title, myst, html } = testCase
+      const mdast = toYAML(testCase.mdast)
+      it(`${title}: mdast --> html`, async () => mdastToHTML(mdast, html))
+      it(`${title}: myst  --> mdast`, async () => mystToMdast(myst, mdast))
     })
   })
 }
