@@ -5,7 +5,7 @@ import { GenericNode } from '.'
 
 type Transformer = {
   tag: string
-  getProps: (node: GenericNode) => Record<string, string>
+  getProps?: (node: GenericNode) => Record<string, string>
 }
 
 type Admonition = GenericNode<{
@@ -44,11 +44,17 @@ function admonitionKindToTitle(kind: AdmonitionKind) {
 }
 
 const mystToHastTransformers: Record<string, Transformer> = {
-  abbr: {
+  abbreviation: {
     tag: 'abbr',
     getProps(node: any) {
       return { title: node.title }
     },
+  },
+  subscript: {
+    tag: 'sub',
+  },
+  superscript: {
+    tag: 'sup',
   },
   admonition: {
     tag: 'aside',
@@ -87,7 +93,7 @@ export const mystToHast = () => (tree: Root) => {
     if (!transformer) return node
     const data = node.data || (node.data = {})
     data.hName = transformer.tag
-    data.hProperties = { ...data.hProperties, ...transformer.getProps(node) }
+    data.hProperties = { ...data.hProperties, ...transformer.getProps?.(node) }
     return node
   })
 }

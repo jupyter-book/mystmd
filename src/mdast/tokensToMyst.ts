@@ -82,7 +82,7 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   abbr: {
-    type: 'abbr',
+    type: 'abbreviation',
     getAttrs(token) {
       const value = token.children?.[0]?.content
       return {
@@ -90,6 +90,12 @@ const defaultMdast: Record<string, Spec> = {
         value,
       }
     },
+  },
+  sub: {
+    type: 'subscript',
+  },
+  sup: {
+    type: 'superscript',
   },
   admonition: {
     type: 'admonition',

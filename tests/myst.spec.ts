@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import yaml from 'js-yaml'
-import { MyST, tokensToMyst, GenericNode, mystToHast, jsonParser } from '../../src'
+import { MyST, tokensToMyst, GenericNode, mystToHast, jsonParser } from '../src'
 import remarkRehype from 'remark-rehype'
 import rehypeStringify from 'rehype-stringify'
 import rehypeFormat from 'rehype-format'
@@ -34,7 +34,7 @@ type TestCase = {
   html: string
 }
 
-const directory = 'tests/mdast'
+const directory = 'tests/myst'
 const files: string[] = fs
   .readdirSync(directory)
   .filter((name) => name.endsWith('.yml'))

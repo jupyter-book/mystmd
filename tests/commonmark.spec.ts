@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from 'path'
 import { MyST } from '../src'
 
 // For the common mark to pass, html parsing needs to be enabled
@@ -24,7 +25,9 @@ const SKIP_TESTS = new Set([
 ])
 
 export function loadSpec(name: string): Spec[] {
-  const fixtures = JSON.parse(fs.readFileSync(`fixtures/${name}`).toString())
+  const fixtures = JSON.parse(
+    fs.readFileSync(path.join('tests', 'commonmark', name)).toString(),
+  )
   return fixtures
 }
 
