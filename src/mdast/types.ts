@@ -7,11 +7,11 @@ export type GenericText = {
   value: string
 }
 
-export type GenericNode = {
+export type GenericNode<T extends Record<string, any> = any> = {
   type: string
-  children?: GenericNode[]
+  children?: GenericNode<any>[]
   value?: string
-}
+} & T
 
 export type Spec = {
   type: string

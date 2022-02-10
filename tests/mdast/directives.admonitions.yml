@@ -1,0 +1,129 @@
+cases:
+  - title: Simple Admonition
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: This is a title
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'An example of an admonition with a '
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: title
+                - type: text
+                  value: '.'
+    myst: |-
+      ```{admonition} This is a title
+        An example of an admonition with a _title_.
+      ```
+    html: |-
+      <aside class="admonition">
+        <p class="admonition-title">This is a title</p>
+        <p>An example of an admonition with a <em>title</em>.</p>
+      </aside>
+
+  - title: Note with no title
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: note
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Please note!
+    myst: |-
+      ```{note}
+        Please note!
+      ```
+    html: |-
+      <aside class="admonition note">
+        <p class="admonition-title">Note</p>
+        <p>Please note!</p>
+      </aside>
+
+  - title: Note with split title
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: note
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: This is NOT a title but an example of a note admonition.
+    myst: |-
+      ```{note} This is NOT a title
+        but an example of a note admonition.
+      ```
+    html: |-
+      <aside class="admonition note">
+        <p class="admonition-title">Note</p>
+        <p>This is NOT a title but an example of a note admonition.</p>
+      </aside>
+
+  - title: Danger on a single line
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: danger
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: This is NOT a title!
+    myst: |-
+      ```{danger} This is NOT a title!
+      ```
+    html: |-
+      <aside class="admonition danger">
+        <p class="admonition-title">Danger</p>
+        <p>This is NOT a title!</p>
+      </aside>
+
+  - title: Admonition with overridding class name
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          class: tip
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: This is a title!
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'An example of a general '
+                - type: inlineCode
+                  value: admonition
+                - type: text
+                  value: ' with a custom '
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: 'class'
+                - type: text
+                  value: '.'
+    myst: |-
+      ```{admonition} This is a title!
+      :class: tip
+
+      An example of a general `admonition` with a custom _class_.
+      ```
+    html: |-
+      <aside class="admonition tip">
+        <p class="admonition-title">This is a title!</p>
+        <p>An example of a general <code>admonition</code> with a custom <em>class</em>.</p>
+      </aside>

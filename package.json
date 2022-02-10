@@ -49,6 +49,7 @@
     "markdown-it-amsmath": "^0.2.0",
     "markdown-it-docutils": "file:.yalc/markdown-it-docutils",
     "markdown-it-dollarmath": "^0.3.0",
+    "rehype-format": "^4.0.1",
     "rehype-stringify": "^9.0.3",
     "remark-rehype": "^10.1.0",
     "unified": "^10.1.1",

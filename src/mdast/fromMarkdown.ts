@@ -24,10 +24,18 @@ export class MarkdownParseState {
   }
 
   addText(text: string, type = 'text') {
-    if (text) {
-      const node: GenericText = { type, value: text }
-      return this.addNode(node)
+    const top = this.top()
+    const value = text.replace('\n', '')
+    if (!value || !this.stack.length || !type || !('children' in top)) return
+    const last = top.children[top.children.length - 1]
+    if (last?.type === type) {
+      // The last node is the same type, merge it with a space
+      last.value += ` ${value}`
+      return last
     }
+    const node: GenericText = { type, value }
+    top.children?.push(node)
+    return node
   }
 
   openNode(type: string, attrs: Record<string, any>, isLeaf = false) {
@@ -43,9 +51,12 @@ export class MarkdownParseState {
 
   parseTokens(tokens?: Token[] | null) {
     tokens?.forEach((token, index) => {
+      if (token.hidden) return
       const handler = this.handlers[token.type]
       if (!handler)
-        throw new Error('Token type `' + token.type + '` not supported by mdast parser')
+        throw new Error(
+          'Token type `' + token.type + '` not supported by tokensToMyst parser',
+        )
       handler(this, token, tokens, index)
     })
   }

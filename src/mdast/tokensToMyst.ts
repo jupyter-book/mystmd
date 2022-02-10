@@ -5,6 +5,10 @@ import { Spec, Token } from './types'
 export type { Spec }
 export { MarkdownParseState }
 
+function removeNextTokens(tokens: Token[], start: number, num = 0) {
+  tokens.splice(start + 1, start + num)
+}
+
 const defaultMdast: Record<string, Spec> = {
   heading: {
     type: 'header',
@@ -86,6 +90,23 @@ const defaultMdast: Record<string, Spec> = {
         value,
       }
     },
+  },
+  admonition: {
+    type: 'admonition',
+    getAttrs(token, tokens, index) {
+      const kind = token.meta.kind || undefined
+      const className = token.meta.class?.join(' ').trim() || undefined
+      if (kind && tokens[index + 1]?.type === 'admonition_title_open') {
+        removeNextTokens(tokens, index, 3)
+      }
+      return {
+        kind,
+        class: className,
+      }
+    },
+  },
+  admonition_title: {
+    type: 'admonitionTitle',
   },
 }
 

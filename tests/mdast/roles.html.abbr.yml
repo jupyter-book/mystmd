@@ -1,0 +1,20 @@
+cases:
+  - title: Inline Abbreviation
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Well '
+            - type: abbr
+              title: Cascading Style Sheets
+              children:
+                - type: text
+                  value: CSS
+            - type: text
+              value: ' is cool?'
+    myst: |-
+      Well {abbr}`CSS (Cascading Style Sheets)` is cool?
+    html: |-
+      <p>Well <abbr title="Cascading Style Sheets">CSS</abbr> is cool?</p>
