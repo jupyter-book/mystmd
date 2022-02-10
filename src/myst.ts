@@ -11,7 +11,7 @@ export type Options = {
 
 export const defaultOptions: Options = {
   math: true,
-  markdownit: { html: false }
+  markdownit: { html: false },
 }
 
 function MyST(opts: Options = defaultOptions): MarkdownIt {
