@@ -28,6 +28,8 @@ type TestFile = {
 }
 type TestCase = {
   title: string
+  description?: string
+  skip?: boolean
   mdast: Root
   myst: string
   html: string
@@ -43,6 +45,7 @@ const length = files
   .map((f) => f.replace('.yml', ''))
   .reduce((a, b) => Math.max(a, b.length), 0)
 
+const skipped: [string, TestCase][] = []
 const cases: [string, TestCase][] = files
   .map((file) => {
     const testYaml = fs.readFileSync(path.join(directory, file)).toString()
@@ -54,6 +57,10 @@ const cases: [string, TestCase][] = files
     })
   })
   .flat()
+  .filter(([f, t]) => {
+    if (t.skip) skipped.push([f, t])
+    return !t.skip
+  })
 
 describe('Testing myst --> mdast conversions', () => {
   test.each(cases)('%s', async (_, { myst, mdast }) => {
@@ -65,6 +72,14 @@ describe('Testing myst --> mdast conversions', () => {
 
 describe('Testing mdast --> html conversions', () => {
   test.each(cases)('%s', async (_, { html, mdast }) => {
+    const newHTML = await toHTML(mdast as GenericNode)
+    expect(newHTML).toEqual(html)
+  })
+})
+
+describe('Skipped Tests', () => {
+  // eslint-disable-next-line jest/no-disabled-tests
+  test.skip.each(skipped)('%s', async (_, { html, mdast }) => {
     const newHTML = await toHTML(mdast as GenericNode)
     expect(newHTML).toEqual(html)
   })

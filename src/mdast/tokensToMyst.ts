@@ -163,6 +163,16 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isText: true,
   },
+  math_inline_double: {
+    type: 'math',
+    noCloseToken: true,
+    isText: true,
+  },
+  math_block: {
+    type: 'math',
+    noCloseToken: true,
+    isText: true,
+  },
 }
 
 export function tokensToMyst(tokens: Token[], handlers = defaultMdast): Root {

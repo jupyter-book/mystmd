@@ -23,12 +23,6 @@ function admonitionKindToTitle(kind: AdmonitionKind) {
   return transform[kind] || `Unknown Admonition "${kind}"`
 }
 
-const inlineMath: Handler = (h, node) => {
-  return h(node, 'span', { class: 'math inline' }, [
-    u('text', node.value.replace(/\r?\n|\r/g, ' ')),
-  ])
-}
-
 const abbreviation: Handler = (h, node) =>
   h(node, 'abbr', { title: node.title }, all(h, node))
 
@@ -73,6 +67,18 @@ const admonition: Handler = (h, node) =>
 const captionNumber: Handler = (h, node) =>
   h(node, 'span', { class: 'caption-number' }, [u('text', 'Figure 1')])
 
+const math: Handler = (h, node) => {
+  return h(node, 'div', { class: 'math block' }, [
+    u('text', node.value.replace(/\r?\n|\r/g, ' ')),
+  ])
+}
+
+const inlineMath: Handler = (h, node) => {
+  return h(node, 'span', { class: 'math inline' }, [
+    u('text', node.value.replace(/\r?\n|\r/g, ' ')),
+  ])
+}
+
 export const mystToHast: Plugin<void[], string, Root> = () => (tree: Root) => {
   // Visit all admonitions and add headers if necessary
   visit(tree, 'admonition', (node: Admonition) => {
@@ -111,6 +117,7 @@ export const mystToHast: Plugin<void[], string, Root> = () => (tree: Root) => {
       abbreviation,
       subscript,
       superscript,
+      math,
       inlineMath,
     },
   })

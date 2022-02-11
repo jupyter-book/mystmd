@@ -6,10 +6,10 @@ cases:
         - type: paragraph
           children:
             - type: text
-              value: 'This is '
+              value: 'This is genius '
             - type: inlineMath
-              value: ma=t^{h}
+              value: e=mc^2
     myst: |-
-      This is {math}`ma=t^{h}`
+      This is genius {math}`e=mc^2`
     html: |-
-      <p>This is <span class="math inline">ma=t^{h}</span></p>
+      <p>This is genius <span class="math inline">e=mc^2</span></p>

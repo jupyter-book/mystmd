@@ -42,7 +42,11 @@ function fixHtml(html: string) {
 
 describe('Common Mark Spec', () => {
   loadSpec('cmark_spec_0.30.json').forEach(({ section, example, markdown, html }) => {
-    if (SKIP_TESTS.has(example)) return
+    if (SKIP_TESTS.has(example)) {
+      // eslint-disable-next-line jest/no-disabled-tests, jest/expect-expect
+      it.skip(`${example}: ${section}`, () => undefined)
+      return
+    }
     const fixed = fixHtml(html)
     it(`${example}: ${section}`, () =>
       expect(tokenizer.render(markdown)).toEqual(fixed))
