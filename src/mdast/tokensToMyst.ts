@@ -60,6 +60,15 @@ const defaultMdast: Record<string, Spec> = {
       }
     },
   },
+  bullet_list: {
+    type: 'list',
+    getAttrs() {
+      return {
+        ordered: false,
+        spread: false,
+      }
+    },
+  },
   list_item: {
     type: 'listItem',
     attrs: { spread: false },
@@ -172,6 +181,15 @@ const defaultMdast: Record<string, Spec> = {
     type: 'math',
     noCloseToken: true,
     isText: true,
+  },
+  amsmath: {
+    type: 'math',
+    noCloseToken: true,
+    isText: true,
+    getAttrs(t) {
+      console.log(t)
+      throw new Error()
+    },
   },
 }
 

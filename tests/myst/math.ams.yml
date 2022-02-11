@@ -1,0 +1,318 @@
+cases:
+  - title: \begin{equation} environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{equation}
+            a = 1
+            \end{equation}
+    myst: |-
+      \begin{equation}
+      a = 1
+      \end{equation}
+    html: |-
+      <pre><div class="math block">\begin{equation}
+      a = 1
+      \end{equation}</div></pre>
+
+  - title: Equation environment, with before/after paragraphs
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Before
+        - type: math
+          value: |-
+            \begin{equation}
+            a = 1
+            \end{equation}
+        - type: paragraph
+          children:
+            - type: text
+              value: After
+    myst: |-
+      Before
+      \begin{equation}
+      a = 1
+      \end{equation}
+      After
+    html: |-
+      <p>Before</p>
+      <pre><div class="math block">\begin{equation}
+      a = 1
+      \end{equation}</div></pre>
+      <p>After</p>
+
+  - title: Equation environment, inside of a list
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          spread: false
+          children:
+            - type: listItem
+              spread: false
+              children:
+                - type: math
+                  value: |-
+                    \begin{equation}
+                    a = 1
+                    \end{equation}
+    myst: |-
+      - \begin{equation}
+      a = 1
+      \end{equation}
+    html: |-
+      <ul>
+        <li>
+          <pre><div class="math block">\begin{equation}
+      a = 1
+      \end{equation}</div></pre>
+        </li>
+      </ul>
+
+  - title: Not matching
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: \begin{equation} a = 1 \end{equation*}
+    myst: |-
+      \begin{equation}
+      a = 1
+      \end{equation*}
+    html: |-
+      <p>\begin{equation} a = 1 \end{equation*}</p>
+
+  - title: Not an environment
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: \begin{multiline*} a = 1 \end{multiline*}
+    myst: |-
+      \begin{multiline*}
+      a = 1
+      \end{multiline*}
+    html: |-
+      <p>\begin{multiline*} a = 1 \end{multiline*}</p>
+
+  - title: \begin{equation*} environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{equation*}
+            a = 1
+            \end{equation*}
+    myst: |-
+      \begin{equation*}
+      a = 1
+      \end{equation*}
+    html: |-
+      <pre><div class="math block">\begin{equation*}
+      a = 1
+      \end{equation*}</div></pre>
+
+  - title: \begin{multline} environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{multline}
+            a = 1
+            \end{multline}
+    myst: |-
+      \begin{multline}
+      a = 1
+      \end{multline}
+    html: |-
+      <pre><div class="math block">\begin{multline}
+      a = 1
+      \end{multline}</div></pre>
+
+  - title: \begin{multline*} environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{multline*}
+            a = 1
+            \end{multline*}
+    myst: |-
+      \begin{multline*}
+      a = 1
+      \end{multline*}
+    html: |-
+      <pre><div class="math block">\begin{multline*}
+      a = 1
+      \end{multline*}</div></pre>
+
+  - title: \begin{gather} environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{gather}
+            a = 1
+            \end{gather}
+    myst: |-
+      \begin{gather}
+      a = 1
+      \end{gather}
+    html: |-
+      <pre><div class="math block">\begin{gather}
+      a = 1
+      \end{gather}</div></pre>
+
+  - title: \begin{gather*} environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{gather*}
+            a = 1
+            \end{gather*}
+    myst: |-
+      \begin{gather*}
+      a = 1
+      \end{gather*}
+    html: |-
+      <pre><div class="math block">\begin{gather*}
+      a = 1
+      \end{gather*}</div></pre>
+
+  - title: \begin{align} environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{align}
+            a = 1
+            \end{align}
+    myst: |-
+      \begin{align}
+      a = 1
+      \end{align}
+    html: |-
+      <pre><div class="math block">\begin{align}
+      a = 1
+      \end{align}</div></pre>
+
+  - title: \begin{align*} environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{align*}
+            a = 1
+            \end{align*}
+    myst: |-
+      \begin{align*}
+      a = 1
+      \end{align*}
+    html: |-
+      <pre><div class="math block">\begin{align*}
+      a = 1
+      \end{align*}</div></pre>
+
+  - title: \begin{flalign} environment
+    description: see https://github.com/executablebooks/markdown-it-py/pull/12#issuecomment-623085932
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{flalign}
+            a = 1
+            \end{flalign}
+    myst: |-
+      \begin{flalign}
+      a = 1
+      \end{flalign}
+    html: |-
+      <pre><div class="math block">\begin{flalign}
+      a = 1
+      \end{flalign}</div></pre>
+
+  - title: \begin{flalign*} environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{flalign*}
+            a = 1
+            \end{flalign*}
+    myst: |-
+      \begin{flalign*}
+      a = 1
+      \end{flalign*}
+    html: |-
+      <pre><div class="math block">\begin{flalign*}
+      a = 1
+      \end{flalign*}</div></pre>
+
+  - title: \begin{alignat} environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{alignat}{3}
+              & d   = \frac{1}{1 + 0.2316419x}  \quad && a_1  = 0.31938153   \quad && a_2 = -0.356563782 \\
+              & a_3 = 1.781477937               \quad && a_4  = -1.821255978 \quad && a_5 = 1.330274429
+            \end{alignat}
+    myst: |-
+      \begin{alignat}{3}
+        & d   = \frac{1}{1 + 0.2316419x}  \quad && a_1  = 0.31938153   \quad && a_2 = -0.356563782 \\
+        & a_3 = 1.781477937               \quad && a_4  = -1.821255978 \quad && a_5 = 1.330274429
+      \end{alignat}
+    html: |-
+      <pre><div class="math block">\begin{alignat}{3}
+        &#x26; d   = \frac{1}{1 + 0.2316419x}  \quad &#x26;&#x26; a_1  = 0.31938153   \quad &#x26;&#x26; a_2 = -0.356563782 \\
+        &#x26; a_3 = 1.781477937               \quad &#x26;&#x26; a_4  = -1.821255978 \quad &#x26;&#x26; a_5 = 1.330274429
+      \end{alignat}</div></pre>
+
+  - title: \begin{alignat} environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{alignat*}{3}
+            & m   \quad && \text{módulo}            \quad && m>0\\
+            & a   \quad && \text{multiplicador}     \quad && 0<a<m\\
+            & c   \quad && \text{constante aditiva} \quad && 0\leq c<m\\
+            & x_0 \quad && \text{valor inicial}     \quad && 0\leq x_0 <m
+            \end{alignat*}
+    myst: |-
+      \begin{alignat*}{3}
+      & m   \quad && \text{módulo}            \quad && m>0\\
+      & a   \quad && \text{multiplicador}     \quad && 0<a<m\\
+      & c   \quad && \text{constante aditiva} \quad && 0\leq c<m\\
+      & x_0 \quad && \text{valor inicial}     \quad && 0\leq x_0 <m
+      \end{alignat*}
+    html: |-
+      <pre><div class="math block">\begin{alignat*}{3}
+      &#x26; m   \quad &#x26;&#x26; \text{módulo}            \quad &#x26;&#x26; m>0\\
+      &#x26; a   \quad &#x26;&#x26; \text{multiplicador}     \quad &#x26;&#x26; 0&#x3C;a&#x3C;m\\
+      &#x26; c   \quad &#x26;&#x26; \text{constante aditiva} \quad &#x26;&#x26; 0\leq c&#x3C;m\\
+      &#x26; x_0 \quad &#x26;&#x26; \text{valor inicial}     \quad &#x26;&#x26; 0\leq x_0 &#x3C;m
+      \end{alignat*}</div></pre>

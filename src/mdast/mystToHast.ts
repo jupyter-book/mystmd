@@ -68,6 +68,10 @@ const captionNumber: Handler = (h, node) =>
   h(node, 'span', { class: 'caption-number' }, [u('text', 'Figure 1')])
 
 const math: Handler = (h, node) => {
+  if (node.value.indexOf('\n') !== -1) {
+    const math = h(node, 'div', { class: 'math block' }, [u('text', node.value)])
+    return h(node, 'pre', [math])
+  }
   return h(node, 'div', { class: 'math block' }, [
     u('text', node.value.replace(/\r?\n|\r/g, ' ')),
   ])

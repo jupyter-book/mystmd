@@ -25,7 +25,7 @@ export class MarkdownParseState {
 
   addText(text: string, type = 'text') {
     const top = this.top()
-    const value = text.replace('\n', '')
+    const value = text.replace('\n', type === 'text' ? '' : '\n')
     if (!value || !this.stack.length || !type || !('children' in top)) return
     const last = top.children[top.children.length - 1]
     if (last?.type === type) {
