@@ -1,0 +1,69 @@
+cases:
+  - title: Simple figure
+    mdast:
+      type: root
+      children:
+        - type: figure
+          children:
+            - type: image
+              url: https://via.placeholder.com/150
+            - type: figureCaption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: This is the figure caption!
+    myst: |-
+      ```{figure} https://via.placeholder.com/150
+      This is the figure caption!
+      ```
+    html: |-
+      <figure>
+        <img src="https://via.placeholder.com/150">
+        <figcaption>
+          <p>This is the figure caption!</p>
+        </figcaption>
+      </figure>
+
+  - title: Named figure with a caption in a paragraph
+    mdast:
+      type: root
+      children:
+        - type: figure
+          children:
+            - type: image
+              url: https://via.placeholder.com/150
+            - type: figureCaption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: This is the figure caption!
+    myst: |-
+      ```{figure} https://via.placeholder.com/150
+      :name: myFigure
+
+      This is the figure caption!
+      ```
+    html: |-
+      <figure id="myFigure" class="numbered">
+        <img src="https://via.placeholder.com/150">
+        <figcaption number="1">
+          <p>This is the figure caption!</p>
+        </figcaption>
+      </figure>
+
+# Named figure with a caption, no space between options:
+# .
+# ```{figure} https://jupyterbook.org/_static/logo.png
+# :name: test2
+# The Jupyter Book Logo!
+# ```
+# .
+# <figure id="fig-test2" class="numbered">
+# <img src="https://jupyterbook.org/_static/logo.png">
+# <figcaption number="1">
+# <p>The Jupyter Book Logo!</p>
+# </figcaption>
+# </figure>
+# .

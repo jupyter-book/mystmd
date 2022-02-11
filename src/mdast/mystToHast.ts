@@ -1,17 +1,23 @@
 import { Root } from 'mdast'
 import { map } from 'unist-util-map'
 import { visit } from 'unist-util-visit'
+import classNames from 'classnames'
 import { GenericNode } from '.'
 
-type Transformer = {
+type Transformer<T extends Record<string, string | undefined> = any> = {
   tag: string
-  getProps?: (node: GenericNode) => Record<string, string>
+  getProps?: (node: GenericNode<T>) => T
 }
 
 type Admonition = GenericNode<{
-  kind: AdmonitionKind
-  class: string
+  kind?: AdmonitionKind
+  class?: string
 }>
+
+type Figure = {
+  name?: string
+  class?: string
+}
 
 enum AdmonitionKind {
   admonition = 'admonition',
@@ -41,6 +47,15 @@ function admonitionKindToTitle(kind: AdmonitionKind) {
     warning: 'Warning',
   }
   return transform[kind] || `Unknown Admonition "${kind}"`
+}
+
+const figure: Transformer<Figure> = {
+  tag: 'figure',
+  getProps(node): Figure {
+    return {
+      class: node.class || undefined,
+    }
+  },
 }
 
 const mystToHastTransformers: Record<string, Transformer> = {
@@ -74,6 +89,21 @@ const mystToHastTransformers: Record<string, Transformer> = {
       return { class: 'admonition-title' }
     },
   },
+  figure,
+  figureCaption: { tag: 'figcaption' },
+  image: {
+    tag: 'img',
+    getProps(node) {
+      return {
+        src: node.url,
+        alt: node.alt,
+        title: node.title,
+        class:
+          classNames(node.align ? `align-${node.align}` : '', node.class) || undefined,
+        width: node.width,
+      }
+    },
+  },
 }
 
 export const mystToHast = () => (tree: Root) => {
@@ -87,6 +117,16 @@ export const mystToHast = () => (tree: Root) => {
       },
       ...(node.children ?? []),
     ]
+  })
+  // Hoist up all paragraphs with a single image
+  visit(tree, 'paragraph', (node: GenericNode) => {
+    if (!(node.children?.length === 1 && node.children?.[0].type === 'image')) return
+    const child = node.children[0]
+    Object.keys(node).map((k) => {
+      delete node[k]
+    })
+    Object.assign(node, child)
+    delete node.children
   })
   return map(tree, (node: GenericNode) => {
     const transformer = mystToHastTransformers[node.type]

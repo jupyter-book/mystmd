@@ -3,7 +3,12 @@ import path from 'path'
 import { MyST } from '../src'
 
 // For the common mark to pass, html parsing needs to be enabled
-const tokenizer = MyST({ markdownit: { html: true } })
+const tokenizer = MyST({
+  markdownit: { html: true },
+  extensions: {
+    frontmatter: false, // Frontmatter screws with some tests!
+  },
+})
 
 type Spec = {
   section: string
