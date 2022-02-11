@@ -21,3 +21,29 @@ export type Spec = {
   isText?: boolean
   isLeaf?: boolean
 }
+
+export type Admonition = GenericNode<{
+  kind?: AdmonitionKind
+  class?: string
+}>
+
+export type Container = {
+  kind: string
+  name?: string
+  class?: string
+  numbered?: boolean
+}
+
+export enum AdmonitionKind {
+  admonition = 'admonition',
+  attention = 'attention',
+  caution = 'caution',
+  danger = 'danger',
+  error = 'error',
+  important = 'important',
+  hint = 'hint',
+  note = 'note',
+  seealso = 'seealso',
+  tip = 'tip',
+  warning = 'warning',
+}

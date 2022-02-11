@@ -59,6 +59,7 @@
     "remark-rehype": "^10.1.0",
     "unified": "^10.1.1",
     "unist-util-map": "^3.0.0",
+    "unist-util-select": "^4.0.1",
     "unist-util-visit": "^4.1.0"
   },
   "devDependencies": {

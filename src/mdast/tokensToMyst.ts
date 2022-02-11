@@ -1,8 +1,7 @@
 import { MarkdownParseState } from './fromMarkdown'
 import type { Root } from 'mdast'
-import { Spec, Token } from './types'
+import { Spec, Token, AdmonitionKind, Container } from './types'
 
-export type { Spec }
 export { MarkdownParseState }
 
 function removeNextTokens(tokens: Token[], start: number, num = 0) {
@@ -95,7 +94,6 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isLeaf: true,
     getAttrs(token) {
-      console.log({ imge: token })
       const alt = token.attrGet('alt') || token.children?.[0]?.content
       const alignMatch = hasClassName(token, /align-(left|right|center)/)
       const align = alignMatch ? alignMatch[1] : undefined
@@ -129,7 +127,11 @@ const defaultMdast: Record<string, Spec> = {
     type: 'admonition',
     getAttrs(token, tokens, index) {
       const kind = token.meta?.kind || undefined
-      if (kind && tokens[index + 1]?.type === 'admonition_title_open') {
+      if (
+        kind &&
+        kind !== AdmonitionKind.admonition &&
+        tokens[index + 1]?.type === 'admonition_title_open'
+      ) {
         removeNextTokens(tokens, index, 3)
       }
       return {
@@ -142,25 +144,19 @@ const defaultMdast: Record<string, Spec> = {
     type: 'admonitionTitle',
   },
   figure: {
-    type: 'figure',
-    getAttrs(token, tokens, index) {
-      console.log({ figure: token })
-      // const kind = token.meta?.kind || undefined
-      // if (kind && tokens[index + 1]?.type === 'admonition_title_open') {
-      //   removeNextTokens(tokens, index, 3)
-      // }
+    type: 'container',
+    getAttrs(token): Container {
+      const name = token.meta?.name || undefined
       return {
-        // kind,
-        class: getClassName(token),
+        kind: 'figure',
+        name,
+        numbered: name ? true : undefined,
+        class: getClassName(token, /numbered/),
       }
     },
   },
   figure_caption: {
-    type: 'figureCaption',
-    getAttrs(token) {
-      const number = token.attrGet('number') || undefined
-      return { number }
-    },
+    type: 'caption',
   },
 }
 
