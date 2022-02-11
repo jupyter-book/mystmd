@@ -54,10 +54,11 @@
     "markdown-it-footnote": "^3.0.3",
     "markdown-it-front-matter": "^0.2.3",
     "markdown-it-task-lists": "^2.1.1",
+    "mdast-util-to-hast": "^12.1.1",
     "rehype-format": "^4.0.1",
     "rehype-stringify": "^9.0.3",
-    "remark-rehype": "^10.1.0",
     "unified": "^10.1.1",
+    "unist-builder": "^3.0.0",
     "unist-util-map": "^3.0.0",
     "unist-util-select": "^4.0.1",
     "unist-util-visit": "^4.1.0"

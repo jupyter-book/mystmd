@@ -158,6 +158,11 @@ const defaultMdast: Record<string, Spec> = {
   figure_caption: {
     type: 'caption',
   },
+  math_inline: {
+    type: 'inlineMath',
+    noCloseToken: true,
+    isText: true,
+  },
 }
 
 export function tokensToMyst(tokens: Token[], handlers = defaultMdast): Root {

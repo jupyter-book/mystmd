@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import yaml from 'js-yaml'
 import { MyST, tokensToMyst, GenericNode, mystToHast, jsonParser } from '../src'
-import remarkRehype from 'remark-rehype'
 import rehypeStringify from 'rehype-stringify'
 import rehypeFormat from 'rehype-format'
 import { unified } from 'unified'
@@ -16,8 +15,8 @@ async function toHTML(doc: GenericNode): Promise<string> {
   const f = await unified()
     .use(jsonParser)
     .use(mystToHast)
-    .use(remarkRehype)
     .use(rehypeFormat)
+    // TODO: sanitize
     .use(rehypeStringify)
     .process(JSON.stringify(doc))
   const html = f.value as string

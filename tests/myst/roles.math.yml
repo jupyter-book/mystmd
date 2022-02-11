@@ -1,0 +1,15 @@
+cases:
+  - title: Math role
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: inlineMath
+              value: ma=t^{h}
+    myst: |-
+      This is {math}`ma=t^{h}`
+    html: |-
+      <p>This is <span class="math inline">ma=t^{h}</span></p>
