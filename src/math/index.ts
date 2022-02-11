@@ -17,7 +17,7 @@ export function addMathRenderers(md: MarkdownIt): void {
 export function plugin(md: MarkdownIt): void {
   markdownDollarmath(md)
   amsmathPlugin(md, {
-    renderer: content => renderMath(content, true)
+    renderer: (content) => renderMath(content, true),
   })
   // Note: numbering of equations for `math_block_label` happens in the directives rules
   addMathRenderers(md)

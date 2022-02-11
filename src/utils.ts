@@ -15,7 +15,7 @@ const HTML_EMPTY_ELEMENTS = new Set([
   'param',
   'source',
   'track',
-  'wbr'
+  'wbr',
 ])
 
 type AttrTypes = string | string[] | number | boolean | undefined | null
@@ -41,7 +41,7 @@ export interface HTMLOutputSpecArray {
 type HTMLOutputSpecArrayInternal = [
   string,
   HTMLOutputSpec | 0 | HTMLAttributes,
-  HTMLOutputSpec | 0
+  HTMLOutputSpec | 0,
 ]
 export type HTMLOutputSpec = HTMLOutputSpecArray
 
@@ -64,14 +64,14 @@ const formatAttr = (key: string, value: AttrTypes): string | null => {
 export function formatTag(
   tag: string,
   attributes: HTMLAttributes,
-  inline: boolean
+  inline: boolean,
 ): string {
   const { children, ...rest } = attributes
   const join = inline ? '' : '\n'
   const attrs = Object.entries(rest)
     .filter(([, value]) => value != null && value !== false)
     .map(([key, value]) => formatAttr(key, value))
-    .filter(value => value != null)
+    .filter((value) => value != null)
     .join(' ')
   const html = `<${escapeHtml(tag)}${attrs ? ` ${attrs}` : ''}>`
   if (children) return `${html}${join}${escapeHtml(String(children))}`
@@ -80,12 +80,12 @@ export function formatTag(
 
 function toHTMLRecurse(
   template: HTMLOutputSpec,
-  inline: boolean
+  inline: boolean,
 ): [string, string | null] {
   // Convert to an internal type which is actually an array
   const T = template as HTMLOutputSpecArrayInternal
   // Cannot have more than one hole in the template
-  const atMostOneHole = T.flat(Infinity).filter(v => v === 0).length <= 1
+  const atMostOneHole = T.flat(Infinity).filter((v) => v === 0).length <= 1
   if (!atMostOneHole)
     throw new Error('There cannot be more than one hole in the template.')
   // Grab the tag and attributes if they exist!
@@ -97,7 +97,7 @@ function toHTMLRecurse(
   const after: string[] = []
   before.push(formatTag(tag, attrs, inline))
   let foundHole = false
-  T.slice(hasAttrs ? 2 : 1).forEach(value => {
+  T.slice(hasAttrs ? 2 : 1).forEach((value) => {
     const v = value as HTMLOutputSpec | 0
     if (v === 0) {
       foundHole = true
@@ -156,7 +156,7 @@ function toHTMLRecurse(
  */
 export function toHTML(
   template: HTMLOutputSpec,
-  opts = { inline: false }
+  opts = { inline: false },
 ): [string, string | null] {
   const [before, after] = toHTMLRecurse(template, opts.inline)
   const join = opts.inline ? '' : '\n'

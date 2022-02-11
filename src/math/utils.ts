@@ -10,10 +10,10 @@ export const renderMath = (math: string, block: boolean, target?: Target): strin
         class: target ? ['math', 'numbered'] : 'math',
         id,
         number,
-        children: block ? `\\[\n${math}\n\\]` : `\\(${math}\\)`
-      }
+        children: block ? `\\[\n${math}\n\\]` : `\\(${math}\\)`,
+      },
     ],
-    { inline: true }
+    { inline: true },
   )
   return block ? `${html}\n` : html
 }

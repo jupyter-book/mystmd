@@ -17,7 +17,7 @@ function checkTarget(
   state: StateBlock,
   startLine: number,
   str: string,
-  silent: boolean
+  silent: boolean,
 ) {
   const match = TARGET_PATTERN.exec(str)
   if (match == null) return false
@@ -35,7 +35,7 @@ function checkComment(
   state: StateBlock,
   startLine: number,
   str: string,
-  silent: boolean
+  silent: boolean,
 ): boolean {
   const match = COMMENT_PATTERN.exec(str)
   if (match == null) return false
@@ -52,7 +52,7 @@ function checkBlockBreak(
   state: StateBlock,
   startLine: number,
   str: string,
-  silent: boolean
+  silent: boolean,
 ) {
   const match = BLOCK_BREAK_PATTERN.exec(str)
   if (match == null) return false
@@ -77,7 +77,7 @@ function blocks(
   state: StateBlock,
   startLine: number,
   endLine: number,
-  silent: boolean
+  silent: boolean,
 ) {
   const pos = state.bMarks[startLine] + state.tShift[startLine]
   const maximum = state.eMarks[startLine]
@@ -88,7 +88,7 @@ function blocks(
   const str = state.src.slice(pos, maximum)
   return blockPlugins.reduce(
     (complete, plug) => complete || plug(state, startLine, str, silent),
-    false
+    false,
   )
 }
 
@@ -110,7 +110,7 @@ const renderBlockBreak: Renderer.RenderRule = (tokens, idx) => {
   return '<!-- Block Break -->\n'
 }
 
-const addBlockTitles: RuleCore = state => {
+const addBlockTitles: RuleCore = (state) => {
   const { tokens } = state
   const env = getStateEnv(state)
   for (let index = 0; index < tokens.length; index += 1) {
@@ -126,13 +126,13 @@ const addBlockTitles: RuleCore = state => {
   return true
 }
 
-const updateLinkHrefs: RuleCore = state => {
+const updateLinkHrefs: RuleCore = (state) => {
   const { tokens } = state
   const env = getStateEnv(state)
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index]
     if (token.type === 'inline' && token.children) {
-      token.children.forEach(t => {
+      token.children.forEach((t) => {
         if (t.type === 'link_open') {
           const target = env.targets[t.attrGet('href') ?? '']
           if (target) {
@@ -148,7 +148,7 @@ const updateLinkHrefs: RuleCore = state => {
 
 export function plugin(md: MarkdownIt): void {
   md.block.ruler.before('hr', 'myst_blocks', blocks, {
-    alt: ['paragraph', 'reference', 'blockquote', 'list', 'footnote_def']
+    alt: ['paragraph', 'reference', 'blockquote', 'list', 'footnote_def'],
   })
   md.core.ruler.after('block', 'add_block_titles', addBlockTitles)
   md.core.ruler.after('inline', 'update_link_hrefs', updateLinkHrefs)
