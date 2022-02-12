@@ -60,7 +60,9 @@ cases:
             - type: paragraph
               children:
                 - type: text
-                  value: This is NOT a title but an example of a note admonition.
+                  value: |-
+                    This is NOT a title
+                    but an example of a note admonition.
     myst: |-
       ```{note} This is NOT a title
         but an example of a note admonition.
@@ -68,7 +70,10 @@ cases:
     html: |-
       <aside class="admonition note">
         <p class="admonition-title">Note</p>
-        <p>This is NOT a title but an example of a note admonition.</p>
+        <p>
+          This is NOT a title
+          but an example of a note admonition.
+        </p>
       </aside>
 
   - title: Danger on a single line

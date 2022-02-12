@@ -1,12 +1,12 @@
 import { MarkdownParseState } from './fromMarkdown'
 import type { Root } from 'mdast'
-import { Spec, Token, AdmonitionKind, Container } from './types'
+import { Spec, Token, Container, AdmonitionKind } from './types'
+import { visit } from 'unist-util-visit'
+import he from 'he'
+import { GenericNode } from '.'
+import { admonitionKindToTitle, withoutTrailingNewline } from './utils'
 
 export { MarkdownParseState }
-
-function removeNextTokens(tokens: Token[], start: number, num = 0) {
-  tokens.splice(start + 1, start + num)
-}
 
 function getClassName(token: Token, exclude?: RegExp): string | undefined {
   const className: string = token.meta?.class?.join(' ') || token.attrGet('class')
@@ -31,9 +31,13 @@ function hasClassName(token: Token, matcher: RegExp): false | RegExpMatchArray {
   return matches[0] as RegExpMatchArray
 }
 
+function getLang(t: Token) {
+  return he.decode(t.info).trim().split(' ')[0].replace('\\', '')
+}
+
 const defaultMdast: Record<string, Spec> = {
   heading: {
-    type: 'header',
+    type: 'heading',
     getAttrs(token) {
       return { depth: Number(token.tag[1]) }
     },
@@ -62,22 +66,37 @@ const defaultMdast: Record<string, Spec> = {
   },
   bullet_list: {
     type: 'list',
-    getAttrs() {
-      return {
-        ordered: false,
-        spread: false,
-      }
+    attrs: {
+      ordered: false,
+      spread: false,
     },
   },
   list_item: {
     type: 'listItem',
-    attrs: { spread: false },
+    attrs: {
+      spread: true,
+    },
   },
   em: {
     type: 'emphasis',
   },
   strong: {
     type: 'strong',
+  },
+  fence: {
+    // TODO
+    type: 'code',
+    getAttrs(t) {
+      return { lang: getLang(t), value: withoutTrailingNewline(t.content) }
+    },
+  },
+  code_block: {
+    // TODO
+    type: 'code',
+    isText: true,
+    getAttrs(t) {
+      return { lang: getLang(t), value: withoutTrailingNewline(t.content) }
+    },
   },
   code_inline: {
     type: 'inlineCode',
@@ -103,12 +122,13 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isLeaf: true,
     getAttrs(token) {
-      const alt = token.attrGet('alt') || token.children?.[0]?.content
+      const alt =
+        token.attrGet('alt') || token.children?.reduce((i, t) => i + t?.content, '')
       const alignMatch = hasClassName(token, /align-(left|right|center)/)
       const align = alignMatch ? alignMatch[1] : undefined
       return {
         url: token.attrGet('src'),
-        alt,
+        alt: alt || undefined,
         title: token.attrGet('title') || undefined,
         class: getClassName(token, /align-(?:left|right|center)/),
         width: token.attrGet('width') || undefined,
@@ -134,15 +154,8 @@ const defaultMdast: Record<string, Spec> = {
   },
   admonition: {
     type: 'admonition',
-    getAttrs(token, tokens, index) {
+    getAttrs(token) {
       const kind = token.meta?.kind || undefined
-      if (
-        kind &&
-        kind !== AdmonitionKind.admonition &&
-        tokens[index + 1]?.type === 'admonition_title_open'
-      ) {
-        removeNextTokens(tokens, index, 3)
-      }
       return {
         kind,
         class: getClassName(token, new RegExp(`admonition|${kind}`)),
@@ -182,14 +195,40 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isText: true,
   },
+  math_block_label: {
+    type: 'span',
+    noCloseToken: true,
+    isText: true,
+  },
   amsmath: {
     type: 'math',
     noCloseToken: true,
     isText: true,
+  },
+  ref: {
+    type: 'cite',
     getAttrs(t) {
-      console.log(t)
-      throw new Error()
+      return {
+        kind: 'ref',
+      }
     },
+  },
+  directive: {
+    type: 'div',
+    noCloseToken: true,
+  },
+  role: {
+    type: 'span',
+  },
+  html_inline: {
+    type: 'html',
+    noCloseToken: true,
+    isText: true,
+  },
+  html_block: {
+    type: 'html',
+    noCloseToken: true,
+    isText: true,
   },
 }
 
@@ -200,5 +239,19 @@ export function tokensToMyst(tokens: Token[], handlers = defaultMdast): Root {
   do {
     doc = state.closeNode() as Root
   } while (state.stack.length)
+
+  // Remove unnecessary admonition titles from AST
+  // These are up to the serializer to put in
+  visit(doc, 'admonition', (node: GenericNode) => {
+    const { kind, children } = node
+    if (!kind || !children || kind === AdmonitionKind.admonition) return
+    const expectedTitle = admonitionKindToTitle(kind)
+    const titleNode = children[0]
+    if (
+      titleNode.type === 'admonitionTitle' &&
+      titleNode.children?.[0]?.value === expectedTitle
+    )
+      node.children = children.slice(1)
+  })
   return doc
 }

@@ -56,7 +56,7 @@ cases:
           spread: false
           children:
             - type: listItem
-              spread: false
+              spread: true
               children:
                 - type: math
                   value: |-
@@ -83,13 +83,20 @@ cases:
         - type: paragraph
           children:
             - type: text
-              value: \begin{equation} a = 1 \end{equation*}
+              value: |-
+                \begin{equation}
+                a = 1
+                \end{equation*}
     myst: |-
       \begin{equation}
       a = 1
       \end{equation*}
     html: |-
-      <p>\begin{equation} a = 1 \end{equation*}</p>
+      <p>
+        \begin{equation}
+        a = 1
+        \end{equation*}
+      </p>
 
   - title: Not an environment
     mdast:
@@ -98,13 +105,20 @@ cases:
         - type: paragraph
           children:
             - type: text
-              value: \begin{multiline*} a = 1 \end{multiline*}
+              value: |-
+                \begin{multiline*}
+                a = 1
+                \end{multiline*}
     myst: |-
       \begin{multiline*}
       a = 1
       \end{multiline*}
     html: |-
-      <p>\begin{multiline*} a = 1 \end{multiline*}</p>
+      <p>
+        \begin{multiline*}
+        a = 1
+        \end{multiline*}
+      </p>
 
   - title: \begin{equation*} environment
     mdast:

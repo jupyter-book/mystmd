@@ -1,27 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import yaml from 'js-yaml'
-import { MyST, tokensToMyst, GenericNode, mystToHast, jsonParser } from '../src'
-import rehypeStringify from 'rehype-stringify'
-import rehypeFormat from 'rehype-format'
-import { unified } from 'unified'
+import { MyST } from '../src'
 import { Root } from 'mdast'
-
-async function fromMarkdown(content: string) {
-  return tokensToMyst(MyST().parse(content, {}))
-}
-
-async function toHTML(doc: GenericNode): Promise<string> {
-  const f = await unified()
-    .use(jsonParser)
-    .use(mystToHast)
-    .use(rehypeFormat)
-    // TODO: sanitize
-    .use(rehypeStringify)
-    .process(JSON.stringify(doc))
-  const html = f.value as string
-  return html.trim()
-}
 
 type TestFile = {
   cases: TestCase[]
@@ -64,23 +45,22 @@ const cases: [string, TestCase][] = files
 
 describe('Testing myst --> mdast conversions', () => {
   test.each(cases)('%s', async (_, { myst, mdast }) => {
+    const parser = new MyST()
     const mdastString = yaml.dump(mdast)
-    const newAst = yaml.dump(await fromMarkdown(myst))
+    const newAst = yaml.dump(parser.parse(myst))
     expect(newAst).toEqual(mdastString)
   })
 })
 
 describe('Testing mdast --> html conversions', () => {
   test.each(cases)('%s', async (_, { html, mdast }) => {
-    const newHTML = await toHTML(mdast as GenericNode)
+    const parser = new MyST()
+    const newHTML = await parser.renderMdast(mdast)
     expect(newHTML).toEqual(html)
   })
 })
 
 describe('Skipped Tests', () => {
-  // eslint-disable-next-line jest/no-disabled-tests
-  test.skip.each(skipped)('%s', async (_, { html, mdast }) => {
-    const newHTML = await toHTML(mdast as GenericNode)
-    expect(newHTML).toEqual(html)
-  })
+  // eslint-disable-next-line jest/no-disabled-tests, jest/expect-expect
+  test.skip.each(skipped)('%s', () => null)
 })

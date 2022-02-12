@@ -2,14 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import { MyST } from '../src'
 
-// For the common mark to pass, html parsing needs to be enabled
-const tokenizer = MyST({
-  markdownit: { html: true },
-  extensions: {
-    frontmatter: false, // Frontmatter screws with some tests!
-  },
-})
-
 type Spec = {
   section: string
   example: number
@@ -39,16 +31,83 @@ export function loadSpec(name: string): Spec[] {
 function fixHtml(html: string) {
   return html.replace(/<blockquote>\n<\/blockquote>/g, '<blockquote></blockquote>')
 }
+const skipped: [string, Spec][] = []
 
-describe('Common Mark Spec', () => {
-  loadSpec('cmark_spec_0.30.json').forEach(({ section, example, markdown, html }) => {
-    if (SKIP_TESTS.has(example)) {
-      // eslint-disable-next-line jest/no-disabled-tests, jest/expect-expect
-      it.skip(`${example}: ${section}`, () => undefined)
-      return
-    }
-    const fixed = fixHtml(html)
-    it(`${example}: ${section}`, () =>
-      expect(tokenizer.render(markdown)).toEqual(fixed))
+const cases: [string, Spec][] = loadSpec('cmark_spec_0.30.json')
+  .map((c) => {
+    return [`${c.example}: ${c.section}`, c] as [string, Spec]
   })
+  .filter(([f, c]) => {
+    // return c.example === 34
+    // if (c.section === 'Lists' || c.section === 'List items') return false
+    if (!SKIP_TESTS.has(c.example)) return true
+    skipped.push([f, c])
+    return false
+  })
+
+describe('Common Mark Spec with markdown it', () => {
+  test.each(cases)('%s', (_, { markdown, html }) => {
+    const fixed = fixHtml(html)
+    // For the common mark to pass, html parsing needs to be enabled
+    const myst = new MyST({
+      markdownit: { html: true },
+      extensions: {
+        frontmatter: false, // Frontmatter screws with some tests!
+      },
+    })
+    const output = myst.tokenizer.render(markdown)
+    expect(output).toEqual(fixed)
+  })
+})
+
+describe('Common Mark Spec with unified', () => {
+  test.each(cases)('%s', async (_, { example, markdown, html }) => {
+    // For the common mark to pass, html parsing needs to be enabled
+    const myst = new MyST({
+      allowDangerousHtml: true,
+      transform: {
+        hoistSingleImagesOutofParagraphs: false,
+      },
+      extensions: {
+        frontmatter: false, // Frontmatter screws with some tests!
+      },
+      formatHtml: false,
+      stringifyHtml: {
+        closeSelfClosing: true,
+      },
+    })
+    const output = await myst.render(markdown)
+    const i = html
+      .replace(/&gt;/g, '>')
+      .replace(/&lt;/g, '&#x3C;')
+      .replace(/&amp;/g, '&#x26;')
+      .replace(/&quot;/g, '"')
+      .replace(' alt=""', '') // Test 580
+      .trim()
+    let o = output
+      .replace(/<li>\n(?!<)/g, '<li>')
+      .replace(/(?<!>)\n<\/li>/g, '</li>')
+      // These are quoted correctly, but come out poorly from the &quot; replacement above
+      .replace('foo&#x22;bar', 'foo"bar') // Test 202
+      .replace('&#x22;and&#x22;', '"and"') // Test 508
+      .replace('title &#x22;&#x22;', 'title ""') // Test 505
+
+    if (example === 190) {
+      o = o
+        .replace('<table><tr><td>', '<table>\n<tr>\n<td>') // Test 190
+        .replace('</td></tr></table>', '</td>\n</tr>\n</table>') // Test 190
+    }
+    if (example === 191) {
+      o = o
+        .replace('<table>  <tr>', '<table>\n  <tr>') // Test 191
+        .replace('</tr></table>', '</tr>\n</table>') // Test 191
+    }
+
+    expect(o).toEqual(i)
+  })
+})
+
+describe('Skipped Commonmark Tests', () => {
+  // eslint-disable-next-line jest/no-disabled-tests, jest/expect-expect
+  test.skip.each(skipped)('%s', () => null)
 })

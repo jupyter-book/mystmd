@@ -1,5 +1,6 @@
 import type { Root, Parent } from 'mdast'
 import type { GenericNode, GenericText, Spec, Token } from './types'
+import { withoutTrailingNewline } from './utils'
 
 /** MarkdownParseState tracks the context of a running token stream.
  *
@@ -23,17 +24,17 @@ export class MarkdownParseState {
     return node
   }
 
-  addText(text: string, type = 'text') {
+  addText(text: string, type = 'text', attrs?: Record<string, any>) {
     const top = this.top()
-    const value = text.replace('\n', type === 'text' ? '' : '\n')
+    const value = text //.replace(/^\s+|\s+$/g, type === 'text' ? '' : '\n')
     if (!value || !this.stack.length || !type || !('children' in top)) return
     const last = top.children[top.children.length - 1]
     if (last?.type === type) {
       // The last node is the same type, merge it with a space
-      last.value += ` ${value}`
+      last.value += `${value}`
       return last
     }
-    const node: GenericText = { type, value }
+    const node: GenericText = { type, value, ...attrs }
     top.children?.push(node)
     return node
   }
@@ -76,10 +77,6 @@ function attrs(spec: Spec, token: Token, tokens: Token[], index: number) {
   return attrs
 }
 
-function withoutTrailingNewline(str: string) {
-  return str[str.length - 1] == '\n' ? str.slice(0, str.length - 1) : str
-}
-
 function noCloseToken(spec: Spec, type: string) {
   return (
     spec.noCloseToken ||
@@ -97,7 +94,11 @@ function getTokenHandlers(specHandlers: Record<string, Spec>) {
     if (noCloseToken(spec, type)) {
       handlers[type] = (state, tok, tokens, i) => {
         if (spec.isText) {
-          state.addText(withoutTrailingNewline(tok.content), spec.type)
+          state.addText(
+            withoutTrailingNewline(tok.content),
+            spec.type,
+            attrs(spec, tok, tokens, i),
+          )
           return
         }
         state.openNode(nodeType, attrs(spec, tok, tokens, i), spec.isLeaf)

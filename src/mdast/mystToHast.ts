@@ -1,27 +1,9 @@
 import { Root } from 'mdast'
-import { visit } from 'unist-util-visit'
-import { selectAll } from 'unist-util-select'
-import { Handler, toHast, all } from 'mdast-util-to-hast'
+import { Handler, toHast, all, Options } from 'mdast-util-to-hast'
 import { u } from 'unist-builder'
 import classNames from 'classnames'
-import { Admonition, GenericNode, AdmonitionKind } from './types'
+import { AdmonitionKind } from './types'
 import { Plugin } from 'unified'
-
-function admonitionKindToTitle(kind: AdmonitionKind) {
-  const transform: Record<string, string> = {
-    attention: 'Attention',
-    caution: 'Caution',
-    danger: 'Danger',
-    error: 'Error',
-    important: 'Important',
-    hint: 'Hint',
-    note: 'Note',
-    seealso: 'See Also',
-    tip: 'Tip',
-    warning: 'Warning',
-  }
-  return transform[kind] || `Unknown Admonition "${kind}"`
-}
 
 const abbreviation: Handler = (h, node) =>
   h(node, 'abbr', { title: node.title }, all(h, node))
@@ -83,34 +65,9 @@ const inlineMath: Handler = (h, node) => {
   ])
 }
 
-export const mystToHast: Plugin<void[], string, Root> = () => (tree: Root) => {
-  // Visit all admonitions and add headers if necessary
-  visit(tree, 'admonition', (node: Admonition) => {
-    if (!node.kind || node.kind === AdmonitionKind.admonition) return
-    node.children = [
-      {
-        type: 'admonitionTitle',
-        children: [{ type: 'text', value: admonitionKindToTitle(node.kind) }],
-      },
-      ...(node.children ?? []),
-    ]
-  })
-  // Visit all containers and add captions
-  selectAll('container[numbered=true] caption > paragraph', tree).forEach(
-    (para: GenericNode) => {
-      para.children = [{ type: 'captionNumber' }, ...(para.children ?? [])]
-    },
-  )
-  // Hoist up all paragraphs with a single image
-  visit(tree, 'paragraph', (node: GenericNode) => {
-    if (!(node.children?.length === 1 && node.children?.[0].type === 'image')) return
-    const child = node.children[0]
-    Object.keys(node).forEach((k) => {
-      delete node[k]
-    })
-    Object.assign(node, child)
-  })
+export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Root) => {
   return toHast(tree, {
+    ...opts,
     handlers: {
       admonition,
       admonitionTitle,
@@ -123,6 +80,7 @@ export const mystToHast: Plugin<void[], string, Root> = () => (tree: Root) => {
       superscript,
       math,
       inlineMath,
+      ...opts?.handlers,
     },
   })
 }
