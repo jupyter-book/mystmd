@@ -2,9 +2,11 @@ import { MarkdownParseState } from './fromMarkdown'
 import type { Root } from 'mdast'
 import { Spec, Token, Container, AdmonitionKind } from './types'
 import { visit } from 'unist-util-visit'
+import { remove } from 'unist-util-remove'
 import he from 'he'
 import { GenericNode } from '.'
 import { admonitionKindToTitle, withoutTrailingNewline } from './utils'
+import { map } from 'unist-util-map'
 
 export { MarkdownParseState }
 
@@ -91,7 +93,6 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   code_block: {
-    // TODO
     type: 'code',
     isText: true,
     getAttrs(t) {
@@ -152,6 +153,15 @@ const defaultMdast: Record<string, Spec> = {
   sup: {
     type: 'superscript',
   },
+  dl: {
+    type: 'definitionList',
+  },
+  dt: {
+    type: 'definitionTerm',
+  },
+  dd: {
+    type: 'definitionDescription',
+  },
   admonition: {
     type: 'admonition',
     getAttrs(token) {
@@ -194,11 +204,19 @@ const defaultMdast: Record<string, Spec> = {
     type: 'math',
     noCloseToken: true,
     isText: true,
+    getAttrs(t) {
+      const info = t.info || undefined
+      return { identifier: info, label: info }
+    },
   },
   math_block_label: {
-    type: 'span',
+    type: 'math',
     noCloseToken: true,
     isText: true,
+    getAttrs(t) {
+      const info = t.info || undefined
+      return { identifier: info, label: info }
+    },
   },
   amsmath: {
     type: 'math',
@@ -213,12 +231,50 @@ const defaultMdast: Record<string, Spec> = {
       }
     },
   },
+  footnote_ref: {
+    type: 'footnoteReference',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        identifier: t?.meta?.id,
+        label: t?.meta?.label,
+      }
+    },
+  },
+  footnote_anchor: {
+    type: 'remove',
+    noCloseToken: true,
+  },
+  footnote_block: {
+    // The footnote block is a view concern, not AST
+    // Lift footnotes out of the tree
+    type: 'lift',
+  },
+  footnote: {
+    type: 'footnoteDefinition',
+    getAttrs(t) {
+      return {
+        identifier: t?.meta?.id,
+        label: t?.meta?.label,
+      }
+    },
+  },
   directive: {
-    type: 'div',
+    type: 'directive',
+    noCloseToken: true,
+  },
+  directive_error: {
+    type: 'directiveError',
     noCloseToken: true,
   },
   role: {
+    type: 'role',
+  },
+  myst_target: {
+    // TODO: remove me if blocks change?
     type: 'span',
+    noCloseToken: true,
   },
   html_inline: {
     type: 'html',
@@ -235,14 +291,27 @@ const defaultMdast: Record<string, Spec> = {
 export function tokensToMyst(tokens: Token[], handlers = defaultMdast): Root {
   const state = new MarkdownParseState(handlers)
   state.parseTokens(tokens)
-  let doc: Root
+  let tree: Root
   do {
-    doc = state.closeNode() as Root
+    tree = state.closeNode() as Root
   } while (state.stack.length)
+
+  // Remove all redundant nodes marked for removal
+  remove(tree, 'remove')
+
+  // Lift up all nodes that are named "lift"
+  tree = map(tree, (node: GenericNode) => {
+    const children = node.children?.map((child: GenericNode) => {
+      if (child.type === 'lift') return child.children
+      return child
+    })
+    node.children = children?.flat()
+    return node
+  }) as Root
 
   // Remove unnecessary admonition titles from AST
   // These are up to the serializer to put in
-  visit(doc, 'admonition', (node: GenericNode) => {
+  visit(tree, 'admonition', (node: GenericNode) => {
     const { kind, children } = node
     if (!kind || !children || kind === AdmonitionKind.admonition) return
     const expectedTitle = admonitionKindToTitle(kind)
@@ -253,5 +322,5 @@ export function tokensToMyst(tokens: Token[], handlers = defaultMdast): Root {
     )
       node.children = children.slice(1)
   })
-  return doc
+  return tree
 }

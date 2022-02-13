@@ -47,7 +47,9 @@ export const defaultOptions: AllOptions = {
   },
   transform: {},
   docutils: {},
-  hast: {},
+  hast: {
+    clobberPrefix: 'm-',
+  },
   formatHtml: true,
   stringifyHtml: {},
 }
@@ -57,16 +59,15 @@ class MyST {
   opts: AllOptions
 
   constructor(opts: Options = defaultOptions) {
-    const tokenizer = MarkdownIt('commonmark', opts.markdownit)
     this.opts = {
-      allowDangerousHtml: opts.allowDangerousHtml ?? false,
-      transform: opts.transform ?? defaultOptions.transform,
-      hast: opts.hast ?? defaultOptions.hast,
-      docutils: opts.docutils ?? defaultOptions.docutils,
-      markdownit: opts.markdownit ?? defaultOptions.markdownit,
-      extensions: opts.extensions ?? defaultOptions.extensions,
+      allowDangerousHtml: opts.allowDangerousHtml ?? defaultOptions.allowDangerousHtml,
+      transform: { ...defaultOptions.transform, ...opts.transform },
+      hast: { ...defaultOptions.hast, ...opts.hast },
+      docutils: { ...defaultOptions.docutils, ...opts.docutils },
+      markdownit: { ...defaultOptions.markdownit, ...opts.markdownit },
+      extensions: { ...defaultOptions.extensions, ...opts.extensions },
       formatHtml: opts.formatHtml ?? defaultOptions.formatHtml,
-      stringifyHtml: opts.stringifyHtml ?? defaultOptions.stringifyHtml,
+      stringifyHtml: { ...defaultOptions.stringifyHtml, ...opts.stringifyHtml },
     }
     if (this.opts.allowDangerousHtml) {
       this.opts.markdownit.html = true
@@ -75,8 +76,9 @@ class MyST {
       this.opts.stringifyHtml.allowDangerousHtml = true
     }
     const exts = this.opts.extensions ?? {}
-    if (exts.tables) tokenizer.enable('table')
 
+    const tokenizer = MarkdownIt('commonmark', opts.markdownit)
+    if (exts.tables) tokenizer.enable('table')
     if (exts.frontmatter)
       tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter)
     if (exts.blocks) tokenizer.use(blocks)

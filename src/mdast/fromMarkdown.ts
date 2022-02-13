@@ -26,15 +26,15 @@ export class MarkdownParseState {
 
   addText(text: string, type = 'text', attrs?: Record<string, any>) {
     const top = this.top()
-    const value = text //.replace(/^\s+|\s+$/g, type === 'text' ? '' : '\n')
+    const value = text
     if (!value || !this.stack.length || !type || !('children' in top)) return
     const last = top.children[top.children.length - 1]
-    if (last?.type === type) {
-      // The last node is the same type, merge it with a space
+    if (type === 'text' && last?.type === type) {
+      // The last node is also text, merge it with a space
       last.value += `${value}`
       return last
     }
-    const node: GenericText = { type, value, ...attrs }
+    const node: GenericText = { type, ...attrs, value }
     top.children?.push(node)
     return node
   }
