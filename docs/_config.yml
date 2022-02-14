@@ -16,6 +16,14 @@ latex:
   latex_documents:
     targetname: book.tex
 
+parse:
+  myst_enable_extensions:
+    - dollarmath
+    - linkify
+    - substitution
+    - colon_fence
+    - deflist
+
 # Information about where the book exists on the web
 repository:
   url: https://github.com/executablebooks/markdown-it-myst # Online location of your book
