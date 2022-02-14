@@ -8,3 +8,8 @@ parts:
   - caption: Library
     chapters:
       - file: overview
+  - caption: Features
+    chapters:
+      - file: commonmark
+      - file: directivesAndRoles
+      - file: admonitions
