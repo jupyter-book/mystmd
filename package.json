@@ -54,6 +54,7 @@
     "markdown-it-dollarmath": "^0.3.0",
     "markdown-it-footnote": "^3.0.3",
     "markdown-it-front-matter": "^0.2.3",
+    "markdown-it-myst-extras": "file:.yalc/markdown-it-myst-extras",
     "markdown-it-task-lists": "^2.1.1",
     "mdast-util-to-hast": "^12.1.1",
     "rehype-format": "^4.0.1",
