@@ -6,7 +6,8 @@ import deflistPlugin from 'markdown-it-deflist'
 import { docutilsPlugin } from 'markdown-it-docutils'
 import { IOptions as IDocutilsOptions } from 'markdown-it-docutils'
 import { Options as HastOptions } from 'mdast-util-to-hast'
-import { math, MathExtensionOptions, blocks, convertFrontMatter } from './plugins'
+import { math, MathExtensionOptions, convertFrontMatter } from './plugins'
+import { mystBlockPlugin } from 'markdown-it-myst-extras'
 import { formatHtml, jsonParser, mystToHast, tokensToMyst } from './mdast'
 import { unified } from 'unified'
 import rehypeStringify, { Options as StringifyOptions } from 'rehype-stringify'
@@ -81,7 +82,7 @@ class MyST {
     if (exts.tables) tokenizer.enable('table')
     if (exts.frontmatter)
       tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter)
-    if (exts.blocks) tokenizer.use(blocks)
+    if (exts.blocks) tokenizer.use(mystBlockPlugin)
     if (exts.footnotes) tokenizer.use(footnotePlugin).disable('footnote_inline') // not yet implemented in myst-parser
     tokenizer.use(docutilsPlugin, opts.docutils)
     if (exts.math) tokenizer.use(math, exts.math)
