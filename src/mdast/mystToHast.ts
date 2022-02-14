@@ -24,7 +24,7 @@ const container: Handler = (h, node) =>
     node,
     'figure',
     {
-      id: node.name || undefined,
+      id: node.name || undefined, // TODO: change to label/identifier
       class: classNames({ numbered: node.numbered }, node.class) || undefined,
     },
     all(h, node),
