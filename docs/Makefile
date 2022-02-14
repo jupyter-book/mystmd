@@ -1,6 +1,7 @@
 .PHONY: build serve watch
 
 build:
+	cd ..; npm run build
 	jupyter-book build .
 	rm -r _build/html/demo | true;
 	cp -r ../dist _build/html/demo
