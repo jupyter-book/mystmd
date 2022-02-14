@@ -17,7 +17,7 @@ describe('toHTML', () => {
       'figure',
       { hi: '1' },
       ['img', { src: '2' }],
-      ['figcaption', { number: '3' }, 0]
+      ['figcaption', { number: '3' }, 0],
     ])
     expect(a).toBe('<figure hi="1">\n<img src="2">\n<figcaption number="3">\n')
     expect(b).toBe('</figcaption>\n</figure>\n')
@@ -29,8 +29,8 @@ describe('toHTML', () => {
         { hi: '1' },
         0,
         ['img', { src: '2' }],
-        ['figcaption', { number: '3' }, 0]
-      ])
+        ['figcaption', { number: '3' }, 0],
+      ]),
     ).toThrow()
   })
 })

@@ -1,0 +1,50 @@
+cases:
+  - title: Standard markdown image
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: image
+              url: fun-fish.png
+              alt: fishy
+    myst: |-
+      ![fishy](fun-fish.png)
+    html: |-
+      <img src="fun-fish.png" alt="fishy">
+
+  - title: Image directive
+    mdast:
+      type: root
+      children:
+        - type: image
+          url: fun-fish.png
+          alt: fishy
+          class: bg-primary mb-1
+          width: 200px
+          align: center
+    myst: |-
+      ```{image} fun-fish.png
+      :alt: fishy
+      :class: bg-primary mb-1
+      :width: 200px
+      :align: center
+      ```
+    html: |-
+      <img src="fun-fish.png" alt="fishy" class="align-center bg-primary mb-1" width="200px">
+
+  - title: Image directive, left
+    mdast:
+      type: root
+      children:
+        - type: image
+          url: fun-fish.png
+          alt: fishy
+          align: left
+    myst: |-
+      ```{image} fun-fish.png
+      :alt: fishy
+      :align: left
+      ```
+    html: |-
+      <img src="fun-fish.png" alt="fishy" class="align-left">

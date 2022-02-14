@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 // const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
@@ -22,10 +22,7 @@ module.exports = {
       template: 'index.html',
     }),
     new CopyPlugin({
-      patterns: [
-        { from: 'fixtures', to: 'fixtures' },
-        { from: 'myst.css', to: 'myst.css' },
-      ],
+      patterns: [{ from: 'myst.css', to: 'myst.css' }],
     }),
   ],
   output: {
@@ -41,20 +38,15 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-        ],
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          'file-loader',
-        ],
+        use: ['file-loader'],
       },
     ],
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
-};
+}

@@ -7,7 +7,7 @@ export enum TargetKind {
   equation = 'eq',
   figure = 'fig',
   table = 'table',
-  code = 'code'
+  code = 'code',
 }
 
 const RefFormatter: { [kind: string]: (id: string, num?: number) => string } = {
@@ -25,7 +25,7 @@ const RefFormatter: { [kind: string]: (id: string, num?: number) => string } = {
   },
   code(id, num) {
     return `Code ${num}`
-  }
+  },
 }
 
 export type Target = {
@@ -55,7 +55,7 @@ export function getStateEnv(state: { env: any }): StateEnv {
       eq: 0,
       fig: 0,
       table: 0,
-      code: 0
+      code: 0,
     }
   }
   if (!state.env) state.env = env
@@ -84,7 +84,7 @@ function nextNumber(state: { env: any }, kind: TargetKind) {
 export function newTarget(
   state: { env: any },
   name: string | undefined,
-  kind: TargetKind
+  kind: TargetKind,
 ): Target {
   const env = getStateEnv(state)
   const number = kind === TargetKind.ref ? undefined : nextNumber(state, kind)
@@ -96,7 +96,7 @@ export function newTarget(
     name: useName,
     defaultReference: RefFormatter[kind](id, number),
     kind,
-    number
+    number,
   }
   env.targets[useName] = target
   return target
