@@ -304,6 +304,16 @@ const defaultMdast: Record<string, Spec> = {
       }
     },
   },
+  myst_line_comment: {
+    type: 'comment',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        value: t.content.trim() || undefined,
+      }
+    },
+  },
 }
 
 export function tokensToMyst(tokens: Token[], handlers = defaultMdast): Root {

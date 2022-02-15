@@ -1,0 +1,32 @@
+cases:
+  - title: Simple paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Something
+    myst: |-
+      Something
+    html: |-
+      <p>Something</p>
+  - title: Two paragraphs
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Something
+        - type: paragraph
+          children:
+            - type: text
+              value: Something else
+    myst: |-
+      Something
+
+      Something else
+    html: |-
+      <p>Something</p>
+      <p>Something else</p>
