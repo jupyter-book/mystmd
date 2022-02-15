@@ -7,6 +7,7 @@ import he from 'he'
 import { GenericNode } from '.'
 import { admonitionKindToTitle, withoutTrailingNewline } from './utils'
 import { map } from 'unist-util-map'
+import { findAfter } from 'unist-util-find-after'
 
 export { MarkdownParseState }
 
@@ -281,8 +282,14 @@ const defaultMdast: Record<string, Spec> = {
   },
   myst_target: {
     // TODO: remove me if blocks change?
-    type: 'span',
+    type: 'target',
     noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        value: t.content,
+      }
+    },
   },
   html_inline: {
     type: 'html',
@@ -350,5 +357,15 @@ export function tokensToMyst(tokens: Token[], handlers = defaultMdast): Root {
     )
       node.children = children.slice(1)
   })
+
+  // Add target values as identifiers to subsequent node
+  visit(tree, 'target', (node: GenericNode) => {
+    const nextNode = findAfter(tree, node) as GenericNode
+    if (nextNode) {
+      nextNode.identifier = node.value
+      nextNode.label = node.value
+    }
+  })
+  remove(tree, 'target')
   return tree
 }

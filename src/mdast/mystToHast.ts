@@ -98,6 +98,9 @@ const blockBreak: Handler = (h, node) =>
 
 const comment: Handler = (h, node) => u('comment', node.value)
 
+const heading: Handler = (h, node) =>
+  h(node, `h${node.depth}`, { id: node.label || undefined }, all(h, node))
+
 export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Root) => {
   return toHast(tree, {
     ...opts,
@@ -122,6 +125,7 @@ export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Roo
       directive,
       blockBreak,
       comment,
+      heading,
       ...opts?.handlers,
     },
   })

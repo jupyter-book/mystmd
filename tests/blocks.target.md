@@ -5,9 +5,8 @@ Header with ID:
 
 {ref}`my_id`
 .
-<span id="ref-my_id"></span>
-<h1>My Header</h1>
-<p><a href="#ref-my_id" title="My Header">My Header</a></p>
+<h1 id="my_id">My Header</h1>
+<p><a href="#my_id" title="My Header">My Header</a></p>
 .
 
 Header with ID and labeled link:
@@ -17,9 +16,8 @@ Header with ID and labeled link:
 
 {ref}`My Label <my_id>`
 .
-<span id="ref-my_id"></span>
-<h1>My Header</h1>
-<p><a href="#ref-my_id" title="My Header">My Label</a></p>
+<h1 id="my_id">My Header</h1>
+<p><a href="#my_id" title="My Header">My Label</a></p>
 .
 
 Reference to a non-existent ID:
@@ -29,8 +27,7 @@ Reference to a non-existent ID:
 
 {ref}`Not There <my_ID>`
 .
-<span id="ref-my_id"></span>
-<h1>My Header</h1>
+<h1 id="my_id">My Header</h1>
 <p><span class="error" title="The reference 'my_ID' was not found.">Reference 'my_ID' not found.</span></p>
 .
 
@@ -41,7 +38,6 @@ Header with ID and a markdown link:
 
 [My Label](my_id)
 .
-<span id="ref-my_id"></span>
-<h1>My Header</h1>
-<p><a href="#ref-my_id" title="My Header">My Label</a></p>
+<h1 id="my_id">My Header</h1>
+<p><a href="#my_id" title="My Header">My Label</a></p>
 .

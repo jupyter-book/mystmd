@@ -11,6 +11,8 @@ export type GenericNode<T extends Record<string, any> = any> = {
   type: string
   children?: GenericNode<any>[]
   value?: string
+  identifier?: string
+  label?: string
 } & T
 
 export type Spec = {
