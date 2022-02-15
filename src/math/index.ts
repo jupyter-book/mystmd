@@ -1,6 +1,6 @@
 import MarkdownIt from 'markdown-it'
-import markdownDollarmath from 'markdown-it-dollarmath'
-import amsmathPlugin from 'markdown-it-amsmath'
+import { dollarmathPlugin } from 'markdown-it-dollarmath'
+import { amsmathPlugin } from 'markdown-it-amsmath'
 import { renderMath } from './utils'
 
 export type MathExtensionOptions = {
@@ -21,7 +21,7 @@ export function addMathRenderers(md: MarkdownIt): void {
 
 export function plugin(md: MarkdownIt, options?: true | MathExtensionOptions): void {
   const opts = options === true ? { amsmath: true, dollarmath: true } : options
-  if (opts?.dollarmath) markdownDollarmath(md)
+  if (opts?.dollarmath) dollarmathPlugin(md)
   if (opts?.amsmath)
     amsmathPlugin(md, {
       renderer: (content) => renderMath(content, true),
