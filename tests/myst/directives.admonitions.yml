@@ -128,7 +128,36 @@ cases:
       An example of a general `admonition` with a custom _class_.
       ```
     html: |-
-      <aside class="admonition tip">
+      <aside class="tip admonition">
         <p class="admonition-title">This is a title!</p>
         <p>An example of a general <code>admonition</code> with a custom <em>class</em>.</p>
+      </aside>
+
+  - title: See Also with overridding class name of tip
+    description: The `tip` class must be appended to the start
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: seealso
+          class: tip
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: |-
+                    This is NOT a title!
+                    Tip class comes first!!
+    myst: |-
+      ```{seealso} This is NOT a title!
+      :class: tip
+      Tip class comes first!!
+      ```
+    html: |-
+      <aside class="tip admonition seealso">
+        <p class="admonition-title">See Also</p>
+        <p>
+          This is NOT a title!
+          Tip class comes first!!
+        </p>
       </aside>
