@@ -38,9 +38,10 @@ const admonition: Handler = (h, node) =>
     node,
     'aside',
     {
-      class: classNames('admonition', {
+      class: classNames({
+        [node.class]: node.class, // The custom class is first!!
+        admonition: true,
         [node.kind]: node.kind && node.kind !== AdmonitionKind.admonition,
-        [node.class]: node.class,
       }),
     },
     all(h, node),

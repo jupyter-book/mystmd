@@ -66,7 +66,7 @@ so content will be appended to the body.
 ## Options
 
 `:class:`
-: CSS classes to add to your admonition, in addition to the default `admonition` class.
+: CSS classes to add to your admonition, in addition to the default `admonition` class. The custom CSS class will be first.
 
 For example, you can try adding the name of an admonition to apply those styles.
 These classes in the default themes are lowercased without spaces (e.g. `seealso` or `error`).
