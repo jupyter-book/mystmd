@@ -11,6 +11,16 @@ export enum KINDS {
   Reference = 'Reference',
 }
 
+export enum ReferenceKind {
+    cite = "cite",
+    link = "link",
+    sec = "sec",
+    fig = "fig",
+    eq = "eq",
+    code = "code",
+    table = "table"
+}
+
 export const DocumentKINDS = new Set([KINDS.Article, KINDS.Notebook]);
 
 export const EditableKINDS = new Set([
