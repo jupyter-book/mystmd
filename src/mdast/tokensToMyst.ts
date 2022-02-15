@@ -263,6 +263,14 @@ const defaultMdast: Record<string, Spec> = {
   directive: {
     type: 'directive',
     noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        kind: t.info,
+        args: t?.meta?.arg || undefined,
+        value: t.content.trim(),
+      }
+    },
   },
   directive_error: {
     type: 'directiveError',

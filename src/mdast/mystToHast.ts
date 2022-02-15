@@ -76,8 +76,21 @@ const cite: Handler = (h, node) =>
 const role: Handler = (h, node) =>
   h(node, 'span', { class: 'unhandled-role' }, all(h, node))
 
-const directive: Handler = (h, node) =>
-  h(node, 'div', { class: 'unhandled-role' }, all(h, node))
+const directive: Handler = (h, node) => {
+  let directiveElements: any[] = [
+    h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
+  ]
+  if (node.args) {
+    directiveElements = directiveElements.concat([
+      u('text', ' '),
+      h(node, 'code', { class: 'args' }, [u('text', node.args)]),
+    ])
+  }
+  return h(node, 'div', { class: 'directive unhandled' }, [
+    h(node, 'p', {}, directiveElements),
+    h(node, 'pre', [h(node, 'code', [u('text', node.value)])]),
+  ])
+}
 
 export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Root) => {
   return toHast(tree, {
