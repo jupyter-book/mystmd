@@ -294,6 +294,16 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isText: true,
   },
+  myst_block_break: {
+    type: 'blockBreak',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        value: t.content || undefined,
+      }
+    },
+  },
 }
 
 export function tokensToMyst(tokens: Token[], handlers = defaultMdast): Root {

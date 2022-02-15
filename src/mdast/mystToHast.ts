@@ -92,6 +92,9 @@ const directive: Handler = (h, node) => {
   ])
 }
 
+const blockBreak: Handler = (h, node) =>
+  h(node, 'div', { class: 'block-break', 'data-block': node.value })
+
 export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Root) => {
   return toHast(tree, {
     ...opts,
@@ -114,6 +117,7 @@ export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Roo
       cite,
       role,
       directive,
+      blockBreak,
       ...opts?.handlers,
     },
   })
