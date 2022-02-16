@@ -11,9 +11,7 @@ export enum KINDS {
   Reference = 'Reference',
 }
 
-export enum ReferenceKind {
-    cite = "cite",
-    link = "link",
+export enum CustomizableReferenceKind {
     sec = "sec",
     fig = "fig",
     eq = "eq",

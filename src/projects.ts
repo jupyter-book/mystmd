@@ -1,7 +1,7 @@
 import { JsonObject, BaseLinks } from './types';
 import { getDate } from './helpers';
 import { CitationStyles } from './blocks/types';
-import { ReferenceKind } from './blocks/types';
+import { CustomizableReferenceKind } from './blocks/types';
 
 export interface ProjectLinks extends BaseLinks {
   thumbnail?: string;
@@ -11,10 +11,6 @@ export interface ProjectLinks extends BaseLinks {
   manifest?: string;
 }
 
-export type CustomizableReferenceKind = Exclude<
-  ReferenceKind,
-  ReferenceKind.cite | ReferenceKind.link
->;
 export type ReferenceLabelMap = Record<CustomizableReferenceKind, string>;
 export interface PartialProject {
   team: string;
@@ -28,11 +24,11 @@ export interface PartialProject {
   };
 }
 export const DEFAULT_REFERENCE_LABEL_MAP: ReferenceLabelMap = {
-  [ReferenceKind.fig]: 'Figure %s',
-  [ReferenceKind.eq]: 'Equation %s',
-  [ReferenceKind.sec]: 'Section %s',
-  [ReferenceKind.table]: 'Table %s',
-  [ReferenceKind.code]: 'Program %s',
+  [CustomizableReferenceKind.fig]: 'Figure %s',
+  [CustomizableReferenceKind.eq]: 'Equation %s',
+  [CustomizableReferenceKind.sec]: 'Section %s',
+  [CustomizableReferenceKind.table]: 'Table %s',
+  [CustomizableReferenceKind.code]: 'Program %s',
 };
 
 export type ProjectId = string;
