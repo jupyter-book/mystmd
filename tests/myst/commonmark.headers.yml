@@ -1,5 +1,5 @@
 cases:
-  - title: Simple headers
+  - title: CommonMark headers
     mdast:
       type: root
       children:
