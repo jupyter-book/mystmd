@@ -4,6 +4,7 @@ import { u } from 'unist-builder'
 import classNames from 'classnames'
 import { AdmonitionKind } from './types'
 import { Plugin } from 'unified'
+import { ElementContent } from 'hast'
 
 const abbreviation: Handler = (h, node) =>
   h(node, 'abbr', { title: node.title }, all(h, node))
@@ -78,7 +79,7 @@ const role: Handler = (h, node) =>
   h(node, 'span', { class: 'unhandled-role' }, all(h, node))
 
 const directive: Handler = (h, node) => {
-  let directiveElements: any[] = [
+  let directiveElements: ElementContent[] = [
     h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
   ]
   if (node.args) {
