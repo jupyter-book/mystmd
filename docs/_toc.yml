@@ -11,5 +11,11 @@ parts:
   - caption: Features
     chapters:
       - file: commonmark
+      - file: targets
+      - file: comments
+      - file: breaks
       - file: directivesAndRoles
       - file: admonitions
+      - file: figures
+      - file: math
+      - file: roles
