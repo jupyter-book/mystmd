@@ -20,5 +20,7 @@ export interface ISession {
 
   post(url: string, data: JsonObject): Response;
 
+  patch(url: string, data: JsonObject): Response;
+
   log: Logger;
 }
