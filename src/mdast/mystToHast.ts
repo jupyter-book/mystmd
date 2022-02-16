@@ -75,8 +75,12 @@ const footnoteRef: Handler = (h, node) => h(node, 'span', all(h, node))
 const cite: Handler = (h, node) =>
   h(node, 'cite', { class: 'unhandled-role' }, all(h, node))
 
-const role: Handler = (h, node) =>
-  h(node, 'span', { class: 'unhandled-role' }, all(h, node))
+const role: Handler = (h, node) => {
+  return h(node, 'span', { class: 'role unhandled' }, [
+    h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
+    h(node, 'code', {}, [u('text', node.value)]),
+  ])
+}
 
 const directive: Handler = (h, node) => {
   let directiveElements: ElementContent[] = [

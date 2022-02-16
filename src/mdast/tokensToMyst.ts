@@ -48,6 +48,7 @@ const defaultMdast: Record<string, Spec> = {
   hr: {
     type: 'thematicBreak',
     noCloseToken: true,
+    isLeaf: true,
   },
   paragraph: {
     type: 'paragraph',
@@ -279,6 +280,15 @@ const defaultMdast: Record<string, Spec> = {
   },
   role: {
     type: 'role',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      console.log(t)
+      return {
+        kind: t.meta.name,
+        value: t.content,
+      }
+    },
   },
   myst_target: {
     // TODO: remove me if blocks change?
