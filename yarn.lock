@@ -353,10 +353,10 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@curvenote/blocks@1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.1.7.tgz#5174a2685470e9507577ee20580baa01f53cd619"
-  integrity sha512-Q7jIfYcEl+GSaWComV42/9OHxK7QhZY28KZkQkkTIEXICMG9UzvefirrdsRyWiXScWxjpo1I5xZ/d57Hf377Ng==
+"@curvenote/blocks@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.2.0.tgz#a7bd5bae35c9ed58d3f95024c5ba58631b17261a"
+  integrity sha512-UO3FS9XwfNaE0g1qIPspVfFBrBddt/vN/ANsY6CT8FLQdyj5Z2vcBL/HDykunyDyUnnyVjtdH6oneMqFaP8Nyw==
 
 "@curvenote/schema@0.11.10":
   version "0.11.10"
