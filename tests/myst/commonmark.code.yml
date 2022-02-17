@@ -1,0 +1,56 @@
+cases:
+  - title: CommonMark code block
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: ''
+          value: print('this is python')
+    myst: |-
+      ```
+      print('this is python')
+      ```
+    html: |-
+      <pre><code>print('this is python')
+      </code></pre>
+  - title: CommonMark python code block
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          value: print('this is python')
+    myst: |-
+      ```python
+      print('this is python')
+      ```
+    html: |-
+      <pre><code class="language-python">print('this is python')
+      </code></pre>
+  - title: CommonMark indented code block
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some JSON:'
+
+        - type: code
+          lang: ''
+          value: |-
+            {
+              'literal': '*text*'
+            }
+    myst: |-
+      Some JSON:
+
+          {
+            'literal': '*text*'
+          }
+    html: |-
+      <p>Some JSON:</p>
+      <pre><code>{
+        'literal': '*text*'
+      }
+      </code></pre>

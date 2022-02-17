@@ -54,7 +54,7 @@ describe('Testing myst --> mdast conversions', () => {
 
 describe('Testing mdast --> html conversions', () => {
   test.each(cases)('%s', async (_, { html, mdast }) => {
-    const parser = new MyST()
+    const parser = new MyST({ allowDangerousHtml: true })
     const newHTML = await parser.renderMdast(mdast)
     expect(newHTML).toEqual(html)
   })

@@ -90,13 +90,14 @@ const defaultMdast: Record<string, Spec> = {
   fence: {
     // TODO
     type: 'code',
+    isLeaf: true,
     getAttrs(t) {
       return { lang: getLang(t), value: withoutTrailingNewline(t.content) }
     },
   },
   code_block: {
     type: 'code',
-    isText: true,
+    isLeaf: true,
     getAttrs(t) {
       return { lang: getLang(t), value: withoutTrailingNewline(t.content) }
     },
@@ -283,7 +284,6 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
-      console.log(t)
       return {
         kind: t.meta.name,
         value: t.content,
