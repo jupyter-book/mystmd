@@ -44,12 +44,10 @@ cases:
     mdast:
       type: root
       children:
-        - type: paragraph
-          children:
-            - type: image
-              url: src
-              alt: alt
-              title: title
+        - type: image
+          url: src
+          alt: alt
+          title: title
     myst: |-
       ![alt](src "title")
     html: |-

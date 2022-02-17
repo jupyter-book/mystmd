@@ -11,6 +11,11 @@ import { findAfter } from 'unist-util-find-after'
 
 export { MarkdownParseState }
 
+export type Options = {
+  handlers?: Record<string, Spec>
+  hoistSingleImagesOutofParagraphs?: boolean
+}
+
 function getClassName(token: Token, exclude?: RegExp): string | undefined {
   const className: string = token.meta?.class?.join(' ') || token.attrGet('class')
   if (!className) return undefined
@@ -228,7 +233,7 @@ const defaultMdast: Record<string, Spec> = {
   },
   ref: {
     type: 'cite',
-    getAttrs(t) {
+    getAttrs() {
       return {
         kind: 'ref',
       }
@@ -246,13 +251,13 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   footnote_anchor: {
-    type: 'remove',
+    type: '_remove',
     noCloseToken: true,
   },
   footnote_block: {
     // The footnote block is a view concern, not AST
     // Lift footnotes out of the tree
-    type: 'lift',
+    type: '_lift',
   },
   footnote: {
     type: 'footnoteDefinition',
@@ -291,8 +296,7 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   myst_target: {
-    // TODO: remove me if blocks change?
-    type: 'target',
+    type: '_headerTarget',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
@@ -333,8 +337,30 @@ const defaultMdast: Record<string, Spec> = {
   },
 }
 
-export function tokensToMyst(tokens: Token[], handlers = defaultMdast): Root {
-  const state = new MarkdownParseState(handlers)
+export function hoistSingleImagesOutofParagraphs(tree: Root) {
+  // Hoist up all paragraphs with a single image
+  visit(tree, 'paragraph', (node: GenericNode) => {
+    if (!(node.children?.length === 1 && node.children?.[0].type === 'image')) return
+    const child = node.children[0]
+    Object.keys(node).forEach((k) => {
+      delete node[k]
+    })
+    Object.assign(node, child)
+  })
+}
+
+const defaultOptions: Options = {
+  handlers: defaultMdast,
+  hoistSingleImagesOutofParagraphs: true,
+}
+
+export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
+  const opts = {
+    ...defaultOptions,
+    ...options,
+    handlers: { ...defaultOptions.handlers, ...options?.handlers },
+  }
+  const state = new MarkdownParseState(opts.handlers)
   state.parseTokens(tokens)
   let tree: Root
   do {
@@ -342,12 +368,12 @@ export function tokensToMyst(tokens: Token[], handlers = defaultMdast): Root {
   } while (state.stack.length)
 
   // Remove all redundant nodes marked for removal
-  remove(tree, 'remove')
+  remove(tree, '_remove')
 
   // Lift up all nodes that are named "lift"
   tree = map(tree, (node: GenericNode) => {
     const children = node.children?.map((child: GenericNode) => {
-      if (child.type === 'lift') return child.children
+      if (child.type === '_lift') return child.children
       return child
     })
     node.children = children?.flat()
@@ -369,13 +395,16 @@ export function tokensToMyst(tokens: Token[], handlers = defaultMdast): Root {
   })
 
   // Add target values as identifiers to subsequent node
-  visit(tree, 'target', (node: GenericNode) => {
+  visit(tree, '_headerTarget', (node: GenericNode) => {
     const nextNode = findAfter(tree, node) as GenericNode
     if (nextNode) {
       nextNode.identifier = node.value
       nextNode.label = node.value
     }
   })
-  remove(tree, 'target')
+  remove(tree, '_headerTarget')
+
+  if (opts.hoistSingleImagesOutofParagraphs) hoistSingleImagesOutofParagraphs(tree)
+
   return tree
 }

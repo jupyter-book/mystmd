@@ -8,7 +8,11 @@ import { admonitionKindToTitle } from './utils'
 export type Options = {
   addAdmonitionHeaders?: boolean
   addContainerCaptionNumbers?: boolean
-  hoistSingleImagesOutofParagraphs?: boolean
+}
+
+const defaultOptions: Record<keyof Options, true> = {
+  addAdmonitionHeaders: true,
+  addContainerCaptionNumbers: true,
 }
 
 // Visit all admonitions and add headers if necessary
@@ -34,24 +38,6 @@ export function addContainerCaptionNumbers(tree: Root) {
   )
 }
 
-export function hoistSingleImagesOutofParagraphs(tree: Root) {
-  // Hoist up all paragraphs with a single image
-  visit(tree, 'paragraph', (node: GenericNode) => {
-    if (!(node.children?.length === 1 && node.children?.[0].type === 'image')) return
-    const child = node.children[0]
-    Object.keys(node).forEach((k) => {
-      delete node[k]
-    })
-    Object.assign(node, child)
-  })
-}
-
-const defaultOptions: Record<keyof Options, true> = {
-  addAdmonitionHeaders: true,
-  addContainerCaptionNumbers: true,
-  hoistSingleImagesOutofParagraphs: true,
-}
-
 export const transform: Plugin<[Options?], string, Root> = (o) => (tree: Root) => {
   const opts = {
     ...defaultOptions,
@@ -59,5 +45,4 @@ export const transform: Plugin<[Options?], string, Root> = (o) => (tree: Root) =
   }
   if (opts.addAdmonitionHeaders) addAdmonitionHeaders(tree)
   if (opts.addContainerCaptionNumbers) addContainerCaptionNumbers(tree)
-  if (opts.hoistSingleImagesOutofParagraphs) hoistSingleImagesOutofParagraphs(tree)
 }

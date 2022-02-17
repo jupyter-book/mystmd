@@ -65,7 +65,7 @@ describe('Common Mark Spec with unified', () => {
     // For the common mark to pass, html parsing needs to be enabled
     const myst = new MyST({
       allowDangerousHtml: true,
-      transform: {
+      mdast: {
         hoistSingleImagesOutofParagraphs: false,
       },
       extensions: {

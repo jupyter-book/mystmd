@@ -3,11 +3,9 @@ cases:
     mdast:
       type: root
       children:
-        - type: paragraph
-          children:
-            - type: image
-              url: fun-fish.png
-              alt: fishy
+        - type: image
+          url: fun-fish.png
+          alt: fishy
     myst: |-
       ![fishy](fun-fish.png)
     html: |-

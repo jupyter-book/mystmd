@@ -8,7 +8,13 @@ import { IOptions as IDocutilsOptions } from 'markdown-it-docutils'
 import { Options as HastOptions } from 'mdast-util-to-hast'
 import { math, MathExtensionOptions, convertFrontMatter } from './plugins'
 import { mystBlockPlugin } from 'markdown-it-myst-extras'
-import { formatHtml, jsonParser, mystToHast, tokensToMyst } from './mdast'
+import {
+  formatHtml,
+  jsonParser,
+  mystToHast,
+  tokensToMyst,
+  Options as MdastOptions,
+} from './mdast'
 import { unified } from 'unified'
 import rehypeStringify, { Options as StringifyOptions } from 'rehype-stringify'
 import { Root } from 'mdast'
@@ -28,6 +34,7 @@ type AllOptions = {
     blocks?: boolean
   }
   transform: TransformOptions
+  mdast: MdastOptions
   hast: HastOptions
   formatHtml: boolean
   stringifyHtml: StringifyOptions
@@ -48,6 +55,7 @@ export const defaultOptions: AllOptions = {
   },
   transform: {},
   docutils: {},
+  mdast: {},
   hast: {
     clobberPrefix: 'm-',
   },
@@ -63,6 +71,7 @@ class MyST {
     this.opts = {
       allowDangerousHtml: opts.allowDangerousHtml ?? defaultOptions.allowDangerousHtml,
       transform: { ...defaultOptions.transform, ...opts.transform },
+      mdast: { ...defaultOptions.mdast, ...opts.mdast },
       hast: { ...defaultOptions.hast, ...opts.hast },
       docutils: { ...defaultOptions.docutils, ...opts.docutils },
       markdownit: { ...defaultOptions.markdownit, ...opts.markdownit },
@@ -93,7 +102,7 @@ class MyST {
   }
 
   parse(content: string) {
-    return tokensToMyst(this.tokenizer.parse(content, {}))
+    return tokensToMyst(this.tokenizer.parse(content, {}), this.opts.mdast)
   }
 
   async render(content: string) {

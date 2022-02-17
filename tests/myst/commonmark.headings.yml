@@ -12,7 +12,7 @@ cases:
       ### Heading!
     html: |-
       <h3>Heading!</h3>
-  - title: CommonMark setext headings
+  - title: CommonMark subtext headings
     mdast:
       type: root
       children:
