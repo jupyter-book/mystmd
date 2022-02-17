@@ -31,7 +31,8 @@ export type Admonition = GenericNode<{
 
 export type Container = {
   kind: string
-  name?: string
+  identifier?: string
+  label?: string
   class?: string
   numbered?: boolean
 }

@@ -32,7 +32,8 @@ cases:
       children:
         - type: container
           kind: figure
-          name: myFigure
+          identifier: myFigure
+          label: myFigure
           numbered: true
           children:
             - type: image
@@ -65,7 +66,8 @@ cases:
       children:
         - type: container
           kind: figure
-          name: myFigure
+          identifier: myFigure
+          label: myFigure
           numbered: true
           children:
             - type: image
@@ -96,7 +98,8 @@ cases:
       children:
         - type: container
           kind: figure
-          name: myFigure
+          identifier: myFigure
+          label: myFigure
           numbered: true
           children:
             - type: image

@@ -25,7 +25,7 @@ const container: Handler = (h, node) =>
     node,
     'figure',
     {
-      id: node.name || undefined, // TODO: change to label/identifier
+      id: node.identifier || node.label || undefined,
       class: classNames({ numbered: node.numbered }, node.class) || undefined,
     },
     all(h, node),
@@ -73,7 +73,7 @@ const definitionDescription: Handler = (h, node) => h(node, 'dd', all(h, node))
 const footnoteRef: Handler = (h, node) => h(node, 'span', all(h, node))
 
 const cite: Handler = (h, node) =>
-  h(node, 'cite', { class: 'unhandled-role' }, all(h, node))
+  h(node, 'a', { href: `#${node.identifier}` }, [u('text', node.value)])
 
 const role: Handler = (h, node) => {
   return h(node, 'span', { class: 'role unhandled' }, [

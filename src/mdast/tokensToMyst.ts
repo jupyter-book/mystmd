@@ -189,7 +189,8 @@ const defaultMdast: Record<string, Spec> = {
       const name = token.meta?.name || undefined
       return {
         kind: 'figure',
-        name,
+        identifier: name,
+        label: name,
         numbered: name ? true : undefined,
         class: getClassName(token, /numbered/),
       }
@@ -233,9 +234,12 @@ const defaultMdast: Record<string, Spec> = {
   },
   ref: {
     type: 'cite',
-    getAttrs() {
+    getAttrs(t) {
+      console.log(t)
       return {
-        kind: 'ref',
+        kind: t.meta.kind,
+        identifier: t.meta.name,
+        value: t.meta.value || undefined,
       }
     },
   },
@@ -392,6 +396,10 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
       titleNode.children?.[0]?.value === expectedTitle
     )
       node.children = children.slice(1)
+  })
+
+  visit(tree, 'cite', (node: GenericNode) => {
+    delete node.children
   })
 
   // Add target values as identifiers to subsequent node
