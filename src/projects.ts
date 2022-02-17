@@ -1,7 +1,6 @@
 import { JsonObject, BaseLinks } from './types';
 import { getDate } from './helpers';
-import { CitationStyles } from './blocks/types';
-import { CustomizableReferenceKind } from './blocks/types';
+import { CitationStyles, CustomizableReferenceKind } from './blocks/types';
 
 export interface ProjectLinks extends BaseLinks {
   thumbnail?: string;
@@ -20,7 +19,7 @@ export interface PartialProject {
   visibility: ProjectVisibility;
   settings: {
     citation_style: CitationStyles;
-    reference_labels: ReferenceLabelMap
+    reference_labels: ReferenceLabelMap;
   };
 }
 export const DEFAULT_REFERENCE_LABEL_MAP: ReferenceLabelMap = {
@@ -48,10 +47,16 @@ export interface Project extends PartialProject {
 }
 
 export const DEFAULT_CITATION_STYLE = CitationStyles.apa;
-function projectSettingsFromDTO(settings?: Partial<Project['settings']>): Project['settings'] {
+function projectSettingsFromDTO(settings?: JsonObject): Project['settings'] {
+  const reference_labels = Object.fromEntries(
+    Object.entries(DEFAULT_REFERENCE_LABEL_MAP).map(([k, v]) => [
+      k,
+      settings?.reference_labels?.[k] ?? v,
+    ]),
+  ) as ReferenceLabelMap;
   return {
     citation_style: settings?.citation_style ?? DEFAULT_CITATION_STYLE,
-    reference_labels: settings?.reference_labels ?? DEFAULT_REFERENCE_LABEL_MAP,
+    reference_labels,
   };
 }
 

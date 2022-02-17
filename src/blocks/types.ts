@@ -11,12 +11,13 @@ export enum KINDS {
   Reference = 'Reference',
 }
 
+// Note this is also in schema as `ReferenceKind`
 export enum CustomizableReferenceKind {
-    sec = "sec",
-    fig = "fig",
-    eq = "eq",
-    code = "code",
-    table = "table"
+  sec = 'sec',
+  fig = 'fig',
+  eq = 'eq',
+  code = 'code',
+  table = 'table',
 }
 
 export const DocumentKINDS = new Set([KINDS.Article, KINDS.Notebook]);
