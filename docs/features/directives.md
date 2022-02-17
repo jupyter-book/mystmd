@@ -1,3 +1,17 @@
+# Directives
+
+Directives and roles define custom MyST behavior. Directives include an identifier, arguments, keyword arguments, and a text block. Examples include [](admonitions), [](figures), [](math) blocks. Unknown directives will be still be parsed as well:
+
+````{raw} html
+<myst-demo>
+```{abc} arg0 arg1
+:option: true
+
+The "abc" directive is undefined.
+```
+</myst-demo>
+````
+
 # Admonitions
 
 Let’s say you wish to highlight a particular block of text that exists slightly apart from the narrative of your page.
@@ -81,3 +95,7 @@ My custom admonition that has a `tip` class applied!
 ```
 </myst-demo>
 ````
+
+# Figures
+
+# Math

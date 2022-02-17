@@ -1,4 +1,4 @@
-# Getting Started
+# Basic Usage
 
 `mystjs` allows you to parse and render MyST in both the browser or in a node environment. The parse creates an abstract syntax tree (AST)
 

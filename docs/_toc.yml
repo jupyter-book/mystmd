@@ -1,21 +1,20 @@
 format: jb-book
 root: index
 parts:
-  - caption: Get started
+  - caption: Understanding the MyST Format
     chapters:
-      - file: start
-      - file: developer
-  - caption: Library
+      - file: features/commonmark
+      - file: features/roles
+      - file: features/directives
+      - file: features/targets
+      - file: features/document
+  - caption: Using the mystjs Library
     chapters:
-      - file: overview
-  - caption: Features
+      - file: consuming/basic
+      - file: consuming/mdast
+      - file: consuming/advanced
+  - caption: Extending MyST with mystjs
     chapters:
-      - file: commonmark
-      - file: targets
-      - file: comments
-      - file: breaks
-      - file: directivesAndRoles
-      - file: admonitions
-      - file: figures
-      - file: math
-      - file: roles
+      - file: extending/roles
+      - file: extending/directives
+      - file: extending/advanced
