@@ -6,7 +6,7 @@ parts:
       - file: features/commonmark
       - file: features/roles
       - file: features/directives
-      - file: features/targets
+      - file: features/references
       - file: features/document
   - caption: Using the mystjs Library
     chapters:

@@ -12,7 +12,7 @@ The "abc" directive is undefined.
 </myst-demo>
 ````
 
-# Admonitions
+## Admonitions
 
 Let’s say you wish to highlight a particular block of text that exists slightly apart from the narrative of your page.
 You can use the `{note}` directive for this. For example, try changing the following text:
@@ -25,7 +25,7 @@ Here is a note!
 </myst-demo>
 ````
 
-## Available admonitions
+### Available admonitions
 
 There is one general `{admonition}` directive available, and a number of pre-styled admonitions:
 
@@ -50,7 +50,7 @@ Try changing `tip` to `warning`!
 </myst-demo>
 ````
 
-## Admonition Arguments
+### Admonition Arguments
 
 The base `{admonition}` has a single argument, which is the **title**, you can use markdown in here!
 
@@ -77,7 +77,7 @@ so content will be appended to the body.
 ````
 `````
 
-## Options
+### Options
 
 `:class:`
 : CSS classes to add to your admonition, in addition to the default `admonition` class. The custom CSS class will be first.
@@ -96,6 +96,62 @@ My custom admonition that has a `tip` class applied!
 </myst-demo>
 ````
 
-# Figures
+## Figures and images
 
-# Math
+````{raw} html
+<myst-demo>
+```{image} fun-fish.png
+:alt: fishy
+:class: bg-primary mb-1
+:width: 200px
+:align: center
+```
+</myst-demo>
+````
+
+````{raw} html
+<myst-demo>
+```{figure} https://via.placeholder.com/150
+:name: myFigure
+:alt: Placeholder
+
+This is the figure caption!
+</myst-demo>
+````
+
+## Math
+
+````{raw} html
+<myst-demo>
+```{math}
+:label: matrix
+Ax = b
+```
+</myst-demo>
+````
+
+### Dollar math
+
+```{raw} html
+<myst-demo>
+$$e=mc^2$$
+</myst-demo>
+```
+
+With a label:
+
+```{raw} html
+<myst-demo>
+$$Ax=b$$ (matrix)
+</myst-demo>
+```
+
+### AMS Math
+
+```{raw} html
+<myst-demo>
+\begin{equation}
+a = 1
+\end{equation}
+</myst-demo>
+```
