@@ -1,4 +1,4 @@
-import { AdmonitionKind } from './types'
+import { AdmonitionKind } from './types';
 
 export function admonitionKindToTitle(kind: AdmonitionKind) {
   const transform: Record<string, string> = {
@@ -12,10 +12,10 @@ export function admonitionKindToTitle(kind: AdmonitionKind) {
     seealso: 'See Also',
     tip: 'Tip',
     warning: 'Warning',
-  }
-  return transform[kind] || `Unknown Admonition "${kind}"`
+  };
+  return transform[kind] || `Unknown Admonition "${kind}"`;
 }
 
 export function withoutTrailingNewline(str: string) {
-  return str[str.length - 1] == '\n' ? str.slice(0, str.length - 1) : str
+  return str[str.length - 1] == '\n' ? str.slice(0, str.length - 1) : str;
 }

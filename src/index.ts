@@ -1,5 +1,5 @@
-import * as plugins from './plugins'
+import * as plugins from './plugins';
 
-export * from './mdast'
-export { MyST } from './myst'
-export { plugins }
+export * from './mdast';
+export { MyST } from './myst';
+export { plugins };

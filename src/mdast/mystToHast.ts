@@ -1,17 +1,18 @@
-import { Root } from 'mdast'
-import { Handler, toHast, all, Options } from 'mdast-util-to-hast'
-import { u } from 'unist-builder'
-import classNames from 'classnames'
-import { AdmonitionKind, GenericNode } from './types'
-import { Plugin } from 'unified'
-import type { ElementContent } from 'hast'
-import type { State } from '../state'
+import { Root } from 'mdast';
+import { Handler, toHast, all, Options } from 'mdast-util-to-hast';
+import { u } from 'unist-builder';
+import classNames from 'classnames';
+import { AdmonitionKind } from './types';
+import { Plugin } from 'unified';
+import type { ElementContent } from 'hast';
+import type { State } from '../state';
+import { MdastNode } from 'mdast-util-to-hast/lib';
 
 const abbreviation: Handler = (h, node) =>
-  h(node, 'abbr', { title: node.title }, all(h, node))
+  h(node, 'abbr', { title: node.title }, all(h, node));
 
-const subscript: Handler = (h, node) => h(node, 'sub', all(h, node))
-const superscript: Handler = (h, node) => h(node, 'sup', all(h, node))
+const subscript: Handler = (h, node) => h(node, 'sub', all(h, node));
+const superscript: Handler = (h, node) => h(node, 'sup', all(h, node));
 const image: Handler = (h, node) =>
   h(node, 'img', {
     src: node.url,
@@ -19,8 +20,8 @@ const image: Handler = (h, node) =>
     title: node.title,
     class: classNames(node.align ? `align-${node.align}` : '', node.class) || undefined,
     width: node.width,
-  })
-const caption: Handler = (h, node) => h(node, 'figcaption', all(h, node))
+  });
+const caption: Handler = (h, node) => h(node, 'figcaption', all(h, node));
 const container: Handler = (h, node) =>
   h(
     node,
@@ -30,10 +31,10 @@ const container: Handler = (h, node) =>
       class: classNames({ numbered: node.numbered }, node.class) || undefined,
     },
     all(h, node),
-  )
+  );
 
 const admonitionTitle: Handler = (h, node) =>
-  h(node, 'p', { class: 'admonition-title' }, all(h, node))
+  h(node, 'p', { class: 'admonition-title' }, all(h, node));
 
 const admonition: Handler = (h, node) =>
   h(
@@ -47,81 +48,82 @@ const admonition: Handler = (h, node) =>
       }),
     },
     all(h, node),
-  )
+  );
 
 const captionNumber: Handler = (h, node) => {
   return h(node, 'span', { class: 'caption-number' }, [
     u('text', `Figure ${node.value}`),
-  ])
-}
+  ]);
+};
 
 const math: Handler = (h, node) => {
-  const attrs = { id: node.label || undefined, class: 'math block' }
+  const attrs = { id: node.label || undefined, class: 'math block' };
   if (node.value.indexOf('\n') !== -1) {
-    const math = h(node, 'div', attrs, [u('text', node.value)])
-    return h(node, 'pre', [math])
+    const math = h(node, 'div', attrs, [u('text', node.value)]);
+    return h(node, 'pre', [math]);
   }
-  return h(node, 'div', attrs, [u('text', node.value.replace(/\r?\n|\r/g, ' '))])
-}
+  return h(node, 'div', attrs, [u('text', node.value.replace(/\r?\n|\r/g, ' '))]);
+};
 
 const inlineMath: Handler = (h, node) => {
   return h(node, 'span', { class: 'math inline' }, [
     u('text', node.value.replace(/\r?\n|\r/g, ' ')),
-  ])
-}
+  ]);
+};
 
-const definitionList: Handler = (h, node) => h(node, 'dl', all(h, node))
-const definitionTerm: Handler = (h, node) => h(node, 'dt', all(h, node))
-const definitionDescription: Handler = (h, node) => h(node, 'dd', all(h, node))
+const definitionList: Handler = (h, node) => h(node, 'dl', all(h, node));
+const definitionTerm: Handler = (h, node) => h(node, 'dt', all(h, node));
+const definitionDescription: Handler = (h, node) => h(node, 'dd', all(h, node));
 
 const role: Handler = (h, node) => {
   return h(node, 'span', { class: 'role unhandled' }, [
     h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
     h(node, 'code', {}, [u('text', node.value)]),
-  ])
-}
+  ]);
+};
 
 const directive: Handler = (h, node) => {
   let directiveElements: ElementContent[] = [
     h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
-  ]
+  ];
   if (node.args) {
     directiveElements = directiveElements.concat([
       u('text', ' '),
       h(node, 'code', { class: 'args' }, [u('text', node.args)]),
-    ])
+    ]);
   }
   return h(node, 'div', { class: 'directive unhandled' }, [
     h(node, 'p', {}, directiveElements),
     h(node, 'pre', [h(node, 'code', [u('text', node.value)])]),
-  ])
-}
+  ]);
+};
 
-const blockBreak: Handler = (h, node) =>
-  h(node, 'div', { class: 'block-break', 'data-block': node.value })
+const block: Handler = (h, node) =>
+  h(node, 'div', { class: 'block', 'data-block': node.meta }, all(h, node));
 
-const comment: Handler = (h, node) => u('comment', node.value)
+const comment: Handler = (h, node) => u('comment', node.value);
 
 const heading: Handler = (h, node) =>
-  h(node, `h${node.depth}`, { id: node.label || undefined }, all(h, node))
+  h(node, `h${node.depth}`, { id: node.label || undefined }, all(h, node));
 
 const contentReference =
   (state: State): Handler =>
   (h, node) => {
-    const refMdast: GenericNode = state.getReferenceMdast(
-      node.identifier,
-      node.kind,
-      node.value,
-    )
+    const refMdast = state.getReferenceMdast(node.identifier, node.kind, node.value);
     if (refMdast) {
-      return h(node, 'a', { href: `#${node.identifier}` }, all(h, refMdast))
+      return h(
+        node,
+        'a',
+        { href: `#${node.identifier}` },
+        all(h, refMdast as MdastNode),
+      );
     } else {
       return h(node, 'span', { class: 'reference role unhandled' }, [
         h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
         h(node, 'code', {}, [u('text', node.identifier)]),
-      ])
+      ]);
     }
-  }
+  };
 
 export const mystToHast: Plugin<[State, Options?], string, Root> =
   (state, opts) => (tree: Root) => {
@@ -144,11 +146,11 @@ export const mystToHast: Plugin<[State, Options?], string, Root> =
         definitionDescription,
         role,
         directive,
-        blockBreak,
+        block,
         comment,
         heading,
         contentReference: contentReference(state),
         ...opts?.handlers,
       },
-    })
-  }
+    });
+  };

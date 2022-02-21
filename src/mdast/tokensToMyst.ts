@@ -1,57 +1,59 @@
-import { MarkdownParseState } from './fromMarkdown'
-import type { Root } from 'mdast'
-import { Spec, Token, Container, Admonition, AdmonitionKind } from './types'
-import { visit } from 'unist-util-visit'
-import { remove } from 'unist-util-remove'
-import he from 'he'
-import { GenericNode } from '.'
-import { admonitionKindToTitle, withoutTrailingNewline } from './utils'
-import { map } from 'unist-util-map'
-import { findAfter } from 'unist-util-find-after'
+import { MarkdownParseState } from './fromMarkdown';
+import type { Root } from 'mdast';
+import { Spec, Token, Container, Admonition, AdmonitionKind } from './types';
+import { visit } from 'unist-util-visit';
+import { remove } from 'unist-util-remove';
+import { u } from 'unist-builder';
+import he from 'he';
+import { GenericNode } from '.';
+import { admonitionKindToTitle, withoutTrailingNewline } from './utils';
+import { map } from 'unist-util-map';
+import { findAfter } from 'unist-util-find-after';
 
-export { MarkdownParseState }
+export { MarkdownParseState };
 
 export type Options = {
-  handlers?: Record<string, Spec>
-  hoistSingleImagesOutofParagraphs?: boolean
-}
+  handlers?: Record<string, Spec>;
+  hoistSingleImagesOutofParagraphs?: boolean;
+  nestBlocks?: boolean;
+};
 
 function getClassName(token: Token, exclude?: RegExp): string | undefined {
-  const className: string = token.meta?.class?.join(' ') || token.attrGet('class')
-  if (!className) return undefined
+  const className: string = token.meta?.class?.join(' ') || token.attrGet('class');
+  if (!className) return undefined;
   return (
     className
       .split(' ')
       .map((c) => c.trim())
       .filter((c) => c && !(exclude && c.match(exclude)))
       .join(' ') || undefined
-  )
+  );
 }
 
 function hasClassName(token: Token, matcher: RegExp): false | RegExpMatchArray {
-  const className = getClassName(token)
-  if (!className) return false
+  const className = getClassName(token);
+  if (!className) return false;
   const matches = className
     .split(' ')
     .map((c) => c.match(matcher))
-    .filter((c) => c)
-  if (matches.length === 0) return false
-  return matches[0] as RegExpMatchArray
+    .filter((c) => c);
+  if (matches.length === 0) return false;
+  return matches[0] as RegExpMatchArray;
 }
 
 function getLang(t: Token) {
-  return he.decode(t.info).trim().split(' ')[0].replace('\\', '')
+  return he.decode(t.info).trim().split(' ')[0].replace('\\', '');
 }
 
 function normalizeLabel(label: string | undefined) {
-  return label?.replace(/[\s]+/g, ' ').trim().toLowerCase()
+  return label?.replace(/[\s]+/g, ' ').trim().toLowerCase();
 }
 
 const defaultMdast: Record<string, Spec> = {
   heading: {
     type: 'heading',
     getAttrs(token) {
-      return { depth: Number(token.tag[1]) }
+      return { depth: Number(token.tag[1]) };
     },
   },
   hr: {
@@ -68,13 +70,13 @@ const defaultMdast: Record<string, Spec> = {
   ordered_list: {
     type: 'list',
     getAttrs(token, tokens, index) {
-      const info = tokens[index + 1]?.info
-      const start = Number(tokens[index + 1]?.info)
+      const info = tokens[index + 1]?.info;
+      const start = Number(tokens[index + 1]?.info);
       return {
         ordered: true,
         start: isNaN(start) || !info ? 1 : start,
         spread: false,
-      }
+      };
     },
   },
   bullet_list: {
@@ -101,14 +103,14 @@ const defaultMdast: Record<string, Spec> = {
     type: 'code',
     isLeaf: true,
     getAttrs(t) {
-      return { lang: getLang(t), value: withoutTrailingNewline(t.content) }
+      return { lang: getLang(t), value: withoutTrailingNewline(t.content) };
     },
   },
   code_block: {
     type: 'code',
     isLeaf: true,
     getAttrs(t) {
-      return { lang: getLang(t), value: withoutTrailingNewline(t.content) }
+      return { lang: getLang(t), value: withoutTrailingNewline(t.content) };
     },
   },
   code_inline: {
@@ -127,7 +129,7 @@ const defaultMdast: Record<string, Spec> = {
       return {
         url: token.attrGet('href'),
         title: token.attrGet('title') ?? undefined,
-      }
+      };
     },
   },
   image: {
@@ -136,9 +138,9 @@ const defaultMdast: Record<string, Spec> = {
     isLeaf: true,
     getAttrs(token) {
       const alt =
-        token.attrGet('alt') || token.children?.reduce((i, t) => i + t?.content, '')
-      const alignMatch = hasClassName(token, /align-(left|right|center)/)
-      const align = alignMatch ? alignMatch[1] : undefined
+        token.attrGet('alt') || token.children?.reduce((i, t) => i + t?.content, '');
+      const alignMatch = hasClassName(token, /align-(left|right|center)/);
+      const align = alignMatch ? alignMatch[1] : undefined;
       return {
         url: token.attrGet('src'),
         alt: alt || undefined,
@@ -146,17 +148,17 @@ const defaultMdast: Record<string, Spec> = {
         class: getClassName(token, /align-(?:left|right|center)/),
         width: token.attrGet('width') || undefined,
         align,
-      }
+      };
     },
   },
   abbr: {
     type: 'abbreviation',
     getAttrs(token) {
-      const value = token.children?.[0]?.content
+      const value = token.children?.[0]?.content;
       return {
         title: token.attrGet('title') ?? undefined,
         value,
-      }
+      };
     },
   },
   sub: {
@@ -177,11 +179,11 @@ const defaultMdast: Record<string, Spec> = {
   admonition: {
     type: 'admonition',
     getAttrs(token) {
-      const kind = token.meta?.kind || undefined
+      const kind = token.meta?.kind || undefined;
       return {
         kind,
         class: getClassName(token, new RegExp(`admonition|${kind}`)),
-      }
+      };
     },
   },
   admonition_title: {
@@ -190,14 +192,14 @@ const defaultMdast: Record<string, Spec> = {
   figure: {
     type: 'container',
     getAttrs(token): Container {
-      const name = token.meta?.name || undefined
+      const name = token.meta?.name || undefined;
       return {
         kind: 'figure',
         identifier: normalizeLabel(name),
         label: name,
         numbered: name ? true : undefined,
         class: getClassName(token, /numbered/),
-      }
+      };
     },
   },
   figure_caption: {
@@ -218,8 +220,8 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isText: true,
     getAttrs(t) {
-      const info = t.info || undefined
-      return { identifier: normalizeLabel(info), label: info }
+      const info = t.info || undefined;
+      return { identifier: normalizeLabel(info), label: info };
     },
   },
   math_block_label: {
@@ -227,11 +229,11 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isText: true,
     getAttrs(t) {
-      const info = t.info || undefined
+      const info = t.info || undefined;
       return {
         identifier: normalizeLabel(info),
         label: info,
-      }
+      };
     },
   },
   amsmath: {
@@ -248,7 +250,7 @@ const defaultMdast: Record<string, Spec> = {
         identifier: normalizeLabel(t.meta.name),
         label: t.meta.name,
         value: t.meta.value || undefined,
-      }
+      };
     },
   },
   footnote_ref: {
@@ -259,7 +261,7 @@ const defaultMdast: Record<string, Spec> = {
       return {
         identifier: normalizeLabel(t?.meta?.label),
         label: t?.meta?.label,
-      }
+      };
     },
   },
   footnote_anchor: {
@@ -277,7 +279,7 @@ const defaultMdast: Record<string, Spec> = {
       return {
         identifier: normalizeLabel(t?.meta?.label),
         label: t?.meta?.label,
-      }
+      };
     },
   },
   directive: {
@@ -289,7 +291,7 @@ const defaultMdast: Record<string, Spec> = {
         kind: t.info,
         args: t?.meta?.arg || undefined,
         value: t.content.trim(),
-      }
+      };
     },
   },
   directive_error: {
@@ -304,7 +306,7 @@ const defaultMdast: Record<string, Spec> = {
       return {
         kind: t.meta.name,
         value: t.content,
-      }
+      };
     },
   },
   myst_target: {
@@ -315,7 +317,7 @@ const defaultMdast: Record<string, Spec> = {
       return {
         identifier: normalizeLabel(t.content),
         label: t.content,
-      }
+      };
     },
   },
   html_inline: {
@@ -329,13 +331,13 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
   },
   myst_block_break: {
-    type: 'blockBreak',
+    type: 'block',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
       return {
-        value: t.content || undefined,
-      }
+        meta: t.content || undefined,
+      };
     },
   },
   myst_line_comment: {
@@ -345,83 +347,111 @@ const defaultMdast: Record<string, Spec> = {
     getAttrs(t) {
       return {
         value: t.content.trim() || undefined,
-      }
+      };
     },
   },
-}
+};
 
 export function hoistSingleImagesOutofParagraphs(tree: Root) {
   // Hoist up all paragraphs with a single image
-  visit(tree, 'paragraph', (node: GenericNode) => {
-    if (!(node.children?.length === 1 && node.children?.[0].type === 'image')) return
-    const child = node.children[0]
+  visit(tree, 'paragraph', (node) => {
+    if (!(node.children?.length === 1 && node.children?.[0].type === 'image')) return;
+    const child = node.children[0];
     Object.keys(node).forEach((k) => {
-      delete node[k]
-    })
-    Object.assign(node, child)
-  })
+      delete (node as any)[k];
+    });
+    Object.assign(node, child);
+  });
 }
 
 const defaultOptions: Options = {
   handlers: defaultMdast,
   hoistSingleImagesOutofParagraphs: true,
-}
+  nestBlocks: true,
+};
 
 export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
   const opts = {
     ...defaultOptions,
     ...options,
     handlers: { ...defaultOptions.handlers, ...options?.handlers },
-  }
-  const state = new MarkdownParseState(opts.handlers)
-  state.parseTokens(tokens)
-  let tree: Root
+  };
+  const state = new MarkdownParseState(opts.handlers);
+  state.parseTokens(tokens);
+  let tree: Root;
   do {
-    tree = state.closeNode() as Root
-  } while (state.stack.length)
+    tree = state.closeNode() as Root;
+  } while (state.stack.length);
 
   // Remove all redundant nodes marked for removal
-  remove(tree, '_remove')
+  remove(tree, '_remove');
 
   // Lift up all nodes that are named "lift"
   tree = map(tree, (node: GenericNode) => {
-    const children = node.children?.map((child: GenericNode) => {
-      if (child.type === '_lift') return child.children
-      return child
-    })
-    node.children = children?.flat()
-    return node
-  }) as Root
+    const children = node.children
+      ?.map((child: GenericNode) => {
+        if (child.type === '_lift' && child.children) return child.children;
+        return child;
+      })
+      ?.flat();
+    node.children = children;
+    return node;
+  }) as Root;
 
   // Remove unnecessary admonition titles from AST
   // These are up to the serializer to put in
   visit(tree, 'admonition', (node: Admonition) => {
-    const { kind, children } = node
-    if (!kind || !children || kind === AdmonitionKind.admonition) return
-    const expectedTitle = admonitionKindToTitle(kind)
-    const titleNode = children[0]
+    const { kind, children } = node;
+    if (!kind || !children || kind === AdmonitionKind.admonition) return;
+    const expectedTitle = admonitionKindToTitle(kind);
+    const titleNode = children[0];
     if (
       titleNode.type === 'admonitionTitle' &&
       titleNode.children?.[0]?.value === expectedTitle
     )
-      node.children = children.slice(1)
-  })
+      node.children = children.slice(1);
+  });
 
   visit(tree, 'contentReference', (node: GenericNode) => {
-    delete node.children
-  })
+    delete node.children;
+  });
 
   // Add target values as identifiers to subsequent node
   visit(tree, '_headerTarget', (node: GenericNode) => {
-    const nextNode = findAfter(tree, node) as GenericNode
+    const nextNode = findAfter(tree, node) as GenericNode;
     if (nextNode) {
-      nextNode.identifier = node.identifier
-      nextNode.label = node.label
+      nextNode.identifier = node.identifier;
+      nextNode.label = node.label;
     }
-  })
-  remove(tree, '_headerTarget')
+  });
+  remove(tree, '_headerTarget');
 
-  if (opts.hoistSingleImagesOutofParagraphs) hoistSingleImagesOutofParagraphs(tree)
+  // Nest block content inside of a block
+  if (opts.nestBlocks) {
+    const newTree = u('root', [] as GenericNode[]);
+    let lastBlock: GenericNode | undefined;
+    const pushBlock = () => {
+      if (!lastBlock) return;
+      if (lastBlock.children?.length === 0) {
+        delete lastBlock.children;
+      }
+      newTree.children.push(lastBlock);
+    };
+    (tree as GenericNode).children?.map((node) => {
+      if (node.type === 'block') {
+        pushBlock();
+        lastBlock = node;
+        node.children = node.children ?? [];
+        return;
+      }
+      const stack = lastBlock ? lastBlock : newTree;
+      stack.children?.push(node);
+    });
+    pushBlock();
+    tree = newTree as Root;
+  }
 
-  return tree
+  if (opts.hoistSingleImagesOutofParagraphs) hoistSingleImagesOutofParagraphs(tree);
+
+  return tree;
 }
