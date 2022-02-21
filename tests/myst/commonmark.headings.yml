@@ -12,7 +12,8 @@ cases:
       ### Heading!
     html: |-
       <h3>Heading!</h3>
-  - title: CommonMark subtext headings
+  - title: CommonMark setext headings
+    description: https://spec.commonmark.org/0.30/#setext-headings
     mdast:
       type: root
       children:

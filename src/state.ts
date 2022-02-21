@@ -1,103 +1,102 @@
 /* eslint-disable no-param-reassign */
 
-import { escapeHtml } from 'markdown-it/lib/common/utils'
+import { Plugin } from 'unified'
+import { Root } from 'mdast'
+import { visit } from 'unist-util-visit'
+import { select } from 'unist-util-select'
+import { GenericNode } from './mdast'
 
 export enum TargetKind {
-  ref = 'ref',
-  equation = 'eq',
-  figure = 'fig',
+  heading = 'heading',
+  math = 'math',
+  figure = 'figure',
   table = 'table',
   code = 'code',
 }
 
-const RefFormatter: { [kind: string]: (id: string, num?: number) => string } = {
-  ref(id) {
-    return `[${id}]`
-  },
-  eq(id, num) {
-    return `Eq ${num}`
-  },
-  fig(id, num) {
-    return `Fig ${num}`
-  },
-  table(id, num) {
-    return `Table ${num}`
-  },
-  code(id, num) {
-    return `Code ${num}`
-  },
+export enum ReferenceKind {
+  ref = 'ref',
+  numref = 'numref',
+  eq = 'eq',
 }
 
-export type Target = {
-  id: string
-  name: string
+type Target = {
+  node: GenericNode
   kind: TargetKind
-  defaultReference: string
-  title?: string
-  number?: number
+  number: string
 }
 
-export type StateEnv = {
+export class State {
   targets: Record<string, Target>
-  numbering: {
-    eq: number
-    fig: number
-    table: number
-    code: number
-  }
-}
+  targetCounts: Record<string, number>
 
-export function getStateEnv(state: { env: any }): StateEnv {
-  const env = (state.env as StateEnv) ?? {}
-  if (!env.targets) env.targets = {}
-  if (!env.numbering) {
-    env.numbering = {
-      eq: 0,
-      fig: 0,
-      table: 0,
-      code: 0,
+  constructor(targetCounts?: Record<string, number>, targets?: Record<string, Target>) {
+    this.targetCounts = targetCounts || {}
+    this.targets = targets || {}
+  }
+
+  addTarget(node: GenericNode) {
+    const kind: TargetKind = node.type === 'container' ? node.kind : node.type
+    node = JSON.parse(JSON.stringify(node))
+    if (kind in TargetKind && node.identifier) {
+      if (kind === TargetKind.heading) {
+        this.targets[node.identifier] = { node, kind, number: '' }
+      } else {
+        this.targets[node.identifier] = {
+          node,
+          kind,
+          number: String(this.incrementCount(kind)),
+        }
+      }
     }
   }
-  if (!state.env) state.env = env
-  return env
-}
 
-/** Get the next number for an equation, figure, code or table
- *
- * Can input `{ numbering: { equation: 100 } }` to start counting at a different numebr.
- *
- * @param state MarkdownIt state that will be modified
- */
-function nextNumber(state: { env: any }, kind: TargetKind) {
-  if (kind === TargetKind.ref) throw new Error('Targets are not numbered?')
-  const env = getStateEnv(state)
-  env.numbering[kind] += 1
-  return env.numbering[kind]
-}
-
-/** Create a new internal target.
- *
- * @param state MarkdownIt state that will be modified
- * @param name The reference name that will be used for the target. Note some directives use label.
- * @param kind The target kind: "ref", "equation", "code", "table" or "figure"
- */
-export function newTarget(
-  state: { env: any },
-  name: string | undefined,
-  kind: TargetKind,
-): Target {
-  const env = getStateEnv(state)
-  const number = kind === TargetKind.ref ? undefined : nextNumber(state, kind)
-  // TODO: not sure about this - if name is not provided, then you get `fig-1` etc.
-  const useName = name ? escapeHtml(name) : `${kind}-${String(number)}`
-  const id = name ? `${kind}-${escapeHtml(useName)}` : useName
-  const target: Target = {
-    id,
-    name: useName,
-    defaultReference: RefFormatter[kind](id, number),
-    kind,
-    number,
+  incrementCount(kind: string): number {
+    if (kind in this.targetCounts) {
+      this.targetCounts[kind] += 1
+    } else {
+      this.targetCounts[kind] = 1
+    }
+    return this.targetCounts[kind]
   }
-  env.targets[useName] = target
-  return target
+
+  getTarget(identifier: string): Target | undefined {
+    return this.targets[identifier]
+  }
+
+  getReferenceMdast(
+    refIdentifier: string,
+    refKind: string,
+    refValue?: string,
+  ): GenericNode | undefined {
+    const target = this.getTarget(refIdentifier)
+    let text = refValue
+    if (!target) {
+      return
+    } else if (refKind === ReferenceKind.eq && target.kind === TargetKind.math) {
+      text = text || `(${target.number})`
+    } else if (refKind === ReferenceKind.ref && target.kind === TargetKind.heading) {
+      if (!text) {
+        return target.node
+      }
+    } else if (refKind === ReferenceKind.ref && target.kind === TargetKind.figure) {
+      if (!text) {
+        return select('caption > paragraph', target.node) as GenericNode
+      }
+    } else if (refKind === ReferenceKind.numref && target.kind === TargetKind.figure) {
+      text = refValue
+        ? refValue.replace(/%s/g, target.number).replace(/\{number\}/g, target.number)
+        : `Fig. ${target.number}`
+    } else {
+      return
+    }
+    return { children: [{ type: text, value: text }] }
+  }
+}
+
+export const updateState: Plugin<[State], string, Root> = (state) => (tree: Root) => {
+  visit(tree, 'container', (node: GenericNode) => state.addTarget(node))
+  visit(tree, 'math', (node: GenericNode) => state.addTarget(node))
+  visit(tree, 'heading', (node: GenericNode) => state.addTarget(node))
+  return tree
 }

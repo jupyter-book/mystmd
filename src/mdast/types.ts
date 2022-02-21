@@ -9,6 +9,7 @@ export type GenericText = {
 
 export type GenericNode<T extends Record<string, any> = any> = {
   type: string
+  kind?: string
   children?: GenericNode<any>[]
   value?: string
   identifier?: string

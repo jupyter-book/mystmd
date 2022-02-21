@@ -1,6 +1,6 @@
 import { MarkdownParseState } from './fromMarkdown'
 import type { Root } from 'mdast'
-import { Spec, Token, Container, AdmonitionKind } from './types'
+import { Spec, Token, Container, Admonition, AdmonitionKind } from './types'
 import { visit } from 'unist-util-visit'
 import { remove } from 'unist-util-remove'
 import he from 'he'
@@ -41,6 +41,10 @@ function hasClassName(token: Token, matcher: RegExp): false | RegExpMatchArray {
 
 function getLang(t: Token) {
   return he.decode(t.info).trim().split(' ')[0].replace('\\', '')
+}
+
+function normalizeLabel(label: string | undefined) {
+  return label?.replace(/[\s]+/g, ' ').trim().toLowerCase()
 }
 
 const defaultMdast: Record<string, Spec> = {
@@ -189,7 +193,7 @@ const defaultMdast: Record<string, Spec> = {
       const name = token.meta?.name || undefined
       return {
         kind: 'figure',
-        identifier: name,
+        identifier: normalizeLabel(name),
         label: name,
         numbered: name ? true : undefined,
         class: getClassName(token, /numbered/),
@@ -215,7 +219,7 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
     getAttrs(t) {
       const info = t.info || undefined
-      return { identifier: info, label: info }
+      return { identifier: normalizeLabel(info), label: info }
     },
   },
   math_block_label: {
@@ -224,7 +228,10 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
     getAttrs(t) {
       const info = t.info || undefined
-      return { identifier: info, label: info }
+      return {
+        identifier: normalizeLabel(info),
+        label: info,
+      }
     },
   },
   amsmath: {
@@ -233,12 +240,13 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
   },
   ref: {
-    type: 'cite',
+    type: 'contentReference',
+    isLeaf: true,
     getAttrs(t) {
-      console.log(t)
       return {
         kind: t.meta.kind,
-        identifier: t.meta.name,
+        identifier: normalizeLabel(t.meta.name),
+        label: t.meta.name,
         value: t.meta.value || undefined,
       }
     },
@@ -249,7 +257,7 @@ const defaultMdast: Record<string, Spec> = {
     isLeaf: true,
     getAttrs(t) {
       return {
-        identifier: t?.meta?.id,
+        identifier: normalizeLabel(t?.meta?.label),
         label: t?.meta?.label,
       }
     },
@@ -267,7 +275,7 @@ const defaultMdast: Record<string, Spec> = {
     type: 'footnoteDefinition',
     getAttrs(t) {
       return {
-        identifier: t?.meta?.id,
+        identifier: normalizeLabel(t?.meta?.label),
         label: t?.meta?.label,
       }
     },
@@ -305,7 +313,8 @@ const defaultMdast: Record<string, Spec> = {
     isLeaf: true,
     getAttrs(t) {
       return {
-        value: t.content,
+        identifier: normalizeLabel(t.content),
+        label: t.content,
       }
     },
   },
@@ -386,7 +395,7 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
 
   // Remove unnecessary admonition titles from AST
   // These are up to the serializer to put in
-  visit(tree, 'admonition', (node: GenericNode) => {
+  visit(tree, 'admonition', (node: Admonition) => {
     const { kind, children } = node
     if (!kind || !children || kind === AdmonitionKind.admonition) return
     const expectedTitle = admonitionKindToTitle(kind)
@@ -398,7 +407,7 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
       node.children = children.slice(1)
   })
 
-  visit(tree, 'cite', (node: GenericNode) => {
+  visit(tree, 'contentReference', (node: GenericNode) => {
     delete node.children
   })
 
@@ -406,8 +415,8 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
   visit(tree, '_headerTarget', (node: GenericNode) => {
     const nextNode = findAfter(tree, node) as GenericNode
     if (nextNode) {
-      nextNode.identifier = node.value
-      nextNode.label = node.value
+      nextNode.identifier = node.identifier
+      nextNode.label = node.label
     }
   })
   remove(tree, '_headerTarget')

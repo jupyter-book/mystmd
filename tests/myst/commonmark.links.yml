@@ -1,12 +1,17 @@
 cases:
-  - title: CommonMark link definition
+  - title: CommonMark link reference
+    skip: true
     mdast:
       type: root
-      children: []
+      children:
+        - type: definition
+          identifier: 'key'
+          label: 'Key'
+          url: 'https://example.com'
+          title: example title
     myst: |-
-      [key]: https://www.google.com 'a title'
-    html: |-
-
+      [Key]: https://example.com 'example title'
+    html:
   - title: CommonMark auto link
     mdast:
       type: root

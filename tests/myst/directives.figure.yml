@@ -32,7 +32,7 @@ cases:
       children:
         - type: container
           kind: figure
-          identifier: myFigure
+          identifier: myfigure
           label: myFigure
           numbered: true
           children:
@@ -53,7 +53,7 @@ cases:
       This is the figure caption!
       ```
     html: |-
-      <figure id="myFigure" class="numbered">
+      <figure id="myfigure" class="numbered">
         <img src="https://via.placeholder.com/150" alt="Placeholder">
         <figcaption>
           <p><span class="caption-number">Figure 1</span>This is the figure caption!</p>
@@ -66,7 +66,7 @@ cases:
       children:
         - type: container
           kind: figure
-          identifier: myFigure
+          identifier: myfigure
           label: myFigure
           numbered: true
           children:
@@ -85,7 +85,7 @@ cases:
       This is the figure caption!
       ```
     html: |-
-      <figure id="myFigure" class="numbered">
+      <figure id="myfigure" class="numbered">
         <img src="https://via.placeholder.com/150">
         <figcaption>
           <p><span class="caption-number">Figure 1</span>This is the figure caption!</p>
@@ -98,7 +98,7 @@ cases:
       children:
         - type: container
           kind: figure
-          identifier: myFigure
+          identifier: myfigure
           label: myFigure
           numbered: true
           children:
@@ -116,7 +116,7 @@ cases:
       This is the figure caption!
       ```
     html: |-
-      <figure id="myFigure" class="numbered">
+      <figure id="myfigure" class="numbered">
         <img src="https://via.placeholder.com/150">
         <figcaption>
           <p><span class="caption-number">Figure 1</span>This is the figure caption!</p>

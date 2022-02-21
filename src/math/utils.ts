@@ -1,5 +1,14 @@
-import { Target } from '../state'
+import { TargetKind } from '../state'
 import { toHTML } from '../utils'
+
+type Target = {
+  id: string
+  name: string
+  kind: TargetKind
+  defaultReference: string
+  title?: string
+  number?: number
+}
 
 export const renderMath = (math: string, block: boolean, target?: Target): string => {
   const { id, number } = target ?? {}

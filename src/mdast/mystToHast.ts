@@ -2,9 +2,10 @@ import { Root } from 'mdast'
 import { Handler, toHast, all, Options } from 'mdast-util-to-hast'
 import { u } from 'unist-builder'
 import classNames from 'classnames'
-import { AdmonitionKind } from './types'
+import { AdmonitionKind, GenericNode } from './types'
 import { Plugin } from 'unified'
-import { ElementContent } from 'hast'
+import type { ElementContent } from 'hast'
+import type { State } from '../state'
 
 const abbreviation: Handler = (h, node) =>
   h(node, 'abbr', { title: node.title }, all(h, node))
@@ -48,8 +49,11 @@ const admonition: Handler = (h, node) =>
     all(h, node),
   )
 
-const captionNumber: Handler = (h, node) =>
-  h(node, 'span', { class: 'caption-number' }, [u('text', 'Figure 1')])
+const captionNumber: Handler = (h, node) => {
+  return h(node, 'span', { class: 'caption-number' }, [
+    u('text', `Figure ${node.value}`),
+  ])
+}
 
 const math: Handler = (h, node) => {
   const attrs = { id: node.label || undefined, class: 'math block' }
@@ -69,11 +73,6 @@ const inlineMath: Handler = (h, node) => {
 const definitionList: Handler = (h, node) => h(node, 'dl', all(h, node))
 const definitionTerm: Handler = (h, node) => h(node, 'dt', all(h, node))
 const definitionDescription: Handler = (h, node) => h(node, 'dd', all(h, node))
-
-const footnoteRef: Handler = (h, node) => h(node, 'span', all(h, node))
-
-const cite: Handler = (h, node) =>
-  h(node, 'a', { href: `#${node.identifier}` }, [u('text', node.value)])
 
 const role: Handler = (h, node) => {
   return h(node, 'span', { class: 'role unhandled' }, [
@@ -106,32 +105,50 @@ const comment: Handler = (h, node) => u('comment', node.value)
 const heading: Handler = (h, node) =>
   h(node, `h${node.depth}`, { id: node.label || undefined }, all(h, node))
 
-export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Root) => {
-  return toHast(tree, {
-    ...opts,
-    handlers: {
-      admonition,
-      admonitionTitle,
-      container,
-      image,
-      caption,
-      captionNumber,
-      abbreviation,
-      subscript,
-      superscript,
-      math,
-      inlineMath,
-      definitionList,
-      definitionTerm,
-      definitionDescription,
-      footnoteRef,
-      cite,
-      role,
-      directive,
-      blockBreak,
-      comment,
-      heading,
-      ...opts?.handlers,
-    },
-  })
-}
+const contentReference =
+  (state: State): Handler =>
+  (h, node) => {
+    const refMdast: GenericNode = state.getReferenceMdast(
+      node.identifier,
+      node.kind,
+      node.value,
+    )
+    if (refMdast) {
+      return h(node, 'a', { href: `#${node.identifier}` }, all(h, refMdast))
+    } else {
+      return h(node, 'span', { class: 'reference role unhandled' }, [
+        h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
+        h(node, 'code', {}, [u('text', node.identifier)]),
+      ])
+    }
+  }
+
+export const mystToHast: Plugin<[State, Options?], string, Root> =
+  (state, opts) => (tree: Root) => {
+    return toHast(tree, {
+      ...opts,
+      handlers: {
+        admonition,
+        admonitionTitle,
+        container,
+        image,
+        caption,
+        captionNumber,
+        abbreviation,
+        subscript,
+        superscript,
+        math,
+        inlineMath,
+        definitionList,
+        definitionTerm,
+        definitionDescription,
+        role,
+        directive,
+        blockBreak,
+        comment,
+        heading,
+        contentReference: contentReference(state),
+        ...opts?.handlers,
+      },
+    })
+  }

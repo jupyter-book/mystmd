@@ -1,9 +1,10 @@
 import { Root } from 'mdast'
 import { Plugin } from 'unified'
 import { visit } from 'unist-util-visit'
-import { selectAll } from 'unist-util-select'
+import { select, selectAll } from 'unist-util-select'
 import { Admonition, AdmonitionKind, GenericNode } from './types'
 import { admonitionKindToTitle } from './utils'
+import { State } from '../state'
 
 export type Options = {
   addAdmonitionHeaders?: boolean
@@ -30,19 +31,25 @@ export function addAdmonitionHeaders(tree: Root) {
 }
 
 // Visit all containers and add captions
-export function addContainerCaptionNumbers(tree: Root) {
-  selectAll('container[numbered=true] caption > paragraph', tree).forEach(
-    (para: GenericNode) => {
-      para.children = [{ type: 'captionNumber' }, ...(para.children ?? [])]
-    },
-  )
+export function addContainerCaptionNumbers(tree: Root, state: State) {
+  selectAll('container[numbered=true]', tree).forEach((container: GenericNode) => {
+    const number = state.getTarget(container.identifier)?.number
+    const para: GenericNode = select('caption > paragraph', container)
+    if (number && para) {
+      para.children = [
+        { type: 'captionNumber', value: number },
+        ...(para?.children ?? []),
+      ]
+    }
+  })
 }
 
-export const transform: Plugin<[Options?], string, Root> = (o) => (tree: Root) => {
-  const opts = {
-    ...defaultOptions,
-    ...o,
+export const transform: Plugin<[State, Options?], string, Root> =
+  (state, o) => (tree: Root) => {
+    const opts = {
+      ...defaultOptions,
+      ...o,
+    }
+    if (opts.addAdmonitionHeaders) addAdmonitionHeaders(tree)
+    if (opts.addContainerCaptionNumbers) addContainerCaptionNumbers(tree, state)
   }
-  if (opts.addAdmonitionHeaders) addAdmonitionHeaders(tree)
-  if (opts.addContainerCaptionNumbers) addContainerCaptionNumbers(tree)
-}

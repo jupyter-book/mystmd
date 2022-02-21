@@ -19,6 +19,7 @@ import { unified } from 'unified'
 import rehypeStringify, { Options as StringifyOptions } from 'rehype-stringify'
 import { Root } from 'mdast'
 import { transform, Options as TransformOptions } from './mdast/transforms'
+import { State, updateState } from './state'
 
 type AllOptions = {
   allowDangerousHtml: boolean
@@ -112,10 +113,12 @@ class MyST {
   }
 
   async renderMdast(tree: Root) {
+    const state = new State()
     const pipe = unified()
       .use(jsonParser)
-      .use(transform, this.opts.transform)
-      .use(mystToHast, this.opts.hast)
+      .use(updateState, state)
+      .use(transform, state, this.opts.transform)
+      .use(mystToHast, state, this.opts.hast)
       .use(formatHtml, this.opts.formatHtml)
       .use(rehypeStringify, this.opts.stringifyHtml)
     const result = await pipe.process(JSON.stringify(tree))
