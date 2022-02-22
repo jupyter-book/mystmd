@@ -32,6 +32,23 @@ export const exportFromOxaLink =
 
 const knownServices = new Set(['blocks', 'drafts', 'projects']);
 
+export function projectIdFromLink(session: ISession, link: string) {
+  const id = oxaLinkToId(link);
+  if (id) {
+    return id.block.project;
+  }
+  if (link.startsWith(session.API_URL)) {
+    const [service, project] = link.split('/').slice(3); // https://api.curvenote.com/{service}/{maybeProjectId}
+    if (!knownServices.has(service)) throw new Error('Unknown API URL for project.');
+    return project;
+  }
+  if (link.startsWith(session.SITE_URL)) {
+    const [team, project] = link.split('/').slice(-2);
+    return `${team}:${project}`;
+  }
+  return link;
+}
+
 export const exportFromProjectLink =
   (
     exportProject: (
@@ -41,20 +58,7 @@ export const exportFromProjectLink =
     ) => Promise<void>,
   ) =>
   async (session: ISession, link: string, opts: Record<string, string>) => {
-    let projectId: string | null = null;
-    const id = oxaLinkToId(link);
-    if (id) {
-      projectId = id.block.project;
-    } else if (link.startsWith(session.API_URL)) {
-      const [service, project] = link.split('/').slice(3); // https://api.curvenote.com/{service}/{maybeProjectId}
-      if (!knownServices.has(service)) throw new Error('Unknown API URL for project.');
-      projectId = project;
-    } else if (link.startsWith(session.SITE_URL)) {
-      const [team, project] = link.split('/').slice(-2);
-      projectId = `${team}:${project}`;
-    } else {
-      projectId = link;
-    }
+    const projectId: string | null = projectIdFromLink(session, link);
     if (!projectId) throw new Error('The project ID provided could not be parsed.');
     await exportProject(session, projectId, opts);
   };

@@ -2,10 +2,11 @@ import { Command, Option } from 'commander';
 import {
   oxaLinkToWord,
   oxaLinkToMarkdown,
-  oxaLinkToTex,
+  oxaLinkToArticleTex,
   oxaLinkToPdf,
   oxaLinkToJupyterBook,
   oxaLinkToNotebook,
+  exportContent,
 } from '../..';
 import { clirun } from './utils';
 
@@ -64,7 +65,7 @@ function makeTexExportCLI(program: Command) {
     .addOption(makeTemplateOption())
     .addOption(makeTemplateOptionsOption())
     .addOption(makeConverterOption())
-    .action(clirun(oxaLinkToTex, { program }));
+    .action(clirun(oxaLinkToArticleTex, { program }));
   return command;
 }
 
@@ -100,6 +101,15 @@ function makeJupyterBookExportCLI(program: Command) {
   return command;
 }
 
+// TODO naming
+function makeMultiExportCLI(program: Command) {
+  const command = new Command('multi')
+    .description('Export multiple targets from Curvenote via local configuraton file')
+    .argument('[path]', 'Path to configuration file', './curvenote.yml')
+    .action(clirun(exportContent, { program }));
+  return command;
+}
+
 export function addExportCLI(program: Command) {
   const command = new Command('export').description(
     'Export a Curvenote document to different formats',
@@ -110,5 +120,6 @@ export function addExportCLI(program: Command) {
   command.addCommand(makePdfExportCLI(program));
   command.addCommand(makeJupyterNotebookExportCLI(program));
   command.addCommand(makeJupyterBookExportCLI(program));
+  command.addCommand(makeMultiExportCLI(program));
   program.addCommand(command);
 }

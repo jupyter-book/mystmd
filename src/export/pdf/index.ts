@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import util from 'util';
 import { exportFromOxaLink, exec } from '../utils';
-import { articleToTex } from '../tex';
+import { singleArticleToTex } from '../tex';
 import { TexExportOptions } from '../tex/types';
 import { ISession } from '../../session/types';
 
@@ -24,7 +24,7 @@ export async function articleToPdf(
   const outputPdfFile = path.join(outputPath, pdf_filename);
   const outputLogFile = path.join(outputPath, log_filename);
 
-  const article = await articleToTex(session, versionId, {
+  const article = await singleArticleToTex(session, versionId, {
     ...opts,
     filename: targetTexFilePath,
     template: opts.template ?? 'public/default',

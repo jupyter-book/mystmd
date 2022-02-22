@@ -39,7 +39,7 @@ export function getCorresponsingAuthorNames(options: {
 export async function toAuthorFields(
   session: ISession,
   author: Author,
-  corresponding: Set<string> = new Set([]), // TODO generise to a function allowing various flags to be set
+  corresponding: Set<string> = new Set([]), // TODO generalize to a function allowing various flags to be set
 ): Promise<ExportAuthorModel> {
   if (author.plain)
     return { name: author.plain, is_corresponding: corresponding.has(author.plain) };
