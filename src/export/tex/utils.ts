@@ -87,7 +87,11 @@ export async function processImages(
  * @param log - Logger
  * @param opts - TenExportOptions
  */
-export async function runTemplating(contentTexFile: string, log: Logger, opts: TexExportOptions) {
+export async function ifTemplateRunJtex(
+  contentTexFile: string,
+  log: Logger,
+  opts: TexExportOptions,
+) {
   // run templating
   if (opts.template) {
     const CMD = `jtex render ${contentTexFile}`;

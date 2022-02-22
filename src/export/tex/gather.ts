@@ -1,27 +1,28 @@
+import path from 'path';
 import { Blocks, VersionId, KINDS, convertToBlockId } from '@curvenote/blocks';
 import { DocumentModel } from 'export';
 import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
 import { getChildren } from '../../actions/getChildren';
 import { buildFrontMatterFromBlock, stringifyFrontMatter } from './frontMatter';
-import { walkArticle, makeBuildPaths, ArticleState } from '../utils';
+import { walkArticle, ArticleState } from '../utils';
 import { TexExportOptions } from './types';
 import { convertAndLocalizeChild, writeBlocksToFile, writeTaggedContent } from './utils';
 import { localizeAndProcessImages } from './images';
 
-export async function gatherArticleContent(
+export async function gatherAndWriteArticleContent(
   session: ISession,
   versionId: VersionId,
   opts: TexExportOptions,
   tagged: string[],
   templateOptions: Record<string, any>,
+  buildPath: string,
 ): Promise<{
   article: ArticleState;
+  filename: string;
   taggedFilenames: Record<string, string>;
   model: DocumentModel;
 }> {
-  const { buildPath, outputFilename } = makeBuildPaths(session.log, opts);
-
   session.log.debug('Fetching data from API...');
   const [block, version] = await Promise.all([
     new Block(session, convertToBlockId(versionId)).get(),
@@ -52,7 +53,7 @@ export async function gatherArticleContent(
     templateOptions,
     {
       path: opts.texIsIntermediate ?? false ? '.' : '..', // jtex path is always relative to the content file
-      filename: outputFilename,
+      filename: path.basename(opts.filename),
       copy_images: true,
       single_file: false,
     },
@@ -60,7 +61,7 @@ export async function gatherArticleContent(
     Object.keys(article.references).length > 0 ? 'main.bib' : null,
   );
 
-  const { filename } = opts;
+  const filename = opts.template ? path.join(buildPath, 'content.tex') : opts.filename;
   session.log.debug(`Writing main body of content to ${filename}`);
   session.log.debug(`Document has ${article.children.length} child blocks`);
   writeBlocksToFile(
@@ -70,5 +71,5 @@ export async function gatherArticleContent(
     stringifyFrontMatter(frontMatter),
   );
 
-  return { article, taggedFilenames, model: frontMatter };
+  return { article, filename, taggedFilenames, model: frontMatter };
 }

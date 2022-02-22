@@ -1,4 +1,4 @@
-import { Author, oxaLinkToId, projectFromDTO, VersionId } from '@curvenote/blocks';
+import { Author, oxaLinkToId, VersionId } from '@curvenote/blocks';
 import fs from 'fs';
 import path from 'path';
 import { ExportConfig } from 'export/types';
@@ -9,12 +9,12 @@ import { writeBibtex } from '../utils/writeBibtex';
 import { ArticleState, ArticleStateReference, exportFromOxaLink, makeBuildPaths } from '../utils';
 import { TexExportOptions } from './types';
 import {
-  fetchTemplateTaggedBlocks,
-  loadTemplateOptions,
+  ifTemplateFetchTaggedBlocks,
+  ifTemplateLoadOptions,
   throwIfTemplateButNoJtex,
 } from './template';
-import { runTemplating } from './utils';
-import { gatherArticleContent } from './gather';
+import { ifTemplateRunJtex } from './utils';
+import { gatherAndWriteArticleContent } from './gather';
 import { buildFrontMatter, stringifyFrontMatter } from './frontMatter';
 import { DocumentModel, toAuthorFields, toDateFields } from '../model';
 
@@ -24,27 +24,27 @@ export async function singleArticleToTex(
   opts: TexExportOptions,
 ) {
   throwIfTemplateButNoJtex(opts);
-  const { tagged } = await fetchTemplateTaggedBlocks(session, opts);
-  const templateOptions = loadTemplateOptions(opts);
+  const { tagged } = await ifTemplateFetchTaggedBlocks(session, opts);
+  const templateOptions = ifTemplateLoadOptions(opts);
 
   const { buildPath } = makeBuildPaths(session.log, opts);
 
   session.log.debug('Starting articleToTex...');
   session.log.debug(`With Options: ${JSON.stringify(opts)}`);
 
-  const filename = path.join(buildPath, 'content.tex');
-  const { article } = await gatherArticleContent(
+  const { article, filename } = await gatherAndWriteArticleContent(
     session,
     versionId,
-    { ...opts, filename },
+    opts,
     tagged,
     templateOptions,
+    buildPath,
   );
 
   session.log.debug('Writing bib file...');
   await writeBibtex(session, article.references, path.join(buildPath, 'main.bib'));
 
-  await runTemplating(filename, session.log, opts);
+  await ifTemplateRunJtex(filename, session.log, opts);
 
   return article;
 }
@@ -64,8 +64,8 @@ export async function multiArticleToTex(
   opts: TexExportOptions,
 ) {
   throwIfTemplateButNoJtex(opts);
-  const { tagged } = await fetchTemplateTaggedBlocks(session, opts);
-  const templateOptions = loadTemplateOptions(opts);
+  const { tagged } = await ifTemplateFetchTaggedBlocks(session, opts);
+  const templateOptions = ifTemplateLoadOptions(opts);
 
   session.log.debug('Starting multiArticleToTex...');
   session.log.debug(`With job: ${JSON.stringify(job)}`);
@@ -97,7 +97,7 @@ export async function multiArticleToTex(
 
     // walk chapters
     const ref = path.join('chapters', `${String(articles.length).padStart(3, '0')}-${name}.tex`);
-    const { article, taggedFilenames, model } = await gatherArticleContent(
+    const { article, taggedFilenames, model } = await gatherAndWriteArticleContent(
       session,
       { ...id.block, version },
       {
@@ -107,6 +107,7 @@ export async function multiArticleToTex(
       },
       tagged, // tagged from template,
       templateOptions,
+      buildPath,
     );
 
     articles.push({ article, model, ref, taggedFilenames });
@@ -173,7 +174,7 @@ export async function multiArticleToTex(
   session.log.debug('Writing bib file...');
   await writeBibtex(session, references, path.join(buildPath, 'main.bib'));
 
-  await runTemplating(opts.filename, session.log, opts);
+  await ifTemplateRunJtex(opts.filename, session.log, opts);
 
   return articles;
 }

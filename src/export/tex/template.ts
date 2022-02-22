@@ -13,7 +13,7 @@ export function throwIfTemplateButNoJtex(opts: TexExportOptions) {
   }
 }
 
-export async function fetchTemplateTaggedBlocks(
+export async function ifTemplateFetchTaggedBlocks(
   session: ISession,
   opts: TexExportOptions,
 ): Promise<{ tagged: string[] }> {
@@ -34,7 +34,7 @@ export async function fetchTemplateTaggedBlocks(
   return { tagged };
 }
 
-export function loadTemplateOptions(opts: TexExportOptions): Record<string, any> {
+export function ifTemplateLoadOptions(opts: TexExportOptions): Record<string, any> {
   if (opts.options) {
     if (!fs.existsSync(opts.options)) {
       throw new Error(`The template options file specified was not found: ${opts.options}`);
