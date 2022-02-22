@@ -11,7 +11,7 @@ import { ISession } from '../../session/types';
 const copyFile = util.promisify(fs.copyFile);
 
 export async function createPdfGivenTexFile(log: Logger, filename: string) {
-  const basename = path.basename(filename);
+  const basename = path.basename(filename, path.extname(filename));
   const tex_filename = `${basename}.tex`;
   const pdf_filename = `${basename}.pdf`;
   const log_filename = `${basename}.log`;
