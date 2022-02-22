@@ -1,7 +1,7 @@
 import YAML from 'yaml';
 import { Blocks } from '@curvenote/blocks';
 import { toTex } from '@curvenote/schema';
-import { buildDocumentModel, ExportAuthorModel, ExportDateModel } from '../model';
+import { buildDocumentModelFromBlock, DocumentModel } from '../model';
 import { Block, Version } from '../../models';
 import { getEditorState } from '../../actions/utils';
 import { ISession } from '../../session/types';
@@ -13,32 +13,47 @@ export interface JtexOutputConfig {
   single_file: boolean;
 }
 
-export interface LatexFrontMatter {
-  title: string;
-  description: string;
-  short_title: string;
-  authors: ExportAuthorModel[];
-  date: ExportDateModel;
-  tags: string[];
-  oxalink: string | null;
-  jtex: {
-    version: number;
-    template: string | null;
-    strict: boolean;
-    input: {
-      references: string | null;
-      tagged: Record<string, string>;
-    };
-    output: JtexOutputConfig;
-    options: Record<string, any>;
+export interface JtexConfig {
+  version: number;
+  template: string | null;
+  strict: boolean;
+  input: {
+    references: string | null;
+    tagged: Record<string, string>;
   };
+  output: JtexOutputConfig;
+  options: Record<string, any>;
 }
+
+export type LatexFrontMatter = DocumentModel & {
+  jtex: JtexConfig;
+};
 
 function escapeLatex(maybeUnsafe: string): string {
   return toTex(getEditorState(`<p>${maybeUnsafe}</p>`).doc);
 }
 
-export async function buildFrontMatter(
+function buildJtexSection(
+  tagged: Record<string, string>,
+  options: Record<string, any>,
+  output: JtexOutputConfig,
+  template: string | null,
+  references: string | null = 'main.bib',
+): JtexConfig {
+  return {
+    version: 1,
+    template,
+    strict: false,
+    input: {
+      references,
+      tagged,
+    },
+    output,
+    options,
+  };
+}
+
+export async function buildFrontMatterFromBlock(
   session: ISession,
   block: Block,
   version: Version<Blocks.Article>,
@@ -46,24 +61,28 @@ export async function buildFrontMatter(
   options: Record<string, any>,
   output: JtexOutputConfig,
   template: string | null,
-  references: string | null = 'main.bib',
+  references: string | null,
 ): Promise<LatexFrontMatter> {
-  const model = await buildDocumentModel(session, block, version, options, escapeLatex);
+  const model = await buildDocumentModelFromBlock(session, block, version, options, escapeLatex);
   const data = {
     ...model,
-    jtex: {
-      version: 1,
-      template,
-      strict: false,
-      input: {
-        references,
-        tagged,
-      },
-      output,
-      options,
-    },
+    jtex: buildJtexSection(tagged, options, output, template, references),
   };
   return data;
+}
+
+export function buildFrontMatter(
+  model: DocumentModel,
+  tagged: Record<string, string>,
+  options: Record<string, any>,
+  output: JtexOutputConfig,
+  template: string | null,
+  references: string | null,
+): LatexFrontMatter {
+  return {
+    ...model,
+    jtex: buildJtexSection(tagged, options, output, template, references),
+  };
 }
 
 const FM_DELIM = '% ---';

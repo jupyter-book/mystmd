@@ -19,14 +19,14 @@ import { getImageSrc } from './getImageSrc';
 import { basekey } from './basekey';
 import { ISession } from '../../session/types';
 
-interface ArticleStateChild {
+export interface ArticleStateChild {
   state: ReturnType<typeof getEditorState>;
   block: Block;
   version: Version;
   templateTags?: string[];
 }
 
-interface ArticleStateReference {
+export interface ArticleStateReference {
   label: string;
   bibtex: string;
   version: Version<Blocks.Reference>;
@@ -34,10 +34,10 @@ interface ArticleStateReference {
 }
 
 export type ArticleState = {
-  children: Partial<ArticleStateChild>[];
+  children: ArticleStateChild[];
   images: Record<string, Version<Blocks.Image | Blocks.Output>>;
   references: Record<string, ArticleStateReference>;
-  tagged: Record<string, Partial<ArticleStateChild>[]>;
+  tagged: Record<string, ArticleStateChild[]>;
 };
 
 function getCodeHTML(content: string, language: string, linenumbers: boolean) {
@@ -101,7 +101,7 @@ export async function walkArticle(
   const limiter = new Bottleneck({ maxConcurrent: 25 });
 
   const templateTagSet = new Set(templateTags); // ensure dedupe
-  const children: ArticleState['children'] = await Promise.all(
+  const children = await Promise.all(
     data.order.map(async (k) => {
       const articleChild = data.children[k];
       const srcId = articleChild?.src;
@@ -265,8 +265,12 @@ export async function walkArticle(
     }),
   );
 
-  const contentChildren = children.filter((c) => !c.templateTags);
-  const taggedChildren = children.filter((c) => c.templateTags);
+  const contentChildren = children
+    .filter((c) => !c.templateTags)
+    .filter((c) => Object.keys(c).length > 0) as ArticleStateChild[];
+  const taggedChildren = children
+    .filter((c) => c.templateTags)
+    .filter((c) => Object.keys(c).length > 0) as ArticleStateChild[];
 
   const tagged = Array.from(templateTagSet).reduce<Record<string, ArticleState['children']>>(
     (obj, tag) => {

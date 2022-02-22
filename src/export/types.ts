@@ -7,11 +7,15 @@ export interface ExportConfig {
   folder: string;
   contents: { name?: string; link?: string; version?: number }[];
   data: {
+    title?: string;
+    short_title?: string;
+    description?: string;
+    date?: string;
     authors: {
-      name: string;
-      username?: string;
-      corresponding: boolean;
-      email: string;
+      name?: string;
+      id?: string;
+      corresponding?: boolean;
+      email?: string;
     }[];
   };
 }

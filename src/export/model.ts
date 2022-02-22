@@ -16,6 +16,16 @@ export interface ExportAuthorModel {
   is_corresponding: boolean;
 }
 
+export interface DocumentModel {
+  title: string;
+  description: string;
+  short_title: string;
+  authors: ExportAuthorModel[];
+  date: ExportDateModel;
+  tags: string[];
+  oxalink: string | null;
+}
+
 export function toShortTitle(title: string): string {
   return title.slice(0, 50);
 }
@@ -54,13 +64,13 @@ export async function toAuthorFields(
   };
 }
 
-export async function buildDocumentModel(
+export async function buildDocumentModelFromBlock(
   session: ISession,
   block: Block,
   version: Version<Blocks.Article>,
   options: Record<string, any>,
   escapeFn?: (s: string) => string,
-) {
+): Promise<DocumentModel> {
   const corresponding = getCorresponsingAuthorNames(options);
   const authors = await Promise.all(
     block.data.authors.map((a) => toAuthorFields(session, a, corresponding)),

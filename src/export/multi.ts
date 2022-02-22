@@ -3,11 +3,11 @@ import YAML from 'yaml';
 import path from 'path';
 import { ISession } from 'session';
 import { Logger } from 'logging';
-import { ArticleFormatTypes, Blocks, ExportableFormatTypes } from '@curvenote/blocks';
+import { ArticleFormatTypes, Blocks } from '@curvenote/blocks';
 import { projectIdFromLink } from './utils';
 import { Project } from '../models';
 import { getLatestVersion } from '../actions/getLatest';
-import { Config, ExportConfig } from './types';
+import { Config } from './types';
 import { multiArticleToTex } from './tex';
 import { TexExportOptions } from './tex/types';
 
@@ -65,7 +65,11 @@ export async function exportContent(session: ISession, pathToYml: string) {
             const filename = path.join(configPath, job.folder, 'main.tex');
             // TODO take other options from Config?
             const opts: TexExportOptions = { filename };
-            multiArticleToTex(session, job, opts);
+            multiArticleToTex(session, project, job, opts);
+          }
+          break;
+        case ArticleFormatTypes.pdf:
+          {
           }
           break;
         default:
