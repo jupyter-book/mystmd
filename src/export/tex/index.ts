@@ -127,12 +127,10 @@ export async function articleToTex(
   const article = await walkArticle(session, data, tagged);
 
   session.log.debug('Start localizing images..');
-  const imageFilenames = await writeImagesToFiles(
-    session.log,
-    article.images,
-    opts?.images ?? 'images',
+  const imageFilenames = await writeImagesToFiles(session.log, article.images, {
+    basePath: opts?.images ?? 'images',
     buildPath,
-  );
+  });
 
   // TODO Dry up gif and svg processing
   session.log.debug('Processing GIFS if present...');

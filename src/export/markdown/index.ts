@@ -34,11 +34,10 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
   if (data.kind !== KINDS.Article) throw new Error('Not an article');
   const article = await walkArticle(session, data);
 
-  const imageFilenames = await writeImagesToFiles(
-    session.log,
-    article.images,
-    opts?.images ?? 'images',
-  );
+  const imageFilenames = await writeImagesToFiles(session.log, article.images, {
+    basePath: opts?.images ?? 'images',
+    simple: true,
+  });
   const localization = localizationOptions(session, imageFilenames, article.references);
   const content = article.children.map((child) => {
     if (!child.version || !child.state) return '';

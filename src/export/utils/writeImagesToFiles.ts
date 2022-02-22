@@ -31,13 +31,19 @@ function makeUniqueFilename(
   content_type: string,
   version: Version<Blocks.Image | Blocks.Output>,
   taken: Set<string>,
+  simple: boolean,
 ): string {
   const ext = contentTypeToExt(content_type);
   const filenames = [
     block.data.name,
     'file_name' in version.data ? version.data.file_name : '', // Output doesn't have a filename
     `${version.id.project}-${version.id.block}-v${version.id.version}`,
-  ]
+  ];
+  if (simple) {
+    // remove the first two options
+    filenames.splice(0, 2);
+  }
+  const unique = filenames
     .map((filename) => {
       if (!filename) return '';
       let name = filename;
@@ -47,15 +53,22 @@ function makeUniqueFilename(
       return test;
     })
     .filter((n) => !!n);
-  return filenames[0];
+  // return the first unique
+  return unique[0];
 }
+
+type Options = {
+  basePath: string;
+  buildPath?: string;
+  simple?: boolean;
+};
 
 export async function writeImagesToFiles(
   log: Logger,
   images: ArticleState['images'],
-  basePath: string,
-  buildPath?: string,
+  options: Options,
 ) {
+  const { basePath, buildPath, simple = false } = options;
   const takenFilenames: Set<string> = new Set();
   const filenames: Record<string, string> = {};
   await Promise.all(
@@ -71,6 +84,7 @@ export async function writeImagesToFiles(
         content_type,
         image,
         takenFilenames,
+        simple,
       );
       const filename = path.join(buildPath ?? '', referencableFilename);
       if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
