@@ -11,7 +11,7 @@ export default {
     typescript(), // Integration between Rollup and Typescript
     commonjs(), // Convert CommonJS modules to ES6
     babel({ babelHelpers: 'bundled' }), // transpile ES6/7 code
-    resolve(), // resolve third party modules in node_modules
+    resolve({ browser: true }), // resolve third party modules in node_modules
     json(), // import json files as modules
   ],
   output: [
