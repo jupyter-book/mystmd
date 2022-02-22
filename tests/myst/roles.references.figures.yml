@@ -210,7 +210,7 @@ cases:
                     - type: text
                       value: '!'
     myst: |-
-      see {ref}`Custom *caption*<my-figure>`
+      see {ref}`Custom *caption* <my-figure>`
 
       ```{figure} fig.jpg
       :name: my-figure

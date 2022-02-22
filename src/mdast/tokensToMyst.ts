@@ -10,8 +10,6 @@ import { admonitionKindToTitle, withoutTrailingNewline } from './utils';
 import { map } from 'unist-util-map';
 import { findAfter } from 'unist-util-find-after';
 
-export { MarkdownParseState };
-
 export type Options = {
   handlers?: Record<string, Spec>;
   hoistSingleImagesOutofParagraphs?: boolean;
@@ -99,7 +97,6 @@ const defaultMdast: Record<string, Spec> = {
     type: 'strong',
   },
   fence: {
-    // TODO
     type: 'code',
     isLeaf: true,
     getAttrs(t) {
@@ -352,7 +349,7 @@ const defaultMdast: Record<string, Spec> = {
   },
 };
 
-export function hoistSingleImagesOutofParagraphs(tree: Root) {
+function hoistSingleImagesOutofParagraphs(tree: Root) {
   // Hoist up all paragraphs with a single image
   visit(tree, 'paragraph', (node) => {
     if (!(node.children?.length === 1 && node.children?.[0].type === 'image')) return;

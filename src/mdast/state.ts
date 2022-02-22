@@ -1,10 +1,7 @@
-/* eslint-disable no-param-reassign */
-
-import { Plugin } from 'unified';
 import { Root } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select } from 'unist-util-select';
-import { GenericNode } from './mdast';
+import { GenericNode } from '.';
 
 export enum TargetKind {
   heading = 'heading',
@@ -65,11 +62,11 @@ export class State {
     return this.targets[identifier];
   }
 
-  getReferenceMdast(
-    refIdentifier: string,
-    refKind: string,
+  getReferenceContent(
+    refIdentifier?: string,
+    refKind?: string,
     refValue?: string,
-  ): GenericNode | undefined {
+  ): GenericNode['children'] | undefined {
     const target = this.getTarget(refIdentifier);
     let text = refValue;
     if (!target) {
@@ -78,11 +75,12 @@ export class State {
       text = text || `(${target.number})`;
     } else if (refKind === ReferenceKind.ref && target.kind === TargetKind.heading) {
       if (!text) {
-        return target.node;
+        return target.node.children;
       }
     } else if (refKind === ReferenceKind.ref && target.kind === TargetKind.figure) {
       if (!text) {
-        return select('caption > paragraph', target.node) as GenericNode;
+        const caption = select('caption > paragraph', target.node) as GenericNode;
+        return caption.children;
       }
     } else if (refKind === ReferenceKind.numref && target.kind === TargetKind.figure) {
       text = refValue
@@ -91,13 +89,25 @@ export class State {
     } else {
       return;
     }
-    return { type: '_', children: [{ type: text, value: text }] };
+    return [{ type: 'text', value: text }];
   }
 }
 
-export const updateState: Plugin<[State], string, Root> = (state) => (tree: Root) => {
+export const countState = (state: State, tree: Root) => {
   visit(tree, 'container', (node: GenericNode) => state.addTarget(node));
   visit(tree, 'math', (node: GenericNode) => state.addTarget(node));
   visit(tree, 'heading', (node) => state.addTarget(node as GenericNode));
   return tree;
+};
+
+export const referenceState = (state: State, tree: Root) => {
+  visit(tree, 'contentReference', (node: GenericNode) => {
+    const content = state.getReferenceContent(node.identifier, node.kind, node.value);
+    if (content) {
+      node.resolved = true;
+      node.children = content;
+    } else {
+      node.resolved = false;
+    }
+  });
 };

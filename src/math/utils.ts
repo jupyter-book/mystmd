@@ -1,4 +1,4 @@
-import { TargetKind } from '../state';
+import { TargetKind } from '../mdast/state';
 import { toHTML } from '../utils';
 
 type Target = {

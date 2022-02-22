@@ -5,8 +5,6 @@ import classNames from 'classnames';
 import { AdmonitionKind } from './types';
 import { Plugin } from 'unified';
 import type { ElementContent } from 'hast';
-import type { State } from '../state';
-import { MdastNode } from 'mdast-util-to-hast/lib';
 
 const abbreviation: Handler = (h, node) =>
   h(node, 'abbr', { title: node.title }, all(h, node));
@@ -106,51 +104,42 @@ const comment: Handler = (h, node) => u('comment', node.value);
 const heading: Handler = (h, node) =>
   h(node, `h${node.depth}`, { id: node.label || undefined }, all(h, node));
 
-const contentReference =
-  (state: State): Handler =>
-  (h, node) => {
-    const refMdast = state.getReferenceMdast(node.identifier, node.kind, node.value);
-    if (refMdast) {
-      return h(
-        node,
-        'a',
-        { href: `#${node.identifier}` },
-        all(h, refMdast as MdastNode),
-      );
-    } else {
-      return h(node, 'span', { class: 'reference role unhandled' }, [
-        h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
-        h(node, 'code', {}, [u('text', node.identifier)]),
-      ]);
-    }
-  };
+const contentReference: Handler = (h, node) => {
+  if (node.resolved) {
+    return h(node, 'a', { href: `#${node.identifier}` }, all(h, node));
+  } else {
+    return h(node, 'span', { class: 'reference role unhandled' }, [
+      h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
+      h(node, 'code', {}, [u('text', node.identifier)]),
+    ]);
+  }
+};
 
-export const mystToHast: Plugin<[State, Options?], string, Root> =
-  (state, opts) => (tree: Root) => {
-    return toHast(tree, {
-      ...opts,
-      handlers: {
-        admonition,
-        admonitionTitle,
-        container,
-        image,
-        caption,
-        captionNumber,
-        abbreviation,
-        subscript,
-        superscript,
-        math,
-        inlineMath,
-        definitionList,
-        definitionTerm,
-        definitionDescription,
-        role,
-        directive,
-        block,
-        comment,
-        heading,
-        contentReference: contentReference(state),
-        ...opts?.handlers,
-      },
-    });
-  };
+export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Root) => {
+  return toHast(tree, {
+    ...opts,
+    handlers: {
+      admonition,
+      admonitionTitle,
+      container,
+      image,
+      caption,
+      captionNumber,
+      abbreviation,
+      subscript,
+      superscript,
+      math,
+      inlineMath,
+      definitionList,
+      definitionTerm,
+      definitionDescription,
+      role,
+      directive,
+      block,
+      comment,
+      heading,
+      contentReference,
+      ...opts?.handlers,
+    },
+  });
+};

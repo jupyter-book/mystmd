@@ -4,7 +4,8 @@ import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { Admonition, AdmonitionKind, GenericNode } from './types';
 import { admonitionKindToTitle } from './utils';
-import { State } from '../state';
+import { State, countState } from './state';
+import { referenceState } from '.';
 
 export type Options = {
   addAdmonitionHeaders?: boolean;
@@ -37,7 +38,7 @@ export function addContainerCaptionNumbers(tree: Root, state: State) {
     const para = select('caption > paragraph', container) as GenericNode;
     if (number && para) {
       para.children = [
-        { type: 'captionNumber', value: number },
+        { type: 'captionNumber', kind: container.kind, value: number },
         ...(para?.children ?? []),
       ];
     }
@@ -50,6 +51,8 @@ export const transform: Plugin<[State, Options?], string, Root> =
       ...defaultOptions,
       ...o,
     };
+    countState(state, tree);
+    referenceState(state, tree);
     if (opts.addAdmonitionHeaders) addAdmonitionHeaders(tree);
     if (opts.addContainerCaptionNumbers) addContainerCaptionNumbers(tree, state);
   };

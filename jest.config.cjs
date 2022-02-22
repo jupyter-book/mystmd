@@ -10,4 +10,4 @@ module.exports = {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
   testPathIgnorePatterns: ['/node_modules/', '/.yalc/', '/dist/', 'docs'],
-}
+};

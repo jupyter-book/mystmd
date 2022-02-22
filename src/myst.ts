@@ -10,16 +10,16 @@ import { math, MathExtensionOptions, convertFrontMatter } from './plugins';
 import { mystBlockPlugin } from 'markdown-it-myst-extras';
 import {
   formatHtml,
-  jsonParser,
   mystToHast,
   tokensToMyst,
-  Options as MdastOptions,
+  MdastOptions,
+  transform,
+  TransformOptions,
+  State,
 } from './mdast';
 import { unified } from 'unified';
 import rehypeStringify, { Options as StringifyOptions } from 'rehype-stringify';
 import { Root } from 'mdast';
-import { transform, Options as TransformOptions } from './mdast/transforms';
-import { State, updateState } from './state';
 
 type AllOptions = {
   allowDangerousHtml: boolean;
@@ -106,23 +106,21 @@ class MyST {
     return tokensToMyst(this.tokenizer.parse(content, {}), this.opts.mdast);
   }
 
-  async render(content: string) {
+  render(content: string) {
     const tree = this.parse(content);
     const html = this.renderMdast(tree);
     return html;
   }
 
-  async renderMdast(tree: Root) {
+  renderMdast(tree: Root) {
     const state = new State();
     const pipe = unified()
-      .use(jsonParser)
-      .use(updateState, state)
       .use(transform, state, this.opts.transform)
-      .use(mystToHast, state, this.opts.hast)
+      .use(mystToHast, this.opts.hast)
       .use(formatHtml, this.opts.formatHtml)
       .use(rehypeStringify, this.opts.stringifyHtml);
-    const result = await pipe.process(JSON.stringify(tree));
-    const html = result.value as string;
+    const result = pipe.runSync(tree);
+    const html = pipe.stringify(result);
     return html.trim();
   }
 }
