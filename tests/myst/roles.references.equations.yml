@@ -39,7 +39,7 @@ cases:
       <figure id="matrix" class="numbered">
         <img src="fig.jpg">
         <figcaption>
-          <p><span class="caption-number">Figure 1</span>Cool caption!</p>
+          <p><span class="caption-number">Figure 1 </span>Cool caption!</p>
         </figcaption>
       </figure>
   - title: Default equation reference

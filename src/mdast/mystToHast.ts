@@ -50,12 +50,12 @@ const admonition: Handler = (h, node) =>
 
 const captionNumber: Handler = (h, node) => {
   return h(node, 'span', { class: 'caption-number' }, [
-    u('text', `Figure ${node.value}`),
+    u('text', `Figure ${node.value} `),
   ]);
 };
 
 const math: Handler = (h, node) => {
-  const attrs = { id: node.label || undefined, class: 'math block' };
+  const attrs = { id: node.identifier || undefined, class: 'math block' };
   if (node.value.indexOf('\n') !== -1) {
     const math = h(node, 'div', attrs, [u('text', node.value)]);
     return h(node, 'pre', [math]);
@@ -102,7 +102,7 @@ const block: Handler = (h, node) =>
 const comment: Handler = (h, node) => u('comment', node.value);
 
 const heading: Handler = (h, node) =>
-  h(node, `h${node.depth}`, { id: node.label || undefined }, all(h, node));
+  h(node, `h${node.depth}`, { id: node.identifier || undefined }, all(h, node));
 
 const contentReference: Handler = (h, node) => {
   if (node.resolved) {

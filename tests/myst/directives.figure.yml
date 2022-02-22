@@ -56,7 +56,7 @@ cases:
       <figure id="myfigure" class="numbered">
         <img src="https://via.placeholder.com/150" alt="Placeholder">
         <figcaption>
-          <p><span class="caption-number">Figure 1</span>This is the figure caption!</p>
+          <p><span class="caption-number">Figure 1 </span>This is the figure caption!</p>
         </figcaption>
       </figure>
 
@@ -88,7 +88,7 @@ cases:
       <figure id="myfigure" class="numbered">
         <img src="https://via.placeholder.com/150">
         <figcaption>
-          <p><span class="caption-number">Figure 1</span>This is the figure caption!</p>
+          <p><span class="caption-number">Figure 1 </span>This is the figure caption!</p>
         </figcaption>
       </figure>
 
@@ -119,6 +119,63 @@ cases:
       <figure id="myfigure" class="numbered">
         <img src="https://via.placeholder.com/150">
         <figcaption>
-          <p><span class="caption-number">Figure 1</span>This is the figure caption!</p>
+          <p><span class="caption-number">Figure 1 </span>This is the figure caption!</p>
+        </figcaption>
+      </figure>
+
+  - title: Two figures
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: myfigure
+          label: myFigure
+          numbered: true
+          children:
+            - type: image
+              url: https://via.placeholder.com/150
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: This is the figure caption!
+        - type: container
+          kind: figure
+          identifier: myotherfigure
+          label: myOtherFigure
+          numbered: true
+          children:
+            - type: image
+              url: https://via.placeholder.com/151
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: This is another caption!
+    myst: |-
+      ```{figure} https://via.placeholder.com/150
+      :name: myFigure
+
+      This is the figure caption!
+      ```
+      ```{figure} https://via.placeholder.com/151
+      :name: myOtherFigure
+
+      This is another caption!
+      ```
+    html: |-
+      <figure id="myfigure" class="numbered">
+        <img src="https://via.placeholder.com/150">
+        <figcaption>
+          <p><span class="caption-number">Figure 1 </span>This is the figure caption!</p>
+        </figcaption>
+      </figure>
+      <figure id="myotherfigure" class="numbered">
+        <img src="https://via.placeholder.com/151">
+        <figcaption>
+          <p><span class="caption-number">Figure 2 </span>This is another caption!</p>
         </figcaption>
       </figure>
