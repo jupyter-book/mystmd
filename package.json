@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@curvenote/blocks": "^1.2.0",
-    "@curvenote/schema": "0.11.10",
+    "@curvenote/schema": "^0.11.11",
     "@reduxjs/toolkit": "^1.7.2",
     "bottleneck": "^2.19.5",
     "chalk": "^4.1.2",
