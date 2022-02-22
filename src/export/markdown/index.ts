@@ -42,7 +42,7 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
   const localization = localizationOptions(session, imageFilenames, article.references);
   const content = article.children.map((child) => {
     if (!child.version || !child.state) return '';
-    const blockData = { oxa: oxaLink('', child.version.id), pinned: false };
+    const blockData = { oxa: oxaLink('', child.version.id) };
     const md = toMarkdown(child.state.doc, localization);
     return `+++ ${JSON.stringify(blockData)}\n\n${md}`;
   });
