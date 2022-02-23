@@ -202,6 +202,38 @@ const defaultMdast: Record<string, Spec> = {
   figure_caption: {
     type: 'caption',
   },
+  table: {
+    type: 'container',
+    getAttrs(token) {
+      const name = token.meta?.name || undefined;
+      return {
+        kind: 'table',
+        identifier: normalizeLabel(name),
+        label: name,
+        numbered: name ? true : undefined,
+        class: getClassName(token, /numbered/),
+        align: token.meta?.align || undefined,
+      };
+    },
+  },
+  table_caption: {
+    type: 'caption',
+  },
+  thead: {
+    type: '_table',
+  },
+  tbody: {
+    type: '_table',
+  },
+  tr: {
+    type: 'tableRow',
+  },
+  th: {
+    type: 'tableCol',
+  },
+  td: {
+    type: 'tableCol',
+  },
   math_inline: {
     type: 'inlineMath',
     noCloseToken: true,
@@ -447,6 +479,26 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
     pushBlock();
     tree = newTree as Root;
   }
+
+  visit(tree, 'container', (node: GenericNode) => {
+    if (node.kind === 'table') {
+      let children: GenericNode[] = [];
+      visit(node, '_table', (tableNode: GenericNode) => {
+        if (tableNode.children) {
+          children = children.concat(tableNode.children);
+        }
+      });
+      node.children = node.children?.concat([
+        { type: 'table', align: node.align, children },
+      ]);
+      delete node.align;
+      visit(node, 'caption', (captionNode: GenericNode) => {
+        captionNode.children = [{ type: 'paragraph', children: captionNode.children }];
+      });
+    }
+  });
+
+  remove(tree, '_table');
 
   if (opts.hoistSingleImagesOutofParagraphs) hoistSingleImagesOutofParagraphs(tree);
 

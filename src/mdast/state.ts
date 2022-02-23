@@ -86,6 +86,10 @@ export class State {
       text = refValue
         ? refValue.replace(/%s/g, target.number).replace(/\{number\}/g, target.number)
         : `Fig. ${target.number}`;
+    } else if (refKind === ReferenceKind.numref && target.kind === TargetKind.table) {
+      text = refValue
+        ? refValue.replace(/%s/g, target.number).replace(/\{number\}/g, target.number)
+        : `Table ${target.number}`;
     } else {
       return;
     }

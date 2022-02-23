@@ -1,0 +1,77 @@
+cases:
+  - title: Figure reference with default numref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: contentReference
+              kind: numref
+              identifier: my-table
+              label: my-table
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          numbered: true
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Caption text'
+            - type: table
+              align: center
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCol
+                      children:
+                        - type: text
+                          value: Head 1
+                - type: tableRow
+                  children:
+                    - type: tableCol
+                      children:
+                        - type: text
+                          value: Row 1
+    myst: |-
+      see {numref}`my-table`
+
+      ```{list-table}  Caption text
+      :name: my-table
+
+      *   - Head 1
+      *   - Row 1
+    html: |-
+      <p>see <a href="#my-table">Table 1</a></p>
+      <figure id="my-table" class="numbered">
+        <figcaption>
+          <p><span class="caption-number">Table 1 </span>Caption text</p>
+        </figcaption>
+        <table>
+          <thead>
+            <tr>
+              <th align="c">Head 1</th>
+              <th align="e"></th>
+              <th align="n"></th>
+              <th align="t"></th>
+              <th align="e"></th>
+              <th align="r"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="c">Row 1</td>
+              <td align="e"></td>
+              <td align="n"></td>
+              <td align="t"></td>
+              <td align="e"></td>
+              <td align="r"></td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
