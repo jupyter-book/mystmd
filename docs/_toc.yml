@@ -4,10 +4,33 @@ parts:
   - caption: Understanding the MyST Format
     chapters:
       - file: features/commonmark
+        sections:
+          - file: features/headings
+          - file: features/styles
+          - file: features/lists
+          - file: features/code
+          - file: features/quotes
+          - file: features/breaks
+          - file: features/links
+          - file: features/images
+          - file: features/html
       - file: features/roles
+        sections:
+          - file: features/supsubscript
+          - file: features/abbreviations
+          - file: features/mathinline
+          - file: features/references
       - file: features/directives
-      - file: features/references
+        sections:
+          - file: features/admonitions
+          - file: features/mathblock
+          - file: features/figures
+          - file: features/tables
       - file: features/document
+        sections:
+          - file: features/frontmatter
+          - file: features/blocks
+          - file: features/comments
   - caption: Using the mystjs Library
     chapters:
       - file: consuming/basic
