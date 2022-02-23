@@ -61,7 +61,9 @@ export async function gatherAndWriteArticleContent(
     Object.keys(article.references).length > 0 ? 'main.bib' : null,
   );
 
-  const filename = opts.template ? path.join(buildPath, 'content.tex') : opts.filename;
+  const filename = opts.template
+    ? path.join(buildPath, path.basename(opts.filename))
+    : opts.filename;
   session.log.debug(`Writing main body of content to ${filename}`);
   session.log.debug(`Document has ${article.children.length} child blocks`);
   writeBlocksToFile(

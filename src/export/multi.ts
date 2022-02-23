@@ -62,10 +62,8 @@ export async function exportContent(session: ISession, pathToYml: string) {
       switch (job.kind) {
         case ArticleFormatTypes.tex:
           {
-            const filename = path.join(configPath, job.folder, 'main.tex');
             // TODO take other options from Config?
-            const opts: TexExportOptions = { filename };
-            multiArticleToTex(session, project, job, opts);
+            multiArticleToTex(session, project, job, configPath);
           }
           break;
         case ArticleFormatTypes.pdf:

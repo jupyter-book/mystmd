@@ -5,6 +5,7 @@ export interface ExportConfig {
   kind: ExportableFormatTypes;
   project: string;
   folder: string;
+  template: string;
   contents: { name?: string; link?: string; version?: number }[];
   data: {
     title?: string;

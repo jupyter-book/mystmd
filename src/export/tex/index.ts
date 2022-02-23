@@ -61,8 +61,13 @@ export async function multiArticleToTex(
   session: ISession,
   project: Project,
   job: ExportConfig,
-  opts: TexExportOptions,
+  configPath: string,
 ) {
+  const opts: TexExportOptions = {
+    filename: path.join(configPath, job.folder, 'main.tex'),
+    template: job.template,
+  };
+
   throwIfTemplateButNoJtex(opts);
   const { tagged } = await ifTemplateFetchTaggedBlocks(session, opts);
   const templateOptions = ifTemplateLoadOptions(opts);
@@ -96,18 +101,20 @@ export async function multiArticleToTex(
     session.log.debug(`Processing ${name} at version ${version}`);
 
     // walk chapters
-    const ref = path.join('chapters', `${String(articles.length).padStart(3, '0')}-${name}.tex`);
+    const chapter = `${String(articles.length).padStart(3, '0')}-${name}.tex`;
+    const ref = path.join('chapters', chapter);
+    fs.mkdirSync(path.join(buildPath, 'chapters'), { recursive: true });
     const { article, taggedFilenames, model } = await gatherAndWriteArticleContent(
       session,
       { ...id.block, version },
       {
         ...opts,
-        filename: path.join(buildPath, ref),
-        images: path.join('..', 'images'),
+        filename: ref,
+        images: '../images',
       },
       tagged, // tagged from template,
       templateOptions,
-      buildPath,
+      opts.template ? path.join(buildPath, 'chapters') : buildPath,
     );
 
     articles.push({ article, model, ref, taggedFilenames });
@@ -148,10 +155,10 @@ export async function multiArticleToTex(
         oxalink: job.project,
       },
       taggedFilenames,
-      [], // templateOptions,
+      templateOptions,
       {
         path: opts.texIsIntermediate ?? false ? '.' : '..', // jtex path is always relative to the content file
-        filename: opts.filename,
+        filename: path.basename(opts.filename),
         copy_images: true,
         single_file: false,
       },
@@ -168,13 +175,14 @@ export async function multiArticleToTex(
     mainContent += `\\chapter*{${article.model.title}}\n\\input{${article.ref}}\n\n`;
   }
 
-  session.log.debug(`Writing main content to ${opts.filename}`);
-  fs.writeFileSync(opts.filename, mainContent);
+  const mainContentFilename = opts.template ? path.join(buildPath, 'main.tex') : opts.filename;
+  session.log.debug(`Writing main content to ${mainContentFilename}`);
+  fs.writeFileSync(mainContentFilename, mainContent);
 
   session.log.debug('Writing bib file...');
   await writeBibtex(session, references, path.join(buildPath, 'main.bib'));
 
-  await ifTemplateRunJtex(opts.filename, session.log, opts);
+  await ifTemplateRunJtex(mainContentFilename, session.log, opts);
 
   return articles;
 }
