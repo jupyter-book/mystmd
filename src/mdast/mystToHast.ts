@@ -4,7 +4,7 @@ import { u } from 'unist-builder';
 import classNames from 'classnames';
 import { AdmonitionKind } from './types';
 import { Plugin } from 'unified';
-import type { ElementContent } from 'hast';
+import type { ElementContent, Properties } from 'hast';
 
 const abbreviation: Handler = (h, node) =>
   h(node, 'abbr', { title: node.title }, all(h, node));
@@ -125,6 +125,18 @@ const table: Handler = (h, node) => {
   return defaultHandlers.table(h, node);
 };
 
+const code: Handler = (h, node) => {
+  const value = node.value ? node.value + '\n' : '';
+  const props: Properties = {};
+  if (node.identifier) {
+    props.id = node.identifier;
+  }
+  props.className =
+    classNames({ ['language-' + node.lang]: node.lang }, node.class) || undefined;
+  const code = h(node, 'code', props, [u('text', value)]);
+  return h(node.position, 'pre', [code]);
+};
+
 export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Root) => {
   return toHast(tree, {
     ...opts,
@@ -149,6 +161,7 @@ export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Roo
       comment,
       heading,
       contentReference,
+      code,
       table,
       ...opts?.handlers,
     },
