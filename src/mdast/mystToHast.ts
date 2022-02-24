@@ -117,7 +117,7 @@ const contentReference: Handler = (h, node) => {
 };
 
 // TODO: The defaultHandler treats the first row (and only the first row)
-//       header; the mdast `tableCol.header` property is not respected.
+//       header; the mdast `tableCell.header` property is not respected.
 //       For that, we need to entirely rewrite this handler.
 const table: Handler = (h, node) => {
   node.data = { hProperties: { align: node.align } };

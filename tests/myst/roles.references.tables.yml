@@ -27,13 +27,13 @@ cases:
               children:
                 - type: tableRow
                   children:
-                    - type: tableCol
+                    - type: tableCell
                       children:
                         - type: text
                           value: Head 1
                 - type: tableRow
                   children:
-                    - type: tableCol
+                    - type: tableCell
                       children:
                         - type: text
                           value: Row 1

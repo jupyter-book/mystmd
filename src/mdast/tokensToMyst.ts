@@ -298,13 +298,13 @@ const defaultMdast: Record<string, Spec> = {
     type: 'tableRow',
   },
   th: {
-    type: 'tableCol',
+    type: 'tableCell',
     getAttrs(t) {
       return { header: true, align: getColAlign(t) || undefined };
     },
   },
   td: {
-    type: 'tableCol',
+    type: 'tableCell',
     getAttrs(t) {
       return { align: getColAlign(t) || undefined };
     },

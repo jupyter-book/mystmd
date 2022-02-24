@@ -7,13 +7,13 @@ cases:
           children:
             - type: tableRow
               children:
-                - type: tableCol
+                - type: tableCell
                   header: true
                   align: left
                   children:
                     - type: text
                       value: header 1
-                - type: tableCol
+                - type: tableCell
                   header: true
                   align: right
                   children:
@@ -21,12 +21,12 @@ cases:
                       value: header 2
             - type: tableRow
               children:
-                - type: tableCol
+                - type: tableCell
                   align: left
                   children:
                     - type: text
                       value: '3'
-                - type: tableCol
+                - type: tableCell
                   align: right
                   children:
                     - type: text
@@ -78,46 +78,46 @@ cases:
               children:
                 - type: tableRow
                   children:
-                    - type: tableCol
+                    - type: tableCell
                       header: true
                       children:
                         - type: text
                           value: Head 1, Column 1
-                    - type: tableCol
+                    - type: tableCell
                       header: true
                       children:
                         - type: text
                           value: Head 1, Column 2
-                    - type: tableCol
+                    - type: tableCell
                       header: true
                       children:
                         - type: text
                           value: Head 1, Column 3
                 - type: tableRow
                   children:
-                    - type: tableCol
+                    - type: tableCell
                       children:
                         - type: text
                           value: Row 1, Column 1
-                    - type: tableCol
+                    - type: tableCell
                       children:
                         - type: text
                           value: Row 1, Column 2
-                    - type: tableCol
+                    - type: tableCell
                       children:
                         - type: text
                           value: Row 1, Column 3
                 - type: tableRow
                   children:
-                    - type: tableCol
+                    - type: tableCell
                       children:
                         - type: text
                           value: Row 2, Column 1
-                    - type: tableCol
+                    - type: tableCell
                       children:
                         - type: text
                           value: Row 2, Column 2
-                    - type: tableCol
+                    - type: tableCell
                       children:
                         - type: text
                           value: 'Row 2, '
