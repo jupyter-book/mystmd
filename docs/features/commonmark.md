@@ -33,7 +33,7 @@ Heading 2
 ```
 
 ```{seealso}
-You can reference headings by preceding your header with an `(id)=`. See more [here](targets)!
+Reference headings by preceding headers with a `(label)=`. See [](./references.md)!
 ```
 
 ### Lists
@@ -85,7 +85,7 @@ Some JSON:
 ```
 
 ```{seealso}
-You can also create codeblocks with additional highlighting using the `code-block` directive. See more here!
+Create code-blocks with additional highlighting using the `code-block` directive. See more here!
 ```
 
 % TODO: provide a link!

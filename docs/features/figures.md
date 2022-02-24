@@ -18,5 +18,6 @@
 :align: center
 
 Relaxing at the beach 🏝 🌊 😎
+```
 </myst-demo>
 ````
