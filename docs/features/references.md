@@ -69,7 +69,13 @@ For example, `[](./citations.md)` creates [](./citations.md).
 
 ### Using the `{ref}` role
 
-The `{ref}` role can be used to bring the title or caption directly in line, the role can take a single argument which is the label. You can also choose the reference text directly (not taking from the title or caption) by using:
+The `{ref}` role can be used to bring the title or caption directly in line, the role can take a single argument which is the label:
+
+```
+{ref}`reference-target`
+```
+
+You can also choose the reference text directly (not taking from the title or caption) by using:
 
 ```
 {ref}`your text here <reference-target>`
@@ -89,7 +95,7 @@ The `{numref}` role is exactly the same as the above `{ref}` role, but also allo
 
 ### Using the `{eq}` role
 
-The `` {eq}`my-label` `` syntax creates a numbered link to the equation, which is equivalent to `[](my-equation)` as there is no text content to fill in a title or caption.
+The `` {eq}`my-equation` `` syntax creates a numbered link to the equation, which is equivalent to `[](my-equation)` as there is no text content to fill in a title or caption.
 
 % TODO: I think we should improve the syntax of links and simplify the explination
 % It is annoying that numref and ref don't work for equations.

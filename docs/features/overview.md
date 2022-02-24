@@ -4,7 +4,7 @@ MyST (Markedly Structured Text) is designed to create publication-quality, compu
 
 > MyST is designed to harness the extensibility and community of RST and bring these super-powers into Markdown.
 
-MyST is a superset of CommonMark (the standard form of Markdown) and allows you to directly create “directives” and “roles” as extension points in the language. `directives` are block-level extension points, like [callout panels](./admonitions.md), tabs, [figures](./figures.md) or embedded charts; and roles are inline extension points, for components like [references](./references.md), [citations](./citations.md), or [inline math](./math.md).
+MyST is a superset of [CommonMark](./commonmark.md) (the standard form of Markdown) and allows you to directly create “directives” and “roles” as extension points in the language. `directives` are block-level extension points, like [callout panels](./admonitions.md), tabs, [figures](./figures.md) or embedded charts; and roles are inline extension points, for components like [references](./references.md), [citations](./citations.md), or [inline math](./math.md).
 
 ## Directives & Roles
 
@@ -87,7 +87,7 @@ Some content {rolename}`and here is my role's content!`
 
 Of course, roles will only work if `rolename` is a valid role name! The `abbr` role creates inline abbreviations, for example, `` {abbr}`MyST (Markedly Structured Text)` `` will become {abbr}`MyST (Markedly Structured Text)`! When you hover over[^1] the abbreviation you will see the `title` appear!
 
-[^1]: Arreviations are also great structured data for screen-readers!
+[^1]: Abbreviations are also great structured data for screen-readers!
 
 Roles are defined inline, with an identifier and input. There are a number of roles included in MyST, including abbreviations, subscript, and superscript, as well as inline [](./math.md). Unknown roles will still be parsed as well:
 

@@ -48,12 +48,12 @@ Here is an admonition!
 </myst-demo>
 ````
 
-Note that all other admontions have no arguments, and as in other directives with no arguments content added in this spot will be added to the content body.
+Note that all other admontions have no arguments, and as in other directives with no arguments content added in this spot will be prepended to the content body.
 
 % TODO: This should be improved in myst, even though it is a constraint of sphinx
 
 `````{danger}
-All named admonitions (e.g. `{note}` or `{tip}`), have **no arguments**. Content on the first line will be appended to the admonition body.
+All named admonitions (e.g. `{note}` or `{tip}`), have **no arguments**. Content on the first line will be prepended to the admonition body.
 
 Best practice is to put your body content on a new line.
 ````{raw} html
