@@ -1,8 +1,8 @@
-# Blocks
+# Blocks & Comments
 
 ## Blocks
 
-`Blocks` provide a structural divison of the MyST document. These correspond, for example, to separate cells in a Jupyter Notebook:
+`Blocks` provide a structural divison of the MyST document using `+++`. These correspond, for example, to separate cells in a Jupyter Notebook. There can be optional metadata associated with the block.
 
 ```{raw} html
 <myst-demo>
