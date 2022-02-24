@@ -75,6 +75,10 @@ In a browser:
   - links
   - Including numbering (single document)
 - Citations (parse only)
+- Code Directives
+  - Code
+  - Code blocks
+  - Code cell
 - Blocks
 - Comments
 - Targets
