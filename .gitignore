@@ -6,4 +6,4 @@ coverage/
 yalc.lock
 
 # The following is built for the docs
-docs/_static/myst.min.js
+docs/_static/index.umd.min.js

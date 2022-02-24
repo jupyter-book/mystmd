@@ -1,36 +1,24 @@
 format: jb-book
 root: index
 parts:
-  - caption: Understanding the MyST Format
+  - caption: MyST Spec
     chapters:
+      - file: features/overview
       - file: features/commonmark
+      - file: features/admonitions
+      - file: features/figures
+      - file: features/tables
+      - file: features/math
+      - file: features/references
+      - file: features/citations
+      - file: features/blocks
+      - file: features/extensions
         sections:
-          - file: features/headings
-          - file: features/styles
-          - file: features/lists
-          - file: features/code
-          - file: features/quotes
-          - file: features/breaks
-          - file: features/links
-          - file: features/images
-          - file: features/html
-      - file: features/roles
-        sections:
-          - file: features/supsubscript
-          - file: features/abbreviations
-          - file: features/mathinline
-          - file: features/references
-      - file: features/directives
-        sections:
-          - file: features/admonitions
-          - file: features/mathblock
-          - file: features/figures
-          - file: features/tables
-      - file: features/document
-        sections:
+          - file: features/basic
           - file: features/frontmatter
-          - file: features/blocks
-          - file: features/comments
+          - file: features/footnotes
+          - file: features/definitions
+          - file: features/tasks
   - caption: Using the mystjs Library
     chapters:
       - file: consuming/basic

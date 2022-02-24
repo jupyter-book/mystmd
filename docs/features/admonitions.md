@@ -1,17 +1,3 @@
-# Directives
-
-Directives and roles define custom MyST behavior. Directives include an identifier, arguments, keyword arguments, and a text block. Examples include [](admonitions), [](figures), [](math) blocks. Unknown directives will be still be parsed as well:
-
-````{raw} html
-<myst-demo>
-```{abc} arg0 arg1
-:option: true
-
-The "abc" directive is undefined.
-```
-</myst-demo>
-````
-
 ## Admonitions
 
 Let’s say you wish to highlight a particular block of text that exists slightly apart from the narrative of your page.
@@ -64,6 +50,8 @@ Here is an admonition!
 
 Note that all other admontions have no arguments, and as in other directives with no arguments content added in this spot will be added to the content body.
 
+% TODO: This should be improved in myst, even though it is a constraint of sphinx
+
 `````{danger}
 All named admonitions (e.g. `{note}` or `{tip}`), have **no arguments**. Content on the first line will be appended to the admonition body.
 
@@ -95,63 +83,3 @@ My custom admonition that has a `tip` class applied!
 ```
 </myst-demo>
 ````
-
-## Figures and images
-
-````{raw} html
-<myst-demo>
-```{image} fun-fish.png
-:alt: fishy
-:class: bg-primary mb-1
-:width: 200px
-:align: center
-```
-</myst-demo>
-````
-
-````{raw} html
-<myst-demo>
-```{figure} https://via.placeholder.com/150
-:name: myFigure
-:alt: Placeholder
-
-This is the figure caption!
-</myst-demo>
-````
-
-## Math
-
-````{raw} html
-<myst-demo>
-```{math}
-:label: matrix
-Ax = b
-```
-</myst-demo>
-````
-
-### Dollar math
-
-```{raw} html
-<myst-demo>
-$$e=mc^2$$
-</myst-demo>
-```
-
-With a label:
-
-```{raw} html
-<myst-demo>
-$$Ax=b$$ (matrix)
-</myst-demo>
-```
-
-### AMS Math
-
-```{raw} html
-<myst-demo>
-\begin{equation}
-a = 1
-\end{equation}
-</myst-demo>
-```

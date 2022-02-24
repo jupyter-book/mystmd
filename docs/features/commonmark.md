@@ -1,6 +1,6 @@
 # CommonMark
 
-MyST is a superset of the CommonMark Spec. This page provides an overview of the types of block and inline markup features supported by CommonMark and MyST. For full details on all the nuance of these features, please look at the [CommonMark Spec documentation](https://spec.commonmark.org/).
+This page provides an overview of the types of block and inline markup features supported by CommonMark and MyST, with pointers to additional content of interest. For full details on all the nuance of these features, please look at the [CommonMark Spec documentation](https://spec.commonmark.org/).
 
 MyST (Markedly Structured Text) was designed to make it easier to create publishable computational documents written with Markdown notation. It is a superset of [CommonMark Markdown](https://commonmark.org/) and draws heavy inspiration from [RMarkdown](https://rmarkdown.rstudio.com/) syntax. In addition to CommonMark, MyST also implements and extends [mdast](https://github.com/syntax-tree/mdast), which is a standard abstract syntax tree for Markdown. `mdast` is part of the [unifiedjs](https://unifiedjs.com) community and has [many utilities](https://unifiedjs.com/explore/keyword/mdast/) for exporting and transforming your content.
 
@@ -19,8 +19,8 @@ Try changing the number of `#`s to change the `depth`.
 </myst-demo>
 ```
 
-An alternative syntax is also supported for level 1 and 2 headers,
-by underlining using multiple `===` or `---`. For example
+An alternative syntax (called setext) is also supported for level 1 and 2 headers,
+by underlining using multiple `===` or `---`. For example:
 
 ```{raw} html
 <myst-demo>
@@ -86,8 +86,10 @@ Some JSON:
 
 ```{seealso}
 You can also create codeblocks with additional highlighting using the `code-block` directive. See more here!
-% TODO: provide a link!
 ```
+
+% TODO: provide a link!
+% TODO: myst: implement code-block
 
 ### Quotes
 
@@ -113,14 +115,26 @@ Section 2
 </myst-demo>
 ```
 
+```{seealso}
+Thematic breaks should not be confused with MyST [block syntax](./document.md),
+which is used to structurally seperate content.
+```
+
 ### Link Definitions
 
 Links may be defined outside of text with a reference target (no spaces) and an optional title.
 
 ```{raw} html
 <myst-demo>
+[This is a link defined elsewhere!][key]
+
 [key]: https://www.google.com 'a title'
 </myst-demo>
+```
+
+```{seealso}
+These can be used in [](inline-links) and are similar to [](./references.md) in MyST.
+This syntax is also similar to [](./footnotes.md).
 ```
 
 ### Paragraph
@@ -138,6 +152,8 @@ any _text_
 Any valid HTML may also be included in a MyST document and rendered to HTML. However, you must set the option `allowDangerousHtml: true` in the MyST parser.
 
 ## Inline Markup
+
+(inline-links)=
 
 ### Inline links
 
@@ -157,14 +173,22 @@ Link with alternative text and optional title:
 </myst-demo>
 ```
 
+```{seealso}
+[](./references.md) provides other ways to reference inline content.
+```
+
 ### Inline images
 
 Link to an image can be done similar to other inline links, or you may use HTML syntax to include image size, etc.
 
 ```{raw} html
 <myst-demo>
-![alt](src "title")
+![alt](https://source.unsplash.com/random/500x200/?fruit "title")
 </myst-demo>
+```
+
+```{seealso}
+[](./figures.md) provides other ways to size, label, and caption images.
 ```
 
 ### Text formatting
@@ -176,4 +200,8 @@ Standard inline formatting including bold, italic, code, as well as escaped symb
 **strong**, _emphasis_, `literal text`, \*escaped symbols\*, a hard\
 break
 </myst-demo>
+```
+
+```{seealso}
+[](./basic.md) provides other roles for subscript, superscript, abbeviations, and other text formating.
 ```
