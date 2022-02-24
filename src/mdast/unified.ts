@@ -1,13 +1,7 @@
 import { Root } from 'mdast';
 import rehypeFormat from 'rehype-format';
 import type { Plugin } from 'unified';
-import { MyST, Options } from '../myst';
-
-export const mystParser: Plugin<[Options?], string, Root> = function mystParser() {
-  this.Parser = (content: string, opts?: Options) => {
-    return new MyST(opts).parse(content);
-  };
-};
+import { Options } from '../types';
 
 export const formatHtml: Plugin<[Options['formatHtml']?], string, Root> =
   function formatHtml(opt) {

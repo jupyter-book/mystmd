@@ -1,7 +1,13 @@
 import type MarkdownIt from 'markdown-it';
 import type StateCore from 'markdown-it/lib/rules_core/state_core';
 
-export { plugin as math, MathExtensionOptions } from './math';
+export { default as frontMatterPlugin } from 'markdown-it-front-matter';
+export { default as footnotePlugin } from 'markdown-it-footnote';
+export { default as tasklistPlugin } from 'markdown-it-task-lists';
+export { default as deflistPlugin } from 'markdown-it-deflist';
+export { docutilsPlugin } from 'markdown-it-docutils';
+export { mystBlockPlugin } from 'markdown-it-myst-extras';
+export { plugin as mathPlugin, MathExtensionOptions } from './math';
 
 /** Markdown-it plugin to convert the front-matter token to a renderable token, for previews */
 export function convertFrontMatter(md: MarkdownIt) {
