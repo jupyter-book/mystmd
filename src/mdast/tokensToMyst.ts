@@ -48,6 +48,19 @@ function normalizeLabel(label: string | undefined) {
   return label?.replace(/[\s]+/g, ' ').trim().toLowerCase();
 }
 
+function getColAlign(t: Token) {
+  if (t.attrs?.length) {
+    for (const attrPair of t.attrs) {
+      if (attrPair[0] === 'style') {
+        const match = attrPair[1].match(/text-align:(left|right|center)/);
+        if (match) {
+          return match[1];
+        }
+      }
+    }
+  }
+}
+
 const defaultMdast: Record<string, Spec> = {
   heading: {
     type: 'heading',
@@ -231,12 +244,15 @@ const defaultMdast: Record<string, Spec> = {
   },
   th: {
     type: 'tableCol',
-    getAttrs() {
-      return { header: true };
+    getAttrs(t) {
+      return { header: true, align: getColAlign(t) || undefined };
     },
   },
   td: {
     type: 'tableCol',
+    getAttrs(t) {
+      return { align: getColAlign(t) || undefined };
+    },
   },
   math_inline: {
     type: 'inlineMath',

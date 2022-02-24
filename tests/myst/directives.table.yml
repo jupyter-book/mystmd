@@ -9,28 +9,32 @@ cases:
               children:
                 - type: tableCol
                   header: true
+                  align: left
                   children:
                     - type: text
                       value: header 1
                 - type: tableCol
                   header: true
+                  align: right
                   children:
                     - type: text
                       value: header 2
             - type: tableRow
               children:
                 - type: tableCol
+                  align: left
                   children:
                     - type: text
                       value: '3'
                 - type: tableCol
+                  align: right
                   children:
                     - type: text
                       value: '4'
 
     myst: |-
       | header 1 | header 2 |
-      |---|---|
+      |:---|---:|
       | 3 | 4 |
     html: |-
       <table>
