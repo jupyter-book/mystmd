@@ -45,14 +45,58 @@ In a browser:
     <div id="output"></div>
     <script>
       function init() {
-        const myst = MyST()
-        const html = myst.render('# Hello to the world!')
-        document.getElementById('output').innerHTML = html
+        const myst = MyST();
+        const html = myst.render('# Hello to the world!');
+        document.getElementById('output').innerHTML = html;
       }
     </script>
   </body>
 </html>
 ```
+
+## `mystjs` Features
+
+- CommonMark
+- Admonitions
+- Figures
+- Images
+- Math
+  - role
+  - directive (equations)
+  - dollar
+  - amsmath
+- Tables
+  - GFM
+  - List Tables
+- References
+  - ref
+  - numref
+  - eq
+  - links
+  - Including numbering (single document)
+- Citations (parse only)
+- Blocks
+- Comments
+- Targets
+- HTML: sub, sup, abbr
+- Definition List
+- Footnotes
+
+Not yet complete:
+
+- div
+- proof
+- margin
+- sidebar
+- colon fence
+- Bibliography
+- Epigraph
+- Glosary
+- Terms
+- Tabs
+- Panels
+- CSV Tables
+- Multi-document
 
 ## Developer Install
 
@@ -71,7 +115,7 @@ The scripts for building, testing, and serving the project are in the [package.j
 
 ### `npm run build`
 
-Builds the library, including compiling the typescript and bundling/minification to create `myst.min.js`.
+Builds the library, including compiling the typescript and bundling/minification to create `index.umd.min.js`.
 This outputs to the `dist` folder, and also includes all type definitions (`*.d.ts`).
 
 ### `npm run test`
