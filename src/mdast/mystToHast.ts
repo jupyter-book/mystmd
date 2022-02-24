@@ -1,5 +1,5 @@
 import { Root } from 'mdast';
-import { Handler, toHast, all, Options } from 'mdast-util-to-hast';
+import { defaultHandlers, Handler, toHast, all, Options } from 'mdast-util-to-hast';
 import { u } from 'unist-builder';
 import classNames from 'classnames';
 import { AdmonitionKind } from './types';
@@ -49,8 +49,9 @@ const admonition: Handler = (h, node) =>
   );
 
 const captionNumber: Handler = (h, node) => {
+  const captionKind = node.kind?.charAt(0).toUpperCase() + node.kind?.slice(1);
   return h(node, 'span', { class: 'caption-number' }, [
-    u('text', `Figure ${node.value} `),
+    u('text', `${captionKind} ${node.value} `),
   ]);
 };
 
@@ -115,6 +116,15 @@ const contentReference: Handler = (h, node) => {
   }
 };
 
+// TODO: The defaultHandler treats the first row (and only the first row)
+//       header; the mdast `tableCol.header` property is not respected.
+//       For that, we need to entirely rewrite this handler.
+const table: Handler = (h, node) => {
+  node.data = { hProperties: { align: node.align } };
+  delete node.align;
+  return defaultHandlers.table(h, node);
+};
+
 export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Root) => {
   return toHast(tree, {
     ...opts,
@@ -139,6 +149,7 @@ export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Roo
       comment,
       heading,
       contentReference,
+      table,
       ...opts?.handlers,
     },
   });
