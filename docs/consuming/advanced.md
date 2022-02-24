@@ -20,30 +20,30 @@ src/
 └── utils.ts
 ```
 
-## Using `markdown-it-myst`
+## Using `mystjs`
 
 There are two ways to use the library, you can use the `MyST` wrapper,
 which creates a `MarkdownIt` tokenizer for you:
 
 ```javascript
-import { MyST } from 'markdown-it-myst'
-const myst = MyST() // Can override options here!
-const html = myst.render(myString)
+import { MyST } from 'mystjs';
+const myst = MyST(); // Can override options here!
+const html = myst.render(myString);
 ```
 
 Alternatively, you can use this with other packages in a more granular way:
 
 ```javascript
-import { plugins, roles, directives } from 'markdown-it-myst'
+import { plugins, roles, directives } from 'mystjs';
 
 // Somewhere create a markdownit tokenizer:
-const tokenizer = MarkdownIt('commonmark')
+const tokenizer = MarkdownIt('commonmark');
 
 // Later:
-tokenizer.use(plugins.math)
-tokenizer.use(plugins.blocks)
-tokenizer.use(plugins.directives(directives))
-tokenizer.use(plugins.roles(roles))
+tokenizer.use(plugins.math);
+tokenizer.use(plugins.blocks);
+tokenizer.use(plugins.directives(directives));
+tokenizer.use(plugins.roles(roles));
 ```
 
 ## Developer Install

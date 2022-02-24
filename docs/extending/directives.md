@@ -12,35 +12,35 @@ A cool caption! 😎
 
 ```typescript
 type Args = {
-  src: string
-}
+  src: string;
+};
 
 type Opts = {
-  name: string
-}
+  name: string;
+};
 
 const figureDirective: Directive<Args, Opts> = {
   token: 'figure',
   getArguments: (info) => {
-    const args = { src: info.trim() }
-    return { args, content: '' }
+    const args = { src: info.trim() };
+    return { args, content: '' };
   },
   getOptions: (data) => {
-    const { name, ...rest } = data
-    unusedOptionsWarning('figure', rest)
-    return { name }
+    const { name, ...rest } = data;
+    unusedOptionsWarning('figure', rest);
+    return { name };
   },
   renderer: (args, opts, target) => {
-    const { src } = args
-    const { id, number } = target ?? {}
+    const { src } = args;
+    const { id, number } = target ?? {};
     return [
       'figure',
       { id, class: 'numbered' },
       ['img', { src }],
       ['figcaption', { number }, 0],
-    ]
+    ];
   },
-}
+};
 ```
 
 The directive is typed with a `Directive<Args, Opts>`, which is standard Typescript, and has four important properties/functions.
@@ -66,7 +66,7 @@ The directive is responsible for parsing it's arguments. These are generally rel
 In some cases, for example, in admonitions the rest of the info line should actually be treated as content in the directive itself. Because of this, you must pass back a dictionary containing two items from this call:
 
 ```javascript
-return { args, content: '' }
+return { args, content: '' };
 ```
 
 Usually the content is empty if the `info` is used in arguments!
@@ -130,7 +130,7 @@ For example, to create the following html:
 The template is used:
 
 ```javascript
-;['figure', { id, class: 'numbered' }, ['img', { src }], ['figcaption', { number }, 0]]
+['figure', { id, class: 'numbered' }, ['img', { src }], ['figcaption', { number }, 0]];
 ```
 
 The number zero (pronounced "hole") is used to **insert** the child contents (usually parsed markdown) into the template. There can be at most one hole per template.

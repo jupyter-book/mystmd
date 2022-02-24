@@ -51,8 +51,10 @@ There are two ways to write directive options
     ````
   - ````
     ```{directivename}
-    :key1: metadata1
-    :key2: metadata2
+    ---
+    key1: metadata1
+    key2: metadata2
+    ---
 
     My directive content.
     ```
