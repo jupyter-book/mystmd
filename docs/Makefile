@@ -5,7 +5,7 @@ build:
 	jupyter-book build .
 	rm -r _build/html/demo | true;
 	cp -r ../dist _build/html/demo
-	cp ../dist/index.umd.min.js _static
+	cp ../dist/index.umd.min.js _static/myst.min.js
 	sed -i '' "s/NAVIGATION_WITH_KEYS: true/NAVIGATION_WITH_KEYS: false/g" _build/html/_static/documentation_options.js
 
 build-watch:
