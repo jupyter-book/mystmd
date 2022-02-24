@@ -1,4 +1,4 @@
-## Admonitions
+# Admonitions
 
 Let’s say you wish to highlight a particular block of text that exists slightly apart from the narrative of your page.
 You can use the `{note}` directive for this. For example, try changing the following text:
@@ -11,7 +11,7 @@ Here is a note!
 </myst-demo>
 ````
 
-### Available admonitions
+## Available admonitions
 
 There is one general `{admonition}` directive available, and a number of pre-styled admonitions:
 
@@ -36,7 +36,7 @@ Try changing `tip` to `warning`!
 </myst-demo>
 ````
 
-### Admonition Arguments
+## Admonition Arguments
 
 The base `{admonition}` has a single argument, which is the **title**, you can use markdown in here!
 
@@ -65,7 +65,7 @@ so content will be appended to the body.
 ````
 `````
 
-### Options
+## Options
 
 `:class:`
 : CSS classes to add to your admonition, in addition to the default `admonition` class. The custom CSS class will be first.

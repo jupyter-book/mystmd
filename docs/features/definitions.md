@@ -1,16 +1,6 @@
 (content/definition-lists)=
 
-## Definition lists
-
-Definition lists are enabled by defining the following setting in your `_config.yml`:
-
-```yaml
-parse:
-  myst_enable_extensions:
-    # don't forget to list any other extensions you want enabled,
-    # including those that are enabled by default!
-    - deflist
-```
+# Definition lists
 
 Definition lists utilise the [markdown-it-py deflist plugin](https://markdown-it-py.readthedocs.io/en/latest/plugins.html), which itself is based on the [Pandoc definition list specification](http://johnmacfarlane.net/pandoc/README.html#definition-lists).
 
@@ -57,3 +47,15 @@ Term 3
 ```
 
 % TODO: Images should parse!
+
+````{tip}
+In JupyterBook, definition lists are enabled by defining the following setting in your `_config.yml`:
+
+```yaml
+parse:
+  myst_enable_extensions:
+    # don't forget to list any other extensions you want enabled,
+    # including those that are enabled by default!
+    - deflist
+```
+````
