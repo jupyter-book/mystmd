@@ -82,7 +82,7 @@ cases:
       <figure id="my-figure" class="numbered">
         <img src="fig.jpg">
         <figcaption>
-          <p><span class="caption-number">Figure 1 </span>Cool caption!</p>
+          <p><span class="caption-number">Figure 1</span>Cool caption!</p>
         </figcaption>
       </figure>
   - title: Figure reference with custom numref
@@ -125,7 +125,7 @@ cases:
       <figure id="my-figure" class="numbered">
         <img src="fig.jpg">
         <figcaption>
-          <p><span class="caption-number">Figure 1 </span>Cool caption!</p>
+          <p><span class="caption-number">Figure 1</span>Cool caption!</p>
         </figcaption>
       </figure>
   - title: Figure reference with default ref
@@ -173,7 +173,7 @@ cases:
       <figure id="my-figure" class="numbered">
         <img src="fig.jpg">
         <figcaption>
-          <p><span class="caption-number">Figure 1 </span>Cool <em>caption</em>!</p>
+          <p><span class="caption-number">Figure 1</span>Cool <em>caption</em>!</p>
         </figcaption>
       </figure>
   - title: Figure reference with default ref
@@ -222,6 +222,6 @@ cases:
       <figure id="my-figure" class="numbered">
         <img src="fig.jpg">
         <figcaption>
-          <p><span class="caption-number">Figure 1 </span>Cool <em>caption</em>!</p>
+          <p><span class="caption-number">Figure 1</span>Cool <em>caption</em>!</p>
         </figcaption>
       </figure>

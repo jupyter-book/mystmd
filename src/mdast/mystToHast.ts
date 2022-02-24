@@ -51,7 +51,7 @@ const admonition: Handler = (h, node) =>
 const captionNumber: Handler = (h, node) => {
   const captionKind = node.kind?.charAt(0).toUpperCase() + node.kind?.slice(1);
   return h(node, 'span', { class: 'caption-number' }, [
-    u('text', `${captionKind} ${node.value} `),
+    u('text', `${captionKind} ${node.value}`),
   ]);
 };
 

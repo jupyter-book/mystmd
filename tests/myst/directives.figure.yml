@@ -56,7 +56,7 @@ cases:
       <figure id="myfigure" class="numbered">
         <img src="https://via.placeholder.com/150" alt="Placeholder">
         <figcaption>
-          <p><span class="caption-number">Figure 1 </span>This is the figure caption!</p>
+          <p><span class="caption-number">Figure 1</span>This is the figure caption!</p>
         </figcaption>
       </figure>
 
@@ -88,7 +88,7 @@ cases:
       <figure id="myfigure" class="numbered">
         <img src="https://via.placeholder.com/150">
         <figcaption>
-          <p><span class="caption-number">Figure 1 </span>This is the figure caption!</p>
+          <p><span class="caption-number">Figure 1</span>This is the figure caption!</p>
         </figcaption>
       </figure>
 
@@ -119,7 +119,7 @@ cases:
       <figure id="myfigure" class="numbered">
         <img src="https://via.placeholder.com/150">
         <figcaption>
-          <p><span class="caption-number">Figure 1 </span>This is the figure caption!</p>
+          <p><span class="caption-number">Figure 1</span>This is the figure caption!</p>
         </figcaption>
       </figure>
 
@@ -170,12 +170,12 @@ cases:
       <figure id="myfigure" class="numbered">
         <img src="https://via.placeholder.com/150">
         <figcaption>
-          <p><span class="caption-number">Figure 1 </span>This is the figure caption!</p>
+          <p><span class="caption-number">Figure 1</span>This is the figure caption!</p>
         </figcaption>
       </figure>
       <figure id="myotherfigure" class="numbered">
         <img src="https://via.placeholder.com/151">
         <figcaption>
-          <p><span class="caption-number">Figure 2 </span>This is another caption!</p>
+          <p><span class="caption-number">Figure 2</span>This is another caption!</p>
         </figcaption>
       </figure>

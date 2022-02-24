@@ -142,7 +142,7 @@ cases:
     html: |-
       <figure id="my-table" class="numbered myclass">
         <figcaption>
-          <p><span class="caption-number">Table 1 </span>Caption <em>text</em></p>
+          <p><span class="caption-number">Table 1</span>Caption <em>text</em></p>
         </figcaption>
         <table align="center">
           <thead>
