@@ -17,14 +17,33 @@ export type Options = {
   nestBlocks?: boolean;
 };
 
-function getClassName(token: Token, exclude?: RegExp): string | undefined {
-  const className: string = token.meta?.class?.join(' ') || token.attrGet('class');
+const NUMBERED_CLASS = /^numbered$/;
+const ALIGN_CLASS = /(?:(?:align-)|^)(left|right|center)/;
+
+function getClassName(token: Token, exclude?: RegExp[]): string | undefined {
+  const allClasses = new Set([
+    // Grab the trimmed classes from the token
+    ...(token.attrGet('class') ?? '')
+      .split(' ')
+      .map((c) => c.trim())
+      .filter((c) => c),
+    // Add any from the meta information (these are often repeated)
+    ...(token.meta?.class ?? []),
+  ]);
+  const className: string = [...allClasses].join(' ');
   if (!className) return undefined;
   return (
     className
       .split(' ')
       .map((c) => c.trim())
-      .filter((c) => c && !(exclude && c.match(exclude)))
+      .filter((c) => {
+        if (!c) return false;
+        if (!exclude) return true;
+        return !exclude.reduce(
+          (doExclude, test) => doExclude || !!c.match(test),
+          false,
+        );
+      })
       .join(' ') || undefined
   );
 }
@@ -137,13 +156,13 @@ const defaultMdast: Record<string, Spec> = {
     getAttrs(token) {
       const alt =
         token.attrGet('alt') || token.children?.reduce((i, t) => i + t?.content, '');
-      const alignMatch = hasClassName(token, /align-(left|right|center)/);
+      const alignMatch = hasClassName(token, ALIGN_CLASS);
       const align = alignMatch ? alignMatch[1] : undefined;
       return {
         url: token.attrGet('src'),
         alt: alt || undefined,
         title: token.attrGet('title') || undefined,
-        class: getClassName(token, /align-(?:left|right|center)/),
+        class: getClassName(token, [ALIGN_CLASS]),
         width: token.attrGet('width') || undefined,
         align,
       };
@@ -180,7 +199,7 @@ const defaultMdast: Record<string, Spec> = {
       const kind = token.meta?.kind || undefined;
       return {
         kind,
-        class: getClassName(token, new RegExp(`admonition|${kind}`)),
+        class: getClassName(token, [new RegExp(`admonition|${kind}`)]),
       };
     },
   },
@@ -196,7 +215,7 @@ const defaultMdast: Record<string, Spec> = {
         identifier: normalizeLabel(name),
         label: name,
         numbered: name ? true : undefined,
-        class: getClassName(token, /numbered/),
+        class: getClassName(token, [NUMBERED_CLASS]),
       };
     },
   },
@@ -212,7 +231,7 @@ const defaultMdast: Record<string, Spec> = {
         identifier: normalizeLabel(name),
         label: name,
         numbered: name ? true : undefined,
-        class: getClassName(token, /numbered/),
+        class: getClassName(token, [NUMBERED_CLASS, ALIGN_CLASS]),
         align: token.meta?.align || undefined,
       };
     },
