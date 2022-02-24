@@ -3,53 +3,51 @@ cases:
     mdast:
       type: root
       children:
-        - type: container
-          kind: table
+        - type: table
           children:
-            - type: table
+            - type: tableRow
               children:
-                - type: tableRow
+                - type: tableCol
+                  header: true
                   children:
-                    - type: tableCol
-                      children:
-                        - type: text
-                          value: header 1
-                    - type: tableCol
-                      children:
-                        - type: text
-                          value: header 2
-                - type: tableRow
+                    - type: text
+                      value: header 1
+                - type: tableCol
+                  header: true
                   children:
-                    - type: tableCol
-                      children:
-                        - type: text
-                          value: '3'
-                    - type: tableCol
-                      children:
-                        - type: text
-                          value: '4'
+                    - type: text
+                      value: header 2
+            - type: tableRow
+              children:
+                - type: tableCol
+                  children:
+                    - type: text
+                      value: '3'
+                - type: tableCol
+                  children:
+                    - type: text
+                      value: '4'
 
     myst: |-
       | header 1 | header 2 |
       |---|---|
       | 3 | 4 |
     html: |-
-      <figure>
-        <table>
-          <thead>
-            <tr>
-              <th>header 1</th>
-              <th>header 2</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>3</td>
-              <td>4</td>
-            </tr>
-          </tbody>
-        </table>
-      </figure>
+      <table>
+        <thead>
+          <tr>
+            <th>header 1</th>
+            <th>header 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>3</td>
+            <td>4</td>
+          </tr>
+        </tbody>
+      </table>
+
   - title: Basic list table
     mdast:
       type: root
@@ -77,14 +75,17 @@ cases:
                 - type: tableRow
                   children:
                     - type: tableCol
+                      header: true
                       children:
                         - type: text
                           value: Head 1, Column 1
                     - type: tableCol
+                      header: true
                       children:
                         - type: text
                           value: Head 1, Column 2
                     - type: tableCol
+                      header: true
                       children:
                         - type: text
                           value: Head 1, Column 3
@@ -141,35 +142,26 @@ cases:
     html: |-
       <figure id="my-table" class="numbered myclass">
         <figcaption>
-          <p><span class="caption-number">Table 1 </span>Caption <em>text</em></p>
+          <p><span class="caption-number">Table 1</span>Caption <em>text</em></p>
         </figcaption>
-        <table class="align-center">
+        <table align="center">
           <thead>
             <tr>
-              <th align="c">Head 1, Column 1</th>
-              <th align="e">Head 1, Column 2</th>
-              <th align="n">Head 1, Column 3</th>
-              <th align="t"></th>
-              <th align="e"></th>
-              <th align="r"></th>
+              <th>Head 1, Column 1</th>
+              <th>Head 1, Column 2</th>
+              <th>Head 1, Column 3</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td align="c">Row 1, Column 1</td>
-              <td align="e">Row 1, Column 2</td>
-              <td align="n">Row 1, Column 3</td>
-              <td align="t"></td>
-              <td align="e"></td>
-              <td align="r"></td>
+              <td>Row 1, Column 1</td>
+              <td>Row 1, Column 2</td>
+              <td>Row 1, Column 3</td>
             </tr>
             <tr>
-              <td align="c">Row 2, Column 1</td>
-              <td align="e">Row 2, Column 2</td>
-              <td align="n">Row 2, <strong>Column 3</strong></td>
-              <td align="t"></td>
-              <td align="e"></td>
-              <td align="r"></td>
+              <td>Row 2, Column 1</td>
+              <td>Row 2, Column 2</td>
+              <td>Row 2, <strong>Column 3</strong></td>
             </tr>
           </tbody>
         </table>

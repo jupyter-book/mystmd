@@ -9,6 +9,7 @@ import { GenericNode } from '.';
 import { admonitionKindToTitle, withoutTrailingNewline } from './utils';
 import { map } from 'unist-util-map';
 import { findAfter } from 'unist-util-find-after';
+import { selectAll } from 'unist-util-select';
 
 export type Options = {
   handlers?: Record<string, Spec>;
@@ -203,11 +204,11 @@ const defaultMdast: Record<string, Spec> = {
     type: 'caption',
   },
   table: {
-    type: 'container',
+    type: 'table',
     getAttrs(token) {
       const name = token.meta?.name || undefined;
       return {
-        kind: 'table',
+        kind: undefined,
         identifier: normalizeLabel(name),
         label: name,
         numbered: name ? true : undefined,
@@ -220,16 +221,19 @@ const defaultMdast: Record<string, Spec> = {
     type: 'caption',
   },
   thead: {
-    type: '_table',
+    type: '_lift',
   },
   tbody: {
-    type: '_table',
+    type: '_lift',
   },
   tr: {
     type: 'tableRow',
   },
   th: {
     type: 'tableCol',
+    getAttrs() {
+      return { header: true };
+    },
   },
   td: {
     type: 'tableCol',
@@ -480,25 +484,37 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
     tree = newTree as Root;
   }
 
-  visit(tree, 'container', (node: GenericNode) => {
-    if (node.kind === 'table') {
-      let children: GenericNode[] = [];
-      visit(node, '_table', (tableNode: GenericNode) => {
-        if (tableNode.children) {
-          children = children.concat(tableNode.children);
-        }
-      });
-      node.children = node.children?.concat([
-        { type: 'table', align: node.align, children },
-      ]);
-      delete node.align;
-      visit(node, 'caption', (captionNode: GenericNode) => {
-        captionNode.children = [{ type: 'paragraph', children: captionNode.children }];
-      });
+  visit(tree, 'caption', (node: GenericNode) => {
+    if (node.children && node.children[0].type !== 'paragraph') {
+      node.children = [{ type: 'paragraph', children: node.children }];
     }
   });
 
-  remove(tree, '_table');
+  // Replace "table node with caption" with "figure node with table and caption"
+  // TODO: Clean up when we update to typescript > 4.6.2 and we have access to
+  //       parent in visitor function.
+  //       i.e. visit(tree, 'table', (node, index parent) => {...})
+  //       https://github.com/microsoft/TypeScript/issues/46900
+
+  selectAll('table', tree).map((node: GenericNode) => {
+    const captionChildren = node.children?.filter(
+      (n: GenericNode) => n.type === 'caption',
+    );
+    if (captionChildren?.length) {
+      const tableChildren = node.children?.filter(
+        (n: GenericNode) => n.type !== 'caption',
+      );
+      const newTableNode: GenericNode = {
+        type: 'table',
+        align: node.align,
+        children: tableChildren,
+      };
+      node.type = 'container';
+      node.kind = 'table';
+      node.children = [...captionChildren, newTableNode];
+      delete node.align;
+    }
+  });
 
   if (opts.hoistSingleImagesOutofParagraphs) hoistSingleImagesOutofParagraphs(tree);
 

@@ -24,7 +24,6 @@ cases:
                     - type: text
                       value: 'Caption text'
             - type: table
-              align: center
               children:
                 - type: tableRow
                   children:
@@ -50,27 +49,17 @@ cases:
       <p>see <a href="#my-table">Table 1</a></p>
       <figure id="my-table" class="numbered">
         <figcaption>
-          <p><span class="caption-number">Table 1 </span>Caption text</p>
+          <p><span class="caption-number">Table 1</span>Caption text</p>
         </figcaption>
         <table>
           <thead>
             <tr>
-              <th align="c">Head 1</th>
-              <th align="e"></th>
-              <th align="n"></th>
-              <th align="t"></th>
-              <th align="e"></th>
-              <th align="r"></th>
+              <th>Head 1</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td align="c">Row 1</td>
-              <td align="e"></td>
-              <td align="n"></td>
-              <td align="t"></td>
-              <td align="e"></td>
-              <td align="r"></td>
+              <td>Row 1</td>
             </tr>
           </tbody>
         </table>
