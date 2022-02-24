@@ -17,14 +17,33 @@ export type Options = {
   nestBlocks?: boolean;
 };
 
-function getClassName(token: Token, exclude?: RegExp): string | undefined {
-  const className: string = token.meta?.class?.join(' ') || token.attrGet('class');
+const NUMBERED_CLASS = /^numbered$/;
+const ALIGN_CLASS = /(?:(?:align-)|^)(left|right|center)/;
+
+function getClassName(token: Token, exclude?: RegExp[]): string | undefined {
+  const allClasses = new Set([
+    // Grab the trimmed classes from the token
+    ...(token.attrGet('class') ?? '')
+      .split(' ')
+      .map((c) => c.trim())
+      .filter((c) => c),
+    // Add any from the meta information (these are often repeated)
+    ...(token.meta?.class ?? []),
+  ]);
+  const className: string = [...allClasses].join(' ');
   if (!className) return undefined;
   return (
     className
       .split(' ')
       .map((c) => c.trim())
-      .filter((c) => c && !(exclude && c.match(exclude)))
+      .filter((c) => {
+        if (!c) return false;
+        if (!exclude) return true;
+        return !exclude.reduce(
+          (doExclude, test) => doExclude || !!c.match(test),
+          false,
+        );
+      })
       .join(' ') || undefined
   );
 }
@@ -44,8 +63,22 @@ function getLang(t: Token) {
   return he.decode(t.info).trim().split(' ')[0].replace('\\', '');
 }
 
-function normalizeLabel(label: string | undefined) {
-  return label?.replace(/[\s]+/g, ' ').trim().toLowerCase();
+/**
+ * https://github.com/syntax-tree/mdast#association
+ * @param label A label field can be present.
+ *        label is a string value: it works just like title on a link or a
+ *        lang on code: character escapes and character references are parsed.
+ * @returns { identifier, label }
+ */
+function normalizeLabel(
+  label: string | undefined,
+): { identifier: string; label: string } | undefined {
+  if (!label) return undefined;
+  const identifier = label
+    .replace(/[\t\n\r ]+/g, ' ')
+    .trim()
+    .toLowerCase();
+  return { identifier, label };
 }
 
 function getColAlign(t: Token) {
@@ -114,7 +147,31 @@ const defaultMdast: Record<string, Spec> = {
     type: 'code',
     isLeaf: true,
     getAttrs(t) {
-      return { lang: getLang(t), value: withoutTrailingNewline(t.content) };
+      const name = t.meta?.name || undefined;
+      const showLineNumbers = !!(
+        t.meta?.linenos ||
+        t.meta?.linenos === null || // Weird docutils implementation
+        t.meta?.['number-lines']
+      );
+      const lineno = t.meta?.['lineno-start'] ?? t.meta?.['number-lines'];
+      const startingLineNumber =
+        lineno && lineno !== 1 && !isNaN(Number(lineno)) ? Number(lineno) : undefined;
+      const emphasizeLines = t.meta?.['emphasize-lines']
+        ? t.meta?.['emphasize-lines']
+            .split(',')
+            .map((n: string) => Number(n.trim()))
+            .filter((n: number) => !isNaN(n) && n > 0)
+        : undefined;
+
+      return {
+        lang: getLang(t),
+        ...normalizeLabel(name),
+        class: getClassName(t),
+        showLineNumbers: showLineNumbers || undefined, // Only add to MDAST if true
+        startingLineNumber: showLineNumbers ? startingLineNumber : undefined, // Only if showing line numbers!
+        emphasizeLines,
+        value: withoutTrailingNewline(t.content),
+      };
     },
   },
   code_block: {
@@ -150,13 +207,13 @@ const defaultMdast: Record<string, Spec> = {
     getAttrs(token) {
       const alt =
         token.attrGet('alt') || token.children?.reduce((i, t) => i + t?.content, '');
-      const alignMatch = hasClassName(token, /align-(left|right|center)/);
+      const alignMatch = hasClassName(token, ALIGN_CLASS);
       const align = alignMatch ? alignMatch[1] : undefined;
       return {
         url: token.attrGet('src'),
         alt: alt || undefined,
         title: token.attrGet('title') || undefined,
-        class: getClassName(token, /align-(?:left|right|center)/),
+        class: getClassName(token, [ALIGN_CLASS]),
         width: token.attrGet('width') || undefined,
         align,
       };
@@ -193,7 +250,7 @@ const defaultMdast: Record<string, Spec> = {
       const kind = token.meta?.kind || undefined;
       return {
         kind,
-        class: getClassName(token, new RegExp(`admonition|${kind}`)),
+        class: getClassName(token, [new RegExp(`admonition|${kind}`)]),
       };
     },
   },
@@ -206,10 +263,9 @@ const defaultMdast: Record<string, Spec> = {
       const name = token.meta?.name || undefined;
       return {
         kind: 'figure',
-        identifier: normalizeLabel(name),
-        label: name,
+        ...normalizeLabel(name),
         numbered: name ? true : undefined,
-        class: getClassName(token, /numbered/),
+        class: getClassName(token, [NUMBERED_CLASS]),
       };
     },
   },
@@ -222,10 +278,9 @@ const defaultMdast: Record<string, Spec> = {
       const name = token.meta?.name || undefined;
       return {
         kind: undefined,
-        identifier: normalizeLabel(name),
-        label: name,
+        ...normalizeLabel(name),
         numbered: name ? true : undefined,
-        class: getClassName(token, /numbered/),
+        class: getClassName(token, [NUMBERED_CLASS, ALIGN_CLASS]),
         align: token.meta?.align || undefined,
       };
     },
@@ -269,8 +324,8 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isText: true,
     getAttrs(t) {
-      const info = t.info || undefined;
-      return { identifier: normalizeLabel(info), label: info };
+      const name = t.info || undefined;
+      return { ...normalizeLabel(name) };
     },
   },
   math_block_label: {
@@ -278,11 +333,8 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isText: true,
     getAttrs(t) {
-      const info = t.info || undefined;
-      return {
-        identifier: normalizeLabel(info),
-        label: info,
-      };
+      const name = t.info || undefined;
+      return { ...normalizeLabel(name) };
     },
   },
   amsmath: {
@@ -295,10 +347,9 @@ const defaultMdast: Record<string, Spec> = {
     isLeaf: true,
     getAttrs(t) {
       return {
-        kind: t.meta.kind,
-        identifier: normalizeLabel(t.meta.name),
-        label: t.meta.name,
-        value: t.meta.value || undefined,
+        kind: t.meta?.kind,
+        ...normalizeLabel(t.meta?.name),
+        value: t.meta?.value || undefined,
       };
     },
   },
@@ -308,8 +359,7 @@ const defaultMdast: Record<string, Spec> = {
     isLeaf: true,
     getAttrs(t) {
       return {
-        identifier: normalizeLabel(t?.meta?.label),
-        label: t?.meta?.label,
+        ...normalizeLabel(t?.meta?.label),
       };
     },
   },
@@ -326,8 +376,7 @@ const defaultMdast: Record<string, Spec> = {
     type: 'footnoteDefinition',
     getAttrs(t) {
       return {
-        identifier: normalizeLabel(t?.meta?.label),
-        label: t?.meta?.label,
+        ...normalizeLabel(t?.meta?.label),
       };
     },
   },
@@ -353,7 +402,7 @@ const defaultMdast: Record<string, Spec> = {
     isLeaf: true,
     getAttrs(t) {
       return {
-        kind: t.meta.name,
+        kind: t.meta?.name,
         value: t.content,
       };
     },
@@ -363,10 +412,7 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
-      return {
-        identifier: normalizeLabel(t.content),
-        label: t.content,
-      };
+      return { ...normalizeLabel(t.content) };
     },
   },
   html_inline: {

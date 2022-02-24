@@ -23,6 +23,14 @@ type Target = {
   number: string;
 };
 
+/**
+ * See https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-numref
+ */
+function replaceWithNumber(title: string, number: string | number) {
+  const num = String(number);
+  return title.replace(/%s/g, num).replace(/\{number\}/g, num);
+}
+
 export class State {
   targets: Record<string, Target>;
   targetCounts: Record<string, number>;
@@ -74,22 +82,16 @@ export class State {
     } else if (refKind === ReferenceKind.eq && target.kind === TargetKind.math) {
       text = text || `(${target.number})`;
     } else if (refKind === ReferenceKind.ref && target.kind === TargetKind.heading) {
-      if (!text) {
-        return target.node.children;
-      }
+      if (!text) return target.node.children;
     } else if (refKind === ReferenceKind.ref && target.kind === TargetKind.figure) {
       if (!text) {
         const caption = select('caption > paragraph', target.node) as GenericNode;
         return caption.children;
       }
     } else if (refKind === ReferenceKind.numref && target.kind === TargetKind.figure) {
-      text = refValue
-        ? refValue.replace(/%s/g, target.number).replace(/\{number\}/g, target.number)
-        : `Fig. ${target.number}`;
+      text = replaceWithNumber(refValue || 'Figure %s', target.number);
     } else if (refKind === ReferenceKind.numref && target.kind === TargetKind.table) {
-      text = refValue
-        ? refValue.replace(/%s/g, target.number).replace(/\{number\}/g, target.number)
-        : `Table ${target.number}`;
+      text = replaceWithNumber(refValue || 'Table %s', target.number);
     } else {
       return;
     }

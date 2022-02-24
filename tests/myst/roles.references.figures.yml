@@ -78,7 +78,7 @@ cases:
       Cool caption!
       ```
     html: |-
-      <p>see <a href="#my-figure">Fig. 1</a></p>
+      <p>see <a href="#my-figure">Figure 1</a></p>
       <figure id="my-figure" class="numbered">
         <img src="fig.jpg">
         <figcaption>

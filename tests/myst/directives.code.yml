@@ -1,0 +1,122 @@
+cases:
+  - title: Code directive
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          showLineNumbers: true
+          value: |-
+            def five():
+              return 5
+    myst: |-
+      ```{code} python
+      :number-lines: 1
+      def five():
+        return 5
+      ```
+    html: |-
+      <pre><code class="language-python">def five():
+        return 5
+      </code></pre>
+
+  - title: Code directive, starting line
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          identifier: my code
+          label: My code
+          class: fun-code
+          showLineNumbers: true
+          startingLineNumber: 2
+          value: |-
+            def five():
+              return 5
+    myst: |-
+      ```{code} python
+      :name: My code
+      :number-lines: 2
+      :class: fun-code
+      def five():
+        return 5
+      ```
+    html: |-
+      <pre><code id="my code" class="language-python fun-code">def five():
+        return 5
+      </code></pre>
+
+  - title: Code-block starting line
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          identifier: my code
+          label: My code
+          class: fun-code
+          showLineNumbers: true
+          startingLineNumber: 2
+          value: |-
+            def five():
+              return 5
+    myst: |-
+      ```{code-block} python
+      :name: My code
+      :linenos:
+      :lineno-start: 2
+      :class: fun-code
+      def five():
+        return 5
+      ```
+    html: |-
+      <pre><code id="my code" class="language-python fun-code">def five():
+        return 5
+      </code></pre>
+
+  - title: Code-block directive cannot spcify linenos without showing them
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          value: |-
+            def five():
+              return 5
+    myst: |-
+      ```{code-block} python
+      :lineno-start: 2
+      def five():
+        return 5
+      ```
+    html: |-
+      <pre><code class="language-python">def five():
+        return 5
+      </code></pre>
+
+  - title: Code-block directive cannot spcify linenos without showing them
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          emphasizeLines:
+            - 2
+            - 3
+          value: |-
+            def five():
+              print('five')
+              return 5
+    myst: |-
+      ```{code-block} python
+      :emphasize-lines: 2, 3
+      def five():
+        print('five')
+        return 5
+      ```
+    html: |-
+      <pre><code class="language-python">def five():
+        print('five')
+        return 5
+      </code></pre>
