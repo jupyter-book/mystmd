@@ -6,9 +6,13 @@ import { MdastOptions, TransformOptions } from './mdast';
 import { Options as StringifyOptions } from 'rehype-stringify';
 
 export type AllOptions = {
+  // Bring the roles and directives to the top level.
+  // We may change the interface to be less dependent on markdown-it in the future
+  roles: Required<IDocutilsOptions['roles']>;
+  directives: Required<IDocutilsOptions['directives']>;
   allowDangerousHtml: boolean;
   markdownit: MarkdownIt.Options;
-  docutils: IDocutilsOptions;
+  docutils: Omit<IDocutilsOptions, 'roles' | 'directives'>;
   extensions: {
     frontmatter?: boolean;
     math?: boolean | MathExtensionOptions;

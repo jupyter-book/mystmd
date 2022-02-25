@@ -15,10 +15,23 @@ import { formatHtml, mystToHast, tokensToMyst, transform, State } from './mdast'
 import { unified } from 'unified';
 import rehypeStringify from 'rehype-stringify';
 import type { AllOptions, Options } from './types';
+import { directivesDefault, rolesDefault } from 'markdown-it-docutils';
 
 export type { Options } from './types';
 
+export {
+  directivesDefault,
+  Directive,
+  IDirectiveData,
+  directiveOptions,
+  Role,
+  rolesDefault,
+  IRoleData,
+} from 'markdown-it-docutils';
+
 export const defaultOptions: AllOptions = {
+  roles: rolesDefault,
+  directives: directivesDefault,
   allowDangerousHtml: false,
   markdownit: {},
   extensions: {
@@ -46,6 +59,8 @@ export class MyST {
 
   constructor(opts: Options = defaultOptions) {
     this.opts = {
+      roles: opts.roles ?? rolesDefault,
+      directives: opts.directives ?? directivesDefault,
       allowDangerousHtml: opts.allowDangerousHtml ?? defaultOptions.allowDangerousHtml,
       transform: { ...defaultOptions.transform, ...opts.transform },
       mdast: { ...defaultOptions.mdast, ...opts.mdast },
@@ -70,7 +85,11 @@ export class MyST {
       tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
     if (exts.blocks) tokenizer.use(mystBlockPlugin);
     if (exts.footnotes) tokenizer.use(footnotePlugin).disable('footnote_inline'); // not yet implemented in myst-parser
-    tokenizer.use(docutilsPlugin, opts.docutils);
+    tokenizer.use(docutilsPlugin, {
+      ...opts.docutils,
+      roles: opts.roles,
+      directives: opts.directives,
+    });
     if (exts.math) tokenizer.use(mathPlugin, exts.math);
     if (exts.deflist) tokenizer.use(deflistPlugin);
     if (exts.tasklist) tokenizer.use(tasklistPlugin);

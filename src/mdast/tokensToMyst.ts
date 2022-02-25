@@ -335,7 +335,7 @@ const defaultMdast: Record<string, Spec> = {
     getAttrs(t) {
       return {
         kind: t.meta?.kind,
-        ...normalizeLabel(t.meta?.name),
+        ...normalizeLabel(t.meta?.label),
         value: t.meta?.value || undefined,
       };
     },
