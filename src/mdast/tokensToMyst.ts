@@ -337,6 +337,7 @@ const defaultMdast: Record<string, Spec> = {
         kind: t.meta?.kind,
         ...normalizeLabel(t.meta?.name),
         value: t.meta?.value || undefined,
+        resolved: false,
       };
     },
   },
@@ -494,8 +495,13 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
       node.children = children.slice(1);
   });
 
+  // Move contentReference text value to children
   visit(tree, 'contentReference', (node: GenericNode) => {
     delete node.children;
+    if (node.value) {
+      setTextAsChild(node, node.value);
+      delete node.value;
+    }
   });
 
   // Add target values as identifiers to subsequent node
@@ -533,6 +539,7 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
     tree = newTree as Root;
   }
 
+  // Ensure caption content is nested in a paragraph
   visit(tree, 'caption', (node: GenericNode) => {
     if (node.children && node.children[0].type !== 'paragraph') {
       node.children = [{ type: 'paragraph', children: node.children }];

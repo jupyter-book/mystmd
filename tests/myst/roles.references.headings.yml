@@ -11,6 +11,7 @@ cases:
               kind: ref
               identifier: my_id
               label: my_id
+              resolved: false
         - type: heading
           depth: 1
           children:
@@ -42,7 +43,10 @@ cases:
               kind: ref
               identifier: my_id
               label: my_id
-              value: something...
+              resolved: false
+              children:
+                - type: text
+                  value: something...
         - type: heading
           depth: 1
           children:
@@ -57,4 +61,63 @@ cases:
       # My Header
     html: |-
       <p>See: <a href="#my_id">something...</a></p>
+      <h1 id="my_id">My Header</h1>
+  - title: Link-style default header reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'See: '
+            - type: link
+              url: my_id
+              children: []
+        - type: heading
+          depth: 1
+          children:
+            - type: strong
+              children:
+                - type: text
+                  value: My
+            - type: text
+              value: ' Header'
+          identifier: my_id
+          label: my_id
+    myst: |-
+      See: [](my_id)
+
+      (my_id)=
+      # **My** Header
+    html: |-
+      <p>See: <a href="#my_id"><strong>My</strong> Header</a></p>
+      <h1 id="my_id"><strong>My</strong> Header</h1>
+  - title: Link-style custom header reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'See: '
+            - type: link
+              url: My_Id
+              title: Title
+              children:
+                - type: text
+                  value: something...
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: My Header
+          identifier: my_id
+          label: my_id
+    myst: |-
+      See: [something...](My_Id "Title")
+
+      (my_id)=
+      # My Header
+    html: |-
+      <p>See: <a href="#my_id" title="Title">something...</a></p>
       <h1 id="my_id">My Header</h1>

@@ -9,6 +9,7 @@ cases:
               kind: numref
               identifier: my-figure
               label: my-figure
+              resolved: false
     myst: |-
       {numref}`my-figure`
     html: |-
@@ -23,7 +24,10 @@ cases:
               kind: numref
               identifier: my-figure
               label: my-figure
-              value: Figure %s
+              resolved: false
+              children:
+                - type: text
+                  value: Figure %s
     myst: |-
       {numref}`Figure %s <my-figure>`
     html: |-
@@ -38,7 +42,10 @@ cases:
               kind: numref
               identifier: my - figure
               label: '  My   -   Figure  '
-              value: Figure %s
+              resolved: false
+              children:
+                - type: text
+                  value: Figure %s
     myst: |-
       {numref}`Figure %s <  My   -   Figure  >`
     html: |-
@@ -55,6 +62,7 @@ cases:
               kind: numref
               identifier: my-figure
               label: my-figure
+              resolved: false
         - type: container
           kind: figure
           identifier: my-figure
@@ -97,7 +105,10 @@ cases:
               kind: numref
               identifier: my-figure
               label: my-figure
-              value: Figure %s, I said {number}
+              resolved: false
+              children:
+                - type: text
+                  value: Figure %s%s%s, I said {number}
         - type: container
           kind: figure
           identifier: my-figure
@@ -113,7 +124,7 @@ cases:
                     - type: text
                       value: Cool caption!
     myst: |-
-      see {numref}`Figure %s, I said {number}<my-figure>`
+      see {numref}`Figure %s%s%s, I said {number}<my-figure>`
 
       ```{figure} fig.jpg
       :name: my-figure
@@ -121,7 +132,7 @@ cases:
       Cool caption!
       ```
     html: |-
-      <p>see <a href="#my-figure">Figure 1, I said 1</a></p>
+      <p>see <a href="#my-figure">Figure 111, I said 1</a></p>
       <figure id="my-figure" class="numbered">
         <img src="fig.jpg">
         <figcaption>
@@ -140,6 +151,7 @@ cases:
               kind: ref
               identifier: my-figure
               label: my-figure
+              resolved: false
         - type: container
           kind: figure
           identifier: my-figure
@@ -176,7 +188,7 @@ cases:
           <p><span class="caption-number">Figure 1</span>Cool <em>caption</em>!</p>
         </figcaption>
       </figure>
-  - title: Figure reference with default ref
+  - title: Figure reference with custom ref
     mdast:
       type: root
       children:
@@ -188,7 +200,10 @@ cases:
               kind: ref
               identifier: my-figure
               label: my-figure
-              value: Custom *caption*
+              resolved: false
+              children:
+                - type: text
+                  value: Custom *caption*
         - type: container
           kind: figure
           identifier: my-figure
@@ -219,6 +234,107 @@ cases:
       ```
     html: |-
       <p>see <a href="#my-figure">Custom *caption*</a></p>
+      <figure id="my-figure" class="numbered">
+        <img src="fig.jpg">
+        <figcaption>
+          <p><span class="caption-number">Figure 1</span>Cool <em>caption</em>!</p>
+        </figcaption>
+      </figure>
+  - title: Link-style figure reference with default ref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: link
+              url: my-figure
+              title: Figure title
+              children: []
+        - type: container
+          kind: figure
+          identifier: my-figure
+          label: my-figure
+          numbered: true
+          children:
+            - type: image
+              url: fig.jpg
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Cool '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: caption
+                    - type: text
+                      value: '!'
+    myst: |-
+      see [](my-figure "Figure title")
+
+      ```{figure} fig.jpg
+      :name: my-figure
+
+      Cool *caption*!
+      ```
+    html: |-
+      <p>see <a href="#my-figure" title="Figure title">Cool <em>caption</em>!</a></p>
+      <figure id="my-figure" class="numbered">
+        <img src="fig.jpg">
+        <figcaption>
+          <p><span class="caption-number">Figure 1</span>Cool <em>caption</em>!</p>
+        </figcaption>
+      </figure>
+  - title: Link-style figure reference with custom ref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: link
+              url: my-figure
+              children:
+                - type: text
+                  value: 'Custom '
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: caption
+        - type: container
+          kind: figure
+          identifier: my-figure
+          label: my-figure
+          numbered: true
+          children:
+            - type: image
+              url: fig.jpg
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Cool '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: caption
+                    - type: text
+                      value: '!'
+    myst: |-
+      see [Custom *caption*](my-figure)
+
+      ```{figure} fig.jpg
+      :name: my-figure
+
+      Cool *caption*!
+      ```
+    html: |-
+      <p>see <a href="#my-figure">Custom <em>caption</em></a></p>
       <figure id="my-figure" class="numbered">
         <img src="fig.jpg">
         <figcaption>

@@ -11,6 +11,7 @@ cases:
               kind: eq
               identifier: matrix
               label: '  matrix  '
+              resolved: false
         - type: container
           kind: figure
           identifier: matrix
@@ -54,6 +55,7 @@ cases:
               kind: eq
               identifier: matrix
               label: matrix
+              resolved: false
         - type: math
           identifier: matrix
           label: matrix
@@ -62,6 +64,33 @@ cases:
     myst: |-
 
       see {eq}`matrix`
+
+      ```{math}
+      :label: matrix
+      Ax = b
+      ```
+    html: |-
+      <p>see <a href="#matrix">(1)</a></p>
+      <div id="matrix" class="math block">Ax = b</div>
+  - title: Link-style equation reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: link
+              url: matrix
+              children: []
+        - type: math
+          identifier: matrix
+          label: matrix
+          value: |-
+            Ax = b
+    myst: |-
+
+      see [](matrix)
 
       ```{math}
       :label: matrix

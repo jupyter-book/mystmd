@@ -68,6 +68,7 @@
     "markdown-it-front-matter": "^0.2.3",
     "markdown-it-myst-extras": "0.2.0",
     "markdown-it-task-lists": "^2.1.1",
+    "mdast-util-find-and-replace": "^2.1.0",
     "mdast-util-to-hast": "^12.1.1",
     "rehype-format": "^4.0.1",
     "rehype-stringify": "^9.0.3",

@@ -107,7 +107,12 @@ const heading: Handler = (h, node) =>
 
 const contentReference: Handler = (h, node) => {
   if (node.resolved) {
-    return h(node, 'a', { href: `#${node.identifier}` }, all(h, node));
+    return h(
+      node,
+      'a',
+      { href: `#${node.identifier}`, title: node.title || undefined },
+      all(h, node),
+    );
   } else {
     return h(node, 'span', { class: 'reference role unhandled' }, [
       h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),

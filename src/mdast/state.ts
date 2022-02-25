@@ -1,7 +1,9 @@
-import { Root } from 'mdast';
+import { Content, Root } from 'mdast';
 import { visit } from 'unist-util-visit';
-import { select } from 'unist-util-select';
+import { select, selectAll } from 'unist-util-select';
+import { findAndReplace } from 'mdast-util-find-and-replace';
 import { GenericNode } from '.';
+import { normalizeLabel, setTextAsChild } from './utils';
 
 export enum TargetKind {
   heading = 'heading',
@@ -26,9 +28,13 @@ type Target = {
 /**
  * See https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-numref
  */
-function replaceWithNumber(title: string, number: string | number) {
+function fillReferenceNumbers(node: GenericNode, number: string | number) {
   const num = String(number);
-  return title.replace(/%s/g, num).replace(/\{number\}/g, num);
+  findAndReplace(node as Content, { '%s': num, '{number}': num });
+}
+
+function copyNode(node: GenericNode): GenericNode {
+  return JSON.parse(JSON.stringify(node));
 }
 
 export class State {
@@ -42,7 +48,7 @@ export class State {
 
   addTarget(node: GenericNode) {
     const kind: string | undefined = node.type === 'container' ? node.kind : node.type;
-    node = JSON.parse(JSON.stringify(node));
+    node = copyNode(node);
     if (kind && kind in TargetKind && node.identifier) {
       if (kind === TargetKind.heading) {
         this.targets[node.identifier] = { node, kind, number: '' };
@@ -70,32 +76,54 @@ export class State {
     return this.targets[identifier];
   }
 
-  getReferenceContent(
-    refIdentifier?: string,
-    refKind?: string,
-    refValue?: string,
-  ): GenericNode['children'] | undefined {
-    const target = this.getTarget(refIdentifier);
-    let text = refValue;
+  resolveReferenceContent(node: GenericNode): GenericNode['children'] | undefined {
+    const target = this.getTarget(node.identifier);
     if (!target) {
       return;
-    } else if (refKind === ReferenceKind.eq && target.kind === TargetKind.math) {
-      text = text || `(${target.number})`;
-    } else if (refKind === ReferenceKind.ref && target.kind === TargetKind.heading) {
-      if (!text) return target.node.children;
-    } else if (refKind === ReferenceKind.ref && target.kind === TargetKind.figure) {
-      if (!text) {
-        const caption = select('caption > paragraph', target.node) as GenericNode;
-        return caption.children;
-      }
-    } else if (refKind === ReferenceKind.numref && target.kind === TargetKind.figure) {
-      text = replaceWithNumber(refValue || 'Figure %s', target.number);
-    } else if (refKind === ReferenceKind.numref && target.kind === TargetKind.table) {
-      text = replaceWithNumber(refValue || 'Table %s', target.number);
-    } else {
-      return;
     }
-    return [{ type: 'text', value: text }];
+    const kinds = {
+      ref: {
+        eq: node.kind === ReferenceKind.eq,
+        ref: node.kind === ReferenceKind.ref,
+        numref: node.kind === ReferenceKind.numref,
+      },
+      target: {
+        math: target.kind === TargetKind.math,
+        figure: target.kind === TargetKind.figure,
+        table: target.kind === TargetKind.table,
+        heading: target.kind === TargetKind.heading,
+      },
+    };
+    const noNodeChildren = !node.children?.length;
+    if (kinds.ref.eq && kinds.target.math) {
+      if (noNodeChildren) {
+        setTextAsChild(node, `(${target.number})`);
+      }
+      node.resolved = true;
+    } else if (kinds.ref.ref && kinds.target.heading) {
+      if (noNodeChildren) {
+        node.children = copyNode(target.node).children;
+      }
+      node.resolved = true;
+    } else if (kinds.ref.ref && (kinds.target.figure || kinds.target.table)) {
+      if (noNodeChildren) {
+        const caption = select('caption > paragraph', target.node) as GenericNode;
+        node.children = copyNode(caption).children;
+      }
+      node.resolved = true;
+    } else if (kinds.ref.numref && kinds.target.figure) {
+      if (noNodeChildren) {
+        setTextAsChild(node, 'Figure %s');
+      }
+      fillReferenceNumbers(node, target.number);
+      node.resolved = true;
+    } else if (kinds.ref.numref && kinds.target.table) {
+      if (noNodeChildren) {
+        setTextAsChild(node, 'Table %s');
+      }
+      fillReferenceNumbers(node, target.number);
+      node.resolved = true;
+    }
   }
 }
 
@@ -107,13 +135,19 @@ export const countState = (state: State, tree: Root) => {
 };
 
 export const referenceState = (state: State, tree: Root) => {
-  visit(tree, 'contentReference', (node: GenericNode) => {
-    const content = state.getReferenceContent(node.identifier, node.kind, node.value);
-    if (content) {
-      node.resolved = true;
-      node.children = content;
-    } else {
+  selectAll('link', tree).map((node: GenericNode) => {
+    const reference = normalizeLabel(node.url);
+    if (reference && reference.identifier in state.targets) {
+      node.type = 'contentReference';
+      node.kind =
+        state.targets[reference.identifier].kind === TargetKind.math ? 'eq' : 'ref';
+      node.identifier = reference.identifier;
+      node.label = reference.label;
       node.resolved = false;
+      delete node.url;
     }
+  });
+  visit(tree, 'contentReference', (node: GenericNode) => {
+    state.resolveReferenceContent(node);
   });
 };
