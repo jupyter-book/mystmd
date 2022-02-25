@@ -4,8 +4,7 @@ import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { Admonition, AdmonitionKind, GenericNode } from './types';
 import { admonitionKindToTitle } from './utils';
-import { State, countState } from './state';
-import { referenceState } from '.';
+import { State, countState, referenceState } from './state';
 
 export type Options = {
   addAdmonitionHeaders?: boolean;
