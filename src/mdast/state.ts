@@ -143,7 +143,6 @@ export const referenceState = (state: State, tree: Root) => {
         state.targets[reference.identifier].kind === TargetKind.math ? 'eq' : 'ref';
       node.identifier = reference.identifier;
       node.label = reference.label;
-      node.resolved = false;
       delete node.url;
     }
   });

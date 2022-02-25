@@ -11,7 +11,6 @@ cases:
               kind: ref
               identifier: my_id
               label: my_id
-              resolved: false
         - type: heading
           depth: 1
           children:
@@ -43,7 +42,6 @@ cases:
               kind: ref
               identifier: my_id
               label: my_id
-              resolved: false
               children:
                 - type: text
                   value: something...

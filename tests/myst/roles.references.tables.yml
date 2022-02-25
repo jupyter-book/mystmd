@@ -11,7 +11,6 @@ cases:
               kind: numref
               identifier: my-table
               label: my-table
-              resolved: false
         - type: container
           kind: table
           identifier: my-table
@@ -77,7 +76,6 @@ cases:
               kind: numref
               identifier: my-table
               label: my-table
-              resolved: false
               children:
                 - type: text
                   value: T%s
@@ -146,7 +144,6 @@ cases:
               kind: ref
               identifier: my-table
               label: my-table
-              resolved: false
         - type: container
           kind: table
           identifier: my-table
@@ -212,7 +209,6 @@ cases:
               kind: ref
               identifier: my-table
               label: my-table
-              resolved: false
               children:
                 - type: text
                   value: My Table

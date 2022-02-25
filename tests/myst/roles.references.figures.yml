@@ -9,7 +9,6 @@ cases:
               kind: numref
               identifier: my-figure
               label: my-figure
-              resolved: false
     myst: |-
       {numref}`my-figure`
     html: |-
@@ -24,7 +23,6 @@ cases:
               kind: numref
               identifier: my-figure
               label: my-figure
-              resolved: false
               children:
                 - type: text
                   value: Figure %s
@@ -42,7 +40,6 @@ cases:
               kind: numref
               identifier: my - figure
               label: '  My   -   Figure  '
-              resolved: false
               children:
                 - type: text
                   value: Figure %s
@@ -62,7 +59,6 @@ cases:
               kind: numref
               identifier: my-figure
               label: my-figure
-              resolved: false
         - type: container
           kind: figure
           identifier: my-figure
@@ -105,7 +101,6 @@ cases:
               kind: numref
               identifier: my-figure
               label: my-figure
-              resolved: false
               children:
                 - type: text
                   value: Figure %s%s%s, I said {number}
@@ -151,7 +146,6 @@ cases:
               kind: ref
               identifier: my-figure
               label: my-figure
-              resolved: false
         - type: container
           kind: figure
           identifier: my-figure
@@ -200,7 +194,6 @@ cases:
               kind: ref
               identifier: my-figure
               label: my-figure
-              resolved: false
               children:
                 - type: text
                   value: Custom *caption*
