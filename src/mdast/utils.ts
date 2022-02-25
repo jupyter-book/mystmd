@@ -1,4 +1,4 @@
-import { AdmonitionKind } from './types';
+import { AdmonitionKind, GenericNode } from './types';
 
 export function admonitionKindToTitle(kind: AdmonitionKind) {
   const transform: Record<string, string> = {
@@ -18,4 +18,26 @@ export function admonitionKindToTitle(kind: AdmonitionKind) {
 
 export function withoutTrailingNewline(str: string) {
   return str[str.length - 1] == '\n' ? str.slice(0, str.length - 1) : str;
+}
+
+/**
+ * https://github.com/syntax-tree/mdast#association
+ * @param label A label field can be present.
+ *        label is a string value: it works just like title on a link or a
+ *        lang on code: character escapes and character references are parsed.
+ * @returns { identifier, label }
+ */
+export function normalizeLabel(
+  label: string | undefined,
+): { identifier: string; label: string } | undefined {
+  if (!label) return undefined;
+  const identifier = label
+    .replace(/[\t\n\r ]+/g, ' ')
+    .trim()
+    .toLowerCase();
+  return { identifier, label };
+}
+
+export function setTextAsChild(node: GenericNode, text: string) {
+  node.children = [{ type: 'text', value: text }];
 }

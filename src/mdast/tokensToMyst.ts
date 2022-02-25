@@ -6,7 +6,12 @@ import { remove } from 'unist-util-remove';
 import { u } from 'unist-builder';
 import he from 'he';
 import { GenericNode } from '.';
-import { admonitionKindToTitle, withoutTrailingNewline } from './utils';
+import {
+  admonitionKindToTitle,
+  normalizeLabel,
+  setTextAsChild,
+  withoutTrailingNewline,
+} from './utils';
 import { map } from 'unist-util-map';
 import { findAfter } from 'unist-util-find-after';
 import { selectAll } from 'unist-util-select';
@@ -61,24 +66,6 @@ function hasClassName(token: Token, matcher: RegExp): false | RegExpMatchArray {
 
 function getLang(t: Token) {
   return he.decode(t.info).trim().split(' ')[0].replace('\\', '');
-}
-
-/**
- * https://github.com/syntax-tree/mdast#association
- * @param label A label field can be present.
- *        label is a string value: it works just like title on a link or a
- *        lang on code: character escapes and character references are parsed.
- * @returns { identifier, label }
- */
-function normalizeLabel(
-  label: string | undefined,
-): { identifier: string; label: string } | undefined {
-  if (!label) return undefined;
-  const identifier = label
-    .replace(/[\t\n\r ]+/g, ' ')
-    .trim()
-    .toLowerCase();
-  return { identifier, label };
 }
 
 function getColAlign(t: Token) {
