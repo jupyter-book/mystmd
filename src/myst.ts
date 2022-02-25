@@ -17,7 +17,7 @@ import rehypeStringify from 'rehype-stringify';
 import type { AllOptions, Options } from './types';
 import { directivesDefault, rolesDefault } from 'markdown-it-docutils';
 
-export type { Options } from './types';
+export type { Options, IRole, IDirective } from './types';
 
 export {
   directivesDefault,
@@ -29,9 +29,7 @@ export {
   IRoleData,
 } from 'markdown-it-docutils';
 
-export const defaultOptions: AllOptions = {
-  roles: rolesDefault,
-  directives: directivesDefault,
+export const defaultOptions: Omit<AllOptions, 'roles' | 'directives'> = {
   allowDangerousHtml: false,
   markdownit: {},
   extensions: {
@@ -44,7 +42,10 @@ export const defaultOptions: AllOptions = {
     blocks: true,
   },
   transform: {},
-  docutils: {},
+  docutils: {
+    roles: rolesDefault,
+    directives: directivesDefault,
+  },
   mdast: {},
   hast: {
     clobberPrefix: 'm-',
@@ -54,47 +55,66 @@ export const defaultOptions: AllOptions = {
 };
 
 export class MyST {
+  opts: Omit<AllOptions, 'roles' | 'directives'>;
   tokenizer: MarkdownIt;
-  opts: AllOptions;
 
   constructor(opts: Options = defaultOptions) {
-    this.opts = {
-      roles: opts.roles ?? rolesDefault,
-      directives: opts.directives ?? directivesDefault,
-      allowDangerousHtml: opts.allowDangerousHtml ?? defaultOptions.allowDangerousHtml,
-      transform: { ...defaultOptions.transform, ...opts.transform },
-      mdast: { ...defaultOptions.mdast, ...opts.mdast },
-      hast: { ...defaultOptions.hast, ...opts.hast },
-      docutils: { ...defaultOptions.docutils, ...opts.docutils },
-      markdownit: { ...defaultOptions.markdownit, ...opts.markdownit },
-      extensions: { ...defaultOptions.extensions, ...opts.extensions },
-      formatHtml: opts.formatHtml ?? defaultOptions.formatHtml,
-      stringifyHtml: { ...defaultOptions.stringifyHtml, ...opts.stringifyHtml },
-    };
-    if (this.opts.allowDangerousHtml) {
-      this.opts.markdownit.html = true;
-      this.opts.hast.allowDangerousHtml = true;
-      this.opts.hast.allowDangerousHtml = true;
-      this.opts.stringifyHtml.allowDangerousHtml = true;
-    }
-    const exts = this.opts.extensions;
+    this.opts = this._parseOptions(opts);
+    this.tokenizer = this._createTokenizer();
+  }
 
-    const tokenizer = MarkdownIt('commonmark', opts.markdownit);
+  _parseOptions(user: Options): Omit<AllOptions, 'roles' | 'directives'> {
+    const opts = {
+      allowDangerousHtml: user.allowDangerousHtml ?? defaultOptions.allowDangerousHtml,
+      transform: { ...defaultOptions.transform, ...user.transform },
+      mdast: { ...defaultOptions.mdast, ...user.mdast },
+      hast: { ...defaultOptions.hast, ...user.hast },
+      docutils: { ...defaultOptions.docutils, ...user.docutils },
+      markdownit: { ...defaultOptions.markdownit, ...user.markdownit },
+      extensions: { ...defaultOptions.extensions, ...user.extensions },
+      formatHtml: user.formatHtml ?? defaultOptions.formatHtml,
+      stringifyHtml: { ...defaultOptions.stringifyHtml, ...user.stringifyHtml },
+    };
+    const rolesHandlers: Required<AllOptions['docutils']>['roles'] = {};
+    const directivesHandlers: Required<AllOptions['docutils']>['directives'] = {};
+    const mdastHandlers: Required<AllOptions['mdast']>['handlers'] = {};
+    const hastHandlers: Required<AllOptions['hast']>['handlers'] = {};
+    Object.entries(user.roles ?? {}).map(([k, { myst, mdast, hast }]) => {
+      rolesHandlers[k] = myst;
+      mdastHandlers[k] = mdast;
+      hastHandlers[mdast.type] = hast;
+    });
+    Object.entries(user.directives ?? {}).map(([k, { myst, mdast, hast }]) => {
+      directivesHandlers[k] = myst;
+      mdastHandlers[k] = mdast;
+      hastHandlers[mdast.type] = hast;
+    });
+    opts.docutils.roles = { ...opts.docutils.roles, ...rolesHandlers };
+    opts.docutils.directives = { ...opts.docutils.directives, ...directivesHandlers };
+    opts.hast.handlers = { ...opts.hast.handlers, ...hastHandlers };
+    opts.mdast.handlers = { ...opts.mdast.handlers, ...mdastHandlers };
+    if (opts.allowDangerousHtml) {
+      opts.markdownit.html = true;
+      opts.hast.allowDangerousHtml = true;
+      opts.hast.allowDangerousHtml = true;
+      opts.stringifyHtml.allowDangerousHtml = true;
+    }
+    return opts;
+  }
+
+  _createTokenizer() {
+    const exts = this.opts.extensions;
+    const tokenizer = MarkdownIt('commonmark', this.opts.markdownit);
     if (exts.tables) tokenizer.enable('table');
     if (exts.frontmatter)
       tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
     if (exts.blocks) tokenizer.use(mystBlockPlugin);
     if (exts.footnotes) tokenizer.use(footnotePlugin).disable('footnote_inline'); // not yet implemented in myst-parser
-    tokenizer.use(docutilsPlugin, {
-      ...opts.docutils,
-      roles: opts.roles,
-      directives: opts.directives,
-    });
+    tokenizer.use(docutilsPlugin, this.opts.docutils);
     if (exts.math) tokenizer.use(mathPlugin, exts.math);
     if (exts.deflist) tokenizer.use(deflistPlugin);
     if (exts.tasklist) tokenizer.use(tasklistPlugin);
-
-    this.tokenizer = tokenizer;
+    return tokenizer;
   }
 
   parse(content: string) {

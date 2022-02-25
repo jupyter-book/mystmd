@@ -394,6 +394,16 @@ const defaultMdast: Record<string, Spec> = {
       };
     },
   },
+  role_error: {
+    type: 'roleError',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        value: t.content,
+      };
+    },
+  },
   myst_target: {
     type: '_headerTarget',
     noCloseToken: true,
