@@ -116,7 +116,7 @@ Section 2
 ```
 
 ```{seealso}
-Thematic breaks should not be confused with MyST [block syntax](./document.md),
+Thematic breaks should not be confused with MyST [block syntax](./blocks.md),
 which is used to structurally seperate content.
 ```
 
