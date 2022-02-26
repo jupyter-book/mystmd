@@ -1,7 +1,5 @@
-import * as plugins from './plugins'
-import { roles, Role, Roles } from './roles'
-import { directives, Directive, Directives } from './directives'
+import * as plugins from './plugins';
 
-export type { Directive, Directives, Role, Roles }
-export { MyST } from './myst'
-export { plugins, roles, directives }
+export * from './mdast';
+export * from './myst';
+export { plugins };

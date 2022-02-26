@@ -1,0 +1,172 @@
+cases:
+  - title: Basic table
+    mdast:
+      type: root
+      children:
+        - type: table
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  header: true
+                  align: left
+                  children:
+                    - type: text
+                      value: header 1
+                - type: tableCell
+                  header: true
+                  align: right
+                  children:
+                    - type: text
+                      value: header 2
+            - type: tableRow
+              children:
+                - type: tableCell
+                  align: left
+                  children:
+                    - type: text
+                      value: '3'
+                - type: tableCell
+                  align: right
+                  children:
+                    - type: text
+                      value: '4'
+
+    myst: |-
+      | header 1 | header 2 |
+      |:---|---:|
+      | 3 | 4 |
+    html: |-
+      <table>
+        <thead>
+          <tr>
+            <th>header 1</th>
+            <th>header 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>3</td>
+            <td>4</td>
+          </tr>
+        </tbody>
+      </table>
+
+  - title: Basic list table
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          numbered: true
+          class: myclass
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Caption '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: text
+            - type: table
+              align: center
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Head 1, Column 1
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Head 1, Column 2
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Head 1, Column 3
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1, Column 1
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1, Column 2
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1, Column 3
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 2, Column 1
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 2, Column 2
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: 'Row 2, '
+                        - type: strong
+                          children:
+                            - type: text
+                              value: Column 3
+
+    myst: |-
+      ```{list-table}  Caption *text*
+      :name: my-table
+      :header-rows: 1
+      :align: center
+      :class: myclass
+
+      *   - Head 1, Column 1
+          - Head 1, Column 2
+          - Head 1, Column 3
+      *   - Row 1, Column 1
+          - Row 1, Column 2
+          - Row 1, Column 3
+      *   - Row 2, Column 1
+          - Row 2, Column 2
+          - Row 2, **Column 3**
+      ```
+    html: |-
+      <figure id="my-table" class="numbered myclass">
+        <figcaption>
+          <p><span class="caption-number">Table 1</span>Caption <em>text</em></p>
+        </figcaption>
+        <table align="center">
+          <thead>
+            <tr>
+              <th>Head 1, Column 1</th>
+              <th>Head 1, Column 2</th>
+              <th>Head 1, Column 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Row 1, Column 1</td>
+              <td>Row 1, Column 2</td>
+              <td>Row 1, Column 3</td>
+            </tr>
+            <tr>
+              <td>Row 2, Column 1</td>
+              <td>Row 2, Column 2</td>
+              <td>Row 2, <strong>Column 3</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>

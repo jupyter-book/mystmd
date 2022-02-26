@@ -1,0 +1,58 @@
+cases:
+  - title: CommonMark simple paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Something
+    myst: |-
+      Something
+    html: |-
+      <p>Something</p>
+  - title: CommomMark two paragraphs
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Something
+        - type: paragraph
+          children:
+            - type: text
+              value: Something else
+    myst: |-
+      Something
+
+      Something else
+    html: |-
+      <p>Something</p>
+      <p>Something else</p>
+  - title: CommonMark inline styling
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: strong
+              children:
+                - type: text
+                  value: strong
+            - type: text
+              value: ', '
+            - type: emphasis
+              children:
+                - type: text
+                  value: emphasis
+            - type: text
+              value: ', '
+            - type: inlineCode
+              value: literal text
+            - type: text
+              value: ', *escaped symbols*'
+    myst: |-
+      **strong**, _emphasis_, `literal text`, \*escaped symbols\*
+    html: |-
+      <p><strong>strong</strong>, <em>emphasis</em>, <code>literal text</code>, *escaped symbols*</p>

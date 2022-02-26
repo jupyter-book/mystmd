@@ -1,13 +1,31 @@
-# Table of content
-# Learn more at https://jupyterbook.org/customize/toc.html
-#
-
-- file: index
-- part: Get started
-  chapters:
-  - file: start
-  - file: developer
-- part: Library
-  chapters:
-  - file: overview
-
+format: jb-book
+root: index
+parts:
+  - caption: MyST Spec
+    chapters:
+      - file: features/overview
+      - file: features/commonmark
+      - file: features/admonitions
+      - file: features/figures
+      - file: features/tables
+      - file: features/math
+      - file: features/references
+      - file: features/citations
+      - file: features/blocks
+      - file: features/extensions
+        sections:
+          - file: features/basic
+          - file: features/frontmatter
+          - file: features/footnotes
+          - file: features/definitions
+          - file: features/tasks
+  - caption: Using the mystjs Library
+    chapters:
+      - file: consuming/basic
+      - file: consuming/mdast
+      - file: consuming/advanced
+  - caption: Extending MyST with mystjs
+    chapters:
+      - file: extending/roles
+      - file: extending/directives
+      - file: extending/advanced

@@ -1,0 +1,59 @@
+cases:
+  - title: CommonMark link reference
+    skip: true
+    mdast:
+      type: root
+      children:
+        - type: definition
+          identifier: 'key'
+          label: 'Key'
+          url: 'https://example.com'
+          title: example title
+    myst: |-
+      [Key]: https://example.com 'example title'
+    html:
+  - title: CommonMark auto link
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Search engine: '
+            - type: link
+              url: https://www.google.com
+              children:
+                - type: text
+                  value: https://www.google.com
+    myst: |-
+      Search engine: <https://www.google.com>
+    html: |-
+      <p>Search engine: <a href="https://www.google.com">https://www.google.com</a></p>
+  - title: CommonMark inline link
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: link
+              url: https://www.google.com
+              title: Google
+              children:
+                - type: text
+                  value: search engine
+    myst: |-
+      [search engine](https://www.google.com "Google")
+    html: |-
+      <p><a href="https://www.google.com" title="Google">search engine</a></p>
+  - title: CommonMark inline image
+    mdast:
+      type: root
+      children:
+        - type: image
+          url: src
+          alt: alt
+          title: title
+    myst: |-
+      ![alt](src "title")
+    html: |-
+      <img src="src" alt="alt" title="title">

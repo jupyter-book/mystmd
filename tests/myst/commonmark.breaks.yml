@@ -1,0 +1,40 @@
+cases:
+  - title: CommonMark hard breaks
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: hard
+            - type: break
+            - type: text
+              value: break
+    myst: |-
+      hard\
+      break
+    html: |-
+      <p>hard<br>break</p>
+  - title: CommonMark thematic breaks
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: thematic
+        - type: thematicBreak
+        - type: paragraph
+          children:
+            - type: text
+              value: break
+    myst: |-
+      thematic
+
+      ---
+
+      break
+    html: |-
+      <p>thematic</p>
+      <hr>
+      <p>break</p>

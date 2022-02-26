@@ -1,0 +1,17 @@
+cases:
+  - title: CommonMark block quote
+    mdast:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Super profound quote
+    myst: |-
+      > Super profound quote
+    html: |-
+      <blockquote>
+        <p>Super profound quote</p>
+      </blockquote>

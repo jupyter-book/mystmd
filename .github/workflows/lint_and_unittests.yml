@@ -2,65 +2,48 @@ name: CI
 
 on:
   push:
-    branches: [ main, ci-* ]
+    branches: [main, ci-*]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Cache packages
-      id: cache-npm
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-npm-${{ hashFiles('**/yarn.lock') }}
-        restore-keys:
-          ${{ runner.os }}-npm-
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
-    - name: install dependencies
-      run: |
-        yarn install
-    - name: lint
-      run: |
-        yarn run lint
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm install
+      - run: npm run lint
 
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [12.x, 14.x]
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Cache packages
-      id: cache-npm
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-npm-${{ hashFiles('**/yarn.lock') }}
-        restore-keys:
-          ${{ runner.os }}-npm-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - name: install dependencies
-      run: |
-        yarn install
-
-    - name: Run the tests and generate coverage reportst
-      run: |
-        yarn test --coverage
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-
-    - name: Run the build
-      run: yarn run build
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install
+      - name: Run the tests and generate coverage reportst
+        run: npm run test --coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+      - run: npm run build

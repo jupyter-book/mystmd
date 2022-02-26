@@ -1,0 +1,402 @@
+cases:
+  - title: Table figure reference with default numref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: contentReference
+              kind: numref
+              identifier: my-table
+              label: my-table
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          numbered: true
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Caption text'
+            - type: table
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Head 1
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1
+    myst: |-
+      see {numref}`my-table`
+
+      ```{list-table}  Caption text
+      :name: my-table
+
+      *   - Head 1
+      *   - Row 1
+    html: |-
+      <p>see <a href="#my-table">Table 1</a></p>
+      <figure id="my-table" class="numbered">
+        <figcaption>
+          <p><span class="caption-number">Table 1</span>Caption text</p>
+        </figcaption>
+        <table>
+          <thead>
+            <tr>
+              <th>Head 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Row 1</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+  - title: Table figure reference with custom numref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: contentReference
+              kind: numref
+              identifier: my-table
+              label: my-table
+              children:
+                - type: text
+                  value: T%s
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          numbered: true
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Caption text'
+            - type: table
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Head 1
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1
+    myst: |-
+      see {numref}`T%s <my-table>`
+
+      ```{list-table}  Caption text
+      :name: my-table
+
+      *   - Head 1
+      *   - Row 1
+    html: |-
+      <p>see <a href="#my-table">T1</a></p>
+      <figure id="my-table" class="numbered">
+        <figcaption>
+          <p><span class="caption-number">Table 1</span>Caption text</p>
+        </figcaption>
+        <table>
+          <thead>
+            <tr>
+              <th>Head 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Row 1</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+  - title: Table figure reference with default ref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: contentReference
+              kind: ref
+              identifier: my-table
+              label: my-table
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          numbered: true
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Caption text'
+            - type: table
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Head 1
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1
+    myst: |-
+      see {ref}`my-table`
+
+      ```{list-table}  Caption text
+      :name: my-table
+
+      *   - Head 1
+      *   - Row 1
+    html: |-
+      <p>see <a href="#my-table">Caption text</a></p>
+      <figure id="my-table" class="numbered">
+        <figcaption>
+          <p><span class="caption-number">Table 1</span>Caption text</p>
+        </figcaption>
+        <table>
+          <thead>
+            <tr>
+              <th>Head 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Row 1</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+  - title: Table figure reference with custom ref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: contentReference
+              kind: ref
+              identifier: my-table
+              label: my-table
+              children:
+                - type: text
+                  value: My Table
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          numbered: true
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Caption text'
+            - type: table
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Head 1
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1
+    myst: |-
+      see {ref}`My Table <my-table>`
+
+      ```{list-table}  Caption text
+      :name: my-table
+
+      *   - Head 1
+      *   - Row 1
+    html: |-
+      <p>see <a href="#my-table">My Table</a></p>
+      <figure id="my-table" class="numbered">
+        <figcaption>
+          <p><span class="caption-number">Table 1</span>Caption text</p>
+        </figcaption>
+        <table>
+          <thead>
+            <tr>
+              <th>Head 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Row 1</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+  - title: Link-style table figure reference with default ref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: link
+              url: my-table
+              children: []
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          numbered: true
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Caption text'
+            - type: table
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Head 1
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1
+    myst: |-
+      see [](my-table)
+
+      ```{list-table}  Caption text
+      :name: my-table
+
+      *   - Head 1
+      *   - Row 1
+    html: |-
+      <p>see <a href="#my-table">Caption text</a></p>
+      <figure id="my-table" class="numbered">
+        <figcaption>
+          <p><span class="caption-number">Table 1</span>Caption text</p>
+        </figcaption>
+        <table>
+          <thead>
+            <tr>
+              <th>Head 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Row 1</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+  - title: Link-style table figure reference with custom ref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: link
+              url: my-table
+              title: different title
+              children:
+                - type: text
+                  value: 'My '
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: Table
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          numbered: true
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Caption text'
+            - type: table
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Head 1
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1
+    myst: |-
+      see [My *Table*](my-table "different title")
+
+      ```{list-table}  Caption text
+      :name: my-table
+
+      *   - Head 1
+      *   - Row 1
+    html: |-
+      <p>see <a href="#my-table" title="different title">My <em>Table</em></a></p>
+      <figure id="my-table" class="numbered">
+        <figcaption>
+          <p><span class="caption-number">Table 1</span>Caption text</p>
+        </figcaption>
+        <table>
+          <thead>
+            <tr>
+              <th>Head 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Row 1</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>

@@ -1,0 +1,52 @@
+cases:
+  - title: Simple block
+    mdast:
+      type: root
+      children:
+        - type: block
+    myst: |-
+      +++
+    html: |-
+      <div class="block"></div>
+  - title: Block with metadata
+    mdast:
+      type: root
+      children:
+        - type: block
+          meta: '{"meta": "data"}'
+    myst: |-
+      +++ {"meta": "data"}
+    html: |-
+      <div class="block" data-block="{&#x22;meta&#x22;: &#x22;data&#x22;}"></div>
+  - title: Block with broken metadata
+    mdast:
+      type: root
+      children:
+        - type: block
+          meta: '{"meta: data}'
+    myst: |-
+      +++ {"meta: data}
+    html: |-
+      <div class="block" data-block="{&#x22;meta: data}"></div>
+
+  - title: Nested block parsing
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: heading
+              depth: 1
+              children:
+                - type: text
+                  value: Heading!
+        - type: block
+    myst: |-
+      +++
+      # Heading!
+      +++
+    html: |-
+      <div class="block">
+        <h1>Heading!</h1>
+      </div>
+      <div class="block"></div>

@@ -1,91 +1,138 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title><%= htmlWebpackPlugin.options.title %></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body{
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-    #input, #output{
-      position: absolute;
-      top: 48px;
-      height: calc(100vh - 50px);
-      width: calc(50vw - 10px);
-      border-radius: 0;
-      outline: none;
-    }
-    #input{
-      left: 0;
-    }
-    #output{
-      right: 0;
-      overflow-y: scroll;
-    }
-  </style>
-  <link rel="stylesheet" href="myst.css">
-</head>
-<body onload="init();">
-  <p>Examples:
-  <select id="examples">
-    <option value="example">Welcome to markdown-it-myst</option>
-    <option value="directives.admonitions">Admonition/Callout Examples</option>
-    <option value="markdown.basic">Basic Markdown</option>
-    <option value="math">Equations & Math</option>
-    <option value="math.ams">AMS Math</option>
-    <option value="blocks.target">Blocks Target</option>
-    <option value="blocks.comment">Blocks Comment</option>
-    <option value="blocks.break">Blocks Break</option>
-    <option value="roles.generic">Generic Roles</option>
-    <option value="roles.html">HTML Roles</option>
-  </select>
-  </p>
-  <textarea id="input"></textarea>
-  <article id="output"></article>
-  <script>
-    let input, output, examples, myst;
-    const cache = {};
-    function render() {
-      const html = myst.render(input.value);
-      output.innerHTML = html;
-      MathJax.typeset();
-    }
-    async function getFixture(name) {
-      if (!cache[name]) {
-        const response = await fetch(`fixtures/${name}.md`);
-        const dataArray = await response.body.getReader().read();
-        const fixture = new TextDecoder("utf-8").decode(dataArray.value);
-        cache[name] = fixture.split('\n.\n\n').map((s) => s.split('\n.\n').slice(0,2).join('\n\n')).join('\n\n');
+  <head>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
       }
-      input.value = cache[name];
-      render();
-    }
-    function init() {
-      myst = MyST();
-      input = document.getElementById('input');
-      output = document.getElementById('output');
-      examples = document.getElementById('examples');
-      input.value = '# Hello World'
-      input.onchange = render;
-      input.onkeyup = render;
-      examples.onchange = (e) => getFixture(e.target.value);
-      getFixture('example');
-    }
-    // Setup Mathjax
-    MathJax = {
-      tex: {
-        inlineMath: [['\\(', '\\)']],
-        displayMath: [['\\[', '\\]']],
-        processEnvironments: false,
-        processRefs: false,
-      },
-      svg: {
-        fontCache: 'global'
+      #input,
+      #output {
+        position: absolute;
+        top: 48px;
+        height: calc(100vh - 50px);
+        width: calc(50vw - 10px);
+        border-radius: 0;
+        outline: none;
       }
-    };
-  </script>
-  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-</body>
+      #input {
+        left: 0;
+      }
+      #output {
+        right: 0;
+        overflow-y: scroll;
+      }
+    </style>
+    <link rel="stylesheet" href="myst.css" />
+  </head>
+  <body onload="init();">
+    <textarea id="input">
+# `mystjs`
+
+{abbr}`MyST (Markedly Structured Text)` is a flavor of markdown inspired from the Sphinx ecosystem and {abbr}`RST (reStructured Text)`.
+
+(start)=
+## Getting Started
+
+You can create headings using between 1-6 `#`'s. For referencing content, there are two things you need!
+
+```myst
+(start)=
+## Getting Started
+
+A reference to {ref}`"start" <start>` or {ref}`start` which will use the title of the header.
+```
+
+A reference to {ref}`"start" <start>` or {ref}`start` (which is this section!) in the javascript implementation *only* looks to the current page's content. In Sphinx, these are cross-links across your entire documentation/book.
+
+You can also use [Markdown](start) links (i.e. `[Markdown](start)` with the reference id as the link).
+
+---
+
+## Admonitions
+
+```{admonition} Definition
+**Admonition**: An act or action of admonishing; authoritative counsel or warning. Mostly used in the 1800s and in [Sphinx documentation](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html).
+
+*Also known as* a **callout**.
+```
+
+Possible admonition types:
+* `attention`,
+* `caution`,
+* `danger`,
+* `error`,
+* `hint`,
+* `important`,
+* `note`,
+* `tip`,
+* `warning`,
+* `admonition`: Note this can take a `title` argument on the first line of the directive. This allows you to have a custom title.
+
+```{attention}
+This is an `attention` admonition. Try changing the directive to one of the options above.
+```
+
+## Figures
+
+```{figure} https://via.placeholder.com/150
+:name: placeholder
+
+A placeholder image!
+```
+
+You can see the the logo for JupyterBook in:
+* {ref}`Here <placeholder>`
+* {ref}`placeholder`
+* {numref}`placeholder`
+* {numref}`Figure %s <placeholder>`
+
+## Math
+
+$$y = m \times x + b$$ (line)
+
+You can see in {eq}`line` that there is math!
+</textarea
+    >
+    <article id="output"></article>
+    <script>
+      let input, output, examples, myst
+      const cache = {}
+      async function render() {
+        const html = await myst.render(input.value)
+        output.innerHTML = html
+        MathJax.typeset()
+      }
+      function init() {
+        myst = new MyST()
+        input = document.getElementById('input')
+        output = document.getElementById('output')
+        examples = document.getElementById('examples')
+        input.onchange = render
+        input.onkeyup = render
+        render()
+      }
+      // Setup Mathjax
+      MathJax = {
+        tex: {
+          inlineMath: [['\\(', '\\)']],
+          displayMath: [['\\[', '\\]']],
+          processEnvironments: false,
+          processRefs: false,
+        },
+        svg: {
+          fontCache: 'global',
+        },
+      }
+    </script>
+    <script
+      type="text/javascript"
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+    ></script>
+  </body>
 </html>

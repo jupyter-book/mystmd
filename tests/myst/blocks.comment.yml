@@ -1,0 +1,53 @@
+cases:
+  - title: Simple comment
+    mdast:
+      type: root
+      children:
+        - type: comment
+          value: A comment
+    myst: |-
+      % A comment
+    html: |-
+      <!--A comment-->
+  - title: Comment between paragraphs
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Something
+        - type: comment
+          value: A comment
+        - type: paragraph
+          children:
+            - type: text
+              value: Something else
+    myst: |-
+      Something
+      % A comment
+      Something else
+    html: |-
+      <p>Something</p><!--A comment-->
+      <p>Something else</p>
+  - title: Comment with script tag
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Something
+        - type: comment
+          value: A comment --> <script>
+        - type: paragraph
+          children:
+            - type: text
+              value: Something else
+    myst: |-
+      Something
+      % A comment --> <script>
+      Something else
+    html: |-
+      <p>Something</p><!--A comment --&#x3E; <script>-->
+      <p>Something else</p>

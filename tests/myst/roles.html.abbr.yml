@@ -1,0 +1,55 @@
+cases:
+  - title: Inline Abbreviation
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Well '
+            - type: abbreviation
+              title: Cascading Style Sheets
+              children:
+                - type: text
+                  value: CSS
+            - type: text
+              value: ' is cool?'
+    myst: |-
+      Well {abbr}`CSS (Cascading Style Sheets)` is cool?
+    html: |-
+      <p>Well <abbr title="Cascading Style Sheets">CSS</abbr> is cool?</p>
+
+  - title: Abbreviation Without Title
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Well '
+            - type: abbreviation
+              children:
+                - type: text
+                  value: CSS
+            - type: text
+              value: ' is cool?'
+    myst: |-
+      Well {abbr}`CSS` is cool?
+    html: |-
+      <p>Well <abbr>CSS</abbr> is cool?</p>
+
+  - title: Abbreviation with poor brackets
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: abbreviation
+              title: Sheets
+              children:
+                - type: text
+                  value: CSS (Cascading) Style
+    myst: |-
+      {abbr}`CSS (Cascading) Style( Sheets)`
+    html: |-
+      <p><abbr title="Sheets">CSS (Cascading) Style</abbr></p>

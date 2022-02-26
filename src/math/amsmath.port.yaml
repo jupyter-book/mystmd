@@ -1,5 +1,0 @@
-# https://github.com/executablebooks/mdit-py-plugins/blob/master/mdit_py_plugins/amsmath/__init__.py
-- package: mdit-py-plugins
-  commit: 2e7a012836ac98b04783eb36101b5b8df4c2f658
-  date: May 20, 2021
-  version: 0.2.8

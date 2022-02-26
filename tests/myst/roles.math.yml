@@ -1,0 +1,15 @@
+cases:
+  - title: Math role
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is genius '
+            - type: inlineMath
+              value: e=mc^2
+    myst: |-
+      This is genius {math}`e=mc^2`
+    html: |-
+      <p>This is genius <span class="math inline">e=mc^2</span></p>

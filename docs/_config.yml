@@ -1,10 +1,10 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: markdown-it-myst
+title: ''
 author: The Jupyter Book Community
 email: rowanc1@gmail.com
-logo: logo.png
+logo: _static/logo-wide.svg
 
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
@@ -16,14 +16,24 @@ latex:
   latex_documents:
     targetname: book.tex
 
+parse:
+  myst_enable_extensions:
+    - dollarmath
+    - linkify
+    - substitution
+    - colon_fence
+    - deflist
+
 # Information about where the book exists on the web
 repository:
-  url: https://github.com/executablebooks/markdown-it-myst  # Online location of your book
-  path_to_book: docs  # Optional path to your book, relative to the repository root
-  branch: main  # Which branch of the repository should be used when creating links (optional)
+  url: https://github.com/executablebooks/markdown-it-myst # Online location of your book
+  path_to_book: docs # Optional path to your book, relative to the repository root
+  branch: main # Which branch of the repository should be used when creating links (optional)
 
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
 html:
+  favicon: _static/logo-square.svg
   use_issues_button: true
   use_repository_button: true
+  home_page_in_navbar: false
