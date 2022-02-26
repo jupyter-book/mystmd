@@ -4,16 +4,16 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/mystjs/blob/master/LICENSE)
 [![CI](https://github.com/executablebooks/mystjs/workflows/CI/badge.svg)](https://github.com/executablebooks/mystjs/actions)
 [![docs](https://github.com/executablebooks/mystjs/workflows/docs/badge.svg)](https://executablebooks.github.io/mystjs)
-[![demo](https://img.shields.io/badge/live-demo-blue)](https://executablebooks.github.io/mystjs/demo/index.html)
 
-> :warning: **Note:** `mystjs` is alpha, expect changes! (January, 2021)
-
-A javascript parser for [MyST](https://myst-parser.readthedocs.io) based on [markdown-it](https://github.com/markdown-it/markdown-it)
+MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown. The main use case driving the development and design of MyST is [JupyterBook](https://jupyterbook.org/), which helps you create educational online textbooks and tutorials with Jupyter Notebooks and narrative content written in MyST. `mystjs` is a javascript parser for MyST markdown that brings these capabilities into a web-native environment.
 
 ## Goals
 
-- Provide a Javascript implementation of [MyST](https://myst-parser.readthedocs.io) markdown extensions
-  - Uses standard html for all known roles and directives, with no styling enforced or provided
+- Provide a Javascript implementation of MyST markdown
+- Parse MyST into a standardized AST, based on [mdast](https://github.com/syntax-tree/mdast).
+- Serialize `mdast` into a default HTML for all known roles and directives
+- Expose an opinionated set of `markdown-it` plugins, to be used in ecosystems that require `markdown-it` (e.g. vscode)
+- Expose extension points in MyST for new roles/directives
 - Provide functionality for cross-referencing that is usually completed by Sphinx (e.g. in the [Python implementation](https://github.com/executablebooks/MyST-Parser))
 
 ## Usage
@@ -27,7 +27,7 @@ In a node environment:
 ```javascript
 import { MyST } from 'mystjs';
 
-const myst = MyST();
+const myst = new MyST();
 const html = myst.render('# Hello to the world!');
 
 console.log(html);
@@ -45,7 +45,7 @@ In a browser:
     <div id="output"></div>
     <script>
       function init() {
-        const myst = MyST();
+        const myst = new mystjs.MyST();
         const html = myst.render('# Hello to the world!');
         document.getElementById('output').innerHTML = html;
       }
@@ -63,7 +63,7 @@ In a browser:
 - Math
   - role
   - directive (equations)
-  - dollar
+  - dollar math
   - amsmath
 - Tables
   - GFM
@@ -74,7 +74,6 @@ In a browser:
   - eq
   - links
   - Including numbering (single document)
-- Citations (parse only)
 - Code Directives
   - Code
   - Code blocks
@@ -82,7 +81,10 @@ In a browser:
 - Blocks
 - Comments
 - Targets
-- HTML: sub, sup, abbr
+- HTML:
+  - `sub`
+  - `sup`
+  - `abbr`
 - Definition List
 - Footnotes
 
@@ -93,6 +95,7 @@ Not yet complete:
 - margin
 - sidebar
 - colon fence
+- Citations
 - Bibliography
 - Epigraph
 - Glosary

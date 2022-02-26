@@ -1,6 +1,6 @@
 # Overview
 
-MyST (Markedly Structured Text) is designed to create publication-quality, computational documents written entirely in Markdown. The main use case driving the development and design of MyST is [JupyterBook](https://jupyterbook.org/), which helps you create educational online textbooks and tutorials with Jupyter Notebooks and narrative content written in MyST. The documentation engine that is used for JupyterBook is [Sphinx](https://www.sphinx-doc.org/): a widely used tool for Python documentation based on [ReStructured Text](https://docutils.sourceforge.io/rst.html) (RST).
+MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown. The main use case driving the development and design of MyST is [JupyterBook](https://jupyterbook.org/), which helps you create educational online textbooks and tutorials with Jupyter Notebooks and narrative content written in MyST. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [ReStructured Text](https://docutils.sourceforge.io/rst.html) (RST) ecosystems.
 
 > MyST is designed to harness the extensibility and community of RST and bring these super-powers into Markdown.
 

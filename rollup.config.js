@@ -18,13 +18,13 @@ export default {
     {
       file: 'dist/index.umd.js',
       format: 'umd', // commonJS
-      name: 'myst', // window.name if script loaded directly in browser
+      name: 'mystjs', // window.name if script loaded directly in browser
       sourcemap: true,
     },
     {
       file: 'dist/index.umd.min.js',
       format: 'umd',
-      name: 'myst',
+      name: 'mystjs',
       plugins: [terser()],
       sourcemap: true,
     },
