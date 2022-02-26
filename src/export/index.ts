@@ -6,4 +6,5 @@ export * from './notebook';
 export * from './jupyter-book';
 export * from './model';
 export * from './utils';
-export * from './multi';
+export * from './multiple';
+export * from './types';

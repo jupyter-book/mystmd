@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import { sync as which } from 'which';
 import YAML from 'yaml';
 import { Template } from '../../models';
@@ -6,7 +7,7 @@ import { ISession } from '../../session/types';
 import { TexExportOptions } from './types';
 
 export function throwIfTemplateButNoJtex(opts: TexExportOptions) {
-  if (opts.template && !which('jtex', { nothrow: true })) {
+  if ((opts.template || opts.templatePath) && !which('jtex', { nothrow: true })) {
     throw new Error(
       'A template option was specified but the `jtex` command was not found on the path.\nTry `pip install jtex`!',
     );
@@ -30,7 +31,17 @@ export async function ifTemplateFetchTaggedBlocks(
     session.log.debug(
       `Template: '${opts.template}' supports following tagged content: ${tagged.join(', ')}`,
     );
+  } else if (opts.templatePath) {
+    const templateYml = path.join(opts.templatePath, 'template.yml');
+    if (fs.existsSync(templateYml)) {
+      const template = YAML.parse(fs.readFileSync(templateYml, 'utf-8'));
+      tagged = template.config.tagged.map((t: { id: string }) => t.id);
+      session.log.debug(
+        `Template: '${opts.templatePath}' supports following tagged content: ${tagged.join(', ')}`,
+      );
+    }
   }
+
   return { tagged };
 }
 

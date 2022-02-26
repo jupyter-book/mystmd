@@ -5,7 +5,9 @@ export interface ExportConfig {
   kind: ExportableFormatTypes;
   project: string;
   folder: string;
-  template: string;
+  filename?: string;
+  template?: string;
+  templatePath?: string;
   contents: { name?: string; link?: string; version?: number }[];
   data: {
     title?: string;
@@ -18,7 +20,7 @@ export interface ExportConfig {
       corresponding?: boolean;
       email?: string;
     }[];
-  };
+  } & Record<string, any>;
 }
 
 export interface Config {

@@ -1,15 +1,14 @@
 import fs from 'fs';
 import YAML from 'yaml';
 import path from 'path';
-import { ISession } from 'session';
-import { Logger } from 'logging';
-import { ArticleFormatTypes, Blocks } from '@curvenote/blocks';
+import { ArticleFormatTypes } from '@curvenote/blocks';
+import { ISession } from '../session';
+import { Logger } from '../logging';
 import { projectIdFromLink } from './utils';
 import { Project } from '../models';
-import { getLatestVersion } from '../actions/getLatest';
 import { Config } from './types';
-import { multiArticleToTex } from './tex';
-import { TexExportOptions } from './tex/types';
+import { multipleArticleToTex } from './tex';
+import { multipleArticleToPdf } from './pdf';
 
 function validate(config: Config) {
   // TODO check against a schema & throw if bad
@@ -53,22 +52,16 @@ export async function exportContent(session: ISession, pathToYml: string) {
       const projectId = projectIdFromLink(session, job.project);
 
       // eslint-disable-next-line no-await-in-loop
-      const [project, { version: nav }] = await Promise.all([
-        new Project(session, projectId).get(),
-        getLatestVersion<Blocks.Navigation>(session, { project: projectId, block: 'nav' }),
-      ]);
+      const project = await new Project(session, projectId).get();
       session.log.debug(`Project access confirmed for: ${project.data.name}`);
 
       switch (job.kind) {
         case ArticleFormatTypes.tex:
-          {
-            // TODO take other options from Config?
-            multiArticleToTex(session, project, job, configPath);
-          }
+          // TODO take other options from Config?
+          multipleArticleToTex(session, project, job, configPath);
           break;
         case ArticleFormatTypes.pdf:
-          {
-          }
+          multipleArticleToPdf(session, project, job, configPath);
           break;
         default:
           session.log.info(`Export job for format ${job.kind} no supported, skipping`);

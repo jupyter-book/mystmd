@@ -93,8 +93,10 @@ export async function ifTemplateRunJtex(
   opts: TexExportOptions,
 ) {
   // run templating
-  if (opts.template) {
-    const CMD = `jtex render ${contentTexFile}`;
+  if (opts.template || opts.templatePath) {
+    const STUB = `jtex render ${contentTexFile}`;
+    const CMD = opts.templatePath ? `${STUB} --template-path ${opts.templatePath}` : STUB;
+
     try {
       log.debug('Running JTEX');
       const jtex = makeExecutable(CMD, log);
