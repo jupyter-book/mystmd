@@ -1,17 +1,20 @@
-.PHONY: build serve watch
+.PHONY: build build-watch serve watch fix-default-js
+
+fix-default-js:
+	# Disables the arrow key navigation which doesn't work with shaddow-dom input boxes
+	sed -i.bak "s/NAVIGATION_WITH_KEYS: true/NAVIGATION_WITH_KEYS: false/g" ./_build/html/_static/documentation_options.js
+	rm ./_build/html/_static/documentation_options.js.bak
 
 build:
 	cd ..; npm run build
-	jupyter-book build .
-	rm -r _build/html/demo | true;
-	cp -r ../dist _build/html/demo
 	cp ../dist/index.umd.min.js _static/myst.min.js
-	sed -i '' "s/NAVIGATION_WITH_KEYS: true/NAVIGATION_WITH_KEYS: false/g" _build/html/_static/documentation_options.js
+	jupyter-book build .
+	make fix-default-js
 
 build-watch:
 	jupyter-book build .
 	cp ../dist/index.umd.min.js _build/html/_static/myst.min.js
-	sed -i '' "s/NAVIGATION_WITH_KEYS: true/NAVIGATION_WITH_KEYS: false/g" _build/html/_static/documentation_options.js
+	make fix-default-js
 
 watch: clean
 	make build
