@@ -1,6 +1,30 @@
-# Welcome to Remix!
+# Curvespace
 
-- [Remix Docs](https://remix.run/docs)
+Curvespace is designed for modern technical communication that is interactive, computational, and linked to data.
+You can create and serve a local website to write your documentation, paper, thesis, or blog.
+
+- [Curvenote Docs](https://cli.curvenote.dev)
+
+## Development
+
+To run your app locally, make sure your project's local dependencies are installed:
+
+```sh
+npm install
+```
+
+Afterwards, start the development server like so:
+
+```sh
+npm run dev
+```
+
+Open up [http://localhost:3000](http://localhost:3000) and you should be ready to go!
+
+## Architecture
+
+Curvespace uses [Remix](https://remix.run) for the server, to learn more see the [Remix Docs](https://remix.run/docs).
+We have chosen Remix as it is blazing fast, built on web-standards, and can also work without Javascript.
 
 ## Deployment
 
@@ -14,21 +38,3 @@ vercel
 ```
 
 It is generally recommended to use a Git repository, because future commits will then automatically be deployed by Vercel, through its [Git Integration](https://vercel.com/docs/concepts/git).
-
-## Development
-
-To run your Remix app locally, make sure your project's local dependencies are installed:
-
-```sh
-npm install
-```
-
-Afterwards, start the Remix development server like so:
-
-```sh
-npm run dev
-```
-
-Open up [http://localhost:3000](http://localhost:3000) and you should be ready to go!
-
-If you're used to using the `vercel dev` command provided by [Vercel CLI](https://vercel.com/cli) instead, you can also use that, but it's not needed.
