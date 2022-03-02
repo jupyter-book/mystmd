@@ -54,7 +54,10 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
     name: block.data.name,
     oxa: oxaLink('', block.id),
   });
-  let file = `---\n${metadata}---\n\n${content.join('\n\n')}`;
+  // TODO: Remove the title when Jupyter Book allows title to be defined in the yaml.
+  // https://github.com/executablebooks/MyST-Parser/pull/492
+  const titleString = `---\n${metadata}---\n\n# ${block.data.title}\n\n`;
+  let file = titleString + content.join('\n\n');
   if (Object.keys(article.references).length > 0) {
     file += '\n\n### References\n\n```{bibliography}\n:filter: docname in docnames\n```';
   }
