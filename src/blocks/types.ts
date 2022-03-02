@@ -303,7 +303,56 @@ export enum XClientName {
   javascript = 'Curvenote Javascript Client',
 }
 
-export type Author = { plain: string; user: null } | { user: string; plain: null };
+
+
+export enum WellKnowContributorRoles {
+  Conceptualization = 'Conceptualization',
+  DataCuration = 'Data curation',
+  FormalAnalysis = 'Formal analysis',
+  FundingAcquisition = 'Funding acquisition',
+  Investigation = 'Investigation',
+  Methodology = 'Methodology',
+  ProjectAdministration = 'Project administration',
+  Resources = 'Resources',
+  Software = 'Software',
+  Supervision = 'Supervision',
+  Validation = 'Validation',
+  Visualization = 'Visualization',
+  WritingOriginalDraft = 'Writing – original draft',
+  WritingReviewEditing = 'Writing – review & editing',
+}
+export const DEFAULT_CONTRIBUTION_ROLES: WellKnowContributorRoles[] = [
+  WellKnowContributorRoles.Conceptualization,
+  WellKnowContributorRoles.DataCuration,
+  WellKnowContributorRoles.FormalAnalysis,
+  WellKnowContributorRoles.FundingAcquisition,
+  WellKnowContributorRoles.Investigation,
+  WellKnowContributorRoles.Methodology,
+  WellKnowContributorRoles.ProjectAdministration,
+  WellKnowContributorRoles.Resources,
+  WellKnowContributorRoles.Software,
+  WellKnowContributorRoles.Supervision,
+  WellKnowContributorRoles.Validation,
+  WellKnowContributorRoles.Visualization,
+  WellKnowContributorRoles.WritingOriginalDraft,
+  WellKnowContributorRoles.WritingReviewEditing,
+];
+
+export interface Affiliation {
+  id: string;
+  text: string;
+}
+
+export interface Author {
+  id: string;
+  name: string | null;
+  userId: string | null;
+  orcid: string | null;
+  corresponding: boolean;
+  email: string | null;
+  roles: WellKnowContributorRoles | string | null;
+  affiliations: string[];
+}
 
 export enum ArtifactStatus {
   'processing' = 'processing',
