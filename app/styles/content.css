@@ -1,0 +1,59 @@
+html {
+  scroll-padding-top: 80px;
+}
+cite {
+  font-style: normal;
+  color: var(--text-secondary);
+}
+cite:hover {
+  color: var(--text-primary);
+}
+.cite-group {
+  color: var(--text-secondary);
+}
+.cite-group cite::after {
+  content: '\;\00a0';
+}
+.cite-group > span:last-of-type cite::after {
+  content: '';
+}
+.cite-group:before {
+  content: '(';
+}
+.cite-group:after {
+  content: ')';
+}
+pre > code > span[data-line-number] {
+  display: block;
+  position: relative;
+  line-height: 1.4rem;
+  padding-right: 1rem;
+}
+pre > code > span[data-highlight='true']::after {
+  content: ' ';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  opacity: 0.12;
+  pointer-events: none;
+  background: #5ca5ee;
+}
+pre > code > span > .linenumber {
+  border-left: 4px solid transparent;
+}
+pre > code > span[data-highlight='true'] > .linenumber {
+  border-left: 4px solid #5ca5ee;
+}
+r-var {
+  display: none;
+}
+r-dynamic {
+  color: #286df7;
+  border-bottom: dotted 1px #285bc1;
+}
+.caption-number {
+  font-weight: 700;
+  margin-right: 0.5em;
+  user-select: none;
+}

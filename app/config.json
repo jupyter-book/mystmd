@@ -1,0 +1,19 @@
+{
+  "site": {
+    "name": "Curvenote",
+    "sections": [{ "title": "Explorables", "folder": "interactive" }],
+    "actions": [
+      { "title": "Log In", "url": "" },
+      { "title": "Sign Up", "url": "" }
+    ],
+    "logo": "/logo.svg",
+    "logoText": "Curvenote"
+  },
+  "folders": {
+    "interactive": {
+      "title": "Curvenote",
+      "index": "test",
+      "pages": [{ "slug": "test", "title": "Test", "level": 1 }]
+    }
+  }
+}
