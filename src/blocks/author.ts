@@ -1,13 +1,14 @@
 import { Author } from "./types";
 
+
 const DEFAULT_AUTHOR: Author = {
   id: '',
   name: null,
   userId: null,
   orcid: null,
-  corresponding: false,
+  corresponding: null,
   email: null,
-  roles: null,
+  roles: [],
   affiliations: []
 }
 

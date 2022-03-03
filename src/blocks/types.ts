@@ -343,14 +343,16 @@ export interface Affiliation {
   text: string;
 }
 
+export type AuthorRoles = WellKnowContributorRoles | string | null;
+
 export interface Author {
   id: string;
   name: string | null;
   userId: string | null;
   orcid: string | null;
-  corresponding: boolean;
+  corresponding: string | null;
   email: string | null;
-  roles: WellKnowContributorRoles | string | null;
+  roles: AuthorRoles[];
   affiliations: string[];
 }
 
