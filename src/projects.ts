@@ -1,6 +1,6 @@
 import { JsonObject, BaseLinks } from './types';
 import { getDate } from './helpers';
-import { CitationStyles, CustomizableReferenceKind } from './blocks/types';
+import { CitationStyles, CustomizableReferenceKind, Affiliation } from './blocks/types';
 
 export interface ProjectLinks extends BaseLinks {
   thumbnail?: string;
@@ -17,6 +17,7 @@ export interface PartialProject {
   title: string;
   description: string;
   visibility: ProjectVisibility;
+  affiliations: Affiliation[];
   settings: {
     citation_style: CitationStyles;
     reference_labels: ReferenceLabelMap;
@@ -69,6 +70,7 @@ export function projectFromDTO(projectId: ProjectId, json: JsonObject): Project 
     title: json.title ?? '',
     description: json.description ?? '',
     visibility: json.visibility ?? ProjectVisibility.private,
+    affiliations: json.affiliations ?? [],
     date_created: getDate(json.date_created),
     date_modified: getDate(json.date_modified),
     settings: projectSettingsFromDTO(json.settings),
