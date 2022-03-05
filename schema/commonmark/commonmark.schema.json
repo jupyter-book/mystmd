@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/commonmark.schema.json",
+  "description": "Basic commonmark types for myst mdast",
+  "$defs": {
+    "Text": {
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "const": "text"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Paragraph": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": {
+          "const": "paragraph"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "mdast.schema.json#/$defs/PhrasingContent"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Heading": {
+      "type": "object",
+      "required": ["type", "depth", "children"],
+      "properties": {
+        "type": {
+          "const": "heading"
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "mdast.schema.json#/$defs/PhrasingContent"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "ThematicBreak": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "const": "thematicBreak"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
