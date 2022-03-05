@@ -1,0 +1,18 @@
+cases:
+  - title: empty mdast document
+    mdast:
+      type: root
+      children: []
+    myst: ''
+    html: ''
+  - title: invalid mdast document type
+    invalid: true
+    mdast:
+      type: paragraph
+      children: []
+  - title: invalid mdast document property
+    invalid: true
+    mdast:
+      type: root
+      children: []
+      extra: property

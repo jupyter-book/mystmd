@@ -1,0 +1,58 @@
+cases:
+  - title: text node
+    mdast:
+      type: root
+      children:
+        - type: text
+          value: Hello world!
+  - title: paragraph node
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Hello world!
+  - title: paragraph node - invalid nesting
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: paragraph
+              children: []
+  - title: heading node
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: Hello world!
+  - title: heading node - invalid depth
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 7
+          children:
+            - type: text
+              value: Hello world!
+  - title: heading node - invalid children
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 7
+          children:
+            - type: paragraph
+              children: []
+  - title: thematic break
+    mdast:
+      type: root
+      children:
+        - type: thematicBreak
