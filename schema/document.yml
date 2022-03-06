@@ -1,18 +1,12 @@
 cases:
-  - title: empty mdast document
+  - title: root node - empty
     mdast:
       type: root
       children: []
     myst: ''
     html: ''
-  - title: invalid mdast document type
+  - title: root node - invalid type
     invalid: true
     mdast:
       type: paragraph
       children: []
-  - title: invalid mdast document property
-    invalid: true
-    mdast:
-      type: root
-      children: []
-      extra: property

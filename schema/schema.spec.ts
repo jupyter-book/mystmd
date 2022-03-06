@@ -3,12 +3,15 @@ import path from 'path';
 import yaml from 'js-yaml';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
-import mdastSchema from './mdast.schema.json';
+
+import mystSchema from './myst.schema.json';
+import unistSchema from './unist/unist.schema.json';
 import commonmarkSchema from './commonmark/commonmark.schema.json';
 
 const ajv = new Ajv();
 addFormats(ajv); // allows {"format": "uri"}
-ajv.addSchema(mdastSchema);
+ajv.addSchema(mystSchema);
+ajv.addSchema(unistSchema);
 ajv.addSchema(commonmarkSchema);
 
 type TestFile = {
@@ -68,17 +71,13 @@ const cases: [string, TestCase][] = files
 
 describe('Valid Schema Tests', () => {
   test.each(cases)('%s', (_, { mdast }) => {
-    try {
-      expect(ajv.validate(mdastSchema, mdast)).toBeTruthy();
-    } catch (e) {
-      throw new Error(JSON.stringify(ajv.errors, null, 2));
-    }
+    expect(ajv.validate(mystSchema, mdast)).toBeTruthy();
   });
 });
 
 describe('Invalid Schema Tests', () => {
   test.each(invalid)('%s', (_, { mdast }) => {
-    expect(ajv.validate(mdastSchema, mdast)).toBeFalsy();
+    expect(ajv.validate(mystSchema, mdast)).toBeFalsy();
   });
 });
 

@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/unist.schema.json",
+  "description": "Existing unist primitives for myst mdast - https://github.com/syntax-tree/unist",
+  "$defs": {
+    "Node": {
+      "description": "base unist node",
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "description": "identifier for node variant",
+          "type": "string"
+        },
+        "data": {
+          "description": "information associated by the ecosystem with the node; never specified by mdast",
+          "type": "object"
+        },
+        "position": {
+          "description": "location of node in source file; must not be present for generated nodes",
+          "$ref": "#/$defs/Position"
+        }
+      }
+    },
+    "Literal": {
+      "description": "basic node with string value",
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/Node"
+        }
+      ]
+    },
+    "Point": {
+      "description": "one place in a source file",
+      "type": "object",
+      "required": ["line", "column"],
+      "properties": {
+        "line": {
+          "description": "line in the source file, 1-indexed",
+          "type": "integer",
+          "minimum": 1
+        },
+        "column": {
+          "description": "column in the source file, 1-indexed",
+          "type": "integer",
+          "minimum": 1
+        },
+        "offset": {
+          "description": "offset character in the source file, 0-indexed",
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "Position": {
+      "description": "location of a node in a source file",
+      "type": "object",
+      "required": ["start", "end"],
+      "properties": {
+        "start": {
+          "description": "place of first character of parsed source region",
+          "$ref": "#/$defs/Point"
+        },
+        "end": {
+          "description": "place of first character after parsed source region, whether it exists or not",
+          "$ref": "#/$defs/Point"
+        },
+        "indent": {
+          "description": "start column at each index in the source region, for elements that span multiple lines",
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

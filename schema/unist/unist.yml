@@ -1,0 +1,34 @@
+cases:
+  - title: unist - node metadata
+    mdast:
+      type: root
+      children: []
+      position:
+        start:
+          line: 1
+          column: 1
+          offset: 0
+        end:
+          line: 10
+          column: 10
+          offset: 0
+        indent: 2
+      data:
+        meta: data
+  - title: unist - invalid node metadata
+    invalid: true
+    mdast:
+      type: root
+      children: []
+      position:
+        start:
+          line: 0
+          column: 1
+          offset: 0
+        end:
+          line: 10
+          column: 10
+          offset: 0
+        indent: 2
+      data:
+        meta: data
