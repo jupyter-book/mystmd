@@ -128,7 +128,14 @@
         "children": {
           "type": "array",
           "items": {
-            "$ref": "myst.schema.json#/$defs/FlowContent"
+            "anyOf": [
+              {
+                "$ref": "myst.schema.json#/$defs/PhrasingContent"
+              },
+              {
+                "$ref": "myst.schema.json#/$defs/FlowContent"
+              }
+            ]
           }
         }
       },
@@ -429,7 +436,7 @@
       "properties": {
         "url": {
           "type": "string",
-          "format": "uri"
+          "format": "uri-reference"
         },
         "title": {
           "description": "advisory information, e.g. for a tooltip",
