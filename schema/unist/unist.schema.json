@@ -31,11 +31,7 @@
           "type": "string"
         }
       },
-      "allOf": [
-        {
-          "$ref": "#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "#/$defs/Node" }]
     },
     "Point": {
       "description": "one place in a source file",

@@ -17,11 +17,7 @@
           }
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "Heading": {
       "type": "object",
@@ -42,11 +38,7 @@
           }
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "ThematicBreak": {
       "type": "object",
@@ -56,11 +48,7 @@
           "const": "thematicBreak"
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "Blockquote": {
       "type": "object",
@@ -76,11 +64,7 @@
           }
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "List": {
       "type": "object",
@@ -108,11 +92,7 @@
           }
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "ListItem": {
       "type": "object",
@@ -129,21 +109,13 @@
           "type": "array",
           "items": {
             "anyOf": [
-              {
-                "$ref": "myst.schema.json#/$defs/PhrasingContent"
-              },
-              {
-                "$ref": "myst.schema.json#/$defs/FlowContent"
-              }
+              { "$ref": "myst.schema.json#/$defs/PhrasingContent" },
+              { "$ref": "myst.schema.json#/$defs/FlowContent" }
             ]
           }
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "HTML": {
       "description": "Fragment of raw HTML - does not need to be valid or complete",
@@ -154,11 +126,7 @@
           "const": "html"
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Literal"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
     },
     "Code": {
       "description": "block of preformatted text",
@@ -184,11 +152,7 @@
         "required": ["lang"]
       },
       "else": {},
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Literal"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
     },
     "Definition": {
       "description": "reference to a url resource",
@@ -200,15 +164,9 @@
         }
       },
       "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        },
-        {
-          "$ref": "#/$defs/Association"
-        },
-        {
-          "$ref": "#/$defs/Resource"
-        }
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "#/$defs/Association" },
+        { "$ref": "#/$defs/Resource" }
       ]
     },
     "Text": {
@@ -219,11 +177,7 @@
           "const": "text"
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Literal"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
     },
     "Emphasis": {
       "description": "stressed, italicized content",
@@ -240,11 +194,7 @@
           }
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "EmphasisStatic": {
       "description": "stressed, italicized content, with static children; used when parent node requires static content",
@@ -261,11 +211,7 @@
           }
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "Strong": {
       "description": "important, serious, urgent, bold content",
@@ -282,11 +228,7 @@
           }
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "StrongStatic": {
       "description": "important, serious, urgent, bold content, with static children; used when parent node requires static content",
@@ -303,11 +245,7 @@
           }
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "InlineCode": {
       "description": "fragment of code",
@@ -318,11 +256,7 @@
           "const": "inlineCode"
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Literal"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
     },
     "Break": {
       "description": "line break",
@@ -333,11 +267,7 @@
           "const": "break"
         }
       },
-      "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        }
-      ]
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "Link": {
       "description": "hyperlink",
@@ -355,12 +285,8 @@
         }
       },
       "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        },
-        {
-          "$ref": "#/$defs/Resource"
-        }
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "#/$defs/Resource" }
       ]
     },
     "Image": {
@@ -373,15 +299,9 @@
         }
       },
       "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        },
-        {
-          "$ref": "#/$defs/Resource"
-        },
-        {
-          "$ref": "#/$defs/Alternative"
-        }
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "#/$defs/Resource" },
+        { "$ref": "#/$defs/Alternative" }
       ]
     },
     "LinkReference": {
@@ -400,12 +320,8 @@
         }
       },
       "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        },
-        {
-          "$ref": "#/$defs/Reference"
-        }
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "#/$defs/Reference" }
       ]
     },
     "ImageReference": {
@@ -418,15 +334,9 @@
         }
       },
       "allOf": [
-        {
-          "$ref": "unist.schema.json#/$defs/Node"
-        },
-        {
-          "$ref": "#/$defs/Reference"
-        },
-        {
-          "$ref": "#/$defs/Alternative"
-        }
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "#/$defs/Reference" },
+        { "$ref": "#/$defs/Alternative" }
       ]
     },
     "Resource": {
@@ -480,11 +390,7 @@
           "enum": ["shortcut", "collapsed", "full"]
         }
       },
-      "allOf": [
-        {
-          "$ref": "#/$defs/Association"
-        }
-      ]
+      "allOf": [{ "$ref": "#/$defs/Association" }]
     }
   }
 }
