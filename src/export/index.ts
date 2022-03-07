@@ -6,3 +6,5 @@ export * from './notebook';
 export * from './jupyter-book';
 export * from './model';
 export * from './utils';
+export * from './multiple';
+export * from './types';

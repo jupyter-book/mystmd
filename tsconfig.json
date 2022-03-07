@@ -9,10 +9,10 @@
     "lib": ["es2019"],
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": "src",
     "typeRoots": ["./types", "./node_modules/@types", "../../node_modules/@types"],
     "resolveJsonModule": true,
     "declaration": true,
+    "baseUrl": "src",
     "skipLibCheck": true
   },
   "include": ["src"],

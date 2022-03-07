@@ -30,7 +30,9 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/naming-convention": "off",
-    "react/destructuring-assignment": "off"
+    "react/destructuring-assignment": "off",
+    "no-resticted-syntax": "off",
+    "no-await-in-loop": "off"
   },
   "settings": {
     "import/resolver": {
