@@ -41,7 +41,7 @@ export function ThemeProvider({
       const xmlhttp = new XMLHttpRequest();
       xmlhttp.open('POST', '/action/set-theme');
       xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-      xmlhttp.send(JSON.stringify({ theme }));
+      xmlhttp.send(JSON.stringify({ theme: next }));
       setTheme(next);
     },
     [theme],
