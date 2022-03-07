@@ -32,18 +32,18 @@ pre > code > span[data-line-number] {
 pre > code > span[data-highlight='true']::after {
   content: ' ';
   position: absolute;
-  left: 0;
+  right: -0.8rem;
   top: 0;
-  width: 100%;
-  opacity: 0.12;
+  width: calc(100% + 1.6rem);
+  opacity: 0.1;
   pointer-events: none;
   background: #5ca5ee;
 }
 pre > code > span > .linenumber {
-  border-left: 4px solid transparent;
+  color: rgb(128, 128, 128);
 }
 pre > code > span[data-highlight='true'] > .linenumber {
-  border-left: 4px solid #5ca5ee;
+  color: #5ca5ee;
 }
 r-var {
   display: none;

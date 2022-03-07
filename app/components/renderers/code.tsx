@@ -41,7 +41,7 @@ export function CodeBlock(props: Props) {
             } as any)
           : ({ 'data-line-number': `${line}` } as any);
       }}
-      customStyle={{ padding: showLineNumbers ? '0.8rem 0' : '0.8rem' }}
+      customStyle={{ padding: '0.8rem' }}
     >
       {children}
     </SyntaxHighlighter>

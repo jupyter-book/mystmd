@@ -1,7 +1,7 @@
+import { Link } from 'remix';
 import { ThemeButton } from './ThemeButton';
 import config from '~/config.json';
 import { getFolder } from '../utils/params';
-import { Link } from 'remix';
 
 export function TopNav() {
   const { logo, logoText, sections, actions } = config.site;
