@@ -12,12 +12,10 @@ export async function localizeAndProcessImages(
   buildPath: string,
 ): Promise<Record<string, string>> {
   session.log.debug('Start localizing images..');
-  const imageFilenames = await writeImagesToFiles(
-    session.log,
-    article.images,
-    opts?.images ?? 'images',
+  const imageFilenames = await writeImagesToFiles(session.log, article.images, {
+    basePath: opts?.images ?? 'images',
     buildPath,
-  );
+  });
 
   session.log.debug('Processing GIFS if present...');
   const gifs = filterFilenamesByExtension(imageFilenames, '.gif');
