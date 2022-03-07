@@ -33,6 +33,7 @@ export function CodeBlock(props: Props) {
         borderLeft: '4px solid transparent',
       }}
       lineProps={(line) => {
+        if (typeof line === 'boolean') return {};
         return highlightLines.has(line)
           ? ({
               'data-line-number': `${line}`,
