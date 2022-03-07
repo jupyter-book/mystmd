@@ -9,10 +9,7 @@ export function isTheme(value: unknown): value is Theme {
   return typeof value === 'string' && Object.values(Theme).includes(value as Theme);
 }
 
-type ThemeContextType = [
-  Theme | null,
-  React.Dispatch<React.SetStateAction<Theme | null>>,
-];
+type ThemeContextType = [Theme | null, (theme: Theme) => void];
 
 const ThemeContext = React.createContext<ThemeContextType | undefined>(undefined);
 ThemeContext.displayName = 'ThemeContext';
@@ -35,16 +32,23 @@ export function ThemeProvider({
     return window.matchMedia(prefersLightMQ).matches ? Theme.light : Theme.dark;
   });
 
-  React.useEffect(() => {
-    if (!theme || theme === startingTheme) return;
-    const xmlhttp = new XMLHttpRequest();
-    xmlhttp.open('POST', '/action/set-theme');
-    xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-    xmlhttp.send(JSON.stringify({ theme }));
-  }, [theme]);
+  const nextTheme = React.useCallback(
+    (next: Theme) => {
+      if (!next || next === theme || !isTheme(next)) return;
+      if (typeof document !== 'undefined') {
+        document.getElementsByTagName('html')[0].className = next;
+      }
+      const xmlhttp = new XMLHttpRequest();
+      xmlhttp.open('POST', '/action/set-theme');
+      xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+      xmlhttp.send(JSON.stringify({ theme }));
+      setTheme(next);
+    },
+    [theme],
+  );
 
   return (
-    <ThemeContext.Provider value={[theme, setTheme]}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={[theme, nextTheme]}>{children}</ThemeContext.Provider>
   );
 }
 
@@ -56,12 +60,9 @@ export function useTheme() {
   const [theme, setTheme] = context;
   const isDark = theme === Theme.dark;
   const isLight = theme === Theme.light;
-  function nextTheme() {
+  const nextTheme = React.useCallback(() => {
     const next = theme === Theme.light ? Theme.dark : Theme.light;
-    if (typeof document !== 'undefined') {
-      document.getElementsByTagName('html')[0].className = next;
-    }
     setTheme(next);
-  }
+  }, [theme]);
   return { theme, isLight, isDark, setTheme, nextTheme };
 }
