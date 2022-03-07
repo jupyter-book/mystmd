@@ -8,17 +8,18 @@ import { NodeTypes } from 'myst-util-to-react';
 type Props = {
   children: string;
   lang?: string;
+  showLineNumbers?: boolean;
   emphasizeLines?: number[];
 };
 
 export function CodeBlock(props: Props) {
   const { isLight } = useTheme();
-  const { children, lang, emphasizeLines } = props;
+  const { children, lang, emphasizeLines, showLineNumbers } = props;
   const highlightLines = new Set(emphasizeLines);
   return (
     <SyntaxHighlighter
       language={lang}
-      showLineNumbers
+      showLineNumbers={showLineNumbers}
       style={isLight ? light : dark}
       wrapLines
       lineNumberContainerStyle={{
@@ -39,7 +40,7 @@ export function CodeBlock(props: Props) {
             } as any)
           : ({ 'data-line-number': `${line}` } as any);
       }}
-      customStyle={{ padding: '0.8rem 0' }}
+      customStyle={{ padding: showLineNumbers ? '0.8rem 0' : '0.8rem' }}
     >
       {children}
     </SyntaxHighlighter>
@@ -49,8 +50,12 @@ export function CodeBlock(props: Props) {
 export const codeRenderers: NodeTypes = {
   code(node: GenericNode) {
     return (
-      <div key={node.key} className="rounded shadow-md dark:shadow-2xl my-8">
-        <CodeBlock lang={node.lang} emphasizeLines={node.emphasizeLines}>
+      <div key={node.key} className="not-prose rounded shadow-md dark:shadow-2xl my-8">
+        <CodeBlock
+          lang={node.lang}
+          emphasizeLines={node.emphasizeLines}
+          showLineNumbers={node.showLineNumbers}
+        >
           {node.value || ''}
         </CodeBlock>
       </div>

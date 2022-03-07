@@ -12,5 +12,17 @@ module.exports = {
   // assetsBuildDirectory: "public/build",
   // serverBuildPath: "api/index.js",
   // publicPath: "/build/",
-  // devServerPort: 8002
+  // devServerPort: 8002,
+  serverDependenciesToBundle: [
+    /^rehype.*/,
+    /^remark.*/,
+    /^unified.*/,
+    /^unist.*/,
+    'bail',
+    'is-plain-obj',
+    'trough',
+    'zwitch',
+    /^vfile.*/,
+    'react-syntax-highlighter',
+  ],
 };
