@@ -363,7 +363,7 @@
           "description": "identifier that may match another node; value is unparsed and must be normalized such that whitespace is collapsed to single space, initial/final space is trimmed, and case is folded",
           "type": "string"
         },
-        "value": {
+        "label": {
           "description": "node label; character escapes and references are parsed; may be normalized to a unique identifier",
           "type": "string"
         }
