@@ -47,7 +47,7 @@ const defaultString: CitationFormatOptions = {
   style: CitationJSStyles.apa,
 };
 
-function getInlineCitation(c: Cite, kind: InlineCite) {
+export function getInlineCitation(c: Cite, kind: InlineCite) {
   const cite = new Cite();
   const authors = cite.set(c).data[0].author;
   const year = cite.set(c).data[0].issued?.['date-parts']?.[0]?.[0];
@@ -84,8 +84,8 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
       return [
         c.id,
         {
-          inline() {
-            return getInlineCitation(c, InlineCite.p);
+          inline(kind = InlineCite.p) {
+            return getInlineCitation(c, kind);
           },
           render() {
             return cleanRef(cite.set(c).get(defaultString));
