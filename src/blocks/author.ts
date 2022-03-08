@@ -6,7 +6,7 @@ const DEFAULT_AUTHOR: Author = {
   name: null,
   userId: null,
   orcid: null,
-  corresponding: null,
+  corresponding: false,
   email: null,
   roles: [],
   affiliations: []

@@ -350,7 +350,7 @@ export interface Author {
   name: string | null;
   userId: string | null;
   orcid: string | null;
-  corresponding: string | null;
+  corresponding: boolean;
   email: string | null;
   roles: AuthorRoles[];
   affiliations: string[];
