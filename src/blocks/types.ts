@@ -303,8 +303,6 @@ export enum XClientName {
   javascript = 'Curvenote Javascript Client',
 }
 
-
-
 export enum CreditRoles {
   Conceptualization = 'Conceptualization',
   DataCuration = 'Data curation',

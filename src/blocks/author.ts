@@ -1,5 +1,4 @@
-import { Author } from "./types";
-
+import { Author } from './types';
 
 const DEFAULT_AUTHOR: Author = {
   id: '',
@@ -9,12 +8,12 @@ const DEFAULT_AUTHOR: Author = {
   corresponding: false,
   email: null,
   roles: [],
-  affiliations: []
-}
+  affiliations: [],
+};
 
-export function createAuthor(initialState: {id: string} & Partial<Author>): Author {
+export function createAuthor(initialState: { id: string } & Partial<Author>): Author {
   return {
     ...DEFAULT_AUTHOR,
     ...initialState,
-  }
+  };
 }
