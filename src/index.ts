@@ -71,7 +71,7 @@ export function getInlineCitation(c: Cite, kind: InlineCite) {
 
 export type CitationRenderer = Record<
   string,
-  { render: () => string; inline: () => InlineNode[]; cite: any }
+  { render: () => string; inline: (kind?: InlineCite) => InlineNode[]; cite: any }
 >;
 
 export async function getCitations(bibtex: string): Promise<CitationRenderer> {
