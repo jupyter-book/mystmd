@@ -305,7 +305,7 @@ export enum XClientName {
 
 
 
-export enum WellKnowContributorRoles {
+export enum CreditRoles {
   Conceptualization = 'Conceptualization',
   DataCuration = 'Data curation',
   FormalAnalysis = 'Formal analysis',
@@ -321,21 +321,21 @@ export enum WellKnowContributorRoles {
   WritingOriginalDraft = 'Writing – original draft',
   WritingReviewEditing = 'Writing – review & editing',
 }
-export const DEFAULT_CONTRIBUTION_ROLES: WellKnowContributorRoles[] = [
-  WellKnowContributorRoles.Conceptualization,
-  WellKnowContributorRoles.DataCuration,
-  WellKnowContributorRoles.FormalAnalysis,
-  WellKnowContributorRoles.FundingAcquisition,
-  WellKnowContributorRoles.Investigation,
-  WellKnowContributorRoles.Methodology,
-  WellKnowContributorRoles.ProjectAdministration,
-  WellKnowContributorRoles.Resources,
-  WellKnowContributorRoles.Software,
-  WellKnowContributorRoles.Supervision,
-  WellKnowContributorRoles.Validation,
-  WellKnowContributorRoles.Visualization,
-  WellKnowContributorRoles.WritingOriginalDraft,
-  WellKnowContributorRoles.WritingReviewEditing,
+export const DEFAULT_CONTRIBUTION_ROLES: CreditRoles[] = [
+  CreditRoles.Conceptualization,
+  CreditRoles.DataCuration,
+  CreditRoles.FormalAnalysis,
+  CreditRoles.FundingAcquisition,
+  CreditRoles.Investigation,
+  CreditRoles.Methodology,
+  CreditRoles.ProjectAdministration,
+  CreditRoles.Resources,
+  CreditRoles.Software,
+  CreditRoles.Supervision,
+  CreditRoles.Validation,
+  CreditRoles.Visualization,
+  CreditRoles.WritingOriginalDraft,
+  CreditRoles.WritingReviewEditing,
 ];
 
 export interface Affiliation {
@@ -343,7 +343,7 @@ export interface Affiliation {
   text: string;
 }
 
-export type AuthorRoles = WellKnowContributorRoles | string | null;
+export type AuthorRoles = CreditRoles | string | null;
 
 export interface Author {
   id: string;
