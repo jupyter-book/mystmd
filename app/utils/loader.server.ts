@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import type { GenericParent } from 'mystjs';
 import type { References } from '~/components/ReferencesProvider';
 
@@ -18,6 +20,15 @@ export async function getData(
 ): Promise<PageLoader | null> {
   if (!folderName || !slug) return null;
   // TODO: only import this on development
-  const content = await import('~/content');
-  return content.getData(folderName, slug);
+  const filename = path.join(
+    __dirname, // This is executed in the API directory
+    '..',
+    'app',
+    'content',
+    folderName,
+    `${slug}.json`,
+  );
+  if (!fs.existsSync(filename)) return null;
+  const contents = fs.readFileSync(filename).toString();
+  return JSON.parse(contents);
 }

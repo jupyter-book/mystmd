@@ -13,7 +13,10 @@
     "interactive": {
       "title": "Curvenote",
       "index": "test",
-      "pages": [{ "slug": "test", "title": "Test", "level": 1 }]
+      "pages": [
+        { "title": "Interactive Components", "level": 1 },
+        { "title": "Test", "slug": "test", "level": 2 }
+      ]
     }
   }
 }

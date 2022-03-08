@@ -40,9 +40,9 @@ const HeadingLink = ({
 
 const Headings = ({ headings }: Props) => (
   <ul className="text-slate-500 dark:text-slate-300 leading-6">
-    {headings.map((heading) => (
+    {headings.map((heading, index) => (
       <li
-        key={heading.slug}
+        key={heading.slug || index}
         className={classNames('p-1', {
           'pl-4': heading.level === 2,
           'pl-6': heading.level === 3,
