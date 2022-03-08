@@ -1,6 +1,5 @@
-import { useParse, Component, NodeTypes } from 'myst-util-to-react';
+import { Component, NodeTypes } from 'myst-util-to-react';
 import { useReferences } from '../ReferencesProvider';
-import { GenericParent } from 'mystjs';
 import { ClickPopover } from './ClickPopover';
 
 function CiteChild({ label }: { label: string }) {
