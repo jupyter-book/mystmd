@@ -51,7 +51,13 @@ const Headings = ({ headings }: Props) => (
           'pl-12': heading.level === 6,
         })}
       >
-        <HeadingLink slug={heading.slug}>{heading.title}</HeadingLink>
+        {heading.slug ? (
+          <HeadingLink slug={heading.slug}>{heading.title}</HeadingLink>
+        ) : (
+          <h5 className="text-slate-900 font-semibold mb-4 text-md leading-6 dark:text-slate-100">
+            {heading.title}
+          </h5>
+        )}
       </li>
     ))}
   </ul>
@@ -62,16 +68,12 @@ export const Navigation = () => {
   const folder = config.folders[folderName as keyof typeof config.folders];
   if (!folder) return null;
   const headings: Heading[] = folder.pages;
-  const title = folder.title;
   return (
     <div className="hidden xl:flex flex-col fixed z-20 top-[58px] bottom-0 left-[max(0px,calc(50%-43rem))] w-[19.5rem] border-r border-stone-200 dark:border-stone-700">
       <nav
         aria-label="Navigation"
         className="flex-grow pt-10 pb-3 px-8 overflow-y-auto"
       >
-        <h5 className="text-slate-900 font-semibold mb-4 text-md leading-6 dark:text-slate-100">
-          {title}
-        </h5>
         <Headings headings={headings} />
       </nav>
       <div className="flex-none py-4">
