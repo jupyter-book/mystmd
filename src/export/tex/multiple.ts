@@ -1,4 +1,4 @@
-import { Author, oxaLinkToId, VersionId } from '@curvenote/blocks';
+import { createAuthor, oxaLinkToId, VersionId } from '@curvenote/blocks';
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'date-fns';
@@ -109,7 +109,7 @@ export async function multipleArticleToTex(
 
   const authors = await Promise.all(
     job.data.authors.map((a) =>
-      toAuthorFields(session, { plain: a.name ?? null, user: a.id ?? null } as Author),
+      toAuthorFields(session, project, createAuthor({ id: '', userId: a.id ?? null })),
     ),
   );
 

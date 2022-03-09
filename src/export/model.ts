@@ -1,5 +1,5 @@
 import { Author, Blocks, oxaLink } from '@curvenote/blocks';
-import { Block, User, Version } from '../models';
+import { Project, Block, User, Version } from '../models';
 import { ISession } from '../session/types';
 
 export interface ExportDateModel {
@@ -38,29 +38,19 @@ export function toDateFields(d: Date): ExportDateModel {
   };
 }
 
-export function getCorresponsingAuthorNames(options: {
-  corresponding_author?: { name: string; email: string }[];
-}) {
-  if (!options.corresponding_author || options.corresponding_author.length === 0)
-    return new Set([]);
-  return new Set(options.corresponding_author.map(({ name }) => name));
-}
-
 export async function toAuthorFields(
   session: ISession,
+  project: Project,
   author: Author,
-  corresponding: Set<string> = new Set([]), // TODO generalize to a function allowing various flags to be set
 ): Promise<ExportAuthorModel> {
-  if (author.plain)
-    return { name: author.plain, is_corresponding: corresponding.has(author.plain) };
-
-  const user = await new User(session, author.user as string).get();
+  const affiliations = Object.fromEntries((project.data.affiliations ?? []).map((a) => [a.id, a]));
+  const user = author.userId ? await new User(session, author.userId as string).get() : null;
   return {
-    name: user.data.display_name,
-    affiliation: user.data.affiliation,
-    location: user.data.location,
-    curvenote: `${session.SITE_URL}/@${user.data.username}`,
-    is_corresponding: corresponding.has(user.data.display_name),
+    name: author.name || '',
+    affiliation: affiliations[user?.data.affiliation ?? '']?.text || '',
+    location: user?.data.location,
+    curvenote: user ? `${session.SITE_URL}/@${user.data.username}` : undefined,
+    is_corresponding: author.corresponding,
   };
 }
 
@@ -71,9 +61,9 @@ export async function buildDocumentModelFromBlock(
   options: Record<string, any>,
   escapeFn?: (s: string) => string,
 ): Promise<DocumentModel> {
-  const corresponding = getCorresponsingAuthorNames(options);
+  const project = await new Project(session, block.id.project).get();
   const authors = await Promise.all(
-    block.data.authors.map((a) => toAuthorFields(session, a, corresponding)),
+    block.data.authors.map((a) => toAuthorFields(session, project, a)),
   );
 
   const escapeIt = (s: string) => escapeFn?.(s ?? '') ?? '';

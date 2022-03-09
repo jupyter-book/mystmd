@@ -4,7 +4,7 @@ import YAML from 'yaml';
 import { VersionId, KINDS, oxaLink, formatDate } from '@curvenote/blocks';
 import { toMarkdown } from '@curvenote/schema';
 import { writeBibtex } from '../utils/writeBibtex';
-import { Block, Version, User } from '../../models';
+import { Block, Version } from '../../models';
 import { getChildren } from '../../actions/getChildren';
 import { exportFromOxaLink, walkArticle, writeImagesToFiles } from '../utils';
 import { localizationOptions } from '../utils/localizationOptions';
@@ -21,15 +21,7 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
     new Version(session, versionId).get(),
     getChildren(session, versionId),
   ]);
-  const authors = await Promise.all(
-    block.data.authors.map(async (author) => {
-      if (author.user) {
-        const user = await new User(session, author.user).get();
-        return `@${user.data.username}`;
-      }
-      return author.plain as string;
-    }),
-  );
+  const authors = block.data.authors.map((author) => author.name || '');
   const { data } = version;
   if (data.kind !== KINDS.Article) throw new Error('Not an article');
   const article = await walkArticle(session, data);
