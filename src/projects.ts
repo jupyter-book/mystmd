@@ -70,7 +70,7 @@ export function projectFromDTO(projectId: ProjectId, json: JsonObject): Project 
     title: json.title ?? '',
     description: json.description ?? '',
     visibility: json.visibility ?? ProjectVisibility.private,
-    affiliations: json.affiliations ?? [],
+    affiliations: json.affiliations ? [...json.affiliations] : [],
     date_created: getDate(json.date_created),
     date_modified: getDate(json.date_modified),
     settings: projectSettingsFromDTO(json.settings),

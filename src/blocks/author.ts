@@ -12,8 +12,12 @@ const DEFAULT_AUTHOR: Author = {
 };
 
 export function createAuthor(initialState: { id: string } & Partial<Author>): Author {
+  const affiliations = initialState.affiliations ? [...initialState.affiliations] : [];
+  const roles = initialState.roles ? [...initialState.roles] : [];
   return {
     ...DEFAULT_AUTHOR,
     ...initialState,
+    affiliations,
+    roles,
   };
 }
