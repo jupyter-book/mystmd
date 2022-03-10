@@ -56,10 +56,11 @@ const Headings = ({ headings, activeId }: Props) => (
   </ul>
 );
 
-function getHeaders() {
-  return Array.from(document.querySelectorAll(SELECTOR)).filter((e) => {
+function getHeaders(): HTMLHeadingElement[] {
+  const headers = Array.from(document.querySelectorAll(SELECTOR)).filter((e) => {
     return !e.classList.contains('title');
-  }) as HTMLHeadingElement[];
+  });
+  return headers as HTMLHeadingElement[];
 }
 
 function useHeaders() {
@@ -72,11 +73,13 @@ function useHeaders() {
   useEffect(() => {
     // We have to look at the document changes for reloads/mutations
     const main = document.querySelector('main');
-    const mutations = new MutationObserver(
-      throttle(() => setElements(getHeaders()), 500),
-    );
-    if (main)
+    const recompute = throttle(() => setElements(getHeaders()), 500);
+    const mutations = new MutationObserver(recompute);
+    // Fire when added to the dom
+    recompute();
+    if (main) {
       mutations.observe(main, { attributes: true, childList: true, subtree: true });
+    }
     return () => mutations.disconnect();
   }, []);
 
