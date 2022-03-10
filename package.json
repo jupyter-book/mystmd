@@ -23,7 +23,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
-    "build": "yarn copy:version; yarn run clean && tsc -p .; copyfiles ./src/styles/* ./dist/styles/*; copyfiles ./src/images/* ./dist/images/*",
+    "build": "yarn copy:version; yarn run clean && tsc -p .; copyfiles -f ./src/styles/* ./dist/styles; copyfiles -f ./src/images/* ./dist/images",
     "build:watch": "yarn copy:version; tsc -w -p .",
     "dev:cli": "npm uninstall -g curvenote; npm run build; npm link",
     "prepublishOnly": "yarn build",
