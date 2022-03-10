@@ -1,8 +1,9 @@
 import classNames from 'classnames';
 import throttle from 'lodash.throttle';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const SELECTOR = [1, 2, 3, 4, 5, 6].map((n) => `main h${n}`).join(', ');
+const HIGHLIGHT_CLASS = 'highlight';
 
 const onClient = typeof document !== 'undefined';
 
@@ -14,12 +15,13 @@ type Heading = {
 type Props = {
   headings: Heading[];
   activeId?: string;
+  highlight?: () => void;
 };
 /**
  * This renders an item in the table of contents list.
  * scrollIntoView is used to ensure that when a user clicks on an item, it will smoothly scroll.
  */
-const Headings = ({ headings, activeId }: Props) => (
+const Headings = ({ headings, activeId, highlight }: Props) => (
   <ul className="text-slate-400 text-sm leading-6">
     {headings.map((heading) => (
       <li
@@ -44,9 +46,12 @@ const Headings = ({ headings, activeId }: Props) => (
           href={`#${heading.id}`}
           onClick={(e) => {
             e.preventDefault();
-            document.querySelector(`#${heading.id}`)?.scrollIntoView({
-              behavior: 'smooth',
-            });
+            const el = document.querySelector(`#${heading.id}`);
+            if (!el) return;
+            getHeaders().forEach((h) => h.classList.remove(HIGHLIGHT_CLASS));
+            el.classList.add(HIGHLIGHT_CLASS);
+            highlight?.();
+            el.scrollIntoView({ behavior: 'smooth' });
           }}
         >
           {heading.title}
@@ -65,18 +70,31 @@ function getHeaders(): HTMLHeadingElement[] {
 
 function useHeaders() {
   if (!onClient) return { activeId: '', headings: [] };
+  const onScreen = useRef<Set<HTMLHeadingElement>>(new Set());
   const [activeId, setActiveId] = useState<string>();
   const headingsSet = useRef<Set<HTMLHeadingElement>>(new Set());
-  const { observer } = useIntersectionObserver(setActiveId);
+
+  const highlight = useCallback(() => {
+    const current = [...onScreen.current];
+    const highlighted = current.reduce((a, b) => {
+      if (a) return a;
+      if (b.classList.contains('highlight')) return b.id;
+      return null;
+    }, null as string | null);
+    const active = [...onScreen.current].sort((a, b) => a.offsetTop - b.offsetTop)[0];
+    if (highlighted || active) setActiveId(highlighted || active.id);
+  }, []);
+
+  const { observer } = useIntersectionObserver(highlight, onScreen.current);
   const [elements, setElements] = useState<HTMLHeadingElement[]>([]);
 
+  const render = throttle(() => setElements(getHeaders()), 500);
   useEffect(() => {
     // We have to look at the document changes for reloads/mutations
     const main = document.querySelector('main');
-    const recompute = throttle(() => setElements(getHeaders()), 500);
-    const mutations = new MutationObserver(recompute);
+    const mutations = new MutationObserver(render);
     // Fire when added to the dom
-    recompute();
+    render();
     if (main) {
       mutations.observe(main, { attributes: true, childList: true, subtree: true });
     }
@@ -99,33 +117,33 @@ function useHeaders() {
     return { title, id, level: Number(heading.tagName.slice(1)) };
   });
 
-  return { activeId, headings };
+  return { activeId, highlight, headings };
 }
 
-const useIntersectionObserver = (setActiveId: (id: string) => void) => {
-  const onScreen = useRef<Set<HTMLHeadingElement>>(new Set());
+const useIntersectionObserver = (
+  highlight: () => void,
+  onScreen: Set<HTMLHeadingElement>,
+) => {
   const observer = useRef<IntersectionObserver | null>(null);
   if (!onClient) return { observer };
   useEffect(() => {
     const callback: IntersectionObserverCallback = (entries) => {
       entries.forEach((entry) => {
-        onScreen.current[entry.isIntersecting ? 'add' : 'delete'](
+        onScreen[entry.isIntersecting ? 'add' : 'delete'](
           entry.target as HTMLHeadingElement,
         );
       });
-
-      const active = [...onScreen.current].sort((a, b) => a.offsetTop - b.offsetTop)[0];
-      if (active) setActiveId(active.id);
+      highlight();
     };
     const o = new IntersectionObserver(callback);
     observer.current = o;
     return () => o.disconnect();
-  }, [setActiveId]);
+  }, [highlight, onScreen]);
   return { observer };
 };
 
 export const TableOfContents = () => {
-  const { headings, activeId } = useHeaders();
+  const { activeId, headings, highlight } = useHeaders();
   if (headings.length <= 1) return <nav suppressHydrationWarning />;
   return (
     <nav
@@ -136,7 +154,9 @@ export const TableOfContents = () => {
       <h5 className="text-slate-900 mb-4 text-sm leading-6 dark:text-slate-100 uppercase">
         In this article
       </h5>
-      {onClient && <Headings headings={headings} activeId={activeId} />}
+      {onClient && (
+        <Headings headings={headings} activeId={activeId} highlight={highlight} />
+      )}
     </nav>
   );
 };
