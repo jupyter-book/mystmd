@@ -7,7 +7,7 @@ export async function createArticleTitle(session: ISession, data: BlockDTO) {
   const schema = schemas.getSchema('full');
   const header = schema.nodes.heading.createAndFill({ level: 1 }, schema.text(data.title)) as Node;
   // TODO: actually do a subtitle
-  const authors = data.authors.map((v) => v.name || '');
+  const authors = data.authors.map((v) => v.name || 'Unknown Author');
   const subtitle = schema.nodes.heading.createAndFill(
     { level: 4 },
     schema.text(authors.join(', ')),
