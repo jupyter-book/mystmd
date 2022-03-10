@@ -24,18 +24,21 @@ const Headings = ({ headings, activeId }: Props) => (
     {headings.map((heading) => (
       <li
         key={heading.id}
-        className={classNames({
+        className={classNames('border-l-2 py-1', {
           'text-blue-500': heading.id === activeId,
           'pl-2': heading.level === 2,
           'pl-3': heading.level === 3,
           'pl-4': heading.level === 4,
           'pl-5': heading.level === 5,
           'pl-6': heading.level === 6,
+          'border-l-gray-300 dark:border-l-gray-50': heading.id !== activeId,
+          'border-l-blue-500 dark:border-l-blue-500': heading.id === activeId,
+          'bg-blue-50 dark:bg-slate-800': heading.id === activeId,
         })}
       >
         <a
           className={classNames('block', {
-            'text-blue-500': heading.id === activeId,
+            'text-blue-500 dark:text-white font-semibold': heading.id === activeId,
             'hover:text-slate-800 dark:hover:text-slate-100': heading.id !== activeId,
           })}
           href={`#${heading.id}`}
@@ -125,10 +128,10 @@ export const TableOfContents = () => {
     <nav
       aria-label="Table of Contents"
       suppressHydrationWarning
-      className="fixed not-prose z-20 top-[3.8125rem] bottom-0 right-[max(0px,calc(50%-45rem))] w-[19.5rem] py-10 px-8 overflow-y-auto hidden xl:block"
+      className="fixed not-prose z-20 top-[3.8125rem] bottom-0 right-[max(0px,calc(50%-45rem))] w-[18rem] py-10 px-8 overflow-y-auto hidden xl:block"
     >
-      <h5 className="text-slate-900 font-semibold mb-4 text-sm leading-6 dark:text-slate-100">
-        On this page
+      <h5 className="text-slate-900 mb-4 text-sm leading-6 dark:text-slate-100 uppercase">
+        In this article
       </h5>
       {onClient && <Headings headings={headings} activeId={activeId} />}
     </nav>
