@@ -24,22 +24,22 @@ const Headings = ({ headings, activeId }: Props) => (
     {headings.map((heading) => (
       <li
         key={heading.id}
-        className={classNames('border-l-2 py-1', {
+        className={classNames('border-l-2', {
           'text-blue-500': heading.id === activeId,
-          'pl-2': heading.level === 2,
-          'pl-3': heading.level === 3,
-          'pl-4': heading.level === 4,
-          'pl-5': heading.level === 5,
-          'pl-6': heading.level === 6,
           'border-l-gray-300 dark:border-l-gray-50': heading.id !== activeId,
           'border-l-blue-500 dark:border-l-blue-500': heading.id === activeId,
           'bg-blue-50 dark:bg-slate-800': heading.id === activeId,
         })}
       >
         <a
-          className={classNames('block', {
+          className={classNames('block pl-2 py-1', {
             'text-blue-500 dark:text-white font-semibold': heading.id === activeId,
             'hover:text-slate-800 dark:hover:text-slate-100': heading.id !== activeId,
+            'pl-3': heading.level === 2,
+            'pl-4': heading.level === 3,
+            'pl-5': heading.level === 4,
+            'pl-6': heading.level === 5,
+            'pl-7': heading.level === 6,
           })}
           href={`#${heading.id}`}
           onClick={(e) => {
