@@ -63,7 +63,7 @@ const Headings = ({ headings }: Props) => (
             {heading.title}
           </HeadingLink>
         ) : (
-          <h5 className="text-slate-900 font-semibold mb-4 text-md leading-6 dark:text-slate-100">
+          <h5 className="text-slate-900 font-semibold my-2 text-md leading-6 dark:text-slate-100">
             {heading.title}
           </h5>
         )}
