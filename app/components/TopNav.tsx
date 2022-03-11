@@ -8,15 +8,19 @@ export function TopNav() {
   const { logo, logoText, sections, actions } = config.site;
   return (
     <div className="bg-stone-700 p-3 px-8 fixed w-screen top-0 z-30">
-      <nav className="flex items-center justify-between flex-wrap max-w-[1380px] mx-auto">
-        <Link
-          className="flex items-center flex-shrink-0 text-white mr-6"
-          to="/"
-          prefetch="intent"
-        >
-          <img src={logo} className="h-9 mr-3"></img>
-          {logoText && <span className="text-xl tracking-tight mr-5">{logoText}</span>}
-        </Link>
+      <nav className="flex items-center justify-between flex-wrap max-w-[1440px] mx-auto">
+        <div className="block xl:min-w-[19.5rem] mr-7 justify-center">
+          <Link
+            className="flex items-center text-white w-fit ml-7"
+            to="/"
+            prefetch="intent"
+          >
+            <img src={logo} className="h-9 mr-3"></img>
+            {logoText && (
+              <span className="text-xl tracking-tight mr-5">{logoText}</span>
+            )}
+          </Link>
+        </div>
         <div className="block md:hidden">
           <button className="flex items-center px-3 py-2 border rounded text-stone-200 border-stone-400 hover:text-white hover:border-white">
             <svg
