@@ -15,7 +15,8 @@
       "index": "test",
       "pages": [
         { "title": "Interactive Components", "level": 1 },
-        { "title": "Test", "slug": "test", "level": 2 }
+        { "title": "Test", "slug": "test", "level": 2 },
+        { "title": "Admonitions", "slug": "admonitions", "level": 2 }
       ]
     }
   }
