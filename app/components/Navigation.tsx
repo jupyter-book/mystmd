@@ -5,9 +5,9 @@ import { CreatedInCurvenote } from './curvenote';
 import config from '~/config.json';
 
 type Heading = {
-  slug: string;
+  slug?: string;
   title: string;
-  level: number;
+  level: number | 'index';
 };
 type Props = {
   headings: Heading[];
@@ -15,9 +15,11 @@ type Props = {
 
 const HeadingLink = ({
   slug,
+  isIndex,
   children,
 }: {
   slug: string;
+  isIndex?: boolean;
   children: React.ReactNode;
 }) => {
   return (
@@ -25,9 +27,12 @@ const HeadingLink = ({
       prefetch="intent"
       className={({ isActive }) =>
         classNames('block', {
-          'text-blue-500': isActive,
+          'text-blue-500': !isIndex && isActive,
           'font-semibold': isActive,
           'hover:text-slate-800 dark:hover:text-slate-100': !isActive,
+          'border-b pb-1': isIndex,
+          'border-stone-200 dark:border-stone-700': isIndex && !isActive,
+          'border-blue-500': isIndex && isActive,
         })
       }
       to={slug}
@@ -44,6 +49,8 @@ const Headings = ({ headings }: Props) => (
       <li
         key={heading.slug || index}
         className={classNames('p-1', {
+          'text-slate-900 font-semibold mb-4 text-lg leading-6 dark:text-slate-100':
+            heading.level === 'index',
           'pl-4': heading.level === 2,
           'pl-6': heading.level === 3,
           'pl-8': heading.level === 4,
@@ -52,7 +59,9 @@ const Headings = ({ headings }: Props) => (
         })}
       >
         {heading.slug ? (
-          <HeadingLink slug={heading.slug}>{heading.title}</HeadingLink>
+          <HeadingLink slug={heading.slug} isIndex={heading.level === 'index'}>
+            {heading.title}
+          </HeadingLink>
         ) : (
           <h5 className="text-slate-900 font-semibold mb-4 text-md leading-6 dark:text-slate-100">
             {heading.title}
@@ -67,7 +76,10 @@ export const Navigation = () => {
   const { folder: folderName } = useParams();
   const folder = config.folders[folderName as keyof typeof config.folders];
   if (!folder) return null;
-  const headings: Heading[] = folder.pages;
+  const headings: Heading[] = [
+    { title: folder.title, slug: folder.index, level: 'index' },
+    ...folder.pages,
+  ];
   return (
     <div className="hidden xl:flex flex-col fixed z-20 top-[58px] bottom-0 left-[max(0px,calc(50%-43rem))] w-[19.5rem] border-r border-stone-200 dark:border-stone-700">
       <nav
