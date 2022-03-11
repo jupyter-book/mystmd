@@ -81,7 +81,7 @@ export const Navigation = () => {
     ...folder.pages,
   ];
   return (
-    <div className="hidden xl:flex flex-col fixed z-20 top-[58px] bottom-0 left-[max(0px,calc(50%-43rem))] w-[19.5rem] border-r border-stone-200 dark:border-stone-700">
+    <div className="hidden xl:flex flex-col fixed z-20 top-[60px] bottom-0 left-[max(0px,calc(50%-45rem))] w-[19.5rem] border-r border-stone-200 dark:border-stone-700">
       <nav
         aria-label="Navigation"
         className="flex-grow pt-10 pb-3 px-8 overflow-y-auto"
