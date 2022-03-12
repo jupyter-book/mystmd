@@ -33,7 +33,7 @@ const HeadingLink = ({
           'font-semibold': isActive,
           'hover:text-slate-800 dark:hover:text-slate-100': !isActive,
           'border-b pb-1': isIndex,
-          'border-stone-200 dark:border-stone-700': isIndex,
+          'border-stone-200 dark:border-stone-700': isIndex && !exact,
           'border-blue-500': isIndex && exact,
         })
       }
