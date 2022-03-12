@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
-import { NavLink, useParams } from 'remix';
+import { NavLink, useParams, useLocation } from 'remix';
 import { CreatedInCurvenote } from './curvenote';
 import config from '~/config.json';
 
@@ -22,6 +22,8 @@ const HeadingLink = ({
   isIndex?: boolean;
   children: React.ReactNode;
 }) => {
+  const { pathname } = useLocation();
+  const exact = pathname === slug;
   return (
     <NavLink
       prefetch="intent"
@@ -31,8 +33,8 @@ const HeadingLink = ({
           'font-semibold': isActive,
           'hover:text-slate-800 dark:hover:text-slate-100': !isActive,
           'border-b pb-1': isIndex,
-          'border-stone-200 dark:border-stone-700': isIndex && !isActive,
-          'border-blue-500': isIndex && isActive,
+          'border-stone-200 dark:border-stone-700': isIndex,
+          'border-blue-500': isIndex && exact,
         })
       }
       to={slug}
@@ -77,7 +79,7 @@ export const Navigation = () => {
   const folder = config.folders[folderName as keyof typeof config.folders];
   if (!folder) return null;
   const headings: Heading[] = [
-    { title: folder.title, slug: folder.index, level: 'index' },
+    { title: folder.title, slug: `/${folderName}`, level: 'index' },
     ...folder.pages,
   ];
   return (

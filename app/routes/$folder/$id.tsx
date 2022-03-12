@@ -3,7 +3,6 @@ import type { LoaderFunction, LinksFunction } from 'remix';
 import { getData } from '~/utils/loader.server';
 import { GenericParent } from 'mystjs';
 import { References, ReferencesProvider, ContentBlock } from '~/components';
-import { getFolder } from '~/utils/params';
 
 export const links: LinksFunction = () => {
   return [
@@ -24,10 +23,7 @@ type BlocksLoader = {
   references: References;
 };
 
-export let loader: LoaderFunction = async ({
-  params,
-  request,
-}): Promise<BlocksLoader> => {
+export const loader: LoaderFunction = async ({ params }): Promise<BlocksLoader> => {
   const loader = await getData(params.folder, params.id).catch((e) => {
     console.log(e);
     return null;
@@ -40,8 +36,8 @@ export let loader: LoaderFunction = async ({
   };
 };
 
-export default function Blog() {
-  let article = useLoaderData<BlocksLoader>();
+export default function Page() {
+  const article = useLoaderData<BlocksLoader>();
   return (
     <ReferencesProvider references={article.references}>
       <div>

@@ -1,39 +1,18 @@
-import { redirect, useCatch } from 'remix';
 import type { LoaderFunction } from 'remix';
 import { getFolder } from '../../utils/params';
+import Page, { loader as pageLoader, CatchBoundary, ErrorBoundary } from './$id';
 
-export let loader: LoaderFunction = async ({ params }): Promise<Response | null> => {
+export const loader: LoaderFunction = async (data): Promise<Response | null> => {
+  const { params, ...rest } = data;
   const folderName = params.folder;
   const folder = getFolder(folderName);
   if (!folder) {
-    throw new Response('Article we not found', { status: 404 });
+    throw new Response('Article was not found', { status: 404 });
   }
-  return redirect(`/${folderName}/${folder?.index}`);
+  const modified = { ...params, id: folder?.index };
+  return pageLoader({ params: modified, ...rest });
 };
 
-export default function NotFound() {
-  return (
-    <div>
-      <h1 className="title">Could not find that!</h1>
-    </div>
-  );
-}
+export default Page;
 
-export function CatchBoundary() {
-  const caught = useCatch();
-  // TODO: This can give a pointer to other pages in the space
-  return (
-    <div>
-      {caught.status} {caught.statusText}
-    </div>
-  );
-}
-
-export function ErrorBoundary() {
-  return (
-    <>
-      <h1>Test</h1>
-      <div>Something went wrong.</div>
-    </>
-  );
-}
+export { CatchBoundary, ErrorBoundary };

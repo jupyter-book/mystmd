@@ -34,9 +34,10 @@ const Headings = ({ headings, activeId, highlight }: Props) => (
         })}
       >
         <a
-          className={classNames('block pl-2 py-1', {
+          className={classNames('block p-1 pl-2', {
             'text-blue-500 dark:text-white font-semibold': heading.id === activeId,
-            'hover:text-slate-800 dark:hover:text-slate-100': heading.id !== activeId,
+            'hover:text-slate-800 dark:hover:text-slate-100 pr-2':
+              heading.id !== activeId,
             'pl-3': heading.level === 2,
             'pl-4': heading.level === 3,
             'pl-5': heading.level === 4,
