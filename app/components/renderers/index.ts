@@ -6,9 +6,11 @@ import { codeRenderers } from './code';
 import { mathRenderers } from './math';
 import { reactiveRenderers } from './reactive';
 import { iframeRenderers } from './iframe';
+import { linkRenderers } from './links';
 
 export const defaultRenderers: NodeTypes = {
   ...nodes,
+  ...linkRenderers,
   ...codeRenderers,
   ...mathRenderers,
   ...citeRenderers,
