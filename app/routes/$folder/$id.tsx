@@ -1,8 +1,9 @@
-import { useCatch, useLoaderData } from 'remix';
+import { redirect, useCatch, useLoaderData } from 'remix';
 import type { LoaderFunction, LinksFunction } from 'remix';
 import { getData } from '~/utils/loader.server';
 import { GenericParent } from 'mystjs';
 import { References, ReferencesProvider, ContentBlock } from '~/components';
+import { getFolder } from '../../utils/params';
 
 export const links: LinksFunction = () => {
   return [
@@ -23,8 +24,19 @@ type BlocksLoader = {
   references: References;
 };
 
-export const loader: LoaderFunction = async ({ params }): Promise<BlocksLoader> => {
-  const loader = await getData(params.folder, params.id).catch((e) => {
+export const loader: LoaderFunction = async ({
+  params,
+}): Promise<BlocksLoader | Response> => {
+  const folderName = params.folder;
+  const folder = getFolder(folderName);
+  if (!folder) {
+    throw new Response('Article was not found', { status: 404 });
+  }
+  if (folder.index === params.id) {
+    return redirect(`/${folderName}`);
+  }
+  const id = params.loadIndexPage ? folder.index : params.id;
+  const loader = await getData(folderName, id).catch((e) => {
     console.log(e);
     return null;
   });
