@@ -12,11 +12,11 @@
   "folders": {
     "interactive": {
       "title": "Curvenote",
-      "index": "test",
+      "index": "index",
       "pages": [
         { "title": "Interactive Components", "level": 1 },
-        { "title": "Test", "slug": "test", "level": 2 },
-        { "title": "Admonitions", "slug": "admonitions", "level": 2 }
+        { "title": "Admonitions", "slug": "admonitions", "level": 2 },
+        { "title": "Interactive Components", "slug": "interactive", "level": 2 }
       ]
     }
   }

@@ -2,13 +2,8 @@ import classNames from 'classnames';
 import React from 'react';
 import { NavLink, useParams, useLocation } from 'remix';
 import { CreatedInCurvenote } from './curvenote';
-import config from '~/config.json';
+import { getFolderPages, Heading } from '../utils/params';
 
-type Heading = {
-  slug?: string;
-  title: string;
-  level: number | 'index';
-};
 type Props = {
   headings: Heading[];
 };
@@ -76,12 +71,8 @@ const Headings = ({ headings }: Props) => (
 
 export const Navigation = () => {
   const { folder: folderName } = useParams();
-  const folder = config.folders[folderName as keyof typeof config.folders];
-  if (!folder) return null;
-  const headings: Heading[] = [
-    { title: folder.title, slug: `/${folderName}`, level: 'index' },
-    ...folder.pages,
-  ];
+  const headings = getFolderPages(folderName);
+  if (!headings) return null;
   return (
     <div className="hidden xl:flex flex-col fixed z-20 top-[60px] bottom-0 left-[max(0px,calc(50%-45rem))] w-[19.5rem] border-r border-stone-200 dark:border-stone-700">
       <nav

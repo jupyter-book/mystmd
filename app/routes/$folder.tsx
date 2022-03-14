@@ -6,7 +6,7 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: extraStyles }];
 };
 
-export default function Blog() {
+export default function Folder() {
   return (
     <article>
       <Navigation />

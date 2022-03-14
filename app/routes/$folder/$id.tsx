@@ -1,9 +1,10 @@
 import { redirect, useCatch, useLoaderData } from 'remix';
 import type { LoaderFunction, LinksFunction } from 'remix';
-import { getData } from '~/utils/loader.server';
+import { getData, PageLoader } from '~/utils/loader.server';
 import { GenericParent } from 'mystjs';
-import { References, ReferencesProvider, ContentBlock } from '~/components';
+import { ReferencesProvider, ContentBlock } from '~/components';
 import { getFolder } from '../../utils/params';
+import { Footer } from '../../components/FooterLinks';
 
 export const links: LinksFunction = () => {
   return [
@@ -17,16 +18,9 @@ export const links: LinksFunction = () => {
   ];
 };
 
-type BlocksLoader = {
-  title?: string;
-  author?: string[];
-  blocks: GenericParent[];
-  references: References;
-};
-
 export const loader: LoaderFunction = async ({
   params,
-}): Promise<BlocksLoader | Response> => {
+}): Promise<PageLoader | Response> => {
   const folderName = params.folder;
   const folder = getFolder(folderName);
   if (!folder) {
@@ -41,29 +35,29 @@ export const loader: LoaderFunction = async ({
     return null;
   });
   if (!loader) throw new Response('Article was not found', { status: 404 });
-  return {
-    ...loader.frontmatter,
-    blocks: loader.mdast.children as GenericParent[],
-    references: loader.references,
-  };
+  return loader;
 };
 
 export default function Page() {
-  const article = useLoaderData<BlocksLoader>();
+  const article = useLoaderData<PageLoader>();
+  const blocks = article.mdast.children as GenericParent[];
   return (
     <ReferencesProvider references={article.references}>
       <div>
-        <h1 className="title">{article.title}</h1>
-        <header className="not-prose mb-10">
-          <ol>
-            {article.author?.map((author, i) => (
-              <li key={i}>{author}</li>
-            ))}
-          </ol>
-        </header>
-        {article.blocks.map((node, index) => {
+        <h1 className="title">{article.frontmatter.title}</h1>
+        {article.frontmatter.author && article.frontmatter.author.length > 0 && (
+          <header className="not-prose mb-10">
+            <ol>
+              {article.frontmatter.author?.map((author, i) => (
+                <li key={i}>{author}</li>
+              ))}
+            </ol>
+          </header>
+        )}
+        {blocks.map((node, index) => {
           return <ContentBlock key={node.key} id={`${index}`} node={node} />;
         })}
+        <Footer links={article.footer} />
       </div>
     </ReferencesProvider>
   );
