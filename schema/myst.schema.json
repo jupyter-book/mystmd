@@ -3,41 +3,46 @@
   "$id": "https://spec.myst.tools/json-schema/myst.schema.json",
   "description": "Myst syntax tree built on existing mdast schemas",
   "type": "object",
-  "properties": {
-    "type": {
-      "const": "root"
-    },
-    "children": {
-      "description": "Top-level children of myst document",
-      "anyOf": [
-        {
-          "type": "array",
-          "items": {
-            "anyOf": [
-              { "$ref": "blocks.schema.json#/$defs/Block" },
-              { "$ref": "#/$defs/FlowContent" }
-            ]
-          }
+  "allOf": [
+    {
+      "properties": {
+        "type": {
+          "const": "root"
         },
-        {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ListContent"
-          }
+        "children": {
+          "description": "Top-level children of myst document",
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "$ref": "blocks.schema.json#/$defs/Block" },
+                  { "$ref": "blocks.schema.json#/$defs/BlockBreak" },
+                  { "$ref": "#/$defs/FlowContent" }
+                ]
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ListContent"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/PhrasingContent"
+              }
+            }
+          ]
         },
-        {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/PhrasingContent"
-          }
-        }
-      ]
+        "position": {},
+        "data": {}
+      },
+      "additionalProperties": false
     },
-    "position": {},
-    "data": {}
-  },
-  "additionalProperties": false,
-  "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }],
+    { "$ref": "unist.schema.json#/$defs/Node" }
+  ],
   "$defs": {
     "FlowContent": {
       "anyOf": [

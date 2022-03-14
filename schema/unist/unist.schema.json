@@ -25,27 +25,35 @@
     "Literal": {
       "description": "basic node with required string value",
       "type": "object",
-      "required": ["value"],
-      "properties": {
-        "value": {
-          "type": "string"
-        }
-      },
-      "allOf": [{ "$ref": "#/$defs/Node" }]
+      "allOf": [
+        {
+          "required": ["value"],
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        { "$ref": "#/$defs/Node" }
+      ]
     },
     "Parent": {
       "description": "basic node with required node children",
       "type": "object",
-      "required": ["children"],
-      "properties": {
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Node"
+      "allOf": [
+        {
+          "required": ["children"],
+          "properties": {
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Node"
+              }
+            }
           }
-        }
-      },
-      "allOf": [{ "$ref": "#/$defs/Node" }]
+        },
+        { "$ref": "#/$defs/Node" }
+      ]
     },
     "Point": {
       "description": "one place in a source file",

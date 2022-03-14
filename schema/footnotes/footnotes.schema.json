@@ -6,45 +6,47 @@
     "FootnoteReference": {
       "description": "Inilne reference to footnote",
       "type": "object",
-      "required": ["identifier"],
-      "properties": {
-        "type": {
-          "const": "footnoteReference"
-        },
-        "identifier": {},
-        "label": {},
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
       "allOf": [
-        { "$ref": "unist.schema.json#/$defs/Node" },
-        { "$ref": "commonmark.schema.json#/$defs/Association" }
+        {
+          "properties": {
+            "type": {
+              "const": "footnoteReference"
+            },
+            "identifier": {},
+            "label": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "commonmark.schema.json#/$defs/Association" },
+        { "$ref": "unist.schema.json#/$defs/Node" }
       ]
     },
     "FootnoteDefinition": {
       "description": "Rich footnote content associated with footnote reference",
       "type": "object",
-      "required": ["identifier"],
-      "properties": {
-        "type": {
-          "const": "footnoteDefinition"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "myst.schema.json#/$defs/FlowContent"
-          }
-        },
-        "identifier": {},
-        "label": {},
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
       "allOf": [
-        { "$ref": "unist.schema.json#/$defs/Parent" },
-        { "$ref": "commonmark.schema.json#/$defs/Association" }
+        {
+          "properties": {
+            "type": {
+              "const": "footnoteDefinition"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/FlowContent"
+              }
+            },
+            "identifier": {},
+            "label": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "commonmark.schema.json#/$defs/Association" },
+        { "$ref": "unist.schema.json#/$defs/Parent" }
       ]
     }
   }

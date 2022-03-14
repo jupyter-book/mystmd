@@ -5,69 +5,101 @@
   "$defs": {
     "Comment": {
       "type": "object",
-      "properties": {
-        "type": {
-          "const": "comment"
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "comment"
+            },
+            "value": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
         },
-        "value": {},
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
+        { "$ref": "unist.schema.json#/$defs/Literal" }
+      ]
+    },
+    "BlockBreak": {
+      "type": "object",
+      "description": "top-level break in the myst document, breaking it into Blocks",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "blockBreak"
+            },
+            "meta": {
+              "description": "block break metadata; conventionally, a stringified JSON dictionary but may be any arbitrary string",
+              "type": "string"
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Node" }
+      ]
     },
     "Block": {
       "type": "object",
-      "properties": {
-        "type": {
-          "const": "block"
-        },
-        "meta": {
-          "description": "block metadata; conventionally, a stringified JSON dictionary but may be any arbitrary string",
-          "type": "string"
-        },
-        "children": {
-          "description": "Top-level children of myst document",
-          "anyOf": [
-            {
-              "type": "array",
-              "items": {
-                "$ref": "myst.schema.json#/$defs/FlowContent"
-              }
+      "description": "top-level content blocks or cells the myst document, delimited by BlockBreaks",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "block"
             },
-            {
-              "type": "array",
-              "items": {
-                "$ref": "myst.schema.json#/$defs/ListContent"
-              }
+            "meta": {
+              "description": "block metadata from preceding break; conventionally, a stringified JSON dictionary but may be any arbitrary string",
+              "type": "string"
             },
-            {
-              "type": "array",
-              "items": {
-                "$ref": "myst.schema.json#/$defs/PhrasingContent"
-              }
-            }
-          ]
+            "children": {
+              "description": "Top-level children of myst document",
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "myst.schema.json#/$defs/FlowContent"
+                  }
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "myst.schema.json#/$defs/ListContent"
+                  }
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "myst.schema.json#/$defs/PhrasingContent"
+                  }
+                }
+              ]
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
         },
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+        { "$ref": "unist.schema.json#/$defs/Node" }
+      ]
     },
     "Target": {
       "type": "object",
-      "properties": {
-        "type": {
-          "const": "target"
-        },
-        "identifier": {},
-        "label": {},
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
       "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "target"
+            },
+            "identifier": {},
+            "label": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
         { "$ref": "unist.schema.json#/$defs/Node" },
         { "$ref": "commonmark.schema.json#/$defs/Association" }
       ]

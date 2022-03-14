@@ -6,294 +6,342 @@
     "Directive": {
       "description": "myst directive, in the format ```{kind} args\n\n:options:\n\nvalue\n```",
       "type": "object",
-      "required": ["kind"],
-      "properties": {
-        "type": {
-          "const": "directive"
+      "allOf": [
+        {
+          "required": ["kind"],
+          "properties": {
+            "type": {
+              "const": "directive"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "args": {
+              "type": "string"
+            },
+            "options": {
+              "type": "object"
+            },
+            "value": {
+              "description": "body of the directive, excluding options",
+              "type": "string"
+            },
+            "children": {
+              "description": "parsed directive content",
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "$ref": "myst.schema.json#/$defs/FlowContent" },
+                  { "$ref": "myst.schema.json#/$defs/PhrasingContent" }
+                ]
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
         },
-        "kind": {
-          "type": "string"
-        },
-        "args": {
-          "type": "string"
-        },
-        "options": {
-          "type": "object"
-        },
-        "value": {
-          "description": "body of the directive, excluding options",
-          "type": "string"
-        },
-        "children": {
-          "description": "parsed directive content",
-          "type": "array",
-          "items": {
-            "anyOf": [
-              { "$ref": "myst.schema.json#/$defs/FlowContent" },
-              { "$ref": "myst.schema.json#/$defs/PhrasingContent" }
-            ]
-          }
-        },
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+        { "$ref": "unist.schema.json#/$defs/Node" }
+      ]
     },
     "Admonition": {
       "description": "highlighted block of text slightly separated from neighboring content",
       "type": "object",
-      "properties": {
-        "type": {
-          "const": "admonition"
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "admonition"
+            },
+            "kind": {
+              "description": "kind of admonition, to determine styling",
+              "type": "string",
+              "enum": [
+                "attention",
+                "caution",
+                "danger",
+                "error",
+                "hint",
+                "important",
+                "note",
+                "seealso",
+                "tip",
+                "warning"
+              ]
+            },
+            "class": {
+              "description": "admonition class info to override kind",
+              "type": "string"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "$ref": "#/$defs/AdmonitionTitle" },
+                  { "$ref": "myst.schema.json#/$defs/FlowContent" }
+                ]
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
         },
-        "kind": {
-          "description": "kind of admonition, to determine styling",
-          "type": "string",
-          "enum": [
-            "attention",
-            "caution",
-            "danger",
-            "error",
-            "hint",
-            "important",
-            "note",
-            "seealso",
-            "tip",
-            "warning"
-          ]
-        },
-        "class": {
-          "description": "admonition class info to override kind",
-          "type": "string"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "anyOf": [
-              { "$ref": "#/$defs/AdmonitionTitle" },
-              { "$ref": "myst.schema.json#/$defs/FlowContent" }
-            ]
-          }
-        },
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+        { "$ref": "unist.schema.json#/$defs/Node" }
+      ]
     },
     "AdmonitionTitle": {
       "description": "custom title for admonition, replaces kind as title",
       "type": "object",
-      "properties": {
-        "type": {
-          "const": "admonitionTitle"
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "admonitionTitle"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/PhrasingContent"
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
         },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "myst.schema.json#/$defs/PhrasingContent"
-          }
-        },
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
+        { "$ref": "unist.schema.json#/$defs/Parent" }
+      ]
     },
     "Math": {
       "description": "block of math",
       "type": "object",
-      "properties": {
-        "type": {
-          "const": "math"
-        },
-        "identifier": {},
-        "label": {},
-        "value": {},
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
       "allOf": [
-        { "$ref": "unist.schema.json#/$defs/Literal" },
-        { "$ref": "commonmark.schema.json#/$defs/OptionalAssociation" }
+        {
+          "properties": {
+            "type": {
+              "const": "math"
+            },
+            "identifier": {},
+            "label": {},
+            "value": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "commonmark.schema.json#/$defs/OptionalAssociation" },
+        { "$ref": "unist.schema.json#/$defs/Literal" }
       ]
     },
     "Container": {
       "description": "top-level container node to provide association and numbering to child content",
       "type": "object",
-      "required": ["kind"],
-      "properties": {
-        "type": {
-          "const": "container"
-        },
-        "kind": {
-          "description": "kind of container contents",
-          "type": "string",
-          "enum": ["figure", "table"]
-        },
-        "class": {
-          "description": "any custom class information",
-          "type": "string"
-        },
-        "numbered": {
-          "description": "count this container for numbering based on kind, e.g. Figure 1",
-          "type": "boolean"
-        },
-        "children": {},
-        "identifier": {},
-        "label": {},
-        "position": {},
-        "data": {}
-      },
-      "if": {
-        "properties": {
-          "kind": {
-            "const": "figure"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "children": {
-            "type": "array",
-            "items": {
-              "anyOf": [
-                { "$ref": "#/$defs/Caption" },
-                { "$ref": "#/$defs/Legend" },
-                { "$ref": "commonmark.schema.json#/$defs/Image" }
-              ]
-            }
-          }
-        }
-      },
-      "else": {
-        "properties": {
-          "children": {
-            "type": "array",
-            "items": {
-              "anyOf": [
-                { "$ref": "#/$defs/Caption" },
-                { "$ref": "#/$defs/Legend" },
-                { "$ref": "directives.schema.json#/$defs/Table" }
-              ]
-            }
-          }
-        }
-      },
-      "additionalProperties": false,
       "allOf": [
-        { "$ref": "unist.schema.json#/$defs/Parent" },
-        { "$ref": "commonmark.schema.json#/$defs/OptionalAssociation" }
+        {
+          "required": ["kind"],
+          "properties": {
+            "type": {
+              "const": "container"
+            },
+            "kind": {
+              "description": "kind of container contents",
+              "type": "string",
+              "enum": ["figure", "table"]
+            },
+            "class": {
+              "description": "any custom class information",
+              "type": "string"
+            },
+            "numbered": {
+              "description": "count this container for numbering based on kind, e.g. Figure 1",
+              "type": "boolean"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "$ref": "#/$defs/Caption" },
+                  { "$ref": "#/$defs/Legend" },
+                  { "$ref": "commonmark.schema.json#/$defs/Image" },
+                  { "$ref": "directives.schema.json#/$defs/Table" }
+                ]
+              }
+            },
+            "identifier": {},
+            "label": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "figure"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "children": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    { "$ref": "#/$defs/Caption" },
+                    { "$ref": "#/$defs/Legend" },
+                    { "$ref": "commonmark.schema.json#/$defs/Image" }
+                  ]
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "children": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    { "$ref": "#/$defs/Caption" },
+                    { "$ref": "#/$defs/Legend" },
+                    { "$ref": "directives.schema.json#/$defs/Table" }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        { "$ref": "commonmark.schema.json#/$defs/OptionalAssociation" },
+        { "$ref": "unist.schema.json#/$defs/Parent" }
       ]
     },
     "Caption": {
       "description": "caption for container content",
       "type": "object",
-      "properties": {
-        "type": {
-          "const": "caption"
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "caption"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/FlowContent"
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
         },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "myst.schema.json#/$defs/FlowContent"
-          }
-        },
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
+        { "$ref": "unist.schema.json#/$defs/Parent" }
+      ]
     },
     "Legend": {
       "description": "legend for container content",
       "type": "object",
-      "properties": {
-        "type": {
-          "const": "legend"
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "legend"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/FlowContent"
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
         },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "myst.schema.json#/$defs/FlowContent"
-          }
-        },
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
+        { "$ref": "unist.schema.json#/$defs/Parent" }
+      ]
     },
     "Table": {
       "description": "two-dimensional table data",
       "type": "object",
-      "properties": {
-        "type": {
-          "const": "table"
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "table"
+            },
+            "align": {
+              "type": "string",
+              "enum": ["left", "center", "right"]
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/TableRow"
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
         },
-        "align": {
-          "type": "string",
-          "enum": ["left", "center", "right"]
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/TableRow"
-          }
-        },
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
+        { "$ref": "unist.schema.json#/$defs/Parent" }
+      ]
     },
     "TableRow": {
       "description": "one row of table containing cells",
       "type": "object",
-      "properties": {
-        "type": {
-          "const": "tableRow"
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "tableRow"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/TableCell"
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
         },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/TableCell"
-          }
-        },
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
+        { "$ref": "unist.schema.json#/$defs/Parent" }
+      ]
     },
     "TableCell": {
       "description": "one cell of table",
       "type": "object",
-      "properties": {
-        "type": {
-          "const": "tableCell"
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "tableCell"
+            },
+            "header": {
+              "type": "boolean"
+            },
+            "align": {
+              "description": "alignment of content within cell",
+              "type": "string",
+              "enum": ["left", "center", "right"]
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/PhrasingContent"
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
         },
-        "header": {
-          "type": "boolean"
-        },
-        "align": {
-          "description": "alignment of content within cell",
-          "type": "string",
-          "enum": ["left", "center", "right"]
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "myst.schema.json#/$defs/PhrasingContent"
-          }
-        },
-        "position": {},
-        "data": {}
-      },
-      "additionalProperties": false,
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
+        { "$ref": "unist.schema.json#/$defs/Parent" }
+      ]
     }
   }
 }
