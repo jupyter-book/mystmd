@@ -48,6 +48,7 @@ function getHeadingLink(
 function getFooter(folderName: string, slug: string): FooterLinks {
   const pages = getFolderPages(folderName, { useIndexSlug: true, addGroups: true });
   const found = pages?.findIndex(({ slug: s }) => s === slug) ?? -1;
+  if (found === -1) return {};
   const prev = getHeadingLink(folderName, slug, pages?.slice(0, found).reverse());
   const next = getHeadingLink(folderName, slug, pages?.slice(found + 1));
   const footer: FooterLinks = {
