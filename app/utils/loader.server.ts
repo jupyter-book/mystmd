@@ -45,6 +45,22 @@ function getHeadingLink(
   };
 }
 
+function getFooter(folderName: string, slug: string): FooterLinks {
+  const pages = getFolderPages(folderName, { useIndexSlug: true, addGroups: true });
+  const found = pages?.findIndex(({ slug: s }) => s === slug) ?? -1;
+  const groupTitle = pages
+    ?.slice(0, found)
+    .reverse()
+    .find(({ slug, level }) => !slug || level === 'index')?.title;
+  console.log({ groupTitle });
+  const prev = getHeadingLink(folderName, slug, pages?.slice(0, found).reverse());
+  const next = getHeadingLink(folderName, slug, pages?.slice(found + 1));
+  const footer: FooterLinks = {
+    navigation: { prev, next },
+  };
+  return footer;
+}
+
 export async function getData(
   folderName?: string,
   slug?: string,
@@ -60,19 +76,8 @@ export async function getData(
     `${slug}.json`,
   );
   if (!fs.existsSync(filename)) return null;
-  const pages = getFolderPages(folderName, { useIndexSlug: true, addGroups: true });
-  const found = pages?.findIndex(({ slug: s }) => s === slug) ?? -1;
-  const groupTitle = pages
-    ?.slice(0, found)
-    .reverse()
-    .find(({ slug, level }) => !slug || level === 'index')?.title;
-  console.log({ groupTitle });
-  const prev = getHeadingLink(folderName, slug, pages?.slice(0, found).reverse());
-  const next = getHeadingLink(folderName, slug, pages?.slice(found + 1));
   const contents = fs.readFileSync(filename).toString();
   const data = JSON.parse(contents);
-  const footer: FooterLinks = {
-    navigation: { prev, next },
-  };
+  const footer = getFooter(folderName, slug);
   return { ...data, footer };
 }
