@@ -1,0 +1,35 @@
+cases:
+  - title: unknown role
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: role
+              kind: abc
+              value: ABC role
+    myst: |-
+      {abc}`ABC role`
+    html: |-
+      <p><span class="role unhandled"><code class="kind">{abc}</code><code>ABC role</code></span></p>
+  - title: unknown role - no value
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: role
+              kind: abc
+    myst: |-
+      {abc}``
+    html: |-
+      <p><span class="role unhandled"><code class="kind">{abc}</code></span></p>
+  - title: unknown role - invalid no kind
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: role
+              value: ABC role

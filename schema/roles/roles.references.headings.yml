@@ -1,0 +1,133 @@
+cases:
+  - title: Default header reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'See: '
+            - type: role
+              kind: ref
+              value: my_id
+              children:
+                - type: crossReference
+                  kind: ref
+                  identifier: my_id
+                  label: my_id
+        - type: target
+          identifier: my_id
+          label: my_id
+        - type: heading
+          depth: 1
+          children:
+            - type: strong
+              children:
+                - type: text
+                  value: My
+            - type: text
+              value: ' Header'
+    myst: |-
+      See: {ref}`my_id`
+
+      (my_id)=
+      # **My** Header
+    html: |-
+      <p>See: <a href="#my_id"><strong>My</strong> Header</a></p>
+      <h1 id="my_id"><strong>My</strong> Header</h1>
+  - title: Custom header reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'See: '
+            - type: role
+              kind: ref
+              value: something... <my_id>
+              children:
+                - type: crossReference
+                  kind: ref
+                  identifier: my_id
+                  label: my_id
+                  children:
+                    - type: text
+                      value: something...
+        - type: target
+          identifier: my_id
+          label: my_id
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: My Header
+    myst: |-
+      See: {ref}`something... <my_id>`
+
+      (my_id)=
+      # My Header
+    html: |-
+      <p>See: <a href="#my_id">something...</a></p>
+      <h1 id="my_id">My Header</h1>
+  - title: Link-style default header reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'See: '
+            - type: link
+              url: my_id
+              children: []
+        - type: target
+          identifier: my_id
+          label: my_id
+        - type: heading
+          depth: 1
+          children:
+            - type: strong
+              children:
+                - type: text
+                  value: My
+            - type: text
+              value: ' Header'
+    myst: |-
+      See: [](my_id)
+
+      (my_id)=
+      # **My** Header
+    html: |-
+      <p>See: <a href="#my_id"><strong>My</strong> Header</a></p>
+      <h1 id="my_id"><strong>My</strong> Header</h1>
+  - title: Link-style custom header reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'See: '
+            - type: link
+              url: My_Id
+              title: Title
+              children:
+                - type: text
+                  value: something...
+        - type: target
+          identifier: my_id
+          label: my_id
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: My Header
+    myst: |-
+      See: [something...](My_Id "Title")
+
+      (my_id)=
+      # My Header
+    html: |-
+      <p>See: <a href="#my_id" title="Title">something...</a></p>
+      <h1 id="my_id">My Header</h1>

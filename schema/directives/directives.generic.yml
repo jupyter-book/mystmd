@@ -1,0 +1,52 @@
+cases:
+  - title: Unknown directive
+    mdast:
+      type: root
+      children:
+        - type: directive
+          kind: abc
+          options:
+            a: one
+            b: two
+          value: ABC directive
+    myst: |-
+      ```{abc}
+      :a: one
+      :b: two
+
+      ABC directive
+      ```
+    html: |-
+      <div class="directive unhandled">
+        <p><code class="kind">{abc}</code></p>
+        <pre><code>:a: one
+      :b: two
+
+      ABC directive</code></pre>
+      </div>
+  - title: Unknown directive with args
+    mdast:
+      type: root
+      children:
+        - type: directive
+          kind: abc
+          args: foo bar
+          options:
+            a: one
+            b: two
+          value: ABC directive
+    myst: |-
+      ```{abc} foo bar
+      :a: one
+      :b: two
+
+      ABC directive
+      ```
+    html: |-
+      <div class="directive unhandled">
+        <p><code class="kind">{abc}</code> <code class="args">foo bar</code></p>
+        <pre><code>:a: one
+      :b: two
+
+      ABC directive</code></pre>
+      </div>

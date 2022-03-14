@@ -1,0 +1,107 @@
+cases:
+  - title: Invalid equation reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: role
+              kind: eq
+              value: '  matrix  '
+              children:
+                - type: crossReference
+                  kind: eq
+                  identifier: matrix
+                  label: '  matrix  '
+        - type: container
+          kind: figure
+          identifier: matrix
+          label: matrix
+          numbered: true
+          children:
+            - type: image
+              url: fig.jpg
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Cool caption!
+    myst: |-
+
+      see {eq}`  matrix  `
+
+      ```{figure} fig.jpg
+      :name: matrix
+
+      Cool caption!
+      ```
+    html: |-
+      <p>see <span class="reference role unhandled"><code class="kind">{eq}</code><code>matrix</code></span></p>
+      <figure id="matrix" class="numbered">
+        <img src="fig.jpg">
+        <figcaption>
+          <p><span class="caption-number">Figure 1</span>Cool caption!</p>
+        </figcaption>
+      </figure>
+  - title: Default equation reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: role
+              kind: eq
+              value: matrix
+              children:
+                - type: crossReference
+                  kind: eq
+                  identifier: matrix
+                  label: matrix
+        - type: math
+          identifier: matrix
+          label: matrix
+          value: |-
+            Ax = b
+    myst: |-
+
+      see {eq}`matrix`
+
+      ```{math}
+      :label: matrix
+      Ax = b
+      ```
+    html: |-
+      <p>see <a href="#matrix">(1)</a></p>
+      <div id="matrix" class="math block">Ax = b</div>
+  - title: Link-style equation reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: link
+              url: matrix
+              children: []
+        - type: math
+          identifier: matrix
+          label: matrix
+          value: |-
+            Ax = b
+    myst: |-
+
+      see [](matrix)
+
+      ```{math}
+      :label: matrix
+      Ax = b
+      ```
+    html: |-
+      <p>see <a href="#matrix">(1)</a></p>
+      <div id="matrix" class="math block">Ax = b</div>

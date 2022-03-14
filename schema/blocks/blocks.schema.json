@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/blocks.schema.json",
+  "description": "Block-level myst types",
+  "$defs": {
+    "Comment": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "comment"
+        },
+        "value": {},
+        "position": {},
+        "data": {}
+      },
+      "additionalProperties": false,
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
+    },
+    "Block": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "block"
+        },
+        "meta": {
+          "description": "block metadata; conventionally, a stringified JSON dictionary but may be any arbitrary string",
+          "type": "string"
+        },
+        "children": {
+          "description": "Top-level children of myst document",
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/FlowContent"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/ListContent"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/PhrasingContent"
+              }
+            }
+          ]
+        },
+        "position": {},
+        "data": {}
+      },
+      "additionalProperties": false,
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "Target": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "target"
+        },
+        "identifier": {},
+        "label": {},
+        "position": {},
+        "data": {}
+      },
+      "additionalProperties": false,
+      "allOf": [
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "commonmark.schema.json#/$defs/Association" }
+      ]
+    }
+  }
+}

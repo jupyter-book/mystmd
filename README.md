@@ -1,5 +1,7 @@
 # MyST Spec
 
+> :warning: The MyST AST specification is still in dev; any structures or features present in the JSON schema may change at any time without notice.
+
 MyST (Markedly Structured Text) is designed to create publication-quality, computational documents written entirely in Markdown. The main use case driving the development and design of MyST is [JupyterBook](https://jupyterbook.org/), which creates educational online textbooks and tutorials with Jupyter Notebooks and narrative content written in MyST.
 
 MyST is a superset of [CommonMark](https://commonmark.org/) (a standard form of Markdown) and allows you to directly create “directives” and “roles” as extension points in the language. These extensions points are influenced by [ReStructured Text (RST)](https://en.wikipedia.org/wiki/ReStructuredText) and [Sphinx](https://www.sphinx-doc.org/) -- pulling on the nomenclature and introducing additional standards where appropriate. `directives` are block-level extension points, like callout panels, tabs, figures or embedded charts; and `roles` are inline extension points, for components like references, citations, or inline math.
@@ -51,14 +53,35 @@ Beyond CommonMark and GitHub Flavoured Markdown, MyST introduces new directives 
 
 ### Structure of the Repository
 
-[TBD]
+```
+schema/
+|- myst.schema.json          // root schema definition
+|- myst.md                   // docs
+|- schema.spec.ts            // test for validating all examples against the schema
+|- unist/
+|  |- unist.schema.json      // unist base types
+|  |- unist.md               // docs
+|  |- unist.yml              // example mdast structures
+|- commonmark/
+|  |- commonmark.schema.json // commonmark mdast types
+|  |- commonmark.md          // docs
+|  |- commonmark.yml         // simple commonmark examples
+|  |- cmark_spec_0.30.yml    // commonmark spec examples
+...
+|- roles/                    // future myst features
+|  |- roles.schema.json
+|  ...
+|- directives/
+|  |- directives.schema.json
+|  ...
+```
 
 ## Relation to other markup languages, frameworks
 
 [TODO]
 
-* CommonMark
-* GitHub Flavored Markdown
-* Pandoc
-* Unified
-* Markdown-It
+- CommonMark
+- GitHub Flavored Markdown
+- Pandoc
+- Unified
+- Markdown-It

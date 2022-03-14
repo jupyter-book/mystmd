@@ -23,12 +23,26 @@
       }
     },
     "Literal": {
-      "description": "basic node with string value",
+      "description": "basic node with required string value",
       "type": "object",
-      "required": ["type"],
+      "required": ["value"],
       "properties": {
         "value": {
           "type": "string"
+        }
+      },
+      "allOf": [{ "$ref": "#/$defs/Node" }]
+    },
+    "Parent": {
+      "description": "basic node with required node children",
+      "type": "object",
+      "required": ["children"],
+      "properties": {
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Node"
+          }
         }
       },
       "allOf": [{ "$ref": "#/$defs/Node" }]
@@ -53,7 +67,8 @@
           "type": "integer",
           "minimum": 0
         }
-      }
+      },
+      "additionalProperties": false
     },
     "Position": {
       "description": "location of a node in a source file",
@@ -73,7 +88,8 @@
           "type": "integer",
           "minimum": 0
         }
-      }
+      },
+      "additionalProperties": false
     }
   }
 }

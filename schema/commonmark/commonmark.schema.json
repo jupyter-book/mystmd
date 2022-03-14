@@ -5,7 +5,6 @@
   "$defs": {
     "Paragraph": {
       "type": "object",
-      "required": ["type", "children"],
       "properties": {
         "type": {
           "const": "paragraph"
@@ -15,13 +14,16 @@
           "items": {
             "$ref": "myst.schema.json#/$defs/PhrasingContent"
           }
-        }
+        },
+        "position": {},
+        "data": {}
       },
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+      "additionalProperties": false,
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
     },
     "Heading": {
       "type": "object",
-      "required": ["type", "depth", "children"],
+      "required": ["depth"],
       "properties": {
         "type": {
           "const": "heading"
@@ -36,23 +38,32 @@
           "items": {
             "$ref": "myst.schema.json#/$defs/PhrasingContent"
           }
-        }
+        },
+        "identifier": {},
+        "label": {},
+        "position": {},
+        "data": {}
       },
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+      "additionalProperties": false,
+      "allOf": [
+        { "$ref": "unist.schema.json#/$defs/Parent" },
+        { "$ref": "#/$defs/OptionalAssociation" }
+      ]
     },
     "ThematicBreak": {
       "type": "object",
-      "required": ["type"],
       "properties": {
         "type": {
           "const": "thematicBreak"
-        }
+        },
+        "position": {},
+        "data": {}
       },
+      "additionalProperties": false,
       "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "Blockquote": {
       "type": "object",
-      "required": ["type", "children"],
       "properties": {
         "type": {
           "const": "blockquote"
@@ -62,13 +73,15 @@
           "items": {
             "$ref": "myst.schema.json#/$defs/FlowContent"
           }
-        }
+        },
+        "position": {},
+        "data": {}
       },
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+      "additionalProperties": false,
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
     },
     "List": {
       "type": "object",
-      "required": ["type", "children"],
       "properties": {
         "type": {
           "const": "list"
@@ -90,13 +103,15 @@
           "items": {
             "$ref": "myst.schema.json#/$defs/ListContent"
           }
-        }
+        },
+        "position": {},
+        "data": {}
       },
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+      "additionalProperties": false,
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
     },
     "ListItem": {
       "type": "object",
-      "required": ["type", "children"],
       "properties": {
         "type": {
           "const": "listItem"
@@ -113,25 +128,30 @@
               { "$ref": "myst.schema.json#/$defs/FlowContent" }
             ]
           }
-        }
+        },
+        "position": {},
+        "data": {}
       },
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+      "additionalProperties": false,
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
     },
     "HTML": {
       "description": "Fragment of raw HTML - does not need to be valid or complete",
       "type": "object",
-      "required": ["type", "value"],
       "properties": {
         "type": {
           "const": "html"
-        }
+        },
+        "value": {},
+        "position": {},
+        "data": {}
       },
+      "additionalProperties": false,
       "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
     },
     "Code": {
       "description": "block of preformatted text",
       "type": "object",
-      "required": ["type", "value"],
       "properties": {
         "type": {
           "const": "code"
@@ -143,26 +163,70 @@
         "meta": {
           "description": "custom information relating to the node",
           "type": "string"
-        }
+        },
+        "class": {
+          "description": "user-defined class for code block",
+          "type": "string"
+        },
+        "showLineNumbers": {
+          "type": "boolean"
+        },
+        "startingLineNumber": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "emphasizeLines": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "identifier": {},
+        "label": {},
+        "value": {},
+        "position": {},
+        "data": {}
       },
-      "if": {
-        "required": ["meta"]
-      },
-      "then": {
-        "required": ["lang"]
-      },
-      "else": {},
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": ["meta"]
+          },
+          "then": {
+            "required": ["lang"]
+          },
+          "else": {}
+        },
+        {
+          "if": {
+            "required": ["startingLineNumber"]
+          },
+          "then": {
+            "required": ["showLineNumbers"]
+          },
+          "else": {}
+        },
+        { "$ref": "unist.schema.json#/$defs/Literal" },
+        { "$ref": "#/$defs/OptionalAssociation" }
+      ]
     },
     "Definition": {
       "description": "reference to a url resource",
       "type": "object",
-      "required": ["type"],
       "properties": {
         "type": {
           "const": "definition"
-        }
+        },
+        "identifier": {},
+        "label": {},
+        "url": {},
+        "title": {},
+        "position": {},
+        "data": {}
       },
+      "additionalProperties": false,
       "allOf": [
         { "$ref": "unist.schema.json#/$defs/Node" },
         { "$ref": "#/$defs/Association" },
@@ -171,18 +235,20 @@
     },
     "Text": {
       "type": "object",
-      "required": ["type", "value"],
       "properties": {
         "type": {
           "const": "text"
-        }
+        },
+        "value": {},
+        "position": {},
+        "data": {}
       },
+      "additionalProperties": false,
       "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
     },
     "Emphasis": {
       "description": "stressed, italicized content",
       "type": "object",
-      "required": ["type", "children"],
       "properties": {
         "type": {
           "const": "emphasis"
@@ -192,14 +258,16 @@
           "items": {
             "$ref": "myst.schema.json#/$defs/PhrasingContent"
           }
-        }
+        },
+        "position": {},
+        "data": {}
       },
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+      "additionalProperties": false,
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
     },
     "EmphasisStatic": {
       "description": "stressed, italicized content, with static children; used when parent node requires static content",
       "type": "object",
-      "required": ["type", "children"],
       "properties": {
         "type": {
           "const": "emphasis"
@@ -209,14 +277,16 @@
           "items": {
             "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
           }
-        }
+        },
+        "position": {},
+        "data": {}
       },
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+      "additionalProperties": false,
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
     },
     "Strong": {
       "description": "important, serious, urgent, bold content",
       "type": "object",
-      "required": ["type", "children"],
       "properties": {
         "type": {
           "const": "strong"
@@ -226,14 +296,16 @@
           "items": {
             "$ref": "myst.schema.json#/$defs/PhrasingContent"
           }
-        }
+        },
+        "position": {},
+        "data": {}
       },
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+      "additionalProperties": false,
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
     },
     "StrongStatic": {
       "description": "important, serious, urgent, bold content, with static children; used when parent node requires static content",
       "type": "object",
-      "required": ["type", "children"],
       "properties": {
         "type": {
           "const": "strong"
@@ -243,36 +315,43 @@
           "items": {
             "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
           }
-        }
+        },
+        "position": {},
+        "data": {}
       },
-      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+      "additionalProperties": false,
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Parent" }]
     },
     "InlineCode": {
       "description": "fragment of code",
       "type": "object",
-      "required": ["type", "value"],
       "properties": {
         "type": {
           "const": "inlineCode"
-        }
+        },
+        "value": {},
+        "position": {},
+        "data": {}
       },
+      "additionalProperties": false,
       "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
     },
     "Break": {
       "description": "line break",
       "type": "object",
-      "required": ["type"],
       "properties": {
         "type": {
           "const": "break"
-        }
+        },
+        "position": {},
+        "data": {}
       },
+      "additionalProperties": false,
       "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
     },
     "Link": {
       "description": "hyperlink",
       "type": "object",
-      "required": ["type", "children"],
       "properties": {
         "type": {
           "const": "link"
@@ -282,22 +361,44 @@
           "items": {
             "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
           }
-        }
+        },
+        "url": {},
+        "title": {},
+        "position": {},
+        "data": {}
       },
+      "additionalProperties": false,
       "allOf": [
-        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "unist.schema.json#/$defs/Parent" },
         { "$ref": "#/$defs/Resource" }
       ]
     },
     "Image": {
       "description": "image hyperlink",
       "type": "object",
-      "required": ["type"],
       "properties": {
         "type": {
           "const": "image"
-        }
+        },
+        "class": {
+          "description": "user-defined class for image",
+          "type": "string"
+        },
+        "width": {
+          "description": "image width in pixels or percentage",
+          "type": "string"
+        },
+        "align": {
+          "type": "string",
+          "enum": ["left", "center", "right"]
+        },
+        "url": {},
+        "title": {},
+        "alt": {},
+        "position": {},
+        "data": {}
       },
+      "additionalProperties": false,
       "allOf": [
         { "$ref": "unist.schema.json#/$defs/Node" },
         { "$ref": "#/$defs/Resource" },
@@ -307,7 +408,6 @@
     "LinkReference": {
       "description": "hyperlink through association",
       "type": "object",
-      "required": ["type", "children"],
       "properties": {
         "type": {
           "const": "linkReference"
@@ -317,25 +417,39 @@
           "items": {
             "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
           }
-        }
+        },
+        "referenceType": {},
+        "identifier": {},
+        "label": {},
+        "position": {},
+        "data": {}
       },
+      "additionalProperties": false,
       "allOf": [
-        { "$ref": "unist.schema.json#/$defs/Node" },
-        { "$ref": "#/$defs/Reference" }
+        { "$ref": "unist.schema.json#/$defs/Parent" },
+        { "$ref": "#/$defs/Reference" },
+        { "$ref": "#/$defs/Association" }
       ]
     },
     "ImageReference": {
       "description": "image through association",
       "type": "object",
-      "required": ["type"],
       "properties": {
         "type": {
           "const": "imageReference"
-        }
+        },
+        "referenceType": {},
+        "identifier": {},
+        "label": {},
+        "alt": {},
+        "position": {},
+        "data": {}
       },
+      "additionalProperties": false,
       "allOf": [
         { "$ref": "unist.schema.json#/$defs/Node" },
         { "$ref": "#/$defs/Reference" },
+        { "$ref": "#/$defs/Association" },
         { "$ref": "#/$defs/Alternative" }
       ]
     },
@@ -354,10 +468,9 @@
         }
       }
     },
-    "Association": {
-      "description": "internal relation from one node to another",
+    "OptionalAssociation": {
+      "description": "internal relation from one node to another; not required by node",
       "type": "object",
-      "required": ["identifier"],
       "properties": {
         "identifier": {
           "description": "identifier that may match another node; value is unparsed and must be normalized such that whitespace is collapsed to single space, initial/final space is trimmed, and case is folded",
@@ -368,6 +481,12 @@
           "type": "string"
         }
       }
+    },
+    "Association": {
+      "description": "internal relation from one node to another",
+      "type": "object",
+      "required": ["identifier"],
+      "allOf": [{ "$ref": "#/$defs/OptionalAssociation" }]
     },
     "Alternative": {
       "description": "alternative description of image",
@@ -389,8 +508,7 @@
           "type": "string",
           "enum": ["shortcut", "collapsed", "full"]
         }
-      },
-      "allOf": [{ "$ref": "#/$defs/Association" }]
+      }
     }
   }
 }

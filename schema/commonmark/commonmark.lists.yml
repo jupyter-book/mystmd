@@ -1,0 +1,105 @@
+cases:
+  - title: CommonMark bullet list
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          spread: false
+          children:
+            - type: listItem
+              spread: false
+              children:
+                - type: text
+                  value: headings
+            - type: listItem
+              spread: false
+              children:
+                - type: text
+                  value: lists
+                - type: list
+                  ordered: false
+                  spread: false
+                  children:
+                    - type: listItem
+                      spread: false
+                      children:
+                        - type: text
+                          value: bullets
+                    - type: listItem
+                      spread: false
+                      children:
+                        - type: text
+                          value: numbers
+            - type: listItem
+              spread: false
+              children:
+                - type: text
+                  value: code blocks
+    myst: |-
+      - headings
+      - lists
+        - bullets
+        - numbers
+      - code blocks
+    html: |-
+      <ul>
+        <li>headings</li>
+        <li>lists
+          <ul>
+            <li>bullets</li>
+            <li>numbers</li>
+          </ul>
+        </li>
+        <li>code blocks</li>
+      </ul>
+    latex: |-
+      \begin{itemize}
+        \item headings
+        \item lists
+          \begin{itemize}
+            \item bullets
+            \item numbers
+          |end{itemize}
+        \item code blocks
+      \end{itemize}
+  - title: CommonMark numbered list
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: true
+          start: 1
+          spread: false
+          children:
+            - type: listItem
+              spread: false
+              children:
+                - type: text
+                  value: quotes
+            - type: listItem
+              spread: false
+              children:
+                - type: text
+                  value: breaks
+            - type: listItem
+              spread: false
+              children:
+                - type: text
+                  value: links
+    myst: |-
+      1. quotes
+      2. breaks
+      3. links
+    html: |-
+      <ol>
+        <li>quotes</li>
+        <li>breaks</li>
+        <li>links</li>
+      </ol>
+    latex: |-
+      \begin{enumerate}
+        \item quotes
+        \item breaks
+        \item links
+      \end{enumerate}

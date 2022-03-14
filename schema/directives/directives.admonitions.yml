@@ -1,0 +1,219 @@
+cases:
+  - title: Simple Admonition
+    mdast:
+      type: root
+      children:
+        - type: directive
+          kind: attention
+          args: This is a title
+          value: An example of an admonition with a _title_.
+          children:
+            - type: admonition
+              children:
+                - type: admonitionTitle
+                  children:
+                    - type: text
+                      value: This is a title
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'An example of an admonition with a '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: title
+                    - type: text
+                      value: '.'
+    myst: |-
+      ```{admonition} This is a title
+        An example of an admonition with a _title_.
+      ```
+    html: |-
+      <aside class="admonition">
+        <p class="admonition-title">This is a title</p>
+        <p>An example of an admonition with a <em>title</em>.</p>
+      </aside>
+    latex: |-
+      \begin{mdframed}
+        \section*{This is a title}
+        An example of an admonition with a \textit{title}.
+      \end{mdframed}
+
+  - title: Note with no title
+    mdast:
+      type: root
+      children:
+        - type: directive
+          kind: note
+          value: Please note!
+          children:
+            - type: admonition
+              kind: note
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Please note!
+    myst: |-
+      ```{note}
+        Please note!
+      ```
+    html: |-
+      <aside class="admonition note">
+        <p class="admonition-title">Note</p>
+        <p>Please note!</p>
+      </aside>
+    latex: |-
+      \begin{mdframed}[style=note]
+        Please note!
+      \end{mdframed}
+
+  - title: Note with split title
+    mdast:
+      type: root
+      children:
+        - type: directive
+          kind: note
+          args: This is a title in myst
+          value: and an example of a note admonition.
+          children:
+            - type: admonition
+              kind: note
+              children:
+                - type: admonitionTitle
+                  children:
+                    - type: text
+                      value: This is a title in myst
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: |-
+                        and an example of a note admonition.
+    myst: |-
+      ```{note} This is a title in myst
+        and an example of a note admonition.
+      ```
+    html: |-
+      <aside class="admonition note">
+        <p class="admonition-title">This is a title in myst</p>
+        <p>
+          and an example of a note admonition.
+        </p>
+      </aside>
+    latex: |-
+      \begin{mdframed}[style=note]
+        \section*{This is a title in myst}
+        and an example of a note admonition.
+      \end{mdframed}
+
+  - title: Danger on a single line
+    mdast:
+      type: root
+      children:
+        - type: directive
+          kind: danger
+          args: This is a title!
+          children:
+            - type: admonition
+              kind: danger
+              children:
+                - type: admonitionTitle
+                  children:
+                    - type: text
+                      value: This is a title!
+    myst: |-
+      ```{danger} This is a title!
+      ```
+    html: |-
+      <aside class="admonition danger">
+        <p class="admonition-title">This is a title!</p>
+      </aside>
+    latex: |-
+      \begin{mdframed}[style=danger]
+        \section*{This is a title!}
+      \end{mdframed}
+
+  - title: Admonition with overridding class name
+    mdast:
+      type: root
+      children:
+        - type: directive
+          kind: admonition
+          args: This is a title!
+          options:
+            class: tip
+          value: An example of a general `admonition` with a custom _class_.
+          children:
+            - type: admonition
+              class: tip
+              children:
+                - type: admonitionTitle
+                  children:
+                    - type: text
+                      value: This is a title!
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'An example of a general '
+                    - type: inlineCode
+                      value: admonition
+                    - type: text
+                      value: ' with a custom '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: 'class'
+                    - type: text
+                      value: '.'
+    myst: |-
+      ```{admonition} This is a title!
+      :class: tip
+
+      An example of a general `admonition` with a custom _class_.
+      ```
+    html: |-
+      <aside class="tip admonition">
+        <p class="admonition-title">This is a title!</p>
+        <p>An example of a general <code>admonition</code> with a custom <em>class</em>.</p>
+      </aside>
+    latex: |-
+      \begin{mdframed}[style=tip]
+        \section*{This is a title!}
+        An example of a general \texttt{admonition} with a custom \textit{class}.
+      \end{mdframed}
+
+  - title: See Also with overridding class name of tip
+    description: The `tip` class must be appended to the start
+    mdast:
+      type: root
+      children:
+        - type: directive
+          kind: seealso
+          options:
+            class: tip
+          value: |-
+            Tip class comes first!!
+          children:
+            - type: admonition
+              kind: seealso
+              class: tip
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: |-
+                        Tip class comes first!!
+    myst: |-
+      ```{seealso}
+      :class: tip
+      Tip class comes first!!
+      ```
+    html: |-
+      <aside class="tip admonition seealso">
+        <p class="admonition-title">See Also</p>
+        <p>Tip class comes first!!</p>
+      </aside>
+    latex: |-
+      \begin{mdframed}[style=tip]
+        Tip class comes first!!
+      \end{mdframed}

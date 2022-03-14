@@ -1,0 +1,371 @@
+cases:
+  - title: Invalid figure reference without value
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: role
+              kind: numref
+              value: my-figure
+              children:
+                - type: crossReference
+                  kind: numref
+                  identifier: my-figure
+                  label: my-figure
+    myst: |-
+      {numref}`my-figure`
+    html: |-
+      <p><span class="reference role unhandled"><code class="kind">{numref}</code><code>my-figure</code></span></p>
+  - title: Invalid figure reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: role
+              kind: numref
+              value: Figure %s <my-figure>
+              children:
+                - type: crossReference
+                  kind: numref
+                  identifier: my-figure
+                  label: my-figure
+                  children:
+                    - type: text
+                      value: Figure %s
+    myst: |-
+      {numref}`Figure %s <my-figure>`
+    html: |-
+      <p><span class="reference role unhandled"><code class="kind">{numref}</code><code>my-figure</code></span></p>
+  - title: Invalid figure reference with messy label
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: role
+              kind: numref
+              value: Figure %s <  My   -   Figure  >
+              children:
+                - type: crossReference
+                  kind: numref
+                  identifier: my - figure
+                  label: '  My   -   Figure  '
+                  children:
+                    - type: text
+                      value: Figure %s
+    myst: |-
+      {numref}`Figure %s <  My   -   Figure  >`
+    html: |-
+      <p><span class="reference role unhandled"><code class="kind">{numref}</code><code>my - figure</code></span></p>
+  - title: Figure reference with default numref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: role
+              kind: numref
+              value: my-figure
+              children:
+                - type: crossReference
+                  kind: numref
+                  identifier: my-figure
+                  label: my-figure
+        - type: directive
+          kind: figure
+          args: fig.jpg
+          options:
+            name: my-figure
+          value: Cool caption!
+          children:
+            - type: container
+              kind: figure
+              identifier: my-figure
+              label: my-figure
+              numbered: true
+              children:
+                - type: image
+                  url: fig.jpg
+                - type: caption
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Cool caption!
+    myst: |-
+      see {numref}`my-figure`
+
+      ```{figure} fig.jpg
+      :name: my-figure
+
+      Cool caption!
+      ```
+    html: |-
+      <p>see <a href="#my-figure">Figure 1</a></p>
+      <figure id="my-figure" class="numbered">
+        <img src="fig.jpg">
+        <figcaption>
+          <p><span class="caption-number">Figure 1</span>Cool caption!</p>
+        </figcaption>
+      </figure>
+  - title: Figure reference with custom numref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: role
+              kind: numref
+              value: Figure %s%s%s, I said {number}<my-figure>
+              children:
+                - type: crossReference
+                  kind: numref
+                  identifier: my-figure
+                  label: my-figure
+                  children:
+                    - type: text
+                      value: Figure %s%s%s, I said {number}
+        - type: container
+          kind: figure
+          identifier: my-figure
+          label: my-figure
+          numbered: true
+          children:
+            - type: image
+              url: fig.jpg
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Cool caption!
+    myst: |-
+      see {numref}`Figure %s%s%s, I said {number}<my-figure>`
+
+      ```{figure} fig.jpg
+      :name: my-figure
+
+      Cool caption!
+      ```
+    html: |-
+      <p>see <a href="#my-figure">Figure 111, I said 1</a></p>
+      <figure id="my-figure" class="numbered">
+        <img src="fig.jpg">
+        <figcaption>
+          <p><span class="caption-number">Figure 1</span>Cool caption!</p>
+        </figcaption>
+      </figure>
+  - title: Figure reference with default ref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: role
+              kind: ref
+              value: my-figure
+              children:
+                - type: crossReference
+                  kind: ref
+                  identifier: my-figure
+                  label: my-figure
+        - type: container
+          kind: figure
+          identifier: my-figure
+          label: my-figure
+          numbered: true
+          children:
+            - type: image
+              url: fig.jpg
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Cool '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: caption
+                    - type: text
+                      value: '!'
+    myst: |-
+      see {ref}`my-figure`
+
+      ```{figure} fig.jpg
+      :name: my-figure
+
+      Cool *caption*!
+      ```
+    html: |-
+      <p>see <a href="#my-figure">Cool <em>caption</em>!</a></p>
+      <figure id="my-figure" class="numbered">
+        <img src="fig.jpg">
+        <figcaption>
+          <p><span class="caption-number">Figure 1</span>Cool <em>caption</em>!</p>
+        </figcaption>
+      </figure>
+  - title: Figure reference with custom ref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: role
+              kind: ref
+              value: Custom *caption* <my-figure>
+              children:
+                - type: crossReference
+                  kind: ref
+                  identifier: my-figure
+                  label: my-figure
+                  children:
+                    - type: text
+                      value: Custom *caption*
+        - type: container
+          kind: figure
+          identifier: my-figure
+          label: my-figure
+          numbered: true
+          children:
+            - type: image
+              url: fig.jpg
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Cool '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: caption
+                    - type: text
+                      value: '!'
+    myst: |-
+      see {ref}`Custom *caption* <my-figure>`
+
+      ```{figure} fig.jpg
+      :name: my-figure
+
+      Cool *caption*!
+      ```
+    html: |-
+      <p>see <a href="#my-figure">Custom *caption*</a></p>
+      <figure id="my-figure" class="numbered">
+        <img src="fig.jpg">
+        <figcaption>
+          <p><span class="caption-number">Figure 1</span>Cool <em>caption</em>!</p>
+        </figcaption>
+      </figure>
+  - title: Link-style figure reference with default ref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: link
+              url: my-figure
+              title: Figure title
+              children: []
+        - type: container
+          kind: figure
+          identifier: my-figure
+          label: my-figure
+          numbered: true
+          children:
+            - type: image
+              url: fig.jpg
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Cool '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: caption
+                    - type: text
+                      value: '!'
+    myst: |-
+      see [](my-figure "Figure title")
+
+      ```{figure} fig.jpg
+      :name: my-figure
+
+      Cool *caption*!
+      ```
+    html: |-
+      <p>see <a href="#my-figure" title="Figure title">Cool <em>caption</em>!</a></p>
+      <figure id="my-figure" class="numbered">
+        <img src="fig.jpg">
+        <figcaption>
+          <p><span class="caption-number">Figure 1</span>Cool <em>caption</em>!</p>
+        </figcaption>
+      </figure>
+  - title: Link-style figure reference with custom ref
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'see '
+            - type: link
+              url: my-figure
+              children:
+                - type: text
+                  value: 'Custom '
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: caption
+        - type: container
+          kind: figure
+          identifier: my-figure
+          label: my-figure
+          numbered: true
+          children:
+            - type: image
+              url: fig.jpg
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Cool '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: caption
+                    - type: text
+                      value: '!'
+    myst: |-
+      see [Custom *caption*](my-figure)
+
+      ```{figure} fig.jpg
+      :name: my-figure
+
+      Cool *caption*!
+      ```
+    html: |-
+      <p>see <a href="#my-figure">Custom <em>caption</em></a></p>
+      <figure id="my-figure" class="numbered">
+        <img src="fig.jpg">
+        <figcaption>
+          <p><span class="caption-number">Figure 1</span>Cool <em>caption</em>!</p>
+        </figcaption>
+      </figure>

@@ -1,0 +1,41 @@
+cases:
+  - title: CommonMark headings
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 3
+          children:
+            - type: text
+              value: Heading!
+    myst: |-
+      ### Heading!
+    html: |-
+      <h3>Heading!</h3>
+  - title: CommonMark setext headings
+    description: https://spec.commonmark.org/0.30/#setext-headings
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: Heading 1
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: Heading 2
+    myst: |-
+      Heading 1
+      =========
+
+      Heading 2
+      ---------
+    html: |-
+      <h1>Heading 1</h1>
+      <h2>Heading 2</h2>
+    latex: |-
+      \section*{Heading 1}
+      \subsection*{Heading 2}
