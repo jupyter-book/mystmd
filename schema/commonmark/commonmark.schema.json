@@ -1,0 +1,396 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/commonmark.schema.json",
+  "description": "Existing basic commonmark types for myst mdast - https://github.com/syntax-tree/mdast",
+  "$defs": {
+    "Paragraph": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": {
+          "const": "paragraph"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "myst.schema.json#/$defs/PhrasingContent"
+          }
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "Heading": {
+      "type": "object",
+      "required": ["type", "depth", "children"],
+      "properties": {
+        "type": {
+          "const": "heading"
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "myst.schema.json#/$defs/PhrasingContent"
+          }
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "ThematicBreak": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "const": "thematicBreak"
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "Blockquote": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": {
+          "const": "blockquote"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "myst.schema.json#/$defs/FlowContent"
+          }
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "List": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": {
+          "const": "list"
+        },
+        "ordered": {
+          "description": "Is item order important or not?",
+          "type": "boolean"
+        },
+        "start": {
+          "description": "Starting number of ordered list",
+          "type": "integer"
+        },
+        "spread": {
+          "description": "One or more children are separated with a blank line from others",
+          "type": "boolean"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "myst.schema.json#/$defs/ListContent"
+          }
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "ListItem": {
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": {
+          "const": "listItem"
+        },
+        "spread": {
+          "description": "One or more children are separated with a blank line from others",
+          "type": "boolean"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "myst.schema.json#/$defs/PhrasingContent" },
+              { "$ref": "myst.schema.json#/$defs/FlowContent" }
+            ]
+          }
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "HTML": {
+      "description": "Fragment of raw HTML - does not need to be valid or complete",
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "const": "html"
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
+    },
+    "Code": {
+      "description": "block of preformatted text",
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "const": "code"
+        },
+        "lang": {
+          "description": "language of the code",
+          "type": "string"
+        },
+        "meta": {
+          "description": "custom information relating to the node",
+          "type": "string"
+        }
+      },
+      "if": {
+        "required": ["meta"]
+      },
+      "then": {
+        "required": ["lang"]
+      },
+      "else": {},
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
+    },
+    "Definition": {
+      "description": "reference to a url resource",
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "const": "definition"
+        }
+      },
+      "allOf": [
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "#/$defs/Association" },
+        { "$ref": "#/$defs/Resource" }
+      ]
+    },
+    "Text": {
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "const": "text"
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
+    },
+    "Emphasis": {
+      "description": "stressed, italicized content",
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": {
+          "const": "emphasis"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "myst.schema.json#/$defs/PhrasingContent"
+          }
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "EmphasisStatic": {
+      "description": "stressed, italicized content, with static children; used when parent node requires static content",
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": {
+          "const": "emphasis"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
+          }
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "Strong": {
+      "description": "important, serious, urgent, bold content",
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": {
+          "const": "strong"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "myst.schema.json#/$defs/PhrasingContent"
+          }
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "StrongStatic": {
+      "description": "important, serious, urgent, bold content, with static children; used when parent node requires static content",
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": {
+          "const": "strong"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
+          }
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "InlineCode": {
+      "description": "fragment of code",
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "const": "inlineCode"
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Literal" }]
+    },
+    "Break": {
+      "description": "line break",
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "const": "break"
+        }
+      },
+      "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }]
+    },
+    "Link": {
+      "description": "hyperlink",
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": {
+          "const": "link"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
+          }
+        }
+      },
+      "allOf": [
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "#/$defs/Resource" }
+      ]
+    },
+    "Image": {
+      "description": "image hyperlink",
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "const": "image"
+        }
+      },
+      "allOf": [
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "#/$defs/Resource" },
+        { "$ref": "#/$defs/Alternative" }
+      ]
+    },
+    "LinkReference": {
+      "description": "hyperlink through association",
+      "type": "object",
+      "required": ["type", "children"],
+      "properties": {
+        "type": {
+          "const": "linkReference"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
+          }
+        }
+      },
+      "allOf": [
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "#/$defs/Reference" }
+      ]
+    },
+    "ImageReference": {
+      "description": "image through association",
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "const": "imageReference"
+        }
+      },
+      "allOf": [
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "#/$defs/Reference" },
+        { "$ref": "#/$defs/Alternative" }
+      ]
+    },
+    "Resource": {
+      "description": "reference to external resource",
+      "type": "object",
+      "required": ["url"],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri-reference"
+        },
+        "title": {
+          "description": "advisory information, e.g. for a tooltip",
+          "type": "string"
+        }
+      }
+    },
+    "Association": {
+      "description": "internal relation from one node to another",
+      "type": "object",
+      "required": ["identifier"],
+      "properties": {
+        "identifier": {
+          "description": "identifier that may match another node; value is unparsed and must be normalized such that whitespace is collapsed to single space, initial/final space is trimmed, and case is folded",
+          "type": "string"
+        },
+        "label": {
+          "description": "node label; character escapes and references are parsed; may be normalized to a unique identifier",
+          "type": "string"
+        }
+      }
+    },
+    "Alternative": {
+      "description": "alternative description of image",
+      "type": "object",
+      "properties": {
+        "alt": {
+          "description": "field describing the image",
+          "type": "string"
+        }
+      }
+    },
+    "Reference": {
+      "description": "marker associated to another node",
+      "type": "object",
+      "required": ["referenceType"],
+      "properties": {
+        "referenceType": {
+          "description": "explicitness of the reference: shortcut - reference is implicit, identifier inferred; collapsed - refernce explicit, identifier inferred; full - reference explicit, identifier explicit",
+          "type": "string",
+          "enum": ["shortcut", "collapsed", "full"]
+        }
+      },
+      "allOf": [{ "$ref": "#/$defs/Association" }]
+    }
+  }
+}

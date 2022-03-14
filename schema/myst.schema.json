@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/myst.schema.json",
+  "description": "Myst syntax tree built on existing mdast schemas",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "root"
+    },
+    "children": {
+      "description": "Top-level children of myst document",
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FlowContent"
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ListContent"
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PhrasingContent"
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [{ "$ref": "unist.schema.json#/$defs/Node" }],
+  "$defs": {
+    "Content": {
+      "oneOf": [
+        { "$ref": "commonmark.schema.json#/$defs/Paragraph" },
+        { "$ref": "commonmark.schema.json#/$defs/Definition" }
+      ]
+    },
+    "FlowContent": {
+      "oneOf": [
+        { "$ref": "#/$defs/Content" },
+        { "$ref": "commonmark.schema.json#/$defs/Heading" },
+        { "$ref": "commonmark.schema.json#/$defs/ThematicBreak" },
+        { "$ref": "commonmark.schema.json#/$defs/Blockquote" },
+        { "$ref": "commonmark.schema.json#/$defs/List" },
+        { "$ref": "commonmark.schema.json#/$defs/HTML" },
+        { "$ref": "commonmark.schema.json#/$defs/Code" }
+      ]
+    },
+    "ListContent": {
+      "oneOf": [{ "$ref": "commonmark.schema.json#/$defs/ListItem" }]
+    },
+    "PhrasingContent": {
+      "anyOf": [
+        { "$ref": "#/$defs/StaticPhrasingContent" },
+        { "$ref": "commonmark.schema.json#/$defs/Emphasis" },
+        { "$ref": "commonmark.schema.json#/$defs/Strong" },
+        { "$ref": "commonmark.schema.json#/$defs/Link" },
+        { "$ref": "commonmark.schema.json#/$defs/LinkReference" }
+      ]
+    },
+    "StaticPhrasingContent": {
+      "oneOf": [
+        { "$ref": "commonmark.schema.json#/$defs/Text" },
+        { "$ref": "commonmark.schema.json#/$defs/HTML" },
+        { "$ref": "commonmark.schema.json#/$defs/EmphasisStatic" },
+        { "$ref": "commonmark.schema.json#/$defs/StrongStatic" },
+        { "$ref": "commonmark.schema.json#/$defs/InlineCode" },
+        { "$ref": "commonmark.schema.json#/$defs/Break" },
+        { "$ref": "commonmark.schema.json#/$defs/Image" },
+        { "$ref": "commonmark.schema.json#/$defs/ImageReference" }
+      ]
+    }
+  }
+}
