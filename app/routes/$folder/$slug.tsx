@@ -1,9 +1,9 @@
 import { MetaFunction, redirect, useCatch, useLoaderData } from 'remix';
 import type { LoaderFunction, LinksFunction } from 'remix';
-import { getData, PageLoader } from '~/utils/loader.server';
+import { getData } from '~/utils/loader.server';
 import { GenericParent } from 'mystjs';
 import { ReferencesProvider, ContentBlock } from '~/components';
-import { getMetaTagsForArticle, getFolder } from '~/utils';
+import { getMetaTagsForArticle, getFolder, PageLoader, getFooterLinks } from '~/utils';
 import { Footer } from '~/components/FooterLinks';
 import config from '~/config.json';
 
@@ -41,13 +41,14 @@ export const loader: LoaderFunction = async ({
   if (folder.index === params.id) {
     return redirect(`/${folderName}`);
   }
-  const id = params.loadIndexPage ? folder.index : params.id;
-  const loader = await getData(folderName, id).catch((e) => {
+  const slug = params.loadIndexPage ? folder.index : params.slug;
+  const loader = await getData(folderName, slug).catch((e) => {
     console.log(e);
     return null;
   });
   if (!loader) throw new Response('Article was not found', { status: 404 });
-  return loader;
+  const footer = getFooterLinks(folderName, slug);
+  return { ...loader, footer };
 };
 
 export default function Page() {

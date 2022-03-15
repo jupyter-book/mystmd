@@ -1,17 +1,5 @@
-import { GenericNode } from 'mystjs';
 import React, { useContext } from 'react';
-
-export type Citations = {
-  order: string[];
-  data: Record<string, { html: string; number: number }>;
-};
-
-export type Footnotes = Record<string, GenericNode>;
-
-export type References = {
-  cite: Citations;
-  footnotes: Footnotes;
-};
+import { References } from '~/utils';
 
 const ReferencesContext = React.createContext<References | null>(null);
 

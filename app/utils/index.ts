@@ -1,2 +1,3 @@
 export * from './seo';
-export * from './params';
+export * from './utils';
+export * from './types';

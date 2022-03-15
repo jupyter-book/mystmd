@@ -5,7 +5,7 @@ import Page, {
   links,
   CatchBoundary,
   ErrorBoundary,
-} from './$id';
+} from './$slug';
 
 export const loader: LoaderFunction = async (data): Promise<Response | null> => {
   const { params, ...rest } = data;
