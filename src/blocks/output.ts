@@ -23,6 +23,7 @@ export interface OutputSummaryEntry {
   content_type: CellOutputMimeTypes;
   content?: string;
   link?: string;
+  path?: string;
 }
 
 export type OutputSummary = OutputSummaryEntry & {
