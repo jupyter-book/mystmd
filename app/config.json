@@ -2,6 +2,7 @@
   "site": {
     "name": "Curvenote",
     "sections": [{ "title": "Explorables", "folder": "interactive" }],
+    "twitter": "curvenote",
     "actions": [
       { "title": "Log In", "url": "" },
       { "title": "Sign Up", "url": "" }

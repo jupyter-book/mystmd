@@ -1,7 +1,7 @@
 import { Link, NavLink } from 'remix';
 import { ThemeButton } from './ThemeButton';
 import config from '~/config.json';
-import { getFolder } from '../utils/params';
+import { getFolder } from '~/utils';
 import classNames from 'classnames';
 
 export function TopNav() {

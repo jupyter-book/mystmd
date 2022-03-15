@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React from 'react';
 import { NavLink, useParams, useLocation } from 'remix';
+import { getFolderPages, Heading } from '~/utils';
 import { CreatedInCurvenote } from './curvenote';
-import { getFolderPages, Heading } from '../utils/params';
 
 type Props = {
   headings: Heading[];

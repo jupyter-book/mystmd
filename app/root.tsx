@@ -15,9 +15,10 @@ import React from 'react';
 import { Theme, ThemeProvider, TopNav } from '~/components';
 import { getThemeSession } from '~/utils/theme.server';
 import tailwind from './styles/app.css';
+import { getMetaTagsForSite } from './utils';
 
 export const meta: MetaFunction = () => {
-  return { title: config.site.name };
+  return getMetaTagsForSite({ title: config.site.name, twitter: config.site.twitter });
 };
 
 export const links: LinksFunction = () => {

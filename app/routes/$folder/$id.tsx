@@ -1,10 +1,22 @@
-import { redirect, useCatch, useLoaderData } from 'remix';
+import { MetaFunction, redirect, useCatch, useLoaderData } from 'remix';
 import type { LoaderFunction, LinksFunction } from 'remix';
 import { getData, PageLoader } from '~/utils/loader.server';
 import { GenericParent } from 'mystjs';
 import { ReferencesProvider, ContentBlock } from '~/components';
-import { getFolder } from '../../utils/params';
-import { Footer } from '../../components/FooterLinks';
+import { getMetaTagsForArticle, getFolder } from '~/utils';
+import { Footer } from '~/components/FooterLinks';
+import config from '~/config.json';
+
+export const meta: MetaFunction = (args) => {
+  const data = args.data as PageLoader | undefined;
+  if (!data) return {};
+  return getMetaTagsForArticle({
+    origin: '',
+    url: args.location.pathname,
+    title: `${data?.frontmatter.title} - ${config.site.name}`,
+    description: data.frontmatter.description,
+  });
+};
 
 export const links: LinksFunction = () => {
   return [

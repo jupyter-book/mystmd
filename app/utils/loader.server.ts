@@ -20,6 +20,7 @@ export type FooterLinks = {
 export type Frontmatter = {
   title?: string;
   author?: string[];
+  description?: string;
 };
 
 export type PageLoader = {
