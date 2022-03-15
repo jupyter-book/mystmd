@@ -1,7 +1,15 @@
 import config from '~/config.json';
 import { FooterLinks, Heading, NavigationLink } from './types';
 
-export function getFolder(folderName?: string) {
+export function getSection(sectionNumber?: number) {
+  if (sectionNumber == null) return undefined;
+  return config.site.sections[sectionNumber];
+}
+
+export function getFolder(folderName?: string | number) {
+  if (typeof folderName === 'number') {
+    folderName = getSection(folderName)?.folder;
+  }
   if (!folderName || !(folderName in config.folders)) return undefined;
   return config.folders[folderName as keyof typeof config.folders];
 }
