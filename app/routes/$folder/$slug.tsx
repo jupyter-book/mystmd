@@ -1,6 +1,6 @@
 import { MetaFunction, redirect, useCatch, useLoaderData } from 'remix';
 import type { LoaderFunction, LinksFunction } from 'remix';
-import { getData } from '~/utils/loader.server';
+import { getData } from '~/utils/file.loader.server';
 import { GenericParent } from 'mystjs';
 import { ReferencesProvider, ContentBlock } from '~/components';
 import { getMetaTagsForArticle, getFolder, PageLoader, getFooterLinks } from '~/utils';

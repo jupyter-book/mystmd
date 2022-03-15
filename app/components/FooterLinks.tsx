@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { Link } from 'remix';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/outline';
-import { FooterLinks, NavigationLink } from '../utils/loader.server';
+import { FooterLinks, NavigationLink } from '~/utils';
 
 const FooterLink = ({
   title,

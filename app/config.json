@@ -1,7 +1,7 @@
 {
   "site": {
     "name": "Curvenote",
-    "sections": [{ "title": "Explorables", "folder": "interactive" }],
+    "sections": [{ "title": "Demo Content", "folder": "demo" }],
     "twitter": "curvenote",
     "actions": [
       { "title": "Log In", "url": "" },
@@ -11,7 +11,7 @@
     "logoText": "Curvenote"
   },
   "folders": {
-    "interactive": {
+    "demo": {
       "title": "Curvenote",
       "index": "index",
       "pages": [
