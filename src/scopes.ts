@@ -13,6 +13,7 @@ export enum SCOPES {
   projectCreate = 'project.create',
   projectRead = 'project.read',
   projectUpdate = 'project.update',
+  projectVisibility = 'project.visibility',
   projectPublish = 'project.publish',
   projectDelete = 'project.delete',
   projectAccessRead = 'project.access.read',
@@ -59,6 +60,7 @@ export const scopes = {
     create: SCOPES.projectCreate,
     read: SCOPES.projectRead,
     update: SCOPES.projectUpdate,
+    visibility: SCOPES.projectVisibility,
     delete: SCOPES.projectDelete,
     access: {
       ...readWrite(SCOPES.projectAccessRead, SCOPES.projectAccessWrite),
@@ -121,6 +123,7 @@ export const scopesInRole: Record<ROLES, SCOPES[]> = {
   [ROLES.projectOwner]: [
     SCOPES.projectRead,
     SCOPES.projectUpdate,
+    SCOPES.projectVisibility,
     SCOPES.projectDelete,
     SCOPES.projectAccessRead,
     SCOPES.projectAccessWrite,
@@ -136,6 +139,7 @@ export const scopesInRole: Record<ROLES, SCOPES[]> = {
   ],
   [ROLES.projectEditor]: [
     SCOPES.projectRead,
+    SCOPES.projectUpdate,
     SCOPES.projectAccessRead,
     SCOPES.projectPublish,
     SCOPES.blockRead,
