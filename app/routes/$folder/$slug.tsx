@@ -6,6 +6,7 @@ import { ReferencesProvider, ContentBlock } from '~/components';
 import { getMetaTagsForArticle, getFolder, PageLoader, getFooterLinks } from '~/utils';
 import { Footer } from '~/components/FooterLinks';
 import config from '~/config.json';
+import { Bibliography } from '../../components/renderers/cite';
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as PageLoader | undefined;
@@ -70,6 +71,7 @@ export default function Page() {
         {blocks.map((node, index) => {
           return <ContentBlock key={node.key} id={`${index}`} node={node} />;
         })}
+        {article.references.cite.order.length > 0 && <Bibliography />}
         <Footer links={article.footer} />
       </div>
     </ReferencesProvider>

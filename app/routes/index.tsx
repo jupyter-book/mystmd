@@ -5,7 +5,6 @@ import { getSection } from '../utils';
 
 export const loader: LoaderFunction = async (): Promise<Response | null> => {
   const sec = getSection(0);
-  console.log({ sec });
   if (!sec) throw new Response('Article was not found', { status: 404 });
   return redirect(`/${sec.folder}`);
 };
