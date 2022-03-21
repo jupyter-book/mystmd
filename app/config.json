@@ -4,8 +4,8 @@
     "sections": [{ "title": "Demo Content", "folder": "demo" }],
     "twitter": "curvenote",
     "actions": [
-      { "title": "Log In", "url": "" },
-      { "title": "Sign Up", "url": "" }
+      { "title": "Log In", "url": "https://curvenote.com/signup" },
+      { "title": "Sign Up", "url": "https://curvenote.com/signup/" }
     ],
     "logo": "/logo.svg",
     "logoText": "Curvenote"

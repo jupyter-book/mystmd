@@ -5,7 +5,7 @@ import { getFolder } from '~/utils';
 import classNames from 'classnames';
 
 export function TopNav() {
-  const { logo, logoText, sections, actions } = config.site;
+  const { logo, logoText, sections, actions, name } = config.site;
   return (
     <div className="bg-stone-700 p-3 px-8 fixed w-screen top-0 z-30">
       <nav className="flex items-center justify-between flex-wrap max-w-[1440px] mx-auto">
@@ -15,7 +15,12 @@ export function TopNav() {
             to="/"
             prefetch="intent"
           >
-            <img src={logo} className="h-9 mr-3"></img>
+            <img
+              src={logo}
+              className="h-9 mr-3"
+              alt={logoText || name}
+              height="2.25rem"
+            ></img>
             {logoText && (
               <span className="text-xl tracking-tight mr-5">{logoText}</span>
             )}

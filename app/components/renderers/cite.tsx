@@ -41,7 +41,7 @@ export function Bibliography() {
       {filtered.length > HIDE_OVER_N_REFERENCES && (
         <button
           onClick={() => setHidden(!hidden)}
-          className="float-right text-xs p-1 px-2 border rounded"
+          className="float-right text-xs p-1 px-2 border rounded hover:border-blue-500 dark:hover:border-blue-400"
         >
           {hidden ? 'Show All' : 'Collapse'}
         </button>
@@ -64,7 +64,10 @@ export function Bibliography() {
           })}
           {filtered.length > HIDE_OVER_N_REFERENCES && (
             <li className="list-none text-center">
-              <button onClick={() => setHidden(!hidden)} className="p-2 border rounded">
+              <button
+                onClick={() => setHidden(!hidden)}
+                className="p-2 border rounded hover:border-blue-500 dark:hover:border-blue-400"
+              >
                 {hidden
                   ? `Show all ${filtered.length} references`
                   : 'Collapse references'}
