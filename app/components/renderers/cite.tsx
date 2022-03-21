@@ -31,9 +31,7 @@ export function Bibliography() {
   const references = useReferences();
   const { order, data } = references?.cite ?? {};
   const filtered = order?.filter((l) => l);
-  const [hidden, setHidden] = useState(
-    filtered ? filtered.length > HIDE_OVER_N_REFERENCES : false,
-  );
+  const [hidden, setHidden] = useState(true);
   if (!filtered || !data || filtered.length === 0) return null;
   const refs = hidden ? filtered.slice(0, HIDE_OVER_N_REFERENCES) : filtered;
   return (
