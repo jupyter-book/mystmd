@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/roles.schema.json",
+  "description": "role node - custom in-line behavior, in the format {kind}`value`",
+  "$defs": {
+    "Role": {
+      "description": "myst role - custom in-line behavior, in the format {kind}`value`",
+      "type": "object",
+      "allOf": [
+        {
+          "required": ["kind"],
+          "properties": {
+            "type": {
+              "const": "role"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "value": {
+              "description": "content of the directive",
+              "type": "string"
+            },
+            "children": {
+              "description": "parsed role content",
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/PhrasingContent"
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Node" }
+      ]
+    }
+  }
+}

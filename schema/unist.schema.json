@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://spec.myst.tools/json-schema/unist.schema.json",
-  "description": "Existing unist primitives for myst mdast - https://github.com/syntax-tree/unist",
+  "description": "existing unist primitives for myst mdast - https://github.com/syntax-tree/unist",
   "$defs": {
     "Node": {
       "description": "base unist node",
@@ -93,8 +93,11 @@
         },
         "indent": {
           "description": "start column at each index in the source region, for elements that span multiple lines",
-          "type": "integer",
-          "minimum": 0
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       },
       "additionalProperties": false

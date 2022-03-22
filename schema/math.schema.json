@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/math.schema.json",
+  "description": "math node for presenting numbered equations",
+  "$defs": {
+    "Math": {
+      "description": "math node for presenting numbered equations",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "math"
+            },
+            "identifier": {},
+            "label": {},
+            "value": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "commonmark.schema.json#/$defs/OptionalAssociation" },
+        { "$ref": "unist.schema.json#/$defs/Literal" }
+      ]
+    },
+    "InlineMath": {
+      "description": "fragment of math, similar to InlineCode, using role {math}",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "inlineMath"
+            },
+            "value": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Literal" }
+      ]
+    }
+  }
+}

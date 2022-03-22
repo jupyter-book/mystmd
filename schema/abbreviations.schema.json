@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/abbreviations.schema.json",
+  "description": "abbreviation node definition",
+  "$defs": {
+    "Abbreviation": {
+      "description": "abbreviation node described by title, using role {abbr}`content (title)`",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "abbreviation"
+            },
+            "children": {
+              "description": "abbreviated value",
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
+              }
+            },
+            "title": {
+              "description": "advisory information for the abbreviation",
+              "type": "string"
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Parent" }
+      ]
+    }
+  }
+}

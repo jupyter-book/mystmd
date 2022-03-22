@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://spec.myst.tools/json-schema/footnotes.schema.json",
-  "description": "Myst footnotes",
+  "description": "footnote nodes",
   "$defs": {
     "FootnoteReference": {
       "description": "Inilne reference to footnote",

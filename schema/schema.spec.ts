@@ -4,23 +4,39 @@ import yaml from 'js-yaml';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 
-import mystSchema from './myst.schema.json';
-import unistSchema from './unist/unist.schema.json';
-import commonmarkSchema from './commonmark/commonmark.schema.json';
-import blocksSchema from './blocks/blocks.schema.json';
-import rolesSchema from './roles/roles.schema.json';
-import directivesSchema from './directives/directives.schema.json';
-import footnotesSchema from './footnotes/footnotes.schema.json';
+import myst from './myst.schema.json';
+import unist from './unist.schema.json';
+import abbreviations from './abbreviations.schema.json';
+import admonitions from './admonitions.schema.json';
+import blocks from './blocks.schema.json';
+import comments from './comments.schema.json';
+import commonmark from './commonmark.schema.json';
+import containers from './containers.schema.json';
+import directives from './directives.schema.json';
+import footnotes from './footnotes.schema.json';
+import math from './math.schema.json';
+import references from './references.schema.json';
+import roles from './roles.schema.json';
+import styles from './styles.schema.json';
+import tables from './tables.schema.json';
 
 const ajv = new Ajv();
 addFormats(ajv); // allows {"format": "uri-reference"}
-ajv.addSchema(mystSchema);
-ajv.addSchema(unistSchema);
-ajv.addSchema(commonmarkSchema);
-ajv.addSchema(blocksSchema);
-ajv.addSchema(rolesSchema);
-ajv.addSchema(directivesSchema);
-ajv.addSchema(footnotesSchema);
+ajv.addSchema(myst);
+ajv.addSchema(unist);
+ajv.addSchema(abbreviations);
+ajv.addSchema(admonitions);
+ajv.addSchema(blocks);
+ajv.addSchema(comments);
+ajv.addSchema(commonmark);
+ajv.addSchema(containers);
+ajv.addSchema(directives);
+ajv.addSchema(footnotes);
+ajv.addSchema(math);
+ajv.addSchema(references);
+ajv.addSchema(roles);
+ajv.addSchema(styles);
+ajv.addSchema(tables);
 
 type TestFile = {
   cases: TestCase[];
@@ -35,22 +51,11 @@ type TestCase = {
   html?: string;
 };
 
-const directory = 'schema';
-let subdirs: string[] = fs
+const directory = 'docs/examples';
+const files: string[] = fs
   .readdirSync(directory)
-  .map((name) => path.join(directory, name))
-  .filter((name) => fs.lstatSync(name).isDirectory());
-subdirs = subdirs.concat(directory);
-
-let files: string[] = [];
-subdirs.forEach((directory) => {
-  files = files.concat(
-    fs
-      .readdirSync(directory)
-      .filter((name) => name.endsWith('.yml'))
-      .map((name) => path.join(directory, name))
-  );
-});
+  .filter((name) => name.endsWith('.yml'))
+  .map((name) => path.join(directory, name));
 
 // For prettier printing of test cases
 const length = files
@@ -79,13 +84,13 @@ const cases: [string, TestCase][] = files
 
 describe('Valid Schema Tests', () => {
   test.each(cases)('%s', (_, { mdast }) => {
-    expect(ajv.validate(mystSchema, mdast)).toBeTruthy();
+    expect(ajv.validate(myst, mdast)).toBeTruthy();
   });
 });
 
 describe('Invalid Schema Tests', () => {
   test.each(invalid)('%s', (_, { mdast }) => {
-    expect(ajv.validate(mystSchema, mdast)).toBeFalsy();
+    expect(ajv.validate(myst, mdast)).toBeFalsy();
   });
 });
 

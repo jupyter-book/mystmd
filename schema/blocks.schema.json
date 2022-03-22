@@ -1,25 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://spec.myst.tools/json-schema/blocks.schema.json",
-  "description": "Block-level myst types",
+  "description": "top-level myst block node types",
   "$defs": {
-    "Comment": {
-      "type": "object",
-      "allOf": [
-        {
-          "properties": {
-            "type": {
-              "const": "comment"
-            },
-            "value": {},
-            "position": {},
-            "data": {}
-          },
-          "additionalProperties": false
-        },
-        { "$ref": "unist.schema.json#/$defs/Literal" }
-      ]
-    },
     "BlockBreak": {
       "type": "object",
       "description": "top-level break in the myst document, breaking it into Blocks",
@@ -83,25 +66,6 @@
           "additionalProperties": false
         },
         { "$ref": "unist.schema.json#/$defs/Node" }
-      ]
-    },
-    "Target": {
-      "type": "object",
-      "allOf": [
-        {
-          "properties": {
-            "type": {
-              "const": "target"
-            },
-            "identifier": {},
-            "label": {},
-            "position": {},
-            "data": {}
-          },
-          "additionalProperties": false
-        },
-        { "$ref": "unist.schema.json#/$defs/Node" },
-        { "$ref": "commonmark.schema.json#/$defs/Association" }
       ]
     }
   }

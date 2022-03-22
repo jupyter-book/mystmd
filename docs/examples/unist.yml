@@ -12,7 +12,8 @@ cases:
           line: 10
           column: 10
           offset: 0
-        indent: 2
+        indent:
+          - 2
       data:
         meta: data
   - title: unist - invalid node metadata
@@ -29,6 +30,7 @@ cases:
           line: 10
           column: 10
           offset: 0
-        indent: 2
+        indent:
+          - 2
       data:
         meta: data

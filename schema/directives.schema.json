@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/directives.schema.json",
+  "description": "directive node - custom block behavior, in the format ```{kind} args\\n\\n:options:\\n\\nvalue\\n```",
+  "$defs": {
+    "Directive": {
+      "description": "myst directive, in the format ```{kind} args\\n\\n:options:\\n\\nvalue\\n```",
+      "type": "object",
+      "allOf": [
+        {
+          "required": ["kind"],
+          "properties": {
+            "type": {
+              "const": "directive"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "args": {
+              "type": "string"
+            },
+            "options": {
+              "type": "object"
+            },
+            "value": {
+              "description": "body of the directive, excluding options",
+              "type": "string"
+            },
+            "children": {
+              "description": "parsed directive content",
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "$ref": "myst.schema.json#/$defs/FlowContent" },
+                  { "$ref": "myst.schema.json#/$defs/PhrasingContent" }
+                ]
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Node" }
+      ]
+    }
+  }
+}

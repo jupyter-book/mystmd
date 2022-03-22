@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/tables.schema.json",
+  "description": "table nodes",
+  "$defs": {
+    "Table": {
+      "description": "two-dimensional table data",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "table"
+            },
+            "align": {
+              "type": "string",
+              "enum": ["left", "center", "right"]
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/TableRow"
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Parent" }
+      ]
+    },
+    "TableRow": {
+      "description": "one row of table containing cells",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "tableRow"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/TableCell"
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Parent" }
+      ]
+    },
+    "TableCell": {
+      "description": "one cell of table",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "tableCell"
+            },
+            "header": {
+              "type": "boolean"
+            },
+            "align": {
+              "description": "alignment of content within cell",
+              "type": "string",
+              "enum": ["left", "center", "right"]
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/PhrasingContent"
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Parent" }
+      ]
+    }
+  }
+}

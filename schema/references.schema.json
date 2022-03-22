@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/references.schema.json",
+  "description": "reference nodes",
+  "$defs": {
+    "Target": {
+      "description": "target node - provides identifier/label for the following node",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "target"
+            },
+            "identifier": {},
+            "label": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Node" },
+        { "$ref": "commonmark.schema.json#/$defs/Association" }
+      ]
+    },
+    "CrossReference": {
+      "description": "in-line reference to an associated node, using role {eq}, {ref}, {numref}",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "crossReference"
+            },
+            "kind": {
+              "type": "string",
+              "enum": ["eq", "numref", "ref"]
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
+              }
+            },
+            "identifier": {},
+            "label": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "commonmark.schema.json#/$defs/Association" },
+        { "$ref": "unist.schema.json#/$defs/Node" }
+      ]
+    }
+  }
+}

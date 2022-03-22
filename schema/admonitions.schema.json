@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/admonitions.schema.json",
+  "description": "admonition node for drawing attention to text, separate from the neighboring content",
+  "$defs": {
+    "Admonition": {
+      "description": "admonition node for drawing attention to text, separate from the neighboring content, in the format ```{kind} args\\n\\n:options:\\n\\nvalue\\n```",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "admonition"
+            },
+            "kind": {
+              "description": "kind of admonition, to determine styling",
+              "type": "string",
+              "enum": [
+                "attention",
+                "caution",
+                "danger",
+                "error",
+                "hint",
+                "important",
+                "note",
+                "seealso",
+                "tip",
+                "warning"
+              ]
+            },
+            "class": {
+              "description": "admonition class info to override kind",
+              "type": "string"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "$ref": "#/$defs/AdmonitionTitle" },
+                  { "$ref": "myst.schema.json#/$defs/FlowContent" }
+                ]
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Node" }
+      ]
+    },
+    "AdmonitionTitle": {
+      "description": "custom title for admonition, replaces kind as title",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "admonitionTitle"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/PhrasingContent"
+              }
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Parent" }
+      ]
+    }
+  }
+}

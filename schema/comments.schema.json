@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/comments.schema.json",
+  "description": "comment nodes for comments present in myst but ingnored upon render",
+  "$defs": {
+    "Comment": {
+      "description": "comment nodes for comments present in myst but ingnored upon render",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "comment"
+            },
+            "value": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Literal" }
+      ]
+    }
+  }
+}

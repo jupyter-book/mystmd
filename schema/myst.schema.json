@@ -41,7 +41,7 @@
       },
       "additionalProperties": false
     },
-    { "$ref": "unist.schema.json#/$defs/Node" }
+    { "$ref": "unist.schema.json#/$defs/Parent" }
   ],
   "$defs": {
     "FlowContent": {
@@ -54,13 +54,13 @@
         { "$ref": "commonmark.schema.json#/$defs/List" },
         { "$ref": "commonmark.schema.json#/$defs/HTML" },
         { "$ref": "commonmark.schema.json#/$defs/Code" },
-        { "$ref": "blocks.schema.json#/$defs/Comment" },
-        { "$ref": "blocks.schema.json#/$defs/Target" },
+        { "$ref": "comments.schema.json#/$defs/Comment" },
+        { "$ref": "references.schema.json#/$defs/Target" },
         { "$ref": "directives.schema.json#/$defs/Directive" },
-        { "$ref": "directives.schema.json#/$defs/Admonition" },
-        { "$ref": "directives.schema.json#/$defs/Container" },
-        { "$ref": "directives.schema.json#/$defs/Math" },
-        { "$ref": "directives.schema.json#/$defs/Table" },
+        { "$ref": "admonitions.schema.json#/$defs/Admonition" },
+        { "$ref": "containers.schema.json#/$defs/Container" },
+        { "$ref": "math.schema.json#/$defs/Math" },
+        { "$ref": "tables.schema.json#/$defs/Table" },
         { "$ref": "footnotes.schema.json#/$defs/FootnoteDefinition" }
       ]
     },
@@ -74,11 +74,11 @@
         { "$ref": "commonmark.schema.json#/$defs/Strong" },
         { "$ref": "commonmark.schema.json#/$defs/Link" },
         { "$ref": "commonmark.schema.json#/$defs/LinkReference" },
-        { "$ref": "roles.schema.json#/$defs/Subscript" },
-        { "$ref": "roles.schema.json#/$defs/Superscript" },
-        { "$ref": "roles.schema.json#/$defs/Underline" },
-        { "$ref": "roles.schema.json#/$defs/Abbreviation" },
-        { "$ref": "roles.schema.json#/$defs/CrossReference" },
+        { "$ref": "styles.schema.json#/$defs/Subscript" },
+        { "$ref": "styles.schema.json#/$defs/Superscript" },
+        { "$ref": "styles.schema.json#/$defs/Underline" },
+        { "$ref": "abbreviations.schema.json#/$defs/Abbreviation" },
+        { "$ref": "references.schema.json#/$defs/CrossReference" },
         { "$ref": "footnotes.schema.json#/$defs/FootnoteReference" }
       ]
     },
@@ -93,10 +93,10 @@
         { "$ref": "commonmark.schema.json#/$defs/Image" },
         { "$ref": "commonmark.schema.json#/$defs/ImageReference" },
         { "$ref": "roles.schema.json#/$defs/Role" },
-        { "$ref": "roles.schema.json#/$defs/SubscriptStatic" },
-        { "$ref": "roles.schema.json#/$defs/SuperscriptStatic" },
-        { "$ref": "roles.schema.json#/$defs/UnderlineStatic" },
-        { "$ref": "roles.schema.json#/$defs/InlineMath" }
+        { "$ref": "styles.schema.json#/$defs/SubscriptStatic" },
+        { "$ref": "styles.schema.json#/$defs/SuperscriptStatic" },
+        { "$ref": "styles.schema.json#/$defs/UnderlineStatic" },
+        { "$ref": "math.schema.json#/$defs/InlineMath" }
       ]
     }
   }

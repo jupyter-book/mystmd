@@ -1,40 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://spec.myst.tools/json-schema/roles.schema.json",
-  "description": "Myst roles - custom in-line behavior, in the format {kind}`value`",
+  "$id": "https://spec.myst.tools/json-schema/styles.schema.json",
+  "description": "style nodes - similar to commonmark styles like emphasis/strong, but defined with a role",
   "$defs": {
-    "Role": {
-      "description": "myst role in the format {kind}`value`",
-      "type": "object",
-      "allOf": [
-        {
-          "required": ["kind"],
-          "properties": {
-            "type": {
-              "const": "role"
-            },
-            "kind": {
-              "type": "string"
-            },
-            "value": {
-              "description": "content of the directive",
-              "type": "string"
-            },
-            "children": {
-              "description": "parsed role content",
-              "type": "array",
-              "items": {
-                "$ref": "myst.schema.json#/$defs/PhrasingContent"
-              }
-            },
-            "position": {},
-            "data": {}
-          },
-          "additionalProperties": false
-        },
-        { "$ref": "unist.schema.json#/$defs/Node" }
-      ]
-    },
     "Subscript": {
       "description": "subscript content, using role {subscript}",
       "type": "object",
@@ -171,82 +139,6 @@
           "additionalProperties": false
         },
         { "$ref": "unist.schema.json#/$defs/Parent" }
-      ]
-    },
-    "Abbreviation": {
-      "description": "abbreviation described by title, using role {abbr}",
-      "type": "object",
-      "allOf": [
-        {
-          "properties": {
-            "type": {
-              "const": "abbreviation"
-            },
-            "children": {
-              "title": "abbreviated value",
-              "type": "array",
-              "items": {
-                "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
-              }
-            },
-            "title": {
-              "description": "advisory information for the abbreviation",
-              "type": "string"
-            },
-            "position": {},
-            "data": {}
-          },
-          "additionalProperties": false
-        },
-        { "$ref": "unist.schema.json#/$defs/Parent" }
-      ]
-    },
-    "InlineMath": {
-      "description": "fragment of math, similar to InlineCode, using role {math}",
-      "type": "object",
-      "allOf": [
-        {
-          "properties": {
-            "type": {
-              "const": "inlineMath"
-            },
-            "value": {},
-            "position": {},
-            "data": {}
-          },
-          "additionalProperties": false
-        },
-        { "$ref": "unist.schema.json#/$defs/Literal" }
-      ]
-    },
-    "CrossReference": {
-      "description": "reference to associated node, using role {eq}, {ref}, {numref}",
-      "type": "object",
-      "allOf": [
-        {
-          "properties": {
-            "type": {
-              "const": "crossReference"
-            },
-            "kind": {
-              "type": "string",
-              "enum": ["eq", "numref", "ref"]
-            },
-            "children": {
-              "type": "array",
-              "items": {
-                "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
-              }
-            },
-            "identifier": {},
-            "label": {},
-            "position": {},
-            "data": {}
-          },
-          "additionalProperties": false
-        },
-        { "$ref": "commonmark.schema.json#/$defs/Association" },
-        { "$ref": "unist.schema.json#/$defs/Node" }
       ]
     }
   }
