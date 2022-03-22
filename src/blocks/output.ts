@@ -1,6 +1,6 @@
 import { KINDS, BaseVersion, TARGET, OutputFormatTypes, FileMetadata } from './types';
 import { JsonObject } from '../types';
-import { CellOutputMimeTypes } from '../translators/types';
+import { CellOutputMimeTypes } from './types/jupyter';
 
 export enum OutputSummaryKind {
   'stream' = 'stream',

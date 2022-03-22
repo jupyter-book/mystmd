@@ -1,6 +1,5 @@
-import { JupyterCellMetadata } from '../translators/types';
 import { JsonObject } from '../types';
-import { KINDS, BaseVersion, TARGET, ContentFormatTypes } from './types';
+import { KINDS, BaseVersion, TARGET, ContentFormatTypes, JupyterCellMetadata } from './types';
 
 export interface PartialContent {
   targets: TARGET[];
