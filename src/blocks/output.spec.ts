@@ -1,6 +1,5 @@
-import { CellOutputMimeTypes } from '../translators';
 import { fromDTO, outputSummaryFromDTO, OutputSummaryKind } from './output';
-import { TARGET } from './types';
+import { CellOutputMimeTypes, TARGET } from './types';
 
 describe('blocks.output', () => {
   test('outputSummaryFromDTO', () => {
