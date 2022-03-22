@@ -1,4 +1,5 @@
 import {
+  Blocks,
   JsonObject,
   OutputSummaryEntry,
   OutputSummaryKind,
@@ -17,3 +18,8 @@ export type OutputSummaries = {
   kind: OutputSummaryKind; // We may choose to delete this later, and decide at format time.
   items: Partial<Record<OutputSummaryKind, OutputSummaryEntry>>;
 };
+
+export interface TranslatedBlockPair {
+  content: Blocks.Content | Blocks.Code;
+  output?: Blocks.Output;
+}

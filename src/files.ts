@@ -16,7 +16,8 @@ export interface IFileObject {
   writeString(data: string, contentType: string): Promise<void>;
   writeBase64(data: string): Promise<void>;
   setContentType(contentType: string): Promise<Metadata>;
-  sign(): Promise<string>;
+  url(): Promise<string>;
+  exists(): boolean;
 }
 
 export class StubFileObject implements IFileObject {
@@ -46,9 +47,14 @@ export class StubFileObject implements IFileObject {
     return Promise.resolve({} as Metadata);
   }
 
-  async sign() {
-    console.debug('StubFileObject:sign');
+  async url() {
+    console.debug('StubFileObject:url');
     return 'stub-file-signature';
+  }
+
+  exists() {
+    console.debug('StubFileObject:exists');
+    return true;
   }
 }
 

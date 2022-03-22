@@ -48,8 +48,8 @@ class SvgSummarizer extends Summarizer {
     const { kind, content_type, content } = summary;
     const path = this.$makeFilepath(content_type);
     const outputFile = this.fileFactory(path);
-    await outputFile.writeString(content as string, content_type);
     await outputFile.setContentType(content_type);
+    await outputFile.writeString(content as string, content_type);
     return {
       kind,
       content_type,

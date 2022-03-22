@@ -11,7 +11,7 @@ module.exports = {
       tsconfig: './tsconfig.json',
     },
   },
-  setupFilesAfterEnv: ['./jest.setup.ts', 'jest-extended'],
+  setupFilesAfterEnv: [],
   verbose: true,
   testEnvironment: 'node',
   testPathIgnorePatterns: ['/node_modules/', '/.yalc/', '/dist/'],

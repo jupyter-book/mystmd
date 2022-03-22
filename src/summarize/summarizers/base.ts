@@ -5,7 +5,8 @@ import {
   OutputSummaryKind,
   OutputSummaryEntry,
 } from '@curvenote/blocks';
-import { IFileObjectFactoryFn } from '../files';
+import { IFileObjectFactoryFn } from '../../files';
+import { SummarizerOptions } from './types';
 
 const NUM_CHARS = 25000;
 const TRUNCATED_CHARS_COUNT = 64;
@@ -17,10 +18,18 @@ class Summarizer {
 
   basepath: string;
 
-  constructor(fileFactory: IFileObjectFactoryFn, item: CellOutput, basepath: string) {
+  options: SummarizerOptions;
+
+  constructor(
+    fileFactory: IFileObjectFactoryFn,
+    item: CellOutput,
+    basepath: string,
+    options: SummarizerOptions = { truncate: true },
+  ) {
     this.fileFactory = fileFactory;
     this.item = item;
     this.basepath = basepath;
+    this.options = options;
   }
 
   test(outputItem: CellOutput): boolean {
@@ -32,6 +41,7 @@ class Summarizer {
     kind: OutputSummaryKind,
     item: CellOutput,
     basepath: string,
+    options?: SummarizerOptions,
   ): Summarizer | null {
     throw new Error('Implemented in factory.ts to avoid dependency cycles.');
   }
@@ -58,7 +68,7 @@ class Summarizer {
 
   async process(summary: OutputSummaryEntry): Promise<OutputSummaryEntry> {
     let { content } = summary;
-    if (summary.content && summary.content.length > NUM_CHARS) {
+    if (this.options.truncate && summary.content && summary.content.length > NUM_CHARS) {
       const path = this.$makeFilepath(summary.content_type);
       const outputFile = this.fileFactory(path);
       await outputFile.writeString(summary.content as string, summary.content_type);

@@ -9,8 +9,9 @@ import {
   OutputSummaryEntry,
   OutputSummaryKind,
 } from '@curvenote/blocks';
-import { IFileObjectFactoryFn } from '../files';
+import { IFileObjectFactoryFn } from '../../files';
 import Summarizer from './base';
+import { SummarizerOptions } from './types';
 import { stripTypesFromOutputData } from './utils';
 
 class StringDisplayDataSummarizer extends Summarizer {
@@ -27,8 +28,9 @@ class StringDisplayDataSummarizer extends Summarizer {
     kind: OutputSummaryKind,
     content_type: CellOutputMimeTypes,
     additionalTypesToStrip: CellOutputMimeTypes[],
+    options?: SummarizerOptions,
   ) {
-    super(fileFactory, item, basepath);
+    super(fileFactory, item, basepath, options);
     this.myKind = kind;
     this.content_type = content_type;
     this.additionalTypesToStrip = additionalTypesToStrip;

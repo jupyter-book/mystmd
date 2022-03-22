@@ -10,7 +10,7 @@ import {
   OutputSummaryKind,
   OutputSummaryEntry,
 } from '@curvenote/blocks';
-import { IFileObjectFactoryFn } from '../files';
+import { IFileObjectFactoryFn } from '../../files';
 import Summarizer from './base';
 import { dictHasOneOf, stripTypesFromOutputData } from './utils';
 
@@ -22,8 +22,6 @@ const RankedImageTypes = [
 ];
 
 class ImageSummarizer extends Summarizer {
-  // static kind: OutputSummaryKind = OutputSummaryKind.image;
-
   data: OutputData;
 
   selectedContentType: CellOutputMimeTypes | null;
@@ -83,8 +81,8 @@ class ImageSummarizer extends Summarizer {
   async process(summary: OutputSummaryEntry): Promise<OutputSummaryEntry> {
     const filepath = this.$makeFilepath(summary.content_type);
     const outputFile = this.fileFactory(filepath);
-    await outputFile.writeBase64(summary.content as string);
     await outputFile.setContentType(summary.content_type);
+    await outputFile.writeBase64(summary.content as string);
     return {
       kind: summary.kind,
       content_type: summary.content_type,

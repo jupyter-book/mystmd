@@ -1,60 +1,35 @@
 /* eslint-disable import/no-cycle */
-import {
-  CellOutputMimeTypes,
-  ContentFormatTypes,
-  OutputFormatTypes,
-  OutputSummaryEntry,
-  OutputSummaryKind,
-  oxaLink,
-  VersionId,
-  FigureStyles,
-} from '@curvenote/blocks';
+import { OutputSummaryEntry } from '@curvenote/blocks';
 import { IFileObjectFactoryFn } from './files';
 
 /**
- * Base format function will truncate content if large and push data to storage
+ * TODO move back into database?
  *
+ * @param createFileObject
+ * @param summary
+ * @returns
  */
+
 export const format = async (
   createFileObject: IFileObjectFactoryFn,
-  id: VersionId,
   summary: OutputSummaryEntry,
-  requestedFormat: OutputFormatTypes,
-  index: number,
-  caption: string | null,
-  label: string,
-  styles: FigureStyles = {},
 ): Promise<OutputSummaryEntry> => {
   let link: string | undefined;
   if (summary.path) {
-    link = await createFileObject(summary.path).sign();
-  }
-
-  let { content } = summary;
-  switch (requestedFormat) {
-    case OutputFormatTypes.tex_curvenote:
-    case OutputFormatTypes.tex: {
-      content = formatTex(
-        requestedFormat,
-        id,
-        content ?? '',
-        summary.content_type,
-        index,
-        caption,
-        label,
-        styles,
-      );
-    }
+    link = await createFileObject(summary.path).url(); // TODO - change to url()? i.e. signing is a conern of the files backend
   }
 
   return {
     kind: summary.kind,
     content_type: summary.content_type,
-    content,
+    content: summary.content,
     link,
   };
 };
 
+/**
+ * 
+ * TODO probably delete - API no longer serves tex back
 export const LatexCompatibleMimeTypes = [
   CellOutputMimeTypes.TextLatex,
   CellOutputMimeTypes.ImagePng,
@@ -104,7 +79,7 @@ const formatTex = (
     }
   }
 };
-
+ */
 /*
 \begin{figure}[!htbp]
   \centering
@@ -121,6 +96,8 @@ const formatTex = (
 \end{figure}
  */
 
+/*
+*
 const formatLatexLineWidthFigure = (
   fmt: OutputTexFormats,
   oxa_path: string,
@@ -172,3 +149,4 @@ const formatLatexLineWidthFigure = (
 function renderContent(arg0: string, caption: string, arg2: ContentFormatTypes) {
   throw new Error('Function not implemented.');
 }
+*/

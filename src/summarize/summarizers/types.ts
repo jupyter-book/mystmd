@@ -10,3 +10,7 @@ export type Summarizer =
   | SvgSummarizer
   | StreamSummarizer
   | ErrorSummarizer;
+
+export interface SummarizerOptions {
+  truncate?: boolean;
+}
