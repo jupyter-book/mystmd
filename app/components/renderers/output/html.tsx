@@ -40,14 +40,12 @@ export const HTMLOutput = ({
   if (!path)
     return (
       <div>
-        <p>set from content</p>
-        <div dangerouslySetInnerHTML={{ __html: content }} />
+        <DangerousHTML content={content} />
       </div>
     );
   if (resolvedContent) {
     return (
       <div>
-        <p>loaded asynchronously</p>
         <DangerousHTML content={resolvedContent.content} />
       </div>
     );
