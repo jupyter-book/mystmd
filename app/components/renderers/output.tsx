@@ -6,28 +6,25 @@ export const Output = (node: GenericNode) => {
   switch (node.data.kind) {
     case OutputSummaryKind.image:
       outputComponent = (
-        <img key={node.key} src={`/${node.data.items[OutputSummaryKind.image].path}`} />
+        <img src={`/${node.data.items[OutputSummaryKind.image].path}`} />
       );
       break;
     case OutputSummaryKind.error:
     case OutputSummaryKind.stream:
     case OutputSummaryKind.text:
     case OutputSummaryKind.json:
-      outputComponent = (
-        <pre key={node.key}>{node.data.items[node.data.kind].content}</pre>
-      );
+      outputComponent = <pre>{node.data.items[node.data.kind].content}</pre>;
       break;
     case OutputSummaryKind.html:
       outputComponent = (
         <div
-          key={node.key}
           dangerouslySetInnerHTML={{ __html: node.data.items[node.data.kind].content }}
         />
       );
       break;
     default:
       outputComponent = (
-        <div key={node.key}>
+        <div>
           `Unable to render ${node.data.items[node.data.kind].kind} |
           {node.data.items[node.data.kind].content_type}`
         </div>
