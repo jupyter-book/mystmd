@@ -42,7 +42,7 @@
                 "image": {
                   "kind": "image",
                   "content_type": "image/png",
-                  "path": "_static/matplotlib.png"
+                  "path": "/_static/matplotlib.png"
                 }
               }
             },
