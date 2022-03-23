@@ -68,16 +68,16 @@ class Summarizer {
 
   async process(summary: OutputSummaryEntry): Promise<OutputSummaryEntry> {
     let { content } = summary;
-    if (this.options.truncate && summary.content && summary.content.length > NUM_CHARS) {
+    if (this.options.truncate && content && content?.length > NUM_CHARS) {
       const path = this.$makeFilepath(summary.content_type);
       const outputFile = this.fileFactory(path);
-      await outputFile.writeString(summary.content as string, summary.content_type);
-      content = `${summary.content.slice(0, TRUNCATED_CHARS_COUNT)}...`;
+      await outputFile.writeString(content as string, summary.content_type);
+      content = `${content.slice(0, TRUNCATED_CHARS_COUNT)}...`;
       return {
         kind: summary.kind,
         content_type: summary.content_type,
         content: content ?? '',
-        path,
+        path: outputFile.id,
       };
     }
     return {
