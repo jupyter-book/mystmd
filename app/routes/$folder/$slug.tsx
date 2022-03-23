@@ -52,7 +52,7 @@ export const loader: LoaderFunction = async ({
     return redirect(`/${folderName}`);
   }
   const slug = params.loadIndexPage ? folder.index : params.slug;
-  const loader = await getData(folderName, slug).catch((e) => {
+  const loader = await getData(config, folderName, slug).catch((e) => {
     console.log(e);
     return null;
   });

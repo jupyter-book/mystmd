@@ -1,3 +1,4 @@
+import { Config } from './config.server';
 import { PageLoader as Data } from './types';
 
 const CACHE: {
@@ -21,7 +22,11 @@ async function getAllData(): Promise<Record<string, Record<string, Data>>> {
   return CACHE.data;
 }
 
-export async function getData(folder?: string, slug?: string): Promise<Data | null> {
+export async function getData(
+  config?: Config,
+  folder?: string,
+  slug?: string,
+): Promise<Data | null> {
   if (!folder || !slug) return null;
   const allData = await getAllData();
   const data = allData[folder]?.[slug] ?? null;

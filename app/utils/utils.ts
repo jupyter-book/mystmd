@@ -6,7 +6,7 @@ export function getSection(config: Config, sectionNumber?: number) {
   return config.site.sections[sectionNumber];
 }
 
-export function getFolder(config: Config | null, folderName?: string | number) {
+export function getFolder(config?: Config, folderName?: string | number) {
   if (!config) return undefined;
   if (typeof folderName === 'number') {
     folderName = getSection(config, folderName)?.folder;
@@ -16,7 +16,7 @@ export function getFolder(config: Config | null, folderName?: string | number) {
 }
 
 export function getFolderPages(
-  config: Config | null,
+  config?: Config,
   folderName?: string,
   opts = { useIndexSlug: false, addGroups: false },
 ): Heading[] | undefined {

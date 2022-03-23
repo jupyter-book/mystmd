@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Config } from '../utils/config.server';
 
-const ConfigContext = React.createContext<Config | null>(null);
+const ConfigContext = React.createContext<Config | undefined>(undefined);
 
 export function ConfigProvider({
   config,
@@ -10,9 +10,7 @@ export function ConfigProvider({
   config?: Config;
   children: React.ReactNode;
 }) {
-  return (
-    <ConfigContext.Provider value={config ?? null}>{children}</ConfigContext.Provider>
-  );
+  return <ConfigContext.Provider value={config}>{children}</ConfigContext.Provider>;
 }
 
 export function useConfig() {
