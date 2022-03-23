@@ -20,6 +20,7 @@ test.each([
   [ROLES.projectOwner, SCOPES.projectRead, true],
   [ROLES.projectOwner, SCOPES.projectUpdate, true],
   [ROLES.projectOwner, SCOPES.projectAccessRead, true],
+  [ROLES.projectOwner, SCOPES.projectVisibility, true],
   [ROLES.projectOwner, SCOPES.projectAccessWrite, true],
   [ROLES.projectOwner, SCOPES.projectPublish, true],
   [ROLES.projectOwner, SCOPES.blockRead, true],
@@ -31,7 +32,8 @@ test.each([
   [ROLES.projectOwner, SCOPES.commentDelete, true],
 
   [ROLES.projectEditor, SCOPES.projectRead, true],
-  [ROLES.projectEditor, SCOPES.projectUpdate, false],
+  [ROLES.projectEditor, SCOPES.projectUpdate, true],
+  [ROLES.projectEditor, SCOPES.projectVisibility, false],
   [ROLES.projectEditor, SCOPES.projectAccessRead, true],
   [ROLES.projectEditor, SCOPES.projectAccessWrite, false],
   [ROLES.projectEditor, SCOPES.projectPublish, true],
