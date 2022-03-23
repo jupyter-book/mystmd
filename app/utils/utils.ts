@@ -1,24 +1,26 @@
-import config from '~/config.json';
+import { Config } from './config.server';
 import { FooterLinks, Heading, NavigationLink } from './types';
 
-export function getSection(sectionNumber?: number) {
+export function getSection(config: Config, sectionNumber?: number) {
   if (sectionNumber == null) return undefined;
   return config.site.sections[sectionNumber];
 }
 
-export function getFolder(folderName?: string | number) {
+export function getFolder(config: Config | null, folderName?: string | number) {
+  if (!config) return undefined;
   if (typeof folderName === 'number') {
-    folderName = getSection(folderName)?.folder;
+    folderName = getSection(config, folderName)?.folder;
   }
   if (!folderName || !(folderName in config.folders)) return undefined;
   return config.folders[folderName as keyof typeof config.folders];
 }
 
 export function getFolderPages(
+  config: Config | null,
   folderName?: string,
   opts = { useIndexSlug: false, addGroups: false },
 ): Heading[] | undefined {
-  const folder = getFolder(folderName);
+  const folder = getFolder(config, folderName);
   if (!folder) return undefined;
   const headings: Heading[] = [
     {
@@ -56,9 +58,16 @@ function getHeadingLink(
   };
 }
 
-export function getFooterLinks(folderName?: string, slug?: string): FooterLinks {
+export function getFooterLinks(
+  config: Config,
+  folderName?: string,
+  slug?: string,
+): FooterLinks {
   if (!folderName || !slug) return {};
-  const pages = getFolderPages(folderName, { useIndexSlug: true, addGroups: true });
+  const pages = getFolderPages(config, folderName, {
+    useIndexSlug: true,
+    addGroups: true,
+  });
   const found = pages?.findIndex(({ slug: s }) => s === slug) ?? -1;
   if (found === -1) return {};
   const prev = getHeadingLink(folderName, slug, pages?.slice(0, found).reverse());

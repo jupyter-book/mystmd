@@ -1,11 +1,12 @@
 import { Link, NavLink } from 'remix';
 import { ThemeButton } from './ThemeButton';
-import config from '~/config.json';
 import { getFolder } from '~/utils';
 import classNames from 'classnames';
+import { useConfig } from './ConfigProvider';
 
 export function TopNav() {
-  const { logo, logoText, sections, actions, name } = config.site;
+  const config = useConfig();
+  const { logo, logoText, sections, actions, name } = config?.site ?? {};
   return (
     <div className="bg-stone-700 p-3 px-8 fixed w-screen top-0 z-30">
       <nav className="flex items-center justify-between flex-wrap max-w-[1440px] mx-auto">
@@ -40,8 +41,8 @@ export function TopNav() {
         </div>
         <div className="hidden flex-grow md:flex items-center w-auto">
           <div className="text-md flex-grow">
-            {sections.map((sec) => {
-              const folder = getFolder(sec.folder);
+            {sections?.map((sec) => {
+              const folder = getFolder(config, sec.folder);
               if (!folder)
                 return <div key={sec.folder}>Didn't find folder: {sec.folder}</div>;
               return (
@@ -65,7 +66,7 @@ export function TopNav() {
           </div>
           <ThemeButton />
           <div>
-            {actions.map((action, index) => (
+            {actions?.map((action, index) => (
               <a
                 key={action.url || index}
                 className="inline-block text-md px-4 py-2 mx-1 leading-none border rounded text-white border-white hover:border-transparent hover:text-stone-500 hover:bg-white mt-0"

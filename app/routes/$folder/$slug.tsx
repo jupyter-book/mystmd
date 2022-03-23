@@ -3,18 +3,25 @@ import type { LoaderFunction, LinksFunction } from 'remix';
 import { getData } from '~/utils/file.loader.server';
 import { GenericParent } from 'mystjs';
 import { ReferencesProvider, ContentBlock } from '~/components';
-import { getMetaTagsForArticle, getFolder, PageLoader, getFooterLinks } from '~/utils';
+import {
+  getMetaTagsForArticle,
+  getFolder,
+  PageLoader,
+  getFooterLinks,
+  Config,
+  getConfig,
+} from '~/utils';
 import { Footer } from '~/components/FooterLinks';
-import config from '~/config.json';
 import { Bibliography } from '../../components/renderers/cite';
 
 export const meta: MetaFunction = (args) => {
+  const config = args.parentsData.root.config as Config | undefined;
   const data = args.data as PageLoader | undefined;
   if (!data) return {};
   return getMetaTagsForArticle({
     origin: '',
     url: args.location.pathname,
-    title: `${data?.frontmatter.title} - ${config.site.name}`,
+    title: `${data?.frontmatter.title} - ${config?.site.name}`,
     description: data.frontmatter.description,
   });
 };
@@ -33,9 +40,11 @@ export const links: LinksFunction = () => {
 
 export const loader: LoaderFunction = async ({
   params,
+  request,
 }): Promise<PageLoader | Response> => {
   const folderName = params.folder;
-  const folder = getFolder(folderName);
+  const config = await getConfig(request);
+  const folder = getFolder(config, folderName);
   if (!folder) {
     throw new Response('Article was not found', { status: 404 });
   }
@@ -48,7 +57,7 @@ export const loader: LoaderFunction = async ({
     return null;
   });
   if (!loader) throw new Response('Article was not found', { status: 404 });
-  const footer = getFooterLinks(folderName, slug);
+  const footer = getFooterLinks(config, folderName, slug);
   return { ...loader, footer };
 };
 

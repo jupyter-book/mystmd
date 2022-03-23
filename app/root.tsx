@@ -10,15 +10,18 @@ import {
   useLoaderData,
 } from 'remix';
 import type { MetaFunction, LinksFunction } from 'remix';
-import config from '~/config.json';
 import React from 'react';
 import { Theme, ThemeProvider, TopNav } from '~/components';
 import { getThemeSession } from '~/utils/theme.server';
 import tailwind from './styles/app.css';
-import { getMetaTagsForSite } from './utils';
+import { getMetaTagsForSite, getConfig, Config } from './utils';
+import { ConfigProvider } from './components/ConfigProvider';
 
-export const meta: MetaFunction = () => {
-  return getMetaTagsForSite({ title: config.site.name, twitter: config.site.twitter });
+export const meta: MetaFunction = ({ data }) => {
+  return getMetaTagsForSite({
+    title: data.config?.site?.name,
+    twitter: data.config?.site?.twitter,
+  });
 };
 
 export const links: LinksFunction = () => {
@@ -27,21 +30,27 @@ export const links: LinksFunction = () => {
 
 type DocumentData = {
   theme: Theme;
+  config: Config;
 };
 
 export const loader: LoaderFunction = async ({ request }): Promise<DocumentData> => {
-  const themeSession = await getThemeSession(request);
-  const data = { theme: themeSession.getTheme() };
+  const [config, themeSession] = await Promise.all([
+    getConfig(request),
+    getThemeSession(request),
+  ]);
+  const data = { theme: themeSession.getTheme(), config };
   return data;
 };
 
 function Document({
   children,
   theme,
+  config,
   title,
 }: {
   children: React.ReactNode;
   theme: Theme;
+  config?: Config;
   title?: string;
 }) {
   return (
@@ -55,8 +64,10 @@ function Document({
       </head>
       <body className="m-0 transition-colors duration-500 bg-white dark:bg-stone-900">
         <ThemeProvider theme={theme}>
-          <TopNav />
-          {children}
+          <ConfigProvider config={config}>
+            <TopNav />
+            {children}
+          </ConfigProvider>
         </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
@@ -67,9 +78,9 @@ function Document({
 }
 
 export default function App() {
-  const { theme } = useLoaderData<DocumentData>();
+  const { theme, config } = useLoaderData<DocumentData>();
   return (
-    <Document theme={theme}>
+    <Document theme={theme} config={config}>
       <Outlet />
     </Document>
   );

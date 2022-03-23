@@ -1,10 +1,11 @@
 // import { Card } from '~/components/card';
 
 import { LoaderFunction, redirect } from 'remix';
-import { getSection } from '../utils';
+import { getConfig, getSection } from '../utils';
 
-export const loader: LoaderFunction = async (): Promise<Response | null> => {
-  const sec = getSection(0);
+export const loader: LoaderFunction = async ({ request }): Promise<Response | null> => {
+  const config = await getConfig(request);
+  const sec = getSection(config, 0);
   if (!sec) throw new Response('Article was not found', { status: 404 });
   return redirect(`/${sec.folder}`);
 };
