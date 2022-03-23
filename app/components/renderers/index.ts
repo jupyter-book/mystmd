@@ -7,6 +7,7 @@ import { mathRenderers } from './math';
 import { reactiveRenderers } from './reactive';
 import { iframeRenderers } from './iframe';
 import { linkRenderers } from './links';
+import { outputRenderers } from './output';
 
 export const defaultRenderers: NodeTypes = {
   ...nodes,
@@ -18,4 +19,5 @@ export const defaultRenderers: NodeTypes = {
   ...footnoteRenderers,
   ...admonitionRenderers,
   ...reactiveRenderers,
+  ...outputRenderers,
 };

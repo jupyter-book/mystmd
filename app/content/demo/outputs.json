@@ -1,0 +1,227 @@
+{
+  "sha256": "0f9c3d4f8b7c19a8a67bed2c4fdb0ae55182ab2e1ff0db4b22e6659b8920e8f",
+  "frontmatter": {
+    "title": "Jupyter Outputs",
+    "description": "Including content from Jupyter notebooks in an independent document."
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "children": [{ "type": "text", "value": "PNG Image", "key": "seJIcT2EnE" }],
+            "key": "ISDISD7s78d"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "This is the result of a plotting using the matplotlib library.",
+                "key": "aSD8sad98sa"
+              }
+            ],
+            "key": "sadsad878asd"
+          }
+        ],
+        "key": "SD8asds9as"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "output",
+            "id": "NsRWuImK6avvBnPGc7_43",
+            "data": {
+              "kind": "image",
+              "items": {
+                "image": {
+                  "kind": "image",
+                  "content_type": "image/png",
+                  "path": "_static/matplotlib.png"
+                }
+              }
+            },
+            "key": "TjmsA9zkVR"
+          }
+        ],
+        "key": "E4upP52xey"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "children": [{ "type": "text", "value": "Stream", "key": "seJIcT2EnE" }],
+            "key": "Tnw4xPquXK"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "This output is the Juptyer stream type, produced in python using the print statement.",
+                "key": "0as89dsah"
+              }
+            ],
+            "key": "sadmsa8dasd"
+          }
+        ],
+        "key": "JsjdjasdadSA"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "output",
+            "id": "XjQc6FMoynhpX9drq77jY",
+            "data": {
+              "kind": "stream",
+              "items": {
+                "stream": {
+                  "kind": "stream",
+                  "content_type": "text/plain",
+                  "content": "[[ 0.      0.      0.    ]\n [ 0.0003  0.0003  0.0003]\n [ 0.0006  0.0006  0.0006]\n [ 0.0008  0.0008  0.0008]\n [ 0.0011  0.0011  0.0011]]\n"
+                }
+              }
+            },
+            "key": "UNR4zGtDI1"
+          }
+        ],
+        "key": "JKSDJKASDU"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "children": [{ "type": "text", "value": "Text", "key": "seJIcT2EnE" }],
+            "key": "Tnw4xPquXK"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "This output of type text is different from a stream, and typically a library adds that as a mimetype bundle.",
+                "key": "asdsajda"
+              }
+            ],
+            "key": "JEBJEBRES"
+          }
+        ],
+        "key": "IHVDHKJSDjsdj"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "output",
+            "id": "XjQc6FMoynhpX9drq77jY",
+            "data": {
+              "kind": "text",
+              "items": {
+                "text": {
+                  "kind": "text",
+                  "content_type": "text/plain",
+                  "content": "This is text that may come from a library or ipython command."
+                }
+              }
+            },
+            "key": "Jsdhasdj9sda"
+          }
+        ],
+        "key": "Uasds8dsah"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "children": [{ "type": "text", "value": "HTML", "key": "seJIcT2EnE" }],
+            "key": "KSiasnsd8sad"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "HTML outputs are rendered dangreously.",
+                "key": "SJhsdaksad"
+              }
+            ],
+            "key": "ASDasdsdsa"
+          }
+        ],
+        "key": "0asd9asDSasd"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "output",
+            "id": "XjQc6FMoynhpX9drq77jY",
+            "data": {
+              "kind": "html",
+              "items": {
+                "html": {
+                  "kind": "html",
+                  "content_type": "text/html",
+                  "content": "<div style='border: 2px dashed red;padding:5px;text-align:center;cursor:pointer;' onclick='alert(\"Boom 💥\")' role=button>Click Me</div>"
+                }
+              }
+            },
+            "key": "UNR4zGtDI1"
+          }
+        ],
+        "key": "SKOEv67jtr"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "children": [
+              { "type": "text", "value": "Large Content", "key": "seJIcT2EnE" }
+            ],
+            "key": "Tnw4xPquXK"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "When outputs with large content are encountered, the inline content is truncated and the full content is made available in files, which require loading after initial page load. The following outputs all have large content.",
+                "key": "8qQXqQXqQX"
+              }
+            ],
+            "key": "8qQXqj3qQX"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Stream", "key": "seJIcT2EnE" }],
+            "key": "XSdjsd8ss"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "HTML", "key": "seJIcT2EnE" }],
+            "key": "PSos8akSs"
+          }
+        ],
+        "key": "eJxj9qXQXK"
+      }
+    ],
+    "key": "89asd8shsd"
+  },
+  "references": { "cite": { "order": [], "data": {} }, "footnotes": {} }
+}
