@@ -10,6 +10,7 @@ export * from './format';
 export * from './author';
 export * from './misc';
 export * from './jupyter';
+export * from './messages';
 
 export interface BlockLinks extends BaseLinks {
   project: string;
