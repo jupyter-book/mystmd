@@ -17,8 +17,10 @@ export interface IFileObject {
   writeBase64(data: string): Promise<void>;
   setContentType(contentType: string): Promise<Metadata>;
   url(): Promise<string>;
-  exists(): boolean;
+  exists(): Promise<boolean>;
 }
+
+export type IFileObjectFactoryFn = (path: string) => IFileObject;
 
 export class StubFileObject implements IFileObject {
   path: string;
@@ -52,10 +54,8 @@ export class StubFileObject implements IFileObject {
     return 'stub-file-signature';
   }
 
-  exists() {
+  async exists() {
     console.debug('StubFileObject:exists');
     return true;
   }
 }
-
-export type IFileObjectFactoryFn = (path: string) => IFileObject;
