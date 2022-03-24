@@ -1,7 +1,7 @@
 // import { Card } from '~/components/card';
 
 import { LoaderFunction, redirect } from 'remix';
-import { getConfig, getSection } from '../utils';
+import { getSection, getConfig } from '~/utils';
 
 export const loader: LoaderFunction = async ({ request }): Promise<Response | null> => {
   const config = await getConfig(request);

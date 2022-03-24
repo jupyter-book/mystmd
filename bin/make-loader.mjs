@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const filename = './app/utils/memory.loader.server.ts';
+const filename = './app/utils/loader.memory.server.ts';
 const template = fs.readFileSync(filename).toString().split('\n');
 const config = JSON.parse(fs.readFileSync('./app/config.json').toString());
 

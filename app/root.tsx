@@ -30,7 +30,7 @@ export const links: LinksFunction = () => {
 
 type DocumentData = {
   theme: Theme;
-  config: Config;
+  config?: Config;
 };
 
 export const loader: LoaderFunction = async ({ request }): Promise<DocumentData> => {

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Config } from '../utils/config.server';
+import { Config } from '~/utils';
 
 const ConfigContext = React.createContext<Config | undefined>(undefined);
 

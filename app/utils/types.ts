@@ -1,5 +1,25 @@
 import { GenericNode, GenericParent } from 'mystjs';
 
+export type Config = {
+  site: {
+    id: string;
+    name: string;
+    sections: { title: string; folder: string }[];
+    twitter?: string;
+    actions: { title: string; url: string }[];
+    logo?: string;
+    logoText?: string;
+  };
+  folders: Record<
+    string,
+    {
+      title: string;
+      index: string;
+      pages: { title: string; slug?: string; level: number }[];
+    }
+  >;
+};
+
 export type Heading = {
   slug?: string;
   title: string;

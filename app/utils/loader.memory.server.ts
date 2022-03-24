@@ -1,5 +1,5 @@
-import { Config } from './config.server';
-import { PageLoader as Data } from './types';
+import config from '~/config.json';
+import { PageLoader as Data, Config } from './types';
 
 const CACHE: {
   isLoaded: boolean;
@@ -8,6 +8,10 @@ const CACHE: {
   isLoaded: false,
   data: {},
 };
+
+export async function getConfig(): Promise<Config> {
+  return config;
+}
 
 async function getAllData(): Promise<Record<string, Record<string, Data>>> {
   if (CACHE.isLoaded) return CACHE.data;

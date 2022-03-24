@@ -1,9 +1,9 @@
-import { Config } from './config.server';
+import { Config } from './types';
 import { FooterLinks, Heading, NavigationLink } from './types';
 
-export function getSection(config: Config, sectionNumber?: number) {
+export function getSection(config?: Config, sectionNumber?: number) {
   if (sectionNumber == null) return undefined;
-  return config.site.sections[sectionNumber];
+  return config?.site.sections[sectionNumber];
 }
 
 export function getFolder(config?: Config, folderName?: string | number) {
@@ -59,11 +59,11 @@ function getHeadingLink(
 }
 
 export function getFooterLinks(
-  config: Config,
+  config?: Config,
   folderName?: string,
   slug?: string,
 ): FooterLinks {
-  if (!folderName || !slug) return {};
+  if (!folderName || !slug || !config) return {};
   const pages = getFolderPages(config, folderName, {
     useIndexSlug: true,
     addGroups: true,
