@@ -1,5 +1,5 @@
-import { JsonObject } from '../types';
-import { notebookFromJupyter } from './notebook';
+import { JsonObject } from '@curvenote/blocks';
+import { notebookFromJupyter } from '../src';
 
 describe('Notebook Translation', () => {
   describe('fromJupyter', () => {

@@ -1,7 +1,14 @@
-import { JsonObject } from '../types';
-import { KINDS, Blocks, TARGET, ContentFormatTypes } from '../blocks';
-import { Notebook } from '../blocks/notebook';
-import { translateToJupyter, NotebookCell, CELL_TYPE, CellOutput } from './index';
+import {
+  JsonObject,
+  KINDS,
+  Blocks,
+  TARGET,
+  ContentFormatTypes,
+  NotebookCell,
+  CELL_TYPE,
+  CellOutput,
+} from '@curvenote/blocks';
+import { translateToJupyter } from '../src';
 
 describe('High level translator functions', () => {
   describe('Translate to Jupyter ', () => {
@@ -10,7 +17,7 @@ describe('High level translator functions', () => {
         const cell = translateToJupyter({
           kind: KINDS.Notebook,
           metadata: { nbformat: 0, nbformat_minor: 0 },
-        } as Notebook) as NotebookCell;
+        } as Blocks.Notebook) as NotebookCell;
         expect(cell).toHaveProperty('cells');
         expect(cell).toHaveProperty('metadata');
         expect(cell).toHaveProperty('nbformat');

@@ -1,7 +1,5 @@
-import { KINDS, TARGET, OutputFormatTypes } from '../blocks/types';
-import { Output } from '../blocks/output';
-import { CellOutput } from './types';
-import { fromJupyter } from './outputData';
+import { KINDS, TARGET, OutputFormatTypes, Blocks, CellOutput } from '@curvenote/blocks';
+import { fromJupyter } from '../src/translators/outputData';
 
 describe('Output Data translators', () => {
   describe('fromJupyter', () => {
@@ -50,7 +48,7 @@ describe('Output Data translators', () => {
     });
 
     it('converts outputs to list of fragments and original', () => {
-      const block = fromJupyter(exampleOutputs) as Output;
+      const block = fromJupyter(exampleOutputs) as Blocks.Output;
       expect(block).toEqual(
         expect.objectContaining({
           kind: KINDS.Output,

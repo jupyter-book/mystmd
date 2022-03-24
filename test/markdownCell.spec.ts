@@ -1,11 +1,16 @@
-import { MarkdownCell, CELL_TYPE } from './types';
-import { fromJupyter, toJupyter } from './markdownCell';
-import { KINDS, TARGET, ContentFormatTypes } from '../blocks';
-import { Content } from '../blocks/content';
+import {
+  MarkdownCell,
+  CELL_TYPE,
+  KINDS,
+  TARGET,
+  ContentFormatTypes,
+  Blocks,
+} from '@curvenote/blocks';
+import { fromJupyter, toJupyter } from '../src/translators/markdownCell';
 
 describe('Markdown block translators', () => {
   let jupyterMarkdownCell: MarkdownCell;
-  let ourMarkdownContent: Partial<Content>;
+  let ourMarkdownContent: Partial<Blocks.Content>;
 
   beforeEach(() => {
     jupyterMarkdownCell = {
@@ -35,7 +40,7 @@ describe('Markdown block translators', () => {
           something: 'unknown',
         },
       },
-    } as Partial<Content>;
+    } as Partial<Blocks.Content>;
   });
 
   it('plain Jupyter MarkdownCell => to our Content Block', () => {
@@ -60,7 +65,7 @@ describe('Markdown block translators', () => {
   });
 
   it('Our Content Block => Jupyter MarkdownCell', () => {
-    const cell = toJupyter(ourMarkdownContent as Content);
+    const cell = toJupyter(ourMarkdownContent as Blocks.Content);
 
     expect(cell).toEqual(
       expect.objectContaining({

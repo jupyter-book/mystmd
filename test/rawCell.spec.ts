@@ -1,12 +1,10 @@
-import { CELL_TYPE, RawCell } from './types';
-import { fromJupyter, toJupyter } from './rawCell';
-import { KINDS, TARGET, ContentFormatTypes } from '../blocks';
-import { Content } from '../blocks/content';
+import { CELL_TYPE, RawCell, KINDS, TARGET, Blocks, ContentFormatTypes } from '@curvenote/blocks';
+import { fromJupyter, toJupyter } from '../src/translators/rawCell';
 
 describe('Raw block translators', () => {
   let jupyterRawCell: RawCell;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let iooxaContentBlock: Partial<Content>;
+  let iooxaContentBlock: Partial<Blocks.Content>;
 
   beforeEach(() => {
     jupyterRawCell = {
@@ -36,7 +34,7 @@ describe('Raw block translators', () => {
           something: 'unknown',
         },
       },
-    } as Partial<Content>;
+    } as Partial<Blocks.Content>;
   });
 
   it('Jupyter RawCell to toIooxa Content Block', () => {
@@ -61,7 +59,7 @@ describe('Raw block translators', () => {
   });
 
   it('Iooxa Content Block to Jupyter RawCell ', () => {
-    const cell = toJupyter(iooxaContentBlock as Content);
+    const cell = toJupyter(iooxaContentBlock as Blocks.Content);
     expect(cell).toEqual(
       expect.objectContaining({
         cell_type: CELL_TYPE.Raw,

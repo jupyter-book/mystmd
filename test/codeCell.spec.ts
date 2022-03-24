@@ -1,5 +1,14 @@
-import { VersionId, KINDS, TARGET, CodeFormatTypes, Blocks } from '@curvenote/blocks';
-import { CellOutput, CELL_TYPE, CodeCell } from '../src/translators/types';
+import {
+  VersionId,
+  KINDS,
+  TARGET,
+  CodeFormatTypes,
+  Blocks,
+  CellOutput,
+  CELL_TYPE,
+  CodeCell,
+} from '@curvenote/blocks';
+import { toJupyter, fromJupyter } from '../src/translators/codeCell';
 
 describe('Code Block Translators', () => {
   let iooxaId: VersionId;
