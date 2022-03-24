@@ -51,7 +51,7 @@ type TestCase = {
   html?: string;
 };
 
-const directory = 'docs/examples';
+const directory = path.join('docs', 'examples');
 const files: string[] = fs
   .readdirSync(directory)
   .filter((name) => name.endsWith('.yml'))
@@ -95,7 +95,7 @@ describe('Invalid Schema Tests', () => {
 });
 
 if (skipped.length) {
-  describe(`Skipped Tests`, () => {
+  describe('Skipped Tests', () => {
     test.skip.each(skipped)('%s', () => null);
   });
 }

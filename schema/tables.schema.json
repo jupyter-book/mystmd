@@ -4,7 +4,7 @@
   "description": "table nodes",
   "$defs": {
     "Table": {
-      "description": "two-dimensional table data",
+      "description": "Two-dimensional table data",
       "type": "object",
       "allOf": [
         {
@@ -31,7 +31,7 @@
       ]
     },
     "TableRow": {
-      "description": "one row of table containing cells",
+      "description": "One row of table containing cells",
       "type": "object",
       "allOf": [
         {
@@ -54,7 +54,7 @@
       ]
     },
     "TableCell": {
-      "description": "one cell of table",
+      "description": "One cell of table",
       "type": "object",
       "allOf": [
         {

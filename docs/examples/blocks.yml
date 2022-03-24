@@ -29,6 +29,7 @@ cases:
     html: |-
       <div class="block" data-block="{&#x22;meta: data}"></div>
   - title: block break nodes - dividing flow content
+    id: blockbreak
     mdast:
       type: root
       children:

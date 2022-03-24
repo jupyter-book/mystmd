@@ -64,6 +64,7 @@ cases:
         \item code blocks
       \end{itemize}
   - title: CommonMark numbered list
+    id: list
     mdast:
       type: root
       children:

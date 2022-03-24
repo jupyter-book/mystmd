@@ -1,5 +1,6 @@
 cases:
   - title: Basic table
+    id: table
     mdast:
       type: root
       children:

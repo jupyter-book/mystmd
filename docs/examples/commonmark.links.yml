@@ -1,5 +1,6 @@
 cases:
   - title: CommonMark link reference
+    id: definition
     mdast:
       type: root
       children:
@@ -30,6 +31,7 @@ cases:
     latex: |-
       Search engine: \url{https://google.com}
   - title: CommonMark inline link
+    id: link
     mdast:
       type: root
       children:

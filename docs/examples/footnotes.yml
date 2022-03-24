@@ -1,5 +1,6 @@
 cases:
   - title: Basic footnotes
+    id: footnote
     mdast:
       type: root
       children:

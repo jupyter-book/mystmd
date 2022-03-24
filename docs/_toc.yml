@@ -1,0 +1,16 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: index
+chapters:
+  - file: features/overview
+  - file: features/commonmark
+  - file: features/admonitions
+  - file: features/figures
+  - file: features/tables
+  - file: features/math
+  - file: features/references
+  - file: features/footnotes
+  - file: features/blocks
+  - file: myst.schema

@@ -1,5 +1,6 @@
 cases:
   - title: Simple figure
+    id: container
     mdast:
       type: root
       children:

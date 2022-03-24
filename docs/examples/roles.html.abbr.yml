@@ -1,5 +1,6 @@
 cases:
   - title: Inline Abbreviation
+    id: abbreviation
     mdast:
       type: root
       children:

@@ -4,7 +4,7 @@
   "description": "container nodes for presenting images, tables, etc as cross-reference-able figures with caption and legend",
   "$defs": {
     "Container": {
-      "description": "top-level container node to provide association and numbering to child content",
+      "description": "Top-level container node to provide association and numbering to child content",
       "type": "object",
       "allOf": [
         {
@@ -86,7 +86,7 @@
       ]
     },
     "Caption": {
-      "description": "caption for container content",
+      "description": "Caption for container content",
       "type": "object",
       "allOf": [
         {
@@ -109,7 +109,7 @@
       ]
     },
     "Legend": {
-      "description": "legend for container content",
+      "description": "Legend for container content",
       "type": "object",
       "allOf": [
         {

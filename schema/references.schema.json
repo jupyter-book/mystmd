@@ -4,7 +4,7 @@
   "description": "reference nodes",
   "$defs": {
     "Target": {
-      "description": "target node - provides identifier/label for the following node",
+      "description": "Target node - provides identifier/label for the following node",
       "type": "object",
       "allOf": [
         {
@@ -24,7 +24,7 @@
       ]
     },
     "CrossReference": {
-      "description": "in-line reference to an associated node, using role {eq}, {ref}, {numref}",
+      "description": "In-line reference to an associated node",
       "type": "object",
       "allOf": [
         {

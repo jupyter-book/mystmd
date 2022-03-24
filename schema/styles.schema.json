@@ -4,7 +4,7 @@
   "description": "style nodes - similar to commonmark styles like emphasis/strong, but defined with a role",
   "$defs": {
     "Subscript": {
-      "description": "subscript content, using role {subscript}",
+      "description": "Subscript content, using role {subscript}",
       "type": "object",
       "allOf": [
         {
@@ -27,7 +27,7 @@
       ]
     },
     "SubscriptStatic": {
-      "description": "subscript content, with static children; used when parent node requires static content",
+      "description": "Subscript content, with static children; used when parent node requires static content",
       "type": "object",
       "allOf": [
         {
@@ -50,7 +50,7 @@
       ]
     },
     "Superscript": {
-      "description": "superscript content, using role {superscript}",
+      "description": "Superscript content, using role {superscript}",
       "type": "object",
       "allOf": [
         {
@@ -73,7 +73,7 @@
       ]
     },
     "SuperscriptStatic": {
-      "description": "superscript content, with static children; used when parent node requires static content",
+      "description": "Superscript content, with static children; used when parent node requires static content",
       "type": "object",
       "allOf": [
         {
@@ -96,7 +96,7 @@
       ]
     },
     "Underline": {
-      "description": "underline content, using role {underline}",
+      "description": "Underline content, using role {underline}",
       "type": "object",
       "allOf": [
         {
@@ -119,7 +119,7 @@
       ]
     },
     "UnderlineStatic": {
-      "description": "underline content, with static children; used when parent node requires static content",
+      "description": "Underline content, with static children; used when parent node requires static content",
       "type": "object",
       "allOf": [
         {

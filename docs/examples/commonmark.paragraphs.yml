@@ -1,5 +1,6 @@
 cases:
   - title: CommonMark simple paragraph
+    id: paragraph
     mdast:
       type: root
       children:
@@ -35,6 +36,7 @@ cases:
 
       Something else
   - title: CommonMark inline styling
+    id: formatting
     mdast:
       type: root
       children:

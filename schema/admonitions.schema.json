@@ -4,7 +4,7 @@
   "description": "admonition node for drawing attention to text, separate from the neighboring content",
   "$defs": {
     "Admonition": {
-      "description": "admonition node for drawing attention to text, separate from the neighboring content, in the format ```{kind} args\\n\\n:options:\\n\\nvalue\\n```",
+      "description": "Admonition node for drawing attention to text, separate from the neighboring content",
       "type": "object",
       "allOf": [
         {
@@ -50,7 +50,7 @@
       ]
     },
     "AdmonitionTitle": {
-      "description": "custom title for admonition, replaces kind as title",
+      "description": "Custom title for admonition, replaces kind as title",
       "type": "object",
       "allOf": [
         {

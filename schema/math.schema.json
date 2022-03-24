@@ -4,7 +4,7 @@
   "description": "math node for presenting numbered equations",
   "$defs": {
     "Math": {
-      "description": "math node for presenting numbered equations",
+      "description": "Math node for presenting numbered equations",
       "type": "object",
       "allOf": [
         {
@@ -25,7 +25,7 @@
       ]
     },
     "InlineMath": {
-      "description": "fragment of math, similar to InlineCode, using role {math}",
+      "description": "Fragment of math, similar to InlineCode, using role {math}",
       "type": "object",
       "allOf": [
         {

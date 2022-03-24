@@ -10,6 +10,7 @@ cases:
     html: |-
       <!--A comment-->
   - title: Comment between paragraphs
+    id: comment
     mdast:
       type: root
       children:

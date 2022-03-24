@@ -1,10 +1,10 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://spec.myst.tools/json-schema/directives.schema.json",
-  "description": "directive node - custom block behavior, in the format ```{kind} args\\n\\n:options:\\n\\nvalue\\n```",
+  "description": "directive node - custom block behavior",
   "$defs": {
     "Directive": {
-      "description": "myst directive, in the format ```{kind} args\\n\\n:options:\\n\\nvalue\\n```",
+      "description": "Content block with predefined behavior",
       "type": "object",
       "allOf": [
         {

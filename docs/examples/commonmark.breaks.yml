@@ -19,6 +19,7 @@ cases:
       hard\\
       break
   - title: CommonMark thematic breaks
+    id: break
     mdast:
       type: root
       children:

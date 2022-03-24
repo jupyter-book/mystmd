@@ -1,5 +1,6 @@
 cases:
   - title: Standard markdown image
+    id: image
     mdast:
       type: root
       children:

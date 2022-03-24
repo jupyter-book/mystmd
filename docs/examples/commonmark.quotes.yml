@@ -1,5 +1,6 @@
 cases:
   - title: CommonMark block quote
+    id: quote
     mdast:
       type: root
       children:
@@ -8,14 +9,14 @@ cases:
             - type: paragraph
               children:
                 - type: text
-                  value: Super profound quote
+                  value: To be or not to be
     myst: |-
-      > Super profound quote
+      > To be or not to be
     html: |-
       <blockquote>
-        <p>Super profound quote</p>
+        <p>To be or not to be</p>
       </blockquote>
     latex: |-
       \begin{quote}
-        Super profound quote
+        To be or not to be
       \end{quote}

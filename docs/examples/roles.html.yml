@@ -25,6 +25,7 @@ cases:
       H\textsubscript{2}O
 
   - title: Subscript spelled out
+    id: subscript
     mdast:
       type: root
       children:
@@ -73,6 +74,7 @@ cases:
       <p>4<sup>th</sup> of July</p>
 
   - title: Superscript spelled out
+    id: superscript
     mdast:
       type: root
       children:

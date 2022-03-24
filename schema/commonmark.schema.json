@@ -176,7 +176,7 @@
       ]
     },
     "Code": {
-      "description": "block of preformatted text",
+      "description": "Block of preformatted text",
       "type": "object",
       "allOf": [
         {
@@ -241,7 +241,7 @@
       ]
     },
     "Definition": {
-      "description": "reference to a url resource",
+      "description": "Reference to a url resource",
       "type": "object",
       "allOf": [
         {
@@ -281,7 +281,7 @@
       ]
     },
     "Emphasis": {
-      "description": "stressed, italicized content",
+      "description": "Stressed, italicized content",
       "type": "object",
       "allOf": [
         {
@@ -304,7 +304,7 @@
       ]
     },
     "EmphasisStatic": {
-      "description": "stressed, italicized content, with static children; used when parent node requires static content",
+      "description": "Stressed, italicized content, with static children; used when parent node requires static content",
       "type": "object",
       "allOf": [
         {
@@ -327,7 +327,7 @@
       ]
     },
     "Strong": {
-      "description": "important, serious, urgent, bold content",
+      "description": "Important, serious, urgent, bold content",
       "type": "object",
       "allOf": [
         {
@@ -350,7 +350,7 @@
       ]
     },
     "StrongStatic": {
-      "description": "important, serious, urgent, bold content, with static children; used when parent node requires static content",
+      "description": "Important, serious, urgent, bold content, with static children; used when parent node requires static content",
       "type": "object",
       "allOf": [
         {
@@ -373,7 +373,7 @@
       ]
     },
     "InlineCode": {
-      "description": "fragment of code",
+      "description": "Fragment of code",
       "type": "object",
       "allOf": [
         {
@@ -391,7 +391,7 @@
       ]
     },
     "Break": {
-      "description": "line break",
+      "description": "Line break",
       "type": "object",
       "allOf": [
         {
@@ -408,7 +408,7 @@
       ]
     },
     "Link": {
-      "description": "hyperlink",
+      "description": "Hyperlink",
       "type": "object",
       "allOf": [
         {
@@ -434,7 +434,7 @@
       ]
     },
     "Image": {
-      "description": "image hyperlink",
+      "description": "Image hyperlink",
       "type": "object",
       "allOf": [
         {
@@ -468,7 +468,7 @@
       ]
     },
     "LinkReference": {
-      "description": "hyperlink through association",
+      "description": "Hyperlink through association",
       "type": "object",
       "allOf": [
         {
@@ -496,7 +496,7 @@
       ]
     },
     "ImageReference": {
-      "description": "image through association",
+      "description": "Image through association",
       "type": "object",
       "allOf": [
         {
@@ -520,7 +520,7 @@
       ]
     },
     "Resource": {
-      "description": "reference to external resource",
+      "description": "Reference to external resource",
       "type": "object",
       "required": ["url"],
       "properties": {
@@ -535,7 +535,7 @@
       }
     },
     "OptionalAssociation": {
-      "description": "internal relation from one node to another; not required by node",
+      "description": "Internal relation from one node to another; not required by node",
       "type": "object",
       "properties": {
         "identifier": {
@@ -549,7 +549,7 @@
       }
     },
     "Association": {
-      "description": "internal relation from one node to another",
+      "description": "Internal relation from one node to another",
       "type": "object",
       "allOf": [
         {
@@ -560,7 +560,7 @@
       ]
     },
     "Alternative": {
-      "description": "alternative description of image",
+      "description": "Alternative description of image",
       "type": "object",
       "properties": {
         "alt": {
@@ -570,7 +570,7 @@
       }
     },
     "Reference": {
-      "description": "marker associated to another node",
+      "description": "Marker associated to another node",
       "type": "object",
       "required": ["referenceType"],
       "properties": {

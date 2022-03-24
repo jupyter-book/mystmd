@@ -1,5 +1,6 @@
 cases:
   - title: Table figure reference with default numref
+    id: crossreference
     mdast:
       type: root
       children:
@@ -49,6 +50,7 @@ cases:
 
       *   - Head 1
       *   - Row 1
+      ```
     html: |-
       <p>see <a href="#my-table">Table 1</a></p>
       <figure id="my-table" class="numbered">

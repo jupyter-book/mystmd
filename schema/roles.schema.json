@@ -1,10 +1,10 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://spec.myst.tools/json-schema/roles.schema.json",
-  "description": "role node - custom in-line behavior, in the format {kind}`value`",
+  "description": "role node - custom in-line behavior",
   "$defs": {
     "Role": {
-      "description": "myst role - custom in-line behavior, in the format {kind}`value`",
+      "description": "Custom in-line behavior",
       "type": "object",
       "allOf": [
         {

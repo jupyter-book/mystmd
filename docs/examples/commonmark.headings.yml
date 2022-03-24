@@ -1,5 +1,6 @@
 cases:
   - title: CommonMark headings
+    id: heading
     mdast:
       type: root
       children:

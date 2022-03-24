@@ -25,6 +25,7 @@ cases:
       ABC directive</code></pre>
       </div>
   - title: Unknown directive with args
+    id: directive
     mdast:
       type: root
       children:

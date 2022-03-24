@@ -4,7 +4,7 @@
   "description": "comment nodes for comments present in myst but ingnored upon render",
   "$defs": {
     "Comment": {
-      "description": "comment nodes for comments present in myst but ingnored upon render",
+      "description": "Comment nodes for comments present in myst but ingnored upon render",
       "type": "object",
       "allOf": [
         {

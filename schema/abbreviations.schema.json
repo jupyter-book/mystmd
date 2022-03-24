@@ -4,7 +4,7 @@
   "description": "abbreviation node definition",
   "$defs": {
     "Abbreviation": {
-      "description": "abbreviation node described by title, using role {abbr}`content (title)`",
+      "description": "Abbreviation node described by title",
       "type": "object",
       "allOf": [
         {
