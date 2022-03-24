@@ -1,6 +1,6 @@
 import { MetaFunction, redirect, useCatch, useLoaderData } from 'remix';
 import type { LoaderFunction, LinksFunction } from 'remix';
-import { GenericParent } from 'mystjs';
+import type { GenericParent } from 'mystjs';
 import { ReferencesProvider, ContentBlock } from '~/components';
 import {
   getData,

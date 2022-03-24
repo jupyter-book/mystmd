@@ -1,7 +1,7 @@
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 import light from 'react-syntax-highlighter/dist/cjs/styles/hljs/xcode';
 import dark from 'react-syntax-highlighter/dist/cjs/styles/hljs/vs2015';
-import { GenericNode } from 'mystjs';
+import type { GenericNode } from 'mystjs';
 import { useTheme } from '../theme';
 import { NodeTypes } from 'myst-util-to-react';
 

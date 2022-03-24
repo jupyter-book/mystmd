@@ -1,6 +1,6 @@
 import { useParse, Component, NodeTypes } from 'myst-util-to-react';
 import { useReferences } from '../ReferencesProvider';
-import { GenericParent } from 'mystjs';
+import type { GenericParent } from 'mystjs';
 import { ClickPopover } from './ClickPopover';
 
 export function FootnoteDefinition({ identifier }: { identifier: string }) {

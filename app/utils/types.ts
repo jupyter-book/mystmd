@@ -1,4 +1,4 @@
-import { GenericNode, GenericParent } from 'mystjs';
+import type { GenericNode, GenericParent } from 'mystjs';
 
 export type Config = {
   site: {

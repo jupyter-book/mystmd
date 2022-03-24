@@ -14,7 +14,22 @@ import {
   LightningBoltIcon,
 } from '@heroicons/react/solid';
 import classNames from 'classnames';
-import { AdmonitionKind } from 'mystjs';
+// import { AdmonitionKind } from 'mystjs';
+
+// TODO: get this from myst-spec?
+enum AdmonitionKind {
+  admonition = 'admonition',
+  attention = 'attention',
+  caution = 'caution',
+  danger = 'danger',
+  error = 'error',
+  important = 'important',
+  hint = 'hint',
+  note = 'note',
+  seealso = 'seealso',
+  tip = 'tip',
+  warning = 'warning',
+}
 
 export const AdmonitionTitle: Component = (node, children) => {
   return children;

@@ -1,4 +1,4 @@
-import { GenericNode } from 'mystjs';
+import type { GenericNode } from 'mystjs';
 
 export const IFrame = (node: GenericNode) => {
   return (

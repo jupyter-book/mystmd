@@ -1,5 +1,5 @@
 import { NodeTypes, useParse } from 'myst-util-to-react';
-import { GenericParent } from 'mystjs';
+import type { GenericParent } from 'mystjs';
 import { defaultRenderers } from './renderers';
 
 export function ContentBlock({

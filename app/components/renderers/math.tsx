@@ -1,4 +1,4 @@
-import { GenericNode } from 'mystjs';
+import type { GenericNode } from 'mystjs';
 import { NodeTypes } from 'myst-util-to-react';
 
 // function Math({ value, html }: { value: string; html: string }) {
