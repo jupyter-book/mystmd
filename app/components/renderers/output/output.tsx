@@ -1,6 +1,10 @@
 import { GenericNode } from 'mystjs';
 import { OutputSummaryKind } from '@curvenote/blocks';
 import { HTMLOutput } from './html';
+import { TextOutput } from './text';
+import { PreOutput } from './pre';
+import { MaybeLongContent } from './long';
+import { DangerousHTML } from './dangerous';
 
 const SUPORTED_KINDS = new Set([
   OutputSummaryKind.stream,
@@ -33,17 +37,36 @@ export const Output = (node: GenericNode) => {
       outputComponent = <img src={`${data.path}`} />;
       break;
     case OutputSummaryKind.error:
-      outputComponent = <div style={{ backgroundColor: 'salmon' }}>{data.content}</div>;
+      outputComponent = (
+        <MaybeLongContent
+          {...data}
+          render={(content: string) => (
+            <div style={{ backgroundColor: 'salmon' }}>{content}</div>
+          )}
+        />
+      );
+      break;
+    case OutputSummaryKind.text:
+      outputComponent = (
+        <MaybeLongContent {...data} render={(content: string) => <p>{content}</p>} />
+      );
       break;
     case OutputSummaryKind.stream:
-    case OutputSummaryKind.text:
     case OutputSummaryKind.json:
-      outputComponent = <pre>{data.content}</pre>;
+      outputComponent = (
+        <MaybeLongContent
+          {...data}
+          render={(content: string) => <pre>{content}</pre>}
+        />
+      );
       break;
     case OutputSummaryKind.html:
-      {
-        outputComponent = <HTMLOutput {...data} />;
-      }
+      outputComponent = (
+        <MaybeLongContent
+          {...data}
+          render={(content: string) => <DangerousHTML content={content} />}
+        />
+      );
       break;
     default:
       outputComponent = (

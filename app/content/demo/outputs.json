@@ -210,16 +210,65 @@
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Stream", "key": "sadssdsad" }],
-            "key": "XSdjsd8ss"
-          },
-          {
-            "type": "heading",
-            "depth": 3,
             "children": [
               { "type": "text", "value": "HTML", "key": "seJIcT2EnEaasdas" }
             ],
             "key": "PSos8akSs"
+          },
+          {
+            "type": "block",
+            "children": [
+              {
+                "type": "output",
+                "id": "EjwoO1UyLsadsadfSKDL",
+                "data": {
+                  "kind": "html",
+                  "items": {
+                    "html": {
+                      "kind": "html",
+                      "content_type": "text/html",
+                      "content": "\n<div id=\"altair-viz-dad3e952a47240e798f32c170eb40347\"></div>\n<s...",
+                      "path": "/_static/altair.json"
+                    },
+                    "text": {
+                      "kind": "text",
+                      "content_type": "text/plain",
+                      "content": "alt.Chart(...)"
+                    }
+                  }
+                },
+                "key": "QNxOasdfzaW"
+              }
+            ],
+            "key": "AeusasdrQZ"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Stream", "key": "sadssdsad" }],
+            "key": "XSdjsd8ss"
+          },
+          {
+            "type": "block",
+            "children": [
+              {
+                "type": "output",
+                "id": "i6fi2JK1KIasdreOkEtE",
+                "data": {
+                  "kind": "stream",
+                  "items": {
+                    "stream": {
+                      "kind": "stream",
+                      "content_type": "text/plain",
+                      "content": "\nlong stream text...\nLorem ipsum dolor sit amet, consectetur adi...",
+                      "path": "/_static/longstream.json"
+                    }
+                  }
+                },
+                "key": "ILvocasboK"
+              }
+            ],
+            "key": "apME1hth7J"
           }
         ],
         "key": "eJxj9qXQXK"
