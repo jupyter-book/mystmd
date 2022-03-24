@@ -4,3 +4,4 @@ export * from './types';
 export * from './files';
 export * from './parse';
 export * from './create';
+export * from './upload';
