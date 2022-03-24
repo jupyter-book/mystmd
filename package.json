@@ -38,9 +38,7 @@
   "bugs": {
     "url": "https://github.com/curvenote/blocks/issues"
   },
-  "dependencies": {
-    "@types/jest": "^26.0.23"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^26.0.23",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
