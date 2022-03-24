@@ -81,7 +81,6 @@ class ImageSummarizer extends Summarizer {
   async process(summary: OutputSummaryEntry): Promise<OutputSummaryEntry> {
     const filepath = this.$makeFilepath(summary.content_type);
     const outputFile = this.fileFactory(filepath);
-    await outputFile.setContentType(summary.content_type);
     await outputFile.writeBase64(summary.content as string);
     return {
       kind: summary.kind,

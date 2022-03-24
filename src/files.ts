@@ -14,7 +14,7 @@ export type Metadata = {
 export interface IFileObject {
   get id(): string;
   writeString(data: string, contentType: string): Promise<void>;
-  writeBase64(data: string): Promise<void>;
+  writeBase64(data: string, contentType?: string): Promise<void>;
   setContentType(contentType: string): Promise<Metadata>;
   url(): Promise<string>;
   exists(): Promise<boolean>;
@@ -39,8 +39,8 @@ export class StubFileObject implements IFileObject {
     return Promise.resolve();
   }
 
-  writeBase64(data: string): Promise<void> {
-    console.debug('StubFileObject:writeBase64', data);
+  writeBase64(data: string, contentType: string): Promise<void> {
+    console.debug('StubFileObject:writeBase64', data, contentType);
     return Promise.resolve();
   }
 
