@@ -1,6 +1,5 @@
-// TODO: This probably needs to go into @curvenote/blocks ??
-import { VersionId } from '../blocks/types';
-import { JsonObject } from '../types';
+import { JsonObject } from '../../types';
+import { VersionId } from './id';
 
 export type CellId = { notebook: string; cell: string };
 

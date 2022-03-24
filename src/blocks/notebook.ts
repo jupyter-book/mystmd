@@ -5,10 +5,10 @@ import {
   KINDS,
   Language,
   NotebookFormatTypes,
+  JupyterNotebookMetadata,
 } from './types';
 
 import { JsonObject } from '../types';
-import { JupyterNotebookMetadata } from '../translators/types';
 
 export interface NotebookBlockMetadata extends JupyterNotebookMetadata {
   nbformat: number;

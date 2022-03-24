@@ -1,6 +1,13 @@
-import { JupyterCellMetadata } from '../translators/types';
 import { JsonObject } from '../types';
-import { KINDS, Language, BaseVersion, VersionId, TARGET, CodeFormatTypes } from './types';
+import {
+  KINDS,
+  Language,
+  BaseVersion,
+  VersionId,
+  TARGET,
+  CodeFormatTypes,
+  JupyterCellMetadata,
+} from './types';
 
 // Code that has not yet been saved / versioned
 export interface PartialCode {
