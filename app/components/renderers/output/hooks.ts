@@ -1,33 +1,22 @@
-import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 interface LongContent {
-  contentType: string;
+  content_type?: string;
   content: string;
 }
 
-export function useFetchLongContent(url?: string) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [longContent, setLongContent] = useState<LongContent | undefined>(undefined);
+const fetcher = (...args: Parameters<typeof fetch>) =>
+  fetch(...args).then((res) => {
+    if (res.status === 200) return res.json();
+    throw new Error(`Content returned with status ${res.status}.`);
+  });
 
-  useEffect(() => {
-    if (!url) return;
-    setLoading(true);
-    fetch(url).then((res) => {
-      if (res.ok) {
-        res.json().then((json) => {
-          setLongContent(json);
-        });
-      } else {
-        setError(`status: ${res.status} | ${res.statusText}`);
-      }
-      setLoading(false);
-    });
-  }, [url]);
-
-  return {
-    loading,
-    error,
-    longContent,
-  };
+export function useLongContent(
+  content: string,
+  url?: string,
+): { data?: LongContent; error?: Error } {
+  if (typeof window === 'undefined') return {};
+  const { data, error } = useSWR<LongContent>(url || null, fetcher);
+  if (!url) return { data: { content } };
+  return { data, error };
 }

@@ -1,16 +1,14 @@
-import { GenericNode } from 'mystjs';
-import { OutputSummaryKind } from '@curvenote/blocks';
-import { HTMLOutput } from './html';
-import { TextOutput } from './text';
-import { PreOutput } from './pre';
-import { MaybeLongContent } from './long';
-import { DangerousHTML } from './dangerous';
+import type { GenericNode } from 'mystjs';
+import { OutputSummaryKind } from '@curvenote/blocks/dist/blocks/output';
+import { DangerousHTML, MaybeLongContent } from './components';
+import classNames from 'classnames';
 
 const SUPORTED_KINDS = new Set([
   OutputSummaryKind.stream,
   OutputSummaryKind.image,
   OutputSummaryKind.error,
   OutputSummaryKind.text,
+  // Both of these kinds are OK as **long as this is a static site**
   OutputSummaryKind.json,
   OutputSummaryKind.html,
 ]);
@@ -20,19 +18,20 @@ const PRIORITIZED_FALLBACK_KINDS = [OutputSummaryKind.image, OutputSummaryKind.t
 export const Output = (node: GenericNode) => {
   let outputComponent = null;
 
-  console.log(node.data);
-
-  let data: any;
-  if (!SUPORTED_KINDS.has(node.data.kind)) {
-    console.log('looking for fallback');
+  let data:
+    | { kind: string; content: string; content_type?: string; path?: string }
+    | undefined;
+  if (SUPORTED_KINDS.has(node.data.kind)) {
+    // The kind is the default if it is supported here!
+    data = node.data.items[node.data.kind];
+  } else {
     // if we don't support the primary kind, try and find a fallback
     PRIORITIZED_FALLBACK_KINDS.forEach((kind) => {
       if (!data && node.data.items[kind]) data = node.data.items[kind];
     });
-    console.log(data);
-  } else data = node.data.items[node.data.kind];
+  }
 
-  switch (data.kind) {
+  switch (data?.kind) {
     case OutputSummaryKind.image:
       outputComponent = <img src={`${data.path}`} />;
       break;
@@ -40,9 +39,7 @@ export const Output = (node: GenericNode) => {
       outputComponent = (
         <MaybeLongContent
           {...data}
-          render={(content: string) => (
-            <div style={{ backgroundColor: 'salmon' }}>{content}</div>
-          )}
+          render={(content: string) => <div className="bg-red-500">{content}</div>}
         />
       );
       break;
@@ -69,26 +66,21 @@ export const Output = (node: GenericNode) => {
       );
       break;
     default:
-      outputComponent = (
-        <div>
-          [MISSING OUTPUT] {data.kind} | {data.content_type}
-        </div>
-      );
+      console.log(node.data);
+      console.log(`Missing output: ${node.data.kind}`);
   }
 
   return (
     <figure
       key={node.key}
-      id={node.label || undefined}
-      style={{ textAlign: node.align || 'left' }}
+      id={node.identifier || undefined}
+      className={classNames({
+        'text-left': !node.align || node.align === 'left',
+        'text-center': node.align === 'center',
+        'text-right': node.align === 'right',
+      })}
     >
-      <div
-        style={{
-          position: 'relative',
-          display: 'block',
-          width: `${node.width || 100}%`,
-        }}
-      >
+      <div className="relative block" style={{ width: `${node.width || 100}%` }}>
         {outputComponent}
       </div>
     </figure>
