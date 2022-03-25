@@ -28,7 +28,7 @@
     "build": "tsc",
     "build:watch": "yarn watch",
     "compile": "npm run clean && tsc -p .",
-    "lint": "eslint \"src/**/*.ts\" -c ../../.eslintrc.js",
+    "lint": "eslint \"src/**/*.ts\" -c ./.eslintrc.js",
     "lint:format": "npx prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint:format:fix": "npx prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "watch": "tsc -w -p .",
