@@ -19,8 +19,8 @@ import { ConfigProvider } from './components/ConfigProvider';
 
 export const meta: MetaFunction = ({ data }) => {
   return getMetaTagsForSite({
-    title: data.config?.site?.name,
-    twitter: data.config?.site?.twitter,
+    title: data?.config?.site?.name,
+    twitter: data?.config?.site?.twitter,
   });
 };
 

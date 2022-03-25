@@ -1,14 +1,55 @@
 import { GenericNode, selectAll } from 'mystjs';
+import NodeCache from 'node-cache';
 import { URL } from 'url';
 import { PageLoader as Data, Config } from './types';
 
-const pathToID: Record<string, string> = {
-  localhost: 'f6b98123s',
-  'climasoma.curve.space': 'f6b98123s',
-  'test.curve.space': 'rq5taz4gz',
-};
+interface CdnRouter {
+  cdn?: string;
+}
 
-const cache: Record<string, Config> = {};
+declare global {
+  // Disable multiple caches when this file is rebuilt
+  // eslint-disable-next-line
+  var cdnRouterCache: NodeCache | undefined, configCache: NodeCache | undefined;
+}
+
+function getCdnRouterCache() {
+  if (global.cdnRouterCache) return global.cdnRouterCache;
+  console.log('Createing cdnRouterCache');
+  // The router should update every minute
+  global.cdnRouterCache = new NodeCache({ stdTTL: 60 });
+  return global.cdnRouterCache;
+}
+
+function getConfigCache() {
+  if (global.configCache) return global.configCache;
+  console.log('Createing configCache');
+  // The config can be long lived as it is static (0 == ∞)
+  global.configCache = new NodeCache({ stdTTL: 0 });
+  return global.configCache;
+}
+
+// const cdnRouterCache: Record<string, { cdn: string }> = {
+//   localhost: { cdn: 'f6b98123s' },
+//   'climasoma.curve.space': { cdn: 'f6b98123s' },
+//   'test.curve.space': { cdn: 'rq5taz4gz' },
+//   'docs.curve.space': { cdn: 'iYv0uCgaG' },
+//   'docs.curvenote.com': { cdn: 'iYv0uCgaG' },
+// };
+
+async function getCdnPath(hostname: string): Promise<string | undefined> {
+  const cached = getCdnRouterCache().get<CdnRouter>(hostname);
+  if (cached) return cached.cdn;
+  const response = await fetch(`https://api.curvenote.com/sites/router/${hostname}`);
+  if (response.status === 404) {
+    // Leave a blank record so we stop hitting the API!
+    getCdnRouterCache().set(hostname, { cdn: undefined });
+    return;
+  }
+  const data = (await response.json()) as CdnRouter;
+  getCdnRouterCache().set<CdnRouter>(hostname, data);
+  return data.cdn;
+}
 
 function withCDN(id: string, url?: string): string | undefined {
   if (!url) return url;
@@ -17,17 +58,17 @@ function withCDN(id: string, url?: string): string | undefined {
 
 export async function getConfig(request: Request): Promise<Config | undefined> {
   const url = new URL(request.url);
-  const id = pathToID[url.hostname];
-  if (cache[id]) {
-    // Load the data from an in memory cache.
-    return cache[id];
-  }
+  const id = await getCdnPath(url.hostname);
+  if (!id) return undefined;
+  const cached = getConfigCache().get<Config>(id);
+  // Load the data from an in memory cache.
+  if (cached) return cached;
   const response = await fetch(`https://cdn.curvenote.com/${id}/config.json`);
   if (response.status === 404) return undefined;
   const data = (await response.json()) as Config;
   data.site.id = id;
   data.site.logo = withCDN(id, data.site.logo);
-  cache[id] = data;
+  getConfigCache().set<Config>(id, data);
   return data;
 }
 

@@ -1,4 +1,5 @@
 {
+  "id": "",
   "site": {
     "name": "Curvenote",
     "sections": [{ "title": "Demo Content", "folder": "demo" }],
