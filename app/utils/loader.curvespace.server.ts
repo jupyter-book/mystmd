@@ -15,7 +15,7 @@ declare global {
 
 function getCdnRouterCache() {
   if (global.cdnRouterCache) return global.cdnRouterCache;
-  console.log('Createing cdnRouterCache');
+  console.log('Creating cdnRouterCache');
   // The router should update every minute
   global.cdnRouterCache = new NodeCache({ stdTTL: 60 });
   return global.cdnRouterCache;
@@ -23,7 +23,7 @@ function getCdnRouterCache() {
 
 function getConfigCache() {
   if (global.configCache) return global.configCache;
-  console.log('Createing configCache');
+  console.log('Creating configCache');
   // The config can be long lived as it is static (0 == ∞)
   global.configCache = new NodeCache({ stdTTL: 0 });
   return global.configCache;
@@ -53,7 +53,7 @@ async function getCdnPath(hostname: string): Promise<string | undefined> {
 
 function withCDN(id: string, url?: string): string | undefined {
   if (!url) return url;
-  return `https://cdn.curvenote.com/${id}/static${url}`;
+  return `https://cdn.curvenote.com/${id}/public${url}`;
 }
 
 export async function getConfig(request: Request): Promise<Config | undefined> {
