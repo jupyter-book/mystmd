@@ -89,5 +89,10 @@ export async function getData(
   images.forEach((node) => {
     node.url = withCDN(id, node.url);
   });
+  const outputs = selectAll('output', data.mdast) as GenericNode[];
+  outputs.forEach((node) => {
+    if (!node.data.path) return;
+    node.data.path = withCDN(id, node.data.path);
+  });
   return data;
 }
