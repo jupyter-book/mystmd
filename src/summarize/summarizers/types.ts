@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import StringDisplayDataSummarizer from './stringDisplayData';
 import ErrorSummarizer from './error';
 import ImageSummarizer from './image';
