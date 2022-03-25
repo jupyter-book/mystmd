@@ -53,7 +53,9 @@ export const Output = (node: GenericNode) => {
       outputComponent = (
         <MaybeLongContent
           {...data}
-          render={(content: string) => <pre>{content}</pre>}
+          render={(content: string) => (
+            <pre className="max-h-[20em] overflow-scroll">{content}</pre>
+          )}
         />
       );
       break;

@@ -15,7 +15,7 @@ export function useLongContent(
   content: string,
   url?: string,
 ): { data?: LongContent; error?: Error } {
-  if (typeof window === 'undefined') return {};
+  if (typeof window === 'undefined') return url ? {} : { data: { content } };
   const { data, error } = useSWR<LongContent>(url || null, fetcher);
   if (!url) return { data: { content } };
   return { data, error };

@@ -51,7 +51,10 @@ export function CodeBlock(props: Props) {
 export const codeRenderers: NodeTypes = {
   code(node: GenericNode) {
     return (
-      <div key={node.key} className="not-prose rounded shadow-md dark:shadow-2xl my-8">
+      <div
+        key={node.key}
+        className="not-prose rounded shadow-md dark:shadow-2xl my-8 text-sm border border-l-4 border-l-blue-400 border-gray-200 dark:border-l-blue-400 dark:border-gray-800 overflow-scroll"
+      >
         <CodeBlock
           lang={node.lang}
           emphasizeLines={node.emphasizeLines}
