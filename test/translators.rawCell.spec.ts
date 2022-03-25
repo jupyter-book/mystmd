@@ -1,7 +1,7 @@
 import { CELL_TYPE, RawCell, KINDS, TARGET, Blocks, ContentFormatTypes } from '@curvenote/blocks';
 import { fromJupyter, toJupyter } from '../src/translators/rawCell';
 
-describe('Raw block translators', () => {
+describe('translators.rawCell', () => {
   let jupyterRawCell: RawCell;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let iooxaContentBlock: Partial<Blocks.Content>;

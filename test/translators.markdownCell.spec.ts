@@ -8,7 +8,7 @@ import {
 } from '@curvenote/blocks';
 import { fromJupyter, toJupyter } from '../src/translators/markdownCell';
 
-describe('Markdown block translators', () => {
+describe('translators.markdownCell', () => {
   let jupyterMarkdownCell: MarkdownCell;
   let ourMarkdownContent: Partial<Blocks.Content>;
 

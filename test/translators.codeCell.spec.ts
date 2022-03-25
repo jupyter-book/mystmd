@@ -10,7 +10,7 @@ import {
 } from '@curvenote/blocks';
 import { toJupyter, fromJupyter } from '../src/translators/codeCell';
 
-describe('Code Block Translators', () => {
+describe('translators.codeCell', () => {
   let iooxaId: VersionId;
   let iooxaCodeBlock: Blocks.Code;
   let outputVersionId: VersionId;

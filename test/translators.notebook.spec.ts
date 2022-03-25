@@ -1,7 +1,7 @@
 import { JsonObject } from '@curvenote/blocks';
 import { notebookFromJupyter } from '../src';
 
-describe('Notebook Translation', () => {
+describe('translators.notebook', () => {
   describe('fromJupyter', () => {
     it('should produce a iooxa notebook container object', () => {
       const json = {

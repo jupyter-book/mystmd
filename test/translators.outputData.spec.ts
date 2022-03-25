@@ -1,7 +1,7 @@
 import { KINDS, TARGET, OutputFormatTypes, Blocks, CellOutput } from '@curvenote/blocks';
 import { fromJupyter } from '../src/translators/outputData';
 
-describe('Output Data translators', () => {
+describe('translators.outputData', () => {
   describe('fromJupyter', () => {
     let exampleOutputs: CellOutput[];
     beforeAll(() => {
