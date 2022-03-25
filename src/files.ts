@@ -31,7 +31,7 @@ export class StubFileObject implements IFileObject {
   }
 
   get id() {
-    return '';
+    return this.path;
   }
 
   writeString(data: string, contentType: string): Promise<void> {
