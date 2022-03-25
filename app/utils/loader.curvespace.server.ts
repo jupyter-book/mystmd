@@ -29,14 +29,6 @@ function getConfigCache() {
   return global.configCache;
 }
 
-// const cdnRouterCache: Record<string, { cdn: string }> = {
-//   localhost: { cdn: 'f6b98123s' },
-//   'climasoma.curve.space': { cdn: 'f6b98123s' },
-//   'test.curve.space': { cdn: 'rq5taz4gz' },
-//   'docs.curve.space': { cdn: 'iYv0uCgaG' },
-//   'docs.curvenote.com': { cdn: 'iYv0uCgaG' },
-// };
-
 async function getCdnPath(hostname: string): Promise<string | undefined> {
   const cached = getCdnRouterCache().get<CdnRouter>(hostname);
   if (cached) return cached.cdn;
@@ -91,8 +83,11 @@ export async function getData(
   });
   const outputs = selectAll('output', data.mdast) as GenericNode[];
   outputs.forEach((node) => {
-    if (!node.data.path) return;
-    node.data.path = withCDN(id, node.data.path);
+    const items = (node.data?.items ?? {}) as Record<string, { path?: string }>;
+    Object.entries(items).forEach(([, data]) => {
+      if (!data?.path) return;
+      data.path = withCDN(id, data.path);
+    });
   });
   return data;
 }
