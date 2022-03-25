@@ -19,7 +19,7 @@
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
-    "project": ["./tsconfig.json"]
+    "project": ["./eslint.tsconfig.json"]
   },
   "plugins": ["@typescript-eslint", "no-skip-tests", "no-only-tests"],
   "rules": {
