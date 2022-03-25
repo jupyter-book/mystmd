@@ -41,10 +41,10 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "@curvenote/blocks": "1.3.2"
+    "@curvenote/blocks": "^1.3.3"
   },
   "devDependencies": {
-    "@curvenote/blocks": "1.3.2",
+    "@curvenote/blocks": "^1.3.3",
     "@types/jest": "^26.0.23",
     "@types/uuid": "^8.3.4",
     "eslint": "6.8.0",
