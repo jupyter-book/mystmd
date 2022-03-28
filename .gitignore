@@ -11,3 +11,4 @@ app/styles/app.css
 
 .yalc/*
 yalc.lock
+yarn.lock
