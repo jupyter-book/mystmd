@@ -1,13 +1,15 @@
 import React from 'react';
 import classNames from 'classnames';
 import { NavLink, useParams, useLocation } from 'remix';
-import { getFolderPages, Heading } from '~/utils';
+import { getFolderPages, Heading, Config } from '~/utils';
 import { useConfig } from '../ConfigProvider';
 import { CreatedInCurvenote } from '../curvenote';
 import { useNavOpen } from '../UiStateProvider';
 
 type Props = {
+  folder?: string;
   headings: Heading[];
+  sections?: Config['site']['sections'];
 };
 
 const HeadingLink = ({
@@ -47,34 +49,54 @@ const HeadingLink = ({
   );
 };
 
-const Headings = ({ headings }: Props) => (
-  <ul className="text-slate-500 dark:text-slate-300 leading-6">
-    {headings.map((heading, index) => (
-      <li
-        key={heading.slug || index}
-        className={classNames('p-1', {
-          'text-slate-900 font-semibold mb-4 text-lg leading-6 dark:text-slate-100':
-            heading.level === 'index',
-          'pl-4': heading.level === 2,
-          'pl-6': heading.level === 3,
-          'pl-8': heading.level === 4,
-          'pl-10': heading.level === 5,
-          'pl-12': heading.level === 6,
-        })}
-      >
-        {heading.path ? (
-          <HeadingLink path={heading.path} isIndex={heading.level === 'index'}>
-            {heading.title}
-          </HeadingLink>
-        ) : (
-          <h5 className="text-slate-900 font-semibold my-2 text-md leading-6 dark:text-slate-100">
-            {heading.title}
-          </h5>
-        )}
-      </li>
-    ))}
-  </ul>
-);
+const HEADING_CLASSES =
+  'text-slate-900 font-semibold mb-4 text-lg leading-6 dark:text-slate-100';
+const Headings = ({ folder, headings, sections }: Props) => {
+  const secs = sections?.filter(({ folder: f }) => f !== folder) ?? [];
+  return (
+    <>
+      {secs.length > 0 && (
+        <div className="block md:hidden">
+          <ul className="text-slate-500 dark:text-slate-300 leading-6">
+            {secs.map((sec) => (
+              <li key={sec.folder} className={classNames('p-1', HEADING_CLASSES)}>
+                <HeadingLink path={`/${sec.folder}`} isIndex>
+                  {sec.title}
+                </HeadingLink>
+              </li>
+            ))}
+          </ul>
+          <hr className="py-3" />
+        </div>
+      )}
+      <ul className="text-slate-500 dark:text-slate-300 leading-6">
+        {headings.map((heading, index) => (
+          <li
+            key={heading.slug || index}
+            className={classNames('p-1', {
+              [HEADING_CLASSES]: heading.level === 'index',
+              'pl-4': heading.level === 2,
+              'pl-6': heading.level === 3,
+              'pl-8': heading.level === 4,
+              'pl-10': heading.level === 5,
+              'pl-12': heading.level === 6,
+            })}
+          >
+            {heading.path ? (
+              <HeadingLink path={heading.path} isIndex={heading.level === 'index'}>
+                {heading.title}
+              </HeadingLink>
+            ) : (
+              <h5 className="text-slate-900 font-semibold my-2 text-md leading-6 dark:text-slate-100">
+                {heading.title}
+              </h5>
+            )}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
 
 export const LeftNav = () => {
   const [open] = useNavOpen();
@@ -97,7 +119,11 @@ export const LeftNav = () => {
         aria-label="Navigation"
         className="flex-grow pt-10 pb-3 px-8 overflow-y-auto"
       >
-        <Headings headings={headings} />
+        <Headings
+          folder={folderName}
+          headings={headings}
+          sections={config?.site.sections}
+        />
       </nav>
       <div className="flex-none py-4">
         <CreatedInCurvenote />
