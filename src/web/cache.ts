@@ -8,16 +8,16 @@ import {
   summarizeOutputs,
   TranslatedBlockPair,
 } from '@curvenote/nbtx';
+import { IOutput } from '@jupyterlab/nbformat';
 import { nanoid } from 'nanoid';
 import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
-import { selectAll } from 'mystjs';
 import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
 import { IDocumentCache, Options, SiteConfig } from './types';
 import { parseMyst, publicPath, RendererData, serverPath, transformMdast } from './utils';
+import { GenericNode, selectAll } from 'mystjs';
 import { LinkLookup, transformLinks } from './transforms';
 import { copyImages, readConfig } from './webConfig';
-
 import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
 
@@ -43,6 +43,8 @@ function createOutputDirective(): { myst: string; id: string } {
   return { myst: `\`\`\`{output}\n:id: ${id}\n\`\`\``, id };
 }
 
+type ITruncatedOutput = { path: string } & IOutput;
+
 async function processNotebook(
   cache: IDocumentCache,
   filename: { from: string; to: string },
@@ -60,7 +62,7 @@ async function processNotebook(
     useHash: true,
   });
 
-  const outputMap: Record<string, OutputSummaries> = {};
+  const outputMap: Record<string, OutputSummaries[]> = {};
 
   const items = (
     await children?.reduce(async (P, item: TranslatedBlockPair) => {
@@ -82,13 +84,10 @@ async function processNotebook(
             '',
           );
 
-          const mystSummaries = summaries.map((summary) => {
-            const { myst, id } = createOutputDirective();
-            outputMap[id] = summary;
-            return myst;
-          });
+          const { myst, id } = createOutputDirective();
+          outputMap[id] = summaries;
 
-          return acc.concat(code).concat(mystSummaries);
+          return acc.concat(code).concat([myst]);
         }
         return acc.concat(code);
       }
@@ -99,7 +98,7 @@ async function processNotebook(
   const mdast = parseMyst(items);
 
   // TODO: typing
-  selectAll('output', mdast).forEach((output: any) => {
+  selectAll('output', mdast).forEach((output: GenericNode) => {
     output.data = outputMap[output.id];
   });
 

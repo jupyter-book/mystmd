@@ -1,3 +1,5 @@
+import { OutputSummaryEntry } from '@curvenote/blocks';
+import { OutputSummaries } from '@curvenote/nbtx';
 import { GenericNode, selectAll } from 'mystjs';
 
 import { Root } from './types';
@@ -5,8 +7,14 @@ import { Root } from './types';
 export function transformOutputs(mdast: Root) {
   const outputs = selectAll('output', mdast) as GenericNode[];
   outputs.forEach((output) => {
-    Object.values(output.data.items as { path?: string }[]).forEach((item) => {
-      if (item.path) item.path = `/${item.path}`;
+    // Jupyter outputs are an array of multiple outputs, so here we have
+    // an array of output summaries
+    // eslint-disable-next-line prefer-destructuring
+    const data: OutputSummaries[] = output.data;
+    data.forEach((summary) => {
+      Object.values(summary.items ?? {}).forEach((entry: OutputSummaryEntry) => {
+        if (entry?.path) entry.path = `/${entry?.path}`;
+      });
     });
   });
 }

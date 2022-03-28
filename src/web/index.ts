@@ -25,7 +25,10 @@ export async function clone(session: ISession, opts: Options) {
     session.log.warn(`👷‍♀️ Warning, using a branch: ${branch}`);
   }
   await makeExecutable(
-    `git clone --branch ${branch} git@github.com:curvenote/curvespace.git ${serverPath(opts)}`,
+    // `git clone git@github.com:curvenote/curvespace.git ${serverPath(opts)}`,
+    `git clone --branch feat/web-outputs git@github.com:curvenote/curvespace.git ${serverPath(
+      opts,
+    )}`,
     session.log,
   )();
   // TODO: log out version!
