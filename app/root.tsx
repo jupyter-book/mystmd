@@ -11,11 +11,13 @@ import {
 } from 'remix';
 import type { MetaFunction, LinksFunction } from 'remix';
 import React from 'react';
-import { Theme, ThemeProvider, TopNav } from '~/components';
+import { Theme, ThemeProvider } from '~/components';
+import { Navigation } from './components/Navigation';
 import { getThemeSession } from '~/utils/theme.server';
 import tailwind from './styles/app.css';
 import { getMetaTagsForSite, getConfig, Config } from './utils';
 import { ConfigProvider } from './components/ConfigProvider';
+import { UiStateProvider } from './components/UiStateProvider';
 
 export const meta: MetaFunction = ({ data }) => {
   return getMetaTagsForSite({
@@ -63,12 +65,14 @@ function Document({
         <Links />
       </head>
       <body className="m-0 transition-colors duration-500 bg-white dark:bg-stone-900">
-        <ThemeProvider theme={theme}>
-          <ConfigProvider config={config}>
-            <TopNav />
-            {children}
-          </ConfigProvider>
-        </ThemeProvider>
+        <UiStateProvider>
+          <ThemeProvider theme={theme}>
+            <ConfigProvider config={config}>
+              <Navigation />
+              {children}
+            </ConfigProvider>
+          </ThemeProvider>
+        </UiStateProvider>
         <ScrollRestoration />
         <Scripts />
         {process.env.NODE_ENV === 'development' && <LiveReload />}

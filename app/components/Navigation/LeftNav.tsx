@@ -1,25 +1,27 @@
-import classNames from 'classnames';
 import React from 'react';
+import classNames from 'classnames';
 import { NavLink, useParams, useLocation } from 'remix';
 import { getFolderPages, Heading } from '~/utils';
-import { useConfig } from './ConfigProvider';
-import { CreatedInCurvenote } from './curvenote';
+import { useConfig } from '../ConfigProvider';
+import { CreatedInCurvenote } from '../curvenote';
+import { useNavOpen } from '../UiStateProvider';
 
 type Props = {
   headings: Heading[];
 };
 
 const HeadingLink = ({
-  slug,
+  path,
   isIndex,
   children,
 }: {
-  slug: string;
+  path: string;
   isIndex?: boolean;
   children: React.ReactNode;
 }) => {
   const { pathname } = useLocation();
-  const exact = pathname === slug;
+  const exact = pathname === path;
+  const [, setOpen] = useNavOpen();
   return (
     <NavLink
       prefetch="intent"
@@ -33,8 +35,12 @@ const HeadingLink = ({
           'border-blue-500': isIndex && exact,
         })
       }
-      to={slug}
-      suppressHydrationWarning
+      to={path}
+      suppressHydrationWarning // The pathname is not defined on the server always.
+      onClick={() => {
+        // Close the nav panel if it is open
+        setOpen(false);
+      }}
     >
       {children}
     </NavLink>
@@ -56,8 +62,8 @@ const Headings = ({ headings }: Props) => (
           'pl-12': heading.level === 6,
         })}
       >
-        {heading.slug ? (
-          <HeadingLink slug={heading.slug} isIndex={heading.level === 'index'}>
+        {heading.path ? (
+          <HeadingLink path={heading.path} isIndex={heading.level === 'index'}>
             {heading.title}
           </HeadingLink>
         ) : (
@@ -70,13 +76,23 @@ const Headings = ({ headings }: Props) => (
   </ul>
 );
 
-export const Navigation = () => {
+export const LeftNav = () => {
+  const [open] = useNavOpen();
   const config = useConfig();
   const { folder: folderName } = useParams();
   const headings = getFolderPages(config, folderName);
   if (!headings) return null;
   return (
-    <div className="hidden xl:flex flex-col fixed z-20 top-[60px] bottom-0 left-[max(0px,calc(50%-45rem))] w-[19.5rem] border-r border-stone-200 dark:border-stone-700">
+    <div
+      className={classNames(
+        'flex-col fixed z-20 top-[60px] bottom-0 left-[max(0px,calc(50%-45rem))] w-[19.5rem] border-r border-stone-200 dark:border-stone-700',
+        {
+          flex: open,
+          'bg-white dark:bg-stone-900': open, // just apply when open, so that theme can transition
+          'hidden xl:flex': !open,
+        },
+      )}
+    >
       <nav
         aria-label="Navigation"
         className="flex-grow pt-10 pb-3 px-8 overflow-y-auto"

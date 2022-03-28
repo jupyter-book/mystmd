@@ -1,5 +1,5 @@
 import { LinksFunction, Outlet, useCatch } from 'remix';
-import { TableOfContents, Navigation } from '~/components';
+import { TableOfContents } from '~/components';
 import extraStyles from '~/styles/content.css';
 
 export const links: LinksFunction = () => {
@@ -9,7 +9,6 @@ export const links: LinksFunction = () => {
 export default function Folder() {
   return (
     <article>
-      <Navigation />
       <main className="mt-[80px] prose prose-stone dark:prose-invert mx-auto p-3 break-words">
         <Outlet />
       </main>

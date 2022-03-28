@@ -9,7 +9,7 @@ const CACHE: {
   data: {},
 };
 
-export async function getConfig(): Promise<Config> {
+export async function getConfig(request: Request): Promise<Config> {
   return config;
 }
 

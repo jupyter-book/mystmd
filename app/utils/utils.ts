@@ -26,9 +26,13 @@ export function getFolderPages(
     {
       title: folder.title,
       slug: opts.useIndexSlug ? folder.index : `/${folderName}`,
+      path: `/${folderName}`,
       level: 'index',
     },
-    ...folder.pages,
+    ...folder.pages.map((p) => {
+      if (!p.slug) return p;
+      return { ...p, path: `/${folderName}/${p.slug}` };
+    }),
   ];
   if (opts.addGroups) {
     let lastTitle = folder.title;
