@@ -21,6 +21,15 @@ module.exports = {
           },
         },
       }),
+      keyframes: {
+        load: {
+          '0%': { width: '0%' },
+          '100%': { width: '50%' },
+        },
+      },
+      animation: {
+        load: 'load 2.5s ease-out',
+      },
     },
   },
   plugins: [require('@tailwindcss/typography')],
