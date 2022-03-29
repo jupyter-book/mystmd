@@ -8,7 +8,7 @@ export function FootnoteDefinition({ identifier }: { identifier: string }) {
   const node = references?.footnotes[identifier];
   if (!node) return null;
   const children = useParse(node as GenericParent);
-  return <div>{children}</div>;
+  return <>{children}</>;
 }
 
 export const FootnoteReference: Component = (node) => {
@@ -16,8 +16,9 @@ export const FootnoteReference: Component = (node) => {
     <ClickPopover
       key={node.key}
       card={<FootnoteDefinition identifier={node.identifier as string} />}
+      as="span"
     >
-      [{node.identifier}]
+      <sup>[{node.identifier}]</sup>
     </ClickPopover>
   );
 };

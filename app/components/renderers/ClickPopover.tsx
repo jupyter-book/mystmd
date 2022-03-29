@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { ElementType, useState } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { usePopper } from 'react-popper';
 
 export function ClickPopover({
   children,
   card,
+  as = 'cite',
 }: {
   children: React.ReactNode;
   card: React.ReactNode;
+  as?: ElementType;
 }) {
   const [referenceElement, setReferenceElement] = useState<HTMLSpanElement | null>(
     null,
@@ -18,7 +20,7 @@ export function ClickPopover({
     <Popover as="span">
       <Popover.Button
         ref={setReferenceElement}
-        as="cite"
+        as={as}
         className="cursor-zoom-in border-b-2 border-dotted"
       >
         {children}
