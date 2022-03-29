@@ -521,14 +521,6 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
   // Remove all redundant nodes marked for removal
   remove(tree, '_remove');
 
-  // visit(tree, 'role', (node: GenericNode) => {
-  //   if (node.children) node.type = '_lift';
-  // });
-
-  // visit(tree, 'directive', (node: GenericNode) => {
-  //   if (node.children) node.type = '_lift';
-  // });
-
   // Lift up all nodes that are named "lift"
   tree = map(tree, (node: GenericNode) => {
     const children = node.children
