@@ -13,7 +13,7 @@ const FooterLink = ({
   return (
     <Link
       prefetch="intent"
-      className="group flex-1 p-4 block border font-normal hover:border-blue-500 dark:hover:border-blue-400 no-underline hover:text-blue-500 dark:hover:text-blue-400 text-gray-600 dark:text-gray-100 border-gray-200 dark:border-gray-500 rounded shadow-sm hover:shadow-lg dark:shadow-gray-800"
+      className="group flex-1 p-4 block border font-normal hover:border-blue-500 dark:hover:border-blue-400 no-underline hover:text-blue-500 dark:hover:text-blue-400 text-gray-600 dark:text-gray-100 border-gray-200 dark:border-gray-500 rounded shadow-sm hover:shadow-lg dark:shadow-neutral-700"
       to={url}
     >
       <div className="flex align-middle">

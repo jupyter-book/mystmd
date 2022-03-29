@@ -3,11 +3,11 @@ module.exports = {
   content: ['./app/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      // See https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
       typography: (theme) => ({
         DEFAULT: {
           css: {
             code: {
-              color: theme('colors.pink[500]'),
               fontWeight: '400',
             },
             'code::before': {
@@ -18,6 +18,16 @@ module.exports = {
             },
             'blockquote p:first-of-type::before': { content: 'none' },
             'blockquote p:first-of-type::after': { content: 'none' },
+          },
+        },
+        invert: {
+          css: {
+            '--tw-prose-code': theme('colors.pink[500]'),
+          },
+        },
+        stone: {
+          css: {
+            '--tw-prose-code': theme('colors.pink[600]'),
           },
         },
       }),

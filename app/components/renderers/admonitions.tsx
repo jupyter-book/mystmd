@@ -56,7 +56,7 @@ export const Admonition: Component = (node, children) => {
     <aside
       key={node.key}
       className={classNames(
-        'admonition rounded-md my-4 border-l-4 shadow-md dark:shadow-2xl overflow-hidden',
+        'admonition rounded-md my-4 border-l-4 shadow-md dark:shadow-2xl dark:shadow-neutral-900 overflow-hidden',
         {
           'border-blue-500': isAdmonition || isNote || isImportant,
           'border-amber-600': isAttention || isCaution || isWarning,

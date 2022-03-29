@@ -66,7 +66,7 @@
                 "label": "1",
                 "key": "quytAE3YTv"
               },
-              { "type": "text", "value": " a", "key": "iqAENMaFmc" }
+              { "type": "text", "value": ".", "key": "iqAENMaFmc" }
             ],
             "key": "E19gWSGoHm"
           },
@@ -633,6 +633,29 @@
             "key": "imbUrpJqYu"
           },
           {
+            "type": "heading",
+            "depth": 2,
+            "children": [
+              { "type": "text", "value": "Other examples:", "key": "FGZzsfciCoWs" }
+            ],
+            "key": "jAodsf58A"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Can have ",
+                "key": "dBfsVEHhvE"
+              },
+              {
+                "type": "inlineCode",
+                "value": "code",
+                "key": "dBfsxVEhvE"
+              }
+            ]
+          },
+          {
             "type": "code",
             "lang": "python",
             "emphasizeLines": [2],
@@ -665,7 +688,10 @@
           {
             "type": "paragraph",
             "children": [
-              { "type": "text", "value": "I mean, if that actually works?!" }
+              {
+                "type": "text",
+                "value": "This is a simple multiplication of cost times visitors!"
+              }
             ]
           }
         ]
