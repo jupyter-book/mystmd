@@ -21,7 +21,6 @@ import { getDate, getTags } from '../helpers';
 
 export * from './types';
 export { NotebookBlockMetadata } from './notebook';
-export { OutputSummaryKind, OutputSummary, OutputSummaryEntry } from './output';
 export { srcIdToJson } from './utils';
 export { createAuthor } from './author';
 export { RIS } from './reference';

@@ -3,7 +3,7 @@ import { VersionId } from './id';
 
 export type CellId = { notebook: string; cell: string };
 
-export enum CellOutputMimeTypes {
+export enum KnownCellOutputMimeTypes {
   TextPlain = 'text/plain',
   TextHtml = 'text/html',
   TextLatex = 'text/latex',
@@ -25,8 +25,49 @@ export enum CellOutputMimeTypes {
   AppBokehExec = 'application/vnd.bokehjs_exec.v0+json',
 }
 
+export type IooxaMetadata = {
+  id: VersionId;
+  outputId?: VersionId;
+};
+
+export enum OutputSummaryKind {
+  'stream' = 'stream',
+  'text' = 'text',
+  'error' = 'error',
+  'image' = 'image',
+  'svg' = 'svg',
+  'html' = 'html',
+  'latex' = 'latex',
+  'json' = 'json',
+  'javascript' = 'javascript',
+  'plotly' = 'plotly',
+  'bokeh' = 'bokeh',
+  'ipywidgets' = 'ipywidgets',
+  'unknown' = 'unknown',
+}
+
+export interface OutputSummaryEntry {
+  kind: OutputSummaryKind;
+  content_type: KnownCellOutputMimeTypes;
+  content?: string;
+  link?: string;
+  path?: string;
+  alternate?: Partial<Record<OutputSummaryKind, OutputSummaryEntry>>;
+}
+
+export interface OutputSummary {
+  kind: OutputSummaryKind; // We may choose to delete this later, and decide at format time.
+  items: Partial<Record<OutputSummaryKind, OutputSummaryEntry>>;
+}
+
+/**
+ *
+ * The following are re-declaring the types from the @jupyterlab/nbformat package.
+ * Should we alias their types? or use the directly?
+ *
+ */
 export type OutputDataValues = string | string[] | JsonObject;
-export type OutputData = Partial<Record<CellOutputMimeTypes, OutputDataValues>>;
+export type OutputData = Partial<Record<KnownCellOutputMimeTypes, OutputDataValues>>;
 
 export enum CellOutputType {
   Stream = 'stream',
@@ -94,11 +135,6 @@ export type JupyterCellMetadata = {
   scrolled?: boolean | string;
   iooxa?: IooxaMetadata;
   [index: string]: any;
-};
-
-export type IooxaMetadata = {
-  id: VersionId;
-  outputId?: VersionId;
 };
 
 export enum CELL_TYPE {

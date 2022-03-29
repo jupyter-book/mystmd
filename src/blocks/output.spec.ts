@@ -1,17 +1,17 @@
 import { fromDTO, outputSummaryFromDTO, OutputSummaryKind } from './output';
-import { CellOutputMimeTypes, TARGET } from './types';
+import { KnownCellOutputMimeTypes, TARGET } from './types';
 
 describe('blocks.output', () => {
   test('outputSummaryFromDTO', () => {
     const json = {
       kind: OutputSummaryKind.json,
-      content_type: CellOutputMimeTypes.AppJson,
+      content_type: KnownCellOutputMimeTypes.AppJson,
       content: 'abc...',
       link: 'https://iooxa.com',
       alternate: {
         [OutputSummaryKind.text]: {
           kind: OutputSummaryKind.text,
-          content_type: CellOutputMimeTypes.TextPlain,
+          content_type: KnownCellOutputMimeTypes.TextPlain,
           content: 'abc...',
           link: 'https://iooxa.com',
         },
@@ -23,7 +23,7 @@ describe('blocks.output', () => {
   test('outputSummaryFromDTO missing alternate', () => {
     const json = {
       kind: OutputSummaryKind.json,
-      content_type: CellOutputMimeTypes.AppJson,
+      content_type: KnownCellOutputMimeTypes.AppJson,
       content: 'abc...',
       link: 'https://iooxa.com',
     };
