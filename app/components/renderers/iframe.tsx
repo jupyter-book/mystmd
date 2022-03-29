@@ -12,7 +12,7 @@ export const IFrame = (node: GenericNode) => {
           position: 'relative',
           display: 'inline-block',
           paddingBottom: '60%',
-          width: `${node.width || 70}%`,
+          width: `min(max(${node.width || 70}%, 500px), 100%)`,
         }}
       >
         <iframe
