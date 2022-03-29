@@ -20,6 +20,7 @@ const image: Handler = (h, node) =>
     width: node.width,
   });
 const caption: Handler = (h, node) => h(node, 'figcaption', all(h, node));
+const legend: Handler = (h, node) => h(node, 'div', { class: 'legend' }, all(h, node));
 const container: Handler = (h, node) =>
   h(
     node,
@@ -75,25 +76,35 @@ const definitionTerm: Handler = (h, node) => h(node, 'dt', all(h, node));
 const definitionDescription: Handler = (h, node) => h(node, 'dd', all(h, node));
 
 const role: Handler = (h, node) => {
-  return h(node, 'span', { class: 'role unhandled' }, [
-    h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
-    h(node, 'code', {}, [u('text', node.value)]),
-  ]);
+  const children = [h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)])];
+  if (node.value) {
+    children.push(h(node, 'code', {}, [u('text', node.value)]));
+  }
+  return h(node, 'span', { class: 'role unhandled' }, children);
 };
 
 const directive: Handler = (h, node) => {
-  let directiveElements: ElementContent[] = [
+  const directiveHeader: ElementContent[] = [
     h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
   ];
   if (node.args) {
-    directiveElements = directiveElements.concat([
-      u('text', ' '),
-      h(node, 'code', { class: 'args' }, [u('text', node.args)]),
-    ]);
+    directiveHeader.push(h(node, 'code', { class: 'args' }, [u('text', node.args)]));
   }
+  const directiveBody: ElementContent[] = [];
+  if (node.options) {
+    const optionsString = Object.keys(node.options)
+      .map((k) => `:${k}: ${node.options[k]}`)
+      .join('\n');
+    directiveBody.push(
+      h(node, 'pre', [
+        h(node, 'code', { class: 'options' }, [u('text', optionsString)]),
+      ]),
+    );
+  }
+  directiveBody.push(h(node, 'pre', [h(node, 'code', [u('text', node.value)])]));
   return h(node, 'div', { class: 'directive unhandled' }, [
-    h(node, 'p', {}, directiveElements),
-    h(node, 'pre', [h(node, 'code', [u('text', node.value)])]),
+    h(node, 'p', {}, directiveHeader),
+    ...directiveBody,
   ]);
 };
 
@@ -105,7 +116,7 @@ const comment: Handler = (h, node) => u('comment', node.value);
 const heading: Handler = (h, node) =>
   h(node, `h${node.depth}`, { id: node.identifier || undefined }, all(h, node));
 
-const contentReference: Handler = (h, node) => {
+const crossReference: Handler = (h, node) => {
   if (node.resolved) {
     return h(
       node,
@@ -152,6 +163,7 @@ export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Roo
       image,
       caption,
       captionNumber,
+      legend,
       abbreviation,
       subscript,
       superscript,
@@ -165,7 +177,7 @@ export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Roo
       block,
       comment,
       heading,
-      contentReference,
+      crossReference,
       code,
       table,
       ...opts?.handlers,
