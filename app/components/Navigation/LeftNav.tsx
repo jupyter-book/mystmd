@@ -49,8 +49,7 @@ const HeadingLink = ({
   );
 };
 
-const HEADING_CLASSES =
-  'text-slate-900 font-semibold mb-4 text-lg leading-6 dark:text-slate-100';
+const HEADING_CLASSES = 'text-slate-900 text-lg leading-6 dark:text-slate-100';
 const Headings = ({ folder, headings, sections }: Props) => {
   const secs = sections ?? [{ folder, title: 'Unknown' }];
   return (
@@ -62,6 +61,7 @@ const Headings = ({ folder, headings, sections }: Props) => {
               key={heading.slug || index}
               className={classNames('p-1', {
                 [HEADING_CLASSES]: heading.level === 'index',
+                'font-semibold': heading.level === 'index',
                 'pl-4': heading.level === 2,
                 'pl-6': heading.level === 3,
                 'pl-8': heading.level === 4,
@@ -84,11 +84,9 @@ const Headings = ({ folder, headings, sections }: Props) => {
         return (
           <li
             key={sec.folder}
-            className={classNames('p-1 py-4 md:hidden', HEADING_CLASSES)}
+            className={classNames('p-1 my-2 md:hidden', HEADING_CLASSES)}
           >
-            <HeadingLink path={`/${sec.folder}`} isIndex>
-              {sec.title}
-            </HeadingLink>
+            <HeadingLink path={`/${sec.folder}`}>{sec.title}</HeadingLink>
           </li>
         );
       })}
