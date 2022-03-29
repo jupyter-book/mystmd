@@ -150,7 +150,7 @@ export const TableOfContents = () => {
     <nav
       aria-label="Table of Contents"
       suppressHydrationWarning
-      className="fixed not-prose z-20 top-[3.8125rem] bottom-0 right-[max(0px,calc(50%-45rem))] w-[18rem] py-10 px-8 overflow-y-auto hidden xl:block"
+      className="fixed not-prose z-20 top-[3.8125rem] bottom-0 right-[max(0px,calc(50%-45rem))] w-[14rem] lg:w-[18rem] py-10 px-4 lg:px-8 overflow-y-auto hidden md:block"
     >
       <h5 className="text-slate-900 mb-4 text-sm leading-6 dark:text-slate-100 uppercase">
         In this article

@@ -76,7 +76,7 @@ export const Output = (node: GenericNode) => {
     <figure
       key={node.key}
       id={node.identifier || undefined}
-      className={classNames({
+      className={classNames('max-w-full overflow-scroll', {
         'text-left': !node.align || node.align === 'left',
         'text-center': node.align === 'center',
         'text-right': node.align === 'right',

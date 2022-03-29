@@ -51,7 +51,7 @@ export const Admonition: Component = (node, children) => {
   const isTip = node.kind === AdmonitionKind.tip;
   const isWarning = node.kind === AdmonitionKind.warning;
 
-  const iconClass = 'h-8 w-8 inline-block pl-2 mr-2';
+  const iconClass = 'h-8 w-8 inline-block pl-2 mr-2 -translate-y-[1px]';
   return (
     <aside
       key={node.key}
@@ -67,7 +67,7 @@ export const Admonition: Component = (node, children) => {
     >
       <p
         key={node.key}
-        className={classNames('admonition-header m-0 text-lg', {
+        className={classNames('admonition-header m-0 text-lg font-medium', {
           'text-blue-600 bg-blue-50 dark:bg-slate-900':
             isAdmonition || isNote || isImportant,
           'text-amber-600 bg-amber-50 dark:bg-slate-900':
