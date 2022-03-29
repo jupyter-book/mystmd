@@ -1,8 +1,7 @@
 {
-  "name": "remix-app-template",
-  "private": true,
-  "description": "",
-  "license": "",
+  "name": "curvespace",
+  "description": "remix site for working with myst markdown",
+  "license": "MIT",
   "sideEffects": false,
   "scripts": {
     "clean": "rimraf api public/build .cache app/styles/app.css",
