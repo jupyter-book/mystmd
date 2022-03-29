@@ -52,49 +52,47 @@ const HeadingLink = ({
 const HEADING_CLASSES =
   'text-slate-900 font-semibold mb-4 text-lg leading-6 dark:text-slate-100';
 const Headings = ({ folder, headings, sections }: Props) => {
-  const secs = sections?.filter(({ folder: f }) => f !== folder) ?? [];
+  const secs = sections ?? [{ folder, title: 'Unknown' }];
   return (
-    <>
-      {secs.length > 0 && (
-        <div className="block md:hidden">
-          <ul className="text-slate-500 dark:text-slate-300 leading-6">
-            {secs.map((sec) => (
-              <li key={sec.folder} className={classNames('p-1', HEADING_CLASSES)}>
-                <HeadingLink path={`/${sec.folder}`} isIndex>
-                  {sec.title}
+    <ul className="text-slate-500 dark:text-slate-300 leading-6">
+      {secs.map((sec) => {
+        if (sec.folder === folder) {
+          return headings.map((heading, index) => (
+            <li
+              key={heading.slug || index}
+              className={classNames('p-1', {
+                [HEADING_CLASSES]: heading.level === 'index',
+                'pl-4': heading.level === 2,
+                'pl-6': heading.level === 3,
+                'pl-8': heading.level === 4,
+                'pl-10': heading.level === 5,
+                'pl-12': heading.level === 6,
+              })}
+            >
+              {heading.path ? (
+                <HeadingLink path={heading.path} isIndex={heading.level === 'index'}>
+                  {heading.title}
                 </HeadingLink>
-              </li>
-            ))}
-          </ul>
-          <hr className="py-3" />
-        </div>
-      )}
-      <ul className="text-slate-500 dark:text-slate-300 leading-6">
-        {headings.map((heading, index) => (
+              ) : (
+                <h5 className="text-slate-900 font-semibold my-2 text-md leading-6 dark:text-slate-100">
+                  {heading.title}
+                </h5>
+              )}
+            </li>
+          ));
+        }
+        return (
           <li
-            key={heading.slug || index}
-            className={classNames('p-1', {
-              [HEADING_CLASSES]: heading.level === 'index',
-              'pl-4': heading.level === 2,
-              'pl-6': heading.level === 3,
-              'pl-8': heading.level === 4,
-              'pl-10': heading.level === 5,
-              'pl-12': heading.level === 6,
-            })}
+            key={sec.folder}
+            className={classNames('p-1 py-4 md:hidden', HEADING_CLASSES)}
           >
-            {heading.path ? (
-              <HeadingLink path={heading.path} isIndex={heading.level === 'index'}>
-                {heading.title}
-              </HeadingLink>
-            ) : (
-              <h5 className="text-slate-900 font-semibold my-2 text-md leading-6 dark:text-slate-100">
-                {heading.title}
-              </h5>
-            )}
+            <HeadingLink path={`/${sec.folder}`} isIndex>
+              {sec.title}
+            </HeadingLink>
           </li>
-        ))}
-      </ul>
-    </>
+        );
+      })}
+    </ul>
   );
 };
 

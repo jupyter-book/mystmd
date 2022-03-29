@@ -18,14 +18,14 @@ export function getFolder(config?: Config, folderName?: string | number) {
 export function getFolderPages(
   config?: Config,
   folderName?: string,
-  opts = { useIndexSlug: false, addGroups: false },
+  opts = { addGroups: false },
 ): Heading[] | undefined {
   const folder = getFolder(config, folderName);
   if (!folder) return undefined;
   const headings: Heading[] = [
     {
       title: folder.title,
-      slug: opts.useIndexSlug ? folder.index : `/${folderName}`,
+      slug: folder.index,
       path: `/${folderName}`,
       level: 'index',
     },
@@ -47,17 +47,16 @@ export function getFolderPages(
 }
 
 function getHeadingLink(
-  folderName: string,
   currentSlug: string,
   headings?: Heading[],
 ): NavigationLink | undefined {
   if (!headings) return undefined;
   const linkIndex = headings.findIndex(({ slug }) => !!slug && slug !== currentSlug);
   const link = headings[linkIndex];
-  if (!link) return undefined;
+  if (!link?.path) return undefined;
   return {
     title: link.title,
-    url: `/${folderName}/${link.slug}`,
+    url: link.path,
     group: link.group,
   };
 }
@@ -69,13 +68,12 @@ export function getFooterLinks(
 ): FooterLinks {
   if (!folderName || !slug || !config) return {};
   const pages = getFolderPages(config, folderName, {
-    useIndexSlug: true,
     addGroups: true,
   });
   const found = pages?.findIndex(({ slug: s }) => s === slug) ?? -1;
   if (found === -1) return {};
-  const prev = getHeadingLink(folderName, slug, pages?.slice(0, found).reverse());
-  const next = getHeadingLink(folderName, slug, pages?.slice(found + 1));
+  const prev = getHeadingLink(slug, pages?.slice(0, found).reverse());
+  const next = getHeadingLink(slug, pages?.slice(found + 1));
   const footer: FooterLinks = {
     navigation: { prev, next },
   };
