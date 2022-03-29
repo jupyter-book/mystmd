@@ -15,20 +15,27 @@ cases:
                   kind: eq
                   identifier: matrix
                   label: '  matrix  '
-        - type: container
+        - type: directive
           kind: figure
-          identifier: matrix
-          label: matrix
-          numbered: true
+          args: fig.jpg
+          options:
+            name: matrix
+          value: Cool caption!
           children:
-            - type: image
-              url: fig.jpg
-            - type: caption
+            - type: container
+              kind: figure
+              identifier: matrix
+              label: matrix
+              numbered: true
               children:
-                - type: paragraph
+                - type: image
+                  url: fig.jpg
+                - type: caption
                   children:
-                    - type: text
-                      value: Cool caption!
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Cool caption!
     myst: |-
 
       see {eq}`  matrix  `
@@ -62,11 +69,17 @@ cases:
                   kind: eq
                   identifier: matrix
                   label: matrix
-        - type: math
-          identifier: matrix
-          label: matrix
-          value: |-
-            Ax = b
+        - type: directive
+          kind: math
+          options:
+            label: matrix
+          value: Ax = b
+          children:
+            - type: math
+              identifier: matrix
+              label: matrix
+              value: |-
+                Ax = b
     myst: |-
 
       see {eq}`matrix`
@@ -89,11 +102,17 @@ cases:
             - type: link
               url: matrix
               children: []
-        - type: math
-          identifier: matrix
-          label: matrix
-          value: |-
-            Ax = b
+        - type: directive
+          kind: math
+          options:
+            label: matrix
+          value: Ax = b
+          children:
+            - type: math
+              identifier: matrix
+              label: matrix
+              value: |-
+                Ax = b
     myst: |-
 
       see [](matrix)

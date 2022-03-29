@@ -8,12 +8,12 @@ cases:
           spread: false
           children:
             - type: listItem
-              spread: false
+              spread: true
               children:
                 - type: text
                   value: headings
             - type: listItem
-              spread: false
+              spread: true
               children:
                 - type: text
                   value: lists
@@ -22,17 +22,17 @@ cases:
                   spread: false
                   children:
                     - type: listItem
-                      spread: false
+                      spread: true
                       children:
                         - type: text
                           value: bullets
                     - type: listItem
-                      spread: false
+                      spread: true
                       children:
                         - type: text
                           value: numbers
             - type: listItem
-              spread: false
+              spread: true
               children:
                 - type: text
                   value: code blocks
@@ -74,17 +74,17 @@ cases:
           spread: false
           children:
             - type: listItem
-              spread: false
+              spread: true
               children:
                 - type: text
                   value: quotes
             - type: listItem
-              spread: false
+              spread: true
               children:
                 - type: text
                   value: breaks
             - type: listItem
-              spread: false
+              spread: true
               children:
                 - type: text
                   value: links

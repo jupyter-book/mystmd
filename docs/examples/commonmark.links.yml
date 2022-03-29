@@ -1,6 +1,5 @@
 cases:
   - title: CommonMark link reference
-    id: definition
     mdast:
       type: root
       children:
@@ -9,8 +8,6 @@ cases:
           label: 'Key'
           url: 'https://example.com'
           title: example title
-    myst: |-
-      [Key]: https://example.com 'example title'
   - title: CommonMark auto link
     mdast:
       type: root
@@ -53,13 +50,17 @@ cases:
     mdast:
       type: root
       children:
-        - type: image
-          url: src
-          alt: alt
-          title: title
+        - type: paragraph
+          children:
+            - type: image
+              url: src
+              alt: alt
+              title: title
     myst: |-
       ![alt](src "title")
     html: |-
-      <img src="src" alt="alt" title="title">
+      <p>
+        <img src="src" alt="alt" title="title">
+      </p>
     latex: |-
       \includegraphics{src}

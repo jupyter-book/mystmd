@@ -6,8 +6,6 @@ cases:
         - type: blockBreak
     myst: |-
       +++
-    html: |-
-      <div class="block"></div>
   - title: block break node - with metadata
     mdast:
       type: root
@@ -16,8 +14,6 @@ cases:
           meta: '{"meta": "data"}'
     myst: |-
       +++ {"meta": "data"}
-    html: |-
-      <div class="block" data-block="{&#x22;meta&#x22;: &#x22;data&#x22;}"></div>
   - title: block break node - with broken metadata
     mdast:
       type: root
@@ -26,8 +22,6 @@ cases:
           meta: '{"meta: data}'
     myst: |-
       +++ {"meta: data}
-    html: |-
-      <div class="block" data-block="{&#x22;meta: data}"></div>
   - title: block break nodes - dividing flow content
     id: blockbreak
     mdast:
@@ -44,11 +38,6 @@ cases:
       +++
       # Heading!
       +++
-    html: |-
-      <div class="block">
-        <h1>Heading!</h1>
-      </div>
-      <div class="block"></div>
   - title: block node - resolved from block breaks with flow content
     mdast:
       type: root
@@ -61,10 +50,7 @@ cases:
                 - type: text
                   value: Heading!
         - type: block
-    myst: |-
-      +++
-      # Heading!
-      +++
+          children: []
     html: |-
       <div class="block">
         <h1>Heading!</h1>

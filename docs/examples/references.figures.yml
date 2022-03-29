@@ -131,20 +131,27 @@ cases:
                   children:
                     - type: text
                       value: Figure %s%s%s, I said {number}
-        - type: container
+        - type: directive
           kind: figure
-          identifier: my-figure
-          label: my-figure
-          numbered: true
+          args: fig.jpg
+          options:
+            name: my-figure
+          value: Cool caption!
           children:
-            - type: image
-              url: fig.jpg
-            - type: caption
+            - type: container
+              kind: figure
+              identifier: my-figure
+              label: my-figure
+              numbered: true
               children:
-                - type: paragraph
+                - type: image
+                  url: fig.jpg
+                - type: caption
                   children:
-                    - type: text
-                      value: Cool caption!
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Cool caption!
     myst: |-
       see {numref}`Figure %s%s%s, I said {number}<my-figure>`
 
@@ -177,26 +184,33 @@ cases:
                   kind: ref
                   identifier: my-figure
                   label: my-figure
-        - type: container
+        - type: directive
           kind: figure
-          identifier: my-figure
-          label: my-figure
-          numbered: true
+          args: fig.jpg
+          options:
+            name: my-figure
+          value: Cool *caption*!
           children:
-            - type: image
-              url: fig.jpg
-            - type: caption
+            - type: container
+              kind: figure
+              identifier: my-figure
+              label: my-figure
+              numbered: true
               children:
-                - type: paragraph
+                - type: image
+                  url: fig.jpg
+                - type: caption
                   children:
-                    - type: text
-                      value: 'Cool '
-                    - type: emphasis
+                    - type: paragraph
                       children:
                         - type: text
-                          value: caption
-                    - type: text
-                      value: '!'
+                          value: 'Cool '
+                        - type: emphasis
+                          children:
+                            - type: text
+                              value: caption
+                        - type: text
+                          value: '!'
     myst: |-
       see {ref}`my-figure`
 
@@ -232,26 +246,33 @@ cases:
                   children:
                     - type: text
                       value: Custom *caption*
-        - type: container
+        - type: directive
           kind: figure
-          identifier: my-figure
-          label: my-figure
-          numbered: true
+          args: fig.jpg
+          options:
+            name: my-figure
+          value: Cool *caption*!
           children:
-            - type: image
-              url: fig.jpg
-            - type: caption
+            - type: container
+              kind: figure
+              identifier: my-figure
+              label: my-figure
+              numbered: true
               children:
-                - type: paragraph
+                - type: image
+                  url: fig.jpg
+                - type: caption
                   children:
-                    - type: text
-                      value: 'Cool '
-                    - type: emphasis
+                    - type: paragraph
                       children:
                         - type: text
-                          value: caption
-                    - type: text
-                      value: '!'
+                          value: 'Cool '
+                        - type: emphasis
+                          children:
+                            - type: text
+                              value: caption
+                        - type: text
+                          value: '!'
     myst: |-
       see {ref}`Custom *caption* <my-figure>`
 
@@ -280,26 +301,33 @@ cases:
               url: my-figure
               title: Figure title
               children: []
-        - type: container
+        - type: directive
           kind: figure
-          identifier: my-figure
-          label: my-figure
-          numbered: true
+          args: fig.jpg
+          options:
+            name: my-figure
+          value: Cool *caption*!
           children:
-            - type: image
-              url: fig.jpg
-            - type: caption
+            - type: container
+              kind: figure
+              identifier: my-figure
+              label: my-figure
+              numbered: true
               children:
-                - type: paragraph
+                - type: image
+                  url: fig.jpg
+                - type: caption
                   children:
-                    - type: text
-                      value: 'Cool '
-                    - type: emphasis
+                    - type: paragraph
                       children:
                         - type: text
-                          value: caption
-                    - type: text
-                      value: '!'
+                          value: 'Cool '
+                        - type: emphasis
+                          children:
+                            - type: text
+                              value: caption
+                        - type: text
+                          value: '!'
     myst: |-
       see [](my-figure "Figure title")
 
@@ -333,26 +361,33 @@ cases:
                   children:
                     - type: text
                       value: caption
-        - type: container
+        - type: directive
           kind: figure
-          identifier: my-figure
-          label: my-figure
-          numbered: true
+          args: fig.jpg
+          options:
+            name: my-figure
+          value: Cool *caption*!
           children:
-            - type: image
-              url: fig.jpg
-            - type: caption
+            - type: container
+              kind: figure
+              identifier: my-figure
+              label: my-figure
+              numbered: true
               children:
-                - type: paragraph
+                - type: image
+                  url: fig.jpg
+                - type: caption
                   children:
-                    - type: text
-                      value: 'Cool '
-                    - type: emphasis
+                    - type: paragraph
                       children:
                         - type: text
-                          value: caption
-                    - type: text
-                      value: '!'
+                          value: 'Cool '
+                        - type: emphasis
+                          children:
+                            - type: text
+                              value: caption
+                        - type: text
+                          value: '!'
     myst: |-
       see [Custom *caption*](my-figure)
 

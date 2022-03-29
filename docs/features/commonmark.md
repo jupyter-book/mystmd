@@ -78,10 +78,6 @@ which is used to structurally seperate content.
 
 ```
 
-```{include} ../examples/definition.md
-
-```
-
 ```{seealso}
 These can be used in [](inline-links) and are similar to [](./references.md) in MyST.
 This syntax is also similar to [](./footnotes.md).

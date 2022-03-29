@@ -5,10 +5,11 @@ cases:
       children:
         - type: directive
           kind: abc
-          options:
-            a: one
-            b: two
-          value: ABC directive
+          value: |-
+            :a: one
+            :b: two
+
+            ABC directive
     myst: |-
       ```{abc}
       :a: one
@@ -32,10 +33,11 @@ cases:
         - type: directive
           kind: abc
           args: foo bar
-          options:
-            a: one
-            b: two
-          value: ABC directive
+          value: |-
+            :a: one
+            :b: two
+
+            ABC directive
     myst: |-
       ```{abc} foo bar
       :a: one
@@ -45,7 +47,7 @@ cases:
       ```
     html: |-
       <div class="directive unhandled">
-        <p><code class="kind">{abc}</code> <code class="args">foo bar</code></p>
+        <p><code class="kind">{abc}</code><code class="args">foo bar</code></p>
         <pre><code>:a: one
       :b: two
 

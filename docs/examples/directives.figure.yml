@@ -42,6 +42,9 @@ cases:
         <figcaption>
           <p>This is the figure caption!</p>
         </figcaption>
+        <div class="legend">
+          <p>Something! A legend!?</p>
+        </div>
       </figure>
 
   - title: Named figure with a caption in a paragraph

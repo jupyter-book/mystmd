@@ -4,13 +4,17 @@ cases:
     mdast:
       type: root
       children:
-        - type: image
-          url: fun-fish.png
-          alt: fishy
+        - type: paragraph
+          children:
+            - type: image
+              url: fun-fish.png
+              alt: fishy
     myst: |-
       ![fishy](fun-fish.png)
     html: |-
-      <img src="fun-fish.png" alt="fishy">
+      <p>
+        <img src="fun-fish.png" alt="fishy">
+      </p>
 
   - title: Image directive
     mdast:

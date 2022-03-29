@@ -525,8 +525,7 @@
       "required": ["url"],
       "properties": {
         "url": {
-          "type": "string",
-          "format": "uri-reference"
+          "type": "string"
         },
         "title": {
           "description": "advisory information, e.g. for a tooltip",

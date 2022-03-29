@@ -4,7 +4,7 @@ cases:
       type: root
       children:
         - type: directive
-          kind: attention
+          kind: admonition
           args: This is a title
           value: An example of an admonition with a _title_.
           children:
@@ -90,22 +90,6 @@ cases:
                     - type: text
                       value: |-
                         and an example of a note admonition.
-    myst: |-
-      ```{note} This is a title in myst
-        and an example of a note admonition.
-      ```
-    html: |-
-      <aside class="admonition note">
-        <p class="admonition-title">This is a title in myst</p>
-        <p>
-          and an example of a note admonition.
-        </p>
-      </aside>
-    latex: |-
-      \begin{mdframed}[style=note]
-        \section*{This is a title in myst}
-        and an example of a note admonition.
-      \end{mdframed}
 
   - title: Danger on a single line
     mdast:
@@ -122,17 +106,6 @@ cases:
                   children:
                     - type: text
                       value: This is a title!
-    myst: |-
-      ```{danger} This is a title!
-      ```
-    html: |-
-      <aside class="admonition danger">
-        <p class="admonition-title">This is a title!</p>
-      </aside>
-    latex: |-
-      \begin{mdframed}[style=danger]
-        \section*{This is a title!}
-      \end{mdframed}
 
   - title: Admonition with overridding class name
     mdast:

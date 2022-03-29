@@ -21,10 +21,6 @@ cases:
           children:
             - type: role
               kind: abc
-    myst: |-
-      {abc}``
-    html: |-
-      <p><span class="role unhandled"><code class="kind">{abc}</code></span></p>
   - title: unknown role - invalid no kind
     invalid: true
     mdast:
