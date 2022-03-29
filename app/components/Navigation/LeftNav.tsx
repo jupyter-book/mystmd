@@ -103,7 +103,7 @@ export const LeftNav = () => {
   return (
     <div
       className={classNames(
-        'flex-col fixed z-20 top-[60px] bottom-0 left-[max(0px,calc(50%-45rem))] w-[19.5rem] border-r border-stone-200 dark:border-stone-700',
+        'flex-col fixed z-30 top-[60px] bottom-0 left-[max(0px,calc(50%-45rem))] w-[19.5rem] border-r border-stone-200 dark:border-stone-700',
         {
           flex: open,
           'bg-white dark:bg-stone-900': open, // just apply when open, so that theme can transition

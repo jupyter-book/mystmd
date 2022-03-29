@@ -8,7 +8,7 @@ export function Navigation() {
     <>
       {open && (
         <div
-          className="fixed inset-0 bg-black opacity-50 z-10"
+          className="fixed inset-0 bg-black opacity-50 z-30"
           onClick={() => setOpen(false)}
         ></div>
       )}
