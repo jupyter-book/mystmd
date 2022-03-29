@@ -46,9 +46,11 @@ describe('Extensions', () => {
     const parser = new MyST({ directives: { custom } });
     const myst = '```{custom}\n:name: hello\nworld\n```';
     const ast = parser.parse(myst) as GenericNode;
-    expect(ast.children?.[0].type).toEqual('custom');
-    expect(ast.children?.[0].name).toEqual('hello');
-    expect(ast.children?.[0].value).toEqual('world\n');
+    expect(ast.children?.[0].type).toEqual('directive');
+    expect(ast.children?.[0].kind).toEqual('custom');
+    expect(ast.children?.[0].children?.[0].type).toEqual('custom');
+    expect(ast.children?.[0].children?.[0].name).toEqual('hello');
+    expect(ast.children?.[0].children?.[0].value).toEqual('world\n');
     const html = parser.renderMdast(ast as Root);
     expect(html).toBe('<div id="hello">world</div>');
   });

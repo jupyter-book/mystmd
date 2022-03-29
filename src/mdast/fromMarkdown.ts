@@ -2,6 +2,13 @@ import { u } from 'unist-builder';
 import type { GenericNode, GenericParent, GenericText, Spec, Token } from './types';
 import { withoutTrailingNewline } from './utils';
 
+const UNHIDDEN_TOKENS = new Set([
+  'parsed_directive_open',
+  'parsed_directive_close',
+  'parsed_role_open',
+  'parsed_role_close',
+]);
+
 /** MarkdownParseState tracks the context of a running token stream.
  *
  * Loosly based on prosemirror-markdown
@@ -52,7 +59,7 @@ export class MarkdownParseState {
 
   parseTokens(tokens?: Token[] | null) {
     tokens?.forEach((token, index) => {
-      if (token.hidden) return;
+      if (token.hidden && !UNHIDDEN_TOKENS.has(token.type)) return;
       const handler = this.handlers[token.type];
       if (!handler)
         throw new Error(

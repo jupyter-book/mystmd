@@ -2,7 +2,7 @@ import { Content, Root } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import { GenericNode } from '.';
+import { GenericNode } from './types';
 import { normalizeLabel, setTextAsChild } from './utils';
 
 export enum TargetKind {
@@ -138,7 +138,7 @@ export const referenceState = (state: State, tree: Root) => {
   selectAll('link', tree).map((node: GenericNode) => {
     const reference = normalizeLabel(node.url);
     if (reference && reference.identifier in state.targets) {
-      node.type = 'contentReference';
+      node.type = 'crossReference';
       node.kind =
         state.targets[reference.identifier].kind === TargetKind.math ? 'eq' : 'ref';
       node.identifier = reference.identifier;
@@ -146,7 +146,7 @@ export const referenceState = (state: State, tree: Root) => {
       delete node.url;
     }
   });
-  visit(tree, 'contentReference', (node: GenericNode) => {
+  visit(tree, 'crossReference', (node: GenericNode) => {
     state.resolveReferenceContent(node);
   });
 };

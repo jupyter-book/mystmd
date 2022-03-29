@@ -1,3 +1,12 @@
+/**
+ * These tests will likely be deprecated in favor of the
+ * commonmark tests pulled in from myst-spec in myst.spec.ts
+ *
+ * However, we can wait until those are slightly more solid
+ * (and possibly coming in as JSON instead of YAML) to delete
+ * these.
+ */
+
 import fs from 'fs';
 import path from 'path';
 import { MyST } from '../src';

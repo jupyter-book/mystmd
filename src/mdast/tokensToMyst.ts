@@ -1,6 +1,6 @@
 import { MarkdownParseState } from './fromMarkdown';
 import type { Root } from 'mdast';
-import { Spec, Token, Container, Admonition, AdmonitionKind } from './types';
+import { Spec, Token, Admonition, Container, AdmonitionKind } from './types';
 import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
 import { u } from 'unist-builder';
@@ -13,7 +13,6 @@ import {
   withoutTrailingNewline,
 } from './utils';
 import { map } from 'unist-util-map';
-import { findAfter } from 'unist-util-find-after';
 import { selectAll } from 'unist-util-select';
 
 export type Options = {
@@ -259,6 +258,9 @@ const defaultMdast: Record<string, Spec> = {
   figure_caption: {
     type: 'caption',
   },
+  figure_legend: {
+    type: 'legend',
+  },
   table: {
     type: 'table',
     getAttrs(token) {
@@ -330,7 +332,7 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
   },
   ref: {
-    type: 'contentReference',
+    type: 'crossReference',
     isLeaf: true,
     getAttrs(t) {
       return {
@@ -379,6 +381,28 @@ const defaultMdast: Record<string, Spec> = {
       };
     },
   },
+  parsed_directive: {
+    type: 'directive',
+    getAttrs(t) {
+      let opts = t.meta?.opts;
+      if (!opts || !Object.keys(opts).length) {
+        opts = undefined;
+      } else {
+        if (opts.class) opts.class = opts.class.join(' ');
+        Object.keys(opts).forEach((k) => {
+          // Handle flags, where option is simply present.
+          // This simple solution is very unlikely to be sufficient long term.
+          if (opts[k] === null) opts[k] = true;
+        });
+      }
+      return {
+        kind: t.info,
+        args: t.meta?.arg || undefined,
+        options: opts,
+        value: t.content.trim() || undefined,
+      };
+    },
+  },
   directive_error: {
     type: 'directiveError',
     noCloseToken: true,
@@ -394,6 +418,15 @@ const defaultMdast: Record<string, Spec> = {
       };
     },
   },
+  parsed_role: {
+    type: 'role',
+    getAttrs(t) {
+      return {
+        kind: t.meta.name,
+        value: t.content,
+      };
+    },
+  },
   role_error: {
     type: 'roleError',
     noCloseToken: true,
@@ -405,7 +438,7 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   myst_target: {
-    type: '_headerTarget',
+    type: 'target',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
@@ -423,7 +456,7 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
   },
   myst_block_break: {
-    type: 'block',
+    type: 'blockBreak',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
@@ -456,6 +489,16 @@ function hoistSingleImagesOutofParagraphs(tree: Root) {
   });
 }
 
+function nestSingleImagesIntoParagraphs(tree: Root) {
+  tree.children = tree.children.map((node) => {
+    if (node.type === 'image') {
+      return { type: 'paragraph', children: [node] };
+    } else {
+      return node;
+    }
+  });
+}
+
 const defaultOptions: Options = {
   handlers: defaultMdast,
   hoistSingleImagesOutofParagraphs: true,
@@ -477,6 +520,14 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
 
   // Remove all redundant nodes marked for removal
   remove(tree, '_remove');
+
+  // visit(tree, 'role', (node: GenericNode) => {
+  //   if (node.children) node.type = '_lift';
+  // });
+
+  // visit(tree, 'directive', (node: GenericNode) => {
+  //   if (node.children) node.type = '_lift';
+  // });
 
   // Lift up all nodes that are named "lift"
   tree = map(tree, (node: GenericNode) => {
@@ -504,24 +555,14 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
       node.children = children.slice(1);
   });
 
-  // Move contentReference text value to children
-  visit(tree, 'contentReference', (node: GenericNode) => {
+  // Move crossReference text value to children
+  visit(tree, 'crossReference', (node: GenericNode) => {
     delete node.children;
     if (node.value) {
       setTextAsChild(node, node.value);
       delete node.value;
     }
   });
-
-  // Add target values as identifiers to subsequent node
-  visit(tree, '_headerTarget', (node: GenericNode) => {
-    const nextNode = findAfter(tree, node) as GenericNode;
-    if (nextNode) {
-      nextNode.identifier = node.identifier;
-      nextNode.label = node.label;
-    }
-  });
-  remove(tree, '_headerTarget');
 
   // Nest block content inside of a block
   if (opts.nestBlocks) {
@@ -535,9 +576,10 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
       newTree.children.push(lastBlock);
     };
     (tree as GenericNode).children?.map((node) => {
-      if (node.type === 'block') {
+      if (node.type === 'blockBreak') {
         pushBlock();
         lastBlock = node;
+        node.type = 'block';
         node.children = node.children ?? [];
         return;
       }
@@ -581,7 +623,11 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
     }
   });
 
-  if (opts.hoistSingleImagesOutofParagraphs) hoistSingleImagesOutofParagraphs(tree);
+  if (opts.hoistSingleImagesOutofParagraphs) {
+    hoistSingleImagesOutofParagraphs(tree);
+  } else {
+    nestSingleImagesIntoParagraphs(tree);
+  }
 
   return tree;
 }
