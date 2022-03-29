@@ -19,7 +19,8 @@
         { "title": "Interactive Components", "level": 1 },
         { "title": "Admonitions", "slug": "admonitions", "level": 2 },
         { "title": "Interactive Components", "slug": "interactive", "level": 2 },
-        { "title": "Juptyer Outputs", "slug": "outputs", "level": 2 }
+        { "title": "Juptyer Outputs", "slug": "outputs", "level": 2 },
+        { "title": "Examples", "slug": "examples", "level": 2 }
       ]
     }
   }
