@@ -103,7 +103,7 @@ export function TopNav() {
   return (
     <div className="bg-stone-700 p-3 md:px-8 fixed w-screen top-0 z-30">
       <nav className="flex items-center justify-between flex-wrap max-w-[1440px] mx-auto">
-        <div className="flex flex-row xl:min-w-[19.5rem] mr-7 justify-start items-center">
+        <div className="flex flex-row xl:min-w-[19.5rem] mr-2 sm:mr-7 justify-start items-center">
           <div className="block xl:hidden">
             <button
               className="flex items-center text-stone-200 border-stone-400 hover:text-white"
@@ -127,7 +127,9 @@ export function TopNav() {
               height="2.25rem"
             ></img>
             {logoText && (
-              <span className="text-xl tracking-tight mr-5">{logoText}</span>
+              <span className="text-md sm:text-xl tracking-tight sm:mr-5">
+                {logoText}
+              </span>
             )}
           </Link>
         </div>
