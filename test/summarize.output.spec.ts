@@ -1,5 +1,5 @@
 import {
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   OutputSummaryKind,
@@ -14,7 +14,7 @@ describe('summarize.output', () => {
     [
       'text/plain (short)',
       CellOutputType.DisplayData,
-      CellOutputMimeTypes.TextPlain,
+      KnownCellOutputMimeTypes.TextPlain,
       'hello text!',
       OutputSummaryKind.text,
       undefined,
@@ -22,7 +22,7 @@ describe('summarize.output', () => {
     [
       'text/html',
       CellOutputType.DisplayData,
-      CellOutputMimeTypes.TextHtml,
+      KnownCellOutputMimeTypes.TextHtml,
       '<p>hello html!</p>',
       OutputSummaryKind.html,
       undefined,
@@ -61,7 +61,7 @@ describe('summarize.output', () => {
     expect(dbo.items[OutputSummaryKind.error]).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.error,
-        content_type: CellOutputMimeTypes.TextPlain,
+        content_type: KnownCellOutputMimeTypes.TextPlain,
         content: 'Type Error: Call Stack: ...',
       }),
     );
@@ -71,8 +71,8 @@ describe('summarize.output', () => {
     const item = {
       output_type: CellOutputType.DisplayData,
       data: {
-        [CellOutputMimeTypes.TextHtml]: ['<h1>', 'hello world', '</h1>'],
-        [CellOutputMimeTypes.TextPlain]: 'hello world',
+        [KnownCellOutputMimeTypes.TextHtml]: ['<h1>', 'hello world', '</h1>'],
+        [KnownCellOutputMimeTypes.TextPlain]: 'hello world',
       },
       metadata: {},
     } as DisplayData;
@@ -84,7 +84,7 @@ describe('summarize.output', () => {
     expect(dbo.items[OutputSummaryKind.html]).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.html,
-        content_type: CellOutputMimeTypes.TextHtml,
+        content_type: KnownCellOutputMimeTypes.TextHtml,
         content: '<h1>hello world</h1>',
       }),
     );
@@ -92,7 +92,7 @@ describe('summarize.output', () => {
     expect(dbo.items[OutputSummaryKind.text]).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.text,
-        content_type: CellOutputMimeTypes.TextPlain,
+        content_type: KnownCellOutputMimeTypes.TextPlain,
         content: 'hello world',
       }),
     );
@@ -102,8 +102,8 @@ describe('summarize.output', () => {
     const item = {
       output_type: CellOutputType.DisplayData,
       data: {
-        [CellOutputMimeTypes.ImagePng]: 'iVBORw0KGgoAAAANSUhEUgAAA\n',
-        [CellOutputMimeTypes.TextPlain]: '<Figure size 640x480 with 1 Axes>',
+        [KnownCellOutputMimeTypes.ImagePng]: 'iVBORw0KGgoAAAANSUhEUgAAA\n',
+        [KnownCellOutputMimeTypes.TextPlain]: '<Figure size 640x480 with 1 Axes>',
       },
       metadata: {},
     } as DisplayData;
@@ -121,7 +121,7 @@ describe('summarize.output', () => {
     expect(dbo.items[OutputSummaryKind.image]).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.image,
-        content_type: CellOutputMimeTypes.ImagePng,
+        content_type: KnownCellOutputMimeTypes.ImagePng,
         path: 'storage/path.0.image_png',
       }),
     );
@@ -130,8 +130,8 @@ describe('summarize.output', () => {
     const item = {
       output_type: CellOutputType.DisplayData,
       data: {
-        [CellOutputMimeTypes.AppJson]: { hello: 42 },
-        [CellOutputMimeTypes.TextPlain]: '<IPython.core.display.JSON object>',
+        [KnownCellOutputMimeTypes.AppJson]: { hello: 42 },
+        [KnownCellOutputMimeTypes.TextPlain]: '<IPython.core.display.JSON object>',
       },
       metadata: {},
     } as DisplayData;
@@ -144,7 +144,7 @@ describe('summarize.output', () => {
     expect(dbo.items[OutputSummaryKind.json]).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.json,
-        content_type: CellOutputMimeTypes.AppJson,
+        content_type: KnownCellOutputMimeTypes.AppJson,
         content: '{"hello":42}',
       }),
     );
@@ -167,7 +167,7 @@ describe('summarize.output', () => {
     expect(dbo.items[OutputSummaryKind.error]).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.error,
-        content_type: CellOutputMimeTypes.TextPlain,
+        content_type: KnownCellOutputMimeTypes.TextPlain,
         content: 'Type Error: Call Stack: ...',
       }),
     );
@@ -177,9 +177,9 @@ describe('summarize.output', () => {
     const item = {
       output_type: CellOutputType.DisplayData,
       data: {
-        [CellOutputMimeTypes.ImagePng]: 'iVBORw0KGgoAAAANSUhEUgAAAe\n',
-        [CellOutputMimeTypes.TextLatex]: ['$', 'E=mc^2', '$'],
-        [CellOutputMimeTypes.TextPlain]: ['E=', 'mc**2'],
+        [KnownCellOutputMimeTypes.ImagePng]: 'iVBORw0KGgoAAAANSUhEUgAAAe\n',
+        [KnownCellOutputMimeTypes.TextLatex]: ['$', 'E=mc^2', '$'],
+        [KnownCellOutputMimeTypes.TextPlain]: ['E=', 'mc**2'],
       },
       metadata: {},
     } as DisplayData;
@@ -197,7 +197,7 @@ describe('summarize.output', () => {
     expect(dbo.items[OutputSummaryKind.latex]).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.latex,
-        content_type: CellOutputMimeTypes.TextLatex,
+        content_type: KnownCellOutputMimeTypes.TextLatex,
         content: '$E=mc^2$',
       }),
     );
@@ -206,7 +206,7 @@ describe('summarize.output', () => {
     expect(dbo.items[OutputSummaryKind.image]).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.image,
-        content_type: CellOutputMimeTypes.ImagePng,
+        content_type: KnownCellOutputMimeTypes.ImagePng,
         path: 'storage/path.0.image_png',
       }),
     );
@@ -215,8 +215,8 @@ describe('summarize.output', () => {
     const item = {
       output_type: CellOutputType.DisplayData,
       data: {
-        [CellOutputMimeTypes.ImageSvg]: ['<svg>', '<g>', '</svg>'],
-        [CellOutputMimeTypes.TextPlain]: '<IPython.core.display.SVG object>',
+        [KnownCellOutputMimeTypes.ImageSvg]: ['<svg>', '<g>', '</svg>'],
+        [KnownCellOutputMimeTypes.TextPlain]: '<IPython.core.display.SVG object>',
       },
       metadata: {},
     } as DisplayData;
@@ -235,14 +235,14 @@ describe('summarize.output', () => {
     expect(dbo.items[OutputSummaryKind.svg]).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.svg,
-        content_type: CellOutputMimeTypes.ImageSvg,
+        content_type: KnownCellOutputMimeTypes.ImageSvg,
         path: 'storage/path.0.image_svg+xml',
       }),
     );
     expect(dbo.items[OutputSummaryKind.text]).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.text,
-        content_type: CellOutputMimeTypes.TextPlain,
+        content_type: KnownCellOutputMimeTypes.TextPlain,
         content: '<IPython.core.display.SVG object>',
       }),
     );

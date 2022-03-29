@@ -1,5 +1,5 @@
 import {
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   ExecuteResult,
@@ -14,9 +14,9 @@ describe('database.versions.output.summarize.javascript', () => {
   beforeEach(() => {
     const output = makeCellOutput(
       CellOutputType.ExecuteResult,
-      CellOutputMimeTypes.AppJavascript as CellOutputMimeTypes,
+      KnownCellOutputMimeTypes.AppJavascript as KnownCellOutputMimeTypes,
     ) as ExecuteResult;
-    output.data[CellOutputMimeTypes.TextPlain] = '<unwanted text 0x123456789>';
+    output.data[KnownCellOutputMimeTypes.TextPlain] = '<unwanted text 0x123456789>';
     summarizer = Summarizer.new(
       (path: string) => new StubFileObject(path),
       OutputSummaryKind.javascript,
@@ -33,7 +33,9 @@ describe('database.versions.output.summarize.javascript', () => {
     [true, CellOutputType.DisplayData, 'application/javascript'],
   ])('test %s', (result, output_type, mimetype) => {
     expect(
-      summarizer?.test(makeCellOutput(output_type, mimetype as CellOutputMimeTypes) as DisplayData),
+      summarizer?.test(
+        makeCellOutput(output_type, mimetype as KnownCellOutputMimeTypes) as DisplayData,
+      ),
     ).toBe(result);
   });
   test('next - strips text', async () => {

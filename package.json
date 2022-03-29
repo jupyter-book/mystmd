@@ -45,7 +45,7 @@
     "@curvenote/blocks": "^1.3.3"
   },
   "devDependencies": {
-    "@curvenote/blocks": "*",
+    "@curvenote/blocks": "file:.yalc/@curvenote/blocks",
     "@types/jest": "^26.0.23",
     "@types/uuid": "^8.3.4",
     "eslint": "7.27.0",

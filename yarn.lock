@@ -316,10 +316,8 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@curvenote/blocks@*":
+"@curvenote/blocks@file:.yalc/@curvenote/blocks":
   version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.3.3.tgz#400f6224dc64ee7c4ecd8c651c727a04be8f7c20"
-  integrity sha512-vESau/dJGzEY34RxGNYxr0W2ako3swc0AM6pXbqiXnGzMq91398xj4pZBMKWWla6gw1SWkfyDTx5gISawOi2qA==
 
 "@eslint/eslintrc@^0.4.1":
   version "0.4.3"

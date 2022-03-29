@@ -1,5 +1,5 @@
 import {
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   OutputSummaryKind,
@@ -13,7 +13,7 @@ describe('database.versions.output.summarize.latex', () => {
   beforeEach(() => {
     const output = makeCellOutput(
       CellOutputType.DisplayData,
-      CellOutputMimeTypes.TextLatex as CellOutputMimeTypes,
+      KnownCellOutputMimeTypes.TextLatex as KnownCellOutputMimeTypes,
     ) as DisplayData;
     summarizer = Summarizer.new(
       (path: string) => new StubFileObject(path),
@@ -31,7 +31,9 @@ describe('database.versions.output.summarize.latex', () => {
     [true, CellOutputType.DisplayData, 'text/latex'],
   ])('test %s', (result, output_type, mimetype) => {
     expect(
-      summarizer?.test(makeCellOutput(output_type, mimetype as CellOutputMimeTypes) as DisplayData),
+      summarizer?.test(
+        makeCellOutput(output_type, mimetype as KnownCellOutputMimeTypes) as DisplayData,
+      ),
     ).toBe(result);
   });
   test('next - strips text/latex', async () => {

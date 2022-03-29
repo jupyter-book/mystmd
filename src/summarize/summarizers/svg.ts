@@ -1,12 +1,11 @@
 /* eslint-disable import/no-cycle */
 import {
   CellOutput,
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   ensureString,
   ExecuteResult,
-  OutputSummary,
   OutputSummaryEntry,
   OutputSummaryKind,
 } from '@curvenote/blocks';
@@ -18,7 +17,7 @@ class SvgSummarizer extends Summarizer {
     return (
       (item.output_type === CellOutputType.DisplayData ||
         item.output_type === CellOutputType.ExecuteResult) &&
-      CellOutputMimeTypes.ImageSvg in item.data
+      KnownCellOutputMimeTypes.ImageSvg in item.data
     );
   }
 
@@ -31,7 +30,7 @@ class SvgSummarizer extends Summarizer {
    */
   next() {
     return stripTypesFromOutputData(this.item as DisplayData | ExecuteResult, [
-      CellOutputMimeTypes.ImageSvg,
+      KnownCellOutputMimeTypes.ImageSvg,
     ]);
   }
 
@@ -39,12 +38,12 @@ class SvgSummarizer extends Summarizer {
     const { data } = this.item as DisplayData;
     return {
       kind: this.kind(),
-      content_type: CellOutputMimeTypes.ImageSvg,
-      content: ensureString(data[CellOutputMimeTypes.ImageSvg] as string[] | string),
+      content_type: KnownCellOutputMimeTypes.ImageSvg,
+      content: ensureString(data[KnownCellOutputMimeTypes.ImageSvg] as string[] | string),
     };
   }
 
-  async process(summary: OutputSummary): Promise<OutputSummaryEntry> {
+  async process(summary: OutputSummaryEntry): Promise<OutputSummaryEntry> {
     const { kind, content_type, content } = summary;
     const path = this.$makeFilepath(content_type);
     const outputFile = this.fileFactory(path);

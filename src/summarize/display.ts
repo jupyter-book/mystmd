@@ -1,13 +1,13 @@
 /* eslint-disable import/no-cycle */
 import {
   CellOutput,
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   DisplayData,
   ExecuteResult,
   OutputSummaryKind,
   OutputSummaryEntry,
+  OutputSummary,
 } from '@curvenote/blocks';
-import { OutputSummaries } from '../types';
 import { IFileObjectFactoryFn } from '../files';
 import { ORDER, Summarizer } from './summarizers';
 import { SummarizerOptions } from './summarizers/types';
@@ -18,7 +18,7 @@ export const summarizeDisplayDataOrExecuteResult = async (
   basepath: string,
   options: SummarizerOptions,
 ) => {
-  const dbo: OutputSummaries = {
+  const dbo: OutputSummary = {
     kind: OutputSummaryKind.unknown,
     items: {},
   };
@@ -53,7 +53,7 @@ export const summarizeDisplayDataOrExecuteResult = async (
       ...dbo.items,
       [OutputSummaryKind.unknown]: {
         kind: OutputSummaryKind.unknown,
-        content_type: CellOutputMimeTypes.TextPlain,
+        content_type: KnownCellOutputMimeTypes.TextPlain,
         content: Object.keys((unprocessed as DisplayData | ExecuteResult)?.data ?? {}).join(', '),
       },
     };

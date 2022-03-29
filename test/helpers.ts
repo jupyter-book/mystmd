@@ -1,14 +1,19 @@
-import { CellOutput, CellOutputMimeTypes, CellOutputType, JsonObject } from '@curvenote/blocks';
+import {
+  CellOutput,
+  KnownCellOutputMimeTypes,
+  CellOutputType,
+  JsonObject,
+} from '@curvenote/blocks';
 
 export function makeCellOutput(
   output_type?: CellOutputType,
-  mimetype?: CellOutputMimeTypes,
+  mimetype?: KnownCellOutputMimeTypes,
   content?: JsonObject | string[] | string,
 ) {
   return {
     output_type: output_type ?? CellOutputType.DisplayData,
     data: {
-      [mimetype ?? CellOutputMimeTypes.TextPlain]: content ?? 'hello world',
+      [mimetype ?? KnownCellOutputMimeTypes.TextPlain]: content ?? 'hello world',
     },
     metadata: {},
   } as CellOutput;

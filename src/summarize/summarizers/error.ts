@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import {
   CellOutput,
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   ensureString,
   OutputSummaryEntry,
@@ -28,7 +28,7 @@ class ErrorSummarizer extends Summarizer {
     const { traceback } = this.item as Traceback;
     return {
       kind: this.kind(),
-      content_type: CellOutputMimeTypes.TextPlain,
+      content_type: KnownCellOutputMimeTypes.TextPlain,
       content: ensureString(traceback),
     };
   }

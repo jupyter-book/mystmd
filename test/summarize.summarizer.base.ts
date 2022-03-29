@@ -1,6 +1,6 @@
 import {
   CellOutput,
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   OutputSummaryEntry,
   OutputSummaryKind,
 } from '@curvenote/blocks';
@@ -21,7 +21,7 @@ describe('summarize.summarizer.base', () => {
   ])('process %s', async (s, content, expectedContent) => {
     const summary = {
       kind: OutputSummaryKind.text,
-      content_type: CellOutputMimeTypes.TextPlain,
+      content_type: KnownCellOutputMimeTypes.TextPlain,
       content,
     } as OutputSummaryEntry;
 
@@ -35,7 +35,7 @@ describe('summarize.summarizer.base', () => {
     expect(processed).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.text,
-        content_type: CellOutputMimeTypes.TextPlain,
+        content_type: KnownCellOutputMimeTypes.TextPlain,
       }),
     );
     if (content) {

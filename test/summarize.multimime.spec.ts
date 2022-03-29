@@ -1,16 +1,21 @@
 /* eslint-disable quotes */
-import { CellOutputMimeTypes, CellOutputType, DisplayData, ensureString } from '@curvenote/blocks';
+import {
+  KnownCellOutputMimeTypes,
+  CellOutputType,
+  DisplayData,
+  ensureString,
+} from '@curvenote/blocks';
 import { makeCellOutput } from './helpers';
 import { processMultiMimeOutputs } from '../src/summarize/multimime';
 import { StubFileObject } from '../src/files';
 
 describe('summarize.multimime', () => {
   test.each([
-    ['traceback', CellOutputType.Traceback, CellOutputMimeTypes.TextPlain],
-    ['stream', CellOutputType.Stream, CellOutputMimeTypes.TextPlain],
-    ['text/plain', CellOutputType.DisplayData, CellOutputMimeTypes.TextPlain],
-    ['text/html', CellOutputType.DisplayData, CellOutputMimeTypes.TextHtml],
-    ['image/svg', CellOutputType.DisplayData, CellOutputMimeTypes.ImageSvg],
+    ['traceback', CellOutputType.Traceback, KnownCellOutputMimeTypes.TextPlain],
+    ['stream', CellOutputType.Stream, KnownCellOutputMimeTypes.TextPlain],
+    ['text/plain', CellOutputType.DisplayData, KnownCellOutputMimeTypes.TextPlain],
+    ['text/html', CellOutputType.DisplayData, KnownCellOutputMimeTypes.TextHtml],
+    ['image/svg', CellOutputType.DisplayData, KnownCellOutputMimeTypes.ImageSvg],
   ])('no-op for %s', async (s, output_type, content_type) => {
     const item = makeCellOutput(output_type, content_type, 'something');
 
@@ -25,7 +30,7 @@ describe('summarize.multimime', () => {
   describe('plotly', () => {
     const plotlyJson = makeCellOutput(
       CellOutputType.DisplayData,
-      CellOutputMimeTypes.AppPlotly,
+      KnownCellOutputMimeTypes.AppPlotly,
       '{"plotly":"json"}',
     ) as DisplayData;
 
@@ -47,13 +52,13 @@ describe('summarize.multimime', () => {
 
     const plotlyScript = makeCellOutput(
       CellOutputType.DisplayData,
-      CellOutputMimeTypes.TextHtml,
+      KnownCellOutputMimeTypes.TextHtml,
       script,
     ) as DisplayData;
 
     const otherHtml = makeCellOutput(
       CellOutputType.DisplayData,
-      CellOutputMimeTypes.TextHtml,
+      KnownCellOutputMimeTypes.TextHtml,
       '<p>not plotly</p>',
     ) as DisplayData;
     test.each([
@@ -68,8 +73,8 @@ describe('summarize.multimime', () => {
       const keys = items
         .map((i) => Object.keys((i as DisplayData).data))
         .reduce((list, i) => [...list, ...i], []);
-      expect(keys).toContain(CellOutputMimeTypes.AppPlotly);
-      expect(keys).toContain(CellOutputMimeTypes.TextHtml);
+      expect(keys).toContain(KnownCellOutputMimeTypes.AppPlotly);
+      expect(keys).toContain(KnownCellOutputMimeTypes.TextHtml);
     });
   });
 });

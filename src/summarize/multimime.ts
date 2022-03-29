@@ -1,6 +1,6 @@
 import {
   CellOutput,
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   ensureString,
@@ -46,9 +46,9 @@ export const processMultiMimeOutputs = (fileFactory: IFileObjectFactoryFn, items
 
         const { data } = item as DisplayData | ExecuteResult;
         return (
-          Object.keys(data).includes(CellOutputMimeTypes.TextHtml) &&
+          Object.keys(data).includes(KnownCellOutputMimeTypes.TextHtml) &&
           looksLikePlotlyJsScript(
-            ensureString(data[CellOutputMimeTypes.TextHtml] as string | string[]),
+            ensureString(data[KnownCellOutputMimeTypes.TextHtml] as string | string[]),
           )
         );
       });
