@@ -21,7 +21,7 @@ const FooterLink = ({
           <ArrowLeftIcon className="w-6 h-6 self-center transition-transform group-hover:-translate-x-1" />
         )}
         <div className={classNames('flex-grow', { 'text-right': right })}>
-          <div className="text-xs text-gray-500">{group || ' '}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">{group || ' '}</div>
           {title}
         </div>
         {!right && (

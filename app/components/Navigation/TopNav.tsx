@@ -111,6 +111,7 @@ export function TopNav() {
                 setOpen(!open);
               }}
             >
+              <span className="sr-only">Open Menu</span>
               <MenuIcon className="fill-current h-8 w-8 p-1" />
             </button>
           </div>
