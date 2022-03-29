@@ -84,7 +84,7 @@ const Headings = ({ folder, headings, sections }: Props) => {
         return (
           <li
             key={sec.folder}
-            className={classNames('p-1 my-2 md:hidden', HEADING_CLASSES)}
+            className={classNames('p-1 my-2 lg:hidden', HEADING_CLASSES)}
           >
             <HeadingLink path={`/${sec.folder}`}>{sec.title}</HeadingLink>
           </li>

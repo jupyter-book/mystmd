@@ -134,7 +134,7 @@ export function TopNav() {
           </Link>
         </div>
         <div className="flex-grow flex items-center w-auto">
-          <div className="text-md flex-grow hidden md:block">
+          <div className="text-md flex-grow hidden lg:block">
             {sections?.map((sec) => {
               const folder = getFolder(config, sec.folder);
               if (!folder)
