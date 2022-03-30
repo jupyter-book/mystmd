@@ -2,6 +2,7 @@ import { IDisplayData, IExecuteResult, MultilineString } from '@jupyterlab/nbfor
 import { ensureString } from '@curvenote/blocks';
 import { IFileObjectFactoryFn } from '../files';
 import { MinifiedMimeBundle, MinifyOptions } from './types';
+import { ensureSafePath } from './utils';
 
 async function minifyContent(
   fileFactory: IFileObjectFactoryFn,
@@ -10,9 +11,9 @@ async function minifyContent(
   isBase64Image: boolean,
   opts: MinifyOptions,
 ) {
-  if (content && content.length <= opts.maxCharacters)
+  if (!isBase64Image && content && content.length <= opts.maxCharacters)
     return { content, content_type: contentType };
-  const file = fileFactory(`${opts.basepath}-${contentType}`);
+  const file = fileFactory(`${opts.basepath}-${ensureSafePath(contentType)}`);
   if (isBase64Image) {
     await file.writeBase64(content);
   } else {
@@ -30,15 +31,20 @@ export async function minifyMimeOutput(
   output: IDisplayData | IExecuteResult,
   opts: MinifyOptions,
 ) {
-  const data: MinifiedMimeBundle = {};
+  const items = await Promise.all(
+    Object.entries(output.data).map(async ([mimetype, content]) => {
+      let isBase64Image = false;
+      let stringContent = ensureString(content as MultilineString | string);
+      if (mimetype.startsWith('application/')) stringContent = JSON.stringify(content);
+      if (mimetype.startsWith('image/')) isBase64Image = true;
+      return minifyContent(fileFactory, stringContent, mimetype, isBase64Image, opts);
+    }),
+  );
 
-  Object.entries(output.data).forEach(async ([mimetype, content]) => {
-    let isBase64Image = false;
-    let stringContent = ensureString(content as MultilineString | string);
-    if (mimetype.startsWith('application/')) stringContent = JSON.stringify(content);
-    if (mimetype.startsWith('image/')) isBase64Image = true;
-    data[mimetype] = await minifyContent(fileFactory, stringContent, mimetype, isBase64Image, opts);
-  });
+  const data: MinifiedMimeBundle = items.reduce(
+    (bundle, item) => ({ ...bundle, [item.content_type]: item }),
+    {},
+  );
 
   return {
     output_type: output.output_type,

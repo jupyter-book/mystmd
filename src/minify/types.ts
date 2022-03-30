@@ -1,7 +1,7 @@
 import { IStream, IError, ExecutionCount, OutputMetadata } from '@jupyterlab/nbformat';
 
 export interface MinifyOptions {
-  basepath?: string;
+  basepath: string;
   maxCharacters: number;
   truncateTo: number;
   randomPath: boolean;

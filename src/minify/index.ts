@@ -4,10 +4,7 @@ import { IFileObjectFactoryFn } from '../files';
 import { MinifiedOutput, MinifyOptions } from './types';
 import { minifyErrorOutput, minifyStreamOutput } from './text';
 import { minifyMimeOutput } from './mime';
-
-function ensureSafePath(path: string): string {
-  return path.replace('/', '_');
-}
+import { ensureSafePath, isNotNull, MAX_CHARS, TRUNCATED_CHARS_COUNT } from './utils';
 
 async function minifyOneOutputItem(
   fileFactory: IFileObjectFactoryFn,
@@ -29,29 +26,24 @@ async function minifyOneOutputItem(
   }
 }
 
-function isNotNull<T>(arg: T | null): arg is T {
-  return arg != null;
-}
-
-export const MAX_CHARS = 25000;
-export const TRUNCATED_CHARS_COUNT = 64;
-
 export async function minifyCellOutput(
   fileFactory: IFileObjectFactoryFn,
   outputs: IOutput[],
-  opts: MinifyOptions = {
-    maxCharacters: MAX_CHARS,
-    truncateTo: TRUNCATED_CHARS_COUNT,
-    randomPath: false,
-  },
+  opts: Partial<MinifyOptions> = {},
 ): Promise<MinifiedOutput[]> {
   if (!opts.randomPath && !opts.basepath)
     throw Error(`Need to set a basepath or enable randomPath`);
+  const options = {
+    ...opts,
+    maxCharacters: opts.maxCharacters ?? MAX_CHARS,
+    truncateTo: opts.truncateTo ?? TRUNCATED_CHARS_COUNT,
+    randomPath: opts.randomPath ?? false,
+  };
   const minifiedOrNull = await Promise.all(
     outputs.map(async (output, idx) =>
       minifyOneOutputItem(fileFactory, output, {
-        ...opts,
-        basepath: opts.randomPath ? nanoid() : ensureSafePath(`${opts.basepath}.${idx}`),
+        ...options,
+        basepath: options.randomPath ? nanoid() : ensureSafePath(`${options.basepath}.${idx}`),
       }),
     ),
   );

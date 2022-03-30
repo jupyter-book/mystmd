@@ -9,11 +9,11 @@ async function minifyStringOutput(
   fieldName: string,
   opts: MinifyOptions,
 ): Promise<MinifiedStreamOutput | MinifiedErrorOutput> {
-  if (!output[fieldName] || !(output[fieldName] instanceof String))
+  if (!output[fieldName])
     throw Error(`Bad Field name ${fieldName} for output type ${output.output_type}`);
   const text = ensureString(output[fieldName] as string);
-  if (text && text.length <= opts.maxCharacters) return output;
-  const file = fileFactory(`${opts.basepath}-${output.output_type}.txt`);
+  if (text && text.length <= opts.maxCharacters) return { ...output, [fieldName]: text };
+  const file = fileFactory(`${opts.basepath}-text_plain`);
   await file.writeString(text, 'text/plain');
   return {
     ...output,
