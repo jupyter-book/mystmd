@@ -1,4 +1,5 @@
 import { Command, Option } from 'commander';
+import { buildPdfOnly } from '../../export/pdf';
 import {
   oxaLinkToWord,
   oxaLinkToMarkdown,
@@ -81,6 +82,14 @@ function makePdfExportCLI(program: Command) {
   return command;
 }
 
+function makePdfBuildCLI(program: Command) {
+  const command = new Command('pdf:build')
+    .description('Build a pdf given a tex file')
+    .argument('[output]', 'A path to the tex file to build')
+    .action(clirun(buildPdfOnly, { program }));
+  return command;
+}
+
 function makeJupyterNotebookExportCLI(program: Command) {
   const command = new Command('notebook')
     .alias('ipynb')
@@ -118,6 +127,7 @@ export function addExportCLI(program: Command) {
   command.addCommand(makeMarkdownExportCLI(program));
   command.addCommand(makeTexExportCLI(program));
   command.addCommand(makePdfExportCLI(program));
+  command.addCommand(makePdfBuildCLI(program));
   command.addCommand(makeJupyterNotebookExportCLI(program));
   command.addCommand(makeJupyterBookExportCLI(program));
   command.addCommand(makeMultiExportCLI(program));

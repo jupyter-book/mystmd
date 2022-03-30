@@ -26,5 +26,7 @@ export async function writeBibtex(
   }
   session.log.debug(`Exporting references to ${filename}.`);
   const bibWithNewLine = `${bibliography.join('\n\n')}\n`;
-  fs.writeFileSync(filename, bibWithNewLine);
+
+  // escape all ampersands
+  fs.writeFileSync(filename, bibWithNewLine.replace(/&/g, '\\&'), { encoding: 'utf8' });
 }

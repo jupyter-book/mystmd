@@ -146,7 +146,7 @@ export async function multipleArticleToTex(
   mainContent += '\\graphicspath{{/}{chapters/}}\n';
   // eslint-disable-next-line no-restricted-syntax
   for (const article of articles) {
-    mainContent += `\\chapter*{${article.model.title}}\n\\input{${article.ref}}\n\n`;
+    mainContent += `\\chapter{${article.model.title}}\n\\input{${article.ref}}\n\n`;
   }
 
   const mainContentFilename =
