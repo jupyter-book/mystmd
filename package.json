@@ -38,7 +38,9 @@
     "url": "https://github.com/curvenote/curvenote/issues"
   },
   "dependencies": {
+    "@jupyterlab/nbformat": "^3.3.2",
     "@typescript-eslint/eslint-plugin": "^5.16.0",
+    "nanoid": "^3.3.2",
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
