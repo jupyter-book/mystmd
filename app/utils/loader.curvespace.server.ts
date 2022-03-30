@@ -43,9 +43,9 @@ async function getCdnPath(hostname: string): Promise<string | undefined> {
   return data.cdn;
 }
 
-function withCDN(id: string, url?: string): string | undefined {
+function withCDN<T extends string | undefined>(id: string, url: T): T {
   if (!url) return url;
-  return `https://cdn.curvenote.com/${id}/public${url}`;
+  return `https://cdn.curvenote.com/${id}/public${url}` as T;
 }
 
 export async function getConfig(request: Request): Promise<Config | undefined> {
@@ -58,7 +58,11 @@ export async function getConfig(request: Request): Promise<Config | undefined> {
   const response = await fetch(`https://cdn.curvenote.com/${id}/config.json`);
   if (response.status === 404) return undefined;
   const data = (await response.json()) as Config;
-  data.site.id = id;
+  data.id = id;
+  data.site.actions.forEach((action) => {
+    if (!action.static) return;
+    action.url = withCDN(id, action.url);
+  });
   data.site.logo = withCDN(id, data.site.logo);
   getConfigCache().set<Config>(id, data);
   return data;
@@ -70,7 +74,7 @@ export async function getData(
   slug?: string,
 ): Promise<Data | null> {
   if (!folder || !slug || !config) return null;
-  const { id } = config.site;
+  const { id } = config;
   const response = await fetch(
     `https://cdn.curvenote.com/${id}/content/${folder}/${slug}.json`,
   );

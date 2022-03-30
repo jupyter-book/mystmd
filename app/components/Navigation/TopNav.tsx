@@ -169,7 +169,9 @@ export function TopNav() {
                 key={action.url || index}
                 className="inline-block text-md px-4 py-2 mx-1 leading-none border rounded text-white border-white hover:border-transparent hover:text-stone-500 hover:bg-white mt-0"
                 href={action.url}
-                target={action.url?.startsWith('http') ? '_blank' : undefined}
+                target={
+                  action.url?.startsWith('http') || action.static ? '_blank' : undefined
+                }
               >
                 {action.title}
               </a>

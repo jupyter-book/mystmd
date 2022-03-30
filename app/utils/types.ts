@@ -6,7 +6,7 @@ export type Config = {
     name: string;
     sections: { title: string; folder: string }[];
     twitter?: string;
-    actions: { title: string; url: string }[];
+    actions: { title: string; url: string; static?: boolean }[];
     logo?: string;
     logoText?: string;
   };
