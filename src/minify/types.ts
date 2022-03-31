@@ -4,7 +4,6 @@ export interface MinifyOptions {
   basepath: string;
   maxCharacters: number;
   truncateTo: number;
-  randomPath: boolean;
 }
 
 export type MinifiedStreamOutput = { path?: string } & IStream;
