@@ -85,12 +85,26 @@ export function propagateTargets(tree: Root) {
   remove(tree, 'target');
 }
 
+/**
+ * Ensure caption content is nested in a paragraph.
+ *
+ * This function is idempotent!
+ */
+export function ensureCaptionIsParagraph(tree: Root) {
+  visit(tree, 'caption', (node: GenericNode) => {
+    if (node.children && node.children[0].type !== 'paragraph') {
+      node.children = [{ type: 'paragraph', children: node.children }];
+    }
+  });
+}
+
 export const transform: Plugin<[State, Options?], string, Root> =
   (state, o) => (tree: Root) => {
     const opts = {
       ...defaultOptions,
       ...o,
     };
+    ensureCaptionIsParagraph(tree);
     propagateTargets(tree);
     countState(state, tree);
     referenceState(state, tree);
