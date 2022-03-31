@@ -79,12 +79,12 @@ export class WebFileObject implements IFileObject {
    * NOTE: in order for the id and filename to be correct, the contentType must be set before calling this method.
    *
    * @param data: string - the base64 encoded image data
-   * @param contentType: string | undefined - the mime type of the data, which if supplied will override that found in the data
+   * @param contentType: string | undefined - the mime type of the data, which if supplied will be used as fallback
    * @returns
    */
   writeBase64(data: string, contentType?: string): Promise<void> {
-    const [header, justData] = data.split(';base64,');
-    this.contentType = contentType ?? header.replace('data:', '');
+    const [justData, header] = data.split(';base64,').reverse(); // reverse as sometimes there is no header
+    this.contentType = header?.replace('data:', '') ?? contentType;
     this.hash = computeHash(justData);
     this.log.debug(`Writing binary output file ${justData.length} bytes`);
     return fsp.writeFile(path.join(this.publicPath, this.id), justData, {

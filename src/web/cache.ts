@@ -3,12 +3,11 @@ import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
 import {
-  OutputSummaries,
   parseNotebook,
-  summarizeOutputs,
   TranslatedBlockPair,
+  minifyCellOutput,
+  MinifiedOutput,
 } from '@curvenote/nbtx';
-import { IOutput } from '@jupyterlab/nbformat';
 import { nanoid } from 'nanoid';
 import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
 import { ISession } from '../session/types';
@@ -43,8 +42,6 @@ function createOutputDirective(): { myst: string; id: string } {
   return { myst: `\`\`\`{output}\n:id: ${id}\n\`\`\``, id };
 }
 
-type ITruncatedOutput = { path: string } & IOutput;
-
 async function processNotebook(
   cache: IDocumentCache,
   filename: { from: string; to: string },
@@ -62,7 +59,7 @@ async function processNotebook(
     useHash: true,
   });
 
-  const outputMap: Record<string, OutputSummaries[]> = {};
+  const outputMap: Record<string, MinifiedOutput[]> = {};
 
   const items = (
     await children?.reduce(async (P, item: TranslatedBlockPair) => {
@@ -75,17 +72,15 @@ async function processNotebook(
       }
       if (item.content.kind === KINDS.Code) {
         const code = `\`\`\`${language}\n${asString(item.content.content)}\n\`\`\``;
-        // TODO the contents of item.output.original is exactly what is needed by
-        // a renderer which would use the Juptyer OutputArea class
         if (item.output && item.output.original) {
-          const summaries: OutputSummaries[] = await summarizeOutputs(
+          const minified: MinifiedOutput[] = await minifyCellOutput(
             fileFactory,
             item.output.original as CellOutput[],
-            '',
+            { basepath: '' }, // fileFactory takes care of this
           );
 
           const { myst, id } = createOutputDirective();
-          outputMap[id] = summaries;
+          outputMap[id] = minified;
 
           return acc.concat(code).concat([myst]);
         }
