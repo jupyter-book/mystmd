@@ -14,6 +14,7 @@ import {
 } from './utils';
 import { map } from 'unist-util-map';
 import { selectAll } from 'unist-util-select';
+import { ensureCaptionIsParagraph } from './transforms';
 
 export type Options = {
   handlers?: Record<string, Spec>;
@@ -582,13 +583,7 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
     tree = newTree as Root;
   }
 
-  // Ensure caption content is nested in a paragraph
-  visit(tree, 'caption', (node: GenericNode) => {
-    if (node.children && node.children[0].type !== 'paragraph') {
-      node.children = [{ type: 'paragraph', children: node.children }];
-    }
-  });
-
+  ensureCaptionIsParagraph(tree);
   // Replace "table node with caption" with "figure node with table and caption"
   // TODO: Clean up when we update to typescript > 4.6.2 and we have access to
   //       parent in visitor function.
