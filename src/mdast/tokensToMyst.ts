@@ -133,18 +133,17 @@ const defaultMdast: Record<string, Spec> = {
     type: 'code',
     isLeaf: true,
     getAttrs(t) {
-      const name = t.meta?.name || undefined;
-      const showLineNumbers = !!(
-        t.meta?.linenos ||
-        t.meta?.linenos === null || // Weird docutils implementation
-        t.meta?.['number-lines']
-      );
-      const lineno = t.meta?.['lineno-start'] ?? t.meta?.['number-lines'];
+      const name = t.attrGet('name') || undefined;
+      const showLineNumbers = !!(t.attrGet('linenos') || t.attrGet('number-lines'));
+      const lineno = t.attrGet('lineno-start') ?? t.attrGet('number-lines');
       const startingLineNumber =
-        lineno && lineno !== 1 && !isNaN(Number(lineno)) ? Number(lineno) : undefined;
-      const emphasizeLines = t.meta?.['emphasize-lines']
-        ? t.meta?.['emphasize-lines']
-            .split(',')
+        lineno && Number(lineno) !== 1 && !isNaN(Number(lineno))
+          ? Number(lineno)
+          : undefined;
+      const emphasizeLines = t.attrGet('emphasize-lines')
+        ? t
+            .attrGet('emphasize-lines')
+            ?.split(',')
             .map((n: string) => Number(n.trim()))
             .filter((n: number) => !isNaN(n) && n > 0)
         : undefined;
@@ -246,7 +245,7 @@ const defaultMdast: Record<string, Spec> = {
   figure: {
     type: 'container',
     getAttrs(token): Container {
-      const name = token.meta?.name || undefined;
+      const name = token.attrGet('id') || undefined;
       return {
         kind: 'figure',
         ...normalizeLabel(name),
@@ -264,13 +263,15 @@ const defaultMdast: Record<string, Spec> = {
   table: {
     type: 'table',
     getAttrs(token) {
-      const name = token.meta?.name || undefined;
+      const name = token.attrGet('name') || undefined;
+      const alignMatch = hasClassName(token, ALIGN_CLASS);
+      const align = alignMatch ? alignMatch[1] : undefined;
       return {
         kind: undefined,
         ...normalizeLabel(name),
         numbered: name ? true : undefined,
         class: getClassName(token, [NUMBERED_CLASS, ALIGN_CLASS]),
-        align: token.meta?.align || undefined,
+        align,
       };
     },
   },

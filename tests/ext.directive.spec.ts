@@ -23,6 +23,9 @@ const custom: IDirective = {
         map: data.bodyMap,
         block: true,
       });
+      if (data.options.name) {
+        token.attrSet('name', data.options.name);
+      }
       return [token];
     }
   },
@@ -32,7 +35,7 @@ const custom: IDirective = {
     isLeaf: true,
     getAttrs(t) {
       return {
-        name: t.meta.name || undefined,
+        name: t.attrGet('name'),
         value: t.content,
       };
     },
