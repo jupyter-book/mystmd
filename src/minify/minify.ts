@@ -30,7 +30,6 @@ export async function minifyCellOutput(
   outputs: IOutput[],
   opts: Partial<MinifyOptions> = {},
 ): Promise<MinifiedOutput[]> {
-  if (!opts.basepath) throw Error(`Need to set a basepath`);
   const options = {
     basepath: opts.basepath ?? 'output',
     maxCharacters: opts.maxCharacters ?? MAX_CHARS,

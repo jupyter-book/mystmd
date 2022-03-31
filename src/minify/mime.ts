@@ -15,9 +15,9 @@ async function minifyContent(
     return { content, content_type: contentType };
   const file = fileFactory(`${opts.basepath}-${ensureSafePath(contentType)}`);
   if (isBase64Image) {
-    await file.writeBase64(content);
+    await file.writeBase64(content, contentType);
   } else {
-    await file.writeString(content, 'text/plain');
+    await file.writeString(content, contentType);
   }
   return {
     content: `${content.slice(0, opts.truncateTo - 3)}...`,

@@ -52,13 +52,16 @@ export function makeNativeMimeOutput(output_type?: string, mimetype?: string, co
 
 const fileBackend: {
   lastWrite: 'writeString' | 'writeBase64' | null;
+  lastContentType: string | null;
 } = {
   lastWrite: null,
+  lastContentType: null,
 };
 
 export type IFileObjectFactoryFn = (path: string) => IFileObject;
 
 export const getLastFileWrite = () => fileBackend.lastWrite;
+export const getLastContentType = () => fileBackend.lastContentType;
 
 export class TestFileObject implements IFileObject {
   path: string;
@@ -73,11 +76,13 @@ export class TestFileObject implements IFileObject {
 
   writeString(data: string, contentType: string): Promise<void> {
     fileBackend.lastWrite = 'writeString';
+    fileBackend.lastContentType = contentType;
     return Promise.resolve();
   }
 
   writeBase64(data: string, contentType: string): Promise<void> {
     fileBackend.lastWrite = 'writeBase64';
+    fileBackend.lastContentType = contentType;
     return Promise.resolve();
   }
 

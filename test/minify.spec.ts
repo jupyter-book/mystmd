@@ -8,30 +8,22 @@ import {
 
 describe('minify', () => {
   test.each([[[{} as any]], [[{} as any, {} as any]]])('unrecognized', async (outputs: any[]) => {
-    expect(
-      await minifyCellOutput((p: string) => new TestFileObject(p), outputs, {
-        randomPath: true,
-      }),
-    ).toEqual([]);
+    expect(await minifyCellOutput((p: string) => new TestFileObject(p), outputs, {})).toEqual([]);
   });
   test.each([
     [[makeNativeStreamOutput('hello')]],
     [[makeNativeStreamOutput('hello'), makeNativeStreamOutput('hello')]],
   ])('outputs', async (outputs: any[]) => {
-    expect(
-      await minifyCellOutput((p: string) => new TestFileObject(p), outputs, {
-        randomPath: true,
-      }),
-    ).toHaveLength(outputs.length);
+    expect(await minifyCellOutput((p: string) => new TestFileObject(p), outputs, {})).toHaveLength(
+      outputs.length,
+    );
   });
 
   test('outputs', async () => {
     const outputs = await minifyCellOutput(
       (p: string) => new TestFileObject(p),
       [makeNativeStreamOutput('hello'), makeNativeErrorOutput(['oh no']), makeNativeMimeOutput()],
-      {
-        randomPath: true,
-      },
+      {},
     );
 
     expect(outputs).toHaveLength(3);
