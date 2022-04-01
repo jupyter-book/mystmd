@@ -390,4 +390,4 @@ files.forEach((file) => {
     }
   });
 });
-writeFileSync(join('dist', jsonTestCaseFile), JSON.stringify(jsonTestCases));
+writeFileSync(join('dist', jsonTestCaseFile), JSON.stringify(jsonTestCases, null, 2));
