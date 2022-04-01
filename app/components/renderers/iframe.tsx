@@ -1,6 +1,6 @@
-import type { GenericNode } from 'mystjs';
+import { NodeRenderer } from 'myst-util-to-react';
 
-export const IFrame = (node: GenericNode) => {
+export const IFrame: NodeRenderer = (node) => {
   return (
     <figure
       key={node.key}

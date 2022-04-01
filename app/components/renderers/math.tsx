@@ -1,5 +1,4 @@
-import type { GenericNode } from 'mystjs';
-import { NodeTypes } from 'myst-util-to-react';
+import { NodeRenderer } from 'myst-util-to-react';
 
 // function Math({ value, html }: { value: string; html: string }) {
 //   const [loaded, setLoaded] = useState(false);
@@ -26,15 +25,17 @@ import { NodeTypes } from 'myst-util-to-react';
 //   );
 // }
 
-const mathBlock = (displayMode: boolean) => (node: GenericNode) => {
-  if (displayMode) {
-    return <div key={node.key} dangerouslySetInnerHTML={{ __html: node.html }} />;
-  }
-  return <span key={node.key} dangerouslySetInnerHTML={{ __html: node.html }} />;
-  // return <Math key={node.key} html={node.html} value={node.value as string} />;
-};
+const mathBlock =
+  (displayMode: boolean): NodeRenderer =>
+  (node) => {
+    if (displayMode) {
+      return <div key={node.key} dangerouslySetInnerHTML={{ __html: node.html }} />;
+    }
+    return <span key={node.key} dangerouslySetInnerHTML={{ __html: node.html }} />;
+    // return <Math key={node.key} html={node.html} value={node.value as string} />;
+  };
 
-export const mathRenderers: NodeTypes = {
+export const mathRenderers = {
   math: mathBlock(true),
   inlineMath: mathBlock(false),
 };

@@ -1,7 +1,10 @@
-import { Component } from 'myst-util-to-react';
+import { Link } from 'myst-spec';
+import { NodeRenderer } from 'myst-util-to-react';
 import { Link as RemixLink } from 'remix';
 
-export const Link: Component = (node, children) => {
+type TransformedLink = Link & { internal?: boolean };
+
+export const link: NodeRenderer<TransformedLink> = (node, children) => {
   const internal = node.internal ?? false;
   if (internal) {
     return (
@@ -18,5 +21,5 @@ export const Link: Component = (node, children) => {
 };
 
 export const linkRenderers = {
-  link: Link,
+  link,
 };

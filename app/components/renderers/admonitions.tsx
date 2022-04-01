@@ -1,4 +1,4 @@
-import { Component, NodeTypes } from 'myst-util-to-react';
+import { NodeRenderer } from 'myst-util-to-react';
 import {
   InformationCircleIcon,
   ExclamationIcon as OExclamationIcon,
@@ -31,11 +31,11 @@ enum AdmonitionKind {
   warning = 'warning',
 }
 
-export const AdmonitionTitle: Component = (node, children) => {
+export const AdmonitionTitle: NodeRenderer = (node, children) => {
   return children;
 };
 
-export const Admonition: Component = (node, children) => {
+export const Admonition: NodeRenderer = (node, children) => {
   const [title, ...rest] = children as any[];
 
   // TODO: react to classes as well!
@@ -93,7 +93,7 @@ export const Admonition: Component = (node, children) => {
   );
 };
 
-export const admonitionRenderers: NodeTypes = {
+export const admonitionRenderers = {
   admonition: Admonition,
   admonitionTitle: AdmonitionTitle,
 };

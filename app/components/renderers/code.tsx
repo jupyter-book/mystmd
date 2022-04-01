@@ -1,9 +1,9 @@
+import type { Code } from 'myst-spec';
+import { NodeRenderer } from 'myst-util-to-react';
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 import light from 'react-syntax-highlighter/dist/cjs/styles/hljs/xcode';
 import dark from 'react-syntax-highlighter/dist/cjs/styles/hljs/vs2015';
-import type { GenericNode } from 'mystjs';
 import { useTheme } from '../theme';
-import { NodeTypes } from 'myst-util-to-react';
 
 type Props = {
   children: string;
@@ -48,21 +48,23 @@ export function CodeBlock(props: Props) {
   );
 }
 
-export const codeRenderers: NodeTypes = {
-  code(node: GenericNode) {
-    return (
-      <div
-        key={node.key}
-        className="not-prose rounded shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-8 text-sm border border-l-4 border-l-blue-400 border-gray-200 dark:border-l-blue-400 dark:border-gray-800 overflow-scroll"
+const code: NodeRenderer<Code> = (node) => {
+  return (
+    <div
+      key={node.key}
+      className="not-prose rounded shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-8 text-sm border border-l-4 border-l-blue-400 border-gray-200 dark:border-l-blue-400 dark:border-gray-800 overflow-scroll"
+    >
+      <CodeBlock
+        lang={node.lang}
+        emphasizeLines={node.emphasizeLines}
+        showLineNumbers={node.showLineNumbers}
       >
-        <CodeBlock
-          lang={node.lang}
-          emphasizeLines={node.emphasizeLines}
-          showLineNumbers={node.showLineNumbers}
-        >
-          {node.value || ''}
-        </CodeBlock>
-      </div>
-    );
-  },
+        {node.value || ''}
+      </CodeBlock>
+    </div>
+  );
+};
+
+export const codeRenderers = {
+  code,
 };

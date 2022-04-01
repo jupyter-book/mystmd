@@ -3,24 +3,20 @@ html {
 }
 cite {
   font-style: normal;
-  color: var(--text-secondary);
 }
-cite:hover {
-  color: var(--text-primary);
+.cite-group.parenthetical cite::after {
+  content: ';\00a0';
 }
-.cite-group {
-  color: var(--text-secondary);
-}
-.cite-group cite::after {
-  content: '\;\00a0';
+.cite-group.narrative cite::after {
+  content: ',\00a0';
 }
 .cite-group > span:last-of-type cite::after {
   content: '';
 }
-.cite-group:before {
+.cite-group.parenthetical:before {
   content: '(';
 }
-.cite-group:after {
+.cite-group.parenthetical:after {
   content: ')';
 }
 pre > code > span[data-line-number] {

@@ -1,4 +1,5 @@
-import { Component, NodeTypes } from 'myst-util-to-react';
+import classNames from 'classnames';
+import { NodeRenderer } from 'myst-util-to-react';
 import { useState } from 'react';
 import { useReferences } from '../ReferencesProvider';
 import { ClickPopover } from './ClickPopover';
@@ -9,15 +10,21 @@ function CiteChild({ label }: { label: string }) {
   return <div dangerouslySetInnerHTML={{ __html: html || '' }} />;
 }
 
-export const CiteGroup: Component = (node, children) => {
+export const CiteGroup: NodeRenderer = (node, children) => {
   return (
-    <span key={node.key} className="cite-group">
+    <span
+      key={node.key}
+      className={classNames('cite-group', {
+        narrative: node.kind === 'narrative',
+        parenthetical: node.kind === 'parenthetical',
+      })}
+    >
       {children}
     </span>
   );
 };
 
-export const Cite: Component = (node, children) => {
+export const Cite: NodeRenderer = (node, children) => {
   return (
     <ClickPopover key={node.key} card={<CiteChild label={node.label as string} />}>
       {children}
@@ -78,7 +85,7 @@ export function Bibliography() {
   );
 }
 
-export const citeRenderers: NodeTypes = {
+export const citeRenderers: Record<string, NodeRenderer> = {
   citeGroup: CiteGroup,
   cite: Cite,
   bibliography: (node) => <Bibliography key={node.key}></Bibliography>,

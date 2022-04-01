@@ -1,6 +1,6 @@
-import { useParse, Component, NodeTypes } from 'myst-util-to-react';
-import { useReferences } from '../ReferencesProvider';
 import type { GenericParent } from 'mystjs';
+import { useParse, NodeRenderer } from 'myst-util-to-react';
+import { useReferences } from '../ReferencesProvider';
 import { ClickPopover } from './ClickPopover';
 
 export function FootnoteDefinition({ identifier }: { identifier: string }) {
@@ -11,7 +11,7 @@ export function FootnoteDefinition({ identifier }: { identifier: string }) {
   return <>{children}</>;
 }
 
-export const FootnoteReference: Component = (node) => {
+export const FootnoteReference: NodeRenderer = (node) => {
   return (
     <ClickPopover
       key={node.key}
@@ -23,6 +23,6 @@ export const FootnoteReference: Component = (node) => {
   );
 };
 
-export const footnoteRenderers: NodeTypes = {
+export const footnoteRenderers = {
   footnoteReference: FootnoteReference,
 };

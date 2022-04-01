@@ -1,4 +1,4 @@
-import type { GenericNode } from 'mystjs';
+import { NodeRenderer } from 'myst-util-to-react';
 import { OutputSummaryKind } from '@curvenote/blocks/dist/blocks/output';
 import { DangerousHTML, MaybeLongContent } from './components';
 import classNames from 'classnames';
@@ -15,7 +15,7 @@ const SUPORTED_KINDS = new Set([
 
 const PRIORITIZED_FALLBACK_KINDS = [OutputSummaryKind.image, OutputSummaryKind.text];
 
-export const Output = (node: GenericNode) => {
+export const Output: NodeRenderer = (node) => {
   let outputComponent = null;
 
   let data:
