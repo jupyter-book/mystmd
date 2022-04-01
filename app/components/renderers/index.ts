@@ -1,4 +1,4 @@
-import { nodes, NodeTypes } from 'myst-util-to-react';
+import { nodes, NodeRenderer } from 'myst-util-to-react';
 import { admonitionRenderers } from './admonitions';
 import { citeRenderers } from './cite';
 import { footnoteRenderers } from './footnotes';
@@ -9,7 +9,7 @@ import { iframeRenderers } from './iframe';
 import { linkRenderers } from './links';
 import { outputRenderers } from './output';
 
-export const defaultRenderers: NodeTypes = {
+export const defaultRenderers: Record<string, NodeRenderer> = {
   ...nodes,
   ...linkRenderers,
   ...codeRenderers,

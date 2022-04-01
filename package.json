@@ -27,7 +27,7 @@
     "classnames": "^2.3.1",
     "lodash.throttle": "^4.1.1",
     "myst-spec": "^0.0.2",
-    "myst-util-to-react": "^0.0.11",
+    "myst-util-to-react": "^0.0.12",
     "mystjs": "^0.0.4",
     "node-cache": "^5.1.2",
     "react": "^17.0.2",

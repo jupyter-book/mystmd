@@ -1,4 +1,4 @@
-import { NodeTypes, useParse } from 'myst-util-to-react';
+import { NodeRenderer, useParse } from 'myst-util-to-react';
 import type { GenericParent } from 'mystjs';
 import { defaultRenderers } from './renderers';
 
@@ -9,7 +9,7 @@ export function ContentBlock({
 }: {
   id: string;
   node: GenericParent;
-  renderers?: NodeTypes;
+  renderers?: Record<string, NodeRenderer>;
 }) {
   const children = useParse(node, renderers);
   return <div id={id}>{children}</div>;
