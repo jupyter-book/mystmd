@@ -6,6 +6,7 @@ import { load, dump } from 'js-yaml';
 const outputSchemaFile = 'myst.schema.json';
 const outputDocFile = 'myst.schema.md';
 const outputTsFile = 'index.d.ts';
+const jsonTestCaseFile = 'myst.tests.json';
 
 type PropertyDefinition = {
   description?: string;
@@ -341,15 +342,32 @@ type TestCase = {
   html?: string;
 };
 
-const directory = join('docs', 'examples');
-const files: string[] = readdirSync(directory)
-  .filter((name) => name.endsWith('.yml'))
-  .map((name) => join(directory, name));
+type JsonTestCase = {
+  title: string;
+  mdast: Record<string, any>;
+  myst: string;
+  html?: string;
+};
 
+const directory = join('docs', 'examples');
+const files: string[] = readdirSync(directory).filter((name) => name.endsWith('.yml'));
+let jsonTestCases: JsonTestCase[] = [];
 files.forEach((file) => {
-  const testYaml = readFileSync(file).toString();
+  const testYaml = readFileSync(join(directory, file)).toString();
   const cases = load(testYaml) as TestFile;
   cases.cases.forEach((testCase) => {
+    if (!testCase.invalid && !testCase.skip && testCase.mdast && testCase.myst) {
+      let html = testCase.html;
+      if (html && !html.endsWith('\n')) {
+        html = html.concat('\n');
+      }
+      jsonTestCases = jsonTestCases.concat({
+        title: `${file.replace('.yml', '')}: ${testCase.title}`,
+        mdast: testCase.mdast,
+        myst: testCase.myst,
+        html,
+      });
+    }
     if (testCase.id) {
       const outFile = join(directory, `${testCase.id}.md`);
       let md = '';
@@ -372,3 +390,4 @@ files.forEach((file) => {
     }
   });
 });
+writeFileSync(join('dist', jsonTestCaseFile), JSON.stringify(jsonTestCases));
