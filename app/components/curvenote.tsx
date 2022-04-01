@@ -1,11 +1,20 @@
-export function CurvenoteLogo({ size = 24 }: { size?: number }) {
+export function CurvenoteLogo({
+  size = 24,
+  fill = '#235F9D',
+  className,
+}: {
+  size?: number;
+  fill?: string;
+  className?: string;
+}) {
   return (
     <svg
       style={{ width: size, height: size }}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 400 400"
       stroke="none"
-      fill="#235F9D"
+      fill={fill}
+      className={className}
     >
       <g id="icon">
         <path

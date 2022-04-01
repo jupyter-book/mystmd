@@ -8,6 +8,7 @@ import { Config, getFolder } from '~/utils';
 import { ThemeButton } from '../ThemeButton';
 import { useConfig } from '../ConfigProvider';
 import { useNavOpen } from '../UiStateProvider';
+import { CurvenoteLogo } from '../curvenote';
 
 function ActionMenu({ actions }: { actions?: Config['site']['actions'] }) {
   if (!actions || actions.length === 0) return null;
@@ -95,6 +96,41 @@ function useLoading() {
   return { showLoading, isLoading: transitionState === 'loading' };
 }
 
+function HomeLink({
+  logo,
+  logoText,
+  name,
+}: {
+  logo?: string;
+  logoText?: string;
+  name?: string;
+}) {
+  const nothingSet = !logo && !logoText;
+  return (
+    <Link
+      className="flex items-center text-white w-fit ml-3 md:ml-5 xl:ml-7"
+      to="/"
+      prefetch="intent"
+    >
+      {logo && (
+        <img
+          src={logo}
+          className="h-9 mr-3"
+          alt={logoText || name}
+          height="2.25rem"
+        ></img>
+      )}
+      {nothingSet && <CurvenoteLogo className="mr-3" fill="#FFF" size={30} />}
+      {logoText ||
+        (nothingSet && (
+          <span className="text-md sm:text-xl tracking-tight sm:mr-5">
+            {logoText || 'Curvenote'}
+          </span>
+        ))}
+    </Link>
+  );
+}
+
 export function TopNav() {
   const [open, setOpen] = useNavOpen();
   const config = useConfig();
@@ -115,23 +151,7 @@ export function TopNav() {
               <MenuIcon className="fill-current h-8 w-8 p-1" />
             </button>
           </div>
-          <Link
-            className="flex items-center text-white w-fit ml-3 md:ml-5 xl:ml-7"
-            to="/"
-            prefetch="intent"
-          >
-            <img
-              src={logo}
-              className="h-9 mr-3"
-              alt={logoText || name}
-              height="2.25rem"
-            ></img>
-            {logoText && (
-              <span className="text-md sm:text-xl tracking-tight sm:mr-5">
-                {logoText}
-              </span>
-            )}
-          </Link>
+          <HomeLink name={name} logo={logo} logoText={logoText} />
         </div>
         <div className="flex-grow flex items-center w-auto">
           <div className="text-md flex-grow hidden lg:block">
