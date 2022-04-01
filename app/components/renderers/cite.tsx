@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { NodeRenderer } from 'myst-util-to-react';
 import { useState } from 'react';
+import ExclamationIcon from '@heroicons/react/outline/ExclamationIcon';
 import { useReferences } from '../ReferencesProvider';
 import { ClickPopover } from './ClickPopover';
 
@@ -25,6 +26,14 @@ export const CiteGroup: NodeRenderer = (node, children) => {
 };
 
 export const Cite: NodeRenderer = (node, children) => {
+  if (node.error) {
+    return (
+      <span key={node.key} className="text-yellow-600" title="Citation Not Found">
+        <ExclamationIcon className="inline h-[1em] mr-1" />
+        {node.label}
+      </span>
+    );
+  }
   return (
     <ClickPopover key={node.key} card={<CiteChild label={node.label as string} />}>
       {children}
