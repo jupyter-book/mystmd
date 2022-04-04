@@ -11,12 +11,14 @@ export type MinifiedErrorOutput = { path?: string } & IError;
 
 export type MimeOutputType = 'execute_result' | 'display_data' | 'update_display_data';
 
+export interface MinifiedMimePayload {
+  content_type: string;
+  content: string;
+  path?: string;
+}
+
 export interface MinifiedMimeBundle {
-  [content_type: string]: {
-    content_type: string;
-    content: string;
-    path?: string;
-  };
+  [content_type: string]: MinifiedMimePayload;
 }
 
 export interface MinifiedMimeOutput {

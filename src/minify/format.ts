@@ -1,4 +1,10 @@
-import { MinifiedMimeBundle, MinifiedOutput } from './types';
+import {
+  MinifiedErrorOutput,
+  MinifiedMimePayload,
+  MinifiedOutput,
+  MinifiedStreamOutput,
+} from './types';
+import { walkPaths } from './utils';
 
 /**
  * formatMinifiedPaths
@@ -11,19 +17,12 @@ import { MinifiedMimeBundle, MinifiedOutput } from './types';
  * @param outputs
  */
 export function formatMinifiedPaths(outputs: MinifiedOutput[], formatFn: (p: string) => string) {
-  outputs.forEach((output: MinifiedOutput) => {
-    if ('path' in output && output.path) {
+  walkPaths(
+    outputs,
+    (p: string, obj: MinifiedStreamOutput | MinifiedErrorOutput | MinifiedMimePayload) => {
       // eslint-disable-next-line no-param-reassign
-      output.path = formatFn(output.path);
-    } else if ('data' in output && output.data) {
-      const data = output.data as MinifiedMimeBundle;
-      const mimetypes = Object.keys(data);
-      mimetypes.forEach((mimetype) => {
-        const bundle = data[mimetype];
-        if ('path' in bundle && bundle.path) {
-          bundle.path = formatFn(bundle.path);
-        }
-      });
-    }
-  });
+      obj.path = formatFn(p);
+      return p;
+    },
+  );
 }
