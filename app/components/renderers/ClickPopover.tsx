@@ -26,9 +26,9 @@ export function ClickPopover({
         {children}
       </Popover.Button>
       <Popover.Panel
-        className="absolute z-30"
+        className="absolute z-30 sm:max-w-[500px]"
         ref={setPopperElement}
-        style={{ ...styles.popper, width: 500 }}
+        style={{ ...styles.popper }}
         {...attributes.popper}
       >
         <Transition
