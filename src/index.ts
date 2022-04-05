@@ -19,7 +19,8 @@ export function createSanitizer() {
 }
 function cleanRef(citation: string) {
   const sanitizer = createSanitizer();
-  return sanitizer.cleanCitationHtml(citation).replace(/^1. /, '').trim();
+  const cleanHtml = sanitizer.cleanCitationHtml(citation).trim();
+  return cleanHtml.replace(/^1\./g, '').trim();
 }
 
 const defaultOpts: CitationFormatOptions = {
@@ -71,8 +72,28 @@ export function getInlineCitation(c: Cite, kind: InlineCite) {
 
 export type CitationRenderer = Record<
   string,
-  { render: () => string; inline: (kind?: InlineCite) => InlineNode[]; cite: any }
+  {
+    render: (style?: CitationJSStyles) => string;
+    inline: (kind?: InlineCite) => InlineNode[];
+    getDOI: () => string | undefined;
+    cite: any;
+  }
 >;
+
+function wrapWithDoiAchorTag(doiStr: string) {
+  if (!doiStr) return '';
+  return `<a target="_blank" rel="noreferrer" href="https://doi.org/${doiStr}">${doiStr}</a>`;
+}
+
+const URL_REGEX =
+  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+
+function replaceDoiWithAnchorElement(str: string, doi: string) {
+  if (!str) return str;
+  const match = str.match(URL_REGEX);
+  if (!match) return str;
+  return str.replace(URL_REGEX, wrapWithDoiAchorTag(doi));
+}
 
 export async function getCitations(bibtex: string): Promise<CitationRenderer> {
   const parse = Cite.parse.input.async.chain;
@@ -87,8 +108,18 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
           inline(kind = InlineCite.p) {
             return getInlineCitation(c, kind);
           },
-          render() {
-            return cleanRef(cite.set(c).get(defaultString));
+          render(style?: CitationJSStyles) {
+            return replaceDoiWithAnchorElement(
+              cleanRef(
+                cite
+                  .set(c)
+                  .get({ ...defaultString, style: style ?? CitationJSStyles.apa }),
+              ),
+              c.DOI,
+            );
+          },
+          getDOI(): string | undefined {
+            return c.DOI || undefined;
           },
           cite: c,
         },
