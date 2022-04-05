@@ -67,10 +67,12 @@ function NavItem({ item }: { item: NavItem }) {
                 <NavLink
                   prefetch="intent"
                   to={action.url}
-                  className={classNames(
-                    active ? 'bg-gray-100' : '',
-                    'block px-4 py-2 text-sm text-gray-700',
-                  )}
+                  className={({ isActive }) =>
+                    classNames('block px-4 py-2 text-sm text-gray-700', {
+                      'bg-gray-100': active,
+                      'text-black font-bold': isActive,
+                    })
+                  }
                 >
                   {action.title}
                 </NavLink>
