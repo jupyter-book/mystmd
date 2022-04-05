@@ -1,5 +1,11 @@
 import type { GenericNode, GenericParent } from 'mystjs';
 
+export type NavItem = {
+  title: string;
+  url: string;
+  children: Omit<NavItem, 'children'>[]; // Only one deep
+};
+
 export type Config = {
   id: string;
   site: {
@@ -7,6 +13,7 @@ export type Config = {
     sections: { title: string; folder: string }[];
     twitter?: string;
     actions: { title: string; url: string; static?: boolean }[];
+    nav: NavItem[];
     logo?: string;
     logoText?: string;
   };

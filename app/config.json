@@ -4,6 +4,16 @@
     "name": "Curvenote",
     "sections": [{ "title": "Demo Content", "folder": "demo" }],
     "twitter": "curvenote",
+    "nav": [
+      { "title": "Examples", "url": "/demo" },
+      {
+        "title": "Menu with Children",
+        "children": [
+          { "title": "A Child!", "url": "/demo" },
+          { "title": "Another Child!", "url": "/demo" }
+        ]
+      }
+    ],
     "actions": [
       { "title": "Log In", "url": "https://curvenote.com/signup" },
       { "title": "Sign Up", "url": "https://curvenote.com/signup/" }
