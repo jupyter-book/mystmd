@@ -79,3 +79,16 @@ export function getFooterLinks(
   };
   return footer;
 }
+
+export function copyTextToClipboard(text: string) {
+  return new Promise<void>((res, rej) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+        res();
+      },
+      (err) => {
+        rej(err);
+      },
+    );
+  });
+}

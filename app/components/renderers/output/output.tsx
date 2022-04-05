@@ -54,7 +54,7 @@ export const Output: NodeRenderer = (node) => {
         <MaybeLongContent
           {...data}
           render={(content: string) => (
-            <pre className="max-h-[20em] overflow-scroll">{content}</pre>
+            <pre className="max-h-[20em] overflow-auto">{content}</pre>
           )}
         />
       );
@@ -76,7 +76,7 @@ export const Output: NodeRenderer = (node) => {
     <figure
       key={node.key}
       id={node.identifier || undefined}
-      className={classNames('max-w-full overflow-scroll', {
+      className={classNames('max-w-full overflow-auto', {
         'text-left': !node.align || node.align === 'left',
         'text-center': node.align === 'center',
         'text-right': node.align === 'right',
