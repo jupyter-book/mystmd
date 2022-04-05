@@ -84,10 +84,11 @@ function NavItem({ item }: { item: NavItem }) {
 }
 
 function NavItems({ nav }: { nav?: Config['site']['nav'] }) {
+  if (!nav) return null;
   return (
     <div className="text-md flex-grow hidden lg:block">
-      {nav?.map((item) => {
-        return <NavItem item={item} />;
+      {nav.map((item) => {
+        return <NavItem key={item.url || item.title} item={item} />;
       })}
     </div>
   );

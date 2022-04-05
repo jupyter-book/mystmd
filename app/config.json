@@ -10,7 +10,7 @@
         "title": "Menu with Children",
         "children": [
           { "title": "A Child!", "url": "/demo" },
-          { "title": "Another Child!", "url": "/demo" }
+          { "title": "Admonitions!", "url": "/demo/admonitions" }
         ]
       }
     ],
