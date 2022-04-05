@@ -1,3 +1,4 @@
+import { Author } from '@curvenote/blocks';
 import type { GenericNode, GenericParent } from 'mystjs';
 
 export type NavItem = {
@@ -62,8 +63,8 @@ export type FooterLinks = {
 
 export type Frontmatter = {
   title?: string;
-  author?: string[];
   description?: string;
+  authors?: Author[];
 };
 
 export type PageLoader = {

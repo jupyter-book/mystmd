@@ -1,7 +1,7 @@
 import { MetaFunction, redirect, useCatch, useLoaderData } from 'remix';
 import type { LoaderFunction, LinksFunction } from 'remix';
 import type { GenericParent } from 'mystjs';
-import { ReferencesProvider, ContentBlock } from '~/components';
+import { ReferencesProvider, ContentBlock, Frontmatter } from '~/components';
 import {
   getData,
   getConfig,
@@ -67,16 +67,7 @@ export default function Page() {
   return (
     <ReferencesProvider references={article.references}>
       <div>
-        <h1 className="title">{article.frontmatter.title}</h1>
-        {article.frontmatter.author && article.frontmatter.author.length > 0 && (
-          <header className="not-prose mb-10">
-            <ol>
-              {article.frontmatter.author?.map((author, i) => (
-                <li key={i}>{author}</li>
-              ))}
-            </ol>
-          </header>
-        )}
+        <Frontmatter frontmatter={article.frontmatter} />
         {blocks.map((node, index) => {
           return <ContentBlock key={node.key} id={`${index}`} node={node} />;
         })}

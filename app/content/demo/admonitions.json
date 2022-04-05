@@ -4,7 +4,20 @@
     "title": "Admonitions",
     "description": "Custom admonitions",
     "date": "2021-06-02T22:55:21.252Z",
-    "author": ["Rowan"],
+    "authors": [
+      {
+        "name": "Rowan Cockett",
+        "affiliations": ["Curvenote"],
+        "corresponding": true,
+        "email": "rowan@curvenote.com",
+        "orcid": "0000-0002-7859-8394"
+      },
+      {
+        "name": "Steve Purves",
+        "affiliations": ["Curvenote"],
+        "orcid": "0000-0002-0760-5497"
+      }
+    ],
     "name": "article-comments",
     "oxa": "oxa:MshxlXndaLsk3WbJ0ZGy/Yeu7QvCSm6wRMLCcpkm4"
   },
