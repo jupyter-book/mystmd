@@ -24,5 +24,7 @@ module.exports = {
     'zwitch',
     /^vfile.*/,
     'react-syntax-highlighter',
+    '@jupyterlab/rendermime',
+    '@jupyterlab/rendermime-interfaces',
   ],
 };

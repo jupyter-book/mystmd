@@ -1,29 +1,46 @@
-import { NodeRenderer } from 'myst-util-to-react';
-import { OutputSummaryKind } from '@curvenote/blocks/dist/blocks/output';
+import type { GenericNode } from 'mystjs';
+import { KnownCellOutputMimeTypes } from '@curvenote/blocks/dist/blocks/types/jupyter';
+import { MinifiedMimeOutput, MinifiedOutput } from '@curvenote/nbtx/dist/minify/types';
 import classNames from 'classnames';
 import { SafeOutputs } from './safe';
 import { NativeJupyterOutputs as JupyterOutputs } from './jupyter';
-import { OutputSummary } from './hooks';
 
-const RENDER_DIRECTLY = new Set([
-  OutputSummaryKind.stream,
-  OutputSummaryKind.image,
-  OutputSummaryKind.text,
-]);
+const DIRECT_OUTPUT_TYPES = new Set(['stream', 'error']);
+
+const DIRECT_MIME_TYPES = new Set([
+  KnownCellOutputMimeTypes.TextPlain,
+  KnownCellOutputMimeTypes.ImagePng,
+  KnownCellOutputMimeTypes.ImageGif,
+  KnownCellOutputMimeTypes.ImageJpeg,
+  KnownCellOutputMimeTypes.ImageBmp,
+]) as Set<string>;
+
+export function allOutputsAreSafe(
+  outputs: MinifiedOutput[],
+  directOutputTypes: Set<string>,
+  directMimeTypes: Set<string>,
+) {
+  return outputs.reduce((flag, output) => {
+    const safe =
+      directOutputTypes.has(output.output_type) ||
+      ('data' in output &&
+        Boolean(output.data) &&
+        Object.keys((output as MinifiedMimeOutput).data).every((mimetype) =>
+          directMimeTypes.has(mimetype),
+        ));
+    return flag && safe;
+  }, true);
+}
 
 export function Output(node: GenericNode) {
-  const data: OutputSummary[] = node.data;
-
-  const allSafe = data.reduce(
-    (flag, output) => flag && RENDER_DIRECTLY.has(output.kind),
-    true,
-  );
+  const outputs: MinifiedOutput[] = node.data;
+  const allSafe = allOutputsAreSafe(outputs, DIRECT_MIME_TYPES, DIRECT_OUTPUT_TYPES);
 
   let component;
   if (allSafe) {
-    component = <SafeOutputs keyStub={node.key} data={node.data} />;
+    component = <SafeOutputs keyStub={node.key} outputs={outputs} />;
   } else {
-    component = <JupyterOutputs summaries={node.data} />;
+    component = <JupyterOutputs outputs={outputs} />;
   }
 
   return (
