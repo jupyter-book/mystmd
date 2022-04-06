@@ -7,12 +7,21 @@ function Author({ author }: { author: Required<FrontmatterType>['authors'][0] })
     <div className="font-semibold text-sm">
       {author.name}
       {author.email && author.corresponding && (
-        <a href={`mailto:${author.email}`} title={author.email} target="_blank">
+        <a
+          href={`mailto:${author.email}`}
+          title={author.email}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <Email className="ml-2 inline-block h-[1.2em] w-[1.2em] -translate-y-[2px]" />
         </a>
       )}
       {author.orcid && (
-        <a href={`https://orcid.org/${author.orcid}`}>
+        <a
+          href={`https://orcid.org/${author.orcid}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <OrcidLogo className="ml-2 inline-block h-[1.2em] w-[1.2em] -translate-y-[2px]" />
         </a>
       )}
