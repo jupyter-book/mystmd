@@ -5,7 +5,7 @@ import Bottleneck from 'bottleneck';
 import { Block } from '../src/models';
 import { BlockId } from '@curvenote/blocks';
 
-const PROJECT_ID = 'ANIrcw5lvVZsEvuPctw5';
+const PROJECT_ID = '<project-id>';
 
 const newAuthorsInfo = [
   {
