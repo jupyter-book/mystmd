@@ -10,11 +10,12 @@ import {
 } from '@curvenote/nbtx';
 import { nanoid } from 'nanoid';
 import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
+import { GenericNode, selectAll } from 'mystjs';
 import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
 import { IDocumentCache, Options, SiteConfig } from './types';
 import { parseMyst, publicPath, RendererData, serverPath, transformMdast } from './utils';
-import { GenericNode, selectAll } from 'mystjs';
+
 import { LinkLookup, transformLinks } from './transforms';
 import { copyImages, readConfig } from './webConfig';
 import { createWebFileObjectFactory } from './files';
