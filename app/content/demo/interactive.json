@@ -3,7 +3,9 @@
     "title": "Interactive Components",
     "description": "How does open-science allow us to reimagine how we stand on the shoulders of giants?",
     "date": "2021-01-27T18:55:00.000Z",
-    "author": ["@rowanc1"],
+    "author": [
+      "@rowanc1"
+    ],
     "name": "communicating-science",
     "oxa": "oxa:AVQ2dzLNloEd25Io8NbA/qejlAHZA1c1plMBozBGl"
   },
@@ -18,7 +20,11 @@
             "type": "heading",
             "depth": 2,
             "children": [
-              { "type": "text", "value": "Park Admission", "key": "FGZzciCoWs" }
+              {
+                "type": "text",
+                "value": "Park Admission",
+                "key": "FGZzciCoWs"
+              }
             ],
             "key": "jA2zodv58A"
           },
@@ -39,8 +45,16 @@
           {
             "type": "paragraph",
             "children": [
-              { "type": "text", "value": "If there are ", "key": "neenTWsOfX" },
-              { "type": "r:display", "valueFunction": "visitors", "key": "pgsn0rilEG" },
+              {
+                "type": "text",
+                "value": "If there are ",
+                "key": "neenTWsOfX"
+              },
+              {
+                "type": "r:display",
+                "valueFunction": "visitors",
+                "key": "pgsn0rilEG"
+              },
               {
                 "type": "text",
                 "value": " visitors and admission cost ",
@@ -52,21 +66,33 @@
                 "format": "$,.2f",
                 "key": "azaBnf4zvt"
               },
-              { "type": "text", "value": ", then we would make ", "key": "KkiNqwUpLo" },
+              {
+                "type": "text",
+                "value": ", then we would make ",
+                "key": "KkiNqwUpLo"
+              },
               {
                 "type": "r:display",
                 "valueFunction": "cost * visitors",
                 "format": "$.2f",
                 "key": "Pr1GfpoYav"
               },
-              { "type": "text", "value": "!!", "key": "WcP5uu4jga" },
+              {
+                "type": "text",
+                "value": "!!",
+                "key": "WcP5uu4jga"
+              },
               {
                 "type": "footnoteReference",
                 "identifier": "1",
                 "label": "1",
                 "key": "quytAE3YTv"
               },
-              { "type": "text", "value": ".", "key": "iqAENMaFmc" }
+              {
+                "type": "text",
+                "value": ".",
+                "key": "iqAENMaFmc"
+              }
             ],
             "key": "E19gWSGoHm"
           },
@@ -75,10 +101,20 @@
             "children": [
               {
                 "type": "strong",
-                "children": [{ "type": "text", "value": "Cost:", "key": "MYLOWCR2tm" }],
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Cost:",
+                    "key": "MYLOWCR2tm"
+                  }
+                ],
                 "key": "NdZkAH8toN"
               },
-              { "type": "text", "value": " ", "key": "UM288Kzasw" },
+              {
+                "type": "text",
+                "value": " ",
+                "key": "UM288Kzasw"
+              },
               {
                 "type": "r:range",
                 "valueFunction": "cost",
@@ -94,11 +130,19 @@
               {
                 "type": "strong",
                 "children": [
-                  { "type": "text", "value": "Visitors:", "key": "Cs0ctTCc0X" }
+                  {
+                    "type": "text",
+                    "value": "Visitors:",
+                    "key": "Cs0ctTCc0X"
+                  }
                 ],
                 "key": "zd2VWh0528"
               },
-              { "type": "text", "value": " ", "key": "BIlCsklJpY" },
+              {
+                "type": "text",
+                "value": " ",
+                "key": "BIlCsklJpY"
+              },
               {
                 "type": "r:range",
                 "valueFunction": "visitors",
@@ -133,7 +177,11 @@
               {
                 "type": "admonitionTitle",
                 "children": [
-                  { "type": "text", "value": "Important", "key": "vzumZD7yoq" }
+                  {
+                    "type": "text",
+                    "value": "Important",
+                    "key": "vzumZD7yoq"
+                  }
                 ],
                 "key": "Sfc9b70qy1"
               },
@@ -254,7 +302,11 @@
                 ],
                 "key": "rIAjjKjJvi"
               },
-              { "type": "text", "value": " ", "key": "cDQfq26iud" },
+              {
+                "type": "text",
+                "value": " ",
+                "key": "cDQfq26iud"
+              },
               {
                 "type": "r:range",
                 "valueFunction": "goal",
@@ -288,7 +340,11 @@
               {
                 "type": "strong",
                 "children": [
-                  { "type": "text", "value": "Price:", "key": "ltbvOpsX6M" }
+                  {
+                    "type": "text",
+                    "value": "Price:",
+                    "key": "ltbvOpsX6M"
+                  }
                 ],
                 "key": "YC7Tof6u7g"
               },
@@ -304,7 +360,11 @@
                 "format": "$",
                 "key": "fgvVNJ44Hu"
               },
-              { "type": "text", "value": "/user/month", "key": "QiJOE8becV" }
+              {
+                "type": "text",
+                "value": "/user/month",
+                "key": "QiJOE8becV"
+              }
             ],
             "key": "a9zKiVPuUm"
           },
@@ -380,7 +440,11 @@
                 "step": "0.01",
                 "key": "J50m7dYH1W"
               },
-              { "type": "text", "value": ".", "key": "cp2ShF65hZ" }
+              {
+                "type": "text",
+                "value": ".",
+                "key": "cp2ShF65hZ"
+              }
             ],
             "key": "VjukwNvTKy"
           },
@@ -391,14 +455,22 @@
               {
                 "type": "admonitionTitle",
                 "children": [
-                  { "type": "text", "value": "Important", "key": "nv6oN4f7A1" }
+                  {
+                    "type": "text",
+                    "value": "Important",
+                    "key": "nv6oN4f7A1"
+                  }
                 ],
                 "key": "R1gd1H41I3"
               },
               {
                 "type": "paragraph",
                 "children": [
-                  { "type": "text", "value": "You will need ", "key": "ffL2j69uYR" },
+                  {
+                    "type": "text",
+                    "value": "You will need ",
+                    "key": "ffL2j69uYR"
+                  },
                   {
                     "type": "strong",
                     "children": [
@@ -520,7 +592,11 @@
                     "step": "0.001",
                     "key": "MgdtY0tlNU"
                   },
-                  { "type": "text", "value": ", you will need ", "key": "yz1vYQ1ICD" },
+                  {
+                    "type": "text",
+                    "value": ", you will need ",
+                    "key": "yz1vYQ1ICD"
+                  },
                   {
                     "type": "strong",
                     "children": [
@@ -533,11 +609,19 @@
                     ],
                     "key": "YG3v2c4IaC"
                   },
-                  { "type": "text", "value": " new ", "key": "vaRCG4Eru1" },
+                  {
+                    "type": "text",
+                    "value": " new ",
+                    "key": "vaRCG4Eru1"
+                  },
                   {
                     "type": "strong",
                     "children": [
-                      { "type": "text", "value": "visitors", "key": "a6HUh958nW" }
+                      {
+                        "type": "text",
+                        "value": "visitors",
+                        "key": "a6HUh958nW"
+                      }
                     ],
                     "key": "ugX7ysj8d3"
                   },
@@ -552,15 +636,27 @@
                     "format": ",.0f",
                     "key": "FKWlbN7bib"
                   },
-                  { "type": "text", "value": " new ", "key": "nD4q7e8loZ" },
+                  {
+                    "type": "text",
+                    "value": " new ",
+                    "key": "nD4q7e8loZ"
+                  },
                   {
                     "type": "strong",
                     "children": [
-                      { "type": "text", "value": "visitors", "key": "rvPOuJ6hqd" }
+                      {
+                        "type": "text",
+                        "value": "visitors",
+                        "key": "rvPOuJ6hqd"
+                      }
                     ],
                     "key": "qvOwaoSnfE"
                   },
-                  { "type": "text", "value": " every day!", "key": "cPdxxLUo4b" }
+                  {
+                    "type": "text",
+                    "value": " every day!",
+                    "key": "cPdxxLUo4b"
+                  }
                 ],
                 "key": "XkRRtw75iw"
               }
@@ -573,7 +669,11 @@
               {
                 "type": "strong",
                 "children": [
-                  { "type": "text", "value": "Things to change:", "key": "nFZLQ9u03F" }
+                  {
+                    "type": "text",
+                    "value": "Things to change:",
+                    "key": "nFZLQ9u03F"
+                  }
                 ],
                 "key": "CayXkwCoxU"
               }
@@ -636,7 +736,11 @@
             "type": "heading",
             "depth": 2,
             "children": [
-              { "type": "text", "value": "Other examples:", "key": "FGZzsfciCoWs" }
+              {
+                "type": "text",
+                "value": "Other examples:",
+                "key": "FGZzsfciCoWs"
+              }
             ],
             "key": "jAodsf58A"
           },
@@ -659,7 +763,9 @@
           {
             "type": "code",
             "lang": "python",
-            "emphasizeLines": [2],
+            "emphasizeLines": [
+              2
+            ],
             "showLineNumbers": true,
             "value": "def five():\n  print('five')\n  return 5",
             "key": "YMSml3yWA3"
@@ -667,6 +773,8 @@
           {
             "type": "math",
             "identifier": "hello",
+            "numbered": true,
+            "number": "1",
             "label": "hello",
             "value": "\\begin{aligned}\n\\frac{d}{d \\tau}\\left(\\frac{\\partial \\xi^{\\alpha}}{d x^{\\mu}} \\frac{d x^{\\mu}}{d \\tau}\\right)=& \\frac{d}{d \\tau}\\left(\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{\\mu}}\\right) \\frac{d x^{\\mu}}{d \\tau}+\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{\\mu}} \\frac{d}{d \\tau}\\left(\\frac{d x^{\\mu}}{d \\tau}\\right) \\\\\n&=\\frac{\\partial}{\\partial x^{v}}\\left(\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{\\mu}}\\right) \\frac{d x^{v}}{d \\tau} \\frac{d x^{\\mu}}{d \\tau}+\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{\\mu}} \\frac{d^{2} x^{\\mu}}{d \\tau^{2}} \\\\\n&=\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{v} \\partial x^{v}} \\frac{d x^{v}}{d \\tau} \\frac{d x^{\\mu}}{d \\tau}+\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{\\mu}} \\frac{d^{2} x^{\\mu}}{d \\tau^{2}}=0\n\\end{aligned}",
             "html": "<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mtable rowspacing=\"0.25em\" columnalign=\"right left\" columnspacing=\"0em\"><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mrow><mfrac><mi>d</mi><mrow><mi>d</mi><mi>τ</mi></mrow></mfrac><mrow><mo fence=\"true\">(</mo><mfrac><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>ξ</mi><mi>α</mi></msup></mrow><mrow><mi>d</mi><msup><mi>x</mi><mi>μ</mi></msup></mrow></mfrac><mfrac><mrow><mi>d</mi><msup><mi>x</mi><mi>μ</mi></msup></mrow><mrow><mi>d</mi><mi>τ</mi></mrow></mfrac><mo fence=\"true\">)</mo></mrow><mo>=</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mrow><mrow></mrow><mfrac><mi>d</mi><mrow><mi>d</mi><mi>τ</mi></mrow></mfrac><mrow><mo fence=\"true\">(</mo><mfrac><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>ξ</mi><mi>α</mi></msup></mrow><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>x</mi><mi>μ</mi></msup></mrow></mfrac><mo fence=\"true\">)</mo></mrow><mfrac><mrow><mi>d</mi><msup><mi>x</mi><mi>μ</mi></msup></mrow><mrow><mi>d</mi><mi>τ</mi></mrow></mfrac><mo>+</mo><mfrac><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>ξ</mi><mi>α</mi></msup></mrow><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>x</mi><mi>μ</mi></msup></mrow></mfrac><mfrac><mi>d</mi><mrow><mi>d</mi><mi>τ</mi></mrow></mfrac><mrow><mo fence=\"true\">(</mo><mfrac><mrow><mi>d</mi><msup><mi>x</mi><mi>μ</mi></msup></mrow><mrow><mi>d</mi><mi>τ</mi></mrow></mfrac><mo fence=\"true\">)</mo></mrow></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mrow><mrow></mrow><mo>=</mo><mfrac><mi mathvariant=\"normal\">∂</mi><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>x</mi><mi>v</mi></msup></mrow></mfrac><mrow><mo fence=\"true\">(</mo><mfrac><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>ξ</mi><mi>α</mi></msup></mrow><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>x</mi><mi>μ</mi></msup></mrow></mfrac><mo fence=\"true\">)</mo></mrow><mfrac><mrow><mi>d</mi><msup><mi>x</mi><mi>v</mi></msup></mrow><mrow><mi>d</mi><mi>τ</mi></mrow></mfrac><mfrac><mrow><mi>d</mi><msup><mi>x</mi><mi>μ</mi></msup></mrow><mrow><mi>d</mi><mi>τ</mi></mrow></mfrac><mo>+</mo><mfrac><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>ξ</mi><mi>α</mi></msup></mrow><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>x</mi><mi>μ</mi></msup></mrow></mfrac><mfrac><mrow><msup><mi>d</mi><mn>2</mn></msup><msup><mi>x</mi><mi>μ</mi></msup></mrow><mrow><mi>d</mi><msup><mi>τ</mi><mn>2</mn></msup></mrow></mfrac></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mrow><mrow></mrow><mo>=</mo><mfrac><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>ξ</mi><mi>α</mi></msup></mrow><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>x</mi><mi>v</mi></msup><mi mathvariant=\"normal\">∂</mi><msup><mi>x</mi><mi>v</mi></msup></mrow></mfrac><mfrac><mrow><mi>d</mi><msup><mi>x</mi><mi>v</mi></msup></mrow><mrow><mi>d</mi><mi>τ</mi></mrow></mfrac><mfrac><mrow><mi>d</mi><msup><mi>x</mi><mi>μ</mi></msup></mrow><mrow><mi>d</mi><mi>τ</mi></mrow></mfrac><mo>+</mo><mfrac><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>ξ</mi><mi>α</mi></msup></mrow><mrow><mi mathvariant=\"normal\">∂</mi><msup><mi>x</mi><mi>μ</mi></msup></mrow></mfrac><mfrac><mrow><msup><mi>d</mi><mn>2</mn></msup><msup><mi>x</mi><mi>μ</mi></msup></mrow><mrow><mi>d</mi><msup><mi>τ</mi><mn>2</mn></msup></mrow></mfrac><mo>=</mo><mn>0</mn></mrow></mstyle></mtd></mtr></mtable><annotation encoding=\"application/x-tex\">\\begin{aligned}\n\\frac{d}{d \\tau}\\left(\\frac{\\partial \\xi^{\\alpha}}{d x^{\\mu}} \\frac{d x^{\\mu}}{d \\tau}\\right)=&amp; \\frac{d}{d \\tau}\\left(\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{\\mu}}\\right) \\frac{d x^{\\mu}}{d \\tau}+\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{\\mu}} \\frac{d}{d \\tau}\\left(\\frac{d x^{\\mu}}{d \\tau}\\right) \\\\\n&amp;=\\frac{\\partial}{\\partial x^{v}}\\left(\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{\\mu}}\\right) \\frac{d x^{v}}{d \\tau} \\frac{d x^{\\mu}}{d \\tau}+\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{\\mu}} \\frac{d^{2} x^{\\mu}}{d \\tau^{2}} \\\\\n&amp;=\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{v} \\partial x^{v}} \\frac{d x^{v}}{d \\tau} \\frac{d x^{\\mu}}{d \\tau}+\\frac{\\partial \\xi^{\\alpha}}{\\partial x^{\\mu}} \\frac{d^{2} x^{\\mu}}{d \\tau^{2}}=0\n\\end{aligned}</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:7.9183em;vertical-align:-3.7091em;\"></span><span class=\"mord\"><span class=\"mtable\"><span class=\"col-align-r\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:4.2091em;\"><span style=\"top:-6.2502em;\"><span class=\"pstrut\" style=\"height:3.4911em;\"></span><span class=\"mord\"><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"minner\"><span class=\"mopen delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">(</span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.5904em;\"><span style=\"top:-2.989em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.04601em;\">ξ</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.0037em;\">α</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mclose delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">)</span></span></span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span></span></span><span style=\"top:-3.5091em;\"><span class=\"pstrut\" style=\"height:3.4911em;\"></span><span class=\"mord\"></span></span><span style=\"top:-0.768em;\"><span class=\"pstrut\" style=\"height:3.4911em;\"></span><span class=\"mord\"></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:3.7091em;\"><span></span></span></span></span></span><span class=\"col-align-l\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:4.2091em;\"><span style=\"top:-6.2502em;\"><span class=\"pstrut\" style=\"height:3.4911em;\"></span><span class=\"mord\"><span class=\"mord\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"minner\"><span class=\"mopen delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">(</span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.5904em;\"><span style=\"top:-2.989em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.04601em;\">ξ</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.0037em;\">α</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mclose delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">)</span></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">+</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.5904em;\"><span style=\"top:-2.989em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.04601em;\">ξ</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.0037em;\">α</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"minner\"><span class=\"mopen delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">(</span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mclose delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">)</span></span></span></span></span><span style=\"top:-3.5091em;\"><span class=\"pstrut\" style=\"height:3.4911em;\"></span><span class=\"mord\"><span class=\"mord\"></span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.5904em;\"><span style=\"top:-2.989em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.03588em;\">v</span></span></span></span></span></span></span></span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"minner\"><span class=\"mopen delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">(</span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.5904em;\"><span style=\"top:-2.989em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.04601em;\">ξ</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.0037em;\">α</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mclose delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">)</span></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.03588em;\">v</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">+</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.5904em;\"><span style=\"top:-2.989em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.04601em;\">ξ</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.0037em;\">α</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.4911em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.7401em;\"><span style=\"top:-2.989em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8141em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span></span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span></span></span><span style=\"top:-0.768em;\"><span class=\"pstrut\" style=\"height:3.4911em;\"></span><span class=\"mord\"><span class=\"mord\"></span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.5904em;\"><span style=\"top:-2.989em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.03588em;\">v</span></span></span></span></span></span></span></span></span><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.5904em;\"><span style=\"top:-2.989em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.03588em;\">v</span></span></span></span></span></span></span></span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.04601em;\">ξ</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.0037em;\">α</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.03588em;\">v</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">+</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3714em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.5904em;\"><span style=\"top:-2.989em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\" style=\"margin-right:0.05556em;\">∂</span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.04601em;\">ξ</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.0037em;\">α</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.4911em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.7401em;\"><span style=\"top:-2.989em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\"><span class=\"mord mathnormal\">d</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8141em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span></span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">μ</span></span></span></span></span></span></span></span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mord\">0</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:3.7091em;\"><span></span></span></span></span></span></span></span></span></span></span></span>",
@@ -679,7 +787,10 @@
     "key": "CK8OC5lkeI"
   },
   "references": {
-    "cite": { "order": [], "data": {} },
+    "cite": {
+      "order": [],
+      "data": {}
+    },
     "footnotes": {
       "1": {
         "type": "footnoteDefinition",
