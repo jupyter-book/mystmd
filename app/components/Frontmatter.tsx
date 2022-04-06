@@ -1,3 +1,4 @@
+import React from 'react';
 import { Frontmatter as FrontmatterType } from '~/utils';
 import Email from './Icons/Email';
 import OrcidLogo from './Icons/Orcid';
@@ -59,14 +60,14 @@ function AuthorAndAffiliations({ authors }: { authors: FrontmatterType['authors'
           </>
         )}
         {authors.map((author) => (
-          <>
-            <Author key={author.name} author={author} />
+          <React.Fragment key={author.name}>
+            <Author author={author} />
             <div className="text-sm hidden sm:block">
               {author.affiliations?.map((affil, i) => (
                 <div key={i}>{affil}</div>
               ))}
             </div>
-          </>
+          </React.Fragment>
         ))}
       </div>
     </header>
