@@ -74,6 +74,12 @@ export function useFetchAllTruncatedContent(outputs: MinifiedOutput[]) {
   const updated = shallowCloneOutputs(outputs);
 
   walkPaths(updated, (path, obj) => {
+    // images have paths, but we don't need to fetch them
+    if (
+      'content_type' in obj &&
+      (obj as MinifiedMimePayload).content_type.startsWith('image/')
+    )
+      return;
     itemsWithPaths.push({ ...obj, path });
   });
 

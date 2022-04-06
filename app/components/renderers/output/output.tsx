@@ -34,7 +34,7 @@ export function allOutputsAreSafe(
 
 export function Output(node: GenericNode) {
   const outputs: MinifiedOutput[] = node.data;
-  const allSafe = allOutputsAreSafe(outputs, DIRECT_MIME_TYPES, DIRECT_OUTPUT_TYPES);
+  const allSafe = allOutputsAreSafe(outputs, DIRECT_OUTPUT_TYPES, DIRECT_MIME_TYPES);
 
   let component;
   if (allSafe) {
