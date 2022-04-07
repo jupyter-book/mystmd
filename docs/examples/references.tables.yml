@@ -8,7 +8,7 @@ cases:
           children:
             - type: text
               value: 'see '
-            - type: role
+            - type: mystRole
               kind: numref
               value: my-table
               children:
@@ -16,7 +16,7 @@ cases:
                   kind: numref
                   identifier: my-table
                   label: my-table
-        - type: directive
+        - type: mystDirective
           kind: list-table
           args: Caption text
           options:
@@ -87,7 +87,7 @@ cases:
           children:
             - type: text
               value: 'see '
-            - type: role
+            - type: mystRole
               kind: numref
               value: T%s <my-table>
               children:
@@ -98,7 +98,7 @@ cases:
                   children:
                     - type: text
                       value: T%s
-        - type: directive
+        - type: mystDirective
           kind: list-table
           args: Caption text
           options:
@@ -168,7 +168,7 @@ cases:
           children:
             - type: text
               value: 'see '
-            - type: role
+            - type: mystRole
               kind: ref
               value: my-table
               children:
@@ -176,7 +176,7 @@ cases:
                   kind: ref
                   identifier: my-table
                   label: my-table
-        - type: directive
+        - type: mystDirective
           kind: list-table
           args: Caption text
           options:
@@ -246,7 +246,7 @@ cases:
           children:
             - type: text
               value: 'see '
-            - type: role
+            - type: mystRole
               kind: ref
               value: My Table <my-table>
               children:
@@ -257,7 +257,7 @@ cases:
                   children:
                     - type: text
                       value: My Table
-        - type: directive
+        - type: mystDirective
           kind: list-table
           args: Caption text
           options:
@@ -330,7 +330,7 @@ cases:
             - type: link
               url: my-table
               children: []
-        - type: directive
+        - type: mystDirective
           kind: list-table
           args: Caption text
           options:
@@ -410,7 +410,7 @@ cases:
                   children:
                     - type: text
                       value: Table
-        - type: directive
+        - type: mystDirective
           kind: list-table
           args: Caption text
           options:

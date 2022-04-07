@@ -65,7 +65,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: list-table
           args: Caption *text*
           options:

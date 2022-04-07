@@ -7,7 +7,7 @@ cases:
           children:
             - type: text
               value: 'See: '
-            - type: role
+            - type: mystRole
               kind: ref
               value: my_id
               children:
@@ -43,7 +43,7 @@ cases:
           children:
             - type: text
               value: 'See: '
-            - type: role
+            - type: mystRole
               kind: ref
               value: something... <my_id>
               children:

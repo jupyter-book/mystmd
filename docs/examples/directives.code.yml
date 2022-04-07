@@ -3,7 +3,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: code
           args: python
           options:
@@ -33,7 +33,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: code
           args: python
           options:
@@ -71,7 +71,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: code-block
           args: python
           options:
@@ -111,7 +111,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: code-block
           args: python
           options:
@@ -151,7 +151,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: code-block
           args: python
           options:

@@ -11,7 +11,7 @@
           "required": ["kind"],
           "properties": {
             "type": {
-              "const": "role"
+              "const": "mystRole"
             },
             "kind": {
               "type": "string"

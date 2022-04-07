@@ -11,7 +11,7 @@
           "required": ["kind"],
           "properties": {
             "type": {
-              "const": "directive"
+              "const": "mystDirective"
             },
             "kind": {
               "type": "string"

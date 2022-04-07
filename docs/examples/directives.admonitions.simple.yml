@@ -3,7 +3,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: attention
           args: Admonition attention
           children:
@@ -31,7 +31,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: caution
           args: Admonition caution
           children:
@@ -59,7 +59,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: danger
           args: Admonition danger
           children:
@@ -87,7 +87,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: error
           args: Admonition error
           children:
@@ -115,7 +115,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: important
           args: Admonition important
           children:
@@ -143,7 +143,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: hint
           args: Admonition hint
           children:
@@ -171,7 +171,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: note
           args: Admonition note
           children:
@@ -199,7 +199,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: seealso
           args: Admonition seealso
           children:
@@ -227,7 +227,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: tip
           args: Admonition tip
           children:
@@ -255,7 +255,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: warning
           args: Admonition warning
           children:

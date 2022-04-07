@@ -4,7 +4,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: https://via.placeholder.com/150
           value: |-
@@ -51,7 +51,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: https://via.placeholder.com/150
           options:
@@ -100,7 +100,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: https://via.placeholder.com/150
           options:
@@ -139,7 +139,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: https://via.placeholder.com/150
           options:
@@ -177,7 +177,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: https://via.placeholder.com/150
           options:
@@ -198,7 +198,7 @@ cases:
                       children:
                         - type: text
                           value: This is the figure caption!
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: https://via.placeholder.com/151
           options:

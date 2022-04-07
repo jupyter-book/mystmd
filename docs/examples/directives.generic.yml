@@ -3,7 +3,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: abc
           value: |-
             :a: one
@@ -30,7 +30,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: abc
           args: foo bar
           value: |-

@@ -7,7 +7,7 @@ cases:
           children:
             - type: text
               value: H
-            - type: role
+            - type: mystRole
               kind: sub
               value: '2'
               children:
@@ -33,7 +33,7 @@ cases:
           children:
             - type: text
               value: H
-            - type: role
+            - type: mystRole
               kind: subscript
               value: '2'
               children:
@@ -58,7 +58,7 @@ cases:
           children:
             - type: text
               value: '4'
-            - type: role
+            - type: mystRole
               kind: sup
               value: th
               children:
@@ -82,7 +82,7 @@ cases:
           children:
             - type: text
               value: '4'
-            - type: role
+            - type: mystRole
               kind: superscript
               value: th
               children:

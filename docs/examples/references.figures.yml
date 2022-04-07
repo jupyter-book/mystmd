@@ -5,7 +5,7 @@ cases:
       children:
         - type: paragraph
           children:
-            - type: role
+            - type: mystRole
               kind: numref
               value: my-figure
               children:
@@ -23,7 +23,7 @@ cases:
       children:
         - type: paragraph
           children:
-            - type: role
+            - type: mystRole
               kind: numref
               value: Figure %s <my-figure>
               children:
@@ -44,7 +44,7 @@ cases:
       children:
         - type: paragraph
           children:
-            - type: role
+            - type: mystRole
               kind: numref
               value: Figure %s <  My   -   Figure  >
               children:
@@ -67,7 +67,7 @@ cases:
           children:
             - type: text
               value: 'see '
-            - type: role
+            - type: mystRole
               kind: numref
               value: my-figure
               children:
@@ -75,7 +75,7 @@ cases:
                   kind: numref
                   identifier: my-figure
                   label: my-figure
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: fig.jpg
           options:
@@ -120,7 +120,7 @@ cases:
           children:
             - type: text
               value: 'see '
-            - type: role
+            - type: mystRole
               kind: numref
               value: Figure %s%s%s, I said {number}<my-figure>
               children:
@@ -131,7 +131,7 @@ cases:
                   children:
                     - type: text
                       value: Figure %s%s%s, I said {number}
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: fig.jpg
           options:
@@ -176,7 +176,7 @@ cases:
           children:
             - type: text
               value: 'see '
-            - type: role
+            - type: mystRole
               kind: ref
               value: my-figure
               children:
@@ -184,7 +184,7 @@ cases:
                   kind: ref
                   identifier: my-figure
                   label: my-figure
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: fig.jpg
           options:
@@ -235,7 +235,7 @@ cases:
           children:
             - type: text
               value: 'see '
-            - type: role
+            - type: mystRole
               kind: ref
               value: Custom *caption* <my-figure>
               children:
@@ -246,7 +246,7 @@ cases:
                   children:
                     - type: text
                       value: Custom *caption*
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: fig.jpg
           options:
@@ -301,7 +301,7 @@ cases:
               url: my-figure
               title: Figure title
               children: []
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: fig.jpg
           options:
@@ -361,7 +361,7 @@ cases:
                   children:
                     - type: text
                       value: caption
-        - type: directive
+        - type: mystDirective
           kind: figure
           args: fig.jpg
           options:

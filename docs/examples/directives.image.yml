@@ -20,7 +20,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: image
           args: fun-fish.png
           options:
@@ -51,7 +51,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: directive
+        - type: mystDirective
           kind: image
           args: fun-fish.png
           options:
