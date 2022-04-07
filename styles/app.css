@@ -3,13 +3,17 @@
 @tailwind utilities;
 
 @layer base {
-  article table td {
-    @apply sm:p-2 p-1 align-top;
+  .prose table td {
+    @apply p-1 sm:p-2 align-top;
   }
   .prose table p,
   .prose table li,
   .prose figure table {
     @apply mt-0 mb-0;
+  }
+  .prose table ul > li,
+  .prose table ol > li {
+    @apply pl-0;
   }
   .prose table tr:hover td {
     @apply bg-slate-50 dark:bg-stone-800;
