@@ -6,4 +6,12 @@
   article table td {
     @apply sm:p-2 p-1 align-top;
   }
+  .prose table p,
+  .prose table li,
+  .prose figure table {
+    @apply mt-0 mb-0;
+  }
+  .prose table tr:hover td {
+    @apply bg-slate-50 dark:bg-stone-800;
+  }
 }
