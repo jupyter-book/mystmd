@@ -5,27 +5,19 @@ import Bottleneck from 'bottleneck';
 import { Block } from '../src/models';
 import { BlockId } from '@curvenote/blocks';
 
-const PROJECT_ID = '<project-id>';
-
-const newAuthorsInfo = [
-  {
-    id: uuid(),
-    userId: null,
-    name: 'Plain Author',
-    orcid: null,
-    corresponding: false,
-    email: null,
-    roles: [],
-    affiliations: [],
-  },
-];
+const referenceBlockId = {
+  project: 'yxMixqONzyNvXmmIAIsq',
+  block: 'QabM62lNX1wh2uDOy3nY',
+};
 
 async function main() {
   const session = getSession();
   console.log('Got session', session.API_URL);
 
+  const reference = await new Block(session, referenceBlockId).get();
+
   const { status, json } = await session.get(
-    `/blocks/${PROJECT_ID}?kind=Article,Notebook&limit=500`,
+    `/blocks/${referenceBlockId.project}?kind=Article,Notebook&limit=500`,
   );
 
   const limiter = new Bottleneck({ maxConcurrent: 25 });
@@ -36,7 +28,7 @@ async function main() {
   await Promise.all(
     json.items.map(async ({ id }: { id: BlockId }) => {
       await limiter.schedule(() =>
-        session.patch(`/blocks/${id.project}/${id.block}`, { authors: newAuthorsInfo }),
+        session.patch(`/blocks/${id.project}/${id.block}`, { authors: reference.data.authors }),
       );
     }),
   );
