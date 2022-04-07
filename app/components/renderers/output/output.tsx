@@ -40,11 +40,12 @@ export function Output(node: GenericNode) {
   if (allSafe) {
     component = <SafeOutputs keyStub={node.key} outputs={outputs} />;
   } else {
-    component = <JupyterOutputs outputs={outputs} />;
+    component = <JupyterOutputs id={node.key} outputs={outputs} />;
   }
 
   return (
     <figure
+      suppressHydrationWarning={!allSafe}
       key={node.key}
       id={node.identifier || undefined}
       className={classNames('max-w-full overflow-auto', {

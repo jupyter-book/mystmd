@@ -96,7 +96,7 @@ export function useFetchAllTruncatedContent(outputs: MinifiedOutput[]) {
   });
 
   return {
-    data: data ? [...outputs] : undefined,
+    data: data ? updated : undefined,
     error,
   };
 }

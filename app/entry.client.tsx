@@ -1,31 +1,34 @@
 import { hydrate } from 'react-dom';
 import { RemixBrowser } from 'remix';
-
-import { applyMiddleware, createStore, combineReducers } from 'redux';
-import thunkMiddleware from 'redux-thunk';
-import runtime, { types } from '@curvenote/runtime';
+import { Provider } from 'react-redux';
+import type { Store } from 'redux';
+import type { types } from '@curvenote/runtime';
 import { register } from '@curvenote/components';
+import { host } from '@curvenote/connect';
+
+import createStore from './store';
 
 declare global {
   interface Window {
     curvenote: {
-      store: types.Store;
+      store: Store;
     };
   }
 }
 
+const store = createStore();
+
 window.curvenote = {
   ...window.curvenote,
-  store: createStore(
-    combineReducers({ runtime: runtime.reducer }),
-    applyMiddleware(
-      thunkMiddleware,
-      runtime.triggerEvaluate,
-      runtime.dangerousEvaluatation,
-    ),
-  ) as types.Store,
+  store,
 };
 
-register(window.curvenote.store);
+register(store as types.Store);
+host.registerMessageListener(window.curvenote.store);
 
-hydrate(<RemixBrowser />, document);
+hydrate(
+  <Provider store={store}>
+    <RemixBrowser />
+  </Provider>,
+  document,
+);
