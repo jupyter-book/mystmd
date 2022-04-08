@@ -11,6 +11,7 @@ import { writeFileToFolder } from '../utils';
 import { serve } from '../web';
 import { LOGO } from '../web/public';
 import { pullProjects } from './pull';
+import questions from './questions';
 
 type Options = {
   template: string;
@@ -63,47 +64,13 @@ export async function init(session: ISession, opts: Options) {
 
   const config = blankCurvenoteConfig();
   const answers = await inquirer.prompt([
-    {
-      name: 'name',
-      type: 'input',
-      message: 'What is the name of this space?',
-      default: config.web.name,
-    },
-    {
-      name: 'content',
-      type: 'list',
-      message: 'What content would you like to use?',
-      when() {
-        return opts.template === undefined;
-      },
-      choices: [
-        {
-          name: 'Import from Curvenote',
-          value: 'curvenote',
-        },
-        {
-          name: 'Use the content & notebooks in this folder',
-          value: 'folder',
-          disabled: folderIsEmpty,
-        },
-        {
-          name: 'Show me some demo content!',
-          value: 'demo',
-        },
-      ],
-    },
+    questions.name({ name: config.web.name }),
+    questions.content({ folderIsEmpty, template: opts.template }),
   ]);
   if (answers.content === 'curvenote') {
     await addProjectsToConfig(session, { config });
   }
-  const { pull } = await inquirer.prompt([
-    {
-      name: 'pull',
-      message: 'Would you like to pull content now?',
-      type: 'confirm',
-      default: true,
-    },
-  ]);
+  const { pull } = await inquirer.prompt([questions.pull()]);
   let pullComplete = false;
   let pullProcess: Promise<void> | undefined;
   if (pull) {

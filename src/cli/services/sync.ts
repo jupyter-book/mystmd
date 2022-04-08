@@ -16,6 +16,13 @@ function makeSyncPullCLI(program: Command) {
   return command;
 }
 
+function makeSyncAddCLI(program: Command) {
+  const command = new Command('add')
+    .description('Add content to your Curvenote project')
+    .action(clirun(sync.add, { program, requireConfig: true }));
+  return command;
+}
+
 export function addSyncCLI(program: Command) {
   const command = new Command('sync').description(
     'Commands to clone, install, and start a webserver',
@@ -26,4 +33,5 @@ export function addSyncCLI(program: Command) {
   // Add a `init` and `pull` shortcut at the top level
   program.addCommand(makeSyncInitCLI(program));
   program.addCommand(makeSyncPullCLI(program));
+  program.addCommand(makeSyncAddCLI(program));
 }

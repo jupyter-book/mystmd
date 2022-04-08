@@ -7,6 +7,8 @@ import { Project } from '../models';
 import { blankCurvenoteConfig, CurvenoteConfig } from '../config';
 import { ISession } from '../session/types';
 import { projectLogString } from './utls';
+import questions from './questions';
+import { pullProjects } from './pull';
 
 export async function addProjectsToConfig(
   session: ISession,
@@ -66,4 +68,41 @@ export async function addProjectsToConfig(
     ]);
   }
   return config;
+}
+
+const START = `
+
+${chalk.bold(chalk.green('Add new content to your Curvenote project'))} 🛻
+
+`;
+
+const FINISHED = `
+
+${chalk.bold(chalk.green('Content successfully added'))} 🎉
+
+`;
+
+export async function add(session: ISession) {
+  const { config } = session;
+  if (!config) throw new Error('Must have config to add content.');
+
+  session.log.info(START);
+
+  const answers = await inquirer.prompt([questions.content({ folderIsEmpty: true })]);
+
+  if (answers.content === 'curvenote') {
+    await addProjectsToConfig(session, { config });
+  }
+
+  const { pull } = await inquirer.prompt([questions.pull()]);
+  if (pull) {
+    await pullProjects(session, { config });
+  } else {
+    session.log.info(
+      `Sync your content later using:\n\n${chalk.bold('curvenote pull')}\n\nLearn more at ${
+        docLinks.pull
+      }`,
+    );
+  }
+  session.log.info(FINISHED);
 }
