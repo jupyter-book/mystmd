@@ -149,8 +149,8 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
   };
   const { json: uploadTargets } = await cache.session.post('/sites/upload', uploadRequest);
 
-  // Only upload n files at a time
-  const limit = pLimit(1);
+  // Only upload N files at a time
+  const limit = pLimit(10);
   const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
   cache.session.log.info(`☁️  Uploading ${files.length} files`);
   bar1.start(files.length, 0);
