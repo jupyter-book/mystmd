@@ -120,6 +120,7 @@ export async function init(session: ISession, opts: Options) {
   // Personalize the config
   me = await me;
   config.web.name = answers.name;
+  config.web.logoText = answers.name;
   if (me) {
     config.web.domains = [`${me.data.username}.curve.space`];
     config.web.twitter = me.data.twitter || undefined;
