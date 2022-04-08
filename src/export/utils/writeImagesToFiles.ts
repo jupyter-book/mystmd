@@ -7,6 +7,8 @@ import { Block, Version } from '../../models';
 import { ArticleState } from './walkArticle';
 import { getImageSrc } from './getImageSrc';
 
+// TODO: use mime-types package!
+// https://www.npmjs.com/package/mime-types
 function contentTypeToExt(contentType: string): string {
   switch (contentType) {
     case 'image/gif':
