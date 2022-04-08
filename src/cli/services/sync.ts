@@ -5,7 +5,7 @@ import { clirun } from './utils';
 function makeSyncInitCLI(program: Command) {
   const command = new Command('init')
     .description('Initialize a Curvenote project')
-    .action(clirun(sync.init, { program }));
+    .action(clirun(sync.init, { program, hideNoTokenWarning: true }));
   return command;
 }
 
