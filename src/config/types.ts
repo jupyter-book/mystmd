@@ -4,9 +4,12 @@ export interface WebConfig {
   name: string;
   sections: { title: string; folder: string; path: string }[];
   actions: { title: string; url: string }[];
-  favicon?: string;
-  logo?: string;
-  logoText?: string;
+  favicon?: string | null;
+  logo?: string | null;
+  logoText?: string | null;
+  design?: {
+    hideAuthors?: boolean;
+  };
 }
 
 export interface ExportConfig {
