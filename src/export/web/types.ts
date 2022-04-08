@@ -34,5 +34,5 @@ export type Options = {
   buildPath?: string;
   clean?: boolean;
   force?: boolean;
-  branch?: boolean;
+  branch?: string;
 };

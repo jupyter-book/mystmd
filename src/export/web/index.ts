@@ -50,6 +50,10 @@ export async function install(session: ISession, opts: Options) {
 async function cloneCurvespace(session: ISession, opts: Options) {
   if (opts.force) {
     await clean(session, opts);
+  } else if (opts.branch !== 'main') {
+    throw new Error(
+      `Cannot use --branch option without force cloning \n\nTry with options: -F --branch ${opts.branch}`,
+    );
   }
   if (exists(opts)) {
     session.log.debug('Curvespace has been cloned, skipping install');
@@ -90,8 +94,7 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
   }
   const me = await new MyUser(session).get();
   // Do a bit of prework to ensure that the domains exists in the config file
-  const config = session.loadConfig();
-  const domains = config?.web.domains;
+  const domains = session.config?.web.domains;
   if (!domains || domains.length === 0) {
     session.log.error(
       `🧐 No domains specified, use config.site.domains: - ${me.data.username}.curve.space`,

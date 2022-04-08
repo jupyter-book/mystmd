@@ -45,11 +45,17 @@ export function clirun(
   func:
     | ((session: ISession, ...args: any[]) => Promise<void>)
     | ((session: ISession, ...args: any[]) => void),
-  cli: { program: Command; session?: ISession },
+  cli: { program: Command; session?: ISession; requireConfig?: boolean },
 ) {
   return async (...args: any[]) => {
     const opts = cli.program.opts() as SessionOpts;
     const useSession = cli.session ?? getSession(opts);
+    if (cli.requireConfig && !useSession.config) {
+      useSession.log.error(
+        'You must be in a directory with a curvenote.yml\n\nDo you need to run: curvenote init',
+      );
+      process.exit(1);
+    }
     try {
       await func(useSession, ...args);
     } catch (error) {

@@ -1,30 +1,39 @@
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import { web } from '../../index';
 import { clirun } from './utils';
+
+function makeBranchOption() {
+  return new Option(
+    '--branch [branch]',
+    'Branch to clone from git@github.com:curvenote/curvespace.git',
+  ).default('main');
+}
+function makeCleanOption() {
+  return new Option('-C, --clean', 'Remove content so that it is rebuilt fresh').default(false);
+}
+function makeForceOption() {
+  return new Option('-F, --force', 'Remove the build directory and re-install').default(false);
+}
 
 function makeCurvespaceCleanCLI(program: Command) {
   const command = new Command('clean')
     .description('Install dependencies for serving')
-    .action(clirun(web.clean, { program }));
+    .action(clirun(web.clean, { program, requireConfig: true }));
   return command;
 }
 
 function makeCurvespaceCloneCLI(program: Command) {
   const command = new Command('clone')
     .description('Clone curvespace into the build directory')
-    .option(
-      '--branch [branch]',
-      'Branch to clone from git@github.com:curvenote/curvespace.git',
-      'main',
-    )
-    .action(clirun(web.clone, { program }));
+    .addOption(makeBranchOption())
+    .action(clirun(web.clone, { program, requireConfig: true }));
   return command;
 }
 
 function makeCurvespaceInstallCLI(program: Command) {
   const command = new Command('install')
     .description('Install dependencies for serving')
-    .action(clirun(web.install, { program }));
+    .action(clirun(web.install, { program, requireConfig: true }));
   return command;
 }
 
@@ -32,18 +41,20 @@ function makeCurvespaceStartCLI(program: Command) {
   const command = new Command('start')
     .alias('serve')
     .description('Start a local project as a web server')
-    .option('-C, --clean', 'Remove content so that it is rebuilt fresh', false)
-    .option('-F, --force', 'Remove the build directory and re-install', false)
-    .action(clirun(web.serve, { program }));
+    .addOption(makeCleanOption())
+    .addOption(makeForceOption())
+    .addOption(makeBranchOption())
+    .action(clirun(web.serve, { program, requireConfig: true }));
   return command;
 }
 
 function makeBuildCLI(program: Command) {
   const command = new Command('build')
     .description('Deploy content to https://*.curve.space or your own domain')
-    .option('-C, --clean', 'Remove content so that it is rebuilt fresh', false)
-    .option('-F, --force', 'Remove the build directory and re-install', false)
-    .action(clirun(web.build, { program }));
+    .addOption(makeCleanOption())
+    .addOption(makeForceOption())
+    .addOption(makeBranchOption())
+    .action(clirun(web.build, { program, requireConfig: true }));
   return command;
 }
 
@@ -51,8 +62,8 @@ function makeDeployCLI(program: Command) {
   const command = new Command('deploy')
     .alias('publish')
     .description('Deploy content to https://*.curve.space or your own domain')
-    .option('-F, --force', 'Remove the build directory and re-install', false)
-    .action(clirun(web.deploy, { program }));
+    .addOption(makeForceOption())
+    .action(clirun(web.deploy, { program, requireConfig: true }));
   return command;
 }
 
