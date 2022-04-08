@@ -30,6 +30,7 @@ async function processFolder(
 }
 
 async function processConfig(cache: DocumentCache): Promise<{ id: string; processed: boolean }[]> {
+  cache.$processLinks = false;
   const folders = await Promise.all(
     (cache.config?.site.sections ?? []).map((sec) => {
       const folder = cache.config?.folders[sec.folder];
@@ -37,6 +38,8 @@ async function processConfig(cache: DocumentCache): Promise<{ id: string; proces
       return processFolder(cache, sec, folder);
     }),
   );
+  cache.$processLinks = true;
+  await cache.processAllLinks();
   return folders.flat().filter((f) => f) as { id: string; processed: boolean }[];
 }
 
@@ -56,7 +59,7 @@ export async function watchContent(session: ISession, opts: Options) {
     session.log.debug(`File modified: "${filename}" (${eventType})`);
     const base = path.basename(filename);
     if (base === '_toc.yml') {
-      await writeConfig(session, opts, false);
+      cache.config = await writeConfig(session, opts, false);
       return;
     }
     cache.markFileDirty(path.dirname(filename), base);
