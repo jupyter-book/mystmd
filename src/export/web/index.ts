@@ -19,10 +19,8 @@ export async function clean(session: ISession, opts: Options) {
 
 export async function clone(session: ISession, opts: Options) {
   session.log.info('🌎 Cloning Curvespace');
-  session.log.warn('🌎 Cloning feat/web-nb branch');
   await makeExecutable(
-    // `git clone git@github.com:curvenote/curvespace.git ${serverPath(opts)}`,
-    `git clone --branch feat/web-nb git@github.com:curvenote/curvespace.git ${serverPath(opts)}`,
+    `git clone git@github.com:curvenote/curvespace.git ${serverPath(opts)}`,
     session.log,
   )();
   // TODO: log out version!
