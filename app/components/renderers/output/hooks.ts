@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import {
   MinifiedErrorOutput,
   MinifiedMimeBundle,
@@ -43,7 +43,7 @@ export function useLongContent(
 ): { data?: LongContent; error?: Error } {
   if (typeof window === 'undefined')
     return url ? {} : { data: { content: content ?? '' } };
-  const { data, error } = useSWR<LongContent>(url || null, fetcher);
+  const { data, error } = useSWRImmutable<LongContent>(url || null, fetcher);
   if (!url) return { data: { content: content ?? '' } };
   return { data, error };
 }
@@ -69,7 +69,7 @@ function shallowCloneOutputs(outputs: MinifiedOutput[]) {
   });
 }
 
-export function useFetchAllTruncatedContent(outputs: MinifiedOutput[]) {
+export function useFetchAnyTruncatedContent(outputs: MinifiedOutput[]) {
   const itemsWithPaths: ObjectWithPath[] = [];
   const updated = shallowCloneOutputs(outputs);
 
@@ -80,11 +80,12 @@ export function useFetchAllTruncatedContent(outputs: MinifiedOutput[]) {
       (obj as MinifiedMimePayload).content_type.startsWith('image/')
     )
       return;
-    itemsWithPaths.push({ ...obj, path });
+    obj.path = path;
+    itemsWithPaths.push(obj);
   });
 
-  const { data, error } = useSWR<LongContent[]>(
-    itemsWithPaths.map(({ path }) => path) || null,
+  const { data, error } = useSWRImmutable<LongContent[]>(
+    itemsWithPaths.map(({ path }) => path),
     arrayFetcher,
   );
 
@@ -93,10 +94,11 @@ export function useFetchAllTruncatedContent(outputs: MinifiedOutput[]) {
     if ('text' in obj) obj.text = content; // stream
     if ('traceback' in obj) obj.traceback = content; // error
     if ('content' in obj) obj.content = content; // mimeoutput
+    obj.path = undefined;
   });
 
   return {
-    data: data ? updated : undefined,
+    data: itemsWithPaths.length === 0 || data ? updated : undefined,
     error,
   };
 }
