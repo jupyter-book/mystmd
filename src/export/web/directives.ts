@@ -1,4 +1,5 @@
 import { Directive, IDirectiveData, directiveOptions, IDirective, Token } from 'mystjs';
+import { JsonObject } from '@curvenote/blocks';
 
 const RVar: IDirective = {
   myst: class RVariable extends Directive {
@@ -120,6 +121,42 @@ const IFrame: IDirective = {
   hast: (h, node) => h(node, 'div', { class: 'iframe' }),
 };
 
+const Output: IDirective = {
+  myst: class Output extends Directive {
+    public required_arguments = 0;
+
+    public optional_arguments = 0;
+
+    public final_argument_whitespace = false;
+
+    public has_content = false;
+
+    public option_spec = {
+      id: directiveOptions.unchanged,
+    };
+
+    run(data: IDirectiveData<keyof Output['option_spec']>) {
+      const token = this.createToken('output', 'div', 0, {
+        map: data.map,
+        block: true,
+      });
+      return [token];
+    }
+  },
+  mdast: {
+    type: 'output',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        id: t.meta.id,
+        data: {},
+      };
+    },
+  },
+  hast: (h, node) => h(node, 'div', { class: 'output' }),
+};
+
 const Margin: IDirective = {
   myst: class Margin extends Directive {
     public required_arguments = 0;
@@ -160,4 +197,5 @@ export const directives = {
   bibliography: Bibliography,
   iframe: IFrame,
   margin: Margin,
+  output: Output,
 };

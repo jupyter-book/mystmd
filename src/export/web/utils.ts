@@ -24,6 +24,10 @@ export function serverPath(opts: Options) {
   return `${buildPath}/web`;
 }
 
+export function publicPath(opts: Options) {
+  return path.join(serverPath(opts), 'public');
+}
+
 export function exists(opts: Options) {
   return fs.existsSync(serverPath(opts));
 }

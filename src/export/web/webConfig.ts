@@ -6,7 +6,7 @@ import { ISession } from '../../session/types';
 import { JupyterBookChapter, readTOC } from '../jupyter-book/toc';
 import { tic } from '../utils/exec';
 import { Options, Page, SiteConfig, SiteFolder } from './types';
-import { serverPath } from './utils';
+import { publicPath, serverPath } from './utils';
 
 export function getFileName(folder: string, file: string) {
   const filenameMd = path.join(folder, `${file}.md`);
@@ -41,7 +41,7 @@ function copyLogo(session: ISession, opts: Options, logoName?: string | null): s
   if (!fs.existsSync(logoName))
     throw new Error(`Could not find logo at "${logoName}". See 'config.web.logo'`);
   const logo = `logo${path.extname(logoName)}`;
-  fs.copyFileSync(logoName, path.join(serverPath(opts), 'public', logo));
+  fs.copyFileSync(logoName, path.join(publicPath(opts), logo));
   return `/${logo}`;
 }
 
@@ -134,7 +134,7 @@ export async function copyImages(session: ISession, opts: Options, config: SiteC
     config.site.sections.map(async ({ path: p }) => {
       return new Promise((callback, error) => {
         const from = path.join(p, 'images', '*');
-        const to = path.join(serverPath(opts), 'public', 'images');
+        const to = path.join(publicPath(opts), '_static');
         session.log.debug(`Copying images from "${from}" to "${to}"`);
         copyfiles([from, to], { up: true, soft: true } as any, (e) => {
           if (e) {

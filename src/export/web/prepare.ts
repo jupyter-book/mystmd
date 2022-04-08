@@ -3,7 +3,7 @@ import path from 'path';
 import yaml from 'js-yaml';
 import { ISession } from '../../session/types';
 import { tic } from '../utils/exec';
-import { serverPath } from './utils';
+import { publicPath, serverPath } from './utils';
 import { Options, SiteConfig, SiteFolder } from './types';
 import { getFileName } from './webConfig';
 import { DocumentCache, watchConfig } from './cache';
@@ -11,7 +11,7 @@ import { DocumentCache, watchConfig } from './cache';
 export function cleanBuiltFiles(session: ISession, opts: Options, info = true) {
   const toc = tic();
   fs.rmdirSync(path.join(serverPath(opts), 'app', 'content'), { recursive: true });
-  fs.rmdirSync(path.join(serverPath(opts), 'public', 'images'), { recursive: true });
+  fs.rmdirSync(path.join(publicPath(opts), '_static'), { recursive: true });
   const log = info ? session.log.info : session.log.debug;
   log(toc('🧹 Clean build files in %s.'));
 }

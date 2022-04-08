@@ -2,12 +2,30 @@ import { CitationRenderer, getCitations } from 'citation-js-utils';
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
+import {
+  OutputSummaries,
+  parseNotebook,
+  summarizeOutputs,
+  TranslatedBlockPair,
+} from '@curvenote/nbtx';
+import { nanoid } from 'nanoid';
+import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
+import { selectAll } from 'mystjs';
 import { ISession } from '../../session/types';
 import { tic } from '../utils/exec';
 import { Options, SiteConfig } from './types';
-import { parseMyst, RendererData, serverPath, transformMdast, writeFileToFolder } from './utils';
+import {
+  parseMyst,
+  publicPath,
+  RendererData,
+  serverPath,
+  transformMdast,
+  writeFileToFolder,
+} from './utils';
 import { LinkLookup, transformLinks } from './transforms';
 import { copyImages, readConfig } from './webConfig';
+
+import { createWebFileObjectFactory } from './files';
 
 type NextFile = { filename: string; folder: string; slug: string };
 
@@ -32,24 +50,72 @@ function asString(source?: string | string[]): string {
   return (Array.isArray(source) ? source.join('') : source) || '';
 }
 
+function createOutputDirective(): { myst: string; id: string } {
+  const id = nanoid();
+  return { myst: `\`\`\`{output}\n:id: ${id}\n\`\`\``, id };
+}
+
 async function processNotebook(
   cache: DocumentCache,
   filename: { from: string; to: string },
   content: string,
   citeRenderer: CitationRenderer,
 ) {
-  const notebook = JSON.parse(content);
-  const cells = notebook.cells
-    .map((cell: any) => {
-      if (cell.cell_type === 'markdown') return asString(cell.source);
-      if (cell.cell_type === 'code') {
-        return `\`\`\`python\n${asString(cell.source)}\n\`\`\``;
+  const { log } = cache.session;
+  const { notebook, children } = parseNotebook(JSON.parse(content));
+  // notebook will be empty, use generateNotebookChildren, generateNotebookOrder here if we want to populate those
+
+  const language = notebook.language ?? notebook.metadata?.kernelspec.language ?? 'python';
+  log.debug('processNotebook', filename);
+  log.debug(notebook);
+
+  const fileFactory = createWebFileObjectFactory(log, publicPath(cache.options), '_static', {
+    useHash: true,
+  });
+
+  const outputMap: Record<string, OutputSummaries> = {};
+
+  const items = (
+    await children?.reduce(async (P, item: TranslatedBlockPair) => {
+      const acc = await P;
+      if (item.content.kind === KINDS.Content) {
+        if (item.content.format === ContentFormatTypes.md)
+          return acc.concat(asString(item.content.content));
+        if (item.content.format === ContentFormatTypes.txt)
+          return acc.concat(`\`\`\`\n${asString(item.content.content)}\n\`\`\``);
       }
-      return null;
-    })
-    .filter((s: string | null) => s)
-    .join('\n\n+++\n\n');
-  const mdast = parseMyst(cells);
+      if (item.content.kind === KINDS.Code) {
+        const code = `\`\`\`${language}\n${asString(item.content.content)}\n\`\`\``;
+        // TODO the contents of item.output.original is exactly what is needed by
+        // a renderer which would use the Juptyer OutputArea class
+        if (item.output && item.output.original) {
+          const summaries: OutputSummaries[] = await summarizeOutputs(
+            fileFactory,
+            item.output.original as CellOutput[],
+            '',
+          );
+
+          const mystSummaries = summaries.map((summary) => {
+            const { myst, id } = createOutputDirective();
+            outputMap[id] = summary;
+            return myst;
+          });
+
+          return acc.concat(code).concat(mystSummaries);
+        }
+        return acc.concat(code);
+      }
+      return acc;
+    }, Promise.resolve([] as string[]))
+  ).join('\n\n+++\n\n');
+
+  const mdast = parseMyst(items);
+
+  // TODO: typing
+  selectAll('output', mdast).forEach((output: any) => {
+    output.data = outputMap[output.id];
+  });
+
   const data = await transformMdast(
     cache.session.log,
     cache.config,
