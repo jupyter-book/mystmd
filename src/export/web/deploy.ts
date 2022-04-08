@@ -5,7 +5,6 @@ import fetch from 'node-fetch';
 import { createHash } from 'crypto';
 import cliProgress from 'cli-progress';
 import { DnsRouter, SiteDeployRequest, SiteUploadRequest } from '@curvenote/blocks';
-import { Storage } from '@google-cloud/storage';
 import mime from 'mime-types';
 import { publicPath, serverPath } from './utils';
 import { DocumentCache } from './cache';
@@ -102,9 +101,6 @@ type FileUpload = FileInfo & {
 async function uploadFile(log: Logger, upload: FileUpload) {
   const toc = tic();
   log.debug(`Starting upload of ${upload.from}`);
-  const storage = new Storage();
-  // See: https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadWithoutAuthenticationSignedUrl.js
-  const file = storage.bucket(upload.bucket).file(upload.to);
   const resumableSession = await fetch(upload.signedUrl, {
     method: 'POST',
     headers: {
@@ -115,17 +111,21 @@ async function uploadFile(log: Logger, upload: FileUpload) {
   // Endpoint to which we should upload the file
   const location = resumableSession.headers.get('location') as string;
 
-  const buffer = fs.readFileSync(upload.from);
-  // Passes the location to file.save so you don't need to authenticate this call
-  await file.save(buffer, {
-    uri: location,
-    contentType: upload.contentType,
-    resumable: true,
-    validation: false,
-    onUploadProgress(e: { bytesWritten: number }) {
-      log.debug(`${Math.round((e.bytesWritten / upload.size) * 100)}% complete for ${upload.from}`);
+  // we are not resuming! is we want resumable uploads we need to implement
+  // or use something other than fetch here that supports resuming
+  const readStream = fs.createReadStream(upload.from);
+  const uploadResponse = await fetch(location, {
+    method: 'PUT',
+    headers: {
+      'Content-length': `${upload.size}`,
     },
+    body: readStream,
   });
+
+  if (!uploadResponse.ok) {
+    log.error(`Upload failed for ${upload.from}`);
+  }
+
   log.debug(toc(`Finished upload of ${upload.from} in %s.`));
 }
 
@@ -150,7 +150,7 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
   const { json: uploadTargets } = await cache.session.post('/sites/upload', uploadRequest);
 
   // Only upload n files at a time
-  const limit = pLimit(10);
+  const limit = pLimit(1);
   const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
   cache.session.log.info(`☁️  Uploading ${files.length} files`);
   bar1.start(files.length, 0);
