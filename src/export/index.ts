@@ -8,4 +8,4 @@ export * as web from './web';
 export * from './model';
 export * from './utils';
 export * from './multiple';
-export * from './types';
+export * from '../config';

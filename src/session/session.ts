@@ -5,6 +5,7 @@ import { basicLogger, Logger, LogLevel } from '../logging';
 import { rootReducer, RootState } from '../store';
 import { getHeaders, setSessionOrUserToken } from './tokens';
 import { ISession, Response, Tokens } from './types';
+import { CurvenoteConfig, loadCurvenoteConfig } from '../config';
 
 const DEFAULT_API_URL = 'https://api.curvenote.com';
 const DEFAULT_SITE_URL = 'https://curvenote.com';
@@ -13,6 +14,7 @@ export type SessionOptions = {
   apiUrl?: string;
   siteUrl?: string;
   logger?: Logger;
+  config?: string;
 };
 
 function withQuery(url: string, query: Record<string, string> = {}) {
@@ -31,6 +33,10 @@ export class Session implements ISession {
   $tokens: Tokens;
 
   store: Store<RootState>;
+
+  configPath: string;
+
+  config: CurvenoteConfig | null;
 
   $logger: Logger;
 
@@ -52,6 +58,13 @@ export class Session implements ISession {
       this.log.warn(`Connecting to API at: "${this.API_URL}".`);
     }
     this.store = createStore(rootReducer);
+    this.configPath = opts.config || 'curvenote.yml';
+    this.config = this.loadConfig();
+  }
+
+  loadConfig() {
+    this.config = loadCurvenoteConfig(this.$logger, this.configPath);
+    return this.config;
   }
 
   async get(url: string, query?: Record<string, string>): Response {

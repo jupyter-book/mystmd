@@ -114,7 +114,6 @@ function makeJupyterBookExportCLI(program: Command) {
 function makeMultiExportCLI(program: Command) {
   const command = new Command('multi')
     .description('Export multiple targets from Curvenote via local configuraton file')
-    .argument('[path]', 'Path to configuration file', './curvenote.yml')
     .action(clirun(exportContent, { program }));
   return command;
 }

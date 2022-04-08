@@ -1,8 +1,7 @@
 import fs from 'fs';
 import { makeExecutable } from '../utils';
 import { ISession } from '../../session/types';
-import { tic } from '../utils/exec';
-import { readFilesAndProcess } from './prepare';
+import { watchContent } from './prepare';
 import { getServerLogger } from './serverLogger';
 import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
@@ -57,14 +56,8 @@ async function cloneCurvespace(session: ISession, opts: Options) {
 export async function serve(session: ISession, opts: Options) {
   await cloneCurvespace(session, opts);
   session.log.info('\n\n\t✨✨✨  Starting Curvenote  ✨✨✨\n\n');
-  const toc = tic();
-  await makeExecutable(`cd ${serverPath(opts)}; npm run build:css`, null)();
-  session.log.info(toc('⚡️ Styled in %s.'));
   // Watch the files in the content folder and process them
-  const processor = readFilesAndProcess(session, opts);
-  fs.watch('content', { recursive: true }, (eventType, filename) => {
-    processor(eventType, filename);
-  });
+  await watchContent(session, opts);
   // Start the server and wait on it
   await makeExecutable(`cd ${serverPath(opts)}; npm run serve`, getServerLogger(session))();
 }

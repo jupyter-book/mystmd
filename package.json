@@ -43,7 +43,7 @@
     "@reduxjs/toolkit": "^1.7.2",
     "bottleneck": "^2.19.5",
     "chalk": "^4.1.2",
-    "citation-js-utils": "^0.0.1",
+    "citation-js-utils": "^0.0.3",
     "commander": "^8.3.0",
     "date-fns": "^2.25.0",
     "docx": "^7.3.0",

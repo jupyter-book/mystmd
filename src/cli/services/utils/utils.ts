@@ -4,22 +4,25 @@ import { chalkLogger, LogLevel } from '../../../logging';
 import { Session, getToken } from '../../../session';
 import { ISession } from '../../../session/types';
 
-function getLogLevel(level: LogLevel | Command = LogLevel.info): LogLevel {
-  let useLevel: LogLevel = typeof level === 'number' ? level : LogLevel.info;
-  if (typeof level !== 'number') {
-    useLevel = level.opts().debug ? LogLevel.debug : LogLevel.info;
-  }
+type SessionOpts = {
+  debug?: boolean | string;
+  config?: string;
+};
+
+function getLogLevel(level: LogLevel | boolean | string = LogLevel.info): LogLevel {
+  if (typeof level === 'number') return level;
+  const useLevel: LogLevel = level ? LogLevel.debug : LogLevel.info;
   return useLevel;
 }
 
-export function anonSession(level?: LogLevel | Command) {
-  const logger = chalkLogger(getLogLevel(level));
+export function anonSession(opts?: SessionOpts): ISession {
+  const logger = chalkLogger(getLogLevel(opts?.debug));
   const session = new Session(undefined, { logger });
   return session;
 }
 
-export function getSession(level?: LogLevel | Command): Session {
-  const logger = chalkLogger(getLogLevel(level));
+function getSession(opts?: SessionOpts): ISession {
+  const logger = chalkLogger(getLogLevel(opts?.debug));
   const token = getToken(logger);
   if (!token) {
     logger.warn('No token was found in settings or CURVENOTE_TOKEN. Session is not authenticated.');
@@ -45,11 +48,11 @@ export function clirun(
   cli: { program: Command; session?: ISession },
 ) {
   return async (...args: any[]) => {
-    const useSession = cli.session ?? getSession(cli.program);
+    const opts = cli.program.opts() as SessionOpts;
+    const useSession = cli.session ?? getSession(opts);
     try {
       await func(useSession, ...args);
     } catch (error) {
-      const opts = cli.program.opts();
       if (opts.debug === true) {
         useSession.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
       } else if (opts.debug) {

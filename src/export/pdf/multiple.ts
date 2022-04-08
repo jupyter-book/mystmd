@@ -1,6 +1,6 @@
 import path from 'path';
 import { multipleArticleToTex } from '../tex';
-import { ExportConfig } from '../types';
+import { ExportConfig } from '../../config/types';
 import { Project } from '../../models';
 import { ISession } from '../../session/types';
 import { createPdfGivenTexFile } from './create';

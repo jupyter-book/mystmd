@@ -34,7 +34,7 @@ const RRange: IRole = {
     }
   },
   mdast: createMdastHandler('r:range'),
-  hast(h, node) {
+  hast() {
     return null;
   },
 };
@@ -48,7 +48,7 @@ const RDynamic: IRole = {
     }
   },
   mdast: createMdastHandler('r:dynamic'),
-  hast(h, node) {
+  hast() {
     return null;
   },
 };
@@ -62,7 +62,7 @@ const RDisplay: IRole = {
     }
   },
   mdast: createMdastHandler('r:display'),
-  hast(h, node) {
+  hast() {
     return null;
   },
 };
@@ -77,6 +77,7 @@ function createCiteMdastHandler(type: string, kind: string): IRole['mdast'] {
     },
   };
 }
+
 const CiteP: IRole = {
   myst: class CiteP extends Role {
     run(data: IRoleData) {
@@ -86,7 +87,21 @@ const CiteP: IRole = {
     }
   },
   mdast: createCiteMdastHandler('cite', 'p'),
-  hast(h, node) {
+  hast() {
+    return null;
+  },
+};
+
+const CiteT: IRole = {
+  myst: class CiteT extends Role {
+    run(data: IRoleData) {
+      const token = new this.state.Token('cite:t', 'cite', 1);
+      token.content = data.content;
+      return [token];
+    }
+  },
+  mdast: createCiteMdastHandler('cite', 't'),
+  hast() {
     return null;
   },
 };
@@ -95,5 +110,7 @@ export const reactiveRoles: Record<string, IRole> = {
   'r:dynamic': RDynamic,
   'r:display': RDisplay,
   'r:range': RRange,
+  cite: CiteP,
   'cite:p': CiteP,
+  'cite:t': CiteT,
 };

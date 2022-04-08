@@ -4,6 +4,8 @@ import { Blocks, NavListItemKindEnum } from '@curvenote/blocks';
 import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
 
+const TOC_FORMAT = 'jb-book';
+
 interface Options {
   filename: string;
 }
@@ -29,14 +31,21 @@ type LoadedBlocks =
       block: Block | null;
     };
 
-type JupyterBookPart = {
+export type JupyterBookPart = {
   caption?: string;
   chapters?: JupyterBookChapter[];
 };
 
-type JupyterBookChapter = {
+export type JupyterBookChapter = {
   file: string;
   sections?: JupyterBookChapter[];
+};
+
+export type TOC = {
+  format: string;
+  root: string;
+  chapters?: JupyterBookChapter[];
+  parts?: JupyterBookPart[];
 };
 
 function getName(block: Block): string {
@@ -120,8 +129,8 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
   const header = '# Table of contents\n# Learn more at https://jupyterbook.org/customize/toc.html';
   if (!hasParts) {
     // There are no parts, just chapters
-    const tocData = {
-      format: 'jb-book',
+    const tocData: TOC = {
+      format: TOC_FORMAT,
       root: getName(items[0].block as Block),
       chapters: itemsToChapters(items.slice(1)),
     };
@@ -141,11 +150,22 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
     index += 1;
     return { caption: `Part ${index}`, chapters: itemsToChapters([item]) };
   });
-  const tocData = {
-    format: 'jb-book',
+  const tocData: TOC = {
+    format: TOC_FORMAT,
     root: getName(root.block as Block),
     parts,
   };
   const toc = `${header}\n\n${YAML.stringify(tocData)}\n`;
   fs.writeFileSync(filename, toc);
+}
+
+export function readTOC(session: ISession, opts?: Options): TOC {
+  const { filename = '_toc.yml' } = opts ?? {};
+  const toc = YAML.parse(fs.readFileSync(filename).toString());
+  const { format, root, chapters, parts } = toc;
+  if (format !== TOC_FORMAT) throw new Error(`The toc.format must be ${TOC_FORMAT}.`);
+  if (!root) throw new Error(`The toc.root must exist.`);
+  if (!chapters && !parts) throw new Error(`The toc must have either chapters or parts.`);
+  session.log.debug('Basic validation of TOC passed.');
+  return toc;
 }

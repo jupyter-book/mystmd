@@ -1,5 +1,14 @@
 import { ExportableFormatTypes } from '@curvenote/blocks';
 
+export interface WebConfig {
+  name: string;
+  sections: { title: string; folder: string }[];
+  actions: { title: string; url: string }[];
+  favicon?: string;
+  logo?: string;
+  logoText?: string;
+}
+
 export interface ExportConfig {
   name: string;
   kind: ExportableFormatTypes;
@@ -23,8 +32,9 @@ export interface ExportConfig {
   } & Record<string, any>;
 }
 
-export interface Config {
+export interface CurvenoteConfig {
   version: number;
   sync: Record<string, any>;
+  web: WebConfig;
   export: ExportConfig[];
 }
