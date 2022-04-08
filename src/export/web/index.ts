@@ -50,7 +50,7 @@ export async function install(session: ISession, opts: Options) {
 async function cloneCurvespace(session: ISession, opts: Options) {
   if (opts.force) {
     await clean(session, opts);
-  } else if (opts.branch !== 'main') {
+  } else if (opts.branch && opts.branch !== 'main') {
     throw new Error(
       `Cannot use --branch option without force cloning \n\nTry with options: -F --branch ${opts.branch}`,
     );
