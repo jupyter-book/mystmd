@@ -1,7 +1,7 @@
 import util from 'util';
 import child_process from 'child_process';
 import prettyHrtime from 'pretty-hrtime';
-import { Logger } from '~/logging';
+import { Logger } from '../../logging';
 
 function execWrapper(
   command: string,

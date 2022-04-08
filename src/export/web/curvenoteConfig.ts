@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { ISession } from '~/session/types';
+import { ISession } from '../../session/types';
 
 export interface Options {
   title: string;

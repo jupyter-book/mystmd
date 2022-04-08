@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { web } from '~/index';
+import { web } from '../../index';
 import { clirun } from './utils';
 
 function makeCurvespaceCleanCLI(program: Command) {

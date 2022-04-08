@@ -1,8 +1,8 @@
 import fs from 'fs';
 import { Command } from 'commander';
-import { chalkLogger, LogLevel } from '~/logging';
-import { Session, getToken } from '~/session';
-import { ISession } from '~/session/types';
+import { chalkLogger, LogLevel } from '../../../logging';
+import { Session, getToken } from '../../../session';
+import { ISession } from '../../../session/types';
 
 function getLogLevel(level: LogLevel | Command = LogLevel.info): LogLevel {
   let useLevel: LogLevel = typeof level === 'number' ? level : LogLevel.info;

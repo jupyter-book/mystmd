@@ -1,6 +1,6 @@
 import { sync as which } from 'which';
 import path from 'path';
-import { Logger } from '~/logging';
+import { Logger } from '../../logging';
 import { makeExecutable } from './exec';
 
 export function isInkscapeAvailable() {

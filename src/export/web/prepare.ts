@@ -18,7 +18,7 @@ import throttle from 'lodash.throttle';
 import { renderEquation } from './math.server';
 import { reactiveRoles } from './roles';
 import { reactiveDirectives } from './directives';
-import { ISession } from '~/session/types';
+import { ISession } from '../../session/types';
 import { tic } from '../utils/exec';
 import { serverPath } from './utils';
 import { Options } from './types';

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import commander from 'commander';
-import version from '~/version';
+import version from '../version';
 import { addAuthCLI, addExportCLI, addWebCLI, addTokenCLI } from './services';
 
 const program = new commander.Command();

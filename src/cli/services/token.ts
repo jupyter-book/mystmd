@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { deleteToken, setToken } from '~/session';
+import { deleteToken, setToken } from '../../session';
 import { anonSession, clirun } from './utils';
 
 export function addTokenCLI(program: Command) {

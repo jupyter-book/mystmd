@@ -12,9 +12,6 @@
     // outDir is overridden from the build:esm/build:cjs scripts
     "outDir": "dist",
     "baseUrl": ".",
-    "paths": {
-      "~/*": ["./src/*"]
-    },
     // Type roots allows it to be included in a yarn workspace
     "typeRoots": ["./types", "./node_modules/@types", "../../node_modules/@types"],
     "resolveJsonModule": true,

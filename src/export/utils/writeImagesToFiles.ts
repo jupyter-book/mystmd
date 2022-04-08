@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import fetch from 'node-fetch';
 import { Blocks } from '@curvenote/blocks';
-import { Logger } from '~/logging';
-import { Block, Version } from '~/models';
+import { Logger } from '../../logging';
+import { Block, Version } from '../../models';
 import { ArticleState } from './walkArticle';
 import { getImageSrc } from './getImageSrc';
 

@@ -4,7 +4,7 @@ import { oxaLink } from '@curvenote/blocks';
 import { toTex } from '@curvenote/schema';
 import os from 'os';
 import path from 'path';
-import { Logger } from 'logging';
+import { Logger } from '../../logging';
 import { ISession } from '../../session/types';
 import { localizationOptions } from '../utils/localizationOptions';
 import { ArticleState, ArticleStateChild, makeExecutable } from '../utils';
