@@ -71,6 +71,9 @@
     "which": "^2.0.2",
     "yaml": "^1.10.2"
   },
+  "overrides": {
+    "prosemirror-tables": "^1.1.1"
+  },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
     "@types/cli-progress": "^3.9.2",

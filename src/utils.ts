@@ -5,11 +5,12 @@ import path from 'path';
 export function writeFileToFolder(
   filename: string | { path?: string; filename: string },
   data: string | NodeJS.ArrayBufferView,
+  opts?: fs.WriteFileOptions,
 ) {
   if (typeof filename === 'string') {
     if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
-    fs.writeFileSync(filename, data);
+    fs.writeFileSync(filename, data, opts);
   } else {
-    writeFileToFolder(path.join(filename.path || '.', filename.filename), data);
+    writeFileToFolder(path.join(filename.path || '.', filename.filename), data, opts);
   }
 }
