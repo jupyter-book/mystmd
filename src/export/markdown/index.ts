@@ -13,6 +13,7 @@ import { ISession } from '../../session/types';
 type Options = {
   filename: string;
   images?: string;
+  renderReferences?: boolean;
 };
 
 export async function articleToMarkdown(session: ISession, versionId: VersionId, opts: Options) {
@@ -50,7 +51,7 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
   // https://github.com/executablebooks/MyST-Parser/pull/492
   const titleString = `---\n${metadata}---\n\n# ${block.data.title}\n\n`;
   let file = titleString + content.join('\n\n');
-  if (Object.keys(article.references).length > 0) {
+  if (opts.renderReferences && Object.keys(article.references).length > 0) {
     file += '\n\n### References\n\n```{bibliography}\n:filter: docname in docnames\n```';
   }
   file += '\n\n';

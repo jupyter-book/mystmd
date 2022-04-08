@@ -7,6 +7,7 @@ import { tic } from '../utils/exec';
 import { Options, SiteConfig } from './types';
 import { parseMyst, RendererData, serverPath, transformMdast, writeFileToFolder } from './utils';
 import { LinkLookup, transformLinks } from './transforms';
+import { copyImages, readConfig } from './webConfig';
 
 type NextFile = { filename: string; folder: string; slug: string };
 
@@ -27,6 +28,10 @@ async function processMarkdown(
   return data;
 }
 
+function asString(source?: string | string[]): string {
+  return (Array.isArray(source) ? source.join('') : source) || '';
+}
+
 async function processNotebook(
   cache: DocumentCache,
   filename: { from: string; to: string },
@@ -36,10 +41,9 @@ async function processNotebook(
   const notebook = JSON.parse(content);
   const cells = notebook.cells
     .map((cell: any) => {
-      if (cell.cell_type === 'markdown') return cell.source;
+      if (cell.cell_type === 'markdown') return asString(cell.source);
       if (cell.cell_type === 'code') {
-        const source = Array.isArray(cell.source) ? cell.source.join('') : cell.source;
-        return `\`\`\`python\n${source}\n\`\`\``;
+        return `\`\`\`python\n${asString(cell.source)}\n\`\`\``;
       }
       return null;
     })
@@ -92,6 +96,10 @@ async function getCitationRenderer(session: ISession, folder: string): Promise<C
   }
   const f = fs.readFileSync(referenceFilename).toString();
   return getCitations(f);
+}
+
+export function watchConfig(cache: DocumentCache) {
+  return fs.watchFile(cache.session.configPath, async () => cache.readConfig());
 }
 
 export class DocumentCache {
@@ -151,18 +159,27 @@ export class DocumentCache {
     const jsonFilename = this.$getJsonFilename(id);
     const filenames = { from: filename, to: jsonFilename };
     const { fromCache, data } = await processFile(this, filenames, content, citeRenderer);
-    const changed = this.$processLinks ? transformLinks(data.mdast, this.$links) : false;
+    const changed = this.$startupPass ? false : transformLinks(data.mdast, this.$links);
     if (changed || !fromCache) {
       writeFileToFolder(jsonFilename, JSON.stringify(data));
       this.session.log.info(toc(`📖 Built ${id} in %s.`));
     }
     this.registerFile(id, data);
+    await this.writeConfig();
     return !fromCache;
   }
 
   $links: LinkLookup = {};
 
   registerFile(id: string, data: RendererData) {
+    const [folder, slug] = id.split('/');
+    // Update the title in the config
+    const page = this.config?.folders[folder]?.pages.find((p) => p.slug === slug);
+    const title = data.frontmatter.title || slug;
+    if (page && page.title !== title) {
+      this.$configDirty = true;
+      page.title = title;
+    }
     this.$processed[id] = data;
     const { oxa } = data.frontmatter ?? {};
     if (oxa) {
@@ -171,7 +188,7 @@ export class DocumentCache {
   }
 
   /** Let the cache know not to process links & cross references */
-  $processLinks = true;
+  $startupPass = false;
 
   async processAllLinks() {
     await Promise.all(
@@ -185,5 +202,34 @@ export class DocumentCache {
         }
       }),
     );
+  }
+
+  $configDirty = false;
+
+  async readConfig() {
+    try {
+      const config = await readConfig(this.session, this.options);
+      this.$configDirty = true;
+      // Update the config titles from any processed files.
+      Object.entries(config.folders).forEach(([folder, { pages }]) => {
+        pages.forEach((page) => {
+          page.title = this.$processed[`${folder}/${page.slug}`]?.frontmatter.title || page.title;
+        });
+      });
+      this.config = config;
+    } catch (error) {
+      this.session.log.error(`Error reading config:\n\n${(error as Error).message}`);
+    }
+    if (this.config) {
+      await copyImages(this.session, this.options, this.config);
+    }
+  }
+
+  async writeConfig() {
+    if (this.$startupPass || !this.$configDirty) return;
+    const pathname = path.join(serverPath(this.options), 'app', 'config.json');
+    this.session.log.info('⚙️  Writing config.json');
+    fs.writeFileSync(pathname, JSON.stringify(this.config));
+    this.$configDirty = false;
   }
 }

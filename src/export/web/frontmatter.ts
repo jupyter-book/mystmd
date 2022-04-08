@@ -1,5 +1,6 @@
 import yaml from 'js-yaml';
 import { Root, PhrasingContent } from 'mdast';
+import { GenericNode, select } from 'mystjs';
 
 export type Frontmatter = {
   title?: string;
@@ -33,5 +34,10 @@ export function getFrontmatter(tree: Root, remove = true): Frontmatter {
     removeUpTo += 1;
   }
   if (remove) tree.children.splice(0, removeUpTo);
+  if (!frontmatter.title) {
+    const heading = select('heading', tree) as GenericNode;
+    // TODO: Improve title selection!
+    frontmatter.title = heading?.children?.[0]?.value || 'Untitled';
+  }
   return frontmatter;
 }

@@ -5,8 +5,8 @@ import { ISession } from '../../session/types';
 import { tic } from '../utils/exec';
 import { serverPath } from './utils';
 import { Options, SiteConfig, SiteFolder } from './types';
-import { getFileName, watchConfig, writeConfig } from './webConfig';
-import { DocumentCache } from './cache';
+import { getFileName } from './webConfig';
+import { DocumentCache, watchConfig } from './cache';
 
 async function processFolder(
   cache: DocumentCache,
@@ -30,7 +30,7 @@ async function processFolder(
 }
 
 async function processConfig(cache: DocumentCache): Promise<{ id: string; processed: boolean }[]> {
-  cache.$processLinks = false;
+  cache.$startupPass = true;
   const folders = await Promise.all(
     (cache.config?.site.sections ?? []).map((sec) => {
       const folder = cache.config?.folders[sec.folder];
@@ -38,8 +38,9 @@ async function processConfig(cache: DocumentCache): Promise<{ id: string; proces
       return processFolder(cache, sec, folder);
     }),
   );
-  cache.$processLinks = true;
+  cache.$startupPass = false;
   await cache.processAllLinks();
+  await cache.writeConfig();
   return folders.flat().filter((f) => f) as { id: string; processed: boolean }[];
 }
 
@@ -52,14 +53,15 @@ export async function watchContent(session: ISession, opts: Options) {
     fs.rmdirSync(path.join(serverPath(opts), 'public', 'images'), { recursive: true });
   }
 
-  cache.config = await writeConfig(session, opts);
+  await cache.readConfig();
   session.log.debug('Site Config:\n\n', yaml.dump(cache.config));
 
   const processor = async (eventType: string, filename: string) => {
     session.log.debug(`File modified: "${filename}" (${eventType})`);
     const base = path.basename(filename);
     if (base === '_toc.yml') {
-      cache.config = await writeConfig(session, opts, false);
+      await cache.readConfig();
+      await cache.writeConfig();
       return;
     }
     cache.markFileDirty(path.dirname(filename), base);
@@ -74,5 +76,5 @@ export async function watchContent(session: ISession, opts: Options) {
   // Watch the full content folder
   fs.watch('content', { recursive: true }, processor);
   // Watch the curvenote.yml
-  watchConfig(session, opts);
+  watchConfig(cache);
 }

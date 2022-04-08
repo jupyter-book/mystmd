@@ -1,13 +1,12 @@
 import copyfiles from 'copyfiles';
 import fs from 'fs';
-import { select, getFrontmatter, GenericParent } from 'mystjs';
 import path from 'path';
 import { WebConfig } from '../../config/types';
 import { ISession } from '../../session/types';
 import { JupyterBookChapter, readTOC } from '../jupyter-book/toc';
 import { tic } from '../utils/exec';
 import { Options, Page, SiteConfig, SiteFolder } from './types';
-import { parseMyst, serverPath } from './utils';
+import { serverPath } from './utils';
 
 export function getFileName(folder: string, file: string) {
   const filenameMd = path.join(folder, `${file}.md`);
@@ -20,29 +19,6 @@ export function getFileName(folder: string, file: string) {
   return { filename, isMarkdown, isNotebook };
 }
 
-function getTitleFromFile(folder: string, file: string) {
-  const { filename, isMarkdown, isNotebook } = getFileName(folder, file);
-  if (isMarkdown) {
-    const mdast = parseMyst(fs.readFileSync(filename).toString());
-    // TODO: improve the title lookup from markdown
-    const backupTitle = (select('heading', mdast) as GenericParent)?.children?.[0]?.value;
-    const title = getFrontmatter(mdast)?.title || backupTitle || file;
-    return title;
-  }
-  if (isNotebook) {
-    const notebook = JSON.parse(fs.readFileSync(filename).toString());
-    const cell = (notebook.cells as any[]).find((c) => {
-      if (c.cell_type !== 'markdown') return false;
-      const heading = select('heading', parseMyst(c.source));
-      if (!heading) return false;
-      c.heading = heading;
-      return true;
-    });
-    return cell?.heading.children?.[0]?.value || file;
-  }
-  throw new Error(`Could not get title for "${filename}", unknown type.`);
-}
-
 function chaptersToPages(
   folder: string,
   chapters: JupyterBookChapter[],
@@ -50,8 +26,8 @@ function chaptersToPages(
   level = 1,
 ): Page[] {
   chapters.forEach((chapter) => {
-    const title = getTitleFromFile(folder, chapter.file);
-    pages.push({ title, slug: chapter.file, level });
+    // Note: the title will get updated when the file is processed
+    pages.push({ title: chapter.file, slug: chapter.file, level });
     if (chapter.sections) chaptersToPages(folder, chapter.sections, pages, level + 1);
   });
   return pages;
@@ -151,7 +127,7 @@ function createConfig(session: ISession, opts: Options): Required<SiteConfig> {
   };
 }
 
-async function copyImages(session: ISession, opts: Options, config: SiteConfig) {
+export async function copyImages(session: ISession, opts: Options, config: SiteConfig) {
   const toc = tic();
   await Promise.all(
     config.site.sections.map(async ({ path: p }) => {
@@ -173,27 +149,8 @@ async function copyImages(session: ISession, opts: Options, config: SiteConfig) 
   session.log.info(toc(`🌄 Copied images in %s`));
 }
 
-export async function writeConfig(
-  session: ISession,
-  opts: Options,
-  throwError = true,
-): Promise<SiteConfig | null> {
-  const toc = tic();
-  try {
-    session.loadConfig(); // Ensure that this is the most up to date config
-    const config = createConfig(session, opts);
-    await copyImages(session, opts, config);
-    const pathname = path.join(serverPath(opts), 'app', 'config.json');
-    session.log.info(toc(`⚙️  Writing config.json in %s`));
-    fs.writeFileSync(pathname, JSON.stringify(config));
-    return config;
-  } catch (error) {
-    if (throwError) throw error;
-    session.log.error((error as Error).message);
-    return null;
-  }
-}
-
-export function watchConfig(session: ISession, opts: Options) {
-  return fs.watchFile(session.configPath, () => writeConfig(session, opts, false));
+export async function readConfig(session: ISession, opts: Options): Promise<SiteConfig> {
+  session.loadConfig(); // Ensure that this is the most up to date config
+  const config = createConfig(session, opts);
+  return config;
 }
