@@ -19,8 +19,12 @@ export async function clean(session: ISession, opts: Options) {
 
 export async function clone(session: ISession, opts: Options) {
   session.log.info('🌎 Cloning Curvespace');
+  const branch = opts.branch || 'main';
+  if (branch !== 'main') {
+    session.log.warn(`👷‍♀️ Warning, using a branch: ${branch}`);
+  }
   await makeExecutable(
-    `git clone git@github.com:curvenote/curvespace.git ${serverPath(opts)}`,
+    `git clone --branch ${branch} git@github.com:curvenote/curvespace.git ${serverPath(opts)}`,
     session.log,
   )();
   // TODO: log out version!

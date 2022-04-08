@@ -12,6 +12,11 @@ function makeCurvespaceCleanCLI(program: Command) {
 function makeCurvespaceCloneCLI(program: Command) {
   const command = new Command('clone')
     .description('Clone curvespace into the build directory')
+    .option(
+      '--branch [branch]',
+      'Branch to clone from git@github.com:curvenote/curvespace.git',
+      'main',
+    )
     .action(clirun(web.clone, { program }));
   return command;
 }
