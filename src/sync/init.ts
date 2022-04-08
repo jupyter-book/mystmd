@@ -111,7 +111,11 @@ export async function init(session: ISession, opts: Options) {
     session.log.info(chalk.dim('\nYou can do this later with:'), chalk.bold('curvenote start'));
   }
   if (!pullComplete) {
-    session.log.info(chalk.dim('\nFinishing'), chalk.bold('curvenote pull'), chalk.dim('...'));
+    session.log.info(
+      chalk.dim('\nFinishing'),
+      chalk.bold('curvenote pull'),
+      chalk.dim('. This may take a minute ⏳...'),
+    );
   }
   if (start) {
     await pullProcess;

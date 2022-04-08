@@ -1,7 +1,29 @@
 import { ExportableFormatTypes } from '@curvenote/blocks';
 
+/** Maybe this is the new sections in the future?
+ *
+ * routes:
+ *   - url: /2021
+ *     file: index/2021.md
+ *   - url: /2021/inversion/*
+ *     folder: 2021/inversion
+ *
+ * export type Route = {
+ *   url: string;
+ *   file?: string;
+ *   folder?: string;
+ * };
+ */
+
+export type NavItem = {
+  title: string;
+  url: string;
+  children?: Omit<NavItem, 'children'>[]; // Only one deep
+};
+
 export interface WebConfig {
   name: string;
+  nav: NavItem[];
   sections: { title: string; folder: string; path: string }[];
   actions: { title: string; url: string; static?: boolean }[];
   favicon?: string | null;

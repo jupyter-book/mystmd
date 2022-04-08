@@ -40,6 +40,7 @@ export function blankCurvenoteConfig(): CurvenoteConfig {
       logo: path.join('public', 'logo.svg'),
       logoText: 'My Curve Space',
       twitter: null,
+      nav: [],
       sections: [],
       actions: [{ title: 'Learn More', url: docLinks.curvespace }],
     },

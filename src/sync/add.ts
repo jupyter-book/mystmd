@@ -1,5 +1,5 @@
 import inquirer from 'inquirer';
-import { join } from 'path';
+import { join, basename } from 'path';
 import chalk from 'chalk';
 import yaml from 'js-yaml';
 import { docLinks } from '../docs';
@@ -59,6 +59,10 @@ export async function addProjectsToConfig(
       title: project.data.title,
       folder: path, // TODO: fix me!
       path,
+    });
+    config.web.nav.push({
+      title: project.data.title,
+      url: `/${basename(path)}`,
     });
     confirm = await inquirer.prompt([
       {

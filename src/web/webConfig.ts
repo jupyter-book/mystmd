@@ -152,6 +152,7 @@ function createConfig(session: ISession, opts: Options): Required<SiteConfig> {
     logoText: config.web.logoText || null,
     twitter: config.web.twitter || null,
     domains: config.web.domains ?? [],
+    nav: config.web.nav ?? [],
     sections,
     design,
   };
