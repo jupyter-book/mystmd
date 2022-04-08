@@ -72,6 +72,7 @@
     "mdast-util-to-hast": "^12.1.1",
     "myst-spec": "0.0.2",
     "rehype-format": "^4.0.1",
+    "rehype-remark": "^9.1.2",
     "rehype-stringify": "^9.0.3",
     "unified": "^10.1.1",
     "unist-builder": "^3.0.0",
