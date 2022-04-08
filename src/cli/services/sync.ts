@@ -12,6 +12,7 @@ function makeSyncInitCLI(program: Command) {
 function makeSyncPullCLI(program: Command) {
   const command = new Command('pull')
     .description('Pull all information for a Curvenote project')
+    .argument('[folder]', 'The location of the content to pull')
     .action(clirun(sync.pull, { program, requireConfig: true }));
   return command;
 }
