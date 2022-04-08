@@ -14,7 +14,7 @@ export function getServerLogger(session: ISession) {
         const url = `http://${ipAndPort}`;
         const local = `http://localhost:${port}`;
         session.log.info(
-          `\nServer started on port ${port}!🥳 🎉\n\n\n\t👉  ${chalk.green(local)}  👈\n\n`,
+          `\n🔌 Server started on port ${port}!🥳 🎉\n\n\n\t👉  ${chalk.green(local)}  👈\n\n`,
         );
         session.log.debug(`You can also access the server here: ${url}`);
         return;
