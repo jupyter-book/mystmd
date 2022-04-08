@@ -8,7 +8,8 @@ import { writeConfig } from './jbConfig';
 import { ISession } from '../../session/types';
 
 type Options = {
-  something?: string;
+  images?: string;
+  bibtex?: string;
 };
 
 export async function projectToJupyterBook(session: ISession, projectId: ProjectId, opts: Options) {
@@ -22,7 +23,7 @@ export async function projectToJupyterBook(session: ISession, projectId: Project
     url: `${session.SITE_URL}/@${project.data.team}/${project.data.name}`,
   });
   await writeTOC(session, nav);
-  await exportAll(session, nav);
+  await exportAll(session, nav, { ...opts, images: '_static', bibtex: 'references.bib' });
 }
 
 export const oxaLinkToJupyterBook = exportFromProjectLink(projectToJupyterBook);

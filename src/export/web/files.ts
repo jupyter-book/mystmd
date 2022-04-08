@@ -101,7 +101,8 @@ export function createWebFileObjectFactory(
   staticPath: string,
   options: { useHash: boolean },
 ): IFileObjectFactoryFn {
-  if (!fs.existsSync(staticPath)) fsp.mkdir(staticPath, { recursive: true });
+  if (!fs.existsSync(path.join(publicPath, staticPath)))
+    fsp.mkdir(path.join(publicPath, staticPath), { recursive: true });
   return (filepath: string) =>
     new WebFileObject(
       log,

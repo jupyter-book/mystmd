@@ -13,6 +13,7 @@ import { ISession } from '../../session/types';
 type Options = {
   filename: string;
   images?: string;
+  bibtex?: string;
   renderReferences?: boolean;
 };
 
@@ -62,7 +63,7 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
   await writeBibtex(
     session,
     article.references,
-    path.join(path.dirname(opts.filename), 'main.bib'),
+    path.join(path.dirname(opts.filename), opts?.bibtex ?? 'main.bib'),
     { alwaysWriteFile: false },
   );
 

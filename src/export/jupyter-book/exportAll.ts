@@ -8,6 +8,7 @@ import { writeBibtex } from '../utils/writeBibtex';
 import { notebookToIpynb } from '../notebook';
 
 interface Options {
+  images?: string;
   bibtex?: string;
 }
 
@@ -31,7 +32,7 @@ export async function exportAll(
       switch (block.data.kind) {
         case KINDS.Article: {
           const filename = `${block.data.name ?? block.id.block}.md`;
-          return articleToMarkdown(session, version.id, { filename });
+          return articleToMarkdown(session, version.id, { ...opts, filename });
         }
         case KINDS.Notebook: {
           const filename = `${block.data.name ?? block.id.block}.ipynb`;

@@ -133,7 +133,7 @@ export async function copyImages(session: ISession, opts: Options, config: SiteC
   await Promise.all(
     config.site.sections.map(async ({ path: p }) => {
       return new Promise((callback, error) => {
-        const from = path.join(p, 'images', '*');
+        const from = path.join(p, '_static', '*');
         const to = path.join(publicPath(opts), '_static');
         session.log.debug(`Copying images from "${from}" to "${to}"`);
         copyfiles([from, to], { up: true, soft: true } as any, (e) => {
