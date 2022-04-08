@@ -1,52 +1,12 @@
-import { createId } from '@curvenote/schema';
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
-import {
-  getFrontmatter,
-  GenericNode,
-  transform,
-  State,
-  unified,
-  selectAll,
-  map,
-  visit,
-  remove,
-} from 'mystjs';
-import { getCitations, CitationRenderer, InlineCite } from 'citation-js-utils';
-import { renderEquation } from './math.server';
+import { getCitations, CitationRenderer } from 'citation-js-utils';
 import { ISession } from '../../session/types';
 import { tic } from '../utils/exec';
-import { parseMyst, serverPath, writeFileToFolder } from './utils';
+import { parseMyst, serverPath, transformMdast, writeFileToFolder } from './utils';
 import { Options } from './types';
-import { SiteConfig, SiteFolder, watchConfig, writeConfig } from './webConfig';
-
-export type Citations = {
-  order: string[];
-  data: Record<string, { html: string; number: number }>;
-};
-
-export type Footnotes = Record<string, GenericNode>;
-
-export type References = {
-  cite: Citations;
-  footnotes: Footnotes;
-};
-
-function pushCite(references: References, citeRenderer: CitationRenderer, label: string) {
-  if (!references.cite.data[label]) {
-    references.cite.order.push(label);
-  }
-  references.cite.data[label] = {
-    number: references.cite.order.length,
-    html: citeRenderer[label]?.render(),
-  };
-}
-
-function addKeys(node: GenericNode) {
-  node.key = createId();
-  return node;
-}
+import { getFileName, SiteConfig, SiteFolder, watchConfig, writeConfig } from './webConfig';
 
 function isSame(filename: string, hash: string): boolean {
   if (!fs.existsSync(filename)) return false;
@@ -54,7 +14,7 @@ function isSame(filename: string, hash: string): boolean {
   return JSON.parse(content).sha256 === hash;
 }
 
-async function prepare(
+async function processMarkdown(
   session: ISession,
   filename: { from: string; to: string },
   content: string,
@@ -62,61 +22,45 @@ async function prepare(
 ) {
   const sha256 = createHash('sha256').update(content).digest('hex');
   if (isSame(filename.to, sha256)) return false;
-  const toc = tic();
-  let mdast = parseMyst(content);
-  const state = new State();
-  mdast = await unified().use(transform, state, { addContainerCaptionNumbers: true }).run(mdast);
-  session.log.debug(toc(`Processing: "${filename.from}" -- MyST      %s`));
-  visit(mdast, 'math', (node: GenericNode) => {
-    node.html = renderEquation(node.value, true);
-  });
-  visit(mdast, 'inlineMath', (node: GenericNode) => {
-    node.html = renderEquation(node.value, false);
-  });
-  session.log.debug(toc(`Processing: "${filename.from}" -- math      %s`));
-  const references: References = {
-    cite: { order: [], data: {} },
-    footnotes: {},
-  };
-  const footnotes = selectAll('footnoteDefinition', mdast);
-  references.footnotes = Object.fromEntries(
-    footnotes.map((n: GenericNode) => [n.identifier, map(n, addKeys)]),
-  );
-  remove(mdast, 'footnoteDefinition');
-  session.log.debug(toc(`Processing: "${filename.from}" -- footnotes %s`));
-  selectAll('cite', mdast).forEach((node: GenericNode) => {
-    const citeLabel = (node.label ?? '').trim();
-    if (!citeLabel) return;
-    if (node.kind === 't') {
-      pushCite(references, citeRenderer, citeLabel);
-      node.label = citeLabel;
-      node.children = citeRenderer[citeLabel]?.inline(InlineCite.t) || [];
-      return;
-    }
-    node.children =
-      citeLabel?.split(',').map((s) => {
-        const label = s.trim();
-        pushCite(references, citeRenderer, label);
-        return {
-          type: 'cite',
-          label,
-          children: citeRenderer[label]?.inline() || [],
-        };
-      }) ?? [];
-    node.type = 'citeGroup';
-  });
-  session.log.debug(toc(`Processing: "${filename.from}" -- citations %s`));
-  // Last step, add unique keys to every node!
-  map(mdast, addKeys);
-  const frontmatter = getFrontmatter(mdast);
-  session.log.debug(toc(`Processing: "${filename.from}" -- keys      %s`));
-  const data = { sha256, frontmatter, mdast, references };
+  const mdast = parseMyst(content);
+  const data = await transformMdast(session.log, filename.from, mdast, citeRenderer, sha256);
   writeFileToFolder(filename.to, JSON.stringify(data));
   return true;
 }
 
-async function getCitationRenderer(folder: string): Promise<CitationRenderer> {
-  const f = fs.readFileSync(path.join('content', folder, 'references.bib')).toString();
+async function processNotebook(
+  session: ISession,
+  filename: { from: string; to: string },
+  content: string,
+  citeRenderer: CitationRenderer,
+) {
+  const sha256 = createHash('sha256').update(content).digest('hex');
+  if (isSame(filename.to, sha256)) return false;
+  const notebook = JSON.parse(content);
+  const cells = notebook.cells
+    .map((cell: any) => {
+      if (cell.cell_type === 'markdown') return cell.source;
+      if (cell.cell_type === 'code') {
+        const source = Array.isArray(cell.source) ? cell.source.join('') : cell.source;
+        return `\`\`\`python\n${source}\n\`\`\``;
+      }
+      return null;
+    })
+    .filter((s: string | null) => s)
+    .join('\n\n+++\n\n');
+  const mdast = parseMyst(cells);
+  const data = await transformMdast(session.log, filename.from, mdast, citeRenderer, sha256);
+  writeFileToFolder(filename.to, JSON.stringify(data));
+  return true;
+}
+
+async function getCitationRenderer(session: ISession, folder: string): Promise<CitationRenderer> {
+  const referenceFilename = path.join('content', folder, 'references.bib');
+  if (!fs.existsSync(referenceFilename)) {
+    session.log.debug(`Expected references at "${referenceFilename}"`);
+    return {};
+  }
+  const f = fs.readFileSync(referenceFilename).toString();
   return getCitations(f);
 }
 
@@ -126,9 +70,14 @@ async function processFile(session: ISession, opts: Options, file: NextFile): Pr
   const webFolder = path.basename(folder);
   session.log.debug(`Reading file "${filename}"`);
   const f = fs.readFileSync(filename).toString();
-  const citeRenderer = await getCitationRenderer(folder);
+  const citeRenderer = await getCitationRenderer(session, folder);
   const jsonFile = path.join(`${serverPath(opts)}/app/content/${webFolder}/${slug}.json`);
-  const built = await prepare(session, { from: filename, to: jsonFile }, f, citeRenderer);
+  let built = false;
+  if (filename.endsWith('.md')) {
+    built = await processMarkdown(session, { from: filename, to: jsonFile }, f, citeRenderer);
+  } else if (filename.endsWith('.ipynb')) {
+    built = await processNotebook(session, { from: filename, to: jsonFile }, f, citeRenderer);
+  }
   if (built) session.log.info(toc(`📖 Built ${webFolder}/${slug} in %s.`));
   return built;
 }
@@ -136,20 +85,21 @@ async function processFile(session: ISession, opts: Options, file: NextFile): Pr
 async function processFolder(
   session: ISession,
   opts: Options,
-  folder: string,
-  pages: SiteFolder['pages'],
+  section: SiteConfig['site']['sections'][0],
+  folder: SiteFolder,
 ): Promise<{ id: string; processed: boolean }[]> {
+  const pages = [{ slug: folder.index }, ...folder.pages];
+  const slugs = pages.filter(({ slug }) => slug) as { slug: string }[];
   const files = await Promise.all(
-    pages
-      .filter(({ slug }) => slug)
-      .map(async ({ slug }) => {
-        const processed = await processFile(session, opts, {
-          folder,
-          slug: slug as string,
-          filename: path.join('content', folder, `${slug}.md`),
-        });
-        return { id: `${folder}/${slug}`, processed };
-      }),
+    slugs.map(async ({ slug }) => {
+      const { filename } = getFileName(section.path, slug);
+      const processed = await processFile(session, opts, {
+        folder: section.folder,
+        slug,
+        filename,
+      });
+      return { id: `${section.folder}/${slug}`, processed };
+    }),
   );
   return files;
 }
@@ -160,11 +110,13 @@ async function processConfig(
   config: SiteConfig | null,
 ): Promise<{ id: string; processed: boolean }[]> {
   const folders = await Promise.all(
-    Object.entries(config?.folders ?? {}).map(([folder, p]) =>
-      processFolder(session, opts, folder, p.pages),
-    ),
+    (config?.site.sections ?? []).map((sec) => {
+      const folder = config?.folders[sec.folder];
+      if (!folder) return null;
+      return processFolder(session, opts, sec, folder);
+    }),
   );
-  return folders.flat();
+  return folders.flat().filter((f) => f) as { id: string; processed: boolean }[];
 }
 
 type NextFile = { filename: string; folder: string; slug: string };

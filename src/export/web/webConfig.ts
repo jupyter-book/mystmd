@@ -25,15 +25,28 @@ export interface SiteConfig {
   folders: Record<string, SiteFolder>;
 }
 
-function getTitleFromMd(folder: string, file: string) {
-  const filename = path.join(folder, `${file}.md`);
-  if (!fs.existsSync(filename))
-    throw new Error(`Could not find "${filename}". See '${folder}/_toc.yml'`);
-  const mdast = parseMyst(fs.readFileSync(filename).toString());
-  // TODO: improve the title lookup from markdown
-  const backupTitle = (select('heading', mdast) as GenericParent)?.children?.[0]?.value;
-  const title = getFrontmatter(mdast)?.title || backupTitle || file;
-  return title;
+export function getFileName(folder: string, file: string) {
+  const filenameMd = path.join(folder, `${file}.md`);
+  const filenameIpynb = path.join(folder, `${file}.ipynb`);
+  const isMarkdown = fs.existsSync(filenameMd);
+  const isNotebook = fs.existsSync(filenameIpynb);
+  if (!isMarkdown && !isNotebook)
+    throw new Error(`Could not find "${file}". See '${folder}/_toc.yml'`);
+  const filename = isMarkdown ? filenameMd : filenameIpynb;
+  return { filename, isMarkdown, isNotebook };
+}
+
+function getTitleFromFile(folder: string, file: string) {
+  const { filename, isMarkdown } = getFileName(folder, file);
+  if (isMarkdown) {
+    const mdast = parseMyst(fs.readFileSync(filename).toString());
+    // TODO: improve the title lookup from markdown
+    const backupTitle = (select('heading', mdast) as GenericParent)?.children?.[0]?.value;
+    const title = getFrontmatter(mdast)?.title || backupTitle || file;
+    return title;
+  }
+  // TODO:
+  return 'Notebook';
 }
 
 function chaptersToPages(
@@ -43,7 +56,7 @@ function chaptersToPages(
   level = 1,
 ): Page[] {
   chapters.forEach((chapter) => {
-    const title = getTitleFromMd(folder, chapter.file);
+    const title = getTitleFromFile(folder, chapter.file);
     pages.push({ title, slug: chapter.file, level });
     if (chapter.sections) chaptersToPages(folder, chapter.sections, pages, level + 1);
   });
