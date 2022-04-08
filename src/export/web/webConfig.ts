@@ -118,6 +118,7 @@ function createConfig(session: ISession, opts: Options): Required<SiteConfig> {
     logo: copyLogo(session, opts, config.web.logo) || null,
     logoText: config.web.logoText || null,
     twitter: config.web.twitter || null,
+    domains: config.web.domains ?? [],
     sections,
     design,
   };

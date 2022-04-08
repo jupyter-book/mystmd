@@ -10,7 +10,10 @@ export interface WebConfig {
   design?: {
     hideAuthors?: boolean;
   };
-  twitter?: string | null; // Twitter handle for the site (not the article)
+  /** Domain hostname, for example, docs.curve.space or docs.curvenote.com */
+  domains?: string[];
+  /** Twitter handle for the site (not the article) */
+  twitter?: string | null;
 }
 
 export interface ExportConfig {
