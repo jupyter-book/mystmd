@@ -85,7 +85,7 @@ const defaultMdast: Record<string, Spec> = {
   heading: {
     type: 'heading',
     getAttrs(token) {
-      return { depth: Number(token.tag[1]) };
+      return { depth: Number(token.tag[1]), unnumbered: token.meta?.unnumbered };
     },
   },
   hr: {
@@ -248,10 +248,17 @@ const defaultMdast: Record<string, Spec> = {
     type: 'container',
     getAttrs(token): Container {
       const name = token.meta?.name || undefined;
+      // TODO: Use unnumbered on container and eliminate this logic
+      let num;
+      if (token.meta?.numbered === false) {
+        num = false;
+      } else {
+        num = name ? true : undefined;
+      }
       return {
         kind: 'figure',
         ...normalizeLabel(name),
-        numbered: name ? true : undefined,
+        numbered: num,
         class: getClassName(token, [NUMBERED_CLASS]),
       };
     },
@@ -266,10 +273,17 @@ const defaultMdast: Record<string, Spec> = {
     type: 'table',
     getAttrs(token) {
       const name = token.meta?.name || undefined;
+      // TODO: Use unnumbered on container and eliminate this logic
+      let num;
+      if (token.meta?.numbered === false) {
+        num = false;
+      } else {
+        num = name ? true : undefined;
+      }
       return {
         kind: undefined,
         ...normalizeLabel(name),
-        numbered: name ? true : undefined,
+        numbered: num,
         class: getClassName(token, [NUMBERED_CLASS, ALIGN_CLASS]),
         align: token.meta?.align || undefined,
       };

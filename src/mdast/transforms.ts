@@ -7,7 +7,7 @@ import { remove } from 'unist-util-remove';
 import { map } from 'unist-util-map';
 import { Admonition, AdmonitionKind, GenericNode } from './types';
 import { admonitionKindToTitle } from './utils';
-import { State, countState, referenceState } from './state';
+import { State, addNumbersToNodes, resolveReferences } from './state';
 
 export type Options = {
   addAdmonitionHeaders?: boolean;
@@ -106,8 +106,8 @@ export const transform: Plugin<[State, Options?], string, Root> =
     };
     ensureCaptionIsParagraph(tree);
     propagateTargets(tree);
-    countState(state, tree);
-    referenceState(state, tree);
+    addNumbersToNodes(state, tree);
+    resolveReferences(state, tree);
     liftChildren(tree, 'directive');
     liftChildren(tree, 'role');
     if (opts.addAdmonitionHeaders) addAdmonitionHeaders(tree);
