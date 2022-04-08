@@ -1,13 +1,13 @@
 import fs from 'fs';
 import path from 'path';
-import { makeExecutable } from '../utils';
-import { ISession } from '../../session/types';
+import { makeExecutable } from '../export/utils';
+import { ISession } from '../session/types';
 import { buildContent, cleanBuiltFiles, watchContent } from './prepare';
 import { getServerLogger } from './serverLogger';
 import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
 import { deployContent } from './deploy';
-import { MyUser } from '../../models';
+import { MyUser } from '../models';
 
 export async function clean(session: ISession, opts: Options) {
   if (!exists(opts)) {

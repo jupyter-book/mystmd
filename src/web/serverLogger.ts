@@ -1,6 +1,6 @@
 import chalk from 'chalk';
-import { ISession } from '../../session/types';
-import { Logger } from '../../logging';
+import { ISession } from '../session/types';
+import { Logger } from '../logging';
 
 export function getServerLogger(session: ISession) {
   const logger: Pick<Logger, 'debug' | 'error'> = {

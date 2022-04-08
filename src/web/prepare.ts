@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
-import { ISession } from '../../session/types';
-import { tic } from '../utils/exec';
+import { ISession } from '../session/types';
+import { tic } from '../export/utils/exec';
 import { publicPath, serverPath } from './utils';
 import { Options, SiteConfig, SiteFolder } from './types';
 import { getFileName } from './webConfig';

@@ -8,8 +8,8 @@ import { DnsRouter, SiteDeployRequest, SiteUploadRequest } from '@curvenote/bloc
 import mime from 'mime-types';
 import { publicPath, serverPath } from './utils';
 import { DocumentCache } from './cache';
-import { Logger } from '../../logging';
-import { tic } from '../utils/exec';
+import { Logger } from '../logging';
+import { tic } from '../export/utils/exec';
 
 type FromTo = {
   from: string;

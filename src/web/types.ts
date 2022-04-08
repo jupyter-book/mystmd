@@ -1,5 +1,5 @@
-import { WebConfig } from '../../config/types';
-import { ISession } from '../../session/types';
+import { WebConfig } from '../config/types';
+import { ISession } from '../session/types';
 
 export interface IDocumentCache {
   session: ISession;

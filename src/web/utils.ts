@@ -5,7 +5,7 @@ import { CitationRenderer } from 'citation-js-utils';
 import { IDocumentCache, Options } from './types';
 import { reactiveRoles } from './roles';
 import { directives } from './directives';
-import { tic } from '../utils/exec';
+import { tic } from '../export/utils/exec';
 import { Frontmatter, getFrontmatter } from './frontmatter';
 import {
   References,

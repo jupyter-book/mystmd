@@ -11,8 +11,8 @@ import {
 import { nanoid } from 'nanoid';
 import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
 import { selectAll } from 'mystjs';
-import { ISession } from '../../session/types';
-import { tic } from '../utils/exec';
+import { ISession } from '../session/types';
+import { tic } from '../export/utils/exec';
 import { IDocumentCache, Options, SiteConfig } from './types';
 import {
   parseMyst,

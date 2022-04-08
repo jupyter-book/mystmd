@@ -1,10 +1,10 @@
 import copyfiles from 'copyfiles';
 import fs from 'fs';
 import path from 'path';
-import { WebConfig } from '../../config/types';
-import { ISession } from '../../session/types';
-import { JupyterBookChapter, readTOC } from '../jupyter-book/toc';
-import { tic } from '../utils/exec';
+import { WebConfig } from '../config/types';
+import { ISession } from '../session/types';
+import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
+import { tic } from '../export/utils/exec';
 import { Options, Page, SiteConfig, SiteFolder } from './types';
 import { publicPath } from './utils';
 
