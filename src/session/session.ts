@@ -67,7 +67,7 @@ export class Session implements ISession {
     return this.config;
   }
 
-  async get(url: string, query?: Record<string, string>): Response {
+  async get<T>(url: string, query?: Record<string, string>): Response<T> {
     const withBase = url.startsWith(this.API_URL) ? url : `${this.API_URL}${url}`;
     const fullUrl = withQuery(withBase, query);
     const headers = await getHeaders(this.log, this.$tokens);
@@ -85,11 +85,11 @@ export class Session implements ISession {
     };
   }
 
-  async patch(url: string, data: JsonObject) {
-    return this.post(url, data, 'patch');
+  async patch<T>(url: string, data: JsonObject) {
+    return this.post<T>(url, data, 'patch');
   }
 
-  async post(url: string, data: JsonObject, method: 'post' | 'patch' = 'post'): Response {
+  async post<T>(url: string, data: JsonObject, method: 'post' | 'patch' = 'post'): Response<T> {
     if (url.startsWith(this.API_URL)) url = url.replace(this.API_URL, '');
     const headers = await getHeaders(this.log, this.$tokens);
     this.log.debug(`${method.toUpperCase()} ${url}`);
