@@ -12,8 +12,7 @@ enum FileExtension {
   gif = 'gif',
   bmp = 'bmp',
   svg = 'svg',
-  txt = 'txt',
-  html = 'html',
+  json = 'json',
 }
 
 const FileExtensionMap: Record<string, FileExtension> = {
@@ -22,8 +21,7 @@ const FileExtensionMap: Record<string, FileExtension> = {
   [CellOutputMimeTypes.ImageGif]: FileExtension.gif,
   [CellOutputMimeTypes.ImageBmp]: FileExtension.bmp,
   [CellOutputMimeTypes.ImageSvg]: FileExtension.svg,
-  [CellOutputMimeTypes.TextPlain]: FileExtension.txt,
-  [CellOutputMimeTypes.TextHtml]: FileExtension.html,
+  [CellOutputMimeTypes.AppJson]: FileExtension.json,
 };
 
 function computeHash(content: string) {
@@ -60,18 +58,33 @@ export class WebFileObject implements IFileObject {
     return ext ? `${fullPath}.${ext}` : fullPath;
   }
 
+  /**
+   * writeString data to a json file, containing the data and it's content type
+   *
+   * @param data: string - any string/text data
+   * @param contentType: string - the mime type of the data
+   * @returns Promise<void>
+   */
   writeString(data: string, contentType: string): Promise<void> {
-    this.contentType = contentType;
-    if (!FileExtensionMap[contentType]) this.log.warn(`Unknown content type ${contentType}`);
+    this.contentType = CellOutputMimeTypes.AppJson;
     this.hash = computeHash(data);
-    this.log.info(`📃 writing text output file ${data.length} bytes`);
-    return fsp.writeFile(path.join(this.publicPath, this.id), data, { encoding: 'utf8' });
+    this.log.info(`🗃  writing json output file for ${contentType} with ${data.length} bytes`);
+    const json = JSON.stringify({ contentType, content: data });
+    return fsp.writeFile(path.join(this.publicPath, this.id), json, { encoding: 'utf8' });
   }
 
+  /**
+   * Write a base64 encoded image to a file.
+   *
+   * NOTE: in order for the id and filename to be correct, the contentType must be set before calling this method.
+   *
+   * @param data
+   * @returns
+   */
   writeBase64(data: string): Promise<void> {
     const justData = data.replace('data:image/png;base64,', '');
     this.hash = computeHash(justData);
-    this.log.info(`🖼 writing binary output file ${justData.length} bytes`);
+    this.log.info(`🖼  writing binary output file ${justData.length} bytes`);
     return fsp.writeFile(path.join(this.publicPath, this.id), justData, {
       encoding: 'base64',
     });

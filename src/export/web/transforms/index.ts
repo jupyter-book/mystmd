@@ -6,3 +6,4 @@ export * from './images';
 export * from './citations';
 export * from './links';
 export * from './types';
+export * from './outputs';

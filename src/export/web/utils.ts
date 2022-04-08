@@ -17,6 +17,7 @@ import {
   transformImages,
   transformCitations,
   transformRoot,
+  transformOutputs,
 } from './transforms';
 
 export function serverPath(opts: Options) {
@@ -69,12 +70,17 @@ export async function transformMdast(
     footnotes: {},
   };
   mdast = await transformRoot(mdast);
-  [transformMath, transformFootnotes, transformImages, transformCitations, transformKeys].forEach(
-    (transformer) => {
-      transformer(mdast, references, citeRenderer);
-      log.debug(toc(`Processing: "${name}" - ${transformer.name.slice(9).toLowerCase()} in %s`));
-    },
-  );
+  [
+    transformMath,
+    transformFootnotes,
+    transformImages,
+    transformOutputs,
+    transformCitations,
+    transformKeys,
+  ].forEach((transformer) => {
+    transformer(mdast, references, citeRenderer);
+    log.debug(toc(`Processing: "${name}" - ${transformer.name.slice(9).toLowerCase()} in %s`));
+  });
   const frontmatter = getFrontmatter(mdast);
   if (config?.site?.design?.hideAuthors) {
     delete frontmatter.author;
