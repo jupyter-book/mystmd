@@ -68,8 +68,8 @@ export class WebFileObject implements IFileObject {
   writeString(data: string, contentType: string): Promise<void> {
     this.contentType = CellOutputMimeTypes.AppJson;
     this.hash = computeHash(data);
-    this.log.info(`🗃  writing json output file for ${contentType} with ${data.length} bytes`);
-    const json = JSON.stringify({ contentType, content: data });
+    this.log.debug(`🗃  writing json output file for ${contentType} with ${data.length} bytes`);
+    const json = JSON.stringify({ content_type: contentType, content: data });
     return fsp.writeFile(path.join(this.publicPath, this.id), json, { encoding: 'utf8' });
   }
 
@@ -86,7 +86,7 @@ export class WebFileObject implements IFileObject {
     const [header, justData] = data.split(';base64,');
     this.contentType = contentType ?? header.replace('data:', '');
     this.hash = computeHash(justData);
-    this.log.info(`🖼  writing binary output file ${justData.length} bytes`);
+    this.log.debug(`🖼  writing binary output file ${justData.length} bytes`);
     return fsp.writeFile(path.join(this.publicPath, this.id), justData, {
       encoding: 'base64',
     });
