@@ -21,7 +21,7 @@ export function getFileName(folder: string, file: string) {
 }
 
 function getTitleFromFile(folder: string, file: string) {
-  const { filename, isMarkdown } = getFileName(folder, file);
+  const { filename, isMarkdown, isNotebook } = getFileName(folder, file);
   if (isMarkdown) {
     const mdast = parseMyst(fs.readFileSync(filename).toString());
     // TODO: improve the title lookup from markdown
@@ -29,8 +29,18 @@ function getTitleFromFile(folder: string, file: string) {
     const title = getFrontmatter(mdast)?.title || backupTitle || file;
     return title;
   }
-  // TODO:
-  return 'Notebook';
+  if (isNotebook) {
+    const notebook = JSON.parse(fs.readFileSync(filename).toString());
+    const cell = (notebook.cells as any[]).find((c) => {
+      if (c.cell_type !== 'markdown') return false;
+      const heading = select('heading', parseMyst(c.source));
+      if (!heading) return false;
+      c.heading = heading;
+      return true;
+    });
+    return cell?.heading.children?.[0]?.value || file;
+  }
+  throw new Error(`Could not get title for "${filename}", unknown type.`);
 }
 
 function chaptersToPages(
