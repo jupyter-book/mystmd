@@ -23,7 +23,7 @@ export async function projectToJupyterBook(session: ISession, projectId: Project
     url: `${session.SITE_URL}/@${project.data.team}/${project.data.name}`,
   });
   await writeTOC(session, nav);
-  await exportAll(session, nav, { ...opts, images: '_static', bibtex: 'references.bib' });
+  await exportAll(session, nav, { ...opts, bibtex: 'references.bib' });
 }
 
 export const oxaLinkToJupyterBook = exportFromProjectLink(projectToJupyterBook);
