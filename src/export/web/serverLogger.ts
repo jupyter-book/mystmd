@@ -10,13 +10,11 @@ export function getServerLogger(session: ISession) {
       if (line.includes('File changed: app/content')) return; // This is shown elsewhere
       if (line.includes('started at http://')) {
         const [, ipAndPort] = line.split('http://');
-        const port = ipAndPort.split(':')[1];
-        const url = `http://${ipAndPort}`;
+        const port = ipAndPort.split(':')[1].replace(/[^0-9]/g, '');
         const local = `http://localhost:${port}`;
         session.log.info(
           `\n🔌 Server started on port ${port}!🥳 🎉\n\n\n\t👉  ${chalk.green(local)}  👈\n\n`,
         );
-        session.log.debug(`You can also access the server here: ${url}`);
         return;
       }
       session.log.info(

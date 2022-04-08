@@ -33,7 +33,7 @@ export async function clone(session: ISession, opts: Options) {
 }
 
 export async function install(session: ISession, opts: Options) {
-  session.log.info('⤵️ Installing libraries');
+  session.log.info('⤵️  Installing libraries');
   if (!exists(opts)) {
     session.log.error('Curvespace is not cloned. Do you need to run: \n\ncurvenote web clone');
     return;
