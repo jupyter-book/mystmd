@@ -30,9 +30,9 @@ export function addSyncCLI(program: Command) {
   );
   command.addCommand(makeSyncInitCLI(program));
   command.addCommand(makeSyncPullCLI(program));
+  command.addCommand(makeSyncAddCLI(program));
   program.addCommand(command);
   // Add a `init` and `pull` shortcut at the top level
   program.addCommand(makeSyncInitCLI(program));
   program.addCommand(makeSyncPullCLI(program));
-  program.addCommand(makeSyncAddCLI(program));
 }

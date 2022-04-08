@@ -44,7 +44,11 @@ async function pullProject(session: ISession, id: string, folder: string, level?
   const project = await new Project(session, id).get();
   const toc = tic();
   log(`Pulling ${folder} from ${projectLogString(project)}`);
-  await projectToJupyterBook(session, project.id, { path: folder, writeConfig: false });
+  await projectToJupyterBook(session, project.id, {
+    path: folder,
+    writeConfig: false,
+    createFrontmatter: true,
+  });
   log(toc(`🚀 Pulled ${folder} in %s`));
 }
 

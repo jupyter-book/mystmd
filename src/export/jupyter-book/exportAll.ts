@@ -11,6 +11,7 @@ interface Options {
   path?: string;
   images?: string;
   bibtex?: string;
+  createFrontmatter?: boolean;
 }
 
 export async function exportAll(

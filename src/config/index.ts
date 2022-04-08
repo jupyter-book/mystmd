@@ -9,6 +9,8 @@ export * from './types';
 
 function validate(config: CurvenoteConfig): CurvenoteConfig {
   // TODO check against a schema & throw if bad
+  if (!config.sync) config.sync = [];
+  if (!config.web.nav) config.web.nav = [];
   return config;
 }
 

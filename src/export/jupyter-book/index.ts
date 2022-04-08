@@ -12,6 +12,7 @@ type Options = {
   writeConfig?: boolean;
   images?: string;
   bibtex?: string;
+  createFrontmatter?: boolean;
 };
 
 export async function projectToJupyterBook(session: ISession, projectId: ProjectId, opts: Options) {

@@ -104,7 +104,7 @@ export async function transformMdast(
   });
   const frontmatter = getFrontmatter(mdast);
   if (cache.config?.site?.design?.hideAuthors) {
-    delete frontmatter.author;
+    delete frontmatter.authors;
   }
   const data = { frontmatter, mdast, references };
   return data;
