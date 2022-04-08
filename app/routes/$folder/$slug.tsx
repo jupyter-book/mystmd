@@ -17,11 +17,11 @@ import { Bibliography } from '../../components/renderers/cite';
 export const meta: MetaFunction = (args) => {
   const config = args.parentsData.root.config as Config | undefined;
   const data = args.data as PageLoader | undefined;
-  if (!data) return {};
+  if (!data || !data.frontmatter) return {};
   return getMetaTagsForArticle({
     origin: '',
     url: args.location.pathname,
-    title: `${data?.frontmatter.title} - ${config?.site.name}`,
+    title: `${data.frontmatter.title} - ${config?.site.name}`,
     description: data.frontmatter.description,
   });
 };
