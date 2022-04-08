@@ -10,6 +10,7 @@ function pushCite(references: References, citeRenderer: CitationRenderer, label:
   references.cite.data[label] = {
     // TODO: this number isn't right? Should be the last time it was seen, not the current size.
     number: references.cite.order.length,
+    doi: citeRenderer[label]?.getDOI(),
     html: citeRenderer[label]?.render(),
   };
 }

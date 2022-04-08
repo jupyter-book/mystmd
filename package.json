@@ -23,7 +23,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
-    "dev:cli": "npm uninstall -g curvenote; npm run build; npm link",
+    "dev": "npm uninstall -g curvenote; npm run build; npm link",
     "prepublishOnly": "npm run build",
     "test": "npm run copy:version; jest",
     "test:watch": "npm run copy:version; jest --watchAll",
@@ -40,7 +40,7 @@
   "dependencies": {
     "@curvenote/blocks": "^1.3.3",
     "@curvenote/nbtx": "^0.1.3",
-    "@curvenote/schema": "^0.11.12",
+    "@curvenote/schema": "^0.11.13",
     "@reduxjs/toolkit": "^1.7.2",
     "bottleneck": "^2.19.5",
     "chalk": "^4.1.2",
