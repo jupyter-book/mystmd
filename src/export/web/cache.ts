@@ -109,13 +109,23 @@ export class DocumentCache {
     );
   }
 
+  $citationRenderers: Record<string, CitationRenderer> = {};
+
+  async getCitationRenderer(folder: string): Promise<CitationRenderer> {
+    const renderer = this.$citationRenderers[folder];
+    if (renderer) return renderer;
+    const newRenderer = await getCitationRenderer(this.session, folder);
+    this.$citationRenderers[folder] = newRenderer;
+    return newRenderer;
+  }
+
   async processFile(file: NextFile): Promise<boolean> {
     const toc = tic();
     const { filename, folder, slug } = file;
     const webFolder = path.basename(folder);
     this.session.log.debug(`Reading file "${filename}"`);
     const f = fs.readFileSync(filename).toString();
-    const citeRenderer = await getCitationRenderer(this.session, folder);
+    const citeRenderer = await this.getCitationRenderer(folder);
     const jsonFile = path.join(`${serverPath(this.options)}/app/content/${webFolder}/${slug}.json`);
     let built = false;
     if (filename.endsWith('.md')) {
