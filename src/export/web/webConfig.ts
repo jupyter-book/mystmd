@@ -35,8 +35,8 @@ function chaptersToPages(
 
 function copyLogo(session: ISession, opts: Options, logoName?: string | null): string | undefined {
   if (!logoName) {
-    session.log.debug('No logo specified');
-    return undefined;
+    session.log.debug('No logo specified, using Curvespace default logo');
+    return '/logo.svg';
   }
   if (!fs.existsSync(logoName)) {
     // Look in the local public path
