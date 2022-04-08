@@ -7,7 +7,7 @@ import cliProgress from 'cli-progress';
 import { DnsRouter, SiteDeployRequest, SiteUploadRequest } from '@curvenote/blocks';
 import { Storage } from '@google-cloud/storage';
 import mime from 'mime-types';
-import { serverPath } from './utils';
+import { publicPath, serverPath } from './utils';
 import { DocumentCache } from './cache';
 import { Logger } from '../../logging';
 import { tic } from '../utils/exec';
@@ -21,20 +21,20 @@ function listConfig(cache: DocumentCache): FromTo[] {
   const paths: FromTo[] = [];
   paths.push({
     from: path.join(serverPath(cache.options), 'app', 'config.json'),
-    to: `config.json`,
+    to: 'config.json',
   });
   if (cache.config?.site.logo) {
     const logo = path.basename(cache.config.site.logo);
     paths.push({
       from: path.join(serverPath(cache.options), 'public', logo),
-      to: `static/${logo}`,
+      to: `public/${logo}`,
     });
   }
   if (cache.config?.site.favicon) {
     const favicon = path.basename(cache.config.site.favicon);
     paths.push({
       from: path.join(serverPath(cache.options), 'public', favicon),
-      to: `static/${favicon}`,
+      to: `public/${favicon}`,
     });
   }
   return paths;
@@ -55,12 +55,12 @@ function listContentFolders(cache: DocumentCache): FromTo[] {
 }
 
 function listPublic(cache: DocumentCache): FromTo[] {
-  const imagesFolder = path.join(serverPath(cache.options), 'public', 'images');
-  const images = fs.readdirSync(imagesFolder);
-  const fromTo = images.map((imageName) => {
+  const staticFolder = path.join(publicPath(cache.options), '_static');
+  const assets = fs.readdirSync(staticFolder);
+  const fromTo = assets.map((assetName) => {
     return {
-      from: path.join(imagesFolder, imageName),
-      to: `static/images/${imageName}`,
+      from: path.join(staticFolder, assetName),
+      to: `public/_static/${assetName}`,
     };
   });
   return fromTo.flat();
