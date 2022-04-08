@@ -36,7 +36,7 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
   const content = article.children.map((child) => {
     if (!child.version || !child.state) return '';
     const blockData = { oxa: oxaLink('', child.version.id) };
-    const md = toMarkdown(child.state.doc, localization);
+    const md = toMarkdown(child.state.doc, { ...localization, renderers: { iframe: 'myst' } });
     return `+++ ${JSON.stringify(blockData)}\n\n${md}`;
   });
 
