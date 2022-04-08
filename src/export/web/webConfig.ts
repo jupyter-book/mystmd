@@ -54,7 +54,7 @@ function copyLogo(session: ISession, opts: Options, logoName?: string | null): s
   }
   if (!fs.existsSync(logoName))
     throw new Error(`Could not find logo at "${logoName}". See 'config.web.logo'`);
-  const logo = `logo.${path.extname(logoName)}`;
+  const logo = `logo${path.extname(logoName)}`;
   fs.copyFileSync(logoName, path.join(serverPath(opts), 'public', logo));
   return `/${logo}`;
 }
@@ -131,6 +131,7 @@ function createConfig(session: ISession, opts: Options): Required<SiteConfig> {
     favicon: config.web.favicon || null,
     logo: copyLogo(session, opts, config.web.logo) || null,
     logoText: config.web.logoText || null,
+    twitter: config.web.twitter || null,
     sections,
     design,
   };

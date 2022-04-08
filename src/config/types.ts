@@ -10,7 +10,7 @@ export interface WebConfig {
   design?: {
     hideAuthors?: boolean;
   };
-  twitter?: string; // Twitter handle for the site (not the article)
+  twitter?: string | null; // Twitter handle for the site (not the article)
 }
 
 export interface ExportConfig {

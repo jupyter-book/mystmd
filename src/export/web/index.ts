@@ -25,10 +25,7 @@ export async function clone(session: ISession, opts: Options) {
   session.log.debug('Cleaning out any git information from build folder.');
   // TODO: udpate this when we are downloading a zip
   const p = serverPath(opts);
-  await makeExecutable(
-    `rm -rf ${p}/.git ${p}/.github ${p}/.gitignore ${p}/vercel.json`,
-    session.log,
-  )();
+  await makeExecutable(`rm -rf ${p}/.git ${p}/.github`, session.log)();
 }
 
 export async function install(session: ISession, opts: Options) {

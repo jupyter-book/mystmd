@@ -164,7 +164,7 @@ export class DocumentCache {
 
   registerFile(id: string, data: RendererData) {
     this.$processed[id] = data;
-    const { oxa } = data.frontmatter;
+    const { oxa } = data.frontmatter ?? {};
     if (oxa) {
       this.$links[oxa] = `/${id}`;
     }
