@@ -1,5 +1,4 @@
 import { Directive, IDirectiveData, directiveOptions, IDirective, Token } from 'mystjs';
-import { JsonObject } from '@curvenote/blocks';
 
 const RVar: IDirective = {
   myst: class RVariable extends Directive {

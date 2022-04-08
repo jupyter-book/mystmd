@@ -6,7 +6,7 @@ import { ISession } from '../../session/types';
 import { JupyterBookChapter, readTOC } from '../jupyter-book/toc';
 import { tic } from '../utils/exec';
 import { Options, Page, SiteConfig, SiteFolder } from './types';
-import { publicPath, serverPath } from './utils';
+import { publicPath } from './utils';
 
 export function getFileName(folder: string, file: string) {
   const filenameMd = path.join(folder, `${file}.md`);
