@@ -165,7 +165,10 @@ async function getCitationRenderer(session: ISession, folder: string): Promise<C
 }
 
 export function watchConfig(cache: DocumentCache) {
-  return fs.watchFile(cache.session.configPath, async () => cache.readConfig());
+  return fs.watchFile(cache.session.configPath, async () => {
+    await cache.readConfig();
+    await cache.writeConfig();
+  });
 }
 
 export class DocumentCache {
