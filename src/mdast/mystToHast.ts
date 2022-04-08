@@ -75,7 +75,7 @@ const definitionList: Handler = (h, node) => h(node, 'dl', all(h, node));
 const definitionTerm: Handler = (h, node) => h(node, 'dt', all(h, node));
 const definitionDescription: Handler = (h, node) => h(node, 'dd', all(h, node));
 
-const role: Handler = (h, node) => {
+const mystRole: Handler = (h, node) => {
   const children = [h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)])];
   if (node.value) {
     children.push(h(node, 'code', {}, [u('text', node.value)]));
@@ -83,7 +83,7 @@ const role: Handler = (h, node) => {
   return h(node, 'span', { class: 'role unhandled' }, children);
 };
 
-const directive: Handler = (h, node) => {
+const mystDirective: Handler = (h, node) => {
   const directiveHeader: ElementContent[] = [
     h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
   ];
@@ -172,8 +172,8 @@ export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Roo
       definitionList,
       definitionTerm,
       definitionDescription,
-      role,
-      directive,
+      mystRole,
+      mystDirective,
       block,
       comment,
       heading,

@@ -385,7 +385,7 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   directive: {
-    type: 'directive',
+    type: 'mystDirective',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
@@ -397,7 +397,7 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   parsed_directive: {
-    type: 'directive',
+    type: 'mystDirective',
     getAttrs(t) {
       let opts = t.meta?.opts;
       if (!opts || !Object.keys(opts).length) {
@@ -419,11 +419,11 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   directive_error: {
-    type: 'directiveError',
+    type: 'mystDirectiveError',
     noCloseToken: true,
   },
   role: {
-    type: 'role',
+    type: 'mystRole',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
@@ -434,7 +434,7 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   parsed_role: {
-    type: 'role',
+    type: 'mystRole',
     getAttrs(t) {
       return {
         kind: t.meta.name,
@@ -443,7 +443,7 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   role_error: {
-    type: 'roleError',
+    type: 'mystRoleError',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {

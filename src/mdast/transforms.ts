@@ -108,8 +108,8 @@ export const transform: Plugin<[State, Options?], string, Root> =
     propagateTargets(tree);
     addNumbersToNodes(state, tree);
     resolveReferences(state, tree);
-    liftChildren(tree, 'directive');
-    liftChildren(tree, 'role');
+    liftChildren(tree, 'mystDirective');
+    liftChildren(tree, 'mystRole');
     if (opts.addAdmonitionHeaders) addAdmonitionHeaders(tree);
     if (opts.addContainerCaptionNumbers) addContainerCaptionNumbers(tree, state);
   };
