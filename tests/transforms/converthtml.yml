@@ -1,0 +1,44 @@
+cases:
+  - title: paragraph
+    before:
+      type: root
+      children:
+        - type: html
+          value: <div><p>*some text*</p></div>
+    after:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: '*some text*'
+  - title: style
+    before:
+      type: root
+      children:
+        - type: html
+          value: <div><p><em>some text</em></p></div>
+    after:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: emphasis
+              children:
+                - type: text
+                  value: some text
+  - title: image
+    before:
+      type: root
+      children:
+        - type: html
+          value: <img src="example.jpg" title="example">
+    after:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: image
+              url: example.jpg
+              title: example
+              alt: ''

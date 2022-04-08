@@ -1,5 +1,7 @@
 import { Root } from 'mdast';
-import { Plugin } from 'unified';
+import { unified, Plugin } from 'unified';
+import rehypeParse from 'rehype-parse';
+import rehypeRemark from 'rehype-remark';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAfter } from 'unist-util-find-after';
@@ -9,12 +11,12 @@ import { Admonition, AdmonitionKind, GenericNode } from './types';
 import { admonitionKindToTitle, normalizeLabel } from './utils';
 import { EnumeratorOptions, State, enumerateTargets, resolveReferences } from './state';
 
-export type Options = {
+export type TransformOptions = {
   addAdmonitionHeaders?: boolean;
   addContainerCaptionNumbers?: boolean;
 } & EnumeratorOptions;
 
-const defaultOptions: Record<keyof Options, boolean> = {
+const defaultOptions: Record<keyof TransformOptions, boolean> = {
   addAdmonitionHeaders: true,
   addContainerCaptionNumbers: true,
   disableHeadingEnumeration: false,
@@ -104,7 +106,20 @@ export function ensureCaptionIsParagraph(tree: Root) {
   });
 }
 
-export const transform: Plugin<[State, Options?], string, Root> =
+export function convertHtmlToMdast(tree: Root) {
+  const htmlNodes = selectAll('html', tree);
+  htmlNodes.forEach((node: GenericNode) => {
+    const hast = unified().use(rehypeParse, { fragment: true }).parse(node.value);
+    const mdast = unified().use(rehypeRemark).runSync(hast);
+    node.type = 'htmlParsed';
+    node.children = mdast.children as GenericNode[];
+    visit(node, (n: GenericNode) => delete n.position);
+  });
+  liftChildren(tree, 'htmlParsed');
+  return tree;
+}
+
+export const transform: Plugin<[State, TransformOptions?], string, Root> =
   (state, o) => (tree: Root) => {
     const opts = {
       ...defaultOptions,
