@@ -5,16 +5,19 @@ cases:
       children:
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: one
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: two
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: three
@@ -23,18 +26,21 @@ cases:
       children:
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: one
           number: '1'
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: two
           number: '2'
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: three
@@ -45,17 +51,19 @@ cases:
       children:
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: one
         - type: heading
           depth: 1
-          unnumbered: true
+          numbered: false
           children:
             - type: text
               value: nope
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: two
@@ -64,18 +72,20 @@ cases:
       children:
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: one
           number: '1'
         - type: heading
           depth: 1
-          unnumbered: true
+          numbered: false
           children:
             - type: text
               value: nope
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: two
@@ -86,37 +96,43 @@ cases:
       children:
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: one
         - type: heading
           depth: 2
+          numbered: true
           children:
             - type: text
               value: one.one
         - type: heading
           depth: 5
+          numbered: true
           children:
             - type: text
               value: one.one.one
         - type: heading
           depth: 5
+          numbered: true
           children:
             - type: text
               value: one.one.two
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: two
         - type: heading
           depth: 4
-          unnumbered: true
+          numbered: false
           children:
             - type: text
               value: nope
         - type: heading
           depth: 5
+          numbered: true
           children:
             - type: text
               value: two.zero.one
@@ -125,42 +141,48 @@ cases:
       children:
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: one
           number: '1'
         - type: heading
           depth: 2
+          numbered: true
           children:
             - type: text
               value: one.one
           number: '1.1'
         - type: heading
           depth: 5
+          numbered: true
           children:
             - type: text
               value: one.one.one
           number: '1.1.1'
         - type: heading
           depth: 5
+          numbered: true
           children:
             - type: text
               value: one.one.two
           number: '1.1.2'
         - type: heading
           depth: 1
+          numbered: true
           children:
             - type: text
               value: two
           number: '2'
         - type: heading
           depth: 4
-          unnumbered: true
+          numbered: false
           children:
             - type: text
               value: nope
         - type: heading
           depth: 5
+          numbered: true
           children:
             - type: text
               value: two.zero.one
@@ -171,22 +193,26 @@ cases:
       children:
         - type: math
           value: Ax = b
+          numbered: true
         - type: math
           value: Cx = d
-          unnumbered: true
+          numbered: false
         - type: math
           value: Fx = g
+          numbered: true
     after:
       type: root
       children:
         - type: math
           value: Ax = b
+          numbered: true
           number: '1'
         - type: math
           value: Cx = d
-          unnumbered: true
+          numbered: false
         - type: math
           value: Fx = g
+          numbered: true
           number: '2'
   - title: math numbering - inside directive
     before:
@@ -198,12 +224,14 @@ cases:
           children:
             - type: math
               value: Ax = b
+              numbered: true
         - type: mystDirective
           kind: math
           value: Cx = d
           children:
             - type: math
               value: Cx = d
+              numbered: true
     after:
       type: root
       children:
@@ -213,6 +241,7 @@ cases:
           children:
             - type: math
               value: Ax = b
+              numbered: true
               number: '1'
         - type: mystDirective
           kind: math
@@ -220,6 +249,7 @@ cases:
           children:
             - type: math
               value: Cx = d
+              numbered: true
               number: '2'
   - title: container numbering
     before:
@@ -235,6 +265,7 @@ cases:
           children:
             - type: container
               kind: figure
+              numbered: true
               children:
                 - type: image
                   url: https://via.placeholder.com/150
@@ -252,6 +283,7 @@ cases:
                           value: Something! A legend!?
         - type: container
           kind: figure
+          numbered: true
           children:
             - type: image
               url: https://via.placeholder.com/150
@@ -322,9 +354,8 @@ cases:
           kind: table
           identifier: my-table
           label: my-table
-          numbered: true
           class: myclass
-          unnumbered: true
+          numbered: false
           children:
             - type: caption
               children:
@@ -375,6 +406,7 @@ cases:
           children:
             - type: container
               kind: figure
+              numbered: true
               children:
                 - type: image
                   url: https://via.placeholder.com/150
@@ -393,6 +425,7 @@ cases:
               number: '1'
         - type: container
           kind: figure
+          numbered: true
           children:
             - type: image
               url: https://via.placeholder.com/150
@@ -465,9 +498,8 @@ cases:
           kind: table
           identifier: my-table
           label: my-table
-          numbered: true
           class: myclass
-          unnumbered: true
+          numbered: false
           children:
             - type: caption
               children:

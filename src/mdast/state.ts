@@ -95,7 +95,7 @@ export class State {
     const kind = kindFromNode(node);
     if (kind && kind in TargetKind) {
       let number = null;
-      if (!node.unnumbered) {
+      if (node.numbered) {
         number = this.incrementCount(node, kind as TargetKind);
         node.number = number;
       }
@@ -111,9 +111,7 @@ export class State {
 
   initializeNumberedHeaderDepths(tree: Root) {
     const headerDepths = new Set(
-      selectAll('heading', tree)
-        .filter((node) => !(node as GenericNode).unnumbered)
-        .map((node) => (node as Heading).depth),
+      selectAll('heading[numbered=true]', tree).map((node) => (node as Heading).depth),
     );
     this.targetCounts.heading = [1, 2, 3, 4, 5, 6].map((depth) =>
       headerDepths.has(depth) ? 0 : null,

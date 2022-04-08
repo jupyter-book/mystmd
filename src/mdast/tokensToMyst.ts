@@ -81,11 +81,17 @@ function getColAlign(t: Token) {
   }
 }
 
+function getNumbered(t: Token) {
+  let numbered = t.meta?.numbered;
+  if (typeof numbered !== 'boolean') numbered = true;
+  return numbered;
+}
+
 const defaultMdast: Record<string, Spec> = {
   heading: {
     type: 'heading',
     getAttrs(token) {
-      return { depth: Number(token.tag[1]), unnumbered: token.meta?.unnumbered };
+      return { depth: Number(token.tag[1]), numbered: getNumbered(token) };
     },
   },
   hr: {
@@ -248,17 +254,10 @@ const defaultMdast: Record<string, Spec> = {
     type: 'container',
     getAttrs(token): Container {
       const name = token.meta?.name || undefined;
-      // TODO: Use unnumbered on container and eliminate this logic
-      let num;
-      if (token.meta?.numbered === false) {
-        num = false;
-      } else {
-        num = name ? true : undefined;
-      }
       return {
         kind: 'figure',
         ...normalizeLabel(name),
-        numbered: num,
+        numbered: getNumbered(token),
         class: getClassName(token, [NUMBERED_CLASS]),
       };
     },
@@ -273,17 +272,10 @@ const defaultMdast: Record<string, Spec> = {
     type: 'table',
     getAttrs(token) {
       const name = token.meta?.name || undefined;
-      // TODO: Use unnumbered on container and eliminate this logic
-      let num;
-      if (token.meta?.numbered === false) {
-        num = false;
-      } else {
-        num = name ? true : undefined;
-      }
       return {
         kind: undefined,
         ...normalizeLabel(name),
-        numbered: num,
+        numbered: getNumbered(token),
         class: getClassName(token, [NUMBERED_CLASS, ALIGN_CLASS]),
         align: token.meta?.align || undefined,
       };
@@ -322,6 +314,9 @@ const defaultMdast: Record<string, Spec> = {
     type: 'math',
     noCloseToken: true,
     isText: true,
+    getAttrs(t) {
+      return { numbered: getNumbered(t) };
+    },
   },
   math_block: {
     type: 'math',
@@ -329,7 +324,7 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
     getAttrs(t) {
       const name = t.info || undefined;
-      return { ...normalizeLabel(name) };
+      return { ...normalizeLabel(name), numbered: getNumbered(t) };
     },
   },
   math_block_label: {
@@ -338,13 +333,16 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
     getAttrs(t) {
       const name = t.info || undefined;
-      return { ...normalizeLabel(name) };
+      return { ...normalizeLabel(name), numbered: getNumbered(t) };
     },
   },
   amsmath: {
     type: 'math',
     noCloseToken: true,
     isText: true,
+    getAttrs(t) {
+      return { numbered: getNumbered(t) };
+    },
   },
   ref: {
     type: 'crossReference',
@@ -621,6 +619,8 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
       node.kind = 'table';
       node.children = [...captionChildren, newTableNode];
       delete node.align;
+    } else {
+      delete node.numbered;
     }
   });
 
