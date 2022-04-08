@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import {
   GenericNode,
-  getFrontmatter,
   map,
   MyST,
   remove,
@@ -14,12 +13,13 @@ import {
 } from 'mystjs';
 import { CitationRenderer, InlineCite } from 'citation-js-utils';
 import { createId } from '@curvenote/schema';
-import { Options } from './types';
+import { Options, SiteConfig } from './types';
 import { reactiveRoles } from './roles';
-import { reactiveDirectives } from './directives';
+import { directives } from './directives';
 import { tic } from '../utils/exec';
 import { Logger } from '../../logging';
 import { renderEquation } from './math.server';
+import { Frontmatter, getFrontmatter } from './frontmatter';
 
 export function serverPath(opts: Options) {
   const buildPath = opts.buildPath || '_build';
@@ -42,7 +42,7 @@ export function writeFileToFolder(filename: string, data: string | NodeJS.ArrayB
 export function parseMyst(content: string) {
   const myst = new MyST({
     roles: { ...reactiveRoles },
-    directives: { ...reactiveDirectives },
+    directives: { ...directives },
   });
   return myst.parse(content);
 }
@@ -60,7 +60,6 @@ export type References = {
 };
 
 export type Root = ReturnType<typeof parseMyst>;
-export type Frontmatter = ReturnType<typeof getFrontmatter>;
 
 export interface RendererData {
   sha256: string;
@@ -86,6 +85,7 @@ function addKeys(node: GenericNode) {
 
 export async function transformMdast(
   log: Logger,
+  config: SiteConfig | null,
   name: string,
   mdast: Root,
   citeRenderer: CitationRenderer,
@@ -111,7 +111,12 @@ export async function transformMdast(
     footnotes.map((n: GenericNode) => [n.identifier, map(n, addKeys)]),
   );
   remove(mdast, 'footnoteDefinition');
-  log.debug(toc(`Processing: "${name}" -- footnotes %s`));
+  log.debug(toc(`Processing: "${name}" -- images    %s`));
+  const images = selectAll('image', mdast) as GenericNode[];
+  images.forEach((image) => {
+    image.url = `/${image.url}`;
+  });
+  log.debug(toc(`Processing: "${name}" -- images    %s`));
   selectAll('cite', mdast).forEach((node: GenericNode) => {
     const citeLabel = (node.label ?? '').trim();
     if (!citeLabel) return;
@@ -137,6 +142,9 @@ export async function transformMdast(
   // Last step, add unique keys to every node!
   map(mdast, addKeys);
   const frontmatter = getFrontmatter(mdast);
+  if (config?.site?.design?.hideAuthors) {
+    delete frontmatter.author;
+  }
   log.debug(toc(`Processing: "${name}" -- keys      %s`));
   const data = { sha256, frontmatter, mdast, references };
   return data;

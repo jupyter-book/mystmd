@@ -1,3 +1,4 @@
+import copyfiles from 'copyfiles';
 import fs from 'fs';
 import { select, getFrontmatter, GenericParent } from 'mystjs';
 import path from 'path';
@@ -5,25 +6,8 @@ import { WebConfig } from '../../config/types';
 import { ISession } from '../../session/types';
 import { JupyterBookChapter, readTOC } from '../jupyter-book/toc';
 import { tic } from '../utils/exec';
-import { Options } from './types';
+import { Options, Page, SiteConfig, SiteFolder } from './types';
 import { parseMyst, serverPath } from './utils';
-
-export interface Page {
-  title: string;
-  slug?: string;
-  level: number;
-}
-
-export type SiteFolder = {
-  title: string;
-  index: string;
-  pages: Page[];
-};
-
-export interface SiteConfig {
-  site: WebConfig;
-  folders: Record<string, SiteFolder>;
-}
 
 export function getFileName(folder: string, file: string) {
   const filenameMd = path.join(folder, `${file}.md`);
@@ -63,7 +47,7 @@ function chaptersToPages(
   return pages;
 }
 
-function copyLogo(session: ISession, opts: Options, logoName?: string): string | undefined {
+function copyLogo(session: ISession, opts: Options, logoName?: string | null): string | undefined {
   if (!logoName) {
     session.log.debug('No logo specified');
     return undefined;
@@ -131,28 +115,63 @@ function getSections(
   return { sections: validated, folders };
 }
 
-function createConfig(session: ISession, opts: Options): SiteConfig {
+function createConfig(session: ISession, opts: Options): Required<SiteConfig> {
   const { config } = session;
   if (!config)
-    throw new Error('Could not find curvenote.yml. Use the `-C [path]` to override the default.');
+    throw new Error(
+      'Could not find curvenote.yml. Use the `--config [path]` to override the default.',
+    );
   const { sections, folders } = getSections(session, opts, config.web.sections);
+  const design: Required<SiteConfig['site']['design']> = {
+    hideAuthors: config.web.design?.hideAuthors ?? false,
+  };
+  const site: Required<SiteConfig['site']> = {
+    name: config.web.name || 'My Site',
+    actions: config.web.actions ?? [],
+    favicon: config.web.favicon || null,
+    logo: copyLogo(session, opts, config.web.logo) || null,
+    logoText: config.web.logoText || null,
+    sections,
+    design,
+  };
   return {
-    site: {
-      name: config.web.name,
-      actions: config.web.actions ?? [],
-      logo: copyLogo(session, opts, config.web.logo),
-      logoText: config.web.logoText,
-      sections,
-    },
+    site,
     folders,
   };
 }
 
-export function writeConfig(session: ISession, opts: Options, throwError = true) {
+async function copyImages(session: ISession, opts: Options, config: SiteConfig) {
+  const toc = tic();
+  await Promise.all(
+    config.site.sections.map(async ({ path: p }) => {
+      return new Promise((callback, error) => {
+        const from = path.join(p, 'images', '*');
+        const to = path.join(serverPath(opts), 'public', 'images');
+        session.log.debug(`Copying images from "${from}" to "${to}"`);
+        copyfiles([from, to], { up: true, soft: true } as any, (e) => {
+          if (e) {
+            session.log.error(e.message);
+            error();
+          } else {
+            callback(true);
+          }
+        });
+      });
+    }),
+  );
+  session.log.info(toc(`🌄 Copied images in %s`));
+}
+
+export async function writeConfig(
+  session: ISession,
+  opts: Options,
+  throwError = true,
+): Promise<SiteConfig | null> {
   const toc = tic();
   try {
     session.loadConfig(); // Ensure that this is the most up to date config
     const config = createConfig(session, opts);
+    await copyImages(session, opts, config);
     const pathname = path.join(serverPath(opts), 'app', 'config.json');
     session.log.info(toc(`⚙️  Writing config.json in %s`));
     fs.writeFileSync(pathname, JSON.stringify(config));
