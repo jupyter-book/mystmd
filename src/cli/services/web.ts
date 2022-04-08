@@ -27,6 +27,7 @@ function makeCurvespaceStartCLI(program: Command) {
   const command = new Command('start')
     .alias('serve')
     .description('Start a local project as a web server')
+    .option('-C, --clean', 'Remove content so that it is rebuilt fresh', false)
     .option('-F, --force', 'Remove the build directory and re-install', false)
     .action(clirun(web.serve, { program }));
   return command;

@@ -10,6 +10,6 @@ addAuthCLI(program);
 addWebCLI(program);
 
 program.option('-D, --debug [file]', 'Log out any errors to the console or an optional file.');
-program.option('-C, --config [config]', 'Path to configuration file', './curvenote.yml');
+program.option('--config [config]', 'Path to configuration file', './curvenote.yml');
 program.version(version, '-V, --version', 'Print the current version of curvenotejs');
 program.parse(process.argv);
