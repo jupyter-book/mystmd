@@ -5,7 +5,7 @@ import { createHash } from 'crypto';
 import { ISession } from '../../session/types';
 import { tic } from '../utils/exec';
 import { Options, SiteConfig } from './types';
-import { parseMyst, serverPath, transformMdast, writeFileToFolder } from './utils';
+import { parseMyst, RendererData, serverPath, transformMdast, writeFileToFolder } from './utils';
 
 type NextFile = { filename: string; folder: string; slug: string };
 
@@ -21,8 +21,6 @@ async function processMarkdown(
   content: string,
   citeRenderer: CitationRenderer,
 ) {
-  const sha256 = createHash('sha256').update(content).digest('hex');
-  if (isSame(filename.to, sha256)) return false;
   const mdast = parseMyst(content);
   const data = await transformMdast(
     cache.session.log,
@@ -30,10 +28,8 @@ async function processMarkdown(
     filename.from,
     mdast,
     citeRenderer,
-    sha256,
   );
-  writeFileToFolder(filename.to, JSON.stringify(data));
-  return true;
+  return data;
 }
 
 async function processNotebook(
@@ -42,8 +38,6 @@ async function processNotebook(
   content: string,
   citeRenderer: CitationRenderer,
 ) {
-  const sha256 = createHash('sha256').update(content).digest('hex');
-  if (isSame(filename.to, sha256)) return false;
   const notebook = JSON.parse(content);
   const cells = notebook.cells
     .map((cell: any) => {
@@ -63,9 +57,31 @@ async function processNotebook(
     filename.from,
     mdast,
     citeRenderer,
-    sha256,
   );
-  writeFileToFolder(filename.to, JSON.stringify(data));
+  return data;
+}
+
+async function processFile(
+  cache: DocumentCache,
+  filename: { from: string; to: string },
+  content: string,
+  citeRenderer: CitationRenderer,
+): Promise<boolean> {
+  const sha256 = createHash('sha256').update(content).digest('hex');
+  if (isSame(filename.to, sha256)) return false;
+  const ext = path.extname(filename.from);
+  let data: Omit<RendererData, 'sha256'>;
+  switch (ext) {
+    case '.md':
+      data = await processMarkdown(cache, filename, content, citeRenderer);
+      break;
+    case '.ipynb':
+      data = await processNotebook(cache, filename, content, citeRenderer);
+      break;
+    default:
+      throw new Error(`Unrecognized extension ${filename.from}`);
+  }
+  writeFileToFolder(filename.to, JSON.stringify({ ...data, sha256 }));
   return true;
 }
 
@@ -124,15 +140,10 @@ export class DocumentCache {
     const { filename, folder, slug } = file;
     const webFolder = path.basename(folder);
     this.session.log.debug(`Reading file "${filename}"`);
-    const f = fs.readFileSync(filename).toString();
+    const content = fs.readFileSync(filename).toString();
     const citeRenderer = await this.getCitationRenderer(folder);
     const jsonFile = path.join(`${serverPath(this.options)}/app/content/${webFolder}/${slug}.json`);
-    let built = false;
-    if (filename.endsWith('.md')) {
-      built = await processMarkdown(this, { from: filename, to: jsonFile }, f, citeRenderer);
-    } else if (filename.endsWith('.ipynb')) {
-      built = await processNotebook(this, { from: filename, to: jsonFile }, f, citeRenderer);
-    }
+    const built = await processFile(this, { from: filename, to: jsonFile }, content, citeRenderer);
     if (built) this.session.log.info(toc(`📖 Built ${webFolder}/${slug} in %s.`));
     return built;
   }

@@ -58,8 +58,7 @@ export async function transformMdast(
   name: string,
   mdast: Root,
   citeRenderer: CitationRenderer,
-  sha256: string,
-): Promise<RendererData> {
+): Promise<Omit<RendererData, 'sha256'>> {
   const toc = tic();
   const references: References = {
     cite: { order: [], data: {} },
@@ -76,6 +75,6 @@ export async function transformMdast(
   if (config?.site?.design?.hideAuthors) {
     delete frontmatter.author;
   }
-  const data = { sha256, frontmatter, mdast, references };
+  const data = { frontmatter, mdast, references };
   return data;
 }
