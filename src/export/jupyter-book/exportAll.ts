@@ -8,6 +8,7 @@ import { writeBibtex } from '../utils/writeBibtex';
 import { notebookToIpynb } from '../notebook';
 
 interface Options {
+  path?: string;
   images?: string;
   bibtex?: string;
 }
@@ -32,11 +33,11 @@ export async function exportAll(
       switch (block.data.kind) {
         case KINDS.Article: {
           const filename = `${block.data.name ?? block.id.block}.md`;
-          return articleToMarkdown(session, version.id, { ...opts, filename });
+          return articleToMarkdown(session, version.id, { ...opts, filename, writeBibtex: false });
         }
         case KINDS.Notebook: {
           const filename = `${block.data.name ?? block.id.block}.ipynb`;
-          return notebookToIpynb(session, version.id, { filename });
+          return notebookToIpynb(session, version.id, { ...opts, filename });
         }
         default:
           session.log.warn(`Skipping block: "${block.data.name}" of kind "${block.data.kind}"`);
@@ -48,5 +49,5 @@ export async function exportAll(
     (obj, a) => ({ ...obj, ...a?.references }),
     {} as ArticleState['references'],
   );
-  await writeBibtex(session, references, bibtex, { alwaysWriteFile: false });
+  await writeBibtex(session, references, bibtex, { path: opts?.path, alwaysWriteFile: false });
 }

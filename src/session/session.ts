@@ -5,7 +5,7 @@ import { basicLogger, Logger, LogLevel } from '../logging';
 import { rootReducer, RootState } from '../store';
 import { getHeaders, setSessionOrUserToken } from './tokens';
 import { ISession, Response, Tokens } from './types';
-import { CurvenoteConfig, loadCurvenoteConfig } from '../config';
+import { CurvenoteConfig, CURVENOTE_YML, loadCurvenoteConfig } from '../config';
 
 const DEFAULT_API_URL = 'https://api.curvenote.com';
 const DEFAULT_SITE_URL = 'https://curvenote.com';
@@ -58,7 +58,7 @@ export class Session implements ISession {
       this.log.warn(`Connecting to API at: "${this.API_URL}".`);
     }
     this.store = createStore(rootReducer);
-    this.configPath = opts.config || 'curvenote.yml';
+    this.configPath = opts.config || CURVENOTE_YML;
     this.config = this.loadConfig();
   }
 

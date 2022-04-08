@@ -39,9 +39,17 @@ export interface ExportConfig {
   } & Record<string, any>;
 }
 
+export interface SyncConfig {
+  id: string; // ProjectId
+  folder: string; // Local folder
+  link: string; // Project Link
+}
+
+export const CONFIG_VERSION = 1;
+
 export interface CurvenoteConfig {
   version: number;
-  sync: Record<string, any>;
+  sync: SyncConfig[];
   web: WebConfig;
-  export: ExportConfig[];
+  export?: ExportConfig[];
 }

@@ -86,7 +86,7 @@ export class WebFileObject implements IFileObject {
     const [header, justData] = data.split(';base64,');
     this.contentType = contentType ?? header.replace('data:', '');
     this.hash = computeHash(justData);
-    this.log.debug(`🖼  writing binary output file ${justData.length} bytes`);
+    this.log.debug(`Writing binary output file ${justData.length} bytes`);
     return fsp.writeFile(path.join(this.publicPath, this.id), justData, {
       encoding: 'base64',
     });

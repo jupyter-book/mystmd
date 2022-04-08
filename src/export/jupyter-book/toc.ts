@@ -1,13 +1,16 @@
 import fs from 'fs';
+import path from 'path';
 import YAML from 'yaml';
 import { Blocks, NavListItemKindEnum } from '@curvenote/blocks';
 import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
+import { writeFileToFolder } from '../../utils';
 
 const TOC_FORMAT = 'jb-book';
 
 interface Options {
-  filename: string;
+  path?: string;
+  filename?: string;
 }
 
 type FolderItem = {
@@ -86,7 +89,7 @@ function spliceRootFromNav(items: FolderItem[]): null | [FolderItem, FolderItem[
 }
 
 export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation>, opts?: Options) {
-  const { filename = '_toc.yml' } = opts ?? {};
+  const filename = path.join(opts?.path || '.', opts?.filename || '_toc.yml');
 
   const loadedBlocks: LoadedBlocks[] = await Promise.all(
     nav.data.items.map(async (item) => {
@@ -135,7 +138,7 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
       chapters: itemsToChapters(items.slice(1)),
     };
     const toc = `${header}\n\n${YAML.stringify(tocData)}\n`;
-    fs.writeFileSync(filename, toc);
+    writeFileToFolder(filename, toc);
     return;
   }
   // Deal with the parts
@@ -156,11 +159,11 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
     parts,
   };
   const toc = `${header}\n\n${YAML.stringify(tocData)}\n`;
-  fs.writeFileSync(filename, toc);
+  writeFileToFolder(filename, toc);
 }
 
 export function readTOC(session: ISession, opts?: Options): TOC {
-  const { filename = '_toc.yml' } = opts ?? {};
+  const filename = path.join(opts?.path || '.', opts?.filename || '_toc.yml');
   const toc = YAML.parse(fs.readFileSync(filename).toString());
   const { format, root, chapters, parts } = toc;
   if (format !== TOC_FORMAT) throw new Error(`The toc.format must be ${TOC_FORMAT}.`);

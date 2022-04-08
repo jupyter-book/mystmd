@@ -60,7 +60,6 @@ function makeBuildCLI(program: Command) {
 
 function makeDeployCLI(program: Command) {
   const command = new Command('deploy')
-    .alias('publish')
     .description('Deploy content to https://*.curve.space or your own domain')
     .addOption(makeForceOption())
     .action(clirun(web.deploy, { program, requireConfig: true }));

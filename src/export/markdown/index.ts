@@ -1,4 +1,3 @@
-import fs from 'fs';
 import path from 'path';
 import YAML from 'yaml';
 import { VersionId, KINDS, oxaLink, formatDate } from '@curvenote/blocks';
@@ -9,10 +8,13 @@ import { getChildren } from '../../actions/getChildren';
 import { exportFromOxaLink, walkArticle, writeImagesToFiles } from '../utils';
 import { localizationOptions } from '../utils/localizationOptions';
 import { ISession } from '../../session/types';
+import { writeFileToFolder } from '../../utils';
 
 type Options = {
+  path?: string;
   filename: string;
   images?: string;
+  writeBibtex?: boolean;
   bibtex?: string;
   renderReferences?: boolean;
 };
@@ -29,6 +31,7 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
   const article = await walkArticle(session, data);
 
   const imageFilenames = await writeImagesToFiles(session.log, article.images, {
+    buildPath: opts?.path,
     basePath: opts?.images ?? 'images',
     simple: true,
   });
@@ -67,22 +70,25 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
     file += '\n\n### References\n\n```{bibliography}\n:filter: docname in docnames\n```';
   }
   file += '\n\n';
-  fs.writeFileSync(opts.filename, file);
+  writeFileToFolder(opts, file);
   if (Object.keys(articleMdastSnippets).length) {
     const normalizedSnippets = Object.fromEntries(
       Object.entries(articleMdastSnippets).map(([k, v]) => [k.split('#')[1], v]),
     );
-    fs.writeFileSync(mdastName, JSON.stringify(normalizedSnippets, null, 2));
+    writeFileToFolder(
+      { ...opts, filename: mdastName },
+      JSON.stringify(normalizedSnippets, null, 2),
+    );
   }
 
-  session.log.debug('Writing bib file...');
-  // Write out the references
-  await writeBibtex(
-    session,
-    article.references,
-    path.join(path.dirname(opts.filename), opts?.bibtex ?? 'main.bib'),
-    { alwaysWriteFile: false },
-  );
+  if (opts.writeBibtex ?? true) {
+    session.log.debug('Writing bib file...');
+    // Write out the references
+    await writeBibtex(session, article.references, opts?.bibtex ?? 'main.bib', {
+      path: path.join(opts.path || '.', path.dirname(opts.filename)),
+      alwaysWriteFile: false,
+    });
+  }
 
   return article;
 }

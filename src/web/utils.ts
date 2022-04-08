@@ -36,11 +36,6 @@ export function ensureBuildFolderExists(opts: Options) {
   if (!exists(opts)) fs.mkdirSync(serverPath(opts), { recursive: true });
 }
 
-export function writeFileToFolder(filename: string, data: string | NodeJS.ArrayBufferView) {
-  if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
-  fs.writeFileSync(filename, data);
-}
-
 export function parseMyst(content: string) {
   const myst = new MyST({
     roles: { ...reactiveRoles },

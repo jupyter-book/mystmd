@@ -1,8 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { ISession } from '../../session/types';
+import { writeFileToFolder } from '../../utils';
 
 export interface Options {
+  path?: string;
+  filename?: string;
   title: string;
   author: string;
   url: string;
@@ -59,12 +62,12 @@ html:
 }
 
 export function writeConfig(session: ISession, opts: Options) {
-  const pathname = path.join('.', '_config.yml');
+  const pathname = path.join(opts.path ?? '.', opts.filename || '_config.yml');
   if (fs.existsSync(pathname)) {
     session.log.debug(`The jupyter-book config already exists, ${pathname}, skipping write.`);
     return;
   }
   session.log.debug(`Writing jupyter-book config: ${pathname}`);
   const config = createYaml(opts);
-  fs.writeFileSync(path.join('.', '_config.yml'), config);
+  writeFileToFolder(pathname, config);
 }

@@ -8,6 +8,8 @@ import { writeConfig } from './jbConfig';
 import { ISession } from '../../session/types';
 
 type Options = {
+  path?: string;
+  writeConfig?: boolean;
   images?: string;
   bibtex?: string;
 };
@@ -17,12 +19,15 @@ export async function projectToJupyterBook(session: ISession, projectId: Project
     new Project(session, projectId).get(),
     getLatestVersion<Blocks.Navigation>(session, { project: projectId, block: 'nav' }),
   ]);
-  writeConfig(session, {
-    title: project.data.title,
-    author: project.data.team,
-    url: `${session.SITE_URL}/@${project.data.team}/${project.data.name}`,
-  });
-  await writeTOC(session, nav);
+  if (opts.writeConfig ?? true) {
+    writeConfig(session, {
+      path: opts.path,
+      title: project.data.title,
+      author: project.data.team,
+      url: `${session.SITE_URL}/@${project.data.team}/${project.data.name}`,
+    });
+  }
+  await writeTOC(session, nav, { path: opts.path });
   await exportAll(session, nav, { ...opts, bibtex: 'references.bib' });
 }
 

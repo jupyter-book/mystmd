@@ -27,7 +27,7 @@ async function processFolder(
     slugs.map(async ({ slug }) => {
       const { filename } = getFileName(section.path, slug);
       const processed = await cache.processFile({
-        folder: section.folder,
+        folder: section.path,
         slug,
         filename,
       });
@@ -75,7 +75,7 @@ export async function buildContent(session: ISession, opts: Options): Promise<Do
 }
 
 export function watchContent(cache: DocumentCache) {
-  const processor = async (eventType: string, filename: string) => {
+  const processor = (folder: string) => async (eventType: string, filename: string) => {
     cache.session.log.debug(`File modified: "${filename}" (${eventType})`);
     const base = path.basename(filename);
     if (base === '_toc.yml') {
@@ -83,12 +83,14 @@ export function watchContent(cache: DocumentCache) {
       await cache.writeConfig();
       return;
     }
-    cache.markFileDirty(path.dirname(filename), base);
+    cache.markFileDirty(folder, base);
     await cache.process();
   };
 
   // Watch the full content folder
-  fs.watch('content', { recursive: true }, processor);
+  cache.config?.site.sections.forEach(({ path: folderPath }) => {
+    fs.watch(folderPath, { recursive: true }, processor(folderPath));
+  });
   // Watch the curvenote.yml
   watchConfig(cache);
 }

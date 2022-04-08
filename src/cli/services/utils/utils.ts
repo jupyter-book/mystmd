@@ -3,6 +3,7 @@ import { Command } from 'commander';
 import { chalkLogger, LogLevel } from '../../../logging';
 import { Session, getToken } from '../../../session';
 import { ISession } from '../../../session/types';
+import { CURVENOTE_YML } from '../../../config';
 
 type SessionOpts = {
   debug?: boolean | string;
@@ -52,7 +53,7 @@ export function clirun(
     const useSession = cli.session ?? getSession(opts);
     if (cli.requireConfig && !useSession.config) {
       useSession.log.error(
-        'You must be in a directory with a curvenote.yml\n\nDo you need to run: curvenote init',
+        `You must be in a directory with a ${CURVENOTE_YML}\n\nDo you need to run: curvenote init`,
       );
       process.exit(1);
     }

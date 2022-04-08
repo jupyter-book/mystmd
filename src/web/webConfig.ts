@@ -7,6 +7,7 @@ import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
 import { tic } from '../export/utils/exec';
 import { Options, Page, SiteConfig, SiteFolder } from './types';
 import { publicPath } from './utils';
+import { CURVENOTE_YML } from '../config';
 
 export function getFileName(folder: string, file: string) {
   const filenameMd = path.join(folder, `${file}.md`);
@@ -134,7 +135,7 @@ function createConfig(session: ISession, opts: Options): Required<SiteConfig> {
   const { config } = session;
   if (!config)
     throw new Error(
-      'Could not find curvenote.yml. Use the `--config [path]` to override the default.',
+      `Could not find ${CURVENOTE_YML}. Use the \`--config [path]\` to override the default.`,
     );
   const { sections, folders } = getSections(session, opts, config.web.sections);
   const design: Required<SiteConfig['site']['design']> = {

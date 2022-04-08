@@ -14,18 +14,12 @@ import { selectAll } from 'mystjs';
 import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
 import { IDocumentCache, Options, SiteConfig } from './types';
-import {
-  parseMyst,
-  publicPath,
-  RendererData,
-  serverPath,
-  transformMdast,
-  writeFileToFolder,
-} from './utils';
+import { parseMyst, publicPath, RendererData, serverPath, transformMdast } from './utils';
 import { LinkLookup, transformLinks } from './transforms';
 import { copyImages, readConfig } from './webConfig';
 
 import { createWebFileObjectFactory } from './files';
+import { writeFileToFolder } from '../utils';
 
 type NextFile = { filename: string; folder: string; slug: string };
 
@@ -60,8 +54,7 @@ async function processNotebook(
   // notebook will be empty, use generateNotebookChildren, generateNotebookOrder here if we want to populate those
 
   const language = notebook.language ?? notebook.metadata?.kernelspec.language ?? 'python';
-  log.debug('processNotebook', filename);
-  log.debug(notebook);
+  log.debug(`Processing Notebook: "${filename.from}"`);
 
   const fileFactory = createWebFileObjectFactory(log, publicPath(cache.options), '_static', {
     useHash: true,
@@ -149,7 +142,7 @@ async function processFile(
 }
 
 async function getCitationRenderer(session: ISession, folder: string): Promise<CitationRenderer> {
-  const referenceFilename = path.join('content', folder, 'references.bib');
+  const referenceFilename = path.join(folder, 'references.bib');
   if (!fs.existsSync(referenceFilename)) {
     session.log.debug(`Expected references at "${referenceFilename}"`);
     return {};
@@ -181,7 +174,7 @@ export class DocumentCache implements IDocumentCache {
   }
 
   markFileDirty(folder: string, file: string) {
-    const filename = path.join('content', folder, file);
+    const filename = path.join(folder, file);
     const slug = file.split('.').slice(0, -1).join('.');
     this.processList[filename] = { filename, folder, slug };
   }
