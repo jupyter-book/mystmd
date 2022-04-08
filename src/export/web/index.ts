@@ -1,7 +1,8 @@
 import fs from 'fs';
+import path from 'path';
 import { makeExecutable } from '../utils';
 import { ISession } from '../../session/types';
-import { watchContent } from './prepare';
+import { cleanBuiltFiles, watchContent } from './prepare';
 import { getServerLogger } from './serverLogger';
 import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
@@ -16,7 +17,7 @@ export async function clean(session: ISession, opts: Options) {
 }
 
 export async function clone(session: ISession, opts: Options) {
-  session.log.info('Cloning Curvespace');
+  session.log.info('🌎 Cloning Curvespace');
   await makeExecutable(
     `git clone git@github.com:curvenote/curvespace.git ${serverPath(opts)}`,
     session.log,
@@ -25,11 +26,14 @@ export async function clone(session: ISession, opts: Options) {
   session.log.debug('Cleaning out any git information from build folder.');
   // TODO: udpate this when we are downloading a zip
   const p = serverPath(opts);
-  await makeExecutable(`rm -rf ${p}/.git ${p}/.github`, session.log)();
+  // Remove all git-related things
+  fs.rmdirSync(path.join(p, '.git'), { recursive: true });
+  fs.rmdirSync(path.join(p, '.github'), { recursive: true });
+  cleanBuiltFiles(session, opts, false);
 }
 
 export async function install(session: ISession, opts: Options) {
-  session.log.info('Installing node_modules');
+  session.log.info('⤵️ Installing libraries');
   if (!exists(opts)) {
     session.log.error('Curvespace is not cloned. Do you need to run: \n\ncurvenote web clone');
     return;

@@ -187,7 +187,7 @@ export class DocumentCache {
     }
   }
 
-  /** Let the cache know not to process links & cross references */
+  /** Let the cache know not to process links, cross references, or config */
   $startupPass = false;
 
   async processAllLinks() {

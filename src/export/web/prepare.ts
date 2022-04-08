@@ -8,6 +8,14 @@ import { Options, SiteConfig, SiteFolder } from './types';
 import { getFileName } from './webConfig';
 import { DocumentCache, watchConfig } from './cache';
 
+export function cleanBuiltFiles(session: ISession, opts: Options, info = true) {
+  const toc = tic();
+  fs.rmdirSync(path.join(serverPath(opts), 'app', 'content'), { recursive: true });
+  fs.rmdirSync(path.join(serverPath(opts), 'public', 'images'), { recursive: true });
+  const log = info ? session.log.info : session.log.debug;
+  log(toc('🧹 Clean build files in %s.'));
+}
+
 async function processFolder(
   cache: DocumentCache,
   section: SiteConfig['site']['sections'][0],
@@ -48,9 +56,7 @@ export async function watchContent(session: ISession, opts: Options) {
   const cache = new DocumentCache(session, opts);
 
   if (opts.force || opts.clean) {
-    session.log.info('🧹  Cleaning built files.');
-    fs.rmdirSync(path.join(serverPath(opts), 'app', 'content'), { recursive: true });
-    fs.rmdirSync(path.join(serverPath(opts), 'public', 'images'), { recursive: true });
+    cleanBuiltFiles(session, opts);
   }
 
   await cache.readConfig();
@@ -72,7 +78,11 @@ export async function watchContent(session: ISession, opts: Options) {
   // Process all existing files
   const pages = await processConfig(cache);
   const touched = pages.filter(({ processed }) => processed).length;
-  session.log.info(toc(`📚 Built ${touched} / ${pages.length} pages in %s.`));
+  if (touched) {
+    session.log.info(toc(`📚 Built ${touched} / ${pages.length} pages in %s.`));
+  } else {
+    session.log.info(toc(`📚 ${pages.length} pages loaded from cache in %s.`));
+  }
   // Watch the full content folder
   fs.watch('content', { recursive: true }, processor);
   // Watch the curvenote.yml

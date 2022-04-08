@@ -146,7 +146,7 @@ export async function copyImages(session: ISession, opts: Options, config: SiteC
       });
     }),
   );
-  session.log.info(toc(`🌄 Copied images in %s`));
+  session.log.info(toc(`🌄 Copied images in %s.`));
 }
 
 export async function readConfig(session: ISession, opts: Options): Promise<SiteConfig> {
