@@ -52,7 +52,7 @@ async function processConfig(cache: DocumentCache): Promise<{ id: string; proces
   return folders.flat().filter((f) => f) as { id: string; processed: boolean }[];
 }
 
-export async function watchContent(session: ISession, opts: Options) {
+export async function buildContent(session: ISession, opts: Options): Promise<DocumentCache> {
   const cache = new DocumentCache(session, opts);
 
   if (opts.force || opts.clean) {
@@ -61,18 +61,6 @@ export async function watchContent(session: ISession, opts: Options) {
 
   await cache.readConfig();
   session.log.debug('Site Config:\n\n', yaml.dump(cache.config));
-
-  const processor = async (eventType: string, filename: string) => {
-    session.log.debug(`File modified: "${filename}" (${eventType})`);
-    const base = path.basename(filename);
-    if (base === '_toc.yml') {
-      await cache.readConfig();
-      await cache.writeConfig();
-      return;
-    }
-    cache.markFileDirty(path.dirname(filename), base);
-    await cache.process();
-  };
 
   const toc = tic();
   // Process all existing files
@@ -83,6 +71,22 @@ export async function watchContent(session: ISession, opts: Options) {
   } else {
     session.log.info(toc(`📚 ${pages.length} pages loaded from cache in %s.`));
   }
+  return cache;
+}
+
+export function watchContent(cache: DocumentCache) {
+  const processor = async (eventType: string, filename: string) => {
+    cache.session.log.debug(`File modified: "${filename}" (${eventType})`);
+    const base = path.basename(filename);
+    if (base === '_toc.yml') {
+      await cache.readConfig();
+      await cache.writeConfig();
+      return;
+    }
+    cache.markFileDirty(path.dirname(filename), base);
+    await cache.process();
+  };
+
   // Watch the full content folder
   fs.watch('content', { recursive: true }, processor);
   // Watch the curvenote.yml

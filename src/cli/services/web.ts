@@ -33,6 +33,24 @@ function makeCurvespaceStartCLI(program: Command) {
   return command;
 }
 
+function makeBuildCLI(program: Command) {
+  const command = new Command('build')
+    .description('Deploy content to https://*.curve.space or your own domain')
+    .option('-C, --clean', 'Remove content so that it is rebuilt fresh', false)
+    .option('-F, --force', 'Remove the build directory and re-install', false)
+    .action(clirun(web.build, { program }));
+  return command;
+}
+
+function makeDeployCLI(program: Command) {
+  const command = new Command('deploy')
+    .alias('publish')
+    .description('Deploy content to https://*.curve.space or your own domain')
+    .option('-F, --force', 'Remove the build directory and re-install', false)
+    .action(clirun(web.deploy, { program }));
+  return command;
+}
+
 export function addWebCLI(program: Command) {
   const command = new Command('web').description(
     'Commands to clone, install, and start a webserver',
@@ -41,7 +59,10 @@ export function addWebCLI(program: Command) {
   command.addCommand(makeCurvespaceCloneCLI(program));
   command.addCommand(makeCurvespaceInstallCLI(program));
   command.addCommand(makeCurvespaceStartCLI(program));
+  command.addCommand(makeDeployCLI(program));
+  command.addCommand(makeBuildCLI(program));
   program.addCommand(command);
-  // Add a `start` shortcut at the top level
+  // Add a `start` and `deploy` shortcut at the top level
   program.addCommand(makeCurvespaceStartCLI(program));
+  program.addCommand(makeDeployCLI(program));
 }
