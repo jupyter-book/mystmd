@@ -3,7 +3,7 @@ import { ExportableFormatTypes } from '@curvenote/blocks';
 export interface WebConfig {
   name: string;
   sections: { title: string; folder: string; path: string }[];
-  actions: { title: string; url: string }[];
+  actions: { title: string; url: string; static?: boolean }[];
   favicon?: string | null;
   logo?: string | null;
   logoText?: string | null;

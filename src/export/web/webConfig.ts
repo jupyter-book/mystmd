@@ -38,11 +38,40 @@ function copyLogo(session: ISession, opts: Options, logoName?: string | null): s
     session.log.debug('No logo specified');
     return undefined;
   }
+  if (!fs.existsSync(logoName)) {
+    // Look in the local public path
+    logoName = path.join('public', logoName);
+  }
   if (!fs.existsSync(logoName))
     throw new Error(`Could not find logo at "${logoName}". See 'config.web.logo'`);
   const logo = `logo${path.extname(logoName)}`;
   fs.copyFileSync(logoName, path.join(publicPath(opts), logo));
   return `/${logo}`;
+}
+
+function copyActionResource(
+  session: ISession,
+  opts: Options,
+  action: SiteConfig['site']['actions'][0],
+): SiteConfig['site']['actions'][0] {
+  let { url: filePath } = action;
+  if (!action.static || !filePath) return action;
+  if (!fs.existsSync(filePath)) {
+    // Look in the local public path
+    filePath = path.join('public', filePath);
+  }
+  if (!fs.existsSync(filePath))
+    throw new Error(`Could not find static resource at "${action.url}". See 'config.web.actions'`);
+  // Get rid of the first public path if present
+  const parts = filePath.split(path.sep).filter((s, i) => i > 0 || s !== 'public');
+  const webUrl = parts.join('/');
+  session.log.debug(`Copying static resource from "${filePath}" to be available at "/${webUrl}"`);
+  fs.copyFileSync(filePath, path.join(publicPath(opts), ...parts));
+  return {
+    title: action.title,
+    url: `/${webUrl}`,
+    static: true,
+  };
 }
 
 function getRepeats<T>(things: T[]): Set<T> {
@@ -111,9 +140,12 @@ function createConfig(session: ISession, opts: Options): Required<SiteConfig> {
   const design: Required<SiteConfig['site']['design']> = {
     hideAuthors: config.web.design?.hideAuthors ?? false,
   };
+  const actions = (config.web.actions ?? []).map((action) =>
+    copyActionResource(session, opts, action),
+  );
   const site: Required<SiteConfig['site']> = {
     name: config.web.name || 'My Site',
-    actions: config.web.actions ?? [],
+    actions,
     favicon: config.web.favicon || null,
     logo: copyLogo(session, opts, config.web.logo) || null,
     logoText: config.web.logoText || null,

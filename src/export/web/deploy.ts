@@ -37,6 +37,16 @@ function listConfig(cache: DocumentCache): FromTo[] {
       to: `public/${favicon}`,
     });
   }
+  // Load all static action resources
+  cache.config?.site.actions.forEach((action) => {
+    if (!action.static) return;
+    // String leading slash
+    const names = action.url.split('/').filter((s) => s);
+    paths.push({
+      from: path.join(serverPath(cache.options), 'public', ...names),
+      to: `public/${names.join('/')}`,
+    });
+  });
   return paths;
 }
 
