@@ -12,12 +12,13 @@ import { serve } from '../web';
 import { LOGO } from '../web/public';
 import { pullProjects } from './pull';
 import questions from './questions';
+import { LogLevel } from '../logging';
 
 type Options = {
   template: string;
 };
 
-const WELCOME = `
+const WELCOME = async (session: ISession) => `
 
 ${chalk.bold(chalk.green('Welcome to the Curvenote CLI!!'))} 👋
 
@@ -27,14 +28,18 @@ You can use this client library to:
 
  - ${chalk.bold('sync content')} to & from Curvenote
  - ${chalk.bold('build & export')} professional PDFs
- - create a ${chalk.bold('local website')} & deploy to ${chalk.blue('https://your.curve.space')}
+ - create a ${chalk.bold('local website')} & deploy to ${chalk.blue(
+  `https://${
+    session.isAnon ? 'your' : (await new MyUser(session).get()).data.username
+  }.curve.space`,
+)}
 
 Find out more here:
 ${docLinks.overview}
 
 `;
 
-const FINISHED = `
+const FINISHED = async (session: ISession) => `
 
 ${chalk.bold(chalk.green('Curvenote setup is complete!!'))} 🚀
 
@@ -42,7 +47,11 @@ You can use this client library to:
 
   - ${chalk.bold('curvenote pull')}: Update your content to what is on https://curvenote.com
   - ${chalk.bold('curvenote start')}: Start a local web server now!
-  - ${chalk.bold('curvenote deploy')}: Share content on ${chalk.blue('https://your.curve.space')}
+  - ${chalk.bold('curvenote deploy')}: Share content on ${chalk.blue(
+  `https://${
+    session.isAnon ? 'your' : (await new MyUser(session).get()).data.username
+  }.curve.space`,
+)}
 
 Find out more here:
 ${docLinks.overview}
@@ -52,12 +61,15 @@ ${docLinks.overview}
 export async function init(session: ISession, opts: Options) {
   if (session.config) {
     session.log.error(`We found a "${CURVENOTE_YML}" on your path, please edit that instead!\n\n`);
+    session.log.info(
+      `${chalk.dim('Are you looking for')} ${chalk.bold('curvenote sync add')}${chalk.dim('?')}`,
+    );
     return;
   }
   const pwd = fs.readdirSync('.');
   const folderIsEmpty = pwd.length === 0;
 
-  session.log.info(WELCOME);
+  session.log.info(await WELCOME(session));
 
   // Load the user now, and wait for it below!
   let me: MyUser | Promise<MyUser> | undefined;
@@ -69,22 +81,14 @@ export async function init(session: ISession, opts: Options) {
     questions.content({ folderIsEmpty, template: opts.template }),
   ]);
   if (answers.content === 'curvenote') {
-    await addProjectsToConfig(session, { config });
+    await addProjectsToConfig(session, { config, singleQuestion: true });
+    session.log.info(`Add other projects using: ${chalk.bold('curvenote sync add')}\n`);
   }
-  const { pull } = await inquirer.prompt([questions.pull()]);
   let pullComplete = false;
-  let pullProcess: Promise<void> | undefined;
-  if (pull) {
-    pullProcess = pullProjects(session, { config }).then(() => {
-      pullComplete = true;
-    });
-  } else {
-    session.log.info(
-      `Sync your content later using:\n\n${chalk.bold('curvenote pull')}\n\nLearn more at ${
-        docLinks.pull
-      }`,
-    );
-  }
+  const pullOpts = { config, level: LogLevel.debug };
+  const pullProcess = pullProjects(session, pullOpts).then(() => {
+    pullComplete = true;
+  });
   // Personalize the config
   me = await me;
   config.web.name = answers.name;
@@ -98,12 +102,12 @@ export async function init(session: ISession, opts: Options) {
   // logo, favicon
   writeFileToFolder('public/logo.svg', LOGO);
 
-  session.log.info(FINISHED);
+  session.log.info(await FINISHED(session));
 
   const { start } = await inquirer.prompt([
     {
       name: 'start',
-      message: 'Would you like to install & start curve.space locally now?',
+      message: 'Would you like to start curve.space locally now?',
       type: 'confirm',
       default: true,
     },
@@ -112,10 +116,11 @@ export async function init(session: ISession, opts: Options) {
     session.log.info(chalk.dim('\nYou can do this later with:'), chalk.bold('curvenote start'));
   }
   if (!pullComplete) {
+    pullOpts.level = LogLevel.info;
     session.log.info(
-      chalk.dim('\nFinishing'),
-      chalk.bold('curvenote pull'),
-      chalk.dim('. This may take a minute ⏳...'),
+      `${chalk.dim('\nFinishing')} ${chalk.bold('curvenote pull')}${chalk.dim(
+        '. This may take a minute ⏳...',
+      )}`,
     );
   }
   if (start) {

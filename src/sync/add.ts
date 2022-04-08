@@ -14,11 +14,12 @@ import { writeFileToFolder } from '../utils';
 
 export async function addProjectsToConfig(
   session: ISession,
-  opts?: { config?: CurvenoteConfig },
+  opts?: { config?: CurvenoteConfig; singleQuestion?: boolean },
 ): Promise<CurvenoteConfig> {
   const { config = blankCurvenoteConfig() } = opts ?? {};
   let confirm = { additional: true };
-  while (confirm.additional) {
+  let firstTime = true;
+  while ((confirm.additional && !opts?.singleQuestion) || firstTime) {
     const { projectLink } = await inquirer.prompt([
       {
         name: 'projectLink',
@@ -64,14 +65,17 @@ export async function addProjectsToConfig(
       title: project.data.title,
       url: `/${basename(path)}`,
     });
-    confirm = await inquirer.prompt([
-      {
-        name: 'additional',
-        message: 'Would you like to add additional projects now?',
-        type: 'confirm',
-        default: false,
-      },
-    ]);
+    if (!opts?.singleQuestion) {
+      confirm = await inquirer.prompt([
+        {
+          name: 'additional',
+          message: 'Would you like to add additional projects now?',
+          type: 'confirm',
+          default: false,
+        },
+      ]);
+    }
+    firstTime = false;
   }
   return config;
 }

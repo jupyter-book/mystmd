@@ -13,6 +13,7 @@ type Options = {
   images?: string;
   bibtex?: string;
   createFrontmatter?: boolean;
+  titleOnlyInFrontmatter?: boolean;
 };
 
 export async function projectToJupyterBook(session: ISession, projectId: ProjectId, opts: Options) {

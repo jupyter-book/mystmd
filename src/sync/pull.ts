@@ -48,6 +48,7 @@ async function pullProject(session: ISession, id: string, folder: string, level?
     path: folder,
     writeConfig: false,
     createFrontmatter: true,
+    titleOnlyInFrontmatter: true,
   });
   log(toc(`🚀 Pulled ${folder} in %s`));
 }

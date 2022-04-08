@@ -12,6 +12,7 @@ interface Options {
   images?: string;
   bibtex?: string;
   createFrontmatter?: boolean;
+  titleOnlyInFrontmatter?: boolean;
 }
 
 export async function exportAll(

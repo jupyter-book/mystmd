@@ -17,6 +17,7 @@ type Options = {
   writeBibtex?: boolean;
   bibtex?: string;
   renderReferences?: boolean;
+  titleOnlyInFrontmatter?: boolean;
 };
 
 export async function createFrontmatter(
@@ -86,9 +87,12 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
 
   const frontmatter = await createFrontmatter(session, block, version);
   const metadata = YAML.stringify(frontmatter);
-  // TODO: Remove the title when Jupyter Book allows title to be defined in the yaml.
-  // https://github.com/executablebooks/MyST-Parser/pull/492
-  const titleString = `---\n${metadata}---\n\n# ${block.data.title}\n\n`;
+  let titleString = `---\n${metadata}---\n\n`;
+  if (!opts.titleOnlyInFrontmatter) {
+    // TODO: Remove the title when Jupyter Book allows title to be defined in the yaml.
+    // https://github.com/executablebooks/MyST-Parser/pull/492
+    titleString += `# ${block.data.title}\n\n`;
+  }
   let file = titleString + content.join('\n\n');
   if (opts.renderReferences && Object.keys(article.references).length > 0) {
     file += '\n\n### References\n\n```{bibliography}\n:filter: docname in docnames\n```';

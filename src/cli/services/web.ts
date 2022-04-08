@@ -39,7 +39,6 @@ function makeCurvespaceInstallCLI(program: Command) {
 
 function makeCurvespaceStartCLI(program: Command) {
   const command = new Command('start')
-    .alias('serve')
     .description('Start a local project as a web server')
     .addOption(makeCleanOption())
     .addOption(makeForceOption())
