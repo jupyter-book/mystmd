@@ -195,5 +195,7 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
     // team:
   });
 
-  console.log(siteCreated);
+  cache.session.log.info('🕸  Site Deployed');
+  cache.session.log.info(`🌎  https://${domains[0]}`);
+  cache.session.log.debug(siteCreated);
 }
