@@ -66,6 +66,7 @@ function listContentFolders(cache: DocumentCache): FromTo[] {
 
 function listPublic(cache: DocumentCache): FromTo[] {
   const staticFolder = path.join(publicPath(cache.options), '_static');
+  if (!fs.existsSync(staticFolder)) return [];
   const assets = fs.readdirSync(staticFolder);
   const fromTo = assets.map((assetName) => {
     return {
@@ -106,7 +107,10 @@ async function uploadFile(log: Logger, upload: FileUpload) {
   const file = storage.bucket(upload.bucket).file(upload.to);
   const resumableSession = await fetch(upload.signedUrl, {
     method: 'POST',
-    headers: { 'x-goog-resumable': 'start' },
+    headers: {
+      'x-goog-resumable': 'start',
+      'content-type': upload.contentType,
+    },
   });
   // Endpoint to which we should upload the file
   const location = resumableSession.headers.get('location') as string;
@@ -125,7 +129,7 @@ async function uploadFile(log: Logger, upload: FileUpload) {
   log.debug(toc(`Finished upload of ${upload.from} in %s.`));
 }
 
-export async function deployContent(cache: DocumentCache) {
+export async function deployContent(cache: DocumentCache, domains: string[]) {
   const configFiles = listConfig(cache);
   const contentFiles = listContentFolders(cache);
   const imagesFiles = listPublic(cache);
@@ -180,14 +184,14 @@ export async function deployContent(cache: DocumentCache) {
   const { status: deployStatus } = await cache.session.post('/sites/deploy', deployRequest);
 
   if (deployStatus === 200) {
-    cache.session.log.info(toc(`🚀  Deployed ${files.length} files in %s.`));
+    cache.session.log.info(toc(`🚀 Deployed ${files.length} files in %s.`));
   } else {
     throw new Error('Deployment failed: Please contact support@curvenote.com!');
   }
 
   const { json: siteCreated } = await cache.session.post<DnsRouter>('/sites/router', {
     cdn: uploadTargets.id,
-    domain: 'rowanc1.curve.space',
+    domain: domains[0],
     // team:
   });
 

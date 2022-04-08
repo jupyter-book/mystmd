@@ -191,8 +191,44 @@ const Margin: IDirective = {
   hast: (h, node) => h(node, 'aside', { class: 'margin' }),
 };
 
+const Mdast: IDirective = {
+  myst: class Mdast extends Directive {
+    public required_arguments = 1;
+
+    public optional_arguments = 0;
+
+    public final_argument_whitespace = false;
+
+    public has_content = false;
+
+    public option_spec = {};
+
+    run(data: IDirectiveData<keyof Mdast['option_spec']>) {
+      const token = this.createToken('mdast', 'div', 0, {
+        content: data.body,
+        map: data.bodyMap,
+        block: true,
+        meta: { id: data.args[0] },
+      });
+      return [token];
+    }
+  },
+  mdast: {
+    type: 'mdast',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        id: t.meta.id,
+      };
+    },
+  },
+  hast: (h, node) => h(node, 'div', { id: node.id }),
+};
+
 export const directives = {
   'r:var': RVar,
+  mdast: Mdast,
   bibliography: Bibliography,
   iframe: IFrame,
   margin: Margin,

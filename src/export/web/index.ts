@@ -7,6 +7,7 @@ import { getServerLogger } from './serverLogger';
 import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
 import { deployContent } from './deploy';
+import { MyUser } from '../../models';
 
 export async function clean(session: ISession, opts: Options) {
   if (!exists(opts)) {
@@ -81,9 +82,25 @@ export async function build(session: ISession, opts: Options) {
 }
 
 export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
+  if (session.isAnon) {
+    session.log.error(
+      '⚠️ You must be authenticated for this call. Use `curvenote token set [token]`',
+    );
+    return;
+  }
+  const me = await new MyUser(session).get();
+  // Do a bit of prework to ensure that the domains exists in the config file
+  const config = session.loadConfig();
+  const domains = config?.web.domains;
+  if (!domains || domains.length === 0) {
+    session.log.error(
+      `🧐 No domains specified, use config.site.domains: - ${me.data.username}.curve.space`,
+    );
+    return;
+  }
   await cloneCurvespace(session, opts);
   sparkles(session, 'Deploying Curvenote');
   // Build the files in the content folder and process them
   const cache = await buildContent(session, { ...opts, clean: true });
-  await deployContent(cache);
+  await deployContent(cache, domains);
 }

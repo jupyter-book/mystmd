@@ -67,26 +67,31 @@ const RDisplay: IRole = {
   },
 };
 
-function createCiteMdastHandler(type: string, kind: string): IRole['mdast'] {
-  return {
-    type,
-    noCloseToken: true,
-    isLeaf: true,
-    getAttrs(t) {
-      return { kind, label: t.content };
-    },
-  };
-}
+const citeMdastHandler: IRole['mdast'] = {
+  type: 'citeGroup',
+  noCloseToken: false,
+  isLeaf: false,
+  getAttrs(t) {
+    return { kind: t.attrGet('kind') };
+  },
+};
 
 const CiteP: IRole = {
   myst: class CiteP extends Role {
     run(data: IRoleData) {
-      const token = new this.state.Token('cite:p', 'cite', 1);
-      token.content = data.content;
-      return [token];
+      const open = new this.state.Token('cite_group_open', 'cite', 1);
+      open.attrSet('kind', 'parenthetical');
+      const labels = data.content?.split(',').map((s) => s.trim()) ?? [];
+      const citations = labels.map((label) => {
+        const cite = new this.state.Token('cite', 'cite', 0);
+        cite.attrSet('label', label);
+        return cite;
+      });
+      const close = new this.state.Token('cite_group_close', 'cite', -1);
+      return [open, ...citations, close];
     }
   },
-  mdast: createCiteMdastHandler('cite', 'p'),
+  mdast: citeMdastHandler,
   hast() {
     return null;
   },
@@ -95,12 +100,44 @@ const CiteP: IRole = {
 const CiteT: IRole = {
   myst: class CiteT extends Role {
     run(data: IRoleData) {
-      const token = new this.state.Token('cite:t', 'cite', 1);
-      token.content = data.content;
-      return [token];
+      const open = new this.state.Token('cite_group_open', 'cite', 1);
+      open.attrSet('kind', 'narrative');
+      const labels = data.content?.split(',').map((s) => s.trim()) ?? [];
+      const citations = labels.map((label) => {
+        const cite = new this.state.Token('cite', 'cite', 0);
+        cite.attrSet('label', label);
+        return cite;
+      });
+      const close = new this.state.Token('cite_group_close', 'cite', -1);
+      return [open, ...citations, close];
     }
   },
-  mdast: createCiteMdastHandler('cite', 't'),
+  mdast: citeMdastHandler,
+  hast() {
+    return null;
+  },
+};
+
+const Cite: IRole = {
+  myst: class Cite extends Role {
+    run(data: IRoleData) {
+      const cite = new this.state.Token('cite', 'cite', 0);
+      // if more than one, create a group...
+      cite.attrSet('label', data.content);
+      return [cite];
+    }
+  },
+  mdast: {
+    type: 'cite',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        label: t.attrGet('label'),
+        identifier: t.attrGet('label'),
+      };
+    },
+  },
   hast() {
     return null;
   },
@@ -110,7 +147,8 @@ export const reactiveRoles: Record<string, IRole> = {
   'r:dynamic': RDynamic,
   'r:display': RDisplay,
   'r:range': RRange,
-  cite: CiteP,
+  cite: Cite,
   'cite:p': CiteP,
+  cite_group: CiteP,
   'cite:t': CiteT,
 };

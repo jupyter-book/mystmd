@@ -1,12 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import { MyST } from 'mystjs';
+import { GenericNode, MyST, selectAll } from 'mystjs';
 import { CitationRenderer } from 'citation-js-utils';
-import { Options, SiteConfig } from './types';
+import { IDocumentCache, Options } from './types';
 import { reactiveRoles } from './roles';
 import { directives } from './directives';
 import { tic } from '../utils/exec';
-import { Logger } from '../../logging';
 import { Frontmatter, getFrontmatter } from './frontmatter';
 import {
   References,
@@ -57,9 +56,32 @@ export interface RendererData {
   references: References;
 }
 
+function importMdastFromJson(cache: IDocumentCache, filename: string, mdast: Root) {
+  const mdastNodes = selectAll('mdast', mdast) as GenericNode[];
+  const loadedData: Record<string, GenericNode> = {};
+  const dir = path.dirname(filename);
+  mdastNodes.forEach((node) => {
+    const [mdastFilename, id] = node.id.split('#');
+    let data = loadedData[mdastFilename];
+    if (!data) {
+      data = JSON.parse(fs.readFileSync(path.join(dir, mdastFilename)).toString());
+      loadedData[mdastFilename] = data;
+    }
+    if (!data[id]) {
+      cache.session.log.error(`Mdast Node import: Could not find ${id} in ${mdastFilename}`);
+      return;
+    }
+    // Clear the current object
+    Object.keys(node).forEach((k) => {
+      delete node[k];
+    });
+    // Replace with the import
+    Object.assign(node, data[id]);
+  });
+}
+
 export async function transformMdast(
-  log: Logger,
-  config: SiteConfig | null,
+  cache: IDocumentCache,
   name: string,
   mdast: Root,
   citeRenderer: CitationRenderer,
@@ -69,6 +91,8 @@ export async function transformMdast(
     cite: { order: [], data: {} },
     footnotes: {},
   };
+  importMdastFromJson(cache, name, mdast); // This must be first!
+  // The transforms from MyST (structural mostly)
   mdast = await transformRoot(mdast);
   [
     transformMath,
@@ -78,11 +102,13 @@ export async function transformMdast(
     transformCitations,
     transformKeys,
   ].forEach((transformer) => {
-    transformer(mdast, references, citeRenderer);
-    log.debug(toc(`Processing: "${name}" - ${transformer.name.slice(9).toLowerCase()} in %s`));
+    transformer(mdast, references, citeRenderer, cache);
+    cache.session.log.debug(
+      toc(`Processing: "${name}" - ${transformer.name.slice(9).toLowerCase()} in %s`),
+    );
   });
   const frontmatter = getFrontmatter(mdast);
-  if (config?.site?.design?.hideAuthors) {
+  if (cache.config?.site?.design?.hideAuthors) {
     delete frontmatter.author;
   }
   const data = { frontmatter, mdast, references };

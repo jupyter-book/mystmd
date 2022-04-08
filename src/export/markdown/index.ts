@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import YAML from 'yaml';
 import { VersionId, KINDS, oxaLink, formatDate } from '@curvenote/blocks';
-import { toMarkdown } from '@curvenote/schema';
+import { createId, toMyst } from '@curvenote/schema';
 import { writeBibtex } from '../utils/writeBibtex';
 import { Block, Version } from '../../models';
 import { getChildren } from '../../actions/getChildren';
@@ -33,10 +33,21 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
     simple: true,
   });
   const localization = localizationOptions(session, imageFilenames, article.references);
+  const mdastName = `${opts.filename.replace(/\.md$/, '')}.mdast.json`;
+  const articleMdastSnippets = {};
   const content = article.children.map((child) => {
     if (!child.version || !child.state) return '';
     const blockData = { oxa: oxaLink('', child.version.id) };
-    const md = toMarkdown(child.state.doc, { ...localization, renderers: { iframe: 'myst' } });
+    const { content: md, mdastSnippets } = toMyst(child.state.doc, {
+      ...localization,
+      renderers: { iframe: 'myst' },
+      createMdastImportId() {
+        return `${mdastName}#${createId()}`;
+      },
+    });
+    if (Object.keys(mdastSnippets).length) {
+      Object.assign(articleMdastSnippets, mdastSnippets);
+    }
     return `+++ ${JSON.stringify(blockData)}\n\n${md}`;
   });
 
@@ -57,6 +68,12 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
   }
   file += '\n\n';
   fs.writeFileSync(opts.filename, file);
+  if (Object.keys(articleMdastSnippets).length) {
+    const normalizedSnippets = Object.fromEntries(
+      Object.entries(articleMdastSnippets).map(([k, v]) => [k.split('#')[1], v]),
+    );
+    fs.writeFileSync(mdastName, JSON.stringify(normalizedSnippets, null, 2));
+  }
 
   session.log.debug('Writing bib file...');
   // Write out the references

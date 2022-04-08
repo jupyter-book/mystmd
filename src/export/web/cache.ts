@@ -13,7 +13,7 @@ import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
 import { selectAll } from 'mystjs';
 import { ISession } from '../../session/types';
 import { tic } from '../utils/exec';
-import { Options, SiteConfig } from './types';
+import { IDocumentCache, Options, SiteConfig } from './types';
 import {
   parseMyst,
   publicPath,
@@ -30,19 +30,13 @@ import { createWebFileObjectFactory } from './files';
 type NextFile = { filename: string; folder: string; slug: string };
 
 async function processMarkdown(
-  cache: DocumentCache,
+  cache: IDocumentCache,
   filename: { from: string; to: string },
   content: string,
   citeRenderer: CitationRenderer,
 ) {
   const mdast = parseMyst(content);
-  const data = await transformMdast(
-    cache.session.log,
-    cache.config,
-    filename.from,
-    mdast,
-    citeRenderer,
-  );
+  const data = await transformMdast(cache, filename.from, mdast, citeRenderer);
   return data;
 }
 
@@ -56,7 +50,7 @@ function createOutputDirective(): { myst: string; id: string } {
 }
 
 async function processNotebook(
-  cache: DocumentCache,
+  cache: IDocumentCache,
   filename: { from: string; to: string },
   content: string,
   citeRenderer: CitationRenderer,
@@ -116,19 +110,13 @@ async function processNotebook(
     output.data = outputMap[output.id];
   });
 
-  const data = await transformMdast(
-    cache.session.log,
-    cache.config,
-    filename.from,
-    mdast,
-    citeRenderer,
-  );
+  const data = await transformMdast(cache, filename.from, mdast, citeRenderer);
   return data;
 }
 
 async function processFile(
-  cache: DocumentCache,
-  filename: { from: string; to: string },
+  cache: IDocumentCache,
+  filename: { from: string; to: string; folder: string; url: string },
   content: string,
   citeRenderer: CitationRenderer,
 ): Promise<{ fromCache: boolean; data: RendererData }> {
@@ -148,6 +136,12 @@ async function processFile(
     case '.ipynb':
       data = await processNotebook(cache, filename, content, citeRenderer);
       break;
+    case '.bib':
+      // TODO: Clear cache, relink all files in the folder, use transformCitations
+      // TODO: delete cache.$citationRenderers[filename.folder]
+      throw new Error(
+        `Please rerun the build/start with -C. References aren't yet handled for "${filename.folder}"`,
+      );
     default:
       throw new Error(`Unrecognized extension ${filename.from}`);
   }
@@ -164,14 +158,14 @@ async function getCitationRenderer(session: ISession, folder: string): Promise<C
   return getCitations(f);
 }
 
-export function watchConfig(cache: DocumentCache) {
+export function watchConfig(cache: IDocumentCache) {
   return fs.watchFile(cache.session.configPath, async () => {
     await cache.readConfig();
     await cache.writeConfig();
   });
 }
 
-export class DocumentCache {
+export class DocumentCache implements IDocumentCache {
   session: ISession;
 
   options: Options;
@@ -226,7 +220,7 @@ export class DocumentCache {
     const content = fs.readFileSync(filename).toString();
     const citeRenderer = await this.getCitationRenderer(folder);
     const jsonFilename = this.$getJsonFilename(id);
-    const filenames = { from: filename, to: jsonFilename };
+    const filenames = { from: filename, to: jsonFilename, folder, url: webFolder };
     const { fromCache, data } = await processFile(this, filenames, content, citeRenderer);
     const changed = this.$startupPass ? false : transformLinks(data.mdast, this.$links);
     if (changed || !fromCache) {

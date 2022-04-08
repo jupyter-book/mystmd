@@ -1,4 +1,17 @@
 import { WebConfig } from '../../config/types';
+import { ISession } from '../../session/types';
+
+export interface IDocumentCache {
+  session: ISession;
+
+  options: Options;
+
+  config: SiteConfig | null;
+
+  readConfig(): Promise<void>;
+
+  writeConfig(): Promise<void>;
+}
 
 export interface Page {
   title: string;
