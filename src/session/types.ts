@@ -6,7 +6,7 @@ import { RootState } from '../store';
 
 export type Tokens = Partial<Record<'user' | 'session', string>>;
 
-export type Response = Promise<{ status: number; json: JsonObject }>;
+export type Response<T extends JsonObject = JsonObject> = Promise<{ status: number; json: T }>;
 
 export interface ISession {
   API_URL: string;
@@ -23,11 +23,11 @@ export interface ISession {
 
   isAnon: boolean;
 
-  get(url: string, query?: Record<string, string>): Response;
+  get<T extends JsonObject = JsonObject>(url: string, query?: Record<string, string>): Response<T>;
 
-  post(url: string, data: JsonObject): Response;
+  post<T extends JsonObject = JsonObject>(url: string, data: JsonObject): Response<T>;
 
-  patch(url: string, data: JsonObject): Response;
+  patch<T extends JsonObject = JsonObject>(url: string, data: JsonObject): Response<T>;
 
   log: Logger;
 }
