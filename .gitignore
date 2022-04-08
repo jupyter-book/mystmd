@@ -5,3 +5,4 @@ yalc.lock
 .yalc/
 *.docx
 src/version.ts
+yarn.lock
