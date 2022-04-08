@@ -32,7 +32,8 @@
     "@typescript-eslint/naming-convention": "off",
     "react/destructuring-assignment": "off",
     "no-resticted-syntax": "off",
-    "no-await-in-loop": "off"
+    "no-await-in-loop": "off",
+    "import/extensions": "off"
   },
   "settings": {
     "import/resolver": {

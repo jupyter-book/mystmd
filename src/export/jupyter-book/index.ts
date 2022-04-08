@@ -4,7 +4,7 @@ import { exportFromProjectLink } from '../utils';
 import { getLatestVersion } from '../../actions/getLatest';
 import { writeTOC } from './toc';
 import { exportAll } from './exportAll';
-import { writeConfig } from './config';
+import { writeConfig } from './jbConfig';
 import { ISession } from '../../session/types';
 
 type Options = {

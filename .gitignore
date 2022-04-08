@@ -3,6 +3,5 @@ temp/
 node_modules/
 yalc.lock
 .yalc/
-package-lock.json
 *.docx
 src/version.ts

@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 import commander from 'commander';
-import { addAuthCLI, addExportCLI, addTokenCLI } from './services';
-import version from '../version';
+import version from '~/version';
+import { addAuthCLI, addExportCLI, addWebCLI, addTokenCLI } from './services';
 
 const program = new commander.Command();
 addExportCLI(program);
 addTokenCLI(program);
 addAuthCLI(program);
+addWebCLI(program);
 
-program.option('-d, --debug [file]', 'Log out any errors to the console or an optional file.');
-program.version(version, '-v, --version', 'output the current version');
+program.option('-D, --debug [file]', 'Log out any errors to the console or an optional file.');
+program.version(version, '-V, --version', 'Print the current version of curvenotejs');
 program.parse(process.argv);

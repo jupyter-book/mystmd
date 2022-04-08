@@ -8,7 +8,7 @@ import {
   oxaLinkToJupyterBook,
   oxaLinkToNotebook,
   exportContent,
-} from '../..';
+} from '~/index';
 import { clirun } from './utils';
 
 function makeImageOption() {
