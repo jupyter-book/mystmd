@@ -29,9 +29,6 @@ export const NativeJupyterOutputs = ({
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
-    console.log('curvespace iframe', iframeRef.current != null);
-    console.log('curvespace ready', rendererReady);
-    console.log('curvespace data', !!data);
     if (iframeRef.current == null || !rendererReady || !data) return;
     host.commsDispatch(iframeRef.current, actions.connectHostSendContent(uid, data));
     setTimeout(() => setLoading(false), 100);
