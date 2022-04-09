@@ -10,6 +10,7 @@ const onClient = typeof document !== 'undefined';
 type Heading = {
   id: string;
   title: string;
+  titleHTML: string;
   level: number;
 };
 type Props = {
@@ -54,9 +55,9 @@ const Headings = ({ headings, activeId, highlight }: Props) => (
             highlight?.();
             el.scrollIntoView({ behavior: 'smooth' });
           }}
-        >
-          {heading.title}
-        </a>
+          // Note that the title can have math in it!
+          dangerouslySetInnerHTML={{ __html: heading.titleHTML }}
+        />
       </li>
     ))}
   </ul>
@@ -113,9 +114,9 @@ function useHeaders() {
     headingsSet.current.add(e);
   });
 
-  const headings = elements.map((heading) => {
-    const { innerText: title, id } = heading;
-    return { title, id, level: Number(heading.tagName.slice(1)) };
+  const headings: Heading[] = elements.map((heading) => {
+    const { innerText: title, innerHTML: titleHTML, id } = heading;
+    return { title, titleHTML, id, level: Number(heading.tagName.slice(1)) };
   });
 
   return { activeId, highlight, headings };
