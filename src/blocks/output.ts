@@ -1,48 +1,27 @@
-import { KINDS, BaseVersion, TARGET, OutputFormatTypes, FileMetadata } from './types';
+import {
+  KINDS,
+  BaseVersion,
+  TARGET,
+  OutputFormatTypes,
+  FileMetadata,
+  OutputSummaryEntry,
+} from './types';
 import { JsonObject } from '../types';
-import { CellOutputMimeTypes } from './types/jupyter';
 
-export enum OutputSummaryKind {
-  'stream' = 'stream',
-  'text' = 'text',
-  'error' = 'error',
-  'image' = 'image',
-  'svg' = 'svg',
-  'html' = 'html',
-  'latex' = 'latex',
-  'json' = 'json',
-  'javascript' = 'javascript',
-  'plotly' = 'plotly',
-  'bokeh' = 'bokeh',
-  'ipywidgets' = 'ipywidgets',
-  'unknown' = 'unknown',
-}
-
-export interface OutputSummaryEntry {
-  kind: OutputSummaryKind;
-  content_type: CellOutputMimeTypes;
-  content?: string;
-  link?: string;
-  path?: string;
-}
-
-export type OutputSummary = OutputSummaryEntry & {
-  alternate: Partial<Record<OutputSummaryKind, OutputSummaryEntry>>;
-};
-
-export function outputSummaryFromDTO(json: JsonObject): OutputSummary {
+export function outputSummaryFromDTO(json: JsonObject): OutputSummaryEntry {
   return {
     kind: json.kind,
     content_type: json.content_type,
     content: json.content,
     link: json.link,
+    path: json.path ?? undefined,
     alternate: json.alternate ?? {},
   };
 }
 
 export type PartialOutput = {
   targets: TARGET[];
-  outputs: OutputSummary[];
+  outputs: OutputSummaryEntry[];
   original?: JsonObject[]; // handling temp state on ext client
   upload_path?: string; // upload DTO is not the same at Download DTO
 } & FileMetadata;
