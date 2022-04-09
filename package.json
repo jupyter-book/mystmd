@@ -38,9 +38,11 @@
     "build:watch": "npm run copy:version; tsc -w -p ."
   },
   "dependencies": {
-    "@curvenote/blocks": "^1.3.3",
-    "@curvenote/nbtx": "^0.1.3",
+    "@curvenote/blocks": "^1.3.4",
+    "@curvenote/nbtx": "^0.1.4",
     "@curvenote/schema": "^0.12.0",
+    "@google-cloud/storage": "^5.18.2",
+    "@jupyterlab/nbformat": "^3.3.2",
     "@reduxjs/toolkit": "^1.7.2",
     "bottleneck": "^2.19.5",
     "chalk": "^4.1.2",

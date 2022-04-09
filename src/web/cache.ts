@@ -3,21 +3,21 @@ import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
 import {
-  OutputSummaries,
   parseNotebook,
-  summarizeOutputs,
   TranslatedBlockPair,
+  minifyCellOutput,
+  MinifiedOutput,
 } from '@curvenote/nbtx';
 import { nanoid } from 'nanoid';
 import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
-import { selectAll } from 'mystjs';
+import { GenericNode, selectAll } from 'mystjs';
 import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
 import { IDocumentCache, Options, SiteConfig } from './types';
 import { parseMyst, publicPath, RendererData, serverPath, transformMdast } from './utils';
+
 import { LinkLookup, transformLinks } from './transforms';
 import { copyImages, readConfig } from './webConfig';
-
 import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
 
@@ -60,7 +60,7 @@ async function processNotebook(
     useHash: true,
   });
 
-  const outputMap: Record<string, OutputSummaries> = {};
+  const outputMap: Record<string, MinifiedOutput[]> = {};
 
   const items = (
     await children?.reduce(async (P, item: TranslatedBlockPair) => {
@@ -73,22 +73,17 @@ async function processNotebook(
       }
       if (item.content.kind === KINDS.Code) {
         const code = `\`\`\`${language}\n${asString(item.content.content)}\n\`\`\``;
-        // TODO the contents of item.output.original is exactly what is needed by
-        // a renderer which would use the Juptyer OutputArea class
         if (item.output && item.output.original) {
-          const summaries: OutputSummaries[] = await summarizeOutputs(
+          const minified: MinifiedOutput[] = await minifyCellOutput(
             fileFactory,
             item.output.original as CellOutput[],
-            '',
+            { basepath: '' }, // fileFactory takes care of this
           );
 
-          const mystSummaries = summaries.map((summary) => {
-            const { myst, id } = createOutputDirective();
-            outputMap[id] = summary;
-            return myst;
-          });
+          const { myst, id } = createOutputDirective();
+          outputMap[id] = minified;
 
-          return acc.concat(code).concat(mystSummaries);
+          return acc.concat(code).concat([myst]);
         }
         return acc.concat(code);
       }
@@ -99,7 +94,7 @@ async function processNotebook(
   const mdast = parseMyst(items);
 
   // TODO: typing
-  selectAll('output', mdast).forEach((output: any) => {
+  selectAll('output', mdast).forEach((output: GenericNode) => {
     output.data = outputMap[output.id];
   });
 

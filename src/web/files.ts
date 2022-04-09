@@ -2,7 +2,7 @@ import path from 'path';
 import fsp from 'fs/promises';
 import fs from 'fs';
 import { createHash } from 'crypto';
-import { CellOutputMimeTypes } from '@curvenote/blocks';
+import { KnownCellOutputMimeTypes } from '@curvenote/blocks';
 import { IFileObject, IFileObjectFactoryFn, Metadata } from '@curvenote/nbtx';
 import { Logger } from 'src/logging';
 
@@ -16,12 +16,12 @@ enum FileExtension {
 }
 
 const FileExtensionMap: Record<string, FileExtension> = {
-  [CellOutputMimeTypes.ImagePng]: FileExtension.png,
-  [CellOutputMimeTypes.ImageJpeg]: FileExtension.jpg,
-  [CellOutputMimeTypes.ImageGif]: FileExtension.gif,
-  [CellOutputMimeTypes.ImageBmp]: FileExtension.bmp,
-  [CellOutputMimeTypes.ImageSvg]: FileExtension.svg,
-  [CellOutputMimeTypes.AppJson]: FileExtension.json,
+  [KnownCellOutputMimeTypes.ImagePng]: FileExtension.png,
+  [KnownCellOutputMimeTypes.ImageJpeg]: FileExtension.jpg,
+  [KnownCellOutputMimeTypes.ImageGif]: FileExtension.gif,
+  [KnownCellOutputMimeTypes.ImageBmp]: FileExtension.bmp,
+  [KnownCellOutputMimeTypes.ImageSvg]: FileExtension.svg,
+  [KnownCellOutputMimeTypes.AppJson]: FileExtension.json,
 };
 
 function computeHash(content: string) {
@@ -66,7 +66,7 @@ export class WebFileObject implements IFileObject {
    * @returns Promise<void>
    */
   writeString(data: string, contentType: string): Promise<void> {
-    this.contentType = CellOutputMimeTypes.AppJson;
+    this.contentType = KnownCellOutputMimeTypes.AppJson;
     this.hash = computeHash(data);
     this.log.debug(`🗃  writing json output file for ${contentType} with ${data.length} bytes`);
     const json = JSON.stringify({ content_type: contentType, content: data });
@@ -79,12 +79,12 @@ export class WebFileObject implements IFileObject {
    * NOTE: in order for the id and filename to be correct, the contentType must be set before calling this method.
    *
    * @param data: string - the base64 encoded image data
-   * @param contentType: string | undefined - the mime type of the data, which if supplied will override that found in the data
+   * @param contentType: string | undefined - the mime type of the data, which if supplied will be used as fallback
    * @returns
    */
   writeBase64(data: string, contentType?: string): Promise<void> {
-    const [header, justData] = data.split(';base64,');
-    this.contentType = contentType ?? header.replace('data:', '');
+    const [justData, header] = data.split(';base64,').reverse(); // reverse as sometimes there is no header
+    this.contentType = header?.replace('data:', '') ?? contentType;
     this.hash = computeHash(justData);
     this.log.debug(`Writing binary output file ${justData.length} bytes`);
     return fsp.writeFile(path.join(this.publicPath, this.id), justData, {
