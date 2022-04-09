@@ -1,280 +1,487 @@
 {
-  "sha256": "0f9c3d4f8b7c19a8a67bed2c4fdb0ae55182ab2e1ff0db4b22e6659b8920e8f",
-  "frontmatter": {
-    "title": "Jupyter Outputs",
-    "description": "Including content from Jupyter notebooks in an independent document."
-  },
+  "frontmatter": { "title": "Jupyter Outputs" },
   "mdast": {
     "type": "root",
     "children": [
       {
-        "type": "block",
+        "type": "heading",
+        "depth": 2,
+        "children": [
+          { "type": "text", "value": "Jupyter Outputs", "key": "OKhaoJFwPK" }
+        ],
+        "key": "nZjWXMg0eZ"
+      },
+      {
+        "type": "paragraph",
         "children": [
           {
-            "type": "heading",
-            "depth": 2,
-            "children": [
-              { "type": "text", "value": "PNG Image", "key": "seJIcT2EnEasd" }
-            ],
-            "key": "ISDISD7s78d"
-          },
-          {
-            "type": "paragraph",
-            "children": [
-              {
-                "type": "text",
-                "value": "This is the result of a plotting using the matplotlib library.",
-                "key": "aSD8sad98sa"
-              }
-            ],
-            "key": "sadsad878asd"
+            "type": "text",
+            "value": "A demonstration of some different type of Juptyer output",
+            "key": "UrrF3grWLj"
           }
         ],
-        "key": "SD8asds9as"
+        "key": "LNwZKgMAfU"
       },
       {
         "type": "block",
         "children": [
-          {
-            "type": "output",
-            "id": "NsRWuImK6avvBnPGc7_43",
-            "data": {
-              "kind": "image",
-              "items": {
-                "image": {
-                  "kind": "image",
-                  "content_type": "image/png",
-                  "path": "/_static/matplotlib.png"
-                }
-              }
-            },
-            "key": "TjmsA9zkVR"
-          }
-        ],
-        "key": "E4upP52xey"
-      },
-      {
-        "type": "block",
-        "children": [
-          {
-            "type": "heading",
-            "depth": 2,
-            "children": [{ "type": "text", "value": "Stream", "key": "SDASSAsada" }],
-            "key": "jhsaASadsad"
-          },
-          {
-            "type": "paragraph",
-            "children": [
-              {
-                "type": "text",
-                "value": "This output is the Juptyer stream type, produced in python using the print statement.",
-                "key": "0as89dsah"
-              }
-            ],
-            "key": "sadmsa8dasd"
-          }
-        ],
-        "key": "Sds8dssasd"
-      },
-      {
-        "type": "block",
-        "children": [
-          {
-            "type": "output",
-            "id": "XjQc6FMoynhpX9drq77jY",
-            "data": {
-              "kind": "stream",
-              "items": {
-                "stream": {
-                  "kind": "stream",
-                  "content_type": "text/plain",
-                  "content": "[[ 0.      0.      0.    ]\n [ 0.0003  0.0003  0.0003]\n [ 0.0006  0.0006  0.0006]\n [ 0.0008  0.0008  0.0008]\n [ 0.0011  0.0011  0.0011]]\n"
-                }
-              }
-            },
-            "key": "UNR4zGtDI1a"
-          }
-        ],
-        "key": "JKSDJKASDU"
-      },
-      {
-        "type": "block",
-        "children": [
-          {
-            "type": "heading",
-            "depth": 2,
-            "children": [{ "type": "text", "value": "Text", "key": "seJIcT2EnEd" }],
-            "key": "Tnw4xPquXK"
-          },
-          {
-            "type": "paragraph",
-            "children": [
-              {
-                "type": "text",
-                "value": "This output of type text is different from a stream, and typically a library adds that as a mimetype bundle.",
-                "key": "asdsajda"
-              }
-            ],
-            "key": "JEBJEBRES"
-          }
-        ],
-        "key": "IHVDHKJSDjsdj"
-      },
-      {
-        "type": "block",
-        "children": [
-          {
-            "type": "output",
-            "id": "XjQc6FMoynhpX9drq77jY",
-            "data": {
-              "kind": "text",
-              "items": {
-                "text": {
-                  "kind": "text",
-                  "content_type": "text/plain",
-                  "content": "This is text that may come from a library or ipython command."
-                }
-              }
-            },
-            "key": "Jsdhasdj9sda"
-          }
-        ],
-        "key": "Uasds8dsah"
-      },
-      {
-        "type": "block",
-        "children": [
-          {
-            "type": "heading",
-            "depth": 2,
-            "children": [{ "type": "text", "value": "HTML", "key": "seJIcT2EnEa1" }],
-            "key": "KSiasnsd8sad"
-          },
-          {
-            "type": "paragraph",
-            "children": [
-              {
-                "type": "text",
-                "value": "HTML outputs are rendered dangreously.",
-                "key": "SJhsdaksad"
-              }
-            ],
-            "key": "ASDasdsdsa"
-          }
-        ],
-        "key": "0asd9asDSasd"
-      },
-      {
-        "type": "block",
-        "children": [
-          {
-            "type": "output",
-            "id": "XjQc6FMoynhpX9drq77jY",
-            "data": {
-              "kind": "html",
-              "items": {
-                "html": {
-                  "kind": "html",
-                  "content_type": "text/html",
-                  "content": "<div style='border: 2px dashed red;padding:5px;text-align:center;cursor:pointer;' onclick='alert(\"Boom 💥\")' role=button>Click Me</div>"
-                }
-              }
-            },
-            "key": "UNR4zGtDI1b"
-          }
-        ],
-        "key": "SKOEv67jtr"
-      },
-      {
-        "type": "block",
-        "children": [
-          {
-            "type": "heading",
-            "depth": 2,
-            "children": [
-              { "type": "text", "value": "Large Content", "key": "seJIcT2EnEsad" }
-            ],
-            "key": "Jsdidnssadu"
-          },
-          {
-            "type": "paragraph",
-            "children": [
-              {
-                "type": "text",
-                "value": "When outputs with large content are encountered, the inline content is truncated and the full content is made available in files, which require loading after initial page load. The following outputs all have large content.",
-                "key": "SISd9asdAS"
-              }
-            ],
-            "key": "&Sdsyd7sa"
-          },
           {
             "type": "heading",
             "depth": 3,
-            "children": [
-              { "type": "text", "value": "HTML", "key": "seJIcT2EnEaasdas" }
-            ],
-            "key": "PSos8akSs"
+            "children": [{ "type": "text", "value": "Matlotlib", "key": "DRyHUSWwbS" }],
+            "key": "AOYBoH04nh"
           },
           {
-            "type": "block",
+            "type": "paragraph",
             "children": [
+              { "type": "text", "value": "Produces a ", "key": "UjtBDXI8un" },
+              { "type": "inlineCode", "value": "execute_result", "key": "Ohg4UBZ9gk" },
+              { "type": "text", "value": " with ", "key": "L2OYC8IJ9Z" },
+              { "type": "inlineCode", "value": "image/png", "key": "fHSleI8Be8" }
+            ],
+            "key": "My0DTXneYr"
+          }
+        ],
+        "key": "M41qnl4cLr"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "code",
+            "lang": "python",
+            "value": "import numpy as np\nimport matplotlib.pyplot as plt\n\nN = np.random.random((128,128))\nplt.figure(figsize=(5,5))\nplt.imshow(N, cmap=\"gray\");",
+            "key": "pGCsxeMtVa"
+          }
+        ],
+        "key": "dlikLhFmOw"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "output",
+            "id": "tX_ZEtQy9p9SR2LG9OsTe",
+            "data": [
               {
-                "type": "output",
-                "id": "EjwoO1UyLsadsadfSKDL",
+                "output_type": "display_data",
+                "metadata": { "needs_background": "light" },
                 "data": {
-                  "kind": "html",
-                  "items": {
-                    "html": {
-                      "kind": "html",
-                      "content_type": "text/html",
-                      "content": "\n<div id=\"altair-viz-dad3e952a47240e798f32c170eb40347\"></div>\n<s...",
-                      "path": "/_static/altair.json"
-                    },
-                    "text": {
-                      "kind": "text",
-                      "content_type": "text/plain",
-                      "content": "alt.Chart(...)"
-                    }
+                  "image/png": {
+                    "content": "iVBORw0KGgoAAAANSUhEUgAAATgAAAEyCAYAAABu5MwMAAAAOXRFWHRTb2Z0d...",
+                    "content_type": "image/png",
+                    "path": "/_static/55e94782279a72d915cab17c85bcd6856a0ff123caf912324fcc96dca0bae4c7.png"
+                  },
+                  "text/plain": {
+                    "content": "<Figure size 360x360 with 1 Axes>",
+                    "content_type": "text/plain"
                   }
-                },
-                "key": "QNxOasdfzaW"
+                }
               }
             ],
-            "key": "AeusasdrQZ"
-          },
+            "key": "m2s8xepN8J"
+          }
+        ],
+        "key": "OxQRDXWW41"
+      },
+      {
+        "type": "block",
+        "children": [
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Stream", "key": "sadssdsad" }],
-            "key": "XSdjsd8ss"
+            "children": [{ "type": "text", "value": "Pandas", "key": "mlPETG2oki" }],
+            "key": "qzOitnzDs7"
           },
           {
-            "type": "block",
+            "type": "paragraph",
             "children": [
-              {
-                "type": "output",
-                "id": "i6fi2JK1KIasdreOkEtE",
-                "data": {
-                  "kind": "stream",
-                  "items": {
-                    "stream": {
-                      "kind": "stream",
-                      "content_type": "text/plain",
-                      "content": "\nlong stream text...\nLorem ipsum dolor sit amet, consectetur adi...",
-                      "path": "/_static/longstream.json"
-                    }
-                  }
-                },
-                "key": "ILvocasboK"
-              }
+              { "type": "text", "value": "Produces ", "key": "GYKPjz2BrW" },
+              { "type": "inlineCode", "value": "text/html", "key": "NJaPBGqXqQ" }
             ],
-            "key": "apME1hth7J"
+            "key": "MB2Xi6pof5"
           }
         ],
-        "key": "eJxj9qXQXK"
+        "key": "RuMSoqVNv0"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "code",
+            "lang": "python",
+            "value": "from sklearn.datasets import load_iris\nimport pandas as pd\n\ndata = load_iris()\ndf = pd.DataFrame(data.data, columns=data.feature_names)\ndf.head()",
+            "key": "vlPRRDqxSP"
+          }
+        ],
+        "key": "nNLU1TGnQf"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "output",
+            "id": "GaLoYBJS2h8mrxD7sT1hc",
+            "data": [
+              {
+                "output_type": "execute_result",
+                "execution_count": 3,
+                "metadata": {},
+                "data": {
+                  "text/html": {
+                    "content": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>sepal length (cm)</th>\n      <th>sepal width (cm)</th>\n      <th>petal length (cm)</th>\n      <th>petal width (cm)</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>5.1</td>\n      <td>3.5</td>\n      <td>1.4</td>\n      <td>0.2</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>4.9</td>\n      <td>3.0</td>\n      <td>1.4</td>\n      <td>0.2</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>4.7</td>\n      <td>3.2</td>\n      <td>1.3</td>\n      <td>0.2</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>4.6</td>\n      <td>3.1</td>\n      <td>1.5</td>\n      <td>0.2</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>5.0</td>\n      <td>3.6</td>\n      <td>1.4</td>\n      <td>0.2</td>\n    </tr>\n  </tbody>\n</table>\n</div>",
+                    "content_type": "text/html"
+                  },
+                  "text/plain": {
+                    "content": "   sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)\n0                5.1               3.5                1.4               0.2\n1                4.9               3.0                1.4               0.2\n2                4.7               3.2                1.3               0.2\n3                4.6               3.1                1.5               0.2\n4                5.0               3.6                1.4               0.2",
+                    "content_type": "text/plain"
+                  }
+                }
+              }
+            ],
+            "key": "aIbIlVYhJz"
+          }
+        ],
+        "key": "Vua4JDhMBr"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Streams", "key": "F0kmitm2ae" }],
+            "key": "OhXQYVCqHn"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              { "type": "text", "value": "Streams a ", "key": "GWI9dbQkPG" },
+              { "type": "inlineCode", "value": "text/plain", "key": "gWpcLGx64j" },
+              {
+                "type": "text",
+                "value": " outputs from command like ",
+                "key": "GXZoBap0ne"
+              },
+              { "type": "inlineCode", "value": "print()", "key": "BrZB4kMRTT" },
+              { "type": "text", "value": " but have their own ", "key": "vYWe12kxn6" },
+              { "type": "inlineCode", "value": "output_type", "key": "vly4AnOKGQ" }
+            ],
+            "key": "fALQEQP2uP"
+          }
+        ],
+        "key": "iQKa0TUWF6"
+      },
+      {
+        "type": "block",
+        "children": [
+          { "type": "code", "lang": "python", "value": "print(N)", "key": "HYddY6wIsm" }
+        ],
+        "key": "PeJ2AKeXib"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "output",
+            "id": "Ce0YG6KU_74PCBfSy5-ga",
+            "data": [
+              {
+                "name": "stdout",
+                "output_type": "stream",
+                "text": "[[0.07024783 0.53350483 0.51928015 ... 0.42362154 0.15129532 0.14530349]\n [0.33449893 0.91502179 0.7148002  ... 0.45355901 0.8525907  0.38453424]\n [0.38811371 0.83441049 0.99754185 ... 0.03193384 0.6917651  0.03849392]\n ...\n [0.55042819 0.83472005 0.28494652 ... 0.19272386 0.86153777 0.76322184]\n [0.87919791 0.0637668  0.77354218 ... 0.53306363 0.62393196 0.31256692]\n [0.86343199 0.08298962 0.94909494 ... 0.4236252  0.39532385 0.60759654]]\n"
+              }
+            ],
+            "key": "fQT6B2ITN4"
+          }
+        ],
+        "key": "SHYNlsZm4e"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Errors", "key": "vN73YeVhcE" }],
+            "key": "DuSpNvly36"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Errors are exxentially ",
+                "key": "KT9SaFNIjw"
+              },
+              { "type": "inlineCode", "value": "text/plain", "key": "gmKmNtT7gk" },
+              {
+                "type": "text",
+                "value": " and also have their own ",
+                "key": "M2WSAl5D9g"
+              },
+              { "type": "inlineCode", "value": "output_type", "key": "ltnvzM899L" },
+              {
+                "type": "text",
+                "value": " but are a different shape from ",
+                "key": "GKMZKPTuUU"
+              },
+              { "type": "inlineCode", "value": "stream", "key": "pQEKSwKwhz" }
+            ],
+            "key": "IMKaVUEwyD"
+          }
+        ],
+        "key": "CwnedwFAqE"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "code",
+            "lang": "python",
+            "value": "this = not_python",
+            "key": "A9Q1zGTXUx"
+          }
+        ],
+        "key": "awEcW4rMQY"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "output",
+            "id": "Pn8yRxm-jq8j3d5okB9Lt",
+            "data": [
+              {
+                "ename": "NameError",
+                "evalue": "name 'not_python' is not defined",
+                "output_type": "error",
+                "traceback": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)Input \u001b[0;32mIn [5]\u001b[0m, in \u001b[0;36m<cell line: 1>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0m this \u001b[38;5;241m=\u001b[39m \u001b[43mnot_python\u001b[49m\n\u001b[0;31mNameError\u001b[0m: name 'not_python' is not defined"
+              }
+            ],
+            "key": "eVRdH5VUNt"
+          }
+        ],
+        "key": "Kn2G0Wwsuo"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "children": [{ "type": "text", "value": "Altair", "key": "A8iGJQwdMd" }],
+            "key": "g632rhQCfe"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Altair is a rich output including ",
+                "key": "zAvk5rfmE4"
+              },
+              { "type": "inlineCode", "value": "text/html", "key": "hA6vSCaDNV" },
+              {
+                "type": "text",
+                "value": " with bundles javascript and state",
+                "key": "kLmRKQe6RI"
+              }
+            ],
+            "key": "Y2Mqw8tll1"
+          }
+        ],
+        "key": "c4rANm2hKy"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "code",
+            "lang": "python",
+            "value": "import altair as alt\nfrom vega_datasets import data\n\ncars = data.cars()\n\ninterval = alt.selection_interval()\n\nscatter = alt.Chart(cars).mark_point().encode(\n    x='Horsepower:Q',\n    y='Miles_per_Gallon:Q',\n    color=alt.condition(interval, 'Origin:N', alt.value('lightgray'))\n).add_selection(\n    interval\n)\n\nhist = alt.Chart(cars).mark_bar().encode(\n    x='count()',\n    y='Origin',\n    color='Origin'\n).transform_filter(\n    interval\n)\n\nscatter & hist",
+            "key": "icPk4t2rfl"
+          }
+        ],
+        "key": "lA0ZUjFIVA"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "output",
+            "id": "pNqv0h6vidGLXM95ZHZt_",
+            "data": [
+              {
+                "output_type": "execute_result",
+                "execution_count": 9,
+                "metadata": {},
+                "data": {
+                  "text/html": {
+                    "content": "\n<div id=\"altair-viz-4f6d31ab28af4bf2989182bebfc2ec4a\"></div>...",
+                    "content_type": "text/html",
+                    "path": "/_static/b53cc596a3364c5d9cb6919b9edcae2eeceafdf1e8f0a4c2ad56943b9c52b9be.json"
+                  },
+                  "text/plain": {
+                    "content": "alt.VConcatChart(...)",
+                    "content_type": "text/plain"
+                  }
+                }
+              }
+            ],
+            "key": "Vc9122doVD"
+          }
+        ],
+        "key": "ENC2G7IfUB"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "children": [{ "type": "text", "value": "Plotly", "key": "VkY5m3mMo5" }],
+            "key": "XADI2v8Qgm"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Is another rich otuput, this time requiring some spcial treatment to render, so less portable than Altair",
+                "key": "lOztavhFR9"
+              }
+            ],
+            "key": "Hasy4Wonfr"
+          }
+        ],
+        "key": "em4bfvZbB8"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "code",
+            "lang": "python",
+            "value": "import plotly.express as px\n\ndf = px.data.tips()\nfig = px.parallel_categories(df, color=\"size\", color_continuous_scale=px.colors.sequential.Inferno)\nfig.show()",
+            "key": "EH2l8UMC1e"
+          }
+        ],
+        "key": "yFzvwQInpP"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "output",
+            "id": "PytmGAZ8ybUOEzTj7n2wN",
+            "data": [
+              {
+                "output_type": "display_data",
+                "metadata": {},
+                "data": {
+                  "text/html": {
+                    "content": "        <script type=\"text/javascript\">\n        window.Plotly...",
+                    "content_type": "text/html",
+                    "path": "/_static/9a52209ae8b34928186623d82ec75eef62a9eda468d63b882df3e9a73f3e2064.json"
+                  }
+                }
+              },
+              {
+                "output_type": "display_data",
+                "metadata": {},
+                "data": {
+                  "application/vnd.plotly.v1+json": {
+                    "content": "{\"config\":{\"plotlyServerURL\":\"https://plot.ly\"},\"data\":[{\"dimensions\":[{\"label\":\"sex\",\"values\":[\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Female\",\"Female\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Female\",\"Female\",\"Female\",\"Female\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\"]},{\"label\":\"smoker\",\"values\":[\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"Yes\",\"No\",\"No\",\"Yes\",\"Yes\",\"No\",\"No\",\"Yes\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"No\",\"Yes\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"No\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"No\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"No\",\"No\",\"Yes\",\"Yes\",\"No\",\"No\"]},{\"label\":\"day\",\"values\":[\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Thur\"]},{\"label\":\"time\",\"values\":[\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\"]},{\"label\":\"size\",\"values\":[2,3,3,2,4,4,2,4,2,2,2,4,2,4,2,2,3,3,3,3,2,2,2,4,2,4,2,2,2,2,2,4,2,4,2,3,3,3,3,3,3,2,2,2,4,2,2,4,3,2,2,2,4,2,4,2,4,2,2,4,2,2,2,4,3,3,2,1,2,2,2,3,2,2,2,2,2,4,2,2,2,2,1,2,2,4,2,2,2,2,2,2,2,2,2,4,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,1,3,2,3,2,4,2,2,4,2,2,2,2,2,6,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,6,5,6,2,2,3,2,2,2,2,2,3,4,4,5,6,4,2,4,4,2,3,2,2,3,2,4,2,2,3,2,2,2,2,2,2,2,2,2,4,2,3,4,2,5,3,5,3,3,2,2,2,2,2,2,2,4,2,2,3,2,2,2,4,3,3,4,2,2,3,4,4,2,3,2,5,2,2,4,2,2,1,3,2,2,2,4,2,2,4,3,2,2,2,2,2,2,3,3,2,2,2,2]}],\"domain\":{\"x\":[0,1],\"y\":[0,1]},\"line\":{\"color\":[2,3,3,2,4,4,2,4,2,2,2,4,2,4,2,2,3,3,3,3,2,2,2,4,2,4,2,2,2,2,2,4,2,4,2,3,3,3,3,3,3,2,2,2,4,2,2,4,3,2,2,2,4,2,4,2,4,2,2,4,2,2,2,4,3,3,2,1,2,2,2,3,2,2,2,2,2,4,2,2,2,2,1,2,2,4,2,2,2,2,2,2,2,2,2,4,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,1,3,2,3,2,4,2,2,4,2,2,2,2,2,6,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,6,5,6,2,2,3,2,2,2,2,2,3,4,4,5,6,4,2,4,4,2,3,2,2,3,2,4,2,2,3,2,2,2,2,2,2,2,2,2,4,2,3,4,2,5,3,5,3,3,2,2,2,2,2,2,2,4,2,2,3,2,2,2,4,3,3,4,2,2,3,4,4,2,3,2,5,2,2,4,2,2,1,3,2,2,2,4,2,2,4,3,2,2,2,2,2,2,3,3,2,2,2,2],\"coloraxis\":\"coloraxis\"},\"name\":\"\",\"type\":\"parcats\"}],\"layout\":{\"autosize\":true,\"coloraxis\":{\"colorbar\":{\"title\":{\"text\":\"size\"}},\"colorscale\":[[0,\"#000004\"],[0.1111111111111111,\"#1b0c41\"],[0.2222222222222222,\"#4a0c6b\"],[0.3333333333333333,\"#781c6d\"],[0.4444444444444444,\"#a52c60\"],[0.5555555555555556,\"#cf4446\"],[0.6666666666666666,\"#ed6925\"],[0.7777777777777778,\"#fb9b06\"],[0.8888888888888888,\"#f7d13d\"],[1,\"#fcffa4\"]]},\"legend\":{\"tracegroupgap\":0},\"margin\":{\"t\":60},\"template\":{\"data\":{\"bar\":[{\"error_x\":{\"color\":\"#2a3f5f\"},\"error_y\":{\"color\":\"#2a3f5f\"},\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"bar\"}],\"barpolar\":[{\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"barpolar\"}],\"carpet\":[{\"aaxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"baxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"type\":\"carpet\"}],\"choropleth\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"type\":\"choropleth\"}],\"contour\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1,\"#f0f921\"]],\"type\":\"contour\"}],\"contourcarpet\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"type\":\"contourcarpet\"}],\"heatmap\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1,\"#f0f921\"]],\"type\":\"heatmap\"}],\"heatmapgl\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1,\"#f0f921\"]],\"type\":\"heatmapgl\"}],\"histogram\":[{\"marker\":{\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"histogram\"}],\"histogram2d\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1,\"#f0f921\"]],\"type\":\"histogram2d\"}],\"histogram2dcontour\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1,\"#f0f921\"]],\"type\":\"histogram2dcontour\"}],\"mesh3d\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"type\":\"mesh3d\"}],\"parcoords\":[{\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"parcoords\"}],\"pie\":[{\"automargin\":true,\"type\":\"pie\"}],\"scatter\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scatter\"}],\"scatter3d\":[{\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scatter3d\"}],\"scattercarpet\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scattercarpet\"}],\"scattergeo\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scattergeo\"}],\"scattergl\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scattergl\"}],\"scattermapbox\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scattermapbox\"}],\"scatterpolar\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scatterpolar\"}],\"scatterpolargl\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scatterpolargl\"}],\"scatterternary\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scatterternary\"}],\"surface\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1,\"#f0f921\"]],\"type\":\"surface\"}],\"table\":[{\"cells\":{\"fill\":{\"color\":\"#EBF0F8\"},\"line\":{\"color\":\"white\"}},\"header\":{\"fill\":{\"color\":\"#C8D4E3\"},\"line\":{\"color\":\"white\"}},\"type\":\"table\"}]},\"layout\":{\"annotationdefaults\":{\"arrowcolor\":\"#2a3f5f\",\"arrowhead\":0,\"arrowwidth\":1},\"autotypenumbers\":\"strict\",\"coloraxis\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"colorscale\":{\"diverging\":[[0,\"#8e0152\"],[0.1,\"#c51b7d\"],[0.2,\"#de77ae\"],[0.3,\"#f1b6da\"],[0.4,\"#fde0ef\"],[0.5,\"#f7f7f7\"],[0.6,\"#e6f5d0\"],[0.7,\"#b8e186\"],[0.8,\"#7fbc41\"],[0.9,\"#4d9221\"],[1,\"#276419\"]],\"sequential\":[[0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1,\"#f0f921\"]],\"sequentialminus\":[[0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1,\"#f0f921\"]]},\"colorway\":[\"#636efa\",\"#EF553B\",\"#00cc96\",\"#ab63fa\",\"#FFA15A\",\"#19d3f3\",\"#FF6692\",\"#B6E880\",\"#FF97FF\",\"#FECB52\"],\"font\":{\"color\":\"#2a3f5f\"},\"geo\":{\"bgcolor\":\"white\",\"lakecolor\":\"white\",\"landcolor\":\"#E5ECF6\",\"showlakes\":true,\"showland\":true,\"subunitcolor\":\"white\"},\"hoverlabel\":{\"align\":\"left\"},\"hovermode\":\"closest\",\"mapbox\":{\"style\":\"light\"},\"paper_bgcolor\":\"white\",\"plot_bgcolor\":\"#E5ECF6\",\"polar\":{\"angularaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"bgcolor\":\"#E5ECF6\",\"radialaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"scene\":{\"xaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"gridwidth\":2,\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\"},\"yaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"gridwidth\":2,\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\"},\"zaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"gridwidth\":2,\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\"}},\"shapedefaults\":{\"line\":{\"color\":\"#2a3f5f\"}},\"ternary\":{\"aaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"baxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"bgcolor\":\"#E5ECF6\",\"caxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"title\":{\"x\":0.05},\"xaxis\":{\"automargin\":true,\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"zerolinewidth\":2},\"yaxis\":{\"automargin\":true,\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"zerolinewidth\":2}}}}}",
+                    "content_type": "application/vnd.plotly.v1+json"
+                  },
+                  "image/png": {
+                    "content": "iVBORw0KGgoAAAANSUhEUgAABlIAAAHCCAYAAACUiFQvAAAAAXNSR0IArs4c6...",
+                    "content_type": "image/png",
+                    "path": "/_static/19eef5052993094140a9ee982880cb964ea8199a52ec1cbd66eae463ebd71b96.png"
+                  },
+                  "text/html": {
+                    "content": "<div>                            <div id=\"288d74d2-f740-4897-93a9-47da7d67a788\" class=\"plotly-graph-div\" style=\"height:525px; width:100%;\"></div>            <script type=\"text/javascript\">                require([\"plotly\"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById(\"288d74d2-f740-4897-93a9-47da7d67a788\")) {                    Plotly.newPlot(                        \"288d74d2-f740-4897-93a9-47da7d67a788\",                        [{\"dimensions\":[{\"label\":\"sex\",\"values\":[\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Female\",\"Female\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Female\",\"Female\",\"Female\",\"Female\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Female\",\"Female\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Female\",\"Female\",\"Male\",\"Male\",\"Female\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Male\",\"Female\",\"Male\",\"Female\",\"Male\",\"Male\",\"Female\"]},{\"label\":\"smoker\",\"values\":[\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"Yes\",\"No\",\"No\",\"Yes\",\"Yes\",\"No\",\"No\",\"Yes\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"No\",\"Yes\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"No\",\"Yes\",\"No\",\"No\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"No\",\"Yes\",\"Yes\",\"Yes\",\"No\",\"No\",\"Yes\",\"No\",\"Yes\",\"Yes\",\"No\",\"No\",\"Yes\",\"Yes\",\"No\",\"No\"]},{\"label\":\"day\",\"values\":[\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Sun\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Thur\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Fri\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Sat\",\"Thur\"]},{\"label\":\"time\",\"values\":[\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Lunch\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\",\"Dinner\"]},{\"label\":\"size\",\"values\":[2,3,3,2,4,4,2,4,2,2,2,4,2,4,2,2,3,3,3,3,2,2,2,4,2,4,2,2,2,2,2,4,2,4,2,3,3,3,3,3,3,2,2,2,4,2,2,4,3,2,2,2,4,2,4,2,4,2,2,4,2,2,2,4,3,3,2,1,2,2,2,3,2,2,2,2,2,4,2,2,2,2,1,2,2,4,2,2,2,2,2,2,2,2,2,4,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,1,3,2,3,2,4,2,2,4,2,2,2,2,2,6,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,6,5,6,2,2,3,2,2,2,2,2,3,4,4,5,6,4,2,4,4,2,3,2,2,3,2,4,2,2,3,2,2,2,2,2,2,2,2,2,4,2,3,4,2,5,3,5,3,3,2,2,2,2,2,2,2,4,2,2,3,2,2,2,4,3,3,4,2,2,3,4,4,2,3,2,5,2,2,4,2,2,1,3,2,2,2,4,2,2,4,3,2,2,2,2,2,2,3,3,2,2,2,2]}],\"domain\":{\"x\":[0.0,1.0],\"y\":[0.0,1.0]},\"line\":{\"color\":[2,3,3,2,4,4,2,4,2,2,2,4,2,4,2,2,3,3,3,3,2,2,2,4,2,4,2,2,2,2,2,4,2,4,2,3,3,3,3,3,3,2,2,2,4,2,2,4,3,2,2,2,4,2,4,2,4,2,2,4,2,2,2,4,3,3,2,1,2,2,2,3,2,2,2,2,2,4,2,2,2,2,1,2,2,4,2,2,2,2,2,2,2,2,2,4,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,1,3,2,3,2,4,2,2,4,2,2,2,2,2,6,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,6,5,6,2,2,3,2,2,2,2,2,3,4,4,5,6,4,2,4,4,2,3,2,2,3,2,4,2,2,3,2,2,2,2,2,2,2,2,2,4,2,3,4,2,5,3,5,3,3,2,2,2,2,2,2,2,4,2,2,3,2,2,2,4,3,3,4,2,2,3,4,4,2,3,2,5,2,2,4,2,2,1,3,2,2,2,4,2,2,4,3,2,2,2,2,2,2,3,3,2,2,2,2],\"coloraxis\":\"coloraxis\"},\"name\":\"\",\"type\":\"parcats\"}],                        {\"template\":{\"data\":{\"bar\":[{\"error_x\":{\"color\":\"#2a3f5f\"},\"error_y\":{\"color\":\"#2a3f5f\"},\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"bar\"}],\"barpolar\":[{\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"barpolar\"}],\"carpet\":[{\"aaxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"baxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"type\":\"carpet\"}],\"choropleth\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"type\":\"choropleth\"}],\"contour\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"type\":\"contour\"}],\"contourcarpet\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"type\":\"contourcarpet\"}],\"heatmap\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"type\":\"heatmap\"}],\"heatmapgl\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"type\":\"heatmapgl\"}],\"histogram\":[{\"marker\":{\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"histogram\"}],\"histogram2d\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"type\":\"histogram2d\"}],\"histogram2dcontour\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"type\":\"histogram2dcontour\"}],\"mesh3d\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"type\":\"mesh3d\"}],\"parcoords\":[{\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"parcoords\"}],\"pie\":[{\"automargin\":true,\"type\":\"pie\"}],\"scatter\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scatter\"}],\"scatter3d\":[{\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scatter3d\"}],\"scattercarpet\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scattercarpet\"}],\"scattergeo\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scattergeo\"}],\"scattergl\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scattergl\"}],\"scattermapbox\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scattermapbox\"}],\"scatterpolar\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scatterpolar\"}],\"scatterpolargl\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scatterpolargl\"}],\"scatterternary\":[{\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"type\":\"scatterternary\"}],\"surface\":[{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"type\":\"surface\"}],\"table\":[{\"cells\":{\"fill\":{\"color\":\"#EBF0F8\"},\"line\":{\"color\":\"white\"}},\"header\":{\"fill\":{\"color\":\"#C8D4E3\"},\"line\":{\"color\":\"white\"}},\"type\":\"table\"}]},\"layout\":{\"annotationdefaults\":{\"arrowcolor\":\"#2a3f5f\",\"arrowhead\":0,\"arrowwidth\":1},\"autotypenumbers\":\"strict\",\"coloraxis\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"colorscale\":{\"diverging\":[[0,\"#8e0152\"],[0.1,\"#c51b7d\"],[0.2,\"#de77ae\"],[0.3,\"#f1b6da\"],[0.4,\"#fde0ef\"],[0.5,\"#f7f7f7\"],[0.6,\"#e6f5d0\"],[0.7,\"#b8e186\"],[0.8,\"#7fbc41\"],[0.9,\"#4d9221\"],[1,\"#276419\"]],\"sequential\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"sequentialminus\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]},\"colorway\":[\"#636efa\",\"#EF553B\",\"#00cc96\",\"#ab63fa\",\"#FFA15A\",\"#19d3f3\",\"#FF6692\",\"#B6E880\",\"#FF97FF\",\"#FECB52\"],\"font\":{\"color\":\"#2a3f5f\"},\"geo\":{\"bgcolor\":\"white\",\"lakecolor\":\"white\",\"landcolor\":\"#E5ECF6\",\"showlakes\":true,\"showland\":true,\"subunitcolor\":\"white\"},\"hoverlabel\":{\"align\":\"left\"},\"hovermode\":\"closest\",\"mapbox\":{\"style\":\"light\"},\"paper_bgcolor\":\"white\",\"plot_bgcolor\":\"#E5ECF6\",\"polar\":{\"angularaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"bgcolor\":\"#E5ECF6\",\"radialaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"scene\":{\"xaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"gridwidth\":2,\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\"},\"yaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"gridwidth\":2,\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\"},\"zaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"gridwidth\":2,\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\"}},\"shapedefaults\":{\"line\":{\"color\":\"#2a3f5f\"}},\"ternary\":{\"aaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"baxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"bgcolor\":\"#E5ECF6\",\"caxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"title\":{\"x\":0.05},\"xaxis\":{\"automargin\":true,\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"zerolinewidth\":2},\"yaxis\":{\"automargin\":true,\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"zerolinewidth\":2}}},\"coloraxis\":{\"colorbar\":{\"title\":{\"text\":\"size\"}},\"colorscale\":[[0.0,\"#000004\"],[0.1111111111111111,\"#1b0c41\"],[0.2222222222222222,\"#4a0c6b\"],[0.3333333333333333,\"#781c6d\"],[0.4444444444444444,\"#a52c60\"],[0.5555555555555556,\"#cf4446\"],[0.6666666666666666,\"#ed6925\"],[0.7777777777777778,\"#fb9b06\"],[0.8888888888888888,\"#f7d13d\"],[1.0,\"#fcffa4\"]]},\"legend\":{\"tracegroupgap\":0},\"margin\":{\"t\":60}},                        {\"responsive\": true}                    ).then(function(){\n                            \nvar gd = document.getElementById('288d74d2-f740-4897-93a9-47da7d67a788');\nvar x = new MutationObserver(function (mutations, observer) {{\n        var display = window.getComputedStyle(gd).display;\n        if (!display || display === 'none') {{\n            console.log([gd, 'removed!']);\n            Plotly.purge(gd);\n            observer.disconnect();\n        }}\n}});\n\n// Listen for the removal of the full notebook cells\nvar notebookContainer = gd.closest('#notebook-container');\nif (notebookContainer) {{\n    x.observe(notebookContainer, {childList: true});\n}}\n\n// Listen for the clearing of the current output cell\nvar outputEl = gd.closest('.output');\nif (outputEl) {{\n    x.observe(outputEl, {childList: true});\n}}\n\n                        })                };                });            </script>        </div>",
+                    "content_type": "text/html"
+                  }
+                }
+              }
+            ],
+            "key": "ganX6xEnYH"
+          }
+        ],
+        "key": "f4Oc81fi2M"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Plotly can also do maps, also there are two apis; the ",
+                "key": "O5lkrPjY5g"
+              },
+              { "type": "inlineCode", "value": "express", "key": "uLvmMdEA3V" },
+              { "type": "text", "value": " used above and this ", "key": "eC7mMZanK2" },
+              { "type": "inlineCode", "value": "GO", "key": "r4oXXiqE6W" },
+              { "type": "text", "value": " Graphics Object api", "key": "Hbz4auzwGZ" }
+            ],
+            "key": "OX9KNNAAie"
+          }
+        ],
+        "key": "eg9zw4TmI5"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "code",
+            "lang": "python",
+            "value": "from urllib.request import urlopen\nimport json\nwith urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:\n    counties = json.load(response)\n\nimport pandas as pd\ndf = pd.read_csv(\"https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv\",\n                   dtype={\"fips\": str})\n\nimport plotly.graph_objects as go\n\nfig = go.Figure(go.Choroplethmapbox(geojson=counties, locations=df.fips, z=df.unemp,\n                                    colorscale=\"Viridis\", zmin=0, zmax=12,\n                                    marker_opacity=0.5, marker_line_width=0))\nfig.update_layout(mapbox_style=\"carto-positron\",\n                  mapbox_zoom=3, mapbox_center = {\"lat\": 37.0902, \"lon\": -95.7129})\nfig.update_layout(margin={\"r\":0,\"t\":0,\"l\":0,\"b\":0})\nfig.show()",
+            "key": "ay7Tk0lASr"
+          }
+        ],
+        "key": "JVAc4wot7P"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "output",
+            "id": "t_aB0sBlwuPHNxVO-Uh3k",
+            "data": [
+              {
+                "output_type": "display_data",
+                "metadata": {},
+                "data": {
+                  "application/vnd.plotly.v1+json": {
+                    "content": "{\"config\":{\"plotlyServerURL\":\"https://plot.ly\"},\"data\":[{\"col...",
+                    "content_type": "application/vnd.plotly.v1+json",
+                    "path": "/_static/39a0693cd94b52ad5e2aec27fd55edfa1cdaebe028bba63beeb70b751e35a1d1.json"
+                  },
+                  "image/png": {
+                    "content": "iVBORw0KGgoAAAANSUhEUgAABlIAAAHCCAYAAACUiFQvAAAAAXNSR0IArs4c6...",
+                    "content_type": "image/png",
+                    "path": "/_static/1ea7848bf7cdf7ec9fcc4ebae16d05cd22b4f4352898a25db316cdbe68b20b80.png"
+                  },
+                  "text/html": {
+                    "content": "<div>                            <div id=\"2d744391-1353-4a1d-...",
+                    "content_type": "text/html",
+                    "path": "/_static/22dedad9f9ed7b97a94410a2220c6785d194968d58ace5be370b5d5c88f40b07.json"
+                  }
+                }
+              }
+            ],
+            "key": "I9U8XdAHZ2"
+          }
+        ],
+        "key": "oXVKSPvkhE"
       }
     ],
-    "key": "89asd8shsd"
+    "key": "sYnuSHrK5s"
   },
-  "references": { "cite": { "order": [], "data": {} }, "footnotes": {} }
+  "references": { "cite": { "order": [], "data": {} }, "footnotes": {} },
+  "sha256": "ff94183de7c30d88d8df009f11302547fb7ce8b5a8975ff087e4b8cc96d6df66"
 }

@@ -6,7 +6,7 @@ export const MaybeLongContent = ({
   path,
   render,
 }: {
-  content: string;
+  content?: string;
   path?: string;
   render: (content: string) => JSX.Element;
 }) => {
