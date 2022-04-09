@@ -54,24 +54,19 @@ export const NativeJupyterOutputs = ({
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
-    console.log({ if: iframeRef.current, rendererReady, data });
     if (iframeRef.current == null || !rendererReady || !data) return;
-    console.log('Sending...');
-    console.log({ data, send: toIOutputs(data) });
     host.commsDispatch(
       iframeRef.current,
       actions.connectHostSendContent(uid, toIOutputs(data)),
     );
   }, [id, iframeRef.current, rendererReady]);
 
-  console.log('height', height);
   useEffect(() => {
     if (height == null) return;
     setLoading(false);
   }, [height]);
 
   if (error) {
-    console.log('ERROR', error);
     return <div className="text-red-500">Error rendering output: {error.message}</div>;
   }
 
