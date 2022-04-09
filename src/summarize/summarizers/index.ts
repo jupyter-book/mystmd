@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { CellOutput, CellOutputMimeTypes, OutputSummaryKind } from '@curvenote/blocks';
+import { CellOutput, KnownCellOutputMimeTypes, OutputSummaryKind } from '@curvenote/blocks';
 import ErrorSummarizer from './error';
 import ImageSummarizer from './image';
 import SvgSummarizer from './svg';
@@ -24,7 +24,7 @@ Summarizer.new = (
         item,
         basepath,
         OutputSummaryKind.bokeh,
-        CellOutputMimeTypes.AppBokehExec,
+        KnownCellOutputMimeTypes.AppBokehExec,
         [],
         options,
       );
@@ -35,7 +35,7 @@ Summarizer.new = (
         item,
         basepath,
         OutputSummaryKind.ipywidgets,
-        CellOutputMimeTypes.AppWidgetView,
+        KnownCellOutputMimeTypes.AppWidgetView,
         [],
         options,
       );
@@ -46,8 +46,8 @@ Summarizer.new = (
         item,
         basepath,
         OutputSummaryKind.plotly,
-        CellOutputMimeTypes.AppPlotly,
-        [CellOutputMimeTypes.TextHtml, CellOutputMimeTypes.TextPlain],
+        KnownCellOutputMimeTypes.AppPlotly,
+        [KnownCellOutputMimeTypes.TextHtml, KnownCellOutputMimeTypes.TextPlain],
         options,
       );
 
@@ -57,8 +57,8 @@ Summarizer.new = (
         item,
         basepath,
         OutputSummaryKind.javascript,
-        CellOutputMimeTypes.AppJavascript,
-        [CellOutputMimeTypes.TextPlain],
+        KnownCellOutputMimeTypes.AppJavascript,
+        [KnownCellOutputMimeTypes.TextPlain],
         options,
       );
 
@@ -68,8 +68,8 @@ Summarizer.new = (
         item,
         basepath,
         OutputSummaryKind.json,
-        CellOutputMimeTypes.AppJson,
-        [CellOutputMimeTypes.TextPlain],
+        KnownCellOutputMimeTypes.AppJson,
+        [KnownCellOutputMimeTypes.TextPlain],
         options,
       );
 
@@ -79,7 +79,7 @@ Summarizer.new = (
         item,
         basepath,
         OutputSummaryKind.latex,
-        CellOutputMimeTypes.TextLatex,
+        KnownCellOutputMimeTypes.TextLatex,
         [],
         options,
       );
@@ -96,7 +96,7 @@ Summarizer.new = (
         item,
         basepath,
         OutputSummaryKind.html,
-        CellOutputMimeTypes.TextHtml,
+        KnownCellOutputMimeTypes.TextHtml,
         [],
         options,
       );
@@ -107,7 +107,7 @@ Summarizer.new = (
         item,
         basepath,
         OutputSummaryKind.text,
-        CellOutputMimeTypes.TextPlain,
+        KnownCellOutputMimeTypes.TextPlain,
         [],
         options,
       );

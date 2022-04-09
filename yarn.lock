@@ -316,10 +316,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@curvenote/blocks@*":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.3.3.tgz#400f6224dc64ee7c4ecd8c651c727a04be8f7c20"
-  integrity sha512-vESau/dJGzEY34RxGNYxr0W2ako3swc0AM6pXbqiXnGzMq91398xj4pZBMKWWla6gw1SWkfyDTx5gISawOi2qA==
+"@curvenote/blocks@^1.3.4":
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@curvenote/blocks/-/blocks-1.3.4.tgz#beb38962b0b0df1fdae1e7f4e4cc80973fba06b7"
+  integrity sha512-dr3HUSAi9tbTQTaZfaMTv555xrtVs0fCXwk3Z/6h7hvvfWGpT1Y0ayR2mCzZEtmXYHRMqYOfjRFyNKS/KMmmfw==
 
 "@eslint/eslintrc@^0.4.1":
   version "0.4.3"
@@ -540,6 +540,18 @@
   dependencies:
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
+
+"@jupyterlab/nbformat@^3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@jupyterlab/nbformat/-/nbformat-3.3.2.tgz#92acc8a3d1acfeee3a8f0073bfbf8f2f099e33c0"
+  integrity sha512-vKUmuHqFrdlNiAzpweYKrft/DnrUpXco6nGd6LTy2nNsmFBo+2uV8E/g5YoBBHLkObEy7XDwN4AOKUGV5E9iNw==
+  dependencies:
+    "@lumino/coreutils" "^1.5.3"
+
+"@lumino/coreutils@^1.5.3":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@lumino/coreutils/-/coreutils-1.12.0.tgz#fbdef760f736eaf2bd396a5c6fc3a68a4b449b15"
+  integrity sha512-DSglh4ylmLi820CNx9soJmDJCpUgymckdWeGWuN0Ash5g60oQvrQDfosVxEhzmNvtvXv45WZEqSBzDP6E5SEmQ==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"

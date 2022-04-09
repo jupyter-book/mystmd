@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import {
   CellOutput,
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   OutputSummaryKind,
   OutputSummaryEntry,
 } from '@curvenote/blocks';
@@ -50,7 +50,7 @@ class Summarizer {
     return OutputSummaryKind.unknown;
   }
 
-  $makeFilepath(contentType: CellOutputMimeTypes): string {
+  $makeFilepath(contentType: KnownCellOutputMimeTypes): string {
     return `${this.basepath}.${contentType.replace('/', '_')}`;
   }
 

@@ -1,7 +1,7 @@
 {
   "name": "@curvenote/nbtx",
   "license": "MIT",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Curvenote Notebook Tranlators",
   "author": "Steve Purves <steve@curvenote.com>",
   "main": "dist/index.js",
@@ -38,6 +38,7 @@
     "url": "https://github.com/curvenote/curvenote/issues"
   },
   "dependencies": {
+    "@jupyterlab/nbformat": "^3.3.2",
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "uuid": "^8.3.2"
   },
@@ -45,7 +46,7 @@
     "@curvenote/blocks": "^1.3.3"
   },
   "devDependencies": {
-    "@curvenote/blocks": "*",
+    "@curvenote/blocks": "^1.3.4",
     "@types/jest": "^26.0.23",
     "@types/uuid": "^8.3.4",
     "eslint": "7.27.0",

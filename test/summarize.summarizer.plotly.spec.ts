@@ -1,6 +1,6 @@
 import {
   CellOutput,
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   OutputSummaryKind,
@@ -14,12 +14,12 @@ describe('database.versions.outuput.summarize.plotly', () => {
   beforeEach(() => {
     const output = makeCellOutput(
       CellOutputType.DisplayData,
-      CellOutputMimeTypes.AppPlotly as CellOutputMimeTypes,
+      KnownCellOutputMimeTypes.AppPlotly as KnownCellOutputMimeTypes,
       { nested: { json: 'object' } },
     ) as DisplayData;
-    output.data[CellOutputMimeTypes.ImagePng] = 'kjsdkjsahdsajkdh324567';
-    output.data[CellOutputMimeTypes.TextHtml] = '<script>all of plotly</script>';
-    output.data[CellOutputMimeTypes.TextPlain] = 'text output that we do not need';
+    output.data[KnownCellOutputMimeTypes.ImagePng] = 'kjsdkjsahdsajkdh324567';
+    output.data[KnownCellOutputMimeTypes.TextHtml] = '<script>all of plotly</script>';
+    output.data[KnownCellOutputMimeTypes.TextPlain] = 'text output that we do not need';
     summarizer = Summarizer.new(
       (path: string) => new StubFileObject(path),
       OutputSummaryKind.plotly,
@@ -31,13 +31,15 @@ describe('database.versions.outuput.summarize.plotly', () => {
     expect(summarizer?.kind()).toEqual(OutputSummaryKind.plotly);
   });
   test.each([
-    [false, CellOutputType.DisplayData, CellOutputMimeTypes.ImagePng],
-    [false, CellOutputType.Stream, CellOutputMimeTypes.TextPlain],
-    [false, CellOutputType.DisplayData, CellOutputMimeTypes.AppJson],
-    [true, CellOutputType.DisplayData, CellOutputMimeTypes.AppPlotly],
+    [false, CellOutputType.DisplayData, KnownCellOutputMimeTypes.ImagePng],
+    [false, CellOutputType.Stream, KnownCellOutputMimeTypes.TextPlain],
+    [false, CellOutputType.DisplayData, KnownCellOutputMimeTypes.AppJson],
+    [true, CellOutputType.DisplayData, KnownCellOutputMimeTypes.AppPlotly],
   ])('test %s', (result, output_type, mimetype) => {
     expect(
-      summarizer?.test(makeCellOutput(output_type, mimetype as CellOutputMimeTypes) as DisplayData),
+      summarizer?.test(
+        makeCellOutput(output_type, mimetype as KnownCellOutputMimeTypes) as DisplayData,
+      ),
     ).toBe(result);
   });
   test('next - strips html', async () => {
@@ -45,7 +47,7 @@ describe('database.versions.outuput.summarize.plotly', () => {
     expect(Object.keys(next.data)).toHaveLength(1);
     expect(next.data).toEqual(
       expect.objectContaining({
-        [CellOutputMimeTypes.ImagePng]: 'kjsdkjsahdsajkdh324567',
+        [KnownCellOutputMimeTypes.ImagePng]: 'kjsdkjsahdsajkdh324567',
       }),
     );
   });
@@ -54,7 +56,7 @@ describe('database.versions.outuput.summarize.plotly', () => {
     expect(dboEntry).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.plotly,
-        content_type: CellOutputMimeTypes.AppPlotly,
+        content_type: KnownCellOutputMimeTypes.AppPlotly,
         content: '{"nested":{"json":"object"}}',
       }),
     );

@@ -15,7 +15,7 @@
     "paths": {
       "*": ["node_modules/*", "types/*"]
     },
-    "typeRoots": ["./node_modules/@types", "../../node_modules/@types"],
+    "typeRoots": ["./node_modules/@types"],
     "resolveJsonModule": true,
     "declaration": true,
     "skipLibCheck": true

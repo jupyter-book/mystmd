@@ -1,5 +1,5 @@
 import {
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   OutputSummaryKind,
@@ -15,7 +15,7 @@ describe('database.versions.output.summarize.error', () => {
   beforeEach(() => {
     const output = makeCellOutput(
       CellOutputType.Traceback,
-      CellOutputMimeTypes.TextPlain as CellOutputMimeTypes,
+      KnownCellOutputMimeTypes.TextPlain as KnownCellOutputMimeTypes,
     ) as Traceback;
     summarizer = Summarizer.new(
       (path: string) => new StubFileObject(path),
@@ -36,7 +36,9 @@ describe('database.versions.output.summarize.error', () => {
     [true, CellOutputType.Traceback, 'text/plain'],
   ])('test %s', (result, output_type, mimetype) => {
     expect(
-      summarizer?.test(makeCellOutput(output_type, mimetype as CellOutputMimeTypes) as DisplayData),
+      summarizer?.test(
+        makeCellOutput(output_type, mimetype as KnownCellOutputMimeTypes) as DisplayData,
+      ),
     ).toBe(result);
   });
   test('next - returns null', async () => {

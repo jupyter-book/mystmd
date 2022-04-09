@@ -1,5 +1,5 @@
 import {
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   ExecuteResult,
@@ -14,10 +14,10 @@ describe('database.versions.output.summarize.widgets', () => {
   beforeEach(() => {
     const output = makeCellOutput(
       CellOutputType.ExecuteResult,
-      CellOutputMimeTypes.AppWidgetView as CellOutputMimeTypes,
+      KnownCellOutputMimeTypes.AppWidgetView as KnownCellOutputMimeTypes,
       { nested: { json: 'object' } },
     ) as ExecuteResult;
-    output.data[CellOutputMimeTypes.TextHtml] = '<div id="1234567890asdfghjkl" />';
+    output.data[KnownCellOutputMimeTypes.TextHtml] = '<div id="1234567890asdfghjkl" />';
     summarizer = Summarizer.new(
       (path: string) => new StubFileObject(path),
       OutputSummaryKind.ipywidgets,
@@ -31,10 +31,12 @@ describe('database.versions.output.summarize.widgets', () => {
   test.each([
     [false, CellOutputType.DisplayData, 'image/png'],
     [false, CellOutputType.Stream, 'text/plain'],
-    [true, CellOutputType.DisplayData, CellOutputMimeTypes.AppWidgetView],
+    [true, CellOutputType.DisplayData, KnownCellOutputMimeTypes.AppWidgetView],
   ])('test %s', (result, output_type, mimetype) => {
     expect(
-      summarizer?.test(makeCellOutput(output_type, mimetype as CellOutputMimeTypes) as DisplayData),
+      summarizer?.test(
+        makeCellOutput(output_type, mimetype as KnownCellOutputMimeTypes) as DisplayData,
+      ),
     ).toBe(result);
   });
   test('next - strips nothing', async () => {
@@ -46,7 +48,7 @@ describe('database.versions.output.summarize.widgets', () => {
     expect(dboEntry).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.ipywidgets,
-        content_type: CellOutputMimeTypes.AppWidgetView,
+        content_type: KnownCellOutputMimeTypes.AppWidgetView,
         content: '{"nested":{"json":"object"}}',
       }),
     );

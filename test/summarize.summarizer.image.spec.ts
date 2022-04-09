@@ -1,5 +1,5 @@
 import {
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   OutputSummaryKind,
@@ -13,10 +13,10 @@ describe('database.versions.output.summarize.image', () => {
   beforeEach(() => {
     const item = makeCellOutput(
       CellOutputType.DisplayData,
-      CellOutputMimeTypes.ImagePng,
+      KnownCellOutputMimeTypes.ImagePng,
       'data:uri',
     ) as DisplayData;
-    item.data[CellOutputMimeTypes.TextPlain] = '<matplotlib 0x1234567>';
+    item.data[KnownCellOutputMimeTypes.TextPlain] = '<matplotlib 0x1234567>';
     summarizer = Summarizer.new(
       (path: string) => new StubFileObject(path),
       OutputSummaryKind.image,

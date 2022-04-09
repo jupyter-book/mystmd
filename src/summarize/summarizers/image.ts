@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import {
   CellOutput,
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   ensureString,
@@ -15,16 +15,16 @@ import Summarizer from './base';
 import { dictHasOneOf, stripTypesFromOutputData } from './utils';
 
 const RankedImageTypes = [
-  CellOutputMimeTypes.ImagePng,
-  CellOutputMimeTypes.ImageJpeg,
-  CellOutputMimeTypes.ImageGif,
-  CellOutputMimeTypes.ImageBmp,
+  KnownCellOutputMimeTypes.ImagePng,
+  KnownCellOutputMimeTypes.ImageJpeg,
+  KnownCellOutputMimeTypes.ImageGif,
+  KnownCellOutputMimeTypes.ImageBmp,
 ];
 
 class ImageSummarizer extends Summarizer {
   data: OutputData;
 
-  selectedContentType: CellOutputMimeTypes | null;
+  selectedContentType: KnownCellOutputMimeTypes | null;
 
   constructor(fileFactory: IFileObjectFactoryFn, item: CellOutput, basepath: string) {
     super(fileFactory, item, basepath);
@@ -44,8 +44,8 @@ class ImageSummarizer extends Summarizer {
     return OutputSummaryKind.image;
   }
 
-  $pickBestImageType(): CellOutputMimeTypes | null {
-    return RankedImageTypes.reduce<CellOutputMimeTypes | null>((selected, mtype) => {
+  $pickBestImageType(): KnownCellOutputMimeTypes | null {
+    return RankedImageTypes.reduce<KnownCellOutputMimeTypes | null>((selected, mtype) => {
       if (selected !== null) return selected;
       return mtype in this.data ? mtype : null;
     }, null);
@@ -64,7 +64,7 @@ class ImageSummarizer extends Summarizer {
     if (this.selectedContentType == null) throw this.$selectedTypeError();
     return stripTypesFromOutputData(this.item as DisplayData | ExecuteResult, [
       this.selectedContentType,
-      CellOutputMimeTypes.TextPlain,
+      KnownCellOutputMimeTypes.TextPlain,
     ]);
   }
 

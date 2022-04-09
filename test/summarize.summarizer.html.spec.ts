@@ -1,5 +1,5 @@
 import {
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   OutputSummaryKind,
@@ -13,7 +13,7 @@ describe('database.versions.output.summarize.html', () => {
   beforeEach(() => {
     const output = makeCellOutput(
       CellOutputType.DisplayData,
-      CellOutputMimeTypes.TextHtml as CellOutputMimeTypes,
+      KnownCellOutputMimeTypes.TextHtml as KnownCellOutputMimeTypes,
     ) as DisplayData;
     summarizer = Summarizer.new(
       (path: string) => new StubFileObject(path),
@@ -31,7 +31,9 @@ describe('database.versions.output.summarize.html', () => {
     [true, CellOutputType.DisplayData, 'text/html'],
   ])('test %s', (result, output_type, mimetype) => {
     expect(
-      summarizer?.test(makeCellOutput(output_type, mimetype as CellOutputMimeTypes) as DisplayData),
+      summarizer?.test(
+        makeCellOutput(output_type, mimetype as KnownCellOutputMimeTypes) as DisplayData,
+      ),
     ).toBe(result);
   });
   test('next - strips html', async () => {

@@ -1,5 +1,5 @@
 import {
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   OutputSummaryKind,
@@ -14,7 +14,7 @@ describe('database.versions.output.summarize.svg', () => {
   beforeEach(() => {
     const output = makeCellOutput(
       CellOutputType.DisplayData,
-      CellOutputMimeTypes.ImageSvg as CellOutputMimeTypes,
+      KnownCellOutputMimeTypes.ImageSvg as KnownCellOutputMimeTypes,
     ) as DisplayData;
     summarizer = Summarizer.new(
       (path: string) => new StubFileObject(path),

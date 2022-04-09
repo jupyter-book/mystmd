@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import {
   CellOutput,
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   ensureString,
@@ -17,17 +17,17 @@ import { stripTypesFromOutputData } from './utils';
 class StringDisplayDataSummarizer extends Summarizer {
   myKind: OutputSummaryKind;
 
-  content_type: CellOutputMimeTypes;
+  content_type: KnownCellOutputMimeTypes;
 
-  additionalTypesToStrip: CellOutputMimeTypes[];
+  additionalTypesToStrip: KnownCellOutputMimeTypes[];
 
   constructor(
     fileFactory: IFileObjectFactoryFn,
     item: CellOutput,
     basepath: string,
     kind: OutputSummaryKind,
-    content_type: CellOutputMimeTypes,
-    additionalTypesToStrip: CellOutputMimeTypes[],
+    content_type: KnownCellOutputMimeTypes,
+    additionalTypesToStrip: KnownCellOutputMimeTypes[],
     options?: SummarizerOptions,
   ) {
     super(fileFactory, item, basepath, options);

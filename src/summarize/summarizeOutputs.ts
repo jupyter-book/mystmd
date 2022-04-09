@@ -1,5 +1,4 @@
-import { CellOutput, CellOutputType, OutputSummaryKind } from '@curvenote/blocks';
-import { OutputSummaries } from '../types';
+import { CellOutput, CellOutputType, OutputSummaryKind, OutputSummary } from '@curvenote/blocks';
 import { IFileObjectFactoryFn } from '../files';
 import { processMultiMimeOutputs as summarizeMultiMimeOutputs } from './multimime';
 import { Summarizer } from './summarizers';
@@ -19,9 +18,9 @@ export const summarizeOutput = async (
   item: CellOutput,
   basepath: string,
   options: SummarizerOptions,
-): Promise<OutputSummaries> => {
+): Promise<OutputSummary> => {
   if (item.output_type === CellOutputType.Stream || item.output_type === CellOutputType.Traceback) {
-    const summaries: OutputSummaries = {
+    const summaries: OutputSummary = {
       kind: OutputSummaryKind.unknown,
       items: {},
     };
@@ -60,7 +59,7 @@ export const summarizeOutputs = (
   // process remaining items
   return Promise.all(
     preprocessed.map(
-      async (item, idx): Promise<OutputSummaries> =>
+      async (item, idx): Promise<OutputSummary> =>
         summarizeOutput(fileFactory, item, `${basepath}.${idx}`, options),
     ),
   );

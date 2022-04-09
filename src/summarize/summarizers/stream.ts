@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import {
   CellOutput,
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   ensureString,
   OutputSummaryEntry,
@@ -28,7 +28,7 @@ class StreamSummarizer extends Summarizer {
     const { text } = this.item as Stream;
     return {
       kind: this.kind(),
-      content_type: CellOutputMimeTypes.TextPlain,
+      content_type: KnownCellOutputMimeTypes.TextPlain,
       content: ensureString(text),
     };
   }

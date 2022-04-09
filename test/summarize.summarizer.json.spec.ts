@@ -1,5 +1,5 @@
 import {
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   ExecuteResult,
@@ -14,10 +14,10 @@ describe('database.versions.output.summarize.json', () => {
   beforeEach(() => {
     const output = makeCellOutput(
       CellOutputType.ExecuteResult,
-      CellOutputMimeTypes.AppJson as CellOutputMimeTypes,
+      KnownCellOutputMimeTypes.AppJson as KnownCellOutputMimeTypes,
       { nested: { json: 'object' } },
     ) as ExecuteResult;
-    output.data[CellOutputMimeTypes.TextPlain] = '<unwanted text 0x123456789>';
+    output.data[KnownCellOutputMimeTypes.TextPlain] = '<unwanted text 0x123456789>';
     summarizer = Summarizer.new(
       (path: string) => new StubFileObject(path),
       OutputSummaryKind.json,
@@ -34,7 +34,9 @@ describe('database.versions.output.summarize.json', () => {
     [true, CellOutputType.DisplayData, 'application/json'],
   ])('test %s', (result, output_type, mimetype) => {
     expect(
-      summarizer?.test(makeCellOutput(output_type, mimetype as CellOutputMimeTypes) as DisplayData),
+      summarizer?.test(
+        makeCellOutput(output_type, mimetype as KnownCellOutputMimeTypes) as DisplayData,
+      ),
     ).toBe(result);
   });
   test('next - strips html', async () => {
@@ -46,7 +48,7 @@ describe('database.versions.output.summarize.json', () => {
     expect(dboEntry).toEqual(
       expect.objectContaining({
         kind: OutputSummaryKind.json,
-        content_type: CellOutputMimeTypes.AppJson,
+        content_type: KnownCellOutputMimeTypes.AppJson,
         content: '{"nested":{"json":"object"}}',
       }),
     );

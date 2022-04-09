@@ -1,6 +1,6 @@
 import {
   CellOutput,
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   DisplayData,
   ExecuteResult,
   OutputData,
@@ -12,7 +12,7 @@ export function dictHasOneOf<T, I extends string>(dict: T, list: I[]): boolean {
 
 export function stripTypesFromOutputData(
   item: DisplayData | ExecuteResult,
-  keys: CellOutputMimeTypes[],
+  keys: KnownCellOutputMimeTypes[],
 ): CellOutput {
   const stripped = keys.reduce<OutputData>((reduced, key) => {
     const { [key]: x, ...rest } = reduced;

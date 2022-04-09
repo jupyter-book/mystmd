@@ -1,5 +1,5 @@
 import {
-  CellOutputMimeTypes,
+  KnownCellOutputMimeTypes,
   CellOutputType,
   DisplayData,
   OutputSummaryKind,
@@ -13,7 +13,7 @@ describe('database.versions.output.summarize.text', () => {
   beforeEach(() => {
     const output = makeCellOutput(
       CellOutputType.DisplayData,
-      CellOutputMimeTypes.TextPlain as CellOutputMimeTypes,
+      KnownCellOutputMimeTypes.TextPlain as KnownCellOutputMimeTypes,
     ) as DisplayData;
     // summarizer = new TextSummarizer(new Context(), output, 'storage/path');
     summarizer = Summarizer.new(
@@ -32,7 +32,9 @@ describe('database.versions.output.summarize.text', () => {
     [true, CellOutputType.DisplayData, 'text/plain'],
   ])('test %s', (result, output_type, mimetype) => {
     expect(
-      summarizer?.test(makeCellOutput(output_type, mimetype as CellOutputMimeTypes) as DisplayData),
+      summarizer?.test(
+        makeCellOutput(output_type, mimetype as KnownCellOutputMimeTypes) as DisplayData,
+      ),
     ).toBe(result);
   });
   test('next - strips text/plain', async () => {
