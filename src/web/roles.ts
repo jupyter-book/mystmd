@@ -143,6 +143,26 @@ const Cite: IRole = {
   },
 };
 
+const Underline: IRole = {
+  myst: class Underline extends Role {
+    run(data: IRoleData) {
+      const open = new this.state.Token('underline_open', 'u', 1);
+      const text = new this.state.Token('text', '', 0);
+      text.content = data.content;
+      const close = new this.state.Token('underline_close', 'u', -1);
+      return [open, text, close];
+    }
+  },
+  mdast: {
+    type: 'underline',
+    noCloseToken: false,
+    isLeaf: false,
+  },
+  hast() {
+    return null;
+  },
+};
+
 export const reactiveRoles: Record<string, IRole> = {
   'r:dynamic': RDynamic,
   'r:display': RDisplay,
@@ -151,4 +171,6 @@ export const reactiveRoles: Record<string, IRole> = {
   'cite:p': CiteP,
   cite_group: CiteP,
   'cite:t': CiteT,
+  u: Underline,
+  underline: Underline,
 };
