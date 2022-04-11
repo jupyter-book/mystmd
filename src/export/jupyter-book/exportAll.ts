@@ -35,11 +35,27 @@ export async function exportAll(
       switch (block.data.kind) {
         case KINDS.Article: {
           const filename = `${block.data.name ?? block.id.block}.md`;
-          return articleToMarkdown(session, version.id, { ...opts, filename, writeBibtex: false });
+          try {
+            const article = await articleToMarkdown(session, version.id, {
+              ...opts,
+              filename,
+              writeBibtex: false,
+            });
+            return article;
+          } catch (error) {
+            session.log.error(`Problem downloading article: ${block.data.name}`);
+            return null;
+          }
         }
         case KINDS.Notebook: {
           const filename = `${block.data.name ?? block.id.block}.ipynb`;
-          return notebookToIpynb(session, version.id, { ...opts, filename });
+          try {
+            const article = await notebookToIpynb(session, version.id, { ...opts, filename });
+            return article;
+          } catch (error) {
+            session.log.error(`Problem downloading notebook: ${block.data.name}`);
+            return null;
+          }
         }
         default:
           session.log.warn(`Skipping block: "${block.data.name}" of kind "${block.data.kind}"`);
