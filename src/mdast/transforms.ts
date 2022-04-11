@@ -110,7 +110,20 @@ export function convertHtmlToMdast(tree: Root) {
   const htmlNodes = selectAll('html', tree);
   htmlNodes.forEach((node: GenericNode) => {
     const hast = unified().use(rehypeParse, { fragment: true }).parse(node.value);
-    const mdast = unified().use(rehypeRemark).runSync(hast);
+    const mdast = unified()
+      .use(rehypeRemark, {
+        handlers: {
+          table(h, node) {
+            return h(node, 'table', all(h, node));
+          },
+          th(h, node) {
+            const result = h(node, 'tableCell', all(h, node));
+            (result as GenericNode).header = true;
+            return result;
+          },
+        },
+      })
+      .runSync(hast);
     node.type = 'htmlParsed';
     node.children = mdast.children as GenericNode[];
     visit(node, (n: GenericNode) => delete n.position);
