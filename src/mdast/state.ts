@@ -23,7 +23,7 @@ export enum ReferenceKind {
 type Target = {
   node: GenericNode;
   kind: TargetKind;
-  number?: string;
+  enumerator?: string;
 };
 
 type TargetCounts = {
@@ -94,33 +94,34 @@ export class State {
   addTarget(node: GenericNode) {
     const kind = kindFromNode(node);
     if (kind && kind in TargetKind) {
-      let number = null;
-      if (node.numbered) {
-        number = this.incrementCount(node, kind as TargetKind);
-        node.number = number;
+      let enumerator = null;
+      if (node.enumerated !== false) {
+        enumerator = this.incrementCount(node, kind as TargetKind);
+        node.enumerator = enumerator;
       }
       if (node.identifier) {
         this.targets[node.identifier] = {
           node: copyNode(node),
           kind: kind as TargetKind,
-          number: number === null ? undefined : number,
+          enumerator: enumerator === null ? undefined : enumerator,
         };
       }
     }
   }
 
-  initializeNumberedHeaderDepths(tree: Root) {
-    const headerDepths = new Set(
-      selectAll('heading[numbered=true]', tree).map((node) => (node as Heading).depth),
+  initializeNumberedHeadingDepths(tree: Root) {
+    const headings = selectAll('heading', tree).filter(
+      (node) => (node as Heading).enumerated !== false,
     );
+    const headingDepths = new Set(headings.map((node) => (node as Heading).depth));
     this.targetCounts.heading = [1, 2, 3, 4, 5, 6].map((depth) =>
-      headerDepths.has(depth) ? 0 : null,
+      headingDepths.has(depth) ? 0 : null,
     );
   }
 
   incrementCount(node: GenericNode, kind: TargetKind): string {
     if (kind === TargetKind.heading) {
-      // Ideally initializeNumberedHeaderDepths is called before incrementing
+      // Ideally initializeNumberedHeadingDepths is called before incrementing
       // heading count to do a better job initializng headers based on tree
       if (!this.targetCounts.heading) this.targetCounts.heading = [0, 0, 0, 0, 0, 0];
       this.targetCounts.heading = incrementHeadingCounts(
@@ -161,9 +162,9 @@ export class State {
       },
     };
     const noNodeChildren = !node.children?.length;
-    if (kinds.ref.eq && kinds.target.math && target.number) {
+    if (kinds.ref.eq && kinds.target.math && target.enumerator) {
       if (noNodeChildren) {
-        setTextAsChild(node, `(${target.number})`);
+        setTextAsChild(node, `(${target.enumerator})`);
       }
       node.resolved = true;
     } else if (kinds.ref.ref && kinds.target.heading) {
@@ -177,24 +178,24 @@ export class State {
         node.children = copyNode(caption).children;
       }
       node.resolved = true;
-    } else if (kinds.ref.numref && kinds.target.figure && target.number) {
+    } else if (kinds.ref.numref && kinds.target.figure && target.enumerator) {
       if (noNodeChildren) {
         setTextAsChild(node, 'Figure %s');
       }
-      fillReferenceNumbers(node, target.number);
+      fillReferenceNumbers(node, target.enumerator);
       node.resolved = true;
-    } else if (kinds.ref.numref && kinds.target.table && target.number) {
+    } else if (kinds.ref.numref && kinds.target.table && target.enumerator) {
       if (noNodeChildren) {
         setTextAsChild(node, 'Table %s');
       }
-      fillReferenceNumbers(node, target.number);
+      fillReferenceNumbers(node, target.enumerator);
       node.resolved = true;
     }
   }
 }
 
 export const addNumbersToNodes = (state: State, tree: Root) => {
-  state.initializeNumberedHeaderDepths(tree);
+  state.initializeNumberedHeadingDepths(tree);
   visit(tree, 'container', (node: GenericNode) => state.addTarget(node));
   visit(tree, 'math', (node: GenericNode) => state.addTarget(node));
   visit(tree, 'heading', (node) => state.addTarget(node as GenericNode));

@@ -81,17 +81,14 @@ function getColAlign(t: Token) {
   }
 }
 
-function getNumbered(t: Token) {
-  let numbered = t.meta?.numbered;
-  if (typeof numbered !== 'boolean') numbered = true;
-  return numbered;
-}
-
 const defaultMdast: Record<string, Spec> = {
   heading: {
     type: 'heading',
     getAttrs(token) {
-      return { depth: Number(token.tag[1]), numbered: getNumbered(token) };
+      return {
+        depth: Number(token.tag[1]),
+        enumerated: token.meta?.enumerated,
+      };
     },
   },
   hr: {
@@ -257,7 +254,7 @@ const defaultMdast: Record<string, Spec> = {
       return {
         kind: 'figure',
         ...normalizeLabel(name),
-        numbered: getNumbered(token),
+        enumerated: token.meta?.enumerated,
         class: getClassName(token, [NUMBERED_CLASS]),
       };
     },
@@ -275,7 +272,7 @@ const defaultMdast: Record<string, Spec> = {
       return {
         kind: undefined,
         ...normalizeLabel(name),
-        numbered: getNumbered(token),
+        enumerated: token.meta?.enumerated,
         class: getClassName(token, [NUMBERED_CLASS, ALIGN_CLASS]),
         align: token.meta?.align || undefined,
       };
@@ -315,7 +312,9 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isText: true,
     getAttrs(t) {
-      return { numbered: getNumbered(t) };
+      return {
+        enumerated: t.meta?.enumerated,
+      };
     },
   },
   math_block: {
@@ -324,7 +323,10 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
     getAttrs(t) {
       const name = t.info || undefined;
-      return { ...normalizeLabel(name), numbered: getNumbered(t) };
+      return {
+        ...normalizeLabel(name),
+        enumerated: t.meta?.enumerated,
+      };
     },
   },
   math_block_label: {
@@ -333,7 +335,10 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
     getAttrs(t) {
       const name = t.info || undefined;
-      return { ...normalizeLabel(name), numbered: getNumbered(t) };
+      return {
+        ...normalizeLabel(name),
+        enumerated: t.meta?.enumerated,
+      };
     },
   },
   amsmath: {
@@ -341,7 +346,9 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isText: true,
     getAttrs(t) {
-      return { numbered: getNumbered(t) };
+      return {
+        enumerated: t.meta?.enumerated,
+      };
     },
   },
   ref: {
@@ -388,7 +395,7 @@ const defaultMdast: Record<string, Spec> = {
     isLeaf: true,
     getAttrs(t) {
       return {
-        kind: t.info,
+        name: t.info,
         args: t?.meta?.arg || undefined,
         value: t.content.trim(),
       };
@@ -409,7 +416,7 @@ const defaultMdast: Record<string, Spec> = {
         });
       }
       return {
-        kind: t.info,
+        name: t.info,
         args: t.meta?.arg || undefined,
         options: opts,
         value: t.content.trim() || undefined,
@@ -426,7 +433,7 @@ const defaultMdast: Record<string, Spec> = {
     isLeaf: true,
     getAttrs(t) {
       return {
-        kind: t.meta?.name,
+        name: t.meta?.name,
         value: t.content,
       };
     },
@@ -435,7 +442,7 @@ const defaultMdast: Record<string, Spec> = {
     type: 'mystRole',
     getAttrs(t) {
       return {
-        kind: t.meta.name,
+        name: t.meta.name,
         value: t.content,
       };
     },
@@ -451,11 +458,13 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   myst_target: {
-    type: 'target',
+    type: 'mystTarget',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
-      return { ...normalizeLabel(t.content) };
+      return {
+        label: t.content,
+      };
     },
   },
   html_inline: {
@@ -479,7 +488,7 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   myst_line_comment: {
-    type: 'comment',
+    type: 'mystComment',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {

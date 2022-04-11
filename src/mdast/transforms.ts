@@ -6,7 +6,7 @@ import { findAfter } from 'unist-util-find-after';
 import { remove } from 'unist-util-remove';
 import { map } from 'unist-util-map';
 import { Admonition, AdmonitionKind, GenericNode } from './types';
-import { admonitionKindToTitle } from './utils';
+import { admonitionKindToTitle, normalizeLabel } from './utils';
 import { State, addNumbersToNodes, resolveReferences } from './state';
 
 export type Options = {
@@ -35,16 +35,18 @@ export function addAdmonitionHeaders(tree: Root) {
 
 // Visit all containers and add captions
 export function addContainerCaptionNumbers(tree: Root, state: State) {
-  selectAll('container[numbered=true]', tree).forEach((container: GenericNode) => {
-    const number = state.getTarget(container.identifier)?.number;
-    const para = select('caption > paragraph', container) as GenericNode;
-    if (number && para) {
-      para.children = [
-        { type: 'captionNumber', kind: container.kind, value: number },
-        ...(para?.children ?? []),
-      ];
-    }
-  });
+  selectAll('container', tree)
+    .filter((container: GenericNode) => container.enumerator !== false)
+    .forEach((container: GenericNode) => {
+      const enumerator = state.getTarget(container.identifier)?.enumerator;
+      const para = select('caption > paragraph', container) as GenericNode;
+      if (enumerator && para) {
+        para.children = [
+          { type: 'captionNumber', kind: container.kind, value: enumerator },
+          ...(para?.children ?? []),
+        ];
+      }
+    });
 }
 
 export function liftChildren(tree: Root, nodeType: string) {
@@ -75,14 +77,15 @@ export function liftChildren(tree: Root, nodeType: string) {
  */
 
 export function propagateTargets(tree: Root) {
-  visit(tree, 'target', (node: GenericNode) => {
+  visit(tree, 'mystTarget', (node: GenericNode) => {
     const nextNode = findAfter(tree, node) as GenericNode;
-    if (nextNode) {
-      nextNode.identifier = node.identifier;
-      nextNode.label = node.label;
+    const normalized = normalizeLabel(node.label);
+    if (nextNode && normalized) {
+      nextNode.identifier = normalized.identifier;
+      nextNode.label = normalized.label;
     }
   });
-  remove(tree, 'target');
+  remove(tree, 'mystTarget');
 }
 
 /**
