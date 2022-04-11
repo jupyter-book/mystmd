@@ -10,17 +10,18 @@
         {
           "properties": {
             "type": {
-              "const": "target"
+              "const": "mystTarget"
             },
-            "identifier": {},
-            "label": {},
+            "label": {
+              "description": "unresolved target label",
+              "type": "string"
+            },
             "position": {},
             "data": {}
           },
           "additionalProperties": false
         },
-        { "$ref": "unist.schema.json#/$defs/Node" },
-        { "$ref": "commonmark.schema.json#/$defs/Association" }
+        { "$ref": "unist.schema.json#/$defs/Node" }
       ]
     },
     "CrossReference": {

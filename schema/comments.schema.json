@@ -10,7 +10,7 @@
         {
           "properties": {
             "type": {
-              "const": "comment"
+              "const": "mystComment"
             },
             "value": {},
             "position": {},

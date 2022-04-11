@@ -15,8 +15,7 @@ cases:
                   kind: ref
                   identifier: my_id
                   label: my_id
-        - type: target
-          identifier: my_id
+        - type: mystTarget
           label: my_id
         - type: heading
           depth: 1
@@ -54,8 +53,7 @@ cases:
                   children:
                     - type: text
                       value: something...
-        - type: target
-          identifier: my_id
+        - type: mystTarget
           label: my_id
         - type: heading
           depth: 1
@@ -81,8 +79,7 @@ cases:
             - type: link
               url: my_id
               children: []
-        - type: target
-          identifier: my_id
+        - type: mystTarget
           label: my_id
         - type: heading
           depth: 1
@@ -115,8 +112,7 @@ cases:
               children:
                 - type: text
                   value: something...
-        - type: target
-          identifier: my_id
+        - type: mystTarget
           label: my_id
         - type: heading
           depth: 1

@@ -3,7 +3,7 @@ cases:
     mdast:
       type: root
       children:
-        - type: comment
+        - type: mystComment
           value: A comment
     myst: |-
       % A comment
@@ -18,7 +18,7 @@ cases:
           children:
             - type: text
               value: Something
-        - type: comment
+        - type: mystComment
           value: A comment
         - type: paragraph
           children:
@@ -39,7 +39,7 @@ cases:
           children:
             - type: text
               value: Something
-        - type: comment
+        - type: mystComment
           value: A comment --> <script>
         - type: paragraph
           children:
