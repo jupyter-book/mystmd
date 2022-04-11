@@ -9,7 +9,7 @@ cases:
             - type: text
               value: 'Well '
             - type: mystRole
-              kind: abbr
+              name: abbr
               value: CSS (Cascading Style Sheets)
               children:
                 - type: abbreviation
@@ -33,7 +33,7 @@ cases:
             - type: text
               value: 'Well '
             - type: mystRole
-              kind: abbr
+              name: abbr
               value: CSS
               children:
                 - type: abbreviation
@@ -54,7 +54,7 @@ cases:
         - type: paragraph
           children:
             - type: mystRole
-              kind: abbr
+              name: abbr
               value: CSS (Cascading) Style( Sheets)
               children:
                 - type: abbreviation

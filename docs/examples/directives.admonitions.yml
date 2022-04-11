@@ -4,7 +4,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: admonition
+          name: admonition
           args: This is a title
           value: An example of an admonition with a _title_.
           children:
@@ -44,7 +44,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: note
+          name: note
           value: Please note!
           children:
             - type: admonition
@@ -74,7 +74,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: note
+          name: note
           args: This is a title in myst
           value: and an example of a note admonition.
           children:
@@ -96,7 +96,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: danger
+          name: danger
           args: This is a title!
           children:
             - type: admonition
@@ -112,7 +112,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: admonition
+          name: admonition
           args: This is a title!
           options:
             class: tip
@@ -162,7 +162,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: seealso
+          name: seealso
           options:
             class: tip
           value: |-

@@ -85,7 +85,7 @@ Roles are very similar to directives, but they are written entirely in one line.
 
 ```
 
-Of course, roles will only allow custom behavior work if `kind` is a valid role name! The `abbr` role creates inline abbreviations, for example, `` {abbr}`MyST (Markedly Structured Text)` `` will become {abbr}`MyST (Markedly Structured Text)`! When you hover over[^1] the abbreviation you will see the `title` appear!
+Of course, roles will only allow custom behavior work if `name` is a valid role name! The `abbr` role creates inline abbreviations, for example, `` {abbr}`MyST (Markedly Structured Text)` `` will become {abbr}`MyST (Markedly Structured Text)`! When you hover over[^1] the abbreviation you will see the `title` appear!
 
 [^1]: Abbreviations are also great structured data for screen-readers!
 

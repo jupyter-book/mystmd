@@ -7,7 +7,7 @@ cases:
         - type: paragraph
           children:
             - type: mystRole
-              kind: abc
+              name: abc
               value: ABC role
     myst: |-
       {abc}`ABC role`
@@ -20,7 +20,7 @@ cases:
         - type: paragraph
           children:
             - type: mystRole
-              kind: abc
+              name: abc
   - title: unknown role - invalid no kind
     invalid: true
     mdast:

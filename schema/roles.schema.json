@@ -8,12 +8,12 @@
       "type": "object",
       "allOf": [
         {
-          "required": ["kind"],
+          "required": ["name"],
           "properties": {
             "type": {
               "const": "mystRole"
             },
-            "kind": {
+            "name": {
               "type": "string"
             },
             "value": {

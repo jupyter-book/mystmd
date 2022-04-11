@@ -4,7 +4,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: code
+          name: code
           args: python
           options:
             number-lines: 1
@@ -34,7 +34,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: code
+          name: code
           args: python
           options:
             name: My code
@@ -72,7 +72,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: code-block
+          name: code-block
           args: python
           options:
             name: My code
@@ -112,7 +112,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: code-block
+          name: code-block
           args: python
           options:
             lineno-start: 2
@@ -152,7 +152,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: code-block
+          name: code-block
           args: python
           options:
             emphasize-lines: 2, 3

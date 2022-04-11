@@ -4,7 +4,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: math
+          name: math
           value: Ax = b
           children:
             - type: math
@@ -27,7 +27,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: math
+          name: math
           options:
             label: matrix
           value: Ax = b

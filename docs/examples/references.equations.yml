@@ -8,7 +8,7 @@ cases:
             - type: text
               value: 'see '
             - type: mystRole
-              kind: eq
+              name: eq
               value: '  matrix  '
               children:
                 - type: crossReference
@@ -16,7 +16,7 @@ cases:
                   identifier: matrix
                   label: '  matrix  '
         - type: mystDirective
-          kind: figure
+          name: figure
           args: fig.jpg
           options:
             name: matrix
@@ -61,7 +61,7 @@ cases:
             - type: text
               value: 'see '
             - type: mystRole
-              kind: eq
+              name: eq
               value: matrix
               children:
                 - type: crossReference
@@ -69,7 +69,7 @@ cases:
                   identifier: matrix
                   label: matrix
         - type: mystDirective
-          kind: math
+          name: math
           options:
             label: matrix
           value: Ax = b
@@ -102,7 +102,7 @@ cases:
               url: matrix
               children: []
         - type: mystDirective
-          kind: math
+          name: math
           options:
             label: matrix
           value: Ax = b

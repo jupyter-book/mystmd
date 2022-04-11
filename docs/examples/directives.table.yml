@@ -66,7 +66,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: list-table
+          name: list-table
           args: Caption *text*
           options:
             name: my-table

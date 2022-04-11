@@ -21,7 +21,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: image
+          name: image
           args: fun-fish.png
           options:
             alt: fishy
@@ -52,7 +52,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: image
+          name: image
           args: fun-fish.png
           options:
             alt: fishy

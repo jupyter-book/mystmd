@@ -8,7 +8,7 @@ cases:
             - type: text
               value: 'See: '
             - type: mystRole
-              kind: ref
+              name: ref
               value: my_id
               children:
                 - type: crossReference
@@ -44,7 +44,7 @@ cases:
             - type: text
               value: 'See: '
             - type: mystRole
-              kind: ref
+              name: ref
               value: something... <my_id>
               children:
                 - type: crossReference

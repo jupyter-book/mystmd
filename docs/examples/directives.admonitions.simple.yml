@@ -4,7 +4,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: attention
+          name: attention
           args: Admonition attention
           children:
             - type: admonition
@@ -32,7 +32,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: caution
+          name: caution
           args: Admonition caution
           children:
             - type: admonition
@@ -60,7 +60,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: danger
+          name: danger
           args: Admonition danger
           children:
             - type: admonition
@@ -88,7 +88,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: error
+          name: error
           args: Admonition error
           children:
             - type: admonition
@@ -116,7 +116,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: important
+          name: important
           args: Admonition important
           children:
             - type: admonition
@@ -144,7 +144,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: hint
+          name: hint
           args: Admonition hint
           children:
             - type: admonition
@@ -172,7 +172,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: note
+          name: note
           args: Admonition note
           children:
             - type: admonition
@@ -200,7 +200,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: seealso
+          name: seealso
           args: Admonition seealso
           children:
             - type: admonition
@@ -228,7 +228,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: tip
+          name: tip
           args: Admonition tip
           children:
             - type: admonition
@@ -256,7 +256,7 @@ cases:
       type: root
       children:
         - type: mystDirective
-          kind: warning
+          name: warning
           args: Admonition warning
           children:
             - type: admonition
