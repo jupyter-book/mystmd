@@ -37,7 +37,7 @@ cases:
       Something! A legend!?
       ```
     html: |-
-      <figure>
+      <figure class="numbered">
         <img src="https://via.placeholder.com/150">
         <figcaption>
           <p>This is the figure caption!</p>
@@ -63,7 +63,6 @@ cases:
               kind: figure
               identifier: myfigure
               label: myFigure
-              numbered: true
               children:
                 - type: image
                   url: https://via.placeholder.com/150
@@ -111,7 +110,6 @@ cases:
               kind: figure
               identifier: myfigure
               label: myFigure
-              numbered: true
               children:
                 - type: image
                   url: https://via.placeholder.com/150
@@ -150,7 +148,6 @@ cases:
               kind: figure
               identifier: myfigure
               label: myFigure
-              numbered: true
               children:
                 - type: image
                   url: https://via.placeholder.com/150
@@ -188,7 +185,6 @@ cases:
               kind: figure
               identifier: myfigure
               label: myFigure
-              numbered: true
               children:
                 - type: image
                   url: https://via.placeholder.com/150
@@ -209,7 +205,6 @@ cases:
               kind: figure
               identifier: myotherfigure
               label: myOtherFigure
-              numbered: true
               children:
                 - type: image
                   url: https://via.placeholder.com/151

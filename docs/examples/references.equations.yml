@@ -26,7 +26,6 @@ cases:
               kind: figure
               identifier: matrix
               label: matrix
-              numbered: true
               children:
                 - type: image
                   url: fig.jpg

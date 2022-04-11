@@ -86,7 +86,6 @@ cases:
               kind: figure
               identifier: my-figure
               label: my-figure
-              numbered: true
               children:
                 - type: image
                   url: fig.jpg
@@ -142,7 +141,6 @@ cases:
               kind: figure
               identifier: my-figure
               label: my-figure
-              numbered: true
               children:
                 - type: image
                   url: fig.jpg
@@ -195,7 +193,6 @@ cases:
               kind: figure
               identifier: my-figure
               label: my-figure
-              numbered: true
               children:
                 - type: image
                   url: fig.jpg
@@ -257,7 +254,6 @@ cases:
               kind: figure
               identifier: my-figure
               label: my-figure
-              numbered: true
               children:
                 - type: image
                   url: fig.jpg
@@ -312,7 +308,6 @@ cases:
               kind: figure
               identifier: my-figure
               label: my-figure
-              numbered: true
               children:
                 - type: image
                   url: fig.jpg
@@ -372,7 +367,6 @@ cases:
               kind: figure
               identifier: my-figure
               label: my-figure
-              numbered: true
               children:
                 - type: image
                   url: fig.jpg

@@ -88,7 +88,6 @@ cases:
               kind: table
               identifier: my-table
               label: my-table
-              numbered: true
               class: myclass
               children:
                 - type: caption

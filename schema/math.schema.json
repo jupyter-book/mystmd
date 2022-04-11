@@ -12,6 +12,14 @@
             "type": {
               "const": "math"
             },
+            "enumerated": {
+              "description": "count this math block for numbering based on kind, e.g. See equation (1a)",
+              "type": "boolean"
+            },
+            "enumerator": {
+              "description": "resolved enumerated value for this math block",
+              "type": "string"
+            },
             "identifier": {},
             "label": {},
             "value": {},
