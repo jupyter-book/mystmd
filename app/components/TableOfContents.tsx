@@ -114,10 +114,19 @@ function useHeaders() {
     headingsSet.current.add(e);
   });
 
-  const headings: Heading[] = elements.map((heading) => {
-    const { innerText: title, innerHTML: titleHTML, id } = heading;
-    return { title, titleHTML, id, level: Number(heading.tagName.slice(1)) };
-  });
+  const headings: Heading[] = elements
+    .map((heading) => {
+      return {
+        level: Number(heading.tagName.slice(1)),
+        id: heading.id,
+        text: heading.querySelector('.heading-text'),
+      };
+    })
+    .filter((h) => !!h.text)
+    .map(({ level, text, id }) => {
+      const { innerText: title, innerHTML: titleHTML } = text as HTMLSpanElement;
+      return { title, titleHTML, id, level };
+    });
 
   return { activeId, highlight, headings };
 }
