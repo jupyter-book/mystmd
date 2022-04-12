@@ -20,7 +20,7 @@ type Options = {
 
 const WELCOME = async (session: ISession) => `
 
-${chalk.bold(chalk.green('Welcome to the Curvenote CLI!!'))} 👋
+${chalk.bold.green('Welcome to the Curvenote CLI!!')} 👋
 
 ${chalk.bold('curvenote init')} walks you through creating a ${chalk.bold(CURVENOTE_YML)} file.
 

@@ -82,13 +82,13 @@ export async function addProjectsToConfig(
 
 const START = `
 
-${chalk.bold(chalk.green('Add new content to your Curvenote project'))} 🛻
+${chalk.green.bold('Add new content to your Curvenote project')} 🛻
 
 `;
 
 const FINISHED = `
 
-${chalk.bold(chalk.green('Content successfully added'))} 🎉
+${chalk.green.bold('Content successfully added')} 🎉
 
 `;
 
