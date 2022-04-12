@@ -49,6 +49,9 @@ type BasicNodeRenderers = {
   table: NodeRenderer<spec.Table>;
   tableRow: NodeRenderer<spec.TableRow>;
   tableCell: NodeRenderer<spec.TableCell & TableExts>;
+  // Comment
+  comment: NodeRenderer<spec.Comment>;
+  mystComment: NodeRenderer<spec.Comment>;
   // Our additions
   captionNumber: NodeRenderer<{ kind: string }>;
   strike: NodeRenderer<Strike>;
@@ -169,6 +172,12 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
         {children}
       </abbr>
     );
+  },
+  mystComment() {
+    return null;
+  },
+  comment() {
+    return null;
   },
 };
 
