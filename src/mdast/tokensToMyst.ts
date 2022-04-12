@@ -629,7 +629,7 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
       node.children = [...captionChildren, newTableNode];
       delete node.align;
     } else {
-      delete node.numbered;
+      delete node.enumerated;
     }
   });
 

@@ -1,4 +1,4 @@
-import { formatHeadingNumber, incrementHeadingCounts } from '../src/mdast/state';
+import { formatHeadingEnumerator, incrementHeadingCounts } from '../src/mdast/state';
 
 describe('Testing heading count', () => {
   test.each([
@@ -23,7 +23,7 @@ describe('Testing heading numbering format', () => {
     [[1, 1, 0, null, 1, 0], '1.1.0.1'],
     [[1, 1, 0, null, 2, 0], '1.1.0.2'],
     [[1, 2, 0, null, 0, 0], '1.2'],
-  ])('formatHeadingNumber(%s)}', (counts, out) => {
-    expect(formatHeadingNumber(counts)).toEqual(out);
+  ])('formatHeadingEnumerator(%s)}', (counts, out) => {
+    expect(formatHeadingEnumerator(counts)).toEqual(out);
   });
 });

@@ -33,8 +33,8 @@ type TargetCounts = {
 /**
  * See https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-numref
  */
-function fillReferenceNumbers(node: GenericNode, number: string | number) {
-  const num = String(number);
+function fillReferenceEnumerators(node: GenericNode, enumerator: string | number) {
+  const num = String(enumerator);
   findAndReplace(node as Content, { '%s': num, '{number}': num });
 }
 
@@ -74,7 +74,7 @@ export function incrementHeadingCounts(
  *
  * Leading zeros are kept, trailing zeros are removed, nulls are ignored.
  */
-export function formatHeadingNumber(counts: (number | null)[]): string {
+export function formatHeadingEnumerator(counts: (number | null)[]): string {
   counts = counts.filter((d) => d !== null);
   while (counts && counts[counts.length - 1] === 0) {
     counts.pop();
@@ -128,7 +128,7 @@ export class State {
         node.depth,
         this.targetCounts.heading,
       );
-      return formatHeadingNumber(this.targetCounts.heading);
+      return formatHeadingEnumerator(this.targetCounts.heading);
     }
     if (kind in this.targetCounts) {
       this.targetCounts[kind] += 1;
@@ -182,19 +182,19 @@ export class State {
       if (noNodeChildren) {
         setTextAsChild(node, 'Figure %s');
       }
-      fillReferenceNumbers(node, target.enumerator);
+      fillReferenceEnumerators(node, target.enumerator);
       node.resolved = true;
     } else if (kinds.ref.numref && kinds.target.table && target.enumerator) {
       if (noNodeChildren) {
         setTextAsChild(node, 'Table %s');
       }
-      fillReferenceNumbers(node, target.enumerator);
+      fillReferenceEnumerators(node, target.enumerator);
       node.resolved = true;
     }
   }
 }
 
-export const addNumbersToNodes = (state: State, tree: Root) => {
+export const addEnumeratorsToNodes = (state: State, tree: Root) => {
   state.initializeNumberedHeadingDepths(tree);
   visit(tree, 'container', (node: GenericNode) => state.addTarget(node));
   visit(tree, 'math', (node: GenericNode) => state.addTarget(node));
