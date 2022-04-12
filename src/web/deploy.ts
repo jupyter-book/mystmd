@@ -198,4 +198,7 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
   cache.session.log.info('🕸  Site Deployed');
   cache.session.log.info(`🌎 https://${domains[0]}`);
   cache.session.log.debug(siteCreated);
+  cache.session.log.info(
+    '\n\n⚠️  https://curve.space is still in alpha. Please ensure you have a copy of your content locally.',
+  );
 }
