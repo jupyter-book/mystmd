@@ -46,8 +46,8 @@ describe('Extensions', () => {
     const parser = new MyST({ directives: { custom } });
     const myst = '```{custom}\n:name: hello\nworld\n```';
     const ast = parser.parse(myst) as GenericNode;
-    expect(ast.children?.[0].type).toEqual('directive');
-    expect(ast.children?.[0].kind).toEqual('custom');
+    expect(ast.children?.[0].type).toEqual('mystDirective');
+    expect(ast.children?.[0].name).toEqual('custom');
     expect(ast.children?.[0].children?.[0].type).toEqual('custom');
     expect(ast.children?.[0].children?.[0].name).toEqual('hello');
     expect(ast.children?.[0].children?.[0].value).toEqual('world\n');

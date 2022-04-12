@@ -38,7 +38,7 @@ export type Container = {
   identifier?: string;
   label?: string;
   class?: string;
-  numbered?: boolean;
+  enumerated?: boolean;
 };
 
 export enum AdmonitionKind {

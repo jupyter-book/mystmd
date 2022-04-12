@@ -27,7 +27,8 @@ const container: Handler = (h, node) =>
     'figure',
     {
       id: node.identifier || node.label || undefined,
-      class: classNames({ numbered: node.numbered }, node.class) || undefined,
+      class:
+        classNames({ numbered: node.enumerated !== false }, node.class) || undefined,
     },
     all(h, node),
   );
@@ -75,17 +76,17 @@ const definitionList: Handler = (h, node) => h(node, 'dl', all(h, node));
 const definitionTerm: Handler = (h, node) => h(node, 'dt', all(h, node));
 const definitionDescription: Handler = (h, node) => h(node, 'dd', all(h, node));
 
-const role: Handler = (h, node) => {
-  const children = [h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)])];
+const mystRole: Handler = (h, node) => {
+  const children = [h(node, 'code', { class: 'kind' }, [u('text', `{${node.name}}`)])];
   if (node.value) {
     children.push(h(node, 'code', {}, [u('text', node.value)]));
   }
   return h(node, 'span', { class: 'role unhandled' }, children);
 };
 
-const directive: Handler = (h, node) => {
+const mystDirective: Handler = (h, node) => {
   const directiveHeader: ElementContent[] = [
-    h(node, 'code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
+    h(node, 'code', { class: 'kind' }, [u('text', `{${node.name}}`)]),
   ];
   if (node.args) {
     directiveHeader.push(h(node, 'code', { class: 'args' }, [u('text', node.args)]));
@@ -111,7 +112,7 @@ const directive: Handler = (h, node) => {
 const block: Handler = (h, node) =>
   h(node, 'div', { class: 'block', 'data-block': node.meta }, all(h, node));
 
-const comment: Handler = (h, node) => u('comment', node.value);
+const mystComment: Handler = (h, node) => u('comment', node.value);
 
 const heading: Handler = (h, node) =>
   h(node, `h${node.depth}`, { id: node.identifier || undefined }, all(h, node));
@@ -172,10 +173,10 @@ export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Roo
       definitionList,
       definitionTerm,
       definitionDescription,
-      role,
-      directive,
+      mystRole,
+      mystDirective,
       block,
-      comment,
+      mystComment,
       heading,
       crossReference,
       code,

@@ -1,0 +1,503 @@
+cases:
+  - title: heading numbering
+    before:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: three
+    after:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+          enumerator: '1'
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+          enumerator: '2'
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: three
+          enumerator: '3'
+  - title: heading numbering - unnumbered
+    before:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+        - type: heading
+          depth: 1
+          enumerated: false
+          children:
+            - type: text
+              value: nope
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+    after:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+          enumerator: '1'
+        - type: heading
+          depth: 1
+          enumerated: false
+          children:
+            - type: text
+              value: nope
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+          enumerator: '2'
+  - title: heading numbering - levels
+    before:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: one.one
+        - type: heading
+          depth: 5
+          children:
+            - type: text
+              value: one.one.one
+        - type: heading
+          depth: 5
+          children:
+            - type: text
+              value: one.one.two
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+        - type: heading
+          depth: 4
+          enumerated: false
+          children:
+            - type: text
+              value: nope
+        - type: heading
+          depth: 5
+          children:
+            - type: text
+              value: two.zero.one
+    after:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+          enumerator: '1'
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: one.one
+          enumerator: '1.1'
+        - type: heading
+          depth: 5
+          children:
+            - type: text
+              value: one.one.one
+          enumerator: '1.1.1'
+        - type: heading
+          depth: 5
+          children:
+            - type: text
+              value: one.one.two
+          enumerator: '1.1.2'
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+          enumerator: '2'
+        - type: heading
+          depth: 4
+          enumerated: false
+          children:
+            - type: text
+              value: nope
+        - type: heading
+          depth: 5
+          children:
+            - type: text
+              value: two.zero.one
+          enumerator: '2.0.1'
+  - title: math numbering
+    before:
+      type: root
+      children:
+        - type: math
+          value: Ax = b
+        - type: math
+          value: Cx = d
+          enumerated: false
+        - type: math
+          value: Fx = g
+    after:
+      type: root
+      children:
+        - type: math
+          value: Ax = b
+          enumerator: '1'
+        - type: math
+          value: Cx = d
+          enumerated: false
+        - type: math
+          value: Fx = g
+          enumerator: '2'
+  - title: math numbering - inside directive
+    before:
+      type: root
+      children:
+        - type: mystDirective
+          kind: math
+          value: Ax = b
+          children:
+            - type: math
+              value: Ax = b
+        - type: mystDirective
+          kind: math
+          value: Cx = d
+          children:
+            - type: math
+              value: Cx = d
+    after:
+      type: root
+      children:
+        - type: mystDirective
+          kind: math
+          value: Ax = b
+          children:
+            - type: math
+              value: Ax = b
+              enumerator: '1'
+        - type: mystDirective
+          kind: math
+          value: Cx = d
+          children:
+            - type: math
+              value: Cx = d
+              enumerator: '2'
+  - title: container numbering
+    before:
+      type: root
+      children:
+        - type: mystDirective
+          kind: figure
+          args: https://via.placeholder.com/150
+          value: |-
+            This is the figure caption!
+
+            Something! A legend!?
+          children:
+            - type: container
+              kind: figure
+              children:
+                - type: image
+                  url: https://via.placeholder.com/150
+                - type: caption
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: This is the figure caption!
+                - type: legend
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Something! A legend!?
+        - type: container
+          kind: figure
+          children:
+            - type: image
+              url: https://via.placeholder.com/150
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: This is the figure caption!
+        - type: mystDirective
+          kind: list-table
+          args: Caption *text*
+          options:
+            name: my-table
+            header-rows: 1
+            align: center
+            class: myclass
+          value: |-
+            *   - Head 1, Column 1
+                - Head 1, Column 2
+            *   - Row 1, Column 1
+                - Row 1, Column 2
+          children:
+            - type: container
+              kind: table
+              identifier: my-table
+              label: my-table
+              class: myclass
+              children:
+                - type: caption
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: 'Caption '
+                        - type: emphasis
+                          children:
+                            - type: text
+                              value: text
+                - type: table
+                  align: center
+                  children:
+                    - type: tableRow
+                      children:
+                        - type: tableCell
+                          header: true
+                          children:
+                            - type: text
+                              value: Head 1, Column 1
+                        - type: tableCell
+                          header: true
+                          children:
+                            - type: text
+                              value: Head 1, Column 2
+                        - type: tableCell
+                    - type: tableRow
+                      children:
+                        - type: tableCell
+                          children:
+                            - type: text
+                              value: Row 1, Column 1
+                        - type: tableCell
+                          children:
+                            - type: text
+                              value: Row 1, Column 2
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          class: myclass
+          enumerated: false
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Caption '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: text
+            - type: table
+              align: center
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Head 1, Column 1
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Head 1, Column 2
+                    - type: tableCell
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1, Column 1
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1, Column 2
+    after:
+      type: root
+      children:
+        - type: mystDirective
+          kind: figure
+          args: https://via.placeholder.com/150
+          value: |-
+            This is the figure caption!
+
+            Something! A legend!?
+          children:
+            - type: container
+              kind: figure
+              children:
+                - type: image
+                  url: https://via.placeholder.com/150
+                - type: caption
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: This is the figure caption!
+                - type: legend
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Something! A legend!?
+              enumerator: '1'
+        - type: container
+          kind: figure
+          children:
+            - type: image
+              url: https://via.placeholder.com/150
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: This is the figure caption!
+          enumerator: '2'
+        - type: mystDirective
+          kind: list-table
+          args: Caption *text*
+          options:
+            name: my-table
+            header-rows: 1
+            align: center
+            class: myclass
+          value: |-
+            *   - Head 1, Column 1
+                - Head 1, Column 2
+            *   - Row 1, Column 1
+                - Row 1, Column 2
+          children:
+            - type: container
+              kind: table
+              identifier: my-table
+              label: my-table
+              class: myclass
+              children:
+                - type: caption
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: 'Caption '
+                        - type: emphasis
+                          children:
+                            - type: text
+                              value: text
+                - type: table
+                  align: center
+                  children:
+                    - type: tableRow
+                      children:
+                        - type: tableCell
+                          header: true
+                          children:
+                            - type: text
+                              value: Head 1, Column 1
+                        - type: tableCell
+                          header: true
+                          children:
+                            - type: text
+                              value: Head 1, Column 2
+                        - type: tableCell
+                    - type: tableRow
+                      children:
+                        - type: tableCell
+                          children:
+                            - type: text
+                              value: Row 1, Column 1
+                        - type: tableCell
+                          children:
+                            - type: text
+                              value: Row 1, Column 2
+              enumerator: '1'
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          class: myclass
+          enumerated: false
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Caption '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: text
+            - type: table
+              align: center
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Head 1, Column 1
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Head 1, Column 2
+                    - type: tableCell
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1, Column 1
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1, Column 2

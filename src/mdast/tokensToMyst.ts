@@ -85,7 +85,10 @@ const defaultMdast: Record<string, Spec> = {
   heading: {
     type: 'heading',
     getAttrs(token) {
-      return { depth: Number(token.tag[1]) };
+      return {
+        depth: Number(token.tag[1]),
+        enumerated: token.meta?.enumerated,
+      };
     },
   },
   hr: {
@@ -251,7 +254,7 @@ const defaultMdast: Record<string, Spec> = {
       return {
         kind: 'figure',
         ...normalizeLabel(name),
-        numbered: name ? true : undefined,
+        enumerated: token.meta?.enumerated,
         class: getClassName(token, [NUMBERED_CLASS]),
       };
     },
@@ -269,7 +272,7 @@ const defaultMdast: Record<string, Spec> = {
       return {
         kind: undefined,
         ...normalizeLabel(name),
-        numbered: name ? true : undefined,
+        enumerated: token.meta?.enumerated,
         class: getClassName(token, [NUMBERED_CLASS, ALIGN_CLASS]),
         align: token.meta?.align || undefined,
       };
@@ -308,6 +311,11 @@ const defaultMdast: Record<string, Spec> = {
     type: 'math',
     noCloseToken: true,
     isText: true,
+    getAttrs(t) {
+      return {
+        enumerated: t.meta?.enumerated,
+      };
+    },
   },
   math_block: {
     type: 'math',
@@ -315,7 +323,10 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
     getAttrs(t) {
       const name = t.info || undefined;
-      return { ...normalizeLabel(name) };
+      return {
+        ...normalizeLabel(name),
+        enumerated: t.meta?.enumerated,
+      };
     },
   },
   math_block_label: {
@@ -324,13 +335,21 @@ const defaultMdast: Record<string, Spec> = {
     isText: true,
     getAttrs(t) {
       const name = t.info || undefined;
-      return { ...normalizeLabel(name) };
+      return {
+        ...normalizeLabel(name),
+        enumerated: t.meta?.enumerated,
+      };
     },
   },
   amsmath: {
     type: 'math',
     noCloseToken: true,
     isText: true,
+    getAttrs(t) {
+      return {
+        enumerated: t.meta?.enumerated,
+      };
+    },
   },
   ref: {
     type: 'crossReference',
@@ -371,19 +390,19 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   directive: {
-    type: 'directive',
+    type: 'mystDirective',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
       return {
-        kind: t.info,
+        name: t.info,
         args: t?.meta?.arg || undefined,
         value: t.content.trim(),
       };
     },
   },
   parsed_directive: {
-    type: 'directive',
+    type: 'mystDirective',
     getAttrs(t) {
       let opts = t.meta?.opts;
       if (!opts || !Object.keys(opts).length) {
@@ -397,7 +416,7 @@ const defaultMdast: Record<string, Spec> = {
         });
       }
       return {
-        kind: t.info,
+        name: t.info,
         args: t.meta?.arg || undefined,
         options: opts,
         value: t.content.trim() || undefined,
@@ -405,31 +424,31 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   directive_error: {
-    type: 'directiveError',
+    type: 'mystDirectiveError',
     noCloseToken: true,
   },
   role: {
-    type: 'role',
+    type: 'mystRole',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
       return {
-        kind: t.meta?.name,
+        name: t.meta?.name,
         value: t.content,
       };
     },
   },
   parsed_role: {
-    type: 'role',
+    type: 'mystRole',
     getAttrs(t) {
       return {
-        kind: t.meta.name,
+        name: t.meta.name,
         value: t.content,
       };
     },
   },
   role_error: {
-    type: 'roleError',
+    type: 'mystRoleError',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
@@ -439,11 +458,13 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   myst_target: {
-    type: 'target',
+    type: 'mystTarget',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
-      return { ...normalizeLabel(t.content) };
+      return {
+        label: t.content,
+      };
     },
   },
   html_inline: {
@@ -467,7 +488,7 @@ const defaultMdast: Record<string, Spec> = {
     },
   },
   myst_line_comment: {
-    type: 'comment',
+    type: 'mystComment',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
@@ -607,6 +628,8 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
       node.kind = 'table';
       node.children = [...captionChildren, newTableNode];
       delete node.align;
+    } else {
+      delete node.enumerated;
     }
   });
 
