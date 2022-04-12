@@ -1,8 +1,8 @@
 import classNames from 'classnames';
-import { NodeRenderer } from 'myst-util-to-react';
+import { NodeRenderer } from '~/myst-to-react';
+import { useReferences } from '~/components/ReferencesProvider';
 import { useState } from 'react';
 import ExclamationIcon from '@heroicons/react/outline/ExclamationIcon';
-import { useReferences } from '../ReferencesProvider';
 import { ClickPopover } from './ClickPopover';
 
 function CiteChild({ label }: { label: string }) {
@@ -94,8 +94,10 @@ export function Bibliography() {
   );
 }
 
-export const citeRenderers: Record<string, NodeRenderer> = {
+const CITE_RENDERERS: Record<string, NodeRenderer> = {
   citeGroup: CiteGroup,
   cite: Cite,
   bibliography: (node) => <Bibliography key={node.key}></Bibliography>,
 };
+
+export default CITE_RENDERERS;

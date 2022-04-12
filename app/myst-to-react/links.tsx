@@ -1,5 +1,5 @@
 import { Link } from 'myst-spec';
-import { NodeRenderer } from 'myst-util-to-react';
+import { NodeRenderer } from '~/myst-to-react';
 import { Link as RemixLink } from 'remix';
 
 type TransformedLink = Link & { internal?: boolean };
@@ -20,6 +20,8 @@ export const link: NodeRenderer<TransformedLink> = (node, children) => {
   );
 };
 
-export const linkRenderers = {
+const LINK_RENDERERS = {
   link,
 };
+
+export default LINK_RENDERERS;

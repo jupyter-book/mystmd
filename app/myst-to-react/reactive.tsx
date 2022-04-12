@@ -54,9 +54,11 @@ export const RRange = (node: GenericNode) => {
   });
 };
 
-export const reactiveRenderers = {
+const REACTIVE_RENDERERS = {
   'r:var': RVar,
   'r:display': RDisplay,
   'r:dynamic': RDynamic,
   'r:range': RRange,
 };
+
+export default REACTIVE_RENDERERS;

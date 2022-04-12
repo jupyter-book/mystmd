@@ -1,4 +1,4 @@
-import { NodeRenderer } from 'myst-util-to-react';
+import { NodeRenderer } from '~/myst-to-react';
 
 export const IFrame: NodeRenderer = (node) => {
   return (
@@ -35,6 +35,8 @@ export const IFrame: NodeRenderer = (node) => {
   );
 };
 
-export const iframeRenderers = {
+const IFRAME_RENDERERS = {
   iframe: IFrame,
 };
+
+export default IFRAME_RENDERERS;

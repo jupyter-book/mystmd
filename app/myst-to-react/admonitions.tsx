@@ -1,4 +1,5 @@
-import { NodeRenderer } from 'myst-util-to-react';
+import type * as spec from 'myst-spec';
+import { NodeRenderer } from '~/myst-to-react';
 import {
   InformationCircleIcon,
   ExclamationIcon as OExclamationIcon,
@@ -31,15 +32,16 @@ enum AdmonitionKind {
   warning = 'warning',
 }
 
-export const AdmonitionTitle: NodeRenderer = (node, children) => {
+export const AdmonitionTitle: NodeRenderer<spec.AdmonitionTitle> = (node, children) => {
   return children;
 };
 
-export const Admonition: NodeRenderer = (node, children) => {
+export const Admonition: NodeRenderer<spec.Admonition> = (node, children) => {
   const [title, ...rest] = children as any[];
 
   // TODO: react to classes as well!
-  const isAdmonition = !node.kind || node.kind === AdmonitionKind.admonition;
+  const isAdmonition =
+    !node.kind || (node.kind as string) === AdmonitionKind.admonition;
   const isAttention = node.kind === AdmonitionKind.attention;
   const isCaution = node.kind === AdmonitionKind.caution;
   const isDanger = node.kind === AdmonitionKind.danger;
@@ -93,7 +95,9 @@ export const Admonition: NodeRenderer = (node, children) => {
   );
 };
 
-export const admonitionRenderers = {
+const ADMONITION_RENDERERS = {
   admonition: Admonition,
   admonitionTitle: AdmonitionTitle,
 };
+
+export default ADMONITION_RENDERERS;

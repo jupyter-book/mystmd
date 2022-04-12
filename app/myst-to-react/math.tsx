@@ -1,4 +1,4 @@
-import { NodeRenderer } from 'myst-util-to-react';
+import { NodeRenderer } from '~/myst-to-react';
 import classNames from 'classnames';
 
 // function Math({ value, html }: { value: string; html: string }) {
@@ -51,7 +51,9 @@ const mathBlock =
     // return <Math key={node.key} html={node.html} value={node.value as string} />;
   };
 
-export const mathRenderers = {
+const MATH_RENDERERS = {
   math: mathBlock(true),
   inlineMath: mathBlock(false),
 };
+
+export default MATH_RENDERERS;

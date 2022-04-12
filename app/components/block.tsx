@@ -1,11 +1,10 @@
-import { NodeRenderer, useParse } from 'myst-util-to-react';
+import { NodeRenderer, useParse, DEFAULT_RENDERERS } from '~/myst-to-react';
 import type { GenericParent } from 'mystjs';
-import { defaultRenderers } from './renderers';
 
 export function ContentBlock({
   id,
   node,
-  renderers = defaultRenderers,
+  renderers = DEFAULT_RENDERERS,
 }: {
   id: string;
   node: GenericParent;

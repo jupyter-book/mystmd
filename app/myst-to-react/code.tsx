@@ -1,9 +1,9 @@
 import type { Code } from 'myst-spec';
-import { NodeRenderer } from 'myst-util-to-react';
+import { NodeRenderer } from '~/myst-to-react';
+import { useTheme } from '~/components/theme';
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 import light from 'react-syntax-highlighter/dist/cjs/styles/hljs/xcode';
 import dark from 'react-syntax-highlighter/dist/cjs/styles/hljs/vs2015';
-import { useTheme } from '../theme';
 import { useEffect, useRef, useState } from 'react';
 import { copyTextToClipboard } from '~/utils';
 import classNames from 'classnames';
@@ -103,6 +103,8 @@ const code: NodeRenderer<Code> = (node) => {
   );
 };
 
-export const codeRenderers = {
+const CODE_RENDERERS = {
   code,
 };
+
+export default CODE_RENDERERS;

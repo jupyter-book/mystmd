@@ -86,7 +86,3 @@ export const NativeJupyterOutputs = ({
     </>
   );
 };
-
-export const outputRenderers = {
-  output: NativeJupyterOutputs,
-};

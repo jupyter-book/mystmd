@@ -3,9 +3,7 @@
     "title": "Interactive Components",
     "description": "How does open-science allow us to reimagine how we stand on the shoulders of giants?",
     "date": "2021-01-27T18:55:00.000Z",
-    "author": [
-      "@rowanc1"
-    ],
+    "author": ["@rowanc1"],
     "name": "communicating-science",
     "oxa": "oxa:AVQ2dzLNloEd25Io8NbA/qejlAHZA1c1plMBozBGl"
   },
@@ -19,6 +17,8 @@
           {
             "type": "heading",
             "depth": 2,
+            "enumerate": true,
+            "enumerator": "1.2",
             "children": [
               {
                 "type": "text",
@@ -763,9 +763,7 @@
           {
             "type": "code",
             "lang": "python",
-            "emphasizeLines": [
-              2
-            ],
+            "emphasizeLines": [2],
             "showLineNumbers": true,
             "value": "def five():\n  print('five')\n  return 5",
             "key": "YMSml3yWA3"

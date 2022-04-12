@@ -58,7 +58,3 @@ export function Output(node: GenericNode) {
     </figure>
   );
 }
-
-export const outputRenderers = {
-  output: Output,
-};

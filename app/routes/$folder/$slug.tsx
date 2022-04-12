@@ -12,7 +12,7 @@ import {
   Config,
 } from '~/utils';
 import { Footer } from '~/components/FooterLinks';
-import { Bibliography } from '../../components/renderers/cite';
+import { Bibliography } from '~/myst-to-react/cite';
 
 export const meta: MetaFunction = (args) => {
   const config = args.parentsData.root.config as Config | undefined;
