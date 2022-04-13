@@ -50,8 +50,9 @@ const mathRenderer: NodeRenderer<MathLike> = (node) => {
     }
     return (
       <div
-        className={classNames('relative', { 'mr-[25px]': node.enumerator })}
         key={node.key}
+        id={node.identifier}
+        className={classNames('relative', { 'mr-[25px]': node.enumerator })}
       >
         <div
           dangerouslySetInnerHTML={{ __html: node.html }}
