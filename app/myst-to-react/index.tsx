@@ -12,6 +12,7 @@ import IFRAME_RENDERERS from './iframe';
 import LINK_RENDERERS from './links';
 import OUTPUT_RENDERERS from './output';
 import HEADING_RENDERERS from './heading';
+import CROSS_REFERENCE_RENDERERS from './crossReference';
 
 export type { NodeRenderer } from './types';
 
@@ -27,6 +28,7 @@ export const DEFAULT_RENDERERS: Record<string, NodeRenderer> = {
   ...REACTIVE_RENDERERS,
   ...OUTPUT_RENDERERS,
   ...HEADING_RENDERERS,
+  ...CROSS_REFERENCE_RENDERERS,
 };
 
 export function useParse(

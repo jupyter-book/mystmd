@@ -2,6 +2,7 @@ import { NodeRenderer } from '~/myst-to-react';
 import classNames from 'classnames';
 import { ExclamationIcon } from '@heroicons/react/outline';
 import { InlineMath, Math } from 'myst-spec';
+import { InlineError } from './inlineError';
 
 // function Math({ value, html }: { value: string; html: string }) {
 //   const [loaded, setLoaded] = useState(false);
@@ -67,12 +68,7 @@ const mathRenderer: NodeRenderer<MathLike> = (node) => {
     );
   }
   if (node.error || !node.html) {
-    return (
-      <span key={node.key} className="text-yellow-600" title={node.message}>
-        <ExclamationIcon className="inline h-[1em] mr-1" />
-        {node.value}
-      </span>
-    );
+    return <InlineError key={node.key} value={node.value} message={node.message} />;
   }
   return <span key={node.key} dangerouslySetInnerHTML={{ __html: node.html }} />;
   // return <Math key={node.key} html={node.html} value={node.value as string} />;

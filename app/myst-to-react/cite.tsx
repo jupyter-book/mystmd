@@ -2,8 +2,8 @@ import classNames from 'classnames';
 import { NodeRenderer } from '~/myst-to-react';
 import { useReferences } from '~/components/ReferencesProvider';
 import { useState } from 'react';
-import ExclamationIcon from '@heroicons/react/outline/ExclamationIcon';
 import { ClickPopover } from './ClickPopover';
+import { InlineError } from './inlineError';
 
 function CiteChild({ label }: { label: string }) {
   const references = useReferences();
@@ -28,10 +28,7 @@ export const CiteGroup: NodeRenderer = (node, children) => {
 export const Cite: NodeRenderer = (node, children) => {
   if (node.error) {
     return (
-      <span key={node.key} className="text-yellow-600" title="Citation Not Found">
-        <ExclamationIcon className="inline h-[1em] mr-1" />
-        {node.label}
-      </span>
+      <InlineError key={node.key} value={node.label} message={'Citation Not Found'} />
     );
   }
   return (

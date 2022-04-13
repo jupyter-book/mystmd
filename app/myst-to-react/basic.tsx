@@ -41,7 +41,6 @@ type BasicNodeRenderers = {
   caption: NodeRenderer<spec.Caption>;
   blockquote: NodeRenderer<spec.Blockquote>;
   thematicBreak: NodeRenderer<spec.ThematicBreak>;
-  crossReference: NodeRenderer<spec.CrossReference>;
   subscript: NodeRenderer<spec.Subscript>;
   superscript: NodeRenderer<spec.Superscript>;
   abbr: NodeRenderer<spec.Abbreviation>;
@@ -128,13 +127,6 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   },
   thematicBreak(node) {
     return <hr key={node.key} />;
-  },
-  crossReference(node, children) {
-    return (
-      <a key={node.key} href={`#${node.identifier}`}>
-        {children}
-      </a>
-    );
   },
   // TODO: This doesn't exist in the spec
   captionNumber(node, children) {
