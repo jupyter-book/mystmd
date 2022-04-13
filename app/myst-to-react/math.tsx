@@ -32,16 +32,16 @@ const mathBlock =
     if (displayMode) {
       return (
         <div
-          className={classNames('relative', { 'mr-[25px]': node.numbered })}
+          className={classNames('relative', { 'mr-[25px]': node.enumerator })}
           key={node.key}
         >
           <div
             dangerouslySetInnerHTML={{ __html: node.html }}
             className="overflow-x-auto"
           />
-          {node.numbered && (
+          {node.enumerator && (
             <div className="absolute right-[-25px] m-0 top-[50%] translate-y-[-50%]">
-              ({node.number})
+              ({node.enumerator})
             </div>
           )}
         </div>
