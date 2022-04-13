@@ -25,6 +25,10 @@ type Underline = {
   type: 'underline';
 };
 
+type SmallCaps = {
+  type: 'smallcaps';
+};
+
 type BasicNodeRenderers = {
   strong: NodeRenderer<spec.Strong>;
   emphasis: NodeRenderer<spec.Emphasis>;
@@ -55,6 +59,7 @@ type BasicNodeRenderers = {
   captionNumber: NodeRenderer<{ kind: string }>;
   strike: NodeRenderer<Strike>;
   underline: NodeRenderer<Underline>;
+  smallcaps: NodeRenderer<SmallCaps>;
 };
 
 const BASIC_RENDERERS: BasicNodeRenderers = {
@@ -70,6 +75,13 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   underline(node, children) {
     return (
       <span key={node.key} style={{ textDecoration: 'underline' }}>
+        {children}
+      </span>
+    );
+  },
+  smallcaps(node, children) {
+    return (
+      <span key={node.key} style={{ fontVariant: 'small-caps' }}>
         {children}
       </span>
     );
