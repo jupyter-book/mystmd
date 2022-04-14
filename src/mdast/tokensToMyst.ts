@@ -551,7 +551,7 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
         return child;
       })
       ?.flat();
-    node.children = children;
+    if (children !== undefined) node.children = children;
     return node;
   }) as Root;
 
