@@ -69,7 +69,7 @@ export const ZERO = CreativeCommons(
 );
 
 export function CreativeCommonsBadge({ license }: { license: string }) {
-  const match = /^([CBYSAND0-]+)-?([0-9].[0-9])?$/.exec(license);
+  const match = /^([CBYSAND0-]+)(?:(?:-)([0-9].[0-9]))?$/.exec(license);
   if (!match) return null;
   const kind = match[1].toUpperCase();
   const version = match[2] ?? '4.0';
