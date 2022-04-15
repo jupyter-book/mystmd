@@ -48,8 +48,6 @@ r-dynamic {
   color: #286df7;
   border-bottom: dotted 1px #285bc1;
 }
-.caption-number {
-  font-weight: 700;
-  margin-right: 0.5em;
-  user-select: none;
+.smallcaps {
+  font-variant: small-caps;
 }

@@ -143,7 +143,7 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   // TODO: This doesn't exist in the spec
   captionNumber(node, children) {
     return (
-      <span key={node.key} className="caption-number">
+      <span key={node.key} className="font-bold mr-1 select-none">
         {getCaptionStart(node.kind)} {children}:
       </span>
     );

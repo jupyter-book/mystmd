@@ -2,8 +2,20 @@
   "sha256": "27e2c31f658ed0f60571702c2d63d786d3f9187aee24265daeee03c51164c05c",
   "frontmatter": {
     "title": "Admonitions",
+    "subtitle": "also known as Callouts",
     "description": "Custom admonitions",
     "date": "2021-06-02T22:55:21.252Z",
+    "subject": "Formatting",
+    "open_access": true,
+    "license": "CC-BY",
+    "doi": "10.1016/j.cageo.2015.09.015",
+    "github": "curvenote/curvespace",
+    "journal": {
+      "title": "Curve Space",
+      "url": "https://curve.space",
+      "volume": 12,
+      "issue": 1
+    },
     "authors": [
       {
         "name": "Rowan Cockett",
