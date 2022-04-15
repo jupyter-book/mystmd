@@ -14,7 +14,7 @@ import {
 } from './utils';
 import { map } from 'unist-util-map';
 import { selectAll } from 'unist-util-select';
-import { ensureCaptionIsParagraph } from './transforms';
+import { ensureCaptionIsParagraph, liftChildren } from './transforms';
 
 export type Options = {
   handlers?: Record<string, Spec>;
@@ -544,16 +544,7 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
   remove(tree, '_remove');
 
   // Lift up all nodes that are named "lift"
-  tree = map(tree, (node: GenericNode) => {
-    const children = node.children
-      ?.map((child: GenericNode) => {
-        if (child.type === '_lift' && child.children) return child.children;
-        return child;
-      })
-      ?.flat();
-    if (children !== undefined) node.children = children;
-    return node;
-  }) as Root;
+  liftChildren(tree, '_lift');
 
   // Remove unnecessary admonition titles from AST
   // These are up to the serializer to put in
