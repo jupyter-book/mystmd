@@ -16,8 +16,8 @@ function CreativeCommons(
         className={className}
       >
         <circle fill="#FFFFFF" {...circle} />
-        {paths.map((path) => (
-          <path d={path} />
+        {paths.map((path, index) => (
+          <path key={index} d={path} />
         ))}
       </svg>
     </span>
