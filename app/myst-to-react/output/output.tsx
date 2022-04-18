@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { SafeOutputs } from './safe';
 import { NativeJupyterOutputs as JupyterOutputs } from './jupyter';
 
-const DIRECT_OUTPUT_TYPES = new Set(['stream', 'error']);
+const DIRECT_OUTPUT_TYPES = new Set(['stream']);
 
 const DIRECT_MIME_TYPES = new Set([
   KnownCellOutputMimeTypes.TextPlain,
