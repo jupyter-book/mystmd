@@ -1,9 +1,10 @@
+import { GenericNode, MyST, map } from 'mystjs';
 import { CitationRenderer } from 'citation-js-utils';
-import { GenericNode, MyST } from 'mystjs';
 import { Frontmatter } from '../frontmatter';
 import { IDocumentCache } from '../types';
 
 export type Root = ReturnType<typeof MyST.prototype.parse>;
+export type MapResult = ReturnType<typeof map>;
 
 export type Citations = {
   order: string[];

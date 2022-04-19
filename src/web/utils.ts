@@ -22,7 +22,7 @@ export function ensureBuildFolderExists(opts: Options) {
   if (!exists(opts)) fs.mkdirSync(serverPath(opts), { recursive: true });
 }
 
-export function parseMyst(content: string) {
+export function parseMyst(content: string): Root {
   const myst = new MyST({
     roles: { ...reactiveRoles },
     directives: { ...directives },

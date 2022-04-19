@@ -1,7 +1,7 @@
 import { State, transform, unified } from 'mystjs';
 import { Root } from './types';
 
-export async function transformRoot(mdast: Root) {
+export async function transformRoot(mdast: Root): Promise<Root> {
   const state = new State();
   mdast = await unified()
     .use(transform, state, { addContainerCaptionNumbers: true })
