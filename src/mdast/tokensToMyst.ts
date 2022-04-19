@@ -12,7 +12,6 @@ import {
   setTextAsChild,
   withoutTrailingNewline,
 } from './utils';
-import { map } from 'unist-util-map';
 import { selectAll } from 'unist-util-select';
 import { ensureCaptionIsParagraph, liftChildren } from './transforms';
 
