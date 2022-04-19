@@ -31,7 +31,8 @@
         { "title": "Interactive Components", "slug": "interactive", "level": 2 },
         { "title": "Juptyer Outputs", "slug": "outputs", "level": 2 },
         { "title": "Examples", "slug": "examples", "level": 2 },
-        { "title": "Tables", "slug": "tables", "level": 2 }
+        { "title": "Tables", "slug": "tables", "level": 2 },
+        { "title": "Links", "slug": "links", "level": 2 }
       ]
     }
   }
