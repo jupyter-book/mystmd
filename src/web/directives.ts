@@ -226,6 +226,50 @@ const Mdast: IDirective = {
   hast: (h, node) => h(node, 'div', { id: node.id }),
 };
 
+const LinkBlock: IDirective = {
+  myst: class LinkBlock extends Directive {
+    public required_arguments = 1;
+
+    public optional_arguments = 0;
+
+    public final_argument_whitespace = false;
+
+    public has_content = true;
+
+    public option_spec = {
+      title: directiveOptions.unchanged,
+      thumbnail: directiveOptions.unchanged,
+    };
+
+    run(data: IDirectiveData<keyof LinkBlock['option_spec']>) {
+      const newTokens: Token[] = [];
+      const openToken = this.createToken('linkBlock_open', 'a', 1, {
+        map: data.map,
+        block: true,
+        meta: { url: data.args[0] },
+      });
+      newTokens.push(openToken);
+      const bodyTokens = this.nestedParse(data.body, data.bodyMap[0]);
+      newTokens.push(...bodyTokens);
+      newTokens.push(this.createToken('linkBlock_close', 'a', -1, { block: true }));
+      return newTokens;
+    }
+  },
+  mdast: {
+    type: 'linkBlock',
+    noCloseToken: false,
+    isLeaf: false,
+    getAttrs(t) {
+      return {
+        url: t.meta.url,
+        title: t.meta.title || undefined,
+        thumbnail: t.meta.thumbnail || undefined,
+      };
+    },
+  },
+  hast: (h, node) => h(node, 'a'),
+};
+
 export const directives = {
   'r:var': RVar,
   mdast: Mdast,
@@ -233,4 +277,6 @@ export const directives = {
   iframe: IFrame,
   margin: Margin,
   output: Output,
+  'link-block': LinkBlock,
+  linkBlock: LinkBlock,
 };
