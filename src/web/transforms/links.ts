@@ -29,7 +29,9 @@ export function transformLinks(mdast: Root, lookup: LinkLookup): boolean {
       if (link.type === 'linkBlock') {
         // Any values already present on the block override link info
         link.title = link.title || lookup[key].title;
-        link.children = link.children || [{ type: 'text', value: lookup[key].description }];
+        if (!link.children || link.children.length === 0) {
+          link.children = [{ type: 'text', value: lookup[key].description }];
+        }
         link.thumbnail = link.thumbnail || lookup[key].thumbnail;
       }
     }
