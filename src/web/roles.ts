@@ -163,6 +163,26 @@ const Underline: IRole = {
   },
 };
 
+const SmallCaps: IRole = {
+  myst: class SmallCaps extends Role {
+    run(data: IRoleData) {
+      const open = new this.state.Token('smallcaps_open', 'u', 1);
+      const text = new this.state.Token('text', '', 0);
+      text.content = data.content;
+      const close = new this.state.Token('smallcaps_close', 'u', -1);
+      return [open, text, close];
+    }
+  },
+  mdast: {
+    type: 'smallcaps',
+    noCloseToken: false,
+    isLeaf: false,
+  },
+  hast() {
+    return null;
+  },
+};
+
 export const reactiveRoles: Record<string, IRole> = {
   'r:dynamic': RDynamic,
   'r:display': RDisplay,
@@ -172,5 +192,7 @@ export const reactiveRoles: Record<string, IRole> = {
   cite_group: CiteP,
   'cite:t': CiteT,
   u: Underline,
+  sc: SmallCaps,
   underline: Underline,
+  smallcaps: SmallCaps,
 };

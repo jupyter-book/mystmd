@@ -14,9 +14,9 @@ import { GenericNode, selectAll } from 'mystjs';
 import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
 import { IDocumentCache, Options, SiteConfig } from './types';
-import { parseMyst, publicPath, RendererData, serverPath, transformMdast } from './utils';
+import { parseMyst, publicPath, serverPath } from './utils';
 
-import { LinkLookup, transformLinks } from './transforms';
+import { LinkLookup, RendererData, transformLinks, transformMdast } from './transforms';
 import { copyImages, readConfig } from './webConfig';
 import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
@@ -233,7 +233,7 @@ export class DocumentCache implements IDocumentCache {
     }
     this.$processed[id] = data;
     const { oxa } = data.frontmatter ?? {};
-    if (oxa) {
+    if (oxa && typeof oxa === 'string') {
       this.$links[oxa] = `/${id}`;
     }
   }
