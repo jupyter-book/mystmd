@@ -57,7 +57,7 @@ export function liftChildren(tree: Root, nodeType: string) {
         return child;
       })
       ?.flat();
-    node.children = children;
+    if (children !== undefined) node.children = children;
     return node;
   });
 }
