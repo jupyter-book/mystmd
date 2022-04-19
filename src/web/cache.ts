@@ -234,7 +234,12 @@ export class DocumentCache implements IDocumentCache {
     this.$processed[id] = data;
     const { oxa } = data.frontmatter ?? {};
     if (oxa && typeof oxa === 'string') {
-      this.$links[oxa] = `/${id}`;
+      this.$links[oxa] = {
+        url: `/${id}`,
+        title: data.frontmatter.title || undefined,
+        description: data.frontmatter.description || undefined,
+        thumbnail: undefined,
+      };
     }
   }
 
