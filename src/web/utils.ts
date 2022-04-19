@@ -4,6 +4,7 @@ import { MyST } from 'mystjs';
 import { Options } from './types';
 import { reactiveRoles } from './roles';
 import { directives } from './directives';
+import { Root } from './transforms/types';
 
 export function serverPath(opts: Options) {
   const buildPath = opts.buildPath || '_build';
