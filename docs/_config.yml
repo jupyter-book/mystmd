@@ -2,7 +2,7 @@
 # Learn more at https://jupyterbook.org/customize/config.html
 
 title: ''
-author: Franklin Koch <franklin@curvenote.com>
+author: Executable Book Project
 logo: images/logo-wide.svg
 
 # Force re-execution of notebooks on each build.
@@ -26,4 +26,4 @@ html:
   use_issues_button: true
   use_repository_button: true
   use_edit_page_button: true
-  extra_navbar: Written in <a href="https://curvenote.com">Curvenote</a>
+  extra_navbar: Maintained by <a href="https://executablebooks.org">Executable Books</a>
