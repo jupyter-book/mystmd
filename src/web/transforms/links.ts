@@ -20,7 +20,7 @@ export function transformLinks(mdast: Root, lookup: LinkLookup): boolean {
     if (!oxa) return;
     link.oxa = oxa;
     const key = oxaLink(oxa, false) as string;
-    const { url } = lookup[key];
+    const url = lookup[key]?.url;
     if (url && url !== link.url) {
       changed += 1;
       // the `internal` flag is picked up in the link renderer (prefetch!)
