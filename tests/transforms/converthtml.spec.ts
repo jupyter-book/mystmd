@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import { Root } from 'mdast';
-import { convertHtmlToMdast, State } from '../../src';
+import { convertHtmlToMdast } from '../../src';
 
 type TestFile = {
   cases: TestCase[];

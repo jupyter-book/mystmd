@@ -2,7 +2,7 @@ import { Root } from 'mdast';
 import { unified, Plugin } from 'unified';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
-import { all } from 'hast-util-to-mdast';
+import { all, H, Handle } from 'hast-util-to-mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAfter } from 'unist-util-find-after';
@@ -15,11 +15,22 @@ import { EnumeratorOptions, State, enumerateTargets, resolveReferences } from '.
 export type TransformOptions = {
   addAdmonitionHeaders?: boolean;
   addContainerCaptionNumbers?: boolean;
+  htmlHandlers?: { [x: string]: Handle };
 } & EnumeratorOptions;
 
-const defaultOptions: Record<keyof TransformOptions, boolean> = {
+const defaultOptions: Record<keyof TransformOptions, any> = {
   addAdmonitionHeaders: true,
   addContainerCaptionNumbers: true,
+  htmlHandlers: {
+    table(h: H, node: any) {
+      return h(node, 'table', all(h, node));
+    },
+    th(h: H, node: any) {
+      const result = h(node, 'tableCell', all(h, node));
+      (result as GenericNode).header = true;
+      return result;
+    },
+  },
   disableHeadingEnumeration: false,
   disableContainerEnumeration: false,
   disableEquationEnumeration: false,
@@ -107,22 +118,17 @@ export function ensureCaptionIsParagraph(tree: Root) {
   });
 }
 
-export function convertHtmlToMdast(tree: Root) {
+export function convertHtmlToMdast(tree: Root, opts?: TransformOptions) {
+  const updatedOpts = {
+    ...defaultOptions,
+    ...opts,
+  };
   const htmlNodes = selectAll('html', tree);
   htmlNodes.forEach((node: GenericNode) => {
     const hast = unified().use(rehypeParse, { fragment: true }).parse(node.value);
     const mdast = unified()
       .use(rehypeRemark, {
-        handlers: {
-          table(h, node) {
-            return h(node, 'table', all(h, node));
-          },
-          th(h, node) {
-            const result = h(node, 'tableCell', all(h, node));
-            (result as GenericNode).header = true;
-            return result;
-          },
-        },
+        handlers: updatedOpts.htmlHandlers,
       })
       .runSync(hast);
     node.type = 'htmlParsed';
