@@ -23,12 +23,17 @@ export enum ReferenceKind {
 type Target = {
   node: GenericNode;
   kind: TargetKind;
-  enumerator?: string;
 };
 
 type TargetCounts = {
   heading?: (number | null)[];
 } & Record<string, number>;
+
+export type EnumeratorOptions = {
+  disableHeadingEnumeration?: boolean;
+  disableContainerEnumeration?: boolean;
+  disableEquationEnumeration?: boolean;
+};
 
 /**
  * See https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-numref
@@ -103,7 +108,6 @@ export class State {
         this.targets[node.identifier] = {
           node: copyNode(node),
           kind: kind as TargetKind,
-          enumerator: enumerator === null ? undefined : enumerator,
         };
       }
     }
@@ -162,9 +166,9 @@ export class State {
       },
     };
     const noNodeChildren = !node.children?.length;
-    if (kinds.ref.eq && kinds.target.math && target.enumerator) {
+    if (kinds.ref.eq && kinds.target.math && target.node.enumerator) {
       if (noNodeChildren) {
-        setTextAsChild(node, `(${target.enumerator})`);
+        setTextAsChild(node, `(${target.node.enumerator})`);
       }
       node.resolved = true;
     } else if (kinds.ref.ref && kinds.target.heading) {
@@ -178,27 +182,33 @@ export class State {
         node.children = copyNode(caption).children;
       }
       node.resolved = true;
-    } else if (kinds.ref.numref && kinds.target.figure && target.enumerator) {
+    } else if (kinds.ref.numref && kinds.target.figure && target.node.enumerator) {
       if (noNodeChildren) {
         setTextAsChild(node, 'Figure %s');
       }
-      fillReferenceEnumerators(node, target.enumerator);
+      fillReferenceEnumerators(node, target.node.enumerator);
       node.resolved = true;
-    } else if (kinds.ref.numref && kinds.target.table && target.enumerator) {
+    } else if (kinds.ref.numref && kinds.target.table && target.node.enumerator) {
       if (noNodeChildren) {
         setTextAsChild(node, 'Table %s');
       }
-      fillReferenceEnumerators(node, target.enumerator);
+      fillReferenceEnumerators(node, target.node.enumerator);
       node.resolved = true;
     }
   }
 }
 
-export const addEnumeratorsToNodes = (state: State, tree: Root) => {
+export const enumerateTargets = (state: State, tree: Root, opts: EnumeratorOptions) => {
   state.initializeNumberedHeadingDepths(tree);
-  visit(tree, 'container', (node: GenericNode) => state.addTarget(node));
-  visit(tree, 'math', (node: GenericNode) => state.addTarget(node));
-  visit(tree, 'heading', (node) => state.addTarget(node as GenericNode));
+  if (!opts.disableContainerEnumeration) {
+    visit(tree, 'container', (node: GenericNode) => state.addTarget(node));
+  }
+  if (!opts.disableEquationEnumeration) {
+    visit(tree, 'math', (node: GenericNode) => state.addTarget(node));
+  }
+  if (!opts.disableHeadingEnumeration) {
+    visit(tree, 'heading', (node) => state.addTarget(node as GenericNode));
+  }
   return tree;
 };
 

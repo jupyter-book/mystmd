@@ -165,6 +165,45 @@ cases:
             - type: text
               value: two.zero.one
           enumerator: '2.0.1'
+  - title: heading numbering - disabled
+    opts:
+      disableHeadingEnumeration: true
+    before:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: three
+    after:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: three
   - title: math numbering
     before:
       type: root
@@ -189,6 +228,8 @@ cases:
           value: Fx = g
           enumerator: '2'
   - title: math numbering - inside directive
+    opts:
+      disableEquationEnumeration: false
     before:
       type: root
       children:
@@ -221,6 +262,29 @@ cases:
             - type: math
               value: Cx = d
               enumerator: '2'
+  - title: math numbering - disabled
+    opts:
+      disableEquationEnumeration: true
+    before:
+      type: root
+      children:
+        - type: math
+          value: Ax = b
+        - type: math
+          value: Cx = d
+          enumerated: false
+        - type: math
+          value: Fx = g
+    after:
+      type: root
+      children:
+        - type: math
+          value: Ax = b
+        - type: math
+          value: Cx = d
+          enumerated: false
+        - type: math
+          value: Fx = g
   - title: container numbering
     before:
       type: root
@@ -501,3 +565,62 @@ cases:
                       children:
                         - type: text
                           value: Row 1, Column 2
+  - title: container numbering - disabled
+    opts:
+      disableContainerEnumeration: true
+    before:
+      type: root
+      children:
+        - type: mystDirective
+          kind: figure
+          args: https://via.placeholder.com/150
+          value: |-
+            This is the figure caption!
+
+            Something! A legend!?
+          children:
+            - type: container
+              kind: figure
+              children:
+                - type: image
+                  url: https://via.placeholder.com/150
+                - type: caption
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: This is the figure caption!
+                - type: legend
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Something! A legend!?
+    after:
+      type: root
+      children:
+        - type: mystDirective
+          kind: figure
+          args: https://via.placeholder.com/150
+          value: |-
+            This is the figure caption!
+
+            Something! A legend!?
+          children:
+            - type: container
+              kind: figure
+              children:
+                - type: image
+                  url: https://via.placeholder.com/150
+                - type: caption
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: This is the figure caption!
+                - type: legend
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Something! A legend!?

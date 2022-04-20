@@ -7,16 +7,19 @@ import { remove } from 'unist-util-remove';
 import { map } from 'unist-util-map';
 import { Admonition, AdmonitionKind, GenericNode } from './types';
 import { admonitionKindToTitle, normalizeLabel } from './utils';
-import { State, addEnumeratorsToNodes, resolveReferences } from './state';
+import { EnumeratorOptions, State, enumerateTargets, resolveReferences } from './state';
 
 export type Options = {
   addAdmonitionHeaders?: boolean;
   addContainerCaptionNumbers?: boolean;
-};
+} & EnumeratorOptions;
 
-const defaultOptions: Record<keyof Options, true> = {
+const defaultOptions: Record<keyof Options, boolean> = {
   addAdmonitionHeaders: true,
   addContainerCaptionNumbers: true,
+  disableHeadingEnumeration: false,
+  disableContainerEnumeration: false,
+  disableEquationEnumeration: false,
 };
 
 // Visit all admonitions and add headers if necessary
@@ -38,7 +41,7 @@ export function addContainerCaptionNumbers(tree: Root, state: State) {
   selectAll('container', tree)
     .filter((container: GenericNode) => container.enumerator !== false)
     .forEach((container: GenericNode) => {
-      const enumerator = state.getTarget(container.identifier)?.enumerator;
+      const enumerator = state.getTarget(container.identifier)?.node.enumerator;
       const para = select('caption > paragraph', container) as GenericNode;
       if (enumerator && para) {
         para.children = [
@@ -109,7 +112,7 @@ export const transform: Plugin<[State, Options?], string, Root> =
     };
     ensureCaptionIsParagraph(tree);
     propagateTargets(tree);
-    addEnumeratorsToNodes(state, tree);
+    enumerateTargets(state, tree, opts);
     resolveReferences(state, tree);
     liftChildren(tree, 'mystDirective');
     liftChildren(tree, 'mystRole');
