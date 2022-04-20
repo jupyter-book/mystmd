@@ -91,13 +91,13 @@ export class State {
     this.targets = targets || {};
   }
 
-  addTarget(node: GenericNode) {
+  addTarget(node: GenericNode, updateEnumeratorValues = true) {
     const kind = kindFromNode(node);
     if (kind && kind in TargetKind) {
       let enumerator = null;
       if (node.enumerated !== false) {
         enumerator = this.incrementCount(node, kind as TargetKind);
-        node.enumerator = enumerator;
+        if (updateEnumeratorValues) node.enumerator = enumerator;
       }
       if (node.identifier) {
         this.targets[node.identifier] = {
@@ -194,11 +194,21 @@ export class State {
   }
 }
 
-export const addEnumeratorsToNodes = (state: State, tree: Root) => {
+export const enumerateTargets = (
+  state: State,
+  tree: Root,
+  updateEnumeratorValues = true,
+) => {
   state.initializeNumberedHeadingDepths(tree);
-  visit(tree, 'container', (node: GenericNode) => state.addTarget(node));
-  visit(tree, 'math', (node: GenericNode) => state.addTarget(node));
-  visit(tree, 'heading', (node) => state.addTarget(node as GenericNode));
+  visit(tree, 'container', (node: GenericNode) =>
+    state.addTarget(node, updateEnumeratorValues),
+  );
+  visit(tree, 'math', (node: GenericNode) =>
+    state.addTarget(node, updateEnumeratorValues),
+  );
+  visit(tree, 'heading', (node) =>
+    state.addTarget(node as GenericNode, updateEnumeratorValues),
+  );
   return tree;
 };
 
