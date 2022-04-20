@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { CitationRenderer } from 'citation-js-utils';
-import { GenericNode, selectAll } from 'mystjs';
+import { convertHtmlToMdast, GenericNode, selectAll } from 'mystjs';
 import { IDocumentCache } from '../types';
 import { transformRoot } from './root';
 import { transformMath } from './math';
@@ -68,6 +68,7 @@ export async function transformMdast(
   // The transforms from MyST (structural mostly)
   mdast = await transformRoot(mdast);
   [
+    convertHtmlToMdast,
     transformMath,
     transformImages,
     transformOutputs,
