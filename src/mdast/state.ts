@@ -30,9 +30,9 @@ type TargetCounts = {
 } & Record<string, number>;
 
 export type EnumeratorOptions = {
-  noHeadingEnumeration?: boolean;
-  noContainerEnumeration?: boolean;
-  noEquationEnumeration?: boolean;
+  disableHeadingEnumeration?: boolean;
+  disableContainerEnumeration?: boolean;
+  disableEquationEnumeration?: boolean;
 };
 
 /**
@@ -200,13 +200,13 @@ export class State {
 
 export const enumerateTargets = (state: State, tree: Root, opts: EnumeratorOptions) => {
   state.initializeNumberedHeadingDepths(tree);
-  if (!opts.noContainerEnumeration) {
+  if (!opts.disableContainerEnumeration) {
     visit(tree, 'container', (node: GenericNode) => state.addTarget(node));
   }
-  if (!opts.noEquationEnumeration) {
+  if (!opts.disableEquationEnumeration) {
     visit(tree, 'math', (node: GenericNode) => state.addTarget(node));
   }
-  if (!opts.noHeadingEnumeration) {
+  if (!opts.disableHeadingEnumeration) {
     visit(tree, 'heading', (node) => state.addTarget(node as GenericNode));
   }
   return tree;

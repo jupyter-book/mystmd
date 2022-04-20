@@ -17,9 +17,9 @@ export type Options = {
 const defaultOptions: Record<keyof Options, boolean> = {
   addAdmonitionHeaders: true,
   addContainerCaptionNumbers: true,
-  noHeadingEnumeration: false,
-  noContainerEnumeration: false,
-  noEquationEnumeration: false,
+  disableHeadingEnumeration: false,
+  disableContainerEnumeration: false,
+  disableEquationEnumeration: false,
 };
 
 // Visit all admonitions and add headers if necessary
