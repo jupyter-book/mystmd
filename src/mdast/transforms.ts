@@ -1,6 +1,6 @@
 import { Root } from 'mdast';
 import { unified, Plugin } from 'unified';
-import rehypeParse from 'rehype-parse';
+import rehypeParse, { Options } from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
 import { all, H, Handle } from 'hast-util-to-mdast';
 import { visit } from 'unist-util-visit';
@@ -125,7 +125,9 @@ export function convertHtmlToMdast(tree: Root, opts?: TransformOptions) {
   };
   const htmlNodes = selectAll('html', tree);
   htmlNodes.forEach((node: GenericNode) => {
-    const hast = unified().use(rehypeParse, { fragment: true }).parse(node.value);
+    const hast = unified()
+      .use(rehypeParse, { fragment: true } as Options)
+      .parse(node.value);
     const mdast = unified()
       .use(rehypeRemark, {
         handlers: updatedOpts.htmlHandlers,
