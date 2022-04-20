@@ -11,6 +11,7 @@ type TestCase = {
   title: string;
   before: Root;
   after: Root;
+  opts?: Record<string, boolean>;
 };
 
 const directory = path.join('tests', 'transforms');
@@ -22,8 +23,8 @@ const cases = (yaml.load(testYaml) as TestFile).cases;
 describe('enumerateTargets', () => {
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
-    (_, { before, after }) => {
-      const transformed = enumerateTargets(new State(), before as Root);
+    (_, { before, after, opts }) => {
+      const transformed = enumerateTargets(new State(), before as Root, opts || {});
       expect(yaml.dump(transformed)).toEqual(yaml.dump(after));
     },
   );

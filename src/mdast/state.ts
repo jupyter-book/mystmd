@@ -23,12 +23,17 @@ export enum ReferenceKind {
 type Target = {
   node: GenericNode;
   kind: TargetKind;
-  enumerator?: string;
 };
 
 type TargetCounts = {
   heading?: (number | null)[];
 } & Record<string, number>;
+
+export type EnumeratorOptions = {
+  noHeadingEnumeration?: boolean;
+  noContainerEnumeration?: boolean;
+  noEquationEnumeration?: boolean;
+};
 
 /**
  * See https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-numref
@@ -91,19 +96,18 @@ export class State {
     this.targets = targets || {};
   }
 
-  addTarget(node: GenericNode, updateEnumeratorValues = true) {
+  addTarget(node: GenericNode) {
     const kind = kindFromNode(node);
     if (kind && kind in TargetKind) {
       let enumerator = null;
       if (node.enumerated !== false) {
         enumerator = this.incrementCount(node, kind as TargetKind);
-        if (updateEnumeratorValues) node.enumerator = enumerator;
+        node.enumerator = enumerator;
       }
       if (node.identifier) {
         this.targets[node.identifier] = {
           node: copyNode(node),
           kind: kind as TargetKind,
-          enumerator: enumerator === null ? undefined : enumerator,
         };
       }
     }
@@ -162,9 +166,9 @@ export class State {
       },
     };
     const noNodeChildren = !node.children?.length;
-    if (kinds.ref.eq && kinds.target.math && target.enumerator) {
+    if (kinds.ref.eq && kinds.target.math && target.node.enumerator) {
       if (noNodeChildren) {
-        setTextAsChild(node, `(${target.enumerator})`);
+        setTextAsChild(node, `(${target.node.enumerator})`);
       }
       node.resolved = true;
     } else if (kinds.ref.ref && kinds.target.heading) {
@@ -178,37 +182,33 @@ export class State {
         node.children = copyNode(caption).children;
       }
       node.resolved = true;
-    } else if (kinds.ref.numref && kinds.target.figure && target.enumerator) {
+    } else if (kinds.ref.numref && kinds.target.figure && target.node.enumerator) {
       if (noNodeChildren) {
         setTextAsChild(node, 'Figure %s');
       }
-      fillReferenceEnumerators(node, target.enumerator);
+      fillReferenceEnumerators(node, target.node.enumerator);
       node.resolved = true;
-    } else if (kinds.ref.numref && kinds.target.table && target.enumerator) {
+    } else if (kinds.ref.numref && kinds.target.table && target.node.enumerator) {
       if (noNodeChildren) {
         setTextAsChild(node, 'Table %s');
       }
-      fillReferenceEnumerators(node, target.enumerator);
+      fillReferenceEnumerators(node, target.node.enumerator);
       node.resolved = true;
     }
   }
 }
 
-export const enumerateTargets = (
-  state: State,
-  tree: Root,
-  updateEnumeratorValues = true,
-) => {
+export const enumerateTargets = (state: State, tree: Root, opts: EnumeratorOptions) => {
   state.initializeNumberedHeadingDepths(tree);
-  visit(tree, 'container', (node: GenericNode) =>
-    state.addTarget(node, updateEnumeratorValues),
-  );
-  visit(tree, 'math', (node: GenericNode) =>
-    state.addTarget(node, updateEnumeratorValues),
-  );
-  visit(tree, 'heading', (node) =>
-    state.addTarget(node as GenericNode, updateEnumeratorValues),
-  );
+  if (!opts.noContainerEnumeration) {
+    visit(tree, 'container', (node: GenericNode) => state.addTarget(node));
+  }
+  if (!opts.noEquationEnumeration) {
+    visit(tree, 'math', (node: GenericNode) => state.addTarget(node));
+  }
+  if (!opts.noHeadingEnumeration) {
+    visit(tree, 'heading', (node) => state.addTarget(node as GenericNode));
+  }
   return tree;
 };
 
