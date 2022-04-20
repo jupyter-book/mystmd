@@ -1,0 +1,97 @@
+cases:
+  - title: paragraph
+    before:
+      type: root
+      children:
+        - type: html
+          value: <div><p>*some text*</p></div>
+    after:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: '*some text*'
+  - title: style
+    before:
+      type: root
+      children:
+        - type: html
+          value: <div><p><em>some text</em></p></div>
+    after:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: emphasis
+              children:
+                - type: text
+                  value: some text
+  - title: image
+    before:
+      type: root
+      children:
+        - type: html
+          value: <img src="example.jpg" title="example">
+    after:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: image
+              url: example.jpg
+              title: example
+              alt: ''
+  - title: table
+    before:
+      type: root
+      children:
+        - type: html
+          value: <table>
+            <tr>
+            <th>Person 1</th>
+            <th>Person 2</th>
+            <th>Person 3</th>
+            </tr>
+            <tr>
+            <td>Emil</td>
+            <td>Tobias</td>
+            <td>Linus</td>
+            </tr>
+            </table>
+    after:
+      type: root
+      children:
+        - type: table
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Person 1
+                  header: true
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Person 2
+                  header: true
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Person 3
+                  header: true
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Emil
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Tobias
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Linus

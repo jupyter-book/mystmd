@@ -1,5 +1,8 @@
 import { Root } from 'mdast';
-import { Plugin } from 'unified';
+import { unified, Plugin } from 'unified';
+import rehypeParse from 'rehype-parse';
+import rehypeRemark from 'rehype-remark';
+import { all, H, Handle } from 'hast-util-to-mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAfter } from 'unist-util-find-after';
@@ -9,14 +12,25 @@ import { Admonition, AdmonitionKind, GenericNode } from './types';
 import { admonitionKindToTitle, normalizeLabel } from './utils';
 import { EnumeratorOptions, State, enumerateTargets, resolveReferences } from './state';
 
-export type Options = {
+export type TransformOptions = {
   addAdmonitionHeaders?: boolean;
   addContainerCaptionNumbers?: boolean;
+  htmlHandlers?: { [x: string]: Handle };
 } & EnumeratorOptions;
 
-const defaultOptions: Record<keyof Options, boolean> = {
+const defaultOptions: Record<keyof TransformOptions, any> = {
   addAdmonitionHeaders: true,
   addContainerCaptionNumbers: true,
+  htmlHandlers: {
+    table(h: H, node: any) {
+      return h(node, 'table', all(h, node));
+    },
+    th(h: H, node: any) {
+      const result = h(node, 'tableCell', all(h, node));
+      (result as GenericNode).header = true;
+      return result;
+    },
+  },
   disableHeadingEnumeration: false,
   disableContainerEnumeration: false,
   disableEquationEnumeration: false,
@@ -104,7 +118,28 @@ export function ensureCaptionIsParagraph(tree: Root) {
   });
 }
 
-export const transform: Plugin<[State, Options?], string, Root> =
+export function convertHtmlToMdast(tree: Root, opts?: TransformOptions) {
+  const updatedOpts = {
+    ...defaultOptions,
+    ...opts,
+  };
+  const htmlNodes = selectAll('html', tree);
+  htmlNodes.forEach((node: GenericNode) => {
+    const hast = unified().use(rehypeParse, { fragment: true }).parse(node.value);
+    const mdast = unified()
+      .use(rehypeRemark, {
+        handlers: updatedOpts.htmlHandlers,
+      })
+      .runSync(hast);
+    node.type = 'htmlParsed';
+    node.children = mdast.children as GenericNode[];
+    visit(node, (n: GenericNode) => delete n.position);
+  });
+  liftChildren(tree, 'htmlParsed');
+  return tree;
+}
+
+export const transform: Plugin<[State, TransformOptions?], string, Root> =
   (state, o) => (tree: Root) => {
     const opts = {
       ...defaultOptions,
