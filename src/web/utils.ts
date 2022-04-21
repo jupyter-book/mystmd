@@ -4,9 +4,9 @@ import { Options } from './types';
 import { reactiveRoles } from './roles';
 import { directives } from './directives';
 import { Root } from './transforms/types';
-import { serverPath } from './transforms/images';
+import { serverPath } from './transforms';
 
-export { serverPath, publicPath } from './transforms/images';
+export { serverPath, publicPath } from './transforms';
 
 export function exists(opts: Options) {
   return fs.existsSync(serverPath(opts));

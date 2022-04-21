@@ -15,6 +15,7 @@ import { Frontmatter, getFrontmatter } from '../frontmatter';
 import { References, Root } from './types';
 import { tic } from '../../export/utils/exec';
 
+export { imagePath, publicPath, serverPath } from './images';
 export { LinkLookup, transformLinks } from './links';
 
 export interface RendererData {
