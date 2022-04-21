@@ -29,6 +29,7 @@ import {
   selectVersion,
   selectTemplate,
 } from './store/selectors';
+import { versionIdToURL } from './utils';
 
 export class MyUser extends BaseTransfer<string, MyUserDTO> {
   constructor(session: ISession) {
@@ -105,7 +106,7 @@ export class Version<T extends ALL_BLOCKS = ALL_BLOCKS> extends BaseTransfer<
 
   $fromDTO = versionFromDTO as (versionId: VersionId, json: JsonObject) => T;
 
-  $createUrl = () => `/blocks/${this.id.project}/${this.id.block}/versions/${this.id.version}`;
+  $createUrl = () => versionIdToURL(this.id);
 
   $recieve = versions.actions.recieve;
 

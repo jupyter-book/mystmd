@@ -1,3 +1,4 @@
+import { VersionId } from '@curvenote/blocks';
 import fs from 'fs';
 import path from 'path';
 
@@ -13,4 +14,8 @@ export function writeFileToFolder(
   } else {
     writeFileToFolder(path.join(filename.path || '.', filename.filename), data, opts);
   }
+}
+
+export function versionIdToURL(versionId: VersionId) {
+  return `/blocks/${versionId.project}/${versionId.block}/versions/${versionId.version}`;
 }

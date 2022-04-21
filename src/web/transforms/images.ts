@@ -8,6 +8,7 @@ import { createHash } from 'crypto';
 
 import { Root, TransformState } from './types';
 import { Options } from '../types';
+import { versionIdToURL } from '../../utils';
 
 export function serverPath(opts: Options) {
   const buildPath = opts.buildPath || '_build';
@@ -32,7 +33,7 @@ function isUrl(url: string) {
 
 export async function transformImages(mdast: Root, state: TransformState) {
   const images = selectAll('image', mdast) as GenericNode[];
-  await Promise.all(
+  return Promise.all(
     images.map(async (image) => {
       const session = state.cache.session;
       const oxa = oxaLinkToId(image.url);
@@ -41,7 +42,7 @@ export async function transformImages(mdast: Root, state: TransformState) {
         // If oxa, get the download url
         const versionId = oxa?.block as VersionId;
         if (!versionId?.version) return;
-        const url = `/blocks/${versionId.project}/${versionId.block}/versions/${versionId.version}`;
+        const url = versionIdToURL(versionId);
         session.log.debug(`Fetching image version: ${url}`);
         const { status, json } = await session.get(url);
         const downloadUrl = json.links?.download;
@@ -57,7 +58,6 @@ export async function transformImages(mdast: Root, state: TransformState) {
         // Assume non-oxa, non-url paths are local images relative to the config.section.path
         const fullPath = path.join(state.folder, image.url);
         if (!fs.existsSync(fullPath)) {
-          console.log(fs.readdirSync('./'));
           session.log.debug(`Cannot find image: ${fullPath}`);
           return;
         }
