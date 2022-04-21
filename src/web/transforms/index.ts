@@ -55,7 +55,7 @@ function importMdastFromJson(cache: IDocumentCache, filename: string, mdast: Roo
 
 export async function transformMdast(
   cache: IDocumentCache,
-  name: string,
+  filename: { from: string; folder: string },
   mdast: Root,
   citeRenderer: CitationRenderer,
 ): Promise<Omit<RendererData, 'sha256'>> {
@@ -64,6 +64,7 @@ export async function transformMdast(
     cite: { order: [], data: {} },
     footnotes: {},
   };
+  const { from: name, folder } = filename;
   const frontmatter = getFrontmatter(mdast);
   importMdastFromJson(cache, name, mdast); // This must be first!
   // The transforms from MyST (structural mostly)
@@ -79,13 +80,13 @@ export async function transformMdast(
     transformFootnotes,
     transformKeys,
   ].forEach((transformer) => {
-    transformer(mdast, { references, citeRenderer, cache, frontmatter });
+    transformer(mdast, { references, citeRenderer, cache, frontmatter, folder });
     cache.session.log.debug(
       toc(`Processing: "${name}" - ${transformer.name.slice(9).toLowerCase()} in %s`),
     );
   });
 
-  await transformImages(mdast, { references, citeRenderer, cache, frontmatter });
+  await transformImages(mdast, { references, citeRenderer, cache, frontmatter, folder });
   cache.session.log.debug(toc(`Processing: "${name}" - images in %s`));
 
   if (cache.config?.site?.design?.hideAuthors) {

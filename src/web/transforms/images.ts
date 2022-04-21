@@ -22,32 +22,26 @@ export function imagePath(opts: Options) {
   return path.join(publicPath(opts), '_static');
 }
 
+function hashUrl(url: string) {
+  return createHash('md5').update(url).digest('hex');
+}
+
+function isUrl(url: string) {
+  return url.toLowerCase().startsWith('http:') || url.toLowerCase().startsWith('https:');
+}
+
 export async function transformImages(mdast: Root, state: TransformState) {
   const images = selectAll('image', mdast) as GenericNode[];
   await Promise.all(
     images.map(async (image) => {
+      const session = state.cache.session;
       const oxa = oxaLinkToId(image.url);
-      const isUrl =
-        image.url.toLowerCase().startsWith('http:') || image.url.toLowerCase().startsWith('https:');
-      // Assume non-oxa, non-url paths are local images correctly placed in the images/ folder
-      if (!oxa && !isUrl) {
-        image.url = `/_static/${path.basename(image.url)}`;
-        return;
-      }
       let file: string;
-      if (!oxa) {
-        // If not oxa, download the URL directly and save it to a file with a hashed name
-        file = await downloadAndSave(
-          image.url,
-          createHash('md5').update(image.url).digest('hex'),
-          state,
-        );
-      } else {
+      if (oxa) {
         // If oxa, get the download url
         const versionId = oxa?.block as VersionId;
         if (!versionId?.version) return;
         const url = `/blocks/${versionId.project}/${versionId.block}/versions/${versionId.version}`;
-        const session = state.cache.session;
         session.log.debug(`Fetching image version: ${url}`);
         const { status, json } = await session.get(url);
         const downloadUrl = json.links?.download;
@@ -56,6 +50,24 @@ export async function transformImages(mdast: Root, state: TransformState) {
           return;
         }
         file = await downloadAndSave(downloadUrl, `${versionId.block}.${versionId.version}`, state);
+      } else if (isUrl(image.url)) {
+        // If not oxa, download the URL directly and save it to a file with a hashed name
+        file = await downloadAndSave(image.url, hashUrl(image.url), state);
+      } else {
+        // Assume non-oxa, non-url paths are local images relative to the config.section.path
+        const fullPath = path.join(state.folder, image.url);
+        if (!fs.existsSync(fullPath)) {
+          console.log(fs.readdirSync('./'));
+          session.log.debug(`Cannot find image: ${fullPath}`);
+          return;
+        }
+        file = `${hashUrl(fullPath)}${path.extname(fullPath)}`;
+        try {
+          fs.copyFileSync(fullPath, path.join(imagePath(state.cache.options), file));
+          session.log.debug(`Image successfully copied: ${fullPath}`);
+        } catch {
+          session.log.debug(`Error copying image: ${fullPath}`);
+        }
       }
       // Update mdast with new file name
       image.url = `/_static/${file}`;
