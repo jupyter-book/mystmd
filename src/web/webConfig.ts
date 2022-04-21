@@ -6,7 +6,7 @@ import { ISession } from '../session/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
 import { tic } from '../export/utils/exec';
 import { Options, Page, SiteConfig, SiteFolder } from './types';
-import { publicPath } from './utils';
+import { publicPath, imagePath } from './transforms';
 import { CURVENOTE_YML } from '../config';
 
 export function getFileName(folder: string, file: string) {
@@ -169,7 +169,7 @@ export async function copyImages(session: ISession, opts: Options, config: SiteC
       return new Promise((callback, error) => {
         // TODO this 'from' path needs to be read from curvenote.yml#sync
         const from = path.join(p, 'images', '*');
-        const to = path.join(publicPath(opts), '_static');
+        const to = imagePath(opts);
         session.log.debug(`Copying images from "${from}" to "${to}"`);
         copyfiles([from, to], { up: true, soft: true } as any, (e) => {
           if (e) {

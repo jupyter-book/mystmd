@@ -67,10 +67,10 @@ export async function transformMdast(
   importMdastFromJson(cache, name, mdast); // This must be first!
   // The transforms from MyST (structural mostly)
   mdast = await transformRoot(mdast);
+  convertHtmlToMdast(mdast);
+  cache.session.log.debug(toc(`Processing: "${name}" - html in %s`));
   [
-    convertHtmlToMdast,
     transformMath,
-    transformImages,
     transformOutputs,
     transformCitations,
     transformEnumerators,
@@ -83,6 +83,10 @@ export async function transformMdast(
       toc(`Processing: "${name}" - ${transformer.name.slice(9).toLowerCase()} in %s`),
     );
   });
+
+  await transformImages(mdast, { references, citeRenderer, cache, frontmatter });
+  cache.session.log.debug(toc(`Processing: "${name}" - images in %s`));
+
   if (cache.config?.site?.design?.hideAuthors) {
     delete frontmatter.authors;
   }
