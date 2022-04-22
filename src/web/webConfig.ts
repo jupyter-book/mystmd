@@ -1,12 +1,10 @@
-import copyfiles from 'copyfiles';
 import fs from 'fs';
 import path from 'path';
 import { WebConfig } from '../config/types';
 import { ISession } from '../session/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
-import { tic } from '../export/utils/exec';
 import { Options, Page, SiteConfig, SiteFolder } from './types';
-import { publicPath } from './utils';
+import { publicPath } from './transforms';
 import { CURVENOTE_YML } from '../config';
 
 export function getFileName(folder: string, file: string) {
@@ -160,29 +158,6 @@ function createConfig(session: ISession, opts: Options): Required<SiteConfig> {
     site,
     folders,
   };
-}
-
-export async function copyImages(session: ISession, opts: Options, config: SiteConfig) {
-  const toc = tic();
-  await Promise.all(
-    config.site.sections.map(async ({ path: p }) => {
-      return new Promise((callback, error) => {
-        // TODO this 'from' path needs to be read from curvenote.yml#sync
-        const from = path.join(p, 'images', '*');
-        const to = path.join(publicPath(opts), '_static');
-        session.log.debug(`Copying images from "${from}" to "${to}"`);
-        copyfiles([from, to], { up: true, soft: true } as any, (e) => {
-          if (e) {
-            session.log.error(e.message);
-            error();
-          } else {
-            callback(true);
-          }
-        });
-      });
-    }),
-  );
-  session.log.info(toc(`🌄 Copied images in %s.`));
 }
 
 export async function readConfig(session: ISession, opts: Options): Promise<SiteConfig> {

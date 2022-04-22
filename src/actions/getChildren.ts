@@ -1,9 +1,10 @@
 import { VersionId } from '@curvenote/blocks';
 import { Block, Version } from '../models';
 import { ISession } from '../session/types';
+import { versionIdToURL } from '../utils';
 
 export async function getChildren(session: ISession, versionId: VersionId) {
-  const url = `/blocks/${versionId.project}/${versionId.block}/versions/${versionId.version}/children`;
+  const url = `${versionIdToURL(versionId)}/children`;
   session.log.debug(`Fetching version children: ${url}`);
   const { status, json } = await session.get(url);
   if (status !== 200) throw new Error('Could not get children');

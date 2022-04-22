@@ -1,19 +1,12 @@
 import fs from 'fs';
-import path from 'path';
 import { MyST } from 'mystjs';
 import { Options } from './types';
 import { reactiveRoles } from './roles';
 import { directives } from './directives';
 import { Root } from './transforms/types';
+import { serverPath } from './transforms';
 
-export function serverPath(opts: Options) {
-  const buildPath = opts.buildPath || '_build';
-  return `${buildPath}/web`;
-}
-
-export function publicPath(opts: Options) {
-  return path.join(serverPath(opts), 'public');
-}
+export { serverPath, publicPath } from './transforms';
 
 export function exists(opts: Options) {
   return fs.existsSync(serverPath(opts));

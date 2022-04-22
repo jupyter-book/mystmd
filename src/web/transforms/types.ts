@@ -23,4 +23,5 @@ export type TransformState = {
   references: References;
   citeRenderer: CitationRenderer;
   cache: IDocumentCache;
+  folder: string;
 };

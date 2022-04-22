@@ -17,7 +17,7 @@ import { IDocumentCache, Options, SiteConfig } from './types';
 import { parseMyst, publicPath, serverPath } from './utils';
 
 import { LinkLookup, RendererData, transformLinks, transformMdast } from './transforms';
-import { copyImages, readConfig } from './webConfig';
+import { readConfig } from './webConfig';
 import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
 
@@ -25,12 +25,12 @@ type NextFile = { filename: string; folder: string; slug: string };
 
 async function processMarkdown(
   cache: IDocumentCache,
-  filename: { from: string; to: string },
+  filename: { from: string; to: string; folder: string },
   content: string,
   citeRenderer: CitationRenderer,
 ) {
   const mdast = parseMyst(content);
-  const data = await transformMdast(cache, filename.from, mdast, citeRenderer);
+  const data = await transformMdast(cache, filename, mdast, citeRenderer);
   return data;
 }
 
@@ -45,7 +45,7 @@ function createOutputDirective(): { myst: string; id: string } {
 
 async function processNotebook(
   cache: IDocumentCache,
-  filename: { from: string; to: string },
+  filename: { from: string; to: string; folder: string },
   content: string,
   citeRenderer: CitationRenderer,
 ) {
@@ -98,7 +98,7 @@ async function processNotebook(
     output.data = outputMap[output.id];
   });
 
-  const data = await transformMdast(cache, filename.from, mdast, citeRenderer);
+  const data = await transformMdast(cache, filename, mdast, citeRenderer);
   return data;
 }
 
@@ -275,9 +275,6 @@ export class DocumentCache implements IDocumentCache {
       this.config = config;
     } catch (error) {
       this.session.log.error(`Error reading config:\n\n${(error as Error).message}`);
-    }
-    if (this.config) {
-      await copyImages(this.session, this.options, this.config);
     }
   }
 
