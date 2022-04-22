@@ -31,11 +31,33 @@ function isUrl(url: string) {
   return url.toLowerCase().startsWith('http:') || url.toLowerCase().startsWith('https:');
 }
 
+async function downloadAndSave(url: string, file: string, state: TransformState): Promise<string> {
+  const filePath = path.join(imagePath(state.cache.options), file);
+  const { session } = state.cache;
+  let extension: string | false = false;
+  session.log.debug(`Fetching image: ${url.slice(0, 31)}...\n  -> saving to: ${filePath}`);
+  await fetch(url)
+    .then(
+      (res) =>
+        new Promise((resolve, reject) => {
+          extension = mime.extension(res.headers.get('content-type') || '');
+          if (!extension) reject();
+          const fileStream = fs.createWriteStream(`${filePath}.${extension}`);
+          res.body.pipe(fileStream);
+          res.body.on('error', reject);
+          fileStream.on('finish', resolve);
+        }),
+    )
+    .then(() => session.log.debug(`Image successfully saved to: ${filePath}`))
+    .catch(() => session.log.debug(`Error saving image to: ${filePath}`));
+  return extension ? `${file}.${extension}` : file;
+}
+
 export async function transformImages(mdast: Root, state: TransformState) {
   const images = selectAll('image', mdast) as GenericNode[];
   return Promise.all(
     images.map(async (image) => {
-      const session = state.cache.session;
+      const { session } = state.cache;
       const oxa = oxaLinkToId(image.url);
       let file: string;
       if (oxa) {
@@ -58,7 +80,7 @@ export async function transformImages(mdast: Root, state: TransformState) {
         // Assume non-oxa, non-url paths are local images relative to the config.section.path
         const fullPath = path.join(state.folder, image.url);
         if (!fs.existsSync(fullPath)) {
-          session.log.debug(`Cannot find image: ${fullPath}`);
+          session.log.error(`Cannot find image: ${fullPath}`);
           return;
         }
         file = `${hashUrl(fullPath)}${path.extname(fullPath)}`;
@@ -66,33 +88,11 @@ export async function transformImages(mdast: Root, state: TransformState) {
           fs.copyFileSync(fullPath, path.join(imagePath(state.cache.options), file));
           session.log.debug(`Image successfully copied: ${fullPath}`);
         } catch {
-          session.log.debug(`Error copying image: ${fullPath}`);
+          session.log.error(`Error copying image: ${fullPath}`);
         }
       }
       // Update mdast with new file name
       image.url = `/_static/${file}`;
     }),
   );
-}
-
-async function downloadAndSave(url: string, file: string, state: TransformState): Promise<string> {
-  const filePath = path.join(imagePath(state.cache.options), file);
-  const session = state.cache.session;
-  let extension: string | false = false;
-  session.log.debug(`Fetching image: ${url.slice(0, 31)}...\n  -> saving to: ${filePath}`);
-  await fetch(url)
-    .then(
-      (res) =>
-        new Promise((resolve, reject) => {
-          extension = mime.extension(res.headers.get('content-type') || '');
-          if (!extension) reject();
-          const fileStream = fs.createWriteStream(`${filePath}.${extension}`);
-          res.body.pipe(fileStream);
-          res.body.on('error', reject);
-          fileStream.on('finish', resolve);
-        }),
-    )
-    .then(() => session.log.debug(`Image successfully saved to: ${filePath}`))
-    .catch(() => session.log.debug(`Error saving image to: ${filePath}`));
-  return extension ? `${file}.${extension}` : file;
 }

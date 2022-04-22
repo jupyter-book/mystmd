@@ -16,6 +16,12 @@ export function cleanBuiltFiles(session: ISession, opts: Options, info = true) {
   log(toc('🧹 Clean build files in %s.'));
 }
 
+export function ensureBuildFoldersExist(session: ISession, opts: Options) {
+  session.log.debug('Build folders created for `app/content` and `_static`.');
+  fs.mkdirSync(path.join(serverPath(opts), 'app', 'content'), { recursive: true });
+  fs.mkdirSync(path.join(publicPath(opts), '_static'), { recursive: true });
+}
+
 async function processFolder(
   cache: DocumentCache,
   section: SiteConfig['site']['sections'][0],
@@ -58,6 +64,7 @@ export async function buildContent(session: ISession, opts: Options): Promise<Do
   if (opts.force || opts.clean) {
     cleanBuiltFiles(session, opts);
   }
+  ensureBuildFoldersExist(session, opts);
 
   await cache.readConfig();
   session.log.debug('Site Config:\n\n', yaml.dump(cache.config));
