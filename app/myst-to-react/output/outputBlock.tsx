@@ -15,11 +15,12 @@ export function OutputBlock(props: Props) {
       suppressHydrationWarning={!allSafe}
       className={classNames(
         `relative group not-prose overflow-auto 
-        rounded shadow-md p-2.5 dark:shadow-2xl dark:shadow-neutral-900 
+        rounded shadow-md dark:shadow-2xl dark:shadow-neutral-900 
         text-sm mb-8 border border-l-4 border-gray-200 dark:border-gray-800`,
         className,
         {
-          'border-l-red-400 dark:border-l-red-400 ': hasError,
+          'p-2.5': allSafe,
+          'border-l-red-400 dark:border-l-red-400 background-red-100': hasError,
           'border-l-emerald-400 dark:border-l-emerald-400': !hasError,
         },
       )}
