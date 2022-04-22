@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFetchAnyTruncatedContent } from './hooks';
-import { MinifiedOutput } from '@curvenote/nbtx/dist/minify/types';
 import { nanoid } from 'nanoid';
 import {
   selectIFrameReady,
@@ -9,29 +8,7 @@ import {
 import { State } from '~/store';
 import { useSelector } from 'react-redux';
 import { host, actions } from '@curvenote/connect';
-import type { IOutput } from '@jupyterlab/nbformat';
-
-function toIOutputs(minified: MinifiedOutput[]): IOutput[] {
-  return minified.map((m: MinifiedOutput) => {
-    switch (m.output_type) {
-      case 'stream':
-      case 'error': {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { path, ...rest } = m;
-        return rest;
-      }
-      default: {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        return {
-          ...m,
-          data: Object.entries(m.data).reduce((acc, [mimetype, payload]) => {
-            return { ...acc, [mimetype]: payload.content };
-          }, {}),
-        };
-      }
-    }
-  });
-}
+import { MinifiedOutput, convertToIOutputs } from '@curvenote/nbtx';
 
 export const NativeJupyterOutputs = ({
   id,
@@ -57,7 +34,7 @@ export const NativeJupyterOutputs = ({
     if (iframeRef.current == null || !rendererReady || !data) return;
     host.commsDispatch(
       iframeRef.current,
-      actions.connectHostSendContent(uid, toIOutputs(data)),
+      actions.connectHostSendContent(uid, convertToIOutputs(data)),
     );
   }, [id, iframeRef.current, rendererReady]);
 
@@ -70,15 +47,22 @@ export const NativeJupyterOutputs = ({
     return <div className="text-red-500">Error rendering output: {error.message}</div>;
   }
 
+  if (process.env.NODE_ENV === 'development')
+    console.debug('Output connecting to http://localhost:3003');
+  console.log({ height });
   return (
     <>
-      {loading && <div>Loading...</div>}
+      {loading && <div className="p-2.5">Loading...</div>}
       <iframe
         ref={iframeRef}
         id={uid}
         name={uid}
         title={uid}
-        src="https://next.curvenote.run"
+        src={
+          process.env.NODE_ENV === 'development' // TODO should this be in config.json?
+            ? 'http://localhost:3003'
+            : 'https://next.curvenote.run'
+        }
         width={'100%'}
         height={height ? height + 25 : 0}
         sandbox="allow-scripts"

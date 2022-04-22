@@ -1,6 +1,6 @@
 import { KnownCellOutputMimeTypes } from '@curvenote/blocks/dist/blocks/types/jupyter';
 import { ensureString } from '@curvenote/blocks/dist/helpers';
-import {
+import type {
   MinifiedMimeBundle,
   MinifiedMimePayload,
   MinifiedOutput,
@@ -30,7 +30,10 @@ const RENDER_PRIORITY = [
   KnownCellOutputMimeTypes.ImageBmp,
 ];
 
-function OutputImage({ output }: { output: MinifiedOutput }) {
+function findSafeMimeOutputs(output: MinifiedOutput): {
+  image?: MinifiedMimePayload;
+  text?: MinifiedMimePayload;
+} {
   const data: MinifiedMimeBundle = output.data as MinifiedMimeBundle;
   const image = RENDER_PRIORITY.reduce(
     (acc: MinifiedMimePayload | undefined, mimetype) => {
@@ -39,8 +42,17 @@ function OutputImage({ output }: { output: MinifiedOutput }) {
     },
     undefined,
   );
-  if (!data || !image) return null;
-  const text = data['text/plain'];
+  const text = data && data['text/plain'];
+  return { image, text };
+}
+
+function OutputImage({
+  image,
+  text,
+}: {
+  image: MinifiedMimePayload;
+  text?: MinifiedMimePayload;
+}) {
   return <img src={image?.path} alt={text?.content ?? 'Image produced in Jupyter'} />;
 }
 
@@ -51,21 +63,18 @@ function SafeOutput({ output }: { output: MinifiedOutput }) {
         <MaybeLongContent
           content={ensureString(output.text)}
           path={output.path}
-          render={(content?: string) => <pre>{content}</pre>}
-        />
-      );
-    case 'error':
-      return (
-        <MaybeLongContent
-          content={ensureString(output.traceback)}
-          path={output.path}
-          render={(content?: string) => <pre>{content}</pre>}
+          render={(content?: string) => <div>{content}</div>}
         />
       );
     case 'display_data':
     case 'execute_result':
-    case 'update_display_data':
-      return <OutputImage output={output} />;
+    case 'update_display_data': {
+      const { image, text } = findSafeMimeOutputs(output);
+      if (!image && !text) return null;
+      if (image) return <OutputImage image={image} text={text} />;
+      if (text) return <div>{text.content}</div>;
+      return null;
+    }
     default:
       console.warn(`Unknown output_type ${output['output_type']}`);
       return null;
