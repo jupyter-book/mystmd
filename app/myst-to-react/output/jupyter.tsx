@@ -47,9 +47,6 @@ export const NativeJupyterOutputs = ({
     return <div className="text-red-500">Error rendering output: {error.message}</div>;
   }
 
-  if (process.env.NODE_ENV === 'development')
-    console.debug('Output connecting to http://localhost:3003');
-  console.log({ height });
   return (
     <>
       {loading && <div className="p-2.5">Loading...</div>}
@@ -58,11 +55,7 @@ export const NativeJupyterOutputs = ({
         id={uid}
         name={uid}
         title={uid}
-        src={
-          process.env.NODE_ENV === 'development' // TODO should this be in config.json?
-            ? 'http://localhost:3003'
-            : 'https://next.curvenote.run'
-        }
+        src="https://next.curvenote.run"
         width={'100%'}
         height={height ? height + 25 : 0}
         sandbox="allow-scripts"
