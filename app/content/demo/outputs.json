@@ -60,7 +60,7 @@
                 "metadata": {},
                 "data": {
                   "application/javascript": {
-                    "content": "[\"console.log(\\\"Hello Console!\\\")\\n\"]",
+                    "content": "console.log(\"Hello Console!\")\n",
                     "content_type": "application/javascript"
                   },
                   "text/plain": {

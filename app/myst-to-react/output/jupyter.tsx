@@ -8,7 +8,6 @@ import {
 import { State } from '~/store';
 import { useSelector } from 'react-redux';
 import { host, actions } from '@curvenote/connect';
-import type { IOutput } from '@jupyterlab/nbformat';
 import { MinifiedOutput, convertToIOutputs } from '@curvenote/nbtx';
 
 export const NativeJupyterOutputs = ({
@@ -49,8 +48,8 @@ export const NativeJupyterOutputs = ({
   }
 
   if (process.env.NODE_ENV === 'development')
-    console.log('Output connecting to http://localhost:3003');
-
+    console.debug('Output connecting to http://localhost:3003');
+  console.log({ height });
   return (
     <>
       {loading && <div className="p-2.5">Loading...</div>}

@@ -8,22 +8,15 @@ type Props = {
 };
 
 export function OutputBlock(props: Props) {
-  const { children, allSafe, hasError, className } = props;
+  const { children, allSafe, className } = props;
 
   return (
     <div
       suppressHydrationWarning={!allSafe}
-      className={classNames(
-        `relative group not-prose overflow-auto 
-        rounded shadow-md dark:shadow-2xl dark:shadow-neutral-900 
-        text-sm mb-8 border border-l-4 border-gray-200 dark:border-gray-800`,
-        className,
-        {
-          'p-2.5': allSafe,
-          'border-l-red-400 dark:border-l-red-400 background-red-100': hasError,
-          'border-l-emerald-400 dark:border-l-emerald-400': !hasError,
-        },
-      )}
+      className={classNames('relative group not-prose overflow-auto mb-8', className, {
+        'p-2.5': allSafe,
+        'pl-0.5': !allSafe,
+      })}
     >
       {children}
     </div>

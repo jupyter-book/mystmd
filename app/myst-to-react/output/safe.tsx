@@ -1,11 +1,11 @@
-import { KnownCellOutputMimeTypes } from "@curvenote/blocks/dist/blocks/types/jupyter";
-import { ensureString } from "@curvenote/blocks/dist/helpers";
+import { KnownCellOutputMimeTypes } from '@curvenote/blocks/dist/blocks/types/jupyter';
+import { ensureString } from '@curvenote/blocks/dist/helpers';
 import type {
   MinifiedMimeBundle,
   MinifiedMimePayload,
   MinifiedOutput,
-} from "@curvenote/nbtx/dist/minify/types";
-import { MaybeLongContent } from "./components";
+} from '@curvenote/nbtx/dist/minify/types';
+import { MaybeLongContent } from './components';
 
 /**
  * https://jupyterbook.org/content/code-outputs.html#render-priority
@@ -40,9 +40,9 @@ function findSafeMimeOutputs(output: MinifiedOutput): {
       if (acc) return acc;
       if (data && data[mimetype]) return data[mimetype];
     },
-    undefined
+    undefined,
   );
-  const text = data && data["text/plain"];
+  const text = data && data['text/plain'];
   return { image, text };
 }
 
@@ -53,15 +53,12 @@ function OutputImage({
   image: MinifiedMimePayload;
   text?: MinifiedMimePayload;
 }) {
-  return (
-    <img src={image?.path} alt={text?.content ?? "Image produced in Jupyter"} />
-  );
+  return <img src={image?.path} alt={text?.content ?? 'Image produced in Jupyter'} />;
 }
 
 function SafeOutput({ output }: { output: MinifiedOutput }) {
-  console.log(`Safe Output ${output.output_type}`);
   switch (output.output_type) {
-    case "stream":
+    case 'stream':
       return (
         <MaybeLongContent
           content={ensureString(output.text)}
@@ -69,16 +66,17 @@ function SafeOutput({ output }: { output: MinifiedOutput }) {
           render={(content?: string) => <div>{content}</div>}
         />
       );
-    case "display_data":
-    case "execute_result":
-    case "update_display_data": {
+    case 'display_data':
+    case 'execute_result':
+    case 'update_display_data': {
       const { image, text } = findSafeMimeOutputs(output);
       if (!image && !text) return null;
       if (image) return <OutputImage image={image} text={text} />;
       if (text) return <div>{text.content}</div>;
+      return null;
     }
     default:
-      console.warn(`Unknown output_type ${output["output_type"]}`);
+      console.warn(`Unknown output_type ${output['output_type']}`);
       return null;
   }
 }
