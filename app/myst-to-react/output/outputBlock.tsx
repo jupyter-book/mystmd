@@ -2,15 +2,17 @@ import classNames from 'classnames';
 
 type Props = {
   children?: React.ReactNode;
+  allSafe?: boolean;
   hasError?: boolean;
   className?: string;
 };
 
 export function OutputBlock(props: Props) {
-  const { children, hasError, className } = props;
+  const { children, allSafe, hasError, className } = props;
 
   return (
     <div
+      suppressHydrationWarning={!allSafe}
       className={classNames(
         `relative group not-prose overflow-auto 
         rounded shadow-md p-2.5 dark:shadow-2xl dark:shadow-neutral-900 

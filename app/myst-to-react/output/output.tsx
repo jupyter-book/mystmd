@@ -63,7 +63,9 @@ export function Output(node: GenericNode) {
         'text-right': node.align === 'right',
       })}
     >
-      <OutputBlock hasError={hasError}>{component}</OutputBlock>
+      <OutputBlock allSafe={allSafe} hasError={hasError}>
+        {component}
+      </OutputBlock>
     </figure>
   );
 }
