@@ -35,6 +35,8 @@ export async function minifyMimeOutput(
     Object.entries(output.data).map(async ([mimetype, content]) => {
       let isBase64Image = false;
       let stringContent = ensureString(content as MultilineString | string);
+      if (mimetype.startsWith('application/javascript'))
+        stringContent = ensureString(content as MultilineString | string);
       if (mimetype.startsWith('application/')) stringContent = JSON.stringify(content);
       if (mimetype.startsWith('image/')) isBase64Image = true;
       return minifyContent(fileFactory, stringContent, mimetype, isBase64Image, opts);
