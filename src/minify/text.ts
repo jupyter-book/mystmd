@@ -12,11 +12,11 @@ async function minifyStringOutput(
   if (!output[fieldName])
     throw Error(`Bad Field name ${fieldName} for output type ${output.output_type}`);
   const text = ensureString(output[fieldName] as string);
-  if (text && text.length <= opts.maxCharacters) return { ...output, [fieldName]: text };
+  if (text && text.length <= opts.maxCharacters) return { ...(output as any), [fieldName]: text };
   const file = fileFactory(`${opts.basepath}-text_plain`);
   await file.writeString(text, 'text/plain');
   return {
-    ...output,
+    ...(output as any),
     path: file.id,
     [fieldName]: `${text.slice(0, opts.truncateTo - 3)}...`,
   };

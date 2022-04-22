@@ -7,7 +7,7 @@ export interface MinifyOptions {
 }
 
 export type MinifiedStreamOutput = { path?: string } & IStream;
-export type MinifiedErrorOutput = { path?: string } & IError;
+export type MinifiedErrorOutput = { path?: string; traceback: string } & IError;
 
 export type MimeOutputType = 'execute_result' | 'display_data' | 'update_display_data';
 
