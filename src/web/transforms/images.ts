@@ -49,7 +49,7 @@ async function downloadAndSave(url: string, file: string, state: TransformState)
         }),
     )
     .then(() => session.log.debug(`Image successfully saved to: ${filePath}`))
-    .catch(() => session.log.debug(`Error saving image to: ${filePath}`));
+    .catch(() => session.log.error(`Error saving image "${url.slice(0, 31)}" to: ${filePath}`));
   return extension ? `${file}.${extension}` : file;
 }
 
@@ -69,7 +69,7 @@ export async function transformImages(mdast: Root, state: TransformState) {
         const { status, json } = await session.get(url);
         const downloadUrl = json.links?.download;
         if (status !== 200 || !downloadUrl) {
-          session.log.debug(`Error fetching image version: ${url}`);
+          session.log.error(`Error fetching image version: ${url}`);
           return;
         }
         file = await downloadAndSave(downloadUrl, `${versionId.block}.${versionId.version}`, state);
