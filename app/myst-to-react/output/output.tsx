@@ -57,7 +57,7 @@ export function Output(node: GenericNode) {
       suppressHydrationWarning={!allSafe}
       key={node.key}
       id={node.identifier || undefined}
-      className={classNames('max-w-full overflow-auto', {
+      className={classNames('max-w-full overflow-auto m-0', {
         'text-left': !node.align || node.align === 'left',
         'text-center': node.align === 'center',
         'text-right': node.align === 'right',

@@ -13,10 +13,10 @@ export function OutputBlock(props: Props) {
   return (
     <div
       suppressHydrationWarning={!allSafe}
-      className={classNames('relative group not-prose overflow-auto mb-8', className, {
-        'p-2.5': allSafe,
-        'pl-0.5': !allSafe,
-      })}
+      className={classNames(
+        'relative group not-prose overflow-auto mb-4 pl-0.5',
+        className,
+      )}
     >
       {children}
     </div>
