@@ -1,11 +1,11 @@
-import { KnownCellOutputMimeTypes } from '@curvenote/blocks/dist/blocks/types/jupyter';
-import { ensureString } from '@curvenote/blocks/dist/helpers';
-import {
+import { KnownCellOutputMimeTypes } from "@curvenote/blocks/dist/blocks/types/jupyter";
+import { ensureString } from "@curvenote/blocks/dist/helpers";
+import type {
   MinifiedMimeBundle,
   MinifiedMimePayload,
   MinifiedOutput,
-} from '@curvenote/nbtx/dist/minify/types';
-import { MaybeLongContent } from './components';
+} from "@curvenote/nbtx/dist/minify/types";
+import { MaybeLongContent } from "./components";
 
 /**
  * https://jupyterbook.org/content/code-outputs.html#render-priority
@@ -30,44 +30,55 @@ const RENDER_PRIORITY = [
   KnownCellOutputMimeTypes.ImageBmp,
 ];
 
-function OutputImage({ output }: { output: MinifiedOutput }) {
+function findSafeMimeOutputs(output: MinifiedOutput): {
+  image?: MinifiedMimePayload;
+  text?: MinifiedMimePayload;
+} {
   const data: MinifiedMimeBundle = output.data as MinifiedMimeBundle;
   const image = RENDER_PRIORITY.reduce(
     (acc: MinifiedMimePayload | undefined, mimetype) => {
       if (acc) return acc;
       if (data && data[mimetype]) return data[mimetype];
     },
-    undefined,
+    undefined
   );
-  if (!data || !image) return null;
-  const text = data['text/plain'];
-  return <img src={image?.path} alt={text?.content ?? 'Image produced in Jupyter'} />;
+  const text = data && data["text/plain"];
+  return { image, text };
+}
+
+function OutputImage({
+  image,
+  text,
+}: {
+  image: MinifiedMimePayload;
+  text?: MinifiedMimePayload;
+}) {
+  return (
+    <img src={image?.path} alt={text?.content ?? "Image produced in Jupyter"} />
+  );
 }
 
 function SafeOutput({ output }: { output: MinifiedOutput }) {
+  console.log(`Safe Output ${output.output_type}`);
   switch (output.output_type) {
-    case 'stream':
+    case "stream":
       return (
         <MaybeLongContent
           content={ensureString(output.text)}
           path={output.path}
-          render={(content?: string) => <pre>{content}</pre>}
+          render={(content?: string) => <div>{content}</div>}
         />
       );
-    case 'error':
-      return (
-        <MaybeLongContent
-          content={ensureString(output.traceback)}
-          path={output.path}
-          render={(content?: string) => <pre>{content}</pre>}
-        />
-      );
-    case 'display_data':
-    case 'execute_result':
-    case 'update_display_data':
-      return <OutputImage output={output} />;
+    case "display_data":
+    case "execute_result":
+    case "update_display_data": {
+      const { image, text } = findSafeMimeOutputs(output);
+      if (!image && !text) return null;
+      if (image) return <OutputImage image={image} text={text} />;
+      if (text) return <div>{text.content}</div>;
+    }
     default:
-      console.warn(`Unknown output_type ${output['output_type']}`);
+      console.warn(`Unknown output_type ${output["output_type"]}`);
       return null;
   }
 }

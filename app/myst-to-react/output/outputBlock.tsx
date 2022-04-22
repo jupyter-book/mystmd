@@ -1,0 +1,28 @@
+import classNames from 'classnames';
+
+type Props = {
+  children?: React.ReactNode;
+  hasError?: boolean;
+  className?: string;
+};
+
+export function OutputBlock(props: Props) {
+  const { children, hasError, className } = props;
+
+  return (
+    <div
+      className={classNames(
+        `relative group not-prose overflow-auto 
+        rounded shadow-md p-2.5 dark:shadow-2xl dark:shadow-neutral-900 
+        text-sm mb-8 border border-l-4 border-gray-200 dark:border-gray-800`,
+        className,
+        {
+          'border-l-red-400 dark:border-l-red-400 ': hasError,
+          'border-l-emerald-400 dark:border-l-emerald-400': !hasError,
+        },
+      )}
+    >
+      {children}
+    </div>
+  );
+}

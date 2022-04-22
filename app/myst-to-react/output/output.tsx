@@ -4,6 +4,7 @@ import { MinifiedMimeOutput, MinifiedOutput } from '@curvenote/nbtx/dist/minify/
 import classNames from 'classnames';
 import { SafeOutputs } from './safe';
 import { NativeJupyterOutputs as JupyterOutputs } from './jupyter';
+import { OutputBlock } from './outputBlock';
 
 const DIRECT_OUTPUT_TYPES = new Set(['stream']);
 
@@ -32,9 +33,17 @@ export function allOutputsAreSafe(
   }, true);
 }
 
+export function anyErrors(outputs: MinifiedOutput[]) {
+  return outputs.reduce(
+    (flag, output) => flag || output.output_type === 'error',
+    false,
+  );
+}
+
 export function Output(node: GenericNode) {
   const outputs: MinifiedOutput[] = node.data;
   const allSafe = allOutputsAreSafe(outputs, DIRECT_OUTPUT_TYPES, DIRECT_MIME_TYPES);
+  const hasError = anyErrors(outputs);
 
   let component;
   if (allSafe) {
@@ -54,7 +63,7 @@ export function Output(node: GenericNode) {
         'text-right': node.align === 'right',
       })}
     >
-      {component}
+      <OutputBlock hasError={hasError}>{component}</OutputBlock>
     </figure>
   );
 }

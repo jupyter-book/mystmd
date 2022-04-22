@@ -70,6 +70,9 @@ export const NativeJupyterOutputs = ({
     return <div className="text-red-500">Error rendering output: {error.message}</div>;
   }
 
+  if (process.env.NODE_ENV === 'development')
+    console.log('Output connecting to http://localhost:3003');
+
   return (
     <>
       {loading && <div>Loading...</div>}
