@@ -30,6 +30,11 @@ const defaultOptions: Record<keyof TransformOptions, any> = {
       (result as GenericNode).header = true;
       return result;
     },
+    comment(h: H, node: any) {
+      const result = h(node, 'comment');
+      (result as GenericNode).value = node.value;
+      return result;
+    },
   },
   disableHeadingEnumeration: false,
   disableContainerEnumeration: false,

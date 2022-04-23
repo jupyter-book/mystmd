@@ -95,3 +95,14 @@ cases:
                   children:
                     - type: text
                       value: Linus
+  - title: comment
+    before:
+      type: root
+      children:
+        - type: html
+          value: '<!-- .slide: data-background="./images/logo.png" -->'
+    after:
+      type: root
+      children:
+        - type: comment
+          value: ' .slide: data-background="./images/logo.png" '
