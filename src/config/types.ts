@@ -16,6 +16,7 @@ export type Frontmatter = {
   subject?: string;
   open_access?: boolean;
   license?: string | License | { code?: License; text?: License };
+  oxa?: string;
   doi?: string;
   github?: string;
   journal?: string | { title?: string; url?: string; volume?: number; issue?: number };

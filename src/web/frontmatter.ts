@@ -49,6 +49,7 @@ export function getFrontmatterFromConfig(
     open_access,
     numbering,
     math,
+    oxa,
     ...rest
   } = next ?? {};
   if (title) frontmatter.title = title;
@@ -60,6 +61,7 @@ export function getFrontmatterFromConfig(
   if (journal) frontmatter.journal = journal;
   if (github) frontmatter.github = github;
   if (doi) frontmatter.doi = doi;
+  if (oxa) frontmatter.oxa = oxa;
   if (license) {
     const nextLicense = validateLicense(log, license as string);
     if (nextLicense) frontmatter.license = nextLicense;
