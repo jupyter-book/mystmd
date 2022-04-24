@@ -1,8 +1,9 @@
 import yaml from 'js-yaml';
 import { Root, PhrasingContent } from 'mdast';
 import { GenericNode, select } from 'mystjs';
+import { Frontmatter } from '../config/types';
 import { ISession } from '../session/types';
-import { FolderContext, Frontmatter } from './types';
+import { FolderContext } from './types';
 
 function toText(content: PhrasingContent[]): string {
   return content
@@ -18,29 +19,87 @@ export const DEFAULT_FRONTMATTER: Frontmatter = {
   numbering: false,
 };
 
+function warnOnUnrecognizedKeys(log: ISession['log'], object: Record<string, any>, start: string) {
+  const extraKeys = Object.keys(object);
+  if (extraKeys.length === 0) return;
+  log.warn(
+    `${start} did not recognize key${extraKeys.length > 1 ? 's' : ''}: "${extraKeys.join('", "')}"`,
+  );
+}
+
 export function getFrontmatterFromConfig(
-  session: ISession,
-  context: Pick<FolderContext, 'config' | 'folder'>,
-  frontmatter = { ...DEFAULT_FRONTMATTER },
+  log: ISession['log'],
+  folder: string,
+  base: Frontmatter,
+  next: Frontmatter,
 ) {
-  const { authors, subject, journal, github, doi, license, open_access, numbering, ...rest } =
-    context.config ?? {};
+  const frontmatter = { ...base };
+  const {
+    title,
+    subtitle,
+    description,
+    date,
+    authors,
+    subject,
+    journal,
+    github,
+    doi,
+    license,
+    open_access,
+    numbering,
+    math,
+    ...rest
+  } = next ?? {};
+  if (title) frontmatter.title = title;
+  if (subtitle) frontmatter.subtitle = subtitle;
+  if (description) frontmatter.description = description;
+  if (date) frontmatter.date = date;
   if (authors) frontmatter.authors = authors;
   if (subject) frontmatter.subject = subject;
   if (journal) frontmatter.journal = journal;
   if (github) frontmatter.github = github;
   if (doi) frontmatter.doi = doi;
   if (license) frontmatter.license = license;
-  if (open_access) frontmatter.open_access = open_access;
-  if (numbering) frontmatter.numbering = numbering;
-  const extraKeys = Object.keys(rest);
-  if (extraKeys.length > 0) {
-    session.log.warn(
-      `Folder "${context.folder}" config.yml did not recognize key${
-        extraKeys.length > 1 ? 's' : ''
-      }: "${extraKeys.join('", "')}"`,
-    );
+  if (open_access != null) frontmatter.open_access = open_access;
+  if (numbering != null) {
+    if (typeof numbering === 'boolean') {
+      frontmatter.numbering = numbering;
+    } else {
+      const {
+        enumerator,
+        figure,
+        equation,
+        table,
+        code,
+        heading_1,
+        heading_2,
+        heading_3,
+        heading_4,
+        heading_5,
+        heading_6,
+        ...restNumbering
+      } = numbering;
+      const nextNumbering =
+        typeof frontmatter.numbering === 'boolean' ? {} : { ...frontmatter.numbering };
+      if (enumerator != null) nextNumbering.enumerator = enumerator;
+      if (figure != null) nextNumbering.figure = figure;
+      if (equation != null) nextNumbering.equation = equation;
+      if (table != null) nextNumbering.table = table;
+      if (code != null) nextNumbering.code = code;
+      if (heading_1 != null) nextNumbering.heading_1 = heading_1;
+      if (heading_2 != null) nextNumbering.heading_2 = heading_2;
+      if (heading_3 != null) nextNumbering.heading_3 = heading_3;
+      if (heading_4 != null) nextNumbering.heading_4 = heading_4;
+      if (heading_5 != null) nextNumbering.heading_5 = heading_5;
+      if (heading_6 != null) nextNumbering.heading_6 = heading_6;
+      frontmatter.numbering = nextNumbering;
+      warnOnUnrecognizedKeys(log, restNumbering, `Folder "${folder}" config.yml#numbering`);
+    }
   }
+  if (math) {
+    frontmatter.math = { ...frontmatter.math, ...math };
+  }
+  warnOnUnrecognizedKeys(log, rest, `Folder "${folder}" config.yml`);
   return frontmatter;
 }
 
@@ -71,5 +130,5 @@ export function getFrontmatter(
     // TODO: Improve title selection!
     frontmatter.title = heading?.children?.[0]?.value || 'Untitled';
   }
-  return getFrontmatterFromConfig(session, context, frontmatter);
+  return getFrontmatterFromConfig(session.log, context.folder, context.config, frontmatter);
 }

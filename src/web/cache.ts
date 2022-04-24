@@ -165,7 +165,12 @@ async function getFolderConfig(session: ISession, folder: string): Promise<Folde
     return DEFAULT_FRONTMATTER;
   }
   const config = yaml.load(fs.readFileSync(folderConfig).toString()) as any;
-  return getFrontmatterFromConfig(session, { folder, config });
+  return getFrontmatterFromConfig(
+    session.log,
+    folder,
+    session.config?.frontmatter ?? { ...DEFAULT_FRONTMATTER },
+    config,
+  );
 }
 
 export function watchConfig(cache: IDocumentCache) {

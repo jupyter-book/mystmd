@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { convertHtmlToMdast, GenericNode, selectAll } from 'mystjs';
-import { FolderContext, IDocumentCache, Frontmatter } from '../types';
+import { FolderContext, IDocumentCache } from '../types';
 import { transformRoot } from './root';
 import { transformMath } from './math';
 import { transformImages } from './images';
@@ -11,8 +11,9 @@ import { transformEnumerators } from './enumerate';
 import { transformFootnotes } from './footnotes';
 import { transformKeys } from './keys';
 import { getFrontmatter } from '../frontmatter';
-import { References, Root } from './types';
+import { References, Root, TransformState } from './types';
 import { tic } from '../../export/utils/exec';
+import { Frontmatter } from '../../config';
 
 export { imagePath, publicPath, serverPath } from './images';
 export { LinkLookup, transformLinks } from './links';
@@ -71,6 +72,14 @@ export async function transformMdast(
   mdast = await transformRoot(mdast);
   convertHtmlToMdast(mdast);
   cache.session.log.debug(toc(`Processing: "${name}" - html in %s`));
+  const state: TransformState = {
+    references,
+    citeRenderer,
+    cache,
+    frontmatter,
+    folder,
+    filename: name,
+  };
   [
     transformMath,
     transformOutputs,
@@ -80,13 +89,13 @@ export async function transformMdast(
     transformFootnotes,
     transformKeys,
   ].forEach((transformer) => {
-    transformer(mdast, { references, citeRenderer, cache, frontmatter, folder });
+    transformer(mdast, state);
     cache.session.log.debug(
       toc(`Processing: "${name}" - ${transformer.name.slice(9).toLowerCase()} in %s`),
     );
   });
 
-  await transformImages(mdast, { references, citeRenderer, cache, frontmatter, folder });
+  await transformImages(mdast, state);
   cache.session.log.debug(toc(`Processing: "${name}" - images in %s`));
 
   if (cache.config?.site?.design?.hide_authors) {

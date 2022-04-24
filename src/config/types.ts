@@ -1,4 +1,43 @@
-import { ExportableFormatTypes } from '@curvenote/blocks';
+import { Author, ExportableFormatTypes } from '@curvenote/blocks';
+
+export enum CreativeCommonsLicense {
+  'CC0' = 'CC0-1.0',
+  'CC-BY' = 'CC-BY-4.0',
+  'CC-BY-SA' = 'CC-BY-SA-4.0',
+  'CC-BY-NC' = 'CC-BY-NC-4.0',
+  'CC-BY-NC-SA' = 'CC-BY-NC-SA-4.0',
+  'CC-BY-ND' = 'CC-BY-ND-4.0',
+  'CC-BY-NC-ND' = 'CC-BY-NC-ND-4.0',
+}
+
+export type Frontmatter = {
+  title?: string;
+  description?: string;
+  authors?: Author[];
+  subject?: string;
+  open_access?: boolean;
+  license?: CreativeCommonsLicense;
+  doi?: string;
+  github?: string;
+  journal?: string | { title?: string; url?: string; volume?: number; issue?: number };
+  numbering?:
+    | boolean
+    | {
+        enumerator?: string;
+        figure?: boolean;
+        equation?: boolean;
+        table?: boolean;
+        code?: boolean;
+        heading_1?: boolean;
+        heading_2?: boolean;
+        heading_3?: boolean;
+        heading_4?: boolean;
+        heading_5?: boolean;
+        heading_6?: boolean;
+      };
+  /** Math macros to be passed to KaTeX or LaTeX */
+  math?: Record<string, string>;
+} & Record<string, any>;
 
 /** Maybe this is the new sections in the future?
  *
@@ -74,4 +113,5 @@ export interface CurvenoteConfig {
   sync: SyncConfig[];
   web: WebConfig;
   export?: ExportConfig[];
+  frontmatter?: Frontmatter;
 }
