@@ -25,9 +25,11 @@
                 "title": "Curvenote",
                 "children": [
                   {
+                    "key": "qx1Hyuxaad",
                     "type": "emphasis",
                     "children": [
                       {
+                        "key": "q61Hyuxaasd",
                         "type": "text",
                         "value": "Go to curvenote"
                       }
@@ -54,9 +56,11 @@
                 "internal": true,
                 "children": [
                   {
+                    "key": "qx6yuxaasd",
                     "type": "emphasis",
                     "children": [
                       {
+                        "key": "qx61Hyusd",
                         "type": "text",
                         "value": "Go to admonitions"
                       }
@@ -85,9 +89,11 @@
             "thumbnail": "https://source.unsplash.com/random/200x200/?mountain",
             "children": [
               {
+                "key": "qx61Hyuxaas",
                 "type": "emphasis",
                 "children": [
                   {
+                    "key": "qx61HyFuxaasd",
                     "type": "text",
                     "value": "Go to curvenote"
                   }
@@ -100,6 +106,7 @@
             "type": "paragraph",
             "children": [
               {
+                "key": "qx61HyFuxasd",
                 "type": "text",
                 "value": "Internal link block: "
               }
@@ -114,9 +121,11 @@
             "thumbnail": "https://source.unsplash.com/random/200x200/?mountain",
             "children": [
               {
+                "key": "qx61Hyuxaad",
                 "type": "emphasis",
                 "children": [
                   {
+                    "key": "qx61Hyuxaasd",
                     "type": "text",
                     "value": "Go to admonitions"
                   }
