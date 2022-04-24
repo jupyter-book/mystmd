@@ -1,8 +1,7 @@
 import path from 'path';
 import fs from 'fs';
-import { CitationRenderer } from 'citation-js-utils';
 import { convertHtmlToMdast, GenericNode, selectAll } from 'mystjs';
-import { IDocumentCache } from '../types';
+import { FolderContext, IDocumentCache, Frontmatter } from '../types';
 import { transformRoot } from './root';
 import { transformMath } from './math';
 import { transformImages } from './images';
@@ -11,7 +10,7 @@ import { transformOutputs } from './outputs';
 import { transformEnumerators } from './enumerate';
 import { transformFootnotes } from './footnotes';
 import { transformKeys } from './keys';
-import { Frontmatter, getFrontmatter } from '../frontmatter';
+import { getFrontmatter } from '../frontmatter';
 import { References, Root } from './types';
 import { tic } from '../../export/utils/exec';
 
@@ -55,9 +54,9 @@ function importMdastFromJson(cache: IDocumentCache, filename: string, mdast: Roo
 
 export async function transformMdast(
   cache: IDocumentCache,
+  context: FolderContext,
   filename: { from: string; folder: string },
   mdast: Root,
-  citeRenderer: CitationRenderer,
 ): Promise<Omit<RendererData, 'sha256'>> {
   const toc = tic();
   const references: References = {
@@ -65,7 +64,8 @@ export async function transformMdast(
     footnotes: {},
   };
   const { from: name, folder } = filename;
-  const frontmatter = getFrontmatter(mdast);
+  const { citeRenderer } = context;
+  const frontmatter = getFrontmatter(cache.session, context, mdast);
   importMdastFromJson(cache, name, mdast); // This must be first!
   // The transforms from MyST (structural mostly)
   mdast = await transformRoot(mdast);
@@ -89,7 +89,7 @@ export async function transformMdast(
   await transformImages(mdast, { references, citeRenderer, cache, frontmatter, folder });
   cache.session.log.debug(toc(`Processing: "${name}" - images in %s`));
 
-  if (cache.config?.site?.design?.hideAuthors) {
+  if (cache.config?.site?.design?.hide_authors) {
     delete frontmatter.authors;
   }
   const data = { frontmatter, mdast, references };

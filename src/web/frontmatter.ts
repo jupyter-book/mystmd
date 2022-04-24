@@ -1,42 +1,8 @@
-import { Author } from '@curvenote/blocks';
 import yaml from 'js-yaml';
 import { Root, PhrasingContent } from 'mdast';
 import { GenericNode, select } from 'mystjs';
-
-enum CreativeCommonsLicense {
-  'CC0' = 'CC0-1.0',
-  'CC-BY' = 'CC-BY-4.0',
-  'CC-BY-SA' = 'CC-BY-SA-4.0',
-  'CC-BY-NC' = 'CC-BY-NC-4.0',
-  'CC-BY-NC-SA' = 'CC-BY-NC-SA-4.0',
-  'CC-BY-ND' = 'CC-BY-ND-4.0',
-  'CC-BY-NC-ND' = 'CC-BY-NC-ND-4.0',
-}
-
-export type Frontmatter = {
-  title?: string;
-  description?: string;
-  authors?: Author[];
-  subject?: string;
-  open_access?: boolean;
-  license?: CreativeCommonsLicense;
-  doi?: string;
-  github?: string;
-  journal?: string | { title?: string; url?: string; volume?: number; issue?: number };
-  numbering?:
-    | boolean
-    | {
-        enumerator?: string;
-        figure?: boolean;
-        equation?: boolean;
-        heading_1?: boolean;
-        heading_2?: boolean;
-        heading_3?: boolean;
-        heading_4?: boolean;
-        heading_5?: boolean;
-        heading_6?: boolean;
-      };
-} & Record<string, string | boolean>;
+import { ISession } from '../session/types';
+import { FolderContext, Frontmatter } from './types';
 
 function toText(content: PhrasingContent[]): string {
   return content
@@ -48,7 +14,42 @@ function toText(content: PhrasingContent[]): string {
     .join('');
 }
 
-export function getFrontmatter(tree: Root, remove = true): Frontmatter {
+export const DEFAULT_FRONTMATTER: Frontmatter = {
+  numbering: false,
+};
+
+export function getFrontmatterFromConfig(
+  session: ISession,
+  context: Pick<FolderContext, 'config' | 'folder'>,
+  frontmatter = { ...DEFAULT_FRONTMATTER },
+) {
+  const { authors, subject, journal, github, doi, license, open_access, numbering, ...rest } =
+    context.config ?? {};
+  if (authors) frontmatter.authors = authors;
+  if (subject) frontmatter.subject = subject;
+  if (journal) frontmatter.journal = journal;
+  if (github) frontmatter.github = github;
+  if (doi) frontmatter.doi = doi;
+  if (license) frontmatter.license = license;
+  if (open_access) frontmatter.open_access = open_access;
+  if (numbering) frontmatter.numbering = numbering;
+  const extraKeys = Object.keys(rest);
+  if (extraKeys.length > 0) {
+    session.log.warn(
+      `Folder "${context.folder}" config.yml did not recognize key${
+        extraKeys.length > 1 ? 's' : ''
+      }: "${extraKeys.join('", "')}"`,
+    );
+  }
+  return frontmatter;
+}
+
+export function getFrontmatter(
+  session: ISession,
+  context: FolderContext,
+  tree: Root,
+  remove = true,
+): Frontmatter {
   const firstNode = tree.children[0];
   const secondNode = tree.children[1];
   let removeUpTo = 0;
@@ -70,5 +71,5 @@ export function getFrontmatter(tree: Root, remove = true): Frontmatter {
     // TODO: Improve title selection!
     frontmatter.title = heading?.children?.[0]?.value || 'Untitled';
   }
-  return frontmatter;
+  return getFrontmatterFromConfig(session, context, frontmatter);
 }

@@ -30,7 +30,7 @@ export interface WebConfig {
   logo?: string | null;
   logoText?: string | null;
   design?: {
-    hideAuthors?: boolean;
+    hide_authors?: boolean;
   };
   /** Domain hostname, for example, docs.curve.space or docs.curvenote.com */
   domains?: string[];
