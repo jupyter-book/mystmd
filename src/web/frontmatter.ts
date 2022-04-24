@@ -4,6 +4,7 @@ import { GenericNode, select } from 'mystjs';
 import { Frontmatter } from '../config/types';
 import { ISession } from '../session/types';
 import { FolderContext } from './types';
+import { validateLicense } from './licenses';
 
 function toText(content: PhrasingContent[]): string {
   return content
@@ -59,7 +60,10 @@ export function getFrontmatterFromConfig(
   if (journal) frontmatter.journal = journal;
   if (github) frontmatter.github = github;
   if (doi) frontmatter.doi = doi;
-  if (license) frontmatter.license = license;
+  if (license) {
+    const nextLicense = validateLicense(log, license as string);
+    if (nextLicense) frontmatter.license = nextLicense;
+  }
   if (open_access != null) frontmatter.open_access = open_access;
   if (numbering != null) {
     if (typeof numbering === 'boolean') {

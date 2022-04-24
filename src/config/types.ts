@@ -1,14 +1,13 @@
 import { Author, ExportableFormatTypes } from '@curvenote/blocks';
 
-export enum CreativeCommonsLicense {
-  'CC0' = 'CC0-1.0',
-  'CC-BY' = 'CC-BY-4.0',
-  'CC-BY-SA' = 'CC-BY-SA-4.0',
-  'CC-BY-NC' = 'CC-BY-NC-4.0',
-  'CC-BY-NC-SA' = 'CC-BY-NC-SA-4.0',
-  'CC-BY-ND' = 'CC-BY-ND-4.0',
-  'CC-BY-NC-ND' = 'CC-BY-NC-ND-4.0',
-}
+type License = {
+  title: string;
+  url: string;
+  id: string;
+  free?: boolean;
+  CC?: boolean;
+  osi?: boolean;
+};
 
 export type Frontmatter = {
   title?: string;
@@ -16,7 +15,7 @@ export type Frontmatter = {
   authors?: Author[];
   subject?: string;
   open_access?: boolean;
-  license?: CreativeCommonsLicense;
+  license?: string | License | { code?: License; text?: License };
   doi?: string;
   github?: string;
   journal?: string | { title?: string; url?: string; volume?: number; issue?: number };
