@@ -1,4 +1,42 @@
-import { ExportableFormatTypes } from '@curvenote/blocks';
+import { Author, ExportableFormatTypes } from '@curvenote/blocks';
+
+type License = {
+  title: string;
+  url: string;
+  id: string;
+  free?: boolean;
+  CC?: boolean;
+  osi?: boolean;
+};
+
+export type Frontmatter = {
+  title?: string;
+  description?: string;
+  authors?: Author[];
+  subject?: string;
+  open_access?: boolean;
+  license?: string | License | { code?: License; text?: License };
+  doi?: string;
+  github?: string;
+  journal?: string | { title?: string; url?: string; volume?: number; issue?: number };
+  numbering?:
+    | boolean
+    | {
+        enumerator?: string;
+        figure?: boolean;
+        equation?: boolean;
+        table?: boolean;
+        code?: boolean;
+        heading_1?: boolean;
+        heading_2?: boolean;
+        heading_3?: boolean;
+        heading_4?: boolean;
+        heading_5?: boolean;
+        heading_6?: boolean;
+      };
+  /** Math macros to be passed to KaTeX or LaTeX */
+  math?: Record<string, string>;
+} & Record<string, any>;
 
 /** Maybe this is the new sections in the future?
  *
@@ -30,7 +68,7 @@ export interface WebConfig {
   logo?: string | null;
   logoText?: string | null;
   design?: {
-    hideAuthors?: boolean;
+    hide_authors?: boolean;
   };
   /** Domain hostname, for example, docs.curve.space or docs.curvenote.com */
   domains?: string[];
@@ -74,4 +112,5 @@ export interface CurvenoteConfig {
   sync: SyncConfig[];
   web: WebConfig;
   export?: ExportConfig[];
+  frontmatter?: Frontmatter;
 }

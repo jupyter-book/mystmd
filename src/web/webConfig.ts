@@ -131,13 +131,14 @@ function getSections(
 
 function createConfig(session: ISession, opts: Options): Required<SiteConfig> {
   const { config } = session;
-  if (!config)
+  if (!config) {
     throw new Error(
       `Could not find ${CURVENOTE_YML}. Use the \`--config [path]\` to override the default.`,
     );
+  }
   const { sections, folders } = getSections(session, opts, config.web.sections);
   const design: Required<SiteConfig['site']['design']> = {
-    hideAuthors: config.web.design?.hideAuthors ?? false,
+    hide_authors: config.web.design?.hide_authors ?? false,
   };
   const actions = (config.web.actions ?? []).map((action) =>
     copyActionResource(session, opts, action),

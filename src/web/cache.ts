@@ -2,6 +2,7 @@ import { CitationRenderer, getCitations } from 'citation-js-utils';
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
+import yaml from 'js-yaml';
 import {
   parseNotebook,
   TranslatedBlockPair,
@@ -13,24 +14,25 @@ import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
 import { GenericNode, selectAll } from 'mystjs';
 import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
-import { IDocumentCache, Options, SiteConfig } from './types';
+import { FolderConfig, FolderContext, IDocumentCache, Options, SiteConfig } from './types';
 import { parseMyst, publicPath, serverPath } from './utils';
 
 import { LinkLookup, RendererData, transformLinks, transformMdast } from './transforms';
 import { readConfig } from './webConfig';
 import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
+import { DEFAULT_FRONTMATTER, getFrontmatterFromConfig } from './frontmatter';
 
 type NextFile = { filename: string; folder: string; slug: string };
 
 async function processMarkdown(
   cache: IDocumentCache,
+  context: FolderContext,
   filename: { from: string; to: string; folder: string },
   content: string,
-  citeRenderer: CitationRenderer,
 ) {
   const mdast = parseMyst(content);
-  const data = await transformMdast(cache, filename, mdast, citeRenderer);
+  const data = await transformMdast(cache, context, filename, mdast);
   return data;
 }
 
@@ -45,9 +47,9 @@ function createOutputDirective(): { myst: string; id: string } {
 
 async function processNotebook(
   cache: IDocumentCache,
+  context: FolderContext,
   filename: { from: string; to: string; folder: string },
   content: string,
-  citeRenderer: CitationRenderer,
 ) {
   const { log } = cache.session;
   const { notebook, children } = parseNotebook(JSON.parse(content));
@@ -98,16 +100,16 @@ async function processNotebook(
     output.data = outputMap[output.id];
   });
 
-  const data = await transformMdast(cache, filename, mdast, citeRenderer);
+  const data = await transformMdast(cache, context, filename, mdast);
   return data;
 }
 
 async function processFile(
   cache: IDocumentCache,
+  context: FolderContext,
   filename: { from: string; to: string; folder: string; url: string },
   content: string,
-  citeRenderer: CitationRenderer,
-): Promise<{ fromCache: boolean; data: RendererData }> {
+): Promise<null | { fromCache: boolean; data: RendererData }> {
   const sha256 = createHash('sha256').update(content).digest('hex');
   if (fs.existsSync(filename.to)) {
     const cachedContent = fs.readFileSync(filename.to).toString();
@@ -119,19 +121,29 @@ async function processFile(
   let data: Omit<RendererData, 'sha256'>;
   switch (ext) {
     case '.md':
-      data = await processMarkdown(cache, filename, content, citeRenderer);
+      data = await processMarkdown(cache, context, filename, content);
       break;
     case '.ipynb':
-      data = await processNotebook(cache, filename, content, citeRenderer);
+      data = await processNotebook(cache, context, filename, content);
       break;
     case '.bib':
       // TODO: Clear cache, relink all files in the folder, use transformCitations
-      // TODO: delete cache.$citationRenderers[filename.folder]
-      throw new Error(
-        `Please rerun the build/start with -C. References aren't yet handled for "${filename.folder}"`,
+      delete (cache as DocumentCache).$citationRenderers[filename.folder];
+      cache.session.log.error(
+        `"${filename.from}": Please rerun the build with -C. References aren't yet handled.`,
       );
+      return null;
+    case '.yml':
+      delete (cache as DocumentCache).$folderConfig[filename.folder];
+      await (cache as DocumentCache).getFolderConfig(filename.folder);
+      // TODO: Rebuild all content in folder
+      cache.session.log.error(
+        `"${filename.from}": Please rerun the build with -C. _config.yml aren't yet handled.`,
+      );
+      return null;
     default:
-      throw new Error(`Unrecognized extension ${filename.from}`);
+      cache.session.log.error(`Unrecognized extension ${filename.from}`);
+      return null;
   }
   return { fromCache: false, data: { ...data, sha256 } };
 }
@@ -144,6 +156,21 @@ async function getCitationRenderer(session: ISession, folder: string): Promise<C
   }
   const f = fs.readFileSync(referenceFilename).toString();
   return getCitations(f);
+}
+
+async function getFolderConfig(session: ISession, folder: string): Promise<FolderConfig> {
+  const folderConfig = path.join(folder, '_config.yml');
+  if (!fs.existsSync(folderConfig)) {
+    session.log.debug(`Did not find a folder config at "${folderConfig}"`);
+    return DEFAULT_FRONTMATTER;
+  }
+  const config = yaml.load(fs.readFileSync(folderConfig).toString()) as any;
+  return getFrontmatterFromConfig(
+    session.log,
+    folder,
+    session.config?.frontmatter ?? { ...DEFAULT_FRONTMATTER },
+    config,
+  );
 }
 
 export function watchConfig(cache: IDocumentCache) {
@@ -183,6 +210,16 @@ export class DocumentCache implements IDocumentCache {
     );
   }
 
+  $folderConfig: Record<string, FolderConfig> = {};
+
+  async getFolderConfig(folder: string): Promise<FolderConfig> {
+    const config = this.$folderConfig[folder];
+    if (config) return config;
+    const newConfig = await getFolderConfig(this.session, folder);
+    this.$folderConfig[folder] = newConfig;
+    return newConfig;
+  }
+
   $citationRenderers: Record<string, CitationRenderer> = {};
 
   async getCitationRenderer(folder: string): Promise<CitationRenderer> {
@@ -207,9 +244,13 @@ export class DocumentCache implements IDocumentCache {
     this.session.log.debug(`Reading file "${filename}"`);
     const content = fs.readFileSync(filename).toString();
     const citeRenderer = await this.getCitationRenderer(folder);
+    const folderConfig = await this.getFolderConfig(folder);
+    const context: FolderContext = { folder, citeRenderer, config: folderConfig };
     const jsonFilename = this.$getJsonFilename(id);
     const filenames = { from: filename, to: jsonFilename, folder, url: webFolder };
-    const { fromCache, data } = await processFile(this, filenames, content, citeRenderer);
+    const processResult = await processFile(this, context, filenames, content);
+    if (!processResult) return false;
+    const { fromCache, data } = processResult;
     const changed = this.$startupPass ? false : transformLinks(data.mdast, this.$links);
     if (changed || !fromCache) {
       writeFileToFolder(jsonFilename, JSON.stringify(data));

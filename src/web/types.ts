@@ -1,4 +1,5 @@
-import { WebConfig } from '../config/types';
+import { CitationRenderer } from 'citation-js-utils';
+import { Frontmatter, WebConfig } from '../config/types';
 import { ISession } from '../session/types';
 
 export interface IDocumentCache {
@@ -11,6 +12,14 @@ export interface IDocumentCache {
   readConfig(): Promise<void>;
 
   writeConfig(): Promise<void>;
+}
+
+export type FolderConfig = Frontmatter;
+
+export interface FolderContext {
+  folder: string;
+  config: FolderConfig;
+  citeRenderer: CitationRenderer;
 }
 
 export interface Page {

@@ -4,13 +4,20 @@ import YAML from 'yaml';
 import { docLinks } from '../docs';
 import { Logger } from '../logging';
 import { CurvenoteConfig } from './types';
+import { DEFAULT_FRONTMATTER, getFrontmatterFromConfig } from '../web/frontmatter';
 
 export * from './types';
 
-function validate(config: CurvenoteConfig): CurvenoteConfig {
+function validate(log: Logger, config: CurvenoteConfig): CurvenoteConfig {
   // TODO check against a schema & throw if bad
   if (!config.sync) config.sync = [];
   if (!config.web.nav) config.web.nav = [];
+  config.frontmatter = getFrontmatterFromConfig(
+    log,
+    '<root>',
+    config.frontmatter ?? { ...DEFAULT_FRONTMATTER },
+    {},
+  );
   return config;
 }
 
@@ -25,7 +32,7 @@ export function loadCurvenoteConfig(log: Logger, pathToYml: string): CurvenoteCo
   let config;
   try {
     config = YAML.parse(fs.readFileSync(pathToYml, 'utf-8'));
-    return validate(config);
+    return validate(log, config);
   } catch (err) {
     log.error(`Could not parse '${pathToYml}' config file.`, (err as Error).message);
     return null;
