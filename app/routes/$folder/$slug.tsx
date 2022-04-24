@@ -65,7 +65,7 @@ export default function Page() {
   const article = useLoaderData<PageLoader>();
   const blocks = article.mdast.children as GenericParent[];
   return (
-    <ReferencesProvider references={article.references}>
+    <ReferencesProvider references={{ ...article.references, article: article.mdast }}>
       <div>
         <Frontmatter frontmatter={article.frontmatter} />
         {blocks.map((node, index) => {

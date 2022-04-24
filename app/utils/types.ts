@@ -46,6 +46,7 @@ export type Footnotes = Record<string, GenericNode>;
 export type References = {
   cite: Citations;
   footnotes: Footnotes;
+  article?: GenericParent;
 };
 
 export type NavigationLink = {

@@ -53,14 +53,14 @@ const mathRenderer: NodeRenderer<MathLike> = (node) => {
       <div
         key={node.key}
         id={node.identifier}
-        className={classNames('relative', { 'mr-[25px]': node.enumerator })}
+        className={classNames('relative', { 'mr-[45px]': node.enumerator })}
       >
         <div
           dangerouslySetInnerHTML={{ __html: node.html }}
           className="overflow-x-auto"
         />
         {node.enumerator && (
-          <div className="absolute right-[-25px] m-0 top-[50%] translate-y-[-50%]">
+          <div className="absolute right-[-45px] m-0 top-[50%] translate-y-[-50%]">
             ({node.enumerator})
           </div>
         )}
