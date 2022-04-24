@@ -22,7 +22,7 @@ export const link: NodeRenderer<TransformedLink> = (node, children) => {
 };
 
 export const linkBlock: NodeRenderer<TransformedLink> = (node, children) => {
-  const iconClass = 'w-6 h-6 self-center transition-transform';
+  const iconClass = 'w-6 h-6 self-center transition-transform flex-none';
   const containerClass =
     'flex-1 p-4 my-4 block border font-normal hover:border-blue-500 dark:hover:border-blue-400 no-underline hover:text-blue-500 dark:hover:text-blue-400 text-gray-600 dark:text-gray-100 border-gray-200 dark:border-gray-500 rounded shadow-sm hover:shadow-lg dark:shadow-neutral-700';
   const internal = node.internal ?? false;
