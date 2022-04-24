@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Frontmatter as FrontmatterType } from '~/utils';
-import { CreativeCommonsBadge } from './Icons/CreativeCommons';
+import { LicenseBadges } from './Icons/License';
 import Email from './Icons/Email';
 import GitHub from './Icons/GitHub';
 import OpenAccessLogo from './Icons/OpenAccess';
@@ -101,7 +101,12 @@ function GitHubLink({ github: possibleLink }: { github?: string }) {
   if (!possibleLink) return null;
   const github = possibleLink.replace(/^(https?:\/\/)?github\.com\//, '');
   return (
-    <a href={`https://github.com/${github}`} target="_blank" rel="noopener noreferrer">
+    <a
+      href={`https://github.com/${github}`}
+      title={`GitHub Repository: ${github}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       <GitHub className="h-[1.3em] translate-y-[0.1em] px-2 opacity-60 hover:opacity-100 dark:invert" />
     </a>
   );
@@ -176,7 +181,7 @@ export function Frontmatter({ frontmatter }: { frontmatter: FrontmatterType }) {
           <Journal journal={frontmatter.journal} />
           <div className="flex-grow"></div>
           <GitHubLink github={github} />
-          {license && <CreativeCommonsBadge license={license} />}
+          <LicenseBadges license={license} />
           <OpenAccessBadge open_access={open_access} />
           <DOI doi={doi} />
         </div>

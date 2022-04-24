@@ -1,3 +1,5 @@
+import ScaleIcon from '@heroicons/react/outline/ScaleIcon';
+
 function CreativeCommons(
   viewBox: string,
   circle: { cx: string; cy: string; r: string },
@@ -68,50 +70,52 @@ export const ZERO = CreativeCommons(
   ],
 );
 
-export function CreativeCommonsBadge({ license }: { license: string }) {
-  const match = /^([CBYSAND0-]+)(?:(?:-)([0-9].[0-9]))?$/.exec(license);
-  if (!match) return null;
+export const OSI = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 500 500"
+    xmlSpace="preserve"
+    className={className}
+  >
+    <path
+      fill="#3EA639"
+      stroke="#1E541E"
+      strokeWidth="19.2122"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M278,340.3 c33.5-12.4,51-36.4,51-77.6c0-41.2-34.7-77.5-78.1-77.6c-45.8-0.1-80.3,36.2-79.8,77.6c0.6,41.4,20.3,68.9,51.9,78.8L167,479.2 C92.1,459.8,16,371.5,16,262.7C16,133.9,119.5,29.5,249.2,29.5S484,133.9,484,262.7c0,110.4-75.4,197.5-151.9,216.8L278,340.3z"
+    />
+  </svg>
+);
+
+type License = {
+  title: string;
+  url: string;
+  id: string;
+  free?: boolean;
+  CC?: boolean;
+  osi?: boolean;
+};
+
+export function CreativeCommonsBadge({
+  license,
+  preamble = '',
+}: {
+  license: License;
+  preamble?: string;
+}) {
+  const match = /^([CBYSAND0-]+)(?:(?:-)([0-9].[0-9]))?$/.exec(license.id);
+  if (!license.CC || !match) return null;
+  const title = `${preamble}${license.title} (${license.id})`;
   const kind = match[1].toUpperCase();
-  const version = match[2] ?? '4.0';
-  let link = '';
-  switch (kind) {
-    case 'CC-BY':
-      link = `/by/${version}/`;
-      break;
-    case 'CC-BY-SA':
-      link = `/by-sa/${version}/`;
-      break;
-    case 'CC-BY-NC':
-      link = `/by-nc/${version}/`;
-      break;
-    case 'CC-BY-NC-SA':
-      link = `/by-nc-sa/${version}/`;
-      break;
-    case 'CC-BY-ND':
-      link = `/by-nd/${version}/`;
-      break;
-    case 'CC-BY-NC-ND':
-      link = `/by-nc-nd/${version}/`;
-      break;
-    case 'CC-ZERO':
-    case 'CC-0':
-    case 'CC0':
-      link = '/zero/1.0/';
-      break;
-    default:
-      break;
-  }
   return (
     <a
       className="opacity-50 hover:opacity-100 dark:invert"
-      href={`https://creativecommons.org/licenses${link}`}
+      href={license.url}
       target="_blank"
       rel="noopener noreferrer"
     >
-      <CC
-        className="h-[1.3em] px-1 inline-block"
-        title={`${license} (Creative Commons License)`}
-      />
+      <CC className="h-[1.3em] px-1 inline-block" title={`${title}`} />
       {(kind.startsWith('CC0') || kind.startsWith('CC-0') || kind.includes('ZERO')) && (
         <ZERO
           className="h-[1.3em] px-1 inline-block"
@@ -144,4 +148,53 @@ export function CreativeCommonsBadge({ license }: { license: string }) {
       )}
     </a>
   );
+}
+
+function SingleLicenseBadge({
+  license,
+  preamble = '',
+}: {
+  license?: License;
+  preamble?: string;
+}) {
+  if (!license) return null;
+  if (license.CC) {
+    return <CreativeCommonsBadge license={license} preamble={preamble} />;
+  }
+  return (
+    <a
+      href={license.url || undefined}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={`${preamble}${license.title} (${license.id})`}
+    >
+      {!license.osi && (
+        <ScaleIcon className="h-[1.3em] translate-y-[0.1em] px-1 opacity-60 hover:opacity-100" />
+      )}
+      {license.osi && (
+        <OSI className="h-[1.3em] translate-y-[0.1em] px-1 opacity-70 hover:opacity-100 grayscale hover:grayscale-0" />
+      )}
+    </a>
+  );
+}
+
+export function LicenseBadges({
+  license: possibleLicense,
+}: {
+  license?: string | License | { code?: License; text?: License };
+}) {
+  if (!possibleLicense) return null;
+  const license =
+    typeof possibleLicense === 'string'
+      ? { title: '', url: '', id: possibleLicense }
+      : possibleLicense;
+  if ('code' in license || 'text' in license) {
+    return (
+      <>
+        <SingleLicenseBadge license={license.text} preamble="Text License: " />
+        <SingleLicenseBadge license={license.code} preamble="Code License: " />
+      </>
+    );
+  }
+  return <SingleLicenseBadge license={license as License} />;
 }
