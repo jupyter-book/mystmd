@@ -2,7 +2,7 @@ import { Heading } from 'myst-spec';
 import { NodeRenderer } from './types';
 import { createElement as e } from 'react';
 
-const HELP_TEXT = 'Permalink to this Section';
+const HELP_TEXT = 'Link to this Section';
 
 const Heading: NodeRenderer<Heading> = (node, children) => {
   const { enumerator, depth, key, identifier } = node;
@@ -15,7 +15,7 @@ const Heading: NodeRenderer<Heading> = (node, children) => {
         title={HELP_TEXT}
         aria-label={HELP_TEXT}
       >
-        <span>#</span>
+        #
       </a>
       {enumerator && <span className="select-none mr-3">{enumerator}</span>}
       <span className="heading-text">{children}</span>
