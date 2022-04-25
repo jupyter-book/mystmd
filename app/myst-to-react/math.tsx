@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { ExclamationIcon } from '@heroicons/react/outline';
 import { InlineMath, Math } from 'myst-spec';
 import { InlineError } from './inlineError';
+import { HashLink } from './heading';
 
 // function Math({ value, html }: { value: string; html: string }) {
 //   const [loaded, setLoaded] = useState(false);
@@ -52,16 +53,17 @@ const mathRenderer: NodeRenderer<MathLike> = (node) => {
     return (
       <div
         key={node.key}
-        id={node.identifier}
-        className={classNames('relative', { 'mr-[45px]': node.enumerator })}
+        id={node.identifier || node.key}
+        className={classNames('flex group')}
       >
         <div
           dangerouslySetInnerHTML={{ __html: node.html }}
-          className="overflow-x-auto"
+          className="overflow-x-auto flex-grow"
         />
         {node.enumerator && (
-          <div className="absolute right-[-45px] m-0 top-[50%] translate-y-[-50%]">
-            ({node.enumerator})
+          <div className="flex-none text-right m-0 pl-2 self-center relative">
+            <span>({node.enumerator})</span>
+            <HashLink id={node.identifier || node.key} align="right" kind="Equation" />
           </div>
         )}
       </div>

@@ -1,22 +1,46 @@
 import { Heading } from 'myst-spec';
 import { NodeRenderer } from './types';
 import { createElement as e } from 'react';
+import classNames from 'classnames';
 
-const HELP_TEXT = 'Link to this Section';
+function getHelpHashText(kind: string) {
+  return `Link to this ${kind}`;
+}
+
+export function HashLink({
+  id,
+  kind,
+  align = 'left',
+}: {
+  id: string;
+  kind: string;
+  align?: 'left' | 'right';
+}) {
+  const helpText = getHelpHashText(kind);
+  return (
+    <a
+      className={classNames(
+        'select-none absolute top-0 font-normal no-underline transition-opacity opacity-0 group-hover:opacity-70',
+        {
+          'left-0 -translate-x-[100%] pr-3': align === 'left',
+          'right-0 translate-x-[100%] pl-3': align === 'right',
+        },
+      )}
+      href={`#${id}`}
+      title={helpText}
+      aria-label={helpText}
+    >
+      #
+    </a>
+  );
+}
 
 const Heading: NodeRenderer<Heading> = (node, children) => {
   const { enumerator, depth, key, identifier } = node;
   const id = identifier || key;
   const textContent = (
     <>
-      <a
-        className="select-none absolute top-0 left-0 -translate-x-[100%] font-normal pr-3 no-underline transition-opacity opacity-0 group-hover:opacity-70"
-        href={`#${id}`}
-        title={HELP_TEXT}
-        aria-label={HELP_TEXT}
-      >
-        #
-      </a>
+      <HashLink id={id} align="left" kind="Section" />
       {enumerator && <span className="select-none mr-3">{enumerator}</span>}
       <span className="heading-text">{children}</span>
     </>
