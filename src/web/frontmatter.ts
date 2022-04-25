@@ -57,7 +57,15 @@ export function getFrontmatterFromConfig(
   if (subtitle) frontmatter.subtitle = subtitle;
   if (description) frontmatter.description = description;
   if (date) frontmatter.date = date;
-  if (authors) frontmatter.authors = authors;
+  if (authors !== undefined) {
+    if (Array.isArray(authors) && authors.length > 0) {
+      // TODO: Validate authors
+      frontmatter.authors = authors;
+    }
+    if (authors === null || (typeof authors === 'boolean' && authors === false)) {
+      delete frontmatter.authors;
+    }
+  }
   if (subject) frontmatter.subject = subject;
   if (journal) frontmatter.journal = journal;
   if (github) frontmatter.github = github;
