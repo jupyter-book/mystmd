@@ -65,6 +65,7 @@ export function validateLicense(
   log: Logger,
   license: string | { code: string; text: string },
 ): null | License | { code?: License; text?: License } {
+  if (!license) return null;
   if (typeof license === 'string') {
     const key = license.toUpperCase();
     if (LICENSE_KEYS[key] === undefined) {
