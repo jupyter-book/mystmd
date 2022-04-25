@@ -15,10 +15,11 @@ import { writeFileToFolder } from '../utils';
 export async function addProjectsToConfig(
   session: ISession,
   opts?: { config?: CurvenoteConfig; singleQuestion?: boolean },
-): Promise<CurvenoteConfig> {
+): Promise<{ config: CurvenoteConfig; newFolders: string[] }> {
   const { config = blankCurvenoteConfig() } = opts ?? {};
   let confirm = { additional: true };
   let firstTime = true;
+  const newFolders = [];
   while ((confirm.additional && !opts?.singleQuestion) || firstTime) {
     const { projectLink } = await inquirer.prompt([
       {
@@ -40,7 +41,7 @@ export async function addProjectsToConfig(
           `To add your own Curvenote projects, please authenticate using:\n\ncurvenote token set [token]\n\nLearn more at ${docLinks.auth}`,
         );
       }
-      return config;
+      return { config, newFolders };
     }
     session.log.info(chalk.green(`🚀 Found ${projectLogString(project)}`));
     const { path } = await inquirer.prompt([
@@ -65,6 +66,7 @@ export async function addProjectsToConfig(
       title: project.data.title,
       url: `/${basename(path)}`,
     });
+    newFolders.push(path);
     if (!opts?.singleQuestion) {
       confirm = await inquirer.prompt([
         {
@@ -77,7 +79,7 @@ export async function addProjectsToConfig(
     }
     firstTime = false;
   }
-  return config;
+  return { config, newFolders };
 }
 
 const START = `
@@ -100,15 +102,21 @@ export async function add(session: ISession) {
 
   const answers = await inquirer.prompt([questions.content({ folderIsEmpty: true })]);
 
+  let newFolders: string[] = [];
   if (answers.content === 'curvenote') {
-    await addProjectsToConfig(session, { config });
+    const resp = await addProjectsToConfig(session, { config });
+    newFolders = resp.newFolders;
   }
 
   writeFileToFolder(CURVENOTE_YML, yaml.dump(config));
 
+  if (newFolders.length === 0) {
+    session.log.info(FINISHED);
+    return;
+  }
   const { pull } = await inquirer.prompt([questions.pull()]);
   if (pull) {
-    await pullProjects(session, { config });
+    await pullProjects(session, { config, folder: newFolders });
   } else {
     session.log.info(
       `Sync your content later using:\n\n${chalk.bold('curvenote pull')}\n\nLearn more at ${

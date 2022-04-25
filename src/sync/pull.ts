@@ -61,16 +61,29 @@ async function pullProject(session: ISession, id: string, folder: string, level?
  */
 export async function pullProjects(
   session: ISession,
-  opts: { config: CurvenoteConfig; level?: LogLevel; folder?: string },
+  opts: { config: CurvenoteConfig; level?: LogLevel; folder?: string | string[] },
 ) {
   const { config } = opts;
   const limit = pLimit(1);
-  if (opts.folder) {
+  if (typeof opts.folder === 'string') {
     const item = throwIfMissingOrNoRemote(
       opts.folder,
       config.sync.find((i) => i.folder === opts.folder),
     );
     await pullProject(session, item.id, opts.folder, opts.level);
+  } else if (Array.isArray(opts.folder)) {
+    const folders = opts.folder.map((f) => {
+      const item = throwIfMissingOrNoRemote(
+        f,
+        config.sync.find((i) => i.folder === f),
+      );
+      return item;
+    });
+    await Promise.all(
+      folders.map(({ folder, id }) =>
+        limit(async () => pullProject(session, id, folder, opts.level)),
+      ),
+    );
   } else {
     const remoteContentOnly = config.sync.filter(hasRemote);
     await Promise.all(
