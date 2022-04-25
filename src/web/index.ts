@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import inquirer from 'inquirer';
 import { makeExecutable } from '../export/utils';
 import { ISession } from '../session/types';
 import { buildContent, cleanBuiltFiles, watchContent } from './prepare';
@@ -102,6 +103,20 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
       `🧐 No domains specified, use config.site.domains: - ${me.data.username}.curve.space`,
     );
     return;
+  }
+  if (!opts.yes) {
+    const confirm = await inquirer.prompt([
+      {
+        name: 'deploy',
+        message: `Deploy local content to "${domains.map((d) => `https://${d}`).join('", "')}"?`,
+        type: 'confirm',
+        default: false,
+      },
+    ]);
+    if (!confirm.deploy) {
+      session.log.info('Exiting deployment.');
+      return;
+    }
   }
   await cloneCurvespace(session, opts);
   sparkles(session, 'Deploying Curvenote');

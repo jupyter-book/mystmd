@@ -14,6 +14,9 @@ function makeCleanOption() {
 function makeForceOption() {
   return new Option('-F, --force', 'Remove the build directory and re-install').default(false);
 }
+function makeYesOption() {
+  return new Option('-Y, --yes', 'Use the defaults and answer "Y" to confirmations').default(false);
+}
 
 function makeCurvespaceCleanCLI(program: Command) {
   const command = new Command('clean')
@@ -61,6 +64,7 @@ function makeDeployCLI(program: Command) {
   const command = new Command('deploy')
     .description('Deploy content to https://*.curve.space or your own domain')
     .addOption(makeForceOption())
+    .addOption(makeYesOption())
     .action(clirun(web.deploy, { program, requireConfig: true }));
   return command;
 }
