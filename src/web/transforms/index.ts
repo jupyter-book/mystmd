@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { convertHtmlToMdast, GenericNode, selectAll } from 'mystjs';
 import { FolderContext, IDocumentCache } from '../types';
+import { ensureBlockNesting } from './blocks';
 import { transformRoot } from './root';
 import { transformMath } from './math';
 import { transformImages } from './images';
@@ -53,6 +54,16 @@ function importMdastFromJson(cache: IDocumentCache, filename: string, mdast: Roo
   });
 }
 
+const htmlHandlers = {
+  comment(h: any, node: any) {
+    // Prevents HTML comments from showing up as text in curvespace
+    // TODO: Remove once this is landed in mystjs
+    const result = h(node, 'comment');
+    (result as GenericNode).value = node.value;
+    return result;
+  },
+};
+
 export async function transformMdast(
   cache: IDocumentCache,
   context: FolderContext,
@@ -70,7 +81,7 @@ export async function transformMdast(
   importMdastFromJson(cache, name, mdast); // This must be first!
   // The transforms from MyST (structural mostly)
   mdast = await transformRoot(mdast);
-  convertHtmlToMdast(mdast);
+  convertHtmlToMdast(mdast, { htmlHandlers });
   cache.session.log.debug(toc(`Processing: "${name}" - html in %s`));
   const state: TransformState = {
     references,
@@ -81,6 +92,7 @@ export async function transformMdast(
     filename: name,
   };
   [
+    ensureBlockNesting,
     transformMath,
     transformOutputs,
     transformCitations,
