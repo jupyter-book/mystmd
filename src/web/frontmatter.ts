@@ -50,6 +50,7 @@ export function getFrontmatterFromConfig(
     numbering,
     math,
     oxa,
+    name,
     ...rest
   } = next ?? {};
   if (title) frontmatter.title = title;
@@ -62,6 +63,7 @@ export function getFrontmatterFromConfig(
   if (github) frontmatter.github = github;
   if (doi) frontmatter.doi = doi;
   if (oxa) frontmatter.oxa = oxa;
+  if (name) frontmatter.name = name;
   if (license) {
     const nextLicense = validateLicense(log, license as string);
     if (nextLicense) frontmatter.license = nextLicense;
@@ -99,13 +101,13 @@ export function getFrontmatterFromConfig(
       if (heading_5 != null) nextNumbering.heading_5 = heading_5;
       if (heading_6 != null) nextNumbering.heading_6 = heading_6;
       frontmatter.numbering = nextNumbering;
-      warnOnUnrecognizedKeys(log, restNumbering, `Folder "${folder}" config.yml#numbering`);
+      warnOnUnrecognizedKeys(log, restNumbering, `Folder "${folder}" _config.yml#numbering`);
     }
   }
   if (math) {
     frontmatter.math = { ...frontmatter.math, ...math };
   }
-  warnOnUnrecognizedKeys(log, rest, `Folder "${folder}" config.yml`);
+  warnOnUnrecognizedKeys(log, rest, `Folder "${folder}" _config.yml`);
   return frontmatter;
 }
 

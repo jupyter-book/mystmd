@@ -15,8 +15,8 @@ function validate(log: Logger, config: CurvenoteConfig): CurvenoteConfig {
   config.frontmatter = getFrontmatterFromConfig(
     log,
     '<root>',
-    config.frontmatter ?? { ...DEFAULT_FRONTMATTER },
-    {},
+    { ...DEFAULT_FRONTMATTER },
+    config.frontmatter ?? {},
   );
   return config;
 }
