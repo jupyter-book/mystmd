@@ -1,6 +1,7 @@
 import React, { ElementType, useState } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { usePopper } from 'react-popper';
+import classNames from 'classnames';
 
 export function ClickPopover({
   children,
@@ -25,7 +26,11 @@ export function ClickPopover({
           <Popover.Button
             ref={setReferenceElement}
             as={as}
-            className="cursor-zoom-in border-b-2 border-dotted"
+            className={classNames(
+              { 'border-dotted': !open },
+              'cursor-zoom-in border-b-2 border-b-blue-500 hover:text-blue-500 hover:border-solid',
+              { 'text-blue-500 border-solid': open },
+            )}
           >
             {children}
           </Popover.Button>
