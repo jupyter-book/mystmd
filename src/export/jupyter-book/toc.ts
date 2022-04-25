@@ -135,7 +135,7 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
     const tocData: TOC = {
       format: TOC_FORMAT,
       root: getName(items[0].block as Block),
-      chapters: itemsToChapters(items.slice(1)),
+      chapters: itemsToChapters([...items[0].children, ...items.slice(1)]),
     };
     const toc = `${header}\n\n${YAML.stringify(tocData)}\n`;
     writeFileToFolder(filename, toc);
@@ -146,7 +146,8 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
   if (!maybeSplit) throw new Error('Must have at least one content page.');
   const [root, rest] = maybeSplit;
   let index = 0;
-  const parts = rest.map((item): JupyterBookPart => {
+  const contents = [...root.children, ...rest];
+  const parts = contents.map((item): JupyterBookPart => {
     if (item.kind === NavListItemKindEnum.Group) {
       return { caption: item.title as string, chapters: itemsToChapters(item.children) };
     }
