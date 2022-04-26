@@ -9,7 +9,6 @@ import { OutputBlock } from './outputBlock';
 const DIRECT_OUTPUT_TYPES = new Set([]);
 
 const DIRECT_MIME_TYPES = new Set([
-  KnownCellOutputMimeTypes.TextPlain,
   KnownCellOutputMimeTypes.ImagePng,
   KnownCellOutputMimeTypes.ImageGif,
   KnownCellOutputMimeTypes.ImageJpeg,
