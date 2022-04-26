@@ -15,19 +15,31 @@ const DIRECT_MIME_TYPES = new Set([
   KnownCellOutputMimeTypes.ImageBmp,
 ]) as Set<string>;
 
+function anImageAndPlainTextOnly(directMimeTypes: Set<string>, mimetypes: string[]) {
+  return (
+    mimetypes.length === 2 &&
+    mimetypes.includes('text/plain') &&
+    mimetypes.reduce(
+      (flag: boolean, mt: string) => flag || directMimeTypes.has(mt),
+      false,
+    )
+  );
+}
+
 export function allOutputsAreSafe(
   outputs: MinifiedOutput[],
   directOutputTypes: Set<string>,
   directMimeTypes: Set<string>,
 ) {
   return outputs.reduce((flag, output) => {
+    if (directOutputTypes.has(output.output_type)) return true;
+    const data = (output as MinifiedMimeOutput).data;
+    const mimetypes = data ? Object.keys(data) : [];
     const safe =
-      directOutputTypes.has(output.output_type) ||
-      ('data' in output &&
-        Boolean(output.data) &&
-        Object.keys((output as MinifiedMimeOutput).data).every((mimetype) =>
-          directMimeTypes.has(mimetype),
-        ));
+      'data' in output &&
+      Boolean(output.data) &&
+      (mimetypes.every((mimetype) => directMimeTypes.has(mimetype)) ||
+        anImageAndPlainTextOnly(directMimeTypes, mimetypes));
     return flag && safe;
   }, true);
 }
@@ -50,6 +62,7 @@ export function Output(node: GenericNode) {
   } else {
     component = <JupyterOutputs id={node.key} outputs={outputs} />;
   }
+  console.log({ allSafe });
 
   return (
     <figure
