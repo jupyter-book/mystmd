@@ -6,7 +6,7 @@ import { SafeOutputs } from './safe';
 import { NativeJupyterOutputs as JupyterOutputs } from './jupyter';
 import { OutputBlock } from './outputBlock';
 
-const DIRECT_OUTPUT_TYPES = new Set(['stream']);
+const DIRECT_OUTPUT_TYPES = new Set([]);
 
 const DIRECT_MIME_TYPES = new Set([
   KnownCellOutputMimeTypes.TextPlain,
