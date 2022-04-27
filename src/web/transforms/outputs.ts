@@ -8,7 +8,7 @@ export function transformOutputs(mdast: Root) {
   outputs.forEach((node) => {
     walkPaths(node.data, (p: string, obj: any) => {
       obj.path = `/${p}`;
-      obj.content = `/${p}`;
+      obj.content = `/${obj.content}`;
     });
   });
 }
