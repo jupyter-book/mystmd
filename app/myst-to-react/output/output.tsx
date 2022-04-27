@@ -62,7 +62,6 @@ export function Output(node: GenericNode) {
   } else {
     component = <JupyterOutputs id={node.key} outputs={outputs} />;
   }
-  console.log({ allSafe });
 
   return (
     <figure
