@@ -67,7 +67,7 @@ describe('minify.mime', () => {
       expect(minified.data[mimetype].path).toEqual(path);
 
       if (path) {
-        expect(minified.data[mimetype].content).toHaveLength(default_opts.truncateTo);
+        expect(minified.data[mimetype].content).toHaveLength(path.length);
         if (mimetype.startsWith('image/')) {
           expect(getLastFileWrite()).toEqual('writeBase64');
         } else {

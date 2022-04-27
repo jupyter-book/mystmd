@@ -20,7 +20,7 @@ async function minifyContent(
     await file.writeString(content, contentType);
   }
   return {
-    content: `${content.slice(0, opts.truncateTo - 3)}...`,
+    content: file.id,
     content_type: contentType,
     path: file.id,
   };
