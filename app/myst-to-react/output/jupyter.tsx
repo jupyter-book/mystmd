@@ -8,7 +8,11 @@ import {
 import { State } from '~/store';
 import { useSelector } from 'react-redux';
 import { host, actions } from '@curvenote/connect';
-import { MinifiedOutput, convertToIOutputs } from '@curvenote/nbtx';
+import {
+  MinifiedOutput,
+  convertToIOutputs,
+  fetchAndEncodeOutputImages,
+} from '@curvenote/nbtx';
 
 export const NativeJupyterOutputs = ({
   id,
@@ -32,10 +36,12 @@ export const NativeJupyterOutputs = ({
 
   useEffect(() => {
     if (iframeRef.current == null || !rendererReady || !data) return;
-    host.commsDispatch(
-      iframeRef.current,
-      actions.connectHostSendContent(uid, convertToIOutputs(data)),
-    );
+    fetchAndEncodeOutputImages(convertToIOutputs(data)).then((outputs) => {
+      host.commsDispatch(
+        iframeRef.current,
+        actions.connectHostSendContent(uid, outputs),
+      );
+    });
   }, [id, iframeRef.current, rendererReady]);
 
   useEffect(() => {

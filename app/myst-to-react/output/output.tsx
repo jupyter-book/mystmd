@@ -6,15 +6,25 @@ import { SafeOutputs } from './safe';
 import { NativeJupyterOutputs as JupyterOutputs } from './jupyter';
 import { OutputBlock } from './outputBlock';
 
-const DIRECT_OUTPUT_TYPES = new Set(['stream']);
+const DIRECT_OUTPUT_TYPES = new Set([]);
 
 const DIRECT_MIME_TYPES = new Set([
-  KnownCellOutputMimeTypes.TextPlain,
   KnownCellOutputMimeTypes.ImagePng,
   KnownCellOutputMimeTypes.ImageGif,
   KnownCellOutputMimeTypes.ImageJpeg,
   KnownCellOutputMimeTypes.ImageBmp,
 ]) as Set<string>;
+
+function anImageAndPlainTextOnly(directMimeTypes: Set<string>, mimetypes: string[]) {
+  return (
+    mimetypes.length === 2 &&
+    mimetypes.includes('text/plain') &&
+    mimetypes.reduce(
+      (flag: boolean, mt: string) => flag || directMimeTypes.has(mt),
+      false,
+    )
+  );
+}
 
 export function allOutputsAreSafe(
   outputs: MinifiedOutput[],
@@ -22,13 +32,14 @@ export function allOutputsAreSafe(
   directMimeTypes: Set<string>,
 ) {
   return outputs.reduce((flag, output) => {
+    if (directOutputTypes.has(output.output_type)) return true;
+    const data = (output as MinifiedMimeOutput).data;
+    const mimetypes = data ? Object.keys(data) : [];
     const safe =
-      directOutputTypes.has(output.output_type) ||
-      ('data' in output &&
-        Boolean(output.data) &&
-        Object.keys((output as MinifiedMimeOutput).data).every((mimetype) =>
-          directMimeTypes.has(mimetype),
-        ));
+      'data' in output &&
+      Boolean(output.data) &&
+      (mimetypes.every((mimetype) => directMimeTypes.has(mimetype)) ||
+        anImageAndPlainTextOnly(directMimeTypes, mimetypes));
     return flag && safe;
   }, true);
 }
