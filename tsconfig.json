@@ -3,7 +3,7 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "target": "es6",
-    "lib": ["es2019"],
+    "lib": ["es2019", "DOM", "DOM.Iterable"],
     "noImplicitAny": true,
     "noImplicitThis": false,
     "experimentalDecorators": true,
