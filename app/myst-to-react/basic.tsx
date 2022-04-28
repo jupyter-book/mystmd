@@ -32,7 +32,6 @@ type SmallCaps = {
 type BasicNodeRenderers = {
   strong: NodeRenderer<spec.Strong>;
   emphasis: NodeRenderer<spec.Emphasis>;
-  inlineCode: NodeRenderer<spec.InlineCode>;
   link: NodeRenderer<spec.Link>;
   paragraph: NodeRenderer<spec.Paragraph>;
   break: NodeRenderer<spec.Break>;
@@ -85,9 +84,6 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
         {children}
       </span>
     );
-  },
-  inlineCode(node, children) {
-    return <code key={node.key}>{children}</code>;
   },
   link(node, children) {
     return (

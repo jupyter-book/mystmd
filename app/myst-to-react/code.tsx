@@ -1,4 +1,4 @@
-import type { Code } from 'myst-spec';
+import type { Code, InlineCode } from 'myst-spec';
 import { NodeRenderer } from '~/myst-to-react';
 import { useTheme } from '~/components/theme';
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -103,8 +103,36 @@ const code: NodeRenderer<Code> = (node) => {
   );
 };
 
+function isColor(code: string): string | undefined {
+  if (!code) return undefined;
+  if (!new Set([4, 7, 9]).has(code.length)) return undefined;
+  const match = /^#([0-9A-Fa-f]{3,8})$/.exec(code);
+  if (!match) return undefined;
+  const color = match[1];
+  return color;
+}
+
+const inlineCode: NodeRenderer<InlineCode> = (node, children) => {
+  if (isColor(node.value)) {
+    return (
+      <code
+        key={node.key}
+        className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-100 px-1 rounded"
+      >
+        {children}
+        <span
+          style={{ backgroundColor: node.value }}
+          className="inline-block w-[10px] h-[10px] rounded-full ml-1"
+        ></span>
+      </code>
+    );
+  }
+  return <code key={node.key}>{children}</code>;
+};
+
 const CODE_RENDERERS = {
   code,
+  inlineCode,
 };
 
 export default CODE_RENDERERS;

@@ -757,6 +757,16 @@
                 "type": "inlineCode",
                 "value": "code",
                 "key": "dBfsxVEhvE"
+              },
+              {
+                "type": "text",
+                "value": " as well as code HEX codes ",
+                "key": "dBfsVEHh"
+              },
+              {
+                "type": "inlineCode",
+                "value": "#235F9D",
+                "key": "dBfsxVvE"
               }
             ]
           },
