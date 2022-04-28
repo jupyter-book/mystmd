@@ -24,7 +24,7 @@ const FileExtensionMap: Record<string, FileExtension> = {
   [KnownCellOutputMimeTypes.AppJson]: FileExtension.json,
 };
 
-function computeHash(content: string) {
+export function computeHash(content: string) {
   return createHash('sha256').update(content).digest('hex');
 }
 

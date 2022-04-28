@@ -8,6 +8,7 @@ import { createHash } from 'crypto';
 
 import { Root, TransformState } from './types';
 import { Options } from '../types';
+import { computeHash, WebFileObject } from '../files';
 import { versionIdToURL } from '../../utils';
 
 export function serverPath(opts: Options) {
@@ -23,12 +24,12 @@ export function imagePath(opts: Options) {
   return path.join(publicPath(opts), '_static');
 }
 
-function hashUrl(url: string) {
-  return createHash('md5').update(url).digest('hex');
-}
-
 function isUrl(url: string) {
   return url.toLowerCase().startsWith('http:') || url.toLowerCase().startsWith('https:');
+}
+
+function isBase64(data: string) {
+  return data.split(';base64,').length === 2;
 }
 
 async function downloadAndSave(url: string, file: string, state: TransformState): Promise<string> {
@@ -59,6 +60,7 @@ export async function transformImages(mdast: Root, state: TransformState) {
     images.map(async (image) => {
       const { session } = state.cache;
       const oxa = oxaLinkToId(image.url);
+      const fullPath = path.join(state.folder, image.url);
       let file: string;
       if (oxa) {
         // If oxa, get the download url
@@ -75,21 +77,24 @@ export async function transformImages(mdast: Root, state: TransformState) {
         file = await downloadAndSave(downloadUrl, `${versionId.block}.${versionId.version}`, state);
       } else if (isUrl(image.url)) {
         // If not oxa, download the URL directly and save it to a file with a hashed name
-        file = await downloadAndSave(image.url, hashUrl(image.url), state);
-      } else {
-        // Assume non-oxa, non-url paths are local images relative to the config.section.path
-        const fullPath = path.join(state.folder, image.url);
-        if (!fs.existsSync(fullPath)) {
-          session.log.error(`Cannot find image: ${fullPath}`);
-          return;
-        }
-        file = `${hashUrl(fullPath)}${path.extname(fullPath)}`;
+        file = await downloadAndSave(image.url, computeHash(image.url), state);
+      } else if (fs.existsSync(fullPath)) {
+        // Non-oxa, non-url local image paths relative to the config.section.path
+        file = `${computeHash(fullPath)}${path.extname(fullPath)}`;
         try {
           fs.copyFileSync(fullPath, path.join(imagePath(state.cache.options), file));
           session.log.debug(`Image successfully copied: ${fullPath}`);
         } catch {
           session.log.error(`Error copying image: ${fullPath}`);
         }
+      } else if (isBase64(image.url)) {
+        // Inline base64 images
+        const fileObject = new WebFileObject(session.log, imagePath(state.cache.options), '', true);
+        await fileObject.writeBase64(image.url);
+        file = fileObject.id;
+      } else {
+        session.log.error(`Cannot find image: ${fullPath}`);
+        return;
       }
       // Update mdast with new file name
       image.url = `/_static/${file}`;
