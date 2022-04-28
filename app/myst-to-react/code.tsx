@@ -104,7 +104,7 @@ const code: NodeRenderer<Code> = (node) => {
 };
 
 function isColor(code: string): string | undefined {
-  if (!code) return undefined;
+  if (!code || code.length > 9) return undefined;
   if (!new Set([4, 7, 9]).has(code.length)) return undefined;
   const match = /^#([0-9A-Fa-f]{3,8})$/.exec(code);
   if (!match) return undefined;
