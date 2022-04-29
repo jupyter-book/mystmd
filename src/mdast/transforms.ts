@@ -15,12 +15,23 @@ import { EnumeratorOptions, State, enumerateTargets, resolveReferences } from '.
 export type TransformOptions = {
   addAdmonitionHeaders?: boolean;
   addContainerCaptionNumbers?: boolean;
-  htmlHandlers?: { [x: string]: Handle };
 } & EnumeratorOptions;
 
-const defaultOptions: Record<keyof TransformOptions, any> = {
+export type HtmlToMdastOptions = {
+  htmlHandlers?: { [x: string]: Handle };
+  keepBreaks?: boolean;
+};
+
+const defaultOptions: Record<keyof TransformOptions, boolean> = {
   addAdmonitionHeaders: true,
   addContainerCaptionNumbers: true,
+  disableHeadingEnumeration: false,
+  disableContainerEnumeration: false,
+  disableEquationEnumeration: false,
+};
+
+const defaultHtmlToMdastOptions: Record<keyof HtmlToMdastOptions, any> = {
+  keepBreaks: true,
   htmlHandlers: {
     table(h: H, node: any) {
       return h(node, 'table', all(h, node));
@@ -30,10 +41,10 @@ const defaultOptions: Record<keyof TransformOptions, any> = {
       (result as GenericNode).header = true;
       return result;
     },
+    _brKeep(h: H, node: any) {
+      return h(node, '_break');
+    },
   },
-  disableHeadingEnumeration: false,
-  disableContainerEnumeration: false,
-  disableEquationEnumeration: false,
 };
 
 // Visit all admonitions and add headers if necessary
@@ -118,26 +129,31 @@ export function ensureCaptionIsParagraph(tree: Root) {
   });
 }
 
-export function convertHtmlToMdast(tree: Root, opts?: TransformOptions) {
-  const updatedOpts = {
-    ...defaultOptions,
-    ...opts,
-  };
+export function convertHtmlToMdast(tree: Root, opts?: HtmlToMdastOptions) {
+  const handlers = { ...defaultHtmlToMdastOptions.htmlHandlers, ...opts?.htmlHandlers };
+  const otherOptions = { ...defaultHtmlToMdastOptions, ...opts };
   const htmlNodes = selectAll('html', tree);
   htmlNodes.forEach((node: GenericNode) => {
     const hast = unified()
       .use(rehypeParse, { fragment: true } as Options)
       .parse(node.value);
-    const mdast = unified()
-      .use(rehypeRemark, {
-        handlers: updatedOpts.htmlHandlers,
-      })
-      .runSync(hast);
+    // hast-util-to-mdast removes breaks if they are the first/last children
+    // and nests standalone breaks in paragraphs.
+    // However, since HTML nodes may just be fragments in the middle of markdown text,
+    // there is an option to `keepBreaks` which will simply convert `<br />`
+    // tags to `break` nodes, without the special hast-util-to-mdast behavior.
+    if (otherOptions.keepBreaks) {
+      selectAll('[tagName=br]', hast).forEach(
+        (node: GenericNode) => (node.tagName = '_brKeep'),
+      );
+    }
+    const mdast = unified().use(rehypeRemark, { handlers }).runSync(hast);
     node.type = 'htmlParsed';
     node.children = mdast.children as GenericNode[];
     visit(node, (n: GenericNode) => delete n.position);
   });
   liftChildren(tree, 'htmlParsed');
+  selectAll('_break', tree).forEach((node: GenericNode) => (node.type = 'break'));
   return tree;
 }
 

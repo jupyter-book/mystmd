@@ -95,3 +95,34 @@ cases:
                   children:
                     - type: text
                       value: Linus
+  - title: horizontal rule
+    before:
+      type: root
+      children:
+        - type: html
+          value: <hr />
+    after:
+      type: root
+      children:
+        - type: thematicBreak
+  - title: break
+    before:
+      type: root
+      children:
+        - type: html
+          value: <br />
+    after:
+      type: root
+      children:
+        - type: break
+  - title: break
+    opts:
+      keepBreaks: false
+    before:
+      type: root
+      children:
+        - type: html
+          value: <br />
+    after:
+      type: root
+      children: []
