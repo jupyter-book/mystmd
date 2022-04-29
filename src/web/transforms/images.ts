@@ -4,7 +4,6 @@ import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
 import mime from 'mime-types';
-import { createHash } from 'crypto';
 
 import { Root, TransformState } from './types';
 import { Options } from '../types';
