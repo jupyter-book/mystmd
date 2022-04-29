@@ -42,7 +42,8 @@ export function getFrontmatterFromConfig(
     date,
     authors,
     subject,
-    journal,
+    venue,
+    biblio,
     github,
     doi,
     license,
@@ -67,7 +68,8 @@ export function getFrontmatterFromConfig(
     }
   }
   if (subject) frontmatter.subject = subject;
-  if (journal) frontmatter.journal = journal;
+  if (venue) frontmatter.venue = venue;
+  if (biblio) frontmatter.biblio = biblio;
   if (github) frontmatter.github = github;
   if (doi) frontmatter.doi = doi;
   if (oxa) frontmatter.oxa = oxa;
