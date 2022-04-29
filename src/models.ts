@@ -20,7 +20,7 @@ import {
 } from '@curvenote/blocks';
 import { BaseTransfer } from './base';
 import { ISession } from './session/types';
-import { users, teams, blocks, projects, versions, templates } from './store';
+import { users, teams, blocks, projects, versions, templates } from './store/api';
 import {
   selectBlock,
   selectProject,
