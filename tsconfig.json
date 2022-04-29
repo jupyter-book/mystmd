@@ -1,20 +1,33 @@
 {
   "compilerOptions": {
+    // module is overridden from the build:esm/build:cjs scripts
     "module": "commonjs",
     "esModuleInterop": true,
     "target": "es6",
     "noImplicitAny": true,
     "strict": true,
+    "preserveSymlinks": true,
     "moduleResolution": "node",
-    "lib": ["es2019"],
+    "lib": [
+      "es2019"
+    ],
     "sourceMap": true,
+    // outDir is overridden from the build:esm/build:cjs scripts
     "outDir": "dist",
-    "typeRoots": ["./types", "./node_modules/@types", "../../node_modules/@types"],
+    "baseUrl": ".",
+    // Type roots allows it to be included in a yarn workspace
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types",
+      "../../node_modules/@types"
+    ],
     "resolveJsonModule": true,
     "declaration": true,
-    "baseUrl": "src",
+    // Ignore node_modules, etc.
     "skipLibCheck": true
   },
-  "include": ["src"],
+  "include": [
+    "src/**/*"
+  ],
   "exclude": []
 }

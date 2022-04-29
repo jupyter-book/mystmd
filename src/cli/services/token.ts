@@ -12,7 +12,7 @@ export function addTokenCLI(program: Command) {
     .action(
       clirun(async (_session, token: string) => setToken(token), {
         program,
-        session: anonSession(program),
+        session: anonSession(program.opts()),
       }),
     );
   command
@@ -20,7 +20,10 @@ export function addTokenCLI(program: Command) {
     .alias('remove')
     .description('Delete all tokens from the config directory')
     .action(
-      clirun((session) => deleteToken(session.log), { program, session: anonSession(program) }),
+      clirun((session) => deleteToken(session.log), {
+        program,
+        session: anonSession(program.opts()),
+      }),
     );
   program.addCommand(command);
 }

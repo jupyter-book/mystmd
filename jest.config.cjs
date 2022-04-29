@@ -1,11 +1,13 @@
 module.exports = {
   roots: ['<rootDir>'],
+  preset: 'ts-jest/presets/default-esm', // or other ESM presets
   testMatch: ['**/?(*.)+(spec|test).+(ts|tsx|js)'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
-  testTimeout: 10000,
-  // verbose: true,
+  moduleNameMapper: {
+    mystjs: '<rootDir>/node_modules/mystjs/dist/index.umd.js',
+  },
   globals: {
     'ts-jest': {
       tsconfig: './tsconfig.json',

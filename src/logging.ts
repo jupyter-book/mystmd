@@ -8,7 +8,25 @@ export enum LogLevel {
   debug = 20,
   trace = 10,
 }
+
 export type Logger = Pick<typeof console, 'debug' | 'info' | 'warn' | 'error'>;
+
+export function getLevel(logger: Logger, level: LogLevel): Logger['info'] {
+  switch (level) {
+    case LogLevel.trace:
+    case LogLevel.debug:
+      return logger.debug;
+    case LogLevel.info:
+      return logger.info;
+    case LogLevel.warn:
+      return logger.warn;
+    case LogLevel.error:
+    case LogLevel.fatal:
+      return logger.error;
+    default:
+      throw new Error(`Level "${level}" not defined.`);
+  }
+}
 
 export function basicLogger(level: LogLevel): Logger {
   const { log } = console;

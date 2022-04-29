@@ -1,11 +1,16 @@
 import fs from 'fs';
+import path from 'path';
 import YAML from 'yaml';
 import { Blocks, NavListItemKindEnum } from '@curvenote/blocks';
 import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
+import { writeFileToFolder } from '../../utils';
+
+const TOC_FORMAT = 'jb-book';
 
 interface Options {
-  filename: string;
+  path?: string;
+  filename?: string;
 }
 
 type FolderItem = {
@@ -29,14 +34,21 @@ type LoadedBlocks =
       block: Block | null;
     };
 
-type JupyterBookPart = {
+export type JupyterBookPart = {
   caption?: string;
   chapters?: JupyterBookChapter[];
 };
 
-type JupyterBookChapter = {
+export type JupyterBookChapter = {
   file: string;
   sections?: JupyterBookChapter[];
+};
+
+export type TOC = {
+  format: string;
+  root: string;
+  chapters?: JupyterBookChapter[];
+  parts?: JupyterBookPart[];
 };
 
 function getName(block: Block): string {
@@ -77,7 +89,7 @@ function spliceRootFromNav(items: FolderItem[]): null | [FolderItem, FolderItem[
 }
 
 export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation>, opts?: Options) {
-  const { filename = '_toc.yml' } = opts ?? {};
+  const filename = path.join(opts?.path || '.', opts?.filename || '_toc.yml');
 
   const loadedBlocks: LoadedBlocks[] = await Promise.all(
     nav.data.items.map(async (item) => {
@@ -120,13 +132,13 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
   const header = '# Table of contents\n# Learn more at https://jupyterbook.org/customize/toc.html';
   if (!hasParts) {
     // There are no parts, just chapters
-    const tocData = {
-      format: 'jb-book',
+    const tocData: TOC = {
+      format: TOC_FORMAT,
       root: getName(items[0].block as Block),
-      chapters: itemsToChapters(items.slice(1)),
+      chapters: itemsToChapters([...items[0].children, ...items.slice(1)]),
     };
     const toc = `${header}\n\n${YAML.stringify(tocData)}\n`;
-    fs.writeFileSync(filename, toc);
+    writeFileToFolder(filename, toc);
     return;
   }
   // Deal with the parts
@@ -134,18 +146,30 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
   if (!maybeSplit) throw new Error('Must have at least one content page.');
   const [root, rest] = maybeSplit;
   let index = 0;
-  const parts = rest.map((item): JupyterBookPart => {
+  const contents = [...root.children, ...rest];
+  const parts = contents.map((item): JupyterBookPart => {
     if (item.kind === NavListItemKindEnum.Group) {
       return { caption: item.title as string, chapters: itemsToChapters(item.children) };
     }
     index += 1;
     return { caption: `Part ${index}`, chapters: itemsToChapters([item]) };
   });
-  const tocData = {
-    format: 'jb-book',
+  const tocData: TOC = {
+    format: TOC_FORMAT,
     root: getName(root.block as Block),
     parts,
   };
   const toc = `${header}\n\n${YAML.stringify(tocData)}\n`;
-  fs.writeFileSync(filename, toc);
+  writeFileToFolder(filename, toc);
+}
+
+export function readTOC(session: ISession, opts?: Options): TOC {
+  const filename = path.join(opts?.path || '.', opts?.filename || '_toc.yml');
+  const toc = YAML.parse(fs.readFileSync(filename).toString());
+  const { format, root, chapters, parts } = toc;
+  if (format !== TOC_FORMAT) throw new Error(`The toc.format must be ${TOC_FORMAT}.`);
+  if (!root) throw new Error(`The toc.root must exist.`);
+  if (!chapters && !parts) throw new Error(`The toc must have either chapters or parts.`);
+  session.log.debug('Basic validation of TOC passed.');
+  return toc;
 }

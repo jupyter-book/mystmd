@@ -2,7 +2,7 @@ import { createAuthor, oxaLinkToId, VersionId } from '@curvenote/blocks';
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'date-fns';
-import { ExportConfig } from 'export';
+import { ExportConfig } from '../../config';
 import { Block, Project } from '../../models';
 import { ISession } from '../../session/types';
 import { writeBibtex } from '../utils/writeBibtex';

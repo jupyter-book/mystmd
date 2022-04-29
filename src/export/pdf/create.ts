@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import util from 'util';
-import { Logger } from 'logging';
+import { Logger } from '../../logging';
 import { exec } from '../utils';
 
 const copyFile = util.promisify(fs.copyFile);

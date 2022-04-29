@@ -5,6 +5,7 @@ import { basicLogger, Logger, LogLevel } from '../logging';
 import { rootReducer, RootState } from '../store';
 import { getHeaders, setSessionOrUserToken } from './tokens';
 import { ISession, Response, Tokens } from './types';
+import { CurvenoteConfig, CURVENOTE_YML, loadCurvenoteConfig } from '../config';
 
 const DEFAULT_API_URL = 'https://api.curvenote.com';
 const DEFAULT_SITE_URL = 'https://curvenote.com';
@@ -13,6 +14,7 @@ export type SessionOptions = {
   apiUrl?: string;
   siteUrl?: string;
   logger?: Logger;
+  config?: string;
 };
 
 function withQuery(url: string, query: Record<string, string> = {}) {
@@ -31,6 +33,10 @@ export class Session implements ISession {
   $tokens: Tokens;
 
   store: Store<RootState>;
+
+  configPath: string;
+
+  config: CurvenoteConfig | null;
 
   $logger: Logger;
 
@@ -52,9 +58,16 @@ export class Session implements ISession {
       this.log.warn(`Connecting to API at: "${this.API_URL}".`);
     }
     this.store = createStore(rootReducer);
+    this.configPath = opts.config || CURVENOTE_YML;
+    this.config = this.loadConfig();
   }
 
-  async get(url: string, query?: Record<string, string>): Response {
+  loadConfig() {
+    this.config = loadCurvenoteConfig(this.$logger, this.configPath);
+    return this.config;
+  }
+
+  async get<T>(url: string, query?: Record<string, string>): Response<T> {
     const withBase = url.startsWith(this.API_URL) ? url : `${this.API_URL}${url}`;
     const fullUrl = withQuery(withBase, query);
     const headers = await getHeaders(this.log, this.$tokens);
@@ -72,11 +85,11 @@ export class Session implements ISession {
     };
   }
 
-  async patch(url: string, data: JsonObject) {
-    return this.post(url, data, 'patch');
+  async patch<T>(url: string, data: JsonObject) {
+    return this.post<T>(url, data, 'patch');
   }
 
-  async post(url: string, data: JsonObject, method: 'post' | 'patch' = 'post'): Response {
+  async post<T>(url: string, data: JsonObject, method: 'post' | 'patch' = 'post'): Response<T> {
     if (url.startsWith(this.API_URL)) url = url.replace(this.API_URL, '');
     const headers = await getHeaders(this.log, this.$tokens);
     this.log.debug(`${method.toUpperCase()} ${url}`);
