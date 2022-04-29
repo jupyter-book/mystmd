@@ -19,7 +19,7 @@ export function getServerLogger(session: ISession) {
       }
       session.log.info(
         line
-          .replace('💿', '🚀')
+          .replace(/💿/g, '🚀')
           .replace(/(GET) /, '💌 $1  ')
           .replace(/(POST) /, '📦 $1 '),
       );
