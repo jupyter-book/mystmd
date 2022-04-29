@@ -23,9 +23,11 @@
     },
     "doi": "10.1016/j.cageo.2015.09.015",
     "github": "curvenote/curvespace",
-    "journal": {
+    "venue": {
       "title": "Curve Space",
-      "url": "https://curve.space",
+      "url": "https://curve.space"
+    },
+    "biblio": {
       "volume": 12,
       "issue": 1
     },

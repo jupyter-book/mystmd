@@ -127,13 +127,18 @@ function OpenAccessBadge({ open_access }: { open_access?: boolean }) {
   );
 }
 
-function Journal({ journal }: { journal?: Required<FrontmatterType>['journal'] }) {
-  if (!journal) return null;
-  const { title, url, volume, issue } =
-    typeof journal === 'string'
-      ? { title: journal, url: null, volume: null, issue: null }
-      : journal;
+function Journal({
+  venue,
+  biblio,
+}: {
+  venue?: Required<FrontmatterType>['venue'];
+  biblio?: Required<FrontmatterType>['biblio'];
+}) {
+  if (!venue) return null;
+  const { title, url } =
+    typeof venue === 'string' ? { title: venue, url: null } : venue;
   if (!title) return null;
+  const { volume, issue } = biblio ?? {};
   return (
     <div className="flex-none mr-2">
       {url ? (
@@ -171,14 +176,14 @@ export function Frontmatter({ frontmatter }: { frontmatter: FrontmatterType }) {
               className={classNames(
                 'flex-none pr-2 smallcaps  hidden lg:inline-block',
                 {
-                  'border-r mr-2': frontmatter.journal,
+                  'border-r mr-2': frontmatter.venue,
                 },
               )}
             >
               {subject}
             </div>
           )}
-          <Journal journal={frontmatter.journal} />
+          <Journal venue={frontmatter.venue} biblio={frontmatter.biblio} />
           <div className="flex-grow"></div>
           <GitHubLink github={github} />
           <LicenseBadges license={license} />
