@@ -23,11 +23,13 @@ function content(opts: { template?: string; folderIsEmpty: boolean }) {
       {
         name: 'Use the content & notebooks in this folder',
         value: 'folder',
-        disabled: opts.folderIsEmpty,
+        // Note: enable this in next pass!
+        disabled: true || opts.folderIsEmpty,
       },
       {
         name: 'Show me some demo content!',
         value: 'demo',
+        disabled: true,
       },
     ],
   };
