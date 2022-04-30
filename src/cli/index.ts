@@ -11,7 +11,7 @@ addSyncCLI(program);
 addWebCLI(program);
 addExportCLI(program);
 
-program.option('-D, --debug [file]', 'Log out any errors to the console or an optional file.');
-program.option(`--config [config]', 'Path to configuration file', './${CURVENOTE_YML}`);
-program.version(version, '-V, -v, --version', 'Print the current version of curvenotejs');
+program.version(`v${version}`, '-v, --version', 'Print the current version of curvenotejs');
+program.option('--config [config]', 'Path to configuration file', `./${CURVENOTE_YML}`);
+program.option('-d, --debug [file]', 'Log out any errors to the console or an optional file.');
 program.parse(process.argv);

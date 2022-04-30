@@ -130,7 +130,7 @@ async function processFile(
       // TODO: Clear cache, relink all files in the folder, use transformCitations
       delete (cache as DocumentCache).$citationRenderers[filename.folder];
       cache.session.log.error(
-        `"${filename.from}": Please rerun the build with -C. References aren't yet handled.`,
+        `"${filename.from}": Please rerun the build with -c. References aren't yet handled.`,
       );
       return null;
     case '.yml':
@@ -138,7 +138,7 @@ async function processFile(
       await (cache as DocumentCache).getFolderConfig(filename.folder);
       // TODO: Rebuild all content in folder
       cache.session.log.error(
-        `"${filename.from}": Please rerun the build with -C. _config.yml aren't yet handled.`,
+        `"${filename.from}": Please rerun the build with -c. _config.yml aren't yet handled.`,
       );
       return null;
     default:

@@ -9,13 +9,13 @@ function makeBranchOption() {
   ).default('main');
 }
 function makeCleanOption() {
-  return new Option('-C, --clean', 'Remove content so that it is rebuilt fresh').default(false);
+  return new Option('-c, --clean', 'Remove content so that it is rebuilt fresh').default(false);
 }
 function makeForceOption() {
-  return new Option('-F, --force', 'Remove the build directory and re-install').default(false);
+  return new Option('-f, --force', 'Remove the build directory and re-install').default(false);
 }
 function makeYesOption() {
-  return new Option('-Y, --yes', 'Use the defaults and answer "Y" to confirmations').default(false);
+  return new Option('-y, --yes', 'Use the defaults and answer "Y" to confirmations').default(false);
 }
 
 function makeCurvespaceCleanCLI(program: Command) {
