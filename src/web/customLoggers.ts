@@ -2,6 +2,46 @@ import chalk from 'chalk';
 import { ISession } from '../session/types';
 import { Logger } from '../logging';
 
+export function getGitLogger(session: ISession) {
+  const logger: Pick<Logger, 'debug' | 'error'> = {
+    debug(data: string) {
+      const line = data.trim();
+      if (!line) return;
+      session.log.debug(data);
+    },
+    error(data: string) {
+      const line = data.trim();
+      if (!line) return;
+      if (line.startsWith('Cloning into')) {
+        session.log.debug(line);
+        return;
+      }
+      session.log.error(data);
+    },
+  };
+  return logger;
+}
+
+export function getNpmLogger(session: ISession) {
+  const logger: Pick<Logger, 'debug' | 'error'> = {
+    debug(data: string) {
+      const line = data.trim();
+      if (!line) return;
+      session.log.debug(data);
+    },
+    error(data: string) {
+      const line = data.trim();
+      if (!line || line === 'npm' || line === 'WARN') return;
+      if (line.includes('deprecated')) {
+        session.log.debug(line);
+        return;
+      }
+      session.log.error(data);
+    },
+  };
+  return logger;
+}
+
 export function getServerLogger(session: ISession) {
   const logger: Pick<Logger, 'debug' | 'error'> = {
     debug(data: string) {

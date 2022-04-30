@@ -4,7 +4,7 @@ import inquirer from 'inquirer';
 import { makeExecutable } from '../export/utils';
 import { ISession } from '../session/types';
 import { buildContent, cleanBuiltFiles, watchContent } from './prepare';
-import { getServerLogger } from './serverLogger';
+import { getGitLogger, getNpmLogger, getServerLogger } from './customLoggers';
 import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
 import { deployContent } from './deploy';
@@ -29,7 +29,7 @@ export async function clone(session: ISession, opts: Options) {
     `git clone --depth 1 --branch ${branch} git@github.com:curvenote/curvespace.git ${serverPath(
       opts,
     )}`,
-    session.log,
+    getGitLogger(session),
   )();
   // TODO: log out version!
   session.log.debug('Cleaning out any git information from build folder.');
@@ -47,7 +47,7 @@ export async function install(session: ISession, opts: Options) {
     session.log.error('Curvespace is not cloned. Do you need to run: \n\ncurvenote web clone');
     return;
   }
-  await makeExecutable(`cd ${serverPath(opts)}; npm install`, session.log)();
+  await makeExecutable(`cd ${serverPath(opts)}; npm install`, getNpmLogger(session))();
 }
 
 async function cloneCurvespace(session: ISession, opts: Options) {
