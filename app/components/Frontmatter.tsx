@@ -147,7 +147,7 @@ function Journal({
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          title="Open Access"
+          title={title}
         >
           {title}
         </a>
