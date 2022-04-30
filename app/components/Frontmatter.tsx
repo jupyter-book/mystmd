@@ -165,8 +165,9 @@ function Journal({
 }
 
 export function Frontmatter({ frontmatter }: { frontmatter: FrontmatterType }) {
-  const { subject, doi, open_access, license, github } = frontmatter;
-  const hasHeaders = subject || doi || open_access || license || github;
+  const { subject, doi, open_access, license, github, venue, biblio } = frontmatter;
+  const hasHeaders =
+    subject || doi || open_access || license || github || venue || biblio;
   return (
     <>
       {hasHeaders && (
@@ -176,14 +177,14 @@ export function Frontmatter({ frontmatter }: { frontmatter: FrontmatterType }) {
               className={classNames(
                 'flex-none pr-2 smallcaps  hidden lg:inline-block',
                 {
-                  'border-r mr-2': frontmatter.venue,
+                  'border-r mr-2': venue,
                 },
               )}
             >
               {subject}
             </div>
           )}
-          <Journal venue={frontmatter.venue} biblio={frontmatter.biblio} />
+          <Journal venue={venue} biblio={biblio} />
           <div className="flex-grow"></div>
           <GitHubLink github={github} />
           <LicenseBadges license={license} />
