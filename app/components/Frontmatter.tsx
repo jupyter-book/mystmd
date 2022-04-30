@@ -144,7 +144,7 @@ function Journal({
       {url ? (
         <a
           className="smallcaps font-semibold no-underline"
-          href="https://en.wikipedia.org/wiki/Open_access"
+          href={url}
           target="_blank"
           rel="noopener noreferrer"
           title="Open Access"
