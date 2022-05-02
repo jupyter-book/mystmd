@@ -64,36 +64,42 @@ async function processNotebook(
 
   const outputMap: Record<string, MinifiedOutput[]> = {};
 
-  const items = (
-    await children?.reduce(async (P, item: TranslatedBlockPair) => {
-      const acc = await P;
-      if (item.content.kind === KINDS.Content) {
-        if (item.content.format === ContentFormatTypes.md)
-          return acc.concat(asString(item.content.content));
-        if (item.content.format === ContentFormatTypes.txt)
-          return acc.concat(`\`\`\`\n${asString(item.content.content)}\n\`\`\``);
+  let end = children.length;
+  if (
+    children &&
+    children.length > 1 &&
+    children?.[children.length - 1].content.content.length === 0
+  )
+    end = -1;
+
+  const items = await children?.slice(0, end).reduce(async (P, item: TranslatedBlockPair) => {
+    const acc = await P;
+    if (item.content.kind === KINDS.Content) {
+      if (item.content.format === ContentFormatTypes.md)
+        return acc.concat(asString(item.content.content));
+      if (item.content.format === ContentFormatTypes.txt)
+        return acc.concat(`\`\`\`\n${asString(item.content.content)}\n\`\`\``);
+    }
+    if (item.content.kind === KINDS.Code) {
+      const code = `\`\`\`${language}\n${asString(item.content.content)}\n\`\`\``;
+      if (item.output && item.output.original) {
+        const minified: MinifiedOutput[] = await minifyCellOutput(
+          fileFactory,
+          item.output.original as CellOutput[],
+          { basepath: '' }, // fileFactory takes care of this
+        );
+
+        const { myst, id } = createOutputDirective();
+        outputMap[id] = minified;
+
+        return acc.concat(code).concat([myst]);
       }
-      if (item.content.kind === KINDS.Code) {
-        const code = `\`\`\`${language}\n${asString(item.content.content)}\n\`\`\``;
-        if (item.output && item.output.original) {
-          const minified: MinifiedOutput[] = await minifyCellOutput(
-            fileFactory,
-            item.output.original as CellOutput[],
-            { basepath: '' }, // fileFactory takes care of this
-          );
+      return acc.concat(code);
+    }
+    return acc;
+  }, Promise.resolve([] as string[]));
 
-          const { myst, id } = createOutputDirective();
-          outputMap[id] = minified;
-
-          return acc.concat(code).concat([myst]);
-        }
-        return acc.concat(code);
-      }
-      return acc;
-    }, Promise.resolve([] as string[]))
-  ).join('\n\n+++\n\n');
-
-  const mdast = parseMyst(items);
+  const mdast = parseMyst(items.join('\n\n+++\n\n'));
 
   // TODO: typing
   selectAll('output', mdast).forEach((output: GenericNode) => {
