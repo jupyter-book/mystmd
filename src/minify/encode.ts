@@ -28,19 +28,32 @@ async function requestImageAsBase64String(src: string) {
   return base64String;
 }
 
+function isUrl(maybeUrl: string) {
+  return maybeUrl.startsWith('http') || maybeUrl.startsWith('/');
+}
+
 export async function fetchAndEncodeOutputImages(outputs: IOutput[]) {
   return Promise.all(
     outputs.map(async (output) => {
       if (!('data' in output)) return output;
-      const imageMimetypes = Object.keys(output.data as IMimeBundle).filter((mimetype) =>
-        mimetype.startsWith('image/'),
+
+      const imageMimetypes = Object.keys(output.data as IMimeBundle).filter(
+        (mimetype) => mimetype !== 'image/svg' && mimetype.startsWith('image/'),
       );
       if (imageMimetypes.length === 0) return output;
       // this is an async fetch, so we need to await the result
       const images = await Promise.all(
-        imageMimetypes.map(async (mimetype) =>
-          requestImageAsBase64String((output.data as IMimeBundle)[mimetype] as string),
-        ),
+        imageMimetypes.map(async (mimetype) => {
+          /*
+            image/* types can be either raw svg, base64 encoded or a URL.
+            base64 encoded images can include data:image/*;base64, or be naked
+            svgs can also be base64 encoded, or plain '<svg ...></svg>'.
+            URLs can be relative or absolute
+          */
+          const data = (output.data as IMimeBundle)[mimetype] as string;
+          if (isUrl(data)) return requestImageAsBase64String(data);
+          return data;
+        }),
       );
 
       imageMimetypes.forEach((mimetype, i) => {

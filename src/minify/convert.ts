@@ -19,7 +19,21 @@ export function convertToIOutputs(minified: MinifiedOutput[]): IOutput[] {
         return {
           ...m,
           data: Object.entries(m.data).reduce((acc, [mimetype, payload]) => {
-            return { ...acc, [mimetype]: payload.content };
+            let { content } = payload;
+
+            if (mimetype !== 'application/javascript' && mimetype.startsWith('application/')) {
+              try {
+                content = JSON.parse(content);
+              } catch (e) {
+                // eslint-disable-next-line no-console
+                console.debug(`${mimetype} is not json parsable, leaving as is`);
+              }
+            }
+
+            return {
+              ...acc,
+              [mimetype]: content,
+            };
           }, {}),
         };
       }
