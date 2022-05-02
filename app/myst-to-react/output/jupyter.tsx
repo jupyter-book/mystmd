@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useFetchAnyTruncatedContent } from './hooks';
+import useWindowSize, { useFetchAnyTruncatedContent } from './hooks';
 import { nanoid } from 'nanoid';
 import {
   selectIFrameReady,
@@ -23,13 +23,15 @@ export const NativeJupyterOutputs = ({
 }) => {
   if (typeof window === 'undefined') return null;
 
+  const windowSize = useWindowSize();
+
   const { data, error } = useFetchAnyTruncatedContent(outputs);
 
   const [loading, setLoading] = useState(true);
 
   const uid = useMemo(nanoid, []);
 
-  const height = useSelector((state: State) => selectIFrameHeight(state, uid));
+  let height = useSelector((state: State) => selectIFrameHeight(state, uid));
   const rendererReady = useSelector((state: State) => selectIFrameReady(state, uid));
 
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -46,6 +48,7 @@ export const NativeJupyterOutputs = ({
 
   useEffect(() => {
     if (height == null) return;
+    if (height > 0.8 * windowSize.height) height = 0.8 * windowSize.height;
     setLoading(false);
   }, [height]);
 
@@ -63,7 +66,7 @@ export const NativeJupyterOutputs = ({
         title={uid}
         src="https://next.curvenote.run"
         width={'100%'}
-        height={height ? '50vh' : 0}
+        height={height ? height + 25 : 0}
         sandbox="allow-scripts"
       ></iframe>
     </>
