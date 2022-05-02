@@ -63,7 +63,7 @@ export const NativeJupyterOutputs = ({
         title={uid}
         src="https://next.curvenote.run"
         width={'100%'}
-        height={height ? height + 25 : 0}
+        height={height ? '50vh' : 0}
         sandbox="allow-scripts"
       ></iframe>
     </>
