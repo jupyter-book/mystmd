@@ -34,11 +34,23 @@ export async function minifyMimeOutput(
   const items = await Promise.all(
     Object.entries(output.data).map(async ([mimetype, content]) => {
       let isBase64Image = false;
-      let stringContent = ensureString(content as MultilineString | string);
-      if (mimetype.startsWith('application/javascript'))
+
+      let stringContent = '';
+      if (
+        mimetype !== 'application/javascript' &&
+        (mimetype === 'application/json' ||
+          (mimetype.startsWith('application/') && typeof content === 'object'))
+      ) {
+        stringContent = JSON.stringify(content);
+      } else {
         stringContent = ensureString(content as MultilineString | string);
-      if (mimetype.startsWith('application/')) stringContent = JSON.stringify(content);
-      if (mimetype.startsWith('image/')) isBase64Image = true;
+      }
+
+      if (!mimetype.startsWith('image/svg') && mimetype.startsWith('image/')) isBase64Image = true;
+
+      // NOTE we insist on creating stringified content as this can / will end up in a
+      // database with limited support for nested objects. Stringifcaiton here means
+      // an inverse operation is needed on convertToIOutputs to get back to the original
       return minifyContent(fileFactory, stringContent, mimetype, isBase64Image, opts);
     }),
   );
