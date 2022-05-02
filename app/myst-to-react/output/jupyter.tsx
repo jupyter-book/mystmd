@@ -14,6 +14,8 @@ import {
   fetchAndEncodeOutputImages,
 } from '@curvenote/nbtx';
 
+const PERCENT_OF_WINOW = 0.7;
+
 export const NativeJupyterOutputs = ({
   id,
   outputs,
@@ -28,10 +30,12 @@ export const NativeJupyterOutputs = ({
   const { data, error } = useFetchAnyTruncatedContent(outputs);
 
   const [loading, setLoading] = useState(true);
+  const [frameHeight, setFrameHeight] = useState(0);
+  const [clamped, setClamped] = useState(false);
 
   const uid = useMemo(nanoid, []);
 
-  let height = useSelector((state: State) => selectIFrameHeight(state, uid));
+  const height = useSelector((state: State) => selectIFrameHeight(state, uid));
   const rendererReady = useSelector((state: State) => selectIFrameReady(state, uid));
 
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -48,7 +52,13 @@ export const NativeJupyterOutputs = ({
 
   useEffect(() => {
     if (height == null) return;
-    if (height > 0.8 * windowSize.height) height = 0.8 * windowSize.height;
+    if (height > PERCENT_OF_WINOW * windowSize.height) {
+      setFrameHeight(PERCENT_OF_WINOW * windowSize.height);
+      setClamped(true);
+    } else {
+      setFrameHeight(height + 25);
+      setClamped(false);
+    }
     setLoading(false);
   }, [height]);
 
@@ -57,7 +67,7 @@ export const NativeJupyterOutputs = ({
   }
 
   return (
-    <>
+    <div>
       {loading && <div className="p-2.5">Loading...</div>}
       <iframe
         ref={iframeRef}
@@ -66,9 +76,25 @@ export const NativeJupyterOutputs = ({
         title={uid}
         src="https://next.curvenote.run"
         width={'100%'}
-        height={height ? height + 25 : 0}
+        height={frameHeight}
         sandbox="allow-scripts"
       ></iframe>
-    </>
+      {clamped && (
+        <div>
+          <div className="text-center">
+            <span
+              className="cursor-pointer"
+              title="Expand"
+              onClick={() => {
+                setFrameHeight(height ?? 0);
+                setClamped(false);
+              }}
+            >
+              (...)
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
