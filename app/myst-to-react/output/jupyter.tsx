@@ -13,6 +13,7 @@ import {
   convertToIOutputs,
   fetchAndEncodeOutputImages,
 } from '@curvenote/nbtx';
+import { ChevronDoubleDownIcon } from '@heroicons/react/outline';
 
 const PERCENT_OF_WINOW = 0.7;
 
@@ -80,19 +81,15 @@ export const NativeJupyterOutputs = ({
         sandbox="allow-scripts"
       ></iframe>
       {clamped && (
-        <div>
-          <div className="text-center">
-            <span
-              className="cursor-pointer"
-              title="Expand"
-              onClick={() => {
-                setFrameHeight(height ?? 0);
-                setClamped(false);
-              }}
-            >
-              (...)
-            </span>
-          </div>
+        <div
+          className="cursor-pointer p-1 pb-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-center text-gray-500 hover:text-gray-600 dark:text-gray-200 dark:hover:text-gray-50"
+          title="Expand"
+          onClick={() => {
+            setFrameHeight(height ?? 0);
+            setClamped(false);
+          }}
+        >
+          <ChevronDoubleDownIcon className="w-5 h-5 inline"></ChevronDoubleDownIcon>
         </div>
       )}
     </div>
