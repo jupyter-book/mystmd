@@ -24,7 +24,7 @@ const PROJECT_FRONT_MATTER_KEYS = Object.keys(
 function extractFrontMatter<T extends BlockFrontMatterProps | ProjectFrontMatterProps>(
   keys: (keyof T)[],
   obj: T,
-) {
+): T {
   const frontMatter: T = keys.reduce((acc, cur) => {
     const value = obj[cur];
     if (typeof value !== 'undefined' && value !== null) {

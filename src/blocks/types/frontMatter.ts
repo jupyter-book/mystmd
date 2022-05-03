@@ -18,7 +18,7 @@ export interface BlockFrontMatterProps {
   };
 }
 
-export type ProjectFrontMatterProps = Exclude<BlockFrontMatterProps, 'venue' | 'biblio'>;
+export type ProjectFrontMatterProps = Omit<BlockFrontMatterProps, 'venue' | 'biblio'>;
 
 export const DEFAULT_PROJECT_FRONT_MATTER: ProjectFrontMatterProps = {
   authors: [],
