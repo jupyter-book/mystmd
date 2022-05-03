@@ -21,7 +21,7 @@ import { getDate, getTags } from '../helpers';
 
 export * from './types';
 export { NotebookBlockMetadata } from './notebook';
-export { srcIdToJson } from './utils';
+export { srcIdToJson, extractBlockFrontMatter, extractProjectFrontMatter } from './utils';
 export { createAuthor } from './author';
 export { RIS } from './reference';
 
