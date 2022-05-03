@@ -7,6 +7,7 @@ import {
   MinifiedStreamOutput,
 } from '@curvenote/nbtx/dist/minify/types';
 import { walkPaths } from '@curvenote/nbtx/dist/minify/utils';
+import { useState, useLayoutEffect } from 'react';
 
 /**
  * Truncation vs Summarization
@@ -101,4 +102,27 @@ export function useFetchAnyTruncatedContent(outputs: MinifiedOutput[]) {
     data: itemsWithPaths.length === 0 || data ? updated : undefined,
     error,
   };
+}
+
+function getWindowSize() {
+  const { innerWidth: width, innerHeight: height } = window;
+  return {
+    width,
+    height,
+  };
+}
+
+export default function useWindowSize() {
+  const [windowSize, setWindowSize] = useState(getWindowSize());
+
+  useLayoutEffect(() => {
+    function handleResize() {
+      setWindowSize(getWindowSize());
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return windowSize;
 }

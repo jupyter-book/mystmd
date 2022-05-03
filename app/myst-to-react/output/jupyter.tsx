@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useFetchAnyTruncatedContent } from './hooks';
+import useWindowSize, { useFetchAnyTruncatedContent } from './hooks';
 import { nanoid } from 'nanoid';
 import {
   selectIFrameReady,
@@ -13,6 +13,9 @@ import {
   convertToIOutputs,
   fetchAndEncodeOutputImages,
 } from '@curvenote/nbtx';
+import { ChevronDoubleDownIcon } from '@heroicons/react/outline';
+
+const PERCENT_OF_WINOW = 0.7;
 
 export const NativeJupyterOutputs = ({
   id,
@@ -23,9 +26,13 @@ export const NativeJupyterOutputs = ({
 }) => {
   if (typeof window === 'undefined') return null;
 
+  const windowSize = useWindowSize();
+
   const { data, error } = useFetchAnyTruncatedContent(outputs);
 
   const [loading, setLoading] = useState(true);
+  const [frameHeight, setFrameHeight] = useState(0);
+  const [clamped, setClamped] = useState(false);
 
   const uid = useMemo(nanoid, []);
 
@@ -46,6 +53,13 @@ export const NativeJupyterOutputs = ({
 
   useEffect(() => {
     if (height == null) return;
+    if (height > PERCENT_OF_WINOW * windowSize.height) {
+      setFrameHeight(PERCENT_OF_WINOW * windowSize.height);
+      setClamped(true);
+    } else {
+      setFrameHeight(height + 25);
+      setClamped(false);
+    }
     setLoading(false);
   }, [height]);
 
@@ -54,7 +68,7 @@ export const NativeJupyterOutputs = ({
   }
 
   return (
-    <>
+    <div>
       {loading && <div className="p-2.5">Loading...</div>}
       <iframe
         ref={iframeRef}
@@ -63,9 +77,21 @@ export const NativeJupyterOutputs = ({
         title={uid}
         src="https://next.curvenote.run"
         width={'100%'}
-        height={height ? height + 25 : 0}
+        height={frameHeight}
         sandbox="allow-scripts"
       ></iframe>
-    </>
+      {clamped && (
+        <div
+          className="cursor-pointer p-1 pb-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-center text-gray-500 hover:text-gray-600 dark:text-gray-200 dark:hover:text-gray-50"
+          title="Expand"
+          onClick={() => {
+            setFrameHeight(height ?? 0);
+            setClamped(false);
+          }}
+        >
+          <ChevronDoubleDownIcon className="w-5 h-5 inline"></ChevronDoubleDownIcon>
+        </div>
+      )}
+    </div>
   );
 };
