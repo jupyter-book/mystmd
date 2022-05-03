@@ -82,7 +82,7 @@ export const NativeJupyterOutputs = ({
       ></iframe>
       {clamped && (
         <div
-          className="cursor-pointer p-1 pb-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-center text-gray-500 hover:text-gray-600 dark:text-gray-200 dark:hover:text-gray-50"
+          className="cursor-pointer p-1 pb-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-center text-gray-500 hover:text-gray-600 dark:text-gray-200 dark:hover:text-gray-50"
           title="Expand"
           onClick={() => {
             setFrameHeight(height ?? 0);
