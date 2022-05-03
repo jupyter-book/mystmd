@@ -65,7 +65,6 @@ function projectSettingsFromDTO(settings?: JsonObject): Project['settings'] {
 }
 
 export function projectFromDTO(projectId: ProjectId, json: JsonObject): Project {
-  // TODO: handle optional frontmatter fields
   return {
     id: projectId,
     team: json.team ?? '',
