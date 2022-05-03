@@ -20,19 +20,20 @@ export interface BlockFrontMatterProps {
 
 export type ProjectFrontMatterProps = Omit<BlockFrontMatterProps, 'venue' | 'biblio'>;
 
-export const DEFAULT_PROJECT_FRONT_MATTER: ProjectFrontMatterProps = {
-  authors: [],
-  licenses: { content: '' },
-  doi: '',
-  open_access: false,
-  github: '',
-  binder: '',
-  subtitle: '',
-  short_title: '',
-};
+// TODO: ensure exausiveness
+export const PROJECT_FRONT_MATTER_KEYS = [
+  'authors',
+  'licenses',
+  'doi',
+  'open_access',
+  'github',
+  'binder',
+  'subtitle',
+  'short_title',
+] as (keyof ProjectFrontMatterProps)[];
 
-export const DEFAULT_BLOCK_FRONT_MATTER: BlockFrontMatterProps = {
-  ...DEFAULT_PROJECT_FRONT_MATTER,
-  venue: { title: '', url: '' },
-  biblio: {},
-};
+export const BLOCK_FRONT_MATTER_KEYS = [
+  ...PROJECT_FRONT_MATTER_KEYS,
+  'venue',
+  'biblio',
+] as (keyof BlockFrontMatterProps)[];

@@ -2,8 +2,8 @@ import { SrcId } from './types';
 import {
   BlockFrontMatterProps,
   ProjectFrontMatterProps,
-  DEFAULT_BLOCK_FRONT_MATTER,
-  DEFAULT_PROJECT_FRONT_MATTER,
+  BLOCK_FRONT_MATTER_KEYS,
+  PROJECT_FRONT_MATTER_KEYS,
 } from './types/frontMatter';
 
 export const srcIdToJson = (object: SrcId): SrcId => ({
@@ -12,14 +12,6 @@ export const srcIdToJson = (object: SrcId): SrcId => ({
   version: object.version ?? null,
   draft: object.draft ?? null,
 });
-
-const BLOCK_FRONT_MATTER_KEYS = Object.keys(
-  DEFAULT_BLOCK_FRONT_MATTER,
-) as (keyof BlockFrontMatterProps)[];
-
-const PROJECT_FRONT_MATTER_KEYS = Object.keys(
-  DEFAULT_PROJECT_FRONT_MATTER,
-) as (keyof ProjectFrontMatterProps)[];
 
 function extractFrontMatter<T extends BlockFrontMatterProps | ProjectFrontMatterProps>(
   keys: (keyof T)[],
