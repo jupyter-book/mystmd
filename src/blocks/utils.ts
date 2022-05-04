@@ -1,3 +1,4 @@
+import { JsonObject } from '../types'
 import { SrcId } from './types';
 import {
   BlockFrontMatterProps,
@@ -19,7 +20,7 @@ function extractFrontMatter<T extends BlockFrontMatterProps | ProjectFrontMatter
 ): T {
   const frontMatter: T = keys.reduce((acc, cur) => {
     const value = obj[cur];
-    if (typeof value !== 'undefined' && value !== null) {
+    if (typeof value !== 'undefined') {
       (acc as any)[cur] = obj[cur];
     }
     return acc;

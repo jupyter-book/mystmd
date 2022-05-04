@@ -1,26 +1,28 @@
 import { Author } from './author';
 
+// All frontmatter props are optional in order to save storage and transfer payload size
+// When the values are null indicates it has been explicitly set to null.
 export interface BlockFrontMatterProps {
-  authors?: Author[];
-  licenses?: { content: string; code?: string };
-  doi?: string;
-  open_access?: boolean;
-  github?: string;
-  binder?: string;
-  subtitle?: string;
-  short_title?: string;
-  venue?: { title?: string; url?: string };
+  authors?: Author[] | null;
+  licenses?: { content: string; code?: string } | null;
+  doi?: string | null;
+  open_access?: boolean | null;
+  github?: string | null;
+  binder?: string | null;
+  subtitle?: string | null;
+  short_title?: string | null;
+  venue?: { title?: string; url?: string } | null;
   biblio?: {
     volume?: string;
     issue?: string;
     first_page?: string;
     last_page?: string;
-  };
+  } | null;
 }
 
 export type ProjectFrontMatterProps = Omit<BlockFrontMatterProps, 'venue' | 'biblio'>;
 
-// TODO: ensure exausiveness
+// TODO: ensure exhausiveness
 export const PROJECT_FRONT_MATTER_KEYS = [
   'authors',
   'licenses',

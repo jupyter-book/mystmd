@@ -1,6 +1,6 @@
 import { BaseLinks } from '../../types';
-import { Author } from './author';
 import { FormatTypes } from './format';
+import { BlockFrontMatterProps } from './frontMatter';
 import { BlockId, ChildId, VersionId } from './id';
 import { KINDS } from './kind';
 
@@ -39,14 +39,13 @@ export interface VersionLinks extends BaseLinks {
   };
 }
 
-export interface PartialBlock {
+export interface PartialBlock extends BlockFrontMatterProps {
   id: BlockId;
   kind: KINDS;
   title: string;
   description: string;
   caption: string | null;
   name: string | null;
-  authors: Author[];
   tags: string[];
   default_draft: string | null;
   pending: string | null;
