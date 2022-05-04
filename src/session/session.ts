@@ -6,6 +6,7 @@ import { rootReducer, RootState } from '../store';
 import { getHeaders, setSessionOrUserToken } from './tokens';
 import { ISession, Response, Tokens } from './types';
 import { CurvenoteConfig, CURVENOTE_YML, loadCurvenoteConfig } from '../config';
+import { checkForClientVersionRejection } from '../utils';
 
 const DEFAULT_API_URL = 'https://api.curvenote.com';
 const DEFAULT_SITE_URL = 'https://curvenote.com';
@@ -79,9 +80,11 @@ export class Session implements ISession {
         ...headers,
       },
     });
+    const json = await response.json();
+    checkForClientVersionRejection(this.log, response.status, json);
     return {
       status: response.status,
-      json: await response.json(),
+      json,
     };
   }
 
@@ -101,6 +104,8 @@ export class Session implements ISession {
       },
       body: JSON.stringify(data),
     });
+    const json = await response.json();
+    checkForClientVersionRejection(this.log, response.status, json);
     return {
       status: response.status,
       json: await response.json(),
