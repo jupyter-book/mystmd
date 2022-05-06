@@ -1,6 +1,8 @@
 import { JsonObject, BaseLinks } from './types';
 import { getDate } from './helpers';
 import { CitationStyles, CustomizableReferenceKind, Affiliation } from './blocks/types';
+import { ProjectFrontMatterProps } from './blocks/types/frontMatter';
+import { extractProjectFrontMatter } from './blocks/utils';
 
 export interface ProjectLinks extends BaseLinks {
   thumbnail?: string;
@@ -11,7 +13,7 @@ export interface ProjectLinks extends BaseLinks {
 }
 
 export type ReferenceLabelMap = Record<CustomizableReferenceKind, string>;
-export interface PartialProject {
+export interface PartialProject extends ProjectFrontMatterProps {
   team: string;
   name: string;
   title: string;
@@ -23,6 +25,7 @@ export interface PartialProject {
     reference_labels: ReferenceLabelMap;
   };
 }
+
 export const DEFAULT_REFERENCE_LABEL_MAP: ReferenceLabelMap = {
   [CustomizableReferenceKind.fig]: 'Figure %s',
   [CustomizableReferenceKind.eq]: 'Equation %s',
@@ -75,5 +78,6 @@ export function projectFromDTO(projectId: ProjectId, json: JsonObject): Project 
     date_modified: getDate(json.date_modified),
     settings: projectSettingsFromDTO(json.settings),
     links: { ...json.links },
+    ...extractProjectFrontMatter(json),
   };
 }

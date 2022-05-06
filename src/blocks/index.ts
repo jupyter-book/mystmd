@@ -18,10 +18,11 @@ import * as image from './image';
 import * as reference from './reference';
 import * as navigation from './navigation';
 import { getDate, getTags } from '../helpers';
+import { extractBlockFrontMatter } from './utils';
 
 export * from './types';
 export { NotebookBlockMetadata } from './notebook';
-export { srcIdToJson } from './utils';
+export { srcIdToJson, extractBlockFrontMatter, extractProjectFrontMatter } from './utils';
 export { createAuthor } from './author';
 export { RIS } from './reference';
 
@@ -98,11 +99,12 @@ export type ALL_PARTIAL_BLOCKS = ALL_PARTIAL_BLOCKS_INTERNAL & BasePartialVersio
 export type ALL_KEYS = ALL_CONTAINER_KEYS | ALL_CONTENT_KEYS;
 
 export function blockFromDTO(blockId: BlockId, json: JsonObject): Block {
+  const frontMatter = extractBlockFrontMatter(json);
   return {
+    ...frontMatter,
     id: { ...blockId },
     kind: json.kind,
     name: json.name ?? null,
-    authors: json.authors ?? null,
     pending: json.pending ?? null,
     title: json.title ?? '',
     description: json.description ?? '',
