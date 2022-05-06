@@ -1,5 +1,5 @@
 import { BlockFrontMatterProps, ProjectFrontMatterProps } from './types';
-import { extractBlockFrontMatter, extractProjectFrontMatter, allDefined } from './utils';
+import { extractBlockFrontMatter, extractProjectFrontMatter } from './utils';
 
 export const TEST_PROJECT_FRONT_MATTER: ProjectFrontMatterProps = {
   authors: [],
