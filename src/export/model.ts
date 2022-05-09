@@ -20,7 +20,7 @@ export interface DocumentModel {
   title: string;
   description: string;
   short_title: string;
-  authors: ExportAuthorModel[];
+  authors?: ExportAuthorModel[];
   date: ExportDateModel;
   tags: string[];
   oxalink: string | null;
@@ -62,9 +62,10 @@ export async function buildDocumentModelFromBlock(
   escapeFn?: (s: string) => string,
 ): Promise<DocumentModel> {
   const project = await new Project(session, block.id.project).get();
-  const authors = await Promise.all(
-    block.data.authors.map((a) => toAuthorFields(session, project, a)),
-  );
+  const authorsData = block.data.authors ?? project.data.authors;
+  const authors = authorsData
+    ? await Promise.all(authorsData.map((a) => toAuthorFields(session, project, a)))
+    : undefined;
 
   const escapeIt = (s: string) => escapeFn?.(s ?? '') ?? '';
 

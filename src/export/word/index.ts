@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { VersionId, KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
 import { writeDocx } from 'prosemirror-docx';
-import { Block, User, Version } from '../../models';
+import { Block, Project, User, Version } from '../../models';
 import { getChildren } from '../../actions/getChildren';
 import { loadImagesToBuffers, walkArticle, assertEndsInExtension } from '../utils';
 import { exportFromOxaLink } from '../utils/exportWrapper';
@@ -25,7 +25,8 @@ export async function articleToWord(
 ) {
   const { filename, ...docOpts } = opts;
   assertEndsInExtension(filename, 'docx');
-  const [block, version] = await Promise.all([
+  const [project, block, version] = await Promise.all([
+    new Project(session, versionId.project).get(),
     new Block(session, versionId).get(),
     new Version(session, versionId).get(),
     getChildren(session, versionId), // This loads all the children quickly, but does not fetch
@@ -41,6 +42,7 @@ export async function articleToWord(
     session,
     user,
     buffers,
+    project,
     block,
     version,
     article,

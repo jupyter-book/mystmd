@@ -89,7 +89,13 @@ const FM_DELIM = '% ---';
 const FM_LINE = '% ';
 
 export function stringifyFrontMatter(data: LatexFrontMatter) {
-  const lines = YAML.stringify(data)
+  // remove any keys that have undefined values, as YAML will silently convert these to null
+  const noUndefined = Object.entries(data).reduce((acc, [key, value]) => {
+    if (value === undefined) return acc;
+    return { ...acc, [key]: value };
+  }, {});
+
+  const lines = YAML.stringify(noUndefined)
     .split('\n')
     .filter((line) => line.length > 0);
   const fm = lines.map((line) => `${FM_LINE}${line}`);

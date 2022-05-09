@@ -103,7 +103,7 @@ export interface ExportConfig {
     short_title?: string;
     description?: string;
     date?: string;
-    authors: {
+    authors?: {
       name?: string;
       id?: string;
       corresponding?: boolean;

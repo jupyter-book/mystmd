@@ -3,7 +3,7 @@ import { Document } from 'docx';
 import { Node as ProsemirrorNode } from 'prosemirror-model';
 import { DocxSerializerState } from 'prosemirror-docx';
 import pkgpath from '../../pkgpath';
-import { Block, User, Version } from '../../models';
+import { Block, Project, User, Version } from '../../models';
 import { getNodesAndMarks } from './schema';
 import { ArticleState } from '../utils';
 import { createArticleTitle, createReferenceTitle } from './titles';
@@ -14,6 +14,7 @@ export interface LoadedArticle {
   session: ISession;
   user: User;
   buffers: Record<string, Buffer>;
+  project: Project;
   block: Block;
   version: Version;
   article: ArticleState;
@@ -21,14 +22,14 @@ export interface LoadedArticle {
 }
 
 export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
-  const { session, user, buffers, block, version, article } = data;
+  const { session, user, buffers, project, block, version, article } = data;
 
   const { nodes, marks } = getNodesAndMarks();
 
   const docxState = new DocxSerializerState(nodes, marks, getDefaultSerializerOptions(buffers));
 
   // Add the title
-  docxState.renderContent(await createArticleTitle(session, block.data));
+  docxState.renderContent(await createArticleTitle(session, project.data, block.data));
   // Then render each block
   article.children.forEach(({ state }) => {
     if (!state) return;

@@ -106,12 +106,14 @@ export async function multipleArticleToTex(
   // build main content file
   //
   session.log.debug('Building front matter for main content...');
-
-  const authors = await Promise.all(
-    job.data.authors.map((a) =>
-      toAuthorFields(session, project, createAuthor({ id: '', userId: a.id ?? null })),
-    ),
-  );
+  const authorsData = job.data.authors ?? project.data.authors;
+  const authors = !authorsData
+    ? undefined
+    : await Promise.all(
+        authorsData.map((a) =>
+          toAuthorFields(session, project, createAuthor({ id: '', userId: a.id ?? null })),
+        ),
+      );
 
   const frontMatter = stringifyFrontMatter(
     buildFrontMatter(

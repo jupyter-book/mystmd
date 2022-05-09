@@ -27,20 +27,23 @@ export async function createFrontmatter(
 ) {
   const project = await new Project(session, block.id.project).get();
   const { affiliations } = project.data;
-  const authors = block.data.authors.map((author) => {
-    const authorAffiliations = author.affiliations
-      .map((id) => affiliations.find(({ id: aid }) => id === aid)?.text || null)
-      .filter((a) => a);
-    return {
-      name: author.name || '',
-      userId: author.userId || undefined,
-      orcid: author.orcid || undefined,
-      corresponding: author.corresponding || undefined,
-      email: author.email || undefined,
-      roles: author.roles?.length > 0 ? author.roles : undefined,
-      affiliations: authorAffiliations?.length > 0 ? authorAffiliations : undefined,
-    };
-  });
+  const authorsData = block.data.authors ?? project.data.authors;
+  const authors = !authorsData
+    ? undefined
+    : authorsData.map((author) => {
+        const authorAffiliations = author.affiliations
+          .map((id) => affiliations.find(({ id: aid }) => id === aid)?.text || null)
+          .filter((a) => a);
+        return {
+          name: author.name || '',
+          userId: author.userId || undefined,
+          orcid: author.orcid || undefined,
+          corresponding: author.corresponding || undefined,
+          email: author.email || undefined,
+          roles: author.roles?.length > 0 ? author.roles : undefined,
+          affiliations: authorAffiliations?.length > 0 ? authorAffiliations : undefined,
+        };
+      });
   return {
     title: block.data.title,
     description: block.data.description || '',
