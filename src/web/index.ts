@@ -26,7 +26,7 @@ export async function clone(session: ISession, opts: Options) {
     session.log.warn(`👷‍♀️ Warning, using a branch: ${branch}`);
   }
   await makeExecutable(
-    `git clone --depth 1 --branch ${branch} git@github.com:curvenote/curvespace.git ${serverPath(
+    `git clone --depth 1 --branch ${branch} https://github.com/curvenote/curvespace.git ${serverPath(
       opts,
     )}`,
     getGitLogger(session),
