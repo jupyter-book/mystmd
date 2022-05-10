@@ -108,7 +108,7 @@ export class Session implements ISession {
     checkForClientVersionRejection(this.log, response.status, json);
     return {
       status: response.status,
-      json: await response.json(),
+      json,
     };
   }
 }
