@@ -157,7 +157,7 @@ export async function multipleArticleToTex(
   fs.writeFileSync(mainContentFilename, mainContent);
 
   session.log.debug('Writing bib file...');
-  await writeBibtex(session, references, path.join(buildPath, 'main.bib'));
+  await writeBibtex(session, references, 'main.bib', { path: buildPath, alwaysWriteFile: true });
 
   await ifTemplateRunJtex(mainContentFilename, session.log, options);
 

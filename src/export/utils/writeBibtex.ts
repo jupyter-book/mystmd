@@ -1,4 +1,3 @@
-import path from 'path';
 import { ISession } from '../../session/types';
 import { writeFileToFolder } from '../../utils';
 import { ArticleState } from './walkArticle';
@@ -30,10 +29,13 @@ export async function writeBibtex(
     session.log.debug('No references to write for the project.');
     return;
   }
-  const pathname = path.join(opts.path || '.', filename);
+  session.log.debug(`opts.path ${opts.path}`);
+  session.log.debug(`filename ${filename}`);
+  let pathname;
+
   session.log.debug(`Exporting references to ${pathname}`);
   const bibWithNewLine = `${bibliography.join('\n\n')}\n`.replace(/&/g, '\\&');
   session.log.debug(`Concatenated bibtex content at ${bibWithNewLine.length} characters`);
-  writeFileToFolder(pathname, bibWithNewLine, { encoding: 'utf8' });
+  writeFileToFolder({ path: opts.path, filename }, bibWithNewLine, { encoding: 'utf8' });
   session.log.debug(`Wrote to ${pathname} successfully`);
 }

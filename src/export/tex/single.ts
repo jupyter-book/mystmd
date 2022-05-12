@@ -36,7 +36,10 @@ export async function singleArticleToTex(
   );
 
   session.log.debug('Writing bib file...');
-  await writeBibtex(session, article.references, path.join(buildPath, 'main.bib'));
+  await writeBibtex(session, article.references, 'main.bib', {
+    path: buildPath,
+    alwaysWriteFile: true,
+  });
 
   await ifTemplateRunJtex(filename, session.log, opts);
 

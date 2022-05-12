@@ -3,6 +3,12 @@ import fs from 'fs';
 import path from 'path';
 import { Logger } from './logging';
 
+export function resolvePath(optionalPath: string | undefined, filename: string) {
+  if (optionalPath) return path.join(optionalPath, filename);
+  if (path.isAbsolute(filename)) return filename;
+  return path.join('.', filename);
+}
+
 /** Writes a file ensuring that the directory exists */
 export function writeFileToFolder(
   filename: string | { path?: string; filename: string },
@@ -13,7 +19,7 @@ export function writeFileToFolder(
     if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
     fs.writeFileSync(filename, data, opts);
   } else {
-    writeFileToFolder(path.join(filename.path || '.', filename.filename), data, opts);
+    writeFileToFolder(resolvePath(filename.path, filename.filename), data, opts);
   }
 }
 

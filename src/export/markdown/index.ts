@@ -116,7 +116,7 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
     session.log.debug('Writing bib file...');
     // Write out the references
     await writeBibtex(session, article.references, opts?.bibtex ?? 'main.bib', {
-      path: path.join(opts.path || '.', path.dirname(opts.filename)),
+      path: path.join(opts.path || '', path.dirname(opts.filename)),
       alwaysWriteFile: false,
     });
   }
