@@ -31,7 +31,9 @@ export async function writeBibtex(
     return;
   }
   const pathname = path.join(opts.path || '.', filename);
-  session.log.debug(`Exporting references to ${pathname}.`);
+  session.log.debug(`Exporting references to ${pathname}`);
   const bibWithNewLine = `${bibliography.join('\n\n')}\n`.replace(/&/g, '\\&');
+  session.log.debug(`Concatenated bibtex content at ${bibWithNewLine.length} characters`);
   writeFileToFolder(pathname, bibWithNewLine, { encoding: 'utf8' });
+  session.log.debug(`Wrote to ${pathname} successfully`);
 }
