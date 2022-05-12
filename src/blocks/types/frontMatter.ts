@@ -4,7 +4,7 @@ import { Author } from './author';
 // When the values are null indicates it has been explicitly set to null.
 export interface BlockFrontMatterProps {
   authors?: Author[] | null;
-  licenses?: { content: string; code?: string } | null;
+  licenses?: { content: string | null; code: string | null };
   doi?: string | null;
   open_access?: boolean | null;
   github?: string | null;
