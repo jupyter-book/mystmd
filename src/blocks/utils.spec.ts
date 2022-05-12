@@ -3,7 +3,7 @@ import { extractBlockFrontMatter, extractProjectFrontMatter } from './utils';
 
 export const TEST_PROJECT_FRONT_MATTER: ProjectFrontMatterProps = {
   authors: [],
-  licenses: { content: '' },
+  licenses: { content: null, code: null },
   doi: '',
   open_access: false,
   github: '',
