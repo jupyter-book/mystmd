@@ -1,6 +1,6 @@
 {
   "name": "curvenote",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "description": "Command line tools for Curvenote",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
