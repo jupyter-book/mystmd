@@ -151,12 +151,17 @@ export function CreativeCommonsBadge({
 }
 
 function SingleLicenseBadge({
-  license,
+  license: possibleLicense,
   preamble = '',
 }: {
-  license?: License;
+  license?: License | string;
   preamble?: string;
 }) {
+  if (!possibleLicense) return null;
+  const license =
+    typeof possibleLicense === 'string'
+      ? { title: '', url: '', id: possibleLicense }
+      : possibleLicense;
   if (!license) return null;
   if (license.CC) {
     return <CreativeCommonsBadge license={license} preamble={preamble} />;
@@ -179,19 +184,15 @@ function SingleLicenseBadge({
 }
 
 export function LicenseBadges({
-  license: possibleLicense,
+  license,
 }: {
-  license?: string | License | { code?: License; text?: License };
+  license?: string | License | { code?: License | string; content?: License | string };
 }) {
-  if (!possibleLicense) return null;
-  const license =
-    typeof possibleLicense === 'string'
-      ? { title: '', url: '', id: possibleLicense }
-      : possibleLicense;
-  if ('code' in license || 'text' in license) {
+  if (!license) return null;
+  if (typeof license !== 'string' && ('code' in license || 'content' in license)) {
     return (
       <>
-        <SingleLicenseBadge license={license.text} preamble="Text License: " />
+        <SingleLicenseBadge license={license.content} preamble="Content License: " />
         <SingleLicenseBadge license={license.code} preamble="Code License: " />
       </>
     );
