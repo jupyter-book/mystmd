@@ -9,6 +9,29 @@ export function resolvePath(optionalPath: string | undefined, filename: string) 
   return path.join('.', filename);
 }
 
+/**
+ * Log a message if there are extra keys in an object that are not expected.
+ *
+ * @param log Logging object
+ * @param object object with maybe extra keys
+ * @param start string for the logging message
+ * @param allowed optional allowed keys
+ * @returns void
+ */
+export function warnOnUnrecognizedKeys(
+  log: Logger,
+  object: Record<string, any>,
+  start: string,
+  allowed?: Set<string>,
+) {
+  const extraKeys = allowed
+    ? Object.keys(object).filter((k) => !allowed.has(k))
+    : Object.keys(object);
+  if (extraKeys.length === 0) return;
+  const plural = extraKeys.length > 1 ? 's' : '';
+  log.warn(`${start} Did not recognize key${plural}: "${extraKeys.join('", "')}".`);
+}
+
 /** Writes a file ensuring that the directory exists */
 export function writeFileToFolder(
   filename: string | { path?: string; filename: string },

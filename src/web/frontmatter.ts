@@ -5,6 +5,7 @@ import { Frontmatter } from '../config/types';
 import { ISession } from '../session/types';
 import { FolderContext } from './types';
 import { validateLicense } from './licenses';
+import { warnOnUnrecognizedKeys } from '../utils';
 
 function toText(content: PhrasingContent[]): string {
   return content
@@ -19,14 +20,6 @@ function toText(content: PhrasingContent[]): string {
 export const DEFAULT_FRONTMATTER: Frontmatter = {
   numbering: false,
 };
-
-function warnOnUnrecognizedKeys(log: ISession['log'], object: Record<string, any>, start: string) {
-  const extraKeys = Object.keys(object);
-  if (extraKeys.length === 0) return;
-  log.warn(
-    `${start} did not recognize key${extraKeys.length > 1 ? 's' : ''}: "${extraKeys.join('", "')}"`,
-  );
-}
 
 export function getFrontmatterFromConfig(
   log: ISession['log'],
@@ -111,13 +104,13 @@ export function getFrontmatterFromConfig(
       if (heading_5 != null) nextNumbering.heading_5 = heading_5;
       if (heading_6 != null) nextNumbering.heading_6 = heading_6;
       frontmatter.numbering = nextNumbering;
-      warnOnUnrecognizedKeys(log, restNumbering, `Folder "${folder}" _config.yml#numbering`);
+      warnOnUnrecognizedKeys(log, restNumbering, `Folder "${folder}" _config.yml#numbering:`);
     }
   }
   if (math) {
     frontmatter.math = { ...frontmatter.math, ...math };
   }
-  warnOnUnrecognizedKeys(log, rest, `Folder "${folder}" _config.yml`);
+  warnOnUnrecognizedKeys(log, rest, `Folder "${folder}" _config.yml:`);
   return frontmatter;
 }
 

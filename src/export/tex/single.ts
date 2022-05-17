@@ -1,5 +1,4 @@
 import { VersionId } from '@curvenote/blocks';
-import path from 'path';
 import { ISession } from '../../session/types';
 import { writeBibtex } from '../utils/writeBibtex';
 import { makeBuildPaths } from '../utils';
