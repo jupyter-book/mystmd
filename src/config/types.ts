@@ -15,7 +15,7 @@ export type Frontmatter = {
   authors?: Author[];
   subject?: string;
   open_access?: boolean;
-  license?: string | License | { code?: License; text?: License };
+  license?: string | License | { code?: License; content?: License };
   oxa?: string;
   doi?: string;
   github?: string;

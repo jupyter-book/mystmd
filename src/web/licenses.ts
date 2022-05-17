@@ -1,4 +1,5 @@
 import { Logger } from '../logging';
+import { warnOnUnrecognizedKeys } from '../utils';
 import LICENSES from './licenses.json';
 
 type License = {
@@ -63,8 +64,8 @@ function createURL(license: Omit<License, 'url'>): string {
 
 export function validateLicense(
   log: Logger,
-  license: string | { code: string; text: string },
-): null | License | { code?: License; text?: License } {
+  license: string | { code: string; content: string },
+): null | License | { code?: License; content?: License } {
   if (!license) return null;
   if (typeof license === 'string') {
     const key = license.toUpperCase();
@@ -81,7 +82,13 @@ export function validateLicense(
       url,
     };
   }
-  const code = (validateLicense(log, license.code) as License | null) ?? undefined;
-  const text = (validateLicense(log, license.text) as License | null) ?? undefined;
-  return { code, text };
+  warnOnUnrecognizedKeys(
+    log,
+    license,
+    'License must only have "code" and "content" or be a string.',
+    new Set(['code', 'content']),
+  );
+  const code = (validateLicense(log, license.code) as License) ?? undefined;
+  const content = (validateLicense(log, license.content) as License) ?? undefined;
+  return { code, content };
 }
