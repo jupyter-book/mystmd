@@ -29,7 +29,7 @@ export function warnOnUnrecognizedKeys(
     : Object.keys(object);
   if (extraKeys.length === 0) return;
   const plural = extraKeys.length > 1 ? 's' : '';
-  log.warn(`${start}: Did not recognize key${plural}: "${extraKeys.join('", "')}"`);
+  log.warn(`${start} Did not recognize key${plural}: "${extraKeys.join('", "')}".`);
 }
 
 /** Writes a file ensuring that the directory exists */
