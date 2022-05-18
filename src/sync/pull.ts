@@ -94,29 +94,38 @@ export async function pullProjects(
   }
 }
 
-export async function pull(session: ISession, folder?: string) {
+type Options = {
+  yes?: boolean;
+};
+
+export async function pull(session: ISession, folder?: string, opts?: Options) {
   const { config } = session;
   if (!config) throw new Error('Must have config to pull content.');
 
-  if (folder)
+  if (folder) {
     throwIfMissingOrNoRemote(
       folder,
       config.sync.find((item) => item.folder === folder),
     );
+  }
 
   const message = folder
     ? `Pulling will overwrite all content in ${folder}. Are you sure?`
     : 'Pulling content will overwrite all content in folders. Are you sure?';
 
-  const { confirm } = await inquirer.prompt([
-    {
-      name: 'confirm',
-      message,
-      type: 'confirm',
-      default: false,
-    },
-  ]);
-  if (confirm) {
-    await pullProjects(session, { config, level: LogLevel.info, folder });
+  if (!opts?.yes) {
+    const { confirm } = await inquirer.prompt([
+      {
+        name: 'confirm',
+        message,
+        type: 'confirm',
+        default: false,
+      },
+    ]);
+    if (!confirm) {
+      session.log.info('Exiting.');
+      return;
+    }
   }
+  await pullProjects(session, { config, level: LogLevel.info, folder });
 }

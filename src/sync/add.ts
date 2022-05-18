@@ -26,7 +26,7 @@ export async function addProjectsToConfig(
         name: 'projectLink',
         message: 'Link to Curvenote project:',
         type: 'input',
-        default: 'https://curvenote.com/@templates/projects',
+        default: 'https://curvenote.com/@templates/curvespace',
       },
     ]);
     session.log.info(chalk.dim('Validating link...'));

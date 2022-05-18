@@ -1,8 +1,9 @@
+// TODO: rename to title
 function name(opts: { name: string }) {
   return {
     name: 'name',
     type: 'input',
-    message: 'What is the name of this space?',
+    message: 'What is the title of this project?',
     default: opts.name,
   };
 }

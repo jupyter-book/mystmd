@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { sync } from '../../index';
 import { clirun } from './utils';
+import { makeYesOption } from './utils/options';
 
 function makeSyncInitCLI(program: Command) {
   const command = new Command('init')
@@ -13,6 +14,7 @@ function makeSyncPullCLI(program: Command) {
   const command = new Command('pull')
     .description('Pull all information for a Curvenote project')
     .argument('[folder]', 'The location of the content to pull')
+    .addOption(makeYesOption())
     .action(clirun(sync.pull, { program, requireConfig: true }));
   return command;
 }

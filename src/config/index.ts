@@ -39,15 +39,15 @@ export function loadCurvenoteConfig(log: Logger, pathToYml: string): CurvenoteCo
   }
 }
 
-export function blankCurvenoteConfig(): CurvenoteConfig {
+export function blankCurvenoteConfig(name = 'My Curve Space'): CurvenoteConfig {
   return {
     version: 1,
     sync: [],
     web: {
-      name: 'My Curve Space',
+      name,
       domains: [],
       logo: path.join('public', 'logo.svg'),
-      logoText: 'My Curve Space',
+      logoText: name,
       twitter: null,
       nav: [],
       sections: [],

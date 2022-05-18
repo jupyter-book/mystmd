@@ -1,6 +1,7 @@
 import { Command, Option } from 'commander';
 import { web } from '../../index';
 import { clirun } from './utils';
+import { makeYesOption } from './utils/options';
 
 function makeBranchOption() {
   return new Option(
@@ -13,9 +14,6 @@ function makeCleanOption() {
 }
 function makeForceOption() {
   return new Option('-f, --force', 'Remove the build directory and re-install').default(false);
-}
-function makeYesOption() {
-  return new Option('-y, --yes', 'Use the defaults and answer "Y" to confirmations').default(false);
 }
 
 function makeCurvespaceCleanCLI(program: Command) {

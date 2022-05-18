@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import chalk from 'chalk';
 import yaml from 'js-yaml';
 import inquirer from 'inquirer';
@@ -75,7 +76,8 @@ export async function init(session: ISession, opts: Options) {
   let me: MyUser | Promise<MyUser> | undefined;
   if (!session.isAnon) me = new MyUser(session).get();
 
-  const config = blankCurvenoteConfig();
+  const defaultName = path.basename(path.resolve());
+  const config = blankCurvenoteConfig(defaultName);
   const answers = await inquirer.prompt([
     questions.name({ name: config.web.name }),
     questions.content({ folderIsEmpty, template: opts.template }),
