@@ -109,7 +109,7 @@ export async function init(session: ISession, opts: Options) {
   const { start } = await inquirer.prompt([
     {
       name: 'start',
-      message: 'Would you like to start curve.space locally now?',
+      message: 'Would you like to start the curve.space local server now?',
       type: 'confirm',
       default: true,
     },
