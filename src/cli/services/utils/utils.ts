@@ -19,7 +19,7 @@ ${chalk.bold('npm install -g npm@latest')}
 
 async function checkNodeVersion(session: ISession): Promise<boolean> {
   const checking = new Promise<boolean>((resolve) => {
-    check({ node: '>= 14.0.0 <17.0.0', npm: '>7' }, (error, result) => {
+    check({ node: '>= 14.0.0 <17.0.0', npm: '>=6' }, (error, result) => {
       if (error) {
         session.log.error(error);
         return;
