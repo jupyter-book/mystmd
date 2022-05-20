@@ -7,6 +7,7 @@ import { transformRoot } from './root';
 import { transformMath } from './math';
 import { transformImages } from './images';
 import { transformCitations } from './citations';
+import { transformLinkedDOIs } from './dois';
 import { transformOutputs } from './outputs';
 import { transformEnumerators } from './enumerate';
 import { transformFootnotes } from './footnotes';
@@ -91,6 +92,10 @@ export async function transformMdast(
     folder,
     filename: name,
   };
+
+  await transformLinkedDOIs(mdast, state);
+  cache.session.log.debug(toc(`Processing: "${name}" - LinkedDOIs in %s`));
+
   [
     ensureBlockNesting,
     transformMath,

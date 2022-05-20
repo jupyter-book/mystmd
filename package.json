@@ -53,6 +53,7 @@
     "copyfiles": "^2.4.1",
     "date-fns": "^2.25.0",
     "docx": "^7.3.0",
+    "doi-utils": "^1.0.0",
     "html-entities": "^2.3.2",
     "inquirer": "^8.2.2",
     "js-yaml": "^4.1.0",

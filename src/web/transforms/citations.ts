@@ -2,6 +2,15 @@ import { CitationRenderer, InlineCite } from 'citation-js-utils';
 import { GenericNode, selectAll } from 'mystjs';
 import { Root, References, TransformState } from './types';
 
+export type CiteKind = 'narrative' | 'parenthetical';
+
+export type Cite = {
+  type: 'cite';
+  kind: CiteKind;
+  label: string;
+  children: GenericNode['children'];
+};
+
 function pushCite(references: References, citeRenderer: CitationRenderer, label: string) {
   if (!references.cite.data[label]) {
     references.cite.order.push(label);
@@ -13,8 +22,6 @@ function pushCite(references: References, citeRenderer: CitationRenderer, label:
     html: citeRenderer[label]?.render(),
   };
 }
-
-type CiteKind = 'narrative' | 'parenthetical';
 
 function addCitationChildren(
   cite: GenericNode,
@@ -35,11 +42,7 @@ function hasChildren(node: GenericNode) {
   return node.children && node.children.length > 0;
 }
 
-export function transformCitations(
-  mdast: Root,
-
-  state: TransformState,
-) {
+export function transformCitations(mdast: Root, state: TransformState) {
   // TODO: this can be simplified if typescript doesn't die on the parent
   selectAll('citeGroup', mdast).forEach((node: GenericNode) => {
     const kind = node.kind as CiteKind;
