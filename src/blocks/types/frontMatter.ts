@@ -20,9 +20,9 @@ export type FrontMatterProps = {
     first_page?: string;
     last_page?: string;
   } | null;
-}
+};
 
-export type BlockFrontMatterProps = Partial<FrontMatterProps>
+export type BlockFrontMatterProps = Partial<FrontMatterProps>;
 
 export type ProjectFrontMatterProps = Omit<BlockFrontMatterProps, 'venue' | 'biblio'>;
 
