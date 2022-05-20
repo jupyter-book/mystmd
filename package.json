@@ -47,6 +47,7 @@
     "bottleneck": "^2.19.5",
     "chalk": "^4.1.2",
     "check-node-version": "^4.2.1",
+    "chokidar": "^3.5.3",
     "citation-js-utils": "^0.0.4",
     "cli-progress": "^3.10.0",
     "commander": "^8.3.0",

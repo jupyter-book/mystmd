@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import chokidar from 'chokidar';
 import yaml from 'js-yaml';
 import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
@@ -96,8 +97,14 @@ export function watchContent(cache: DocumentCache) {
 
   // Watch the full content folder
   try {
+    // TODO: Change this to a singe watch
     cache.config?.site.sections.forEach(({ path: folderPath }) => {
-      fs.watch(folderPath, { recursive: true }, processor(folderPath));
+      chokidar
+        .watch(folderPath, {
+          ignoreInitial: true,
+          awaitWriteFinish: { stabilityThreshold: 50, pollInterval: 50 },
+        })
+        .on('all', processor(folderPath));
     });
     // Watch the curvenote.yml
     watchConfig(cache);
