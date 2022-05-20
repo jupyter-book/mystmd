@@ -71,7 +71,7 @@ function sparkles(session: ISession, name: string) {
   session.log.info(`\n\n\t✨✨✨  ${name}  ✨✨✨\n\n`);
 }
 
-export async function serve(session: ISession, opts: Options) {
+export async function startServer(session: ISession, opts: Options) {
   await cloneCurvespace(session, opts);
   sparkles(session, 'Starting Curvenote');
   const cache = await buildContent(session, opts);

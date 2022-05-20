@@ -44,7 +44,7 @@ function makeCurvespaceStartCLI(program: Command) {
     .addOption(makeCleanOption())
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
-    .action(clirun(web.serve, { program, requireConfig: true }));
+    .action(clirun(web.startServer, { program, requireConfig: true }));
   return command;
 }
 

@@ -95,9 +95,16 @@ export function watchContent(cache: DocumentCache) {
   };
 
   // Watch the full content folder
-  cache.config?.site.sections.forEach(({ path: folderPath }) => {
-    fs.watch(folderPath, { recursive: true }, processor(folderPath));
-  });
-  // Watch the curvenote.yml
-  watchConfig(cache);
+  try {
+    cache.config?.site.sections.forEach(({ path: folderPath }) => {
+      fs.watch(folderPath, { recursive: true }, processor(folderPath));
+    });
+    // Watch the curvenote.yml
+    watchConfig(cache);
+  } catch (error) {
+    cache.session.log.error((error as Error).message);
+    cache.session.log.error(
+      '🙈 The file-system watch failed.\n\tThe server should still work, but will require you to restart it manually to see any changes to content.\n\tUse `curvenote start -c` to clear cache and restart.',
+    );
+  }
 }
