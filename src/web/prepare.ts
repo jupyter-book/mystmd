@@ -10,8 +10,8 @@ import { DocumentCache, watchConfig } from './cache';
 
 export function cleanBuiltFiles(session: ISession, opts: Options, info = true) {
   const toc = tic();
-  fs.rmdirSync(path.join(serverPath(opts), 'app', 'content'), { recursive: true });
-  fs.rmdirSync(path.join(publicPath(opts), '_static'), { recursive: true });
+  fs.rmSync(path.join(serverPath(opts), 'app', 'content'), { recursive: true, force: true });
+  fs.rmSync(path.join(publicPath(opts), '_static'), { recursive: true, force: true });
   const log = info ? session.log.info : session.log.debug;
   log(toc('🧹 Clean build files in %s.'));
 }

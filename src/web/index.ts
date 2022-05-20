@@ -16,7 +16,7 @@ export async function clean(session: ISession, opts: Options) {
     return;
   }
   session.log.debug(`web.clean: Removing ${serverPath(opts)}`);
-  fs.rmdirSync(serverPath(opts), { recursive: true });
+  fs.rmSync(serverPath(opts), { recursive: true, force: true });
 }
 
 export async function clone(session: ISession, opts: Options) {
@@ -36,8 +36,8 @@ export async function clone(session: ISession, opts: Options) {
   // TODO: udpate this when we are downloading a zip
   const p = serverPath(opts);
   // Remove all git-related things
-  fs.rmdirSync(path.join(p, '.git'), { recursive: true });
-  fs.rmdirSync(path.join(p, '.github'), { recursive: true });
+  fs.rmSync(path.join(p, '.git'), { recursive: true, force: true });
+  fs.rmSync(path.join(p, '.github'), { recursive: true, force: true });
   cleanBuiltFiles(session, opts, false);
 }
 
