@@ -30,7 +30,7 @@ const TEST_FRONT_MATTER_OBJ = {
 };
 
 describe('extractBlockFrontMatter', () => {
-  test('should handle correct frontmatter exhausively', () => {
+  test('should handle correct frontmatter extraction exhausively', () => {
     const frontmatter: FrontMatterProps = {
       authors: [],
       licenses: { content: 'MIT', code: null },
@@ -46,6 +46,8 @@ describe('extractBlockFrontMatter', () => {
     };
 
     expect(extractBlockFrontMatter(frontmatter)).toEqual(frontmatter);
+    const { venue, biblio, ...projectExtractionResult } = frontmatter;
+    expect(extractProjectFrontMatter(frontmatter)).toEqual(projectExtractionResult);
   });
 
   test('should extract block front matter properly', () => {
