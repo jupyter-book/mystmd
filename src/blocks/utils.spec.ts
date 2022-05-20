@@ -1,4 +1,4 @@
-import { BlockFrontMatterProps, ProjectFrontMatterProps } from './types';
+import { BlockFrontMatterProps, FrontMatterProps, ProjectFrontMatterProps } from './types';
 import { extractBlockFrontMatter, extractProjectFrontMatter } from './utils';
 
 export const TEST_PROJECT_FRONT_MATTER: ProjectFrontMatterProps = {
@@ -19,7 +19,7 @@ export const TEST_BLOCK_FRONT_MATTER: BlockFrontMatterProps = {
 };
 
 const TEST_FRONT_MATTER_OBJ = {
-  authors: [{ test: 'test' }],
+  authors: [],
   license: undefined, // handles undefined
   github: null,
   short_title: '',
@@ -30,6 +30,24 @@ const TEST_FRONT_MATTER_OBJ = {
 };
 
 describe('extractBlockFrontMatter', () => {
+  test('should handle correct frontmatter exhausively', () => {
+    const frontmatter: FrontMatterProps = {
+      authors: [],
+      licenses: { content: 'MIT', code: null },
+      github: null,
+      doi: 'doi',
+      arxiv: 'arxiv',
+      binder: 'binder',
+      subtitle: 'subtitle',
+      short_title: '',
+      open_access: false,
+      venue: {},
+      biblio: {},
+    };
+
+    expect(extractBlockFrontMatter(frontmatter)).toEqual(frontmatter);
+  });
+
   test('should extract block front matter properly', () => {
     const target = { ...TEST_FRONT_MATTER_OBJ };
 
