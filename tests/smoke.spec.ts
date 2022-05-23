@@ -5,11 +5,13 @@ const exec = util.promisify(execWithCb);
 
 describe('CLI Smoke Tests', () => {
   test('an example site', async () => {
+    expect.assertions(0);
     try {
       const { stdout } = await exec('curvenote web build -o', { cwd: 'tests/example' });
       console.log(stdout);
     } catch (error) {
-      expect(error).toBeNull();
+      console.error(error);
+      expect(error).not.toBeNull();
     }
   });
 });
