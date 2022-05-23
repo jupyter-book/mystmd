@@ -191,9 +191,9 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
     id: cdnKey,
     files: files.map(({ to }) => ({ path: to })),
   };
-  const { status: deployStatus } = await cache.session.post('/sites/deploy', deployRequest);
+  const deploy = await cache.session.post('/sites/deploy', deployRequest);
 
-  if (deployStatus === 200) {
+  if (deploy.ok) {
     cache.session.log.info(toc(`🚀 Deployed ${files.length} files in %s.`));
   } else {
     throw new Error('Deployment failed: Please contact support@curvenote.com!');
@@ -217,7 +217,11 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
 
   const allSites = sites.map((s) => `https://${s.id}`).join('\n  - ');
   cache.session.log.info(
-    `🌍 Site promoted to ${sites.length} domain${sites.length > 1 ? 's' : ''}:\n\n  - ${allSites}`,
+    toc(
+      `🌍 Site promoted to ${sites.length} domain${
+        sites.length > 1 ? 's' : ''
+      } in %s:\n\n  - ${allSites}`,
+    ),
   );
   cache.session.log.debug(`CDN key: ${cdnKey}`);
   cache.session.log.info(

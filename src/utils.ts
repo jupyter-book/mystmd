@@ -1,5 +1,6 @@
 import { JsonObject, VersionId } from '@curvenote/blocks';
 import fs from 'fs';
+import inquirer from 'inquirer';
 import path from 'path';
 import { Logger } from './logging';
 
@@ -53,5 +54,20 @@ export function versionIdToURL(versionId: VersionId) {
 export function checkForClientVersionRejection(log: Logger, status: number, body: JsonObject) {
   if (status === 400 && body.errors[0].code === 'outdated_client') {
     log.error('Please run `npm i curvenote@latest` to update your client.');
+  }
+}
+
+export async function confirmOrExit(message: string, opts?: { yes?: boolean }) {
+  if (opts?.yes) return;
+  const question = await inquirer.prompt([
+    {
+      name: 'confirm',
+      message,
+      type: 'confirm',
+      default: false,
+    },
+  ]);
+  if (!question.confirm) {
+    throw new Error('Exiting');
   }
 }
