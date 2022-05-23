@@ -93,7 +93,7 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
     session.log.error(
       '⚠️ You must be authenticated for this call. Use `curvenote token set [token]`',
     );
-    return;
+    process.exit(1);
   }
   const me = await new MyUser(session).get();
   // Do a bit of prework to ensure that the domains exists in the config file
@@ -102,7 +102,7 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
     session.log.error(
       `🧐 No domains specified, use config.site.domains: - ${me.data.username}.curve.space`,
     );
-    return;
+    process.exit(1);
   }
   if (!opts.yes) {
     const confirm = await inquirer.prompt([
@@ -115,7 +115,7 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
     ]);
     if (!confirm.deploy) {
       session.log.info('Exiting deployment.');
-      return;
+      process.exit(1);
     }
   }
   await cloneCurvespace(session, opts);

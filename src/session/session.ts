@@ -83,6 +83,7 @@ export class Session implements ISession {
     const json = await response.json();
     checkForClientVersionRejection(this.log, response.status, json);
     return {
+      ok: response.ok,
       status: response.status,
       json,
     };
@@ -107,6 +108,7 @@ export class Session implements ISession {
     const json = await response.json();
     checkForClientVersionRejection(this.log, response.status, json);
     return {
+      ok: response.ok,
       status: response.status,
       json,
     };

@@ -6,7 +6,11 @@ import { RootState } from '../store';
 
 export type Tokens = Partial<Record<'user' | 'session', string>>;
 
-export type Response<T extends JsonObject = JsonObject> = Promise<{ status: number; json: T }>;
+export type Response<T extends JsonObject = JsonObject> = Promise<{
+  ok: boolean;
+  status: number;
+  json: T;
+}>;
 
 export interface ISession {
   API_URL: string;
