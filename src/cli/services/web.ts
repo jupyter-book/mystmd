@@ -15,6 +15,9 @@ function makeCleanOption() {
 function makeForceOption() {
   return new Option('-f, --force', 'Remove the build directory and re-install').default(false);
 }
+function makeCIOption() {
+  return new Option('-ci, --ci', 'Perform a minimal build, for use on CI').default(false);
+}
 
 function makeCurvespaceCleanCLI(program: Command) {
   const command = new Command('clean')
@@ -54,6 +57,7 @@ function makeBuildCLI(program: Command) {
     .addOption(makeCleanOption())
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
+    .addOption(makeCIOption())
     .action(clirun(web.build, { program, requireConfig: true }));
   return command;
 }

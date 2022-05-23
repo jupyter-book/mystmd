@@ -22,4 +22,5 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run lint:format
+      - run: npm run dev
       - run: npm run test
