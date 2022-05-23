@@ -44,6 +44,6 @@ export type Options = {
   clean?: boolean;
   force?: boolean;
   branch?: string;
-  contentOnly?: boolean;
+  ci?: boolean;
   yes?: boolean;
 };

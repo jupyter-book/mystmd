@@ -82,7 +82,7 @@ export async function startServer(session: ISession, opts: Options) {
 }
 
 export async function build(session: ISession, opts: Options) {
-  if (!opts.contentOnly) await cloneCurvespace(session, opts);
+  if (!opts.ci) await cloneCurvespace(session, opts);
   sparkles(session, 'Building Curvenote');
   // Build the files in the content folder and process them
   await buildContent(session, opts);
