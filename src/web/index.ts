@@ -9,7 +9,6 @@ import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
 import { deployContent } from './deploy';
 import { MyUser } from '../models';
-import { JsonWebTokenError } from 'jsonwebtoken';
 
 export async function clean(session: ISession, opts: Options) {
   if (!exists(opts)) {
