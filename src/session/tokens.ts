@@ -61,7 +61,7 @@ export async function getSessionToken(log: Logger, tokens: Tokens): Promise<stri
       Authorization: `Bearer ${tokens.user}`,
     },
   });
-  if (response.status !== 200) throw new Error('SessionToken: The user token was not valid.');
+  if (!response.ok) throw new Error('SessionToken: The user token is not valid.');
   const json = await response.json();
   if (!json.session)
     throw new Error(

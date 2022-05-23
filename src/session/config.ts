@@ -1,9 +1,11 @@
 import path from 'path';
 import * as fs from 'fs';
 import chalk from 'chalk';
+import inquirer from 'inquirer';
 import { MyUser } from '../models';
 import { Session } from './session';
 import { chalkLogger, Logger, LogLevel } from '../logging';
+import { actionLinks } from '../docs';
 
 function getConfigPath() {
   const pathArr: string[] = [];
@@ -21,7 +23,18 @@ function getConfigPath() {
   return path.join(...pathArr, ...local);
 }
 
-export async function setToken(token: string) {
+export async function setToken(log: Logger, token?: string) {
+  if (!token) {
+    log.info(`Create an API token here:\n\n${actionLinks.apiToken}\n`);
+    const resp = await inquirer.prompt([
+      {
+        name: 'token',
+        message: 'API Token:',
+        type: 'input',
+      },
+    ]);
+    token = resp.token;
+  }
   const session = new Session(token);
   let me;
   try {

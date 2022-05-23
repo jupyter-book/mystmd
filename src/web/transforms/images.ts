@@ -67,9 +67,9 @@ export async function transformImages(mdast: Root, state: TransformState) {
         if (!versionId?.version) return;
         const url = versionIdToURL(versionId);
         session.log.debug(`Fetching image version: ${url}`);
-        const { status, json } = await session.get(url);
+        const { ok, json } = await session.get(url);
         const downloadUrl = json.links?.download;
-        if (status !== 200 || !downloadUrl) {
+        if (!ok || !downloadUrl) {
           session.log.error(`Error fetching image version: ${url}`);
           return;
         }

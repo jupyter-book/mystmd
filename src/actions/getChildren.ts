@@ -6,8 +6,8 @@ import { versionIdToURL } from '../utils';
 export async function getChildren(session: ISession, versionId: VersionId) {
   const url = `${versionIdToURL(versionId)}/children`;
   session.log.debug(`Fetching version children: ${url}`);
-  const { status, json } = await session.get(url);
-  if (status !== 200) throw new Error('Could not get children');
+  const { ok, json } = await session.get(url);
+  if (!ok) throw new Error('Could not get children');
   session.log.debug(
     `Version children include ${json.blocks.items.length} block(s) and ${json.versions.items.length} version(s)`,
   );

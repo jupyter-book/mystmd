@@ -40,7 +40,7 @@ export async function notebookToIpynb(session: ISession, versionId: VersionId, o
   }
   // NOTE: this should be handled better in the client.
   const resp = await session.get(`${version.$createUrl()}/download`);
-  if (resp.status !== 200) throw new Error(`Could not download notebook.`);
+  if (!resp.ok) throw new Error(`Could not download notebook.`);
   if (opts.createFrontmatter) {
     // Put a frontmatter cell in the front!
     const frontmatterCell = await createFrontmatterCell(session, block, version);

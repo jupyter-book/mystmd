@@ -53,8 +53,8 @@ export class BaseTransfer<
       return this;
     }
     this.session.log.debug(`Fetching ${this.modelKind}: "${url}"`);
-    const { status, json } = await this.session.get(url, query);
-    if (status !== 200) {
+    const { ok, json } = await this.session.get(url, query);
+    if (!ok) {
       if ('message' in json) {
         throw new Error(`${this.modelKind}: (${url}) ${json.message}`);
       }

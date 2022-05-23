@@ -31,7 +31,7 @@ export class Session implements ISession {
 
   SITE_URL: string;
 
-  $tokens: Tokens;
+  $tokens: Tokens = {};
 
   store: Store<RootState>;
 
@@ -51,8 +51,7 @@ export class Session implements ISession {
 
   constructor(token?: string, opts: SessionOptions = {}) {
     this.$logger = opts.logger ?? basicLogger(LogLevel.info);
-    const { tokens, url } = setSessionOrUserToken(this.log, token);
-    this.$tokens = tokens;
+    const url = this.setToken(token);
     this.API_URL = opts.apiUrl ?? url ?? DEFAULT_API_URL;
     this.SITE_URL = opts.siteUrl ?? DEFAULT_SITE_URL;
     if (this.API_URL !== DEFAULT_API_URL) {
@@ -61,6 +60,12 @@ export class Session implements ISession {
     this.store = createStore(rootReducer);
     this.configPath = opts.config || CURVENOTE_YML;
     this.config = this.loadConfig();
+  }
+
+  setToken(token?: string) {
+    const { tokens, url } = setSessionOrUserToken(this.log, token);
+    this.$tokens = tokens;
+    return url;
   }
 
   loadConfig() {

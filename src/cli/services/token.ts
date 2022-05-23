@@ -7,10 +7,10 @@ export function addTokenCLI(program: Command) {
     'Set or delete a token to access the Curvenote API',
   );
   command
-    .command('set <token>')
+    .command('set [token]')
     .description('Set a token and save to a config directory')
     .action(
-      clirun(async (_session, token: string) => setToken(token), {
+      clirun(async (session, token?: string) => setToken(session.log, token), {
         program,
         session: anonSession(program.opts()),
       }),
