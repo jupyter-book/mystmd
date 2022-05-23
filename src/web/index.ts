@@ -9,6 +9,7 @@ import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
 import { deployContent } from './deploy';
 import { MyUser } from '../models';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 export async function clean(session: ISession, opts: Options) {
   if (!exists(opts)) {
@@ -82,7 +83,7 @@ export async function startServer(session: ISession, opts: Options) {
 }
 
 export async function build(session: ISession, opts: Options) {
-  await cloneCurvespace(session, opts);
+  if (!opts.contentOnly) await cloneCurvespace(session, opts);
   sparkles(session, 'Building Curvenote');
   // Build the files in the content folder and process them
   await buildContent(session, opts);

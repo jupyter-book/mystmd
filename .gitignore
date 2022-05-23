@@ -1,6 +1,8 @@
 dist/
 temp/
 node_modules/
+.ipynb_checkpoints/
+_build/
 yalc.lock
 .yalc/
 *.docx

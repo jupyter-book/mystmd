@@ -15,6 +15,12 @@ function makeCleanOption() {
 function makeForceOption() {
   return new Option('-f, --force', 'Remove the build directory and re-install').default(false);
 }
+function makeContentOnlyOption() {
+  return new Option(
+    '-o, --content-only',
+    'Process local content only, do not re-install the build folder if missing',
+  ).default(false);
+}
 
 function makeCurvespaceCleanCLI(program: Command) {
   const command = new Command('clean')
@@ -54,6 +60,7 @@ function makeBuildCLI(program: Command) {
     .addOption(makeCleanOption())
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
+    .addOption(makeContentOnlyOption())
     .action(clirun(web.build, { program, requireConfig: true }));
   return command;
 }
