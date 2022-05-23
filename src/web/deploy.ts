@@ -208,7 +208,7 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
         });
         if (resp.ok) return resp.json;
         cache.session.log.error(
-          `Error deploying site: https://${domain}. Please ensure you have permission.`,
+          `Error promoting site: https://${domain}. Please ensure you have permission or contact support@curvenote.com`,
         );
         return null;
       }),
