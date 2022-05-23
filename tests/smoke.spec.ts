@@ -7,7 +7,7 @@ describe('CLI Smoke Tests', () => {
   test('an example site', async () => {
     expect.assertions(0);
     try {
-      const { stdout } = await exec('curvenote web build -o', { cwd: 'tests/example' });
+      const { stdout } = await exec('curvenote web build -ci', { cwd: 'tests/example' });
       console.log(stdout);
     } catch (error) {
       console.error(error);
