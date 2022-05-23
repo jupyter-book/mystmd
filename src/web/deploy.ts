@@ -217,7 +217,7 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
 
   const allSites = sites.map((s) => `https://${s.id}`).join('\n  - ');
   cache.session.log.info(
-    `🌍  Site deployed to ${sites.length} domain${sites.length > 1 ? 's' : ''}:\n\n  - ${allSites}`,
+    `🌍 Site promoted to ${sites.length} domain${sites.length > 1 ? 's' : ''}:\n\n  - ${allSites}`,
   );
   cache.session.log.debug(`CDN key: ${cdnKey}`);
   cache.session.log.info(
