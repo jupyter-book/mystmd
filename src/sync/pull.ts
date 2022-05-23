@@ -7,6 +7,7 @@ import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
 import { projectLogString } from './utls';
 import { LogLevel, getLevel } from '../logging';
+import { confirmOrExit } from '../utils';
 
 /**
  * Check the item has a remote
@@ -112,20 +113,6 @@ export async function pull(session: ISession, folder?: string, opts?: Options) {
   const message = folder
     ? `Pulling will overwrite all content in ${folder}. Are you sure?`
     : 'Pulling content will overwrite all content in folders. Are you sure?';
-
-  if (!opts?.yes) {
-    const { confirm } = await inquirer.prompt([
-      {
-        name: 'confirm',
-        message,
-        type: 'confirm',
-        default: false,
-      },
-    ]);
-    if (!confirm) {
-      session.log.info('Exiting.');
-      return;
-    }
-  }
+  await confirmOrExit(message, opts);
   await pullProjects(session, { config, level: LogLevel.info, folder });
 }

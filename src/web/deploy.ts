@@ -4,7 +4,12 @@ import pLimit from 'p-limit';
 import fetch from 'node-fetch';
 import { createHash } from 'crypto';
 import cliProgress from 'cli-progress';
-import { DnsRouter, SiteDeployRequest, SiteUploadRequest } from '@curvenote/blocks';
+import {
+  DnsRouter,
+  SiteDeployRequest,
+  SiteUploadRequest,
+  SiteUploadResponse,
+} from '@curvenote/blocks';
 import mime from 'mime-types';
 import { publicPath, serverPath } from './utils';
 import { DocumentCache } from './cache';
@@ -147,7 +152,10 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
       size,
     })),
   };
-  const { json: uploadTargets } = await cache.session.post('/sites/upload', uploadRequest);
+  const { json: uploadTargets } = await cache.session.post<SiteUploadResponse>(
+    '/sites/upload',
+    uploadRequest,
+  );
 
   // Only upload N files at a time
   const limit = pLimit(10);
@@ -177,27 +185,45 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
   bar1.stop();
   cache.session.log.info(toc(`☁️  Uploaded ${files.length} files in %s.`));
 
+  const cdnKey = uploadTargets.id;
+
   const deployRequest: SiteDeployRequest = {
-    id: uploadTargets.id,
+    id: cdnKey,
     files: files.map(({ to }) => ({ path: to })),
   };
-  const { status: deployStatus } = await cache.session.post('/sites/deploy', deployRequest);
+  const deploy = await cache.session.post('/sites/deploy', deployRequest);
 
-  if (deployStatus === 200) {
+  if (deploy.ok) {
     cache.session.log.info(toc(`🚀 Deployed ${files.length} files in %s.`));
   } else {
     throw new Error('Deployment failed: Please contact support@curvenote.com!');
   }
 
-  const { json: siteCreated } = await cache.session.post<DnsRouter>('/sites/router', {
-    cdn: uploadTargets.id,
-    domain: domains[0],
-    // team:
-  });
+  const sites = (
+    await Promise.all(
+      domains.map(async (domain) => {
+        const resp = await cache.session.post<DnsRouter>('/sites/router', {
+          cdn: cdnKey,
+          domain,
+        });
+        if (resp.ok) return resp.json;
+        cache.session.log.error(
+          `Error promoting site: https://${domain}. Please ensure you have permission or contact support@curvenote.com`,
+        );
+        return null;
+      }),
+    )
+  ).filter((s): s is DnsRouter => !!s);
 
-  cache.session.log.info('🕸  Site Deployed');
-  cache.session.log.info(`🌎 https://${domains[0]}`);
-  cache.session.log.debug(siteCreated);
+  const allSites = sites.map((s) => `https://${s.id}`).join('\n  - ');
+  cache.session.log.info(
+    toc(
+      `🌍 Site promoted to ${sites.length} domain${
+        sites.length > 1 ? 's' : ''
+      } in %s:\n\n  - ${allSites}`,
+    ),
+  );
+  cache.session.log.debug(`CDN key: ${cdnKey}`);
   cache.session.log.info(
     '\n\n⚠️  https://curve.space is still in alpha. Please ensure you have a copy of your content locally.',
   );

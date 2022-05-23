@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import inquirer from 'inquirer';
 import { makeExecutable } from '../export/utils';
 import { ISession } from '../session/types';
 import { buildContent, cleanBuiltFiles, watchContent } from './prepare';
@@ -9,6 +8,7 @@ import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
 import { deployContent } from './deploy';
 import { MyUser } from '../models';
+import { confirmOrExit } from '../utils';
 
 export async function clean(session: ISession, opts: Options) {
   if (!exists(opts)) {
@@ -90,34 +90,22 @@ export async function build(session: ISession, opts: Options) {
 
 export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
   if (session.isAnon) {
-    session.log.error(
+    throw new Error(
       '⚠️ You must be authenticated for this call. Use `curvenote token set [token]`',
     );
-    return;
   }
   const me = await new MyUser(session).get();
   // Do a bit of prework to ensure that the domains exists in the config file
   const domains = session.config?.web.domains;
   if (!domains || domains.length === 0) {
-    session.log.error(
+    throw new Error(
       `🧐 No domains specified, use config.site.domains: - ${me.data.username}.curve.space`,
     );
-    return;
   }
-  if (!opts.yes) {
-    const confirm = await inquirer.prompt([
-      {
-        name: 'deploy',
-        message: `Deploy local content to "${domains.map((d) => `https://${d}`).join('", "')}"?`,
-        type: 'confirm',
-        default: false,
-      },
-    ]);
-    if (!confirm.deploy) {
-      session.log.info('Exiting deployment.');
-      return;
-    }
-  }
+  await confirmOrExit(
+    `Deploy local content to "${domains.map((d) => `https://${d}`).join('", "')}"?`,
+    opts,
+  );
   await cloneCurvespace(session, opts);
   sparkles(session, 'Deploying Curvenote');
   // Build the files in the content folder and process them

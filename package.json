@@ -38,7 +38,7 @@
     "build:watch": "npm run copy:version; tsc -w -p ."
   },
   "dependencies": {
-    "@curvenote/blocks": "^1.4.0",
+    "@curvenote/blocks": "^1.4.4",
     "@curvenote/nbtx": "^0.1.8",
     "@curvenote/schema": "^0.12.9",
     "@google-cloud/storage": "^5.18.2",
