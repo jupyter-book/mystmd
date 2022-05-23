@@ -1,4 +1,3 @@
-import inquirer from 'inquirer';
 import pLimit from 'p-limit';
 import { projectToJupyterBook } from '../export';
 import { Project } from '../models';
