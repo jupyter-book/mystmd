@@ -80,7 +80,7 @@ export async function build(session: ISession, opts: Options) {
   await buildContent2(session, opts);
 }
 
-export async function serve2(session: ISession, opts: Options) {
+export async function startServer(session: ISession, opts: Options) {
   await build(session, opts);
   const configPath = path.join(serverPath({}), 'app', 'config.json');
   session.log.info('⚙️  Writing config.json');

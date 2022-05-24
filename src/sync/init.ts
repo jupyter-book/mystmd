@@ -13,7 +13,7 @@ import {
 import { docLinks } from '../docs';
 import { MyUser } from '../models';
 import { writeFileToFolder } from '../utils';
-import { serve2 } from '../web';
+import { startServer } from '../web';
 import { LOGO } from '../web/public';
 import { pullProjects, validateProject } from './pull';
 import questions from './questions';
@@ -181,7 +181,7 @@ export async function init(session: ISession, opts: Options) {
   if (start) {
     await pullProcess;
     session.log.info(chalk.dim('\nStarting local server with: '), chalk.bold('curvenote start'));
-    await serve2(session, {});
+    await startServer(session, {});
   }
   await pullProcess;
 }
