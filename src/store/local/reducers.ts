@@ -1,13 +1,14 @@
+import { dirname } from 'path';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 
-import { ProjectConfig, SiteConfig, Project } from '../../types';
+import { ProjectConfig, SiteConfig, LocalProject } from '../../types';
 
 export const projects = createSlice({
   name: 'projects',
-  initialState: {} as Record<string, Project>,
+  initialState: {} as Record<string, LocalProject>,
   reducers: {
-    recieve(state, action: PayloadAction<Project>) {
+    recieve(state, action: PayloadAction<LocalProject>) {
       state[action.payload.path] = action.payload;
     },
   },

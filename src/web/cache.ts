@@ -23,7 +23,6 @@ import { readConfig } from './webConfig';
 import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
 import { DEFAULT_FRONTMATTER, getFrontmatterFromConfig } from './frontmatter';
-import { ManifestItem } from '../types';
 
 type NextFile = { filename: string; folder: string; slug: string };
 
@@ -274,18 +273,22 @@ export class DocumentCache implements IDocumentCache {
     return !fromCache;
   }
 
-  async processFile2(page: ManifestItem): Promise<boolean> {
+  async processFile2(
+    file: string,
+    projectSlug: string,
+    pageSlug: string,
+  ): Promise<{ id: string; processed: boolean }> {
     const toc = tic();
-    const id = path.join(page.url, page.slug);
-    this.session.log.debug(`Reading file "${page.file}"`);
-    const content = fs.readFileSync(page.file).toString();
-    const citeRenderer = await this.getCitationRenderer(page.url);
-    const folderConfig = await this.getFolderConfig(page.url);
-    const context: FolderContext = { folder: page.url, citeRenderer, config: folderConfig };
+    const id = path.join(projectSlug, pageSlug);
+    this.session.log.debug(`Reading file "${file}"`);
+    const content = fs.readFileSync(file).toString();
+    const citeRenderer = await this.getCitationRenderer(projectSlug);
+    const folderConfig = await this.getFolderConfig(projectSlug);
+    const context: FolderContext = { folder: projectSlug, citeRenderer, config: folderConfig };
     const jsonFilename = this.$getJsonFilename(id);
-    const filenames = { from: page.file, to: jsonFilename, folder: page.url, url: page.url };
+    const filenames = { from: file, to: jsonFilename, folder: projectSlug, url: projectSlug };
     const processResult = await processFile(this, context, filenames, content);
-    if (!processResult) return false;
+    if (!processResult) return { id, processed: false };
     const { fromCache, data } = processResult;
     const changed = this.$startupPass ? false : transformLinks(data.mdast, this.$links);
     if (changed || !fromCache) {
@@ -294,7 +297,7 @@ export class DocumentCache implements IDocumentCache {
     }
     this.registerFile(id, data);
     await this.writeConfig();
-    return !fromCache;
+    return { id, processed: !fromCache };
   }
 
   $links: LinkLookup = {};

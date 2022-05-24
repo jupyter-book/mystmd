@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { parse, join } from 'path';
+import { parse, join, sep } from 'path';
 import { Store } from 'redux';
 import { Frontmatter } from './config';
 import { RootState, selectors } from './store';
@@ -26,14 +26,25 @@ function isDirectory(file: string): boolean {
   return fs.lstatSync(file).isDirectory();
 }
 
-function fileInfo(file: string): { slug: string; title: string } {
-  const slug = parse(file).name.toLowerCase();
-  return { slug, title: slug };
+function fileInfo(
+  file: string,
+  fileSlugs: Record<string, number>,
+): { slug: string; title: string } {
+  let slug = parse(file).name.toLowerCase();
+  const title = slug;
+  if (fileSlugs[slug]) {
+    fileSlugs[slug] += 1;
+    slug = `${slug}-${fileSlugs[slug] - 1}`;
+  } else {
+    fileSlugs[slug] = 1;
+  }
+  return { slug, title };
 }
 
 export function projectPagesFromPath(
   path: string,
   level: pageLevels,
+  fileSlugs: Record<string, number>,
   ignore?: string[],
 ): (LocalProjectFolder | LocalProjectPage)[] {
   return fs
@@ -47,31 +58,32 @@ export function projectPagesFromPath(
         return {
           file,
           level,
-          ...fileInfo(file),
+          ...fileInfo(file, fileSlugs),
         } as LocalProjectPage;
       }
-      const projectFolder = { title: fileInfo(file).title, level };
+      const projectFolder = { title: fileInfo(file, fileSlugs).title, level };
       const newLevel = level < 5 ? level + 1 : 6;
-      const pages = projectPagesFromPath(file, newLevel as pageLevels, ignore);
+      const pages = projectPagesFromPath(file, newLevel as pageLevels, fileSlugs, ignore);
       return pages.length ? [projectFolder].concat(pages) : [];
     })
     .flat();
 }
 
-export function projectFromPath(path: string, index?: string): LocalProject {
-  if (!index) {
+export function projectFromPath(path: string, indexFile?: string): LocalProject {
+  if (!indexFile) {
     fs.readdirSync(path).forEach((file) => {
       if (DEFAULT_INDEX_FILES.includes(file.toLowerCase())) {
-        index = join(path, file);
+        indexFile = join(path, file);
       }
     });
   }
-  if (!index || !fs.existsSync(index)) {
-    throw Error(`index file ${index || DEFAULT_INDEX_FILES.join(',')} not found`);
+  if (!indexFile || !fs.existsSync(indexFile)) {
+    throw Error(`index file ${indexFile || DEFAULT_INDEX_FILES.join(',')} not found`);
   }
-  const { title } = fileInfo(index);
-  const pages = projectPagesFromPath(path, 1, [index, join(path, '_build')]);
-  return { file: index, title, pages };
+  const fileSlugs: Record<string, number> = {};
+  const { slug, title } = fileInfo(indexFile, fileSlugs);
+  const pages = projectPagesFromPath(path, 1, fileSlugs, [indexFile, join(path, '_build')]);
+  return { file: indexFile, index: slug, path, title, pages };
 }
 
 export function updateProject(store: Store<RootState>, path?: string, index?: string) {
@@ -98,7 +110,7 @@ export function localToManifestProject(
   projectSlug: string,
   frontmatter: Frontmatter,
 ): ManifestProject {
-  const { title: projectTitle, pages } = proj;
+  const { title: projectTitle, index, pages } = proj;
   const manifestPages = pages.map((page) => {
     if ('file' in page) {
       const { slug, title, level } = page;
@@ -106,7 +118,7 @@ export function localToManifestProject(
     }
     return page;
   });
-  return { slug: projectSlug, title: projectTitle, pages: manifestPages, ...frontmatter };
+  return { slug: projectSlug, index, title: projectTitle, pages: manifestPages, ...frontmatter };
 }
 
 export function getManifest(state: RootState): SiteManifest {
@@ -118,11 +130,11 @@ export function getManifest(state: RootState): SiteManifest {
     const frontmatter = resolveFrontmatter(siteConfig, projConfig);
     const proj = selectors.selectLocalProject(state, siteProj.path);
     if (!proj) return;
-    siteProjects.push(localToManifestProject(proj, siteProj.url, frontmatter));
+    siteProjects.push(localToManifestProject(proj, siteProj.slug, frontmatter));
   });
   const { title, twitter, logo, logoText, nav, actions } = siteConfig;
   const manifest = {
-    title,
+    title: title || '',
     twitter,
     logo,
     logoText,

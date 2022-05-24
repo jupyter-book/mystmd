@@ -13,7 +13,7 @@ export type ProjectConfig = Frontmatter & {
 
 export type SiteProject = {
   path: string;
-  url: string;
+  slug: string;
 };
 
 export type SiteNavPage = {
@@ -65,7 +65,9 @@ export type LocalProjectPage = {
 } & LocalProjectFolder;
 
 export type LocalProject = {
+  path: string;
   file: string;
+  index: string;
   title: string;
   pages: (LocalProjectPage | LocalProjectFolder)[];
 };
@@ -86,12 +88,13 @@ export type ManifestProjectPage = {
 
 export type ManifestProject = Frontmatter & {
   slug: string;
+  index: string;
   title: string;
   pages: (ManifestProjectPage | ManifestProjectFolder)[];
 };
 
 export type SiteManifest = {
-  title?: string;
+  title: string;
   twitter?: string;
   logo?: string;
   logoText?: string;

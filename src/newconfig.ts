@@ -18,7 +18,7 @@ const DEFAULT_SITE_CONFIG = {
   projects: [
     {
       path: '.',
-      url: '',
+      slug: 'my-proj',
     },
   ],
   nav: [],
