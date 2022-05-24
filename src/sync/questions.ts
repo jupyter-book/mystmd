@@ -34,12 +34,12 @@ function content(opts: { template?: string; folderIsEmpty: boolean }) {
   };
 }
 
-function projectLink(opts: { projectLink: string }) {
+function projectLink(opts?: { projectLink?: string }) {
   return {
     name: 'projectLink',
     message: 'Link to Curvenote project:',
     type: 'input',
-    default: opts.projectLink,
+    default: opts?.projectLink || 'https://curvenote.com/@templates/curvespace',
   };
 }
 

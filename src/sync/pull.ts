@@ -103,9 +103,7 @@ export async function pull(session: ISession, path?: string, opts?: Options) {
     }
   } catch {
     // Pull from new remote project
-    const { projectLink } = await inquirer.prompt([
-      questions.projectLink({ projectLink: 'https://curvenote.com/@templates/projects' }),
-    ]);
+    const { projectLink } = await inquirer.prompt([questions.projectLink()]);
     const project = await validateProject(session, projectLink);
     if (!project) return;
     projectConfig = { remote: project.data.id };

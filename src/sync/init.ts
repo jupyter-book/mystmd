@@ -116,9 +116,7 @@ export async function init(session: ISession, opts: Options) {
     siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
     pullComplete = true;
   } else if (content === 'curvenote') {
-    const { projectLink } = await inquirer.prompt([
-      questions.projectLink({ projectLink: 'https://curvenote.com/@templates/projects' }),
-    ]);
+    const { projectLink } = await inquirer.prompt([questions.projectLink()]);
     const project = await validateProject(session, projectLink);
     if (!project) return;
     projectConfig.remote = project.data.id;
