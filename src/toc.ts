@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { parse, join } from 'path';
+import { extname, parse, join } from 'path';
 import { Store } from 'redux';
 import { ISession } from './session';
 import { RootState, selectors } from './store';
@@ -14,6 +14,7 @@ import {
   ManifestProject,
 } from './types';
 import { resolveFrontmatter } from './web/frontmatter';
+import { publicPath } from './web/utils';
 
 const DEFAULT_INDEX_FILES = ['readme.md'];
 const VALID_FILE_EXTENSIONS = ['.md', '.ipynb'];
@@ -41,7 +42,7 @@ function fileInfo(
   return { slug, title };
 }
 
-export function projectPagesFromPath(
+function projectPagesFromPath(
   path: string,
   level: pageLevels,
   fileSlugs: Record<string, number>,
@@ -112,6 +113,22 @@ export function localToManifestProject(
   return { slug: projectSlug, index, title: projectTitle, pages: manifestPages, ...frontmatter };
 }
 
+function copyLogo(session: ISession, logoName?: string | null): string | undefined {
+  if (!logoName) {
+    session.log.debug('No logo specified, Curvespace renderer will use default logo');
+    return undefined;
+  }
+  if (!fs.existsSync(logoName)) {
+    // Look in the local public path
+    logoName = join('public', logoName);
+  }
+  if (!fs.existsSync(logoName))
+    throw new Error(`Could not find logo at "${logoName}". See 'config.web.logo'`);
+  const logo = `logo${extname(logoName)}`;
+  fs.copyFileSync(logoName, join(publicPath({}), logo));
+  return `/${logo}`;
+}
+
 export function getSiteManifest(session: ISession): SiteManifest {
   const siteProjects: ManifestProject[] = [];
   const state = session.store.getState();
@@ -128,7 +145,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
   const manifest = {
     title: title || '',
     twitter,
-    logo,
+    logo: copyLogo(session, logo),
     logoText,
     nav,
     actions,

@@ -31,22 +31,6 @@ function chaptersToPages(
   return pages;
 }
 
-function copyLogo(session: ISession, opts: Options, logoName?: string | null): string | undefined {
-  if (!logoName) {
-    session.log.debug('No logo specified, Curvespace renderer will use default logo');
-    return undefined;
-  }
-  if (!fs.existsSync(logoName)) {
-    // Look in the local public path
-    logoName = path.join('public', logoName);
-  }
-  if (!fs.existsSync(logoName))
-    throw new Error(`Could not find logo at "${logoName}". See 'config.web.logo'`);
-  const logo = `logo${path.extname(logoName)}`;
-  fs.copyFileSync(logoName, path.join(publicPath(opts), logo));
-  return `/${logo}`;
-}
-
 function copyActionResource(
   session: ISession,
   opts: Options,
