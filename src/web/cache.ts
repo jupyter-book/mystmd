@@ -23,6 +23,7 @@ import { readConfig } from './webConfig';
 import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
 import { DEFAULT_FRONTMATTER, getFrontmatterFromConfig } from './frontmatter';
+import { ManifestItem } from '../types';
 
 type NextFile = { filename: string; folder: string; slug: string };
 
@@ -260,6 +261,29 @@ export class DocumentCache implements IDocumentCache {
     const context: FolderContext = { folder, citeRenderer, config: folderConfig };
     const jsonFilename = this.$getJsonFilename(id);
     const filenames = { from: filename, to: jsonFilename, folder, url: webFolder };
+    const processResult = await processFile(this, context, filenames, content);
+    if (!processResult) return false;
+    const { fromCache, data } = processResult;
+    const changed = this.$startupPass ? false : transformLinks(data.mdast, this.$links);
+    if (changed || !fromCache) {
+      writeFileToFolder(jsonFilename, JSON.stringify(data));
+      this.session.log.info(toc(`📖 Built ${id} in %s.`));
+    }
+    this.registerFile(id, data);
+    await this.writeConfig();
+    return !fromCache;
+  }
+
+  async processFile2(page: ManifestItem): Promise<boolean> {
+    const toc = tic();
+    const id = path.join(page.url, page.slug);
+    this.session.log.debug(`Reading file "${page.file}"`);
+    const content = fs.readFileSync(page.file).toString();
+    const citeRenderer = await this.getCitationRenderer(page.url);
+    const folderConfig = await this.getFolderConfig(page.url);
+    const context: FolderContext = { folder: page.url, citeRenderer, config: folderConfig };
+    const jsonFilename = this.$getJsonFilename(id);
+    const filenames = { from: page.file, to: jsonFilename, folder: page.url, url: page.url };
     const processResult = await processFile(this, context, filenames, content);
     if (!processResult) return false;
     const { fromCache, data } = processResult;

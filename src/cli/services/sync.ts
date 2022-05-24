@@ -2,6 +2,14 @@ import { Command } from 'commander';
 import { sync } from '../../index';
 import { clirun } from './utils';
 import { makeYesOption } from './utils/options';
+import { quickstart } from '../../quickstart';
+
+function makeSyncQuickCLI(program: Command) {
+  const command = new Command('quickstart')
+    .description('testing')
+    .action(clirun(quickstart, { program, hideNoTokenWarning: true }));
+  return command;
+}
 
 function makeSyncInitCLI(program: Command) {
   const command = new Command('init')
@@ -37,4 +45,5 @@ export function addSyncCLI(program: Command) {
   // Add a `init` and `pull` shortcut at the top level
   program.addCommand(makeSyncInitCLI(program));
   program.addCommand(makeSyncPullCLI(program));
+  program.addCommand(makeSyncQuickCLI(program));
 }

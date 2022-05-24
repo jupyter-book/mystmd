@@ -1,58 +1,58 @@
 import mock from 'mock-fs';
-import { siteSectionFromFolder } from './toc';
+import { projectFromPath } from './toc';
 
 afterEach(() => mock.restore());
 
 describe('site section generation', () => {
   it('empty', async () => {
     mock({});
-    expect(() => siteSectionFromFolder()).toThrow();
+    expect(() => projectFromPath('.')).toThrow();
   });
   it('invalid index', async () => {
     mock({ 'readme.md': '' });
-    expect(() => siteSectionFromFolder('index.md')).toThrow();
+    expect(() => projectFromPath('.', 'index.md')).toThrow();
   });
   it('readme.md only', async () => {
     mock({ 'readme.md': '' });
-    expect(siteSectionFromFolder()).toEqual({
+    expect(projectFromPath('.')).toEqual({
       file: 'readme.md',
-      slug: 'readme',
+      path: '.',
       title: 'readme',
       pages: [],
     });
   });
   it('README.md only', async () => {
     mock({ 'README.md': '' });
-    expect(siteSectionFromFolder()).toEqual({
+    expect(projectFromPath('.')).toEqual({
       file: 'README.md',
-      slug: 'readme',
+      path: '.',
       title: 'readme',
       pages: [],
     });
   });
   it('index.md only', async () => {
     mock({ 'index.md': '' });
-    expect(siteSectionFromFolder('index.md')).toEqual({
+    expect(projectFromPath('.', 'index.md')).toEqual({
       file: 'index.md',
-      slug: 'index',
+      path: '.',
       title: 'index',
       pages: [],
     });
   });
   it('folder/subfolder/index.md only', async () => {
     mock({ 'folder/subfolder/index.md': '' });
-    expect(siteSectionFromFolder('folder/subfolder/index.md')).toEqual({
+    expect(projectFromPath('.', 'folder/subfolder/index.md')).toEqual({
       file: 'folder/subfolder/index.md',
-      slug: 'index',
+      path: '.',
       title: 'index',
       pages: [],
     });
   });
   it('flat folder', async () => {
     mock({ 'readme.md': '', 'page.md': '', 'notebook.ipynb': '' });
-    expect(siteSectionFromFolder()).toEqual({
+    expect(projectFromPath('.')).toEqual({
       file: 'readme.md',
-      slug: 'readme',
+      path: '.',
       title: 'readme',
       pages: [
         {
@@ -72,9 +72,9 @@ describe('site section generation', () => {
   });
   it('single folder', async () => {
     mock({ 'readme.md': '', folder: { 'page.md': '', 'notebook.ipynb': '' } });
-    expect(siteSectionFromFolder()).toEqual({
+    expect(projectFromPath('.')).toEqual({
       file: 'readme.md',
-      slug: 'readme',
+      path: '.',
       title: 'readme',
       pages: [
         {
@@ -98,9 +98,9 @@ describe('site section generation', () => {
   });
   it('nested folders', async () => {
     mock({ 'readme.md': '', 'folder1/folder2/folder3': { 'page.md': '', 'notebook.ipynb': '' } });
-    expect(siteSectionFromFolder()).toEqual({
+    expect(projectFromPath('.')).toEqual({
       file: 'readme.md',
-      slug: 'readme',
+      path: '.',
       title: 'readme',
       pages: [
         {
@@ -126,6 +126,54 @@ describe('site section generation', () => {
           slug: 'page',
           title: 'page',
           level: 4,
+        },
+      ],
+    });
+  });
+  it('specify index & folder', async () => {
+    mock({
+      'ignore.md': '',
+      folder1: {
+        'page1.md': '',
+        folder2: {
+          'readme.md': '',
+          'page2.md': '',
+          folder3: {
+            'page3.md': '',
+          },
+        },
+      },
+    });
+    expect(projectFromPath('folder1', 'folder1/folder2/readme.md')).toEqual({
+      file: 'folder1/folder2/readme.md',
+      path: 'folder1',
+      title: 'readme',
+      pages: [
+        {
+          title: 'folder2',
+          level: 1,
+        },
+        {
+          title: 'folder3',
+          level: 2,
+        },
+        {
+          file: 'folder1/folder2/folder3/page3.md',
+          slug: 'page3',
+          title: 'page3',
+          level: 3,
+        },
+        {
+          file: 'folder1/folder2/page2.md',
+          slug: 'page2',
+          title: 'page2',
+          level: 2,
+        },
+        {
+          file: 'folder1/page1.md',
+          slug: 'page1',
+          title: 'page1',
+          level: 1,
         },
       ],
     });
