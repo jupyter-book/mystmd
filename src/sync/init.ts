@@ -1,19 +1,24 @@
 import fs from 'fs';
-import path from 'path';
+import { basename, join, resolve } from 'path';
 import chalk from 'chalk';
-import yaml from 'js-yaml';
 import inquirer from 'inquirer';
 import { ISession } from '../session/types';
-import { addProjectsToConfig } from './add';
-import { blankCurvenoteConfig, CURVENOTE_YML } from '../config';
+import {
+  CURVENOTE_YML,
+  saveProjectConfig,
+  saveSiteConfig,
+  writeSiteConfig,
+  writeProjectConfig,
+} from '../newconfig';
 import { docLinks } from '../docs';
 import { MyUser } from '../models';
 import { writeFileToFolder } from '../utils';
 import { startServer } from '../web';
 import { LOGO } from '../web/public';
-import { pullProjects } from './pull';
+import { pullProjects, validateProject } from './pull';
 import questions from './questions';
 import { LogLevel } from '../logging';
+import { ProjectConfig, SiteConfig } from '../types';
 
 type Options = {
   template: string;
@@ -59,61 +64,96 @@ ${docLinks.overview}
 
 `;
 
+const INIT_LOGO_PATH = join('public', 'logo.svg');
+
+const INIT_SITE_CONFIG: SiteConfig = {
+  title: 'My Curve Space',
+  domains: [],
+  logo: INIT_LOGO_PATH,
+  logoText: 'My Curve Space',
+  nav: [],
+  actions: [{ title: 'Learn More', url: docLinks.curvespace }],
+  projects: [],
+};
+
+const INIT_PROJECT_CONFIG: ProjectConfig = {};
+
+/**
+ * Initialize local curvenote project from folder or remote project
+ *
+ * It creates a new curvenote.yml file in the current directory with
+ * both site and project configuration.
+ *
+ * This fails if curvenote.yml already exists; use `start` or `add`.
+ */
 export async function init(session: ISession, opts: Options) {
-  if (session.config) {
-    session.log.error(`We found a "${CURVENOTE_YML}" on your path, please edit that instead!\n\n`);
-    session.log.info(
-      `${chalk.dim('Are you looking for')} ${chalk.bold('curvenote sync add')}${chalk.dim('?')}`,
-    );
+  session.log.info(await WELCOME(session));
+  const path = '.';
+  let siteConfig;
+  let projectConfig;
+  // Initialize config - error if it exists
+  try {
+    siteConfig = saveSiteConfig(session.store, INIT_SITE_CONFIG, true);
+    projectConfig = saveProjectConfig(session.store, path, INIT_PROJECT_CONFIG, true);
+  } catch (err) {
+    session.log.error(err);
     return;
   }
-  const pwd = fs.readdirSync('.');
-  const folderIsEmpty = pwd.length === 0;
 
-  session.log.info(await WELCOME(session));
+  if (!siteConfig || !projectConfig) throw Error('Error initializing configs');
 
   // Load the user now, and wait for it below!
   let me: MyUser | Promise<MyUser> | undefined;
   if (!session.isAnon) me = new MyUser(session).get();
 
-  const defaultName = path.basename(path.resolve());
-  const config = blankCurvenoteConfig(defaultName);
-  const answers = await inquirer.prompt([
-    questions.name({ name: config.web.name }),
+  const folderIsEmpty = fs.readdirSync(path).length === 0;
+  const { title, content } = await inquirer.prompt([
+    questions.title({ title: siteConfig.title || '' }),
     questions.content({ folderIsEmpty, template: opts.template }),
   ]);
-  if (answers.content === 'curvenote') {
-    await addProjectsToConfig(session, { config, singleQuestion: true });
+  let pullComplete = false;
+  if (content === 'folder') {
+    siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
+    pullComplete = true;
+  } else if (content === 'curvenote') {
+    const { projectLink } = await inquirer.prompt([
+      questions.projectLink({ projectLink: 'https://curvenote.com/@templates/projects' }),
+    ]);
+    const project = await validateProject(session, projectLink);
+    if (!project) return;
+    projectConfig.remote = project.data.id;
+    siteConfig.projects = [{ path, slug: project.data.name }];
     session.log.info(`Add other projects using: ${chalk.bold('curvenote sync add')}\n`);
   }
-  let pullComplete = false;
-  const pullOpts = { config, level: LogLevel.debug };
-  const pullProcess = pullProjects(session, pullOpts).then(() => {
-    pullComplete = true;
-  });
   // Personalize the config
   me = await me;
-  config.web.name = answers.name;
-  config.web.logoText = answers.name;
-  if (me) {
-    config.web.domains = [`${me.data.username}.curve.space`];
-    config.web.twitter = me.data.twitter || undefined;
+  siteConfig.title = title;
+  siteConfig.logoText = title;
+  siteConfig.twitter = siteConfig.twitter || me?.data.twitter;
+  if (me && !siteConfig.domains.length) {
+    siteConfig.domains = [`${me.data.username}.curve.space`];
   }
-  writeFileToFolder(CURVENOTE_YML, yaml.dump(config));
-  session.loadConfig();
-  // logo, favicon
-  writeFileToFolder('public/logo.svg', LOGO);
+  saveSiteConfig(session.store, siteConfig);
+  saveProjectConfig(session.store, path, projectConfig);
+  const state = session.store.getState();
+  writeSiteConfig(state, path);
+  writeProjectConfig(state, path);
+
+  const pullOpts = { level: LogLevel.debug };
+  let pullProcess: Promise<void> | undefined;
+  if (!pullComplete) {
+    pullProcess = pullProjects(session, pullOpts).then(() => {
+      pullComplete = true;
+    });
+  }
+
+  if (siteConfig.logo === INIT_LOGO_PATH) {
+    writeFileToFolder(INIT_LOGO_PATH, LOGO);
+  }
 
   session.log.info(await FINISHED(session));
 
-  const { start } = await inquirer.prompt([
-    {
-      name: 'start',
-      message: 'Would you like to start the curve.space local server now?',
-      type: 'confirm',
-      default: true,
-    },
-  ]);
+  const { start } = await inquirer.prompt([questions.start()]);
   if (!start) {
     session.log.info(chalk.dim('\nYou can do this later with:'), chalk.bold('curvenote start'));
   }

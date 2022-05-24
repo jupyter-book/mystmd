@@ -2,11 +2,62 @@
 //
 // loaded directly from curvenote.yml
 
+import { Author } from '@curvenote/blocks';
+
+type License = {
+  title: string;
+  url: string;
+  id: string;
+  free?: boolean;
+  CC?: boolean;
+  osi?: boolean;
+};
+
 export type Frontmatter = {
+  title?: string;
   description?: string;
+  authors?: Author[];
+  subject?: string;
+  open_access?: boolean;
+  license?: string | License | { code?: License; text?: License };
+  oxa?: string;
+  doi?: string;
+  github?: string;
+  venue?:
+    | string
+    | {
+        title?: string;
+        url?: string;
+      };
+  // https://docs.openalex.org/about-the-data/work#biblio
+  biblio?: {
+    volume?: string | number; // sometimes you'll get fun values like "Spring" and "Inside cover."
+    issue?: string | number;
+    first_page?: string | number;
+    last_page?: string | number;
+  };
+  numbering?:
+    | boolean
+    | {
+        enumerator?: string;
+        figure?: boolean;
+        equation?: boolean;
+        table?: boolean;
+        code?: boolean;
+        heading_1?: boolean;
+        heading_2?: boolean;
+        heading_3?: boolean;
+        heading_4?: boolean;
+        heading_5?: boolean;
+        heading_6?: boolean;
+      };
+  /** Math macros to be passed to KaTeX or LaTeX */
+  math?: Record<string, string>;
+  metadata?: Record<string, any>;
 };
 
 export type ProjectConfig = Frontmatter & {
+  remote?: string;
   index?: string;
   exclude?: string[];
 };
@@ -29,11 +80,10 @@ export type SiteNavFolder = {
 export type SiteNavItem = SiteNavPage | SiteNavFolder;
 
 export type SiteAction = SiteNavPage & {
-  static: boolean;
+  static?: boolean;
 };
 
 export type SiteConfig = Frontmatter & {
-  title?: string;
   twitter?: string;
   domains: string[];
   logo?: string;

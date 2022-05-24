@@ -1,34 +1,39 @@
+import fs from 'fs';
+import inquirer from 'inquirer';
 import pLimit from 'p-limit';
-import { projectToJupyterBook } from '../export';
+import chalk from 'chalk';
+import { projectIdFromLink, projectToJupyterBook } from '../export';
 import { Project } from '../models';
-import { CurvenoteConfig, CURVENOTE_YML, SyncConfig } from '../config';
 import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
-import { projectLogString } from './utls';
+import { projectLogString } from './utils';
 import { LogLevel, getLevel } from '../logging';
 import { confirmOrExit } from '../utils';
+import { selectors } from '../store';
+import questions from './questions';
+import { isDirectory } from '../toc';
+import { docLinks } from '../docs';
+import { loadProjectConfig, saveProjectConfig, writeProjectConfig } from '../newconfig';
 
-/**
- * Check the item has a remote
- *
- * @param item the item to pull
- * @returns boolean
- */
-function hasRemote(item: SyncConfig): boolean {
-  return Boolean(item.link) && Boolean(item.id);
-}
-
-/**
- * Check the item exists and has a remote
- *
- * @param folder the local path of the folder to pull, used in message only
- * @param item the item to validate, whcih may be undefined
- * @returns a validated SyncConfig
- */
-function throwIfMissingOrNoRemote(folder: string, item?: SyncConfig): SyncConfig {
-  if (!item) throw new Error(`Could not find ${folder} in ${CURVENOTE_YML}`);
-  if (!hasRemote(item)) throw new Error(`Item ${folder} has no remote, cannot pull`);
-  return item as SyncConfig;
+export async function validateProject(
+  session: ISession,
+  projectLink: string,
+): Promise<Project | undefined> {
+  const id = projectIdFromLink(session, projectLink);
+  let project: Project;
+  try {
+    project = await new Project(session, id).get();
+  } catch (error) {
+    session.log.error('Could not load project from link.');
+    if (session.isAnon) {
+      session.log.info(
+        `To add your own Curvenote projects, please authenticate using:\n\ncurvenote token set [token]\n\nLearn more at ${docLinks.auth}`,
+      );
+    }
+    return undefined;
+  }
+  session.log.info(chalk.green(`🚀 Found ${projectLogString(project)}`));
+  return project;
 }
 
 /**
@@ -36,21 +41,25 @@ function throwIfMissingOrNoRemote(folder: string, item?: SyncConfig): SyncConfig
  *
  * @param session the session
  * @param id the item id which is also the project id for remote content
- * @param folder the local folder to pull
+ * @param path the local path to pull
  * @param level logging level from the cli
  */
-async function pullProject(session: ISession, id: string, folder: string, level?: LogLevel) {
+async function pullProject(session: ISession, path: string, level?: LogLevel) {
+  const state = session.store.getState();
+  const projectConfig = selectors.selectLocalProjectConfig(state, path);
+  if (!projectConfig) throw Error(`cannot pull project from ${path}: no project config`);
+  if (!projectConfig.remote) throw Error(`cannot pull project from ${path}: no remote id`);
   const log = getLevel(session.log, level ?? LogLevel.debug);
-  const project = await new Project(session, id).get();
+  const project = await new Project(session, projectConfig.remote).get();
   const toc = tic();
-  log(`Pulling ${folder} from ${projectLogString(project)}`);
+  log(`Pulling ${path} from ${projectLogString(project)}`);
   await projectToJupyterBook(session, project.id, {
-    path: folder,
+    path,
     writeConfig: false,
     createFrontmatter: true,
     titleOnlyInFrontmatter: true,
   });
-  log(toc(`🚀 Pulled ${folder} in %s`));
+  log(toc(`🚀 Pulled ${path} in %s`));
 }
 
 /**
@@ -59,59 +68,54 @@ async function pullProject(session: ISession, id: string, folder: string, level?
  * @param session
  * @param opts
  */
-export async function pullProjects(
-  session: ISession,
-  opts: { config: CurvenoteConfig; level?: LogLevel; folder?: string | string[] },
-) {
-  const { config } = opts;
+export async function pullProjects(session: ISession, opts: { level?: LogLevel }) {
+  const state = session.store.getState();
+  const siteConfig = selectors.selectLocalSiteConfig(state);
+  if (!siteConfig) throw Error('cannot pull projects: no site config');
   const limit = pLimit(1);
-  if (typeof opts.folder === 'string') {
-    const item = throwIfMissingOrNoRemote(
-      opts.folder,
-      config.sync.find((i) => i.folder === opts.folder),
-    );
-    await pullProject(session, item.id, opts.folder, opts.level);
-  } else if (Array.isArray(opts.folder)) {
-    const folders = opts.folder.map((f) => {
-      const item = throwIfMissingOrNoRemote(
-        f,
-        config.sync.find((i) => i.folder === f),
-      );
-      return item;
-    });
-    await Promise.all(
-      folders.map(({ folder, id }) =>
-        limit(async () => pullProject(session, id, folder, opts.level)),
-      ),
-    );
-  } else {
-    const remoteContentOnly = config.sync.filter(hasRemote);
-    await Promise.all(
-      remoteContentOnly.map(({ folder, id }) =>
-        limit(async () => pullProject(session, id, folder, opts.level)),
-      ),
-    );
-  }
+  await Promise.all(
+    siteConfig.projects.map(async (proj) => {
+      limit(async () => pullProject(session, proj.path, opts.level));
+    }),
+  );
 }
 
 type Options = {
   yes?: boolean;
 };
 
-export async function pull(session: ISession, folder?: string, opts?: Options) {
-  const { config } = session;
-  if (!config) throw new Error('Must have config to pull content.');
-
-  if (folder) {
-    throwIfMissingOrNoRemote(
-      folder,
-      config.sync.find((item) => item.folder === folder),
-    );
+/** Pull a project from curvenote.com to a given path
+ *
+ * Prompts for project link if no project config is present, otherwise
+ */
+export async function pull(session: ISession, path?: string, opts?: Options) {
+  path = path || '.';
+  if (!fs.existsSync(path) || !isDirectory(path)) {
+    session.log.error(`invalid local path: ${path}`);
   }
+  let projectConfig;
+  try {
+    // Pull from existing remote project saved in curvenote.yml
+    projectConfig = loadProjectConfig(session.store, path);
+    if (!projectConfig.remote) {
+      session.log.error(`Project config exists but no remote project is defined: ${path}`);
+      return;
+    }
+  } catch {
+    // Pull from new remote project
+    const { projectLink } = await inquirer.prompt([
+      questions.projectLink({ projectLink: 'https://curvenote.com/@templates/projects' }),
+    ]);
+    const project = await validateProject(session, projectLink);
+    if (!project) return;
+    projectConfig = { remote: project.data.id };
+    saveProjectConfig(session.store, path, projectConfig);
+    writeProjectConfig(session.store.getState(), path);
+  }
+  const message = `Pulling will overwrite all content in ${
+    path === '.' ? 'the current directory' : path
+  }. Are you sure?`;
 
-  const message = folder
-    ? `Pulling will overwrite all content in ${folder}. Are you sure?`
-    : 'Pulling content will overwrite all content in folders. Are you sure?';
   await confirmOrExit(message, opts);
-  await pullProjects(session, { config, level: LogLevel.info, folder });
+  await pullProject(session, path, LogLevel.info);
 }

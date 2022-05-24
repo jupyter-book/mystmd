@@ -98,12 +98,12 @@ export function clirun(
       cli.session ?? getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
-    if (cli.requireConfig && !useSession.config) {
-      useSession.log.error(
-        `You must be in a directory with a ${CURVENOTE_YML}\n\nDo you need to run: curvenote init`,
-      );
-      process.exit(1);
-    }
+    // if (cli.requireConfig && !useSession.config) {
+    //   useSession.log.error(
+    //     `You must be in a directory with a ${CURVENOTE_YML}\n\nDo you need to run: curvenote init`,
+    //   );
+    //   process.exit(1);
+    // }
     try {
       await func(useSession, ...args);
     } catch (error) {

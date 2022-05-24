@@ -1,4 +1,3 @@
-import { dirname } from 'path';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 

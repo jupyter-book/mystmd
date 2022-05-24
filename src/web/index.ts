@@ -2,13 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import { makeExecutable } from '../export/utils';
 import { ISession } from '../session/types';
-import { buildContent, cleanBuiltFiles, watchContent } from './prepare';
+import { buildContent, buildContent2, cleanBuiltFiles, watchContent } from './prepare';
 import { getGitLogger, getNpmLogger, getServerLogger } from './customLoggers';
 import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
 import { deployContent } from './deploy';
 import { MyUser } from '../models';
 import { confirmOrExit } from '../utils';
+import { getSiteManifest } from '../toc';
+import { selectors } from '../store';
 
 export async function clean(session: ISession, opts: Options) {
   if (!exists(opts)) {
@@ -81,6 +83,17 @@ export async function startServer(session: ISession, opts: Options) {
   await makeExecutable(`cd ${serverPath(opts)}; npm run serve`, getServerLogger(session))();
 }
 
+export async function serve2(session: ISession, opts: Options) {
+  await cloneCurvespace(session, { force: true, branch: 'feat/new-config' });
+  sparkles(session, 'Starting Curvenote');
+  await buildContent2(session, {});
+  const configPath = path.join(serverPath({}), 'app', 'config.json');
+  session.log.info('⚙️  Writing config.json');
+  const siteManifest = getSiteManifest(session.store.getState());
+  fs.writeFileSync(configPath, JSON.stringify(siteManifest));
+  await makeExecutable(`cd ${serverPath({})}; npm run serve`, getServerLogger(session))();
+}
+
 export async function build(session: ISession, opts: Options) {
   if (!opts.ci) await cloneCurvespace(session, opts);
   sparkles(session, 'Building Curvenote');
@@ -96,7 +109,8 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
   }
   const me = await new MyUser(session).get();
   // Do a bit of prework to ensure that the domains exists in the config file
-  const domains = session.config?.web.domains;
+  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  const domains = siteConfig?.domains;
   if (!domains || domains.length === 0) {
     throw new Error(
       `🧐 No domains specified, use config.site.domains: - ${me.data.username}.curve.space`,

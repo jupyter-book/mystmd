@@ -1,6 +1,5 @@
 import { JsonObject } from '@curvenote/blocks';
 import { Store } from 'redux';
-import { CurvenoteConfig } from '../config/types';
 import { Logger } from '../logging';
 import { RootState } from '../store';
 
@@ -18,12 +17,6 @@ export interface ISession {
   SITE_URL: string;
 
   store: Store<RootState>;
-
-  configPath: string;
-
-  config: CurvenoteConfig | null;
-
-  loadConfig(): CurvenoteConfig | null;
 
   isAnon: boolean;
 

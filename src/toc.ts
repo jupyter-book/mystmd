@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { parse, join, sep } from 'path';
+import { parse, join } from 'path';
 import { Store } from 'redux';
 import { Frontmatter } from './config';
 import { RootState, selectors } from './store';
@@ -22,7 +22,7 @@ function isValidFile(file: string): boolean {
   return VALID_FILE_EXTENSIONS.includes(parse(file).ext);
 }
 
-function isDirectory(file: string): boolean {
+export function isDirectory(file: string): boolean {
   return fs.lstatSync(file).isDirectory();
 }
 
@@ -121,7 +121,7 @@ export function localToManifestProject(
   return { slug: projectSlug, index, title: projectTitle, pages: manifestPages, ...frontmatter };
 }
 
-export function getManifest(state: RootState): SiteManifest {
+export function getSiteManifest(state: RootState): SiteManifest {
   const siteProjects: ManifestProject[] = [];
   const siteConfig = selectors.selectLocalSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
