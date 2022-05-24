@@ -66,6 +66,7 @@ function getRepeats<T>(things: T[]): Set<T> {
   return repeats;
 }
 
+// TODO:
 function getSections(
   session: ISession,
   opts: Options,
@@ -116,7 +117,7 @@ function getSections(
 //   const { config } = session;
 //   if (!config) {
 //     throw new Error(
-//       `Could not find ${CURVENOTE_YML}. Use the \`--config [path]\` to override the default.`,
+//       `Could not find ${CURVENOTE_YML}.`,
 //     );
 //   }
 //   const { sections, folders } = getSections(session, opts, config.web.sections);

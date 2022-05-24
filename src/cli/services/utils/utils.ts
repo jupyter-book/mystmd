@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import { chalkLogger, LogLevel } from '../../../logging';
 import { Session, getToken } from '../../../session';
 import { ISession } from '../../../session/types';
+import { CURVENOTE_YML } from '../../../newconfig';
 
 const INSTALL_NODE_MESSAGE = `
 You can download Node here:
@@ -97,6 +98,7 @@ export function clirun(
       cli.session ?? getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
+    // TODO
     // if (cli.requireConfig && !useSession.config) {
     //   useSession.log.error(
     //     `You must be in a directory with a ${CURVENOTE_YML}\n\nDo you need to run: curvenote init`,
