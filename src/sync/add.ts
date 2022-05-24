@@ -5,7 +5,8 @@ import chalk from 'chalk';
 import { ISession } from '../session/types';
 import questions from './questions';
 import { isDirectory } from '../toc';
-import { loadSiteConfig, saveSiteConfig, writeSiteConfig } from '../newconfig';
+import { loadSiteConfig, writeSiteConfig } from '../newconfig';
+import { config } from '../store/local';
 
 const START = `
 
@@ -39,7 +40,7 @@ export async function add(session: ISession) {
     session.log.error(`cannot find project: ${projectPath}`);
   }
   siteConfig.projects.push({ path: projectPath, slug: basename(resolve(projectPath)) });
-  saveSiteConfig(session.store, siteConfig);
+  session.store.dispatch(config.actions.receiveSite(siteConfig));
   writeSiteConfig(session.store.getState(), '.');
 
   session.log.info(FINISHED);

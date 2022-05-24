@@ -3,13 +3,7 @@ import { basename, join, resolve } from 'path';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { ISession } from '../session/types';
-import {
-  CURVENOTE_YML,
-  saveProjectConfig,
-  saveSiteConfig,
-  writeSiteConfig,
-  writeProjectConfig,
-} from '../newconfig';
+import { CURVENOTE_YML, writeSiteConfig, writeProjectConfig } from '../newconfig';
 import { docLinks } from '../docs';
 import { MyUser } from '../models';
 import { writeFileToFolder } from '../utils';
@@ -20,6 +14,7 @@ import questions from './questions';
 import { LogLevel } from '../logging';
 import { ProjectConfig, SiteConfig } from '../types';
 import { config } from '../store/local';
+import { selectors } from '../store';
 
 type Options = {
   branch?: string;
@@ -68,19 +63,19 @@ ${docLinks.overview}
 
 const INIT_LOGO_PATH = join('public', 'logo.svg');
 
-const INIT_SITE_CONFIG: SiteConfig = {
-  title: 'My Curve Space',
+const getDefaultSiteConfig = (title?: string): SiteConfig => ({
+  title: title || 'My Curve Space',
   domains: [],
   logo: INIT_LOGO_PATH,
-  logoText: 'My Curve Space',
+  logoText: title || 'My Curve Space',
   nav: [],
   actions: [{ title: 'Learn More', url: docLinks.curvespace }],
   projects: [],
-};
+});
 
-const INIT_PROJECT_CONFIG: ProjectConfig = {
-  title: 'my-project',
-};
+const getDefaultProjectConfig = (title?: string): ProjectConfig => ({
+  title: title || 'my-project',
+});
 
 /**
  * Initialize local curvenote project from folder or remote project
@@ -93,18 +88,19 @@ const INIT_PROJECT_CONFIG: ProjectConfig = {
 export async function init(session: ISession, opts: Options) {
   session.log.info(await WELCOME(session));
   const path = '.';
-  let siteConfig;
-  let projectConfig;
   // Initialize config - error if it exists
-  try {
-    siteConfig = saveSiteConfig(session.store, INIT_SITE_CONFIG, true);
-    projectConfig = saveProjectConfig(session.store, path, INIT_PROJECT_CONFIG, true);
-  } catch (err) {
-    session.log.error(err);
-    return;
+  if (
+    selectors.selectLocalSiteConfig(session.store.getState()) ||
+    selectors.selectLocalProjectConfig(session.store.getState(), '.')
+  ) {
+    throw Error(
+      `The ${CURVENOTE_YML} config already exists, did you mean to ${chalk.bold(
+        'curvenote add',
+      )} or ${chalk.bold('curvenote start')}?`,
+    );
   }
-
-  if (!siteConfig || !projectConfig) throw Error('Error initializing configs');
+  const siteConfig = getDefaultSiteConfig(basename(resolve(path)));
+  const projectConfig = getDefaultProjectConfig();
 
   // Load the user now, and wait for it below!
   let me: MyUser | Promise<MyUser> | undefined;
@@ -117,38 +113,33 @@ export async function init(session: ISession, opts: Options) {
   ]);
   let pullComplete = false;
   if (content === 'folder') {
-    session.store.dispatch(
-      config.actions.receiveSiteMetadata({ projects: [{ path, slug: basename(resolve(path)) }] }),
-    );
+    projectConfig.title = title;
+    siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
     pullComplete = true;
   } else if (content === 'curvenote') {
     const { projectLink } = await inquirer.prompt([questions.projectLink()]);
     const project = await validateProject(session, projectLink);
+    // TODO: while (!project) {}
     if (!project) return;
-    session.store.dispatch(
-      config.actions.receiveProjectMetadata({ remote: project.data.id, path }),
-    );
-    session.store.dispatch(
-      config.actions.receiveSiteMetadata({ projects: [{ path, slug: project.data.name }] }),
-    );
-    session.log.info(`Add other projects using: ${chalk.bold('curvenote sync add')}\n`);
+    // TODO: Add all sorts of other stuff for the project data that we know!!
+    projectConfig.remote = project.data.id;
+    projectConfig.title = project.data.title;
+    siteConfig.projects = [{ path, slug: project.data.name }];
+    // TODO: fix this comment!
+    session.log.info(`Add other projects using: ${chalk.bold('curvenote add')}\n`);
   }
   // Personalize the config
   me = await me;
-  session.store.dispatch(
-    config.actions.receiveSiteMetadata({
-      title,
-      logoText: title,
-      twitter: siteConfig.twitter || me?.data.twitter,
-    }),
-  );
-  if (me && !siteConfig.domains.length) {
-    session.store.dispatch(
-      config.actions.receiveSiteMetadata({
-        domains: [`${me.data.username}.curve.space`],
-      }),
-    );
+  siteConfig.title = title;
+  siteConfig.logoText = title;
+  if (me) {
+    const { username, twitter } = me.data;
+    siteConfig.domains = [`${username}.curve.space`];
+    if (twitter) siteConfig.twitter = twitter;
   }
+  // Save the configs to the state and write them to disk
+  session.store.dispatch(config.actions.receiveSite(siteConfig));
+  session.store.dispatch(config.actions.receiveProject({ path: '.', ...projectConfig }));
   const state = session.store.getState();
   writeSiteConfig(state, path);
   writeProjectConfig(state, path);

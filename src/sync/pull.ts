@@ -14,7 +14,8 @@ import { selectors } from '../store';
 import questions from './questions';
 import { isDirectory } from '../toc';
 import { docLinks } from '../docs';
-import { loadProjectConfig, saveProjectConfig, writeProjectConfig } from '../newconfig';
+import { loadProjectConfig, writeProjectConfig } from '../newconfig';
+import { config } from '../store/local';
 
 export async function validateProject(
   session: ISession,
@@ -85,7 +86,8 @@ type Options = {
   yes?: boolean;
 };
 
-/** Pull a project from curvenote.com to a given path
+/**
+ * Pull a project from curvenote.com to a given path
  *
  * Prompts for project link if no project config is present, otherwise
  */
@@ -111,7 +113,7 @@ export async function pull(session: ISession, path?: string, opts?: Options) {
       remote: project.data.id,
       title: basename(resolve(path)),
     };
-    saveProjectConfig(session.store, path, projectConfig);
+    session.store.dispatch(config.actions.receiveProject({ path, ...projectConfig }));
     writeProjectConfig(session.store.getState(), path);
   }
   const message = `Pulling will overwrite all content in ${

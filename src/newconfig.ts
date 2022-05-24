@@ -5,7 +5,7 @@ import yaml from 'js-yaml';
 import type { Store } from 'redux';
 import { RootState, selectors } from './store';
 import { config } from './store/local';
-import type { Config, ProjectConfig, SiteConfig } from './types';
+import type { Config } from './types';
 
 export const CURVENOTE_YML = 'curvenote.yml';
 
@@ -42,7 +42,7 @@ export function loadProjectConfig(store: Store<RootState>, path: string) {
 }
 
 /**
-Load site config from current directory to redux store
+ * Load site config from current directory to redux store
  *
  * Returns loaded site config.
  *
@@ -51,52 +51,13 @@ Load site config from current directory to redux store
  */
 export function loadSiteConfig(store: Store<RootState>) {
   const { site } = readConfig('.');
-  if (!site) throw Error(`no site config in ${join('.', CURVENOTE_YML)}`);
+  if (!site) throw Error(`No site config in ${join('.', CURVENOTE_YML)}`);
   store.dispatch(config.actions.receiveSite(site));
   return selectors.selectLocalSiteConfig(store.getState());
 }
 
 /**
-Save project config to redux store
- *
- * Returns saved project config.
- *
- * Errors if `initialize` is true and the project config already exists for the given path
- */
-export function saveProjectConfig(
-  store: Store<RootState>,
-  path: string,
-  projectConfig: ProjectConfig,
-  initialize?: boolean,
-) {
-  if (initialize && selectors.selectLocalProjectConfig(store.getState(), path)) {
-    throw Error(`Project config already exists on path ${path}`);
-  }
-  store.dispatch(config.actions.receiveProject({ path, ...projectConfig }));
-  return selectors.selectLocalProjectConfig(store.getState(), path);
-}
-
-/**
-Save site config to redux store
- *
- * Returns saved site config.
- *
- * Errors if `initialize` is true and site config already exists
- */
-export function saveSiteConfig(
-  store: Store<RootState>,
-  siteConfig: SiteConfig,
-  initialize?: boolean,
-) {
-  if (initialize && selectors.selectLocalSiteConfig(store.getState())) {
-    throw Error('Site config already exists');
-  }
-  store.dispatch(config.actions.receiveSite(siteConfig));
-  return selectors.selectLocalSiteConfig(store.getState());
-}
-
-/**
-Write site config to path
+ * Write site config to path
  *
  * If a config file exists on the path, this will override the
  * site portion of the config and leave the rest.
