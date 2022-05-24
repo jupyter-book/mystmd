@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { makeExecutable } from '../export/utils';
 import { ISession } from '../session/types';
-import { buildContent, buildContent2, cleanBuiltFiles, watchContent } from './prepare';
+import { buildContent2, cleanBuiltFiles, watchContent } from './prepare';
 import { getGitLogger, getNpmLogger, getServerLogger } from './customLoggers';
 import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
@@ -73,32 +73,22 @@ function sparkles(session: ISession, name: string) {
   session.log.info(`\n\n\t✨✨✨  ${name}  ✨✨✨\n\n`);
 }
 
-export async function startServer(session: ISession, opts: Options) {
-  await cloneCurvespace(session, opts);
-  sparkles(session, 'Starting Curvenote');
-  const cache = await buildContent(session, opts);
-  // Watch the files in the content folder and process them
-  watchContent(cache);
-  // Start the server and wait on it
-  await makeExecutable(`cd ${serverPath(opts)}; npm run serve`, getServerLogger(session))();
+export async function build(session: ISession, opts: Options) {
+  if (!opts.ci) await cloneCurvespace(session, { force: true, branch: 'feat/new-config' });
+  sparkles(session, 'Building Curvenote');
+  // Build the files in the content folder and process them
+  await buildContent2(session, opts);
 }
 
 export async function serve2(session: ISession, opts: Options) {
-  await cloneCurvespace(session, { force: true, branch: 'feat/new-config' });
-  sparkles(session, 'Starting Curvenote');
-  await buildContent2(session, {});
+  await build(session, opts);
   const configPath = path.join(serverPath({}), 'app', 'config.json');
   session.log.info('⚙️  Writing config.json');
-  const siteManifest = getSiteManifest(session.store.getState());
+  const siteManifest = getSiteManifest(session);
   fs.writeFileSync(configPath, JSON.stringify(siteManifest));
+  sparkles(session, 'Starting Curvenote');
+  watchContent(session);
   await makeExecutable(`cd ${serverPath({})}; npm run serve`, getServerLogger(session))();
-}
-
-export async function build(session: ISession, opts: Options) {
-  if (!opts.ci) await cloneCurvespace(session, opts);
-  sparkles(session, 'Building Curvenote');
-  // Build the files in the content folder and process them
-  await buildContent(session, opts);
 }
 
 export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
@@ -123,6 +113,6 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
   await cloneCurvespace(session, opts);
   sparkles(session, 'Deploying Curvenote');
   // Build the files in the content folder and process them
-  const cache = await buildContent(session, { ...opts, clean: true });
+  const cache = await buildContent2(session, { ...opts, clean: true });
   await deployContent(cache, domains);
 }

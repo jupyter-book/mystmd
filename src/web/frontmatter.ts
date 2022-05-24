@@ -1,11 +1,11 @@
 import yaml from 'js-yaml';
 import { Root, PhrasingContent } from 'mdast';
 import { GenericNode, select } from 'mystjs';
-import { Frontmatter } from '../config/types';
+import { Frontmatter } from '../types';
 import { ISession } from '../session/types';
-import { FolderContext } from './types';
 import { validateLicense } from './licenses';
 import { warnOnUnrecognizedKeys } from '../utils';
+import { selectors } from '../store';
 
 function toText(content: PhrasingContent[]): string {
   return content
@@ -21,12 +21,17 @@ export const DEFAULT_FRONTMATTER: Frontmatter = {
   numbering: false,
 };
 
-export function getFrontmatterFromConfig(
-  log: ISession['log'],
-  folder: string,
+/**
+ * Resolve two sets of frontmatter to a single frontmatter object
+ *
+ * `next` takes precedence over `base`
+ */
+export function resolveFrontmatter(
   base: Frontmatter,
   next: Frontmatter,
-) {
+  log: ISession['log'],
+  fileToLog?: string,
+): Frontmatter {
   const frontmatter = { ...base };
   const {
     title,
@@ -104,35 +109,33 @@ export function getFrontmatterFromConfig(
       if (heading_5 != null) nextNumbering.heading_5 = heading_5;
       if (heading_6 != null) nextNumbering.heading_6 = heading_6;
       frontmatter.numbering = nextNumbering;
-      warnOnUnrecognizedKeys(log, restNumbering, `Folder "${folder}" _config.yml#numbering:`);
+      warnOnUnrecognizedKeys(log, restNumbering, `${fileToLog || ''}#numbering:`);
     }
   }
   if (math) {
     frontmatter.math = { ...frontmatter.math, ...math };
   }
-  warnOnUnrecognizedKeys(log, rest, `Folder "${folder}" _config.yml:`);
+  warnOnUnrecognizedKeys(log, rest, fileToLog ? `${fileToLog}:` : '');
   return frontmatter;
 }
 
-export function getFrontmatter(
-  session: ISession,
-  context: FolderContext,
+function frontmatterFromMdastTree(
   tree: Root,
   remove = true,
-): Frontmatter {
+): { tree: Root; frontmatter: Frontmatter } {
   const firstNode = tree.children[0];
   const secondNode = tree.children[1];
   let removeUpTo = 0;
   let frontmatter: Frontmatter = {};
-  const isYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
-  if (isYaml) {
+  const firstIsYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
+  if (firstIsYaml) {
     frontmatter = yaml.load(firstNode.value) as Record<string, any>;
     removeUpTo += 1;
   }
-  const maybeHeading = isYaml ? secondNode : firstNode;
-  const isHeading = maybeHeading?.type === 'heading' && maybeHeading.depth === 1;
-  if (isHeading) {
-    frontmatter.title = toText(maybeHeading.children);
+  const nextNode = firstIsYaml ? secondNode : firstNode;
+  const nextNodeIsHeading = nextNode?.type === 'heading' && nextNode.depth === 1;
+  if (nextNodeIsHeading) {
+    frontmatter.title = toText(nextNode.children);
     removeUpTo += 1;
   }
   if (remove) tree.children.splice(0, removeUpTo);
@@ -141,5 +144,24 @@ export function getFrontmatter(
     // TODO: Improve title selection!
     frontmatter.title = heading?.children?.[0]?.value || 'Untitled';
   }
-  return getFrontmatterFromConfig(session.log, context.folder, context.config, frontmatter);
+  return { tree, frontmatter };
+}
+
+export function getPageFrontmatter(
+  session: ISession,
+  path: string,
+  tree: Root,
+  remove = true,
+): Frontmatter {
+  let { frontmatter } = frontmatterFromMdastTree(tree, remove);
+  const state = session.store.getState();
+  const projectConfig = selectors.selectLocalProjectConfig(state, path);
+  const siteConfig = selectors.selectLocalSiteConfig(state);
+  if (projectConfig?.frontmatter) {
+    frontmatter = resolveFrontmatter(projectConfig.frontmatter, frontmatter, session.log);
+  }
+  if (siteConfig?.frontmatter) {
+    frontmatter = resolveFrontmatter(siteConfig.frontmatter, frontmatter, session.log);
+  }
+  return frontmatter;
 }

@@ -1,19 +1,19 @@
 import fs from 'fs';
 import { parse, join } from 'path';
 import { Store } from 'redux';
-import { Frontmatter } from './config';
+import { ISession } from './session';
 import { RootState, selectors } from './store';
 import { projects } from './store/local';
 import {
+  Frontmatter,
   SiteManifest,
   pageLevels,
   LocalProjectFolder,
   LocalProjectPage,
   LocalProject,
-  SiteConfig,
-  ProjectConfig,
   ManifestProject,
 } from './types';
+import { resolveFrontmatter } from './web/frontmatter';
 
 const DEFAULT_INDEX_FILES = ['readme.md'];
 const VALID_FILE_EXTENSIONS = ['.md', '.ipynb'];
@@ -96,15 +96,6 @@ export function updateProject(store: Store<RootState>, path?: string, index?: st
   store.dispatch(projects.actions.receive(newProject));
 }
 
-export function resolveFrontmatter(
-  siteConfig: SiteConfig,
-  projectConfig?: ProjectConfig,
-): Frontmatter {
-  return {
-    description: projectConfig?.description || siteConfig.description,
-  };
-}
-
 export function localToManifestProject(
   proj: LocalProject,
   projectSlug: string,
@@ -121,13 +112,14 @@ export function localToManifestProject(
   return { slug: projectSlug, index, title: projectTitle, pages: manifestPages, ...frontmatter };
 }
 
-export function getSiteManifest(state: RootState): SiteManifest {
+export function getSiteManifest(session: ISession): SiteManifest {
   const siteProjects: ManifestProject[] = [];
+  const state = session.store.getState();
   const siteConfig = selectors.selectLocalSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
   siteConfig.projects.forEach((siteProj) => {
     const projConfig = selectors.selectLocalProjectConfig(state, siteProj.path);
-    const frontmatter = resolveFrontmatter(siteConfig, projConfig);
+    const frontmatter = resolveFrontmatter(siteConfig, projConfig, session.log, siteProj.path);
     const proj = selectors.selectLocalProject(state, siteProj.path);
     if (!proj) return;
     siteProjects.push(localToManifestProject(proj, siteProj.slug, frontmatter));

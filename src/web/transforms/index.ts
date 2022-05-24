@@ -12,10 +12,10 @@ import { transformOutputs } from './outputs';
 import { transformEnumerators } from './enumerate';
 import { transformFootnotes } from './footnotes';
 import { transformKeys } from './keys';
-import { getFrontmatter } from '../frontmatter';
+import { getPageFrontmatter } from '../frontmatter';
 import { References, Root, TransformState } from './types';
 import { tic } from '../../export/utils/exec';
-import { Frontmatter } from '../../config';
+import { Frontmatter } from '../../types';
 
 export { imagePath, publicPath, serverPath } from './images';
 export { LinkLookup, transformLinks } from './links';
@@ -78,7 +78,7 @@ export async function transformMdast(
   };
   const { from: name, folder } = filename;
   const { citeRenderer } = context;
-  const frontmatter = getFrontmatter(cache.session, context, mdast);
+  const frontmatter = getPageFrontmatter(cache.session, context.folder, mdast);
   importMdastFromJson(cache, name, mdast); // This must be first!
   // The transforms from MyST (structural mostly)
   mdast = await transformRoot(mdast);

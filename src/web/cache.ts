@@ -19,10 +19,11 @@ import { FolderConfig, FolderContext, IDocumentCache, Options, SiteConfig } from
 import { parseMyst, publicPath, serverPath } from './utils';
 
 import { LinkLookup, RendererData, transformLinks, transformMdast } from './transforms';
-import { readConfig } from './webConfig';
+// import { readConfig } from './webConfig';
 import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
-import { DEFAULT_FRONTMATTER, getFrontmatterFromConfig } from './frontmatter';
+import { DEFAULT_FRONTMATTER, resolveFrontmatter } from './frontmatter';
+import { selectors } from '../store';
 
 type NextFile = { filename: string; folder: string; slug: string };
 
@@ -172,25 +173,26 @@ async function getFolderConfig(session: ISession, folder: string): Promise<Folde
     return DEFAULT_FRONTMATTER;
   }
   const config = yaml.load(fs.readFileSync(folderConfig).toString()) as any;
-  return getFrontmatterFromConfig(
+  const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), folder);
+  return resolveFrontmatter(
+    projectConfig?.frontmatter ?? { ...DEFAULT_FRONTMATTER },
+    config,
     session.log,
     folder,
-    session.config?.frontmatter ?? { ...DEFAULT_FRONTMATTER },
-    config,
   );
 }
 
-export function watchConfig(cache: IDocumentCache) {
-  return chokidar
-    .watch(cache.session.configPath, {
-      ignoreInitial: true,
-      awaitWriteFinish: { stabilityThreshold: 50, pollInterval: 50 },
-    })
-    .on('all', async () => {
-      await cache.readConfig();
-      await cache.writeConfig();
-    });
-}
+// export function watchConfig(cache: IDocumentCache) {
+//   return chokidar
+//     .watch(cache.session.configPath, {
+//       ignoreInitial: true,
+//       awaitWriteFinish: { stabilityThreshold: 50, pollInterval: 50 },
+//     })
+//     .on('all', async () => {
+//       await cache.readConfig();
+//       await cache.writeConfig();
+//     });
+// }
 
 export class DocumentCache implements IDocumentCache {
   session: ISession;
@@ -213,14 +215,14 @@ export class DocumentCache implements IDocumentCache {
     this.processList[filename] = { filename, folder, slug };
   }
 
-  async process() {
-    await Promise.all(
-      Object.entries(this.processList).map(([key, file]) => {
-        delete this.processList[key];
-        return this.processFile(file);
-      }),
-    );
-  }
+  // async process() {
+  //   await Promise.all(
+  //     Object.entries(this.processList).map(([key, file]) => {
+  //       delete this.processList[key];
+  //       return this.processFile(file);
+  //     }),
+  //   );
+  // }
 
   $folderConfig: Record<string, FolderConfig> = {};
 
@@ -248,30 +250,30 @@ export class DocumentCache implements IDocumentCache {
 
   $processed: Record<string, RendererData> = {};
 
-  async processFile(file: NextFile): Promise<boolean> {
-    const toc = tic();
-    const { filename, folder, slug } = file;
-    const webFolder = path.basename(folder);
-    const id = path.join(webFolder, slug);
-    this.session.log.debug(`Reading file "${filename}"`);
-    const content = fs.readFileSync(filename).toString();
-    const citeRenderer = await this.getCitationRenderer(folder);
-    const folderConfig = await this.getFolderConfig(folder);
-    const context: FolderContext = { folder, citeRenderer, config: folderConfig };
-    const jsonFilename = this.$getJsonFilename(id);
-    const filenames = { from: filename, to: jsonFilename, folder, url: webFolder };
-    const processResult = await processFile(this, context, filenames, content);
-    if (!processResult) return false;
-    const { fromCache, data } = processResult;
-    const changed = this.$startupPass ? false : transformLinks(data.mdast, this.$links);
-    if (changed || !fromCache) {
-      writeFileToFolder(jsonFilename, JSON.stringify(data));
-      this.session.log.info(toc(`📖 Built ${id} in %s.`));
-    }
-    this.registerFile(id, data);
-    await this.writeConfig();
-    return !fromCache;
-  }
+  // async processFile(file: NextFile): Promise<boolean> {
+  //   const toc = tic();
+  //   const { filename, folder, slug } = file;
+  //   const webFolder = path.basename(folder);
+  //   const id = path.join(webFolder, slug);
+  //   this.session.log.debug(`Reading file "${filename}"`);
+  //   const content = fs.readFileSync(filename).toString();
+  //   const citeRenderer = await this.getCitationRenderer(folder);
+  //   const folderConfig = await this.getFolderConfig(folder);
+  //   const context: FolderContext = { folder, citeRenderer, config: folderConfig };
+  //   const jsonFilename = this.$getJsonFilename(id);
+  //   const filenames = { from: filename, to: jsonFilename, folder, url: webFolder };
+  //   const processResult = await processFile(this, context, filenames, content);
+  //   if (!processResult) return false;
+  //   const { fromCache, data } = processResult;
+  //   const changed = this.$startupPass ? false : transformLinks(data.mdast, this.$links);
+  //   if (changed || !fromCache) {
+  //     writeFileToFolder(jsonFilename, JSON.stringify(data));
+  //     this.session.log.info(toc(`📖 Built ${id} in %s.`));
+  //   }
+  //   this.registerFile(id, data);
+  //   await this.writeConfig();
+  //   return !fromCache;
+  // }
 
   async processFile2(
     file: string,
@@ -296,7 +298,7 @@ export class DocumentCache implements IDocumentCache {
       this.session.log.info(toc(`📖 Built ${id} in %s.`));
     }
     this.registerFile(id, data);
-    await this.writeConfig();
+    // await this.writeConfig();
     return { id, processed: !fromCache };
   }
 
@@ -342,27 +344,27 @@ export class DocumentCache implements IDocumentCache {
 
   $configDirty = false;
 
-  async readConfig() {
-    try {
-      const config = await readConfig(this.session, this.options);
-      this.$configDirty = true;
-      // Update the config titles from any processed files.
-      Object.entries(config.folders).forEach(([folder, { pages }]) => {
-        pages.forEach((page) => {
-          page.title = this.$processed[`${folder}/${page.slug}`]?.frontmatter.title || page.title;
-        });
-      });
-      this.config = config;
-    } catch (error) {
-      this.session.log.error(`Error reading config:\n\n${(error as Error).message}`);
-    }
-  }
+  // async readConfig() {
+  //   try {
+  //     const config = await readConfig(this.session, this.options);
+  //     this.$configDirty = true;
+  //     // Update the config titles from any processed files.
+  //     Object.entries(config.folders).forEach(([folder, { pages }]) => {
+  //       pages.forEach((page) => {
+  //         page.title = this.$processed[`${folder}/${page.slug}`]?.frontmatter.title || page.title;
+  //       });
+  //     });
+  //     this.config = config;
+  //   } catch (error) {
+  //     this.session.log.error(`Error reading config:\n\n${(error as Error).message}`);
+  //   }
+  // }
 
-  async writeConfig() {
-    if (this.$startupPass || !this.$configDirty) return;
-    const pathname = path.join(serverPath(this.options), 'app', 'config.json');
-    this.session.log.info('⚙️  Writing config.json');
-    fs.writeFileSync(pathname, JSON.stringify(this.config));
-    this.$configDirty = false;
-  }
+  // async writeConfig() {
+  //   if (this.$startupPass || !this.$configDirty) return;
+  //   const pathname = path.join(serverPath(this.options), 'app', 'config.json');
+  //   this.session.log.info('⚙️  Writing config.json');
+  //   fs.writeFileSync(pathname, JSON.stringify(this.config));
+  //   this.$configDirty = false;
+  // }
 }

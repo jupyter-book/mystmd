@@ -13,12 +13,13 @@ import {
 import { docLinks } from '../docs';
 import { MyUser } from '../models';
 import { writeFileToFolder } from '../utils';
-import { startServer } from '../web';
+import { serve2 } from '../web';
 import { LOGO } from '../web/public';
 import { pullProjects, validateProject } from './pull';
 import questions from './questions';
 import { LogLevel } from '../logging';
 import { ProjectConfig, SiteConfig } from '../types';
+import { config } from '../store/local';
 
 type Options = {
   template: string;
@@ -76,7 +77,9 @@ const INIT_SITE_CONFIG: SiteConfig = {
   projects: [],
 };
 
-const INIT_PROJECT_CONFIG: ProjectConfig = {};
+const INIT_PROJECT_CONFIG: ProjectConfig = {
+  title: 'my-project',
+};
 
 /**
  * Initialize local curvenote project from folder or remote project
@@ -166,7 +169,7 @@ export async function init(session: ISession, opts: Options) {
   if (start) {
     await pullProcess;
     session.log.info(chalk.dim('\nStarting local server with: '), chalk.bold('curvenote start'));
-    await startServer(session, {});
+    await serve2(session, {});
   }
   await pullProcess;
 }

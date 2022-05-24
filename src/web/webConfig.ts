@@ -1,11 +1,10 @@
 import fs from 'fs';
 import path from 'path';
-import { WebConfig } from '../config/types';
+import { WebConfig } from '../types';
 import { ISession } from '../session/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
 import { Options, Page, SiteConfig, SiteFolder } from './types';
 import { publicPath } from './transforms';
-import { CURVENOTE_YML } from '../config';
 
 export function getFileName(folder: string, file: string) {
   const filenameMd = path.join(folder, `${file}.md`);
@@ -129,40 +128,40 @@ function getSections(
   return { sections: validated, folders };
 }
 
-function createConfig(session: ISession, opts: Options): Required<SiteConfig> {
-  const { config } = session;
-  if (!config) {
-    throw new Error(
-      `Could not find ${CURVENOTE_YML}. Use the \`--config [path]\` to override the default.`,
-    );
-  }
-  const { sections, folders } = getSections(session, opts, config.web.sections);
-  const design: Required<SiteConfig['site']['design']> = {
-    hide_authors: config.web.design?.hide_authors ?? false,
-  };
-  const actions = (config.web.actions ?? []).map((action) =>
-    copyActionResource(session, opts, action),
-  );
-  const site: Required<SiteConfig['site']> = {
-    name: config.web.name || 'My Site',
-    actions,
-    favicon: config.web.favicon || null,
-    logo: copyLogo(session, opts, config.web.logo) || null,
-    logoText: config.web.logoText || null,
-    twitter: config.web.twitter || null,
-    domains: config.web.domains ?? [],
-    nav: config.web.nav ?? [],
-    sections,
-    design,
-  };
-  return {
-    site,
-    folders,
-  };
-}
+// function createConfig(session: ISession, opts: Options): Required<SiteConfig> {
+//   const { config } = session;
+//   if (!config) {
+//     throw new Error(
+//       `Could not find ${CURVENOTE_YML}. Use the \`--config [path]\` to override the default.`,
+//     );
+//   }
+//   const { sections, folders } = getSections(session, opts, config.web.sections);
+//   const design: Required<SiteConfig['site']['design']> = {
+//     hide_authors: config.web.design?.hide_authors ?? false,
+//   };
+//   const actions = (config.web.actions ?? []).map((action) =>
+//     copyActionResource(session, opts, action),
+//   );
+//   const site: Required<SiteConfig['site']> = {
+//     name: config.web.name || 'My Site',
+//     actions,
+//     favicon: config.web.favicon || null,
+//     logo: copyLogo(session, opts, config.web.logo) || null,
+//     logoText: config.web.logoText || null,
+//     twitter: config.web.twitter || null,
+//     domains: config.web.domains ?? [],
+//     nav: config.web.nav ?? [],
+//     sections,
+//     design,
+//   };
+//   return {
+//     site,
+//     folders,
+//   };
+// }
 
-export async function readConfig(session: ISession, opts: Options): Promise<SiteConfig> {
-  session.loadConfig(); // Ensure that this is the most up to date config
-  const config = createConfig(session, opts);
-  return config;
-}
+// export async function readConfig(session: ISession, opts: Options): Promise<SiteConfig> {
+//   session.loadConfig(); // Ensure that this is the most up to date config
+//   const config = createConfig(session, opts);
+//   return config;
+// }

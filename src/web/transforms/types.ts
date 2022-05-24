@@ -1,7 +1,7 @@
 import { GenericNode, MyST, map } from 'mystjs';
 import { CitationRenderer } from 'citation-js-utils';
 import { IDocumentCache } from '../types';
-import { Frontmatter } from '../../config';
+import { Frontmatter } from '../../types';
 
 export type Root = ReturnType<typeof MyST.prototype.parse>;
 export type MapResult = ReturnType<typeof map>;

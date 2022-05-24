@@ -26,7 +26,8 @@ function readConfig(path: string) {
   return validateConfig(conf);
 }
 
-/** Load project config from local path to redux store
+/**
+ * Load project config from local path to redux store
  *
  * Returns loaded project config.
  *
@@ -40,21 +41,23 @@ export function loadProjectConfig(store: Store<RootState>, path: string) {
   return selectors.selectLocalProjectConfig(store.getState(), path);
 }
 
-/** Load site config from local path to redux store
+/**
+Load site config from current directory to redux store
  *
  * Returns loaded site config.
  *
  * Errors if config file does not exist or if config file exists but
  * does not contain site config.
  */
-export function loadSiteConfig(store: Store<RootState>, path: string) {
-  const { site } = readConfig(path);
-  if (!site) throw Error(`no site config in ${join(path, CURVENOTE_YML)}`);
+export function loadSiteConfig(store: Store<RootState>) {
+  const { site } = readConfig('.');
+  if (!site) throw Error(`no site config in ${join('.', CURVENOTE_YML)}`);
   store.dispatch(config.actions.receiveSite(site));
   return selectors.selectLocalSiteConfig(store.getState());
 }
 
-/** Save project config to redux store
+/**
+Save project config to redux store
  *
  * Returns saved project config.
  *
@@ -73,7 +76,8 @@ export function saveProjectConfig(
   return selectors.selectLocalProjectConfig(store.getState(), path);
 }
 
-/** Save site config to redux store
+/**
+Save site config to redux store
  *
  * Returns saved site config.
  *
@@ -91,7 +95,8 @@ export function saveSiteConfig(
   return selectors.selectLocalSiteConfig(store.getState());
 }
 
-/** Write site config to path
+/**
+Write site config to path
  *
  * If a config file exists on the path, this will override the
  * site portion of the config and leave the rest.
@@ -111,7 +116,8 @@ export function writeSiteConfig(state: RootState, path: string) {
   fs.writeFileSync(join(path, CURVENOTE_YML), yaml.dump(conf), 'utf-8');
 }
 
-/** Write project config to path
+/**
+ * Write project config to path
  *
  * If a config file exists on the path, this will override the
  * project portion of the config and leave the rest.

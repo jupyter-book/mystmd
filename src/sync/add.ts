@@ -22,16 +22,12 @@ ${chalk.green.bold('Project successfully added')} 🎉
 /** Add local project to curve.space site config
  *
  */
-export async function add(session: ISession, path?: string) {
-  path = path || '.';
-  if (!fs.existsSync(path) || !isDirectory(path)) {
-    session.log.error(`invalid local path: ${path}`);
-  }
+export async function add(session: ISession) {
   let siteConfig;
   try {
-    siteConfig = loadSiteConfig(session.store, path);
+    siteConfig = loadSiteConfig(session.store);
   } catch {
-    session.log.error(`site config not found in ${path === '.' ? 'current directory' : path}`);
+    session.log.error('site config not found in current directory');
     return;
   }
   if (!siteConfig) throw Error('site config error');
@@ -44,7 +40,7 @@ export async function add(session: ISession, path?: string) {
   }
   siteConfig.projects.push({ path: projectPath, slug: basename(resolve(projectPath)) });
   saveSiteConfig(session.store, siteConfig);
-  writeSiteConfig(session.store.getState(), path);
+  writeSiteConfig(session.store.getState(), '.');
 
   session.log.info(FINISHED);
 }

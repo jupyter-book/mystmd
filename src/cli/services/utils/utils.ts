@@ -5,7 +5,6 @@ import chalk from 'chalk';
 import { chalkLogger, LogLevel } from '../../../logging';
 import { Session, getToken } from '../../../session';
 import { ISession } from '../../../session/types';
-import { CURVENOTE_YML } from '../../../config';
 
 const INSTALL_NODE_MESSAGE = `
 You can download Node here:

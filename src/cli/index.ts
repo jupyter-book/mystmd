@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import commander from 'commander';
-import { CURVENOTE_YML } from '../config';
+import { CURVENOTE_YML } from '../newconfig';
 import version from '../version';
 import { addAuthCLI, addExportCLI, addWebCLI, addTokenCLI, addSyncCLI } from './services';
 

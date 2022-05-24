@@ -2,6 +2,7 @@ import fs from 'fs';
 import inquirer from 'inquirer';
 import pLimit from 'p-limit';
 import chalk from 'chalk';
+import { basename, resolve } from 'path';
 import { projectIdFromLink, projectToJupyterBook } from '../export';
 import { Project } from '../models';
 import { ISession } from '../session/types';
@@ -106,7 +107,10 @@ export async function pull(session: ISession, path?: string, opts?: Options) {
     const { projectLink } = await inquirer.prompt([questions.projectLink()]);
     const project = await validateProject(session, projectLink);
     if (!project) return;
-    projectConfig = { remote: project.data.id };
+    projectConfig = {
+      remote: project.data.id,
+      title: basename(resolve(path)),
+    };
     saveProjectConfig(session.store, path, projectConfig);
     writeProjectConfig(session.store.getState(), path);
   }

@@ -1,8 +1,8 @@
+import { Author, ExportableFormatTypes } from '@curvenote/blocks';
+
 // Frontmatter and Site/Project Configs
 //
 // loaded directly from curvenote.yml
-
-import { Author } from '@curvenote/blocks';
 
 type License = {
   title: string;
@@ -53,10 +53,11 @@ export type Frontmatter = {
       };
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, string>;
-  metadata?: Record<string, any>;
-};
+} & Record<string, any>;
 
-export type ProjectConfig = Frontmatter & {
+export type ProjectConfig = {
+  frontmatter?: Frontmatter;
+  title: string;
   remote?: string;
   index?: string;
   exclude?: string[];
@@ -83,7 +84,9 @@ export type SiteAction = SiteNavPage & {
   static?: boolean;
 };
 
-export type SiteConfig = Frontmatter & {
+export type SiteConfig = {
+  title: string;
+  frontmatter?: Frontmatter;
   twitter?: string;
   domains: string[];
   logo?: string;
@@ -138,11 +141,12 @@ export type ManifestProjectPage = {
   slug: string;
 } & ManifestProjectFolder;
 
-export type ManifestProject = Frontmatter & {
+export type ManifestProject = {
   slug: string;
   index: string;
   title: string;
   pages: (ManifestProjectPage | ManifestProjectFolder)[];
+  frontmatter?: Frontmatter;
 };
 
 export type SiteManifest = {
@@ -154,3 +158,49 @@ export type SiteManifest = {
   actions: SiteAction[];
   projects: ManifestProject[];
 };
+
+export type NavItem = {
+  title: string;
+  url: string;
+  children?: Omit<NavItem, 'children'>[]; // Only one deep
+};
+
+export interface WebConfig {
+  name: string;
+  nav: NavItem[];
+  sections: { title: string; folder: string; path: string }[];
+  actions: { title: string; url: string; static?: boolean }[];
+  favicon?: string | null;
+  logo?: string | null;
+  logoText?: string | null;
+  design?: {
+    hide_authors?: boolean;
+  };
+  /** Domain hostname, for example, docs.curve.space or docs.curvenote.com */
+  domains?: string[];
+  /** Twitter handle for the site (not the article) */
+  twitter?: string | null;
+}
+
+export interface ExportConfig {
+  name: string;
+  kind: ExportableFormatTypes;
+  project: string;
+  folder: string;
+  filename?: string;
+  template?: string;
+  templatePath?: string;
+  contents: { name?: string; link?: string; version?: number }[];
+  data: {
+    title?: string;
+    short_title?: string;
+    description?: string;
+    date?: string;
+    authors?: {
+      name?: string;
+      id?: string;
+      corresponding?: boolean;
+      email?: string;
+    }[];
+  } & Record<string, any>;
+}
