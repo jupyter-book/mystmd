@@ -42,7 +42,7 @@ export class MyUser extends BaseTransfer<string, MyUserDTO> {
 
   $createUrl = () => `/my/user`;
 
-  $recieve = users.actions.recieve;
+  $receive = users.actions.receive;
 
   // TODO: $selector for MyUser that looks at the session
 }
@@ -54,7 +54,7 @@ export class User extends BaseTransfer<string, UserDTO> {
 
   $createUrl = () => `/users/${this.id}`;
 
-  $recieve = users.actions.recieve;
+  $receive = users.actions.receive;
 
   $selector = selectUser;
 }
@@ -66,7 +66,7 @@ export class Team extends BaseTransfer<string, TeamDTO> {
 
   $createUrl = () => `/teams/${this.id}`;
 
-  $recieve = teams.actions.recieve;
+  $receive = teams.actions.receive;
 
   $selector = selectTeam;
 }
@@ -78,7 +78,7 @@ export class Project extends BaseTransfer<ProjectId, ProjectDTO> {
 
   $createUrl = () => `/projects/${this.id}`;
 
-  $recieve = projects.actions.recieve;
+  $receive = projects.actions.receive;
 
   $selector = selectProject;
 }
@@ -90,7 +90,7 @@ export class Block extends BaseTransfer<BlockId, BlockDTO> {
 
   $createUrl = () => `/blocks/${this.id.project}/${this.id.block}`;
 
-  $recieve = blocks.actions.recieve;
+  $receive = blocks.actions.receive;
 
   $selector = selectBlock;
 }
@@ -108,7 +108,7 @@ export class Version<T extends ALL_BLOCKS = ALL_BLOCKS> extends BaseTransfer<
 
   $createUrl = () => versionIdToURL(this.id);
 
-  $recieve = versions.actions.recieve;
+  $receive = versions.actions.receive;
 
   $selector = selectVersion;
 }
@@ -121,7 +121,7 @@ export class Template extends BaseTransfer<string, TemplateSpec & { id: string }
 
   $createUrl = () => `/templates/${this.id}`;
 
-  $recieve = templates.actions.recieve;
+  $receive = templates.actions.receive;
 
   $selector = selectTemplate;
 }

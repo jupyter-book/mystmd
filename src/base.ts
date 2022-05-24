@@ -26,7 +26,7 @@ export class BaseTransfer<
 
   $selector?: (state: RootState, id: ID) => DTO;
 
-  $recieve?: (dto: DTO) => AnyAction;
+  $receive?: (dto: DTO) => AnyAction;
 
   constructor(session: ISession, id: ID) {
     this.id = id;
@@ -41,7 +41,7 @@ export class BaseTransfer<
   set data(data: DTO) {
     this.id = data.id;
     this.$data = this.$fromDTO(data.id, data);
-    if (this.$recieve) this.session.store.dispatch(this.$recieve(data));
+    if (this.$receive) this.session.store.dispatch(this.$receive(data));
   }
 
   async get(query?: GetOptions) {

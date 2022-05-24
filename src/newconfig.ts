@@ -36,7 +36,7 @@ export function updateSiteConfig(store: Store<RootState>, folder?: string) {
   // store should never receive changes outside of file changes
   folder = folder || '.';
   const { site } = loadConfig(folder);
-  if (site) store.dispatch(config.actions.recieveSite(site));
+  if (site) store.dispatch(config.actions.receiveSite(site));
 }
 
 export function initializeQuickstartConfig(folder: string) {

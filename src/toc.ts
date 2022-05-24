@@ -93,7 +93,7 @@ export function updateProject(store: Store<RootState>, path?: string, index?: st
     index = project.file;
   }
   const newProject = projectFromPath(path, index);
-  store.dispatch(projects.actions.recieve(newProject));
+  store.dispatch(projects.actions.receive(newProject));
 }
 
 export function resolveFrontmatter(
