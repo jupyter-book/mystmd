@@ -81,7 +81,7 @@ const CiteP: IRole = {
     run(data: IRoleData) {
       const open = new this.state.Token('cite_group_open', 'cite', 1);
       open.attrSet('kind', 'parenthetical');
-      const labels = data.content?.split(',').map((s) => s.trim()) ?? [];
+      const labels = data.content?.split(/[,;]/).map((s) => s.trim()) ?? [];
       const citations = labels.map((label) => {
         const cite = new this.state.Token('cite', 'cite', 0);
         cite.attrSet('label', label);
@@ -102,7 +102,7 @@ const CiteT: IRole = {
     run(data: IRoleData) {
       const open = new this.state.Token('cite_group_open', 'cite', 1);
       open.attrSet('kind', 'narrative');
-      const labels = data.content?.split(',').map((s) => s.trim()) ?? [];
+      const labels = data.content?.split(/[,;]/).map((s) => s.trim()) ?? [];
       const citations = labels.map((label) => {
         const cite = new this.state.Token('cite', 'cite', 0);
         cite.attrSet('label', label);
