@@ -1,23 +1,13 @@
-import { Command, Option } from 'commander';
+import { Command } from 'commander';
 import { web } from '../../index';
 import { clirun } from './utils';
-import { makeYesOption } from './utils/options';
-
-function makeBranchOption() {
-  return new Option(
-    '--branch [branch]',
-    'Branch to clone from git@github.com:curvenote/curvespace.git',
-  ).default('main');
-}
-function makeCleanOption() {
-  return new Option('-c, --clean', 'Remove content so that it is rebuilt fresh').default(false);
-}
-function makeForceOption() {
-  return new Option('-f, --force', 'Remove the build directory and re-install').default(false);
-}
-function makeCIOption() {
-  return new Option('-ci, --ci', 'Perform a minimal build, for use on CI').default(false);
-}
+import {
+  makeBranchOption,
+  makeCIOption,
+  makeCleanOption,
+  makeForceOption,
+  makeYesOption,
+} from './utils/options';
 
 function makeCurvespaceCleanCLI(program: Command) {
   const command = new Command('clean')

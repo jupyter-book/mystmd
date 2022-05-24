@@ -1,11 +1,13 @@
 import { Command } from 'commander';
 import { sync } from '../../index';
 import { clirun } from './utils';
-import { makeYesOption } from './utils/options';
+import { makeBranchOption, makeForceOption, makeYesOption } from './utils/options';
 
 function makeSyncInitCLI(program: Command) {
   const command = new Command('init')
     .description('Initialize a Curvenote project')
+    .addOption(makeForceOption())
+    .addOption(makeBranchOption())
     .action(clirun(sync.init, { program, hideNoTokenWarning: true }));
   return command;
 }

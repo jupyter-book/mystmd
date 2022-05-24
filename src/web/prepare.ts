@@ -10,7 +10,7 @@ import { DocumentCache } from './cache';
 import { LocalProjectPage } from '../types';
 import { selectors } from '../store';
 import { CURVENOTE_YML } from '../newconfig';
-import { updateProject } from '../toc';
+import { getSiteManifest, updateProject } from '../toc';
 
 export function cleanBuiltFiles(session: ISession, opts: Options, info = true) {
   const toc = tic();
@@ -24,6 +24,13 @@ export function ensureBuildFoldersExist(session: ISession, opts: Options) {
   session.log.debug('Build folders created for `app/content` and `_static`.');
   fs.mkdirSync(path.join(serverPath(opts), 'app', 'content'), { recursive: true });
   fs.mkdirSync(path.join(publicPath(opts), '_static'), { recursive: true });
+}
+
+export async function writeSiteManifest(session: ISession, opts: Options) {
+  const configPath = path.join(serverPath(opts), 'app', 'config.json');
+  session.log.info('⚙️  Writing config.json');
+  const siteManifest = getSiteManifest(session);
+  fs.writeFileSync(configPath, JSON.stringify(siteManifest));
 }
 
 export async function buildContent2(session: ISession, opts: Options): Promise<DocumentCache> {
@@ -60,6 +67,7 @@ export async function buildContent2(session: ISession, opts: Options): Promise<D
   } else {
     session.log.info(toc(`📚 ${pages.length} pages loaded from cache in %s.`));
   }
+  await writeSiteManifest(session, opts);
   return cache;
 }
 

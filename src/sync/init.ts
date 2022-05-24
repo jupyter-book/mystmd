@@ -22,7 +22,8 @@ import { ProjectConfig, SiteConfig } from '../types';
 import { config } from '../store/local';
 
 type Options = {
-  template: string;
+  branch?: string;
+  force?: boolean;
 };
 
 const WELCOME = async (session: ISession) => `
@@ -112,7 +113,7 @@ export async function init(session: ISession, opts: Options) {
   const folderIsEmpty = fs.readdirSync(path).length === 0;
   const { title, content } = await inquirer.prompt([
     questions.title({ title: siteConfig.title || '' }),
-    questions.content({ folderIsEmpty, template: opts.template }),
+    questions.content({ folderIsEmpty }),
   ]);
   let pullComplete = false;
   if (content === 'folder') {
@@ -181,7 +182,7 @@ export async function init(session: ISession, opts: Options) {
   if (start) {
     await pullProcess;
     session.log.info(chalk.dim('\nStarting local server with: '), chalk.bold('curvenote start'));
-    await startServer(session, {});
+    await startServer(session, opts);
   }
   await pullProcess;
 }

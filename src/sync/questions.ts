@@ -7,14 +7,11 @@ function title(opts: { title: string }) {
   };
 }
 
-function content(opts: { template?: string; folderIsEmpty: boolean }) {
+function content(opts: { folderIsEmpty: boolean }) {
   return {
     name: 'content',
     type: 'list',
     message: 'What content would you like to use?',
-    when() {
-      return opts.template === undefined;
-    },
     choices: [
       {
         name: 'Import from Curvenote',

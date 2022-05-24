@@ -53,14 +53,15 @@ export async function install(session: ISession, opts: Options) {
 }
 
 export async function cloneCurvespace(session: ISession, opts: Options) {
+  const folderExists = exists(opts);
   if (opts.force) {
     await clean(session, opts);
-  } else if (opts.branch && opts.branch !== 'main') {
+  } else if (opts.branch && opts.branch !== 'main' && folderExists) {
     throw new Error(
       `Cannot use --branch option without force cloning \n\nTry with options: -F --branch ${opts.branch}`,
     );
   }
-  if (exists(opts)) {
+  if (folderExists) {
     session.log.debug('Curvespace has been cloned, skipping install');
     return;
   }
@@ -73,22 +74,18 @@ function sparkles(session: ISession, name: string) {
   session.log.info(`\n\n\t✨✨✨  ${name}  ✨✨✨\n\n`);
 }
 
-export async function build(session: ISession, opts: Options) {
-  if (!opts.ci) await cloneCurvespace(session, { force: true, branch: 'feat/new-config' });
-  sparkles(session, 'Building Curvenote');
+export async function build(session: ISession, opts: Options, showSparkles = true) {
+  if (!opts.ci) await cloneCurvespace(session, opts);
+  if (showSparkles) sparkles(session, 'Building Curvenote');
   // Build the files in the content folder and process them
   await buildContent2(session, opts);
 }
 
 export async function startServer(session: ISession, opts: Options) {
-  await build(session, opts);
-  const configPath = path.join(serverPath({}), 'app', 'config.json');
-  session.log.info('⚙️  Writing config.json');
-  const siteManifest = getSiteManifest(session);
-  fs.writeFileSync(configPath, JSON.stringify(siteManifest));
+  await build(session, opts, false);
   sparkles(session, 'Starting Curvenote');
   watchContent(session);
-  await makeExecutable(`cd ${serverPath({})}; npm run serve`, getServerLogger(session))();
+  await makeExecutable(`cd ${serverPath(opts)}; npm run serve`, getServerLogger(session))();
 }
 
 export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
