@@ -56,8 +56,8 @@ export type Frontmatter = {
 } & Record<string, any>;
 
 export type ProjectConfig = {
-  frontmatter?: Frontmatter;
   title: string;
+  frontmatter?: Frontmatter;
   remote?: string;
   index?: string;
   exclude?: string[];

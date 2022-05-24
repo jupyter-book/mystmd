@@ -116,26 +116,38 @@ export async function init(session: ISession, opts: Options) {
   ]);
   let pullComplete = false;
   if (content === 'folder') {
-    siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
+    session.store.dispatch(
+      config.actions.receiveSiteMetadata({ projects: [{ path, slug: basename(resolve(path)) }] }),
+    );
     pullComplete = true;
   } else if (content === 'curvenote') {
     const { projectLink } = await inquirer.prompt([questions.projectLink()]);
     const project = await validateProject(session, projectLink);
     if (!project) return;
-    projectConfig.remote = project.data.id;
-    siteConfig.projects = [{ path, slug: project.data.name }];
+    session.store.dispatch(
+      config.actions.receiveProjectMetadata({ remote: project.data.id, path }),
+    );
+    session.store.dispatch(
+      config.actions.receiveSiteMetadata({ projects: [{ path, slug: project.data.name }] }),
+    );
     session.log.info(`Add other projects using: ${chalk.bold('curvenote sync add')}\n`);
   }
   // Personalize the config
   me = await me;
-  siteConfig.title = title;
-  siteConfig.logoText = title;
-  siteConfig.twitter = siteConfig.twitter || me?.data.twitter;
+  session.store.dispatch(
+    config.actions.receiveSiteMetadata({
+      title,
+      logoText: title,
+      twitter: siteConfig.twitter || me?.data.twitter,
+    }),
+  );
   if (me && !siteConfig.domains.length) {
-    siteConfig.domains = [`${me.data.username}.curve.space`];
+    session.store.dispatch(
+      config.actions.receiveSiteMetadata({
+        domains: [`${me.data.username}.curve.space`],
+      }),
+    );
   }
-  saveSiteConfig(session.store, siteConfig);
-  saveProjectConfig(session.store, path, projectConfig);
   const state = session.store.getState();
   writeSiteConfig(state, path);
   writeProjectConfig(state, path);
