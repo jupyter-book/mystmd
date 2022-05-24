@@ -216,13 +216,15 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
   ).filter((s): s is DnsRouter => !!s);
 
   const allSites = sites.map((s) => `https://${s.id}`).join('\n  - ');
-  cache.session.log.info(
-    toc(
-      `🌍 Site promoted to ${sites.length} domain${
-        sites.length > 1 ? 's' : ''
-      } in %s:\n\n  - ${allSites}`,
-    ),
-  );
+  if (allSites.length > 0) {
+    cache.session.log.info(
+      toc(
+        `🌍 Site promoted to ${sites.length} domain${
+          sites.length > 1 ? 's' : ''
+        } in %s:\n\n  - ${allSites}`,
+      ),
+    );
+  }
   cache.session.log.debug(`CDN key: ${cdnKey}`);
   cache.session.log.info(
     '\n\n⚠️  https://curve.space is still in alpha. Please ensure you have a copy of your content locally.',

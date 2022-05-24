@@ -111,6 +111,10 @@ export class Session implements ISession {
       body: JSON.stringify(data),
     });
     const json = await response.json();
+    if (!response.ok) {
+      const dataString = JSON.stringify(json, null, 2);
+      this.log.debug(`${method.toUpperCase()} FAILED ${url}: ${response.status}\n\n${dataString}`);
+    }
     checkForClientVersionRejection(this.log, response.status, json);
     return {
       ok: response.ok,
