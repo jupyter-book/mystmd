@@ -6,7 +6,7 @@ import { ISession } from './session';
 import { RootState } from './store';
 import { getManifest, updateProject } from './toc';
 import { cloneCurvespace } from './web';
-import { buildContent } from './web/prepare';
+import { buildContent2 } from './web/prepare';
 import { makeExecutable } from './export';
 import { serverPath } from './web/transforms';
 import { getServerLogger } from './web/customLoggers';
@@ -18,8 +18,8 @@ export async function quickstart(session: ISession) {
 
   updateProject(session.store, folder);
 
-  await cloneCurvespace(session, {});
-  await buildContent(session, {});
+  await cloneCurvespace(session, { force: true, branch: 'feat/new-config' });
+  await buildContent2(session, {});
   const pathname = path.join(serverPath({}), 'app', 'config.json');
   session.log.info('⚙️  Writing config.json');
   const manifest = getManifest(session.store.getState());

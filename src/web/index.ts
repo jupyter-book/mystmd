@@ -51,25 +51,19 @@ export async function install(session: ISession, opts: Options) {
 }
 
 export async function cloneCurvespace(session: ISession, opts: Options) {
-  // if (opts.force) {
-  //   await clean(session, opts);
-  // } else if (opts.branch && opts.branch !== 'main') {
-  //   throw new Error(
-  //     `Cannot use --branch option without force cloning \n\nTry with options: -F --branch ${opts.branch}`,
-  //   );
-  // }
-  // if (exists(opts)) {
-  //   session.log.debug('Curvespace has been cloned, skipping install');
-  //   return;
-  // }
+  if (opts.force) {
+    await clean(session, opts);
+  } else if (opts.branch && opts.branch !== 'main') {
+    throw new Error(
+      `Cannot use --branch option without force cloning \n\nTry with options: -F --branch ${opts.branch}`,
+    );
+  }
+  if (exists(opts)) {
+    session.log.debug('Curvespace has been cloned, skipping install');
+    return;
+  }
   ensureBuildFolderExists(opts);
-  // await clone(session, opts);
-  await makeExecutable(
-    `cp -r /Users/franklin/git/curvenote/monospace/apps/curvespace/* ${serverPath(
-      {},
-    )}; rm -rf ${serverPath({})}/node_modules`,
-    getGitLogger(session),
-  )();
+  await clone(session, opts);
   await install(session, opts);
 }
 

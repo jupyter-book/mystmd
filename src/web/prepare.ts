@@ -46,40 +46,20 @@ async function processFolder(
   return files;
 }
 
-// async function processFolder(
-//   cache: DocumentCache,
-//   siteProject: SiteProject,
-//   project: Project,
-// ): Promise<{ id: string; processed: boolean }[]> {
-//   const pages = project.pages.filter((page) => 'slug' in page) as ProjectPage[];
-//   const files = await Promise.all(
-//     pages.map(async (page) => {
-//       const processed = await cache.processFile(page);
-//       return { id: `${section.folder}/${slug}`, processed };
-//     }),
-//   );
-//   return files;
-// }
-
-// async function processConfig(
-//   cache: DocumentCache,
-//   store: Store<RootState>,
-// ): Promise<{ id: string; processed: boolean }[]> {
-//   cache.$startupPass = true;
-//   const state = store.getState();
-//   const siteConfig = selectors.selectLocalSiteConfig(state);
-//   const folders = await Promise.all(
-//     (siteConfig?.projects ?? []).map((sec) => {
-//       const proj = selectors.selectLocalProject(state, sec.path);
-//       if (!proj) return null;
-//       return processFolder(cache, sec, folder);
-//     }),
-//   );
-//   cache.$startupPass = false;
-//   await cache.processAllLinks();
-//   await cache.writeConfig();
-//   return folders.flat().filter((f) => f) as { id: string; processed: boolean }[];
-// }
+async function processConfig(cache: DocumentCache): Promise<{ id: string; processed: boolean }[]> {
+  cache.$startupPass = true;
+  const folders = await Promise.all(
+    (cache.config?.site.sections ?? []).map((sec) => {
+      const folder = cache.config?.folders[sec.folder];
+      if (!folder) return null;
+      return processFolder(cache, sec, folder);
+    }),
+  );
+  cache.$startupPass = false;
+  await cache.processAllLinks();
+  await cache.writeConfig();
+  return folders.flat().filter((f) => f) as { id: string; processed: boolean }[];
+}
 
 export async function buildContent(session: ISession, opts: Options): Promise<DocumentCache> {
   const cache = new DocumentCache(session, opts);
@@ -89,14 +69,34 @@ export async function buildContent(session: ISession, opts: Options): Promise<Do
   }
   ensureBuildFoldersExist(session, opts);
 
-  // await cache.readConfig();
-  // session.log.debug('Site Config:\n\n', yaml.dump(cache.config));
+  await cache.readConfig();
+  session.log.debug('Site Config:\n\n', yaml.dump(cache.config));
 
   const toc = tic();
   // Process all existing files
-  // const pages = await processConfig(cache);
+  const pages = await processConfig(cache);
+  const touched = pages.filter(({ processed }) => processed).length;
+  if (touched) {
+    session.log.info(toc(`📚 Built ${touched} / ${pages.length} pages in %s.`));
+  } else {
+    session.log.info(toc(`📚 ${pages.length} pages loaded from cache in %s.`));
+  }
+  return cache;
+}
+
+export async function buildContent2(session: ISession, opts: Options): Promise<DocumentCache> {
+  const cache = new DocumentCache(session, opts);
+
+  if (opts.force || opts.clean) {
+    cleanBuiltFiles(session, opts);
+  }
+  ensureBuildFoldersExist(session, opts);
 
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  session.log.debug('Site Config:\n\n', yaml.dump(siteConfig));
+
+  const toc = tic();
+
   if (!siteConfig?.projects.length) return cache;
   const project = selectors.selectLocalProject(
     session.store.getState(),
@@ -107,13 +107,10 @@ export async function buildContent(session: ISession, opts: Options): Promise<Do
     ...project.pages
       .filter((page): page is LocalProjectPage => 'slug' in page)
       .map(async (page) => {
-        console.log(page);
-        console.log(siteConfig.projects[0]);
         return cache.processFile2(page.file, siteConfig.projects[0].slug, page.slug);
       }),
   ]);
 
-  console.log(pages);
   const touched = pages.flat().filter(({ processed }) => processed).length;
   if (touched) {
     session.log.info(toc(`📚 Built ${touched} / ${pages.length} pages in %s.`));

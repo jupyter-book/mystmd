@@ -28,7 +28,9 @@ export type SiteNavFolder = {
 
 export type SiteNavItem = SiteNavPage | SiteNavFolder;
 
-export type SiteAction = SiteNavPage;
+export type SiteAction = SiteNavPage & {
+  static: boolean;
+};
 
 export type SiteConfig = Frontmatter & {
   title?: string;

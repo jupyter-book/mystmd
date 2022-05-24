@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import { createStore, Store } from 'redux';
-import type { FSWatcher } from 'chokidar';
 import { JsonObject } from '@curvenote/blocks';
 import { basicLogger, Logger, LogLevel } from '../logging';
 import { rootReducer, RootState } from '../store';
@@ -36,8 +35,6 @@ export class Session implements ISession {
 
   store: Store<RootState>;
 
-  watcher?: FSWatcher;
-
   configPath: string;
 
   config: CurvenoteConfig | null;
@@ -72,7 +69,6 @@ export class Session implements ISession {
   }
 
   loadConfig() {
-    return null;
     this.config = loadCurvenoteConfig(this.$logger, this.configPath);
     return this.config;
   }

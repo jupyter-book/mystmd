@@ -35,6 +35,7 @@ export function loadCurvenoteConfig(log: Logger, pathToYml: string): CurvenoteCo
     return validate(log, config);
   } catch (err) {
     log.error(`Could not parse '${pathToYml}' config file.`, (err as Error).message);
+    log.error('If you are using non-legacy CLI commands, this is ok');
     return null;
   }
 }
