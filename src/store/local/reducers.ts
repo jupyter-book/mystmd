@@ -1,15 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 
-import {
-  ProjectConfig,
-  SiteConfig,
-  SiteProject,
-  LocalProject,
-  SiteAction,
-  SiteNavItem,
-  Frontmatter,
-} from '../../types';
+import { ProjectConfig, SiteConfig, SiteProject, LocalProject, Frontmatter } from '../../types';
 
 export const projects = createSlice({
   name: 'projects',
@@ -29,32 +21,27 @@ export const config = createSlice({
       state.site = action.payload;
     },
     receiveSiteProject(state, action: PayloadAction<SiteProject>) {
+      if (!state.site) {
+        // eslint-disable-next-line no-console
+        console.error('state.site is not defined, not executing "receiveSiteProject"');
+        return;
+      }
       state.site.projects.push(action.payload);
     },
-    receiveSiteMetadata(
-      state,
-      action: PayloadAction<{
-        title?: string;
-        frontmatter?: Frontmatter;
-        logo?: string;
-        logoText?: string;
-        twitter?: string;
-        domains?: string[];
-        projects?: SiteProject[];
-        nav?: SiteNavItem[];
-        actions?: SiteAction[];
-      }>,
-    ) {
+    receiveSiteMetadata(state, action: PayloadAction<Partial<SiteConfig>>) {
       const { payload } = action;
-      if (payload.title) state.site.title = payload.title;
-      if (payload.frontmatter) state.site.frontmatter = payload.frontmatter;
-      if (payload.logo) state.site.logo = payload.logo;
-      if (payload.logoText) state.site.logoText = payload.logoText;
-      if (payload.twitter) state.site.twitter = payload.twitter;
-      if (payload.domains) state.site.domains = payload.domains;
-      if (payload.projects) state.site.projects = payload.projects;
-      if (payload.nav) state.site.nav = payload.nav;
-      if (payload.actions) state.site.actions = payload.actions;
+      state.site = {
+        ...state.site,
+        title: payload.title ?? '',
+        frontmatter: payload.frontmatter ?? undefined,
+        logo: payload.logo ?? undefined,
+        logoText: payload.logoText ?? undefined,
+        twitter: payload.twitter ?? undefined,
+        domains: payload.domains ?? [],
+        projects: payload.projects ?? [],
+        nav: payload.nav ?? [],
+        actions: payload.actions ?? [],
+      };
     },
     receiveProject(state, action: PayloadAction<ProjectConfig & { path: string }>) {
       const { path, ...payload } = action.payload;
