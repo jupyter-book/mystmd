@@ -31,16 +31,15 @@ export const config = createSlice({
     receiveSiteMetadata(state, action: PayloadAction<Partial<SiteConfig>>) {
       const { payload } = action;
       state.site = {
-        ...state.site,
-        title: payload.title ?? '',
-        frontmatter: payload.frontmatter ?? undefined,
-        logo: payload.logo ?? undefined,
-        logoText: payload.logoText ?? undefined,
-        twitter: payload.twitter ?? undefined,
-        domains: payload.domains ?? [],
-        projects: payload.projects ?? [],
-        nav: payload.nav ?? [],
-        actions: payload.actions ?? [],
+        title: payload.title ?? state.site?.title ?? '',
+        frontmatter: payload.frontmatter ?? state.site?.frontmatter,
+        logo: payload.logo ?? state.site?.logo,
+        logoText: payload.logoText ?? state.site?.logoText,
+        twitter: payload.twitter ?? state.site?.twitter,
+        domains: payload.domains ?? state.site?.domains ?? [],
+        projects: payload.projects ?? state.site?.projects ?? [],
+        nav: payload.nav ?? state.site?.nav ?? [],
+        actions: payload.actions ?? state.site?.actions ?? [],
       };
     },
     receiveProject(state, action: PayloadAction<ProjectConfig & { path: string }>) {
