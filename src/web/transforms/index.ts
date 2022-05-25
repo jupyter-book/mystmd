@@ -91,6 +91,7 @@ export async function transformMdast(
     frontmatter,
     folder,
     filename: name,
+    context,
   };
 
   await transformLinkedDOIs(mdast, state);

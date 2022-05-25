@@ -14,6 +14,7 @@ export type FolderConfig = Frontmatter;
 
 export interface FolderContext {
   folder: string;
+  path: string;
   config: FolderConfig;
   citeRenderer: CitationRenderer;
 }

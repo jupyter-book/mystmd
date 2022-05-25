@@ -1,6 +1,6 @@
 import { GenericNode, MyST, map } from 'mystjs';
 import { CitationRenderer } from 'citation-js-utils';
-import { IDocumentCache } from '../types';
+import { FolderContext, IDocumentCache } from '../types';
 import { Frontmatter } from '../../types';
 
 export type Root = ReturnType<typeof MyST.prototype.parse>;
@@ -23,6 +23,7 @@ export type TransformState = {
   references: References;
   citeRenderer: CitationRenderer;
   cache: IDocumentCache;
+  context: FolderContext;
   folder: string;
   filename: string;
 };

@@ -295,7 +295,12 @@ export class DocumentCache implements IDocumentCache {
     const content = fs.readFileSync(page.file).toString();
     const citeRenderer = await this.getCitationRenderer(siteProject.path);
     const folderConfig = await this.getFolderConfig(projectSlug);
-    const context: FolderContext = { folder: projectSlug, citeRenderer, config: folderConfig };
+    const context: FolderContext = {
+      folder: projectSlug,
+      citeRenderer,
+      config: folderConfig,
+      path: siteProject.path,
+    };
     const jsonFilename = this.$getJsonFilename(id);
     const filenames = { from: page.file, to: jsonFilename, folder: projectSlug, url: projectSlug };
     const processResult = await processFile(this, context, filenames, content);

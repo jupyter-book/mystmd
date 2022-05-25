@@ -60,7 +60,7 @@ function chaptersToPages(
 ): (LocalProjectFolder | LocalProjectPage)[] {
   chapters.forEach((chapter) => {
     // Note: the title will get updated when the file is processed
-    const file = resolveExtension(chapter.file);
+    const file = resolveExtension(join(path, chapter.file));
     if (!file) {
       throw Error(`File from ${tocFile(path)} not found: ${chapter.file}`);
     }
@@ -80,7 +80,7 @@ function projectFromToc(path: string): LocalProject {
   }
   const toc = readTOC({ filename });
   const pageSlugs: PageSlugs = {};
-  const indexFile = resolveExtension(toc.root);
+  const indexFile = resolveExtension(join(path, toc.root));
   if (!indexFile) {
     throw Error(`Root from ${tocFile(path)} not found: ${indexFile}`);
   }

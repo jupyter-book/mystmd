@@ -6,6 +6,7 @@ import type { Store } from 'redux';
 import { RootState, selectors } from './store';
 import { config } from './store/local';
 import type { Config, ProjectConfig, SiteConfig } from './types';
+import { writeFileToFolder } from './utils';
 
 export const CURVENOTE_YML = 'curvenote.yml';
 
@@ -74,7 +75,7 @@ export function writeSiteConfig(state: RootState, path: string) {
     conf = emptyConfig();
   }
   conf.site = siteConfig;
-  fs.writeFileSync(join(path, CURVENOTE_YML), yaml.dump(conf), 'utf-8');
+  writeFileToFolder(join(path, CURVENOTE_YML), yaml.dump(conf), 'utf-8');
 }
 
 /**
@@ -95,5 +96,5 @@ export function writeProjectConfig(state: RootState, path: string) {
     conf = emptyConfig();
   }
   conf.project = projectConfig;
-  fs.writeFileSync(join(path, CURVENOTE_YML), yaml.dump(conf), 'utf-8');
+  writeFileToFolder(join(path, CURVENOTE_YML), yaml.dump(conf), 'utf-8');
 }

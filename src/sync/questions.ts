@@ -40,11 +40,12 @@ function projectLink(opts?: { projectLink?: string }) {
   };
 }
 
-function projectPath() {
+function projectPath(path?: string) {
   return {
     name: 'projectPath',
-    message: 'Path to Curvenote project:',
+    message: 'Name of local folder to clone this project to?',
     type: 'input',
+    default: path || '.',
   };
 }
 

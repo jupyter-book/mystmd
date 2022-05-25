@@ -5,7 +5,7 @@ import inquirer from 'inquirer';
 import { ISession } from '../session/types';
 import { CURVENOTE_YML, writeSiteConfig, writeProjectConfig } from '../newconfig';
 import { docLinks } from '../docs';
-import { MyUser } from '../models';
+import { MyUser, Project } from '../models';
 import { writeFileToFolder } from '../utils';
 import { startServer } from '../web';
 import { LOGO } from '../web/public';
@@ -87,7 +87,7 @@ const getDefaultProjectConfig = (title?: string): ProjectConfig => ({
  */
 export async function init(session: ISession, opts: Options) {
   session.log.info(await WELCOME(session));
-  const path = '.';
+  let path = '.';
   // Initialize config - error if it exists
   if (
     selectors.selectLocalSiteConfig(session.store.getState()) ||
@@ -117,13 +117,18 @@ export async function init(session: ISession, opts: Options) {
     siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
     pullComplete = true;
   } else if (content === 'curvenote') {
-    const { projectLink } = await inquirer.prompt([questions.projectLink()]);
-    const project = await validateProject(session, projectLink);
-    // TODO: while (!project) {}
-    if (!project) return;
+    let project: Project | undefined;
+    while (!project) {
+      const { projectLink } = await inquirer.prompt([questions.projectLink()]);
+      project = await validateProject(session, projectLink);
+    }
     // TODO: Add all sorts of other stuff for the project data that we know!!
     projectConfig.remote = project.data.id;
     projectConfig.title = project.data.title;
+    const { projectPath } = await inquirer.prompt([
+      questions.projectPath(join('content', project.data.name)),
+    ]);
+    path = projectPath;
     siteConfig.projects = [{ path, slug: project.data.name }];
     // TODO: fix this comment!
     session.log.info(`Add other projects using: ${chalk.bold('curvenote add')}\n`);
@@ -139,9 +144,9 @@ export async function init(session: ISession, opts: Options) {
   }
   // Save the configs to the state and write them to disk
   session.store.dispatch(config.actions.receiveSite(siteConfig));
-  session.store.dispatch(config.actions.receiveProject({ path: '.', ...projectConfig }));
+  session.store.dispatch(config.actions.receiveProject({ path, ...projectConfig }));
   const state = session.store.getState();
-  writeSiteConfig(state, path);
+  writeSiteConfig(state, '.');
   writeProjectConfig(state, path);
 
   const pullOpts = { level: LogLevel.debug };
