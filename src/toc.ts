@@ -200,7 +200,12 @@ export function getSiteManifest(session: ISession): SiteManifest {
   if (!siteConfig) throw Error('no site config defined');
   siteConfig.projects.forEach((siteProj) => {
     const projConfig = selectors.selectLocalProjectConfig(state, siteProj.path);
-    const frontmatter = resolveFrontmatter(siteConfig, projConfig, session.log, siteProj.path);
+    const frontmatter = resolveFrontmatter(
+      siteConfig.frontmatter || {},
+      projConfig.frontmatter || {},
+      session.log,
+      siteProj.path,
+    );
     const proj = selectors.selectLocalProject(state, siteProj.path);
     if (!proj) return;
     siteProjects.push(localToManifestProject(proj, siteProj.slug, frontmatter));
