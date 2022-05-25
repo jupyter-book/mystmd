@@ -219,7 +219,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
     siteProjects.push(localToManifestProject(proj, siteProj.slug, frontmatter));
   });
   const { title, twitter, logo, logoText, nav, actions } = siteConfig;
-  const manifest = {
+  const manifest: SiteManifest = {
     title: title || '',
     twitter,
     logo: copyLogo(session, logo),

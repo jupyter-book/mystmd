@@ -14,16 +14,18 @@ import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
 import { GenericNode, selectAll } from 'mystjs';
 import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
-import { FolderConfig, FolderContext, IDocumentCache, Options, SiteConfig } from './types';
+import { FolderContext, IDocumentCache, Options, SiteConfig } from './types';
 import { parseMyst, publicPath, serverPath } from './utils';
 
-import { LinkLookup, RendererData, transformLinks, transformMdast } from './transforms';
+import { LinkLookup, transformLinks, transformMdast } from './transforms';
 // import { readConfig } from './webConfig';
 import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
 import { DEFAULT_FRONTMATTER, resolveFrontmatter } from './frontmatter';
 import { selectors } from '../store';
-import { LocalProjectPage, SiteProject } from '../types';
+import { Frontmatter, LocalProjectPage, SiteProject } from '../types';
+import { watch } from '../store/local';
+import { RendererData } from './transforms/types';
 
 type NextFile = { filename: string; folder: string; slug: string };
 
@@ -174,7 +176,7 @@ async function getCitationRenderer(session: ISession, folder: string): Promise<C
   return renderer;
 }
 
-async function getFolderConfig(session: ISession, folder: string): Promise<FolderConfig> {
+async function getFolderConfig(session: ISession, folder: string): Promise<Frontmatter> {
   const folderConfig = path.join(folder, '_config.yml');
   if (!fs.existsSync(folderConfig)) {
     session.log.debug(`Did not find a folder config at "${folderConfig}"`);
@@ -220,9 +222,9 @@ export class DocumentCache implements IDocumentCache {
   //   );
   // }
 
-  $folderConfig: Record<string, FolderConfig> = {};
+  $folderConfig: Record<string, Frontmatter> = {};
 
-  async getFolderConfig(folder: string): Promise<FolderConfig> {
+  async getFolderConfig(folder: string): Promise<Frontmatter> {
     const config = this.$folderConfig[folder];
     if (config) return config;
     const newConfig = await getFolderConfig(this.session, folder);
@@ -232,11 +234,11 @@ export class DocumentCache implements IDocumentCache {
 
   $citationRenderers: Record<string, CitationRenderer> = {};
 
-  async getCitationRenderer(folder: string): Promise<CitationRenderer> {
-    const renderer = this.$citationRenderers[folder];
+  async getCitationRenderer(projectPath: string): Promise<CitationRenderer> {
+    const renderer = this.$citationRenderers[projectPath];
     if (renderer) return renderer;
-    const newRenderer = await getCitationRenderer(this.session, folder);
-    this.$citationRenderers[folder] = newRenderer;
+    const newRenderer = await getCitationRenderer(this.session, projectPath);
+    this.$citationRenderers[projectPath] = newRenderer;
     return newRenderer;
   }
 
@@ -275,6 +277,13 @@ export class DocumentCache implements IDocumentCache {
     siteProject: SiteProject,
     page: Pick<LocalProjectPage, 'file' | 'slug'>,
   ): Promise<{ id: string; processed: boolean }> {
+    this.session.store.dispatch(
+      watch.actions.registerFile({
+        processed: false,
+        project: siteProject,
+        file: { path: page.file, slug: page.slug },
+      }),
+    );
     const toc = tic();
     const projectSlug = siteProject.slug;
     const id = path.join(siteProject.slug, page.slug);
@@ -285,7 +294,7 @@ export class DocumentCache implements IDocumentCache {
     const context: FolderContext = {
       folder: projectSlug,
       citeRenderer,
-      config: folderConfig,
+      frontmatter: folderConfig,
       path: siteProject.path,
     };
     const jsonFilename = this.$getJsonFilename(id);

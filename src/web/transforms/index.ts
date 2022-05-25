@@ -13,19 +13,11 @@ import { transformEnumerators } from './enumerate';
 import { transformFootnotes } from './footnotes';
 import { transformKeys } from './keys';
 import { getPageFrontmatter } from '../frontmatter';
-import { References, Root, TransformState } from './types';
+import { References, RendererData, Root, TransformState } from './types';
 import { tic } from '../../export/utils/exec';
-import { Frontmatter } from '../../types';
 
 export { imagePath, publicPath, serverPath } from './images';
 export { LinkLookup, transformLinks } from './links';
-
-export interface RendererData {
-  sha256: string;
-  frontmatter: Frontmatter;
-  mdast: Root;
-  references: References;
-}
 
 /**
  * This is the {mdast} directive, that loads from disk

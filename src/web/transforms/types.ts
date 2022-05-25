@@ -18,6 +18,13 @@ export type References = {
   footnotes: Footnotes;
 };
 
+export interface RendererData {
+  sha256: string;
+  frontmatter: Frontmatter;
+  mdast: Root;
+  references: References;
+}
+
 export type TransformState = {
   frontmatter: Frontmatter;
   references: References;

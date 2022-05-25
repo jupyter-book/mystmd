@@ -80,8 +80,8 @@ export function watchConfig(cache: IDocumentCache) {
       ignoreInitial: true,
       awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
     })
-    .on('all', async () => {
-      console.log('CONFIG changed');
+    .on('all', async (eventType: string) => {
+      cache.session.log.debug(`File modified: "${CURVENOTE_YML}" (${eventType})`);
       // await cache.readConfig();
       // await cache.writeConfig();
       await buildSite(cache.session, {});

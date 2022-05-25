@@ -10,12 +10,10 @@ export interface IDocumentCache {
   config: SiteConfig | null;
 }
 
-export type FolderConfig = Frontmatter;
-
 export interface FolderContext {
   folder: string;
   path: string;
-  config: FolderConfig;
+  frontmatter: Frontmatter;
   citeRenderer: CitationRenderer;
 }
 

@@ -31,9 +31,32 @@ export const config = createSlice({
   },
 });
 
+type WatchedFile = {
+  dirty?: true;
+  processed: boolean;
+  project: { path: string; slug: string };
+  file: { path: string; slug: string };
+  // data?: RendererData;
+};
+type WatchState = { startup: boolean; files: Record<string, WatchedFile> };
+
+export const watch = createSlice({
+  name: 'watch',
+  initialState: { startup: false, files: {} } as WatchState,
+  reducers: {
+    setStartupPass(state, action: PayloadAction<boolean>) {
+      state.startup = action.payload;
+    },
+    registerFile(state, action: PayloadAction<WatchedFile>) {
+      state.files[action.payload.file.path] = action.payload;
+    },
+  },
+});
+
 export const localReducer = combineReducers({
   projects: projects.reducer,
   config: config.reducer,
+  watch: watch.reducer,
 });
 
 export type LocalState = ReturnType<typeof localReducer>;

@@ -1,4 +1,4 @@
 import * as selectors from './selectors';
 
-export { projects, config } from './reducers';
+export { projects, config, watch } from './reducers';
 export { selectors };
