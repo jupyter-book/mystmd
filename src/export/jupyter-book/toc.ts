@@ -163,13 +163,12 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
   writeFileToFolder(filename, toc);
 }
 
-export function readTOC(session: ISession, opts?: Options): TOC {
+export function readTOC(opts?: Options): TOC {
   const filename = path.join(opts?.path || '.', opts?.filename || '_toc.yml');
   const toc = YAML.parse(fs.readFileSync(filename).toString());
   const { format, root, chapters, parts } = toc;
   if (format !== TOC_FORMAT) throw new Error(`The toc.format must be ${TOC_FORMAT}.`);
   if (!root) throw new Error(`The toc.root must exist.`);
   if (!chapters && !parts) throw new Error(`The toc must have either chapters or parts.`);
-  session.log.debug('Basic validation of TOC passed.');
   return toc;
 }

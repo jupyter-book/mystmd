@@ -15,37 +15,96 @@ import {
 } from './types';
 import { resolveFrontmatter } from './web/frontmatter';
 import { publicPath } from './web/utils';
+import { JupyterBookChapter, readTOC } from './export/jupyter-book/toc';
 
 const DEFAULT_INDEX_FILES = ['readme.md'];
 const VALID_FILE_EXTENSIONS = ['.md', '.ipynb'];
 
+const tocFile = (path: string): string => join(path, '_toc.yml');
+
+type PageSlugs = Record<string, number>;
+
 function isValidFile(file: string): boolean {
   return VALID_FILE_EXTENSIONS.includes(parse(file).ext);
+}
+
+function resolveExtension(file: string): string | undefined {
+  if (fs.existsSync(file)) return file;
+  return VALID_FILE_EXTENSIONS.map((ext) => `${file}${ext}`).find((fileExt) =>
+    fs.existsSync(fileExt),
+  );
 }
 
 export function isDirectory(file: string): boolean {
   return fs.lstatSync(file).isDirectory();
 }
 
-function fileInfo(
-  file: string,
-  fileSlugs: Record<string, number>,
-): { slug: string; title: string } {
+function fileInfo(file: string, pageSlugs: PageSlugs): { slug: string; title: string } {
   let slug = parse(file).name.toLowerCase();
   const title = slug;
-  if (fileSlugs[slug]) {
-    fileSlugs[slug] += 1;
-    slug = `${slug}-${fileSlugs[slug] - 1}`;
+  if (pageSlugs[slug]) {
+    pageSlugs[slug] += 1;
+    slug = `${slug}-${pageSlugs[slug] - 1}`;
   } else {
-    fileSlugs[slug] = 1;
+    pageSlugs[slug] = 1;
   }
   return { slug, title };
+}
+
+function chaptersToPages(
+  path: string,
+  chapters: JupyterBookChapter[],
+  pages: (LocalProjectFolder | LocalProjectPage)[] = [],
+  level: pageLevels = 1,
+  pageSlugs: PageSlugs,
+): (LocalProjectFolder | LocalProjectPage)[] {
+  chapters.forEach((chapter) => {
+    // Note: the title will get updated when the file is processed
+    const file = resolveExtension(chapter.file);
+    if (!file) {
+      throw Error(`File from ${tocFile(path)} not found: ${chapter.file}`);
+    }
+    pages.push({ file, level, ...fileInfo(file, pageSlugs) });
+    const newLevel = level < 5 ? level + 1 : 6;
+    if (chapter.sections) {
+      chaptersToPages(path, chapter.sections, pages, newLevel as pageLevels, pageSlugs);
+    }
+  });
+  return pages;
+}
+
+function projectFromToc(path: string): LocalProject {
+  const filename = tocFile(path);
+  if (!fs.existsSync(filename)) {
+    throw new Error(`Could not find TOC "${filename}". Please create a '_toc.yml'.`);
+  }
+  const toc = readTOC({ filename });
+  const pageSlugs: PageSlugs = {};
+  const indexFile = resolveExtension(toc.root);
+  if (!indexFile) {
+    throw Error(`Root from ${tocFile(path)} not found: ${indexFile}`);
+  }
+  const { slug, title } = fileInfo(indexFile, pageSlugs);
+  const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
+  if (toc.chapters) {
+    chaptersToPages(path, toc.chapters, pages, 1, pageSlugs);
+  } else if (toc.parts) {
+    toc.parts.forEach((part, index) => {
+      if (part.caption) {
+        pages.push({ title: part.caption || `Part ${index + 1}`, level: 1 });
+      }
+      if (part.chapters) {
+        chaptersToPages(path, part.chapters, pages, 2, pageSlugs);
+      }
+    });
+  }
+  return { path, file: indexFile, index: slug, title, pages };
 }
 
 function projectPagesFromPath(
   path: string,
   level: pageLevels,
-  fileSlugs: Record<string, number>,
+  pageSlugs: PageSlugs,
   ignore?: string[],
 ): (LocalProjectFolder | LocalProjectPage)[] {
   return fs
@@ -59,12 +118,12 @@ function projectPagesFromPath(
         return {
           file,
           level,
-          ...fileInfo(file, fileSlugs),
+          ...fileInfo(file, pageSlugs),
         } as LocalProjectPage;
       }
-      const projectFolder = { title: fileInfo(file, fileSlugs).title, level };
+      const projectFolder = { title: fileInfo(file, pageSlugs).title, level };
       const newLevel = level < 5 ? level + 1 : 6;
-      const pages = projectPagesFromPath(file, newLevel as pageLevels, fileSlugs, ignore);
+      const pages = projectPagesFromPath(file, newLevel as pageLevels, pageSlugs, ignore);
       return pages.length ? [projectFolder].concat(pages) : [];
     })
     .flat();
@@ -81,19 +140,24 @@ export function projectFromPath(path: string, indexFile?: string): LocalProject 
   if (!indexFile || !fs.existsSync(indexFile)) {
     throw Error(`index file ${indexFile || DEFAULT_INDEX_FILES.join(',')} not found`);
   }
-  const fileSlugs: Record<string, number> = {};
-  const { slug, title } = fileInfo(indexFile, fileSlugs);
-  const pages = projectPagesFromPath(path, 1, fileSlugs, [indexFile, join(path, '_build')]);
+  const pageSlugs: PageSlugs = {};
+  const { slug, title } = fileInfo(indexFile, pageSlugs);
+  const pages = projectPagesFromPath(path, 1, pageSlugs, [indexFile, join(path, '_build')]);
   return { file: indexFile, index: slug, path, title, pages };
 }
 
 export function updateProject(store: Store<RootState>, path?: string, index?: string) {
   path = path || '.';
-  const project = selectors.selectLocalProject(store.getState(), path);
-  if (!index && project?.file) {
-    index = project.file;
+  let newProject;
+  if (fs.existsSync(tocFile(path))) {
+    newProject = projectFromToc(path);
+  } else {
+    const project = selectors.selectLocalProject(store.getState(), path);
+    if (!index && project?.file) {
+      index = project.file;
+    }
+    newProject = projectFromPath(path, index);
   }
-  const newProject = projectFromPath(path, index);
   store.dispatch(projects.actions.receive(newProject));
 }
 
