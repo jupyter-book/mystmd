@@ -53,15 +53,14 @@ export async function install(session: ISession, opts: Options) {
 }
 
 export async function cloneCurvespace(session: ISession, opts: Options) {
-  const folderExists = exists(opts);
   if (opts.force) {
     await clean(session, opts);
-  } else if (opts.branch && opts.branch !== 'main' && folderExists) {
+  } else if (opts.branch && opts.branch !== 'main' && exists(opts)) {
     throw new Error(
       `Cannot use --branch option without force cloning \n\nTry with options: -F --branch ${opts.branch}`,
     );
   }
-  if (folderExists) {
+  if (exists(opts)) {
     session.log.debug('Curvespace has been cloned, skipping install');
     return;
   }

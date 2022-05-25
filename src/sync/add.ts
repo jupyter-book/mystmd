@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import { ISession } from '../session/types';
 import questions from './questions';
 import { isDirectory } from '../toc';
-import { loadSiteConfig, writeSiteConfig } from '../newconfig';
+import { loadSiteConfigOrThrow, writeSiteConfig } from '../newconfig';
 import { config } from '../store/local';
 
 const START = `
@@ -20,18 +20,11 @@ ${chalk.green.bold('Project successfully added')} 🎉
 
 `;
 
-/** Add local project to curve.space site config
- *
+/**
+ * Add local project to curve.space site config
  */
 export async function add(session: ISession) {
-  let siteConfig;
-  try {
-    siteConfig = loadSiteConfig(session.store);
-  } catch {
-    session.log.error('site config not found in current directory');
-    return;
-  }
-  if (!siteConfig) throw Error('site config error');
+  const siteConfig = loadSiteConfigOrThrow(session.store);
 
   session.log.info(START);
 

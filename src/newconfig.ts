@@ -5,7 +5,7 @@ import yaml from 'js-yaml';
 import type { Store } from 'redux';
 import { RootState, selectors } from './store';
 import { config } from './store/local';
-import type { Config } from './types';
+import type { Config, ProjectConfig, SiteConfig } from './types';
 
 export const CURVENOTE_YML = 'curvenote.yml';
 
@@ -34,11 +34,11 @@ function readConfig(path: string) {
  * Errors if config file does not exist or if config file exists but
  * does not contain project config.
  */
-export function loadProjectConfig(store: Store<RootState>, path: string) {
+export function loadProjectConfigOrThrow(store: Store<RootState>, path: string): ProjectConfig {
   const { project } = readConfig(path);
-  if (!project) throw Error(`No project config in ${join(path, CURVENOTE_YML)}`);
+  if (!project) throw Error(`No project config defined in ${join(path, CURVENOTE_YML)}`);
   store.dispatch(config.actions.receiveProject({ path, ...project }));
-  return selectors.selectLocalProjectConfig(store.getState(), path);
+  return selectors.selectLocalProjectConfig(store.getState(), path) as ProjectConfig;
 }
 
 /**
@@ -49,11 +49,11 @@ export function loadProjectConfig(store: Store<RootState>, path: string) {
  * Errors if config file does not exist or if config file exists but
  * does not contain site config.
  */
-export function loadSiteConfig(store: Store<RootState>) {
+export function loadSiteConfigOrThrow(store: Store<RootState>): SiteConfig {
   const { site } = readConfig('.');
   if (!site) throw Error(`No site config in ${join('.', CURVENOTE_YML)}`);
   store.dispatch(config.actions.receiveSite(site));
-  return selectors.selectLocalSiteConfig(store.getState());
+  return selectors.selectLocalSiteConfig(store.getState()) as SiteConfig;
 }
 
 /**
@@ -66,7 +66,7 @@ export function loadSiteConfig(store: Store<RootState>) {
  */
 export function writeSiteConfig(state: RootState, path: string) {
   const siteConfig = selectors.selectLocalSiteConfig(state);
-  if (!siteConfig) throw Error('no site config loaded');
+  if (!siteConfig) throw Error('no site config loaded into redux state');
   let conf;
   try {
     conf = readConfig(path);

@@ -202,7 +202,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
     const projConfig = selectors.selectLocalProjectConfig(state, siteProj.path);
     const frontmatter = resolveFrontmatter(
       siteConfig.frontmatter || {},
-      projConfig.frontmatter || {},
+      projConfig?.frontmatter || {},
       session.log,
       siteProj.path,
     );

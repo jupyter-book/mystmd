@@ -31,8 +31,8 @@ export function getNpmLogger(session: ISession) {
     },
     error(data: string) {
       const line = data.trim();
-      if (!line || line === 'npm' || line === 'WARN') return;
-      if (line.includes('deprecated')) {
+      if (!line) return;
+      if (line.includes('deprecated') || line === 'npm' || line.includes('WARN')) {
         session.log.debug(line);
         return;
       }

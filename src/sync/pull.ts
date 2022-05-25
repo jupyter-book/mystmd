@@ -1,8 +1,8 @@
 import fs from 'fs';
+import { join, basename, resolve } from 'path';
 import inquirer from 'inquirer';
 import pLimit from 'p-limit';
 import chalk from 'chalk';
-import { basename, resolve } from 'path';
 import { projectIdFromLink, projectToJupyterBook } from '../export';
 import { Project } from '../models';
 import { ISession } from '../session/types';
@@ -14,7 +14,7 @@ import { selectors } from '../store';
 import questions from './questions';
 import { isDirectory } from '../toc';
 import { docLinks } from '../docs';
-import { loadProjectConfig, writeProjectConfig } from '../newconfig';
+import { CURVENOTE_YML, loadProjectConfigOrThrow, writeProjectConfig } from '../newconfig';
 import { config } from '../store/local';
 
 export async function validateProject(
@@ -94,14 +94,16 @@ type Options = {
 export async function pull(session: ISession, path?: string, opts?: Options) {
   path = path || '.';
   if (!fs.existsSync(path) || !isDirectory(path)) {
-    session.log.error(`invalid local path: ${path}`);
+    throw new Error(
+      `Invalid path: "${path}", it must be a folder accessible from the local directory`,
+    );
   }
   let projectConfig;
   try {
     // Pull from existing remote project saved in curvenote.yml
-    projectConfig = loadProjectConfig(session.store, path);
-    if (!projectConfig.remote) {
-      session.log.error(`Project config exists but no remote project is defined: ${path}`);
+    projectConfig = loadProjectConfigOrThrow(session.store, path);
+    if (!projectConfig?.remote) {
+      session.log.error(`No "remote" defined in "${join(path, CURVENOTE_YML)}"`);
       return;
     }
   } catch {

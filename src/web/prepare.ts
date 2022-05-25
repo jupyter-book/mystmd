@@ -42,22 +42,26 @@ export async function buildContent2(session: ISession, opts: Options): Promise<D
   ensureBuildFoldersExist(session, opts);
 
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
-  session.log.debug('Site Config:\n\n', yaml.dump(siteConfig));
+  session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
 
   const toc = tic();
 
   if (!siteConfig?.projects.length) return cache;
-  updateProject(session.store, siteConfig?.projects[0].path);
-  const project = selectors.selectLocalProject(
-    session.store.getState(),
-    siteConfig?.projects[0].path,
-  );
+  const siteProject = siteConfig.projects[0];
+  updateProject(session.store, siteProject.path);
+  const project = selectors.selectLocalProject(session.store.getState(), siteProject.path);
+  if (!project) {
+    session.log.error(`Could not find project config at ${siteProject.path}`);
+    return cache;
+  }
+  // Load the citations first, or else they are loaded in each call below
+  await cache.getCitationRenderer(siteProject.path);
   const pages = await Promise.all([
-    cache.processFile2(project.file, siteConfig.projects[0].slug, project.index),
+    cache.processFile2(siteProject, { file: project.file, slug: project.index }),
     ...project.pages
       .filter((page): page is LocalProjectPage => 'slug' in page)
       .map(async (page) => {
-        return cache.processFile2(page.file, siteConfig.projects[0].slug, page.slug);
+        return cache.processFile2(siteProject, page);
       }),
   ]);
 

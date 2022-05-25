@@ -24,6 +24,7 @@ import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
 import { DEFAULT_FRONTMATTER, resolveFrontmatter } from './frontmatter';
 import { selectors } from '../store';
+import { LocalProjectPage, SiteProject } from '../types';
 
 type NextFile = { filename: string; folder: string; slug: string };
 
@@ -157,13 +158,21 @@ async function processFile(
 }
 
 async function getCitationRenderer(session: ISession, folder: string): Promise<CitationRenderer> {
+  const toc = tic();
   const referenceFilename = path.join(folder, 'references.bib');
   if (!fs.existsSync(referenceFilename)) {
     session.log.debug(`Expected references at "${referenceFilename}"`);
     return {};
   }
+  session.log.debug(`Loading references at "${referenceFilename}"`);
   const f = fs.readFileSync(referenceFilename).toString();
-  return getCitations(f);
+  const renderer = await getCitations(f);
+  const numCitations = Object.keys(renderer).length;
+  const plural = numCitations > 1 ? 's' : '';
+  session.log.info(
+    toc(`🏫 Read ${numCitations} citation${plural} from ${referenceFilename} in %s.`),
+  );
+  return renderer;
 }
 
 async function getFolderConfig(session: ISession, folder: string): Promise<FolderConfig> {
@@ -276,19 +285,19 @@ export class DocumentCache implements IDocumentCache {
   // }
 
   async processFile2(
-    file: string,
-    projectSlug: string,
-    pageSlug: string,
+    siteProject: SiteProject,
+    page: Pick<LocalProjectPage, 'file' | 'slug'>,
   ): Promise<{ id: string; processed: boolean }> {
     const toc = tic();
-    const id = path.join(projectSlug, pageSlug);
-    this.session.log.debug(`Reading file "${file}"`);
-    const content = fs.readFileSync(file).toString();
-    const citeRenderer = await this.getCitationRenderer(projectSlug);
+    const projectSlug = siteProject.slug;
+    const id = path.join(siteProject.slug, page.slug);
+    this.session.log.debug(`Reading file "${page.file}"`);
+    const content = fs.readFileSync(page.file).toString();
+    const citeRenderer = await this.getCitationRenderer(siteProject.path);
     const folderConfig = await this.getFolderConfig(projectSlug);
     const context: FolderContext = { folder: projectSlug, citeRenderer, config: folderConfig };
     const jsonFilename = this.$getJsonFilename(id);
-    const filenames = { from: file, to: jsonFilename, folder: projectSlug, url: projectSlug };
+    const filenames = { from: page.file, to: jsonFilename, folder: projectSlug, url: projectSlug };
     const processResult = await processFile(this, context, filenames, content);
     if (!processResult) return { id, processed: false };
     const { fromCache, data } = processResult;

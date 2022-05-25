@@ -6,7 +6,7 @@ import { rootReducer, RootState } from '../store';
 import { getHeaders, setSessionOrUserToken } from './tokens';
 import { ISession, Response, Tokens } from './types';
 import { checkForClientVersionRejection } from '../utils';
-import { loadSiteConfig, loadProjectConfig, CURVENOTE_YML } from '../newconfig';
+import { loadSiteConfigOrThrow, loadProjectConfigOrThrow, CURVENOTE_YML } from '../newconfig';
 import { selectLocalSiteConfig } from '../store/selectors';
 
 const DEFAULT_API_URL = 'https://api.curvenote.com';
@@ -28,14 +28,14 @@ function withQuery(url: string, query: Record<string, string> = {}) {
 
 function loadAllConfigs(log: Logger, store: Store<RootState>) {
   try {
-    loadSiteConfig(store);
+    loadSiteConfigOrThrow(store);
     log.debug(`Loaded site config from "./${CURVENOTE_YML}"`);
   } catch (error) {
     // TODO: what error?
     log.debug(`Failed to find or load site config from "./${CURVENOTE_YML}"`);
   }
   try {
-    loadProjectConfig(store, '.');
+    loadProjectConfigOrThrow(store, '.');
     log.debug(`Loaded project config from "./${CURVENOTE_YML}"`);
   } catch (error) {
     // TODO: what error?
@@ -45,7 +45,7 @@ function loadAllConfigs(log: Logger, store: Store<RootState>) {
   if (!siteConfig) return;
   siteConfig.projects.forEach((project) => {
     try {
-      loadProjectConfig(store, project.path);
+      loadProjectConfigOrThrow(store, project.path);
     } catch (error) {
       // TODO: what error?
       log.debug(`Failed to find or load project config from "${project.path}/${CURVENOTE_YML}"`);
