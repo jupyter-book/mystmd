@@ -76,13 +76,13 @@ export async function build(session: ISession, opts: Options, showSparkles = tru
   if (!opts.ci) await cloneCurvespace(session, opts);
   if (showSparkles) sparkles(session, 'Building Curvenote');
   // Build the files in the content folder and process them
-  await buildSite(session, opts);
+  return buildSite(session, opts);
 }
 
 export async function startServer(session: ISession, opts: Options) {
-  await build(session, opts, false);
+  const cache = await build(session, opts, false);
   sparkles(session, 'Starting Curvenote');
-  watchContent(session);
+  watchContent(session, cache);
   await makeExecutable(`cd ${serverPath(opts)}; npm run serve`, getServerLogger(session))();
 }
 

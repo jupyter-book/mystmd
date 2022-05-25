@@ -22,7 +22,7 @@ function validateConfig(conf: unknown) {
 
 function readConfig(path: string) {
   const confFile = join(path, CURVENOTE_YML);
-  if (!fs.existsSync(confFile)) throw Error(`cannot find ${CURVENOTE_YML} in ${path}`);
+  if (!fs.existsSync(confFile)) throw Error(`Cannot find ${CURVENOTE_YML} in ${path}`);
   const conf = yaml.load(fs.readFileSync(confFile, 'utf-8'));
   return validateConfig(conf);
 }
@@ -65,8 +65,9 @@ export function loadSiteConfigOrThrow(store: Store<RootState>): SiteConfig {
  *
  * Errors if site config is not present in redux store
  */
-export function writeSiteConfig(state: RootState, path: string) {
-  const siteConfig = selectors.selectLocalSiteConfig(state);
+export function writeSiteConfig(store: Store, path: string, newConfig?: SiteConfig) {
+  if (newConfig) store.dispatch(config.actions.receiveSite(newConfig));
+  const siteConfig = selectors.selectLocalSiteConfig(store.getState());
   if (!siteConfig) throw Error('no site config loaded into redux state');
   let conf;
   try {
@@ -86,8 +87,9 @@ export function writeSiteConfig(state: RootState, path: string) {
  *
  * Errors if project config is not present in redux store for the given path
  */
-export function writeProjectConfig(state: RootState, path: string) {
-  const projectConfig = selectors.selectLocalProjectConfig(state, path);
+export function writeProjectConfig(store: Store, path: string, newConfig?: ProjectConfig) {
+  if (newConfig) store.dispatch(config.actions.receiveProject({ path, ...newConfig }));
+  const projectConfig = selectors.selectLocalProjectConfig(store.getState(), path);
   if (!projectConfig) throw Error(`no site config loaded for path ${projectConfig}`);
   let conf;
   try {

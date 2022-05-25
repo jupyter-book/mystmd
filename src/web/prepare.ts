@@ -1,11 +1,11 @@
 import fs from 'fs';
-import path from 'path';
+import { join } from 'path';
 import chokidar from 'chokidar';
 import yaml from 'js-yaml';
 import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
 import { publicPath, serverPath } from './utils';
-import { Options } from './types';
+import { IDocumentCache, Options } from './types';
 import { DocumentCache } from './cache';
 import { LocalProjectPage, SiteProject } from '../types';
 import { selectors } from '../store';
@@ -14,16 +14,16 @@ import { getSiteManifest, loadProjectConfigFromDisk } from '../toc';
 
 export function cleanBuiltFiles(session: ISession, opts: Options, info = true) {
   const toc = tic();
-  fs.rmSync(path.join(serverPath(opts), 'app', 'content'), { recursive: true, force: true });
-  fs.rmSync(path.join(publicPath(opts), '_static'), { recursive: true, force: true });
+  fs.rmSync(join(serverPath(opts), 'app', 'content'), { recursive: true, force: true });
+  fs.rmSync(join(publicPath(opts), '_static'), { recursive: true, force: true });
   const log = info ? session.log.info : session.log.debug;
   log(toc('🧹 Clean build files in %s.'));
 }
 
 export function ensureBuildFoldersExist(session: ISession, opts: Options) {
   session.log.debug('Build folders created for `app/content` and `_static`.');
-  fs.mkdirSync(path.join(serverPath(opts), 'app', 'content'), { recursive: true });
-  fs.mkdirSync(path.join(publicPath(opts), '_static'), { recursive: true });
+  fs.mkdirSync(join(serverPath(opts), 'app', 'content'), { recursive: true });
+  fs.mkdirSync(join(publicPath(opts), '_static'), { recursive: true });
 }
 
 export async function buildProject(cache: DocumentCache, siteProject: SiteProject) {
@@ -51,7 +51,7 @@ export async function buildProject(cache: DocumentCache, siteProject: SiteProjec
 }
 
 export async function writeSiteManifest(session: ISession, opts: Options) {
-  const configPath = path.join(serverPath(opts), 'app', 'config.json');
+  const configPath = join(serverPath(opts), 'app', 'config.json');
   session.log.info('⚙️  Writing site config.json');
   const siteManifest = getSiteManifest(session);
   fs.writeFileSync(configPath, JSON.stringify(siteManifest));
@@ -74,38 +74,49 @@ export async function buildSite(session: ISession, opts: Options): Promise<Docum
   return cache;
 }
 
-export function watchContent(session: ISession) {
-  const processor = () => async (eventType: string, filename: string) => {
+export function watchConfig(cache: IDocumentCache) {
+  return chokidar
+    .watch(CURVENOTE_YML, {
+      ignoreInitial: true,
+      awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
+    })
+    .on('all', async () => {
+      console.log('CONFIG changed');
+      // await cache.readConfig();
+      // await cache.writeConfig();
+      await buildSite(cache.session, {});
+    });
+}
+
+export function watchContent(session: ISession, cache: IDocumentCache) {
+  const processor = (path: string) => async (eventType: string, filename: string) => {
     if (filename.startsWith('_build')) return;
-    session.log.debug(`File modified: "${filename}" (${eventType})`);
-    session.log.debug('Rebuilding everything 😱');
+    session.log.debug(`File modified: "${join(path, filename)}" (${eventType})`);
     await buildSite(session, {});
   };
 
-  // Watch the full content folder
-  // try {
-  //   // TODO: Change this to a singe watch
-  //   cache.config?.site.sections.forEach(({ path: folderPath }) => {
-  //     chokidar
-  //       .watch(folderPath, {
-  //         ignoreInitial: true,
-  //         awaitWriteFinish: { stabilityThreshold: 50, pollInterval: 50 },
-  //       })
-  //       .on('all', processor(folderPath));
-  //   });
-  //   // Watch the curvenote.yml
-  //   watchConfig(cache);
-  // } catch (error) {
-  //   cache.session.log.error((error as Error).message);
-  //   cache.session.log.error(
-  //     '🙈 The file-system watch failed.\n\tThe server should still work, but will require you to restart it manually to see any changes to content.\n\tUse `curvenote start -c` to clear cache and restart.',
-  //   );
-  // }
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   if (!siteConfig) return;
-  // This doesn't watch new projects if they are added to the content.
+  // Watch each project the full content folder
   siteConfig.projects.forEach((proj) => {
-    fs.watch(proj.path, { recursive: true }, processor());
+    const ignored =
+      proj.path === '.'
+        ? [
+            // If in the root, ignore the YML and all other projects
+            CURVENOTE_YML,
+            ...siteConfig.projects
+              .filter(({ path }) => path !== '.')
+              .map(({ path }) => join(path, '*')),
+          ]
+        : [];
+    chokidar
+      .watch(proj.path, {
+        ignoreInitial: true,
+        ignored: ['_build', ...ignored],
+        awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
+      })
+      .on('all', processor(proj.path));
   });
-  fs.watch(CURVENOTE_YML, {}, processor());
+  // Watch the curvenote.yml
+  watchConfig(cache);
 }

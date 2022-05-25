@@ -1,7 +1,6 @@
 import { CitationRenderer, getCitations } from 'citation-js-utils';
 import fs from 'fs';
 import path from 'path';
-import chokidar from 'chokidar';
 import { createHash } from 'crypto';
 import yaml from 'js-yaml';
 import {
@@ -190,18 +189,6 @@ async function getFolderConfig(session: ISession, folder: string): Promise<Folde
     folder,
   );
 }
-
-// export function watchConfig(cache: IDocumentCache) {
-//   return chokidar
-//     .watch(cache.session.configPath, {
-//       ignoreInitial: true,
-//       awaitWriteFinish: { stabilityThreshold: 50, pollInterval: 50 },
-//     })
-//     .on('all', async () => {
-//       await cache.readConfig();
-//       await cache.writeConfig();
-//     });
-// }
 
 export class DocumentCache implements IDocumentCache {
   session: ISession;

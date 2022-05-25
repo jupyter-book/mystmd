@@ -15,7 +15,7 @@ type License = {
 
 export type Frontmatter = {
   title?: string;
-  description?: string;
+  description?: string | null;
   authors?: Author[];
   subject?: string;
   open_access?: boolean;
@@ -57,7 +57,8 @@ export type Frontmatter = {
 
 export type ProjectConfig = {
   title: string;
-  frontmatter?: Frontmatter;
+  description?: string | null;
+  frontmatter?: Omit<Frontmatter, 'title' | 'description'>;
   remote?: string;
   index?: string;
   exclude?: string[];
@@ -86,7 +87,7 @@ export type SiteAction = SiteNavPage & {
 
 export type SiteConfig = {
   title: string;
-  frontmatter?: Frontmatter;
+  frontmatter?: Omit<Frontmatter, 'title' | 'description'>;
   twitter?: string;
   domains: string[];
   logo?: string;

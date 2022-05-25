@@ -3,7 +3,7 @@ import { sync } from '../../index';
 import { clirun } from './utils';
 import { makeBranchOption, makeForceOption, makeYesOption } from './utils/options';
 
-function makeSyncInitCLI(program: Command) {
+function makeInitCLI(program: Command) {
   const command = new Command('init')
     .description('Initialize a Curvenote project')
     .addOption(makeForceOption())
@@ -12,31 +12,26 @@ function makeSyncInitCLI(program: Command) {
   return command;
 }
 
-function makeSyncPullCLI(program: Command) {
+function makePullCLI(program: Command) {
   const command = new Command('pull')
-    .description('Pull all information for a Curvenote project')
-    .argument('[folder]', 'The location of the content to pull')
+    .description('Pull all remote information for a Curvenote project')
+    .argument('[folder]', 'The location of the content to pull, defaults to the currect directory')
     .addOption(makeYesOption())
     .action(clirun(sync.pull, { program, requireConfig: true }));
   return command;
 }
 
-function makeSyncAddCLI(program: Command) {
-  const command = new Command('add')
-    .description('Add content to your Curvenote project')
-    .action(clirun(sync.add, { program, requireConfig: true }));
+function makeCloneCLI(program: Command) {
+  const command = new Command('clone')
+    .description('Clone a Curvenote project')
+    .argument('[remote]', 'Curvenote link to a project')
+    .argument('[folder]', 'The location of the content to clone')
+    .action(clirun(sync.clone, { program, requireConfig: true }));
   return command;
 }
 
 export function addSyncCLI(program: Command) {
-  const command = new Command('sync').description(
-    'Commands to clone, install, and start a webserver',
-  );
-  command.addCommand(makeSyncInitCLI(program));
-  command.addCommand(makeSyncPullCLI(program));
-  command.addCommand(makeSyncAddCLI(program));
-  program.addCommand(command);
-  // Add a `init` and `pull` shortcut at the top level
-  program.addCommand(makeSyncInitCLI(program));
-  program.addCommand(makeSyncPullCLI(program));
+  program.addCommand(makeInitCLI(program));
+  program.addCommand(makeCloneCLI(program));
+  program.addCommand(makePullCLI(program));
 }

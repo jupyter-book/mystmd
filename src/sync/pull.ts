@@ -1,9 +1,6 @@
 import fs from 'fs';
-import { join, basename, resolve } from 'path';
-import inquirer from 'inquirer';
 import pLimit from 'p-limit';
-import chalk from 'chalk';
-import { projectIdFromLink, projectToJupyterBook } from '../export';
+import { projectToJupyterBook } from '../export';
 import { Project } from '../models';
 import { ISession } from '../session/types';
 import { tic } from '../export/utils/exec';
@@ -11,50 +8,21 @@ import { projectLogString } from './utils';
 import { LogLevel, getLevel } from '../logging';
 import { confirmOrExit } from '../utils';
 import { selectors } from '../store';
-import questions from './questions';
 import { isDirectory } from '../toc';
-import { docLinks } from '../docs';
-import { CURVENOTE_YML, loadProjectConfigOrThrow, writeProjectConfig } from '../newconfig';
-import { config } from '../store/local';
-
-export async function validateProject(
-  session: ISession,
-  projectLink: string,
-): Promise<Project | undefined> {
-  const id = projectIdFromLink(session, projectLink);
-  let project: Project;
-  try {
-    project = await new Project(session, id).get();
-  } catch (error) {
-    session.log.error('Could not load project from link.');
-    if (session.isAnon) {
-      session.log.info(
-        `To add your own Curvenote projects, please authenticate using:\n\ncurvenote token set [token]\n\nLearn more at ${docLinks.auth}`,
-      );
-    }
-    return undefined;
-  }
-  session.log.info(chalk.green(`🚀 Found ${projectLogString(project)}`));
-  return project;
-}
+import { loadProjectConfigOrThrow, loadSiteConfigOrThrow } from '../newconfig';
 
 /**
  * Pull content for a project
- *
- * @param session the session
- * @param id the item id which is also the project id for remote content
- * @param path the local path to pull
- * @param level logging level from the cli
  */
-async function pullProject(session: ISession, path: string, level?: LogLevel) {
+export async function pullProject(session: ISession, path: string, opts?: { level?: LogLevel }) {
   const state = session.store.getState();
   const projectConfig = selectors.selectLocalProjectConfig(state, path);
   if (!projectConfig) throw Error(`cannot pull project from ${path}: no project config`);
   if (!projectConfig.remote) throw Error(`cannot pull project from ${path}: no remote id`);
-  const log = getLevel(session.log, level ?? LogLevel.debug);
+  const log = getLevel(session.log, opts?.level ?? LogLevel.debug);
   const project = await new Project(session, projectConfig.remote).get();
   const toc = tic();
-  log(`Pulling ${path} from ${projectLogString(project)}`);
+  log(`📥 Pulling ${path} from ${projectLogString(project)}`);
   await projectToJupyterBook(session, project.id, {
     path,
     writeConfig: false,
@@ -66,9 +34,6 @@ async function pullProject(session: ISession, path: string, level?: LogLevel) {
 
 /**
  * Pull content for all projects in the config.sync that have remotes
- *
- * @param session
- * @param opts
  */
 export async function pullProjects(session: ISession, opts: { level?: LogLevel }) {
   const state = session.store.getState();
@@ -77,7 +42,7 @@ export async function pullProjects(session: ISession, opts: { level?: LogLevel }
   const limit = pLimit(1);
   await Promise.all(
     siteConfig.projects.map(async (proj) => {
-      limit(async () => pullProject(session, proj.path, opts.level));
+      limit(async () => pullProject(session, proj.path, opts));
     }),
   );
 }
@@ -87,9 +52,7 @@ type Options = {
 };
 
 /**
- * Pull a project from curvenote.com to a given path
- *
- * Prompts for project link if no project config is present, otherwise
+ * Pull new content for a project from curvenote.com
  */
 export async function pull(session: ISession, path?: string, opts?: Options) {
   path = path || '.';
@@ -98,30 +61,19 @@ export async function pull(session: ISession, path?: string, opts?: Options) {
       `Invalid path: "${path}", it must be a folder accessible from the local directory`,
     );
   }
-  let projectConfig;
-  try {
-    // Pull from existing remote project saved in curvenote.yml
-    projectConfig = loadProjectConfigOrThrow(session.store, path);
-    if (!projectConfig?.remote) {
-      session.log.error(`No "remote" defined in "${join(path, CURVENOTE_YML)}"`);
-      return;
-    }
-  } catch {
-    // Pull from new remote project
-    const { projectLink } = await inquirer.prompt([questions.projectLink()]);
-    const project = await validateProject(session, projectLink);
-    if (!project) return;
-    projectConfig = {
-      remote: project.data.id,
-      title: basename(resolve(path)),
-    };
-    session.store.dispatch(config.actions.receiveProject({ path, ...projectConfig }));
-    writeProjectConfig(session.store.getState(), path);
+  if (path === '.') {
+    const siteConfig = loadSiteConfigOrThrow(session.store);
+    const numProjects = siteConfig.projects.length;
+    if (numProjects === 0) throw new Error('You site configuration has no projects');
+    const plural = numProjects > 1 ? 's' : '';
+    await confirmOrExit(
+      `Pulling will overwrite all content in ${numProjects} project${plural}. Are you sure?`,
+      opts,
+    );
+    await pullProjects(session, { level: LogLevel.info });
+  } else {
+    loadProjectConfigOrThrow(session.store, path);
+    await confirmOrExit(`Pulling will overwrite all content in ${path}. Are you sure?`, opts);
+    await pullProject(session, path, { level: LogLevel.info });
   }
-  const message = `Pulling will overwrite all content in ${
-    path === '.' ? 'the current directory' : path
-  }. Are you sure?`;
-
-  await confirmOrExit(message, opts);
-  await pullProject(session, path, LogLevel.info);
 }

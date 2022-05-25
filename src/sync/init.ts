@@ -1,20 +1,20 @@
 import fs from 'fs';
-import { basename, join, resolve } from 'path';
+import { basename, resolve } from 'path';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { ISession } from '../session/types';
 import { CURVENOTE_YML, writeSiteConfig, writeProjectConfig } from '../newconfig';
 import { docLinks } from '../docs';
-import { MyUser, Project } from '../models';
+import { MyUser } from '../models';
 import { writeFileToFolder } from '../utils';
 import { startServer } from '../web';
 import { LOGO } from '../web/public';
-import { pullProjects, validateProject } from './pull';
+import { pullProjects } from './pull';
 import questions from './questions';
 import { LogLevel } from '../logging';
-import { ProjectConfig, SiteConfig } from '../types';
-import { config } from '../store/local';
 import { selectors } from '../store';
+import { getDefaultProjectConfig, getDefaultSiteConfig, INIT_LOGO_PATH } from './utils';
+import { interactiveCloneQuestions } from './clone';
 
 type Options = {
   branch?: string;
@@ -61,22 +61,6 @@ ${docLinks.overview}
 
 `;
 
-const INIT_LOGO_PATH = join('public', 'logo.svg');
-
-const getDefaultSiteConfig = (title?: string): SiteConfig => ({
-  title: title || 'My Curve Space',
-  domains: [],
-  logo: INIT_LOGO_PATH,
-  logoText: title || 'My Curve Space',
-  nav: [],
-  actions: [{ title: 'Learn More', url: docLinks.curvespace }],
-  projects: [],
-});
-
-const getDefaultProjectConfig = (title?: string): ProjectConfig => ({
-  title: title || 'my-project',
-});
-
 /**
  * Initialize local curvenote project from folder or remote project
  *
@@ -117,21 +101,11 @@ export async function init(session: ISession, opts: Options) {
     siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
     pullComplete = true;
   } else if (content === 'curvenote') {
-    let project: Project | undefined;
-    while (!project) {
-      const { projectLink } = await inquirer.prompt([questions.projectLink()]);
-      project = await validateProject(session, projectLink);
-    }
-    // TODO: Add all sorts of other stuff for the project data that we know!!
-    projectConfig.remote = project.data.id;
-    projectConfig.title = project.data.title;
-    const { projectPath } = await inquirer.prompt([
-      questions.projectPath(join('content', project.data.name)),
-    ]);
-    path = projectPath;
-    siteConfig.projects = [{ path, slug: project.data.name }];
-    // TODO: fix this comment!
-    session.log.info(`Add other projects using: ${chalk.bold('curvenote add')}\n`);
+    const { siteProject } = await interactiveCloneQuestions(session, { projectConfig });
+    path = siteProject.path;
+    siteConfig.nav = [{ title: projectConfig.title, url: `/${siteProject.slug}` }];
+    siteConfig.projects = [siteProject];
+    session.log.info(`Add other projects using: ${chalk.bold('curvenote clone')}\n`);
   }
   // Personalize the config
   me = await me;
@@ -143,11 +117,8 @@ export async function init(session: ISession, opts: Options) {
     if (twitter) siteConfig.twitter = twitter;
   }
   // Save the configs to the state and write them to disk
-  session.store.dispatch(config.actions.receiveSite(siteConfig));
-  session.store.dispatch(config.actions.receiveProject({ path, ...projectConfig }));
-  const state = session.store.getState();
-  writeSiteConfig(state, '.');
-  writeProjectConfig(state, path);
+  writeSiteConfig(session.store, '.', siteConfig);
+  writeProjectConfig(session.store, path, projectConfig);
 
   const pullOpts = { level: LogLevel.debug };
   let pullProcess: Promise<void> | undefined;
