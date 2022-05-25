@@ -21,7 +21,6 @@ export interface PartialNotebook {
   metadata: NotebookBlockMetadata;
   order: ChildId[];
   children: BlockChildDict;
-  launch_binder: string | null;
 }
 
 export const defaultFormat = NotebookFormatTypes.jupyter;
@@ -36,6 +35,5 @@ export function fromDTO(json: JsonObject): PartialNotebook {
     metadata: json.metadata ?? {},
     order: [...(json?.order ?? [])],
     children: { ...json.children },
-    launch_binder: json.launch_binder ?? null,
   };
 }
