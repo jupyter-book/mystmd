@@ -59,7 +59,6 @@ export async function transformImages(mdast: Root, state: TransformState) {
     images.map(async (image) => {
       const { session } = state.cache;
       const oxa = oxaLinkToId(image.url);
-      const fullPath = path.join(state.folder, image.url);
       let file: string;
       if (oxa) {
         // If oxa, get the download url
@@ -77,14 +76,14 @@ export async function transformImages(mdast: Root, state: TransformState) {
       } else if (isUrl(image.url)) {
         // If not oxa, download the URL directly and save it to a file with a hashed name
         file = await downloadAndSave(image.url, computeHash(image.url), state);
-      } else if (fs.existsSync(fullPath)) {
+      } else if (fs.existsSync(image.url)) {
         // Non-oxa, non-url local image paths relative to the config.section.path
-        file = `${computeHash(fullPath)}${path.extname(fullPath)}`;
+        file = `${computeHash(image.url)}${path.extname(image.url)}`;
         try {
-          fs.copyFileSync(fullPath, path.join(imagePath(state.cache.options), file));
-          session.log.debug(`Image successfully copied: ${fullPath}`);
+          fs.copyFileSync(image.url, path.join(imagePath(state.cache.options), file));
+          session.log.debug(`Image successfully copied: ${image.url}`);
         } catch {
-          session.log.error(`Error copying image: ${fullPath}`);
+          session.log.error(`Error copying image: ${image.url}`);
         }
       } else if (isBase64(image.url)) {
         // Inline base64 images
@@ -92,7 +91,7 @@ export async function transformImages(mdast: Root, state: TransformState) {
         await fileObject.writeBase64(image.url);
         file = fileObject.id;
       } else {
-        session.log.error(`Cannot find image: ${fullPath}`);
+        session.log.error(`Cannot find image: ${image.url}`);
         return;
       }
       // Update mdast with new file name
