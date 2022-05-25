@@ -146,7 +146,11 @@ export function projectFromPath(path: string, indexFile?: string): LocalProject 
   return { file: indexFile, index: slug, path, title, pages };
 }
 
-export function updateProject(store: Store<RootState>, path?: string, index?: string) {
+export function loadProjectConfigFromDisk(
+  store: Store<RootState>,
+  path?: string,
+  index?: string,
+): LocalProject {
   path = path || '.';
   let newProject;
   if (fs.existsSync(tocFile(path))) {
@@ -158,7 +162,11 @@ export function updateProject(store: Store<RootState>, path?: string, index?: st
     }
     newProject = projectFromPath(path, index);
   }
+  if (!newProject) {
+    throw new Error(`Could not find project config at ${path}`);
+  }
   store.dispatch(projects.actions.receive(newProject));
+  return newProject;
 }
 
 export function localToManifestProject(

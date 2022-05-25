@@ -284,7 +284,7 @@ export class DocumentCache implements IDocumentCache {
   //   return !fromCache;
   // }
 
-  async processFile2(
+  async processFile(
     siteProject: SiteProject,
     page: Pick<LocalProjectPage, 'file' | 'slug'>,
   ): Promise<{ id: string; processed: boolean }> {
@@ -304,7 +304,7 @@ export class DocumentCache implements IDocumentCache {
     const changed = this.$startupPass ? false : transformLinks(data.mdast, this.$links);
     if (changed || !fromCache) {
       writeFileToFolder(jsonFilename, JSON.stringify(data));
-      this.session.log.info(toc(`📖 Built ${id} in %s.`));
+      this.session.log.info(toc(`📖 Built ${page.file} in %s.`));
     }
     this.registerFile(id, data);
     // await this.writeConfig();

@@ -2,14 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import { makeExecutable } from '../export/utils';
 import { ISession } from '../session/types';
-import { buildContent2, cleanBuiltFiles, watchContent } from './prepare';
+import { buildSite, cleanBuiltFiles, watchContent } from './prepare';
 import { getGitLogger, getNpmLogger, getServerLogger } from './customLoggers';
 import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
 import { deployContent } from './deploy';
 import { MyUser } from '../models';
 import { confirmOrExit } from '../utils';
-import { getSiteManifest } from '../toc';
 import { selectors } from '../store';
 
 export async function clean(session: ISession, opts: Options) {
@@ -77,7 +76,7 @@ export async function build(session: ISession, opts: Options, showSparkles = tru
   if (!opts.ci) await cloneCurvespace(session, opts);
   if (showSparkles) sparkles(session, 'Building Curvenote');
   // Build the files in the content folder and process them
-  await buildContent2(session, opts);
+  await buildSite(session, opts);
 }
 
 export async function startServer(session: ISession, opts: Options) {
@@ -109,6 +108,6 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
   await cloneCurvespace(session, opts);
   sparkles(session, 'Deploying Curvenote');
   // Build the files in the content folder and process them
-  const cache = await buildContent2(session, { ...opts, clean: true });
+  const cache = await buildSite(session, { ...opts, clean: true });
   await deployContent(cache, domains);
 }
