@@ -10,7 +10,7 @@ import { DocumentCache } from './cache';
 import { LocalProjectPage, SiteProject } from '../types';
 import { selectors } from '../store';
 import { CURVENOTE_YML } from '../newconfig';
-import { getSiteManifest, loadProjectConfigFromDisk } from '../toc';
+import { getSiteManifest, loadProjectFromDisk } from '../toc';
 
 export function cleanBuiltFiles(session: ISession, opts: Options, info = true) {
   const toc = tic();
@@ -29,7 +29,7 @@ export function ensureBuildFoldersExist(session: ISession, opts: Options) {
 export async function buildProject(cache: DocumentCache, siteProject: SiteProject) {
   const toc = tic();
   const { store, log } = cache.session;
-  const project = loadProjectConfigFromDisk(store, siteProject.path);
+  const project = loadProjectFromDisk(store, siteProject.path);
   // Load the citations first, or else they are loaded in each call below
   await cache.getCitationRenderer(siteProject.path);
   const pages = await Promise.all([

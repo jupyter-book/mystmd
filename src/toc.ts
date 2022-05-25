@@ -146,7 +146,7 @@ export function projectFromPath(path: string, indexFile?: string): LocalProject 
   return { file: indexFile, index: slug, path, title, pages };
 }
 
-export function loadProjectConfigFromDisk(
+export function loadProjectFromDisk(
   store: Store<RootState>,
   path?: string,
   index?: string,
@@ -163,12 +163,18 @@ export function loadProjectConfigFromDisk(
     newProject = projectFromPath(path, index);
   }
   if (!newProject) {
-    throw new Error(`Could not find project config at ${path}`);
+    throw new Error(`Could load project from ${path}`);
   }
   store.dispatch(projects.actions.receive(newProject));
   return newProject;
 }
 
+/** Convert local project representation to site manifest project
+ *
+ * This does a couple things:
+ * - Adds projectSlug (which locally comes from site config)
+ * - Removes any local file references
+ */
 export function localToManifestProject(
   proj: LocalProject,
   projectSlug: string,
@@ -195,12 +201,17 @@ function copyLogo(session: ISession, logoName?: string | null): string | undefin
     logoName = join('public', logoName);
   }
   if (!fs.existsSync(logoName))
-    throw new Error(`Could not find logo at "${logoName}". See 'config.web.logo'`);
+    throw new Error(`Could not find logo at "${logoName}". See 'config.site.logo'`);
   const logo = `logo${extname(logoName)}`;
   fs.copyFileSync(logoName, join(publicPath({}), logo));
   return `/${logo}`;
 }
 
+/** Build Site Manifest from local curvenote state
+ *
+ * Site manifest acts as the configuration to build the curvespace site.
+ * It combines local site config and project configs into a single structure.
+ */
 export function getSiteManifest(session: ISession): SiteManifest {
   const siteProjects: ManifestProject[] = [];
   const state = session.store.getState();

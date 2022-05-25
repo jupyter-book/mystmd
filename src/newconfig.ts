@@ -60,6 +60,9 @@ export function loadSiteConfigOrThrow(store: Store<RootState>): SiteConfig {
 /**
  * Write site config to path
  *
+ * If newConfig is provided, the redux store will be updated with this site
+ * config before writing.
+ *
  * If a config file exists on the path, this will override the
  * site portion of the config and leave the rest.
  *
@@ -81,6 +84,9 @@ export function writeSiteConfig(store: Store, path: string, newConfig?: SiteConf
 
 /**
  * Write project config to path
+ *
+ * If newConfig is provided, the redux store will be updated with this project
+ * config before writing.
  *
  * If a config file exists on the path, this will override the
  * project portion of the config and leave the rest.
