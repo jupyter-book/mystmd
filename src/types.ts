@@ -122,9 +122,12 @@ export type LocalProjectPage = {
 
 export type LocalProject = {
   path: string;
+  /** The local path to the local index file. */
   file: string;
+  /** The slug that the index get's renamed to for the JSON */
   index: string;
   title: string;
+  citations: string[];
   pages: (LocalProjectPage | LocalProjectFolder)[];
 };
 

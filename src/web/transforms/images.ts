@@ -59,6 +59,7 @@ export async function transformImages(mdast: Root, state: TransformState) {
     images.map(async (image) => {
       const { session } = state.cache;
       const oxa = oxaLinkToId(image.url);
+      // TODO: This should be the file path, not the project path.
       const imageLocalFile = path.join(state.context.path, image.url);
       session.log.debug(`Found image ${image.url} at ${imageLocalFile}`);
       let file: string;

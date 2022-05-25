@@ -1,8 +1,7 @@
 import fs from 'fs';
 import { extname, parse, join } from 'path';
-import { Store } from 'redux';
 import { ISession } from './session';
-import { RootState, selectors } from './store';
+import { selectors } from './store';
 import { projects } from './store/local';
 import {
   Frontmatter,
@@ -73,7 +72,17 @@ function chaptersToPages(
   return pages;
 }
 
-function projectFromToc(path: string): LocalProject {
+function getCitationPaths(session: ISession, path: string): string[] {
+  // TODO: traverse to find all bibs, and or read from toc/config
+  const ref = join(path, 'references.bib');
+  if (!fs.existsSync(ref)) {
+    session.log.debug(`Expected citations at "${ref}"`);
+    return [];
+  }
+  return [ref];
+}
+
+function projectFromToc(session: ISession, path: string): LocalProject {
   const filename = tocFile(path);
   if (!fs.existsSync(filename)) {
     throw new Error(`Could not find TOC "${filename}". Please create a '_toc.yml'.`);
@@ -98,7 +107,8 @@ function projectFromToc(path: string): LocalProject {
       }
     });
   }
-  return { path, file: indexFile, index: slug, title, pages };
+  const citations = getCitationPaths(session, path);
+  return { path, file: indexFile, index: slug, title, pages, citations };
 }
 
 function projectPagesFromPath(
@@ -129,7 +139,7 @@ function projectPagesFromPath(
     .flat();
 }
 
-export function projectFromPath(path: string, indexFile?: string): LocalProject {
+export function projectFromPath(session: ISession, path: string, indexFile?: string): LocalProject {
   if (!indexFile) {
     fs.readdirSync(path).forEach((file) => {
       if (DEFAULT_INDEX_FILES.includes(file.toLowerCase())) {
@@ -143,29 +153,30 @@ export function projectFromPath(path: string, indexFile?: string): LocalProject 
   const pageSlugs: PageSlugs = {};
   const { slug, title } = fileInfo(indexFile, pageSlugs);
   const pages = projectPagesFromPath(path, 1, pageSlugs, [indexFile, join(path, '_build')]);
-  return { file: indexFile, index: slug, path, title, pages };
+  const citations = getCitationPaths(session, path);
+  return { file: indexFile, index: slug, path, title, pages, citations };
 }
 
 export function loadProjectFromDisk(
-  store: Store<RootState>,
+  session: ISession,
   path?: string,
   index?: string,
 ): LocalProject {
   path = path || '.';
   let newProject;
   if (fs.existsSync(tocFile(path))) {
-    newProject = projectFromToc(path);
+    newProject = projectFromToc(session, path);
   } else {
-    const project = selectors.selectLocalProject(store.getState(), path);
+    const project = selectors.selectLocalProject(session.store.getState(), path);
     if (!index && project?.file) {
       index = project.file;
     }
-    newProject = projectFromPath(path, index);
+    newProject = projectFromPath(session, path, index);
   }
   if (!newProject) {
     throw new Error(`Could load project from ${path}`);
   }
-  store.dispatch(projects.actions.receive(newProject));
+  session.store.dispatch(projects.actions.receive(newProject));
   return newProject;
 }
 

@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { makeExecutable } from '../export/utils';
 import { ISession } from '../session/types';
-import { buildSite, cleanBuiltFiles, watchContent } from './prepare';
+import { buildSite, cleanBuiltFiles } from './prepare';
 import { getGitLogger, getNpmLogger, getServerLogger } from './customLoggers';
 import { ensureBuildFolderExists, exists, serverPath } from './utils';
 import { Options } from './types';
@@ -10,6 +10,7 @@ import { deployContent } from './deploy';
 import { MyUser } from '../models';
 import { confirmOrExit } from '../utils';
 import { selectors } from '../store';
+import { watchContent } from './watch';
 
 export async function clean(session: ISession, opts: Options) {
   if (!exists(opts)) {

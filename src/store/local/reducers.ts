@@ -32,11 +32,9 @@ export const config = createSlice({
 });
 
 type WatchedFile = {
-  dirty?: true;
-  processed: boolean;
-  project: { path: string; slug: string };
-  file: { path: string; slug: string };
-  // data?: RendererData;
+  path: string;
+  fileIsChanged?: boolean;
+  title?: string;
 };
 type WatchState = { startup: boolean; files: Record<string, WatchedFile> };
 
@@ -47,8 +45,9 @@ export const watch = createSlice({
     setStartupPass(state, action: PayloadAction<boolean>) {
       state.startup = action.payload;
     },
-    registerFile(state, action: PayloadAction<WatchedFile>) {
-      state.files[action.payload.file.path] = action.payload;
+    markFileChanged(state, action: PayloadAction<{ path: string; changed?: boolean }>) {
+      const { path, changed = true } = action.payload;
+      state.files[path] = { ...state.files[path], path, fileIsChanged: changed };
     },
   },
 });

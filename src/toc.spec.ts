@@ -1,20 +1,23 @@
 import mock from 'mock-fs';
+import { Session } from './session';
 import { projectFromPath } from './toc';
 
 afterEach(() => mock.restore());
 
+const session = new Session();
+
 describe('site section generation', () => {
   it('empty', async () => {
     mock({});
-    expect(() => projectFromPath('.')).toThrow();
+    expect(() => projectFromPath(session, '.')).toThrow();
   });
   it('invalid index', async () => {
     mock({ 'readme.md': '' });
-    expect(() => projectFromPath('.', 'index.md')).toThrow();
+    expect(() => projectFromPath(session, '.', 'index.md')).toThrow();
   });
   it('readme.md only', async () => {
     mock({ 'readme.md': '' });
-    expect(projectFromPath('.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       title: 'readme',
@@ -23,7 +26,7 @@ describe('site section generation', () => {
   });
   it('README.md only', async () => {
     mock({ 'README.md': '' });
-    expect(projectFromPath('.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'README.md',
       path: '.',
       title: 'readme',
@@ -32,7 +35,7 @@ describe('site section generation', () => {
   });
   it('index.md only', async () => {
     mock({ 'index.md': '' });
-    expect(projectFromPath('.', 'index.md')).toEqual({
+    expect(projectFromPath(session, '.', 'index.md')).toEqual({
       file: 'index.md',
       path: '.',
       title: 'index',
@@ -41,7 +44,7 @@ describe('site section generation', () => {
   });
   it('folder/subfolder/index.md only', async () => {
     mock({ 'folder/subfolder/index.md': '' });
-    expect(projectFromPath('.', 'folder/subfolder/index.md')).toEqual({
+    expect(projectFromPath(session, '.', 'folder/subfolder/index.md')).toEqual({
       file: 'folder/subfolder/index.md',
       path: '.',
       title: 'index',
@@ -50,7 +53,7 @@ describe('site section generation', () => {
   });
   it('flat folder', async () => {
     mock({ 'readme.md': '', 'page.md': '', 'notebook.ipynb': '' });
-    expect(projectFromPath('.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       title: 'readme',
@@ -72,7 +75,7 @@ describe('site section generation', () => {
   });
   it('single folder', async () => {
     mock({ 'readme.md': '', folder: { 'page.md': '', 'notebook.ipynb': '' } });
-    expect(projectFromPath('.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       title: 'readme',
@@ -98,7 +101,7 @@ describe('site section generation', () => {
   });
   it('nested folders', async () => {
     mock({ 'readme.md': '', 'folder1/folder2/folder3': { 'page.md': '', 'notebook.ipynb': '' } });
-    expect(projectFromPath('.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       title: 'readme',
@@ -144,7 +147,7 @@ describe('site section generation', () => {
         },
       },
     });
-    expect(projectFromPath('folder1', 'folder1/folder2/readme.md')).toEqual({
+    expect(projectFromPath(session, 'folder1', 'folder1/folder2/readme.md')).toEqual({
       file: 'folder1/folder2/readme.md',
       path: 'folder1',
       title: 'readme',

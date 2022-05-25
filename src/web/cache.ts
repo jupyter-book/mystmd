@@ -24,7 +24,6 @@ import { writeFileToFolder } from '../utils';
 import { DEFAULT_FRONTMATTER, resolveFrontmatter } from './frontmatter';
 import { selectors } from '../store';
 import { Frontmatter, LocalProjectPage, SiteProject } from '../types';
-import { watch } from '../store/local';
 import { RendererData } from './transforms/types';
 
 type NextFile = { filename: string; folder: string; slug: string };
@@ -277,13 +276,6 @@ export class DocumentCache implements IDocumentCache {
     siteProject: SiteProject,
     page: Pick<LocalProjectPage, 'file' | 'slug'>,
   ): Promise<{ id: string; processed: boolean }> {
-    this.session.store.dispatch(
-      watch.actions.registerFile({
-        processed: false,
-        project: siteProject,
-        file: { path: page.file, slug: page.slug },
-      }),
-    );
     const toc = tic();
     const projectSlug = siteProject.slug;
     const id = path.join(siteProject.slug, page.slug);
