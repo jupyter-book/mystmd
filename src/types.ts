@@ -123,7 +123,8 @@ export type LocalProjectFolder = {
 export type LocalProjectPage = {
   file: string;
   slug: string;
-} & LocalProjectFolder;
+  level: pageLevels;
+};
 
 export type LocalProject = {
   path: string;
@@ -131,7 +132,6 @@ export type LocalProject = {
   file: string;
   /** The slug that the index get's renamed to for the JSON */
   index: string;
-  title: string;
   citations: string[];
   pages: (LocalProjectPage | LocalProjectFolder)[];
 };

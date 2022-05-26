@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { extname, parse, join } from 'path';
 import { ISession } from './session';
-import { selectors } from './store';
+import { RootState, selectors } from './store';
 import { projects } from './store/local';
 import {
   Frontmatter,
@@ -11,6 +11,7 @@ import {
   LocalProjectPage,
   LocalProject,
   ManifestProject,
+  SiteProject,
 } from './types';
 import { resolveFrontmatter } from './web/frontmatter';
 import { publicPath } from './web/utils';
@@ -96,7 +97,7 @@ export function projectFromToc(session: ISession, path: string): LocalProject {
   if (!indexFile) {
     throw Error(`Root from ${tocFile(path)} not found: ${indexFile}`);
   }
-  const { slug, title } = fileInfo(indexFile, pageSlugs);
+  const { slug } = fileInfo(indexFile, pageSlugs);
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
   if (toc.chapters) {
     chaptersToPages(path, toc.chapters, pages, 1, pageSlugs);
@@ -111,7 +112,7 @@ export function projectFromToc(session: ISession, path: string): LocalProject {
     });
   }
   const citations = getCitationPaths(session, path);
-  return { path, file: indexFile, index: slug, title, pages, citations };
+  return { path, file: indexFile, index: slug, pages, citations };
 }
 
 function projectPagesFromPath(
@@ -131,13 +132,13 @@ function projectPagesFromPath(
         return {
           file,
           level,
-          ...fileInfo(file, pageSlugs),
+          slug: fileInfo(file, pageSlugs).slug,
         } as LocalProjectPage;
       }
-      const projectFolder = { title: fileInfo(file, pageSlugs).title, level };
+      const projectFolder: LocalProjectFolder = { title: fileInfo(file, pageSlugs).title, level };
       const newLevel = level < 5 ? level + 1 : 6;
       const pages = projectPagesFromPath(file, newLevel as pageLevels, pageSlugs, ignore);
-      return pages.length ? [projectFolder].concat(pages) : [];
+      return pages.length ? [projectFolder, ...pages] : [];
     })
     .flat();
 }
@@ -157,10 +158,10 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
     throw Error(`index file ${indexFile || DEFAULT_INDEX_FILES.join(',')} not found`);
   }
   const pageSlugs: PageSlugs = {};
-  const { slug, title } = fileInfo(indexFile, pageSlugs);
+  const { slug } = fileInfo(indexFile, pageSlugs);
   const pages = projectPagesFromPath(path, 1, pageSlugs, [indexFile, join(path, '_build')]);
   const citations = getCitationPaths(session, path);
-  return { file: indexFile, index: slug, path, title, pages, citations };
+  return { file: indexFile, index: slug, path, pages, citations };
 }
 
 /**
@@ -206,19 +207,32 @@ export function loadProjectFromDisk(
  * - Removes any local file references
  */
 export function localToManifestProject(
-  proj: LocalProject,
-  projectSlug: string,
+  state: RootState,
+  siteProj: SiteProject,
   frontmatter: Frontmatter,
-): ManifestProject {
-  const { title: projectTitle, index, pages } = proj;
-  const manifestPages = pages.map((page) => {
+): ManifestProject | null {
+  const projConfig = selectors.selectLocalProjectConfig(state, siteProj.path);
+  const proj = selectors.selectLocalProject(state, siteProj.path);
+  if (!proj || !projConfig) return null;
+  // Update all of the page title to the frontmatter title
+  const { index } = proj;
+  const projectTitle =
+    projConfig?.title || selectors.selectFileInfo(state, proj.file).title || proj.index;
+  const pages: ManifestProject['pages'] = proj.pages.map((page) => {
     if ('file' in page) {
-      const { slug, title, level } = page;
+      const title = selectors.selectFileInfo(state, page.file).title || page.slug;
+      const { slug, level } = page;
       return { slug, title, level };
     }
-    return page;
+    return { ...page };
   });
-  return { slug: projectSlug, index, title: projectTitle, pages: manifestPages, ...frontmatter };
+  return {
+    slug: siteProj.slug,
+    index,
+    title: projectTitle || 'Untitled',
+    pages,
+    ...frontmatter,
+  };
 }
 
 function getLogoPaths(
@@ -265,19 +279,9 @@ export function getSiteManifest(session: ISession): SiteManifest {
       session.log,
       siteProj.path,
     );
-    const proj = selectors.selectLocalProject(state, siteProj.path);
+    const proj = localToManifestProject(state, siteProj, frontmatter);
     if (!proj) return;
-    // Update all of the page title to the frontmatter title
-    const projectTitle = selectors.selectFileInfo(state, proj.file).title || proj.title;
-    const pages = proj.pages
-      .filter((page): page is LocalProjectPage => 'file' in page)
-      .map((page) => {
-        const title = selectors.selectFileInfo(state, page.file).title || page.slug;
-        return { ...page, title };
-      });
-    siteProjects.push(
-      localToManifestProject({ ...proj, pages, title: projectTitle }, siteProj.slug, frontmatter),
-    );
+    siteProjects.push(proj);
   });
   const { title, twitter, logo, logoText, nav, actions } = siteConfig;
   const manifest: SiteManifest = {
