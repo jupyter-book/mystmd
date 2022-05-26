@@ -21,6 +21,8 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       title: 'readme',
+      index: 'readme',
+      citations: [],
       pages: [],
     });
   });
@@ -30,6 +32,8 @@ describe('site section generation', () => {
       file: 'README.md',
       path: '.',
       title: 'readme',
+      index: 'readme',
+      citations: [],
       pages: [],
     });
   });
@@ -39,6 +43,8 @@ describe('site section generation', () => {
       file: 'index.md',
       path: '.',
       title: 'index',
+      index: 'index',
+      citations: [],
       pages: [],
     });
   });
@@ -48,6 +54,8 @@ describe('site section generation', () => {
       file: 'folder/subfolder/index.md',
       path: '.',
       title: 'index',
+      index: 'index',
+      citations: [],
       pages: [],
     });
   });
@@ -57,6 +65,8 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       title: 'readme',
+      index: 'readme',
+      citations: [],
       pages: [
         {
           file: 'notebook.ipynb',
@@ -79,6 +89,8 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       title: 'readme',
+      index: 'readme',
+      citations: [],
       pages: [
         {
           title: 'folder',
@@ -105,6 +117,8 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       title: 'readme',
+      index: 'readme',
+      citations: [],
       pages: [
         {
           title: 'folder1',
@@ -151,6 +165,8 @@ describe('site section generation', () => {
       file: 'folder1/folder2/readme.md',
       path: 'folder1',
       title: 'readme',
+      index: 'readme',
+      citations: [],
       pages: [
         {
           title: 'folder2',
