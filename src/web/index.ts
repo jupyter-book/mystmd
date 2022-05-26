@@ -21,14 +21,14 @@ export async function clean(session: ISession) {
   const toc = tic();
   session.log.info(`🗑  Removing ${serverPath(session)}`);
   fs.rmSync(serverPath(session), { recursive: true, force: true });
-  session.log.info(toc(`🗑  Removed ${serverPath(session)} in %s`));
+  session.log.debug(toc(`Removed ${serverPath(session)} in %s`));
 }
 
 export async function clone(session: ISession, opts: Options) {
   session.log.info('🌎 Cloning Curvespace');
   const branch = opts.branch || 'main';
   if (branch !== 'main') {
-    session.log.warn(`👷‍♀️ Warning, using a branch: ${branch}`);
+    session.log.warn(`👷 Warning, using a branch: ${branch}`);
   }
   await makeExecutable(
     `git clone --depth 1 --branch ${branch} https://github.com/curvenote/curvespace.git ${serverPath(
@@ -48,7 +48,7 @@ export async function clone(session: ISession, opts: Options) {
 
 export async function install(session: ISession) {
   const toc = tic();
-  session.log.info('⤵️  Installing web libraries (can take up to 90 s ☕️)');
+  session.log.info('⤵️  Installing web libraries (can take up to 60 s)');
   if (!buildPathExists(session)) {
     session.log.error('Curvespace is not cloned. Do you need to run: \n\ncurvenote web clone');
     return;
