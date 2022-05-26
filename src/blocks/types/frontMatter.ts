@@ -25,7 +25,7 @@ export type FrontMatterProps = {
 
 export type BlockFrontMatterProps = Partial<FrontMatterProps>;
 
-export type ProjectFrontMatterProps = Omit<BlockFrontMatterProps, 'venue' | 'biblio'>;
+export type ProjectFrontMatterProps = Omit<BlockFrontMatterProps, 'venue' | 'biblio' | 'subtitle'>;
 
 // Exhausiveness is ensured in test
 export const PROJECT_FRONT_MATTER_KEYS = [
