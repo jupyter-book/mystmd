@@ -34,9 +34,15 @@ function isBase64(data: string) {
 }
 
 async function downloadAndSave(session: ISession, url: string, file: string): Promise<string> {
+  const fileFolder = imagePath(session);
+  const fileMatch = fs.readdirSync(fileFolder).find((f) => path.parse(f).name === file);
+  if (fileMatch) {
+    session.log.debug(`Cached image found for: ${url}...`);
+    return fileMatch;
+  }
   const filePath = path.join(imagePath(session), file);
   let extension: string | false = false;
-  session.log.debug(`Fetching image: ${url.slice(0, 31)}...\n  -> saving to: ${filePath}`);
+  session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${filePath}`);
   await fetch(url)
     .then(
       (res) =>
@@ -50,7 +56,7 @@ async function downloadAndSave(session: ISession, url: string, file: string): Pr
         }),
     )
     .then(() => session.log.debug(`Image successfully saved to: ${filePath}`))
-    .catch(() => session.log.error(`Error saving image "${url.slice(0, 31)}" to: ${filePath}`));
+    .catch(() => session.log.error(`Error saving image "${url}" to: ${filePath}`));
   return extension ? `${file}.${extension}` : file;
 }
 
@@ -60,7 +66,6 @@ export async function transformImages(session: ISession, mdast: Root, filePath: 
     images.map(async (image) => {
       const oxa = oxaLinkToId(image.url);
       const imageLocalFile = path.join(filePath, image.url);
-      session.log.debug(`Found image ${image.url} at ${imageLocalFile}`);
       let file: string;
       if (oxa) {
         // If oxa, get the download url
@@ -85,11 +90,16 @@ export async function transformImages(session: ISession, mdast: Root, filePath: 
       } else if (fs.existsSync(imageLocalFile)) {
         // Non-oxa, non-url local image paths relative to the config.section.path
         file = `${computeHash(imageLocalFile)}${path.extname(image.url)}`;
-        try {
-          fs.copyFileSync(imageLocalFile, path.join(imagePath(session), file));
-          session.log.debug(`Image successfully copied: ${imageLocalFile}`);
-        } catch {
-          session.log.error(`Error copying image: ${imageLocalFile}`);
+        const destination = path.join(imagePath(session), file);
+        if (fs.existsSync(destination)) {
+          session.log.debug(`Cached image found for: ${imageLocalFile}`);
+        } else {
+          try {
+            fs.copyFileSync(imageLocalFile, destination);
+            session.log.debug(`Image successfully copied: ${imageLocalFile}`);
+          } catch {
+            session.log.error(`Error copying image: ${imageLocalFile}`);
+          }
         }
       } else if (isBase64(image.url)) {
         // Inline base64 images
