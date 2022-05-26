@@ -11,6 +11,7 @@ export type FrontMatterProps = {
   open_access: boolean | null;
   github: string | null;
   binder: string | null;
+  subject: string | null;
   subtitle: string | null;
   short_title: string | null;
   venue: { title?: string; url?: string } | null;
@@ -35,7 +36,7 @@ export const PROJECT_FRONT_MATTER_KEYS = [
   'open_access',
   'github',
   'binder',
-  'subtitle',
+  'subject',
   'short_title',
 ] as (keyof ProjectFrontMatterProps)[];
 
@@ -43,4 +44,5 @@ export const BLOCK_FRONT_MATTER_KEYS = [
   ...PROJECT_FRONT_MATTER_KEYS,
   'venue',
   'biblio',
+  'subtitle',
 ] as (keyof BlockFrontMatterProps)[];

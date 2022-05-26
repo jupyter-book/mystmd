@@ -39,6 +39,7 @@ describe('extractBlockFrontMatter', () => {
       arxiv: 'arxiv',
       binder: 'binder',
       subtitle: 'subtitle',
+      subject: 'subject',
       short_title: '',
       open_access: false,
       venue: {},
@@ -46,7 +47,7 @@ describe('extractBlockFrontMatter', () => {
     };
 
     expect(extractBlockFrontMatter(frontmatter)).toEqual(frontmatter);
-    const { venue, biblio, ...projectExtractionResult } = frontmatter;
+    const { venue, biblio, subtitle, ...projectExtractionResult } = frontmatter;
     expect(extractProjectFrontMatter(frontmatter)).toEqual(projectExtractionResult);
   });
 
