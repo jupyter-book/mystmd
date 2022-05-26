@@ -17,8 +17,7 @@ import { tic } from '../export/utils/exec';
 import { FolderContext, IDocumentCache, Options, SiteConfig } from './types';
 import { parseMyst, publicPath, serverPath } from './utils';
 
-import { LinkLookup, transformLinks, transformMdast } from './transforms';
-// import { readConfig } from './webConfig';
+import { LinkLookup, transformLinks } from './transforms';
 import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
 import { DEFAULT_FRONTMATTER, resolveFrontmatter } from './frontmatter';
@@ -35,8 +34,8 @@ async function processMarkdown(
   content: string,
 ) {
   const mdast = parseMyst(content);
-  const data = await transformMdast(cache, context, filename, mdast);
-  return data;
+  // const data = await transformMdast(cache, context, filename, mdast);
+  return mdast;
 }
 
 function asString(source?: string | string[]): string {
@@ -61,7 +60,7 @@ async function processNotebook(
   const language = notebook.language ?? notebook.metadata?.kernelspec.language ?? 'python';
   log.debug(`Processing Notebook: "${filename.from}"`);
 
-  const fileFactory = createWebFileObjectFactory(log, publicPath(cache.options), '_static', {
+  const fileFactory = createWebFileObjectFactory(log, publicPath(cache.session), '_static', {
     useHash: true,
   });
 
@@ -109,8 +108,8 @@ async function processNotebook(
     output.data = outputMap[output.id];
   });
 
-  const data = await transformMdast(cache, context, filename, mdast);
-  return data;
+  // const data = await transformMdast(cache, context, filename, mdast);
+  return mdast;
 }
 
 async function processFile(
@@ -118,7 +117,8 @@ async function processFile(
   context: FolderContext,
   filename: { from: string; to: string; folder: string; url: string },
   content: string,
-): Promise<null | { fromCache: boolean; data: RendererData }> {
+) {
+  // ): Promise<null | { fromCache: boolean; data: RendererData }> {
   const sha256 = createHash('sha256').update(content).digest('hex');
   if (fs.existsSync(filename.to)) {
     const cachedContent = fs.readFileSync(filename.to).toString();
@@ -127,7 +127,7 @@ async function processFile(
     if (same) return { fromCache: true, data };
   }
   const ext = path.extname(filename.from);
-  let data: Omit<RendererData, 'sha256'>;
+  let data; // Omit<RendererData, 'sha256'>;
   switch (ext) {
     case '.md':
       data = await processMarkdown(cache, context, filename, content);
@@ -242,7 +242,7 @@ export class DocumentCache implements IDocumentCache {
   }
 
   $getJsonFilename(id: string) {
-    return path.join(serverPath(this.options), 'app', 'content', `${id}.json`);
+    return path.join(serverPath(this.session), 'app', 'content', `${id}.json`);
   }
 
   $processed: Record<string, RendererData> = {};
@@ -293,14 +293,13 @@ export class DocumentCache implements IDocumentCache {
     const filenames = { from: page.file, to: jsonFilename, folder: projectSlug, url: projectSlug };
     const processResult = await processFile(this, context, filenames, content);
     if (!processResult) return { id, processed: false };
-    const { fromCache, data } = processResult;
-    const changed = this.$startupPass ? false : transformLinks(data.mdast, this.$links);
-    if (changed || !fromCache) {
-      writeFileToFolder(jsonFilename, JSON.stringify(data));
-      this.session.log.info(toc(`📖 Built ${page.file} in %s.`));
-    }
-    this.registerFile(id, data);
-    // await this.writeConfig();
+    const { fromCache } = processResult;
+    // const changed = this.$startupPass ? false : transformLinks(data.mdast, this.$links);
+    // if (changed || !fromCache) {
+    //   writeFileToFolder(jsonFilename, JSON.stringify(data));
+    //   this.session.log.info(toc(`📖 Built ${page.file} in %s.`));
+    // }
+    // this.registerFile(id, data);
     return { id, processed: !fromCache };
   }
 
