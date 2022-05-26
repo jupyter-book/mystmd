@@ -12,7 +12,7 @@ import {
 function makeCurvespaceCleanCLI(program: Command) {
   const command = new Command('clean')
     .description('Install dependencies for serving')
-    .action(clirun(web.clean, { program, requireConfig: true }));
+    .action(clirun(web.clean, { program, requireSiteConfig: true }));
   return command;
 }
 
@@ -20,14 +20,14 @@ function makeCurvespaceCloneCLI(program: Command) {
   const command = new Command('clone')
     .description('Clone curvespace into the build directory')
     .addOption(makeBranchOption())
-    .action(clirun(web.clone, { program, requireConfig: true }));
+    .action(clirun(web.clone, { program, requireSiteConfig: true }));
   return command;
 }
 
 function makeCurvespaceInstallCLI(program: Command) {
   const command = new Command('install')
     .description('Install dependencies for serving')
-    .action(clirun(web.install, { program, requireConfig: true }));
+    .action(clirun(web.install, { program, requireSiteConfig: true }));
   return command;
 }
 
@@ -37,7 +37,7 @@ function makeCurvespaceStartCLI(program: Command) {
     .addOption(makeCleanOption())
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
-    .action(clirun(web.startServer, { program, requireConfig: true }));
+    .action(clirun(web.startServer, { program, requireSiteConfig: true }));
   return command;
 }
 
@@ -48,7 +48,7 @@ function makeBuildCLI(program: Command) {
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
     .addOption(makeCIOption())
-    .action(clirun(web.build, { program, requireConfig: true }));
+    .action(clirun(web.build, { program, requireSiteConfig: true }));
   return command;
 }
 
@@ -57,7 +57,7 @@ function makeDeployCLI(program: Command) {
     .description('Deploy content to https://*.curve.space or your own domain')
     .addOption(makeForceOption())
     .addOption(makeYesOption())
-    .action(clirun(web.deploy, { program, requireConfig: true }));
+    .action(clirun(web.deploy, { program, requireSiteConfig: true }));
   return command;
 }
 

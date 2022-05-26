@@ -17,7 +17,7 @@ function makePullCLI(program: Command) {
     .description('Pull all remote information for a Curvenote project')
     .argument('[folder]', 'The location of the content to pull, defaults to the current directory')
     .addOption(makeYesOption())
-    .action(clirun(sync.pull, { program, requireConfig: true }));
+    .action(clirun(sync.pull, { program }));
   return command;
 }
 
@@ -26,7 +26,7 @@ function makeCloneCLI(program: Command) {
     .description('Clone a Curvenote project')
     .argument('[remote]', 'Curvenote link to a project')
     .argument('[folder]', 'The location of the content to clone')
-    .action(clirun(sync.clone, { program, requireConfig: true }));
+    .action(clirun(sync.clone, { program }));
   return command;
 }
 

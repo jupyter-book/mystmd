@@ -89,7 +89,7 @@ export function clirun(
   cli: {
     program: Command;
     session?: ISession;
-    requireConfig?: boolean;
+    requireSiteConfig?: boolean;
     hideNoTokenWarning?: boolean;
   },
 ) {
@@ -100,7 +100,7 @@ export function clirun(
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
     const config = selectors.selectLocalSiteConfig(useSession.store.getState());
-    if (cli.requireConfig && !config) {
+    if (cli.requireSiteConfig && !config) {
       useSession.log.error(
         `You must be in a directory with a ${CURVENOTE_YML}\n\nDo you need to run: ${chalk.bold(
           'curvenote init',
