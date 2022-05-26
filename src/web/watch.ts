@@ -42,7 +42,7 @@ function fileProcessor(session: ISession, siteProject: SiteProject) {
       projectSlug: siteProject.slug,
       pageSlug,
     });
-    // TODO: process full site
+    // TODO: process full site silently and update if there are any
     // await processSite(session, true);
   };
 }

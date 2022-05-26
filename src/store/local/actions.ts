@@ -27,6 +27,7 @@ import { processNotebook } from './notebook';
 import { copyLogo, getSiteManifest, loadProjectFromDisk } from '../../toc';
 import { LocalProjectPage, SiteProject } from '../../types';
 import { selectFileInfo } from './selectors';
+import { loadAllConfigs } from '../../session';
 
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
@@ -279,6 +280,7 @@ export async function processProject(
 }
 
 export async function processSite(session: ISession, watchMode = false): Promise<boolean> {
+  loadAllConfigs(session);
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
   if (!siteConfig?.projects.length) return false;

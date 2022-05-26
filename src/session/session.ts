@@ -26,29 +26,31 @@ function withQuery(url: string, query: Record<string, string> = {}) {
   return url.indexOf('?') === -1 ? `${url}?${params}` : `${url}&${params}`;
 }
 
-function loadAllConfigs(log: Logger, store: Store<RootState>) {
+export function loadAllConfigs(session: Pick<ISession, 'log' | 'store'>) {
   try {
-    loadSiteConfigOrThrow(store);
-    log.debug(`Loaded site config from "./${CURVENOTE_YML}"`);
+    loadSiteConfigOrThrow(session.store);
+    session.log.debug(`Loaded site config from "./${CURVENOTE_YML}"`);
   } catch (error) {
     // TODO: what error?
-    log.debug(`Failed to find or load site config from "./${CURVENOTE_YML}"`);
+    session.log.debug(`Failed to find or load site config from "./${CURVENOTE_YML}"`);
   }
   try {
-    loadProjectConfigOrThrow(store, '.');
-    log.debug(`Loaded project config from "./${CURVENOTE_YML}"`);
+    loadProjectConfigOrThrow(session.store, '.');
+    session.log.debug(`Loaded project config from "./${CURVENOTE_YML}"`);
   } catch (error) {
     // TODO: what error?
-    log.debug(`Failed to find or load project config from "./${CURVENOTE_YML}"`);
+    session.log.debug(`Failed to find or load project config from "./${CURVENOTE_YML}"`);
   }
-  const siteConfig = selectLocalSiteConfig(store.getState());
+  const siteConfig = selectLocalSiteConfig(session.store.getState());
   if (!siteConfig) return;
   siteConfig.projects.forEach((project) => {
     try {
-      loadProjectConfigOrThrow(store, project.path);
+      loadProjectConfigOrThrow(session.store, project.path);
     } catch (error) {
       // TODO: what error?
-      log.debug(`Failed to find or load project config from "${project.path}/${CURVENOTE_YML}"`);
+      session.log.debug(
+        `Failed to find or load project config from "${project.path}/${CURVENOTE_YML}"`,
+      );
     }
   });
 }
@@ -81,7 +83,7 @@ export class Session implements ISession {
       this.log.warn(`Connecting to API at: "${this.API_URL}".`);
     }
     this.store = createStore(rootReducer);
-    loadAllConfigs(this.$logger, this.store);
+    loadAllConfigs({ log: this.$logger, store: this.store });
   }
 
   setToken(token?: string) {

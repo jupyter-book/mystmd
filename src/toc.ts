@@ -90,7 +90,7 @@ export function projectFromToc(session: ISession, path: string): LocalProject {
   if (!fs.existsSync(filename)) {
     throw new Error(`Could not find TOC "${filename}". Please create a '_toc.yml'.`);
   }
-  const toc = readTOC({ filename });
+  const toc = readTOC(session, { filename });
   const pageSlugs: PageSlugs = {};
   const indexFile = resolveExtension(join(path, toc.root));
   if (!indexFile) {
