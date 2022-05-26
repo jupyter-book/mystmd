@@ -1,6 +1,7 @@
 import { CitationRenderer, InlineCite } from 'citation-js-utils';
 import { GenericNode, selectAll } from 'mystjs';
-import { Root, References, TransformState } from './types';
+import { Root, References } from './types';
+import { Logger } from '../../logging';
 
 export type CiteKind = 'narrative' | 'parenthetical';
 
@@ -42,21 +43,26 @@ function hasChildren(node: GenericNode) {
   return node.children && node.children.length > 0;
 }
 
-export function transformCitations(mdast: Root, state: TransformState) {
+export function transformCitations(
+  log: Logger,
+  mdast: Root,
+  renderer: CitationRenderer,
+  references: References,
+) {
   // TODO: this can be simplified if typescript doesn't die on the parent
   selectAll('citeGroup', mdast).forEach((node: GenericNode) => {
     const kind = node.kind as CiteKind;
     node.children?.forEach((cite) => {
-      addCitationChildren(cite, state.citeRenderer, kind);
+      addCitationChildren(cite, renderer, kind);
     });
   });
   selectAll('cite', mdast).forEach((cite: GenericNode) => {
     const citeLabel = cite.label as string;
     // push cites in order of appearance in the document
-    pushCite(state.references, state.citeRenderer, citeLabel);
+    pushCite(references, renderer, citeLabel);
     if (hasChildren(cite)) return;
     // These are picked up as they are *not* cite groups
-    const success = addCitationChildren(cite, state.citeRenderer);
-    if (!success) state.cache.session.log.error(`⚠️  Could not find citation: ${cite.label}`);
+    const success = addCitationChildren(cite, renderer);
+    if (!success) log.error(`⚠️  Could not find citation: ${cite.label}`);
   });
 }

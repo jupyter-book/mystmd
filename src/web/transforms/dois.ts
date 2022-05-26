@@ -4,11 +4,10 @@ import { validate, normalize } from 'doi-utils';
 import { GenericNode, selectAll } from 'mystjs';
 import { CitationRenderer, getCitations } from 'citation-js-utils';
 import chalk from 'chalk';
-import { Root, TransformState } from './types';
+import { Root } from './types';
 import { Cite } from './citations';
 import { Logger } from '../../logging';
 import { tic } from '../../export/utils/exec';
-import { ISession } from '../../session';
 
 async function getDoiOrgBibtex(log: Logger, doi: string): Promise<string | null> {
   if (!validate(normalize(doi))) return null;

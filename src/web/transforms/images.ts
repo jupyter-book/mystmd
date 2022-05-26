@@ -5,22 +5,24 @@ import fs from 'fs';
 import path from 'path';
 import mime from 'mime-types';
 
-import { Root, TransformState } from './types';
-import { Options } from '../types';
+import { Root } from './types';
 import { computeHash, WebFileObject } from '../files';
 import { versionIdToURL } from '../../utils';
+import { ISession } from '../../session/types';
+import { selectors } from '../../store';
 
-export function serverPath(opts: Options) {
-  const buildPath = opts.buildPath || '_build';
+export function serverPath(session: ISession) {
+  const config = selectors.selectLocalSiteConfig(session.store.getState());
+  const buildPath = config?.buildPath || '_build';
   return `${buildPath}/web`;
 }
 
-export function publicPath(opts: Options) {
-  return path.join(serverPath(opts), 'public');
+export function publicPath(session: ISession) {
+  return path.join(serverPath(session), 'public');
 }
 
-export function imagePath(opts: Options) {
-  return path.join(publicPath(opts), '_static');
+export function imagePath(session: ISession) {
+  return path.join(publicPath(session), '_static');
 }
 
 function isUrl(url: string) {
@@ -31,9 +33,8 @@ function isBase64(data: string) {
   return data.split(';base64,').length === 2;
 }
 
-async function downloadAndSave(url: string, file: string, state: TransformState): Promise<string> {
-  const filePath = path.join(imagePath(state.cache.options), file);
-  const { session } = state.cache;
+async function downloadAndSave(session: ISession, url: string, file: string): Promise<string> {
+  const filePath = path.join(imagePath(session), file);
   let extension: string | false = false;
   session.log.debug(`Fetching image: ${url.slice(0, 31)}...\n  -> saving to: ${filePath}`);
   await fetch(url)
@@ -53,14 +54,12 @@ async function downloadAndSave(url: string, file: string, state: TransformState)
   return extension ? `${file}.${extension}` : file;
 }
 
-export async function transformImages(mdast: Root, state: TransformState) {
+export async function transformImages(session: ISession, mdast: Root, filePath: string) {
   const images = selectAll('image', mdast) as GenericNode[];
   return Promise.all(
     images.map(async (image) => {
-      const { session } = state.cache;
       const oxa = oxaLinkToId(image.url);
-      // TODO: This should be the file path, not the project path.
-      const imageLocalFile = path.join(state.context.path, image.url);
+      const imageLocalFile = path.join(filePath, image.url);
       session.log.debug(`Found image ${image.url} at ${imageLocalFile}`);
       let file: string;
       if (oxa) {
@@ -75,22 +74,26 @@ export async function transformImages(mdast: Root, state: TransformState) {
           session.log.error(`Error fetching image version: ${url}`);
           return;
         }
-        file = await downloadAndSave(downloadUrl, `${versionId.block}.${versionId.version}`, state);
+        file = await downloadAndSave(
+          session,
+          downloadUrl,
+          `${versionId.block}.${versionId.version}`,
+        );
       } else if (isUrl(image.url)) {
         // If not oxa, download the URL directly and save it to a file with a hashed name
-        file = await downloadAndSave(image.url, computeHash(image.url), state);
+        file = await downloadAndSave(session, image.url, computeHash(image.url));
       } else if (fs.existsSync(imageLocalFile)) {
         // Non-oxa, non-url local image paths relative to the config.section.path
         file = `${computeHash(imageLocalFile)}${path.extname(image.url)}`;
         try {
-          fs.copyFileSync(imageLocalFile, path.join(imagePath(state.cache.options), file));
+          fs.copyFileSync(imageLocalFile, path.join(imagePath(session), file));
           session.log.debug(`Image successfully copied: ${imageLocalFile}`);
         } catch {
           session.log.error(`Error copying image: ${imageLocalFile}`);
         }
       } else if (isBase64(image.url)) {
         // Inline base64 images
-        const fileObject = new WebFileObject(session.log, imagePath(state.cache.options), '', true);
+        const fileObject = new WebFileObject(session.log, imagePath(session), '', true);
         await fileObject.writeBase64(image.url);
         file = fileObject.id;
       } else {

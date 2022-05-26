@@ -9,7 +9,12 @@ import { DocumentCache } from './cache';
 import { LocalProjectPage, SiteProject } from '../types';
 import { selectors } from '../store';
 import { getSiteManifest, loadProjectFromDisk } from '../toc';
-import { loadFile, transformMdast, writeFile } from '../store/local/actions';
+import {
+  combineProjectCitationRenderers,
+  loadFile,
+  transformMdast,
+  writeFile,
+} from '../store/local/actions';
 
 export function cleanBuiltFiles(session: ISession, info = true) {
   const toc = tic();
@@ -38,6 +43,8 @@ export async function processProject(cache: DocumentCache, siteProject: SiteProj
     ...projectPages.map((page) => loadFile(cache.session, page.file)),
     ...project.citations.map((path) => loadFile(cache.session, path)),
   ]);
+  // Consolidate all citations onto single project citation renderer
+  combineProjectCitationRenderers(cache.session, siteProject.path);
   const fakeProjectPages = projectPages.filter((p) => p.file.endsWith('.md'));
   await Promise.all(
     fakeProjectPages.map((page) =>

@@ -1,6 +1,5 @@
 import { walkPaths } from '@curvenote/nbtx';
 import { GenericNode, selectAll } from 'mystjs';
-
 import { Root } from './types';
 
 export function transformOutputs(mdast: Root) {

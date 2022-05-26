@@ -13,6 +13,15 @@ import { transformRoot } from '../../web/transforms/root';
 import { getPageFrontmatter } from '../../web/frontmatter';
 import { writeFileToFolder } from '../../utils';
 import { transformLinkedDOIs } from '../../web/transforms/dois';
+import { ensureBlockNesting } from '../../web/transforms/blocks';
+import { transformMath } from '../../web/transforms/math';
+import { transformOutputs } from '../../web/transforms/outputs';
+import { transformCitations } from '../../web/transforms/citations';
+import { selectors } from '..';
+import { transformEnumerators } from '../../web/transforms/enumerate';
+import { transformFootnotes } from '../../web/transforms/footnotes';
+import { transformKeys } from '../../web/transforms/keys';
+import { transformImages } from '../../web/transforms/images';
 
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>;
@@ -48,6 +57,27 @@ async function loadCitations(session: ISession, path: string) {
   const plural = numCitations > 1 ? 's' : '';
   session.log.info(toc(`🏫 Read ${numCitations} citation${plural} from ${path} in %s.`));
   return renderer;
+}
+
+function combineRenderers(log: Logger, ...renderers: CitationRenderer[]) {
+  const combined: CitationRenderer = {};
+  renderers.forEach((renderer) => {
+    Object.keys(renderer).forEach((key) => {
+      if (combined[key]) {
+        log.warn(`Duplicate citations with id: ${key}`);
+      }
+      combined[key] = renderer[key];
+    });
+  });
+  return combined;
+}
+
+export function combineProjectCitationRenderers(session: ISession, projectPath: string) {
+  const project = selectors.selectLocalProject(session.store.getState(), projectPath);
+  const cache = castSession(session);
+  if (!project?.citations) return;
+  const renderers = project.citations.map((file) => cache.$citationRenderers[file]);
+  cache.$citationRenderers[projectPath] = combineRenderers(session.log, ...renderers);
 }
 
 export async function loadFile(session: ISession, path: string) {
@@ -131,19 +161,33 @@ export async function transformMdast(
   importMdastFromJson(session.log, file, mdast); // This must be first!
   mdast = await transformRoot(mdast);
   convertHtmlToMdast(mdast, { htmlHandlers });
-  // TODO: make sure we look at all project files, not just .bib, when resolving references
+  // Initialize citation renderers for this (non-bib) file
   if (!cache.$citationRenderers[file]) {
     cache.$citationRenderers[file] = {};
   }
   transformLinkedDOIs(log, mdast, cache.$citationRenderers[file]);
+  ensureBlockNesting(mdast);
+  transformMath(log, mdast, frontmatter);
+  transformOutputs(mdast);
+  // Combine file-specific citation renderers with project renderers from bib files
+  const fileCitationRenderer = combineRenderers(
+    log,
+    cache.$citationRenderers[projectPath],
+    cache.$citationRenderers[file],
+  );
+  transformCitations(log, mdast, fileCitationRenderer, references);
+  transformEnumerators(mdast, frontmatter);
+  transformFootnotes(mdast, references);
+  transformKeys(mdast);
+  await transformImages(session, mdast, dirname(file));
+  // TODO: Do we need to wait until here to delete authors if hide_authors is true?
+  //       or is it ok if it happens above in `getPageFrontmatter`
   const sha256 = ''; // TODO: get this from the store
   const data: RendererData = { sha256, frontmatter, mdast, references };
   cache.$mdast[file].post = data;
   log.debug(toc(`Processed "${file}" in %s`));
   console.log(data);
 }
-
-const opts = { buildPath: '_build' };
 
 export async function writeFile(
   session: ISession,
@@ -155,7 +199,7 @@ export async function writeFile(
   const mdastPost = cache.$mdast[file]?.post;
   if (!mdastPost) throw new Error(`Expected mdast to be processed and transformed for ${file}`);
   const id = join(projectSlug, pageSlug);
-  const jsonFilename = join(serverPath(opts), 'app', 'content', `${id}.json`);
+  const jsonFilename = join(serverPath(session), 'app', 'content', `${id}.json`);
   writeFileToFolder(jsonFilename, JSON.stringify(mdastPost));
   log.debug(toc(`Wrote "${file}" in %s`));
 }

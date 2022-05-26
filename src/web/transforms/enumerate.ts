@@ -1,9 +1,10 @@
 import { GenericNode, selectAll } from 'mystjs';
+import { Frontmatter } from '../../types';
 
-import { Root, TransformState } from './types';
+import { Root } from './types';
 
-export function transformEnumerators(mdast: Root, state: TransformState) {
-  const { numbering } = state.frontmatter;
+export function transformEnumerators(mdast: Root, frontmatter: Frontmatter) {
+  const { numbering } = frontmatter;
   if (numbering === true || numbering == null) return;
   if (numbering === false) {
     const numbered = selectAll('[enumerator]', mdast) as GenericNode[];

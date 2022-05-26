@@ -163,5 +163,8 @@ export function getPageFrontmatter(
   if (siteConfig?.frontmatter) {
     frontmatter = resolveFrontmatter(siteConfig.frontmatter, frontmatter, session.log);
   }
+  if (siteConfig?.design?.hide_authors) {
+    delete frontmatter.authors;
+  }
   return frontmatter;
 }
