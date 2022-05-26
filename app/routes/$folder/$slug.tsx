@@ -6,7 +6,7 @@ import {
   getData,
   getConfig,
   getMetaTagsForArticle,
-  getFolder,
+  getProject,
   PageLoader,
   getFooterLinks,
   SiteManifest,
@@ -44,7 +44,7 @@ export const loader: LoaderFunction = async ({
 }): Promise<PageLoader | Response> => {
   const folderName = params.folder;
   const config = await getConfig(request);
-  const folder = getFolder(config, folderName);
+  const folder = getProject(config, folderName);
   if (!folder) {
     throw new Response('Article was not found', { status: 404 });
   }

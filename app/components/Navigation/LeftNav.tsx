@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { NavLink, useParams, useLocation } from 'remix';
-import { getFolderPages, Heading, ManifestProject } from '~/utils';
+import { getProjectHeadings, Heading, ManifestProject } from '~/utils';
 import { useConfig } from '../ConfigProvider';
 import { CreatedInCurvenote } from '../curvenote';
 import { useNavOpen } from '../UiStateProvider';
@@ -104,8 +104,9 @@ const Headings = ({ folder, headings, sections }: Props) => {
 export const LeftNav = () => {
   const [open] = useNavOpen();
   const config = useConfig();
-  const { folder: folderName } = useParams();
-  const headings = getFolderPages(config, folderName);
+  const { folder: projectSlug } = useParams();
+  if (!config) return null;
+  const headings = getProjectHeadings(config, projectSlug);
   if (!headings) return null;
   return (
     <div
@@ -122,7 +123,11 @@ export const LeftNav = () => {
         aria-label="Navigation"
         className="flex-grow pt-10 pb-3 px-8 overflow-y-auto"
       >
-        <Headings folder={folderName} headings={headings} sections={config?.projects} />
+        <Headings
+          folder={projectSlug}
+          headings={headings}
+          sections={config?.projects}
+        />
       </nav>
       <div className="flex-none py-4">
         <CreatedInCurvenote />
