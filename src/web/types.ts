@@ -35,7 +35,6 @@ export interface SiteConfig {
 }
 
 export type Options = {
-  buildPath?: string;
   clean?: boolean;
   force?: boolean;
   branch?: string;

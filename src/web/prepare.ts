@@ -11,18 +11,18 @@ import { selectors } from '../store';
 import { getSiteManifest, loadProjectFromDisk } from '../toc';
 import { loadFile, transformMdast, writeFile } from '../store/local/actions';
 
-export function cleanBuiltFiles(session: ISession, opts: Options, info = true) {
+export function cleanBuiltFiles(session: ISession, info = true) {
   const toc = tic();
-  fs.rmSync(join(serverPath(opts), 'app', 'content'), { recursive: true, force: true });
-  fs.rmSync(join(publicPath(opts), '_static'), { recursive: true, force: true });
+  fs.rmSync(join(serverPath(session), 'app', 'content'), { recursive: true, force: true });
+  fs.rmSync(join(publicPath(session), '_static'), { recursive: true, force: true });
   const log = info ? session.log.info : session.log.debug;
   log(toc('🧹 Clean build files in %s.'));
 }
 
-export function ensureBuildFoldersExist(session: ISession, opts: Options) {
+export function ensureBuildFoldersExist(session: ISession) {
   session.log.debug('Build folders created for `app/content` and `_static`.');
-  fs.mkdirSync(join(serverPath(opts), 'app', 'content'), { recursive: true });
-  fs.mkdirSync(join(publicPath(opts), '_static'), { recursive: true });
+  fs.mkdirSync(join(serverPath(session), 'app', 'content'), { recursive: true });
+  fs.mkdirSync(join(publicPath(session), '_static'), { recursive: true });
 }
 
 export async function processProject(cache: DocumentCache, siteProject: SiteProject) {
@@ -65,8 +65,8 @@ export async function processProject(cache: DocumentCache, siteProject: SiteProj
   // };
 }
 
-export async function writeSiteManifest(session: ISession, opts: Options) {
-  const configPath = join(serverPath(opts), 'app', 'config.json');
+export async function writeSiteManifest(session: ISession) {
+  const configPath = join(serverPath(session), 'app', 'config.json');
   session.log.info('⚙️  Writing site config.json');
   const siteManifest = getSiteManifest(session);
   fs.writeFileSync(configPath, JSON.stringify(siteManifest));
@@ -76,15 +76,15 @@ export async function buildSite(session: ISession, opts: Options): Promise<Docum
   const cache = new DocumentCache(session, opts);
 
   if (opts.force || opts.clean) {
-    cleanBuiltFiles(session, opts);
+    cleanBuiltFiles(session);
   }
-  ensureBuildFoldersExist(session, opts);
+  ensureBuildFoldersExist(session);
 
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
 
   if (!siteConfig?.projects.length) return cache;
   await Promise.all(siteConfig.projects.map((siteProject) => processProject(cache, siteProject)));
-  await writeSiteManifest(session, opts);
+  await writeSiteManifest(session);
   return cache;
 }

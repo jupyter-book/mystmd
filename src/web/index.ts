@@ -4,7 +4,7 @@ import { makeExecutable } from '../export/utils';
 import { ISession } from '../session/types';
 import { buildSite, cleanBuiltFiles } from './prepare';
 import { getGitLogger, getNpmLogger, getServerLogger } from './customLoggers';
-import { ensureBuildFolderExists, exists, serverPath } from './utils';
+import { ensureBuildFolderExists, buildPathExists, serverPath } from './utils';
 import { Options } from './types';
 import { deployContent } from './deploy';
 import { MyUser } from '../models';
@@ -12,13 +12,13 @@ import { confirmOrExit } from '../utils';
 import { selectors } from '../store';
 import { watchContent } from './watch';
 
-export async function clean(session: ISession, opts: Options) {
-  if (!exists(opts)) {
-    session.log.debug(`web.clean: ${serverPath(opts)} not found.`);
+export async function clean(session: ISession) {
+  if (!buildPathExists(session)) {
+    session.log.debug(`web.clean: ${serverPath(session)} not found.`);
     return;
   }
-  session.log.debug(`web.clean: Removing ${serverPath(opts)}`);
-  fs.rmSync(serverPath(opts), { recursive: true, force: true });
+  session.log.debug(`web.clean: Removing ${serverPath(session)}`);
+  fs.rmSync(serverPath(session), { recursive: true, force: true });
 }
 
 export async function clone(session: ISession, opts: Options) {
@@ -29,44 +29,44 @@ export async function clone(session: ISession, opts: Options) {
   }
   await makeExecutable(
     `git clone --depth 1 --branch ${branch} https://github.com/curvenote/curvespace.git ${serverPath(
-      opts,
+      session,
     )}`,
     getGitLogger(session),
   )();
   // TODO: log out version!
   session.log.debug('Cleaning out any git information from build folder.');
   // TODO: udpate this when we are downloading a zip
-  const p = serverPath(opts);
+  const p = serverPath(session);
   // Remove all git-related things
   fs.rmSync(path.join(p, '.git'), { recursive: true, force: true });
   fs.rmSync(path.join(p, '.github'), { recursive: true, force: true });
-  cleanBuiltFiles(session, opts, false);
+  cleanBuiltFiles(session, false);
 }
 
-export async function install(session: ISession, opts: Options) {
+export async function install(session: ISession) {
   session.log.info('⤵️  Installing libraries');
-  if (!exists(opts)) {
+  if (!buildPathExists(session)) {
     session.log.error('Curvespace is not cloned. Do you need to run: \n\ncurvenote web clone');
     return;
   }
-  await makeExecutable(`cd ${serverPath(opts)}; npm install`, getNpmLogger(session))();
+  await makeExecutable(`cd ${serverPath(session)}; npm install`, getNpmLogger(session))();
 }
 
 export async function cloneCurvespace(session: ISession, opts: Options) {
   if (opts.force) {
-    await clean(session, opts);
-  } else if (opts.branch && opts.branch !== 'main' && exists(opts)) {
+    await clean(session);
+  } else if (opts.branch && opts.branch !== 'main' && buildPathExists(session)) {
     throw new Error(
       `Cannot use --branch option without force cloning \n\nTry with options: -F --branch ${opts.branch}`,
     );
   }
-  if (exists(opts)) {
+  if (buildPathExists(session)) {
     session.log.debug('Curvespace has been cloned, skipping install');
     return;
   }
-  ensureBuildFolderExists(opts);
+  ensureBuildFolderExists(session);
   await clone(session, opts);
-  await install(session, opts);
+  await install(session);
 }
 
 function sparkles(session: ISession, name: string) {
@@ -84,7 +84,7 @@ export async function startServer(session: ISession, opts: Options) {
   const cache = await build(session, opts, false);
   sparkles(session, 'Starting Curvenote');
   watchContent(session, cache);
-  await makeExecutable(`cd ${serverPath(opts)}; npm run serve`, getServerLogger(session))();
+  await makeExecutable(`cd ${serverPath(session)}; npm run serve`, getServerLogger(session))();
 }
 
 export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {

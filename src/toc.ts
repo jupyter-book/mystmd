@@ -233,7 +233,7 @@ function copyLogo(session: ISession, logoName?: string | null): string | undefin
   if (!fs.existsSync(logoName))
     throw new Error(`Could not find logo at "${logoName}". See 'config.site.logo'`);
   const logo = `logo${extname(logoName)}`;
-  fs.copyFileSync(logoName, join(publicPath({}), logo));
+  fs.copyFileSync(logoName, join(publicPath(session), logo));
   return `/${logo}`;
 }
 

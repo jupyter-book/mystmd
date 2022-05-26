@@ -92,6 +92,10 @@ export type SiteConfig = {
   domains: string[];
   logo?: string;
   logoText?: string;
+  buildPath?: string;
+  design?: {
+    hide_authors?: boolean;
+  };
   projects: SiteProject[];
   nav: SiteNavItem[];
   actions: SiteAction[];

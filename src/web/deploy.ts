@@ -24,20 +24,20 @@ type FromTo = {
 function listConfig(cache: DocumentCache): FromTo[] {
   const paths: FromTo[] = [];
   paths.push({
-    from: path.join(serverPath(cache.options), 'app', 'config.json'),
+    from: path.join(serverPath(cache.session), 'app', 'config.json'),
     to: 'config.json',
   });
   if (cache.config?.site.logo) {
     const logo = path.basename(cache.config.site.logo);
     paths.push({
-      from: path.join(serverPath(cache.options), 'public', logo),
+      from: path.join(serverPath(cache.session), 'public', logo),
       to: `public/${logo}`,
     });
   }
   if (cache.config?.site.favicon) {
     const favicon = path.basename(cache.config.site.favicon);
     paths.push({
-      from: path.join(serverPath(cache.options), 'public', favicon),
+      from: path.join(serverPath(cache.session), 'public', favicon),
       to: `public/${favicon}`,
     });
   }
@@ -47,7 +47,7 @@ function listConfig(cache: DocumentCache): FromTo[] {
     // String leading slash
     const names = action.url.split('/').filter((s) => s);
     paths.push({
-      from: path.join(serverPath(cache.options), 'public', ...names),
+      from: path.join(serverPath(cache.session), 'public', ...names),
       to: `public/${names.join('/')}`,
     });
   });
@@ -55,7 +55,7 @@ function listConfig(cache: DocumentCache): FromTo[] {
 }
 
 function listContentFolders(cache: DocumentCache): FromTo[] {
-  const contentFolder = path.join(serverPath(cache.options), 'app', 'content');
+  const contentFolder = path.join(serverPath(cache.session), 'app', 'content');
   const folders = fs.readdirSync(contentFolder);
   const fromTo = folders.map((folderName) => {
     const basePath = path.join(contentFolder, folderName);
@@ -69,7 +69,7 @@ function listContentFolders(cache: DocumentCache): FromTo[] {
 }
 
 function listPublic(cache: DocumentCache): FromTo[] {
-  const staticFolder = path.join(publicPath(cache.options), '_static');
+  const staticFolder = path.join(publicPath(cache.session), '_static');
   if (!fs.existsSync(staticFolder)) return [];
   const assets = fs.readdirSync(staticFolder);
   const fromTo = assets.map((assetName) => {

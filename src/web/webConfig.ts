@@ -1,9 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { WebConfig } from '../types';
 import { ISession } from '../session/types';
-import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
-import { Options, Page, SiteConfig, SiteFolder } from './types';
+import { SiteConfig } from './types';
 import { publicPath } from './transforms';
 
 export function getFileName(folder: string, file: string) {
@@ -19,7 +17,6 @@ export function getFileName(folder: string, file: string) {
 
 function copyActionResource(
   session: ISession,
-  opts: Options,
   action: SiteConfig['site']['actions'][0],
 ): SiteConfig['site']['actions'][0] {
   let { url: filePath } = action;
@@ -34,7 +31,7 @@ function copyActionResource(
   const parts = filePath.split(path.sep).filter((s, i) => i > 0 || s !== 'public');
   const webUrl = parts.join('/');
   session.log.debug(`Copying static resource from "${filePath}" to be available at "/${webUrl}"`);
-  fs.copyFileSync(filePath, path.join(publicPath(opts), ...parts));
+  fs.copyFileSync(filePath, path.join(publicPath(session), ...parts));
   return {
     title: action.title,
     url: `/${webUrl}`,
