@@ -263,7 +263,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
     const pages = proj.pages
       .filter((page): page is LocalProjectPage => 'file' in page)
       .map((page) => {
-        const title = selectors.selectFileInfo(state, page.file).title || page.title;
+        const title = selectors.selectFileInfo(state, page.file).title || page.slug;
         return { ...page, title };
       });
     siteProjects.push(

@@ -136,7 +136,7 @@ function frontmatterFromMdastTree(
   if (!frontmatter.title) {
     const heading = select('heading', tree) as GenericNode;
     // TODO: Improve title selection!
-    frontmatter.title = heading?.children?.[0]?.value || 'Untitled';
+    frontmatter.title = heading?.children?.[0]?.value;
   }
   return { tree, frontmatter };
 }
