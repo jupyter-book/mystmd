@@ -1,5 +1,7 @@
 import { oxaLink, oxaLinkToId } from '@curvenote/blocks';
 import { GenericNode, selectAll } from 'mystjs';
+import { ISession } from '../../session/types';
+import { selectors } from '../../store';
 import { Root } from './types';
 
 type LinkInfo = {
@@ -11,7 +13,7 @@ type LinkInfo = {
 
 export type LinkLookup = Record<string, LinkInfo>;
 
-export function transformLinks(mdast: Root, lookup: LinkLookup): boolean {
+export function transformLinks(session: ISession, mdast: Root): boolean {
   const links = selectAll('link,linkBlock', mdast) as GenericNode[];
   if (links.length === 0) return false;
   let changed = 0;
@@ -20,7 +22,8 @@ export function transformLinks(mdast: Root, lookup: LinkLookup): boolean {
     if (!oxa) return;
     link.oxa = oxa;
     const key = oxaLink(oxa, false) as string;
-    const url = lookup[key]?.url;
+    const info = selectors.selectOxaLinkInformation(session.store.getState(), key);
+    const url = info?.url;
     if (url && url !== link.url) {
       changed += 1;
       // the `internal` flag is picked up in the link renderer (prefetch!)
@@ -28,11 +31,11 @@ export function transformLinks(mdast: Root, lookup: LinkLookup): boolean {
       link.url = url;
       if (link.type === 'linkBlock') {
         // Any values already present on the block override link info
-        link.title = link.title || lookup[key].title;
+        link.title = link.title || info.title;
         if (!link.children || link.children.length === 0) {
-          link.children = [{ type: 'text', value: lookup[key].description }];
+          link.children = [{ type: 'text', value: info.description || '' }];
         }
-        link.thumbnail = link.thumbnail || lookup[key].thumbnail;
+        link.thumbnail = link.thumbnail || info.thumbnail;
       }
     }
   });

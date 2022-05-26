@@ -33,25 +33,46 @@ export const config = createSlice({
 
 type WatchedFile = {
   title?: string | null;
+  description?: string | null;
   sha256?: string | null;
 };
-type WatchState = Record<string, WatchedFile>;
+type WatchState = {
+  linkLookup: Record<string, { path: string; url: string }>;
+  files: Record<string, WatchedFile>;
+};
 
 export const watch = createSlice({
   name: 'watch',
-  initialState: {} as WatchState,
+  initialState: { linkLookup: {}, files: {} } as WatchState,
   reducers: {
     markFileChanged(state, action: PayloadAction<{ path: string; sha256?: string }>) {
       const { path, sha256 = null } = action.payload;
-      state[path] = { ...state[path], sha256 };
+      state.files[path] = { ...state.files[path], sha256 };
     },
     updateFileInfo(
       state,
-      action: PayloadAction<{ path: string; title?: string; sha256?: string }>,
+      action: PayloadAction<{
+        path: string;
+        title?: string | null;
+        description?: string | null;
+        sha256?: string;
+      }>,
     ) {
-      const { path, sha256, title } = action.payload;
-      if (title) state[path].title = title;
-      if (sha256) state[path].sha256 = sha256;
+      const { path, sha256, title, description } = action.payload;
+      if (title) state.files[path].title = title;
+      if (description) state.files[path].description = description;
+      if (sha256) state.files[path].sha256 = sha256;
+    },
+    updateLinkInfo(
+      state,
+      action: PayloadAction<{
+        path: string;
+        oxa: string;
+        url: string;
+      }>,
+    ) {
+      const { oxa, path, url } = action.payload;
+      state.linkLookup[oxa] = { path, url };
     },
   },
 });

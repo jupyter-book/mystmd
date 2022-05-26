@@ -28,6 +28,7 @@ import { copyLogo, getSiteManifest, loadProjectFromDisk } from '../../toc';
 import { LocalProjectPage, SiteProject } from '../../types';
 import { selectFileInfo } from './selectors';
 import { loadAllConfigs } from '../../session';
+import { transformLinks } from '../../web/transforms';
 
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
@@ -159,9 +160,17 @@ export async function transformMdast(
   session: ISession,
   {
     projectPath,
+    pageSlug,
+    projectSlug,
     file,
     watchMode = false,
-  }: { projectPath: string; file: string; watchMode?: boolean },
+  }: {
+    projectPath: string;
+    file: string;
+    projectSlug: string;
+    pageSlug: string;
+    watchMode?: boolean;
+  },
 ) {
   const toc = tic();
   const { store, log } = session;
@@ -192,10 +201,37 @@ export async function transformMdast(
   transformKeys(mdast);
   await transformImages(session, mdast, dirname(file));
   const sha256 = selectFileInfo(store.getState(), file).sha256 as string;
-  store.dispatch(watch.actions.updateFileInfo({ path: file, title: frontmatter.title }));
+  store.dispatch(
+    watch.actions.updateFileInfo({
+      path: file,
+      title: frontmatter.title,
+      description: frontmatter.description,
+      // TODO: thumbnail
+    }),
+  );
+  if (frontmatter.oxa) {
+    store.dispatch(
+      watch.actions.updateLinkInfo({
+        path: file,
+        oxa: frontmatter.oxa,
+        url: `/${projectSlug}/${pageSlug}`,
+      }),
+    );
+  }
   const data: RendererData = { sha256, frontmatter, mdast, references };
   cache.$mdast[file].post = data;
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
+}
+
+export async function postProcessMdast(session: ISession, { file }: { file: string }) {
+  const toc = tic();
+  const { log } = session;
+  const cache = castSession(session);
+  const mdastPost = cache.$mdast[file]?.post;
+  if (!mdastPost) throw new Error(`Expected mdast to be processed for ${file}`);
+  // TODO: this is doing things in place...
+  transformLinks(session, mdastPost.mdast);
+  log.debug(toc(`Transformed mdast cross references for "${file}" in %s`));
 }
 
 export async function writeFile(
@@ -231,7 +267,8 @@ export async function fastProcessFile(
 ) {
   const toc = tic();
   await loadFile(session, file);
-  await transformMdast(session, { file, projectPath, watchMode: true });
+  await transformMdast(session, { file, projectPath, projectSlug, pageSlug, watchMode: true });
+  await postProcessMdast(session, { file });
   await writeFile(session, { file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session);
@@ -263,9 +300,17 @@ export async function processProject(
   // Transform all pages
   await Promise.all(
     pages.map((page) =>
-      transformMdast(session, { projectPath: project.path, file: page.file, watchMode }),
+      transformMdast(session, {
+        projectPath: project.path,
+        file: page.file,
+        projectSlug: siteProject.slug,
+        pageSlug: page.slug,
+        watchMode,
+      }),
     ),
   );
+  // Handle all cross references
+  await Promise.all(pages.map((page) => postProcessMdast(session, { file: page.file })));
   // Write all pages
   await Promise.all(
     pages.map((page) =>

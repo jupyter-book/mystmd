@@ -334,17 +334,17 @@ export class DocumentCache implements IDocumentCache {
   $startupPass = false;
 
   async processAllLinks() {
-    await Promise.all(
-      Object.entries(this.$processed).map(async ([id, data]) => {
-        const jsonFilename = this.$getJsonFilename(id);
-        const toc = tic();
-        const changed = transformLinks(data.mdast, this.$links);
-        if (changed) {
-          writeFileToFolder(jsonFilename, JSON.stringify(data));
-          this.session.log.info(toc(`🔗 Built links for ${id} in %s.`));
-        }
-      }),
-    );
+    // await Promise.all(
+    //   Object.entries(this.$processed).map(async ([id, data]) => {
+    //     const jsonFilename = this.$getJsonFilename(id);
+    //     const toc = tic();
+    //     const changed = transformLinks(data.mdast, this.$links);
+    //     if (changed) {
+    //       writeFileToFolder(jsonFilename, JSON.stringify(data));
+    //       this.session.log.info(toc(`🔗 Built links for ${id} in %s.`));
+    //     }
+    //   }),
+    // );
   }
 
   $configDirty = false;
