@@ -24,7 +24,7 @@ import { transformFootnotes } from '../../web/transforms/footnotes';
 import { transformKeys } from '../../web/transforms/keys';
 import { transformImages } from '../../web/transforms/images';
 import { processNotebook } from './notebook';
-import { copyLogo, getSiteManifest, loadProjectFromDisk } from '../../toc';
+import { copyActionResource, copyLogo, getSiteManifest, loadProjectFromDisk } from '../../toc';
 import { LocalProjectPage, SiteProject } from '../../types';
 import { selectFileInfo } from './selectors';
 import { loadAllConfigs } from '../../session';
@@ -333,6 +333,8 @@ export async function processSite(session: ISession, watchMode = false): Promise
     siteConfig.projects.map((siteProject) => processProject(session, siteProject, watchMode)),
   );
   await writeSiteManifest(session);
+  // Copy all assets
   copyLogo(session, siteConfig.logo);
+  siteConfig.actions.forEach((action) => copyActionResource(session, action));
   return true;
 }

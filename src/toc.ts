@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { extname, parse, join } from 'path';
+import { extname, parse, join, sep } from 'path';
 import { ISession } from './session';
 import { RootState, selectors } from './store';
 import { projects } from './store/local';
@@ -12,6 +12,7 @@ import {
   LocalProject,
   ManifestProject,
   SiteProject,
+  SiteAction,
 } from './types';
 import { resolveFrontmatter } from './web/frontmatter';
 import { publicPath } from './web/utils';
@@ -253,6 +254,38 @@ function getLogoPaths(
   return { path: logoName, public: join(publicPath(session), logo), url: `/${logo}` };
 }
 
+function getManifestActionPaths(session: ISession, filePath: string) {
+  if (!fs.existsSync(filePath)) {
+    // Look in the local public path
+    filePath = join('public', filePath);
+  }
+  if (!fs.existsSync(filePath))
+    throw new Error(`Could not find static resource at "${filePath}". See 'config.site.actions'`);
+  // Get rid of the first public path if present
+  const parts = filePath.split(sep).filter((s, i) => i > 0 || s !== 'public');
+  const webUrl = parts.join('/'); // this is not sep! (web url!)
+  return { path: filePath, public: join(publicPath(session), ...parts), url: `/${webUrl}` };
+}
+
+function getSiteManifestAction(session: ISession, action: SiteAction): SiteAction {
+  if (!action.static || !action.url) return { ...action };
+  const { url } = getManifestActionPaths(session, action.url);
+  return {
+    title: action.title,
+    url,
+    static: true,
+  };
+}
+
+export function copyActionResource(session: ISession, action: SiteAction) {
+  if (!action.static || !action.url) return;
+  const resource = getManifestActionPaths(session, action.url);
+  session.log.debug(
+    `Copying static resource from "${resource.path}" to be available at "${resource.url}"`,
+  );
+  fs.copyFileSync(resource.path, resource.public);
+}
+
 export function copyLogo(session: ISession, logoName?: string | null): string | undefined {
   const logo = getLogoPaths(session, logoName);
   if (!logo) return;
@@ -283,7 +316,8 @@ export function getSiteManifest(session: ISession): SiteManifest {
     if (!proj) return;
     siteProjects.push(proj);
   });
-  const { title, twitter, logo, logoText, nav, actions } = siteConfig;
+  const { title, twitter, logo, logoText, nav } = siteConfig;
+  const actions = siteConfig.actions.map((action) => getSiteManifestAction(session, action));
   const manifest: SiteManifest = {
     title: title || '',
     twitter,
