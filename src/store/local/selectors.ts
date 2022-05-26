@@ -24,6 +24,7 @@ export function selectFileInfo(state: RootState, path: string) {
 export function selectPageSlug(state: RootState, projectPath: string, path: string) {
   const project = selectLocalProject(state, projectPath);
   if (!project) return undefined;
+  if (path === project.file) return project.index;
   const found = project.pages
     .filter((page): page is LocalProjectPage => 'file' in page)
     .find(({ file }) => file === path);
