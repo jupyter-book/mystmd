@@ -59,7 +59,7 @@ export async function transformLinkedDOIs(
   if (linkedDois.length === 0) return renderer;
   log.debug(`Found ${linkedDois.length} DOIs to auto link.`);
   const before = Object.keys(doiRenderer).length;
-  const success = await Promise.all(
+  await Promise.all(
     linkedDois.map(async (node) => {
       const cite = doiRenderer[node.url] ?? (await getCitation(log, node.url));
       if (!cite) return false;

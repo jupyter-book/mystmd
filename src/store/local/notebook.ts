@@ -7,6 +7,7 @@ import {
 } from '@curvenote/nbtx';
 import { GenericNode, selectAll } from 'mystjs';
 import { nanoid } from 'nanoid';
+import { Root } from '../../web/transforms/types';
 import { ISession } from '../../session/types';
 import { createWebFileObjectFactory } from '../../web/files';
 import { parseMyst, publicPath } from '../../web/utils';
@@ -20,7 +21,11 @@ function createOutputDirective(): { myst: string; id: string } {
   return { myst: `\`\`\`{output}\n:id: ${id}\n\`\`\``, id };
 }
 
-export async function processNotebook(session: ISession, path: string, content: string) {
+export async function processNotebook(
+  session: ISession,
+  path: string,
+  content: string,
+): Promise<Root> {
   const { log } = session;
   const { notebook, children } = parseNotebook(JSON.parse(content));
   // notebook will be empty, use generateNotebookChildren, generateNotebookOrder here if we want to populate those
