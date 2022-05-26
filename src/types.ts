@@ -92,6 +92,7 @@ export type SiteConfig = {
   domains: string[];
   logo?: string;
   logoText?: string;
+  favicon?: string;
   buildPath?: string;
   design?: {
     hide_authors?: boolean;

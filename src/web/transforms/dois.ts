@@ -3,11 +3,12 @@ import { Link } from 'myst-spec';
 import { validate, normalize } from 'doi-utils';
 import { GenericNode, selectAll } from 'mystjs';
 import { CitationRenderer, getCitations } from 'citation-js-utils';
-import chalk from 'chalk';
 import { Root } from './types';
 import { Cite } from './citations';
 import { Logger } from '../../logging';
 import { tic } from '../../export/utils/exec';
+
+export type SingleCitationRenderer = { id: string; render: CitationRenderer[''] };
 
 async function getDoiOrgBibtex(log: Logger, doi: string): Promise<string | null> {
   if (!validate(normalize(doi))) return null;
@@ -25,10 +26,7 @@ async function getDoiOrgBibtex(log: Logger, doi: string): Promise<string | null>
   return bibtex;
 }
 
-async function getCitation(
-  log: Logger,
-  doi: string,
-): Promise<{ id: string; render: CitationRenderer[''] } | null> {
+async function getCitation(log: Logger, doi: string): Promise<SingleCitationRenderer | null> {
   if (!validate(normalize(doi))) return null;
   const bibtex = await getDoiOrgBibtex(log, doi);
   if (!bibtex) {
@@ -44,20 +42,28 @@ async function getCitation(
 /**
  * Find in-line DOIs and add them to the citation renderer
  */
-export async function transformLinkedDOIs(log: Logger, mdast: Root, renderer: CitationRenderer) {
+export async function transformLinkedDOIs(
+  log: Logger,
+  mdast: Root,
+  doiRenderer: Record<string, SingleCitationRenderer>,
+  path: string,
+): Promise<CitationRenderer> {
   const toc = tic();
+  const renderer: CitationRenderer = {};
   const linkedDois: Link[] = [];
   selectAll('link', mdast).forEach((node: GenericNode) => {
     const { url } = node as Link;
     if (!validate(normalize(url))) return;
     linkedDois.push(node as Link);
   });
-  if (linkedDois.length === 0) return;
+  if (linkedDois.length === 0) return renderer;
   log.debug(`Found ${linkedDois.length} DOIs to auto link.`);
+  const before = Object.keys(doiRenderer).length;
   const success = await Promise.all(
     linkedDois.map(async (node) => {
-      const cite = await getCitation(log, node.url);
+      const cite = doiRenderer[node.url] ?? (await getCitation(log, node.url));
       if (!cite) return false;
+      doiRenderer[node.url] = cite;
       renderer[cite.id] = cite.render;
       const citeNode = node as unknown as Cite;
       citeNode.type = 'cite';
@@ -67,10 +73,10 @@ export async function transformLinkedDOIs(log: Logger, mdast: Root, renderer: Ci
       return true;
     }),
   );
-  const number = success.filter((r) => r).length;
-  const error =
-    linkedDois.length === number
-      ? ''
-      : chalk.dim(` (⚠️ failed to link ${linkedDois.length - number})`);
-  log.info(toc(`🪄 Linked ${number} DOI${number > 1 ? 's' : ''} in %s${error}`));
+  const after = Object.keys(doiRenderer).length;
+  const number = after - before;
+  if (number > 0) {
+    log.info(toc(`🪄 Linked ${number} DOI${number > 1 ? 's' : ''} in %s for ${path}`));
+  }
+  return renderer;
 }

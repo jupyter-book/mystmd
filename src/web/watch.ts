@@ -1,63 +1,66 @@
 import { join } from 'path';
 import chokidar from 'chokidar';
 import { ISession } from '../session/types';
-import { IDocumentCache } from './types';
 import { selectors } from '../store';
 import { CURVENOTE_YML } from '../newconfig';
-import { changeFile } from '../store/local/actions';
+import { changeFile, fastProcessFile, processSite } from '../store/local/actions';
+import { selectPageSlug } from '../store/selectors';
+import { SiteProject } from '../types';
 
-export function watchConfig(cache: IDocumentCache) {
+function watchConfig(session: ISession) {
   return chokidar
     .watch(CURVENOTE_YML, {
       ignoreInitial: true,
       awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
     })
     .on('all', async (eventType: string, filename: string) => {
-      cache.session.log.debug(`File modified: "${CURVENOTE_YML}" (${eventType})`);
-      // await cache.readConfig();
-      // await cache.writeConfig();
-      // await buildSite(cache.session, {});
+      session.log.debug(`File modified: "${filename}" (${eventType})`);
+      await processSite(session, true);
     });
 }
-
-export function watchContent(session: ISession, cache: IDocumentCache) {
-  const processor = async (eventType: string, filename: string) => {
-    if (filename.startsWith('_build')) return;
-    session.log.debug(`File modified: "${filename}" (${eventType})`);
-    changeFile(session, filename, eventType);
-    // await buildSite(session, {});
+function fileProcessor(session: ISession, siteProject: SiteProject) {
+  return async (eventType: string, file: string) => {
+    if (file.startsWith('_build') || file.startsWith('.')) return;
+    changeFile(session, file, eventType);
+    const pageSlug = selectPageSlug(session.store.getState(), siteProject.path, file);
+    if (!pageSlug) {
+      session.log.warn(`⚠️ File is not in project: ${file}`);
+      return;
+    }
+    await fastProcessFile(session, {
+      file,
+      projectPath: siteProject.path,
+      projectSlug: siteProject.slug,
+      pageSlug,
+    });
+    // TODO: process full site
+    // await processSite(session, true);
   };
-  // TODO: watch the project folders
-  chokidar
-    .watch('.', {
-      ignoreInitial: true,
-      ignored: ['_build'],
-      awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
-    })
-    .on('all', processor);
+}
 
-  // const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
-  // if (!siteConfig) return;
-  // // Watch each project the full content folder
-  // siteConfig.projects.forEach((proj) => {
-  //   const ignored =
-  //     proj.path === '.'
-  //       ? [
-  //           // If in the root, ignore the YML and all other projects
-  //           CURVENOTE_YML,
-  //           ...siteConfig.projects
-  //             .filter(({ path }) => path !== '.')
-  //             .map(({ path }) => join(path, '*')),
-  //         ]
-  //       : [];
-  //   chokidar
-  //     .watch(proj.path, {
-  //       ignoreInitial: true,
-  //       ignored: ['_build', ...ignored],
-  //       awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
-  //     })
-  //     .on('all', processor(proj.path));
-  // });
-  // // Watch the curvenote.yml
-  // watchConfig(cache);
+export function watchContent(session: ISession) {
+  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  if (!siteConfig) return;
+  // For each project watch the full content folder
+  siteConfig.projects.forEach((proj) => {
+    const ignored =
+      proj.path === '.'
+        ? [
+            // If in the root, ignore the YML and all other projects
+            CURVENOTE_YML,
+            ...siteConfig.projects
+              .filter(({ path }) => path !== '.')
+              .map(({ path }) => join(path, '*')),
+          ]
+        : [];
+    chokidar
+      .watch(proj.path, {
+        ignoreInitial: true,
+        ignored: ['_build/**', '.git/**', ...ignored],
+        awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
+      })
+      .on('all', fileProcessor(session, proj));
+  });
+  // Watch the curvenote.yml
+  watchConfig(session);
 }

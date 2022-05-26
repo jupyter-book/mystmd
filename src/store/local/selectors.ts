@@ -1,4 +1,4 @@
-import { LocalProject, ProjectConfig, SiteConfig } from '../../types';
+import { LocalProject, LocalProjectPage, ProjectConfig, SiteConfig } from '../../types';
 import { RootState } from '../reducers';
 
 export function selectLocalProject(state: RootState, path: string): LocalProject | undefined {
@@ -14,4 +14,18 @@ export function selectLocalProjectConfig(
   path: string,
 ): ProjectConfig | undefined {
   return state.local.config.projects[path];
+}
+
+export function selectFileInfo(state: RootState, path: string) {
+  const { title, sha256 } = state.local.watch[path] ?? {};
+  return { title, sha256 };
+}
+
+export function selectPageSlug(state: RootState, projectPath: string, path: string) {
+  const project = selectLocalProject(state, projectPath);
+  if (!project) return undefined;
+  const found = project.pages
+    .filter((page): page is LocalProjectPage => 'file' in page)
+    .find(({ file }) => file === path);
+  return found?.slug;
 }

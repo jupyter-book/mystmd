@@ -258,7 +258,17 @@ export function getSiteManifest(session: ISession): SiteManifest {
     );
     const proj = selectors.selectLocalProject(state, siteProj.path);
     if (!proj) return;
-    siteProjects.push(localToManifestProject(proj, siteProj.slug, frontmatter));
+    // Update all of the page title to the frontmatter title
+    const projectTitle = selectors.selectFileInfo(state, proj.file).title || proj.title;
+    const pages = proj.pages
+      .filter((page): page is LocalProjectPage => 'file' in page)
+      .map((page) => {
+        const title = selectors.selectFileInfo(state, page.file).title || page.title;
+        return { ...page, title };
+      });
+    siteProjects.push(
+      localToManifestProject({ ...proj, pages, title: projectTitle }, siteProj.slug, frontmatter),
+    );
   });
   const { title, twitter, logo, logoText, nav, actions } = siteConfig;
   const manifest: SiteManifest = {

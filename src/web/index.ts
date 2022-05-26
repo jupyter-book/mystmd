@@ -11,14 +11,17 @@ import { MyUser } from '../models';
 import { confirmOrExit } from '../utils';
 import { selectors } from '../store';
 import { watchContent } from './watch';
+import { tic } from '../export/utils/exec';
 
 export async function clean(session: ISession) {
   if (!buildPathExists(session)) {
     session.log.debug(`web.clean: ${serverPath(session)} not found.`);
     return;
   }
-  session.log.debug(`web.clean: Removing ${serverPath(session)}`);
+  const toc = tic();
+  session.log.info(`🗑  Removing ${serverPath(session)}`);
   fs.rmSync(serverPath(session), { recursive: true, force: true });
+  session.log.info(toc(`🗑  Removed ${serverPath(session)} in %s`));
 }
 
 export async function clone(session: ISession, opts: Options) {
@@ -44,12 +47,14 @@ export async function clone(session: ISession, opts: Options) {
 }
 
 export async function install(session: ISession) {
-  session.log.info('⤵️  Installing libraries');
+  const toc = tic();
+  session.log.info('⤵️  Installing web libraries (can take up to 90 s ☕️)');
   if (!buildPathExists(session)) {
     session.log.error('Curvespace is not cloned. Do you need to run: \n\ncurvenote web clone');
     return;
   }
   await makeExecutable(`cd ${serverPath(session)}; npm install`, getNpmLogger(session))();
+  session.log.info(toc('✅  Installed web libraries in %s'));
 }
 
 export async function cloneCurvespace(session: ISession, opts: Options) {
@@ -81,9 +86,9 @@ export async function build(session: ISession, opts: Options, showSparkles = tru
 }
 
 export async function startServer(session: ISession, opts: Options) {
-  const cache = await build(session, opts, false);
+  await build(session, opts, false);
   sparkles(session, 'Starting Curvenote');
-  watchContent(session, cache);
+  watchContent(session);
   await makeExecutable(`cd ${serverPath(session)}; npm run serve`, getServerLogger(session))();
 }
 
@@ -96,6 +101,9 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
   const me = await new MyUser(session).get();
   // Do a bit of prework to ensure that the domains exists in the config file
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  if (!siteConfig) {
+    throw new Error(`🧐 No site config found.`);
+  }
   const domains = siteConfig?.domains;
   if (!domains || domains.length === 0) {
     throw new Error(
@@ -109,6 +117,6 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
   await cloneCurvespace(session, opts);
   sparkles(session, 'Deploying Curvenote');
   // Build the files in the content folder and process them
-  const cache = await buildSite(session, { ...opts, clean: true });
-  await deployContent(cache, domains);
+  await buildSite(session, { ...opts, clean: true });
+  await deployContent(session, siteConfig);
 }

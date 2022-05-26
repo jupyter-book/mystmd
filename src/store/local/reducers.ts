@@ -32,22 +32,26 @@ export const config = createSlice({
 });
 
 type WatchedFile = {
-  path: string;
-  fileIsChanged?: boolean;
-  title?: string;
+  title?: string | null;
+  sha256?: string | null;
 };
-type WatchState = { startup: boolean; files: Record<string, WatchedFile> };
+type WatchState = Record<string, WatchedFile>;
 
 export const watch = createSlice({
   name: 'watch',
-  initialState: { startup: false, files: {} } as WatchState,
+  initialState: {} as WatchState,
   reducers: {
-    setStartupPass(state, action: PayloadAction<boolean>) {
-      state.startup = action.payload;
+    markFileChanged(state, action: PayloadAction<{ path: string; sha256?: string }>) {
+      const { path, sha256 = null } = action.payload;
+      state[path] = { ...state[path], sha256 };
     },
-    markFileChanged(state, action: PayloadAction<{ path: string; changed?: boolean }>) {
-      const { path, changed = true } = action.payload;
-      state.files[path] = { ...state.files[path], path, fileIsChanged: changed };
+    updateFileInfo(
+      state,
+      action: PayloadAction<{ path: string; title?: string; sha256?: string }>,
+    ) {
+      const { path, sha256, title } = action.payload;
+      if (title) state[path].title = title;
+      if (sha256) state[path].sha256 = sha256;
     },
   },
 });

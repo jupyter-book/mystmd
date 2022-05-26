@@ -17,10 +17,6 @@ function toText(content: PhrasingContent[]): string {
     .join('');
 }
 
-export const DEFAULT_FRONTMATTER: Frontmatter = {
-  numbering: false,
-};
-
 /**
  * Resolve two sets of frontmatter to a single frontmatter object
  *
@@ -77,40 +73,38 @@ export function resolveFrontmatter(
     if (nextLicense) frontmatter.license = nextLicense;
   }
   if (open_access != null) frontmatter.open_access = open_access;
-  if (numbering != null) {
-    if (typeof numbering === 'boolean') {
-      frontmatter.numbering = numbering;
-    } else {
-      const {
-        enumerator,
-        figure,
-        equation,
-        table,
-        code,
-        heading_1,
-        heading_2,
-        heading_3,
-        heading_4,
-        heading_5,
-        heading_6,
-        ...restNumbering
-      } = numbering;
-      const nextNumbering =
-        typeof frontmatter.numbering === 'boolean' ? {} : { ...frontmatter.numbering };
-      if (enumerator != null) nextNumbering.enumerator = enumerator;
-      if (figure != null) nextNumbering.figure = figure;
-      if (equation != null) nextNumbering.equation = equation;
-      if (table != null) nextNumbering.table = table;
-      if (code != null) nextNumbering.code = code;
-      if (heading_1 != null) nextNumbering.heading_1 = heading_1;
-      if (heading_2 != null) nextNumbering.heading_2 = heading_2;
-      if (heading_3 != null) nextNumbering.heading_3 = heading_3;
-      if (heading_4 != null) nextNumbering.heading_4 = heading_4;
-      if (heading_5 != null) nextNumbering.heading_5 = heading_5;
-      if (heading_6 != null) nextNumbering.heading_6 = heading_6;
-      frontmatter.numbering = nextNumbering;
-      warnOnUnrecognizedKeys(log, restNumbering, `${fileToLog || ''}#numbering:`);
-    }
+  if (typeof numbering === 'boolean' || numbering == null) {
+    frontmatter.numbering = numbering ?? false;
+  } else {
+    const {
+      enumerator,
+      figure,
+      equation,
+      table,
+      code,
+      heading_1,
+      heading_2,
+      heading_3,
+      heading_4,
+      heading_5,
+      heading_6,
+      ...restNumbering
+    } = numbering;
+    const nextNumbering =
+      typeof frontmatter.numbering === 'boolean' ? {} : { ...frontmatter.numbering };
+    if (enumerator != null) nextNumbering.enumerator = enumerator;
+    if (figure != null) nextNumbering.figure = figure;
+    if (equation != null) nextNumbering.equation = equation;
+    if (table != null) nextNumbering.table = table;
+    if (code != null) nextNumbering.code = code;
+    if (heading_1 != null) nextNumbering.heading_1 = heading_1;
+    if (heading_2 != null) nextNumbering.heading_2 = heading_2;
+    if (heading_3 != null) nextNumbering.heading_3 = heading_3;
+    if (heading_4 != null) nextNumbering.heading_4 = heading_4;
+    if (heading_5 != null) nextNumbering.heading_5 = heading_5;
+    if (heading_6 != null) nextNumbering.heading_6 = heading_6;
+    frontmatter.numbering = nextNumbering;
+    warnOnUnrecognizedKeys(log, restNumbering, `${fileToLog || ''}#numbering:`);
   }
   if (math) {
     frontmatter.math = { ...frontmatter.math, ...math };
@@ -153,17 +147,13 @@ export function getPageFrontmatter(
   tree: Root,
   remove = true,
 ): Frontmatter {
-  let { frontmatter } = frontmatterFromMdastTree(tree, remove);
   const state = session.store.getState();
-  const projectConfig = selectors.selectLocalProjectConfig(state, path);
-  const siteConfig = selectors.selectLocalSiteConfig(state);
-  if (projectConfig?.frontmatter) {
-    frontmatter = resolveFrontmatter(projectConfig.frontmatter, frontmatter, session.log);
-  }
-  if (siteConfig?.frontmatter) {
-    frontmatter = resolveFrontmatter(siteConfig.frontmatter, frontmatter, session.log);
-  }
-  if (siteConfig?.design?.hide_authors) {
+  const site = selectors.selectLocalSiteConfig(state);
+  const project = selectors.selectLocalProjectConfig(state, path)?.frontmatter ?? {};
+  const page = frontmatterFromMdastTree(tree, remove).frontmatter;
+  const base = resolveFrontmatter(site?.frontmatter ?? {}, project, session.log);
+  const frontmatter = resolveFrontmatter(base, page, session.log);
+  if (site?.design?.hide_authors) {
     delete frontmatter.authors;
   }
   return frontmatter;

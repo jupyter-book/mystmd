@@ -20,10 +20,14 @@ import { parseMyst, publicPath, serverPath } from './utils';
 import { LinkLookup, transformLinks } from './transforms';
 import { createWebFileObjectFactory } from './files';
 import { writeFileToFolder } from '../utils';
-import { DEFAULT_FRONTMATTER, resolveFrontmatter } from './frontmatter';
+import { resolveFrontmatter } from './frontmatter';
 import { selectors } from '../store';
 import { Frontmatter, LocalProjectPage, SiteProject } from '../types';
 import { RendererData } from './transforms/types';
+
+const DEFAULT_FRONTMATTER: Frontmatter = {
+  numbering: false,
+};
 
 type NextFile = { filename: string; folder: string; slug: string };
 

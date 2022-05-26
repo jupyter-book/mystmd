@@ -97,7 +97,7 @@ export async function transformImages(session: ISession, mdast: Root, filePath: 
         await fileObject.writeBase64(image.url);
         file = fileObject.id;
       } else {
-        session.log.error(`Cannot find image: ${image.url}`);
+        session.log.error(`Cannot find image "${image.url}" in ${filePath}`);
         return;
       }
       // Update mdast with new file name
