@@ -41,13 +41,13 @@ export async function processProject(cache: DocumentCache, siteProject: SiteProj
   const fakeProjectPages = projectPages.filter((p) => p.file.endsWith('.md'));
   await Promise.all(
     fakeProjectPages.map((page) =>
-      transformMdast(cache.session, { projectPath: project.path, path: page.file }),
+      transformMdast(cache.session, { projectPath: project.path, file: page.file }),
     ),
   );
   await Promise.all(
     fakeProjectPages.map((page) =>
       writeFile(cache.session, {
-        path: page.file,
+        file: page.file,
         projectSlug: siteProject.slug,
         pageSlug: page.slug,
       }),

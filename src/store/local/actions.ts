@@ -112,27 +112,28 @@ const htmlHandlers = {
 
 export async function transformMdast(
   session: ISession,
-  { projectPath, path }: { projectPath: string; path: string },
+  { projectPath, file }: { projectPath: string; file: string },
 ) {
   const toc = tic();
   const { log } = session;
   const cache = castSession(session);
-  const mdastPre = cache.$mdast[path]?.pre;
-  if (!mdastPre) throw new Error(`Expected mdast to be processed for ${path}`);
+  const mdastPre = cache.$mdast[file]?.pre;
+  if (!mdastPre) throw new Error(`Expected mdast to be processed for ${file}`);
   // TODO: use structuredClone?
+  log.debug(`Processiong "${file}"`);
   let mdast = JSON.parse(JSON.stringify(mdastPre)) as Root;
   const frontmatter = getPageFrontmatter(session, projectPath, mdast);
   const references: References = {
     cite: { order: [], data: {} },
     footnotes: {},
   };
-  importMdastFromJson(session.log, path, mdast); // This must be first!
+  importMdastFromJson(session.log, file, mdast); // This must be first!
   mdast = await transformRoot(mdast);
   convertHtmlToMdast(mdast, { htmlHandlers });
   const sha256 = ''; // TODO: get this from the store
   const data: RendererData = { sha256, frontmatter, mdast, references };
-  cache.$mdast[path].post = data;
-  log.debug(toc(`Processed "${path}" in %s`));
+  cache.$mdast[file].post = data;
+  log.debug(toc(`Processed "${file}" in %s`));
   console.log(data);
 }
 
@@ -140,15 +141,15 @@ const opts = { buildPath: '_build' };
 
 export async function writeFile(
   session: ISession,
-  { path, pageSlug, projectSlug }: { path: string; projectSlug: string; pageSlug: string },
+  { file, pageSlug, projectSlug }: { file: string; projectSlug: string; pageSlug: string },
 ) {
   const toc = tic();
   const { log } = session;
   const cache = castSession(session);
-  const mdastPost = cache.$mdast[path]?.post;
-  if (!mdastPost) throw new Error(`Expected mdast to be processed and transformed for ${path}`);
+  const mdastPost = cache.$mdast[file]?.post;
+  if (!mdastPost) throw new Error(`Expected mdast to be processed and transformed for ${file}`);
   const id = join(projectSlug, pageSlug);
   const jsonFilename = join(serverPath(opts), 'app', 'content', `${id}.json`);
   writeFileToFolder(jsonFilename, JSON.stringify(mdastPost));
-  log.debug(toc(`Wrote "${path}" in %s`));
+  log.debug(toc(`Wrote "${file}" in %s`));
 }

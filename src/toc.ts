@@ -16,7 +16,7 @@ import { resolveFrontmatter } from './web/frontmatter';
 import { publicPath } from './web/utils';
 import { JupyterBookChapter, readTOC } from './export/jupyter-book/toc';
 
-const DEFAULT_INDEX_FILES = ['readme.md'];
+const DEFAULT_INDEX_FILES = ['index.md', 'readme.md'];
 const VALID_FILE_EXTENSIONS = ['.md', '.ipynb'];
 
 const tocFile = (path: string): string => join(path, '_toc.yml');
@@ -50,6 +50,16 @@ function fileInfo(file: string, pageSlugs: PageSlugs): { slug: string; title: st
   return { slug, title };
 }
 
+function getCitationPaths(session: ISession, path: string): string[] {
+  // TODO: traverse to find all bibs, and or read from toc/config
+  const ref = join(path, 'references.bib');
+  if (!fs.existsSync(ref)) {
+    session.log.debug(`Expected citations at "${ref}"`);
+    return [];
+  }
+  return [ref];
+}
+
 function chaptersToPages(
   path: string,
   chapters: JupyterBookChapter[],
@@ -72,17 +82,10 @@ function chaptersToPages(
   return pages;
 }
 
-function getCitationPaths(session: ISession, path: string): string[] {
-  // TODO: traverse to find all bibs, and or read from toc/config
-  const ref = join(path, 'references.bib');
-  if (!fs.existsSync(ref)) {
-    session.log.debug(`Expected citations at "${ref}"`);
-    return [];
-  }
-  return [ref];
-}
-
-function projectFromToc(session: ISession, path: string): LocalProject {
+/**
+ * Build project structure from jupyterbook '_toc.yml' file
+ */
+export function projectFromToc(session: ISession, path: string): LocalProject {
   const filename = tocFile(path);
   if (!fs.existsSync(filename)) {
     throw new Error(`Could not find TOC "${filename}". Please create a '_toc.yml'.`);
@@ -139,6 +142,9 @@ function projectPagesFromPath(
     .flat();
 }
 
+/**
+ * Build project structure from local file/folder structure.
+ */
 export function projectFromPath(session: ISession, path: string, indexFile?: string): LocalProject {
   if (!indexFile) {
     fs.readdirSync(path).forEach((file) => {
@@ -157,6 +163,18 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
   return { file: indexFile, index: slug, path, title, pages, citations };
 }
 
+/**
+ * Load project structure from disk from
+ *
+ * @param session
+ * @param path - root directory of project, relative to current directory; default is '.'
+ * @param index - index file, including path relative to current directory; default is 'index.md'
+ *     or 'readme.md' in 'path' directory
+ *
+ * If jupyterbook '_toc.yml' exists in path, project structure will be derived from that.
+ * In this case, index will be ignored in favor of root from '_toc.yml'
+ * If '_toc.yml' does not exist, project structure will be built from the local file/foler structure.
+ */
 export function loadProjectFromDisk(
   session: ISession,
   path?: string,
@@ -180,7 +198,8 @@ export function loadProjectFromDisk(
   return newProject;
 }
 
-/** Convert local project representation to site manifest project
+/**
+ * Convert local project representation to site manifest project
  *
  * This does a couple things:
  * - Adds projectSlug (which locally comes from site config)
@@ -218,7 +237,8 @@ function copyLogo(session: ISession, logoName?: string | null): string | undefin
   return `/${logo}`;
 }
 
-/** Build Site Manifest from local curvenote state
+/**
+ * Build site manifest from local curvenote state
  *
  * Site manifest acts as the configuration to build the curvespace site.
  * It combines local site config and project configs into a single structure.
