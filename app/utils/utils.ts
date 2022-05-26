@@ -1,22 +1,26 @@
-import { Config } from './types';
+import { ManifestProject, SiteManifest } from './types';
 import { FooterLinks, Heading, NavigationLink } from './types';
 
-export function getSection(config?: Config, sectionNumber?: number) {
+export function getSection(config?: SiteManifest, sectionNumber?: number) {
   if (sectionNumber == null) return undefined;
-  return config?.site.sections[sectionNumber];
+  return config?.projects[sectionNumber];
 }
 
-export function getFolder(config?: Config, folderName?: string | number) {
+export function getFolder(config?: SiteManifest, folderName?: string | number) {
   if (!config) return undefined;
   if (typeof folderName === 'number') {
-    folderName = getSection(config, folderName)?.folder;
+    folderName = getSection(config, folderName)?.slug;
   }
-  if (!folderName || !(folderName in config.folders)) return undefined;
-  return config.folders[folderName as keyof typeof config.folders];
+  const folderLookup: Record<string, ManifestProject> = {};
+  config.projects.forEach((p) => (folderLookup[p.slug] = p));
+  if (!folderName || !(folderName in folderLookup)) {
+    return undefined;
+  }
+  return folderLookup[folderName];
 }
 
 export function getFolderPages(
-  config?: Config,
+  config?: SiteManifest,
   folderName?: string,
   opts = { addGroups: false },
 ): Heading[] | undefined {
@@ -25,13 +29,13 @@ export function getFolderPages(
   const headings: Heading[] = [
     {
       title: folder.title,
-      slug: folder.index,
-      path: `/${folderName}`,
+      slug: folder.slug,
+      path: `/${folder.slug}`,
       level: 'index',
     },
     ...folder.pages.map((p) => {
-      if (!p.slug) return p;
-      return { ...p, path: `/${folderName}/${p.slug}` };
+      if (!('slug' in p)) return p;
+      return { ...p, path: `/${folder.slug}/${p.slug}` };
     }),
   ];
   if (opts.addGroups) {
@@ -62,7 +66,7 @@ function getHeadingLink(
 }
 
 export function getFooterLinks(
-  config?: Config,
+  config?: SiteManifest,
   folderName?: string,
   slug?: string,
 ): FooterLinks {

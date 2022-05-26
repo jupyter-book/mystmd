@@ -1,28 +1,25 @@
 {
-  "id": "",
-  "site": {
-    "name": "Curvenote",
-    "sections": [{ "title": "Demo Content", "folder": "demo" }],
-    "twitter": "curvenote",
-    "nav": [
-      { "title": "Examples", "url": "/demo" },
-      {
-        "title": "Menu with Children",
-        "children": [
-          { "title": "Admonitions", "url": "/demo/admonitions" },
-          { "title": "Jupyter Outputs", "url": "/demo/outputs" }
-        ]
-      }
-    ],
-    "actions": [
-      { "title": "Log In", "url": "https://curvenote.com/signup" },
-      { "title": "Sign Up", "url": "https://curvenote.com/signup/" }
-    ],
-    "logo": "/logo.svg",
-    "logoText": "Curvenote"
-  },
-  "folders": {
-    "demo": {
+  "title": "Curvenote",
+  "twitter": "curvenote",
+  "nav": [
+    { "title": "Examples", "url": "/demo" },
+    {
+      "title": "Menu with Children",
+      "children": [
+        { "title": "Admonitions", "url": "/demo/admonitions" },
+        { "title": "Jupyter Outputs", "url": "/demo/outputs" }
+      ]
+    }
+  ],
+  "actions": [
+    { "title": "Log In", "url": "https://curvenote.com/signup" },
+    { "title": "Sign Up", "url": "https://curvenote.com/signup/" }
+  ],
+  "logo": "/logo.svg",
+  "logoText": "Curvenote",
+  "projects": [
+    {
+      "slug": "demo",
       "title": "Curvenote",
       "index": "index",
       "pages": [
@@ -35,5 +32,5 @@
         { "title": "Links", "slug": "links", "level": 2 }
       ]
     }
-  }
+  ]
 }

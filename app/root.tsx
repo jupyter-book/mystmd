@@ -15,14 +15,14 @@ import { Theme, ThemeProvider } from '~/components';
 import { Navigation } from './components/Navigation';
 import { getThemeSession } from '~/utils/theme.server';
 import tailwind from './styles/app.css';
-import { getMetaTagsForSite, getConfig, Config } from './utils';
+import { getMetaTagsForSite, getConfig, SiteManifest } from './utils';
 import { ConfigProvider } from './components/ConfigProvider';
 import { UiStateProvider } from './components/UiStateProvider';
 
 export const meta: MetaFunction = ({ data }) => {
   return getMetaTagsForSite({
-    title: data?.config?.site?.name,
-    twitter: data?.config?.site?.twitter,
+    title: data?.config?.title,
+    twitter: data?.config?.twitter,
   });
 };
 
@@ -32,7 +32,7 @@ export const links: LinksFunction = () => {
 
 type DocumentData = {
   theme: Theme;
-  config?: Config;
+  config?: SiteManifest;
 };
 
 export const loader: LoaderFunction = async ({ request }): Promise<DocumentData> => {
@@ -52,7 +52,7 @@ function Document({
 }: {
   children: React.ReactNode;
   theme: Theme;
-  config?: Config;
+  config?: SiteManifest;
   title?: string;
 }) {
   return (

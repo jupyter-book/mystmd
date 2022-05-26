@@ -115,3 +115,45 @@ export type PageLoader = {
   references: References;
   footer?: FooterLinks;
 };
+
+export type pageLevels = 1 | 2 | 3 | 4 | 5 | 6;
+
+export type SiteNavPage = {
+  title: string;
+  url: string;
+};
+
+export type SiteNavFolder = {
+  title: string;
+  children: SiteNavItem[];
+};
+
+export type SiteNavItem = SiteNavPage | SiteNavFolder;
+
+export type SiteAction = SiteNavPage;
+
+export type ManifestProjectFolder = {
+  title: string;
+  level: pageLevels;
+};
+
+export type ManifestProjectPage = {
+  slug: string;
+} & ManifestProjectFolder;
+
+export type ManifestProject = {
+  slug: string;
+  index: string;
+  title: string;
+  pages: (ManifestProjectPage | ManifestProjectFolder)[];
+} & Frontmatter;
+
+export type SiteManifest = {
+  title: string;
+  twitter?: string;
+  logo?: string;
+  logoText?: string;
+  nav: SiteNavItem[];
+  actions: SiteAction[];
+  projects: ManifestProject[];
+};

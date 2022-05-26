@@ -1,4 +1,4 @@
-import { selectAll } from 'unist-util-select';
+import { selectAll } from 'mystjs';
 import { CrossReference } from 'myst-spec';
 import LinkIcon from '@heroicons/react/outline/LinkIcon';
 import { useReferences } from '~/components/ReferencesProvider';

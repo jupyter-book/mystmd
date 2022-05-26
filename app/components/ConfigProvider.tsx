@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
-import { Config } from '~/utils';
+import { SiteManifest } from '~/utils';
 
-const ConfigContext = React.createContext<Config | undefined>(undefined);
+const ConfigContext = React.createContext<SiteManifest | undefined>(undefined);
 
 export function ConfigProvider({
   config,
   children,
 }: {
-  config?: Config;
+  config?: SiteManifest;
   children: React.ReactNode;
 }) {
   return <ConfigContext.Provider value={config}>{children}</ConfigContext.Provider>;

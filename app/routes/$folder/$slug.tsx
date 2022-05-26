@@ -9,19 +9,19 @@ import {
   getFolder,
   PageLoader,
   getFooterLinks,
-  Config,
+  SiteManifest,
 } from '~/utils';
 import { Footer } from '~/components/FooterLinks';
 import { Bibliography } from '~/myst-to-react/cite';
 
 export const meta: MetaFunction = (args) => {
-  const config = args.parentsData.root.config as Config | undefined;
+  const config = args.parentsData.root.config as SiteManifest | undefined;
   const data = args.data as PageLoader | undefined;
   if (!data || !data.frontmatter) return {};
   return getMetaTagsForArticle({
     origin: '',
     url: args.location.pathname,
-    title: `${data.frontmatter.title} - ${config?.site.name}`,
+    title: `${data.frontmatter.title} - ${config?.title}`,
     description: data.frontmatter.description,
   });
 };
@@ -48,7 +48,7 @@ export const loader: LoaderFunction = async ({
   if (!folder) {
     throw new Response('Article was not found', { status: 404 });
   }
-  if (folder.index === params.id) {
+  if (params.slug === folder.index) {
     return redirect(`/${folderName}`);
   }
   const slug = params.loadIndexPage ? folder.index : params.slug;
