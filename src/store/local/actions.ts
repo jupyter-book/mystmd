@@ -24,7 +24,7 @@ import { transformFootnotes } from '../../web/transforms/footnotes';
 import { transformKeys } from '../../web/transforms/keys';
 import { transformImages } from '../../web/transforms/images';
 import { processNotebook } from './notebook';
-import { getSiteManifest, loadProjectFromDisk } from '../../toc';
+import { copyLogo, getSiteManifest, loadProjectFromDisk } from '../../toc';
 import { LocalProjectPage, SiteProject } from '../../types';
 import { selectFileInfo } from './selectors';
 
@@ -265,19 +265,17 @@ export async function processProject(
       transformMdast(session, { projectPath: project.path, file: page.file, watchMode }),
     ),
   );
-  if (!watchMode) {
-    // Write all pages
-    await Promise.all(
-      pages.map((page) =>
-        writeFile(session, {
-          file: page.file,
-          projectSlug: siteProject.slug,
-          pageSlug: page.slug,
-        }),
-      ),
-    );
-    log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug} in %s.`));
-  }
+  // Write all pages
+  await Promise.all(
+    pages.map((page) =>
+      writeFile(session, {
+        file: page.file,
+        projectSlug: siteProject.slug,
+        pageSlug: page.slug,
+      }),
+    ),
+  );
+  log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug} in %s.`));
 }
 
 export async function processSite(session: ISession, watchMode = false): Promise<boolean> {
@@ -288,5 +286,6 @@ export async function processSite(session: ISession, watchMode = false): Promise
     siteConfig.projects.map((siteProject) => processProject(session, siteProject, watchMode)),
   );
   await writeSiteManifest(session);
+  copyLogo(session, siteConfig.logo);
   return true;
 }

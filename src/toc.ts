@@ -221,10 +221,13 @@ export function localToManifestProject(
   return { slug: projectSlug, index, title: projectTitle, pages: manifestPages, ...frontmatter };
 }
 
-function copyLogo(session: ISession, logoName?: string | null): string | undefined {
+function getLogoPaths(
+  session: ISession,
+  logoName?: string | null,
+): { path: string; public: string; url: string } | null {
   if (!logoName) {
     session.log.debug('No logo specified, Curvespace renderer will use default logo');
-    return undefined;
+    return null;
   }
   if (!fs.existsSync(logoName)) {
     // Look in the local public path
@@ -233,8 +236,14 @@ function copyLogo(session: ISession, logoName?: string | null): string | undefin
   if (!fs.existsSync(logoName))
     throw new Error(`Could not find logo at "${logoName}". See 'config.site.logo'`);
   const logo = `logo${extname(logoName)}`;
-  fs.copyFileSync(logoName, join(publicPath(session), logo));
-  return `/${logo}`;
+  return { path: logoName, public: join(publicPath(session), logo), url: `/${logo}` };
+}
+
+export function copyLogo(session: ISession, logoName?: string | null): string | undefined {
+  const logo = getLogoPaths(session, logoName);
+  if (!logo) return;
+  session.log.debug(`Copying logo from ${logo.path} to ${logo.public}`);
+  fs.copyFileSync(logo.path, logo.public);
 }
 
 /**
@@ -274,7 +283,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
   const manifest: SiteManifest = {
     title: title || '',
     twitter,
-    logo: copyLogo(session, logo),
+    logo: getLogoPaths(session, logo)?.url,
     logoText,
     nav,
     actions,

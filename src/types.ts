@@ -90,7 +90,7 @@ export type SiteConfig = {
   frontmatter?: Omit<Frontmatter, 'title' | 'description'>;
   twitter?: string;
   domains: string[];
-  logo?: string;
+  logo?: string | null;
   logoText?: string;
   favicon?: string;
   buildPath?: string;
