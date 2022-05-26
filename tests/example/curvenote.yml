@@ -1,17 +1,14 @@
 version: 1
-sync:
-  - folder: content/smoke
-    link: https://curvenote.com/@stevejpurves/blog
-web:
+site:
   name: Smoke Test
   domains:
     - smoke.curve.space
   logo: public/logo.svg
   logoText: Curvenote
   twitter: curvenote
-  sections:
-    - title: Smoke Test
-      folder: content/smoke
+  projects:
+    - path: content/smoke
+      slug: smoke
   nav:
     - title: Smoke Test
       url: /smoke

@@ -20,7 +20,6 @@ describe('site section generation', () => {
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
-      title: 'readme',
       index: 'readme',
       citations: [],
       pages: [],
@@ -31,7 +30,6 @@ describe('site section generation', () => {
     expect(projectFromPath(session, '.')).toEqual({
       file: 'README.md',
       path: '.',
-      title: 'readme',
       index: 'readme',
       citations: [],
       pages: [],
@@ -42,7 +40,6 @@ describe('site section generation', () => {
     expect(projectFromPath(session, '.', 'index.md')).toEqual({
       file: 'index.md',
       path: '.',
-      title: 'index',
       index: 'index',
       citations: [],
       pages: [],
@@ -53,7 +50,6 @@ describe('site section generation', () => {
     expect(projectFromPath(session, '.', 'folder/subfolder/index.md')).toEqual({
       file: 'folder/subfolder/index.md',
       path: '.',
-      title: 'index',
       index: 'index',
       citations: [],
       pages: [],
@@ -64,20 +60,17 @@ describe('site section generation', () => {
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
-      title: 'readme',
       index: 'readme',
       citations: [],
       pages: [
         {
           file: 'notebook.ipynb',
           slug: 'notebook',
-          title: 'notebook',
           level: 1,
         },
         {
           file: 'page.md',
           slug: 'page',
-          title: 'page',
           level: 1,
         },
       ],
@@ -88,7 +81,6 @@ describe('site section generation', () => {
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
-      title: 'readme',
       index: 'readme',
       citations: [],
       pages: [
@@ -99,13 +91,11 @@ describe('site section generation', () => {
         {
           file: 'folder/notebook.ipynb',
           slug: 'notebook',
-          title: 'notebook',
           level: 2,
         },
         {
           file: 'folder/page.md',
           slug: 'page',
-          title: 'page',
           level: 2,
         },
       ],
@@ -116,7 +106,6 @@ describe('site section generation', () => {
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
-      title: 'readme',
       index: 'readme',
       citations: [],
       pages: [
@@ -135,13 +124,11 @@ describe('site section generation', () => {
         {
           file: 'folder1/folder2/folder3/notebook.ipynb',
           slug: 'notebook',
-          title: 'notebook',
           level: 4,
         },
         {
           file: 'folder1/folder2/folder3/page.md',
           slug: 'page',
-          title: 'page',
           level: 4,
         },
       ],
@@ -164,7 +151,6 @@ describe('site section generation', () => {
     expect(projectFromPath(session, 'folder1', 'folder1/folder2/readme.md')).toEqual({
       file: 'folder1/folder2/readme.md',
       path: 'folder1',
-      title: 'readme',
       index: 'readme',
       citations: [],
       pages: [
@@ -179,19 +165,16 @@ describe('site section generation', () => {
         {
           file: 'folder1/folder2/folder3/page3.md',
           slug: 'page3',
-          title: 'page3',
           level: 3,
         },
         {
           file: 'folder1/folder2/page2.md',
           slug: 'page2',
-          title: 'page2',
           level: 2,
         },
         {
           file: 'folder1/page1.md',
           slug: 'page1',
-          title: 'page1',
           level: 1,
         },
       ],
