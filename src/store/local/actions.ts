@@ -12,6 +12,7 @@ import { Logger } from '../../logging';
 import { transformRoot } from '../../web/transforms/root';
 import { getPageFrontmatter } from '../../web/frontmatter';
 import { writeFileToFolder } from '../../utils';
+import { transformLinkedDOIs } from '../../web/transforms/dois';
 
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>;
@@ -130,6 +131,11 @@ export async function transformMdast(
   importMdastFromJson(session.log, file, mdast); // This must be first!
   mdast = await transformRoot(mdast);
   convertHtmlToMdast(mdast, { htmlHandlers });
+  // TODO: make sure we look at all project files, not just .bib, when resolving references
+  if (!cache.$citationRenderers[file]) {
+    cache.$citationRenderers[file] = {};
+  }
+  transformLinkedDOIs(log, mdast, cache.$citationRenderers[file]);
   const sha256 = ''; // TODO: get this from the store
   const data: RendererData = { sha256, frontmatter, mdast, references };
   cache.$mdast[file].post = data;

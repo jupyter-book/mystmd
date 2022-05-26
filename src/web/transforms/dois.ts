@@ -8,6 +8,7 @@ import { Root, TransformState } from './types';
 import { Cite } from './citations';
 import { Logger } from '../../logging';
 import { tic } from '../../export/utils/exec';
+import { ISession } from '../../session';
 
 async function getDoiOrgBibtex(log: Logger, doi: string): Promise<string | null> {
   if (!validate(normalize(doi))) return null;
@@ -26,11 +27,10 @@ async function getDoiOrgBibtex(log: Logger, doi: string): Promise<string | null>
 }
 
 async function getCitation(
-  state: TransformState,
+  log: Logger,
   doi: string,
 ): Promise<{ id: string; render: CitationRenderer[''] } | null> {
   if (!validate(normalize(doi))) return null;
-  const { log } = state.cache.session;
   const bibtex = await getDoiOrgBibtex(log, doi);
   if (!bibtex) {
     log.warn(`⚠️  Could not find DOI: ${doi}`);
@@ -42,8 +42,10 @@ async function getCitation(
   return { id, render };
 }
 
-export async function transformLinkedDOIs(mdast: Root, state: TransformState) {
-  const { log } = state.cache.session;
+/**
+ * Find in-line DOIs and add them to the citation renderer
+ */
+export async function transformLinkedDOIs(log: Logger, mdast: Root, renderer: CitationRenderer) {
   const toc = tic();
   const linkedDois: Link[] = [];
   selectAll('link', mdast).forEach((node: GenericNode) => {
@@ -55,9 +57,9 @@ export async function transformLinkedDOIs(mdast: Root, state: TransformState) {
   log.debug(`Found ${linkedDois.length} DOIs to auto link.`);
   const success = await Promise.all(
     linkedDois.map(async (node) => {
-      const cite = await getCitation(state, node.url);
+      const cite = await getCitation(log, node.url);
       if (!cite) return false;
-      state.citeRenderer[cite.id] = cite.render;
+      renderer[cite.id] = cite.render;
       const citeNode = node as unknown as Cite;
       citeNode.type = 'cite';
       citeNode.kind = 'narrative';
@@ -71,7 +73,5 @@ export async function transformLinkedDOIs(mdast: Root, state: TransformState) {
     linkedDois.length === number
       ? ''
       : chalk.dim(` (⚠️ failed to link ${linkedDois.length - number})`);
-  log.info(
-    toc(`🪄 Linked ${number} DOI${number > 1 ? 's' : ''} in ${state.filename} in %s${error}`),
-  );
+  log.info(toc(`🪄 Linked ${number} DOI${number > 1 ? 's' : ''} in %s${error}`));
 }

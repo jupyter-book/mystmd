@@ -86,8 +86,8 @@ export async function transformMdast(
     context,
   };
 
-  await transformLinkedDOIs(mdast, state);
-  cache.session.log.debug(toc(`Processing: "${name}" - LinkedDOIs in %s`));
+  // await transformLinkedDOIs(mdast, state);
+  // cache.session.log.debug(toc(`Processing: "${name}" - LinkedDOIs in %s`));
 
   [
     ensureBlockNesting,
