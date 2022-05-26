@@ -8,7 +8,6 @@ export const TEST_PROJECT_FRONT_MATTER: ProjectFrontMatterProps = {
   open_access: false,
   github: '',
   binder: '',
-  subtitle: '',
   short_title: '',
 };
 
