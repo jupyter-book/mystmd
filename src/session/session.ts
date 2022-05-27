@@ -27,14 +27,14 @@ function withQuery(url: string, query: Record<string, string> = {}) {
 
 export function loadAllConfigs(session: Pick<ISession, 'log' | 'store'>) {
   try {
-    loadSiteConfigOrThrow(session.store);
+    loadSiteConfigOrThrow(session);
     session.log.debug(`Loaded site config from "./${CURVENOTE_YML}"`);
   } catch (error) {
     // TODO: what error?
     session.log.debug(`Failed to find or load site config from "./${CURVENOTE_YML}"`);
   }
   try {
-    loadProjectConfigOrThrow(session.store, '.');
+    loadProjectConfigOrThrow(session, '.');
     session.log.debug(`Loaded project config from "./${CURVENOTE_YML}"`);
   } catch (error) {
     // TODO: what error?
@@ -44,7 +44,7 @@ export function loadAllConfigs(session: Pick<ISession, 'log' | 'store'>) {
   if (!siteConfig) return;
   siteConfig.projects.forEach((project) => {
     try {
-      loadProjectConfigOrThrow(session.store, project.path);
+      loadProjectConfigOrThrow(session, project.path);
     } catch (error) {
       // TODO: what error?
       session.log.debug(

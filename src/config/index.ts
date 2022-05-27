@@ -1,13 +1,14 @@
 import fs from 'fs';
 import { join } from 'path';
 import yaml from 'js-yaml';
-import { Store } from 'redux';
-import { RootState, selectors } from '../store';
+import { ISession } from '../session/types';
+import { selectors } from '../store';
 import { config } from '../store/local';
 import { writeFileToFolder } from '../utils';
 import { Config, ProjectConfig, SiteConfig } from './types';
 
 export const CURVENOTE_YML = 'curvenote.yml';
+export const VERSION = 1;
 
 function emptyConfig(): Config {
   return {
@@ -15,15 +16,43 @@ function emptyConfig(): Config {
   };
 }
 
-function validateConfig(conf: unknown) {
-  return conf as Config;
+type PartialSession = Pick<ISession, 'store' | 'log'>;
+
+function validateConfig(session: PartialSession, incoming: unknown): Config {
+  const start = incoming as Config;
+  let site: Config['site'];
+  let project: Config['project'];
+  if (start.version !== VERSION) {
+    throw new Error(
+      `The versions in the ${CURVENOTE_YML} "${start.version}" does not match ${VERSION}`,
+    );
+  }
+  if (start.site) {
+    site = {
+      ...start.site,
+      projects: start.site.projects ?? [],
+      nav: start.site.nav ?? [],
+      actions: start.site.actions ?? [],
+      domains: start.site.domains ?? [],
+    };
+  }
+  if (start.project) {
+    project = {
+      ...start.project,
+    };
+  }
+  return {
+    version: VERSION,
+    site,
+    project,
+  };
 }
 
-function readConfig(path: string) {
+function readConfig(session: PartialSession, path: string) {
   const confFile = join(path, CURVENOTE_YML);
   if (!fs.existsSync(confFile)) throw Error(`Cannot find ${CURVENOTE_YML} in ${path}`);
   const conf = yaml.load(fs.readFileSync(confFile, 'utf-8'));
-  return validateConfig(conf);
+  return validateConfig(session, conf);
 }
 
 /**
@@ -34,11 +63,11 @@ function readConfig(path: string) {
  * Errors if config file does not exist or if config file exists but
  * does not contain project config.
  */
-export function loadProjectConfigOrThrow(store: Store<RootState>, path: string): ProjectConfig {
-  const { project } = readConfig(path);
+export function loadProjectConfigOrThrow(session: PartialSession, path: string): ProjectConfig {
+  const { project } = readConfig(session, path);
   if (!project) throw Error(`No project config defined in ${join(path, CURVENOTE_YML)}`);
-  store.dispatch(config.actions.receiveProject({ path, ...project }));
-  return selectors.selectLocalProjectConfig(store.getState(), path) as ProjectConfig;
+  session.store.dispatch(config.actions.receiveProject({ path, ...project }));
+  return selectors.selectLocalProjectConfig(session.store.getState(), path) as ProjectConfig;
 }
 
 /**
@@ -49,11 +78,11 @@ export function loadProjectConfigOrThrow(store: Store<RootState>, path: string):
  * Errors if config file does not exist or if config file exists but
  * does not contain site config.
  */
-export function loadSiteConfigOrThrow(store: Store<RootState>): SiteConfig {
-  const { site } = readConfig('.');
+export function loadSiteConfigOrThrow(session: PartialSession): SiteConfig {
+  const { site } = readConfig(session, '.');
   if (!site) throw Error(`No site config in ${join('.', CURVENOTE_YML)}`);
-  store.dispatch(config.actions.receiveSite(site));
-  return selectors.selectLocalSiteConfig(store.getState()) as SiteConfig;
+  session.store.dispatch(config.actions.receiveSite(site));
+  return selectors.selectLocalSiteConfig(session.store.getState()) as SiteConfig;
 }
 
 /**
@@ -67,13 +96,13 @@ export function loadSiteConfigOrThrow(store: Store<RootState>): SiteConfig {
  *
  * Errors if site config is not present in redux store
  */
-export function writeSiteConfig(store: Store, path: string, newConfig?: SiteConfig) {
-  if (newConfig) store.dispatch(config.actions.receiveSite(newConfig));
-  const siteConfig = selectors.selectLocalSiteConfig(store.getState());
+export function writeSiteConfig(session: PartialSession, path: string, newConfig?: SiteConfig) {
+  if (newConfig) session.store.dispatch(config.actions.receiveSite(newConfig));
+  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   if (!siteConfig) throw Error('no site config loaded into redux state');
   let conf;
   try {
-    conf = readConfig(path);
+    conf = readConfig(session, path);
   } catch {
     conf = emptyConfig();
   }
@@ -92,13 +121,17 @@ export function writeSiteConfig(store: Store, path: string, newConfig?: SiteConf
  *
  * Errors if project config is not present in redux store for the given path
  */
-export function writeProjectConfig(store: Store, path: string, newConfig?: ProjectConfig) {
-  if (newConfig) store.dispatch(config.actions.receiveProject({ path, ...newConfig }));
-  const projectConfig = selectors.selectLocalProjectConfig(store.getState(), path);
+export function writeProjectConfig(
+  session: PartialSession,
+  path: string,
+  newConfig?: ProjectConfig,
+) {
+  if (newConfig) session.store.dispatch(config.actions.receiveProject({ path, ...newConfig }));
+  const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
   if (!projectConfig) throw Error(`no site config loaded for path ${projectConfig}`);
   let conf;
   try {
-    conf = readConfig(path);
+    conf = readConfig(session, path);
   } catch {
     conf = emptyConfig();
   }

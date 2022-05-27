@@ -46,7 +46,7 @@ export async function interactiveCloneQuestions(
   }
   let projectConfig: ProjectConfig | undefined;
   try {
-    projectConfig = loadProjectConfigOrThrow(session.store, path);
+    projectConfig = loadProjectConfigOrThrow(session, path);
   } catch {
     // Project config does not exist; good!
     // TODO: Add all sorts of other stuff for the project data that we know!!
@@ -84,14 +84,14 @@ export async function clone(
     remote,
     path,
   });
-  writeProjectConfig(session.store, siteProject.path, projectConfig);
+  writeProjectConfig(session, siteProject.path, projectConfig);
   if (siteConfig) {
     const newSiteConfig: SiteConfig = {
       ...siteConfig,
       nav: [...siteConfig.nav, { title: projectConfig.title, url: `/${siteProject.slug}` }],
       projects: [...siteConfig.projects, siteProject],
     };
-    writeSiteConfig(session.store, '.', newSiteConfig);
+    writeSiteConfig(session, '.', newSiteConfig);
   }
   await pullProject(session, siteProject.path, { level: LogLevel.info });
 }

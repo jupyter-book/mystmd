@@ -83,7 +83,7 @@ export async function pull(session: ISession, path?: string, opts?: Options) {
     );
     await pullProjects(session, { level: LogLevel.info });
   } else {
-    loadProjectConfigOrThrow(session.store, path);
+    loadProjectConfigOrThrow(session, path);
     await confirmOrExit(
       `Pulling will overwrite all content in ${
         path === '.' ? 'current directory' : path

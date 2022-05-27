@@ -119,8 +119,8 @@ export async function init(session: ISession, opts: Options) {
     if (twitter) siteConfig.twitter = twitter;
   }
   // Save the configs to the state and write them to disk
-  writeSiteConfig(session.store, '.', siteConfig);
-  writeProjectConfig(session.store, path, projectConfig);
+  writeSiteConfig(session, '.', siteConfig);
+  writeProjectConfig(session, path, projectConfig);
 
   const pullOpts = { level: LogLevel.debug };
   let pullProcess: Promise<void> | undefined;
