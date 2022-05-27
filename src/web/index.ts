@@ -51,7 +51,7 @@ export async function install(session: ISession) {
     return;
   }
   await makeExecutable(`cd ${serverPath(session)}; npm install`, getNpmLogger(session))();
-  session.log.info(toc('✅  Installed web libraries in %s'));
+  session.log.info(toc('✅ Installed web libraries in %s'));
 }
 
 export async function cloneCurvespace(session: ISession, opts: Options) {
