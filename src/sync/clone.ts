@@ -1,11 +1,12 @@
 import fs from 'fs';
 import { join } from 'path';
 import inquirer from 'inquirer';
+import chalk from 'chalk';
 import { ISession } from '../session/types';
 import { getDefaultProjectConfig, validateLinkIsAProject } from './utils';
 import { LogLevel } from '../logging';
 import questions from './questions';
-import { writeProjectConfig, writeSiteConfig } from '../newconfig';
+import { loadProjectConfigOrThrow, writeProjectConfig, writeSiteConfig } from '../newconfig';
 import { pullProject } from './pull';
 import { Project } from '../models';
 import { ProjectConfig, SiteConfig, SiteProject } from '../types';
@@ -15,7 +16,6 @@ type Options = {
   remote?: string;
   path?: string;
   yes?: boolean;
-  projectConfig?: ProjectConfig;
 };
 
 export async function interactiveCloneQuestions(
@@ -23,7 +23,6 @@ export async function interactiveCloneQuestions(
   opts?: Options,
 ): Promise<{ siteProject: SiteProject; projectConfig: ProjectConfig }> {
   // This is an interactive clone
-  const projectConfig = opts?.projectConfig ?? getDefaultProjectConfig();
   let project: Project | undefined;
   if (opts?.remote) {
     project = await validateLinkIsAProject(session, opts.remote);
@@ -34,10 +33,6 @@ export async function interactiveCloneQuestions(
       project = await validateLinkIsAProject(session, projectLink);
     }
   }
-  // TODO: Add all sorts of other stuff for the project data that we know!!
-  projectConfig.remote = project.data.id;
-  projectConfig.title = project.data.title;
-  projectConfig.description = project.data.description || null;
   let path = '.';
   if (opts?.path) {
     if (path !== '.' && fs.existsSync(path)) {
@@ -49,10 +44,23 @@ export async function interactiveCloneQuestions(
     ]);
     path = projectPath;
   }
-  return {
-    siteProject: { path, slug: project.data.name },
-    projectConfig,
-  };
+  let projectConfig: ProjectConfig | undefined;
+  try {
+    projectConfig = loadProjectConfigOrThrow(session.store, path);
+  } catch {
+    // Project config does not exist; good!
+    // TODO: Add all sorts of other stuff for the project data that we know!!
+    projectConfig = getDefaultProjectConfig(project.data.title);
+    projectConfig.remote = project.data.id;
+    projectConfig.description = project.data.description || null;
+    return {
+      siteProject: { path, slug: project.data.name },
+      projectConfig,
+    };
+  }
+  throw new Error(
+    `Project already exists: "${path}, did you mean to ${chalk.bold('curvenote pull')}`,
+  );
 }
 
 /**
