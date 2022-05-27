@@ -151,8 +151,9 @@ export function getPageFrontmatter(
   const site = selectors.selectLocalSiteConfig(state);
   const project = selectors.selectLocalProjectConfig(state, path)?.frontmatter ?? {};
   const page = frontmatterFromMdastTree(tree, remove).frontmatter;
-  const base = resolveFrontmatter(site?.frontmatter ?? {}, project, session.log);
-  const frontmatter = resolveFrontmatter(base, page, session.log);
+  const sitematter = resolveFrontmatter({}, site?.frontmatter ?? {}, session.log);
+  const projmatter = resolveFrontmatter(sitematter, project, session.log);
+  const frontmatter = resolveFrontmatter(projmatter, page, session.log);
   if (site?.design?.hide_authors) {
     delete frontmatter.authors;
   }
