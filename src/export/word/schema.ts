@@ -1,9 +1,9 @@
-import { oxaLinkToId } from '@curvenote/blocks';
-import { CaptionKind, Nodes, ReferenceKind } from '@curvenote/schema';
-import { formatDatetime } from '@curvenote/schema/dist/nodes/time';
 import { HeadingLevel, IParagraphOptions, IRunOptions } from 'docx';
 import { defaultMarks, NodeSerializer } from 'prosemirror-docx';
 import { Node } from 'prosemirror-model';
+import { oxaLinkToId } from '@curvenote/blocks';
+import { CaptionKind, Nodes, ReferenceKind } from '@curvenote/schema';
+import { formatDatetime } from '@curvenote/schema/dist/nodes/time';
 
 interface Styles {
   paragraph?: IParagraphOptions;

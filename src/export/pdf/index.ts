@@ -1,4 +1,4 @@
-import { exportFromOxaLink } from '../utils';
+import { exportFromOxaLink } from '../utils/exportWrapper';
 import { singleArticleToPdf } from './single';
 
 export { singleArticleToPdf } from './single';

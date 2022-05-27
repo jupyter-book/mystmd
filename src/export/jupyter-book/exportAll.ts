@@ -1,11 +1,11 @@
 import { Blocks, KINDS, NavListItemKindEnum } from '@curvenote/blocks';
 import { Version } from '../../models';
-import { articleToMarkdown } from '../markdown';
-import { getLatestVersion } from '../../actions/getLatest';
 import { ISession } from '../../session/types';
-import { ArticleState } from '../utils';
-import { writeBibtex } from '../utils/writeBibtex';
+import { articleToMarkdown } from '../markdown';
 import { notebookToIpynb } from '../notebook';
+import { getLatestVersion } from '../utils/getLatest';
+import { ArticleState } from '../utils/walkArticle';
+import { writeBibtex } from '../utils/writeBibtex';
 
 interface Options {
   path?: string;

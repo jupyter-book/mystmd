@@ -2,14 +2,14 @@ import { VersionId } from '@curvenote/blocks';
 import { ISession } from '../../session/types';
 import { writeBibtex } from '../utils/writeBibtex';
 import { makeBuildPaths } from '../utils';
-import { TexExportOptions } from './types';
+import { gatherAndWriteArticleContent } from './gather';
 import {
   ifTemplateFetchTaggedBlocks,
   ifTemplateLoadOptions,
   throwIfTemplateButNoJtex,
 } from './template';
+import { TexExportOptions } from './types';
 import { ifTemplateRunJtex } from './utils';
-import { gatherAndWriteArticleContent } from './gather';
 
 export async function singleArticleToTex(
   session: ISession,

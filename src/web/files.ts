@@ -1,10 +1,10 @@
-import path from 'path';
-import fsp from 'fs/promises';
-import fs from 'fs';
 import { createHash } from 'crypto';
+import fs from 'fs';
+import fsp from 'fs/promises';
+import path from 'path';
 import { KnownCellOutputMimeTypes } from '@curvenote/blocks';
 import { IFileObject, IFileObjectFactoryFn, Metadata } from '@curvenote/nbtx';
-import { Logger } from 'src/logging';
+import { Logger } from '../logging';
 
 enum FileExtension {
   png = 'png',
@@ -68,7 +68,7 @@ export class WebFileObject implements IFileObject {
   writeString(data: string, contentType: string): Promise<void> {
     this.contentType = KnownCellOutputMimeTypes.AppJson;
     this.hash = computeHash(data);
-    this.log.debug(`🗃  writing json output file for ${contentType} with ${data.length} bytes`);
+    this.log.debug(`Writing json output file for ${contentType} with ${data.length} bytes`);
     const json = JSON.stringify({ content_type: contentType, content: data });
     return fsp.writeFile(path.join(this.publicPath, this.id), json, { encoding: 'utf8' });
   }

@@ -1,22 +1,24 @@
-import fs from 'fs';
-import path from 'path';
 import chalk from 'chalk';
-import yaml from 'js-yaml';
+import fs from 'fs';
 import inquirer from 'inquirer';
-import { ISession } from '../session/types';
-import { addProjectsToConfig } from './add';
-import { blankCurvenoteConfig, CURVENOTE_YML } from '../config';
-import { docLinks } from '../docs';
+import { basename, resolve } from 'path';
+import { CURVENOTE_YML, writeSiteConfig, writeProjectConfig } from '../config';
+import { ProjectConfig } from '../config/types';
+import { docLinks, LOGO } from '../docs';
+import { LogLevel } from '../logging';
 import { MyUser } from '../models';
+import { ISession } from '../session/types';
+import { selectors } from '../store';
 import { writeFileToFolder } from '../utils';
 import { startServer } from '../web';
-import { LOGO } from '../web/public';
+import { interactiveCloneQuestions } from './clone';
 import { pullProjects } from './pull';
 import questions from './questions';
-import { LogLevel } from '../logging';
+import { getDefaultProjectConfig, getDefaultSiteConfig, INIT_LOGO_PATH } from './utils';
 
 type Options = {
-  template: string;
+  branch?: string;
+  force?: boolean;
 };
 
 const WELCOME = async (session: ISession) => `
@@ -59,61 +61,82 @@ ${docLinks.overview}
 
 `;
 
+/**
+ * Initialize local curvenote project from folder or remote project
+ *
+ * It creates a new curvenote.yml file in the current directory with
+ * both site and project configuration.
+ *
+ * This fails if curvenote.yml already exists; use `start` or `add`.
+ */
 export async function init(session: ISession, opts: Options) {
-  if (session.config) {
-    session.log.error(`We found a "${CURVENOTE_YML}" on your path, please edit that instead!\n\n`);
-    session.log.info(
-      `${chalk.dim('Are you looking for')} ${chalk.bold('curvenote sync add')}${chalk.dim('?')}`,
-    );
-    return;
-  }
-  const pwd = fs.readdirSync('.');
-  const folderIsEmpty = pwd.length === 0;
-
   session.log.info(await WELCOME(session));
+  let path = '.';
+  // Initialize config - error if it exists
+  if (
+    selectors.selectLocalSiteConfig(session.store.getState()) ||
+    selectors.selectLocalProjectConfig(session.store.getState(), '.')
+  ) {
+    throw Error(
+      `The ${CURVENOTE_YML} config already exists, did you mean to ${chalk.bold(
+        'curvenote add',
+      )} or ${chalk.bold('curvenote start')}?`,
+    );
+  }
+  const siteConfig = getDefaultSiteConfig(basename(resolve(path)));
 
   // Load the user now, and wait for it below!
   let me: MyUser | Promise<MyUser> | undefined;
   if (!session.isAnon) me = new MyUser(session).get();
 
-  const defaultName = path.basename(path.resolve());
-  const config = blankCurvenoteConfig(defaultName);
-  const answers = await inquirer.prompt([
-    questions.name({ name: config.web.name }),
-    questions.content({ folderIsEmpty, template: opts.template }),
-  ]);
-  if (answers.content === 'curvenote') {
-    await addProjectsToConfig(session, { config, singleQuestion: true });
-    session.log.info(`Add other projects using: ${chalk.bold('curvenote sync add')}\n`);
-  }
+  const folderIsEmpty = fs.readdirSync(path).length === 0;
+  const { content } = await inquirer.prompt([questions.content({ folderIsEmpty })]);
+  let projectConfig: ProjectConfig;
   let pullComplete = false;
-  const pullOpts = { config, level: LogLevel.debug };
-  const pullProcess = pullProjects(session, pullOpts).then(() => {
+  if (content === 'folder') {
+    const { title } = await inquirer.prompt([questions.title({ title: siteConfig.title || '' })]);
+    projectConfig = getDefaultProjectConfig(title);
+    siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
     pullComplete = true;
-  });
+  } else if (content === 'curvenote') {
+    const results = await interactiveCloneQuestions(session);
+    const { siteProject } = results;
+    projectConfig = results.projectConfig;
+    path = siteProject.path;
+    siteConfig.nav = [{ title: projectConfig.title, url: `/${siteProject.slug}` }];
+    siteConfig.projects = [siteProject];
+    session.log.info(`Add other projects using: ${chalk.bold('curvenote clone')}\n`);
+  } else {
+    throw Error(`Invalid init content: ${content}`);
+  }
   // Personalize the config
   me = await me;
-  config.web.name = answers.name;
-  config.web.logoText = answers.name;
+  siteConfig.title = projectConfig.title;
+  siteConfig.logoText = projectConfig.title;
   if (me) {
-    config.web.domains = [`${me.data.username}.curve.space`];
-    config.web.twitter = me.data.twitter || undefined;
+    const { username, twitter } = me.data;
+    siteConfig.domains = [`${username}.curve.space`];
+    if (twitter) siteConfig.twitter = twitter;
   }
-  writeFileToFolder(CURVENOTE_YML, yaml.dump(config));
-  session.loadConfig();
-  // logo, favicon
-  writeFileToFolder('public/logo.svg', LOGO);
+  // Save the configs to the state and write them to disk
+  writeSiteConfig(session, '.', siteConfig);
+  writeProjectConfig(session, path, projectConfig);
+
+  const pullOpts = { level: LogLevel.debug };
+  let pullProcess: Promise<void> | undefined;
+  if (!pullComplete) {
+    pullProcess = pullProjects(session, pullOpts).then(() => {
+      pullComplete = true;
+    });
+  }
+
+  if (siteConfig.logo === INIT_LOGO_PATH) {
+    writeFileToFolder(INIT_LOGO_PATH, LOGO);
+  }
 
   session.log.info(await FINISHED(session));
 
-  const { start } = await inquirer.prompt([
-    {
-      name: 'start',
-      message: 'Would you like to start the curve.space local server now?',
-      type: 'confirm',
-      default: true,
-    },
-  ]);
+  const { start } = await inquirer.prompt([questions.start()]);
   if (!start) {
     session.log.info(chalk.dim('\nYou can do this later with:'), chalk.bold('curvenote start'));
   }
@@ -128,7 +151,7 @@ export async function init(session: ISession, opts: Options) {
   if (start) {
     await pullProcess;
     session.log.info(chalk.dim('\nStarting local server with: '), chalk.bold('curvenote start'));
-    await startServer(session, {});
+    await startServer(session, opts);
   }
   await pullProcess;
 }

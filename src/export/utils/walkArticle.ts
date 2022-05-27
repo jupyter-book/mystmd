@@ -1,3 +1,5 @@
+import Bottleneck from 'bottleneck';
+import { encode } from 'html-entities';
 import fetch from 'node-fetch';
 import {
   VersionId,
@@ -10,14 +12,12 @@ import {
   ReferenceFormatTypes,
 } from '@curvenote/blocks';
 import { DEFAULT_IMAGE_WIDTH, nodeNames, Nodes, ReferenceKind } from '@curvenote/schema';
-import { encode } from 'html-entities';
-import Bottleneck from 'bottleneck';
-import { getEditorState, getEditorStateFromHTML } from '../../actions/utils';
 import { Block, Version } from '../../models';
-import { getLatestVersion } from '../../actions/getLatest';
-import { getImageSrc } from './getImageSrc';
-import { basekey } from './basekey';
 import { ISession } from '../../session/types';
+import { basekey } from './basekey';
+import { getEditorState, getEditorStateFromHTML } from './getEditorState';
+import { getImageSrc } from './getImageSrc';
+import { getLatestVersion } from './getLatest';
 
 export interface ArticleStateChild {
   state: ReturnType<typeof getEditorState>;

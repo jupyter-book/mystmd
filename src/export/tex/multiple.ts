@@ -1,22 +1,23 @@
-import { createAuthor, oxaLinkToId, VersionId } from '@curvenote/blocks';
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'date-fns';
-import { ExportConfig } from '../../config';
+import { Author, createAuthor, oxaLinkToId, VersionId } from '@curvenote/blocks';
 import { Block, Project } from '../../models';
 import { ISession } from '../../session/types';
+import { DocumentModel, toAuthorFields, toDateFields } from '../model';
+import { ExportConfig } from '../types';
+import { makeBuildPaths } from '../utils/makeBuildPaths';
+import { ArticleState, ArticleStateReference } from '../utils/walkArticle';
 import { writeBibtex } from '../utils/writeBibtex';
-import { ArticleState, ArticleStateReference, makeBuildPaths } from '../utils';
 import { TexExportOptions } from './types';
+import { buildFrontMatter, stringifyFrontMatter } from './frontMatter';
+import { gatherAndWriteArticleContent } from './gather';
 import {
   ifTemplateFetchTaggedBlocks,
   ifTemplateLoadOptions,
   throwIfTemplateButNoJtex,
 } from './template';
 import { ifTemplateRunJtex } from './utils';
-import { gatherAndWriteArticleContent } from './gather';
-import { buildFrontMatter, stringifyFrontMatter } from './frontMatter';
-import { DocumentModel, toAuthorFields, toDateFields } from '../model';
 
 /**
  * Create a tex output based on an export configuration
@@ -110,7 +111,7 @@ export async function multipleArticleToTex(
   const authors = !authorsData
     ? undefined
     : await Promise.all(
-        authorsData.map((a) =>
+        (authorsData as Author[]).map((a) =>
           toAuthorFields(session, project, createAuthor({ id: '', userId: a.id ?? null })),
         ),
       );

@@ -1,61 +1,61 @@
-import fs from 'fs';
-import path from 'path';
-import pLimit from 'p-limit';
-import fetch from 'node-fetch';
 import { createHash } from 'crypto';
 import cliProgress from 'cli-progress';
+import fs from 'fs';
+import mime from 'mime-types';
+import fetch from 'node-fetch';
+import path from 'path';
+import pLimit from 'p-limit';
 import {
   DnsRouter,
   SiteDeployRequest,
   SiteUploadRequest,
   SiteUploadResponse,
 } from '@curvenote/blocks';
-import mime from 'mime-types';
-import { publicPath, serverPath } from './utils';
-import { DocumentCache } from './cache';
+import { SiteConfig } from '../config/types';
 import { Logger } from '../logging';
-import { tic } from '../export/utils/exec';
+import { ISession } from '../session/types';
+import { publicPath, serverPath, tic } from '../utils';
 
 type FromTo = {
   from: string;
   to: string;
 };
 
-function listConfig(cache: DocumentCache): FromTo[] {
+function listConfig(session: ISession, siteConfig: SiteConfig): FromTo[] {
   const paths: FromTo[] = [];
   paths.push({
-    from: path.join(serverPath(cache.options), 'app', 'config.json'),
+    from: path.join(serverPath(session), 'app', 'config.json'),
     to: 'config.json',
   });
-  if (cache.config?.site.logo) {
-    const logo = path.basename(cache.config.site.logo);
+  if (siteConfig.logo) {
+    const logo = path.basename(siteConfig.logo);
     paths.push({
-      from: path.join(serverPath(cache.options), 'public', logo),
+      from: path.join(serverPath(session), 'public', logo),
       to: `public/${logo}`,
     });
   }
-  if (cache.config?.site.favicon) {
-    const favicon = path.basename(cache.config.site.favicon);
+  if (siteConfig.favicon) {
+    const favicon = path.basename(siteConfig.favicon);
     paths.push({
-      from: path.join(serverPath(cache.options), 'public', favicon),
+      from: path.join(serverPath(session), 'public', favicon),
       to: `public/${favicon}`,
     });
   }
   // Load all static action resources
-  cache.config?.site.actions.forEach((action) => {
+  siteConfig.actions.forEach((action) => {
     if (!action.static) return;
     // String leading slash
     const names = action.url.split('/').filter((s) => s);
     paths.push({
-      from: path.join(serverPath(cache.options), 'public', ...names),
+      from: path.join(serverPath(session), 'public', ...names),
       to: `public/${names.join('/')}`,
     });
   });
   return paths;
 }
 
-function listContentFolders(cache: DocumentCache): FromTo[] {
-  const contentFolder = path.join(serverPath(cache.options), 'app', 'content');
+function listContentFolders(session: ISession): FromTo[] {
+  const contentFolder = path.join(serverPath(session), 'app', 'content');
   const folders = fs.readdirSync(contentFolder);
   const fromTo = folders.map((folderName) => {
     const basePath = path.join(contentFolder, folderName);
@@ -68,8 +68,8 @@ function listContentFolders(cache: DocumentCache): FromTo[] {
   return fromTo.flat();
 }
 
-function listPublic(cache: DocumentCache): FromTo[] {
-  const staticFolder = path.join(publicPath(cache.options), '_static');
+function listPublic(session: ISession): FromTo[] {
+  const staticFolder = path.join(publicPath(session), '_static');
   if (!fs.existsSync(staticFolder)) return [];
   const assets = fs.readdirSync(staticFolder);
   const fromTo = assets.map((assetName) => {
@@ -134,10 +134,10 @@ async function uploadFile(log: Logger, upload: FileUpload) {
   log.debug(toc(`Finished upload of ${upload.from} in %s.`));
 }
 
-export async function deployContent(cache: DocumentCache, domains: string[]) {
-  const configFiles = listConfig(cache);
-  const contentFiles = listContentFolders(cache);
-  const imagesFiles = listPublic(cache);
+export async function deployContent(session: ISession, siteConfig: SiteConfig) {
+  const configFiles = listConfig(session, siteConfig);
+  const contentFiles = listContentFolders(session);
+  const imagesFiles = listPublic(session);
   const filesToUpload = [...configFiles, ...imagesFiles, ...contentFiles];
 
   const files = await Promise.all(
@@ -152,7 +152,7 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
       size,
     })),
   };
-  const { json: uploadTargets } = await cache.session.post<SiteUploadResponse>(
+  const { json: uploadTargets } = await session.post<SiteUploadResponse>(
     '/sites/upload',
     uploadRequest,
   );
@@ -160,7 +160,7 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
   // Only upload N files at a time
   const limit = pLimit(10);
   const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-  cache.session.log.info(`☁️  Uploading ${files.length} files`);
+  session.log.info(`☁️  Uploading ${files.length} files`);
   bar1.start(files.length, 0);
   let current = 0;
   const toc = tic();
@@ -168,7 +168,7 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
     files.map((file) =>
       limit(async () => {
         const upload = uploadTargets.files[file.to];
-        await uploadFile(cache.session.log, {
+        await uploadFile(session.log, {
           bucket: uploadTargets.bucket,
           from: file.from,
           to: upload.path,
@@ -183,7 +183,7 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
     ),
   );
   bar1.stop();
-  cache.session.log.info(toc(`☁️  Uploaded ${files.length} files in %s.`));
+  session.log.info(toc(`☁️  Uploaded ${files.length} files in %s.`));
 
   const cdnKey = uploadTargets.id;
 
@@ -191,23 +191,23 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
     id: cdnKey,
     files: files.map(({ to }) => ({ path: to })),
   };
-  const deploy = await cache.session.post('/sites/deploy', deployRequest);
+  const deploy = await session.post('/sites/deploy', deployRequest);
 
   if (deploy.ok) {
-    cache.session.log.info(toc(`🚀 Deployed ${files.length} files in %s.`));
+    session.log.info(toc(`🚀 Deployed ${files.length} files in %s.`));
   } else {
     throw new Error('Deployment failed: Please contact support@curvenote.com!');
   }
 
   const sites = (
     await Promise.all(
-      domains.map(async (domain) => {
-        const resp = await cache.session.post<DnsRouter>('/sites/router', {
+      siteConfig.domains.map(async (domain) => {
+        const resp = await session.post<DnsRouter>('/sites/router', {
           cdn: cdnKey,
           domain,
         });
         if (resp.ok) return resp.json;
-        cache.session.log.error(
+        session.log.error(
           `Error promoting site: https://${domain}. Please ensure you have permission or contact support@curvenote.com`,
         );
         return null;
@@ -217,7 +217,7 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
 
   const allSites = sites.map((s) => `https://${s.id}`).join('\n  - ');
   if (allSites.length > 0) {
-    cache.session.log.info(
+    session.log.info(
       toc(
         `🌍 Site promoted to ${sites.length} domain${
           sites.length > 1 ? 's' : ''
@@ -225,8 +225,8 @@ export async function deployContent(cache: DocumentCache, domains: string[]) {
       ),
     );
   }
-  cache.session.log.debug(`CDN key: ${cdnKey}`);
-  cache.session.log.info(
+  session.log.debug(`CDN key: ${cdnKey}`);
+  session.log.info(
     '\n\n⚠️  https://curve.space is still in alpha. Please ensure you have a copy of your content locally.',
   );
 }

@@ -4,8 +4,8 @@ import fetch from 'node-fetch';
 import { Blocks } from '@curvenote/blocks';
 import { Logger } from '../../logging';
 import { Block, Version } from '../../models';
-import { ArticleState } from './walkArticle';
 import { getImageSrc } from './getImageSrc';
+import { ArticleState } from './walkArticle';
 
 // TODO: use mime-types package!
 // https://www.npmjs.com/package/mime-types

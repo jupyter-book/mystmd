@@ -1,117 +1,95 @@
+import fs from 'fs';
 import pLimit from 'p-limit';
+import { loadProjectConfigOrThrow } from '../config';
 import { projectToJupyterBook } from '../export';
-import { Project } from '../models';
-import { CurvenoteConfig, CURVENOTE_YML, SyncConfig } from '../config';
-import { ISession } from '../session/types';
-import { tic } from '../export/utils/exec';
-import { projectLogString } from './utls';
 import { LogLevel, getLevel } from '../logging';
-import { confirmOrExit } from '../utils';
+import { Project } from '../models';
+import { ISession } from '../session/types';
+import { selectors } from '../store';
+import { isDirectory } from '../toc';
+import { confirmOrExit, tic } from '../utils';
+import { projectLogString } from './utils';
 
 /**
- * Check the item has a remote
+ * Pull content for a project on a path
  *
- * @param item the item to pull
- * @returns boolean
+ * Errors if project config does not exist or no remote project url is specified.
  */
-function hasRemote(item: SyncConfig): boolean {
-  return Boolean(item.link) && Boolean(item.id);
-}
-
-/**
- * Check the item exists and has a remote
- *
- * @param folder the local path of the folder to pull, used in message only
- * @param item the item to validate, whcih may be undefined
- * @returns a validated SyncConfig
- */
-function throwIfMissingOrNoRemote(folder: string, item?: SyncConfig): SyncConfig {
-  if (!item) throw new Error(`Could not find ${folder} in ${CURVENOTE_YML}`);
-  if (!hasRemote(item)) throw new Error(`Item ${folder} has no remote, cannot pull`);
-  return item as SyncConfig;
-}
-
-/**
- * Pull content for a project
- *
- * @param session the session
- * @param id the item id which is also the project id for remote content
- * @param folder the local folder to pull
- * @param level logging level from the cli
- */
-async function pullProject(session: ISession, id: string, folder: string, level?: LogLevel) {
-  const log = getLevel(session.log, level ?? LogLevel.debug);
-  const project = await new Project(session, id).get();
+export async function pullProject(session: ISession, path: string, opts?: { level?: LogLevel }) {
+  const state = session.store.getState();
+  const projectConfig = selectors.selectLocalProjectConfig(state, path);
+  if (!projectConfig) throw Error(`Cannot pull project from ${path}: no project config`);
+  if (!projectConfig.remote) throw Error(`Cannot pull project from ${path}: no remote project url`);
+  const log = getLevel(session.log, opts?.level ?? LogLevel.debug);
+  const project = await new Project(session, projectConfig.remote).get();
   const toc = tic();
-  log(`Pulling ${folder} from ${projectLogString(project)}`);
+  log(`📥 Pulling ${path} from ${projectLogString(project)}`);
   await projectToJupyterBook(session, project.id, {
-    path: folder,
+    path,
     writeConfig: false,
     createFrontmatter: true,
     titleOnlyInFrontmatter: true,
   });
-  log(toc(`🚀 Pulled ${folder} in %s`));
+  log(toc(`🚀 Pulled ${path} in %s`));
 }
 
 /**
- * Pull content for all projects in the config.sync that have remotes
+ * Pull content for all projects in the site config
  *
- * @param session
- * @param opts
+ * Errors if no site config is loaded in the state.
  */
-export async function pullProjects(
-  session: ISession,
-  opts: { config: CurvenoteConfig; level?: LogLevel; folder?: string | string[] },
-) {
-  const { config } = opts;
+export async function pullProjects(session: ISession, opts: { level?: LogLevel }) {
+  const state = session.store.getState();
+  const siteConfig = selectors.selectLocalSiteConfig(state);
+  if (!siteConfig) throw Error('Cannot pull projects: no site config');
   const limit = pLimit(1);
-  if (typeof opts.folder === 'string') {
-    const item = throwIfMissingOrNoRemote(
-      opts.folder,
-      config.sync.find((i) => i.folder === opts.folder),
-    );
-    await pullProject(session, item.id, opts.folder, opts.level);
-  } else if (Array.isArray(opts.folder)) {
-    const folders = opts.folder.map((f) => {
-      const item = throwIfMissingOrNoRemote(
-        f,
-        config.sync.find((i) => i.folder === f),
-      );
-      return item;
-    });
-    await Promise.all(
-      folders.map(({ folder, id }) =>
-        limit(async () => pullProject(session, id, folder, opts.level)),
-      ),
-    );
-  } else {
-    const remoteContentOnly = config.sync.filter(hasRemote);
-    await Promise.all(
-      remoteContentOnly.map(({ folder, id }) =>
-        limit(async () => pullProject(session, id, folder, opts.level)),
-      ),
-    );
-  }
+  await Promise.all(
+    siteConfig.projects.map(async (proj) => {
+      limit(async () => pullProject(session, proj.path, opts));
+    }),
+  );
 }
 
 type Options = {
   yes?: boolean;
 };
 
-export async function pull(session: ISession, folder?: string, opts?: Options) {
-  const { config } = session;
-  if (!config) throw new Error('Must have config to pull content.');
-
-  if (folder) {
-    throwIfMissingOrNoRemote(
-      folder,
-      config.sync.find((item) => item.folder === folder),
+/**
+ * Pull new project content from curvenote.com
+ *
+ * If this is called from a folder with an existing site configuration and
+ * no other path is specified, all projects included in the site are pulled.
+ * Otherwise, a single project on the specified path is pulled.
+ *
+ * Errors if site config has no projects or if project does not exist
+ * on specified path.
+ */
+export async function pull(session: ISession, path?: string, opts?: Options) {
+  path = path || '.';
+  if (!fs.existsSync(path) || !isDirectory(path)) {
+    throw new Error(
+      `Invalid path: "${path}", it must be a folder accessible from the local directory`,
     );
   }
-
-  const message = folder
-    ? `Pulling will overwrite all content in ${folder}. Are you sure?`
-    : 'Pulling content will overwrite all content in folders. Are you sure?';
-  await confirmOrExit(message, opts);
-  await pullProjects(session, { config, level: LogLevel.info, folder });
+  // Site config is loaded on session init
+  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  if (path === '.' && siteConfig) {
+    const numProjects = siteConfig.projects.length;
+    if (numProjects === 0) throw new Error('Your site configuration has no projects');
+    const plural = numProjects > 1 ? 's' : '';
+    await confirmOrExit(
+      `Pulling will overwrite all content in ${numProjects} project${plural}. Are you sure?`,
+      opts,
+    );
+    await pullProjects(session, { level: LogLevel.info });
+  } else {
+    loadProjectConfigOrThrow(session, path);
+    await confirmOrExit(
+      `Pulling will overwrite all content in ${
+        path === '.' ? 'current directory' : path
+      }. Are you sure?`,
+      opts,
+    );
+    await pullProject(session, path, { level: LogLevel.info });
+  }
 }

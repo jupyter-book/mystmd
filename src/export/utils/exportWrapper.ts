@@ -1,7 +1,7 @@
 import { oxaLinkToId, ProjectId, VersionId } from '@curvenote/blocks';
-import { getLatestVersion } from '../../actions/getLatest';
 import { Block } from '../../models';
 import { ISession } from '../../session/types';
+import { getLatestVersion } from './getLatest';
 import { ArticleState } from './walkArticle';
 
 export const exportFromOxaLink =

@@ -1,14 +1,14 @@
 import path from 'path';
 import { Blocks, VersionId, KINDS, convertToBlockId } from '@curvenote/blocks';
-import { DocumentModel } from '../model';
 import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
-import { getChildren } from '../../actions/getChildren';
+import { DocumentModel } from '../model';
+import { getChildren } from '../utils/getChildren';
+import { walkArticle, ArticleState } from '../utils/walkArticle';
 import { buildFrontMatterFromBlock, stringifyFrontMatter } from './frontMatter';
-import { walkArticle, ArticleState } from '../utils';
+import { localizeAndProcessImages } from './images';
 import { TexExportOptions } from './types';
 import { convertAndLocalizeChild, writeBlocksToFile, writeTaggedContent } from './utils';
-import { localizeAndProcessImages } from './images';
 
 export async function gatherAndWriteArticleContent(
   session: ISession,

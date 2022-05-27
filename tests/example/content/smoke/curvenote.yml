@@ -1,0 +1,4 @@
+version: 1
+project:
+  - title: Smoke Test!
+    remote: https://curvenote.com/@stevejpurves/blog

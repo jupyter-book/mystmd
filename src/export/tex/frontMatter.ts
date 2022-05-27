@@ -1,10 +1,10 @@
 import YAML from 'yaml';
 import { Blocks } from '@curvenote/blocks';
 import { toTex } from '@curvenote/schema';
-import { buildDocumentModelFromBlock, DocumentModel } from '../model';
 import { Block, Version } from '../../models';
-import { getEditorState } from '../../actions/utils';
 import { ISession } from '../../session/types';
+import { buildDocumentModelFromBlock, DocumentModel } from '../model';
+import { getEditorState } from '../utils/getEditorState';
 
 export interface JtexOutputConfig {
   path: string;

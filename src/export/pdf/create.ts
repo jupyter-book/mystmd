@@ -1,5 +1,5 @@
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 import util from 'util';
 import { Logger } from '../../logging';
 import { exec } from '../utils';

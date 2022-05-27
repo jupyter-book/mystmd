@@ -1,6 +1,5 @@
 import util from 'util';
 import child_process from 'child_process';
-import prettyHrtime from 'pretty-hrtime';
 import { Logger } from '../../logging';
 
 function execWrapper(
@@ -28,16 +27,6 @@ function makeExecWrapper(command: string, log: Pick<Logger, 'debug' | 'error'> |
 
 export function makeExecutable(command: string, log: Pick<Logger, 'debug' | 'error'> | null) {
   return util.promisify(makeExecWrapper(command, log));
-}
-
-export function tic() {
-  let start = process.hrtime();
-  function toc(f = '') {
-    const time = prettyHrtime(process.hrtime(start));
-    start = process.hrtime();
-    return f ? f.replace('%s', time) : time;
-  }
-  return toc;
 }
 
 export default exec;

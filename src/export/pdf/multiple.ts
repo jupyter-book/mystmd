@@ -1,8 +1,8 @@
 import path from 'path';
-import { multipleArticleToTex } from '../tex';
-import { ExportConfig } from '../../config/types';
 import { Project } from '../../models';
 import { ISession } from '../../session/types';
+import { multipleArticleToTex } from '../tex';
+import { ExportConfig } from '../types';
 import { createPdfGivenTexFile } from './create';
 
 export async function multipleArticleToPdf(

@@ -1,12 +1,13 @@
 import fs from 'fs';
-import { VersionId, KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
 import { writeDocx } from 'prosemirror-docx';
+import { VersionId, KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
 import { Block, Project, User, Version } from '../../models';
-import { getChildren } from '../../actions/getChildren';
-import { loadImagesToBuffers, walkArticle, assertEndsInExtension } from '../utils';
-import { exportFromOxaLink } from '../utils/exportWrapper';
-import { defaultTemplate } from './template';
 import { ISession } from '../../session/types';
+import { assertEndsInExtension } from '../utils/assertions';
+import { exportFromOxaLink } from '../utils/exportWrapper';
+import { getChildren } from '../utils/getChildren';
+import { loadImagesToBuffers, walkArticle } from '../utils/walkArticle';
+import { defaultTemplate } from './template';
 
 export * from './schema';
 export { getDefaultSerializerOptions } from './utils';

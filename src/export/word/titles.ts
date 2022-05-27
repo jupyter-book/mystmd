@@ -1,6 +1,6 @@
-import { schemas } from '@curvenote/schema';
 import { Node } from 'prosemirror-model';
 import { Project as ProjectDTO, Block as BlockDTO } from '@curvenote/blocks';
+import { schemas } from '@curvenote/schema';
 import { ISession } from '../../session/types';
 
 export async function createArticleTitle(

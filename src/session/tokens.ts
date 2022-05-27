@@ -1,6 +1,6 @@
-import { XClientName } from '@curvenote/blocks';
 import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
+import { XClientName } from '@curvenote/blocks';
 import { Logger } from '../logging';
 import CLIENT_VERSION from '../version';
 import { Tokens } from './types';

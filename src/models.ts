@@ -1,3 +1,4 @@
+import { AnyAction } from '@reduxjs/toolkit';
 import {
   MyUser as MyUserDTO,
   User as UserDTO,
@@ -18,18 +19,73 @@ import {
   FormatTypes,
   TemplateSpec,
 } from '@curvenote/blocks';
-import { BaseTransfer } from './base';
 import { ISession } from './session/types';
+import { selectors, RootState } from './store';
 import { users, teams, blocks, projects, versions, templates } from './store/api';
-import {
-  selectBlock,
-  selectProject,
-  selectTeam,
-  selectUser,
-  selectVersion,
-  selectTemplate,
-} from './store/selectors';
 import { versionIdToURL } from './utils';
+
+/** Base class for API models */
+class BaseTransfer<
+  ID,
+  DTO extends { id: ID },
+  GetOptions extends Record<string, string> = Record<string, never>,
+> {
+  modelKind = '';
+
+  session: ISession;
+
+  id: ID;
+
+  $data?: DTO;
+
+  $fromDTO: (id: ID, json: JsonObject) => DTO = () => {
+    throw new Error('Must be set in base class');
+  };
+
+  $createUrl: () => string = () => {
+    throw new Error('Must be set in base class');
+  };
+
+  $selector?: (state: RootState, id: ID) => DTO;
+
+  $receive?: (dto: DTO) => AnyAction;
+
+  constructor(session: ISession, id: ID) {
+    this.id = id;
+    this.session = session;
+  }
+
+  get data(): DTO {
+    if (this.$data) return this.$data;
+    throw new Error(`${this.modelKind}: Must call "get" first`);
+  }
+
+  set data(data: DTO) {
+    this.id = data.id;
+    this.$data = this.$fromDTO(data.id, data);
+    if (this.$receive) this.session.store.dispatch(this.$receive(data));
+  }
+
+  async get(query?: GetOptions) {
+    const url = this.$createUrl();
+    const fromSession = this.$selector?.(this.session.store.getState(), this.id);
+    if (fromSession) {
+      this.session.log.debug(`Loading ${this.modelKind} from cache: "${url}"`);
+      this.data = fromSession;
+      return this;
+    }
+    this.session.log.debug(`Fetching ${this.modelKind}: "${url}"`);
+    const { ok, json } = await this.session.get(url, query);
+    if (!ok) {
+      if ('message' in json) {
+        throw new Error(`${this.modelKind}: (${url}) ${json.message}`);
+      }
+      throw new Error(`${this.modelKind}: Not found (${url}) or you do not have access.`);
+    }
+    this.data = json as any;
+    return this;
+  }
+}
 
 export class MyUser extends BaseTransfer<string, MyUserDTO> {
   constructor(session: ISession) {
@@ -42,7 +98,7 @@ export class MyUser extends BaseTransfer<string, MyUserDTO> {
 
   $createUrl = () => `/my/user`;
 
-  $recieve = users.actions.recieve;
+  $receive = users.actions.receive;
 
   // TODO: $selector for MyUser that looks at the session
 }
@@ -54,9 +110,9 @@ export class User extends BaseTransfer<string, UserDTO> {
 
   $createUrl = () => `/users/${this.id}`;
 
-  $recieve = users.actions.recieve;
+  $receive = users.actions.receive;
 
-  $selector = selectUser;
+  $selector = selectors.selectUser;
 }
 
 export class Team extends BaseTransfer<string, TeamDTO> {
@@ -66,9 +122,9 @@ export class Team extends BaseTransfer<string, TeamDTO> {
 
   $createUrl = () => `/teams/${this.id}`;
 
-  $recieve = teams.actions.recieve;
+  $receive = teams.actions.receive;
 
-  $selector = selectTeam;
+  $selector = selectors.selectTeam;
 }
 
 export class Project extends BaseTransfer<ProjectId, ProjectDTO> {
@@ -78,9 +134,9 @@ export class Project extends BaseTransfer<ProjectId, ProjectDTO> {
 
   $createUrl = () => `/projects/${this.id}`;
 
-  $recieve = projects.actions.recieve;
+  $receive = projects.actions.receive;
 
-  $selector = selectProject;
+  $selector = selectors.selectProject;
 }
 
 export class Block extends BaseTransfer<BlockId, BlockDTO> {
@@ -90,9 +146,9 @@ export class Block extends BaseTransfer<BlockId, BlockDTO> {
 
   $createUrl = () => `/blocks/${this.id.project}/${this.id.block}`;
 
-  $recieve = blocks.actions.recieve;
+  $receive = blocks.actions.receive;
 
-  $selector = selectBlock;
+  $selector = selectors.selectBlock;
 }
 
 export type VersionQueryOpts = { format?: FormatTypes };
@@ -108,9 +164,9 @@ export class Version<T extends ALL_BLOCKS = ALL_BLOCKS> extends BaseTransfer<
 
   $createUrl = () => versionIdToURL(this.id);
 
-  $recieve = versions.actions.recieve;
+  $receive = versions.actions.receive;
 
-  $selector = selectVersion;
+  $selector = selectors.selectVersion;
 }
 
 export class Template extends BaseTransfer<string, TemplateSpec & { id: string }> {
@@ -121,7 +177,7 @@ export class Template extends BaseTransfer<string, TemplateSpec & { id: string }
 
   $createUrl = () => `/templates/${this.id}`;
 
-  $recieve = templates.actions.recieve;
+  $receive = templates.actions.receive;
 
-  $selector = selectTemplate;
+  $selector = selectors.selectTemplate;
 }

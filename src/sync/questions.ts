@@ -1,21 +1,17 @@
-// TODO: rename to title
-function name(opts: { name: string }) {
+function title(opts: { title: string }) {
   return {
-    name: 'name',
+    name: 'title',
     type: 'input',
-    message: 'What is the title of this project?',
-    default: opts.name,
+    message: 'What is the title of your curve.space site?',
+    default: opts.title,
   };
 }
 
-function content(opts: { template?: string; folderIsEmpty: boolean }) {
+function content(opts: { folderIsEmpty: boolean }) {
   return {
     name: 'content',
     type: 'list',
     message: 'What content would you like to use?',
-    when() {
-      return opts.template === undefined;
-    },
     choices: [
       {
         name: 'Import from Curvenote',
@@ -24,8 +20,7 @@ function content(opts: { template?: string; folderIsEmpty: boolean }) {
       {
         name: 'Use the content & notebooks in this folder',
         value: 'folder',
-        // Note: enable this in next pass!
-        disabled: true || opts.folderIsEmpty,
+        disabled: opts.folderIsEmpty,
       },
       {
         name: 'Show me some demo content!',
@@ -33,6 +28,33 @@ function content(opts: { template?: string; folderIsEmpty: boolean }) {
         disabled: true,
       },
     ],
+  };
+}
+
+function projectLink(opts?: { projectLink?: string }) {
+  return {
+    name: 'projectLink',
+    message: 'Link to Curvenote project:',
+    type: 'input',
+    default: opts?.projectLink || 'https://curvenote.com/@templates/curvespace',
+  };
+}
+
+function projectPath(path?: string) {
+  return {
+    name: 'projectPath',
+    message: 'Name of local folder to clone this project to?',
+    type: 'input',
+    default: path || '.',
+  };
+}
+
+function start() {
+  return {
+    name: 'start',
+    message: 'Would you like to start the curve.space local server now?',
+    type: 'confirm',
+    default: true,
   };
 }
 
@@ -46,7 +68,10 @@ function pull() {
 }
 
 export default {
-  name,
+  title,
   content,
+  projectLink,
+  projectPath,
+  start,
   pull,
 };
