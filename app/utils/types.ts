@@ -1,33 +1,6 @@
 import { Author } from '@curvenote/blocks';
 import type { GenericNode, GenericParent } from 'mystjs';
 
-export type NavItem = {
-  title: string;
-  url: string;
-  children: Omit<NavItem, 'children'>[]; // Only one deep
-};
-
-export type Config = {
-  id: string;
-  site: {
-    name: string;
-    sections: { title: string; folder: string }[];
-    twitter?: string;
-    actions: { title: string; url: string; static?: boolean }[];
-    nav: NavItem[];
-    logo?: string;
-    logoText?: string;
-  };
-  folders: Record<
-    string,
-    {
-      title: string;
-      index: string;
-      pages: { title: string; slug?: string; level: number }[];
-    }
-  >;
-};
-
 export type Heading = {
   slug?: string;
   path?: string;
@@ -114,4 +87,49 @@ export type PageLoader = {
   mdast: GenericParent;
   references: References;
   footer?: FooterLinks;
+};
+
+export type pageLevels = 1 | 2 | 3 | 4 | 5 | 6;
+
+export type SiteNavPage = {
+  title: string;
+  url: string;
+};
+
+export type SiteNavFolder = {
+  title: string;
+  url?: string;
+  children: SiteNavPage[];
+};
+
+export type SiteNavItem = SiteNavPage | SiteNavFolder;
+
+export type SiteAction = SiteNavPage & {
+  static: boolean;
+};
+
+export type ManifestProjectFolder = {
+  title: string;
+  level: pageLevels;
+};
+
+export type ManifestProjectPage = {
+  slug: string;
+} & ManifestProjectFolder;
+
+export type ManifestProject = {
+  slug: string;
+  index: string;
+  title: string;
+  pages: (ManifestProjectPage | ManifestProjectFolder)[];
+} & Frontmatter;
+
+export type SiteManifest = {
+  title: string;
+  twitter?: string;
+  logo?: string;
+  logoText?: string;
+  nav: SiteNavItem[];
+  actions: SiteAction[];
+  projects: ManifestProject[];
 };

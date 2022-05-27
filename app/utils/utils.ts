@@ -1,41 +1,34 @@
-import { Config } from './types';
+import { ManifestProject, SiteManifest } from './types';
 import { FooterLinks, Heading, NavigationLink } from './types';
 
-export function getSection(config?: Config, sectionNumber?: number) {
-  if (sectionNumber == null) return undefined;
-  return config?.site.sections[sectionNumber];
+export function getProject(config: SiteManifest, projectSlug?: string) {
+  const projectLookup: Record<string, ManifestProject> = {};
+  config.projects.forEach((p) => (projectLookup[p.slug] = p));
+  if (!projectSlug || !(projectSlug in projectLookup)) return undefined;
+  return projectLookup[projectSlug];
 }
 
-export function getFolder(config?: Config, folderName?: string | number) {
-  if (!config) return undefined;
-  if (typeof folderName === 'number') {
-    folderName = getSection(config, folderName)?.folder;
-  }
-  if (!folderName || !(folderName in config.folders)) return undefined;
-  return config.folders[folderName as keyof typeof config.folders];
-}
-
-export function getFolderPages(
-  config?: Config,
-  folderName?: string,
+export function getProjectHeadings(
+  config: SiteManifest,
+  projectSlug?: string,
   opts = { addGroups: false },
 ): Heading[] | undefined {
-  const folder = getFolder(config, folderName);
-  if (!folder) return undefined;
+  const project = getProject(config, projectSlug);
+  if (!project) return undefined;
   const headings: Heading[] = [
     {
-      title: folder.title,
-      slug: folder.index,
-      path: `/${folderName}`,
+      title: project.title,
+      slug: project.slug,
+      path: `/${project.slug}`,
       level: 'index',
     },
-    ...folder.pages.map((p) => {
-      if (!p.slug) return p;
-      return { ...p, path: `/${folderName}/${p.slug}` };
+    ...project.pages.map((p) => {
+      if (!('slug' in p)) return p;
+      return { ...p, path: `/${project.slug}/${p.slug}` };
     }),
   ];
   if (opts.addGroups) {
-    let lastTitle = folder.title;
+    let lastTitle = project.title;
     return headings.map((heading) => {
       if (!heading.slug || heading.level === 'index') {
         lastTitle = heading.title;
@@ -62,12 +55,12 @@ function getHeadingLink(
 }
 
 export function getFooterLinks(
-  config?: Config,
-  folderName?: string,
+  config?: SiteManifest,
+  projectSlug?: string,
   slug?: string,
 ): FooterLinks {
-  if (!folderName || !slug || !config) return {};
-  const pages = getFolderPages(config, folderName, {
+  if (!projectSlug || !slug || !config) return {};
+  const pages = getProjectHeadings(config, projectSlug, {
     addGroups: true,
   });
   const found = pages?.findIndex(({ slug: s }) => s === slug) ?? -1;

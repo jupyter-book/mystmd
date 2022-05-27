@@ -1,5 +1,5 @@
 import config from '~/config.json';
-import { PageLoader as Data, Config } from './types';
+import { PageLoader as Data, SiteManifest } from './types';
 
 const CACHE: {
   isLoaded: boolean;
@@ -9,7 +9,7 @@ const CACHE: {
   data: {},
 };
 
-export async function getConfig(request: Request): Promise<Config> {
+export async function getConfig(request: Request): Promise<SiteManifest> {
   return config;
 }
 

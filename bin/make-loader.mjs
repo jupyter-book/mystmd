@@ -5,15 +5,14 @@ const template = fs.readFileSync(filename).toString().split('\n');
 const config = JSON.parse(fs.readFileSync('./app/config.json').toString());
 
 const lines = [];
-config.site.sections.forEach(({ folder }) => {
-  lines.push(`  CACHE.data['${folder}'] = {};`);
-  const pages = [
-    { slug: config.folders[folder].index },
-    ...config.folders[folder].pages.filter(({ slug }) => !!slug),
-  ];
-  pages.forEach(({ slug }) => {
+config.projects.forEach((proj) => {
+  lines.push(`  CACHE.data['${proj.slug}'] = {};`);
+  lines.push(
+    `  CACHE.data['${proj.slug}']['${proj.index}'] = await import('~/content/${proj.slug}/${proj.index}.json');`,
+  );
+  proj.pages.forEach(({ slug }) => {
     lines.push(
-      `  CACHE.data['${folder}']['${slug}'] = await import('~/content/${folder}/${slug}.json');`,
+      `  CACHE.data['${proj.slug}']['${slug}'] = await import('~/content/${proj.slug}/${slug}.json');`,
     );
   });
 });

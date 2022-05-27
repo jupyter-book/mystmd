@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { NavLink, useParams, useLocation } from 'remix';
-import { getFolderPages, Heading, Config } from '~/utils';
+import { getProjectHeadings, Heading, ManifestProject } from '~/utils';
 import { useConfig } from '../ConfigProvider';
 import { CreatedInCurvenote } from '../curvenote';
 import { useNavOpen } from '../UiStateProvider';
@@ -9,7 +9,7 @@ import { useNavOpen } from '../UiStateProvider';
 type Props = {
   folder?: string;
   headings: Heading[];
-  sections?: Config['site']['sections'];
+  sections?: ManifestProject[];
 };
 
 const HeadingLink = ({
@@ -54,11 +54,11 @@ const HeadingLink = ({
 
 const HEADING_CLASSES = 'text-slate-900 text-lg leading-6 dark:text-slate-100';
 const Headings = ({ folder, headings, sections }: Props) => {
-  const secs = sections ?? [{ folder, title: 'Unknown' }];
+  const secs = sections || [];
   return (
     <ul className="text-slate-500 dark:text-slate-300 leading-6">
       {secs.map((sec) => {
-        if (sec.folder === folder) {
+        if (sec.slug === folder) {
           return headings.map((heading, index) => (
             <li
               key={heading.slug || index}
@@ -90,10 +90,10 @@ const Headings = ({ folder, headings, sections }: Props) => {
         }
         return (
           <li
-            key={sec.folder}
+            key={sec.slug}
             className={classNames('p-1 my-2 lg:hidden', HEADING_CLASSES)}
           >
-            <HeadingLink path={`/${sec.folder}`}>{sec.title}</HeadingLink>
+            <HeadingLink path={`/${sec.slug}`}>{sec.title}</HeadingLink>
           </li>
         );
       })}
@@ -104,8 +104,9 @@ const Headings = ({ folder, headings, sections }: Props) => {
 export const LeftNav = () => {
   const [open] = useNavOpen();
   const config = useConfig();
-  const { folder: folderName } = useParams();
-  const headings = getFolderPages(config, folderName);
+  const { folder: projectSlug } = useParams();
+  if (!config) return null;
+  const headings = getProjectHeadings(config, projectSlug);
   if (!headings) return null;
   return (
     <div
@@ -123,9 +124,9 @@ export const LeftNav = () => {
         className="flex-grow pt-10 pb-3 px-8 overflow-y-auto"
       >
         <Headings
-          folder={folderName}
+          folder={projectSlug}
           headings={headings}
-          sections={config?.site.sections}
+          sections={config?.projects}
         />
       </nav>
       <div className="flex-none py-4">

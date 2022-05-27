@@ -4,16 +4,16 @@ import classNames from 'classnames';
 import { Menu, Transition } from '@headlessui/react';
 import DotsVerticalIcon from '@heroicons/react/solid/DotsVerticalIcon';
 import MenuIcon from '@heroicons/react/solid/MenuIcon';
-import { Config, NavItem } from '~/utils';
+import { SiteManifest, SiteNavItem } from '~/utils';
 import { ThemeButton } from '../ThemeButton';
 import { useConfig } from '../ConfigProvider';
 import { useNavOpen } from '../UiStateProvider';
 import { CurvenoteLogo } from '../curvenote';
 import ChevronDownIcon from '@heroicons/react/solid/ChevronDownIcon';
 
-function NavItem({ item }: { item: NavItem }) {
+function NavItem({ item }: { item: SiteNavItem }) {
   const isActive = false;
-  if (!item.children) {
+  if (!('children' in item)) {
     return (
       <div className="relative grow-0 inline-block mx-2">
         <NavLink
@@ -85,18 +85,18 @@ function NavItem({ item }: { item: NavItem }) {
   );
 }
 
-function NavItems({ nav }: { nav?: Config['site']['nav'] }) {
+function NavItems({ nav }: { nav?: SiteManifest['nav'] }) {
   if (!nav) return null;
   return (
     <div className="text-md flex-grow hidden lg:block">
       {nav.map((item) => {
-        return <NavItem key={item.url || item.title} item={item} />;
+        return <NavItem key={'url' in item ? item.url : item.title} item={item} />;
       })}
     </div>
   );
 }
 
-function ActionMenu({ actions }: { actions?: Config['site']['actions'] }) {
+function ActionMenu({ actions }: { actions?: SiteManifest['actions'] }) {
   if (!actions || actions.length === 0) return null;
   return (
     <Menu as="div" className="relative">
@@ -220,7 +220,7 @@ function HomeLink({
 export function TopNav() {
   const [open, setOpen] = useNavOpen();
   const config = useConfig();
-  const { logo, logoText, actions, name, nav } = config?.site ?? {};
+  const { logo, logoText, actions, title, nav } = config ?? {};
   const { isLoading, showLoading } = useLoading();
   return (
     <div className="bg-stone-700 p-3 md:px-8 fixed w-screen top-0 z-30 h-[60px]">
@@ -237,7 +237,7 @@ export function TopNav() {
               <MenuIcon className="fill-current h-8 w-8 p-1" />
             </button>
           </div>
-          <HomeLink name={name} logo={logo} logoText={logoText} />
+          <HomeLink name={title} logo={logo} logoText={logoText} />
         </div>
         <div className="flex-grow flex items-center w-auto">
           <NavItems nav={nav} />

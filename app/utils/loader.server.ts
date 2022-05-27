@@ -1,17 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 import config from '~/config.json';
-import { PageLoader as Data, Config } from './types';
+import { PageLoader as Data, SiteManifest } from './types';
 
 // This is executed in the API directory
 const contentFolder = path.join(__dirname, '..', 'app', 'content');
 
-export async function getConfig(request: Request): Promise<Config> {
+export async function getConfig(request: Request): Promise<SiteManifest> {
   return config;
 }
 
 export async function getData(
-  config?: Config,
+  config?: SiteManifest,
   folder?: string,
   slug?: string,
 ): Promise<Data | null> {
