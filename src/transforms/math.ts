@@ -2,7 +2,7 @@ import katex from 'katex';
 import { Math, InlineMath } from 'myst-spec';
 import { selectAll } from 'mystjs';
 import { Logger } from '../logging';
-import { Frontmatter } from '../frontmatter';
+import { Frontmatter } from '../frontmatter/types';
 import { Root } from '../myst';
 
 export function renderEquation(log: Logger, node: Math | InlineMath, frontmatter: Frontmatter) {

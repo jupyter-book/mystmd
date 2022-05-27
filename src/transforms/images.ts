@@ -7,7 +7,7 @@ import { oxaLinkToId, VersionId } from '@curvenote/blocks';
 import { Root } from '../myst';
 import { computeHash, WebFileObject } from '../web/files';
 import { imagePath, versionIdToURL } from '../utils';
-import { ISession } from '../session';
+import { ISession } from '../session/types';
 
 function isUrl(url: string) {
   return url.toLowerCase().startsWith('http:') || url.toLowerCase().startsWith('https:');

@@ -13,7 +13,7 @@ import {
 } from '@curvenote/blocks';
 import { SiteConfig } from '../config/types';
 import { Logger } from '../logging';
-import { ISession } from '../session';
+import { ISession } from '../session/types';
 import { publicPath, serverPath, tic } from '../utils';
 
 type FromTo = {

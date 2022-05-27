@@ -1,15 +1,7 @@
-import { Logger } from './logging';
-import LICENSES from './static/licenses.json';
-import { warnOnUnrecognizedKeys } from './utils';
-
-export type License = {
-  title: string;
-  url: string;
-  id: string;
-  free?: boolean;
-  CC?: boolean;
-  osi?: boolean;
-};
+import { Logger } from '../logging';
+import LICENSES from '../static/licenses.json';
+import { warnOnUnrecognizedKeys } from '../utils';
+import { License } from './types';
 
 const LICENSE_KEYS = Object.fromEntries(LICENSES.map((l) => [l.id.toUpperCase(), l]));
 

@@ -1,6 +1,6 @@
 import { GenericNode, selectAll } from 'mystjs';
 import { oxaLink, oxaLinkToId } from '@curvenote/blocks';
-import { ISession } from '../session';
+import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { Root } from '../myst';
 

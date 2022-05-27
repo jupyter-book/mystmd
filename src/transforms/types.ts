@@ -1,6 +1,6 @@
 import { CitationRenderer } from 'citation-js-utils';
 import { GenericNode, map } from 'mystjs';
-import { Frontmatter } from '../frontmatter';
+import { Frontmatter } from '../frontmatter/types';
 import { Root } from '../myst';
 
 export type MapResult = ReturnType<typeof map>;

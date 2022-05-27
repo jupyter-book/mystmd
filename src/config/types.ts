@@ -1,4 +1,4 @@
-import { Frontmatter } from '../frontmatter';
+import { Frontmatter } from '../frontmatter/types';
 
 export type ProjectConfig = {
   title: string;

@@ -3,7 +3,7 @@ import path from 'path';
 import { makeExecutable } from '../export/utils';
 import { getGitLogger, getNpmLogger, getServerLogger } from '../logging/custom';
 import { MyUser } from '../models';
-import { ISession } from '../session';
+import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { confirmOrExit, ensureBuildFolderExists, buildPathExists, serverPath, tic } from '../utils';
 import { deployContent } from './deploy';

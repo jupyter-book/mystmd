@@ -8,7 +8,6 @@ import { SiteProject } from '../../config/types';
 import { getPageFrontmatter } from '../../frontmatter';
 import { parseMyst, Root } from '../../myst';
 import { ISession } from '../../session/types';
-import { serverPath, tic } from '../../utils';
 import { Logger } from '../../logging';
 import { loadAllConfigs } from '../../session';
 import {
@@ -27,7 +26,7 @@ import {
 import { References, RendererData, SingleCitationRenderer } from '../../transforms/types';
 import { copyActionResource, copyLogo, getSiteManifest, loadProjectFromDisk } from '../../toc';
 import { LocalProjectPage } from '../../toc/types';
-import { writeFileToFolder } from '../../utils';
+import { writeFileToFolder, serverPath, tic } from '../../utils';
 import { selectors } from '..';
 import { processNotebook } from './notebook';
 import { watch } from './reducers';

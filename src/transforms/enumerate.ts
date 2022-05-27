@@ -1,5 +1,5 @@
 import { GenericNode, selectAll } from 'mystjs';
-import { Frontmatter } from '../frontmatter';
+import { Frontmatter } from '../frontmatter/types';
 import { Root } from '../myst';
 
 export function transformEnumerators(mdast: Root, frontmatter: Frontmatter) {

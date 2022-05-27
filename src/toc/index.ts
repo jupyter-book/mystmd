@@ -2,11 +2,11 @@ import fs from 'fs';
 import { extname, parse, join, sep } from 'path';
 import { SiteProject, SiteAction } from '../config/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
-import { Frontmatter } from '../frontmatter';
-import { ISession } from '../session';
+import { resolveFrontmatter } from '../frontmatter';
+import { Frontmatter } from '../frontmatter/types';
+import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
 import { projects } from '../store/local';
-import { resolveFrontmatter } from '../frontmatter';
 import { publicPath } from '../utils';
 import {
   SiteManifest,

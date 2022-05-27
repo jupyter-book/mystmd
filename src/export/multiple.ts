@@ -3,7 +3,7 @@ import path from 'path';
 import yaml from 'js-yaml';
 import { ArticleFormatTypes } from '@curvenote/blocks';
 import { Project } from '../models';
-import { ISession } from '../session';
+import { ISession } from '../session/types';
 import { multipleArticleToPdf } from './pdf';
 import { multipleArticleToTex } from './tex';
 import { ExportConfig } from './types';

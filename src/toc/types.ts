@@ -1,4 +1,4 @@
-import { Frontmatter } from '../frontmatter';
+import { Frontmatter } from '../frontmatter/types';
 import { SiteAction, SiteNavItem } from '../config/types';
 
 // Types for local Project
