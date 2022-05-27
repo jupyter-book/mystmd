@@ -15,6 +15,7 @@ import { LogLevel } from '../logging';
 import { selectors } from '../store';
 import { getDefaultProjectConfig, getDefaultSiteConfig, INIT_LOGO_PATH } from './utils';
 import { interactiveCloneQuestions } from './clone';
+import { ProjectConfig } from '../types';
 
 type Options = {
   branch?: string;
@@ -84,33 +85,35 @@ export async function init(session: ISession, opts: Options) {
     );
   }
   const siteConfig = getDefaultSiteConfig(basename(resolve(path)));
-  const projectConfig = getDefaultProjectConfig();
 
   // Load the user now, and wait for it below!
   let me: MyUser | Promise<MyUser> | undefined;
   if (!session.isAnon) me = new MyUser(session).get();
 
   const folderIsEmpty = fs.readdirSync(path).length === 0;
-  const { title, content } = await inquirer.prompt([
-    questions.title({ title: siteConfig.title || '' }),
-    questions.content({ folderIsEmpty }),
-  ]);
+  const { content } = await inquirer.prompt([questions.content({ folderIsEmpty })]);
+  let projectConfig: ProjectConfig;
   let pullComplete = false;
   if (content === 'folder') {
-    projectConfig.title = title;
+    const { title } = await inquirer.prompt([questions.title({ title: siteConfig.title || '' })]);
+    projectConfig = getDefaultProjectConfig(title);
     siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
     pullComplete = true;
   } else if (content === 'curvenote') {
-    const { siteProject } = await interactiveCloneQuestions(session, { projectConfig });
+    const results = await interactiveCloneQuestions(session);
+    const { siteProject } = results;
+    projectConfig = results.projectConfig;
     path = siteProject.path;
     siteConfig.nav = [{ title: projectConfig.title, url: `/${siteProject.slug}` }];
     siteConfig.projects = [siteProject];
     session.log.info(`Add other projects using: ${chalk.bold('curvenote clone')}\n`);
+  } else {
+    throw Error(`Invalid init content: ${content}`);
   }
   // Personalize the config
   me = await me;
-  siteConfig.title = title;
-  siteConfig.logoText = title;
+  siteConfig.title = projectConfig.title;
+  siteConfig.logoText = projectConfig.title;
   if (me) {
     const { username, twitter } = me.data;
     siteConfig.domains = [`${username}.curve.space`];
