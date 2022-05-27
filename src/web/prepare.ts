@@ -1,10 +1,16 @@
 import fs from 'fs';
 import { join } from 'path';
 import { ISession } from '../session/types';
-import { tic } from '../export/utils/exec';
-import { publicPath, serverPath } from './utils';
-import { Options } from './types';
+import { publicPath, serverPath, tic } from '../utils';
 import { processSite } from '../store/local/actions';
+
+export type Options = {
+  clean?: boolean;
+  force?: boolean;
+  branch?: string;
+  ci?: boolean;
+  yes?: boolean;
+};
 
 export function cleanBuiltFiles(session: ISession, info = true) {
   const toc = tic();

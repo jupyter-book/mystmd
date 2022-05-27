@@ -1,8 +1,8 @@
-import { VersionId } from '@curvenote/blocks';
 import path from 'path';
+import { VersionId } from '@curvenote/blocks';
+import { ISession } from '../../session/types';
 import { singleArticleToTex } from '../tex';
 import { TexExportOptions } from '../tex/types';
-import { ISession } from '../../session/types';
 import { createPdfGivenTexFile } from './create';
 
 export async function singleArticleToPdf(

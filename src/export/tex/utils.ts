@@ -1,13 +1,13 @@
 import fs from 'fs';
-
-import { oxaLink } from '@curvenote/blocks';
-import { toTex } from '@curvenote/schema';
 import os from 'os';
 import path from 'path';
+import { oxaLink } from '@curvenote/blocks';
+import { toTex } from '@curvenote/schema';
 import { Logger } from '../../logging';
 import { ISession } from '../../session/types';
+import { makeExecutable } from '../utils/exec';
 import { localizationOptions } from '../utils/localizationOptions';
-import { ArticleState, ArticleStateChild, makeExecutable } from '../utils';
+import { ArticleState, ArticleStateChild } from '../utils/walkArticle';
 import { TexExportOptions } from './types';
 
 export function createTempFolder() {

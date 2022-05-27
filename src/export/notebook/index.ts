@@ -1,11 +1,12 @@
-import { Blocks, KINDS, VersionId } from '@curvenote/blocks';
 import yaml from 'js-yaml';
+import { Blocks, KINDS, VersionId } from '@curvenote/blocks';
 import { Block, Version } from '../../models';
-import { assertEndsInExtension, exportFromOxaLink } from '../utils';
 import { ISession } from '../../session/types';
-import { getChildren } from '../../actions/getChildren';
 import { writeFileToFolder } from '../../utils';
 import { createFrontmatter } from '../markdown';
+import { assertEndsInExtension } from '../utils/assertions';
+import { exportFromOxaLink } from '../utils/exportWrapper';
+import { getChildren } from '../utils/getChildren';
 
 type Options = {
   path?: string;

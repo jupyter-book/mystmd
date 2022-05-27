@@ -1,17 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 import { makeExecutable } from '../export/utils';
-import { ISession } from '../session/types';
-import { buildSite, cleanBuiltFiles } from './prepare';
-import { getGitLogger, getNpmLogger, getServerLogger } from './customLoggers';
-import { ensureBuildFolderExists, buildPathExists, serverPath } from './utils';
-import { Options } from './types';
-import { deployContent } from './deploy';
+import { getGitLogger, getNpmLogger, getServerLogger } from '../logging/custom';
 import { MyUser } from '../models';
-import { confirmOrExit } from '../utils';
+import { ISession } from '../session';
 import { selectors } from '../store';
+import { confirmOrExit, ensureBuildFolderExists, buildPathExists, serverPath, tic } from '../utils';
+import { deployContent } from './deploy';
+import { buildSite, cleanBuiltFiles, Options } from './prepare';
 import { watchContent } from './watch';
-import { tic } from '../export/utils/exec';
 
 export async function clean(session: ISession) {
   if (!buildPathExists(session)) {

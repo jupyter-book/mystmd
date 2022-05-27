@@ -1,34 +1,36 @@
-import fs from 'fs';
-import yaml from 'js-yaml';
-import { extname, join, dirname } from 'path';
-import { convertHtmlToMdast, GenericNode, selectAll } from 'mystjs';
 import { CitationRenderer, getCitations } from 'citation-js-utils';
 import { createHash } from 'crypto';
+import fs from 'fs';
+import yaml from 'js-yaml';
+import { convertHtmlToMdast, GenericNode, selectAll } from 'mystjs';
+import { extname, join, dirname } from 'path';
+import { SiteProject } from '../../config/types';
+import { getPageFrontmatter } from '../../frontmatter';
+import { parseMyst, Root } from '../../myst';
 import { ISession } from '../../session/types';
-import { References, RendererData, Root } from '../../web/transforms/types';
-import { watch } from './reducers';
-import { parseMyst, serverPath } from '../../web/utils';
-import { tic } from '../../export/utils/exec';
+import { serverPath, tic } from '../../utils';
 import { Logger } from '../../logging';
-import { transformRoot } from '../../web/transforms/root';
-import { getPageFrontmatter } from '../../web/frontmatter';
-import { writeFileToFolder } from '../../utils';
-import { SingleCitationRenderer, transformLinkedDOIs } from '../../web/transforms/dois';
-import { ensureBlockNesting } from '../../web/transforms/blocks';
-import { transformMath } from '../../web/transforms/math';
-import { transformOutputs } from '../../web/transforms/outputs';
-import { transformCitations } from '../../web/transforms/citations';
-import { selectors } from '..';
-import { transformEnumerators } from '../../web/transforms/enumerate';
-import { transformFootnotes } from '../../web/transforms/footnotes';
-import { transformKeys } from '../../web/transforms/keys';
-import { transformImages } from '../../web/transforms/images';
-import { processNotebook } from './notebook';
-import { copyActionResource, copyLogo, getSiteManifest, loadProjectFromDisk } from '../../toc';
-import { LocalProjectPage, SiteProject } from '../../types';
-import { selectFileInfo } from './selectors';
 import { loadAllConfigs } from '../../session';
-import { transformLinks } from '../../web/transforms';
+import {
+  transformRoot,
+  transformLinkedDOIs,
+  ensureBlockNesting,
+  transformMath,
+  transformOutputs,
+  transformCitations,
+  transformEnumerators,
+  transformFootnotes,
+  transformKeys,
+  transformImages,
+  transformLinks,
+} from '../../transforms';
+import { References, RendererData, SingleCitationRenderer } from '../../transforms/types';
+import { copyActionResource, copyLogo, getSiteManifest, loadProjectFromDisk } from '../../toc';
+import { LocalProjectPage } from '../../toc/types';
+import { writeFileToFolder } from '../../utils';
+import { selectors } from '..';
+import { processNotebook } from './notebook';
+import { watch } from './reducers';
 
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
@@ -200,7 +202,7 @@ export async function transformMdast(
   transformFootnotes(mdast, references); // Needs to happen nead the end
   transformKeys(mdast);
   await transformImages(session, mdast, dirname(file));
-  const sha256 = selectFileInfo(store.getState(), file).sha256 as string;
+  const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   store.dispatch(
     watch.actions.updateFileInfo({
       path: file,

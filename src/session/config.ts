@@ -1,11 +1,11 @@
-import path from 'path';
-import * as fs from 'fs';
 import chalk from 'chalk';
+import * as fs from 'fs';
 import inquirer from 'inquirer';
+import path from 'path';
 import { MyUser } from '../models';
-import { Session } from './session';
 import { chalkLogger, Logger, LogLevel } from '../logging';
 import { actionLinks } from '../docs';
+import { Session } from './session';
 
 function getConfigPath() {
   const pathArr: string[] = [];

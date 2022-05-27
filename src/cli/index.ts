@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 import commander from 'commander';
 import version from '../version';
-import { addAuthCLI, addExportCLI, addWebCLI, addTokenCLI, addSyncCLI } from './services';
+import { addAuthCLI } from './auth';
+import { addExportCLI } from './export';
+import { addSyncCLI } from './sync';
+import { addTokenCLI } from './token';
+import { addWebCLI } from './web';
 
 const program = new commander.Command();
 addTokenCLI(program);

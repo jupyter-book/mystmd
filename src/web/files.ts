@@ -1,10 +1,10 @@
-import path from 'path';
-import fsp from 'fs/promises';
-import fs from 'fs';
 import { createHash } from 'crypto';
+import fs from 'fs';
+import fsp from 'fs/promises';
+import path from 'path';
 import { KnownCellOutputMimeTypes } from '@curvenote/blocks';
 import { IFileObject, IFileObjectFactoryFn, Metadata } from '@curvenote/nbtx';
-import { Logger } from 'src/logging';
+import { Logger } from '../logging';
 
 enum FileExtension {
   png = 'png',

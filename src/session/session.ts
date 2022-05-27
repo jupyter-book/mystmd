@@ -1,13 +1,12 @@
 import fetch from 'node-fetch';
 import { createStore, Store } from 'redux';
 import { JsonObject } from '@curvenote/blocks';
+import { loadSiteConfigOrThrow, loadProjectConfigOrThrow, CURVENOTE_YML } from '../config';
 import { basicLogger, Logger, LogLevel } from '../logging';
-import { rootReducer, RootState } from '../store';
+import { rootReducer, RootState, selectors } from '../store';
 import { getHeaders, setSessionOrUserToken } from './tokens';
 import { ISession, Response, Tokens } from './types';
 import { checkForClientVersionRejection } from '../utils';
-import { loadSiteConfigOrThrow, loadProjectConfigOrThrow, CURVENOTE_YML } from '../newconfig';
-import { selectLocalSiteConfig } from '../store/selectors';
 
 const DEFAULT_API_URL = 'https://api.curvenote.com';
 const DEFAULT_SITE_URL = 'https://curvenote.com';
@@ -41,7 +40,7 @@ export function loadAllConfigs(session: Pick<ISession, 'log' | 'store'>) {
     // TODO: what error?
     session.log.debug(`Failed to find or load project config from "./${CURVENOTE_YML}"`);
   }
-  const siteConfig = selectLocalSiteConfig(session.store.getState());
+  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   if (!siteConfig) return;
   siteConfig.projects.forEach((project) => {
     try {

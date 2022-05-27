@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { Footer, Paragraph, TextRun, ImageRun, AlignmentType } from 'docx';
-import pkgpath from '../../pkgpath';
+import pkgpath from '../../utils';
 
 export function createCurvenoteFooter() {
   return new Footer({

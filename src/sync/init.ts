@@ -1,21 +1,20 @@
-import fs from 'fs';
-import { basename, resolve } from 'path';
 import chalk from 'chalk';
+import fs from 'fs';
 import inquirer from 'inquirer';
-import { ISession } from '../session/types';
-import { CURVENOTE_YML, writeSiteConfig, writeProjectConfig } from '../newconfig';
-import { docLinks } from '../docs';
+import { basename, resolve } from 'path';
+import { CURVENOTE_YML, writeSiteConfig, writeProjectConfig } from '../config';
+import { ProjectConfig } from '../config/types';
+import { docLinks, LOGO } from '../docs';
+import { LogLevel } from '../logging';
 import { MyUser } from '../models';
+import { ISession } from '../session/types';
+import { selectors } from '../store';
 import { writeFileToFolder } from '../utils';
 import { startServer } from '../web';
-import { LOGO } from '../web/public';
+import { interactiveCloneQuestions } from './clone';
 import { pullProjects } from './pull';
 import questions from './questions';
-import { LogLevel } from '../logging';
-import { selectors } from '../store';
 import { getDefaultProjectConfig, getDefaultSiteConfig, INIT_LOGO_PATH } from './utils';
-import { interactiveCloneQuestions } from './clone';
-import { ProjectConfig } from '../types';
 
 type Options = {
   branch?: string;

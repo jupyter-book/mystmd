@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
-import { ProjectConfig, SiteConfig, SiteProject, LocalProject } from '../../types';
+import { ProjectConfig, SiteConfig, SiteProject } from '../../config/types';
+import { LocalProject } from '../../toc/types';
 
 export const projects = createSlice({
   name: 'projects',

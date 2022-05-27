@@ -1,11 +1,11 @@
 import { ProjectId, Blocks } from '@curvenote/blocks';
 import { Project } from '../../models';
-import { exportFromProjectLink } from '../utils';
-import { getLatestVersion } from '../../actions/getLatest';
-import { writeTOC } from './toc';
+import { ISession } from '../../session/types';
+import { exportFromProjectLink } from '../utils/exportWrapper';
+import { getLatestVersion } from '../utils/getLatest';
 import { exportAll } from './exportAll';
 import { writeConfig } from './jbConfig';
-import { ISession } from '../../session/types';
+import { writeTOC } from './toc';
 
 type Options = {
   path?: string;

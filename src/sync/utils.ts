@@ -1,10 +1,10 @@
 import chalk from 'chalk';
 import path from 'path';
+import { ProjectConfig, SiteConfig } from '../config/types';
 import { docLinks } from '../docs';
 import { projectIdFromLink } from '../export';
 import { Project } from '../models';
 import { ISession } from '../session/types';
-import { ProjectConfig, SiteConfig } from '../types';
 
 export function projectLogString(project: Project) {
   return `"${project.data.title}" (@${project.data.team}/${project.data.name})`;

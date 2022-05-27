@@ -1,3 +1,5 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { combineReducers } from 'redux';
 import {
   User as UserDTO,
   Team as TeamDTO,
@@ -10,8 +12,6 @@ import {
   draftIdToString,
   TemplateSpec,
 } from '@curvenote/blocks';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { combineReducers } from 'redux';
 
 export const users = createSlice({
   name: 'users',

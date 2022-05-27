@@ -1,3 +1,5 @@
+import { GenericNode, selectAll } from 'mystjs';
+import { nanoid } from 'nanoid';
 import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
 import {
   parseNotebook,
@@ -5,12 +7,10 @@ import {
   minifyCellOutput,
   MinifiedOutput,
 } from '@curvenote/nbtx';
-import { GenericNode, selectAll } from 'mystjs';
-import { nanoid } from 'nanoid';
-import { Root } from '../../web/transforms/types';
+import { parseMyst, Root } from '../../myst';
 import { ISession } from '../../session/types';
+import { publicPath } from '../../utils';
 import { createWebFileObjectFactory } from '../../web/files';
-import { parseMyst, publicPath } from '../../web/utils';
 
 function asString(source?: string | string[]): string {
   return (Array.isArray(source) ? source.join('') : source) || '';

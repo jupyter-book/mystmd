@@ -1,15 +1,14 @@
 import fs from 'fs';
 import pLimit from 'p-limit';
+import { loadProjectConfigOrThrow } from '../config';
 import { projectToJupyterBook } from '../export';
+import { LogLevel, getLevel } from '../logging';
 import { Project } from '../models';
 import { ISession } from '../session/types';
-import { tic } from '../export/utils/exec';
-import { projectLogString } from './utils';
-import { LogLevel, getLevel } from '../logging';
-import { confirmOrExit } from '../utils';
 import { selectors } from '../store';
 import { isDirectory } from '../toc';
-import { loadProjectConfigOrThrow } from '../newconfig';
+import { confirmOrExit, tic } from '../utils';
+import { projectLogString } from './utils';
 
 /**
  * Pull content for a project on a path

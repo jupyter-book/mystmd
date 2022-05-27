@@ -1,4 +1,6 @@
-import { LocalProject, LocalProjectPage, ProjectConfig, SiteConfig } from '../../types';
+import { ProjectConfig, SiteConfig } from '../../config/types';
+import { LocalProject, LocalProjectPage } from '../../toc/types';
+
 import { RootState } from '../reducers';
 
 export function selectLocalProject(state: RootState, path: string): LocalProject | undefined {

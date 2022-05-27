@@ -2,13 +2,15 @@ import path from 'path';
 import YAML from 'yaml';
 import { VersionId, KINDS, oxaLink, formatDate, Blocks } from '@curvenote/blocks';
 import { createId, toMyst } from '@curvenote/schema';
-import { writeBibtex } from '../utils/writeBibtex';
 import { Block, Project, Version } from '../../models';
-import { getChildren } from '../../actions/getChildren';
-import { exportFromOxaLink, walkArticle, writeImagesToFiles } from '../utils';
-import { localizationOptions } from '../utils/localizationOptions';
 import { ISession } from '../../session/types';
 import { writeFileToFolder } from '../../utils';
+import { exportFromOxaLink } from '../utils/exportWrapper';
+import { getChildren } from '../utils/getChildren';
+import { localizationOptions } from '../utils/localizationOptions';
+import { walkArticle } from '../utils/walkArticle';
+import { writeBibtex } from '../utils/writeBibtex';
+import { writeImagesToFiles } from '../utils/writeImagesToFiles';
 
 type Options = {
   path?: string;

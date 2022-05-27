@@ -2,13 +2,13 @@ import * as fs from 'fs';
 import { Document } from 'docx';
 import { Node as ProsemirrorNode } from 'prosemirror-model';
 import { DocxSerializerState } from 'prosemirror-docx';
-import pkgpath from '../../pkgpath';
 import { Block, Project, User, Version } from '../../models';
+import { ISession } from '../../session/types';
+import pkgpath from '../../utils';
+import { ArticleState } from '../utils/walkArticle';
 import { getNodesAndMarks } from './schema';
-import { ArticleState } from '../utils';
 import { createArticleTitle, createReferenceTitle } from './titles';
 import { createSingleDocument, getDefaultSerializerOptions } from './utils';
-import { ISession } from '../../session/types';
 
 export interface LoadedArticle {
   session: ISession;

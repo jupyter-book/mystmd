@@ -1,21 +1,20 @@
-import fs from 'fs';
-import path from 'path';
-import pLimit from 'p-limit';
-import fetch from 'node-fetch';
 import { createHash } from 'crypto';
 import cliProgress from 'cli-progress';
+import fs from 'fs';
+import mime from 'mime-types';
+import fetch from 'node-fetch';
+import path from 'path';
+import pLimit from 'p-limit';
 import {
   DnsRouter,
   SiteDeployRequest,
   SiteUploadRequest,
   SiteUploadResponse,
 } from '@curvenote/blocks';
-import mime from 'mime-types';
-import { publicPath, serverPath } from './utils';
+import { SiteConfig } from '../config/types';
 import { Logger } from '../logging';
-import { tic } from '../export/utils/exec';
 import { ISession } from '../session';
-import { SiteConfig } from '../types';
+import { publicPath, serverPath, tic } from '../utils';
 
 type FromTo = {
   from: string;

@@ -1,13 +1,13 @@
 import fs from 'fs';
 import path from 'path';
-import { ArticleFormatTypes } from '@curvenote/blocks';
 import yaml from 'js-yaml';
-import { ISession } from '../session';
-import { projectIdFromLink } from './utils';
+import { ArticleFormatTypes } from '@curvenote/blocks';
 import { Project } from '../models';
-import { multipleArticleToTex } from './tex';
+import { ISession } from '../session';
 import { multipleArticleToPdf } from './pdf';
-import { ExportConfig } from '../types';
+import { multipleArticleToTex } from './tex';
+import { ExportConfig } from './types';
+import { projectIdFromLink } from './utils';
 
 export async function exportContent(session: ISession) {
   try {

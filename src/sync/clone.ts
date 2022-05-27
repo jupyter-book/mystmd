@@ -1,16 +1,16 @@
-import fs from 'fs';
-import { join } from 'path';
-import inquirer from 'inquirer';
 import chalk from 'chalk';
-import { ISession } from '../session/types';
-import { getDefaultProjectConfig, validateLinkIsAProject } from './utils';
+import fs from 'fs';
+import inquirer from 'inquirer';
+import { join } from 'path';
+import { loadProjectConfigOrThrow, writeProjectConfig, writeSiteConfig } from '../config';
+import { ProjectConfig, SiteConfig, SiteProject } from '../config/types';
 import { LogLevel } from '../logging';
-import questions from './questions';
-import { loadProjectConfigOrThrow, writeProjectConfig, writeSiteConfig } from '../newconfig';
-import { pullProject } from './pull';
 import { Project } from '../models';
-import { ProjectConfig, SiteConfig, SiteProject } from '../types';
+import { ISession } from '../session/types';
 import { selectors } from '../store';
+import { pullProject } from './pull';
+import questions from './questions';
+import { getDefaultProjectConfig, validateLinkIsAProject } from './utils';
 
 type Options = {
   remote?: string;

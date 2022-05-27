@@ -1,11 +1,10 @@
-import { join, extname } from 'path';
 import chokidar from 'chokidar';
+import { join, extname } from 'path';
+import { CURVENOTE_YML } from '../config';
+import { SiteProject } from '../config/types';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
-import { CURVENOTE_YML } from '../newconfig';
 import { changeFile, fastProcessFile, processSite } from '../store/local/actions';
-import { selectPageSlug } from '../store/selectors';
-import { SiteProject } from '../types';
 
 function watchConfigAndPublic(session: ISession) {
   return chokidar
@@ -31,7 +30,7 @@ function fileProcessor(session: ISession, siteProject: SiteProject) {
       await processSite(session);
       return;
     }
-    const pageSlug = selectPageSlug(session.store.getState(), siteProject.path, file);
+    const pageSlug = selectors.selectPageSlug(session.store.getState(), siteProject.path, file);
     if (!pageSlug) {
       session.log.warn(`⚠️ File is not in project: ${file}`);
       return;
