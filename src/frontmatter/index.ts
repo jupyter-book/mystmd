@@ -1,11 +1,16 @@
 import yaml from 'js-yaml';
+import { join } from 'path';
 import { Root, PhrasingContent } from 'mdast';
 import { GenericNode, select } from 'mystjs';
-import { validateLicense } from '../licenses';
+import { CURVENOTE_YML } from '../config/types';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
-import { warnOnUnrecognizedKeys } from '../utils';
-import { Frontmatter } from './types';
+import { PageFrontmatter } from './types';
+import {
+  validatePageFrontmatter,
+  validateProjectFrontmatter,
+  fillPageFrontmatter,
+} from './validators';
 
 function toText(content: PhrasingContent[]): string {
   return content
@@ -17,110 +22,14 @@ function toText(content: PhrasingContent[]): string {
     .join('');
 }
 
-/**
- * Resolve two sets of frontmatter to a single frontmatter object
- *
- * `next` takes precedence over `base`
- */
-export function resolveFrontmatter(
-  base: Frontmatter,
-  next: Frontmatter,
-  log: ISession['log'],
-  fileToLog?: string,
-): Frontmatter {
-  const frontmatter = { ...base };
-  const {
-    title,
-    subtitle,
-    description,
-    date,
-    authors,
-    subject,
-    venue,
-    biblio,
-    github,
-    doi,
-    license,
-    open_access,
-    numbering,
-    math,
-    oxa,
-    name,
-    ...rest
-  } = next ?? {};
-  if (title) frontmatter.title = title;
-  if (subtitle) frontmatter.subtitle = subtitle;
-  if (description) frontmatter.description = description;
-  if (date) frontmatter.date = date;
-  if (authors !== undefined) {
-    if (Array.isArray(authors) && authors.length > 0) {
-      // TODO: Validate authors
-      frontmatter.authors = authors;
-    }
-    if (authors === null || (typeof authors === 'boolean' && authors === false)) {
-      delete frontmatter.authors;
-    }
-  }
-  if (subject) frontmatter.subject = subject;
-  if (venue) frontmatter.venue = venue;
-  if (biblio) frontmatter.biblio = biblio;
-  if (github) frontmatter.github = github;
-  if (doi) frontmatter.doi = doi;
-  if (oxa) frontmatter.oxa = oxa;
-  if (name) frontmatter.name = name;
-  if (license) {
-    const nextLicense = validateLicense(log, license as string);
-    if (nextLicense) frontmatter.license = nextLicense;
-  }
-  if (open_access != null) frontmatter.open_access = open_access;
-  if (typeof numbering === 'boolean' || numbering == null) {
-    frontmatter.numbering = numbering ?? false;
-  } else {
-    const {
-      enumerator,
-      figure,
-      equation,
-      table,
-      code,
-      heading_1,
-      heading_2,
-      heading_3,
-      heading_4,
-      heading_5,
-      heading_6,
-      ...restNumbering
-    } = numbering;
-    const nextNumbering =
-      typeof frontmatter.numbering === 'boolean' ? {} : { ...frontmatter.numbering };
-    if (enumerator != null) nextNumbering.enumerator = enumerator;
-    if (figure != null) nextNumbering.figure = figure;
-    if (equation != null) nextNumbering.equation = equation;
-    if (table != null) nextNumbering.table = table;
-    if (code != null) nextNumbering.code = code;
-    if (heading_1 != null) nextNumbering.heading_1 = heading_1;
-    if (heading_2 != null) nextNumbering.heading_2 = heading_2;
-    if (heading_3 != null) nextNumbering.heading_3 = heading_3;
-    if (heading_4 != null) nextNumbering.heading_4 = heading_4;
-    if (heading_5 != null) nextNumbering.heading_5 = heading_5;
-    if (heading_6 != null) nextNumbering.heading_6 = heading_6;
-    frontmatter.numbering = nextNumbering;
-    warnOnUnrecognizedKeys(log, restNumbering, `${fileToLog || ''}#numbering:`);
-  }
-  if (math) {
-    frontmatter.math = { ...frontmatter.math, ...math };
-  }
-  warnOnUnrecognizedKeys(log, rest, fileToLog ? `${fileToLog}:` : '');
-  return frontmatter;
-}
-
 function frontmatterFromMdastTree(
   tree: Root,
   remove = true,
-): { tree: Root; frontmatter: Frontmatter } {
+): { tree: Root; frontmatter: Record<string, any> } {
   const firstNode = tree.children[0];
   const secondNode = tree.children[1];
   let removeUpTo = 0;
-  let frontmatter: Frontmatter = {};
+  let frontmatter: Record<string, any> = {};
   const firstIsYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
   if (firstIsYaml) {
     frontmatter = yaml.load(firstNode.value) as Record<string, any>;
@@ -141,19 +50,42 @@ function frontmatterFromMdastTree(
   return { tree, frontmatter };
 }
 
+/**
+ * Get page frontmatter from mdast tree and fill in missing info from project frontmatter
+ *
+ * @param session
+ * @param path - project path for loading project config/frontmatter
+ * @param tree - mdast tree already loaded from 'file'
+ * @param file - file source for mdast 'tree' - this is only used for logging; tree is not reloaded
+ * @param remove - if true, mdast tree will be mutated to remove frontmatter once read
+ */
 export function getPageFrontmatter(
   session: ISession,
   path: string,
   tree: Root,
+  file: string,
   remove = true,
-): Frontmatter {
+): PageFrontmatter {
+  const { frontmatter: rawPageFrontmatter } = frontmatterFromMdastTree(tree, remove);
+  const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, {
+    logger: session.log,
+    property: 'frontmatter',
+    file,
+  });
+
   const state = session.store.getState();
+  const projConfig = selectors.selectLocalProjectConfig(state, path) ?? {};
+  // Validation happens on initial read; this is called for filtering/coersion only.
+  const projectFrontmatter = validateProjectFrontmatter(projConfig, {
+    logger: session.log,
+    property: 'project',
+    file: join(path, CURVENOTE_YML),
+    warn: false,
+  });
+
+  const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter);
+
   const site = selectors.selectLocalSiteConfig(state);
-  const project = selectors.selectLocalProjectConfig(state, path)?.frontmatter ?? {};
-  const page = frontmatterFromMdastTree(tree, remove).frontmatter;
-  const sitematter = resolveFrontmatter({}, site?.frontmatter ?? {}, session.log);
-  const projmatter = resolveFrontmatter(sitematter, project, session.log);
-  const frontmatter = resolveFrontmatter(projmatter, page, session.log);
   if (site?.design?.hide_authors) {
     delete frontmatter.authors;
   }

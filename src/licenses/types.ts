@@ -6,3 +6,8 @@ export type License = {
   CC?: boolean;
   osi?: boolean;
 };
+
+export type Licenses = {
+  content?: License;
+  code?: License;
+};
