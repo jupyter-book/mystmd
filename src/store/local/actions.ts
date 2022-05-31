@@ -21,6 +21,7 @@ import {
   transformFootnotes,
   transformKeys,
   transformImages,
+  transformAdmonitions,
   transformLinks,
 } from '../../transforms';
 import { References, RendererData, SingleCitationRenderer } from '../../transforms/types';
@@ -198,6 +199,7 @@ export async function transformMdast(
   const fileCitationRenderer = combineRenderers(cache, projectPath, file);
   transformCitations(log, mdast, fileCitationRenderer, references);
   transformEnumerators(mdast, frontmatter);
+  transformAdmonitions(mdast);
   transformFootnotes(mdast, references); // Needs to happen nead the end
   transformKeys(mdast);
   await transformImages(session, mdast, dirname(file));

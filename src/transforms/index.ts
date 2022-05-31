@@ -9,3 +9,4 @@ export { LinkLookup, transformLinks } from './links';
 export { transformMath } from './math';
 export { transformOutputs } from './outputs';
 export { transformRoot } from './root';
+export { transformAdmonitions } from './admonitions';
