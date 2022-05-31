@@ -45,7 +45,7 @@ export async function pullProjects(session: ISession, opts: { level?: LogLevel }
   const limit = pLimit(1);
   await Promise.all(
     siteConfig.projects.map(async (proj) => {
-      limit(async () => pullProject(session, proj.path, opts));
+      return limit(async () => pullProject(session, proj.path, opts));
     }),
   );
 }
