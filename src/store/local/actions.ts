@@ -182,7 +182,7 @@ export async function transformMdast(
   log.debug(`Processing "${file}"`);
   // Use structuredClone in future (available in node 17)
   let mdast = JSON.parse(JSON.stringify(mdastPre)) as Root;
-  const frontmatter = getPageFrontmatter(session, projectPath, mdast);
+  const frontmatter = getPageFrontmatter(session, projectPath, mdast, file);
   const references: References = {
     cite: { order: [], data: {} },
     footnotes: {},

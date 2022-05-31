@@ -1,9 +1,9 @@
-import { Frontmatter } from '../frontmatter/types';
+import { ProjectFrontmatter, SiteFrontmatter } from '../frontmatter/types';
 
-export type ProjectConfig = {
-  title: string;
-  description?: string | null;
-  frontmatter?: Omit<Frontmatter, 'title' | 'description'>;
+export const CURVENOTE_YML = 'curvenote.yml';
+export const VERSION = 1;
+
+export type ProjectConfig = ProjectFrontmatter & {
   remote?: string;
   index?: string;
   exclude?: string[];
@@ -35,9 +35,7 @@ export type AnalyticsConfig = {
   plausible?: string;
 };
 
-export type SiteConfig = {
-  title: string;
-  frontmatter?: Omit<Frontmatter, 'title' | 'description'>;
+export type SiteConfig = SiteFrontmatter & {
   twitter?: string;
   domains: string[];
   logo?: string | null;

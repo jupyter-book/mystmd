@@ -1,7 +1,8 @@
 import fetch from 'node-fetch';
 import { createStore, Store } from 'redux';
 import { JsonObject } from '@curvenote/blocks';
-import { loadSiteConfigOrThrow, loadProjectConfigOrThrow, CURVENOTE_YML } from '../config';
+import { loadSiteConfigOrThrow, loadProjectConfigOrThrow } from '../config';
+import { CURVENOTE_YML } from '../config/types';
 import { basicLogger, Logger, LogLevel } from '../logging';
 import { rootReducer, RootState, selectors } from '../store';
 import { getHeaders, setSessionOrUserToken } from './tokens';

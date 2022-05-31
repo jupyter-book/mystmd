@@ -3,8 +3,12 @@ import { extname, parse, join, sep } from 'path';
 import { CURVENOTE_YML } from '../config';
 import { SiteProject, SiteAction, AnalyticsConfig } from '../config/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
-import { resolveFrontmatter } from '../frontmatter';
-import { Frontmatter } from '../frontmatter/types';
+import { SiteFrontmatter } from '../frontmatter/types';
+import {
+  fillMissingKeys,
+  PROJECT_FRONTMATTER_KEYS,
+  SITE_FRONTMATTER_KEYS,
+} from '../frontmatter/validators';
 import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
 import { projects } from '../store/local';
@@ -210,7 +214,6 @@ export function loadProjectFromDisk(
 export function localToManifestProject(
   state: RootState,
   siteProj: SiteProject,
-  frontmatter: Frontmatter,
 ): ManifestProject | null {
   const projConfig = selectors.selectLocalProjectConfig(state, siteProj.path);
   const proj = selectors.selectLocalProject(state, siteProj.path);
@@ -228,11 +231,11 @@ export function localToManifestProject(
     return { ...page };
   });
   return {
+    ...fillMissingKeys({}, projConfig, PROJECT_FRONTMATTER_KEYS),
+    title: projectTitle || 'Untitled',
     slug: siteProj.slug,
     index,
-    title: projectTitle || 'Untitled',
     pages,
-    ...frontmatter,
   };
 }
 
@@ -318,26 +321,14 @@ export function getSiteManifest(session: ISession): SiteManifest {
   const siteConfig = selectors.selectLocalSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
   siteConfig.projects.forEach((siteProj) => {
-    const projConfig = selectors.selectLocalProjectConfig(state, siteProj.path);
-    const sitematter = resolveFrontmatter(
-      {},
-      siteConfig.frontmatter || {},
-      session.log,
-      siteProj.path,
-    );
-    const frontmatter = resolveFrontmatter(
-      sitematter,
-      projConfig?.frontmatter || {},
-      session.log,
-      siteProj.path,
-    );
-    const proj = localToManifestProject(state, siteProj, frontmatter);
+    const proj = localToManifestProject(state, siteProj);
     if (!proj) return;
     siteProjects.push(proj);
   });
   const { title, twitter, logo, logoText, nav } = siteConfig;
   const actions = siteConfig.actions.map((action) => getSiteManifestAction(session, action));
   const manifest: SiteManifest = {
+    ...fillMissingKeys({} as SiteFrontmatter, siteConfig, SITE_FRONTMATTER_KEYS),
     title: title || '',
     twitter,
     logo: getLogoPaths(session, logo)?.url,

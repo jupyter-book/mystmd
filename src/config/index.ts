@@ -5,10 +5,7 @@ import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { config } from '../store/local';
 import { writeFileToFolder } from '../utils';
-import { Config, ProjectConfig, SiteConfig } from './types';
-
-export const CURVENOTE_YML = 'curvenote.yml';
-export const VERSION = 1;
+import { Config, CURVENOTE_YML, ProjectConfig, SiteConfig, VERSION } from './types';
 
 function emptyConfig(): Config {
   return {

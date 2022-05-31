@@ -52,7 +52,7 @@ export async function interactiveCloneQuestions(
     // TODO: Add all sorts of other stuff for the project data that we know!!
     projectConfig = getDefaultProjectConfig(project.data.title);
     projectConfig.remote = project.data.id;
-    projectConfig.description = project.data.description || null;
+    projectConfig.description = project.data.description;
     return {
       siteProject: { path, slug: project.data.name },
       projectConfig,
@@ -88,7 +88,7 @@ export async function clone(
   if (siteConfig) {
     const newSiteConfig: SiteConfig = {
       ...siteConfig,
-      nav: [...siteConfig.nav, { title: projectConfig.title, url: `/${siteProject.slug}` }],
+      nav: [...siteConfig.nav, { title: projectConfig.title || '', url: `/${siteProject.slug}` }],
       projects: [...siteConfig.projects, siteProject],
     };
     writeSiteConfig(session, '.', newSiteConfig);

@@ -1,7 +1,6 @@
 import chokidar from 'chokidar';
 import { join, extname } from 'path';
-import { CURVENOTE_YML } from '../config';
-import { SiteProject } from '../config/types';
+import { CURVENOTE_YML, SiteProject } from '../config/types';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { changeFile, fastProcessFile, processSite } from '../store/local/actions';
