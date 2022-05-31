@@ -69,7 +69,7 @@ export const Admonition: NodeRenderer<spec.Admonition> = (node, children) => {
     >
       <p
         key={node.key}
-        className={classNames('admonition-header m-0 text-lg font-medium', {
+        className={classNames('admonition-header m-0 text-lg font-medium py-1', {
           'text-blue-600 bg-blue-50 dark:bg-slate-900':
             isAdmonition || isNote || isImportant,
           'text-amber-600 bg-amber-50 dark:bg-slate-900':
