@@ -40,7 +40,7 @@
   "dependencies": {
     "@curvenote/blocks": "^1.5.1",
     "@curvenote/nbtx": "^0.1.8",
-    "@curvenote/schema": "^0.12.11",
+    "@curvenote/schema": "^0.12.12",
     "@google-cloud/storage": "^5.18.2",
     "@jupyterlab/nbformat": "^3.3.2",
     "@reduxjs/toolkit": "^1.7.2",
