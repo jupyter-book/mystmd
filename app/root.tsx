@@ -18,6 +18,7 @@ import tailwind from './styles/app.css';
 import { getMetaTagsForSite, getConfig, SiteManifest } from './utils';
 import { ConfigProvider } from './components/ConfigProvider';
 import { UiStateProvider } from './components/UiStateProvider';
+import { Analytics } from './components/analytics';
 
 export const meta: MetaFunction = ({ data }) => {
   return getMetaTagsForSite({
@@ -63,6 +64,7 @@ function Document({
         {title && <title>{title}</title>}
         <Meta />
         <Links />
+        <Analytics analytics={config?.analytics} />
       </head>
       <body className="m-0 transition-colors duration-500 bg-white dark:bg-stone-900">
         <UiStateProvider>

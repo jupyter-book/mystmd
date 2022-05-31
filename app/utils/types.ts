@@ -124,6 +124,11 @@ export type ManifestProject = {
   pages: (ManifestProjectPage | ManifestProjectFolder)[];
 } & Frontmatter;
 
+export type AnalyticsConfig = {
+  google?: string;
+  plausible?: string;
+};
+
 export type SiteManifest = {
   title: string;
   twitter?: string;
@@ -132,4 +137,5 @@ export type SiteManifest = {
   nav: SiteNavItem[];
   actions: SiteAction[];
   projects: ManifestProject[];
+  analytics?: AnalyticsConfig;
 };
