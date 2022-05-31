@@ -1,7 +1,6 @@
 import fs from 'fs';
 import { extname, parse, join, sep } from 'path';
-import { CURVENOTE_YML } from '../config';
-import { SiteProject, SiteAction, AnalyticsConfig } from '../config/types';
+import { CURVENOTE_YML, SiteProject, SiteAction, AnalyticsConfig } from '../config/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
 import { SiteFrontmatter } from '../frontmatter/types';
 import {
