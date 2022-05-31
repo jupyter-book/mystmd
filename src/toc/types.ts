@@ -1,5 +1,5 @@
 import { Frontmatter } from '../frontmatter/types';
-import { SiteAction, SiteNavItem } from '../config/types';
+import { AnalyticsConfig, SiteAction, SiteNavItem } from '../config/types';
 
 // Types for local Project
 //
@@ -59,4 +59,5 @@ export type SiteManifest = {
   nav: SiteNavItem[];
   actions: SiteAction[];
   projects: ManifestProject[];
+  analytics?: AnalyticsConfig;
 };
