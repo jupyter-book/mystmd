@@ -116,7 +116,7 @@ async function uploadFile(log: Logger, upload: FileUpload) {
   // Endpoint to which we should upload the file
   const location = resumableSession.headers.get('location') as string;
 
-  // we are not resuming! is we want resumable uploads we need to implement
+  // we are not resuming! if we want resumable uploads we need to implement
   // or use something other than fetch here that supports resuming
   const readStream = fs.createReadStream(upload.from);
   const uploadResponse = await fetch(location, {
@@ -139,6 +139,7 @@ export async function deployContent(session: ISession, siteConfig: SiteConfig) {
   const contentFiles = listContentFolders(session);
   const imagesFiles = listPublic(session);
   const filesToUpload = [...configFiles, ...imagesFiles, ...contentFiles];
+  session.log.info(`🔬 Preparing to upload ${filesToUpload.length} files`);
 
   const files = await Promise.all(
     filesToUpload.map(({ from, to }) => prepareFileForUpload(from, to)),
