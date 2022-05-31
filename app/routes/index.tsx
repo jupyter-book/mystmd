@@ -5,7 +5,8 @@ import { getConfig } from '~/utils';
 
 export const loader: LoaderFunction = async ({ request }): Promise<Response | null> => {
   const config = await getConfig(request);
-  const project = config.projects[0];
+  if (!config) throw new Response('Site was not found', { status: 404 });
+  const project = config?.projects[0];
   if (!project) throw new Response('Article was not found', { status: 404 });
   return redirect(`/${project.slug}`);
 };

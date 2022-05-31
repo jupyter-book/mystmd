@@ -6,7 +6,7 @@ import { PageLoader as Data, SiteManifest } from './types';
 // This is executed in the API directory
 const contentFolder = path.join(__dirname, '..', 'app', 'content');
 
-export async function getConfig(request: Request): Promise<SiteManifest> {
+export async function getConfig(request: Request): Promise<SiteManifest | undefined> {
   return config;
 }
 

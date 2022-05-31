@@ -105,7 +105,7 @@ export type SiteNavFolder = {
 export type SiteNavItem = SiteNavPage | SiteNavFolder;
 
 export type SiteAction = SiteNavPage & {
-  static: boolean;
+  static?: boolean;
 };
 
 export type ManifestProjectFolder = {

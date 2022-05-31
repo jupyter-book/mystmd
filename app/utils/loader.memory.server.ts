@@ -9,7 +9,7 @@ const CACHE: {
   data: {},
 };
 
-export async function getConfig(request: Request): Promise<SiteManifest> {
+export async function getConfig(request: Request): Promise<SiteManifest | undefined> {
   return config;
 }
 
