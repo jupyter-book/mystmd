@@ -30,6 +30,11 @@ export type SiteAction = SiteNavPage & {
   static?: boolean;
 };
 
+export type AnalyticsConfig = {
+  google?: string;
+  plausible?: string;
+};
+
 export type SiteConfig = {
   title: string;
   frontmatter?: Omit<Frontmatter, 'title' | 'description'>;
@@ -45,6 +50,7 @@ export type SiteConfig = {
   projects: SiteProject[];
   nav: SiteNavItem[];
   actions: SiteAction[];
+  analytics?: AnalyticsConfig;
 };
 
 export type Config = {

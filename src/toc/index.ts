@@ -1,13 +1,14 @@
 import fs from 'fs';
 import { extname, parse, join, sep } from 'path';
-import { SiteProject, SiteAction } from '../config/types';
+import { CURVENOTE_YML } from '../config';
+import { SiteProject, SiteAction, AnalyticsConfig } from '../config/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
 import { resolveFrontmatter } from '../frontmatter';
 import { Frontmatter } from '../frontmatter/types';
 import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
 import { projects } from '../store/local';
-import { publicPath } from '../utils';
+import { publicPath, warnOnUnrecognizedKeys } from '../utils';
 import {
   SiteManifest,
   pageLevels,
@@ -276,6 +277,19 @@ function getSiteManifestAction(session: ISession, action: SiteAction): SiteActio
   };
 }
 
+function getSiteManifestAnalytics(
+  session: ISession,
+  analytics?: AnalyticsConfig,
+): AnalyticsConfig | undefined {
+  if (!analytics) return undefined;
+  const { google, plausible, ...rest } = analytics;
+  warnOnUnrecognizedKeys(session.log, rest, `${CURVENOTE_YML}#site.analytics:`);
+  return {
+    google: google || undefined,
+    plausible: plausible || undefined,
+  };
+}
+
 export function copyActionResource(session: ISession, action: SiteAction) {
   if (!action.static || !action.url) return;
   const resource = getManifestActionPaths(session, action.url);
@@ -331,6 +345,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
     nav,
     actions,
     projects: siteProjects,
+    analytics: getSiteManifestAnalytics(session, siteConfig.analytics),
   };
   return manifest;
 }
