@@ -224,7 +224,7 @@ export function validateNumbering(input: any, opts: Options) {
   return value as Numbering;
 }
 
-function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Options) {
+export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Options) {
   const output: SiteFrontmatter = {};
   if (defined(value.title)) {
     output.title = validateString(value.title, incrementOptions('title', opts));
@@ -238,13 +238,13 @@ function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Options) 
   return output;
 }
 
-function validateProjectFrontmatterKeys(value: Record<string, any>, opts: Options) {
+export function validateProjectFrontmatterKeys(value: Record<string, any>, opts: Options) {
   const output: ProjectFrontmatter = {};
   if (defined(value.authors)) {
     output.authors = validateList(
       value.authors,
       incrementOptions('authors', opts),
-      (author, index: number) => {
+      (author, index) => {
         return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
       },
     );

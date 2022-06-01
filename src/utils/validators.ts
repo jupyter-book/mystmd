@@ -85,18 +85,13 @@ export function validateString(
  * If 'include' is provided, value must include it in the origin.
  */
 export function validateUrl(input: any, opts: { includes?: string } & Options) {
-  let value = validateString(input, { ...opts, maxLength: 2048 });
+  const value = validateString(input, { ...opts, maxLength: 2048 });
   if (value === undefined) return value;
   let url: URL;
   try {
     url = new URL(value);
   } catch {
-    try {
-      value = `http://${value}`;
-      url = new URL(value);
-    } catch {
-      return validationError('must be valid URL', opts);
-    }
+    return validationError('must be valid URL', opts);
   }
   if (opts.includes && !url.origin.includes(opts.includes)) {
     return validationError(`must include "${opts.includes}"`, opts);

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { extname, parse, join, sep } from 'path';
-import { CURVENOTE_YML, SiteProject, SiteAction, AnalyticsConfig } from '../config/types';
+import { CURVENOTE_YML, SiteProject, SiteAction, SiteAnalytics } from '../config/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
 import { allowNestedFrontmatter } from '../frontmatter';
 import { validateSiteFrontmatter } from '../frontmatter/validators';
@@ -291,8 +291,8 @@ function getSiteManifestAction(session: ISession, action: SiteAction): SiteActio
 
 function getSiteManifestAnalytics(
   session: ISession,
-  analytics?: AnalyticsConfig,
-): AnalyticsConfig | undefined {
+  analytics?: SiteAnalytics,
+): SiteAnalytics | undefined {
   if (!analytics) return undefined;
   const { google, plausible, ...rest } = analytics;
   warnOnUnrecognizedKeys(session.log, rest, `${CURVENOTE_YML}#site.analytics:`);

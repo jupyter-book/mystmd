@@ -8,6 +8,7 @@ import {
   validateDate,
   validateEmail,
   validateKeys,
+  validateList,
   validateObject,
   validateString,
   validateUrl,
@@ -105,9 +106,6 @@ describe('validateUrl', () => {
   it('valid value returns self', async () => {
     expect(validateUrl('https://example.com', opts)).toEqual('https://example.com');
   });
-  it('valid value without scheme coerces', async () => {
-    expect(validateUrl('example.com', opts)).toEqual('http://example.com');
-  });
   it('invalid string errors', async () => {
     expect(validateUrl('not a url', opts)).toEqual(undefined);
     expect(opts.count?.errors).toEqual(1);
@@ -117,17 +115,10 @@ describe('validateUrl', () => {
       'https://example.com',
     );
   });
-  it('valid value without scheme includes', async () => {
-    expect(validateUrl('example.com', { ...opts, includes: 'le.c' })).toEqual('http://example.com');
-  });
   it('valid value without includes errors', async () => {
     expect(validateUrl('https://example.com', { ...opts, includes: 'example.org' })).toEqual(
       undefined,
     );
-    expect(opts.count?.errors).toEqual(1);
-  });
-  it('valid value without includes errors', async () => {
-    expect(validateUrl('example.com', { ...opts, includes: 'example.org' })).toEqual(undefined);
     expect(opts.count?.errors).toEqual(1);
   });
 });
@@ -193,6 +184,33 @@ describe('validateKeys', () => {
   it('missing required keys errors', async () => {
     expect(validateKeys({ a: 1 }, { required: ['a', 'b'] }, opts)).toEqual(undefined);
     expect(opts.count?.errors).toEqual(1);
+  });
+});
+
+describe('validateList', () => {
+  it('empty list', async () => {
+    expect(validateList([], opts, (val) => val)).toEqual([]);
+  });
+  it('simple list and index', async () => {
+    expect(validateList(['a', 'b', 'c'], opts, (val, ind) => `${val} ${ind}`)).toEqual([
+      'a 0',
+      'b 1',
+      'c 2',
+    ]);
+  });
+  it('list filters undefined values', async () => {
+    expect(validateList(['a', 'b', 'c'], opts, (val) => (val === 'c' ? undefined : val))).toEqual([
+      'a',
+      'b',
+    ]);
+  });
+  it('invalid object errors', async () => {
+    expect(validateList({}, opts, (val) => val)).toEqual(undefined);
+    expect(opts.count.errors).toEqual(1);
+  });
+  it('invalid string errors', async () => {
+    expect(validateList('abc', opts, (val) => val)).toEqual(undefined);
+    expect(opts.count.errors).toEqual(1);
   });
 });
 
