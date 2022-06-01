@@ -1,7 +1,6 @@
 import { basicLogger, LogLevel } from '../logging';
+import { Options } from '../utils/validators';
 import { validateLicense, validateLicenses } from './validators';
-
-const opts = { logger: basicLogger(LogLevel.info), property: 'test' };
 
 const TEST_LICENSE = {
   title: 'Creative Commons Attribution 4.0 International',
@@ -11,24 +10,34 @@ const TEST_LICENSE = {
   url: 'https://creativecommons.org/licenses/by/4.0/',
 };
 
+let opts: Options;
+
+beforeEach(() => {
+  opts = { logger: basicLogger(LogLevel.info), property: 'test', count: {} };
+});
+
 describe('validateLicense', () => {
   it('invalid string errors', async () => {
-    expect(() => validateLicense('', opts)).toThrow();
+    expect(validateLicense('', opts)).toEqual(undefined);
+    expect(opts.count.errors).toEqual(1);
   });
   it('valid string coerces', async () => {
     expect(validateLicense('CC-BY-4.0', opts)).toEqual(TEST_LICENSE);
   });
-  it('valid license errors', async () => {
-    expect(() => validateLicense(TEST_LICENSE, opts)).toThrow();
+  it('valid license output errors', async () => {
+    expect(validateLicense(TEST_LICENSE, opts)).toEqual(undefined);
+    expect(opts.count.errors).toEqual(1);
   });
 });
 
 describe('validateLicenses', () => {
   it('invalid string errors', async () => {
-    expect(() => validateLicenses('', opts)).toThrow();
+    expect(validateLicenses('', opts)).toEqual({});
+    expect(opts.count.errors).toEqual(1);
   });
   it('invalid content string errors', async () => {
-    expect(() => validateLicenses({ content: '' }, opts)).toThrow();
+    expect(validateLicenses({ content: '' }, opts)).toEqual({});
+    expect(opts.count.errors).toEqual(1);
   });
   it('empty object returns self', async () => {
     expect(validateLicenses({}, opts)).toEqual({});

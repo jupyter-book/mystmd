@@ -5,7 +5,8 @@ export type Options = {
   property: string;
   file?: string;
   location?: string;
-  warn?: boolean;
+  suppressWarnings?: boolean;
+  count: { errors?: number; warnings?: number };
 };
 
 export function defined(val: any) {
@@ -24,13 +25,25 @@ export function incrementOptions(property: string, opts: Options) {
   return { ...opts, property, location };
 }
 
-export function validationError(message: string, opts: Options): Error {
-  return Error(`Validation error: "${opts.property}" ${message}${locationSuffix(opts)}`);
+export function validationError(message: string, opts: Options) {
+  if (opts.count.errors) {
+    opts.count.errors += 1;
+  } else {
+    opts.count.errors = 1;
+  }
+  opts.logger.error(`Validation error: "${opts.property}" ${message}${locationSuffix(opts)}`);
+  return undefined;
 }
 
 export function validationMessage(message: string, opts: Options) {
-  if (opts.warn)
-    opts.logger.debug(`Validation: "${opts.property}" ${message}${locationSuffix(opts)}`);
+  if (!opts.suppressWarnings) {
+    if (opts.count.warnings) {
+      opts.count.warnings += 1;
+    } else {
+      opts.count.warnings = 1;
+    }
+    opts.logger.warn(`Validation: "${opts.property}" ${message}${locationSuffix(opts)}`);
+  }
 }
 
 /**
@@ -44,7 +57,7 @@ export function validateBoolean(input: any, opts: Options) {
     if (input.toLowerCase() === 'false') return false;
   }
   if (input === true || input === false) return input;
-  throw validationError('must be boolean', opts);
+  return validationError('must be boolean', opts);
 }
 
 /**
@@ -53,15 +66,15 @@ export function validateBoolean(input: any, opts: Options) {
 export function validateString(
   input: any,
   opts: { maxLength?: number; regex?: string } & Options,
-): string {
-  if (typeof input !== 'string') throw validationError(`must be string`, opts);
+): string | undefined {
+  if (typeof input !== 'string') return validationError(`must be string`, opts);
   const value = input as string;
   const maxLength = opts.maxLength || 500;
   if (value.length > maxLength) {
-    throw validationError(`must be less than ${maxLength} chars`, opts);
+    return validationError(`must be less than ${maxLength} chars`, opts);
   }
   if (opts.regex && !value.match(opts.regex)) {
-    throw validationError(`must match regex ${opts.regex}`, opts);
+    return validationError(`must match regex ${opts.regex}`, opts);
   }
   return value;
 }
@@ -73,6 +86,7 @@ export function validateString(
  */
 export function validateUrl(input: any, opts: { includes?: string } & Options) {
   let value = validateString(input, { ...opts, maxLength: 2048 });
+  if (value === undefined) return value;
   let url: URL;
   try {
     url = new URL(value);
@@ -81,11 +95,11 @@ export function validateUrl(input: any, opts: { includes?: string } & Options) {
       value = `http://${value}`;
       url = new URL(value);
     } catch {
-      throw validationError('must be valid URL', opts);
+      return validationError('must be valid URL', opts);
     }
   }
   if (opts.includes && !url.origin.includes(opts.includes)) {
-    throw validationError(`must include "${opts.includes}"`, opts);
+    return validationError(`must include "${opts.includes}"`, opts);
   }
   return value;
 }
@@ -95,13 +109,14 @@ export function validateUrl(input: any, opts: { includes?: string } & Options) {
  */
 export function validateEmail(input: any, opts: Options) {
   const value = validateString(input, opts);
+  if (value === undefined) return value;
   const valid = value
     .toLowerCase()
     .match(
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
     );
   if (!valid) {
-    throw validationError('must be valid email address', opts);
+    return validationError('must be valid email address', opts);
   }
   return value;
 }
@@ -115,8 +130,8 @@ export function validateEmail(input: any, opts: Options) {
  */
 export function validateDate(input: any, opts: Options) {
   if (!new Date(input).getDate()) {
-    throw validationError(
-      `invalid date ${input} - must be ISO 8601 format or IETF timestamp`,
+    return validationError(
+      `invalid date "${input}" - must be ISO 8601 format or IETF timestamp`,
       opts,
     );
   }
@@ -128,7 +143,7 @@ export function validateDate(input: any, opts: Options) {
  * Validates value is an object
  */
 export function validateObject(input: any, opts: Options) {
-  if (typeof input !== 'object') throw validationError(`must be object`, opts);
+  if (typeof input !== 'object') return validationError(`must be object`, opts);
   return input as Record<string, any>;
 }
 
@@ -155,7 +170,7 @@ export function validateKeys(
     }
   });
   if (required.length) {
-    throw validationError(
+    return validationError(
       `missing required key${required.length > 1 ? 's' : ''}: ${required.join(', ')}`,
       opts,
     );
@@ -170,12 +185,51 @@ export function validateKeys(
 }
 
 /**
+ * Validates value is an object and has all required keys
+ *
+ * Returns new object with only required/optional keys
+ */
+export function validateObjectKeys(
+  input: any,
+  keys: { required?: string[]; optional?: string[] },
+  opts: Options,
+) {
+  const value = validateObject(input, opts);
+  if (value === undefined) return undefined;
+  return validateKeys(value, keys, opts);
+}
+
+/**
  * Validate value is a list
  */
-export function validateList(input: any, opts: Options) {
+export function validateList<T>(
+  input: any,
+  opts: Options,
+  itemValidator: (item: any, index: number) => T | undefined,
+) {
   if (!Array.isArray(input)) {
-    throw validationError('must be an array', opts);
+    return validationError('must be an array', opts);
   }
   const value = input as any[];
-  return value;
+  return value
+    .map((item, index) => itemValidator(item, index))
+    .filter((item): item is T => item !== undefined);
+}
+
+/**
+ * Copy 'base' object and fill any 'keys' that are missing with their values from 'filler'
+ */
+export function fillMissingKeys<T extends Record<string, any>>(
+  base: T,
+  filler: T,
+  keys: (keyof T | string)[],
+): T {
+  const output: T = { ...base };
+  keys.forEach((key) => {
+    if (!defined(output[key]) && defined(filler[key])) {
+      key = key as keyof T;
+      output[key] = filler[key];
+    }
+  });
+  return output;
 }

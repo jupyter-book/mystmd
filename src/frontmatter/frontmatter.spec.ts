@@ -1,7 +1,7 @@
 import { basicLogger, LogLevel } from '../logging';
+import { Options } from '../utils/validators';
 import { Author, Biblio, Numbering, PageFrontmatter, ProjectFrontmatter } from './types';
 import {
-  fillMissingKeys,
   fillPageFrontmatter,
   validateAuthor,
   validateBiblio,
@@ -81,7 +81,11 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   date: '14 Dec 2021',
 };
 
-const opts = { logger: basicLogger(LogLevel.info), property: 'test' };
+let opts: Options;
+
+beforeEach(() => {
+  opts = { logger: basicLogger(LogLevel.info), property: 'test', count: {} };
+});
 
 describe('validateVenue', () => {
   it('empty object returns self', async () => {
@@ -112,16 +116,20 @@ describe('validateAuthor', () => {
     expect(validateAuthor(TEST_AUTHOR, opts)).toEqual(TEST_AUTHOR);
   });
   it('invalid orcid errors', async () => {
-    expect(() => validateAuthor({ orcid: 'https://exampale.com/example' }, opts)).toThrow();
+    expect(validateAuthor({ orcid: 'https://exampale.com/example' }, opts)).toEqual({});
+    expect(opts.count.errors).toEqual(1);
   });
   it('invalid email errors', async () => {
-    expect(() => validateAuthor({ email: 'https://example.com' }, opts)).toThrow();
+    expect(validateAuthor({ email: 'https://example.com' }, opts)).toEqual({});
+    expect(opts.count.errors).toEqual(1);
   });
   it('invalid roles errors', async () => {
-    expect(() => validateAuthor({ roles: ['example'] }, opts)).toThrow();
+    expect(validateAuthor({ roles: ['example'] }, opts)).toEqual({ roles: [] });
+    expect(opts.count.errors).toEqual(1);
   });
   it('corresponding with no email errors', async () => {
-    expect(() => validateAuthor({ corresponding: true }, opts)).toThrow();
+    expect(validateAuthor({ corresponding: true }, opts)).toEqual({ corresponding: false });
+    expect(opts.count.errors).toEqual(1);
   });
 });
 
@@ -151,7 +159,8 @@ describe('validateNumbering', () => {
 
 describe('validateSiteFrontmatter', () => {
   it('invalid type errors', async () => {
-    expect(() => validateSiteFrontmatter('frontmatter', opts)).toThrow();
+    expect(validateSiteFrontmatter('frontmatter', opts)).toEqual({});
+    expect(opts.count.errors).toEqual(1);
   });
   it('empty object returns self', async () => {
     expect(validateSiteFrontmatter({}, opts)).toEqual({});
@@ -167,6 +176,10 @@ describe('validateSiteFrontmatter', () => {
 });
 
 describe('validateProjectFrontmatter', () => {
+  it('invalid type errors', async () => {
+    expect(validateProjectFrontmatter('frontmatter', opts)).toEqual({});
+    expect(opts.count.errors).toEqual(1);
+  });
   it('empty object returns self', async () => {
     expect(validateProjectFrontmatter({}, opts)).toEqual({});
   });
@@ -179,7 +192,8 @@ describe('validateProjectFrontmatter', () => {
     expect(validateProjectFrontmatter({ numbering: 'false' }, opts)).toEqual({ numbering: false });
   });
   it('invalid doi errors', async () => {
-    expect(() => validateProjectFrontmatter({ doi: '' }, opts)).toThrow();
+    expect(validateProjectFrontmatter({ doi: '' }, opts)).toEqual({});
+    expect(opts.count.errors).toEqual(1);
   });
   it('github username/repo coerces', async () => {
     expect(validateProjectFrontmatter({ github: 'example/repo' }, opts)).toEqual({
@@ -187,14 +201,26 @@ describe('validateProjectFrontmatter', () => {
     });
   });
   it('invalid github errors', async () => {
-    expect(() => validateProjectFrontmatter({ github: 'https://example.com' }, opts)).toThrow();
+    expect(validateProjectFrontmatter({ github: 'https://example.com' }, opts)).toEqual({});
+    expect(opts.count.errors).toEqual(1);
   });
   it('invalid arxiv errors', async () => {
-    expect(() => validateProjectFrontmatter({ arxiv: 'https://example.com' }, opts)).toThrow();
+    expect(validateProjectFrontmatter({ arxiv: 'https://example.com' }, opts)).toEqual({});
+    expect(opts.count.errors).toEqual(1);
+  });
+  it('invalid math errors', async () => {
+    expect(validateProjectFrontmatter({ math: { a: 'valid', b: 0 } }, opts)).toEqual({
+      math: { a: 'valid' },
+    });
+    expect(opts.count.errors).toEqual(1);
   });
 });
 
 describe('validatePageFrontmatter', () => {
+  it('invalid type errors', async () => {
+    expect(validatePageFrontmatter('frontmatter', opts)).toEqual({});
+    expect(opts.count.errors).toEqual(1);
+  });
   it('empty object returns self', async () => {
     expect(validatePageFrontmatter({}, opts)).toEqual({});
   });
@@ -202,23 +228,8 @@ describe('validatePageFrontmatter', () => {
     expect(validatePageFrontmatter(TEST_PAGE_FRONTMATTER, opts)).toEqual(TEST_PAGE_FRONTMATTER);
   });
   it('invalid date errors', async () => {
-    expect(() => validatePageFrontmatter({ date: 'https://example.com' }, opts)).toThrow();
-  });
-});
-
-describe('fillMissingKeys', () => {
-  it('primary supersedes secondary', async () => {
-    expect(fillMissingKeys({ a: 1 }, { a: 2 }, ['a'])).toEqual({ a: 1 });
-  });
-  it('secondary supersedes nothing', async () => {
-    expect(fillMissingKeys({}, { a: 2 }, ['a'])).toEqual({ a: 2 });
-  });
-  it('other filler keys ignored', async () => {
-    expect(fillMissingKeys({ a: 1, b: 2 }, { a: 2, c: 3, d: 4 }, ['a', 'd'])).toEqual({
-      a: 1,
-      b: 2,
-      d: 4,
-    });
+    expect(validatePageFrontmatter({ date: 'https://example.com' }, opts)).toEqual({});
+    expect(opts.count.errors).toEqual(1);
   });
 });
 

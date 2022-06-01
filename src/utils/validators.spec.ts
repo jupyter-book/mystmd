@@ -1,6 +1,8 @@
 import { basicLogger, LogLevel } from '../logging';
 import {
+  fillMissingKeys,
   incrementOptions,
+  Options,
   locationSuffix,
   validateBoolean,
   validateDate,
@@ -11,7 +13,11 @@ import {
   validateUrl,
 } from './validators';
 
-const opts = { logger: basicLogger(LogLevel.info), property: 'test' };
+let opts: Options;
+
+beforeEach(() => {
+  opts = { logger: basicLogger(LogLevel.info), property: 'test', count: {} };
+});
 
 describe('locationSuffix', () => {
   it('empty opts return empty string', async () => {
@@ -41,6 +47,14 @@ describe('incrementOptions', () => {
       location: 'object.test',
     });
   });
+  it('errors/warnings are not lost', async () => {
+    const newOpts = incrementOptions('new', opts);
+    if (newOpts.count) {
+      newOpts.count.errors = 1;
+      newOpts.count.warnings = 2;
+    }
+    expect(opts.count).toEqual({ errors: 1, warnings: 2 });
+  });
 });
 
 describe('validateBoolean', () => {
@@ -57,10 +71,12 @@ describe('validateBoolean', () => {
     expect(validateBoolean('False', opts)).toEqual(false);
   });
   it('invalid type errors', async () => {
-    expect(() => validateBoolean(0, opts)).toThrow();
+    expect(validateBoolean(0, opts)).toEqual(undefined);
+    expect(opts.count?.errors).toEqual(1);
   });
   it('invalid string errors', async () => {
-    expect(() => validateBoolean('t', opts)).toThrow();
+    expect(validateBoolean('t', opts)).toEqual(undefined);
+    expect(opts.count?.errors).toEqual(1);
   });
 });
 
@@ -69,16 +85,19 @@ describe('validateString', () => {
     expect(validateString('a', opts)).toEqual('a');
   });
   it('invalid type errors', async () => {
-    expect(() => validateString({}, opts)).toThrow();
+    expect(validateString({}, opts)).toEqual(undefined);
+    expect(opts.count?.errors).toEqual(1);
   });
   it('exceeding maxLenth errors', async () => {
-    expect(() => validateString('abc', { maxLength: 1, ...opts })).toThrow();
+    expect(validateString('abc', { maxLength: 1, ...opts })).toEqual(undefined);
+    expect(opts.count?.errors).toEqual(1);
   });
   it('regex match returns self', async () => {
     expect(validateString('abc', { regex: '^[a-c]{3}$', ...opts })).toEqual('abc');
   });
   it('incompatible regex errors', async () => {
-    expect(() => validateString('abc', { regex: '^[a-c]{2}$', ...opts })).toThrow();
+    expect(validateString('abc', { regex: '^[a-c]{2}$', ...opts })).toEqual(undefined);
+    expect(opts.count?.errors).toEqual(1);
   });
 });
 
@@ -90,7 +109,8 @@ describe('validateUrl', () => {
     expect(validateUrl('example.com', opts)).toEqual('http://example.com');
   });
   it('invalid string errors', async () => {
-    expect(() => validateUrl('not a url', opts)).toThrow();
+    expect(validateUrl('not a url', opts)).toEqual(undefined);
+    expect(opts.count?.errors).toEqual(1);
   });
   it('valid value includes', async () => {
     expect(validateUrl('https://example.com', { ...opts, includes: 'le.c' })).toEqual(
@@ -101,12 +121,14 @@ describe('validateUrl', () => {
     expect(validateUrl('example.com', { ...opts, includes: 'le.c' })).toEqual('http://example.com');
   });
   it('valid value without includes errors', async () => {
-    expect(() =>
-      validateUrl('https://example.com', { ...opts, includes: 'example.org' }),
-    ).toThrow();
+    expect(validateUrl('https://example.com', { ...opts, includes: 'example.org' })).toEqual(
+      undefined,
+    );
+    expect(opts.count?.errors).toEqual(1);
   });
   it('valid value without includes errors', async () => {
-    expect(() => validateUrl('example.com', { ...opts, includes: 'example.org' })).toThrow();
+    expect(validateUrl('example.com', { ...opts, includes: 'example.org' })).toEqual(undefined);
+    expect(opts.count?.errors).toEqual(1);
   });
 });
 
@@ -115,7 +137,8 @@ describe('validateEmail', () => {
     expect(validateEmail('example@example.com', opts)).toEqual('example@example.com');
   });
   it('invalid email errors', async () => {
-    expect(() => validateEmail('https://example.com', opts)).toThrow();
+    expect(validateEmail('https://example.com', opts)).toEqual(undefined);
+    expect(opts.count?.errors).toEqual(1);
   });
 });
 
@@ -135,7 +158,8 @@ describe('validateDate', () => {
     expect(validateDate(date, opts)).toEqual(date);
   });
   it('invalid date errors', async () => {
-    expect(() => validateDate('https://example.com', opts)).toThrow();
+    expect(validateDate('https://example.com', opts)).toEqual(undefined);
+    expect(opts.count?.errors).toEqual(1);
   });
 });
 
@@ -144,7 +168,8 @@ describe('validateObject', () => {
     expect(validateObject({ a: 1 }, opts)).toEqual({ a: 1 });
   });
   it('invalid type errors', async () => {
-    expect(() => validateObject('a', opts)).toThrow();
+    expect(validateObject('a', opts)).toEqual(undefined);
+    expect(opts.count?.errors).toEqual(1);
   });
 });
 
@@ -163,8 +188,26 @@ describe('validateKeys', () => {
       a: 1,
       b: 2,
     });
+    expect(opts.count?.warnings).toEqual(1);
   });
   it('missing required keys errors', async () => {
-    expect(() => validateKeys({ a: 1 }, { required: ['a', 'b'] }, opts)).toThrow();
+    expect(validateKeys({ a: 1 }, { required: ['a', 'b'] }, opts)).toEqual(undefined);
+    expect(opts.count?.errors).toEqual(1);
+  });
+});
+
+describe('fillMissingKeys', () => {
+  it('primary supersedes secondary', async () => {
+    expect(fillMissingKeys({ a: 1 }, { a: 2 }, ['a'])).toEqual({ a: 1 });
+  });
+  it('secondary supersedes nothing', async () => {
+    expect(fillMissingKeys({}, { a: 2 }, ['a'])).toEqual({ a: 2 });
+  });
+  it('other filler keys ignored', async () => {
+    expect(fillMissingKeys({ a: 1, b: 2 }, { a: 2, c: 3, d: 4 }, ['a', 'd'])).toEqual({
+      a: 1,
+      b: 2,
+      d: 4,
+    });
   });
 });

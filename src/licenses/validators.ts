@@ -3,8 +3,7 @@ import {
   defined,
   incrementOptions,
   Options,
-  validateKeys,
-  validateObject,
+  validateObjectKeys,
   validateString,
   validationError,
 } from '../utils/validators';
@@ -64,10 +63,12 @@ function createURL(license: Omit<License, 'url'>): string {
 /**
  * Validate input to be known license id and return corresponding License object
  */
-export function validateLicense(input: any, opts: Options): License {
-  const value = validateString(input, opts).toUpperCase();
+export function validateLicense(input: any, opts: Options): License | undefined {
+  let value = validateString(input, opts);
+  if (value === undefined) return undefined;
+  value = value.toUpperCase();
   if (!LICENSE_KEYS[value]) {
-    throw validationError(
+    return validationError(
       `invalid value "${value}" - must be a valid license ID, see https://spdx.org/licenses/`,
       opts,
     );
@@ -83,21 +84,25 @@ export function validateLicense(input: any, opts: Options): License {
  * Input value is either a single license id string or an object with
  * license ids for 'code' and/or 'content'
  */
-export function validateLicenses(input: any, opts: Options): Licenses {
+export function validateLicenses(input: any, opts: Options): Licenses | undefined {
   let contentOpts: Options;
+  let copyContentToCode = false;
   if (typeof input === 'string') {
-    input = { content: input, code: input };
+    input = { content: input };
+    copyContentToCode = true; // If we copy here then validate, we risk 2 duplicate validation errors
     contentOpts = opts;
   } else {
     // This means 'licenses.content' only shows up in errors if present in original input
     contentOpts = incrementOptions('content', opts);
   }
-  let value = validateObject(input, opts);
-  value = validateKeys(input, { optional: ['content', 'code'] }, opts);
+  const value = validateObjectKeys(input, { optional: ['content', 'code'] }, opts);
+  if (value === undefined) return undefined;
   if (defined(value.content)) {
     value.content = validateLicense(value.content, contentOpts);
   }
-  if (defined(value.code)) {
+  if (copyContentToCode) {
+    value.code = value.content;
+  } else if (defined(value.code)) {
     value.code = validateLicense(value.code, incrementOptions('code', opts));
   }
   return value;

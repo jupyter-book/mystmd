@@ -71,6 +71,7 @@ export function getPageFrontmatter(
     logger: session.log,
     property: 'frontmatter',
     file,
+    count: {},
   });
 
   const state = session.store.getState();
@@ -80,7 +81,8 @@ export function getPageFrontmatter(
     logger: session.log,
     property: 'project',
     file: join(path, CURVENOTE_YML),
-    warn: false,
+    suppressWarnings: true,
+    count: {},
   });
 
   const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter);

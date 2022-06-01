@@ -3,15 +3,12 @@ import { extname, parse, join, sep } from 'path';
 import { CURVENOTE_YML, SiteProject, SiteAction, AnalyticsConfig } from '../config/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
 import { SiteFrontmatter } from '../frontmatter/types';
-import {
-  fillMissingKeys,
-  PROJECT_FRONTMATTER_KEYS,
-  SITE_FRONTMATTER_KEYS,
-} from '../frontmatter/validators';
+import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from '../frontmatter/validators';
 import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
 import { projects } from '../store/local';
 import { publicPath, warnOnUnrecognizedKeys } from '../utils';
+import { fillMissingKeys } from '../utils/validators';
 import {
   SiteManifest,
   pageLevels,
