@@ -1,10 +1,10 @@
 import { GenericNode, selectAll } from 'mystjs';
-import { Numbering } from '../frontmatter/types';
+import { ProjectFrontmatter } from '../frontmatter/types';
 import { Root } from '../myst';
 
 export function transformEnumerators(
   mdast: Root,
-  frontmatter: { numbering?: boolean | Numbering },
+  frontmatter: Pick<ProjectFrontmatter, 'numbering'>,
 ) {
   const { numbering } = frontmatter;
   if (numbering === true || numbering == null) return;

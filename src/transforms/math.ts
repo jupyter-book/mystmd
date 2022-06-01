@@ -1,13 +1,14 @@
 import katex from 'katex';
 import { Math, InlineMath } from 'myst-spec';
 import { selectAll } from 'mystjs';
+import { ProjectFrontmatter } from '../frontmatter/types';
 import { Logger } from '../logging';
 import { Root } from '../myst';
 
 export function renderEquation(
   log: Logger,
   node: Math | InlineMath,
-  frontmatter: { math?: Record<string, string> },
+  frontmatter: Pick<ProjectFrontmatter, 'math'>,
 ) {
   const { value } = node;
   if (!value) return;
@@ -32,7 +33,7 @@ export function renderEquation(
 export function transformMath(
   log: Logger,
   mdast: Root,
-  frontmatter: { math?: Record<string, string> },
+  frontmatter: Pick<ProjectFrontmatter, 'math'>,
 ) {
   const nodes = selectAll('math,inlineMath', mdast) as (Math | InlineMath)[];
   nodes.forEach((node) => {
