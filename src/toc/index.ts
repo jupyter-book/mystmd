@@ -2,13 +2,12 @@ import fs from 'fs';
 import { extname, parse, join, sep } from 'path';
 import { CURVENOTE_YML, SiteProject, SiteAction, AnalyticsConfig } from '../config/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
-import { SiteFrontmatter } from '../frontmatter/types';
-import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from '../frontmatter/validators';
+import { allowNestedFrontmatter } from '../frontmatter';
+import { validateSiteFrontmatter } from '../frontmatter/validators';
 import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
 import { projects } from '../store/local';
 import { publicPath, warnOnUnrecognizedKeys } from '../utils';
-import { fillMissingKeys } from '../utils/validators';
 import {
   SiteManifest,
   pageLevels,
@@ -206,8 +205,10 @@ export function loadProjectFromDisk(
  * This does a couple things:
  * - Adds projectSlug (which locally comes from site config)
  * - Removes any local file references
+ * - Adds validated frontmatter
  */
 export function localToManifestProject(
+  session: ISession,
   state: RootState,
   siteProj: SiteProject,
 ): ManifestProject | null {
@@ -226,8 +227,20 @@ export function localToManifestProject(
     }
     return { ...page };
   });
+  const rawProjectFrontmatter = allowNestedFrontmatter(
+    session,
+    projConfig as Record<string, any>,
+    CURVENOTE_YML,
+  );
+  const projFrontmatter = validateSiteFrontmatter(rawProjectFrontmatter, {
+    logger: session.log,
+    property: 'project',
+    file: join(siteProj.path, CURVENOTE_YML),
+    suppressWarnings: true,
+    count: {},
+  });
   return {
-    ...fillMissingKeys({}, projConfig, PROJECT_FRONTMATTER_KEYS),
+    ...projFrontmatter,
     title: projectTitle || 'Untitled',
     slug: siteProj.slug,
     index,
@@ -317,14 +330,26 @@ export function getSiteManifest(session: ISession): SiteManifest {
   const siteConfig = selectors.selectLocalSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
   siteConfig.projects.forEach((siteProj) => {
-    const proj = localToManifestProject(state, siteProj);
+    const proj = localToManifestProject(session, state, siteProj);
     if (!proj) return;
     siteProjects.push(proj);
   });
   const { title, twitter, logo, logoText, nav } = siteConfig;
   const actions = siteConfig.actions.map((action) => getSiteManifestAction(session, action));
+  const rawSiteFrontmatter = allowNestedFrontmatter(
+    session,
+    siteConfig as Record<string, any>,
+    CURVENOTE_YML,
+  );
+  const siteFrontmatter = validateSiteFrontmatter(rawSiteFrontmatter, {
+    logger: session.log,
+    property: 'site',
+    file: CURVENOTE_YML,
+    suppressWarnings: true,
+    count: {},
+  });
   const manifest: SiteManifest = {
-    ...fillMissingKeys({} as SiteFrontmatter, siteConfig, SITE_FRONTMATTER_KEYS),
+    ...siteFrontmatter,
     title: title || '',
     twitter,
     logo: getLogoPaths(session, logo)?.url,

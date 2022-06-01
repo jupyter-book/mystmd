@@ -13,7 +13,7 @@ export function defined(val: any) {
   return val != null;
 }
 
-export function locationSuffix(opts: Options) {
+export function locationSuffix(opts: Partial<Options>) {
   if (opts.file && opts.location) return ` (at ${opts.file}#${opts.location})`;
   if (opts.file || opts.location) return ` (at ${opts.file || opts.location})`;
   return '';

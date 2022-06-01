@@ -5,6 +5,7 @@ import { GenericNode, select } from 'mystjs';
 import { CURVENOTE_YML } from '../config/types';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
+import { locationSuffix } from '../utils/validators';
 import { PageFrontmatter } from './types';
 import {
   validatePageFrontmatter,
@@ -50,6 +51,22 @@ function frontmatterFromMdastTree(
   return { tree, frontmatter };
 }
 
+export function allowNestedFrontmatter(
+  session: ISession,
+  rawFrontmatter: Record<string, any>,
+  file: string,
+) {
+  if (rawFrontmatter.frontmatter) {
+    session.log.warn(
+      `Frontmatter fields should be defined directly on project, not nested under "project.frontmatter"${locationSuffix(
+        { file },
+      )}`,
+    );
+    rawFrontmatter = rawFrontmatter.frontmatter;
+  }
+  return rawFrontmatter;
+}
+
 /**
  * Get page frontmatter from mdast tree and fill in missing info from project frontmatter
  *
@@ -75,12 +92,18 @@ export function getPageFrontmatter(
   });
 
   const state = session.store.getState();
-  const projConfig = selectors.selectLocalProjectConfig(state, path) ?? {};
-  // Validation happens on initial read; this is called for filtering/coersion only.
-  const projectFrontmatter = validateProjectFrontmatter(projConfig, {
+  let rawProjectFrontmatter: Record<string, any> =
+    selectors.selectLocalProjectConfig(state, path) ?? {};
+  rawProjectFrontmatter = allowNestedFrontmatter(
+    session,
+    rawProjectFrontmatter,
+    join(path, CURVENOTE_YML),
+  );
+  const projectFrontmatter = validateProjectFrontmatter(rawProjectFrontmatter, {
     logger: session.log,
     property: 'project',
     file: join(path, CURVENOTE_YML),
+    // TODO: Validate sooner and don't suppressWarnings at that point.
     suppressWarnings: true,
     count: {},
   });
