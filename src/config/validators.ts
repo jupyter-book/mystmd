@@ -63,7 +63,7 @@ function validateProjectConfigKeys(value: Record<string, any>, opts: Options) {
 export function validateProjectConfig(input: any, opts: Options) {
   const value = validateObjectKeys(input, PROJECT_CONFIG_KEYS, opts) || {};
   const projectConfig = validateProjectConfigKeys(value, opts);
-  return projectConfig as ProjectConfig;
+  return projectConfig;
 }
 
 export function validateSiteProject(input: any, opts: Options) {
@@ -124,7 +124,7 @@ export function validateSiteAction(input: any, opts: Options) {
   return value as SiteAction;
 }
 
-function validateSiteDesign(input: any, opts: Options) {
+export function validateSiteDesign(input: any, opts: Options) {
   const value = validateObjectKeys(input, { optional: ['hide_authors'] }, opts);
   if (value === undefined) return undefined;
   if (defined(value.hide_authors)) {
@@ -136,7 +136,7 @@ function validateSiteDesign(input: any, opts: Options) {
   return value as SiteDesign;
 }
 
-function validateSiteAnalytics(input: any, opts: Options) {
+export function validateSiteAnalytics(input: any, opts: Options) {
   const value = validateObjectKeys(input, { optional: ['google', 'plausible'] }, opts);
   if (value === undefined) return undefined;
   if (defined(value.google)) {
@@ -148,9 +148,8 @@ function validateSiteAnalytics(input: any, opts: Options) {
   return value as SiteAnalytics;
 }
 
-export function validateSiteConfig(input: any, opts: Options) {
-  const value = validateObjectKeys(input, SITE_CONFIG_KEYS, opts);
-  if (value === undefined) return undefined;
+export function validateSiteConfigKeys(value: Record<string, any>, opts: Options) {
+  const output: Record<string, any> = {};
   const projects = validateList(
     value.projects,
     incrementOptions('projects', opts),
@@ -170,13 +169,13 @@ export function validateSiteConfig(input: any, opts: Options) {
   );
   const domainsOpts = incrementOptions('domains', opts);
   const domains = validateList(value.domains, domainsOpts, (domain) => {
-    return validateString(domain, { ...domainsOpts, regex: '^[a-zA-Z0-9._-]+.curve.space$' });
+    // Very basic subdomain validation
+    return validateString(domain, { ...domainsOpts, regex: /^.+\..+\..+$/ });
   });
-  const output: Record<string, any> = {};
   if (defined(value.twitter)) {
     output.twitter = validateString(value.twitter, {
       ...incrementOptions('twitter', opts),
-      regex: '^@?(w){1,15}$',
+      regex: /^@?(\w){1,15}$/,
     });
   }
   if (defined(value.logo)) {
@@ -199,4 +198,11 @@ export function validateSiteConfig(input: any, opts: Options) {
   }
   if (!projects || !nav || !actions || !domains) return undefined;
   return { projects, nav, actions, domains, ...output } as SiteConfig;
+}
+
+export function validateSiteConfig(input: any, opts: Options) {
+  const value = validateObjectKeys(input, SITE_CONFIG_KEYS, opts);
+  if (value === undefined) return undefined;
+  const siteConfig = validateSiteConfigKeys(value, opts);
+  return siteConfig;
 }

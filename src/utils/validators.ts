@@ -65,7 +65,7 @@ export function validateBoolean(input: any, opts: Options) {
  */
 export function validateString(
   input: any,
-  opts: { maxLength?: number; regex?: string } & Options,
+  opts: { maxLength?: number; regex?: string | RegExp } & Options,
 ): string | undefined {
   if (typeof input !== 'string') return validationError(`must be string`, opts);
   const value = input as string;

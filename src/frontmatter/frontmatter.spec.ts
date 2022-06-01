@@ -92,10 +92,11 @@ describe('validateVenue', () => {
     expect(validateVenue({}, opts)).toEqual({});
   });
   it('object with title/url returns self', async () => {
-    expect(validateVenue({ title: 'test', url: 'example.com' }, opts)).toEqual({
+    const venue = {
       title: 'test',
       url: 'http://example.com',
-    });
+    };
+    expect(validateVenue(venue, opts)).toEqual(venue);
   });
   it('string returns object with title', async () => {
     expect(validateVenue('test', opts)).toEqual({ title: 'test' });

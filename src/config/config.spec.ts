@@ -3,6 +3,9 @@ import { Options } from '../utils/validators';
 import {
   validateProjectConfig,
   validateSiteAction,
+  validateSiteAnalytics,
+  validateSiteConfig,
+  validateSiteDesign,
   validateSiteNavItem,
   validateSiteProject,
 } from './validators';
@@ -112,6 +115,94 @@ describe('validateSiteAction', () => {
   });
   it('invalid url errors', async () => {
     expect(validateSiteAction({ title: 'example', url: '/a' }, opts)).toEqual(undefined);
+    expect(opts.count.errors).toEqual(1);
+  });
+});
+
+describe('validateSiteDesign', () => {
+  it('empty object returns self', async () => {
+    expect(validateSiteDesign({}, opts)).toEqual({});
+  });
+  it('valid site design returns self', async () => {
+    const siteDesign = {
+      hide_authors: true,
+    };
+    expect(validateSiteDesign(siteDesign, opts)).toEqual(siteDesign);
+  });
+});
+
+describe('validateSiteAnalytics', () => {
+  it('empty object returns self', async () => {
+    expect(validateSiteAnalytics({}, opts)).toEqual({});
+  });
+  it('valid site design returns self', async () => {
+    const siteAnalytics = {
+      google: 'google',
+      plausible: 'plausible',
+    };
+    expect(validateSiteAnalytics(siteAnalytics, opts)).toEqual(siteAnalytics);
+  });
+});
+
+describe('validateSiteConfig', () => {
+  it('empty object errors', async () => {
+    expect(validateSiteConfig({}, opts)).toEqual(undefined);
+    expect(opts.count.errors).toEqual(1);
+  });
+  it('valid site config returns self', async () => {
+    const siteConfig = {
+      projects: [{ path: 'my-proj', slug: 'test' }],
+      nav: [{ title: 'cool folder', children: [{ title: 'cool page', url: '/test/cool-page' }] }],
+      actions: [{ title: 'Go To Example', url: 'https://example.com', static: false }],
+      domains: ['test.curve.space'],
+      twitter: 'test',
+      logo: 'curvenote.png',
+      logoText: 'test logo',
+      favicon: 'curvenote.png',
+      buildPath: '_build',
+      analytics: {
+        google: 'google',
+        plausible: 'plausible',
+      },
+      design: {
+        hide_authors: true,
+      },
+    };
+    expect(validateSiteConfig(siteConfig, opts)).toEqual(siteConfig);
+  });
+  it('invalid list values are filtered', async () => {
+    expect(
+      validateSiteConfig(
+        {
+          projects: [{ path: 'my-proj', slug: '/my/proj' }],
+          nav: [{ title: 'cool folder', children: 'a' }],
+          actions: [{ title: 'Go To Example', url: '/my/proj', static: false }],
+          domains: ['example.com'],
+        },
+        opts,
+      ),
+    ).toEqual({
+      projects: [],
+      nav: [],
+      actions: [],
+      domains: [],
+    });
+    expect(opts.count.errors).toEqual(4);
+  });
+  it('invalid list values are filtered', async () => {
+    expect(
+      validateSiteConfig(
+        {
+          projects: 'a',
+          nav: [
+            { title: 'cool folder', children: [{ title: 'cool page', url: '/test/cool-page' }] },
+          ],
+          actions: [{ title: 'Go To Example', url: 'https://example.com', static: false }],
+          domains: ['test.curve.space'],
+        },
+        opts,
+      ),
+    ).toEqual(undefined);
     expect(opts.count.errors).toEqual(1);
   });
 });
