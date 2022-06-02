@@ -46,6 +46,7 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   description: 'site frontmatter',
   venue: { title: 'test' },
   authors: [{}],
+  date: '14 Dec 2021',
   name: 'example.md',
   doi: '10.1000/abcd/efg012',
   arxiv: 'https://arxiv.org/example',
@@ -191,6 +192,7 @@ describe('validateProjectFrontmatter', () => {
   });
   it('boolean numbering is valid', async () => {
     expect(validateProjectFrontmatter({ numbering: 'false' }, opts)).toEqual({ numbering: false });
+    expect(opts.count.errors).toBeFalsy();
   });
   it('invalid doi errors', async () => {
     expect(validateProjectFrontmatter({ doi: '' }, opts)).toEqual({});

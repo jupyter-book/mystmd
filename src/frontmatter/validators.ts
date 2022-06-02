@@ -65,6 +65,7 @@ export const PAGE_FRONTMATTER_KEYS = ['subtitle', 'short_title'].concat(PROJECT_
 
 export const USE_PROJECT_FALLBACK = [
   'authors',
+  'date',
   'doi',
   'arxiv',
   'open_access',
