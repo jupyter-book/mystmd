@@ -9,6 +9,8 @@ export type Options = {
   count: { errors?: number; warnings?: number };
 };
 
+type KeyOptions = Options & { returnInvalidPartial?: boolean };
+
 export function defined(val: any) {
   return val != null;
 }
@@ -150,7 +152,7 @@ export function validateObject(input: any, opts: Options) {
 export function validateKeys(
   input: Record<string, any>,
   keys: { required?: string[]; optional?: string[] },
-  opts: Options,
+  opts: KeyOptions,
 ) {
   const value: Record<string, any> = {};
   let required = keys.required || [];
@@ -169,6 +171,7 @@ export function validateKeys(
       `missing required key${required.length > 1 ? 's' : ''}: ${required.join(', ')}`,
       opts,
     );
+    if (!opts.returnInvalidPartial) return undefined;
   }
   if (ignored.length) {
     validationMessage(
@@ -187,7 +190,7 @@ export function validateKeys(
 export function validateObjectKeys(
   input: any,
   keys: { required?: string[]; optional?: string[] },
-  opts: Options,
+  opts: KeyOptions,
 ) {
   const value = validateObject(input, opts);
   if (value === undefined) return undefined;

@@ -28,10 +28,6 @@ describe('validateProjectConfig', () => {
     };
     expect(validateProjectConfig(projConfig, opts)).toEqual(projConfig);
   });
-  it('invalid remote url errors', async () => {
-    expect(validateProjectConfig({ remote: 'https://example.com' }, opts)).toEqual({});
-    expect(opts.count.errors).toEqual(1);
-  });
   it('invalid exclude omitted', async () => {
     expect(validateProjectConfig({ exclude: ['license.md', 5] }, opts)).toEqual({
       exclude: ['license.md'],
@@ -204,6 +200,15 @@ describe('validateSiteConfig', () => {
   it('missing required values are coerced', async () => {
     expect(validateSiteConfig({}, opts)).toEqual({
       projects: [],
+      nav: [],
+      actions: [],
+      domains: [],
+    });
+    expect(opts.count.errors).toEqual(1);
+  });
+  it('valid required values are not coerced', async () => {
+    expect(validateSiteConfig({ projects: [{ path: 'my-proj', slug: 'test' }] }, opts)).toEqual({
+      projects: [{ path: 'my-proj', slug: 'test' }],
       nav: [],
       actions: [],
       domains: [],

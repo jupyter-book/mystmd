@@ -215,7 +215,8 @@ export function validateSiteConfigKeys(value: Record<string, any>, opts: Options
 }
 
 export function validateSiteConfig(input: any, opts: Options) {
-  const value = validateObjectKeys(input, SITE_CONFIG_KEYS, opts) || {};
+  const value =
+    validateObjectKeys(input, SITE_CONFIG_KEYS, { ...opts, returnInvalidPartial: true }) || {};
   const siteConfig = validateSiteConfigKeys(value, opts);
   return siteConfig;
 }
