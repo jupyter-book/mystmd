@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { join } from 'path';
 import yaml from 'js-yaml';
+import { licensesToString } from '../licenses/validators';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { config } from '../store/local';
@@ -12,7 +13,7 @@ import {
   validateObject,
   validationError,
 } from '../utils/validators';
-import { Config, CURVENOTE_YML, ProjectConfig, SiteConfig, VERSION } from './types';
+import { Config, CURVENOTE_YML, VERSION } from './types';
 import { validateProjectConfig, validateSiteConfig } from './validators';
 
 function emptyConfig(): Config {
@@ -133,8 +134,8 @@ export function writeConfigs(
   session: PartialSession,
   path: string,
   newConfigs?: {
-    siteConfig?: SiteConfig;
-    projectConfig?: ProjectConfig;
+    siteConfig?: Record<string, any>;
+    projectConfig?: Record<string, any>;
   },
 ) {
   // TODO: siteConfig -> rawSiteConfig before writing, don't lose extra keys in raw.
@@ -151,6 +152,9 @@ export function writeConfigs(
   // Get project config to save
   if (projectConfig) validateProjectConfigAndSave(session, path, projectConfig);
   projectConfig = selectors.selectLocalProjectConfig(state, path);
+  if (projectConfig?.licenses) {
+    projectConfig.licenses = licensesToString(projectConfig.licenses);
+  }
   // Return early if nothing new to save
   if (!siteConfig && !projectConfig) {
     session.log.debug(`No new config to write to ${file}`);

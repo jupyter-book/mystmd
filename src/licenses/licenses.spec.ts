@@ -1,6 +1,6 @@
 import { basicLogger, LogLevel } from '../logging';
 import { Options } from '../utils/validators';
-import { validateLicense, validateLicenses } from './validators';
+import { licensesToString, validateLicense, validateLicenses } from './validators';
 
 const TEST_LICENSE = {
   title: 'Creative Commons Attribution 4.0 International',
@@ -53,5 +53,76 @@ describe('validateLicenses', () => {
   });
   it('valid content object coerces', async () => {
     expect(validateLicenses({ content: 'CC-BY-4.0' }, opts)).toEqual({ content: TEST_LICENSE });
+  });
+});
+
+describe('licensesToString', () => {
+  it('empty licenses returns self', async () => {
+    expect(licensesToString({})).toEqual({});
+  });
+  it('content licenses returns content string', async () => {
+    expect(
+      licensesToString({
+        content: {
+          title: 'Creative Commons Attribution Share Alike 4.0 International',
+          id: 'CC-BY-SA-4.0',
+          CC: true,
+          free: true,
+          url: 'https://example.com',
+        },
+      }),
+    ).toEqual({ content: 'CC-BY-SA-4.0' });
+  });
+  it('code licenses returns code string', async () => {
+    expect(
+      licensesToString({
+        code: {
+          title: 'Creative Commons Attribution Share Alike 4.0 International',
+          id: 'CC-BY-SA-4.0',
+          CC: true,
+          free: true,
+          url: 'https://example.com',
+        },
+      }),
+    ).toEqual({ code: 'CC-BY-SA-4.0' });
+  });
+  it('matching content/code licenses returns string', async () => {
+    expect(
+      licensesToString({
+        content: {
+          title: 'Creative Commons Attribution Share Alike 4.0 International',
+          id: 'CC-BY-SA-4.0',
+          CC: true,
+          free: true,
+          url: 'https://example.com',
+        },
+        code: {
+          title: 'Creative Commons Attribution Share Alike 4.0 International',
+          id: 'CC-BY-SA-4.0',
+          CC: true,
+          free: true,
+          url: 'https://example.com',
+        },
+      }),
+    ).toEqual('CC-BY-SA-4.0');
+  });
+  it('content/code licenses returns content/code strings', async () => {
+    expect(
+      licensesToString({
+        content: {
+          title: 'Creative Commons Attribution Share Alike 4.0 International',
+          id: 'CC-BY-SA-4.0',
+          CC: true,
+          free: true,
+          url: 'https://example.com',
+        },
+        code: {
+          title: 'Creative Commons Attribution No Derivatives 4.0 International',
+          id: 'CC-BY-ND-4.0',
+          CC: true,
+          url: 'https://example.com',
+        },
+      }),
+    ).toEqual({ content: 'CC-BY-SA-4.0', code: 'CC-BY-ND-4.0' });
   });
 });

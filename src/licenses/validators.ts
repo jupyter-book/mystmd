@@ -107,3 +107,18 @@ export function validateLicenses(input: any, opts: Options): Licenses | undefine
   }
   return value;
 }
+
+export function licensesToString(licenses: Licenses) {
+  let stringLicenses: string | { content?: string; code?: string } = {};
+  if (licenses.content && licenses.code && licenses.content.id === licenses.code.id) {
+    stringLicenses = licenses.content.id;
+  } else {
+    if (licenses.content) {
+      stringLicenses.content = licenses.content.id;
+    }
+    if (licenses.code) {
+      stringLicenses.code = licenses.code.id;
+    }
+  }
+  return stringLicenses;
+}
