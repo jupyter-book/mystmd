@@ -15,22 +15,18 @@ export const projects = createSlice({
 
 export const config = createSlice({
   name: 'config',
-  initialState: { rawProjects: {}, projects: {} } as {
-    rawSite?: Record<string, any>;
+  initialState: { rawConfigs: {}, projects: {} } as {
+    rawConfigs: Record<string, Record<string, any>>;
     site?: SiteConfig;
-    rawProjects: Record<string, Record<string, any>>;
     projects: Record<string, ProjectConfig>;
   },
   reducers: {
-    receiveRawSite(state, action: PayloadAction<Record<string, any>>) {
-      state.rawSite = action.payload;
+    receiveRawConfig(state, action: PayloadAction<Record<string, any> & { path: string }>) {
+      const { path, ...payload } = action.payload;
+      state.rawConfigs[path] = payload;
     },
     receiveSite(state, action: PayloadAction<SiteConfig>) {
       state.site = action.payload;
-    },
-    receiveRawProject(state, action: PayloadAction<Record<string, any> & { path: string }>) {
-      const { path, ...payload } = action.payload;
-      state.rawProjects[path] = payload;
     },
     receiveProject(state, action: PayloadAction<ProjectConfig & { path: string }>) {
       const { path, ...payload } = action.payload;

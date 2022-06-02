@@ -3,19 +3,15 @@ import { LocalProject, LocalProjectPage } from '../../toc/types';
 
 import { RootState } from '../reducers';
 
-export function selectLocalRawSiteConfig(state: RootState): Record<string, any> | undefined {
-  return state.local.config.rawSite;
-}
-
 export function selectLocalSiteConfig(state: RootState): SiteConfig | undefined {
   return state.local.config.site;
 }
 
-export function selectLocalRawProjectConfig(
+export function selectLocalRawConfig(
   state: RootState,
   path: string,
 ): Record<string, any> | undefined {
-  return state.local.config.rawProjects[path];
+  return state.local.config.rawConfigs[path];
 }
 
 export function selectLocalProjectConfig(
