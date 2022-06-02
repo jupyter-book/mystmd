@@ -4,6 +4,13 @@ export function makeYesOption() {
   return new Option('-y, --yes', 'Use the defaults and answer "Y" to confirmations').default(false);
 }
 
+export function makeDomainOption() {
+  return new Option(
+    '-dm, --domain <string>',
+    'Specify a custom domain during initializaton',
+  ).default(undefined);
+}
+
 export function makeBranchOption() {
   return new Option(
     '--branch [branch]',
