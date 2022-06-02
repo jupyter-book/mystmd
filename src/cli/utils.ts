@@ -88,15 +88,16 @@ export function clirun(
     | ((session: ISession, ...args: any[]) => void),
   cli: {
     program: Command;
-    session?: ISession;
+    anonymous?: boolean;
     requireSiteConfig?: boolean;
     hideNoTokenWarning?: boolean;
   },
 ) {
   return async (...args: any[]) => {
     const opts = cli.program.opts() as SessionOpts;
-    const useSession =
-      cli.session ?? getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
+    const useSession = cli.anonymous
+      ? anonSession(opts)
+      : getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
     const config = selectors.selectLocalSiteConfig(useSession.store.getState());

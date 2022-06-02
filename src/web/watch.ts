@@ -14,7 +14,7 @@ function watchConfigAndPublic(session: ISession) {
     .on('all', async (eventType: string, filename: string) => {
       session.log.debug(`File modified: "${filename}" (${eventType})`);
       session.log.info('💥 Triggered full site rebuild');
-      await processSite(session);
+      await processSite(session, { reloadConfigs: true });
     });
 }
 
@@ -26,7 +26,7 @@ function fileProcessor(session: ISession, siteProject: SiteProject) {
     changeFile(session, file, eventType);
     if (!KNOWN_FAST_BUILDS.has(extname(file))) {
       session.log.info('💥 Triggered full site rebuild');
-      await processSite(session);
+      await processSite(session, { reloadConfigs: true });
       return;
     }
     const pageSlug = selectors.selectPageSlug(session.store.getState(), siteProject.path, file);

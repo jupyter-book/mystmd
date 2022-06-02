@@ -165,7 +165,7 @@ export function validateKeys(
     }
   });
   if (required.length) {
-    return validationError(
+    validationError(
       `missing required key${required.length > 1 ? 's' : ''}: ${required.join(', ')}`,
       opts,
     );

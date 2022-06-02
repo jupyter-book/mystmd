@@ -1,6 +1,6 @@
 import fs from 'fs';
 import pLimit from 'p-limit';
-import { loadProjectConfigOrThrow } from '../config';
+import { loadConfigOrThrow } from '../config';
 import { projectToJupyterBook } from '../export';
 import { LogLevel, getLevel } from '../logging';
 import { Project } from '../models';
@@ -83,7 +83,7 @@ export async function pull(session: ISession, path?: string, opts?: Options) {
     );
     await pullProjects(session, { level: LogLevel.info });
   } else {
-    loadProjectConfigOrThrow(session, path);
+    loadConfigOrThrow(session, path);
     await confirmOrExit(
       `Pulling will overwrite all content in ${
         path === '.' ? 'current directory' : path

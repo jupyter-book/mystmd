@@ -145,10 +145,6 @@ describe('validateSiteAnalytics', () => {
 });
 
 describe('validateSiteConfig', () => {
-  it('empty object errors', async () => {
-    expect(validateSiteConfig({}, opts)).toEqual(undefined);
-    expect(opts.count.errors).toEqual(1);
-  });
   it('valid site config returns self', async () => {
     const siteConfig = {
       projects: [{ path: 'my-proj', slug: 'test' }],
@@ -189,7 +185,7 @@ describe('validateSiteConfig', () => {
     });
     expect(opts.count.errors).toEqual(4);
   });
-  it('invalid list values are filtered', async () => {
+  it('invalid required values error', async () => {
     expect(
       validateSiteConfig(
         {
@@ -203,6 +199,15 @@ describe('validateSiteConfig', () => {
         opts,
       ),
     ).toEqual(undefined);
+    expect(opts.count.errors).toEqual(1);
+  });
+  it('missing required values are coerced', async () => {
+    expect(validateSiteConfig({}, opts)).toEqual({
+      projects: [],
+      nav: [],
+      actions: [],
+      domains: [],
+    });
     expect(opts.count.errors).toEqual(1);
   });
 });

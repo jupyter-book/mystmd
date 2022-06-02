@@ -3,12 +3,19 @@ import { LocalProject, LocalProjectPage } from '../../toc/types';
 
 import { RootState } from '../reducers';
 
-export function selectLocalProject(state: RootState, path: string): LocalProject | undefined {
-  return state.local.projects[path];
+export function selectLocalRawSiteConfig(state: RootState): Record<string, any> | undefined {
+  return state.local.config.rawSite;
 }
 
 export function selectLocalSiteConfig(state: RootState): SiteConfig | undefined {
   return state.local.config.site;
+}
+
+export function selectLocalRawProjectConfig(
+  state: RootState,
+  path: string,
+): Record<string, any> | undefined {
+  return state.local.config.rawProjects[path];
 }
 
 export function selectLocalProjectConfig(
@@ -16,6 +23,10 @@ export function selectLocalProjectConfig(
   path: string,
 ): ProjectConfig | undefined {
   return state.local.config.projects[path];
+}
+
+export function selectLocalProject(state: RootState, path: string): LocalProject | undefined {
+  return state.local.projects[path];
 }
 
 export function selectFileInfo(state: RootState, path: string) {

@@ -5,7 +5,14 @@ import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { config } from '../store/local';
 import { writeFileToFolder } from '../utils';
+import {
+  incrementOptions,
+  Options,
+  validateObjectKeys,
+  validationError,
+} from '../utils/validators';
 import { Config, CURVENOTE_YML, ProjectConfig, SiteConfig, VERSION } from './types';
+import { validateProjectConfig, validateSiteConfig } from './validators';
 
 function emptyConfig(): Config {
   return {
@@ -15,71 +22,65 @@ function emptyConfig(): Config {
 
 type PartialSession = Pick<ISession, 'store' | 'log'>;
 
-function validateConfig(session: PartialSession, incoming: unknown): Config {
-  const start = incoming as Config;
-  let site: Config['site'];
-  let project: Config['project'];
-  if (start.version !== VERSION) {
-    throw new Error(
-      `The versions in the ${CURVENOTE_YML} "${start.version}" does not match ${VERSION}`,
+function readConfig(session: PartialSession, path: string) {
+  const file = join(path, CURVENOTE_YML);
+  if (!fs.existsSync(file)) throw Error(`Cannot find ${CURVENOTE_YML} in ${path}`);
+  const conf = yaml.load(fs.readFileSync(file, 'utf-8'));
+  const opts: Options = { logger: session.log, file, property: 'config', count: {} };
+  const confObject = validateObjectKeys(
+    conf,
+    { required: ['version'], optional: ['site', 'project'] },
+    opts,
+  );
+  if (confObject && confObject.version !== VERSION) {
+    validationError(
+      `"${confObject.version}" does not match ${VERSION}`,
+      incrementOptions('version', opts),
     );
   }
-  if (start.site) {
-    site = {
-      ...start.site,
-      projects: start.site.projects ?? [],
-      nav: start.site.nav ?? [],
-      actions: start.site.actions ?? [],
-      domains: start.site.domains ?? [],
-    };
-  }
-  if (start.project) {
-    project = {
-      ...start.project,
-    };
-  }
-  return {
-    version: VERSION,
-    site,
-    project,
-  };
-}
-
-function readConfig(session: PartialSession, path: string) {
-  const confFile = join(path, CURVENOTE_YML);
-  if (!fs.existsSync(confFile)) throw Error(`Cannot find ${CURVENOTE_YML} in ${path}`);
-  const conf = yaml.load(fs.readFileSync(confFile, 'utf-8'));
-  return validateConfig(session, conf);
+  if (!confObject || opts.count.errors) throw Error(`Please address invalid config file ${file}`);
+  return confObject;
 }
 
 /**
- * Load project config from local path to redux store
+ * Load site/project config from local path to redux store
  *
- * Returns loaded project config.
- *
- * Errors if config file does not exist or if config file exists but
- * does not contain project config.
+ * Errors if config file does not exist or if config file exists but is invalid.
  */
-export function loadProjectConfigOrThrow(session: PartialSession, path: string): ProjectConfig {
-  const { project } = readConfig(session, path);
-  if (!project) throw Error(`No project config defined in ${join(path, CURVENOTE_YML)}`);
-  session.store.dispatch(config.actions.receiveProject({ path, ...project }));
-  return selectors.selectLocalProjectConfig(session.store.getState(), path) as ProjectConfig;
-}
-
-/**
- * Load site config from current directory to redux store
- *
- * Returns loaded site config.
- *
- * Errors if config file does not exist or if config file exists but
- * does not contain site config.
- */
-export function loadSiteConfigOrThrow(session: PartialSession): SiteConfig {
-  const { site } = readConfig(session, '.');
-  if (!site) throw Error(`No site config in ${join('.', CURVENOTE_YML)}`);
-  session.store.dispatch(config.actions.receiveSite(site));
-  return selectors.selectLocalSiteConfig(session.store.getState()) as SiteConfig;
+export function loadConfigOrThrow(session: PartialSession, path: string) {
+  const { project: rawProjectConfig, site: rawSiteConfig } = readConfig(session, path);
+  const file = join(path, CURVENOTE_YML);
+  if (path !== '.') {
+    if (rawSiteConfig)
+      session.log.debug(`Ignoring site config from non-current directory: ${path}`);
+  } else if (rawSiteConfig) {
+    const siteConfig = validateSiteConfig(rawSiteConfig, {
+      logger: session.log,
+      file,
+      property: 'site',
+      count: {},
+    });
+    if (!siteConfig) throw Error(`Please address invalid site config in ${file}`);
+    session.store.dispatch(config.actions.receiveRawSite(rawSiteConfig));
+    session.store.dispatch(config.actions.receiveSite(siteConfig));
+    session.log.debug(`Loaded site config from ${file}`);
+  } else {
+    session.log.debug(`No site config in ${file}`);
+  }
+  if (rawProjectConfig) {
+    const projectConfig = validateProjectConfig(rawProjectConfig, {
+      logger: session.log,
+      file,
+      property: 'project',
+      count: {},
+    });
+    if (!projectConfig) throw Error(`Please address invalid project config in ${file}`);
+    session.store.dispatch(config.actions.receiveRawProject({ path, ...rawProjectConfig }));
+    session.store.dispatch(config.actions.receiveProject({ path, ...projectConfig }));
+    session.log.debug(`Loaded project config from ${file}`);
+  } else {
+    session.log.debug(`No project config defined in ${file}`);
+  }
 }
 
 /**
@@ -94,6 +95,8 @@ export function loadSiteConfigOrThrow(session: PartialSession): SiteConfig {
  * Errors if site config is not present in redux store
  */
 export function writeSiteConfig(session: PartialSession, path: string, newConfig?: SiteConfig) {
+  // TODO: siteConfig -> rawSiteConfig before writing, don't lose extra keys in raw.
+  //       also shouldn't need to re-readConfig...
   if (newConfig) session.store.dispatch(config.actions.receiveSite(newConfig));
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   if (!siteConfig) throw Error('no site config loaded into redux state');

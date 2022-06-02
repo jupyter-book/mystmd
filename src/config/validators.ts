@@ -36,10 +36,8 @@ const SITE_CONFIG_KEYS = {
 function validateProjectConfigKeys(value: Record<string, any>, opts: Options) {
   const output: ProjectConfig = {};
   if (defined(value.remote)) {
-    output.remote = validateUrl(value.remote, {
-      includes: 'curvenote.com',
-      ...incrementOptions('remote', opts),
-    });
+    // TODO: Validate as oxa? Or curvenote url...?
+    output.remote = validateString(value.remote, incrementOptions('remote', opts));
   }
   if (defined(value.index)) {
     // TODO: Warn if these files don't exist
@@ -150,28 +148,44 @@ export function validateSiteAnalytics(input: any, opts: Options) {
 
 export function validateSiteConfigKeys(value: Record<string, any>, opts: Options) {
   const output: Record<string, any> = {};
-  const projects = validateList(
-    value.projects,
-    incrementOptions('projects', opts),
-    (proj, index) => {
-      return validateSiteProject(proj, incrementOptions(`projects.${index}`, opts));
-    },
-  );
-  const nav = validateList(value.nav, incrementOptions('nav', opts), (item, index) => {
-    return validateSiteNavItem(item, incrementOptions(`nav.${index}`, opts));
-  });
-  const actions = validateList(
-    value.actions,
-    incrementOptions('actions', opts),
-    (action, index) => {
-      return validateSiteAction(action, incrementOptions(`actions.${index}`, opts));
-    },
-  );
-  const domainsOpts = incrementOptions('domains', opts);
-  const domains = validateList(value.domains, domainsOpts, (domain) => {
-    // Very basic subdomain validation
-    return validateString(domain, { ...domainsOpts, regex: /^.+\..+\..+$/ });
-  });
+  if (defined(value.projects)) {
+    output.projects = validateList(
+      value.projects,
+      incrementOptions('projects', opts),
+      (proj, index) => {
+        return validateSiteProject(proj, incrementOptions(`projects.${index}`, opts));
+      },
+    );
+  } else {
+    output.projects = [];
+  }
+  if (defined(value.nav)) {
+    output.nav = validateList(value.nav, incrementOptions('nav', opts), (item, index) => {
+      return validateSiteNavItem(item, incrementOptions(`nav.${index}`, opts));
+    });
+  } else {
+    output.nav = [];
+  }
+  if (defined(value.actions)) {
+    output.actions = validateList(
+      value.actions,
+      incrementOptions('actions', opts),
+      (action, index) => {
+        return validateSiteAction(action, incrementOptions(`actions.${index}`, opts));
+      },
+    );
+  } else {
+    output.actions = [];
+  }
+  if (defined(value.domains)) {
+    const domainsOpts = incrementOptions('domains', opts);
+    output.domains = validateList(value.domains, domainsOpts, (domain) => {
+      // Very basic subdomain validation
+      return validateString(domain, { ...domainsOpts, regex: /^.+\..+\..+$/ });
+    });
+  } else {
+    output.domains = [];
+  }
   if (defined(value.twitter)) {
     output.twitter = validateString(value.twitter, {
       ...incrementOptions('twitter', opts),
@@ -196,13 +210,12 @@ export function validateSiteConfigKeys(value: Record<string, any>, opts: Options
   if (defined(value.design)) {
     output.design = validateSiteDesign(value.design, incrementOptions('design', opts));
   }
-  if (!projects || !nav || !actions || !domains) return undefined;
-  return { projects, nav, actions, domains, ...output } as SiteConfig;
+  if (!output.projects || !output.nav || !output.actions || !output.domains) return undefined;
+  return output as SiteConfig;
 }
 
 export function validateSiteConfig(input: any, opts: Options) {
-  const value = validateObjectKeys(input, SITE_CONFIG_KEYS, opts);
-  if (value === undefined) return undefined;
+  const value = validateObjectKeys(input, SITE_CONFIG_KEYS, opts) || {};
   const siteConfig = validateSiteConfigKeys(value, opts);
   return siteConfig;
 }

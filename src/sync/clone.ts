@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
 import { join } from 'path';
-import { loadProjectConfigOrThrow, writeProjectConfig, writeSiteConfig } from '../config';
+import { loadConfigOrThrow, writeProjectConfig, writeSiteConfig } from '../config';
 import { ProjectConfig, SiteConfig, SiteProject } from '../config/types';
 import { LogLevel } from '../logging';
 import { Project } from '../models';
@@ -44,13 +44,12 @@ export async function interactiveCloneQuestions(
     ]);
     path = projectPath;
   }
-  let projectConfig: ProjectConfig | undefined;
   try {
-    projectConfig = loadProjectConfigOrThrow(session, path);
+    loadConfigOrThrow(session, path);
   } catch {
     // Project config does not exist; good!
     // TODO: Add all sorts of other stuff for the project data that we know!!
-    projectConfig = getDefaultProjectConfig(project.data.title);
+    const projectConfig = getDefaultProjectConfig(project.data.title);
     projectConfig.remote = project.data.id;
     projectConfig.description = project.data.description;
     return {

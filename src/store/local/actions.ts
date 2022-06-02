@@ -327,13 +327,16 @@ export async function processProject(
   log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug} in %s.`));
 }
 
-export async function processSite(session: ISession, watchMode = false): Promise<boolean> {
-  loadAllConfigs(session);
+export async function processSite(
+  session: ISession,
+  opts?: { reloadConfigs?: boolean; watchMode?: boolean },
+): Promise<boolean> {
+  if (opts?.reloadConfigs) loadAllConfigs(session);
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
   if (!siteConfig?.projects.length) return false;
   await Promise.all(
-    siteConfig.projects.map((siteProject) => processProject(session, siteProject, watchMode)),
+    siteConfig.projects.map((siteProject) => processProject(session, siteProject, opts?.watchMode)),
   );
   await writeSiteManifest(session);
   // Copy all assets

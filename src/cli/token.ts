@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { deleteToken, setToken } from '../session';
-import { anonSession, clirun } from './utils';
+import { clirun } from './utils';
 
 export function addTokenCLI(program: Command) {
   const command = new Command('token').description(
@@ -12,7 +12,7 @@ export function addTokenCLI(program: Command) {
     .action(
       clirun(async (session, token?: string) => setToken(session.log, token), {
         program,
-        session: anonSession(program.opts()),
+        anonymous: true,
       }),
     );
   command
@@ -22,7 +22,7 @@ export function addTokenCLI(program: Command) {
     .action(
       clirun((session) => deleteToken(session.log), {
         program,
-        session: anonSession(program.opts()),
+        anonymous: true,
       }),
     );
   program.addCommand(command);
