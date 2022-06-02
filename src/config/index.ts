@@ -71,7 +71,6 @@ function validateSiteConfigAndSave(
     throw Error(`Please address invalid site config${errorSuffix}`);
   }
   session.store.dispatch(config.actions.receiveSite(siteConfig));
-  session.log.debug(`Loaded site config from ${file}`);
 }
 
 function validateProjectConfigAndSave(
@@ -91,7 +90,6 @@ function validateProjectConfigAndSave(
     throw Error(`Please address invalid project config${errorSuffix}`);
   }
   session.store.dispatch(config.actions.receiveProject({ path, ...projectConfig }));
-  session.log.debug(`Loaded project config from ${file}`);
 }
 
 /**
@@ -108,11 +106,13 @@ export function loadConfigOrThrow(session: PartialSession, path: string) {
     if (site) session.log.debug(`Ignoring site config from non-current directory: ${path}`);
   } else if (site) {
     validateSiteConfigAndSave(session, site, file);
+    session.log.debug(`Loaded site config from ${file}`);
   } else {
     session.log.debug(`No site config in ${file}`);
   }
   if (project) {
     validateProjectConfigAndSave(session, path, project, file);
+    session.log.debug(`Loaded project config from ${file}`);
   } else {
     session.log.debug(`No project config defined in ${file}`);
   }
@@ -142,16 +142,15 @@ export function writeConfigs(
   //       also shouldn't need to re-readConfig...
   let { siteConfig, projectConfig } = newConfigs || {};
   if (path !== '.' && siteConfig) throw Error('path must be "." when writing a new site config');
-  const state = session.store.getState();
   const file = configFile(path);
   // Get site config to save
   if (path === '.') {
     if (siteConfig) validateSiteConfigAndSave(session, siteConfig);
-    siteConfig = selectors.selectLocalSiteConfig(state);
+    siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   }
   // Get project config to save
   if (projectConfig) validateProjectConfigAndSave(session, path, projectConfig);
-  projectConfig = selectors.selectLocalProjectConfig(state, path);
+  projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
   if (projectConfig?.licenses) {
     projectConfig.licenses = licensesToString(projectConfig.licenses);
   }
@@ -161,7 +160,7 @@ export function writeConfigs(
     return;
   }
   // Get raw config to override
-  let rawConfig = selectors.selectLocalRawConfig(state, path);
+  let rawConfig = selectors.selectLocalRawConfig(session.store.getState(), path);
   if (!rawConfig && configFileExists(path)) {
     rawConfig = readConfig(session, path);
   } else if (!rawConfig) {
@@ -177,11 +176,8 @@ export function writeConfigs(
   }
   session.log.debug(`Writing ${logContent} to ${file}`);
   // Combine site/project configs with
-  const { site: rawSiteConfig, project: rawProjectConfig, ...rawExtra } = rawConfig;
-  const newConfig = {
-    site: { ...rawSiteConfig, ...siteConfig },
-    project: { ...rawProjectConfig, ...projectConfig },
-    ...rawExtra,
-  };
+  const newConfig = { ...rawConfig };
+  if (siteConfig) newConfig.site = { ...rawConfig.site, ...siteConfig };
+  if (projectConfig) newConfig.project = { ...rawConfig.project, ...projectConfig };
   writeFileToFolder(configFile(path), yaml.dump(newConfig), 'utf-8');
 }
