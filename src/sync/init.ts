@@ -20,6 +20,7 @@ type Options = {
   branch?: string;
   force?: boolean;
   yes?: boolean;
+  domain?: string;
 };
 
 const WELCOME = async (session: ISession) => `
@@ -72,6 +73,7 @@ ${docLinks.overview}
  */
 export async function init(session: ISession, opts: Options) {
   if (!opts.yes) session.log.info(await WELCOME(session));
+  if (opts.domain) session.log.info(`Using custom domain ${opts.domain}`);
   let path = '.';
   // Initialize config - error if it exists
   if (
@@ -130,7 +132,9 @@ export async function init(session: ISession, opts: Options) {
   siteConfig.logoText = projectConfig.title;
   if (me) {
     const { username, twitter } = me.data;
-    siteConfig.domains = [`${username}.curve.space`];
+    siteConfig.domains = opts.domain
+      ? [opts.domain.replace(/^http[s]*:\/\//, '')]
+      : [`${username}.curve.space`];
     if (twitter) siteConfig.twitter = twitter;
   }
   // Save the configs to the state and write them to disk

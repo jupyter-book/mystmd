@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { sync } from '../index';
 import { clirun } from './utils';
-import { makeBranchOption, makeForceOption, makeYesOption } from './options';
+import { makeBranchOption, makeDomainOption, makeForceOption, makeYesOption } from './options';
 
 function makeInitCLI(program: Command) {
   const command = new Command('init')
@@ -9,6 +9,7 @@ function makeInitCLI(program: Command) {
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
     .addOption(makeYesOption())
+    .addOption(makeDomainOption())
     .action(clirun(sync.init, { program, hideNoTokenWarning: true }));
   return command;
 }
