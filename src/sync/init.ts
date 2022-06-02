@@ -92,6 +92,7 @@ export async function init(session: ISession, opts: Options) {
   if (!session.isAnon) me = new MyUser(session).get();
 
   const folderIsEmpty = fs.readdirSync(path).length === 0;
+  if (folderIsEmpty && opts.yes) throw Error('Cannot initialize an empty folder');
   let content;
   if (!folderIsEmpty && opts.yes) content = 'folder';
   else {
@@ -148,7 +149,7 @@ export async function init(session: ISession, opts: Options) {
     writeFileToFolder(INIT_LOGO_PATH, LOGO);
   }
 
-  session.log.info(await FINISHED(session));
+  if (!opts.yes) session.log.info(await FINISHED(session));
 
   let start = false;
   if (!opts.yes) {
