@@ -45,7 +45,9 @@ export async function interactiveCloneQuestions(
     path = projectPath;
   }
   try {
+    // Throw if project doesn't exist - that's what we want!
     loadConfigOrThrow(session, path);
+    if (!selectors.selectLocalProjectConfig(session.store.getState(), path)) throw Error();
   } catch {
     // Project config does not exist; good!
     // TODO: Add all sorts of other stuff for the project data that we know!!
@@ -58,7 +60,7 @@ export async function interactiveCloneQuestions(
     };
   }
   throw new Error(
-    `Project already exists: "${path}, did you mean to ${chalk.bold('curvenote pull')}`,
+    `Project already exists: "${path}" - did you mean to ${chalk.bold('curvenote pull')}`,
   );
 }
 
