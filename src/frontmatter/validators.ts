@@ -334,7 +334,10 @@ function validatePageFrontmatterKeys(value: Record<string, any>, opts: Options) 
     output.subtitle = validateString(value.subtitle, incrementOptions('subtitle', opts));
   }
   if (defined(value.short_title)) {
-    output.short_title = validateString(value.short_title, incrementOptions('short_title', opts));
+    output.short_title = validateString(value.short_title, {
+      ...incrementOptions('short_title', opts),
+      maxLength: 40,
+    });
   }
   if (defined(value.date)) {
     output.date = validateDate(value.date, incrementOptions('date', opts));
