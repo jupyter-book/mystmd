@@ -2,12 +2,16 @@ import fs from 'fs';
 import { extname, parse, join, sep } from 'path';
 import { CURVENOTE_YML, SiteProject, SiteAction, SiteAnalytics } from '../config/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
-import { allowNestedFrontmatter } from '../frontmatter';
-import { validateSiteFrontmatter } from '../frontmatter/validators';
+import {
+  PROJECT_FRONTMATTER_KEYS,
+  SITE_FRONTMATTER_KEYS,
+  validateSiteFrontmatter,
+} from '../frontmatter/validators';
 import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
 import { projects } from '../store/local';
 import { publicPath, warnOnUnrecognizedKeys } from '../utils';
+import { fillMissingKeys } from '../utils/validators';
 import {
   SiteManifest,
   pageLevels,
@@ -227,18 +231,7 @@ export function localToManifestProject(
     }
     return { ...page };
   });
-  const rawProjectFrontmatter = allowNestedFrontmatter(
-    session,
-    projConfig as Record<string, any>,
-    CURVENOTE_YML,
-  );
-  const projFrontmatter = validateSiteFrontmatter(rawProjectFrontmatter, {
-    logger: session.log,
-    property: 'project',
-    file: join(siteProj.path, CURVENOTE_YML),
-    suppressWarnings: true,
-    count: {},
-  });
+  const projFrontmatter = fillMissingKeys({}, projConfig, PROJECT_FRONTMATTER_KEYS);
   return {
     ...projFrontmatter,
     title: projectTitle || 'Untitled',
@@ -336,18 +329,11 @@ export function getSiteManifest(session: ISession): SiteManifest {
   });
   const { title, twitter, logo, logoText, nav } = siteConfig;
   const actions = siteConfig.actions.map((action) => getSiteManifestAction(session, action));
-  const rawSiteFrontmatter = allowNestedFrontmatter(
-    session,
+  const siteFrontmatter = fillMissingKeys(
+    {},
     siteConfig as Record<string, any>,
-    CURVENOTE_YML,
+    SITE_FRONTMATTER_KEYS,
   );
-  const siteFrontmatter = validateSiteFrontmatter(rawSiteFrontmatter, {
-    logger: session.log,
-    property: 'site',
-    file: CURVENOTE_YML,
-    suppressWarnings: true,
-    count: {},
-  });
   const manifest: SiteManifest = {
     ...siteFrontmatter,
     title: title || '',

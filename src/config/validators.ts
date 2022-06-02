@@ -1,4 +1,9 @@
-import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from '../frontmatter/validators';
+import {
+  PROJECT_FRONTMATTER_KEYS,
+  SITE_FRONTMATTER_KEYS,
+  validateProjectFrontmatterKeys,
+  validateSiteFrontmatterKeys,
+} from '../frontmatter/validators';
 import {
   defined,
   incrementOptions,
@@ -58,10 +63,12 @@ function validateProjectConfigKeys(value: Record<string, any>, opts: Options) {
 /**
  * Validate ProjectConfig object against the schema
  */
-export function validateProjectConfig(input: any, opts: Options) {
+export function validateProjectConfig(input: any, opts: Options): ProjectConfig {
   const value = validateObjectKeys(input, PROJECT_CONFIG_KEYS, opts) || {};
   const projectConfig = validateProjectConfigKeys(value, opts);
-  return projectConfig;
+  const siteFrontmatter = validateSiteFrontmatterKeys(value, opts);
+  const projectFrontmatter = validateProjectFrontmatterKeys(value, opts);
+  return { ...projectConfig, ...siteFrontmatter, ...projectFrontmatter };
 }
 
 export function validateSiteProject(input: any, opts: Options) {
@@ -114,10 +121,11 @@ export function validateSiteAction(input: any, opts: Options) {
   );
   if (value === undefined) return undefined;
   const title = validateString(value.title, incrementOptions('title', opts));
-  const url = validateUrl(value.url, incrementOptions('url', opts));
   if (defined(value.static)) {
     value.static = validateBoolean(value.static, incrementOptions('static', opts));
   }
+  const actionUrlValidator = value.static ? validateString : validateUrl;
+  const url = actionUrlValidator(value.url, incrementOptions('url', opts));
   if (title === undefined || !url) return undefined;
   return value as SiteAction;
 }
@@ -214,9 +222,11 @@ export function validateSiteConfigKeys(value: Record<string, any>, opts: Options
   return output as SiteConfig;
 }
 
-export function validateSiteConfig(input: any, opts: Options) {
+export function validateSiteConfig(input: any, opts: Options): SiteConfig | undefined {
   const value =
     validateObjectKeys(input, SITE_CONFIG_KEYS, { ...opts, returnInvalidPartial: true }) || {};
   const siteConfig = validateSiteConfigKeys(value, opts);
-  return siteConfig;
+  if (!siteConfig) return undefined;
+  const siteFrontmatter = validateSiteFrontmatterKeys(value, opts);
+  return { ...siteConfig, ...siteFrontmatter };
 }

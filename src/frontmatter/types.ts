@@ -37,11 +37,12 @@ export type SiteFrontmatter = {
 
 export type ProjectFrontmatter = SiteFrontmatter & {
   authors?: Author[];
+  date?: string;
   name?: string;
   doi?: string;
   arxiv?: string;
   open_access?: boolean;
-  licenses?: Licenses;
+  license?: Licenses;
   github?: string;
   binder?: string;
   subject?: string;
@@ -55,5 +56,4 @@ export type ProjectFrontmatter = SiteFrontmatter & {
 export type PageFrontmatter = ProjectFrontmatter & {
   subtitle?: string;
   short_title?: string;
-  date?: string;
 };

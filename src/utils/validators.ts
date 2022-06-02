@@ -6,6 +6,7 @@ export type Options = {
   file?: string;
   location?: string;
   suppressWarnings?: boolean;
+  suppressErrors?: boolean;
   count: { errors?: number; warnings?: number };
 };
 
@@ -28,6 +29,7 @@ export function incrementOptions(property: string, opts: Options) {
 }
 
 export function validationError(message: string, opts: Options) {
+  if (opts.suppressErrors) return undefined;
   if (opts.count.errors) {
     opts.count.errors += 1;
   } else {
@@ -38,14 +40,14 @@ export function validationError(message: string, opts: Options) {
 }
 
 export function validationMessage(message: string, opts: Options) {
-  if (!opts.suppressWarnings) {
-    if (opts.count.warnings) {
-      opts.count.warnings += 1;
-    } else {
-      opts.count.warnings = 1;
-    }
-    opts.logger.warn(`Validation: "${opts.property}" ${message}${locationSuffix(opts)}`);
+  if (opts.suppressWarnings) return undefined;
+  if (opts.count.warnings) {
+    opts.count.warnings += 1;
+  } else {
+    opts.count.warnings = 1;
   }
+  opts.logger.warn(`Validation: "${opts.property}" ${message}${locationSuffix(opts)}`);
+  return undefined;
 }
 
 /**

@@ -52,6 +52,20 @@ function readConfig(session: PartialSession, path: string) {
   }
   if (!conf || opts.count.errors) throw Error(`Please address invalid config file ${file}`);
   // Keep original config object with extra keys, etc.
+  if (conf.site?.frontmatter) {
+    session.log.warn(
+      `Frontmatter fields should be defined directly on project, not nested under "${path}#$site.frontmatter"`,
+    );
+    const { frontmatter, ...rest } = conf.site;
+    conf.site = { ...frontmatter, ...rest };
+  }
+  if (conf.project?.frontmatter) {
+    session.log.warn(
+      `Frontmatter fields should be defined directly on project, not nested under "${path}#$project.frontmatter"`,
+    );
+    const { frontmatter, ...rest } = conf.project;
+    conf.project = { ...frontmatter, ...rest };
+  }
   return conf;
 }
 
@@ -151,8 +165,8 @@ export function writeConfigs(
   // Get project config to save
   if (projectConfig) validateProjectConfigAndSave(session, path, projectConfig);
   projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
-  if (projectConfig?.licenses) {
-    projectConfig.licenses = licensesToString(projectConfig.licenses);
+  if (projectConfig?.license) {
+    projectConfig.license = licensesToString(projectConfig.license);
   }
   // Return early if nothing new to save
   if (!siteConfig && !projectConfig) {

@@ -47,11 +47,12 @@ const CRT_CONTRIBUTOR_ROLES = [
 export const SITE_FRONTMATTER_KEYS = ['title', 'description', 'venue'];
 export const PROJECT_FRONTMATTER_KEYS = [
   'authors',
+  'date',
   'name',
   'doi',
   'arxiv',
   'open_access',
-  'licenses',
+  'license',
   'github',
   'binder',
   'subject',
@@ -60,16 +61,14 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'numbering',
   'math',
 ].concat(SITE_FRONTMATTER_KEYS);
-export const PAGE_FRONTMATTER_KEYS = ['subtitle', 'short_title', 'date'].concat(
-  PROJECT_FRONTMATTER_KEYS,
-);
+export const PAGE_FRONTMATTER_KEYS = ['subtitle', 'short_title'].concat(PROJECT_FRONTMATTER_KEYS);
 
 export const USE_PROJECT_FALLBACK = [
   'authors',
   'doi',
   'arxiv',
   'open_access',
-  'licenses',
+  'license',
   'github',
   'binder',
   'subject',
@@ -249,6 +248,9 @@ export function validateProjectFrontmatterKeys(value: Record<string, any>, opts:
       },
     );
   }
+  if (defined(value.date)) {
+    output.date = validateDate(value.date, incrementOptions('date', opts));
+  }
   if (defined(value.name)) {
     output.name = validateString(value.name, incrementOptions('name', opts));
   }
@@ -272,8 +274,8 @@ export function validateProjectFrontmatterKeys(value: Record<string, any>, opts:
   if (defined(value.open_access)) {
     output.open_access = validateBoolean(value.open_access, incrementOptions('open_access', opts));
   }
-  if (defined(value.licenses)) {
-    output.licenses = validateLicenses(value.licenses, incrementOptions('licenses', opts));
+  if (defined(value.license)) {
+    output.license = validateLicenses(value.license, incrementOptions('license', opts));
   }
   if (defined(value.github)) {
     let { github } = value;
@@ -292,7 +294,10 @@ export function validateProjectFrontmatterKeys(value: Record<string, any>, opts:
     output.binder = validateUrl(value.binder, incrementOptions('binder', opts));
   }
   if (defined(value.subject)) {
-    output.subject = validateString(value.subject, incrementOptions('subject', opts));
+    output.subject = validateString(value.subject, {
+      ...incrementOptions('subject', opts),
+      maxLength: 40,
+    });
   }
   if (defined(value.biblio)) {
     output.biblio = validateBiblio(value.biblio, incrementOptions('biblio', opts));
@@ -303,10 +308,12 @@ export function validateProjectFrontmatterKeys(value: Record<string, any>, opts:
   }
   if (defined(value.numbering)) {
     const numberingOpts = incrementOptions('numbering', opts);
-    let numbering: boolean | Numbering | undefined = validateBoolean(
-      value.numbering,
-      numberingOpts,
-    );
+    let numbering: boolean | Numbering | undefined = validateBoolean(value.numbering, {
+      ...numberingOpts,
+      suppressWarnings: true,
+      suppressErrors: true,
+    });
+    // TODO: could add an error here for validation of a non-bool non-object
     if (numbering === undefined) {
       numbering = validateNumbering(value.numbering, numberingOpts);
     }
@@ -338,9 +345,6 @@ function validatePageFrontmatterKeys(value: Record<string, any>, opts: Options) 
       ...incrementOptions('short_title', opts),
       maxLength: 40,
     });
-  }
-  if (defined(value.date)) {
-    output.date = validateDate(value.date, incrementOptions('date', opts));
   }
   return output;
 }
