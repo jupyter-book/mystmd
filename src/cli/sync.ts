@@ -8,6 +8,7 @@ function makeInitCLI(program: Command) {
     .description('Initialize a Curvenote project')
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
+    .addOption(makeYesOption())
     .action(clirun(sync.init, { program, hideNoTokenWarning: true }));
   return command;
 }

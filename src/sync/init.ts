@@ -19,6 +19,7 @@ import { getDefaultProjectConfig, getDefaultSiteConfig, INIT_LOGO_PATH } from '.
 type Options = {
   branch?: string;
   force?: boolean;
+  yes?: boolean;
 };
 
 const WELCOME = async (session: ISession) => `
@@ -70,7 +71,7 @@ ${docLinks.overview}
  * This fails if curvenote.yml already exists; use `start` or `add`.
  */
 export async function init(session: ISession, opts: Options) {
-  session.log.info(await WELCOME(session));
+  if (!opts.yes) session.log.info(await WELCOME(session));
   let path = '.';
   // Initialize config - error if it exists
   if (
@@ -83,18 +84,31 @@ export async function init(session: ISession, opts: Options) {
       )} or ${chalk.bold('curvenote start')}?`,
     );
   }
-  const siteConfig = getDefaultSiteConfig(basename(resolve(path)));
+  const folderName = basename(resolve(path));
+  const siteConfig = getDefaultSiteConfig(folderName);
 
   // Load the user now, and wait for it below!
   let me: MyUser | Promise<MyUser> | undefined;
   if (!session.isAnon) me = new MyUser(session).get();
 
   const folderIsEmpty = fs.readdirSync(path).length === 0;
-  const { content } = await inquirer.prompt([questions.content({ folderIsEmpty })]);
+  let content;
+  if (!folderIsEmpty && opts.yes) content = 'folder';
+  else {
+    const response = await inquirer.prompt([questions.content({ folderIsEmpty })]);
+    content = response.content;
+  }
+
   let projectConfig: ProjectConfig;
   let pullComplete = false;
   if (content === 'folder') {
-    const { title } = await inquirer.prompt([questions.title({ title: siteConfig.title || '' })]);
+    let title = folderName;
+    if (!opts.yes) {
+      const promptTitle = await inquirer.prompt([
+        questions.title({ title: siteConfig.title || '' }),
+      ]);
+      title = promptTitle.title;
+    }
     projectConfig = getDefaultProjectConfig(title);
     siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
     pullComplete = true;
@@ -136,8 +150,12 @@ export async function init(session: ISession, opts: Options) {
 
   session.log.info(await FINISHED(session));
 
-  const { start } = await inquirer.prompt([questions.start()]);
-  if (!start) {
+  let start = false;
+  if (!opts.yes) {
+    const promptStart = await inquirer.prompt([questions.start()]);
+    start = promptStart.start;
+  }
+  if (!start && !opts.yes) {
     session.log.info(chalk.dim('\nYou can do this later with:'), chalk.bold('curvenote start'));
   }
   if (!pullComplete) {
