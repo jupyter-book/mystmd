@@ -166,7 +166,7 @@ export function writeConfigs(
   if (projectConfig) validateProjectConfigAndSave(session, path, projectConfig);
   projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
   if (projectConfig?.license) {
-    projectConfig.license = licensesToString(projectConfig.license);
+    projectConfig = { ...projectConfig, license: licensesToString(projectConfig.license) };
   }
   // Return early if nothing new to save
   if (!siteConfig && !projectConfig) {
