@@ -1,4 +1,4 @@
-import { basicLogger, LogLevel } from '../logging';
+import { silentLogger } from '../logging';
 import { Options } from '../utils/validators';
 import { licensesToString, validateLicense, validateLicenses } from './validators';
 
@@ -13,7 +13,7 @@ const TEST_LICENSE = {
 let opts: Options;
 
 beforeEach(() => {
-  opts = { logger: basicLogger(LogLevel.info), property: 'test', count: {} };
+  opts = { logger: silentLogger(), property: 'test', count: {} };
 });
 
 describe('validateLicense', () => {

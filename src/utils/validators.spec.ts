@@ -1,4 +1,4 @@
-import { basicLogger, LogLevel } from '../logging';
+import { silentLogger } from '../logging';
 import {
   fillMissingKeys,
   incrementOptions,
@@ -17,7 +17,7 @@ import {
 let opts: Options;
 
 beforeEach(() => {
-  opts = { logger: basicLogger(LogLevel.info), property: 'test', count: {} };
+  opts = { logger: silentLogger(), property: 'test', count: {} };
 });
 
 describe('locationSuffix', () => {

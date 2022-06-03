@@ -71,3 +71,12 @@ export function chalkLogger(level: LogLevel): Logger {
     },
   };
 }
+
+export function silentLogger(): Logger {
+  return {
+    debug() {},
+    info() {},
+    warn() {},
+    error() {},
+  };
+}
