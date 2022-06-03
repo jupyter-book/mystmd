@@ -86,10 +86,8 @@ export function validateLicense(input: any, opts: Options): License | undefined 
  */
 export function validateLicenses(input: any, opts: Options): Licenses | undefined {
   let contentOpts: Options;
-  let copyContentToCode = false;
   if (typeof input === 'string') {
     input = { content: input };
-    copyContentToCode = true; // If we copy here then validate, we risk 2 duplicate validation errors
     contentOpts = opts;
   } else {
     // This means 'licenses.content' only shows up in errors if present in original input
@@ -101,25 +99,22 @@ export function validateLicenses(input: any, opts: Options): Licenses | undefine
   if (defined(value.content)) {
     output.content = validateLicense(value.content, contentOpts);
   }
-  if (copyContentToCode) {
-    output.code = output.content;
-  } else if (defined(value.code)) {
+  if (defined(value.code) && value.code !== value.content) {
     output.code = validateLicense(value.code, incrementOptions('code', opts));
   }
   return output;
 }
 
 export function licensesToString(licenses: Licenses) {
-  let stringLicenses: string | { content?: string; code?: string } = {};
-  if (licenses.content && licenses.code && licenses.content.id === licenses.code.id) {
-    stringLicenses = licenses.content.id;
-  } else {
-    if (licenses.content) {
-      stringLicenses.content = licenses.content.id;
+  const stringLicenses: { content?: string; code?: string } = {};
+  if (licenses.content) {
+    if (!licenses.code || licenses.content.id === licenses.code.id) {
+      return licenses.content.id;
     }
-    if (licenses.code) {
-      stringLicenses.code = licenses.code.id;
-    }
+    stringLicenses.content = licenses.content.id;
+  }
+  if (licenses.code) {
+    stringLicenses.code = licenses.code.id;
   }
   return stringLicenses;
 }

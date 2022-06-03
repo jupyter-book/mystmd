@@ -45,7 +45,6 @@ describe('validateLicenses', () => {
   it('valid string coerces', async () => {
     expect(validateLicenses('CC-BY-4.0', opts)).toEqual({
       content: TEST_LICENSE,
-      code: TEST_LICENSE,
     });
   });
   it('valid code object coerces', async () => {
@@ -54,13 +53,29 @@ describe('validateLicenses', () => {
   it('valid content object coerces', async () => {
     expect(validateLicenses({ content: 'CC-BY-4.0' }, opts)).toEqual({ content: TEST_LICENSE });
   });
+  it('valid matching content/code object coerces', async () => {
+    expect(validateLicenses({ content: 'CC-BY-4.0', code: 'CC-BY-4.0' }, opts)).toEqual({
+      content: TEST_LICENSE,
+    });
+  });
+  it('valid different content/code object coerces', async () => {
+    expect(validateLicenses({ content: 'CC-BY-4.0', code: 'CC-BY-3.0' }, opts)).toEqual({
+      content: TEST_LICENSE,
+      code: {
+        title: 'Creative Commons Attribution 3.0 Unported',
+        id: 'CC-BY-3.0',
+        CC: true,
+        url: 'https://creativecommons.org/licenses/by/3.0/',
+      },
+    });
+  });
 });
 
 describe('licensesToString', () => {
   it('empty licenses returns self', async () => {
     expect(licensesToString({})).toEqual({});
   });
-  it('content licenses returns content string', async () => {
+  it('content licenses returns content string only', async () => {
     expect(
       licensesToString({
         content: {
@@ -71,7 +86,7 @@ describe('licensesToString', () => {
           url: 'https://example.com',
         },
       }),
-    ).toEqual({ content: 'CC-BY-SA-4.0' });
+    ).toEqual('CC-BY-SA-4.0');
   });
   it('code licenses returns code string', async () => {
     expect(
