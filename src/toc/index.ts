@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { extname, parse, join, sep } from 'path';
 import { CURVENOTE_YML, SiteProject, SiteAction, SiteAnalytics } from '../config/types';
-import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
+import { JupyterBookChapter, readTOC, tocFile, validateTOC } from '../export/jupyter-book/toc';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from '../frontmatter/validators';
 import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
@@ -19,8 +19,6 @@ import {
 
 const DEFAULT_INDEX_FILENAMES = ['index', 'readme'];
 const VALID_FILE_EXTENSIONS = ['.md', '.ipynb'];
-
-const tocFile = (path: string): string => join(path, '_toc.yml');
 
 type PageSlugs = Record<string, number>;
 
@@ -221,7 +219,7 @@ export function loadProjectFromDisk(
 ): LocalProject {
   path = path || '.';
   let newProject;
-  if (fs.existsSync(tocFile(path))) {
+  if (validateTOC(session, path)) {
     newProject = projectFromToc(session, path);
   } else {
     const project = selectors.selectLocalProject(session.store.getState(), path);

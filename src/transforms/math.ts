@@ -21,7 +21,7 @@ function replaceLabel(log: Logger, node: Math | InlineMath, file: string): strin
 
 function replaceEqnarray(log: Logger, value: string, file: string) {
   if (!value.includes('\\begin{eqnarray}')) return value;
-  log.debug(`Replacing math \\begin{eqnarray} with \\begin{align*} in ${file}`);
+  log.warn(`Replacing math \\begin{eqnarray} with \\begin{align*} in ${file}`);
   return value
     .replace(/\\begin{eqnarray}/g, '\\begin{align*}')
     .replace(/\\end{eqnarray}/g, '\\end{align*}');

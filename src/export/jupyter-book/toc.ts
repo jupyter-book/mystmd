@@ -1,10 +1,12 @@
 import fs from 'fs';
-import path from 'path';
+import { join } from 'path';
 import YAML from 'yaml';
 import { Blocks, NavListItemKindEnum } from '@curvenote/blocks';
 import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
 import { writeFileToFolder } from '../../utils';
+
+export const tocFile = (filename: string): string => join(filename, '_toc.yml');
 
 const TOC_FORMAT = 'jb-book';
 
@@ -89,7 +91,7 @@ function spliceRootFromNav(items: FolderItem[]): null | [FolderItem, FolderItem[
 }
 
 export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation>, opts?: Options) {
-  const filename = path.join(opts?.path || '.', opts?.filename || '_toc.yml');
+  const filename = join(opts?.path || '.', opts?.filename || '_toc.yml');
 
   const loadedBlocks: LoadedBlocks[] = await Promise.all(
     nav.data.items.map(async (item) => {
@@ -164,12 +166,27 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
 }
 
 export function readTOC(session: ISession, opts?: Options): TOC {
-  const filename = path.join(opts?.path || '.', opts?.filename || '_toc.yml');
+  const filename = join(opts?.path || '.', opts?.filename || '_toc.yml');
   const toc = YAML.parse(fs.readFileSync(filename).toString());
   const { format, root, chapters, parts } = toc;
-  if (format !== TOC_FORMAT) throw new Error(`The toc.format must be ${TOC_FORMAT}.`);
-  if (!root) throw new Error(`The toc.root must exist.`);
-  if (!chapters && !parts) throw new Error(`The toc must have either chapters or parts.`);
-  session.log.debug('Basic validation of TOC passed.');
+  if (format !== TOC_FORMAT) throw new Error(`The toc.format must be ${TOC_FORMAT}`);
+  if (!root) throw new Error(`The toc.root must exist`);
+  if (!chapters && !parts) throw new Error(`The toc must have either chapters or parts`);
+  session.log.debug('Basic validation of TOC passed');
   return toc;
+}
+
+export function validateTOC(session: ISession, path: string): boolean {
+  const filename = tocFile(path);
+  if (!fs.existsSync(filename)) return false;
+  try {
+    readTOC(session, { filename });
+    return true;
+  } catch (error) {
+    const { message } = error as unknown as Error;
+    session.log.error(
+      `The Table of Contents (ToC) file "${filename}" did not pass validation:\n - ${message}\n - An implicit ToC will be used instead\n`,
+    );
+    return false;
+  }
 }
