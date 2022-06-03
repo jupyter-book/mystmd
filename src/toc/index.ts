@@ -7,7 +7,7 @@ import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
 import { projects } from '../store/local';
 import { publicPath, warnOnUnrecognizedKeys } from '../utils';
-import { fillMissingKeys } from '../utils/validators';
+import { filterKeys } from '../utils/validators';
 import {
   SiteManifest,
   pageLevels,
@@ -265,7 +265,7 @@ export function localToManifestProject(
     }
     return { ...page };
   });
-  const projFrontmatter = fillMissingKeys({}, projConfig, PROJECT_FRONTMATTER_KEYS);
+  const projFrontmatter = filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS);
   return {
     ...projFrontmatter,
     title: projectTitle || 'Untitled',
@@ -363,11 +363,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
   });
   const { title, twitter, logo, logoText, nav } = siteConfig;
   const actions = siteConfig.actions.map((action) => getSiteManifestAction(session, action));
-  const siteFrontmatter = fillMissingKeys(
-    {},
-    siteConfig as Record<string, any>,
-    SITE_FRONTMATTER_KEYS,
-  );
+  const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
   const manifest: SiteManifest = {
     ...siteFrontmatter,
     title: title || '',

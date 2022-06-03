@@ -233,3 +233,7 @@ export function fillMissingKeys<T extends Record<string, any>>(
   });
   return output;
 }
+
+export function filterKeys(value: Record<string, any>, keys: string[]): Record<string, any> {
+  return fillMissingKeys({}, value, keys);
+}

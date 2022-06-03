@@ -4,6 +4,7 @@ import {
   defined,
   incrementOptions,
   fillMissingKeys,
+  filterKeys,
   Options,
   validateBoolean,
   validateDate,
@@ -330,7 +331,7 @@ export function validateProjectFrontmatterKeys(value: Record<string, any>, opts:
         // Filter on non-string values
         return validateString(math[key], incrementOptions(key, mathOpts));
       });
-      output.math = fillMissingKeys({} as Record<string, string>, math, stringKeys);
+      output.math = filterKeys(math, stringKeys);
     }
   }
   return output;
