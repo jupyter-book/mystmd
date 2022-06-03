@@ -54,14 +54,14 @@ function readConfig(session: PartialSession, path: string) {
   // Keep original config object with extra keys, etc.
   if (conf.site?.frontmatter) {
     session.log.warn(
-      `Frontmatter fields should be defined directly on project, not nested under "${path}#$site.frontmatter"`,
+      `Frontmatter fields should be defined directly on site, not nested under "${file}#site.frontmatter"`,
     );
     const { frontmatter, ...rest } = conf.site;
     conf.site = { ...frontmatter, ...rest };
   }
   if (conf.project?.frontmatter) {
     session.log.warn(
-      `Frontmatter fields should be defined directly on project, not nested under "${path}#$project.frontmatter"`,
+      `Frontmatter fields should be defined directly on project, not nested under "${file}#project.frontmatter"`,
     );
     const { frontmatter, ...rest } = conf.project;
     conf.project = { ...frontmatter, ...rest };
