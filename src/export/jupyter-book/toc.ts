@@ -5,6 +5,7 @@ import { Blocks, NavListItemKindEnum } from '@curvenote/blocks';
 import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
 import { writeFileToFolder } from '../../utils';
+import { Logger, silentLogger } from '../../logging';
 
 export const tocFile = (filename: string): string => join(filename, '_toc.yml');
 
@@ -165,14 +166,41 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
   writeFileToFolder(filename, toc);
 }
 
-export function readTOC(session: ISession, opts?: Options): TOC {
+// See https://executablebooks.org/en/latest/updates/2021-06-18-update-toc.html
+function upgradeOldJupyterBookToc(oldToc: any[]) {
+  const [root, ...parts] = oldToc;
+  const toc: TOC = {
+    root: root.file,
+    format: TOC_FORMAT,
+    parts: parts.map(({ part, chapters }) => ({
+      caption: part,
+      chapters,
+    })),
+  };
+  return toc;
+}
+
+export function readTOC(log: Logger, opts?: Options): TOC {
   const filename = join(opts?.path || '.', opts?.filename || '_toc.yml');
   const toc = YAML.parse(fs.readFileSync(filename).toString());
+  if (Array.isArray(toc)) {
+    try {
+      const old = upgradeOldJupyterBookToc(toc);
+      log.warn(
+        `${filename} is out of date: see https://executablebooks.org/en/latest/updates/2021-06-18-update-toc.html`,
+      );
+      return old;
+    } catch (error) {
+      throw new Error(
+        `Could not upgrade toc, please see: https://executablebooks.org/en/latest/updates/2021-06-18-update-toc.html`,
+      );
+    }
+  }
   const { format, root, chapters, parts } = toc;
   if (format !== TOC_FORMAT) throw new Error(`The toc.format must be ${TOC_FORMAT}`);
   if (!root) throw new Error(`The toc.root must exist`);
   if (!chapters && !parts) throw new Error(`The toc must have either chapters or parts`);
-  session.log.debug('Basic validation of TOC passed');
+  log.debug('Basic validation of TOC passed');
   return toc;
 }
 
@@ -180,7 +208,7 @@ export function validateTOC(session: ISession, path: string): boolean {
   const filename = tocFile(path);
   if (!fs.existsSync(filename)) return false;
   try {
-    readTOC(session, { filename });
+    readTOC(silentLogger(), { filename });
     return true;
   } catch (error) {
     const { message } = error as unknown as Error;
