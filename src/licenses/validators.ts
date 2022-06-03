@@ -97,15 +97,16 @@ export function validateLicenses(input: any, opts: Options): Licenses | undefine
   }
   const value = validateObjectKeys(input, { optional: ['content', 'code'] }, opts);
   if (value === undefined) return undefined;
+  const output: Licenses = {};
   if (defined(value.content)) {
-    value.content = validateLicense(value.content, contentOpts);
+    output.content = validateLicense(value.content, contentOpts);
   }
   if (copyContentToCode) {
-    value.code = value.content;
+    output.code = output.content;
   } else if (defined(value.code)) {
-    value.code = validateLicense(value.code, incrementOptions('code', opts));
+    output.code = validateLicense(value.code, incrementOptions('code', opts));
   }
-  return value;
+  return output;
 }
 
 export function licensesToString(licenses: Licenses) {

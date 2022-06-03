@@ -1,4 +1,4 @@
-import { basicLogger, LogLevel } from '../logging';
+import { silentLogger } from '../logging';
 import { Options } from '../utils/validators';
 import {
   validateProjectConfig,
@@ -13,7 +13,7 @@ import {
 let opts: Options;
 
 beforeEach(() => {
-  opts = { logger: basicLogger(LogLevel.info), property: 'test', count: {} };
+  opts = { logger: silentLogger(), property: 'test', count: {} };
 });
 
 describe('validateProjectConfig', () => {
