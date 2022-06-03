@@ -180,4 +180,66 @@ describe('site section generation', () => {
       ],
     });
   });
+  it('first md file as index', async () => {
+    mock({ folder: { 'page.md': '', 'notebook.ipynb': '' } });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'folder/page.md',
+      path: '.',
+      index: 'page',
+      citations: [],
+      pages: [
+        {
+          title: 'folder',
+          level: 1,
+        },
+        {
+          file: 'folder/notebook.ipynb',
+          slug: 'notebook',
+          level: 2,
+        },
+      ],
+    });
+  });
+  it('other md picked over default notebook', async () => {
+    mock({ 'page.md': '', 'index.ipynb': '' });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'page.md',
+      path: '.',
+      index: 'page',
+      citations: [],
+      pages: [
+        {
+          file: 'index.ipynb',
+          slug: 'index',
+          level: 1,
+        },
+      ],
+    });
+  });
+  it('index notebook picked over other notebook', async () => {
+    mock({ 'aaa.ipynb': '', 'index.ipynb': '' });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'index.ipynb',
+      path: '.',
+      index: 'index',
+      citations: [],
+      pages: [
+        {
+          file: 'aaa.ipynb',
+          slug: 'aaa',
+          level: 1,
+        },
+      ],
+    });
+  });
+  it('first notebook as index', async () => {
+    mock({ folder: { 'page.docx': '', 'notebook.ipynb': '' } });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'folder/notebook.ipynb',
+      path: '.',
+      index: 'notebook',
+      citations: [],
+      pages: [],
+    });
+  });
 });

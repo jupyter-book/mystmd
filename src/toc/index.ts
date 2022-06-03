@@ -2,11 +2,7 @@ import fs from 'fs';
 import { extname, parse, join, sep } from 'path';
 import { CURVENOTE_YML, SiteProject, SiteAction, SiteAnalytics } from '../config/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
-import {
-  PROJECT_FRONTMATTER_KEYS,
-  SITE_FRONTMATTER_KEYS,
-  validateSiteFrontmatter,
-} from '../frontmatter/validators';
+import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from '../frontmatter/validators';
 import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
 import { projects } from '../store/local';
@@ -21,7 +17,7 @@ import {
   ManifestProject,
 } from './types';
 
-const DEFAULT_INDEX_FILES = ['index.md', 'readme.md'];
+const DEFAULT_INDEX_FILENAMES = ['index', 'readme'];
 const VALID_FILE_EXTENSIONS = ['.md', '.ipynb'];
 
 const tocFile = (path: string): string => join(path, '_toc.yml');
@@ -29,14 +25,15 @@ const tocFile = (path: string): string => join(path, '_toc.yml');
 type PageSlugs = Record<string, number>;
 
 function isValidFile(file: string): boolean {
-  return VALID_FILE_EXTENSIONS.includes(parse(file).ext);
+  return VALID_FILE_EXTENSIONS.includes(extname(file).toLowerCase());
 }
 
 function resolveExtension(file: string): string | undefined {
   if (fs.existsSync(file)) return file;
-  return VALID_FILE_EXTENSIONS.map((ext) => `${file}${ext}`).find((fileExt) =>
-    fs.existsSync(fileExt),
+  const extensions = VALID_FILE_EXTENSIONS.concat(
+    VALID_FILE_EXTENSIONS.map((ext) => ext.toUpperCase()),
   );
+  return extensions.map((ext) => `${file}${ext}`).find((fileExt) => fs.existsSync(fileExt));
 }
 
 export function isDirectory(file: string): boolean {
@@ -148,18 +145,55 @@ function projectPagesFromPath(
 }
 
 /**
+ * Pick index file from project pages
+ *
+ * If "{path}/index.md" or "{path}/readme.md" exist, use that. Otherwise, use the first
+ * markdown file. Otherwise, use the first file of any type.
+ */
+function indexFileFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: string) {
+  let indexFile: string | undefined;
+  const files = pages
+    .filter((page): page is LocalProjectPage => 'file' in page)
+    .map((page) => page.file);
+
+  const matcher = (ext: string) => {
+    // Find default index file with given extension "ext" in "files" list
+    let match: string | undefined;
+    DEFAULT_INDEX_FILENAMES.map((index) => `${index}${ext}`)
+      .map((index) => join(path, index).toLowerCase())
+      .forEach((index) => {
+        if (match) return;
+        files.forEach((file) => {
+          if (file.toLowerCase() === index) match = file;
+        });
+      });
+    return match;
+  };
+
+  if (!indexFile) indexFile = matcher('.md');
+  if (!indexFile) [indexFile] = files.filter((file) => extname(file) === '.md');
+  if (!indexFile) indexFile = matcher('.ipynb');
+  if (!indexFile) [indexFile] = files;
+  return indexFile;
+}
+
+/**
  * Build project structure from local file/folder structure.
  */
 export function projectFromPath(session: ISession, path: string, indexFile?: string): LocalProject {
-  if (!indexFile) {
-    fs.readdirSync(path).forEach((file) => {
-      if (DEFAULT_INDEX_FILES.includes(file.toLowerCase())) {
-        indexFile = join(path, file);
-      }
-    });
+  const ext_string = VALID_FILE_EXTENSIONS.join(' or ');
+  if (indexFile) {
+    if (!isValidFile(indexFile))
+      throw Error(`Index file ${indexFile} has invalid extension; must be ${ext_string}}`);
+    if (!fs.existsSync(indexFile)) throw Error(`Index file ${indexFile} not found`);
   }
-  if (!indexFile || !fs.existsSync(indexFile)) {
-    throw Error(`index file ${indexFile || DEFAULT_INDEX_FILES.join(',')} not found`);
+  if (!indexFile) {
+    const searchPages = projectPagesFromPath(path, 1, {}, [join(path, '_build')]);
+    if (!searchPages.length) {
+      throw Error(`No valid files with extensions ${ext_string} found in path "${path}"`);
+    }
+    indexFile = indexFileFromPages(searchPages, path);
+    if (!indexFile) throw Error(`Unable to find any index file in path "${path}"`);
   }
   const pageSlugs: PageSlugs = {};
   const { slug } = fileInfo(indexFile, pageSlugs);
