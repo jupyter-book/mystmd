@@ -239,7 +239,7 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Op
 }
 
 export function validateProjectFrontmatterKeys(value: Record<string, any>, opts: Options) {
-  const output: ProjectFrontmatter = {};
+  const output: ProjectFrontmatter = validateSiteFrontmatterKeys(value, opts);
   if (defined(value.authors)) {
     output.authors = validateList(
       value.authors,
@@ -337,7 +337,7 @@ export function validateProjectFrontmatterKeys(value: Record<string, any>, opts:
 }
 
 function validatePageFrontmatterKeys(value: Record<string, any>, opts: Options) {
-  const output: PageFrontmatter = {};
+  const output: PageFrontmatter = validateProjectFrontmatterKeys(value, opts);
   if (defined(value.subtitle)) {
     output.subtitle = validateString(value.subtitle, incrementOptions('subtitle', opts));
   }
@@ -363,9 +363,7 @@ export function validateSiteFrontmatter(input: any, opts: Options) {
  */
 export function validateProjectFrontmatter(input: any, opts: Options) {
   const value = validateObjectKeys(input, { optional: PROJECT_FRONTMATTER_KEYS }, opts) || {};
-  const siteFrontmatter = validateSiteFrontmatterKeys(value, opts);
-  const projectFrontmatter = validateProjectFrontmatterKeys(value, opts);
-  return { ...siteFrontmatter, ...projectFrontmatter } as ProjectFrontmatter;
+  return validateProjectFrontmatterKeys(value, opts);
 }
 
 /**
@@ -373,10 +371,7 @@ export function validateProjectFrontmatter(input: any, opts: Options) {
  */
 export function validatePageFrontmatter(input: any, opts: Options) {
   const value = validateObjectKeys(input, { optional: PAGE_FRONTMATTER_KEYS }, opts) || {};
-  const siteFrontmatter = validateSiteFrontmatterKeys(value, opts);
-  const projectFrontmatter = validateProjectFrontmatterKeys(value, opts);
-  const pageFrontmatter = validatePageFrontmatterKeys(value, opts);
-  return { ...siteFrontmatter, ...projectFrontmatter, ...pageFrontmatter } as PageFrontmatter;
+  return validatePageFrontmatterKeys(value, opts);
 }
 
 /**

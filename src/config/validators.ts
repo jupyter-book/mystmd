@@ -39,7 +39,7 @@ const SITE_CONFIG_KEYS = {
 };
 
 function validateProjectConfigKeys(value: Record<string, any>, opts: Options) {
-  const output: ProjectConfig = {};
+  const output: ProjectConfig = validateProjectFrontmatterKeys(value, opts);
   if (defined(value.remote)) {
     // TODO: Validate as oxa? Or curvenote url...?
     output.remote = validateString(value.remote, incrementOptions('remote', opts));
@@ -65,10 +65,7 @@ function validateProjectConfigKeys(value: Record<string, any>, opts: Options) {
  */
 export function validateProjectConfig(input: any, opts: Options): ProjectConfig {
   const value = validateObjectKeys(input, PROJECT_CONFIG_KEYS, opts) || {};
-  const projectConfig = validateProjectConfigKeys(value, opts);
-  const siteFrontmatter = validateSiteFrontmatterKeys(value, opts);
-  const projectFrontmatter = validateProjectFrontmatterKeys(value, opts);
-  return { ...projectConfig, ...siteFrontmatter, ...projectFrontmatter };
+  return validateProjectConfigKeys(value, opts);
 }
 
 export function validateSiteProject(input: any, opts: Options) {
@@ -155,7 +152,7 @@ export function validateSiteAnalytics(input: any, opts: Options) {
 }
 
 export function validateSiteConfigKeys(value: Record<string, any>, opts: Options) {
-  const output: Record<string, any> = {};
+  const output: Record<string, any> = validateSiteFrontmatterKeys(value, opts);
   if (defined(value.projects)) {
     output.projects = validateList(
       value.projects,
@@ -222,11 +219,8 @@ export function validateSiteConfigKeys(value: Record<string, any>, opts: Options
   return output as SiteConfig;
 }
 
-export function validateSiteConfig(input: any, opts: Options): SiteConfig | undefined {
+export function validateSiteConfig(input: any, opts: Options) {
   const value =
     validateObjectKeys(input, SITE_CONFIG_KEYS, { ...opts, returnInvalidPartial: true }) || {};
-  const siteConfig = validateSiteConfigKeys(value, opts);
-  if (!siteConfig) return undefined;
-  const siteFrontmatter = validateSiteFrontmatterKeys(value, opts);
-  return { ...siteConfig, ...siteFrontmatter };
+  return validateSiteConfigKeys(value, opts);
 }
