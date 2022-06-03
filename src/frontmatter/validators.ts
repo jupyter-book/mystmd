@@ -114,13 +114,14 @@ export function validateVenue(input: any, opts: Options) {
   }
   const value = validateObjectKeys(input, { optional: ['title', 'url'] }, opts);
   if (value === undefined) return undefined;
+  const output: Venue = {};
   if (defined(value.title)) {
-    value.title = validateString(value.title, titleOpts);
+    output.title = validateString(value.title, titleOpts);
   }
   if (defined(value.url)) {
-    value.url = validateUrl(value.url, incrementOptions('url', opts));
+    output.url = validateUrl(value.url, incrementOptions('url', opts));
   }
-  return value as Venue;
+  return output;
 }
 
 /**
@@ -129,33 +130,34 @@ export function validateVenue(input: any, opts: Options) {
 export function validateAuthor(input: any, opts: Options) {
   const value = validateObjectKeys(input, { optional: AUTHOR_KEYS }, opts);
   if (value === undefined) return undefined;
+  const output: Author = {};
   if (defined(value.userId)) {
     // TODO: Better userId validation - length? regex?
-    value.userId = validateString(value.userId, incrementOptions('userId', opts));
+    output.userId = validateString(value.userId, incrementOptions('userId', opts));
   }
   if (defined(value.name)) {
-    value.name = validateString(value.name, incrementOptions('name', opts));
+    output.name = validateString(value.name, incrementOptions('name', opts));
   }
   if (defined(value.orcid)) {
-    value.orcid = validateString(value.orcid, {
+    output.orcid = validateString(value.orcid, {
       ...incrementOptions('orcid', opts),
       regex: ORCID_REGEX,
     });
   }
   if (defined(value.corresponding)) {
     const correspondingOpts = incrementOptions('corresponding', opts);
-    value.corresponding = validateBoolean(value.corresponding, correspondingOpts);
+    output.corresponding = validateBoolean(value.corresponding, correspondingOpts);
     if (value.corresponding && !defined(value.email)) {
       validationError(`must include email for corresponding author`, correspondingOpts);
-      value.corresponding = false;
+      output.corresponding = false;
     }
   }
   if (defined(value.email)) {
-    value.email = validateEmail(value.email, incrementOptions('email', opts));
+    output.email = validateEmail(value.email, incrementOptions('email', opts));
   }
   if (defined(value.roles)) {
     const rolesOpts = incrementOptions('roles', opts);
-    value.roles = validateList(value.roles, rolesOpts, (r) => {
+    output.roles = validateList(value.roles, rolesOpts, (r) => {
       const role = validateString(r, rolesOpts);
       if (role === undefined) return undefined;
       if (!CRT_CONTRIBUTOR_ROLES.includes(role.toLowerCase())) {
@@ -169,11 +171,11 @@ export function validateAuthor(input: any, opts: Options) {
   }
   if (defined(value.affiliations)) {
     const affiliationsOpts = incrementOptions('affiliations', opts);
-    value.affiliations = validateList(value.affiliations, affiliationsOpts, (aff) => {
+    output.affiliations = validateList(value.affiliations, affiliationsOpts, (aff) => {
       return validateString(aff, affiliationsOpts);
     });
   }
-  return value as Author;
+  return output;
 }
 
 function validateStringOrNumber(input: any, opts: Options) {
@@ -190,22 +192,23 @@ function validateStringOrNumber(input: any, opts: Options) {
 export function validateBiblio(input: any, opts: Options) {
   const value = validateObjectKeys(input, { optional: BIBLIO_KEYS }, opts);
   if (value === undefined) return undefined;
+  const output: Biblio = {};
   if (defined(value.volume)) {
-    value.volume = validateStringOrNumber(value.volume, incrementOptions('volume', opts));
+    output.volume = validateStringOrNumber(value.volume, incrementOptions('volume', opts));
   }
   if (defined(value.issue)) {
-    value.issue = validateStringOrNumber(value.issue, incrementOptions('issue', opts));
+    output.issue = validateStringOrNumber(value.issue, incrementOptions('issue', opts));
   }
   if (defined(value.first_page)) {
-    value.first_page = validateStringOrNumber(
+    output.first_page = validateStringOrNumber(
       value.first_page,
       incrementOptions('first_page', opts),
     );
   }
   if (defined(value.last_page)) {
-    value.last_page = validateStringOrNumber(value.last_page, incrementOptions('last_page', opts));
+    output.last_page = validateStringOrNumber(value.last_page, incrementOptions('last_page', opts));
   }
-  return value as Biblio;
+  return output;
 }
 
 /**
@@ -214,15 +217,16 @@ export function validateBiblio(input: any, opts: Options) {
 export function validateNumbering(input: any, opts: Options) {
   const value = validateObjectKeys(input, { optional: NUMBERING_KEYS }, opts);
   if (value === undefined) return undefined;
+  const output: Record<string, any> = {};
   if (defined(value.enumerator)) {
-    value.enumerator = validateString(value.enumerator, incrementOptions('enumerator', opts));
+    output.enumerator = validateString(value.enumerator, incrementOptions('enumerator', opts));
   }
   NUMBERING_KEYS.filter((key) => key !== 'enumerator').forEach((key) => {
     if (defined(value[key])) {
-      value[key] = validateBoolean(value[key], incrementOptions(key, opts));
+      output[key] = validateBoolean(value[key], incrementOptions(key, opts));
     }
   });
-  return value as Numbering;
+  return output as Numbering;
 }
 
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Options) {
