@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
-import { ProjectConfig, SiteConfig, SiteProject } from '../../config/types';
+import { ProjectConfig, SiteConfig } from '../../config/types';
 import { LocalProject } from '../../toc/types';
 
 export const projects = createSlice({
@@ -15,15 +15,18 @@ export const projects = createSlice({
 
 export const config = createSlice({
   name: 'config',
-  initialState: { projects: {} } as { site?: SiteConfig; projects: Record<string, ProjectConfig> },
+  initialState: { rawConfigs: {}, projects: {} } as {
+    rawConfigs: Record<string, Record<string, any>>;
+    site?: SiteConfig;
+    projects: Record<string, ProjectConfig>;
+  },
   reducers: {
+    receiveRawConfig(state, action: PayloadAction<Record<string, any> & { path: string }>) {
+      const { path, ...payload } = action.payload;
+      state.rawConfigs[path] = payload;
+    },
     receiveSite(state, action: PayloadAction<SiteConfig>) {
       state.site = action.payload;
-    },
-    receiveSiteProject(state, action: PayloadAction<SiteProject>) {
-      if (!state.site)
-        throw new Error('state.local.site is not defined, not executing "receiveSiteProject"');
-      state.site.projects.push(action.payload);
     },
     receiveProject(state, action: PayloadAction<ProjectConfig & { path: string }>) {
       const { path, ...payload } = action.payload;

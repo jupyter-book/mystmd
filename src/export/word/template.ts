@@ -4,7 +4,7 @@ import { Node as ProsemirrorNode } from 'prosemirror-model';
 import { DocxSerializerState } from 'prosemirror-docx';
 import { Block, Project, User, Version } from '../../models';
 import { ISession } from '../../session/types';
-import pkgpath from '../../utils';
+import { pkgpath } from '../../utils';
 import { ArticleState } from '../utils/walkArticle';
 import { getNodesAndMarks } from './schema';
 import { createArticleTitle, createReferenceTitle } from './titles';

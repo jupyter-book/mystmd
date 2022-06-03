@@ -3,9 +3,9 @@ import inquirer from 'inquirer';
 import path from 'path';
 import prettyHrtime from 'pretty-hrtime';
 import { JsonObject, VersionId } from '@curvenote/blocks';
-import { Logger } from './logging';
-import { ISession } from './session/types';
-import { selectors } from './store';
+import { Logger } from '../logging';
+import { ISession } from '../session/types';
+import { selectors } from '../store';
 
 /**
  * pkgpath - easily get package relative paths
@@ -13,8 +13,8 @@ import { selectors } from './store';
  * @param absPathSegment an absolute path from the package root level
  * @returns full absolute path
  */
-export default function pkgpath(absPathSegment: string) {
-  return path.join(__dirname, absPathSegment);
+export function pkgpath(absPathSegment: string) {
+  return path.resolve(path.join(__dirname, '..', absPathSegment));
 }
 
 export function resolvePath(optionalPath: string | undefined, filename: string) {

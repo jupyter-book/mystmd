@@ -1,6 +1,6 @@
 import { CitationRenderer } from 'citation-js-utils';
 import { GenericNode, map } from 'mystjs';
-import { Frontmatter } from '../frontmatter/types';
+import { PageFrontmatter } from '../frontmatter/types';
 import { Root } from '../myst';
 
 export type MapResult = ReturnType<typeof map>;
@@ -19,7 +19,7 @@ export type References = {
 
 export interface RendererData {
   sha256: string;
-  frontmatter: Frontmatter;
+  frontmatter: PageFrontmatter;
   mdast: Root;
   references: References;
 }

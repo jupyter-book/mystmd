@@ -2,7 +2,7 @@ import fs from 'fs';
 import chalk from 'chalk';
 import check from 'check-node-version';
 import { Command } from 'commander';
-import { CURVENOTE_YML } from '../config';
+import { CURVENOTE_YML } from '../config/types';
 import { chalkLogger, LogLevel } from '../logging';
 import { Session, getToken } from '../session';
 import { ISession } from '../session/types';
@@ -88,15 +88,16 @@ export function clirun(
     | ((session: ISession, ...args: any[]) => void),
   cli: {
     program: Command;
-    session?: ISession;
+    anonymous?: boolean;
     requireSiteConfig?: boolean;
     hideNoTokenWarning?: boolean;
   },
 ) {
   return async (...args: any[]) => {
     const opts = cli.program.opts() as SessionOpts;
-    const useSession =
-      cli.session ?? getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
+    const useSession = cli.anonymous
+      ? anonSession(opts)
+      : getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
     const config = selectors.selectLocalSiteConfig(useSession.store.getState());

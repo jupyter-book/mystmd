@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
 import { join } from 'path';
-import { loadProjectConfigOrThrow, writeProjectConfig, writeSiteConfig } from '../config';
+import { loadConfigOrThrow, writeConfigs } from '../config';
 import { ProjectConfig, SiteConfig, SiteProject } from '../config/types';
 import { LogLevel } from '../logging';
 import { Project } from '../models';
@@ -44,22 +44,23 @@ export async function interactiveCloneQuestions(
     ]);
     path = projectPath;
   }
-  let projectConfig: ProjectConfig | undefined;
   try {
-    projectConfig = loadProjectConfigOrThrow(session, path);
+    // Throw if project doesn't exist - that's what we want!
+    loadConfigOrThrow(session, path);
+    if (!selectors.selectLocalProjectConfig(session.store.getState(), path)) throw Error();
   } catch {
     // Project config does not exist; good!
     // TODO: Add all sorts of other stuff for the project data that we know!!
-    projectConfig = getDefaultProjectConfig(project.data.title);
+    const projectConfig = getDefaultProjectConfig(project.data.title);
     projectConfig.remote = project.data.id;
-    projectConfig.description = project.data.description || null;
+    projectConfig.description = project.data.description;
     return {
       siteProject: { path, slug: project.data.name },
       projectConfig,
     };
   }
   throw new Error(
-    `Project already exists: "${path}, did you mean to ${chalk.bold('curvenote pull')}`,
+    `Project already exists: "${path}" - did you mean to ${chalk.bold('curvenote pull')}`,
   );
 }
 
@@ -84,14 +85,14 @@ export async function clone(
     remote,
     path,
   });
-  writeProjectConfig(session, siteProject.path, projectConfig);
+  writeConfigs(session, siteProject.path, { projectConfig });
   if (siteConfig) {
     const newSiteConfig: SiteConfig = {
       ...siteConfig,
-      nav: [...siteConfig.nav, { title: projectConfig.title, url: `/${siteProject.slug}` }],
+      nav: [...siteConfig.nav, { title: projectConfig.title || '', url: `/${siteProject.slug}` }],
       projects: [...siteConfig.projects, siteProject],
     };
-    writeSiteConfig(session, '.', newSiteConfig);
+    writeConfigs(session, '.', { siteConfig: newSiteConfig });
   }
   await pullProject(session, siteProject.path, { level: LogLevel.info });
 }

@@ -1,7 +1,8 @@
 import fetch from 'node-fetch';
 import { createStore, Store } from 'redux';
 import { JsonObject } from '@curvenote/blocks';
-import { loadSiteConfigOrThrow, loadProjectConfigOrThrow, CURVENOTE_YML } from '../config';
+import { loadConfigOrThrow } from '../config';
+import { CURVENOTE_YML } from '../config/types';
 import { basicLogger, Logger, LogLevel } from '../logging';
 import { rootReducer, RootState, selectors } from '../store';
 import { getHeaders, setSessionOrUserToken } from './tokens';
@@ -27,31 +28,26 @@ function withQuery(url: string, query: Record<string, string> = {}) {
 
 export function loadAllConfigs(session: Pick<ISession, 'log' | 'store'>) {
   try {
-    loadSiteConfigOrThrow(session);
-    session.log.debug(`Loaded site config from "./${CURVENOTE_YML}"`);
+    loadConfigOrThrow(session, '.');
+    session.log.debug(`Loaded configs from "./${CURVENOTE_YML}"`);
   } catch (error) {
     // TODO: what error?
-    session.log.debug(`Failed to find or load site config from "./${CURVENOTE_YML}"`);
-  }
-  try {
-    loadProjectConfigOrThrow(session, '.');
-    session.log.debug(`Loaded project config from "./${CURVENOTE_YML}"`);
-  } catch (error) {
-    // TODO: what error?
-    session.log.debug(`Failed to find or load project config from "./${CURVENOTE_YML}"`);
+    session.log.debug(`Failed to find or load configs from "./${CURVENOTE_YML}"`);
   }
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   if (!siteConfig) return;
-  siteConfig.projects.forEach((project) => {
-    try {
-      loadProjectConfigOrThrow(session, project.path);
-    } catch (error) {
-      // TODO: what error?
-      session.log.debug(
-        `Failed to find or load project config from "${project.path}/${CURVENOTE_YML}"`,
-      );
-    }
-  });
+  siteConfig.projects
+    .filter((project) => project.path !== '.') // already loaded
+    .forEach((project) => {
+      try {
+        loadConfigOrThrow(session, project.path);
+      } catch (error) {
+        // TODO: what error?
+        session.log.debug(
+          `Failed to find or load project config from "${project.path}/${CURVENOTE_YML}"`,
+        );
+      }
+    });
 }
 
 export class Session implements ISession {

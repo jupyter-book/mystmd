@@ -1,9 +1,9 @@
-import { Frontmatter } from '../frontmatter/types';
+import { ProjectFrontmatter, SiteFrontmatter } from '../frontmatter/types';
 
-export type ProjectConfig = {
-  title: string;
-  description?: string | null;
-  frontmatter?: Omit<Frontmatter, 'title' | 'description'>;
+export const CURVENOTE_YML = 'curvenote.yml';
+export const VERSION = 1;
+
+export type ProjectConfig = ProjectFrontmatter & {
   remote?: string;
   index?: string;
   exclude?: string[];
@@ -30,27 +30,27 @@ export type SiteAction = SiteNavPage & {
   static?: boolean;
 };
 
-export type AnalyticsConfig = {
+export type SiteAnalytics = {
   google?: string;
   plausible?: string;
 };
 
-export type SiteConfig = {
-  title: string;
-  frontmatter?: Omit<Frontmatter, 'title' | 'description'>;
-  twitter?: string;
-  domains: string[];
-  logo?: string | null;
-  logoText?: string;
-  favicon?: string;
-  buildPath?: string;
-  design?: {
-    hide_authors?: boolean;
-  };
+export type SiteDesign = {
+  hide_authors?: boolean;
+};
+
+export type SiteConfig = SiteFrontmatter & {
   projects: SiteProject[];
   nav: SiteNavItem[];
   actions: SiteAction[];
-  analytics?: AnalyticsConfig;
+  domains: string[];
+  twitter?: string;
+  logo?: string;
+  logoText?: string;
+  favicon?: string;
+  buildPath?: string;
+  analytics?: SiteAnalytics;
+  design?: SiteDesign;
 };
 
 export type Config = {

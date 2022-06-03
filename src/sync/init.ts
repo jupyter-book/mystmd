@@ -2,8 +2,8 @@ import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
 import { basename, resolve } from 'path';
-import { CURVENOTE_YML, writeSiteConfig, writeProjectConfig } from '../config';
-import { ProjectConfig } from '../config/types';
+import { writeConfigs } from '../config';
+import { CURVENOTE_YML, ProjectConfig } from '../config/types';
 import { docLinks, LOGO } from '../docs';
 import { LogLevel } from '../logging';
 import { MyUser } from '../models';
@@ -120,7 +120,7 @@ export async function init(session: ISession, opts: Options) {
     const { siteProject } = results;
     projectConfig = results.projectConfig;
     path = siteProject.path;
-    siteConfig.nav = [{ title: projectConfig.title, url: `/${siteProject.slug}` }];
+    siteConfig.nav = [{ title: projectConfig.title || '', url: `/${siteProject.slug}` }];
     siteConfig.projects = [siteProject];
     session.log.info(`Add other projects using: ${chalk.bold('curvenote clone')}\n`);
   } else {
@@ -138,8 +138,8 @@ export async function init(session: ISession, opts: Options) {
     if (twitter) siteConfig.twitter = twitter;
   }
   // Save the configs to the state and write them to disk
-  writeSiteConfig(session, '.', siteConfig);
-  writeProjectConfig(session, path, projectConfig);
+  writeConfigs(session, '.', { siteConfig });
+  writeConfigs(session, path, { projectConfig });
 
   const pullOpts = { level: LogLevel.debug };
   let pullProcess: Promise<void> | undefined;

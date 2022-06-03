@@ -1,5 +1,5 @@
-import { Frontmatter } from '../frontmatter/types';
-import { AnalyticsConfig, SiteAction, SiteNavItem } from '../config/types';
+import { ProjectFrontmatter } from '../frontmatter/types';
+import { SiteAnalytics, SiteAction, SiteNavItem } from '../config/types';
 
 // Types for local Project
 //
@@ -43,12 +43,11 @@ export type ManifestProjectPage = {
   slug: string;
 } & ManifestProjectFolder;
 
-export type ManifestProject = {
+export type ManifestProject = ProjectFrontmatter & {
   slug: string;
   index: string;
   title: string;
   pages: (ManifestProjectPage | ManifestProjectFolder)[];
-  frontmatter?: Frontmatter;
 };
 
 export type SiteManifest = {
@@ -59,5 +58,5 @@ export type SiteManifest = {
   nav: SiteNavItem[];
   actions: SiteAction[];
   projects: ManifestProject[];
-  analytics?: AnalyticsConfig;
+  analytics?: SiteAnalytics;
 };

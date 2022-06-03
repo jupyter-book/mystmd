@@ -1,14 +1,17 @@
 import fs from 'fs';
 import { extname, parse, join, sep } from 'path';
-import { CURVENOTE_YML } from '../config';
-import { SiteProject, SiteAction, AnalyticsConfig } from '../config/types';
+import { CURVENOTE_YML, SiteProject, SiteAction, SiteAnalytics } from '../config/types';
 import { JupyterBookChapter, readTOC } from '../export/jupyter-book/toc';
-import { resolveFrontmatter } from '../frontmatter';
-import { Frontmatter } from '../frontmatter/types';
+import {
+  PROJECT_FRONTMATTER_KEYS,
+  SITE_FRONTMATTER_KEYS,
+  validateSiteFrontmatter,
+} from '../frontmatter/validators';
 import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
 import { projects } from '../store/local';
 import { publicPath, warnOnUnrecognizedKeys } from '../utils';
+import { fillMissingKeys } from '../utils/validators';
 import {
   SiteManifest,
   pageLevels,
@@ -206,11 +209,12 @@ export function loadProjectFromDisk(
  * This does a couple things:
  * - Adds projectSlug (which locally comes from site config)
  * - Removes any local file references
+ * - Adds validated frontmatter
  */
 export function localToManifestProject(
+  session: ISession,
   state: RootState,
   siteProj: SiteProject,
-  frontmatter: Frontmatter,
 ): ManifestProject | null {
   const projConfig = selectors.selectLocalProjectConfig(state, siteProj.path);
   const proj = selectors.selectLocalProject(state, siteProj.path);
@@ -227,12 +231,13 @@ export function localToManifestProject(
     }
     return { ...page };
   });
+  const projFrontmatter = fillMissingKeys({}, projConfig, PROJECT_FRONTMATTER_KEYS);
   return {
+    ...projFrontmatter,
+    title: projectTitle || 'Untitled',
     slug: siteProj.slug,
     index,
-    title: projectTitle || 'Untitled',
     pages,
-    ...frontmatter,
   };
 }
 
@@ -279,8 +284,8 @@ function getSiteManifestAction(session: ISession, action: SiteAction): SiteActio
 
 function getSiteManifestAnalytics(
   session: ISession,
-  analytics?: AnalyticsConfig,
-): AnalyticsConfig | undefined {
+  analytics?: SiteAnalytics,
+): SiteAnalytics | undefined {
   if (!analytics) return undefined;
   const { google, plausible, ...rest } = analytics;
   warnOnUnrecognizedKeys(session.log, rest, `${CURVENOTE_YML}#site.analytics:`);
@@ -318,26 +323,19 @@ export function getSiteManifest(session: ISession): SiteManifest {
   const siteConfig = selectors.selectLocalSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
   siteConfig.projects.forEach((siteProj) => {
-    const projConfig = selectors.selectLocalProjectConfig(state, siteProj.path);
-    const sitematter = resolveFrontmatter(
-      {},
-      siteConfig.frontmatter || {},
-      session.log,
-      siteProj.path,
-    );
-    const frontmatter = resolveFrontmatter(
-      sitematter,
-      projConfig?.frontmatter || {},
-      session.log,
-      siteProj.path,
-    );
-    const proj = localToManifestProject(state, siteProj, frontmatter);
+    const proj = localToManifestProject(session, state, siteProj);
     if (!proj) return;
     siteProjects.push(proj);
   });
   const { title, twitter, logo, logoText, nav } = siteConfig;
   const actions = siteConfig.actions.map((action) => getSiteManifestAction(session, action));
+  const siteFrontmatter = fillMissingKeys(
+    {},
+    siteConfig as Record<string, any>,
+    SITE_FRONTMATTER_KEYS,
+  );
   const manifest: SiteManifest = {
+    ...siteFrontmatter,
     title: title || '',
     twitter,
     logo: getLogoPaths(session, logo)?.url,
