@@ -1,4 +1,4 @@
-import { Project } from '@curvenote/blocks';
+import { PartialProject, Project } from '@curvenote/blocks';
 import { ISession } from '../session';
 import { filterKeys } from '../utils/validators';
 import { Author, ProjectFrontmatter } from './types';
@@ -16,13 +16,19 @@ function resolveAffiliations(author: Author, projectAffiliations: Project['affil
   return { affiliations: resolvedAffiliations, ...rest };
 }
 
-export function projectFrontmatterFromDTO(session: ISession, project: Project): ProjectFrontmatter {
+export function projectFrontmatterFromDTO(
+  session: ISession,
+  project: PartialProject,
+): ProjectFrontmatter {
   const apiFrontmatter = filterKeys(project, PROJECT_FRONTMATTER_KEYS);
   const affiliations = project.affiliations || [];
   if (apiFrontmatter.authors) {
     apiFrontmatter.authors = apiFrontmatter.authors.map((author: Author) =>
       resolveAffiliations(author, affiliations),
     );
+  }
+  if (project.licenses) {
+    apiFrontmatter.license = project.licenses;
   }
   return validateProjectFrontmatterKeys(apiFrontmatter, {
     logger: session.log,

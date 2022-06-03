@@ -1,5 +1,8 @@
-import { basicLogger, LogLevel } from '../logging';
+import { CitationStyles, PartialProject, ProjectVisibility } from '@curvenote/blocks';
+import { silentLogger } from '../logging';
+import { Session } from '../session';
 import { Options } from '../utils/validators';
+import { projectFrontmatterFromDTO } from './api';
 import { Author, Biblio, Numbering, PageFrontmatter, ProjectFrontmatter } from './types';
 import {
   fillPageFrontmatter,
@@ -85,7 +88,7 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
 let opts: Options;
 
 beforeEach(() => {
-  opts = { logger: basicLogger(LogLevel.info), property: 'test', count: {} };
+  opts = { logger: silentLogger(), property: 'test', count: {} };
 });
 
 describe('validateVenue', () => {
@@ -264,6 +267,202 @@ describe('fillPageFrontmatter', () => {
       ),
     ).toEqual({
       numbering: { enumerator: '#', heading_1: true, heading_5: true, heading_6: true },
+    });
+  });
+});
+
+describe('projectFrontmatterFromDTO', () => {
+  const frontmatter: ProjectFrontmatter = {
+    name: 'name',
+    title: 'title',
+    description: 'description',
+  };
+  const project: PartialProject = {
+    team: 'team',
+    name: 'name',
+    title: 'title',
+    description: 'description',
+    visibility: ProjectVisibility.public,
+    affiliations: [],
+    settings: {
+      citation_style: CitationStyles.harvard,
+      reference_labels: {
+        fig: 'Figure %s',
+        eq: 'Equation %s',
+        sec: 'Section %s',
+        table: 'Table %s',
+        code: 'Program %s',
+      },
+    },
+  };
+  it('minimal object returns self', async () => {
+    expect(projectFrontmatterFromDTO(new Session(), project)).toEqual(frontmatter);
+  });
+  it('licenses coerces to license', async () => {
+    expect(
+      projectFrontmatterFromDTO(new Session(), {
+        ...project,
+        licenses: {
+          content: 'CC-BY-SA-4.0',
+          code: 'MIT',
+        },
+      }),
+    ).toEqual({
+      ...frontmatter,
+      license: {
+        content: {
+          title: 'Creative Commons Attribution Share Alike 4.0 International',
+          id: 'CC-BY-SA-4.0',
+          CC: true,
+          free: true,
+          url: 'https://creativecommons.org/licenses/by-sa/4.0/',
+        },
+        code: {
+          title: 'MIT License',
+          id: 'MIT',
+          free: true,
+          osi: true,
+          url: 'https://opensource.org/licenses/MIT',
+        },
+      },
+    });
+  });
+  it('affiliations populate correctly', async () => {
+    expect(
+      projectFrontmatterFromDTO(new Session(), {
+        ...project,
+        authors: [
+          {
+            userId: 'abc',
+            email: 'test@example.com',
+            corresponding: true,
+            name: 'Test 0',
+            orcid: '0000-0000-0000-0000',
+            id: 'abc',
+            roles: [
+              'Conceptualization',
+              'Investigation',
+              'Methodology',
+              'Writing – original draft',
+            ],
+            affiliations: ['a0', 'a1'],
+          },
+          {
+            affiliations: ['a0', 'a2'],
+            id: 'def',
+            userId: 'def',
+            email: null,
+            corresponding: false,
+            roles: ['Writing – review & editing', 'Validation'],
+            orcid: '0000-0000-0000-0001',
+            name: 'Test 1',
+          },
+        ],
+        affiliations: [
+          {
+            id: 'a0',
+            text: 'example university',
+          },
+          {
+            id: 'a1',
+            text: 'example company',
+          },
+          {
+            id: 'a2',
+            text: 'example group',
+          },
+        ],
+      }),
+    ).toEqual({
+      ...frontmatter,
+      authors: [
+        {
+          userId: 'abc',
+          email: 'test@example.com',
+          corresponding: true,
+          name: 'Test 0',
+          orcid: '0000-0000-0000-0000',
+          roles: ['Conceptualization', 'Investigation', 'Methodology', 'Writing – original draft'],
+          affiliations: ['example university', 'example company'],
+        },
+        {
+          affiliations: ['example university', 'example group'],
+          userId: 'def',
+          corresponding: false,
+          roles: ['Writing – review & editing', 'Validation'],
+          orcid: '0000-0000-0000-0001',
+          name: 'Test 1',
+        },
+      ],
+    });
+  });
+  it('unknown affiliations filter', async () => {
+    expect(
+      projectFrontmatterFromDTO(new Session(), {
+        ...project,
+        authors: [
+          {
+            userId: 'abc',
+            email: 'test@example.com',
+            corresponding: true,
+            name: 'Test 0',
+            orcid: '0000-0000-0000-0000',
+            id: 'abc',
+            roles: [
+              'Conceptualization',
+              'Investigation',
+              'Methodology',
+              'Writing – original draft',
+            ],
+            affiliations: ['a0', 'a1'],
+          },
+          {
+            affiliations: ['a0', 'a2'],
+            id: 'def',
+            userId: 'def',
+            email: null,
+            corresponding: false,
+            roles: ['Writing – review & editing', 'Validation'],
+            orcid: '0000-0000-0000-0001',
+            name: 'Test 1',
+          },
+        ],
+        affiliations: [
+          {
+            id: 'z0',
+            text: 'example university',
+          },
+          {
+            id: 'z1',
+            text: 'example company',
+          },
+          {
+            id: 'a2',
+            text: 'example group',
+          },
+        ],
+      }),
+    ).toEqual({
+      ...frontmatter,
+      authors: [
+        {
+          userId: 'abc',
+          email: 'test@example.com',
+          corresponding: true,
+          name: 'Test 0',
+          orcid: '0000-0000-0000-0000',
+          roles: ['Conceptualization', 'Investigation', 'Methodology', 'Writing – original draft'],
+          affiliations: [],
+        },
+        {
+          affiliations: ['example group'],
+          userId: 'def',
+          corresponding: false,
+          roles: ['Writing – review & editing', 'Validation'],
+          orcid: '0000-0000-0000-0001',
+          name: 'Test 1',
+        },
+      ],
     });
   });
 });
