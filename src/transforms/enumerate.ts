@@ -7,8 +7,8 @@ export function transformEnumerators(
   frontmatter: Pick<ProjectFrontmatter, 'numbering'>,
 ) {
   const { numbering } = frontmatter;
-  if (numbering === true || numbering == null) return;
-  if (numbering === false) {
+  if (numbering === true) return;
+  if (numbering == null || numbering === false) {
     const numbered = selectAll('[enumerator]', mdast) as GenericNode[];
     numbered.forEach((node) => {
       node.enumerate = false;
