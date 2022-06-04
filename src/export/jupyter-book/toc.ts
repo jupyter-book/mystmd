@@ -168,6 +168,7 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
 
 // See https://executablebooks.org/en/latest/updates/2021-06-18-update-toc.html
 function upgradeOldJupyterBookToc(oldToc: any[]) {
+  // TODO: numbering is ignored
   const [root, ...parts] = oldToc;
   const toc: TOC = {
     root: root.file,

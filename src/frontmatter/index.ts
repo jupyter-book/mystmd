@@ -32,8 +32,11 @@ function frontmatterFromMdastTree(
   const nextNode = firstIsYaml ? secondNode : firstNode;
   const nextNodeIsHeading = nextNode?.type === 'heading' && nextNode.depth === 1;
   if (nextNodeIsHeading) {
-    frontmatter.title = toText(nextNode.children);
-    removeUpTo += 1;
+    const title = toText(nextNode.children);
+    // Only remove the title if it is the same
+    if (frontmatter.title && frontmatter.title === title) {
+      removeUpTo += 1;
+    }
   }
   if (remove) tree.children.splice(0, removeUpTo);
   if (!frontmatter.title) {
