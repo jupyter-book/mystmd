@@ -9,7 +9,7 @@
       "version": "0.5.2",
       "license": "MIT",
       "dependencies": {
-        "@curvenote/blocks": "^1.5.1",
+        "@curvenote/blocks": "^1.5.2",
         "@curvenote/nbtx": "^0.1.8",
         "@curvenote/schema": "^0.12.13",
         "@google-cloud/storage": "^5.18.2",
@@ -954,9 +954,9 @@
       }
     },
     "node_modules/@curvenote/blocks": {
-      "version": "1.5.1",
-      "resolved": "https://registry.npmjs.org/@curvenote/blocks/-/blocks-1.5.1.tgz",
-      "integrity": "sha512-P9mN51fQSeFiWd90lVlgGATb6aHAsIni0N9uSelWGvhZIfvPDDqv1rrWOZZUnKTt7fPZp1m0U3RXLKv39jDJ0g=="
+      "version": "1.5.2",
+      "resolved": "https://registry.npmjs.org/@curvenote/blocks/-/blocks-1.5.2.tgz",
+      "integrity": "sha512-InheJkVa1CU/SAyeNm6ii8/M8B++sl9tyeyCqXHX06PMRUq5VoyIBm0PlPXKv4A71i6WAPuQwW/MjBpGTGRVbA=="
     },
     "node_modules/@curvenote/nbtx": {
       "version": "0.1.8",
@@ -11481,9 +11481,9 @@
       }
     },
     "@curvenote/blocks": {
-      "version": "1.5.1",
-      "resolved": "https://registry.npmjs.org/@curvenote/blocks/-/blocks-1.5.1.tgz",
-      "integrity": "sha512-P9mN51fQSeFiWd90lVlgGATb6aHAsIni0N9uSelWGvhZIfvPDDqv1rrWOZZUnKTt7fPZp1m0U3RXLKv39jDJ0g=="
+      "version": "1.5.2",
+      "resolved": "https://registry.npmjs.org/@curvenote/blocks/-/blocks-1.5.2.tgz",
+      "integrity": "sha512-InheJkVa1CU/SAyeNm6ii8/M8B++sl9tyeyCqXHX06PMRUq5VoyIBm0PlPXKv4A71i6WAPuQwW/MjBpGTGRVbA=="
     },
     "@curvenote/nbtx": {
       "version": "0.1.8",
