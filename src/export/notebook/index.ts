@@ -1,9 +1,9 @@
 import yaml from 'js-yaml';
 import { Blocks, KINDS, VersionId } from '@curvenote/blocks';
+import { pageFrontmatterFromDTO } from '../../frontmatter/api';
 import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
 import { writeFileToFolder } from '../../utils';
-import { createFrontmatter } from '../markdown';
 import { assertEndsInExtension } from '../utils/assertions';
 import { exportFromOxaLink } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';
@@ -14,12 +14,8 @@ type Options = {
   createFrontmatter?: boolean;
 };
 
-async function createFrontmatterCell(
-  session: ISession,
-  block: Block,
-  version: Version<Blocks.Notebook>,
-) {
-  const frontmatter = await createFrontmatter(session, block, version);
+async function createFrontmatterCell(session: ISession, block: Block) {
+  const frontmatter = pageFrontmatterFromDTO(session, block.data);
   return {
     cell_type: 'markdown',
     metadata: {
@@ -44,7 +40,7 @@ export async function notebookToIpynb(session: ISession, versionId: VersionId, o
   if (!resp.ok) throw new Error(`Could not download notebook.`);
   if (opts.createFrontmatter) {
     // Put a frontmatter cell in the front!
-    const frontmatterCell = await createFrontmatterCell(session, block, version);
+    const frontmatterCell = createFrontmatterCell(session, block);
     resp.json.cells = [frontmatterCell, ...resp.json.cells];
   }
   writeFileToFolder(opts, JSON.stringify(resp.json));

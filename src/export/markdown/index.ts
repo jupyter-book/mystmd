@@ -1,8 +1,9 @@
 import path from 'path';
 import YAML from 'yaml';
-import { VersionId, KINDS, oxaLink, formatDate, Blocks } from '@curvenote/blocks';
+import { VersionId, KINDS, oxaLink, Blocks } from '@curvenote/blocks';
 import { createId, toMyst } from '@curvenote/schema';
-import { Block, Project, Version } from '../../models';
+import { pageFrontmatterFromDTO } from '../../frontmatter/api';
+import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
 import { writeFileToFolder } from '../../utils';
 import { exportFromOxaLink } from '../utils/exportWrapper';
@@ -21,40 +22,6 @@ type Options = {
   renderReferences?: boolean;
   titleOnlyInFrontmatter?: boolean;
 };
-
-export async function createFrontmatter(
-  session: ISession,
-  block: Block,
-  version: Version<Blocks.Article | Blocks.Notebook>,
-) {
-  const project = await new Project(session, block.id.project).get();
-  const { affiliations } = project.data;
-  const authorsData = block.data.authors ?? project.data.authors;
-  const authors = !authorsData
-    ? undefined
-    : authorsData.map((author) => {
-        const authorAffiliations = author.affiliations
-          .map((id) => affiliations.find(({ id: aid }) => id === aid)?.text || null)
-          .filter((a) => a);
-        return {
-          name: author.name || '',
-          userId: author.userId || undefined,
-          orcid: author.orcid || undefined,
-          corresponding: author.corresponding || undefined,
-          email: author.email || undefined,
-          roles: author.roles?.length > 0 ? author.roles : undefined,
-          affiliations: authorAffiliations?.length > 0 ? authorAffiliations : undefined,
-        };
-      });
-  return {
-    title: block.data.title,
-    description: block.data.description || '',
-    date: formatDate('date' in version.data ? version.data.date : version.data.date_created),
-    authors,
-    name: block.data.name,
-    oxa: oxaLink('', block.id),
-  };
-}
 
 export async function articleToMarkdown(session: ISession, versionId: VersionId, opts: Options) {
   const [block, version] = await Promise.all([
@@ -90,7 +57,7 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
     return `+++ ${JSON.stringify(blockData)}\n\n${md}`;
   });
 
-  const frontmatter = await createFrontmatter(session, block, version);
+  const frontmatter = pageFrontmatterFromDTO(session, block.data);
   const metadata = YAML.stringify(frontmatter);
   let titleString = `---\n${metadata}---\n\n`;
   if (!opts.titleOnlyInFrontmatter) {

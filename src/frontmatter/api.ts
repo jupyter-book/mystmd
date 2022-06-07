@@ -1,8 +1,14 @@
-import { PartialProject, Project } from '@curvenote/blocks';
+import { Block, formatDate, oxaLink, Project } from '@curvenote/blocks';
+import { selectAffiliation } from '../store/selectors';
 import { ISession } from '../session';
 import { filterKeys } from '../utils/validators';
-import { Author, ProjectFrontmatter } from './types';
-import { PROJECT_FRONTMATTER_KEYS, validateProjectFrontmatterKeys } from './validators';
+import { Author, PageFrontmatter, ProjectFrontmatter } from './types';
+import {
+  PAGE_FRONTMATTER_KEYS,
+  PROJECT_FRONTMATTER_KEYS,
+  validatePageFrontmatterKeys,
+  validateProjectFrontmatterKeys,
+} from './validators';
 
 function resolveAffiliations(session: ISession, author: Author): Author {
   const { affiliations, ...rest } = author;
@@ -27,6 +33,30 @@ export function projectFrontmatterFromDTO(session: ISession, project: Project): 
   return validateProjectFrontmatterKeys(apiFrontmatter, {
     logger: session.log,
     property: 'project',
+    suppressErrors: true,
+    suppressWarnings: true,
+    count: {},
+  });
+}
+
+export function pageFrontmatterFromDTO(session: ISession, block: Block): PageFrontmatter {
+  const apiFrontmatter = filterKeys(block, PAGE_FRONTMATTER_KEYS);
+  if (apiFrontmatter.authors) {
+    apiFrontmatter.authors = apiFrontmatter.authors.map((author: Author) =>
+      resolveAffiliations(session, author),
+    );
+  }
+  if (block.licenses) {
+    apiFrontmatter.license = block.licenses;
+  }
+  // TODO: Date needs to be in block frontmatter
+  if (block.date_modified) {
+    apiFrontmatter.date = formatDate(block.date_modified);
+  }
+  apiFrontmatter.oxa = oxaLink('', block.id);
+  return validatePageFrontmatterKeys(apiFrontmatter, {
+    logger: session.log,
+    property: 'page',
     suppressErrors: true,
     suppressWarnings: true,
     count: {},

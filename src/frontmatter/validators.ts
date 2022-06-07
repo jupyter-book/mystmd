@@ -341,7 +341,7 @@ export function validateProjectFrontmatterKeys(value: Record<string, any>, opts:
   return output;
 }
 
-function validatePageFrontmatterKeys(value: Record<string, any>, opts: Options) {
+export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Options) {
   const output: PageFrontmatter = validateProjectFrontmatterKeys(value, opts);
   if (defined(value.subtitle)) {
     output.subtitle = validateString(value.subtitle, incrementOptions('subtitle', opts));
