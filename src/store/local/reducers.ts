@@ -13,6 +13,18 @@ export const projects = createSlice({
   },
 });
 
+export const affiliations = createSlice({
+  name: 'affiliations',
+  initialState: {} as Record<string, string>,
+  reducers: {
+    receive(state, action: PayloadAction<{ affiliations: { id: string; text: string }[] }>) {
+      action.payload.affiliations.forEach((aff) => {
+        state[aff.id] = aff.text;
+      });
+    },
+  },
+});
+
 export const config = createSlice({
   name: 'config',
   initialState: { rawConfigs: {}, projects: {} } as {
@@ -83,6 +95,7 @@ export const watch = createSlice({
 
 export const localReducer = combineReducers({
   projects: projects.reducer,
+  affiliations: affiliations.reducer,
   config: config.reducer,
   watch: watch.reducer,
 });

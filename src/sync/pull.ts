@@ -7,7 +7,7 @@ import { LogLevel, getLevel } from '../logging';
 import { Project } from '../models';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
-import { config } from '../store/local';
+import { affiliations, config } from '../store/local';
 import { isDirectory } from '../toc';
 import { confirmOrExit, tic } from '../utils';
 import { projectLogString } from './utils';
@@ -24,13 +24,16 @@ export async function pullProject(session: ISession, path: string, opts?: { leve
   if (!projectConfig.remote) throw Error(`Cannot pull project from ${path}: no remote project url`);
   const log = getLevel(session.log, opts?.level ?? LogLevel.debug);
   const project = await new Project(session, projectConfig.remote).get();
-  if (project.$data) {
-    const newFrontmatter = projectFrontmatterFromDTO(session, project.$data);
-    session.store.dispatch(
-      config.actions.receiveProject({ path, ...projectConfig, ...newFrontmatter }),
-    );
-    writeConfigs(session, path);
-  }
+  session.store.dispatch(
+    affiliations.actions.receive({
+      affiliations: project.data.affiliations || [],
+    }),
+  );
+  const newFrontmatter = projectFrontmatterFromDTO(session, project.data);
+  session.store.dispatch(
+    config.actions.receiveProject({ path, ...projectConfig, ...newFrontmatter }),
+  );
+  writeConfigs(session, path);
   const toc = tic();
   log(`📥 Pulling ${path} from ${projectLogString(project)}`);
   await projectToJupyterBook(session, project.id, {
