@@ -1,5 +1,5 @@
 import { BlockId } from './blocks/types';
-import { projectIdToString, blockListToString, blockIdToString, parseSourceUrl } from './utils';
+import { projectIdToString, blockListToString, blockIdToString, parseGitUrl } from './utils';
 import { ProjectId } from './projects';
 
 const CASES: [string, { url: string; owner: string; repo: string; provider: string }][] = [
@@ -75,7 +75,7 @@ describe('utils', () => {
   });
   describe('converting a github url', () => {
     test.each(CASES)('%s -> %s', (input, expected) => {
-      const parsed = parseSourceUrl(input as string);
+      const parsed = parseGitUrl(input as string);
       expect(parsed.url).toBe(expected.url);
       expect(parsed.owner).toBe(expected.owner);
       expect(parsed.repo).toBe(expected.repo);
