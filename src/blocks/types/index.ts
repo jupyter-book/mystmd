@@ -12,7 +12,6 @@ export * from './misc';
 export * from './jupyter';
 export * from './messages';
 export * from './frontMatter';
-export * from './launchpad';
 
 export interface BlockLinks extends BaseLinks {
   project: string;
