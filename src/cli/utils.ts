@@ -100,13 +100,17 @@ export function clirun(
       : getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
-    const config = selectors.selectLocalSiteConfig(useSession.store.getState());
-    if (cli.requireSiteConfig && !config) {
-      useSession.log.error(
-        `You must be in a directory with a ${CURVENOTE_YML}\n\nDo you need to run: ${chalk.bold(
-          'curvenote init',
-        )}`,
-      );
+    const state = useSession.store.getState();
+    const siteConfig = selectors.selectLocalSiteConfig(state);
+    if (cli.requireSiteConfig && !siteConfig) {
+      const projectConfig = selectors.selectLocalProject(state, '.');
+      let message: string;
+      if (projectConfig) {
+        message = `No "site" config found in ${CURVENOTE_YML}`;
+      } else {
+        message = `You must be in a directory with a ${CURVENOTE_YML}`;
+      }
+      useSession.log.error(`${message}\n\nDo you need to run: ${chalk.bold('curvenote init')}`);
       process.exit(1);
     }
     try {
