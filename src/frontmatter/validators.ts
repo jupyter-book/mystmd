@@ -1,3 +1,4 @@
+import { KINDS } from '@curvenote/blocks';
 import { validate } from 'doi-utils';
 import { validateLicenses } from '../licenses/validators';
 import {
@@ -62,7 +63,9 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'numbering',
   'math',
 ].concat(SITE_FRONTMATTER_KEYS);
-export const PAGE_FRONTMATTER_KEYS = ['subtitle', 'short_title'].concat(PROJECT_FRONTMATTER_KEYS);
+export const PAGE_FRONTMATTER_KEYS = ['kind', 'subtitle', 'short_title'].concat(
+  PROJECT_FRONTMATTER_KEYS,
+);
 
 export const USE_PROJECT_FALLBACK = [
   'authors',
@@ -351,6 +354,15 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Op
       ...incrementOptions('short_title', opts),
       maxLength: 40,
     });
+  }
+  if (defined(value.kind)) {
+    const kindOpts = incrementOptions('kind', opts);
+    const kind = validateString(value.kind, kindOpts) as KINDS;
+    if (kind && !Object.values(KINDS).includes(kind as KINDS)) {
+      validationError(`invalid page kind ${kind}`, kindOpts);
+    } else {
+      output.kind = kind;
+    }
   }
   return output;
 }

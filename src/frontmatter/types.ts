@@ -1,4 +1,4 @@
-import { Author as BlocksAuthor } from '@curvenote/blocks';
+import { Author as BlocksAuthor, KINDS } from '@curvenote/blocks';
 import { Licenses } from '../licenses/types';
 
 export type Author = Partial<BlocksAuthor>;
@@ -54,6 +54,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
 };
 
 export type PageFrontmatter = ProjectFrontmatter & {
+  kind?: KINDS;
   subtitle?: string;
   short_title?: string;
 };
