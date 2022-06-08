@@ -53,7 +53,7 @@ export async function notebookToIpynb(session: ISession, versionId: VersionId, o
   if (!resp.ok) throw new Error(`Could not download notebook.`);
   if (opts.createFrontmatter) {
     // Put a frontmatter cell in the front!
-    const frontmatterCell = createFrontmatterCell(session, block, opts);
+    const frontmatterCell = await createFrontmatterCell(session, block, opts);
     resp.json.cells = [frontmatterCell, ...resp.json.cells];
   }
   writeFileToFolder(opts, JSON.stringify(resp.json));
