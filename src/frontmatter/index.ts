@@ -1,6 +1,8 @@
 import yaml from 'js-yaml';
 import { Root, PhrasingContent } from 'mdast';
 import { GenericNode, select } from 'mystjs';
+import { Licenses } from '../licenses/types';
+import { licensesToString } from '../licenses/validators';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { PageFrontmatter } from './types';
@@ -82,4 +84,9 @@ export function getPageFrontmatter(
     delete frontmatter.authors;
   }
   return frontmatter;
+}
+
+export function prepareToWrite(frontmatter: { license?: Licenses }) {
+  if (!frontmatter.license) return { ...frontmatter };
+  return { ...frontmatter, license: licensesToString(frontmatter.license) };
 }

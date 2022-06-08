@@ -2,8 +2,14 @@ import path from 'path';
 import YAML from 'yaml';
 import { VersionId, KINDS, oxaLink, Blocks } from '@curvenote/blocks';
 import { createId, toMyst } from '@curvenote/schema';
-import { pageFrontmatterFromDTO } from '../../frontmatter/api';
-import { Block, Version } from '../../models';
+import { prepareToWrite } from '../../frontmatter';
+import {
+  pageFrontmatterFromDTO,
+  projectFrontmatterFromDTO,
+  saveAffiliations,
+} from '../../frontmatter/api';
+import { fillPageFrontmatter } from '../../frontmatter/validators';
+import { Block, Project, Version } from '../../models';
 import { ISession } from '../../session/types';
 import { writeFileToFolder } from '../../utils';
 import { exportFromOxaLink } from '../utils/exportWrapper';
@@ -21,6 +27,7 @@ type Options = {
   bibtex?: string;
   renderReferences?: boolean;
   titleOnlyInFrontmatter?: boolean;
+  ignoreProjectFrontmatter?: boolean;
 };
 
 export async function articleToMarkdown(session: ISession, versionId: VersionId, opts: Options) {
@@ -57,8 +64,14 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
     return `+++ ${JSON.stringify(blockData)}\n\n${md}`;
   });
 
-  const frontmatter = pageFrontmatterFromDTO(session, block.data);
-  const metadata = YAML.stringify(frontmatter);
+  const project = await new Project(session, block.id.project).get();
+  saveAffiliations(session, project.data);
+  let frontmatter = pageFrontmatterFromDTO(session, block.data, version.data.date);
+  if (!opts.ignoreProjectFrontmatter) {
+    const projectFrontmatter = projectFrontmatterFromDTO(session, project.data);
+    frontmatter = fillPageFrontmatter(frontmatter, projectFrontmatter);
+  }
+  const metadata = YAML.stringify(prepareToWrite(frontmatter));
   let titleString = `---\n${metadata}---\n\n`;
   if (!opts.titleOnlyInFrontmatter) {
     // TODO: Remove the title when Jupyter Book allows title to be defined in the yaml.

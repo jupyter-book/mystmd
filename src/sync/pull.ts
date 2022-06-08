@@ -1,13 +1,13 @@
 import fs from 'fs';
 import pLimit from 'p-limit';
-import { projectFrontmatterFromDTO } from '../frontmatter/api';
+import { projectFrontmatterFromDTO, saveAffiliations } from '../frontmatter/api';
 import { loadConfigOrThrow, writeConfigs } from '../config';
 import { projectToJupyterBook } from '../export';
 import { LogLevel, getLevel } from '../logging';
 import { Project } from '../models';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
-import { affiliations, config } from '../store/local';
+import { config } from '../store/local';
 import { isDirectory } from '../toc';
 import { confirmOrExit, tic } from '../utils';
 import { projectLogString } from './utils';
@@ -24,11 +24,7 @@ export async function pullProject(session: ISession, path: string, opts?: { leve
   if (!projectConfig.remote) throw Error(`Cannot pull project from ${path}: no remote project url`);
   const log = getLevel(session.log, opts?.level ?? LogLevel.debug);
   const project = await new Project(session, projectConfig.remote).get();
-  session.store.dispatch(
-    affiliations.actions.receive({
-      affiliations: project.data.affiliations || [],
-    }),
-  );
+  saveAffiliations(session, project.data);
   const newFrontmatter = projectFrontmatterFromDTO(session, project.data);
   session.store.dispatch(
     config.actions.receiveProject({ path, ...projectConfig, ...newFrontmatter }),
@@ -41,6 +37,8 @@ export async function pullProject(session: ISession, path: string, opts?: { leve
     writeConfig: false,
     createFrontmatter: true,
     titleOnlyInFrontmatter: true,
+    // Project frontmatter is kept sepatare in project config, above
+    ignoreProjectFrontmatter: true,
   });
   log(toc(`🚀 Pulled ${path} in %s`));
 }
