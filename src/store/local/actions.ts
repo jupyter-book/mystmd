@@ -178,7 +178,7 @@ export async function transformMdast(
   const { store, log } = session;
   const cache = castSession(session);
   const mdastPre = cache.$mdast[file]?.pre;
-  if (!mdastPre) throw new Error(`Expected mdast to be processed for ${file}`);
+  if (!mdastPre) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
   // Use structuredClone in future (available in node 17)
   let mdast = JSON.parse(JSON.stringify(mdastPre)) as Root;
