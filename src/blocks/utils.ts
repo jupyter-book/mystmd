@@ -1,4 +1,3 @@
-import { JsonObject } from '../types';
 import { SrcId } from './types';
 import {
   BlockFrontMatterProps,
