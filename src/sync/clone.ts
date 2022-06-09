@@ -33,8 +33,9 @@ export async function interactiveCloneQuestions(
       project = await validateLinkIsAProject(session, projectLink);
     }
   }
-  let path = '.';
+  let path: string;
   if (opts?.path) {
+    path = opts?.path;
     if (path !== '.' && fs.existsSync(path)) {
       throw new Error(`Invalid path for clone: "${path}", it must not exist.`);
     }
