@@ -13,4 +13,7 @@ export interface LaunchpadDTO {
   domain: string;
   status: LaunchpadStatus;
   date_created: Date;
+  links: {
+    status: string;
+  };
 }
