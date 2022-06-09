@@ -21,5 +21,5 @@ export function parseGitUrl(url: string) {
       provider,
     };
   }
-  throw Error(`Unsupported source_url: ${url}`);
+  throw Error(`Unsupported url: ${url}`);
 }
