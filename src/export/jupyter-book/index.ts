@@ -14,6 +14,7 @@ type Options = {
   bibtex?: string;
   createFrontmatter?: boolean;
   titleOnlyInFrontmatter?: boolean;
+  ignoreProjectFrontmatter?: boolean;
 };
 
 export async function projectToJupyterBook(session: ISession, projectId: ProjectId, opts: Options) {

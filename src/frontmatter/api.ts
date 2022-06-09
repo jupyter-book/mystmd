@@ -1,30 +1,39 @@
-import { PartialProject, Project } from '@curvenote/blocks';
+import { Block, oxaLink, Project } from '@curvenote/blocks';
+import { affiliations } from '../store/local';
+import { selectAffiliation } from '../store/selectors';
 import { ISession } from '../session';
 import { filterKeys } from '../utils/validators';
-import { Author, ProjectFrontmatter } from './types';
-import { PROJECT_FRONTMATTER_KEYS, validateProjectFrontmatterKeys } from './validators';
+import { Author, PageFrontmatter, ProjectFrontmatter } from './types';
+import {
+  PAGE_FRONTMATTER_KEYS,
+  PROJECT_FRONTMATTER_KEYS,
+  validatePageFrontmatterKeys,
+  validateProjectFrontmatterKeys,
+} from './validators';
 
-function resolveAffiliations(author: Author, projectAffiliations: Project['affiliations']): Author {
-  const affiliationLookup = Object.fromEntries(
-    projectAffiliations.map((val) => [val.id, val.text]),
+export function saveAffiliations(session: ISession, project: Project) {
+  session.store.dispatch(
+    affiliations.actions.receive({
+      affiliations: project.affiliations || [],
+    }),
   );
-  const { affiliations, ...rest } = author;
-  if (!affiliations) return { ...rest };
-  const resolvedAffiliations = affiliations
-    .map((val) => affiliationLookup[val])
-    .filter((val) => val);
+}
+
+function resolveAffiliations(session: ISession, author: Author): Author {
+  const { affiliations: authorAffiliations, ...rest } = author;
+  if (!authorAffiliations) return { ...rest };
+  const state = session.store.getState();
+  const resolvedAffiliations = authorAffiliations
+    .map((id) => selectAffiliation(state, id))
+    .filter((text): text is string => typeof text === 'string');
   return { affiliations: resolvedAffiliations, ...rest };
 }
 
-export function projectFrontmatterFromDTO(
-  session: ISession,
-  project: PartialProject,
-): ProjectFrontmatter {
+export function projectFrontmatterFromDTO(session: ISession, project: Project): ProjectFrontmatter {
   const apiFrontmatter = filterKeys(project, PROJECT_FRONTMATTER_KEYS);
-  const affiliations = project.affiliations || [];
   if (apiFrontmatter.authors) {
     apiFrontmatter.authors = apiFrontmatter.authors.map((author: Author) =>
-      resolveAffiliations(author, affiliations),
+      resolveAffiliations(session, author),
     );
   }
   if (project.licenses) {
@@ -33,6 +42,34 @@ export function projectFrontmatterFromDTO(
   return validateProjectFrontmatterKeys(apiFrontmatter, {
     logger: session.log,
     property: 'project',
+    suppressErrors: true,
+    suppressWarnings: true,
+    count: {},
+  });
+}
+
+export function pageFrontmatterFromDTO(
+  session: ISession,
+  block: Block,
+  date?: string | Date,
+): PageFrontmatter {
+  const apiFrontmatter = filterKeys(block, PAGE_FRONTMATTER_KEYS);
+  if (apiFrontmatter.authors) {
+    apiFrontmatter.authors = apiFrontmatter.authors.map((author: Author) =>
+      resolveAffiliations(session, author),
+    );
+  }
+  if (block.licenses) {
+    apiFrontmatter.license = block.licenses;
+  }
+  // TODO: Date needs to be in block frontmatter
+  if (block.date_modified) {
+    apiFrontmatter.date = date || block.date_modified;
+  }
+  apiFrontmatter.oxa = oxaLink('', block.id);
+  return validatePageFrontmatterKeys(apiFrontmatter, {
+    logger: session.log,
+    property: 'page',
     suppressErrors: true,
     suppressWarnings: true,
     count: {},

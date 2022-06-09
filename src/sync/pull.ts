@@ -1,6 +1,6 @@
 import fs from 'fs';
 import pLimit from 'p-limit';
-import { projectFrontmatterFromDTO } from '../frontmatter/api';
+import { projectFrontmatterFromDTO, saveAffiliations } from '../frontmatter/api';
 import { loadConfigOrThrow, writeConfigs } from '../config';
 import { projectToJupyterBook } from '../export';
 import { LogLevel, getLevel } from '../logging';
@@ -24,13 +24,12 @@ export async function pullProject(session: ISession, path: string, opts?: { leve
   if (!projectConfig.remote) throw Error(`Cannot pull project from ${path}: no remote project url`);
   const log = getLevel(session.log, opts?.level ?? LogLevel.debug);
   const project = await new Project(session, projectConfig.remote).get();
-  if (project.$data) {
-    const newFrontmatter = projectFrontmatterFromDTO(session, project.$data);
-    session.store.dispatch(
-      config.actions.receiveProject({ path, ...projectConfig, ...newFrontmatter }),
-    );
-    writeConfigs(session, path);
-  }
+  saveAffiliations(session, project.data);
+  const newFrontmatter = projectFrontmatterFromDTO(session, project.data);
+  session.store.dispatch(
+    config.actions.receiveProject({ path, ...projectConfig, ...newFrontmatter }),
+  );
+  writeConfigs(session, path);
   const toc = tic();
   log(`📥 Pulling ${path} from ${projectLogString(project)}`);
   await projectToJupyterBook(session, project.id, {
@@ -38,6 +37,8 @@ export async function pullProject(session: ISession, path: string, opts?: { leve
     writeConfig: false,
     createFrontmatter: true,
     titleOnlyInFrontmatter: true,
+    // Project frontmatter is kept sepatare in project config, above
+    ignoreProjectFrontmatter: true,
   });
   log(toc(`🚀 Pulled ${path} in %s`));
 }

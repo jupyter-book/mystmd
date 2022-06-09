@@ -13,6 +13,7 @@ interface Options {
   bibtex?: string;
   createFrontmatter?: boolean;
   titleOnlyInFrontmatter?: boolean;
+  ignoreProjectFrontmatter?: boolean;
 }
 
 export async function exportAll(

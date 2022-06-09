@@ -1,7 +1,14 @@
 import path from 'path';
 import YAML from 'yaml';
-import { VersionId, KINDS, oxaLink, formatDate, Blocks } from '@curvenote/blocks';
+import { VersionId, KINDS, oxaLink, Blocks } from '@curvenote/blocks';
 import { createId, toMyst } from '@curvenote/schema';
+import { prepareToWrite } from '../../frontmatter';
+import {
+  pageFrontmatterFromDTO,
+  projectFrontmatterFromDTO,
+  saveAffiliations,
+} from '../../frontmatter/api';
+import { fillPageFrontmatter } from '../../frontmatter/validators';
 import { Block, Project, Version } from '../../models';
 import { ISession } from '../../session/types';
 import { writeFileToFolder } from '../../utils';
@@ -20,41 +27,8 @@ type Options = {
   bibtex?: string;
   renderReferences?: boolean;
   titleOnlyInFrontmatter?: boolean;
+  ignoreProjectFrontmatter?: boolean;
 };
-
-export async function createFrontmatter(
-  session: ISession,
-  block: Block,
-  version: Version<Blocks.Article | Blocks.Notebook>,
-) {
-  const project = await new Project(session, block.id.project).get();
-  const { affiliations } = project.data;
-  const authorsData = block.data.authors ?? project.data.authors;
-  const authors = !authorsData
-    ? undefined
-    : authorsData.map((author) => {
-        const authorAffiliations = author.affiliations
-          .map((id) => affiliations.find(({ id: aid }) => id === aid)?.text || null)
-          .filter((a) => a);
-        return {
-          name: author.name || '',
-          userId: author.userId || undefined,
-          orcid: author.orcid || undefined,
-          corresponding: author.corresponding || undefined,
-          email: author.email || undefined,
-          roles: author.roles?.length > 0 ? author.roles : undefined,
-          affiliations: authorAffiliations?.length > 0 ? authorAffiliations : undefined,
-        };
-      });
-  return {
-    title: block.data.title,
-    description: block.data.description || '',
-    date: formatDate('date' in version.data ? version.data.date : version.data.date_created),
-    authors,
-    name: block.data.name,
-    oxa: oxaLink('', block.id),
-  };
-}
 
 export async function articleToMarkdown(session: ISession, versionId: VersionId, opts: Options) {
   const [block, version] = await Promise.all([
@@ -90,8 +64,14 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
     return `+++ ${JSON.stringify(blockData)}\n\n${md}`;
   });
 
-  const frontmatter = await createFrontmatter(session, block, version);
-  const metadata = YAML.stringify(frontmatter);
+  const project = await new Project(session, block.id.project).get();
+  saveAffiliations(session, project.data);
+  let frontmatter = pageFrontmatterFromDTO(session, block.data, version.data.date);
+  if (!opts.ignoreProjectFrontmatter) {
+    const projectFrontmatter = projectFrontmatterFromDTO(session, project.data);
+    frontmatter = fillPageFrontmatter(frontmatter, projectFrontmatter);
+  }
+  const metadata = YAML.stringify(prepareToWrite(frontmatter));
   let titleString = `---\n${metadata}---\n\n`;
   if (!opts.titleOnlyInFrontmatter) {
     // TODO: Remove the title when Jupyter Book allows title to be defined in the yaml.

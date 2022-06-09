@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { join } from 'path';
 import yaml from 'js-yaml';
-import { licensesToString } from '../licenses/validators';
+import { prepareToWrite } from '../frontmatter';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { config } from '../store/local';
@@ -165,8 +165,8 @@ export function writeConfigs(
   // Get project config to save
   if (projectConfig) validateProjectConfigAndSave(session, path, projectConfig);
   projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
-  if (projectConfig?.license) {
-    projectConfig = { ...projectConfig, license: licensesToString(projectConfig.license) };
+  if (projectConfig) {
+    projectConfig = prepareToWrite(projectConfig);
   }
   // Return early if nothing new to save
   if (!siteConfig && !projectConfig) {

@@ -1,3 +1,4 @@
+import { formatDate } from '@curvenote/blocks';
 import { Logger } from '../logging';
 
 export type Options = {
@@ -128,14 +129,14 @@ export function validateEmail(input: any, opts: Options) {
  * IETF timestamps are valid.
  */
 export function validateDate(input: any, opts: Options) {
-  if (!new Date(input).getDate()) {
+  const date = new Date(input);
+  if (!date.getDate()) {
     return validationError(
       `invalid date "${input}" - must be ISO 8601 format or IETF timestamp`,
       opts,
     );
   }
-  // TODO: Helpful to coerce to a uniform format?
-  return input;
+  return typeof input === 'string' ? input : formatDate(date);
 }
 
 /**
