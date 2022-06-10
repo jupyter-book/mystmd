@@ -12,7 +12,7 @@ export interface LaunchpadDTO {
   source_url: string;
   domain: string;
   status: LaunchpadStatus;
-  date_created: Date;
+  date_created: string;
   links: {
     status: string;
   };
