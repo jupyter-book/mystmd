@@ -28,7 +28,71 @@ type Options = {
   renderReferences?: boolean;
   titleOnlyInFrontmatter?: boolean;
   ignoreProjectFrontmatter?: boolean;
+  keepOutputs?: boolean;
 };
+
+/**
+ * Pull content from a version of kind Output, cache in mdast snippets, and return {mdast} directive
+ *
+ * This slightly restructures the notebook output from:
+ *
+ * [
+ *   {
+ *     "execution_count": 7,
+ *     "output_type": "execute_result",
+ *     "data": {
+ *       "text/html": "...",
+ *       ...
+ *     }
+ *   },
+ *   ...
+ * ]
+ *
+ * to
+ *
+ * [
+ *   {
+ *     "execution_count": 7,
+ *     "output_type": "execute_result",
+ *     "data": {
+ *       "text/html": {
+ *         "content": "...",
+ *         "content_type": "text/html"
+ *       },
+ *       ...
+ *     }
+ *   },
+ *   ...
+ * ]
+ *
+ */
+async function createOutputSnippet(
+  version: Version,
+  name: string,
+  mdastSnippets: Record<string, GenericNode<Record<string, any>>>,
+) {
+  const response = await fetch(version.data.links.download);
+  if (!response.ok) return '';
+  const outputData = (await response.json()) as Record<string, any>[];
+  // TODO: It would be nice if we could consume the notebook output structure as-is.
+  outputData.forEach((outputEntry) => {
+    Object.keys(outputEntry.data).forEach((content_type) => {
+      const outputContent = outputEntry.data[content_type];
+      if (typeof outputContent === 'string') {
+        outputEntry.data[content_type] = {
+          content_type,
+          content: outputContent,
+        };
+      }
+    });
+  });
+  const snippetId = `${name}#${createId()}`;
+  mdastSnippets[snippetId] = {
+    type: 'output',
+    data: outputData,
+  };
+  return `\`\`\`{mdast} ${snippetId}\n\`\`\``;
+}
 
 export async function articleToMarkdown(session: ISession, versionId: VersionId, opts: Options) {
   const [block, version] = await Promise.all([
@@ -48,21 +112,32 @@ export async function articleToMarkdown(session: ISession, versionId: VersionId,
   const localization = localizationOptions(session, imageFilenames, article.references);
   const mdastName = `${opts.filename.replace(/\.md$/, '')}.mdast.json`;
   const articleMdastSnippets = {};
-  const content = article.children.map((child) => {
-    if (!child.version || !child.state) return '';
-    const blockData = { oxa: oxaLink('', child.version.id) };
-    const { content: md, mdastSnippets } = toMyst(child.state.doc, {
-      ...localization,
-      renderers: { iframe: 'myst' },
-      createMdastImportId() {
-        return `${mdastName}#${createId()}`;
-      },
-    });
-    if (Object.keys(mdastSnippets).length) {
-      Object.assign(articleMdastSnippets, mdastSnippets);
-    }
-    return `+++ ${JSON.stringify(blockData)}\n\n${md}`;
-  });
+  const content = await Promise.all(
+    article.children.map(async (child) => {
+      if (!child.version) return '';
+      const blockData = { oxa: oxaLink('', child.version.id) };
+      let md = '';
+      let mdastSnippets: Record<string, GenericNode<Record<string, any>>> = {};
+      if (child.state) {
+        const myst = toMyst(child.state.doc, {
+          ...localization,
+          renderers: { iframe: 'myst' },
+          createMdastImportId() {
+            return `${mdastName}#${createId()}`;
+          },
+        });
+        md = myst.content;
+        mdastSnippets = myst.mdastSnippets;
+      }
+      if (opts.keepOutputs && !md && child.version.data.kind === KINDS.Output) {
+        md = await createOutputSnippet(child.version, mdastName, mdastSnippets);
+      }
+      if (Object.keys(mdastSnippets).length) {
+        Object.assign(articleMdastSnippets, mdastSnippets);
+      }
+      return `+++ ${JSON.stringify(blockData)}\n\n${md}`;
+    }),
+  );
 
   const project = await new Project(session, block.id.project).get();
   saveAffiliations(session, project.data);
