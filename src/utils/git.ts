@@ -1,25 +1,30 @@
-export function parseGitUrl(url: string) {
-  const provider_domain = url.includes('github.com') ? 'github.com' : 'gitlab.com';
+export function parseGitUrl(maybeUrl: string) {
+  const provider_domain = maybeUrl.includes('github.com') ? 'github.com' : 'gitlab.com';
   const provider = provider_domain.split('.')[0];
-  if (url.startsWith(`https://${provider_domain}/`)) {
+  if (maybeUrl.startsWith(`git@${provider_domain}`)) {
     const [, owner, repo] =
-      url.match(new RegExp(`https://${provider_domain}/([^/]+)/([^/]+)/?.*$`)) || [];
+      maybeUrl.match(new RegExp(`git@${provider_domain}:([^/]+)/([^/]+)/?.*$`)) || [];
     return {
-      url: url.endsWith('.git') ? url : `https://${provider_domain}/${owner}/${repo}.git`,
+      url: maybeUrl.replace(`git@${provider_domain}:`, `https://${provider_domain}/`),
       owner,
       repo: repo.replace('.git', ''),
       provider,
     };
   }
-  if (url.startsWith(`git@${provider_domain}`)) {
+  const url = maybeUrl.startsWith(provider_domain) ? `https://${maybeUrl}` : maybeUrl;
+  if (
+    url.startsWith(`http://${provider_domain}/`) ||
+    url.startsWith(`https://${provider_domain}/`)
+  ) {
     const [, owner, repo] =
-      url.match(new RegExp(`git@${provider_domain}:([^/]+)/([^/]+)/?.*$`)) || [];
+      url.match(new RegExp(`http[s]*://${provider_domain}/([^/]+)/([^/]+)/?.*$`)) || [];
     return {
-      url: url.replace(`git@${provider_domain}:`, `https://${provider_domain}/`),
+      url: `https://${provider_domain}/${owner}/${repo}${url.endsWith('.git') ? '' : '.git'}`,
       owner,
       repo: repo.replace('.git', ''),
       provider,
     };
   }
+
   throw Error(`Unsupported url: ${url}`);
 }
