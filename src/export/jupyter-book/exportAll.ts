@@ -1,25 +1,19 @@
 import { Blocks, KINDS, NavListItemKindEnum } from '@curvenote/blocks';
 import { Version } from '../../models';
 import { ISession } from '../../session/types';
-import { articleToMarkdown } from '../markdown';
-import { notebookToIpynb } from '../notebook';
+import { articleToMarkdown, MarkdownExportOptions } from '../markdown';
+import { notebookToIpynb, NotebookExportOptions } from '../notebook';
 import { getLatestVersion } from '../utils/getLatest';
 import { ArticleState } from '../utils/walkArticle';
 import { writeBibtex } from '../utils/writeBibtex';
 
-interface Options {
-  path?: string;
-  images?: string;
-  bibtex?: string;
-  createFrontmatter?: boolean;
-  titleOnlyInFrontmatter?: boolean;
-  ignoreProjectFrontmatter?: boolean;
-}
+export type ExportAllOptions = Omit<MarkdownExportOptions, 'filename' | 'writeBibtex'> &
+  Omit<NotebookExportOptions, 'filename'>;
 
 export async function exportAll(
   session: ISession,
   nav: Version<Blocks.Navigation>,
-  opts?: Options,
+  opts?: ExportAllOptions,
 ) {
   const { bibtex = 'references.bib' } = opts ?? {};
   const blocks = await Promise.all(

@@ -14,14 +14,14 @@ import { assertEndsInExtension } from '../utils/assertions';
 import { exportFromOxaLink } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';
 
-type Options = {
+export type NotebookExportOptions = {
   path?: string;
   filename: string;
-  createFrontmatter?: boolean;
+  createNotebookFrontmatter?: boolean;
   ignoreProjectFrontmatter?: boolean;
 };
 
-async function createFrontmatterCell(session: ISession, block: Block, opts: Options) {
+async function createFrontmatterCell(session: ISession, block: Block, opts: NotebookExportOptions) {
   const project = await new Project(session, block.id.project).get();
   saveAffiliations(session, project.data);
   let frontmatter = pageFrontmatterFromDTO(session, block.data);
@@ -38,7 +38,11 @@ async function createFrontmatterCell(session: ISession, block: Block, opts: Opti
   };
 }
 
-export async function notebookToIpynb(session: ISession, versionId: VersionId, opts: Options) {
+export async function notebookToIpynb(
+  session: ISession,
+  versionId: VersionId,
+  opts: NotebookExportOptions,
+) {
   assertEndsInExtension(opts.filename, 'ipynb');
   const [block, version] = await Promise.all([
     new Block(session, versionId).get(),
@@ -51,7 +55,7 @@ export async function notebookToIpynb(session: ISession, versionId: VersionId, o
   // NOTE: this should be handled better in the client.
   const resp = await session.get(`${version.$createUrl()}/download`);
   if (!resp.ok) throw new Error(`Could not download notebook.`);
-  if (opts.createFrontmatter) {
+  if (opts.createNotebookFrontmatter) {
     // Put a frontmatter cell in the front!
     const frontmatterCell = await createFrontmatterCell(session, block, opts);
     resp.json.cells = [frontmatterCell, ...resp.json.cells];

@@ -1,3 +1,4 @@
+import { GenericNode } from 'mystjs';
 import path from 'path';
 import YAML from 'yaml';
 import { VersionId, KINDS, oxaLink, Blocks } from '@curvenote/blocks';
@@ -19,7 +20,7 @@ import { walkArticle } from '../utils/walkArticle';
 import { writeBibtex } from '../utils/writeBibtex';
 import { writeImagesToFiles } from '../utils/writeImagesToFiles';
 
-type Options = {
+export type MarkdownExportOptions = {
   path?: string;
   filename: string;
   images?: string;
@@ -94,7 +95,11 @@ async function createOutputSnippet(
   return `\`\`\`{mdast} ${snippetId}\n\`\`\``;
 }
 
-export async function articleToMarkdown(session: ISession, versionId: VersionId, opts: Options) {
+export async function articleToMarkdown(
+  session: ISession,
+  versionId: VersionId,
+  opts: MarkdownExportOptions,
+) {
   const [block, version] = await Promise.all([
     new Block(session, versionId).get(),
     new Version<Blocks.Article>(session, versionId).get(),

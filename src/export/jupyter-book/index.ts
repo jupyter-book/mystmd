@@ -3,18 +3,12 @@ import { Project } from '../../models';
 import { ISession } from '../../session/types';
 import { exportFromProjectLink } from '../utils/exportWrapper';
 import { getLatestVersion } from '../utils/getLatest';
-import { exportAll } from './exportAll';
+import { exportAll, ExportAllOptions } from './exportAll';
 import { writeConfig } from './jbConfig';
 import { writeTOC } from './toc';
 
-type Options = {
-  path?: string;
+type Options = Omit<ExportAllOptions, 'bibtex'> & {
   writeConfig?: boolean;
-  images?: string;
-  bibtex?: string;
-  createFrontmatter?: boolean;
-  titleOnlyInFrontmatter?: boolean;
-  ignoreProjectFrontmatter?: boolean;
 };
 
 export async function projectToJupyterBook(session: ISession, projectId: ProjectId, opts: Options) {
