@@ -57,6 +57,7 @@ function makeDeployCLI(program: Command) {
     .description('Deploy content to https://*.curve.space or your own domain')
     .addOption(makeForceOption())
     .addOption(makeYesOption())
+    .addOption(makeCIOption())
     .action(clirun(web.deploy, { program, requireSiteConfig: true }));
   return command;
 }

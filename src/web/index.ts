@@ -55,6 +55,7 @@ export async function install(session: ISession) {
 }
 
 export async function cloneCurvespace(session: ISession, opts: Options) {
+  if (opts.ci) return;
   if (opts.force) {
     await clean(session);
   } else if (opts.branch && opts.branch !== 'main' && buildPathExists(session)) {
