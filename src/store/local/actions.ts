@@ -23,6 +23,7 @@ import {
   transformImages,
   transformAdmonitions,
   transformLinks,
+  transformCode,
 } from '../../transforms';
 import { References, RendererData, SingleCitationRenderer } from '../../transforms/types';
 import { copyActionResource, copyLogo, getSiteManifest, loadProjectFromDisk } from '../../toc';
@@ -200,6 +201,7 @@ export async function transformMdast(
   transformCitations(log, mdast, fileCitationRenderer, references);
   transformEnumerators(mdast, frontmatter);
   transformAdmonitions(mdast);
+  transformCode(mdast);
   transformFootnotes(mdast, references); // Needs to happen nead the end
   transformKeys(mdast);
   await transformImages(session, mdast, dirname(file));

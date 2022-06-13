@@ -10,3 +10,4 @@ export { transformMath } from './math';
 export { transformOutputs } from './outputs';
 export { transformRoot } from './root';
 export { transformAdmonitions } from './admonitions';
+export { transformCode } from './code';
