@@ -32,7 +32,7 @@
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "lint:format:fix": "npm run copy:version; prettier --write \"src/**/*.ts\"",
     "build:ts": "tsc -p .",
-    "build:assets": "copyfiles -f ./src/styles/* ./dist/styles; copyfiles -f ./src/images/* ./dist/images",
+    "build:assets": "copyfiles -f ./src/static/* ./dist/static",
     "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "build": "npm-run-all -l copy:version clean -p build:ts build:assets declarations",
     "build:watch": "npm run copy:version; tsc -w -p ."

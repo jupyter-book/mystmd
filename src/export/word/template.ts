@@ -48,7 +48,7 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
   });
 
   // TODO: this could come from an existing word doc
-  const styles = fs.readFileSync(pkgpath('styles/simple.xml'), 'utf-8');
+  const styles = fs.readFileSync(pkgpath('static/simple.xml'), 'utf-8');
 
   const doc = createSingleDocument(docxState, {
     title: block.data.title,

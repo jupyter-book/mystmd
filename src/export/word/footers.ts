@@ -9,7 +9,7 @@ export function createCurvenoteFooter() {
         children: [
           new TextRun('Created in '),
           new ImageRun({
-            data: fs.readFileSync(pkgpath('images/logo-blue-text.png')).toString('base64'),
+            data: fs.readFileSync(pkgpath('static/logo-blue-text.png')).toString('base64'),
             transformation: {
               width: 1150 / 18,
               height: 200 / 18,
