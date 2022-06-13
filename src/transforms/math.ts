@@ -61,7 +61,7 @@ function tryRender(
   } catch (error) {
     const { message } = error as unknown as Error;
     if (message.includes("Expected 'EOF', got '&' at position")) {
-      log.warn(`Math: Wrapping with \\begin{align*} in ${file}\n"${chalk.dim(message)}}"`);
+      log.warn(`Math: Wrapping with \\begin{align*} in ${file}\n${chalk.dim(message)}`);
       const result = tryRender(
         log,
         `\\begin{align*}\n${value}\n\\end{align*}`,
