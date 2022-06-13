@@ -31,11 +31,12 @@ function replaceEqnarray(log: Logger, value: string, file: string) {
 type RenderResult = { html?: string; warnings?: string[]; error?: string };
 
 function removeWarnings(result: RenderResult, predicate: (warning: string) => boolean) {
-  if (!result.warnings) return result;
-  const nextWarnings = result.warnings.filter(predicate);
-  if (nextWarnings.length === 0) return { html: result.html };
+  const { warnings, ...rest } = result;
+  if (!warnings) return rest;
+  const nextWarnings = warnings.filter(predicate);
+  if (nextWarnings.length === 0) return rest;
   return {
-    ...result,
+    ...rest,
     warnings: nextWarnings,
   };
 }
