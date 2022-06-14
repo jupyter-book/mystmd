@@ -1,6 +1,10 @@
 import path from 'path';
 import { VersionId, KINDS, convertToBlockId } from '@curvenote/blocks';
-import { pageFrontmatterFromDTO, projectFrontmatterFromDTO } from '../../frontmatter/api';
+import {
+  saveAffiliations,
+  pageFrontmatterFromDTO,
+  projectFrontmatterFromDTO,
+} from '../../frontmatter/api';
 import { fillPageFrontmatter } from '../../frontmatter/validators';
 import { Block, Project, Version } from '../../models';
 import { ISession } from '../../session/types';
@@ -56,6 +60,7 @@ export async function gatherAndWriteArticleContent(
   const frontmatterOpts = {
     escapeFn: escapeLatex,
   };
+  saveAffiliations(session, project.data);
   const projectFrontmatter = projectFrontmatterFromDTO(session, project.data, frontmatterOpts);
   let pageFrontmatter = pageFrontmatterFromDTO(session, block.data, data.date, frontmatterOpts);
   pageFrontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter);
