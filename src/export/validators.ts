@@ -10,7 +10,7 @@ import {
 /**
  * Validate Export Config
  *
- * This needs to be more complete, or even better, export config should more closely match
+ * TODO: This needs to be more complete, or even better, export config should more closely match
  * project/site config and we can reuse those validators...
  */
 export function validateExportConfigKeys(value: Record<string, any>, opts: Options) {
@@ -26,6 +26,11 @@ export function validateExportConfigKeys(value: Record<string, any>, opts: Optio
   return value;
 }
 
+/**
+ * Perform validation/corsion on jtex output
+ *
+ * TODO: these coersions could remain in memory and be passed directly to jtex, instead of written to file
+ */
 export function validateJtexFrontmatterKeys(value: Record<string, any>, opts: Options) {
   let date: Date;
   if (defined(value.date)) {

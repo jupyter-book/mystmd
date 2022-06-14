@@ -55,8 +55,8 @@ const FM_DELIM = '% ---';
 const FM_LINE = '% ';
 
 export function stringifyFrontmatter(data: Record<string, any>) {
-  // remove any keys that have undefined values, as YAML will silently convert these to null
   data = prepareToWrite(data);
+  // remove any keys that have undefined values, as YAML will silently convert these to null
   const noUndefined = Object.entries(data).reduce((acc, [key, value]) => {
     if (value === undefined) return acc;
     return { ...acc, [key]: value };
