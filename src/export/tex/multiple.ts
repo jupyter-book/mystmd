@@ -1,16 +1,21 @@
 import fs from 'fs';
 import path from 'path';
-import { parse } from 'date-fns';
-import { Author, createAuthor, oxaLinkToId, VersionId } from '@curvenote/blocks';
+import { oxaLinkToId, VersionId } from '@curvenote/blocks';
+import { projectFrontmatterFromDTO } from '../../frontmatter/api';
 import { Block, Project } from '../../models';
 import { ISession } from '../../session/types';
-import { DocumentModel, toAuthorFields, toDateFields } from '../model';
 import { ExportConfig } from '../types';
 import { makeBuildPaths } from '../utils/makeBuildPaths';
 import { ArticleState, ArticleStateReference } from '../utils/walkArticle';
 import { writeBibtex } from '../utils/writeBibtex';
+import { validateExportConfigKeys, validateJtexFrontmatterKeys } from '../validators';
 import { TexExportOptions } from './types';
-import { buildFrontMatter, stringifyFrontMatter } from './frontMatter';
+import {
+  stringifyFrontmatter,
+  buildJtexSection,
+  escapeLatex,
+  LatexFrontmatter,
+} from './frontmatter';
 import { gatherAndWriteArticleContent } from './gather';
 import {
   ifTemplateFetchTaggedBlocks,
@@ -53,7 +58,7 @@ export async function multipleArticleToTex(
 
   const articles: {
     article: ArticleState;
-    model: DocumentModel;
+    model: LatexFrontmatter;
     ref: string;
     taggedFilenames: Record<string, string>;
   }[] = [];
@@ -107,29 +112,21 @@ export async function multipleArticleToTex(
   // build main content file
   //
   session.log.debug('Building front matter for main content...');
-  const authorsData = job.data.authors ?? project.data.authors;
-  const authors = !authorsData
-    ? undefined
-    : await Promise.all(
-        (authorsData as Author[]).map((a) =>
-          toAuthorFields(session, project, createAuthor({ id: '', userId: a.id ?? null })),
-        ),
-      );
-
-  const frontMatter = stringifyFrontMatter(
-    buildFrontMatter(
-      {
-        ...job.data,
-        title: job.data.title ?? project.data.title,
-        description: job.data.description ?? project.data.description,
-        short_title: job.data.short_title ?? project.data.title.slice(0, 50),
-        authors,
-        date: job.data.date
-          ? toDateFields(parse(job.data.date, 'yyyy/MM/dd', new Date()))
-          : toDateFields(new Date()),
-        tags: [],
-        oxalink: job.project,
-      },
+  const validatedJobConfig = validateExportConfigKeys(job, {
+    logger: session.log,
+    property: 'job',
+    count: {},
+  });
+  const projectFrontmatter = projectFrontmatterFromDTO(session, project.data, {
+    escapeFn: escapeLatex,
+  });
+  const frontmatter: LatexFrontmatter = {
+    ...projectFrontmatter,
+    ...validatedJobConfig.data,
+    short_title: job.data.short_title ?? projectFrontmatter.title?.slice(0, 50),
+    // tags: [],
+    oxa: job.project ?? projectFrontmatter.oxa,
+    jtex: buildJtexSection(
       taggedFilenames,
       templateOptions,
       {
@@ -141,11 +138,17 @@ export async function multipleArticleToTex(
       options.template ?? options.templatePath ?? null,
       Object.keys(references).length > 0 ? 'main.bib' : null,
     ),
-  );
+  };
+
+  const validFrontmatter = validateJtexFrontmatterKeys(frontmatter, {
+    logger: session.log,
+    property: 'jtex',
+    count: {},
+  });
 
   // write the main file
   // write front matter
-  let mainContent = `${frontMatter}\n`;
+  let mainContent = `${stringifyFrontmatter(validFrontmatter)}\n`;
   mainContent += '\\graphicspath{{/}{chapters/}}\n';
   // eslint-disable-next-line no-restricted-syntax
   for (const article of articles) {

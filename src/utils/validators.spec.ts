@@ -100,6 +100,11 @@ describe('validateString', () => {
     expect(validateString('abc', { regex: '^[a-c]{2}$', ...opts })).toEqual(undefined);
     expect(opts.count?.errors).toEqual(1);
   });
+  it('escape function runs', async () => {
+    expect(validateString('abc', { maxLength: 3, escapeFn: (s) => `${s}${s}`, ...opts })).toEqual(
+      'abcabc',
+    );
+  });
 });
 
 describe('validateUrl', () => {

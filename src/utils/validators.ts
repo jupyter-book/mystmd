@@ -9,6 +9,8 @@ export type Options = {
   suppressWarnings?: boolean;
   suppressErrors?: boolean;
   count: { errors?: number; warnings?: number };
+  // escapeFn is only used in string validation
+  escapeFn?: (s: string) => string;
 };
 
 type KeyOptions = Options & { returnInvalidPartial?: boolean };
@@ -66,20 +68,26 @@ export function validateBoolean(input: any, opts: Options) {
 }
 
 /**
- * Validates value is a string and obeys max length, if provided.
+ * Validates string value
+ *
+ * Ensures string length is less than `maxLength` and matches regular expression `regex`.
+ * If `escapeFn` is provided, this will be applied to the output after other validation.
  */
 export function validateString(
   input: any,
   opts: { maxLength?: number; regex?: string | RegExp } & Options,
 ): string | undefined {
   if (typeof input !== 'string') return validationError(`must be string`, opts);
-  const value = input as string;
+  let value = input as string;
   const maxLength = opts.maxLength || 500;
   if (value.length > maxLength) {
     return validationError(`must be less than ${maxLength} chars`, opts);
   }
   if (opts.regex && !value.match(opts.regex)) {
     return validationError(`must match regex ${opts.regex}`, opts);
+  }
+  if (opts.escapeFn) {
+    value = opts.escapeFn(value);
   }
   return value;
 }
