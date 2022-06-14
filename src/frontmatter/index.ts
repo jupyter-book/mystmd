@@ -1,6 +1,6 @@
 import yaml from 'js-yaml';
-import { Root, PhrasingContent } from 'mdast';
-import { GenericNode, select } from 'mystjs';
+import { Root, PhrasingContent, Heading } from 'mdast';
+import { remove, select } from 'mystjs';
 import { Licenses } from '../licenses/types';
 import { licensesToString } from '../licenses/validators';
 import { ISession } from '../session/types';
@@ -20,31 +20,38 @@ function toText(content: PhrasingContent[]): string {
 
 function frontmatterFromMdastTree(
   tree: Root,
-  remove = true,
+  removeNode = true,
 ): { tree: Root; frontmatter: Record<string, any> } {
   const firstNode = tree.children[0];
   const secondNode = tree.children[1];
-  let removeUpTo = 0;
   let frontmatter: Record<string, any> = {};
   const firstIsYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
   if (firstIsYaml) {
     frontmatter = yaml.load(firstNode.value) as Record<string, any>;
-    removeUpTo += 1;
+    if (removeNode) (firstNode as any).type = '__delete__';
   }
   const nextNode = firstIsYaml ? secondNode : firstNode;
   const nextNodeIsHeading = nextNode?.type === 'heading' && nextNode.depth === 1;
+  // Explicitly handle the case of a H1 directly after the frontmatter
   if (nextNodeIsHeading) {
     const title = toText(nextNode.children);
+    // Add the title if it doesn't already exist
+    if (!frontmatter.title) frontmatter.title = title;
     // Only remove the title if it is the same
     if (frontmatter.title && frontmatter.title === title) {
-      removeUpTo += 1;
+      if (removeNode) (nextNode as any).type = '__delete__';
     }
   }
-  if (remove) tree.children.splice(0, removeUpTo);
   if (!frontmatter.title) {
-    const heading = select('heading', tree) as GenericNode;
-    // TODO: Improve title selection!
-    frontmatter.title = heading?.children?.[0]?.value;
+    const heading = select('heading', tree) as Heading;
+    if (heading) {
+      frontmatter.title = toText(heading.children);
+      if (removeNode) (heading as any).type = '__delete__';
+    }
+  }
+  if (removeNode) {
+    // Handles deleting the block if it is the only element in the block
+    remove(tree, '__delete__');
   }
   return { tree, frontmatter };
 }
@@ -56,16 +63,16 @@ function frontmatterFromMdastTree(
  * @param path - project path for loading project config/frontmatter
  * @param tree - mdast tree already loaded from 'file'
  * @param file - file source for mdast 'tree' - this is only used for logging; tree is not reloaded
- * @param remove - if true, mdast tree will be mutated to remove frontmatter once read
+ * @param removeNode - if true, mdast tree will be mutated to remove frontmatter once read
  */
 export function getPageFrontmatter(
   session: ISession,
   path: string,
   tree: Root,
   file: string,
-  remove = true,
+  removeNode = true,
 ): PageFrontmatter {
-  const { frontmatter: rawPageFrontmatter } = frontmatterFromMdastTree(tree, remove);
+  const { frontmatter: rawPageFrontmatter } = frontmatterFromMdastTree(tree, removeNode);
   const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, {
     logger: session.log,
     property: 'frontmatter',
