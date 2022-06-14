@@ -1,7 +1,8 @@
 import path from 'path';
 import { VersionId, KINDS, convertToBlockId } from '@curvenote/blocks';
-import { pageFrontmatterFromDTO } from '../../frontmatter/api';
-import { Block, Version } from '../../models';
+import { pageFrontmatterFromDTO, projectFrontmatterFromDTO } from '../../frontmatter/api';
+import { fillPageFrontmatter } from '../../frontmatter/validators';
+import { Block, Project, Version } from '../../models';
 import { ISession } from '../../session/types';
 import { getChildren } from '../utils/getChildren';
 import { walkArticle, ArticleState } from '../utils/walkArticle';
@@ -30,7 +31,8 @@ export async function gatherAndWriteArticleContent(
   model: LatexFrontmatter;
 }> {
   session.log.debug('Fetching data from API...');
-  const [block, version] = await Promise.all([
+  const [project, block, version] = await Promise.all([
+    new Project(session, versionId.project).get(),
     new Block(session, convertToBlockId(versionId)).get(),
     new Version(session, versionId).get(),
     getChildren(session, versionId),
@@ -51,10 +53,12 @@ export async function gatherAndWriteArticleContent(
   );
 
   session.log.debug('Building front matter...');
-
-  const pageFrontmatter = pageFrontmatterFromDTO(session, block.data, data.date, {
+  const frontmatterOpts = {
     escapeFn: escapeLatex,
-  });
+  };
+  const projectFrontmatter = projectFrontmatterFromDTO(session, project.data, frontmatterOpts);
+  let pageFrontmatter = pageFrontmatterFromDTO(session, block.data, data.date, frontmatterOpts);
+  pageFrontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter);
   const frontmatter: LatexFrontmatter = {
     ...pageFrontmatter,
     jtex: buildJtexSection(
