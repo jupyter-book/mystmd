@@ -12,7 +12,7 @@ function replaceLabel(log: Logger, node: Math | InlineMath, file: string): strin
   const match = LABEL.exec(node.value);
   if (!match) return node.value;
   const label = match[1];
-  log.debug(`Replacing math \\label for ${label} in ${file}`);
+  log.debug(`Math: Replacing \\label for ${label} in ${file}`);
   if (node.type === 'math') {
     node.label = label;
     node.identifier = label; // TODO: normalizeLabel
@@ -22,7 +22,7 @@ function replaceLabel(log: Logger, node: Math | InlineMath, file: string): strin
 
 function replaceEqnarray(log: Logger, value: string, file: string) {
   if (!value.includes('\\begin{eqnarray}')) return value;
-  log.warn(`Replacing math \\begin{eqnarray} with \\begin{align*} in ${file}`);
+  log.warn(`Math: Replacing \\begin{eqnarray} with \\begin{align*} in ${file}`);
   return value
     .replace(/\\begin{eqnarray}/g, '\\begin{align*}')
     .replace(/\\end{eqnarray}/g, '\\end{align*}');
