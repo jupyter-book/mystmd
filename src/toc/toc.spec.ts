@@ -85,7 +85,7 @@ describe('site section generation', () => {
       citations: [],
       pages: [
         {
-          title: 'folder',
+          title: 'Folder',
           level: 1,
         },
         {
@@ -102,7 +102,10 @@ describe('site section generation', () => {
     });
   });
   it('nested folders', async () => {
-    mock({ 'readme.md': '', 'folder1/folder2/folder3': { 'page.md': '', 'notebook.ipynb': '' } });
+    mock({
+      'readme.md': '',
+      'folder1/01_MySecond_folder-ok/folder3': { '01_notebook.ipynb': '', '02_page.md': '' },
+    });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
@@ -110,24 +113,24 @@ describe('site section generation', () => {
       citations: [],
       pages: [
         {
-          title: 'folder1',
+          title: 'Folder1',
           level: 1,
         },
         {
-          title: 'folder2',
+          title: 'My Second Folder Ok',
           level: 2,
         },
         {
-          title: 'folder3',
+          title: 'Folder3',
           level: 3,
         },
         {
-          file: 'folder1/folder2/folder3/notebook.ipynb',
+          file: 'folder1/01_MySecond_folder-ok/folder3/01_notebook.ipynb',
           slug: 'notebook',
           level: 4,
         },
         {
-          file: 'folder1/folder2/folder3/page.md',
+          file: 'folder1/01_MySecond_folder-ok/folder3/02_page.md',
           slug: 'page',
           level: 4,
         },
@@ -155,11 +158,11 @@ describe('site section generation', () => {
       citations: [],
       pages: [
         {
-          title: 'folder2',
+          title: 'Folder2',
           level: 1,
         },
         {
-          title: 'folder3',
+          title: 'Folder3',
           level: 2,
         },
         {
@@ -189,7 +192,7 @@ describe('site section generation', () => {
       citations: [],
       pages: [
         {
-          title: 'folder',
+          title: 'Folder',
           level: 1,
         },
         {
