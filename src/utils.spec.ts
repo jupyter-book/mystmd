@@ -4,6 +4,24 @@ import { ProjectId } from './projects';
 
 const CASES: [string, { url: string; owner: string; repo: string; provider: string }][] = [
   [
+    'https://github.com/stevejpurves/seg_tutorial#branch',
+    {
+      url: 'https://github.com/stevejpurves/seg_tutorial.git',
+      owner: 'stevejpurves',
+      repo: 'seg_tutorial',
+      provider: 'github',
+    },
+  ],
+  [
+    'https://github.com/stevejpurves/seg_tutorial/tree/some/file',
+    {
+      url: 'https://github.com/stevejpurves/seg_tutorial.git',
+      owner: 'stevejpurves',
+      repo: 'seg_tutorial',
+      provider: 'github',
+    },
+  ],
+  [
     'github.com/stevejpurves/seg_tutorial',
     {
       url: 'https://github.com/stevejpurves/seg_tutorial.git',

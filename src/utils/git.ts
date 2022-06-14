@@ -17,7 +17,7 @@ export function parseGitUrl(maybeUrl: string) {
     url.startsWith(`https://${provider_domain}/`)
   ) {
     const [, owner, repo] =
-      url.match(new RegExp(`http[s]*://${provider_domain}/([^/]+)/([^/]+)/?.*$`)) || [];
+      url.match(new RegExp(`http[s]*://${provider_domain}/([^/]+)/([^/#]+)/?.*$`)) || [];
     return {
       url: `https://${provider_domain}/${owner}/${repo}${url.endsWith('.git') ? '' : '.git'}`,
       owner,
