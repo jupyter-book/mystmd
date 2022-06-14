@@ -1,11 +1,17 @@
 import path from 'path';
-import { Blocks, VersionId, KINDS, convertToBlockId } from '@curvenote/blocks';
+import { VersionId, KINDS, convertToBlockId } from '@curvenote/blocks';
+import { pageFrontmatterFromDTO } from '../../frontmatter/api';
 import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
-import { DocumentModel } from '../model';
 import { getChildren } from '../utils/getChildren';
 import { walkArticle, ArticleState } from '../utils/walkArticle';
-import { buildFrontMatterFromBlock, stringifyFrontMatter } from './frontMatter';
+import { validateJtexFrontmatterKeys } from '../validators';
+import {
+  buildJtexSection,
+  escapeLatex,
+  LatexFrontmatter,
+  stringifyFrontmatter,
+} from './frontmatter';
 import { localizeAndProcessImages } from './images';
 import { TexExportOptions } from './types';
 import { convertAndLocalizeChild, writeBlocksToFile, writeTaggedContent } from './utils';
@@ -21,7 +27,7 @@ export async function gatherAndWriteArticleContent(
   article: ArticleState;
   filename: string;
   taggedFilenames: Record<string, string>;
-  model: DocumentModel;
+  model: LatexFrontmatter;
 }> {
   session.log.debug('Fetching data from API...');
   const [block, version] = await Promise.all([
@@ -45,21 +51,31 @@ export async function gatherAndWriteArticleContent(
   );
 
   session.log.debug('Building front matter...');
-  const frontMatter = await buildFrontMatterFromBlock(
-    session,
-    block,
-    version as Version<Blocks.Article>,
-    taggedFilenames,
-    templateOptions,
-    {
-      path: opts.texIsIntermediate ?? false ? '.' : '..', // jtex path is always relative to the content file
-      filename: path.basename(opts.filename),
-      copy_images: true,
-      single_file: false,
-    },
-    opts.template ?? null,
-    Object.keys(article.references).length > 0 ? 'main.bib' : null,
-  );
+
+  const pageFrontmatter = pageFrontmatterFromDTO(session, block.data, data.date, {
+    escapeFn: escapeLatex,
+  });
+  const frontmatter: LatexFrontmatter = {
+    ...pageFrontmatter,
+    jtex: buildJtexSection(
+      taggedFilenames,
+      templateOptions,
+      {
+        path: opts.texIsIntermediate ?? false ? '.' : '..', // jtex path is always relative to the content file
+        filename: path.basename(opts.filename),
+        copy_images: true,
+        single_file: false,
+      },
+      opts.template ?? null,
+      Object.keys(article.references).length > 0 ? 'main.bib' : null,
+    ),
+  };
+
+  const validFrontmatter = validateJtexFrontmatterKeys(frontmatter, {
+    logger: session.log,
+    property: 'jtex',
+    count: {},
+  });
 
   const filename = opts.multiple
     ? path.join(buildPath, 'chapters', opts.filename)
@@ -70,8 +86,8 @@ export async function gatherAndWriteArticleContent(
     article.children,
     (child) => convertAndLocalizeChild(session, child, imageFilenames, article.references),
     filename,
-    stringifyFrontMatter(frontMatter),
+    stringifyFrontmatter(validFrontmatter),
   );
 
-  return { article, filename, taggedFilenames, model: frontMatter };
+  return { article, filename, taggedFilenames, model: frontmatter };
 }

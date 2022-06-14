@@ -1,9 +1,6 @@
 import YAML from 'yaml';
-import { Blocks } from '@curvenote/blocks';
 import { toTex } from '@curvenote/schema';
-import { Block, Version } from '../../models';
-import { ISession } from '../../session/types';
-import { buildDocumentModelFromBlock, DocumentModel } from '../model';
+import { PageFrontmatter } from '../../frontmatter/types';
 import { getEditorState } from '../utils/getEditorState';
 
 export interface JtexOutputConfig {
@@ -25,15 +22,15 @@ export interface JtexConfig {
   options: Record<string, any>;
 }
 
-export type LatexFrontMatter = DocumentModel & {
+export type LatexFrontmatter = PageFrontmatter & {
   jtex: JtexConfig;
 };
 
-function escapeLatex(maybeUnsafe: string): string {
+export function escapeLatex(maybeUnsafe: string): string {
   return toTex(getEditorState(`<p>${maybeUnsafe}</p>`).doc);
 }
 
-function buildJtexSection(
+export function buildJtexSection(
   tagged: Record<string, string>,
   options: Record<string, any>,
   output: JtexOutputConfig,
@@ -53,42 +50,10 @@ function buildJtexSection(
   };
 }
 
-export async function buildFrontMatterFromBlock(
-  session: ISession,
-  block: Block,
-  version: Version<Blocks.Article>,
-  tagged: Record<string, string>,
-  options: Record<string, any>,
-  output: JtexOutputConfig,
-  template: string | null,
-  references: string | null,
-): Promise<LatexFrontMatter> {
-  const model = await buildDocumentModelFromBlock(session, block, version, options, escapeLatex);
-  const data = {
-    ...model,
-    jtex: buildJtexSection(tagged, options, output, template, references),
-  };
-  return data;
-}
-
-export function buildFrontMatter(
-  model: DocumentModel,
-  tagged: Record<string, string>,
-  options: Record<string, any>,
-  output: JtexOutputConfig,
-  template: string | null,
-  references: string | null,
-): LatexFrontMatter {
-  return {
-    ...model,
-    jtex: buildJtexSection(tagged, options, output, template, references),
-  };
-}
-
 const FM_DELIM = '% ---';
 const FM_LINE = '% ';
 
-export function stringifyFrontMatter(data: LatexFrontMatter) {
+export function stringifyFrontmatter(data: Record<string, any>) {
   // remove any keys that have undefined values, as YAML will silently convert these to null
   const noUndefined = Object.entries(data).reduce((acc, [key, value]) => {
     if (value === undefined) return acc;

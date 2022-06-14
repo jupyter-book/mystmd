@@ -2,7 +2,7 @@ import { Block, oxaLink, Project } from '@curvenote/blocks';
 import { affiliations } from '../store/local';
 import { selectAffiliation } from '../store/selectors';
 import { ISession } from '../session';
-import { filterKeys } from '../utils/validators';
+import { filterKeys, Options } from '../utils/validators';
 import { Author, PageFrontmatter, ProjectFrontmatter } from './types';
 import {
   PAGE_FRONTMATTER_KEYS,
@@ -29,7 +29,11 @@ function resolveAffiliations(session: ISession, author: Author): Author {
   return { affiliations: resolvedAffiliations, ...rest };
 }
 
-export function projectFrontmatterFromDTO(session: ISession, project: Project): ProjectFrontmatter {
+export function projectFrontmatterFromDTO(
+  session: ISession,
+  project: Project,
+  opts?: Partial<Options>,
+): ProjectFrontmatter {
   const apiFrontmatter = filterKeys(project, PROJECT_FRONTMATTER_KEYS);
   if (apiFrontmatter.authors) {
     apiFrontmatter.authors = apiFrontmatter.authors.map((author: Author) =>
@@ -45,6 +49,7 @@ export function projectFrontmatterFromDTO(session: ISession, project: Project): 
     suppressErrors: true,
     suppressWarnings: true,
     count: {},
+    ...opts,
   });
 }
 
@@ -52,6 +57,7 @@ export function pageFrontmatterFromDTO(
   session: ISession,
   block: Block,
   date?: string | Date,
+  opts?: Partial<Options>,
 ): PageFrontmatter {
   const apiFrontmatter = filterKeys(block, PAGE_FRONTMATTER_KEYS);
   if (apiFrontmatter.authors) {
@@ -73,5 +79,6 @@ export function pageFrontmatterFromDTO(
     suppressErrors: true,
     suppressWarnings: true,
     count: {},
+    ...opts,
   });
 }

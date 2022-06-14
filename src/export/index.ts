@@ -4,6 +4,5 @@ export * from './tex';
 export * from './pdf';
 export * from './notebook';
 export * from './jupyter-book';
-export * from './model';
 export * from './utils';
 export * from './multiple';
