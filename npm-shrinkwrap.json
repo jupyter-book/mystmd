@@ -10,7 +10,7 @@
       "license": "MIT",
       "dependencies": {
         "@curvenote/blocks": "^1.5.2",
-        "@curvenote/nbtx": "^0.1.8",
+        "@curvenote/nbtx": "^0.1.9",
         "@curvenote/schema": "^0.12.13",
         "@google-cloud/storage": "^5.18.2",
         "@jupyterlab/nbformat": "^3.3.2",
@@ -959,9 +959,9 @@
       "integrity": "sha512-InheJkVa1CU/SAyeNm6ii8/M8B++sl9tyeyCqXHX06PMRUq5VoyIBm0PlPXKv4A71i6WAPuQwW/MjBpGTGRVbA=="
     },
     "node_modules/@curvenote/nbtx": {
-      "version": "0.1.8",
-      "resolved": "https://registry.npmjs.org/@curvenote/nbtx/-/nbtx-0.1.8.tgz",
-      "integrity": "sha512-TSLwXOAa+dRwAtSuZWUKjEHohgbuEONMrHI9NigzjSozgjur1+hlH6Hbu4uQfgSJe5GJ7JxTeMMeqgCYkImZZQ==",
+      "version": "0.1.9",
+      "resolved": "https://registry.npmjs.org/@curvenote/nbtx/-/nbtx-0.1.9.tgz",
+      "integrity": "sha512-uXHIN7MvoxKc3e51XjZR/tAc22qCNAl32AQRNGGTugLwN7WdA+wauclb/G5rCAavuPUwneeXWgrNrgjBz/IJOQ==",
       "dependencies": {
         "@jupyterlab/nbformat": "^3.3.2",
         "@typescript-eslint/eslint-plugin": "^5.16.0",
@@ -11486,9 +11486,9 @@
       "integrity": "sha512-InheJkVa1CU/SAyeNm6ii8/M8B++sl9tyeyCqXHX06PMRUq5VoyIBm0PlPXKv4A71i6WAPuQwW/MjBpGTGRVbA=="
     },
     "@curvenote/nbtx": {
-      "version": "0.1.8",
-      "resolved": "https://registry.npmjs.org/@curvenote/nbtx/-/nbtx-0.1.8.tgz",
-      "integrity": "sha512-TSLwXOAa+dRwAtSuZWUKjEHohgbuEONMrHI9NigzjSozgjur1+hlH6Hbu4uQfgSJe5GJ7JxTeMMeqgCYkImZZQ==",
+      "version": "0.1.9",
+      "resolved": "https://registry.npmjs.org/@curvenote/nbtx/-/nbtx-0.1.9.tgz",
+      "integrity": "sha512-uXHIN7MvoxKc3e51XjZR/tAc22qCNAl32AQRNGGTugLwN7WdA+wauclb/G5rCAavuPUwneeXWgrNrgjBz/IJOQ==",
       "requires": {
         "@jupyterlab/nbformat": "^3.3.2",
         "@typescript-eslint/eslint-plugin": "^5.16.0",
