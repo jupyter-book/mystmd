@@ -15,7 +15,7 @@ export const parseNotebook = (
   const children: TranslatedBlockPair[] = notebookAsJson.cells.map((cell) => {
     const [content, output] = translateFromJupyter(
       cell,
-      notebookAsJson.metadata.language_info.name,
+      notebookAsJson?.metadata?.language_info?.name,
     );
     if (!output || (output as Blocks.Output)?.original?.length === 0) {
       return { content } as TranslatedBlockPair;
