@@ -1,3 +1,4 @@
+import { title2name as createSlug } from '@curvenote/blocks';
 import fs from 'fs';
 import { extname, parse, join, sep } from 'path';
 import { CURVENOTE_YML, SiteProject, SiteAction, SiteAnalytics } from '../config/types';
@@ -38,9 +39,27 @@ export function isDirectory(file: string): boolean {
   return fs.lstatSync(file).isDirectory();
 }
 
+function createTitle(s: string): string {
+  return (
+    s
+      // https://stackoverflow.com/questions/18379254/regex-to-split-camel-case
+      .split(/([A-Z][a-z0-9]+)|_|-/)
+      .filter((e) => e)
+      .join(' ')
+      .trim()
+      // Now make it into title case (simple, but good enough)
+      .replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()))
+  );
+}
+
+function removeLeadingEnumeration(s: string): string {
+  return s.replace(/^([0-9_.-]+)/, '');
+}
+
 function fileInfo(file: string, pageSlugs: PageSlugs): { slug: string; title: string } {
-  let slug = parse(file).name.toLowerCase();
-  const title = slug;
+  const { name } = parse(file);
+  let slug = createSlug(removeLeadingEnumeration(name));
+  const title = createTitle(removeLeadingEnumeration(name));
   if (pageSlugs[slug]) {
     pageSlugs[slug] += 1;
     slug = `${slug}-${pageSlugs[slug] - 1}`;
