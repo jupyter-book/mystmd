@@ -57,5 +57,22 @@ describe('translators.notebook', () => {
         }),
       );
     });
+    it('given no kernelspec language, the translation still succeeds', () => {
+      const json = {
+        metadata: {
+          someone: "else's stuff",
+        },
+        nbformat: 9,
+        nbformat_minor: 9,
+      } as JsonObject;
+
+      const notebook = notebookFromJupyter(json);
+
+      expect(notebook).toEqual(
+        expect.objectContaining({
+          language: '',
+        }),
+      );
+    });
   });
 });
