@@ -22,5 +22,11 @@ describe('processing.notebook', () => {
       expect(children).toHaveLength(7);
       expect(children.filter((b) => b.output)).toHaveLength(2);
     });
+
+    test('parse notebook with invalid cell', () => {
+      const invalidCellNotebook = { ...exampleNotebookAsJson };
+      invalidCellNotebook.cells = [{} as any, ...invalidCellNotebook.cells];
+      expect(() => parseNotebook(invalidCellNotebook as JupyterNotebook)).toThrow();
+    });
   });
 });

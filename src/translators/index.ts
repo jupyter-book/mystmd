@@ -65,5 +65,8 @@ export function translateFromJupyter(
   cell: NotebookCell,
   language: Language | undefined,
 ): (Blocks.Code | Blocks.Content | Blocks.Output)[] {
+  if (!translators[cell.cell_type]) {
+    throw Error(`Unknown cell_type: ${cell.cell_type}`);
+  }
   return translators[cell.cell_type].fromJupyter(cell, language);
 }
