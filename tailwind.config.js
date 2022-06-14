@@ -24,6 +24,14 @@ module.exports = {
             },
             'blockquote p:first-of-type::before': { content: 'none' },
             'blockquote p:first-of-type::after': { content: 'none' },
+            li: {
+              marginTop: '0.25rem',
+              marginBottom: '0.25rem',
+            },
+            'li > p': {
+              marginTop: 0,
+              marginBottom: 0,
+            },
           },
         },
         invert: {
