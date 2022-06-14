@@ -20,6 +20,8 @@ export interface ISession {
 
   isAnon: boolean;
 
+  reload(): void;
+
   get<T extends JsonObject = JsonObject>(url: string, query?: Record<string, string>): Response<T>;
 
   post<T extends JsonObject = JsonObject>(url: string, data: JsonObject): Response<T>;

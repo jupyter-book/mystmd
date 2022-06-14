@@ -87,6 +87,10 @@ export class Session implements ISession {
     return url;
   }
 
+  reload() {
+    loadAllConfigs({ log: this.$logger, store: this.store });
+  }
+
   async get<T>(url: string, query?: Record<string, string>): Response<T> {
     const withBase = url.startsWith(this.API_URL) ? url : `${this.API_URL}${url}`;
     const fullUrl = withQuery(withBase, query);
