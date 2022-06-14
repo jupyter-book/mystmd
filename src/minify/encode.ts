@@ -17,7 +17,7 @@ async function requestImageAsBase64String(src: string) {
       canvas.width = (this as HTMLImageElement).naturalWidth;
       ctx.drawImage(this as HTMLImageElement, 0, 0);
       const dataURL = canvas.toDataURL('image/png');
-      const [_, base64] = dataURL.split(';base64,');
+      const [, base64] = dataURL.split(';base64,');
       resolve(base64);
     };
 
