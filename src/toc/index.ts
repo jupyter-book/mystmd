@@ -122,6 +122,7 @@ function projectPagesFromPath(
 ): (LocalProjectFolder | LocalProjectPage)[] {
   return fs
     .readdirSync(path)
+    .filter((file) => !file.startsWith('.'))
     .map((file) => join(path, file))
     .filter((file) => !ignore || !ignore.includes(file))
     .filter((file) => isValidFile(file) || isDirectory(file))
