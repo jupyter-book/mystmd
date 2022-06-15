@@ -35,36 +35,8 @@ export type MarkdownExportOptions = {
 /**
  * Pull content from a version of kind Output, cache in mdast snippets, and return {mdast} directive
  *
- * This slightly restructures the notebook output from:
- *
- * [
- *   {
- *     "execution_count": 7,
- *     "output_type": "execute_result",
- *     "data": {
- *       "text/html": "...",
- *       ...
- *     }
- *   },
- *   ...
- * ]
- *
- * to
- *
- * [
- *   {
- *     "execution_count": 7,
- *     "output_type": "execute_result",
- *     "data": {
- *       "text/html": {
- *         "content": "...",
- *         "content_type": "text/html"
- *       },
- *       ...
- *     }
- *   },
- *   ...
- * ]
+ * Note: the output data cached here is directly from the API; it still needs to be minified in
+ * the transformOutputs transform.
  *
  */
 async function createOutputSnippet(
@@ -75,21 +47,6 @@ async function createOutputSnippet(
   const response = await fetch(version.data.links.download);
   if (!response.ok) return '';
   const outputData = (await response.json()) as Record<string, any>[];
-  // TODO: It would be nice if we could consume the notebook output structure as-is.
-  outputData.forEach((outputEntry) => {
-    Object.keys(outputEntry.data).forEach((content_type) => {
-      let outputContent = outputEntry.data[content_type];
-      if (typeof outputContent === 'object') {
-        outputContent = JSON.stringify(outputContent);
-      }
-      if (typeof outputContent === 'string') {
-        outputEntry.data[content_type] = {
-          content_type,
-          content: outputContent,
-        };
-      }
-    });
-  });
   const snippetId = `${name}#${createId()}`;
   mdastSnippets[snippetId] = {
     type: 'output',
