@@ -78,7 +78,10 @@ async function createOutputSnippet(
   // TODO: It would be nice if we could consume the notebook output structure as-is.
   outputData.forEach((outputEntry) => {
     Object.keys(outputEntry.data).forEach((content_type) => {
-      const outputContent = outputEntry.data[content_type];
+      let outputContent = outputEntry.data[content_type];
+      if (typeof outputContent === 'object') {
+        outputContent = JSON.stringify(outputContent);
+      }
       if (typeof outputContent === 'string') {
         outputEntry.data[content_type] = {
           content_type,
