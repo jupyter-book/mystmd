@@ -40,7 +40,7 @@ export function notebookFromJupyter(data: JsonObject): Partial<Blocks.Notebook> 
       nbformat: data.nbformat,
       nbformat_minor: data.nbformat_minor,
     },
-    language: data.metadata.kernelspec.language ?? '',
+    language: metadata.kernelspec?.language ?? '',
     order: [],
     children: {},
   } as Partial<Blocks.Notebook>;
