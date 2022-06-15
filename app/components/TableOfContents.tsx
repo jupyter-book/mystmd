@@ -158,7 +158,7 @@ export const TableOfContents = () => {
   if (headings.length <= 1) return <nav suppressHydrationWarning />;
   return (
     <nav
-      aria-label="Table of Contents"
+      aria-label="Document Outline"
       suppressHydrationWarning
       className="fixed not-prose z-10 top-[3.8125rem] bottom-0 right-[max(0px,calc(50%-45rem))] w-[14rem] lg:w-[18rem] py-10 px-4 lg:px-8 overflow-y-auto hidden md:block"
     >

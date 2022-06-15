@@ -44,9 +44,7 @@ export const loader: LoaderFunction = async ({
 }): Promise<PageLoader | Response> => {
   const folderName = params.folder;
   const config = await getConfig(request);
-  if (!config) {
-    throw new Response('Site was not found', { status: 404 });
-  }
+  if (!config) throw new Response('Site was not found', { status: 404 });
   const folder = getProject(config, folderName);
   if (!folder) {
     throw new Response('Article was not found', { status: 404 });
