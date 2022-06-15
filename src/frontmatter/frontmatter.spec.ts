@@ -84,7 +84,6 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   subtitle: 'sub',
   short_title: 'short',
   date: '14 Dec 2021',
-  kind: KINDS.Article,
 };
 
 const TEST_PROJECT: Project = {
@@ -266,10 +265,6 @@ describe('validatePageFrontmatter', () => {
   });
   it('invalid date errors', async () => {
     expect(validatePageFrontmatter({ date: 'https://example.com' }, opts)).toEqual({});
-    expect(opts.count.errors).toEqual(1);
-  });
-  it('invalid kind errors', async () => {
-    expect(validatePageFrontmatter({ kind: 'not article' }, opts)).toEqual({});
     expect(opts.count.errors).toEqual(1);
   });
 });
@@ -484,7 +479,6 @@ describe('pageFrontmatterFromDTO', () => {
     name: 'name',
     date: date.toISOString(),
     oxa: 'oxa:proj/block',
-    kind: KINDS.Article,
   };
   const block: Block = {
     id: {

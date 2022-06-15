@@ -4,6 +4,7 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import { convertHtmlToMdast, GenericNode, selectAll } from 'mystjs';
 import { extname, join, dirname } from 'path';
+import { KINDS } from '@curvenote/blocks';
 import { SiteProject } from '../../config/types';
 import { getPageFrontmatter } from '../../frontmatter';
 import { parseMyst, Root } from '../../myst';
@@ -25,7 +26,12 @@ import {
   transformLinks,
   transformCode,
 } from '../../transforms';
-import { References, RendererData, SingleCitationRenderer } from '../../transforms/types';
+import {
+  PreRendererData,
+  References,
+  RendererData,
+  SingleCitationRenderer,
+} from '../../transforms/types';
 import { copyActionResource, copyLogo, getSiteManifest, loadProjectFromDisk } from '../../toc';
 import { LocalProjectPage } from '../../toc/types';
 import { writeFileToFolder, serverPath, tic } from '../../utils';
@@ -36,7 +42,7 @@ import { watch } from './reducers';
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
   $doiRenderers: Record<string, SingleCitationRenderer>; // keyed on doi
-  $mdast: Record<string, { pre: Root; post?: RendererData }>; // keyed on path
+  $mdast: Record<string, { pre: PreRendererData; post?: RendererData }>; // keyed on path
 };
 
 function castSession(session: ISession): ISessionWithCache {
@@ -97,12 +103,12 @@ export async function loadFile(session: ISession, path: string) {
   switch (ext) {
     case '.md': {
       const mdast = parseMyst(content);
-      cache.$mdast[path] = { pre: mdast };
+      cache.$mdast[path] = { pre: { mdast, kind: KINDS.Article } };
       break;
     }
     case '.ipynb': {
       const mdast = await processNotebook(cache, path, content);
-      cache.$mdast[path] = { pre: mdast };
+      cache.$mdast[path] = { pre: { mdast, kind: KINDS.Notebook } };
       break;
     }
     case '.bib': {
@@ -178,7 +184,7 @@ export async function transformMdast(
   const toc = tic();
   const { store, log } = session;
   const cache = castSession(session);
-  const mdastPre = cache.$mdast[file]?.pre;
+  const { mdast: mdastPre, kind } = cache.$mdast[file]?.pre;
   if (!mdastPre) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
   // Use structuredClone in future (available in node 17)
@@ -223,7 +229,7 @@ export async function transformMdast(
       }),
     );
   }
-  const data: RendererData = { sha256, frontmatter, mdast, references };
+  const data: RendererData = { kind, sha256, frontmatter, mdast, references };
   cache.$mdast[file].post = data;
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
 }

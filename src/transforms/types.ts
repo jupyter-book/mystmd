@@ -1,5 +1,6 @@
 import { CitationRenderer } from 'citation-js-utils';
 import { GenericNode, map } from 'mystjs';
+import { KINDS } from '@curvenote/blocks';
 import { PageFrontmatter } from '../frontmatter/types';
 import { Root } from '../myst';
 
@@ -17,11 +18,15 @@ export type References = {
   footnotes: Footnotes;
 };
 
-export interface RendererData {
+export type PreRendererData = {
+  mdast: Root;
+  kind: KINDS;
+};
+
+export type RendererData = PreRendererData & {
   sha256: string;
   frontmatter: PageFrontmatter;
-  mdast: Root;
   references: References;
-}
+};
 
 export type SingleCitationRenderer = { id: string; render: CitationRenderer[''] };
