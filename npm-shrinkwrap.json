@@ -10,7 +10,7 @@
       "license": "MIT",
       "dependencies": {
         "@curvenote/blocks": "^1.5.2",
-        "@curvenote/nbtx": "^0.1.9",
+        "@curvenote/nbtx": "^0.1.10",
         "@curvenote/schema": "^0.12.13",
         "@google-cloud/storage": "^5.18.2",
         "@jupyterlab/nbformat": "^3.3.2",
@@ -959,9 +959,9 @@
       "integrity": "sha512-InheJkVa1CU/SAyeNm6ii8/M8B++sl9tyeyCqXHX06PMRUq5VoyIBm0PlPXKv4A71i6WAPuQwW/MjBpGTGRVbA=="
     },
     "node_modules/@curvenote/nbtx": {
-      "version": "0.1.9",
-      "resolved": "https://registry.npmjs.org/@curvenote/nbtx/-/nbtx-0.1.9.tgz",
-      "integrity": "sha512-uXHIN7MvoxKc3e51XjZR/tAc22qCNAl32AQRNGGTugLwN7WdA+wauclb/G5rCAavuPUwneeXWgrNrgjBz/IJOQ==",
+      "version": "0.1.10",
+      "resolved": "https://registry.npmjs.org/@curvenote/nbtx/-/nbtx-0.1.10.tgz",
+      "integrity": "sha512-9vI7aEVbxLZ8eKIassR5Jebine3TWFA8/gg9MbP2+ALtmJzl/thlfieZ29+Xe4wlD5UnOq45Y6Qn7qyS4nTytA==",
       "dependencies": {
         "@jupyterlab/nbformat": "^3.3.2",
         "@typescript-eslint/eslint-plugin": "^5.16.0",
@@ -11486,9 +11486,9 @@
       "integrity": "sha512-InheJkVa1CU/SAyeNm6ii8/M8B++sl9tyeyCqXHX06PMRUq5VoyIBm0PlPXKv4A71i6WAPuQwW/MjBpGTGRVbA=="
     },
     "@curvenote/nbtx": {
-      "version": "0.1.9",
-      "resolved": "https://registry.npmjs.org/@curvenote/nbtx/-/nbtx-0.1.9.tgz",
-      "integrity": "sha512-uXHIN7MvoxKc3e51XjZR/tAc22qCNAl32AQRNGGTugLwN7WdA+wauclb/G5rCAavuPUwneeXWgrNrgjBz/IJOQ==",
+      "version": "0.1.10",
+      "resolved": "https://registry.npmjs.org/@curvenote/nbtx/-/nbtx-0.1.10.tgz",
+      "integrity": "sha512-9vI7aEVbxLZ8eKIassR5Jebine3TWFA8/gg9MbP2+ALtmJzl/thlfieZ29+Xe4wlD5UnOq45Y6Qn7qyS4nTytA==",
       "requires": {
         "@jupyterlab/nbformat": "^3.3.2",
         "@typescript-eslint/eslint-plugin": "^5.16.0",
@@ -16599,9 +16599,9 @@
       }
     },
     "minimist": {
-      "version": "1.2.6",
-      "resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.6.tgz",
-      "integrity": "sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q=="
+      "version": "1.2.5",
+      "resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz",
+      "integrity": "sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw=="
     },
     "mkdirp": {
       "version": "1.0.4",

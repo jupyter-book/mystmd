@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@curvenote/blocks": "^1.5.2",
-    "@curvenote/nbtx": "^0.1.9",
+    "@curvenote/nbtx": "^0.1.10",
     "@curvenote/schema": "^0.12.13",
     "@google-cloud/storage": "^5.18.2",
     "@jupyterlab/nbformat": "^3.3.2",
