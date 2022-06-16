@@ -1,9 +1,12 @@
 # Curvespace
 
-Curvespace is designed for modern technical communication that is interactive, computational, and linked to data.
-You can create and serve a local website to write your documentation, paper, thesis, or blog.
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/curvespace/blob/main/LICENSE)
+![CI](https://github.com/curvenote/curvespace/workflows/CI/badge.svg)
 
-- [Curvenote Docs](https://cli.curvenote.dev)
+Curvespace is designed for modern technical communication that is interactive, computational, and linked to data. You can create and serve a local website to write your documentation, paper, thesis, or blog.
+
+- [Curvenote Docs](https://docs.curvenote.com/cli)
+- [`curvenotejs`](https://github.com/curvenote/curvenotejs)
 
 ## Development
 
@@ -26,15 +29,6 @@ Open up [http://localhost:3000](http://localhost:3000) and you should be ready t
 Curvespace uses [Remix](https://remix.run) for the server, to learn more see the [Remix Docs](https://remix.run/docs).
 We have chosen Remix as it is blazing fast, built on web-standards, and can also work without Javascript.
 
-## Deployment
+## Using the Site
 
-After having run the `create-remix` command and selected "Vercel" as a deployment target, you only need to [import your Git repository](https://vercel.com/new) into Vercel, and it will be deployed.
-
-If you'd like to avoid using a Git repository, you can also deploy the directory by running [Vercel CLI](https://vercel.com/cli):
-
-```sh
-npm i -g vercel
-vercel
-```
-
-It is generally recommended to use a Git repository, because future commits will then automatically be deployed by Vercel, through its [Git Integration](https://vercel.com/docs/concepts/git).
+This site is run by `curvenote start` see [documentation](https://docs.curvenote.com/web).
