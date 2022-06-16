@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { NavLink, useParams, useLocation } from 'remix';
+import { NavLink, useParams, useLocation } from '@remix-run/react';
 import { getProjectHeadings, Heading, ManifestProject } from '~/utils';
 import { useConfig } from '../ConfigProvider';
 import { CreatedInCurvenote } from '../curvenote';
@@ -30,7 +30,7 @@ const HeadingLink = ({
     <NavLink
       prefetch="intent"
       title={title}
-      className={({ isActive }) =>
+      className={({ isActive }: { isActive: boolean }) =>
         classNames('block break-words', {
           'text-blue-500': !isIndex && isActive,
           'font-semibold': isActive,
@@ -101,7 +101,7 @@ const Headings = ({ folder, headings, sections }: Props) => {
   );
 };
 
-export const LeftNav = () => {
+export const TableOfContents = () => {
   const [open] = useNavOpen();
   const config = useConfig();
   const { folder: projectSlug } = useParams();
@@ -120,7 +120,7 @@ export const LeftNav = () => {
       )}
     >
       <nav
-        aria-label="Navigation"
+        aria-label="Table of Contents"
         className="flex-grow pt-10 pb-3 px-8 overflow-y-auto"
       >
         <Headings

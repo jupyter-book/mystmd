@@ -153,7 +153,7 @@ const useIntersectionObserver = (
   return { observer };
 };
 
-export const TableOfContents = () => {
+export const DocumentOutline = () => {
   const { activeId, headings, highlight } = useHeaders();
   if (headings.length <= 1) return <nav suppressHydrationWarning />;
   return (

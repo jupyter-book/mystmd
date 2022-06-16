@@ -1,5 +1,5 @@
 import { useNavOpen } from '../UiStateProvider';
-import { LeftNav } from './LeftNav';
+import { TableOfContents } from './TableOfContents';
 import { TopNav } from './TopNav';
 
 export function Navigation() {
@@ -13,7 +13,7 @@ export function Navigation() {
         ></div>
       )}
       <TopNav />
-      <LeftNav />
+      <TableOfContents />
     </>
   );
 }
