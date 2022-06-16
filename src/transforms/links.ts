@@ -5,6 +5,7 @@ import { OxaLink, oxaLink, oxaLinkToId } from '@curvenote/blocks';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { Root } from '../myst';
+import { hashAndCopyStaticFile } from '../utils';
 
 type LinkInfo = {
   url: string;
@@ -49,6 +50,9 @@ export function fileFromRelativePath(
   return [pathFromLink, ...target].join('#');
 }
 
+/**
+ * Populate link node with rich oxa info
+ */
 function mutateOxaLink(session: ISession, link: GenericNode, oxa: OxaLink) {
   link.oxa = oxa;
   const key = oxaLink(oxa, false) as string;
@@ -69,10 +73,23 @@ function mutateOxaLink(session: ISession, link: GenericNode, oxa: OxaLink) {
   }
 }
 
+/**
+ * Replace relative file link with resolved site path
+ */
 function mutateRelativeLink(link: GenericNode, sitePath: string, target?: string[]) {
   link.sourceUrl = link.url;
   link.url = [sitePath, ...(target || [])].join('#');
   link.internal = true;
+}
+
+/**
+ * Copy relative file to static folder and replace with absolute link
+ */
+function mutateStaticLink(session: ISession, link: GenericNode, linkFile: string) {
+  const file = hashAndCopyStaticFile(session, linkFile);
+  link.sourceUrl = link.url;
+  link.url = `/_static/${file}`;
+  link.static = true;
 }
 
 export function transformLinks(session: ISession, mdast: Root, file: string) {
@@ -89,6 +106,8 @@ export function transformLinks(session: ISession, mdast: Root, file: string) {
       const { url } = selectors.selectFileInfo(session.store.getState(), linkFile) || {};
       if (url) {
         mutateRelativeLink(link, url, target);
+      } else {
+        mutateStaticLink(session, link, linkFile);
       }
     }
   });

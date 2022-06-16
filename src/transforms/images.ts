@@ -5,8 +5,8 @@ import fetch from 'node-fetch';
 import path from 'path';
 import { oxaLinkToId, VersionId } from '@curvenote/blocks';
 import { Root } from '../myst';
-import { computeHash, WebFileObject } from '../web/files';
-import { imagePath, versionIdToURL } from '../utils';
+import { WebFileObject } from '../web/files';
+import { computeHash, hashAndCopyStaticFile, staticPath, versionIdToURL } from '../utils';
 import { ISession } from '../session/types';
 
 function isUrl(url: string) {
@@ -18,13 +18,13 @@ function isBase64(data: string) {
 }
 
 async function downloadAndSave(session: ISession, url: string, file: string): Promise<string> {
-  const fileFolder = imagePath(session);
+  const fileFolder = staticPath(session);
   const fileMatch = fs.readdirSync(fileFolder).find((f) => path.parse(f).name === file);
   if (fileMatch) {
     session.log.debug(`Cached image found for: ${url}...`);
     return fileMatch;
   }
-  const filePath = path.join(imagePath(session), file);
+  const filePath = path.join(staticPath(session), file);
   let extension: string | false = false;
   session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${filePath}`);
   await fetch(url)
@@ -73,21 +73,10 @@ export async function transformImages(session: ISession, mdast: Root, filePath: 
         file = await downloadAndSave(session, image.url, computeHash(image.url));
       } else if (fs.existsSync(imageLocalFile)) {
         // Non-oxa, non-url local image paths relative to the config.section.path
-        file = `${computeHash(imageLocalFile)}${path.extname(image.url)}`;
-        const destination = path.join(imagePath(session), file);
-        if (fs.existsSync(destination)) {
-          session.log.debug(`Cached image found for: ${imageLocalFile}`);
-        } else {
-          try {
-            fs.copyFileSync(imageLocalFile, destination);
-            session.log.debug(`Image successfully copied: ${imageLocalFile}`);
-          } catch {
-            session.log.error(`Error copying image: ${imageLocalFile}`);
-          }
-        }
+        file = hashAndCopyStaticFile(session, imageLocalFile);
       } else if (isBase64(image.url)) {
         // Inline base64 images
-        const fileObject = new WebFileObject(session.log, imagePath(session), '', true);
+        const fileObject = new WebFileObject(session.log, staticPath(session), '', true);
         await fileObject.writeBase64(image.url);
         file = fileObject.id;
       } else {
