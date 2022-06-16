@@ -6,18 +6,26 @@ import { ProjectFrontmatter } from '../frontmatter/types';
 import { Logger } from '../logging';
 import { Root } from '../myst';
 
-function replaceLabel(log: Logger, node: Math | InlineMath, file: string): string | undefined {
-  if (!node.value) return undefined;
+const replacements = {
+  ' ': ' ',
+};
+
+function knownReplacements(log: Logger, node: Math | InlineMath, file: string): string | undefined {
+  let { value } = node;
+  if (!value) return undefined;
+  Object.entries(replacements).forEach(([from, to]) => {
+    value = value.replace(new RegExp(from, 'g'), to);
+  });
   const LABEL = /\\label\{([^}]+)\}/g;
-  const match = LABEL.exec(node.value);
-  if (!match) return node.value;
+  const match = LABEL.exec(value);
+  if (!match) return value;
   const label = match[1];
   log.debug(`Math: Replacing \\label for ${label} in ${file}`);
   if (node.type === 'math') {
     node.label = label;
     node.identifier = label; // TODO: normalizeLabel
   }
-  return node.value.replace(LABEL, '');
+  return value.replace(LABEL, '');
 }
 
 function replaceEqnarray(log: Logger, value: string, file: string) {
@@ -98,7 +106,7 @@ export function renderEquation(
   frontmatter: Pick<ProjectFrontmatter, 'math'>,
   file: string,
 ) {
-  let value = replaceLabel(log, node, file);
+  let value = knownReplacements(log, node, file);
   if (!value) return;
   value = replaceEqnarray(log, value, file);
   const displayMode = node.type === 'math';

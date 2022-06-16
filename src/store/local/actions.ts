@@ -204,7 +204,7 @@ export async function transformMdast(
   await transformOutputs(session, mdast, kind);
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineRenderers(cache, projectPath, file);
-  transformCitations(log, mdast, fileCitationRenderer, references);
+  transformCitations(log, mdast, fileCitationRenderer, references, file);
   transformEnumerators(mdast, frontmatter);
   transformAdmonitions(mdast);
   transformCode(mdast);

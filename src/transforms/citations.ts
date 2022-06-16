@@ -49,6 +49,7 @@ export function transformCitations(
   mdast: Root,
   renderer: CitationRenderer,
   references: References,
+  file: string,
 ) {
   // TODO: this can be simplified if typescript doesn't die on the parent
   selectAll('citeGroup', mdast).forEach((node: GenericNode) => {
@@ -64,6 +65,6 @@ export function transformCitations(
     if (hasChildren(cite)) return;
     // These are picked up as they are *not* cite groups
     const success = addCitationChildren(cite, renderer);
-    if (!success) log.error(`⚠️  Could not find citation: ${cite.label}`);
+    if (!success) log.error(`⚠️  Could not find citation: ${cite.label} in ${file}`);
   });
 }
