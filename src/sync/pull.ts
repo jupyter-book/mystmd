@@ -35,8 +35,9 @@ export async function pullProject(session: ISession, path: string, opts?: { leve
   await projectToJupyterBook(session, project.id, {
     path,
     writeConfig: false,
-    createFrontmatter: true,
+    createNotebookFrontmatter: true,
     titleOnlyInFrontmatter: true,
+    keepOutputs: true,
     // Project frontmatter is kept sepatare in project config, above
     ignoreProjectFrontmatter: true,
   });

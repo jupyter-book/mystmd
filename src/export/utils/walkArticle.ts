@@ -173,7 +173,7 @@ export async function walkArticle(
             if (state == null) return {};
             return { state, block: childBlock, version };
           }
-          return {};
+          return { block: childBlock, version };
         }
         default:
           return {};

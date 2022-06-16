@@ -201,7 +201,7 @@ export async function transformMdast(
   cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
   ensureBlockNesting(mdast);
   transformMath(log, mdast, frontmatter, file);
-  transformOutputs(mdast);
+  await transformOutputs(session, mdast, kind);
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineRenderers(cache, projectPath, file);
   transformCitations(log, mdast, fileCitationRenderer, references);
