@@ -223,6 +223,7 @@ export async function transformMdast(
       path: file,
       title: frontmatter.title,
       description: frontmatter.description,
+      url: `/${projectSlug}/${pageSlug}`,
       // TODO: thumbnail
     }),
   );
@@ -248,7 +249,7 @@ export async function postProcessMdast(session: ISession, { file }: { file: stri
   const mdastPost = cache.$mdast[file].post;
   if (!mdastPost) throw new Error(`Expected mdast to be processed for ${file}`);
   // TODO: this is doing things in place...
-  transformLinks(session, mdastPost.mdast);
+  transformLinks(session, mdastPost.mdast, file);
   log.debug(toc(`Transformed mdast cross references for "${file}" in %s`));
 }
 
