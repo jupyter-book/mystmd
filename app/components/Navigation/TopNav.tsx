@@ -1,4 +1,4 @@
-import { Link, NavLink, useTransition } from 'remix';
+import { Link, NavLink, useTransition } from '@remix-run/react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { Menu, Transition } from '@headlessui/react';

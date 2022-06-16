@@ -1,4 +1,4 @@
-import { LoaderFunction } from 'remix';
+import { LoaderFunction } from '@remix-run/node';
 
 function createRobotsTxt(domain: string) {
   return `# https://www.robotstxt.org/robotstxt.html

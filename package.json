@@ -13,8 +13,7 @@
     "serve": "cross-env NODE_ENV=development npm run build:css && cross-env NODE_ENV=development remix dev",
     "lint": "eslint \"app/**/*.ts\" -c .eslintrc.json",
     "lint:format": "prettier --check \"app/**/*.tsx\" \"app/**/*.ts\"",
-    "lint:format:fix": "prettier --write \"app/**/*.tsx\" \"app/**/*.ts\"",
-    "postinstall": "remix setup node"
+    "lint:format:fix": "prettier --write \"app/**/*.tsx\" \"app/**/*.ts\""
   },
   "dependencies": {
     "@curvenote/blocks": "^1.4.4",
@@ -25,8 +24,9 @@
     "@headlessui/react": "^1.5.0",
     "@heroicons/react": "^1.0.6",
     "@popperjs/core": "^2.11.5",
-    "@remix-run/react": "^1.5.1",
-    "@remix-run/vercel": "^1.5.1",
+    "@remix-run/node": "^1.6.0",
+    "@remix-run/react": "^1.6.0",
+    "@remix-run/vercel": "^1.6.0",
     "classnames": "^2.3.1",
     "lodash.throttle": "^4.1.1",
     "myst-spec": "^0.0.4",
@@ -40,13 +40,12 @@
     "react-syntax-highlighter": "^15.5.0",
     "redux": "^4.1.2",
     "redux-thunk": "^2.4.1",
-    "remix": "^1.5.1",
     "swr": "^1.2.2",
     "unist-util-select": "^4.0.1"
   },
   "devDependencies": {
-    "@remix-run/dev": "^1.5.1",
-    "@remix-run/serve": "^1.5.1",
+    "@remix-run/dev": "^1.6.0",
+    "@remix-run/serve": "^1.6.0",
     "@tailwindcss/typography": "^0.5.2",
     "@types/lodash.throttle": "^4.1.7",
     "@types/react": "^17.0.43",

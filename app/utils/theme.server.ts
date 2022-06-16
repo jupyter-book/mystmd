@@ -1,4 +1,4 @@
-import { createCookieSessionStorage } from 'remix';
+import { createCookieSessionStorage } from '@remix-run/node';
 import { isTheme, Theme } from '~/components';
 
 export const themeStorage = createCookieSessionStorage({
@@ -8,7 +8,6 @@ export const themeStorage = createCookieSessionStorage({
     secrets: ['secret'],
     sameSite: 'lax',
     path: '/',
-    expires: new Date('2100-01-01'),
     httpOnly: true,
   },
 });
@@ -21,7 +20,8 @@ async function getThemeSession(request: Request) {
       return isTheme(themeValue) ? themeValue : Theme.light;
     },
     setTheme: (theme: Theme) => session.set('theme', theme),
-    commit: () => themeStorage.commitSession(session),
+    commit: () =>
+      themeStorage.commitSession(session, { expires: new Date('2100-01-01') }),
   };
 }
 

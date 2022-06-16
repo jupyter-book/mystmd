@@ -1,10 +1,10 @@
-import type { LoaderFunction } from 'remix';
+import type { LoaderFunction } from '@remix-run/node';
 import Page, {
   loader as pageLoader,
   meta,
   links,
-  CatchBoundary,
-  ErrorBoundary,
+  // CatchBoundary,
+  // ErrorBoundary,
 } from './$slug';
 
 export const loader: LoaderFunction = async (data): Promise<Response | null> => {
@@ -15,4 +15,4 @@ export const loader: LoaderFunction = async (data): Promise<Response | null> => 
 
 export default Page;
 
-export { meta, links, CatchBoundary, ErrorBoundary };
+export { meta, links };

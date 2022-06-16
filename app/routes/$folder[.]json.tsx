@@ -1,4 +1,4 @@
-import { LoaderFunction } from 'remix';
+import { LoaderFunction } from '@remix-run/node';
 import { loader as pageLoader } from './$folder/$slug';
 
 export const loader: LoaderFunction = async (data): Promise<Response | null> => {

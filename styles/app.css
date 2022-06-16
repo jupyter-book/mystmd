@@ -18,4 +18,10 @@
   .prose table tr:hover td {
     @apply bg-slate-50 dark:bg-stone-800;
   }
+  .article-content {
+    @apply mt-[80px] prose prose-stone dark:prose-invert break-words mx-5 p-3 max-w-none sm:pl-10 md:mr-[250px] lg:pr-[330px] lg:mr-0 lg:mx-auto xl:pr-[330px] xl:pl-[390px] xl:max-w-[1475px];
+  }
+  .error-content {
+    @apply mt-[80px] prose prose-stone dark:prose-invert break-words mx-5 p-3 max-w-none sm:pl-10 md:max-w-2xl lg:mx-auto xl:max-w-4xl;
+  }
 }

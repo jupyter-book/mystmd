@@ -75,7 +75,7 @@ export function CodeBlock(props: Props) {
             copyTextToClipboard(value)
               .then(() => setShowCopied(true))
               .catch(() => {
-                console.log('Failed to copy');
+                console.error('Failed to copy');
               });
           }}
         >

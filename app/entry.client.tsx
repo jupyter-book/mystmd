@@ -1,5 +1,5 @@
 import { hydrate } from 'react-dom';
-import { RemixBrowser } from 'remix';
+import { RemixBrowser } from '@remix-run/react';
 import { Provider } from 'react-redux';
 import type { Store } from 'redux';
 import type { types } from '@curvenote/runtime';

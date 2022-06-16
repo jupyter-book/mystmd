@@ -1,6 +1,5 @@
-import React from 'react';
 import classNames from 'classnames';
-import { Link } from 'remix';
+import { Link } from '@remix-run/react';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/outline';
 import { FooterLinks, NavigationLink } from '~/utils';
 

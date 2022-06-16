@@ -1,15 +1,17 @@
+import type { LinksFunction, MetaFunction } from '@remix-run/node';
+import { LoaderFunction } from '@remix-run/node';
+
 import {
   Links,
   LiveReload,
-  LoaderFunction,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
   useCatch,
   useLoaderData,
-} from 'remix';
-import type { MetaFunction, LinksFunction } from 'remix';
+} from '@remix-run/react';
+
 import React from 'react';
 import { Theme, ThemeProvider } from '~/components';
 import { Navigation } from './components/Navigation';
@@ -19,6 +21,9 @@ import { getMetaTagsForSite, getConfig, SiteManifest } from './utils';
 import { ConfigProvider } from './components/ConfigProvider';
 import { UiStateProvider } from './components/UiStateProvider';
 import { Analytics } from './components/analytics';
+import { ErrorSiteExpired } from './components/ErrorSiteExpired';
+import { ErrorSiteNotFound } from './components/ErrorSiteNotFound';
+import { responseNoSite } from './utils/response.server';
 
 export const meta: MetaFunction = ({ data }) => {
   return getMetaTagsForSite({
@@ -41,6 +46,7 @@ export const loader: LoaderFunction = async ({ request }): Promise<DocumentData>
     getConfig(request),
     getThemeSession(request),
   ]);
+  if (!config) throw responseNoSite(request.url);
   const data = { theme: themeSession.getTheme(), config };
   return data;
 };
@@ -94,21 +100,41 @@ export default function App() {
 
 export function CatchBoundary() {
   const caught = useCatch();
+  let isLaunchpad = false;
+  let url;
+  try {
+    url = new URL(caught.data);
+    isLaunchpad = url.hostname.startsWith('launchpad-');
+    // eslint-disable-next-line no-empty
+  } catch (err: any) {}
+
   return (
-    <Document theme={Theme.light} title="Page Not Found">
+    <Document theme={Theme.light} title={caught.statusText}>
       <article>
-        <h1>
-          {caught.status} {caught.statusText}
-        </h1>
+        <main className="error-content">
+          {isLaunchpad && <ErrorSiteExpired />}
+          {!isLaunchpad && <ErrorSiteNotFound url={url?.toString() ?? ''} />}
+        </main>
       </article>
     </Document>
   );
 }
 
-export function ErrorBoundary() {
+export function ErrorBoundary({
+  error,
+}: {
+  error: { message: string; stack: string };
+}) {
   return (
-    <Document theme={Theme.light} title="Page Not Found">
-      <h1></h1>
+    <Document theme={Theme.light} title="Error">
+      <div className="mt-16">
+        <main className="error-content">
+          <h1>An Error Occurred</h1>
+          <p>{error.message}</p>
+          <p>The stack trace is:</p>
+          <pre>{error.stack}</pre>
+        </main>
+      </div>
     </Document>
   );
 }
