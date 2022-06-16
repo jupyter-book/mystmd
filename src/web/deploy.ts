@@ -228,6 +228,6 @@ export async function deployContent(session: ISession, siteConfig: SiteConfig) {
   }
   session.log.debug(`CDN key: ${cdnKey}`);
   session.log.info(
-    '\n\n⚠️  https://curve.space is still in alpha. Please ensure you have a copy of your content locally.',
+    '\n\n⚠️  https://curve.space is in beta. Please ensure you have a copy of your content locally.',
   );
 }
