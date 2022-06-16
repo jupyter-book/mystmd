@@ -100,28 +100,33 @@ export async function loadFile(session: ISession, path: string) {
   const sha256 = createHash('sha256').update(content).digest('hex');
   const ext = extname(path);
   let success = true;
-  switch (ext) {
-    case '.md': {
-      const mdast = parseMyst(content);
-      cache.$mdast[path] = { pre: { mdast, kind: KINDS.Article } };
-      break;
+  try {
+    switch (ext) {
+      case '.md': {
+        const mdast = parseMyst(content);
+        cache.$mdast[path] = { pre: { mdast, kind: KINDS.Article } };
+        break;
+      }
+      case '.ipynb': {
+        const mdast = await processNotebook(cache, path, content);
+        cache.$mdast[path] = { pre: { mdast, kind: KINDS.Notebook } };
+        break;
+      }
+      case '.bib': {
+        const renderer = await loadCitations(session, path);
+        cache.$citationRenderers[path] = renderer;
+        break;
+      }
+      default:
+        session.log.error(`Unrecognized extension ${path}`);
+        session.log.info(
+          `"${path}": Please rerun the build with "-c" to ensure the built files are cleared.`,
+        );
+        success = false;
     }
-    case '.ipynb': {
-      const mdast = await processNotebook(cache, path, content);
-      cache.$mdast[path] = { pre: { mdast, kind: KINDS.Notebook } };
-      break;
-    }
-    case '.bib': {
-      const renderer = await loadCitations(session, path);
-      cache.$citationRenderers[path] = renderer;
-      break;
-    }
-    default:
-      session.log.error(`Unrecognized extension ${path}`);
-      session.log.info(
-        `"${path}": Please rerun the build with "-c" to ensure the built files are cleared.`,
-      );
-      success = false;
+  } catch (err) {
+    session.log.error(`Error reading file ${path}: ${err}`);
+    success = false;
   }
   session.store.dispatch(watch.actions.markFileChanged({ path, sha256 }));
   if (success) session.log.debug(toc(`loadFile: loaded ${path} in %s.`));
@@ -184,7 +189,8 @@ export async function transformMdast(
   const toc = tic();
   const { store, log } = session;
   const cache = castSession(session);
-  const { mdast: mdastPre, kind } = cache.$mdast[file]?.pre;
+  if (!cache.$mdast[file]) return;
+  const { mdast: mdastPre, kind } = cache.$mdast[file].pre;
   if (!mdastPre) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
   // Use structuredClone in future (available in node 17)
@@ -238,7 +244,8 @@ export async function postProcessMdast(session: ISession, { file }: { file: stri
   const toc = tic();
   const { log } = session;
   const cache = castSession(session);
-  const mdastPost = cache.$mdast[file]?.post;
+  if (!cache.$mdast[file]) return;
+  const mdastPost = cache.$mdast[file].post;
   if (!mdastPost) throw new Error(`Expected mdast to be processed for ${file}`);
   // TODO: this is doing things in place...
   transformLinks(session, mdastPost.mdast);
@@ -252,7 +259,8 @@ export async function writeFile(
   const toc = tic();
   const { log } = session;
   const cache = castSession(session);
-  const mdastPost = cache.$mdast[file]?.post;
+  if (!cache.$mdast[file]) return;
+  const mdastPost = cache.$mdast[file].post;
   if (!mdastPost) throw new Error(`Expected mdast to be processed and transformed for ${file}`);
   const id = join(projectSlug, pageSlug);
   const jsonFilename = join(serverPath(session), 'app', 'content', `${id}.json`);
