@@ -4,14 +4,71 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/curvenotejs/blob/main/LICENSE)
 ![CI](https://github.com/curvenote/curvenotejs/workflows/CI/badge.svg)
 
+Create, edit, share and publish scientific and technical documents.
+
 ## Overview
 
-`curvenote` is a library and command line interface to access information and the API of <https://curvenote.com>. It includes utilities to export to various formats.
+`curvenote` is an open source library and command line interface (CLI) to create and share technical documents.
 
-## Basic usage of command line
+* Write papers and reports in Markdown and Jupyter ([docs](https://docs.curvenote.com/cli))
+* Create and share interactive websites ([docs](https://docs.curvenote.com/web))
+* Export to Word, LaTeX, and PDF with any [template](https://github.com/curvenote/templates) ([docs](https://docs.curvenote.com/export))
+
+In addition to being completely local, `curvenote` can optionally sync content to <https://curvenote.com> to allow you to work with collaborators who enjoy WYSIWYG editing & real time collaboration for technical documents.
+
+## Get Started
+
+Curvenote is available through Node and NPM. Unless you already have this on your system you will have to [install NodeJS](https://docs.curvenote.com/cli/installing-prerequisites). See [full install instructions](https://docs.curvenote.com/cli/installing) in the docs!
 
 ```bash
 npm install -g curvenote
+curvenote init
+curvenote start
+curvenote deploy
+```
+
+[![](images/cli-init.png)](https://docs.curvenote.com/web)
+
+## Built with Curvenote
+
+Curvenote allows you to easily create, edit, and publish content to the web as a fast, optimized site with interactive citations, cross-referencing, math, and dynamic figures from Jupyter Notebooks.
+
+Curvenote can be used to create all sorts of open-access content, click the links below to see some examples!
+
+* [Blogs](https://blog.curvenote.com/) & [technical websites](https://www.stevejpurves.com/blog)
+* [Papers](https://www.stevejpurves.com/la-palma-earthquakes) & [reports](https://www.stevejpurves.com/computational-finance)
+* [Seminar](https://seminars.simpeg.xyz/) & [conference](https://transform.softwareunderground.org/) websites
+* [Courses](https://geosci-inversion.curve.space/inversion) & [books](https://climasoma.curve.space/)
+* [Documentation](http://docs.curvenote.com/)
+* [Sharing Jupyter Notebooks](https://jarmitage.curve.space/)
+
+### Interactive and Linked
+
+The default website you create can have interactive Jupyter Notebook features, and live-preview of cross-references and citations.
+
+[PhD Thesis](https://phd.row1.ca/) with linked references, equations, and export to PDF.
+[![](images/phd-simple.gif)](https://phd.row1.ca/)
+
+[Interactive Papers](https://www.stevejpurves.com/la-palma-earthquakes/interactive-timelines-altair) with Jupyter Notebooks and interactive visualizations.
+[![](images/web-interactive.gif)](https://www.stevejpurves.com/la-palma-earthquakes/interactive-timelines-altair)
+
+These interactive scientific sites can be easily deployed on a hosting service called [curve.space](https://curve.space) or can also be hosted on your own custom domain.
+
+
+## Work locally with Live Reload
+
+The client library is entirely local, and rebuilds in ~50ms for most projects. Meaning you can preview your content as you are writing!
+
+[![](images/live-reload.gif)](https://www.stevejpurves.com/la-palma-earthquakes/interactive-timelines-altair)
+
+## Direct export from Curvenote
+
+- Microsoft Word (.docx)
+- Markdown (.md) - using MyST
+- LaTeX (.tex)
+- PDF (.pdf)
+
+```bash
 curvenote token set YOUR_TOKEN
 curvenote export docx https://curvenote.com/@curvenote/blog/communicating-science communicating-science.docx
 curvenote export md https://curvenote.com/@curvenote/blog/version-control-for-scientists version-control.md
@@ -19,7 +76,7 @@ curvenote export tex https://curvenote.com/@curvenote/blog/version-control-for-s
 curvenote export pdf https://curvenote.com/@curvenote/blog/version-control-for-scientists version-control.pdf -template arxiv_nips
 ```
 
-## Dependencies
+## LaTeX and PDF Dependencies
 
 Exporting to:
 
@@ -33,29 +90,3 @@ With python 3.7 or greater installed, install `jtex` via pip:
 ```bash
   python -m pip install jtex
 ```
-
-## Usage as a package
-
-```ts
-import { Session, MyUser } from 'curvenote';
-
-const session = new Session(token);
-const user = await new MyUser(session).get();
-console.log(user.data.username);
-```
-
-## Supported Models
-
-- MyUser
-- User
-- Team
-- Project
-- Block
-- Version
-
-## Supported Export
-
-- Microsoft Word (.docx)
-- Markdown (.md)
-- LaTeX (.tex)
-- PDF (.pdf)
