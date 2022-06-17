@@ -139,27 +139,31 @@ function projectPagesFromPath(
   pageSlugs: PageSlugs,
   ignore?: string[],
 ): (LocalProjectFolder | LocalProjectPage)[] {
-  return fs
+  const contents = fs
     .readdirSync(path)
     .filter((file) => !file.startsWith('.'))
     .map((file) => join(path, file))
     .filter((file) => !ignore || !ignore.includes(file))
-    .filter((file) => isValidFile(file) || isDirectory(file))
-    .sort()
+    .sort();
+  const files: (LocalProjectFolder | LocalProjectPage)[] = contents
+    .filter((file) => isValidFile(file))
     .map((file) => {
-      if (isValidFile(file)) {
-        return {
-          file,
-          level,
-          slug: fileInfo(file, pageSlugs).slug,
-        } as LocalProjectPage;
-      }
+      return {
+        file,
+        level,
+        slug: fileInfo(file, pageSlugs).slug,
+      } as LocalProjectPage;
+    });
+  const folders = contents
+    .filter((file) => isDirectory(file))
+    .map((file) => {
       const projectFolder: LocalProjectFolder = { title: fileInfo(file, pageSlugs).title, level };
       const newLevel = level < 5 ? level + 1 : 6;
       const pages = projectPagesFromPath(file, newLevel as pageLevels, pageSlugs, ignore);
       return pages.length ? [projectFolder, ...pages] : [];
     })
     .flat();
+  return files.concat(folders);
 }
 
 /**

@@ -137,6 +137,31 @@ describe('site section generation', () => {
       ],
     });
   });
+  it('files before folders', async () => {
+    mock({ 'readme.md': '', 'zfile.md': '', afolder: { 'page.md': '' } });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'readme.md',
+      path: '.',
+      index: 'readme',
+      citations: [],
+      pages: [
+        {
+          file: 'zfile.md',
+          slug: 'zfile',
+          level: 1,
+        },
+        {
+          title: 'Afolder',
+          level: 1,
+        },
+        {
+          file: 'afolder/page.md',
+          slug: 'page',
+          level: 2,
+        },
+      ],
+    });
+  });
   it('specify index & folder', async () => {
     mock({
       'ignore.md': '',
@@ -158,8 +183,18 @@ describe('site section generation', () => {
       citations: [],
       pages: [
         {
+          file: 'folder1/page1.md',
+          slug: 'page1',
+          level: 1,
+        },
+        {
           title: 'Folder2',
           level: 1,
+        },
+        {
+          file: 'folder1/folder2/page2.md',
+          slug: 'page2',
+          level: 2,
         },
         {
           title: 'Folder3',
@@ -169,16 +204,6 @@ describe('site section generation', () => {
           file: 'folder1/folder2/folder3/page3.md',
           slug: 'page3',
           level: 3,
-        },
-        {
-          file: 'folder1/folder2/page2.md',
-          slug: 'page2',
-          level: 2,
-        },
-        {
-          file: 'folder1/page1.md',
-          slug: 'page1',
-          level: 1,
         },
       ],
     });
