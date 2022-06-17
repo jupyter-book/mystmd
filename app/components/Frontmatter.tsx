@@ -195,8 +195,8 @@ export function Frontmatter({
           <Journal venue={venue} biblio={biblio} />
           <div className="flex-grow"></div>
           <Jupyter jupyter={kind === KINDS.Notebook} />
-          <GitHubLink github={'asa'} />
-          <LicenseBadges license={'asa'} />
+          <GitHubLink github={github} />
+          <LicenseBadges license={license} />
           <OpenAccessBadge open_access={open_access} />
           <DOI doi={doi} />
         </div>
