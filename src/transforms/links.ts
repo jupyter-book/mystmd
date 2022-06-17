@@ -100,7 +100,7 @@ export function transformLinks(session: ISession, mdast: Root, file: string) {
       mutateOxaLink(session, link, oxa);
       return;
     }
-    const linkFileWithTarget = fileFromRelativePath(link.url, file);
+    const linkFileWithTarget = fileFromRelativePath(link.sourceUrl || link.url, file);
     if (linkFileWithTarget) {
       const [linkFile, ...target] = linkFileWithTarget.split('#');
       const { url } = selectors.selectFileInfo(session.store.getState(), linkFile) || {};
