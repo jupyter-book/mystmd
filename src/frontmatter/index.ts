@@ -81,10 +81,10 @@ export function getPageFrontmatter(
   });
 
   const state = session.store.getState();
-  const projectFrontmatter: Record<string, any> =
-    selectors.selectLocalProjectConfig(state, path) ?? {};
+  const siteFrontmatter = selectors.selectLocalSiteConfig(state) ?? {};
+  const projectFrontmatter = selectors.selectLocalProjectConfig(state, path) ?? {};
 
-  const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter);
+  const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter, siteFrontmatter);
 
   const site = selectors.selectLocalSiteConfig(state);
   if (site?.design?.hide_authors) {

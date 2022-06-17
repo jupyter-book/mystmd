@@ -64,6 +64,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = ['subtitle', 'short_title'].concat(PROJECT_FRONTMATTER_KEYS);
 
+export const USE_SITE_FALLBACK = ['venue'];
 export const USE_PROJECT_FALLBACK = [
   'authors',
   'date',
@@ -388,9 +389,11 @@ export function validatePageFrontmatter(input: any, opts: Options) {
 export function fillPageFrontmatter(
   pageFrontmatter: PageFrontmatter,
   projectFrontmatter: ProjectFrontmatter,
+  siteFrontmatter?: SiteFrontmatter,
 ) {
-  // TODO: Anything with SiteFrontmatter? Maybe 'site.venue' overrides other venues?
-  //       Or 'site.title' is used if no other title is available on project/page?
+  if (siteFrontmatter) {
+    projectFrontmatter = fillMissingKeys(projectFrontmatter, siteFrontmatter, USE_SITE_FALLBACK);
+  }
   const frontmatter = fillMissingKeys(pageFrontmatter, projectFrontmatter, USE_PROJECT_FALLBACK);
 
   // If numbering is an object, combine page and project settings.

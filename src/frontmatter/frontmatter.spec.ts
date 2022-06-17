@@ -271,7 +271,7 @@ describe('validatePageFrontmatter', () => {
 
 describe('fillPageFrontmatter', () => {
   it('empty frontmatters return empty', async () => {
-    expect(fillPageFrontmatter({}, {})).toEqual({});
+    expect(fillPageFrontmatter({}, {}, {})).toEqual({});
   });
   it('page frontmatter returns self', async () => {
     expect(fillPageFrontmatter(TEST_PAGE_FRONTMATTER, {})).toEqual(TEST_PAGE_FRONTMATTER);
@@ -297,6 +297,11 @@ describe('fillPageFrontmatter', () => {
       ),
     ).toEqual({
       numbering: { enumerator: '#', heading_1: true, heading_5: true, heading_6: true },
+    });
+  });
+  it('site venue added', async () => {
+    expect(fillPageFrontmatter({}, {}, { venue: { title: 'my venue' } })).toEqual({
+      venue: { title: 'my venue' },
     });
   });
 });

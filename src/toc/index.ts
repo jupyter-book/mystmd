@@ -301,12 +301,13 @@ function getLogoPaths(
     session.log.debug('No logo specified, Curvespace renderer will use default logo');
     return null;
   }
+  const origLogoName = logoName;
   if (!fs.existsSync(logoName)) {
     // Look in the local public path
     logoName = join('public', logoName);
   }
   if (!fs.existsSync(logoName))
-    throw new Error(`Could not find logo at "${logoName}". See 'config.site.logo'`);
+    throw new Error(`Could not find logo at "${origLogoName}". See 'config.site.logo'`);
   const logo = `logo${extname(logoName)}`;
   return { path: logoName, public: join(publicPath(session), logo), url: `/${logo}` };
 }
