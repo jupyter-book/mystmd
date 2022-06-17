@@ -104,12 +104,12 @@ export async function loadFile(session: ISession, path: string) {
     switch (ext) {
       case '.md': {
         const mdast = parseMyst(content);
-        cache.$mdast[path] = { pre: { mdast, kind: KINDS.Article } };
+        cache.$mdast[path] = { pre: { kind: KINDS.Article, file: path, mdast } };
         break;
       }
       case '.ipynb': {
         const mdast = await processNotebook(cache, path, content);
-        cache.$mdast[path] = { pre: { mdast, kind: KINDS.Notebook } };
+        cache.$mdast[path] = { pre: { kind: KINDS.Notebook, file: path, mdast } };
         break;
       }
       case '.bib': {
@@ -236,7 +236,7 @@ export async function transformMdast(
       }),
     );
   }
-  const data: RendererData = { kind, sha256, frontmatter, mdast, references };
+  const data: RendererData = { kind, file, sha256, frontmatter, mdast, references };
   cache.$mdast[file].post = data;
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
 }
