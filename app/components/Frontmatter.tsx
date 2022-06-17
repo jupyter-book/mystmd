@@ -1,11 +1,13 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Frontmatter as FrontmatterType } from '~/utils';
+import { KINDS } from '@curvenote/blocks';
 import { LicenseBadges } from './Icons/License';
 import Email from './Icons/Email';
 import GitHub from './Icons/GitHub';
 import OpenAccessLogo from './Icons/OpenAccess';
 import OrcidLogo from './Icons/Orcid';
+import { Jupyter } from './Icons/Jupyter';
 
 function Author({ author }: { author: Required<FrontmatterType>['authors'][0] }) {
   return (
@@ -164,10 +166,16 @@ function Journal({
   );
 }
 
-export function Frontmatter({ frontmatter }: { frontmatter: FrontmatterType }) {
+export function Frontmatter({
+  kind,
+  frontmatter,
+}: {
+  kind: KINDS;
+  frontmatter: FrontmatterType;
+}) {
   const { subject, doi, open_access, license, github, venue, biblio } = frontmatter;
   const hasHeaders =
-    subject || doi || open_access || license || github || venue || biblio;
+    subject || doi || open_access || license || github || venue || biblio || true;
   return (
     <>
       {hasHeaders && (
@@ -186,8 +194,9 @@ export function Frontmatter({ frontmatter }: { frontmatter: FrontmatterType }) {
           )}
           <Journal venue={venue} biblio={biblio} />
           <div className="flex-grow"></div>
-          <GitHubLink github={github} />
-          <LicenseBadges license={license} />
+          <Jupyter jupyter={kind === KINDS.Notebook} />
+          <GitHubLink github={'asa'} />
+          <LicenseBadges license={'asa'} />
           <OpenAccessBadge open_access={open_access} />
           <DOI doi={doi} />
         </div>

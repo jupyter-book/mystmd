@@ -9,7 +9,6 @@ export default function Error({ output }: { output: MinifiedErrorOutput }) {
       content={ensureString(output.traceback)}
       path={output.path}
       render={(content?: string) => {
-        console.log('ERROR CONTENT', content);
         return (
           <pre className="text-sm font-thin font-system jupyter-error">
             <Ansi>{content ?? ''}</Ansi>
