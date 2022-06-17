@@ -86,8 +86,7 @@ async function prepareFileForUpload(from: string, to: string): Promise<FileInfo>
   const stats = fs.statSync(from);
   const md5 = createHash('md5').update(content).digest('hex');
   const contentType = mime.lookup(path.extname(from));
-  if (!contentType) throw new Error(`Unknown mime type for file ${from}`);
-  return { from, to, md5, size: stats.size, contentType };
+  return { from, to, md5, size: stats.size, contentType: contentType || '' };
 }
 
 type FileInfo = {
