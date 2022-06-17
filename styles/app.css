@@ -24,4 +24,10 @@
   .error-content {
     @apply mt-[80px] prose prose-stone dark:prose-invert break-words mx-5 p-3 max-w-none sm:pl-10 md:max-w-2xl lg:mx-auto xl:max-w-4xl;
   }
+  .font-system {
+    font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  }
+  .jupyter-error {
+    background-color: rgb(255, 221, 221);
+  }
 }

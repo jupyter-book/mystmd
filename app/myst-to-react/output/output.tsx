@@ -6,9 +6,10 @@ import { SafeOutputs } from './safe';
 import { NativeJupyterOutputs as JupyterOutputs } from './jupyter';
 import { OutputBlock } from './outputBlock';
 
-const DIRECT_OUTPUT_TYPES = new Set([]);
+const DIRECT_OUTPUT_TYPES = new Set(['stream', 'error']);
 
 const DIRECT_MIME_TYPES = new Set([
+  // KnownCellOutputMimeTypes.TextPlain,
   KnownCellOutputMimeTypes.ImagePng,
   KnownCellOutputMimeTypes.ImageGif,
   KnownCellOutputMimeTypes.ImageJpeg,
@@ -44,6 +45,18 @@ export function allOutputsAreSafe(
   }, true);
 }
 
+export function listMimetypes(
+  outputs: MinifiedOutput[],
+  directOutputTypes: Set<string>,
+) {
+  return outputs.map((output) => {
+    if (directOutputTypes.has(output.output_type)) return [output.output_type];
+    const data = (output as MinifiedMimeOutput).data;
+    const mimetypes = data ? Object.keys(data) : [];
+    return [output.output_type, mimetypes];
+  });
+}
+
 export function anyErrors(outputs: MinifiedOutput[]) {
   return outputs.reduce(
     (flag, output) => flag || output.output_type === 'error',
@@ -63,6 +76,8 @@ export function Output(node: GenericNode) {
     component = <JupyterOutputs id={node.key} outputs={outputs} />;
   }
 
+  const mimetypes = listMimetypes(outputs, DIRECT_OUTPUT_TYPES);
+
   return (
     <figure
       suppressHydrationWarning={!allSafe}
@@ -77,6 +92,7 @@ export function Output(node: GenericNode) {
       <OutputBlock allSafe={allSafe} hasError={hasError}>
         {component}
       </OutputBlock>
+      {mimetypes.join()}
     </figure>
   );
 }

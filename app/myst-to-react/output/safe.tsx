@@ -1,11 +1,11 @@
 import { KnownCellOutputMimeTypes } from '@curvenote/blocks/dist/blocks/types/jupyter';
-import { ensureString } from '@curvenote/blocks/dist/helpers';
 import type {
   MinifiedMimeBundle,
   MinifiedMimePayload,
   MinifiedOutput,
 } from '@curvenote/nbtx/dist/minify/types';
-import { MaybeLongContent } from './components';
+import Stream from './stream';
+import Error from './error';
 
 /**
  * https://jupyterbook.org/content/code-outputs.html#render-priority
@@ -59,13 +59,9 @@ function OutputImage({
 function SafeOutput({ output }: { output: MinifiedOutput }) {
   switch (output.output_type) {
     case 'stream':
-      return (
-        <MaybeLongContent
-          content={ensureString(output.text)}
-          path={output.path}
-          render={(content?: string) => <div>{content}</div>}
-        />
-      );
+      return <Stream output={output} />;
+    case 'error':
+      return <Error output={output} />;
     case 'display_data':
     case 'execute_result':
     case 'update_display_data': {
