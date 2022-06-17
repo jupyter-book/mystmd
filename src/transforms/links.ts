@@ -34,6 +34,8 @@ export function fileFromRelativePath(
 ): string | undefined {
   let target: string[];
   [pathFromLink, ...target] = pathFromLink.split('#');
+  // The URL is encoded (e.g. %20 --> space)
+  pathFromLink = decodeURIComponent(pathFromLink);
   if (!sitePath) sitePath = '.';
   if (file) {
     pathFromLink = path.relative(sitePath, path.resolve(path.dirname(file), pathFromLink));

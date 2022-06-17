@@ -16,6 +16,18 @@ describe('fileFromRelativePath', () => {
     mock({ 'readme.pdf': '' });
     expect(fileFromRelativePath('readme.pdf')).toEqual('readme.pdf');
   });
+  it('file returns file (decodeURI)', async () => {
+    mock({ 'notebooks/Joint EM inversion.ipynb': '' });
+    expect(fileFromRelativePath('notebooks/Joint%20EM%20inversion')).toEqual(
+      'notebooks/Joint EM inversion.ipynb',
+    );
+    expect(fileFromRelativePath('notebooks/Joint%20EM%20inversion.ipynb')).toEqual(
+      'notebooks/Joint EM inversion.ipynb',
+    );
+    expect(fileFromRelativePath('notebooks/Joint EM inversion.ipynb')).toEqual(
+      'notebooks/Joint EM inversion.ipynb',
+    );
+  });
   it('file with no ext returns ipynb file', async () => {
     mock({ 'readme.ipynb': '' });
     expect(fileFromRelativePath('readme')).toEqual('readme.ipynb');
