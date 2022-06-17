@@ -9,23 +9,12 @@ import { OutputBlock } from './outputBlock';
 const DIRECT_OUTPUT_TYPES = new Set(['stream', 'error']);
 
 const DIRECT_MIME_TYPES = new Set([
-  // KnownCellOutputMimeTypes.TextPlain,
+  KnownCellOutputMimeTypes.TextPlain,
   KnownCellOutputMimeTypes.ImagePng,
   KnownCellOutputMimeTypes.ImageGif,
   KnownCellOutputMimeTypes.ImageJpeg,
   KnownCellOutputMimeTypes.ImageBmp,
 ]) as Set<string>;
-
-function anImageAndPlainTextOnly(directMimeTypes: Set<string>, mimetypes: string[]) {
-  return (
-    mimetypes.length === 2 &&
-    mimetypes.includes('text/plain') &&
-    mimetypes.reduce(
-      (flag: boolean, mt: string) => flag || directMimeTypes.has(mt),
-      false,
-    )
-  );
-}
 
 export function allOutputsAreSafe(
   outputs: MinifiedOutput[],
@@ -39,16 +28,13 @@ export function allOutputsAreSafe(
     const safe =
       'data' in output &&
       Boolean(output.data) &&
-      (mimetypes.every((mimetype) => directMimeTypes.has(mimetype)) ||
-        anImageAndPlainTextOnly(directMimeTypes, mimetypes));
+      mimetypes.every((mimetype) => directMimeTypes.has(mimetype));
     return flag && safe;
   }, true);
 }
 
-export function listMimetypes(
-  outputs: MinifiedOutput[],
-  directOutputTypes: Set<string>,
-) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function listMimetypes(outputs: MinifiedOutput[], directOutputTypes: Set<string>) {
   return outputs.map((output) => {
     if (directOutputTypes.has(output.output_type)) return [output.output_type];
     const data = (output as MinifiedMimeOutput).data;
@@ -76,8 +62,6 @@ export function Output(node: GenericNode) {
     component = <JupyterOutputs id={node.key} outputs={outputs} />;
   }
 
-  const mimetypes = listMimetypes(outputs, DIRECT_OUTPUT_TYPES);
-
   return (
     <figure
       suppressHydrationWarning={!allSafe}
@@ -92,7 +76,6 @@ export function Output(node: GenericNode) {
       <OutputBlock allSafe={allSafe} hasError={hasError}>
         {component}
       </OutputBlock>
-      {mimetypes.join()}
     </figure>
   );
 }
