@@ -15,7 +15,7 @@ export const MaybeLongContent = ({
     return <div className="text-red-500">Error loading content: {error.message}</div>;
   }
   if (!data) {
-    return <div>Loading output area....</div>;
+    return <div>Fetching long content....</div>;
   }
   return <div>{render(data.content)}</div>;
 };
