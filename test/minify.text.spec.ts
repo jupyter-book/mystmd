@@ -1,10 +1,5 @@
 import { minifyStreamOutput, minifyErrorOutput } from '../src/minify/text';
-import {
-  getLastFileWrite,
-  makeNativeErrorOutput,
-  makeNativeStreamOutput,
-  TestFileObject,
-} from './helpers';
+import { makeNativeErrorOutput, makeNativeStreamOutput, TestFileObject } from './helpers';
 
 const default_opts = {
   basepath: 'somepath',
@@ -17,7 +12,7 @@ describe('minify.text', () => {
   test.each([
     ['hello world', 'hello world', undefined],
     ['123456789012345678901', '12345', 'somepath-text_plain'],
-    [['hello ', 'world'], 'hello \nworld', undefined],
+    [['hello ', 'world'], 'hello world', undefined],
     [['123', '456789012345678901'], '12345', 'somepath-text_plain'],
   ])(
     'minifyStreamOutput',
