@@ -109,7 +109,7 @@ export function transformLinks(session: ISession, mdast: Root, file: string) {
       const { url } = selectors.selectFileInfo(session.store.getState(), linkFile) || {};
       if (url) {
         mutateRelativeLink(link, url, target);
-      } else {
+      } else if (link.url !== '' && !link.url.startsWith('#')) {
         mutateStaticLink(session, link, linkFile);
       }
     }
