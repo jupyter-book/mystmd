@@ -3,15 +3,23 @@ import { ensureString } from '@curvenote/blocks';
 import { IFileObjectFactoryFn } from '../files';
 import { MinifiedErrorOutput, MinifiedStreamOutput, MinifyOptions } from './types';
 
+function ensureStringEnsureNewlines(maybeString: string | string[] | undefined) {
+  return typeof maybeString === 'string'
+    ? (maybeString as string)
+    : (maybeString as Array<string>)?.join('\n');
+}
+
 async function minifyStringOutput(
   fileFactory: IFileObjectFactoryFn,
   output: IStream | IError,
   fieldName: string,
-  opts: MinifyOptions,
+  opts: { ensureNewlines?: boolean } & MinifyOptions,
 ): Promise<MinifiedStreamOutput | MinifiedErrorOutput> {
   if (!output[fieldName])
     throw Error(`Bad Field name ${fieldName} for output type ${output.output_type}`);
-  const text = ensureString(output[fieldName] as string);
+  const text = opts.ensureNewlines
+    ? ensureStringEnsureNewlines(output[fieldName] as string | string[] | undefined)
+    : ensureString(output[fieldName] as string | string[] | undefined);
   if (text && text.length <= opts.maxCharacters) return { ...(output as any), [fieldName]: text };
   const file = fileFactory(`${opts.basepath}-text_plain`);
   await file.writeString(text, 'text/plain');
@@ -34,4 +42,7 @@ export const minifyErrorOutput = async (
   output: IError,
   opts: MinifyOptions,
 ): Promise<MinifiedErrorOutput> =>
-  minifyStringOutput(fileFactory, output, 'traceback', opts) as Promise<MinifiedErrorOutput>;
+  minifyStringOutput(fileFactory, output, 'traceback', {
+    ensureNewlines: true,
+    ...opts,
+  }) as Promise<MinifiedErrorOutput>;

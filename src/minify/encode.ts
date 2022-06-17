@@ -22,7 +22,15 @@ async function requestImageAsBase64String(src: string) {
     };
 
     // trigger the load
-    img.src = `${document.referrer.slice(0, -1)}${src}`;
+    try {
+      // attempt to properly resolve the url
+      const url = new URL(document.referrer);
+      img.src = `${url.origin}${src}`;
+    } catch (err: any) {
+      // if not best we can do is to try and load the src directly
+      console.error(`Could not get origin from referrer: ${document.referrer}, for: ${src}`);
+      img.src = src;
+    }
   });
 
   return base64String;
