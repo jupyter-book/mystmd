@@ -35,6 +35,16 @@ describe('site section generation', () => {
       pages: [],
     });
   });
+  it('README.md and index.md', async () => {
+    mock({ 'README.md': '', 'index.md': '' });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'index.md',
+      path: '.',
+      index: 'index',
+      citations: [],
+      pages: [{ file: 'README.md', level: 1, slug: 'readme' }],
+    });
+  });
   it('index.md only', async () => {
     mock({ 'index.md': '' });
     expect(projectFromPath(session, '.', 'index.md')).toEqual({
