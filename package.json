@@ -19,7 +19,7 @@
     "@curvenote/blocks": "^1.4.4",
     "@curvenote/components": "^0.3.4",
     "@curvenote/connect": "^0.0.6",
-    "@curvenote/nbtx": "^0.1.8",
+    "@curvenote/nbtx": "^0.1.11",
     "@curvenote/runtime": "^0.2.9",
     "@headlessui/react": "^1.5.0",
     "@heroicons/react": "^1.0.6",
