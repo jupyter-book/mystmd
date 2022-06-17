@@ -10,9 +10,9 @@ Create, edit, share and publish scientific and technical documents.
 
 `curvenote` is an open source library and command line interface (CLI) to create and share technical documents.
 
-* Write papers and reports in Markdown and Jupyter ([docs](https://docs.curvenote.com/cli))
-* Create and share interactive websites ([docs](https://docs.curvenote.com/web))
-* Export to Word, LaTeX, and PDF with any [template](https://github.com/curvenote/templates) ([docs](https://docs.curvenote.com/export))
+- Write papers and reports in Markdown and Jupyter ([docs](https://docs.curvenote.com/cli))
+- Create and share interactive websites ([docs](https://docs.curvenote.com/web))
+- Export to Word, LaTeX, and PDF with any [template](https://github.com/curvenote/templates) ([docs](https://docs.curvenote.com/export))
 
 In addition to being completely local, `curvenote` can optionally sync content to <https://curvenote.com> to allow you to work with collaborators who enjoy WYSIWYG editing & real time collaboration for technical documents.
 
@@ -35,12 +35,12 @@ Curvenote allows you to easily create, edit, and publish content to the web as a
 
 Curvenote can be used to create all sorts of open-access content, click the links below to see some examples!
 
-* [Blogs](https://blog.curvenote.com/) & [technical websites](https://www.stevejpurves.com/blog)
-* [Papers](https://www.stevejpurves.com/la-palma-earthquakes) & [reports](https://www.stevejpurves.com/computational-finance)
-* [Seminar](https://seminars.simpeg.xyz/) & [conference](https://transform.softwareunderground.org/) websites
-* [Courses](https://geosci-inversion.curve.space/inversion) & [books](https://climasoma.curve.space/)
-* [Documentation](http://docs.curvenote.com/)
-* [Sharing Jupyter Notebooks](https://jarmitage.curve.space/)
+- [Courses](https://geosci-inversion.curve.space/inversion) & [books](https://climasoma.curve.space/)
+- [Seminar](https://seminars.simpeg.xyz/) & [conference](https://transform.softwareunderground.org/) websites
+- [Blogs](https://blog.curvenote.com/) & [technical websites](https://www.stevejpurves.com/blog)
+- [Papers](https://www.stevejpurves.com/la-palma-earthquakes) & [reports](https://www.stevejpurves.com/computational-finance)
+- [Documentation](http://docs.curvenote.com/)
+- [Sharing Jupyter Notebooks](https://jarmitage.curve.space/)
 
 ### Interactive and Linked
 
@@ -54,7 +54,6 @@ The default website you create can have interactive Jupyter Notebook features, a
 
 These interactive scientific sites can be easily deployed on a hosting service called [curve.space](https://curve.space) or can also be hosted on your own custom domain.
 
-
 ## Work locally with Live Reload
 
 The client library is entirely local, and rebuilds in ~50ms for most projects. Meaning you can preview your content as you are writing!
@@ -63,13 +62,21 @@ The client library is entirely local, and rebuilds in ~50ms for most projects. M
 
 ## Direct export from Curvenote
 
+First login, see [authorization docs](https://docs.curvenote.com/cli/authorization) to get an API token.
+
+```bash
+curvenote token set
+> YOUR_API_TOKEN
+```
+
+Then you can directly export your curvenote documents to:
+
 - Microsoft Word (.docx)
 - Markdown (.md) - using MyST
 - LaTeX (.tex)
 - PDF (.pdf)
 
 ```bash
-curvenote token set YOUR_TOKEN
 curvenote export docx https://curvenote.com/@curvenote/blog/communicating-science communicating-science.docx
 curvenote export md https://curvenote.com/@curvenote/blog/version-control-for-scientists version-control.md
 curvenote export tex https://curvenote.com/@curvenote/blog/version-control-for-scientists version-control.tex -template plain_latex
