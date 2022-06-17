@@ -4,6 +4,14 @@
   "description": "Command line tools for Curvenote",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
+  "keywords": [
+    "markdown",
+    "latex",
+    "writing-software",
+    "scientific-visualization",
+    "pdf-generation",
+    "science-research"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
