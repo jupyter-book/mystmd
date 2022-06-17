@@ -1,10 +1,10 @@
-import { createHash } from 'crypto';
 import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
 import { KnownCellOutputMimeTypes } from '@curvenote/blocks';
 import { IFileObject, IFileObjectFactoryFn, Metadata } from '@curvenote/nbtx';
 import { Logger } from '../logging';
+import { computeHash } from '../utils';
 
 enum FileExtension {
   png = 'png',
@@ -23,10 +23,6 @@ const FileExtensionMap: Record<string, FileExtension> = {
   [KnownCellOutputMimeTypes.ImageSvg]: FileExtension.svg,
   [KnownCellOutputMimeTypes.AppJson]: FileExtension.json,
 };
-
-export function computeHash(content: string) {
-  return createHash('sha256').update(content).digest('hex');
-}
 
 export class WebFileObject implements IFileObject {
   log: Logger;

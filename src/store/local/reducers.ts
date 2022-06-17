@@ -51,6 +51,7 @@ type WatchedFile = {
   title?: string | null;
   description?: string | null;
   sha256?: string | null;
+  url?: string | null;
 };
 type WatchState = {
   linkLookup: Record<string, { path: string; url: string }>;
@@ -72,12 +73,14 @@ export const watch = createSlice({
         title?: string | null;
         description?: string | null;
         sha256?: string;
+        url?: string;
       }>,
     ) {
-      const { path, sha256, title, description } = action.payload;
+      const { path, sha256, title, description, url } = action.payload;
       if (title) state.files[path].title = title;
       if (description) state.files[path].description = description;
       if (sha256) state.files[path].sha256 = sha256;
+      if (url) state.files[path].url = url;
     },
     updateLinkInfo(
       state,

@@ -104,12 +104,12 @@ export async function loadFile(session: ISession, path: string) {
     switch (ext) {
       case '.md': {
         const mdast = parseMyst(content);
-        cache.$mdast[path] = { pre: { mdast, kind: KINDS.Article } };
+        cache.$mdast[path] = { pre: { kind: KINDS.Article, file: path, mdast } };
         break;
       }
       case '.ipynb': {
         const mdast = await processNotebook(cache, path, content);
-        cache.$mdast[path] = { pre: { mdast, kind: KINDS.Notebook } };
+        cache.$mdast[path] = { pre: { kind: KINDS.Notebook, file: path, mdast } };
         break;
       }
       case '.bib': {
@@ -223,6 +223,7 @@ export async function transformMdast(
       path: file,
       title: frontmatter.title,
       description: frontmatter.description,
+      url: `/${projectSlug}/${pageSlug}`,
       // TODO: thumbnail
     }),
   );
@@ -235,7 +236,7 @@ export async function transformMdast(
       }),
     );
   }
-  const data: RendererData = { kind, sha256, frontmatter, mdast, references };
+  const data: RendererData = { kind, file, sha256, frontmatter, mdast, references };
   cache.$mdast[file].post = data;
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
 }
@@ -248,7 +249,7 @@ export async function postProcessMdast(session: ISession, { file }: { file: stri
   const mdastPost = cache.$mdast[file].post;
   if (!mdastPost) throw new Error(`Expected mdast to be processed for ${file}`);
   // TODO: this is doing things in place...
-  transformLinks(session, mdastPost.mdast);
+  transformLinks(session, mdastPost.mdast, file);
   log.debug(toc(`Transformed mdast cross references for "${file}" in %s`));
 }
 

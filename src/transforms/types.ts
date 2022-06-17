@@ -19,6 +19,7 @@ export type References = {
 };
 
 export type PreRendererData = {
+  file: string;
   mdast: Root;
   kind: KINDS;
 };

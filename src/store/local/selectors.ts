@@ -30,8 +30,8 @@ export function selectLocalProjectConfig(
 }
 
 export function selectFileInfo(state: RootState, path: string) {
-  const { title, sha256 } = state.local.watch.files[path] ?? {};
-  return { title, sha256 };
+  const { title, sha256, url } = state.local.watch.files[path] ?? {};
+  return { title, sha256, url };
 }
 
 export function selectPageSlug(state: RootState, projectPath: string, path: string) {

@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import fs from 'fs';
 import inquirer from 'inquirer';
 import path from 'path';
@@ -33,7 +34,7 @@ export function publicPath(session: ISession) {
   return path.join(serverPath(session), 'public');
 }
 
-export function imagePath(session: ISession) {
+export function staticPath(session: ISession) {
   return path.join(publicPath(session), '_static');
 }
 
@@ -80,6 +81,31 @@ export function writeFileToFolder(
   } else {
     writeFileToFolder(resolvePath(filename.path, filename.filename), data, opts);
   }
+}
+
+export function computeHash(content: string) {
+  return createHash('sha256').update(content).digest('hex');
+}
+
+/**
+ * Copy an existing file to the static path and name it based on hashed filename
+ *
+ * If hashed file already exists, this does nothing
+ */
+export function hashAndCopyStaticFile(session: ISession, file: string) {
+  const fileHash = `${computeHash(file)}${path.extname(file)}`;
+  const destination = path.join(staticPath(session), fileHash);
+  if (fs.existsSync(destination)) {
+    session.log.debug(`Cached image found for: ${file}`);
+  } else {
+    try {
+      fs.copyFileSync(file, destination);
+      session.log.debug(`File successfully copied: ${file}`);
+    } catch {
+      session.log.error(`Error copying image: ${file}`);
+    }
+  }
+  return fileHash;
 }
 
 export function versionIdToURL(versionId: VersionId) {
