@@ -6,6 +6,7 @@ import type {
 } from '@curvenote/nbtx/dist/minify/types';
 import Stream from './stream';
 import Error from './error';
+import Ansi from 'ansi-to-react';
 
 /**
  * https://jupyterbook.org/content/code-outputs.html#render-priority
@@ -68,7 +69,12 @@ function SafeOutput({ output }: { output: MinifiedOutput }) {
       const { image, text } = findSafeMimeOutputs(output);
       if (!image && !text) return null;
       if (image) return <OutputImage image={image} text={text} />;
-      if (text) return <div>{text.content}</div>;
+      if (text)
+        return (
+          <div>
+            <Ansi>{text.content}</Ansi>
+          </div>
+        );
       return null;
     }
     default:
