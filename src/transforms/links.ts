@@ -77,7 +77,7 @@ function mutateOxaLink(session: ISession, link: GenericNode, oxa: OxaLink) {
  * Replace relative file link with resolved site path
  */
 function mutateRelativeLink(link: GenericNode, sitePath: string, target?: string[]) {
-  link.sourceUrl = link.url;
+  if (!link.sourceUrl) link.sourceUrl = link.url;
   link.url = [sitePath, ...(target || [])].join('#');
   link.internal = true;
 }
@@ -87,7 +87,7 @@ function mutateRelativeLink(link: GenericNode, sitePath: string, target?: string
  */
 function mutateStaticLink(session: ISession, link: GenericNode, linkFile: string) {
   const file = hashAndCopyStaticFile(session, linkFile);
-  link.sourceUrl = link.url;
+  if (!link.sourceUrl) link.sourceUrl = link.url;
   link.url = `/_static/${file}`;
   link.static = true;
 }
@@ -95,12 +95,13 @@ function mutateStaticLink(session: ISession, link: GenericNode, linkFile: string
 export function transformLinks(session: ISession, mdast: Root, file: string) {
   const links = selectAll('link,linkBlock', mdast) as GenericNode[];
   links.forEach((link) => {
-    const oxa = link.oxa || oxaLinkToId(link.url);
+    const sourceUrl = link.sourceUrl || link.url;
+    const oxa = link.oxa || oxaLinkToId(sourceUrl);
     if (oxa) {
       mutateOxaLink(session, link, oxa);
       return;
     }
-    const linkFileWithTarget = fileFromRelativePath(link.sourceUrl || link.url, file);
+    const linkFileWithTarget = fileFromRelativePath(sourceUrl, file);
     if (linkFileWithTarget) {
       const [linkFile, ...target] = linkFileWithTarget.split('#');
       const { url } = selectors.selectFileInfo(session.store.getState(), linkFile) || {};
