@@ -89,6 +89,7 @@ function mutateRelativeLink(link: GenericNode, sitePath: string, target?: string
  */
 function mutateStaticLink(session: ISession, link: GenericNode, linkFile: string) {
   const file = hashAndCopyStaticFile(session, linkFile);
+  if (!file) return;
   if (!link.sourceUrl) link.sourceUrl = link.url;
   link.url = `/_static/${file}`;
   link.static = true;

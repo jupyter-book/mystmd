@@ -102,7 +102,8 @@ export function hashAndCopyStaticFile(session: ISession, file: string) {
       fs.copyFileSync(file, destination);
       session.log.debug(`File successfully copied: ${file}`);
     } catch {
-      session.log.error(`Error copying image: ${file}`);
+      session.log.error(`Error copying file: ${file}`);
+      return undefined;
     }
   }
   return fileHash;
