@@ -53,6 +53,14 @@ function createTitle(s: string): string {
 }
 
 function removeLeadingEnumeration(s: string): string {
+  if (s.match(/^([12][0-9]{3})[^0-9]/)) {
+    // Starts with what looks like a year
+    return s;
+  }
+  if (s.match(/^([0-9]{5})/)) {
+    // More than five numbers
+    return s;
+  }
   return s.replace(/^([0-9_.-]+)/, '');
 }
 
