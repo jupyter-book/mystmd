@@ -83,7 +83,10 @@ export async function articleToMarkdown(
       const blockData = { oxa: oxaLink('', child.version.id) };
       let md = '';
       let mdastSnippets: Record<string, GenericNode<Record<string, any>>> = {};
-      if (child.state) {
+      if (opts.keepOutputs && child.version.data.kind === KINDS.Output) {
+        // Reprocess output here, ignoring Output state from walkArticle
+        md = await createOutputSnippet(child.version, mdastName, mdastSnippets);
+      } else if (child.state) {
         const myst = toMyst(child.state.doc, {
           ...localization,
           renderers: { iframe: 'myst' },
@@ -93,9 +96,6 @@ export async function articleToMarkdown(
         });
         md = myst.content;
         mdastSnippets = myst.mdastSnippets;
-      }
-      if (opts.keepOutputs && !md && child.version.data.kind === KINDS.Output) {
-        md = await createOutputSnippet(child.version, mdastName, mdastSnippets);
       }
       if (Object.keys(mdastSnippets).length) {
         Object.assign(articleMdastSnippets, mdastSnippets);
