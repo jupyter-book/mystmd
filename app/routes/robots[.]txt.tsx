@@ -12,7 +12,6 @@ Sitemap: ${domain}/sitemap.xml
 
 export const loader: LoaderFunction = async ({ request }): Promise<Response | null> => {
   const url = new URL(request.url);
-  console.log(request.url, url.protocol, url.port);
   const domain = `${url.protocol}//${url.hostname}${url.port ? `:${url.port}` : ''}`;
   return new Response(createRobotsTxt(domain), {
     status: 200,
