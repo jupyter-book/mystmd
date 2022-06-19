@@ -89,6 +89,7 @@ function mutateRelativeLink(link: GenericNode, sitePath: string, target?: string
  */
 function mutateStaticLink(session: ISession, link: GenericNode, linkFile: string) {
   const file = hashAndCopyStaticFile(session, linkFile);
+  if (!file) return;
   if (!link.sourceUrl) link.sourceUrl = link.url;
   link.url = `/_static/${file}`;
   link.static = true;
@@ -103,14 +104,16 @@ export function transformLinks(session: ISession, mdast: Root, file: string) {
       mutateOxaLink(session, link, oxa);
       return;
     }
+    if (link.url === '' || link.url.startsWith('#')) {
+      link.internal = true;
+      return;
+    }
     const linkFileWithTarget = fileFromRelativePath(sourceUrl, file);
     if (linkFileWithTarget) {
       const [linkFile, ...target] = linkFileWithTarget.split('#');
       const { url } = selectors.selectFileInfo(session.store.getState(), linkFile) || {};
-      if (url) {
+      if (url != null) {
         mutateRelativeLink(link, url, target);
-      } else if (link.url === '' || link.url.startsWith('#')) {
-        link.internal = true;
       } else {
         mutateStaticLink(session, link, linkFile);
       }

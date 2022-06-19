@@ -50,7 +50,7 @@ export async function transformImages(session: ISession, mdast: Root, filePath: 
     images.map(async (image) => {
       const oxa = oxaLinkToId(image.url);
       const imageLocalFile = path.join(filePath, image.url);
-      let file: string;
+      let file: string | undefined;
       if (oxa) {
         // If oxa, get the download url
         const versionId = oxa?.block as VersionId;
@@ -74,6 +74,7 @@ export async function transformImages(session: ISession, mdast: Root, filePath: 
       } else if (fs.existsSync(imageLocalFile)) {
         // Non-oxa, non-url local image paths relative to the config.section.path
         file = hashAndCopyStaticFile(session, imageLocalFile);
+        if (!file) return;
       } else if (isBase64(image.url)) {
         // Inline base64 images
         const fileObject = new WebFileObject(session.log, staticPath(session), '', true);

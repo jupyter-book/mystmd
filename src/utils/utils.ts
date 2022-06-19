@@ -96,13 +96,14 @@ export function hashAndCopyStaticFile(session: ISession, file: string) {
   const fileHash = `${computeHash(file)}${path.extname(file)}`;
   const destination = path.join(staticPath(session), fileHash);
   if (fs.existsSync(destination)) {
-    session.log.debug(`Cached image found for: ${file}`);
+    session.log.debug(`Cached file found for: ${file}`);
   } else {
     try {
       fs.copyFileSync(file, destination);
       session.log.debug(`File successfully copied: ${file}`);
     } catch {
-      session.log.error(`Error copying image: ${file}`);
+      session.log.error(`Error copying file: ${file}`);
+      return undefined;
     }
   }
   return fileHash;
