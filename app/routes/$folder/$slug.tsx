@@ -66,7 +66,6 @@ export const loader: LoaderFunction = async ({
 export default function Page() {
   const article = useLoaderData<PageLoader>();
   const blocks = article.mdast.children as GenericParent[];
-  console.log('mdast', article.kind);
   return (
     <ReferencesProvider references={{ ...article.references, article: article.mdast }}>
       <div>

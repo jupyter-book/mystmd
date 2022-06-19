@@ -1,4 +1,4 @@
-import { Author } from '@curvenote/blocks';
+import { Author, KINDS } from '@curvenote/blocks';
 import type { GenericNode, GenericParent } from 'mystjs';
 
 export type Heading = {
@@ -84,6 +84,7 @@ export type Frontmatter = {
 
 export type PageLoader = {
   frontmatter: Frontmatter;
+  kind: KINDS;
   mdast: GenericParent;
   references: References;
   footer?: FooterLinks;
