@@ -18,7 +18,7 @@ export function getProjectHeadings(
   const headings: Heading[] = [
     {
       title: project.title,
-      slug: project.slug,
+      slug: project.index,
       path: `/${project.slug}`,
       level: 'index',
     },
