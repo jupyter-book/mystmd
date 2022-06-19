@@ -55,8 +55,9 @@ function getFigureHTML(
 ) {
   const figcaption = caption ? `\n  <figcaption kind="fig">${caption}</figcaption>` : '';
   const { width = DEFAULT_IMAGE_WIDTH, align = 'center', numbered = false } = style;
+  const widthPercent = `${`${width}`.replace(/%/g, '')}%`;
   return `<figure id="${id}"${numbered ? ' numbered=""' : ''} align="${align}">
-  <img src="${src}" align="${align}" alt="${title}" width="${width}%">${figcaption}
+  <img src="${src}" align="${align}" alt="${title}" width="${widthPercent}">${figcaption}
 </figure>`;
 }
 

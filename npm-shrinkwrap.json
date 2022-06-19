@@ -11,7 +11,7 @@
       "dependencies": {
         "@curvenote/blocks": "^1.5.2",
         "@curvenote/nbtx": "^0.1.11",
-        "@curvenote/schema": "^0.12.13",
+        "@curvenote/schema": "^0.12.14",
         "@google-cloud/storage": "^5.18.2",
         "@jupyterlab/nbformat": "^3.3.2",
         "@reduxjs/toolkit": "^1.7.2",
@@ -1110,9 +1110,9 @@
       }
     },
     "node_modules/@curvenote/schema": {
-      "version": "0.12.13",
-      "resolved": "https://registry.npmjs.org/@curvenote/schema/-/schema-0.12.13.tgz",
-      "integrity": "sha512-519WdZcXYloaLVgTl5PjYTR6faiZMb54fudFLwxJphHNImftHYwPb0bw3o0oIBlUs5yzNCKv4PFJcw25FI/QAw==",
+      "version": "0.12.14",
+      "resolved": "https://registry.npmjs.org/@curvenote/schema/-/schema-0.12.14.tgz",
+      "integrity": "sha512-iAw43aleIcHmlF/drIkJLdoZJlq5AZ71GVksfslOeEg9qeb8X/gD2xT/JVLEvTA5v2+IP4JQJJGwnxfUF9qS8A==",
       "dependencies": {
         "@wordpress/wordcount": "^3.2.2",
         "js-yaml": "^4.1.0",
@@ -11569,9 +11569,9 @@
       }
     },
     "@curvenote/schema": {
-      "version": "0.12.13",
-      "resolved": "https://registry.npmjs.org/@curvenote/schema/-/schema-0.12.13.tgz",
-      "integrity": "sha512-519WdZcXYloaLVgTl5PjYTR6faiZMb54fudFLwxJphHNImftHYwPb0bw3o0oIBlUs5yzNCKv4PFJcw25FI/QAw==",
+      "version": "0.12.14",
+      "resolved": "https://registry.npmjs.org/@curvenote/schema/-/schema-0.12.14.tgz",
+      "integrity": "sha512-iAw43aleIcHmlF/drIkJLdoZJlq5AZ71GVksfslOeEg9qeb8X/gD2xT/JVLEvTA5v2+IP4JQJJGwnxfUF9qS8A==",
       "requires": {
         "@wordpress/wordcount": "^3.2.2",
         "js-yaml": "^4.1.0",
