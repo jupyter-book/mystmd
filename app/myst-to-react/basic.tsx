@@ -40,7 +40,6 @@ type BasicNodeRenderers = {
   list: NodeRenderer<spec.List>;
   listItem: NodeRenderer<spec.ListItem>;
   container: NodeRenderer<spec.Container>;
-  image: NodeRenderer<spec.Image>;
   caption: NodeRenderer<spec.Caption>;
   blockquote: NodeRenderer<spec.Blockquote>;
   thematicBreak: NodeRenderer<spec.ThematicBreak>;
@@ -123,9 +122,6 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
         {children}
       </figure>
     );
-  },
-  image(node) {
-    return <img key={node.key} src={node.url} />;
   },
   caption(node, children) {
     return <figcaption key={node.key}>{children}</figcaption>;
