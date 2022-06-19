@@ -84,6 +84,7 @@ export async function transformImages(session: ISession, mdast: Root, filePath: 
         return;
       }
       // Update mdast with new file name
+      image.file = image.url;
       image.url = `/_static/${file}`;
     }),
   );
