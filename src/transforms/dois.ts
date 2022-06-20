@@ -29,7 +29,7 @@ async function getCitation(log: Logger, doi: string): Promise<SingleCitationRend
   if (!validate(normalize(doi))) return null;
   const bibtex = await getDoiOrgBibtex(log, doi);
   if (!bibtex) {
-    log.warn(`⚠️  Could not find DOI: ${doi}`);
+    log.warn(`⚠️  Could not find DOI from link: ${doi} as ${normalize(doi)}`);
     return null;
   }
   const renderer = await getCitations(bibtex);
