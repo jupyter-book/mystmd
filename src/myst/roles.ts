@@ -194,6 +194,30 @@ const SmallCaps: IRole = {
   },
 };
 
+const RRID: IRole = {
+  myst: class RRID extends Role {
+    run(data: IRoleData) {
+      const rrid = new this.state.Token('rrid', 'cite', 0);
+      rrid.attrSet('label', data.content);
+      return [rrid];
+    }
+  },
+  mdast: {
+    type: 'rrid',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        label: t.attrGet('label'),
+        identifier: t.attrGet('label'),
+      };
+    },
+  },
+  hast() {
+    return null;
+  },
+};
+
 export const reactiveRoles: Record<string, IRole> = {
   'r:dynamic': RDynamic,
   'r:display': RDisplay,
@@ -206,4 +230,5 @@ export const reactiveRoles: Record<string, IRole> = {
   sc: SmallCaps,
   underline: Underline,
   smallcaps: SmallCaps,
+  rrid: RRID,
 };
