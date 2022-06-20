@@ -48,8 +48,9 @@ export async function transformImages(session: ISession, mdast: Root, filePath: 
   const images = selectAll('image', mdast) as GenericNode[];
   return Promise.all(
     images.map(async (image) => {
-      const oxa = oxaLinkToId(image.url);
-      const imageLocalFile = path.join(filePath, image.url);
+      const sourceUrl = image.sourceUrl || image.url;
+      const oxa = oxaLinkToId(sourceUrl);
+      const imageLocalFile = path.join(filePath, sourceUrl);
       let file: string | undefined;
       if (oxa) {
         // If oxa, get the download url
@@ -68,24 +69,24 @@ export async function transformImages(session: ISession, mdast: Root, filePath: 
           downloadUrl,
           `${versionId.block}.${versionId.version}`,
         );
-      } else if (isUrl(image.url)) {
+      } else if (isUrl(sourceUrl)) {
         // If not oxa, download the URL directly and save it to a file with a hashed name
-        file = await downloadAndSave(session, image.url, computeHash(image.url));
+        file = await downloadAndSave(session, sourceUrl, computeHash(sourceUrl));
       } else if (fs.existsSync(imageLocalFile)) {
         // Non-oxa, non-url local image paths relative to the config.section.path
         file = hashAndCopyStaticFile(session, imageLocalFile);
         if (!file) return;
-      } else if (isBase64(image.url)) {
+      } else if (isBase64(sourceUrl)) {
         // Inline base64 images
         const fileObject = new WebFileObject(session.log, staticPath(session), '', true);
-        await fileObject.writeBase64(image.url);
+        await fileObject.writeBase64(sourceUrl);
         file = fileObject.id;
       } else {
-        session.log.error(`Cannot find image "${image.url}" in ${filePath}`);
+        session.log.error(`Cannot find image "${sourceUrl}" in ${filePath}`);
         return;
       }
       // Update mdast with new file name
-      image.file = image.url;
+      image.sourceUrl = sourceUrl;
       image.url = `/_static/${file}`;
     }),
   );
