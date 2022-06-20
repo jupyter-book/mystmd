@@ -34,7 +34,10 @@
     "authors": [
       {
         "name": "Rowan Cockett",
-        "affiliations": ["Curvenote"],
+        "affiliations": [
+          "Curvenote",
+          { "name": "University of British Columbia", "ror": "03rmrcq20" }
+        ],
         "corresponding": true,
         "email": "rowan@curvenote.com",
         "orcid": "0000-0002-7859-8394"

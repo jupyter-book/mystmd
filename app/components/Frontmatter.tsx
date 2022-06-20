@@ -8,6 +8,7 @@ import GitHub from './Icons/GitHub';
 import OpenAccessLogo from './Icons/OpenAccess';
 import OrcidLogo from './Icons/Orcid';
 import { Jupyter } from './Icons/Jupyter';
+import ROR from './Icons/ROR';
 
 function Author({ author }: { author: Required<FrontmatterType>['authors'][0] }) {
   return (
@@ -70,9 +71,28 @@ function AuthorAndAffiliations({ authors }: { authors: FrontmatterType['authors'
           <React.Fragment key={author.name}>
             <Author author={author} />
             <div className="text-sm hidden sm:block">
-              {author.affiliations?.map((affil, i) => (
-                <div key={i}>{affil}</div>
-              ))}
+              {author.affiliations?.map((affil, i) => {
+                if (typeof affil === 'string') {
+                  return <div key={i}>{affil}</div>;
+                }
+                const { name, ror } = affil as any as { name: string; ror?: string };
+                if (ror) {
+                  return (
+                    <div key={i}>
+                      {name}
+                      <a
+                        href={`https://ror.org/${ror}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="ROR (Research Organization Registry)"
+                      >
+                        <ROR className="ml-2 inline-block h-[2em] w-[2em] grayscale hover:grayscale-0 -translate-y-[1px]" />
+                      </a>
+                    </div>
+                  );
+                }
+                return <div key={i}>{name}</div>;
+              })}
             </div>
           </React.Fragment>
         ))}
