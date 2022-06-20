@@ -121,10 +121,21 @@ const CiteT: IRole = {
 const Cite: IRole = {
   myst: class Cite extends Role {
     run(data: IRoleData) {
-      const cite = new this.state.Token('cite', 'cite', 0);
-      // if more than one, create a group...
-      cite.attrSet('label', data.content);
-      return [cite];
+      const labels = data.content?.split(/[,;]/).map((s) => s.trim()) ?? [];
+      if (labels.length < 2) {
+        const cite = new this.state.Token('cite', 'cite', 0);
+        cite.attrSet('label', data.content);
+        return [cite];
+      }
+      const open = new this.state.Token('cite_group_open', 'cite', 1);
+      open.attrSet('kind', 'narrative');
+      const citations = labels.map((label) => {
+        const cite = new this.state.Token('cite', 'cite', 0);
+        cite.attrSet('label', label);
+        return cite;
+      });
+      const close = new this.state.Token('cite_group_close', 'cite', -1);
+      return [open, ...citations, close];
     }
   },
   mdast: {
