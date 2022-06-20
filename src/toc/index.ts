@@ -27,16 +27,16 @@ function isValidFile(file: string): boolean {
   return VALID_FILE_EXTENSIONS.includes(extname(file).toLowerCase());
 }
 
+export function isDirectory(file: string): boolean {
+  return fs.lstatSync(file).isDirectory();
+}
+
 function resolveExtension(file: string): string | undefined {
-  if (fs.existsSync(file)) return file;
+  if (fs.existsSync(file) && !isDirectory(file)) return file;
   const extensions = VALID_FILE_EXTENSIONS.concat(
     VALID_FILE_EXTENSIONS.map((ext) => ext.toUpperCase()),
   );
   return extensions.map((ext) => `${file}${ext}`).find((fileExt) => fs.existsSync(fileExt));
-}
-
-export function isDirectory(file: string): boolean {
-  return fs.lstatSync(file).isDirectory();
 }
 
 function createTitle(s: string): string {
@@ -88,6 +88,7 @@ function getCitationPaths(session: ISession, path: string): string[] {
 }
 
 function chaptersToPages(
+  session: ISession,
   path: string,
   chapters: JupyterBookChapter[],
   pages: (LocalProjectFolder | LocalProjectPage)[] = [],
@@ -95,15 +96,17 @@ function chaptersToPages(
   pageSlugs: PageSlugs,
 ): (LocalProjectFolder | LocalProjectPage)[] {
   chapters.forEach((chapter) => {
-    // Note: the title will get updated when the file is processed
-    const file = resolveExtension(join(path, chapter.file));
-    if (!file) {
-      throw Error(`File from ${tocFile(path)} not found: ${chapter.file}`);
+    // TODO: support globs and urls
+    const file = chapter.file ? resolveExtension(join(path, chapter.file)) : undefined;
+    if (file) {
+      pages.push({ file, level, ...fileInfo(file, pageSlugs) });
     }
-    pages.push({ file, level, ...fileInfo(file, pageSlugs) });
-    const newLevel = level < 5 ? level + 1 : 6;
+    if (!file && chapter.file) {
+      session.log.error(`File from ${tocFile(path)} not found: ${chapter.file}`);
+    }
     if (chapter.sections) {
-      chaptersToPages(path, chapter.sections, pages, newLevel as pageLevels, pageSlugs);
+      const newLevel = level < 5 ? level + 1 : 6;
+      chaptersToPages(session, path, chapter.sections, pages, newLevel as pageLevels, pageSlugs);
     }
   });
   return pages;
@@ -126,14 +129,14 @@ export function projectFromToc(session: ISession, path: string): LocalProject {
   const { slug } = fileInfo(indexFile, pageSlugs);
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
   if (toc.chapters) {
-    chaptersToPages(path, toc.chapters, pages, 1, pageSlugs);
+    chaptersToPages(session, path, toc.chapters, pages, 1, pageSlugs);
   } else if (toc.parts) {
     toc.parts.forEach((part, index) => {
       if (part.caption) {
         pages.push({ title: part.caption || `Part ${index + 1}`, level: 1 });
       }
       if (part.chapters) {
-        chaptersToPages(path, part.chapters, pages, 2, pageSlugs);
+        chaptersToPages(session, path, part.chapters, pages, 2, pageSlugs);
       }
     });
   }
