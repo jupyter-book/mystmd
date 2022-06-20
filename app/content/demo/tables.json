@@ -359,6 +359,401 @@
           }
         ],
         "key": "T9wDYYEBSV"
+      },
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "children": [
+              {
+                "type": "text",
+                "value": "Materials & Methods",
+                "key": "PF0IZ2gnvz"
+              }
+            ],
+            "enumerate": false,
+            "key": "bw7pjMOawn"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Example methods section from ",
+                "key": "au3HtgTthH"
+              },
+              {
+                "type": "cite",
+                "url": "https://doi.org/10.7554/eLife.59045",
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Impaired speed encoding and grid cell periodicity in a mouse model of tauopathy",
+                    "key": "qVgdvTFrHh"
+                  }
+                ],
+                "kind": "narrative",
+                "label": "Ridler_2020",
+                "key": "Cadir15rFI"
+              },
+              {
+                "type": "text",
+                "value": ".",
+                "key": "tmuejnbIDN"
+              }
+            ],
+            "key": "BXPqqKLdus"
+          },
+          {
+            "type": "table",
+            "children": [
+              {
+                "type": "tableRow",
+                "children": [
+                  {
+                    "type": "tableCell",
+                    "header": true,
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Resource type",
+                        "key": "vM0r2mhjnX"
+                      }
+                    ],
+                    "key": "RkmSTY9KNQ"
+                  },
+                  {
+                    "type": "tableCell",
+                    "header": true,
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Designation",
+                        "key": "puWGqZT1ha"
+                      }
+                    ],
+                    "key": "KbOwkZXa8j"
+                  },
+                  {
+                    "type": "tableCell",
+                    "header": true,
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Source",
+                        "key": "C3CUJXiLwZ"
+                      }
+                    ],
+                    "key": "UxAwpZ9rMS"
+                  },
+                  {
+                    "type": "tableCell",
+                    "header": true,
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Identifiers",
+                        "key": "lLL7g0bi5q"
+                      }
+                    ],
+                    "key": "lJYLIVoZLO"
+                  }
+                ],
+                "key": "weAl5RUcJd"
+              },
+              {
+                "type": "tableRow",
+                "children": [
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Strain, strain background",
+                        "key": "UqLlyepqeb"
+                      },
+                      {
+                        "type": "break",
+                        "key": "sgDZ2B7oqe"
+                      },
+                      {
+                        "type": "text",
+                        "value": "(",
+                        "key": "xxDc9UuCx7"
+                      },
+                      {
+                        "type": "emphasis",
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "M. musculus,",
+                            "key": "LNQ4mCYWxS"
+                          }
+                        ],
+                        "key": "OVRjoxFV4c"
+                      },
+                      {
+                        "type": "text",
+                        "value": " Male)",
+                        "key": "CZVqsu4tST"
+                      }
+                    ],
+                    "key": "LIwhKBhbCO"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "rTg4510",
+                        "key": "UnfsVSUUrb"
+                      }
+                    ],
+                    "key": "GdIn5Cl8pE"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "ENVIGO",
+                        "key": "etgQMVOJGi"
+                      }
+                    ],
+                    "key": "SwsNg82V86"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "rrid",
+                        "label": "MGI:4819951",
+                        "identifier": "MGI:4819951",
+                        "key": "JicYmry8wV"
+                      }
+                    ],
+                    "key": "egOso90hLx"
+                  }
+                ],
+                "key": "UFBSBjAJYA"
+              },
+              {
+                "type": "tableRow",
+                "children": [
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Software, algorithm",
+                        "key": "lgd0rG0aZE"
+                      }
+                    ],
+                    "key": "uGGNIpxUk3"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Klusta suite",
+                        "key": "QRh4xRO3mq"
+                      }
+                    ],
+                    "key": "vPr3z3yIfC"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "cite",
+                        "url": "https://doi.org/10.1038/nn.4268",
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "Rossant et al., 2016",
+                            "key": "Gizl5GKwud"
+                          }
+                        ],
+                        "kind": "narrative",
+                        "label": "Rossant_2016",
+                        "key": "mn1YydmN5K"
+                      }
+                    ],
+                    "key": "d4rfAvHAF1"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "rrid",
+                        "label": "SCR_014480",
+                        "identifier": "SCR_014480",
+                        "key": "Ha5WYCTP71"
+                      }
+                    ],
+                    "key": "s4czI4KTSJ"
+                  }
+                ],
+                "key": "HbuaMqxuZF"
+              },
+              {
+                "type": "tableRow",
+                "children": [
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Software, algorithm",
+                        "key": "QYYJ6rwB3J"
+                      }
+                    ],
+                    "key": "O64OiFTH3J"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "MATLAB R2019b",
+                        "key": "kLVsJFTeEq"
+                      }
+                    ],
+                    "key": "zgOQLMvjSO"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "link",
+                        "url": "https://uk.mathworks.com/",
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "Mathworks",
+                            "key": "CehycKuFec"
+                          }
+                        ],
+                        "key": "SRAbuXbsrm"
+                      }
+                    ],
+                    "key": "zgEsJG7o2O"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "rrid",
+                        "label": "SCR_001622",
+                        "identifier": "SCR_001622",
+                        "key": "liPGflkBON"
+                      },
+                      {
+                        "type": "break",
+                        "key": "TJAkQKA9ty"
+                      },
+                      {
+                        "type": "rrid",
+                        "label": "SCR_005547",
+                        "identifier": "SCR_005547",
+                        "key": "NI0gdULsaG"
+                      }
+                    ],
+                    "key": "qrmhk6LZqF"
+                  }
+                ],
+                "key": "KnR7Of4Iol"
+              },
+              {
+                "type": "tableRow",
+                "children": [
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "paragraph",
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "Software, algorithm",
+                            "key": "eeQzLcXueq"
+                          }
+                        ],
+                        "key": "BgdjIyhlD7"
+                      }
+                    ],
+                    "key": "Jy58aXISBG"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "paragraph",
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "OriginPro 2019b",
+                            "key": "bs04dlwyz4"
+                          }
+                        ],
+                        "key": "pYDPd6ZDTq"
+                      }
+                    ],
+                    "key": "ODwb5zLb6c"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "paragraph",
+                        "children": [
+                          {
+                            "type": "link",
+                            "url": "https://www.originlab.com/",
+                            "children": [
+                              {
+                                "type": "text",
+                                "value": "OriginLab",
+                                "key": "B99PdTGu9A"
+                              }
+                            ],
+                            "key": "VVzAXj2EQZ"
+                          }
+                        ],
+                        "key": "H8ggjwTJUk"
+                      }
+                    ],
+                    "key": "cThlPUp7IH"
+                  },
+                  {
+                    "type": "tableCell",
+                    "children": [
+                      {
+                        "type": "paragraph",
+                        "children": [
+                          {
+                            "type": "rrid",
+                            "label": "SCR_014212",
+                            "identifier": "SCR_014212",
+                            "key": "kRBe3qxDZK"
+                          }
+                        ],
+                        "key": "x3KMaXLF8V"
+                      }
+                    ],
+                    "key": "KFHyr6ECbj"
+                  }
+                ],
+                "key": "tfEmVV1c9F"
+              }
+            ],
+            "key": "yw4bSxxVhX"
+          }
+        ],
+        "key": "EYPJ0CihRZ"
       }
     ],
     "key": "vb5Z7gNBlz"

@@ -14,6 +14,7 @@ import LINK_RENDERERS from './links';
 import OUTPUT_RENDERERS from './output';
 import HEADING_RENDERERS from './heading';
 import CROSS_REFERENCE_RENDERERS from './crossReference';
+import RRID_RENDERERS from './rrid';
 
 export type { NodeRenderer } from './types';
 
@@ -24,6 +25,7 @@ export const DEFAULT_RENDERERS: Record<string, NodeRenderer> = {
   ...CODE_RENDERERS,
   ...MATH_RENDERERS,
   ...CITE_RENDERERS,
+  ...RRID_RENDERERS,
   ...IFRAME_RENDERERS,
   ...FOOTNOTE_RENDERERS,
   ...ADMONITION_RENDERERS,
