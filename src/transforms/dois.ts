@@ -50,16 +50,22 @@ export async function transformLinkedDOIs(
   const toc = tic();
   const renderer: CitationRenderer = {};
   const linkedDois: Link[] = [];
+  const citeDois: Cite[] = [];
   selectAll('link', mdast).forEach((node: GenericNode) => {
     const { url } = node as Link;
     if (!validate(normalize(url))) return;
     linkedDois.push(node as Link);
   });
-  if (linkedDois.length === 0) return renderer;
-  log.debug(`Found ${linkedDois.length} DOIs to auto link.`);
+  selectAll('cite', mdast).forEach((node: GenericNode) => {
+    const { label } = node as Cite;
+    if (!validate(normalize(label))) return;
+    citeDois.push(node as Cite);
+  });
+  if (linkedDois.length === 0 && citeDois.length === 0) return renderer;
+  log.debug(`Found ${linkedDois.length + citeDois.length} DOIs to auto link.`);
   const before = Object.keys(doiRenderer).length;
-  await Promise.all(
-    linkedDois.map(async (node) => {
+  await Promise.all([
+    ...linkedDois.map(async (node) => {
       const cite = doiRenderer[node.url] ?? (await getCitation(log, node.url));
       if (!cite) return false;
       doiRenderer[node.url] = cite;
@@ -71,7 +77,15 @@ export async function transformLinkedDOIs(
       // Leave the children as is
       return true;
     }),
-  );
+    ...citeDois.map(async (node) => {
+      const cite = doiRenderer[node.label] ?? (await getCitation(log, node.label));
+      if (!cite) return false;
+      doiRenderer[node.label] = cite;
+      renderer[cite.id] = cite.render;
+      node.label = cite.id;
+      return true;
+    }),
+  ]);
   const after = Object.keys(doiRenderer).length;
   const number = after - before;
   if (number > 0) {
