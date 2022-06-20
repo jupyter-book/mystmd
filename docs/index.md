@@ -39,7 +39,7 @@ The `mystjs` package provides a Javascript implementation of the [MyST](https://
 - Math & equations, with cross-references
 - Common roles and directives that constitute "Core MyST"
 
-## Design Coices and Related Packages
+## Design Choices and Related Packages
 
 The `mystjs` package currently uses `markdown-it` for parsing markdown. This includes packages that are elsewhere in the executablebooks community including:
 
