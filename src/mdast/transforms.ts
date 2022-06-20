@@ -105,8 +105,8 @@ export function liftChildren(tree: Root, nodeType: string) {
  */
 
 export function propagateTargets(tree: Root) {
-  visit(tree, 'mystTarget', (node: GenericNode) => {
-    const nextNode = findAfter(tree, node) as GenericNode;
+  visit(tree, 'mystTarget', (node: GenericNode, index: number) => {
+    const nextNode = findAfter(tree, index) as GenericNode;
     const normalized = normalizeLabel(node.label);
     if (nextNode && normalized) {
       nextNode.identifier = normalized.identifier;
