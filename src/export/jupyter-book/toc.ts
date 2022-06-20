@@ -43,7 +43,10 @@ export type JupyterBookPart = {
 };
 
 export type JupyterBookChapter = {
-  file: string;
+  file?: string;
+  url?: string;
+  title?: string;
+  glob?: string;
   sections?: JupyterBookChapter[];
 };
 

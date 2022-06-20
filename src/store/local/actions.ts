@@ -96,11 +96,12 @@ export function combineProjectCitationRenderers(session: ISession, projectPath: 
 export async function loadFile(session: ISession, path: string) {
   const toc = tic();
   const cache = castSession(session);
-  const content = fs.readFileSync(path).toString();
-  const sha256 = createHash('sha256').update(content).digest('hex');
-  const ext = extname(path);
   let success = true;
+  let sha256: string | undefined;
   try {
+    const content = fs.readFileSync(path).toString();
+    sha256 = createHash('sha256').update(content).digest('hex');
+    const ext = extname(path);
     switch (ext) {
       case '.md': {
         const mdast = parseMyst(content);
