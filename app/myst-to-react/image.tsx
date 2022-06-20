@@ -23,7 +23,7 @@ export const Image: NodeRenderer<ImageNode> = (node) => {
         width: node.width || undefined,
         ...alignToMargin(node.align || 'center'),
       }}
-      data-canonical-url={(node as any).file}
+      data-canonical-url={(node as any).sourceUrl}
     />
   );
 };
