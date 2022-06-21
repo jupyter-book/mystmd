@@ -144,6 +144,11 @@ export function projectFromToc(session: ISession, path: string): LocalProject {
   return { path, file: indexFile, index: slug, pages, citations };
 }
 
+function alwaysIgnore(file: string) {
+  const ignore = ['node_modules', '_build'];
+  return file.startsWith('.') || ignore.includes(file);
+}
+
 function projectPagesFromPath(
   path: string,
   level: pageLevels,
@@ -152,7 +157,7 @@ function projectPagesFromPath(
 ): (LocalProjectFolder | LocalProjectPage)[] {
   const contents = fs
     .readdirSync(path)
-    .filter((file) => !file.startsWith('.'))
+    .filter((file) => !alwaysIgnore(file))
     .map((file) => join(path, file))
     .filter((file) => !ignore || !ignore.includes(file))
     .sort();
@@ -221,7 +226,7 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
     if (!fs.existsSync(indexFile)) throw Error(`Index file ${indexFile} not found`);
   }
   if (!indexFile) {
-    const searchPages = projectPagesFromPath(path, 1, {}, [join(path, '_build')]);
+    const searchPages = projectPagesFromPath(path, 1, {});
     if (!searchPages.length) {
       throw Error(`No valid files with extensions ${ext_string} found in path "${path}"`);
     }
@@ -230,7 +235,7 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
   }
   const pageSlugs: PageSlugs = {};
   const { slug } = fileInfo(indexFile, pageSlugs);
-  const pages = projectPagesFromPath(path, 1, pageSlugs, [indexFile, join(path, '_build')]);
+  const pages = projectPagesFromPath(path, 1, pageSlugs, [indexFile]);
   const citations = getCitationPaths(session, path);
   return { file: indexFile, index: slug, path, pages, citations };
 }

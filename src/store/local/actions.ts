@@ -101,7 +101,7 @@ export async function loadFile(session: ISession, path: string) {
   try {
     const content = fs.readFileSync(path).toString();
     sha256 = createHash('sha256').update(content).digest('hex');
-    const ext = extname(path);
+    const ext = extname(path).toLowerCase();
     switch (ext) {
       case '.md': {
         const mdast = parseMyst(content);

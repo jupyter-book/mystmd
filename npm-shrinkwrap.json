@@ -11,7 +11,7 @@
       "dependencies": {
         "@curvenote/blocks": "^1.5.2",
         "@curvenote/nbtx": "^0.1.11",
-        "@curvenote/schema": "^0.12.14",
+        "@curvenote/schema": "^0.12.15",
         "@google-cloud/storage": "^5.18.2",
         "@jupyterlab/nbformat": "^3.3.2",
         "@reduxjs/toolkit": "^1.7.2",
@@ -35,7 +35,7 @@
         "lodash.throttle": "^4.1.1",
         "mime-types": "^2.1.35",
         "myst-spec": "^0.0.4",
-        "mystjs": "^0.0.9",
+        "mystjs": "^0.0.10",
         "nanoid": "^3.3.2",
         "node-fetch": "^2.6.7",
         "p-limit": "^3.1.0",
@@ -1110,15 +1110,15 @@
       }
     },
     "node_modules/@curvenote/schema": {
-      "version": "0.12.14",
-      "resolved": "https://registry.npmjs.org/@curvenote/schema/-/schema-0.12.14.tgz",
-      "integrity": "sha512-iAw43aleIcHmlF/drIkJLdoZJlq5AZ71GVksfslOeEg9qeb8X/gD2xT/JVLEvTA5v2+IP4JQJJGwnxfUF9qS8A==",
+      "version": "0.12.15",
+      "resolved": "https://registry.npmjs.org/@curvenote/schema/-/schema-0.12.15.tgz",
+      "integrity": "sha512-bw69i3B+5ALn6wrG7omlObnWNYAoJ8A2m3D2qYFBJF465lqSXxRVWvXctnffPWr18LtpHGEHhZbiCZ/kV9yJbA==",
       "dependencies": {
         "@wordpress/wordcount": "^3.2.2",
         "js-yaml": "^4.1.0",
         "markdown-it": "^12.2.0",
         "myst-spec": "^0.0.4",
-        "mystjs": "^0.0.9",
+        "mystjs": "^0.0.10",
         "nanoid": "^3.1.30",
         "orderedmap": "^1.1.1",
         "prosemirror-collab": "^1.2.2",
@@ -7870,9 +7870,9 @@
       "integrity": "sha512-1j7184Wmg5lhgSXt6AXtG82E0PFJ7ULFPplfshQDzb4nIOLKruYFD0CYWheRPMM/eVqNbNZUzc/LLrhyubsK0Q=="
     },
     "node_modules/mystjs": {
-      "version": "0.0.9",
-      "resolved": "https://registry.npmjs.org/mystjs/-/mystjs-0.0.9.tgz",
-      "integrity": "sha512-r3DL3DRuZKdXHk2GpjEeWwY/qgdc2lIg602m4y63md4IFpt+qqbE7B/mAWNO2FZjZdM8XAz7t0BW7x71z5ry3g==",
+      "version": "0.0.10",
+      "resolved": "https://registry.npmjs.org/mystjs/-/mystjs-0.0.10.tgz",
+      "integrity": "sha512-Hn9Fu7peO3DJTaITR8RE6DKiLtxt45rA+0hYDJNGfLMW2j8NhXlxrfwB3UrbBSUzwFAJmA1JP05yQfA5W8f3IQ==",
       "dependencies": {
         "classnames": "^2.3.1",
         "hast-util-to-mdast": "^8.3.1",
@@ -11569,15 +11569,15 @@
       }
     },
     "@curvenote/schema": {
-      "version": "0.12.14",
-      "resolved": "https://registry.npmjs.org/@curvenote/schema/-/schema-0.12.14.tgz",
-      "integrity": "sha512-iAw43aleIcHmlF/drIkJLdoZJlq5AZ71GVksfslOeEg9qeb8X/gD2xT/JVLEvTA5v2+IP4JQJJGwnxfUF9qS8A==",
+      "version": "0.12.15",
+      "resolved": "https://registry.npmjs.org/@curvenote/schema/-/schema-0.12.15.tgz",
+      "integrity": "sha512-bw69i3B+5ALn6wrG7omlObnWNYAoJ8A2m3D2qYFBJF465lqSXxRVWvXctnffPWr18LtpHGEHhZbiCZ/kV9yJbA==",
       "requires": {
         "@wordpress/wordcount": "^3.2.2",
         "js-yaml": "^4.1.0",
         "markdown-it": "^12.2.0",
         "myst-spec": "^0.0.4",
-        "mystjs": "^0.0.9",
+        "mystjs": "^0.0.10",
         "nanoid": "^3.1.30",
         "orderedmap": "^1.1.1",
         "prosemirror-collab": "^1.2.2",
@@ -16635,9 +16635,9 @@
       "integrity": "sha512-1j7184Wmg5lhgSXt6AXtG82E0PFJ7ULFPplfshQDzb4nIOLKruYFD0CYWheRPMM/eVqNbNZUzc/LLrhyubsK0Q=="
     },
     "mystjs": {
-      "version": "0.0.9",
-      "resolved": "https://registry.npmjs.org/mystjs/-/mystjs-0.0.9.tgz",
-      "integrity": "sha512-r3DL3DRuZKdXHk2GpjEeWwY/qgdc2lIg602m4y63md4IFpt+qqbE7B/mAWNO2FZjZdM8XAz7t0BW7x71z5ry3g==",
+      "version": "0.0.10",
+      "resolved": "https://registry.npmjs.org/mystjs/-/mystjs-0.0.10.tgz",
+      "integrity": "sha512-Hn9Fu7peO3DJTaITR8RE6DKiLtxt45rA+0hYDJNGfLMW2j8NhXlxrfwB3UrbBSUzwFAJmA1JP05yQfA5W8f3IQ==",
       "requires": {
         "classnames": "^2.3.1",
         "hast-util-to-mdast": "^8.3.1",
