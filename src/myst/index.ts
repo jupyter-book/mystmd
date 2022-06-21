@@ -8,6 +8,7 @@ export function parseMyst(content: string): Root {
   const myst = new MyST({
     roles: { ...reactiveRoles },
     directives: { ...directives },
+    markdownit: { linkify: true },
   });
   return myst.parse(content);
 }
