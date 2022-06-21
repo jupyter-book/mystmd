@@ -102,7 +102,7 @@ export async function init(session: ISession, opts: Options) {
 
   let pullComplete = false;
   if (content === 'folder') {
-    if (!projectConfig) {
+    if (!projectConfig?.title) {
       let title = folderName;
       if (!opts.yes) {
         const promptTitle = await inquirer.prompt([
@@ -110,7 +110,11 @@ export async function init(session: ISession, opts: Options) {
         ]);
         title = promptTitle.title;
       }
-      projectConfig = getDefaultProjectConfig(title);
+      if (projectConfig) {
+        projectConfig = { ...projectConfig, title };
+      } else {
+        projectConfig = getDefaultProjectConfig(title);
+      }
     }
     siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
     pullComplete = true;
