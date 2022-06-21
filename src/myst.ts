@@ -1,4 +1,11 @@
 import MarkdownIt from 'markdown-it';
+import { Root } from 'mdast';
+import type { Plugin } from 'unified';
+import { unified } from 'unified';
+import rehypeStringify from 'rehype-stringify';
+import { directivesDefault, rolesDefault } from 'markdown-it-docutils';
+import { MARKDOWN_IT_CONFIG } from './config';
+import { formatHtml, mystToHast, tokensToMyst, transform, State } from './mdast';
 import {
   mathPlugin,
   convertFrontMatter,
@@ -9,13 +16,7 @@ import {
   deflistPlugin,
   tasklistPlugin,
 } from './plugins';
-import { Root } from 'mdast';
-import type { Plugin } from 'unified';
-import { formatHtml, mystToHast, tokensToMyst, transform, State } from './mdast';
-import { unified } from 'unified';
-import rehypeStringify from 'rehype-stringify';
 import type { AllOptions, Options } from './types';
-import { directivesDefault, rolesDefault } from 'markdown-it-docutils';
 
 export type { Options, IRole, IDirective } from './types';
 
@@ -104,7 +105,7 @@ export class MyST {
 
   _createTokenizer() {
     const exts = this.opts.extensions;
-    const tokenizer = MarkdownIt('commonmark', this.opts.markdownit);
+    const tokenizer = MarkdownIt(MARKDOWN_IT_CONFIG as any, this.opts.markdownit);
     if (exts.tables) tokenizer.enable('table');
     if (exts.frontmatter)
       tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
