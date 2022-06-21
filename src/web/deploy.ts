@@ -195,10 +195,12 @@ export async function deployContent(session: ISession, siteConfig: SiteConfig) {
 
   if (deploy.ok) {
     session.log.info(toc(`🚀 Deployed ${files.length} files in %s.`));
+    session.log.debug(`CDN key: ${cdnKey}`);
   } else {
     throw new Error('Deployment failed: Please contact support@curvenote.com!');
   }
 
+  const errorDomains: string[] = [];
   const sites = (
     await Promise.all(
       siteConfig.domains.map(async (domain) => {
@@ -207,9 +209,7 @@ export async function deployContent(session: ISession, siteConfig: SiteConfig) {
           domain,
         });
         if (resp.ok) return resp.json;
-        session.log.error(
-          `Error promoting site: https://${domain}. Please ensure you have permission or contact support@curvenote.com`,
-        );
+        errorDomains.push(`https://${domain}`);
         return null;
       }),
     )
@@ -225,8 +225,14 @@ export async function deployContent(session: ISession, siteConfig: SiteConfig) {
       ),
     );
   }
-  session.log.debug(`CDN key: ${cdnKey}`);
   session.log.info(
     '\n\n⚠️  https://curve.space is in beta. Please ensure you have a copy of your content locally.',
   );
+  if (errorDomains.length > 0) {
+    throw Error(
+      `Error promoting site(s): ${errorDomains.join(
+        ', ',
+      )}. Please ensure you have permission or contact support@curvenote.com`,
+    );
+  }
 }
