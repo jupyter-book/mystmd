@@ -76,18 +76,16 @@ export async function init(session: ISession, opts: Options) {
   if (opts.domain) session.log.info(`Using custom domain ${opts.domain}`);
   let path = '.';
   // Initialize config - error if it exists
-  if (
-    selectors.selectLocalSiteConfig(session.store.getState()) ||
-    selectors.selectLocalProjectConfig(session.store.getState(), '.')
-  ) {
+  if (selectors.selectLocalSiteConfig(session.store.getState())) {
     throw Error(
-      `The ${CURVENOTE_YML} config already exists, did you mean to ${chalk.bold(
+      `Site config in ${CURVENOTE_YML} config already exists, did you mean to ${chalk.bold(
         'curvenote add',
       )} or ${chalk.bold('curvenote start')}?`,
     );
   }
   const folderName = basename(resolve(path));
   const siteConfig = getDefaultSiteConfig(folderName);
+  let projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), '.');
 
   // Load the user now, and wait for it below!
   let me: MyUser | Promise<MyUser> | undefined;
@@ -96,23 +94,24 @@ export async function init(session: ISession, opts: Options) {
   const folderIsEmpty = fs.readdirSync(path).length === 0;
   if (folderIsEmpty && opts.yes) throw Error('Cannot initialize an empty folder');
   let content;
-  if (!folderIsEmpty && opts.yes) content = 'folder';
+  if ((!folderIsEmpty && opts.yes) || projectConfig) content = 'folder';
   else {
     const response = await inquirer.prompt([questions.content({ folderIsEmpty })]);
     content = response.content;
   }
 
-  let projectConfig: ProjectConfig;
   let pullComplete = false;
   if (content === 'folder') {
-    let title = folderName;
-    if (!opts.yes) {
-      const promptTitle = await inquirer.prompt([
-        questions.title({ title: siteConfig.title || '' }),
-      ]);
-      title = promptTitle.title;
+    if (!projectConfig) {
+      let title = folderName;
+      if (!opts.yes) {
+        const promptTitle = await inquirer.prompt([
+          questions.title({ title: siteConfig.title || '' }),
+        ]);
+        title = promptTitle.title;
+      }
+      projectConfig = getDefaultProjectConfig(title);
     }
-    projectConfig = getDefaultProjectConfig(title);
     siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
     pullComplete = true;
   } else if (content === 'curvenote') {
