@@ -214,7 +214,7 @@ export async function transformMdast(
   transformCitations(log, mdast, fileCitationRenderer, references, file);
   transformEnumerators(mdast, frontmatter);
   transformAdmonitions(mdast);
-  transformCode(mdast);
+  transformCode(mdast, frontmatter);
   transformFootnotes(mdast, references); // Needs to happen nead the end
   transformKeys(mdast);
   await transformImages(session, mdast, dirname(file));
