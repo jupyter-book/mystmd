@@ -64,6 +64,26 @@ function createURL(license: Omit<License, 'url'>): string {
  * Validate input to be known license id and return corresponding License object
  */
 export function validateLicense(input: any, opts: Options): License | undefined {
+  if (typeof input === 'object') {
+    const revalidated = validateLicense(input.id, {
+      ...opts,
+      suppressErrors: true,
+      suppressWarnings: true,
+    });
+    let equal = Boolean(revalidated);
+    if (revalidated) {
+      Object.entries(revalidated).forEach(([key, val]) => {
+        if (val !== input[key]) equal = false;
+      });
+    }
+    if (!equal) {
+      return validationError(
+        `invalid license object - use a valid license ID string instead, see https://spdx.org/licenses/`,
+        opts,
+      );
+    }
+    return revalidated;
+  }
   let value = validateString(input, opts);
   if (value === undefined) return undefined;
   value = value.toUpperCase();

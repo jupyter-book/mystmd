@@ -3,7 +3,7 @@ import fs from 'fs';
 import inquirer from 'inquirer';
 import { basename, resolve } from 'path';
 import { writeConfigs } from '../config';
-import { CURVENOTE_YML, ProjectConfig } from '../config/types';
+import { CURVENOTE_YML } from '../config/types';
 import { docLinks, LOGO } from '../docs';
 import { LogLevel } from '../logging';
 import { MyUser } from '../models';
