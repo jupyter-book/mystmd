@@ -15,7 +15,11 @@ function execWrapper(
 
 const exec = util.promisify(execWrapper);
 
-function makeExecWrapper(command: string, log: Pick<Logger, 'debug' | 'error'> | null, options?: { cwd?: string }) {
+function makeExecWrapper(
+  command: string,
+  log: Pick<Logger, 'debug' | 'error'> | null,
+  options?: { cwd?: string },
+) {
   return function inner(
     callback?: (error: child_process.ExecException | null, stdout: string, stderr: string) => void,
   ) {
@@ -26,7 +30,11 @@ function makeExecWrapper(command: string, log: Pick<Logger, 'debug' | 'error'> |
   };
 }
 
-export function makeExecutable(command: string, log: Pick<Logger, 'debug' | 'error'> | null, options?: { cwd?: string }) {
+export function makeExecutable(
+  command: string,
+  log: Pick<Logger, 'debug' | 'error'> | null,
+  options?: { cwd?: string },
+) {
   return util.promisify(makeExecWrapper(command, log, options));
 }
 

@@ -87,7 +87,7 @@ export async function startServer(session: ISession, opts: Options) {
   await build(session, opts, false);
   sparkles(session, 'Starting Curvenote');
   watchContent(session);
-  await makeExecutable(`npm run serve`, getServerLogger(session), {cwd: serverPath(session)})();
+  await makeExecutable(`npm run serve`, getServerLogger(session), { cwd: serverPath(session) })();
 }
 
 export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {
