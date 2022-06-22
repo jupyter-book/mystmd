@@ -24,8 +24,13 @@ describe('validateLicense', () => {
   it('valid string coerces', async () => {
     expect(validateLicense('CC-BY-4.0', opts)).toEqual(TEST_LICENSE);
   });
-  it('valid license output errors', async () => {
-    expect(validateLicense(TEST_LICENSE, opts)).toEqual(undefined);
+  it('valid license object passes', async () => {
+    expect(validateLicense(TEST_LICENSE, opts)).toEqual(TEST_LICENSE);
+  });
+  it('invalid license object fails', async () => {
+    expect(validateLicense({ ...TEST_LICENSE, url: 'https://example.com' }, opts)).toEqual(
+      undefined,
+    );
     expect(opts.count.errors).toEqual(1);
   });
 });
