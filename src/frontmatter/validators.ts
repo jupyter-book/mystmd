@@ -279,8 +279,13 @@ function validateTextRepresentation(input: any, opts: Options) {
     output.format_name = validateString(value.format_name, incrementOptions('format_name', opts));
   }
   if (defined(value.format_version)) {
+    // The format version ocassionally comes as a number in YAML, treat it as a string
+    const format_version =
+      typeof value.format_version === 'number'
+        ? String(value.format_version)
+        : value.format_version;
     output.format_version = validateString(
-      value.format_version,
+      format_version,
       incrementOptions('format_version', opts),
     );
   }
