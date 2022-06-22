@@ -19,11 +19,13 @@ import {
 import {
   Author,
   Biblio,
+  Jupytext,
   KernelSpec,
   Numbering,
   PageFrontmatter,
   ProjectFrontmatter,
   SiteFrontmatter,
+  TextRepresentation,
   Venue,
 } from './types';
 
@@ -63,7 +65,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'numbering',
   'math',
 ].concat(SITE_FRONTMATTER_KEYS);
-export const PAGE_FRONTMATTER_KEYS = ['subtitle', 'short_title', 'kernelspec'].concat(
+export const PAGE_FRONTMATTER_KEYS = ['subtitle', 'short_title', 'kernelspec', 'jupytext'].concat(
   PROJECT_FRONTMATTER_KEYS,
 );
 
@@ -99,6 +101,8 @@ const NUMBERING_KEYS = [
   'heading_6',
 ];
 const KERNELSPEC_KEYS = ['name', 'language', 'display_name', 'argv', 'env'];
+const TEXT_REPRESENTATION_KEYS = ['extension', 'format_name', 'format_version', 'jupytext_version'];
+const JUPYTEXT_KEYS = ['formats', 'text_representation'];
 
 const GITHUB_USERNAME_REPO_REGEX = '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$';
 const ORCID_REGEX = '^(http(s)?://orcid.org/)?([0-9]{4}-){3}[0-9]{3}[0-9X]$';
@@ -264,6 +268,52 @@ export function validateKernelSpec(input: any, opts: Options) {
   return output;
 }
 
+function validateTextRepresentation(input: any, opts: Options) {
+  const value = validateObjectKeys(input, { optional: TEXT_REPRESENTATION_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const output: TextRepresentation = {};
+  if (defined(value.extension)) {
+    output.extension = validateString(value.extension, incrementOptions('extension', opts));
+  }
+  if (defined(value.format_name)) {
+    output.format_name = validateString(value.format_name, incrementOptions('format_name', opts));
+  }
+  if (defined(value.format_version)) {
+    output.format_version = validateString(
+      value.format_version,
+      incrementOptions('format_version', opts),
+    );
+  }
+  if (defined(value.jupytext_version)) {
+    output.jupytext_version = validateString(
+      value.jupytext_version,
+      incrementOptions('jupytext_version', opts),
+    );
+  }
+  return output;
+}
+
+/**
+ * Validate Jupytext object
+ *
+ * https://jupyterbook.org/en/stable/file-types/myst-notebooks.html
+ */
+export function validateJupytext(input: any, opts: Options) {
+  const value = validateObjectKeys(input, { optional: JUPYTEXT_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const output: Jupytext = {};
+  if (defined(value.formats)) {
+    output.formats = validateString(value.formats, incrementOptions('formats', opts));
+  }
+  if (defined(value.text_representation)) {
+    output.text_representation = validateTextRepresentation(
+      value.text_representation,
+      incrementOptions('text_representation', opts),
+    );
+  }
+  return output;
+}
+
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Options) {
   const output: SiteFrontmatter = {};
   if (defined(value.title)) {
@@ -389,6 +439,9 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Op
   }
   if (defined(value.kernelspec)) {
     output.kernelspec = validateKernelSpec(value.kernelspec, incrementOptions('kernelspec', opts));
+  }
+  if (defined(value.jupytext)) {
+    output.jupytext = validateJupytext(value.jupytext, incrementOptions('jupytext', opts));
   }
   return output;
 }

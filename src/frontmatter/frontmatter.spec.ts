@@ -7,6 +7,7 @@ import { pageFrontmatterFromDTO, projectFrontmatterFromDTO, saveAffiliations } f
 import {
   Author,
   Biblio,
+  Jupytext,
   KernelSpec,
   Numbering,
   PageFrontmatter,
@@ -16,6 +17,7 @@ import {
   fillPageFrontmatter,
   validateAuthor,
   validateBiblio,
+  validateJupytext,
   validateKernelSpec,
   validateNumbering,
   validatePageFrontmatter,
@@ -63,6 +65,15 @@ const TEST_KERNELSPEC: KernelSpec = {
     b: 'two',
   },
 };
+const TEST_JUPYTEXT: Jupytext = {
+  formats: 'md:myst',
+  text_representation: {
+    extension: '.md',
+    format_name: 'myst',
+    format_version: '0.9',
+    jupytext_version: '1.5.2',
+  },
+};
 const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   title: 'frontmatter',
   description: 'site frontmatter',
@@ -103,6 +114,7 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   short_title: 'short',
   date: '14 Dec 2021',
   kernelspec: {},
+  jupytext: {},
 };
 
 const TEST_PROJECT: Project = {
@@ -220,6 +232,18 @@ describe('validateKernelSpec', () => {
   });
   it('full object returns self', async () => {
     expect(validateKernelSpec(TEST_KERNELSPEC, opts)).toEqual(TEST_KERNELSPEC);
+  });
+});
+
+describe('validateJupytext', () => {
+  it('empty object returns self', async () => {
+    expect(validateJupytext({}, opts)).toEqual({});
+  });
+  it('extra keys removed', async () => {
+    expect(validateJupytext({ extra: '' }, opts)).toEqual({});
+  });
+  it('full object returns self', async () => {
+    expect(validateJupytext(TEST_JUPYTEXT, opts)).toEqual(TEST_JUPYTEXT);
   });
 });
 
