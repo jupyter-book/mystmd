@@ -27,7 +27,7 @@ export function resolvePath(optionalPath: string | undefined, filename: string) 
 export function serverPath(session: ISession) {
   const config = selectors.selectLocalSiteConfig(session.store.getState());
   const buildPath = config?.buildPath || '_build';
-  return `${buildPath}/web`;
+  return path.resolve(path.join('.', buildPath, 'web'));
 }
 
 export function publicPath(session: ISession) {

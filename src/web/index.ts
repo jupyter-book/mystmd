@@ -50,7 +50,7 @@ export async function install(session: ISession) {
     session.log.error('Curvespace is not cloned. Do you need to run: \n\ncurvenote web clone');
     return;
   }
-  await makeExecutable(`cd ${serverPath(session)}; npm install`, getNpmLogger(session))();
+  await makeExecutable(`npm install`, getNpmLogger(session), { cwd: serverPath(session) })();
   session.log.info(toc('✅ Installed web libraries in %s'));
 }
 
@@ -87,7 +87,7 @@ export async function startServer(session: ISession, opts: Options) {
   await build(session, opts, false);
   sparkles(session, 'Starting Curvenote');
   watchContent(session);
-  await makeExecutable(`cd ${serverPath(session)}; npm run serve`, getServerLogger(session))();
+  await makeExecutable(`npm run serve`, getServerLogger(session), {cwd: serverPath(session)})();
 }
 
 export async function deploy(session: ISession, opts: Omit<Options, 'clean'>) {

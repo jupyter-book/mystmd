@@ -16,11 +16,11 @@ export async function createPdfGivenTexFile(log: Logger, filename: string, useBu
   const outputPdfFile = path.join(outputPath, pdf_filename);
   const outputLogFile = path.join(outputPath, log_filename);
 
-  const buildPath = useBuildFolder ? path.join(outputPath, '_build') : outputPath;
-  const CMD = `cd ${buildPath};latexmk -f -xelatex -synctex=1 -interaction=batchmode -file-line-error -latexoption="-shell-escape" ${tex_filename} &> ${tex_log_filename}`;
+  const buildPath = path.resolve(useBuildFolder ? path.join(outputPath, '_build') : outputPath);
+  const CMD = `latexmk -f -xelatex -synctex=1 -interaction=batchmode -file-line-error -latexoption="-shell-escape" ${tex_filename} &> ${tex_log_filename}`;
   try {
     log.debug(`Building LaTeX: logging output to ${tex_log_filename}`);
-    await exec(CMD);
+    await exec(CMD, { cwd: buildPath });
     log.debug(`Done building LaTeX.`);
   } catch (err) {
     log.error(`Error while invoking mklatex: ${err}`);
