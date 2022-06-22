@@ -208,6 +208,7 @@ export async function transformMdast(
   cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
   ensureBlockNesting(mdast);
   transformMath(log, mdast, frontmatter, file);
+  // Kind needs to still be Article here even if jupytext, to handle outputs correctly
   await transformOutputs(session, mdast, kind);
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineRenderers(cache, projectPath, file);
@@ -237,7 +238,14 @@ export async function transformMdast(
       }),
     );
   }
-  const data: RendererData = { kind, file, sha256, frontmatter, mdast, references };
+  const data: RendererData = {
+    kind: frontmatter.kernelspec || frontmatter.jupytext ? KINDS.Notebook : kind,
+    file,
+    sha256,
+    frontmatter,
+    mdast,
+    references,
+  };
   cache.$mdast[file].post = data;
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
 }
