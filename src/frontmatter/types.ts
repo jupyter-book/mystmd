@@ -29,6 +29,26 @@ export type Venue = {
   url?: string;
 };
 
+export type TextRepresentation = {
+  extension?: string;
+  format_name?: string;
+  format_version?: string;
+  jupytext_version?: string;
+};
+
+export type Jupytext = {
+  formats?: string;
+  text_representation?: TextRepresentation;
+};
+
+export type KernelSpec = {
+  name?: string;
+  language?: string;
+  display_name?: string;
+  argv?: string[];
+  env?: Record<string, any>;
+};
+
 export type SiteFrontmatter = {
   title?: string;
   description?: string;
@@ -56,4 +76,6 @@ export type ProjectFrontmatter = SiteFrontmatter & {
 export type PageFrontmatter = ProjectFrontmatter & {
   subtitle?: string;
   short_title?: string;
+  kernelspec?: KernelSpec;
+  jupytext?: Jupytext;
 };

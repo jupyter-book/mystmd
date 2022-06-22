@@ -1,14 +1,24 @@
 import { Block, CitationStyles, KINDS, Project, ProjectVisibility } from '@curvenote/blocks';
-import { prepareToWrite } from '.';
+import { prepareToWrite, unnestKernelSpec } from '.';
 import { silentLogger } from '../logging';
 import { Session } from '../session';
 import { Options } from '../utils/validators';
 import { pageFrontmatterFromDTO, projectFrontmatterFromDTO, saveAffiliations } from './api';
-import { Author, Biblio, Numbering, PageFrontmatter, ProjectFrontmatter } from './types';
+import {
+  Author,
+  Biblio,
+  Jupytext,
+  KernelSpec,
+  Numbering,
+  PageFrontmatter,
+  ProjectFrontmatter,
+} from './types';
 import {
   fillPageFrontmatter,
   validateAuthor,
   validateBiblio,
+  validateJupytext,
+  validateKernelSpec,
   validateNumbering,
   validatePageFrontmatter,
   validateProjectFrontmatter,
@@ -44,6 +54,25 @@ const TEST_NUMBERING: Numbering = {
   heading_4: true,
   heading_5: true,
   heading_6: true,
+};
+const TEST_KERNELSPEC: KernelSpec = {
+  name: 'python3',
+  language: 'python',
+  display_name: 'Python 3',
+  argv: ['python3', '-m', 'IPython.kernel', '-f', '{connection_file}'],
+  env: {
+    a: 1,
+    b: 'two',
+  },
+};
+const TEST_JUPYTEXT: Jupytext = {
+  formats: 'md:myst',
+  text_representation: {
+    extension: '.md',
+    format_name: 'myst',
+    format_version: '0.9',
+    jupytext_version: '1.5.2',
+  },
 };
 const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   title: 'frontmatter',
@@ -84,6 +113,8 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   subtitle: 'sub',
   short_title: 'short',
   date: '14 Dec 2021',
+  kernelspec: {},
+  jupytext: {},
 };
 
 const TEST_PROJECT: Project = {
@@ -192,6 +223,30 @@ describe('validateNumbering', () => {
   });
 });
 
+describe('validateKernelSpec', () => {
+  it('empty object returns self', async () => {
+    expect(validateKernelSpec({}, opts)).toEqual({});
+  });
+  it('extra keys removed', async () => {
+    expect(validateKernelSpec({ extra: '' }, opts)).toEqual({});
+  });
+  it('full object returns self', async () => {
+    expect(validateKernelSpec(TEST_KERNELSPEC, opts)).toEqual(TEST_KERNELSPEC);
+  });
+});
+
+describe('validateJupytext', () => {
+  it('empty object returns self', async () => {
+    expect(validateJupytext({}, opts)).toEqual({});
+  });
+  it('extra keys removed', async () => {
+    expect(validateJupytext({ extra: '' }, opts)).toEqual({});
+  });
+  it('full object returns self', async () => {
+    expect(validateJupytext(TEST_JUPYTEXT, opts)).toEqual(TEST_JUPYTEXT);
+  });
+});
+
 describe('validateSiteFrontmatter', () => {
   it('invalid type errors', async () => {
     expect(validateSiteFrontmatter('frontmatter', opts)).toEqual({});
@@ -266,6 +321,31 @@ describe('validatePageFrontmatter', () => {
   it('invalid date errors', async () => {
     expect(validatePageFrontmatter({ date: 'https://example.com' }, opts)).toEqual({});
     expect(opts.count.errors).toEqual(1);
+  });
+  it('valid kernelspec returns self', async () => {
+    expect(validatePageFrontmatter({ kernelspec: TEST_KERNELSPEC }, opts)).toEqual({
+      kernelspec: TEST_KERNELSPEC,
+    });
+  });
+  it('valid jupyter.kernelspec returns kernelspec', async () => {
+    const frontmatter = {
+      jupyter: { kernelspec: TEST_KERNELSPEC },
+    };
+    unnestKernelSpec(frontmatter);
+    expect(validatePageFrontmatter(frontmatter, opts)).toEqual({
+      kernelspec: TEST_KERNELSPEC,
+    });
+    expect(opts.count.warnings).toEqual(undefined);
+  });
+  it('valid jupyter.kernelspec with extra key wawrns', async () => {
+    const frontmatter = {
+      jupyter: { kernelspec: TEST_KERNELSPEC, extra: true },
+    };
+    unnestKernelSpec(frontmatter);
+    expect(validatePageFrontmatter(frontmatter, opts)).toEqual({
+      kernelspec: TEST_KERNELSPEC,
+    });
+    expect(opts.count.warnings).toEqual(1);
   });
 });
 
