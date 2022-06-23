@@ -3,6 +3,7 @@ import { LinksFunction } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 import { ErrorProjectNotFound } from '~/components/ErrorProjectNotFound';
 import extraStyles from '~/styles/content.css';
+import LaunchpadMessage from '~/components/LaunchpadMessage';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: extraStyles }];
@@ -10,11 +11,12 @@ export const links: LinksFunction = () => {
 
 export default function Folder() {
   return (
-    <article>
+    <article suppressHydrationWarning>
       <main className="article-content">
         <Outlet />
       </main>
       <DocumentOutline />
+      <LaunchpadMessage />
     </article>
   );
 }

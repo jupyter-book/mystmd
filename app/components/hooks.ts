@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 // Based on https://usehooks-ts.com/react-hook/use-media-query
 export function useMediaQuery(query: string): boolean {
-  const ssr = typeof window === 'undefined';
+  const ssr = typeof document === 'undefined';
   const getMatches = (query: string): boolean => {
     if (ssr) return false;
     return window.matchMedia(query).matches;

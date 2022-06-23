@@ -42,7 +42,7 @@ export function useLongContent(
   content?: string,
   url?: string,
 ): { data?: LongContent; error?: Error } {
-  if (typeof window === 'undefined')
+  if (typeof document === 'undefined')
     return url ? {} : { data: { content: content ?? '' } };
   const { data, error } = useSWRImmutable<LongContent>(url || null, fetcher);
   if (!url) return { data: { content: content ?? '' } };

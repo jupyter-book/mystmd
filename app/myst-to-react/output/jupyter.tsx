@@ -24,7 +24,7 @@ export const NativeJupyterOutputs = ({
   id: string;
   outputs: MinifiedOutput[];
 }) => {
-  if (typeof window === 'undefined') return null;
+  if (typeof document === 'undefined') return null;
 
   const windowSize = useWindowSize();
 
