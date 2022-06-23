@@ -1,5 +1,7 @@
 import classnames from 'classnames';
+import { useTheme } from '../theme';
 import JupyterLogo from './jupyter.svg';
+import JupyterGreyLogo from './jupyter-grey.svg';
 
 export const Jupyter = ({
   className,
@@ -8,16 +10,11 @@ export const Jupyter = ({
   className?: string;
   jupyter: boolean;
 }) => {
+  const { isDark } = useTheme();
   if (!jupyter) return null;
   return (
-    <div
-      className={classnames(
-        'not-prose mx-[2px] px-[2px] dark:bg-gray-200 py-[2px] dark:rounded',
-        className,
-      )}
-      title="Jupyter Notebook"
-    >
-      <img src={JupyterLogo} alt="Juyter Logo" width="21" />
+    <div className={classnames('not-prose px-1', className)} title="Jupyter Notebook">
+      <img src={isDark ? JupyterGreyLogo : JupyterLogo} alt="Juyter Logo" width="21" />
     </div>
   );
 };
