@@ -29,7 +29,7 @@ export function makeCIOption() {
 }
 export function makeWriteTocOption() {
   return new Option(
-    '-t, --write-toc',
+    '--write-toc',
     'Generate editable _toc.yml file for project if it does not exist',
   ).default(false);
 }
