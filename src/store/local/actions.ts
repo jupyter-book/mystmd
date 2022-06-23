@@ -45,6 +45,12 @@ type ISessionWithCache = ISession & {
   $mdast: Record<string, { pre: PreRendererData; post?: RendererData }>; // keyed on path
 };
 
+type ProcessOptions = {
+  reloadConfigs?: boolean;
+  watchMode?: boolean;
+  writeToc?: boolean;
+};
+
 function castSession(session: ISession): ISessionWithCache {
   const cache = session as unknown as ISessionWithCache;
   if (!cache.$citationRenderers) cache.$citationRenderers = {};
@@ -306,11 +312,12 @@ export async function fastProcessFile(
 export async function processProject(
   session: ISession,
   siteProject: SiteProject,
-  watchMode = false,
+  opts?: ProcessOptions,
 ) {
   const toc = tic();
   const { log } = session;
-  const project = loadProjectFromDisk(session, siteProject.path);
+  const { watchMode, writeToc } = opts || {};
+  const project = loadProjectFromDisk(session, siteProject.path, { writeToc });
   // Load the citations first, or else they are loaded in each call below
   const pages = [
     { file: project.file, slug: project.index },
@@ -353,16 +360,13 @@ export async function processProject(
   log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug} in %s.`));
 }
 
-export async function processSite(
-  session: ISession,
-  opts?: { reloadConfigs?: boolean; watchMode?: boolean },
-): Promise<boolean> {
+export async function processSite(session: ISession, opts?: ProcessOptions): Promise<boolean> {
   if (opts?.reloadConfigs) loadAllConfigs(session);
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
   if (!siteConfig?.projects.length) return false;
   await Promise.all(
-    siteConfig.projects.map((siteProject) => processProject(session, siteProject, opts?.watchMode)),
+    siteConfig.projects.map((siteProject) => processProject(session, siteProject, opts)),
   );
   await writeSiteManifest(session);
   // Copy all assets

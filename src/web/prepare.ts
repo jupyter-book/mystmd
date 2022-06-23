@@ -10,6 +10,7 @@ export type Options = {
   branch?: string;
   ci?: boolean;
   yes?: boolean;
+  writeToc?: boolean;
 };
 
 export function cleanBuiltFiles(session: ISession, info = true) {
@@ -27,7 +28,8 @@ export function ensureBuildFoldersExist(session: ISession) {
 }
 
 export async function buildSite(session: ISession, opts: Options): Promise<boolean> {
-  if (opts.force || opts.clean) cleanBuiltFiles(session);
+  const { writeToc, force, clean } = opts;
+  if (force || clean) cleanBuiltFiles(session);
   ensureBuildFoldersExist(session);
-  return processSite(session);
+  return processSite(session, { writeToc });
 }
