@@ -1,8 +1,9 @@
 import { title2name as createSlug } from '@curvenote/blocks';
 import fs from 'fs';
+import yaml from 'js-yaml';
 import { extname, parse, join, sep } from 'path';
 import { CURVENOTE_YML, SiteProject, SiteAction, SiteAnalytics } from '../config/types';
-import { JupyterBookChapter, readTOC, tocFile, validateTOC } from '../export/jupyter-book/toc';
+import { JupyterBookChapter, readTOC, TOC, tocFile, validateTOC } from '../export/jupyter-book/toc';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from '../frontmatter/validators';
 import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
@@ -21,6 +22,26 @@ import {
 const DEFAULT_INDEX_FILENAMES = ['index', 'readme'];
 const VALID_FILE_EXTENSIONS = ['.md', '.ipynb'];
 
+const GENERATED_TOC_HEADER = `
+# Table of Contents
+#
+# Curvenote will respect:
+# 1. New pages
+#      - file: relative/path/to/page
+# 2. New sections without an associated page
+#      - title: Folder Title
+#        sections: ...
+# 3. New sections with an associated page
+#      - file: relative/path/to/page
+#        sections: ...
+#
+# Note: Titles defined on pages here are not recognized.
+#
+# This spec is based on the Jupyterbook table of contents.
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+`;
+
 type PageSlugs = Record<string, number>;
 
 function isValidFile(file: string): boolean {
@@ -37,6 +58,12 @@ function resolveExtension(file: string): string | undefined {
     VALID_FILE_EXTENSIONS.map((ext) => ext.toUpperCase()),
   );
   return extensions.map((ext) => `${file}${ext}`).find((fileExt) => fs.existsSync(fileExt));
+}
+
+function removeExtension(file: string): string {
+  const { ext } = parse(file);
+  if (ext) file = file.slice(0, file.length - ext.length);
+  return file;
 }
 
 function createTitle(s: string): string {
@@ -104,6 +131,9 @@ function chaptersToPages(
     if (!file && chapter.file) {
       session.log.error(`File from ${tocFile(path)} not found: ${chapter.file}`);
     }
+    if (!file && chapter.title) {
+      pages.push({ level, title: chapter.title });
+    }
     if (chapter.sections) {
       const newLevel = level < 5 ? level + 1 : 6;
       chaptersToPages(session, path, chapter.sections, pages, newLevel as pageLevels, pageSlugs);
@@ -142,6 +172,61 @@ export function projectFromToc(session: ISession, path: string): LocalProject {
   }
   const citations = getCitationPaths(session, path);
   return { path, file: indexFile, index: slug, pages, citations };
+}
+
+function chaptersFromPages(pages: (LocalProjectFolder | LocalProjectPage)[]) {
+  const levels = pages.map((page) => page.level);
+  const currentLevel = Math.min(...levels) as pageLevels;
+  const currentLevelIndices = levels.reduce((inds: number[], val: pageLevels, i: number) => {
+    if (val === currentLevel) {
+      inds.push(i);
+    }
+    return inds;
+  }, []);
+  const chapters: JupyterBookChapter[] = currentLevelIndices.map((index, i) => {
+    let nextPages: (LocalProjectFolder | LocalProjectPage)[];
+    if (currentLevelIndices[i + 1]) {
+      nextPages = pages.slice(index + 1, currentLevelIndices[i + 1]);
+    } else {
+      nextPages = pages.slice(index + 1);
+    }
+    const chapter: JupyterBookChapter = {};
+    if ('file' in pages[index]) {
+      const page = pages[index] as LocalProjectPage;
+      chapter.file = removeExtension(page.file);
+    } else if ('title' in pages[index]) {
+      const page = pages[index] as LocalProjectFolder;
+      chapter.title = page.title;
+    }
+    if (nextPages.length) {
+      chapter.sections = chaptersFromPages(nextPages);
+    }
+    return chapter;
+  });
+  return chapters;
+}
+
+/**
+ * Create a jupyterbook toc structure from project pages
+ *
+ * Output consists of a top-level chapter with files/sections
+ * based on project structure. Sections headings may be either
+ * associated with a `file` (results in clickable curvespace page)
+ * or just a `title` (results in unclickable curvespace heading)
+ */
+export function tocFromProject(project: LocalProject) {
+  const toc: TOC = {
+    format: 'jb-book',
+    root: removeExtension(project.file),
+    chapters: chaptersFromPages(project.pages),
+  };
+  return toc;
+}
+
+export function writeTocFromProject(project: LocalProject, path: string) {
+  const filename = [path, '_toc.yml'].join(sep);
+  const content = `${GENERATED_TOC_HEADER}${yaml.dump(tocFromProject(project))}`;
+  fs.writeFileSync(filename, content);
 }
 
 function alwaysIgnore(file: string) {
@@ -255,12 +340,14 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
 export function loadProjectFromDisk(
   session: ISession,
   path?: string,
-  index?: string,
+  opts?: { index?: string; writeToc?: boolean },
 ): LocalProject {
   path = path || '.';
   let newProject;
+  let { index, writeToc } = opts || {};
   if (validateTOC(session, path)) {
     newProject = projectFromToc(session, path);
+    writeToc = false;
   } else {
     const project = selectors.selectLocalProject(session.store.getState(), path);
     if (!index && project?.file) {
@@ -270,6 +357,16 @@ export function loadProjectFromDisk(
   }
   if (!newProject) {
     throw new Error(`Could load project from ${path}`);
+  }
+  if (writeToc) {
+    try {
+      session.log.info(`📓 Writing '_toc.yml' file to ${path}`);
+      writeTocFromProject(newProject, path);
+      // Re-load from TOC just in case there are subtle differences with resulting project
+      newProject = projectFromToc(session, path);
+    } catch {
+      session.log.error(`Error writing '_toc.yml' file to ${path}`);
+    }
   }
   session.store.dispatch(projects.actions.receive(newProject));
   return newProject;

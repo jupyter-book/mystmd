@@ -7,6 +7,7 @@ import {
   makeCleanOption,
   makeForceOption,
   makeYesOption,
+  makeWriteTocOption,
 } from './options';
 
 function makeCurvespaceCleanCLI(program: Command) {
@@ -37,6 +38,7 @@ function makeCurvespaceStartCLI(program: Command) {
     .addOption(makeCleanOption())
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
+    .addOption(makeWriteTocOption())
     .action(clirun(web.startServer, { program, requireSiteConfig: true }));
   return command;
 }

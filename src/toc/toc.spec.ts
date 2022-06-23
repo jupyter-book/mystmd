@@ -1,6 +1,6 @@
 import mock from 'mock-fs';
 import { Session } from '../session';
-import { projectFromPath } from '.';
+import { projectFromPath, tocFromProject } from '.';
 
 afterEach(() => mock.restore());
 
@@ -278,6 +278,196 @@ describe('site section generation', () => {
       index: 'notebook',
       citations: [],
       pages: [],
+    });
+  });
+});
+
+describe('tocFromProject', () => {
+  it('single root', async () => {
+    expect(
+      tocFromProject({
+        file: 'readme.md',
+        path: '.',
+        index: 'readme',
+        citations: [],
+        pages: [],
+      }),
+    ).toEqual({
+      format: 'jb-book',
+      root: 'readme',
+      chapters: [],
+    });
+  });
+  it('root and one page', async () => {
+    expect(
+      tocFromProject({
+        file: 'readme.md',
+        path: '.',
+        index: 'readme',
+        citations: [],
+        pages: [
+          {
+            file: 'a.md',
+            slug: 'a',
+            level: 1,
+          },
+        ],
+      }),
+    ).toEqual({
+      format: 'jb-book',
+      root: 'readme',
+      chapters: [
+        {
+          file: 'a',
+        },
+      ],
+    });
+  });
+  it('root and pages with different levels', async () => {
+    expect(
+      tocFromProject({
+        file: 'readme.md',
+        path: '.',
+        index: 'readme',
+        citations: [],
+        pages: [
+          {
+            file: 'a.md',
+            slug: 'a',
+            level: 1,
+          },
+          {
+            file: 'b.md',
+            slug: 'b',
+            level: 3,
+          },
+          {
+            file: 'c.md',
+            slug: 'c',
+            level: 1,
+          },
+        ],
+      }),
+    ).toEqual({
+      format: 'jb-book',
+      root: 'readme',
+      chapters: [
+        {
+          file: 'a',
+          sections: [
+            {
+              file: 'b',
+            },
+          ],
+        },
+        {
+          file: 'c',
+        },
+      ],
+    });
+  });
+  it('root and folder and page', async () => {
+    expect(
+      tocFromProject({
+        file: 'readme.md',
+        path: '.',
+        index: 'readme',
+        citations: [],
+        pages: [
+          {
+            title: 'folder',
+            level: 1,
+          },
+          {
+            file: 'b.md',
+            slug: 'b',
+            level: 3,
+          },
+        ],
+      }),
+    ).toEqual({
+      format: 'jb-book',
+      root: 'readme',
+      chapters: [
+        {
+          title: 'folder',
+          sections: [
+            {
+              file: 'b',
+            },
+          ],
+        },
+      ],
+    });
+  });
+  it('root and nested folders', async () => {
+    expect(
+      tocFromProject({
+        file: 'readme.md',
+        path: '.',
+        index: 'readme',
+        citations: [],
+        pages: [
+          {
+            title: 'folder',
+            level: 1,
+          },
+          {
+            title: 'folder',
+            level: 2,
+          },
+          {
+            title: 'folder',
+            level: 3,
+          },
+          {
+            file: 'a.md',
+            slug: 'a',
+            level: 4,
+          },
+          {
+            file: 'b.md',
+            slug: 'b',
+            level: 2,
+          },
+          {
+            file: 'c.md',
+            slug: 'c',
+            level: 3,
+          },
+        ],
+      }),
+    ).toEqual({
+      format: 'jb-book',
+      root: 'readme',
+      chapters: [
+        {
+          title: 'folder',
+          sections: [
+            {
+              title: 'folder',
+              sections: [
+                {
+                  title: 'folder',
+                  sections: [
+                    {
+                      file: 'a',
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              file: 'b',
+              sections: [
+                {
+                  file: 'c',
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
   });
 });

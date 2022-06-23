@@ -27,3 +27,9 @@ export function makeForceOption() {
 export function makeCIOption() {
   return new Option('-ci, --ci', 'Perform a minimal build, for use on CI').default(false);
 }
+export function makeWriteTocOption() {
+  return new Option(
+    '--write-toc',
+    'Generate editable _toc.yml file for project if it does not exist',
+  ).default(false);
+}

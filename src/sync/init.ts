@@ -21,6 +21,7 @@ type Options = {
   force?: boolean;
   yes?: boolean;
   domain?: string;
+  writeToc?: boolean;
 };
 
 const WELCOME = async (session: ISession) => `
@@ -160,7 +161,7 @@ export async function init(session: ISession, opts: Options) {
 
   let start = false;
   if (!opts.yes) {
-    const promptStart = await inquirer.prompt([questions.start()]);
+    const promptStart = await inquirer.prompt([questions.start(opts.writeToc)]);
     start = promptStart.start;
   }
   if (!start && !opts.yes) {

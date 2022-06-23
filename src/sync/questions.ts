@@ -49,10 +49,11 @@ function projectPath(path?: string) {
   };
 }
 
-function start() {
+function start(writeToc?: boolean) {
+  const tocMessage = writeToc ? 'write missing _toc.yml files and ' : '';
   return {
     name: 'start',
-    message: 'Would you like to start the curve.space local server now?',
+    message: `Would you like to ${tocMessage}start the curve.space local server now?`,
     type: 'confirm',
     default: true,
   };
