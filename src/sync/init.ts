@@ -132,16 +132,25 @@ export async function init(session: ISession, opts: Options) {
     projectConfig = results.projectConfig;
     title = projectConfig.title;
     path = siteProject.path;
-    siteConfig.nav = [{ title: title || '', url: `/${siteProject.slug}` }];
     siteConfig.projects = [siteProject];
     session.log.info(`Add other projects using: ${chalk.bold('curvenote clone')}\n`);
   } else {
     throw Error(`Invalid init content: ${content}`);
   }
+  // If there is a new project config, save to the state and write to disk
+  if (projectConfig) writeConfigs(session, path, { projectConfig });
+  const state = session.store.getState();
   // Personalize the config
   me = await me;
   siteConfig.title = title;
   siteConfig.logoText = title;
+  siteConfig.nav = siteConfig.projects.map((proj) => {
+    const projConf = selectors.selectLocalProjectConfig(state, proj.path);
+    return {
+      title: projConf?.title || proj.slug,
+      url: `/${proj.slug}`,
+    };
+  });
   if (me) {
     const { username, twitter } = me.data;
     siteConfig.domains = opts.domain
@@ -149,9 +158,8 @@ export async function init(session: ISession, opts: Options) {
       : [`${username}.curve.space`];
     if (twitter) siteConfig.twitter = twitter;
   }
-  // Save the configs to the state and write them to disk
+  // Save site config to state and write to disk
   writeConfigs(session, '.', { siteConfig });
-  writeConfigs(session, path, { projectConfig });
 
   const pullOpts = { level: LogLevel.debug };
   let pullProcess: Promise<void> | undefined;
