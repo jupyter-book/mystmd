@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
-import { basename, resolve } from 'path';
+import { basename, join, resolve } from 'path';
 import { writeConfigs } from '../config';
 import { CURVENOTE_YML } from '../config/types';
 import { docLinks, LOGO } from '../docs';
@@ -9,6 +9,7 @@ import { LogLevel } from '../logging';
 import { MyUser } from '../models';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
+import { findProjectsOnPath } from '../toc';
 import { writeFileToFolder } from '../utils';
 import { startServer } from '../web';
 import { interactiveCloneQuestions } from './clone';
@@ -86,7 +87,6 @@ export async function init(session: ISession, opts: Options) {
   }
   const folderName = basename(resolve(path));
   const siteConfig = getDefaultSiteConfig(folderName);
-  let projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), '.');
 
   // Load the user now, and wait for it below!
   let me: MyUser | Promise<MyUser> | undefined;
@@ -95,36 +95,44 @@ export async function init(session: ISession, opts: Options) {
   const folderIsEmpty = fs.readdirSync(path).length === 0;
   if (folderIsEmpty && opts.yes) throw Error('Cannot initialize an empty folder');
   let content;
-  if ((!folderIsEmpty && opts.yes) || projectConfig) content = 'folder';
-  else {
+  const projectConfigPaths = findProjectsOnPath(session, path);
+  if (!folderIsEmpty && opts.yes) content = 'folder';
+  else if (projectConfigPaths.length) {
+    content = 'folder';
+    const pathListString = projectConfigPaths
+      .map((p) => `  - ${join(p, CURVENOTE_YML)}`)
+      .join('\n');
+    session.log.info(`👀 Found existing project config files on your path:\n${pathListString}\n`);
+  } else {
     const response = await inquirer.prompt([questions.content({ folderIsEmpty })]);
     content = response.content;
   }
-
+  let projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), '.');
   let pullComplete = false;
+  let title = projectConfig?.title || siteConfig.title;
   if (content === 'folder') {
-    if (!projectConfig?.title) {
-      let title = folderName;
-      if (!opts.yes) {
-        const promptTitle = await inquirer.prompt([
-          questions.title({ title: siteConfig.title || '' }),
-        ]);
-        title = promptTitle.title;
-      }
-      if (projectConfig) {
-        projectConfig = { ...projectConfig, title };
-      } else {
-        projectConfig = getDefaultProjectConfig(title);
-      }
+    let createWorkingDirProject = !projectConfigPaths.length;
+    if (projectConfigPaths.length && !projectConfigPaths.includes('.')) {
+      const promptCreate = await inquirer.prompt([questions.createWorkingDirProject()]);
+      createWorkingDirProject = promptCreate.createWorkingDirProject;
     }
-    siteConfig.projects = [{ path, slug: basename(resolve(path)) }];
+    if (!opts.yes) {
+      const promptTitle = await inquirer.prompt([questions.title({ title: title || '' })]);
+      title = promptTitle.title;
+    }
+    if (createWorkingDirProject) {
+      projectConfig = getDefaultProjectConfig(title);
+      projectConfigPaths.unshift(path);
+    }
+    siteConfig.projects = projectConfigPaths.map((p) => ({ path: p, slug: basename(resolve(p)) }));
     pullComplete = true;
   } else if (content === 'curvenote') {
     const results = await interactiveCloneQuestions(session);
     const { siteProject } = results;
     projectConfig = results.projectConfig;
+    title = projectConfig.title;
     path = siteProject.path;
-    siteConfig.nav = [{ title: projectConfig.title || '', url: `/${siteProject.slug}` }];
+    siteConfig.nav = [{ title: title || '', url: `/${siteProject.slug}` }];
     siteConfig.projects = [siteProject];
     session.log.info(`Add other projects using: ${chalk.bold('curvenote clone')}\n`);
   } else {
@@ -132,8 +140,8 @@ export async function init(session: ISession, opts: Options) {
   }
   // Personalize the config
   me = await me;
-  siteConfig.title = projectConfig.title;
-  siteConfig.logoText = projectConfig.title;
+  siteConfig.title = title;
+  siteConfig.logoText = title;
   if (me) {
     const { username, twitter } = me.data;
     siteConfig.domains = opts.domain

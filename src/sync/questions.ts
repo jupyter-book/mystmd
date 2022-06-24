@@ -68,6 +68,15 @@ function pull() {
   };
 }
 
+function createWorkingDirProject() {
+  return {
+    name: 'createWorkingDirProject',
+    message: 'Would you like to create an additional project for your current working directory?',
+    type: 'confirm',
+    default: false,
+  };
+}
+
 export default {
   title,
   content,
@@ -75,4 +84,5 @@ export default {
   projectPath,
   start,
   pull,
+  createWorkingDirProject,
 };

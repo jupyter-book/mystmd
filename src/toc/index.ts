@@ -2,6 +2,7 @@ import { title2name as createSlug } from '@curvenote/blocks';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import { extname, parse, join, sep } from 'path';
+import { loadConfigOrThrow } from '../config';
 import { CURVENOTE_YML, SiteProject, SiteAction, SiteAnalytics } from '../config/types';
 import { JupyterBookChapter, readTOC, TOC, tocFile, validateTOC } from '../export/jupyter-book/toc';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from '../frontmatter/validators';
@@ -516,4 +517,22 @@ export function getSiteManifest(session: ISession): SiteManifest {
     analytics: getSiteManifestAnalytics(session, siteConfig.analytics),
   };
   return manifest;
+}
+
+export function findProjectsOnPath(session: ISession, path: string) {
+  let projectPaths: string[] = [];
+  const content = fs.readdirSync(path);
+  if (content.includes(CURVENOTE_YML)) {
+    loadConfigOrThrow(session, path);
+    if (selectors.selectLocalProjectConfig(session.store.getState(), path)) {
+      projectPaths.push(path);
+    }
+  }
+  content
+    .map((dir) => join(path, dir))
+    .filter((file) => isDirectory(file))
+    .forEach((dir) => {
+      projectPaths = projectPaths.concat(findProjectsOnPath(session, dir));
+    });
+  return projectPaths;
 }

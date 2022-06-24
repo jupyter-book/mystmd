@@ -1,6 +1,6 @@
 import mock from 'mock-fs';
 import { Session } from '../session';
-import { projectFromPath, tocFromProject } from '.';
+import { findProjectsOnPath, projectFromPath, tocFromProject } from '.';
 
 afterEach(() => mock.restore());
 
@@ -534,5 +534,46 @@ describe('tocFromProject', () => {
         },
       ],
     });
+  });
+});
+
+const SITE_CONFIG = `
+version: 1
+site:
+  projects: []
+  nav: []
+  actions: []
+  domains: []
+`;
+
+const PROJECT_CONFIG = `
+version: 1
+project: {}
+`;
+
+describe('findProjectPaths', () => {
+  it('site curvenote.ymls', async () => {
+    mock({
+      'curvenote.yml': SITE_CONFIG,
+      'readme.md': '',
+      folder: {
+        'page.md': '',
+        'notebook.ipynb': '',
+        newproj: { 'page.md': '', 'curvenote.yml': SITE_CONFIG },
+      },
+    });
+    expect(findProjectsOnPath(session, '.')).toEqual([]);
+  });
+  it('project curvenote.ymls', async () => {
+    mock({
+      'curvenote.yml': PROJECT_CONFIG,
+      'readme.md': '',
+      folder: {
+        'page.md': '',
+        'notebook.ipynb': '',
+        newproj: { 'page.md': '', 'curvenote.yml': PROJECT_CONFIG },
+      },
+    });
+    expect(findProjectsOnPath(session, '.')).toEqual(['.', 'folder/newproj']);
   });
 });
