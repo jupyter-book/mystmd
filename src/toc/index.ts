@@ -362,7 +362,7 @@ export function loadProjectFromDisk(
     newProject = projectFromPath(session, path, index);
   }
   if (!newProject) {
-    throw new Error(`Could load project from ${path}`);
+    throw new Error(`Could not load project from ${path}`);
   }
   if (writeToc) {
     try {

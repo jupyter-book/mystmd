@@ -9,7 +9,7 @@ import { LogLevel } from '../logging';
 import { MyUser } from '../models';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
-import { findProjectsOnPath } from '../toc';
+import { findProjectsOnPath, loadProjectFromDisk } from '../toc';
 import { writeFileToFolder } from '../utils';
 import { startServer } from '../web';
 import { interactiveCloneQuestions } from './clone';
@@ -96,13 +96,8 @@ export async function init(session: ISession, opts: Options) {
   if (folderIsEmpty && opts.yes) throw Error('Cannot initialize an empty folder');
   let content;
   const projectConfigPaths = findProjectsOnPath(session, path);
-  if (!folderIsEmpty && opts.yes) content = 'folder';
-  else if (projectConfigPaths.length) {
+  if ((!folderIsEmpty && opts.yes) || projectConfigPaths.length) {
     content = 'folder';
-    const pathListString = projectConfigPaths
-      .map((p) => `  - ${join(p, CURVENOTE_YML)}`)
-      .join('\n');
-    session.log.info(`👀 Found existing project config files on your path:\n${pathListString}\n`);
   } else {
     const response = await inquirer.prompt([questions.content({ folderIsEmpty })]);
     content = response.content;
@@ -111,18 +106,28 @@ export async function init(session: ISession, opts: Options) {
   let pullComplete = false;
   let title = projectConfig?.title || siteConfig.title;
   if (content === 'folder') {
-    let createWorkingDirProject = !projectConfigPaths.length;
-    if (projectConfigPaths.length && !projectConfigPaths.includes('.')) {
-      const promptCreate = await inquirer.prompt([questions.createWorkingDirProject()]);
-      createWorkingDirProject = promptCreate.createWorkingDirProject;
-    }
     if (!opts.yes) {
       const promptTitle = await inquirer.prompt([questions.title({ title: title || '' })]);
       title = promptTitle.title;
     }
-    if (createWorkingDirProject) {
-      projectConfig = getDefaultProjectConfig(title);
-      projectConfigPaths.unshift(path);
+    if (projectConfigPaths.length) {
+      const pathListString = projectConfigPaths
+        .map((p) => `  - ${join(p, CURVENOTE_YML)}`)
+        .join('\n');
+      session.log.info(`👀 Found existing project config files on your path:\n${pathListString}`);
+    }
+    if (!projectConfig) {
+      try {
+        loadProjectFromDisk(session, path);
+        session.log.info(`📓 Creating project config`);
+        projectConfig = getDefaultProjectConfig(title);
+        projectConfigPaths.unshift(path);
+      } catch {
+        if (!projectConfigPaths.length) {
+          throw Error(`No markdown or notebook files found`);
+        }
+        session.log.info(`🧹 No additional markdown or notebook files found`);
+      }
     }
     siteConfig.projects = projectConfigPaths.map((p) => ({ path: p, slug: basename(resolve(p)) }));
     pullComplete = true;
@@ -141,6 +146,7 @@ export async function init(session: ISession, opts: Options) {
   if (projectConfig) writeConfigs(session, path, { projectConfig });
   const state = session.store.getState();
   // Personalize the config
+  session.log.info(`📓 Creating site config`);
   me = await me;
   siteConfig.title = title;
   siteConfig.logoText = title;
