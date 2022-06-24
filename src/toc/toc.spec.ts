@@ -280,6 +280,71 @@ describe('site section generation', () => {
       pages: [],
     });
   });
+  it('stop traversing at curvenote.yml', async () => {
+    mock({
+      'readme.md': '',
+      folder: {
+        'page.md': '',
+        'notebook.ipynb': '',
+        newproj: { 'page.md': '', 'curvenote.yml': '' },
+      },
+    });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'readme.md',
+      path: '.',
+      index: 'readme',
+      citations: [],
+      pages: [
+        {
+          title: 'Folder',
+          level: 1,
+        },
+        {
+          file: 'folder/notebook.ipynb',
+          slug: 'notebook',
+          level: 2,
+        },
+        {
+          file: 'folder/page.md',
+          slug: 'page',
+          level: 2,
+        },
+      ],
+    });
+  });
+  it('do not stop traversing at root curvenote.yml', async () => {
+    mock({
+      'curvenote.yml': '',
+      'readme.md': '',
+      folder: {
+        'page.md': '',
+        'notebook.ipynb': '',
+        newproj: { 'page.md': '', 'curvenote.yml': '' },
+      },
+    });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'readme.md',
+      path: '.',
+      index: 'readme',
+      citations: [],
+      pages: [
+        {
+          title: 'Folder',
+          level: 1,
+        },
+        {
+          file: 'folder/notebook.ipynb',
+          slug: 'notebook',
+          level: 2,
+        },
+        {
+          file: 'folder/page.md',
+          slug: 'page',
+          level: 2,
+        },
+      ],
+    });
+  });
 });
 
 describe('tocFromProject', () => {

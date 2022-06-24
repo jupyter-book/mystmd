@@ -224,7 +224,7 @@ export function tocFromProject(project: LocalProject) {
 }
 
 export function writeTocFromProject(project: LocalProject, path: string) {
-  const filename = [path, '_toc.yml'].join(sep);
+  const filename = join(path, '_toc.yml');
   const content = `${GENERATED_TOC_HEADER}${yaml.dump(tocFromProject(project))}`;
   fs.writeFileSync(filename, content);
 }
@@ -246,6 +246,10 @@ function projectPagesFromPath(
     .map((file) => join(path, file))
     .filter((file) => !ignore || !ignore.includes(file))
     .sort();
+  if (contents.includes(join(path, CURVENOTE_YML))) {
+    // Stop when we encounter another site/project curvenote config
+    return [];
+  }
   const files: (LocalProjectFolder | LocalProjectPage)[] = contents
     .filter((file) => isValidFile(file))
     .map((file) => {
@@ -310,8 +314,9 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
       throw Error(`Index file ${indexFile} has invalid extension; must be ${ext_string}}`);
     if (!fs.existsSync(indexFile)) throw Error(`Index file ${indexFile} not found`);
   }
+  const rootCurvenoteYML = join(path, CURVENOTE_YML);
   if (!indexFile) {
-    const searchPages = projectPagesFromPath(path, 1, {});
+    const searchPages = projectPagesFromPath(path, 1, {}, [rootCurvenoteYML]);
     if (!searchPages.length) {
       throw Error(`No valid files with extensions ${ext_string} found in path "${path}"`);
     }
@@ -320,7 +325,7 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
   }
   const pageSlugs: PageSlugs = {};
   const { slug } = fileInfo(indexFile, pageSlugs);
-  const pages = projectPagesFromPath(path, 1, pageSlugs, [indexFile]);
+  const pages = projectPagesFromPath(path, 1, pageSlugs, [indexFile, rootCurvenoteYML]);
   const citations = getCitationPaths(session, path);
   return { file: indexFile, index: slug, path, pages, citations };
 }
@@ -381,7 +386,6 @@ export function loadProjectFromDisk(
  * - Adds validated frontmatter
  */
 export function localToManifestProject(
-  session: ISession,
   state: RootState,
   siteProj: SiteProject,
 ): ManifestProject | null {
@@ -493,7 +497,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
   const siteConfig = selectors.selectLocalSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
   siteConfig.projects.forEach((siteProj) => {
-    const proj = localToManifestProject(session, state, siteProj);
+    const proj = localToManifestProject(state, siteProj);
     if (!proj) return;
     siteProjects.push(proj);
   });
