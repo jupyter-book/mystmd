@@ -1,6 +1,8 @@
 import mock from 'mock-fs';
 import { Session } from '../session';
-import { findProjectsOnPath, projectFromPath, tocFromProject } from '.';
+import { projectFromPath } from './fromPath';
+import { tocFromProject } from './toToc';
+import { findProjectsOnPath } from './utils';
 
 afterEach(() => mock.restore());
 

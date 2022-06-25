@@ -8,7 +8,7 @@ import { Project } from '../models';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { config } from '../store/local';
-import { isDirectory } from '../toc';
+import { isDirectory } from '../toc/utils';
 import { confirmOrExit, tic } from '../utils';
 import { projectLogString } from './utils';
 
