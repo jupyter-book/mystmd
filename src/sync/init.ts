@@ -106,15 +106,19 @@ export async function init(session: ISession, opts: Options) {
   let pullComplete = false;
   let title = projectConfig?.title || siteConfig.title;
   if (content === 'folder') {
-    if (!opts.yes) {
-      const promptTitle = await inquirer.prompt([questions.title({ title: title || '' })]);
-      title = promptTitle.title;
-    }
     if (projectConfigPaths.length) {
       const pathListString = projectConfigPaths
         .map((p) => `  - ${join(p, CURVENOTE_YML)}`)
         .join('\n');
-      session.log.info(`👀 Found existing project config files on your path:\n${pathListString}`);
+      session.log.info(
+        `👀 ${chalk.bold(
+          'Found existing project config files on your path:',
+        )}\n${pathListString}\n`,
+      );
+    }
+    if (!opts.yes) {
+      const promptTitle = await inquirer.prompt([questions.title({ title: title || '' })]);
+      title = promptTitle.title;
     }
     if (!projectConfig) {
       try {
