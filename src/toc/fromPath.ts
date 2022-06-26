@@ -2,7 +2,8 @@ import fs from 'fs';
 import { extname, join } from 'path';
 import { CURVENOTE_YML } from '../config/types';
 import { ISession } from '../session/types';
-import { pageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
+import { pagesFromToc } from './fromToc';
+import { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
 import {
   fileInfo,
   getCitationPaths,
@@ -23,8 +24,9 @@ function alwaysIgnore(file: string) {
  * Recursively traverse path for md/ipynb files
  */
 function projectPagesFromPath(
+  session: ISession,
   path: string,
-  level: pageLevels,
+  level: PageLevels,
   pageSlugs: PageSlugs,
   ignore?: string[],
 ): (LocalProjectFolder | LocalProjectPage)[] {
@@ -38,6 +40,9 @@ function projectPagesFromPath(
     // Stop when we encounter another site/project curvenote config
     return [];
   }
+  if (contents.includes(join(path, '_toc.yml'))) {
+    return pagesFromToc(session, path, level);
+  }
   const files: (LocalProjectFolder | LocalProjectPage)[] = contents
     .filter((file) => isValidFile(file))
     .map((file) => {
@@ -49,10 +54,10 @@ function projectPagesFromPath(
     });
   const folders = contents
     .filter((file) => isDirectory(file))
-    .map((file) => {
-      const projectFolder: LocalProjectFolder = { title: fileInfo(file, pageSlugs).title, level };
+    .map((dir) => {
+      const projectFolder: LocalProjectFolder = { title: fileInfo(dir, pageSlugs).title, level };
       const newLevel = level < 5 ? level + 1 : 6;
-      const pages = projectPagesFromPath(file, newLevel as pageLevels, pageSlugs, ignore);
+      const pages = projectPagesFromPath(session, dir, newLevel as PageLevels, pageSlugs, ignore);
       return pages.length ? [projectFolder, ...pages] : [];
     })
     .flat();
@@ -104,7 +109,7 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
   }
   const rootCurvenoteYML = join(path, CURVENOTE_YML);
   if (!indexFile) {
-    const searchPages = projectPagesFromPath(path, 1, {}, [rootCurvenoteYML]);
+    const searchPages = projectPagesFromPath(session, path, 1, {}, [rootCurvenoteYML]);
     if (!searchPages.length) {
       throw Error(`No valid files with extensions ${ext_string} found in path "${path}"`);
     }
@@ -113,7 +118,7 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
   }
   const pageSlugs: PageSlugs = {};
   const { slug } = fileInfo(indexFile, pageSlugs);
-  const pages = projectPagesFromPath(path, 1, pageSlugs, [indexFile, rootCurvenoteYML]);
+  const pages = projectPagesFromPath(session, path, 1, pageSlugs, [indexFile, rootCurvenoteYML]);
   const citations = getCitationPaths(session, path);
   return { file: indexFile, index: slug, path, pages, citations };
 }

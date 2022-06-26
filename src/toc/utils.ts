@@ -5,10 +5,15 @@ import { loadConfigOrThrow } from '../config';
 import { CURVENOTE_YML } from '../config/types';
 import { ISession } from '../session';
 import { selectors } from '../store';
+import { PageLevels } from './types';
 
 export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb'];
 
 export type PageSlugs = Record<string, number>;
+
+export function nextLevel(level: PageLevels): PageLevels {
+  return (level < 5 ? level + 1 : 6) as PageLevels;
+}
 
 export function isValidFile(file: string): boolean {
   return VALID_FILE_EXTENSIONS.includes(extname(file).toLowerCase());

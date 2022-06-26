@@ -2,7 +2,7 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import { join } from 'path';
 import { JupyterBookChapter, TOC } from '../export/jupyter-book/toc';
-import { pageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
+import { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
 import { removeExtension } from './utils';
 
 const GENERATED_TOC_HEADER = `
@@ -27,8 +27,8 @@ const GENERATED_TOC_HEADER = `
 
 function chaptersFromPages(pages: (LocalProjectFolder | LocalProjectPage)[]) {
   const levels = pages.map((page) => page.level);
-  const currentLevel = Math.min(...levels) as pageLevels;
-  const currentLevelIndices = levels.reduce((inds: number[], val: pageLevels, i: number) => {
+  const currentLevel = Math.min(...levels) as PageLevels;
+  const currentLevelIndices = levels.reduce((inds: number[], val: PageLevels, i: number) => {
     if (val === currentLevel) {
       inds.push(i);
     }
