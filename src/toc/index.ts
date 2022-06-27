@@ -2,6 +2,7 @@ import { title2name as createSlug } from '@curvenote/blocks';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import { extname, parse, join, sep } from 'path';
+import { loadConfigOrThrow } from '../config';
 import { CURVENOTE_YML, SiteProject, SiteAction, SiteAnalytics } from '../config/types';
 import { JupyterBookChapter, readTOC, TOC, tocFile, validateTOC } from '../export/jupyter-book/toc';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from '../frontmatter/validators';
@@ -224,7 +225,7 @@ export function tocFromProject(project: LocalProject) {
 }
 
 export function writeTocFromProject(project: LocalProject, path: string) {
-  const filename = [path, '_toc.yml'].join(sep);
+  const filename = join(path, '_toc.yml');
   const content = `${GENERATED_TOC_HEADER}${yaml.dump(tocFromProject(project))}`;
   fs.writeFileSync(filename, content);
 }
@@ -246,6 +247,10 @@ function projectPagesFromPath(
     .map((file) => join(path, file))
     .filter((file) => !ignore || !ignore.includes(file))
     .sort();
+  if (contents.includes(join(path, CURVENOTE_YML))) {
+    // Stop when we encounter another site/project curvenote config
+    return [];
+  }
   const files: (LocalProjectFolder | LocalProjectPage)[] = contents
     .filter((file) => isValidFile(file))
     .map((file) => {
@@ -310,8 +315,9 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
       throw Error(`Index file ${indexFile} has invalid extension; must be ${ext_string}}`);
     if (!fs.existsSync(indexFile)) throw Error(`Index file ${indexFile} not found`);
   }
+  const rootCurvenoteYML = join(path, CURVENOTE_YML);
   if (!indexFile) {
-    const searchPages = projectPagesFromPath(path, 1, {});
+    const searchPages = projectPagesFromPath(path, 1, {}, [rootCurvenoteYML]);
     if (!searchPages.length) {
       throw Error(`No valid files with extensions ${ext_string} found in path "${path}"`);
     }
@@ -320,7 +326,7 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
   }
   const pageSlugs: PageSlugs = {};
   const { slug } = fileInfo(indexFile, pageSlugs);
-  const pages = projectPagesFromPath(path, 1, pageSlugs, [indexFile]);
+  const pages = projectPagesFromPath(path, 1, pageSlugs, [indexFile, rootCurvenoteYML]);
   const citations = getCitationPaths(session, path);
   return { file: indexFile, index: slug, path, pages, citations };
 }
@@ -356,7 +362,7 @@ export function loadProjectFromDisk(
     newProject = projectFromPath(session, path, index);
   }
   if (!newProject) {
-    throw new Error(`Could load project from ${path}`);
+    throw new Error(`Could not load project from ${path}`);
   }
   if (writeToc) {
     try {
@@ -381,7 +387,6 @@ export function loadProjectFromDisk(
  * - Adds validated frontmatter
  */
 export function localToManifestProject(
-  session: ISession,
   state: RootState,
   siteProj: SiteProject,
 ): ManifestProject | null {
@@ -493,7 +498,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
   const siteConfig = selectors.selectLocalSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
   siteConfig.projects.forEach((siteProj) => {
-    const proj = localToManifestProject(session, state, siteProj);
+    const proj = localToManifestProject(state, siteProj);
     if (!proj) return;
     siteProjects.push(proj);
   });
@@ -512,4 +517,22 @@ export function getSiteManifest(session: ISession): SiteManifest {
     analytics: getSiteManifestAnalytics(session, siteConfig.analytics),
   };
   return manifest;
+}
+
+export function findProjectsOnPath(session: ISession, path: string) {
+  let projectPaths: string[] = [];
+  const content = fs.readdirSync(path);
+  if (content.includes(CURVENOTE_YML)) {
+    loadConfigOrThrow(session, path);
+    if (selectors.selectLocalProjectConfig(session.store.getState(), path)) {
+      projectPaths.push(path);
+    }
+  }
+  content
+    .map((dir) => join(path, dir))
+    .filter((file) => isDirectory(file))
+    .forEach((dir) => {
+      projectPaths = projectPaths.concat(findProjectsOnPath(session, dir));
+    });
+  return projectPaths;
 }
