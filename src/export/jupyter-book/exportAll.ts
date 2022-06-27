@@ -3,7 +3,7 @@ import { Version } from '../../models';
 import { ISession } from '../../session/types';
 import { articleToMarkdown, MarkdownExportOptions } from '../markdown';
 import { notebookToIpynb, NotebookExportOptions } from '../notebook';
-import { getLatestVersion } from '../utils/getLatest';
+import { getBlockAndLatestVersion } from '../utils/getLatest';
 import { ArticleState } from '../utils/walkArticle';
 import { writeBibtex } from '../utils/writeBibtex';
 
@@ -19,7 +19,7 @@ export async function exportAll(
   const blocks = await Promise.all(
     nav.data.items.map((item) => {
       if (item.kind === NavListItemKindEnum.Item)
-        return getLatestVersion(session, item.blockId).catch(() => null);
+        return getBlockAndLatestVersion(session, item.blockId).catch(() => null);
       return null;
     }),
   );
@@ -27,6 +27,12 @@ export async function exportAll(
     blocks.map(async (blockData) => {
       if (!blockData) return null;
       const { block, version } = blockData;
+      if (!version) {
+        session.log.error(
+          `Unable to download "${block.data.name}" - do you need to save the draft?`,
+        );
+        return null;
+      }
       switch (block.data.kind) {
         case KINDS.Article: {
           const filename = `${block.data.name ?? block.id.block}.md`;

@@ -1,5 +1,6 @@
 import fs from 'fs';
 import pLimit from 'p-limit';
+import { join } from 'path';
 import { projectFrontmatterFromDTO, saveAffiliations } from '../frontmatter/api';
 import { loadConfigOrThrow, writeConfigs } from '../config';
 import { projectToJupyterBook } from '../export';
@@ -41,7 +42,7 @@ export async function pullProject(session: ISession, path: string, opts?: { leve
     // Project frontmatter is kept sepatare in project config, above
     ignoreProjectFrontmatter: true,
   });
-  log(toc(`🚀 Pulled ${path} in %s`));
+  if (fs.existsSync(join(path, '_toc.yml'))) log(toc(`🚀 Pulled ${path} in %s`));
 }
 
 /**
