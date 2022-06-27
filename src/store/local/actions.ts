@@ -32,7 +32,8 @@ import {
   RendererData,
   SingleCitationRenderer,
 } from '../../transforms/types';
-import { copyActionResource, copyLogo, getSiteManifest, loadProjectFromDisk } from '../../toc';
+import { loadProjectFromDisk } from '../../toc';
+import { copyActionResource, copyLogo, getSiteManifest } from '../../toc/manifest';
 import { LocalProjectPage } from '../../toc/types';
 import { writeFileToFolder, serverPath, tic } from '../../utils';
 import { selectors } from '..';
