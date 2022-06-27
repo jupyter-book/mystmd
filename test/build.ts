@@ -23,6 +23,6 @@ export const tnodes = builders(schema, {
   abbr: { nodeType: 'abbr', title: 'Cascading Style Sheets' },
   aside: { nodeType: 'aside' },
   figure: { nodeType: 'figure' },
-});
+}) as any;
 
 export const tdoc = (...args: Parameters<typeof tnodes.doc>) => tnodes.doc('', ...args);

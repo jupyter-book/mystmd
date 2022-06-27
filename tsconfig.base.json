@@ -6,18 +6,18 @@
     "noImplicitAny": true,
     "strict": true,
     "moduleResolution": "node",
-    "lib": ["es2019"],
+    "lib": ["es2019", "DOM"],
     "sourceMap": true,
-    "outDir": "dist",
+    "outDir": "dist/cjs",
     "baseUrl": "src",
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["node_modules/*", "types/*"]
     },
     "typeRoots": ["./node_modules/@types", "./types"],
     "resolveJsonModule": true,
-    "declaration": true,
+    "declaration": false,
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "test/**/*"],
+  "include": ["src/**/*", "test/**/*", "demo/**/*"],
   "exclude": []
 }

@@ -1,4 +1,4 @@
-import { Node as ProsemirrorNode, Schema, Mark } from 'prosemirror-model';
+import { Node, Mark } from 'prosemirror-model';
 import {
   IParagraphOptions,
   IRunOptions,
@@ -30,19 +30,14 @@ import { IFootnotes, INumbering, Mutable } from './types';
 // This is duplicated from @curvenote/schema
 export type AlignOptions = 'left' | 'center' | 'right';
 
-export type NodeSerializer<S extends Schema = any> = Record<
+export type NodeSerializer = Record<
   string,
-  (
-    state: DocxSerializerState<S>,
-    node: ProsemirrorNode<S>,
-    parent: ProsemirrorNode<S>,
-    index: number,
-  ) => void
+  (state: DocxSerializerState, node: Node, parent: Node, index: number) => void
 >;
 
-export type MarkSerializer<S extends Schema = any> = Record<
+export type MarkSerializer = Record<
   string,
-  (state: DocxSerializerState<S>, node: ProsemirrorNode<S>, mark: Mark<S>) => IRunOptions
+  (state: DocxSerializerState, node: Node, mark: Mark) => IRunOptions
 >;
 
 export type Options = {
@@ -71,12 +66,12 @@ function createReferenceBookmark(
   });
 }
 
-export class DocxSerializerState<S extends Schema = any> {
-  nodes: NodeSerializer<S>;
+export class DocxSerializerState {
+  nodes: NodeSerializer;
 
   options: Options;
 
-  marks: MarkSerializer<S>;
+  marks: MarkSerializer;
 
   children: (Paragraph | Table)[];
 
@@ -95,7 +90,7 @@ export class DocxSerializerState<S extends Schema = any> {
 
   currentNumbering?: { reference: string; level: number };
 
-  constructor(nodes: NodeSerializer<S>, marks: MarkSerializer<S>, options: Options) {
+  constructor(nodes: NodeSerializer, marks: MarkSerializer, options: Options) {
     this.nodes = nodes;
     this.marks = marks;
     this.options = options ?? {};
@@ -103,21 +98,21 @@ export class DocxSerializerState<S extends Schema = any> {
     this.numbering = [];
   }
 
-  renderContent(parent: ProsemirrorNode<S>, opts?: IParagraphOptions) {
+  renderContent(parent: Node, opts?: IParagraphOptions) {
     parent.forEach((node, _, i) => {
       if (opts) this.addParagraphOptions(opts);
       this.render(node, parent, i);
     });
   }
 
-  render(node: ProsemirrorNode<S>, parent: ProsemirrorNode<S>, index: number) {
+  render(node: Node, parent: Node, index: number) {
     if (typeof parent === 'number') throw new Error('!');
     if (!this.nodes[node.type.name])
       throw new Error(`Token type \`${node.type.name}\` not supported by Word renderer`);
     this.nodes[node.type.name](this, node, parent, index);
   }
 
-  renderMarks(node: ProsemirrorNode<S>, marks: Mark[]): IRunOptions {
+  renderMarks(node: Node, marks: Mark[]): IRunOptions {
     return marks
       .map((mark) => {
         return this.marks[mark.type.name]?.(this, node, mark);
@@ -125,7 +120,7 @@ export class DocxSerializerState<S extends Schema = any> {
       .reduce((a, b) => ({ ...a, ...b }), {});
   }
 
-  renderInline(parent: ProsemirrorNode<S>) {
+  renderInline(parent: Node) {
     // Pop the stack over to this object when we encounter a link, and closeLink restores it
     let currentLink: { link: string; stack: ParagraphChild[] } | undefined;
     const closeLink = () => {
@@ -159,7 +154,7 @@ export class DocxSerializerState<S extends Schema = any> {
       };
       this.current = [];
     };
-    const progress = (node: ProsemirrorNode<S>, offset: number, index: number) => {
+    const progress = (node: Node, offset: number, index: number) => {
       const links = node.marks.filter((m) => m.type.name === 'link');
       const hasLink = links.length > 0;
       if (hasLink) {
@@ -168,7 +163,7 @@ export class DocxSerializerState<S extends Schema = any> {
         closeLink();
       }
       if (node.isText) {
-        this.text(node.text, this.renderMarks(node, node.marks));
+        this.text(node.text, this.renderMarks(node, [...node.marks]));
       } else {
         this.render(node, parent, index);
       }
@@ -178,7 +173,7 @@ export class DocxSerializerState<S extends Schema = any> {
     closeLink();
   }
 
-  renderList(node: ProsemirrorNode<S>, style: NumberingStyles) {
+  renderList(node: Node, style: NumberingStyles) {
     if (!this.currentNumbering) {
       const nextId = createShortId();
       this.numbering.push(createNumbering(nextId, style));
@@ -197,7 +192,7 @@ export class DocxSerializerState<S extends Schema = any> {
   }
 
   // This is a pass through to the paragraphs, etc. underneath they will close the block
-  renderListItem(node: ProsemirrorNode<S>) {
+  renderListItem(node: Node) {
     if (!this.currentNumbering) throw new Error('Trying to create a list item without a list?');
     this.addParagraphOptions({ numbering: this.currentNumbering });
     this.renderContent(node);
@@ -279,7 +274,7 @@ export class DocxSerializerState<S extends Schema = any> {
     });
   }
 
-  table(node: ProsemirrorNode<S>) {
+  table(node: Node) {
     const actualChildren = this.children;
     const rows: TableRow[] = [];
     node.content.forEach(({ content: rowContent }) => {
@@ -319,7 +314,7 @@ export class DocxSerializerState<S extends Schema = any> {
 
   $footnoteCounter = 0;
 
-  footnote(node: ProsemirrorNode<S>) {
+  footnote(node: Node) {
     const { current, nextRunOpts } = this;
     // Delete everything and work with the footnote inline on the current
     this.current = [];
@@ -335,7 +330,7 @@ export class DocxSerializerState<S extends Schema = any> {
     this.current.push(new FootnoteReferenceRun(this.$footnoteCounter));
   }
 
-  closeBlock(node: ProsemirrorNode<S>, props?: IParagraphOptions) {
+  closeBlock(node: Node, props?: IParagraphOptions) {
     const paragraph = new Paragraph({
       children: this.current,
       ...this.nextParentParagraphOpts,
@@ -356,18 +351,18 @@ export class DocxSerializerState<S extends Schema = any> {
   }
 }
 
-export class DocxSerializer<S extends Schema = any> {
-  nodes: NodeSerializer<S>;
+export class DocxSerializer {
+  nodes: NodeSerializer;
 
-  marks: MarkSerializer<S>;
+  marks: MarkSerializer;
 
-  constructor(nodes: NodeSerializer<S>, marks: MarkSerializer<S>) {
+  constructor(nodes: NodeSerializer, marks: MarkSerializer) {
     this.nodes = nodes;
     this.marks = marks;
   }
 
-  serialize(content: ProsemirrorNode<S>, options: Options) {
-    const state = new DocxSerializerState<S>(this.nodes, this.marks, options);
+  serialize(content: Node, options: Options) {
+    const state = new DocxSerializerState(this.nodes, this.marks, options);
     state.renderContent(content);
     const doc = createDocFromState(state);
     return doc;
