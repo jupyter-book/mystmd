@@ -650,12 +650,47 @@ describe('pagesFromToc', () => {
       file: 'readme.md',
       pages: [
         { slug: 'x', file: 'x.md', level: 1 },
+        { slug: 'index', file: 'project/index.md', level: 1 },
+        { slug: 'a', file: 'project/a.md', level: 2 },
+        { title: 'Sections', level: 2 },
+        { slug: 'b', file: 'project/b.md', level: 3 },
+        { slug: 'c', file: 'project/c.md', level: 3 },
+        { title: 'Section', level: 1 },
+        { slug: 'y', file: 'section/y.md', level: 2 },
+        { slug: 'z', file: 'section/z.md', level: 2 },
+      ],
+      citations: [],
+    });
+  });
+  it('pages from bad toc', async () => {
+    mock({
+      'readme.md': '',
+      'x.md': '',
+      section: {
+        'y.md': '',
+        'z.md': '',
+      },
+      project: {
+        '_toc.yml': '',
+        'index.md': '',
+        'a.md': '',
+        'b.md': '',
+        'c.md': '',
+        'd.md': '',
+      },
+    });
+    expect(projectFromPath(session, '.')).toEqual({
+      path: '.',
+      index: 'readme',
+      file: 'readme.md',
+      pages: [
+        { slug: 'x', file: 'x.md', level: 1 },
         { title: 'Project', level: 1 },
+        { slug: 'a', file: 'project/a.md', level: 2 },
+        { slug: 'b', file: 'project/b.md', level: 2 },
+        { slug: 'c', file: 'project/c.md', level: 2 },
+        { slug: 'd', file: 'project/d.md', level: 2 },
         { slug: 'index', file: 'project/index.md', level: 2 },
-        { slug: 'a', file: 'project/a.md', level: 3 },
-        { title: 'Sections', level: 3 },
-        { slug: 'b', file: 'project/b.md', level: 4 },
-        { slug: 'c', file: 'project/c.md', level: 4 },
         { title: 'Section', level: 1 },
         { slug: 'y', file: 'section/y.md', level: 2 },
         { slug: 'z', file: 'section/z.md', level: 2 },

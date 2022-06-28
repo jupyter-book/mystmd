@@ -9,6 +9,7 @@ import {
   getCitationPaths,
   isDirectory,
   isValidFile,
+  nextLevel,
   PageSlugs,
   VALID_FILE_EXTENSIONS,
 } from './utils';
@@ -20,6 +21,11 @@ function alwaysIgnore(file: string) {
   return file.startsWith('.') || ignore.includes(file);
 }
 
+type Options = {
+  ignore?: string[];
+  suppressWarnings?: boolean;
+};
+
 /**
  * Recursively traverse path for md/ipynb files
  */
@@ -28,8 +34,9 @@ function projectPagesFromPath(
   path: string,
   level: PageLevels,
   pageSlugs: PageSlugs,
-  ignore?: string[],
+  opts?: Options,
 ): (LocalProjectFolder | LocalProjectPage)[] {
+  const { ignore, suppressWarnings } = opts || {};
   const contents = fs
     .readdirSync(path)
     .filter((file) => !alwaysIgnore(file))
@@ -41,7 +48,14 @@ function projectPagesFromPath(
     return [];
   }
   if (contents.includes(join(path, '_toc.yml'))) {
-    return pagesFromToc(session, path, level);
+    const prevLevel = (level > 2 ? 1 : level - 1) as PageLevels;
+    try {
+      return pagesFromToc(session, path, prevLevel);
+    } catch {
+      if (!suppressWarnings) {
+        session.log.warn(`Invalid table of contents ignored: ${join(path, '_toc.yml')}`);
+      }
+    }
   }
   const files: (LocalProjectFolder | LocalProjectPage)[] = contents
     .filter((file) => isValidFile(file))
@@ -56,9 +70,16 @@ function projectPagesFromPath(
     .filter((file) => isDirectory(file))
     .map((dir) => {
       const projectFolder: LocalProjectFolder = { title: fileInfo(dir, pageSlugs).title, level };
-      const newLevel = level < 5 ? level + 1 : 6;
-      const pages = projectPagesFromPath(session, dir, newLevel as PageLevels, pageSlugs, ignore);
-      return pages.length ? [projectFolder, ...pages] : [];
+      const pages = projectPagesFromPath(session, dir, nextLevel(level), pageSlugs, opts);
+      if (!pages.length) {
+        return [];
+      }
+      if (pages[0].level === level) {
+        // If first folder page is given same level as folder itself, do not include folder.
+        // This happens if _toc.yml with index file is present in the folder.
+        return pages;
+      }
+      return [projectFolder, ...pages];
     })
     .flat();
   return files.concat(folders);
@@ -109,7 +130,13 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
   }
   const rootCurvenoteYML = join(path, CURVENOTE_YML);
   if (!indexFile) {
-    const searchPages = projectPagesFromPath(session, path, 1, {}, [rootCurvenoteYML]);
+    const searchPages = projectPagesFromPath(
+      session,
+      path,
+      1,
+      {},
+      { ignore: [rootCurvenoteYML], suppressWarnings: true },
+    );
     if (!searchPages.length) {
       throw Error(`No valid files with extensions ${ext_string} found in path "${path}"`);
     }
@@ -118,7 +145,9 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
   }
   const pageSlugs: PageSlugs = {};
   const { slug } = fileInfo(indexFile, pageSlugs);
-  const pages = projectPagesFromPath(session, path, 1, pageSlugs, [indexFile, rootCurvenoteYML]);
+  const pages = projectPagesFromPath(session, path, 1, pageSlugs, {
+    ignore: [indexFile, rootCurvenoteYML],
+  });
   const citations = getCitationPaths(session, path);
   return { file: indexFile, index: slug, path, pages, citations };
 }
