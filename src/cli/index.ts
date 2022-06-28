@@ -8,10 +8,10 @@ import { addTokenCLI } from './token';
 import { addWebCLI } from './web';
 
 const program = new commander.Command();
-addTokenCLI(program);
-addAuthCLI(program);
 addSyncCLI(program);
 addWebCLI(program);
+addTokenCLI(program);
+addAuthCLI(program);
 addExportCLI(program);
 
 program.version(`v${version}`, '-v, --version', 'Print the current version of curvenotejs');
