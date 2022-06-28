@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.18.6",
-    "@curvenote/schema": "0.12.15-rc.0",
+    "@curvenote/schema": "0.12.16",
     "@types/jest": "^28.1.3",
     "@types/markdown-it": "^12.2.3",
     "@typescript-eslint/eslint-plugin": "^5.30.0",

@@ -1111,10 +1111,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@curvenote/schema@0.12.15-rc.0":
-  version "0.12.15-rc.0"
-  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.12.15-rc.0.tgz#253962822fdb4f3a87cb21aced3d075988feb068"
-  integrity sha512-rMzXd3HgoYJuCRJQ3pyK/lPwSjrgnufTdo7mBJj6lbzHkOYWH/8on9Mvpo3/EA0ntnu4MccRe/Ndzb9FWjUNHg==
+"@curvenote/schema@0.12.16":
+  version "0.12.16"
+  resolved "https://registry.yarnpkg.com/@curvenote/schema/-/schema-0.12.16.tgz#f612160eb78bab0e4c12b37eda12f93256549fa3"
+  integrity sha512-M4QJmbrE1Fd+6YwhP5T10e/uw3uGvfVIdG389UtM3dpjUMnFqQ0unla0oRN3JGjZQ78/J5G5O2cXDc71ooayrA==
   dependencies:
     "@wordpress/wordcount" "^3.11.0"
     js-yaml "^4.1.0"
