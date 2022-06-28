@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { Document } from 'docx';
-import { Node as ProsemirrorNode } from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 import { DocxSerializerState } from 'prosemirror-docx';
 import { Block, Project, User, Version } from '../../models';
 import { ISession } from '../../session/types';
@@ -39,7 +39,7 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
   // render references with title if they exist
   const referencesDocStates = Object.values(article.references)
     .map(({ state }) => state?.doc)
-    .filter((docState): docState is ProsemirrorNode<any> => !!docState);
+    .filter((docState): docState is Node => !!docState);
   if (referencesDocStates.length > 0) {
     docxState.renderContent(createReferenceTitle());
   }

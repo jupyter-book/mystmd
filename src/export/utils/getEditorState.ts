@@ -1,6 +1,5 @@
 import { JSDOM } from 'jsdom';
 import { server, schemas, fromHTML } from '@curvenote/schema';
-import { docToEditorState } from '@curvenote/schema/dist/server';
 
 export function getEditorState(content: string, schema: schemas.UseSchema = 'full') {
   const { document, DOMParser } = new JSDOM('').window;
@@ -11,5 +10,5 @@ export function getEditorState(content: string, schema: schemas.UseSchema = 'ful
 export function getEditorStateFromHTML(content: string, schema: schemas.UseSchema = 'full') {
   const { document, DOMParser } = new JSDOM('').window;
   const doc = fromHTML(content, schema, document, DOMParser);
-  return docToEditorState(doc, 0);
+  return server.docToEditorState(doc, 0);
 }

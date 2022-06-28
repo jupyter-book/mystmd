@@ -1,5 +1,5 @@
 import { oxaLink, oxaLinkToId } from '@curvenote/blocks';
-import { SharedOptions } from '@curvenote/schema/dist/types';
+import { SharedMarkdownOptions } from '@curvenote/schema';
 import { ISession } from '../../session/types';
 import { ArticleState } from './walkArticle';
 import { basekey } from './basekey';
@@ -8,7 +8,7 @@ export function localizationOptions(
   session: ISession,
   imageFilenames: Record<string, string>,
   references: ArticleState['references'],
-): SharedOptions {
+): SharedMarkdownOptions {
   return {
     localizeImageSrc: (src) => imageFilenames[src],
     localizeId: (maybeOxaLink: string) => {
