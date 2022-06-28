@@ -48,7 +48,7 @@ function projectPagesFromPath(
     return [];
   }
   if (contents.includes(join(path, '_toc.yml'))) {
-    const prevLevel = (level > 2 ? 1 : level - 1) as PageLevels;
+    const prevLevel = (level < 2 ? 1 : level - 1) as PageLevels;
     try {
       return pagesFromToc(session, path, prevLevel);
     } catch {
