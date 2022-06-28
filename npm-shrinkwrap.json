@@ -25,7 +25,7 @@
         "copyfiles": "^2.4.1",
         "date-fns": "^2.25.0",
         "docx": "^7.3.0",
-        "doi-utils": "^1.0.3",
+        "doi-utils": "^1.0.4",
         "html-entities": "^2.3.2",
         "inquirer": "^8.2.2",
         "js-yaml": "^4.1.0",
@@ -3761,9 +3761,9 @@
       }
     },
     "node_modules/doi-utils": {
-      "version": "1.0.3",
-      "resolved": "https://registry.npmjs.org/doi-utils/-/doi-utils-1.0.3.tgz",
-      "integrity": "sha512-uWJfR249Us/MaxN/LHyV6TdyhS43nl3aL23GP7t3ylpcRcMLq2GarH8V+7+uieliM4gkBAhyurztdhgn+QIDNg=="
+      "version": "1.0.4",
+      "resolved": "https://registry.npmjs.org/doi-utils/-/doi-utils-1.0.4.tgz",
+      "integrity": "sha512-38nlf9qn4PPDJ+N/5C/iaRqJDiHFmoort16POf1Mnd3fjwyo9mJCbxBBcRqIt6yn3LV8mAAE63c1eX2Ig08xig=="
     },
     "node_modules/domexception": {
       "version": "4.0.0",
@@ -13570,9 +13570,9 @@
       }
     },
     "doi-utils": {
-      "version": "1.0.3",
-      "resolved": "https://registry.npmjs.org/doi-utils/-/doi-utils-1.0.3.tgz",
-      "integrity": "sha512-uWJfR249Us/MaxN/LHyV6TdyhS43nl3aL23GP7t3ylpcRcMLq2GarH8V+7+uieliM4gkBAhyurztdhgn+QIDNg=="
+      "version": "1.0.4",
+      "resolved": "https://registry.npmjs.org/doi-utils/-/doi-utils-1.0.4.tgz",
+      "integrity": "sha512-38nlf9qn4PPDJ+N/5C/iaRqJDiHFmoort16POf1Mnd3fjwyo9mJCbxBBcRqIt6yn3LV8mAAE63c1eX2Ig08xig=="
     },
     "domexception": {
       "version": "4.0.0",
