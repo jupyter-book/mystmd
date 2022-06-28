@@ -17,7 +17,7 @@ import { ISession } from '../../session/types';
 import { basekey } from './basekey';
 import { getEditorState, getEditorStateFromHTML } from './getEditorState';
 import { getImageSrc } from './getImageSrc';
-import { getLatestVersion } from './getLatest';
+import { getBlockAndLatestVersion } from './getLatest';
 
 export interface ArticleStateChild {
   state: ReturnType<typeof getEditorState>;
@@ -223,15 +223,12 @@ export async function walkArticle(
       const id = oxaLinkToId(key)?.block as VersionId;
       if (!id) return;
       // Always load the latest version for references!
-      let version;
-      try {
-        const blockAndVersion = await limiter.schedule(() =>
-          getLatestVersion<Blocks.Reference>(session, id, {
-            format: referenceFormat,
-          }),
-        );
-        version = blockAndVersion.version;
-      } catch (err) {
+      const { version } = await limiter.schedule(() =>
+        getBlockAndLatestVersion<Blocks.Reference>(session, id, {
+          format: referenceFormat,
+        }),
+      );
+      if (!version) {
         session.log.error(`Could not fetch latest version of reference - skipping ${key}`);
         return;
       }

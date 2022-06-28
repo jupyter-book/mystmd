@@ -1,7 +1,7 @@
 import { oxaLinkToId, ProjectId, VersionId } from '@curvenote/blocks';
 import { Block } from '../../models';
 import { ISession } from '../../session/types';
-import { getLatestVersion } from './getLatest';
+import { getBlockAndLatestVersion } from './getLatest';
 import { ArticleState } from './walkArticle';
 
 export const exportFromOxaLink =
@@ -25,8 +25,12 @@ export const exportFromOxaLink =
       );
     } else {
       // Here we will load up the latest version
-      const { version } = await getLatestVersion(session, id.block);
-      await exportArticle(session, version.id, { filename, ...opts });
+      const { version } = await getBlockAndLatestVersion(session, id.block);
+      if (!version) {
+        session.log.error('Could not download article; do you need to save the draft?');
+      } else {
+        await exportArticle(session, version.id, { filename, ...opts });
+      }
     }
   };
 
