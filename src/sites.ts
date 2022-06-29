@@ -1,5 +1,6 @@
 import { getDate } from './helpers';
-import { JsonObject } from './types';
+import { ProjectId } from './projects';
+import { BaseLinks, JsonObject } from './types';
 
 export interface UploadFileInfo {
   path: string;
@@ -35,6 +36,70 @@ export interface DnsRouter {
   created_by: string;
   date_created: Date;
   date_modified: Date;
+}
+
+export interface Venue {
+  title?: string;
+  url?: string;
+}
+
+export interface SiteProject {
+  remote: string;
+  slug: string;
+  path?: string;
+}
+
+export interface SiteNavPage {
+  title: string;
+  url: string;
+}
+
+export interface SiteNavFolder {
+  title: string;
+  children: (SiteNavPage | SiteNavFolder)[];
+}
+
+export interface SiteAction extends SiteNavPage {
+  static?: boolean;
+}
+
+export interface SiteAnalytics {
+  google?: string;
+  plausible?: string;
+}
+
+export interface SiteDesign {
+  hide_authors?: boolean;
+}
+
+export interface PartialSiteConfig {
+  title?: string;
+  description?: string;
+  venue?: Venue;
+  projects?: SiteProject[];
+  nav?: (SiteNavPage | SiteNavFolder)[];
+  actions?: SiteAction[];
+  domains?: string[];
+  twitter?: string;
+  logo?: string;
+  logoText?: string;
+  favicon?: string;
+  buildPath?: string;
+  analytics?: SiteAnalytics;
+  design?: SiteDesign;
+}
+
+export interface SiteConfigLinks extends BaseLinks {
+  project: string;
+  publish: string;
+}
+
+export interface SiteConfig extends PartialSiteConfig {
+  id: ProjectId;
+  created_by: string;
+  date_created: Date;
+  date_modified: Date;
+  links: SiteConfigLinks;
 }
 
 const CURVE_SPACE = /^(?:(?:https?:)?\/\/)?([a-z0-9_]{3,20})(?:-([a-z0-9_]{1,30}))?\.curve\.space$/;
