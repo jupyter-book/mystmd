@@ -2,12 +2,14 @@ import fs from 'fs';
 import { extname, join } from 'path';
 import { CURVENOTE_YML } from '../config/types';
 import { ISession } from '../session/types';
-import { pageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
+import { pagesFromToc } from './fromToc';
+import { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
 import {
   fileInfo,
   getCitationPaths,
   isDirectory,
   isValidFile,
+  nextLevel,
   PageSlugs,
   VALID_FILE_EXTENSIONS,
 } from './utils';
@@ -19,15 +21,22 @@ function alwaysIgnore(file: string) {
   return file.startsWith('.') || ignore.includes(file);
 }
 
+type Options = {
+  ignore?: string[];
+  suppressWarnings?: boolean;
+};
+
 /**
  * Recursively traverse path for md/ipynb files
  */
 function projectPagesFromPath(
+  session: ISession,
   path: string,
-  level: pageLevels,
+  level: PageLevels,
   pageSlugs: PageSlugs,
-  ignore?: string[],
+  opts?: Options,
 ): (LocalProjectFolder | LocalProjectPage)[] {
+  const { ignore, suppressWarnings } = opts || {};
   const contents = fs
     .readdirSync(path)
     .filter((file) => !alwaysIgnore(file))
@@ -37,6 +46,16 @@ function projectPagesFromPath(
   if (contents.includes(join(path, CURVENOTE_YML))) {
     // Stop when we encounter another site/project curvenote config
     return [];
+  }
+  if (contents.includes(join(path, '_toc.yml'))) {
+    const prevLevel = (level < 2 ? 1 : level - 1) as PageLevels;
+    try {
+      return pagesFromToc(session, path, prevLevel);
+    } catch {
+      if (!suppressWarnings) {
+        session.log.warn(`Invalid table of contents ignored: ${join(path, '_toc.yml')}`);
+      }
+    }
   }
   const files: (LocalProjectFolder | LocalProjectPage)[] = contents
     .filter((file) => isValidFile(file))
@@ -49,11 +68,18 @@ function projectPagesFromPath(
     });
   const folders = contents
     .filter((file) => isDirectory(file))
-    .map((file) => {
-      const projectFolder: LocalProjectFolder = { title: fileInfo(file, pageSlugs).title, level };
-      const newLevel = level < 5 ? level + 1 : 6;
-      const pages = projectPagesFromPath(file, newLevel as pageLevels, pageSlugs, ignore);
-      return pages.length ? [projectFolder, ...pages] : [];
+    .map((dir) => {
+      const projectFolder: LocalProjectFolder = { title: fileInfo(dir, pageSlugs).title, level };
+      const pages = projectPagesFromPath(session, dir, nextLevel(level), pageSlugs, opts);
+      if (!pages.length) {
+        return [];
+      }
+      if (pages[0].level === level) {
+        // If first folder page is given same level as folder itself, do not include folder.
+        // This happens if _toc.yml with index file is present in the folder.
+        return pages;
+      }
+      return [projectFolder, ...pages];
     })
     .flat();
   return files.concat(folders);
@@ -104,7 +130,13 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
   }
   const rootCurvenoteYML = join(path, CURVENOTE_YML);
   if (!indexFile) {
-    const searchPages = projectPagesFromPath(path, 1, {}, [rootCurvenoteYML]);
+    const searchPages = projectPagesFromPath(
+      session,
+      path,
+      1,
+      {},
+      { ignore: [rootCurvenoteYML], suppressWarnings: true },
+    );
     if (!searchPages.length) {
       throw Error(`No valid files with extensions ${ext_string} found in path "${path}"`);
     }
@@ -113,7 +145,9 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
   }
   const pageSlugs: PageSlugs = {};
   const { slug } = fileInfo(indexFile, pageSlugs);
-  const pages = projectPagesFromPath(path, 1, pageSlugs, [indexFile, rootCurvenoteYML]);
+  const pages = projectPagesFromPath(session, path, 1, pageSlugs, {
+    ignore: [indexFile, rootCurvenoteYML],
+  });
   const citations = getCitationPaths(session, path);
   return { file: indexFile, index: slug, path, pages, citations };
 }
