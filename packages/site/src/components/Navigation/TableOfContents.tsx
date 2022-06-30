@@ -111,8 +111,9 @@ export const TableOfContents = ({
   const [open] = useNavOpen();
   const config = useConfig();
   const { folder } = useParams();
+  const resolvedProjectSlug = projectSlug || folder;
   if (!config) return null;
-  const headings = getProjectHeadings(config, projectSlug || folder, {
+  const headings = getProjectHeadings(config, resolvedProjectSlug, {
     addGroups: false,
     urlbase,
   });
@@ -133,7 +134,7 @@ export const TableOfContents = ({
         className="flex-grow pt-10 pb-3 px-8 overflow-y-auto"
       >
         <Headings
-          folder={projectSlug}
+          folder={resolvedProjectSlug}
           headings={headings}
           sections={config?.projects}
         />
