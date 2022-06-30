@@ -1,0 +1,26 @@
+{
+  "name": "@curvenote/icons",
+  "version": "0.0.1",
+  "sideEffects": false,
+  "main": "./react/index.tsx",
+  "types": "./react/index.tsx",
+  "files": [
+    "src"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint react/*/**.ts*"
+  },
+  "dependencies": {
+    "@curvenote/ui-providers": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "*",
+    "react": "^17.0.2",
+    "tsconfig": "*",
+    "typescript": "^4.5.2"
+  }
+}
