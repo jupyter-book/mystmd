@@ -1,0 +1,27 @@
+{
+  "name": "@curvenote/site",
+  "version": "0.0.1",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "files": [
+    "src"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint *.ts*"
+  },
+  "peerDependencies": {
+    "@curvenote/blocks": "*",
+    "@curvenote/icons": "*",
+    "@curvenote/site-common": "*"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "*",
+    "tsconfig": "*",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "unist-util-select": "^4.0.1"
+  }
+}
