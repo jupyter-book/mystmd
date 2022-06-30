@@ -4,7 +4,7 @@ export function ErrorSiteNotFound({ url }: { url: string }) {
       <h1>No site at this url</h1>
       <p>No website is available at this url, please double check the url.</p>
       <pre>{url}</pre>
-      <h3>What's next?</h3>
+      <h3>What&apos;s next?</h3>
       <p>
         If you are expecting to see <span className="font-semibold">your website</span>{' '}
         here and you think that something has gone wrong, please send an email to{' '}
@@ -17,7 +17,7 @@ export function ErrorSiteNotFound({ url }: { url: string }) {
         </a>
         , or{' '}
         <a href="https://slack.curvenote.dev">let us know on our community slack</a>,
-        and we'll help out.
+        and we&apos;ll help out.
       </p>
       <p>
         Or create a new temporary website from Markdown and Jupyter Notebooks using{' '}

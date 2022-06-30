@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { formatDistanceToNow, addDays } from 'date-fns';
 
 export default function LaunchpadMessage() {
-  if (typeof document === 'undefined') return null;
   const hostname = window.location.hostname;
   const [expiresIn, setExpiresIn] = useState('and will expire in - days.');
   const [show, setShow] = useState(true);
