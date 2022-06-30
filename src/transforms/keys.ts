@@ -15,5 +15,5 @@ function addKeys(node: GenericNode) {
  * @returns
  */
 export function transformKeys<T extends GenericNode | Root>(mdast: T): MapResult {
-  return map(mdast, addKeys);
+  return map(mdast, addKeys as any);
 }
