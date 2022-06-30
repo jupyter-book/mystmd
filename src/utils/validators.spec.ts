@@ -50,10 +50,19 @@ describe('incrementOptions', () => {
   it('errors/warnings are not lost', async () => {
     const newOpts = incrementOptions('new', opts);
     if (newOpts.messages) {
-      newOpts.messages.errors = ['a'];
-      newOpts.messages.warnings = ['b', 'c'];
+      newOpts.messages.errors = [{ property: 'a', message: 'x' }];
+      newOpts.messages.warnings = [
+        { property: 'b', message: 'y' },
+        { property: 'c', message: 'z' },
+      ];
     }
-    expect(opts.messages).toEqual({ errors: ['a'], warnings: ['b', 'c'] });
+    expect(opts.messages).toEqual({
+      errors: [{ property: 'a', message: 'x' }],
+      warnings: [
+        { property: 'b', message: 'y' },
+        { property: 'c', message: 'z' },
+      ],
+    });
   });
 });
 
@@ -72,11 +81,11 @@ describe('validateBoolean', () => {
   });
   it('invalid type errors', async () => {
     expect(validateBoolean(0, opts)).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid string errors', async () => {
     expect(validateBoolean('t', opts)).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 
@@ -86,18 +95,18 @@ describe('validateString', () => {
   });
   it('invalid type errors', async () => {
     expect(validateString({}, opts)).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('exceeding maxLenth errors', async () => {
     expect(validateString('abc', { maxLength: 1, ...opts })).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('regex match returns self', async () => {
     expect(validateString('abc', { regex: '^[a-c]{3}$', ...opts })).toEqual('abc');
   });
   it('incompatible regex errors', async () => {
     expect(validateString('abc', { regex: '^[a-c]{2}$', ...opts })).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('escape function runs', async () => {
     expect(validateString('abc', { maxLength: 3, escapeFn: (s) => `${s}${s}`, ...opts })).toEqual(
@@ -112,7 +121,7 @@ describe('validateUrl', () => {
   });
   it('invalid string errors', async () => {
     expect(validateUrl('not a url', opts)).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('valid value includes', async () => {
     expect(validateUrl('https://example.com', { ...opts, includes: 'le.c' })).toEqual(
@@ -123,7 +132,7 @@ describe('validateUrl', () => {
     expect(validateUrl('https://example.com', { ...opts, includes: 'example.org' })).toEqual(
       undefined,
     );
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 
@@ -133,7 +142,7 @@ describe('validateEmail', () => {
   });
   it('invalid email errors', async () => {
     expect(validateEmail('https://example.com', opts)).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 
@@ -157,7 +166,7 @@ describe('validateDate', () => {
   });
   it('invalid date errors', async () => {
     expect(validateDate('https://example.com', opts)).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 
@@ -167,7 +176,7 @@ describe('validateObject', () => {
   });
   it('invalid type errors', async () => {
     expect(validateObject('a', opts)).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 
@@ -186,11 +195,11 @@ describe('validateKeys', () => {
       a: 1,
       b: 2,
     });
-    expect(opts.messages?.warnings.length).toEqual(1);
+    expect(opts.messages.warnings?.length).toEqual(1);
   });
   it('missing required keys errors', async () => {
     expect(validateKeys({ a: 1 }, { required: ['a', 'b'] }, opts)).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 
@@ -213,11 +222,11 @@ describe('validateList', () => {
   });
   it('invalid object errors', async () => {
     expect(validateList({}, opts, (val) => val)).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid string errors', async () => {
     expect(validateList('abc', opts, (val) => val)).toEqual(undefined);
-    expect(opts.messages?.errors.length).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 
