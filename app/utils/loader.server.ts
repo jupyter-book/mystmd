@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import config from '~/config.json';
-import { PageLoader as Data, SiteManifest } from './types';
+import type { PageLoader as Data, SiteManifest } from '@curvenote/site-common';
 
 // This is executed in the API directory
 const contentFolder = path.join(__dirname, '..', 'app', 'content');

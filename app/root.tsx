@@ -11,19 +11,26 @@ import {
   useCatch,
   useLoaderData,
 } from '@remix-run/react';
-
 import React from 'react';
-import { Theme, ThemeProvider } from '~/components';
-import { Navigation } from './components/Navigation';
 import { getThemeSession } from '~/utils/theme.server';
 import tailwind from './styles/app.css';
-import { getMetaTagsForSite, getConfig, SiteManifest } from './utils';
-import { ConfigProvider } from './components/ConfigProvider';
-import { UiStateProvider } from './components/UiStateProvider';
-import { Analytics } from './components/analytics';
+import { getConfig } from './utils';
 import { ErrorSiteExpired } from './components/ErrorSiteExpired';
 import { ErrorSiteNotFound } from './components/ErrorSiteNotFound';
-import { responseNoSite } from './utils/response.server';
+import {
+  SiteProvider,
+  Theme,
+  ThemeProvider,
+  UiStateProvider,
+} from '@curvenote/ui-providers';
+import type { SiteManifest } from '@curvenote/site-common';
+import {
+  Navigation,
+  TopNav,
+  Analytics,
+  responseNoSite,
+  getMetaTagsForSite,
+} from '@curvenote/site';
 
 export const meta: MetaFunction = ({ data }) => {
   return getMetaTagsForSite({
@@ -75,10 +82,12 @@ function Document({
       <body className="m-0 transition-colors duration-500 bg-white dark:bg-stone-900">
         <UiStateProvider>
           <ThemeProvider theme={theme}>
-            <ConfigProvider config={config}>
-              <Navigation />
+            <SiteProvider config={config}>
+              <Navigation>
+                <TopNav />
+              </Navigation>
               {children}
-            </ConfigProvider>
+            </SiteProvider>
           </ThemeProvider>
         </UiStateProvider>
         <ScrollRestoration />

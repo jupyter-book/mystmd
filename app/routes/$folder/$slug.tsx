@@ -1,21 +1,21 @@
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { MetaFunction, redirect } from '@remix-run/node';
-import { useCatch, useLoaderData } from '@remix-run/react';
-import type { GenericParent } from 'mystjs';
-import { ReferencesProvider, ContentBlock, Frontmatter } from '~/components';
+import { useLoaderData } from '@remix-run/react';
 import {
-  getData,
-  getConfig,
+  ContentBlocks,
+  ErrorDocumentNotFound,
+  FooterLinksBlock,
+  FrontmatterBlock,
+  getFooterLinks,
   getMetaTagsForArticle,
   getProject,
-  PageLoader,
-  getFooterLinks,
-  SiteManifest,
-} from '~/utils';
-import { Footer } from '~/components/FooterLinks';
-import { Bibliography } from '~/myst-to-react/cite';
-import { responseNoArticle, responseNoSite } from '~/utils/response.server';
-import { ErrorDocumentNotFound } from '~/components/ErrorDocumentNotFound';
+  responseNoArticle,
+  responseNoSite,
+} from '@curvenote/site';
+import { getData, getConfig } from '~/utils';
+import { Bibliography } from 'myst-util-to-react';
+import { ReferencesProvider } from '@curvenote/ui-providers';
+import type { PageLoader, SiteManifest } from '@curvenote/site-common';
 
 export const meta: MetaFunction = (args) => {
   const config = args.parentsData?.root?.config as SiteManifest | undefined;
@@ -65,23 +65,18 @@ export const loader: LoaderFunction = async ({
 
 export default function Page() {
   const article = useLoaderData<PageLoader>();
-  const blocks = article.mdast.children as GenericParent[];
   return (
     <ReferencesProvider references={{ ...article.references, article: article.mdast }}>
       <div>
-        <Frontmatter kind={article.kind} frontmatter={article.frontmatter} />
-        {blocks.map((node, index) => {
-          return <ContentBlock key={node.key} id={`${index}`} node={node} />;
-        })}
+        <FrontmatterBlock kind={article.kind} frontmatter={article.frontmatter} />
+        <ContentBlocks mdast={article.mdast} />
         {article.references.cite.order.length > 0 && <Bibliography />}
-        <Footer links={article.footer} />
+        <FooterLinksBlock links={article.footer} />
       </div>
     </ReferencesProvider>
   );
 }
 
 export function CatchBoundary() {
-  const { data, statusText } = useCatch();
-  if (statusText === 'Site not found') throw responseNoSite(data);
   return <ErrorDocumentNotFound />;
 }

@@ -1,5 +1,5 @@
 import { createCookieSessionStorage } from '@remix-run/node';
-import { isTheme, Theme } from '~/components';
+import { isTheme, Theme } from '@curvenote/ui-providers';
 
 export const themeStorage = createCookieSessionStorage({
   cookie: {
