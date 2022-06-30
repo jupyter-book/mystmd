@@ -56,8 +56,8 @@ export interface Venue {
 }
 
 export interface SiteProject {
-  remote: string;
   slug: string;
+  remote?: string;
   path?: string;
 }
 
@@ -94,9 +94,8 @@ export interface PartialSiteConfig {
   domains?: string[] | null;
   twitter?: string | null;
   logo?: string | null;
-  logoText?: string | null;
+  logo_text?: string | null;
   favicon?: string | null;
-  buildPath?: string | null;
   analytics?: SiteAnalytics | null;
   design?: SiteDesign | null;
 }
