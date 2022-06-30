@@ -85,20 +85,20 @@ export interface SiteDesign {
 }
 
 export interface PartialSiteConfig {
-  title?: string;
-  description?: string;
-  venue?: Venue;
-  projects?: SiteProject[];
-  nav?: (SiteNavPage | SiteNavFolder)[];
-  actions?: SiteAction[];
-  domains?: string[];
-  twitter?: string;
-  logo?: string;
-  logoText?: string;
-  favicon?: string;
-  buildPath?: string;
-  analytics?: SiteAnalytics;
-  design?: SiteDesign;
+  title?: string | null;
+  description?: string | null;
+  venue?: Venue | null;
+  projects?: SiteProject[] | null;
+  nav?: (SiteNavPage | SiteNavFolder)[] | null;
+  actions?: SiteAction[] | null;
+  domains?: string[] | null;
+  twitter?: string | null;
+  logo?: string | null;
+  logoText?: string | null;
+  favicon?: string | null;
+  buildPath?: string | null;
+  analytics?: SiteAnalytics | null;
+  design?: SiteDesign | null;
 }
 
 export interface SiteConfigLinks extends BaseLinks {
@@ -268,8 +268,11 @@ export function validateSiteAnalytics(input: any, opts: ValidationOptions) {
   return value as SiteAnalytics;
 }
 
-export function validateSiteConfigKeys(value: Record<string, any>, opts: ValidationOptions) {
-  const output: Record<string, any> = {};
+export function validateSiteConfigKeys(
+  value: Record<string, any>,
+  opts: ValidationOptions,
+): PartialSiteConfig {
+  const output: PartialSiteConfig = {};
   if (defined(value.title)) {
     output.title = validateString(value.title, incrementOptions('title', opts));
   }
@@ -341,5 +344,5 @@ export function validateSiteConfigKeys(value: Record<string, any>, opts: Validat
   if (defined(value.design)) {
     output.design = validateSiteDesign(value.design, incrementOptions('design', opts));
   }
-  return output as PartialSiteConfig;
+  return output;
 }
