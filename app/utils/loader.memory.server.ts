@@ -1,5 +1,5 @@
 import config from '~/config.json';
-import { PageLoader as Data, SiteManifest } from './types';
+import { PageLoader as Data, SiteManifest } from '@curvenote/site-common';
 
 const CACHE: {
   isLoaded: boolean;
