@@ -108,7 +108,6 @@ export interface SiteConfigLinks extends BaseLinks {
 
 export interface SiteConfig extends PartialSiteConfig {
   id: ProjectId;
-  created_by: string;
   date_created: Date;
   date_modified: Date;
   links: SiteConfigLinks;
