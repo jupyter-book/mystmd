@@ -31,3 +31,57 @@
     background-color: rgb(255, 221, 221);
   }
 }
+
+html {
+  scroll-padding-top: 80px;
+}
+cite {
+  font-style: normal;
+}
+.cite-group.parenthetical cite::after {
+  content: ';\00a0';
+}
+.cite-group.narrative cite::after {
+  content: ',\00a0';
+}
+.cite-group > span:last-of-type cite::after {
+  content: '';
+}
+.cite-group.parenthetical:before {
+  content: '(';
+}
+.cite-group.parenthetical:after {
+  content: ')';
+}
+pre > code > span[data-line-number] {
+  display: block;
+  position: relative;
+  line-height: 1.4rem;
+  padding-right: 1rem;
+}
+pre > code > span[data-highlight='true']::after {
+  content: ' ';
+  position: absolute;
+  right: -0.8rem;
+  top: 0;
+  width: calc(100% + 1.6rem);
+  opacity: 0.1;
+  pointer-events: none;
+  background: #5ca5ee;
+}
+pre > code > span > .linenumber {
+  color: rgb(128, 128, 128);
+}
+pre > code > span[data-highlight='true'] > .linenumber {
+  color: #5ca5ee;
+}
+r-var {
+  display: none;
+}
+r-dynamic {
+  color: #286df7;
+  border-bottom: dotted 1px #285bc1;
+}
+.smallcaps {
+  font-variant: small-caps;
+}
