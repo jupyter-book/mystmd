@@ -1,0 +1,23 @@
+{
+  "name": "@curvenote/site-common",
+  "version": "0.0.1",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "files": [
+    "src"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint *.ts*"
+  },
+  "peerDependencies": {
+    "@curvenote/blocks": "*"
+  },
+  "devDependencies": {
+    "mystjs": "^0.0.10",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "*",
+    "tsconfig": "*",
+    "typescript": "^4.5.2"
+  }
+}
