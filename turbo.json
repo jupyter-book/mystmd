@@ -4,7 +4,14 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]
     },
+    "lint:format": {
+      "outputs": []
+    },
     "lint": {
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["build"],
       "outputs": []
     },
     "dev": {
