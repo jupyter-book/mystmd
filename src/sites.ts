@@ -182,15 +182,25 @@ export function validateVenue(input: any, opts: ValidationOptions) {
 }
 
 export function validateSiteProject(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { required: ['path', 'slug'] }, opts);
+  const value = validateObjectKeys(
+    input,
+    { required: ['slug'], optional: ['remote', 'path'] },
+    opts,
+  );
   if (value === undefined) return undefined;
-  const path = validateString(value.path, incrementOptions('path', opts));
   const slug = validateString(value.slug, {
     ...incrementOptions('slug', opts),
     regex: '^[a-zA-Z0-9._-]+$',
   });
-  if (!path || !slug) return undefined;
-  return { path, slug } as SiteProject;
+  if (!slug) return undefined;
+  const output: SiteProject = { slug };
+  if (defined(value.path)) {
+    output.path = validateString(value.path, incrementOptions('path', opts));
+  }
+  if (defined(value.remote)) {
+    output.remote = validateString(value.remote, incrementOptions('remote', opts));
+  }
+  return output;
 }
 
 export function validateSiteNavItem(
@@ -329,13 +339,10 @@ export function validateSiteConfigKeys(
     output.logo = validateString(value.logo, incrementOptions('logo', opts));
   }
   if (defined(value.logoText)) {
-    output.logoText = validateString(value.logoText, incrementOptions('logoText', opts));
+    output.logo_text = validateString(value.logoText, incrementOptions('logoText', opts));
   }
   if (defined(value.favicon)) {
     output.favicon = validateString(value.favicon, incrementOptions('favicon', opts));
-  }
-  if (defined(value.buildPath)) {
-    output.buildPath = validateString(value.buildPath, incrementOptions('buildPath', opts));
   }
   if (defined(value.analytics)) {
     output.analytics = validateSiteAnalytics(value.analytics, incrementOptions('analytics', opts));
