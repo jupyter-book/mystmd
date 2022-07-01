@@ -8,7 +8,8 @@
   ],
   "license": "MIT",
   "scripts": {
-    "lint": "eslint src/*/**.ts*"
+    "lint": "eslint src/**/*.ts*",
+    "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\""
   },
   "dependencies": {
     "@curvenote/blocks": "^1.5.6",
