@@ -4,10 +4,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]
     },
-    "lint:format": {
+    "lint": {
       "outputs": []
     },
-    "lint": {
+    "lint:format": {
       "outputs": []
     },
     "test": {
