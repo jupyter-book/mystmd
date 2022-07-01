@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "@heroicons/react": "^1.0.6",
+    "lodash.throttle": "^4.1.1",
+    "node-cache": "^5.1.2",
     "unist-util-select": "^4.0.1"
   }
 }
