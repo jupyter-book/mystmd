@@ -4,9 +4,14 @@ module.exports = {
   darkMode: 'class',
   content: [
     './app/**/*.{js,ts,jsx,tsx}',
+    // These are pointers to the dependencies
     '../../node_modules/myst-util-to-react/**/*.{js,ts,jsx,tsx}',
     '../../node_modules/@curvenote/site/**/*.{js,ts,jsx,tsx}',
     '../../node_modules/@curvenote/icons/**/*.{js,ts,jsx,tsx}',
+    // These need to be duplicated for working in nested monorepos
+    '../../../node_modules/myst-util-to-react/**/*.{js,ts,jsx,tsx}',
+    '../../../node_modules/@curvenote/site/**/*.{js,ts,jsx,tsx}',
+    '../../../node_modules/@curvenote/icons/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
