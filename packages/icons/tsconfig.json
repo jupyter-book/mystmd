@@ -1,5 +1,5 @@
 {
-  "extends": "tsconfig/remix.json",
+  "extends": "../tsconfig/remix.json",
   "include": ["."],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
