@@ -12,8 +12,7 @@
     "dev": "concurrently \"cross-env NODE_ENV=development npm run dev:css\" \"cross-env NODE_ENV=development PORT=5001 remix dev\"",
     "serve": "cross-env NODE_ENV=development npm run build:css && cross-env NODE_ENV=development remix dev",
     "lint": "eslint \"app/**/*.ts\" -c .eslintrc.json",
-    "lint:format": "prettier --check \"app/**/*.tsx\" \"app/**/*.ts\"",
-    "lint:format:fix": "prettier --write \"app/**/*.tsx\" \"app/**/*.ts\""
+    "lint:format": "prettier --check \"app/**/*.tsx\" \"app/**/*.ts\""
   },
   "dependencies": {
     "@curvenote/blocks": "^1.4.4",
