@@ -90,8 +90,6 @@ export type PageLoader = {
   footer?: FooterLinks;
 };
 
-export type pageLevels = 1 | 2 | 3 | 4 | 5 | 6;
-
 export type SiteNavPage = {
   title: string;
   url: string;
@@ -112,7 +110,7 @@ export type SiteAction = SiteNavPage & {
 
 export type ManifestProjectFolder = {
   title: string;
-  level: pageLevels;
+  level: number;
 };
 
 export type ManifestProjectPage = {
