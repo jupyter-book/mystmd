@@ -18,20 +18,22 @@ export function getProject(
 export function getProjectHeadings(
   config: SiteManifest,
   projectSlug?: string,
-  opts = { addGroups: false, urlbase: '' },
+  opts: { addGroups: boolean; urlbase?: string } = { addGroups: false },
 ): Heading[] | undefined {
   const project = getProject(config, projectSlug);
   if (!project) return undefined;
+  // Ensure there is a leading /
+  const urlbase = opts.urlbase?.replace(/^\/?/, '/') ?? '';
   const headings: Heading[] = [
     {
       title: project.title,
       slug: project.index,
-      path: `${opts.urlbase || ''}/${project.slug}`,
+      path: `${urlbase}/${project.slug}`,
       level: 'index',
     },
     ...project.pages.map((p) => {
       if (!('slug' in p)) return p;
-      return { ...p, path: `${opts.urlbase || ''}/${project.slug}/${p.slug}` };
+      return { ...p, path: `${urlbase}/${project.slug}/${p.slug}` };
     }),
   ];
   if (opts.addGroups) {
@@ -65,7 +67,7 @@ export function getFooterLinks(
   config?: SiteManifest,
   projectSlug?: string,
   slug?: string,
-  urlbase = '',
+  urlbase?: string,
 ): FooterLinks {
   if (!projectSlug || !slug || !config) return {};
   const pages = getProjectHeadings(config, projectSlug, {

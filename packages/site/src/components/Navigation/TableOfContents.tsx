@@ -106,7 +106,7 @@ export const TableOfContents = ({
   projectSlug,
   top,
   height,
-  urlbase = '',
+  urlbase,
 }: {
   top?: number;
   height?: number;

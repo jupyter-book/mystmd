@@ -1,16 +1,21 @@
 import { Outlet } from '@remix-run/react';
 import LaunchpadMessage from '~/components/LaunchpadMessage';
-import { DocumentOutline, ErrorProjectNotFound } from '@curvenote/site';
+import {
+  DocumentOutline,
+  ErrorProjectNotFound,
+  useNavigationHeight,
+} from '@curvenote/site';
 
 export default function Folder() {
+  const { ref, height, top } = useNavigationHeight(60);
   return (
-    <article className="content">
-      <main className="article-content">
+    <>
+      <main ref={ref} className="article-content">
         <Outlet />
-        <DocumentOutline />
+        <DocumentOutline top={top} height={height} />
       </main>
       {typeof document === 'undefined' ? null : <LaunchpadMessage />}
-    </article>
+    </>
   );
 }
 

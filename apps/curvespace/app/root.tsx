@@ -30,6 +30,7 @@ import {
   Analytics,
   responseNoSite,
   getMetaTagsForSite,
+  useNavigationHeight,
 } from '@curvenote/site';
 
 export const meta: MetaFunction = ({ data }) => {
@@ -69,6 +70,7 @@ function Document({
   config?: SiteManifest;
   title?: string;
 }) {
+  const { ref, height, top } = useNavigationHeight<HTMLDivElement>(60);
   return (
     <html lang="en" className={theme}>
       <head>
@@ -83,10 +85,13 @@ function Document({
         <UiStateProvider>
           <ThemeProvider theme={theme}>
             <SiteProvider config={config}>
-              <Navigation>
+              <Navigation top={top} height={height}>
                 <TopNav />
               </Navigation>
-              {children}
+
+              <article ref={ref} className="content">
+                {children}
+              </article>
             </SiteProvider>
           </ThemeProvider>
         </UiStateProvider>
