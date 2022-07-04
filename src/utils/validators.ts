@@ -107,12 +107,37 @@ export function validateUrl(input: any, opts: { includes?: string } & Validation
   try {
     url = new URL(value);
   } catch {
-    return validationError('must be valid URL', opts);
+    return validationError(`must be valid URL: ${value}`, opts);
   }
   if (opts.includes && !url.origin.includes(opts.includes)) {
-    return validationError(`must include "${opts.includes}"`, opts);
+    return validationError(`must include "${opts.includes}": ${value}`, opts);
   }
   return value;
+}
+
+export function validateSubdomain(input: string, opts: ValidationOptions) {
+  let value = validateString(input, { ...opts, maxLength: 2048 });
+  if (value === undefined) return value;
+  if (!value.startsWith('https://') && !value.startsWith('http://')) {
+    value = `http://${value}`;
+  }
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return validationError(`must be valid domain: ${value}`, opts);
+  }
+  const { hash, host, pathname, protocol, search } = url;
+  if (protocol !== 'http:' && protocol !== 'https:') {
+    return validationError(`must have http/https protocol or no protocol: ${value}`, opts);
+  }
+  if ((pathname && pathname !== '/') || hash || search) {
+    return validationError(`must not specify path, query, or fragment: ${value}`, opts);
+  }
+  if (!host.match(/^.+\..+\..+$/)) {
+    return validationError(`must be a subdomain: ${value}`, opts);
+  }
+  return host;
 }
 
 /**

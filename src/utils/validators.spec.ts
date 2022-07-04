@@ -1,5 +1,6 @@
 import {
   fillMissingKeys,
+  filterKeys,
   incrementOptions,
   ValidationOptions,
   locationSuffix,
@@ -10,6 +11,7 @@ import {
   validateList,
   validateObject,
   validateString,
+  validateSubdomain,
   validateUrl,
 } from './validators';
 
@@ -136,6 +138,39 @@ describe('validateUrl', () => {
   });
 });
 
+describe('validateSubdomain', () => {
+  it('valid value returns self', async () => {
+    expect(validateSubdomain('www.example.com', opts)).toEqual('www.example.com');
+  });
+  it('valid value removes protocol', async () => {
+    expect(validateSubdomain('https://www.example.com', opts)).toEqual('www.example.com');
+  });
+  it('invalid url errors', async () => {
+    expect(validateSubdomain('not a url', opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('invalid protocol errors', async () => {
+    expect(validateSubdomain('ftp://www.example.com', opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('top-level domain errors', async () => {
+    expect(validateSubdomain('example.com', opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('value with path errors', async () => {
+    expect(validateSubdomain('www.example.com/path', opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('value with query errors', async () => {
+    expect(validateSubdomain('www.example.com?query=true', opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('value with fragment errors', async () => {
+    expect(validateSubdomain('www.example.com#fragment', opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+});
+
 describe('validateEmail', () => {
   it('valid email returns self', async () => {
     expect(validateEmail('example@example.com', opts)).toEqual('example@example.com');
@@ -243,5 +278,14 @@ describe('fillMissingKeys', () => {
       b: 2,
       d: 4,
     });
+  });
+});
+
+describe('filterKeys', () => {
+  it('remove existing key', async () => {
+    expect(filterKeys({ a: 1, b: 2 }, ['a'])).toEqual({ a: 1 });
+  });
+  it('remove null', async () => {
+    expect(filterKeys({ a: null }, ['a', 'b'])).toEqual({});
   });
 });

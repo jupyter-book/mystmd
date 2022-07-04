@@ -6,6 +6,7 @@ import {
   validateObject,
   validateObjectKeys,
   validateString,
+  validateSubdomain,
   validateUrl,
   validateList,
   validateBoolean,
@@ -83,6 +84,23 @@ export interface SiteAnalytics {
 export interface SiteDesign {
   hide_authors?: boolean;
 }
+export const SITE_CONFIG_KEYS = {
+  optional: [
+    'domains',
+    'title',
+    'description',
+    'venue',
+    'projects',
+    'nav',
+    'actions',
+    'twitter',
+    'logo',
+    'logo_text',
+    'favicon',
+    'analytics',
+    'design',
+  ],
+};
 
 export interface PartialSiteConfig {
   title?: string | null;
@@ -147,10 +165,14 @@ export function getCurvespaceParts(test: string): [string | null, string | null]
   return [match[1], match[2] ?? null];
 }
 
-export function createCurvespaceUrl(name: string, sub?: string | null): string {
-  const url = sub ? `https://${name}-${sub}.curve.space` : `https://${name}.curve.space`;
-  if (!isCurvespaceDomain(url)) throw new Error(`The url "${url}" is not valid`);
+export function createCurvespaceDomain(name: string, sub?: string | null): string {
+  const url = sub ? `${name}-${sub}.curve.space` : `${name}.curve.space`;
+  if (!isCurvespaceDomain(url)) throw new Error(`The domain "${url}" is not valid`);
   return url;
+}
+
+export function createCurvespaceUrl(name: string, sub?: string | null): string {
+  return `https://${createCurvespaceDomain(name, sub)}`;
 }
 
 export function dnsRouterFromDTO(id: string, json: JsonObject): DnsRouter {
@@ -161,6 +183,14 @@ export function dnsRouterFromDTO(id: string, json: JsonObject): DnsRouter {
     date_created: getDate(json.date_created),
     date_modified: getDate(json.date_modified),
   };
+}
+
+export function validateDomain(input: any, opts: ValidationOptions) {
+  const value = validateString(input, opts);
+  if (!defined(value)) return undefined;
+  const [name, sub] = getCurvespaceParts(value as string);
+  if (name) return createCurvespaceDomain(name, sub);
+  return validateSubdomain(value as string, opts);
 }
 
 /**
@@ -299,15 +329,11 @@ export function validateSiteConfigKeys(
         return validateSiteProject(proj, incrementOptions(`projects.${index}`, opts));
       },
     );
-  } else {
-    output.projects = [];
   }
   if (defined(value.nav)) {
     output.nav = validateList(value.nav, incrementOptions('nav', opts), (item, index) => {
       return validateSiteNavItem(item, incrementOptions(`nav.${index}`, opts));
     });
-  } else {
-    output.nav = [];
   }
   if (defined(value.actions)) {
     output.actions = validateList(
@@ -317,17 +343,16 @@ export function validateSiteConfigKeys(
         return validateSiteAction(action, incrementOptions(`actions.${index}`, opts));
       },
     );
-  } else {
-    output.actions = [];
   }
   if (defined(value.domains)) {
-    const domainsOpts = incrementOptions('domains', opts);
-    output.domains = validateList(value.domains, domainsOpts, (domain) => {
-      // Very basic subdomain validation
-      return validateString(domain, { ...domainsOpts, regex: /^.+\..+\..+$/ });
-    });
-  } else {
-    output.domains = [];
+    const domains = validateList(
+      value.domains,
+      incrementOptions('domains', opts),
+      (domain, index) => {
+        return validateDomain(domain, incrementOptions(`domains.${index}`, opts));
+      },
+    );
+    if (domains) output.domains = [...new Set(domains)];
   }
   if (defined(value.twitter)) {
     output.twitter = validateString(value.twitter, {
@@ -338,8 +363,8 @@ export function validateSiteConfigKeys(
   if (defined(value.logo)) {
     output.logo = validateString(value.logo, incrementOptions('logo', opts));
   }
-  if (defined(value.logoText)) {
-    output.logo_text = validateString(value.logoText, incrementOptions('logoText', opts));
+  if (defined(value.logo_text)) {
+    output.logo_text = validateString(value.logo_text, incrementOptions('logoText', opts));
   }
   if (defined(value.favicon)) {
     output.favicon = validateString(value.favicon, incrementOptions('favicon', opts));
@@ -351,4 +376,13 @@ export function validateSiteConfigKeys(
     output.design = validateSiteDesign(value.design, incrementOptions('design', opts));
   }
   return output;
+}
+
+export function validateSiteConfig(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, SITE_CONFIG_KEYS, {
+    ...opts,
+    returnInvalidPartial: true,
+  });
+  if (value === undefined) return undefined;
+  return validateSiteConfigKeys(value, opts);
 }
