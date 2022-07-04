@@ -13,7 +13,7 @@ export function SiteProvider({
   return <SiteContext.Provider value={config}>{children}</SiteContext.Provider>;
 }
 
-export function useConfig() {
+export function useSiteManifest() {
   const config = useContext(SiteContext);
   return config;
 }

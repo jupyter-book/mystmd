@@ -5,10 +5,14 @@ export function Navigation({
   children,
   projectSlug,
   urlbase,
+  top,
+  height,
 }: {
   children?: React.ReactNode;
   urlbase?: string;
   projectSlug?: string;
+  top?: number;
+  height?: number;
 }) {
   const [open, setOpen] = useNavOpen();
   return (
@@ -20,7 +24,12 @@ export function Navigation({
         ></div>
       )}
       {children}
-      <TableOfContents projectSlug={projectSlug} urlbase={urlbase} />
+      <TableOfContents
+        projectSlug={projectSlug}
+        urlbase={urlbase}
+        top={top}
+        height={height}
+      />
     </>
   );
 }

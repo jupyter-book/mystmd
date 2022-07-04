@@ -30,6 +30,15 @@
   .jupyter-error {
     background-color: rgb(255, 221, 221);
   }
+  article.content {
+    min-height: calc(100vh - 300px);
+  }
+  .document-outline {
+    @apply fixed z-10 bottom-0 right-[max(0px,calc(50%-45rem))] w-[14rem] lg:w-[18rem] py-10 px-4 lg:px-8 overflow-y-auto hidden md:block;
+  }
+  .toc {
+    @apply flex-col fixed z-30 bottom-0 left-[max(0px,calc(50%-45rem))] w-[19.5rem] border-r border-stone-200 dark:border-stone-700;
+  }
 }
 
 html {

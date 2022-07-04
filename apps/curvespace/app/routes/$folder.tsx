@@ -4,11 +4,11 @@ import { DocumentOutline, ErrorProjectNotFound } from '@curvenote/site';
 
 export default function Folder() {
   return (
-    <article>
+    <article className="content">
       <main className="article-content">
         <Outlet />
+        <DocumentOutline />
       </main>
-      <DocumentOutline />
       {typeof document === 'undefined' ? null : <LaunchpadMessage />}
     </article>
   );

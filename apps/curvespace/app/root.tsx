@@ -119,7 +119,7 @@ export function CatchBoundary() {
 
   return (
     <Document theme={Theme.light} title={caught.statusText}>
-      <article>
+      <article className="content">
         <main className="error-content">
           {isLaunchpad && <ErrorSiteExpired />}
           {!isLaunchpad && <ErrorSiteNotFound url={url?.toString() ?? ''} />}

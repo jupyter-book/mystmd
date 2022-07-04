@@ -6,7 +6,7 @@ import DotsVerticalIcon from '@heroicons/react/solid/DotsVerticalIcon';
 import MenuIcon from '@heroicons/react/solid/MenuIcon';
 import type { SiteManifest, SiteNavItem } from '@curvenote/site-common';
 import { ThemeButton } from './ThemeButton';
-import { useNavOpen, useConfig } from '@curvenote/ui-providers';
+import { useNavOpen, useSiteManifest } from '@curvenote/ui-providers';
 import { CurvenoteLogo } from '@curvenote/icons';
 import ChevronDownIcon from '@heroicons/react/solid/ChevronDownIcon';
 
@@ -218,7 +218,7 @@ function HomeLink({
 
 export function TopNav() {
   const [open, setOpen] = useNavOpen();
-  const config = useConfig();
+  const config = useSiteManifest();
   const { logo, logoText, actions, title, nav } = config ?? {};
   const { isLoading, showLoading } = useLoading();
   return (

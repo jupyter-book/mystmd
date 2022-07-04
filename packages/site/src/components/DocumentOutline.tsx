@@ -153,14 +153,23 @@ const useIntersectionObserver = (
   return { observer };
 };
 
-export const DocumentOutline = () => {
+export const DocumentOutline = ({ top, height }: { top?: number; height?: number }) => {
   const { activeId, headings, highlight } = useHeaders();
+  if (height && height < 50) return null;
   if (headings.length <= 1) return <nav suppressHydrationWarning />;
   return (
     <nav
       aria-label="Document Outline"
       suppressHydrationWarning
-      className="fixed not-prose z-10 top-[3.8125rem] bottom-0 right-[max(0px,calc(50%-45rem))] w-[14rem] lg:w-[18rem] py-10 px-4 lg:px-8 overflow-y-auto hidden md:block"
+      className="document-outline not-prose transition-opacity"
+      style={{
+        top: top ?? 0,
+        height:
+          typeof document === 'undefined' || (height && height > window.innerHeight)
+            ? undefined
+            : height,
+        opacity: height && height > 300 ? undefined : 0,
+      }}
     >
       <h5 className="text-slate-900 mb-4 text-sm leading-6 dark:text-slate-100 uppercase">
         In this article
