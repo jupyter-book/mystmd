@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import classNames from 'classnames';
 import throttle from 'lodash.throttle';
 import { useCallback, useEffect, useRef, useState } from 'react';

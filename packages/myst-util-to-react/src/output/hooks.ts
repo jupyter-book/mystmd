@@ -45,7 +45,6 @@ export function useLongContent(
   // This is ONLY called on the server
   if (typeof document === 'undefined')
     return url ? {} : { data: { content: content ?? '' } };
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data, error } = useSWRImmutable<LongContent>(url || null, fetcher);
   if (!url) return { data: { content: content ?? '' } };
   return { data, error };
