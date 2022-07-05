@@ -83,6 +83,7 @@ export type Frontmatter = {
 } & Record<string, string | boolean>;
 
 export type PageLoader = {
+  domain: string;
   slug: string;
   frontmatter: Frontmatter;
   kind: KINDS;
