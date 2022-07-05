@@ -75,7 +75,10 @@ function AuthorAndAffiliations({ authors }: { authors: FrontmatterType['authors'
                 if (typeof affil === 'string') {
                   return <div key={i}>{affil}</div>;
                 }
-                const { name, ror } = affil as any as { name: string; ror?: string };
+                const { name, ror } = affil as unknown as {
+                  name: string;
+                  ror?: string;
+                };
                 if (ror) {
                   return (
                     <div key={i}>

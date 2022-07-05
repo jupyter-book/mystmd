@@ -18,7 +18,7 @@ function Block({
 export function ContentBlocks({
   mdast,
 }: {
-  mdast: GenericParent<Record<string, any>>;
+  mdast: GenericParent<Record<string, unknown>>;
 }) {
   const blocks = mdast.children as GenericParent[];
   return (

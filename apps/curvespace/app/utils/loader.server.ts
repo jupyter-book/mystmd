@@ -6,8 +6,8 @@ import type { PageLoader as Data, SiteManifest } from '@curvenote/site-common';
 // This is executed in the API directory
 const contentFolder = path.join(__dirname, '..', 'app', 'content');
 
-export async function getConfig(request: Request): Promise<SiteManifest | undefined> {
-  return config as any;
+export async function getConfig(): Promise<SiteManifest | undefined> {
+  return config as unknown as SiteManifest;
 }
 
 export async function getData(
