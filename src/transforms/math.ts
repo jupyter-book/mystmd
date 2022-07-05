@@ -32,7 +32,7 @@ function replaceEqnarray(log: Logger, value: string, file: string) {
   if (!value.includes('\\begin{eqnarray}')) return value;
   log.warn(
     `Math: Replacing \\begin{eqnarray} with \\begin{align*} in ${file}\n${chalk.dim(
-      `Although the standard eqnarray environment is available in LaTeX, it is better to use align or equation+split instead. Within eqnarray, spacing around signs of relation is not the preferred mathematical spacing, and is inconsistent with that spacing as it appears in other environments.\n See http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/required/amsmath/amsldoc.pdf`,
+      'Although the standard eqnarray environment is available in LaTeX, it is better to use align or equation+split instead. Within eqnarray, spacing around signs of relation is not the preferred mathematical spacing, and is inconsistent with that spacing as it appears in other environments.\n See http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/required/amsmath/amsldoc.pdf',
     )}`,
   );
   return value
