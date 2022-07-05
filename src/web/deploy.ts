@@ -204,7 +204,7 @@ export async function deployContent(session: ISession, siteConfig: SiteConfig) {
   const sites = (
     await Promise.all(
       siteConfig.domains.map(async (domain) => {
-        const resp = await session.post<DnsRouter>('/sites/router', {
+        const resp = await session.post<DnsRouter>('/routers', {
           cdn: cdnKey,
           domain,
         });
