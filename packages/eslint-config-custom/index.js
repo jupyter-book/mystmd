@@ -8,12 +8,14 @@ module.exports = {
   rules: {
     '@next/next/no-html-link-for-pages': 'off',
     'react/jsx-key': 'off',
-    quotes: ['error', 'single'],
     'prettier/prettier': [
       'error',
       {
         endOfLine: 'auto',
-        printWidth: 88,
+        printWidth: 100,
+        tabWidth: 2,
+        semi: true,
+        singleQuote: true,
       },
     ],
   },

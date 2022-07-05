@@ -48,10 +48,7 @@ export function getProjectHeadings(
   return headings;
 }
 
-function getHeadingLink(
-  currentSlug: string,
-  headings?: Heading[],
-): NavigationLink | undefined {
+function getHeadingLink(currentSlug: string, headings?: Heading[]): NavigationLink | undefined {
   if (!headings) return undefined;
   const linkIndex = headings.findIndex(({ slug }) => !!slug && slug !== currentSlug);
   const link = headings[linkIndex];

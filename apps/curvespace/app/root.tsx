@@ -17,12 +17,7 @@ import tailwind from './styles/app.css';
 import { getConfig } from './utils';
 import { ErrorSiteExpired } from './components/ErrorSiteExpired';
 import { ErrorSiteNotFound } from './components/ErrorSiteNotFound';
-import {
-  SiteProvider,
-  Theme,
-  ThemeProvider,
-  UiStateProvider,
-} from '@curvenote/ui-providers';
+import { SiteProvider, Theme, ThemeProvider, UiStateProvider } from '@curvenote/ui-providers';
 import type { SiteManifest } from '@curvenote/site-common';
 import {
   Navigation,
@@ -50,10 +45,7 @@ type DocumentData = {
 };
 
 export const loader: LoaderFunction = async ({ request }): Promise<DocumentData> => {
-  const [config, themeSession] = await Promise.all([
-    getConfig(request),
-    getThemeSession(request),
-  ]);
+  const [config, themeSession] = await Promise.all([getConfig(request), getThemeSession(request)]);
   if (!config) throw responseNoSite(request.url);
   const data = { theme: themeSession.getTheme(), config };
   return data;
@@ -134,11 +126,7 @@ export function CatchBoundary() {
   );
 }
 
-export function ErrorBoundary({
-  error,
-}: {
-  error: { message: string; stack: string };
-}) {
+export function ErrorBoundary({ error }: { error: { message: string; stack: string } }) {
   return (
     <Document theme={Theme.light} title="Error">
       <div className="mt-16">

@@ -10,11 +10,7 @@ export function ReferencesProvider({
   references: References;
   children: React.ReactNode;
 }) {
-  return (
-    <ReferencesContext.Provider value={references}>
-      {children}
-    </ReferencesContext.Provider>
-  );
+  return <ReferencesContext.Provider value={references}>{children}</ReferencesContext.Provider>;
 }
 
 export function useReferences() {

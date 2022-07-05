@@ -42,9 +42,10 @@ export function useLongContent(
   content?: string,
   url?: string,
 ): { data?: LongContent; error?: Error } {
-  // This is ONLY called on the server
-  if (typeof document === 'undefined')
+  if (typeof document === 'undefined') {
+    // This is ONLY called on the server
     return url ? {} : { data: { content: content ?? '' } };
+  }
   const { data, error } = useSWRImmutable<LongContent>(url || null, fetcher);
   if (!url) return { data: { content: content ?? '' } };
   return { data, error };
@@ -77,10 +78,7 @@ export function useFetchAnyTruncatedContent(outputs: MinifiedOutput[]) {
 
   walkPaths(updated, (path, obj) => {
     // images have paths, but we don't need to fetch them
-    if (
-      'content_type' in obj &&
-      (obj as MinifiedMimePayload).content_type.startsWith('image/')
-    )
+    if ('content_type' in obj && (obj as MinifiedMimePayload).content_type.startsWith('image/'))
       return;
     obj.path = path;
     itemsWithPaths.push(obj);

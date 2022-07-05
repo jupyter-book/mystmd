@@ -24,12 +24,7 @@ export function Navigation({
         ></div>
       )}
       {children}
-      <TableOfContents
-        projectSlug={projectSlug}
-        urlbase={urlbase}
-        top={top}
-        height={height}
-      />
+      <TableOfContents projectSlug={projectSlug} urlbase={urlbase} top={top} height={height} />
     </>
   );
 }

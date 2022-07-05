@@ -39,12 +39,7 @@ export const linkBlock: NodeRenderer<TransformedLink> = (node, children) => {
 
   if (internal) {
     return (
-      <RemixLink
-        key={node.key}
-        to={node.url}
-        prefetch="intent"
-        className={containerClass}
-      >
+      <RemixLink key={node.key} to={node.url} prefetch="intent" className={containerClass}>
         {nested}
       </RemixLink>
     );

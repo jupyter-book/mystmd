@@ -10,11 +10,7 @@ export function ThemeButton() {
       aria-label={`Change theme to ${isDark ? 'light' : 'dark'} mode.`}
       onClick={nextTheme}
     >
-      {isDark ? (
-        <MoonIcon className="h-8 w-8 p-1" />
-      ) : (
-        <SunIcon className="h-8 w-8 p-1" />
-      )}
+      {isDark ? <MoonIcon className="h-8 w-8 p-1" /> : <SunIcon className="h-8 w-8 p-1" />}
     </button>
   );
 }

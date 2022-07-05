@@ -143,10 +143,7 @@ function ActionMenu({ actions }: { actions?: SiteManifest['actions'] }) {
  */
 function useLoading() {
   const transitionState = useTransition().state;
-  const ref = useMemo<{ start?: NodeJS.Timeout; finish?: NodeJS.Timeout }>(
-    () => ({}),
-    [],
-  );
+  const ref = useMemo<{ start?: NodeJS.Timeout; finish?: NodeJS.Timeout }>(() => ({}), []);
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
@@ -181,15 +178,7 @@ function useLoading() {
   return { showLoading, isLoading: transitionState === 'loading' };
 }
 
-function HomeLink({
-  logo,
-  logoText,
-  name,
-}: {
-  logo?: string;
-  logoText?: string;
-  name?: string;
-}) {
+function HomeLink({ logo, logoText, name }: { logo?: string; logoText?: string; name?: string }) {
   const nothingSet = !logo && !logoText;
   return (
     <Link
@@ -197,14 +186,7 @@ function HomeLink({
       to="/"
       prefetch="intent"
     >
-      {logo && (
-        <img
-          src={logo}
-          className="h-9 mr-3"
-          alt={logoText || name}
-          height="2.25rem"
-        ></img>
-      )}
+      {logo && <img src={logo} className="h-9 mr-3" alt={logoText || name} height="2.25rem"></img>}
       {nothingSet && <CurvenoteLogo className="mr-3" fill="#FFF" size={30} />}
       {logoText ||
         (nothingSet && (
@@ -251,9 +233,7 @@ export function TopNav() {
                 key={action.url || index}
                 className="inline-block text-md px-4 py-2 mx-1 leading-none border rounded text-white border-white hover:border-transparent hover:text-stone-500 hover:bg-white mt-0"
                 href={action.url}
-                target={
-                  action.url?.startsWith('http') || action.static ? '_blank' : undefined
-                }
+                target={action.url?.startsWith('http') || action.static ? '_blank' : undefined}
                 rel="noreferrer"
               >
                 {action.title}

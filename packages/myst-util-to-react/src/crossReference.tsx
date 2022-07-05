@@ -33,10 +33,7 @@ export function ReferencedContent({
         <button onClick={onClose} className="absolute top-4 right-1">
           <LinkIcon className="w-6 h-6" />
         </button>
-        <InlineError
-          value={identifier || 'No Label'}
-          message="Cross Reference Not Found"
-        />
+        <InlineError value={identifier || 'No Label'} message="Cross Reference Not Found" />
       </>
     );
   }

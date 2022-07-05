@@ -10,10 +10,7 @@ const fetcher = (...args: Parameters<typeof fetch>) =>
   });
 
 function RRIDChild({ label }: { label: string }) {
-  const { data, error } = useSWR(
-    `https://scicrunch.org/resolver/${label}.json`,
-    fetcher,
-  );
+  const { data, error } = useSWR(`https://scicrunch.org/resolver/${label}.json`, fetcher);
   if (!data && !error) {
     return <span className="animate-pulse">Loading...</span>;
   }
@@ -30,10 +27,8 @@ function RRIDChild({ label }: { label: string }) {
     types: categories,
   } = hit?._source?.item ?? {};
   const category = supercategory?.[0]?.name;
-  const types =
-    (categories?.map(({ name }: { name: string }) => name) as string[]) ?? [];
-  const tags =
-    (keywords?.map(({ keyword }: { keyword: string }) => keyword) as string[]) ?? [];
+  const types = (categories?.map(({ name }: { name: string }) => name) as string[]) ?? [];
+  const tags = (keywords?.map(({ keyword }: { keyword: string }) => keyword) as string[]) ?? [];
   return (
     <div>
       <a

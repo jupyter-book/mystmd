@@ -14,10 +14,6 @@ export default function create() {
       runtime: runtime.reducer,
       app: host.reducer,
     }),
-    applyMiddleware(
-      thunkMiddleware,
-      runtime.triggerEvaluate,
-      runtime.dangerousEvaluatation,
-    ),
+    applyMiddleware(thunkMiddleware, runtime.triggerEvaluate, runtime.dangerousEvaluatation),
   );
 }

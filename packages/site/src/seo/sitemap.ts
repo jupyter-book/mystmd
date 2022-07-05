@@ -134,11 +134,7 @@ Number of URLs in this XML Sitemap:
 </xsl:stylesheet>`;
 }
 
-export function getSiteSlugs(
-  site: SiteManifest,
-  baseurl = '',
-  explicitIndex = false,
-): string[] {
+export function getSiteSlugs(site: SiteManifest, baseurl = '', explicitIndex = false): string[] {
   const slugs = site.projects
     .map((project) => {
       const pages = project.pages
@@ -171,11 +167,7 @@ ${sitemapsXml}
 </sitemapindex>`;
 }
 
-export function createSitemap(
-  domain: string,
-  pages: string[],
-  style = '/sitemap_style.xsl',
-) {
+export function createSitemap(domain: string, pages: string[], style = '/sitemap_style.xsl') {
   const urlsXml = pages
     .map((url) => `  <url>\n    <loc>${domain}${url}</loc>\n  </url>`)
     .join('\n');

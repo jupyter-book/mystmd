@@ -43,10 +43,7 @@ function listMimetypes(outputs: MinifiedOutput[], directOutputTypes: Set<string>
 }
 
 export function anyErrors(outputs: MinifiedOutput[]) {
-  return outputs.reduce(
-    (flag, output) => flag || output.output_type === 'error',
-    false,
-  );
+  return outputs.reduce((flag, output) => flag || output.output_type === 'error', false);
 }
 
 export function Output(node: GenericNode) {
@@ -60,9 +57,7 @@ export function Output(node: GenericNode) {
   } else {
     // Hide the iframe if rendering on the server
     component =
-      typeof document === 'undefined' ? null : (
-        <JupyterOutputs id={node.key} outputs={outputs} />
-      );
+      typeof document === 'undefined' ? null : <JupyterOutputs id={node.key} outputs={outputs} />;
   }
 
   return (

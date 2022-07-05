@@ -15,11 +15,7 @@ function Block({
   return <div id={id}>{children}</div>;
 }
 
-export function ContentBlocks({
-  mdast,
-}: {
-  mdast: GenericParent<Record<string, unknown>>;
-}) {
+export function ContentBlocks({ mdast }: { mdast: GenericParent<Record<string, unknown>> }) {
   const blocks = mdast.children as GenericParent[];
   return (
     <>

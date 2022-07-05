@@ -90,10 +90,7 @@ const Headings = ({ folder, headings, sections, urlbase }: Props) => {
           ));
         }
         return (
-          <li
-            key={sec.slug}
-            className={classNames('p-1 my-2 lg:hidden', HEADING_CLASSES)}
-          >
+          <li key={sec.slug} className={classNames('p-1 my-2 lg:hidden', HEADING_CLASSES)}>
             <HeadingLink path={`${urlbase}/${sec.slug}`}>{sec.title}</HeadingLink>
           </li>
         );
@@ -133,8 +130,7 @@ export const TableOfContents = ({
       style={{
         top: top ?? 0,
         height:
-          typeof document === 'undefined' ||
-          (height && height > window.innerHeight - (top ?? 0))
+          typeof document === 'undefined' || (height && height > window.innerHeight - (top ?? 0))
             ? undefined
             : height,
       }}

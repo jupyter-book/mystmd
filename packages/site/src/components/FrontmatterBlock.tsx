@@ -40,16 +40,11 @@ function Author({ author }: { author: Required<FrontmatterType>['authors'][0] })
 
 function AuthorAndAffiliations({ authors }: { authors: FrontmatterType['authors'] }) {
   if (!authors || authors.length === 0) return null;
-  const hasAffliations = authors.reduce(
-    (r, { affiliations: a }) => r || a?.length > 0,
-    false,
-  );
+  const hasAffliations = authors.reduce((r, { affiliations: a }) => r || a?.length > 0, false);
   if (!hasAffliations) {
     return (
       <header className="not-prose mb-10">
-        {authors.length > 1 && (
-          <div className="font-thin text-xs uppercase pb-2">Authors</div>
-        )}
+        {authors.length > 1 && <div className="font-thin text-xs uppercase pb-2">Authors</div>}
         {authors.map((author) => (
           <Author key={author.name} author={author} />
         ))}
@@ -62,9 +57,7 @@ function AuthorAndAffiliations({ authors }: { authors: FrontmatterType['authors'
         {authors.length > 1 && (
           <>
             <div className="font-thin text-xs uppercase pb-2">Authors</div>
-            <div className="font-thin text-xs uppercase pb-2 hidden sm:block">
-              Affiliations
-            </div>
+            <div className="font-thin text-xs uppercase pb-2 hidden sm:block">Affiliations</div>
           </>
         )}
         {authors.map((author) => (
@@ -160,8 +153,7 @@ function Journal({
   biblio?: Required<FrontmatterType>['biblio'];
 }) {
   if (!venue) return null;
-  const { title, url } =
-    typeof venue === 'string' ? { title: venue, url: null } : venue;
+  const { title, url } = typeof venue === 'string' ? { title: venue, url: null } : venue;
   if (!title) return null;
   const { volume, issue } = biblio ?? {};
   return (
@@ -197,20 +189,16 @@ export function FrontmatterBlock({
   frontmatter: FrontmatterType;
 }) {
   const { subject, doi, open_access, license, github, venue, biblio } = frontmatter;
-  const hasHeaders =
-    subject || doi || open_access || license || github || venue || biblio || true;
+  const hasHeaders = subject || doi || open_access || license || github || venue || biblio || true;
   return (
     <>
       {hasHeaders && (
         <div className="flex mt-3 mb-5 text-sm font-light">
           {subject && (
             <div
-              className={classNames(
-                'flex-none pr-2 smallcaps  hidden lg:inline-block',
-                {
-                  'border-r mr-2': venue,
-                },
-              )}
+              className={classNames('flex-none pr-2 smallcaps  hidden lg:inline-block', {
+                'border-r mr-2': venue,
+              })}
             >
               {subject}
             </div>
@@ -224,13 +212,9 @@ export function FrontmatterBlock({
           <DOI doi={doi} />
         </div>
       )}
-      <h1 className={classNames('title', { 'mb-2': frontmatter.subtitle })}>
-        {frontmatter.title}
-      </h1>
+      <h1 className={classNames('title', { 'mb-2': frontmatter.subtitle })}>{frontmatter.title}</h1>
       {frontmatter.subtitle && (
-        <h2 className="title mt-0 text-zinc-600 dark:text-zinc-400">
-          {frontmatter.subtitle}
-        </h2>
+        <h2 className="title mt-0 text-zinc-600 dark:text-zinc-400">{frontmatter.subtitle}</h2>
       )}
       <AuthorAndAffiliations authors={frontmatter.authors} />
     </>

@@ -3,11 +3,7 @@ import useWindowSize, { useFetchAnyTruncatedContent } from './hooks';
 import { nanoid } from 'nanoid';
 import { useSelector } from 'react-redux';
 import { host, actions } from '@curvenote/connect';
-import {
-  MinifiedOutput,
-  convertToIOutputs,
-  fetchAndEncodeOutputImages,
-} from '@curvenote/nbtx';
+import { MinifiedOutput, convertToIOutputs, fetchAndEncodeOutputImages } from '@curvenote/nbtx';
 import { ChevronDoubleDownIcon } from '@heroicons/react/outline';
 import { selectIFrameHeight, selectIFrameReady, State } from './selectors';
 
@@ -38,10 +34,7 @@ export const NativeJupyterOutputs = ({
   useEffect(() => {
     if (iframeRef.current == null || !rendererReady || !data) return;
     fetchAndEncodeOutputImages(convertToIOutputs(data)).then((outputs) => {
-      host.commsDispatch(
-        iframeRef.current,
-        actions.connectHostSendContent(uid, outputs),
-      );
+      host.commsDispatch(iframeRef.current, actions.connectHostSendContent(uid, outputs));
     });
   }, [id, iframeRef.current, rendererReady]);
 

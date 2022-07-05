@@ -16,9 +16,7 @@ export default function LaunchpadMessage() {
         resp.json().then((json) => {
           console.log('created', json.date_created);
           setExpiresIn(
-            `and will expire in ${formatDistanceToNow(
-              addDays(new Date(json.date_created), 5),
-            )}.`,
+            `and will expire in ${formatDistanceToNow(addDays(new Date(json.date_created), 5))}.`,
           );
         });
       else setExpiresIn('and is temporary.');

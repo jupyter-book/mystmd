@@ -49,11 +49,8 @@ function withCDN<T extends string | undefined>(id: string, url: T): T {
   return `https://cdn.curvenote.com/${id}/public${url}` as T;
 }
 
-export async function getConfig(
-  request: Request | string,
-): Promise<Config | undefined> {
-  const hostname =
-    typeof request === 'string' ? request : new URL(request.url).hostname;
+export async function getConfig(request: Request | string): Promise<Config | undefined> {
+  const hostname = typeof request === 'string' ? request : new URL(request.url).hostname;
   const id = await getCdnPath(hostname);
   if (!id) throw responseNoSite(hostname);
   const cached = getConfigCache().get<Config>(id);
@@ -80,9 +77,7 @@ export async function getData(
   if (!project || !slug || !config) throw responseNoArticle();
   const { id } = config;
   if (!id) throw responseNoSite('');
-  const response = await fetch(
-    `https://cdn.curvenote.com/${id}/content/${project}/${slug}.json`,
-  );
+  const response = await fetch(`https://cdn.curvenote.com/${id}/content/${project}/${slug}.json`);
   if (response.status === 404) throw responseNoArticle();
   const data = (await response.json()) as Data;
   // Fix all of the images to point to the CDN

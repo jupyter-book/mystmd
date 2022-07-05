@@ -75,13 +75,10 @@ export function CodeBlock(props: Props) {
       </SyntaxHighlighter>
       <div className="absolute hidden top-1 right-1 group-hover:block">
         <button
-          className={classNames(
-            'p-1 cursor-pointer transition-color duration-200 ease-in-out',
-            {
-              'text-primary-500 border-primary-500': !showCopied,
-              'text-success border-success ': showCopied,
-            },
-          )}
+          className={classNames('p-1 cursor-pointer transition-color duration-200 ease-in-out', {
+            'text-primary-500 border-primary-500': !showCopied,
+            'text-success border-success ': showCopied,
+          })}
           title={showCopied ? 'Copied' : 'Copy to clipboard'}
           onClick={() => {
             copyTextToClipboard(value)
@@ -91,11 +88,7 @@ export function CodeBlock(props: Props) {
               });
           }}
         >
-          {showCopied ? (
-            <CheckIcon className="w-5 h-5" />
-          ) : (
-            <DuplicateIcon className="w-5 h-5" />
-          )}
+          {showCopied ? <CheckIcon className="w-5 h-5" /> : <DuplicateIcon className="w-5 h-5" />}
         </button>
       </div>
     </div>

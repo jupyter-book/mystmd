@@ -17,9 +17,7 @@ type SocialArticle = {
 };
 
 function allDefined(meta: Record<string, string | undefined>): HtmlMetaDescriptor {
-  return Object.fromEntries(
-    Object.entries(meta).filter(([, v]) => v),
-  ) as HtmlMetaDescriptor;
+  return Object.fromEntries(Object.entries(meta).filter(([, v]) => v)) as HtmlMetaDescriptor;
 }
 
 export function getMetaTagsForSite({ title, twitter }: SocialSite): HtmlMetaDescriptor {

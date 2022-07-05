@@ -9,14 +9,10 @@ export function ClickPopover({
   as = 'cite',
 }: {
   children: React.ReactNode;
-  card:
-    | React.ReactNode
-    | ((args: { open: boolean; close: () => void }) => React.ReactNode);
+  card: React.ReactNode | ((args: { open: boolean; close: () => void }) => React.ReactNode);
   as?: ElementType;
 }) {
-  const [referenceElement, setReferenceElement] = useState<HTMLSpanElement | null>(
-    null,
-  );
+  const [referenceElement, setReferenceElement] = useState<HTMLSpanElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null);
   const { styles, attributes } = usePopper(referenceElement, popperElement);
   return (

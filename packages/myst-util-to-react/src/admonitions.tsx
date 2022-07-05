@@ -40,8 +40,7 @@ export const Admonition: NodeRenderer<spec.Admonition> = (node, children) => {
   const [title, ...rest] = children as any[];
 
   // TODO: react to classes as well!
-  const isAdmonition =
-    !node.kind || (node.kind as string) === AdmonitionKind.admonition;
+  const isAdmonition = !node.kind || (node.kind as string) === AdmonitionKind.admonition;
   const isAttention = node.kind === AdmonitionKind.attention;
   const isCaution = node.kind === AdmonitionKind.caution;
   const isDanger = node.kind === AdmonitionKind.danger;
@@ -70,10 +69,8 @@ export const Admonition: NodeRenderer<spec.Admonition> = (node, children) => {
       <p
         key={node.key}
         className={classNames('admonition-header m-0 text-lg font-medium py-1', {
-          'text-blue-600 bg-blue-50 dark:bg-slate-900':
-            isAdmonition || isNote || isImportant,
-          'text-amber-600 bg-amber-50 dark:bg-slate-900':
-            isAttention || isCaution || isWarning,
+          'text-blue-600 bg-blue-50 dark:bg-slate-900': isAdmonition || isNote || isImportant,
+          'text-amber-600 bg-amber-50 dark:bg-slate-900': isAttention || isCaution || isWarning,
           'text-red-600 bg-red-50 dark:bg-slate-900': isDanger || isError,
           'text-green-600 bg-green-50 dark:bg-slate-900': isHint || isSeealso || isTip,
         })}

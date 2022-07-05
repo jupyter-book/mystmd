@@ -47,9 +47,7 @@ export function ThemeProvider({
     [theme],
   );
 
-  return (
-    <ThemeContext.Provider value={[theme, nextTheme]}>{children}</ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={[theme, nextTheme]}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

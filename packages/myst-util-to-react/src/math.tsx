@@ -51,11 +51,7 @@ const mathRenderer: NodeRenderer<MathLike> = (node) => {
       );
     }
     return (
-      <div
-        key={node.key}
-        id={node.identifier || node.key}
-        className={classNames('flex group')}
-      >
+      <div key={node.key} id={node.identifier || node.key} className={classNames('flex group')}>
         <div
           dangerouslySetInnerHTML={{ __html: node.html }}
           className="overflow-x-auto flex-grow"

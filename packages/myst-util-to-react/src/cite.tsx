@@ -27,9 +27,7 @@ export const CiteGroup: NodeRenderer = (node, children) => {
 
 export const Cite: NodeRenderer = (node, children) => {
   if (node.error) {
-    return (
-      <InlineError key={node.key} value={node.label} message={'Citation Not Found'} />
-    );
+    return <InlineError key={node.key} value={node.label} message={'Citation Not Found'} />;
   }
   return (
     <ClickPopover key={node.key} card={<CiteChild label={node.label as string} />}>
@@ -57,9 +55,7 @@ export function Bibliography() {
           {hidden ? 'Show All' : 'Collapse'}
         </button>
       )}
-      <header className="text-lg font-semibold text-stone-900 dark:text-white">
-        References
-      </header>
+      <header className="text-lg font-semibold text-stone-900 dark:text-white">References</header>
       <div className="text-xs mb-8 pl-3 text-stone-500 dark:text-stone-300">
         <ol>
           {refs.map((label) => {
@@ -79,9 +75,7 @@ export function Bibliography() {
                 onClick={() => setHidden(!hidden)}
                 className="p-2 border rounded hover:border-blue-500 dark:hover:border-blue-400"
               >
-                {hidden
-                  ? `Show all ${filtered.length} references`
-                  : 'Collapse references'}
+                {hidden ? `Show all ${filtered.length} references` : 'Collapse references'}
               </button>
             </li>
           )}

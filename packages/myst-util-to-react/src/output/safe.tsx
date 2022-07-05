@@ -10,7 +10,7 @@ import Ansi from 'ansi-to-react';
 
 /**
  * https://jupyterbook.org/content/code-outputs.html#render-priority
- * 
+ *
  * nb_render_priority:
       html:
       - "application/vnd.jupyter.widget-view+json"
@@ -36,24 +36,15 @@ function findSafeMimeOutputs(output: MinifiedOutput): {
   text?: MinifiedMimePayload;
 } {
   const data: MinifiedMimeBundle = output.data as MinifiedMimeBundle;
-  const image = RENDER_PRIORITY.reduce(
-    (acc: MinifiedMimePayload | undefined, mimetype) => {
-      if (acc) return acc;
-      if (data && data[mimetype]) return data[mimetype];
-    },
-    undefined,
-  );
+  const image = RENDER_PRIORITY.reduce((acc: MinifiedMimePayload | undefined, mimetype) => {
+    if (acc) return acc;
+    if (data && data[mimetype]) return data[mimetype];
+  }, undefined);
   const text = data && data['text/plain'];
   return { image, text };
 }
 
-function OutputImage({
-  image,
-  text,
-}: {
-  image: MinifiedMimePayload;
-  text?: MinifiedMimePayload;
-}) {
+function OutputImage({ image, text }: { image: MinifiedMimePayload; text?: MinifiedMimePayload }) {
   return <img src={image?.path} alt={text?.content ?? 'Image produced in Jupyter'} />;
 }
 
@@ -83,13 +74,7 @@ function SafeOutput({ output }: { output: MinifiedOutput }) {
   }
 }
 
-export function SafeOutputs({
-  keyStub,
-  outputs,
-}: {
-  keyStub: string;
-  outputs: MinifiedOutput[];
-}) {
+export function SafeOutputs({ keyStub, outputs }: { keyStub: string; outputs: MinifiedOutput[] }) {
   // TODO better key - add keys during content creation?
   const components = outputs.map((output, idx) => (
     <SafeOutput key={`${keyStub}-${idx}`} output={output} />

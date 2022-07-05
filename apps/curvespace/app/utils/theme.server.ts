@@ -20,8 +20,7 @@ async function getThemeSession(request: Request) {
       return isTheme(themeValue) ? themeValue : Theme.light;
     },
     setTheme: (theme: Theme) => session.set('theme', theme),
-    commit: () =>
-      themeStorage.commitSession(session, { expires: new Date('2100-01-01') }),
+    commit: () => themeStorage.commitSession(session, { expires: new Date('2100-01-01') }),
   };
 }
 
