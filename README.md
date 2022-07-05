@@ -4,17 +4,17 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/curvenotejs/blob/main/LICENSE)
 ![CI](https://github.com/curvenote/curvenotejs/workflows/CI/badge.svg)
 
-Create, edit, share and publish scientific and technical documents.
+Create, edit, share and publish scientific documents.
 
 ## Overview
 
-`curvenote` is an open source library and command line interface (CLI) to create and share technical documents.
+`curvenote` is an open source library and command line interface (CLI) to create share and publish technical documents.
 
 - Write papers and reports in Markdown and Jupyter ([docs](https://docs.curvenote.com/cli))
 - Create and share interactive websites ([docs](https://docs.curvenote.com/web))
 - Export to Word, LaTeX, and PDF with any [template](https://github.com/curvenote/templates) ([docs](https://docs.curvenote.com/export))
 
-In addition to being completely local, `curvenote` can optionally sync content to <https://curvenote.com> to allow you to work with collaborators who enjoy WYSIWYG editing & real time collaboration for technical documents.
+In addition to being completely local, `curvenote` can optionally sync content to <https://curvenote.com> to allow you to work with collaborators who enjoy WYSIWYG editing, commenting & real time collaboration for technical documents.
 
 ## Get Started
 
@@ -37,9 +37,9 @@ Curvenote can be used to create all sorts of open-access content, click the link
 
 - [Courses](https://geosci-inversion.curve.space/inversion) & [books](https://climasoma.curve.space/)
 - [Seminar](https://seminars.simpeg.xyz/) & [conference](https://transform.softwareunderground.org/) websites
-- [Blogs](https://blog.curvenote.com/) & [technical websites](https://www.stevejpurves.com/blog)
+- [Blogs](https://curvenote.com/blog) & [technical websites](https://www.stevejpurves.com/blog)
 - [Papers](https://www.stevejpurves.com/la-palma-earthquakes) & [reports](https://www.stevejpurves.com/computational-finance)
-- [Documentation](http://docs.curvenote.com/)
+- [Documentation](http://curvenote.com/docs)
 - [Sharing Jupyter Notebooks](https://jarmitage.curve.space/)
 
 ### Interactive and Linked
@@ -95,5 +95,5 @@ Requires the [jtex](https://pypi.org/project/jtex/) python package to be install
 With python 3.7 or greater installed, install `jtex` via pip:
 
 ```bash
-  python -m pip install jtex
+python -m pip install jtex
 ```
