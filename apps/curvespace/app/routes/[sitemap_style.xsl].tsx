@@ -1,4 +1,1 @@
-import type { LoaderFunction } from '@remix-run/node';
-import { sitemapStylesheetResponse } from '@curvenote/site';
-
-export const loader: LoaderFunction = async () => sitemapStylesheetResponse();
+export { sitemapStylesheetResponse as loader } from '@curvenote/site';

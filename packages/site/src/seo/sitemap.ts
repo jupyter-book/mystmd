@@ -195,7 +195,7 @@ export function sitemapStylesheetIndexResponse() {
   });
 }
 
-export function sitemapStylesheetResponse() {
+export async function sitemapStylesheetResponse() {
   return new Response(sitemapStylesheet(), {
     status: 200,
     headers: { 'Content-Type': 'application/xml' },
