@@ -1,12 +1,12 @@
 {
   "name": "curvenote",
-  "version": "0.5.15",
+  "version": "0.5.16",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "curvenote",
-      "version": "0.5.15",
+      "version": "0.5.16",
       "license": "MIT",
       "dependencies": {
         "@curvenote/blocks": "^1.5.6",
