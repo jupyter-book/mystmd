@@ -14,7 +14,7 @@ import {
   VALID_FILE_EXTENSIONS,
 } from './utils';
 
-const DEFAULT_INDEX_FILENAMES = ['index', 'readme'];
+const DEFAULT_INDEX_FILENAMES = ['index', 'readme', 'main'];
 
 function alwaysIgnore(file: string) {
   const ignore = ['node_modules', '_build'];
