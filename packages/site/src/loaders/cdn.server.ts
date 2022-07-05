@@ -34,7 +34,7 @@ function getConfigCache() {
 async function getCdnPath(hostname: string): Promise<string | undefined> {
   const cached = getCdnRouterCache().get<CdnRouter>(hostname);
   if (cached) return cached.cdn;
-  const response = await fetch(`https://api.curvenote.com/sites/router/${hostname}`);
+  const response = await fetch(`https://api.curvenote.com/routers/${hostname}`);
   if (response.status === 404) {
     // Always hit the API again if it is not found!
     return;
