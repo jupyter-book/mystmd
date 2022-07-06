@@ -45,7 +45,7 @@ export default function LaunchpadMessage() {
         <ul className="list-inside indent-4">
           <li>
             <a
-              href="https://docs.curvenote.com/web/launchpad#J7q8FCSPRp"
+              href="https://curvenote.com/docs/web/launchpad"
               target="_blank"
               rel="noreferrer noopener"
               className="hover:underline text-blue-500"
@@ -74,7 +74,7 @@ export default function LaunchpadMessage() {
         </a>
         <a
           className="border p-2 rounded text-white bg-blue-400 hover:bg-blue-500 hover:border-blue-400"
-          href="https://docs.curvenote.com/web/launchpad#J7q8FCSPRp"
+          href="https://curvenote.com/docs/web/launchpad"
           target="_blank"
           rel="noreferrer noopener"
         >

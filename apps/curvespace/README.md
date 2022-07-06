@@ -5,7 +5,7 @@
 
 Curvespace is designed for modern technical communication that is interactive, computational, and linked to data. You can create and serve a local website to write your documentation, paper, thesis, or blog.
 
-- [Curvenote Docs](https://docs.curvenote.com/cli)
+- [Curvenote Docs](https://curvenote.com/docs/cli)
 - [`curvenotejs`](https://github.com/curvenote/curvenotejs)
 
 ## Development
@@ -31,4 +31,4 @@ We have chosen Remix as it is blazing fast, built on web-standards, and can also
 
 ## Using the Site
 
-This site is run by `curvenote start` see [documentation](https://docs.curvenote.com/web).
+This site is run by `curvenote start` see [documentation](https://curvenote.com/docs/web).
