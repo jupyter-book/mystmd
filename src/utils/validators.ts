@@ -40,7 +40,7 @@ export function validationError(message: string, opts: ValidationOptions) {
   if (!messages.errors) messages.errors = [];
   messages.errors.push({
     property: opts.property,
-    message: `"${opts.property}" ${message}${locationSuffix(opts)}`,
+    message: `'${opts.property}' ${message}${locationSuffix(opts)}`,
   });
   return undefined;
 }
