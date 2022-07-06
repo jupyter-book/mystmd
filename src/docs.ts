@@ -3,10 +3,10 @@ export const actionLinks = {
 };
 
 export const docLinks = {
-  overview: 'https://docs.curvenote.com/cli',
-  auth: 'https://docs.curvenote.com/cli/authorization',
-  pull: 'https://docs.curvenote.com/cli/pull',
-  curvespace: 'https://docs.curvenote.com/web',
+  overview: 'https://curvenote.com/docs/cli',
+  auth: 'https://curvenote.com/docs/cli/authorization',
+  pull: 'https://curvenote.com/docs/cli/pull',
+  curvespace: 'https://curvenote.com/docs/web',
 };
 
 export const LOGO = `<?xml version="1.0" encoding="utf-8"?>

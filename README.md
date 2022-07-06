@@ -10,15 +10,15 @@ Create, edit, share and publish scientific documents.
 
 `curvenote` is an open source library and command line interface (CLI) to create share and publish technical documents.
 
-- Write papers and reports in Markdown and Jupyter ([docs](https://docs.curvenote.com/cli))
-- Create and share interactive websites ([docs](https://docs.curvenote.com/web))
-- Export to Word, LaTeX, and PDF with any [template](https://github.com/curvenote/templates) ([docs](https://docs.curvenote.com/export))
+- Write papers and reports in Markdown and Jupyter ([docs](https://curvenote.com/docs/cli))
+- Create and share interactive websites ([docs](https://curvenote.com/docs/web))
+- Export to Word, LaTeX, and PDF with any [template](https://github.com/curvenote/templates) ([docs](https://curvenote.com/docs/export))
 
 In addition to being completely local, `curvenote` can optionally sync content to <https://curvenote.com> to allow you to work with collaborators who enjoy WYSIWYG editing, commenting & real time collaboration for technical documents.
 
 ## Get Started
 
-Curvenote is available through Node and NPM. Unless you already have this on your system you will have to [install NodeJS](https://docs.curvenote.com/cli/installing-prerequisites). See [full install instructions](https://docs.curvenote.com/cli/installing) in the docs!
+Curvenote is available through Node and NPM. Unless you already have this on your system you will have to [install NodeJS](https://curvenote.com/docs/cli/installing-prerequisites). See [full install instructions](https://curvenote.com/docs/cli/installing) in the docs!
 
 ```bash
 npm install -g curvenote
@@ -27,7 +27,7 @@ curvenote start
 curvenote deploy
 ```
 
-[![](images/cli-init.png)](https://docs.curvenote.com/web)
+[![](images/cli-init.png)](https://curvenote.com/docs/web)
 
 ## Built with Curvenote
 
@@ -62,7 +62,7 @@ The client library is entirely local, and rebuilds in ~50ms for most projects. M
 
 ## Direct export from Curvenote
 
-First login, see [authorization docs](https://docs.curvenote.com/cli/authorization) to get an API token.
+First login, see [authorization docs](https://curvenote.com/docs/cli/authorization) to get an API token.
 
 ```bash
 curvenote token set
