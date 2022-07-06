@@ -165,9 +165,9 @@ export const DocumentOutline = ({ top, height }: { top?: number; height?: number
         opacity: height && height > 300 ? undefined : 0,
       }}
     >
-      <h5 className="text-slate-900 mb-4 text-sm leading-6 dark:text-slate-100 uppercase">
+      <div className="text-slate-900 mb-4 text-sm leading-6 dark:text-slate-100 uppercase">
         In this article
-      </h5>
+      </div>
       {onClient && <Headings headings={headings} activeId={activeId} highlight={highlight} />}
     </nav>
   );
