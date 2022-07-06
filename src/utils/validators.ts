@@ -125,17 +125,17 @@ export function validateSubdomain(input: string, opts: ValidationOptions) {
   try {
     url = new URL(value);
   } catch {
-    return validationError(`must be valid domain: ${value}`, opts);
+    return validationError(`must be valid domain: ${input}`, opts);
   }
   const { hash, host, pathname, protocol, search } = url;
   if (protocol !== 'http:' && protocol !== 'https:') {
-    return validationError(`must have http/https protocol or no protocol: ${value}`, opts);
+    return validationError(`must have http/https protocol or no protocol: ${input}`, opts);
   }
   if ((pathname && pathname !== '/') || hash || search) {
-    return validationError(`must not specify path, query, or fragment: ${value}`, opts);
+    return validationError(`must not specify path, query, or fragment: ${input}`, opts);
   }
   if (!host.match(/^.+\..+\..+$/)) {
-    return validationError(`must be a subdomain: ${value}`, opts);
+    return validationError(`must be a subdomain: ${input}`, opts);
   }
   return host;
 }
