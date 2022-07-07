@@ -27,6 +27,7 @@ export type BaseUrls = {
   profile: string;
   drafts: string;
   blocks: string;
+  sites: string;
   my: string;
 };
 

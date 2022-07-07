@@ -10,6 +10,7 @@ export interface ProjectLinks extends BaseLinks {
   blocks: string;
   team: string;
   manifest?: string;
+  site: string;
 }
 
 export type ReferenceLabelMap = Record<CustomizableReferenceKind, string>;
