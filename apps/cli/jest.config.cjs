@@ -6,7 +6,7 @@ module.exports = {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
   moduleNameMapper: {
-    mystjs: '<rootDir>/node_modules/mystjs/dist/index.umd.js',
+    mystjs: '<rootDir>/../../node_modules/mystjs/dist/index.umd.js',
   },
   globals: {
     'ts-jest': {
