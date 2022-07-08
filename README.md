@@ -1,39 +1,142 @@
-# Turborepo starter with npm
+# `curvenote`
 
-This is an official starter turborepo.
+[![curvenote on npm](https://img.shields.io/npm/v/curvenote.svg)](https://www.npmjs.com/package/curvenote)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/curvenote/blob/main/LICENSE)
+![CI](https://github.com/curvenote/curvenote/workflows/CI/badge.svg)
+
+Create, edit, share and publish scientific documents.
+
+## Overview
+
+`curvenote` is an open source library and command line interface (CLI) to create share and publish technical documents.
+
+- Write papers and reports in Markdown and Jupyter ([docs](https://curvenote.com/docs/cli))
+- Create and share interactive websites ([docs](https://curvenote.com/docs/web))
+- Export to Word, LaTeX, and PDF with any [template](https://github.com/curvenote/templates) ([docs](https://curvenote.com/docs/export))
+
+In addition to being completely local, `curvenote` can optionally sync content to <https://curvenote.com> to allow you to work with collaborators who enjoy WYSIWYG editing, commenting & real time collaboration for technical documents.
+
+## Get Started
+
+Curvenote is available through Node and NPM. Unless you already have this on your system you will have to [install NodeJS](https://curvenote.com/docs/cli/installing-prerequisites). See [full install instructions](https://curvenote.com/docs/cli/installing) in the docs!
+
+```bash
+npm install -g curvenote
+curvenote init
+curvenote start
+curvenote deploy
+```
+
+[![](images/cli-init.png)](https://curvenote.com/docs/web)
+
+## Built with Curvenote
+
+Curvenote allows you to easily create, edit, and publish content to the web as a fast, optimized site with interactive citations, cross-referencing, math, and dynamic figures from Jupyter Notebooks.
+
+Curvenote can be used to create all sorts of open-access content, click the links below to see some examples!
+
+- [Courses](https://geosci-inversion.curve.space/inversion) & [books](https://climasoma.curve.space/)
+- [Seminar](https://seminars.simpeg.xyz/) & [conference](https://transform.softwareunderground.org/) websites
+- [Blogs](https://curvenote.com/blog) & [technical websites](https://www.stevejpurves.com/blog)
+- [Papers](https://www.stevejpurves.com/la-palma-earthquakes) & [reports](https://www.stevejpurves.com/computational-finance)
+- [Documentation](http://curvenote.com/docs)
+- [Sharing Jupyter Notebooks](https://jarmitage.curve.space/)
+
+### Interactive and Linked
+
+The default website you create can have interactive Jupyter Notebook features, and live-preview of cross-references and citations.
+
+[PhD Thesis](https://phd.row1.ca/) with linked references, equations, and export to PDF.
+[![](images/phd-simple.gif)](https://phd.row1.ca/)
+
+[Interactive Papers](https://www.stevejpurves.com/la-palma-earthquakes/interactive-timelines-altair) with Jupyter Notebooks and interactive visualizations.
+[![](images/web-interactive.gif)](https://www.stevejpurves.com/la-palma-earthquakes/interactive-timelines-altair)
+
+These interactive scientific sites can be easily deployed on a hosting service called [curve.space](https://curve.space) or can also be hosted on your own custom domain.
+
+## Work locally with Live Reload
+
+The client library is entirely local, and rebuilds in ~50ms for most projects. Meaning you can preview your content as you are writing!
+
+[![](images/live-reload.gif)](https://www.stevejpurves.com/la-palma-earthquakes/interactive-timelines-altair)
+
+## Direct export from Curvenote
+
+First login, see [authorization docs](https://curvenote.com/docs/cli/authorization) to get an API token.
+
+```bash
+curvenote token set
+> YOUR_API_TOKEN
+```
+
+Then you can directly export your curvenote documents to:
+
+- Microsoft Word (.docx)
+- Markdown (.md) - using MyST
+- LaTeX (.tex)
+- PDF (.pdf)
+
+```bash
+curvenote export docx https://curvenote.com/@curvenote/blog/communicating-science communicating-science.docx
+curvenote export md https://curvenote.com/@curvenote/blog/version-control-for-scientists version-control.md
+curvenote export tex https://curvenote.com/@curvenote/blog/version-control-for-scientists version-control.tex -template plain_latex
+curvenote export pdf https://curvenote.com/@curvenote/blog/version-control-for-scientists version-control.pdf -template arxiv_nips
+```
+
+## LaTeX and PDF Dependencies
+
+Exporting to:
+
+- LaTeX (`latex`|`tex`) with a template option specified
+- or to PDF
+
+Requires the [jtex](https://pypi.org/project/jtex/) python package to be installed and available on the user's `PATH`.
+
+With python 3.7 or greater installed, install `jtex` via pip:
+
+```bash
+python -m pip install jtex
+```
+
+# Development
+
+All dependencies for `curvenote` are included in this repository (a monorepo!).
 
 ## What's inside?
 
-This turborepo uses [npm](https://www.npmjs.com/) as a package manager. It includes the following packages/apps:
+`curvenote` uses [npm](https://www.npmjs.com/) as a package manager. It includes the following packages/apps:
 
-### Apps and Packages
+**Apps:**
 
-- `docs`: a [Next.js](https://nextjs.org) app
-- `web`: another [Next.js](https://nextjs.org) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `curvenote`: the Curvenote command line interface (CLI)
+- `curvespace`: the web-experience for Curvenote sites, using Remix
+
+**Packages:**
+
+- `ui-providers`: React providers for references and site configuration
+- `myst-util-to-react`: expose MyST content as an article, built with React
+- `site`: components and utilities for building React and Remix sites
+- `site-common`: utilities and types that are used in the CLI, APIs and sites, does not include React
+- `icons`: icons used throughout our projects, built for React
+- `eslint-config-custom`: `eslint` configurations
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
 
 ### Utilities
 
-This turborepo has some additional tools already setup for you:
+`curvenote` is built and developed using:
 
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
-
-## Setup
-
-This repository is used in the `npx create-turbo@latest` command, and selected when choosing which package manager you wish to use with your monorepo (npm).
 
 ### Build
 
 To build all apps and packages, run the following command:
 
 ```
-cd my-turborepo
+cd curvenote
 npm run build
 ```
 
@@ -42,36 +145,6 @@ npm run build
 To develop all apps and packages, run the following command:
 
 ```
-cd my-turborepo
+cd curvenote
 npm run dev
 ```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Pipelines](https://turborepo.org/docs/core-concepts/pipelines)
-- [Caching](https://turborepo.org/docs/core-concepts/caching)
-- [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching)
-- [Scoped Tasks](https://turborepo.org/docs/core-concepts/scopes)
-- [Configuration Options](https://turborepo.org/docs/reference/configuration)
-- [CLI Usage](https://turborepo.org/docs/reference/command-line-reference)
