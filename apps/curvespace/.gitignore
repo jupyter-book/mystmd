@@ -1,0 +1,15 @@
+node_modules
+
+.cache
+.vercel
+.output
+.turbo
+
+/build/
+/public/build
+api
+app/styles/app.css
+
+.yalc/*
+yalc.lock
+yarn.lock
