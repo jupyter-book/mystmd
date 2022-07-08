@@ -1,0 +1,42 @@
+{
+  "frontmatter": {
+    "title": "Curvenote",
+    "description": "Curvenote demo content",
+    "date": "2021-08-25T20:06:05.379Z",
+    "name": "index",
+    "oxa": "oxa:w6jXebeTS6WGaVFDIEz9/t0PHcLrwlY5oHVksiPG8"
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "meta": "{\"oxa\":\"oxa:w6jXebeTS6WGaVFDIEz9/Jlk5a5AYAGIBQPpox7l5.2\"}",
+        "children": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Curvenote is a writing platform that integrates with interactive content and data. You can use Curvenote to write scientific papers, technical reports, documentation, blog posts, prepare a manuscript or thesis, and more! When writing with Curvenote your content is separated into blocks that can be versioned and reused throughout multiple projects. You can collaborate simultaneously with other users, add comments, and share you content here or export it to Word, PDF, ",
+                "key": "zA9W67FStn"
+              },
+              {
+                "type": "inlineMath",
+                "value": "\\LaTeX",
+                "html": "<span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><mtext>LaTeX</mtext></mrow><annotation encoding=\"application/x-tex\">\\LaTeX</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.8988em;vertical-align:-0.2155em;\"></span><span class=\"mord text\"><span class=\"mord textrm\">L</span><span class=\"mspace\" style=\"margin-right:-0.36em;\"></span><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6833em;\"><span style=\"top:-2.905em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"mord\"><span class=\"mord textrm mtight sizing reset-size6 size3\">A</span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:-0.15em;\"></span><span class=\"mord text\"><span class=\"mord textrm\">T</span><span class=\"mspace\" style=\"margin-right:-0.1667em;\"></span><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.4678em;\"><span style=\"top:-2.7845em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord textrm\">E</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.2155em;\"><span></span></span></span></span><span class=\"mspace\" style=\"margin-right:-0.125em;\"></span><span class=\"mord textrm\">X</span></span></span></span></span></span>",
+                "key": "AitNorKokA"
+              },
+              { "type": "text", "value": ", or Markdown formats.", "key": "Qg0j1mvTPt" }
+            ],
+            "key": "Qm64zhY7VB"
+          }
+        ],
+        "key": "gy5wfQlFz6"
+      }
+    ],
+    "key": "vUuXbVmv5a"
+  },
+  "references": { "cite": { "order": [], "data": {} }, "footnotes": {} },
+  "sha256": "c8a2982ccb8d1c9b241daa565cb9b1d9785e8d8f351ebb99f67b7248f69c6260"
+}

@@ -1,0 +1,107 @@
+{
+  "frontmatter": {
+    "title": "Examples",
+    "description": "",
+    "date": "2022-01-17T00:46:35.123Z",
+    "name": "examples"
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "You can embed iframes and other content, which is nicely sized!",
+                "key": "qx61HyFuwu"
+              }
+            ],
+            "key": "onm8JPAn6g"
+          },
+          {
+            "type": "iframe",
+            "src": "https://www.loom.com/embed/d4ae47586c9447649f934e892663b0ee",
+            "label": "frGvUAfvAC",
+            "width": 70,
+            "align": "center",
+            "key": "HNZBwKrxC6"
+          },
+          {
+            "type": "list",
+            "ordered": false,
+            "start": null,
+            "spread": false,
+            "children": [
+              {
+                "type": "listItem",
+                "spread": false,
+                "checked": null,
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Bullet one",
+                        "key": "mDYvOwRRzd"
+                      }
+                    ],
+                    "key": "mo2e6PMUxC"
+                  }
+                ],
+                "key": "WHVuO8s0xs"
+              },
+              {
+                "type": "listItem",
+                "spread": false,
+                "checked": null,
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Bullet two",
+                        "key": "aav2k67dx2"
+                      }
+                    ],
+                    "key": "GyTQcZdBIj"
+                  }
+                ],
+                "key": "O8lQVvJ8eA"
+              },
+              {
+                "type": "listItem",
+                "spread": false,
+                "checked": null,
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Bullet three",
+                        "key": "iURplli4bE"
+                      }
+                    ],
+                    "key": "KyFCPA6Lnz"
+                  }
+                ],
+                "key": "VShPquR5Kw"
+              }
+            ],
+            "key": "nyTs983vGp"
+          }
+        ],
+        "key": "GmQ5RXAtN4"
+      }
+    ],
+    "key": "BlfRanCg5h"
+  },
+  "references": { "cite": { "order": [], "data": {} }, "footnotes": {} },
+  "sha256": "963a9095ce34f515552c8de359274f368f9803b96261332e485c5889e741195a"
+}
