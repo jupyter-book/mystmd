@@ -15,12 +15,18 @@ function Block({
   return <div id={id}>{children}</div>;
 }
 
-export function ContentBlocks({ mdast }: { mdast: GenericParent<Record<string, unknown>> }) {
+export function ContentBlocks({
+  mdast,
+  renderers,
+}: {
+  mdast: GenericParent<Record<string, unknown>>;
+  renderers?: Record<string, NodeRenderer>;
+}) {
   const blocks = mdast.children as GenericParent[];
   return (
     <>
       {blocks.map((node, index) => {
-        return <Block key={node.key} id={`${index}`} node={node} />;
+        return <Block key={node.key} id={`${index}`} node={node} renderers={renderers} />;
       })}
     </>
   );

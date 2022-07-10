@@ -41,6 +41,11 @@ export function useParse(
   renderers: Record<string, NodeRenderer> = DEFAULT_RENDERERS,
 ) {
   if (!node) return null;
-  const nodes = mystToReact(node, renderers);
-  return nodes;
+  try {
+    const nodes = mystToReact(node, renderers);
+    return nodes;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
