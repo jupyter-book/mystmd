@@ -12,21 +12,16 @@
     "lint": "eslint src/**/*.ts*",
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\""
   },
-  "devDependencies": {
-    "eslint": "^7.32.0",
-    "eslint-config-custom": "*",
-    "tsconfig": "*",
-    "typescript": "^4.5.2"
-  },
   "dependencies": {
     "@curvenote/blocks": "*",
     "@curvenote/icons": "*",
     "@curvenote/nbtx": "^0.1.11",
     "@curvenote/site-common": "*",
     "@curvenote/ui-providers": "*",
-    "@headlessui/react": "^1.6.5",
+    "@headlessui/react": "^1.6.6",
     "@heroicons/react": "^1.0.6",
-    "@remix-run/react": "^1.6.3",
+    "@remix-run/node": "^1.6.4",
+    "@remix-run/react": "^1.6.4",
     "classnames": "^2.3.1",
     "lodash.throttle": "^4.1.1",
     "myst-util-to-react": "*",
@@ -35,5 +30,11 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "unist-util-select": "^4.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "*",
+    "tsconfig": "*",
+    "typescript": "^4.5.2"
   }
 }
