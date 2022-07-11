@@ -3,9 +3,9 @@ import { LoaderFunction, redirect } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 import { getConfig } from '~/utils';
 
-export const loader: LoaderFunction = async ({ request }): Promise<Response | null> => {
+export const loader: LoaderFunction = async (): Promise<Response | null> => {
   const config = getConfig();
-  if (!config) throw responseNoSite(request.url);
+  if (!config) throw responseNoSite();
   const project = config?.projects[0];
   if (!project) throw responseNoArticle();
   return redirect(`/${project.slug}`);

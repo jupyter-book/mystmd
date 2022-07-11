@@ -44,7 +44,7 @@ type DocumentData = {
 
 export const loader: LoaderFunction = async ({ request }): Promise<DocumentData> => {
   const [config, themeSession] = await Promise.all([getConfig(), getThemeSession(request)]);
-  if (!config) throw responseNoSite(request.url);
+  if (!config) throw responseNoSite();
   const data = { theme: themeSession.getTheme(), config };
   return data;
 };

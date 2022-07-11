@@ -3,9 +3,9 @@ export enum ErrorStatus {
   noArticle = 'Article was not found',
 }
 
-export function responseNoSite(data: string): Response {
+export function responseNoSite(): Response {
   // note: error boundary logic is dependent on the string sent here
-  return new Response(data, {
+  return new Response(ErrorStatus.noSite, {
     status: 404,
     statusText: ErrorStatus.noSite,
   });

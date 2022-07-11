@@ -90,7 +90,7 @@ export async function getPage(
 ) {
   const folderName = opts.folder;
   const config = getConfig();
-  if (!config) throw responseNoSite(request.url);
+  if (!config) throw responseNoSite();
   const folder = getProject(config, folderName);
   if (!folder) throw responseNoArticle();
   if (opts.slug === folder.index) {

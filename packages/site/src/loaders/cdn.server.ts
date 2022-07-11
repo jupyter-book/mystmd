@@ -53,12 +53,12 @@ function withCDN<T extends string | undefined>(id: string, url: T): T {
 
 export async function getConfig(hostname: string): Promise<Config> {
   const id = await getCdnPath(hostname);
-  if (!id) throw responseNoSite(hostname);
+  if (!id) throw responseNoSite();
   const cached = getConfigCache().get<Config>(id);
   // Load the data from an in memory cache.
   if (cached) return cached;
   const response = await fetch(`https://cdn.curvenote.com/${id}/config.json`);
-  if (response.status === 404) throw responseNoSite(hostname);
+  if (response.status === 404) throw responseNoSite();
   const data = (await response.json()) as Config;
   data.id = id;
   data.actions.forEach((action) => {
@@ -77,7 +77,7 @@ export async function getData(
 ): Promise<Data | null> {
   if (!project || !slug || !config) throw responseNoArticle();
   const { id } = config;
-  if (!id) throw responseNoSite('');
+  if (!id) throw responseNoSite();
   const response = await fetch(`https://cdn.curvenote.com/${id}/content/${project}/${slug}.json`);
   if (response.status === 404) throw responseNoArticle();
   const data = (await response.json()) as Data;
@@ -109,7 +109,7 @@ export async function getPage(
 ) {
   const folderName = opts.folder;
   const config = await getConfig(hostname);
-  if (!config) throw responseNoSite(hostname);
+  if (!config) throw responseNoSite();
   const folder = getProject(config, folderName);
   if (!folder) throw responseNoArticle();
   if (opts.slug === folder.index) {
