@@ -33,7 +33,7 @@
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "unlink": "npm uninstall -g curvenote;",
     "link": "npm run unlink; npm link;",
-    "dev": "npm run link; tsc -w -p .",
+    "dev": "npm run link; tsc -w --preserveWatchOutput -p .",
     "prepublishOnly": "npm run build",
     "test": "npm run copy:version; npm run link; jest",
     "test:watch": "npm run copy:version; npm run link; jest --watchAll",
@@ -45,7 +45,7 @@
     "build:assets": "copyfiles -f ./src/static/* ./dist/static",
     "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "build": "npm-run-all -l copy:version clean -p build:ts build:assets declarations",
-    "build:watch": "npm run copy:version; tsc -w -p ."
+    "build:watch": "npm run copy:version; tsc -w --preserveWatchOutput -p ."
   },
   "dependencies": {
     "@curvenote/blocks": "^1.5.6",
