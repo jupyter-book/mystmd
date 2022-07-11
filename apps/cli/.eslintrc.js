@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  extends: ['custom'],
+  extends: ['curvenote'],
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: 'module',

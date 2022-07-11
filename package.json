@@ -16,7 +16,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint-config-custom": "*",
+    "eslint-config-curvenote": "*",
     "prettier": "latest",
     "turbo": "latest"
   },
