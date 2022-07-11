@@ -1,6 +1,6 @@
 {
-  "name": "curvespace",
-  "description": "remix site for working with myst markdown",
+  "name": "@curvespace/default",
+  "description": "Curvenote site for previewing MyST markdown",
   "license": "MIT",
   "sideEffects": false,
   "scripts": {

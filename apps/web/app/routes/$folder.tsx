@@ -1,5 +1,4 @@
 import { Outlet } from '@remix-run/react';
-import LaunchpadMessage from '~/components/LaunchpadMessage';
 import { DocumentOutline, ErrorProjectNotFound, useNavigationHeight } from '@curvenote/site';
 
 export default function Folder() {
@@ -10,7 +9,6 @@ export default function Folder() {
         <Outlet />
         <DocumentOutline top={top} height={height} />
       </main>
-      {typeof document === 'undefined' ? null : <LaunchpadMessage />}
     </>
   );
 }

@@ -1,16 +1,15 @@
-export function ErrorSiteNotFound({ url }: { url: string }) {
+export function ErrorSiteNotFound() {
   return (
     <>
-      <h1>No site at this url</h1>
+      <h1>No Site Found</h1>
       <p>No website is available at this url, please double check the url.</p>
-      <pre>{url}</pre>
       <h3>What&apos;s next?</h3>
       <p>
         If you are expecting to see <span className="font-semibold">your website</span> here and you
         think that something has gone wrong, please send an email to{' '}
         <a
           href={`mailto:support@curvenote.com?subject=Website%20Unavailable&body=${encodeURIComponent(
-            `My website is deployed a ${url}, but is not available. 😥`,
+            `My website is not available. 😥`,
           )}`}
         >
           support@curvenote.com

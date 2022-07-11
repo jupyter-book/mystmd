@@ -13,8 +13,6 @@ import {
 import React from 'react';
 import tailwind from './styles/app.css';
 import { getConfig } from './utils';
-import { ErrorSiteExpired } from './components/ErrorSiteExpired';
-import { ErrorSiteNotFound } from './components/ErrorSiteNotFound';
 import { SiteProvider, Theme, ThemeProvider, UiStateProvider } from '@curvenote/ui-providers';
 import type { SiteManifest } from '@curvenote/site-common';
 import {
@@ -26,6 +24,7 @@ import {
   useNavigationHeight,
   getThemeSession,
 } from '@curvenote/site';
+import { ErrorSiteNotFound } from '~/components/ErrorSiteNotFound';
 
 export const meta: MetaFunction = ({ data }) => {
   return getMetaTagsForSite({
@@ -104,21 +103,11 @@ export default function App() {
 
 export function CatchBoundary() {
   const caught = useCatch();
-  let isLaunchpad = false;
-  let url;
-  try {
-    url = new URL(caught.data);
-    isLaunchpad = url.hostname.startsWith('launchpad-');
-  } catch (err) {
-    // pass
-  }
-
   return (
     <Document theme={Theme.light} title={caught.statusText}>
       <article className="content">
         <main className="error-content">
-          {isLaunchpad && <ErrorSiteExpired />}
-          {!isLaunchpad && <ErrorSiteNotFound url={url?.toString() ?? ''} />}
+          <ErrorSiteNotFound />
         </main>
       </article>
     </Document>
