@@ -13,7 +13,7 @@ export type Options = {
   writeToc?: boolean;
 };
 
-export function cleanBuiltFiles(session: ISession, info = true) {
+export function cleanBuiltFiles(session: ISession, info = true): void {
   const toc = tic();
   fs.rmSync(join(serverPath(session), 'app', 'content'), { recursive: true, force: true });
   fs.rmSync(join(publicPath(session), '_static'), { recursive: true, force: true });
@@ -21,7 +21,7 @@ export function cleanBuiltFiles(session: ISession, info = true) {
   log(toc('🧹 Clean build files in %s.'));
 }
 
-export function ensureBuildFoldersExist(session: ISession) {
+export function ensureBuildFoldersExist(session: ISession): void {
   session.log.debug('Build folders created for `app/content` and `_static`.');
   fs.mkdirSync(join(serverPath(session), 'app', 'content'), { recursive: true });
   fs.mkdirSync(join(publicPath(session), '_static'), { recursive: true });

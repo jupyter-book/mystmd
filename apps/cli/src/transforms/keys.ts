@@ -1,4 +1,5 @@
-import { GenericNode, map } from 'mystjs';
+import type { GenericNode } from 'mystjs';
+import { map } from 'mystjs';
 import { createId } from '@curvenote/schema';
 import { MapResult } from './types';
 import { Root } from '../myst';

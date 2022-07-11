@@ -2,8 +2,10 @@ import chalk from 'chalk';
 import { ISession } from '../session/types';
 import { Logger } from './index';
 
-export function getGitLogger(session: ISession) {
-  const logger: Pick<Logger, 'debug' | 'error'> = {
+type LoggerDE = Pick<Logger, 'debug' | 'error'>;
+
+export function getGitLogger(session: ISession): LoggerDE {
+  const logger = {
     debug(data: string) {
       const line = data.trim();
       if (!line) return;
@@ -22,8 +24,8 @@ export function getGitLogger(session: ISession) {
   return logger;
 }
 
-export function getNpmLogger(session: ISession) {
-  const logger: Pick<Logger, 'debug' | 'error'> = {
+export function getNpmLogger(session: ISession): LoggerDE {
+  const logger = {
     debug(data: string) {
       const line = data.trim();
       if (!line) return;
@@ -42,8 +44,8 @@ export function getNpmLogger(session: ISession) {
   return logger;
 }
 
-export function getServerLogger(session: ISession) {
-  const logger: Pick<Logger, 'debug' | 'error'> = {
+export function getServerLogger(session: ISession): LoggerDE {
+  const logger = {
     debug(data: string) {
       const line = data.trim();
       if (!line || line.startsWith('>') || line.startsWith('Watching')) return;
@@ -67,6 +69,8 @@ export function getServerLogger(session: ISession) {
     error(data: string) {
       const line = data.trim();
       if (!line) return;
+      // This is a spurious Remix warning https://github.com/remix-run/remix/issues/2677
+      if (line.includes('is not listed in your package.json dependencies')) return;
       if (line.startsWith('Done in')) {
         session.log.info(`⚡️ ${line.replace('Done', 'Compiled')}`);
         return;

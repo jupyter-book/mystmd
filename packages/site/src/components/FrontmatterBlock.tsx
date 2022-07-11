@@ -2,13 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import { Frontmatter as FrontmatterType } from '@curvenote/site-common';
 import { KINDS } from '@curvenote/blocks';
-import { LicenseBadges } from '@curvenote/icons';
-import { Email } from '@curvenote/icons';
-import { GitHub } from '@curvenote/icons';
-import { OpenAccess } from '@curvenote/icons';
-import { Orcid } from '@curvenote/icons';
-import { Jupyter } from '@curvenote/icons';
-import { ROR } from '@curvenote/icons';
+import { LicenseBadges, Email, GitHub, OpenAccess, Orcid, Jupyter, ROR } from '@curvenote/icons';
 
 function Author({ author }: { author: Required<FrontmatterType>['authors'][0] }) {
   return (

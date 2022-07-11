@@ -1,6 +1,7 @@
 import fs from 'fs';
 import mime from 'mime-types';
-import { GenericNode, selectAll } from 'mystjs';
+import type { GenericNode } from 'mystjs';
+import { selectAll } from 'mystjs';
 import fetch from 'node-fetch';
 import path from 'path';
 import { oxaLinkToId, VersionId } from '@curvenote/blocks';

@@ -50,7 +50,7 @@ function getLogoPaths(
   logoName?: string | null,
 ): { path: string; public: string; url: string } | null {
   if (!logoName) {
-    session.log.debug('No logo specified, Curvespace renderer will use default logo');
+    session.log.debug('No logo specified, Curvenote renderer will use default logo');
     return null;
   }
   const origLogoName = logoName;

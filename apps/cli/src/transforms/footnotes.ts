@@ -1,4 +1,5 @@
-import { GenericNode, remove, selectAll } from 'mystjs';
+import type { GenericNode } from 'mystjs';
+import { remove, selectAll } from 'mystjs';
 import { Root } from '../myst';
 import { transformKeys } from './keys';
 import { References } from './types';

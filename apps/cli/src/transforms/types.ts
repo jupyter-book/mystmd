@@ -1,5 +1,5 @@
-import { CitationRenderer } from 'citation-js-utils';
-import { GenericNode, map } from 'mystjs';
+import type { CitationRenderer } from 'citation-js-utils';
+import type { GenericNode, map } from 'mystjs';
 import { KINDS } from '@curvenote/blocks';
 import { PageFrontmatter } from '../frontmatter/types';
 import { Root } from '../myst';

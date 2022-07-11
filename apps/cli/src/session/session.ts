@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
-import { createStore, Store } from 'redux';
+import type { Store } from 'redux';
+import { createStore } from 'redux';
 import { JsonObject } from '@curvenote/blocks';
 import { loadConfigOrThrow } from '../config';
 import { CURVENOTE_YML } from '../config/types';

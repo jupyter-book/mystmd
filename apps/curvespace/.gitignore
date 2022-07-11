@@ -7,7 +7,7 @@ node_modules
 
 /build/
 /public/build
-api
+/api/*
 app/styles/app.css
 
 .yalc/*

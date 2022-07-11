@@ -2,14 +2,16 @@ import fs from 'fs';
 import path from 'path';
 import config from '~/config.json';
 import type { PageLoader as Data, SiteManifest } from '@curvenote/site-common';
+import { redirect } from '@remix-run/node';
+import { getFooterLinks, getProject, responseNoArticle, responseNoSite } from '@curvenote/site';
 
 // This is executed in the API directory
 const contentFolder = path.join(__dirname, '..', 'app', 'content');
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function getConfig(request: Request): Promise<SiteManifest> {
+export function getConfig(): SiteManifest {
   return config as unknown as SiteManifest;
 }
+
 /**
  * This function loads the data from disk in your app/content folder.
  *
@@ -70,7 +72,7 @@ export async function getConfig(request: Request): Promise<SiteManifest> {
  * }
  * ```
  */
-export async function getData(
+async function getData(
   config?: SiteManifest,
   folder?: string,
   slug?: string,
@@ -80,4 +82,26 @@ export async function getData(
   if (!fs.existsSync(filename)) return null;
   const contents = fs.readFileSync(filename).toString();
   return JSON.parse(contents);
+}
+
+export async function getPage(
+  request: Request,
+  opts: { folder?: string; loadIndexPage?: boolean; slug?: string },
+) {
+  const folderName = opts.folder;
+  const config = getConfig();
+  if (!config) throw responseNoSite(request.url);
+  const folder = getProject(config, folderName);
+  if (!folder) throw responseNoArticle();
+  if (opts.slug === folder.index) {
+    return redirect(`/${folderName}`);
+  }
+  const slug = opts.loadIndexPage ? folder.index : opts.slug;
+  const loader = await getData(config, folderName, slug).catch((e) => {
+    console.error(e);
+    return null;
+  });
+  if (!loader) throw responseNoArticle();
+  const footer = getFooterLinks(config, folderName, slug);
+  return { ...loader, footer };
 }

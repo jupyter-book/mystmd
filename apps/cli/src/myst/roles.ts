@@ -1,4 +1,5 @@
-import { Role, IRoleData, IRole } from 'mystjs';
+import type { IRoleData, IRole } from 'mystjs';
+import { Role } from 'mystjs';
 
 function parseRole(content?: string) {
   if (!content) return {};

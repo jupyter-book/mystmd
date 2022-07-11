@@ -10,14 +10,14 @@ import {
   makeWriteTocOption,
 } from './options';
 
-function makeCurvespaceCleanCLI(program: Command) {
+function makeCurvenoteCleanCLI(program: Command) {
   const command = new Command('clean')
     .description('Install dependencies for serving')
     .action(clirun(web.clean, { program, requireSiteConfig: true }));
   return command;
 }
 
-function makeCurvespaceCloneCLI(program: Command) {
+function makeCurvenoteCloneCLI(program: Command) {
   const command = new Command('clone')
     .description('Clone curvespace into the build directory')
     .addOption(makeBranchOption())
@@ -25,14 +25,14 @@ function makeCurvespaceCloneCLI(program: Command) {
   return command;
 }
 
-function makeCurvespaceInstallCLI(program: Command) {
+function makeCurvenoteInstallCLI(program: Command) {
   const command = new Command('install')
     .description('Install dependencies for serving')
     .action(clirun(web.install, { program, requireSiteConfig: true }));
   return command;
 }
 
-function makeCurvespaceStartCLI(program: Command) {
+function makeCurvenoteStartCLI(program: Command) {
   const command = new Command('start')
     .description('Start a local project as a web server')
     .addOption(makeCleanOption())
@@ -64,18 +64,18 @@ function makeDeployCLI(program: Command) {
   return command;
 }
 
-export function addWebCLI(program: Command) {
+export function addWebCLI(program: Command): void {
   const command = new Command('web').description(
     'Commands to clone, install, and start a webserver',
   );
-  command.addCommand(makeCurvespaceCleanCLI(program));
-  command.addCommand(makeCurvespaceCloneCLI(program));
-  command.addCommand(makeCurvespaceInstallCLI(program));
-  command.addCommand(makeCurvespaceStartCLI(program));
+  command.addCommand(makeCurvenoteCleanCLI(program));
+  command.addCommand(makeCurvenoteCloneCLI(program));
+  command.addCommand(makeCurvenoteInstallCLI(program));
+  command.addCommand(makeCurvenoteStartCLI(program));
   command.addCommand(makeDeployCLI(program));
   command.addCommand(makeBuildCLI(program));
   program.addCommand(command);
   // Add a `start` and `deploy` shortcut at the top level
-  program.addCommand(makeCurvespaceStartCLI(program));
+  program.addCommand(makeCurvenoteStartCLI(program));
   program.addCommand(makeDeployCLI(program));
 }

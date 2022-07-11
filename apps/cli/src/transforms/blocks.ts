@@ -1,4 +1,5 @@
-import { GenericNode, select } from 'mystjs';
+import type { GenericNode } from 'mystjs';
+import { select } from 'mystjs';
 import { Root } from '../myst';
 
 export function ensureBlockNesting(mdast: Root) {

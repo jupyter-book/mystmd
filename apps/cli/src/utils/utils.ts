@@ -24,26 +24,30 @@ export function resolvePath(optionalPath: string | undefined, filename: string) 
   return path.join('.', filename);
 }
 
-export function serverPath(session: ISession) {
+export function repoPath(session: ISession): string {
   const config = selectors.selectLocalSiteConfig(session.store.getState());
   const buildPath = config?.buildPath || '_build';
   return path.resolve(path.join('.', buildPath, 'web'));
 }
 
-export function publicPath(session: ISession) {
+export function serverPath(session: ISession): string {
+  return path.join(repoPath(session), 'apps', 'curvespace');
+}
+
+export function publicPath(session: ISession): string {
   return path.join(serverPath(session), 'public');
 }
 
-export function staticPath(session: ISession) {
+export function staticPath(session: ISession): string {
   return path.join(publicPath(session), '_static');
 }
 
-export function buildPathExists(session: ISession) {
-  return fs.existsSync(serverPath(session));
+export function buildPathExists(session: ISession): boolean {
+  return fs.existsSync(repoPath(session));
 }
 
-export function ensureBuildFolderExists(session: ISession) {
-  if (!buildPathExists(session)) fs.mkdirSync(serverPath(session), { recursive: true });
+export function ensureBuildFolderExists(session: ISession): void {
+  if (!buildPathExists(session)) fs.mkdirSync(repoPath(session), { recursive: true });
 }
 
 /**

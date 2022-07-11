@@ -1,8 +1,10 @@
-import { CitationRenderer, getCitations } from 'citation-js-utils';
+import type { CitationRenderer } from 'citation-js-utils';
+import { getCitations } from 'citation-js-utils';
 import { createHash } from 'crypto';
 import fs from 'fs';
 import yaml from 'js-yaml';
-import { convertHtmlToMdast, GenericNode, selectAll } from 'mystjs';
+import type { GenericNode } from 'mystjs';
+import { convertHtmlToMdast, selectAll } from 'mystjs';
 import { extname, join, dirname } from 'path';
 import { KINDS } from '@curvenote/blocks';
 import { SiteProject } from '../../config/types';

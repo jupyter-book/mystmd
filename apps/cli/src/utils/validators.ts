@@ -15,11 +15,11 @@ export type Options = {
 
 type KeyOptions = Options & { returnInvalidPartial?: boolean };
 
-export function defined(val: any) {
+export function defined(val: unknown): boolean {
   return val != null;
 }
 
-export function locationSuffix(opts: Partial<Options>) {
+export function locationSuffix(opts: Partial<Options>): string {
   if (opts.file && opts.location) return ` (at ${opts.file}#${opts.location})`;
   if (opts.file || opts.location) return ` (at ${opts.file || opts.location})`;
   return '';

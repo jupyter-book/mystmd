@@ -1,4 +1,4 @@
-import { GenericNode } from 'mystjs';
+import type { GenericNode } from 'mystjs';
 import path from 'path';
 import YAML from 'yaml';
 import { VersionId, KINDS, oxaLink, Blocks } from '@curvenote/blocks';

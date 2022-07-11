@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import { ProjectConfig, SiteConfig } from '../../config/types';
 import { LocalProject } from '../../toc/types';

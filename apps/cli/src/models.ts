@@ -1,4 +1,4 @@
-import { AnyAction } from '@reduxjs/toolkit';
+import type { AnyAction } from '@reduxjs/toolkit';
 import {
   MyUser as MyUserDTO,
   User as UserDTO,

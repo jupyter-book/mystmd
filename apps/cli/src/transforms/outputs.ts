@@ -1,4 +1,5 @@
-import { GenericNode, selectAll } from 'mystjs';
+import type { GenericNode } from 'mystjs';
+import { selectAll } from 'mystjs';
 import { CellOutput, KINDS } from '@curvenote/blocks';
 import { minifyCellOutput, walkPaths } from '@curvenote/nbtx';
 import { Root } from '../myst';

@@ -1,5 +1,6 @@
 import { HeadingLevel, IParagraphOptions, IRunOptions } from 'docx';
-import { defaultMarks, NodeSerializer } from 'prosemirror-docx';
+import type { NodeSerializer } from 'prosemirror-docx';
+import { defaultMarks } from 'prosemirror-docx';
 import { Node } from 'prosemirror-model';
 import { oxaLinkToId } from '@curvenote/blocks';
 import { CaptionKind, Nodes, ReferenceKind, formatDatetime } from '@curvenote/schema';

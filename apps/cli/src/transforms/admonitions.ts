@@ -1,4 +1,5 @@
-import { GenericNode, selectAll } from 'mystjs';
+import type { GenericNode } from 'mystjs';
+import { selectAll } from 'mystjs';
 import { Root } from '../myst';
 
 export function transformAdmonitions(mdast: Root) {

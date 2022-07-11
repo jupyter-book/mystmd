@@ -1,5 +1,7 @@
-import { CitationRenderer, InlineCite } from 'citation-js-utils';
-import { GenericNode, selectAll } from 'mystjs';
+import type { CitationRenderer } from 'citation-js-utils';
+import { InlineCite } from 'citation-js-utils';
+import type { GenericNode } from 'mystjs';
+import { selectAll } from 'mystjs';
 import { Logger } from '../logging';
 import { Root } from '../myst';
 import { References } from './types';

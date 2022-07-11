@@ -1,6 +1,5 @@
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import { LoaderFunction } from '@remix-run/node';
-
 import {
   Links,
   LiveReload,
@@ -12,7 +11,6 @@ import {
   useLoaderData,
 } from '@remix-run/react';
 import React from 'react';
-import { getThemeSession } from '~/utils/theme.server';
 import tailwind from './styles/app.css';
 import { getConfig } from './utils';
 import { ErrorSiteExpired } from './components/ErrorSiteExpired';
@@ -26,6 +24,7 @@ import {
   responseNoSite,
   getMetaTagsForSite,
   useNavigationHeight,
+  getThemeSession,
 } from '@curvenote/site';
 
 export const meta: MetaFunction = ({ data }) => {
@@ -45,7 +44,7 @@ type DocumentData = {
 };
 
 export const loader: LoaderFunction = async ({ request }): Promise<DocumentData> => {
-  const [config, themeSession] = await Promise.all([getConfig(request), getThemeSession(request)]);
+  const [config, themeSession] = await Promise.all([getConfig(), getThemeSession(request)]);
   if (!config) throw responseNoSite(request.url);
   const data = { theme: themeSession.getTheme(), config };
   return data;
@@ -80,7 +79,6 @@ function Document({
               <Navigation top={top} height={height}>
                 <TopNav />
               </Navigation>
-
               <article ref={ref} className="content">
                 {children}
               </article>
@@ -111,8 +109,9 @@ export function CatchBoundary() {
   try {
     url = new URL(caught.data);
     isLaunchpad = url.hostname.startsWith('launchpad-');
-    // eslint-disable-next-line no-empty
-  } catch (err: any) {}
+  } catch (err) {
+    // pass
+  }
 
   return (
     <Document theme={Theme.light} title={caught.statusText}>

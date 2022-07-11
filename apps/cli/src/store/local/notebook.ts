@@ -1,4 +1,5 @@
-import { GenericNode, selectAll } from 'mystjs';
+import type { GenericNode } from 'mystjs';
+import { selectAll } from 'mystjs';
 import { nanoid } from 'nanoid';
 import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
 import {

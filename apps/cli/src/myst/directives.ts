@@ -1,4 +1,5 @@
-import { Directive, IDirectiveData, directiveOptions, IDirective, Token } from 'mystjs';
+import type { IDirectiveData, IDirective, Token } from 'mystjs';
+import { Directive, directiveOptions } from 'mystjs';
 
 const RVar: IDirective = {
   myst: class RVariable extends Directive {

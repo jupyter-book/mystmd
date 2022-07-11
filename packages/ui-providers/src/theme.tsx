@@ -39,7 +39,7 @@ export function ThemeProvider({
         document.getElementsByTagName('html')[0].className = next;
       }
       const xmlhttp = new XMLHttpRequest();
-      xmlhttp.open('POST', '/action/set-theme');
+      xmlhttp.open('POST', '/api/theme');
       xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
       xmlhttp.send(JSON.stringify({ theme: next }));
       setTheme(next);

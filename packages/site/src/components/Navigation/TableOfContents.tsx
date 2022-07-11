@@ -134,6 +134,7 @@ export const TableOfContents = ({
             ? undefined
             : height,
       }}
+      suppressHydrationWarning
     >
       <nav
         aria-label="Table of Contents"

@@ -1,4 +1,4 @@
-import { Store } from 'redux';
+import type { Store } from 'redux';
 import { JsonObject } from '@curvenote/blocks';
 import { Logger } from '../logging';
 import { RootState } from '../store';
