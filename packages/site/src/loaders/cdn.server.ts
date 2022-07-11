@@ -4,6 +4,8 @@ import NodeCache from 'node-cache';
 import { walkPaths } from '@curvenote/nbtx/dist/minify/utils';
 import { PageLoader as Data, SiteManifest as Config } from '@curvenote/site-common';
 import { responseNoArticle, responseNoSite } from './errors.server';
+import { getFooterLinks, getProject } from './utils';
+import { redirect } from '@remix-run/node';
 
 interface CdnRouter {
   cdn?: string;
@@ -49,8 +51,7 @@ function withCDN<T extends string | undefined>(id: string, url: T): T {
   return `https://cdn.curvenote.com/${id}/public${url}` as T;
 }
 
-export async function getConfig(request: Request | string): Promise<Config | undefined> {
-  const hostname = typeof request === 'string' ? request : new URL(request.url).hostname;
+export async function getConfig(hostname: string): Promise<Config> {
   const id = await getCdnPath(hostname);
   if (!id) throw responseNoSite(hostname);
   const cached = getConfigCache().get<Config>(id);
@@ -100,4 +101,26 @@ export async function getData(
     });
   });
   return data;
+}
+
+export async function getPage(
+  hostname: string,
+  opts: { folder?: string; loadIndexPage?: boolean; slug?: string },
+) {
+  const folderName = opts.folder;
+  const config = await getConfig(hostname);
+  if (!config) throw responseNoSite(hostname);
+  const folder = getProject(config, folderName);
+  if (!folder) throw responseNoArticle();
+  if (opts.slug === folder.index) {
+    return redirect(`/${folderName}`);
+  }
+  const slug = opts.loadIndexPage ? folder.index : opts.slug;
+  const loader = await getData(config, folderName, slug).catch((e) => {
+    console.error(e);
+    return null;
+  });
+  if (!loader) throw responseNoArticle();
+  const footer = getFooterLinks(config, folderName, slug);
+  return { ...loader, footer };
 }
