@@ -27,11 +27,11 @@ export function resolvePath(optionalPath: string | undefined, filename: string) 
 export function repoPath(session: ISession): string {
   const config = selectors.selectLocalSiteConfig(session.store.getState());
   const buildPath = config?.buildPath || '_build';
-  return path.resolve(path.join('.', buildPath, 'web'));
+  return path.resolve(path.join('.', buildPath, 'curvenote'));
 }
 
 export function serverPath(session: ISession): string {
-  return path.join(repoPath(session), 'apps', 'curvespace');
+  return path.join(repoPath(session), 'apps', 'web');
 }
 
 export function publicPath(session: ISession): string {
