@@ -41,6 +41,10 @@ export type ManifestProjectFolder = {
 
 export type ManifestProjectPage = {
   slug: string;
+  description: string;
+  date: string;
+  thumbnail: string;
+  tags: string[];
 } & ManifestProjectFolder;
 
 export type ManifestProject = ProjectFrontmatter & {

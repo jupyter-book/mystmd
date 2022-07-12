@@ -81,6 +81,9 @@ export async function getData(
   const response = await fetch(`https://cdn.curvenote.com/${id}/content/${project}/${slug}.json`);
   if (response.status === 404) throw responseNoArticle();
   const data = (await response.json()) as Data;
+  if (data?.frontmatter?.thumbnail) {
+    data.frontmatter.thumbnail = withCDN(id, data.frontmatter.thumbnail);
+  }
   // Fix all of the images to point to the CDN
   const images = selectAll('image', data.mdast) as GenericNode[];
   images.forEach((node) => {

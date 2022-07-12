@@ -2,14 +2,14 @@ import yaml from 'js-yaml';
 import { Blocks, KINDS, VersionId } from '@curvenote/blocks';
 import { prepareToWrite } from '../../frontmatter';
 import {
-  pageFrontmatterFromDTO,
+  pageFrontmatterFromDTOAndThumbnail,
   projectFrontmatterFromDTO,
   saveAffiliations,
 } from '../../frontmatter/api';
 import { fillPageFrontmatter } from '../../frontmatter/validators';
 import { Block, Project, Version } from '../../models';
 import { ISession } from '../../session/types';
-import { writeFileToFolder } from '../../utils';
+import { resolvePath, writeFileToFolder } from '../../utils';
 import { assertEndsInExtension } from '../utils/assertions';
 import { exportFromOxaLink } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';
@@ -21,10 +21,15 @@ export type NotebookExportOptions = {
   ignoreProjectFrontmatter?: boolean;
 };
 
-async function createFrontmatterCell(session: ISession, block: Block, opts: NotebookExportOptions) {
+async function createFrontmatterCell(
+  session: ISession,
+  filename: string,
+  block: Block,
+  opts: NotebookExportOptions,
+) {
   const project = await new Project(session, block.id.project).get();
   saveAffiliations(session, project.data);
-  let frontmatter = pageFrontmatterFromDTO(session, block.data);
+  let frontmatter = await pageFrontmatterFromDTOAndThumbnail(session, filename, block.data);
   if (!opts.ignoreProjectFrontmatter) {
     const projectFrontmatter = projectFrontmatterFromDTO(session, project.data);
     frontmatter = fillPageFrontmatter(frontmatter, projectFrontmatter);
@@ -57,7 +62,12 @@ export async function notebookToIpynb(
   if (!resp.ok) throw new Error(`Could not download notebook.`);
   if (opts.createNotebookFrontmatter) {
     // Put a frontmatter cell in the front!
-    const frontmatterCell = await createFrontmatterCell(session, block, opts);
+    const frontmatterCell = await createFrontmatterCell(
+      session,
+      resolvePath(opts.path, opts.filename),
+      block,
+      opts,
+    );
     resp.json.cells = [frontmatterCell, ...resp.json.cells];
   }
   writeFileToFolder(opts, JSON.stringify(resp.json));

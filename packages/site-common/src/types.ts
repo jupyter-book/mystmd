@@ -54,6 +54,8 @@ export type Frontmatter = {
   title?: string;
   description?: string;
   authors?: Author[];
+  thumbnail?: string;
+  tags?: string[];
   subject?: string;
   open_access?: boolean;
   license?: CreativeCommonsLicense;
@@ -129,6 +131,10 @@ export type ManifestProjectFolder = {
 
 export type ManifestProjectPage = {
   slug: string;
+  description: string;
+  date: string;
+  thumbnail: string;
+  tags: string[];
 } & ManifestProjectFolder;
 
 export type ManifestProject = {

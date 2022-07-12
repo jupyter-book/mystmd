@@ -24,6 +24,7 @@ import {
   transformFootnotes,
   transformKeys,
   transformImages,
+  transformThumbnail,
   transformAdmonitions,
   transformLinks,
   transformCode,
@@ -227,15 +228,20 @@ export async function transformMdast(
   transformCode(mdast, frontmatter);
   transformFootnotes(mdast, references); // Needs to happen nead the end
   transformKeys(mdast);
-  await transformImages(session, mdast, dirname(file));
+  await Promise.all([
+    transformImages(session, mdast, dirname(file)),
+    transformThumbnail(session, frontmatter, dirname(file)),
+  ]);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   store.dispatch(
     watch.actions.updateFileInfo({
       path: file,
       title: frontmatter.title,
       description: frontmatter.description,
+      date: frontmatter.date,
+      thumbnail: frontmatter.thumbnail,
+      tags: frontmatter.tags,
       url: `/${projectSlug}/${pageSlug}`,
-      // TODO: thumbnail
     }),
   );
   if (frontmatter.oxa) {

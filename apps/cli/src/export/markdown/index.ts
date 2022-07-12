@@ -5,14 +5,14 @@ import { VersionId, KINDS, oxaLink, Blocks } from '@curvenote/blocks';
 import { createId, toMyst } from '@curvenote/schema';
 import { prepareToWrite } from '../../frontmatter';
 import {
-  pageFrontmatterFromDTO,
+  pageFrontmatterFromDTOAndThumbnail,
   projectFrontmatterFromDTO,
   saveAffiliations,
 } from '../../frontmatter/api';
 import { fillPageFrontmatter } from '../../frontmatter/validators';
 import { Block, Project, Version } from '../../models';
 import { ISession } from '../../session/types';
-import { writeFileToFolder } from '../../utils';
+import { resolvePath, writeFileToFolder } from '../../utils';
 import { exportFromOxaLink } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';
 import { localizationOptions } from '../utils/localizationOptions';
@@ -106,7 +106,12 @@ export async function articleToMarkdown(
 
   const project = await new Project(session, block.id.project).get();
   saveAffiliations(session, project.data);
-  let frontmatter = pageFrontmatterFromDTO(session, block.data, version.data.date);
+  let frontmatter = await pageFrontmatterFromDTOAndThumbnail(
+    session,
+    resolvePath(opts.path, opts.filename),
+    block.data,
+    version.data.date,
+  );
   if (!opts.ignoreProjectFrontmatter) {
     const projectFrontmatter = projectFrontmatterFromDTO(session, project.data);
     frontmatter = fillPageFrontmatter(frontmatter, projectFrontmatter);

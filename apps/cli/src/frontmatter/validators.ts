@@ -71,6 +71,7 @@ export const PAGE_FRONTMATTER_KEYS = [
   'kernelspec',
   'jupytext',
   'tags',
+  'thumbnail',
 ].concat(PROJECT_FRONTMATTER_KEYS);
 
 export const USE_SITE_FALLBACK = ['venue'];
@@ -460,6 +461,9 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Op
         return validateString(file, incrementOptions(`tags.${index}`, opts));
       },
     );
+  }
+  if (defined(value.thumbnail)) {
+    output.thumbnail = validateString(value.thumbnail, incrementOptions('thumbnail', opts));
   }
   return output;
 }
