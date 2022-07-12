@@ -3,7 +3,7 @@ import mime from 'mime-types';
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
 import fetch from 'node-fetch';
-import path from 'path';
+import { dirname, join, parse } from 'path';
 import { oxaLinkToId, VersionId } from '@curvenote/blocks';
 import { Root } from '../myst';
 import { WebFileObject } from '../web/files';
@@ -26,12 +26,12 @@ export async function downloadAndSaveImage(
   fileFolder: string,
 ): Promise<string> {
   const exists = fs.existsSync(fileFolder);
-  const fileMatch = exists && fs.readdirSync(fileFolder).find((f) => path.parse(f).name === file);
+  const fileMatch = exists && fs.readdirSync(fileFolder).find((f) => parse(f).name === file);
   if (exists && fileMatch) {
     session.log.debug(`Cached image found for: ${url}...`);
     return fileMatch;
   }
-  const filePath = path.join(fileFolder, file);
+  const filePath = join(fileFolder, file);
   let extension: string | false = false;
   session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${filePath}`);
   await fetch(url)
@@ -58,7 +58,7 @@ export async function saveImageInStaticFolder(
   filePath = '',
 ): Promise<{ sourceUrl: string; url: string } | null> {
   const oxa = oxaLinkToId(sourceUrl);
-  const imageLocalFile = path.join(filePath, sourceUrl);
+  const imageLocalFile = join(filePath, sourceUrl);
   let file: string | undefined;
   if (oxa) {
     // If oxa, get the download url
@@ -104,11 +104,15 @@ export async function saveImageInStaticFolder(
   return { sourceUrl, url };
 }
 
-export async function transformImages(session: ISession, mdast: Root, filePath: string) {
+export async function transformImages(session: ISession, mdast: Root, file: string) {
   const images = selectAll('image', mdast) as GenericNode[];
   return Promise.all(
     images.map(async (image) => {
-      const result = await saveImageInStaticFolder(session, image.sourceUrl || image.url, filePath);
+      const result = await saveImageInStaticFolder(
+        session,
+        image.sourceUrl || image.url,
+        dirname(file),
+      );
       if (result) {
         // Update mdast with new file name
         const { sourceUrl, url } = result;
@@ -122,13 +126,28 @@ export async function transformImages(session: ISession, mdast: Root, filePath: 
 export async function transformThumbnail(
   session: ISession,
   frontmatter: PageFrontmatter,
-  filePath: string,
+  mdast: Root,
+  file: string,
 ) {
-  if (!frontmatter.thumbnail) return;
-  session.log.debug(
-    `Saving thumbnail in static folder for: ${path.join(filePath, frontmatter.thumbnail)}`,
-  );
-  const result = await saveImageInStaticFolder(session, frontmatter.thumbnail, filePath);
+  let thumbnail = frontmatter.thumbnail;
+  // If the thumbnail is explicitly null, don't add an image
+  if (thumbnail === null) {
+    session.log.debug(`${file}#frontmatter.thumbnail is explicitly null, not searching content.`);
+    return;
+  }
+  if (!thumbnail) {
+    // The thumbnail isn't found, grab it from the mdast
+    const [image] = selectAll('image', mdast) as GenericNode[];
+    if (!image) {
+      session.log.debug(`${file}#frontmatter.thumbnail is not set, and there are no images.`);
+      return;
+    }
+    session.log.debug(`${file}#frontmatter.thumbnail is being populated by the first image.`);
+    thumbnail = image.sourceUrl || image.url;
+  }
+  if (!thumbnail) return;
+  session.log.debug(`${file}#frontmatter.thumbnail Saving thumbnail in static folder.`);
+  const result = await saveImageInStaticFolder(session, thumbnail, dirname(file));
   if (result) {
     // Update frontmatter with new file name
     const { url } = result;

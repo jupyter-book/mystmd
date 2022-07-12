@@ -229,8 +229,8 @@ export async function transformMdast(
   transformFootnotes(mdast, references); // Needs to happen nead the end
   transformKeys(mdast);
   await Promise.all([
-    transformImages(session, mdast, dirname(file)),
-    transformThumbnail(session, frontmatter, dirname(file)),
+    transformImages(session, mdast, file),
+    transformThumbnail(session, frontmatter, mdast, file),
   ]);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   store.dispatch(

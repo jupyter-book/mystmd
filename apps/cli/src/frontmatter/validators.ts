@@ -462,7 +462,11 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Op
       },
     );
   }
-  if (defined(value.thumbnail)) {
+  if (value.thumbnail === null) {
+    // It is possible for the thumbnail to explicitly be null.
+    // This means not to look to the images in a page.
+    output.thumbnail = null;
+  } else if (defined(value.thumbnail)) {
     output.thumbnail = validateString(value.thumbnail, incrementOptions('thumbnail', opts));
   }
   return output;
