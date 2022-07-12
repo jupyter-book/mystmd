@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import config from '~/config.json';
-import type { PageLoader as Data, SiteManifest } from '@curvenote/site-common';
+import { getDomainFromRequest, PageLoader as Data, SiteManifest } from '@curvenote/site-common';
 import { redirect } from '@remix-run/node';
 import { getFooterLinks, getProject, responseNoArticle, responseNoSite } from '@curvenote/site';
 
@@ -103,5 +103,5 @@ export async function getPage(
   });
   if (!loader) throw responseNoArticle();
   const footer = getFooterLinks(config, folderName, slug);
-  return { ...loader, footer };
+  return { ...loader, footer, domain: getDomainFromRequest(request) };
 }

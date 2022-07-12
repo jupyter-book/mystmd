@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { join } from 'path';
-import YAML from 'yaml';
+import YAML from 'js-yaml';
 import { Blocks, NavListItemKindEnum } from '@curvenote/blocks';
 import { Block, Version } from '../../models';
 import { ISession } from '../../session/types';
@@ -143,7 +143,7 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
       root: getName(items[0].block as Block),
       chapters: itemsToChapters([...items[0].children, ...items.slice(1)]),
     };
-    const toc = `${header}\n\n${YAML.stringify(tocData)}\n`;
+    const toc = `${header}\n\n${YAML.dump(tocData)}\n`;
     writeFileToFolder(filename, toc);
     return;
   }
@@ -165,7 +165,7 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
     root: getName(root.block as Block),
     parts,
   };
-  const toc = `${header}\n\n${YAML.stringify(tocData)}\n`;
+  const toc = `${header}\n\n${YAML.dump(tocData)}\n`;
   writeFileToFolder(filename, toc);
 }
 
@@ -186,7 +186,7 @@ function upgradeOldJupyterBookToc(oldToc: any[]) {
 
 export function readTOC(log: Logger, opts?: Options): TOC {
   const filename = join(opts?.path || '.', opts?.filename || '_toc.yml');
-  const toc = YAML.parse(fs.readFileSync(filename).toString());
+  const toc = YAML.load(fs.readFileSync(filename).toString()) as any;
   if (Array.isArray(toc)) {
     try {
       const old = upgradeOldJupyterBookToc(toc);

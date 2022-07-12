@@ -1,4 +1,5 @@
 import { Block, oxaLink, Project } from '@curvenote/blocks';
+import { dirname, join } from 'path';
 import { affiliations } from '../store/local';
 import { selectAffiliation } from '../store/selectors';
 import { ISession } from '../session';
@@ -10,6 +11,9 @@ import {
   validatePageFrontmatterKeys,
   validateProjectFrontmatterKeys,
 } from './validators';
+import { downloadAndSaveImage } from '../transforms/images';
+
+const thumbnailsDirectory = 'thumbnails';
 
 export function saveAffiliations(session: ISession, project: Project) {
   session.store.dispatch(
@@ -51,6 +55,28 @@ export function projectFrontmatterFromDTO(
     count: {},
     ...opts,
   });
+}
+
+export async function pageFrontmatterFromDTOAndThumbnail(
+  session: ISession,
+  filename: string,
+  block: Block,
+  date?: string | Date,
+  opts?: Partial<Options>,
+): Promise<PageFrontmatter> {
+  const apiFrontmatter = pageFrontmatterFromDTO(session, block, date, opts);
+  if (block.links.thumbnail) {
+    const result = await downloadAndSaveImage(
+      session,
+      block.links.thumbnail,
+      block.name || block.id.block,
+      join(dirname(filename), thumbnailsDirectory),
+    );
+    if (result) {
+      apiFrontmatter.thumbnail = join(thumbnailsDirectory, result);
+    }
+  }
+  return apiFrontmatter;
 }
 
 export function pageFrontmatterFromDTO(

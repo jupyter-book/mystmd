@@ -9,6 +9,7 @@ module.exports = {
   rules: {
     '@next/next/no-html-link-for-pages': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     'react/jsx-key': 'off',
     'import/no-duplicates': 'error',
     'import/no-unresolved': 'off', // This errors out on '~/module' that is defined in tsconfig

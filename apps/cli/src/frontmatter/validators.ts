@@ -65,9 +65,14 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'numbering',
   'math',
 ].concat(SITE_FRONTMATTER_KEYS);
-export const PAGE_FRONTMATTER_KEYS = ['subtitle', 'short_title', 'kernelspec', 'jupytext'].concat(
-  PROJECT_FRONTMATTER_KEYS,
-);
+export const PAGE_FRONTMATTER_KEYS = [
+  'subtitle',
+  'short_title',
+  'kernelspec',
+  'jupytext',
+  'tags',
+  'thumbnail',
+].concat(PROJECT_FRONTMATTER_KEYS);
 
 export const USE_SITE_FALLBACK = ['venue'];
 export const USE_PROJECT_FALLBACK = [
@@ -447,6 +452,22 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Op
   }
   if (defined(value.jupytext)) {
     output.jupytext = validateJupytext(value.jupytext, incrementOptions('jupytext', opts));
+  }
+  if (defined(value.tags)) {
+    output.tags = validateList(
+      value.tags,
+      incrementOptions('tags', opts),
+      (file, index: number) => {
+        return validateString(file, incrementOptions(`tags.${index}`, opts));
+      },
+    );
+  }
+  if (value.thumbnail === null) {
+    // It is possible for the thumbnail to explicitly be null.
+    // This means not to look to the images in a page.
+    output.thumbnail = null;
+  } else if (defined(value.thumbnail)) {
+    output.thumbnail = validateString(value.thumbnail, incrementOptions('thumbnail', opts));
   }
   return output;
 }

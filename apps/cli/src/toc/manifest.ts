@@ -6,7 +6,7 @@ import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
 import { publicPath, warnOnUnrecognizedKeys } from '../utils';
 import { filterKeys } from '../utils/validators';
-import { SiteManifest, ManifestProject } from './types';
+import { SiteManifest, ManifestProject, ManifestProjectPage, ManifestProjectFolder } from './types';
 
 /**
  * Convert local project representation to site manifest project
@@ -27,14 +27,30 @@ export function localToManifestProject(
   const { index } = proj;
   const projectTitle =
     projConfig?.title || selectors.selectFileInfo(state, proj.file).title || proj.index;
-  const pages: ManifestProject['pages'] = proj.pages.map((page) => {
-    if ('file' in page) {
-      const title = selectors.selectFileInfo(state, page.file).title || page.slug;
-      const { slug, level } = page;
-      return { slug, title, level };
-    }
-    return { ...page };
-  });
+  const pages: ManifestProject['pages'] = proj.pages.map(
+    (page): ManifestProjectFolder | ManifestProjectPage => {
+      if ('file' in page) {
+        const fileInfo = selectors.selectFileInfo(state, page.file);
+        const title = fileInfo.title || page.slug;
+        const description = fileInfo.description ?? '';
+        const thumbnail = fileInfo.thumbnail ?? '';
+        const date = fileInfo.date ?? '';
+        const tags = fileInfo.tags ?? [];
+        const { slug, level } = page;
+        const projectPage: ManifestProjectPage = {
+          slug,
+          title,
+          description,
+          date,
+          thumbnail,
+          tags,
+          level,
+        };
+        return projectPage;
+      }
+      return { ...page } as ManifestProjectFolder;
+    },
+  );
   const projFrontmatter = filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS);
   return {
     ...projFrontmatter,

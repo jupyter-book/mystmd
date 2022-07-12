@@ -1,4 +1,4 @@
-import YAML from 'yaml';
+import YAML from 'js-yaml';
 import { toTex } from '@curvenote/schema';
 import { prepareToWrite } from '../../frontmatter';
 import { PageFrontmatter } from '../../frontmatter/types';
@@ -62,7 +62,7 @@ export function stringifyFrontmatter(data: Record<string, any>) {
     return { ...acc, [key]: value };
   }, {});
 
-  const lines = YAML.stringify(noUndefined)
+  const lines = YAML.dump(noUndefined)
     .split('\n')
     .filter((line) => line.length > 0);
   const fm = lines.map((line) => `${FM_LINE}${line}`);

@@ -564,6 +564,7 @@ describe('pageFrontmatterFromDTO', () => {
     name: 'name',
     date: date.toISOString(),
     oxa: 'oxa:proj/block',
+    tags: ['a-tag'],
   };
   const block: Block = {
     id: {
@@ -584,7 +585,7 @@ describe('pageFrontmatterFromDTO', () => {
     date_created: date,
     date_modified: date,
     pending: '',
-    tags: [],
+    tags: ['a-tag'],
     default_draft: '',
     links: {
       project: '',

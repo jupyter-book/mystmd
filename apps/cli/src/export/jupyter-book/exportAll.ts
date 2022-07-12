@@ -44,6 +44,7 @@ export async function exportAll(
             });
             return article;
           } catch (error) {
+            session.log.debug(error);
             session.log.error(`Problem downloading article: ${block.data.name}`);
             return null;
           }

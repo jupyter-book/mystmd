@@ -78,4 +78,6 @@ export type PageFrontmatter = ProjectFrontmatter & {
   short_title?: string;
   kernelspec?: KernelSpec;
   jupytext?: Jupytext;
+  tags?: string[];
+  thumbnail?: string | null;
 };
