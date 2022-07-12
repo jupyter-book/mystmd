@@ -10,6 +10,8 @@ import { useNavOpen, useSiteManifest } from '@curvenote/ui-providers';
 import { CurvenoteLogo } from '@curvenote/icons';
 import ChevronDownIcon from '@heroicons/react/solid/ChevronDownIcon';
 
+export const DEFAULT_NAV_HEIGHT = 60;
+
 function NavItem({ item }: { item: SiteNavItem }) {
   const isActive = false;
   if (!('children' in item)) {

@@ -58,6 +58,7 @@ Number of URLs in this XML Sitemap:
 </xsl:template>
 </xsl:stylesheet>`;
 }
+
 export function sitemapStylesheet() {
   return `<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:sitemap="http://www.sitemaps.org/schemas/sitemap/0.9" version="1.0" exclude-result-prefixes="sitemap">
 <xsl:output method="html" encoding="UTF-8" indent="yes"/>

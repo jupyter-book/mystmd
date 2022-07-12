@@ -1,6 +1,11 @@
 import { Author, KINDS } from '@curvenote/blocks';
 import type { GenericNode, GenericParent } from 'mystjs';
 
+export enum Theme {
+  light = 'light',
+  dark = 'dark',
+}
+
 export type Heading = {
   slug?: string;
   path?: string;
@@ -81,6 +86,11 @@ export type Frontmatter = {
         heading_6?: boolean;
       };
 } & Record<string, string | boolean>;
+
+export type DocumentLoader = {
+  theme: Theme;
+  config?: SiteManifest;
+};
 
 export type PageLoader = {
   domain: string;

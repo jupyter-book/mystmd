@@ -1,30 +1,13 @@
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import { LoaderFunction } from '@remix-run/node';
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useCatch,
-  useLoaderData,
-} from '@remix-run/react';
-import React from 'react';
-import tailwind from './styles/app.css';
-import { getConfig } from './utils';
-import { SiteProvider, Theme, ThemeProvider, UiStateProvider } from '@curvenote/ui-providers';
-import type { SiteManifest } from '@curvenote/site-common';
-import {
-  Navigation,
-  TopNav,
-  Analytics,
-  responseNoSite,
-  getMetaTagsForSite,
-  useNavigationHeight,
-  getThemeSession,
+import tailwind from '~/styles/app.css';
+import { getConfig } from '~/utils';
+import type { DocumentLoader } from '@curvenote/site-common';
+import { App, responseNoSite, getMetaTagsForSite, getThemeSession } from '@curvenote/site';
+export {
+  AppCatchBoundary as CatchBoundary,
+  AppDebugErrorBoundary as ErrorBoundary,
 } from '@curvenote/site';
-import { ErrorSiteNotFound } from '~/components/ErrorSiteNotFound';
 
 export const meta: MetaFunction = ({ data }) => {
   return getMetaTagsForSite({
@@ -37,94 +20,11 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: tailwind }];
 };
 
-type DocumentData = {
-  theme: Theme;
-  config?: SiteManifest;
-};
-
-export const loader: LoaderFunction = async ({ request }): Promise<DocumentData> => {
+export const loader: LoaderFunction = async ({ request }): Promise<DocumentLoader> => {
   const [config, themeSession] = await Promise.all([getConfig(), getThemeSession(request)]);
   if (!config) throw responseNoSite();
   const data = { theme: themeSession.getTheme(), config };
   return data;
 };
 
-function Document({
-  children,
-  theme,
-  config,
-  title,
-}: {
-  children: React.ReactNode;
-  theme: Theme;
-  config?: SiteManifest;
-  title?: string;
-}) {
-  const { ref, height, top } = useNavigationHeight<HTMLDivElement>(60);
-  return (
-    <html lang="en" className={theme}>
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        {title && <title>{title}</title>}
-        <Meta />
-        <Links />
-        <Analytics analytics={config?.analytics} />
-      </head>
-      <body className="m-0 transition-colors duration-500 bg-white dark:bg-stone-900">
-        <UiStateProvider>
-          <ThemeProvider theme={theme}>
-            <SiteProvider config={config}>
-              <Navigation top={top} height={height}>
-                <TopNav />
-              </Navigation>
-              <article ref={ref} className="content">
-                {children}
-              </article>
-            </SiteProvider>
-          </ThemeProvider>
-        </UiStateProvider>
-        <ScrollRestoration />
-        <Scripts />
-        {process.env.NODE_ENV === 'development' && <LiveReload />}
-      </body>
-    </html>
-  );
-}
-
-export default function App() {
-  const { theme, config } = useLoaderData<DocumentData>();
-  return (
-    <Document theme={theme} config={config}>
-      <Outlet />
-    </Document>
-  );
-}
-
-export function CatchBoundary() {
-  const caught = useCatch();
-  return (
-    <Document theme={Theme.light} title={caught.statusText}>
-      <article className="content">
-        <main className="error-content">
-          <ErrorSiteNotFound />
-        </main>
-      </article>
-    </Document>
-  );
-}
-
-export function ErrorBoundary({ error }: { error: { message: string; stack: string } }) {
-  return (
-    <Document theme={Theme.light} title="Error">
-      <div className="mt-16">
-        <main className="error-content">
-          <h1>An Error Occurred</h1>
-          <p>{error.message}</p>
-          <p>The stack trace is:</p>
-          <pre>{error.stack}</pre>
-        </main>
-      </div>
-    </Document>
-  );
-}
+export default App;

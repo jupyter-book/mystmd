@@ -1,17 +1,7 @@
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { MetaFunction } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
-import {
-  ContentBlocks,
-  ErrorDocumentNotFound,
-  FooterLinksBlock,
-  FrontmatterBlock,
-  getMetaTagsForArticle,
-  KatexCSS,
-} from '@curvenote/site';
+import { getMetaTagsForArticle, KatexCSS, ArticlePage } from '@curvenote/site';
 import { getPage } from '~/utils';
-import { Bibliography } from 'myst-util-to-react';
-import { ReferencesProvider } from '@curvenote/ui-providers';
 import type { PageLoader, SiteManifest } from '@curvenote/site-common';
 
 export const meta: MetaFunction = (args) => {
@@ -33,18 +23,5 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   return getPage(request, { folder, slug });
 };
 
-export default function Page() {
-  const article = useLoaderData<PageLoader>();
-  return (
-    <ReferencesProvider references={{ ...article.references, article: article.mdast }}>
-      <FrontmatterBlock kind={article.kind} frontmatter={article.frontmatter} />
-      <ContentBlocks mdast={article.mdast} />
-      <Bibliography />
-      <FooterLinksBlock links={article.footer} />
-    </ReferencesProvider>
-  );
-}
-
-export function CatchBoundary() {
-  return <ErrorDocumentNotFound />;
-}
+export { ArticlePageCatchBoundary as CatchBoundary } from '@curvenote/site';
+export default ArticlePage;

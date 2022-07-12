@@ -1,7 +1,7 @@
 import { useTransition } from '@remix-run/react';
 import { useEffect, useRef, useState } from 'react';
 
-export function useNavigationHeight<T extends HTMLElement = HTMLElement>(top: number) {
+export function useNavigationHeight<T extends HTMLElement = HTMLElement>() {
   const ref = useRef<T>(null);
   const [height, setHeightState] = useState(1000);
   const transitionState = useTransition().state;
@@ -19,5 +19,5 @@ export function useNavigationHeight<T extends HTMLElement = HTMLElement>(top: nu
       window.removeEventListener('scroll', handleScroll);
     };
   }, [ref, transitionState]);
-  return { ref, height, top };
+  return { ref, height };
 }
