@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { sync as which } from 'which';
-import YAML from 'yaml';
+import YAML from 'js-yaml';
 import { Template } from '../../models';
 import { ISession } from '../../session/types';
 import { TexExportOptions } from './types';
@@ -34,7 +34,7 @@ export async function ifTemplateFetchTaggedBlocks(
   } else if (opts.templatePath) {
     const templateYml = path.join(opts.templatePath, 'template.yml');
     if (fs.existsSync(templateYml)) {
-      const template = YAML.parse(fs.readFileSync(templateYml, 'utf-8'));
+      const template = YAML.load(fs.readFileSync(templateYml, 'utf-8')) as any;
       tagged = template.config.tagged.map((t: { id: string }) => t.id);
       session.log.debug(
         `Template: '${opts.templatePath}' supports following tagged content: ${tagged.join(', ')}`,
@@ -51,7 +51,7 @@ export function ifTemplateLoadOptions(opts: TexExportOptions): Record<string, an
       throw new Error(`The template options file specified was not found: ${opts.options}`);
     }
     // TODO validate against the options schema here
-    return YAML.parse(fs.readFileSync(opts.options as string, 'utf8')) as Record<string, any>;
+    return YAML.load(fs.readFileSync(opts.options as string, 'utf8')) as Record<string, any>;
   }
   return {};
 }

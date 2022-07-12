@@ -1,6 +1,5 @@
 import { getSession } from '../src/cli/services/utils';
 import fs from 'fs';
-import YAML from 'yaml';
 import path from 'path';
 import { Version } from '../src';
 import { Block, BlockChildDict, Blocks, ContentFormatTypes, KINDS } from '@curvenote/blocks';

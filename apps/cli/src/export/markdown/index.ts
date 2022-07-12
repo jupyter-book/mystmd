@@ -1,6 +1,6 @@
 import type { GenericNode } from 'mystjs';
 import path from 'path';
-import YAML from 'yaml';
+import YAML from 'js-yaml';
 import { VersionId, KINDS, oxaLink, Blocks } from '@curvenote/blocks';
 import { createId, toMyst } from '@curvenote/schema';
 import { prepareToWrite } from '../../frontmatter';
@@ -111,7 +111,7 @@ export async function articleToMarkdown(
     const projectFrontmatter = projectFrontmatterFromDTO(session, project.data);
     frontmatter = fillPageFrontmatter(frontmatter, projectFrontmatter);
   }
-  const metadata = YAML.stringify(prepareToWrite(frontmatter));
+  const metadata = YAML.dump(prepareToWrite(frontmatter));
   let titleString = `---\n${metadata}---\n\n`;
   if (!opts.titleOnlyInFrontmatter) {
     // TODO: Remove the title when Jupyter Book allows title to be defined in the yaml.
