@@ -93,10 +93,12 @@ export type DocumentLoader = {
 };
 
 export type PageLoader = {
-  domain: string;
-  slug: string;
-  frontmatter: Frontmatter;
   kind: KINDS;
+  file: string;
+  sha256: string;
+  slug: string;
+  domain: string; // This is written in at render time in the site
+  frontmatter: Frontmatter;
   mdast: GenericParent;
   references: References;
   footer?: FooterLinks;

@@ -105,7 +105,7 @@ export async function getData(
 
 export async function getPage(
   hostname: string,
-  opts: { folder?: string; loadIndexPage?: boolean; slug?: string },
+  opts: { domain?: string; folder?: string; loadIndexPage?: boolean; slug?: string },
 ) {
   const folderName = opts.folder;
   const config = await getConfig(hostname);
@@ -122,5 +122,5 @@ export async function getPage(
   });
   if (!loader) throw responseNoArticle();
   const footer = getFooterLinks(config, folderName, slug);
-  return { ...loader, footer };
+  return { ...loader, footer, domain: opts.domain };
 }
