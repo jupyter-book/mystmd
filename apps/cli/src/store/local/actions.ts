@@ -251,6 +251,7 @@ export async function transformMdast(
     kind: frontmatter.kernelspec || frontmatter.jupytext ? KINDS.Notebook : kind,
     file,
     sha256,
+    slug: pageSlug,
     frontmatter,
     mdast,
     references,
