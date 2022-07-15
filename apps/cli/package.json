@@ -13,7 +13,7 @@
     "science-research"
   ],
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
@@ -25,7 +25,7 @@
     "url": "https://github.com/curvenote/curvenotejs/issues"
   },
   "bin": {
-    "curvenote": "./dist/cli/index.js"
+    "curvenote": "./dist/curvenote.js"
   },
   "homepage": "https://github.com/curvenote/curvenotejs",
   "scripts": {
@@ -44,7 +44,8 @@
     "build:ts": "tsc -p .",
     "build:assets": "copyfiles -f ./src/static/* ./dist/static",
     "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
-    "build": "npm-run-all -l copy:version clean -p build:ts build:assets declarations",
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents",
+    "build": "npm-run-all -l copy:version clean -p build:ts build:assets declarations build:cli",
     "build:watch": "npm run copy:version; tsc -w --preserveWatchOutput -p ."
   },
   "dependencies": {
@@ -106,6 +107,7 @@
     "@types/node-fetch": "^2.5.12",
     "@types/pretty-hrtime": "^1.0.1",
     "@types/which": "^2.0.1",
+    "esbuild": "^0.14.49",
     "eslint-config-curvenote": "*",
     "jest": "^27.5.1",
     "mock-fs": "^5.1.2",

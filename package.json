@@ -1,5 +1,5 @@
 {
-  "name": "curvenote",
+  "name": "@curvenote/monorepo",
   "version": "0.0.0",
   "private": true,
   "workspaces": [
@@ -16,6 +16,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "esbuild": "^0.14.49",
     "eslint-config-curvenote": "*",
     "prettier": "latest",
     "turbo": "latest"
@@ -24,6 +25,5 @@
     "npm": ">=7.0.0",
     "node": ">=14.0.0"
   },
-  "dependencies": {},
   "packageManager": "npm@8.10.0"
 }
