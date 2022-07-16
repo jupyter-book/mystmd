@@ -2,7 +2,7 @@
 
 [![curvenote on npm](https://img.shields.io/npm/v/curvenote.svg)](https://www.npmjs.com/package/curvenote)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/curvenote/blob/main/LICENSE)
-![CI](https://github.com/curvenote/curvenote/workflows/CI/badge.svg)
+[![CI](https://github.com/curvenote/curvenote/workflows/CI/badge.svg)](https://github.com/curvenote/curvenote/actions)
 
 Create, edit, share and publish scientific documents.
 
