@@ -8,16 +8,6 @@ import { Logger } from '../logging';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 
-/**
- * pkgpath - easily get package relative paths
- *
- * @param absPathSegment an absolute path from the package root level
- * @returns full absolute path
- */
-export function pkgpath(absPathSegment: string) {
-  return path.resolve(path.join(__dirname, '..', absPathSegment));
-}
-
 export function resolvePath(optionalPath: string | undefined, filename: string) {
   if (optionalPath) return path.join(optionalPath, filename);
   if (path.isAbsolute(filename)) return filename;

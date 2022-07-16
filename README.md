@@ -118,6 +118,7 @@ All dependencies for `curvenote` are included in this repository (a monorepo!).
 - `site`: components and utilities for building React and Remix sites
 - `site-common`: utilities and types that are used in the CLI, APIs and sites, does not include React
 - `icons`: icons used throughout our projects, built for React
+- `citation-js-utils`: utilities for using the citation-js library
 - `eslint-config-custom`: `eslint` configurations
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
 

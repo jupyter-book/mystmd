@@ -1,14 +1,13 @@
-import * as fs from 'fs';
 import { Document } from 'docx';
 import { Node } from 'prosemirror-model';
 import { DocxSerializerState } from 'prosemirror-docx';
 import { Block, Project, User, Version } from '../../models';
 import { ISession } from '../../session/types';
-import { pkgpath } from '../../utils';
 import { ArticleState } from '../utils/walkArticle';
 import { getNodesAndMarks } from './schema';
 import { createArticleTitle, createReferenceTitle } from './titles';
 import { createSingleDocument, getDefaultSerializerOptions } from './utils';
+import { DEFAULT_STYLES } from './simpleStyles';
 
 export interface LoadedArticle {
   session: ISession;
@@ -48,7 +47,7 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
   });
 
   // TODO: this could come from an existing word doc
-  const styles = fs.readFileSync(pkgpath('static/simple.xml'), 'utf-8');
+  const styles = DEFAULT_STYLES;
 
   const doc = createSingleDocument(docxState, {
     title: block.data.title,
