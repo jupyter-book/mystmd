@@ -27,7 +27,7 @@ curvenote start
 curvenote deploy
 ```
 
-[![](images/cli-init.png)](https://curvenote.com/docs/web)
+[![](apps/cli/images/cli-init.png)](https://curvenote.com/docs/web)
 
 ## Built with Curvenote
 
@@ -47,10 +47,10 @@ Curvenote can be used to create all sorts of open-access content, click the link
 The default website you create can have interactive Jupyter Notebook features, and live-preview of cross-references and citations.
 
 [PhD Thesis](https://phd.row1.ca/) with linked references, equations, and export to PDF.
-[![](images/phd-simple.gif)](https://phd.row1.ca/)
+[![](apps/cli/images/phd-simple.gif)](https://phd.row1.ca/)
 
 [Interactive Papers](https://www.stevejpurves.com/la-palma-earthquakes/interactive-timelines-altair) with Jupyter Notebooks and interactive visualizations.
-[![](images/web-interactive.gif)](https://www.stevejpurves.com/la-palma-earthquakes/interactive-timelines-altair)
+[![](apps/cli/images/web-interactive.gif)](https://www.stevejpurves.com/la-palma-earthquakes/interactive-timelines-altair)
 
 These interactive scientific sites can be easily deployed on a hosting service called [curve.space](https://curve.space) or can also be hosted on your own custom domain.
 
@@ -58,7 +58,7 @@ These interactive scientific sites can be easily deployed on a hosting service c
 
 The client library is entirely local, and rebuilds in ~50ms for most projects. Meaning you can preview your content as you are writing!
 
-[![](images/live-reload.gif)](https://www.stevejpurves.com/la-palma-earthquakes/interactive-timelines-altair)
+[![](apps/cli/images/live-reload.gif)](https://www.stevejpurves.com/la-palma-earthquakes/interactive-timelines-altair)
 
 ## Direct export from Curvenote
 

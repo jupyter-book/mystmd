@@ -5,8 +5,8 @@
 
 Curvespace is designed for modern technical communication that is interactive, computational, and linked to data. You can create and serve a local website to write your documentation, paper, thesis, or blog.
 
-- [Curvenote Docs](https://curvenote.com/docs/cli)
-- [`curvenotejs`](https://github.com/curvenote/curvenotejs)
+- [Curvenote CLI Docs](https://curvenote.com/docs/cli)
+- [`curvenote`](https://github.com/curvenote/curvenote/blob/main/apps/cli)
 
 ## Development
 

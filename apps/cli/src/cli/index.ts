@@ -14,6 +14,6 @@ addTokenCLI(program);
 addAuthCLI(program);
 addExportCLI(program);
 
-program.version(`v${version}`, '-v, --version', 'Print the current version of curvenotejs');
+program.version(`v${version}`, '-v, --version', 'Print the current version of curvenote');
 program.option('-d, --debug [file]', 'Log out any errors to the console or an optional file.');
 program.parse(process.argv);

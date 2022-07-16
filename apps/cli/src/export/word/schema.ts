@@ -132,7 +132,7 @@ export function getNodesAndMarks(styles?: Styles) {
     },
     figure(state, node) {
       const { id, numbered } = node.attrs as Nodes.Figure.Attrs;
-      // TODO: localize this ID; we will need an options structure similar to https://github.com/curvenote/curvenotejs/blob/main/src/export/utils/localizationOptions.ts
+      // TODO: localize this ID; we will need an options structure similar to https://github.com/curvenote/curvenote/blob/main/apps/cli/src/export/utils/localizationOptions.ts
       (state as any).nextCaptionId = id;
       (state as any).nextCaptionNumbered = numbered;
       state.renderContent(node);

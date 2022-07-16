@@ -20,15 +20,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/curvenotejs.git"
+    "url": "git+https://github.com/curvenote/curvenote.git"
   },
   "bugs": {
-    "url": "https://github.com/curvenote/curvenotejs/issues"
+    "url": "https://github.com/curvenote/curvenote/issues"
   },
   "bin": {
     "curvenote": "./dist/curvenote.js"
   },
-  "homepage": "https://github.com/curvenote/curvenotejs",
+  "homepage": "https://github.com/curvenote/curvenote",
   "scripts": {
     "clean": "rimraf dist",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
