@@ -44,10 +44,9 @@
     "lint:format:fix": "npm run copy:version; prettier --write \"src/**/*.ts\"",
     "build:cjs": "tsc",
     "build:esm": "tsc --module ES2020 --outDir ./dist/esm",
-    "build:assets": "copyfiles -f ./src/static/* ./dist/cjs/static && copyfiles -f ./src/static/* ./dist/esm/static && copyfiles -f ./src/static/* ./dist/static",
     "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
-    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents",
-    "build": "npm-run-all -l copy:version clean -p build:cjs build:esm build:assets declarations build:cli",
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents --loader:.xml=text",
+    "build": "npm-run-all -l copy:version clean -p build:cjs build:esm declarations build:cli",
     "build:watch": "npm run copy:version; tsc -w --preserveWatchOutput -p ."
   },
   "dependencies": {
@@ -64,7 +63,6 @@
     "citation-js-utils": "*",
     "cli-progress": "^3.10.0",
     "commander": "^8.3.0",
-    "copyfiles": "^2.4.1",
     "date-fns": "^2.25.0",
     "docx": "^7.3.0",
     "doi-utils": "^1.0.4",

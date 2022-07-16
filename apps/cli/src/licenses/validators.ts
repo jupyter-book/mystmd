@@ -1,4 +1,4 @@
-import LICENSES from '../static/licenses.json';
+import LICENSES from './licenses.json';
 import {
   defined,
   incrementOptions,
