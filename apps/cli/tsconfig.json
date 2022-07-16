@@ -20,6 +20,6 @@
     // Ignore node_modules, etc.
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "types/**/*"],
   "exclude": ["src/**/*.spec.ts"]
 }

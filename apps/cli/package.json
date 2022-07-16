@@ -45,7 +45,7 @@
     "build:cjs": "tsc",
     "build:esm": "tsc --module ES2020 --outDir ./dist/esm",
     "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
-    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents",
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents --loader:.xml=text",
     "build": "npm-run-all -l copy:version clean -p build:cjs build:esm declarations build:cli",
     "build:watch": "npm run copy:version; tsc -w --preserveWatchOutput -p ."
   },

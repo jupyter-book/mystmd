@@ -7,7 +7,7 @@ import { ArticleState } from '../utils/walkArticle';
 import { getNodesAndMarks } from './schema';
 import { createArticleTitle, createReferenceTitle } from './titles';
 import { createSingleDocument, getDefaultSerializerOptions } from './utils';
-import { DEFAULT_STYLES } from './simpleStyles';
+import DEFAULT_STYLE from './simpleStyles.xml';
 
 export interface LoadedArticle {
   session: ISession;
@@ -47,7 +47,7 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
   });
 
   // TODO: this could come from an existing word doc
-  const styles = DEFAULT_STYLES;
+  const styles = DEFAULT_STYLE;
 
   const doc = createSingleDocument(docxState, {
     title: block.data.title,
