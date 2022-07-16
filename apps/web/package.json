@@ -3,6 +3,7 @@
   "description": "Curvenote site for previewing MyST markdown",
   "license": "MIT",
   "sideEffects": false,
+  "private": true,
   "scripts": {
     "clean": "rimraf api public/build .cache app/styles/app.css",
     "build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
