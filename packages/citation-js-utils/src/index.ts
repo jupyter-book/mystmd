@@ -1,22 +1,20 @@
 import Cite, { CitationFormatOptions } from 'citation-js';
-
-import createDOMPurify from 'dompurify';
-import { JSDOM } from 'jsdom';
+import sanitizeHtml from 'sanitize-html';
 
 export type InlineNode = {
   type: string;
-  children: InlineNode[];
+  value?: string;
+  children?: InlineNode[];
 };
 
 export function createSanitizer() {
-  const { window } = new JSDOM('');
-  const DOMPurify = createDOMPurify(window as unknown as Window);
   return {
     cleanCitationHtml(htmlStr: string) {
-      return DOMPurify.sanitize(htmlStr, { ALLOWED_TAGS: ['b', 'a', 'u', 'i'] });
+      return sanitizeHtml(htmlStr, { allowedTags: ['b', 'a', 'u', 'i'] });
     },
   };
 }
+
 function cleanRef(citation: string) {
   const sanitizer = createSanitizer();
   const cleanHtml = sanitizer.cleanCitationHtml(citation).trim();
@@ -68,6 +66,7 @@ export function getInlineCitation(c: Cite, kind: InlineCite) {
       { type: 'text', value: `${yearPart}` },
     ];
   }
+  throw new Error('Unknown number of authors for citation');
 }
 
 export type CitationRenderer = Record<
@@ -101,7 +100,7 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
   const p = await parse(bibtex);
 
   return Object.fromEntries(
-    p.map((c: any) => {
+    p.map((c: any): [string, CitationRenderer[0]] => {
       return [
         c.id,
         {
