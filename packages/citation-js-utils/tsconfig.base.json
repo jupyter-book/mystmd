@@ -1,25 +1,27 @@
 {
   "compilerOptions": {
-    // module is overridden from the build:esm/build:cjs scripts
-    "module": "commonjs",
-    "esModuleInterop": true,
     "target": "es6",
+    // module is overridden from the build:esm/build:cjs scripts
+    "module": "es2015",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
     "noImplicitAny": true,
     "strict": true,
-    "preserveSymlinks": true,
     "moduleResolution": "node",
-    "lib": ["es2019"],
     "sourceMap": true,
     // outDir is overridden from the build:esm/build:cjs scripts
-    "outDir": "dist/cjs",
-    "baseUrl": ".",
+    "outDir": "dist/types",
+    "baseUrl": "src",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
     // Type roots allows it to be included in a yarn workspace
-    "typeRoots": ["./types", "./node_modules/@types", "../../node_modules/@types"],
+    "typeRoots": ["./node_modules/@types", "./types", "../../node_modules/@types"],
     "resolveJsonModule": true,
-    "declaration": false,
     // Ignore node_modules, etc.
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["src/**/*.spec.ts"]
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": []
 }

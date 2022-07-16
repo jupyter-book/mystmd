@@ -12,7 +12,8 @@
     "pdf-generation",
     "science-research"
   ],
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
   "files": [
     "dist"
@@ -41,11 +42,12 @@
     "lint": "npm run copy:version; eslint \"src/**/*.ts\" -c .eslintrc.js",
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "lint:format:fix": "npm run copy:version; prettier --write \"src/**/*.ts\"",
-    "build:ts": "tsc -p .",
-    "build:assets": "copyfiles -f ./src/static/* ./dist/static",
+    "build:cjs": "tsc",
+    "build:esm": "tsc --module ES2020 --outDir ./dist/esm",
+    "build:assets": "copyfiles -f ./src/static/* ./dist/cjs/static && copyfiles -f ./src/static/* ./dist/esm/static && copyfiles -f ./src/static/* ./dist/static",
     "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents",
-    "build": "npm-run-all -l copy:version clean -p build:ts build:assets declarations build:cli",
+    "build": "npm-run-all -l copy:version clean -p build:cjs build:esm build:assets declarations build:cli",
     "build:watch": "npm run copy:version; tsc -w --preserveWatchOutput -p ."
   },
   "dependencies": {
@@ -59,7 +61,7 @@
     "chalk": "^4.1.2",
     "check-node-version": "^4.2.1",
     "chokidar": "^3.5.3",
-    "citation-js-utils": "^0.0.4",
+    "citation-js-utils": "*",
     "cli-progress": "^3.10.0",
     "commander": "^8.3.0",
     "copyfiles": "^2.4.1",
