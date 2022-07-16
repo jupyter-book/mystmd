@@ -124,6 +124,10 @@ All dependencies for `curvenote` are included in this repository (a monorepo!).
 
 Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
 
+### Versioning & Publishing
+
+Curvenote uses [changesets](https://github.com/changesets/changesets) to document changes to this monorepo, call `npx changeset` and follow the prompts. Later, `npx changeset version` will be called and then `npx changeset publish`.
+
 ### Utilities
 
 `curvenote` is built and developed using:
