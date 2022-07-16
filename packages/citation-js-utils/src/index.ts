@@ -55,9 +55,7 @@ export function getInlineCitation(c: Cite, kind: InlineCite) {
     return [{ type: 'text', value: `${authors[0].family}${yearPart}` }];
   }
   if (authors.length === 2) {
-    return [
-      { type: 'text', value: `${authors[0].family} & ${authors[1].family}${yearPart}` },
-    ];
+    return [{ type: 'text', value: `${authors[0].family} & ${authors[1].family}${yearPart}` }];
   }
   if (authors.length > 2) {
     return [
@@ -109,11 +107,7 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
           },
           render(style?: CitationJSStyles) {
             return replaceDoiWithAnchorElement(
-              cleanRef(
-                cite
-                  .set(c)
-                  .get({ ...defaultString, style: style ?? CitationJSStyles.apa }),
-              ),
+              cleanRef(cite.set(c).get({ ...defaultString, style: style ?? CitationJSStyles.apa })),
               c.DOI,
             );
           },

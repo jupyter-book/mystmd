@@ -5,9 +5,6 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
-  moduleNameMapper: {
-    mystjs: '<rootDir>/node_modules/mystjs/dist/index.umd.js',
-  },
   globals: {
     'ts-jest': {
       tsconfig: './tsconfig.base.json',
@@ -15,5 +12,5 @@ module.exports = {
   },
   verbose: true,
   testEnvironment: 'node',
-  testPathIgnorePatterns: ['/node_modules/', '/.yalc/', '/dist/'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
 };
