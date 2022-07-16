@@ -11,7 +11,7 @@
     "lib": ["es2019"],
     "sourceMap": true,
     // outDir is overridden from the build:esm/build:cjs scripts
-    "outDir": "dist",
+    "outDir": "dist/cjs",
     "baseUrl": ".",
     // Type roots allows it to be included in a yarn workspace
     "typeRoots": ["./types", "./node_modules/@types", "../../node_modules/@types"],
