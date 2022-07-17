@@ -4,6 +4,7 @@ import { CURVENOTE_YML, SiteProject } from '../config/types';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { changeFile, fastProcessFile, processSite } from '../store/local/actions';
+import { BUILD_FOLDER } from '../utils';
 
 function watchConfigAndPublic(session: ISession) {
   return chokidar
@@ -22,7 +23,7 @@ const KNOWN_FAST_BUILDS = new Set(['.ipynb', '.md']);
 
 function fileProcessor(session: ISession, siteProject: SiteProject) {
   return async (eventType: string, file: string) => {
-    if (file.startsWith('_build') || file.startsWith('.')) return;
+    if (file.startsWith(BUILD_FOLDER) || file.startsWith('.')) return;
     changeFile(session, file, eventType);
     if (!KNOWN_FAST_BUILDS.has(extname(file))) {
       session.log.info('💥 Triggered full site rebuild');
