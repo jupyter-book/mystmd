@@ -13,7 +13,8 @@
     "lint": "turbo run lint",
     "lint:format": "turbo run lint:format",
     "test": "turbo run test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "esbuild": "^0.14.49",
