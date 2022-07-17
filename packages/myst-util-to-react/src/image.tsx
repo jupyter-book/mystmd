@@ -1,3 +1,4 @@
+import { Alignment } from '@curvenote/blocks';
 import { Image as ImageNode } from 'myst-spec';
 import { NodeRenderer } from './types';
 
@@ -14,16 +15,51 @@ function alignToMargin(align: string) {
   }
 }
 
+function Picture({
+  src,
+  srcOptimized,
+  sourceUrl,
+  align = 'center',
+  alt,
+  width,
+}: {
+  src: string;
+  srcOptimized?: string;
+  sourceUrl?: string;
+  alt?: string;
+  width?: string;
+  align?: Alignment;
+}) {
+  const image = (
+    <img
+      style={{
+        width: width || undefined,
+        ...alignToMargin(align),
+      }}
+      src={src}
+      alt={alt}
+      data-canonical-url={sourceUrl}
+    />
+  );
+  if (!srcOptimized) return image;
+  return (
+    <picture>
+      <source srcSet={srcOptimized} type="image/webp" />
+      {image}
+    </picture>
+  );
+}
+
 export const Image: NodeRenderer<ImageNode> = (node) => {
   return (
-    <img
+    <Picture
       key={node.key}
       src={node.url}
-      style={{
-        width: node.width || undefined,
-        ...alignToMargin(node.align || 'center'),
-      }}
-      data-canonical-url={(node as any).sourceUrl}
+      srcOptimized={(node as any).urlOptimized}
+      alt={node.alt || node.title}
+      width={node.width || undefined}
+      align={node.align}
+      sourceUrl={(node as any).sourceUrl}
     />
   );
 };

@@ -80,4 +80,5 @@ export type PageFrontmatter = ProjectFrontmatter & {
   jupytext?: Jupytext;
   tags?: string[];
   thumbnail?: string | null;
+  thumbnailOptimized?: string;
 };
