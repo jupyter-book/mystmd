@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Logger } from '../../logging';
+import { BUILD_FOLDER } from '../../utils';
 import { TexExportOptions } from '../tex/types';
 
 export function makeBuildPaths(log: Logger, opts: TexExportOptions) {
@@ -8,7 +9,7 @@ export function makeBuildPaths(log: Logger, opts: TexExportOptions) {
   const outputFilename = path.basename(opts.filename);
   const buildPath =
     opts.useBuildFolder ?? (opts.template || opts.templatePath)
-      ? path.join(outputPath, '_build')
+      ? path.join(outputPath, BUILD_FOLDER)
       : outputPath;
   log.debug(`Output Path ${outputPath}`);
   log.debug(`Filename ${outputFilename}`);

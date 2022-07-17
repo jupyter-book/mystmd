@@ -55,6 +55,7 @@ export type Frontmatter = {
   description?: string;
   authors?: Author[];
   thumbnail?: string;
+  thumbnailOptimized?: string;
   tags?: string[];
   subject?: string;
   open_access?: boolean;

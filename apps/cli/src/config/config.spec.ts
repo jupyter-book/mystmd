@@ -1,4 +1,5 @@
 import { silentLogger } from '../logging';
+import { BUILD_FOLDER } from '../utils';
 import { Options } from '../utils/validators';
 import {
   validateProjectConfig,
@@ -151,7 +152,7 @@ describe('validateSiteConfig', () => {
       logo: 'curvenote.png',
       logoText: 'test logo',
       favicon: 'curvenote.png',
-      buildPath: '_build',
+      buildPath: BUILD_FOLDER,
       analytics: {
         google: 'google',
         plausible: 'plausible',

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import util from 'util';
 import { Logger } from '../../logging';
+import { BUILD_FOLDER } from '../../utils';
 import { exec } from '../utils';
 
 const copyFile = util.promisify(fs.copyFile);
@@ -16,7 +17,7 @@ export async function createPdfGivenTexFile(log: Logger, filename: string, useBu
   const outputPdfFile = path.join(outputPath, pdf_filename);
   const outputLogFile = path.join(outputPath, log_filename);
 
-  const buildPath = path.resolve(useBuildFolder ? path.join(outputPath, '_build') : outputPath);
+  const buildPath = path.resolve(useBuildFolder ? path.join(outputPath, BUILD_FOLDER) : outputPath);
   const CMD = `latexmk -f -xelatex -synctex=1 -interaction=batchmode -file-line-error -latexoption="-shell-escape" ${tex_filename} &> ${tex_log_filename}`;
   try {
     log.debug(`Building LaTeX: logging output to ${tex_log_filename}`);

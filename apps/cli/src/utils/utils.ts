@@ -8,6 +8,9 @@ import { Logger } from '../logging';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 
+export const BUILD_FOLDER = '_build';
+export const THUMBNAILS_FOLDER = 'thumbnails';
+
 export function resolvePath(optionalPath: string | undefined, filename: string) {
   if (optionalPath) return path.join(optionalPath, filename);
   if (path.isAbsolute(filename)) return filename;
@@ -16,7 +19,7 @@ export function resolvePath(optionalPath: string | undefined, filename: string) 
 
 export function repoPath(session: ISession): string {
   const config = selectors.selectLocalSiteConfig(session.store.getState());
-  const buildPath = config?.buildPath || '_build';
+  const buildPath = config?.buildPath || BUILD_FOLDER;
   return path.resolve(path.join('.', buildPath, 'curvenote'));
 }
 

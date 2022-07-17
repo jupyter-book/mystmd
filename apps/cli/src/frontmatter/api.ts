@@ -12,8 +12,7 @@ import {
   validateProjectFrontmatterKeys,
 } from './validators';
 import { downloadAndSaveImage } from '../transforms/images';
-
-const thumbnailsDirectory = 'thumbnails';
+import { THUMBNAILS_FOLDER } from '../utils';
 
 export function saveAffiliations(session: ISession, project: Project) {
   session.store.dispatch(
@@ -70,10 +69,10 @@ export async function pageFrontmatterFromDTOAndThumbnail(
       session,
       block.links.thumbnail,
       block.name || block.id.block,
-      join(dirname(filename), thumbnailsDirectory),
+      join(dirname(filename), THUMBNAILS_FOLDER),
     );
     if (result) {
-      apiFrontmatter.thumbnail = join(thumbnailsDirectory, result);
+      apiFrontmatter.thumbnail = join(THUMBNAILS_FOLDER, result);
     }
   }
   return apiFrontmatter;

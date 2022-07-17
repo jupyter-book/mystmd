@@ -10,6 +10,7 @@ import { WebFileObject } from '../web/files';
 import { computeHash, hashAndCopyStaticFile, staticPath, versionIdToURL } from '../utils';
 import { ISession } from '../session/types';
 import { PageFrontmatter } from '../frontmatter/types';
+import { convertImageToWebp } from '../export/utils/imagemagick';
 
 function isUrl(url: string) {
   return url.toLowerCase().startsWith('http:') || url.toLowerCase().startsWith('https:');
@@ -56,10 +57,12 @@ export async function saveImageInStaticFolder(
   session: ISession,
   sourceUrl: string,
   filePath = '',
-): Promise<{ sourceUrl: string; url: string } | null> {
+  opts?: { webp?: boolean },
+): Promise<{ sourceUrl: string; url: string; webp?: string } | null> {
   const oxa = oxaLinkToId(sourceUrl);
   const imageLocalFile = join(filePath, sourceUrl);
   let file: string | undefined;
+  const folder = staticPath(session);
   if (oxa) {
     // If oxa, get the download url
     const versionId = oxa?.block as VersionId;
@@ -76,32 +79,36 @@ export async function saveImageInStaticFolder(
       session,
       downloadUrl,
       `${versionId.block}.${versionId.version}`,
-      staticPath(session),
+      folder,
     );
   } else if (isUrl(sourceUrl)) {
     // If not oxa, download the URL directly and save it to a file with a hashed name
-    file = await downloadAndSaveImage(
-      session,
-      sourceUrl,
-      computeHash(sourceUrl),
-      staticPath(session),
-    );
+    file = await downloadAndSaveImage(session, sourceUrl, computeHash(sourceUrl), folder);
   } else if (fs.existsSync(imageLocalFile)) {
     // Non-oxa, non-url local image paths relative to the config.section.path
     file = hashAndCopyStaticFile(session, imageLocalFile);
     if (!file) return null;
   } else if (isBase64(sourceUrl)) {
     // Inline base64 images
-    const fileObject = new WebFileObject(session.log, staticPath(session), '', true);
+    const fileObject = new WebFileObject(session.log, folder, '', true);
     await fileObject.writeBase64(sourceUrl);
     file = fileObject.id;
   } else {
     session.log.error(`Cannot find image "${sourceUrl}" in ${filePath}`);
     return null;
   }
+  let webp: string | undefined;
+  if (opts?.webp) {
+    try {
+      const result = await convertImageToWebp(session, join(folder, file));
+      if (result) webp = `/_static/${result}`;
+    } catch (error) {
+      session.log.warn(`⚠️  Large image ${imageLocalFile} (${(error as any).message})`);
+    }
+  }
   // Update mdast with new file name
   const url = `/_static/${file}`;
-  return { sourceUrl, url };
+  return { sourceUrl, url, webp };
 }
 
 export async function transformImages(session: ISession, mdast: Root, file: string) {
@@ -112,12 +119,14 @@ export async function transformImages(session: ISession, mdast: Root, file: stri
         session,
         image.sourceUrl || image.url,
         dirname(file),
+        { webp: true },
       );
       if (result) {
         // Update mdast with new file name
-        const { sourceUrl, url } = result;
+        const { sourceUrl, url, webp } = result;
         image.sourceUrl = sourceUrl;
         image.url = url;
+        image.urlOptimized = webp;
       }
     }),
   );
@@ -147,10 +156,11 @@ export async function transformThumbnail(
   }
   if (!thumbnail) return;
   session.log.debug(`${file}#frontmatter.thumbnail Saving thumbnail in static folder.`);
-  const result = await saveImageInStaticFolder(session, thumbnail, dirname(file));
+  const result = await saveImageInStaticFolder(session, thumbnail, dirname(file), { webp: true });
   if (result) {
     // Update frontmatter with new file name
-    const { url } = result;
+    const { url, webp } = result;
     frontmatter.thumbnail = url;
+    frontmatter.thumbnailOptimized = webp;
   }
 }
