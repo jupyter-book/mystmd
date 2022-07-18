@@ -190,12 +190,13 @@ function HomeLink({ logo, logoText, name }: { logo?: string; logoText?: string; 
     >
       {logo && <img src={logo} className="h-9 mr-3" alt={logoText || name} height="2.25rem"></img>}
       {nothingSet && <CurvenoteLogo className="mr-3" fill="#FFF" size={30} />}
-      {logoText ||
-        (nothingSet && (
-          <span className="text-md sm:text-xl tracking-tight sm:mr-5">
-            {logoText || 'Curvenote'}
-          </span>
-        ))}
+      <span
+        className={classNames('text-md sm:text-xl tracking-tight sm:mr-5', {
+          'sr-only': !(logoText || nothingSet),
+        })}
+      >
+        {logoText || 'Curvenote'}
+      </span>
     </Link>
   );
 }
