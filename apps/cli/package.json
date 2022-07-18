@@ -32,6 +32,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
+    "copy:static": "cp src/export/word/simpleStyles.xml dist/esm/export/word/simpleStyles.xml && cp src/export/word/simpleStyles.xml dist/cjs/export/word/simpleStyles.xml",
     "unlink": "npm uninstall -g curvenote;",
     "link": "npm run unlink; npm link;",
     "dev": "npm run link && concurrently \"tsc -w --preserveWatchOutput -p .\" \"esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents --loader:.xml=text --watch\"",
@@ -46,7 +47,7 @@
     "build:esm": "tsc --module ES2020 --outDir ./dist/esm",
     "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents --loader:.xml=text",
-    "build": "npm-run-all -l copy:version clean -p build:cjs build:esm declarations build:cli",
+    "build": "npm-run-all -l copy:version clean -p build:cjs build:esm declarations build:cli -s copy:static",
     "build:watch": "npm run copy:version; tsc -w --preserveWatchOutput -p ."
   },
   "dependencies": {
