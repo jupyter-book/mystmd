@@ -24,6 +24,7 @@ import {
   transformFootnotes,
   transformKeys,
   transformImages,
+  transformImageAltText,
   transformThumbnail,
   transformAdmonitions,
   transformLinks,
@@ -226,6 +227,7 @@ export async function transformMdast(
   transformEnumerators(mdast, frontmatter);
   transformAdmonitions(mdast);
   transformCode(mdast, frontmatter);
+  transformImageAltText(mdast);
   transformFootnotes(mdast, references); // Needs to happen nead the end
   transformKeys(mdast);
   await Promise.all([

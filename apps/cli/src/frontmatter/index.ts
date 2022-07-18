@@ -1,22 +1,13 @@
 import yaml from 'js-yaml';
-import { Root, PhrasingContent, Heading } from 'mdast';
+import { Root, Heading } from 'mdast';
 import { remove, select } from 'mystjs';
 import { Licenses } from '../licenses/types';
 import { licensesToString } from '../licenses/validators';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
+import { toText } from '../utils';
 import { PageFrontmatter } from './types';
 import { validatePageFrontmatter, fillPageFrontmatter } from './validators';
-
-function toText(content: PhrasingContent[]): string {
-  return content
-    .map((n) => {
-      if ('value' in n) return n.value;
-      if ('children' in n) return toText(n.children);
-      return '';
-    })
-    .join('');
-}
 
 function frontmatterFromMdastTree(
   tree: Root,

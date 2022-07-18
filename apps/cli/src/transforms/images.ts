@@ -1,16 +1,18 @@
 import fs from 'fs';
 import mime from 'mime-types';
 import type { GenericNode } from 'mystjs';
-import { selectAll } from 'mystjs';
+import { select, selectAll } from 'mystjs';
 import fetch from 'node-fetch';
 import { dirname, join, parse } from 'path';
 import { oxaLinkToId, VersionId } from '@curvenote/blocks';
 import { Root } from '../myst';
 import { WebFileObject } from '../web/files';
-import { computeHash, hashAndCopyStaticFile, staticPath, versionIdToURL } from '../utils';
+import { computeHash, hashAndCopyStaticFile, staticPath, toText, versionIdToURL } from '../utils';
 import { ISession } from '../session/types';
 import { PageFrontmatter } from '../frontmatter/types';
 import { convertImageToWebp } from '../export/utils/imagemagick';
+import type { PhrasingContent } from 'mdast';
+import type { Image } from 'myst-spec';
 
 function isUrl(url: string) {
   return url.toLowerCase().startsWith('http:') || url.toLowerCase().startsWith('https:');
@@ -109,6 +111,19 @@ export async function saveImageInStaticFolder(
   // Update mdast with new file name
   const url = `/_static/${file}`;
   return { urlSource, url, webp };
+}
+
+export function transformImageAltText(tree: Root) {
+  selectAll('container', tree).forEach((container: GenericNode) => {
+    const image = select('image', container) as Image;
+    if (!image || image.alt) return;
+    const para = select('caption > paragraph', container) as GenericNode;
+    if (!para) return;
+    // Get rid of the captionNumber
+    const content = para.children?.filter((n) => n.type !== 'captionNumber');
+    if (!content || content.length < 1) return;
+    image.alt = toText(content as PhrasingContent[]);
+  });
 }
 
 export async function transformImages(session: ISession, mdast: Root, file: string) {
