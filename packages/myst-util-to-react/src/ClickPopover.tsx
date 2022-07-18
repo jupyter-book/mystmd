@@ -24,8 +24,8 @@ export function ClickPopover({
             as={as}
             className={classNames(
               { 'border-dotted': !open },
-              'cursor-zoom-in border-b-2 border-b-blue-500 hover:text-blue-500 hover:border-solid',
-              { 'text-blue-500 border-solid': open },
+              'cursor-zoom-in border-b-2 border-b-blue-600 hover:text-blue-600 hover:border-solid',
+              { 'text-blue-600 border-solid': open },
             )}
           >
             {children}

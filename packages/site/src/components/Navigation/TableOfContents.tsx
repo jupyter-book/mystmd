@@ -33,7 +33,7 @@ const HeadingLink = ({
       title={title}
       className={({ isActive }: { isActive: boolean }) =>
         classNames('block break-words', {
-          'text-blue-500': !isIndex && isActive,
+          'text-blue-600 dark:text-white': !isIndex && isActive,
           'font-semibold': isActive,
           'hover:text-slate-800 dark:hover:text-slate-100': !isActive,
           'border-b pb-1': isIndex,

@@ -88,8 +88,7 @@ r-var {
   display: none;
 }
 r-dynamic {
-  color: #286df7;
-  border-bottom: dotted 1px #285bc1;
+  @apply text-blue-600 border-b border-dotted border-blue-600;
 }
 .smallcaps {
   font-variant: small-caps;
