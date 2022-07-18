@@ -1,5 +1,13 @@
 # curvenote
 
+## 0.6.3
+
+### Patch Changes
+
+- c02461d: Expose `thumbnailOptimized` on the config passed to the renderer
+- c02461d: Improve teh error message for image writing in thumbnails and normal images
+- 3607491: Add alt text to images based on figure captions
+
 ## 0.6.2
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # myst-util-to-react
 
+## 0.1.4
+
+### Patch Changes
+
+- 3fe3e21: 👓 Improve contrast on blue text
+  - @curvenote/ui-providers@0.0.3
+
 ## 0.1.3
 
 ### Patch Changes

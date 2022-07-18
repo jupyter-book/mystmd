@@ -1,5 +1,11 @@
 # @curvenote/site-common
 
+## 0.0.3
+
+### Patch Changes
+
+- c02461d: Expose `thumbnailOptimized` on the config passed to the renderer
+
 ## 0.0.2
 
 ### Patch Changes
