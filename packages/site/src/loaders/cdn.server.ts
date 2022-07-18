@@ -84,6 +84,9 @@ export async function getData(
   if (data?.frontmatter?.thumbnail) {
     data.frontmatter.thumbnail = withCDN(id, data.frontmatter.thumbnail);
   }
+  if (data?.frontmatter?.thumbnailOptimized) {
+    data.frontmatter.thumbnailOptimized = withCDN(id, data.frontmatter.thumbnailOptimized);
+  }
   // Fix all of the images to point to the CDN
   const images = selectAll('image', data.mdast) as GenericNode[];
   images.forEach((node) => {
@@ -93,6 +96,9 @@ export async function getData(
   links
     .filter((node) => node.static)
     .forEach((node) => {
+      if (node.urlOptimized) {
+        node.urlOptimized = withCDN(id, node.urlOptimized);
+      }
       node.url = withCDN(id, node.url);
     });
   const outputs = selectAll('output', data.mdast) as GenericNode[];
