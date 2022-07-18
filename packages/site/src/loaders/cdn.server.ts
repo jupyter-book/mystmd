@@ -91,14 +91,14 @@ export async function getData(
   const images = selectAll('image', data.mdast) as GenericNode[];
   images.forEach((node) => {
     node.url = withCDN(id, node.url);
+    if (node.urlOptimized) {
+      node.urlOptimized = withCDN(id, node.urlOptimized);
+    }
   });
   const links = selectAll('link,linkBlock', data.mdast) as GenericNode[];
   links
     .filter((node) => node.static)
     .forEach((node) => {
-      if (node.urlOptimized) {
-        node.urlOptimized = withCDN(id, node.urlOptimized);
-      }
       node.url = withCDN(id, node.url);
     });
   const outputs = selectAll('output', data.mdast) as GenericNode[];
