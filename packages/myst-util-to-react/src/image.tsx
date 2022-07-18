@@ -18,14 +18,14 @@ function alignToMargin(align: string) {
 function Picture({
   src,
   srcOptimized,
-  sourceUrl,
+  urlSource,
   align = 'center',
   alt,
   width,
 }: {
   src: string;
   srcOptimized?: string;
-  sourceUrl?: string;
+  urlSource?: string;
   alt?: string;
   width?: string;
   align?: Alignment;
@@ -38,7 +38,7 @@ function Picture({
       }}
       src={src}
       alt={alt}
-      data-canonical-url={sourceUrl}
+      data-canonical-url={urlSource}
     />
   );
   if (!srcOptimized) return image;
@@ -59,7 +59,8 @@ export const Image: NodeRenderer<ImageNode> = (node) => {
       alt={node.alt || node.title}
       width={node.width || undefined}
       align={node.align}
-      sourceUrl={(node as any).sourceUrl}
+      // Note that sourceUrl is for backwards compatibility
+      urlSource={(node as any).urlSource || (node as any).sourceUrl}
     />
   );
 };

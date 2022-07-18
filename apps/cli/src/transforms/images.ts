@@ -55,12 +55,12 @@ export async function downloadAndSaveImage(
 
 export async function saveImageInStaticFolder(
   session: ISession,
-  sourceUrl: string,
+  urlSource: string,
   filePath = '',
   opts?: { webp?: boolean },
-): Promise<{ sourceUrl: string; url: string; webp?: string } | null> {
-  const oxa = oxaLinkToId(sourceUrl);
-  const imageLocalFile = join(filePath, sourceUrl);
+): Promise<{ urlSource: string; url: string; webp?: string } | null> {
+  const oxa = oxaLinkToId(urlSource);
+  const imageLocalFile = join(filePath, urlSource);
   let file: string | undefined;
   const folder = staticPath(session);
   if (oxa) {
@@ -81,20 +81,20 @@ export async function saveImageInStaticFolder(
       `${versionId.block}.${versionId.version}`,
       folder,
     );
-  } else if (isUrl(sourceUrl)) {
+  } else if (isUrl(urlSource)) {
     // If not oxa, download the URL directly and save it to a file with a hashed name
-    file = await downloadAndSaveImage(session, sourceUrl, computeHash(sourceUrl), folder);
+    file = await downloadAndSaveImage(session, urlSource, computeHash(urlSource), folder);
   } else if (fs.existsSync(imageLocalFile)) {
     // Non-oxa, non-url local image paths relative to the config.section.path
     file = hashAndCopyStaticFile(session, imageLocalFile);
     if (!file) return null;
-  } else if (isBase64(sourceUrl)) {
+  } else if (isBase64(urlSource)) {
     // Inline base64 images
     const fileObject = new WebFileObject(session.log, folder, '', true);
-    await fileObject.writeBase64(sourceUrl);
+    await fileObject.writeBase64(urlSource);
     file = fileObject.id;
   } else {
-    session.log.error(`Cannot find image "${sourceUrl}" in ${filePath}`);
+    session.log.error(`Cannot find image "${urlSource}" in ${filePath}`);
     return null;
   }
   let webp: string | undefined;
@@ -108,7 +108,7 @@ export async function saveImageInStaticFolder(
   }
   // Update mdast with new file name
   const url = `/_static/${file}`;
-  return { sourceUrl, url, webp };
+  return { urlSource, url, webp };
 }
 
 export async function transformImages(session: ISession, mdast: Root, file: string) {
@@ -117,14 +117,14 @@ export async function transformImages(session: ISession, mdast: Root, file: stri
     images.map(async (image) => {
       const result = await saveImageInStaticFolder(
         session,
-        image.sourceUrl || image.url,
+        image.urlSource || image.url,
         dirname(file),
         { webp: true },
       );
       if (result) {
         // Update mdast with new file name
-        const { sourceUrl, url, webp } = result;
-        image.sourceUrl = sourceUrl;
+        const { urlSource, url, webp } = result;
+        image.urlSource = urlSource;
         image.url = url;
         image.urlOptimized = webp;
       }
@@ -152,7 +152,7 @@ export async function transformThumbnail(
       return;
     }
     session.log.debug(`${file}#frontmatter.thumbnail is being populated by the first image.`);
-    thumbnail = image.sourceUrl || image.url;
+    thumbnail = image.urlSource || image.url;
   }
   if (!thumbnail) return;
   session.log.debug(`${file}#frontmatter.thumbnail Saving thumbnail in static folder.`);
