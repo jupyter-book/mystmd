@@ -1,5 +1,11 @@
 # myst-util-to-react
 
+## 0.1.3
+
+### Patch Changes
+
+- d89a0d8: `sourceUrl` has been renamed to `urlSource` for consistency with `urlOptimized`, this is backwards compatible.
+
 ## 0.1.2
 
 ### Patch Changes

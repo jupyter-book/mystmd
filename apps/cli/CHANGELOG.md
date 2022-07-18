@@ -1,5 +1,12 @@
 # curvenote
 
+## 0.6.2
+
+### Patch Changes
+
+- 40cf170: Deploy functions were split into two functions (#275)
+- d89a0d8: `sourceUrl` has been renamed to `urlSource` for consistency with `urlOptimized`, this is backwards compatible.
+
 ## 0.6.1
 
 ### Patch Changes
