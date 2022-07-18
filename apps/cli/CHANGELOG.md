@@ -1,5 +1,11 @@
 # curvenote
 
+## 0.6.4
+
+### Patch Changes
+
+- 444743f: Update the build to use `esbuild` as well as move all files to `ts` (no `xml` or `json`).
+
 ## 0.6.3
 
 ### Patch Changes
