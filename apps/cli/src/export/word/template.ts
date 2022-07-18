@@ -7,7 +7,7 @@ import { ArticleState } from '../utils/walkArticle';
 import { getNodesAndMarks } from './schema';
 import { createArticleTitle, createReferenceTitle } from './titles';
 import { createSingleDocument, getDefaultSerializerOptions } from './utils';
-import DEFAULT_STYLE from './simpleStyles.xml';
+import DEFAULT_STYLE from './simpleStyles';
 
 export interface LoadedArticle {
   session: ISession;

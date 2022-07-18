@@ -1,6 +1,6 @@
 {
   "name": "curvenote",
-  "version": "0.6.3",
+  "version": "0.6.4-rc.0",
   "description": "Command line tools for Curvenote",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
@@ -32,10 +32,9 @@
   "scripts": {
     "clean": "rimraf dist",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
-    "copy:static": "cp src/export/word/simpleStyles.xml dist/esm/export/word/simpleStyles.xml && cp src/export/word/simpleStyles.xml dist/cjs/export/word/simpleStyles.xml",
     "unlink": "npm uninstall -g curvenote;",
     "link": "npm run unlink; npm link;",
-    "dev": "npm run link && concurrently \"tsc -w --preserveWatchOutput -p .\" \"esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents --loader:.xml=text --watch\"",
+    "dev": "npm run link && concurrently \"tsc -w --preserveWatchOutput -p .\" \"esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents --watch\"",
     "prepublishOnly": "npm run build",
     "test": "npm run copy:version; npm run link; jest",
     "test:watch": "npm run copy:version; npm run link; jest --watchAll",
@@ -43,11 +42,11 @@
     "lint": "npm run copy:version; eslint \"src/**/*.ts\" -c .eslintrc.js",
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "lint:format:fix": "npm run copy:version; prettier --write \"src/**/*.ts\"",
-    "build:cjs": "tsc",
-    "build:esm": "tsc --module ES2020 --outDir ./dist/esm",
+    "build:cjs": "esbuild `find src \\( -name '*.ts' \\)` --outdir=dist/cjs --platform=node --format=cjs",
+    "build:esm": "esbuild `find src \\( -name '*.ts' \\)` --outdir=dist/esm --platform=node --format=esm",
     "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
-    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents --loader:.xml=text",
-    "build": "npm-run-all -l copy:version clean -p build:cjs build:esm declarations build:cli -s copy:static",
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/curvenote.js --platform=node --external:jsdom --external:fsevents",
+    "build": "npm-run-all -l copy:version clean -p build:cjs build:esm declarations build:cli",
     "build:watch": "npm run copy:version; tsc -w --preserveWatchOutput -p ."
   },
   "dependencies": {
