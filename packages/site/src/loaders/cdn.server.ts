@@ -2,7 +2,11 @@ import type { GenericNode } from 'mystjs';
 import { selectAll } from 'unist-util-select';
 import NodeCache from 'node-cache';
 import { walkPaths } from '@curvenote/nbtx/dist/minify/utils';
-import { PageLoader as Data, SiteManifest as Config } from '@curvenote/site-common';
+import type {
+  ManifestProjectPage,
+  PageLoader as Data,
+  SiteManifest as Config,
+} from '@curvenote/site-common';
 import { responseNoArticle, responseNoSite } from './errors.server';
 import { getFooterLinks, getProject } from './utils';
 import { redirect } from '@remix-run/node';
@@ -66,6 +70,15 @@ export async function getConfig(hostname: string): Promise<Config> {
     action.url = withCDN(id, action.url);
   });
   data.logo = withCDN(id, data.logo);
+  // Update the thumbnails to point at the CDN
+  data.projects.forEach((project) => {
+    project.pages
+      .filter((page): page is ManifestProjectPage => 'slug' in page)
+      .forEach((page) => {
+        if (page.thumbnail) page.thumbnail = withCDN(id, page.thumbnail);
+        if (page.thumbnailOptimized) page.thumbnailOptimized = withCDN(id, page.thumbnailOptimized);
+      });
+  });
   getConfigCache().set<Config>(id, data);
   return data;
 }
@@ -96,11 +109,11 @@ export async function getData(
     }
   });
   const links = selectAll('link,linkBlock', data.mdast) as GenericNode[];
-  links
-    .filter((node) => node.static)
-    .forEach((node) => {
-      node.url = withCDN(id, node.url);
-    });
+  const staticLinks = links.filter((node) => node.static);
+  staticLinks.forEach((node) => {
+    // These are static links to thinks like PDFs or other referenced files
+    node.url = withCDN(id, node.url);
+  });
   const outputs = selectAll('output', data.mdast) as GenericNode[];
   outputs.forEach((node) => {
     if (!node.data) return;

@@ -242,6 +242,7 @@ export async function transformMdast(
       description: frontmatter.description,
       date: frontmatter.date,
       thumbnail: frontmatter.thumbnail,
+      thumbnailOptimized: frontmatter.thumbnailOptimized,
       tags: frontmatter.tags,
       url: `/${projectSlug}/${pageSlug}`,
     }),

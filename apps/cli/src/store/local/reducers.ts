@@ -53,6 +53,7 @@ type WatchedFile = {
   description?: string | null;
   date?: string | null;
   thumbnail?: string | null;
+  thumbnailOptimized?: string | null;
   tags?: string[] | null;
   sha256?: string | null;
   url?: string | null;
@@ -78,16 +79,19 @@ export const watch = createSlice({
         description?: string | null;
         date?: string | null;
         thumbnail?: string | null;
+        thumbnailOptimized?: string;
         tags?: string[] | null;
         sha256?: string;
         url?: string;
       }>,
     ) {
-      const { path, sha256, title, description, date, thumbnail, tags, url } = action.payload;
+      const { path, sha256, title, description, date, thumbnail, thumbnailOptimized, tags, url } =
+        action.payload;
       if (title) state.files[path].title = title;
       if (description) state.files[path].description = description;
       if (date) state.files[path].date = date;
       if (thumbnail) state.files[path].thumbnail = thumbnail;
+      if (thumbnailOptimized) state.files[path].thumbnailOptimized = thumbnailOptimized;
       if (tags) state.files[path].tags = [...tags];
       if (sha256) state.files[path].sha256 = sha256;
       if (url) state.files[path].url = url;

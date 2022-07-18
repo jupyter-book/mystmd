@@ -44,6 +44,7 @@ export type ManifestProjectPage = {
   description: string;
   date: string;
   thumbnail: string;
+  thumbnailOptimized?: string;
   tags: string[];
 } & ManifestProjectFolder;
 

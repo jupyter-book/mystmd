@@ -59,7 +59,7 @@ export async function saveImageInStaticFolder(
   session: ISession,
   urlSource: string,
   filePath = '',
-  opts?: { webp?: boolean },
+  opts?: { webp?: boolean; sourceFile?: string },
 ): Promise<{ urlSource: string; url: string; webp?: string } | null> {
   const oxa = oxaLinkToId(urlSource);
   const imageLocalFile = join(filePath, urlSource);
@@ -96,7 +96,7 @@ export async function saveImageInStaticFolder(
     await fileObject.writeBase64(urlSource);
     file = fileObject.id;
   } else {
-    session.log.error(`Cannot find image "${urlSource}" in ${filePath}`);
+    session.log.error(`⚠️  Cannot find image "${urlSource}" in ${opts?.sourceFile || filePath}`);
     return null;
   }
   let webp: string | undefined;
@@ -134,7 +134,7 @@ export async function transformImages(session: ISession, mdast: Root, file: stri
         session,
         image.urlSource || image.url,
         dirname(file),
-        { webp: true },
+        { webp: true, sourceFile: file },
       );
       if (result) {
         // Update mdast with new file name
@@ -171,7 +171,10 @@ export async function transformThumbnail(
   }
   if (!thumbnail) return;
   session.log.debug(`${file}#frontmatter.thumbnail Saving thumbnail in static folder.`);
-  const result = await saveImageInStaticFolder(session, thumbnail, dirname(file), { webp: true });
+  const result = await saveImageInStaticFolder(session, thumbnail, dirname(file), {
+    webp: true,
+    sourceFile: file,
+  });
   if (result) {
     // Update frontmatter with new file name
     const { url, webp } = result;

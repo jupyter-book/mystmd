@@ -34,6 +34,7 @@ export function localToManifestProject(
         const title = fileInfo.title || page.slug;
         const description = fileInfo.description ?? '';
         const thumbnail = fileInfo.thumbnail ?? '';
+        const thumbnailOptimized = fileInfo.thumbnailOptimized ?? '';
         const date = fileInfo.date ?? '';
         const tags = fileInfo.tags ?? [];
         const { slug, level } = page;
@@ -43,6 +44,7 @@ export function localToManifestProject(
           description,
           date,
           thumbnail,
+          thumbnailOptimized,
           tags,
           level,
         };

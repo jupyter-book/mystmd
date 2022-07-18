@@ -30,9 +30,9 @@ export function selectLocalProjectConfig(
 }
 
 export function selectFileInfo(state: RootState, path: string) {
-  const { title, description, date, thumbnail, tags, sha256, url } =
+  const { title, description, date, thumbnail, thumbnailOptimized, tags, sha256, url } =
     state.local.watch.files[path] ?? {};
-  return { title, description, date, thumbnail, tags, sha256, url };
+  return { title, description, date, thumbnail, thumbnailOptimized, tags, sha256, url };
 }
 
 export function selectPageSlug(state: RootState, projectPath: string, path: string) {
@@ -54,5 +54,6 @@ export function selectOxaLinkInformation(state: RootState, oxa: string) {
     description: fileInfo.description,
     url: info.url,
     thumbnail: fileInfo.thumbnail || undefined,
+    thumbnailOptimized: fileInfo.thumbnailOptimized || undefined,
   };
 }
