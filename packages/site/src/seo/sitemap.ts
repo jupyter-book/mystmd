@@ -135,14 +135,19 @@ Number of URLs in this XML Sitemap:
 </xsl:stylesheet>`;
 }
 
-export function getSiteSlugs(site: SiteManifest, baseurl = '', explicitIndex = false): string[] {
+export function getSiteSlugs(
+  site: SiteManifest,
+  baseurl = '',
+  opts?: { excludeIndex?: boolean; explicitIndex?: boolean },
+): string[] {
   const slugs = site.projects
     .map((project) => {
       const pages = project.pages
         .filter((page): page is ManifestProjectPage => 'slug' in page)
         .map((page) => `${baseurl}/${project.slug}/${page.slug}`);
+      if (opts?.excludeIndex) return [...pages];
       return [
-        explicitIndex
+        opts?.explicitIndex
           ? `${baseurl}/${project.slug}/${project.index}`
           : `${baseurl}/${project.slug}`,
         ...pages,
