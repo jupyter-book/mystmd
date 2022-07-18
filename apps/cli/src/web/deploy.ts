@@ -11,9 +11,9 @@ import {
   SiteUploadRequest,
   SiteUploadResponse,
 } from '@curvenote/blocks';
-import { SiteConfig } from '../config/types';
 import { Logger } from '../logging';
 import { ISession } from '../session/types';
+import { selectors } from '../store';
 import { publicPath, serverPath, tic } from '../utils';
 
 type FromTo = {
@@ -21,7 +21,9 @@ type FromTo = {
   to: string;
 };
 
-function listConfig(session: ISession, siteConfig: SiteConfig): FromTo[] {
+function listConfig(session: ISession): FromTo[] {
+  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  if (!siteConfig) throw new Error('🧐 No site config found.');
   const paths: FromTo[] = [];
   paths.push({
     from: path.join(serverPath(session), 'app', 'config.json'),
@@ -133,8 +135,8 @@ async function uploadFile(log: Logger, upload: FileUpload) {
   log.debug(toc(`Finished upload of ${upload.from} in %s.`));
 }
 
-export async function deployContent(session: ISession, siteConfig: SiteConfig) {
-  const configFiles = listConfig(session, siteConfig);
+export async function deployContentToCdn(session: ISession) {
+  const configFiles = listConfig(session);
   const contentFiles = listContentFolders(session);
   const imagesFiles = listPublic(session);
   const filesToUpload = [...configFiles, ...imagesFiles, ...contentFiles];
@@ -199,7 +201,13 @@ export async function deployContent(session: ISession, siteConfig: SiteConfig) {
   } else {
     throw new Error('Deployment failed: Please contact support@curvenote.com!');
   }
+  return cdnKey;
+}
 
+export async function promoteContent(session: ISession, cdnKey: string) {
+  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  if (!siteConfig) throw new Error('🧐 No site config found.');
+  const toc = tic();
   const errorDomains: string[] = [];
   const sites = (
     await Promise.all(

@@ -13,9 +13,11 @@ import {
   repoPath,
   serverPath,
 } from '../utils';
-import { deployContent } from './deploy';
+import { deployContentToCdn, promoteContent } from './deploy';
 import { buildSite, cleanBuiltFiles, Options } from './prepare';
 import { watchContent } from './watch';
+
+export { buildSite, deployContentToCdn };
 
 export async function clean(session: ISession): Promise<void> {
   if (!buildPathExists(session)) {
@@ -125,5 +127,6 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>): P
   sparkles(session, 'Deploying Curvenote');
   // Build the files in the content folder and process them
   await buildSite(session, { ...opts, clean: true });
-  await deployContent(session, siteConfig);
+  const cdnKey = await deployContentToCdn(session);
+  await promoteContent(session, cdnKey);
 }
