@@ -7,6 +7,7 @@ import {
   validateBoolean,
   validateDate,
   validateEmail,
+  validateEnum,
   validateKeys,
   validateList,
   validateObject,
@@ -14,6 +15,7 @@ import {
   validateSubdomain,
   validateUrl,
 } from './validators';
+import { LaunchpadStatus } from '../launchpad';
 
 let opts: ValidationOptions;
 
@@ -177,6 +179,20 @@ describe('validateEmail', () => {
   });
   it('invalid email errors', async () => {
     expect(validateEmail('https://example.com', opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+});
+
+describe('validateEnum', () => {
+  it('valid enum value returns self', async () => {
+    expect(validateEnum<LaunchpadStatus>('completed', { ...opts, enum: LaunchpadStatus })).toEqual(
+      'completed',
+    );
+  });
+  it('invalid enum value errors', async () => {
+    expect(validateEnum<LaunchpadStatus>('invalid', { ...opts, enum: LaunchpadStatus })).toEqual(
+      undefined,
+    );
     expect(opts.messages.errors?.length).toEqual(1);
   });
 });
