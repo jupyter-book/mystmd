@@ -152,9 +152,27 @@ export function validateEmail(input: any, opts: ValidationOptions) {
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
     );
   if (!valid) {
-    return validationError('must be valid email address', opts);
+    return validationError(`must be valid email address: ${value}`, opts);
   }
   return value;
+}
+
+/**
+ * Validate value against enum
+ *
+ * Must provide enum object as both option 'enum' and the type variable.
+ */
+export function validateEnum<T>(
+  input: any,
+  opts: ValidationOptions & { enum: Record<string | number | symbol, any> },
+): T | undefined {
+  if (!Object.values(opts.enum).includes(input)) {
+    return validationError(
+      `invalid value '${input}' - must be one of [${Object.values(opts.enum).join(', ')}]`,
+      opts,
+    );
+  }
+  return input;
 }
 
 /**

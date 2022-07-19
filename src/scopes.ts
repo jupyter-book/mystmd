@@ -26,6 +26,13 @@ export enum SCOPES {
   commentUpdate = 'project.comment.update',
   commentResolve = 'project.comment.resolve',
   commentDelete = 'project.comment.delete',
+  siteConfigRead = 'site.config.read',
+  siteConfigUpdate = 'site.config.update',
+  sitePublishRead = 'site.publish.read',
+  sitePublishCreate = 'site.publish.create',
+  sitePublishUpdate = 'site.publish.update',
+  siteRouterCreate = 'site.router.create',
+  siteRouterDelete = 'site.router.delete',
 }
 
 export interface CRUD {
@@ -50,8 +57,7 @@ export const scopes = {
     read: SCOPES.teamRead,
     update: SCOPES.teamUpdate,
     access: {
-      ...readWrite(SCOPES.teamAccessRead, SCOPES.teamAccessWrite),
-      delete: SCOPES.teamAccessDelete,
+      ...readWrite(SCOPES.teamAccessRead, SCOPES.teamAccessWrite, SCOPES.teamAccessDelete),
       leave: SCOPES.teamAccessLeave,
       list: SCOPES.teamAccessRead,
     },
@@ -102,6 +108,22 @@ export const scopes = {
       list: SCOPES.commentRead,
     },
   },
+  site: {
+    config: {
+      read: SCOPES.siteConfigRead,
+      update: SCOPES.siteConfigUpdate,
+    },
+    publish: {
+      create: SCOPES.sitePublishCreate,
+      read: SCOPES.sitePublishRead,
+      update: SCOPES.sitePublishUpdate,
+      list: SCOPES.sitePublishRead,
+    },
+    router: {
+      create: SCOPES.siteRouterCreate,
+      delete: SCOPES.siteRouterDelete,
+    },
+  },
 };
 
 export const scopesInRole: Record<ROLES, SCOPES[]> = {
@@ -113,12 +135,14 @@ export const scopesInRole: Record<ROLES, SCOPES[]> = {
     SCOPES.teamAccessWrite,
     SCOPES.teamAccessDelete,
     SCOPES.projectCreate,
+    SCOPES.siteRouterCreate,
   ],
   [ROLES.teamMember]: [
     SCOPES.teamRead,
     SCOPES.teamAccessRead,
     SCOPES.teamAccessLeave,
     SCOPES.projectCreate,
+    SCOPES.siteRouterCreate,
   ],
   [ROLES.projectOwner]: [
     SCOPES.projectRead,
@@ -136,6 +160,13 @@ export const scopesInRole: Record<ROLES, SCOPES[]> = {
     SCOPES.commentUpdate,
     SCOPES.commentResolve,
     SCOPES.commentDelete,
+    SCOPES.siteConfigRead,
+    SCOPES.siteConfigUpdate,
+    SCOPES.sitePublishRead,
+    SCOPES.sitePublishCreate,
+    SCOPES.sitePublishUpdate,
+    SCOPES.siteRouterCreate,
+    SCOPES.siteRouterDelete,
   ],
   [ROLES.projectEditor]: [
     SCOPES.projectRead,
@@ -147,16 +178,28 @@ export const scopesInRole: Record<ROLES, SCOPES[]> = {
     SCOPES.commentRead,
     SCOPES.commentWrite,
     SCOPES.commentResolve,
+    SCOPES.siteConfigRead,
+    SCOPES.sitePublishRead,
+    SCOPES.sitePublishCreate,
+    SCOPES.sitePublishUpdate,
+    SCOPES.siteRouterCreate,
+    SCOPES.siteRouterDelete,
   ],
   [ROLES.projectComment]: [
     SCOPES.projectRead,
     SCOPES.blockRead,
     SCOPES.commentRead,
     SCOPES.commentWrite,
+    SCOPES.siteConfigRead,
   ],
-  [ROLES.projectView]: [SCOPES.projectRead, SCOPES.blockRead, SCOPES.commentRead],
+  [ROLES.projectView]: [
+    SCOPES.projectRead,
+    SCOPES.blockRead,
+    SCOPES.commentRead,
+    SCOPES.siteConfigRead,
+  ],
   [ROLES.manifest]: [SCOPES.projectRead],
-  [ROLES.public]: [SCOPES.teamRead, SCOPES.projectRead, SCOPES.blockRead],
+  [ROLES.public]: [SCOPES.teamRead, SCOPES.projectRead, SCOPES.blockRead, SCOPES.siteConfigRead],
 };
 
 function getScopes(role: ROLES): SCOPES[] {

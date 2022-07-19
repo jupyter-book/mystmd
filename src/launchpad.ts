@@ -17,3 +17,16 @@ export interface LaunchpadDTO {
     status: string;
   };
 }
+
+export type PubsubMessageAttributes = {
+  action: string;
+  id: string;
+  user_auth: string;
+  [key: string]: string;
+};
+
+export type LaunchpadMessageAttributes = PubsubMessageAttributes & {
+  action: 'launchpad';
+  source_url: string;
+  domain: string;
+};
