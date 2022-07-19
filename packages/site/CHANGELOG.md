@@ -1,5 +1,13 @@
 # @curvenote/site
 
+## 0.0.4
+
+### Patch Changes
+
+- 7da0e71: Add options of `excludeIndex` and `explicitIndex` to `getSiteSlugs`
+  - @curvenote/site-common@0.0.4
+  - @curvenote/ui-providers@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

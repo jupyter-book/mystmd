@@ -1,5 +1,11 @@
 # curvenote
 
+## 0.6.5
+
+### Patch Changes
+
+- e3dcb6e: Replace a process.exit(1) with error in exported function outside CLI
+
 ## 0.6.4
 
 ### Patch Changes
