@@ -4,7 +4,7 @@
   "description": "footnote nodes",
   "$defs": {
     "FootnoteReference": {
-      "description": "Inilne reference to footnote",
+      "description": "Inline reference to footnote",
       "type": "object",
       "allOf": [
         {
