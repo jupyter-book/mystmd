@@ -26,7 +26,7 @@ export async function interactiveCloneQuestions(
   let project: Project | undefined;
   if (opts?.remote) {
     project = await validateLinkIsAProject(session, opts.remote);
-    if (!project) process.exit(1);
+    if (!project) throw new Error(`Invalid remote address: "${opts.remote}"`);
   } else {
     while (!project) {
       const { projectLink } = await inquirer.prompt([questions.projectLink()]);
