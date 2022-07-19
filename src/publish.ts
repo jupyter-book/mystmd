@@ -1,5 +1,6 @@
+import { getDate } from './helpers';
 import { LaunchpadStatus, PubsubMessageAttributes } from './launchpad';
-import { BaseLinks } from './types';
+import { BaseLinks, JsonObject } from './types';
 
 export interface SitePublishLinks extends BaseLinks {
   site: string;
@@ -25,3 +26,15 @@ export type SitePublishMessageAttributes = PubsubMessageAttributes & {
   action: 'publish';
   site: string;
 };
+
+export function sitePublishFromDTO(json: JsonObject): SitePublish {
+  return {
+    id: json.id,
+    created_by: json.created_by ?? '',
+    cdn: json.cdn ?? '',
+    status: json.status ?? '',
+    date_created: getDate(json.date_created),
+    date_modified: getDate(json.date_modified),
+    links: { ...json.links },
+  };
+}
