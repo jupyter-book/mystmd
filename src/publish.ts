@@ -1,4 +1,4 @@
-import { LaunchpadStatus } from './launchpad';
+import { LaunchpadStatus, PubsubMessageAttributes } from './launchpad';
 import { BaseLinks } from './types';
 
 export interface SitePublishLinks extends BaseLinks {
@@ -20,3 +20,8 @@ export interface SitePublish {
   date_modified: Date;
   links: SitePublishLinks;
 }
+
+export type SitePublishMessageAttributes = PubsubMessageAttributes & {
+  action: 'publish';
+  site: string;
+};
