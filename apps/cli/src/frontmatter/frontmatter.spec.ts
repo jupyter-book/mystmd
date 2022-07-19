@@ -142,6 +142,7 @@ const TEST_PROJECT: Project = {
     access: '',
     blocks: '',
     team: '',
+    site: '',
     self: '',
   },
 };
