@@ -179,7 +179,6 @@ export const scopesInRole: Record<ROLES, SCOPES[]> = {
     SCOPES.commentWrite,
     SCOPES.commentResolve,
     SCOPES.siteConfigRead,
-    SCOPES.siteConfigUpdate,
     SCOPES.sitePublishRead,
     SCOPES.sitePublishCreate,
     SCOPES.sitePublishUpdate,
@@ -191,10 +190,16 @@ export const scopesInRole: Record<ROLES, SCOPES[]> = {
     SCOPES.blockRead,
     SCOPES.commentRead,
     SCOPES.commentWrite,
+    SCOPES.siteConfigRead,
   ],
-  [ROLES.projectView]: [SCOPES.projectRead, SCOPES.blockRead, SCOPES.commentRead],
+  [ROLES.projectView]: [
+    SCOPES.projectRead,
+    SCOPES.blockRead,
+    SCOPES.commentRead,
+    SCOPES.siteConfigRead,
+  ],
   [ROLES.manifest]: [SCOPES.projectRead],
-  [ROLES.public]: [SCOPES.teamRead, SCOPES.projectRead, SCOPES.blockRead],
+  [ROLES.public]: [SCOPES.teamRead, SCOPES.projectRead, SCOPES.blockRead, SCOPES.siteConfigRead],
 };
 
 function getScopes(role: ROLES): SCOPES[] {
