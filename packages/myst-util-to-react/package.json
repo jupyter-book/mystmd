@@ -12,7 +12,7 @@
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\""
   },
   "dependencies": {
-    "@curvenote/blocks": "^1.5.6",
+    "@curvenote/blocks": "^1.5.8",
     "@curvenote/connect": "^0.0.6",
     "@curvenote/nbtx": "^0.1.11",
     "@curvenote/ui-providers": "*",

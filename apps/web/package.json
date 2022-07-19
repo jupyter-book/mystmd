@@ -15,7 +15,7 @@
     "lint:format": "prettier --check \"app/**/*.tsx\" \"app/**/*.ts\""
   },
   "dependencies": {
-    "@curvenote/blocks": "^1.5.6",
+    "@curvenote/blocks": "^1.5.8",
     "@curvenote/components": "^0.3.4",
     "@curvenote/connect": "^0.0.6",
     "@curvenote/icons": "*",
