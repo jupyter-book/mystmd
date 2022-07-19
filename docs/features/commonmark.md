@@ -47,13 +47,13 @@ Create code-blocks with additional highlighting using the `code-block` directive
 % TODO: provide a link!
 % TODO: myst: implement code-block
 
-### Quotes
+### Blockquotes
 
-```{include} ../nodes/quote.md
+```{include} ../nodes/blockquote.md
 
 ```
 
-```{include} ../examples/quote.md
+```{include} ../examples/blockquote.md
 
 ```
 

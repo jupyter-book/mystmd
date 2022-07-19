@@ -1,5 +1,6 @@
 cases:
   - title: Simple Admonition
+    id: admonition
     mdast:
       type: root
       children:
@@ -69,7 +70,6 @@ cases:
       \end{mdframed}
 
   - title: Note with split title
-    id: admonition
     mdast:
       type: root
       children:

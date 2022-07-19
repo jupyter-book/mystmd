@@ -1,6 +1,6 @@
 cases:
-  - title: CommonMark block quote
-    id: quote
+  - title: CommonMark blockquote
+    id: blockquote
     mdast:
       type: root
       children:

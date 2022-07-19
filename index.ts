@@ -371,21 +371,29 @@ files.forEach((file) => {
     if (testCase.id) {
       const outFile = join(directory, `${testCase.id}.md`);
       let md = '';
+      md += '``````{tab-set}\n';
+      md += '`````{tab-item} Markup\n:sync: myst\n';
       if (testCase.myst) {
-        md += '`````{tabbed} Markup\n';
         md += `\`\`\`\`\n${testCase.myst}\n\`\`\`\`\n`;
-        md += '`````\n\n';
+      } else {
+        md += 'No MyST included in example.\n';
       }
+      md += '`````\n\n';
+      md += '````{tab-item} AST\n:sync: ast\n';
       if (testCase.mdast) {
-        md += '`````{tabbed} AST\n';
         md += `\`\`\`yaml\n${dump(testCase.mdast)}\n\`\`\`\n`;
-        md += '`````\n\n';
+      } else {
+        md += 'No AST included in example.\n';
       }
+      md += '````\n\n';
+      md += '````{tab-item} Render\n:sync: render\n\n';
       if (testCase.myst) {
-        md += '`````{tabbed} Render\n\n';
         md += `${testCase.myst}\n\n`;
-        md += '`````\n\n';
+      } else {
+        md += 'No renderer included in example.\n';
       }
+      md += '````\n\n';
+      md += '``````\n\n';
       writeFileSync(outFile, md);
     }
   });
