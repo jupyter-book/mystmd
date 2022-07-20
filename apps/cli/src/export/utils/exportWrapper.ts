@@ -41,6 +41,10 @@ export function projectIdFromLink(session: ISession, link: string) {
   if (id) {
     return id.block.project;
   }
+  if (link.startsWith('@') && link.split('/').length === 2) {
+    // This is something, maybe, of the form @team/project
+    return link.replace('/', ':');
+  }
   if (link.startsWith(session.API_URL)) {
     const [service, project] = link.split('/').slice(3); // https://api.curvenote.com/{service}/{maybeProjectId}
     if (!knownServices.has(service)) throw new Error('Unknown API URL for project.');

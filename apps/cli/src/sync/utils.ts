@@ -47,6 +47,6 @@ export async function validateLinkIsAProject(
     }
     return undefined;
   }
-  session.log.info(chalk.green(`🚀 Found ${projectLogString(project)}`));
+  session.log.info(chalk.green(`🔍 Found ${projectLogString(project)}`));
   return project;
 }
