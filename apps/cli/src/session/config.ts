@@ -82,6 +82,7 @@ export function getToken(logger: Logger = chalkLogger(LogLevel.info)): string | 
     const data = JSON.parse(fs.readFileSync(configPath).toString());
     return data.token;
   } catch (error) {
+    logger.debug(`\n\n${(error as Error)?.stack}\n\n`);
     throw new Error('Could not read settings');
   }
 }

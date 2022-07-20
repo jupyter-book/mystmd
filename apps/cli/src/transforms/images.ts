@@ -105,6 +105,7 @@ export async function saveImageInStaticFolder(
       const result = await convertImageToWebp(session, join(folder, file));
       if (result) webp = `/_static/${result}`;
     } catch (error) {
+      session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
       session.log.warn(`⚠️  Large image ${imageLocalFile} (${(error as any).message})`);
     }
   }

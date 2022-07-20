@@ -44,7 +44,7 @@ export async function exportAll(
             });
             return article;
           } catch (error) {
-            session.log.debug(error);
+            session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
             session.log.error(`Problem downloading article: ${block.data.name}`);
             return null;
           }
@@ -55,6 +55,7 @@ export async function exportAll(
             const article = await notebookToIpynb(session, version.id, { ...opts, filename });
             return article;
           } catch (error) {
+            session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
             session.log.error(`Problem downloading notebook: ${block.data.name}`);
             return null;
           }
