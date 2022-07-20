@@ -1,6 +1,7 @@
 import type { GenericNode } from 'mystjs';
 import path from 'path';
 import YAML from 'js-yaml';
+import fetch from 'node-fetch';
 import { VersionId, KINDS, oxaLink, Blocks } from '@curvenote/blocks';
 import { createId, toMyst } from '@curvenote/schema';
 import { prepareToWrite } from '../../frontmatter';
