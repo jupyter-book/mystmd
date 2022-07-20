@@ -63,7 +63,7 @@ export function localToManifestProject(
   };
 }
 
-function getLogoPaths(
+export function getLogoPaths(
   session: ISession,
   logoName?: string | null,
   opts = { silent: false },

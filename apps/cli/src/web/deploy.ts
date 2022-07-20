@@ -15,6 +15,7 @@ import { Logger } from '../logging';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { publicPath, serverPath, tic } from '../utils';
+import { getLogoPaths } from '../toc/manifest';
 
 type FromTo = {
   from: string;
@@ -29,12 +30,10 @@ function listConfig(session: ISession): FromTo[] {
     from: path.join(serverPath(session), 'app', 'config.json'),
     to: 'config.json',
   });
-  if (siteConfig.logo) {
-    const logo = path.basename(siteConfig.logo);
-    paths.push({
-      from: path.join(serverPath(session), 'public', logo),
-      to: `public/${logo}`,
-    });
+  // Ensure that we can access the logo
+  const logo = getLogoPaths(session, siteConfig.logo, { silent: true });
+  if (logo) {
+    paths.push({ from: logo.public, to: `public${logo.url}` });
   }
   if (siteConfig.favicon) {
     const favicon = path.basename(siteConfig.favicon);
