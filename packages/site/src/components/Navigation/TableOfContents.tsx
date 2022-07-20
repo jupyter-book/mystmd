@@ -91,7 +91,7 @@ const Headings = ({ folder, headings, sections, urlbase }: Props) => {
         }
         return (
           <li key={sec.slug} className={classNames('p-1 my-2 lg:hidden', HEADING_CLASSES)}>
-            <HeadingLink path={`${urlbase}/${sec.slug}`}>{sec.title}</HeadingLink>
+            <HeadingLink path={`${urlbase ?? ''}/${sec.slug}`}>{sec.title}</HeadingLink>
           </li>
         );
       })}
