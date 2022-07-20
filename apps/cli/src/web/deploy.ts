@@ -134,7 +134,7 @@ async function uploadFile(log: Logger, upload: FileUpload) {
   log.debug(toc(`Finished upload of ${upload.from} in %s.`));
 }
 
-export async function deployContentToCdn(session: ISession) {
+export async function deployContentToCdn(session: ISession, opts?: { ci?: boolean }) {
   const configFiles = listConfig(session);
   const contentFiles = listContentFolders(session);
   const imagesFiles = listPublic(session);
@@ -160,9 +160,11 @@ export async function deployContentToCdn(session: ISession) {
 
   // Only upload N files at a time
   const limit = pLimit(10);
-  const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+  const bar1 = opts?.ci
+    ? undefined
+    : new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
   session.log.info(`☁️  Uploading ${files.length} files`);
-  bar1.start(files.length, 0);
+  bar1?.start(files.length, 0);
   let current = 0;
   const toc = tic();
   await Promise.all(
@@ -179,11 +181,14 @@ export async function deployContentToCdn(session: ISession) {
           signedUrl: upload.signed_url,
         });
         current += 1;
-        bar1.update(current);
+        bar1?.update(current);
+        if (opts?.ci && current % 5 == 0) {
+          session.log.info(`☁️  Uploaded ${current} / ${files.length} files`);
+        }
       }),
     ),
   );
-  bar1.stop();
+  bar1?.stop();
   session.log.info(toc(`☁️  Uploaded ${files.length} files in %s.`));
 
   const cdnKey = uploadTargets.id;

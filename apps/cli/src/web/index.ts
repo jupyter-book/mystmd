@@ -127,6 +127,6 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>): P
   sparkles(session, 'Deploying Curvenote');
   // Build the files in the content folder and process them
   await buildSite(session, { ...opts, clean: true });
-  const cdnKey = await deployContentToCdn(session);
+  const cdnKey = await deployContentToCdn(session, opts);
   await promoteContent(session, cdnKey);
 }
