@@ -4,6 +4,7 @@ import {
   User as UserDTO,
   Team as TeamDTO,
   Project as ProjectDTO,
+  SiteConfig as SiteConfigDTO,
   Block as BlockDTO,
   ALL_BLOCKS,
   ProjectId,
@@ -18,10 +19,11 @@ import {
   teamFromDTO,
   FormatTypes,
   TemplateSpec,
+  siteConfigFromDTO,
 } from '@curvenote/blocks';
 import { ISession } from './session/types';
 import { selectors, RootState } from './store';
-import { users, teams, blocks, projects, versions, templates } from './store/api';
+import { users, teams, blocks, projects, siteconfigs, versions, templates } from './store/api';
 import { versionIdToURL } from './utils';
 
 /** Base class for API models */
@@ -137,6 +139,18 @@ export class Project extends BaseTransfer<ProjectId, ProjectDTO> {
   $receive = projects.actions.receive;
 
   $selector = selectors.selectProject;
+}
+
+export class RemoteSiteConfig extends BaseTransfer<ProjectId, SiteConfigDTO> {
+  modelKind = 'SiteConfig';
+
+  $fromDTO = siteConfigFromDTO;
+
+  $createUrl = () => `/sites/${this.id}`;
+
+  $receive = siteconfigs.actions.receive;
+
+  $selector = selectors.selectSiteConfig;
 }
 
 export class Block extends BaseTransfer<BlockId, BlockDTO> {

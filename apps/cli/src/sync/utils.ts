@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import path from 'path';
-import { ProjectConfig, SiteConfig } from '../config/types';
+import { ProjectConfig, SiteConfig, SiteProject } from '../config/types';
 import { docLinks } from '../docs';
 import { projectIdFromLink } from '../export';
-import { Project } from '../models';
+import { Project, RemoteSiteConfig } from '../models';
 import { ISession } from '../session/types';
 
 export function projectLogString(project: Project) {
@@ -22,6 +22,25 @@ export function getDefaultSiteConfig(title?: string): SiteConfig {
     actions: [{ title: 'Learn More', url: docLinks.curvespace }],
     projects: [],
   };
+}
+
+export async function getDefaultSiteConfigFromRemote(
+  session: ISession,
+  projectId: string,
+  siteProject: SiteProject,
+): Promise<SiteConfig> {
+  const project = await new Project(session, projectId).get();
+  const remoteSiteConfig = await new RemoteSiteConfig(session, project.id).get();
+  const siteConfig = getDefaultSiteConfig();
+  siteConfig.title = project.data.title;
+  siteConfig.logoText = project.data.title;
+  if (remoteSiteConfig.data.domains) siteConfig.domains = remoteSiteConfig.data.domains;
+  // Add an entry to the nav if it doesn't exist (i.e. empty list is fine)
+  if (!remoteSiteConfig.data.nav) {
+    siteConfig.nav = [{ title: project.data.title || '', url: `/${siteProject.slug}` }];
+  }
+  siteConfig.projects = [...siteConfig.projects, siteProject];
+  return siteConfig;
 }
 
 export function getDefaultProjectConfig(title?: string): ProjectConfig {
