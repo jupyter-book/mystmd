@@ -20,6 +20,10 @@ export function selectProject(state: RootState, projectId: ProjectId) {
   return state.api.projects[projectId];
 }
 
+export function selectSiteConfig(state: RootState, projectId: ProjectId) {
+  return state.api.siteconfigs[projectId];
+}
+
 export function selectBlock(state: RootState, blockId: BlockId) {
   const key = blockIdToString(blockId);
   return state.api.blocks[key];

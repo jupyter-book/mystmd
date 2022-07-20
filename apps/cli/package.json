@@ -50,7 +50,7 @@
     "build:watch": "npm run copy:version; tsc -w --preserveWatchOutput -p ."
   },
   "dependencies": {
-    "@curvenote/blocks": "^1.5.8",
+    "@curvenote/blocks": "*",
     "@curvenote/nbtx": "^0.1.11",
     "@curvenote/schema": "^0.12.16",
     "@google-cloud/storage": "^5.18.2",
@@ -113,7 +113,7 @@
     "jest": "^27.5.1",
     "mock-fs": "^5.1.2",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.6.1",
+    "prettier": "^2.7.1",
     "prosemirror-schema-basic": "^1.2.0",
     "prosemirror-test-builder": "^1.1.0",
     "rimraf": "^3.0.2",

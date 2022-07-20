@@ -32,7 +32,7 @@ export async function pullProject(session: ISession, path: string, opts?: { leve
   );
   writeConfigs(session, path);
   const toc = tic();
-  log(`📥 Pulling ${path} from ${projectLogString(project)}`);
+  log(`📥 Pulling ${projectLogString(project)} into ${path}`);
   await projectToJupyterBook(session, project.id, {
     path,
     writeConfig: false,

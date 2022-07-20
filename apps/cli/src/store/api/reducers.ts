@@ -5,6 +5,7 @@ import {
   User as UserDTO,
   Team as TeamDTO,
   Project as ProjectDTO,
+  SiteConfig as SiteConfigDTO,
   Block as BlockDTO,
   Draft as DraftDTO,
   blockIdToString,
@@ -39,6 +40,16 @@ export const projects = createSlice({
   initialState: {} as Record<string, ProjectDTO>,
   reducers: {
     receive(state, action: PayloadAction<ProjectDTO>) {
+      state[action.payload.id] = action.payload;
+    },
+  },
+});
+
+export const siteconfigs = createSlice({
+  name: 'siteconfigs',
+  initialState: {} as Record<string, SiteConfigDTO>,
+  reducers: {
+    receive(state, action: PayloadAction<SiteConfigDTO>) {
       state[action.payload.id] = action.payload;
     },
   },
@@ -91,6 +102,7 @@ export const apiReducer = combineReducers({
   users: users.reducer,
   teams: teams.reducer,
   projects: projects.reducer,
+  siteconfigs: siteconfigs.reducer,
   blocks: blocks.reducer,
   versions: versions.reducer,
   drafts: drafts.reducer,

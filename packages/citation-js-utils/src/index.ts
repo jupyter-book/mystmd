@@ -21,6 +21,7 @@ function cleanRef(citation: string) {
   return cleanHtml.replace(/^1\./g, '').trim();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const defaultOpts: CitationFormatOptions = {
   format: 'string',
   type: 'json',

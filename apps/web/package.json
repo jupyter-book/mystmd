@@ -15,7 +15,7 @@
     "lint:format": "prettier --check \"app/**/*.tsx\" \"app/**/*.ts\""
   },
   "dependencies": {
-    "@curvenote/blocks": "^1.5.8",
+    "@curvenote/blocks": "*",
     "@curvenote/components": "^0.3.4",
     "@curvenote/connect": "^0.0.6",
     "@curvenote/icons": "*",
@@ -63,7 +63,7 @@
     "eslint-config-curvenote": "*",
     "prettier": "^2.7.1",
     "tailwindcss": "^3.1.5",
-    "typescript": "^4.6.3"
+    "typescript": "^4.7.4"
   },
   "engines": {
     "node": ">=14"

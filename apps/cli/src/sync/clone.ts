@@ -4,13 +4,18 @@ import inquirer from 'inquirer';
 import { join } from 'path';
 import { loadConfigOrThrow, writeConfigs } from '../config';
 import { ProjectConfig, SiteConfig, SiteProject } from '../config/types';
+import { projectIdFromLink } from '../export';
 import { LogLevel } from '../logging';
 import { Project } from '../models';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { pullProject } from './pull';
 import questions from './questions';
-import { getDefaultProjectConfig, validateLinkIsAProject } from './utils';
+import {
+  getDefaultProjectConfig,
+  getDefaultSiteConfigFromRemote,
+  validateLinkIsAProject,
+} from './utils';
 
 type Options = {
   remote?: string;
@@ -34,15 +39,14 @@ export async function interactiveCloneQuestions(
     }
   }
   let path: string;
-  if (opts?.path) {
-    path = opts?.path;
+  const defaultPath = join('content', project.data.name);
+  if (opts?.path || opts?.yes) {
+    path = opts?.path ?? defaultPath;
     if (path !== '.' && fs.existsSync(path)) {
       throw new Error(`Invalid path for clone: "${path}", it must not exist.`);
     }
   } else {
-    const { projectPath } = await inquirer.prompt([
-      questions.projectPath(join('content', project.data.name)),
-    ]);
+    const { projectPath } = await inquirer.prompt([questions.projectPath(defaultPath)]);
     path = projectPath;
   }
   try {
@@ -87,7 +91,15 @@ export async function clone(
     path,
   });
   writeConfigs(session, siteProject.path, { projectConfig });
-  if (siteConfig) {
+  if (!siteConfig && remote) {
+    // If there is no site config, but a remote is provided, create a config
+    const newSiteConfig = await getDefaultSiteConfigFromRemote(
+      session,
+      projectIdFromLink(session, remote),
+      siteProject,
+    );
+    writeConfigs(session, '.', { siteConfig: newSiteConfig });
+  } else if (siteConfig) {
     const newSiteConfig: SiteConfig = {
       ...siteConfig,
       nav: [...siteConfig.nav, { title: projectConfig.title || '', url: `/${siteProject.slug}` }],
