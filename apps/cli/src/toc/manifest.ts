@@ -66,6 +66,7 @@ export function localToManifestProject(
 function getLogoPaths(
   session: ISession,
   logoName?: string | null,
+  opts = { silent: false },
 ): { path: string; public: string; url: string } | null {
   if (!logoName) {
     session.log.debug('No logo specified, Curvenote renderer will use default logo');
@@ -76,8 +77,12 @@ function getLogoPaths(
     // Look in the local public path
     logoName = join('public', logoName);
   }
-  if (!fs.existsSync(logoName))
-    throw new Error(`Could not find logo at "${origLogoName}". See 'config.site.logo'`);
+  if (!fs.existsSync(logoName)) {
+    session.log[opts.silent ? 'debug' : 'error'](
+      `Could not find logo at "${origLogoName}". See 'config.site.logo'`,
+    );
+    return null;
+  }
   const logo = `logo${extname(logoName)}`;
   return { path: logoName, public: join(publicPath(session), logo), url: `/${logo}` };
 }
@@ -157,7 +162,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
     ...siteFrontmatter,
     title: title || '',
     twitter,
-    logo: getLogoPaths(session, logo)?.url,
+    logo: getLogoPaths(session, logo, { silent: true })?.url,
     logoText,
     nav,
     actions,
