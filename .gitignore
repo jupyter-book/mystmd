@@ -4,3 +4,6 @@ yalc.lock
 .yalc/
 *.docx
 .DS_Store
+
+# turbo
+.turbo
