@@ -1,5 +1,11 @@
 # curvenote
 
+## 0.6.7
+
+### Patch Changes
+
+- 53458c6: Logo can be missing for deploy
+
 ## 0.6.6
 
 ### Patch Changes
