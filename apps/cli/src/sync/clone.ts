@@ -34,15 +34,14 @@ export async function interactiveCloneQuestions(
     }
   }
   let path: string;
-  if (opts?.path) {
-    path = opts?.path;
+  const defaultPath = join('content', project.data.name);
+  if (opts?.path || opts?.yes) {
+    path = opts?.path ?? defaultPath;
     if (path !== '.' && fs.existsSync(path)) {
       throw new Error(`Invalid path for clone: "${path}", it must not exist.`);
     }
   } else {
-    const { projectPath } = await inquirer.prompt([
-      questions.projectPath(join('content', project.data.name)),
-    ]);
+    const { projectPath } = await inquirer.prompt([questions.projectPath(defaultPath)]);
     path = projectPath;
   }
   try {

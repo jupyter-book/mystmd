@@ -35,6 +35,7 @@ function makeCloneCLI(program: Command) {
     .description('Clone a Curvenote project')
     .argument('[remote]', 'Curvenote link to a project')
     .argument('[folder]', 'The location of the content to clone')
+    .addOption(makeYesOption())
     .action(clirun(sync.clone, { program }));
   return command;
 }
