@@ -100,7 +100,9 @@ export function myUserFromDTO(id: string, json: JsonObject): MyUser {
 }
 
 export function userFromDTO(id: string, json: JsonObject): User {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { email, email_verified, ...data } = myUserFromDTO(id, json);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { projects, access, ...links } = data.links;
   const user = data as User;
   user.links = links;

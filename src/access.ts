@@ -85,7 +85,7 @@ export interface Manifest extends Access {
 
 function directManifestFromDTO(json?: JsonObject): { [id: string]: AccessGrantDirect } {
   return Object.fromEntries(
-    Object.keys(json ?? {}).map((grant: string) => [
+    Object.keys(json ?? {}).map((grant: string): [string, AccessGrantDirect] => [
       grant,
       {
         granted_by: json?.[grant].granted_by,
@@ -98,13 +98,13 @@ function directManifestFromDTO(json?: JsonObject): { [id: string]: AccessGrantDi
 
 function nestedManifestFromDTO(json?: JsonObject): { [id: string]: AccessGrantNested } {
   return Object.fromEntries(
-    Object.keys(json ?? {}).map((grant: string) => [
+    Object.keys(json ?? {}).map((grant: string): [string, AccessGrantNested] => [
       grant,
       {
         granted_by: json?.[grant].granted_by,
         granted_on: getDate(json?.[grant].granted_on),
         grant,
-        children: [...json?.[grant].children],
+        children: [...(json?.[grant].children ?? [])],
       },
     ]),
   );
