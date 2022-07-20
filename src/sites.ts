@@ -386,3 +386,17 @@ export function validateSiteConfig(input: any, opts: ValidationOptions) {
   if (value === undefined) return undefined;
   return validateSiteConfigKeys(value, opts);
 }
+
+export function siteConfigFromDTO(id: ProjectId, json: JsonObject): SiteConfig {
+  const validationOptions: ValidationOptions = {
+    property: 'site',
+    messages: {},
+  };
+  return {
+    id,
+    ...validateSiteConfig(json, validationOptions),
+    date_created: getDate(json.date_created),
+    date_modified: getDate(json.date_modified),
+    links: { ...json.links },
+  };
+}

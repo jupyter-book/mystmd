@@ -27,9 +27,9 @@ export type SitePublishMessageAttributes = PubsubMessageAttributes & {
   site: string;
 };
 
-export function sitePublishFromDTO(json: JsonObject): SitePublish {
+export function sitePublishFromDTO(sitePublishId: SitePublishId, json: JsonObject): SitePublish {
   return {
-    id: json.id,
+    id: { ...sitePublishId },
     created_by: json.created_by ?? '',
     cdn: json.cdn ?? '',
     status: json.status ?? '',
