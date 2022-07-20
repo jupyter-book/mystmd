@@ -1,5 +1,18 @@
 # @curvenote/site
 
+## 0.0.5
+
+### Patch Changes
+
+- 1b23694: Update typescript and @curvenote/blocks
+- Updated dependencies [0a1509c]
+- Updated dependencies [1b23694]
+  - @curvenote/blocks@1.5.9
+  - @curvenote/icons@0.0.2
+  - myst-util-to-react@0.1.5
+  - @curvenote/site-common@0.0.5
+  - @curvenote/ui-providers@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes

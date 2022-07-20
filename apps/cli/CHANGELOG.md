@@ -1,5 +1,20 @@
 # curvenote
 
+## 0.6.6
+
+### Patch Changes
+
+- e55abd4: The `curvenote clone` option can now take a -y flag to take the default path.
+- 79707eb: Allow the logo to fail to exist, without stopping the site build
+- 8ed82ad: Improve clone function to use remote config
+- 0a1509c: Add remote site config to list of models that can be fetched from the curvenote API
+- 1b23694: Update typescript and @curvenote/blocks
+- 3fe1207: Allow project lookup with `@team/name` in addition to links
+- Updated dependencies [0a1509c]
+- Updated dependencies [1b23694]
+  - @curvenote/blocks@1.5.9
+  - citation-js-utils@0.0.6
+
 ## 0.6.5
 
 ### Patch Changes

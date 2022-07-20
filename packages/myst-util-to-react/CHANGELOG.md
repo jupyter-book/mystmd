@@ -1,5 +1,15 @@
 # myst-util-to-react
 
+## 0.1.5
+
+### Patch Changes
+
+- 1b23694: Update typescript and @curvenote/blocks
+- Updated dependencies [0a1509c]
+- Updated dependencies [1b23694]
+  - @curvenote/blocks@1.5.9
+  - @curvenote/ui-providers@0.0.5
+
 ## 0.1.4
 
 ### Patch Changes

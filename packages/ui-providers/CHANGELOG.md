@@ -1,5 +1,13 @@
 # @curvenote/ui-providers
 
+## 0.0.5
+
+### Patch Changes
+
+- 1b23694: Update typescript and @curvenote/blocks
+- Updated dependencies [1b23694]
+  - @curvenote/site-common@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes
