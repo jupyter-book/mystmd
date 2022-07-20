@@ -1,5 +1,12 @@
 # curvenote
 
+## 0.6.9
+
+### Patch Changes
+
+- Fix bug for including fetch for downloading notebooks
+- 801f7c7: Improve logging messages for errors in debug mode.
+
 ## 0.6.8
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @curvenote/site
 
+## 0.0.6
+
+### Patch Changes
+
+- a41df47: Update table of contents to allow not setting a urlbase
+  - @curvenote/site-common@0.0.6
+  - @curvenote/ui-providers@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes

@@ -14,7 +14,10 @@
     "lint:format": "turbo run lint:format",
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "changeset": "changeset",
+    "version": "changeset version && npm install",
+    "publish": "npm run clean && npm run build && changeset publish"
   },
   "devDependencies": {
     "esbuild": "^0.14.49",

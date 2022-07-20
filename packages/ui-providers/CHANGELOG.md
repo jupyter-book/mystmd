@@ -1,5 +1,11 @@
 # @curvenote/ui-providers
 
+## 0.0.6
+
+### Patch Changes
+
+- @curvenote/site-common@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes
