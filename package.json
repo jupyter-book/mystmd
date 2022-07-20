@@ -26,7 +26,7 @@
     "prepublishOnly": "npm run compile",
     "build": "npm run clean; tsc",
     "compile": "npm run clean && tsc -p .",
-    "dev": "tsc -w -p .",
+    "dev": "tsc -w --preserveWatchOutput -p .",
     "watch": "yarn lint; tsc -w -p .",
     "clean": "rm -rf dist",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.js",
