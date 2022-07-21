@@ -18,7 +18,7 @@ export type ValidationOptions = {
 
 type KeyOptions = ValidationOptions & { returnInvalidPartial?: boolean };
 
-export function defined(val: any) {
+export function defined<T = any>(val: T | null | undefined): val is T {
   return val != null;
 }
 
@@ -137,7 +137,8 @@ export function validateSubdomain(input: string, opts: ValidationOptions) {
   if (!host.match(/^.+\..+\..+$/)) {
     return validationError(`must be a subdomain: ${input}`, opts);
   }
-  return host;
+  // `host` is already lowercased, but we can be super explicit!
+  return host.toLowerCase();
 }
 
 /**

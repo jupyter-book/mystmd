@@ -4,6 +4,7 @@ import {
   getCurvespaceParts,
   isCurvespaceDomain,
   validateSiteAction,
+  validateDomain,
   validateSiteAnalytics,
   validateSiteConfig,
   validateSiteDesign,
@@ -51,10 +52,23 @@ describe('Curvespace Links', () => {
   test('create URL', () => {
     expect(createCurvespaceUrl('some')).toBe('https://some.curve.space');
     expect(createCurvespaceUrl('some', 'one')).toBe('https://some-one.curve.space');
+    expect(createCurvespaceUrl('some', 'CAPITAL')).toBe('https://some-capital.curve.space');
+    expect(createCurvespaceUrl('SOME', 'CAPITAL')).toBe('https://some-capital.curve.space');
     expect(() => createCurvespaceUrl('some-')).toThrow();
     expect(() => createCurvespaceUrl('some-', 'one')).toThrow();
     expect(() => createCurvespaceUrl('some', 'one&')).toThrow();
     expect(() => createCurvespaceUrl('some', 'one-')).toThrow();
+  });
+});
+
+describe('validateDomain', () => {
+  it('sanity checking on domains', async () => {
+    expect(validateDomain('www.example.com', opts)).toEqual('www.example.com');
+    expect(validateDomain('vanilla.curve.space', opts)).toEqual('vanilla.curve.space');
+    expect(validateDomain('vanilla-prj.curve.space', opts)).toEqual('vanilla-prj.curve.space');
+    expect(validateDomain('vanilla-CAPITAL.curve.space', opts)).toBe('vanilla-capital.curve.space');
+    expect(validateDomain('vanilla-prj--.curve.space', opts)).toBe(undefined);
+    expect(validateDomain('', opts)).toEqual(undefined);
   });
 });
 

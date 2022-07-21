@@ -144,6 +144,9 @@ describe('validateSubdomain', () => {
   it('valid value returns self', async () => {
     expect(validateSubdomain('www.example.com', opts)).toEqual('www.example.com');
   });
+  it('valid uppercase is lowercased', async () => {
+    expect(validateSubdomain('www.EXAMPLE.com', opts)).toEqual('www.example.com');
+  });
   it('valid value removes protocol', async () => {
     expect(validateSubdomain('https://www.example.com', opts)).toEqual('www.example.com');
   });

@@ -10,6 +10,7 @@ import {
   validateUrl,
   validateList,
   validateBoolean,
+  validationError,
 } from './utils/validators';
 import { getDate } from './helpers';
 import { ProjectId } from './projects';
@@ -166,7 +167,7 @@ export function getCurvespaceParts(test: string): [string | null, string | null]
 }
 
 export function createCurvespaceDomain(name: string, sub?: string | null): string {
-  const url = sub ? `${name}-${sub}.curve.space` : `${name}.curve.space`;
+  const url = (sub ? `${name}-${sub}.curve.space` : `${name}.curve.space`).toLowerCase();
   if (!isCurvespaceDomain(url)) throw new Error(`The domain "${url}" is not valid`);
   return url;
 }
@@ -188,9 +189,13 @@ export function dnsRouterFromDTO(id: string, json: JsonObject): DnsRouter {
 export function validateDomain(input: any, opts: ValidationOptions) {
   const value = validateString(input, opts);
   if (!defined(value)) return undefined;
-  const [name, sub] = getCurvespaceParts(value as string);
+  const lowerCase = value.toLowerCase();
+  const [name, sub] = getCurvespaceParts(lowerCase as string);
   if (name) return createCurvespaceDomain(name, sub);
-  return validateSubdomain(value as string, opts);
+  if (lowerCase.endsWith('.curve.space')) {
+    return validationError(`invalid curvespace domain: ${input}`, opts);
+  }
+  return validateSubdomain(lowerCase as string, opts);
 }
 
 /**
