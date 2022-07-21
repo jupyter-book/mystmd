@@ -17,7 +17,7 @@ async function parse(text: string) {
 
 export const MySTRenderer: NodeRenderer = (node) => {
   const area = useRef<HTMLTextAreaElement | null>(null);
-  const [text, setText] = useState<string>(node.value);
+  const [text, setText] = useState<string>(node.value.trim());
   const [mdast, setMdast] = useState<string>('Loading...');
   const [html, setHtml] = useState<string>('Loading...');
   const [content, setContent] = useState<React.ReactNode>(<p>{node.value}</p>);
@@ -43,7 +43,7 @@ export const MySTRenderer: NodeRenderer = (node) => {
   }, [text]);
 
   return (
-    <figure className="relative shadow-lg rounded overflow-hidden">
+    <figure key={node.key} className="relative shadow-lg rounded overflow-hidden">
       <div className="absolute right-0 p-1">
         <CopyIcon text={text} />
       </div>
