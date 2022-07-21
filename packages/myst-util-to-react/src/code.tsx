@@ -73,10 +73,10 @@ const code: NodeRenderer<Code> = (node) => {
   );
 };
 
-function isColor(code: string): string | undefined {
-  if (!code || code.length > 9) return undefined;
-  if (!new Set([4, 7, 9]).has(code.length)) return undefined;
-  const match = /^#([0-9A-Fa-f]{3,8})$/.exec(code);
+function isColor(maybeColorHash: string): string | undefined {
+  if (!maybeColorHash || maybeColorHash.length > 9) return undefined;
+  if (!new Set([4, 7, 9]).has(maybeColorHash.length)) return undefined;
+  const match = /^#([0-9A-Fa-f]{3,8})$/.exec(maybeColorHash);
   if (!match) return undefined;
   const color = match[1];
   return color;
