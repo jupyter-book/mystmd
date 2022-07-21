@@ -1,5 +1,15 @@
 # curvenote
 
+## 0.6.11
+
+### Patch Changes
+
+- 01f73de: - `include` added as a directive
+  - `tab-set` and `tab-item` added as directives
+- fb1364b: Recognize GitHub urls for images
+- bc337d0: Added a MyST Demo Component
+- b91c836: WebP translation is now only called on png, jpg, jpeg, tiff, or gif
+
 ## 0.6.10
 
 ### Patch Changes

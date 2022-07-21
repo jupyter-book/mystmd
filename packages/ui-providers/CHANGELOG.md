@@ -1,5 +1,13 @@
 # @curvenote/ui-providers
 
+## 0.0.7
+
+### Patch Changes
+
+- 01f73de: - `include` added as a directive
+  - `tab-set` and `tab-item` added as directives
+  - @curvenote/site-common@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes

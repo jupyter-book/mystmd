@@ -1,5 +1,18 @@
 # @curvenote/site
 
+## 0.0.7
+
+### Patch Changes
+
+- 01f73de: - `include` added as a directive
+  - `tab-set` and `tab-item` added as directives
+- Updated dependencies [01f73de]
+- Updated dependencies [3f8249c]
+- Updated dependencies [bc337d0]
+  - myst-util-to-react@0.1.6
+  - @curvenote/ui-providers@0.0.7
+  - @curvenote/site-common@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes

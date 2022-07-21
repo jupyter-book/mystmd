@@ -1,5 +1,16 @@
 # myst-util-to-react
 
+## 0.1.6
+
+### Patch Changes
+
+- 01f73de: - `include` added as a directive
+  - `tab-set` and `tab-item` added as directives
+- 3f8249c: Node `abbr` is actually `abbreviation`, this was updated
+- bc337d0: Added a MyST Demo Component
+- Updated dependencies [01f73de]
+  - @curvenote/ui-providers@0.0.7
+
 ## 0.1.5
 
 ### Patch Changes
