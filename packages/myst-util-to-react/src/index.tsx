@@ -20,6 +20,7 @@ import MYST_RENDERERS from './myst';
 
 export type { NodeRenderer } from './types';
 export { Bibliography } from './cite';
+export { CopyIcon } from './CopyIcon';
 
 export const DEFAULT_RENDERERS: Record<string, NodeRenderer> = {
   ...BASIC_RENDERERS,
