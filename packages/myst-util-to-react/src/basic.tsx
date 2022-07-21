@@ -29,6 +29,18 @@ type SmallCaps = {
   type: 'smallcaps';
 };
 
+type DefinitionList = {
+  type: 'definitionList';
+};
+
+type DefinitionTerm = {
+  type: 'definitionTerm';
+};
+
+type DefinitionDescription = {
+  type: 'definitionDescription';
+};
+
 type BasicNodeRenderers = {
   strong: NodeRenderer<spec.Strong>;
   emphasis: NodeRenderer<spec.Emphasis>;
@@ -58,6 +70,10 @@ type BasicNodeRenderers = {
   strike: NodeRenderer<Strike>;
   underline: NodeRenderer<Underline>;
   smallcaps: NodeRenderer<SmallCaps>;
+  // definitions
+  definitionList: NodeRenderer<DefinitionList>;
+  definitionTerm: NodeRenderer<DefinitionTerm>;
+  definitionDescription: NodeRenderer<DefinitionDescription>;
 };
 
 const BASIC_RENDERERS: BasicNodeRenderers = {
@@ -174,6 +190,15 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   },
   comment() {
     return null;
+  },
+  definitionList(node, children) {
+    return <dl key={node.key}>{children}</dl>;
+  },
+  definitionTerm(node, children) {
+    return <dt key={node.key}>{children}</dt>;
+  },
+  definitionDescription(node, children) {
+    return <dd key={node.key}>{children}</dd>;
   },
 };
 
