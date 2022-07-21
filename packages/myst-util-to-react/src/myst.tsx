@@ -53,18 +53,19 @@ export const MySTRenderer: NodeRenderer = (node) => {
           <textarea
             ref={area}
             value={text}
-            className="block p-6 shadow-inner resize-none w-full font-mono bg-slate-50 outline-none"
+            className="block p-6 shadow-inner resize-none w-full font-mono bg-slate-50 dark:bg-slate-800 outline-none"
             onChange={(e) => setText(e.target.value)}
           ></textarea>
         </label>
       </div>
-      <div className="relative min-h-1 pt-[50px] px-6 pb-6">
-        <div className="absolute cursor-pointer top-0 left-0 border">
+      <div className="relative min-h-1 pt-[50px] px-6 pb-6 dark:bg-slate-900">
+        <div className="absolute cursor-pointer top-0 left-0 border dark:border-slate-600">
           {['Demo', 'AST', 'HTML'].map((show) => (
             <button
               key={show}
               className={classnames('px-2 uppercase', {
-                'bg-white hover:bg-slate-200': previewType !== show,
+                'bg-white hover:bg-slate-200 dark:bg-slate-500 dark:hover:bg-slate-700':
+                  previewType !== show,
                 'bg-curvenote-blue text-white': previewType === show,
               })}
               title={`Show the ${show}`}
