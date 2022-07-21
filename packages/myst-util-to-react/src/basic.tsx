@@ -29,6 +29,18 @@ type SmallCaps = {
   type: 'smallcaps';
 };
 
+type DefinitionList = {
+  type: 'definitionList';
+};
+
+type DefinitionTerm = {
+  type: 'definitionTerm';
+};
+
+type DefinitionDescription = {
+  type: 'definitionDescription';
+};
+
 type BasicNodeRenderers = {
   strong: NodeRenderer<spec.Strong>;
   emphasis: NodeRenderer<spec.Emphasis>;
@@ -45,7 +57,7 @@ type BasicNodeRenderers = {
   thematicBreak: NodeRenderer<spec.ThematicBreak>;
   subscript: NodeRenderer<spec.Subscript>;
   superscript: NodeRenderer<spec.Superscript>;
-  abbr: NodeRenderer<spec.Abbreviation>;
+  abbreviation: NodeRenderer<spec.Abbreviation>;
   // Tables
   table: NodeRenderer<spec.Table>;
   tableRow: NodeRenderer<spec.TableRow>;
@@ -58,6 +70,10 @@ type BasicNodeRenderers = {
   strike: NodeRenderer<Strike>;
   underline: NodeRenderer<Underline>;
   smallcaps: NodeRenderer<SmallCaps>;
+  // definitions
+  definitionList: NodeRenderer<DefinitionList>;
+  definitionTerm: NodeRenderer<DefinitionTerm>;
+  definitionDescription: NodeRenderer<DefinitionDescription>;
 };
 
 const BASIC_RENDERERS: BasicNodeRenderers = {
@@ -162,7 +178,7 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   superscript(node, children) {
     return <sup key={node.key}>{children}</sup>;
   },
-  abbr(node, children) {
+  abbreviation(node, children) {
     return (
       <abbr key={node.key} title={node.title}>
         {children}
@@ -174,6 +190,15 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   },
   comment() {
     return null;
+  },
+  definitionList(node, children) {
+    return <dl key={node.key}>{children}</dl>;
+  },
+  definitionTerm(node, children) {
+    return <dt key={node.key}>{children}</dt>;
+  },
+  definitionDescription(node, children) {
+    return <dd key={node.key}>{children}</dd>;
   },
 };
 

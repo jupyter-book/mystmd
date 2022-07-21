@@ -64,7 +64,8 @@ const Headings = ({ headings, activeId, highlight }: Props) => (
 
 function getHeaders(): HTMLHeadingElement[] {
   const headers = Array.from(document.querySelectorAll(SELECTOR)).filter((e) => {
-    return !e.classList.contains('title');
+    const parent = e.closest('.exclude-from-outline');
+    return !(e.classList.contains('title') || parent);
   });
   return headers as HTMLHeadingElement[];
 }
