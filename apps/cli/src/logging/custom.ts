@@ -14,7 +14,7 @@ export function getGitLogger(session: ISession): LoggerDE {
     error(data: string) {
       const line = data.trim();
       if (!line) return;
-      if (line.startsWith('Cloning into')) {
+      if (line.startsWith('Cloning into') || line.startsWith('Submodule')) {
         session.log.debug(line);
         return;
       }

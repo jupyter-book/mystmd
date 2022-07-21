@@ -38,7 +38,7 @@ export async function clone(session: ISession, opts: Options): Promise<void> {
   }
   const repo = repoPath(session);
   await makeExecutable(
-    `git clone --depth 1 --branch ${branch} https://github.com/curvenote/curvenote.git ${repo}`,
+    `git clone --recursive --depth 1 --branch ${branch} https://github.com/curvenote/curvenote.git ${repo}`,
     getGitLogger(session),
   )();
   // TODO: log out version!
