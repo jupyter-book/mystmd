@@ -62,6 +62,7 @@ export const MySTRenderer: NodeRenderer = (node) => {
         <div className="absolute cursor-pointer top-0 left-0 border">
           {['Demo', 'AST', 'HTML'].map((show) => (
             <button
+              key={show}
               className={classnames('px-2 uppercase', {
                 'bg-white hover:bg-slate-200': previewType !== show,
                 'bg-curvenote-blue text-white': previewType === show,
