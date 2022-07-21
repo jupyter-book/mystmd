@@ -230,10 +230,9 @@ export async function transformMdast(
   transformImageAltText(mdast);
   transformFootnotes(mdast, references); // Needs to happen nead the end
   transformKeys(mdast);
-  await Promise.all([
-    transformImages(session, mdast, file),
-    transformThumbnail(session, frontmatter, mdast, file),
-  ]);
+  await transformImages(session, mdast, file);
+  // Note, the thumbnail transform must be **after** images, as it may read the images
+  await transformThumbnail(session, frontmatter, mdast, file);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   store.dispatch(
     watch.actions.updateFileInfo({

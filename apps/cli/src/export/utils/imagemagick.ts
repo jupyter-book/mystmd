@@ -68,6 +68,10 @@ export async function convertImageToWebp(
   quality = 80,
   overwrite = false,
 ): Promise<string | null> {
+  if (!fs.existsSync(image)) {
+    session.log.debug(`Image does not exist: "${image}"`);
+    return null;
+  }
   const allowedExtensions = ['.png', '.jpg', '.jpeg', '.tiff', '.gif'];
   if (!allowedExtensions.includes(path.extname(image))) {
     session.log.debug(`Skipping webp conversion of "${image}"`);

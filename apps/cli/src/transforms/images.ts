@@ -22,12 +22,18 @@ function isBase64(data: string) {
   return data.split(';base64,').length === 2;
 }
 
+function getGithubRawUrl(url?: string): string | undefined {
+  const GITHUB_BLOB = /^(?:https?:\/\/)?github\.com\/([^/]+)\/([^/]+)\/blob\//;
+  if (!url?.match(GITHUB_BLOB)) return undefined;
+  return url.replace(GITHUB_BLOB, 'https://raw.githubusercontent.com/$1/$2/');
+}
+
 export async function downloadAndSaveImage(
   session: ISession,
   url: string,
   file: string,
   fileFolder: string,
-): Promise<string> {
+): Promise<string | undefined> {
   const exists = fs.existsSync(fileFolder);
   const fileMatch = exists && fs.readdirSync(fileFolder).find((f) => parse(f).name === file);
   if (exists && fileMatch) {
@@ -35,24 +41,33 @@ export async function downloadAndSaveImage(
     return fileMatch;
   }
   const filePath = join(fileFolder, file);
-  let extension: string | false = false;
   session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${filePath}`);
-  await fetch(url)
-    .then(
-      (res) =>
-        new Promise((resolve, reject) => {
-          extension = mime.extension(res.headers.get('content-type') || '');
-          if (!extension) reject();
-          if (!fs.existsSync(fileFolder)) fs.mkdirSync(fileFolder, { recursive: true });
-          const fileStream = fs.createWriteStream(`${filePath}.${extension}`);
-          res.body.pipe(fileStream);
-          res.body.on('error', reject);
-          fileStream.on('finish', resolve);
-        }),
-    )
-    .then(() => session.log.debug(`Image successfully saved to: ${filePath}`))
-    .catch(() => session.log.error(`Error saving image "${url}" to: ${filePath}`));
-  return extension ? `${file}.${extension}` : file;
+  try {
+    const github = getGithubRawUrl(url);
+    const res = await fetch(github ?? url);
+    const contentType = res.headers.get('content-type') || '';
+    const extension = mime.extension(contentType);
+    if (!extension || !contentType) throw new Error('No content-type for image found.');
+    if (!contentType.startsWith('image/')) {
+      throw new Error(`ContentType "${contentType}" is not an image`);
+    }
+    if (!fs.existsSync(fileFolder)) fs.mkdirSync(fileFolder, { recursive: true });
+    // Write to a file
+    const fileStream = fs.createWriteStream(`${filePath}.${extension}`);
+    await new Promise((resolve, reject) => {
+      res.body.pipe(fileStream);
+      res.body.on('error', reject);
+      fileStream.on('finish', resolve);
+    });
+    await new Promise((r) => setTimeout(r, 50));
+    const fileName = `${file}.${extension}`;
+    session.log.debug(`Image successfully saved to: ${fileName}`);
+    return fileName;
+  } catch (error) {
+    session.log.debug(`\n\n${(error as Error).stack}\n\n`);
+    session.log.error(`Error saving image "${url}": ${(error as Error).message}`);
+    return undefined;
+  }
 }
 
 export async function saveImageInStaticFolder(
@@ -100,7 +115,7 @@ export async function saveImageInStaticFolder(
     return null;
   }
   let webp: string | undefined;
-  if (opts?.webp) {
+  if (opts?.webp && file) {
     try {
       const result = await convertImageToWebp(session, join(folder, file));
       if (result) webp = `/_static/${result}`;
