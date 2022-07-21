@@ -13,6 +13,7 @@ module.exports = {
     'react/jsx-key': 'off',
     'import/no-duplicates': 'error',
     'import/no-unresolved': 'off', // This errors out on '~/module' that is defined in tsconfig
+    '@typescript-eslint/no-shadow': 'error',
     'prettier/prettier': [
       'error',
       {

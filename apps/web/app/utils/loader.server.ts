@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import config from '~/config.json';
+import configJson from '~/config.json';
 import { getDomainFromRequest, PageLoader as Data, SiteManifest } from '@curvenote/site-common';
 import { redirect } from '@remix-run/node';
 import { getFooterLinks, getProject, responseNoArticle, responseNoSite } from '@curvenote/site';
@@ -9,7 +9,7 @@ import { getFooterLinks, getProject, responseNoArticle, responseNoSite } from '@
 const contentFolder = path.join(__dirname, '..', 'app', 'content');
 
 export function getConfig(): SiteManifest {
-  return config as unknown as SiteManifest;
+  return configJson as unknown as SiteManifest;
 }
 
 /**

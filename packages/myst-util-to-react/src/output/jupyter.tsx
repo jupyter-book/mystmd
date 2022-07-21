@@ -33,8 +33,8 @@ export const NativeJupyterOutputs = ({
 
   useEffect(() => {
     if (iframeRef.current == null || !rendererReady || !data) return;
-    fetchAndEncodeOutputImages(convertToIOutputs(data)).then((outputs) => {
-      host.commsDispatch(iframeRef.current, actions.connectHostSendContent(uid, outputs));
+    fetchAndEncodeOutputImages(convertToIOutputs(data)).then((out) => {
+      host.commsDispatch(iframeRef.current, actions.connectHostSendContent(uid, out));
     });
   }, [id, iframeRef.current, rendererReady]);
 
