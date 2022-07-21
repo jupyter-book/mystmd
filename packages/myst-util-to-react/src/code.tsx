@@ -4,27 +4,13 @@ import { useTheme } from '@curvenote/ui-providers';
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 import light from 'react-syntax-highlighter/dist/cjs/styles/hljs/xcode';
 import dark from 'react-syntax-highlighter/dist/cjs/styles/hljs/vs2015';
-import { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
-import { CheckIcon } from '@heroicons/react/outline';
-import { DuplicateIcon } from '@heroicons/react/solid';
-
-function copyTextToClipboard(text: string) {
-  return new Promise<void>((res, rej) => {
-    navigator.clipboard.writeText(text).then(
-      () => {
-        res();
-      },
-      (err) => {
-        rej(err);
-      },
-    );
-  });
-}
+import { CopyIcon } from './CopyIcon';
 
 type Props = {
   value: string;
   lang?: string;
+  showCopy?: boolean;
   showLineNumbers?: boolean;
   emphasizeLines?: number[];
   className?: string;
@@ -32,16 +18,8 @@ type Props = {
 
 export function CodeBlock(props: Props) {
   const { isLight } = useTheme();
-  const { value, lang, emphasizeLines, showLineNumbers, className } = props;
+  const { value, lang, emphasizeLines, showLineNumbers, className, showCopy = true } = props;
   const highlightLines = new Set(emphasizeLines);
-  const [showCopied, setShowCopied] = useState<boolean>(false);
-  const timeoutRef = useRef<NodeJS.Timeout>();
-
-  useEffect(() => {
-    if (!showCopied) return;
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setShowCopied(false), 1500);
-  }, [showCopied]);
 
   return (
     <div className={classNames('relative group not-prose overflow-auto', className)}>
@@ -73,24 +51,11 @@ export function CodeBlock(props: Props) {
       >
         {value}
       </SyntaxHighlighter>
-      <div className="absolute hidden top-1 right-1 group-hover:block">
-        <button
-          className={classNames('p-1 cursor-pointer transition-color duration-200 ease-in-out', {
-            'text-primary-500 border-primary-500': !showCopied,
-            'text-success border-success ': showCopied,
-          })}
-          title={showCopied ? 'Copied' : 'Copy to clipboard'}
-          onClick={() => {
-            copyTextToClipboard(value)
-              .then(() => setShowCopied(true))
-              .catch(() => {
-                console.error('Failed to copy');
-              });
-          }}
-        >
-          {showCopied ? <CheckIcon className="w-5 h-5" /> : <DuplicateIcon className="w-5 h-5" />}
-        </button>
-      </div>
+      {showCopy && (
+        <div className="absolute hidden top-1 right-1 group-hover:block">
+          <CopyIcon text={value} />
+        </div>
+      )}
     </div>
   );
 }

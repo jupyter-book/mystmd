@@ -16,6 +16,7 @@ import HEADING_RENDERERS from './heading';
 import CROSS_REFERENCE_RENDERERS from './crossReference';
 import RRID_RENDERERS from './rrid';
 import TAB_RENDERERS from './tabs';
+import MYST_RENDERERS from './myst';
 
 export type { NodeRenderer } from './types';
 export { Bibliography } from './cite';
@@ -36,6 +37,7 @@ export const DEFAULT_RENDERERS: Record<string, NodeRenderer> = {
   ...OUTPUT_RENDERERS,
   ...HEADING_RENDERERS,
   ...CROSS_REFERENCE_RENDERERS,
+  ...MYST_RENDERERS,
 };
 
 export function useParse(

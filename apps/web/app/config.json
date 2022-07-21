@@ -30,7 +30,8 @@
         { "title": "Examples", "slug": "examples", "level": 2 },
         { "title": "Tables", "slug": "tables", "level": 2 },
         { "title": "Links", "slug": "links", "level": 2 },
-        { "title": "Math & Tabs", "slug": "math", "level": 2 }
+        { "title": "Math & Tabs", "slug": "math", "level": 2 },
+        { "title": "Commonmark", "slug": "commonmark", "level": 2 }
       ]
     }
   ]

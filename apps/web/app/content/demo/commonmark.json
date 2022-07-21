@@ -1,0 +1,671 @@
+{
+  "kind": "Article",
+  "file": "features/commonmark.md",
+  "sha256": "6fc88b0dc8e965a509dd46ebcb3b686fc201414f0fc9b89614bb6bb582eb23de",
+  "slug": "commonmark",
+  "frontmatter": { "title": "CommonMark" },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "This page provides an overview of the types of block and inline markup features supported by CommonMark and MyST, with pointers to additional content of interest. For full details on all the nuance of these features, please look at the ",
+                "key": "AjRKlXIsgV"
+              },
+              {
+                "type": "link",
+                "url": "https://spec.commonmark.org/",
+                "children": [
+                  { "type": "text", "value": "CommonMark Spec documentation", "key": "ZD663WI15R" }
+                ],
+                "key": "e1F9qdHvGt"
+              },
+              { "type": "text", "value": ".", "key": "vi9ijRYThW" }
+            ],
+            "key": "Ex6KOjHHsk"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "MyST (Markedly Structured Text) was designed to make it easier to create publishable computational documents written with Markdown notation. It is a superset of ",
+                "key": "F0LkQ1Xv4j"
+              },
+              {
+                "type": "link",
+                "url": "https://commonmark.org/",
+                "children": [
+                  { "type": "text", "value": "CommonMark Markdown", "key": "kfs4U4yWZH" }
+                ],
+                "key": "BlN3eW3pA8"
+              },
+              {
+                "type": "text",
+                "value": " and draws heavy inspiration from ",
+                "key": "gAnr027STh"
+              },
+              {
+                "type": "link",
+                "url": "https://rmarkdown.rstudio.com/",
+                "children": [{ "type": "text", "value": "RMarkdown", "key": "IrIRsrCOjt" }],
+                "key": "yqJse7Q974"
+              },
+              {
+                "type": "text",
+                "value": " syntax. In addition to CommonMark, MyST also implements and extends ",
+                "key": "pNjLtKfV1B"
+              },
+              {
+                "type": "link",
+                "url": "https://github.com/syntax-tree/mdast",
+                "children": [{ "type": "text", "value": "mdast", "key": "zKsC1vGdLM" }],
+                "key": "xPGQTDs877"
+              },
+              {
+                "type": "text",
+                "value": ", which is a standard abstract syntax tree for Markdown. ",
+                "key": "J2kcR9FJrW"
+              },
+              { "type": "inlineCode", "value": "mdast", "key": "tNfhOboSvP" },
+              { "type": "text", "value": " is part of the ", "key": "S5J7efkK8V" },
+              {
+                "type": "link",
+                "url": "https://unifiedjs.com",
+                "children": [{ "type": "text", "value": "unifiedjs", "key": "qCJRCgCrZq" }],
+                "key": "rHrquVbbZb"
+              },
+              { "type": "text", "value": " community and has ", "key": "SkPXg9cjd3" },
+              {
+                "type": "link",
+                "url": "https://unifiedjs.com/explore/keyword/mdast/",
+                "children": [{ "type": "text", "value": "many utilities", "key": "Wk5VzfZF57" }],
+                "key": "Nou5YXuVGZ"
+              },
+              {
+                "type": "text",
+                "value": " for exporting and transforming your content.",
+                "key": "Hh9vfBAGD1"
+              }
+            ],
+            "key": "cmG6yF9cbG"
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "children": [{ "type": "text", "value": "Block Markup", "key": "OjE2JJOzaY" }],
+            "enumerate": false,
+            "key": "Aqa9IdLlEb"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Headings", "key": "irZr2ejX5p" }],
+            "enumerate": false,
+            "key": "SgSaofj7p6"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Markdown syntax denotes headers starting with between 1 to 6 ",
+                "key": "fF5g09jh3R"
+              },
+              { "type": "inlineCode", "value": "#", "key": "dSqqo8n3ka" },
+              {
+                "type": "text",
+                "value": ".\nFor example, a level 3 header looks like:",
+                "key": "qNaq084LfP"
+              }
+            ],
+            "key": "LE7ix6xT22"
+          },
+          {
+            "type": "myst",
+            "value": "### Heading Level 3\n\nTry changing the number of `#`s to change the `depth`.\n",
+            "key": "wYnYHxaU5x"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "An alternative syntax (called setext) is also supported for level 1 and 2 headers,\nby underlining using multiple ",
+                "key": "gSKnlq4d6T"
+              },
+              { "type": "inlineCode", "value": "===", "key": "HhBHT98f0G" },
+              { "type": "text", "value": " or ", "key": "wlMQNQFwll" },
+              { "type": "inlineCode", "value": "---", "key": "jmWEYshpRv" },
+              { "type": "text", "value": ". For example:", "key": "oMIwgikwmw" }
+            ],
+            "key": "kZeBabsd5M"
+          },
+          {
+            "type": "myst",
+            "value": "Heading 1\n=========\n\nHeading 2\n---------\n",
+            "key": "V5wPcLU8X2"
+          },
+          {
+            "type": "admonition",
+            "kind": "seealso",
+            "children": [
+              {
+                "type": "admonitionTitle",
+                "children": [{ "type": "text", "value": "See Also", "key": "a3c5lhiyvQ" }],
+                "key": "qLduVLws8t"
+              },
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Reference headings by preceding headers with a ",
+                    "key": "LbvAxaoFgB"
+                  },
+                  { "type": "inlineCode", "value": "(label)=", "key": "njoxqbTCfH" },
+                  { "type": "text", "value": ". See ", "key": "qjc8w3I1P1" },
+                  {
+                    "type": "link",
+                    "url": "/docs/references",
+                    "children": [],
+                    "key": "Oh6C6qXBaw",
+                    "urlSource": "./references.md",
+                    "internal": true
+                  },
+                  { "type": "text", "value": "!", "key": "hbne0gCCEa" }
+                ],
+                "key": "hZGLdVVXSk"
+              }
+            ],
+            "key": "u1hMxvu1dx"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Lists", "key": "q6xEfaJhVE" }],
+            "enumerate": false,
+            "key": "ZjO7dCOOIb"
+          },
+          {
+            "type": "paragraph",
+            "children": [{ "type": "text", "value": "Bullet points:", "key": "SOz1zJEwOW" }],
+            "key": "XtRwRlrTfo"
+          },
+          {
+            "type": "myst",
+            "value": "- headings\n- lists\n  - bullets\n  - numbers\n- code blocks\n",
+            "key": "KoGXBwGVHF"
+          },
+          {
+            "type": "paragraph",
+            "children": [{ "type": "text", "value": "Numbered items:", "key": "W0gA6zr6Ng" }],
+            "key": "ykW7DH5IUA"
+          },
+          { "type": "myst", "value": "1. quotes\n2. breaks\n3. links\n", "key": "kCiq03neWU" },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Code", "key": "kMmlodsijZ" }],
+            "enumerate": false,
+            "key": "qXCI3CCQJ4"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Code blocks are enclosed in 3 or more ",
+                "key": "Zgk2oUZd9f"
+              },
+              { "type": "inlineCode", "value": "`", "key": "vsQiJYc71i" },
+              { "type": "text", "value": " or ", "key": "rtYBJrPvRZ" },
+              { "type": "inlineCode", "value": "~", "key": "jIqLDsc1Ff" },
+              { "type": "text", "value": " with an optional language name.", "key": "DpARYz23FD" }
+            ],
+            "key": "AGvFwWATpu"
+          },
+          {
+            "type": "myst",
+            "value": "```python\nprint('this is python')\n```\n",
+            "key": "CrM3fWEAc3"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Indented paragraphs are also treated as literal text. This may be used for code or other preformatted text.",
+                "key": "JZRF2hM8uQ"
+              }
+            ],
+            "key": "ZrWgyR0dDg"
+          },
+          {
+            "type": "myst",
+            "value": "Some JSON:\n\n    {\n      'literal': '*text*'\n    }\n",
+            "key": "dVXf6Ys2OC"
+          },
+          {
+            "type": "admonition",
+            "kind": "seealso",
+            "children": [
+              {
+                "type": "admonitionTitle",
+                "children": [{ "type": "text", "value": "See Also", "key": "hZTlL4ctdn" }],
+                "key": "dKi4MQBaz4"
+              },
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Create code-blocks with additional highlighting using the ",
+                    "key": "FdM0LRpYPo"
+                  },
+                  { "type": "inlineCode", "value": "code-block", "key": "vH2mGy0toy" },
+                  { "type": "text", "value": " directive. See more here!", "key": "yz5CEvFrzP" }
+                ],
+                "key": "xq9B0DEYGd"
+              }
+            ],
+            "key": "RxyViwCKyG"
+          },
+          {
+            "type": "mystComment",
+            "value": "TODO: provide a link!\n TODO: myst: implement code-block",
+            "key": "zUOrOVcmCB"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Quotes", "key": "HNiXzSx8bJ" }],
+            "enumerate": false,
+            "key": "AK8WAy1Kiv"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              { "type": "text", "value": "Quote blocks are prepended with ", "key": "HAwW9xPHyg" },
+              { "type": "inlineCode", "value": ">", "key": "tHuaLYlHbg" },
+              { "type": "text", "value": ":", "key": "E9d3IFwZVe" }
+            ],
+            "key": "JwW9eJBlok"
+          },
+          { "type": "myst", "value": "> Super profound quote\n", "key": "bP0uKZBG5R" },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Thematic Break", "key": "AfkZyZn8W0" }],
+            "enumerate": false,
+            "key": "MapiGagcx1"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Create a horizontal line in the output",
+                "key": "hhMwKVgDbk"
+              }
+            ],
+            "key": "JSAlnWiTmn"
+          },
+          { "type": "myst", "value": "Section 1\n\n---\n\nSection 2\n", "key": "MMwKosb5k4" },
+          {
+            "type": "admonition",
+            "kind": "seealso",
+            "children": [
+              {
+                "type": "admonitionTitle",
+                "children": [{ "type": "text", "value": "See Also", "key": "DGIcO1ij3T" }],
+                "key": "yecvZmGd38"
+              },
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Thematic breaks should not be confused with MyST ",
+                    "key": "hvFi2NfZUm"
+                  },
+                  {
+                    "type": "link",
+                    "url": "/docs/blocks",
+                    "children": [{ "type": "text", "value": "block syntax", "key": "mLePfOocdp" }],
+                    "key": "JjwzamOqyc",
+                    "urlSource": "./blocks.md",
+                    "internal": true
+                  },
+                  {
+                    "type": "text",
+                    "value": ",\nwhich is used to structurally seperate content.",
+                    "key": "GGHxFaKQwZ"
+                  }
+                ],
+                "key": "f6ynRBz3Eu"
+              }
+            ],
+            "key": "bPqjON174u"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Link Definitions", "key": "zQNqtWeWif" }],
+            "enumerate": false,
+            "key": "IK0IyNU60a"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Links may be defined outside of text with a reference target (no spaces) and an optional title.",
+                "key": "A7oTXfkC9b"
+              }
+            ],
+            "key": "aJwkyCjuOR"
+          },
+          {
+            "type": "myst",
+            "value": "[This is a link defined elsewhere!][key]\n\n[key]: https://www.google.com 'a title'\n",
+            "key": "H1SVlP8kzt"
+          },
+          {
+            "type": "admonition",
+            "kind": "seealso",
+            "children": [
+              {
+                "type": "admonitionTitle",
+                "children": [{ "type": "text", "value": "See Also", "key": "gXf2qeQO49" }],
+                "key": "oOsT5cwuGa"
+              },
+              {
+                "type": "paragraph",
+                "children": [
+                  { "type": "text", "value": "These can be used in ", "key": "shVQ9tNRxh" },
+                  {
+                    "type": "crossReference",
+                    "children": [{ "type": "text", "value": "Inline links", "key": "kLwawHGo7I" }],
+                    "kind": "ref",
+                    "identifier": "inline-links",
+                    "label": "inline-links",
+                    "resolved": true,
+                    "key": "Yyz27jMFkx"
+                  },
+                  { "type": "text", "value": " and are similar to ", "key": "TBYCqcPXKH" },
+                  {
+                    "type": "link",
+                    "url": "/docs/references",
+                    "children": [],
+                    "key": "faTYrCdbWS",
+                    "urlSource": "./references.md",
+                    "internal": true
+                  },
+                  {
+                    "type": "text",
+                    "value": " in MyST.\nThis syntax is also similar to ",
+                    "key": "dYLXLLiTHB"
+                  },
+                  {
+                    "type": "link",
+                    "url": "/docs/footnotes",
+                    "children": [],
+                    "key": "sUP68BPnz5",
+                    "urlSource": "./footnotes.md",
+                    "internal": true
+                  },
+                  { "type": "text", "value": ".", "key": "D5Uxh2iAEG" }
+                ],
+                "key": "pUZQCFtq2X"
+              }
+            ],
+            "key": "wH3lKTzi6F"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Paragraph", "key": "RBlD1aGQpg" }],
+            "enumerate": false,
+            "key": "GIVLM2Gypn"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Any text that does not belong to another block is simply a paragraph:",
+                "key": "jZEtJAKKZl"
+              }
+            ],
+            "key": "amBgJycKmD"
+          },
+          { "type": "myst", "value": "any _text_\n", "key": "WujeHslZc8" },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Valid HTML", "key": "eTnWbiryrq" }],
+            "enumerate": false,
+            "key": "StKxh6lqhE"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Any valid HTML may also be included in a MyST document and rendered to HTML. However, you must set the option ",
+                "key": "u6AREmcqVl"
+              },
+              { "type": "inlineCode", "value": "allowDangerousHtml: true", "key": "wQNk099Af0" },
+              { "type": "text", "value": " in the MyST parser.", "key": "EFIJ6rhmNv" }
+            ],
+            "key": "BTXB1oPqCf"
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "children": [{ "type": "text", "value": "Inline Markup", "key": "Qxq8wbXMPC" }],
+            "enumerate": false,
+            "key": "n6qklYRq6Y"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Inline links", "key": "xj6Dw2mj0T" }],
+            "identifier": "inline-links",
+            "label": "inline-links",
+            "enumerate": false,
+            "key": "siwQ1D1sAZ"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Auto-link where link itself is shown in final output:",
+                "key": "uIyL0iQTLe"
+              }
+            ],
+            "key": "yzhAkvgIkv"
+          },
+          {
+            "type": "myst",
+            "value": "Search engine: <https://www.google.com>\n",
+            "key": "zFaEaKjaS5"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Link with alternative text and optional title:",
+                "key": "iFLAwUh2JK"
+              }
+            ],
+            "key": "bSAR9KvqGr"
+          },
+          {
+            "type": "myst",
+            "value": "[search engine](https://www.google.com \"Google\")\n",
+            "key": "DUx4mfwfho"
+          },
+          {
+            "type": "admonition",
+            "kind": "seealso",
+            "children": [
+              {
+                "type": "admonitionTitle",
+                "children": [{ "type": "text", "value": "See Also", "key": "D5Ak62DzUY" }],
+                "key": "BVGWF2EEg5"
+              },
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "type": "link",
+                    "url": "/docs/references",
+                    "children": [],
+                    "key": "jrYYMaEwXC",
+                    "urlSource": "./references.md",
+                    "internal": true
+                  },
+                  {
+                    "type": "text",
+                    "value": " provides other ways to reference inline content.",
+                    "key": "uAjVMtwwmP"
+                  }
+                ],
+                "key": "cJMnJP5MO4"
+              }
+            ],
+            "key": "rAiSeGe3uN"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Inline images", "key": "xDr0IOljdj" }],
+            "enumerate": false,
+            "key": "t1V9qXD5Dz"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Link to an image can be done similar to other inline links, or you may use HTML syntax to include image size, etc.",
+                "key": "sSKKjg8EuU"
+              }
+            ],
+            "key": "UuIwYrW6Rv"
+          },
+          {
+            "type": "myst",
+            "value": "![alt](https://source.unsplash.com/random/500x200/?fruit \"title\")\n",
+            "key": "yQ0pCL757B"
+          },
+          {
+            "type": "admonition",
+            "kind": "seealso",
+            "children": [
+              {
+                "type": "admonitionTitle",
+                "children": [{ "type": "text", "value": "See Also", "key": "gaAJLMDpvN" }],
+                "key": "mOMR3e9r8C"
+              },
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "type": "link",
+                    "url": "/docs/figures",
+                    "children": [],
+                    "key": "Bfvi6AY1yh",
+                    "urlSource": "./figures.md",
+                    "internal": true
+                  },
+                  {
+                    "type": "text",
+                    "value": " provides other ways to size, label, and caption images.",
+                    "key": "eda8OfxjBs"
+                  }
+                ],
+                "key": "DbD79ZeOcO"
+              }
+            ],
+            "key": "KlyNFnn4x1"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Text formatting", "key": "x9NFJsUbmp" }],
+            "enumerate": false,
+            "key": "E2FinQSp20"
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "type": "text",
+                "value": "Standard inline formatting including bold, italic, code, as well as escaped symbols and line breaks:",
+                "key": "fkqZFAkteV"
+              }
+            ],
+            "key": "RQpwLwbVjJ"
+          },
+          {
+            "type": "myst",
+            "value": "**strong**, _emphasis_, `literal text`, \\*escaped symbols\\*, a hard\\\nbreak\n",
+            "key": "OzjR3pQvOb"
+          },
+          {
+            "type": "admonition",
+            "kind": "seealso",
+            "children": [
+              {
+                "type": "admonitionTitle",
+                "children": [{ "type": "text", "value": "See Also", "key": "VLI8pkJydY" }],
+                "key": "mWuKpirsVP"
+              },
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "type": "link",
+                    "url": "/docs/basic",
+                    "children": [],
+                    "key": "qrh6FWOvLo",
+                    "urlSource": "./basic.md",
+                    "internal": true
+                  },
+                  {
+                    "type": "text",
+                    "value": " provides other roles for subscript, superscript, abbeviations, and other text formating.",
+                    "key": "DmfcH1YrTM"
+                  }
+                ],
+                "key": "lZETqhoo4G"
+              }
+            ],
+            "key": "tpzzSb9vYm"
+          }
+        ],
+        "key": "cDpiJ4PVnt"
+      }
+    ],
+    "key": "iNmf0bazYN"
+  },
+  "references": { "cite": { "order": [], "data": {} }, "footnotes": {} },
+  "footer": {
+    "navigation": {
+      "prev": { "title": "Overview", "url": "/docs/overview", "group": "MyST Spec" },
+      "next": { "title": "Admonitions", "url": "/docs/admonitions", "group": "MyST Spec" }
+    }
+  },
+  "domain": "http://localhost:3000"
+}

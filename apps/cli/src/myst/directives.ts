@@ -385,6 +385,42 @@ const TabItem: IDirective = {
   hast: (h, node) => h(node, 'div', { class: 'margin' }),
 };
 
+const MystDemo: IDirective = {
+  myst: class MystDemo extends Directive {
+    public required_arguments = 0;
+
+    public optional_arguments = 0;
+
+    public final_argument_whitespace = false;
+
+    public has_content = true;
+
+    public option_spec = {};
+
+    run(data: IDirectiveData<keyof MystDemo['option_spec']>) {
+      const newTokens: Token[] = [];
+      const adToken = this.createToken('myst', 'div', 1, {
+        map: data.map,
+        block: true,
+        meta: { value: data.body },
+      });
+      newTokens.push(adToken);
+      return newTokens;
+    }
+  },
+  mdast: {
+    type: 'myst',
+    getAttrs(t) {
+      return {
+        value: t.meta.value,
+      };
+    },
+    noCloseToken: true,
+    isLeaf: true,
+  },
+  hast: (h, node) => h(node, 'div', { class: 'margin' }),
+};
+
 export const directives = {
   'r:var': RVar,
   mdast: Mdast,
@@ -399,4 +435,5 @@ export const directives = {
   tabSet: TabSet,
   'tab-item': TabItem,
   tabItem: TabItem,
+  myst: MystDemo,
 };
