@@ -1,25 +1,28 @@
-import mock from 'mock-fs';
+import { vol } from 'memfs';
 import { Session } from '../session';
 import { projectFromPath } from './fromPath';
 import { pagesFromToc } from './fromToc';
 import { tocFromProject } from './toToc';
 import { findProjectsOnPath } from './utils';
 
-afterEach(() => mock.restore());
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+jest.mock('fs', () => require('memfs').fs);
+
+beforeEach(() => vol.reset());
 
 const session = new Session();
 
 describe('site section generation', () => {
   it('empty', async () => {
-    mock({});
+    vol.fromJSON({});
     expect(() => projectFromPath(session, '.')).toThrow();
   });
   it('invalid index', async () => {
-    mock({ 'readme.md': '' });
+    vol.fromJSON({ 'readme.md': '' });
     expect(() => projectFromPath(session, '.', 'index.md')).toThrow();
   });
   it('readme.md only', async () => {
-    mock({ 'readme.md': '' });
+    vol.fromJSON({ 'readme.md': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
@@ -29,7 +32,7 @@ describe('site section generation', () => {
     });
   });
   it('README.md only', async () => {
-    mock({ 'README.md': '' });
+    vol.fromJSON({ 'README.md': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'README.md',
       path: '.',
@@ -39,7 +42,7 @@ describe('site section generation', () => {
     });
   });
   it('README.md and index.md', async () => {
-    mock({ 'README.md': '', 'index.md': '' });
+    vol.fromJSON({ 'README.md': '', 'index.md': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'index.md',
       path: '.',
@@ -49,7 +52,7 @@ describe('site section generation', () => {
     });
   });
   it('index.md only', async () => {
-    mock({ 'index.md': '' });
+    vol.fromJSON({ 'index.md': '' });
     expect(projectFromPath(session, '.', 'index.md')).toEqual({
       file: 'index.md',
       path: '.',
@@ -59,7 +62,7 @@ describe('site section generation', () => {
     });
   });
   it('folder/subfolder/index.md only', async () => {
-    mock({ 'folder/subfolder/index.md': '' });
+    vol.fromJSON({ 'folder/subfolder/index.md': '' });
     expect(projectFromPath(session, '.', 'folder/subfolder/index.md')).toEqual({
       file: 'folder/subfolder/index.md',
       path: '.',
@@ -69,7 +72,7 @@ describe('site section generation', () => {
     });
   });
   it('flat folder', async () => {
-    mock({ 'readme.md': '', 'page.md': '', 'notebook.ipynb': '' });
+    vol.fromJSON({ 'readme.md': '', 'page.md': '', 'notebook.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
@@ -90,7 +93,7 @@ describe('site section generation', () => {
     });
   });
   it('single folder', async () => {
-    mock({ 'readme.md': '', folder: { 'page.md': '', 'notebook.ipynb': '' } });
+    vol.fromJSON({ 'readme.md': '', 'folder/page.md': '', 'folder/notebook.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
@@ -115,9 +118,10 @@ describe('site section generation', () => {
     });
   });
   it('nested folders', async () => {
-    mock({
+    vol.fromJSON({
       'readme.md': '',
-      'folder1/01_MySecond_folder-ok/folder3': { '01_notebook.ipynb': '', '02_page.md': '' },
+      'folder1/01_MySecond_folder-ok/folder3/01_notebook.ipynb': '',
+      'folder1/01_MySecond_folder-ok/folder3/02_page.md': '',
     });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
@@ -151,7 +155,7 @@ describe('site section generation', () => {
     });
   });
   it('files before folders', async () => {
-    mock({ 'readme.md': '', 'zfile.md': '', afolder: { 'page.md': '' } });
+    vol.fromJSON({ 'readme.md': '', 'zfile.md': '', 'afolder/page.md': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
@@ -176,18 +180,12 @@ describe('site section generation', () => {
     });
   });
   it('specify index & folder', async () => {
-    mock({
+    vol.fromJSON({
       'ignore.md': '',
-      folder1: {
-        'page1.md': '',
-        folder2: {
-          'readme.md': '',
-          'page2.md': '',
-          folder3: {
-            'page3.md': '',
-          },
-        },
-      },
+      'folder1/page1.md': '',
+      'folder1/folder2/readme.md': '',
+      'folder1/folder2/page2.md': '',
+      'folder1/folder2/folder3/page3.md': '',
     });
     expect(projectFromPath(session, 'folder1', 'folder1/folder2/readme.md')).toEqual({
       file: 'folder1/folder2/readme.md',
@@ -222,7 +220,7 @@ describe('site section generation', () => {
     });
   });
   it('first md file as index', async () => {
-    mock({ folder: { 'page.md': '', 'notebook.ipynb': '' } });
+    vol.fromJSON({ 'folder/page.md': '', 'folder/notebook.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'folder/page.md',
       path: '.',
@@ -242,7 +240,7 @@ describe('site section generation', () => {
     });
   });
   it('other md picked over default notebook', async () => {
-    mock({ 'page.md': '', 'index.ipynb': '' });
+    vol.fromJSON({ 'page.md': '', 'index.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'page.md',
       path: '.',
@@ -258,7 +256,7 @@ describe('site section generation', () => {
     });
   });
   it('index notebook picked over other notebook', async () => {
-    mock({ 'aaa.ipynb': '', 'index.ipynb': '' });
+    vol.fromJSON({ 'aaa.ipynb': '', 'index.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'index.ipynb',
       path: '.',
@@ -274,7 +272,7 @@ describe('site section generation', () => {
     });
   });
   it('first notebook as index', async () => {
-    mock({ folder: { 'page.docx': '', 'notebook.ipynb': '' } });
+    vol.fromJSON({ 'folder/page.docx': '', 'folder/notebook.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'folder/notebook.ipynb',
       path: '.',
@@ -284,13 +282,12 @@ describe('site section generation', () => {
     });
   });
   it('stop traversing at curvenote.yml', async () => {
-    mock({
+    vol.fromJSON({
       'readme.md': '',
-      folder: {
-        'page.md': '',
-        'notebook.ipynb': '',
-        newproj: { 'page.md': '', 'curvenote.yml': '' },
-      },
+      'folder/page.md': '',
+      'folder/notebook.ipynb': '',
+      'folder/newproj/page.md': '',
+      'folder/newproj/curvenote.yml': '',
     });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
@@ -316,14 +313,13 @@ describe('site section generation', () => {
     });
   });
   it('do not stop traversing at root curvenote.yml', async () => {
-    mock({
+    vol.fromJSON({
       'curvenote.yml': '',
       'readme.md': '',
-      folder: {
-        'page.md': '',
-        'notebook.ipynb': '',
-        newproj: { 'page.md': '', 'curvenote.yml': '' },
-      },
+      'folder/page.md': '',
+      'folder/notebook.ipynb': '',
+      'folder/newproj/page.md': '',
+      'folder/newproj/curvenote.yml': '',
     });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
@@ -556,26 +552,24 @@ project: {}
 
 describe('findProjectPaths', () => {
   it('site curvenote.ymls', async () => {
-    mock({
+    vol.fromJSON({
       'curvenote.yml': SITE_CONFIG,
       'readme.md': '',
-      folder: {
-        'page.md': '',
-        'notebook.ipynb': '',
-        newproj: { 'page.md': '', 'curvenote.yml': SITE_CONFIG },
-      },
+      'folder/page.md': '',
+      'folder/notebook.ipynb': '',
+      'folder/newproj/page.md': '',
+      'folder/newproj/curvenote.yml': SITE_CONFIG,
     });
     expect(findProjectsOnPath(session, '.')).toEqual([]);
   });
   it('project curvenote.ymls', async () => {
-    mock({
+    vol.fromJSON({
       'curvenote.yml': PROJECT_CONFIG,
       'readme.md': '',
-      folder: {
-        'page.md': '',
-        'notebook.ipynb': '',
-        newproj: { 'page.md': '', 'curvenote.yml': PROJECT_CONFIG },
-      },
+      'folder/page.md': '',
+      'folder/notebook.ipynb': '',
+      'folder/newproj/page.md': '',
+      'folder/newproj/curvenote.yml': PROJECT_CONFIG,
     });
     expect(findProjectsOnPath(session, '.')).toEqual(['.', 'folder/newproj']);
   });
@@ -594,7 +588,7 @@ chapters:
 
 describe('pagesFromToc', () => {
   it('pages from toc', async () => {
-    mock({
+    vol.fromJSON({
       '_toc.yml': TOC_FILE,
       'index.md': '',
       'a.md': '',
@@ -610,7 +604,7 @@ describe('pagesFromToc', () => {
     ]);
   });
   it('pages from toc, with extra files', async () => {
-    mock({
+    vol.fromJSON({
       '_toc.yml': TOC_FILE,
       'index.md': '',
       'a.md': '',
@@ -628,21 +622,17 @@ describe('pagesFromToc', () => {
     ]);
   });
   it('pages from toc, nested', async () => {
-    mock({
+    vol.fromJSON({
       'readme.md': '',
       'x.md': '',
-      section: {
-        'y.md': '',
-        'z.md': '',
-      },
-      project: {
-        '_toc.yml': TOC_FILE,
-        'index.md': '',
-        'a.md': '',
-        'b.md': '',
-        'c.md': '',
-        'd.md': '',
-      },
+      'section/y.md': '',
+      'section/z.md': '',
+      'project/_toc.yml': TOC_FILE,
+      'project/index.md': '',
+      'project/a.md': '',
+      'project/b.md': '',
+      'project/c.md': '',
+      'project/d.md': '',
     });
     expect(projectFromPath(session, '.')).toEqual({
       path: '.',
@@ -663,21 +653,17 @@ describe('pagesFromToc', () => {
     });
   });
   it('pages from bad toc', async () => {
-    mock({
+    vol.fromJSON({
       'readme.md': '',
       'x.md': '',
-      section: {
-        'y.md': '',
-        'z.md': '',
-      },
-      project: {
-        '_toc.yml': '',
-        'index.md': '',
-        'a.md': '',
-        'b.md': '',
-        'c.md': '',
-        'd.md': '',
-      },
+      'section/y.md': '',
+      'section/z.md': '',
+      'project/_toc.yml': '',
+      'project/index.md': '',
+      'project/a.md': '',
+      'project/b.md': '',
+      'project/c.md': '',
+      'project/d.md': '',
     });
     expect(projectFromPath(session, '.')).toEqual({
       path: '.',
