@@ -68,6 +68,12 @@ export async function convertImageToWebp(
   quality = 80,
   overwrite = false,
 ): Promise<string | null> {
+  const allowedExtensions = ['.png', '.jpg', '.jpeg', '.tiff', '.gif'];
+  if (!allowedExtensions.includes(path.extname(image))) {
+    session.log.debug(`Skipping webp conversion of "${image}"`);
+    return null;
+  }
+
   const { size } = fs.statSync(image);
   if (size > LARGE_IMAGE) {
     const inMB = (size / (1024 * 1024)).toLocaleString(undefined, {
@@ -79,6 +85,7 @@ export async function convertImageToWebp(
     );
     throw new Error(`${inMB} MB`);
   }
+
   const dirname = path.dirname(image);
   const basename = path.basename(image, path.extname(image));
   const webp = path.join(dirname, `${basename}.webp`);
