@@ -1,5 +1,11 @@
 # curvenote
 
+## 0.6.10
+
+### Patch Changes
+
+- 0568d3b: Clone recursively when using locally.
+
 ## 0.6.9
 
 ### Patch Changes
