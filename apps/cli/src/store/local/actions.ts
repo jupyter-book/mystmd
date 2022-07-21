@@ -4,14 +4,13 @@ import { createHash } from 'crypto';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import type { GenericNode } from 'mystjs';
-import { convertHtmlToMdast, selectAll } from 'mystjs';
-import { extname, join, dirname } from 'path';
+import { convertHtmlToMdast } from 'mystjs';
+import { extname, join } from 'path';
 import { KINDS } from '@curvenote/blocks';
 import { SiteProject } from '../../config/types';
 import { getPageFrontmatter } from '../../frontmatter';
 import { parseMyst, Root } from '../../myst';
 import { ISession } from '../../session/types';
-import { Logger } from '../../logging';
 import { loadAllConfigs } from '../../session';
 import {
   transformRoot,
@@ -29,6 +28,8 @@ import {
   transformAdmonitions,
   transformLinks,
   transformCode,
+  importMdastFromJson,
+  includeFilesDirective,
 } from '../../transforms';
 import {
   PreRendererData,
@@ -144,34 +145,6 @@ export async function loadFile(session: ISession, path: string) {
   if (success) session.log.debug(toc(`loadFile: loaded ${path} in %s.`));
 }
 
-/**
- * This is the {mdast} directive, that loads from disk
- * For example, tables that can't be represented in markdown.
- */
-function importMdastFromJson(log: Logger, filename: string, mdast: Root) {
-  const mdastNodes = selectAll('mdast', mdast) as GenericNode[];
-  const loadedData: Record<string, GenericNode> = {};
-  const dir = dirname(filename);
-  mdastNodes.forEach((node) => {
-    const [mdastFilename, id] = node.id.split('#');
-    let data = loadedData[mdastFilename];
-    if (!data) {
-      data = JSON.parse(fs.readFileSync(join(dir, mdastFilename)).toString());
-      loadedData[mdastFilename] = data;
-    }
-    if (!data[id]) {
-      log.error(`Mdast Node import: Could not find ${id} in ${mdastFilename}`);
-      return;
-    }
-    // Clear the current object
-    Object.keys(node).forEach((k) => {
-      delete node[k];
-    });
-    // Replace with the import
-    Object.assign(node, data[id]);
-  });
-}
-
 const htmlHandlers = {
   comment(h: any, node: any) {
     // Prevents HTML comments from showing up as text in curvespace
@@ -212,7 +185,9 @@ export async function transformMdast(
     cite: { order: [], data: {} },
     footnotes: {},
   };
-  importMdastFromJson(session.log, file, mdast); // This must be first!
+  // Import additional content from mdast or other files
+  importMdastFromJson(session, file, mdast);
+  includeFilesDirective(session, file, mdast);
   mdast = await transformRoot(mdast);
   convertHtmlToMdast(mdast, { htmlHandlers });
   // Initialize citation renderers for this (non-bib) file

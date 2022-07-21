@@ -227,6 +227,41 @@ const Mdast: IDirective = {
   hast: (h, node) => h(node, 'div', { id: node.id }),
 };
 
+const Include: IDirective = {
+  myst: class Include extends Directive {
+    public required_arguments = 1;
+
+    public optional_arguments = 0;
+
+    public final_argument_whitespace = false;
+
+    public has_content = false;
+
+    public option_spec = {};
+
+    run(data: IDirectiveData<keyof Include['option_spec']>) {
+      const token = this.createToken('include', 'div', 0, {
+        content: data.body,
+        map: data.bodyMap,
+        block: true,
+        meta: { file: data.args[0] },
+      });
+      return [token];
+    }
+  },
+  mdast: {
+    type: 'include',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        file: t.meta.file,
+      };
+    },
+  },
+  hast: (h, node) => h(node, 'div', { file: node.file }),
+};
+
 const LinkBlock: IDirective = {
   myst: class LinkBlock extends Directive {
     public required_arguments = 1;
@@ -271,13 +306,97 @@ const LinkBlock: IDirective = {
   hast: (h, node) => h(node, 'a'),
 };
 
+const TabSet: IDirective = {
+  myst: class TabSet extends Directive {
+    public required_arguments = 0;
+
+    public optional_arguments = 0;
+
+    public final_argument_whitespace = false;
+
+    public has_content = true;
+
+    public option_spec = {
+      class: directiveOptions.class_option,
+    };
+
+    run(data: IDirectiveData<keyof TabSet['option_spec']>) {
+      const newTokens: Token[] = [];
+      // we create an overall container, then individual containers for the title and body
+      const adToken = this.createToken('tabSet_open', 'div', 1, {
+        map: data.map,
+        block: true,
+      });
+      newTokens.push(adToken);
+      const bodyTokens = this.nestedParse(data.body, data.bodyMap[0]);
+      newTokens.push(...bodyTokens);
+      newTokens.push(this.createToken('tabSet_close', 'div', -1, { block: true }));
+      return newTokens;
+    }
+  },
+  mdast: {
+    type: 'tabSet',
+    getAttrs(t) {
+      return {
+        class: t.meta.class,
+      };
+    },
+  },
+  hast: (h, node) => h(node, 'div', { class: 'margin' }),
+};
+
+const TabItem: IDirective = {
+  myst: class TabItem extends Directive {
+    public required_arguments = 1;
+
+    public optional_arguments = 0;
+
+    public final_argument_whitespace = false;
+
+    public has_content = true;
+
+    public option_spec = {
+      sync: directiveOptions.unchanged,
+    };
+
+    run(data: IDirectiveData<keyof TabItem['option_spec']>) {
+      const newTokens: Token[] = [];
+      const adToken = this.createToken('tabItem_open', 'div', 1, {
+        map: data.map,
+        block: true,
+        meta: { title: data.args[0] },
+      });
+      newTokens.push(adToken);
+      const bodyTokens = this.nestedParse(data.body, data.bodyMap[0]);
+      newTokens.push(...bodyTokens);
+      newTokens.push(this.createToken('tabItem_close', 'div', -1, { block: true }));
+      return newTokens;
+    }
+  },
+  mdast: {
+    type: 'tabItem',
+    getAttrs(t) {
+      return {
+        title: t.meta.title,
+        sync: t.meta.sync,
+      };
+    },
+  },
+  hast: (h, node) => h(node, 'div', { class: 'margin' }),
+};
+
 export const directives = {
   'r:var': RVar,
   mdast: Mdast,
+  include: Include,
   bibliography: Bibliography,
   iframe: IFrame,
   margin: Margin,
   output: Output,
   'link-block': LinkBlock,
   linkBlock: LinkBlock,
+  'tab-set': TabSet,
+  tabSet: TabSet,
+  'tab-item': TabItem,
+  tabItem: TabItem,
 };

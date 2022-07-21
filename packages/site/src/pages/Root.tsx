@@ -1,5 +1,11 @@
 import { DocumentLoader, SiteManifest } from '@curvenote/site-common';
-import { SiteProvider, Theme, ThemeProvider, UiStateProvider } from '@curvenote/ui-providers';
+import {
+  SiteProvider,
+  TabStateProvider,
+  Theme,
+  ThemeProvider,
+  UiStateProvider,
+} from '@curvenote/ui-providers';
 import {
   Links,
   LiveReload,
@@ -40,18 +46,20 @@ export function Document({
         <Analytics analytics={config?.analytics} />
       </head>
       <body className="m-0 transition-colors duration-500 bg-white dark:bg-stone-900">
-        <UiStateProvider>
-          <ThemeProvider theme={theme}>
-            <SiteProvider config={config}>
-              <Navigation top={top} height={height}>
-                <TopNav />
-              </Navigation>
-              <article ref={ref} className="content">
-                {children}
-              </article>
-            </SiteProvider>
-          </ThemeProvider>
-        </UiStateProvider>
+        <TabStateProvider>
+          <UiStateProvider>
+            <ThemeProvider theme={theme}>
+              <SiteProvider config={config}>
+                <Navigation top={top} height={height}>
+                  <TopNav />
+                </Navigation>
+                <article ref={ref} className="content">
+                  {children}
+                </article>
+              </SiteProvider>
+            </ThemeProvider>
+          </UiStateProvider>
+        </TabStateProvider>
         <ScrollRestoration />
         <Scripts />
         {process.env.NODE_ENV === 'development' && <LiveReload />}

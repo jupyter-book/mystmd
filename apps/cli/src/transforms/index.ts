@@ -1,3 +1,5 @@
+export { importMdastFromJson } from './mdast';
+export { includeFilesDirective } from './include';
 export { ensureBlockNesting } from './blocks';
 export { transformCitations } from './citations';
 export { transformLinkedDOIs } from './dois';
