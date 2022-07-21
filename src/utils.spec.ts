@@ -119,7 +119,7 @@ describe('utils', () => {
     });
   });
   describe('converting a github url', () => {
-    test.each(CASES)('%s -> %s', (input, expected) => {
+    test.each(CASES)('%s', (input, expected) => {
       const parsed = parseGitUrl(input as string);
       expect(parsed.url).toBe(expected.url);
       expect(parsed.owner).toBe(expected.owner);
