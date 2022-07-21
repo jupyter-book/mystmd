@@ -58,7 +58,8 @@ export const MySTRenderer: NodeRenderer = (node) => {
           ></textarea>
         </label>
       </div>
-      <div className="relative min-h-1 pt-[50px] px-6 pb-6 dark:bg-slate-900">
+      {/* The `exclude-from-outline` class is excluded from the document outline */}
+      <div className="exclude-from-outline relative min-h-1 pt-[50px] px-6 pb-6 dark:bg-slate-900">
         <div className="absolute cursor-pointer top-0 left-0 border dark:border-slate-600">
           {['Demo', 'AST', 'HTML'].map((show) => (
             <button
