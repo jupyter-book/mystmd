@@ -26,8 +26,10 @@ export const TabSetRenderer: NodeRenderer = (node, children) => {
           return (
             <div
               className={classNames('flex-none px-3 py-1 font-semibold cursor-pointer', {
-                'text-blue-600 border-b-2 border-b-blue-600': active[key],
-                'text-gray-500': !active[key],
+                'text-blue-600 border-b-2 border-b-blue-600 dark:border-b-white dark:text-white':
+                  active[key],
+                'text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100':
+                  !active[key],
               })}
               onClick={() => onClick(key)}
             >
