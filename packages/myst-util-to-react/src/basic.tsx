@@ -45,7 +45,7 @@ type BasicNodeRenderers = {
   thematicBreak: NodeRenderer<spec.ThematicBreak>;
   subscript: NodeRenderer<spec.Subscript>;
   superscript: NodeRenderer<spec.Superscript>;
-  abbr: NodeRenderer<spec.Abbreviation>;
+  abbreviation: NodeRenderer<spec.Abbreviation>;
   // Tables
   table: NodeRenderer<spec.Table>;
   tableRow: NodeRenderer<spec.TableRow>;
@@ -162,7 +162,7 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   superscript(node, children) {
     return <sup key={node.key}>{children}</sup>;
   },
-  abbr(node, children) {
+  abbreviation(node, children) {
     return (
       <abbr key={node.key} title={node.title}>
         {children}
