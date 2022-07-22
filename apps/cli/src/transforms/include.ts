@@ -18,6 +18,7 @@ export function includeFilesDirective(session: ISession, filename: string, mdast
     const file = join(dir, node.file);
     if (!fs.existsSync(file)) {
       session.log.error(`Include Directive: Could not find "${file}" in "${filename}"`);
+      return;
     }
     const content = fs.readFileSync(file).toString();
     const children = parseMyst(content).children as GenericNode[];
