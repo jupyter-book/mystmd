@@ -1,5 +1,11 @@
 # myst-util-to-react
 
+## 0.1.7
+
+### Patch Changes
+
+- 92ceb9b: Export CopyIcon
+
 ## 0.1.6
 
 ### Patch Changes

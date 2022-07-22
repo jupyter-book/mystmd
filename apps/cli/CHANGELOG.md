@@ -1,5 +1,11 @@
 # curvenote
 
+## 0.6.12
+
+### Patch Changes
+
+- e048508: Include directive should return if file doesn't exist
+
 ## 0.6.11
 
 ### Patch Changes
