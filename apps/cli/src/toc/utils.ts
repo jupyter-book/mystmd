@@ -51,7 +51,7 @@ export function createTitle(s: string): string {
 }
 
 function removeLeadingEnumeration(s: string): string {
-  if (s.match(/^([12][0-9]{3})[^0-9]/)) {
+  if (s.match(/^([12][0-9]{3})([^0-9])?/)) {
     // Starts with what looks like a year
     return s;
   }
@@ -59,7 +59,9 @@ function removeLeadingEnumeration(s: string): string {
     // More than five numbers
     return s;
   }
-  return s.replace(/^([0-9_.-]+)/, '');
+  const removed = s.replace(/^([0-9_.-]+)/, '');
+  if (!removed) return s; // Never return an empty slug!
+  return removed;
 }
 
 export function fileInfo(file: string, pageSlugs: PageSlugs): { slug: string; title: string } {
