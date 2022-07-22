@@ -1,5 +1,11 @@
 # curvenote
 
+## 0.6.13
+
+### Patch Changes
+
+- d220c0d: Never return empty slugs when removing enumeration
+
 ## 0.6.12
 
 ### Patch Changes
