@@ -176,7 +176,7 @@ export function validateAuthor(input: any, opts: Options) {
       if (role === undefined) return undefined;
       if (!CRT_CONTRIBUTOR_ROLES.includes(role.toLowerCase())) {
         return validationError(
-          `invalid value "${role}" - must be CRT contributor roles - see https://casrai.org/credit/`,
+          `invalid value "${role}" - must be CRT contributor roles - see https://credit.niso.org/`,
           rolesOpts,
         );
       }
