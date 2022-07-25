@@ -35,7 +35,7 @@ Curvenote allows you to easily create, edit, and publish content to the web as a
 
 Curvenote can be used to create all sorts of open-access content, click the links below to see some examples!
 
-- [Courses](https://geosci-inversion.curve.space/inversion) & [books](https://climasoma.curve.space/)
+- [Courses](https://geosci-inversion.curve.space) & [books](https://climasoma.curve.space/)
 - [Seminar](https://seminars.simpeg.xyz/) & [conference](https://transform.softwareunderground.org/) websites
 - [Blogs](https://curvenote.com/blog) & [technical websites](https://www.stevejpurves.com/blog)
 - [Papers](https://www.stevejpurves.com/la-palma-earthquakes) & [reports](https://www.stevejpurves.com/computational-finance)
