@@ -52,6 +52,7 @@ export interface PartialBlock extends BlockFrontMatterProps {
 }
 
 export interface Block extends PartialBlock {
+  hidden: boolean;
   published: boolean;
   published_versions: number[];
   latest_version: number | null;
