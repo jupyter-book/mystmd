@@ -577,6 +577,7 @@ describe('pageFrontmatterFromDTO', () => {
     description: 'description',
     name: 'name',
     caption: '',
+    hidden: false,
     published: false,
     published_versions: [],
     latest_version: 0,
