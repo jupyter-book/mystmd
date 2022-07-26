@@ -6,7 +6,7 @@ export const docLinks = {
   overview: 'https://curvenote.com/docs/cli',
   auth: 'https://curvenote.com/docs/cli/authorization',
   pull: 'https://curvenote.com/docs/cli/pull',
-  curvespace: 'https://curvenote.com/docs/web',
+  web: 'https://curvenote.com/docs/web',
 };
 
 export const LOGO = `<?xml version="1.0" encoding="utf-8"?>

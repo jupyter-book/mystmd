@@ -21,7 +21,7 @@ function makeCurvenoteCleanCLI(program: Command) {
 
 function makeCurvenoteCloneCLI(program: Command) {
   const command = new Command('clone')
-    .description('Clone curvespace into the build directory')
+    .description('Clone curvenote into the build directory')
     .addOption(makeBranchOption())
     .action(clirun(web.clone, { program, requireSiteConfig: true }));
   return command;

@@ -145,7 +145,7 @@ export function copyLogo(session: ISession, logoName?: string | null): string | 
 /**
  * Build site manifest from local curvenote state
  *
- * Site manifest acts as the configuration to build the curvespace site.
+ * Site manifest acts as the configuration to build the website.
  * It combines local site config and project configs into a single structure.
  */
 export function getSiteManifest(session: ISession): SiteManifest {

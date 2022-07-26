@@ -2,7 +2,7 @@ function title(opts: { title: string }) {
   return {
     name: 'title',
     type: 'input',
-    message: 'What is the title of your curve.space site?',
+    message: 'What is the title of your website?',
     default: opts.title,
   };
 }
@@ -36,7 +36,7 @@ function projectLink(opts?: { projectLink?: string }) {
     name: 'projectLink',
     message: 'Link to Curvenote project:',
     type: 'input',
-    default: opts?.projectLink || 'https://curvenote.com/@templates/curvespace',
+    default: opts?.projectLink || 'https://curvenote.com/@templates/web',
   };
 }
 

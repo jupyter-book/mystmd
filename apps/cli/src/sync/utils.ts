@@ -19,7 +19,7 @@ export function getDefaultSiteConfig(title?: string): SiteConfig {
     logo: INIT_LOGO_PATH,
     logoText: title || 'My Curve Space',
     nav: [],
-    actions: [{ title: 'Learn More', url: docLinks.curvespace }],
+    actions: [{ title: 'Learn More', url: docLinks.web }],
     projects: [],
   };
 }

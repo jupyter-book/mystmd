@@ -22,7 +22,7 @@
       }
     },
     "doi": "10.1016/j.cageo.2015.09.015",
-    "github": "curvenote/curvespace",
+    "github": "curvenote/curvenote",
     "venue": {
       "title": "Curve Space",
       "url": "https://curve.space"
@@ -57,9 +57,7 @@
       {
         "type": "heading",
         "depth": 1,
-        "children": [
-          { "type": "text", "value": "Article Comments", "key": "seJIcT2EnE" }
-        ],
+        "children": [{ "type": "text", "value": "Article Comments", "key": "seJIcT2EnE" }],
         "key": "Tnw4xPquXK"
       },
       {
@@ -71,16 +69,12 @@
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [
-                  { "type": "text", "value": "Heading!", "key": "sUv4BlfFax" }
-                ],
+                "children": [{ "type": "text", "value": "Heading!", "key": "sUv4BlfFax" }],
                 "key": "ecOT8GrVm2"
               },
               {
                 "type": "paragraph",
-                "children": [
-                  { "type": "text", "value": "Hello world", "key": "Jrw055vp9M" }
-                ],
+                "children": [{ "type": "text", "value": "Hello world", "key": "Jrw055vp9M" }],
                 "key": "gJodCstqzU"
               }
             ],
@@ -92,16 +86,12 @@
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [
-                  { "type": "text", "value": "Attention", "key": "aXI0FdePIE" }
-                ],
+                "children": [{ "type": "text", "value": "Attention", "key": "aXI0FdePIE" }],
                 "key": "k618inKIfJ"
               },
               {
                 "type": "paragraph",
-                "children": [
-                  { "type": "text", "value": "Hello world", "key": "xZ26Bxc16s" }
-                ],
+                "children": [{ "type": "text", "value": "Hello world", "key": "xZ26Bxc16s" }],
                 "key": "jxzSQPUpgS"
               }
             ],
@@ -113,16 +103,12 @@
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [
-                  { "type": "text", "value": "Caution", "key": "K7lRdJgMad" }
-                ],
+                "children": [{ "type": "text", "value": "Caution", "key": "K7lRdJgMad" }],
                 "key": "QkoYUlknzz"
               },
               {
                 "type": "paragraph",
-                "children": [
-                  { "type": "text", "value": "Hello world", "key": "nacEIe3tAW" }
-                ],
+                "children": [{ "type": "text", "value": "Hello world", "key": "nacEIe3tAW" }],
                 "key": "OCT313DjQJ"
               }
             ],
@@ -134,16 +120,12 @@
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [
-                  { "type": "text", "value": "Danger", "key": "jnbJfPs7yZ" }
-                ],
+                "children": [{ "type": "text", "value": "Danger", "key": "jnbJfPs7yZ" }],
                 "key": "KklwNE4zMz"
               },
               {
                 "type": "paragraph",
-                "children": [
-                  { "type": "text", "value": "Hello world", "key": "Xt9UHKAgpI" }
-                ],
+                "children": [{ "type": "text", "value": "Hello world", "key": "Xt9UHKAgpI" }],
                 "key": "F6BoU1pPGn"
               }
             ],
@@ -160,9 +142,7 @@
               },
               {
                 "type": "paragraph",
-                "children": [
-                  { "type": "text", "value": "Hello world", "key": "NWyyaEmmYX" }
-                ],
+                "children": [{ "type": "text", "value": "Hello world", "key": "NWyyaEmmYX" }],
                 "key": "b7R3u7iOJ1"
               }
             ],
@@ -174,16 +154,12 @@
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [
-                  { "type": "text", "value": "Important", "key": "xSPtFZYX5C" }
-                ],
+                "children": [{ "type": "text", "value": "Important", "key": "xSPtFZYX5C" }],
                 "key": "wF64P6Ql1R"
               },
               {
                 "type": "paragraph",
-                "children": [
-                  { "type": "text", "value": "Hello world", "key": "JZ53Fphw7k" }
-                ],
+                "children": [{ "type": "text", "value": "Hello world", "key": "JZ53Fphw7k" }],
                 "key": "GR4yWUkgcg"
               }
             ],
@@ -200,9 +176,7 @@
               },
               {
                 "type": "paragraph",
-                "children": [
-                  { "type": "text", "value": "Hello world", "key": "oVrUQG2j19" }
-                ],
+                "children": [{ "type": "text", "value": "Hello world", "key": "oVrUQG2j19" }],
                 "key": "vKbUTQSAPK"
               }
             ],
@@ -219,9 +193,7 @@
               },
               {
                 "type": "paragraph",
-                "children": [
-                  { "type": "text", "value": "Hello world", "key": "FK4HRi5stO" }
-                ],
+                "children": [{ "type": "text", "value": "Hello world", "key": "FK4HRi5stO" }],
                 "key": "McH7xBGzdD"
               }
             ],
@@ -233,16 +205,12 @@
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [
-                  { "type": "text", "value": "See Also", "key": "LLIIPrZ0cA" }
-                ],
+                "children": [{ "type": "text", "value": "See Also", "key": "LLIIPrZ0cA" }],
                 "key": "r1PWgCqaqv"
               },
               {
                 "type": "paragraph",
-                "children": [
-                  { "type": "text", "value": "Hello world", "key": "B0HjNaoBci" }
-                ],
+                "children": [{ "type": "text", "value": "Hello world", "key": "B0HjNaoBci" }],
                 "key": "oQLrTeSJXQ"
               }
             ],
@@ -259,9 +227,7 @@
               },
               {
                 "type": "paragraph",
-                "children": [
-                  { "type": "text", "value": "Hello world", "key": "fLfWctxcEQ" }
-                ],
+                "children": [{ "type": "text", "value": "Hello world", "key": "fLfWctxcEQ" }],
                 "key": "jl3bEWDoOH"
               }
             ],
@@ -273,16 +239,12 @@
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [
-                  { "type": "text", "value": "Warning", "key": "x54acRcEDK" }
-                ],
+                "children": [{ "type": "text", "value": "Warning", "key": "x54acRcEDK" }],
                 "key": "enDlvpf4NJ"
               },
               {
                 "type": "paragraph",
-                "children": [
-                  { "type": "text", "value": "Hello world", "key": "IG8UPSc3YP" }
-                ],
+                "children": [{ "type": "text", "value": "Hello world", "key": "IG8UPSc3YP" }],
                 "key": "tCjIztKlTo"
               }
             ],

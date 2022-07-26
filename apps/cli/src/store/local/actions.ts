@@ -163,7 +163,7 @@ export async function getRawFrontmatterFromFile(session: ISession, file: string)
 
 const htmlHandlers = {
   comment(h: any, node: any) {
-    // Prevents HTML comments from showing up as text in curvespace
+    // Prevents HTML comments from showing up as text in web
     // TODO: Remove once this is landed in mystjs
     const result = h(node, 'comment');
     (result as GenericNode).value = node.value;

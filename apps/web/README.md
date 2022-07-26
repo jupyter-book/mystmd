@@ -1,7 +1,7 @@
 # Curvespace
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/curvespace/blob/main/LICENSE)
-![CI](https://github.com/curvenote/curvespace/workflows/CI/badge.svg)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/curvenote/blob/main/LICENSE)
+![CI](https://github.com/curvenote/curvenote/workflows/CI/badge.svg)
 
 Curvespace is designed for modern technical communication that is interactive, computational, and linked to data. You can create and serve a local website to write your documentation, paper, thesis, or blog.
 

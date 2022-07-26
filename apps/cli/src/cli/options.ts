@@ -14,7 +14,7 @@ export function makeDomainOption() {
 export function makeBranchOption() {
   return new Option(
     '--branch [branch]',
-    'Branch to clone from git@github.com:curvenote/curvespace.git',
+    'Branch to clone from git@github.com:curvenote/curvenote.git',
   ).default('main');
 }
 
