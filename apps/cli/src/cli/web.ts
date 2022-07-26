@@ -73,16 +73,14 @@ function makeDeployCLI(program: Command) {
 
 export function addWebCLI(program: Command): void {
   const command = new Command('web').description(
-    'Commands to clone, install, and start a webserver',
+    'Commands to clone, install, or clean the webserver',
   );
   command.addCommand(makeCurvenoteCleanCLI(program));
   command.addCommand(makeCurvenoteCloneCLI(program));
   command.addCommand(makeCurvenoteInstallCLI(program));
-  command.addCommand(makeCurvenoteStartCLI(program));
-  command.addCommand(makeDeployCLI(program));
-  command.addCommand(makeBuildCLI(program));
   program.addCommand(command);
-  // Add a `start` and `deploy` shortcut at the top level
+  // Top level are `start`, `deploy`, and `build`
   program.addCommand(makeCurvenoteStartCLI(program));
   program.addCommand(makeDeployCLI(program));
+  program.addCommand(makeBuildCLI(program));
 }
