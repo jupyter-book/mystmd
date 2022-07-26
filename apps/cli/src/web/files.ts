@@ -1,5 +1,4 @@
 import fs from 'fs';
-import fsp from 'fs/promises';
 import path from 'path';
 import { KnownCellOutputMimeTypes } from '@curvenote/blocks';
 import { IFileObject, IFileObjectFactoryFn, Metadata } from '@curvenote/nbtx';
@@ -61,12 +60,12 @@ export class WebFileObject implements IFileObject {
    * @param contentType: string - the mime type of the data
    * @returns Promise<void>
    */
-  writeString(data: string, contentType: string): Promise<void> {
+  async writeString(data: string, contentType: string) {
     this.contentType = KnownCellOutputMimeTypes.AppJson;
     this.hash = computeHash(data);
     this.log.debug(`Writing json output file for ${contentType} with ${data.length} bytes`);
     const json = JSON.stringify({ content_type: contentType, content: data });
-    return fsp.writeFile(path.join(this.publicPath, this.id), json, { encoding: 'utf8' });
+    fs.writeFileSync(path.join(this.publicPath, this.id), json, { encoding: 'utf8' });
   }
 
   /**
@@ -78,12 +77,12 @@ export class WebFileObject implements IFileObject {
    * @param contentType: string | undefined - the mime type of the data, which if supplied will be used as fallback
    * @returns
    */
-  writeBase64(data: string, contentType?: string): Promise<void> {
+  async writeBase64(data: string, contentType?: string) {
     const [justData, header] = data.split(';base64,').reverse(); // reverse as sometimes there is no header
     this.contentType = header?.replace('data:', '') ?? contentType;
     this.hash = computeHash(justData);
     this.log.debug(`Writing binary output file ${justData.length} bytes`);
-    return fsp.writeFile(path.join(this.publicPath, this.id), justData, {
+    fs.writeFileSync(path.join(this.publicPath, this.id), justData, {
       encoding: 'base64',
     });
   }
