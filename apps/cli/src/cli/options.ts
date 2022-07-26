@@ -25,7 +25,7 @@ export function makeForceOption() {
 }
 export function makeCIOption() {
   return new Option(
-    '-ci',
+    '-ci, --ci', // Must have both!
     'Perform a minimal build, for use on Continuous Integration (CI)',
   ).default(false);
 }
