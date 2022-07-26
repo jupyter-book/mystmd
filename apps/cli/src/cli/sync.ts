@@ -24,7 +24,10 @@ function makeInitCLI(program: Command) {
 function makePullCLI(program: Command) {
   const command = new Command('pull')
     .description('Pull all remote information for a Curvenote project')
-    .argument('[folder]', 'The location of the content to pull, defaults to the current directory')
+    .argument(
+      '[path]',
+      'The location of the project or file to update, defaults to the current directory',
+    )
     .addOption(makeYesOption())
     .action(clirun(sync.pull, { program }));
   return command;

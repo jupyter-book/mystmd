@@ -82,7 +82,7 @@ export async function init(session: ISession, opts: Options) {
   if (selectors.selectLocalSiteConfig(session.store.getState())) {
     throw Error(
       `Site config in ${CURVENOTE_YML} config already exists, did you mean to ${chalk.bold(
-        'curvenote add',
+        'curvenote clone',
       )} or ${chalk.bold('curvenote start')}?`,
     );
   }

@@ -7,6 +7,8 @@ import { chalkLogger, LogLevel } from '../logging';
 import { Session, getToken } from '../session';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
+import CurvenoteVersion from '../version';
+import { packageJsonPath } from '../utils';
 
 const INSTALL_NODE_MESSAGE = `
 You can download Node here:
@@ -43,6 +45,22 @@ async function checkNodeVersion(session: ISession): Promise<boolean> {
     });
   });
   return checking;
+}
+
+function logVersions(session: ISession, debug = true) {
+  let siteVersion = '';
+  try {
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath(session)).toString()) as {
+      name: string;
+      version: string;
+    };
+    siteVersion = `\n - ${packageJson.name}: ${packageJson.version}`;
+  } catch (error) {
+    // pass
+  }
+  session.log[debug ? 'debug' : 'info'](
+    `\n\nVersions:\n - curvenote: ${CurvenoteVersion}${siteVersion}\n\n`,
+  );
 }
 
 type SessionOpts = {
@@ -98,6 +116,7 @@ export function clirun(
     const useSession = cli.anonymous
       ? anonSession(opts)
       : getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
+    logVersions(useSession);
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
     const state = useSession.store.getState();
@@ -116,12 +135,11 @@ export function clirun(
     try {
       await func(useSession, ...args);
     } catch (error) {
-      if (opts.debug === true) {
+      if (opts.debug) {
         useSession.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-      } else if (opts.debug) {
-        fs.writeFileSync(opts.debug, (error as Error)?.stack ?? '');
       }
       useSession.log.error((error as Error).message);
+      logVersions(useSession, false);
       process.exit(1);
     }
   };
