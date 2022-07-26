@@ -51,6 +51,7 @@ function makeBuildCLI(program: Command) {
     .addOption(makeCleanOption())
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
+    .addOption(makeWriteTocOption())
     .addOption(makeCIOption())
     .addOption(makeStrictOption())
     .addOption(makeCheckLinksOption())

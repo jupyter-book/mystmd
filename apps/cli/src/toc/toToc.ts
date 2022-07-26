@@ -1,12 +1,16 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
-import { join } from 'path';
+import { join, relative } from 'path';
 import { JupyterBookChapter, TOC } from '../export/jupyter-book/toc';
 import { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
 import { removeExtension } from './utils';
 
-const GENERATED_TOC_HEADER = `
-# Table of Contents
+function getRelativeDocumentLink(file: string, path: string) {
+  if (path === '.') return removeExtension(file);
+  return removeExtension(relative(path, file));
+}
+
+const GENERATED_TOC_HEADER = `# Table of Contents
 #
 # Curvenote will respect:
 # 1. New pages
@@ -25,7 +29,7 @@ const GENERATED_TOC_HEADER = `
 
 `;
 
-function chaptersFromPages(pages: (LocalProjectFolder | LocalProjectPage)[]) {
+function chaptersFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: string) {
   const levels = pages.map((page) => page.level);
   const currentLevel = Math.min(...levels) as PageLevels;
   const currentLevelIndices = levels.reduce((inds: number[], val: PageLevels, i: number) => {
@@ -44,13 +48,13 @@ function chaptersFromPages(pages: (LocalProjectFolder | LocalProjectPage)[]) {
     const chapter: JupyterBookChapter = {};
     if ('file' in pages[index]) {
       const page = pages[index] as LocalProjectPage;
-      chapter.file = removeExtension(page.file);
+      chapter.file = getRelativeDocumentLink(page.file, path);
     } else if ('title' in pages[index]) {
       const page = pages[index] as LocalProjectFolder;
       chapter.title = page.title;
     }
     if (nextPages.length) {
-      chapter.sections = chaptersFromPages(nextPages);
+      chapter.sections = chaptersFromPages(nextPages, path);
     }
     return chapter;
   });
@@ -62,20 +66,20 @@ function chaptersFromPages(pages: (LocalProjectFolder | LocalProjectPage)[]) {
  *
  * Output consists of a top-level chapter with files/sections
  * based on project structure. Sections headings may be either
- * associated with a `file` (results in clickable curvespace page)
- * or just a `title` (results in unclickable curvespace heading)
+ * associated with a `file` (results in clickable in page)
+ * or just a `title` (results in unclickable in heading)
  */
-export function tocFromProject(project: LocalProject) {
+export function tocFromProject(project: LocalProject, path = '.') {
   const toc: TOC = {
     format: 'jb-book',
-    root: removeExtension(project.file),
-    chapters: chaptersFromPages(project.pages),
+    root: getRelativeDocumentLink(project.file, path),
+    chapters: chaptersFromPages(project.pages, path),
   };
   return toc;
 }
 
 export function writeTocFromProject(project: LocalProject, path: string) {
   const filename = join(path, '_toc.yml');
-  const content = `${GENERATED_TOC_HEADER}${yaml.dump(tocFromProject(project))}`;
+  const content = `${GENERATED_TOC_HEADER}${yaml.dump(tocFromProject(project, path))}`;
   fs.writeFileSync(filename, content);
 }

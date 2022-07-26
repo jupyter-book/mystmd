@@ -430,6 +430,34 @@ describe('tocFromProject', () => {
       ],
     });
   });
+  it('root page with relative path', async () => {
+    expect(
+      tocFromProject(
+        {
+          file: 'path/readme.md',
+          path: '.',
+          index: 'readme',
+          citations: [],
+          pages: [
+            {
+              file: 'path/a.md',
+              slug: 'a',
+              level: 1,
+            },
+          ],
+        },
+        'path', // This is the relative path we are calling this from!
+      ),
+    ).toEqual({
+      format: 'jb-book',
+      root: 'readme',
+      chapters: [
+        {
+          file: 'a',
+        },
+      ],
+    });
+  });
   it('root and folder and page', async () => {
     expect(
       tocFromProject({

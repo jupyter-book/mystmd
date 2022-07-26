@@ -12,7 +12,7 @@ import { LocalProject } from './types';
  *
  * @param session
  * @param path - root directory of project, relative to current directory; default is '.'
- * @param index - index file, including path relative to current directory; default is 'index.md'
+ * @param opts - `index`, including path relative to current directory; default is 'index.md'
  *     or 'readme.md' in 'path' directory
  *
  * If jupyterbook '_toc.yml' exists in path, project structure will be derived from that.
@@ -42,7 +42,9 @@ export function loadProjectFromDisk(
   }
   if (writeToc) {
     try {
-      session.log.info(`📓 Writing '_toc.yml' file to ${path}`);
+      session.log.info(
+        `📓 Writing '_toc.yml' file to ${path === '.' ? 'the current directory' : path}`,
+      );
       writeTocFromProject(newProject, path);
       // Re-load from TOC just in case there are subtle differences with resulting project
       newProject = projectFromToc(session, path);
