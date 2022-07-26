@@ -49,7 +49,9 @@ const Headings = ({ headings, activeId, highlight }: Props) => (
             e.preventDefault();
             const el = document.querySelector(`#${heading.id}`);
             if (!el) return;
-            getHeaders().forEach((h) => h.classList.remove(HIGHLIGHT_CLASS));
+            getHeaders().forEach((h) => {
+              h.classList.remove(HIGHLIGHT_CLASS);
+            });
             el.classList.add(HIGHLIGHT_CLASS);
             highlight?.();
             el.scrollIntoView({ behavior: 'smooth' });

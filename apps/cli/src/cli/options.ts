@@ -27,6 +27,12 @@ export function makeForceOption() {
 export function makeCIOption() {
   return new Option('-ci, --ci', 'Perform a minimal build, for use on CI').default(false);
 }
+export function makeStrictOption() {
+  return new Option('--strict', 'Error on build warnings').default(false);
+}
+export function makeCheckLinksOption() {
+  return new Option('--check-links', 'Check all links in files').default(false);
+}
 export function makeWriteTocOption() {
   return new Option(
     '--write-toc',

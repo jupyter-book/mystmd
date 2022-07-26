@@ -7,7 +7,14 @@ import { dirname, join, parse } from 'path';
 import { oxaLinkToId, VersionId } from '@curvenote/blocks';
 import { Root } from '../myst';
 import { WebFileObject } from '../web/files';
-import { computeHash, hashAndCopyStaticFile, staticPath, toText, versionIdToURL } from '../utils';
+import {
+  addWarningForFile,
+  computeHash,
+  hashAndCopyStaticFile,
+  staticPath,
+  toText,
+  versionIdToURL,
+} from '../utils';
 import { ISession } from '../session/types';
 import { PageFrontmatter } from '../frontmatter/types';
 import { convertImageToWebp } from '../export/utils/imagemagick';
@@ -89,7 +96,8 @@ export async function saveImageInStaticFolder(
     const { ok, json } = await session.get(url);
     const downloadUrl = json.links?.download;
     if (!ok || !downloadUrl) {
-      session.log.error(`Error fetching image version: ${url}`);
+      const message = `Error fetching image version: ${url}`;
+      addWarningForFile(session, opts?.sourceFile, message, 'error');
       return null;
     }
     file = await downloadAndSaveImage(
@@ -111,7 +119,8 @@ export async function saveImageInStaticFolder(
     await fileObject.writeBase64(urlSource);
     file = fileObject.id;
   } else {
-    session.log.error(`⚠️  Cannot find image "${urlSource}" in ${opts?.sourceFile || filePath}`);
+    const message = `Cannot find image "${urlSource}" in ${opts?.sourceFile || filePath}`;
+    addWarningForFile(session, opts?.sourceFile, message, 'error');
     return null;
   }
   let webp: string | undefined;
@@ -121,7 +130,8 @@ export async function saveImageInStaticFolder(
       if (result) webp = `/_static/${result}`;
     } catch (error) {
       session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-      session.log.warn(`⚠️  Large image ${imageLocalFile} (${(error as any).message})`);
+      const message = `Large image ${imageLocalFile} (${(error as any).message})`;
+      addWarningForFile(session, opts?.sourceFile, message, 'warn');
     }
   }
   // Update mdast with new file name
@@ -142,7 +152,7 @@ export function transformImageAltText(tree: Root) {
   });
 }
 
-export async function transformImages(session: ISession, mdast: Root, file: string) {
+export async function transformImages(session: ISession, file: string, mdast: Root) {
   const images = selectAll('image', mdast) as GenericNode[];
   return Promise.all(
     images.map(async (image) => {

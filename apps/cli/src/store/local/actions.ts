@@ -39,11 +39,14 @@ import {
 } from '../../transforms/types';
 import { loadProjectFromDisk } from '../../toc';
 import { copyActionResource, copyLogo, getSiteManifest } from '../../toc/manifest';
-import { LocalProjectPage } from '../../toc/types';
+import { LocalProject, LocalProjectPage } from '../../toc/types';
 import { writeFileToFolder, serverPath, tic } from '../../utils';
 import { selectors } from '..';
 import { processNotebook } from './notebook';
 import { watch } from './reducers';
+import { warnings } from '../build';
+import { selectFileWarnings } from '../build/selectors';
+import chalk from 'chalk';
 
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
@@ -55,6 +58,9 @@ type ProcessOptions = {
   reloadConfigs?: boolean;
   watchMode?: boolean;
   writeToc?: boolean;
+  writeFiles?: boolean;
+  strict?: boolean;
+  checkLinks?: boolean;
 };
 
 function castSession(session: ISession): ISessionWithCache {
@@ -105,44 +111,45 @@ export function combineProjectCitationRenderers(session: ISession, projectPath: 
   cache.$citationRenderers[projectPath] = combineRenderers(cache, ...project.citations);
 }
 
-export async function loadFile(session: ISession, path: string) {
+export async function loadFile(session: ISession, file: string) {
   const toc = tic();
+  session.store.dispatch(warnings.actions.clearWarnings({ file }));
   const cache = castSession(session);
   let success = true;
   let sha256: string | undefined;
   try {
-    const content = fs.readFileSync(path).toString();
+    const content = fs.readFileSync(file).toString();
     sha256 = createHash('sha256').update(content).digest('hex');
-    const ext = extname(path).toLowerCase();
+    const ext = extname(file).toLowerCase();
     switch (ext) {
       case '.md': {
         const mdast = parseMyst(content);
-        cache.$mdast[path] = { pre: { kind: KINDS.Article, file: path, mdast } };
+        cache.$mdast[file] = { pre: { kind: KINDS.Article, file, mdast } };
         break;
       }
       case '.ipynb': {
-        const mdast = await processNotebook(cache, path, content);
-        cache.$mdast[path] = { pre: { kind: KINDS.Notebook, file: path, mdast } };
+        const mdast = await processNotebook(cache, file, content);
+        cache.$mdast[file] = { pre: { kind: KINDS.Notebook, file, mdast } };
         break;
       }
       case '.bib': {
-        const renderer = await loadCitations(session, path);
-        cache.$citationRenderers[path] = renderer;
+        const renderer = await loadCitations(session, file);
+        cache.$citationRenderers[file] = renderer;
         break;
       }
       default:
-        session.log.error(`Unrecognized extension ${path}`);
+        session.log.error(`Unrecognized extension ${file}`);
         session.log.info(
-          `"${path}": Please rerun the build with "-c" to ensure the built files are cleared.`,
+          `"${file}": Please rerun the build with "-c" to ensure the built files are cleared.`,
         );
         success = false;
     }
   } catch (err) {
-    session.log.error(`Error reading file ${path}: ${err}`);
+    session.log.error(`Error reading file ${file}: ${err}`);
     success = false;
   }
-  session.store.dispatch(watch.actions.markFileChanged({ path, sha256 }));
-  if (success) session.log.debug(toc(`loadFile: loaded ${path} in %s.`));
+  session.store.dispatch(watch.actions.markFileChanged({ path: file, sha256 }));
+  if (success) session.log.debug(toc(`loadFile: loaded ${file} in %s.`));
 }
 
 const htmlHandlers = {
@@ -193,7 +200,7 @@ export async function transformMdast(
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
   ensureBlockNesting(mdast);
-  transformMath(log, mdast, frontmatter, file);
+  transformMath(session, file, mdast, frontmatter);
   // Kind needs to still be Article here even if jupytext, to handle outputs correctly
   await transformOutputs(session, mdast, kind);
   // Combine file-specific citation renderers with project renderers from bib files
@@ -201,11 +208,11 @@ export async function transformMdast(
   transformCitations(log, mdast, fileCitationRenderer, references, file);
   transformEnumerators(mdast, frontmatter);
   transformAdmonitions(mdast);
-  transformCode(mdast, frontmatter);
+  transformCode(session, file, mdast, frontmatter);
   transformImageAltText(mdast);
   transformFootnotes(mdast, references); // Needs to happen nead the end
   transformKeys(mdast);
-  await transformImages(session, mdast, file);
+  await transformImages(session, file, mdast);
   // Note, the thumbnail transform must be **after** images, as it may read the images
   await transformThumbnail(session, frontmatter, mdast, file);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
@@ -243,16 +250,27 @@ export async function transformMdast(
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
 }
 
-export async function postProcessMdast(session: ISession, { file }: { file: string }) {
+export async function postProcessMdast(
+  session: ISession,
+  { file, strict, checkLinks }: { file: string; strict?: boolean; checkLinks?: boolean },
+) {
   const toc = tic();
   const { log } = session;
-  const cache = castSession(session);
-  if (!cache.$mdast[file]) return;
-  const mdastPost = cache.$mdast[file].post;
-  if (!mdastPost) throw new Error(`Expected mdast to be processed for ${file}`);
+  const mdastPost = selectFile(session, file);
   // TODO: this is doing things in place...
-  transformLinks(session, mdastPost.mdast, file);
-  log.debug(toc(`Transformed mdast cross references for "${file}" in %s`));
+  const linkLookup = transformLinks(session, file, mdastPost.mdast, { checkLinks });
+  if (strict || checkLinks) {
+    await linkLookup;
+  }
+  log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
+}
+
+export function selectFile(session: ISession, file: string) {
+  const cache = castSession(session);
+  if (!cache.$mdast[file]) throw new Error(`Expected mdast to be processed for ${file}`);
+  const mdastPost = cache.$mdast[file].post;
+  if (!mdastPost) throw new Error(`Expected mdast to be processed and transformed for ${file}`);
+  return mdastPost;
 }
 
 export async function writeFile(
@@ -260,15 +278,11 @@ export async function writeFile(
   { file, pageSlug, projectSlug }: { file: string; projectSlug: string; pageSlug: string },
 ) {
   const toc = tic();
-  const { log } = session;
-  const cache = castSession(session);
-  if (!cache.$mdast[file]) return;
-  const mdastPost = cache.$mdast[file].post;
-  if (!mdastPost) throw new Error(`Expected mdast to be processed and transformed for ${file}`);
+  const mdastPost = selectFile(session, file);
   const id = join(projectSlug, pageSlug);
   const jsonFilename = join(serverPath(session), 'app', 'content', `${id}.json`);
   writeFileToFolder(jsonFilename, JSON.stringify(mdastPost));
-  log.debug(toc(`Wrote "${file}" in %s`));
+  session.log.debug(toc(`Wrote "${file}" in %s`));
 }
 
 export async function writeSiteManifest(session: ISession) {
@@ -300,11 +314,13 @@ export async function processProject(
   session: ISession,
   siteProject: SiteProject,
   opts?: ProcessOptions,
-) {
+): Promise<LocalProject> {
   const toc = tic();
   const { log } = session;
-  const { watchMode, writeToc } = opts || {};
-  const project = loadProjectFromDisk(session, siteProject.path, { writeToc });
+  const { watchMode, writeToc, writeFiles = true } = opts || {};
+  const project = loadProjectFromDisk(session, siteProject.path, {
+    writeToc: writeFiles && writeToc,
+  });
   // Load the citations first, or else they are loaded in each call below
   const pages = [
     { file: project.file, slug: project.index },
@@ -333,18 +349,29 @@ export async function processProject(
     ),
   );
   // Handle all cross references
-  await Promise.all(pages.map((page) => postProcessMdast(session, { file: page.file })));
-  // Write all pages
   await Promise.all(
     pages.map((page) =>
-      writeFile(session, {
+      postProcessMdast(session, {
         file: page.file,
-        projectSlug: siteProject.slug,
-        pageSlug: page.slug,
+        strict: opts?.strict,
+        checkLinks: opts?.checkLinks,
       }),
     ),
   );
+  // Write all pages
+  if (writeFiles) {
+    await Promise.all(
+      pages.map((page) =>
+        writeFile(session, {
+          file: page.file,
+          projectSlug: siteProject.slug,
+          pageSlug: page.slug,
+        }),
+      ),
+    );
+  }
   log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug} in %s.`));
+  return project;
 }
 
 export async function processSite(session: ISession, opts?: ProcessOptions): Promise<boolean> {
@@ -352,12 +379,44 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
   if (!siteConfig?.projects.length) return false;
-  await Promise.all(
+  const projects = await Promise.all(
     siteConfig.projects.map((siteProject) => processProject(session, siteProject, opts)),
   );
-  await writeSiteManifest(session);
-  // Copy all assets
-  copyLogo(session, siteConfig.logo);
-  siteConfig.actions.forEach((action) => copyActionResource(session, action));
+  if (opts?.strict) {
+    const hasWarnings = projects
+      .map((project) => {
+        return project.pages
+          .map((page) => {
+            if (!('slug' in page)) return [0, 0];
+            const buildWarnings = selectFileWarnings(session.store.getState(), page.file);
+            if (!buildWarnings || buildWarnings.length === 0) return [0, 0];
+            const resp = buildWarnings
+              .map(({ message, kind }) => chalk[kind === 'error' ? 'red' : 'yellow'](message))
+              .join('\n  - ');
+            session.log.info(`\n${page.file}\n  - ${resp}\n`);
+            return [
+              buildWarnings.filter(({ kind }) => kind === 'error').length,
+              buildWarnings.filter(({ kind }) => kind === 'warn').length,
+            ];
+          })
+          .reduce((a, b) => [a[0] + b[0], a[1] + b[1]], [0, 0]);
+      })
+      .reduce((a, b) => [a[0] + b[0], a[1] + b[1]], [0, 0]);
+    if (hasWarnings[0] > 0) {
+      const pluralE = hasWarnings[0] > 1 ? 's' : '';
+      const pluralW = hasWarnings[1] > 1 ? 's' : '';
+      throw new Error(
+        `Site has ${hasWarnings[0]} error${pluralE} and ${hasWarnings[1]} warning${pluralW}, stopping build.`,
+      );
+    }
+  }
+  if (opts?.writeFiles ?? true) {
+    await writeSiteManifest(session);
+    // Copy all assets
+    copyLogo(session, siteConfig.logo);
+    siteConfig.actions.forEach((action) => {
+      copyActionResource(session, action);
+    });
+  }
   return true;
 }

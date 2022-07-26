@@ -39,6 +39,7 @@ function findSafeMimeOutputs(output: MinifiedOutput): {
   const image = RENDER_PRIORITY.reduce((acc: MinifiedMimePayload | undefined, mimetype) => {
     if (acc) return acc;
     if (data && data[mimetype]) return data[mimetype];
+    return undefined;
   }, undefined);
   const text = data && data['text/plain'];
   return { image, text };

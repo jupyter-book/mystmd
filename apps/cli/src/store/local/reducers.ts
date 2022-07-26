@@ -58,6 +58,7 @@ type WatchedFile = {
   sha256?: string | null;
   url?: string | null;
 };
+
 type WatchState = {
   linkLookup: Record<string, { path: string; url: string }>;
   files: Record<string, WatchedFile>;

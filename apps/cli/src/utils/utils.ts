@@ -7,6 +7,7 @@ import { JsonObject, VersionId } from '@curvenote/blocks';
 import { Logger } from '../logging';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
+import { WarningKind, warnings } from '../store/build';
 
 export const BUILD_FOLDER = '_build';
 export const THUMBNAILS_FOLDER = 'thumbnails';
@@ -64,6 +65,29 @@ export function warnOnUnrecognizedKeys(
   if (extraKeys.length === 0) return;
   const plural = extraKeys.length > 1 ? 's' : '';
   log.warn(`${start} Did not recognize key${plural}: "${extraKeys.join('", "')}".`);
+}
+
+export function addWarningForFile(
+  session: ISession,
+  file: string | undefined | null,
+  message: string,
+  kind: WarningKind = 'warn',
+) {
+  switch (kind) {
+    case 'info':
+      session.log.info(`ℹ️ ${file}: ${message}`);
+      break;
+    case 'error':
+      session.log.error(`⛔️ ${file}: ${message}`);
+      break;
+    case 'warn':
+    default:
+      session.log.warn(`⚠️  ${file}: ${message}`);
+      break;
+  }
+  if (file) {
+    session.store.dispatch(warnings.actions.addWarning({ file, message, kind }));
+  }
 }
 
 /** Writes a file ensuring that the directory exists */

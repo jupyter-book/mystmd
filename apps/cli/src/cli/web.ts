@@ -8,6 +8,8 @@ import {
   makeForceOption,
   makeYesOption,
   makeWriteTocOption,
+  makeStrictOption,
+  makeCheckLinksOption,
 } from './options';
 
 function makeCurvenoteCleanCLI(program: Command) {
@@ -50,6 +52,8 @@ function makeBuildCLI(program: Command) {
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
     .addOption(makeCIOption())
+    .addOption(makeStrictOption())
+    .addOption(makeCheckLinksOption())
     .action(clirun(web.build, { program, requireSiteConfig: true }));
   return command;
 }
@@ -60,6 +64,8 @@ function makeDeployCLI(program: Command) {
     .addOption(makeForceOption())
     .addOption(makeYesOption())
     .addOption(makeCIOption())
+    .addOption(makeStrictOption())
+    .addOption(makeCheckLinksOption())
     .action(clirun(web.deploy, { program, requireSiteConfig: true }));
   return command;
 }

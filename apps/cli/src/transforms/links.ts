@@ -2,11 +2,53 @@ import fs from 'fs';
 import path from 'path';
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
+import pLimit from 'p-limit';
+import fetch from 'node-fetch';
 import { OxaLink, oxaLink, oxaLinkToId } from '@curvenote/blocks';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { Root } from '../myst';
-import { hashAndCopyStaticFile } from '../utils';
+import { addWarningForFile, hashAndCopyStaticFile, tic } from '../utils';
+import { links } from '../store/build';
+import { selectLinkStatus } from '../store/build/selectors';
+import type { ExternalLinkResult } from '../store/build';
+
+// These limit access from command line tools by default
+const skippedDomains = ['www.linkedin.com', 'linkedin.com', 'medium.com', 'twitter.com'];
+
+async function checkLink(session: ISession, url: string): Promise<ExternalLinkResult> {
+  const cached = selectLinkStatus(session.store.getState(), url);
+  if (cached) return cached;
+  const link: ExternalLinkResult = {
+    url,
+  };
+  if (url.startsWith('mailto:')) {
+    link.skipped = true;
+    session.log.debug(`Skipping: ${url}`);
+    session.store.dispatch(links.actions.updateLink(link));
+    return link;
+  }
+  try {
+    const parsedUrl = new URL(url);
+    if (skippedDomains.includes(parsedUrl.hostname)) {
+      link.skipped = true;
+      session.log.debug(`Skipping: ${url}`);
+      session.store.dispatch(links.actions.updateLink(link));
+      return link;
+    }
+    session.log.debug(`Checking that "${url}" exists`);
+    const resp = await fetch(url);
+    link.ok = resp.ok;
+    link.status = resp.status;
+    link.statusText = resp.statusText;
+  } catch (error) {
+    session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+    session.log.debug(`Error fetching ${url} ${(error as Error).message}`);
+    link.ok = false;
+  }
+  session.store.dispatch(links.actions.updateLink(link));
+  return link;
+}
 
 type LinkInfo = {
   url: string;
@@ -56,10 +98,13 @@ export function fileFromRelativePath(
 /**
  * Populate link node with rich oxa info
  */
-function mutateOxaLink(session: ISession, link: GenericNode, oxa: OxaLink) {
+function mutateOxaLink(session: ISession, file: string, link: GenericNode, oxa: OxaLink) {
   link.oxa = oxa;
   const key = oxaLink(oxa, false) as string;
   const info = selectors.selectOxaLinkInformation(session.store.getState(), key);
+  if (!info) {
+    addWarningForFile(session, file, `Information for oxa.link not found: ${key}`);
+  }
   const url = info?.url;
   if (url && url !== link.url) {
     // the `internal` flag is picked up in the link renderer (prefetch!)
@@ -96,13 +141,20 @@ function mutateStaticLink(session: ISession, link: GenericNode, linkFile: string
   link.static = true;
 }
 
-export function transformLinks(session: ISession, mdast: Root, file: string) {
-  const links = selectAll('link,linkBlock', mdast) as GenericNode[];
-  links.forEach((link) => {
+const limitOutgoingConnections = pLimit(25);
+
+export async function transformLinks(
+  session: ISession,
+  file: string,
+  mdast: Root,
+  opts?: { checkLinks?: boolean },
+): Promise<string[]> {
+  const linkNodes = selectAll('link,linkBlock', mdast) as GenericNode[];
+  linkNodes.forEach((link) => {
     const urlSource = link.urlSource || link.url;
     const oxa = link.oxa || oxaLinkToId(urlSource);
     if (oxa) {
-      mutateOxaLink(session, link, oxa);
+      mutateOxaLink(session, file, link, oxa);
       return;
     }
     if (link.url === '' || link.url.startsWith('#')) {
@@ -118,6 +170,27 @@ export function transformLinks(session: ISession, mdast: Root, file: string) {
       } else {
         mutateStaticLink(session, link, linkFile);
       }
+      return;
     }
   });
+  const linkUrls = linkNodes
+    .filter((link) => !(link.internal || link.static))
+    .map((link) => link.url as string);
+  if (!opts?.checkLinks || linkUrls.length === 0) return linkUrls;
+  const toc = tic();
+  const plural = linkUrls.length > 1 ? 's' : '';
+  session.log.info(`🔗 Checking ${linkUrls.length} link${plural} in ${file}`);
+  const linkResults = await Promise.all(
+    linkUrls.map(async (url) =>
+      limitOutgoingConnections(async () => {
+        const check = await checkLink(session, url);
+        if (check.ok || check.skipped) return url as string;
+        const status = check.status ? ` (${check.status}, ${check.statusText})` : '';
+        addWarningForFile(session, file, `Link for "${url}" did not resolve.${status}`, 'error');
+        return url as string;
+      }),
+    ),
+  );
+  session.log.info(toc(`🔗 Checked ${linkUrls.length} link${plural} in ${file} in %s`));
+  return linkResults;
 }

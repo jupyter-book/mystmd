@@ -4,7 +4,7 @@ import { CURVENOTE_YML, SiteProject, SiteAction, SiteAnalytics } from '../config
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from '../frontmatter/validators';
 import { ISession } from '../session/types';
 import { RootState, selectors } from '../store';
-import { publicPath, warnOnUnrecognizedKeys } from '../utils';
+import { addWarningForFile, publicPath, warnOnUnrecognizedKeys } from '../utils';
 import { filterKeys } from '../utils/validators';
 import { SiteManifest, ManifestProject, ManifestProjectPage, ManifestProjectFolder } from './types';
 
@@ -78,9 +78,12 @@ export function getLogoPaths(
     logoName = join('public', logoName);
   }
   if (!fs.existsSync(logoName)) {
-    session.log[opts.silent ? 'debug' : 'error'](
-      `Could not find logo at "${origLogoName}". See 'config.site.logo'`,
-    );
+    const message = `Could not find logo at "${origLogoName}". See 'config.site.logo'`;
+    if (opts.silent) {
+      session.log.debug(message);
+    } else {
+      addWarningForFile(session, CURVENOTE_YML, message);
+    }
     return null;
   }
   const logo = `logo${extname(logoName)}`;

@@ -14,6 +14,12 @@ module.exports = {
     'import/no-duplicates': 'error',
     'import/no-unresolved': 'off', // This errors out on '~/module' that is defined in tsconfig
     '@typescript-eslint/no-shadow': 'error',
+    'array-callback-return': [
+      'error',
+      {
+        checkForEach: true,
+      },
+    ],
     'prettier/prettier': [
       'error',
       {

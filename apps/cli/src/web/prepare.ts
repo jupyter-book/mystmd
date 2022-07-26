@@ -7,6 +7,8 @@ import { processSite } from '../store/local/actions';
 export type Options = {
   clean?: boolean;
   force?: boolean;
+  strict?: boolean;
+  checkLinks?: boolean;
   branch?: string;
   ci?: boolean;
   yes?: boolean;
@@ -31,5 +33,5 @@ export async function buildSite(session: ISession, opts: Options): Promise<boole
   const { writeToc, force, clean } = opts;
   if (force || clean) cleanBuiltFiles(session);
   ensureBuildFoldersExist(session);
-  return processSite(session, { writeToc });
+  return processSite(session, { writeToc, strict: opts.strict, checkLinks: opts.checkLinks });
 }
