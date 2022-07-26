@@ -1,9 +1,9 @@
 import fs from 'fs';
 import pLimit from 'p-limit';
-import { join } from 'path';
+import { join, dirname, basename, extname } from 'path';
 import { projectFrontmatterFromDTO, saveAffiliations } from '../frontmatter/api';
 import { loadConfigOrThrow, writeConfigs } from '../config';
-import { projectToJupyterBook } from '../export';
+import { oxaLinkToMarkdown, oxaLinkToNotebook, projectToJupyterBook } from '../export';
 import { LogLevel, getLevel } from '../logging';
 import { Project } from '../models';
 import { ISession } from '../session/types';
@@ -12,6 +12,7 @@ import { config } from '../store/local';
 import { isDirectory } from '../toc/utils';
 import { confirmOrExit, tic } from '../utils';
 import { projectLogString } from './utils';
+import { getRawFrontmatterFromFile } from '../store/local/actions';
 
 /**
  * Pull content for a project on a path
@@ -62,6 +63,23 @@ export async function pullProjects(session: ISession, opts: { level?: LogLevel }
   );
 }
 
+export async function pullDocument(session: ISession, file: string) {
+  const frontmatter = await getRawFrontmatterFromFile(session, file);
+  if (!frontmatter?.oxa) {
+    throw new Error(`File ${file} does not have a "oxa" in the frontmatter.`);
+  }
+  switch (extname(file)) {
+    case '.md':
+      await oxaLinkToMarkdown(session, frontmatter.oxa, basename(file), { path: dirname(file) });
+      break;
+    case '.ipynb':
+      await oxaLinkToNotebook(session, frontmatter.oxa, basename(file), { path: dirname(file) });
+      break;
+    default:
+      throw new Error('Unrecognized extension to pull document.');
+  }
+}
+
 type Options = {
   yes?: boolean;
 };
@@ -78,10 +96,15 @@ type Options = {
  */
 export async function pull(session: ISession, path?: string, opts?: Options) {
   path = path || '.';
-  if (!fs.existsSync(path) || !isDirectory(path)) {
+  if (!fs.existsSync(path)) {
     throw new Error(
-      `Invalid path: "${path}", it must be a folder accessible from the local directory`,
+      `Invalid path: "${path}", it must be a folder or file accessible from the local directory`,
     );
+  }
+  if (!isDirectory(path)) {
+    await confirmOrExit(`Pulling will overwrite the file "${path}". Are you sure?`, opts);
+    await pullDocument(session, path);
+    return;
   }
   // Site config is loaded on session init
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());

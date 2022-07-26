@@ -8,7 +8,7 @@ import { convertHtmlToMdast } from 'mystjs';
 import { extname, join } from 'path';
 import { KINDS } from '@curvenote/blocks';
 import { SiteProject } from '../../config/types';
-import { getPageFrontmatter } from '../../frontmatter';
+import { frontmatterFromMdastTree, getPageFrontmatter } from '../../frontmatter';
 import { parseMyst, Root } from '../../myst';
 import { ISession } from '../../session/types';
 import { loadAllConfigs } from '../../session';
@@ -150,6 +150,15 @@ export async function loadFile(session: ISession, file: string) {
   }
   session.store.dispatch(watch.actions.markFileChanged({ path: file, sha256 }));
   if (success) session.log.debug(toc(`loadFile: loaded ${file} in %s.`));
+}
+
+export async function getRawFrontmatterFromFile(session: ISession, file: string) {
+  const cache = castSession(session);
+  await loadFile(session, file);
+  const result = cache.$mdast[file];
+  if (!result || !result.pre) return undefined;
+  const frontmatter = frontmatterFromMdastTree(result.pre.mdast);
+  return frontmatter.frontmatter;
 }
 
 const htmlHandlers = {

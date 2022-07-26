@@ -9,7 +9,7 @@ import { toText } from '../utils';
 import { PageFrontmatter } from './types';
 import { validatePageFrontmatter, fillPageFrontmatter } from './validators';
 
-function frontmatterFromMdastTree(
+export function frontmatterFromMdastTree(
   tree: Root,
   removeNode = true,
 ): { tree: Root; frontmatter: Record<string, any> } {
