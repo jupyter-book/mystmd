@@ -193,7 +193,7 @@ export function validateDomain(input: any, opts: ValidationOptions) {
   const [name, sub] = getCurvespaceParts(lowerCase as string);
   if (name) return createCurvespaceDomain(name, sub);
   if (lowerCase.endsWith('.curve.space')) {
-    return validationError(`invalid curvespace domain: ${input}`, opts);
+    return validationError(`invalid *.curve.space domain: ${input}`, opts);
   }
   return validateSubdomain(lowerCase as string, opts);
 }
