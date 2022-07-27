@@ -46,7 +46,6 @@ export const defaultOptions: Omit<AllOptions, 'roles' | 'directives'> = {
   },
   transform: {},
   docutils: {
-    colonFences: false, // REMOVE when bumped
     roles: rolesDefault,
     directives: directivesDefault,
   },
