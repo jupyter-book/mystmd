@@ -7,7 +7,7 @@ import { MinifiedOutput, convertToIOutputs, fetchAndEncodeOutputImages } from '@
 import { ChevronDoubleDownIcon } from '@heroicons/react/outline';
 import { selectIFrameHeight, selectIFrameReady, State } from './selectors';
 
-const PERCENT_OF_WINOW = 0.9;
+const PERCENT_OF_WINDOW = 0.9;
 
 export const NativeJupyterOutputs = ({
   id,
@@ -40,8 +40,8 @@ export const NativeJupyterOutputs = ({
 
   useEffect(() => {
     if (height == null) return;
-    if (height > PERCENT_OF_WINOW * windowSize.height) {
-      setFrameHeight(PERCENT_OF_WINOW * windowSize.height);
+    if (height > PERCENT_OF_WINDOW * windowSize.height) {
+      setFrameHeight(PERCENT_OF_WINDOW * windowSize.height);
       setClamped(true);
     } else {
       setFrameHeight(height + 25);
