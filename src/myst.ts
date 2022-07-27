@@ -44,6 +44,7 @@ export const defaultOptions: Omit<AllOptions, 'roles' | 'directives'> = {
   },
   transform: {},
   docutils: {
+    colonFences: true,
     roles: rolesDefault,
     directives: directivesDefault,
   },
