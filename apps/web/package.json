@@ -36,7 +36,7 @@
     "lodash.throttle": "^4.1.1",
     "myst-spec": "^0.0.4",
     "myst-util-to-react": "*",
-    "mystjs": "^0.0.10",
+    "mystjs": "^0.0.13",
     "nanoid": "^3.3.2",
     "node-cache": "^5.1.2",
     "react": "^17.0.2",

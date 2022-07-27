@@ -16,7 +16,7 @@
     "@curvenote/blocks": "*"
   },
   "devDependencies": {
-    "mystjs": "^0.0.10",
+    "mystjs": "^0.0.13",
     "eslint-config-curvenote": "*",
     "tsconfig": "*",
     "typescript": "^4.7.4"
