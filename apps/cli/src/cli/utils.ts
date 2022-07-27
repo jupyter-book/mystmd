@@ -8,7 +8,7 @@ import { Session, getToken } from '../session';
 import { ISession } from '../session/types';
 import { selectors } from '../store';
 import CurvenoteVersion from '../version';
-import { packageJsonPath } from '../utils';
+import { webPackageJsonPath } from '../utils';
 
 const INSTALL_NODE_MESSAGE = `
 You can download Node here:
@@ -50,7 +50,7 @@ async function checkNodeVersion(session: ISession): Promise<boolean> {
 function logVersions(session: ISession, debug = true) {
   let siteVersion = '';
   try {
-    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath(session)).toString()) as {
+    const packageJson = JSON.parse(fs.readFileSync(webPackageJsonPath(session)).toString()) as {
       name: string;
       version: string;
     };
@@ -64,7 +64,7 @@ function logVersions(session: ISession, debug = true) {
 }
 
 type SessionOpts = {
-  debug?: boolean | string;
+  debug?: boolean;
   config?: string;
 };
 
