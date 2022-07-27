@@ -132,6 +132,14 @@ const defaultMdast: Record<string, Spec> = {
   strong: {
     type: 'strong',
   },
+  colon_fence: {
+    type: 'code',
+    isLeaf: true,
+    noCloseToken: true,
+    getAttrs(t) {
+      return { lang: getLang(t), value: withoutTrailingNewline(t.content) };
+    },
+  },
   fence: {
     type: 'code',
     isLeaf: true,
