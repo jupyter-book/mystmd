@@ -27,6 +27,7 @@ export type AllOptions = {
   markdownit: MarkdownIt.Options;
   docutils: IDocutilsOptions;
   extensions: {
+    colonFences?: boolean;
     frontmatter?: boolean;
     math?: boolean | MathExtensionOptions;
     footnotes?: boolean;

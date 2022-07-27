@@ -10,6 +10,7 @@ import {
   mathPlugin,
   convertFrontMatter,
   frontMatterPlugin,
+  colonFencePlugin,
   mystBlockPlugin,
   footnotePlugin,
   docutilsPlugin,
@@ -34,6 +35,7 @@ export const defaultOptions: Omit<AllOptions, 'roles' | 'directives'> = {
   allowDangerousHtml: false,
   markdownit: {},
   extensions: {
+    colonFences: true,
     frontmatter: true,
     math: true,
     footnotes: true,
@@ -44,7 +46,6 @@ export const defaultOptions: Omit<AllOptions, 'roles' | 'directives'> = {
   },
   transform: {},
   docutils: {
-    colonFences: true,
     roles: rolesDefault,
     directives: directivesDefault,
   },
@@ -108,6 +109,7 @@ export class MyST {
     const exts = this.opts.extensions;
     const tokenizer = MarkdownIt(MARKDOWN_IT_CONFIG as any, this.opts.markdownit);
     if (exts.tables) tokenizer.enable('table');
+    if (exts.colonFences) tokenizer.use(colonFencePlugin);
     if (exts.frontmatter)
       tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
     if (exts.blocks) tokenizer.use(mystBlockPlugin);

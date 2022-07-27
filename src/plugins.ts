@@ -6,7 +6,7 @@ export { default as footnotePlugin } from 'markdown-it-footnote';
 export { default as tasklistPlugin } from 'markdown-it-task-lists';
 export { default as deflistPlugin } from 'markdown-it-deflist';
 export { docutilsPlugin } from 'markdown-it-docutils';
-export { mystBlockPlugin } from 'markdown-it-myst-extras';
+export { mystBlockPlugin, colonFencePlugin } from 'markdown-it-myst-extras';
 export { plugin as mathPlugin, MathExtensionOptions } from './math';
 
 /** Markdown-it plugin to convert the front-matter token to a renderable token, for previews */
