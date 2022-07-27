@@ -144,8 +144,9 @@ export async function loadFile(session: ISession, file: string) {
         );
         success = false;
     }
-  } catch (err) {
-    session.log.error(`Error reading file ${file}: ${err}`);
+  } catch (error) {
+    session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+    session.log.error(`Error reading file ${file}: ${error}`);
     success = false;
   }
   session.store.dispatch(watch.actions.markFileChanged({ path: file, sha256 }));
