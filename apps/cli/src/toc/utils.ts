@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { extname, join, parse } from 'path';
+import { extname, join, parse, basename } from 'path';
 import { title2name as createSlug } from '@curvenote/blocks';
 import { loadConfigOrThrow } from '../config';
 import { CURVENOTE_YML } from '../config/types';
@@ -77,14 +77,30 @@ export function fileInfo(file: string, pageSlugs: PageSlugs): { slug: string; ti
   return { slug, title };
 }
 
-export function getCitationPaths(session: ISession, path: string): string[] {
-  // TODO: traverse to find all bibs, and or read from toc/config
-  const ref = join(path, 'references.bib');
-  if (!fs.existsSync(ref)) {
-    session.log.debug(`Expected citations at "${ref}"`);
-    return [];
-  }
-  return [ref];
+const BIBTEX_IGNORE_DIRECTORIES = ['_build', 'node_modules', '_static', '.git'];
+
+export function getCitationPaths(session: ISession, path: string) {
+  let bibFiles: string[] = [];
+  const content = fs.readdirSync(path);
+  content
+    .map((dir) => join(path, dir))
+    .filter((file) => {
+      const isDir = isDirectory(file);
+      if (!isDir && extname(file) === '.bib') {
+        // Push the bibtex file to a list!
+        bibFiles.push(file);
+      }
+      // If it is in a list or is hidden
+      if (basename(file).startsWith('.') || BIBTEX_IGNORE_DIRECTORIES.includes(basename(file))) {
+        return false;
+      }
+      return isDir;
+    })
+    .forEach((dir) => {
+      // Now recurse into each directory
+      bibFiles = bibFiles.concat(getCitationPaths(session, dir));
+    });
+  return bibFiles;
 }
 
 export function findProjectsOnPath(session: ISession, path: string) {
