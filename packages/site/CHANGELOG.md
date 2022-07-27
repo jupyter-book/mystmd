@@ -1,5 +1,15 @@
 # @curvenote/site
 
+## 0.0.8
+
+### Patch Changes
+
+- 3d68483: Update to mystjs 0.0.13
+- Updated dependencies [3d68483]
+  - myst-util-to-react@0.1.8
+  - @curvenote/site-common@0.0.8
+  - @curvenote/ui-providers@0.0.8
+
 ## 0.0.7
 
 ### Patch Changes

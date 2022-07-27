@@ -1,5 +1,12 @@
 # myst-util-to-react
 
+## 0.1.8
+
+### Patch Changes
+
+- 3d68483: Update to mystjs 0.0.13
+  - @curvenote/ui-providers@0.0.8
+
 ## 0.1.7
 
 ### Patch Changes

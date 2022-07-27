@@ -1,5 +1,11 @@
 # @curvenote/site-common
 
+## 0.0.8
+
+### Patch Changes
+
+- 3d68483: Update to mystjs 0.0.13
+
 ## 0.0.7
 
 ## 0.0.6

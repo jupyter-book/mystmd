@@ -1,5 +1,26 @@
 # curvenote
 
+## 0.6.14
+
+### Patch Changes
+
+- e66b049: Print versions on errors
+- da41124: Add `mbox` support for math renderers
+- e66b049: Remove write-toc option from the start command
+- 3d68483: Update to mystjs 0.0.13
+- e66b049: Remove the debug file output option
+- 56a4682: Update mystjs to support colon fences
+- ae093f6: Move `curvenote build` to the main CLI service
+- ee7b327: Support adding a title on relative links to files
+- 5cf656c: Update language around curvespace --> website
+- b6dcd75: Relative links in `--write-toc` option
+- 068bea8: Pull content for a single document
+- 40fe45d: Look up all bibtex files on the current tree
+- 53b3bec: Introduce `strict` and `check-links` parameters for the build process that can stop the build
+- 367b3d5: Allow CLI to run on node v12
+- 322574d: Update links in readme and CRT contributor roles
+- e66b049: Make the curvenote --branch flag require an argument
+
 ## 0.6.13
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @curvespace/default
 
+## 0.0.6
+
+### Patch Changes
+
+- 3d68483: Update to mystjs 0.0.13
+- 5cf656c: Update language around curvespace --> website
+- Updated dependencies [3d68483]
+  - myst-util-to-react@0.1.8
+  - @curvenote/site@0.0.8
+  - @curvenote/site-common@0.0.8
+  - @curvenote/ui-providers@0.0.8
+
 ## 0.0.5
 
 ### Patch Changes
