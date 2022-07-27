@@ -40,7 +40,7 @@ import {
 import { loadProjectFromDisk } from '../../toc';
 import { copyActionResource, copyLogo, getSiteManifest } from '../../toc/manifest';
 import { LocalProject, LocalProjectPage } from '../../toc/types';
-import { writeFileToFolder, serverPath, tic } from '../../utils';
+import { writeFileToFolder, serverPath, tic, addWarningForFile } from '../../utils';
 import { selectors } from '..';
 import { processNotebook } from './notebook';
 import { watch } from './reducers';
@@ -96,7 +96,7 @@ function combineRenderers(cache: ISessionWithCache, ...files: string[]) {
     const renderer = cache.$citationRenderers[file];
     Object.keys(renderer).forEach((key) => {
       if (combined[key]) {
-        cache.log.warn(`Duplicate citations in ${file} with id: ${key}`);
+        addWarningForFile(cache, file, `Duplicate citation with id: ${key}`);
       }
       combined[key] = renderer[key];
     });
