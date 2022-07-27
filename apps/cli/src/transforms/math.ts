@@ -12,6 +12,10 @@ const replacements = {
   ' ': ' ',
 };
 
+const buildInMacros = {
+  '\\mbox': '\\text{#1}', // mbox is not supported in KaTeX, this is an OK fallback
+};
+
 function knownReplacements(log: Logger, node: Math | InlineMath, file: string): string | undefined {
   let { value } = node;
   if (!value) return undefined;
@@ -66,7 +70,7 @@ function tryRender(
   try {
     const html = katex.renderToString(value, {
       displayMode,
-      macros: { ...macros },
+      macros: { ...buildInMacros, ...macros },
       strict: (f: string, m: string) => {
         warnings.push(`${f}, ${m}`);
       },
