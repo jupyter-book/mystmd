@@ -40,7 +40,6 @@ function makeCurvenoteStartCLI(program: Command) {
     .addOption(makeCleanOption())
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
-    .addOption(makeWriteTocOption())
     .action(clirun(web.startServer, { program, requireSiteConfig: true }));
   return command;
 }
@@ -62,8 +61,8 @@ function makeBuildCLI(program: Command) {
 function makeDeployCLI(program: Command) {
   const command = new Command('deploy')
     .description('Deploy content to https://*.curve.space or your own domain')
-    .addOption(makeForceOption())
     .addOption(makeYesOption())
+    .addOption(makeForceOption())
     .addOption(makeCIOption())
     .addOption(makeStrictOption())
     .addOption(makeCheckLinksOption())
