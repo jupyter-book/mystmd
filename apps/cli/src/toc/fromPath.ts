@@ -2,7 +2,7 @@ import fs from 'fs';
 import { extname, join } from 'path';
 import { CURVENOTE_YML } from '../config/types';
 import { ISession } from '../session/types';
-import { BUILD_FOLDER } from '../utils';
+import { shouldIgnoreFile } from '../utils';
 import { pagesFromToc } from './fromToc';
 import { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
 import {
@@ -16,11 +16,6 @@ import {
 } from './utils';
 
 const DEFAULT_INDEX_FILENAMES = ['index', 'readme', 'main'];
-
-function alwaysIgnore(file: string) {
-  const ignore = ['node_modules', BUILD_FOLDER];
-  return file.startsWith('.') || ignore.includes(file);
-}
 
 type Options = {
   ignore?: string[];
@@ -40,7 +35,7 @@ function projectPagesFromPath(
   const { ignore, suppressWarnings } = opts || {};
   const contents = fs
     .readdirSync(path)
-    .filter((file) => !alwaysIgnore(file))
+    .filter((file) => !shouldIgnoreFile(file))
     .map((file) => join(path, file))
     .filter((file) => !ignore || !ignore.includes(file))
     .sort();

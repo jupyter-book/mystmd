@@ -12,6 +12,11 @@ import { WarningKind, warnings } from '../store/build';
 export const BUILD_FOLDER = '_build';
 export const THUMBNAILS_FOLDER = 'thumbnails';
 
+export function shouldIgnoreFile(file: string) {
+  const ignore = ['node_modules', BUILD_FOLDER];
+  return file.startsWith('.') || ignore.includes(file);
+}
+
 export function resolvePath(optionalPath: string | undefined, filename: string) {
   if (optionalPath) return path.join(optionalPath, filename);
   if (path.isAbsolute(filename)) return filename;

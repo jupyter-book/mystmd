@@ -6,6 +6,7 @@ import { CURVENOTE_YML } from '../config/types';
 import { ISession } from '../session';
 import { selectors } from '../store';
 import { PageLevels } from './types';
+import { shouldIgnoreFile } from '../utils';
 
 export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb'];
 
@@ -77,8 +78,6 @@ export function fileInfo(file: string, pageSlugs: PageSlugs): { slug: string; ti
   return { slug, title };
 }
 
-const BIBTEX_IGNORE_DIRECTORIES = ['_build', 'node_modules', '_static', '.git'];
-
 export function getCitationPaths(session: ISession, path: string) {
   let bibFiles: string[] = [];
   const content = fs.readdirSync(path);
@@ -91,7 +90,7 @@ export function getCitationPaths(session: ISession, path: string) {
         bibFiles.push(file);
       }
       // If it is in a list or is hidden
-      if (basename(file).startsWith('.') || BIBTEX_IGNORE_DIRECTORIES.includes(basename(file))) {
+      if (shouldIgnoreFile(basename(file))) {
         return false;
       }
       return isDir;
