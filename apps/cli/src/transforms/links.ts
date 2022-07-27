@@ -121,13 +121,26 @@ function mutateOxaLink(session: ISession, file: string, link: GenericNode, oxa: 
   }
 }
 
+function updateLinkTextIfEmpty(link: GenericNode, title?: string) {
+  if (!link.children || link.children?.length === 0) {
+    // If there is nothing in the link, give it a title
+    link.children = [{ type: 'text', value: title }];
+  }
+}
+
 /**
  * Replace relative file link with resolved site path
  */
-function mutateRelativeLink(link: GenericNode, sitePath: string, target?: string[]) {
+function mutateRelativeLink(
+  link: GenericNode,
+  sitePath: string,
+  target?: string[],
+  title?: string,
+) {
   if (!link.urlSource) link.urlSource = link.url;
   link.url = [sitePath, ...(target || [])].join('#');
   link.internal = true;
+  updateLinkTextIfEmpty(link, title);
 }
 
 /**
@@ -164,9 +177,9 @@ export async function transformLinks(
     const linkFileWithTarget = fileFromRelativePath(urlSource, file);
     if (linkFileWithTarget) {
       const [linkFile, ...target] = linkFileWithTarget.split('#');
-      const { url } = selectors.selectFileInfo(session.store.getState(), linkFile) || {};
+      const { url, title } = selectors.selectFileInfo(session.store.getState(), linkFile) || {};
       if (url != null) {
-        mutateRelativeLink(link, url, target);
+        mutateRelativeLink(link, url, target, title ?? '');
       } else {
         mutateStaticLink(session, link, linkFile);
       }
