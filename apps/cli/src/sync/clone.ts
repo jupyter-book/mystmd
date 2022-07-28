@@ -11,17 +11,18 @@ import { ISession } from '../session/types';
 import { selectors } from '../store';
 import { pullProject } from './pull';
 import questions from './questions';
+import { SyncCiHelperOptions } from './types';
 import {
   getDefaultProjectConfig,
   getDefaultSiteConfigFromRemote,
+  processOption,
   validateLinkIsAProject,
 } from './utils';
 
 type Options = {
   remote?: string;
   path?: string;
-  yes?: boolean;
-};
+} & SyncCiHelperOptions;
 
 export async function interactiveCloneQuestions(
   session: ISession,
@@ -74,19 +75,15 @@ export async function interactiveCloneQuestions(
  *
  * If a site config is present, the project is also added to the site.
  */
-export async function clone(
-  session: ISession,
-  remote?: string,
-  path?: string,
-  opts?: Pick<Options, 'yes'>,
-) {
+export async function clone(session: ISession, remote?: string, path?: string, opts?: Options) {
+  const processedOpts = processOption(opts);
   // Site config is loaded on session init
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   if (!siteConfig) {
     session.log.debug('Site config not found');
   }
   const { siteProject, projectConfig } = await interactiveCloneQuestions(session, {
-    ...opts,
+    ...processedOpts,
     remote,
     path,
   });
@@ -107,5 +104,5 @@ export async function clone(
     };
     writeConfigs(session, '.', { siteConfig: newSiteConfig });
   }
-  await pullProject(session, siteProject.path, { level: LogLevel.info });
+  await pullProject(session, siteProject.path, { level: LogLevel.info, ci: opts?.ci });
 }

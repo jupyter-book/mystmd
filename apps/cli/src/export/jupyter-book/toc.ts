@@ -14,6 +14,7 @@ const TOC_FORMAT = 'jb-book';
 interface Options {
   path?: string;
   filename?: string;
+  ci?: boolean;
 }
 
 type FolderItem = {
@@ -94,6 +95,13 @@ function spliceRootFromNav(items: FolderItem[]): null | [FolderItem, FolderItem[
   return null;
 }
 
+function handleErrorMessage(session: ISession, shouldThrow: boolean, msg: string) {
+  if (shouldThrow) {
+    throw new Error(msg);
+  }
+  session.log.error(msg);
+}
+
 export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation>, opts?: Options) {
   const filename = join(opts?.path || '.', opts?.filename || '_toc.yml');
 
@@ -114,7 +122,16 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
 
   const items: FolderItem[] = [];
 
-  const hasParts = loadedBlocks.filter(({ kind }) => kind === NavListItemKindEnum.Group).length > 0;
+  const groupNavItems = loadedBlocks.filter(({ kind }) => kind === NavListItemKindEnum.Group);
+  const hasParts = groupNavItems.length > 0;
+  const totalDocuments = loadedBlocks.length - groupNavItems.length;
+
+  if (totalDocuments === 0) {
+    handleErrorMessage(session, opts?.ci ?? false, 'The table of contents has no documents.');
+    return;
+  }
+
+  let skipCounter = 0;
 
   loadedBlocks.forEach((data) => {
     const children: FolderItem[] = [];
@@ -126,7 +143,10 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
       return;
     }
     const { parentId, block } = data;
-    if (!block) return;
+    if (!block || block.data.hidden) {
+      skipCounter++;
+      return;
+    }
     if (parentId) {
       const folder = nest[parentId];
       folder.push({ id, kind, block, children });
@@ -136,6 +156,15 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
   });
 
   const header = '# Table of contents\n# Learn more at https://jupyterbook.org/customize/toc.html';
+
+  if (skipCounter === totalDocuments) {
+    handleErrorMessage(
+      session,
+      opts?.ci ?? false,
+      'All documents in the table of contents are hidden.',
+    );
+    return;
+  }
   if (!hasParts) {
     // There are no parts, just chapters
     const tocData: TOC = {

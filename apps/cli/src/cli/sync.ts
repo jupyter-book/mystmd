@@ -7,6 +7,7 @@ import {
   makeForceOption,
   makeYesOption,
   makeWriteTocOption,
+  makeCIOption,
 } from './options';
 
 function makeInitCLI(program: Command) {
@@ -29,6 +30,7 @@ function makePullCLI(program: Command) {
       'The location of the project or file to update, defaults to the current directory',
     )
     .addOption(makeYesOption())
+    .addOption(makeCIOption())
     .action(clirun(sync.pull, { program }));
   return command;
 }
@@ -39,6 +41,7 @@ function makeCloneCLI(program: Command) {
     .argument('[remote]', 'Curvenote link to a project')
     .argument('[folder]', 'The location of the content to clone')
     .addOption(makeYesOption())
+    .addOption(makeCIOption())
     .action(clirun(sync.clone, { program }));
   return command;
 }

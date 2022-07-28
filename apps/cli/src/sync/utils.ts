@@ -5,6 +5,7 @@ import { docLinks } from '../docs';
 import { projectIdFromLink } from '../export';
 import { Project, RemoteSiteConfig } from '../models';
 import { ISession } from '../session/types';
+import { SyncCiHelperOptions } from './types';
 
 export function projectLogString(project: Project) {
   return `"${project.data.title}" (@${project.data.team}/${project.data.name})`;
@@ -68,4 +69,12 @@ export async function validateLinkIsAProject(
   }
   session.log.info(chalk.green(`🔍 Found ${projectLogString(project)}`));
   return project;
+}
+
+export function processOption(opts: SyncCiHelperOptions | undefined) {
+  if (!opts) return undefined;
+  return {
+    ...opts,
+    yes: opts.ci || opts.yes,
+  };
 }

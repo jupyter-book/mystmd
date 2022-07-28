@@ -9,6 +9,7 @@ import { writeTOC } from './toc';
 
 type Options = Omit<ExportAllOptions, 'bibtex'> & {
   writeConfig?: boolean;
+  ci?: boolean;
 };
 
 /**
@@ -35,7 +36,7 @@ export async function projectToJupyterBook(session: ISession, projectId: Project
       url: `${session.SITE_URL}/@${project.data.team}/${project.data.name}`,
     });
   }
-  await writeTOC(session, nav, { path: opts.path });
+  await writeTOC(session, nav, { path: opts.path, ci: opts.ci });
   await exportAll(session, nav, { ...opts, bibtex: 'references.bib' });
 }
 
