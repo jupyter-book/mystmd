@@ -1,5 +1,11 @@
 # curvenote
 
+## 0.6.15
+
+### Patch Changes
+
+- 87ff5a2: Respect hidden documents in the navigation when pulling or cloning
+
 ## 0.6.14
 
 ### Patch Changes
