@@ -18,8 +18,11 @@ declare module 'citation-js' {
 
   export type CitationJson = {
     id: string;
-    author: { given: string; family: string }[];
+    author?: { given: string; family: string }[];
     issued: { 'date-parts': number[][] };
+    publisher?: string;
+    title?: string;
+    'citation-key'?: string;
   } & Record<string, any>;
 
   export class Cite {
