@@ -219,6 +219,143 @@ const RRID: IRole = {
   },
 };
 
+const Chem: IRole = {
+  myst: class Chem extends Role {
+    run(data: IRoleData) {
+      const chem = new this.state.Token('chem', 'code', 1);
+      chem.content = data.content;
+      return [chem];
+    }
+  },
+  mdast: {
+    type: 'chemicalFormula',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        value: t.content,
+      };
+    },
+  },
+  hast() {
+    return null;
+  },
+};
+
+const UNITS: Record<string, string> = {
+  ampere: 'A',
+  candela: 'cd',
+  kelvin: 'K',
+  kilogram: 'kg',
+  metre: 'm',
+  meter: 'm',
+  mole: 'mol',
+  second: 's',
+  becquerel: 'Bq',
+  degreeCelsius: '°C',
+  coulomb: 'C',
+  farad: 'F',
+  gray: 'Gy',
+  hertz: 'Hz',
+  henry: 'H',
+  joule: 'J',
+  lumen: 'lm',
+  katal: 'kat',
+  lux: 'lx',
+  newton: 'N',
+  ohm: 'Ω',
+  pascal: 'Pa',
+  radian: 'rad',
+  siemens: 'S',
+  sievert: 'Sv',
+  steradian: 'sr',
+  tesla: 'T',
+  volt: 'V',
+  watt: 'W',
+  weber: 'Wb',
+  astronomicalunit: 'au',
+  bel: 'B',
+  dalton: 'Da',
+  day: 'd',
+  decibel: 'dB',
+  degree: '°',
+  electronvolt: 'eV',
+  hectare: 'ha',
+  hour: 'h',
+  litre: 'L',
+  liter: 'L',
+  arcminute: '′', // minute (plane angle) U+2032
+  minute: 'min', // minute (time)
+  arcsecond: '″', // second (plane angle) U+2033
+  neper: 'Np',
+  tonne: 't',
+  // SI prefixes
+  yocto: 'y', // -24
+  zepto: 'z', // -21
+  atto: 'a', // -18
+  femto: 'f', // -15
+  pico: 'p', // -12
+  nano: 'n', // -9
+  micro: 'µ', // -6
+  milli: 'm', // -3
+  centi: 'c', // -2
+  deci: 'd', // -1
+  deca: 'da', // 1
+  hecto: 'h', // 2
+  kilo: 'k', // 3
+  mega: 'M', // 6
+  giga: 'G', // 9
+  tera: 'T', // 12
+  peta: 'P', // 15
+  exa: 'E', // 18
+  zetta: 'Z', // 21
+  yotta: 'Y', // 24
+  // Special
+  angstrom: 'Å',
+};
+
+const SI: IRole = {
+  myst: class SI extends Role {
+    run(data: IRoleData) {
+      const siunit = new this.state.Token('si', 'span', 1);
+      const match = data.content.match(/([0-9]+)\s?<([\\a-zA-Z]+)>/);
+      if (!match) {
+        siunit.content = data.content;
+        siunit.attrSet('error', 'true');
+      } else {
+        const [, num, units] = match;
+        const parsed = [...units.matchAll(/\\([a-zA-Z]+)/g)];
+        const translated = parsed.map(([, c]) => UNITS[c] ?? c);
+        siunit.attrSet('number', num);
+        siunit.attrSet('units', parsed.join(' '));
+        siunit.content = `${num} ${translated.join('')}`;
+      }
+      return [siunit];
+    }
+  },
+  mdast: {
+    type: 'si',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      if (t.attrGet('error')) {
+        return {
+          value: t.content,
+          error: true,
+        };
+      }
+      return {
+        value: t.content,
+        number: t.attrGet('number'),
+        units: t.attrGet('units'),
+      };
+    },
+  },
+  hast() {
+    return null;
+  },
+};
+
 export const reactiveRoles: Record<string, IRole> = {
   'r:dynamic': RDynamic,
   'r:display': RDisplay,
@@ -232,4 +369,7 @@ export const reactiveRoles: Record<string, IRole> = {
   underline: Underline,
   smallcaps: SmallCaps,
   rrid: RRID,
+  chem: Chem,
+  chemicalFormula: Chem,
+  si: SI,
 };
