@@ -33,10 +33,14 @@ function addCitationChildren(
   kind: CiteKind = 'parenthetical',
 ): boolean {
   const render = renderer[cite.label as string];
-  const children = render?.inline(kind === 'narrative' ? InlineCite.t : InlineCite.p);
-  if (children) {
-    cite.children = children;
-    return true;
+  try {
+    const children = render?.inline(kind === 'narrative' ? InlineCite.t : InlineCite.p);
+    if (children) {
+      cite.children = children;
+      return true;
+    }
+  } catch (error) {
+    // pass
   }
   cite.error = true;
   return false;
