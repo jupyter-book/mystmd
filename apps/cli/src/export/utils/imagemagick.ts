@@ -72,14 +72,15 @@ export async function convertImageToWebp(
     session.log.debug(`Image does not exist: "${image}"`);
     return null;
   }
-  const allowedExtensions = ['.png', '.jpg', '.jpeg', '.tiff', '.gif'];
-  if (!allowedExtensions.includes(path.extname(image))) {
+  const imageExt = path.extname(image).toLowerCase();
+  const allowedExtensions = ['.png', '.jpg', '.jpeg', '.tiff', '.gif', '.pdf'];
+  if (!allowedExtensions.includes(imageExt)) {
     session.log.debug(`Skipping webp conversion of "${image}"`);
     return null;
   }
 
   const { size } = fs.statSync(image);
-  if (size > LARGE_IMAGE) {
+  if (size > LARGE_IMAGE && imageExt !== '.pdf') {
     const inMB = (size / (1024 * 1024)).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -91,7 +92,8 @@ export async function convertImageToWebp(
   }
 
   const dirname = path.dirname(image);
-  const basename = path.basename(image, path.extname(image));
+  const basename = path.basename(image, imageExt);
+  const png = path.join(dirname, `${basename}.png`);
   const webp = path.join(dirname, `${basename}.webp`);
   if (!overwrite && fs.existsSync(webp)) {
     session.log.debug(`Image is already converted ${webp}`);
@@ -105,9 +107,17 @@ export async function convertImageToWebp(
   };
   const convertImg = makeExecutable(`cwebp -q ${quality} "${image}" -o "${webp}"`, debugLogger);
   const convertGif = makeExecutable(`gif2webp -q ${quality} "${image}" -o "${webp}"`, debugLogger);
+  // Density has to be BEFORE the PDF
+  const convertPdfPng = makeExecutable(`convert -density 600 ${image} ${png}`, debugLogger);
+  const convertPdfWebP = makeExecutable(`cwebp -q ${quality} "${png}" -o "${webp}"`, debugLogger);
 
   try {
-    if (path.extname(image) === '.gif') {
+    if (path.extname(image) === '.pdf') {
+      if (!isImageMagickAvailable()) return null;
+      await convertPdfPng();
+      if (!isWebpAvailable()) return null;
+      await convertPdfWebP();
+    } else if (path.extname(image) === '.gif') {
       if (!isGif2webpAvailable()) return null;
       await convertGif();
     } else {
