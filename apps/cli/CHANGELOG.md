@@ -1,5 +1,15 @@
 # curvenote
 
+## 0.6.16
+
+### Patch Changes
+
+- c3fe4b6: Catch citation errors from stopping the build
+- 3182d24: Support PDF images in html
+- 54f2c4d: SI Units and chemical formulas as basic extensions
+- Updated dependencies [1544132]
+  - citation-js-utils@0.0.7
+
 ## 0.6.15
 
 ### Patch Changes

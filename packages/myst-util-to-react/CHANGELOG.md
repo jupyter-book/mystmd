@@ -1,5 +1,11 @@
 # myst-util-to-react
 
+## 0.1.9
+
+### Patch Changes
+
+- 54f2c4d: SI Units and chemical formulas as basic extensions
+
 ## 0.1.8
 
 ### Patch Changes
