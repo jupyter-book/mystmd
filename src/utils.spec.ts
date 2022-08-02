@@ -1,5 +1,11 @@
-import { BlockId } from './blocks/types';
-import { projectIdToString, blockListToString, blockIdToString, parseGitUrl } from './utils';
+import { BlockChild, BlockId } from './blocks/types';
+import {
+  projectIdToString,
+  blockListToString,
+  blockIdToString,
+  parseGitUrl,
+  ensureConsistentChildren,
+} from './utils';
 import { ProjectId } from './projects';
 
 const CASES: [string, { url: string; owner: string; repo: string; provider: string }][] = [
@@ -125,6 +131,30 @@ describe('utils', () => {
       expect(parsed.owner).toBe(expected.owner);
       expect(parsed.repo).toBe(expected.repo);
       expect(parsed.provider).toBe(expected.provider);
+    });
+  });
+  describe('ensureConsistentChildren', () => {
+    test('empty', () => {
+      const { order, children } = ensureConsistentChildren([], {});
+      expect(order).toHaveLength(0);
+      expect(Object.keys(children)).toHaveLength(0);
+    });
+    test('orphaned id in order', () => {
+      const { order, children } = ensureConsistentChildren(['orphan123', 'x'], {
+        x: { id: '1', src: { block: '1', project: 'a' }, style: {} } as BlockChild,
+      });
+      expect(order).toHaveLength(1);
+      expect(Object.keys(children)).toHaveLength(1);
+      expect(children['x']).toHaveProperty('id', '1');
+    });
+    test('additional children in dict', () => {
+      const { order, children } = ensureConsistentChildren(['x'], {
+        x: { id: '1', src: { block: '1', project: 'a' }, style: {} } as BlockChild,
+        y: { id: '2', src: { block: '2', project: 'b' }, style: {} } as BlockChild,
+      });
+      expect(order).toHaveLength(1);
+      expect(Object.keys(children)).toHaveLength(1);
+      expect(children['x']).toHaveProperty('id', '1');
     });
   });
 });

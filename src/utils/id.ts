@@ -165,12 +165,19 @@ export function assertNever(x: never): never {
 
 // TODO move to common
 export function ensureConsistentChildren(oldOrder: string[], oldChildren: BlockChildDict) {
-  const order = oldOrder.filter((childId: string) => Boolean(oldChildren[childId]));
-  const children = order.reduce(
-    (obj, childId) => ({ ...obj, [childId]: oldChildren[childId] }),
-    {} as BlockChildDict,
+  return oldOrder.reduce(
+    (acc, childId) => {
+      if (!oldChildren[childId]) return acc;
+      // NOTE: mutate order and children for performance
+      acc.order.push(childId);
+      acc.children[childId] = oldChildren[childId];
+      return {
+        order: acc.order,
+        children: acc.children,
+      };
+    },
+    { order: [], children: {} } as { children: BlockChildDict; order: string[] },
   );
-  return { order, children };
 }
 
 export function splitScopedTemplateId(scopedId: string) {
