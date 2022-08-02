@@ -17,6 +17,7 @@ import CROSS_REFERENCE_RENDERERS from './crossReference';
 import RRID_RENDERERS from './rrid';
 import TAB_RENDERERS from './tabs';
 import MYST_RENDERERS from './myst';
+export { MySTRenderer } from './myst';
 import EXT_RENDERERS from './extensions';
 
 export type { NodeRenderer } from './types';

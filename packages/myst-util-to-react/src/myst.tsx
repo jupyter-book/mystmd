@@ -15,12 +15,12 @@ async function parse(text: string) {
   return { mdast: yaml.dump(mdast), html, content };
 }
 
-export const MySTRenderer: NodeRenderer = (node) => {
+export function MySTRenderer({ value }: { value: string }) {
   const area = useRef<HTMLTextAreaElement | null>(null);
-  const [text, setText] = useState<string>(node.value.trim());
+  const [text, setText] = useState<string>(value.trim());
   const [mdast, setMdast] = useState<string>('Loading...');
   const [html, setHtml] = useState<string>('Loading...');
-  const [content, setContent] = useState<React.ReactNode>(<p>{node.value}</p>);
+  const [content, setContent] = useState<React.ReactNode>(<p>{value}</p>);
   const [previewType, setPreviewType] = useState('Demo');
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export const MySTRenderer: NodeRenderer = (node) => {
   }, [text]);
 
   return (
-    <figure key={node.key} className="relative shadow-lg rounded overflow-hidden">
+    <figure className="relative shadow-lg rounded overflow-hidden">
       <div className="absolute right-0 p-1">
         <CopyIcon text={text} />
       </div>
@@ -84,10 +84,14 @@ export const MySTRenderer: NodeRenderer = (node) => {
       </div>
     </figure>
   );
+}
+
+const MystNodeRenderer: NodeRenderer = (node) => {
+  return <MySTRenderer key={node.key} value={node.value} />;
 };
 
 const MYST_RENDERERS = {
-  myst: MySTRenderer,
+  myst: MystNodeRenderer,
 };
 
 export default MYST_RENDERERS;
