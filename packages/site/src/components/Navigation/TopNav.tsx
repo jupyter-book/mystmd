@@ -13,7 +13,6 @@ import ChevronDownIcon from '@heroicons/react/solid/ChevronDownIcon';
 export const DEFAULT_NAV_HEIGHT = 60;
 
 function NavItem({ item }: { item: SiteNavItem }) {
-  const isActive = false;
   if (!('children' in item)) {
     return (
       <div className="relative grow-0 inline-block mx-2">
@@ -37,14 +36,7 @@ function NavItem({ item }: { item: SiteNavItem }) {
   return (
     <Menu as="div" className="relative grow-0 inline-block mx-2">
       <div className="inline-block">
-        <Menu.Button
-          className={classNames(
-            'inline-flex items-center justify-center w-full mx-2 py-1 text-md font-medium text-white rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75',
-            {
-              'border-b border-stone-200': isActive,
-            },
-          )}
-        >
+        <Menu.Button className="inline-flex items-center justify-center w-full mx-2 py-1 text-md font-medium text-white rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           <span>{item.title}</span>
           <ChevronDownIcon
             className="w-5 h-5 ml-2 -mr-1 text-violet-200 hover:text-violet-100"
