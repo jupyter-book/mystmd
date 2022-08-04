@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [main, ci-*]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm run lint
+      - run: npm run lint:format
+      - run: npm run test

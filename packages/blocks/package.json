@@ -1,0 +1,54 @@
+{
+  "name": "@curvenote/blocks",
+  "version": "1.5.12",
+  "license": "MIT",
+  "description": "Schemas for the Curvenote API and data structures",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "homepage": "https://github.com/curvenote/blocks#readme",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "directories": {
+    "src": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/curvenote/blocks.git"
+  },
+  "scripts": {
+    "prepublishOnly": "npm run compile",
+    "build": "npm run clean; tsc",
+    "compile": "npm run clean && tsc -p .",
+    "dev": "tsc -w --preserveWatchOutput -p .",
+    "watch": "yarn lint; tsc -w -p .",
+    "clean": "rm -rf dist",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.js",
+    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:clear": "jest --clearCache"
+  },
+  "bugs": {
+    "url": "https://github.com/curvenote/blocks/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^28.1.6",
+    "eslint-config-curvenote": "*",
+    "jest": "28.1.3",
+    "jest-extended": "^3.0.1",
+    "jest-fixtures": "^0.6.0",
+    "jest-to-match-shape-of": "^1.3.2",
+    "moment": "^2.29.4",
+    "prettier": "^2.7.1",
+    "ts-jest": "^28.0.7",
+    "typescript": "^4.7.4"
+  }
+}

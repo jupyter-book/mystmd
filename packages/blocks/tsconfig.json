@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "lib": ["es2019", "dom"],
+    "noImplicitAny": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "skipLibCheck": true,
+    "declaration": true
+  },
+  "include": ["src", "./global.d.ts"],
+  "exclude": ["src/**/*.spec.ts"]
+}
