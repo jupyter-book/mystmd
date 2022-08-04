@@ -1,3 +1,0 @@
-[submodule "packages/blocks"]
-	path = packages/blocks
-	url = https://github.com/curvenote/blocks
