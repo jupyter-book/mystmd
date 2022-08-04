@@ -41,7 +41,6 @@
     "test:clear": "npm run copy:version; npm run link; jest --clearCache",
     "lint": "npm run copy:version; eslint \"src/**/*.ts\" -c .eslintrc.js",
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
-    "lint:format:fix": "npm run copy:version; prettier --write \"src/**/*.ts\"",
     "build:cjs": "esbuild `find src \\( -name '*.ts' \\)` --outdir=dist/cjs --platform=node --format=cjs",
     "build:esm": "esbuild `find src \\( -name '*.ts' \\)` --outdir=dist/esm --platform=node --format=esm",
     "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",

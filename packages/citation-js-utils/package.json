@@ -21,7 +21,6 @@
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "lint": "eslint -c .eslintrc.js src/**/*.ts tests/**/*.ts",
     "lint:format": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "lint:format:fix": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "test": "jest",
     "test:cov": "jest --coverage",
     "test:watch": "jest --watchAll",
