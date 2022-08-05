@@ -15,14 +15,14 @@ You can download Node here:
 
 ${chalk.bold('https://nodejs.org/en/download/')}
 
-You can upgrade your NPM version using:
+Upgrade your Node Package Manager (npm) using:
 
 ${chalk.bold('npm install -g npm@latest')}
 `;
 
 async function checkNodeVersion(session: ISession): Promise<boolean> {
   const checking = new Promise<boolean>((resolve) => {
-    check({ node: '>= 14.0.0', npm: '>=6' }, (error, result) => {
+    check({ node: '>= 14.0.0', npm: '>=7' }, (error, result) => {
       if (error) {
         session.log.error(error);
         return;
