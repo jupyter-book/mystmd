@@ -1,5 +1,12 @@
 # @curvenote/ui-providers
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies [e29e889]
+  - @curvenote/site-common@0.0.9
+
 ## 0.0.8
 
 ### Patch Changes

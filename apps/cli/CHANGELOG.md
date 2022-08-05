@@ -1,5 +1,15 @@
 # curvenote
 
+## 0.6.17
+
+### Patch Changes
+
+- e29e889: Add blocks to monorepo, improve linting for development in other monorepos
+- 2b15752: Change NPM requirements for >=7 and remove crossenv
+- Updated dependencies [e29e889]
+  - @curvenote/blocks@1.5.13
+  - citation-js-utils@0.0.8
+
 ## 0.6.16
 
 ### Patch Changes

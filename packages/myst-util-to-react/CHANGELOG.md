@@ -1,5 +1,14 @@
 # myst-util-to-react
 
+## 0.1.10
+
+### Patch Changes
+
+- b1efcf6: Export MySTRenderer as React Component
+- Updated dependencies [e29e889]
+  - @curvenote/blocks@1.5.13
+  - @curvenote/ui-providers@0.0.9
+
 ## 0.1.9
 
 ### Patch Changes

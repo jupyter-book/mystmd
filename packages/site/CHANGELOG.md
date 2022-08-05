@@ -1,5 +1,17 @@
 # @curvenote/site
 
+## 0.0.9
+
+### Patch Changes
+
+- e29e889: Add blocks to monorepo, improve linting for development in other monorepos
+- Updated dependencies [e29e889]
+- Updated dependencies [b1efcf6]
+  - @curvenote/blocks@1.5.13
+  - @curvenote/site-common@0.0.9
+  - myst-util-to-react@0.1.10
+  - @curvenote/ui-providers@0.0.9
+
 ## 0.0.8
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 0.0.8
+
+### Patch Changes
+
+- e29e889: Add blocks to monorepo, improve linting for development in other monorepos
+
 ## 0.0.7
 
 ### Patch Changes

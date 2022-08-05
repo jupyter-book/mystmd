@@ -1,5 +1,11 @@
 # @curvenote/blocks
 
+## 1.5.13
+
+### Patch Changes
+
+- e29e889: Add blocks to monorepo, improve linting for development in other monorepos
+
 ## 1.5.9
 
 ### Patch Changes
