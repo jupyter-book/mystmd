@@ -7,6 +7,7 @@ export const docLinks = {
   auth: 'https://curvenote.com/docs/cli/authorization',
   pull: 'https://curvenote.com/docs/cli/pull',
   web: 'https://curvenote.com/docs/web',
+  installNode: 'https://curvenote.com/docs/cli/installing-prerequisites',
 };
 
 export const LOGO = `<?xml version="1.0" encoding="utf-8"?>

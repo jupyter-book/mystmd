@@ -9,6 +9,7 @@ import { ISession } from '../session/types';
 import { selectors } from '../store';
 import CurvenoteVersion from '../version';
 import { webPackageJsonPath } from '../utils';
+import { docLinks } from '../docs';
 
 const INSTALL_NODE_MESSAGE = `
 You can download Node here:
@@ -18,49 +19,68 @@ ${chalk.bold('https://nodejs.org/en/download/')}
 Upgrade your Node Package Manager (npm) using:
 
 ${chalk.bold('npm install -g npm@latest')}
+
+Additional Documentation:
+
+${chalk.bold.blue(docLinks.installNode)}
 `;
 
-async function checkNodeVersion(session: ISession): Promise<boolean> {
-  const checking = new Promise<boolean>((resolve) => {
-    check({ node: '>= 14.0.0', npm: '>=7' }, (error, result) => {
+type VersionResults = Parameters<Parameters<typeof check>[1]>[1];
+
+async function getNodeVersion(session: ISession): Promise<VersionResults | null> {
+  const result = new Promise<VersionResults | null>((resolve) => {
+    check({ node: '>= 14.0.0', npm: '>=7' }, (error, results) => {
       if (error) {
         session.log.error(error);
+        resolve(null);
         return;
       }
-      if (result.isSatisfied) {
-        resolve(true);
-        return;
-      }
-      const unsatisfied = Object.keys(result.versions)
-        .filter((packageName) => !result.versions[packageName].isSatisfied)
-        .map((packageName) => {
-          const p = result.versions[packageName];
-          const version = p.version ? `Found: ${p.version}` : 'Package Not Found';
-          const wanted = `Required: ${p.wanted?.raw || ''}`;
-          return `${packageName}\t${version}\t${wanted}`;
-        });
-      session.log.error(`Please update your Node or NPM versions.\n\n${unsatisfied.join('\n')}`);
-      session.log.info(INSTALL_NODE_MESSAGE);
-      resolve(false);
+      resolve(results);
     });
   });
-  return checking;
+  return result;
 }
 
-function logVersions(session: ISession, debug = true) {
-  let siteVersion = '';
+async function logVersions(session: ISession, debug = true) {
+  const result = await getNodeVersion(session);
+  const versions: string[][] = [];
+  Object.entries(result?.versions ?? {}).forEach(([name, p]) => {
+    versions.push([
+      name,
+      p.version ? `${p.version}` : 'Package Not Found',
+      `Required: ${p.wanted?.raw || ''}`,
+      p.isSatisfied ? '✅' : '⚠️',
+    ]);
+  });
+  versions.push(['curvenote', CurvenoteVersion]);
   try {
     const packageJson = JSON.parse(fs.readFileSync(webPackageJsonPath(session)).toString()) as {
       name: string;
       version: string;
     };
-    siteVersion = `\n - ${packageJson.name}: ${packageJson.version}`;
+    versions.push([packageJson.name, packageJson.version]);
   } catch (error) {
     // pass
   }
-  session.log[debug ? 'debug' : 'info'](
-    `\n\nVersions:\n - curvenote: ${CurvenoteVersion}${siteVersion}\n\n`,
-  );
+  const versionString = versions
+    .map(
+      ([n, v, r, c]) =>
+        `\n - ${n.padEnd(25, ' ')}${v.padStart(10, ' ').padEnd(15, ' ')}${r?.padEnd(25) ?? ''}${
+          c ?? ''
+        }`,
+    )
+    .join('');
+  session.log[debug ? 'debug' : 'info'](`\n\nCurvenote CLI Versions:${versionString}\n\n`);
+}
+
+async function checkNodeVersion(session: ISession): Promise<boolean> {
+  const result = await getNodeVersion(session);
+  if (!result) return false;
+  if (result.isSatisfied) return true;
+  await logVersions(session, false);
+  session.log.error('Please update your Node or NPM versions.\n');
+  session.log.info(INSTALL_NODE_MESSAGE);
+  return false;
 }
 
 type SessionOpts = {
@@ -116,7 +136,7 @@ export function clirun(
     const useSession = cli.anonymous
       ? anonSession(opts)
       : getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
-    logVersions(useSession);
+    await logVersions(useSession);
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
     const state = useSession.store.getState();
@@ -139,7 +159,7 @@ export function clirun(
         useSession.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
       }
       useSession.log.error((error as Error).message);
-      logVersions(useSession, false);
+      await logVersions(useSession, false);
       process.exit(1);
     }
   };

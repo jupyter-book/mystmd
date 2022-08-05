@@ -1,5 +1,4 @@
 import fs from 'fs';
-import path from 'path';
 import { makeExecutable } from '../export/utils';
 import { getGitLogger, getNpmLogger, getServerLogger } from '../logging/custom';
 import { MyUser } from '../models';
@@ -12,6 +11,7 @@ import {
   tic,
   repoPath,
   serverPath,
+  blocksJsonPath,
 } from '../utils';
 import { deployContentToCdn, promoteContent } from './deploy';
 import { buildSite, cleanBuiltFiles, Options } from './prepare';
@@ -41,12 +41,7 @@ export async function clone(session: ISession, opts: Options): Promise<void> {
     `git clone --recursive --depth 1 --branch ${branch} https://github.com/curvenote/curvenote.git ${repo}`,
     getGitLogger(session),
   )();
-  // TODO: log out version!
   session.log.debug('Cleaning out any git information from build folder.');
-  // TODO: udpate this when we are downloading a zip
-  // Remove all git-related things
-  fs.rmSync(path.join(repo, '.git'), { recursive: true, force: true });
-  fs.rmSync(path.join(repo, '.github'), { recursive: true, force: true });
   cleanBuiltFiles(session, false);
 }
 
@@ -58,7 +53,10 @@ export async function install(session: ISession): Promise<void> {
     return;
   }
   await makeExecutable('npm install', getNpmLogger(session), { cwd: repoPath(session) })();
-  session.log.info(toc('✅ Installed web libraries in %s'));
+  session.log.info(toc('📦 Installed web libraries in %s'));
+  // This avoids using turbo repo for the path that the website needs
+  await makeExecutable('npm run build', getNpmLogger(session), { cwd: blocksJsonPath(session) })();
+  session.log.info(toc('🛠 Built dependencies in %s'));
 }
 
 export async function cloneCurvenote(session: ISession, opts: Options): Promise<void> {
