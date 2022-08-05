@@ -17,7 +17,7 @@
     "prepublishOnly": "npm run build",
     "changeset": "changeset",
     "version": "changeset version && npm install",
-    "publish": "npm run clean && npm run build && changeset publish && git push --follow-tags"
+    "publish": "npm run clean && npm run build -- --force && changeset publish && git push --follow-tags"
   },
   "devDependencies": {
     "esbuild": "^0.14.53",
