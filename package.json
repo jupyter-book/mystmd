@@ -21,7 +21,7 @@
     "publish": "npm run clean && npm run build && changeset publish && git push --follow-tags"
   },
   "devDependencies": {
-    "esbuild": "^0.14.49",
+    "esbuild": "^0.14.53",
     "eslint-config-curvenote": "*",
     "prettier": "latest",
     "turbo": "latest"
