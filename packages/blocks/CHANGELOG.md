@@ -1,5 +1,12 @@
 # @curvenote/blocks
 
+## 1.5.14
+
+### Patch Changes
+
+- 58adf87: Added consistent-type-imports eslint rule
+- 9ae455e: Improve install of @cuvenote/blocks in the monorepo
+
 ## 1.5.13
 
 ### Patch Changes

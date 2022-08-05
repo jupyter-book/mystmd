@@ -1,5 +1,16 @@
 # curvenote
 
+## 0.6.18
+
+### Patch Changes
+
+- 58adf87: Added consistent-type-imports eslint rule
+- 9ae455e: Improve install of @cuvenote/blocks in the monorepo
+- Updated dependencies [58adf87]
+- Updated dependencies [9ae455e]
+  - @curvenote/blocks@1.5.14
+  - citation-js-utils@0.0.9
+
 ## 0.6.17
 
 ### Patch Changes

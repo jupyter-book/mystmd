@@ -1,5 +1,13 @@
 # @curvenote/ui-providers
 
+## 0.0.10
+
+### Patch Changes
+
+- 58adf87: Added consistent-type-imports eslint rule
+- Updated dependencies [58adf87]
+  - @curvenote/site-common@0.0.10
+
 ## 0.0.9
 
 ### Patch Changes

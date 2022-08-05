@@ -1,5 +1,17 @@
 # @curvenote/site
 
+## 0.0.10
+
+### Patch Changes
+
+- 58adf87: Added consistent-type-imports eslint rule
+- Updated dependencies [58adf87]
+- Updated dependencies [9ae455e]
+  - @curvenote/blocks@1.5.14
+  - myst-util-to-react@0.1.11
+  - @curvenote/site-common@0.0.10
+  - @curvenote/ui-providers@0.0.10
+
 ## 0.0.9
 
 ### Patch Changes

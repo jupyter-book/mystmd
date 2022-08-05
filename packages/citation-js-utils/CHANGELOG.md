@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 0.0.9
+
+### Patch Changes
+
+- 58adf87: Added consistent-type-imports eslint rule
+
 ## 0.0.8
 
 ### Patch Changes
