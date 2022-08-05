@@ -10,7 +10,7 @@
     "build": "cross-env NODE_ENV=production npm run build:css && cross-env NODE_ENV=production remix build",
     "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
     "dev": "concurrently \"cross-env NODE_ENV=development npm run dev:css\" \"cross-env NODE_ENV=development PORT=5001 remix dev\"",
-    "serve": "cross-env NODE_ENV=development npm run build:css && cross-env NODE_ENV=development remix dev",
+    "serve": "npm run build:css && remix dev",
     "lint": "eslint \"app/**/*.ts\" -c .eslintrc.js",
     "lint:format": "prettier --check \"app/**/*.tsx\" \"app/**/*.ts\""
   },
