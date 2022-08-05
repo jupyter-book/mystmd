@@ -1,4 +1,4 @@
-import { FormatTypes } from './format';
+import type { FormatTypes } from './format';
 
 export enum ArtifactStatus {
   'processing' = 'processing',

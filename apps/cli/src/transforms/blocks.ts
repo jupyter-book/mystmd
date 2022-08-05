@@ -1,6 +1,6 @@
 import type { GenericNode } from 'mystjs';
 import { select } from 'mystjs';
-import { Root } from '../myst';
+import type { Root } from '../myst';
 
 export function ensureBlockNesting(mdast: Root) {
   if (!select('block', mdast)) {

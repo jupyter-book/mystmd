@@ -3,15 +3,15 @@ import fs from 'fs';
 import inquirer from 'inquirer';
 import { join } from 'path';
 import { loadConfigOrThrow, writeConfigs } from '../config';
-import { ProjectConfig, SiteConfig, SiteProject } from '../config/types';
+import type { ProjectConfig, SiteConfig, SiteProject } from '../config/types';
 import { projectIdFromLink } from '../export';
 import { LogLevel } from '../logging';
-import { Project } from '../models';
-import { ISession } from '../session/types';
+import type { Project } from '../models';
+import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import { pullProject } from './pull';
 import questions from './questions';
-import { SyncCiHelperOptions } from './types';
+import type { SyncCiHelperOptions } from './types';
 import {
   getDefaultProjectConfig,
   getDefaultSiteConfigFromRemote,

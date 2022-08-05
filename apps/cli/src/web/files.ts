@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { KnownCellOutputMimeTypes } from '@curvenote/blocks';
-import { IFileObject, IFileObjectFactoryFn, Metadata } from '@curvenote/nbtx';
-import { Logger } from '../logging';
+import type { IFileObject, IFileObjectFactoryFn, Metadata } from '@curvenote/nbtx';
+import type { Logger } from '../logging';
 import { computeHash } from '../utils';
 
 enum FileExtension {

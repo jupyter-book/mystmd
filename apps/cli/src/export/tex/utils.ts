@@ -3,12 +3,12 @@ import os from 'os';
 import path from 'path';
 import { oxaLink } from '@curvenote/blocks';
 import { toTex } from '@curvenote/schema';
-import { Logger } from '../../logging';
-import { ISession } from '../../session/types';
+import type { Logger } from '../../logging';
+import type { ISession } from '../../session/types';
 import { makeExecutable } from '../utils/exec';
 import { localizationOptions } from '../utils/localizationOptions';
-import { ArticleState, ArticleStateChild } from '../utils/walkArticle';
-import { TexExportOptions } from './types';
+import type { ArticleState, ArticleStateChild } from '../utils/walkArticle';
+import type { TexExportOptions } from './types';
 
 export function createTempFolder() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'curvenote'));

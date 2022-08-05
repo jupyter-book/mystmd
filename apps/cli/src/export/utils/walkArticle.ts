@@ -1,19 +1,18 @@
 import Bottleneck from 'bottleneck';
 import { encode } from 'html-entities';
 import fetch from 'node-fetch';
+import type { VersionId, Blocks, FigureStyles } from '@curvenote/blocks';
 import {
-  VersionId,
   KINDS,
   oxaLinkToId,
   oxaLink,
-  Blocks,
-  FigureStyles,
   OutputSummaryKind,
   ReferenceFormatTypes,
 } from '@curvenote/blocks';
-import { DEFAULT_IMAGE_WIDTH, nodeNames, Nodes, ReferenceKind } from '@curvenote/schema';
+import type { Nodes } from '@curvenote/schema';
+import { DEFAULT_IMAGE_WIDTH, nodeNames, ReferenceKind } from '@curvenote/schema';
 import { Block, Version } from '../../models';
-import { ISession } from '../../session/types';
+import type { ISession } from '../../session/types';
 import { basekey } from './basekey';
 import { getEditorState, getEditorStateFromHTML } from './getEditorState';
 import { getImageSrc } from './getImageSrc';

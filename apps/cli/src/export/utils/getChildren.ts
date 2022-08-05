@@ -1,6 +1,6 @@
-import { VersionId } from '@curvenote/blocks';
+import type { VersionId } from '@curvenote/blocks';
 import { Block, Version } from '../../models';
-import { ISession } from '../../session/types';
+import type { ISession } from '../../session/types';
 import { versionIdToURL } from '../../utils';
 
 export async function getChildren(session: ISession, versionId: VersionId) {

@@ -3,10 +3,10 @@ import path from 'path';
 import yaml from 'js-yaml';
 import { ArticleFormatTypes } from '@curvenote/blocks';
 import { Project } from '../models';
-import { ISession } from '../session/types';
+import type { ISession } from '../session/types';
 import { multipleArticleToPdf } from './pdf';
 import { multipleArticleToTex } from './tex';
-import { ExportConfig } from './types';
+import type { ExportConfig } from './types';
 import { projectIdFromLink } from './utils';
 
 export async function exportContent(session: ISession) {

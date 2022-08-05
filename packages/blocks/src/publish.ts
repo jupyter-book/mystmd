@@ -1,6 +1,6 @@
 import { getDate } from './helpers';
-import { LaunchpadStatus, PubsubMessageAttributes } from './launchpad';
-import { BaseLinks, JsonObject } from './types';
+import type { LaunchpadStatus, PubsubMessageAttributes } from './launchpad';
+import type { BaseLinks, JsonObject } from './types';
 
 export interface SitePublishLinks extends BaseLinks {
   site: string;

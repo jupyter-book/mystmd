@@ -1,14 +1,14 @@
-import {
+import type {
   BlockChildDict,
   ChildId,
   BaseVersion,
   KINDS,
   Language,
-  NotebookFormatTypes,
   JupyterNotebookMetadata,
 } from './types';
+import { NotebookFormatTypes } from './types';
 
-import { JsonObject } from '../types';
+import type { JsonObject } from '../types';
 
 export interface NotebookBlockMetadata extends JupyterNotebookMetadata {
   nbformat: number;

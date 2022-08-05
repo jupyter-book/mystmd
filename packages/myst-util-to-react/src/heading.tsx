@@ -1,5 +1,5 @@
 import { Heading } from 'myst-spec';
-import { NodeRenderer } from './types';
+import type { NodeRenderer } from './types';
 import { createElement as e } from 'react';
 import classNames from 'classnames';
 

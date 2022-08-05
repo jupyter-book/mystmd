@@ -1,5 +1,5 @@
-import { VersionId } from '@curvenote/blocks';
-import { ISession } from '../../session/types';
+import type { VersionId } from '@curvenote/blocks';
+import type { ISession } from '../../session/types';
 import { writeBibtex } from '../utils/writeBibtex';
 import { makeBuildPaths } from '../utils';
 import { gatherAndWriteArticleContent } from './gather';
@@ -8,7 +8,7 @@ import {
   ifTemplateLoadOptions,
   throwIfTemplateButNoJtex,
 } from './template';
-import { TexExportOptions } from './types';
+import type { TexExportOptions } from './types';
 import { ifTemplateRunJtex } from './utils';
 
 export async function singleArticleToTex(

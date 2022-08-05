@@ -3,11 +3,12 @@ import fs from 'fs';
 import inquirer from 'inquirer';
 import path from 'path';
 import prettyHrtime from 'pretty-hrtime';
-import { JsonObject, VersionId } from '@curvenote/blocks';
-import { Logger } from '../logging';
-import { ISession } from '../session/types';
+import type { JsonObject, VersionId } from '@curvenote/blocks';
+import type { Logger } from '../logging';
+import type { ISession } from '../session/types';
 import { selectors } from '../store';
-import { WarningKind, warnings } from '../store/build';
+import type { WarningKind } from '../store/build';
+import { warnings } from '../store/build';
 
 export const BUILD_FOLDER = '_build';
 export const THUMBNAILS_FOLDER = 'thumbnails';

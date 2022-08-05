@@ -1,6 +1,6 @@
 import chalk from 'chalk';
-import { ISession } from '../session/types';
-import { Logger } from './index';
+import type { ISession } from '../session/types';
+import type { Logger } from './index';
 
 type LoggerDE = Pick<Logger, 'debug' | 'error'>;
 

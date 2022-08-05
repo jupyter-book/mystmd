@@ -1,5 +1,5 @@
 import { silentLogger } from '../logging';
-import { Options } from '../utils/validators';
+import type { Options } from '../utils/validators';
 import { licensesToString, validateLicense, validateLicenses } from './validators';
 
 const TEST_LICENSE = {

@@ -2,18 +2,19 @@ import fs from 'fs';
 import { join } from 'path';
 import yaml from 'js-yaml';
 import { prepareToWrite } from '../frontmatter';
-import { ISession } from '../session/types';
+import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import { config } from '../store/local';
 import { writeFileToFolder } from '../utils';
+import type { Options } from '../utils/validators';
 import {
   incrementOptions,
-  Options,
   validateKeys,
   validateObject,
   validationError,
 } from '../utils/validators';
-import { Config, CURVENOTE_YML, VERSION } from './types';
+import type { Config } from './types';
+import { CURVENOTE_YML, VERSION } from './types';
 import { validateProjectConfig, validateSiteConfig } from './validators';
 
 function emptyConfig(): Config {

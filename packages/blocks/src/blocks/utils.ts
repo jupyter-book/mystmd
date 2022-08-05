@@ -1,10 +1,6 @@
-import { SrcId } from './types';
-import {
-  BlockFrontMatterProps,
-  ProjectFrontMatterProps,
-  BLOCK_FRONT_MATTER_KEYS,
-  PROJECT_FRONT_MATTER_KEYS,
-} from './types/frontMatter';
+import type { SrcId } from './types';
+import type { BlockFrontMatterProps, ProjectFrontMatterProps } from './types/frontMatter';
+import { BLOCK_FRONT_MATTER_KEYS, PROJECT_FRONT_MATTER_KEYS } from './types/frontMatter';
 
 export const srcIdToJson = (object: SrcId): SrcId => ({
   project: object.project,

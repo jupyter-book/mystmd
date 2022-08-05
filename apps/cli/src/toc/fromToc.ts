@@ -1,9 +1,11 @@
 import fs from 'fs';
 import { join } from 'path';
-import { JupyterBookChapter, readTOC, tocFile } from '../export/jupyter-book/toc';
-import { ISession } from '../session/types';
-import { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
-import { fileInfo, getCitationPaths, nextLevel, PageSlugs, resolveExtension } from './utils';
+import type { JupyterBookChapter } from '../export/jupyter-book/toc';
+import { readTOC, tocFile } from '../export/jupyter-book/toc';
+import type { ISession } from '../session/types';
+import type { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
+import type { PageSlugs } from './utils';
+import { fileInfo, getCitationPaths, nextLevel, resolveExtension } from './utils';
 
 function pagesFromChapters(
   session: ISession,

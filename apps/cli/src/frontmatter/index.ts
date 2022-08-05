@@ -1,12 +1,12 @@
 import yaml from 'js-yaml';
-import { Root, Heading } from 'mdast';
+import type { Root, Heading } from 'mdast';
 import { remove, select } from 'mystjs';
-import { Licenses } from '../licenses/types';
+import type { Licenses } from '../licenses/types';
 import { licensesToString } from '../licenses/validators';
-import { ISession } from '../session/types';
+import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import { toText } from '../utils';
-import { PageFrontmatter } from './types';
+import type { PageFrontmatter } from './types';
 import { validatePageFrontmatter, fillPageFrontmatter } from './validators';
 
 export function frontmatterFromMdastTree(

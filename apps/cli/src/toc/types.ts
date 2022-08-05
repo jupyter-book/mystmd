@@ -1,5 +1,5 @@
-import { ProjectFrontmatter } from '../frontmatter/types';
-import { SiteAnalytics, SiteAction, SiteNavItem } from '../config/types';
+import type { ProjectFrontmatter } from '../frontmatter/types';
+import type { SiteAnalytics, SiteAction, SiteNavItem } from '../config/types';
 
 // Types for local Project
 //

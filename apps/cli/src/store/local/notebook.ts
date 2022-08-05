@@ -1,15 +1,13 @@
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
 import { nanoid } from 'nanoid';
-import { CellOutput, ContentFormatTypes, KINDS } from '@curvenote/blocks';
-import {
-  parseNotebook,
-  TranslatedBlockPair,
-  minifyCellOutput,
-  MinifiedOutput,
-} from '@curvenote/nbtx';
-import { parseMyst, Root } from '../../myst';
-import { ISession } from '../../session/types';
+import type { CellOutput } from '@curvenote/blocks';
+import { ContentFormatTypes, KINDS } from '@curvenote/blocks';
+import type { TranslatedBlockPair, MinifiedOutput } from '@curvenote/nbtx';
+import { parseNotebook, minifyCellOutput } from '@curvenote/nbtx';
+import type { Root } from '../../myst';
+import { parseMyst } from '../../myst';
+import type { ISession } from '../../session/types';
 import { publicPath } from '../../utils';
 import { createWebFileObjectFactory } from '../../web/files';
 

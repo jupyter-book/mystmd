@@ -1,5 +1,5 @@
 import { State, transform, unified } from 'mystjs';
-import { Root } from '../myst';
+import type { Root } from '../myst';
 
 export async function transformRoot(mdast: Root): Promise<Root> {
   const state = new State();

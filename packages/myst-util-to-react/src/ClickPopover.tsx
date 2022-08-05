@@ -1,4 +1,5 @@
-import React, { ElementType, useState } from 'react';
+import type { ElementType } from 'react';
+import React, { useState } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { usePopper } from 'react-popper';
 import classNames from 'classnames';

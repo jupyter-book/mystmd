@@ -1,6 +1,6 @@
 import Ansi from 'ansi-to-react';
 import { ensureString } from '@curvenote/blocks';
-import { MinifiedErrorOutput } from '@curvenote/nbtx';
+import type { MinifiedErrorOutput } from '@curvenote/nbtx';
 import { MaybeLongContent } from './components';
 
 export default function Error({ output }: { output: MinifiedErrorOutput }) {

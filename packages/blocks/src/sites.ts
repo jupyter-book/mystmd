@@ -1,7 +1,7 @@
+import type { ValidationOptions } from './utils/validators';
 import {
   defined,
   incrementOptions,
-  ValidationOptions,
   validateKeys,
   validateObject,
   validateObjectKeys,
@@ -13,8 +13,8 @@ import {
   validationError,
 } from './utils/validators';
 import { getDate } from './helpers';
-import { ProjectId } from './projects';
-import { BaseLinks, JsonObject } from './types';
+import type { ProjectId } from './projects';
+import type { BaseLinks, JsonObject } from './types';
 
 export interface UploadFileInfo {
   path: string;

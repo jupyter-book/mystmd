@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { MyUser } from '../models';
-import { ISession } from '../session/types';
+import type { ISession } from '../session/types';
 import { clirun } from './utils';
 
 async function checkAuth(session: ISession) {

@@ -1,10 +1,11 @@
-import { Block, CitationStyles, KINDS, Project, ProjectVisibility } from '@curvenote/blocks';
+import type { Block, Project } from '@curvenote/blocks';
+import { CitationStyles, KINDS, ProjectVisibility } from '@curvenote/blocks';
 import { prepareToWrite, unnestKernelSpec } from '.';
 import { silentLogger } from '../logging';
 import { Session } from '../session';
-import { Options } from '../utils/validators';
+import type { Options } from '../utils/validators';
 import { pageFrontmatterFromDTO, projectFrontmatterFromDTO, saveAffiliations } from './api';
-import {
+import type {
   Author,
   Biblio,
   Jupytext,

@@ -1,4 +1,4 @@
-import { Author, KINDS } from '@curvenote/blocks';
+import type { Author, KINDS } from '@curvenote/blocks';
 import type { GenericNode, GenericParent } from 'mystjs';
 
 export enum Theme {

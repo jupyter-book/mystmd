@@ -3,9 +3,11 @@ import useWindowSize, { useFetchAnyTruncatedContent } from './hooks';
 import { nanoid } from 'nanoid';
 import { useSelector } from 'react-redux';
 import { host, actions } from '@curvenote/connect';
-import { MinifiedOutput, convertToIOutputs, fetchAndEncodeOutputImages } from '@curvenote/nbtx';
+import type { MinifiedOutput } from '@curvenote/nbtx';
+import { convertToIOutputs, fetchAndEncodeOutputImages } from '@curvenote/nbtx';
 import { ChevronDoubleDownIcon } from '@heroicons/react/outline';
-import { selectIFrameHeight, selectIFrameReady, State } from './selectors';
+import type { State } from './selectors';
+import { selectIFrameHeight, selectIFrameReady } from './selectors';
 
 const PERCENT_OF_WINDOW = 0.9;
 

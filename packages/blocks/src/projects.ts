@@ -1,7 +1,8 @@
-import { JsonObject, BaseLinks } from './types';
+import type { JsonObject, BaseLinks } from './types';
 import { getDate } from './helpers';
-import { CitationStyles, CustomizableReferenceKind, Affiliation } from './blocks/types';
-import { ProjectFrontMatterProps } from './blocks/types/frontMatter';
+import type { Affiliation } from './blocks/types';
+import { CitationStyles, CustomizableReferenceKind } from './blocks/types';
+import type { ProjectFrontMatterProps } from './blocks/types/frontMatter';
 import { extractProjectFrontMatter } from './blocks/utils';
 
 export interface ProjectLinks extends BaseLinks {

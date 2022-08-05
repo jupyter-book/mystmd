@@ -1,7 +1,7 @@
-import { Link } from 'myst-spec';
+import type { Link } from 'myst-spec';
 import { Link as RemixLink } from '@remix-run/react';
 import { ExternalLinkIcon, LinkIcon } from '@heroicons/react/outline';
-import { NodeRenderer } from './types';
+import type { NodeRenderer } from './types';
 
 type TransformedLink = Link & { internal?: boolean };
 

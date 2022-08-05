@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { References } from '@curvenote/site-common';
+import type { References } from '@curvenote/site-common';
 
 const ReferencesContext = React.createContext<References | null>(null);
 

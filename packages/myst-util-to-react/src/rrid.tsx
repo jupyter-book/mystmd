@@ -1,4 +1,4 @@
-import { NodeRenderer } from './types';
+import type { NodeRenderer } from './types';
 import { ClickPopover } from './ClickPopover';
 import useSWR from 'swr';
 import { ExternalLinkIcon } from '@heroicons/react/outline';

@@ -1,5 +1,6 @@
-import { JsonObject } from '../types';
-import { KINDS, BaseVersion, ReferenceFormatTypes } from './types';
+import type { JsonObject } from '../types';
+import type { KINDS, BaseVersion } from './types';
+import { ReferenceFormatTypes } from './types';
 
 interface RisFull {
   AB: string;

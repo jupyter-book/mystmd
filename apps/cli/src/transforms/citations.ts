@@ -2,9 +2,9 @@ import type { CitationRenderer } from 'citation-js-utils';
 import { InlineCite } from 'citation-js-utils';
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
-import { Logger } from '../logging';
-import { Root } from '../myst';
-import { References } from './types';
+import type { Logger } from '../logging';
+import type { Root } from '../myst';
+import type { References } from './types';
 
 export type CiteKind = 'narrative' | 'parenthetical';
 

@@ -1,5 +1,5 @@
-import { Author as BlocksAuthor } from '@curvenote/blocks';
-import { Licenses } from '../licenses/types';
+import type { Author as BlocksAuthor } from '@curvenote/blocks';
+import type { Licenses } from '../licenses/types';
 
 export type Author = Partial<BlocksAuthor>;
 export type Biblio = {

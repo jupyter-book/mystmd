@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
-import { Frontmatter as FrontmatterType } from '@curvenote/site-common';
+import type { Frontmatter as FrontmatterType } from '@curvenote/site-common';
 import { KINDS } from '@curvenote/blocks';
 import { LicenseBadges, Email, GitHub, OpenAccess, Orcid, Jupyter, ROR } from '@curvenote/icons';
 

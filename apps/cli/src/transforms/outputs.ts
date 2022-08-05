@@ -1,9 +1,10 @@
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
-import { CellOutput, KINDS } from '@curvenote/blocks';
+import type { CellOutput } from '@curvenote/blocks';
+import { KINDS } from '@curvenote/blocks';
 import { minifyCellOutput, walkPaths } from '@curvenote/nbtx';
-import { Root } from '../myst';
-import { ISession } from '../session';
+import type { Root } from '../myst';
+import type { ISession } from '../session';
 import { publicPath } from '../utils';
 import { createWebFileObjectFactory } from '../web/files';
 

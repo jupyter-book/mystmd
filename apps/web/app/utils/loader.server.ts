@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import configJson from '~/config.json';
-import { getDomainFromRequest, PageLoader as Data, SiteManifest } from '@curvenote/site-common';
+import type { PageLoader as Data, SiteManifest } from '@curvenote/site-common';
+import { getDomainFromRequest } from '@curvenote/site-common';
 import { redirect } from '@remix-run/node';
 import { getFooterLinks, getProject, responseNoArticle, responseNoSite } from '@curvenote/site';
 

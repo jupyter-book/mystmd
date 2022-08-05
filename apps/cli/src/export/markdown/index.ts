@@ -2,7 +2,8 @@ import type { GenericNode } from 'mystjs';
 import path from 'path';
 import YAML from 'js-yaml';
 import fetch from 'node-fetch';
-import { VersionId, KINDS, oxaLink, Blocks } from '@curvenote/blocks';
+import type { VersionId, Blocks } from '@curvenote/blocks';
+import { KINDS, oxaLink } from '@curvenote/blocks';
 import { createId, toMyst } from '@curvenote/schema';
 import { prepareToWrite } from '../../frontmatter';
 import {
@@ -12,7 +13,7 @@ import {
 } from '../../frontmatter/api';
 import { fillPageFrontmatter } from '../../frontmatter/validators';
 import { Block, Project, Version } from '../../models';
-import { ISession } from '../../session/types';
+import type { ISession } from '../../session/types';
 import { resolvePath, writeFileToFolder } from '../../utils';
 import { exportFromOxaLink } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';

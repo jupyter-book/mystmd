@@ -7,10 +7,11 @@ import type { GenericNode } from 'mystjs';
 import { convertHtmlToMdast } from 'mystjs';
 import { extname, join } from 'path';
 import { KINDS } from '@curvenote/blocks';
-import { SiteProject } from '../../config/types';
+import type { SiteProject } from '../../config/types';
 import { frontmatterFromMdastTree, getPageFrontmatter } from '../../frontmatter';
-import { parseMyst, Root } from '../../myst';
-import { ISession } from '../../session/types';
+import type { Root } from '../../myst';
+import { parseMyst } from '../../myst';
+import type { ISession } from '../../session/types';
 import { loadAllConfigs } from '../../session';
 import {
   transformRoot,
@@ -31,7 +32,7 @@ import {
   importMdastFromJson,
   includeFilesDirective,
 } from '../../transforms';
-import {
+import type {
   PreRendererData,
   References,
   RendererData,
@@ -39,7 +40,7 @@ import {
 } from '../../transforms/types';
 import { loadProjectFromDisk } from '../../toc';
 import { copyActionResource, copyLogo, getSiteManifest } from '../../toc/manifest';
-import { LocalProject, LocalProjectPage } from '../../toc/types';
+import type { LocalProject, LocalProjectPage } from '../../toc/types';
 import { writeFileToFolder, serverPath, tic, addWarningForFile } from '../../utils';
 import { selectors } from '..';
 import { processNotebook } from './notebook';

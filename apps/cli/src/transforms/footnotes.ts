@@ -1,8 +1,8 @@
 import type { GenericNode } from 'mystjs';
 import { remove, selectAll } from 'mystjs';
-import { Root } from '../myst';
+import type { Root } from '../myst';
 import { transformKeys } from './keys';
-import { References } from './types';
+import type { References } from './types';
 
 export function transformFootnotes(mdast: Root, references: References) {
   const footnotes = selectAll('footnoteDefinition', mdast);

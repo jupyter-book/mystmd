@@ -1,8 +1,8 @@
 import { silentLogger } from '../logging';
+import type { Options } from './validators';
 import {
   fillMissingKeys,
   incrementOptions,
-  Options,
   locationSuffix,
   validateBoolean,
   validateDate,

@@ -1,5 +1,5 @@
 import { formatDate } from '@curvenote/blocks';
-import { Logger } from '../logging';
+import type { Logger } from '../logging';
 
 export type Options = {
   logger: Logger;

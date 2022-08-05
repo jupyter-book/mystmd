@@ -1,8 +1,8 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import type { GenericNode, map } from 'mystjs';
-import { KINDS } from '@curvenote/blocks';
-import { PageFrontmatter } from '../frontmatter/types';
-import { Root } from '../myst';
+import type { KINDS } from '@curvenote/blocks';
+import type { PageFrontmatter } from '../frontmatter/types';
+import type { Root } from '../myst';
 
 export type MapResult = ReturnType<typeof map>;
 

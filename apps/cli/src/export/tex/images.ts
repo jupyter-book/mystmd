@@ -1,9 +1,9 @@
-import { ISession } from '../../session/types';
+import type { ISession } from '../../session/types';
 import * as imagemagick from '../utils/imagemagick';
 import * as inkscape from '../utils/inkscape';
-import { ArticleState } from '../utils/walkArticle';
+import type { ArticleState } from '../utils/walkArticle';
 import { writeImagesToFiles } from '../utils/writeImagesToFiles';
-import { TexExportOptions } from './types';
+import type { TexExportOptions } from './types';
 import { filterFilenamesByExtension, processImages } from './utils';
 
 export async function localizeAndProcessImages(

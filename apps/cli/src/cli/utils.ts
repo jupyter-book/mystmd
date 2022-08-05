@@ -1,11 +1,11 @@
 import fs from 'fs';
 import chalk from 'chalk';
 import check from 'check-node-version';
-import { Command } from 'commander';
+import type { Command } from 'commander';
 import { CURVENOTE_YML } from '../config/types';
 import { chalkLogger, LogLevel } from '../logging';
 import { Session, getToken } from '../session';
-import { ISession } from '../session/types';
+import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import CurvenoteVersion from '../version';
 import { webPackageJsonPath } from '../utils';

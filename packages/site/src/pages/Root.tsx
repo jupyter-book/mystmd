@@ -1,4 +1,4 @@
-import { DocumentLoader, SiteManifest } from '@curvenote/site-common';
+import type { DocumentLoader, SiteManifest } from '@curvenote/site-common';
 import {
   SiteProvider,
   TabStateProvider,

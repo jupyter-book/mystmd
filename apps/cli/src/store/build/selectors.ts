@@ -1,5 +1,5 @@
 import type { RootState } from '../reducers';
-import { BuildWarning, ExternalLinkResult } from './types';
+import type { BuildWarning, ExternalLinkResult } from './types';
 
 export function selectLinkStatus(state: RootState, url: string): ExternalLinkResult | undefined {
   return state.build.links[url];

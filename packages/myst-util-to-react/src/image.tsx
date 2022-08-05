@@ -1,6 +1,6 @@
-import { Alignment } from '@curvenote/blocks';
-import { Image as ImageNode } from 'myst-spec';
-import { NodeRenderer } from './types';
+import type { Alignment } from '@curvenote/blocks';
+import type { Image as ImageNode } from 'myst-spec';
+import type { NodeRenderer } from './types';
 
 function alignToMargin(align: string) {
   switch (align) {

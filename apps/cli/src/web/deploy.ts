@@ -5,14 +5,14 @@ import mime from 'mime-types';
 import fetch from 'node-fetch';
 import path from 'path';
 import pLimit from 'p-limit';
-import {
+import type {
   DnsRouter,
   SiteDeployRequest,
   SiteUploadRequest,
   SiteUploadResponse,
 } from '@curvenote/blocks';
-import { Logger } from '../logging';
-import { ISession } from '../session/types';
+import type { Logger } from '../logging';
+import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import { publicPath, serverPath, tic } from '../utils';
 import { getLogoPaths } from '../toc/manifest';

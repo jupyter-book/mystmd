@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import { ExclamationIcon } from '@heroicons/react/outline';
-import { InlineMath, Math } from 'myst-spec';
+import type { InlineMath, Math } from 'myst-spec';
 import { InlineError } from './inlineError';
 import { HashLink } from './heading';
-import { NodeRenderer } from './types';
+import type { NodeRenderer } from './types';
 
 // function Math({ value, html }: { value: string; html: string }) {
 //   const [loaded, setLoaded] = useState(false);

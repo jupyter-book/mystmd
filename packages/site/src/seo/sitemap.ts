@@ -1,4 +1,4 @@
-import { ManifestProjectPage, SiteManifest } from '@curvenote/site-common';
+import type { ManifestProjectPage, SiteManifest } from '@curvenote/site-common';
 
 export function sitemapStylesheetIndex() {
   return `<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:sitemap="http://www.sitemaps.org/schemas/sitemap/0.9" version="1.0" exclude-result-prefixes="sitemap">

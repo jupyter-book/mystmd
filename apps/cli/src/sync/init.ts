@@ -7,7 +7,7 @@ import { CURVENOTE_YML } from '../config/types';
 import { docLinks, LOGO } from '../docs';
 import { LogLevel } from '../logging';
 import { MyUser } from '../models';
-import { ISession } from '../session/types';
+import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import { loadProjectFromDisk } from '../toc';
 import { findProjectsOnPath } from '../toc/utils';

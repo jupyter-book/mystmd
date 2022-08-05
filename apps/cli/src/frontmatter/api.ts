@@ -1,10 +1,12 @@
-import { Block, oxaLink, Project } from '@curvenote/blocks';
+import type { Block, Project } from '@curvenote/blocks';
+import { oxaLink } from '@curvenote/blocks';
 import { dirname, join } from 'path';
 import { affiliations } from '../store/local';
 import { selectAffiliation } from '../store/selectors';
-import { ISession } from '../session';
-import { filterKeys, Options } from '../utils/validators';
-import { Author, PageFrontmatter, ProjectFrontmatter } from './types';
+import type { ISession } from '../session';
+import type { Options } from '../utils/validators';
+import { filterKeys } from '../utils/validators';
+import type { Author, PageFrontmatter, ProjectFrontmatter } from './types';
 import {
   PAGE_FRONTMATTER_KEYS,
   PROJECT_FRONTMATTER_KEYS,

@@ -1,11 +1,6 @@
 import { validateAuthor } from '../frontmatter/validators';
-import {
-  defined,
-  incrementOptions,
-  Options,
-  validateDate,
-  validateList,
-} from '../utils/validators';
+import type { Options } from '../utils/validators';
+import { defined, incrementOptions, validateDate, validateList } from '../utils/validators';
 
 /**
  * Validate Export Config

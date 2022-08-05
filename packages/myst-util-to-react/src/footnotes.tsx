@@ -1,6 +1,7 @@
 import type { GenericParent } from 'mystjs';
 import { useReferences } from '@curvenote/ui-providers';
-import { useParse, NodeRenderer } from '.';
+import type { NodeRenderer } from '.';
+import { useParse } from '.';
 import { ClickPopover } from './ClickPopover';
 
 export function FootnoteDefinition({ identifier }: { identifier: string }) {

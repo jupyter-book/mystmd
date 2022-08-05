@@ -1,7 +1,9 @@
 import { applyMiddleware, createStore, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import runtime, { types } from '@curvenote/runtime';
-import { host, HostState } from '@curvenote/connect';
+import type { types } from '@curvenote/runtime';
+import runtime from '@curvenote/runtime';
+import type { HostState } from '@curvenote/connect';
+import { host } from '@curvenote/connect';
 
 export interface State {
   runtime: types.State;

@@ -1,11 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import fetch from 'node-fetch';
-import { Blocks } from '@curvenote/blocks';
-import { Logger } from '../../logging';
-import { Block, Version } from '../../models';
+import type { Blocks } from '@curvenote/blocks';
+import type { Logger } from '../../logging';
+import type { Version } from '../../models';
+import { Block } from '../../models';
 import { getImageSrc } from './getImageSrc';
-import { ArticleState } from './walkArticle';
+import type { ArticleState } from './walkArticle';
 
 // TODO: use mime-types package!
 // https://www.npmjs.com/package/mime-types

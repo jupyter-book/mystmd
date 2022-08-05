@@ -1,21 +1,19 @@
 import fs from 'fs';
 import path from 'path';
-import { oxaLinkToId, VersionId } from '@curvenote/blocks';
+import type { VersionId } from '@curvenote/blocks';
+import { oxaLinkToId } from '@curvenote/blocks';
 import { projectFrontmatterFromDTO } from '../../frontmatter/api';
-import { Block, Project } from '../../models';
-import { ISession } from '../../session/types';
-import { ExportConfig } from '../types';
+import type { Project } from '../../models';
+import { Block } from '../../models';
+import type { ISession } from '../../session/types';
+import type { ExportConfig } from '../types';
 import { makeBuildPaths } from '../utils/makeBuildPaths';
-import { ArticleState, ArticleStateReference } from '../utils/walkArticle';
+import type { ArticleState, ArticleStateReference } from '../utils/walkArticle';
 import { writeBibtex } from '../utils/writeBibtex';
 import { validateExportConfigKeys, validateJtexFrontmatterKeys } from '../validators';
-import { TexExportOptions } from './types';
-import {
-  stringifyFrontmatter,
-  buildJtexSection,
-  escapeLatex,
-  LatexFrontmatter,
-} from './frontmatter';
+import type { TexExportOptions } from './types';
+import type { LatexFrontmatter } from './frontmatter';
+import { stringifyFrontmatter, buildJtexSection, escapeLatex } from './frontmatter';
 import { gatherAndWriteArticleContent } from './gather';
 import {
   ifTemplateFetchTaggedBlocks,

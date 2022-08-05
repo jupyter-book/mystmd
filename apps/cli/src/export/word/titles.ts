@@ -1,7 +1,7 @@
-import { Node } from 'prosemirror-model';
-import { Project as ProjectDTO, Block as BlockDTO } from '@curvenote/blocks';
+import type { Node } from 'prosemirror-model';
+import type { Project as ProjectDTO, Block as BlockDTO } from '@curvenote/blocks';
 import { schemas } from '@curvenote/schema';
-import { ISession } from '../../session/types';
+import type { ISession } from '../../session/types';
 
 export async function createArticleTitle(
   session: ISession,

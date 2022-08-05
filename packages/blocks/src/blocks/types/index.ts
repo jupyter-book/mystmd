@@ -1,8 +1,8 @@
-import { BaseLinks } from '../../types';
-import { FormatTypes } from './format';
-import { BlockFrontMatterProps } from './frontMatter';
-import { BlockId, ChildId, VersionId } from './id';
-import { KINDS } from './kind';
+import type { BaseLinks } from '../../types';
+import type { FormatTypes } from './format';
+import type { BlockFrontMatterProps } from './frontMatter';
+import type { BlockId, ChildId, VersionId } from './id';
+import type { KINDS } from './kind';
 
 export * from './id';
 export * from './kind';

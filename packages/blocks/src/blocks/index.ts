@@ -1,14 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { JsonObject } from '../types';
-import {
-  KINDS,
-  VersionId,
-  BlockId,
-  Block,
-  BasePartialVersion,
-  ContentFormatTypes,
-  FormatTypes,
-} from './types';
+import type { JsonObject } from '../types';
+import type { VersionId, BlockId, Block, BasePartialVersion, FormatTypes } from './types';
+import { KINDS, ContentFormatTypes } from './types';
 import * as article from './article';
 import * as content from './content';
 import * as code from './code';

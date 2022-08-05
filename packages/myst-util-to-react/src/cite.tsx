@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { useReferences } from '@curvenote/ui-providers';
-import { NodeRenderer } from './types';
+import type { NodeRenderer } from './types';
 import { useState } from 'react';
 import { ClickPopover } from './ClickPopover';
 import { InlineError } from './inlineError';

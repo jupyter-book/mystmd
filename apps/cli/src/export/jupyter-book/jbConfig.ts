@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { ISession } from '../../session/types';
+import type { ISession } from '../../session/types';
 import { writeFileToFolder } from '../../utils';
 
 export interface Options {

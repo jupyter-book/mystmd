@@ -1,7 +1,7 @@
 import { oxaLink, oxaLinkToId } from '@curvenote/blocks';
 import type { SharedMarkdownOptions } from '@curvenote/schema';
-import { ISession } from '../../session/types';
-import { ArticleState } from './walkArticle';
+import type { ISession } from '../../session/types';
+import type { ArticleState } from './walkArticle';
 import { basekey } from './basekey';
 
 export function localizationOptions(

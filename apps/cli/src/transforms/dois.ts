@@ -1,15 +1,15 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import { getCitations } from 'citation-js-utils';
 import { validate, normalize } from 'doi-utils';
-import { Link } from 'myst-spec';
+import type { Link } from 'myst-spec';
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
 import fetch from 'node-fetch';
-import { Logger } from '../logging';
-import { Root } from '../myst';
+import type { Logger } from '../logging';
+import type { Root } from '../myst';
 import { tic } from '../utils';
-import { Cite } from './citations';
-import { SingleCitationRenderer } from './types';
+import type { Cite } from './citations';
+import type { SingleCitationRenderer } from './types';
 
 async function getDoiOrgBibtex(log: Logger, doi: string): Promise<string | null> {
   if (!validate(normalize(doi))) return null;

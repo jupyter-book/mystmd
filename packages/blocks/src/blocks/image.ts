@@ -1,5 +1,6 @@
-import { JsonObject } from '../types';
-import { KINDS, BaseVersion, ImageFormatTypes, FileMetadata } from './types';
+import type { JsonObject } from '../types';
+import type { KINDS, BaseVersion, FileMetadata } from './types';
+import { ImageFormatTypes } from './types';
 
 // Code that has not yet been saved / versioned
 export type PartialImage = {

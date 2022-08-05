@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { join } from 'path';
-import { ISession } from '../session/types';
+import type { ISession } from '../session/types';
 import { publicPath, serverPath, tic } from '../utils';
 import { processSite } from '../store/local/actions';
 

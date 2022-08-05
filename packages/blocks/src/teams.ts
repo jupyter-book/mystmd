@@ -1,6 +1,6 @@
 import { getDate } from './helpers';
-import { ROLES } from './roles';
-import { BaseLinks, JsonObject } from './types';
+import type { ROLES } from './roles';
+import type { BaseLinks, JsonObject } from './types';
 
 export interface TeamLinks extends BaseLinks {
   access?: string;

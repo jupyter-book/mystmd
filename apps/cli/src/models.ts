@@ -1,5 +1,5 @@
 import type { AnyAction } from '@reduxjs/toolkit';
-import {
+import type {
   MyUser as MyUserDTO,
   User as UserDTO,
   Team as TeamDTO,
@@ -10,19 +10,22 @@ import {
   ProjectId,
   BlockId,
   VersionId,
+  JsonObject,
+  FormatTypes,
+  TemplateSpec,
+} from '@curvenote/blocks';
+import {
   projectFromDTO,
   blockFromDTO,
   versionFromDTO,
   userFromDTO,
   myUserFromDTO,
-  JsonObject,
   teamFromDTO,
-  FormatTypes,
-  TemplateSpec,
   siteConfigFromDTO,
 } from '@curvenote/blocks';
-import { ISession } from './session/types';
-import { selectors, RootState } from './store';
+import type { ISession } from './session/types';
+import type { RootState } from './store';
+import { selectors } from './store';
 import { users, teams, blocks, projects, siteconfigs, versions, templates } from './store/api';
 import { versionIdToURL } from './utils';
 

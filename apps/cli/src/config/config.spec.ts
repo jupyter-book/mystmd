@@ -1,6 +1,6 @@
 import { silentLogger } from '../logging';
 import { BUILD_FOLDER } from '../utils';
-import { Options } from '../utils/validators';
+import type { Options } from '../utils/validators';
 import {
   validateProjectConfig,
   validateSiteAction,

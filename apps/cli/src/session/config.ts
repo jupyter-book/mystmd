@@ -3,7 +3,8 @@ import * as fs from 'fs';
 import inquirer from 'inquirer';
 import path from 'path';
 import { MyUser } from '../models';
-import { chalkLogger, Logger, LogLevel } from '../logging';
+import type { Logger } from '../logging';
+import { chalkLogger, LogLevel } from '../logging';
 import { actionLinks } from '../docs';
 import { Session } from './session';
 

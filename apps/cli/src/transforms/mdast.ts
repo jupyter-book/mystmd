@@ -3,7 +3,7 @@ import type { GenericNode } from 'mystjs';
 import type { Root } from '../myst';
 import { selectAll } from 'mystjs';
 import { join, dirname } from 'path';
-import { ISession } from '../session';
+import type { ISession } from '../session';
 
 /**
  * This is the {mdast} directive, that loads from disk

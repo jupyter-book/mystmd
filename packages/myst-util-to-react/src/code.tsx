@@ -1,5 +1,5 @@
 import type { Code, InlineCode } from 'myst-spec';
-import { NodeRenderer } from './types';
+import type { NodeRenderer } from './types';
 import { useTheme } from '@curvenote/ui-providers';
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 import light from 'react-syntax-highlighter/dist/cjs/styles/hljs/xcode';

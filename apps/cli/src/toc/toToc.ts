@@ -1,8 +1,8 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
 import { join, relative } from 'path';
-import { JupyterBookChapter, TOC } from '../export/jupyter-book/toc';
-import { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
+import type { JupyterBookChapter, TOC } from '../export/jupyter-book/toc';
+import type { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
 import { removeExtension } from './utils';
 
 function getRelativeDocumentLink(file: string, path: string) {

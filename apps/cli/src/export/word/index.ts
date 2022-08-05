@@ -1,8 +1,9 @@
 import fs from 'fs';
 import { writeDocx } from 'prosemirror-docx';
-import { VersionId, KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
+import type { VersionId } from '@curvenote/blocks';
+import { KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
 import { Block, Project, User, Version } from '../../models';
-import { ISession } from '../../session/types';
+import type { ISession } from '../../session/types';
 import { assertEndsInExtension } from '../utils/assertions';
 import { exportFromOxaLink } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';

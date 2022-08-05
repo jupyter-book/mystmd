@@ -1,4 +1,4 @@
-import { NodeRenderer } from './types';
+import type { NodeRenderer } from './types';
 
 export const IFrame: NodeRenderer = (node) => {
   return (

@@ -1,4 +1,4 @@
-import { PhrasingContent } from 'mdast';
+import type { PhrasingContent } from 'mdast';
 
 export function toText(content: PhrasingContent[]): string {
   return content

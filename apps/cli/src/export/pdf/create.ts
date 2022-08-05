@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import util from 'util';
-import { Logger } from '../../logging';
+import type { Logger } from '../../logging';
 import { BUILD_FOLDER } from '../../utils';
 import { exec } from '../utils';
 

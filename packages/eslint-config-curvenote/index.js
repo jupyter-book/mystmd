@@ -5,6 +5,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
     'plugin:import/recommended',
+    'plugin:import/typescript',
   ],
   rules: {
     '@next/next/no-html-link-for-pages': 'off',
@@ -14,6 +15,7 @@ module.exports = {
     'import/no-duplicates': 'error',
     'import/no-unresolved': 'off', // This errors out on '~/module' that is defined in tsconfig
     '@typescript-eslint/no-shadow': 'error',
+    '@typescript-eslint/consistent-type-imports': 'error',
     'array-callback-return': [
       'error',
       {

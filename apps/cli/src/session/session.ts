@@ -1,13 +1,15 @@
 import fetch from 'node-fetch';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
-import { JsonObject } from '@curvenote/blocks';
+import type { JsonObject } from '@curvenote/blocks';
 import { loadConfigOrThrow } from '../config';
 import { CURVENOTE_YML } from '../config/types';
-import { basicLogger, Logger, LogLevel } from '../logging';
-import { rootReducer, RootState, selectors } from '../store';
+import type { Logger } from '../logging';
+import { basicLogger, LogLevel } from '../logging';
+import type { RootState } from '../store';
+import { rootReducer, selectors } from '../store';
 import { getHeaders, setSessionOrUserToken } from './tokens';
-import { ISession, Response, Tokens } from './types';
+import type { ISession, Response, Tokens } from './types';
 import { checkForClientVersionRejection } from '../utils';
 
 const DEFAULT_API_URL = 'https://api.curvenote.com';

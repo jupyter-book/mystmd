@@ -1,13 +1,13 @@
 import LICENSES from './licenses';
+import type { Options } from '../utils/validators';
 import {
   defined,
   incrementOptions,
-  Options,
   validateObjectKeys,
   validateString,
   validationError,
 } from '../utils/validators';
-import { License, Licenses } from './types';
+import type { License, Licenses } from './types';
 
 const LICENSE_KEYS = Object.fromEntries(LICENSES.map((l) => [l.id.toUpperCase(), l]));
 

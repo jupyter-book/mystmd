@@ -1,11 +1,11 @@
 import { validate } from 'doi-utils';
 import { validateLicenses } from '../licenses/validators';
+import type { Options } from '../utils/validators';
 import {
   defined,
   incrementOptions,
   fillMissingKeys,
   filterKeys,
-  Options,
   validateBoolean,
   validateDate,
   validateEmail,
@@ -16,7 +16,7 @@ import {
   validateUrl,
   validationError,
 } from '../utils/validators';
-import {
+import type {
   Author,
   Biblio,
   Jupytext,

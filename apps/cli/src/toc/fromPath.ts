@@ -1,17 +1,17 @@
 import fs from 'fs';
 import { extname, join } from 'path';
 import { CURVENOTE_YML } from '../config/types';
-import { ISession } from '../session/types';
+import type { ISession } from '../session/types';
 import { shouldIgnoreFile } from '../utils';
 import { pagesFromToc } from './fromToc';
-import { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
+import type { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
+import type { PageSlugs } from './utils';
 import {
   fileInfo,
   getCitationPaths,
   isDirectory,
   isValidFile,
   nextLevel,
-  PageSlugs,
   VALID_FILE_EXTENSIONS,
 } from './utils';
 

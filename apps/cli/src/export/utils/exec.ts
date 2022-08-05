@@ -1,6 +1,6 @@
 import util from 'util';
 import child_process from 'child_process';
-import { Logger } from '../../logging';
+import type { Logger } from '../../logging';
 
 function execWrapper(
   command: string,

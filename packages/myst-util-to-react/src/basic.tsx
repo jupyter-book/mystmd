@@ -1,5 +1,5 @@
 import type * as spec from 'myst-spec';
-import { NodeRenderer } from './types';
+import type { NodeRenderer } from './types';
 
 function getCaptionStart(kind?: string) {
   switch (kind) {

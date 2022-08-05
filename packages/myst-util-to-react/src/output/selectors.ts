@@ -1,4 +1,5 @@
-import { host, HostState } from '@curvenote/connect';
+import type { HostState } from '@curvenote/connect';
+import { host } from '@curvenote/connect';
 
 export interface State {
   app: HostState;

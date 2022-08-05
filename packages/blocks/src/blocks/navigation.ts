@@ -1,13 +1,12 @@
-import { JsonObject } from '../types';
-import {
+import type { JsonObject } from '../types';
+import type {
   BaseVersion,
   KINDS,
-  NavigationFormatTypes,
   NavListItemDTO,
   NavListBlockItemDTO,
   NavListGroupItemDTO,
-  NavListItemKindEnum,
 } from './types';
+import { NavigationFormatTypes, NavListItemKindEnum } from './types';
 
 export interface PartialNavigation {
   items: NavListItemDTO[];

@@ -3,8 +3,8 @@ import path from 'path';
 import { sync as which } from 'which';
 import YAML from 'js-yaml';
 import { Template } from '../../models';
-import { ISession } from '../../session/types';
-import { TexExportOptions } from './types';
+import type { ISession } from '../../session/types';
+import type { TexExportOptions } from './types';
 
 export function throwIfTemplateButNoJtex(opts: TexExportOptions) {
   if ((opts.template || opts.templatePath) && !which('jtex', { nothrow: true })) {

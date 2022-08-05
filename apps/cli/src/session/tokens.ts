@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import { XClientName } from '@curvenote/blocks';
-import { Logger } from '../logging';
+import type { Logger } from '../logging';
 import CLIENT_VERSION from '../version';
-import { Tokens } from './types';
+import type { Tokens } from './types';
 
 function decodeAndValidateToken(
   log: Logger,

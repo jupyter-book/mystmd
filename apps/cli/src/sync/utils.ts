@@ -1,11 +1,11 @@
 import chalk from 'chalk';
 import path from 'path';
-import { ProjectConfig, SiteConfig, SiteProject } from '../config/types';
+import type { ProjectConfig, SiteConfig, SiteProject } from '../config/types';
 import { docLinks } from '../docs';
 import { projectIdFromLink } from '../export';
 import { Project, RemoteSiteConfig } from '../models';
-import { ISession } from '../session/types';
-import { SyncCiHelperOptions } from './types';
+import type { ISession } from '../session/types';
+import type { SyncCiHelperOptions } from './types';
 
 export function projectLogString(project: Project) {
   return `"${project.data.title}" (@${project.data.team}/${project.data.name})`;

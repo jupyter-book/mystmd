@@ -1,9 +1,10 @@
 import fs from 'fs';
 import type { GenericNode } from 'mystjs';
-import { parseMyst, Root } from '../myst';
+import type { Root } from '../myst';
+import { parseMyst } from '../myst';
 import { selectAll } from 'mystjs';
 import { join, dirname } from 'path';
-import { ISession } from '../session';
+import type { ISession } from '../session';
 
 /**
  * This is the {include} directive, that loads from disk.

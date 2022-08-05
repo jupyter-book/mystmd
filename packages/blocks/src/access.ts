@@ -1,6 +1,6 @@
-import { JsonObject, BaseLinks } from './types';
+import type { JsonObject, BaseLinks } from './types';
 import { getDate } from './helpers';
-import { ROLES } from './roles';
+import type { ROLES } from './roles';
 
 export enum ACLType {
   'Project' = 'Project',

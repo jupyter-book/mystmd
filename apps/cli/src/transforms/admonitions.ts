@@ -1,6 +1,6 @@
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
-import { Root } from '../myst';
+import type { Root } from '../myst';
 
 export function transformAdmonitions(mdast: Root) {
   const numbered = selectAll('admonition', mdast) as GenericNode[];

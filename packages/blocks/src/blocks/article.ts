@@ -1,5 +1,6 @@
-import { JsonObject } from '../types';
-import { KINDS, ChildId, BlockChildDict, BaseVersion, ArticleFormatTypes } from './types';
+import type { JsonObject } from '../types';
+import type { KINDS, ChildId, BlockChildDict, BaseVersion } from './types';
+import { ArticleFormatTypes } from './types';
 import { getDate } from '../helpers';
 
 export interface PartialArticle {

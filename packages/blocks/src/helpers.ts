@@ -1,4 +1,4 @@
-import { JsonObject, NetworkError } from './types';
+import type { JsonObject, NetworkError } from './types';
 
 export const getNetworkError = (json: JsonObject): NetworkError => ({
   status: json?.status ?? 400,

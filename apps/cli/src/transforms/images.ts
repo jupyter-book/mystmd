@@ -4,8 +4,9 @@ import type { GenericNode } from 'mystjs';
 import { select, selectAll } from 'mystjs';
 import fetch from 'node-fetch';
 import { dirname, join, parse } from 'path';
-import { oxaLinkToId, VersionId } from '@curvenote/blocks';
-import { Root } from '../myst';
+import type { VersionId } from '@curvenote/blocks';
+import { oxaLinkToId } from '@curvenote/blocks';
+import type { Root } from '../myst';
 import { WebFileObject } from '../web/files';
 import {
   addWarningForFile,
@@ -15,8 +16,8 @@ import {
   toText,
   versionIdToURL,
 } from '../utils';
-import { ISession } from '../session/types';
-import { PageFrontmatter } from '../frontmatter/types';
+import type { ISession } from '../session/types';
+import type { PageFrontmatter } from '../frontmatter/types';
 import { convertImageToWebp } from '../export/utils/imagemagick';
 import type { PhrasingContent } from 'mdast';
 import type { Image } from 'myst-spec';

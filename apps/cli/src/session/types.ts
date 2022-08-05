@@ -1,7 +1,7 @@
 import type { Store } from 'redux';
-import { JsonObject } from '@curvenote/blocks';
-import { Logger } from '../logging';
-import { RootState } from '../store';
+import type { JsonObject } from '@curvenote/blocks';
+import type { Logger } from '../logging';
+import type { RootState } from '../store';
 
 export type Tokens = Partial<Record<'user' | 'session', string>>;
 

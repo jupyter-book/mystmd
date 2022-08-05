@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { Logger } from '../../logging';
+import type { Logger } from '../../logging';
 import { BUILD_FOLDER } from '../../utils';
-import { TexExportOptions } from '../tex/types';
+import type { TexExportOptions } from '../tex/types';
 
 export function makeBuildPaths(log: Logger, opts: TexExportOptions) {
   const outputPath = path.dirname(opts.filename);

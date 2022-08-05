@@ -1,5 +1,6 @@
-import React, { createElement as e } from 'react';
-import { NodeRenderer } from './types';
+import type React from 'react';
+import { createElement as e } from 'react';
+import type { NodeRenderer } from './types';
 import type { GenericNode } from 'mystjs';
 
 export function toReact(

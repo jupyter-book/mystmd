@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import type { GenericNode } from 'mystjs';
 import { useEffect } from 'react';
 import { selectAll } from 'unist-util-select';
-import { NodeRenderer } from './types';
+import type { NodeRenderer } from './types';
 
 interface TabItem extends GenericNode {
   key: string;

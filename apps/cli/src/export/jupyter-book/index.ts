@@ -1,9 +1,10 @@
-import { ProjectId, Blocks } from '@curvenote/blocks';
+import type { ProjectId, Blocks } from '@curvenote/blocks';
 import { Project } from '../../models';
-import { ISession } from '../../session/types';
+import type { ISession } from '../../session/types';
 import { exportFromProjectLink } from '../utils/exportWrapper';
 import { getBlockAndLatestVersion } from '../utils/getLatest';
-import { exportAll, ExportAllOptions } from './exportAll';
+import type { ExportAllOptions } from './exportAll';
+import { exportAll } from './exportAll';
 import { writeConfig } from './jbConfig';
 import { writeTOC } from './toc';
 

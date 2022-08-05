@@ -3,9 +3,9 @@ import { extname, join, parse, basename } from 'path';
 import { title2name as createSlug } from '@curvenote/blocks';
 import { loadConfigOrThrow } from '../config';
 import { CURVENOTE_YML } from '../config/types';
-import { ISession } from '../session';
+import type { ISession } from '../session';
 import { selectors } from '../store';
-import { PageLevels } from './types';
+import type { PageLevels } from './types';
 import { shouldIgnoreFile } from '../utils';
 
 export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb'];

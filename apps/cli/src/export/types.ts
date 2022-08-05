@@ -1,4 +1,4 @@
-import { ExportableFormatTypes } from '@curvenote/blocks';
+import type { ExportableFormatTypes } from '@curvenote/blocks';
 
 export interface ExportConfig {
   name: string;

@@ -1,4 +1,5 @@
-import Cite, { CitationFormatOptions } from 'citation-js';
+import type { CitationFormatOptions } from 'citation-js';
+import Cite from 'citation-js';
 import sanitizeHtml from 'sanitize-html';
 
 export type InlineNode = {

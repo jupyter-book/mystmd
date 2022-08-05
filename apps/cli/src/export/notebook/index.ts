@@ -1,5 +1,6 @@
 import yaml from 'js-yaml';
-import { Blocks, KINDS, VersionId } from '@curvenote/blocks';
+import type { Blocks, VersionId } from '@curvenote/blocks';
+import { KINDS } from '@curvenote/blocks';
 import { prepareToWrite } from '../../frontmatter';
 import {
   pageFrontmatterFromDTOAndThumbnail,
@@ -8,7 +9,7 @@ import {
 } from '../../frontmatter/api';
 import { fillPageFrontmatter } from '../../frontmatter/validators';
 import { Block, Project, Version } from '../../models';
-import { ISession } from '../../session/types';
+import type { ISession } from '../../session/types';
 import { resolvePath, writeFileToFolder } from '../../utils';
 import { assertEndsInExtension } from '../utils/assertions';
 import { exportFromOxaLink } from '../utils/exportWrapper';

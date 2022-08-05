@@ -1,6 +1,6 @@
 import type { GenericNode } from 'mystjs';
 import { KnownCellOutputMimeTypes } from '@curvenote/blocks/dist/blocks/types/jupyter';
-import { MinifiedMimeOutput, MinifiedOutput } from '@curvenote/nbtx/dist/minify/types';
+import type { MinifiedMimeOutput, MinifiedOutput } from '@curvenote/nbtx/dist/minify/types';
 import classNames from 'classnames';
 import { SafeOutputs } from './safe';
 import { NativeJupyterOutputs as JupyterOutputs } from './jupyter';

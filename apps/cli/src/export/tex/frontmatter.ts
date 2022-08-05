@@ -1,7 +1,7 @@
 import YAML from 'js-yaml';
 import { toTex } from '@curvenote/schema';
 import { prepareToWrite } from '../../frontmatter';
-import { PageFrontmatter } from '../../frontmatter/types';
+import type { PageFrontmatter } from '../../frontmatter/types';
 import { getEditorState } from '../utils/getEditorState';
 
 export interface JtexOutputConfig {

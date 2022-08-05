@@ -1,11 +1,11 @@
 import { validateTOC } from '../export/jupyter-book/toc';
-import { ISession } from '../session/types';
+import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import { projects } from '../store/local';
 import { projectFromPath } from './fromPath';
 import { projectFromToc } from './fromToc';
 import { writeTocFromProject } from './toToc';
-import { LocalProject } from './types';
+import type { LocalProject } from './types';
 
 /**
  * Load project structure from disk from

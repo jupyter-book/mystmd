@@ -1,7 +1,7 @@
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
-import { Numbering, ProjectFrontmatter } from '../frontmatter/types';
-import { Root } from '../myst';
+import type { Numbering, ProjectFrontmatter } from '../frontmatter/types';
+import type { Root } from '../myst';
 
 const DEFAULT_NUMBERING: Numbering = {
   figure: true,

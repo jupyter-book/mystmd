@@ -1,19 +1,17 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
-import {
+import type {
   User as UserDTO,
   Team as TeamDTO,
   Project as ProjectDTO,
   SiteConfig as SiteConfigDTO,
   Block as BlockDTO,
   Draft as DraftDTO,
-  blockIdToString,
   ALL_BLOCKS,
-  versionIdToString,
-  draftIdToString,
   TemplateSpec,
 } from '@curvenote/blocks';
+import { blockIdToString, versionIdToString, draftIdToString } from '@curvenote/blocks';
 
 export const users = createSlice({
   name: 'users',

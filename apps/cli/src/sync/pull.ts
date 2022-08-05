@@ -6,14 +6,14 @@ import { loadConfigOrThrow, writeConfigs } from '../config';
 import { oxaLinkToMarkdown, oxaLinkToNotebook, projectToJupyterBook } from '../export';
 import { LogLevel, getLevel } from '../logging';
 import { Project } from '../models';
-import { ISession } from '../session/types';
+import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import { config } from '../store/local';
 import { isDirectory } from '../toc/utils';
 import { confirmOrExit, tic } from '../utils';
 import { processOption, projectLogString } from './utils';
 import { getRawFrontmatterFromFile } from '../store/local/actions';
-import { SyncCiHelperOptions } from './types';
+import type { SyncCiHelperOptions } from './types';
 
 /**
  * Pull content for a project on a path

@@ -1,10 +1,13 @@
-import { Blocks, KINDS, NavListItemKindEnum } from '@curvenote/blocks';
-import { Version } from '../../models';
-import { ISession } from '../../session/types';
-import { articleToMarkdown, MarkdownExportOptions } from '../markdown';
-import { notebookToIpynb, NotebookExportOptions } from '../notebook';
+import type { Blocks } from '@curvenote/blocks';
+import { KINDS, NavListItemKindEnum } from '@curvenote/blocks';
+import type { Version } from '../../models';
+import type { ISession } from '../../session/types';
+import type { MarkdownExportOptions } from '../markdown';
+import { articleToMarkdown } from '../markdown';
+import type { NotebookExportOptions } from '../notebook';
+import { notebookToIpynb } from '../notebook';
 import { getBlockAndLatestVersion } from '../utils/getLatest';
-import { ArticleState } from '../utils/walkArticle';
+import type { ArticleState } from '../utils/walkArticle';
 import { writeBibtex } from '../utils/writeBibtex';
 
 export type ExportAllOptions = Omit<MarkdownExportOptions, 'filename' | 'writeBibtex'> &

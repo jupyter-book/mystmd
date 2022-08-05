@@ -1,6 +1,6 @@
 import { Document, SectionType } from 'docx';
-import { IPropertiesOptions } from 'docx/build/file/core-properties';
-import { DocxSerializerState } from 'prosemirror-docx';
+import type { IPropertiesOptions } from 'docx/build/file/core-properties';
+import type { DocxSerializerState } from 'prosemirror-docx';
 import { createCurvenoteFooter } from './footers';
 
 export function createSingleDocument(

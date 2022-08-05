@@ -1,11 +1,14 @@
 import fs from 'fs';
 import { join } from 'path';
 import YAML from 'js-yaml';
-import { Blocks, NavListItemKindEnum } from '@curvenote/blocks';
-import { Block, Version } from '../../models';
-import { ISession } from '../../session/types';
+import type { Blocks } from '@curvenote/blocks';
+import { NavListItemKindEnum } from '@curvenote/blocks';
+import type { Version } from '../../models';
+import { Block } from '../../models';
+import type { ISession } from '../../session/types';
 import { writeFileToFolder } from '../../utils';
-import { Logger, silentLogger } from '../../logging';
+import type { Logger } from '../../logging';
+import { silentLogger } from '../../logging';
 
 export const tocFile = (filename: string): string => join(filename, '_toc.yml');
 

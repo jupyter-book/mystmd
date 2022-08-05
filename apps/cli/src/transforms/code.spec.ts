@@ -1,5 +1,5 @@
 import { silentLogger } from '../logging';
-import { Root } from '../myst';
+import type { Root } from '../myst';
 import { Session } from '../session';
 import { selectFileWarnings } from '../store/build/selectors';
 import { transformCode } from './code';

@@ -1,5 +1,6 @@
 import path from 'path';
-import { VersionId, KINDS, convertToBlockId } from '@curvenote/blocks';
+import type { VersionId } from '@curvenote/blocks';
+import { KINDS, convertToBlockId } from '@curvenote/blocks';
 import {
   saveAffiliations,
   pageFrontmatterFromDTO,
@@ -7,18 +8,15 @@ import {
 } from '../../frontmatter/api';
 import { fillPageFrontmatter } from '../../frontmatter/validators';
 import { Block, Project, Version } from '../../models';
-import { ISession } from '../../session/types';
+import type { ISession } from '../../session/types';
 import { getChildren } from '../utils/getChildren';
-import { walkArticle, ArticleState } from '../utils/walkArticle';
+import type { ArticleState } from '../utils/walkArticle';
+import { walkArticle } from '../utils/walkArticle';
 import { validateJtexFrontmatterKeys } from '../validators';
-import {
-  buildJtexSection,
-  escapeLatex,
-  LatexFrontmatter,
-  stringifyFrontmatter,
-} from './frontmatter';
+import type { LatexFrontmatter } from './frontmatter';
+import { buildJtexSection, escapeLatex, stringifyFrontmatter } from './frontmatter';
 import { localizeAndProcessImages } from './images';
-import { TexExportOptions } from './types';
+import type { TexExportOptions } from './types';
 import { convertAndLocalizeChild, writeBlocksToFile, writeTaggedContent } from './utils';
 
 export async function gatherAndWriteArticleContent(

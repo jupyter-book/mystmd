@@ -1,6 +1,6 @@
-import { JsonObject, BaseLinks } from './types';
+import type { JsonObject, BaseLinks } from './types';
 import { getDate } from './helpers';
-import { BlockId } from './blocks/types';
+import type { BlockId } from './blocks/types';
 
 export interface CommentId {
   project: string;

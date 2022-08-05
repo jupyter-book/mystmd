@@ -1,6 +1,6 @@
-import { ISession } from '../../session/types';
+import type { ISession } from '../../session/types';
 import { resolvePath, writeFileToFolder } from '../../utils';
-import { ArticleState } from './walkArticle';
+import type { ArticleState } from './walkArticle';
 
 type Options = {
   path?: string;

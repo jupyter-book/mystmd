@@ -1,9 +1,9 @@
-import { Document } from 'docx';
-import { Node } from 'prosemirror-model';
+import type { Document } from 'docx';
+import type { Node } from 'prosemirror-model';
 import { DocxSerializerState } from 'prosemirror-docx';
-import { Block, Project, User, Version } from '../../models';
-import { ISession } from '../../session/types';
-import { ArticleState } from '../utils/walkArticle';
+import type { Block, Project, User, Version } from '../../models';
+import type { ISession } from '../../session/types';
+import type { ArticleState } from '../utils/walkArticle';
 import { getNodesAndMarks } from './schema';
 import { createArticleTitle, createReferenceTitle } from './titles';
 import { createSingleDocument, getDefaultSerializerOptions } from './utils';

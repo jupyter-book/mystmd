@@ -1,10 +1,10 @@
 import chalk from 'chalk';
 import katex from 'katex';
-import { Math, InlineMath } from 'myst-spec';
+import type { Math, InlineMath } from 'myst-spec';
 import { selectAll } from 'mystjs';
-import { ProjectFrontmatter } from '../frontmatter/types';
-import { Logger } from '../logging';
-import { Root } from '../myst';
+import type { ProjectFrontmatter } from '../frontmatter/types';
+import type { Logger } from '../logging';
+import type { Root } from '../myst';
 import type { ISession } from '../session/types';
 import { addWarningForFile } from '../utils';
 

@@ -1,12 +1,6 @@
-import {
-  ProjectId,
-  BlockId,
-  VersionId,
-  blockIdToString,
-  versionIdToString,
-  ALL_BLOCKS,
-} from '@curvenote/blocks';
-import { RootState } from '../reducers';
+import type { ProjectId, BlockId, VersionId, ALL_BLOCKS } from '@curvenote/blocks';
+import { blockIdToString, versionIdToString } from '@curvenote/blocks';
+import type { RootState } from '../reducers';
 
 export function selectUser(state: RootState, userId: string) {
   return state.api.users[userId];

@@ -1,10 +1,10 @@
 import { selectAll } from 'unist-util-select';
-import { CrossReference } from 'myst-spec';
+import type { CrossReference } from 'myst-spec';
 import LinkIcon from '@heroicons/react/outline/LinkIcon';
 import { useReferences } from '@curvenote/ui-providers';
 import { useParse } from '.';
 import { InlineError } from './inlineError';
-import { NodeRenderer } from './types';
+import type { NodeRenderer } from './types';
 import { ClickPopover } from './ClickPopover';
 
 export function ReferencedContent({

@@ -1,5 +1,6 @@
-import { KINDS, Blocks, OutputSummaryKind } from '@curvenote/blocks';
-import { Version } from '../../models';
+import type { Blocks } from '@curvenote/blocks';
+import { KINDS, OutputSummaryKind } from '@curvenote/blocks';
+import type { Version } from '../../models';
 
 type ImageSrc = { src?: string; content_type?: string };
 

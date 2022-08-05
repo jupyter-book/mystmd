@@ -4,10 +4,10 @@ import {
   validateProjectFrontmatterKeys,
   validateSiteFrontmatterKeys,
 } from '../frontmatter/validators';
+import type { Options } from '../utils/validators';
 import {
   defined,
   incrementOptions,
-  Options,
   validateKeys,
   validateObject,
   validateObjectKeys,
@@ -16,7 +16,7 @@ import {
   validateList,
   validateBoolean,
 } from '../utils/validators';
-import {
+import type {
   ProjectConfig,
   SiteAction,
   SiteAnalytics,

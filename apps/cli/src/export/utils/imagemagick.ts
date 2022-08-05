@@ -1,9 +1,9 @@
 import { sync as which } from 'which';
 import fs from 'fs';
 import path from 'path';
-import { Logger } from '../../logging';
+import type { Logger } from '../../logging';
 import { makeExecutable } from './exec';
-import { ISession } from '../../session';
+import type { ISession } from '../../session';
 import { tic } from '../../utils';
 
 export function isWebpAvailable() {
