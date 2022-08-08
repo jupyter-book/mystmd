@@ -39,14 +39,15 @@ export function projectFrontmatterFromDTO(
   project: Project,
   opts?: Partial<Options>,
 ): ProjectFrontmatter {
-  const apiFrontmatter = filterKeys(project, PROJECT_FRONTMATTER_KEYS);
+  const apiFrontmatter = filterKeys(project, PROJECT_FRONTMATTER_KEYS) as ProjectFrontmatter;
   if (apiFrontmatter.authors) {
     apiFrontmatter.authors = apiFrontmatter.authors.map((author: Author) =>
       resolveAffiliations(session, author),
     );
   }
   if (project.licenses) {
-    apiFrontmatter.license = project.licenses;
+    // This will get validated below
+    apiFrontmatter.license = project.licenses as any;
   }
   return validateProjectFrontmatterKeys(apiFrontmatter, {
     logger: session.log,
@@ -86,20 +87,20 @@ export function pageFrontmatterFromDTO(
   date?: string | Date,
   opts?: Partial<Options>,
 ): PageFrontmatter {
-  const apiFrontmatter = filterKeys(block, PAGE_FRONTMATTER_KEYS);
+  const apiFrontmatter = filterKeys(block, PAGE_FRONTMATTER_KEYS) as PageFrontmatter;
   if (apiFrontmatter.authors) {
     apiFrontmatter.authors = apiFrontmatter.authors.map((author: Author) =>
       resolveAffiliations(session, author),
-    );
+    ) as any;
   }
   if (block.licenses) {
-    apiFrontmatter.license = block.licenses;
+    apiFrontmatter.license = block.licenses as any;
   }
   // TODO: Date needs to be in block frontmatter
   if (block.date_modified) {
-    apiFrontmatter.date = date || block.date_modified;
+    apiFrontmatter.date = (date || block.date_modified) as any;
   }
-  apiFrontmatter.oxa = oxaLink('', block.id);
+  apiFrontmatter.oxa = oxaLink('', block.id) as any;
   return validatePageFrontmatterKeys(apiFrontmatter, {
     logger: session.log,
     property: 'page',
