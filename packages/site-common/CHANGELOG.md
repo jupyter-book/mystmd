@@ -1,5 +1,11 @@
 # @curvenote/site-common
 
+## 0.0.11
+
+### Patch Changes
+
+- 4b5a4c9: Add bibliography list of source files to the exported type
+
 ## 0.0.10
 
 ### Patch Changes

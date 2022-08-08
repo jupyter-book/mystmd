@@ -1,5 +1,12 @@
 # curvenote
 
+## 0.6.19
+
+### Patch Changes
+
+- 4b5a4c9: Fetch bibliography items from remote URLs
+- 9423af0: Add a `--keep-host` option for curvenote serve and by default use localhost for the value of the HOST environment variable.
+
 ## 0.6.18
 
 ### Patch Changes
