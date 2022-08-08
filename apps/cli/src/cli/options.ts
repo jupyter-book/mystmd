@@ -23,6 +23,14 @@ export function makeCleanOption() {
 export function makeForceOption() {
   return new Option('-f, --force', 'Remove the build directory and re-install').default(false);
 }
+
+export function makeKeepHostOption() {
+  return new Option(
+    '--keep-host',
+    'The HOST environment variable is changed to "localhost" by default. This flag uses the original environment variable.',
+  ).default(false);
+}
+
 export function makeCIOption() {
   return new Option(
     '-ci, --ci', // Must have both!

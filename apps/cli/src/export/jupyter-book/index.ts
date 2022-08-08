@@ -25,7 +25,7 @@ export async function projectToJupyterBook(session: ISession, projectId: Project
   ]);
   if (!nav) {
     session.log.error(
-      `Unable to load project "${project.data.name}" - do you need to save a draft?`,
+      `Unable to load project navigation "${project.data.name}" - please save any article in your project?`,
     );
     return;
   }

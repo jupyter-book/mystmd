@@ -13,6 +13,7 @@ export type Options = {
   ci?: boolean;
   yes?: boolean;
   writeToc?: boolean;
+  keepHost?: boolean;
 };
 
 export function cleanBuiltFiles(session: ISession, info = true): void {

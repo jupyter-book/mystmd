@@ -81,6 +81,21 @@ export function warnOnUnrecognizedKeys(
   log.warn(`${start} Did not recognize key${plural}: "${extraKeys.join('", "')}".`);
 }
 
+export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHost?: boolean }) {
+  if (process.env.HOST && process.env.HOST !== 'localhost') {
+    if (opts?.keepHost) {
+      session.log.warn(
+        `\nThe HOST environment variable is set to "${process.env.HOST}", this may cause issues for the web server.\n`,
+      );
+    } else {
+      session.log.warn(
+        `\nThe HOST environment variable is set to "${process.env.HOST}", we are overwriting this to "localhost".\nTo keep this value use the \`--keep-host\` flag.\n`,
+      );
+      process.env.HOST = 'localhost';
+    }
+  }
+}
+
 export function addWarningForFile(
   session: ISession,
   file: string | undefined | null,

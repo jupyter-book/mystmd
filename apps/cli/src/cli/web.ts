@@ -10,6 +10,7 @@ import {
   makeWriteTocOption,
   makeStrictOption,
   makeCheckLinksOption,
+  makeKeepHostOption,
 } from './options';
 
 function makeCurvenoteCleanCLI(program: Command) {
@@ -40,6 +41,7 @@ function makeCurvenoteStartCLI(program: Command) {
     .addOption(makeCleanOption())
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
+    .addOption(makeKeepHostOption())
     .action(clirun(web.startServer, { program, requireSiteConfig: true }));
   return command;
 }

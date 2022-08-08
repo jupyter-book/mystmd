@@ -12,6 +12,7 @@ import {
   repoPath,
   serverPath,
   blocksJsonPath,
+  warnOnHostEnvironmentVariable,
 } from '../utils';
 import { deployContentToCdn, promoteContent } from './deploy';
 import type { Options } from './prepare';
@@ -94,6 +95,7 @@ export async function build(
 }
 
 export async function startServer(session: ISession, opts: Options): Promise<void> {
+  warnOnHostEnvironmentVariable(session, opts);
   await build(session, opts, false);
   sparkles(session, 'Starting Curvenote');
   watchContent(session);
