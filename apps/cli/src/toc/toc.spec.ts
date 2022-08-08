@@ -27,7 +27,6 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
-      citations: [],
       pages: [],
     });
   });
@@ -37,7 +36,6 @@ describe('site section generation', () => {
       file: 'README.md',
       path: '.',
       index: 'readme',
-      citations: [],
       pages: [],
     });
   });
@@ -47,7 +45,6 @@ describe('site section generation', () => {
       file: 'index.md',
       path: '.',
       index: 'index',
-      citations: [],
       pages: [{ file: 'README.md', level: 1, slug: 'readme' }],
     });
   });
@@ -57,7 +54,6 @@ describe('site section generation', () => {
       file: 'index.md',
       path: '.',
       index: 'index',
-      citations: [],
       pages: [],
     });
   });
@@ -67,7 +63,6 @@ describe('site section generation', () => {
       file: 'folder/subfolder/index.md',
       path: '.',
       index: 'index',
-      citations: [],
       pages: [],
     });
   });
@@ -77,7 +72,6 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
-      citations: [],
       pages: [
         {
           file: 'notebook.ipynb',
@@ -98,7 +92,6 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
-      citations: [],
       pages: [
         {
           title: 'Folder',
@@ -127,7 +120,6 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
-      citations: [],
       pages: [
         {
           title: 'Folder1',
@@ -160,7 +152,6 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
-      citations: [],
       pages: [
         {
           file: 'zfile.md',
@@ -191,7 +182,6 @@ describe('site section generation', () => {
       file: 'folder1/folder2/readme.md',
       path: 'folder1',
       index: 'readme',
-      citations: [],
       pages: [
         {
           file: 'folder1/page1.md',
@@ -225,7 +215,6 @@ describe('site section generation', () => {
       file: 'folder/page.md',
       path: '.',
       index: 'page',
-      citations: [],
       pages: [
         {
           title: 'Folder',
@@ -245,7 +234,6 @@ describe('site section generation', () => {
       file: 'page.md',
       path: '.',
       index: 'page',
-      citations: [],
       pages: [
         {
           file: 'index.ipynb',
@@ -261,7 +249,6 @@ describe('site section generation', () => {
       file: 'index.ipynb',
       path: '.',
       index: 'index',
-      citations: [],
       pages: [
         {
           file: 'aaa.ipynb',
@@ -277,7 +264,6 @@ describe('site section generation', () => {
       file: 'folder/notebook.ipynb',
       path: '.',
       index: 'notebook',
-      citations: [],
       pages: [],
     });
   });
@@ -293,7 +279,6 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
-      citations: [],
       pages: [
         {
           title: 'Folder',
@@ -325,7 +310,6 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
-      citations: [],
       pages: [
         {
           title: 'Folder',
@@ -351,9 +335,6 @@ describe('tocFromProject', () => {
     expect(
       tocFromProject({
         file: 'readme.md',
-        path: '.',
-        index: 'readme',
-        citations: [],
         pages: [],
       }),
     ).toEqual({
@@ -366,9 +347,6 @@ describe('tocFromProject', () => {
     expect(
       tocFromProject({
         file: 'readme.md',
-        path: '.',
-        index: 'readme',
-        citations: [],
         pages: [
           {
             file: 'a.md',
@@ -391,9 +369,6 @@ describe('tocFromProject', () => {
     expect(
       tocFromProject({
         file: 'readme.md',
-        path: '.',
-        index: 'readme',
-        citations: [],
         pages: [
           {
             file: 'a.md',
@@ -435,9 +410,6 @@ describe('tocFromProject', () => {
       tocFromProject(
         {
           file: 'path/readme.md',
-          path: '.',
-          index: 'readme',
-          citations: [],
           pages: [
             {
               file: 'path/a.md',
@@ -462,9 +434,6 @@ describe('tocFromProject', () => {
     expect(
       tocFromProject({
         file: 'readme.md',
-        path: '.',
-        index: 'readme',
-        citations: [],
         pages: [
           {
             title: 'folder',
@@ -496,9 +465,6 @@ describe('tocFromProject', () => {
     expect(
       tocFromProject({
         file: 'readme.md',
-        path: '.',
-        index: 'readme',
-        citations: [],
         pages: [
           {
             title: 'folder',
@@ -677,7 +643,6 @@ describe('pagesFromToc', () => {
         { slug: 'y', file: 'section/y.md', level: 2 },
         { slug: 'z', file: 'section/z.md', level: 2 },
       ],
-      citations: [],
     });
   });
   it('pages from bad toc', async () => {
@@ -709,7 +674,6 @@ describe('pagesFromToc', () => {
         { slug: 'y', file: 'section/y.md', level: 2 },
         { slug: 'z', file: 'section/z.md', level: 2 },
       ],
-      citations: [],
     });
   });
 });
