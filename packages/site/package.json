@@ -32,6 +32,7 @@
     "unist-util-select": "^4.0.1"
   },
   "devDependencies": {
+    "eslint": "^8.21.0",
     "eslint-config-curvenote": "*",
     "tsconfig": "*",
     "typescript": "latest"
