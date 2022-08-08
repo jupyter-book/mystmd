@@ -6,14 +6,7 @@ import { shouldIgnoreFile } from '../utils';
 import { pagesFromToc } from './fromToc';
 import type { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
 import type { PageSlugs } from './utils';
-import {
-  fileInfo,
-  getCitationPaths,
-  isDirectory,
-  isValidFile,
-  nextLevel,
-  VALID_FILE_EXTENSIONS,
-} from './utils';
+import { fileInfo, isDirectory, isValidFile, nextLevel, VALID_FILE_EXTENSIONS } from './utils';
 
 const DEFAULT_INDEX_FILENAMES = ['index', 'readme', 'main'];
 
@@ -117,7 +110,11 @@ function indexFileFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], pa
 /**
  * Build project structure from local file/folder structure.
  */
-export function projectFromPath(session: ISession, path: string, indexFile?: string): LocalProject {
+export function projectFromPath(
+  session: ISession,
+  path: string,
+  indexFile?: string,
+): Omit<LocalProject, 'bibliography'> {
   const ext_string = VALID_FILE_EXTENSIONS.join(' or ');
   if (indexFile) {
     if (!isValidFile(indexFile))
@@ -144,6 +141,5 @@ export function projectFromPath(session: ISession, path: string, indexFile?: str
   const pages = projectPagesFromPath(session, path, 1, pageSlugs, {
     ignore: [indexFile, rootCurvenoteYML],
   });
-  const citations = getCitationPaths(session, path);
-  return { file: indexFile, index: slug, path, pages, citations };
+  return { file: indexFile, index: slug, path, pages };
 }

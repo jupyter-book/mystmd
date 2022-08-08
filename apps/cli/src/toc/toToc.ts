@@ -61,6 +61,8 @@ function chaptersFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], pat
   return chapters;
 }
 
+type PartialLocalProject = Pick<LocalProject, 'file' | 'pages'>;
+
 /**
  * Create a jupyterbook toc structure from project pages
  *
@@ -69,7 +71,7 @@ function chaptersFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], pat
  * associated with a `file` (results in clickable in page)
  * or just a `title` (results in unclickable in heading)
  */
-export function tocFromProject(project: LocalProject, path = '.') {
+export function tocFromProject(project: PartialLocalProject, path = '.') {
   const toc: TOC = {
     format: 'jb-book',
     root: getRelativeDocumentLink(project.file, path),
@@ -78,7 +80,7 @@ export function tocFromProject(project: LocalProject, path = '.') {
   return toc;
 }
 
-export function writeTocFromProject(project: LocalProject, path: string) {
+export function writeTocFromProject(project: PartialLocalProject, path: string) {
   const filename = join(path, '_toc.yml');
   const content = `${GENERATED_TOC_HEADER}${yaml.dump(tocFromProject(project, path))}`;
   fs.writeFileSync(filename, content);

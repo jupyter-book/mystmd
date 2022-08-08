@@ -78,7 +78,7 @@ export function fileInfo(file: string, pageSlugs: PageSlugs): { slug: string; ti
   return { slug, title };
 }
 
-export function getCitationPaths(session: ISession, path: string) {
+export function getAllBibTexFilesOnPath(session: ISession, path: string) {
   let bibFiles: string[] = [];
   const content = fs.readdirSync(path);
   content
@@ -97,7 +97,7 @@ export function getCitationPaths(session: ISession, path: string) {
     })
     .forEach((dir) => {
       // Now recurse into each directory
-      bibFiles = bibFiles.concat(getCitationPaths(session, dir));
+      bibFiles = bibFiles.concat(getAllBibTexFilesOnPath(session, dir));
     });
   return bibFiles;
 }

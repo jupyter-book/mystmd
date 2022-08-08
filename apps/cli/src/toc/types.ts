@@ -25,7 +25,7 @@ export type LocalProject = {
   file: string;
   /** The slug that the index get's renamed to for the JSON */
   index: string;
-  citations: string[];
+  bibliography: string[];
   pages: (LocalProjectPage | LocalProjectFolder)[];
 };
 

@@ -243,6 +243,9 @@ export function fillMissingKeys<T extends Record<string, any>>(
   return output;
 }
 
-export function filterKeys(value: Record<string, any>, keys: string[]): Record<string, any> {
-  return fillMissingKeys({}, value, keys);
+export function filterKeys<T extends Record<string, any> = Record<string, any>>(
+  value: T,
+  keys: string[],
+): Partial<T> {
+  return fillMissingKeys({} as T, value, keys);
 }

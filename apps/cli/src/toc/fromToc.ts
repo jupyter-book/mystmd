@@ -5,7 +5,7 @@ import { readTOC, tocFile } from '../export/jupyter-book/toc';
 import type { ISession } from '../session/types';
 import type { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
 import type { PageSlugs } from './utils';
-import { fileInfo, getCitationPaths, nextLevel, resolveExtension } from './utils';
+import { fileInfo, nextLevel, resolveExtension } from './utils';
 
 function pagesFromChapters(
   session: ISession,
@@ -42,7 +42,7 @@ export function projectFromToc(
   session: ISession,
   path: string,
   level: PageLevels = 1,
-): LocalProject {
+): Omit<LocalProject, 'bibliography'> {
   const filename = tocFile(path);
   if (!fs.existsSync(filename)) {
     throw new Error(`Could not find TOC "${filename}". Please create a '_toc.yml'.`);
@@ -67,8 +67,7 @@ export function projectFromToc(
       }
     });
   }
-  const citations = getCitationPaths(session, path);
-  return { path, file: indexFile, index: slug, pages, citations };
+  return { path, file: indexFile, index: slug, pages };
 }
 
 /**
@@ -81,10 +80,7 @@ export function pagesFromToc(
   path: string,
   level: PageLevels,
 ): (LocalProjectFolder | LocalProjectPage)[] {
-  const { file, index, pages, citations } = projectFromToc(session, path, nextLevel(level));
-  if (citations.length) {
-    session.log.debug(`Ignoring citation files from ${join(path, '_toc.yml')}`);
-  }
+  const { file, index, pages } = projectFromToc(session, path, nextLevel(level));
   pages.unshift({ file, slug: index, level });
   return pages;
 }

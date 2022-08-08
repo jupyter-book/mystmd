@@ -144,6 +144,7 @@ export type ManifestProject = {
   index: string;
   title: string;
   pages: (ManifestProjectPage | ManifestProjectFolder)[];
+  bibliography: string[]; // List of source bib files
 } & Frontmatter;
 
 export type AnalyticsConfig = {

@@ -159,6 +159,10 @@ export function hashAndCopyStaticFile(session: ISession, file: string) {
   return fileHash;
 }
 
+export function isUrl(url: string): boolean {
+  return !!url.toLowerCase().match(/^https?:\/\//);
+}
+
 export function versionIdToURL(versionId: VersionId) {
   return `/blocks/${versionId.project}/${versionId.block}/versions/${versionId.version}`;
 }

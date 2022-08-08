@@ -3,6 +3,10 @@ import type { LocalProject, LocalProjectPage } from '../../toc/types';
 
 import type { RootState } from '../reducers';
 
+export function selectProjectConfig(state: RootState, path: string): ProjectConfig | undefined {
+  return state.local.config.projects[path];
+}
+
 export function selectLocalProject(state: RootState, path: string): LocalProject | undefined {
   return state.local.projects[path];
 }

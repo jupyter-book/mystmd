@@ -66,6 +66,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   github?: string;
   binder?: string;
   subject?: string;
+  bibliography?: string[];
   biblio?: Biblio;
   oxa?: string;
   numbering?: boolean | Numbering;

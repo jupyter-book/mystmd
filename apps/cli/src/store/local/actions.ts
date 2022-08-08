@@ -6,6 +6,8 @@ import yaml from 'js-yaml';
 import type { GenericNode } from 'mystjs';
 import { convertHtmlToMdast } from 'mystjs';
 import { extname, join } from 'path';
+import chalk from 'chalk';
+import fetch from 'node-fetch';
 import { KINDS } from '@curvenote/blocks';
 import type { SiteProject } from '../../config/types';
 import { frontmatterFromMdastTree, getPageFrontmatter } from '../../frontmatter';
@@ -41,13 +43,12 @@ import type {
 import { loadProjectFromDisk } from '../../toc';
 import { copyActionResource, copyLogo, getSiteManifest } from '../../toc/manifest';
 import type { LocalProject, LocalProjectPage } from '../../toc/types';
-import { writeFileToFolder, serverPath, tic, addWarningForFile } from '../../utils';
+import { writeFileToFolder, serverPath, tic, addWarningForFile, isUrl } from '../../utils';
 import { selectors } from '..';
 import { processNotebook } from './notebook';
 import { watch } from './reducers';
 import { warnings } from '../build';
 import { selectFileWarnings } from '../build/selectors';
-import chalk from 'chalk';
 
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
@@ -82,9 +83,20 @@ export function changeFile(session: ISession, path: string, eventType: string) {
 
 async function loadCitations(session: ISession, path: string) {
   const toc = tic();
-  session.log.debug(`Loading citations at "${path}"`);
-  const f = fs.readFileSync(path).toString();
-  const renderer = await getCitations(f);
+  let data: string;
+  if (isUrl(path)) {
+    session.log.debug(`Fetching citations at "${path}"`);
+    const res = await fetch(path);
+    if (!res.ok) {
+      throw new Error(`Error fetching citations from "${path}": ${res.status} ${res.statusText}`);
+    }
+    data = await res.text();
+    session.log.debug(`Fetched citations from "${path}" successfully.`);
+  } else {
+    session.log.debug(`Loading citations at "${path}"`);
+    data = fs.readFileSync(path).toString();
+  }
+  const renderer = await getCitations(data);
   const numCitations = Object.keys(renderer).length;
   const plural = numCitations > 1 ? 's' : '';
   session.log.info(toc(`🏫 Read ${numCitations} citation${plural} from ${path} in %s.`));
@@ -94,7 +106,7 @@ async function loadCitations(session: ISession, path: string) {
 function combineRenderers(cache: ISessionWithCache, ...files: string[]) {
   const combined: CitationRenderer = {};
   files.forEach((file) => {
-    const renderer = cache.$citationRenderers[file];
+    const renderer = cache.$citationRenderers[file] ?? {};
     Object.keys(renderer).forEach((key) => {
       if (combined[key]) {
         addWarningForFile(cache, file, `Duplicate citation with id: ${key}`);
@@ -108,27 +120,33 @@ function combineRenderers(cache: ISessionWithCache, ...files: string[]) {
 export function combineProjectCitationRenderers(session: ISession, projectPath: string) {
   const project = selectors.selectLocalProject(session.store.getState(), projectPath);
   const cache = castSession(session);
-  if (!project?.citations) return;
-  cache.$citationRenderers[projectPath] = combineRenderers(cache, ...project.citations);
+  if (!project?.bibliography) return;
+  cache.$citationRenderers[projectPath] = combineRenderers(cache, ...project.bibliography);
 }
 
-export async function loadFile(session: ISession, file: string) {
+export async function loadFile(
+  session: ISession,
+  file: string,
+  extension?: '.md' | '.ipynb' | '.bib',
+) {
   const toc = tic();
   session.store.dispatch(warnings.actions.clearWarnings({ file }));
   const cache = castSession(session);
   let success = true;
   let sha256: string | undefined;
   try {
-    const content = fs.readFileSync(file).toString();
-    sha256 = createHash('sha256').update(content).digest('hex');
-    const ext = extname(file).toLowerCase();
+    const ext = extension || extname(file).toLowerCase();
     switch (ext) {
       case '.md': {
+        const content = fs.readFileSync(file).toString();
+        sha256 = createHash('sha256').update(content).digest('hex');
         const mdast = parseMyst(content);
         cache.$mdast[file] = { pre: { kind: KINDS.Article, file, mdast } };
         break;
       }
       case '.ipynb': {
+        const content = fs.readFileSync(file).toString();
+        sha256 = createHash('sha256').update(content).digest('hex');
         const mdast = await processNotebook(cache, file, content);
         cache.$mdast[file] = { pre: { kind: KINDS.Notebook, file, mdast } };
         break;
@@ -340,7 +358,7 @@ export async function processProject(
   if (!watchMode) {
     await Promise.all([
       // Load all citations (.bib)
-      ...project.citations.map((path) => loadFile(session, path)),
+      ...project.bibliography.map((path) => loadFile(session, path, '.bib')),
       // Load all content (.md and .ipynb)
       ...pages.map((page) => loadFile(session, page.file)),
     ]);

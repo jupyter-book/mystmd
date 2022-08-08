@@ -12,6 +12,7 @@ import {
   addWarningForFile,
   computeHash,
   hashAndCopyStaticFile,
+  isUrl,
   staticPath,
   toText,
   versionIdToURL,
@@ -21,10 +22,6 @@ import type { PageFrontmatter } from '../frontmatter/types';
 import { convertImageToWebp } from '../export/utils/imagemagick';
 import type { PhrasingContent } from 'mdast';
 import type { Image } from 'myst-spec';
-
-function isUrl(url: string) {
-  return url.toLowerCase().startsWith('http:') || url.toLowerCase().startsWith('https:');
-}
 
 function isBase64(data: string) {
   return data.split(';base64,').length === 2;

@@ -63,6 +63,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'biblio',
   'oxa',
   'numbering',
+  'bibliography',
   'math',
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = [
@@ -196,6 +197,22 @@ function validateStringOrNumber(input: any, opts: Options) {
   if (typeof input === 'string') return validateString(input, opts);
   if (typeof input === 'number') return input;
   return validationError('must be string or number', opts);
+}
+
+function validateBibliography(input: any, opts: Options) {
+  if (typeof input === 'string') {
+    const value = validateString(input, opts);
+    if (value) return [value];
+    return undefined;
+  }
+  if (!Array.isArray(input)) {
+    return validationError('must be string or a list of strings', opts);
+  }
+  return validateList(input, opts, (r) => {
+    const role = validateString(r, opts);
+    if (role === undefined) return undefined;
+    return role;
+  });
 }
 
 /**
@@ -399,6 +416,12 @@ export function validateProjectFrontmatterKeys(value: Record<string, any>, opts:
       ...incrementOptions('subject', opts),
       maxLength: 40,
     });
+  }
+  if (defined(value.bibliography)) {
+    output.bibliography = validateBibliography(
+      value.bibliography,
+      incrementOptions('bibliography', opts),
+    );
   }
   if (defined(value.biblio)) {
     output.biblio = validateBiblio(value.biblio, incrementOptions('biblio', opts));
