@@ -1,34 +1,37 @@
 import type { Document } from 'docx';
 import type { Node } from 'prosemirror-model';
 import { DocxSerializerState } from 'prosemirror-docx';
-import type { Block, Project, User, Version } from '../../models';
+import type { MyUser, User } from '../../models';
 import type { ISession } from '../../session/types';
 import type { ArticleState } from '../utils/walkArticle';
 import { getNodesAndMarks } from './schema';
 import { createArticleTitle, createReferenceTitle } from './titles';
 import { createSingleDocument, getDefaultSerializerOptions } from './utils';
 import DEFAULT_STYLE from './simpleStyles';
+import type { Author } from '@curvenote/blocks';
 
 export interface LoadedArticle {
   session: ISession;
-  user: User;
+  user: User | MyUser;
   buffers: Record<string, Buffer>;
-  project: Project;
-  block: Block;
-  version: Version;
+  authors: Author[];
+  versionId?: number;
   article: ArticleState;
+  title: string;
+  description: string;
+  tags: string[];
   opts: Record<string, any>;
 }
 
 export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
-  const { session, user, buffers, project, block, version, article } = data;
+  const { user, buffers, authors, versionId, article, title, description, tags } = data;
 
   const { nodes, marks } = getNodesAndMarks();
 
   const docxState = new DocxSerializerState(nodes, marks, getDefaultSerializerOptions(buffers));
 
   // Add the title
-  docxState.renderContent(await createArticleTitle(session, project.data, block.data));
+  docxState.renderContent(await createArticleTitle(title, authors));
   // Then render each block
   article.children.forEach(({ state }) => {
     if (!state) return;
@@ -50,12 +53,12 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
   const styles = DEFAULT_STYLE;
 
   const doc = createSingleDocument(docxState, {
-    title: block.data.title,
-    description: block.data.description,
-    revision: version.id.version ?? 1,
+    title,
+    description,
+    revision: versionId ?? 1,
     creator: `${user.data.display_name} on https://curvenote.com`,
     lastModifiedBy: `${user.data.display_name} (@${user.data.username})`,
-    keywords: block.data.tags.join(', '),
+    keywords: tags.join(', '),
     externalStyles: styles,
   });
 

@@ -12,7 +12,7 @@ import { Block, Project, Version } from '../../models';
 import type { ISession } from '../../session/types';
 import { resolvePath, writeFileToFolder } from '../../utils';
 import { assertEndsInExtension } from '../utils/assertions';
-import { exportFromOxaLink } from '../utils/exportWrapper';
+import { exportFromPath } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';
 
 export type NotebookExportOptions = {
@@ -74,4 +74,4 @@ export async function notebookToIpynb(
   writeFileToFolder(opts, JSON.stringify(resp.json));
 }
 
-export const oxaLinkToNotebook = exportFromOxaLink(notebookToIpynb);
+export const oxaLinkToNotebook = exportFromPath(notebookToIpynb);

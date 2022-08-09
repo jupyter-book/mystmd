@@ -1,25 +1,16 @@
 import type { Node } from 'prosemirror-model';
-import type { Project as ProjectDTO, Block as BlockDTO } from '@curvenote/blocks';
 import { schemas } from '@curvenote/schema';
-import type { ISession } from '../../session/types';
+import type { Author } from '@curvenote/blocks';
 
-export async function createArticleTitle(
-  session: ISession,
-  projectData: ProjectDTO,
-  blockData: BlockDTO,
-) {
+export async function createArticleTitle(blockTitle: string, authors: Author[]) {
   const schema = schemas.getSchema('full');
-  const header = schema.nodes.heading.createAndFill(
-    { level: 1 },
-    schema.text(blockData.title),
-  ) as Node;
+  const header = schema.nodes.heading.createAndFill({ level: 1 }, schema.text(blockTitle)) as Node;
   // TODO: actually do a subtitle
-  const authorsData = blockData.authors ?? projectData.authors;
-  const authors = !authorsData ? undefined : authorsData.map((v) => v.name || 'Unknown Author');
-  if (authors) {
+  const authorNames = !authors ? undefined : authors.map((v) => v.name || 'Unknown Author');
+  if (authorNames && authorNames.length) {
     const subtitle = schema.nodes.heading.createAndFill(
       { level: 4 },
-      schema.text(authors.join(', ')),
+      schema.text(authorNames.join(', ')),
     ) as Node;
     return schema.nodes.doc.createAndFill({}, [header, subtitle]) as Node;
   }

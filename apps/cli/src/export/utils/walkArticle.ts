@@ -20,8 +20,8 @@ import { getBlockAndLatestVersion } from './getLatest';
 
 export interface ArticleStateChild {
   state: ReturnType<typeof getEditorState>;
-  block: Block;
-  version: Version;
+  block?: Block;
+  version?: Version;
   templateTags?: string[];
 }
 

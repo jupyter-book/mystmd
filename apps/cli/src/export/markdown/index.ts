@@ -15,7 +15,7 @@ import { fillPageFrontmatter } from '../../frontmatter/validators';
 import { Block, Project, Version } from '../../models';
 import type { ISession } from '../../session/types';
 import { resolvePath, writeFileToFolder } from '../../utils';
-import { exportFromOxaLink } from '../utils/exportWrapper';
+import { exportFromPath } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';
 import { localizationOptions } from '../utils/localizationOptions';
 import { walkArticle } from '../utils/walkArticle';
@@ -153,4 +153,4 @@ export async function articleToMarkdown(
   return article;
 }
 
-export const oxaLinkToMarkdown = exportFromOxaLink(articleToMarkdown);
+export const oxaLinkToMarkdown = exportFromPath(articleToMarkdown);
