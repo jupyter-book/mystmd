@@ -52,6 +52,6 @@ describe('Extensions', () => {
     expect(ast.children?.[0].children?.[0].name).toEqual('hello');
     expect(ast.children?.[0].children?.[0].value).toEqual('world\n');
     const html = parser.renderMdast(ast as Root);
-    expect(html).toBe('<div id="hello">world</div>');
+    expect(html.replace(/\n[\s]*/g, '')).toBe('<div id="hello">world</div>');
   });
 });

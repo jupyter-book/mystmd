@@ -28,7 +28,7 @@ const SKIP_TESTS = [
   '506', // This is a link issue?
 ];
 
-const directory = 'node_modules/myst-spec/dist/examples';
+const directory = '../../node_modules/myst-spec/dist/examples';
 const files: string[] = fs
   .readdirSync(directory)
   .filter((name) => name.endsWith('.yml'));
@@ -62,6 +62,15 @@ const mystCases: [string, TestCase][] = cases.filter(([f, t]) => {
   return t.myst;
 });
 const htmlCases: [string, TestCase][] = cases.filter(([f, t]) => t.html);
+
+/**
+ * Normalize html by removing any indented newlines.
+ *
+ * **Note**: This will screw up `<pre>` tags, but it is good enough for comparing in tests
+ */
+function normalize(html: string) {
+  return html.replace(/\n[\s]*/g, '');
+}
 
 describe('Testing myst --> mdast conversions', () => {
   test.each(mystCases)('%s', (_, { myst, mdast }) => {
@@ -109,31 +118,18 @@ describe('Testing mdast --> html conversions', () => {
           .replace(' alt=""', '') // Test 580
           .trim();
         let o = output
-          .replace(/<li>\n(?!<)/g, '<li>')
-          .replace(/(?<!>)\n<\/li>/g, '</li>')
           // These are quoted correctly, but come out poorly from the &quot; replacement above
           .replace('foo&#x22;bar', 'foo"bar') // Test 202
           .replace('&#x22;and&#x22;', '"and"') // Test 508
           .replace('title &#x22;&#x22;', 'title ""'); // Test 505
 
-        if (name.includes('190')) {
-          o = o
-            .replace('<table><tr><td>', '<table>\n<tr>\n<td>') // Test 190
-            .replace('</td></tr></table>', '</td>\n</tr>\n</table>'); // Test 190
-        }
-        if (name.includes('191')) {
-          o = o
-            .replace('<table>  <tr>', '<table>\n  <tr>') // Test 191
-            .replace('</tr></table>', '</tr>\n</table>'); // Test 191
-        }
-
-        expect(o).toEqual(i);
+        expect(normalize(o)).toEqual(normalize(i));
       } else {
         const parser = new MyST({
           allowDangerousHtml: true,
         });
         const newHTML = parser.renderMdast(mdast);
-        expect(newHTML).toEqual(html);
+        expect(normalize(newHTML)).toEqual(normalize(html));
       }
     }
   });

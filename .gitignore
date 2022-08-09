@@ -1,9 +1,3 @@
-dist/
-node_modules/
-docs/_build/*
-coverage/
-.yalc/*
-yalc.lock
-
-# The following is built for the docs
-docs/_static/myst.min.js
+node_modules
+coverage
+.turbo

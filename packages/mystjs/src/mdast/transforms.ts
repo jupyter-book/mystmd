@@ -78,14 +78,14 @@ export function addContainerCaptionNumbers(tree: Root, state: State) {
 }
 
 export function liftChildren(tree: Root, nodeType: string) {
-  map(tree, (node: GenericNode) => {
-    const children = node.children
-      ?.map((child: GenericNode) => {
+  map(tree, (node) => {
+    const children = (node as GenericNode).children
+      ?.map((child) => {
         if (child.type === nodeType && child.children) return child.children;
         return child;
       })
       ?.flat();
-    if (children !== undefined) node.children = children;
+    if (children !== undefined) (node as GenericNode).children = children;
     return node;
   });
 }

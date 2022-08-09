@@ -9,5 +9,5 @@ module.exports = {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
-  testPathIgnorePatterns: ['/node_modules/', '/.yalc/', '/dist/', 'docs'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', 'docs'],
 };

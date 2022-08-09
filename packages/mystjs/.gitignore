@@ -1,0 +1,4 @@
+dist/
+docs/_build/*
+# The following is built for the docs
+docs/_static/myst.min.js
