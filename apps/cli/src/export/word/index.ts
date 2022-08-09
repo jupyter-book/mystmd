@@ -1,19 +1,22 @@
 import fs from 'fs';
-import { extname } from 'path';
 import { writeDocx } from 'prosemirror-docx';
 import type { VersionId } from '@curvenote/blocks';
 import { KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
 import { Block, MyUser, Project, User, Version } from '../../models';
 import type { ISession } from '../../session/types';
 import { EditorState } from 'prosemirror-state';
-import type { Root } from 'myst-spec';
+import type { Image, Root } from 'myst-spec';
+import type { GenericNode } from 'mystjs';
+import { selectAll } from 'mystjs';
 import { fromMdast } from '@curvenote/schema';
-import { parseMyst } from '../../myst';
-import { processNotebook } from '../../store/local/notebook';
+import { loadFile, selectFile, transformMdast } from '../../store/local/actions';
+import type { References } from '../../transforms/types';
 import { assertEndsInExtension } from '../utils/assertions';
 import { exportFromPath } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';
-import { loadImagesToBuffers, walkArticle } from '../utils/walkArticle';
+import { getEditorState } from '../utils/getEditorState';
+import type { ArticleStateReference } from '../utils/walkArticle';
+import { loadImagesToBuffers, loadLocalImagesToBuffers, walkArticle } from '../utils/walkArticle';
 import { defaultTemplate } from './template';
 
 export * from './schema';
@@ -25,39 +28,40 @@ export type WordOptions = {
   [key: string]: any;
 };
 
+function referencesToWord(references: References) {
+  const out: Record<string, ArticleStateReference> = {};
+  references.cite.order.forEach((key) => {
+    out[key] = { label: key, state: getEditorState(`<p>${references.cite.data[key].html}</p>`) };
+  });
+  return out;
+}
+
 export async function localArticleToWord(
   session: ISession,
-  path: string,
+  file: string,
   opts: WordOptions,
   documentCreator = defaultTemplate,
 ) {
   const { filename, ...docOpts } = opts;
   assertEndsInExtension(filename, 'docx');
-  let mdast: Root;
-  try {
-    const content = fs.readFileSync(path).toString();
-    const ext = extname(path).toLowerCase();
-    switch (ext) {
-      case '.md': {
-        mdast = parseMyst(content) as Root;
-        break;
-      }
-      case '.ipynb': {
-        mdast = (await processNotebook(session, path, content)) as Root;
-        break;
-      }
-      default:
-        throw new Error(`Unrecognized extension ${path}`);
-    }
-  } catch (err) {
-    throw new Error(`Error reading file ${path}: ${err}`);
-  }
-  const stateDoc = fromMdast(mdast, 'full');
-  const state = EditorState.create({ doc: stateDoc });
+  await loadFile(session, file);
+  await transformMdast(session, { file, localExport: true });
+  const { frontmatter, mdast, references } = selectFile(session, file);
+  const consolidatedChildren = selectAll('block', mdast).reduce((newChildren, block) => {
+    newChildren.push(...(block as any).children);
+    return newChildren;
+  }, [] as GenericNode[]);
+  consolidatedChildren.push(...Object.values(references.footnotes));
+  const consolidatedMdast = {
+    type: 'root',
+    children: consolidatedChildren,
+  } as Root;
+  const articleDoc = fromMdast(consolidatedMdast, 'full');
+  const articleChildren = [{ state: EditorState.create({ doc: articleDoc }) }];
   const article = {
-    children: [{ state }],
+    children: articleChildren,
     images: {},
-    references: {},
+    references: referencesToWord(references),
     tagged: {},
   };
 
@@ -65,12 +69,12 @@ export async function localArticleToWord(
   const doc = await documentCreator({
     session,
     user,
-    buffers: {},
-    authors: [],
+    buffers: loadLocalImagesToBuffers(selectAll('image', mdast) as Image[]),
+    authors: frontmatter.authors || [],
     article,
-    title: 'temp title',
-    description: 'temp description',
-    tags: [],
+    title: frontmatter.title || 'Untitled',
+    description: frontmatter.description || '',
+    tags: frontmatter.tags || [],
     opts: docOpts,
   });
   await writeDocx(doc, (buffer) => {

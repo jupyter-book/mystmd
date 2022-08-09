@@ -152,9 +152,10 @@ export function computeHash(content: string) {
  *
  * If hashed file already exists, this does nothing
  */
-export function hashAndCopyStaticFile(session: ISession, file: string) {
+export function hashAndCopyStaticFile(session: ISession, file: string, writeFolder?: string) {
+  if (!writeFolder) writeFolder = staticPath(session);
   const fileHash = `${computeHash(file)}${path.extname(file)}`;
-  const destination = path.join(staticPath(session), fileHash);
+  const destination = path.join(writeFolder, fileHash);
   if (fs.existsSync(destination)) {
     session.log.debug(`Cached file found for: ${file}`);
   } else {

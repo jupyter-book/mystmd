@@ -35,9 +35,9 @@ export function unnestKernelSpec(pageFrontmatter: Record<string, any>) {
  */
 export function getPageFrontmatter(
   session: ISession,
-  path: string,
   tree: Root,
   file: string,
+  path?: string,
   removeNode = true,
 ): PageFrontmatter {
   const { frontmatter: rawPageFrontmatter } = getFrontmatter(tree, {
@@ -54,7 +54,7 @@ export function getPageFrontmatter(
 
   const state = session.store.getState();
   const siteFrontmatter = selectors.selectLocalSiteConfig(state) ?? {};
-  const projectFrontmatter = selectors.selectLocalProjectConfig(state, path) ?? {};
+  const projectFrontmatter = path ? selectors.selectLocalProjectConfig(state, path) ?? {} : {};
 
   const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter, siteFrontmatter);
 

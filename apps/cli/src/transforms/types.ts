@@ -19,7 +19,7 @@ export type PreRendererData = {
 
 export type RendererData = PreRendererData & {
   sha256: string;
-  slug: string;
+  slug?: string;
   frontmatter: PageFrontmatter;
   references: References;
 };

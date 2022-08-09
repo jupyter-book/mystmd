@@ -2,7 +2,7 @@ import type { Node } from 'prosemirror-model';
 import { schemas } from '@curvenote/schema';
 import type { Author } from '@curvenote/blocks';
 
-export async function createArticleTitle(blockTitle: string, authors: Author[]) {
+export async function createArticleTitle(blockTitle: string, authors: Partial<Author>[]) {
   const schema = schemas.getSchema('full');
   const header = schema.nodes.heading.createAndFill({ level: 1 }, schema.text(blockTitle)) as Node;
   // TODO: actually do a subtitle

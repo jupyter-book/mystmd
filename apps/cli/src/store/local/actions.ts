@@ -19,7 +19,7 @@ import {
   enumerateTargetsPlugin,
   getFrontmatter,
 } from 'myst-transforms';
-import { extname, join } from 'path';
+import { dirname, extname, join } from 'path';
 import chalk from 'chalk';
 import fetch from 'node-fetch';
 import { KINDS } from '@curvenote/blocks';
@@ -123,7 +123,7 @@ async function loadCitations(session: ISession, path: string) {
   return renderer;
 }
 
-function combineRenderers(cache: ISessionWithCache, ...files: string[]) {
+function combineCitationRenderers(cache: ISessionWithCache, ...files: string[]) {
   const combined: CitationRenderer = {};
   files.forEach((file) => {
     const renderer = cache.$citationRenderers[file] ?? {};
@@ -141,7 +141,7 @@ export function combineProjectCitationRenderers(session: ISession, projectPath: 
   const project = selectors.selectLocalProject(session.store.getState(), projectPath);
   const cache = castSession(session);
   if (!project?.bibliography) return;
-  cache.$citationRenderers[projectPath] = combineRenderers(cache, ...project.bibliography);
+  cache.$citationRenderers[projectPath] = combineCitationRenderers(cache, ...project.bibliography);
 }
 
 export async function loadFile(
@@ -219,12 +219,14 @@ export async function transformMdast(
     projectSlug,
     file,
     watchMode = false,
+    localExport = false,
   }: {
-    projectPath: string;
     file: string;
-    projectSlug: string;
-    pageSlug: string;
+    projectPath?: string;
+    projectSlug?: string;
+    pageSlug?: string;
     watchMode?: boolean;
+    localExport?: boolean;
   },
 ) {
   const toc = tic();
@@ -236,7 +238,7 @@ export async function transformMdast(
   log.debug(`Processing "${file}"`);
   // Use structuredClone in future (available in node 17)
   const mdast = JSON.parse(JSON.stringify(mdastPre)) as Root;
-  const frontmatter = getPageFrontmatter(session, projectPath, mdast, file);
+  const frontmatter = getPageFrontmatter(session, mdast, file, projectPath);
   const references: References = {
     cite: { order: [], data: {} },
     footnotes: {},
@@ -257,17 +259,32 @@ export async function transformMdast(
     .run(mdast, vfile);
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
+  const rendererFiles = [file];
+  if (projectPath) {
+    rendererFiles.unshift(projectPath);
+  } else {
+    const fileDirectory = dirname(file);
+    await Promise.all(
+      fs.readdirSync(fileDirectory).map(async (f) => {
+        if (extname(f).toLowerCase() === '.bib') {
+          const bibFile = join(fileDirectory, f);
+          await loadFile(session, bibFile);
+          rendererFiles.push(bibFile);
+        }
+      }),
+    );
+  }
+  // Combine file-specific citation renderers with project renderers from bib files
+  const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
   // Kind needs to still be Article here even if jupytext, to handle outputs correctly
   await transformOutputs(session, mdast, kind);
-  // Combine file-specific citation renderers with project renderers from bib files
-  const fileCitationRenderer = combineRenderers(cache, projectPath, file);
   transformCitations(log, mdast, fileCitationRenderer, references, file);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
     .use(footnotesPlugin, { references }) // Needs to happen nead the end
     .use(keysPlugin) // Keys should be the last major transform
     .run(mdast, vfile);
-  await transformImages(session, file, mdast);
+  await transformImages(session, file, mdast, { localExport });
   // Note, the thumbnail transform must be **after** images, as it may read the images
   await transformThumbnail(session, frontmatter, mdast, file);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;

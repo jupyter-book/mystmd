@@ -14,7 +14,7 @@ export interface LoadedArticle {
   session: ISession;
   user: User | MyUser;
   buffers: Record<string, Buffer>;
-  authors: Author[];
+  authors: Partial<Author>[];
   versionId?: number;
   article: ArticleState;
   title: string;

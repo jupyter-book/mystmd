@@ -154,9 +154,8 @@ export function getNodesAndMarks(styles?: Styles) {
     cite(state, node) {
       const { kind, key, text } = node.attrs as Nodes.Cite.Attrs;
       const oxa = oxaLinkToId(key);
-      if (!oxa) return;
       // TODO: This is probably very wrong
-      const id = oxa.id || oxa.block.block.slice(0, 8);
+      const id = oxa?.id || oxa?.block.block.slice(0, 8);
       switch (kind) {
         case ReferenceKind.cite:
           state.text(text);
@@ -164,10 +163,10 @@ export function getNodesAndMarks(styles?: Styles) {
         case ReferenceKind.table:
         case ReferenceKind.code:
         case ReferenceKind.fig:
-          state.createReference(id);
+          if (id) state.createReference(id);
           break;
         case ReferenceKind.eq:
-          state.createReference(id, 'Equation ');
+          if (id) state.createReference(id, 'Equation ');
           break;
         default:
           break;
