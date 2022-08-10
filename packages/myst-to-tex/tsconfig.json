@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "es6",
+    // module is overridden from the build:esm/build:cjs scripts
+    "module": "es2015",
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    // outDir is overridden from the build:esm/build:cjs scripts
+    "outDir": "dist/types",
+    "baseUrl": "src",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "lib": ["ES2019"],
+    // Type roots allows it to be included in a yarn workspace
+    "typeRoots": ["./node_modules/@types", "./types", "../../node_modules/@types"],
+    "resolveJsonModule": true,
+    "declaration": false,
+    // Ignore node_modules, etc.
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": []
+}
