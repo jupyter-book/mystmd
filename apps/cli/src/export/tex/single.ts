@@ -1,7 +1,9 @@
 import type { VersionId } from '@curvenote/blocks';
+// import { MyST, State, unified } from 'mystjs';
+// import mystToTex from 'myst-to-tex';
 import type { ISession } from '../../session/types';
 import { writeBibtex } from '../utils/writeBibtex';
-import { makeBuildPaths } from '../utils';
+import { assertEndsInExtension, makeBuildPaths } from '../utils';
 import { gatherAndWriteArticleContent } from './gather';
 import {
   ifTemplateFetchTaggedBlocks,
@@ -10,6 +12,8 @@ import {
 } from './template';
 import type { TexExportOptions } from './types';
 import { ifTemplateRunJtex } from './utils';
+import { loadFile, selectFile, transformMdast } from '../../store/local/actions';
+// import { writeFileToFolder } from '../../utils';
 
 export async function singleArticleToTex(
   session: ISession,
@@ -43,4 +47,18 @@ export async function singleArticleToTex(
   await ifTemplateRunJtex(filename, session.log, opts);
 
   return article;
+}
+
+export async function localArticleToTex(session: ISession, file: string, opts: TexExportOptions) {
+  const { filename, ...texOpts } = opts;
+  assertEndsInExtension(filename, 'tex');
+  await loadFile(session, file);
+  await transformMdast(session, { file, localExport: true });
+  const { frontmatter, mdast, references } = selectFile(session, file);
+  console.log(mdast);
+  // const pipe = unified().use(mystToTex);
+  // const result = pipe.runSync(mdast as any);
+  // const tex = pipe.stringify(result);
+  // console.log(tex.result);
+  // writeFileToFolder(filename, tex.result as string);
 }
