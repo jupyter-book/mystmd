@@ -21,6 +21,7 @@
     "publish": "npm run clean && npm run build -- --force && changeset publish && git push --follow-tags"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.23.2",
     "esbuild": "^0.14.53",
     "eslint-config-curvenote": "*",
     "prettier": "latest",
@@ -30,8 +31,5 @@
     "npm": ">=7.0.0",
     "node": ">=14.0.0"
   },
-  "packageManager": "npm@8.10.0",
-  "dependencies": {
-    "@changesets/cli": "^2.23.2"
-  }
+  "packageManager": "npm@8.10.0"
 }
