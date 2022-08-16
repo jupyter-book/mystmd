@@ -5,7 +5,7 @@ import { readTOC, tocFile } from '../export/jupyter-book/toc';
 import type { ISession } from '../session/types';
 import type { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types';
 import type { PageSlugs } from './utils';
-import { fileInfo, nextLevel, resolveExtension } from './utils';
+import { VALID_FILE_EXTENSIONS, fileInfo, nextLevel, resolveExtension } from './utils';
 
 function pagesFromChapters(
   session: ISession,
@@ -51,7 +51,13 @@ export function projectFromToc(
   const pageSlugs: PageSlugs = {};
   const indexFile = resolveExtension(join(path, toc.root));
   if (!indexFile) {
-    throw Error(`Root from ${tocFile(path)} not found: ${indexFile}`);
+    throw Error(
+      `The table of contents defined in "${tocFile(path)}" could not find file "${
+        toc.root
+      }" defined as the "root:" page. Please ensure that one of these files is defined:\n- ${VALID_FILE_EXTENSIONS.map(
+        (ext) => join(path, `${toc.root}${ext}`),
+      ).join('\n- ')}\n`,
+    );
   }
   const { slug } = fileInfo(indexFile, pageSlugs);
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
