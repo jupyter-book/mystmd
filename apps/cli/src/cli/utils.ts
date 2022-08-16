@@ -41,8 +41,7 @@ async function getNodeVersion(session: ISession): Promise<VersionResults | null>
   return result;
 }
 
-async function logVersions(session: ISession, debug = true) {
-  const result = await getNodeVersion(session);
+function logVersions(session: ISession, result: VersionResults | null, debug = true) {
   const versions: string[][] = [];
   Object.entries(result?.versions ?? {}).forEach(([name, p]) => {
     versions.push([
@@ -77,7 +76,8 @@ async function checkNodeVersion(session: ISession): Promise<boolean> {
   const result = await getNodeVersion(session);
   if (!result) return false;
   if (result.isSatisfied) return true;
-  await logVersions(session, false);
+  const versions = await getNodeVersion(session);
+  logVersions(session, versions, false);
   session.log.error('Please update your Node or NPM versions.\n');
   session.log.info(INSTALL_NODE_MESSAGE);
   return false;
@@ -136,7 +136,8 @@ export function clirun(
     const useSession = cli.anonymous
       ? anonSession(opts)
       : getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
-    await logVersions(useSession);
+    const versions = await getNodeVersion(useSession);
+    logVersions(useSession, versions);
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
     const state = useSession.store.getState();
@@ -159,7 +160,7 @@ export function clirun(
         useSession.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
       }
       useSession.log.error((error as Error).message);
-      await logVersions(useSession, false);
+      logVersions(useSession, versions, false);
       process.exit(1);
     }
   };
