@@ -4,6 +4,10 @@ import { join } from 'path';
 import { createReadStream, createWriteStream, mkdirSync } from 'fs';
 import type { ISession } from './types';
 
+type LinkResponse = {
+  link: string;
+};
+
 export async function downloadAndUnzipTemplate(
   session: ISession,
   opts: { template: string; path: string },
@@ -15,7 +19,8 @@ export async function downloadAndUnzipTemplate(
   const resLink = await fetch(url);
   if (!resLink.ok)
     throw new Error(`Problem with template link "${url}": ${resLink.status} ${resLink.statusText}`);
-  const { link } = await resLink.json();
+  const { link } = (await resLink.json()) as LinkResponse;
+  if (!link) throw new Error(`Problem with template link "${url}": No download link in response`);
   session.log.debug(`Fetching template from ${link}`);
   const res = await fetch(link);
   if (!res.ok)
