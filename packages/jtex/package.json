@@ -1,7 +1,7 @@
 {
   "name": "jtex",
   "version": "0.0.1",
-  "description": "Utilities for citation-js.",
+  "description": "Tool for rendering LaTeX documents from jinja-style templates",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "unpkg": "dist/index.umd.min.js",
@@ -32,17 +32,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/citation-js-utils.git"
+    "url": "git+https://github.com/curvenote/curvenote.git"
   },
   "keywords": [
-    "citation-js"
+    "jtex"
   ],
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/curvenote/citation-js-utils/issues"
+    "url": "https://github.com/curvenote/curvenote/issues"
   },
-  "homepage": "https://github.com/curvenote/citation-js-utils#readme",
+  "homepage": "https://github.com/curvenote/curvenote#readme",
   "engines": {
     "node": ">=12",
     "npm": ">=6"
