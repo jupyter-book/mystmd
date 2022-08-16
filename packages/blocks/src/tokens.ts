@@ -15,18 +15,23 @@ export enum TokenExpiresIn {
   oneDay = 1,
 }
 
-export function ensureValidTokenExpiresIn(expiry?: TokenExpiresIn): TokenExpiresIn {
+export function ensureValidTokenExpiresIn(expiry?: TokenExpiresIn | string): TokenExpiresIn {
   switch (expiry) {
     case TokenExpiresIn.never:
       return TokenExpiresIn.never;
+    case '90':
     case TokenExpiresIn.nintyDays:
       return TokenExpiresIn.nintyDays;
+    case '60':
     case TokenExpiresIn.sixtyDays:
       return TokenExpiresIn.sixtyDays;
+    case '30':
     case TokenExpiresIn.thirtyDays:
       return TokenExpiresIn.thirtyDays;
+    case '7':
     case TokenExpiresIn.sevenDays:
       return TokenExpiresIn.sevenDays;
+    case '1':
     case TokenExpiresIn.oneDay:
     default:
       return TokenExpiresIn.oneDay;
