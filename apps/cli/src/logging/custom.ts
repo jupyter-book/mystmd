@@ -34,7 +34,12 @@ export function getNpmLogger(session: ISession): LoggerDE {
     error(data: string) {
       const line = data.trim();
       if (!line) return;
-      if (line.includes('deprecated') || line === 'npm' || line.includes('WARN')) {
+      if (
+        line.includes('deprecated') ||
+        line.includes('package is no longer supported') ||
+        line === 'npm' ||
+        line.includes('WARN')
+      ) {
         session.log.debug(line);
         return;
       }
