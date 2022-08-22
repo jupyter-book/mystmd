@@ -1,5 +1,5 @@
 import yaml from 'js-yaml';
-import type { Root, Heading } from 'mdast';
+import type { Root, Code, Heading } from 'mdast';
 import { remove, select } from 'mystjs';
 import type { Licenses } from '../licenses/types';
 import { licensesToString } from '../licenses/validators';
@@ -13,15 +13,15 @@ export function frontmatterFromMdastTree(
   tree: Root,
   removeNode = true,
 ): { tree: Root; frontmatter: Record<string, any> } {
-  const firstNode = tree.children[0];
-  const secondNode = tree.children[1];
+  const firstNode = tree.children[0] as Code;
+  const secondNode = tree.children[1] as Heading;
   let frontmatter: Record<string, any> = {};
   const firstIsYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
   if (firstIsYaml) {
     frontmatter = yaml.load(firstNode.value) as Record<string, any>;
     if (removeNode) (firstNode as any).type = '__delete__';
   }
-  const nextNode = firstIsYaml ? secondNode : firstNode;
+  const nextNode = firstIsYaml ? secondNode : (firstNode as unknown as Heading);
   const nextNodeIsHeading = nextNode?.type === 'heading' && nextNode.depth === 1;
   // Explicitly handle the case of a H1 directly after the frontmatter
   if (nextNodeIsHeading) {
@@ -42,7 +42,11 @@ export function frontmatterFromMdastTree(
   }
   if (removeNode) {
     // Handles deleting the block if it is the only element in the block
-    remove(tree, '__delete__');
+    const possibleNull = remove(tree, '__delete__');
+    if (possibleNull === null) {
+      // null is returned if tree itself didn’t pass the test or is cascaded away
+      remove(tree, { cascade: false }, '__delete__');
+    }
   }
   return { tree, frontmatter };
 }
