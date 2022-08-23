@@ -128,10 +128,7 @@ export class State {
       // Ideally initializeNumberedHeadingDepths is called before incrementing
       // heading count to do a better job initializng headers based on tree
       if (!this.targetCounts.heading) this.targetCounts.heading = [0, 0, 0, 0, 0, 0];
-      this.targetCounts.heading = incrementHeadingCounts(
-        node.depth,
-        this.targetCounts.heading,
-      );
+      this.targetCounts.heading = incrementHeadingCounts(node.depth, this.targetCounts.heading);
       return formatHeadingEnumerator(this.targetCounts.heading);
     }
     if (kind in this.targetCounts) {
@@ -217,8 +214,7 @@ export const resolveReferences = (state: State, tree: Root) => {
     const reference = normalizeLabel(node.url);
     if (reference && reference.identifier in state.targets) {
       node.type = 'crossReference';
-      node.kind =
-        state.targets[reference.identifier].kind === TargetKind.math ? 'eq' : 'ref';
+      node.kind = state.targets[reference.identifier].kind === TargetKind.math ? 'eq' : 'ref';
       node.identifier = reference.identifier;
       node.label = reference.label;
       delete node.url;

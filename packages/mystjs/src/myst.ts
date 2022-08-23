@@ -110,8 +110,7 @@ export class MyST {
     const tokenizer = MarkdownIt(MARKDOWN_IT_CONFIG as any, this.opts.markdownit);
     if (exts.tables) tokenizer.enable('table');
     if (exts.colonFences) tokenizer.use(colonFencePlugin);
-    if (exts.frontmatter)
-      tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
+    if (exts.frontmatter) tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
     if (exts.blocks) tokenizer.use(mystBlockPlugin);
     if (exts.footnotes) tokenizer.use(footnotePlugin).disable('footnote_inline'); // not yet implemented in myst-parser
     tokenizer.use(docutilsPlugin, this.opts.docutils);

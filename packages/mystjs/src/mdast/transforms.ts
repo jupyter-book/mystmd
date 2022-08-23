@@ -143,9 +143,7 @@ export function convertHtmlToMdast(tree: Root, opts?: HtmlToMdastOptions) {
     // there is an option to `keepBreaks` which will simply convert `<br />`
     // tags to `break` nodes, without the special hast-util-to-mdast behavior.
     if (otherOptions.keepBreaks) {
-      selectAll('[tagName=br]', hast).forEach(
-        (node: GenericNode) => (node.tagName = '_brKeep'),
-      );
+      selectAll('[tagName=br]', hast).forEach((node: GenericNode) => (node.tagName = '_brKeep'));
     }
     const mdast = unified().use(rehypeRemark, { handlers }).runSync(hast);
     node.type = 'htmlParsed';

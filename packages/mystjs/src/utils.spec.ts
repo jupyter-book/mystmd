@@ -24,13 +24,7 @@ describe('toHTML', () => {
   });
   it('Raises errors on multiple holes', () => {
     expect(() =>
-      toHTML([
-        'figure',
-        { hi: '1' },
-        0,
-        ['img', { src: '2' }],
-        ['figcaption', { number: '3' }, 0],
-      ]),
+      toHTML(['figure', { hi: '1' }, 0, ['img', { src: '2' }], ['figcaption', { number: '3' }, 0]]),
     ).toThrow();
   });
 });

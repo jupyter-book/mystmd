@@ -31,7 +31,7 @@ module.exports = {
       'error',
       {
         endOfLine: 'auto',
-        printWidth: 88,
+        printWidth: 100,
       },
     ],
     'import/prefer-default-export': 'off',

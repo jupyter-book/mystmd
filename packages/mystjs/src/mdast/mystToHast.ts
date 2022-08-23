@@ -6,8 +6,7 @@ import { AdmonitionKind } from './types';
 import { Plugin } from 'unified';
 import type { ElementContent, Properties } from 'hast';
 
-const abbreviation: Handler = (h, node) =>
-  h(node, 'abbr', { title: node.title }, all(h, node));
+const abbreviation: Handler = (h, node) => h(node, 'abbr', { title: node.title }, all(h, node));
 
 const subscript: Handler = (h, node) => h(node, 'sub', all(h, node));
 const superscript: Handler = (h, node) => h(node, 'sup', all(h, node));
@@ -27,8 +26,7 @@ const container: Handler = (h, node) =>
     'figure',
     {
       id: node.identifier || node.label || undefined,
-      class:
-        classNames({ numbered: node.enumerated !== false }, node.class) || undefined,
+      class: classNames({ numbered: node.enumerated !== false }, node.class) || undefined,
     },
     all(h, node),
   );
@@ -52,9 +50,7 @@ const admonition: Handler = (h, node) =>
 
 const captionNumber: Handler = (h, node) => {
   const captionKind = node.kind?.charAt(0).toUpperCase() + node.kind?.slice(1);
-  return h(node, 'span', { class: 'caption-number' }, [
-    u('text', `${captionKind} ${node.value}`),
-  ]);
+  return h(node, 'span', { class: 'caption-number' }, [u('text', `${captionKind} ${node.value}`)]);
 };
 
 const math: Handler = (h, node) => {
@@ -97,9 +93,7 @@ const mystDirective: Handler = (h, node) => {
       .map((k) => `:${k}: ${node.options[k]}`)
       .join('\n');
     directiveBody.push(
-      h(node, 'pre', [
-        h(node, 'code', { class: 'options' }, [u('text', optionsString)]),
-      ]),
+      h(node, 'pre', [h(node, 'code', { class: 'options' }, [u('text', optionsString)])]),
     );
   }
   directiveBody.push(h(node, 'pre', [h(node, 'code', [u('text', node.value)])]));
@@ -148,8 +142,7 @@ const code: Handler = (h, node) => {
   if (node.identifier) {
     props.id = node.identifier;
   }
-  props.className =
-    classNames({ ['language-' + node.lang]: node.lang }, node.class) || undefined;
+  props.className = classNames({ ['language-' + node.lang]: node.lang }, node.class) || undefined;
   const code = h(node, 'code', props, [u('text', value)]);
   return h(node.position, 'pre', [code]);
 };

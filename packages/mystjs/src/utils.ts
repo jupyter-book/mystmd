@@ -61,11 +61,7 @@ const formatAttr = (key: string, value: AttrTypes): string | null => {
   return `${key}="${escapeHtml(v)}"`;
 };
 
-export function formatTag(
-  tag: string,
-  attributes: HTMLAttributes,
-  inline: boolean,
-): string {
+export function formatTag(tag: string, attributes: HTMLAttributes, inline: boolean): string {
   const { children, ...rest } = attributes;
   const join = inline ? '' : '\n';
   const attrs = Object.entries(rest)
@@ -78,16 +74,12 @@ export function formatTag(
   return html;
 }
 
-function toHTMLRecurse(
-  template: HTMLOutputSpec,
-  inline: boolean,
-): [string, string | null] {
+function toHTMLRecurse(template: HTMLOutputSpec, inline: boolean): [string, string | null] {
   // Convert to an internal type which is actually an array
   const T = template as HTMLOutputSpecArrayInternal;
   // Cannot have more than one hole in the template
   const atMostOneHole = T.flat(Infinity).filter((v) => v === 0).length <= 1;
-  if (!atMostOneHole)
-    throw new Error('There cannot be more than one hole in the template.');
+  if (!atMostOneHole) throw new Error('There cannot be more than one hole in the template.');
   // Grab the tag and attributes if they exist!
   const tag = T[0];
   const hasAttrs = !Array.isArray(T?.[1]) && typeof T?.[1] === 'object';

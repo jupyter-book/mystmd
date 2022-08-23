@@ -43,10 +43,7 @@ function getClassName(token: Token, exclude?: RegExp[]): string | undefined {
       .filter((c) => {
         if (!c) return false;
         if (!exclude) return true;
-        return !exclude.reduce(
-          (doExclude, test) => doExclude || !!c.match(test),
-          false,
-        );
+        return !exclude.reduce((doExclude, test) => doExclude || !!c.match(test), false);
       })
       .join(' ') || undefined
   );
@@ -202,8 +199,7 @@ const defaultMdast: Record<string, Spec> = {
     noCloseToken: true,
     isLeaf: true,
     getAttrs(token) {
-      const alt =
-        token.attrGet('alt') || token.children?.reduce((i, t) => i + t?.content, '');
+      const alt = token.attrGet('alt') || token.children?.reduce((i, t) => i + t?.content, '');
       const alignMatch = hasClassName(token, ALIGN_CLASS);
       const align = alignMatch ? alignMatch[1] : undefined;
       return {
@@ -560,10 +556,7 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
     if (!kind || !children || kind === AdmonitionKind.admonition) return;
     const expectedTitle = admonitionKindToTitle(kind);
     const titleNode = children[0];
-    if (
-      titleNode.type === 'admonitionTitle' &&
-      titleNode.children?.[0]?.value === expectedTitle
-    )
+    if (titleNode.type === 'admonitionTitle' && titleNode.children?.[0]?.value === expectedTitle)
       node.children = children.slice(1);
   });
 
@@ -610,13 +603,9 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
   //       https://github.com/microsoft/TypeScript/issues/46900
 
   selectAll('table', tree).map((node: GenericNode) => {
-    const captionChildren = node.children?.filter(
-      (n: GenericNode) => n.type === 'caption',
-    );
+    const captionChildren = node.children?.filter((n: GenericNode) => n.type === 'caption');
     if (captionChildren?.length) {
-      const tableChildren = node.children?.filter(
-        (n: GenericNode) => n.type !== 'caption',
-      );
+      const tableChildren = node.children?.filter((n: GenericNode) => n.type !== 'caption');
       const newTableNode: GenericNode = {
         type: 'table',
         align: node.align,
