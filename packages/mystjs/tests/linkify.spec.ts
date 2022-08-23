@@ -1,11 +1,19 @@
-import { MyST } from '../src';
+import type { Root } from 'mdast';
+import { MyST, visit } from '../src';
+
+function stripPositions(tree: Root) {
+  visit(tree, (node) => {
+    delete node.position;
+  });
+  return tree;
+}
 
 describe('linkify', () => {
   it('linkify in paragraph', () => {
     const myst = new MyST();
     const mystLinkify = new MyST({ markdownit: { linkify: true } });
     const content = 'Link in paragraph: example.com';
-    expect(myst.parse(content)).toEqual({
+    expect(stripPositions(myst.parse(content))).toEqual({
       type: 'root',
       children: [
         {
@@ -14,7 +22,7 @@ describe('linkify', () => {
         },
       ],
     });
-    expect(mystLinkify.parse(content)).toEqual({
+    expect(stripPositions(mystLinkify.parse(content))).toEqual({
       type: 'root',
       children: [
         {
@@ -35,7 +43,7 @@ describe('linkify', () => {
     const myst = new MyST();
     const mystLinkify = new MyST({ markdownit: { linkify: true } });
     const content = '# Link in heading: example.com';
-    expect(myst.parse(content)).toEqual({
+    expect(stripPositions(myst.parse(content))).toEqual({
       type: 'root',
       children: [
         {
@@ -45,7 +53,7 @@ describe('linkify', () => {
         },
       ],
     });
-    expect(mystLinkify.parse(content)).toEqual({
+    expect(stripPositions(mystLinkify.parse(content))).toEqual({
       type: 'root',
       children: [
         {
@@ -67,7 +75,7 @@ describe('linkify', () => {
     const myst = new MyST();
     const mystLinkify = new MyST({ markdownit: { linkify: true } });
     const content = 'Link in link: [example.com](https://example.com)';
-    expect(myst.parse(content)).toEqual({
+    expect(stripPositions(myst.parse(content))).toEqual({
       type: 'root',
       children: [
         {
@@ -83,7 +91,7 @@ describe('linkify', () => {
         },
       ],
     });
-    expect(mystLinkify.parse(content)).toEqual({
+    expect(stripPositions(mystLinkify.parse(content))).toEqual({
       type: 'root',
       children: [
         {

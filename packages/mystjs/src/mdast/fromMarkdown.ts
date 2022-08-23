@@ -9,6 +9,15 @@ const UNHIDDEN_TOKENS = new Set([
   'parsed_role_close',
 ]);
 
+function addPositionsToNode(node: GenericNode, token: Token) {
+  if (token.map) {
+    node.position = {
+      start: { line: token.map[0], column: 0 },
+      end: { line: token.map[1], column: 0 },
+    };
+  }
+}
+
 /** MarkdownParseState tracks the context of a running token stream.
  *
  * Loosly based on prosemirror-markdown
@@ -31,7 +40,7 @@ export class MarkdownParseState {
     return node;
   }
 
-  addText(text: string, type = 'text', attrs?: Record<string, any>) {
+  addText(text: string, token: Token, type = 'text', attrs?: Record<string, any>) {
     const top = this.top();
     const value = text;
     if (!value || !this.stack.length || !type || !('children' in top)) return;
@@ -43,11 +52,13 @@ export class MarkdownParseState {
     }
     const node: GenericText = { type, ...attrs, value };
     top.children?.push(node);
+    addPositionsToNode(node, token);
     return node;
   }
 
-  openNode(type: string, attrs: Record<string, any>, isLeaf = false) {
+  openNode(type: string, token: Token, attrs: Record<string, any>, isLeaf = false) {
     const node: GenericNode = { type, ...attrs };
+    addPositionsToNode(node, token);
     if (!isLeaf) (node as GenericParent).children = [];
     this.stack.push(node);
   }
@@ -62,9 +73,7 @@ export class MarkdownParseState {
       if (token.hidden && !UNHIDDEN_TOKENS.has(token.type)) return;
       const handler = this.handlers[token.type];
       if (!handler)
-        throw new Error(
-          'Token type `' + token.type + '` not supported by tokensToMyst parser',
-        );
+        throw new Error(`Token type ${token.type} not supported by tokensToMyst parser`);
       handler(this, token, tokens, index);
     });
   }
@@ -85,12 +94,7 @@ function attrs(spec: Spec, token: Token, tokens: Token[], index: number) {
 }
 
 function noCloseToken(spec: Spec, type: string) {
-  return (
-    spec.noCloseToken ||
-    type == 'code_inline' ||
-    type == 'code_block' ||
-    type == 'fence'
-  );
+  return spec.noCloseToken || type == 'code_inline' || type == 'code_block' || type == 'fence';
 }
 
 function getTokenHandlers(specHandlers: Record<string, Spec>) {
@@ -103,24 +107,25 @@ function getTokenHandlers(specHandlers: Record<string, Spec>) {
         if (spec.isText) {
           state.addText(
             withoutTrailingNewline(tok.content),
+            tok,
             spec.type,
             attrs(spec, tok, tokens, i),
           );
           return;
         }
-        state.openNode(nodeType, attrs(spec, tok, tokens, i), spec.isLeaf);
-        state.addText(withoutTrailingNewline(tok.content));
+        state.openNode(nodeType, tok, attrs(spec, tok, tokens, i), spec.isLeaf);
+        state.addText(withoutTrailingNewline(tok.content), tok);
         state.closeNode();
       };
     } else {
       handlers[type + '_open'] = (state, tok, tokens, i) =>
-        state.openNode(nodeType, attrs(spec, tok, tokens, i));
+        state.openNode(nodeType, tok, attrs(spec, tok, tokens, i));
       handlers[type + '_close'] = (state) => state.closeNode();
     }
   });
 
-  handlers.text = (state, tok) => state.addText(tok.content);
+  handlers.text = (state, tok) => state.addText(tok.content, tok);
   handlers.inline = (state, tok) => state.parseTokens(tok.children);
-  handlers.softbreak = handlers.softbreak || ((state) => state.addText('\n'));
+  handlers.softbreak = handlers.softbreak || ((state, tok) => state.addText('\n', tok));
   return handlers;
 }

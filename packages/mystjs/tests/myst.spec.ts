@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
-import { MyST } from '../src';
+import { MyST, visit } from '../src';
 import { Root } from 'mdast';
 
 type TestFile = {
@@ -29,14 +29,10 @@ const SKIP_TESTS = [
 ];
 
 const directory = '../../node_modules/myst-spec/dist/examples';
-const files: string[] = fs
-  .readdirSync(directory)
-  .filter((name) => name.endsWith('.yml'));
+const files: string[] = fs.readdirSync(directory).filter((name) => name.endsWith('.yml'));
 
 // For prettier printing of test cases
-const length = files
-  .map((f) => f.replace('.yml', ''))
-  .reduce((a, b) => Math.max(a, b.length), 0);
+const length = files.map((f) => f.replace('.yml', '')).reduce((a, b) => Math.max(a, b.length), 0);
 
 const skipped: [string, TestCase][] = [];
 const cases: [string, TestCase][] = files
@@ -72,6 +68,13 @@ function normalize(html: string) {
   return html.replace(/\n[\s]*/g, '');
 }
 
+function stripPositions(tree: Root) {
+  visit(tree, (node) => {
+    delete node.position;
+  });
+  return tree;
+}
+
 describe('Testing myst --> mdast conversions', () => {
   test.each(mystCases)('%s', (_, { myst, mdast }) => {
     if (myst) {
@@ -85,7 +88,7 @@ describe('Testing myst --> mdast conversions', () => {
         },
       });
       const mdastString = yaml.dump(mdast);
-      const newAst = yaml.dump(parser.parse(myst));
+      const newAst = yaml.dump(stripPositions(parser.parse(myst)));
       expect(newAst).toEqual(mdastString);
     }
   });
