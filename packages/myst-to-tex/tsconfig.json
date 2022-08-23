@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "es6",
     // module is overridden from the build:esm/build:cjs scripts
-    "module": "es2015",
+    "module": "es2020",
     "esModuleInterop": true,
     "noImplicitAny": true,
     "strict": true,
