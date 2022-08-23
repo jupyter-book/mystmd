@@ -33,8 +33,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "compile": "npm run clean && tsc -p .",
-    "prepublishOnly": "npm run compile; npm run build;",
+    "prepublishOnly": "npm run build;",
     "test": "node --experimental-vm-modules  ../../node_modules/.bin/jest",
     "test:watch": "jest --watchAll",
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",
