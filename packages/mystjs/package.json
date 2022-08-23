@@ -41,7 +41,7 @@
     "test": "node --experimental-vm-modules ../../node_modules/.bin/jest",
     "test:watch": "node --experimental-vm-modules ../../node_modules/.bin/jest --watchAll",
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",
-    "lint:format": "prettier --write src/*.ts src/**/*.ts",
+    "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "watch": "tsc -w -p .",
     "build:bundles": "rollup -c",
     "build:esm": "tsc --module es2015   --outDir dist/esm",
