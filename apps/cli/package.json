@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@curvenote/blocks": "*",
+    "@curvenote/site-common": "*",
     "@curvenote/nbtx": "^0.1.11",
     "@curvenote/schema": "0.12.17",
     "@google-cloud/storage": "^5.18.2",

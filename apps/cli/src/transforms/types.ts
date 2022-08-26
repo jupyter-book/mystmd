@@ -1,22 +1,15 @@
 import type { CitationRenderer } from 'citation-js-utils';
-import type { GenericNode, map } from 'mystjs';
+import type { map } from 'mystjs';
 import type { KINDS } from '@curvenote/blocks';
+import type { References as SiteReferences } from '@curvenote/site-common';
 import type { PageFrontmatter } from '../frontmatter/types';
 import type { Root } from '../myst';
 
 export type MapResult = ReturnType<typeof map>;
 
-export type Citations = {
-  order: string[];
-  data: Record<string, { html: string; number: number; doi: string | undefined }>;
-};
+export type { Citations, Footnotes } from '@curvenote/site-common';
 
-export type Footnotes = Record<string, GenericNode>;
-
-export type References = {
-  cite: Citations;
-  footnotes: Footnotes;
-};
+export type References = Required<SiteReferences>;
 
 export type PreRendererData = {
   file: string;
