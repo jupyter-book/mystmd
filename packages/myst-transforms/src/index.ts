@@ -29,4 +29,4 @@ export {
 } from './enumerate';
 
 // Composite plugins
-export { singleDocumentPlugin, multiDocumentPlugin } from './document';
+export { basicTransformationsPlugin, basicTransformations } from './basic';

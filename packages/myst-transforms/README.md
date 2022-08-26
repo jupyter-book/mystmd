@@ -47,13 +47,7 @@ Code
 
 CodeBlock
 : Codeblocks can live inside of figures, have captions and be references. Transformation ensures that this information isn't lost from the original parsing of mdast.
-: Note: this may move into the parser in the future.
-
-Enumerate
-: Add information about numbering and cross-referencing of content.
-: There are two passes, `enumerateTargetsPlugin` and `resolveReferencesPlugin` these can be run at different times depending on if you are in a single-document or multi-document setup.
-: The `resolveReferencesPlugin` has a number of transformations for (1) links, which identify document level links to other md files; (2) `crossReference` transforms which link references in the state and replace children with, for example, "Figure 1"; and (3) inserting caption numbers into containers.
-: The enumeration transforms require state, and can instantiate a `ReferenceState` object or a `MultiPageReferenceState` for collections with multiple pages. The reference resolution is defined in those classes. To create your own reference management, use the `IReferenceState` interface to pass in.
+: Note: this should move into the parser in the future.
 
 Footnotes
 : Pull the footnote definitions into a reference object.
@@ -81,9 +75,25 @@ Targets
 : Propagate targets (i.e. `(my-id)=`) to the following node
 : Add HTML friendly identifiers to headings.
 
-## Document Plugins
+## Plugin Collections
 
-A few of the plugins are exposed for a `singleDocumentPlugin` and `multiDocumentPlugin` which only differ in that they resolve references. See the code for exactly which plugins are included. If you are depending on this, ideally use the individual plugins directly, which will always provide options. These collections are primarily to reduce code duplication in this monorepo and not explicitly intended for external use.
+A few of the plugins are exposed in a `basicTransformationsPlugin` does a number of the expected transformations without any user supplied options. See the code for exactly which plugins are included. If you are depending on this, ideally use the individual plugins directly, which will always provide options.
+
+## Enumeration
+
+There are two stages to add information about numbering and cross-referencing of content, specifically, `enumerateTargetsPlugin` and `resolveReferencesPlugin` these can be run at different times depending on if you are in a single-document or multi-document setup.
+
+The enumeration transforms require state, and can instantiate a `ReferenceState` object or a `MultiPageReferenceState` for collections with multiple pages. The reference resolution is defined in those classes. To create your own reference management, use the `IReferenceState` interface to pass in.
+
+The `enumerateTargetsPlugin` should be run early, and registers targets with the state through `state.addTarget`. This will also tick forward all of the counting in the document (e.g. "Section 3.2.4" or "Figure 5"). The numbering can be configured with a `numbering` option in the `ReferenceState`, or your own implementation of counting.
+
+The `resolveReferencesPlugin` has a number of transformations for (1) links, which identify document level links to other md files; (2) `crossReference` transforms which link references in the state and replace children with, for example, "Figure 1"; and (3) inserting caption numbers into containers.
+
+## Naming Conventions
+
+There are two many types of exports `transforms` and `plugins` the plugins are `unifiedjs` plugins that can be chained together, for example, `unified().use(myPlugin, opts).use(myOtherPlugin)`. These plugins are generally very light wrappers around transforms which are the funcitonal analogues of the plugin. The `transforms` are called on a `tree`, for example, `myTransform(tree, opts)`.
+
+In all cases transformations are completed in place on the mdast tree.
 
 ## Error Reporting
 

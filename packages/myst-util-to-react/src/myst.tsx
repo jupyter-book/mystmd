@@ -16,8 +16,15 @@ import { ReferencesProvider } from '@curvenote/ui-providers';
 async function parse(text: string) {
   // Ensure that any imports from myst are async and scoped to this function
   const { MyST, unified, visit } = await import('mystjs');
-  const { mathPlugin, footnotesPlugin, keysPlugin, singleDocumentPlugin, ReferenceState } =
-    await import('myst-transforms');
+  const {
+    mathPlugin,
+    footnotesPlugin,
+    keysPlugin,
+    basicTransformationsPlugin,
+    enumerateTargetsPlugin,
+    resolveReferencesPlugin,
+    ReferenceState,
+  } = await import('myst-transforms');
   const { default: mystToTex } = await import('myst-to-tex');
   const myst = new MyST();
   const mdast = myst.parse(text);
@@ -33,10 +40,12 @@ async function parse(text: string) {
   };
   const state = new ReferenceState();
   unified()
-    .use(singleDocumentPlugin, { state })
+    .use(basicTransformationsPlugin)
+    .use(enumerateTargetsPlugin, { state })
     .use(mathPlugin)
     .use(footnotesPlugin, { references })
     .use(keysPlugin)
+    .use(resolveReferencesPlugin, { state })
     .runSync(mdast as any, file);
   const tex = unified()
     .use(mystToTex)

@@ -7,7 +7,7 @@ import { unified } from 'unified';
 import { VFile } from 'vfile';
 import type { GenericNode } from 'mystjs';
 import {
-  multiDocumentPlugin,
+  basicTransformationsPlugin,
   htmlPlugin,
   footnotesPlugin,
   keysPlugin,
@@ -16,8 +16,7 @@ import {
   resolveReferencesTransform,
   mathPlugin,
   codePlugin,
-  imageAltTextPlugin,
-  codeBlockPlugin,
+  enumerateTargetsPlugin,
 } from 'myst-transforms';
 import { extname, join } from 'path';
 import chalk from 'chalk';
@@ -250,8 +249,8 @@ export async function transformMdast(
   includeFilesDirective(session, file, mdast);
 
   await unified()
-    .use(codeBlockPlugin) // TODO: better parser would replace this!
-    .use(multiDocumentPlugin, { state }) // does not include resolving references
+    .use(basicTransformationsPlugin)
+    .use(enumerateTargetsPlugin, { state })
     .use(htmlPlugin, { htmlHandlers })
     .use(mathPlugin, { macros: frontmatter.math })
     .run(mdast, vfile);
@@ -264,7 +263,6 @@ export async function transformMdast(
   transformCitations(log, mdast, fileCitationRenderer, references, file);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
-    .use(imageAltTextPlugin)
     .use(footnotesPlugin, { references }) // Needs to happen nead the end
     .use(keysPlugin) // Keys should be the last major transform
     .run(mdast, vfile);
