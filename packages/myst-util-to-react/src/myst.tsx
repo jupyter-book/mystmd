@@ -17,6 +17,7 @@ async function parse(text: string) {
   // Ensure that any imports from myst are async and scoped to this function
   const { MyST, unified, visit } = await import('mystjs');
   const { mathPlugin, footnotesPlugin, keysPlugin } = await import('myst-transforms');
+  const { default: mystToTex } = await import('myst-to-tex');
   const myst = new MyST();
   const mdast = myst.parse(text);
   // For the mdast that we show, duplicate, strip positions and dump to yaml
@@ -34,11 +35,15 @@ async function parse(text: string) {
     .use(footnotesPlugin, { references })
     .use(keysPlugin)
     .runSync(mdast as any, file);
+  const tex = unified()
+    .use(mystToTex)
+    .stringify(mdast as any).result as string;
   const content = useParse(mdast as any);
   return {
     yaml: mdastString,
     references: { ...references, article: mdast } as References,
     html: htmlString,
+    tex,
     content,
     warnings: file.messages,
   };
@@ -50,9 +55,10 @@ export function MySTRenderer({ value }: { value: string }) {
   const [references, setReferences] = useState<References>({});
   const [mdastYaml, setYaml] = useState<string>('Loading...');
   const [html, setHtml] = useState<string>('Loading...');
+  const [tex, setTex] = useState<string>('Loading...');
   const [warnings, setWarnings] = useState<VFileMessage[]>([]);
   const [content, setContent] = useState<React.ReactNode>(<p>{value}</p>);
-  const [previewType, setPreviewType] = useState('Demo');
+  const [previewType, setPreviewType] = useState('DEMO');
 
   useEffect(() => {
     const ref = { current: true };
@@ -61,6 +67,7 @@ export function MySTRenderer({ value }: { value: string }) {
       setYaml(result.yaml);
       setReferences(result.references);
       setHtml(result.html);
+      setTex(result.tex);
       setContent(result.content);
       setWarnings(result.warnings);
     });
@@ -94,10 +101,10 @@ export function MySTRenderer({ value }: { value: string }) {
       {/* The `exclude-from-outline` class is excluded from the document outline */}
       <div className="exclude-from-outline relative min-h-1 pt-[50px] px-6 pb-6 dark:bg-slate-900">
         <div className="absolute cursor-pointer top-0 left-0 border dark:border-slate-600">
-          {['Demo', 'AST', 'HTML'].map((show) => (
+          {['DEMO', 'AST', 'HTML', 'LaTeX'].map((show) => (
             <button
               key={show}
-              className={classnames('px-2 uppercase', {
+              className={classnames('px-2', {
                 'bg-white hover:bg-slate-200 dark:bg-slate-500 dark:hover:bg-slate-700':
                   previewType !== show,
                 'bg-curvenote-blue text-white': previewType === show,
@@ -111,13 +118,14 @@ export function MySTRenderer({ value }: { value: string }) {
             </button>
           ))}
         </div>
-        {previewType === 'Demo' && (
+        {previewType === 'DEMO' && (
           <ReferencesProvider references={references}>{content}</ReferencesProvider>
         )}
         {previewType === 'AST' && <CodeBlock lang="yaml" value={mdastYaml} showCopy={false} />}
         {previewType === 'HTML' && <CodeBlock lang="xml" value={html} showCopy={false} />}
+        {previewType === 'LaTeX' && <CodeBlock lang="latex" value={tex} showCopy={false} />}
       </div>
-      {previewType === 'Demo' && warnings.length > 0 && (
+      {previewType === 'DEMO' && warnings.length > 0 && (
         <div>
           {warnings.map((m) => (
             <div
