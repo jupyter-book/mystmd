@@ -351,7 +351,7 @@ const TabItem: IDirective = {
 
     public optional_arguments = 0;
 
-    public final_argument_whitespace = false;
+    public final_argument_whitespace = true;
 
     public has_content = true;
 
