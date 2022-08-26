@@ -1,5 +1,6 @@
 import { responseNoArticle, responseNoSite } from '@curvenote/site';
-import { LoaderFunction, redirect } from '@remix-run/node';
+import type { LoaderFunction } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 import { getConfig } from '~/utils';
 

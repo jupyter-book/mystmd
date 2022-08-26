@@ -1,5 +1,4 @@
-import type { LinksFunction, LoaderFunction } from '@remix-run/node';
-import { MetaFunction } from '@remix-run/node';
+import type { LinksFunction, LoaderFunction, MetaFunction } from '@remix-run/node';
 import { getMetaTagsForArticle, KatexCSS, ArticlePage } from '@curvenote/site';
 import { getPage } from '~/utils';
 import type { PageLoader, SiteManifest } from '@curvenote/site-common';

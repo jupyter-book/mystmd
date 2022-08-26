@@ -1,5 +1,4 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/node';
-import { LoaderFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction, LoaderFunction } from '@remix-run/node';
 import tailwind from '~/styles/app.css';
 import { getConfig } from '~/utils';
 import type { DocumentLoader } from '@curvenote/site-common';
