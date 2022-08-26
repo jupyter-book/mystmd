@@ -56,7 +56,7 @@ export async function install(session: ISession): Promise<void> {
   await makeExecutable('npm install', getNpmLogger(session), { cwd: repoPath(session) })();
   session.log.info(toc('📦 Installed web libraries in %s'));
   await makeExecutable('npm run build:web', getNpmLogger(session), { cwd: repoPath(session) })();
-  session.log.info(toc('🛠 Built dependencies in %s'));
+  session.log.info(toc('🛠  Built dependencies in %s'));
 }
 
 export async function cloneCurvenote(session: ISession, opts: Options): Promise<void> {
