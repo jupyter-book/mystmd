@@ -5,6 +5,7 @@ import { map } from 'unist-util-map';
 import { createId } from './utils';
 
 function addKeys(node: Node) {
+  if ((node as any).key) return;
   (node as any).key = createId();
   return node;
 }

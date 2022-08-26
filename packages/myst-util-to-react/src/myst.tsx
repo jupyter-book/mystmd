@@ -16,7 +16,9 @@ import { ReferencesProvider } from '@curvenote/ui-providers';
 async function parse(text: string) {
   // Ensure that any imports from myst are async and scoped to this function
   const { MyST, unified, visit } = await import('mystjs');
-  const { mathPlugin, footnotesPlugin, keysPlugin } = await import('myst-transforms');
+  const { mathPlugin, footnotesPlugin, keysPlugin, singleDocumentPlugin, State } = await import(
+    'myst-transforms'
+  );
   const { default: mystToTex } = await import('myst-to-tex');
   const myst = new MyST();
   const mdast = myst.parse(text);
@@ -24,13 +26,15 @@ async function parse(text: string) {
   const mdastPre = JSON.parse(JSON.stringify(mdast));
   visit(mdastPre, (n) => delete n.position);
   const mdastString = yaml.dump(mdastPre);
-  const htmlString = myst.renderMdast(mdast);
+  const htmlString = myst.renderMdast(mdastPre);
   const file = new VFile();
   const references = {
     cite: { order: [], data: {} },
     footnotes: {},
   };
+  const state = new State();
   unified()
+    .use(singleDocumentPlugin, { state })
     .use(mathPlugin)
     .use(footnotesPlugin, { references })
     .use(keysPlugin)

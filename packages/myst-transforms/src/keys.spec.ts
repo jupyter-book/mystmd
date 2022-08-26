@@ -18,7 +18,6 @@ describe('Test keys plugin', () => {
     unified().use(keysPlugin).runSync(mdast, file);
     expect(file.messages.length).toBe(0);
     expect(node.key).toBeTruthy();
-    console.log(node.key);
     // Starts with a lowercase letter to pass ID validation
     expect((node.key as string).match(/^[a-zA-Z]/)).toBeTruthy();
   });
