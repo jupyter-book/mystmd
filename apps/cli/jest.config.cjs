@@ -1,7 +1,7 @@
 module.exports = {
-  rootDir: "../../",
+  rootDir: '../../',
   preset: 'ts-jest/presets/js-with-ts',
-  testMatch: ['**/?(*.)+(spec|test).+(ts|tsx|js)'],
+  testMatch: ['<rootDir>/apps/cli/**/?(*.)+(spec|test).+(ts|tsx|js)'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
@@ -18,6 +18,8 @@ module.exports = {
   },
   verbose: true,
   testEnvironment: 'node',
-  transformIgnorePatterns: ['<rootDir>/node_modules/(?!(vfile|vfile\-message|unified|bail|trough|zwitch|unist\-|hast\-|rehype\-|mdast\-|trim\-|web-namespaces))'],
+  transformIgnorePatterns: [
+    '<rootDir>/node_modules/(?!(vfile|vfile-message|unified|bail|trough|zwitch|unist-|hast-|rehype-|mdast-|trim-|web-namespaces))',
+  ],
   testPathIgnorePatterns: ['/node_modules/', '/.yalc/', '/dist/'],
 };
