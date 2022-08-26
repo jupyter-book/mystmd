@@ -6,14 +6,15 @@
   "sideEffects": false,
   "private": true,
   "scripts": {
+    "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > app/version.ts",
     "clean": "rimraf api public/build .cache app/styles/app.css",
     "build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
-    "build": "cross-env NODE_ENV=production npm run build:css && cross-env NODE_ENV=production remix build",
+    "build": "cross-env NODE_ENV=production npm run copy:version && npm run build:css && cross-env NODE_ENV=production remix build",
     "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
-    "dev": "concurrently \"cross-env NODE_ENV=development npm run dev:css\" \"cross-env NODE_ENV=development PORT=5001 remix dev\"",
-    "serve": "npm run build:css && remix dev",
-    "lint": "eslint \"app/**/*.ts\" -c .eslintrc.js",
-    "lint:format": "prettier --check \"app/**/*.tsx\" \"app/**/*.ts\""
+    "dev": "concurrently \"npm run copy:version\" \"cross-env NODE_ENV=development npm run dev:css\" \"cross-env NODE_ENV=development PORT=5001 remix dev\"",
+    "serve": "npm run build:css && npm run copy:version && remix dev",
+    "lint": "npm run copy:version && eslint \"app/**/*.ts\" -c .eslintrc.js",
+    "lint:format": "npm run copy:version && prettier --check \"app/**/*.tsx\" \"app/**/*.ts\""
   },
   "dependencies": {
     "@curvenote/blocks": "*",

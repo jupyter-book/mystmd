@@ -9,6 +9,7 @@ node_modules
 /public/build
 /api/*
 app/styles/app.css
+app/version.ts
 
 .yalc/*
 yalc.lock
