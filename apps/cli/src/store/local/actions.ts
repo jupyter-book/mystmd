@@ -48,7 +48,14 @@ import type {
 import { loadProjectFromDisk } from '../../toc';
 import { copyActionResource, copyLogo, getSiteManifest } from '../../toc/manifest';
 import type { LocalProject, LocalProjectPage } from '../../toc/types';
-import { writeFileToFolder, serverPath, tic, addWarningForFile, isUrl } from '../../utils';
+import {
+  writeFileToFolder,
+  serverPath,
+  tic,
+  addWarningForFile,
+  isUrl,
+  logMessagesFromVFile,
+} from '../../utils';
 import { selectors } from '..';
 import { processNotebook } from './notebook';
 import { watch } from './reducers';
@@ -296,6 +303,7 @@ export async function transformMdast(
     references,
   };
   cache.$mdast[file].post = data;
+  logMessagesFromVFile(session, vfile);
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
 }
 
@@ -317,7 +325,7 @@ export async function postProcessMdast(
   const { log } = session;
   const cache = castSession(session);
   const mdastPost = selectFile(session, file);
-  // TODO: this is doing things in place...
+  // NOTE: This is doing things in place, we should potentially make this a different state?
   const linkLookup = transformLinks(session, file, mdastPost.mdast, { checkLinks });
   const state = cache.$references[file];
   const projectState = new MultiPageReferenceState(pageReferenceStates, file);
@@ -325,9 +333,7 @@ export async function postProcessMdast(
   if (strict || checkLinks) {
     await linkLookup;
   }
-  if (state.file && state.file.messages.length > 0) {
-    console.log(state.file.messages);
-  }
+  logMessagesFromVFile(session, state.file);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
 }
 

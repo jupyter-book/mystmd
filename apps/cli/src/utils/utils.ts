@@ -1,5 +1,7 @@
 import { createHash } from 'crypto';
 import fs from 'fs';
+import type { VFile } from 'vfile';
+import chalk from 'chalk';
 import inquirer from 'inquirer';
 import path from 'path';
 import prettyHrtime from 'pretty-hrtime';
@@ -90,6 +92,18 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHo
       process.env.HOST = 'localhost';
     }
   }
+}
+
+export function logMessagesFromVFile(session: ISession, file?: VFile): void {
+  if (!file) return;
+  file.messages.forEach((message) => {
+    const kind: WarningKind =
+      message.fatal === null ? 'info' : message.fatal === false ? 'warn' : 'error';
+    const note = message.note ? `\n\n${chalk.dim(message.note)}` : '';
+    const url = message.url ? `\n\nSee also: ${chalk.bold(message.url)}` : '';
+    addWarningForFile(session, file.path, `${message.message}${note}${url}`, kind);
+  });
+  file.messages = [];
 }
 
 export function addWarningForFile(
