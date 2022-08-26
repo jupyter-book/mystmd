@@ -1,5 +1,21 @@
 # curvenote
 
+## 0.6.20
+
+### Patch Changes
+
+- 241154b: Improve logging around TOC, licenses, and npm
+- 619328f: Improve cross-referencing of content in a book
+- 8f87d52: Tab items can have whitespace in titles
+- 619328f: Migrate to using vfile error reporting for some of the file errors
+- 619328f: Bring transforms into the frontend to allow for improved demo component
+- 619328f: Add wikipedia hover links
+- 3099109: If frontmatter is the only block, it will now be removed
+- Updated dependencies [619328f]
+- Updated dependencies [619328f]
+- Updated dependencies [619328f]
+  - myst-transforms@0.0.2
+
 ## 0.6.19
 
 ### Patch Changes

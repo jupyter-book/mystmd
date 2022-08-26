@@ -1,5 +1,19 @@
 # myst-util-to-react
 
+## 0.1.12
+
+### Patch Changes
+
+- 619328f: Add internal hover links with tooltips and other information
+- 619328f: Improve cross-referencing of content in a book
+- 619328f: Add initial version of LaTeX export to the output
+- 619328f: Bring transforms into the frontend to allow for improved demo component
+- 619328f: Add wikipedia hover links
+- Updated dependencies [619328f]
+- Updated dependencies [619328f]
+- Updated dependencies [619328f]
+  - myst-transforms@0.0.2
+
 ## 0.1.11
 
 ### Patch Changes

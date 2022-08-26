@@ -1,5 +1,18 @@
 # @curvespace/default
 
+## 0.0.8
+
+### Patch Changes
+
+- 619328f: Add an explicit API for getting content and looking up external cross-references
+- 619328f: Add wikipedia hover links
+- Updated dependencies [619328f]
+- Updated dependencies [619328f]
+- Updated dependencies [619328f]
+- Updated dependencies [619328f]
+- Updated dependencies [619328f]
+  - myst-util-to-react@0.1.12
+
 ## 0.0.7
 
 ### Patch Changes
