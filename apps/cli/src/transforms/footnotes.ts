@@ -4,7 +4,7 @@ import type { Root } from '../myst';
 import { transformKeys } from './keys';
 import type { References } from './types';
 
-export function transformFootnotes(mdast: Root, references: References) {
+export function transformFootnotes(mdast: Root, references: Pick<References, 'footnotes'>) {
   const footnotes = selectAll('footnoteDefinition', mdast);
   references.footnotes = Object.fromEntries(
     footnotes.map((n: GenericNode) => [n.identifier, transformKeys(n)]),

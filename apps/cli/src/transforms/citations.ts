@@ -15,7 +15,11 @@ export type Cite = {
   children: GenericNode['children'];
 };
 
-function pushCite(references: References, citeRenderer: CitationRenderer, label: string) {
+function pushCite(
+  references: Pick<References, 'cite'>,
+  citeRenderer: CitationRenderer,
+  label: string,
+) {
   if (!references.cite.data[label]) {
     references.cite.order.push(label);
   }
@@ -54,7 +58,7 @@ export function transformCitations(
   log: Logger,
   mdast: Root,
   renderer: CitationRenderer,
-  references: References,
+  references: Pick<References, 'cite'>,
   file: string,
 ) {
   // TODO: this can be simplified if typescript doesn't die on the parent

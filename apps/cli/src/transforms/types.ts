@@ -9,7 +9,7 @@ export type MapResult = ReturnType<typeof map>;
 
 export type { Citations, Footnotes } from '@curvenote/site-common';
 
-export type References = Required<SiteReferences>;
+export type References = Required<Omit<SiteReferences, 'article'>>;
 
 export type PreRendererData = {
   file: string;
