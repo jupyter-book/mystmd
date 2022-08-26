@@ -2,6 +2,7 @@ import { useParse } from 'myst-util-to-react';
 import { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
 import yaml from 'js-yaml';
+import type { References } from '@curvenote/site-common';
 import type { NodeRenderer } from 'myst-util-to-react';
 import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
@@ -10,11 +11,12 @@ import ExclamationCircleIcon from '@heroicons/react/outline/ExclamationCircleIco
 import InformationCircleIcon from '@heroicons/react/outline/InformationCircleIcon';
 import { CopyIcon } from './CopyIcon';
 import { CodeBlock } from './code';
+import { ReferencesProvider } from '@curvenote/ui-providers';
 
 async function parse(text: string) {
   // Ensure that any imports from myst are async and scoped to this function
   const { MyST, unified, visit } = await import('mystjs');
-  const { mathPlugin } = await import('myst-transforms');
+  const { mathPlugin, footnotesPlugin, keysPlugin } = await import('myst-transforms');
   const myst = new MyST();
   const mdast = myst.parse(text);
   // For the mdast that we show, duplicate, strip positions and dump to yaml
@@ -23,17 +25,30 @@ async function parse(text: string) {
   const mdastString = yaml.dump(mdastPre);
   const htmlString = myst.renderMdast(mdast);
   const file = new VFile();
+  const references = {
+    cite: { order: [], data: {} },
+    footnotes: {},
+  };
   unified()
     .use(mathPlugin)
+    .use(footnotesPlugin, { references })
+    .use(keysPlugin)
     .runSync(mdast as any, file);
   const content = useParse(mdast as any);
-  return { mdast: mdastString, html: htmlString, content, warnings: file.messages };
+  return {
+    yaml: mdastString,
+    references: { ...references, article: mdast } as References,
+    html: htmlString,
+    content,
+    warnings: file.messages,
+  };
 }
 
 export function MySTRenderer({ value }: { value: string }) {
   const area = useRef<HTMLTextAreaElement | null>(null);
   const [text, setText] = useState<string>(value.trim());
-  const [mdast, setMdast] = useState<string>('Loading...');
+  const [references, setReferences] = useState<References>({});
+  const [mdastYaml, setYaml] = useState<string>('Loading...');
   const [html, setHtml] = useState<string>('Loading...');
   const [warnings, setWarnings] = useState<VFileMessage[]>([]);
   const [content, setContent] = useState<React.ReactNode>(<p>{value}</p>);
@@ -43,7 +58,8 @@ export function MySTRenderer({ value }: { value: string }) {
     const ref = { current: true };
     parse(text).then((result) => {
       if (!ref.current) return;
-      setMdast(result.mdast);
+      setYaml(result.yaml);
+      setReferences(result.references);
       setHtml(result.html);
       setContent(result.content);
       setWarnings(result.warnings);
@@ -95,8 +111,10 @@ export function MySTRenderer({ value }: { value: string }) {
             </button>
           ))}
         </div>
-        {previewType === 'Demo' && content}
-        {previewType === 'AST' && <CodeBlock lang="yaml" value={mdast} showCopy={false} />}
+        {previewType === 'Demo' && (
+          <ReferencesProvider references={references}>{content}</ReferencesProvider>
+        )}
+        {previewType === 'AST' && <CodeBlock lang="yaml" value={mdastYaml} showCopy={false} />}
         {previewType === 'HTML' && <CodeBlock lang="xml" value={html} showCopy={false} />}
       </div>
       {previewType === 'Demo' && warnings.length > 0 && (

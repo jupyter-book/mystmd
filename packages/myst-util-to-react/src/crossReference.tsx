@@ -1,4 +1,5 @@
 import { selectAll } from 'unist-util-select';
+import { EXIT, SKIP, visit } from 'unist-util-visit';
 import type { CrossReference } from 'myst-spec';
 import LinkIcon from '@heroicons/react/outline/LinkIcon';
 import { useReferences } from '@curvenote/ui-providers';
@@ -6,6 +7,8 @@ import { useParse } from '.';
 import { InlineError } from './inlineError';
 import type { NodeRenderer } from './types';
 import { ClickPopover } from './ClickPopover';
+
+const MAX_NODES = 3; // Max nodes to show after a header
 
 export function ReferencedContent({
   identifier,
@@ -15,9 +18,20 @@ export function ReferencedContent({
   close: () => void;
 }) {
   const references = useReferences();
-  const node = selectAll(`[identifier=${identifier}]`, references?.article).filter(
-    ({ type }) => type === 'container' || type === 'math',
-  )[0];
+  const identifiers = selectAll(`[identifier=${identifier}]`, references?.article);
+  const container = identifiers.filter(({ type }) => type === 'container' || type === 'math')[0];
+  const nodes = container ? [container] : [];
+  if (nodes.length === 0 && identifiers.length > 0 && references?.article) {
+    let begin = false;
+    visit(references.article, (node) => {
+      if ((begin && node.type === 'heading') || nodes.length >= MAX_NODES) return EXIT;
+      if (node.identifier === identifier) begin = true;
+      if (begin) {
+        nodes.push(node);
+        return SKIP; // Don't traverse the children
+      }
+    });
+  }
   const onClose = () => {
     // Need to close it first because the ID is on the page twice ...
     close();
@@ -26,8 +40,8 @@ export function ReferencedContent({
       el?.scrollIntoView({ behavior: 'smooth' });
     }, 10);
   };
-  const children = useParse({ type: 'block', children: [node] });
-  if (!node) {
+  const children = useParse({ type: 'block', children: nodes });
+  if (!nodes) {
     return (
       <>
         <button onClick={onClose} className="absolute top-4 right-1">

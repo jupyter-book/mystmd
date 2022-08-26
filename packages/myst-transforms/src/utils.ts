@@ -1,5 +1,6 @@
 import type { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
+import { customAlphabet } from 'nanoid';
 import type { Node } from 'myst-spec';
 
 export type MessageInfo = {
@@ -27,4 +28,14 @@ export function fileWarn(file: VFile, message: string | Error, opts?: MessageInf
 
 export function fileInfo(file: VFile, message: string | Error, opts?: MessageInfo): VFileMessage {
   return addMessageInfo(file.info(message, opts?.node, opts?.source), opts);
+}
+
+const az = 'abcdefghijklmnopqrstuvwxyz';
+const alpha = az + az.toUpperCase();
+const numbers = '0123456789';
+const nanoidAZ = customAlphabet(alpha, 1);
+const nanoidAZ9 = customAlphabet(alpha + numbers, 9);
+
+export function createId() {
+  return nanoidAZ() + nanoidAZ9();
 }

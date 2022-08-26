@@ -6,7 +6,7 @@ import { ClickPopover } from './ClickPopover';
 
 export function FootnoteDefinition({ identifier }: { identifier: string }) {
   const references = useReferences();
-  const node = references?.footnotes[identifier];
+  const node = references?.footnotes?.[identifier];
   const children = useParse(node as GenericParent);
   return <>{children}</>;
 }

@@ -7,7 +7,7 @@ import { InlineError } from './inlineError';
 
 function CiteChild({ label }: { label: string }) {
   const references = useReferences();
-  const { html } = references?.cite.data[label] ?? {};
+  const { html } = references?.cite?.data[label] ?? {};
   return <div dangerouslySetInnerHTML={{ __html: html || '' }} />;
 }
 
