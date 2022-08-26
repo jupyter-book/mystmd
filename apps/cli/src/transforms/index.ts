@@ -1,15 +1,7 @@
 export { importMdastFromJson } from './mdast';
 export { includeFilesDirective } from './include';
-export { ensureBlockNesting } from './blocks';
 export { transformCitations } from './citations';
 export { transformLinkedDOIs } from './dois';
-export { transformEnumerators } from './enumerate';
-export { transformFootnotes } from './footnotes';
-export { transformImages, transformThumbnail, transformImageAltText } from './images';
-export { transformKeys } from './keys';
+export { transformImages, transformThumbnail } from './images';
 export { LinkLookup, transformLinks } from './links';
-export { transformMath } from './math';
 export { transformOutputs } from './outputs';
-export { transformRoot } from './root';
-export { transformAdmonitions } from './admonitions';
-export { transformCode } from './code';

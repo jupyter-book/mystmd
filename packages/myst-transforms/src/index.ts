@@ -5,6 +5,9 @@ export { htmlPlugin, htmlTransform } from './html';
 export { htmlIdsPlugin, htmlIdsTransform } from './htmlIds';
 export { keysPlugin, keysTransform } from './keys';
 export { mathPlugin, mathTransform } from './math';
+export { blockNestingPlugin, blockNestingTransform } from './blocks';
+export { codePlugin, codeTransform } from './code';
+export { imageAltTextPlugin, imageAltTextTransform } from './images';
 export { mystCleanupPlugin, mystCleanupTransform } from './mystCleanup';
 export {
   mystTargetsPlugin,

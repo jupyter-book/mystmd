@@ -137,19 +137,6 @@ export async function saveImageInStaticFolder(
   return { urlSource, url, webp };
 }
 
-export function transformImageAltText(tree: Root) {
-  selectAll('container', tree).forEach((container: GenericNode) => {
-    const image = select('image', container) as Image;
-    if (!image || image.alt) return;
-    const para = select('caption > paragraph', container) as GenericNode;
-    if (!para) return;
-    // Get rid of the captionNumber
-    const content = para.children?.filter((n) => n.type !== 'captionNumber');
-    if (!content || content.length < 1) return;
-    image.alt = toText(content as PhrasingContent[]);
-  });
-}
-
 export async function transformImages(session: ISession, file: string, mdast: Root) {
   const images = selectAll('image', mdast) as GenericNode[];
   return Promise.all(

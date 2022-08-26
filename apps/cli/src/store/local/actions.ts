@@ -3,9 +3,9 @@ import { getCitations } from 'citation-js-utils';
 import { createHash } from 'crypto';
 import fs from 'fs';
 import yaml from 'js-yaml';
+import { unified } from 'unified';
 import { VFile } from 'vfile';
 import type { GenericNode } from 'mystjs';
-import { unified } from 'unified';
 import {
   multiDocumentPlugin,
   htmlPlugin,
@@ -14,6 +14,9 @@ import {
   ReferenceState,
   MultiPageReferenceState,
   resolveReferencesTransform,
+  mathPlugin,
+  codePlugin,
+  imageAltTextPlugin,
 } from 'myst-transforms';
 import { extname, join } from 'path';
 import chalk from 'chalk';
@@ -27,15 +30,11 @@ import type { ISession } from '../../session/types';
 import { loadAllConfigs } from '../../session';
 import {
   transformLinkedDOIs,
-  ensureBlockNesting,
-  transformMath,
   transformOutputs,
   transformCitations,
   transformImages,
-  transformImageAltText,
   transformThumbnail,
   transformLinks,
-  transformCode,
   importMdastFromJson,
   includeFilesDirective,
 } from '../../transforms';
@@ -243,19 +242,18 @@ export async function transformMdast(
   await unified()
     .use(multiDocumentPlugin, { state }) // does not include resolving references
     .use(htmlPlugin, { htmlHandlers })
+    .use(mathPlugin, { macros: frontmatter.math })
     .run(mdast, vfile);
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
-  ensureBlockNesting(mdast);
-  transformMath(session, file, mdast, frontmatter);
   // Kind needs to still be Article here even if jupytext, to handle outputs correctly
   await transformOutputs(session, mdast, kind);
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineRenderers(cache, projectPath, file);
   transformCitations(log, mdast, fileCitationRenderer, references, file);
-  transformCode(session, file, mdast, frontmatter);
-  transformImageAltText(mdast);
   await unified()
+    .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
+    .use(imageAltTextPlugin)
     .use(footnotesPlugin, { references }) // Needs to happen nead the end
     .use(keysPlugin) // Keys should be the last major transform
     .run(mdast, vfile);

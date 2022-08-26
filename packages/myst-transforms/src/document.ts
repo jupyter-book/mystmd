@@ -6,6 +6,7 @@ import { mystCleanupTransform } from './mystCleanup';
 import { mystTargetsTransform, headingLabelTransform } from './targets';
 import { captionParagraphTransform } from './caption';
 import { admonitionHeadersTransform } from './admonitions';
+import { blockNestingTransform } from './blocks';
 import { htmlIdsTransform } from './htmlIds';
 
 export type TransformOptions = {
@@ -20,6 +21,7 @@ function basicTransformations(tree: Root, opts: TransformOptions) {
   admonitionHeadersTransform(tree);
   enumerateTargetsTransform(tree, opts);
   htmlIdsTransform(tree);
+  blockNestingTransform(tree);
 }
 
 export const singleDocumentPlugin: Plugin<[TransformOptions], Root, Root> =
