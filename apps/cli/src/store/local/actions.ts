@@ -17,6 +17,7 @@ import {
   mathPlugin,
   codePlugin,
   imageAltTextPlugin,
+  codeBlockPlugin,
 } from 'myst-transforms';
 import { extname, join } from 'path';
 import chalk from 'chalk';
@@ -239,7 +240,9 @@ export async function transformMdast(
   // Import additional content from mdast or other files
   importMdastFromJson(session, file, mdast);
   includeFilesDirective(session, file, mdast);
+
   await unified()
+    .use(codeBlockPlugin) // TODO: better parser would replace this!
     .use(multiDocumentPlugin, { state }) // does not include resolving references
     .use(htmlPlugin, { htmlHandlers })
     .use(mathPlugin, { macros: frontmatter.math })

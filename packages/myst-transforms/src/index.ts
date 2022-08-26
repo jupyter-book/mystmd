@@ -7,6 +7,7 @@ export { keysPlugin, keysTransform } from './keys';
 export { mathPlugin, mathTransform } from './math';
 export { blockNestingPlugin, blockNestingTransform } from './blocks';
 export { codePlugin, codeTransform } from './code';
+export { codeBlockPlugin, codeBlockTransform } from './codeBlock';
 export { imageAltTextPlugin, imageAltTextTransform } from './images';
 export { mystCleanupPlugin, mystCleanupTransform } from './mystCleanup';
 export {

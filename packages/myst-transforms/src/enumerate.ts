@@ -237,7 +237,7 @@ export class ReferenceState implements IReferenceState {
   resolveReferenceContent(node: ResolvableCrossReference) {
     const target = this.getTarget(node.identifier);
     if (!target) {
-      this.warnNodeNotResolved(node);
+      this.warnNodeTargetNotFound(node);
       return;
     }
     const kinds = {
@@ -251,6 +251,7 @@ export class ReferenceState implements IReferenceState {
         figure: target.kind === TargetKind.figure,
         table: target.kind === TargetKind.table,
         heading: target.kind === TargetKind.heading,
+        code: target.kind === TargetKind.code,
       },
     };
     const noNodeChildren = !node.children?.length;
@@ -271,7 +272,7 @@ export class ReferenceState implements IReferenceState {
       }
       fillReferenceEnumerators(node, target.node.enumerator);
       node.resolved = true;
-    } else if (kinds.ref.ref && (kinds.target.figure || kinds.target.table)) {
+    } else if (kinds.ref.ref && (kinds.target.figure || kinds.target.table || kinds.target.code)) {
       if (noNodeChildren) {
         const caption = select('caption > paragraph', target.node) as Paragraph;
         node.children = copyNode(caption).children as StaticPhrasingContent[];
@@ -289,13 +290,29 @@ export class ReferenceState implements IReferenceState {
       }
       fillReferenceEnumerators(node, target.node.enumerator);
       node.resolved = true;
+    } else if (kinds.ref.numref && kinds.target.code && target.node.enumerator) {
+      if (noNodeChildren) {
+        setTextAsChild(node, 'Program %s');
+      }
+      fillReferenceEnumerators(node, target.node.enumerator);
+      node.resolved = true;
     }
     if (node.resolved) {
       // It may have changed in the lookup, but unlikely
       node.identifier = target.node.identifier;
+    } else {
+      this.warnNodeNotResolved(node);
+      return;
     }
   }
 
+  warnNodeTargetNotFound(node: ResolvableCrossReference) {
+    if (!this.file) return;
+    fileWarn(this.file, `Cross reference was not found: ${node.identifier}`, {
+      node,
+      source: TRANSFORM_NAME,
+    });
+  }
   warnNodeNotResolved(node: ResolvableCrossReference) {
     if (!this.file) return;
     fileWarn(this.file, `Cross reference was not resolved: ${node.identifier}`, {
@@ -342,7 +359,7 @@ export class MultiPageReferenceState implements IReferenceState {
   resolveReferenceContent(node: ResolvableCrossReference) {
     const pageXRefs = this.resolveStateProvider(node.identifier);
     if (!pageXRefs) {
-      this.fileState.warnNodeNotResolved(node);
+      this.fileState.warnNodeTargetNotFound(node);
       return;
     }
     pageXRefs?.state.resolveReferenceContent(node);
