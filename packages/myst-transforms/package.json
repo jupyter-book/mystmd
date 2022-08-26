@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "myst-spec": "^0.0.4",
-    "vfile": "^5.3.4",
+    "vfile": "^5.0.0",
     "vfile-message": "^3.1.2",
     "unified": "^10.0.0",
     "unist-util-select": "^4.0.1",

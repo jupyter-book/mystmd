@@ -83,6 +83,7 @@
     "prosemirror-model": "^1.18.1",
     "prosemirror-state": "^1.4.1",
     "redux": "^4.1.2",
+    "vfile": "^5.0.0",
     "which": "^2.0.2"
   },
   "overrides": {
