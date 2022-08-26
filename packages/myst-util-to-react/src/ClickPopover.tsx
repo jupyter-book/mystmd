@@ -32,7 +32,7 @@ export function ClickPopover({
             {children}
           </Popover.Button>
           <Popover.Panel
-            className="absolute z-30 sm:max-w-[500px]"
+            className="exclude-from-outline absolute z-30 sm:max-w-[500px]"
             ref={setPopperElement}
             style={{ ...styles.popper }}
             {...attributes.popper}

@@ -25,7 +25,7 @@ export function ReferencedContent({
     let begin = false;
     visit(references.article, (node) => {
       if ((begin && node.type === 'heading') || nodes.length >= MAX_NODES) return EXIT;
-      if (node.identifier === identifier) begin = true;
+      if (node.identifier === identifier && node.type === 'heading') begin = true;
       if (begin) {
         nodes.push(node);
         return SKIP; // Don't traverse the children
@@ -52,12 +52,12 @@ export function ReferencedContent({
     );
   }
   return (
-    <>
+    <div className="exclude-from-outline">
       <button onClick={onClose} className="absolute top-4 right-1">
         <LinkIcon className="w-6 h-6" />
       </button>
       {children}
-    </>
+    </div>
   );
 }
 
