@@ -15,6 +15,7 @@ import OUTPUT_RENDERERS from './output';
 import HEADING_RENDERERS from './heading';
 import CROSS_REFERENCE_RENDERERS from './crossReference';
 import RRID_RENDERERS from './rrid';
+import WIKI_RENDERERS from './wiki';
 import TAB_RENDERERS from './tabs';
 import MYST_RENDERERS from './myst';
 export { MySTRenderer } from './myst';
@@ -32,6 +33,7 @@ export const DEFAULT_RENDERERS: Record<string, NodeRenderer> = {
   ...MATH_RENDERERS,
   ...CITE_RENDERERS,
   ...RRID_RENDERERS,
+  ...WIKI_RENDERERS,
   ...TAB_RENDERERS,
   ...IFRAME_RENDERERS,
   ...FOOTNOTE_RENDERERS,

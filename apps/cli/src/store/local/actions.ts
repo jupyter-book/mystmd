@@ -65,6 +65,7 @@ type ISessionWithCache = ISession & {
 type PageReferenceStates = {
   state: ReferenceState;
   file: string;
+  url: string | null;
 }[];
 
 type ProcessOptions = {
@@ -309,7 +310,7 @@ export async function postProcessMdast(
     file: string;
     strict?: boolean;
     checkLinks?: boolean;
-    pageReferenceStates?: PageReferenceStates;
+    pageReferenceStates: PageReferenceStates;
   },
 ) {
   const toc = tic();
@@ -319,7 +320,7 @@ export async function postProcessMdast(
   // TODO: this is doing things in place...
   const linkLookup = transformLinks(session, file, mdastPost.mdast, { checkLinks });
   const state = cache.$references[file];
-  const projectState = new MultiPageReferenceState(pageReferenceStates ?? [{ state, file }], file);
+  const projectState = new MultiPageReferenceState(pageReferenceStates, file);
   resolveReferencesTransform(mdastPost.mdast, { state: projectState });
   if (strict || checkLinks) {
     await linkLookup;
@@ -371,10 +372,11 @@ function loadProject(session: ISession, projectPath: string, writeToc = false) {
 
 function selectPageReferenceStates(session: ISession, pages: { file: string }[]) {
   const cache = castSession(session);
-  const pageReferenceStates = pages
+  const pageReferenceStates: PageReferenceStates = pages
     .map((page) => ({
       state: cache.$references[page.file],
       file: page.file,
+      url: selectors.selectFileInfo(session.store.getState(), page.file)?.url ?? null,
     }))
     .filter(({ state }) => !!state);
   return pageReferenceStates;

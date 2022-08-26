@@ -322,23 +322,25 @@ export class ReferenceState implements IReferenceState {
   }
 }
 
-type IStateList = { state: IReferenceState; file: string }[];
-type StateAndFile = { state: ReferenceState; file: string };
+type IStateList = { state: IReferenceState; file: string; url: string | null }[];
+type StateAndFile = { state: ReferenceState; file: string; url: string | null };
 
 export class MultiPageReferenceState implements IReferenceState {
   states: StateAndFile[];
   fileState: ReferenceState;
   filePath: string;
+  url: string;
   constructor(states: IStateList, filePath: string) {
     this.states = states as StateAndFile[];
     this.fileState = states.filter((v) => v.file === filePath)[0]?.state as ReferenceState;
+    this.url = states.filter((v) => v.file === filePath)[0]?.url as string;
     this.filePath = filePath;
   }
 
   resolveStateProvider(identifier?: string, page?: string): StateAndFile | undefined {
     if (!identifier) return undefined;
     const local = this.fileState.getTarget(identifier);
-    if (local) return { state: this.fileState, file: this.filePath };
+    if (local) return { state: this.fileState, file: this.filePath, url: this.url };
     const pageXRefs = this.states.find(({ state }) => !!state.getTarget(identifier));
     return pageXRefs;
   }
@@ -365,7 +367,7 @@ export class MultiPageReferenceState implements IReferenceState {
     pageXRefs?.state.resolveReferenceContent(node);
     if (node.resolved && pageXRefs?.file !== this.filePath) {
       (node as any).remote = true;
-      (node as any).page = pageXRefs?.file;
+      (node as any).url = pageXRefs.url;
     }
   }
 }

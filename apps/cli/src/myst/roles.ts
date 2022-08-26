@@ -219,6 +219,35 @@ const RRID: IRole = {
   },
 };
 
+const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Reference <ref>'
+
+const Wiki: IRole = {
+  myst: class Wiki extends Role {
+    run(data: IRoleData) {
+      const wiki = new this.state.Token('wiki', 'cite', 0);
+      const match = REF_PATTERN.exec(data.content);
+      const [, title, name] = match ?? [];
+      wiki.attrSet('title', title?.trim() ?? data.content);
+      wiki.attrSet('name', name?.trim() ?? data.content);
+      return [wiki];
+    }
+  },
+  mdast: {
+    type: 'wiki',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        title: t.attrGet('title'),
+        name: t.attrGet('name'),
+      };
+    },
+  },
+  hast() {
+    return null;
+  },
+};
+
 const Chem: IRole = {
   myst: class Chem extends Role {
     run(data: IRoleData) {
@@ -369,6 +398,7 @@ export const reactiveRoles: Record<string, IRole> = {
   underline: Underline,
   smallcaps: SmallCaps,
   rrid: RRID,
+  wiki: Wiki,
   chem: Chem,
   chemicalFormula: Chem,
   si: SI,

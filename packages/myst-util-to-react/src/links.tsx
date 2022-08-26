@@ -1,17 +1,56 @@
+import { useEffect } from 'react';
 import type { Link } from 'myst-spec';
-import { Link as RemixLink } from '@remix-run/react';
+import { Link as RemixLink, useFetcher } from '@remix-run/react';
 import { ExternalLinkIcon, LinkIcon } from '@heroicons/react/outline';
 import type { NodeRenderer } from './types';
+import { HoverPopover } from './HoverPopover';
+import classNames from 'classnames';
 
 type TransformedLink = Link & { internal?: boolean };
 
-export const link: NodeRenderer<TransformedLink> = (node, children) => {
-  const internal = node.internal ?? false;
-  if (internal) {
-    return (
-      <RemixLink key={node.key} to={node.url} prefetch="intent">
+function LinkCard({ url, open }: { url: string; open: boolean }) {
+  const fetcher = useFetcher();
+  useEffect(() => {
+    if (fetcher.type === 'init' && open) {
+      fetcher.load(url);
+    }
+  }, [open, fetcher]);
+
+  const data = fetcher?.data; // the data from the loader
+  const { title, description, thumbnail } = data?.frontmatter ?? {};
+  return (
+    <div className={classNames('w-[300px]', { 'animate-pulse': !data })}>
+      <RemixLink to={url} className="block" prefetch="intent">
+        <ExternalLinkIcon className="w-4 h-4 float-right" />
+        {title}
+      </RemixLink>
+      {!data && <div className="animate-pulse bg-slate-100 w-full h-[150px] mt-4" />}
+      {thumbnail && (
+        <img src={thumbnail} className="w-full max-h-[200px] object-cover object-top" />
+      )}
+      <div className="mt-2">{description}</div>
+    </div>
+  );
+}
+
+function InternalLink({ url, children }: { url: string; children: React.ReactNode }) {
+  return (
+    <HoverPopover card={({ open }) => <LinkCard url={url} open={open} />}>
+      <RemixLink to={url} prefetch="intent">
         {children}
       </RemixLink>
+    </HoverPopover>
+  );
+}
+
+export const link: NodeRenderer<TransformedLink> = (node, children) => {
+  const internal = node.internal ?? false;
+
+  if (internal) {
+    return (
+      <InternalLink key={node.key} url={node.url}>
+        {children}
+      </InternalLink>
     );
   }
   return (
