@@ -1,18 +1,33 @@
 import { useParse } from 'myst-util-to-react';
+import { VFile } from 'vfile';
+import type { VFileMessage } from 'vfile-message';
 import yaml from 'js-yaml';
 import type { NodeRenderer } from 'myst-util-to-react';
 import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
+import ExclamationIcon from '@heroicons/react/outline/ExclamationIcon';
+import ExclamationCircleIcon from '@heroicons/react/outline/ExclamationCircleIcon';
+import InformationCircleIcon from '@heroicons/react/outline/InformationCircleIcon';
 import { CopyIcon } from './CopyIcon';
 import { CodeBlock } from './code';
 
 async function parse(text: string) {
-  const { MyST } = await import('mystjs');
+  // Ensure that any imports from myst are async and scoped to this function
+  const { MyST, unified, visit } = await import('mystjs');
+  const { mathPlugin } = await import('myst-transforms');
   const myst = new MyST();
   const mdast = myst.parse(text);
-  const html = myst.renderMdast(mdast);
+  // For the mdast that we show, duplicate, strip positions and dump to yaml
+  const mdastPre = JSON.parse(JSON.stringify(mdast));
+  visit(mdastPre, (n) => delete n.position);
+  const mdastString = yaml.dump(mdastPre);
+  const htmlString = myst.renderMdast(mdast);
+  const file = new VFile();
+  unified()
+    .use(mathPlugin)
+    .runSync(mdast as any, file);
   const content = useParse(mdast as any);
-  return { mdast: yaml.dump(mdast), html, content };
+  return { mdast: mdastString, html: htmlString, content, warnings: file.messages };
 }
 
 export function MySTRenderer({ value }: { value: string }) {
@@ -20,6 +35,7 @@ export function MySTRenderer({ value }: { value: string }) {
   const [text, setText] = useState<string>(value.trim());
   const [mdast, setMdast] = useState<string>('Loading...');
   const [html, setHtml] = useState<string>('Loading...');
+  const [warnings, setWarnings] = useState<VFileMessage[]>([]);
   const [content, setContent] = useState<React.ReactNode>(<p>{value}</p>);
   const [previewType, setPreviewType] = useState('Demo');
 
@@ -30,6 +46,7 @@ export function MySTRenderer({ value }: { value: string }) {
       setMdast(result.mdast);
       setHtml(result.html);
       setContent(result.content);
+      setWarnings(result.warnings);
     });
     return () => {
       ref.current = false;
@@ -82,6 +99,24 @@ export function MySTRenderer({ value }: { value: string }) {
         {previewType === 'AST' && <CodeBlock lang="yaml" value={mdast} showCopy={false} />}
         {previewType === 'HTML' && <CodeBlock lang="xml" value={html} showCopy={false} />}
       </div>
+      {previewType === 'Demo' && warnings.length > 0 && (
+        <div>
+          {warnings.map((m) => (
+            <div
+              className={classnames('p-1 shadow-inner text-white not-prose', {
+                'bg-red-500 dark:bg-red-800': m.fatal === true,
+                'bg-orange-500 dark:bg-orange-700': m.fatal === false,
+                'bg-slate-500 dark:bg-slate-800': m.fatal === null,
+              })}
+            >
+              {m.fatal === true && <ExclamationCircleIcon className="inline h-[1.3em] mr-1" />}
+              {m.fatal === false && <ExclamationIcon className="inline h-[1.3em] mr-1" />}
+              {m.fatal === null && <InformationCircleIcon className="inline h-[1.3em] mr-1" />}
+              <code>{m.ruleId || m.source}</code>: {m.message}
+            </div>
+          ))}
+        </div>
+      )}
     </figure>
   );
 }

@@ -1,0 +1,46 @@
+{
+  "name": "myst-transforms",
+  "version": "0.0.1",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    }
+  },
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf dist",
+    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest",
+    "test:watch": "node --experimental-vm-modules ../../node_modules/.bin/jest --watchAll",
+    "lint": "eslint \"src/**/*.ts*\" \"src/**/*.tsx\" -c ./.eslintrc.js",
+    "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\"",
+    "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist/esm",
+    "build:cjs": "tsc --project ./tsconfig.json --module commonjs --outDir dist/cjs",
+    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
+    "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
+  },
+  "dependencies": {
+    "myst-spec": "^0.0.4",
+    "vfile": "^5.3.4",
+    "vfile-message": "^3.1.2",
+    "unified": "^10.0.0",
+    "unist-util-select": "^4.0.1",
+    "katex": "^0.15.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.21.0",
+    "eslint-config-curvenote": "*",
+    "react": "^17.0.2",
+    "tsconfig": "*",
+    "npm-run-all": "^4.1.5",
+    "prettier": "latest",
+    "rimraf": "^3.0.2",
+    "typescript": "latest"
+  }
+}

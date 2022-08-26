@@ -129,7 +129,7 @@
           },
           {
             "type": "myst",
-            "value": "### Heading Level 3\n\nTry changing the number of `#`s to change the `depth`.\n",
+            "value": "### Heading Level 3\n\nTry changing the number of `#`s to change the `depth`. $x_$\n\n$$\\label{a}$$\n\n$$a&=a\\\\abc&=d$$\n\n",
             "key": "wYnYHxaU5x"
           },
           {
