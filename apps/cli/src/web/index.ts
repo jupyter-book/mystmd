@@ -11,7 +11,6 @@ import {
   tic,
   repoPath,
   serverPath,
-  blocksJsonPath,
   warnOnHostEnvironmentVariable,
 } from '../utils';
 import { deployContentToCdn, promoteContent } from './deploy';
@@ -56,8 +55,7 @@ export async function install(session: ISession): Promise<void> {
   }
   await makeExecutable('npm install', getNpmLogger(session), { cwd: repoPath(session) })();
   session.log.info(toc('📦 Installed web libraries in %s'));
-  // This avoids using turbo repo for the path that the website needs
-  await makeExecutable('npm run build', getNpmLogger(session), { cwd: blocksJsonPath(session) })();
+  await makeExecutable('npm run build:web', getNpmLogger(session), { cwd: repoPath(session) })();
   session.log.info(toc('🛠 Built dependencies in %s'));
 }
 

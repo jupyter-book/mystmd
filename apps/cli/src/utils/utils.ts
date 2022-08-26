@@ -30,10 +30,6 @@ export function repoPath(session: ISession): string {
   return path.resolve(path.join('.', buildPath, 'curvenote'));
 }
 
-export function blocksJsonPath(session: ISession): string {
-  return path.join(repoPath(session), 'packages', 'blocks');
-}
-
 export function webPackageJsonPath(session: ISession): string {
   return path.join(repoPath(session), 'apps', 'web', 'package.json');
 }

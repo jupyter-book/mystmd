@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:web": "turbo run build --filter=@curvespace/default",
     "dev": "turbo run dev --parallel",
     "clean": "turbo run clean --parallel && find . -name '.turbo' -type d -prune -exec rm -rf '{}' +",
     "lint": "turbo run lint",
