@@ -51,13 +51,23 @@ export function createId() {
  */
 export function normalizeLabel(
   label: string | undefined,
-): { identifier: string; label: string } | undefined {
+): { identifier: string; label: string; html_id: string } | undefined {
   if (!label) return undefined;
   const identifier = label
     .replace(/[\t\n\r ]+/g, ' ')
     .trim()
     .toLowerCase();
-  return { identifier, label };
+  const html_id = createHtmlId(identifier) as string;
+  return { identifier, label, html_id };
+}
+
+export function createHtmlId(identifier?: string): string | undefined {
+  if (!identifier) return undefined;
+  return identifier
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '-') // Remove any fancy characters
+    .replace(/^([0-9-])/, 'id-$1') // Ensure that the id starts with a letter
+    .replace(/-[-]+/g, '-'); // Replace repeated `-`s
 }
 
 export function liftChildren(tree: Root, nodeType: string) {

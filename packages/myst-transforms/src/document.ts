@@ -1,14 +1,15 @@
 import type { Root } from 'mdast';
 import type { Plugin } from 'unified';
-import type { IState } from './enumerate';
+import type { IReferenceState } from './enumerate';
 import { enumerateTargetsTransform, resolveReferencesTransform } from './enumerate';
 import { mystCleanupTransform } from './mystCleanup';
 import { mystTargetsTransform, headingLabelTransform } from './targets';
 import { captionParagraphTransform } from './caption';
 import { admonitionHeadersTransform } from './admonitions';
+import { htmlIdsTransform } from './htmlIds';
 
 export type TransformOptions = {
-  state: IState;
+  state: IReferenceState;
 };
 
 function basicTransformations(tree: Root, opts: TransformOptions) {
@@ -18,6 +19,7 @@ function basicTransformations(tree: Root, opts: TransformOptions) {
   mystCleanupTransform(tree);
   admonitionHeadersTransform(tree);
   enumerateTargetsTransform(tree, opts);
+  htmlIdsTransform(tree);
 }
 
 export const singleDocumentPlugin: Plugin<[TransformOptions], Root, Root> =

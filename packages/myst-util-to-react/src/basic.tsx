@@ -1,16 +1,6 @@
 import type * as spec from 'myst-spec';
+import { HashLink } from './heading';
 import type { NodeRenderer } from './types';
-
-function getCaptionStart(kind?: string) {
-  switch (kind) {
-    case 'figure':
-      return 'Figure';
-    case 'table':
-      return 'Table';
-    default:
-      return 'Unknown';
-  }
-}
 
 type TableExts = {
   rowspan?: number;
@@ -41,6 +31,12 @@ type DefinitionDescription = {
   type: 'definitionDescription';
 };
 
+type CaptionNumber = {
+  type: 'captionNumber';
+  kind: string;
+  identifier: string;
+};
+
 type BasicNodeRenderers = {
   strong: NodeRenderer<spec.Strong>;
   emphasis: NodeRenderer<spec.Emphasis>;
@@ -66,7 +62,7 @@ type BasicNodeRenderers = {
   comment: NodeRenderer<spec.Comment>;
   mystComment: NodeRenderer<spec.Comment>;
   // Our additions
-  captionNumber: NodeRenderer<{ kind: string }>;
+  captionNumber: NodeRenderer<CaptionNumber>;
   strike: NodeRenderer<Strike>;
   underline: NodeRenderer<Underline>;
   smallcaps: NodeRenderer<SmallCaps>;
@@ -134,13 +130,17 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   },
   container(node, children) {
     return (
-      <figure key={node.key} id={node.identifier}>
+      <figure key={node.key} id={node.html_id || node.identifier || node.key}>
         {children}
       </figure>
     );
   },
   caption(node, children) {
-    return <figcaption key={node.key}>{children}</figcaption>;
+    return (
+      <figcaption key={node.key} className="group">
+        {children}
+      </figcaption>
+    );
   },
   blockquote(node, children) {
     return <blockquote key={node.key}>{children}</blockquote>;
@@ -148,11 +148,19 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   thematicBreak(node) {
     return <hr key={node.key} />;
   },
-  // TODO: This doesn't exist in the spec
   captionNumber(node, children) {
+    function backwardsCompatibleLabel(value: string, kind?: string) {
+      const capital = kind?.slice(0, 1).toUpperCase() ?? 'F';
+      const body = kind?.slice(1) ?? 'igure';
+      return `${capital}${body}: ${children}`;
+    }
+    const label =
+      typeof children === 'string' ? backwardsCompatibleLabel(children, node.kind) : children;
+    const id = node.html_id || node.identifier || node.key;
     return (
-      <span key={node.key} className="font-bold mr-1 select-none">
-        {getCaptionStart(node.kind)} {children}:
+      <span key={node.key} className="font-bold mr-1 select-none relative">
+        <HashLink id={id} align="left" kind={node.kind} />
+        {label}
       </span>
     );
   },

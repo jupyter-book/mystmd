@@ -50,8 +50,9 @@ const mathRenderer: NodeRenderer<MathLike> = (node) => {
         </pre>
       );
     }
+    const id = node.html_id || node.identifier || node.key;
     return (
-      <div key={node.key} id={node.identifier || node.key} className={classNames('flex group')}>
+      <div key={node.key} id={id} className={classNames('flex group')}>
         <div
           dangerouslySetInnerHTML={{ __html: node.html }}
           className="overflow-x-auto flex-grow"
@@ -59,7 +60,7 @@ const mathRenderer: NodeRenderer<MathLike> = (node) => {
         {node.enumerator && (
           <div className="flex-none text-right m-0 pl-2 self-center relative">
             <span>({node.enumerator})</span>
-            <HashLink id={node.identifier || node.key} align="right" kind="Equation" />
+            <HashLink id={id} align="right" kind="Equation" />
           </div>
         )}
       </div>

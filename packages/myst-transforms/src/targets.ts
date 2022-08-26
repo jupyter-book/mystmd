@@ -3,7 +3,7 @@ import { findAfter } from 'unist-util-find-after';
 import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
 import type { Root } from 'mdast';
-import type { Target, Heading } from 'myst-spec';
+import type { Target, Heading, Parent } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import { normalizeLabel, toText } from './utils';
 
@@ -21,13 +21,14 @@ import { normalizeLabel, toText } from './utils';
  * will still not be targetable.
  */
 export function mystTargetsTransform(tree: Root) {
-  visit(tree, 'mystTarget', (node: Target, index: number) => {
+  visit(tree, 'mystTarget', (node: Target, index: number, parent: Parent) => {
     // TODO: have multiple targets and collect the labels
-    const nextNode = findAfter(tree, index) as any;
+    const nextNode = findAfter(parent, index) as any;
     const normalized = normalizeLabel(node.label);
     if (nextNode && normalized) {
       nextNode.identifier = normalized.identifier;
       nextNode.label = normalized.label;
+      nextNode.html_id = normalized.html_id;
     }
   });
   remove(tree, 'mystTarget');
@@ -43,9 +44,12 @@ export function headingLabelTransform(tree: Root) {
     if (node.label || node.identifier) return;
     const normalized = normalizeLabel(toText(node.children));
     if (normalized) {
-      // These are used for heading URL slugs
-      node.identifier = normalized.identifier.replace(/\s/g, '-');
+      node.identifier = normalized.identifier;
       node.label = normalized.label;
+      (node as any).html_id = normalized.html_id;
+      // The target is marked as implicit
+      // This will not warn on duplicates
+      (node as any).implicit = true;
     }
   });
 }

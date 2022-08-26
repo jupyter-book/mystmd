@@ -36,8 +36,8 @@ export function HashLink({
 }
 
 const Heading: NodeRenderer<Heading> = (node, children) => {
-  const { enumerator, depth, key, identifier } = node;
-  const id = identifier || key;
+  const { enumerator, depth, key, identifier, html_id } = node;
+  const id = html_id || identifier || key;
   const textContent = (
     <>
       <HashLink id={id} align="left" kind="Section" />
@@ -45,11 +45,11 @@ const Heading: NodeRenderer<Heading> = (node, children) => {
       <span className="heading-text">{children}</span>
     </>
   );
-  // The `heading-text` class picked up in the TableOfContents to select without the enumerator and "#" link
+  // The `heading-text` class is picked up in the Outline to select without the enumerator and "#" link
   return e(
     `h${depth}`,
     {
-      key: id,
+      key: node.key,
       id,
       className: 'relative group',
     },

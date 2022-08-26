@@ -1,5 +1,6 @@
 import type { Author, KINDS } from '@curvenote/blocks';
-import type { GenericNode, GenericParent } from 'mystjs';
+import type { GenericParent } from 'mystjs';
+import type { FootnoteDefinition } from 'myst-spec';
 
 export enum Theme {
   light = 'light',
@@ -19,7 +20,7 @@ export type Citations = {
   data: Record<string, { html: string; number: number; doi: string | undefined }>;
 };
 
-export type Footnotes = Record<string, GenericNode>;
+export type Footnotes = Record<string, FootnoteDefinition>;
 
 export type References = {
   cite?: Citations;

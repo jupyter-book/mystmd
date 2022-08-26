@@ -3,8 +3,18 @@ import { getCitations } from 'citation-js-utils';
 import { createHash } from 'crypto';
 import fs from 'fs';
 import yaml from 'js-yaml';
+import { VFile } from 'vfile';
 import type { GenericNode } from 'mystjs';
-import { convertHtmlToMdast } from 'mystjs';
+import { unified } from 'unified';
+import {
+  multiDocumentPlugin,
+  htmlPlugin,
+  footnotesPlugin,
+  keysPlugin,
+  ReferenceState,
+  MultiPageReferenceState,
+  resolveReferencesTransform,
+} from 'myst-transforms';
 import { extname, join } from 'path';
 import chalk from 'chalk';
 import fetch from 'node-fetch';
@@ -16,19 +26,14 @@ import { parseMyst } from '../../myst';
 import type { ISession } from '../../session/types';
 import { loadAllConfigs } from '../../session';
 import {
-  transformRoot,
   transformLinkedDOIs,
   ensureBlockNesting,
   transformMath,
   transformOutputs,
   transformCitations,
-  transformEnumerators,
-  transformFootnotes,
-  transformKeys,
   transformImages,
   transformImageAltText,
   transformThumbnail,
-  transformAdmonitions,
   transformLinks,
   transformCode,
   importMdastFromJson,
@@ -53,8 +58,14 @@ import { selectFileWarnings } from '../build/selectors';
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
   $doiRenderers: Record<string, SingleCitationRenderer>; // keyed on doi
+  $references: Record<string, ReferenceState>; // keyed on path
   $mdast: Record<string, { pre: PreRendererData; post?: RendererData }>; // keyed on path
 };
+
+type PageReferenceStates = {
+  state: ReferenceState;
+  file: string;
+}[];
 
 type ProcessOptions = {
   reloadConfigs?: boolean;
@@ -69,6 +80,7 @@ function castSession(session: ISession): ISessionWithCache {
   const cache = session as unknown as ISessionWithCache;
   if (!cache.$citationRenderers) cache.$citationRenderers = {};
   if (!cache.$doiRenderers) cache.$doiRenderers = {};
+  if (!cache.$references) cache.$references = {};
   if (!cache.$mdast) cache.$mdast = {};
   return cache;
 }
@@ -215,17 +227,23 @@ export async function transformMdast(
   if (!mdastPre) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
   // Use structuredClone in future (available in node 17)
-  let mdast = JSON.parse(JSON.stringify(mdastPre)) as Root;
+  const mdast = JSON.parse(JSON.stringify(mdastPre)) as Root;
   const frontmatter = getPageFrontmatter(session, projectPath, mdast, file);
   const references: References = {
     cite: { order: [], data: {} },
     footnotes: {},
   };
+  const vfile = new VFile(); // Collect errors on this file
+  vfile.path = file;
+  const state = new ReferenceState({ numbering: frontmatter.numbering, file: vfile });
+  cache.$references[file] = state;
   // Import additional content from mdast or other files
   importMdastFromJson(session, file, mdast);
   includeFilesDirective(session, file, mdast);
-  mdast = await transformRoot(mdast);
-  convertHtmlToMdast(mdast, { htmlHandlers });
+  await unified()
+    .use(multiDocumentPlugin, { state }) // does not include resolving references
+    .use(htmlPlugin, { htmlHandlers })
+    .run(mdast, vfile);
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
   ensureBlockNesting(mdast);
@@ -235,12 +253,12 @@ export async function transformMdast(
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineRenderers(cache, projectPath, file);
   transformCitations(log, mdast, fileCitationRenderer, references, file);
-  transformEnumerators(mdast, frontmatter);
-  transformAdmonitions(mdast);
   transformCode(session, file, mdast, frontmatter);
   transformImageAltText(mdast);
-  transformFootnotes(mdast, references); // Needs to happen nead the end
-  transformKeys(mdast);
+  await unified()
+    .use(footnotesPlugin, { references }) // Needs to happen nead the end
+    .use(keysPlugin) // Keys should be the last major transform
+    .run(mdast, vfile);
   await transformImages(session, file, mdast);
   // Note, the thumbnail transform must be **after** images, as it may read the images
   await transformThumbnail(session, frontmatter, mdast, file);
@@ -281,15 +299,32 @@ export async function transformMdast(
 
 export async function postProcessMdast(
   session: ISession,
-  { file, strict, checkLinks }: { file: string; strict?: boolean; checkLinks?: boolean },
+  {
+    file,
+    strict,
+    checkLinks,
+    pageReferenceStates,
+  }: {
+    file: string;
+    strict?: boolean;
+    checkLinks?: boolean;
+    pageReferenceStates?: PageReferenceStates;
+  },
 ) {
   const toc = tic();
   const { log } = session;
+  const cache = castSession(session);
   const mdastPost = selectFile(session, file);
   // TODO: this is doing things in place...
   const linkLookup = transformLinks(session, file, mdastPost.mdast, { checkLinks });
+  const state = cache.$references[file];
+  const projectState = new MultiPageReferenceState(pageReferenceStates ?? [{ state, file }], file);
+  resolveReferencesTransform(mdastPost.mdast, { state: projectState });
   if (strict || checkLinks) {
     await linkLookup;
+  }
+  if (state.file && state.file.messages.length > 0) {
+    console.log(state.file.messages);
   }
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
 }
@@ -321,6 +356,29 @@ export async function writeSiteManifest(session: ISession) {
   writeFileToFolder(configPath, JSON.stringify(siteManifest));
 }
 
+function loadProject(session: ISession, projectPath: string, writeToc = false) {
+  const project = loadProjectFromDisk(session, projectPath, {
+    writeToc,
+  });
+  // Load the citations first, or else they are loaded in each call below
+  const pages = [
+    { file: project.file, slug: project.index },
+    ...project.pages.filter((page): page is LocalProjectPage => 'file' in page),
+  ];
+  return { project, pages };
+}
+
+function selectPageReferenceStates(session: ISession, pages: { file: string }[]) {
+  const cache = castSession(session);
+  const pageReferenceStates = pages
+    .map((page) => ({
+      state: cache.$references[page.file],
+      file: page.file,
+    }))
+    .filter(({ state }) => !!state);
+  return pageReferenceStates;
+}
+
 export async function fastProcessFile(
   session: ISession,
   {
@@ -333,7 +391,9 @@ export async function fastProcessFile(
   const toc = tic();
   await loadFile(session, file);
   await transformMdast(session, { file, projectPath, projectSlug, pageSlug, watchMode: true });
-  await postProcessMdast(session, { file });
+  const { pages } = loadProject(session, projectPath);
+  const pageReferenceStates = selectPageReferenceStates(session, pages);
+  await postProcessMdast(session, { file, pageReferenceStates });
   await writeFile(session, { file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session);
@@ -347,14 +407,7 @@ export async function processProject(
   const toc = tic();
   const { log } = session;
   const { watchMode, writeToc, writeFiles = true } = opts || {};
-  const project = loadProjectFromDisk(session, siteProject.path, {
-    writeToc: writeFiles && writeToc,
-  });
-  // Load the citations first, or else they are loaded in each call below
-  const pages = [
-    { file: project.file, slug: project.index },
-    ...project.pages.filter((page): page is LocalProjectPage => 'file' in page),
-  ];
+  const { project, pages } = loadProject(session, siteProject.path, writeFiles && writeToc);
   if (!watchMode) {
     await Promise.all([
       // Load all citations (.bib)
@@ -377,6 +430,7 @@ export async function processProject(
       }),
     ),
   );
+  const pageReferenceStates = selectPageReferenceStates(session, pages);
   // Handle all cross references
   await Promise.all(
     pages.map((page) =>
@@ -384,6 +438,7 @@ export async function processProject(
         file: page.file,
         strict: opts?.strict,
         checkLinks: opts?.checkLinks,
+        pageReferenceStates,
       }),
     ),
   );

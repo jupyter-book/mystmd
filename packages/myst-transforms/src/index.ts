@@ -2,6 +2,7 @@ export { admonitionHeadersPlugin, admonitionHeadersTransform } from './admonitio
 export { captionParagraphPlugin, captionParagraphTransform } from './caption';
 export { footnotesPlugin, footnotesTransform } from './footnotes';
 export { htmlPlugin, htmlTransform } from './html';
+export { htmlIdsPlugin, htmlIdsTransform } from './htmlIds';
 export { keysPlugin, keysTransform } from './keys';
 export { mathPlugin, mathTransform } from './math';
 export { mystCleanupPlugin, mystCleanupTransform } from './mystCleanup';
@@ -13,13 +14,14 @@ export {
 } from './targets';
 
 // Enumeration
-export type { IState, NumberingOptions, TargetKind, ReferenceKind } from './enumerate';
+export type { IReferenceState, NumberingOptions, TargetKind, ReferenceKind } from './enumerate';
 export {
   enumerateTargetsTransform,
   enumerateTargetsPlugin,
   resolveReferencesTransform,
   resolveReferencesPlugin,
-  State,
+  ReferenceState,
+  MultiPageReferenceState,
 } from './enumerate';
 
 // Composite plugins

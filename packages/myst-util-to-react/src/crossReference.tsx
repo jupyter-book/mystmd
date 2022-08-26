@@ -32,16 +32,17 @@ export function ReferencedContent({
       }
     });
   }
+  const htmlId = (nodes[0] as any)?.html_id;
   const onClose = () => {
     // Need to close it first because the ID is on the page twice ...
     close();
     setTimeout(() => {
-      const el = document.getElementById(identifier);
+      const el = document.getElementById(htmlId);
       el?.scrollIntoView({ behavior: 'smooth' });
     }, 10);
   };
   const children = useParse({ type: 'block', children: nodes });
-  if (!nodes) {
+  if (!nodes || nodes.length === 0) {
     return (
       <>
         <button onClick={onClose} className="absolute top-4 right-1">

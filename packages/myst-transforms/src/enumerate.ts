@@ -1,4 +1,5 @@
 import type { Plugin } from 'unified';
+import type { VFile } from 'vfile';
 import type { Content, Root } from 'mdast';
 import type {
   Container,
@@ -14,7 +15,9 @@ import type {
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import { normalizeLabel, setTextAsChild } from './utils';
+import { createHtmlId, fileWarn, normalizeLabel, setTextAsChild } from './utils';
+
+const TRANSFORM_NAME = 'myst-transforms:enumerate';
 
 type ResolvableCrossReference = CrossReference & { resolved?: boolean };
 
@@ -44,7 +47,7 @@ type TargetCounts = {
 } & Record<string, number>;
 
 export type StateOptions = {
-  state: IState;
+  state: IReferenceState;
 };
 
 export type NumberingOptions = {
@@ -83,7 +86,9 @@ function shouldEnumerate(
   node: TargetNodes,
   kind: TargetKind | string,
   numbering: NumberingOptions,
+  override?: boolean | null,
 ) {
+  if (typeof override === 'boolean') return override;
   if (kind === 'heading' && node.type === 'heading') {
     return numbering[`heading_${node.depth}` as keyof Omit<NumberingOptions, 'enumerator'>];
   }
@@ -118,15 +123,17 @@ export function incrementHeadingCounts(
  *
  * Leading zeros are kept, trailing zeros are removed, nulls are ignored.
  */
-export function formatHeadingEnumerator(counts: (number | null)[]): string {
+export function formatHeadingEnumerator(counts: (number | null)[], prefix?: string): string {
   counts = counts.filter((d) => d !== null);
   while (counts && counts[counts.length - 1] === 0) {
     counts.pop();
   }
-  return counts.join('.');
+  const enumerator = counts.join('.');
+  const out = prefix ? prefix.replace(/%s/g, String(enumerator)) : String(enumerator);
+  return out;
 }
 
-export interface IState {
+export interface IReferenceState {
   initializeNumberedHeadingDepths: (tree: Root) => void;
   addTarget: (node: TargetNodes) => void;
   /**
@@ -136,25 +143,53 @@ export interface IState {
   resolveReferenceContent: (node: ResolvableCrossReference) => void;
 }
 
-export class State implements IState {
+export class ReferenceState implements IReferenceState {
+  file?: VFile;
+  numberAll: boolean | null = null;
   numbering: NumberingOptions;
   targets: Record<string, Target>;
   targetCounts: TargetCounts;
 
-  constructor(opts?: { targetCounts?: TargetCounts; numbering?: NumberingOptions }) {
+  constructor(opts?: {
+    targetCounts?: TargetCounts;
+    numbering?: boolean | NumberingOptions;
+    file?: VFile;
+  }) {
     this.targetCounts = opts?.targetCounts || {};
-    this.numbering = { equation: true, figure: true, table: true, ...opts?.numbering };
+    if (typeof opts?.numbering === 'boolean') {
+      this.numberAll = opts?.numbering;
+      this.numbering = {};
+    } else {
+      this.numbering = { equation: true, figure: true, table: true, ...opts?.numbering };
+    }
     this.targets = {};
+    this.file = opts?.file;
   }
 
   addTarget(node: TargetNodes) {
     const kind = kindFromNode(node);
     if (kind && kind in TargetKind) {
-      const numberNode = shouldEnumerate(node, kind, this.numbering);
+      const numberNode = shouldEnumerate(node, kind, this.numbering, this.numberAll);
       let enumerator = null;
       if (node.enumerated !== false && numberNode) {
         enumerator = this.incrementCount(node, kind as TargetKind);
         node.enumerator = enumerator;
+      }
+      if (!(node as any).html_id) {
+        (node as any).html_id = createHtmlId(node.identifier);
+      }
+      if (node.identifier && this.targets[node.identifier]) {
+        if (!this.file) return;
+        if ((node as any).implicit) return; // Do not warn on implicit headings
+        fileWarn(
+          this.file,
+          `Duplicate identifier "${node.identifier}" for node of type ${node.type}`,
+          {
+            node,
+            source: TRANSFORM_NAME,
+          },
+        );
+        return;
       }
       if (node.identifier) {
         this.targets[node.identifier] = {
@@ -181,14 +216,17 @@ export class State implements IState {
       // heading count to do a better job initializng headers based on tree
       if (!this.targetCounts.heading) this.targetCounts.heading = [0, 0, 0, 0, 0, 0];
       this.targetCounts.heading = incrementHeadingCounts(node.depth, this.targetCounts.heading);
-      return formatHeadingEnumerator(this.targetCounts.heading);
+      return formatHeadingEnumerator(this.targetCounts.heading, this.numbering.enumerator);
     }
     if (kind in this.targetCounts) {
       this.targetCounts[kind] += 1;
     } else {
       this.targetCounts[kind] = 1;
     }
-    return String(this.targetCounts[kind]);
+    const enumerator = this.targetCounts[kind];
+    const prefix = this.numbering.enumerator;
+    const out = prefix ? prefix.replace(/%s/g, String(enumerator)) : String(enumerator);
+    return out;
   }
 
   getTarget(identifier?: string): Target | undefined {
@@ -198,7 +236,10 @@ export class State implements IState {
 
   resolveReferenceContent(node: ResolvableCrossReference) {
     const target = this.getTarget(node.identifier);
-    if (!target) return;
+    if (!target) {
+      this.warnNodeNotResolved(node);
+      return;
+    }
     const kinds = {
       ref: {
         eq: node.kind === ReferenceKind.eq,
@@ -213,15 +254,22 @@ export class State implements IState {
       },
     };
     const noNodeChildren = !node.children?.length;
-    if (kinds.ref.eq && kinds.target.math && target.node.enumerator) {
+    if (kinds.target.math && target.node.enumerator) {
       if (noNodeChildren) {
-        setTextAsChild(node, `(${target.node.enumerator})`);
+        setTextAsChild(node, '(%s)');
       }
+      fillReferenceEnumerators(node, target.node.enumerator);
       node.resolved = true;
-    } else if (kinds.ref.ref && kinds.target.heading) {
+    } else if (kinds.target.heading && !target.node.enumerator) {
       if (noNodeChildren) {
         node.children = copyNode(target.node as Parent).children as StaticPhrasingContent[];
       }
+      node.resolved = true;
+    } else if (kinds.target.heading && target.node.enumerator) {
+      if (noNodeChildren) {
+        setTextAsChild(node, 'Section %s');
+      }
+      fillReferenceEnumerators(node, target.node.enumerator);
       node.resolved = true;
     } else if (kinds.ref.ref && (kinds.target.figure || kinds.target.table)) {
       if (noNodeChildren) {
@@ -242,6 +290,66 @@ export class State implements IState {
       fillReferenceEnumerators(node, target.node.enumerator);
       node.resolved = true;
     }
+    if (node.resolved) {
+      // It may have changed in the lookup, but unlikely
+      node.identifier = target.node.identifier;
+    }
+  }
+
+  warnNodeNotResolved(node: ResolvableCrossReference) {
+    if (!this.file) return;
+    fileWarn(this.file, `Cross reference was not resolved: ${node.identifier}`, {
+      node,
+      source: TRANSFORM_NAME,
+    });
+  }
+}
+
+type IStateList = { state: IReferenceState; file: string }[];
+type StateAndFile = { state: ReferenceState; file: string };
+
+export class MultiPageReferenceState implements IReferenceState {
+  states: StateAndFile[];
+  fileState: ReferenceState;
+  filePath: string;
+  constructor(states: IStateList, filePath: string) {
+    this.states = states as StateAndFile[];
+    this.fileState = states.filter((v) => v.file === filePath)[0]?.state as ReferenceState;
+    this.filePath = filePath;
+  }
+
+  resolveStateProvider(identifier?: string, page?: string): StateAndFile | undefined {
+    if (!identifier) return undefined;
+    const local = this.fileState.getTarget(identifier);
+    if (local) return { state: this.fileState, file: this.filePath };
+    const pageXRefs = this.states.find(({ state }) => !!state.getTarget(identifier));
+    return pageXRefs;
+  }
+
+  addTarget(node: TargetNodes) {
+    return this.fileState.addTarget(node);
+  }
+
+  initializeNumberedHeadingDepths(tree: Root) {
+    return this.fileState.initializeNumberedHeadingDepths(tree);
+  }
+
+  getTarget(identifier?: string, page?: string): Target | undefined {
+    const pageXRefs = this.resolveStateProvider(identifier, page);
+    return pageXRefs?.state.getTarget(identifier);
+  }
+
+  resolveReferenceContent(node: ResolvableCrossReference) {
+    const pageXRefs = this.resolveStateProvider(node.identifier);
+    if (!pageXRefs) {
+      this.fileState.warnNodeNotResolved(node);
+      return;
+    }
+    pageXRefs?.state.resolveReferenceContent(node);
+    if (node.resolved && pageXRefs?.file !== this.filePath) {
+      (node as any).remote = true;
+      (node as any).page = pageXRefs?.file;
+    }
   }
 }
 
@@ -257,6 +365,18 @@ export const enumerateTargetsPlugin: Plugin<[StateOptions], Root, Root> = (opts)
   enumerateTargetsTransform(tree, opts);
 };
 
+function getCaptionLabel(kind?: string) {
+  switch (kind) {
+    case 'table':
+      return 'Table %s:';
+    case 'code':
+      return 'Program %s:';
+    case 'figure':
+    default:
+      return 'Figure %s:';
+  }
+}
+
 /** Visit all containers and add captions */
 export function addContainerCaptionNumbersTransform(tree: Root, opts: StateOptions) {
   const containers = selectAll('container', tree) as Container[];
@@ -266,10 +386,18 @@ export function addContainerCaptionNumbersTransform(tree: Root, opts: StateOptio
       const enumerator = opts.state.getTarget(container.identifier)?.node.enumerator;
       const para = select('caption > paragraph', container) as Container;
       if (enumerator && para && (para.children[0].type as string) !== 'captionNumber') {
-        para.children = [
-          { type: 'captionNumber', kind: container.kind, value: enumerator } as any,
-          ...(para?.children ?? []),
-        ];
+        const captionNumber = {
+          type: 'captionNumber',
+          kind: container.kind,
+          identifier: container.identifier,
+          html_id: (container as any).html_id,
+          enumerator,
+        };
+        setTextAsChild(captionNumber, getCaptionLabel(container.kind));
+        fillReferenceEnumerators(captionNumber, enumerator);
+        // The caption number is in the paragraph, it needs a link to the figure container
+        // This is a bit awkward, but necessary for (efficient) rendering
+        para.children = [captionNumber as any, ...(para?.children ?? [])];
       }
     });
 }
