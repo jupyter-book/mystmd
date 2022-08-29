@@ -77,20 +77,6 @@ export function resolveInputs(session: ISession, opts: { template?: string; path
   throw new Error(`Unable to resolve template from: ${opts.template}`);
 }
 
-export async function ensureTemplateExistsOnPath(
-  session: ISession,
-  opts: { templatePath: string; templateUrl?: string; force?: boolean },
-) {
-  const { templatePath, templateUrl, force } = opts;
-  if (!force && fs.existsSync(join(templatePath, TEMPLATE_FILENAME))) {
-    session.log.debug(`Template found at path: ${templatePath}`);
-  } else if (!templateUrl) {
-    throw new Error(`No template on path and no download URL to fetch from: ${templatePath}`);
-  } else {
-    await downloadAndUnzipTemplate(session, { templatePath, templateUrl });
-  }
-}
-
 export async function downloadAndUnzipTemplate(
   session: ISession,
   opts: { templatePath: string; templateUrl: string },

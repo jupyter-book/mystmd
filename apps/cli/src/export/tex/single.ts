@@ -1,5 +1,5 @@
 import type { TemplateTagDefinition } from 'jtex';
-import JTex, { ensureTemplateExistsOnPath } from 'jtex';
+import JTex from 'jtex';
 import type { Root } from 'mdast';
 import type { GenericNode } from 'mystjs';
 import { selectAll, unified } from 'mystjs';
@@ -122,13 +122,10 @@ export async function localArticleToTexTemplated(
   file: string,
   opts: Omit<TexExportOptions, 'disableTemplate'>,
 ) {
-  const { filename } = opts;
+  const { filename, template, templatePath } = opts;
   const { frontmatter, mdast, references } = await getFileContent(session, file);
-  const jtex = new JTex(session, opts);
-  await ensureTemplateExistsOnPath(session, {
-    templatePath: jtex.templatePath,
-    templateUrl: jtex.templateUrl,
-  });
+  const jtex = new JTex(session, { template, path: templatePath });
+  await jtex.ensureTemplateExistsOnPath();
   const templateYml = jtex.getValidatedTemplateYml();
 
   const tagDefinitions = templateYml?.config?.tagged || [];

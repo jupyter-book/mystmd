@@ -5,7 +5,7 @@ import nunjucks from 'nunjucks';
 import type { PageFrontmatter } from '@curvenote/frontmatter';
 import type { ValidationOptions } from '@curvenote/validators';
 import { curvenoteDef } from './definitions';
-import { resolveInputs, TEMPLATE_FILENAME } from './download';
+import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
 import { extendJtexFrontmatter } from './frontmatter';
 import type { ISession, Renderer } from './types';
 import { ensureDirectoryExists } from './utils';
@@ -95,6 +95,21 @@ class JTex {
       throw new Error(`Unable to render with template ${this.getTemplateYmlPath()}`);
     }
     return validatedTemplateOptions;
+  }
+
+  async ensureTemplateExistsOnPath(force?: boolean) {
+    if (!force && fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
+      this.session.log.debug(`Template found at path: ${this.templatePath}`);
+    } else if (!this.templateUrl) {
+      throw new Error(
+        `No template on path and no download URL to fetch from: ${this.templatePath}`,
+      );
+    } else {
+      await downloadAndUnzipTemplate(this.session, {
+        templatePath: this.templatePath,
+        templateUrl: this.templateUrl,
+      });
+    }
   }
 
   render(opts: {
