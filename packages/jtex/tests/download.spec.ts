@@ -15,10 +15,10 @@ describe('Download Template', () => {
     const jtex = new JTex(new Session(), '_build/templates/public/not-there');
     expect(() => jtex.render({} as any)).toThrow(/does not exist/);
   });
-  it.only('Render out the template', async () => {
+  it('Render out the template', async () => {
     const jtex = new JTex(new Session(), '_build/templates/public/default');
     jtex.render({
-      contentPath: 'tests/test.tex',
+      contentOrPath: 'tests/test.tex',
       outputPath: '_build/tests/article.tex',
       data: {
         doc: {

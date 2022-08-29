@@ -82,7 +82,10 @@ export async function articleToMarkdown(
   const content = await Promise.all(
     article.children.map(async (child) => {
       if (!child.version) return '';
-      const blockData = { oxa: oxaLink('', child.version.id) };
+      const blockData = {
+        oxa: oxaLink('', child.version.id),
+        tags: child.block?.data.tags || [],
+      };
       let md = '';
       let mdastSnippets: Record<string, GenericNode<Record<string, any>>> = {};
       if (opts.keepOutputs && child.version.data.kind === KINDS.Output) {

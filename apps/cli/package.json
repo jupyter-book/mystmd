@@ -71,11 +71,13 @@
     "js-yaml": "^4.1.0",
     "jsdom": "^18.0.0",
     "jsonwebtoken": "^8.5.1",
+    "jtex": "^0.0.0",
     "katex": "^0.15.2",
     "lodash.throttle": "^4.1.1",
     "mime-types": "^2.1.35",
     "myst-spec": "^0.0.4",
     "myst-transforms": "*",
+    "myst-to-tex": "*",
     "mystjs": "^0.0.13",
     "nanoid": "^3.3.2",
     "node-fetch": "^2.6.7",
@@ -121,7 +123,7 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
-    "typescript": "latest"
+    "typescript": "^4.6.3"
   },
   "engines": {
     "node": ">=14"

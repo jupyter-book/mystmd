@@ -1,47 +1,34 @@
 import fs from 'fs';
 import { extname, basename, join, dirname } from 'path';
+import yaml from 'js-yaml';
 import nunjucks from 'nunjucks';
-import type { ISession } from './types';
-import { ensureDirectoryExists } from './utils';
+import type { PageFrontmatter } from '@curvenote/frontmatter';
+import type { ValidationOptions } from '@curvenote/validators';
 import { curvenoteDef } from './definitions';
+import { resolveInputs, TEMPLATE_FILENAME } from './download';
+import { extendJtexFrontmatter } from './frontmatter';
+import type { ISession, Renderer } from './types';
+import { ensureDirectoryExists } from './utils';
+import { validateTemplateOptions, validateTemplateYml } from './validators';
 
-type Renderer = {
-  CONTENT: string;
-  doc: {
-    title: string;
-    description: string;
-    date: {
-      day: string;
-      month: string;
-      year: string;
-    };
-    authors: {
-      name: string;
-      affiliation: string;
-      orcid?: string;
-    }[];
-  };
-  options: {
-    keywords: string;
-  };
-  tagged: {
-    abstract: string;
-  };
-};
-
-const DO_NOT_COPY = ['template.tex', 'thumbnail.png'];
+const DO_NOT_COPY = [TEMPLATE_FILENAME, 'thumbnail.png'];
 const DO_NOT_COPY_EXTS = ['.md', '.yml', '.zip'];
+
+const TEMPLATE_YML = 'template.yml';
 
 class JTex {
   session: ISession;
   templatePath: string;
+  templateUrl: string | undefined;
   env: nunjucks.Environment;
 
-  constructor(session: ISession, templatePath: string) {
+  constructor(session: ISession, opts?: { template?: string; path?: string }) {
     this.session = session;
+    const { templatePath, templateUrl } = resolveInputs(session, opts || {});
     this.templatePath = templatePath;
+    this.templateUrl = templateUrl;
     this.env = nunjucks
-      .configure(templatePath, {
+      .configure(this.templatePath, {
         trimBlocks: true,
         tags: {
           blockStart: '[#',
@@ -55,24 +42,91 @@ class JTex {
       .addFilter('len', (array) => array.length);
   }
 
-  render(opts: { contentPath: string; outputPath: string; data: Omit<Renderer, 'CONTENT'> }) {
-    if (!fs.existsSync(join(this.templatePath, 'template.tex'))) {
+  getTemplateYmlPath() {
+    return join(this.templatePath, TEMPLATE_YML);
+  }
+
+  getTemplateYml() {
+    const templateYmlPath = this.getTemplateYmlPath();
+    if (!fs.existsSync(templateYmlPath)) {
+      throw new Error(`The template yml at "${templateYmlPath}" does not exist`);
+    }
+    const content = fs.readFileSync(templateYmlPath).toString();
+    return yaml.load(content);
+  }
+
+  getValidatedTemplateYml() {
+    const opts: ValidationOptions = {
+      file: this.getTemplateYmlPath(),
+      property: 'template',
+      messages: {},
+    };
+    const templateYml = validateTemplateYml(this.getTemplateYml(), opts);
+    if (opts.messages.errors?.length) {
+      opts.messages.errors.forEach((error) => {
+        this.session.log.error(error.message);
+      });
+    }
+    if (opts.messages.errors?.length || templateYml === undefined) {
+      throw new Error(`Cannot use invalid ${TEMPLATE_YML}: ${this.getTemplateYmlPath()}`);
+    }
+    return templateYml;
+  }
+
+  validateOptions(templateOptions: any, file: string) {
+    const templateYml = this.getValidatedTemplateYml();
+    if (!templateYml?.config?.options) return {};
+    const opts: ValidationOptions = {
+      file,
+      property: 'template_options',
+      messages: {},
+    };
+    const validatedTemplateOptions = validateTemplateOptions(
+      templateOptions,
+      templateYml.config.options,
+      opts,
+    );
+    if (opts.messages.errors?.length) {
+      opts.messages.errors.forEach((error) => {
+        this.session.log.error(error.message);
+      });
+    }
+    if (opts.messages.errors?.length || validatedTemplateOptions === undefined) {
+      throw new Error(`Unable to render with template ${this.getTemplateYmlPath()}`);
+    }
+    return validatedTemplateOptions;
+  }
+
+  render(opts: {
+    contentOrPath: string;
+    outputPath: string;
+    frontmatter: PageFrontmatter;
+    tagged: Record<string, string>;
+    options: Record<string, any>;
+  }) {
+    if (!fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
       throw new Error(
-        `The template at "${join(this.templatePath, 'template.tex')}" does not exist`,
+        `The template at "${join(this.templatePath, TEMPLATE_FILENAME)}" does not exist`,
       );
     }
     if (extname(opts.outputPath) !== '.tex') {
       throw new Error(`outputPath must be a ".tex" file, not "${opts.outputPath}"`);
     }
-    this.session.log.debug(`Reading data from ${opts.contentPath}`);
-    const content = fs.readFileSync(opts.contentPath).toString();
+    let content: string;
+    if (fs.existsSync(opts.contentOrPath)) {
+      this.session.log.debug(`Reading content from ${opts.contentOrPath}`);
+      content = fs.readFileSync(opts.contentOrPath).toString();
+    } else {
+      content = opts.contentOrPath;
+    }
+    const extendedFrontmatter = extendJtexFrontmatter(opts.frontmatter);
     const renderer: Renderer = {
       CONTENT: content,
-      doc: opts.data.doc,
-      tagged: opts.data.tagged,
-      options: opts.data.options,
+      doc: extendedFrontmatter,
+      tagged: opts.tagged,
+      options: opts.options,
     };
-    const rendered = this.env.render('template.tex', renderer);
+    const rendered = this.env.render(TEMPLATE_FILENAME, renderer);
     const outputDirectory = dirname(opts.outputPath);
     ensureDirectoryExists(outputDirectory);
     this.copyTemplateFiles(dirname(opts.outputPath));
