@@ -84,12 +84,14 @@ export function validateLicense(input: any, opts: ValidationOptions): License | 
     }
     return revalidated;
   }
-  let value = validateString(input, opts);
-  if (value === undefined) return undefined;
-  value = value.toUpperCase();
+  const valueUnvalidated = validateString(input, opts);
+  if (valueUnvalidated === undefined) return undefined;
+  const value = valueUnvalidated.toUpperCase();
   if (!LICENSE_KEYS[value]) {
+    const possibleAlts = Object.keys(LICENSE_KEYS).filter((k) => k.includes(value));
+    const alts = possibleAlts.length > 0 ? ` Maybe try:\n- "${possibleAlts.join('"\n- "')}"\n` : '';
     return validationError(
-      `invalid value "${value}" - must be a valid license ID, see https://spdx.org/licenses/`,
+      `invalid value "${value}" - must be a valid license ID, see https://spdx.org/licenses/.${alts}`,
       opts,
     );
   }

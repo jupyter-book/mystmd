@@ -1,5 +1,5 @@
+import { getDate } from '@curvenote/validators';
 import type { JsonObject, BaseLinks } from './types';
-import { getDate } from './helpers';
 import type { ROLES } from './roles';
 
 export enum ACLType {

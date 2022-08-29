@@ -1,18 +1,18 @@
 import fs from 'fs';
 import { join } from 'path';
 import yaml from 'js-yaml';
-import { prepareToWrite } from '../frontmatter';
-import type { ISession } from '../session/types';
-import { selectors } from '../store';
-import { config } from '../store/local';
-import { writeFileToFolder } from '../utils';
-import type { Options } from '../utils/validators';
+import type { ValidationOptions } from '@curvenote/validators';
 import {
   incrementOptions,
   validateKeys,
   validateObject,
   validationError,
-} from '../utils/validators';
+} from '@curvenote/validators';
+import { prepareToWrite } from '../frontmatter';
+import type { ISession } from '../session/types';
+import { selectors } from '../store';
+import { config } from '../store/local';
+import { writeFileToFolder } from '../utils';
 import type { Config } from './types';
 import { CURVENOTE_YML, VERSION } from './types';
 import { validateProjectConfig, validateSiteConfig } from './validators';
@@ -36,7 +36,17 @@ function configFileExists(path: string) {
 function readConfig(session: PartialSession, path: string) {
   if (!configFileExists(path)) throw Error(`Cannot find ${CURVENOTE_YML} in ${path}`);
   const file = configFile(path);
-  const opts: Options = { logger: session.log, file, property: 'config', count: {} };
+  const opts: ValidationOptions = {
+    file,
+    property: 'config',
+    messages: {},
+    errorLogFn: (message: string) => {
+      session.log.error(`Validation error: "${message}`);
+    },
+    warningLogFn: (message: string) => {
+      session.log.warn(`Validation: "${message}`);
+    },
+  };
   const conf = validateObject(yaml.load(fs.readFileSync(file, 'utf-8')), opts);
   if (conf) {
     const filteredConf = validateKeys(
@@ -51,7 +61,7 @@ function readConfig(session: PartialSession, path: string) {
       );
     }
   }
-  if (!conf || opts.count.errors) throw Error(`Please address invalid config file ${file}`);
+  if (!conf || opts.messages.errors) throw Error(`Please address invalid config file ${file}`);
   // Keep original config object with extra keys, etc.
   if (conf.site?.frontmatter) {
     session.log.warn(
@@ -76,10 +86,15 @@ function validateSiteConfigAndSave(
   file?: string,
 ) {
   const siteConfig = validateSiteConfig(rawSiteConfig, {
-    logger: session.log,
     file,
     property: 'site',
-    count: {},
+    messages: {},
+    errorLogFn: (message: string) => {
+      session.log.error(`Validation error: "${message}`);
+    },
+    warningLogFn: (message: string) => {
+      session.log.warn(`Validation: "${message}`);
+    },
   });
   if (!siteConfig) {
     const errorSuffix = file ? ` in ${file}` : '';
@@ -95,10 +110,15 @@ function validateProjectConfigAndSave(
   file?: string,
 ) {
   const projectConfig = validateProjectConfig(rawProjectConfig, {
-    logger: session.log,
     file,
     property: 'project',
-    count: {},
+    messages: {},
+    errorLogFn: (message: string) => {
+      session.log.error(`Validation error: "${message}`);
+    },
+    warningLogFn: (message: string) => {
+      session.log.warn(`Validation: "${message}`);
+    },
   });
   if (!projectConfig) {
     const errorSuffix = file ? ` in ${file}` : '';

@@ -1,6 +1,6 @@
-import { validateAuthor } from '../frontmatter/validators';
-import type { Options } from '../utils/validators';
-import { defined, incrementOptions, validateDate, validateList } from '../utils/validators';
+import { validateAuthor } from '@curvenote/frontmatter';
+import type { ValidationOptions } from '@curvenote/validators';
+import { defined, incrementOptions, validateDate, validateList } from '@curvenote/validators';
 
 /**
  * Validate Export Config
@@ -8,7 +8,7 @@ import { defined, incrementOptions, validateDate, validateList } from '../utils/
  * TODO: This needs to be more complete, or even better, export config should more closely match
  * project/site config and we can reuse those validators...
  */
-export function validateExportConfigKeys(value: Record<string, any>, opts: Options) {
+export function validateExportConfigKeys(value: Record<string, any>, opts: ValidationOptions) {
   if (defined(value.data?.authors)) {
     value.data.authors = validateList(
       value.data.authors,
@@ -26,7 +26,7 @@ export function validateExportConfigKeys(value: Record<string, any>, opts: Optio
  *
  * TODO: these coersions could remain in memory and be passed directly to jtex, instead of written to file
  */
-export function validateJtexFrontmatterKeys(value: Record<string, any>, opts: Options) {
+export function validateJtexFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   let date: Date;
   if (defined(value.date)) {
     const validDate = validateDate(value.date, incrementOptions('date', opts));

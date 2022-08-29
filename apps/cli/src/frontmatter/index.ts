@@ -1,28 +1,14 @@
 import type { Root } from 'mdast';
 import { getFrontmatter } from 'myst-transforms';
-import type { Licenses } from '../licenses/types';
-import { licensesToString } from '../licenses/validators';
+import type { Licenses, PageFrontmatter } from '@curvenote/frontmatter';
+import {
+  fillPageFrontmatter,
+  licensesToString,
+  unnestKernelSpec,
+  validatePageFrontmatter,
+} from '@curvenote/frontmatter';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
-import type { PageFrontmatter } from './types';
-import { validatePageFrontmatter, fillPageFrontmatter } from './validators';
-
-/**
- * Unnest `kernelspec` from `jupyter.kernelspec`
- */
-export function unnestKernelSpec(pageFrontmatter: Record<string, any>) {
-  if (pageFrontmatter.jupyter?.kernelspec) {
-    // TODO: When we are exporting from local state, we will need to be more careful to
-    // round-trip this correctly.
-    pageFrontmatter.kernelspec = pageFrontmatter.jupyter.kernelspec;
-    // This cleanup prevents warning on `jupyter.kernelspec` but keeps warnings if other
-    // keys exist under `jupyter`
-    delete pageFrontmatter.jupyter.kernelspec;
-    if (!Object.keys(pageFrontmatter.jupyter).length) {
-      delete pageFrontmatter.jupyter;
-    }
-  }
-}
 
 /**
  * Get page frontmatter from mdast tree and fill in missing info from project frontmatter
@@ -46,10 +32,15 @@ export function getPageFrontmatter(
   });
   unnestKernelSpec(rawPageFrontmatter);
   const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, {
-    logger: session.log,
     property: 'frontmatter',
     file,
-    count: {},
+    messages: {},
+    errorLogFn: (message: string) => {
+      session.log.error(`Validation error: "${message}`);
+    },
+    warningLogFn: (message: string) => {
+      session.log.warn(`Validation: "${message}`);
+    },
   });
 
   const state = session.store.getState();

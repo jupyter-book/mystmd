@@ -1,13 +1,13 @@
 import fs from 'fs';
 import { extname, join, sep } from 'path';
+import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from '@curvenote/frontmatter';
+import { filterKeys } from '@curvenote/validators';
 import type { SiteProject, SiteAction, SiteAnalytics } from '../config/types';
 import { CURVENOTE_YML } from '../config/types';
-import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from '../frontmatter/validators';
 import type { ISession } from '../session/types';
 import type { RootState } from '../store';
 import { selectors } from '../store';
 import { addWarningForFile, publicPath, warnOnUnrecognizedKeys } from '../utils';
-import { filterKeys } from '../utils/validators';
 import type {
   SiteManifest,
   ManifestProject,

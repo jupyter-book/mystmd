@@ -1,4 +1,4 @@
-import { getDate } from './helpers';
+import { getDate } from '@curvenote/validators';
 import type { ROLES } from './roles';
 import type { BaseLinks, JsonObject } from './types';
 

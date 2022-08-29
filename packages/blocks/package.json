@@ -37,6 +37,9 @@
   "bugs": {
     "url": "https://github.com/curvenote/curvenote/issues"
   },
+  "dependencies": {
+    "@curvenote/validators": "^0.0.1"
+  },
   "devDependencies": {
     "@types/jest": "^28.1.6",
     "eslint": "^8.21.0",

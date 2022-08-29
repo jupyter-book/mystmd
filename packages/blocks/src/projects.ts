@@ -1,5 +1,5 @@
+import { getDate } from '@curvenote/validators';
 import type { JsonObject, BaseLinks } from './types';
-import { getDate } from './helpers';
 import type { Affiliation } from './blocks/types';
 import { CitationStyles, CustomizableReferenceKind } from './blocks/types';
 import type { ProjectFrontMatterProps } from './blocks/types/frontMatter';

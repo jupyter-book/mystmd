@@ -4,6 +4,7 @@ import YAML from 'js-yaml';
 import fetch from 'node-fetch';
 import type { VersionId, Blocks } from '@curvenote/blocks';
 import { KINDS, oxaLink } from '@curvenote/blocks';
+import { fillPageFrontmatter } from '@curvenote/frontmatter';
 import { createId, toMyst } from '@curvenote/schema';
 import { prepareToWrite } from '../../frontmatter';
 import {
@@ -11,7 +12,6 @@ import {
   projectFrontmatterFromDTO,
   saveAffiliations,
 } from '../../frontmatter/api';
-import { fillPageFrontmatter } from '../../frontmatter/validators';
 import { Block, Project, Version } from '../../models';
 import type { ISession } from '../../session/types';
 import { resolvePath, writeFileToFolder } from '../../utils';
