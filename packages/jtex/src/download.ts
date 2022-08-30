@@ -61,6 +61,19 @@ export function resolveInputs(session: ISession, opts: { template?: string; path
       return { templatePath, templateUrl };
     }
   }
+  if (opts.path && fs.existsSync(opts.path)) {
+    const { base, dir } = parse(opts.path);
+    if (base === TEMPLATE_FILENAME) {
+      templatePath = dir;
+    } else if (fs.lstatSync(opts.path).isDirectory()) {
+      if (fs.existsSync(join(opts.path, TEMPLATE_FILENAME))) {
+        templatePath = opts.path;
+      }
+    }
+    if (templatePath) {
+      return { templatePath, templateUrl };
+    }
+  }
   // Handle case where template is a download URL
   templateUrl = validateUrl(opts.template, { messages: {}, suppressErrors: true, property: '' });
   if (templateUrl) {

@@ -15,7 +15,7 @@ tags: [-tags|join(', ')-]
 
 describe('JTEX', () => {
   it('Basic rendering', async () => {
-    const rendered = new JTex(new Session(), '.').freeform(basicDoc, {
+    const rendered = new JTex(new Session(), { path: '.' }).freeform(basicDoc, {
       famous_people: [
         { name: 'Rowan', job: 'CEO', email: 'rowan@curvenote.com' },
         { name: 'Steve', job: 'CTO' },
