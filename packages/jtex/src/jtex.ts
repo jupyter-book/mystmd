@@ -92,7 +92,7 @@ class JTex {
       opts,
     );
     if (opts.messages.errors?.length || validatedTemplateOptions === undefined) {
-      throw new Error(`Unable to render with template ${this.getTemplateYmlPath()}`);
+      throw new Error(`Invalid options for template ${this.getTemplateYmlPath()} from ${file}`);
     }
     return validatedTemplateOptions;
   }

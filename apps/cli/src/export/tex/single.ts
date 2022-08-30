@@ -89,7 +89,6 @@ export function extractTaggedContent(
     }
     return '';
   }
-  console.log(`${tagDefinition.id} extracted`);
   const taggedMdast = { type: 'root', children: taggedBlocks } as Root;
   const taggedContent = mdastToTex(taggedMdast);
   taggedBlocks.forEach((block) => {

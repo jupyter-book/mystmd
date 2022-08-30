@@ -21,10 +21,12 @@ export function validationError(message: string, opts: ValidationOptions) {
   if (opts.suppressErrors) return undefined;
   const { messages } = opts;
   if (!messages.errors) messages.errors = [];
+  const fullMessage = `'${opts.property}' ${message}${locationSuffix(opts)}`;
   messages.errors.push({
     property: opts.property,
-    message: `'${opts.property}' ${message}${locationSuffix(opts)}`,
+    message: fullMessage,
   });
+  if (opts.errorLogFn) opts.errorLogFn(fullMessage);
   return undefined;
 }
 
@@ -32,10 +34,12 @@ export function validationWarning(message: string, opts: ValidationOptions) {
   if (opts.suppressWarnings) return undefined;
   const { messages } = opts;
   if (!messages.warnings) messages.warnings = [];
+  const fullMessage = `'${opts.property}' ${message}${locationSuffix(opts)}`;
   messages.warnings.push({
     property: opts.property,
-    message: `"${opts.property}" ${message}${locationSuffix(opts)}`,
+    message: fullMessage,
   });
+  if (opts.warningLogFn) opts.warningLogFn(fullMessage);
   return undefined;
 }
 
