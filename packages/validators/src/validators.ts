@@ -69,9 +69,8 @@ export function validateString(
 ): string | undefined {
   if (typeof input !== 'string') return validationError(`must be string`, opts);
   let value = input as string;
-  const maxLength = opts.maxLength || 500;
-  if (value.length > maxLength) {
-    return validationError(`must be less than ${maxLength} chars`, opts);
+  if (opts.maxLength && value.length > opts.maxLength) {
+    return validationError(`must be less than ${opts.maxLength} chars`, opts);
   }
   if (opts.regex && !value.match(opts.regex)) {
     return validationError(`must match regex ${opts.regex}`, opts);
