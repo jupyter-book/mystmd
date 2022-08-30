@@ -22,6 +22,14 @@ class JTex {
   templateUrl: string | undefined;
   env: nunjucks.Environment;
 
+  /**
+   * JTex class for template validation and rendering
+   *
+   * Constructor takes a session object for logging and optional template/path.
+   * Template may be a path to an existing template on disk, a URL where the zipped
+   * template may be downloaded, or the name of a Curvenote template. Path is the
+   * local path where the downloaded template will be saved.
+   */
   constructor(session: ISession, opts?: { template?: string; path?: string }) {
     this.session = session;
     const { templatePath, templateUrl } = resolveInputs(session, opts || {});
