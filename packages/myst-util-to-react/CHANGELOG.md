@@ -1,5 +1,21 @@
 # myst-util-to-react
 
+## 0.1.13
+
+### Patch Changes
+
+- b63638b: Hide hash IDs for headers and equations if you are in a cross-reference.
+- b63638b: Load cross-link information from local config
+- b63638b: Parse frontmatter in myst demo
+- Updated dependencies [b63638b]
+- Updated dependencies [b63638b]
+- Updated dependencies [b63638b]
+- Updated dependencies [b63638b]
+- Updated dependencies [b63638b]
+  - myst-transforms@0.0.3
+  - myst-to-tex@0.0.2
+  - @curvenote/ui-providers@0.0.12
+
 ## 0.1.12
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @curvenote/site
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [b63638b]
+- Updated dependencies [b63638b]
+- Updated dependencies [b63638b]
+- Updated dependencies [b63638b]
+  - myst-util-to-react@0.1.13
+  - @curvenote/ui-providers@0.0.12
+  - @curvenote/site-common@0.0.12
+
 ## 0.0.11
 
 ### Patch Changes

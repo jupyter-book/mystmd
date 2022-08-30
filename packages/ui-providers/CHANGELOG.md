@@ -1,5 +1,12 @@
 # @curvenote/ui-providers
 
+## 0.0.12
+
+### Patch Changes
+
+- b63638b: Add a xref provider for linking remote content
+  - @curvenote/site-common@0.0.12
+
 ## 0.0.11
 
 ### Patch Changes

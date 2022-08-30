@@ -1,5 +1,11 @@
 # curvenote
 
+## 0.6.21
+
+### Patch Changes
+
+- Updates to linking of packages
+
 ## 0.6.20
 
 ### Patch Changes

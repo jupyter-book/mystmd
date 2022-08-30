@@ -1,6 +1,6 @@
 {
   "name": "myst-util-to-react",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "main": "./src/index.tsx",
   "types": "./src/index.tsx",
   "files": [
@@ -23,7 +23,7 @@
     "ansi-to-react": "^6.1.6",
     "classnames": "^2.3.1",
     "myst-spec": "^0.0.4",
-    "myst-to-tex": "0.0.1",
+    "myst-to-tex": "0.0.2",
     "myst-transforms": "*",
     "mystjs": "^0.0.13",
     "nanoid": "^4.0.0",
