@@ -6,7 +6,7 @@ import { AdmonitionKind } from './types';
 
 type Options = {
   /** Replace the admonition title with the first paragraph if it is all bold. */
-  boldAdmonitionTitles?: boolean;
+  replaceAdmonitionTitles?: boolean;
 };
 
 function admonitionKindToTitle(kind: AdmonitionKind | string) {
@@ -40,18 +40,22 @@ export function admonitionHeadersTransform(tree: Root, opts?: Options) {
       ...(node.children ?? []),
     ];
     // Replace the admonition title with bold text if it is provided
-    if (opts?.boldAdmonitionTitles) {
-      const [admonitionHeader, strongParagraph, ...rest] = node.children as [
+    if (opts?.replaceAdmonitionTitles ?? true) {
+      const [admonitionHeader, possibleHeading, ...rest] = node.children as [
         AdmonitionTitle,
         FlowContent,
       ];
       if (
-        strongParagraph.type === 'paragraph' &&
-        strongParagraph.children?.length === 1 &&
-        strongParagraph.children[0].type === 'strong'
+        possibleHeading?.type === 'paragraph' &&
+        possibleHeading.children?.length === 1 &&
+        possibleHeading.children[0].type === 'strong'
       ) {
-        const strongTextChildren = strongParagraph.children[0].children;
+        const strongTextChildren = possibleHeading.children[0].children;
         admonitionHeader.children = strongTextChildren; // Replace the admonition text with the strong chidren
+        node.children = [admonitionHeader, ...rest]; // remove the strong text
+      } else if (possibleHeading?.type === 'heading') {
+        console.log(possibleHeading);
+        admonitionHeader.children = possibleHeading.children; // Replace the admonition text with the heading chidren
         node.children = [admonitionHeader, ...rest]; // remove the strong text
       }
     }

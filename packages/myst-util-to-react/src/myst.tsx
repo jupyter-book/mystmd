@@ -9,7 +9,7 @@ import classnames from 'classnames';
 import ExclamationIcon from '@heroicons/react/outline/ExclamationIcon';
 import ExclamationCircleIcon from '@heroicons/react/outline/ExclamationCircleIcon';
 import InformationCircleIcon from '@heroicons/react/outline/InformationCircleIcon';
-import { CopyIcon } from './CopyIcon';
+import { CopyIcon } from './components/CopyIcon';
 import { CodeBlock } from './code';
 import { ReferencesProvider } from '@curvenote/ui-providers';
 
@@ -24,6 +24,7 @@ async function parse(text: string) {
     enumerateTargetsPlugin,
     resolveReferencesPlugin,
     ReferenceState,
+    getFrontmatter,
   } = await import('myst-transforms');
   const { default: mystToTex } = await import('myst-to-tex');
   const myst = new MyST();
@@ -38,11 +39,12 @@ async function parse(text: string) {
     cite: { order: [], data: {} },
     footnotes: {},
   };
+  const { frontmatter } = getFrontmatter(mdast, { removeYaml: true, removeHeading: false });
   const state = new ReferenceState();
   unified()
     .use(basicTransformationsPlugin)
+    .use(mathPlugin, { macros: frontmatter?.math ?? {} }) // This must happen before enumeration, as it can add labels
     .use(enumerateTargetsPlugin, { state })
-    .use(mathPlugin)
     .use(footnotesPlugin, { references })
     .use(keysPlugin)
     .use(resolveReferencesPlugin, { state })
@@ -119,7 +121,7 @@ export function MySTRenderer({ value }: { value: string }) {
               className={classnames('px-2', {
                 'bg-white hover:bg-slate-200 dark:bg-slate-500 dark:hover:bg-slate-700':
                   previewType !== show,
-                'bg-curvenote-blue text-white': previewType === show,
+                'bg-blue-800 text-white': previewType === show,
               })}
               title={`Show the ${show}`}
               aria-label={`Show the ${show}`}

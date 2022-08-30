@@ -1,41 +1,50 @@
-import { useEffect } from 'react';
 import type { Link } from 'myst-spec';
-import { Link as RemixLink, useFetcher } from '@remix-run/react';
+import { Link as RemixLink } from '@remix-run/react';
 import { ExternalLinkIcon, LinkIcon } from '@heroicons/react/outline';
 import type { NodeRenderer } from './types';
-import { HoverPopover } from './HoverPopover';
-import classNames from 'classnames';
+import { HoverPopover } from './components/HoverPopover';
+import { useSiteManifest } from '@curvenote/ui-providers';
+import type { ManifestProjectPage, SiteManifest } from '@curvenote/site-common';
+import { LinkCard } from './components/LinkCard';
 
 type TransformedLink = Link & { internal?: boolean };
 
-function LinkCard({ url, open }: { url: string; open: boolean }) {
-  const fetcher = useFetcher();
-  useEffect(() => {
-    if (fetcher.type === 'init' && open) {
-      fetcher.load(url);
-    }
-  }, [open, fetcher]);
-
-  const data = fetcher?.data; // the data from the loader
-  const { title, description, thumbnail } = data?.frontmatter ?? {};
-  return (
-    <div className={classNames('w-[300px]', { 'animate-pulse': !data })}>
-      <RemixLink to={url} className="block" prefetch="intent">
-        <ExternalLinkIcon className="w-4 h-4 float-right" />
-        {title}
-      </RemixLink>
-      {!data && <div className="animate-pulse bg-slate-100 w-full h-[150px] mt-4" />}
-      {thumbnail && (
-        <img src={thumbnail} className="w-full max-h-[200px] object-cover object-top" />
-      )}
-      <div className="mt-2">{description}</div>
-    </div>
-  );
+function getPageInfo(
+  site: SiteManifest | undefined,
+  path: string,
+): ManifestProjectPage | undefined {
+  if (!site) return undefined;
+  const [projectSlug, pageSlug] = path.replace(/^\//, '').split('/');
+  const project = site.projects.find((p) => p.slug === projectSlug);
+  if (!project) return undefined;
+  return project.pages.find(
+    (p) => (p as ManifestProjectPage).slug === pageSlug,
+  ) as ManifestProjectPage;
 }
 
 function InternalLink({ url, children }: { url: string; children: React.ReactNode }) {
+  const site = useSiteManifest();
+  const page = getPageInfo(site, url);
+  const skipPreview = !page || (!page.description && !page.thumbnail);
+  if (skipPreview) {
+    return (
+      <RemixLink to={url} prefetch="intent">
+        {children}
+      </RemixLink>
+    );
+  }
   return (
-    <HoverPopover card={({ open }) => <LinkCard url={url} open={open} />}>
+    <HoverPopover
+      card={
+        <LinkCard
+          internal
+          url={url}
+          title={page.title}
+          description={page.description}
+          thumbnail={page.thumbnailOptimized || page.thumbnail}
+        />
+      }
+    >
       <RemixLink to={url} prefetch="intent">
         {children}
       </RemixLink>

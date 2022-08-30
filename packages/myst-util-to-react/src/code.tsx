@@ -5,7 +5,7 @@ import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 import light from 'react-syntax-highlighter/dist/cjs/styles/hljs/xcode';
 import dark from 'react-syntax-highlighter/dist/cjs/styles/hljs/vs2015';
 import classNames from 'classnames';
-import { CopyIcon } from './CopyIcon';
+import { CopyIcon } from './components/CopyIcon';
 
 type Props = {
   value: string;

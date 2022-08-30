@@ -1,9 +1,10 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import katex from 'katex';
-import type { Root, Math, InlineMath, Node } from 'myst-spec';
+import type { Root } from 'mdast';
+import type { Math, InlineMath, Node } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
-import { fileInfo, fileWarn } from './utils';
+import { fileWarn, normalizeLabel } from './utils';
 
 const TRANSFORM_NAME = 'myst-transforms:math';
 
@@ -19,25 +20,71 @@ const buildInMacros = {
   '\\mbox': '\\text{#1}', // mbox is not supported in KaTeX, this is an OK fallback
 };
 
-function knownReplacements(file: VFile, node: Math | InlineMath): string | undefined {
+function transformMathValue(file: VFile, node: Math | InlineMath) {
   let { value } = node;
   if (!value) return undefined;
   Object.entries(replacements).forEach(([from, to]) => {
     value = value.replace(new RegExp(from, 'g'), to);
   });
+  node.value = value;
+}
+
+function labelMathNodes(file: VFile, node: Math | InlineMath) {
+  const { value } = node;
+  if (!value) return;
+  // Pull out all the labels from the latex
   const LABEL = /\\label\{([^}]+)\}/g;
   const match = LABEL.exec(value);
   if (!match) return value;
   const label = match[1];
-  fileInfo(file, `Identified "\\label{${label}}" as node identifier`, {
-    node,
-    source: TRANSFORM_NAME,
-  });
-  if (node.type === 'math') {
-    node.label = label;
-    node.identifier = label; // TODO: normalizeLabel
+  const normalized = normalizeLabel(label);
+  if (node.type === 'math' && normalized) {
+    if (node.enumerated === false) {
+      fileWarn(file, `Labelling an unnumbered math node with "\\label{${label}}"`, {
+        node,
+        source: TRANSFORM_NAME,
+      });
+    }
+    node.identifier = normalized.identifier;
+    node.label = normalized.label;
+    (node as any).html_id = normalized.html_id;
+  } else if (node.type === 'inlineMath') {
+    fileWarn(file, `Cannot use "\\label{${label}}" in inline math`, {
+      node,
+      source: TRANSFORM_NAME,
+    });
   }
-  return value.replace(LABEL, '');
+  node.value = value.replace(LABEL, '');
+}
+
+function removeSimpleEquationEnv(file: VFile, node: Math | InlineMath) {
+  const { value } = node;
+  if (!value) return;
+  // For simple equation environments, pull that out
+  const BEGIN = /\\begin\{equation([*]?)\}/g;
+  const END = /\\end\{equation([*]?)\}/g;
+  if (value.match(BEGIN)?.length !== 1 || value.match(END)?.length !== 1) return;
+  if (node.type === 'inlineMath') {
+    fileWarn(file, `Unexpected AMS environment in inline math node.`, {
+      node,
+      note: value,
+      source: TRANSFORM_NAME,
+    });
+    return;
+  }
+  const beginStar = BEGIN.exec(value)?.[1] === '*';
+  const endStar = END.exec(value)?.[1] === '*';
+  if (beginStar !== endStar) {
+    // Should never get to here as the parser should not accept mismatched ends
+    fileWarn(file, `Mismatching begin/end environment numbering`, {
+      node,
+      note: value,
+      source: TRANSFORM_NAME,
+    });
+    return;
+  }
+  node.enumerated = !beginStar;
+  node.value = value.replace(BEGIN, '').replace(END, '').trim();
 }
 
 function replaceEqnarray(file: VFile, value: string, node: Node) {
@@ -117,7 +164,7 @@ function tryRender(
 }
 
 function renderEquation(file: VFile, node: Math | InlineMath, opts?: Options) {
-  let value = knownReplacements(file, node);
+  let value = node.value;
   if (!value) {
     const message = 'No input for math node';
     fileWarn(file, message, {
@@ -148,12 +195,25 @@ function renderEquation(file: VFile, node: Math | InlineMath, opts?: Options) {
   }
 }
 
+export function mathLabelTransform(mdast: Root, file: VFile) {
+  const nodes = selectAll('math,inlineMath', mdast) as (Math | InlineMath)[];
+  nodes.forEach((node) => {
+    transformMathValue(file, node);
+    removeSimpleEquationEnv(file, node);
+    labelMathNodes(file, node);
+  });
+}
+
 export function mathTransform(mdast: Root, file: VFile, opts?: Options) {
   const nodes = selectAll('math,inlineMath', mdast) as (Math | InlineMath)[];
   nodes.forEach((node) => {
     renderEquation(file, node, opts);
   });
 }
+
+export const mathLabelPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
+  mathLabelTransform(tree, file);
+};
 
 export const mathPlugin: Plugin<[Options?], Root, Root> = (opts) => (tree, file) => {
   mathTransform(tree, file, opts);

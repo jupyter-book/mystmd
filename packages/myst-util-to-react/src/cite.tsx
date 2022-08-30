@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { useReferences } from '@curvenote/ui-providers';
 import type { NodeRenderer } from './types';
 import { useState } from 'react';
-import { ClickPopover } from './ClickPopover';
+import { ClickPopover } from './components/ClickPopover';
 import { InlineError } from './inlineError';
 
 function CiteChild({ label }: { label: string }) {

@@ -18,7 +18,7 @@
   .prose table tr:hover td {
     @apply bg-slate-50 dark:bg-stone-800;
   }
-  .prose dt {
+  .prose dt > strong {
     @apply font-bold text-blue-900 dark:text-blue-100;
   }
   .prose dd {
@@ -44,6 +44,14 @@
   }
   .toc {
     @apply flex-col fixed z-30 bottom-0 left-[max(0px,calc(50%-45rem))] w-[19.5rem] border-r border-stone-200 dark:border-stone-700;
+  }
+  .popout > h1,
+  .popout > h2,
+  .popout > h3,
+  .popout > h4,
+  .popout > h5,
+  .popout > h6 {
+    margin-top: 0;
   }
 }
 
@@ -98,4 +106,10 @@ r-dynamic {
 }
 .smallcaps {
   font-variant: small-caps;
+}
+
+/* Hide katex generated equation numbers */
+.katex .eqn-num {
+  opacity: 0;
+  user-select: none;
 }

@@ -1,10 +1,10 @@
 import type { NodeRenderer } from './types';
-import { HoverPopover } from './HoverPopover';
+import { HoverPopover } from './components/HoverPopover';
 import useSWR from 'swr';
 import { ExternalLinkIcon } from '@heroicons/react/outline';
-import classNames from 'classnames';
+import { LinkCard } from './components/LinkCard';
 
-const WikiLogo = () => (
+const WikiTextMark = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
@@ -80,22 +80,20 @@ function WikiChild({ name, open }: { name: string; open: boolean }) {
       <span>
         <a href={url} className="block" target="_blank" rel="noreferrer">
           <ExternalLinkIcon className="w-4 h-4 float-right" />
-          <WikiLogo />
+          <WikiTextMark />
         </a>
         <div className="mt-2">Error loading "{name}" from wikipedia.</div>
       </span>
     );
   }
   return (
-    <div className={classNames('w-[300px]', { 'animate-pulse': !data })}>
-      <a href={url} className="block" target="_blank" rel="noreferrer">
-        <ExternalLinkIcon className="w-4 h-4 float-right" />
-        <WikiLogo />
-      </a>
-      {!data && <div className="animate-pulse bg-slate-100 w-full h-[150px] mt-4" />}
-      {image && <img src={image} className="w-full max-h-[200px] object-cover object-top" />}
-      <div className="mt-2">{extract}</div>
-    </div>
+    <LinkCard
+      loading={!data}
+      url={url}
+      title={<WikiTextMark />}
+      thumbnail={image}
+      description={extract}
+    />
   );
 }
 

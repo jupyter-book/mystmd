@@ -2,6 +2,7 @@ import { Heading } from 'myst-spec';
 import type { NodeRenderer } from './types';
 import { createElement as e } from 'react';
 import classNames from 'classnames';
+import { useXRefState } from '@curvenote/ui-providers';
 
 function getHelpHashText(kind: string) {
   return `Link to this ${kind}`;
@@ -16,6 +17,9 @@ export function HashLink({
   kind: string;
   align?: 'left' | 'right';
 }) {
+  const { inCrossRef } = useXRefState();
+  // If we are in a cross-reference popout, hide the hash links
+  if (inCrossRef) return null;
   const helpText = getHelpHashText(kind);
   return (
     <a

@@ -250,9 +250,9 @@ export async function transformMdast(
 
   await unified()
     .use(basicTransformationsPlugin)
-    .use(enumerateTargetsPlugin, { state })
     .use(htmlPlugin, { htmlHandlers })
     .use(mathPlugin, { macros: frontmatter.math })
+    .use(enumerateTargetsPlugin, { state }) // This should be after math
     .run(mdast, vfile);
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);

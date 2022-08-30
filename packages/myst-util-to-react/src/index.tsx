@@ -23,7 +23,7 @@ import EXT_RENDERERS from './extensions';
 
 export type { NodeRenderer } from './types';
 export { Bibliography } from './cite';
-export { CopyIcon } from './CopyIcon';
+export { CopyIcon } from './components/CopyIcon';
 
 export const DEFAULT_RENDERERS: Record<string, NodeRenderer> = {
   ...BASIC_RENDERERS,

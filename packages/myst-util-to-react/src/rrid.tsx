@@ -1,5 +1,5 @@
 import type { NodeRenderer } from './types';
-import { ClickPopover } from './ClickPopover';
+import { ClickPopover } from './components/ClickPopover';
 import useSWR from 'swr';
 import { ExternalLinkIcon } from '@heroicons/react/outline';
 

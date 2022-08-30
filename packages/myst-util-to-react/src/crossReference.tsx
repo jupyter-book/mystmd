@@ -1,47 +1,16 @@
-import React, { createContext, useContext } from 'react';
 import { selectAll } from 'unist-util-select';
 import { EXIT, SKIP, visit } from 'unist-util-visit';
 import type { Root } from 'mdast';
 import type { CrossReference } from 'myst-spec';
 import LinkIcon from '@heroicons/react/outline/LinkIcon';
 import ExternalLinkIcon from '@heroicons/react/outline/ExternalLinkIcon';
-import { useReferences } from '@curvenote/ui-providers';
+import { useReferences, useXRefState, XRefProvider } from '@curvenote/ui-providers';
 import { useParse } from '.';
 import { InlineError } from './inlineError';
 import type { NodeRenderer } from './types';
-import { ClickPopover } from './ClickPopover';
+import { ClickPopover } from './components/ClickPopover';
 import useSWR from 'swr';
 import { Link } from '@remix-run/react';
-
-interface RemoteXRefState {
-  remote: boolean;
-  url?: string;
-}
-
-const RemoteXRefContext = createContext<RemoteXRefState | undefined>(undefined);
-
-// Create a provider for components to consume and subscribe to changes
-export function RemoteXRefProvider({
-  remote,
-  url: url,
-  children,
-}: {
-  remote?: boolean;
-  url?: string;
-  children: React.ReactNode;
-}) {
-  const parent = useRemotePreview();
-  const value: RemoteXRefState = { remote: remote ?? parent.remote, url: url ?? parent.url };
-  if (value.remote && !value.url) {
-    value.remote = false;
-  }
-  return <RemoteXRefContext.Provider value={value}>{children}</RemoteXRefContext.Provider>;
-}
-
-export function useRemotePreview(): RemoteXRefState {
-  const state = useContext(RemoteXRefContext) ?? { remote: false, url: undefined };
-  return state;
-}
 
 const MAX_NODES = 3; // Max nodes to show after a header
 
@@ -82,7 +51,7 @@ export function ReferencedContent({
   identifier: string;
   close: () => void;
 }) {
-  const { remote, url } = useRemotePreview();
+  const { remote, url } = useXRefState();
   const external = url?.startsWith('http') ?? false;
   const lookupUrl = external ? `/api/lookup?url=${url}.json` : `${url}.json`;
   const { data, error } = useSWR(remote ? lookupUrl : null, fetcher);
@@ -130,7 +99,7 @@ export function ReferencedContent({
           <LinkIcon className="w-4 h-4" />
         </button>
       )}
-      {children}
+      <div className="popout">{children}</div>
     </div>
   );
 }
@@ -149,9 +118,9 @@ export const CrossReferenceNode: NodeRenderer<CrossReference> = (node, children)
     <ClickPopover
       key={node.key}
       card={({ close }) => (
-        <RemoteXRefProvider remote={(node as any).remote} url={(node as any).url}>
+        <XRefProvider remote={(node as any).remote} url={(node as any).url}>
           <ReferencedContent identifier={node.identifier as string} close={close} />
-        </RemoteXRefProvider>
+        </XRefProvider>
       )}
       as="span"
     >

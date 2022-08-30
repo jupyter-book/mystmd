@@ -68,6 +68,9 @@ Keys
 Math
 : Use KaTeX to create and provide errors/warnings about math rendering.
 
+Math Label
+: Parse latex to strip \label and simple equation environments from math, and put this in mdast directly.
+
 MyST Cleanup
 : A few utilities for lifting children and getting rid of some information about the parsed document from MyST. For example, the `mystDirective` and `mystRole` wrapper nodes are removed.
 

@@ -1,9 +1,12 @@
 {
   "kind": "Article",
-  "file": "features/commonmark.md",
-  "sha256": "6fc88b0dc8e965a509dd46ebcb3b686fc201414f0fc9b89614bb6bb582eb23de",
+  "file": "commonmark.md",
+  "sha256": "233126896529974001246e5831e9b9032c56ca34c2d70d0c4e662b36ae02ada8",
   "slug": "commonmark",
-  "frontmatter": { "title": "CommonMark" },
+  "frontmatter": {
+    "title": "CommonMark",
+    "description": "MyST Markdown is a superset of CommonMark Markdown, and fully supports all of the markdown that you are used to. Here we describe all of the CommonMark features that are supported."
+  },
   "mdast": {
     "type": "root",
     "children": [
@@ -12,660 +15,932 @@
         "children": [
           {
             "type": "paragraph",
+            "position": { "start": { "line": 5, "column": 0 }, "end": { "line": 6, "column": 0 } },
             "children": [
               {
                 "type": "text",
                 "value": "This page provides an overview of the types of block and inline markup features supported by CommonMark and MyST, with pointers to additional content of interest. For full details on all the nuance of these features, please look at the ",
-                "key": "AjRKlXIsgV"
+                "key": "W0MqSHtgtt"
               },
               {
                 "type": "link",
                 "url": "https://spec.commonmark.org/",
                 "children": [
-                  { "type": "text", "value": "CommonMark Spec documentation", "key": "ZD663WI15R" }
+                  { "type": "text", "value": "CommonMark Spec documentation", "key": "mhZiDtyw17" }
                 ],
-                "key": "e1F9qdHvGt"
+                "key": "Ddl85OImlR"
               },
-              { "type": "text", "value": ".", "key": "vi9ijRYThW" }
+              { "type": "text", "value": ".", "key": "tvCAqweYpe" }
             ],
-            "key": "Ex6KOjHHsk"
+            "key": "THPv3OXyeP"
           },
           {
             "type": "paragraph",
+            "position": { "start": { "line": 7, "column": 0 }, "end": { "line": 8, "column": 0 } },
             "children": [
               {
                 "type": "text",
                 "value": "MyST (Markedly Structured Text) was designed to make it easier to create publishable computational documents written with Markdown notation. It is a superset of ",
-                "key": "F0LkQ1Xv4j"
+                "key": "eKHzvLf9pR"
               },
               {
                 "type": "link",
                 "url": "https://commonmark.org/",
                 "children": [
-                  { "type": "text", "value": "CommonMark Markdown", "key": "kfs4U4yWZH" }
+                  { "type": "text", "value": "CommonMark Markdown", "key": "eGFsdOtdN0" }
                 ],
-                "key": "BlN3eW3pA8"
+                "key": "Un2qLoOpUt"
               },
               {
                 "type": "text",
                 "value": " and draws heavy inspiration from ",
-                "key": "gAnr027STh"
+                "key": "A5RimEblz4"
               },
               {
                 "type": "link",
                 "url": "https://rmarkdown.rstudio.com/",
-                "children": [{ "type": "text", "value": "RMarkdown", "key": "IrIRsrCOjt" }],
-                "key": "yqJse7Q974"
+                "children": [{ "type": "text", "value": "RMarkdown", "key": "aDlNfkmzRX" }],
+                "key": "A0B5MHEuI7"
               },
               {
                 "type": "text",
                 "value": " syntax. In addition to CommonMark, MyST also implements and extends ",
-                "key": "pNjLtKfV1B"
+                "key": "IvUDh5D3CP"
               },
               {
                 "type": "link",
                 "url": "https://github.com/syntax-tree/mdast",
-                "children": [{ "type": "text", "value": "mdast", "key": "zKsC1vGdLM" }],
-                "key": "xPGQTDs877"
+                "children": [{ "type": "text", "value": "mdast", "key": "ZxxlTI3UW7" }],
+                "key": "FNi7xtyVUY"
               },
               {
                 "type": "text",
                 "value": ", which is a standard abstract syntax tree for Markdown. ",
-                "key": "J2kcR9FJrW"
+                "key": "RyATOGlo9n"
               },
-              { "type": "inlineCode", "value": "mdast", "key": "tNfhOboSvP" },
-              { "type": "text", "value": " is part of the ", "key": "S5J7efkK8V" },
+              { "type": "inlineCode", "value": "mdast", "key": "wxxa4qIzR2" },
+              { "type": "text", "value": " is part of the ", "key": "Sg5snvqcp8" },
               {
                 "type": "link",
                 "url": "https://unifiedjs.com",
-                "children": [{ "type": "text", "value": "unifiedjs", "key": "qCJRCgCrZq" }],
-                "key": "rHrquVbbZb"
+                "children": [{ "type": "text", "value": "unifiedjs", "key": "at6gihlBu4" }],
+                "key": "DuKTX1MwaW"
               },
-              { "type": "text", "value": " community and has ", "key": "SkPXg9cjd3" },
+              { "type": "text", "value": " community and has ", "key": "iQl9KVa6ed" },
               {
                 "type": "link",
                 "url": "https://unifiedjs.com/explore/keyword/mdast/",
-                "children": [{ "type": "text", "value": "many utilities", "key": "Wk5VzfZF57" }],
-                "key": "Nou5YXuVGZ"
+                "children": [{ "type": "text", "value": "many utilities", "key": "kp1hNP6b6v" }],
+                "key": "qpN5hq3xKN"
               },
               {
                 "type": "text",
                 "value": " for exporting and transforming your content.",
-                "key": "Hh9vfBAGD1"
+                "key": "G1Z6OHE9qK"
               }
             ],
-            "key": "cmG6yF9cbG"
+            "key": "NqqVefz34P"
           },
           {
             "type": "heading",
             "depth": 2,
-            "children": [{ "type": "text", "value": "Block Markup", "key": "OjE2JJOzaY" }],
-            "enumerate": false,
-            "key": "Aqa9IdLlEb"
+            "position": { "start": { "line": 9, "column": 0 }, "end": { "line": 10, "column": 0 } },
+            "children": [{ "type": "text", "value": "Block Markup", "key": "Bz5vZUG5i8" }],
+            "identifier": "block markup",
+            "label": "Block Markup",
+            "html_id": "block-markup",
+            "implicit": true,
+            "key": "sgJRz9FAkr"
           },
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Headings", "key": "irZr2ejX5p" }],
-            "enumerate": false,
-            "key": "SgSaofj7p6"
+            "position": {
+              "start": { "line": 11, "column": 0 },
+              "end": { "line": 12, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Headings", "key": "vVNgcSgYoO" }],
+            "identifier": "headings",
+            "label": "Headings",
+            "html_id": "headings",
+            "implicit": true,
+            "key": "foUOq1Pzhj"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 13, "column": 0 },
+              "end": { "line": 15, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "Markdown syntax denotes headers starting with between 1 to 6 ",
-                "key": "fF5g09jh3R"
+                "key": "WJIYyge7VB"
               },
-              { "type": "inlineCode", "value": "#", "key": "dSqqo8n3ka" },
+              { "type": "inlineCode", "value": "#", "key": "QMTRB5tc89" },
               {
                 "type": "text",
                 "value": ".\nFor example, a level 3 header looks like:",
-                "key": "qNaq084LfP"
+                "key": "GMpRI8YTbi"
               }
             ],
-            "key": "LE7ix6xT22"
+            "key": "mieMHoJmSH"
           },
           {
             "type": "myst",
-            "value": "### Heading Level 3\n\nTry changing the number of `#`s to change the `depth`. $x_$\n\n$$\\label{a}$$\n\n$$a&=a\\\\abc&=d$$\n\n",
-            "key": "wYnYHxaU5x"
+            "value": "### Heading Level 3\n\nTry changing the number of `#`s to change the `depth`.\n",
+            "position": {
+              "start": { "line": 16, "column": 0 },
+              "end": { "line": 21, "column": 0 }
+            },
+            "key": "Ljt3zASDK1"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 22, "column": 0 },
+              "end": { "line": 24, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "An alternative syntax (called setext) is also supported for level 1 and 2 headers,\nby underlining using multiple ",
-                "key": "gSKnlq4d6T"
+                "key": "g5HpNpXcE2"
               },
-              { "type": "inlineCode", "value": "===", "key": "HhBHT98f0G" },
-              { "type": "text", "value": " or ", "key": "wlMQNQFwll" },
-              { "type": "inlineCode", "value": "---", "key": "jmWEYshpRv" },
-              { "type": "text", "value": ". For example:", "key": "oMIwgikwmw" }
+              { "type": "inlineCode", "value": "===", "key": "pP7ePzKx1E" },
+              { "type": "text", "value": " or ", "key": "HStAqcbXMe" },
+              { "type": "inlineCode", "value": "---", "key": "Qlpl87CJxF" },
+              { "type": "text", "value": ". For example:", "key": "GbcR4oEaXq" }
             ],
-            "key": "kZeBabsd5M"
+            "key": "IaGmW9AvCS"
           },
           {
             "type": "myst",
             "value": "Heading 1\n=========\n\nHeading 2\n---------\n",
-            "key": "V5wPcLU8X2"
+            "position": {
+              "start": { "line": 25, "column": 0 },
+              "end": { "line": 32, "column": 0 }
+            },
+            "key": "DGyUC51VfT"
           },
           {
             "type": "admonition",
             "kind": "seealso",
+            "position": {
+              "start": { "line": 33, "column": 0 },
+              "end": { "line": 36, "column": 0 }
+            },
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [{ "type": "text", "value": "See Also", "key": "a3c5lhiyvQ" }],
-                "key": "qLduVLws8t"
+                "children": [{ "type": "text", "value": "See Also", "key": "LSoBEfWCfF" }],
+                "key": "RQowcRg0J8"
               },
               {
                 "type": "paragraph",
+                "position": {
+                  "start": { "line": 34, "column": 0 },
+                  "end": { "line": 35, "column": 0 }
+                },
                 "children": [
                   {
                     "type": "text",
                     "value": "Reference headings by preceding headers with a ",
-                    "key": "LbvAxaoFgB"
+                    "key": "HD8sdFP9ox"
                   },
-                  { "type": "inlineCode", "value": "(label)=", "key": "njoxqbTCfH" },
-                  { "type": "text", "value": ". See ", "key": "qjc8w3I1P1" },
+                  { "type": "inlineCode", "value": "(label)=", "key": "RGW6zmhjms" },
+                  { "type": "text", "value": ". See ", "key": "F8mH654Xax" },
                   {
                     "type": "link",
-                    "url": "/docs/references",
-                    "children": [],
-                    "key": "Oh6C6qXBaw",
+                    "url": "/guide/references",
+                    "children": [{ "type": "text", "value": "References & Links" }],
+                    "key": "LpBJ1zOivV",
                     "urlSource": "./references.md",
                     "internal": true
                   },
-                  { "type": "text", "value": "!", "key": "hbne0gCCEa" }
+                  { "type": "text", "value": "!", "key": "GcFSESkcWv" }
                 ],
-                "key": "hZGLdVVXSk"
+                "key": "lk30L2qlMK"
               }
             ],
-            "key": "u1hMxvu1dx"
+            "key": "fgnDZEZ1sO"
           },
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Lists", "key": "q6xEfaJhVE" }],
-            "enumerate": false,
-            "key": "ZjO7dCOOIb"
+            "position": {
+              "start": { "line": 37, "column": 0 },
+              "end": { "line": 38, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Lists", "key": "fTwaK9xli6" }],
+            "identifier": "lists",
+            "label": "Lists",
+            "html_id": "lists",
+            "implicit": true,
+            "key": "YI5Y7wNHgf"
           },
           {
             "type": "paragraph",
-            "children": [{ "type": "text", "value": "Bullet points:", "key": "SOz1zJEwOW" }],
-            "key": "XtRwRlrTfo"
+            "position": {
+              "start": { "line": 39, "column": 0 },
+              "end": { "line": 40, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Bullet points:", "key": "TuGKpyH8fh" }],
+            "key": "ApNSxe99Nk"
           },
           {
             "type": "myst",
             "value": "- headings\n- lists\n  - bullets\n  - numbers\n- code blocks\n",
-            "key": "KoGXBwGVHF"
+            "position": {
+              "start": { "line": 41, "column": 0 },
+              "end": { "line": 48, "column": 0 }
+            },
+            "key": "Y3knTFZqtG"
           },
           {
             "type": "paragraph",
-            "children": [{ "type": "text", "value": "Numbered items:", "key": "W0gA6zr6Ng" }],
-            "key": "ykW7DH5IUA"
+            "position": {
+              "start": { "line": 49, "column": 0 },
+              "end": { "line": 50, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Numbered items:", "key": "S9vIuwyurL" }],
+            "key": "WiR5OidbnY"
           },
-          { "type": "myst", "value": "1. quotes\n2. breaks\n3. links\n", "key": "kCiq03neWU" },
+          {
+            "type": "myst",
+            "value": "1. quotes\n2. breaks\n3. links\n",
+            "position": {
+              "start": { "line": 51, "column": 0 },
+              "end": { "line": 56, "column": 0 }
+            },
+            "key": "zp6dYA0RW5"
+          },
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Code", "key": "kMmlodsijZ" }],
-            "enumerate": false,
-            "key": "qXCI3CCQJ4"
+            "position": {
+              "start": { "line": 57, "column": 0 },
+              "end": { "line": 58, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Code", "key": "IykXDNN7n0" }],
+            "identifier": "code",
+            "label": "Code",
+            "html_id": "code",
+            "implicit": true,
+            "key": "zXcRUzOD64"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 59, "column": 0 },
+              "end": { "line": 60, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "Code blocks are enclosed in 3 or more ",
-                "key": "Zgk2oUZd9f"
+                "key": "T1TYEejmOe"
               },
-              { "type": "inlineCode", "value": "`", "key": "vsQiJYc71i" },
-              { "type": "text", "value": " or ", "key": "rtYBJrPvRZ" },
-              { "type": "inlineCode", "value": "~", "key": "jIqLDsc1Ff" },
-              { "type": "text", "value": " with an optional language name.", "key": "DpARYz23FD" }
+              { "type": "inlineCode", "value": "`", "key": "CvQAp7ebjN" },
+              { "type": "text", "value": " or ", "key": "voigomLb3k" },
+              { "type": "inlineCode", "value": "~", "key": "r439Ix1bgj" },
+              { "type": "text", "value": " with an optional language name.", "key": "azbzyzlDZF" }
             ],
-            "key": "AGvFwWATpu"
+            "key": "iamdi3rEi8"
           },
           {
             "type": "myst",
             "value": "```python\nprint('this is python')\n```\n",
-            "key": "CrM3fWEAc3"
+            "position": {
+              "start": { "line": 61, "column": 0 },
+              "end": { "line": 66, "column": 0 }
+            },
+            "key": "HJakKfNBKz"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 67, "column": 0 },
+              "end": { "line": 68, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "Indented paragraphs are also treated as literal text. This may be used for code or other preformatted text.",
-                "key": "JZRF2hM8uQ"
+                "key": "jKzsN3TfIn"
               }
             ],
-            "key": "ZrWgyR0dDg"
+            "key": "uZFjzWQgg0"
           },
           {
             "type": "myst",
             "value": "Some JSON:\n\n    {\n      'literal': '*text*'\n    }\n",
-            "key": "dVXf6Ys2OC"
+            "position": {
+              "start": { "line": 69, "column": 0 },
+              "end": { "line": 76, "column": 0 }
+            },
+            "key": "oBos0XIgpZ"
           },
           {
             "type": "admonition",
             "kind": "seealso",
+            "position": {
+              "start": { "line": 77, "column": 0 },
+              "end": { "line": 80, "column": 0 }
+            },
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [{ "type": "text", "value": "See Also", "key": "hZTlL4ctdn" }],
-                "key": "dKi4MQBaz4"
+                "children": [{ "type": "text", "value": "See Also", "key": "mopnlcPdL4" }],
+                "key": "Gno4aXGyNA"
               },
               {
                 "type": "paragraph",
+                "position": {
+                  "start": { "line": 78, "column": 0 },
+                  "end": { "line": 79, "column": 0 }
+                },
                 "children": [
                   {
                     "type": "text",
                     "value": "Create code-blocks with additional highlighting using the ",
-                    "key": "FdM0LRpYPo"
+                    "key": "Vfm7V8FrGu"
                   },
-                  { "type": "inlineCode", "value": "code-block", "key": "vH2mGy0toy" },
-                  { "type": "text", "value": " directive. See more here!", "key": "yz5CEvFrzP" }
+                  { "type": "inlineCode", "value": "code-block", "key": "BzJWqH15Di" },
+                  { "type": "text", "value": " directive. See more here!", "key": "JDELJshduZ" }
                 ],
-                "key": "xq9B0DEYGd"
+                "key": "QPCeiIARhz"
               }
             ],
-            "key": "RxyViwCKyG"
+            "key": "QOQXTZE3Ox"
           },
           {
             "type": "mystComment",
             "value": "TODO: provide a link!\n TODO: myst: implement code-block",
-            "key": "zUOrOVcmCB"
+            "position": {
+              "start": { "line": 81, "column": 0 },
+              "end": { "line": 83, "column": 0 }
+            },
+            "key": "mbNFrs2LXR"
           },
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Quotes", "key": "HNiXzSx8bJ" }],
-            "enumerate": false,
-            "key": "AK8WAy1Kiv"
+            "position": {
+              "start": { "line": 84, "column": 0 },
+              "end": { "line": 85, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Quotes", "key": "RaAYrLUn4d" }],
+            "identifier": "quotes",
+            "label": "Quotes",
+            "html_id": "quotes",
+            "implicit": true,
+            "key": "V78CekVkcA"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 86, "column": 0 },
+              "end": { "line": 87, "column": 0 }
+            },
             "children": [
-              { "type": "text", "value": "Quote blocks are prepended with ", "key": "HAwW9xPHyg" },
-              { "type": "inlineCode", "value": ">", "key": "tHuaLYlHbg" },
-              { "type": "text", "value": ":", "key": "E9d3IFwZVe" }
+              { "type": "text", "value": "Quote blocks are prepended with ", "key": "uyiyBxVBpl" },
+              { "type": "inlineCode", "value": ">", "key": "cC4nZNQL3q" },
+              { "type": "text", "value": ":", "key": "mgtEyKrqvb" }
             ],
-            "key": "JwW9eJBlok"
+            "key": "bq3jBpqZPC"
           },
-          { "type": "myst", "value": "> Super profound quote\n", "key": "bP0uKZBG5R" },
+          {
+            "type": "myst",
+            "value": "> Super profound quote\n",
+            "position": {
+              "start": { "line": 88, "column": 0 },
+              "end": { "line": 91, "column": 0 }
+            },
+            "key": "kajFjROYLE"
+          },
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Thematic Break", "key": "AfkZyZn8W0" }],
-            "enumerate": false,
-            "key": "MapiGagcx1"
+            "position": {
+              "start": { "line": 92, "column": 0 },
+              "end": { "line": 93, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Thematic Break", "key": "TVVtcyc7MA" }],
+            "identifier": "thematic break",
+            "label": "Thematic Break",
+            "html_id": "thematic-break",
+            "implicit": true,
+            "key": "xGHi8ec2do"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 94, "column": 0 },
+              "end": { "line": 95, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "Create a horizontal line in the output",
-                "key": "hhMwKVgDbk"
+                "key": "ayLsgq5vOJ"
               }
             ],
-            "key": "JSAlnWiTmn"
+            "key": "U25g6tHSNt"
           },
-          { "type": "myst", "value": "Section 1\n\n---\n\nSection 2\n", "key": "MMwKosb5k4" },
+          {
+            "type": "myst",
+            "value": "Section 1\n\n---\n\nSection 2\n",
+            "position": {
+              "start": { "line": 96, "column": 0 },
+              "end": { "line": 103, "column": 0 }
+            },
+            "key": "PNuNMjTuMe"
+          },
           {
             "type": "admonition",
             "kind": "seealso",
+            "position": {
+              "start": { "line": 104, "column": 0 },
+              "end": { "line": 108, "column": 0 }
+            },
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [{ "type": "text", "value": "See Also", "key": "DGIcO1ij3T" }],
-                "key": "yecvZmGd38"
+                "children": [{ "type": "text", "value": "See Also", "key": "rMmk1bUaTW" }],
+                "key": "r93Cp4FbR2"
               },
               {
                 "type": "paragraph",
+                "position": {
+                  "start": { "line": 105, "column": 0 },
+                  "end": { "line": 107, "column": 0 }
+                },
                 "children": [
                   {
                     "type": "text",
                     "value": "Thematic breaks should not be confused with MyST ",
-                    "key": "hvFi2NfZUm"
+                    "key": "lWV6x8tHW6"
                   },
                   {
                     "type": "link",
-                    "url": "/docs/blocks",
-                    "children": [{ "type": "text", "value": "block syntax", "key": "mLePfOocdp" }],
-                    "key": "JjwzamOqyc",
+                    "url": "/guide/blocks",
+                    "children": [{ "type": "text", "value": "block syntax", "key": "nCdbGJOssI" }],
+                    "key": "fv0O96bSE8",
                     "urlSource": "./blocks.md",
                     "internal": true
                   },
                   {
                     "type": "text",
                     "value": ",\nwhich is used to structurally seperate content.",
-                    "key": "GGHxFaKQwZ"
+                    "key": "UDmDd4rAvQ"
                   }
                 ],
-                "key": "f6ynRBz3Eu"
+                "key": "HD2Us80cWB"
               }
             ],
-            "key": "bPqjON174u"
+            "key": "MDwalTxvHF"
           },
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Link Definitions", "key": "zQNqtWeWif" }],
-            "enumerate": false,
-            "key": "IK0IyNU60a"
+            "position": {
+              "start": { "line": 109, "column": 0 },
+              "end": { "line": 110, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Link Definitions", "key": "PYKVlRSEtX" }],
+            "identifier": "link definitions",
+            "label": "Link Definitions",
+            "html_id": "link-definitions",
+            "implicit": true,
+            "key": "HG4263gV0W"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 111, "column": 0 },
+              "end": { "line": 112, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "Links may be defined outside of text with a reference target (no spaces) and an optional title.",
-                "key": "A7oTXfkC9b"
+                "key": "FC6IVPNp3K"
               }
             ],
-            "key": "aJwkyCjuOR"
+            "key": "RO4ZewiWvX"
           },
           {
             "type": "myst",
             "value": "[This is a link defined elsewhere!][key]\n\n[key]: https://www.google.com 'a title'\n",
-            "key": "H1SVlP8kzt"
+            "position": {
+              "start": { "line": 113, "column": 0 },
+              "end": { "line": 118, "column": 0 }
+            },
+            "key": "XCfrYhdTGb"
           },
           {
             "type": "admonition",
             "kind": "seealso",
+            "position": {
+              "start": { "line": 119, "column": 0 },
+              "end": { "line": 123, "column": 0 }
+            },
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [{ "type": "text", "value": "See Also", "key": "gXf2qeQO49" }],
-                "key": "oOsT5cwuGa"
+                "children": [{ "type": "text", "value": "See Also", "key": "tgypz7zppc" }],
+                "key": "fP0Js330Kw"
               },
               {
                 "type": "paragraph",
+                "position": {
+                  "start": { "line": 120, "column": 0 },
+                  "end": { "line": 122, "column": 0 }
+                },
                 "children": [
-                  { "type": "text", "value": "These can be used in ", "key": "shVQ9tNRxh" },
+                  { "type": "text", "value": "These can be used in ", "key": "LjCkqFo3Cq" },
                   {
                     "type": "crossReference",
-                    "children": [{ "type": "text", "value": "Inline links", "key": "kLwawHGo7I" }],
+                    "children": [{ "type": "text", "value": "Inline links" }],
+                    "key": "UCN16nC2Kk",
                     "kind": "ref",
                     "identifier": "inline-links",
                     "label": "inline-links",
-                    "resolved": true,
-                    "key": "Yyz27jMFkx"
+                    "resolved": true
                   },
-                  { "type": "text", "value": " and are similar to ", "key": "TBYCqcPXKH" },
+                  { "type": "text", "value": " and are similar to ", "key": "kjnmYkxG3r" },
                   {
                     "type": "link",
-                    "url": "/docs/references",
-                    "children": [],
-                    "key": "faTYrCdbWS",
+                    "url": "/guide/references",
+                    "children": [{ "type": "text", "value": "References & Links" }],
+                    "key": "tnueMGjWQ2",
                     "urlSource": "./references.md",
                     "internal": true
                   },
                   {
                     "type": "text",
                     "value": " in MyST.\nThis syntax is also similar to ",
-                    "key": "dYLXLLiTHB"
+                    "key": "fd3lfbonXK"
                   },
                   {
                     "type": "link",
-                    "url": "/docs/footnotes",
-                    "children": [],
-                    "key": "sUP68BPnz5",
+                    "url": "/guide/footnotes",
+                    "children": [{ "type": "text", "value": "Footnotes" }],
+                    "key": "lKHSCYcpzo",
                     "urlSource": "./footnotes.md",
                     "internal": true
                   },
-                  { "type": "text", "value": ".", "key": "D5Uxh2iAEG" }
+                  { "type": "text", "value": ".", "key": "iKkIbURx3s" }
                 ],
-                "key": "pUZQCFtq2X"
+                "key": "XP9iffI2iO"
               }
             ],
-            "key": "wH3lKTzi6F"
+            "key": "vOUsoISIGB"
           },
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Paragraph", "key": "RBlD1aGQpg" }],
-            "enumerate": false,
-            "key": "GIVLM2Gypn"
+            "position": {
+              "start": { "line": 124, "column": 0 },
+              "end": { "line": 125, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Paragraph", "key": "LyAu3IuG9O" }],
+            "identifier": "paragraph",
+            "label": "Paragraph",
+            "html_id": "paragraph",
+            "implicit": true,
+            "key": "qCTclefa2d"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 126, "column": 0 },
+              "end": { "line": 127, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "Any text that does not belong to another block is simply a paragraph:",
-                "key": "jZEtJAKKZl"
+                "key": "KVn8TaM9aW"
               }
             ],
-            "key": "amBgJycKmD"
+            "key": "ICPJXZreXe"
           },
-          { "type": "myst", "value": "any _text_\n", "key": "WujeHslZc8" },
+          {
+            "type": "myst",
+            "value": "any _text_\n",
+            "position": {
+              "start": { "line": 128, "column": 0 },
+              "end": { "line": 131, "column": 0 }
+            },
+            "key": "pInuBPhdi0"
+          },
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Valid HTML", "key": "eTnWbiryrq" }],
-            "enumerate": false,
-            "key": "StKxh6lqhE"
+            "position": {
+              "start": { "line": 132, "column": 0 },
+              "end": { "line": 133, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Valid HTML", "key": "o6XOp3phP5" }],
+            "identifier": "valid html",
+            "label": "Valid HTML",
+            "html_id": "valid-html",
+            "implicit": true,
+            "key": "WdagjuVKjy"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 134, "column": 0 },
+              "end": { "line": 135, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "Any valid HTML may also be included in a MyST document and rendered to HTML. However, you must set the option ",
-                "key": "u6AREmcqVl"
+                "key": "jzfYCfMqNP"
               },
-              { "type": "inlineCode", "value": "allowDangerousHtml: true", "key": "wQNk099Af0" },
-              { "type": "text", "value": " in the MyST parser.", "key": "EFIJ6rhmNv" }
+              { "type": "inlineCode", "value": "allowDangerousHtml: true", "key": "ViwaCrweIZ" },
+              { "type": "text", "value": " in the MyST parser.", "key": "W3GXLBDpx4" }
             ],
-            "key": "BTXB1oPqCf"
+            "key": "ZeGoGWvPRU"
           },
           {
             "type": "heading",
             "depth": 2,
-            "children": [{ "type": "text", "value": "Inline Markup", "key": "Qxq8wbXMPC" }],
-            "enumerate": false,
-            "key": "n6qklYRq6Y"
+            "position": {
+              "start": { "line": 136, "column": 0 },
+              "end": { "line": 137, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Inline Markup", "key": "VvWTMXydhu" }],
+            "identifier": "inline markup",
+            "label": "Inline Markup",
+            "html_id": "inline-markup",
+            "implicit": true,
+            "key": "BOw8fRmvgj"
           },
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Inline links", "key": "xj6Dw2mj0T" }],
+            "position": {
+              "start": { "line": 140, "column": 0 },
+              "end": { "line": 141, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Inline links", "key": "yWJyjB2kQu" }],
             "identifier": "inline-links",
             "label": "inline-links",
-            "enumerate": false,
-            "key": "siwQ1D1sAZ"
+            "html_id": "inline-links",
+            "key": "c18akSqPIh"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 142, "column": 0 },
+              "end": { "line": 143, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "Auto-link where link itself is shown in final output:",
-                "key": "uIyL0iQTLe"
+                "key": "IwAbuS6EFy"
               }
             ],
-            "key": "yzhAkvgIkv"
+            "key": "dhvfiMUBdf"
           },
           {
             "type": "myst",
             "value": "Search engine: <https://www.google.com>\n",
-            "key": "zFaEaKjaS5"
+            "position": {
+              "start": { "line": 144, "column": 0 },
+              "end": { "line": 147, "column": 0 }
+            },
+            "key": "gJj5Q2xZR1"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 148, "column": 0 },
+              "end": { "line": 149, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "Link with alternative text and optional title:",
-                "key": "iFLAwUh2JK"
+                "key": "WuqD3XUGRR"
               }
             ],
-            "key": "bSAR9KvqGr"
+            "key": "p5LyATIB7l"
           },
           {
             "type": "myst",
             "value": "[search engine](https://www.google.com \"Google\")\n",
-            "key": "DUx4mfwfho"
+            "position": {
+              "start": { "line": 150, "column": 0 },
+              "end": { "line": 153, "column": 0 }
+            },
+            "key": "OUKOklUUZT"
           },
           {
             "type": "admonition",
             "kind": "seealso",
+            "position": {
+              "start": { "line": 154, "column": 0 },
+              "end": { "line": 157, "column": 0 }
+            },
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [{ "type": "text", "value": "See Also", "key": "D5Ak62DzUY" }],
-                "key": "BVGWF2EEg5"
+                "children": [{ "type": "text", "value": "See Also", "key": "uKWzIgxkdT" }],
+                "key": "psOeT1fQJt"
               },
               {
                 "type": "paragraph",
+                "position": {
+                  "start": { "line": 155, "column": 0 },
+                  "end": { "line": 156, "column": 0 }
+                },
                 "children": [
                   {
                     "type": "link",
-                    "url": "/docs/references",
-                    "children": [],
-                    "key": "jrYYMaEwXC",
+                    "url": "/guide/references",
+                    "children": [{ "type": "text", "value": "References & Links" }],
+                    "key": "H3M20KOfFD",
                     "urlSource": "./references.md",
                     "internal": true
                   },
                   {
                     "type": "text",
                     "value": " provides other ways to reference inline content.",
-                    "key": "uAjVMtwwmP"
+                    "key": "nxxL7nUdy2"
                   }
                 ],
-                "key": "cJMnJP5MO4"
+                "key": "KFHDk24pKS"
               }
             ],
-            "key": "rAiSeGe3uN"
+            "key": "PzAFWOWSuG"
           },
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Inline images", "key": "xDr0IOljdj" }],
-            "enumerate": false,
-            "key": "t1V9qXD5Dz"
+            "position": {
+              "start": { "line": 158, "column": 0 },
+              "end": { "line": 159, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Inline images", "key": "k4EctA78yS" }],
+            "identifier": "inline images",
+            "label": "Inline images",
+            "html_id": "inline-images",
+            "implicit": true,
+            "key": "ra16ZTJdGD"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 160, "column": 0 },
+              "end": { "line": 161, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "Link to an image can be done similar to other inline links, or you may use HTML syntax to include image size, etc.",
-                "key": "sSKKjg8EuU"
+                "key": "DjU4q1GWOn"
               }
             ],
-            "key": "UuIwYrW6Rv"
+            "key": "zxHfGngNfj"
           },
           {
             "type": "myst",
             "value": "![alt](https://source.unsplash.com/random/500x200/?fruit \"title\")\n",
-            "key": "yQ0pCL757B"
+            "position": {
+              "start": { "line": 162, "column": 0 },
+              "end": { "line": 165, "column": 0 }
+            },
+            "key": "acGTFoG2bU"
           },
           {
             "type": "admonition",
             "kind": "seealso",
+            "position": {
+              "start": { "line": 166, "column": 0 },
+              "end": { "line": 169, "column": 0 }
+            },
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [{ "type": "text", "value": "See Also", "key": "gaAJLMDpvN" }],
-                "key": "mOMR3e9r8C"
+                "children": [{ "type": "text", "value": "See Also", "key": "EsQY47Hhf0" }],
+                "key": "lk0VFK2Zos"
               },
               {
                 "type": "paragraph",
+                "position": {
+                  "start": { "line": 167, "column": 0 },
+                  "end": { "line": 168, "column": 0 }
+                },
                 "children": [
                   {
                     "type": "link",
-                    "url": "/docs/figures",
-                    "children": [],
-                    "key": "Bfvi6AY1yh",
+                    "url": "/guide/figures",
+                    "children": [{ "type": "text", "value": "Figures & Images" }],
+                    "key": "JqmrmWBrPP",
                     "urlSource": "./figures.md",
                     "internal": true
                   },
                   {
                     "type": "text",
                     "value": " provides other ways to size, label, and caption images.",
-                    "key": "eda8OfxjBs"
+                    "key": "BAYIlGPQgU"
                   }
                 ],
-                "key": "DbD79ZeOcO"
+                "key": "Blf9wbOlSa"
               }
             ],
-            "key": "KlyNFnn4x1"
+            "key": "XHevKm1ajX"
           },
           {
             "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "Text formatting", "key": "x9NFJsUbmp" }],
-            "enumerate": false,
-            "key": "E2FinQSp20"
+            "position": {
+              "start": { "line": 170, "column": 0 },
+              "end": { "line": 171, "column": 0 }
+            },
+            "children": [{ "type": "text", "value": "Text formatting", "key": "Ktf7XG4YAq" }],
+            "identifier": "text formatting",
+            "label": "Text formatting",
+            "html_id": "text-formatting",
+            "implicit": true,
+            "key": "AWyUOifxPK"
           },
           {
             "type": "paragraph",
+            "position": {
+              "start": { "line": 172, "column": 0 },
+              "end": { "line": 173, "column": 0 }
+            },
             "children": [
               {
                 "type": "text",
                 "value": "Standard inline formatting including bold, italic, code, as well as escaped symbols and line breaks:",
-                "key": "fkqZFAkteV"
+                "key": "LtXVoYJjGI"
               }
             ],
-            "key": "RQpwLwbVjJ"
+            "key": "RdsnSVtL5C"
           },
           {
             "type": "myst",
             "value": "**strong**, _emphasis_, `literal text`, \\*escaped symbols\\*, a hard\\\nbreak\n",
-            "key": "OzjR3pQvOb"
+            "position": {
+              "start": { "line": 174, "column": 0 },
+              "end": { "line": 178, "column": 0 }
+            },
+            "key": "JVL99vlRAW"
           },
           {
             "type": "admonition",
             "kind": "seealso",
+            "position": {
+              "start": { "line": 179, "column": 0 },
+              "end": { "line": 182, "column": 0 }
+            },
             "children": [
               {
                 "type": "admonitionTitle",
-                "children": [{ "type": "text", "value": "See Also", "key": "VLI8pkJydY" }],
-                "key": "mWuKpirsVP"
+                "children": [{ "type": "text", "value": "See Also", "key": "u2DdzlVy02" }],
+                "key": "gdEMVKOisD"
               },
               {
                 "type": "paragraph",
+                "position": {
+                  "start": { "line": 180, "column": 0 },
+                  "end": { "line": 181, "column": 0 }
+                },
                 "children": [
                   {
                     "type": "link",
-                    "url": "/docs/basic",
-                    "children": [],
-                    "key": "qrh6FWOvLo",
+                    "url": "/guide/basic",
+                    "children": [{ "type": "text", "value": "HTML Roles" }],
+                    "key": "i1d0YGSI2g",
                     "urlSource": "./basic.md",
                     "internal": true
                   },
                   {
                     "type": "text",
                     "value": " provides other roles for subscript, superscript, abbeviations, and other text formating.",
-                    "key": "DmfcH1YrTM"
+                    "key": "nOU98gluth"
                   }
                 ],
-                "key": "lZETqhoo4G"
+                "key": "YGMXsVtjOB"
               }
             ],
-            "key": "tpzzSb9vYm"
+            "key": "a3apA7zVa6"
           }
         ],
-        "key": "cDpiJ4PVnt"
+        "key": "HSOZmiAXZg"
       }
     ],
-    "key": "iNmf0bazYN"
+    "key": "qQOeEWn0ml"
   },
-  "references": { "cite": { "order": [], "data": {} }, "footnotes": {} },
-  "footer": {
-    "navigation": {
-      "prev": { "title": "Overview", "url": "/docs/overview", "group": "MyST Spec" },
-      "next": { "title": "Admonitions", "url": "/docs/admonitions", "group": "MyST Spec" }
-    }
-  },
-  "domain": "http://localhost:3000"
+  "references": { "cite": { "order": [], "data": {} }, "footnotes": {} }
 }
