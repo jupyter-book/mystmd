@@ -17,13 +17,14 @@ import {
   mathPlugin,
   codePlugin,
   enumerateTargetsPlugin,
+  getFrontmatter,
 } from 'myst-transforms';
 import { extname, join } from 'path';
 import chalk from 'chalk';
 import fetch from 'node-fetch';
 import { KINDS } from '@curvenote/blocks';
 import type { SiteProject } from '../../config/types';
-import { frontmatterFromMdastTree, getPageFrontmatter } from '../../frontmatter';
+import { getPageFrontmatter } from '../../frontmatter';
 import type { Root } from '../../myst';
 import { parseMyst } from '../../myst';
 import type { ISession } from '../../session/types';
@@ -196,7 +197,7 @@ export async function getRawFrontmatterFromFile(session: ISession, file: string)
   await loadFile(session, file);
   const result = cache.$mdast[file];
   if (!result || !result.pre) return undefined;
-  const frontmatter = frontmatterFromMdastTree(result.pre.mdast);
+  const frontmatter = getFrontmatter(result.pre.mdast);
   return frontmatter.frontmatter;
 }
 

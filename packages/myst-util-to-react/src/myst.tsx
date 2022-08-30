@@ -40,7 +40,7 @@ async function parse(text: string) {
     footnotes: {},
   };
   const { frontmatter } = getFrontmatter(mdast, { removeYaml: true, removeHeading: false });
-  const state = new ReferenceState();
+  const state = new ReferenceState({ numbering: frontmatter.numbering, file });
   unified()
     .use(basicTransformationsPlugin)
     .use(mathPlugin, { macros: frontmatter?.math ?? {} }) // This must happen before enumeration, as it can add labels

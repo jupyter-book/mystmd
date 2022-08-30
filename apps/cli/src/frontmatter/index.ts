@@ -1,55 +1,11 @@
-import yaml from 'js-yaml';
-import type { Root, Code, Heading } from 'mdast';
-import { remove, select } from 'mystjs';
+import type { Root } from 'mdast';
+import { getFrontmatter } from 'myst-transforms';
 import type { Licenses } from '../licenses/types';
 import { licensesToString } from '../licenses/validators';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
-import { toText } from '../utils';
 import type { PageFrontmatter } from './types';
 import { validatePageFrontmatter, fillPageFrontmatter } from './validators';
-
-export function frontmatterFromMdastTree(
-  tree: Root,
-  removeNode = true,
-): { tree: Root; frontmatter: Record<string, any> } {
-  const firstNode = tree.children[0] as Code;
-  const secondNode = tree.children[1] as Heading;
-  let frontmatter: Record<string, any> = {};
-  const firstIsYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
-  if (firstIsYaml) {
-    frontmatter = yaml.load(firstNode.value) as Record<string, any>;
-    if (removeNode) (firstNode as any).type = '__delete__';
-  }
-  const nextNode = firstIsYaml ? secondNode : (firstNode as unknown as Heading);
-  const nextNodeIsHeading = nextNode?.type === 'heading' && nextNode.depth === 1;
-  // Explicitly handle the case of a H1 directly after the frontmatter
-  if (nextNodeIsHeading) {
-    const title = toText(nextNode.children);
-    // Add the title if it doesn't already exist
-    if (!frontmatter.title) frontmatter.title = title;
-    // Only remove the title if it is the same
-    if (frontmatter.title && frontmatter.title === title) {
-      if (removeNode) (nextNode as any).type = '__delete__';
-    }
-  }
-  if (!frontmatter.title) {
-    const heading = select('heading', tree) as Heading;
-    if (heading) {
-      frontmatter.title = toText(heading.children);
-      if (removeNode) (heading as any).type = '__delete__';
-    }
-  }
-  if (removeNode) {
-    // Handles deleting the block if it is the only element in the block
-    const possibleNull = remove(tree, '__delete__');
-    if (possibleNull === null) {
-      // null is returned if tree itself didn’t pass the test or is cascaded away
-      remove(tree, { cascade: false }, '__delete__');
-    }
-  }
-  return { tree, frontmatter };
-}
 
 /**
  * Unnest `kernelspec` from `jupyter.kernelspec`
@@ -84,7 +40,10 @@ export function getPageFrontmatter(
   file: string,
   removeNode = true,
 ): PageFrontmatter {
-  const { frontmatter: rawPageFrontmatter } = frontmatterFromMdastTree(tree, removeNode);
+  const { frontmatter: rawPageFrontmatter } = getFrontmatter(tree, {
+    removeYaml: removeNode,
+    removeHeading: removeNode,
+  });
   unnestKernelSpec(rawPageFrontmatter);
   const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, {
     logger: session.log,
