@@ -32,7 +32,7 @@ import type {
   Venue,
 } from './types';
 
-export const SITE_FRONTMATTER_KEYS = ['title', 'description', 'venue'];
+export const SITE_FRONTMATTER_KEYS = ['title', 'description', 'venue', 'keywords'];
 export const PROJECT_FRONTMATTER_KEYS = [
   'authors',
   'date',
@@ -341,6 +341,12 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
   }
   if (defined(value.venue)) {
     output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
+  }
+  if (defined(value.keywords)) {
+    const kwOpts = incrementOptions('keywords', opts);
+    output.keywords = validateList(value.keywords, kwOpts, (word, ind) => {
+      return validateString(word, incrementOptions(String(ind), kwOpts));
+    });
   }
   return output;
 }

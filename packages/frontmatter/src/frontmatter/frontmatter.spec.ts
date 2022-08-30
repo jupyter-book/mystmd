@@ -111,6 +111,7 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   date: '14 Dec 2021',
   kernelspec: {},
   jupytext: {},
+  keywords: ['example', 'test'],
 };
 
 let opts: ValidationOptions;

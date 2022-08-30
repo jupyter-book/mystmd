@@ -81,6 +81,7 @@ export type SiteFrontmatter = {
   title?: string;
   description?: string;
   venue?: Venue;
+  keywords?: string[];
 };
 
 export type ProjectFrontmatter = SiteFrontmatter & {
