@@ -149,7 +149,8 @@ const handlers: Record<string, Handler> = {
     state.write('\\\\\n');
   },
   table: renderNodeToLatex,
-  image(node, state, parent) {
+  image(node, state) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width: nodeWidth, url: nodeSrc, align } = node;
     const src = state.options.localizeImageSrc?.(nodeSrc) || nodeSrc;
     const width = Math.round(nodeWidth ?? DEFAULT_IMAGE_WIDTH);
@@ -257,6 +258,7 @@ class TexSerializer implements ITexSerializer {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   closeBlock(node: any) {
     this.ensureNewLine(true);
     this.file.result += '\n';
