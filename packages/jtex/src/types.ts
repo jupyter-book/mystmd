@@ -59,14 +59,14 @@ export type RendererDoc = {
   };
   authors: {
     name: string;
-    affiliation: string;
+    affiliations: string[];
     orcid?: string;
   }[];
 };
 
 export type Renderer = {
   CONTENT: string;
-  doc: Record<string, any>;
+  doc: RendererDoc;
   options: Record<string, any>;
   tagged: Record<string, string>;
 };

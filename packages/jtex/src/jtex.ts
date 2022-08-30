@@ -9,7 +9,7 @@ import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './do
 import { extendJtexFrontmatter } from './frontmatter';
 import type { ISession, Renderer } from './types';
 import { ensureDirectoryExists } from './utils';
-import { validateTemplateOptions, validateTemplateYml } from './validators';
+import { errorLogger, validateTemplateOptions, validateTemplateYml } from './validators';
 
 const DO_NOT_COPY = [TEMPLATE_FILENAME, 'thumbnail.png'];
 const DO_NOT_COPY_EXTS = ['.md', '.yml', '.zip'];
@@ -60,13 +60,9 @@ class JTex {
       file: this.getTemplateYmlPath(),
       property: 'template',
       messages: {},
+      errorLogFn: errorLogger(this.session),
     };
     const templateYml = validateTemplateYml(this.getTemplateYml(), opts);
-    if (opts.messages.errors?.length) {
-      opts.messages.errors.forEach((error) => {
-        this.session.log.error(error.message);
-      });
-    }
     if (opts.messages.errors?.length || templateYml === undefined) {
       throw new Error(`Cannot use invalid ${TEMPLATE_YML}: ${this.getTemplateYmlPath()}`);
     }
@@ -80,17 +76,13 @@ class JTex {
       file,
       property: 'template_options',
       messages: {},
+      errorLogFn: errorLogger(this.session),
     };
     const validatedTemplateOptions = validateTemplateOptions(
       templateOptions,
       templateYml.config.options,
       opts,
     );
-    if (opts.messages.errors?.length) {
-      opts.messages.errors.forEach((error) => {
-        this.session.log.error(error.message);
-      });
-    }
     if (opts.messages.errors?.length || validatedTemplateOptions === undefined) {
       throw new Error(`Unable to render with template ${this.getTemplateYmlPath()}`);
     }
@@ -134,10 +126,10 @@ class JTex {
     } else {
       content = opts.contentOrPath;
     }
-    const extendedFrontmatter = extendJtexFrontmatter(opts.frontmatter);
+    const doc = extendJtexFrontmatter(this.session, opts.frontmatter);
     const renderer: Renderer = {
       CONTENT: content,
-      doc: extendedFrontmatter,
+      doc,
       tagged: opts.tagged,
       options: opts.options,
     };

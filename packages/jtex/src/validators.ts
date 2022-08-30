@@ -11,7 +11,12 @@ import {
   validationError,
 } from '@curvenote/validators';
 import type { ValidationOptions } from '@curvenote/validators';
-import type { TemplateOptionDefinition, TemplateTagDefinition, TemplateYml } from './types';
+import type {
+  ISession,
+  TemplateOptionDefinition,
+  TemplateTagDefinition,
+  TemplateYml,
+} from './types';
 import { TEMPLATE_OPTION_TYPES } from './types';
 
 export function validateTemplateOption(
@@ -174,4 +179,8 @@ export function validateTemplateYml(input: any, opts: ValidationOptions) {
     output.config = validateTemplateConfig(value.config, incrementOptions('config', opts));
   }
   return output;
+}
+
+export function errorLogger(session: ISession) {
+  return (message: string) => session.log.error(message);
 }
