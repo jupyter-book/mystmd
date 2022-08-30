@@ -54,7 +54,7 @@ function labelMathNodes(file: VFile, node: Math | InlineMath) {
       source: TRANSFORM_NAME,
     });
   }
-  node.value = value.replace(LABEL, '');
+  node.value = value.replace(LABEL, '').trim();
 }
 
 function removeSimpleEquationEnv(file: VFile, node: Math | InlineMath) {
