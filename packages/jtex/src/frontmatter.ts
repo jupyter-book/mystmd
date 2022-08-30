@@ -33,6 +33,18 @@ export function extendJtexFrontmatter(
   if (opts.messages.errors?.length || !validatedAuthors) {
     throw new Error('Required author fields missing for export');
   }
+  const corresponding: RendererDoc['corresponding'] = [];
+  const authors = validatedAuthors.map((a) => {
+    const author = {
+      name: a.name,
+      affiliations: a.affiliations || [],
+      orcid: a.orcid,
+    };
+    if (a.corresponding) {
+      corresponding.push({ ...author, email: a.email });
+    }
+    return author;
+  });
   const doc: RendererDoc = {
     title: filteredFm.title || '',
     description: filteredFm.description || '',
@@ -41,13 +53,9 @@ export function extendJtexFrontmatter(
       month: String(datetime.getMonth() + 1),
       year: String(datetime.getFullYear()),
     },
-    authors: validatedAuthors.map((author) => {
-      return {
-        name: author.name,
-        affiliations: author.affiliations || [],
-        orcid: author.orcid,
-      };
-    }),
+    authors,
+    corresponding,
+    keywords: frontmatter.keywords,
   };
   return doc;
 }

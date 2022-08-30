@@ -62,6 +62,13 @@ export type RendererDoc = {
     affiliations: string[];
     orcid?: string;
   }[];
+  corresponding: {
+    name: string;
+    affiliations: string[];
+    email: string;
+    orcid?: string;
+  }[];
+  keywords?: string[];
 };
 
 export type Renderer = {
