@@ -1,3 +1,5 @@
+import type { Author } from '@curvenote/frontmatter';
+
 export type Logger = Pick<typeof console, 'debug' | 'info' | 'warn' | 'error'>;
 
 export interface ISession {
@@ -49,6 +51,16 @@ export type TemplateYml = {
   };
 };
 
+type NameAndIndex = {
+  name: string;
+  index: number;
+};
+
+type RendererAuthor = Omit<Author, 'affiliations'> & {
+  affiliations?: NameAndIndex[];
+  index: number;
+};
+
 export type RendererDoc = {
   title: string;
   description: string;
@@ -57,17 +69,8 @@ export type RendererDoc = {
     month: string;
     year: string;
   };
-  authors: {
-    name: string;
-    affiliations: string[];
-    orcid?: string;
-  }[];
-  corresponding: {
-    name: string;
-    affiliations: string[];
-    email: string;
-    orcid?: string;
-  }[];
+  authors: RendererAuthor[];
+  affiliations: NameAndIndex[];
   keywords?: string[];
 };
 

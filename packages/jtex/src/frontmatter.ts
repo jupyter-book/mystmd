@@ -1,8 +1,29 @@
-import type { PageFrontmatter } from '@curvenote/frontmatter';
+import type { Author, PageFrontmatter } from '@curvenote/frontmatter';
 import type { ValidationOptions } from '@curvenote/validators';
-import { incrementOptions, validateList, validateObjectKeys } from '@curvenote/validators';
+import { validateObjectKeys } from '@curvenote/validators';
 import { errorLogger } from './validators';
 import type { ISession, RendererDoc } from './types';
+
+function addIndicesToAuthors(authors: Author[], affiliationList: RendererDoc['affiliations']) {
+  const affiliationLookup: Record<string, number> = {};
+  affiliationList.forEach(({ name, index }) => {
+    affiliationLookup[name] = index;
+  });
+  return authors.map((auth, index) => {
+    const affiliations =
+      auth.affiliations?.map((name) => {
+        return { name, index: affiliationLookup[name] };
+      }) || [];
+    return { ...auth, index, affiliations };
+  });
+}
+
+function affiliationsFromAuthors(authors: Author[]) {
+  const allAffiliations = authors.map((auth) => auth.affiliations || []).flat();
+  return [...new Set(allAffiliations)].map((name, index) => {
+    return { name, index };
+  });
+}
 
 export function extendJtexFrontmatter(
   session: ISession,
@@ -23,28 +44,7 @@ export function extendJtexFrontmatter(
   if (opts.messages.errors?.length || !filteredFm) {
     throw new Error('Required frontmatter missing for export');
   }
-  const validatedAuthors = validateList(filteredFm.authors, opts, (author, ind) => {
-    return validateObjectKeys(
-      author,
-      { required: ['name'] },
-      incrementOptions(`author.${ind}`, opts),
-    );
-  });
-  if (opts.messages.errors?.length || !validatedAuthors) {
-    throw new Error('Required author fields missing for export');
-  }
-  const corresponding: RendererDoc['corresponding'] = [];
-  const authors = validatedAuthors.map((a) => {
-    const author = {
-      name: a.name,
-      affiliations: a.affiliations || [],
-      orcid: a.orcid,
-    };
-    if (a.corresponding) {
-      corresponding.push({ ...author, email: a.email });
-    }
-    return author;
-  });
+  const affiliations = affiliationsFromAuthors(frontmatter.authors || []);
   const doc: RendererDoc = {
     title: filteredFm.title || '',
     description: filteredFm.description || '',
@@ -53,9 +53,10 @@ export function extendJtexFrontmatter(
       month: String(datetime.getMonth() + 1),
       year: String(datetime.getFullYear()),
     },
-    authors,
-    corresponding,
+    authors: addIndicesToAuthors(frontmatter.authors || [], affiliations),
+    affiliations,
     keywords: frontmatter.keywords,
   };
+  console.log(JSON.stringify(doc, null, 2));
   return doc;
 }

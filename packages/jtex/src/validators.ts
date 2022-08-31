@@ -97,9 +97,8 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
     output.multiple = validateBoolean(value.multiple, incrementOptions('multiple', opts));
   }
   if (defined(value.choices)) {
-    const choicesOpts = incrementOptions('choices', opts);
-    output.choices = validateList(value.choices, choicesOpts, (val, ind) => {
-      return validateString(val, incrementOptions(String(ind), choicesOpts));
+    output.choices = validateList(value.choices, incrementOptions('choices', opts), (val, ind) => {
+      return validateString(val, incrementOptions(`choices.${ind}`, opts));
     });
   }
   if (defined(value.default)) {
@@ -153,15 +152,13 @@ export function validateTemplateConfig(input: any, opts: ValidationOptions) {
     output.schema = validateObject(value.schema, incrementOptions('schema', opts));
   }
   if (defined(value.tagged)) {
-    const taggedOpts = incrementOptions('tagged', opts);
-    output.tagged = validateList(value.tagged, taggedOpts, (val, ind) => {
-      return validateTemplateTagDefinition(val, incrementOptions(String(ind), taggedOpts));
+    output.tagged = validateList(value.tagged, incrementOptions('tagged', opts), (val, ind) => {
+      return validateTemplateTagDefinition(val, incrementOptions(`tagged.${ind}`, opts));
     });
   }
   if (defined(value.options)) {
-    const optionsOpts = incrementOptions('options', opts);
-    output.options = validateList(value.options, optionsOpts, (val, ind) => {
-      return validateTemplateOptionDefinition(val, incrementOptions(String(ind), optionsOpts));
+    output.options = validateList(value.options, incrementOptions('options', opts), (val, ind) => {
+      return validateTemplateOptionDefinition(val, incrementOptions(`options.${ind}`, opts));
     });
   }
   return output;
