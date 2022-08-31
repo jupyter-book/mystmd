@@ -5,6 +5,7 @@ import type { GenericNode } from 'mystjs';
 import { selectAll, unified } from 'mystjs';
 import mystToTex from 'myst-to-tex';
 import type { VersionId } from '@curvenote/blocks';
+import { ExportFormats } from '@curvenote/frontmatter';
 import type { ValidationOptions } from '@curvenote/validators';
 import { validationError } from '@curvenote/validators';
 import type { ISession } from '../../session/types';
@@ -123,6 +124,9 @@ export async function localArticleToTexTemplated(
 ) {
   const { filename, template, templatePath } = opts;
   const { frontmatter, mdast, references } = await getFileContent(session, file);
+  const templateOptions = opts.templateOptions
+    ? opts.templateOptions
+    : frontmatter.export?.find((exp) => exp.format === ExportFormats.tex);
   const jtex = new JTex(session, { template, path: templatePath });
   await jtex.ensureTemplateExistsOnPath();
   const templateYml = jtex.getValidatedTemplateYml();
@@ -143,7 +147,7 @@ export async function localArticleToTexTemplated(
     throw new Error(`Unable to render with template ${jtex.getTemplateYmlPath()}`);
   }
 
-  const validatedTemplateOptions = jtex.validateOptions(opts.templateOptions || {}, file);
+  const validatedTemplateOptions = jtex.validateOptions(templateOptions || {}, file);
 
   // prune mdast based on tags, if required by template, eg abstract, acknowledgements
   // Need to load up template yaml - returned from jtex, with 'tagged' dict

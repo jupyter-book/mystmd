@@ -9,6 +9,7 @@ import {
   validateDate,
   validateEmail,
   validateEnum,
+  validateKeys,
   validateList,
   validateObject,
   validateObjectKeys,
@@ -18,10 +19,11 @@ import {
   validationWarning,
 } from '@curvenote/validators';
 import { validateLicenses } from '../licenses/validators';
-import { CreditRoles } from './types';
+import { CreditRoles, ExportFormats } from './types';
 import type {
   Author,
   Biblio,
+  Export,
   Jupytext,
   KernelSpec,
   Numbering,
@@ -49,6 +51,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'numbering',
   'bibliography',
   'math',
+  'export',
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = [
   'subtitle',
@@ -73,6 +76,8 @@ export const USE_PROJECT_FALLBACK = [
   'venue',
   'biblio',
   'numbering',
+  'keywords',
+  'export',
 ];
 
 const AUTHOR_KEYS = ['userId', 'name', 'orcid', 'corresponding', 'email', 'roles', 'affiliations'];
@@ -331,6 +336,19 @@ export function validateJupytext(input: any, opts: ValidationOptions) {
   return output;
 }
 
+export function validateExport(input: any, opts: ValidationOptions) {
+  const value = validateObject(input, opts);
+  if (value === undefined) return undefined;
+  validateKeys(value, { required: ['format'] }, { ...opts, suppressWarnings: true });
+  const format = validateEnum<ExportFormats>(value.format, {
+    ...incrementOptions('format', opts),
+    enum: ExportFormats,
+  });
+  if (format === undefined) return undefined;
+  const output: Export = { ...value, format };
+  return output;
+}
+
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: SiteFrontmatter = {};
   if (defined(value.title)) {
@@ -343,10 +361,13 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
   }
   if (defined(value.keywords)) {
-    const kwOpts = incrementOptions('keywords', opts);
-    output.keywords = validateList(value.keywords, kwOpts, (word, ind) => {
-      return validateString(word, incrementOptions(String(ind), kwOpts));
-    });
+    output.keywords = validateList(
+      value.keywords,
+      incrementOptions('keywords', opts),
+      (word, ind) => {
+        return validateString(word, incrementOptions(`keywords.${ind}`, opts));
+      },
+    );
   }
   return output;
 }
@@ -454,6 +475,11 @@ export function validateProjectFrontmatterKeys(
       });
       output.math = filterKeys(math, stringKeys);
     }
+  }
+  if (defined(value.export)) {
+    output.export = validateList(value.export, incrementOptions('export', opts), (exp, ind) => {
+      return validateExport(exp, incrementOptions(`export.${ind}`, opts));
+    });
   }
   return output;
 }

@@ -88,6 +88,8 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   oxa: '',
   numbering: {},
   math: { a: 'b' },
+  keywords: ['example', 'test'],
+  export: [{ format: 'pdf' as any, a: 1 }],
 };
 const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   title: 'frontmatter',
@@ -112,6 +114,7 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   kernelspec: {},
   jupytext: {},
   keywords: ['example', 'test'],
+  export: [{ format: 'pdf' as any, a: 1 }],
 };
 
 let opts: ValidationOptions;

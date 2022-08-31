@@ -77,6 +77,16 @@ export type KernelSpec = {
   env?: Record<string, any>;
 };
 
+export enum ExportFormats {
+  pdf = 'pdf',
+  tex = 'tex',
+  docx = 'docx',
+}
+
+export type Export = {
+  format: ExportFormats;
+} & Record<string, any>;
+
 export type SiteFrontmatter = {
   title?: string;
   description?: string;
@@ -101,6 +111,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   numbering?: boolean | Numbering;
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, string>;
+  export?: Export[];
 };
 
 export type PageFrontmatter = ProjectFrontmatter & {
