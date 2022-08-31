@@ -38,6 +38,7 @@ class JTex {
     this.env = nunjucks
       .configure(this.templatePath, {
         trimBlocks: true,
+        autoescape: false, // Ensures that we are not writing to HTML!
         tags: {
           blockStart: '[#',
           blockEnd: '#]',
