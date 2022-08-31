@@ -18,4 +18,16 @@ describe('myst-to-tex', () => {
 
     expect(tex.result).toEqual('Some \\% \\textit{markdown}');
   });
+  it('escapes quotes', () => {
+    const myst = new MyST();
+    const content = '“quote”';
+
+    const state = new State();
+    const tree = myst.parse(content);
+    const pipe = unified().use(transform, state, {}).use(mystToTex);
+    const result = pipe.runSync(tree as any);
+    const tex = pipe.stringify(result);
+
+    expect(tex.result).toEqual("``quote''");
+  });
 });
