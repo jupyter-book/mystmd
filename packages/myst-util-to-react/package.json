@@ -22,6 +22,7 @@
     "@remix-run/react": "^1.6.3",
     "ansi-to-react": "^6.1.6",
     "classnames": "^2.3.1",
+    "mermaid": "^9.1.6",
     "myst-spec": "^0.0.4",
     "myst-to-tex": "*",
     "myst-transforms": "*",
@@ -35,6 +36,7 @@
     "unist-util-select": "^4.0.1"
   },
   "devDependencies": {
+    "@types/mermaid": "^8.2.9",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "eslint": "^8.21.0",

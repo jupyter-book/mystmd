@@ -18,6 +18,7 @@ import RRID_RENDERERS from './rrid';
 import WIKI_RENDERERS from './wiki';
 import TAB_RENDERERS from './tabs';
 import MYST_RENDERERS from './myst';
+import MERMAID_RENDERERS from './mermaid';
 export { MySTRenderer } from './myst';
 import EXT_RENDERERS from './extensions';
 
@@ -43,6 +44,7 @@ export const DEFAULT_RENDERERS: Record<string, NodeRenderer> = {
   ...HEADING_RENDERERS,
   ...CROSS_REFERENCE_RENDERERS,
   ...MYST_RENDERERS,
+  ...MERMAID_RENDERERS,
   ...EXT_RENDERERS,
 };
 

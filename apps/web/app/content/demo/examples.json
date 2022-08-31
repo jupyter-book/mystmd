@@ -31,6 +31,11 @@
             "key": "HNZBwKrxC6"
           },
           {
+            "type": "mermaid",
+            "key": "HNZBwKrxC6",
+            "value": "flowchart LR\n  A[Jupyter Notebook] --> C\n  B[MyST Markdown] --> C\n  C(mystjs) --> D{MDAST}\n  D --> E[LaTeX]\n  D --> F[Word]\n  D --> G[HTML]\n  E --> H[PDF]"
+          },
+          {
             "type": "list",
             "ordered": false,
             "start": null,
