@@ -2,7 +2,7 @@ import type { Author, PageFrontmatter } from '@curvenote/frontmatter';
 import type { ValidationOptions } from '@curvenote/validators';
 import { validateObjectKeys } from '@curvenote/validators';
 import { errorLogger } from './validators';
-import type { ISession, RendererDoc } from './types';
+import type { ISession, NameAndIndex, RendererDoc } from './types';
 
 function addIndicesToAuthors(authors: Author[], affiliationList: RendererDoc['affiliations']) {
   const affiliationLookup: Record<string, number> = {};
@@ -10,15 +10,18 @@ function addIndicesToAuthors(authors: Author[], affiliationList: RendererDoc['af
     affiliationLookup[name] = index;
   });
   return authors.map((auth, index) => {
-    const affiliations =
-      auth.affiliations?.map((name) => {
-        return { name, index: affiliationLookup[name] };
-      }) || [];
+    const affiliations = auth.affiliations?.map((name) => {
+      return { name, index: affiliationLookup[name] };
+    });
+    if (!affiliations || affiliations.length === 0) {
+      // Explicitly return undefined
+      return { ...auth, index, affiliations: undefined };
+    }
     return { ...auth, index, affiliations };
   });
 }
 
-function affiliationsFromAuthors(authors: Author[]) {
+function affiliationsFromAuthors(authors: Author[]): NameAndIndex[] {
   const allAffiliations = authors.map((auth) => auth.affiliations || []).flat();
   return [...new Set(allAffiliations)].map((name, index) => {
     return { name, index };

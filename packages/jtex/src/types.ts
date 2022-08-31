@@ -51,7 +51,7 @@ export type TemplateYml = {
   };
 };
 
-type NameAndIndex = {
+export type NameAndIndex = {
   name: string;
   index: number;
   letter?: string;
