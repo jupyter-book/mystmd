@@ -86,7 +86,10 @@ export function extractTaggedContent(
   const taggedBlocks = taggedBlocksFromMdast(mdast, tagDefinition.id);
   if (!taggedBlocks) {
     if (tagDefinition.required) {
-      validationError(`required tag not found: ${tagDefinition.id}`, opts);
+      validationError(
+        `required tag not found: ${tagDefinition.id}\n${tagDefinition.description}`,
+        opts,
+      );
     }
     return '';
   }
@@ -130,6 +133,7 @@ export async function localArticleToTexTemplated(
   const jtex = new JTex(session, { template, path: templatePath });
   await jtex.ensureTemplateExistsOnPath();
   const templateYml = jtex.getValidatedTemplateYml();
+  const validatedTemplateOptions = jtex.validateOptions(templateOptions || {}, file);
 
   const tagDefinitions = templateYml?.config?.tagged || [];
   const tagged: Record<string, string> = {};
@@ -146,8 +150,6 @@ export async function localArticleToTexTemplated(
   if (taggedValidationOpts.messages.errors?.length) {
     throw new Error(`Unable to render with template ${jtex.getTemplateYmlPath()}`);
   }
-
-  const validatedTemplateOptions = jtex.validateOptions(templateOptions || {}, file);
 
   // prune mdast based on tags, if required by template, eg abstract, acknowledgements
   // Need to load up template yaml - returned from jtex, with 'tagged' dict

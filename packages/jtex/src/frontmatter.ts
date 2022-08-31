@@ -57,6 +57,5 @@ export function extendJtexFrontmatter(
     affiliations,
     keywords: frontmatter.keywords,
   };
-  console.log(JSON.stringify(doc, null, 2));
   return doc;
 }

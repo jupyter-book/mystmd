@@ -54,11 +54,13 @@ export type TemplateYml = {
 type NameAndIndex = {
   name: string;
   index: number;
+  letter?: string;
 };
 
 type RendererAuthor = Omit<Author, 'affiliations'> & {
   affiliations?: NameAndIndex[];
   index: number;
+  letter?: string;
 };
 
 export type RendererDoc = {
