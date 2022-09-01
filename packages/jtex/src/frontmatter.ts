@@ -4,6 +4,12 @@ import { validateObjectKeys } from '@curvenote/validators';
 import { errorLogger } from './validators';
 import type { ISession, NameAndIndex, RendererDoc } from './types';
 
+function undefinedIfEmpty<T>(array?: T[]): T[] | undefined {
+  // Explicitly return undefined
+  if (!array || array.length === 0) return undefined;
+  return array;
+}
+
 function addIndicesToAuthors(authors: Author[], affiliationList: RendererDoc['affiliations']) {
   const affiliationLookup: Record<string, number> = {};
   affiliationList.forEach(({ name, index }) => {
@@ -13,11 +19,7 @@ function addIndicesToAuthors(authors: Author[], affiliationList: RendererDoc['af
     const affiliations = auth.affiliations?.map((name) => {
       return { name, index: affiliationLookup[name] };
     });
-    if (!affiliations || affiliations.length === 0) {
-      // Explicitly return undefined
-      return { ...auth, index, affiliations: undefined };
-    }
-    return { ...auth, index, affiliations };
+    return { ...auth, index, affiliations: undefinedIfEmpty(affiliations) };
   });
 }
 
@@ -58,6 +60,7 @@ export function extendJtexFrontmatter(
     },
     authors: addIndicesToAuthors(frontmatter.authors || [], affiliations),
     affiliations,
+    bibliography: undefinedIfEmpty(frontmatter.bibliography),
     keywords: frontmatter.keywords,
   };
   return doc;

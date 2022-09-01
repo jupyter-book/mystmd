@@ -75,6 +75,7 @@ export type RendererDoc = {
   };
   authors: RendererAuthor[];
   affiliations: NameAndIndex[];
+  bibliography?: string[];
   keywords?: string[];
 };
 
