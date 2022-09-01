@@ -10,6 +10,7 @@ import {
   validateEnum,
   validateKeys,
   validateList,
+  validateNumber,
   validateObject,
   validateString,
   validateSubdomain,
@@ -95,6 +96,34 @@ describe('validateBoolean', () => {
   it('invalid string errors', async () => {
     expect(validateBoolean('t', opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
+  });
+});
+
+describe('validateNumber', () => {
+  it('number returns self', async () => {
+    expect(validateNumber(2.2, opts)).toEqual(2.2);
+  });
+  it('string number returns number', async () => {
+    expect(validateNumber('2.2', opts)).toEqual(2.2);
+  });
+  it('invalid string errors', async () => {
+    expect(validateNumber('two', opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('less than min errors', async () => {
+    expect(validateNumber(0, { min: 5, ...opts })).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('greater than max errors', async () => {
+    expect(validateNumber(0, { max: -1, ...opts })).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('non-integer errors', async () => {
+    expect(validateNumber(2.2, { integer: true, ...opts })).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('integer in bounds returns self', async () => {
+    expect(validateNumber(5, { integer: true, min: 4, max: 5, ...opts })).toEqual(5);
   });
 });
 

@@ -5,6 +5,7 @@ import {
   validateChoice,
   validateEnum,
   validateList,
+  validateNumber,
   validateObject,
   validateObjectKeys,
   validateString,
@@ -19,21 +20,48 @@ import type {
 } from './types';
 import { TEMPLATE_OPTION_TYPES } from './types';
 
+function validateSingleTemplateOption(
+  input: any,
+  optionDefinition: TemplateOptionDefinition,
+  opts: ValidationOptions,
+) {
+  const { type, regex, choices } = optionDefinition;
+  switch (type) {
+    case 'bool':
+      return validateBoolean(input, opts);
+    case 'str':
+      return validateString(input, { ...opts, regex: regex });
+    case 'choice':
+      return validateChoice(input, { ...opts, choices: choices || [] });
+    default:
+      return validationError(`unknown type on option definition: "${type}"`, opts);
+  }
+}
+
+function validateMultipleTemplateOption(
+  input: any,
+  optionDefinition: TemplateOptionDefinition,
+  opts: ValidationOptions,
+) {
+  const value = validateList(input, opts, (item) => {
+    return validateSingleTemplateOption(item, optionDefinition, opts);
+  });
+  if (value === undefined) return undefined;
+  if (optionDefinition.required && value.length === 0) {
+    return validationError('required option must have at least one value', opts);
+  }
+  return value;
+}
+
 export function validateTemplateOption(
   input: any,
   optionDefinition: TemplateOptionDefinition,
   opts: ValidationOptions,
 ) {
-  switch (optionDefinition.type) {
-    case 'bool':
-      return validateBoolean(input, opts);
-    case 'str':
-      return validateString(input, opts);
-    case 'choice':
-      return validateChoice(input, { ...opts, choices: optionDefinition.choices || [] });
-    default:
-      return validationError(`unknown type on option definition: "${optionDefinition.type}"`, opts);
+  if (optionDefinition.multiple) {
+    return validateMultipleTemplateOption(input, optionDefinition, opts);
   }
+  return validateSingleTemplateOption(input, optionDefinition, opts);
 }
 
 export function validateTemplateOptions(
@@ -68,7 +96,7 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
   const value = validateObjectKeys(
     input,
     {
-      optional: ['description', 'default', 'required', 'multiple', 'choices'],
+      optional: ['description', 'default', 'required', 'multiple', 'choices', 'regex'],
       required: ['id', 'type'],
     },
     opts,
@@ -101,6 +129,9 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
       return validateString(val, incrementOptions(`choices.${ind}`, opts));
     });
   }
+  if (defined(value.regex)) {
+    output.regex = validateString(value.regex, incrementOptions('regex', opts));
+  }
   if (defined(value.default)) {
     output.default = validateTemplateOption(
       value.default,
@@ -115,7 +146,7 @@ export function validateTemplateTagDefinition(input: any, opts: ValidationOption
   const value = validateObjectKeys(
     input,
     {
-      optional: ['description', 'required', 'plain', 'chars', 'words'],
+      optional: ['description', 'required', 'plain', 'max_chars', 'max_words'],
       required: ['id'],
     },
     opts,
@@ -133,7 +164,20 @@ export function validateTemplateTagDefinition(input: any, opts: ValidationOption
   if (defined(value.plain)) {
     output.plain = validateBoolean(value.plain, incrementOptions('plain', opts));
   }
-  // chars, words
+  if (defined(value.max_chars)) {
+    output.max_chars = validateNumber(value.max_chars, {
+      min: 0,
+      integer: true,
+      ...incrementOptions('max_chars', opts),
+    });
+  }
+  if (defined(value.max_words)) {
+    output.max_words = validateNumber(value.max_words, {
+      min: 0,
+      integer: true,
+      ...incrementOptions('max_words', opts),
+    });
+  }
   return output;
 }
 

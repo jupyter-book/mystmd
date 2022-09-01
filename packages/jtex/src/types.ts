@@ -20,8 +20,8 @@ export type TemplateTagDefinition = {
   description?: string;
   required?: boolean;
   plain?: boolean;
-  chars?: MinMax;
-  words?: MinMax;
+  max_chars?: number;
+  max_words?: number;
   // condition
 };
 
@@ -40,6 +40,8 @@ export type TemplateOptionDefinition = {
   required?: boolean;
   multiple?: boolean;
   choices?: string[];
+  regex?: string;
+  max_length?: number;
   // condition
 };
 

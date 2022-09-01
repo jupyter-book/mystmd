@@ -58,6 +58,31 @@ export function validateBoolean(input: any, opts: ValidationOptions) {
 }
 
 /**
+ * Validate value is number
+ *
+ * Attempts to coerce inputs to number with Number(input)
+ */
+export function validateNumber(
+  input: any,
+  opts: { min?: number; max?: number; integer?: boolean } & ValidationOptions,
+) {
+  const value = Number(input);
+  if (Number.isNaN(value)) {
+    return validationError(`must be a number: ${input}`, opts);
+  }
+  if (defined(opts.min) && value < opts.min) {
+    return validationError(`must be greater than or equal to ${opts.min}: ${value}`, opts);
+  }
+  if (defined(opts.max) && value > opts.max) {
+    return validationError(`must be less than or equal to ${opts.max}: ${value}`, opts);
+  }
+  if (opts.integer && !Number.isInteger(value)) {
+    return validationError(`must be an integer: ${value}`, opts);
+  }
+  return value;
+}
+
+/**
  * Validates string value
  *
  * Ensures string length is less than `maxLength` and matches regular expression `regex`.

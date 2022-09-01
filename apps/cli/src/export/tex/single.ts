@@ -9,10 +9,10 @@ import type { VersionId } from '@curvenote/blocks';
 import type { PageFrontmatter } from '@curvenote/frontmatter';
 import { ExportFormats } from '@curvenote/frontmatter';
 import type { ValidationOptions } from '@curvenote/validators';
-import { validationError } from '@curvenote/validators';
+import { defined, validationError } from '@curvenote/validators';
 import type { ISession } from '../../session/types';
 import { loadFile, selectFile, transformMdast } from '../../store/local/actions';
-import { writeFileToFolder } from '../../utils';
+import { toText, writeFileToFolder } from '../../utils';
 import { assertEndsInExtension, makeBuildPaths } from '../utils';
 import { writeBibtex } from '../utils/writeBibtex';
 import { gatherAndWriteArticleContent } from './gather';
@@ -95,6 +95,22 @@ export function extractTaggedContent(
       );
     }
     return { value: '' };
+  }
+  const { max_chars, max_words } = tagDefinition;
+  if (defined(max_chars) || defined(max_words)) {
+    const taggedText = toText(taggedBlocks);
+    if (max_chars != null && taggedText.length > max_chars) {
+      validationError(
+        `tagged block "${tagDefinition.id}" must be less than or equal to ${max_chars} characters`,
+        opts,
+      );
+    }
+    if (max_words != null && taggedText.split(' ').length > max_words) {
+      validationError(
+        `tagged block "${tagDefinition.id}" must be less than or equal to ${max_words} words`,
+        opts,
+      );
+    }
   }
   const taggedMdast = { type: 'root', children: taggedBlocks } as Root;
   const taggedContent = mdastToTex(taggedMdast, frontmatter);

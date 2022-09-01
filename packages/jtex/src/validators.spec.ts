@@ -109,6 +109,54 @@ describe('validateTemplateOptions', () => {
     ).toEqual({});
     expect(opts.messages.errors?.length).toEqual(3);
   });
+  it('multiple fails with single value', async () => {
+    expect(
+      validateTemplateOptions(
+        { a: 'value' },
+        [{ id: 'a', type: 'str' as any, multiple: true }],
+        opts,
+      ),
+    ).toEqual({});
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('multiple validates list', async () => {
+    expect(
+      validateTemplateOptions(
+        { a: ['value'] },
+        [{ id: 'a', type: 'str' as any, multiple: true, required: true }],
+        opts,
+      ),
+    ).toEqual({ a: ['value'] });
+  });
+  it('multiple required fails empty list', async () => {
+    expect(
+      validateTemplateOptions(
+        { a: [] },
+        [{ id: 'a', type: 'str' as any, multiple: true, required: true }],
+        opts,
+      ),
+    ).toEqual({});
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('string validation uses regex', async () => {
+    expect(
+      validateTemplateOptions(
+        { a: 'a b c' },
+        [{ id: 'a', type: 'str' as any, regex: '^[a-z\\s]*$' }],
+        opts,
+      ),
+    ).toEqual({ a: 'a b c' });
+  });
+  it('string validation errors from regex', async () => {
+    expect(
+      validateTemplateOptions(
+        { a: '1 2 3' },
+        [{ id: 'a', type: 'str' as any, regex: '^[a-z\\s]*$' }],
+        opts,
+      ),
+    ).toEqual({});
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
 });
 
 describe('validateTemplateOptionDefinition', () => {
