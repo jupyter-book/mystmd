@@ -75,6 +75,7 @@ class JTex {
     };
     const templateYml = validateTemplateYml(this.getTemplateYml(), opts);
     if (opts.messages.errors?.length || templateYml === undefined) {
+      // Strictly error if template.yml is invalid
       throw new Error(`Cannot use invalid ${TEMPLATE_YML}: ${this.getTemplateYmlPath()}`);
     }
     return templateYml;
@@ -94,8 +95,11 @@ class JTex {
       templateYml.config.options,
       opts,
     );
-    if (opts.messages.errors?.length || validatedTemplateOptions === undefined) {
-      throw new Error(`Invalid options for template ${this.getTemplateYmlPath()} from ${file}`);
+    if (validatedTemplateOptions === undefined) {
+      // Pass even if there are some validation errors; only error on total failure
+      throw new Error(
+        `Unable to parse options for template ${this.getTemplateYmlPath()} from ${file}`,
+      );
     }
     return validatedTemplateOptions;
   }

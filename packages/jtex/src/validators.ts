@@ -48,7 +48,7 @@ function validateMultipleTemplateOption(
   });
   if (value === undefined) return undefined;
   if (optionDefinition.required && value.length === 0) {
-    return validationError('required option must have at least one value', opts);
+    validationError('required option must have at least one value', opts);
   }
   return value;
 }
