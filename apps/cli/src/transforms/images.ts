@@ -19,7 +19,8 @@ import {
   staticPath,
   versionIdToURL,
 } from '../utils';
-import { WebFileObject } from '../web/files';
+import type { ISession } from '../session/types';
+import { convertImageToWebp } from '../export/utils/imagemagick';
 
 function isBase64(data: string) {
   return data.split(';base64,').length === 2;
