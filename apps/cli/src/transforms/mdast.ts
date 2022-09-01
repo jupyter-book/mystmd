@@ -1,6 +1,6 @@
 import fs from 'fs';
 import type { GenericNode } from 'mystjs';
-import type { Root } from '../myst';
+import type { Root } from 'mdast';
 import { selectAll } from 'mystjs';
 import { join, dirname } from 'path';
 import type { ISession } from '../session';

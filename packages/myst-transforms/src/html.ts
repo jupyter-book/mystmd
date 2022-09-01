@@ -9,7 +9,7 @@ import { visit } from 'unist-util-visit';
 import type { Options } from 'rehype-parse';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
-import { liftChildren } from './utils';
+import { liftChildren } from 'myst-utils';
 
 export type HtmlTransformOptions = {
   keepBreaks?: boolean;

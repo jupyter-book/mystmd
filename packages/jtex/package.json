@@ -17,17 +17,16 @@
     }
   },
   "scripts": {
+    "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "clean": "rimraf dist _build",
-    "format": "prettier --write src/**/*.ts tests/**/*.ts",
-    "lint": "eslint -c .eslintrc.js src/**/*.ts tests/**/*.ts",
-    "lint:format": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "test": "jest",
-    "test:cov": "jest --coverage",
-    "test:watch": "jest --watchAll",
+    "lint": "npm run copy:version && eslint -c .eslintrc.js src/**/*.ts tests/**/*.ts",
+    "lint:format": "npm run copy:version && prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "test": "npm run copy:version && jest",
+    "test:watch": "npm run copy:version && jest --watchAll",
     "build:esm": "tsc --project ./src/tsconfig.json --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --project ./src/tsconfig.json --module commonjs --outDir dist/cjs",
     "declarations": "tsc --project ./src/tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
-    "build": "npm-run-all -l clean -p build:cjs build:esm declarations",
+    "build": "npm-run-all -l clean copy:version -p build:cjs build:esm declarations",
     "prepublishOnly": "npm run build"
   },
   "repository": {

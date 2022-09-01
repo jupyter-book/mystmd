@@ -25,7 +25,7 @@ import fetch from 'node-fetch';
 import { KINDS } from '@curvenote/blocks';
 import type { SiteProject } from '../../config/types';
 import { getPageFrontmatter } from '../../frontmatter';
-import type { Root } from '../../myst';
+import type { Root } from 'mdast';
 import { parseMyst } from '../../myst';
 import type { ISession } from '../../session/types';
 import { loadAllConfigs } from '../../session';

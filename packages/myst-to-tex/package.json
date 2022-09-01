@@ -34,8 +34,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build;",
-    "test": "node --experimental-vm-modules  ../../node_modules/.bin/jest",
-    "test:watch": "jest --watchAll",
+    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest",
+    "test:watch": "node --experimental-vm-modules ../../node_modules/.bin/jest --watchAll",
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "watch": "tsc -w -p .",
@@ -48,7 +48,7 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "mystjs": "^0.0.13",
+    "myst-utils": "*",
     "vfile-reporter": "^7.0.4"
   },
   "devDependencies": {

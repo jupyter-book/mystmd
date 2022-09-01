@@ -87,7 +87,9 @@ export function setTextAsChild(node: Partial<Parent>, text: string) {
   node.children = [{ type: 'text', value: text } as Node];
 }
 
-export function toText(content: Node[]): string {
+export function toText(content?: Node[] | Node): string {
+  if (!content) return '';
+  if (!Array.isArray(content)) return toText([content]);
   return (content as PhrasingContent[])
     .map((n) => {
       if ('value' in n) return n.value;

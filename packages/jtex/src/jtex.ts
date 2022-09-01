@@ -7,9 +7,11 @@ import type { ValidationOptions } from '@curvenote/validators';
 import { curvenoteDef } from './definitions';
 import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
 import { extendJtexFrontmatter } from './frontmatter';
-import type { ISession, Renderer } from './types';
+import type { ExpandedImports, ISession, Renderer } from './types';
 import { ensureDirectoryExists } from './utils';
 import { errorLogger, validateTemplateOptions, validateTemplateYml } from './validators';
+import { renderImports } from './imports';
+import version from './version';
 
 const DO_NOT_COPY = [TEMPLATE_FILENAME, 'thumbnail.png'];
 const DO_NOT_COPY_EXTS = ['.md', '.yml', '.zip'];
@@ -119,6 +121,7 @@ class JTex {
     frontmatter: PageFrontmatter;
     tagged: Record<string, string>;
     options: Record<string, any>;
+    imports?: string | ExpandedImports;
   }) {
     if (!fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
       throw new Error(
@@ -141,12 +144,13 @@ class JTex {
       doc,
       tagged: opts.tagged,
       options: opts.options,
+      IMPORTS: renderImports(opts.imports),
     };
     const rendered = this.env.render(TEMPLATE_FILENAME, renderer);
     const outputDirectory = dirname(opts.outputPath);
     ensureDirectoryExists(outputDirectory);
     this.copyTemplateFiles(dirname(opts.outputPath));
-    fs.writeFileSync(opts.outputPath, rendered);
+    fs.writeFileSync(opts.outputPath, `% Created with jtex v.${version}\n${rendered}`);
     fs.writeFileSync(join(outputDirectory, 'curvenote.def'), curvenoteDef);
   }
 

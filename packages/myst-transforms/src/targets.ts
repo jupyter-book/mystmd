@@ -5,7 +5,7 @@ import { remove } from 'unist-util-remove';
 import type { Root } from 'mdast';
 import type { Target, Heading, Parent } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
-import { normalizeLabel, toText } from './utils';
+import { normalizeLabel, toText } from 'myst-utils';
 
 /**
  * Propagate target identifier/value to subsequent node

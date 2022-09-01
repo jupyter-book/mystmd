@@ -4,5 +4,6 @@ export * from './frontmatter';
 export * from './session';
 export * from './types';
 export * from './validators';
+export * from './imports';
 
 export default JTex;

@@ -1,11 +1,8 @@
 import type { CitationRenderer } from 'citation-js-utils';
-import type { map } from 'mystjs';
 import type { KINDS } from '@curvenote/blocks';
 import type { References as SiteReferences } from '@curvenote/site-common';
 import type { PageFrontmatter } from '@curvenote/frontmatter';
-import type { Root } from '../myst';
-
-export type MapResult = ReturnType<typeof map>;
+import type { Root } from 'mdast';
 
 export type { Citations, Footnotes } from '@curvenote/site-common';
 

@@ -8,7 +8,7 @@ import type { OxaLink } from '@curvenote/blocks';
 import { oxaLink, oxaLinkToId } from '@curvenote/blocks';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
-import type { Root } from '../myst';
+import type { Root } from 'mdast';
 import { addWarningForFile, hashAndCopyStaticFile, tic } from '../utils';
 import { links } from '../store/build';
 import { selectLinkStatus } from '../store/build/selectors';
@@ -113,11 +113,11 @@ function mutateOxaLink(session: ISession, file: string, link: GenericNode, oxa: 
     link.url = url;
     if (link.type === 'linkBlock') {
       // Any values already present on the block override link info
-      link.title = link.title || info.title;
+      link.title = link.title || info?.title;
       if (!link.children || link.children.length === 0) {
-        link.children = [{ type: 'text', value: info.description || '' }];
+        link.children = [{ type: 'text', value: info?.description || '' }];
       }
-      link.thumbnail = link.thumbnail || info.thumbnail;
+      link.thumbnail = link.thumbnail || info?.thumbnail;
     }
   }
 }

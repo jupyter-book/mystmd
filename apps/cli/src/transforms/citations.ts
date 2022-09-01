@@ -1,9 +1,9 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import { InlineCite } from 'citation-js-utils';
-import type { GenericNode } from 'mystjs';
+import type { StaticPhrasingContent, Parent } from 'myst-spec';
 import { selectAll } from 'mystjs';
 import type { Logger } from '../logging';
-import type { Root } from '../myst';
+import type { Root } from 'mdast';
 import type { References } from './types';
 
 export type CiteKind = 'narrative' | 'parenthetical';
@@ -12,7 +12,14 @@ export type Cite = {
   type: 'cite';
   kind: CiteKind;
   label: string;
-  children: GenericNode['children'];
+  children: StaticPhrasingContent[];
+  error?: boolean;
+};
+
+export type CiteGroup = {
+  type: 'citeGroup';
+  kind: CiteKind;
+  children: Cite[];
 };
 
 function pushCite(
@@ -32,13 +39,15 @@ function pushCite(
 }
 
 function addCitationChildren(
-  cite: GenericNode,
+  cite: Cite,
   renderer: CitationRenderer,
   kind: CiteKind = 'parenthetical',
 ): boolean {
   const render = renderer[cite.label as string];
   try {
-    const children = render?.inline(kind === 'narrative' ? InlineCite.t : InlineCite.p);
+    const children = render?.inline(
+      kind === 'narrative' ? InlineCite.t : InlineCite.p,
+    ) as StaticPhrasingContent[];
     if (children) {
       cite.children = children;
       return true;
@@ -50,7 +59,7 @@ function addCitationChildren(
   return false;
 }
 
-function hasChildren(node: GenericNode) {
+function hasChildren(node: Parent) {
   return node.children && node.children.length > 0;
 }
 
@@ -62,13 +71,15 @@ export function transformCitations(
   file: string,
 ) {
   // TODO: this can be simplified if typescript doesn't die on the parent
-  selectAll('citeGroup', mdast).forEach((node: GenericNode) => {
-    const kind = node.kind as CiteKind;
+  const citeGroups = selectAll('citeGroup', mdast) as CiteGroup[];
+  citeGroups.forEach((node) => {
+    const kind = node.kind;
     node.children?.forEach((cite) => {
       addCitationChildren(cite, renderer, kind);
     });
   });
-  selectAll('cite', mdast).forEach((cite: GenericNode) => {
+  const citations = selectAll('cite', mdast) as Cite[];
+  citations.forEach((cite) => {
     const citeLabel = cite.label as string;
     // push cites in order of appearance in the document
     pushCite(references, renderer, citeLabel);

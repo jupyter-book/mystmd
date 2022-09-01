@@ -25,7 +25,10 @@
   "bugs": {
     "url": "https://github.com/curvenote/curvenote/issues"
   },
-  "bin": "./dist/curvenote.js",
+  "bin": {
+    "curvenote": "./dist/curvenote.js",
+    "myst": "./dist/curvenote.js"
+  },
   "homepage": "https://github.com/curvenote/curvenote",
   "scripts": {
     "clean": "rimraf dist",

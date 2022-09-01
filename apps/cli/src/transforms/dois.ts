@@ -6,7 +6,7 @@ import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
 import fetch from 'node-fetch';
 import type { Logger } from '../logging';
-import type { Root } from '../myst';
+import type { Root } from 'mdast';
 import { tic } from '../utils';
 import type { Cite } from './citations';
 import type { SingleCitationRenderer } from './types';

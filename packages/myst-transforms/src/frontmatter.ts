@@ -3,7 +3,7 @@ import { select } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
 import type { Root } from 'mdast';
 import type { Code, Heading } from 'myst-spec';
-import { toText } from './utils';
+import { toText } from 'myst-utils';
 
 type Options = {
   removeYaml?: boolean;

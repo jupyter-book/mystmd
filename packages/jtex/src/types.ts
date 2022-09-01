@@ -7,6 +7,8 @@ export interface ISession {
   log: Logger;
 }
 
+export type ExpandedImports = { imports: string[]; commands: string[] };
+
 type MinMax = {
   min: number;
   max: number;
@@ -81,4 +83,5 @@ export type Renderer = {
   doc: RendererDoc;
   options: Record<string, any>;
   tagged: Record<string, string>;
+  IMPORTS?: string;
 };

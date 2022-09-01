@@ -1,17 +1,15 @@
 import fs from 'fs';
 import os from 'os';
-import type { PhrasingContent } from 'mdast';
+import type { Root } from 'mdast';
 import mime from 'mime-types';
-import type { Image } from 'myst-spec';
 import type { GenericNode } from 'mystjs';
-import { select, selectAll } from 'mystjs';
+import { selectAll } from 'mystjs';
 import fetch from 'node-fetch';
 import { dirname, join, parse } from 'path';
 import type { VersionId } from '@curvenote/blocks';
 import { oxaLinkToId } from '@curvenote/blocks';
 import type { PageFrontmatter } from '@curvenote/frontmatter';
 import { convertImageToWebp } from '../export/utils/imagemagick';
-import type { Root } from '../myst';
 import type { ISession } from '../session/types';
 import {
   addWarningForFile,

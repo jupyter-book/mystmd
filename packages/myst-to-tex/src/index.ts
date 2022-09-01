@@ -1,11 +1,14 @@
-import type { Root } from 'myst-spec';
+import type { Root, Parent } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
+import { toText } from 'myst-utils';
 import { captionHandler, containerHandler } from './container';
 import { renderNodeToLatex } from './tables';
-import type { Handler, ITexSerializer, Options } from './types';
-import { DEFAULT_IMAGE_WIDTH } from './types';
-import { stringToLatexMath, stringToLatexText } from './utils';
+import type { Handler, ITexSerializer, LatexResult, Options } from './types';
+import { getLatexImageWidth, stringToLatexMath, stringToLatexText } from './utils';
+import MATH_HANDLERS, { createMathCommands } from './math';
+
+export type { LatexResult } from './types';
 
 const handlers: Record<string, Handler> = {
   text(node, state) {
@@ -15,7 +18,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
   },
   heading(node, state) {
-    const { depth, identifier, enumerated } = node;
+    const { depth, label, enumerated } = node;
     const star = enumerated ? '' : '*';
     if (depth === 1) state.write(`\\section${star}{`);
     if (depth === 2) state.write(`\\subsection${star}{`);
@@ -25,8 +28,8 @@ const handlers: Record<string, Handler> = {
     if (depth === 6) state.write(`\\subparagraph${star}{`);
     state.renderChildren(node, true);
     state.write('}');
-    if (enumerated && identifier) {
-      state.write(`\\label{${identifier}}`);
+    if (enumerated && label) {
+      state.write(`\\label{${label}}`);
     }
     state.closeBlock(node);
   },
@@ -66,30 +69,7 @@ const handlers: Record<string, Handler> = {
     state.write('\n\\bigskip\n\\centerline{\\rule{13cm}{0.4pt}}\n\\bigskip');
     state.closeBlock(node);
   },
-  math(node, state) {
-    const { identifier, enumerated } = node;
-    if (state.isInTable) {
-      state.write('\\(\\displaystyle ');
-      state.write(node.value);
-      state.write(' \\)');
-    } else {
-      // TODO: AMS math
-      state.write(`\\begin{equation${enumerated === false ? '*' : ''}}\n`);
-      if (identifier) {
-        state.write(`\\label{${identifier}}`);
-      }
-      state.ensureNewLine();
-      state.write(node.value);
-      state.ensureNewLine(true);
-      state.write(`\\end{equation${enumerated === false ? '*' : ''}}`);
-    }
-    if (!state.isInTable) state.closeBlock(node);
-  },
-  inlineMath(node, state) {
-    state.write('$');
-    state.text(node.value, true);
-    state.write('$');
-  },
+  ...MATH_HANDLERS,
   mystRole(node, state) {
     state.renderChildren(node, true);
   },
@@ -153,7 +133,7 @@ const handlers: Record<string, Handler> = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width: nodeWidth, url: nodeSrc, align } = node;
     const src = state.options.localizeImageSrc?.(nodeSrc) || nodeSrc;
-    const width = Math.round(nodeWidth ?? DEFAULT_IMAGE_WIDTH);
+    const width = getLatexImageWidth(nodeWidth);
     //   let align = 'center';
     //   switch (nodeAlign?.toLowerCase()) {
     //     case 'left':
@@ -173,7 +153,7 @@ const handlers: Record<string, Handler> = {
     //     state.write(template);
     //     return;
     //   }
-    state.write(`\\includegraphics[width=${width / 100}\\linewidth]{${src}}`);
+    state.write(`\\includegraphics[width=${width}]{${src}}`);
     state.closeBlock(node);
   },
   container: containerHandler,
@@ -181,9 +161,22 @@ const handlers: Record<string, Handler> = {
   captionNumber: () => undefined,
   crossReference(node, state) {
     // Look up reference and add the text
-    const text = 'Figure~%s';
-    const id = state.options.localizeId?.(node.identifier) || node.identifier;
+    const text = (node.template ?? toText(node))?.replace(/\s/g, '~') || '%s';
+    const id = state.options.localizeId?.(node.label) || node.label;
     state.write(text.replace(/%s/g, `\\ref{${id}}`));
+  },
+  citeGroup(node, state) {
+    const tp = node.kind === 'narrative' ? 't' : 'p';
+    state.write(`\\cite${tp}{`);
+    state.renderChildren(node, true, ', ');
+    state.write('}');
+  },
+  cite(node, state, parent) {
+    if (parent.type === 'citeGroup') {
+      state.write(node.label);
+    } else {
+      state.write(`\\cite{${node.label}}`);
+    }
   },
 };
 
@@ -195,11 +188,14 @@ class TexSerializer implements ITexSerializer {
   isInTable = false;
   longFigure = false;
 
+  mathPlugins: Required<Options>['math'];
+
   constructor(file: VFile, opts?: Options) {
     file.result = '';
     this.file = file;
     this.options = opts ?? {};
-    this.handlers = this.options.handlers ?? handlers;
+    this.handlers = opts?.handlers ?? handlers;
+    this.mathPlugins = {}; // initialize empty!
   }
 
   get out(): string {
@@ -225,14 +221,16 @@ class TexSerializer implements ITexSerializer {
     this.write('\n');
   }
 
-  renderChildren(node: any, inline = false) {
-    node.children?.forEach((child: any) => {
+  renderChildren(node: Partial<Parent>, inline = false, delim = '') {
+    const numChildren = node.children?.length ?? 0;
+    node.children?.forEach((child, index) => {
       const handler = this.handlers[child.type];
       if (handler) {
         handler(child, this, node);
       } else {
         console.log(`myst-to-tex: unhandled node of ${child.type}`, child);
       }
+      if (delim && index + 1 < numChildren) this.write(delim);
     });
     if (!inline) this.closeBlock(node);
   }
@@ -267,9 +265,15 @@ class TexSerializer implements ITexSerializer {
 
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
   this.Compiler = (node, file) => {
-    const writer = new TexSerializer(file, opts?.handlers ?? handlers);
-    writer.renderChildren(node);
-    file.result = (file.result as string).trim();
+    const state = new TexSerializer(file, opts ?? { handlers });
+    state.renderChildren(node);
+    const tex = (file.result as string).trim();
+    const result: LatexResult = {
+      imports: [],
+      commands: [...createMathCommands(state.mathPlugins)],
+      value: tex,
+    };
+    file.result = result;
     return file;
   };
 

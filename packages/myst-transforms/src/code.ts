@@ -2,7 +2,7 @@ import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import type { Code } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
-import { fileWarn } from './utils';
+import { fileWarn } from 'myst-utils';
 import type { VFile } from 'vfile';
 
 type Options = {

@@ -1,6 +1,6 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import type { Content, Root } from 'mdast';
+import type { Root } from 'mdast';
 import type {
   Container,
   CrossReference,
@@ -15,11 +15,15 @@ import type {
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import { createHtmlId, fileWarn, normalizeLabel, setTextAsChild } from './utils';
+import { createHtmlId, fileWarn, normalizeLabel, setTextAsChild } from 'myst-utils';
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
 
-type ResolvableCrossReference = CrossReference & { resolved?: boolean };
+type ResolvableCrossReference = CrossReference & {
+  enumerator?: string;
+  template?: string;
+  resolved?: boolean;
+};
 
 export enum TargetKind {
   heading = 'heading',
@@ -67,9 +71,19 @@ export type NumberingOptions = {
 /**
  * See https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-numref
  */
-function fillReferenceEnumerators(node: Node, enumerator: string | number) {
+function fillReferenceEnumerators(
+  node: Pick<ResolvableCrossReference, 'children' | 'template' | 'enumerator'>,
+  template: string,
+  enumerator: string | number,
+) {
+  const noNodeChildren = !node.children?.length;
+  if (noNodeChildren) {
+    setTextAsChild(node, template);
+  }
   const num = String(enumerator);
-  findAndReplace(node as Content, { '%s': num, '{number}': num });
+  node.template = template;
+  node.enumerator = num;
+  findAndReplace(node as any, { '%s': num, '{number}': num });
 }
 
 function copyNode<T extends Node>(node: T): T {
@@ -256,10 +270,7 @@ export class ReferenceState implements IReferenceState {
     };
     const noNodeChildren = !node.children?.length;
     if (kinds.target.math && target.node.enumerator) {
-      if (noNodeChildren) {
-        setTextAsChild(node, '(%s)');
-      }
-      fillReferenceEnumerators(node, target.node.enumerator);
+      fillReferenceEnumerators(node, '(%s)', target.node.enumerator);
       node.resolved = true;
     } else if (kinds.target.heading && !target.node.enumerator) {
       if (noNodeChildren) {
@@ -267,10 +278,7 @@ export class ReferenceState implements IReferenceState {
       }
       node.resolved = true;
     } else if (kinds.target.heading && target.node.enumerator) {
-      if (noNodeChildren) {
-        setTextAsChild(node, 'Section %s');
-      }
-      fillReferenceEnumerators(node, target.node.enumerator);
+      fillReferenceEnumerators(node, 'Section %s', target.node.enumerator);
       node.resolved = true;
     } else if (kinds.ref.ref && (kinds.target.figure || kinds.target.table || kinds.target.code)) {
       if (noNodeChildren) {
@@ -279,22 +287,13 @@ export class ReferenceState implements IReferenceState {
       }
       node.resolved = true;
     } else if (kinds.ref.numref && kinds.target.figure && target.node.enumerator) {
-      if (noNodeChildren) {
-        setTextAsChild(node, 'Figure %s');
-      }
-      fillReferenceEnumerators(node, target.node.enumerator);
+      fillReferenceEnumerators(node, 'Figure %s', target.node.enumerator);
       node.resolved = true;
     } else if (kinds.ref.numref && kinds.target.table && target.node.enumerator) {
-      if (noNodeChildren) {
-        setTextAsChild(node, 'Table %s');
-      }
-      fillReferenceEnumerators(node, target.node.enumerator);
+      fillReferenceEnumerators(node, 'Table %s', target.node.enumerator);
       node.resolved = true;
     } else if (kinds.ref.numref && kinds.target.code && target.node.enumerator) {
-      if (noNodeChildren) {
-        setTextAsChild(node, 'Program %s');
-      }
-      fillReferenceEnumerators(node, target.node.enumerator);
+      fillReferenceEnumerators(node, 'Program %s', target.node.enumerator);
       node.resolved = true;
     }
     if (node.resolved) {
@@ -412,8 +411,7 @@ export function addContainerCaptionNumbersTransform(tree: Root, opts: StateOptio
           html_id: (container as any).html_id,
           enumerator,
         };
-        setTextAsChild(captionNumber, getCaptionLabel(container.kind));
-        fillReferenceEnumerators(captionNumber, enumerator);
+        fillReferenceEnumerators(captionNumber, getCaptionLabel(container.kind), enumerator);
         // The caption number is in the paragraph, it needs a link to the figure container
         // This is a bit awkward, but necessary for (efficient) rendering
         para.children = [captionNumber as any, ...(para?.children ?? [])];

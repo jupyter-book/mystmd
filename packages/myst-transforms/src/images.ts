@@ -2,7 +2,7 @@ import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import type { Container, Paragraph, PhrasingContent, Image } from 'myst-spec';
 import { select, selectAll } from 'unist-util-select';
-import { toText } from './utils';
+import { toText } from 'myst-utils';
 
 export function imageAltTextTransform(tree: Root) {
   const containers = selectAll('container', tree) as Container[];
