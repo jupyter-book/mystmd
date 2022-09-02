@@ -1,0 +1,7 @@
+format: jb-book
+root: index
+chapters:
+  - file: template-rules
+  - file: document
+  - file: template-yml
+  - file: pandoc-comparison
