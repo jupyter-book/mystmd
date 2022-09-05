@@ -105,6 +105,10 @@ const handlers: Record<string, Handler> = {
     // \usepackage[normalem]{ulem}
     state.renderInlineEnvironment(node, 'sout');
   },
+  break(node, state) {
+    state.write('\\\\');
+    state.ensureNewLine();
+  },
   abbreviation(node, state) {
     // TODO: \newacronym{gcd}{GCD}{Greatest Common Divisor}
     // https://www.overleaf.com/learn/latex/glossaries

@@ -20,7 +20,7 @@ export const TabSetRenderer: NodeRenderer = (node, children) => {
   }, []);
   return (
     <div className="">
-      <div className="flex flex-row border-b border-b-gray-100">
+      <div className="flex flex-row border-b border-b-gray-100 overflow-x-auto">
         {items.map((item) => {
           const key = item.sync || item.key;
           return (

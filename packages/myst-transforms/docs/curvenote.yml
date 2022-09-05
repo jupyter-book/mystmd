@@ -1,0 +1,6 @@
+version: 1
+project:
+  title: MyST Transforms
+  github: https://github.com/curvenote/curvenote
+  license: MIT
+  subject: MyST Transforms

@@ -1,0 +1,36 @@
+version: 1
+site:
+  title: MyST JS
+  projects:
+    - path: docs
+      slug: guide
+    - path: packages/myst-transforms/docs
+      slug: myst-transforms
+    - path: packages/myst-to-tex/docs
+      slug: myst-to-tex
+    - path: packages/myst-to-react/docs
+      slug: myst-to-react
+    - path: packages/jtex/docs
+      slug: jtex
+  nav:
+    - title: MyST JS
+      url: /guide
+    - title: Packages
+      children:
+        - title: myst-transforms
+          url: /myst-transforms
+        - title: myst-to-tex
+          url: /myst-to-tex
+        - title: myst-to-react
+          url: /myst-to-react
+        - title: jtex
+          url: /jtex
+  actions:
+    - title: GitHub
+      url: https://github.com/executablebooks/mystjs
+  domains:
+    - rowanc1-myst_docs.curve.space
+    - js.myst.tools
+  twitter: executablebooks
+  logo: docs/public/logo.svg
+  logoText: ''

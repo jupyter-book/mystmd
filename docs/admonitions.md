@@ -15,20 +15,22 @@ Here is a note, try changing it to a `warning`!
 
 The specification calls these kind of directives `admonition`, which are generally used through their named directives, like `{note}` or `{danger}`. Admonitions can have custom classes, icons and hide their children.
 
+(admonitions-list)=
+
 ## Available admonitions
 
 There is one general `{admonition}` directive available, and a number of pre-styled admonitions:
 
-- `attention`
-- `caution`
-- `danger`
-- `error`
+- `note`
 - `important`
 - `hint`
-- `note`
 - `seealso`
 - `tip`
+- `attention`
+- `caution`
 - `warning`
+- `danger`
+- `error`
 
 Try changing the directive type of the admonition below:
 
@@ -37,6 +39,72 @@ Try changing the directive type of the admonition below:
 Try changing `tip` to `warning`!
 ```
 ````
+
+See below for a demo of each admonition in the default theme.
+
+`````{tab-set}
+
+````{tab-item} Note
+```{note}
+This is an note admonition
+```
+````
+
+````{tab-item} Important
+```{important}
+This is an important admonition
+```
+````
+
+````{tab-item} Hint
+```{hint}
+This is an hint admonition
+```
+````
+
+````{tab-item} See Also
+```{seealso}
+This is an seealso admonition
+```
+````
+
+````{tab-item} Tip
+```{tip}
+This is an tip admonition
+```
+````
+
+````{tab-item} Attention
+```{attention}
+This is an attention admonition
+```
+````
+
+````{tab-item} Caution
+```{caution}
+This is an caution admonition
+```
+````
+
+````{tab-item} Warning
+```{warning}
+This is an warning admonition
+```
+````
+
+````{tab-item} Danger
+```{danger}
+This is an danger admonition
+```
+````
+
+````{tab-item} Error
+```{error}
+This is an error admonition
+```
+````
+
+`````
 
 ## Admonition arguments
 
@@ -66,8 +134,6 @@ so content will be appended to the body.
 
 ## Options
 
-TODO
-
 **class**
 : CSS classes to add to your admonition, in addition to the default `admonition` class. The custom CSS class will be first.
 
@@ -83,10 +149,26 @@ My custom admonition that has a `tip` class applied!
 ```
 ````
 
+Note that if you provide conflicting class names, the first one in the {ref}`list above <admonitions-list>` will be used.
+
 ## Dropdown
 
-TODO
+You can also hide the body of your admonition blocks so that users must click the header to reveal the contents. This is helpful if you’d like to include some text that isn’t immediately visible to the user.
 
-## Collapse
+To turn an admonition into a dropdown, add the `dropdown` class to them.
 
-TODO
+````{myst}
+```{note}
+:class: dropdown
+This is initially hidden!
+```
+````
+
+You can use the `dropdown` class in conjunction with `{admonition}` directives to include your own titles and stylings. In the example below, we add both a `tip` and a `dropdown` class.
+
+````{myst}
+```{admonition} Click here!
+:class: tip dropdown
+This is initially hidden!
+```
+````

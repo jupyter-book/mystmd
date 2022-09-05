@@ -7,8 +7,8 @@ type TableExts = {
   colspan?: number;
 };
 
-type Strike = {
-  type: 'strike';
+type Delete = {
+  type: 'delete';
 };
 
 type Underline = {
@@ -63,7 +63,7 @@ type BasicNodeRenderers = {
   mystComment: NodeRenderer<spec.Comment>;
   // Our additions
   captionNumber: NodeRenderer<CaptionNumber>;
-  strike: NodeRenderer<Strike>;
+  delete: NodeRenderer<Delete>;
   underline: NodeRenderer<Underline>;
   smallcaps: NodeRenderer<SmallCaps>;
   // definitions
@@ -73,7 +73,7 @@ type BasicNodeRenderers = {
 };
 
 const BASIC_RENDERERS: BasicNodeRenderers = {
-  strike(node, children) {
+  delete(node, children) {
     return <del key={node.key}>{children}</del>;
   },
   strong(node, children) {
@@ -203,7 +203,11 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
     return <dl key={node.key}>{children}</dl>;
   },
   definitionTerm(node, children) {
-    return <dt key={node.key}>{children}</dt>;
+    return (
+      <dt key={node.key}>
+        <strong>{children}</strong>
+      </dt>
+    );
   },
   definitionDescription(node, children) {
     return <dd key={node.key}>{children}</dd>;

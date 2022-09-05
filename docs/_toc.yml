@@ -7,7 +7,7 @@ parts:
       - file: intro
   - caption: Authoring
     chapters:
-      - file: commonmark
+      - file: typography
       - file: admonitions
       - file: figures
       - file: tables
@@ -19,5 +19,7 @@ parts:
       - file: footnotes
       - file: tasks
       - file: definitions
-      - file: html-roles
       - file: frontmatter
+  - caption: Reference
+    chapters:
+      - file: commonmark

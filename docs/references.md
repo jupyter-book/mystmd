@@ -115,8 +115,6 @@ The `` {doc}`./my-file.md` `` syntax creates a link to the document, which is eq
 
 ### Header Targets
 
-% TODO: We should support pandoc style unnumbered {-} and {.class, #id} syntax
-
 To add labels to a header use `(my-section)=` before the header, these can then be used in markdown links and `{ref}` roles. This is helpful if you want to quickly insert links to other parts of your book.
 
 ```{myst}
@@ -129,6 +127,8 @@ You can use `(label)=` before the element that you want to target. Then referenc
 * {ref}`Custom title <my-section>`
 * [](my-section)
 ```
+
+% TODO: We should support pandoc style unnumbered {-} and {.class, #id} syntax
 
 % TODO: I suppose we can reference a paragraph? But why would we support labeling figures?
 % {note} % Labels can be added before any other block of content.

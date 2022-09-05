@@ -20,6 +20,10 @@ For example, a level 3 header looks like:
 Try changing the number of `#`s to change the `depth`.
 ```
 
+(setex-headings)=
+
+### Setext Headings
+
 An alternative syntax (called setext) is also supported for level 1 and 2 headers,
 by underlining using multiple `===` or `---`. For example:
 
@@ -180,5 +184,5 @@ break
 ```
 
 ```{seealso}
-[](./basic.md) provides other roles for subscript, superscript, abbeviations, and other text formating.
+[](./typography.md) provides other roles for subscript, superscript, abbeviations, and other text formating.
 ```
