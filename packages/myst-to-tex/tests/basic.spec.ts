@@ -21,11 +21,14 @@ describe('myst-to-tex', () => {
     const file = pipe.stringify(tree);
     expect((file.result as LatexResult).value).toEqual('Some \\% \\textit{markdown}');
   });
-  it('escapes quotes', () => {
-    const tree = u('root', u('paragraph', [u('text', { value: '“quote”' })]));
+  it('escapes quotes and unicode', () => {
+    const tree = u(
+      'root',
+      u('paragraph', [u('text', { value: '“quote” ' }), u('inlineMath', { value: '½' })]),
+    );
     const pipe = unified().use(mystToTex);
     pipe.runSync(tree as any);
     const file = pipe.stringify(tree);
-    expect((file.result as LatexResult).value).toEqual("``quote''");
+    expect((file.result as LatexResult).value).toEqual("``quote'' $\\frac{1}{2}$");
   });
 });

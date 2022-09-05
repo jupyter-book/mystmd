@@ -1,4 +1,4 @@
-import type { NodeRenderer } from 'myst-util-to-react';
+import type { NodeRenderer } from './types';
 import { useEffect, useState } from 'react';
 
 async function parse(id: string, text: string): Promise<string> {

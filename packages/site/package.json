@@ -24,7 +24,7 @@
     "@remix-run/react": "^1.6.4",
     "classnames": "^2.3.1",
     "lodash.throttle": "^4.1.1",
-    "myst-util-to-react": "*",
+    "myst-to-react": "*",
     "mystjs": "^0.0.13",
     "node-cache": "^5.1.2",
     "react": "^17.0.2",

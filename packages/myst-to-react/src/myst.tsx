@@ -1,9 +1,9 @@
-import { useParse } from 'myst-util-to-react';
+import { useParse } from '.';
 import { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
 import yaml from 'js-yaml';
 import type { References } from '@curvenote/site-common';
-import type { NodeRenderer } from 'myst-util-to-react';
+import type { NodeRenderer } from './types';
 import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import ExclamationIcon from '@heroicons/react/outline/ExclamationIcon';

@@ -1,6 +1,6 @@
-import type { NodeRenderer } from 'myst-util-to-react';
-import { useParse, DEFAULT_RENDERERS } from 'myst-util-to-react';
-import type { GenericParent } from 'mystjs';
+import type { NodeRenderer } from 'myst-to-react';
+import { useParse, DEFAULT_RENDERERS } from 'myst-to-react';
+import type { Parent } from 'myst-spec';
 
 function Block({
   id,
@@ -8,7 +8,7 @@ function Block({
   renderers = DEFAULT_RENDERERS,
 }: {
   id: string;
-  node: GenericParent;
+  node: Parent;
   renderers?: Record<string, NodeRenderer>;
 }) {
   const children = useParse(node, renderers);
@@ -19,14 +19,14 @@ export function ContentBlocks({
   mdast,
   renderers,
 }: {
-  mdast: GenericParent<Record<string, unknown>>;
+  mdast: Parent;
   renderers?: Record<string, NodeRenderer>;
 }) {
-  const blocks = mdast.children as GenericParent[];
+  const blocks = mdast.children as Parent[];
   return (
     <>
       {blocks.map((node, index) => {
-        return <Block key={node.key} id={`${index}`} node={node} renderers={renderers} />;
+        return <Block key={(node as any).key} id={`${index}`} node={node} renderers={renderers} />;
       })}
     </>
   );
