@@ -3,6 +3,7 @@ import { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
 import yaml from 'js-yaml';
 import type { References } from '@curvenote/site-common';
+import type { PageFrontmatter } from '@curvenote/frontmatter';
 import type { NodeRenderer } from './types';
 import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
@@ -13,7 +14,7 @@ import { CopyIcon } from './components/CopyIcon';
 import { CodeBlock } from './code';
 import { ReferencesProvider } from '@curvenote/ui-providers';
 
-async function parse(text: string) {
+async function parse(text: string, defaultFrontmatter?: PageFrontmatter) {
   // Ensure that any imports from myst are async and scoped to this function
   const { MyST, unified, visit } = await import('mystjs');
   const {
@@ -40,7 +41,10 @@ async function parse(text: string) {
     footnotes: {},
   };
   const { frontmatter } = getFrontmatter(mdast, { removeYaml: true, removeHeading: false });
-  const state = new ReferenceState({ numbering: frontmatter.numbering, file });
+  const state = new ReferenceState({
+    numbering: frontmatter.numbering ?? defaultFrontmatter?.numbering,
+    file,
+  });
   unified()
     .use(basicTransformationsPlugin)
     .use(mathPlugin, { macros: frontmatter?.math ?? {} }) // This must happen before enumeration, as it can add labels
@@ -63,7 +67,7 @@ async function parse(text: string) {
   };
 }
 
-export function MySTRenderer({ value }: { value: string }) {
+export function MySTRenderer({ value, numbering }: { value: string; numbering: any }) {
   const area = useRef<HTMLTextAreaElement | null>(null);
   const [text, setText] = useState<string>(value.trim());
   const [references, setReferences] = useState<References>({});
@@ -76,7 +80,7 @@ export function MySTRenderer({ value }: { value: string }) {
 
   useEffect(() => {
     const ref = { current: true };
-    parse(text).then((result) => {
+    parse(text, { numbering }).then((result) => {
       if (!ref.current) return;
       setYaml(result.yaml);
       setReferences(result.references);
@@ -162,7 +166,7 @@ export function MySTRenderer({ value }: { value: string }) {
 }
 
 const MystNodeRenderer: NodeRenderer = (node) => {
-  return <MySTRenderer key={node.key} value={node.value} />;
+  return <MySTRenderer key={node.key} value={node.value} numbering={node.numbering} />;
 };
 
 const MYST_RENDERERS = {

@@ -1,3 +1,4 @@
+import yaml from 'js-yaml';
 import type { IDirectiveData, IDirective, Token } from 'mystjs';
 import { Directive, directiveOptions } from 'mystjs';
 
@@ -395,7 +396,9 @@ const MystDemo: IDirective = {
 
     public has_content = true;
 
-    public option_spec = {};
+    public option_spec = {
+      numbering: directiveOptions.unchanged,
+    };
 
     run(data: IDirectiveData<keyof MystDemo['option_spec']>) {
       const newTokens: Token[] = [];
@@ -411,8 +414,17 @@ const MystDemo: IDirective = {
   mdast: {
     type: 'myst',
     getAttrs(t) {
+      let numbering = {};
+      if (t.meta.numbering) {
+        try {
+          numbering = yaml.load(t.meta.numbering) as any;
+        } catch (err) {
+          //pass
+        }
+      }
       return {
         value: t.meta.value,
+        numbering: numbering,
       };
     },
     noCloseToken: true,

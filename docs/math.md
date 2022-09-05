@@ -100,30 +100,30 @@ If you are using JupyterBook or Sphinx, the `label` analysis of the source is no
 
 #### Supported AMS Environments
 
-**equation**
+equation
 : basic equation environment, similar to a math directive or dollar-math
 
-**multline**
+multline
 : variation equation, used for equations that don’t fit on a single line
 
-**gather**
+gather
 : a group of consecutive equations when there is no alignment desired among them
 
-**align**
+align
 : used for two or more equations when vertical alignment is desired
 : Note that `aligned` (i.e. with the `ed`) is **not** an AMS environment and only works inside of `\begin{equation}` or a math environment.
 
-**alignat**
+alignat
 : allows the horizontal space between equations to be explicitly specified.
 
-**flalign**
+flalign
 : stretches the space between the equation columns to the maximum possible width
 
-**matrix**, **pmatrix**, **bmatrix**, **Bmatrix**, **vmatrix**, **Vmatrix**
+matrix, pmatrix, bmatrix, Bmatrix, vmatrix, Vmatrix
 : The pmatrix, bmatrix, Bmatrix, vmatrix and Vmatrix have (respectively)
 `()`,`[]`,`{}`,`||`,and `‖‖` delimiters built in.
 
-**eqnarray**
+eqnarray
 : eqnarray is another supported math environment, it is not part of amsmath, and it is better to use
 align or equation+split instead
 
@@ -170,7 +170,7 @@ w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
 - Reference using `eq`: {eq}`my_label`
 - Reference using `numref`: {numref}`my_label`
 - Reference using `%s` `numref`: {numref}`Eq. %s <my_label>`
-- Reference using `{number}` `numref`: {numref}`Eq. {number} <my_label>`
+- Reference using `{number}` `numref`: {numref}`Equation {number} <my_label>`
 ````
 
 ```{note}

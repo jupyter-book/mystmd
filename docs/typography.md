@@ -86,3 +86,12 @@ To create an abbreviation, you can use the `abbr` role, in HTML this will ensure
 ```{myst}
 Well {abbr}`MyST (Markedly Structured Text)` is cool!
 ```
+
+## Quotations
+
+Quotations are controlled with standard Markdown syntax, by inserting a caret (`>`) symbol in front of one or more lines of text. You can provide an attribution to a blockquote by adding `- author or source` to the final line.
+
+```{myst}
+> We know what we are, but know not what we may be.
+> - Hamlet act 4, Scene 5
+```

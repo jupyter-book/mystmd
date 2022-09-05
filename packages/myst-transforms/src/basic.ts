@@ -10,6 +10,7 @@ import { htmlIdsTransform } from './htmlIds';
 import { codeBlockTransform } from './codeBlock';
 import { imageAltTextTransform } from './images';
 import { mathLabelTransform } from './math';
+import { blockquoteTransform } from './blockquote';
 
 export function basicTransformations(tree: Root, file: VFile) {
   // Must happen first
@@ -24,6 +25,7 @@ export function basicTransformations(tree: Root, file: VFile) {
   htmlIdsTransform(tree);
   blockNestingTransform(tree);
   imageAltTextTransform(tree);
+  blockquoteTransform(tree);
 }
 
 export const basicTransformationsPlugin: Plugin<[], Root, Root> = () => (tree, file) => {

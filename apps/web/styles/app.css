@@ -104,6 +104,15 @@ r-var {
 r-dynamic {
   @apply text-blue-600 border-b border-dotted border-blue-600;
 }
+
+figure.quote figcaption {
+  text-align: right;
+}
+figure.quote figcaption > p:before {
+  content: '—';
+  padding-right: 0.5em;
+}
+
 .smallcaps {
   font-variant: small-caps;
 }

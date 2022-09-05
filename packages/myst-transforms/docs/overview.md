@@ -33,6 +33,9 @@ Admonitions
 Blocks
 : Ensure that all blocks in a document are not nested.
 
+Blockquotes
+: Change attributed blockquotes, those that include a single list item to a figure of `kind` quote, and add the attribution as a figure caption.
+
 Caption
 : Ensure that figure captions are in paragraphs
 

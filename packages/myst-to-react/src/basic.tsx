@@ -130,7 +130,7 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
   },
   container(node, children) {
     return (
-      <figure key={node.key} id={node.html_id || node.identifier || node.key}>
+      <figure key={node.key} id={node.html_id || node.identifier || node.key} className={node.kind}>
         {children}
       </figure>
     );

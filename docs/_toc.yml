@@ -10,8 +10,9 @@ parts:
       - file: typography
       - file: admonitions
       - file: figures
-      - file: tables
       - file: math
+      - file: tables
+      - file: code
       - file: references
       - file: citations
       - file: blocks
