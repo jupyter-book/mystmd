@@ -113,9 +113,11 @@ The `` {doc}`./my-file.md` `` syntax creates a link to the document, which is eq
 
 (targeting-headers)=
 
-### Header Targets
+## Header Targets
 
-To add labels to a header use `(my-section)=` before the header, these can then be used in markdown links and `{ref}` roles. This is helpful if you want to quickly insert links to other parts of your book.
+To add labels to a header use `(my-section)=` before the header, these can then be used in markdown links and `{ref}` roles. This is helpful if you want to quickly insert links to other parts of your book. Referencing a heading will show the heading and the subsequent two pieces of content[^1], unless a header is encountered.
+
+[^1]: The content could be a single paragraph, a figure, table or list. It can also be fully interactive content, with cross-references to other content, allowing you to nest and follow references easily!
 
 ```{myst}
 (my-section)=
@@ -128,42 +130,24 @@ You can use `(label)=` before the element that you want to target. Then referenc
 * [](my-section)
 ```
 
-% TODO: We should support pandoc style unnumbered {-} and {.class, #id} syntax
+````{tip}
+:class: dropdown
+# How to turn on heading `numbering`
 
-% TODO: I suppose we can reference a paragraph? But why would we support labeling figures?
-% {note} % Labels can be added before any other block of content.
+By default headings are not nuumbered, see {ref}`heading-numbering` for more information. To turn on numbered headers you need to turn numbering on in the document or project using `numbering` in the frontmatter. You can control this for each heading level:
 
-% TODO: numref for sections!?
-
-(targeting-equations)=
-
-### Equations Targets
-
-To reference equations, use the `{eq}` role. It will automatically insert the number of the equation. Note that you cannot modify the text of equation links.
-
-````{myst}
-```{math}
-:label: my-math-label
-e=mc^2
+```yaml
+numbering:
+  heading_1: true
+  heading_2: true
 ```
 
-See Equation {eq}`my-math-label`!
+These will show up, for example, as `Section 1` and `Section 2.1`.
 ````
 
-`````{tip}
-You can also use the `$$` label extension, which follows the second `$$ (label)`.\
-This can even all be on a single line!
-````{myst}
-$$
-e=mc^2
-$$ (my-math-label)
+% TODO: We should support pandoc style unnumbered {-} and {.class, #id} syntax
 
-See Equation {eq}`my-math-label`!
-````
-`````
-
-% Internal/external links
-% Checking for missing references, link to another place.
+(heading-numbering)=
 
 ## Numbering
 
@@ -190,6 +174,49 @@ numbering:
 * {numref}`my-chapter`
 * {numref}`my-section`
 * {numref}`my-section2`
+```
+
+(targeting-equations)=
+
+## Equations Targets
+
+To reference equations, use the `{eq}` role. It will automatically insert the number of the equation. Note that you cannot modify the text of equation links.
+
+````{myst}
+```{math}
+:label: my-math-label
+e=mc^2
+```
+
+See Equation {eq}`my-math-label`!
+````
+
+`````{tip}
+You can also use the `$$` label extension, which follows the second `$$ (label)`.\
+This can even all be on a single line!
+````{myst}
+$$ e=mc^2 $$ (my-math-label)
+
+See Equation {eq}`my-math-label`!
+````
+`````
+
+% Internal/external links
+% Checking for missing references, link to another place.
+
+## Label Anything
+
+It is possible to label any document node by adding `(my-label)=` before any other block of content. These can be referenced using the `{ref}` role, but by default will not be enumerated, so you cannot use `%s` or `{number}` in the content.
+
+```{myst}
+(my-paragraph)=
+This is just a paragraph!
+
+(my-points)=
+* Bullet
+* point
+
+Please see {ref}`this paragraph <my-paragraph>` and {ref}`these points <my-points>`.
 ```
 
 (external-references)=
