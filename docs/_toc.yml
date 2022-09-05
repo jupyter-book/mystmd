@@ -1,0 +1,23 @@
+format: jb-book
+root: index
+parts:
+  - caption: Overview
+    chapters:
+      - file: overview
+      - file: intro
+  - caption: Authoring
+    chapters:
+      - file: commonmark
+      - file: admonitions
+      - file: figures
+      - file: tables
+      - file: math
+      - file: references
+      - file: citations
+      - file: blocks
+      - file: diagrams
+      - file: footnotes
+      - file: tasks
+      - file: definitions
+      - file: html-roles
+      - file: frontmatter
