@@ -27,7 +27,7 @@ A standard way of including references for $\LaTeX$ is using {wiki}`bibtex`, you
 
 To create a citation in Markdown, use either a parenthetical or textual citation:
 
-```text
+```md
 This is a parenthetical citation {cite:p}`cockett2015`.
 You can also use a narrative citation with {cite:t}`cockett2015`.
 You can also use a narrative citation with {cite:p}`cockett2015; heagy2017`.
@@ -37,7 +37,7 @@ This is the difference between: {cite:p}`cockett2015` and {cite:t}`cockett2015`.
 
 You can also include DOIs in citations (`cite`, `cite:t`, and `cite:p`) which will be linked in the same way as a simple markdown link, but will match the reference style of the project.
 
-```text
+```md
 This will be a citation: {cite}`10.1103/PhysRevLett.116.061102`.
 ```
 
@@ -47,7 +47,7 @@ This will show as: {cite}`10.1103/PhysRevLett.116.061102`.
 
 If you want to explicitly reference which bibtex files to use, as well as what order to resolve them in, you can use the `bibliography` field in your frontmatter, which is a string array of local or remote files. This will load the files in order specified.
 
-```
+```yaml
 bibliography:
   - my_references.bib
   - https://example.com/my/remote/bibtex.bib

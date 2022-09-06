@@ -112,6 +112,9 @@ figure.quote figcaption > p:before {
   content: '—';
   padding-right: 0.5em;
 }
+figure.code > div {
+  margin: 0;
+}
 
 .smallcaps {
   font-variant: small-caps;

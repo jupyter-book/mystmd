@@ -12,19 +12,29 @@ type Props = {
   lang?: string;
   showCopy?: boolean;
   showLineNumbers?: boolean;
+  startingLineNumber?: number;
   emphasizeLines?: number[];
   className?: string;
 };
 
 export function CodeBlock(props: Props) {
   const { isLight } = useTheme();
-  const { value, lang, emphasizeLines, showLineNumbers, className, showCopy = true } = props;
+  const {
+    value,
+    lang,
+    emphasizeLines,
+    showLineNumbers,
+    className,
+    showCopy = true,
+    startingLineNumber = 1,
+  } = props;
   const highlightLines = new Set(emphasizeLines);
 
   return (
     <div className={classNames('relative group not-prose overflow-auto', className)}>
       <SyntaxHighlighter
         language={lang}
+        startingLineNumber={startingLineNumber}
         showLineNumbers={showLineNumbers}
         style={isLight ? light : dark}
         wrapLines
@@ -69,6 +79,7 @@ const code: NodeRenderer<Code> = (node) => {
       lang={node.lang}
       emphasizeLines={node.emphasizeLines}
       showLineNumbers={node.showLineNumbers}
+      startingLineNumber={node.startingLineNumber}
     />
   );
 };
