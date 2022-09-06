@@ -145,7 +145,10 @@ const defaultMdast: Record<string, Spec> = {
       const showLineNumbers = !!(
         t.meta?.linenos ||
         t.meta?.linenos === null || // Weird docutils implementation
-        t.meta?.['number-lines']
+        t.meta?.['number-lines'] ||
+        // If lineno-start is present, linenos option is also automatically activated
+        // https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-option-code-block-lineno-start
+        t.meta?.['lineno-start']
       );
       const lineno = t.meta?.['lineno-start'] ?? t.meta?.['number-lines'];
       const startingLineNumber =
