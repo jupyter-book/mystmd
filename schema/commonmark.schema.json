@@ -533,7 +533,8 @@
       "required": ["url"],
       "properties": {
         "url": {
-          "type": "string"
+          "type": "string",
+          "description": "A Uniform Resource Locator (URL) to an external resource or link."
         },
         "title": {
           "description": "advisory information, e.g. for a tooltip",
@@ -582,7 +583,7 @@
       "required": ["referenceType"],
       "properties": {
         "referenceType": {
-          "description": "explicitness of the reference: shortcut - reference is implicit, identifier inferred; collapsed - refernce explicit, identifier inferred; full - reference explicit, identifier explicit",
+          "description": "explicitness of the reference:\n`shortcut` - reference is implicit, identifier inferred\n`collapsed` - reference explicit, identifier inferred\n`full` - reference explicit, identifier explicit",
           "type": "string",
           "enum": ["shortcut", "collapsed", "full"]
         }

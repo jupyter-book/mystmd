@@ -1,6 +1,9 @@
-% Based loosely on https://jupyterbook.org/content/references.html
+---
+title: References & Links
+description: References refer to labeled content and allow you to enumerate figures, tables, code, and headers.
+---
 
-# References & Links
+% Based loosely on https://jupyterbook.org/content/references.html
 
 References refer to labeled content (e.g. a figure, document or table) and automatically generates links and extra information, like numbering. This page covers the basics of setting up references to content and shows examples for sections, figures, tables and equations.
 
@@ -49,7 +52,7 @@ Using markdown link syntax is one of the most versatile ways to link to content.
 ```{note}
 Markdown links support nested markdown syntax. If you leave the text empty, MyST will fill in the link with the title, caption, document name, or equation number as appropriate.
 
-For example, `[](./references.md)` creates [](./references.md).
+For example, `[](./footnotes.md)` creates [](./footnotes.md).
 ```
 
 (ref-role)=

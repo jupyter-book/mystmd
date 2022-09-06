@@ -88,11 +88,13 @@ describe('Valid Schema Tests', () => {
   });
 });
 
-describe('Invalid Schema Tests', () => {
-  test.each(invalid)('%s', (_, { mdast }) => {
-    expect(ajv.validate(myst, mdast)).toBeFalsy();
+if (invalid.length) {
+  describe('Invalid Schema Tests', () => {
+    test.each(invalid)('%s', (_, { mdast }) => {
+      expect(ajv.validate(myst, mdast)).toBeFalsy();
+    });
   });
-});
+}
 
 if (skipped.length) {
   describe('Skipped Tests', () => {

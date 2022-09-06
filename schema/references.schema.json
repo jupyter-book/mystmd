@@ -35,13 +35,15 @@
             },
             "kind": {
               "type": "string",
-              "enum": ["eq", "numref", "ref"]
+              "enum": ["eq", "numref", "ref"],
+              "description": "Indicates if the references should be numbered.\n```{warning}\nThe `kind` was based on docutils and is subject to change as we improve the `crossReference` experience.\n```"
             },
             "children": {
               "type": "array",
               "items": {
                 "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
-              }
+              },
+              "description": "Children of the crossReference, can include text with \"%s\" or \"{number}\" and enumerated references will be filled in."
             },
             "identifier": {},
             "label": {},

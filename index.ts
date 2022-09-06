@@ -215,24 +215,22 @@ function schemaKey2md(schema: Schema, key: string): string {
   if (schema.$defs[key].allOf) {
     const { properties, required } = propsFromObject(schema.$defs, key);
     for (const prop in properties) {
-      md += `- __${prop}${required.includes(prop) ? '*' : ''}__`;
-      if (properties[prop].type || properties[prop].value || properties[prop].description) {
-        md += ': ';
-      }
-      if (properties[prop].type) {
-        md += `_${properties[prop].type}_ `;
-      }
-      if (properties[prop].value) {
-        const val = properties[prop].value;
-        md += `(${typeof val === 'object' ? val.join(' | ') : val}) `;
-      }
-      if (properties[prop].description) {
-        md += `- ${properties[prop].description.replace(/`/g, '\\`')} `;
-      }
-      if (properties[prop].from) {
-        md += `- See ${mdReferenceFromRef(properties[prop].from)}`;
-      }
-      md += '\n';
+      const { type, value, description, from } = properties[prop];
+      const optionalDoc = required.includes(prop) ? '' : '_optional_';
+      const propDoc = type ? `__${prop}__` : '';
+      const typeDoc = type ? `_${type}_` : '';
+      const descriptionDoc = description?.replace(/\n/g, '\n   ') || undefined;
+      const referenceDoc = from ? `See also ${mdReferenceFromRef(from)}` : undefined;
+      const valueDoc = value
+        ? `(${typeof value === 'object' ? value.join(' | ') : `${value}`})`
+        : '';
+      const afterProp = [typeDoc, optionalDoc, valueDoc].filter((d) => !!d).join(', ');
+      const backup =
+        !descriptionDoc && !referenceDoc ? 'No description for this property.' : undefined;
+      const definitionDetails = [descriptionDoc, referenceDoc, backup]
+        .filter((d) => d != null)
+        .join('\n: ');
+      md += `${propDoc}: ${afterProp}\n: ${definitionDetails}\n\n`;
     }
   } else if (schema.$defs[key].anyOf) {
     if (schema.$defs[key].anyOf.length > 1) {

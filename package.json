@@ -26,7 +26,7 @@
     "build": "npm run clean && tsc index.ts && node index.js",
     "docs": "npm run build && jupyter-book build docs",
     "docs:quick": "jupyter-book build docs",
-    "clean": "rimraf index.js dist docs/_build",
+    "clean": "rimraf index.js dist",
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
     "test:watch": "node --experimental-vm-modules ./node_modules/.bin/jest --watchAll",
     "lint": "prettier --write *.ts schema/*.ts",

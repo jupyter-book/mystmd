@@ -39,7 +39,8 @@
                   { "$ref": "#/$defs/AdmonitionTitle" },
                   { "$ref": "myst.schema.json#/$defs/FlowContent" }
                 ]
-              }
+              },
+              "description": "An optional `admonitionTitle` followed by the admonitions content."
             },
             "position": {},
             "data": {}

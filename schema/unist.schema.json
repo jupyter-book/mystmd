@@ -4,7 +4,7 @@
   "description": "existing unist primitives for myst mdast - https://github.com/syntax-tree/unist",
   "$defs": {
     "Node": {
-      "description": "Base unist node",
+      "description": "Base node object, based on the [unist](https://github.com/syntax-tree/unist) syntax tree.",
       "type": "object",
       "required": ["type"],
       "properties": {
@@ -30,7 +30,8 @@
           "required": ["value"],
           "properties": {
             "value": {
-              "type": "string"
+              "type": "string",
+              "description": "The value of the node"
             }
           }
         },
@@ -46,6 +47,7 @@
           "properties": {
             "children": {
               "type": "array",
+              "description": "List of children nodes",
               "items": {
                 "$ref": "#/$defs/Node"
               }

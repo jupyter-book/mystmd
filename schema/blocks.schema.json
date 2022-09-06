@@ -13,7 +13,7 @@
               "const": "blockBreak"
             },
             "meta": {
-              "description": "block break metadata; conventionally, a stringified JSON dictionary but may be any arbitrary string",
+              "description": "Block metadata. Conventionally this is a stringified JSON dictionary but it may be any arbitrary string.",
               "type": "string"
             },
             "position": {},

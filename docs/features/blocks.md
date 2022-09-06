@@ -8,13 +8,11 @@
 ### Specification
 
 ```{include} ../nodes/blockbreak.md
-
 ```
 
 ### Example
 
 ```{include} ../examples/blockbreak.md
-
 ```
 
 ## Comments
@@ -25,13 +23,11 @@ You may add comments by putting the `%` character at the beginning of a line. Th
 ### Specification
 
 ```{include} ../nodes/comment.md
-
 ```
 
 ### Example
 
 ```{include} ../examples/comment.md
-
 ```
 
 ````{important}
