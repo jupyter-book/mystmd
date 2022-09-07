@@ -75,7 +75,7 @@ $$ (maxwell)
 
 $$ Ax=b $$ (one-liner)
 
-See {eq}`maxwell` for a enlightenment and {eq}`one-liner` to do things on one line!
+See {eq}`maxwell` for enlightenment and {eq}`one-liner` to do things on one line!
 ```
 
 ### AMS Math
