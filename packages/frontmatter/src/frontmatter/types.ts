@@ -112,9 +112,10 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, string>;
   export?: Export[];
+  intersphinx?: Record<string, { url: string }>;
 };
 
-export type PageFrontmatter = ProjectFrontmatter & {
+export type PageFrontmatter = Omit<ProjectFrontmatter, 'intersphinx'> & {
   subtitle?: string;
   short_title?: string;
   kernelspec?: KernelSpec;

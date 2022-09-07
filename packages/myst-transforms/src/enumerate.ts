@@ -1,6 +1,6 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import type { Root } from 'mdast';
+import type { Root, PhrasingContent } from 'mdast';
 import type {
   Container,
   CrossReference,
@@ -10,7 +10,6 @@ import type {
   Node,
   Paragraph,
   Parent,
-  StaticPhrasingContent,
 } from 'myst-spec';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
@@ -33,6 +32,23 @@ export enum TargetKind {
   code = 'code',
 }
 
+function getDefaultReferenceLabel(kind: TargetKind | string) {
+  switch (kind) {
+    case TargetKind.heading:
+      return 'Section %s';
+    case TargetKind.equation:
+      return '(%s)';
+    case TargetKind.figure:
+      return 'Figure %s';
+    case TargetKind.table:
+      return 'Table %s';
+    case TargetKind.code:
+      return 'Program %s';
+    default:
+      return `${kind.slice(0, 1).toUpperCase()}${kind.slice(1)} %s`;
+  }
+}
+
 export enum ReferenceKind {
   ref = 'ref',
   numref = 'numref',
@@ -40,6 +56,7 @@ export enum ReferenceKind {
 }
 
 type TargetNodes = Container | Math | Heading;
+type IdentifierNodes = { type: string; identifier: string };
 
 type Target = {
   node: TargetNodes;
@@ -68,30 +85,38 @@ export type NumberingOptions = {
   heading_6?: boolean;
 };
 
+const UNKNOWN_REFERENCE_ENUMERATOR = '??';
+const UNKNOWN_REFERENCE_NAME = '????';
+
 /**
  * See https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-numref
  */
 function fillReferenceEnumerators(
   node: Pick<ResolvableCrossReference, 'children' | 'template' | 'enumerator'>,
   template: string,
-  enumerator: string | number,
+  enumerator?: string | number,
+  title?: string | PhrasingContent[],
 ) {
   const noNodeChildren = !node.children?.length;
   if (noNodeChildren) {
     setTextAsChild(node, template);
   }
-  const num = String(enumerator);
+  const num = enumerator != null ? String(enumerator) : UNKNOWN_REFERENCE_ENUMERATOR;
   node.template = template;
-  node.enumerator = num;
-  findAndReplace(node as any, { '%s': num, '{number}': num });
+  if (num && num !== UNKNOWN_REFERENCE_ENUMERATOR) node.enumerator = num;
+  findAndReplace(node as any, {
+    '%s': num,
+    '{number}': num,
+    '{name}': () => title || UNKNOWN_REFERENCE_NAME,
+  });
 }
 
 function copyNode<T extends Node>(node: T): T {
   return JSON.parse(JSON.stringify(node));
 }
 
-function kindFromNode(node: TargetNodes): TargetKind | string | undefined {
-  if (node.type === 'container') return node.kind;
+function kindFromNode(node: TargetNodes): TargetKind | string {
+  if (node.type === 'container') return node.kind || TargetKind.figure;
   if (node.type === 'math') return TargetKind.equation;
   return node.type;
 }
@@ -101,10 +126,12 @@ function shouldEnumerate(
   kind: TargetKind | string,
   numbering: NumberingOptions,
   override?: boolean | null,
-) {
+): boolean {
   if (typeof override === 'boolean') return override;
   if (kind === 'heading' && node.type === 'heading') {
-    return numbering[`heading_${node.depth}` as keyof Omit<NumberingOptions, 'enumerator'>];
+    return (
+      numbering[`heading_${node.depth}` as keyof Omit<NumberingOptions, 'enumerator'>] ?? false
+    );
   }
   return numbering[kind as keyof Omit<NumberingOptions, 'enumerator'>] ?? false;
 }
@@ -148,6 +175,7 @@ export function formatHeadingEnumerator(counts: (number | null)[], prefix?: stri
 }
 
 export interface IReferenceState {
+  file?: VFile;
   initializeNumberedHeadingDepths: (tree: Root) => void;
   addTarget: (node: TargetNodes) => void;
   /**
@@ -181,36 +209,45 @@ export class ReferenceState implements IReferenceState {
   }
 
   addTarget(node: TargetNodes) {
+    const possibleIncorrectNode = node as IdentifierNodes;
+    if (
+      possibleIncorrectNode.type === 'crossReference' ||
+      possibleIncorrectNode.type === 'cite' ||
+      possibleIncorrectNode.type === 'footnoteDefinition'
+    ) {
+      // Explicitly filter out crossReferences, citations, and footnoteDefinition
+      // These are not targets, but do have an "identifier" property
+      // Footnotes are resolved differently
+      return;
+    }
     const kind = kindFromNode(node);
-    if (kind && kind in TargetKind) {
-      const numberNode = shouldEnumerate(node, kind, this.numbering, this.numberAll);
-      let enumerator = null;
-      if (node.enumerated !== false && numberNode) {
-        enumerator = this.incrementCount(node, kind as TargetKind);
-        node.enumerator = enumerator;
-      }
-      if (!(node as any).html_id) {
-        (node as any).html_id = createHtmlId(node.identifier);
-      }
-      if (node.identifier && this.targets[node.identifier]) {
-        if (!this.file) return;
-        if ((node as any).implicit) return; // Do not warn on implicit headings
-        fileWarn(
-          this.file,
-          `Duplicate identifier "${node.identifier}" for node of type ${node.type}`,
-          {
-            node,
-            source: TRANSFORM_NAME,
-          },
-        );
-        return;
-      }
-      if (node.identifier) {
-        this.targets[node.identifier] = {
-          node: copyNode(node),
-          kind: kind as TargetKind,
-        };
-      }
+    const numberNode = shouldEnumerate(node, kind, this.numbering, this.numberAll);
+    let enumerator = null;
+    if (node.enumerated !== false && numberNode) {
+      enumerator = this.incrementCount(node, kind as TargetKind);
+      node.enumerator = enumerator;
+    }
+    if (!(node as any).html_id) {
+      (node as any).html_id = createHtmlId(node.identifier);
+    }
+    if (node.identifier && this.targets[node.identifier]) {
+      if (!this.file) return;
+      if ((node as any).implicit) return; // Do not warn on implicit headings
+      fileWarn(
+        this.file,
+        `Duplicate identifier "${node.identifier}" for node of type ${node.type}`,
+        {
+          node,
+          source: TRANSFORM_NAME,
+        },
+      );
+      return;
+    }
+    if (node.identifier) {
+      this.targets[node.identifier] = {
+        node: copyNode(node),
+        kind: kind as TargetKind,
+      };
     }
   }
 
@@ -254,67 +291,42 @@ export class ReferenceState implements IReferenceState {
       this.warnNodeTargetNotFound(node);
       return;
     }
-    const kinds = {
-      ref: {
-        eq: node.kind === ReferenceKind.eq,
-        ref: node.kind === ReferenceKind.ref,
-        numref: node.kind === ReferenceKind.numref,
-      },
-      target: {
-        math: target.kind === TargetKind.equation,
-        figure: target.kind === TargetKind.figure,
-        table: target.kind === TargetKind.table,
-        heading: target.kind === TargetKind.heading,
-        code: target.kind === TargetKind.code,
-      },
-    };
     const noNodeChildren = !node.children?.length;
-    if (kinds.target.math && target.node.enumerator) {
-      fillReferenceEnumerators(node, '(%s)', target.node.enumerator);
-      node.resolved = true;
-    } else if (kinds.target.heading && !target.node.enumerator) {
-      if (noNodeChildren) {
-        node.children = copyNode(target.node as Parent).children as StaticPhrasingContent[];
-      }
-      node.resolved = true;
-    } else if (kinds.target.heading && target.node.enumerator) {
-      fillReferenceEnumerators(node, 'Section %s', target.node.enumerator);
-      node.resolved = true;
-    } else if (kinds.ref.ref && (kinds.target.figure || kinds.target.table || kinds.target.code)) {
-      if (noNodeChildren) {
-        const caption = select('caption > paragraph', target.node) as Paragraph;
-        node.children = copyNode(caption).children as StaticPhrasingContent[];
-      }
-      node.resolved = true;
-    } else if (kinds.ref.numref && kinds.target.figure && target.node.enumerator) {
-      fillReferenceEnumerators(node, 'Figure %s', target.node.enumerator);
-      node.resolved = true;
-    } else if (kinds.ref.numref && kinds.target.table && target.node.enumerator) {
-      fillReferenceEnumerators(node, 'Table %s', target.node.enumerator);
-      node.resolved = true;
-    } else if (kinds.ref.numref && kinds.target.code && target.node.enumerator) {
-      fillReferenceEnumerators(node, 'Program %s', target.node.enumerator);
-      node.resolved = true;
-    }
-    if (node.resolved) {
-      // It may have changed in the lookup, but unlikely
-      node.identifier = target.node.identifier;
+    if (target.kind === TargetKind.heading) {
+      const numberHeading = shouldEnumerate(
+        target.node,
+        TargetKind.heading,
+        this.numbering,
+        this.numberAll,
+      );
+      // The default for a heading changes if it is numbered
+      const headingTemplate = numberHeading ? 'Section %s' : '{name}';
+      fillReferenceEnumerators(
+        node,
+        headingTemplate,
+        target.node.enumerator,
+        copyNode(target.node as Heading).children as PhrasingContent[],
+      );
+    } else if (target.kind === TargetKind.equation) {
+      fillReferenceEnumerators(node, '(%s)', target.node.enumerator, 'Equation');
     } else {
-      this.warnNodeNotResolved(node);
-      return;
+      // By default look into the caption paragraph if it exists
+      const caption = select('caption > paragraph', target.node) as Paragraph | null;
+      const title = caption ? (copyNode(caption)?.children as PhrasingContent[]) : undefined;
+      if (title && node.kind === ReferenceKind.ref && noNodeChildren) {
+        node.children = title as any;
+      }
+      const template = getDefaultReferenceLabel(target.kind);
+      fillReferenceEnumerators(node, template, target.node.enumerator, title);
     }
+    node.resolved = true;
+    // The identifier may have changed in the lookup, but unlikely
+    node.identifier = target.node.identifier;
   }
 
   warnNodeTargetNotFound(node: ResolvableCrossReference) {
     if (!this.file) return;
     fileWarn(this.file, `Cross reference was not found: ${node.identifier}`, {
-      node,
-      source: TRANSFORM_NAME,
-    });
-  }
-  warnNodeNotResolved(node: ResolvableCrossReference) {
-    if (!this.file) return;
-    fileWarn(this.file, `Cross reference was not resolved: ${node.identifier}`, {
       node,
       source: TRANSFORM_NAME,
     });
@@ -325,13 +337,16 @@ type IStateList = { state: IReferenceState; file: string; url: string | null }[]
 type StateAndFile = { state: ReferenceState; file: string; url: string | null };
 
 export class MultiPageReferenceState implements IReferenceState {
+  file?: VFile; // A copy of the local file for reporting and errors or warnings about the reference linking
   states: StateAndFile[];
   fileState: ReferenceState;
   filePath: string;
   url: string;
+
   constructor(states: IStateList, filePath: string) {
     this.states = states as StateAndFile[];
     this.fileState = states.filter((v) => v.file === filePath)[0]?.state as ReferenceState;
+    this.file = this.fileState?.file;
     this.url = states.filter((v) => v.file === filePath)[0]?.url as string;
     this.filePath = filePath;
   }
@@ -373,9 +388,13 @@ export class MultiPageReferenceState implements IReferenceState {
 
 export const enumerateTargetsTransform = (tree: Root, opts: StateOptions) => {
   opts.state.initializeNumberedHeadingDepths(tree);
-  visit(tree, 'container', (node: Container) => opts.state.addTarget(node));
-  visit(tree, 'math', (node: Math) => opts.state.addTarget(node));
-  visit(tree, 'heading', (node) => opts.state.addTarget(node as Heading));
+  const nodes = selectAll('container,math,heading,[identifier]', tree) as (
+    | TargetNodes
+    | IdentifierNodes
+  )[];
+  nodes.forEach((node) => {
+    opts.state.addTarget(node as TargetNodes);
+  });
   return tree;
 };
 
@@ -422,15 +441,39 @@ export function addContainerCaptionNumbersTransform(tree: Root, opts: StateOptio
 export const resolveReferenceLinksTransform = (tree: Root, opts: StateOptions) => {
   selectAll('link', tree).forEach((node) => {
     const link = node as Link;
-    const reference = normalizeLabel(link.url);
-    const target = opts.state.getTarget(reference?.identifier);
-    if (reference && target) {
-      const xref = link as unknown as CrossReference;
-      xref.type = 'crossReference';
-      xref.kind = target.kind === TargetKind.equation ? 'eq' : 'ref';
-      xref.identifier = reference.identifier;
-      xref.label = reference.label;
-      delete (xref as any).url;
+    const identifier = link.url.replace(/^#/, '');
+    const reference = normalizeLabel(identifier);
+    const target = opts.state.getTarget(identifier) ?? opts.state.getTarget(reference?.identifier);
+    if (!target || !reference) return;
+    if (!link.url.startsWith('#') && opts.state.file) {
+      fileWarn(
+        opts.state.file,
+        `Legacy syntax used for link target, please prepend a '#' to your link url: "${link.url}"`,
+        {
+          node,
+          note: 'The link target should be of the form `[](#target)`, including the `#` sign.\nThis may be deprecated in the future.',
+          source: TRANSFORM_NAME,
+        },
+      );
+    }
+    // Change the link into a cross-reference!
+    const xref = link as unknown as CrossReference;
+    xref.type = 'crossReference';
+    xref.identifier = reference.identifier;
+    xref.label = reference.label;
+    delete xref.kind; // This will be deprecated, no need to set, and remove if it is there
+    delete (xref as any).url;
+    // Raise a warning if linking to an implicit node.
+    if ((target.node as any).implicit && opts.state.file) {
+      fileWarn(
+        opts.state.file,
+        `Linking to implicit an reference, best practice is to create an explicit reference for "${target.node.identifier}"`,
+        {
+          node,
+          note: 'Explicit references do not break when you update the title to a section, they are preferred over using the implicit HTML id created for headers.',
+          source: TRANSFORM_NAME,
+        },
+      );
     }
   });
 };

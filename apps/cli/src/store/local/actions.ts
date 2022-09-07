@@ -10,7 +10,6 @@ import {
   basicTransformationsPlugin,
   htmlPlugin,
   footnotesPlugin,
-  keysPlugin,
   ReferenceState,
   MultiPageReferenceState,
   resolveReferencesTransform,
@@ -18,6 +17,7 @@ import {
   codePlugin,
   enumerateTargetsPlugin,
   getFrontmatter,
+  keysTransform,
 } from 'myst-transforms';
 import { dirname, extname, join } from 'path';
 import chalk from 'chalk';
@@ -61,11 +61,13 @@ import { processNotebook } from './notebook';
 import { watch } from './reducers';
 import { warnings } from '../build';
 import { selectFileWarnings } from '../build/selectors';
+import { Inventory } from './intersphinx';
 
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
   $doiRenderers: Record<string, SingleCitationRenderer>; // keyed on doi
   $references: Record<string, ReferenceState>; // keyed on path
+  $intersphinx: Record<string, Inventory>; // keyed on id
   $mdast: Record<string, { pre: PreRendererData; post?: RendererData }>; // keyed on path
 };
 
@@ -90,6 +92,7 @@ function castSession(session: ISession): ISessionWithCache {
   if (!cache.$doiRenderers) cache.$doiRenderers = {};
   if (!cache.$references) cache.$references = {};
   if (!cache.$mdast) cache.$mdast = {};
+  if (!cache.$intersphinx) cache.$intersphinx = {};
   return cache;
 }
 
@@ -121,6 +124,45 @@ async function loadCitations(session: ISession, path: string) {
   const plural = numCitations > 1 ? 's' : '';
   session.log.info(toc(`🏫 Read ${numCitations} citation${plural} from ${path} in %s.`));
   return renderer;
+}
+
+async function loadInterspinx(
+  session: ISession,
+  opts: { projectPath: string; force?: boolean },
+): Promise<Inventory[]> {
+  const projectConfig = selectors.selectProjectConfig(session.store.getState(), opts.projectPath);
+  const cache = castSession(session);
+  if (!projectConfig?.intersphinx) return [];
+  const intersphinx = Object.entries(projectConfig.intersphinx)
+    .filter(([key, object]) => {
+      if (isUrl(object.url)) return true;
+      session.log.error(`⚠️  ${key} intersphinx is not a valid url: "${object.url}"`);
+      return false;
+    })
+    .map(([key, object]) => {
+      if (!cache.$intersphinx[key] || opts.force) {
+        cache.$intersphinx[key] = new Inventory({ name: key, path: object.url });
+      }
+      return cache.$intersphinx[key];
+    })
+    .filter((exists) => !!exists);
+  await Promise.all(
+    intersphinx.map(async (loader) => {
+      if (loader._loaded) return;
+      const toc = tic();
+      try {
+        await loader.load();
+      } catch (error) {
+        session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+        session.log.error(`Problem fetching intersphinx entry: ${loader.name} (${loader.path})`);
+        return null;
+      }
+      session.log.info(
+        toc(`🏫 Read ${loader.numEntries} intersphinx links for "${loader.name}" in %s.`),
+      );
+    }),
+  );
+  return intersphinx;
 }
 
 function combineCitationRenderers(cache: ISessionWithCache, ...files: string[]) {
@@ -282,7 +324,6 @@ export async function transformMdast(
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
     .use(footnotesPlugin, { references }) // Needs to happen nead the end
-    .use(keysPlugin) // Keys should be the last major transform
     .run(mdast, vfile);
   await transformImages(session, file, mdast, { localExport });
   // Note, the thumbnail transform must be **after** images, as it may read the images
@@ -327,12 +368,12 @@ export async function postProcessMdast(
   session: ISession,
   {
     file,
-    strict,
+    projectPath,
     checkLinks,
     pageReferenceStates,
   }: {
     file: string;
-    strict?: boolean;
+    projectPath: string;
     checkLinks?: boolean;
     pageReferenceStates: PageReferenceStates;
   },
@@ -341,14 +382,17 @@ export async function postProcessMdast(
   const { log } = session;
   const cache = castSession(session);
   const mdastPost = selectFile(session, file);
+  const intersphinx = await loadInterspinx(session, { projectPath });
   // NOTE: This is doing things in place, we should potentially make this a different state?
-  const linkLookup = transformLinks(session, file, mdastPost.mdast, { checkLinks });
+  await transformLinks(session, file, mdastPost.mdast, {
+    checkLinks,
+    intersphinx,
+  });
   const state = cache.$references[file];
   const projectState = new MultiPageReferenceState(pageReferenceStates, file);
   resolveReferencesTransform(mdastPost.mdast, { state: projectState });
-  if (strict || checkLinks) {
-    await linkLookup;
-  }
+  // Ensure there are keys on every node
+  keysTransform(mdastPost.mdast);
   logMessagesFromVFile(session, state.file);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
 }
@@ -361,7 +405,7 @@ export function selectFile(session: ISession, file: string) {
   return mdastPost;
 }
 
-export async function writeFile(
+export function writeFile(
   session: ISession,
   { file, pageSlug, projectSlug }: { file: string; projectSlug: string; pageSlug: string },
 ) {
@@ -418,8 +462,8 @@ export async function fastProcessFile(
   await transformMdast(session, { file, projectPath, projectSlug, pageSlug, watchMode: true });
   const { pages } = loadProject(session, projectPath);
   const pageReferenceStates = selectPageReferenceStates(session, pages);
-  await postProcessMdast(session, { file, pageReferenceStates });
-  await writeFile(session, { file, pageSlug, projectSlug });
+  await postProcessMdast(session, { file, projectPath, pageReferenceStates });
+  writeFile(session, { file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session);
 }
@@ -439,6 +483,8 @@ export async function processProject(
       ...project.bibliography.map((path) => loadFile(session, path, '.bib')),
       // Load all content (.md and .ipynb)
       ...pages.map((page) => loadFile(session, page.file)),
+      // Load up all the intersphinx references
+      loadInterspinx(session, { projectPath: siteProject.path }) as Promise<any>,
     ]);
   }
   // Consolidate all citations onto single project citation renderer
@@ -461,22 +507,20 @@ export async function processProject(
     pages.map((page) =>
       postProcessMdast(session, {
         file: page.file,
-        strict: opts?.strict,
-        checkLinks: opts?.checkLinks,
+        projectPath: project.path,
+        checkLinks: opts?.checkLinks || opts?.strict,
         pageReferenceStates,
       }),
     ),
   );
   // Write all pages
   if (writeFiles) {
-    await Promise.all(
-      pages.map((page) =>
-        writeFile(session, {
-          file: page.file,
-          projectSlug: siteProject.slug,
-          pageSlug: page.slug,
-        }),
-      ),
+    pages.map((page) =>
+      writeFile(session, {
+        file: page.file,
+        projectSlug: siteProject.slug,
+        pageSlug: page.slug,
+      }),
     );
   }
   log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug} in %s.`));
