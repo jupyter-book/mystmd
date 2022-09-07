@@ -5,7 +5,7 @@ module.exports = {
   content: [
     './app/**/*.{js,ts,jsx,tsx}',
     // Look to the actual packages too (better than node_modules for pnpm)
-    '../../packages/myst-util-to-react/src/**/*.{js,ts,jsx,tsx}',
+    '../../packages/myst-to-react/src/**/*.{js,ts,jsx,tsx}',
     '../../packages/site/src/**/*.{js,ts,jsx,tsx}',
     '../../packages/icons/react/**/*.{js,ts,jsx,tsx}',
   ],
