@@ -32,8 +32,11 @@ function selectMdastNodes(mdast: Root, identifier: string) {
     });
   }
   if (nodes.length === 0 && identifiers.length > 0) {
-    // If we haven't found anything, push the first identifier
-    nodes.push(identifiers[0]);
+    // If we haven't found anything, push the first identifier that isn't a cite or crossReference
+    const resolved = identifiers.filter(
+      (node) => node.type !== 'crossReference' && node.type !== 'cite',
+    )[0];
+    nodes.push(resolved ?? identifiers[0]);
   }
   return nodes;
 }
