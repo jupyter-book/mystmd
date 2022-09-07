@@ -67,7 +67,8 @@ export function createHtmlId(identifier?: string): string | undefined {
     .toLowerCase()
     .replace(/[^a-z0-9-]/g, '-') // Remove any fancy characters
     .replace(/^([0-9-])/, 'id-$1') // Ensure that the id starts with a letter
-    .replace(/-[-]+/g, '-'); // Replace repeated `-`s
+    .replace(/-[-]+/g, '-') // Replace repeated `-`s
+    .replace(/(?:^[-]+)|(?:[-]+$)/g, ''); // Remove repeated `-`s at the start or the end
 }
 
 export function liftChildren(tree: Root, nodeType: string) {
