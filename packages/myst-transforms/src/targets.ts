@@ -44,7 +44,8 @@ export function headingLabelTransform(tree: Root) {
     if (node.label || node.identifier) return;
     const normalized = normalizeLabel(toText(node.children));
     if (normalized) {
-      node.identifier = normalized.identifier;
+      // For implicit header identifiers, use the html_id rather than the normalized label
+      node.identifier = normalized.html_id;
       node.label = normalized.label;
       (node as any).html_id = normalized.html_id;
       // The target is marked as implicit
