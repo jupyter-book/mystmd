@@ -1,5 +1,5 @@
 import type { Author, KINDS } from '@curvenote/blocks';
-import type { GenericParent } from 'mystjs';
+import type { Root } from 'mdast';
 import type { FootnoteDefinition } from 'myst-spec';
 
 export enum Theme {
@@ -25,7 +25,7 @@ export type Footnotes = Record<string, FootnoteDefinition>;
 export type References = {
   cite?: Citations;
   footnotes?: Footnotes;
-  article?: GenericParent;
+  article?: Root;
 };
 
 export type NavigationLink = {
@@ -103,7 +103,7 @@ export type PageLoader = {
   slug: string;
   domain: string; // This is written in at render time in the site
   frontmatter: Frontmatter;
-  mdast: GenericParent;
+  mdast: Root;
   references: References;
   footer?: FooterLinks;
 };

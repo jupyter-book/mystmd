@@ -25,7 +25,10 @@
   "bugs": {
     "url": "https://github.com/curvenote/curvenote/issues"
   },
-  "bin": "./dist/curvenote.js",
+  "bin": {
+    "curvenote": "./dist/curvenote.js",
+    "myst": "./dist/curvenote.js"
+  },
   "homepage": "https://github.com/curvenote/curvenote",
   "scripts": {
     "clean": "rimraf dist",
@@ -48,9 +51,11 @@
   },
   "dependencies": {
     "@curvenote/blocks": "*",
+    "@curvenote/frontmatter": "^0.0.1",
     "@curvenote/nbtx": "^0.1.11",
     "@curvenote/schema": "0.12.17",
     "@curvenote/site-common": "*",
+    "@curvenote/validators": "^0.0.1",
     "@google-cloud/storage": "^5.18.2",
     "@jupyterlab/nbformat": "^3.3.2",
     "@reduxjs/toolkit": "^1.7.2",
@@ -65,15 +70,18 @@
     "docx": "^7.3.0",
     "doi-utils": "^1.0.4",
     "html-entities": "^2.3.2",
+    "intersphinx": "*",
     "inquirer": "^8.2.2",
     "js-yaml": "^4.1.0",
     "jsdom": "^18.0.0",
     "jsonwebtoken": "^8.5.1",
+    "jtex": "^0.0.0",
     "katex": "^0.15.2",
     "lodash.throttle": "^4.1.1",
     "mime-types": "^2.1.35",
     "myst-spec": "^0.0.4",
     "myst-transforms": "*",
+    "myst-to-tex": "*",
     "mystjs": "^0.0.13",
     "nanoid": "^3.3.2",
     "node-fetch": "^2.6.7",
@@ -119,7 +127,7 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
-    "typescript": "latest"
+    "typescript": "^4.6.3"
   },
   "engines": {
     "node": ">=14"

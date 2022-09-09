@@ -1,0 +1,57 @@
+{
+  "name": "@curvenote/frontmatter",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Curvenote frontmatter types and validation",
+  "author": "Franklin Koch <franklin@curvenote.com>",
+  "homepage": "https://github.com/curvenote/curvenote#readme",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "directories": {
+    "src": "src"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/curvenote/curvenote.git"
+  },
+  "scripts": {
+    "prepublishOnly": "npm run compile",
+    "build": "npm run clean && tsc",
+    "compile": "npm run clean && tsc -p .",
+    "dev": "tsc -w --preserveWatchOutput -p .",
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.js",
+    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:clear": "jest --clearCache"
+  },
+  "bugs": {
+    "url": "https://github.com/curvenote/curvenote/issues"
+  },
+  "dependencies": {
+    "@curvenote/validators": "^0.0.1",
+    "doi-utils": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.6",
+    "eslint": "^8.21.0",
+    "eslint-config-curvenote": "*",
+    "jest": "28.1.3",
+    "jest-extended": "^3.0.1",
+    "jest-fixtures": "^0.6.0",
+    "jest-to-match-shape-of": "^1.3.2",
+    "moment": "^2.29.4",
+    "prettier": "latest",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^28.0.7",
+    "typescript": "latest"
+  }
+}

@@ -4,6 +4,7 @@ import YAML from 'js-yaml';
 import fetch from 'node-fetch';
 import type { VersionId, Blocks } from '@curvenote/blocks';
 import { KINDS, oxaLink } from '@curvenote/blocks';
+import { fillPageFrontmatter } from '@curvenote/frontmatter';
 import { createId, toMyst } from '@curvenote/schema';
 import { prepareToWrite } from '../../frontmatter';
 import {
@@ -11,11 +12,10 @@ import {
   projectFrontmatterFromDTO,
   saveAffiliations,
 } from '../../frontmatter/api';
-import { fillPageFrontmatter } from '../../frontmatter/validators';
 import { Block, Project, Version } from '../../models';
 import type { ISession } from '../../session/types';
 import { resolvePath, writeFileToFolder } from '../../utils';
-import { exportFromOxaLink } from '../utils/exportWrapper';
+import { exportFromPath } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';
 import { localizationOptions } from '../utils/localizationOptions';
 import { walkArticle } from '../utils/walkArticle';
@@ -82,7 +82,10 @@ export async function articleToMarkdown(
   const content = await Promise.all(
     article.children.map(async (child) => {
       if (!child.version) return '';
-      const blockData = { oxa: oxaLink('', child.version.id) };
+      const blockData = {
+        oxa: oxaLink('', child.version.id),
+        tags: child.block?.data.tags || [],
+      };
       let md = '';
       let mdastSnippets: Record<string, GenericNode<Record<string, any>>> = {};
       if (opts.keepOutputs && child.version.data.kind === KINDS.Output) {
@@ -153,4 +156,4 @@ export async function articleToMarkdown(
   return article;
 }
 
-export const oxaLinkToMarkdown = exportFromOxaLink(articleToMarkdown);
+export const oxaLinkToMarkdown = exportFromPath(articleToMarkdown);

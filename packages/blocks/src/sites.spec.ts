@@ -1,4 +1,4 @@
-import { ValidationOptions } from './utils/validators';
+import type { ValidationOptions } from '@curvenote/validators';
 import {
   createCurvespaceUrl,
   getCurvespaceParts,

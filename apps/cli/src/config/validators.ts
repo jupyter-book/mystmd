@@ -3,8 +3,8 @@ import {
   SITE_FRONTMATTER_KEYS,
   validateProjectFrontmatterKeys,
   validateSiteFrontmatterKeys,
-} from '../frontmatter/validators';
-import type { Options } from '../utils/validators';
+} from '@curvenote/frontmatter';
+import type { ValidationOptions } from '@curvenote/validators';
 import {
   defined,
   incrementOptions,
@@ -15,7 +15,7 @@ import {
   validateUrl,
   validateList,
   validateBoolean,
-} from '../utils/validators';
+} from '@curvenote/validators';
 import type {
   ProjectConfig,
   SiteAction,
@@ -38,7 +38,7 @@ const SITE_CONFIG_KEYS = {
   ),
 };
 
-function validateProjectConfigKeys(value: Record<string, any>, opts: Options) {
+function validateProjectConfigKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: ProjectConfig = validateProjectFrontmatterKeys(value, opts);
   if (defined(value.remote)) {
     // TODO: Validate as oxa? Or curvenote url...?
@@ -63,12 +63,12 @@ function validateProjectConfigKeys(value: Record<string, any>, opts: Options) {
 /**
  * Validate ProjectConfig object against the schema
  */
-export function validateProjectConfig(input: any, opts: Options): ProjectConfig {
+export function validateProjectConfig(input: any, opts: ValidationOptions): ProjectConfig {
   const value = validateObjectKeys(input, PROJECT_CONFIG_KEYS, opts) || {};
   return validateProjectConfigKeys(value, opts);
 }
 
-export function validateSiteProject(input: any, opts: Options) {
+export function validateSiteProject(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(input, { required: ['path', 'slug'] }, opts);
   if (value === undefined) return undefined;
   const path = validateString(value.path, incrementOptions('path', opts));
@@ -80,7 +80,7 @@ export function validateSiteProject(input: any, opts: Options) {
   return { path, slug } as SiteProject;
 }
 
-export function validateSiteNavItem(input: any, opts: Options): SiteNavItem | undefined {
+export function validateSiteNavItem(input: any, opts: ValidationOptions): SiteNavItem | undefined {
   let value = validateObject(input, opts);
   if (value === undefined) return undefined;
   if (defined(value.children)) {
@@ -110,7 +110,7 @@ export function validateSiteNavItem(input: any, opts: Options): SiteNavItem | un
   return { title, url } as SiteNavPage;
 }
 
-export function validateSiteAction(input: any, opts: Options) {
+export function validateSiteAction(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(
     input,
     { required: ['title', 'url'], optional: ['static'] },
@@ -127,7 +127,7 @@ export function validateSiteAction(input: any, opts: Options) {
   return value as SiteAction;
 }
 
-export function validateSiteDesign(input: any, opts: Options) {
+export function validateSiteDesign(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(input, { optional: ['hide_authors'] }, opts);
   if (value === undefined) return undefined;
   if (defined(value.hide_authors)) {
@@ -139,7 +139,7 @@ export function validateSiteDesign(input: any, opts: Options) {
   return value as SiteDesign;
 }
 
-export function validateSiteAnalytics(input: any, opts: Options) {
+export function validateSiteAnalytics(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(input, { optional: ['google', 'plausible'] }, opts);
   if (value === undefined) return undefined;
   if (defined(value.google)) {
@@ -151,7 +151,7 @@ export function validateSiteAnalytics(input: any, opts: Options) {
   return value as SiteAnalytics;
 }
 
-export function validateSiteConfigKeys(value: Record<string, any>, opts: Options) {
+export function validateSiteConfigKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: Record<string, any> = validateSiteFrontmatterKeys(value, opts);
   if (defined(value.projects)) {
     output.projects = validateList(
@@ -219,7 +219,7 @@ export function validateSiteConfigKeys(value: Record<string, any>, opts: Options
   return output as SiteConfig;
 }
 
-export function validateSiteConfig(input: any, opts: Options) {
+export function validateSiteConfig(input: any, opts: ValidationOptions) {
   const value =
     validateObjectKeys(input, SITE_CONFIG_KEYS, { ...opts, returnInvalidPartial: true }) || {};
   return validateSiteConfigKeys(value, opts);

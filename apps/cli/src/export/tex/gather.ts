@@ -1,12 +1,12 @@
 import path from 'path';
 import type { VersionId } from '@curvenote/blocks';
 import { KINDS, convertToBlockId } from '@curvenote/blocks';
+import { fillPageFrontmatter } from '@curvenote/frontmatter';
 import {
   saveAffiliations,
   pageFrontmatterFromDTO,
   projectFrontmatterFromDTO,
 } from '../../frontmatter/api';
-import { fillPageFrontmatter } from '../../frontmatter/validators';
 import { Block, Project, Version } from '../../models';
 import type { ISession } from '../../session/types';
 import { getChildren } from '../utils/getChildren';
@@ -79,9 +79,14 @@ export async function gatherAndWriteArticleContent(
   };
 
   const validFrontmatter = validateJtexFrontmatterKeys(frontmatter, {
-    logger: session.log,
     property: 'jtex',
-    count: {},
+    messages: {},
+    errorLogFn: (message: string) => {
+      session.log.error(`Validation error: "${message}`);
+    },
+    warningLogFn: (message: string) => {
+      session.log.warn(`Validation: "${message}`);
+    },
   });
 
   const filename = opts.multiple

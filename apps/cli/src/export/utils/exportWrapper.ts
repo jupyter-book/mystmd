@@ -1,25 +1,34 @@
 import type { ProjectId, VersionId } from '@curvenote/blocks';
 import { oxaLinkToId } from '@curvenote/blocks';
+import fs from 'fs';
 import { Block } from '../../models';
 import type { ISession } from '../../session/types';
 import { getBlockAndLatestVersion } from './getLatest';
 import type { ArticleState } from './walkArticle';
 
-export const exportFromOxaLink =
+export const exportFromPath =
   (
-    exportArticle: (
+    exportRemoteArticle: (
       session: ISession,
       id: VersionId,
       opts: { filename: string },
     ) => Promise<ArticleState | void>,
+    exportLocalArticle?: (
+      session: ISession,
+      path: string,
+      opts: { filename: string },
+    ) => Promise<ArticleState | void>,
   ) =>
-  async (session: ISession, link: string, filename: string, opts?: Record<string, string>) => {
-    const id = oxaLinkToId(link);
-    if (!id) throw new Error('The article ID provided could not be parsed.');
-    if ('version' in id.block) {
+  async (session: ISession, path: string, filename: string, opts?: Record<string, string>) => {
+    const id = oxaLinkToId(path);
+    if (exportLocalArticle && fs.existsSync(path)) {
+      await exportLocalArticle(session, path, { filename, ...opts });
+    } else if (!id) {
+      throw new Error(`Unknown article ID or local file: ${path}`);
+    } else if ('version' in id.block) {
       // Ensure that we actually get a correct ID, and then use the version supplied
       const block = await new Block(session, id.block).get();
-      await exportArticle(
+      await exportRemoteArticle(
         session,
         { ...block.id, version: id.block.version },
         { filename, ...opts },
@@ -30,7 +39,7 @@ export const exportFromOxaLink =
       if (!version) {
         session.log.error('Could not download article; do you need to save the draft?');
       } else {
-        await exportArticle(session, version.id, { filename, ...opts });
+        await exportRemoteArticle(session, version.id, { filename, ...opts });
       }
     }
   };

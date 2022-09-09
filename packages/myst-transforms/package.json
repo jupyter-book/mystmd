@@ -26,9 +26,12 @@
     "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
   },
   "dependencies": {
+    "doi-utils": "^1.0.4",
     "js-yaml": "^4.1.0",
     "katex": "^0.15.2",
+    "intersphinx": "*",
     "myst-spec": "^0.0.4",
+    "myst-utils": "*",
     "unified": "^10.0.0",
     "unist-util-select": "^4.0.1",
     "vfile": "^5.0.0",

@@ -175,6 +175,26 @@ const Underline: IRole = {
   },
 };
 
+const Delete: IRole = {
+  myst: class Delete extends Role {
+    run(data: IRoleData) {
+      const open = new this.state.Token('delete_open', 'u', 1);
+      const text = new this.state.Token('text', '', 0);
+      text.content = data.content;
+      const close = new this.state.Token('delete_close', 'u', -1);
+      return [open, text, close];
+    }
+  },
+  mdast: {
+    type: 'delete',
+    noCloseToken: false,
+    isLeaf: false,
+  },
+  hast() {
+    return null;
+  },
+};
+
 const SmallCaps: IRole = {
   myst: class SmallCaps extends Role {
     run(data: IRoleData) {
@@ -189,59 +209,6 @@ const SmallCaps: IRole = {
     type: 'smallcaps',
     noCloseToken: false,
     isLeaf: false,
-  },
-  hast() {
-    return null;
-  },
-};
-
-const RRID: IRole = {
-  myst: class RRID extends Role {
-    run(data: IRoleData) {
-      const rrid = new this.state.Token('rrid', 'cite', 0);
-      rrid.attrSet('label', data.content);
-      return [rrid];
-    }
-  },
-  mdast: {
-    type: 'rrid',
-    noCloseToken: true,
-    isLeaf: true,
-    getAttrs(t) {
-      return {
-        label: t.attrGet('label'),
-        identifier: t.attrGet('label'),
-      };
-    },
-  },
-  hast() {
-    return null;
-  },
-};
-
-const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Reference <ref>'
-
-const Wiki: IRole = {
-  myst: class Wiki extends Role {
-    run(data: IRoleData) {
-      const wiki = new this.state.Token('wiki', 'cite', 0);
-      const match = REF_PATTERN.exec(data.content);
-      const [, title, name] = match ?? [];
-      wiki.attrSet('title', title?.trim() ?? data.content);
-      wiki.attrSet('name', name?.trim() ?? data.content);
-      return [wiki];
-    }
-  },
-  mdast: {
-    type: 'wiki',
-    noCloseToken: true,
-    isLeaf: true,
-    getAttrs(t) {
-      return {
-        title: t.attrGet('title'),
-        name: t.attrGet('name'),
-      };
-    },
   },
   hast() {
     return null;
@@ -394,11 +361,12 @@ export const reactiveRoles: Record<string, IRole> = {
   cite_group: CiteP,
   'cite:t': CiteT,
   u: Underline,
-  sc: SmallCaps,
   underline: Underline,
+  sc: SmallCaps,
   smallcaps: SmallCaps,
-  rrid: RRID,
-  wiki: Wiki,
+  del: Delete,
+  strike: Delete,
+  delete: Delete,
   chem: Chem,
   chemicalFormula: Chem,
   si: SI,

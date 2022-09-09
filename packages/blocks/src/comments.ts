@@ -1,5 +1,5 @@
+import { getDate } from '@curvenote/validators';
 import type { JsonObject, BaseLinks } from './types';
-import { getDate } from './helpers';
 import type { BlockId } from './blocks/types';
 
 export interface CommentId {

@@ -111,9 +111,14 @@ export async function multipleArticleToTex(
   //
   session.log.debug('Building front matter for main content...');
   const validatedJobConfig = validateExportConfigKeys(job, {
-    logger: session.log,
     property: 'job',
-    count: {},
+    messages: {},
+    errorLogFn: (message: string) => {
+      session.log.error(`Validation error: "${message}`);
+    },
+    warningLogFn: (message: string) => {
+      session.log.warn(`Validation: "${message}`);
+    },
   });
   const projectFrontmatter = projectFrontmatterFromDTO(session, project.data, {
     escapeFn: escapeLatex,
@@ -139,9 +144,14 @@ export async function multipleArticleToTex(
   };
 
   const validFrontmatter = validateJtexFrontmatterKeys(frontmatter, {
-    logger: session.log,
     property: 'jtex',
-    count: {},
+    messages: {},
+    errorLogFn: (message: string) => {
+      session.log.error(`Validation error: "${message}`);
+    },
+    warningLogFn: (message: string) => {
+      session.log.warn(`Validation: "${message}`);
+    },
   });
 
   // write the main file

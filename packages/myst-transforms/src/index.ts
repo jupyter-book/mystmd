@@ -8,8 +8,10 @@ export { mathPlugin, mathLabelPlugin, mathTransform, mathLabelTransform } from '
 export { blockNestingPlugin, blockNestingTransform } from './blocks';
 export { codePlugin, codeTransform } from './code';
 export { codeBlockPlugin, codeBlockTransform } from './codeBlock';
+export { blockquotePlugin, blockquoteTransform } from './blockquote';
 export { imageAltTextPlugin, imageAltTextTransform } from './images';
 export { mystCleanupPlugin, mystCleanupTransform } from './mystCleanup';
+export * from './links';
 export {
   mystTargetsPlugin,
   mystTargetsTransform,

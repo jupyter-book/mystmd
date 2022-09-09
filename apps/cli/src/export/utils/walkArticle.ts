@@ -1,5 +1,7 @@
+import fs from 'fs';
 import Bottleneck from 'bottleneck';
 import { encode } from 'html-entities';
+import type { GenericNode } from 'mystjs';
 import fetch from 'node-fetch';
 import type { VersionId, Blocks, FigureStyles } from '@curvenote/blocks';
 import {
@@ -20,15 +22,15 @@ import { getBlockAndLatestVersion } from './getLatest';
 
 export interface ArticleStateChild {
   state: ReturnType<typeof getEditorState>;
-  block: Block;
-  version: Version;
+  block?: Block;
+  version?: Version;
   templateTags?: string[];
 }
 
 export interface ArticleStateReference {
   label: string;
-  bibtex: string;
-  version: Version<Blocks.Reference>;
+  bibtex?: string;
+  version?: Version<Blocks.Reference>;
   state?: ReturnType<typeof getEditorState>;
 }
 
@@ -239,7 +241,7 @@ export async function walkArticle(
       const existing = references[basekey(key)];
       const state =
         referenceFormat === ReferenceFormatTypes.html ? getEditorState(content) : undefined;
-      if (existing) {
+      if (existing?.version) {
         const ve = existing.version.id.version;
         const v = version.id.version;
         // if existing, only update if incoming version is defined and greater than the existing
@@ -297,5 +299,13 @@ export async function loadImagesToBuffers(images: ArticleState['images']) {
       buffers[key] = buffer;
     }),
   );
+  return buffers;
+}
+
+export function loadLocalImagesToBuffers(images: GenericNode[]) {
+  const buffers: Record<string, Buffer> = {};
+  images.forEach((image) => {
+    buffers[image.url] = fs.readFileSync(image.url);
+  });
   return buffers;
 }

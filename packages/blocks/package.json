@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "Schemas for the Curvenote API and data structures",
   "author": "Rowan Cockett <rowan@curvenote.com>",
-  "homepage": "https://github.com/curvenote/blocks#readme",
+  "homepage": "https://github.com/curvenote/curvenote#readme",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "directories": {
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/blocks.git"
+    "url": "git+https://github.com/curvenote/curvenote.git"
   },
   "scripts": {
     "prepublishOnly": "npm run compile",
@@ -35,7 +35,10 @@
     "test:clear": "jest --clearCache"
   },
   "bugs": {
-    "url": "https://github.com/curvenote/blocks/issues"
+    "url": "https://github.com/curvenote/curvenote/issues"
+  },
+  "dependencies": {
+    "@curvenote/validators": "^0.0.1"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

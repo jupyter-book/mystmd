@@ -23,7 +23,7 @@ module.exports = {
     'trough',
     'zwitch',
     /^vfile.*/,
-    'myst-util-to-react',
+    'myst-to-react',
     '@curvenote/ui-providers',
     '@curvenote/icons',
     '@curvenote/site',

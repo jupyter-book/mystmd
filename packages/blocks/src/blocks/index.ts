@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+import { getDate } from '@curvenote/validators';
 import type { JsonObject } from '../types';
 import type { VersionId, BlockId, Block, BasePartialVersion, FormatTypes } from './types';
 import { KINDS, ContentFormatTypes } from './types';
@@ -10,7 +11,7 @@ import * as output from './output';
 import * as image from './image';
 import * as reference from './reference';
 import * as navigation from './navigation';
-import { getDate, getTags } from '../helpers';
+import { getTags } from '../helpers';
 import { extractBlockFrontMatter } from './utils';
 
 export * from './types';

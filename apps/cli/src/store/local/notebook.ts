@@ -5,7 +5,7 @@ import type { CellOutput } from '@curvenote/blocks';
 import { ContentFormatTypes, KINDS } from '@curvenote/blocks';
 import type { TranslatedBlockPair, MinifiedOutput } from '@curvenote/nbtx';
 import { parseNotebook, minifyCellOutput } from '@curvenote/nbtx';
-import type { Root } from '../../myst';
+import type { Root } from 'mdast';
 import { parseMyst } from '../../myst';
 import type { ISession } from '../../session/types';
 import { publicPath } from '../../utils';

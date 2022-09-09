@@ -1,11 +1,8 @@
 import type { CitationRenderer } from 'citation-js-utils';
-import type { map } from 'mystjs';
 import type { KINDS } from '@curvenote/blocks';
 import type { References as SiteReferences } from '@curvenote/site-common';
-import type { PageFrontmatter } from '../frontmatter/types';
-import type { Root } from '../myst';
-
-export type MapResult = ReturnType<typeof map>;
+import type { PageFrontmatter } from '@curvenote/frontmatter';
+import type { Root } from 'mdast';
 
 export type { Citations, Footnotes } from '@curvenote/site-common';
 
@@ -19,7 +16,7 @@ export type PreRendererData = {
 
 export type RendererData = PreRendererData & {
   sha256: string;
-  slug: string;
+  slug?: string;
   frontmatter: PageFrontmatter;
   references: References;
 };

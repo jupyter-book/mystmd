@@ -1,0 +1,1 @@
+export { Inventory } from './intersphinx';

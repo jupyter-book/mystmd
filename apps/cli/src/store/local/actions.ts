@@ -10,7 +10,6 @@ import {
   basicTransformationsPlugin,
   htmlPlugin,
   footnotesPlugin,
-  keysPlugin,
   ReferenceState,
   MultiPageReferenceState,
   resolveReferencesTransform,
@@ -18,14 +17,20 @@ import {
   codePlugin,
   enumerateTargetsPlugin,
   getFrontmatter,
+  keysTransform,
+  linksTransform,
+  MystTransformer,
+  WikiTransformer,
+  RRIDTransformer,
+  DOITransformer,
 } from 'myst-transforms';
-import { extname, join } from 'path';
+import { dirname, extname, join } from 'path';
 import chalk from 'chalk';
 import fetch from 'node-fetch';
 import { KINDS } from '@curvenote/blocks';
 import type { SiteProject } from '../../config/types';
 import { getPageFrontmatter } from '../../frontmatter';
-import type { Root } from '../../myst';
+import type { Root } from 'mdast';
 import { parseMyst } from '../../myst';
 import type { ISession } from '../../session/types';
 import { loadAllConfigs } from '../../session';
@@ -35,7 +40,7 @@ import {
   transformCitations,
   transformImages,
   transformThumbnail,
-  transformLinks,
+  checkLinksTransform,
   importMdastFromJson,
   includeFilesDirective,
 } from '../../transforms';
@@ -61,11 +66,14 @@ import { processNotebook } from './notebook';
 import { watch } from './reducers';
 import { warnings } from '../build';
 import { selectFileWarnings } from '../build/selectors';
+import { Inventory } from 'intersphinx';
+import { OxaTransformer, StaticFileTransformer } from '../../transforms/links';
 
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
   $doiRenderers: Record<string, SingleCitationRenderer>; // keyed on doi
-  $references: Record<string, ReferenceState>; // keyed on path
+  $internalReferences: Record<string, ReferenceState>; // keyed on path
+  $externalReferences: Record<string, Inventory>; // keyed on id
   $mdast: Record<string, { pre: PreRendererData; post?: RendererData }>; // keyed on path
 };
 
@@ -88,7 +96,8 @@ function castSession(session: ISession): ISessionWithCache {
   const cache = session as unknown as ISessionWithCache;
   if (!cache.$citationRenderers) cache.$citationRenderers = {};
   if (!cache.$doiRenderers) cache.$doiRenderers = {};
-  if (!cache.$references) cache.$references = {};
+  if (!cache.$internalReferences) cache.$internalReferences = {};
+  if (!cache.$externalReferences) cache.$externalReferences = {};
   if (!cache.$mdast) cache.$mdast = {};
   return cache;
 }
@@ -123,7 +132,47 @@ async function loadCitations(session: ISession, path: string) {
   return renderer;
 }
 
-function combineRenderers(cache: ISessionWithCache, ...files: string[]) {
+async function loadInterspinx(
+  session: ISession,
+  opts: { projectPath: string; force?: boolean },
+): Promise<Inventory[]> {
+  const projectConfig = selectors.selectProjectConfig(session.store.getState(), opts.projectPath);
+  const cache = castSession(session);
+  // A bit confusing here, references is the frontmatter, but those are `externalReferences`
+  if (!projectConfig?.references) return [];
+  const references = Object.entries(projectConfig.references)
+    .filter(([key, object]) => {
+      if (isUrl(object.url)) return true;
+      session.log.error(`⚠️  ${key} references is not a valid url: "${object.url}"`);
+      return false;
+    })
+    .map(([key, object]) => {
+      if (!cache.$externalReferences[key] || opts.force) {
+        cache.$externalReferences[key] = new Inventory({ id: key, path: object.url });
+      }
+      return cache.$externalReferences[key];
+    })
+    .filter((exists) => !!exists);
+  await Promise.all(
+    references.map(async (loader) => {
+      if (loader._loaded) return;
+      const toc = tic();
+      try {
+        await loader.load();
+      } catch (error) {
+        session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+        session.log.error(`Problem fetching references entry: ${loader.id} (${loader.path})`);
+        return null;
+      }
+      session.log.info(
+        toc(`🏫 Read ${loader.numEntries} references links for "${loader.id}" in %s.`),
+      );
+    }),
+  );
+  return references;
+}
+
+function combineCitationRenderers(cache: ISessionWithCache, ...files: string[]) {
   const combined: CitationRenderer = {};
   files.forEach((file) => {
     const renderer = cache.$citationRenderers[file] ?? {};
@@ -141,7 +190,7 @@ export function combineProjectCitationRenderers(session: ISession, projectPath: 
   const project = selectors.selectLocalProject(session.store.getState(), projectPath);
   const cache = castSession(session);
   if (!project?.bibliography) return;
-  cache.$citationRenderers[projectPath] = combineRenderers(cache, ...project.bibliography);
+  cache.$citationRenderers[projectPath] = combineCitationRenderers(cache, ...project.bibliography);
 }
 
 export async function loadFile(
@@ -219,12 +268,14 @@ export async function transformMdast(
     projectSlug,
     file,
     watchMode = false,
+    localExport = false,
   }: {
-    projectPath: string;
     file: string;
-    projectSlug: string;
-    pageSlug: string;
+    projectPath?: string;
+    projectSlug?: string;
+    pageSlug?: string;
     watchMode?: boolean;
+    localExport?: boolean;
   },
 ) {
   const toc = tic();
@@ -236,7 +287,7 @@ export async function transformMdast(
   log.debug(`Processing "${file}"`);
   // Use structuredClone in future (available in node 17)
   const mdast = JSON.parse(JSON.stringify(mdastPre)) as Root;
-  const frontmatter = getPageFrontmatter(session, projectPath, mdast, file);
+  const frontmatter = getPageFrontmatter(session, mdast, file, projectPath);
   const references: References = {
     cite: { order: [], data: {} },
     footnotes: {},
@@ -244,7 +295,7 @@ export async function transformMdast(
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
   const state = new ReferenceState({ numbering: frontmatter.numbering, file: vfile });
-  cache.$references[file] = state;
+  cache.$internalReferences[file] = state;
   // Import additional content from mdast or other files
   importMdastFromJson(session, file, mdast);
   includeFilesDirective(session, file, mdast);
@@ -255,19 +306,44 @@ export async function transformMdast(
     .use(mathPlugin, { macros: frontmatter.math })
     .use(enumerateTargetsPlugin, { state }) // This should be after math
     .run(mdast, vfile);
+
+  // Run the link transformations that can be done without knowledge of other files
+  const intersphinx = projectPath ? await loadInterspinx(session, { projectPath }) : [];
+  const transformers = [
+    new WikiTransformer(),
+    new RRIDTransformer(),
+    new DOITransformer(), // This also is picked up in the next transform
+    new MystTransformer(intersphinx),
+  ];
+  linksTransform(mdast, vfile, { transformers });
+
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
+  const rendererFiles = [file];
+  if (projectPath) {
+    rendererFiles.unshift(projectPath);
+  } else {
+    const fileDirectory = dirname(file);
+    await Promise.all(
+      fs.readdirSync(fileDirectory).map(async (f) => {
+        if (extname(f).toLowerCase() === '.bib') {
+          const bibFile = join(fileDirectory, f);
+          await loadFile(session, bibFile);
+          rendererFiles.push(bibFile);
+        }
+      }),
+    );
+  }
+  // Combine file-specific citation renderers with project renderers from bib files
+  const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
   // Kind needs to still be Article here even if jupytext, to handle outputs correctly
   await transformOutputs(session, mdast, kind);
-  // Combine file-specific citation renderers with project renderers from bib files
-  const fileCitationRenderer = combineRenderers(cache, projectPath, file);
   transformCitations(log, mdast, fileCitationRenderer, references, file);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
     .use(footnotesPlugin, { references }) // Needs to happen nead the end
-    .use(keysPlugin) // Keys should be the last major transform
     .run(mdast, vfile);
-  await transformImages(session, file, mdast);
+  await transformImages(session, file, mdast, { localExport });
   // Note, the thumbnail transform must be **after** images, as it may read the images
   await transformThumbnail(session, frontmatter, mdast, file);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
@@ -310,12 +386,10 @@ export async function postProcessMdast(
   session: ISession,
   {
     file,
-    strict,
     checkLinks,
     pageReferenceStates,
   }: {
     file: string;
-    strict?: boolean;
     checkLinks?: boolean;
     pageReferenceStates: PageReferenceStates;
   },
@@ -324,16 +398,20 @@ export async function postProcessMdast(
   const { log } = session;
   const cache = castSession(session);
   const mdastPost = selectFile(session, file);
-  // NOTE: This is doing things in place, we should potentially make this a different state?
-  const linkLookup = transformLinks(session, file, mdastPost.mdast, { checkLinks });
-  const state = cache.$references[file];
   const projectState = new MultiPageReferenceState(pageReferenceStates, file);
-  resolveReferencesTransform(mdastPost.mdast, { state: projectState });
-  if (strict || checkLinks) {
-    await linkLookup;
-  }
+  // NOTE: This is doing things in place, we should potentially make this a different state?
+  const transformers = [
+    new OxaTransformer(session), // This links any oxa links to their file if they exist
+    new StaticFileTransformer(session, file), // Links static files and internally linked files
+  ];
+  linksTransform(mdastPost.mdast, projectState.file as VFile, { transformers });
+  const state = cache.$internalReferences[file];
+  resolveReferencesTransform(mdastPost.mdast, projectState.file as VFile, { state: projectState });
+  // Ensure there are keys on every node
+  keysTransform(mdastPost.mdast);
   logMessagesFromVFile(session, state.file);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
+  if (checkLinks) await checkLinksTransform(session, file, mdastPost.mdast);
 }
 
 export function selectFile(session: ISession, file: string) {
@@ -344,7 +422,7 @@ export function selectFile(session: ISession, file: string) {
   return mdastPost;
 }
 
-export async function writeFile(
+export function writeFile(
   session: ISession,
   { file, pageSlug, projectSlug }: { file: string; projectSlug: string; pageSlug: string },
 ) {
@@ -379,7 +457,7 @@ function selectPageReferenceStates(session: ISession, pages: { file: string }[])
   const cache = castSession(session);
   const pageReferenceStates: PageReferenceStates = pages
     .map((page) => ({
-      state: cache.$references[page.file],
+      state: cache.$internalReferences[page.file],
       file: page.file,
       url: selectors.selectFileInfo(session.store.getState(), page.file)?.url ?? null,
     }))
@@ -402,7 +480,7 @@ export async function fastProcessFile(
   const { pages } = loadProject(session, projectPath);
   const pageReferenceStates = selectPageReferenceStates(session, pages);
   await postProcessMdast(session, { file, pageReferenceStates });
-  await writeFile(session, { file, pageSlug, projectSlug });
+  writeFile(session, { file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session);
 }
@@ -422,6 +500,8 @@ export async function processProject(
       ...project.bibliography.map((path) => loadFile(session, path, '.bib')),
       // Load all content (.md and .ipynb)
       ...pages.map((page) => loadFile(session, page.file)),
+      // Load up all the intersphinx references
+      loadInterspinx(session, { projectPath: siteProject.path }) as Promise<any>,
     ]);
   }
   // Consolidate all citations onto single project citation renderer
@@ -444,22 +524,19 @@ export async function processProject(
     pages.map((page) =>
       postProcessMdast(session, {
         file: page.file,
-        strict: opts?.strict,
-        checkLinks: opts?.checkLinks,
+        checkLinks: opts?.checkLinks || opts?.strict,
         pageReferenceStates,
       }),
     ),
   );
   // Write all pages
   if (writeFiles) {
-    await Promise.all(
-      pages.map((page) =>
-        writeFile(session, {
-          file: page.file,
-          projectSlug: siteProject.slug,
-          pageSlug: page.slug,
-        }),
-      ),
+    pages.map((page) =>
+      writeFile(session, {
+        file: page.file,
+        projectSlug: siteProject.slug,
+        pageSlug: page.slug,
+      }),
     );
   }
   log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug} in %s.`));

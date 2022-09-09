@@ -1,18 +1,18 @@
 import type { Block, Project } from '@curvenote/blocks';
 import { oxaLink } from '@curvenote/blocks';
-import { dirname, join } from 'path';
-import { affiliations } from '../store/local';
-import { selectAffiliation } from '../store/selectors';
-import type { ISession } from '../session';
-import type { Options } from '../utils/validators';
-import { filterKeys } from '../utils/validators';
-import type { Author, PageFrontmatter, ProjectFrontmatter } from './types';
+import type { Author, PageFrontmatter, ProjectFrontmatter } from '@curvenote/frontmatter';
 import {
   PAGE_FRONTMATTER_KEYS,
   PROJECT_FRONTMATTER_KEYS,
   validatePageFrontmatterKeys,
   validateProjectFrontmatterKeys,
-} from './validators';
+} from '@curvenote/frontmatter';
+import type { ValidationOptions } from '@curvenote/validators';
+import { filterKeys } from '@curvenote/validators';
+import { dirname, join } from 'path';
+import { affiliations } from '../store/local';
+import { selectAffiliation } from '../store/selectors';
+import type { ISession } from '../session';
 import { downloadAndSaveImage } from '../transforms/images';
 import { THUMBNAILS_FOLDER } from '../utils';
 
@@ -37,7 +37,7 @@ function resolveAffiliations(session: ISession, author: Author): Author {
 export function projectFrontmatterFromDTO(
   session: ISession,
   project: Project,
-  opts?: Partial<Options>,
+  opts?: Partial<ValidationOptions>,
 ): ProjectFrontmatter {
   const apiFrontmatter = filterKeys(project, PROJECT_FRONTMATTER_KEYS) as ProjectFrontmatter;
   if (apiFrontmatter.authors) {
@@ -50,11 +50,10 @@ export function projectFrontmatterFromDTO(
     apiFrontmatter.license = project.licenses as any;
   }
   return validateProjectFrontmatterKeys(apiFrontmatter, {
-    logger: session.log,
     property: 'project',
     suppressErrors: true,
     suppressWarnings: true,
-    count: {},
+    messages: {},
     ...opts,
   });
 }
@@ -64,7 +63,7 @@ export async function pageFrontmatterFromDTOAndThumbnail(
   filename: string,
   block: Block,
   date?: string | Date,
-  opts?: Partial<Options>,
+  opts?: Partial<ValidationOptions>,
 ): Promise<PageFrontmatter> {
   const apiFrontmatter = pageFrontmatterFromDTO(session, block, date, opts);
   if (block.links.thumbnail) {
@@ -85,7 +84,7 @@ export function pageFrontmatterFromDTO(
   session: ISession,
   block: Block,
   date?: string | Date,
-  opts?: Partial<Options>,
+  opts?: Partial<ValidationOptions>,
 ): PageFrontmatter {
   const apiFrontmatter = filterKeys(block, PAGE_FRONTMATTER_KEYS) as PageFrontmatter;
   if (apiFrontmatter.authors) {
@@ -102,11 +101,10 @@ export function pageFrontmatterFromDTO(
   }
   apiFrontmatter.oxa = oxaLink('', block.id) as any;
   return validatePageFrontmatterKeys(apiFrontmatter, {
-    logger: session.log,
     property: 'page',
     suppressErrors: true,
     suppressWarnings: true,
-    count: {},
+    messages: {},
     ...opts,
   });
 }

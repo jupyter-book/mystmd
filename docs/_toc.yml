@@ -1,0 +1,26 @@
+format: jb-book
+root: index
+parts:
+  - caption: Overview
+    chapters:
+      - file: syntax-overview
+      - file: intro
+  - caption: Authoring
+    chapters:
+      - file: typography
+      - file: admonitions
+      - file: figures
+      - file: math
+      - file: tables
+      - file: code
+      - file: cross-references
+      - file: external-references
+      - file: citations
+      - file: blocks
+      - file: diagrams
+      - file: cards-and-tabs
+      - file: tasks
+      - file: frontmatter
+  - caption: Reference
+    chapters:
+      - file: commonmark

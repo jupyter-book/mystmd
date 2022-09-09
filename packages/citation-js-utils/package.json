@@ -32,7 +32,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/citation-js-utils.git"
+    "url": "git+https://github.com/curvenote/curvenote.git"
   },
   "keywords": [
     "citation-js"
@@ -40,9 +40,9 @@
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/curvenote/citation-js-utils/issues"
+    "url": "https://github.com/curvenote/curvenote/issues"
   },
-  "homepage": "https://github.com/curvenote/citation-js-utils#readme",
+  "homepage": "https://github.com/curvenote/curvenote#readme",
   "engines": {
     "node": ">=12",
     "npm": ">=6"

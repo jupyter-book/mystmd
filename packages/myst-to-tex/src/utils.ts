@@ -1,3 +1,5 @@
+import { DEFAULT_IMAGE_WIDTH, DEFAULT_PAGE_WIDTH_PIXELS } from './types';
+
 /** Removes nobreak and zero-width spaces */
 export function cleanWhitespaceChars(text: string, nbsp = ' '): string {
   return text.replace(/\u00A0/g, nbsp).replace(/[\u200B-\u200D\uFEFF]/g, '');
@@ -185,4 +187,23 @@ export function stringToLatexMath(text: string) {
   }, '');
   const final = replaced.trim();
   return cleanWhitespaceChars(final);
+}
+
+export function getLatexImageWidth(width?: number | string): string {
+  if (typeof width === 'number' && Number.isNaN(width)) {
+    // If it is nan, return with the default.
+    return getLatexImageWidth(DEFAULT_IMAGE_WIDTH);
+  }
+  if (typeof width === 'string') {
+    if (width.endsWith('%')) {
+      return getLatexImageWidth(Number(width.replace('%', '')));
+    } else if (width.endsWith('px')) {
+      return getLatexImageWidth(Number(width.replace('px', '')) / DEFAULT_PAGE_WIDTH_PIXELS);
+    }
+    console.log(`Unknown width ${width} in getLatexImageWidth`);
+    return getLatexImageWidth(DEFAULT_IMAGE_WIDTH);
+  }
+  let lineWidth = width ?? DEFAULT_IMAGE_WIDTH;
+  if (lineWidth < 1) lineWidth *= 100;
+  return `${lineWidth / 100}\\linewidth`;
 }

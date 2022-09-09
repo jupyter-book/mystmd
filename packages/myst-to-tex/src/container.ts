@@ -1,5 +1,5 @@
 import type { Container, Image, Table, Code, Math } from 'myst-spec';
-import { select } from 'mystjs';
+import { select } from 'unist-util-select';
 import { getColumnWidths } from './tables';
 import type { Handler } from './types';
 

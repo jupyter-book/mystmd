@@ -1,4 +1,6 @@
-import { MyST, State, transform, unified } from 'mystjs';
+import { unified } from 'unified';
+import { u } from 'unist-builder';
+import type { LatexResult } from '../src';
 import mystToTex from '../src';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -7,15 +9,26 @@ const everything =
 
 describe('myst-to-tex', () => {
   it('emphasis in paragraph', () => {
-    const myst = new MyST();
-    const content = 'Some % *markdown*';
-
-    const state = new State();
-    const tree = myst.parse(content);
-    const pipe = unified().use(transform, state, {}).use(mystToTex);
-    const result = pipe.runSync(tree as any);
-    const tex = pipe.stringify(result);
-
-    expect(tex.result).toEqual('Some \\% \\textit{markdown}');
+    const tree = u(
+      'root',
+      u('paragraph', [
+        u('text', { value: 'Some % ' }),
+        u('emphasis', [u('text', { value: 'markdown' })]),
+      ]),
+    );
+    const pipe = unified().use(mystToTex);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree);
+    expect((file.result as LatexResult).value).toEqual('Some \\% \\textit{markdown}');
+  });
+  it('escapes quotes and unicode', () => {
+    const tree = u(
+      'root',
+      u('paragraph', [u('text', { value: '“quote” ' }), u('inlineMath', { value: '½' })]),
+    );
+    const pipe = unified().use(mystToTex);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree);
+    expect((file.result as LatexResult).value).toEqual("``quote'' $\\frac{1}{2}$");
   });
 });

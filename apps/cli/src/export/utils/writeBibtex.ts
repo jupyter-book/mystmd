@@ -23,7 +23,7 @@ export async function writeBibtex(
       seen.push(label);
       return bibtex;
     })
-    .filter((item: string | null) => item != null);
+    .filter((item: string | null | undefined) => item != null);
 
   if (bibliography.length === 0 && !opts.alwaysWriteFile) {
     session.log.debug('No references to write for the project.');

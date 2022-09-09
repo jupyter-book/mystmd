@@ -14,6 +14,7 @@ export function throwIfTemplateButNoJtex(opts: TexExportOptions) {
   }
 }
 
+// TODO: Move to jtex
 export async function ifTemplateFetchTaggedBlocks(
   session: ISession,
   opts: TexExportOptions,

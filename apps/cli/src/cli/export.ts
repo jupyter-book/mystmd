@@ -7,7 +7,7 @@ import {
   oxaLinkToMarkdown,
   oxaLinkToNotebook,
   oxaLinkToPdf,
-  oxaLinkToWord,
+  pathToWord,
 } from '../export';
 import { clirun } from './utils';
 
@@ -17,8 +17,19 @@ function makeImageOption() {
   );
 }
 
+function makeDisableTemplateOption() {
+  return new Option(
+    '--disable-template',
+    'Export raw latex content with no template applied',
+  ).default(false);
+}
+
 function makeTemplateOption() {
   return new Option('-t, --template <name>', 'Specify a template to apply during export');
+}
+
+function makeTemplatePathOption() {
+  return new Option('--template-path <name>', 'Specify a path to templates folder');
 }
 
 function makeTemplateOptionsOption() {
@@ -41,7 +52,7 @@ function makeWordExportCLI(program: Command) {
     .description('Export a Microsoft Word document from a Curvenote link')
     .argument('<article>', 'A link to the Curvenote article (e.g. OXA Link or API link)')
     .argument('[output]', 'The document filename to export to', 'article.docx')
-    .action(clirun(oxaLinkToWord, { program }));
+    .action(clirun(pathToWord, { program }));
   return command;
 }
 
@@ -63,7 +74,9 @@ function makeTexExportCLI(program: Command) {
     .argument('<article>', 'A link to the Curvenote article (e.g. OXA Link or API link)')
     .argument('[output]', 'The document filename to export to', 'main.tex')
     .addOption(makeImageOption())
+    .addOption(makeDisableTemplateOption())
     .addOption(makeTemplateOption())
+    .addOption(makeTemplatePathOption())
     .addOption(makeTemplateOptionsOption())
     .addOption(makeConverterOption())
     .action(clirun(oxaLinkToArticleTex, { program }));

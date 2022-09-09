@@ -6,8 +6,9 @@ import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
 import fetch from 'node-fetch';
 import type { Logger } from '../logging';
-import type { Root } from '../myst';
+import type { Root } from 'mdast';
 import { tic } from '../utils';
+import { toText } from 'myst-utils';
 import type { Cite } from './citations';
 import type { SingleCitationRenderer } from './types';
 
@@ -76,7 +77,10 @@ export async function transformLinkedDOIs(
       citeNode.type = 'cite';
       citeNode.kind = 'narrative';
       citeNode.label = cite.id;
-      // Leave the children as is
+      if (validate(normalize(toText(citeNode.children)))) {
+        // If the link text is the DOI, update with a citation in a following pass
+        citeNode.children = [];
+      }
       return true;
     }),
     ...citeDois.map(async (node) => {

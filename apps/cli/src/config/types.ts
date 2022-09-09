@@ -1,4 +1,4 @@
-import type { ProjectFrontmatter, SiteFrontmatter } from '../frontmatter/types';
+import type { ProjectFrontmatter, SiteFrontmatter } from '@curvenote/frontmatter';
 
 export const CURVENOTE_YML = 'curvenote.yml';
 export const VERSION = 1;

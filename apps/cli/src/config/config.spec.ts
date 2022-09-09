@@ -1,6 +1,5 @@
-import { silentLogger } from '../logging';
+import type { ValidationOptions } from '@curvenote/validators';
 import { BUILD_FOLDER } from '../utils';
-import type { Options } from '../utils/validators';
 import {
   validateProjectConfig,
   validateSiteAction,
@@ -11,10 +10,10 @@ import {
   validateSiteProject,
 } from './validators';
 
-let opts: Options;
+let opts: ValidationOptions;
 
 beforeEach(() => {
-  opts = { logger: silentLogger(), property: 'test', count: {} };
+  opts = { property: 'test', messages: {} };
 });
 
 describe('validateProjectConfig', () => {
@@ -33,14 +32,14 @@ describe('validateProjectConfig', () => {
     expect(validateProjectConfig({ exclude: ['license.md', 5] }, opts)).toEqual({
       exclude: ['license.md'],
     });
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 
 describe('validateSiteProject', () => {
   it('empty object errors', async () => {
     expect(validateSiteProject({}, opts)).toEqual(undefined);
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('valid site project returns self', async () => {
     const siteProj = {
@@ -51,14 +50,14 @@ describe('validateSiteProject', () => {
   });
   it('invalid slug errors', async () => {
     expect(validateSiteProject({ path: 'my-dir', slug: '#' }, opts)).toEqual(undefined);
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 
 describe('validateSiteNavItem', () => {
   it('empty object errors', async () => {
     expect(validateSiteNavItem({}, opts)).toEqual(undefined);
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('valid site nav folder returns self', async () => {
     const siteNavFolder = {
@@ -76,31 +75,31 @@ describe('validateSiteNavItem', () => {
   });
   it('invalid children errors', async () => {
     expect(validateSiteNavItem({ title: 'my-folder', children: 'a' }, opts)).toEqual(undefined);
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid child errors', async () => {
     expect(validateSiteNavItem({ title: 'my-folder', children: ['a'] }, opts)).toEqual({
       title: 'my-folder',
       children: [],
     });
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid url errors', async () => {
     expect(validateSiteNavItem({ title: 'my-folder', url: '/a/a/a' }, opts)).toEqual(undefined);
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid full url errors', async () => {
     expect(
       validateSiteNavItem({ title: 'my-folder', url: 'https://example.com/a/a' }, opts),
     ).toEqual(undefined);
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 
 describe('validateSiteAction', () => {
   it('empty object errors', async () => {
     expect(validateSiteAction({}, opts)).toEqual(undefined);
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('valid site project returns self', async () => {
     const siteAction = {
@@ -112,7 +111,7 @@ describe('validateSiteAction', () => {
   });
   it('invalid url errors', async () => {
     expect(validateSiteAction({ title: 'example', url: '/a' }, opts)).toEqual(undefined);
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 
@@ -180,7 +179,7 @@ describe('validateSiteConfig', () => {
       actions: [],
       domains: [],
     });
-    expect(opts.count.errors).toEqual(4);
+    expect(opts.messages.errors?.length).toEqual(4);
   });
   it('invalid required values error', async () => {
     expect(
@@ -196,7 +195,7 @@ describe('validateSiteConfig', () => {
         opts,
       ),
     ).toEqual(undefined);
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('missing required values are coerced', async () => {
     expect(validateSiteConfig({}, opts)).toEqual({
@@ -205,7 +204,7 @@ describe('validateSiteConfig', () => {
       actions: [],
       domains: [],
     });
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('valid required values are not coerced', async () => {
     expect(validateSiteConfig({ projects: [{ path: 'my-proj', slug: 'test' }] }, opts)).toEqual({
@@ -214,6 +213,6 @@ describe('validateSiteConfig', () => {
       actions: [],
       domains: [],
     });
-    expect(opts.count.errors).toEqual(1);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });

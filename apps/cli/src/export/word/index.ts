@@ -2,12 +2,21 @@ import fs from 'fs';
 import { writeDocx } from 'prosemirror-docx';
 import type { VersionId } from '@curvenote/blocks';
 import { KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
-import { Block, Project, User, Version } from '../../models';
+import { Block, MyUser, Project, User, Version } from '../../models';
 import type { ISession } from '../../session/types';
+import { EditorState } from 'prosemirror-state';
+import type { Image, Root } from 'myst-spec';
+import type { GenericNode } from 'mystjs';
+import { selectAll } from 'mystjs';
+import { fromMdast } from '@curvenote/schema';
+import { loadFile, selectFile, transformMdast } from '../../store/local/actions';
+import type { References } from '../../transforms/types';
 import { assertEndsInExtension } from '../utils/assertions';
-import { exportFromOxaLink } from '../utils/exportWrapper';
+import { exportFromPath } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';
-import { loadImagesToBuffers, walkArticle } from '../utils/walkArticle';
+import { getEditorState } from '../utils/getEditorState';
+import type { ArticleStateReference } from '../utils/walkArticle';
+import { loadImagesToBuffers, loadLocalImagesToBuffers, walkArticle } from '../utils/walkArticle';
 import { defaultTemplate } from './template';
 
 export * from './schema';
@@ -19,7 +28,63 @@ export type WordOptions = {
   [key: string]: any;
 };
 
-export async function articleToWord(
+function referencesToWord(references: References) {
+  const out: Record<string, ArticleStateReference> = {};
+  references.cite.order.forEach((key) => {
+    out[key] = { label: key, state: getEditorState(`<p>${references.cite.data[key].html}</p>`) };
+  });
+  return out;
+}
+
+export async function localArticleToWord(
+  session: ISession,
+  file: string,
+  opts: WordOptions,
+  documentCreator = defaultTemplate,
+) {
+  const { filename, ...docOpts } = opts;
+  assertEndsInExtension(filename, 'docx');
+  await loadFile(session, file);
+  await transformMdast(session, { file, localExport: true });
+  const { frontmatter, mdast, references } = selectFile(session, file);
+  const consolidatedChildren = selectAll('block', mdast).reduce((newChildren, block) => {
+    newChildren.push(...(block as any).children);
+    return newChildren;
+  }, [] as GenericNode[]);
+  consolidatedChildren.push(...Object.values(references.footnotes));
+  const consolidatedMdast = {
+    type: 'root',
+    children: consolidatedChildren,
+  } as Root;
+  const articleDoc = fromMdast(consolidatedMdast, 'full');
+  const articleChildren = [{ state: EditorState.create({ doc: articleDoc }) }];
+  const article = {
+    children: articleChildren,
+    images: {},
+    references: referencesToWord(references),
+    tagged: {},
+  };
+
+  const user = await new MyUser(session).get();
+  const doc = await documentCreator({
+    session,
+    user,
+    buffers: loadLocalImagesToBuffers(selectAll('image', mdast) as Image[]),
+    authors: frontmatter.authors || [],
+    article,
+    title: frontmatter.title || 'Untitled',
+    description: frontmatter.description || '',
+    tags: frontmatter.tags || [],
+    opts: docOpts,
+  });
+  await writeDocx(doc, (buffer) => {
+    fs.writeFileSync(filename, buffer);
+  });
+
+  return article;
+}
+
+export async function oxaArticleToWord(
   session: ISession,
   versionId: VersionId,
   opts: WordOptions,
@@ -44,10 +109,12 @@ export async function articleToWord(
     session,
     user,
     buffers,
-    project,
-    block,
-    version,
+    authors: block.data.authors ?? project.data.authors ?? [],
+    versionId: version.id.version || undefined,
     article,
+    title: block.data.title,
+    description: block.data.description,
+    tags: block.data.tags,
     opts: docOpts,
   });
 
@@ -58,4 +125,4 @@ export async function articleToWord(
   return article;
 }
 
-export const oxaLinkToWord = exportFromOxaLink(articleToWord);
+export const pathToWord = exportFromPath(oxaArticleToWord, localArticleToWord);

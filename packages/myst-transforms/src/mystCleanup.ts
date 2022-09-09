@@ -1,6 +1,6 @@
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
-import { liftChildren } from './utils';
+import { liftChildren } from 'myst-utils';
 
 export function mystCleanupTransform(tree: Root) {
   liftChildren(tree, 'mystDirective');
