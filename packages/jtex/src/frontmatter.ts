@@ -1,8 +1,5 @@
 import type { Author, PageFrontmatter } from '@curvenote/frontmatter';
-import type { ValidationOptions } from '@curvenote/validators';
-import { validateObjectKeys } from '@curvenote/validators';
-import { errorLogger } from './validators';
-import type { ISession, NameAndIndex, RendererDoc } from './types';
+import type { RendererAuthor, RendererDoc, ValueAndIndex } from './types';
 
 function undefinedIfEmpty<T>(array?: T[]): T[] | undefined {
   // Explicitly return undefined
@@ -15,44 +12,37 @@ function addIndicesToAuthors(authors: Author[], affiliationList: RendererDoc['af
   affiliationList.forEach(({ name, index }) => {
     affiliationLookup[name] = index;
   });
+  let correspondingIndex = 0;
   return authors.map((auth, index) => {
-    const affiliations = auth.affiliations?.map((name) => {
-      return { name, index: affiliationLookup[name] };
+    let corresponding: ValueAndIndex | undefined;
+    if (auth.corresponding) {
+      corresponding = {
+        value: auth.corresponding,
+        ...indexAndLetter(correspondingIndex),
+      };
+      correspondingIndex += 1;
+    }
+    let affiliations = auth.affiliations?.map((value) => {
+      return { ...affiliationLookup[value] };
     });
     return { ...auth, index, affiliations: undefinedIfEmpty(affiliations) };
   });
 }
 
-function affiliationsFromAuthors(authors: Author[]): NameAndIndex[] {
+function affiliationsFromAuthors(authors: Author[]): ValueAndIndex[] {
   const allAffiliations = authors.map((auth) => auth.affiliations || []).flat();
-  return [...new Set(allAffiliations)].map((name, index) => {
-    return { name, index };
+  return [...new Set(allAffiliations)].map((value, index) => {
+    return { value, ...indexAndLetter(index) };
   });
 }
 
-export function extendJtexFrontmatter(
-  session: ISession,
-  frontmatter: PageFrontmatter,
-): RendererDoc {
+export function extendJtexFrontmatter(frontmatter: PageFrontmatter): RendererDoc {
   const datetime = frontmatter.date ? new Date(frontmatter.date) : new Date();
-  const opts: ValidationOptions = {
-    property: 'frontmatter',
-    messages: {},
-    errorLogFn: errorLogger(session),
-  };
-  // Additional validation beyond standard frontmatter validation
-  const filteredFm = validateObjectKeys(
-    frontmatter,
-    { required: ['title', 'description', 'authors'] },
-    opts,
-  );
-  if (opts.messages.errors?.length || !filteredFm) {
-    throw new Error('Required frontmatter missing for export');
-  }
   const affiliations = affiliationsFromAuthors(frontmatter.authors || []);
   const doc: RendererDoc = {
-    title: filteredFm.title || '',
-    description: filteredFm.description || '',
+    title: frontmatter.title,
+    short_title: frontmatter.short_title,
+    description: frontmatter.description,
     date: {
       day: String(datetime.getDate()),
       month: String(datetime.getMonth() + 1),

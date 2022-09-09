@@ -22,27 +22,37 @@ export type TemplateTagDefinition = {
   plain?: boolean;
   max_chars?: number;
   max_words?: number;
-  // condition
+  condition?: {
+    id: string;
+    value?: any;
+  };
 };
 
-export enum TEMPLATE_OPTION_TYPES {
+export enum TemplateOptionTypes {
   bool = 'bool',
   str = 'str',
   choice = 'choice',
+  frontmatter = 'frontmatter',
 }
+
+/**
+ * Validated frontmatter keys exposed in renderer doc
+ */
+export const DOC_FRONTMATTER_KEYS = ['title', 'description', 'authors', 'short_title', 'keywords'];
 
 export type TemplateOptionDefinition = {
   id: string;
-  type: TEMPLATE_OPTION_TYPES;
+  type: TemplateOptionTypes;
   title?: string;
   description?: string;
   default?: any;
   required?: boolean;
-  multiple?: boolean;
   choices?: string[];
-  regex?: string;
-  max_length?: number;
-  // condition
+  max_chars?: number;
+  condition?: {
+    id: string;
+    value?: any;
+  };
 };
 
 export type TemplateYml = {
@@ -55,21 +65,26 @@ export type TemplateYml = {
   };
 };
 
-export type NameAndIndex = {
-  name: string;
+export type ValueAndIndex = {
+  value: any;
   index: number;
-  letter?: string;
+  letter: string;
 };
 
-type RendererAuthor = Omit<Author, 'affiliations'> & {
-  affiliations?: NameAndIndex[];
+export type RendererAuthor = Omit<Author, 'affiliations' | 'corresponding' | 'orcid'> & {
+  affiliations?: ValueAndIndex[];
+  corresponding?: ValueAndIndex;
+  orcid?: string;
   index: number;
   letter?: string;
+  given_name: string;
+  surname: string;
 };
 
 export type RendererDoc = {
-  title: string;
-  description: string;
+  title?: string;
+  short_title?: string;
+  description?: string;
   date: {
     day: string;
     month: string;
