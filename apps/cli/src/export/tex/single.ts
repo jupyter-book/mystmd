@@ -153,7 +153,6 @@ export async function localArticleToTexTemplated(
   const jtex = new JTex(session, { template, path: templatePath });
   await jtex.ensureTemplateExistsOnPath();
   const templateYml = jtex.getValidatedTemplateYml();
-  const validatedTemplateOptions = jtex.validateOptions(templateOptions || {}, file);
 
   const tagDefinitions = templateYml?.config?.tagged || [];
   const tagged: Record<string, string> = {};

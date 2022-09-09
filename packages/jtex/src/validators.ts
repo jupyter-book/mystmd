@@ -221,7 +221,3 @@ export function validateTemplateYml(input: any, opts: ValidationOptions) {
   }
   return output;
 }
-
-export function errorLogger(session: ISession) {
-  return (message: string) => session.log.error(message);
-}
