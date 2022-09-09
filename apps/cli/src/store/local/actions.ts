@@ -72,8 +72,8 @@ import { OxaTransformer, StaticFileTransformer } from '../../transforms/links';
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
   $doiRenderers: Record<string, SingleCitationRenderer>; // keyed on doi
-  $references: Record<string, ReferenceState>; // keyed on path
-  $intersphinx: Record<string, Inventory>; // keyed on id
+  $internalReferences: Record<string, ReferenceState>; // keyed on path
+  $externalReferences: Record<string, Inventory>; // keyed on id
   $mdast: Record<string, { pre: PreRendererData; post?: RendererData }>; // keyed on path
 };
 
@@ -96,9 +96,9 @@ function castSession(session: ISession): ISessionWithCache {
   const cache = session as unknown as ISessionWithCache;
   if (!cache.$citationRenderers) cache.$citationRenderers = {};
   if (!cache.$doiRenderers) cache.$doiRenderers = {};
-  if (!cache.$references) cache.$references = {};
+  if (!cache.$internalReferences) cache.$internalReferences = {};
+  if (!cache.$externalReferences) cache.$externalReferences = {};
   if (!cache.$mdast) cache.$mdast = {};
-  if (!cache.$intersphinx) cache.$intersphinx = {};
   return cache;
 }
 
@@ -138,37 +138,38 @@ async function loadInterspinx(
 ): Promise<Inventory[]> {
   const projectConfig = selectors.selectProjectConfig(session.store.getState(), opts.projectPath);
   const cache = castSession(session);
-  if (!projectConfig?.intersphinx) return [];
-  const intersphinx = Object.entries(projectConfig.intersphinx)
+  // A bit confusing here, references is the frontmatter, but those are `externalReferences`
+  if (!projectConfig?.references) return [];
+  const references = Object.entries(projectConfig.references)
     .filter(([key, object]) => {
       if (isUrl(object.url)) return true;
-      session.log.error(`⚠️  ${key} intersphinx is not a valid url: "${object.url}"`);
+      session.log.error(`⚠️  ${key} references is not a valid url: "${object.url}"`);
       return false;
     })
     .map(([key, object]) => {
-      if (!cache.$intersphinx[key] || opts.force) {
-        cache.$intersphinx[key] = new Inventory({ id: key, path: object.url });
+      if (!cache.$externalReferences[key] || opts.force) {
+        cache.$externalReferences[key] = new Inventory({ id: key, path: object.url });
       }
-      return cache.$intersphinx[key];
+      return cache.$externalReferences[key];
     })
     .filter((exists) => !!exists);
   await Promise.all(
-    intersphinx.map(async (loader) => {
+    references.map(async (loader) => {
       if (loader._loaded) return;
       const toc = tic();
       try {
         await loader.load();
       } catch (error) {
         session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-        session.log.error(`Problem fetching intersphinx entry: ${loader.id} (${loader.path})`);
+        session.log.error(`Problem fetching references entry: ${loader.id} (${loader.path})`);
         return null;
       }
       session.log.info(
-        toc(`🏫 Read ${loader.numEntries} intersphinx links for "${loader.id}" in %s.`),
+        toc(`🏫 Read ${loader.numEntries} references links for "${loader.id}" in %s.`),
       );
     }),
   );
-  return intersphinx;
+  return references;
 }
 
 function combineCitationRenderers(cache: ISessionWithCache, ...files: string[]) {
@@ -294,7 +295,7 @@ export async function transformMdast(
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
   const state = new ReferenceState({ numbering: frontmatter.numbering, file: vfile });
-  cache.$references[file] = state;
+  cache.$internalReferences[file] = state;
   // Import additional content from mdast or other files
   importMdastFromJson(session, file, mdast);
   includeFilesDirective(session, file, mdast);
@@ -404,7 +405,7 @@ export async function postProcessMdast(
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
   linksTransform(mdastPost.mdast, projectState.file as VFile, { transformers });
-  const state = cache.$references[file];
+  const state = cache.$internalReferences[file];
   resolveReferencesTransform(mdastPost.mdast, projectState.file as VFile, { state: projectState });
   // Ensure there are keys on every node
   keysTransform(mdastPost.mdast);
@@ -456,7 +457,7 @@ function selectPageReferenceStates(session: ISession, pages: { file: string }[])
   const cache = castSession(session);
   const pageReferenceStates: PageReferenceStates = pages
     .map((page) => ({
-      state: cache.$references[page.file],
+      state: cache.$internalReferences[page.file],
       file: page.file,
       url: selectors.selectFileInfo(session.store.getState(), page.file)?.url ?? null,
     }))

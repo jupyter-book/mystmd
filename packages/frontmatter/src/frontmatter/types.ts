@@ -105,14 +105,16 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   github?: string;
   binder?: string;
   subject?: string;
+  /** Links to bib files for citations */
   bibliography?: string[];
+  /** Intersphinx and cross-project references */
+  references?: Record<string, { url: string }>;
   biblio?: Biblio;
   oxa?: string;
   numbering?: boolean | Numbering;
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, string>;
   export?: Export[];
-  intersphinx?: Record<string, { url: string }>;
 };
 
 export type PageFrontmatter = Omit<ProjectFrontmatter, 'intersphinx'> & {

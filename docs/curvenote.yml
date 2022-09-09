@@ -9,3 +9,6 @@ project:
   venue:
     title: MyST
     url: /
+  references:
+    python: https://docs.python.org/3.7/
+    jupyterbook: https://jupyterbook.org/en/stable/

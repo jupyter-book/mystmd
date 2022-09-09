@@ -42,10 +42,6 @@ There is different syntax for creating [Section/Header targets](#targeting-heade
 
 ## Referencing using Links
 
-[%s](#para)
-
-(para)=
-
 Cross-referencing content is accomplished with markdown link syntax (`[text](#target)`) where `#target` is the target label[^1], like the figure, equation or section header that you are referencing. If you leave the text empty, MyST will fill in the link with the title, caption, document name, or equation number as appropriate (e.g. "Figure 1" or "Section 1.3.7"). If you do supply text, you can control what is displayed in the reference, as well as have access to placing the name and enumerator of the target, using `{name}` and `{number}`, respectively[^2].
 
 [^1]: Note that targets without the `#` will resolve, however, they throw a deprecation warning. By including the `#` there is a better chance of your content working in other markdown renderers like GitHub or VSCode.

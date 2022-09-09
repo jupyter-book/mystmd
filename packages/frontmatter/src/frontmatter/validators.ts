@@ -63,7 +63,7 @@ export const PAGE_FRONTMATTER_KEYS = [
 ].concat(PROJECT_FRONTMATTER_KEYS);
 
 // These keys only exist on the project.
-PROJECT_FRONTMATTER_KEYS.push('intersphinx');
+PROJECT_FRONTMATTER_KEYS.push('references');
 
 export const USE_SITE_FALLBACK = ['venue'];
 export const USE_PROJECT_FALLBACK = [
@@ -485,14 +485,14 @@ export function validateProjectFrontmatterKeys(
     });
   }
   // This is only for the project, and is not defined on pages
-  if (defined(value.intersphinx)) {
-    const intersphinxOpts = incrementOptions('intersphinx', opts);
-    const intersphinx = validateObject(value.intersphinx, intersphinxOpts);
-    if (intersphinx) {
-      output.intersphinx = Object.fromEntries(
-        Object.keys(intersphinx)
+  if (defined(value.references)) {
+    const referencesOpts = incrementOptions('references', opts);
+    const references = validateObject(value.references, referencesOpts);
+    if (references) {
+      output.references = Object.fromEntries(
+        Object.keys(references)
           .map((key) => {
-            const url = validateUrl(intersphinx[key], incrementOptions(key, intersphinxOpts));
+            const url = validateUrl(references[key], incrementOptions(key, referencesOpts));
             if (!url) return undefined;
             return [key, { url }];
           })
