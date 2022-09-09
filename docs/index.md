@@ -17,7 +17,7 @@ The following documentation refers only to the **Javascript** MyST parser.
 ## Goals
 
 - `mystjs` is a javascript implementation for MyST markdown
-- Parse MyST into a standardized {wiki}`AST <Abstract Syntax Tree>`, based on mdast ([see the MyST Spec](https://spec2.myst.tools))
+- Parse MyST into a standardized [AST](wiki:Abstract_Syntax_Tree), based on mdast ([see the MyST Spec](https://spec2.myst.tools))
 - Translate MyST/mdast into:
   - HTML for static websites
   - React for interactive websites

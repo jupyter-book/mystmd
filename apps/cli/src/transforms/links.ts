@@ -4,8 +4,9 @@ import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
 import pLimit from 'p-limit';
 import fetch from 'node-fetch';
-import type { OxaLink } from '@curvenote/blocks';
 import { oxaLink, oxaLinkToId } from '@curvenote/blocks';
+import { updateLinkTextIfEmpty } from 'myst-transforms';
+import type { LinkTransformer, Link } from 'myst-transforms';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import type { Root } from 'mdast';
@@ -13,10 +14,17 @@ import { addWarningForFile, hashAndCopyStaticFile, tic } from '../utils';
 import { links } from '../store/build';
 import { selectLinkStatus } from '../store/build/selectors';
 import type { ExternalLinkResult } from '../store/build';
-import type { Inventory } from '../store/local/intersphinx';
+import type { VFile } from 'vfile';
+import { fileWarn, fileError } from 'myst-utils';
 
 // These limit access from command line tools by default
-const skippedDomains = ['www.linkedin.com', 'linkedin.com', 'medium.com', 'twitter.com'];
+const skippedDomains = [
+  'www.linkedin.com',
+  'linkedin.com',
+  'medium.com',
+  'twitter.com',
+  'en.wikipedia.org',
+];
 
 async function checkLink(session: ISession, url: string): Promise<ExternalLinkResult> {
   const cached = selectLinkStatus(session.store.getState(), url);
@@ -85,6 +93,10 @@ export function fileFromRelativePath(
   if (file) {
     pathFromLink = path.relative(sitePath, path.resolve(path.dirname(file), pathFromLink));
   }
+  if (fs.existsSync(pathFromLink) && fs.lstatSync(pathFromLink).isDirectory()) {
+    // This should only return true for files
+    return undefined;
+  }
   if (!fs.existsSync(pathFromLink)) {
     if (fs.existsSync(`${pathFromLink}.md`)) {
       pathFromLink = `${pathFromLink}.md`;
@@ -100,144 +112,106 @@ export function fileFromRelativePath(
 /**
  * Populate link node with rich oxa info
  */
-function mutateOxaLink(session: ISession, file: string, link: GenericNode, oxa: OxaLink) {
-  link.oxa = oxa;
-  const key = oxaLink(oxa, false) as string;
-  const info = selectors.selectOxaLinkInformation(session.store.getState(), key);
-  if (!info) {
-    addWarningForFile(session, file, `Information for oxa.link not found: ${key}`);
+export class OxaTransformer implements LinkTransformer {
+  protocol = 'oxa';
+  session: ISession;
+
+  constructor(session: ISession) {
+    this.session = session;
   }
-  const url = info?.url;
-  if (url && url !== link.url) {
-    // the `internal` flag is picked up in the link renderer (prefetch!)
-    link.internal = true;
-    link.url = url;
-    if (link.type === 'linkBlock') {
-      // Any values already present on the block override link info
-      link.title = link.title || info?.title;
-      if (!link.children || link.children.length === 0) {
-        link.children = [{ type: 'text', value: info?.description || '' }];
-      }
-      link.thumbnail = link.thumbnail || info?.thumbnail;
-    }
+
+  test(url?: string) {
+    if (!url) return false;
+    const oxa = oxaLinkToId(url);
+    return !!oxa;
   }
-}
 
-function updateLinkTextIfEmpty(link: GenericNode, title?: string) {
-  if (!link.children || link.children?.length === 0) {
-    // If there is nothing in the link, give it a title
-    link.children = [{ type: 'text', value: title }];
-  }
-}
-
-/**
- * Replace relative file link with resolved site path
- */
-function mutateRelativeLink(
-  link: GenericNode,
-  sitePath: string,
-  target?: string[],
-  title?: string,
-) {
-  if (!link.urlSource) link.urlSource = link.url;
-  link.url = [sitePath, ...(target || [])].join('#');
-  link.internal = true;
-  updateLinkTextIfEmpty(link, title);
-}
-
-/**
- * Copy relative file to static folder and replace with absolute link
- */
-function mutateStaticLink(session: ISession, link: GenericNode, linkFile: string) {
-  const file = hashAndCopyStaticFile(session, linkFile);
-  if (!file) return;
-  if (!link.urlSource) link.urlSource = link.url;
-  link.url = `/_static/${file}`;
-  link.static = true;
-}
-
-function mutateMystProtocolLink(
-  session: ISession,
-  link: GenericNode,
-  opts?: { intersphinx?: Inventory[] },
-): boolean | null {
-  const urlSource = link.urlSource || link.url;
-  if (!urlSource.startsWith('myst:')) return null;
-  const intersphinx = opts?.intersphinx ?? [];
-  try {
-    const url = new URL(urlSource);
-    const lookup = intersphinx.find((i) => i.name === url.pathname);
-    if (!lookup) {
-      session.log.warn(
-        `Intersphinx: Unknown myst project "${url.pathname}" for link: ${urlSource}`,
-      );
-      link.error = true;
-      return false;
+  transform(link: Link, file: VFile) {
+    const urlSource = link.urlSource || link.url;
+    const oxa = oxaLinkToId(urlSource);
+    const key = oxaLink(oxa, false) as string;
+    const info = selectors.selectOxaLinkInformation(this.session.store.getState(), key);
+    if (!info) {
+      fileWarn(file, `Information for link not found: ${key}`, { node: link });
     }
-    const target = url.hash.replace(/^#/, '');
-    // TODO: add query params in here to pick the domain
-    const entry = lookup.getEntry({ name: target });
-    if (!entry) {
-      session.log.warn(
-        `Intersphinx: ${urlSource} not found interspinx ${lookup.name} (${lookup.path})`,
-      );
-      link.error = true;
-      return false;
+    const url = info?.url;
+    if (url && url !== link.url) {
+      // the `internal` flag is picked up in the link renderer (prefetch!)
+      link.internal = true;
+      link.url = url;
+      // TODO: Link blocks!
+      // if (link.type === 'linkBlock') {
+      //   // Any values already present on the block override link info
+      //   link.title = link.title || info?.title || undefined;
+      //   if (!link.children || link.children.length === 0) {
+      //     link.children = [{ type: 'text', value: info?.description || '' }];
+      //   }
+      //   link.thumbnail = link.thumbnail || info?.thumbnail;
+      // }
     }
-    if (!link.urlSource) link.urlSource = link.url;
-    link.internal = false;
-    link.url = entry.location;
-    // If the link is the same as the original url, likely a <myst:project#target>
-    // We will replace those with the display name
-    if (link.children?.[0]?.value === link.urlSource) link.children = [];
-    updateLinkTextIfEmpty(link, entry.display || lookup.name);
-    delete link.error; // No error on this node!
     return true;
-  } catch (error) {
-    link.error = true;
-    return false;
+  }
+}
+
+export class StaticFileTransformer implements LinkTransformer {
+  protocol = 'file';
+  session: ISession;
+  filePath: string;
+
+  constructor(session: ISession, filePath: string) {
+    this.session = session;
+    this.filePath = filePath;
+  }
+  test(url?: string) {
+    if (!url) return false;
+    const linkFileWithTarget = fileFromRelativePath(url, this.filePath);
+    return !!linkFileWithTarget;
+  }
+
+  transform(link: Link, file: VFile): boolean {
+    const urlSource = link.urlSource || link.url;
+    const linkFileWithTarget = fileFromRelativePath(urlSource, this.filePath);
+    if (!linkFileWithTarget) {
+      // Not raising a warning here, this should be caught in the test above
+      return false;
+    }
+    const [linkFile, ...target] = linkFileWithTarget.split('#');
+    const { url, title } = selectors.selectFileInfo(this.session.store.getState(), linkFile) || {};
+    if (url != null) {
+      // Replace relative file link with resolved site path
+      // TODO: lookup the and resolve the hash as well
+      link.url = [url, ...(target || [])].join('#');
+      link.internal = true;
+    } else {
+      // Copy relative file to static folder and replace with absolute link
+      const copiedFile = hashAndCopyStaticFile(this.session, linkFile);
+      if (!copiedFile) {
+        fileError(file, `Error copying file ${urlSource}`, {
+          node: link,
+          source: 'StaticFileTransformer',
+        });
+        return false;
+      }
+      link.url = `/_static/${copiedFile}`;
+      link.static = true;
+    }
+    updateLinkTextIfEmpty(link, title || path.basename(linkFile));
+    return true;
   }
 }
 
 const limitOutgoingConnections = pLimit(25);
 
-export async function transformLinks(
+export async function checkLinksTransform(
   session: ISession,
   file: string,
   mdast: Root,
-  opts?: { checkLinks?: boolean; intersphinx?: Inventory[] },
 ): Promise<string[]> {
   const linkNodes = selectAll('link,linkBlock', mdast) as GenericNode[];
-  linkNodes.forEach((link) => {
-    const urlSource = link.urlSource || link.url;
-    const oxa = link.oxa || oxaLinkToId(urlSource);
-    if (oxa) {
-      mutateOxaLink(session, file, link, oxa);
-      return;
-    }
-    const mystHandled = mutateMystProtocolLink(session, link, opts);
-    if (mystHandled !== null) return;
-    if (link.url === '' || link.url.startsWith('#')) {
-      // These are picked up in `resolveReferenceLinksTransform`
-      link.internal = true;
-      return;
-    }
-    const linkFileWithTarget = fileFromRelativePath(urlSource, file);
-    if (linkFileWithTarget) {
-      const [linkFile, ...target] = linkFileWithTarget.split('#');
-      const { url, title } = selectors.selectFileInfo(session.store.getState(), linkFile) || {};
-      if (url != null) {
-        mutateRelativeLink(link, url, target, title ?? '');
-      } else {
-        mutateStaticLink(session, link, linkFile);
-      }
-      return;
-    }
-  });
   const linkUrls = linkNodes
     .filter((link) => !(link.internal || link.static))
     .map((link) => link.url as string);
-  if (!opts?.checkLinks || linkUrls.length === 0) return linkUrls;
+  if (linkUrls.length === 0) return linkUrls;
   const toc = tic();
   const plural = linkUrls.length > 1 ? 's' : '';
   session.log.info(`🔗 Checking ${linkUrls.length} link${plural} in ${file}`);

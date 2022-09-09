@@ -1,7 +1,6 @@
-import type { NodeRenderer } from './types';
-import { ClickPopover } from './components/ClickPopover';
 import useSWR from 'swr';
 import { ExternalLinkIcon } from '@heroicons/react/outline';
+import { ClickPopover } from '../components/ClickPopover';
 
 const fetcher = (...args: Parameters<typeof fetch>) =>
   fetch(...args).then((res) => {
@@ -9,14 +8,14 @@ const fetcher = (...args: Parameters<typeof fetch>) =>
     throw new Error(`Content returned with status ${res.status}.`);
   });
 
-function RRIDChild({ label }: { label: string }) {
-  const { data, error } = useSWR(`https://scicrunch.org/resolver/${label}.json`, fetcher);
+function RRIDChild({ rrid }: { rrid: string }) {
+  const { data, error } = useSWR(`https://scicrunch.org/resolver/${rrid}.json`, fetcher);
   if (!data && !error) {
     return <span className="animate-pulse">Loading...</span>;
   }
   const hit = data?.hits?.hits?.[0];
   if (error || !hit) {
-    return <span>Error loading {label}.</span>;
+    return <span>Error loading {rrid}.</span>;
   }
   const {
     name: title,
@@ -32,7 +31,7 @@ function RRIDChild({ label }: { label: string }) {
   return (
     <div>
       <a
-        href={`https://scicrunch.org/resolver/${label}`}
+        href={`https://scicrunch.org/resolver/${rrid}`}
         target="_blank"
         rel="noopener noreferrer"
         className="absolute top-4 right-1 opacity-70 hover:opacity-100"
@@ -72,17 +71,11 @@ function RRIDChild({ label }: { label: string }) {
   );
 }
 
-export const RRID: NodeRenderer = (node) => {
+export function RRIDLink({ rrid }: { rrid: string }) {
   return (
-    <ClickPopover key={node.key} card={<RRIDChild label={node.label as string} />}>
+    <ClickPopover card={<RRIDChild rrid={rrid} />}>
       <span>RRID: </span>
-      <cite className="italic">{node.label}</cite>
+      <cite className="italic">{rrid}</cite>
     </ClickPopover>
   );
-};
-
-const RRID_RENDERERS: Record<string, NodeRenderer> = {
-  rrid: RRID,
-};
-
-export default RRID_RENDERERS;
+}

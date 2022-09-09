@@ -47,7 +47,7 @@ hy = [(1, 40)]
 mesh = discretize.TensorMesh([hx, hy])
 ```
 
-In the {numref}`my-program`, we create a mesh for simulation using [SimPEG](https://discretize.simpeg.xyz/).
+In the [](#my-program), we create a mesh for simulation using [SimPEG](https://discretize.simpeg.xyz/).
 ````
 
 ````{attention}

@@ -1,5 +1,5 @@
 ---
-title: MyST Overview
+title: Syntax Overview
 description: MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown.
 ---
 
@@ -7,7 +7,7 @@ MyST (Markedly Structured Text) is designed to create publication-quality docume
 
 > MyST is designed to harness the extensibility and community of RST and bring these super-powers into Markdown.
 
-MyST is a superset of [CommonMark](./commonmark.md) (the standard form of Markdown) and allows you to directly create “directives” and “roles” as extension points in the language. `directives` are block-level extension points, like [callout panels](./admonitions.md), tabs, [figures](./figures.md) or embedded charts; and roles are inline extension points, for components like [references](./references.md), [citations](./citations.md), or [inline math](./math.md).
+MyST is a superset of [CommonMark](./commonmark.md) (the standard form of Markdown) and allows you to directly create “directives” and “roles” as extension points in the language. `directives` are block-level extension points, like [callout panels](./admonitions.md), tabs, [figures](./figures.md) or embedded charts; and roles are inline extension points, for components like [cross-references](./cross-references.md), [citations](./citations.md), or [inline math](./math.md).
 
 ## Directives & Roles
 
@@ -27,7 +27,7 @@ The `{note}` directive above doesn't take any arguments and we didn't add any op
 
 1\) **directive arguments** - a list of words that come just after the `{directivename}`.
 
-````
+````markdown
 ```{directivename} arg1 arg2
 My directive content.
 ```
@@ -42,7 +42,7 @@ There are two ways to write directive options
     Great for a few options.
   - 2b) Options as `key: val` pairs enclosed by `---` lines.\
     This is parsed as YAML, and easier for listing many options.
-* - ````
+* - ````markdown
     ```{directivename}
     :key1: metadata1
     :key2: metadata2
@@ -50,7 +50,7 @@ There are two ways to write directive options
     My directive content.
     ```
     ````
-  - ````
+  - ````markdown
     ```{directivename}
     ---
     key1: metadata1
@@ -80,7 +80,7 @@ The picture would look better if it is `:align: center`-ed!
 
 Roles are very similar to directives, but they are written entirely in one line. The syntax of a role is:
 
-```
+```markdown
 Some content {rolename}`and here is my role's content!`
 ```
 
@@ -100,7 +100,7 @@ If you’d like to nest content blocks inside one another in Markdown (for examp
 
 For example, the following syntax:
 
-`````
+`````text
 ````
 ```
 ```
@@ -109,12 +109,12 @@ For example, the following syntax:
 
 yields
 
-````
+````text
 ```
 ```
 ````
 
-Thus, if you’d like to nest directives inside one another, you can take the same approach. For example, the following syntax:
+Thus, if you’d like to nest directives inside one another, you can take the same approach. For example, two [admonitions](./admonitions.md) nested in side of eachother:
 
 `````{myst}
 ````{important}
@@ -123,5 +123,3 @@ Here's my `important`, highly nested note! 🪆
 ```
 ````
 `````
-
-produces a note in the margin!

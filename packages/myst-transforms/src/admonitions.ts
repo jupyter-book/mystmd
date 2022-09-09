@@ -54,7 +54,6 @@ export function admonitionHeadersTransform(tree: Root, opts?: Options) {
         admonitionHeader.children = strongTextChildren; // Replace the admonition text with the strong chidren
         node.children = [admonitionHeader, ...rest]; // remove the strong text
       } else if (possibleHeading?.type === 'heading') {
-        console.log(possibleHeading);
         admonitionHeader.children = possibleHeading.children; // Replace the admonition text with the heading chidren
         node.children = [admonitionHeader, ...rest]; // remove the strong text
       }

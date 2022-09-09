@@ -1,16 +1,7 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { Root, PhrasingContent } from 'mdast';
-import type {
-  Container,
-  CrossReference,
-  Heading,
-  Link,
-  Math,
-  Node,
-  Paragraph,
-  Parent,
-} from 'myst-spec';
+import type { Container, CrossReference, Heading, Link, Math, Node, Paragraph } from 'myst-spec';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
@@ -32,7 +23,7 @@ export enum TargetKind {
   code = 'code',
 }
 
-function getDefaultReferenceLabel(kind: TargetKind | string) {
+function getDefaultNumberedReferenceLabel(kind: TargetKind | string) {
   switch (kind) {
     case TargetKind.heading:
       return 'Section %s';
@@ -86,13 +77,16 @@ export type NumberingOptions = {
 };
 
 const UNKNOWN_REFERENCE_ENUMERATOR = '??';
-const UNKNOWN_REFERENCE_NAME = '????';
 
 /**
  * See https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-numref
  */
 function fillReferenceEnumerators(
-  node: Pick<ResolvableCrossReference, 'children' | 'template' | 'enumerator'>,
+  file: VFile | undefined,
+  node: Pick<
+    ResolvableCrossReference,
+    'label' | 'identifier' | 'children' | 'template' | 'enumerator'
+  > & { type: string },
   template: string,
   enumerator?: string | number,
   title?: string | PhrasingContent[],
@@ -104,11 +98,35 @@ function fillReferenceEnumerators(
   const num = enumerator != null ? String(enumerator) : UNKNOWN_REFERENCE_ENUMERATOR;
   node.template = template;
   if (num && num !== UNKNOWN_REFERENCE_ENUMERATOR) node.enumerator = num;
+  const used = {
+    number: false,
+    name: false,
+  };
   findAndReplace(node as any, {
-    '%s': num,
-    '{number}': num,
-    '{name}': () => title || UNKNOWN_REFERENCE_NAME,
+    '%s': () => {
+      used.number = true;
+      return num;
+    },
+    '{number}': () => {
+      used.number = true;
+      return num;
+    },
+    '{name}': () => {
+      used.name = true;
+      return title || node.label || node.identifier;
+    },
   });
+  if (num === UNKNOWN_REFERENCE_ENUMERATOR && used.number && file) {
+    fileWarn(
+      file,
+      `Reference for "${node.identifier}" uses "{number}" or "%s" in the template "${template}", but node is not numbered.`,
+      {
+        node,
+        note: 'The node was filled in with "??" as the number.',
+        source: TRANSFORM_NAME,
+      },
+    );
+  }
 }
 
 function copyNode<T extends Node>(node: T): T {
@@ -302,13 +320,14 @@ export class ReferenceState implements IReferenceState {
       // The default for a heading changes if it is numbered
       const headingTemplate = numberHeading ? 'Section %s' : '{name}';
       fillReferenceEnumerators(
+        this.file,
         node,
         headingTemplate,
         target.node.enumerator,
         copyNode(target.node as Heading).children as PhrasingContent[],
       );
     } else if (target.kind === TargetKind.equation) {
-      fillReferenceEnumerators(node, '(%s)', target.node.enumerator, 'Equation');
+      fillReferenceEnumerators(this.file, node, '(%s)', target.node.enumerator, 'Equation');
     } else {
       // By default look into the caption paragraph if it exists
       const caption = select('caption > paragraph', target.node) as Paragraph | null;
@@ -316,8 +335,10 @@ export class ReferenceState implements IReferenceState {
       if (title && node.kind === ReferenceKind.ref && noNodeChildren) {
         node.children = title as any;
       }
-      const template = getDefaultReferenceLabel(target.kind);
-      fillReferenceEnumerators(node, template, target.node.enumerator, title);
+      const template = target.node.enumerator
+        ? getDefaultNumberedReferenceLabel(target.kind)
+        : '{name}';
+      fillReferenceEnumerators(this.file, node, template, target.node.enumerator, title);
     }
     node.resolved = true;
     // The identifier may have changed in the lookup, but unlikely
@@ -415,7 +436,7 @@ function getCaptionLabel(kind?: string) {
 }
 
 /** Visit all containers and add captions */
-export function addContainerCaptionNumbersTransform(tree: Root, opts: StateOptions) {
+export function addContainerCaptionNumbersTransform(tree: Root, file: VFile, opts: StateOptions) {
   const containers = selectAll('container', tree) as Container[];
   containers
     .filter((container: Container) => container.enumerator)
@@ -426,11 +447,12 @@ export function addContainerCaptionNumbersTransform(tree: Root, opts: StateOptio
         const captionNumber = {
           type: 'captionNumber',
           kind: container.kind,
+          label: container.label,
           identifier: container.identifier,
           html_id: (container as any).html_id,
           enumerator,
         };
-        fillReferenceEnumerators(captionNumber, getCaptionLabel(container.kind), enumerator);
+        fillReferenceEnumerators(file, captionNumber, getCaptionLabel(container.kind), enumerator);
         // The caption number is in the paragraph, it needs a link to the figure container
         // This is a bit awkward, but necessary for (efficient) rendering
         para.children = [captionNumber as any, ...(para?.children ?? [])];
@@ -484,12 +506,13 @@ export const resolveCrossReferencesTransform = (tree: Root, opts: StateOptions) 
   });
 };
 
-export const resolveReferencesTransform = (tree: Root, opts: StateOptions) => {
+export const resolveReferencesTransform = (tree: Root, file: VFile, opts: StateOptions) => {
   resolveReferenceLinksTransform(tree, opts);
   resolveCrossReferencesTransform(tree, opts);
-  addContainerCaptionNumbersTransform(tree, opts);
+  addContainerCaptionNumbersTransform(tree, file, opts);
 };
 
-export const resolveReferencesPlugin: Plugin<[StateOptions], Root, Root> = (opts) => (tree) => {
-  resolveReferencesTransform(tree, opts);
-};
+export const resolveReferencesPlugin: Plugin<[StateOptions], Root, Root> =
+  (opts) => (tree, file) => {
+    resolveReferencesTransform(tree, file, opts);
+  };

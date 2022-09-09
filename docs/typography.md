@@ -38,7 +38,7 @@ smallcaps
 
 ## Line Breaks
 
-To put a line break, without a paragraph, use a `\` followed by a new line. This corresponds to a `<br>` in HTML and `\\` in LaTeX. For example, here is the {wiki}`worlds shortest poem <Lines_on_the_Antiquity_of_Microbes>`:
+To put a line break, without a paragraph, use a `\` followed by a new line. This corresponds to a `<br>` in HTML and `\\` in $\LaTeX$. For example, here is the [worlds shortest poem](wiki:Lines_on_the_Antiquity_of_Microbes):
 
 ```{myst}
 Fleas \
@@ -95,3 +95,93 @@ Quotations are controlled with standard Markdown syntax, by inserting a caret (`
 > We know what we are, but know not what we may be.
 > - Hamlet act 4, Scene 5
 ```
+
+## Definition Lists
+
+Definition lists are based on the [Pandoc definition list specification](http://johnmacfarlane.net/pandoc/README.html#definition-lists).
+
+> Each term must fit on one line, which may optionally be followed by a blank line, and must be followed by one or more definitions. A definition begins with a colon or tilde, which may be indented one or two spaces.
+>
+> A term may have multiple definitions, and each definition may consist of one or more block elements (paragraphs, code blocks, lists, etc.)
+>
+> - [Pandoc documentation](https://pandoc.org/MANUAL.html#definition-lists)
+
+Here's an example:
+
+```{myst}
+Term 1
+: Definition
+
+Term 2
+: Definition
+```
+
+````{tip}
+:class: dropdown
+# Complex Definition Lists
+
+```{myst}
+Term _with Markdown_
+: Definition [with reference](content/definition-lists)
+
+A second paragraph
+: A second definition
+
+Term 2
+~ Definition 2a
+~ Definition 2b
+
+Term 3
+: A code block
+: > A quote
+: A final definition, that can even include images:
+
+  ![Beach!](https://source.unsplash.com/random/400x200?beach,ocean)
+```
+````
+
+% TODO: figure out how to support the footnote numbering.
+(footnotes)=
+
+## Footnotes
+
+Footnotes use the [pandoc specification](https://pandoc.org/MANUAL.html#footnotes). A footnote is labeled with `[^label]` and can then be any alpha-numeric string (no spaces), which is case-insensitive.
+
+- If the label is an integer, then it will always use that integer for the rendered label (i.e. they are manually numbered).
+- For any other labels, they will be auto-numbered in the order which they are referenced, skipping any manually numbered labels.
+
+All footnote definitions are collected, and displayed at the bottom of the page for print or as hover-notes online.
+Note that un-referenced footnote definitions will not be displayed.
+
+```{myst}
+- This is a manually-numbered footnote reference.[^3]
+- This is an auto-numbered footnote reference.[^myref]
+
+[^myref]: This is an auto-numbered footnote definition.
+[^3]: This is a manually-numbered footnote definition.
+```
+
+Any preceding text after a footnote definitions, which is indented by four or more spaces, will also be included in the footnote definition.
+
+````{tip}
+:class: dropdown
+# Complex Footnotes
+
+```{myst}
+That's exactly right[^1].
+
+[^1]: Sometimes, you need to explain a point
+
+    with some extra text!
+
+    - and some *serious* points 💥
+    - and even images!
+
+    ![Beach!](https://source.unsplash.com/random/400x200?beach,ocean)
+
+    Plus any preceding unindented lines,
+that are not separated by a blank line
+
+This is not part of the footnote!
+```
+````

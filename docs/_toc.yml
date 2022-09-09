@@ -3,7 +3,7 @@ root: index
 parts:
   - caption: Overview
     chapters:
-      - file: overview
+      - file: syntax-overview
       - file: intro
   - caption: Authoring
     chapters:
@@ -13,13 +13,13 @@ parts:
       - file: math
       - file: tables
       - file: code
-      - file: references
+      - file: cross-references
+      - file: external-references
       - file: citations
       - file: blocks
       - file: diagrams
-      - file: footnotes
+      - file: cards-and-tabs
       - file: tasks
-      - file: definitions
       - file: frontmatter
   - caption: Reference
     chapters:

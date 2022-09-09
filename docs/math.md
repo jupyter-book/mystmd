@@ -4,7 +4,7 @@ description: Use LaTeX style math in your documents, including references, inlin
 ---
 
 ```{seealso}
-For using JupyterBook, see [math and equations](https://jupyterbook.org/en/stable/content/math.html) documentation.
+For using JupyterBook, see <myst:jupyterbook#myst-content/math> documentation.
 The implementation below uses $\KaTeX$, and has pre-processing steps to ensure compatibility across $\LaTeX$,
 to pick up on `/label`'s from inside of AMS environments and inclusion on `macros` to define commands in math.
 ```
@@ -56,7 +56,7 @@ You can have an optional `label` parameter, which will label this equation for l
 w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
 ```
 
-See {eq}`my-equation` for more information!
+See [](#my-equation) for more information!
 ````
 
 ### Dollar math equations
@@ -75,7 +75,7 @@ $$ (maxwell)
 
 $$ Ax=b $$ (one-liner)
 
-See {eq}`maxwell` for enlightenment and {eq}`one-liner` to do things on one line!
+See [](#maxwell) for enlightenment and [](#one-liner) to do things on one line!
 ```
 
 ### AMS Math
@@ -88,17 +88,21 @@ In addition to a `math` directive and dollar-math syntax, you can also use AMS m
 Ax = b
 \end{equation}
 
-The general matrix equation is shown in {numref}`Equation %s <matrix>`.
+The general matrix equation is shown in [Equation %s](#matrix).
 ```
 
 You can label your equation with the standard `\label{my-equation}` that you would do in $\LaTeX$.
-The equation cross-referencing will work with the rest of your content.
+The equation cross-referencing and numbering will work with the rest of your content.
 
 ```{warning}
+The label implementation does not yet work for sub-equations and may not work if you have more than one label.
+
 If you are using JupyterBook or Sphinx, the `label` analysis of the source is not yet implemented.
 ```
 
-#### Supported AMS Environments
+```{tip}
+:class: dropdown
+# Supported AMS Environments
 
 equation
 : basic equation environment, similar to a math directive or dollar-math
@@ -126,14 +130,15 @@ matrix, pmatrix, bmatrix, Bmatrix, vmatrix, Vmatrix
 eqnarray
 : eqnarray is another supported math environment, it is not part of amsmath, and it is better to use
 align or equation+split instead
+```
 
 (referencing-equations)=
 
 ## Referencing Equations
 
 As you have seen above, each of the ways to create equations can also label them and then cross-reference
-these in other parts of your document. For example, the start of this document had {numref}`Equation %s <cross>`,
-which can be referenced here with a link and inline-preview. There are a few different ways to reference equations, with more details in [](./references.md).
+these in other parts of your document. For example, the start of this document had [Equation %s](#cross),
+which can be referenced here with a link and inline-preview. There are a few different ways to reference equations, with more details in [](./cross-references.md).
 
 ### Labelling equations
 
@@ -151,14 +156,19 @@ my_math
 ```
 ````
 
-To reference equations you can use either the `eq` role or the `numref` role.
+To reference equations you can use a markdown link with the target, for example:
+`[](#cross)`. either the `eq` role or the `numref` role.
 
-### `eq` and `numref` roles
+`````{note}
+:class: dropdown
+# Coming from Sphinx? How to use `eq` and `numref` roles.
 
-The `eq` role can be used for math, and by default inserts the number in parenthesis,
+We recommend using markdown links, as the syntax is consistent across all references and citations. You can also have markup inside of the text link and dynamically insert enumeration. However, if you are familiar with roles in Sphinx, you can also use the `eq` and `numref` roles to cross-reference equations.
+
+The `eq` role can be used for referencing math, and by default inserts the number in parenthesis,
 for example, {eq}`cross`. The label should be the first and only entry in the body of the role.
 The `numref` directive should be used if you want to refer to your equation with text or a non-standard format.
-As with other references you can use the `%s` or `{number}` to fill in the equation number (see [](./references.md)).
+As with other references you can use the `%s` or `{number}` to fill in the equation number (see [](./cross-references.md)).
 Note that `{name}` does not work for equations as there is no text content to fill in.
 
 ````{myst}
@@ -173,12 +183,13 @@ w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
 - Reference using `{number}` `numref`: {numref}`Equation {number} <my_label>`
 ````
 
-```{note}
+```{warning}
 If you are using JupyterBook or Sphinx, there are the following limitations:
 (1) the `label` analysis of the source is not yet implemented;
 (2) you can not reference equations using the `{numref}` role; and
 (3) labels must not have spaces or start with a number (this is good practice anyways!).
 ```
+`````
 
 ### Disabling Numbering
 
@@ -211,7 +222,7 @@ math:
 The residual is the predicted data for the model, $\dpred{m}$, minus the observed data, $\dobs$. You can also calculate the predicted data for the reference model $\dpred{\mref}$.
 ```
 
-The `math` macros are parsed as `yaml` in the frontmatter and can easily be shared or inherited through project to page frontmatter.
+The `math` macros are parsed as `yaml` in the frontmatter and can easily be shared or inherited through project to page frontmatter. These are also inserted into any $\LaTeX$ outputs for creating professional PDF documents.
 
 ```{important}
 When using the yaml syntax for math, use **single quotes** around the strings. The single quote yaml syntax means you do not have to text-escape the strings, otherwise backslashes `\f`, `\n`, `\b`, `\r`, `\t` and other symbols have to be escaped which is difficult to remember and leads to all sorts of strange errors.

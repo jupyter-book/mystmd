@@ -1,13 +1,15 @@
 import type { Link } from 'myst-spec';
 import { Link as RemixLink } from '@remix-run/react';
 import { ExternalLinkIcon, LinkIcon } from '@heroicons/react/outline';
-import type { NodeRenderer } from './types';
-import { HoverPopover } from './components/HoverPopover';
 import { useSiteManifest } from '@curvenote/ui-providers';
 import type { ManifestProjectPage, SiteManifest } from '@curvenote/site-common';
-import { LinkCard } from './components/LinkCard';
+import type { NodeRenderer } from '../types';
+import { HoverPopover } from '../components/HoverPopover';
+import { LinkCard } from '../components/LinkCard';
+import { WikiLink } from './wiki';
+import { RRIDLink } from './rrid';
 
-type TransformedLink = Link & { internal?: boolean };
+type TransformedLink = Link & { internal?: boolean; protocol?: string };
 
 function getPageInfo(
   site: SiteManifest | undefined,
@@ -26,7 +28,7 @@ function InternalLink({ url, children }: { url: string; children: React.ReactNod
   const site = useSiteManifest();
   const page = getPageInfo(site, url);
   const skipPreview = !page || (!page.description && !page.thumbnail);
-  if (skipPreview) {
+  if (!page || skipPreview) {
     return (
       <RemixLink to={url} prefetch="intent">
         {children}
@@ -54,19 +56,36 @@ function InternalLink({ url, children }: { url: string; children: React.ReactNod
 
 export const link: NodeRenderer<TransformedLink> = (node, children) => {
   const internal = node.internal ?? false;
+  const protocol = node.protocol;
 
-  if (internal) {
-    return (
-      <InternalLink key={node.key} url={node.url}>
-        {children}
-      </InternalLink>
-    );
+  switch (protocol) {
+    case 'wiki':
+      return (
+        <WikiLink
+          key={node.key}
+          url={node.url}
+          page={node.data?.page as string}
+          wiki={node.data?.wiki as string}
+        >
+          {children}
+        </WikiLink>
+      );
+    case 'rrid':
+      return <RRIDLink key={node.key} rrid={node.data?.rrid as string} />;
+    default:
+      if (internal) {
+        return (
+          <InternalLink key={node.key} url={node.url}>
+            {children}
+          </InternalLink>
+        );
+      }
+      return (
+        <a key={node.key} target="_blank" href={node.url} rel="noreferrer">
+          {children}
+        </a>
+      );
   }
-  return (
-    <a key={node.key} target="_blank" href={node.url} rel="noreferrer">
-      {children}
-    </a>
-  );
 };
 
 export const linkBlock: NodeRenderer<TransformedLink> = (node, children) => {

@@ -70,6 +70,7 @@
     "docx": "^7.3.0",
     "doi-utils": "^1.0.4",
     "html-entities": "^2.3.2",
+    "intersphinx": "*",
     "inquirer": "^8.2.2",
     "js-yaml": "^4.1.0",
     "jsdom": "^18.0.0",

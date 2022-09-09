@@ -1,8 +1,8 @@
-import type { NodeRenderer } from './types';
-import { HoverPopover } from './components/HoverPopover';
 import useSWR from 'swr';
 import { ExternalLinkIcon } from '@heroicons/react/outline';
-import { LinkCard } from './components/LinkCard';
+import { HoverPopover } from '../components/HoverPopover';
+import { LinkCard } from '../components/LinkCard';
+import React from 'react';
 
 const WikiTextMark = () => (
   <svg
@@ -63,17 +63,18 @@ const fetcher = (...args: Parameters<typeof fetch>) =>
     throw new Error(`Content returned with status ${res.status}.`);
   });
 
-function createWikiUrl(name: string): string {
-  return `https://en.wikipedia.org/wiki/${name}`;
+const ENGLISH_WIKIPEDIA = 'https://en.wikipedia.org/';
+function createWikiUrl(name: string, wiki?: string): string {
+  return `${wiki || ENGLISH_WIKIPEDIA}wiki/${name}`;
+}
+function createWikiApiUrl(name: string, wiki?: string): string {
+  return `${wiki || ENGLISH_WIKIPEDIA}api/rest_v1/page/summary/${name}`;
 }
 
-function WikiChild({ name, open }: { name: string; open: boolean }) {
-  const { data, error } = useSWR(
-    open ? `https://en.wikipedia.org/api/rest_v1/page/summary/${name}` : null,
-    fetcher,
-  );
+function WikiChild({ page, wiki, open }: { page: string; wiki: string; open: boolean }) {
+  const { data, error } = useSWR(open ? createWikiApiUrl(page, wiki) : null, fetcher);
   const { thumbnail, extract, content_urls } = data ?? {};
-  const url = content_urls?.desktop?.page ?? createWikiUrl(name);
+  const url = content_urls?.desktop?.page ?? createWikiUrl(page);
   const image = thumbnail?.source;
   if (error) {
     return (
@@ -82,7 +83,7 @@ function WikiChild({ name, open }: { name: string; open: boolean }) {
           <ExternalLinkIcon className="w-4 h-4 float-right" />
           <WikiTextMark />
         </a>
-        <div className="mt-2">Error loading "{name}" from wikipedia.</div>
+        <div className="mt-2">Error loading "{page}" from wikipedia.</div>
       </span>
     );
   }
@@ -97,21 +98,22 @@ function WikiChild({ name, open }: { name: string; open: boolean }) {
   );
 }
 
-export const Wiki: NodeRenderer = (node) => {
+export function WikiLink({
+  children,
+  page,
+  url,
+  wiki,
+}: {
+  children: React.ReactNode;
+  page: string;
+  url: string;
+  wiki: string;
+}) {
   return (
-    <HoverPopover
-      key={node.key}
-      card={({ open }) => <WikiChild name={node.name as string} open={open} />}
-    >
-      <a href={createWikiUrl(node.name)} className="italic" target="_blank" rel="noreferrer">
-        {node.title}
+    <HoverPopover card={({ open }) => <WikiChild wiki={wiki} page={page} open={open} />}>
+      <a href={url} className="italic" target="_blank" rel="noreferrer">
+        {children}
       </a>
     </HoverPopover>
   );
-};
-
-const WIKI_RENDERERS: Record<string, NodeRenderer> = {
-  wiki: Wiki,
-};
-
-export default WIKI_RENDERERS;
+}

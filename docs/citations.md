@@ -3,27 +3,31 @@ title: Citations and bibliography
 description: Add academic citations to your documents easily, have hover-references and an automatically created bibliography.
 ---
 
-Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a markdown link to a {wiki}`DOI <Digital object identifier>`; and (2) by adding a bibtex file, which can be exported from any reference manager, and adding a `cite` role to your content.
+Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a markdown link to a [DOI](wiki:Digital_object_identifier); and (2) by adding a bibtex file, which can be exported from any reference manager, and adding a `cite` role to your content.
 
 +++
 
+(doi-links)=
+
 ## Simple Referencing with a DOI Link
 
-Add citations easily to your markdown files or Jupyter Notebooks by including the citation as a link to the `doi`. For example:
+Link to any DOI in your markdown files or Jupyter Notebooks by including a link to the DOI. Provided the `DOI` is formatted correctly, this will be transformed during the build process to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be automatically added to the reference section at the bottom of your notebook (see below👇).
 
 ```md
 This is a link in markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040).
 ```
 
-Provided the `doi` is formatted correctly, this will be changed during the build process, to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be automatically added to the reference section at the bottom of your notebook (see below👇).
+It is also possible to to drop the link text, that is:\
+`<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)`,\
+which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.).
 
-Providing your DOIs as links has the advantage that on other rendering platforms (e.g. GitHub or in Jupyter Notebooks), your citation will still be shown as a link. If you have many citations, however, this can slow down the build process as the citation information is fetched dynamically.
+Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link. If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
 
 +++
 
 ## Including BibTex
 
-A standard way of including references for $\LaTeX$ is using {wiki}`bibtex`, you can include a `*.bib` file or files in the same directory as your content directory for the project. These will provide the reference keys for that project.
+A standard way of including references for $\LaTeX$ is using <wiki:bibtex>, you can include a `*.bib` file or files in the same directory as your content directory for the project. These will provide the reference keys for that project.
 
 To create a citation in Markdown, use either a parenthetical or textual citation:
 

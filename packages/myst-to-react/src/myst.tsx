@@ -1,5 +1,6 @@
 import { useParse } from '.';
 import { VFile } from 'vfile';
+import type { LatexResult } from 'myst-to-tex'; // Only import the type!!
 import type { VFileMessage } from 'vfile-message';
 import yaml from 'js-yaml';
 import type { References } from '@curvenote/site-common';
@@ -24,14 +25,21 @@ async function parse(text: string, defaultFrontmatter?: PageFrontmatter) {
     basicTransformationsPlugin,
     enumerateTargetsPlugin,
     resolveReferencesPlugin,
+    WikiTransformer,
+    DOITransformer,
+    RRIDTransformer,
+    linksPlugin,
     ReferenceState,
     getFrontmatter,
   } = await import('myst-transforms');
   const { default: mystToTex } = await import('myst-to-tex');
   const myst = new MyST();
   const mdast = myst.parse(text);
+  const linkTransforms = [new WikiTransformer(), new DOITransformer(), new RRIDTransformer()];
   // For the mdast that we show, duplicate, strip positions and dump to yaml
+  // Also run some of the transforms, like the links
   const mdastPre = JSON.parse(JSON.stringify(mdast));
+  unified().use(linksPlugin, { transformers: linkTransforms }).runSync(mdastPre);
   visit(mdastPre, (n) => delete n.position);
   const mdastString = yaml.dump(mdastPre);
   const htmlString = myst.renderMdast(mdastPre);
@@ -49,19 +57,20 @@ async function parse(text: string, defaultFrontmatter?: PageFrontmatter) {
     .use(basicTransformationsPlugin)
     .use(mathPlugin, { macros: frontmatter?.math ?? {} }) // This must happen before enumeration, as it can add labels
     .use(enumerateTargetsPlugin, { state })
+    .use(linksPlugin, { transformers: linkTransforms })
     .use(footnotesPlugin, { references })
-    .use(keysPlugin)
     .use(resolveReferencesPlugin, { state })
+    .use(keysPlugin)
     .runSync(mdast as any, file);
   const tex = unified()
     .use(mystToTex)
-    .stringify(mdast as any).result as string;
+    .stringify(mdast as any).result as LatexResult;
   const content = useParse(mdast as any);
   return {
     yaml: mdastString,
     references: { ...references, article: mdast } as References,
     html: htmlString,
-    tex,
+    tex: tex.value,
     content,
     warnings: file.messages,
   };

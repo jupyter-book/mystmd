@@ -18,6 +18,11 @@ import {
   enumerateTargetsPlugin,
   getFrontmatter,
   keysTransform,
+  linksTransform,
+  MystTransformer,
+  WikiTransformer,
+  RRIDTransformer,
+  DOITransformer,
 } from 'myst-transforms';
 import { dirname, extname, join } from 'path';
 import chalk from 'chalk';
@@ -35,7 +40,7 @@ import {
   transformCitations,
   transformImages,
   transformThumbnail,
-  transformLinks,
+  checkLinksTransform,
   importMdastFromJson,
   includeFilesDirective,
 } from '../../transforms';
@@ -61,7 +66,8 @@ import { processNotebook } from './notebook';
 import { watch } from './reducers';
 import { warnings } from '../build';
 import { selectFileWarnings } from '../build/selectors';
-import { Inventory } from './intersphinx';
+import { Inventory } from 'intersphinx';
+import { OxaTransformer, StaticFileTransformer } from '../../transforms/links';
 
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
@@ -141,7 +147,7 @@ async function loadInterspinx(
     })
     .map(([key, object]) => {
       if (!cache.$intersphinx[key] || opts.force) {
-        cache.$intersphinx[key] = new Inventory({ name: key, path: object.url });
+        cache.$intersphinx[key] = new Inventory({ id: key, path: object.url });
       }
       return cache.$intersphinx[key];
     })
@@ -154,11 +160,11 @@ async function loadInterspinx(
         await loader.load();
       } catch (error) {
         session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-        session.log.error(`Problem fetching intersphinx entry: ${loader.name} (${loader.path})`);
+        session.log.error(`Problem fetching intersphinx entry: ${loader.id} (${loader.path})`);
         return null;
       }
       session.log.info(
-        toc(`🏫 Read ${loader.numEntries} intersphinx links for "${loader.name}" in %s.`),
+        toc(`🏫 Read ${loader.numEntries} intersphinx links for "${loader.id}" in %s.`),
       );
     }),
   );
@@ -299,6 +305,17 @@ export async function transformMdast(
     .use(mathPlugin, { macros: frontmatter.math })
     .use(enumerateTargetsPlugin, { state }) // This should be after math
     .run(mdast, vfile);
+
+  // Run the link transformations that can be done without knowledge of other files
+  const intersphinx = projectPath ? await loadInterspinx(session, { projectPath }) : [];
+  const transformers = [
+    new WikiTransformer(),
+    new RRIDTransformer(),
+    new DOITransformer(), // This also is picked up in the next transform
+    new MystTransformer(intersphinx),
+  ];
+  linksTransform(mdast, vfile, { transformers });
+
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
   const rendererFiles = [file];
@@ -368,12 +385,10 @@ export async function postProcessMdast(
   session: ISession,
   {
     file,
-    projectPath,
     checkLinks,
     pageReferenceStates,
   }: {
     file: string;
-    projectPath: string;
     checkLinks?: boolean;
     pageReferenceStates: PageReferenceStates;
   },
@@ -382,19 +397,20 @@ export async function postProcessMdast(
   const { log } = session;
   const cache = castSession(session);
   const mdastPost = selectFile(session, file);
-  const intersphinx = await loadInterspinx(session, { projectPath });
-  // NOTE: This is doing things in place, we should potentially make this a different state?
-  await transformLinks(session, file, mdastPost.mdast, {
-    checkLinks,
-    intersphinx,
-  });
-  const state = cache.$references[file];
   const projectState = new MultiPageReferenceState(pageReferenceStates, file);
-  resolveReferencesTransform(mdastPost.mdast, { state: projectState });
+  // NOTE: This is doing things in place, we should potentially make this a different state?
+  const transformers = [
+    new OxaTransformer(session), // This links any oxa links to their file if they exist
+    new StaticFileTransformer(session, file), // Links static files and internally linked files
+  ];
+  linksTransform(mdastPost.mdast, projectState.file as VFile, { transformers });
+  const state = cache.$references[file];
+  resolveReferencesTransform(mdastPost.mdast, projectState.file as VFile, { state: projectState });
   // Ensure there are keys on every node
   keysTransform(mdastPost.mdast);
   logMessagesFromVFile(session, state.file);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
+  if (checkLinks) await checkLinksTransform(session, file, mdastPost.mdast);
 }
 
 export function selectFile(session: ISession, file: string) {
@@ -462,7 +478,7 @@ export async function fastProcessFile(
   await transformMdast(session, { file, projectPath, projectSlug, pageSlug, watchMode: true });
   const { pages } = loadProject(session, projectPath);
   const pageReferenceStates = selectPageReferenceStates(session, pages);
-  await postProcessMdast(session, { file, projectPath, pageReferenceStates });
+  await postProcessMdast(session, { file, pageReferenceStates });
   writeFile(session, { file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session);
@@ -507,7 +523,6 @@ export async function processProject(
     pages.map((page) =>
       postProcessMdast(session, {
         file: page.file,
-        projectPath: project.path,
         checkLinks: opts?.checkLinks || opts?.strict,
         pageReferenceStates,
       }),

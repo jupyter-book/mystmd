@@ -17,7 +17,6 @@ import {
   hashAndCopyStaticFile,
   isUrl,
   staticPath,
-  toText,
   versionIdToURL,
 } from '../utils';
 import { WebFileObject } from '../web/files';
