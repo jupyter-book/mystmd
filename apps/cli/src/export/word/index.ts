@@ -18,6 +18,7 @@ import { getEditorState } from '../utils/getEditorState';
 import type { ArticleStateReference } from '../utils/walkArticle';
 import { loadImagesToBuffers, loadLocalImagesToBuffers, walkArticle } from '../utils/walkArticle';
 import { defaultTemplate } from './template';
+import { createTempFolder } from 'src/utils';
 
 export * from './schema';
 export { getDefaultSerializerOptions } from './utils';
@@ -45,7 +46,7 @@ export async function localArticleToWord(
   const { filename, ...docOpts } = opts;
   assertEndsInExtension(filename, 'docx');
   await loadFile(session, file);
-  await transformMdast(session, { file, localExport: true });
+  await transformMdast(session, { file, imageWriteFolder: createTempFolder() });
   const { frontmatter, mdast, references } = selectFile(session, file);
   const consolidatedChildren = selectAll('block', mdast).reduce((newChildren, block) => {
     newChildren.push(...(block as any).children);

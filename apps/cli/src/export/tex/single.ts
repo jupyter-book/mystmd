@@ -10,7 +10,7 @@ import type { PageFrontmatter } from '@curvenote/frontmatter';
 import { ExportFormats } from '@curvenote/frontmatter';
 import type { ISession } from '../../session/types';
 import { loadFile, selectFile, transformMdast } from '../../store/local/actions';
-import { writeFileToFolder } from '../../utils';
+import { createTempFolder, writeFileToFolder } from '../../utils';
 import { assertEndsInExtension, makeBuildPaths } from '../utils';
 import { writeBibtex } from '../utils/writeBibtex';
 import { gatherAndWriteArticleContent } from './gather';
@@ -96,7 +96,7 @@ export function extractTaggedContent(
 export async function getFileContent(session: ISession, file: string) {
   await loadFile(session, file);
   // Collect bib files - mysttotex will need those, not 'references'
-  await transformMdast(session, { file, localExport: true });
+  await transformMdast(session, { file, imageWriteFolder: createTempFolder() });
   return selectFile(session, file);
 }
 

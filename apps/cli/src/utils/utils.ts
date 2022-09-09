@@ -1,5 +1,6 @@
 import { createHash } from 'crypto';
 import fs from 'fs';
+import os from 'os';
 import type { VFile } from 'vfile';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
@@ -127,6 +128,10 @@ export function addWarningForFile(
   if (file) {
     session.store.dispatch(warnings.actions.addWarning({ file, message, kind }));
   }
+}
+
+export function createTempFolder() {
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'curvenote'));
 }
 
 /** Writes a file ensuring that the directory exists */

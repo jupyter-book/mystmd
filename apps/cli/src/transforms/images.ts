@@ -1,5 +1,4 @@
 import fs from 'fs';
-import os from 'os';
 import type { Root } from 'mdast';
 import mime from 'mime-types';
 import type { GenericNode } from 'mystjs';
@@ -17,7 +16,6 @@ import {
   computeHash,
   hashAndCopyStaticFile,
   isUrl,
-  staticPath,
   versionIdToURL,
 } from '../utils';
 
@@ -29,10 +27,6 @@ function getGithubRawUrl(url?: string): string | undefined {
   const GITHUB_BLOB = /^(?:https?:\/\/)?github\.com\/([^/]+)\/([^/]+)\/blob\//;
   if (!url?.match(GITHUB_BLOB)) return undefined;
   return url.replace(GITHUB_BLOB, 'https://raw.githubusercontent.com/$1/$2/');
-}
-
-function createTempFolder() {
-  return fs.mkdtempSync(join(os.tmpdir(), 'curvenote'));
 }
 
 export async function downloadAndSaveImage(
@@ -77,16 +71,27 @@ export async function downloadAndSaveImage(
   }
 }
 
+function resolveOutputPath(file: string, writeFolder: string, altOutputFolder?: string) {
+  if (altOutputFolder == null) {
+    return join(writeFolder, file);
+  }
+  if (altOutputFolder.endsWith('/')) {
+    return `${altOutputFolder}${file}`;
+  }
+  return join(altOutputFolder, file);
+}
+
 export async function saveImageInStaticFolder(
   session: ISession,
   urlSource: string,
-  filePath = '',
-  opts?: { webp?: boolean; sourceFile?: string; tempFolder?: string },
+  sourceFile: string,
+  writeFolder: string,
+  opts?: { webp?: boolean; altOutputFolder?: string },
 ): Promise<{ urlSource: string; url: string; webp?: string } | null> {
   const oxa = oxaLinkToId(urlSource);
-  const imageLocalFile = join(filePath, urlSource);
+  const sourceFilePath = dirname(sourceFile);
+  const imageLocalFile = join(sourceFilePath, urlSource);
   let file: string | undefined;
-  const writeFolder = opts?.tempFolder || staticPath(session);
   if (oxa) {
     // If oxa, get the download url
     const versionId = oxa?.block as VersionId;
@@ -97,7 +102,7 @@ export async function saveImageInStaticFolder(
     const downloadUrl = json.links?.download;
     if (!ok || !downloadUrl) {
       const message = `Error fetching image version: ${url}`;
-      addWarningForFile(session, opts?.sourceFile, message, 'error');
+      addWarningForFile(session, sourceFile, message, 'error');
       return null;
     }
     file = await downloadAndSaveImage(
@@ -119,41 +124,44 @@ export async function saveImageInStaticFolder(
     await fileObject.writeBase64(urlSource);
     file = fileObject.id;
   } else {
-    const message = `Cannot find image "${urlSource}" in ${opts?.sourceFile || filePath}`;
-    addWarningForFile(session, opts?.sourceFile, message, 'error');
+    const message = `Cannot find image "${urlSource}" in ${sourceFilePath}`;
+    addWarningForFile(session, sourceFile, message, 'error');
     return null;
   }
   let webp: string | undefined;
   if (opts?.webp && file) {
     try {
       const result = await convertImageToWebp(session, join(writeFolder, file));
-      if (result) webp = opts?.tempFolder ? join(opts.tempFolder, result) : `/_static/${result}`;
+      if (result) webp = resolveOutputPath(result, writeFolder, opts.altOutputFolder);
     } catch (error) {
       session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
       const message = `Large image ${imageLocalFile} (${(error as any).message})`;
-      addWarningForFile(session, opts?.sourceFile, message, 'warn');
+      addWarningForFile(session, sourceFile, message, 'warn');
     }
   }
   // Update mdast with new file name
-  const url = opts?.tempFolder ? join(opts.tempFolder, file as string) : `/_static/${file}`;
+  const url = resolveOutputPath(file as string, writeFolder, opts?.altOutputFolder);
   return { urlSource, url, webp };
 }
 
 export async function transformImages(
   session: ISession,
-  file: string,
   mdast: Root,
-  opts?: { localExport?: boolean },
+  file: string,
+  writeFolder: string,
+  opts?: { altOutputFolder?: string },
 ) {
   const images = selectAll('image', mdast) as GenericNode[];
-  const tempFolder = opts?.localExport ? createTempFolder() : undefined;
   return Promise.all(
     images.map(async (image) => {
       const result = await saveImageInStaticFolder(
         session,
         image.urlSource || image.url,
-        dirname(file),
-        { webp: true, sourceFile: file, tempFolder },
+        file,
+        writeFolder,
+        {
+          webp: true,
+        },
       );
       if (result) {
         // Update mdast with new file name
@@ -168,9 +176,11 @@ export async function transformImages(
 
 export async function transformThumbnail(
   session: ISession,
-  frontmatter: PageFrontmatter,
   mdast: Root,
   file: string,
+  frontmatter: PageFrontmatter,
+  writeFolder: string,
+  opts?: { altOutputFolder?: string },
 ) {
   let thumbnail = frontmatter.thumbnail;
   // If the thumbnail is explicitly null, don't add an image
@@ -190,9 +200,9 @@ export async function transformThumbnail(
   }
   if (!thumbnail) return;
   session.log.debug(`${file}#frontmatter.thumbnail Saving thumbnail in static folder.`);
-  const result = await saveImageInStaticFolder(session, thumbnail, dirname(file), {
+  const result = await saveImageInStaticFolder(session, thumbnail, file, writeFolder, {
     webp: true,
-    sourceFile: file,
+    altOutputFolder: opts?.altOutputFolder,
   });
   if (result) {
     // Update frontmatter with new file name
