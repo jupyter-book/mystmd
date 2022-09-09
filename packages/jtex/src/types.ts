@@ -9,11 +9,6 @@ export interface ISession {
 
 export type ExpandedImports = { imports: string[]; commands: string[] };
 
-type MinMax = {
-  min: number;
-  max: number;
-};
-
 export type TemplateTagDefinition = {
   id: string;
   // tag: string;
@@ -91,7 +86,7 @@ export type RendererDoc = {
     year: string;
   };
   authors: RendererAuthor[];
-  affiliations: NameAndIndex[];
+  affiliations: ValueAndIndex[];
   bibliography?: string[];
   keywords?: string[];
 };

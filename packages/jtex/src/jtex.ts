@@ -7,10 +7,15 @@ import type { ValidationOptions } from '@curvenote/validators';
 import { curvenoteDef } from './definitions';
 import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
 import { extendJtexFrontmatter } from './frontmatter';
-import type { ExpandedImports, ISession, Renderer } from './types';
-import { ensureDirectoryExists } from './utils';
-import { errorLogger, validateTemplateOptions, validateTemplateYml } from './validators';
 import { renderImports } from './imports';
+import type { ExpandedImports, ISession, Renderer } from './types';
+import { ensureDirectoryExists, errorLogger, warningLogger } from './utils';
+import {
+  validateFrontmatterTemplateOptions,
+  validateTemplateOptions,
+  validateTemplateTagged,
+  validateTemplateYml,
+} from './validators';
 import version from './version';
 
 const DO_NOT_COPY = [TEMPLATE_FILENAME, 'thumbnail.png'];
@@ -177,9 +182,10 @@ class JTex {
   render(opts: {
     contentOrPath: string;
     outputPath: string;
-    frontmatter: PageFrontmatter;
-    tagged: Record<string, string>;
-    options: Record<string, any>;
+    frontmatter: any;
+    tagged: any;
+    options: any;
+    sourceFile?: string;
     imports?: string | ExpandedImports;
   }) {
     if (!fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
@@ -204,8 +210,8 @@ class JTex {
     const renderer: Renderer = {
       CONTENT: content,
       doc,
-      tagged: opts.tagged,
-      options: opts.options,
+      tagged,
+      options,
       IMPORTS: renderImports(opts.imports),
     };
     const rendered = this.env.render(TEMPLATE_FILENAME, renderer);

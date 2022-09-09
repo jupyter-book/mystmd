@@ -1,16 +1,26 @@
 import type { Author, PageFrontmatter } from '@curvenote/frontmatter';
 import type { RendererAuthor, RendererDoc, ValueAndIndex } from './types';
 
+const ALPHA = 'ABCDEFGHIJKLMNOPQURSUVWXYZ';
+
+function indexAndLetter(index: number) {
+  const value = ALPHA[index % ALPHA.length];
+  const multiplier = Math.ceil((index + 1) / ALPHA.length);
+  return { index: index + 1, letter: value.repeat(multiplier) };
+}
 function undefinedIfEmpty<T>(array?: T[]): T[] | undefined {
   // Explicitly return undefined
   if (!array || array.length === 0) return undefined;
   return array;
 }
 
-function addIndicesToAuthors(authors: Author[], affiliationList: RendererDoc['affiliations']) {
-  const affiliationLookup: Record<string, number> = {};
-  affiliationList.forEach(({ name, index }) => {
-    affiliationLookup[name] = index;
+function addIndicesToAuthors(
+  authors: Author[],
+  affiliationList: RendererDoc['affiliations'],
+): RendererAuthor[] {
+  const affiliationLookup: Record<string, ValueAndIndex> = {};
+  affiliationList.forEach((affil) => {
+    affiliationLookup[affil.value] = affil;
   });
   let correspondingIndex = 0;
   return authors.map((auth, index) => {
@@ -25,7 +35,20 @@ function addIndicesToAuthors(authors: Author[], affiliationList: RendererDoc['af
     let affiliations = auth.affiliations?.map((value) => {
       return { ...affiliationLookup[value] };
     });
-    return { ...auth, index, affiliations: undefinedIfEmpty(affiliations) };
+    if (!affiliations || affiliations.length === 0) {
+      // Affiliations are explicitly undefined if length === 0
+      affiliations = undefined;
+    }
+    const [givenName, ...surnameParts] = auth.name?.split(' ') || ['', ''];
+    const surname = surnameParts.join(' ');
+    return {
+      ...auth,
+      ...indexAndLetter(index),
+      corresponding,
+      affiliations,
+      given_name: givenName,
+      surname,
+    };
   });
 }
 
