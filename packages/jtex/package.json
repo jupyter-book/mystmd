@@ -34,7 +34,10 @@
     "url": "git+https://github.com/curvenote/curvenote.git"
   },
   "keywords": [
-    "jtex"
+    "jtex",
+    "latex",
+    "jinja",
+    "templating"
   ],
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
