@@ -8,6 +8,7 @@ export {
   validationWarning,
   validateBoolean,
   validateString,
+  validateNumber,
   validateUrl,
   validateSubdomain,
   validateEmail,
