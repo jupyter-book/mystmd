@@ -94,7 +94,7 @@ export function toText(content?: Node[] | Node): string {
   return (content as PhrasingContent[])
     .map((n) => {
       if ('value' in n) return n.value;
-      if ('children' in n) return toText(n.children);
+      if ('children' in n && n.children) return toText(n.children);
       return '';
     })
     .join('');
