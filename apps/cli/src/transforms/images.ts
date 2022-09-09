@@ -161,6 +161,7 @@ export async function transformImages(
         writeFolder,
         {
           webp: true,
+          altOutputFolder: opts?.altOutputFolder,
         },
       );
       if (result) {
