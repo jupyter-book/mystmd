@@ -29,7 +29,7 @@ There are two ways to write inline math; (1) with a `math` role or (2) by wrappi
 This math is a role, {math}`e=mc^2`, while this math is wrapped in dollar signs, $Ax=b$.
 ```
 
-The output of these is the same (which you can see by looking at the AST and LaTeX outputs in the demo above).
+The output of these is the same (which you can see by looking at the AST and $\LaTeX$ outputs in the demo above).
 Using a `math` role is much less likely to collide with your writing if it includes dollars (e.g. \$2.99).
 
 Ocassionally, dollar signs that you do not intend to wrap math need to be escaped.

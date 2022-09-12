@@ -66,7 +66,7 @@ For numbered lists, you can start following lines with any number, meaning they 
 ### Subscript & Superscript
 
 For inline typography for subscript and superscript formatting, it is best practice to use a text-based representation over resorting to math exponents, i.e. `4$^{th}$`.
-This is required in some journal submissions, and using these roles ensure that the output in HTML and LaTeX is correct.
+This is required in some journal submissions, and using these roles ensure that the output in HTML and $\LaTeX$ is correct.
 The two roles for subscript and superscript are `sub` and `sup`, respectively.
 
 ```{myst}

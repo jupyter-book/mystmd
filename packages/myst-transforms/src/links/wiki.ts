@@ -3,11 +3,12 @@ import type { VFile } from 'vfile';
 import type { Link, LinkTransformer } from './types';
 import { updateLinkTextIfEmpty, withoutHttp } from './utils';
 
-const ENGLISH_WIKIPEDIA = 'https://en.wikipedia.org/';
+const DEFAULT_LANGUAGE = 'en';
+const ANY_WIKIPEDIA_ORG = /^(?:https?:\/\/)?(?:([a-z]+)\.)?wikipedia\.org\/wiki\/(.+)$/;
 const TRANSFORM_SOURCE = 'LinkTransform:WikiTransformer';
 
-function removeTrailingWiki(url: string, replace = '') {
-  return url.replace(/\/?(wiki\/?)?$/, replace);
+function removeWiki(url: string, replace = '') {
+  return url.replace(/\/?(wiki\/?)?$/, replace).replace(/^\/?(wiki\/)/, '');
 }
 
 export class WikiTransformer implements LinkTransformer {
@@ -15,38 +16,59 @@ export class WikiTransformer implements LinkTransformer {
 
   wikiUrl: string;
 
-  constructor(opts?: { url: string }) {
+  lang?: string;
+
+  constructor(opts?: { url?: string; lang?: string }) {
     // Ensure for the link formatting that the URL ends in a "/"
-    this.wikiUrl = removeTrailingWiki(opts?.url ?? ENGLISH_WIKIPEDIA, '/');
+    this.wikiUrl = removeWiki(
+      opts?.url ?? `https://${opts?.lang || DEFAULT_LANGUAGE}.wikipedia.org/`,
+      '/',
+    );
+    this.lang = opts?.lang || `${this.wikiUrl}wiki/x`.match(ANY_WIKIPEDIA_ORG)?.[1] || undefined;
   }
 
   test(uri?: string): boolean {
     if (!uri) return false;
     if (uri.startsWith('wiki:')) return true;
-    return withoutHttp(uri).startsWith(withoutHttp(this.wikiUrl));
+    if (uri.match(ANY_WIKIPEDIA_ORG)) return true;
+    if (withoutHttp(uri).startsWith(withoutHttp(this.wikiUrl))) return true;
+    return false;
   }
 
-  pageName(uri: string) {
+  pageName(uri: string): { page: string; wiki: string; lang?: string } | undefined {
     if (uri.startsWith('wiki:')) {
-      return uri.replace(/^wiki:/, '').trim();
+      return { page: uri.replace(/^wiki:/, '').trim(), wiki: this.wikiUrl, lang: this.lang };
     }
     if (withoutHttp(uri).startsWith(withoutHttp(this.wikiUrl))) {
-      return removeTrailingWiki(withoutHttp(uri).replace(withoutHttp(this.wikiUrl), '').trim());
+      const page = removeWiki(withoutHttp(uri).replace(withoutHttp(this.wikiUrl), ''));
+      return { page, wiki: this.wikiUrl, lang: this.lang };
     }
-    return uri.trim();
+    const match = uri.match(ANY_WIKIPEDIA_ORG);
+    if (!match) return undefined;
+    const [, lang, page] = match;
+    return { page, wiki: `https://${lang || DEFAULT_LANGUAGE}.wikipedia.org/`, lang };
   }
 
   transform(link: Link, file: VFile): boolean {
     const urlSource = link.urlSource || link.url;
-    let pageName = this.pageName(urlSource);
-    if (pageName.match(/\s/)) {
+    const result = this.pageName(urlSource);
+    if (!result) {
+      fileWarn(file, `Wikipedia pagenames should not contain spaces in link: ${urlSource}`, {
+        node: link,
+        note: 'Replace spaces with underscores',
+        source: TRANSFORM_SOURCE,
+      });
+      return false;
+    }
+    let { page } = result;
+    if (page.match(/\s/)) {
       fileWarn(file, `Wikipedia pagenames should not contain spaces in link: ${urlSource}`, {
         node: link,
         note: 'Replace spaces with underscores',
         source: TRANSFORM_SOURCE,
       });
     }
-    if (pageName.match(/\//)) {
+    if (page.match(/\//)) {
       fileError(file, `Wikipedia pagenames should not contain "/" in link: ${urlSource}`, {
         node: link,
         note: 'Only point to the final page name, do not include any other parts of the Wikipedia URL.',
@@ -55,17 +77,18 @@ export class WikiTransformer implements LinkTransformer {
       return false;
     }
     // Replace any repeated spaces with underscores, and trim leading/trailing underscroes
-    pageName = pageName
+    page = page
       .replace(/[\s]+/g, '_')
       .replace(/_[_]+/, '_')
       .replace(/(?:^_)|(?:_$)/g, '');
-    link.url = `${this.wikiUrl}wiki/${pageName}`;
+    link.url = `${result.wiki}wiki/${page}`;
     link.data = {
-      page: pageName,
-      wiki: this.wikiUrl,
+      page: page,
+      wiki: result.wiki,
+      lang: result.lang,
     };
     link.internal = false;
-    const title = pageName.replace(/_/, ' ');
+    const title = page.replace(/_/, ' ');
     updateLinkTextIfEmpty(link, title);
     return true;
   }

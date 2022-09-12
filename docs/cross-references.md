@@ -4,7 +4,6 @@ description: Create numbered cross-references to labeled content (e.g. a figure,
 numbering:
   heading_1: true
   heading_2: true
-  heading_3: true
 ---
 
 % Based loosely on https://jupyterbook.org/content/references.html
@@ -79,7 +78,6 @@ Cross-referencing content is accomplished with markdown link syntax (`[text](#ta
   - [](./_toc.yml)
 ```
 
-% TODO: Links should also put in the {name} and {number}!!
 % TODO: absolute links
 
 ```{seealso}
@@ -89,8 +87,6 @@ If is also possible to use specific roles to reference content, including ([ref]
 
 These roles are supported to have compatibility with Sphinx. However, it is recommended to use markdown link syntax for referencing content, as it is more portable, is more concise, and has improved features such as inline formatting in the text links.
 ```
-
-% TODO: There are way to many ways to do the exact same thing here!!
 
 (targeting-headers)=
 
@@ -113,7 +109,7 @@ Use `(label)=` before the element that you want to target, then reference conten
 :class: dropdown
 # How to turn on heading `numbering`
 
-By default headings are not numbered, see {ref}`heading-numbering` for more information. To turn on numbered headers you need to turn numbering on in the document or project using `numbering` in the frontmatter. You can control this for each heading level:
+By default headings are not numbered, see [](#header-numbering) for more information. To turn on numbered headers you need to turn numbering on in the document or project using `numbering` in the frontmatter. You can control this for each heading level:
 
 ```yaml
 numbering:
@@ -126,9 +122,9 @@ These will show up, for example, as `Section 1` and `Section 2.1`.
 
 % TODO: We should support pandoc style unnumbered {-} and {.class, #id} syntax
 
-(heading-numbering)=
+(header-numbering)=
 
-## Numbering
+## Header Numbering
 
 By default section numbering for headers is turned off with numbering for figure and table numbering enabled.
 To turn on `numbering` for headers, you can can change the frontmatter in the document or project.
@@ -150,9 +146,9 @@ numbering:
 (my-section2)=
 ### My Second Section
 
-* {numref}`my-chapter`
-* {numref}`my-section`
-* {numref}`my-section2`
+* [](#my-chapter)
+* [](#my-section)
+* [](#my-section2)
 ```
 
 (targeting-equations)=
@@ -212,45 +208,23 @@ See [{name}](#link-references) for ways to use markdown link, `[](#target)` synt
 
 (ref-role)=
 
-### Using the `{ref}` role
-
-The `{ref}` role can be used to bring the title or caption directly in line, the role can take a single argument which is the label:
-
-```markdown
-{ref}`reference-target`
-```
-
-You can also choose the reference text directly (not taking from the title or caption) by using:
-
-```markdown
-{ref}`your text here <reference-target>`
-```
+ref
+: The `{ref}` role can be used to bring the title or caption directly in line, the role can take a single argument which is the label, for example, `` {ref}`reference-target` ``
+: You can also choose the reference text directly (not taking from the title or caption) by using, `` {ref}`your text here <reference-target>` ``.
 
 (numref-role)=
 
-### Numbering references with `{numref}`
-
-The `{numref}` role is exactly the same as the above `{ref}` role, but also allows you to use a `%s` in place of the number, which will get filled in when the content is rendered. For example, `` {numref}`Custom Table %s text <my-table-ref>`. `` will become `Custom Table 3 text`. You can try this in the demo above!
-
-% TODO: Can't use this for equations?!
-% TODO: numref should just be folded into ref if there is a %s.
-% Note: the spec also supports {number} but that should probably raise a warning?!
+numref
+: The `{numref}` role is exactly the same as the above `{ref}` role, but also allows you to use a `%s` in place of the number, which will get filled in when the content is rendered. For example, `` {numref}`Custom Table %s text <my-table-ref>`. `` will become `Custom Table 3 text`.
 
 (eq-role)=
 
-### Using the `{eq}` role
-
-The `` {eq}`my-equation` `` syntax creates a numbered link to the equation, which is equivalent to `[](#my-equation)` as there is no text content to fill in a title or caption.
-
-% TODO: I think we should improve the syntax of links and simplify the explination
-% It is annoying that numref and ref don't work for equations.
-% You can also not fill in the text with a link. Can we override that?
+eq
+: The `` {eq}`my-equation` `` syntax creates a numbered link to the equation, which is equivalent to `[](#my-equation)` as there is no text content to fill in a title or caption.
 
 (doc-role)=
 
-### Using the `{doc}` role
+doc
+: The `` {doc}`./my-file.md` `` syntax creates a link to the document, which is equivalent to `[](./my-file.md)`.
 
-The `` {doc}`./my-file.md` `` syntax creates a link to the document, which is equivalent to `[](./my-file.md)`.
-
-% TODO: move this to the bottom, talk about the markdown links!
 % TODO: mystjs - doc role (or just leave unhandled until we can do multi doc)

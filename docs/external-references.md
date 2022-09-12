@@ -119,6 +119,7 @@ To show different text you can use a similar technique to references:\
 ```
 
 ```{tip}
+:class: dropdown
 # Finding and formating the page title
 To find the page title, browse Wikipedia and copy the last part of the URL, for example:\
 `Page_Title` in `https://wikipedia.org/wiki/Page_Title`. If you do not supply text for the link specifically, then the case of the link will be preserved and shown without the underscores.
@@ -126,6 +127,19 @@ To find the page title, browse Wikipedia and copy the last part of the URL, for 
 Usually the page titles resolve properly, so just try guessing when you are writing and then you can check them with the live hover preview.
 
 Note that if the page title has spaces in it, simply replace them with underscores.
+```
+
+```{important}
+:class: dropdown
+# Different languages or wikis
+
+There are many different official and unoffial wikis that use the same [Wikimedia](wiki:Wikimedia_Foundation) technology, including subdomains in various langauges.
+
+Wikipedia links, like `https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)` will work fine out of the box, and point to [](https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)) with the popup still working!
+
+% TODO: Allow the ability to set the default language to use on your MyST site. This is already possible in the transformers.
+
+% TODO: Set the default wiki links, or an additional wiki link in references, e.g. to something like https://wiki.seg.org/wiki/Knowledge_tree
 ```
 
 ## Linking DOIs

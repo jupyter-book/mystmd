@@ -42,10 +42,10 @@ This is the difference between: {cite:p}`cockett2015` and {cite:t}`cockett2015`.
 You can also include DOIs in citations (`cite`, `cite:t`, and `cite:p`) which will be linked in the same way as a simple markdown link, but will match the reference style of the project.
 
 ```md
-This will be a citation: {cite}`10.1103/PhysRevLett.116.061102`.
+This will be a citation: {cite}`10.1093/nar/22.22.4673`.
 ```
 
-This will show as: {cite}`10.1103/PhysRevLett.116.061102`.
+This will show as: {cite}`10.1093/nar/22.22.4673`.
 
 ## Specififying BibTeX
 

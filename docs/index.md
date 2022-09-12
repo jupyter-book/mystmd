@@ -21,7 +21,7 @@ The following documentation refers only to the **Javascript** MyST parser.
 - Translate MyST/mdast into:
   - HTML for static websites
   - React for interactive websites
-  - LaTeX (and PDFs) with specific templates for journal articles
+  - $\LaTeX$ (and PDFs) with specific templates for journal articles
   - Microsoft Word
 - Expose an opinionated set of transforms to improve document structure
 - Expose extension points in MyST for new roles/directives

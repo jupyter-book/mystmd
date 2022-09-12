@@ -99,12 +99,13 @@ function fillReferenceEnumerators(
   node.template = template;
   if (num && num !== UNKNOWN_REFERENCE_ENUMERATOR) node.enumerator = num;
   const used = {
+    s: false,
     number: false,
     name: false,
   };
   findAndReplace(node as any, {
     '%s': () => {
-      used.number = true;
+      used.s = true;
       return num;
     },
     '{number}': () => {
@@ -116,10 +117,12 @@ function fillReferenceEnumerators(
       return title || node.label || node.identifier;
     },
   });
-  if (num === UNKNOWN_REFERENCE_ENUMERATOR && used.number && file) {
+  if (num === UNKNOWN_REFERENCE_ENUMERATOR && (used.number || used.s) && file) {
+    const numberType =
+      used.number && used.s ? '"{number}" and "%s"' : `${used.number ? '"number"' : '"%s"'}`;
     fileWarn(
       file,
-      `Reference for "${node.identifier}" uses "{number}" or "%s" in the template "${template}", but node is not numbered.`,
+      `Reference for "${node.identifier}" uses ${numberType} in the template, but node is not numbered.`,
       {
         node,
         note: 'The node was filled in with "??" as the number.',
@@ -327,7 +330,7 @@ export class ReferenceState implements IReferenceState {
         copyNode(target.node as Heading).children as PhrasingContent[],
       );
     } else if (target.kind === TargetKind.equation) {
-      fillReferenceEnumerators(this.file, node, '(%s)', target.node.enumerator, 'Equation');
+      fillReferenceEnumerators(this.file, node, '(%s)', target.node.enumerator);
     } else {
       // By default look into the caption paragraph if it exists
       const caption = select('caption > paragraph', target.node) as Paragraph | null;
@@ -347,7 +350,7 @@ export class ReferenceState implements IReferenceState {
 
   warnNodeTargetNotFound(node: ResolvableCrossReference) {
     if (!this.file) return;
-    fileWarn(this.file, `Cross reference was not found: ${node.identifier}`, {
+    fileWarn(this.file, `Cross reference target was not found: ${node.identifier}`, {
       node,
       source: TRANSFORM_NAME,
     });
@@ -466,7 +469,15 @@ export const resolveReferenceLinksTransform = (tree: Root, opts: StateOptions) =
     const identifier = link.url.replace(/^#/, '');
     const reference = normalizeLabel(identifier);
     const target = opts.state.getTarget(identifier) ?? opts.state.getTarget(reference?.identifier);
-    if (!target || !reference) return;
+    if (!target || !reference) {
+      if (!opts.state.file || !link.url.startsWith('#')) return;
+      // Only warn on explicit internal URLs
+      fileWarn(opts.state.file, `No target for internal reference "${link.url}" was found.`, {
+        node,
+        source: TRANSFORM_NAME,
+      });
+      return;
+    }
     if (!link.url.startsWith('#') && opts.state.file) {
       fileWarn(
         opts.state.file,
@@ -489,10 +500,10 @@ export const resolveReferenceLinksTransform = (tree: Root, opts: StateOptions) =
     if ((target.node as any).implicit && opts.state.file) {
       fileWarn(
         opts.state.file,
-        `Linking to implicit an reference, best practice is to create an explicit reference for "${target.node.identifier}"`,
+        `Linking "${target.node.identifier}" to an implicit ${target.kind} reference, best practice is to create an explicit reference.`,
         {
           node,
-          note: 'Explicit references do not break when you update the title to a section, they are preferred over using the implicit HTML id created for headers.',
+          note: 'Explicit references do not break when you update the title to a section, they are preferred over using the implicit HTML ID created for headers.',
           source: TRANSFORM_NAME,
         },
       );

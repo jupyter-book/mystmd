@@ -17,6 +17,7 @@ parts:
       - file: external-references
       - file: citations
       - file: blocks
+      - file: interactive-notebooks
       - file: diagrams
       - file: cards-and-tabs
       - file: tasks
