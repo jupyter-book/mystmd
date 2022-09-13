@@ -70,7 +70,7 @@ function nodeToLaTeXOptions(node: Image | Table | Code | Math) {
 }
 
 export const containerHandler: Handler = (node, state) => {
-  if (state.isInTable) {
+  if (state.data.isInTable) {
     state.renderChildren(node);
     return;
   }
@@ -107,24 +107,24 @@ export const containerHandler: Handler = (node, state) => {
   // centering does not work in a longtable environment
   if (!multipage || !containsTable) state.write('\\centering');
   state.ensureNewLine();
-  state.longFigure = multipage;
-  state.nextCaptionNumbered = enumerated ?? !!localId;
-  state.nextCaptionId = localId;
+  state.data.longFigure = multipage;
+  state.data.nextCaptionNumbered = enumerated ?? !!localId;
+  state.data.nextCaptionId = localId;
   state.renderChildren(node);
   state.trimEnd();
-  state.longFigure = undefined;
+  state.data.longFigure = undefined;
   state.write(`\n\\end{${command}}`);
   if (after) state.write(after);
   state.closeBlock(node);
 };
 
 export const captionHandler: Handler = (node, state) => {
-  if (state.isInTable && node.type !== CaptionKind.table) {
+  if (state.data.isInTable && node.type !== CaptionKind.table) {
     // Skip captions in tables
     return null;
   }
   state.ensureNewLine(true);
-  const { nextCaptionNumbered: numbered, nextCaptionId: id } = state;
+  const { nextCaptionNumbered: numbered, nextCaptionId: id } = state.data;
   const command = numbered === false ? 'caption*' : 'caption';
   const after = numbered && id ? `\\label{${id}}` : '';
   state.renderInlineEnvironment(node, command, { after });

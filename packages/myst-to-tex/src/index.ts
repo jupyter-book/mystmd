@@ -1,10 +1,17 @@
 import type { Root, Parent } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import { toText } from 'myst-utils';
+import { fileError, toText } from 'myst-utils';
 import { captionHandler, containerHandler } from './container';
 import { renderNodeToLatex } from './tables';
-import type { Handler, ITexSerializer, LatexResult, Options } from './types';
+import type {
+  Handler,
+  ITexSerializer,
+  LatexResult,
+  MathPlugins,
+  Options,
+  StateData,
+} from './types';
 import { getLatexImageWidth, stringToLatexMath, stringToLatexText } from './utils';
 import MATH_HANDLERS, { createMathCommands } from './math';
 
@@ -19,13 +26,18 @@ const handlers: Record<string, Handler> = {
   },
   heading(node, state) {
     const { depth, label, enumerated } = node;
-    const star = enumerated ? '' : '*';
-    if (depth === 1) state.write(`\\section${star}{`);
-    if (depth === 2) state.write(`\\subsection${star}{`);
-    if (depth === 3) state.write(`\\subsubsection${star}{`);
-    if (depth === 4) state.write(`\\paragraph${star}{`);
-    if (depth === 5) state.write(`\\subparagraph${star}{`);
-    if (depth === 6) state.write(`\\subparagraph${star}{`);
+    if (state.data.nextHeadingIsFrameTitle) {
+      state.write('\\frametitle{');
+      state.data.nextHeadingIsFrameTitle = false;
+    } else {
+      const star = enumerated || state.options.beamer ? '' : '*';
+      if (depth === 1) state.write(`\\section${star}{`);
+      if (depth === 2) state.write(`\\subsection${star}{`);
+      if (depth === 3) state.write(`\\subsubsection${star}{`);
+      if (depth === 4) state.write(`\\paragraph${star}{`);
+      if (depth === 5) state.write(`\\subparagraph${star}{`);
+      if (depth === 6) state.write(`\\subparagraph${star}{`);
+    }
     state.renderChildren(node, true);
     state.write('}');
     if (enumerated && label) {
@@ -34,7 +46,23 @@ const handlers: Record<string, Handler> = {
     state.closeBlock(node);
   },
   block(node, state) {
-    // TODO: write metadata to a comment?
+    if (state.options.beamer) {
+      // Metadata from block `+++ { "outline": true }` is put in data field.
+      if (node.data?.outline) {
+        // For beamer blocks that are outline, write the content as normal
+        // This will hopefully just be section and subsection
+        state.data.nextHeadingIsFrameTitle = false;
+        state.renderChildren(node, false);
+        return;
+      }
+      if (node.children?.[0]?.type === 'heading') {
+        state.data.nextHeadingIsFrameTitle = true;
+      }
+      state.write('\n\n\\begin{frame}\n');
+      state.renderChildren(node, false);
+      state.write('\\end{frame}\n\n');
+      return;
+    }
     state.renderChildren(node, false);
   },
   blockquote(node, state) {
@@ -47,7 +75,7 @@ const handlers: Record<string, Handler> = {
     state.closeBlock(node);
   },
   list(node, state) {
-    if (state.isInTable) {
+    if (state.data.isInTable) {
       node.children.forEach((child: any, i: number) => {
         state.write(node.ordered ? `${i}.~~` : '\\textbullet~~');
         state.renderChildren(child, true);
@@ -186,18 +214,16 @@ const handlers: Record<string, Handler> = {
 
 class TexSerializer implements ITexSerializer {
   file: VFile;
+  data: StateData;
   options: Options;
   handlers: Record<string, Handler>;
-
-  isInTable = false;
-  longFigure = false;
-
-  mathPlugins: Required<Options>['math'];
+  mathPlugins: MathPlugins;
 
   constructor(file: VFile, opts?: Options) {
     file.result = '';
     this.file = file;
     this.options = opts ?? {};
+    this.data = {};
     this.handlers = opts?.handlers ?? handlers;
     this.mathPlugins = {}; // initialize empty!
   }
@@ -232,7 +258,10 @@ class TexSerializer implements ITexSerializer {
       if (handler) {
         handler(child, this, node);
       } else {
-        console.log(`myst-to-tex: unhandled node of ${child.type}`, child);
+        fileError(this.file, `Unhandled LaTeX conversion for node of "${child.type}"`, {
+          node: child,
+          source: 'myst-to-tex',
+        });
       }
       if (delim && index + 1 < numChildren) this.write(delim);
     });

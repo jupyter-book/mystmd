@@ -11,19 +11,27 @@ export type LatexResult = {
   commands?: string[];
 };
 
+export type MathPlugins = Required<PageFrontmatter>['math'];
+
 export type Options = {
   handlers?: Record<string, Handler>;
-  math?: PageFrontmatter['math'];
+  beamer?: boolean;
+  math?: MathPlugins;
   localizeId?: (src: string) => string;
   localizeLink?: (src: string) => string;
   localizeImageSrc?: (src: string) => string;
 };
 
-export interface ITexSerializer {
-  isInTable: boolean;
+export type StateData = {
+  isInTable?: boolean;
   longFigure?: boolean;
   nextCaptionNumbered?: boolean;
+  nextHeadingIsFrameTitle?: boolean;
   nextCaptionId?: string;
+};
+
+export interface ITexSerializer<D extends Record<string, any> = StateData> {
+  data: D;
   options: Options;
   mathPlugins: Required<PageFrontmatter>['math'];
   write: (value: string) => void;

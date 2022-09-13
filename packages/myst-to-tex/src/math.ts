@@ -20,7 +20,7 @@ export function createMathCommands(plugins: PageFrontmatter['math']): string[] {
 const math: Handler = (node, state) => {
   const { label, enumerated } = node;
   addMacrosToState(node.value, state);
-  if (state.isInTable) {
+  if (state.data.isInTable) {
     state.write('\\(\\displaystyle ');
     state.write(node.value);
     state.write(' \\)');
@@ -35,7 +35,7 @@ const math: Handler = (node, state) => {
     state.ensureNewLine(true);
     state.write(`\\end{equation${enumerated === false ? '*' : ''}}`);
   }
-  if (!state.isInTable) state.closeBlock(node);
+  if (!state.data.isInTable) state.closeBlock(node);
 };
 
 const inlineMath: Handler = (node, state) => {

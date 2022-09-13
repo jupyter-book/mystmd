@@ -100,14 +100,14 @@ export function renderNodeToLatex(node: Table, state: ITexSerializer) {
   if (!numColumns) {
     throw new Error('invalid table format, no columns');
   }
-  state.isInTable = true; // this is cleared at the end of this function
+  state.data.isInTable = true; // this is cleared at the end of this function
   state.ensureNewLine();
 
   // if not in a longtable environment already (these replace the figure environment)
   // let dedent;
   // handle initial headers first
   let numHeaderRowsFound = 0;
-  if (state.longFigure) {
+  if (state.data.longFigure) {
     state.ensureNewLine();
     state.write('\\hline');
     state.ensureNewLine();
@@ -182,7 +182,7 @@ export function renderNodeToLatex(node: Table, state: ITexSerializer) {
     }
   });
 
-  if (state.longFigure) {
+  if (state.data.longFigure) {
     state.write('\\hline');
   } else {
     state.write('\\bottomrule');
@@ -191,5 +191,5 @@ export function renderNodeToLatex(node: Table, state: ITexSerializer) {
     state.write('\\end{tabular}');
   }
   state.closeBlock(node);
-  state.isInTable = false;
+  state.data.isInTable = false;
 }
