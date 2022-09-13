@@ -56,6 +56,7 @@ import type { LocalProject, LocalProjectPage } from '../../toc/types';
 import {
   writeFileToFolder,
   serverPath,
+  staticPath,
   tic,
   addWarningForFile,
   isUrl,
@@ -263,19 +264,21 @@ const htmlHandlers = {
 export async function transformMdast(
   session: ISession,
   {
+    file,
+    imageWriteFolder,
     projectPath,
     pageSlug,
     projectSlug,
-    file,
+    imageAltOutputFolder,
     watchMode = false,
-    localExport = false,
   }: {
     file: string;
+    imageWriteFolder: string;
     projectPath?: string;
     projectSlug?: string;
     pageSlug?: string;
+    imageAltOutputFolder?: string;
     watchMode?: boolean;
-    localExport?: boolean;
   },
 ) {
   const toc = tic();
@@ -343,9 +346,13 @@ export async function transformMdast(
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
     .use(footnotesPlugin, { references }) // Needs to happen nead the end
     .run(mdast, vfile);
-  await transformImages(session, file, mdast, { localExport });
+  await transformImages(session, mdast, file, imageWriteFolder, {
+    altOutputFolder: imageAltOutputFolder,
+  });
   // Note, the thumbnail transform must be **after** images, as it may read the images
-  await transformThumbnail(session, frontmatter, mdast, file);
+  await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
+    altOutputFolder: imageAltOutputFolder,
+  });
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   store.dispatch(
     watch.actions.updateFileInfo({
@@ -476,7 +483,15 @@ export async function fastProcessFile(
 ) {
   const toc = tic();
   await loadFile(session, file);
-  await transformMdast(session, { file, projectPath, projectSlug, pageSlug, watchMode: true });
+  await transformMdast(session, {
+    file,
+    imageWriteFolder: staticPath(session),
+    imageAltOutputFolder: '/_static/',
+    projectPath,
+    projectSlug,
+    pageSlug,
+    watchMode: true,
+  });
   const { pages } = loadProject(session, projectPath);
   const pageReferenceStates = selectPageReferenceStates(session, pages);
   await postProcessMdast(session, { file, pageReferenceStates });
@@ -510,8 +525,10 @@ export async function processProject(
   await Promise.all(
     pages.map((page) =>
       transformMdast(session, {
-        projectPath: project.path,
         file: page.file,
+        imageWriteFolder: staticPath(session),
+        imageAltOutputFolder: '/_static/',
+        projectPath: project.path,
         projectSlug: siteProject.slug,
         pageSlug: page.slug,
         watchMode,

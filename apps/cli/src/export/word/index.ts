@@ -1,16 +1,17 @@
 import fs from 'fs';
 import { writeDocx } from 'prosemirror-docx';
-import type { VersionId } from '@curvenote/blocks';
-import { KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
-import { Block, MyUser, Project, User, Version } from '../../models';
-import type { ISession } from '../../session/types';
 import { EditorState } from 'prosemirror-state';
 import type { Image, Root } from 'myst-spec';
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
+import type { VersionId } from '@curvenote/blocks';
+import { KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
 import { fromMdast } from '@curvenote/schema';
+import { Block, MyUser, Project, User, Version } from '../../models';
+import type { ISession } from '../../session/types';
 import { loadFile, selectFile, transformMdast } from '../../store/local/actions';
 import type { References } from '../../transforms/types';
+import { createTempFolder } from '../../utils';
 import { assertEndsInExtension } from '../utils/assertions';
 import { exportFromPath } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';
@@ -45,7 +46,7 @@ export async function localArticleToWord(
   const { filename, ...docOpts } = opts;
   assertEndsInExtension(filename, 'docx');
   await loadFile(session, file);
-  await transformMdast(session, { file, localExport: true });
+  await transformMdast(session, { file, imageWriteFolder: createTempFolder() });
   const { frontmatter, mdast, references } = selectFile(session, file);
   const consolidatedChildren = selectAll('block', mdast).reduce((newChildren, block) => {
     newChildren.push(...(block as any).children);

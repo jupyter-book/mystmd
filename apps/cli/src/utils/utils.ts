@@ -1,5 +1,6 @@
 import { createHash } from 'crypto';
 import fs from 'fs';
+import os from 'os';
 import type { VFile } from 'vfile';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
@@ -129,6 +130,10 @@ export function addWarningForFile(
   }
 }
 
+export function createTempFolder() {
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'curvenote'));
+}
+
 /** Writes a file ensuring that the directory exists */
 export function writeFileToFolder(
   filename: string | { path?: string; filename: string },
@@ -148,18 +153,18 @@ export function computeHash(content: string) {
 }
 
 /**
- * Copy an existing file to the static path and name it based on hashed filename
+ * Copy an existing file to writeFolder and name it based on hashed filename
  *
  * If hashed file already exists, this does nothing
  */
-export function hashAndCopyStaticFile(session: ISession, file: string, writeFolder?: string) {
-  if (!writeFolder) writeFolder = staticPath(session);
+export function hashAndCopyStaticFile(session: ISession, file: string, writeFolder: string) {
   const fileHash = `${computeHash(file)}${path.extname(file)}`;
   const destination = path.join(writeFolder, fileHash);
   if (fs.existsSync(destination)) {
     session.log.debug(`Cached file found for: ${file}`);
   } else {
     try {
+      if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
       fs.copyFileSync(file, destination);
       session.log.debug(`File successfully copied: ${file}`);
     } catch {

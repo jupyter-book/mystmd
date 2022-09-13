@@ -1,3 +1,4 @@
+import path from 'path';
 import type { TemplateTagDefinition, ExpandedImports } from 'jtex';
 import JTex, { mergeExpandedImports } from 'jtex';
 import type { Root } from 'mdast';
@@ -93,10 +94,19 @@ export function extractTaggedContent(
   return taggedContent;
 }
 
-export async function getFileContent(session: ISession, file: string) {
+export async function getFileContent(
+  session: ISession,
+  file: string,
+  opts: Pick<TexExportOptions, 'filename'>,
+) {
+  const { filename } = opts;
   await loadFile(session, file);
   // Collect bib files - mysttotex will need those, not 'references'
-  await transformMdast(session, { file, localExport: true });
+  await transformMdast(session, {
+    file,
+    imageWriteFolder: path.join(path.dirname(filename), 'images'),
+    imageAltOutputFolder: 'images',
+  });
   return selectFile(session, file);
 }
 
@@ -106,7 +116,7 @@ export async function localArticleToTexRaw(
   opts: Pick<TexExportOptions, 'filename'>,
 ) {
   const { filename } = opts;
-  const { mdast, frontmatter } = await getFileContent(session, file);
+  const { mdast, frontmatter } = await getFileContent(session, file, opts);
   const result = mdastToTex(mdast, frontmatter);
   session.log.info(`🖋  Writing tex to ${filename}`);
   // TODO: add imports and macros?
@@ -119,7 +129,7 @@ export async function localArticleToTexTemplated(
   opts: Omit<TexExportOptions, 'disableTemplate'>,
 ) {
   const { filename, template, templatePath } = opts;
-  const { frontmatter, mdast, references } = await getFileContent(session, file);
+  const { frontmatter, mdast, references } = await getFileContent(session, file, opts);
   const templateOptions = opts.templateOptions
     ? opts.templateOptions
     : frontmatter.export?.find((exp) => exp.format === ExportFormats.tex);

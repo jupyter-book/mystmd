@@ -1,21 +1,21 @@
 import fs from 'fs';
 import path from 'path';
-import type { GenericNode } from 'mystjs';
-import { selectAll } from 'mystjs';
 import pLimit from 'p-limit';
 import fetch from 'node-fetch';
-import { oxaLink, oxaLinkToId } from '@curvenote/blocks';
+import type { GenericNode } from 'mystjs';
+import { selectAll } from 'mystjs';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
 import type { LinkTransformer, Link } from 'myst-transforms';
+import { fileWarn, fileError } from 'myst-utils';
+import type { VFile } from 'vfile';
+import { oxaLink, oxaLinkToId } from '@curvenote/blocks';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import type { Root } from 'mdast';
-import { addWarningForFile, hashAndCopyStaticFile, tic } from '../utils';
+import { addWarningForFile, hashAndCopyStaticFile, staticPath, tic } from '../utils';
 import { links } from '../store/build';
 import { selectLinkStatus } from '../store/build/selectors';
 import type { ExternalLinkResult } from '../store/build';
-import type { VFile } from 'vfile';
-import { fileWarn, fileError } from 'myst-utils';
 
 // These limit access from command line tools by default
 const skippedDomains = [
@@ -184,7 +184,7 @@ export class StaticFileTransformer implements LinkTransformer {
       link.internal = true;
     } else {
       // Copy relative file to static folder and replace with absolute link
-      const copiedFile = hashAndCopyStaticFile(this.session, linkFile);
+      const copiedFile = hashAndCopyStaticFile(this.session, linkFile, staticPath(this.session));
       if (!copiedFile) {
         fileError(file, `Error copying file ${urlSource}`, {
           node: link,
