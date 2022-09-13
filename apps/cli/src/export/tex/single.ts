@@ -1,4 +1,4 @@
-import { dirname } from 'path';
+import path from 'path';
 import type { TemplateTagDefinition, ExpandedImports } from 'jtex';
 import JTex, { mergeExpandedImports } from 'jtex';
 import type { Root } from 'mdast';
@@ -104,8 +104,8 @@ export async function getFileContent(
   // Collect bib files - mysttotex will need those, not 'references'
   await transformMdast(session, {
     file,
-    imageWriteFolder: dirname(filename),
-    imageAltOutputFolder: '.',
+    imageWriteFolder: path.join(path.dirname(filename), 'images'),
+    imageAltOutputFolder: 'images',
   });
   return selectFile(session, file);
 }
