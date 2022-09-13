@@ -4,7 +4,7 @@ import mime from 'mime-types';
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
 import fetch from 'node-fetch';
-import { dirname, join, parse } from 'path';
+import path from 'path';
 import type { VersionId } from '@curvenote/blocks';
 import { oxaLinkToId } from '@curvenote/blocks';
 import type { PageFrontmatter } from '@curvenote/frontmatter';
@@ -36,12 +36,12 @@ export async function downloadAndSaveImage(
   fileFolder: string,
 ): Promise<string | undefined> {
   const exists = fs.existsSync(fileFolder);
-  const fileMatch = exists && fs.readdirSync(fileFolder).find((f) => parse(f).name === file);
+  const fileMatch = exists && fs.readdirSync(fileFolder).find((f) => path.parse(f).name === file);
   if (exists && fileMatch) {
     session.log.debug(`Cached image found for: ${url}...`);
     return fileMatch;
   }
-  const filePath = join(fileFolder, file);
+  const filePath = path.join(fileFolder, file);
   session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${filePath}`);
   try {
     const github = getGithubRawUrl(url);
@@ -73,12 +73,12 @@ export async function downloadAndSaveImage(
 
 function resolveOutputPath(file: string, writeFolder: string, altOutputFolder?: string) {
   if (altOutputFolder == null) {
-    return join(writeFolder, file);
+    return path.join(writeFolder, file);
   }
   if (altOutputFolder.endsWith('/')) {
     return `${altOutputFolder}${file}`;
   }
-  return join(altOutputFolder, file);
+  return path.join(altOutputFolder, file);
 }
 
 export async function saveImageInStaticFolder(
@@ -89,8 +89,8 @@ export async function saveImageInStaticFolder(
   opts?: { webp?: boolean; altOutputFolder?: string },
 ): Promise<{ urlSource: string; url: string; webp?: string } | null> {
   const oxa = oxaLinkToId(urlSource);
-  const sourceFilePath = dirname(sourceFile);
-  const imageLocalFile = join(sourceFilePath, urlSource);
+  const sourceFileFolder = path.dirname(sourceFile);
+  const imageLocalFile = path.join(sourceFileFolder, urlSource);
   let file: string | undefined;
   if (oxa) {
     // If oxa, get the download url
@@ -116,7 +116,14 @@ export async function saveImageInStaticFolder(
     file = await downloadAndSaveImage(session, urlSource, computeHash(urlSource), writeFolder);
   } else if (fs.existsSync(imageLocalFile)) {
     // Non-oxa, non-url local image paths relative to the config.section.path
-    file = hashAndCopyStaticFile(session, imageLocalFile, writeFolder);
+    console.log(path.dirname(imageLocalFile));
+    console.log(writeFolder);
+    if (path.resolve(path.dirname(imageLocalFile)) === path.resolve(writeFolder)) {
+      // If file is already in write folder, don't hash/copy
+      file = path.basename(imageLocalFile);
+    } else {
+      file = hashAndCopyStaticFile(session, imageLocalFile, writeFolder);
+    }
     if (!file) return null;
   } else if (isBase64(urlSource)) {
     // Inline base64 images
@@ -124,14 +131,14 @@ export async function saveImageInStaticFolder(
     await fileObject.writeBase64(urlSource);
     file = fileObject.id;
   } else {
-    const message = `Cannot find image "${urlSource}" in ${sourceFilePath}`;
+    const message = `Cannot find image "${urlSource}" in ${sourceFileFolder}`;
     addWarningForFile(session, sourceFile, message, 'error');
     return null;
   }
   let webp: string | undefined;
   if (opts?.webp && file) {
     try {
-      const result = await convertImageToWebp(session, join(writeFolder, file));
+      const result = await convertImageToWebp(session, path.join(writeFolder, file));
       if (result) webp = resolveOutputPath(result, writeFolder, opts.altOutputFolder);
     } catch (error) {
       session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
