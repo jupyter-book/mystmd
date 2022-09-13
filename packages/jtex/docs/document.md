@@ -4,20 +4,15 @@ description: jtex uses a standard document model to validate and expose frontmat
 ---
 
 The document model is based on `frontmatter` but is modified to make it more useful for $\LaTeX$ templating.
-For example, a date is not exposed as a `Date` object, instead it provides `day` `month` and `year` variables
+For example, a date is not exposed as a `Date` object, instead it provides `day`, `month` and `year` variables
 that can be directly used in $\LaTeX$ without any translation.
-
-```latex
-\newdate{articleDate}{[-doc.date.day-]}{[-doc.date.month-]}{[-doc.date.year-]}
-\date{\displaydate{articleDate}}
-```
 
 This is also completed with author and affiliation information, and the document model includes `index` and `letter`,
 which help by making it easy to have, Author{sup}`a`, defined in $\LaTeX$ with `[- author.letter -]`.
 
 ## Template Variables
 
-`jtex` provides global variables which can be used when rendering the template:
+The following global variables can be used when rendering the template:
 
 `CONTENT`
 : This is the main content of your document.
@@ -30,14 +25,14 @@ which help by making it easy to have, Author{sup}`a`, defined in $\LaTeX$ with `
 `doc`
 : The `title`, `date`, `authors` and other information in [](#document-properties) are on this object
 
+`options`
+: The options for your template as defined in your `template.yml` options.
+: See [](#template-options) for more information.
+
 `parts`
 : The content for each part of your document are included in this object.
 : To access the abstract for example, you can use `[- parts.abstract -]`.
 : See [](#template-parts) for more information.
-
-`options`
-: The options for your template as defined in your `template.yml` options.
-: See [](#template-options) for more information.
 
 (document-properties)=
 
@@ -64,9 +59,9 @@ date
 
 authors (`Author[]`)
 : A list of the authors with information for indexing, corresponding author, and affiliations.
-: See [](#doc-authors) below.
+: See [Author](#doc-authors).
 
-affiliations: (`ValueAndIndex[]`)
+affiliations: ([`ValueAndIndex` list](#value-and-index))
 : The `value`, `index` and uppercase `letter` of the corresponding authors.
 
 bibliography (`string[]`, optional)
@@ -93,11 +88,11 @@ surname (`string`)
 email (`string`, optional)
 : The email of the author if provided.
 
-affiliations (`ValueAndIndex[]`)
+affiliations ([`ValueAndIndex` list](#value-and-index))
 : The `value`, `index` and uppercase `letter` of the affiliation.
 : The `index` and `letter` are the same as the affiliation in the `doc.affiliations` list above.
 
-corresponding: (`ValueAndIndex[] | undefined`)
+corresponding: ([`ValueAndIndex` list](#value-and-index) or undefined)
 : The `value`, `index` and uppercase `letter` of the corresponding authors.
 : Can be used as a condition, for example, `[# if author.corresponding #]`
 
@@ -121,7 +116,7 @@ The authors and affiliations are often the most complex part of the template, th
 [# if author.corresponding #]
 \footnotemark[[-author.corresponding.index-]]
 [#- endif #]\\
-[# if author.affiliation #][--author.affiliation.value--]\\[# endif #]
+[# if author.affiliations #][--author.affiliations[0].value--]\\[# endif #]
 [# if not loop.last #]
 \AND
 [# endif #]
@@ -137,3 +132,20 @@ The authors and affiliations are often the most complex part of the template, th
 [# endif #]
 [# endfor #]
 ```
+
+# Reference
+
+(value-and-index)=
+
+ValueAndIndex List
+: A list of objects that replaces a simple list of values, with the index and letter, this allows the template to show indexes and footnotes with letters/numbers without having to create these variables in the templating language.
+
+    value
+    : The value of the entry, can be included, for example, as `[- object.value -]`
+
+    index
+    : The index, starting at 1, which avoids you having to count or number in $\LaTeX$.
+
+    letter
+    : The uppercase letter, starting at "A".
+    : If there are more letters than 26, they will be repeated ("AA").

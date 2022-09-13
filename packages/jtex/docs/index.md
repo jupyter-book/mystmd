@@ -3,7 +3,7 @@ title: jtex
 description: jtex is a command line tool and library for rendering LaTeX documents from Jinja-style templates.
 ---
 
-`jtex` is a command line tool (CLI) for rendering $\LaTeX$ documents from Jinja-style templates. This package uses [nunjucks](https://mozilla.github.io/nunjucks/) as the template engine with a modified environment and syntax that plays well with $\LaTeX$'s markup.
+`jtex` is a command line tool (CLI) for rendering $\LaTeX$ documents from Jinja-style templates. This package uses [nunjucks](https://mozilla.github.io/nunjucks/) (a port of Jinja) as the template engine with a modified environment and syntax that plays well with $\LaTeX$'s markup.
 
 **Goals**
 
@@ -39,7 +39,7 @@ both of which can compile markdown into $\LaTeX$ for templating with `jtex`.
 ## Simple Example
 
 A document can be used very simply with the document as `doc`, the contents of which are
-documented in [](document.md).
+documented in [](document.md). Be sure to include the `[-IMPORTS-]` and the `[-CONTENT-]`.
 
 ```latex
 % template.tex
