@@ -164,6 +164,7 @@ export function hashAndCopyStaticFile(session: ISession, file: string, writeFold
     session.log.debug(`Cached file found for: ${file}`);
   } else {
     try {
+      if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
       fs.copyFileSync(file, destination);
       session.log.debug(`File successfully copied: ${file}`);
     } catch {
