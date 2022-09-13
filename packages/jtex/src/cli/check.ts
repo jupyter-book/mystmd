@@ -47,7 +47,7 @@ function extractVariablesFromTemplate(template: string) {
     .map((line) => line.split(/(?<!\\)%/)[0]) // Strip comments (backwards lookup for \% escapes)
     .map((line: string, i) => {
       const match = line.match(
-        /\\(?:usepackage|RequirePackage)(?:\[(?:[^\]]+)\])?\{([a-zA-z0-9_-]+)\}/g,
+        /\\(?:usepackage|RequirePackage)(?:\[(?:[^\]]+)\])?\{([a-zA-z0-9_\-,\s]+)\}/g,
       );
       if (!match) return [];
       return { match, lineNumber: i + 1 };
@@ -55,12 +55,15 @@ function extractVariablesFromTemplate(template: string) {
     .flat()
     .filter((m) => !!m)
     .forEach((p) => {
-      const name = /\{([a-zA-z0-9_-]+)\}/.exec(p.match[0])?.[1];
-      if (!name) return;
-      if (!variables.packages?.[name]) variables.packages[name] = [];
-      if (!variables.packages[name].includes(p.lineNumber)) {
-        variables.packages[name].push(p.lineNumber);
-      }
+      const names = /\{([a-zA-z0-9_\-,\s]+)\}/.exec(p.match[0])?.[1];
+      if (!names) return;
+      names.split(',').forEach((n) => {
+        const name = n.trim();
+        if (!variables.packages?.[name]) variables.packages[name] = [];
+        if (!variables.packages[name].includes(p.lineNumber)) {
+          variables.packages[name].push(p.lineNumber);
+        }
+      });
     });
   return variables;
 }
