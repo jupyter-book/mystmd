@@ -17,17 +17,17 @@ describe('extractTaggedContent', () => {
       children: [
         {
           type: 'block' as any,
-          meta: '{ "tags": ["other_tag"] }',
+          data: { tags: ['other_tag'] },
           children: [{ type: 'text', value: 'untagged content' }],
         },
         {
           type: 'block' as any,
-          meta: '{ "tags": ["test_tag"] }',
+          data: { tags: ['test_tag'] },
           children: [{ type: 'text', value: 'tagged content' }],
         },
         {
           type: 'block' as any,
-          meta: '{ "tags": ["other_tag", "test_tag"] }',
+          data: { tags: ['other_tag', 'test_tag'] },
           children: [{ type: 'text', value: 'also tagged content' }],
         },
       ],
@@ -42,17 +42,17 @@ describe('extractTaggedContent', () => {
       children: [
         {
           type: 'block' as any,
-          meta: '{ "tags": ["other_tag"] }',
+          data: { tags: ['other_tag'] },
           children: [{ type: 'text', value: 'untagged content' }],
         },
         {
           type: 'block' as any,
-          meta: '{ "tags": ["test_tag"] }',
+          data: { tags: ['test_tag'] },
           children: [],
         },
         {
           type: 'block' as any,
-          meta: '{ "tags": ["other_tag", "test_tag"] }',
+          data: { tags: ['other_tag', 'test_tag'] },
           children: [],
         },
       ],
@@ -64,7 +64,7 @@ describe('extractTaggedContent', () => {
       children: [
         {
           type: 'block' as any,
-          meta: '{ "tags": ["test_tag"] }',
+          data: { tags: ['test_tag'] },
           children: [{ type: 'text', value: 'tagged content' }],
         },
       ],
@@ -73,13 +73,13 @@ describe('extractTaggedContent', () => {
       extractTaggedContent(tree, { id: 'test_tag', max_chars: 1000, max_words: 100 }, {}),
     ).toEqual({ value: 'tagged content', imports: [], commands: [] });
   });
-  it('exceeding max chars logs error and returns', async () => {
+  it('exceeding max chars passes', async () => {
     const tree: Root = {
       type: 'root',
       children: [
         {
           type: 'block' as any,
-          meta: '{ "tags": ["test_tag"] }',
+          data: { tags: ['test_tag'] },
           children: [{ type: 'text', value: 'tagged content' }],
         },
       ],
@@ -90,13 +90,13 @@ describe('extractTaggedContent', () => {
       commands: [],
     });
   });
-  it('exceeding max words logs error and returns', async () => {
+  it('exceeding max words passes', async () => {
     const tree: Root = {
       type: 'root',
       children: [
         {
           type: 'block' as any,
-          meta: '{ "tags": ["test_tag"] }',
+          data: { tags: ['test_tag'] },
           children: [{ type: 'text', value: 'tagged content' }],
         },
       ],

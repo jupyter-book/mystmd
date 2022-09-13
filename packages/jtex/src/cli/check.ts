@@ -1,13 +1,14 @@
+import chalk from 'chalk';
 import { Command } from 'commander';
 import yaml from 'js-yaml';
 import { clirun } from './utils';
 import fs from 'fs';
 import { join } from 'path';
 import type { ISession } from '../types';
-import { REDERER_DOC_KEYS, DOC_FRONTMATTER_KEYS } from '../types';
-import { validateTemplateConfig } from '../validators';
 import type { ValidationOptions } from '@curvenote/validators';
-import chalk from 'chalk';
+import { PAGE_FRONTMATTER_KEYS } from '@curvenote/frontmatter';
+import { REDERER_DOC_KEYS } from '../types';
+import { validateTemplateConfig } from '../validators';
 
 type Variables = Record<
   'options' | 'doc' | 'parts' | 'packages' | 'global',
@@ -188,7 +189,7 @@ export function checkTemplate(session: ISession, path: string) {
   // Validate non-frontmatter options
   const doc = validated.options?.filter((p) => p.type === 'frontmatter').map((p) => p.id) ?? [];
   Object.entries(variables.doc).forEach(([optKey, lineNumbers]) => {
-    if (!doc.includes(optKey) && DOC_FRONTMATTER_KEYS.includes(optKey)) {
+    if (!doc.includes(optKey) && PAGE_FRONTMATTER_KEYS.includes(optKey)) {
       messages.errors.push({
         property: 'doc',
         message: `The template.yml does not include document property "${optKey}" but it is referenced in template.tex on ${lineNumbersToString(
