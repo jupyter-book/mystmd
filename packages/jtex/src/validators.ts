@@ -1,5 +1,5 @@
 import type { PageFrontmatter } from '@curvenote/frontmatter';
-import { validatePageFrontmatter } from '@curvenote/frontmatter';
+import { PAGE_FRONTMATTER_KEYS, validatePageFrontmatter } from '@curvenote/frontmatter';
 import {
   defined,
   incrementOptions,
@@ -16,7 +16,7 @@ import {
 } from '@curvenote/validators';
 import type { ValidationOptions } from '@curvenote/validators';
 import type { TemplateOptionDefinition, TemplateTagDefinition, TemplateYml } from './types';
-import { DOC_FRONTMATTER_KEYS, TemplateOptionTypes } from './types';
+import { TemplateOptionTypes } from './types';
 
 export function validateTemplateOption(
   input: any,
@@ -164,7 +164,7 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
   let id: string | undefined;
   const idOpts = incrementOptions('id', opts);
   if (optionType === TemplateOptionTypes.frontmatter) {
-    id = validateChoice(value.id, { choices: DOC_FRONTMATTER_KEYS, ...idOpts });
+    id = validateChoice(value.id, { choices: PAGE_FRONTMATTER_KEYS, ...idOpts });
   } else {
     id = validateString(value.id, idOpts);
   }
@@ -234,7 +234,7 @@ export function crossValidateConditions(
       }
     } else if (
       def.condition &&
-      !DOC_FRONTMATTER_KEYS.includes(def.condition.id) &&
+      !PAGE_FRONTMATTER_KEYS.includes(def.condition.id) &&
       def.condition.id !== def.id
     ) {
       validationError(`unknown condition id: ${def.condition.id}`, opts);

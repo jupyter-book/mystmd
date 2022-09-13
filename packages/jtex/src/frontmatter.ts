@@ -63,9 +63,7 @@ export function extendJtexFrontmatter(frontmatter: PageFrontmatter): RendererDoc
   const datetime = frontmatter.date ? new Date(frontmatter.date) : new Date();
   const affiliations = affiliationsFromAuthors(frontmatter.authors || []);
   const doc: RendererDoc = {
-    title: frontmatter.title,
-    short_title: frontmatter.short_title,
-    description: frontmatter.description,
+    ...frontmatter,
     date: {
       day: String(datetime.getDate()),
       month: String(datetime.getMonth() + 1),
@@ -74,7 +72,6 @@ export function extendJtexFrontmatter(frontmatter: PageFrontmatter): RendererDoc
     authors: addIndicesToAuthors(frontmatter.authors || [], affiliations),
     affiliations,
     bibliography: undefinedIfEmpty(frontmatter.bibliography),
-    keywords: frontmatter.keywords,
   };
   return doc;
 }

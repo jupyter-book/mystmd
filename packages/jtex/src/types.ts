@@ -29,12 +29,6 @@ export enum TemplateOptionTypes {
   choice = 'choice',
   frontmatter = 'frontmatter',
 }
-
-/**
- * Validated frontmatter keys exposed in renderer doc
- */
-export const DOC_FRONTMATTER_KEYS = ['title', 'description', 'authors', 'short_title', 'keywords'];
-
 export type TemplateOptionDefinition = {
   id: string;
   type: TemplateOptionTypes;
