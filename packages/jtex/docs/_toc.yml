@@ -4,6 +4,7 @@ parts:
   - caption: Guide
     chapters:
       - file: create-a-latex-template
+      - file: create-a-beamer-template
   - caption: Reference
     chapters:
       - file: template-rules
