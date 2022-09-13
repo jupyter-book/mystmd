@@ -4,7 +4,7 @@ description: 'jtex uses a customized set of jinja templating rules like `[- vari
 ---
 
 `jtex` uses `nunjucks`, which is a javascript port of Jinja templating language with the modifications
-to allow easy reading and syntax highlighting with LaTeX.
+to allow easy reading and syntax highlighting with $\LaTeX$.
 The `nunjucks` ecosystem is compatible with `jinja` templates, and they are modified with custom rules.
 
 ## Syntax
@@ -16,7 +16,7 @@ The `nunjucks` ecosystem is compatible with `jinja` templates, and they are modi
 | Comments     | `%# #%`    | `{# #}`         |
 | Line Comment | `%%`       | `##`            |
 
-Statements can be if-blocks or for-loops, a minimal freeform LaTeX example illustrating these would be:
+Statements can be if-blocks or for-loops, a minimal freeform $\LaTeX$ example illustrating these would be:
 
 ```latex
 \documentclass{article}
@@ -35,19 +35,16 @@ Statements can be if-blocks or for-loops, a minimal freeform LaTeX example illus
 
 In addition to the custom syntax we also set the following options:
 
-| option                | `jtex` setting  | default | effect                                                                                              |
-| --------------------- | --------------- | ------- | --------------------------------------------------------------------------------------------------- |
-| trim_blocks           | `true`          | `false` | If this is set to `true` the first newline after a block is removed (block, not variable tag!)      |
-| autoescape            | `false`         | `true`  | If set to `false` the XML/HTML autoescaping feature is disabled                                     |
-| auto_reload           | `true`          | `false` | Will always check template location for changes and recompiles the template as needed               |
-| undefined             | SlientUndefined | None    | Ignore any undefined variables in the template, render anyways without affected blocks or variables |
-| keep_trailing_newline | `true`          | `false` | Preserve the trailing newline when rendering templates, important in LaTeX                          |
+| Option      | jtex    | Default | Description                            |
+| ----------- | ------- | ------- | -------------------------------------- |
+| trim_blocks | `true`  | `false` | First newline after a block is removed |
+| autoescape  | `false` | `true`  | HTML autoescaping feature is disabled  |
 
 `jinja` provide a whole host of [tags](https://mozilla.github.io/nunjucks/templating.html#tags), [expressions](https://mozilla.github.io/nunjucks/templating.html#expressions) and [filters](https://mozilla.github.io/nunjucks/templating.html#filters) at global scope.
 
 ## Filters
 
-Some of the main [filters](https://mozilla.github.io/nunjucks/templating.html#filters) used in the LaTeX templates,
+Some of the main [filters](https://mozilla.github.io/nunjucks/templating.html#filters) used in the $\LaTeX$ templates,
 are, for example, `join`, `title`, or `trim`.
 
 **template.tex**

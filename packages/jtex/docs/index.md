@@ -3,13 +3,11 @@ title: jtex
 description: jtex is a command line tool and library for rendering LaTeX documents from Jinja-style templates.
 ---
 
-[![jtex on npm](https://img.shields.io/npm/v/jtex.svg)](https://www.npmjs.com/package/jtex)
-
-`jtex` is a command line tool (CLI) for rendering LaTeX documents from Jinja-style templates. This package uses [nunjucks](https://mozilla.github.io/nunjucks/) as the template engine with a modified environment and syntax that plays well with LaTeX's markup.
+`jtex` is a command line tool (CLI) for rendering $\LaTeX$ documents from Jinja-style templates. This package uses [nunjucks](https://mozilla.github.io/nunjucks/) as the template engine with a modified environment and syntax that plays well with $\LaTeX$'s markup.
 
 **Goals**
 
-- Provide a data-driven templating markup for LaTeX
+- Provide a data-driven templating markup for $\LaTeX$
 - Provide validation of templates and supplied options when rendering a template
 - Work with standardized frontmatter to make authors, affiliations, etc. easy to template
 - Work with the MyST ecosystem of tools
@@ -17,14 +15,14 @@ description: jtex is a command line tool and library for rendering LaTeX documen
 
 **Not Goals**
 
-- Translation to LaTeX, instead see `myst-to-tex` or [using pandoc](pandoc-comparison.md)
+- Translation to $\LaTeX$, instead see `myst-to-tex` or [using pandoc](pandoc-comparison.md)
 
 ## Installation
 
-Install the package into your virtual environment using npm:
+Install the package globally using npm:
 
 ```bash
-npm install jtex
+npm install -g jtex
 ```
 
 and confirm correct installation by typing:
@@ -36,7 +34,7 @@ jtex --version
 ## Usage with MyST
 
 The main usage for `jtex` is with `myst` and `curvenote` command line tools,
-both of which can compile markdown into LaTeX for templating with `jtex`.
+both of which can compile markdown into $\LaTeX$ for templating with `jtex`.
 
 ## Simple Example
 
@@ -56,7 +54,7 @@ documented in [](document.md).
 \maketitle
 
 [-CONTENT-]
-\vskip 1cm
+
 The End!
 \end{document}
 ```

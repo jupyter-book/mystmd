@@ -3,7 +3,7 @@ title: Comparing to Pandoc
 description: jtex can work directly with pandoc, however, also has a different approach to templating latex than pandoc for data-driven templates.
 ---
 
-`jtex` is a data-driven templating library, not a document translation package, and although `jtex` is designed to work with the open-source MyST community, it can also work with `pandoc` when not using `pandoc` in "standalone" mode. This creates the inner LaTeX inputs that can be used with `jtex`.
+`jtex` is a data-driven templating library, not a document translation package, and although `jtex` is designed to work with the open-source MyST community, it can also work with `pandoc` when not using `pandoc` in "standalone" mode. This creates the inner $\LaTeX$ inputs that can be used with `jtex`.
 
 For example, converting a document into latex using `pandoc` can then be rendered in a `jtex` template:
 
@@ -12,9 +12,9 @@ pandoc pandoc_example.md -o my_content.tex --bibliography references.bib --bibla
 jtex render my_content.tex --template arxiv --frontmatter frontmatter.yml
 ```
 
-It is also possible to use Pandoc to create LaTeX templates, and there are a number of decisions that `jtex` has taken. Specifically, `jtex` was designed with:
+It is also possible to use Pandoc to create $\LaTeX$ templates, and there are a number of decisions that `jtex` has taken. Specifically, `jtex` was designed with:
 
-- an easy to read syntax that stands out against LaTeX
+- an easy to read syntax that stands out against $\LaTeX$
 - full template creation, without needing inheritance, default partials, or any other default decisions
 - a well-used templating language, `jinja`, with full support for variables and control-flow
 - entirely web-friendly langauges (no `lua` filters!)
@@ -38,9 +38,9 @@ We believe that `pandoc` is very powerful, but requires much more knowledge to c
 
 ## Template syntax
 
-The template syntax that `pandoc` uses is `$if(beamer)$` and `${ variable }`. Both brackets and dollar signs are used in the LaTeX langauge, making it quite difficult to do syntax highlighting or rendering on the template without `pandoc` in the loop.
+The template syntax that `pandoc` uses is `$if(beamer)$` and `${ variable }`. Both brackets and dollar signs are used in the $\LaTeX$ langauge, making it quite difficult to do syntax highlighting or rendering on the template without `pandoc` in the loop.
 
-In `jtex` we have chosen a [templating syntax](template-rules.md) (e.g. `[# if beamer #]` and `[- variable -]`) that works with the LaTeX language, and any existing syntax highlighters. This can help authors when they are writing their own templates.
+In `jtex` we have chosen a [templating syntax](template-rules.md) (e.g. `[# if beamer #]` and `[- variable -]`) that works with the $\LaTeX$ language, and any existing syntax highlighters. This can help authors when they are writing their own templates.
 
 ## Data driven
 
