@@ -85,10 +85,31 @@ export type RendererDoc = {
   keywords?: string[];
 };
 
+export const REDERER_DOC_KEYS = [
+  'title',
+  'short_title',
+  'description',
+  'date',
+  'authors',
+  'affiliations',
+  'bibliography',
+  'keywords',
+];
+
 export type Renderer = {
   CONTENT: string;
   doc: RendererDoc;
   options: Record<string, any>;
   tagged: Record<string, string>;
   IMPORTS?: string;
+};
+
+export type TemplateResponse = {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  links: {
+    self: string;
+  };
 };
