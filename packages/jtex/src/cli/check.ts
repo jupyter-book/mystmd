@@ -119,7 +119,7 @@ export function checkTemplate(session: ISession, path: string) {
       const lines = `line${lineNumbers.length > 1 ? 's' : ''} ${lineNumbers.join(', ')}`;
       messages.errors.push({
         property: 'parts',
-        message: `The template.yml does not include "${partKey}" but it is referenced in template.tex on ${lines}`,
+        message: `The template.yml does not include part "${partKey}" but it is referenced in template.tex on ${lines}`,
       });
       return;
     }
@@ -140,7 +140,7 @@ export function checkTemplate(session: ISession, path: string) {
     if (!options.includes(optKey)) {
       messages.errors.push({
         property: 'options',
-        message: `The template.yml does not include "${optKey}" but it is referenced in template.tex on ${lineNumbersToString(
+        message: `The template.yml does not include option "${optKey}" but it is referenced in template.tex on ${lineNumbersToString(
           lineNumbers,
         )}`,
       });
@@ -162,7 +162,7 @@ export function checkTemplate(session: ISession, path: string) {
     if (!doc.includes(optKey) && DOC_FRONTMATTER_KEYS.includes(optKey)) {
       messages.errors.push({
         property: 'doc',
-        message: `The template.yml does not frontmatter option "${optKey}" but it is referenced in template.tex on ${lineNumbersToString(
+        message: `The template.yml does not include document property "${optKey}" but it is referenced in template.tex on ${lineNumbersToString(
           lineNumbers,
         )}`,
       });
