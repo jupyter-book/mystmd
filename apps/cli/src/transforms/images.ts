@@ -116,8 +116,6 @@ export async function saveImageInStaticFolder(
     file = await downloadAndSaveImage(session, urlSource, computeHash(urlSource), writeFolder);
   } else if (fs.existsSync(imageLocalFile)) {
     // Non-oxa, non-url local image paths relative to the config.section.path
-    console.log(path.dirname(imageLocalFile));
-    console.log(writeFolder);
     if (path.resolve(path.dirname(imageLocalFile)) === path.resolve(writeFolder)) {
       // If file is already in write folder, don't hash/copy
       file = path.basename(imageLocalFile);
