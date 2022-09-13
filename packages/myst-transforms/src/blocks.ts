@@ -1,7 +1,9 @@
+import type { VFile } from 'vfile';
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
-import type { Node, Parent } from 'myst-spec';
-import { select } from 'unist-util-select';
+import type { Block, Node, Parent } from 'myst-spec';
+import { select, selectAll } from 'unist-util-select';
+import { fileError } from 'myst-utils';
 
 export function blockNestingTransform(mdast: Root) {
   if (!select('block', mdast)) {
@@ -21,4 +23,24 @@ export function blockNestingTransform(mdast: Root) {
 
 export const blockNestingPlugin: Plugin<[], Root, Root> = () => (tree) => {
   blockNestingTransform(tree);
+};
+
+const TRANSFORM_SOURCE = 'BlockTransform:BlockMetadata';
+
+export function blockMetadataTransform(mdast: Root, file: VFile) {
+  const blocks = selectAll('block', mdast) as Block[];
+  blocks.forEach((block) => {
+    if (!block.meta) return;
+    try {
+      const data = JSON.parse(block.meta);
+      block.data = data;
+      delete block.meta;
+    } catch (error) {
+      fileError(file, 'Problem parsing JSON for block', { node: block, source: TRANSFORM_SOURCE });
+    }
+  });
+}
+
+export const blockMetadataPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
+  blockMetadataTransform(tree, file);
 };

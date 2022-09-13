@@ -5,7 +5,12 @@ export { htmlPlugin, htmlTransform } from './html';
 export { htmlIdsPlugin, htmlIdsTransform } from './htmlIds';
 export { keysPlugin, keysTransform } from './keys';
 export { mathPlugin, mathLabelPlugin, mathTransform, mathLabelTransform } from './math';
-export { blockNestingPlugin, blockNestingTransform } from './blocks';
+export {
+  blockNestingPlugin,
+  blockNestingTransform,
+  blockMetadataPlugin,
+  blockMetadataTransform,
+} from './blocks';
 export { codePlugin, codeTransform } from './code';
 export { codeBlockPlugin, codeBlockTransform } from './codeBlock';
 export { blockquotePlugin, blockquoteTransform } from './blockquote';

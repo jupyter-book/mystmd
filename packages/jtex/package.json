@@ -16,9 +16,15 @@
       "import": "./dist/esm/index.js"
     }
   },
+  "bin": {
+    "jtex": "./dist/jtex.js"
+  },
   "scripts": {
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "clean": "rimraf dist _build",
+    "unlink": "npm uninstall -g jtex;",
+    "link": "npm run unlink; npm link;",
+    "dev": "npm run link && esbuild src/cli/index.ts --bundle --outfile=dist/jtex.js --platform=node --watch",
     "lint": "npm run copy:version && eslint -c .eslintrc.js src/**/*.ts tests/**/*.ts",
     "lint:format": "npm run copy:version && prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
     "test": "npm run copy:version && jest",
@@ -26,7 +32,8 @@
     "build:esm": "tsc --project ./src/tsconfig.json --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --project ./src/tsconfig.json --module commonjs --outDir dist/cjs",
     "declarations": "tsc --project ./src/tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
-    "build": "npm-run-all -l clean copy:version -p build:cjs build:esm declarations",
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/jtex.js --platform=node",
+    "build": "npm-run-all -l clean copy:version -p build:cli build:cjs build:esm declarations",
     "prepublishOnly": "npm run build"
   },
   "repository": {
@@ -53,10 +60,12 @@
     "@curvenote/frontmatter": "^0.0.1",
     "@curvenote/validators": "^0.0.1",
     "chalk": "^4.1.2",
+    "commander": "^8.3.0",
     "crypto": "^1.0.1",
     "js-yaml": "^4.1.0",
     "node-fetch": "^2.6.7",
     "nunjucks": "^3.2.3",
+    "pretty-hrtime": "^1.0.3",
     "unzipper": "^0.10.11"
   },
   "devDependencies": {
@@ -66,6 +75,7 @@
     "@types/react": "^18.0.15",
     "@types/sanitize-html": "^2.6.2",
     "@types/unzipper": "^0.10.5",
+    "esbuild": "^0.14.53",
     "eslint": "^8.21.0",
     "eslint-config-curvenote": "*",
     "jest": "^28.1.3",

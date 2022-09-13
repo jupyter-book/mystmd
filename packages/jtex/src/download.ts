@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import unzipper from 'unzipper';
 import { join, parse } from 'path';
 import { validateUrl } from '@curvenote/validators';
-import type { ISession } from './types';
+import type { ISession, TemplateResponse } from './types';
 
 export const TEMPLATE_FILENAME = 'template.tex';
 
@@ -23,6 +23,10 @@ function normalizeTemplateName(template: string) {
     return template;
   }
   return undefined;
+}
+
+function listingUrl(session: ISession) {
+  return `${session.API_URL}/templates/tex`;
 }
 
 function defaultUrl(session: ISession, template: string) {
@@ -97,19 +101,22 @@ export async function downloadAndUnzipTemplate(
   const { templatePath, templateUrl } = opts;
   session.log.debug(`Fetching template information from ${templateUrl}`);
   const resLink = await fetch(templateUrl);
-  if (!resLink.ok)
+  if (!resLink.ok) {
     throw new Error(
       `Problem with template link "${templateUrl}": ${resLink.status} ${resLink.statusText}`,
     );
+  }
   const { link } = (await resLink.json()) as LinkResponse;
-  if (!link)
+  if (!link) {
     throw new Error(`Problem with template link "${templateUrl}": No download link in response`);
+  }
   session.log.debug(`Fetching template from ${link}`);
   const res = await fetch(link);
-  if (!res.ok)
+  if (!res.ok) {
     throw new Error(
       `Problem downloading template "${templateUrl}": ${res.status} ${res.statusText}`,
     );
+  }
   const zipFile = join(templatePath, 'template.zip');
   mkdirSync(templatePath, { recursive: true });
   const fileStream = createWriteStream(zipFile);
@@ -123,4 +130,62 @@ export async function downloadAndUnzipTemplate(
     .pipe(unzipper.Extract({ path: templatePath }))
     .promise();
   session.log.debug(`Unzipped template to path ${templatePath}`);
+}
+
+export async function fetchPublicTemplate(session: ISession, name: string) {
+  const url = listingUrl(session);
+  session.log.debug('Fetching template listing information');
+  const templateUrl = `${url}/${normalizeTemplateName(name)}`;
+  const resLink = await fetch(templateUrl);
+  if (!resLink.ok) {
+    throw new Error(
+      `Problem with template link "${templateUrl}": ${resLink.status} ${resLink.statusText}`,
+    );
+  }
+  const template = (await resLink.json()) as any;
+  return {
+    id: template.metadata.id,
+    title: template.metadata.title,
+    description: template.metadata.description,
+    version: template.metadata.version,
+    license: template.metadata.license,
+    author: {
+      name: template.metadata.author.name,
+      website: template.metadata.author.website,
+      affiliation: template.metadata.author.affiliation,
+    },
+    contributor: {
+      name: template.metadata.contributor.name,
+      github: template.metadata.contributor.github,
+      twitter: template.metadata.contributor.twitter,
+      affiliation: template.metadata.contributor.affiliation,
+    },
+    tags: template.metadata.tags,
+  };
+}
+
+export async function listPublicTemplates(
+  session: ISession,
+  name?: string,
+): Promise<TemplateResponse[]> {
+  const url = listingUrl(session);
+  if (name) {
+    session.log.debug('Fetching template listing information');
+    const templateUrl = `${url}/${normalizeTemplateName(name)}`;
+    const resLink = await fetch(templateUrl);
+    if (!resLink.ok) {
+      throw new Error(
+        `Problem with template link "${templateUrl}": ${resLink.status} ${resLink.statusText}`,
+      );
+    }
+    const templates = (await resLink.json()) as { items: TemplateResponse[] };
+    return [];
+  }
+  session.log.debug('Fetching template listing information');
+  const resLink = await fetch(url);
+  if (!resLink.ok) {
+    throw new Error(`Problem with template link "${url}": ${resLink.status} ${resLink.statusText}`);
+  }
+  const templates = (await resLink.json()) as { items: TemplateResponse[] };
+  return templates.items;
 }

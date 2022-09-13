@@ -66,11 +66,9 @@ export function mdastToTex(mdast: Root, frontmatter: PageFrontmatter) {
 
 export function taggedBlocksFromMdast(mdast: Root, tag: string) {
   const taggedBlocks = selectAll('block', mdast).filter((block) => {
-    let meta: Record<string, any>;
     try {
-      meta = JSON.parse((block as GenericNode).meta);
-      if (!meta.tags) return false;
-      return (meta.tags as any).includes(tag);
+      if (!block.data?.tags) return false;
+      return (block.data.tags as any).includes(tag);
     } catch {
       return false;
     }

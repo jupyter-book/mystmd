@@ -28,23 +28,22 @@ export function getLevel(logger: Logger, level: LogLevel): Logger['info'] {
 }
 
 export function chalkLogger(level: LogLevel): Logger {
-  const { log } = console;
   return {
     debug(...args: any) {
       if (level > LogLevel.debug) return;
-      log(chalk.dim(...args));
+      console.debug(chalk.dim(...args));
     },
     info(...args: any) {
       if (level > LogLevel.info) return;
-      log(chalk.reset(...args));
+      console.log(chalk.reset(...args));
     },
     warn(...args: any) {
       if (level > LogLevel.warn) return;
-      log(chalk.yellow(...args));
+      console.warn(chalk.yellow(...args));
     },
     error(...args: any) {
       if (level > LogLevel.error) return;
-      log(chalk.red(...args));
+      console.error(chalk.red(...args));
     },
   };
 }

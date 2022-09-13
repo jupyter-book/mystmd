@@ -1,7 +1,16 @@
 format: jb-book
 root: index
-chapters:
-  - file: template-rules
-  - file: document
-  - file: template-yml
-  - file: pandoc-comparison
+parts:
+  - caption: Guide
+    chapters:
+      - file: create-a-latex-template
+      - file: create-a-beamer-template
+  - caption: Reference
+    chapters:
+      - file: template-rules
+      - file: document
+      - file: template-yml
+      - file: command-line
+  - caption: Background
+    chapters:
+      - file: pandoc-comparison

@@ -5,7 +5,7 @@ import { mystCleanupTransform } from './mystCleanup';
 import { mystTargetsTransform, headingLabelTransform } from './targets';
 import { captionParagraphTransform } from './caption';
 import { admonitionHeadersTransform } from './admonitions';
-import { blockNestingTransform } from './blocks';
+import { blockMetadataTransform, blockNestingTransform } from './blocks';
 import { htmlIdsTransform } from './htmlIds';
 import { codeBlockTransform } from './codeBlock';
 import { imageAltTextTransform } from './images';
@@ -24,6 +24,7 @@ export function basicTransformations(tree: Root, file: VFile) {
   admonitionHeadersTransform(tree);
   htmlIdsTransform(tree);
   blockNestingTransform(tree);
+  blockMetadataTransform(tree, file);
   imageAltTextTransform(tree);
   blockquoteTransform(tree);
 }
