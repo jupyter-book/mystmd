@@ -9,12 +9,24 @@ import { validateTemplateConfig } from '../validators';
 import type { ValidationOptions } from '@curvenote/validators';
 import chalk from 'chalk';
 
-type Variables = Record<'options' | 'doc' | 'parts' | 'packages', Record<string, number[]>>;
+type Variables = Record<
+  'options' | 'doc' | 'parts' | 'packages' | 'global',
+  Record<string, number[]>
+>;
 
 function matchOpts(line: string, lineNumber: number, variables: Variables) {
   const match = line.match(/\[[#|-]-?([^\]#]*)-?[#|-]\]/g);
   if (!match) return;
   match.forEach((template) => {
+    const global = template.match(/(CONTENT|IMPORTS)/g);
+    if (global) {
+      const value = global[0];
+      if (!variables.global?.[value]) variables.global[value] = [];
+      if (!variables.global[value].includes(lineNumber)) {
+        variables.global[value].push(lineNumber);
+      }
+      return;
+    }
     const args = template.match(/(doc|options|tagged|parts)\.([a-zA-Z0-9_]+)/g);
     if (!args) return;
     args.forEach((a) => {
@@ -38,6 +50,7 @@ function extractVariablesFromTemplate(template: string) {
     doc: {},
     parts: {},
     packages: {},
+    global: {},
   };
   template.split('\n').forEach((line: string, i: number) => {
     matchOpts(line, i + 1, variables);
@@ -112,6 +125,19 @@ export function checkTemplate(session: ISession, path: string) {
   const configWarnings = printWarnings(session, 'template.yml', messages);
   if (!validated) {
     throw new Error('Could not validate template.yml');
+  }
+  // Validate global
+  if (!variables.global.IMPORTS) {
+    messages.errors?.push({
+      property: 'global',
+      message: `The global variable "IMPORTS" was not referenced in the template.`,
+    });
+  }
+  if (!variables.global.CONTENT) {
+    messages.errors?.push({
+      property: 'global',
+      message: `The global variable "CONTENT" was not referenced in the template.`,
+    });
   }
 
   // Validate parts
@@ -211,7 +237,9 @@ export function listVariablesTemplate(session: ISession, file: string) {
       session.log.info(`${k.padEnd(30)}${chalk.dim(lineNumbersToString(lineNumbers))}`);
     });
   }
-  session.log.info(`${chalk.bold.blueBright('Doc:')}`);
+  session.log.info(`${chalk.bold.blueBright('Global:')}`);
+  logEntries(variables.global);
+  session.log.info(`\n\n${chalk.bold.blueBright('Doc:')}`);
   logEntries(variables.doc);
   session.log.info(`\n\n${chalk.bold.blueBright('Options:')}`);
   logEntries(variables.options);
