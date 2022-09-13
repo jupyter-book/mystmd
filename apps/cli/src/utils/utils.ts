@@ -153,12 +153,11 @@ export function computeHash(content: string) {
 }
 
 /**
- * Copy an existing file to the static path and name it based on hashed filename
+ * Copy an existing file to writeFolder and name it based on hashed filename
  *
  * If hashed file already exists, this does nothing
  */
-export function hashAndCopyStaticFile(session: ISession, file: string, writeFolder?: string) {
-  if (!writeFolder) writeFolder = staticPath(session);
+export function hashAndCopyStaticFile(session: ISession, file: string, writeFolder: string) {
   const fileHash = `${computeHash(file)}${path.extname(file)}`;
   const destination = path.join(writeFolder, fileHash);
   if (fs.existsSync(destination)) {
