@@ -130,7 +130,7 @@ export async function localArticleToTexTemplated(
   const { frontmatter, mdast, references } = await getFileContent(session, file, opts);
   const templateOptions = opts.templateOptions
     ? opts.templateOptions
-    : frontmatter.export?.find((exp) => exp.format === ExportFormats.tex);
+    : frontmatter.exports?.find((exp) => exp.format === ExportFormats.tex);
   const jtex = new JTex(session, { template, path: templatePath });
   await jtex.ensureTemplateExistsOnPath();
   const templateYml = jtex.getValidatedTemplateYml();

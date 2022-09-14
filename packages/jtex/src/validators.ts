@@ -1,5 +1,9 @@
 import type { PageFrontmatter } from '@curvenote/frontmatter';
-import { PAGE_FRONTMATTER_KEYS, validatePageFrontmatter } from '@curvenote/frontmatter';
+import {
+  PAGE_FRONTMATTER_KEYS,
+  RESERVED_EXPORT_KEYS,
+  validatePageFrontmatter,
+} from '@curvenote/frontmatter';
 import {
   defined,
   incrementOptions,
@@ -169,6 +173,12 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
     id = validateString(value.id, idOpts);
   }
   if (id === undefined) return undefined;
+  if (RESERVED_EXPORT_KEYS.includes(id)) {
+    return validationError(
+      `cannot use reserved export property for template option: "${id}"`,
+      idOpts,
+    );
+  }
   const output: TemplateOptionDefinition = {
     id,
     type: optionType,

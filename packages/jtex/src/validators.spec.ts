@@ -274,6 +274,12 @@ describe('validateTemplateOptionDefinition', () => {
       type: 'str',
     });
   });
+  it('reserved id errors', async () => {
+    expect(validateTemplateOptionDefinition({ id: 'format', type: 'str' }, opts)).toEqual(
+      undefined,
+    );
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
   it('choice type errors with no choices', async () => {
     expect(validateTemplateOptionDefinition({ id: 'key', type: 'choice' }, opts)).toEqual(
       undefined,

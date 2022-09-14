@@ -114,7 +114,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   numbering?: boolean | Numbering;
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, string>;
-  export?: Export[];
+  exports?: Export[];
 };
 
 export type PageFrontmatter = Omit<ProjectFrontmatter, 'intersphinx'> & {
