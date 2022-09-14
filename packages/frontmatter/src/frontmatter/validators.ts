@@ -364,6 +364,20 @@ export function validateExport(input: any, opts: ValidationOptions) {
   return output;
 }
 
+export function validateGithubUrl(value: any, opts: ValidationOptions) {
+  let github = value;
+  if (typeof github === 'string') {
+    const repo = github.match(GITHUB_USERNAME_REPO_REGEX);
+    if (repo) {
+      github = `https://github.com/${repo}`;
+    }
+  }
+  return validateUrl(github, {
+    ...incrementOptions('github', opts),
+    includes: 'github',
+  });
+}
+
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: SiteFrontmatter = {};
   if (defined(value.title)) {
@@ -431,17 +445,7 @@ export function validateProjectFrontmatterKeys(
     output.license = validateLicenses(value.license, incrementOptions('license', opts));
   }
   if (defined(value.github)) {
-    let { github } = value;
-    if (typeof github === 'string') {
-      const repo = github.match(GITHUB_USERNAME_REPO_REGEX);
-      if (repo) {
-        github = `https://github.com/${repo}`;
-      }
-    }
-    output.github = validateUrl(github, {
-      ...incrementOptions('github', opts),
-      includes: 'github',
-    });
+    output.github = validateGithubUrl(value.github, incrementOptions('github', opts));
   }
   if (defined(value.binder)) {
     output.binder = validateUrl(value.binder, incrementOptions('binder', opts));

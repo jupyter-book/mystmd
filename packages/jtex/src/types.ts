@@ -1,4 +1,4 @@
-import type { Author, PageFrontmatter } from '@curvenote/frontmatter';
+import type { Author, Licenses, PageFrontmatter } from '@curvenote/frontmatter';
 import { PAGE_FRONTMATTER_KEYS } from '@curvenote/frontmatter';
 
 export type Logger = Pick<typeof console, 'debug' | 'info' | 'warn' | 'error'>;
@@ -48,14 +48,20 @@ export type TemplateOptionDefinition = TemplateDocDefinition & {
 };
 
 export type TemplateYml = {
-  metadata?: Record<string, any>;
-  config?: {
-    build?: Record<string, any>;
-    schema?: Record<string, any>;
-    parts?: TemplatePartDefinition[];
-    doc?: TemplateDocDefinition[];
-    options?: TemplateOptionDefinition[];
-  };
+  jtex?: 'v1';
+  title?: string;
+  description?: string;
+  version?: string;
+  authors?: Author[];
+  license?: Licenses;
+  tags?: string[];
+  source?: string;
+  github?: string;
+  build?: Record<string, any>;
+  schema?: Record<string, any>;
+  parts?: TemplatePartDefinition[];
+  doc?: TemplateDocDefinition[];
+  options?: TemplateOptionDefinition[];
 };
 
 export type ValueAndIndex = {

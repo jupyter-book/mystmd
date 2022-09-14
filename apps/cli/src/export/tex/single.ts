@@ -135,7 +135,7 @@ export async function localArticleToTexTemplated(
   await jtex.ensureTemplateExistsOnPath();
   const templateYml = jtex.getValidatedTemplateYml();
 
-  const partDefinitions = templateYml?.config?.parts || [];
+  const partDefinitions = templateYml?.parts || [];
   const parts: Record<string, string> = {};
   let collectedImports: ExpandedImports = { imports: [], commands: [] };
   partDefinitions.forEach((def) => {

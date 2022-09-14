@@ -1,7 +1,9 @@
-import type { PageFrontmatter } from '@curvenote/frontmatter';
 import {
   PAGE_FRONTMATTER_KEYS,
   RESERVED_EXPORT_KEYS,
+  validateAuthor,
+  validateGithubUrl,
+  validateLicenses,
   validatePageFrontmatter,
 } from '@curvenote/frontmatter';
 import {
@@ -16,6 +18,7 @@ import {
   validateObject,
   validateObjectKeys,
   validateString,
+  validateUrl,
   validationError,
 } from '@curvenote/validators';
 import type { ValidationOptions } from '@curvenote/validators';
@@ -327,14 +330,69 @@ export function validateTemplatePartDefinition(input: any, opts: ValidationOptio
   return output;
 }
 
-export function validateTemplateConfig(input: any, opts: ValidationOptions) {
+export function validateTemplateYml(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(
     input,
-    { optional: ['build', 'schema', 'parts', 'doc', 'options'] },
+    {
+      optional: [
+        'jtex',
+        'title',
+        'description',
+        'version',
+        'authors',
+        'license',
+        'tags',
+        'source',
+        'github',
+        'build',
+        'schema',
+        'parts',
+        'doc',
+        'options',
+      ],
+    },
     opts,
   );
   if (value === undefined) return undefined;
-  const output: TemplateYml['config'] = {};
+  const output: TemplateYml = {};
+  if (defined(value.jtex)) {
+    output.jtex = validateChoice(value.jtex, {
+      ...incrementOptions('jtex', opts),
+      choices: ['v1'],
+    });
+  }
+  if (defined(value.title)) {
+    output.title = validateString(value.title, incrementOptions('title', opts));
+  }
+  if (defined(value.description)) {
+    output.description = validateString(value.description, incrementOptions('description', opts));
+  }
+  if (defined(value.version)) {
+    output.version = validateString(value.version, incrementOptions('version', opts));
+  }
+  if (defined(value.authors)) {
+    output.authors = validateList(
+      value.authors,
+      incrementOptions('authors', opts),
+      (author, index) => {
+        return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
+      },
+    );
+  }
+  if (defined(value.license)) {
+    output.license = validateLicenses(value.license, incrementOptions('license', opts));
+  }
+  if (defined(value.source)) {
+    output.source = validateUrl(value.source, incrementOptions('source', opts));
+  }
+  if (defined(value.github)) {
+    output.github = validateGithubUrl(value.github, incrementOptions('github', opts));
+  }
+  if (defined(value.tags)) {
+    output.tags = validateList(value.tags, incrementOptions('tags', opts), (file, index) => {
+      return validateString(file, incrementOptions(`tags.${index}`, opts));
+    });
+  }
   if (defined(value.build)) {
     output.build = validateObject(value.build, incrementOptions('build', opts));
   }
@@ -357,19 +415,5 @@ export function validateTemplateConfig(input: any, opts: ValidationOptions) {
     });
   }
   crossValidateConditions(output.options || [], output.parts || [], output.doc || [], opts);
-  return output;
-}
-
-export function validateTemplateYml(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: ['metadata', 'config'] }, opts);
-  if (value === undefined) return undefined;
-  const output: TemplateYml = {};
-  // Ignoring value.metadata for now; this is just unused template metadata
-  if (defined(value.metadata)) {
-    output.metadata = value.metadata;
-  }
-  if (defined(value.config)) {
-    output.config = validateTemplateConfig(value.config, incrementOptions('config', opts));
-  }
   return output;
 }

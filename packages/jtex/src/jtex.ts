@@ -7,7 +7,7 @@ import { curvenoteDef } from './definitions';
 import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
 import { extendJtexFrontmatter } from './frontmatter';
 import { renderImports } from './imports';
-import type { ExpandedImports, ISession, Renderer } from './types';
+import type { ExpandedImports, ISession, Renderer, TemplateYml } from './types';
 import { ensureDirectoryExists, errorLogger, warningLogger } from './utils';
 import {
   validateTemplateDoc,
@@ -27,6 +27,7 @@ class JTex {
   templatePath: string;
   templateUrl: string | undefined;
   env: nunjucks.Environment;
+  validatedTemplateYml: TemplateYml | undefined;
 
   /**
    * JTex class for template validation and rendering
@@ -71,18 +72,22 @@ class JTex {
   }
 
   getValidatedTemplateYml() {
-    const opts: ValidationOptions = {
-      file: this.getTemplateYmlPath(),
-      property: 'template',
-      messages: {},
-      errorLogFn: errorLogger(this.session),
-    };
-    const templateYml = validateTemplateYml(this.getTemplateYml(), opts);
-    if (opts.messages.errors?.length || templateYml === undefined) {
-      // Strictly error if template.yml is invalid
-      throw new Error(`Cannot use invalid ${TEMPLATE_YML}: ${this.getTemplateYmlPath()}`);
+    if (this.validatedTemplateYml == null) {
+      const opts: ValidationOptions = {
+        file: this.getTemplateYmlPath(),
+        property: 'template',
+        messages: {},
+        errorLogFn: errorLogger(this.session),
+        warningLogFn: warningLogger(this.session),
+      };
+      const templateYml = validateTemplateYml(this.getTemplateYml(), opts);
+      if (opts.messages.errors?.length || templateYml === undefined) {
+        // Strictly error if template.yml is invalid
+        throw new Error(`Cannot use invalid ${TEMPLATE_YML}: ${this.getTemplateYmlPath()}`);
+      }
+      this.validatedTemplateYml = templateYml;
     }
-    return templateYml;
+    return this.validatedTemplateYml;
   }
 
   validateOptions(options: any, file?: string) {
@@ -94,11 +99,7 @@ class JTex {
       errorLogFn: errorLogger(this.session),
       warningLogFn: warningLogger(this.session),
     };
-    const validatedOptions = validateTemplateOptions(
-      options,
-      templateYml?.config?.options || [],
-      opts,
-    );
+    const validatedOptions = validateTemplateOptions(options, templateYml?.options || [], opts);
     if (validatedOptions === undefined) {
       // Pass even if there are some validation errors; only error on total failure
       throw new Error(
@@ -119,12 +120,7 @@ class JTex {
       errorLogFn: errorLogger(this.session),
       warningLogFn: warningLogger(this.session),
     };
-    const validatedParts = validateTemplateParts(
-      parts,
-      templateYml?.config?.parts || [],
-      options,
-      opts,
-    );
+    const validatedParts = validateTemplateParts(parts, templateYml?.parts || [], options, opts);
     if (validatedParts === undefined) {
       // Pass even if there are some validation errors; only error on total failure
       throw new Error(
@@ -145,12 +141,7 @@ class JTex {
       errorLogFn: errorLogger(this.session),
       warningLogFn: warningLogger(this.session),
     };
-    const validatedDoc = validateTemplateDoc(
-      frontmatter,
-      templateYml?.config?.doc || [],
-      options,
-      opts,
-    );
+    const validatedDoc = validateTemplateDoc(frontmatter, templateYml?.doc || [], options, opts);
     if (validatedDoc === undefined) {
       throw new Error(`Unable to read frontmatter${file ? ' from ' : ''}${file}`);
     }

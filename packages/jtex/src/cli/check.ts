@@ -8,7 +8,7 @@ import type { ISession } from '../types';
 import type { ValidationOptions } from '@curvenote/validators';
 import { PAGE_FRONTMATTER_KEYS } from '@curvenote/frontmatter';
 import { RENDERER_DOC_KEYS } from '../types';
-import { validateTemplateConfig } from '../validators';
+import { validateTemplateYml } from '../validators';
 
 type Variables = Record<
   'options' | 'doc' | 'parts' | 'packages' | 'global',
@@ -121,7 +121,7 @@ export function checkTemplate(session: ISession, path: string) {
   }
 
   const messages: Required<ValidationOptions['messages']> = { warnings: [], errors: [] };
-  const validated = validateTemplateConfig(configYaml?.config, { property: '', messages });
+  const validated = validateTemplateYml(configYaml, { property: '', messages });
 
   const configWarnings = printWarnings(session, 'template.yml', messages);
   if (!validated) {

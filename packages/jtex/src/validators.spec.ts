@@ -1,7 +1,6 @@
 import type { ValidationOptions } from '@curvenote/validators';
 import {
   crossValidateConditions,
-  validateTemplateConfig,
   validateTemplateOption,
   validateTemplateOptions,
   validateTemplateOptionDefinition,
@@ -558,30 +557,6 @@ describe('validateTemplatePartDefinition', () => {
   });
 });
 
-describe('validateTemplateConfig', () => {
-  it('invalid input errors', async () => {
-    expect(validateTemplateConfig('', opts)).toEqual(undefined);
-    expect(opts.messages.errors?.length).toEqual(1);
-  });
-  it('empty object passes', async () => {
-    expect(validateTemplateConfig({}, opts)).toEqual({});
-  });
-  it('minimal object passes', async () => {
-    expect(
-      validateTemplateConfig({ build: {}, schema: {}, options: [], parts: [], doc: [] }, opts),
-    ).toEqual({ build: {}, schema: {}, options: [], parts: [], doc: [] });
-  });
-  it('invalid properties error', async () => {
-    expect(
-      validateTemplateConfig(
-        { build: '', schema: '', options: [{ id: 'key' }], parts: [{}], doc: [{}] },
-        opts,
-      ),
-    ).toEqual({ options: [], parts: [], doc: [] });
-    expect(opts.messages.errors?.length).toEqual(5);
-  });
-});
-
 describe('validateTemplateYml', () => {
   it('invalid input errors', async () => {
     expect(validateTemplateYml('', opts)).toEqual(undefined);
@@ -591,15 +566,58 @@ describe('validateTemplateYml', () => {
     expect(validateTemplateYml({}, opts)).toEqual({});
   });
   it('minimal object passes', async () => {
-    expect(validateTemplateYml({ metadata: {}, config: {} }, opts)).toEqual({
-      metadata: {},
-      config: {},
+    expect(
+      validateTemplateYml(
+        {
+          jtex: 'v1',
+          title: 'test',
+          description: 'test',
+          version: '1.0.0',
+          authors: [],
+          license: 'MIT',
+          tags: [],
+          source: 'https://example.com',
+          github: 'https://github.com/example/repo',
+          build: {},
+          schema: {},
+          options: [],
+          parts: [],
+          doc: [],
+        },
+        opts,
+      ),
+    ).toEqual({
+      jtex: 'v1',
+      title: 'test',
+      description: 'test',
+      version: '1.0.0',
+      authors: [],
+      license: {
+        content: {
+          free: true,
+          id: 'MIT',
+          osi: true,
+          title: 'MIT License',
+          url: 'https://opensource.org/licenses/MIT',
+        },
+      },
+      tags: [],
+      source: 'https://example.com',
+      github: 'https://github.com/example/repo',
+      build: {},
+      schema: {},
+      options: [],
+      parts: [],
+      doc: [],
     });
   });
   it('invalid properties error', async () => {
     expect(
-      validateTemplateYml({ metadata: {}, config: { options: [{ id: 'key' }] } }, opts),
-    ).toEqual({ metadata: {}, config: { options: [] } });
-    expect(opts.messages.errors?.length).toEqual(1);
+      validateTemplateYml(
+        { build: '', schema: '', options: [{ id: 'key' }], parts: [{}], doc: [{}] },
+        opts,
+      ),
+    ).toEqual({ options: [], parts: [], doc: [] });
+    expect(opts.messages.errors?.length).toEqual(5);
   });
 });
