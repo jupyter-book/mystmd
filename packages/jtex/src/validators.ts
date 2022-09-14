@@ -74,7 +74,10 @@ export function validateTemplateOptions(
     return conditionMet(def, value);
   });
   const required = filteredOptions.filter((def) => isRequired(def)).map((def) => def.id);
-  const optional = filteredOptions.filter((def) => !isRequired(def)).map((def) => def.id);
+  const optional = filteredOptions
+    .filter((def) => !isRequired(def))
+    .map((def) => def.id)
+    .concat(RESERVED_EXPORT_KEYS);
   validateKeys(value, { optional, required }, { returnInvalidPartial: true, ...opts });
   const output: Record<string, any> = {};
   filteredOptions.forEach((def) => {
