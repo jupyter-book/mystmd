@@ -105,34 +105,13 @@ function handleErrorMessage(session: ISession, shouldThrow: boolean, msg: string
   session.log.error(msg);
 }
 
-export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation>, opts?: Options) {
-  const filename = join(opts?.path || '.', opts?.filename || '_toc.yml');
-
-  const loadedBlocks: LoadedBlocks[] = await Promise.all(
-    nav.data.items.map(async (item) => {
-      const { id, kind } = item;
-      if (kind === NavListItemKindEnum.Group) {
-        const { title } = item;
-        return { id, kind, title };
-      }
-      const { parentId } = item;
-      const block = await new Block(session, item.blockId).get().catch(() => null);
-      return { id, kind, parentId, block };
-    }),
-  );
-
+export function unflattenNavBlocks(loadedBlocks: LoadedBlocks[]) {
   const nest: Record<string, FolderItem[]> = {};
-
   const items: FolderItem[] = [];
 
   const groupNavItems = loadedBlocks.filter(({ kind }) => kind === NavListItemKindEnum.Group);
   const hasParts = groupNavItems.length > 0;
   const totalDocuments = loadedBlocks.length - groupNavItems.length;
-
-  if (totalDocuments === 0) {
-    handleErrorMessage(session, opts?.ci ?? false, 'The table of contents has no documents.');
-    return;
-  }
 
   let skipCounter = 0;
 
@@ -150,13 +129,38 @@ export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation
       skipCounter++;
       return;
     }
-    if (parentId) {
+    if (parentId && nest[parentId]) {
       const folder = nest[parentId];
       folder.push({ id, kind, block, children });
       return;
     }
     items.push({ id, kind, block, children });
   });
+  return { items, hasParts, skipCounter, totalDocuments };
+}
+
+export async function writeTOC(session: ISession, nav: Version<Blocks.Navigation>, opts?: Options) {
+  const filename = join(opts?.path || '.', opts?.filename || '_toc.yml');
+
+  const loadedBlocks: LoadedBlocks[] = await Promise.all(
+    nav.data.items.map(async (item) => {
+      const { id, kind } = item;
+      if (kind === NavListItemKindEnum.Group) {
+        const { title } = item;
+        return { id, kind, title };
+      }
+      const { parentId } = item;
+      const block = await new Block(session, item.blockId).get().catch(() => null);
+      return { id, kind, parentId, block };
+    }),
+  );
+
+  const { items, hasParts, skipCounter, totalDocuments } = unflattenNavBlocks(loadedBlocks);
+
+  if (totalDocuments === 0) {
+    handleErrorMessage(session, opts?.ci ?? false, 'The table of contents has no documents.');
+    return;
+  }
 
   const header = '# Table of contents\n# Learn more at https://jupyterbook.org/customize/toc.html';
 
