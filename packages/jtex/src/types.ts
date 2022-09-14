@@ -9,9 +9,8 @@ export interface ISession {
 
 export type ExpandedImports = { imports: string[]; commands: string[] };
 
-export type TemplateTagDefinition = {
+export type TemplatePartDefinition = {
   id: string;
-  // tag: string;
   description?: string;
   required?: boolean;
   plain?: boolean;
@@ -49,7 +48,7 @@ export type TemplateYml = {
   config?: {
     build?: Record<string, any>;
     schema?: Record<string, any>;
-    tagged?: TemplateTagDefinition[];
+    parts?: TemplatePartDefinition[];
     options?: TemplateOptionDefinition[];
   };
 };
@@ -100,7 +99,7 @@ export type Renderer = {
   CONTENT: string;
   doc: RendererDoc;
   options: Record<string, any>;
-  tagged: Record<string, string>;
+  parts: Record<string, string>;
   IMPORTS?: string;
 };
 

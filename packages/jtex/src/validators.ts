@@ -19,7 +19,7 @@ import {
   validationError,
 } from '@curvenote/validators';
 import type { ValidationOptions } from '@curvenote/validators';
-import type { TemplateOptionDefinition, TemplateTagDefinition, TemplateYml } from './types';
+import type { TemplateOptionDefinition, TemplatePartDefinition, TemplateYml } from './types';
 import { TemplateOptionTypes } from './types';
 
 export function validateTemplateOption(
@@ -83,42 +83,42 @@ export function validateTemplateOptions(
   return output;
 }
 
-export function validateTemplateTagged(
-  tagged: any,
-  taggedDefinitions: TemplateTagDefinition[],
+export function validateTemplateParts(
+  parts: any,
+  partsDefinitions: TemplatePartDefinition[],
   options: Record<string, any>,
   frontmatter: PageFrontmatter,
   opts: ValidationOptions,
 ) {
-  const filteredTagged = taggedDefinitions.filter((def) =>
+  const filteredParts = partsDefinitions.filter((def) =>
     conditionMet(def, { ...options, ...frontmatter }),
   );
-  const optional = filteredTagged.filter((def) => !isRequired(def)).map((def) => def.id);
-  const required = filteredTagged.filter((def) => isRequired(def)).map((def) => def.id);
+  const optional = filteredParts.filter((def) => !isRequired(def)).map((def) => def.id);
+  const required = filteredParts.filter((def) => isRequired(def)).map((def) => def.id);
   const value = validateObjectKeys(
-    tagged,
+    parts,
     { optional, required },
     { returnInvalidPartial: true, ...opts },
   );
   if (value === undefined) return undefined;
   const output: Record<string, string> = {};
-  filteredTagged.forEach((def) => {
+  filteredParts.forEach((def) => {
     const { id, max_chars, max_words } = def;
     if (defined(value[id])) {
-      const tagValue = validateString(value[id], incrementOptions(id, opts));
-      if (max_chars != null && tagValue && tagValue.length > max_chars) {
+      const partValue = validateString(value[id], incrementOptions(id, opts));
+      if (max_chars != null && partValue && partValue.length > max_chars) {
         validationError(
-          `tagged block "${id}" must be less than or equal to ${max_chars} characters`,
+          `part block "${id}" must be less than or equal to ${max_chars} characters`,
           opts,
         );
       }
-      if (max_words != null && tagValue && tagValue.split(' ').length > max_words) {
+      if (max_words != null && partValue && partValue.split(' ').length > max_words) {
         validationError(
-          `tagged block "${id}" must be less than or equal to ${max_words} words`,
+          `part block "${id}" must be less than or equal to ${max_words} words`,
           opts,
         );
       }
-      if (tagValue !== undefined) output[def.id] = tagValue;
+      if (partValue !== undefined) output[def.id] = partValue;
     }
   });
   return output;
@@ -216,7 +216,7 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
 
 export function crossValidateConditions(
   optionDefinitions: TemplateOptionDefinition[],
-  taggedDefinitions: TemplateTagDefinition[],
+  partsDefinitions: TemplatePartDefinition[],
   opts: ValidationOptions,
 ) {
   const optionDefLookup: Record<string, TemplateOptionDefinition> = {};
@@ -227,7 +227,7 @@ export function crossValidateConditions(
       optionDefLookup[def.id] = def;
     }
   });
-  [...optionDefinitions, ...taggedDefinitions].forEach((def) => {
+  [...optionDefinitions, ...partsDefinitions].forEach((def) => {
     if (def.condition && optionDefLookup[def.condition.id]) {
       if (defined(def.condition.value)) {
         const val = validateTemplateOption(def.condition.value, optionDefLookup[def.condition.id], {
@@ -252,7 +252,7 @@ export function crossValidateConditions(
   });
 }
 
-export function validateTemplateTagDefinition(input: any, opts: ValidationOptions) {
+export function validateTemplatePartDefinition(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(
     input,
     {
@@ -264,7 +264,7 @@ export function validateTemplateTagDefinition(input: any, opts: ValidationOption
   if (value === undefined) return undefined;
   const id = validateString(value.id, incrementOptions('id', opts));
   if (id === undefined) return undefined;
-  const output: TemplateTagDefinition = { id };
+  const output: TemplatePartDefinition = { id };
   if (defined(value.description)) {
     output.description = validateString(value.description, incrementOptions('description', opts));
   }
@@ -297,7 +297,7 @@ export function validateTemplateTagDefinition(input: any, opts: ValidationOption
 export function validateTemplateConfig(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(
     input,
-    { optional: ['build', 'schema', 'tagged', 'options'] },
+    { optional: ['build', 'schema', 'parts', 'options'] },
     opts,
   );
   if (value === undefined) return undefined;
@@ -308,9 +308,9 @@ export function validateTemplateConfig(input: any, opts: ValidationOptions) {
   if (defined(value.schema)) {
     output.schema = validateObject(value.schema, incrementOptions('schema', opts));
   }
-  if (defined(value.tagged)) {
-    output.tagged = validateList(value.tagged, incrementOptions('tagged', opts), (val, ind) => {
-      return validateTemplateTagDefinition(val, incrementOptions(`tagged.${ind}`, opts));
+  if (defined(value.parts)) {
+    output.parts = validateList(value.parts, incrementOptions('parts', opts), (val, ind) => {
+      return validateTemplatePartDefinition(val, incrementOptions(`parts.${ind}`, opts));
     });
   }
   if (defined(value.options)) {
@@ -318,7 +318,7 @@ export function validateTemplateConfig(input: any, opts: ValidationOptions) {
       return validateTemplateOptionDefinition(val, incrementOptions(`options.${ind}`, opts));
     });
   }
-  crossValidateConditions(output.options || [], output.tagged || [], opts);
+  crossValidateConditions(output.options || [], output.parts || [], opts);
   return output;
 }
 

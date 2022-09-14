@@ -13,7 +13,7 @@ import { ensureDirectoryExists, errorLogger, warningLogger } from './utils';
 import {
   validateFrontmatterTemplateOptions,
   validateTemplateOptions,
-  validateTemplateTagged,
+  validateTemplateParts,
   validateTemplateYml,
 } from './validators';
 import version from './version';
@@ -112,8 +112,8 @@ class JTex {
     return validatedOptions;
   }
 
-  validateTagged(
-    tagged: any,
+  validateParts(
+    parts: any,
     options: Record<string, any>,
     frontmatter: PageFrontmatter,
     file?: string,
@@ -121,27 +121,27 @@ class JTex {
     const templateYml = this.getValidatedTemplateYml();
     const opts: ValidationOptions = {
       file,
-      property: 'tagged',
+      property: 'parts',
       messages: {},
       errorLogFn: errorLogger(this.session),
       warningLogFn: warningLogger(this.session),
     };
-    const validatedTagged = validateTemplateTagged(
-      tagged,
-      templateYml?.config?.tagged || [],
+    const validatedParts = validateTemplateParts(
+      parts,
+      templateYml?.config?.parts || [],
       options,
       frontmatter,
       opts,
     );
-    if (validatedTagged === undefined) {
+    if (validatedParts === undefined) {
       // Pass even if there are some validation errors; only error on total failure
       throw new Error(
-        `Unable to parse tagged values for template ${this.getTemplateYmlPath()}${
+        `Unable to parse "parts" for template ${this.getTemplateYmlPath()}${
           file ? ' from ' : ''
         }${file}`,
       );
     }
-    return validatedTagged;
+    return validatedParts;
   }
 
   validateFrontmatter(frontmatter: any, file?: string) {
@@ -183,7 +183,7 @@ class JTex {
     contentOrPath: string;
     outputPath: string;
     frontmatter: any;
-    tagged: any;
+    parts: any;
     options: any;
     sourceFile?: string;
     imports?: string | ExpandedImports;
@@ -205,12 +205,12 @@ class JTex {
     }
     const frontmatter = this.validateFrontmatter(opts.frontmatter, opts.sourceFile);
     const options = this.validateOptions(opts.options, frontmatter, opts.sourceFile);
-    const tagged = this.validateTagged(opts.tagged, options, frontmatter, opts.sourceFile);
+    const parts = this.validateParts(opts.parts, options, frontmatter, opts.sourceFile);
     const doc = extendJtexFrontmatter(frontmatter);
     const renderer: Renderer = {
       CONTENT: content,
       doc,
-      tagged,
+      parts,
       options,
       IMPORTS: renderImports(opts.imports),
     };

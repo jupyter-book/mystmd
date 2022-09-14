@@ -1,17 +1,17 @@
 import type { Root } from 'mdast';
-import { extractTaggedContent } from './single';
+import { extractPart } from './single';
 
-describe('extractTaggedContent', () => {
-  it('no tagged content returns undefined', async () => {
+describe('extractPart', () => {
+  it('no tagged part returns undefined', async () => {
     expect(
-      extractTaggedContent(
+      extractPart(
         { type: 'root', children: [{ type: 'text', value: 'untagged content' }] },
         { id: 'test_tag', required: true },
         {},
       ),
     ).toEqual(undefined);
   });
-  it('tagged content removed from tree and returned', async () => {
+  it('tagged part removed from tree and returned', async () => {
     const tree: Root = {
       type: 'root',
       children: [
@@ -32,7 +32,7 @@ describe('extractTaggedContent', () => {
         },
       ],
     };
-    expect(extractTaggedContent(tree, { id: 'test_tag' }, {})).toEqual({
+    expect(extractPart(tree, { id: 'test_tag' }, {})).toEqual({
       value: 'tagged content\n\nalso tagged content',
       imports: [],
       commands: [],
@@ -58,7 +58,7 @@ describe('extractTaggedContent', () => {
       ],
     });
   });
-  it('tagged content meeting maximums passes', async () => {
+  it('tagged part meeting maximums passes', async () => {
     const tree: Root = {
       type: 'root',
       children: [
@@ -69,9 +69,11 @@ describe('extractTaggedContent', () => {
         },
       ],
     };
-    expect(
-      extractTaggedContent(tree, { id: 'test_tag', max_chars: 1000, max_words: 100 }, {}),
-    ).toEqual({ value: 'tagged content', imports: [], commands: [] });
+    expect(extractPart(tree, { id: 'test_tag', max_chars: 1000, max_words: 100 }, {})).toEqual({
+      value: 'tagged content',
+      imports: [],
+      commands: [],
+    });
   });
   it('exceeding max chars passes', async () => {
     const tree: Root = {
@@ -84,7 +86,7 @@ describe('extractTaggedContent', () => {
         },
       ],
     };
-    expect(extractTaggedContent(tree, { id: 'test_tag', max_chars: 5 }, {})).toEqual({
+    expect(extractPart(tree, { id: 'test_tag', max_chars: 5 }, {})).toEqual({
       value: 'tagged content',
       imports: [],
       commands: [],
@@ -101,7 +103,7 @@ describe('extractTaggedContent', () => {
         },
       ],
     };
-    expect(extractTaggedContent(tree, { id: 'test_tag', max_words: 1 }, {})).toEqual({
+    expect(extractPart(tree, { id: 'test_tag', max_words: 1 }, {})).toEqual({
       value: 'tagged content',
       imports: [],
       commands: [],

@@ -28,11 +28,11 @@ function matchOpts(line: string, lineNumber: number, variables: Variables) {
       }
       return;
     }
-    const args = template.match(/(doc|options|tagged|parts)\.([a-zA-Z0-9_]+)/g);
+    const args = template.match(/(doc|options|parts)\.([a-zA-Z0-9_]+)/g);
     if (!args) return;
     args.forEach((a) => {
       const [kind, value] = a.split('.');
-      const useKind = (kind === 'tagged' ? 'parts' : kind) as keyof typeof variables;
+      const useKind = kind as keyof typeof variables;
       if (!variables[useKind]?.[value]) variables[useKind][value] = [];
       if (!variables[useKind][value].includes(lineNumber)) {
         variables[useKind][value].push(lineNumber);
@@ -142,7 +142,7 @@ export function checkTemplate(session: ISession, path: string) {
   }
 
   // Validate parts
-  const parts = validated.tagged?.map((p) => p.id) ?? [];
+  const parts = validated.parts?.map((p) => p.id) ?? [];
   const usedParts: string[] = [];
   Object.entries(variables.parts).forEach(([partKey, lineNumbers]) => {
     if (!parts.includes(partKey)) {

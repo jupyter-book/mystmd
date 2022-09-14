@@ -1,5 +1,5 @@
 import path from 'path';
-import type { TemplateTagDefinition, ExpandedImports } from 'jtex';
+import type { TemplatePartDefinition, ExpandedImports } from 'jtex';
 import JTex, { mergeExpandedImports } from 'jtex';
 import type { Root } from 'mdast';
 import type { GenericNode } from 'mystjs';
@@ -77,12 +77,12 @@ export function taggedBlocksFromMdast(mdast: Root, tag: string) {
   return taggedBlocks as GenericNode[];
 }
 
-export function extractTaggedContent(
+export function extractPart(
   mdast: Root,
-  tagDefinition: TemplateTagDefinition,
+  partDefinition: TemplatePartDefinition,
   frontmatter: PageFrontmatter,
 ): LatexResult | undefined {
-  const taggedBlocks = taggedBlocksFromMdast(mdast, tagDefinition.id);
+  const taggedBlocks = taggedBlocksFromMdast(mdast, partDefinition.id);
   if (!taggedBlocks) return undefined;
   const taggedMdast = { type: 'root', children: taggedBlocks } as Root;
   const taggedContent = mdastToTex(taggedMdast, frontmatter);
@@ -135,19 +135,19 @@ export async function localArticleToTexTemplated(
   await jtex.ensureTemplateExistsOnPath();
   const templateYml = jtex.getValidatedTemplateYml();
 
-  const tagDefinitions = templateYml?.config?.tagged || [];
-  const tagged: Record<string, string> = {};
+  const partDefinitions = templateYml?.config?.parts || [];
+  const parts: Record<string, string> = {};
   let collectedImports: ExpandedImports = { imports: [], commands: [] };
-  tagDefinitions.forEach((def) => {
-    const result = extractTaggedContent(mdast, def, frontmatter);
+  partDefinitions.forEach((def) => {
+    const result = extractPart(mdast, def, frontmatter);
     if (result != null) {
       collectedImports = mergeExpandedImports(collectedImports, result);
-      tagged[def.id] = result?.value ?? '';
+      parts[def.id] = result?.value ?? '';
     }
   });
 
   // prune mdast based on tags, if required by template, eg abstract, acknowledgements
-  // Need to load up template yaml - returned from jtex, with 'tagged' dict
+  // Need to load up template yaml - returned from jtex, with 'parts' dict
   // This probably means we need to store tags alongside oxa link for blocks
   // This will need opts eventually --v
   const result = mdastToTex(mdast, frontmatter);
@@ -157,7 +157,7 @@ export async function localArticleToTexTemplated(
     contentOrPath: result.value,
     outputPath: filename,
     frontmatter,
-    tagged,
+    parts,
     options: templateOptions || {},
     sourceFile: file,
     imports: mergeExpandedImports(collectedImports, result),

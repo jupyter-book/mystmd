@@ -5,7 +5,7 @@ import {
   validateTemplateOption,
   validateTemplateOptions,
   validateTemplateOptionDefinition,
-  validateTemplateTagDefinition,
+  validateTemplatePartDefinition,
   validateTemplateYml,
 } from './validators';
 
@@ -529,39 +529,39 @@ describe('crossValidateConditions', () => {
   });
 });
 
-describe('validateTemplateTagDefinition', () => {
+describe('validateTemplatePartDefinition', () => {
   it('invalid input errors', async () => {
-    expect(validateTemplateTagDefinition('', opts)).toEqual(undefined);
+    expect(validateTemplatePartDefinition('', opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('no id errors', async () => {
-    expect(validateTemplateTagDefinition({}, opts)).toEqual(undefined);
+    expect(validateTemplatePartDefinition({}, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('id/type return self', async () => {
-    expect(validateTemplateTagDefinition({ id: 'key' }, opts)).toEqual({ id: 'key' });
+    expect(validateTemplatePartDefinition({ id: 'key' }, opts)).toEqual({ id: 'key' });
   });
   it('invalid description errors', async () => {
-    expect(validateTemplateTagDefinition({ id: 'key', description: true }, opts)).toEqual({
+    expect(validateTemplatePartDefinition({ id: 'key', description: true }, opts)).toEqual({
       id: 'key',
     });
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid required errors', async () => {
-    expect(validateTemplateTagDefinition({ id: 'key', required: 'yes' }, opts)).toEqual({
+    expect(validateTemplatePartDefinition({ id: 'key', required: 'yes' }, opts)).toEqual({
       id: 'key',
     });
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid plain errors', async () => {
-    expect(validateTemplateTagDefinition({ id: 'key', plain: 'yes' }, opts)).toEqual({
+    expect(validateTemplatePartDefinition({ id: 'key', plain: 'yes' }, opts)).toEqual({
       id: 'key',
     });
     expect(opts.messages.errors?.length).toEqual(1);
   });
-  it('valid tag definiton passes', async () => {
+  it('valid part definiton passes', async () => {
     expect(
-      validateTemplateTagDefinition(
+      validateTemplatePartDefinition(
         { id: 'key', description: 'desc', required: true, plain: false, extra: 'ignored' },
         opts,
       ),
@@ -583,17 +583,17 @@ describe('validateTemplateConfig', () => {
     expect(validateTemplateConfig({}, opts)).toEqual({});
   });
   it('minimal object passes', async () => {
-    expect(
-      validateTemplateConfig({ build: {}, schema: {}, options: [], tagged: [] }, opts),
-    ).toEqual({ build: {}, schema: {}, options: [], tagged: [] });
+    expect(validateTemplateConfig({ build: {}, schema: {}, options: [], parts: [] }, opts)).toEqual(
+      { build: {}, schema: {}, options: [], parts: [] },
+    );
   });
   it('invalid properties error', async () => {
     expect(
       validateTemplateConfig(
-        { build: '', schema: '', options: [{ id: 'key' }], tagged: [{}] },
+        { build: '', schema: '', options: [{ id: 'key' }], parts: [{}] },
         opts,
       ),
-    ).toEqual({ options: [], tagged: [] });
+    ).toEqual({ options: [], parts: [] });
     expect(opts.messages.errors?.length).toEqual(4);
   });
 });

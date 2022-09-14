@@ -34,7 +34,7 @@ describe('Download Template', () => {
       options: {
         keywords: '',
       },
-      tagged: {
+      parts: {
         abstract: 'My abstract!',
       },
     });

@@ -36,7 +36,7 @@ config:
     bibstyle: true
     citestyle: true
 
-  tagged:
+  parts:
     - id: abstract
       description: |
         An abstract is a short summary of your research paper or report. A good abstract will prepare readers for
