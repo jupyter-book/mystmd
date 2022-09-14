@@ -49,17 +49,15 @@ config:
       description: |
         You can this section to highlight support such as; collaborations, data sources, funding sources, broader
         projects. This section will be places towards the end of the article with a subtitle - Acknowledgments.
-
-  options:
+  doc:
     - id: title
-      type: frontmatter
       required: true
     - id: authors
-      type: frontmatter
       required: true
     - id: keywords
-      type: frontmatter
       required: true
+
+  options:
     - id: link
       type: string
       description: |

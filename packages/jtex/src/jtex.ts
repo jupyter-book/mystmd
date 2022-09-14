@@ -2,7 +2,6 @@ import fs from 'fs';
 import { extname, basename, join, dirname } from 'path';
 import yaml from 'js-yaml';
 import nunjucks from 'nunjucks';
-import type { PageFrontmatter } from '@curvenote/frontmatter';
 import type { ValidationOptions } from '@curvenote/validators';
 import { curvenoteDef } from './definitions';
 import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
@@ -11,7 +10,7 @@ import { renderImports } from './imports';
 import type { ExpandedImports, ISession, Renderer } from './types';
 import { ensureDirectoryExists, errorLogger, warningLogger } from './utils';
 import {
-  validateFrontmatterTemplateOptions,
+  validateTemplateDoc,
   validateTemplateOptions,
   validateTemplateParts,
   validateTemplateYml,
@@ -86,7 +85,7 @@ class JTex {
     return templateYml;
   }
 
-  validateOptions(options: any, frontmatter: PageFrontmatter, file?: string) {
+  validateOptions(options: any, file?: string) {
     const templateYml = this.getValidatedTemplateYml();
     const opts: ValidationOptions = {
       file,
@@ -98,7 +97,6 @@ class JTex {
     const validatedOptions = validateTemplateOptions(
       options,
       templateYml?.config?.options || [],
-      frontmatter,
       opts,
     );
     if (validatedOptions === undefined) {
@@ -112,12 +110,7 @@ class JTex {
     return validatedOptions;
   }
 
-  validateParts(
-    parts: any,
-    options: Record<string, any>,
-    frontmatter: PageFrontmatter,
-    file?: string,
-  ) {
+  validateParts(parts: any, options: Record<string, any>, file?: string) {
     const templateYml = this.getValidatedTemplateYml();
     const opts: ValidationOptions = {
       file,
@@ -130,7 +123,6 @@ class JTex {
       parts,
       templateYml?.config?.parts || [],
       options,
-      frontmatter,
       opts,
     );
     if (validatedParts === undefined) {
@@ -144,7 +136,7 @@ class JTex {
     return validatedParts;
   }
 
-  validateFrontmatter(frontmatter: any, file?: string) {
+  validateDoc(frontmatter: any, options: Record<string, any>, file?: string) {
     const templateYml = this.getValidatedTemplateYml();
     const opts: ValidationOptions = {
       file,
@@ -153,15 +145,16 @@ class JTex {
       errorLogFn: errorLogger(this.session),
       warningLogFn: warningLogger(this.session),
     };
-    const validatedFrontmatter = validateFrontmatterTemplateOptions(
+    const validatedDoc = validateTemplateDoc(
       frontmatter,
-      templateYml?.config?.options || [],
+      templateYml?.config?.doc || [],
+      options,
       opts,
     );
-    if (validatedFrontmatter === undefined) {
+    if (validatedDoc === undefined) {
       throw new Error(`Unable to read frontmatter${file ? ' from ' : ''}${file}`);
     }
-    return validatedFrontmatter;
+    return validatedDoc;
   }
 
   async ensureTemplateExistsOnPath(force?: boolean) {
@@ -203,10 +196,10 @@ class JTex {
     } else {
       content = opts.contentOrPath;
     }
-    const frontmatter = this.validateFrontmatter(opts.frontmatter, opts.sourceFile);
-    const options = this.validateOptions(opts.options, frontmatter, opts.sourceFile);
-    const parts = this.validateParts(opts.parts, options, frontmatter, opts.sourceFile);
-    const doc = extendJtexFrontmatter(frontmatter);
+    const options = this.validateOptions(opts.options, opts.sourceFile);
+    const parts = this.validateParts(opts.parts, options, opts.sourceFile);
+    const docFrontmatter = this.validateDoc(opts.frontmatter, options, opts.sourceFile);
+    const doc = extendJtexFrontmatter(docFrontmatter);
     const renderer: Renderer = {
       CONTENT: content,
       doc,

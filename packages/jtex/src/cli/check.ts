@@ -7,7 +7,7 @@ import { join } from 'path';
 import type { ISession } from '../types';
 import type { ValidationOptions } from '@curvenote/validators';
 import { PAGE_FRONTMATTER_KEYS } from '@curvenote/frontmatter';
-import { REDERER_DOC_KEYS } from '../types';
+import { RENDERER_DOC_KEYS } from '../types';
 import { validateTemplateConfig } from '../validators';
 
 type Variables = Record<
@@ -164,7 +164,7 @@ export function checkTemplate(session: ISession, path: string) {
   }
 
   // Validate non-frontmatter options
-  const options = validated.options?.filter((p) => p.type !== 'frontmatter').map((p) => p.id) ?? [];
+  const options = validated.options?.map((p) => p.id) ?? [];
   const usedOpts: string[] = [];
   Object.entries(variables.options).forEach(([optKey, lineNumbers]) => {
     if (!options.includes(optKey)) {
@@ -187,7 +187,7 @@ export function checkTemplate(session: ISession, path: string) {
   }
 
   // Validate non-frontmatter options
-  const doc = validated.options?.filter((p) => p.type === 'frontmatter').map((p) => p.id) ?? [];
+  const doc = validated.doc?.map((p) => p.id) ?? [];
   Object.entries(variables.doc).forEach(([optKey, lineNumbers]) => {
     if (!doc.includes(optKey) && PAGE_FRONTMATTER_KEYS.includes(optKey)) {
       messages.errors.push({
@@ -198,7 +198,7 @@ export function checkTemplate(session: ISession, path: string) {
       });
       return;
     }
-    if (!REDERER_DOC_KEYS.includes(optKey)) {
+    if (!RENDERER_DOC_KEYS.includes(optKey)) {
       messages.errors.push({
         property: 'doc',
         message: `The template.yml references "doc.${optKey}" but that is not a valid document property on ${lineNumbersToString(

@@ -19,7 +19,12 @@ import {
   validationError,
 } from '@curvenote/validators';
 import type { ValidationOptions } from '@curvenote/validators';
-import type { TemplateOptionDefinition, TemplatePartDefinition, TemplateYml } from './types';
+import type {
+  TemplateDocDefinition,
+  TemplateOptionDefinition,
+  TemplatePartDefinition,
+  TemplateYml,
+} from './types';
 import { TemplateOptionTypes } from './types';
 
 export function validateTemplateOption(
@@ -35,9 +40,6 @@ export function validateTemplateOption(
       return validateString(input, { ...opts, maxLength: max_chars });
     case TemplateOptionTypes.choice:
       return validateChoice(input, { ...opts, choices: choices || [] });
-    case TemplateOptionTypes.frontmatter:
-      // validated elsewhere
-      return input;
     default:
       return validationError(`unknown type on option definition: "${type}"`, opts);
   }
@@ -61,14 +63,13 @@ const conditionMet = (
 export function validateTemplateOptions(
   options: any,
   optionDefinitions: TemplateOptionDefinition[],
-  frontmatter: PageFrontmatter,
   opts: ValidationOptions,
 ) {
   const value = validateObject(options, opts);
   if (value === undefined) return undefined;
-  const filteredOptions = optionDefinitions
-    .filter((def) => def.type !== TemplateOptionTypes.frontmatter)
-    .filter((def) => conditionMet(def, { ...value, ...frontmatter }));
+  const filteredOptions = optionDefinitions.filter((def) => {
+    return conditionMet(def, value);
+  });
   const required = filteredOptions.filter((def) => isRequired(def)).map((def) => def.id);
   const optional = filteredOptions.filter((def) => !isRequired(def)).map((def) => def.id);
   validateKeys(value, { optional, required }, { returnInvalidPartial: true, ...opts });
@@ -87,12 +88,9 @@ export function validateTemplateParts(
   parts: any,
   partsDefinitions: TemplatePartDefinition[],
   options: Record<string, any>,
-  frontmatter: PageFrontmatter,
   opts: ValidationOptions,
 ) {
-  const filteredParts = partsDefinitions.filter((def) =>
-    conditionMet(def, { ...options, ...frontmatter }),
-  );
+  const filteredParts = partsDefinitions.filter((def) => conditionMet(def, options));
   const optional = filteredParts.filter((def) => !isRequired(def)).map((def) => def.id);
   const required = filteredParts.filter((def) => isRequired(def)).map((def) => def.id);
   const value = validateObjectKeys(
@@ -124,17 +122,18 @@ export function validateTemplateParts(
   return output;
 }
 
-export function validateFrontmatterTemplateOptions(
+export function validateTemplateDoc(
   frontmatter: any,
-  optionDefinitions: TemplateOptionDefinition[],
+  docDefinitions: TemplateDocDefinition[],
+  options: Record<string, any>,
   opts: ValidationOptions,
 ) {
   const output = validatePageFrontmatter(frontmatter, opts);
   if (output === undefined) return undefined;
-  const required = optionDefinitions
-    .filter((def) => def.type === TemplateOptionTypes.frontmatter)
-    .filter((def) => isRequired(def))
-    .map((def) => def.id);
+  const filteredDoc = docDefinitions.filter((def) => {
+    return conditionMet(def, { ...options });
+  });
+  const required = filteredDoc.filter((def) => isRequired(def)).map((def) => def.id);
   validateObjectKeys(output, { required }, { suppressWarnings: true, ...opts });
   return output;
 }
@@ -147,11 +146,50 @@ function validateCondition(input: any, opts: ValidationOptions) {
   return { id, value: value.value };
 }
 
+export function validateTemplateDocDefinition(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(
+    input,
+    {
+      optional: ['title', 'description', 'required', 'condition'],
+      required: ['id'],
+    },
+    opts,
+  );
+  if (value === undefined) return undefined;
+  const id = validateChoice(value.id, {
+    choices: PAGE_FRONTMATTER_KEYS,
+    ...incrementOptions('id', opts),
+  });
+  if (id === undefined) return undefined;
+  const output: TemplateDocDefinition = { id };
+  if (defined(value.title)) {
+    output.title = validateString(value.title, incrementOptions('title', opts));
+  }
+  if (defined(value.description)) {
+    output.description = validateString(value.description, incrementOptions('description', opts));
+  }
+  if (defined(value.required)) {
+    output.required = validateBoolean(value.required, incrementOptions('required', opts));
+  }
+  if (defined(value.condition)) {
+    output.condition = validateCondition(value.condition, incrementOptions('condition', opts));
+  }
+  return output;
+}
+
 export function validateTemplateOptionDefinition(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(
     input,
     {
-      optional: ['description', 'default', 'required', 'choices', 'max_chars', 'condition'],
+      optional: [
+        'title',
+        'description',
+        'default',
+        'required',
+        'choices',
+        'max_chars',
+        'condition',
+      ],
       required: ['id', 'type'],
     },
     opts,
@@ -165,13 +203,8 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
   if (optionType === TemplateOptionTypes.choice && !defined(value.choices)) {
     return validationError('"choices" must be defined for option type "choice"', opts);
   }
-  let id: string | undefined;
   const idOpts = incrementOptions('id', opts);
-  if (optionType === TemplateOptionTypes.frontmatter) {
-    id = validateChoice(value.id, { choices: PAGE_FRONTMATTER_KEYS, ...idOpts });
-  } else {
-    id = validateString(value.id, idOpts);
-  }
+  const id = validateString(value.id, idOpts);
   if (id === undefined) return undefined;
   if (RESERVED_EXPORT_KEYS.includes(id)) {
     return validationError(
@@ -183,6 +216,9 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
     id,
     type: optionType,
   };
+  if (defined(value.title)) {
+    output.title = validateString(value.title, incrementOptions('title', opts));
+  }
   if (defined(value.description)) {
     output.description = validateString(value.description, incrementOptions('description', opts));
   }
@@ -217,6 +253,7 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
 export function crossValidateConditions(
   optionDefinitions: TemplateOptionDefinition[],
   partsDefinitions: TemplatePartDefinition[],
+  docDefinitions: TemplateDocDefinition[],
   opts: ValidationOptions,
 ) {
   const optionDefLookup: Record<string, TemplateOptionDefinition> = {};
@@ -227,7 +264,7 @@ export function crossValidateConditions(
       optionDefLookup[def.id] = def;
     }
   });
-  [...optionDefinitions, ...partsDefinitions].forEach((def) => {
+  [...optionDefinitions, ...partsDefinitions, ...docDefinitions].forEach((def) => {
     if (def.condition && optionDefLookup[def.condition.id]) {
       if (defined(def.condition.value)) {
         const val = validateTemplateOption(def.condition.value, optionDefLookup[def.condition.id], {
@@ -242,11 +279,7 @@ export function crossValidateConditions(
           );
         }
       }
-    } else if (
-      def.condition &&
-      !PAGE_FRONTMATTER_KEYS.includes(def.condition.id) &&
-      def.condition.id !== def.id
-    ) {
+    } else if (def.condition && def.condition.id !== def.id) {
       validationError(`unknown condition id: ${def.condition.id}`, opts);
     }
   });
@@ -297,7 +330,7 @@ export function validateTemplatePartDefinition(input: any, opts: ValidationOptio
 export function validateTemplateConfig(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(
     input,
-    { optional: ['build', 'schema', 'parts', 'options'] },
+    { optional: ['build', 'schema', 'parts', 'doc', 'options'] },
     opts,
   );
   if (value === undefined) return undefined;
@@ -313,12 +346,17 @@ export function validateTemplateConfig(input: any, opts: ValidationOptions) {
       return validateTemplatePartDefinition(val, incrementOptions(`parts.${ind}`, opts));
     });
   }
+  if (defined(value.doc)) {
+    output.doc = validateList(value.doc, incrementOptions('doc', opts), (val, ind) => {
+      return validateTemplateDocDefinition(val, incrementOptions(`doc.${ind}`, opts));
+    });
+  }
   if (defined(value.options)) {
     output.options = validateList(value.options, incrementOptions('options', opts), (val, ind) => {
       return validateTemplateOptionDefinition(val, incrementOptions(`options.${ind}`, opts));
     });
   }
-  crossValidateConditions(output.options || [], output.parts || [], opts);
+  crossValidateConditions(output.options || [], output.parts || [], output.doc || [], opts);
   return output;
 }
 
