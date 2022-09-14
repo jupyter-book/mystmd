@@ -61,6 +61,6 @@ config:
       type: frontmatter
       required: true
     - id: link
-      type: str
+      type: string
       description: |
         Link to the article on Curvenote as a footnote on the first page

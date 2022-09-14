@@ -21,10 +21,12 @@ describe('validateTemplateOption', () => {
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('string option validates string', async () => {
-    expect(validateTemplateOption('input', { id: '', type: 'str' } as any, opts)).toEqual('input');
+    expect(validateTemplateOption('input', { id: '', type: 'string' } as any, opts)).toEqual(
+      'input',
+    );
   });
   it('bool option validates bool', async () => {
-    expect(validateTemplateOption(false, { id: '', type: 'bool' } as any, opts)).toEqual(false);
+    expect(validateTemplateOption(false, { id: '', type: 'boolean' } as any, opts)).toEqual(false);
   });
   it('choice option validates choice', async () => {
     expect(
@@ -36,11 +38,13 @@ describe('validateTemplateOption', () => {
     ).toEqual('a');
   });
   it('string option errors with invalid string', async () => {
-    expect(validateTemplateOption(false, { id: '', type: 'str' } as any, opts)).toEqual(undefined);
+    expect(validateTemplateOption(false, { id: '', type: 'string' } as any, opts)).toEqual(
+      undefined,
+    );
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('bool option errors with invalid bool', async () => {
-    expect(validateTemplateOption('input', { id: '', type: 'bool' } as any, opts)).toEqual(
+    expect(validateTemplateOption('input', { id: '', type: 'boolean' } as any, opts)).toEqual(
       undefined,
     );
     expect(opts.messages.errors?.length).toEqual(1);
@@ -71,11 +75,13 @@ describe('validateTemplateOptions', () => {
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('missing optional property passes', async () => {
-    expect(validateTemplateOptions({}, [{ id: 'key', type: 'str' as any }], {}, opts)).toEqual({});
+    expect(validateTemplateOptions({}, [{ id: 'key', type: 'string' as any }], {}, opts)).toEqual(
+      {},
+    );
   });
   it('missing reqired property errors', async () => {
     expect(
-      validateTemplateOptions({}, [{ id: 'key', type: 'str' as any, required: true }], {}, opts),
+      validateTemplateOptions({}, [{ id: 'key', type: 'string' as any, required: true }], {}, opts),
     ).toEqual({});
     expect(opts.messages.errors?.length).toEqual(1);
   });
@@ -83,7 +89,7 @@ describe('validateTemplateOptions', () => {
     expect(
       validateTemplateOptions(
         {},
-        [{ id: 'key', type: 'str' as any, required: true, default: 'value' }],
+        [{ id: 'key', type: 'string' as any, required: true, default: 'value' }],
         {},
         opts,
       ),
@@ -94,8 +100,8 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         { a: 'value', b: true, c: '1' },
         [
-          { id: 'a', type: 'str' as any },
-          { id: 'b', type: 'bool' as any, required: true },
+          { id: 'a', type: 'string' as any },
+          { id: 'b', type: 'boolean' as any, required: true },
           { id: 'c', type: 'choice' as any, choices: ['1', '2'] },
         ],
         {},
@@ -108,8 +114,8 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         { a: true, b: 'value', c: '3' },
         [
-          { id: 'a', type: 'str' as any },
-          { id: 'b', type: 'bool' as any, required: true },
+          { id: 'a', type: 'string' as any },
+          { id: 'b', type: 'boolean' as any, required: true },
           { id: 'c', type: 'choice' as any, choices: ['1', '2'] },
         ],
         {},
@@ -122,7 +128,7 @@ describe('validateTemplateOptions', () => {
     expect(
       validateTemplateOptions(
         { a: 'a b c' },
-        [{ id: 'a', type: 'str' as any, max_chars: 100 }],
+        [{ id: 'a', type: 'string' as any, max_chars: 100 }],
         {},
         opts,
       ),
@@ -132,7 +138,7 @@ describe('validateTemplateOptions', () => {
     expect(
       validateTemplateOptions(
         { a: '1 2 3' },
-        [{ id: 'a', type: 'str' as any, max_chars: 2 }],
+        [{ id: 'a', type: 'string' as any, max_chars: 2 }],
         {},
         opts,
       ),
@@ -143,7 +149,7 @@ describe('validateTemplateOptions', () => {
     expect(
       validateTemplateOptions(
         {},
-        [{ id: 'a', type: 'str' as any, required: true, condition: { id: 'short_title' } }],
+        [{ id: 'a', type: 'string' as any, required: true, condition: { id: 'short_title' } }],
         {},
         opts,
       ),
@@ -154,7 +160,7 @@ describe('validateTemplateOptions', () => {
     expect(
       validateTemplateOptions(
         {},
-        [{ id: 'a', type: 'str' as any, required: true, condition: { id: 'short_title' } }],
+        [{ id: 'a', type: 'string' as any, required: true, condition: { id: 'short_title' } }],
         { short_title: 'test' },
         opts,
       ),
@@ -166,8 +172,8 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         {},
         [
-          { id: 'a', type: 'str' as any, required: true, condition: { id: 'b' } },
-          { id: 'b', type: 'str' as any },
+          { id: 'a', type: 'string' as any, required: true, condition: { id: 'b' } },
+          { id: 'b', type: 'string' as any },
         ],
         {},
         opts,
@@ -180,8 +186,8 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         { b: 'test' },
         [
-          { id: 'a', type: 'str' as any, required: true, condition: { id: 'b' } },
-          { id: 'b', type: 'str' as any },
+          { id: 'a', type: 'string' as any, required: true, condition: { id: 'b' } },
+          { id: 'b', type: 'string' as any },
         ],
         {},
         opts,
@@ -196,7 +202,7 @@ describe('validateTemplateOptions', () => {
         [
           {
             id: 'a',
-            type: 'str' as any,
+            type: 'string' as any,
             required: true,
             condition: { id: 'short_title', value: 'test' },
           },
@@ -214,7 +220,7 @@ describe('validateTemplateOptions', () => {
         [
           {
             id: 'a',
-            type: 'str' as any,
+            type: 'string' as any,
             required: true,
             condition: { id: 'short_title', value: 'test' },
           },
@@ -230,8 +236,8 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         { b: 'not test' },
         [
-          { id: 'a', type: 'str' as any, required: true, condition: { id: 'b', value: 'test' } },
-          { id: 'b', type: 'str' as any },
+          { id: 'a', type: 'string' as any, required: true, condition: { id: 'b', value: 'test' } },
+          { id: 'b', type: 'string' as any },
         ],
         {},
         opts,
@@ -244,8 +250,8 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         { b: 'test' },
         [
-          { id: 'a', type: 'str' as any, required: true, condition: { id: 'b', value: 'test' } },
-          { id: 'b', type: 'str' as any },
+          { id: 'a', type: 'string' as any, required: true, condition: { id: 'b', value: 'test' } },
+          { id: 'b', type: 'string' as any },
         ],
         {},
         opts,
@@ -261,7 +267,7 @@ describe('validateTemplateOptionDefinition', () => {
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('no id errors', async () => {
-    expect(validateTemplateOptionDefinition({ type: 'str' }, opts)).toEqual(undefined);
+    expect(validateTemplateOptionDefinition({ type: 'string' }, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('no type errors', async () => {
@@ -269,13 +275,13 @@ describe('validateTemplateOptionDefinition', () => {
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('id/type return self', async () => {
-    expect(validateTemplateOptionDefinition({ id: 'key', type: 'str' }, opts)).toEqual({
+    expect(validateTemplateOptionDefinition({ id: 'key', type: 'string' }, opts)).toEqual({
       id: 'key',
-      type: 'str',
+      type: 'string',
     });
   });
   it('reserved id errors', async () => {
-    expect(validateTemplateOptionDefinition({ id: 'format', type: 'str' }, opts)).toEqual(
+    expect(validateTemplateOptionDefinition({ id: 'format', type: 'string' }, opts)).toEqual(
       undefined,
     );
     expect(opts.messages.errors?.length).toEqual(1);
@@ -398,7 +404,7 @@ describe('validateTemplateOptionDefinition', () => {
       validateTemplateOptionDefinition(
         {
           id: 'key',
-          type: 'str',
+          type: 'string',
           condition: {
             id: 'test',
           },
@@ -407,7 +413,7 @@ describe('validateTemplateOptionDefinition', () => {
       ),
     ).toEqual({
       id: 'key',
-      type: 'str',
+      type: 'string',
       condition: {
         id: 'test',
       },
@@ -418,7 +424,7 @@ describe('validateTemplateOptionDefinition', () => {
       validateTemplateOptionDefinition(
         {
           id: 'key',
-          type: 'str',
+          type: 'string',
           condition: {
             invalid: true,
           },
@@ -427,7 +433,7 @@ describe('validateTemplateOptionDefinition', () => {
       ),
     ).toEqual({
       id: 'key',
-      type: 'str',
+      type: 'string',
     });
     expect(opts.messages.errors?.length).toEqual(1);
   });
@@ -438,7 +444,7 @@ describe('crossValidateConditions', () => {
       [
         {
           id: 'test',
-          type: 'str' as any,
+          type: 'string' as any,
           condition: {
             id: 'short_title',
           },
@@ -454,7 +460,7 @@ describe('crossValidateConditions', () => {
       [
         {
           id: 'test',
-          type: 'str' as any,
+          type: 'string' as any,
           condition: {
             id: 'prop',
             value: 'value',
@@ -462,7 +468,7 @@ describe('crossValidateConditions', () => {
         },
         {
           id: 'prop',
-          type: 'str' as any,
+          type: 'string' as any,
         },
       ],
       [],
@@ -475,7 +481,7 @@ describe('crossValidateConditions', () => {
       [
         {
           id: 'test',
-          type: 'str' as any,
+          type: 'string' as any,
           condition: {
             id: 'prop',
           },
@@ -491,7 +497,7 @@ describe('crossValidateConditions', () => {
       [
         {
           id: 'test',
-          type: 'str' as any,
+          type: 'string' as any,
           condition: {
             id: 'prop',
             value: true,
@@ -499,7 +505,7 @@ describe('crossValidateConditions', () => {
         },
         {
           id: 'prop',
-          type: 'str' as any,
+          type: 'string' as any,
         },
       ],
       [],
@@ -512,14 +518,14 @@ describe('crossValidateConditions', () => {
       [
         {
           id: 'test',
-          type: 'str' as any,
+          type: 'string' as any,
           condition: {
             id: 'test',
           },
         },
         {
           id: 'prop',
-          type: 'str' as any,
+          type: 'string' as any,
         },
       ],
       [],

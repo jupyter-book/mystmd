@@ -23,8 +23,8 @@ export type TemplatePartDefinition = {
 };
 
 export enum TemplateOptionTypes {
-  bool = 'bool',
-  str = 'str',
+  boolean = 'boolean',
+  string = 'string',
   choice = 'choice',
   frontmatter = 'frontmatter',
 }

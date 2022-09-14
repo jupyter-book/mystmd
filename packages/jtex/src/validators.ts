@@ -29,9 +29,9 @@ export function validateTemplateOption(
 ) {
   const { type, max_chars, choices } = optionDefinition;
   switch (type) {
-    case TemplateOptionTypes.bool:
+    case TemplateOptionTypes.boolean:
       return validateBoolean(input, opts);
-    case TemplateOptionTypes.str:
+    case TemplateOptionTypes.string:
       return validateString(input, { ...opts, maxLength: max_chars });
     case TemplateOptionTypes.choice:
       return validateChoice(input, { ...opts, choices: choices || [] });
