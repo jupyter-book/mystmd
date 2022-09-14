@@ -48,7 +48,7 @@ export type TemplateOptionDefinition = TemplateDocDefinition & {
 };
 
 export type TemplateYml = {
-  jtex?: 'v1';
+  jtex: 'v1';
   title?: string;
   description?: string;
   version?: string;
@@ -57,6 +57,7 @@ export type TemplateYml = {
   tags?: string[];
   source?: string;
   github?: string;
+  thumbnail?: string;
   build?: Record<string, any>;
   schema?: Record<string, any>;
   parts?: TemplatePartDefinition[];

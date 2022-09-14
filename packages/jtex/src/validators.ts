@@ -337,8 +337,8 @@ export function validateTemplateYml(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(
     input,
     {
+      required: ['jtex'],
       optional: [
-        'jtex',
         'title',
         'description',
         'version',
@@ -347,6 +347,7 @@ export function validateTemplateYml(input: any, opts: ValidationOptions) {
         'tags',
         'source',
         'github',
+        'thumbnail',
         'build',
         'schema',
         'parts',
@@ -357,13 +358,12 @@ export function validateTemplateYml(input: any, opts: ValidationOptions) {
     opts,
   );
   if (value === undefined) return undefined;
-  const output: TemplateYml = {};
-  if (defined(value.jtex)) {
-    output.jtex = validateChoice(value.jtex, {
-      ...incrementOptions('jtex', opts),
-      choices: ['v1'],
-    });
-  }
+  const jtex = validateChoice<'v1'>(value.jtex, {
+    ...incrementOptions('jtex', opts),
+    choices: ['v1'],
+  });
+  if (jtex === undefined) return undefined;
+  const output: TemplateYml = { jtex };
   if (defined(value.title)) {
     output.title = validateString(value.title, incrementOptions('title', opts));
   }
@@ -390,6 +390,9 @@ export function validateTemplateYml(input: any, opts: ValidationOptions) {
   }
   if (defined(value.github)) {
     output.github = validateGithubUrl(value.github, incrementOptions('github', opts));
+  }
+  if (defined(value.thumbnail)) {
+    output.thumbnail = validateString(value.thumbnail, incrementOptions('thumbnail', opts));
   }
   if (defined(value.tags)) {
     output.tags = validateList(value.tags, incrementOptions('tags', opts), (file, index) => {

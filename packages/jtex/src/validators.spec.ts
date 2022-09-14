@@ -563,7 +563,7 @@ describe('validateTemplateYml', () => {
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('empty object passes', async () => {
-    expect(validateTemplateYml({}, opts)).toEqual({});
+    expect(validateTemplateYml({ jtex: 'v1' }, opts)).toEqual({ jtex: 'v1' });
   });
   it('minimal object passes', async () => {
     expect(
@@ -578,6 +578,7 @@ describe('validateTemplateYml', () => {
           tags: [],
           source: 'https://example.com',
           github: 'https://github.com/example/repo',
+          thumbnail: 'thumb',
           build: {},
           schema: {},
           options: [],
@@ -604,6 +605,7 @@ describe('validateTemplateYml', () => {
       tags: [],
       source: 'https://example.com',
       github: 'https://github.com/example/repo',
+      thumbnail: 'thumb',
       build: {},
       schema: {},
       options: [],
@@ -614,10 +616,10 @@ describe('validateTemplateYml', () => {
   it('invalid properties error', async () => {
     expect(
       validateTemplateYml(
-        { build: '', schema: '', options: [{ id: 'key' }], parts: [{}], doc: [{}] },
+        { jtex: 'v1', build: '', schema: '', options: [{ id: 'key' }], parts: [{}], doc: [{}] },
         opts,
       ),
-    ).toEqual({ options: [], parts: [], doc: [] });
+    ).toEqual({ jtex: 'v1', options: [], parts: [], doc: [] });
     expect(opts.messages.errors?.length).toEqual(5);
   });
 });

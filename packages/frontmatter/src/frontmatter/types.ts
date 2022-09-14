@@ -28,6 +28,9 @@ export interface Author {
   email?: string;
   roles?: AuthorRoles[];
   affiliations?: string[];
+  twitter?: string;
+  github?: string;
+  website?: string;
 }
 
 export type Biblio = {
@@ -104,6 +107,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   license?: Licenses;
   github?: string;
   binder?: string;
+  source?: string;
   subject?: string;
   /** Links to bib files for citations */
   bibliography?: string[];

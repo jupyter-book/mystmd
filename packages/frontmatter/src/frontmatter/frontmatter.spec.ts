@@ -31,6 +31,9 @@ const TEST_AUTHOR: Author = {
   email: 'test@example.com',
   roles: ['Software', 'Validation'],
   affiliations: ['example university'],
+  twitter: '@test',
+  github: 'test',
+  website: 'https://example.com',
 };
 
 const TEST_BIBLIO: Biblio = {
@@ -84,6 +87,7 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   license: {},
   github: 'https://github.com/example',
   binder: 'https://example.com/binder',
+  source: 'https://example.com/source',
   subject: '',
   biblio: {},
   oxa: '',
@@ -104,6 +108,7 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   license: {},
   github: 'https://github.com/example',
   binder: 'https://example.com/binder',
+  source: 'https://example.com/source',
   subject: '',
   biblio: {},
   oxa: '',

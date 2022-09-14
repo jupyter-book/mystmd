@@ -3,9 +3,13 @@ title: Curvenote Default
 description: A paper styled template using the custom environments and styling to match Curvenote Web
 authors:
   - name: Curvenote
+    github: curvenote
+    twitter: curvenote
     affiliations:
       - Curvenote
   - name: Curvenote
+    github: curvenote
+    twitter: curvenote
     affiliations:
       - Curvenote
 version: 0.2.1

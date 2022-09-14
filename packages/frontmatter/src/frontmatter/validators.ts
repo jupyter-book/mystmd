@@ -45,6 +45,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'license',
   'github',
   'binder',
+  'source',
   'subject',
   'biblio',
   'oxa',
@@ -75,6 +76,7 @@ export const USE_PROJECT_FALLBACK = [
   'license',
   'github',
   'binder',
+  'source',
   'subject',
   'venue',
   'biblio',
@@ -83,7 +85,18 @@ export const USE_PROJECT_FALLBACK = [
   'exports',
 ];
 
-const AUTHOR_KEYS = ['userId', 'name', 'orcid', 'corresponding', 'email', 'roles', 'affiliations'];
+const AUTHOR_KEYS = [
+  'userId',
+  'name',
+  'orcid',
+  'corresponding',
+  'email',
+  'roles',
+  'affiliations',
+  'twitter',
+  'github',
+  'website',
+];
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
 const NUMBERING_KEYS = [
   'enumerator',
@@ -101,7 +114,7 @@ const NUMBERING_KEYS = [
 const KERNELSPEC_KEYS = ['name', 'language', 'display_name', 'argv', 'env'];
 const TEXT_REPRESENTATION_KEYS = ['extension', 'format_name', 'format_version', 'jupytext_version'];
 const JUPYTEXT_KEYS = ['formats', 'text_representation'];
-export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output'];
+export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output', 'id', 'name'];
 
 const GITHUB_USERNAME_REPO_REGEX = '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$';
 const ORCID_REGEX = '^(http(s)?://orcid.org/)?([0-9]{4}-){3}[0-9]{3}[0-9X]$';
@@ -188,6 +201,15 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
     output.affiliations = validateList(value.affiliations, affiliationsOpts, (aff) => {
       return validateString(aff, affiliationsOpts);
     });
+  }
+  if (defined(value.twitter)) {
+    output.twitter = validateString(value.twitter, incrementOptions('twitter', opts));
+  }
+  if (defined(value.github)) {
+    output.github = validateString(value.github, incrementOptions('github', opts));
+  }
+  if (defined(value.website)) {
+    output.website = validateUrl(value.website, incrementOptions('website', opts));
   }
   return output;
 }
@@ -449,6 +471,9 @@ export function validateProjectFrontmatterKeys(
   }
   if (defined(value.binder)) {
     output.binder = validateUrl(value.binder, incrementOptions('binder', opts));
+  }
+  if (defined(value.source)) {
+    output.source = validateUrl(value.source, incrementOptions('source', opts));
   }
   if (defined(value.subject)) {
     output.subject = validateString(value.subject, {
