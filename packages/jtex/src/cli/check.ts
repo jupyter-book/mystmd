@@ -121,7 +121,7 @@ export function checkTemplate(session: ISession, path: string) {
   }
 
   const messages: Required<ValidationOptions['messages']> = { warnings: [], errors: [] };
-  const validated = validateTemplateYml(configYaml, { property: '', messages });
+  const validated = validateTemplateYml(configYaml, { property: '', messages, templateDir });
 
   const configWarnings = printWarnings(session, 'template.yml', messages);
   if (!validated) {

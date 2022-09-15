@@ -80,7 +80,10 @@ class JTex {
         errorLogFn: errorLogger(this.session),
         warningLogFn: warningLogger(this.session),
       };
-      const templateYml = validateTemplateYml(this.getTemplateYml(), opts);
+      const templateYml = validateTemplateYml(this.getTemplateYml(), {
+        ...opts,
+        templateDir: this.templatePath,
+      });
       if (opts.messages.errors?.length || templateYml === undefined) {
         // Strictly error if template.yml is invalid
         throw new Error(`Cannot use invalid ${TEMPLATE_YML}: ${this.getTemplateYmlPath()}`);

@@ -584,6 +584,8 @@ describe('validateTemplateYml', () => {
           options: [],
           parts: [],
           doc: [],
+          packages: [],
+          files: [],
         },
         opts,
       ),
@@ -611,15 +613,25 @@ describe('validateTemplateYml', () => {
       options: [],
       parts: [],
       doc: [],
+      packages: [],
+      files: [],
     });
   });
   it('invalid properties error', async () => {
     expect(
       validateTemplateYml(
-        { jtex: 'v1', build: '', schema: '', options: [{ id: 'key' }], parts: [{}], doc: [{}] },
-        opts,
+        {
+          jtex: 'v1',
+          build: '',
+          schema: '',
+          options: [{ id: 'key' }],
+          parts: [{}],
+          doc: [{}],
+          files: ['fake.txt'],
+        },
+        { ...opts, templateDir: '.' },
       ),
-    ).toEqual({ jtex: 'v1', options: [], parts: [], doc: [] });
-    expect(opts.messages.errors?.length).toEqual(5);
+    ).toEqual({ jtex: 'v1', options: [], parts: [], doc: [], files: ['fake.txt'] });
+    expect(opts.messages.errors?.length).toEqual(6);
   });
 });

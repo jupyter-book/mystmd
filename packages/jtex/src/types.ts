@@ -63,6 +63,8 @@ export type TemplateYml = {
   parts?: TemplatePartDefinition[];
   doc?: TemplateDocDefinition[];
   options?: TemplateOptionDefinition[];
+  packages?: string[];
+  files?: string[];
 };
 
 export type ValueAndIndex = {

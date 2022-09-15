@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import {
   PAGE_FRONTMATTER_KEYS,
   RESERVED_EXPORT_KEYS,
@@ -333,7 +335,10 @@ export function validateTemplatePartDefinition(input: any, opts: ValidationOptio
   return output;
 }
 
-export function validateTemplateYml(input: any, opts: ValidationOptions) {
+export function validateTemplateYml(
+  input: any,
+  opts: ValidationOptions & { templateDir?: string },
+) {
   const value = validateObjectKeys(
     input,
     {
@@ -353,6 +358,8 @@ export function validateTemplateYml(input: any, opts: ValidationOptions) {
         'parts',
         'doc',
         'options',
+        'packages',
+        'files',
       ],
     },
     opts,
@@ -418,6 +425,28 @@ export function validateTemplateYml(input: any, opts: ValidationOptions) {
   if (defined(value.options)) {
     output.options = validateList(value.options, incrementOptions('options', opts), (val, ind) => {
       return validateTemplateOptionDefinition(val, incrementOptions(`options.${ind}`, opts));
+    });
+  }
+  if (defined(value.packages)) {
+    output.packages = validateList(
+      value.packages,
+      incrementOptions('packages', opts),
+      (val, ind) => {
+        return validateString(val, incrementOptions(`packages.${ind}`, opts));
+      },
+    );
+  }
+  if (defined(value.files)) {
+    output.files = validateList(value.files, incrementOptions('files', opts), (val, ind) => {
+      const fileOpts = incrementOptions(`files.${ind}`, opts);
+      const file = validateString(val, fileOpts);
+      if (file && opts.templateDir) {
+        const filePath = path.join(opts.templateDir, file);
+        if (!fs.existsSync(filePath)) {
+          validationError(`file does not exist: ${path.join(opts.templateDir, file)}`, fileOpts);
+        }
+      }
+      return file;
     });
   }
   crossValidateConditions(output.options || [], output.parts || [], output.doc || [], opts);
