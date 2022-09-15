@@ -30,6 +30,8 @@ as well as the full content in a parsed form that can be used for an inline refe
 Currently cross-project links aren't fully implemented, check back soon!
 ```
 
+(intersphinx)=
+
 ## Referencing external Sphinx documentation
 
 MyST can integrate directly with other Sphinx documentation, which is used in many Python projects including the [standard library](https://docs.python.org/).

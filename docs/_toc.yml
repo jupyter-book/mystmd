@@ -4,6 +4,7 @@ parts:
   - caption: Overview
     chapters:
       - file: syntax-overview
+      - file: project-overview
       - file: intro
   - caption: Authoring
     chapters:
@@ -17,11 +18,27 @@ parts:
       - file: external-references
       - file: citations
       - file: blocks
-      - file: interactive-notebooks
       - file: diagrams
       - file: cards-and-tabs
       - file: tasks
-      - file: frontmatter
+  - caption: Executable Content
+    chapters:
+      - file: interactive-notebooks
+  - caption: Websites
+    chapters:
+      - file: website-overview
+      - file: themes-and-extensions
+      - file: seo-and-social
+      - file: performance-accessibility
+      - file: search
+      - file: analytics
+      - file: publishing
+  - caption: Documents
+    chapters:
+      - file: creating-pdf-documents
+      - file: creating-word-documents
   - caption: Reference
     chapters:
+      - file: background
       - file: commonmark
+      - file: frontmatter

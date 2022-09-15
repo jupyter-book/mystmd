@@ -24,7 +24,7 @@ This next line won't render, but it is in the HTML!
 ```
 
 ````{note}
-# Comments split paragraphs.
+# Comments split paragraphs
 Putting a comment between items will split any preceding elements. For example, a comment between two lines of text will be broken up into two paragraphs, resulting in a margin between them:
 
 ```{myst}
