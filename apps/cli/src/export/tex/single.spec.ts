@@ -45,16 +45,6 @@ describe('extractPart', () => {
           data: { tags: ['other_tag'] },
           children: [{ type: 'text', value: 'untagged content' }],
         },
-        {
-          type: 'block' as any,
-          data: { tags: ['test_tag'] },
-          children: [],
-        },
-        {
-          type: 'block' as any,
-          data: { tags: ['other_tag', 'test_tag'] },
-          children: [],
-        },
       ],
     });
   });
