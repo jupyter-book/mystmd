@@ -2,18 +2,17 @@ import fs from 'fs';
 import { extname, basename, join, dirname } from 'path';
 import yaml from 'js-yaml';
 import nunjucks from 'nunjucks';
-import type { PageFrontmatter } from '@curvenote/frontmatter';
 import type { ValidationOptions } from '@curvenote/validators';
 import { curvenoteDef } from './definitions';
 import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
 import { extendJtexFrontmatter } from './frontmatter';
 import { renderImports } from './imports';
-import type { ExpandedImports, ISession, Renderer } from './types';
+import type { ExpandedImports, ISession, Renderer, TemplateYml } from './types';
 import { ensureDirectoryExists, errorLogger, warningLogger } from './utils';
 import {
-  validateFrontmatterTemplateOptions,
+  validateTemplateDoc,
   validateTemplateOptions,
-  validateTemplateTagged,
+  validateTemplateParts,
   validateTemplateYml,
 } from './validators';
 import version from './version';
@@ -28,6 +27,7 @@ class JTex {
   templatePath: string;
   templateUrl: string | undefined;
   env: nunjucks.Environment;
+  validatedTemplateYml: TemplateYml | undefined;
 
   /**
    * JTex class for template validation and rendering
@@ -72,21 +72,28 @@ class JTex {
   }
 
   getValidatedTemplateYml() {
-    const opts: ValidationOptions = {
-      file: this.getTemplateYmlPath(),
-      property: 'template',
-      messages: {},
-      errorLogFn: errorLogger(this.session),
-    };
-    const templateYml = validateTemplateYml(this.getTemplateYml(), opts);
-    if (opts.messages.errors?.length || templateYml === undefined) {
-      // Strictly error if template.yml is invalid
-      throw new Error(`Cannot use invalid ${TEMPLATE_YML}: ${this.getTemplateYmlPath()}`);
+    if (this.validatedTemplateYml == null) {
+      const opts: ValidationOptions = {
+        file: this.getTemplateYmlPath(),
+        property: 'template',
+        messages: {},
+        errorLogFn: errorLogger(this.session),
+        warningLogFn: warningLogger(this.session),
+      };
+      const templateYml = validateTemplateYml(this.getTemplateYml(), {
+        ...opts,
+        templateDir: this.templatePath,
+      });
+      if (opts.messages.errors?.length || templateYml === undefined) {
+        // Strictly error if template.yml is invalid
+        throw new Error(`Cannot use invalid ${TEMPLATE_YML}: ${this.getTemplateYmlPath()}`);
+      }
+      this.validatedTemplateYml = templateYml;
     }
-    return templateYml;
+    return this.validatedTemplateYml;
   }
 
-  validateOptions(options: any, frontmatter: PageFrontmatter, file?: string) {
+  validateOptions(options: any, file?: string) {
     const templateYml = this.getValidatedTemplateYml();
     const opts: ValidationOptions = {
       file,
@@ -95,12 +102,7 @@ class JTex {
       errorLogFn: errorLogger(this.session),
       warningLogFn: warningLogger(this.session),
     };
-    const validatedOptions = validateTemplateOptions(
-      options,
-      templateYml?.config?.options || [],
-      frontmatter,
-      opts,
-    );
+    const validatedOptions = validateTemplateOptions(options, templateYml?.options || [], opts);
     if (validatedOptions === undefined) {
       // Pass even if there are some validation errors; only error on total failure
       throw new Error(
@@ -112,39 +114,28 @@ class JTex {
     return validatedOptions;
   }
 
-  validateTagged(
-    tagged: any,
-    options: Record<string, any>,
-    frontmatter: PageFrontmatter,
-    file?: string,
-  ) {
+  validateParts(parts: any, options: Record<string, any>, file?: string) {
     const templateYml = this.getValidatedTemplateYml();
     const opts: ValidationOptions = {
       file,
-      property: 'tagged',
+      property: 'parts',
       messages: {},
       errorLogFn: errorLogger(this.session),
       warningLogFn: warningLogger(this.session),
     };
-    const validatedTagged = validateTemplateTagged(
-      tagged,
-      templateYml?.config?.tagged || [],
-      options,
-      frontmatter,
-      opts,
-    );
-    if (validatedTagged === undefined) {
+    const validatedParts = validateTemplateParts(parts, templateYml?.parts || [], options, opts);
+    if (validatedParts === undefined) {
       // Pass even if there are some validation errors; only error on total failure
       throw new Error(
-        `Unable to parse tagged values for template ${this.getTemplateYmlPath()}${
+        `Unable to parse "parts" for template ${this.getTemplateYmlPath()}${
           file ? ' from ' : ''
         }${file}`,
       );
     }
-    return validatedTagged;
+    return validatedParts;
   }
 
-  validateFrontmatter(frontmatter: any, file?: string) {
+  validateDoc(frontmatter: any, options: Record<string, any>, file?: string) {
     const templateYml = this.getValidatedTemplateYml();
     const opts: ValidationOptions = {
       file,
@@ -153,15 +144,11 @@ class JTex {
       errorLogFn: errorLogger(this.session),
       warningLogFn: warningLogger(this.session),
     };
-    const validatedFrontmatter = validateFrontmatterTemplateOptions(
-      frontmatter,
-      templateYml?.config?.options || [],
-      opts,
-    );
-    if (validatedFrontmatter === undefined) {
+    const validatedDoc = validateTemplateDoc(frontmatter, templateYml?.doc || [], options, opts);
+    if (validatedDoc === undefined) {
       throw new Error(`Unable to read frontmatter${file ? ' from ' : ''}${file}`);
     }
-    return validatedFrontmatter;
+    return validatedDoc;
   }
 
   async ensureTemplateExistsOnPath(force?: boolean) {
@@ -183,7 +170,7 @@ class JTex {
     contentOrPath: string;
     outputPath: string;
     frontmatter: any;
-    tagged: any;
+    parts: any;
     options: any;
     sourceFile?: string;
     imports?: string | ExpandedImports;
@@ -203,14 +190,14 @@ class JTex {
     } else {
       content = opts.contentOrPath;
     }
-    const frontmatter = this.validateFrontmatter(opts.frontmatter, opts.sourceFile);
-    const options = this.validateOptions(opts.options, frontmatter, opts.sourceFile);
-    const tagged = this.validateTagged(opts.tagged, options, frontmatter, opts.sourceFile);
-    const doc = extendJtexFrontmatter(frontmatter);
+    const options = this.validateOptions(opts.options, opts.sourceFile);
+    const parts = this.validateParts(opts.parts, options, opts.sourceFile);
+    const docFrontmatter = this.validateDoc(opts.frontmatter, options, opts.sourceFile);
+    const doc = extendJtexFrontmatter(docFrontmatter);
     const renderer: Renderer = {
       CONTENT: content,
       doc,
-      tagged,
+      parts,
       options,
       IMPORTS: renderImports(opts.imports),
     };

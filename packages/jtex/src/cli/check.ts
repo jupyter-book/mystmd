@@ -7,8 +7,8 @@ import { join } from 'path';
 import type { ISession } from '../types';
 import type { ValidationOptions } from '@curvenote/validators';
 import { PAGE_FRONTMATTER_KEYS } from '@curvenote/frontmatter';
-import { REDERER_DOC_KEYS } from '../types';
-import { validateTemplateConfig } from '../validators';
+import { RENDERER_DOC_KEYS } from '../types';
+import { validateTemplateYml } from '../validators';
 
 type Variables = Record<
   'options' | 'doc' | 'parts' | 'packages' | 'global',
@@ -28,11 +28,11 @@ function matchOpts(line: string, lineNumber: number, variables: Variables) {
       }
       return;
     }
-    const args = template.match(/(doc|options|tagged|parts)\.([a-zA-Z0-9_]+)/g);
+    const args = template.match(/(doc|options|parts)\.([a-zA-Z0-9_]+)/g);
     if (!args) return;
     args.forEach((a) => {
       const [kind, value] = a.split('.');
-      const useKind = (kind === 'tagged' ? 'parts' : kind) as keyof typeof variables;
+      const useKind = kind as keyof typeof variables;
       if (!variables[useKind]?.[value]) variables[useKind][value] = [];
       if (!variables[useKind][value].includes(lineNumber)) {
         variables[useKind][value].push(lineNumber);
@@ -121,7 +121,7 @@ export function checkTemplate(session: ISession, path: string) {
   }
 
   const messages: Required<ValidationOptions['messages']> = { warnings: [], errors: [] };
-  const validated = validateTemplateConfig(configYaml?.config, { property: '', messages });
+  const validated = validateTemplateYml(configYaml, { property: '', messages, templateDir });
 
   const configWarnings = printWarnings(session, 'template.yml', messages);
   if (!validated) {
@@ -142,7 +142,7 @@ export function checkTemplate(session: ISession, path: string) {
   }
 
   // Validate parts
-  const parts = validated.tagged?.map((p) => p.id) ?? [];
+  const parts = validated.parts?.map((p) => p.id) ?? [];
   const usedParts: string[] = [];
   Object.entries(variables.parts).forEach(([partKey, lineNumbers]) => {
     if (!parts.includes(partKey)) {
@@ -164,7 +164,7 @@ export function checkTemplate(session: ISession, path: string) {
   }
 
   // Validate non-frontmatter options
-  const options = validated.options?.filter((p) => p.type !== 'frontmatter').map((p) => p.id) ?? [];
+  const options = validated.options?.map((p) => p.id) ?? [];
   const usedOpts: string[] = [];
   Object.entries(variables.options).forEach(([optKey, lineNumbers]) => {
     if (!options.includes(optKey)) {
@@ -187,7 +187,7 @@ export function checkTemplate(session: ISession, path: string) {
   }
 
   // Validate non-frontmatter options
-  const doc = validated.options?.filter((p) => p.type === 'frontmatter').map((p) => p.id) ?? [];
+  const doc = validated.doc?.map((p) => p.id) ?? [];
   Object.entries(variables.doc).forEach(([optKey, lineNumbers]) => {
     if (!doc.includes(optKey) && PAGE_FRONTMATTER_KEYS.includes(optKey)) {
       messages.errors.push({
@@ -198,7 +198,7 @@ export function checkTemplate(session: ISession, path: string) {
       });
       return;
     }
-    if (!REDERER_DOC_KEYS.includes(optKey)) {
+    if (!RENDERER_DOC_KEYS.includes(optKey)) {
       messages.errors.push({
         property: 'doc',
         message: `The template.yml references "doc.${optKey}" but that is not a valid document property on ${lineNumbersToString(

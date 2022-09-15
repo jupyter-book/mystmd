@@ -45,13 +45,14 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'license',
   'github',
   'binder',
+  'source',
   'subject',
   'biblio',
   'oxa',
   'numbering',
   'bibliography',
   'math',
-  'export',
+  'exports',
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = [
   'subtitle',
@@ -75,15 +76,27 @@ export const USE_PROJECT_FALLBACK = [
   'license',
   'github',
   'binder',
+  'source',
   'subject',
   'venue',
   'biblio',
   'numbering',
   'keywords',
-  'export',
+  'exports',
 ];
 
-const AUTHOR_KEYS = ['userId', 'name', 'orcid', 'corresponding', 'email', 'roles', 'affiliations'];
+const AUTHOR_KEYS = [
+  'userId',
+  'name',
+  'orcid',
+  'corresponding',
+  'email',
+  'roles',
+  'affiliations',
+  'twitter',
+  'github',
+  'website',
+];
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
 const NUMBERING_KEYS = [
   'enumerator',
@@ -101,6 +114,7 @@ const NUMBERING_KEYS = [
 const KERNELSPEC_KEYS = ['name', 'language', 'display_name', 'argv', 'env'];
 const TEXT_REPRESENTATION_KEYS = ['extension', 'format_name', 'format_version', 'jupytext_version'];
 const JUPYTEXT_KEYS = ['formats', 'text_representation'];
+export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output', 'id', 'name'];
 
 const GITHUB_USERNAME_REPO_REGEX = '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$';
 const ORCID_REGEX = '^(http(s)?://orcid.org/)?([0-9]{4}-){3}[0-9]{3}[0-9X]$';
@@ -187,6 +201,15 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
     output.affiliations = validateList(value.affiliations, affiliationsOpts, (aff) => {
       return validateString(aff, affiliationsOpts);
     });
+  }
+  if (defined(value.twitter)) {
+    output.twitter = validateString(value.twitter, incrementOptions('twitter', opts));
+  }
+  if (defined(value.github)) {
+    output.github = validateString(value.github, incrementOptions('github', opts));
+  }
+  if (defined(value.website)) {
+    output.website = validateUrl(value.website, incrementOptions('website', opts));
   }
   return output;
 }
@@ -342,14 +365,43 @@ export function validateJupytext(input: any, opts: ValidationOptions) {
 export function validateExport(input: any, opts: ValidationOptions) {
   const value = validateObject(input, opts);
   if (value === undefined) return undefined;
-  validateKeys(value, { required: ['format'] }, { ...opts, suppressWarnings: true });
+  validateKeys(
+    value,
+    { required: ['format'], optional: RESERVED_EXPORT_KEYS },
+    { ...opts, suppressWarnings: true },
+  );
+  if (value.format === undefined) return undefined;
   const format = validateEnum<ExportFormats>(value.format, {
     ...incrementOptions('format', opts),
     enum: ExportFormats,
   });
   if (format === undefined) return undefined;
   const output: Export = { ...value, format };
+  if (value.template === null) {
+    // It is possible for the template to explicitly be null.
+    // This use no template (rather than default template).
+    output.template = null;
+  } else if (defined(value.template)) {
+    output.template = validateString(value.template, incrementOptions('template', opts));
+  }
+  if (defined(value.output)) {
+    output.output = validateString(value.output, incrementOptions('output', opts));
+  }
   return output;
+}
+
+export function validateGithubUrl(value: any, opts: ValidationOptions) {
+  let github = value;
+  if (typeof github === 'string') {
+    const repo = github.match(GITHUB_USERNAME_REPO_REGEX);
+    if (repo) {
+      github = `https://github.com/${repo}`;
+    }
+  }
+  return validateUrl(github, {
+    ...incrementOptions('github', opts),
+    includes: 'github',
+  });
 }
 
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
@@ -419,20 +471,13 @@ export function validateProjectFrontmatterKeys(
     output.license = validateLicenses(value.license, incrementOptions('license', opts));
   }
   if (defined(value.github)) {
-    let { github } = value;
-    if (typeof github === 'string') {
-      const repo = github.match(GITHUB_USERNAME_REPO_REGEX);
-      if (repo) {
-        github = `https://github.com/${repo}`;
-      }
-    }
-    output.github = validateUrl(github, {
-      ...incrementOptions('github', opts),
-      includes: 'github',
-    });
+    output.github = validateGithubUrl(value.github, incrementOptions('github', opts));
   }
   if (defined(value.binder)) {
     output.binder = validateUrl(value.binder, incrementOptions('binder', opts));
+  }
+  if (defined(value.source)) {
+    output.source = validateUrl(value.source, incrementOptions('source', opts));
   }
   if (defined(value.subject)) {
     output.subject = validateString(value.subject, {
@@ -479,9 +524,9 @@ export function validateProjectFrontmatterKeys(
       output.math = filterKeys(math, stringKeys);
     }
   }
-  if (defined(value.export)) {
-    output.export = validateList(value.export, incrementOptions('export', opts), (exp, ind) => {
-      return validateExport(exp, incrementOptions(`export.${ind}`, opts));
+  if (defined(value.exports)) {
+    output.exports = validateList(value.exports, incrementOptions('exports', opts), (exp, ind) => {
+      return validateExport(exp, incrementOptions(`exports.${ind}`, opts));
     });
   }
   // This is only for the project, and is not defined on pages

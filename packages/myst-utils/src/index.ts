@@ -8,6 +8,7 @@ export {
   createHtmlId,
   liftChildren,
   setTextAsChild,
+  copyNode,
 } from './utils';
 
 export type { MessageInfo } from './utils';

@@ -1,66 +1,63 @@
-metadata:
-  title: Curvenote Default
-  description: A paper styled template using the custom environments and styling to match Curvenote Web
-  author:
-    name: Curvenote
+jtex: v1
+title: Curvenote Default
+description: A paper styled template using the custom environments and styling to match Curvenote Web
+authors:
+  - name: Curvenote
     github: curvenote
     twitter: curvenote
-    affiliation: Curvenote
-  contributor:
-    name: Curvenote
+    affiliations:
+      - Curvenote
+  - name: Curvenote
     github: curvenote
     twitter: curvenote
-    affiliation: Curvenote
-  version: 0.2.1
-  license: CC-BY-4.0
-  tags:
-    - article
-    - paper
-  links:
-    github: https://github.com/curvenote/templates/tree/main/latex/default
-    source: http://curvenote.com
+    affiliations:
+      - Curvenote
+version: 0.2.1
+license: CC-BY-4.0
+tags:
+  - article
+  - paper
+github: https://github.com/curvenote/templates/tree/main/latex/default
+source: http://curvenote.com
 
 # options that can be offered to users to customise how this template is rendered
-config:
-  build:
-    layout: compact
+build:
+  layout: compact
 
-  schema:
-    aside: framed
-    callout: callout
-    code: verbatim
-    raggedbottom: true
-    sloppy: true
-    hidelinks: false
-    natbib: true
-    bibstyle: true
-    citestyle: true
+schema:
+  aside: framed
+  callout: callout
+  code: verbatim
+  raggedbottom: true
+  sloppy: true
+  hidelinks: false
+  natbib: true
+  bibstyle: true
+  citestyle: true
 
-  tagged:
-    - id: abstract
-      description: |
-        An abstract is a short summary of your research paper or report. A good abstract will prepare readers for
-        the detailed information to follow, communicate the essence of the article and help readers take away and
-        remember key points.
-      words:
-        min: 50
-        max: 500
-    - id: acknowledgments
-      description: |
-        You can this section to highlight support such as; collaborations, data sources, funding sources, broader
-        projects. This section will be places towards the end of the article with a subtitle - Acknowledgments.
+parts:
+  - id: abstract
+    description: |
+      An abstract is a short summary of your research paper or report. A good abstract will prepare readers for
+      the detailed information to follow, communicate the essence of the article and help readers take away and
+      remember key points.
+    words:
+      min: 50
+      max: 500
+  - id: acknowledgments
+    description: |
+      You can this section to highlight support such as; collaborations, data sources, funding sources, broader
+      projects. This section will be places towards the end of the article with a subtitle - Acknowledgments.
+doc:
+  - id: title
+    required: true
+  - id: authors
+    required: true
+  - id: keywords
+    required: true
 
-  options:
-    - id: title
-      type: frontmatter
-      required: true
-    - id: authors
-      type: frontmatter
-      required: true
-    - id: keywords
-      type: frontmatter
-      required: true
-    - id: link
-      type: str
-      description: |
-        Link to the article on Curvenote as a footnote on the first page
+options:
+  - id: link
+    type: string
+    description: |
+      Link to the article on Curvenote as a footnote on the first page

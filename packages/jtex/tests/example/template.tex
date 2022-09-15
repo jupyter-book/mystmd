@@ -34,9 +34,9 @@ addtopdfcreator={Written in Curvenote}
 \begin{document}
 
 \maketitle
-[#- if tagged.abstract -#]
+[#- if parts.abstract -#]
 \begin{abstract}
-Abstract: [-tagged.abstract-]
+Abstract: [-parts.abstract-]
 \end{abstract}
 [#- endif -#]
 [#- if doc.keywords -#]
@@ -45,9 +45,9 @@ Abstract: [-tagged.abstract-]
 
 [-CONTENT-]
 
-[#- if tagged.acknowledgments -#]
+[#- if parts.acknowledgments -#]
 \section*{Acknowledgments}
-[-tagged.acknowledgments-]
+[-parts.acknowledgments-]
 [#- endif -#]
 
 [#- if options.link -#]

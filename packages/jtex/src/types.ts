@@ -1,4 +1,5 @@
-import type { Author } from '@curvenote/frontmatter';
+import type { Author, Licenses, PageFrontmatter } from '@curvenote/frontmatter';
+import { PAGE_FRONTMATTER_KEYS } from '@curvenote/frontmatter';
 
 export type Logger = Pick<typeof console, 'debug' | 'info' | 'warn' | 'error'>;
 
@@ -9,9 +10,8 @@ export interface ISession {
 
 export type ExpandedImports = { imports: string[]; commands: string[] };
 
-export type TemplateTagDefinition = {
+export type TemplatePartDefinition = {
   id: string;
-  // tag: string;
   description?: string;
   required?: boolean;
   plain?: boolean;
@@ -24,34 +24,47 @@ export type TemplateTagDefinition = {
 };
 
 export enum TemplateOptionTypes {
-  bool = 'bool',
-  str = 'str',
+  boolean = 'boolean',
+  string = 'string',
   choice = 'choice',
-  frontmatter = 'frontmatter',
 }
-export type TemplateOptionDefinition = {
+
+export type TemplateDocDefinition = {
   id: string;
-  type: TemplateOptionTypes;
   title?: string;
   description?: string;
-  default?: any;
   required?: boolean;
-  choices?: string[];
-  max_chars?: number;
   condition?: {
     id: string;
     value?: any;
   };
 };
 
+export type TemplateOptionDefinition = TemplateDocDefinition & {
+  type: TemplateOptionTypes;
+  default?: any;
+  choices?: string[];
+  max_chars?: number;
+};
+
 export type TemplateYml = {
-  metadata?: Record<string, any>;
-  config?: {
-    build?: Record<string, any>;
-    schema?: Record<string, any>;
-    tagged?: TemplateTagDefinition[];
-    options?: TemplateOptionDefinition[];
-  };
+  jtex: 'v1';
+  title?: string;
+  description?: string;
+  version?: string;
+  authors?: Author[];
+  license?: Licenses;
+  tags?: string[];
+  source?: string;
+  github?: string;
+  thumbnail?: string;
+  build?: Record<string, any>;
+  schema?: Record<string, any>;
+  parts?: TemplatePartDefinition[];
+  doc?: TemplateDocDefinition[];
+  options?: TemplateOptionDefinition[];
+  packages?: string[];
+  files?: string[];
 };
 
 export type ValueAndIndex = {
@@ -70,10 +83,7 @@ export type RendererAuthor = Omit<Author, 'affiliations' | 'corresponding' | 'or
   surname: string;
 };
 
-export type RendererDoc = {
-  title?: string;
-  short_title?: string;
-  description?: string;
+export type RendererDoc = Omit<PageFrontmatter, 'date' | 'authors'> & {
   date: {
     day: string;
     month: string;
@@ -81,26 +91,15 @@ export type RendererDoc = {
   };
   authors: RendererAuthor[];
   affiliations: ValueAndIndex[];
-  bibliography?: string[];
-  keywords?: string[];
 };
 
-export const REDERER_DOC_KEYS = [
-  'title',
-  'short_title',
-  'description',
-  'date',
-  'authors',
-  'affiliations',
-  'bibliography',
-  'keywords',
-];
+export const RENDERER_DOC_KEYS = ['affiliations'].concat(PAGE_FRONTMATTER_KEYS);
 
 export type Renderer = {
   CONTENT: string;
   doc: RendererDoc;
   options: Record<string, any>;
-  tagged: Record<string, string>;
+  parts: Record<string, string>;
   IMPORTS?: string;
 };
 

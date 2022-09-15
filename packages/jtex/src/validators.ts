@@ -1,5 +1,13 @@
-import type { PageFrontmatter } from '@curvenote/frontmatter';
-import { PAGE_FRONTMATTER_KEYS, validatePageFrontmatter } from '@curvenote/frontmatter';
+import fs from 'fs';
+import path from 'path';
+import {
+  PAGE_FRONTMATTER_KEYS,
+  RESERVED_EXPORT_KEYS,
+  validateAuthor,
+  validateGithubUrl,
+  validateLicenses,
+  validatePageFrontmatter,
+} from '@curvenote/frontmatter';
 import {
   defined,
   incrementOptions,
@@ -12,10 +20,16 @@ import {
   validateObject,
   validateObjectKeys,
   validateString,
+  validateUrl,
   validationError,
 } from '@curvenote/validators';
 import type { ValidationOptions } from '@curvenote/validators';
-import type { TemplateOptionDefinition, TemplateTagDefinition, TemplateYml } from './types';
+import type {
+  TemplateDocDefinition,
+  TemplateOptionDefinition,
+  TemplatePartDefinition,
+  TemplateYml,
+} from './types';
 import { TemplateOptionTypes } from './types';
 
 export function validateTemplateOption(
@@ -25,15 +39,12 @@ export function validateTemplateOption(
 ) {
   const { type, max_chars, choices } = optionDefinition;
   switch (type) {
-    case TemplateOptionTypes.bool:
+    case TemplateOptionTypes.boolean:
       return validateBoolean(input, opts);
-    case TemplateOptionTypes.str:
+    case TemplateOptionTypes.string:
       return validateString(input, { ...opts, maxLength: max_chars });
     case TemplateOptionTypes.choice:
       return validateChoice(input, { ...opts, choices: choices || [] });
-    case TemplateOptionTypes.frontmatter:
-      // validated elsewhere
-      return input;
     default:
       return validationError(`unknown type on option definition: "${type}"`, opts);
   }
@@ -57,16 +68,18 @@ const conditionMet = (
 export function validateTemplateOptions(
   options: any,
   optionDefinitions: TemplateOptionDefinition[],
-  frontmatter: PageFrontmatter,
   opts: ValidationOptions,
 ) {
   const value = validateObject(options, opts);
   if (value === undefined) return undefined;
-  const filteredOptions = optionDefinitions
-    .filter((def) => def.type !== TemplateOptionTypes.frontmatter)
-    .filter((def) => conditionMet(def, { ...value, ...frontmatter }));
+  const filteredOptions = optionDefinitions.filter((def) => {
+    return conditionMet(def, value);
+  });
   const required = filteredOptions.filter((def) => isRequired(def)).map((def) => def.id);
-  const optional = filteredOptions.filter((def) => !isRequired(def)).map((def) => def.id);
+  const optional = filteredOptions
+    .filter((def) => !isRequired(def))
+    .map((def) => def.id)
+    .concat(RESERVED_EXPORT_KEYS);
   validateKeys(value, { optional, required }, { returnInvalidPartial: true, ...opts });
   const output: Record<string, any> = {};
   filteredOptions.forEach((def) => {
@@ -79,58 +92,56 @@ export function validateTemplateOptions(
   return output;
 }
 
-export function validateTemplateTagged(
-  tagged: any,
-  taggedDefinitions: TemplateTagDefinition[],
+export function validateTemplateParts(
+  parts: any,
+  partsDefinitions: TemplatePartDefinition[],
   options: Record<string, any>,
-  frontmatter: PageFrontmatter,
   opts: ValidationOptions,
 ) {
-  const filteredTagged = taggedDefinitions.filter((def) =>
-    conditionMet(def, { ...options, ...frontmatter }),
-  );
-  const optional = filteredTagged.filter((def) => !isRequired(def)).map((def) => def.id);
-  const required = filteredTagged.filter((def) => isRequired(def)).map((def) => def.id);
+  const filteredParts = partsDefinitions.filter((def) => conditionMet(def, options));
+  const optional = filteredParts.filter((def) => !isRequired(def)).map((def) => def.id);
+  const required = filteredParts.filter((def) => isRequired(def)).map((def) => def.id);
   const value = validateObjectKeys(
-    tagged,
+    parts,
     { optional, required },
     { returnInvalidPartial: true, ...opts },
   );
   if (value === undefined) return undefined;
   const output: Record<string, string> = {};
-  filteredTagged.forEach((def) => {
+  filteredParts.forEach((def) => {
     const { id, max_chars, max_words } = def;
     if (defined(value[id])) {
-      const tagValue = validateString(value[id], incrementOptions(id, opts));
-      if (max_chars != null && tagValue && tagValue.length > max_chars) {
+      const partValue = validateString(value[id], incrementOptions(id, opts));
+      if (max_chars != null && partValue && partValue.length > max_chars) {
         validationError(
-          `tagged block "${id}" must be less than or equal to ${max_chars} characters`,
+          `part block "${id}" must be less than or equal to ${max_chars} characters`,
           opts,
         );
       }
-      if (max_words != null && tagValue && tagValue.split(' ').length > max_words) {
+      if (max_words != null && partValue && partValue.split(' ').length > max_words) {
         validationError(
-          `tagged block "${id}" must be less than or equal to ${max_words} words`,
+          `part block "${id}" must be less than or equal to ${max_words} words`,
           opts,
         );
       }
-      if (tagValue !== undefined) output[def.id] = tagValue;
+      if (partValue !== undefined) output[def.id] = partValue;
     }
   });
   return output;
 }
 
-export function validateFrontmatterTemplateOptions(
+export function validateTemplateDoc(
   frontmatter: any,
-  optionDefinitions: TemplateOptionDefinition[],
+  docDefinitions: TemplateDocDefinition[],
+  options: Record<string, any>,
   opts: ValidationOptions,
 ) {
   const output = validatePageFrontmatter(frontmatter, opts);
   if (output === undefined) return undefined;
-  const required = optionDefinitions
-    .filter((def) => def.type === TemplateOptionTypes.frontmatter)
-    .filter((def) => isRequired(def))
-    .map((def) => def.id);
+  const filteredDoc = docDefinitions.filter((def) => {
+    return conditionMet(def, { ...options });
+  });
+  const required = filteredDoc.filter((def) => isRequired(def)).map((def) => def.id);
   validateObjectKeys(output, { required }, { suppressWarnings: true, ...opts });
   return output;
 }
@@ -143,11 +154,50 @@ function validateCondition(input: any, opts: ValidationOptions) {
   return { id, value: value.value };
 }
 
+export function validateTemplateDocDefinition(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(
+    input,
+    {
+      optional: ['title', 'description', 'required', 'condition'],
+      required: ['id'],
+    },
+    opts,
+  );
+  if (value === undefined) return undefined;
+  const id = validateChoice(value.id, {
+    choices: PAGE_FRONTMATTER_KEYS,
+    ...incrementOptions('id', opts),
+  });
+  if (id === undefined) return undefined;
+  const output: TemplateDocDefinition = { id };
+  if (defined(value.title)) {
+    output.title = validateString(value.title, incrementOptions('title', opts));
+  }
+  if (defined(value.description)) {
+    output.description = validateString(value.description, incrementOptions('description', opts));
+  }
+  if (defined(value.required)) {
+    output.required = validateBoolean(value.required, incrementOptions('required', opts));
+  }
+  if (defined(value.condition)) {
+    output.condition = validateCondition(value.condition, incrementOptions('condition', opts));
+  }
+  return output;
+}
+
 export function validateTemplateOptionDefinition(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(
     input,
     {
-      optional: ['description', 'default', 'required', 'choices', 'max_chars', 'condition'],
+      optional: [
+        'title',
+        'description',
+        'default',
+        'required',
+        'choices',
+        'max_chars',
+        'condition',
+      ],
       required: ['id', 'type'],
     },
     opts,
@@ -161,18 +211,22 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
   if (optionType === TemplateOptionTypes.choice && !defined(value.choices)) {
     return validationError('"choices" must be defined for option type "choice"', opts);
   }
-  let id: string | undefined;
   const idOpts = incrementOptions('id', opts);
-  if (optionType === TemplateOptionTypes.frontmatter) {
-    id = validateChoice(value.id, { choices: PAGE_FRONTMATTER_KEYS, ...idOpts });
-  } else {
-    id = validateString(value.id, idOpts);
-  }
+  const id = validateString(value.id, idOpts);
   if (id === undefined) return undefined;
+  if (RESERVED_EXPORT_KEYS.includes(id)) {
+    return validationError(
+      `cannot use reserved export property for template option: "${id}"`,
+      idOpts,
+    );
+  }
   const output: TemplateOptionDefinition = {
     id,
     type: optionType,
   };
+  if (defined(value.title)) {
+    output.title = validateString(value.title, incrementOptions('title', opts));
+  }
   if (defined(value.description)) {
     output.description = validateString(value.description, incrementOptions('description', opts));
   }
@@ -206,7 +260,8 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
 
 export function crossValidateConditions(
   optionDefinitions: TemplateOptionDefinition[],
-  taggedDefinitions: TemplateTagDefinition[],
+  partsDefinitions: TemplatePartDefinition[],
+  docDefinitions: TemplateDocDefinition[],
   opts: ValidationOptions,
 ) {
   const optionDefLookup: Record<string, TemplateOptionDefinition> = {};
@@ -217,7 +272,7 @@ export function crossValidateConditions(
       optionDefLookup[def.id] = def;
     }
   });
-  [...optionDefinitions, ...taggedDefinitions].forEach((def) => {
+  [...optionDefinitions, ...partsDefinitions, ...docDefinitions].forEach((def) => {
     if (def.condition && optionDefLookup[def.condition.id]) {
       if (defined(def.condition.value)) {
         const val = validateTemplateOption(def.condition.value, optionDefLookup[def.condition.id], {
@@ -232,17 +287,13 @@ export function crossValidateConditions(
           );
         }
       }
-    } else if (
-      def.condition &&
-      !PAGE_FRONTMATTER_KEYS.includes(def.condition.id) &&
-      def.condition.id !== def.id
-    ) {
+    } else if (def.condition && def.condition.id !== def.id) {
       validationError(`unknown condition id: ${def.condition.id}`, opts);
     }
   });
 }
 
-export function validateTemplateTagDefinition(input: any, opts: ValidationOptions) {
+export function validateTemplatePartDefinition(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(
     input,
     {
@@ -254,7 +305,7 @@ export function validateTemplateTagDefinition(input: any, opts: ValidationOption
   if (value === undefined) return undefined;
   const id = validateString(value.id, incrementOptions('id', opts));
   if (id === undefined) return undefined;
-  const output: TemplateTagDefinition = { id };
+  const output: TemplatePartDefinition = { id };
   if (defined(value.description)) {
     output.description = validateString(value.description, incrementOptions('description', opts));
   }
@@ -284,23 +335,91 @@ export function validateTemplateTagDefinition(input: any, opts: ValidationOption
   return output;
 }
 
-export function validateTemplateConfig(input: any, opts: ValidationOptions) {
+export function validateTemplateYml(
+  input: any,
+  opts: ValidationOptions & { templateDir?: string },
+) {
   const value = validateObjectKeys(
     input,
-    { optional: ['build', 'schema', 'tagged', 'options'] },
+    {
+      required: ['jtex'],
+      optional: [
+        'title',
+        'description',
+        'version',
+        'authors',
+        'license',
+        'tags',
+        'source',
+        'github',
+        'thumbnail',
+        'build',
+        'schema',
+        'parts',
+        'doc',
+        'options',
+        'packages',
+        'files',
+      ],
+    },
     opts,
   );
   if (value === undefined) return undefined;
-  const output: TemplateYml['config'] = {};
+  const jtex = validateChoice<'v1'>(value.jtex, {
+    ...incrementOptions('jtex', opts),
+    choices: ['v1'],
+  });
+  if (jtex === undefined) return undefined;
+  const output: TemplateYml = { jtex };
+  if (defined(value.title)) {
+    output.title = validateString(value.title, incrementOptions('title', opts));
+  }
+  if (defined(value.description)) {
+    output.description = validateString(value.description, incrementOptions('description', opts));
+  }
+  if (defined(value.version)) {
+    output.version = validateString(value.version, incrementOptions('version', opts));
+  }
+  if (defined(value.authors)) {
+    output.authors = validateList(
+      value.authors,
+      incrementOptions('authors', opts),
+      (author, index) => {
+        return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
+      },
+    );
+  }
+  if (defined(value.license)) {
+    output.license = validateLicenses(value.license, incrementOptions('license', opts));
+  }
+  if (defined(value.source)) {
+    output.source = validateUrl(value.source, incrementOptions('source', opts));
+  }
+  if (defined(value.github)) {
+    output.github = validateGithubUrl(value.github, incrementOptions('github', opts));
+  }
+  if (defined(value.thumbnail)) {
+    output.thumbnail = validateString(value.thumbnail, incrementOptions('thumbnail', opts));
+  }
+  if (defined(value.tags)) {
+    output.tags = validateList(value.tags, incrementOptions('tags', opts), (file, index) => {
+      return validateString(file, incrementOptions(`tags.${index}`, opts));
+    });
+  }
   if (defined(value.build)) {
     output.build = validateObject(value.build, incrementOptions('build', opts));
   }
   if (defined(value.schema)) {
     output.schema = validateObject(value.schema, incrementOptions('schema', opts));
   }
-  if (defined(value.tagged)) {
-    output.tagged = validateList(value.tagged, incrementOptions('tagged', opts), (val, ind) => {
-      return validateTemplateTagDefinition(val, incrementOptions(`tagged.${ind}`, opts));
+  if (defined(value.parts)) {
+    output.parts = validateList(value.parts, incrementOptions('parts', opts), (val, ind) => {
+      return validateTemplatePartDefinition(val, incrementOptions(`parts.${ind}`, opts));
+    });
+  }
+  if (defined(value.doc)) {
+    output.doc = validateList(value.doc, incrementOptions('doc', opts), (val, ind) => {
+      return validateTemplateDocDefinition(val, incrementOptions(`doc.${ind}`, opts));
     });
   }
   if (defined(value.options)) {
@@ -308,20 +427,28 @@ export function validateTemplateConfig(input: any, opts: ValidationOptions) {
       return validateTemplateOptionDefinition(val, incrementOptions(`options.${ind}`, opts));
     });
   }
-  crossValidateConditions(output.options || [], output.tagged || [], opts);
-  return output;
-}
-
-export function validateTemplateYml(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: ['metadata', 'config'] }, opts);
-  if (value === undefined) return undefined;
-  const output: TemplateYml = {};
-  // Ignoring value.metadata for now; this is just unused template metadata
-  if (defined(value.metadata)) {
-    output.metadata = value.metadata;
+  if (defined(value.packages)) {
+    output.packages = validateList(
+      value.packages,
+      incrementOptions('packages', opts),
+      (val, ind) => {
+        return validateString(val, incrementOptions(`packages.${ind}`, opts));
+      },
+    );
   }
-  if (defined(value.config)) {
-    output.config = validateTemplateConfig(value.config, incrementOptions('config', opts));
+  if (defined(value.files)) {
+    output.files = validateList(value.files, incrementOptions('files', opts), (val, ind) => {
+      const fileOpts = incrementOptions(`files.${ind}`, opts);
+      const file = validateString(val, fileOpts);
+      if (file && opts.templateDir) {
+        const filePath = path.join(opts.templateDir, file);
+        if (!fs.existsSync(filePath)) {
+          validationError(`file does not exist: ${path.join(opts.templateDir, file)}`, fileOpts);
+        }
+      }
+      return file;
+    });
   }
+  crossValidateConditions(output.options || [], output.parts || [], output.doc || [], opts);
   return output;
 }

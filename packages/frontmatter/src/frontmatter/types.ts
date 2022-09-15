@@ -28,6 +28,9 @@ export interface Author {
   email?: string;
   roles?: AuthorRoles[];
   affiliations?: string[];
+  twitter?: string;
+  github?: string;
+  website?: string;
 }
 
 export type Biblio = {
@@ -85,6 +88,8 @@ export enum ExportFormats {
 
 export type Export = {
   format: ExportFormats;
+  template?: string | null;
+  output?: string;
 } & Record<string, any>;
 
 export type SiteFrontmatter = {
@@ -104,6 +109,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   license?: Licenses;
   github?: string;
   binder?: string;
+  source?: string;
   subject?: string;
   /** Links to bib files for citations */
   bibliography?: string[];
@@ -114,7 +120,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   numbering?: boolean | Numbering;
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, string>;
-  export?: Export[];
+  exports?: Export[];
 };
 
 export type PageFrontmatter = Omit<ProjectFrontmatter, 'intersphinx'> & {

@@ -1,11 +1,11 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { Root, PhrasingContent } from 'mdast';
-import type { Container, CrossReference, Heading, Link, Math, Node, Paragraph } from 'myst-spec';
+import type { Container, CrossReference, Heading, Link, Math, Paragraph } from 'myst-spec';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import { createHtmlId, fileWarn, normalizeLabel, setTextAsChild } from 'myst-utils';
+import { createHtmlId, fileWarn, normalizeLabel, setTextAsChild, copyNode } from 'myst-utils';
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
 
@@ -130,10 +130,6 @@ function fillReferenceEnumerators(
       },
     );
   }
-}
-
-function copyNode<T extends Node>(node: T): T {
-  return JSON.parse(JSON.stringify(node));
 }
 
 function kindFromNode(node: TargetNodes): TargetKind | string {

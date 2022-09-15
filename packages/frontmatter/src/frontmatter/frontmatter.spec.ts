@@ -13,6 +13,7 @@ import {
   unnestKernelSpec,
   validateAuthor,
   validateBiblio,
+  validateExport,
   validateJupytext,
   validateKernelSpec,
   validateNumbering,
@@ -30,6 +31,9 @@ const TEST_AUTHOR: Author = {
   email: 'test@example.com',
   roles: ['Software', 'Validation'],
   affiliations: ['example university'],
+  twitter: '@test',
+  github: 'test',
+  website: 'https://example.com',
 };
 
 const TEST_BIBLIO: Biblio = {
@@ -83,13 +87,14 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   license: {},
   github: 'https://github.com/example',
   binder: 'https://example.com/binder',
+  source: 'https://example.com/source',
   subject: '',
   biblio: {},
   oxa: '',
   numbering: {},
   math: { a: 'b' },
   keywords: ['example', 'test'],
-  export: [{ format: 'pdf' as any, a: 1 }],
+  exports: [{ format: 'pdf' as any, template: 'default', output: 'out.tex', a: 1 }],
 };
 const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   title: 'frontmatter',
@@ -103,6 +108,7 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   license: {},
   github: 'https://github.com/example',
   binder: 'https://example.com/binder',
+  source: 'https://example.com/source',
   subject: '',
   biblio: {},
   oxa: '',
@@ -114,7 +120,7 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   kernelspec: {},
   jupytext: {},
   keywords: ['example', 'test'],
-  export: [{ format: 'pdf' as any, a: 1 }],
+  exports: [{ format: 'pdf' as any, template: 'default', output: 'out.tex', a: 1 }],
 };
 
 let opts: ValidationOptions;
@@ -219,6 +225,36 @@ describe('validateJupytext', () => {
   });
   it('full object returns self', async () => {
     expect(validateJupytext(TEST_JUPYTEXT, opts)).toEqual(TEST_JUPYTEXT);
+  });
+});
+
+describe('validateExport', () => {
+  it('empty object errors', async () => {
+    expect(validateExport({}, opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('format only passes', async () => {
+    expect(validateExport({ format: 'pdf' }, opts)).toEqual({ format: 'pdf' });
+  });
+  it('invalid format errors passes', async () => {
+    expect(validateExport({ format: 'str' }, opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('invalid template errors', async () => {
+    expect(validateExport({ format: 'pdf', template: true }, opts)).toEqual({ format: 'pdf' });
+  });
+  it('invalid output errors', async () => {
+    expect(validateExport({ format: 'pdf', output: true }, opts)).toEqual({ format: 'pdf' });
+  });
+  it('full object returns self', async () => {
+    expect(
+      validateExport({ format: 'pdf', template: 'default', output: 'main.tex' }, opts),
+    ).toEqual({ format: 'pdf', template: 'default', output: 'main.tex' });
+  });
+  it('extra keys are maintained', async () => {
+    expect(
+      validateExport({ format: 'pdf', template: 'default', output: 'main.tex', a: 1 }, opts),
+    ).toEqual({ format: 'pdf', template: 'default', output: 'main.tex', a: 1 });
   });
 });
 

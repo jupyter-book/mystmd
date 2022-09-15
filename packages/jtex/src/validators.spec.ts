@@ -1,12 +1,12 @@
 import type { ValidationOptions } from '@curvenote/validators';
 import {
   crossValidateConditions,
-  validateTemplateConfig,
   validateTemplateOption,
   validateTemplateOptions,
   validateTemplateOptionDefinition,
-  validateTemplateTagDefinition,
+  validateTemplatePartDefinition,
   validateTemplateYml,
+  validateTemplateDoc,
 } from './validators';
 
 let opts: ValidationOptions;
@@ -21,10 +21,12 @@ describe('validateTemplateOption', () => {
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('string option validates string', async () => {
-    expect(validateTemplateOption('input', { id: '', type: 'str' } as any, opts)).toEqual('input');
+    expect(validateTemplateOption('input', { id: '', type: 'string' } as any, opts)).toEqual(
+      'input',
+    );
   });
   it('bool option validates bool', async () => {
-    expect(validateTemplateOption(false, { id: '', type: 'bool' } as any, opts)).toEqual(false);
+    expect(validateTemplateOption(false, { id: '', type: 'boolean' } as any, opts)).toEqual(false);
   });
   it('choice option validates choice', async () => {
     expect(
@@ -36,11 +38,13 @@ describe('validateTemplateOption', () => {
     ).toEqual('a');
   });
   it('string option errors with invalid string', async () => {
-    expect(validateTemplateOption(false, { id: '', type: 'str' } as any, opts)).toEqual(undefined);
+    expect(validateTemplateOption(false, { id: '', type: 'string' } as any, opts)).toEqual(
+      undefined,
+    );
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('bool option errors with invalid bool', async () => {
-    expect(validateTemplateOption('input', { id: '', type: 'bool' } as any, opts)).toEqual(
+    expect(validateTemplateOption('input', { id: '', type: 'boolean' } as any, opts)).toEqual(
       undefined,
     );
     expect(opts.messages.errors?.length).toEqual(1);
@@ -55,27 +59,22 @@ describe('validateTemplateOption', () => {
     ).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
-  it('frontmatter option passes through', async () => {
-    expect(
-      validateTemplateOption('test', { id: 'title', type: 'frontmatter' } as any, opts),
-    ).toEqual('test');
-  });
 });
 
 describe('validateTemplateOptions', () => {
   it('no options returns empty object', async () => {
-    expect(validateTemplateOptions({ a: 1, b: 2 }, [], {}, opts)).toEqual({});
+    expect(validateTemplateOptions({ a: 1, b: 2 }, [], opts)).toEqual({});
   });
   it('non-object errors', async () => {
-    expect(validateTemplateOptions('' as any, [], {}, opts)).toEqual(undefined);
+    expect(validateTemplateOptions('' as any, [], opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('missing optional property passes', async () => {
-    expect(validateTemplateOptions({}, [{ id: 'key', type: 'str' as any }], {}, opts)).toEqual({});
+    expect(validateTemplateOptions({}, [{ id: 'key', type: 'string' as any }], opts)).toEqual({});
   });
   it('missing reqired property errors', async () => {
     expect(
-      validateTemplateOptions({}, [{ id: 'key', type: 'str' as any, required: true }], {}, opts),
+      validateTemplateOptions({}, [{ id: 'key', type: 'string' as any, required: true }], opts),
     ).toEqual({});
     expect(opts.messages.errors?.length).toEqual(1);
   });
@@ -83,8 +82,8 @@ describe('validateTemplateOptions', () => {
     expect(
       validateTemplateOptions(
         {},
-        [{ id: 'key', type: 'str' as any, required: true, default: 'value' }],
-        {},
+        [{ id: 'key', type: 'string' as any, required: true, default: 'value' }],
+
         opts,
       ),
     ).toEqual({ key: 'value' });
@@ -94,11 +93,11 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         { a: 'value', b: true, c: '1' },
         [
-          { id: 'a', type: 'str' as any },
-          { id: 'b', type: 'bool' as any, required: true },
+          { id: 'a', type: 'string' as any },
+          { id: 'b', type: 'boolean' as any, required: true },
           { id: 'c', type: 'choice' as any, choices: ['1', '2'] },
         ],
-        {},
+
         opts,
       ),
     ).toEqual({ a: 'value', b: true, c: '1' });
@@ -108,11 +107,11 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         { a: true, b: 'value', c: '3' },
         [
-          { id: 'a', type: 'str' as any },
-          { id: 'b', type: 'bool' as any, required: true },
+          { id: 'a', type: 'string' as any },
+          { id: 'b', type: 'boolean' as any, required: true },
           { id: 'c', type: 'choice' as any, choices: ['1', '2'] },
         ],
-        {},
+
         opts,
       ),
     ).toEqual({});
@@ -122,8 +121,8 @@ describe('validateTemplateOptions', () => {
     expect(
       validateTemplateOptions(
         { a: 'a b c' },
-        [{ id: 'a', type: 'str' as any, max_chars: 100 }],
-        {},
+        [{ id: 'a', type: 'string' as any, max_chars: 100 }],
+
         opts,
       ),
     ).toEqual({ a: 'a b c' });
@@ -132,30 +131,8 @@ describe('validateTemplateOptions', () => {
     expect(
       validateTemplateOptions(
         { a: '1 2 3' },
-        [{ id: 'a', type: 'str' as any, max_chars: 2 }],
-        {},
-        opts,
-      ),
-    ).toEqual({});
-    expect(opts.messages.errors?.length).toEqual(1);
-  });
-  it('condition from frontmatter not met no error', async () => {
-    expect(
-      validateTemplateOptions(
-        {},
-        [{ id: 'a', type: 'str' as any, required: true, condition: { id: 'short_title' } }],
-        {},
-        opts,
-      ),
-    ).toEqual({});
-    expect(opts.messages.errors?.length).toEqual(undefined);
-  });
-  it('condition from frontmatter met errors', async () => {
-    expect(
-      validateTemplateOptions(
-        {},
-        [{ id: 'a', type: 'str' as any, required: true, condition: { id: 'short_title' } }],
-        { short_title: 'test' },
+        [{ id: 'a', type: 'string' as any, max_chars: 2 }],
+
         opts,
       ),
     ).toEqual({});
@@ -166,10 +143,9 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         {},
         [
-          { id: 'a', type: 'str' as any, required: true, condition: { id: 'b' } },
-          { id: 'b', type: 'str' as any },
+          { id: 'a', type: 'string' as any, required: true, condition: { id: 'b' } },
+          { id: 'b', type: 'string' as any },
         ],
-        {},
         opts,
       ),
     ).toEqual({});
@@ -180,49 +156,12 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         { b: 'test' },
         [
-          { id: 'a', type: 'str' as any, required: true, condition: { id: 'b' } },
-          { id: 'b', type: 'str' as any },
+          { id: 'a', type: 'string' as any, required: true, condition: { id: 'b' } },
+          { id: 'b', type: 'string' as any },
         ],
-        {},
         opts,
       ),
     ).toEqual({ b: 'test' });
-    expect(opts.messages.errors?.length).toEqual(1);
-  });
-  it('condition value from frontmatter not met no error', async () => {
-    expect(
-      validateTemplateOptions(
-        {},
-        [
-          {
-            id: 'a',
-            type: 'str' as any,
-            required: true,
-            condition: { id: 'short_title', value: 'test' },
-          },
-        ],
-        { short_title: 'not test' },
-        opts,
-      ),
-    ).toEqual({});
-    expect(opts.messages.errors?.length).toEqual(undefined);
-  });
-  it('condition value from frontmatter met errors', async () => {
-    expect(
-      validateTemplateOptions(
-        {},
-        [
-          {
-            id: 'a',
-            type: 'str' as any,
-            required: true,
-            condition: { id: 'short_title', value: 'test' },
-          },
-        ],
-        { short_title: 'test' },
-        opts,
-      ),
-    ).toEqual({});
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('condition value from options not met no error', async () => {
@@ -230,10 +169,9 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         { b: 'not test' },
         [
-          { id: 'a', type: 'str' as any, required: true, condition: { id: 'b', value: 'test' } },
-          { id: 'b', type: 'str' as any },
+          { id: 'a', type: 'string' as any, required: true, condition: { id: 'b', value: 'test' } },
+          { id: 'b', type: 'string' as any },
         ],
-        {},
         opts,
       ),
     ).toEqual({ b: 'not test' });
@@ -244,14 +182,54 @@ describe('validateTemplateOptions', () => {
       validateTemplateOptions(
         { b: 'test' },
         [
-          { id: 'a', type: 'str' as any, required: true, condition: { id: 'b', value: 'test' } },
-          { id: 'b', type: 'str' as any },
+          { id: 'a', type: 'string' as any, required: true, condition: { id: 'b', value: 'test' } },
+          { id: 'b', type: 'string' as any },
         ],
-        {},
         opts,
       ),
     ).toEqual({ b: 'test' });
     expect(opts.messages.errors?.length).toEqual(1);
+  });
+});
+
+describe('validateTemplateDoc', () => {
+  it('frontmatter option passes through', async () => {
+    expect(validateTemplateDoc({ title: 'test' }, [{ id: 'title' }], {}, opts)).toEqual({
+      title: 'test',
+    });
+  });
+  it('frontmatter condition ignored if unmet', async () => {
+    expect(
+      validateTemplateDoc(
+        {},
+        [{ id: 'title', required: true, condition: { id: 'use_title' } }],
+        {},
+        opts,
+      ),
+    ).toEqual({});
+    expect(opts.messages.errors?.length).toEqual(undefined);
+  });
+  it('frontmatter condition errors if met', async () => {
+    expect(
+      validateTemplateDoc(
+        {},
+        [{ id: 'title', required: true, condition: { id: 'use_title' } }],
+        { use_title: true },
+        opts,
+      ),
+    ).toEqual({});
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('frontmatter condition passes if met', async () => {
+    expect(
+      validateTemplateDoc(
+        { title: 'test' },
+        [{ id: 'title', required: true, condition: { id: 'use_title' } }],
+        { use_title: true },
+        opts,
+      ),
+    ).toEqual({ title: 'test' });
+    expect(opts.messages.errors?.length).toEqual(undefined);
   });
 });
 
@@ -261,7 +239,7 @@ describe('validateTemplateOptionDefinition', () => {
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('no id errors', async () => {
-    expect(validateTemplateOptionDefinition({ type: 'str' }, opts)).toEqual(undefined);
+    expect(validateTemplateOptionDefinition({ type: 'string' }, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('no type errors', async () => {
@@ -269,10 +247,16 @@ describe('validateTemplateOptionDefinition', () => {
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('id/type return self', async () => {
-    expect(validateTemplateOptionDefinition({ id: 'key', type: 'str' }, opts)).toEqual({
+    expect(validateTemplateOptionDefinition({ id: 'key', type: 'string' }, opts)).toEqual({
       id: 'key',
-      type: 'str',
+      type: 'string',
     });
+  });
+  it('reserved id errors', async () => {
+    expect(validateTemplateOptionDefinition({ id: 'format', type: 'string' }, opts)).toEqual(
+      undefined,
+    );
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('choice type errors with no choices', async () => {
     expect(validateTemplateOptionDefinition({ id: 'key', type: 'choice' }, opts)).toEqual(
@@ -392,7 +376,7 @@ describe('validateTemplateOptionDefinition', () => {
       validateTemplateOptionDefinition(
         {
           id: 'key',
-          type: 'str',
+          type: 'string',
           condition: {
             id: 'test',
           },
@@ -401,7 +385,7 @@ describe('validateTemplateOptionDefinition', () => {
       ),
     ).toEqual({
       id: 'key',
-      type: 'str',
+      type: 'string',
       condition: {
         id: 'test',
       },
@@ -412,7 +396,7 @@ describe('validateTemplateOptionDefinition', () => {
       validateTemplateOptionDefinition(
         {
           id: 'key',
-          type: 'str',
+          type: 'string',
           condition: {
             invalid: true,
           },
@@ -421,34 +405,35 @@ describe('validateTemplateOptionDefinition', () => {
       ),
     ).toEqual({
       id: 'key',
-      type: 'str',
+      type: 'string',
     });
     expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 describe('crossValidateConditions', () => {
-  it('frontmatter condition id passes', async () => {
+  it('frontmatter condition id fails', async () => {
     crossValidateConditions(
       [
         {
           id: 'test',
-          type: 'str' as any,
+          type: 'string' as any,
           condition: {
             id: 'short_title',
           },
         },
       ],
       [],
+      [],
       opts,
     );
-    expect(opts.messages.errors?.length).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
   });
   it('option condition id passes', async () => {
     crossValidateConditions(
       [
         {
           id: 'test',
-          type: 'str' as any,
+          type: 'string' as any,
           condition: {
             id: 'prop',
             value: 'value',
@@ -456,9 +441,10 @@ describe('crossValidateConditions', () => {
         },
         {
           id: 'prop',
-          type: 'str' as any,
+          type: 'string' as any,
         },
       ],
+      [],
       [],
       opts,
     );
@@ -469,12 +455,13 @@ describe('crossValidateConditions', () => {
       [
         {
           id: 'test',
-          type: 'str' as any,
+          type: 'string' as any,
           condition: {
             id: 'prop',
           },
         },
       ],
+      [],
       [],
       opts,
     );
@@ -485,7 +472,7 @@ describe('crossValidateConditions', () => {
       [
         {
           id: 'test',
-          type: 'str' as any,
+          type: 'string' as any,
           condition: {
             id: 'prop',
             value: true,
@@ -493,9 +480,10 @@ describe('crossValidateConditions', () => {
         },
         {
           id: 'prop',
-          type: 'str' as any,
+          type: 'string' as any,
         },
       ],
+      [],
       [],
       opts,
     );
@@ -506,16 +494,17 @@ describe('crossValidateConditions', () => {
       [
         {
           id: 'test',
-          type: 'str' as any,
+          type: 'string' as any,
           condition: {
             id: 'test',
           },
         },
         {
           id: 'prop',
-          type: 'str' as any,
+          type: 'string' as any,
         },
       ],
+      [],
       [],
       opts,
     );
@@ -523,39 +512,39 @@ describe('crossValidateConditions', () => {
   });
 });
 
-describe('validateTemplateTagDefinition', () => {
+describe('validateTemplatePartDefinition', () => {
   it('invalid input errors', async () => {
-    expect(validateTemplateTagDefinition('', opts)).toEqual(undefined);
+    expect(validateTemplatePartDefinition('', opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('no id errors', async () => {
-    expect(validateTemplateTagDefinition({}, opts)).toEqual(undefined);
+    expect(validateTemplatePartDefinition({}, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('id/type return self', async () => {
-    expect(validateTemplateTagDefinition({ id: 'key' }, opts)).toEqual({ id: 'key' });
+    expect(validateTemplatePartDefinition({ id: 'key' }, opts)).toEqual({ id: 'key' });
   });
   it('invalid description errors', async () => {
-    expect(validateTemplateTagDefinition({ id: 'key', description: true }, opts)).toEqual({
+    expect(validateTemplatePartDefinition({ id: 'key', description: true }, opts)).toEqual({
       id: 'key',
     });
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid required errors', async () => {
-    expect(validateTemplateTagDefinition({ id: 'key', required: 'yes' }, opts)).toEqual({
+    expect(validateTemplatePartDefinition({ id: 'key', required: 'yes' }, opts)).toEqual({
       id: 'key',
     });
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid plain errors', async () => {
-    expect(validateTemplateTagDefinition({ id: 'key', plain: 'yes' }, opts)).toEqual({
+    expect(validateTemplatePartDefinition({ id: 'key', plain: 'yes' }, opts)).toEqual({
       id: 'key',
     });
     expect(opts.messages.errors?.length).toEqual(1);
   });
-  it('valid tag definiton passes', async () => {
+  it('valid part definiton passes', async () => {
     expect(
-      validateTemplateTagDefinition(
+      validateTemplatePartDefinition(
         { id: 'key', description: 'desc', required: true, plain: false, extra: 'ignored' },
         opts,
       ),
@@ -568,48 +557,81 @@ describe('validateTemplateTagDefinition', () => {
   });
 });
 
-describe('validateTemplateConfig', () => {
-  it('invalid input errors', async () => {
-    expect(validateTemplateConfig('', opts)).toEqual(undefined);
-    expect(opts.messages.errors?.length).toEqual(1);
-  });
-  it('empty object passes', async () => {
-    expect(validateTemplateConfig({}, opts)).toEqual({});
-  });
-  it('minimal object passes', async () => {
-    expect(
-      validateTemplateConfig({ build: {}, schema: {}, options: [], tagged: [] }, opts),
-    ).toEqual({ build: {}, schema: {}, options: [], tagged: [] });
-  });
-  it('invalid properties error', async () => {
-    expect(
-      validateTemplateConfig(
-        { build: '', schema: '', options: [{ id: 'key' }], tagged: [{}] },
-        opts,
-      ),
-    ).toEqual({ options: [], tagged: [] });
-    expect(opts.messages.errors?.length).toEqual(4);
-  });
-});
-
 describe('validateTemplateYml', () => {
   it('invalid input errors', async () => {
     expect(validateTemplateYml('', opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('empty object passes', async () => {
-    expect(validateTemplateYml({}, opts)).toEqual({});
+    expect(validateTemplateYml({ jtex: 'v1' }, opts)).toEqual({ jtex: 'v1' });
   });
   it('minimal object passes', async () => {
-    expect(validateTemplateYml({ metadata: {}, config: {} }, opts)).toEqual({
-      metadata: {},
-      config: {},
+    expect(
+      validateTemplateYml(
+        {
+          jtex: 'v1',
+          title: 'test',
+          description: 'test',
+          version: '1.0.0',
+          authors: [],
+          license: 'MIT',
+          tags: [],
+          source: 'https://example.com',
+          github: 'https://github.com/example/repo',
+          thumbnail: 'thumb',
+          build: {},
+          schema: {},
+          options: [],
+          parts: [],
+          doc: [],
+          packages: [],
+          files: [],
+        },
+        opts,
+      ),
+    ).toEqual({
+      jtex: 'v1',
+      title: 'test',
+      description: 'test',
+      version: '1.0.0',
+      authors: [],
+      license: {
+        content: {
+          free: true,
+          id: 'MIT',
+          osi: true,
+          title: 'MIT License',
+          url: 'https://opensource.org/licenses/MIT',
+        },
+      },
+      tags: [],
+      source: 'https://example.com',
+      github: 'https://github.com/example/repo',
+      thumbnail: 'thumb',
+      build: {},
+      schema: {},
+      options: [],
+      parts: [],
+      doc: [],
+      packages: [],
+      files: [],
     });
   });
   it('invalid properties error', async () => {
     expect(
-      validateTemplateYml({ metadata: {}, config: { options: [{ id: 'key' }] } }, opts),
-    ).toEqual({ metadata: {}, config: { options: [] } });
-    expect(opts.messages.errors?.length).toEqual(1);
+      validateTemplateYml(
+        {
+          jtex: 'v1',
+          build: '',
+          schema: '',
+          options: [{ id: 'key' }],
+          parts: [{}],
+          doc: [{}],
+          files: ['fake.txt'],
+        },
+        { ...opts, templateDir: '.' },
+      ),
+    ).toEqual({ jtex: 'v1', options: [], parts: [], doc: [], files: ['fake.txt'] });
+    expect(opts.messages.errors?.length).toEqual(6);
   });
 });
