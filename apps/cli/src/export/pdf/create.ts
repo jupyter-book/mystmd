@@ -40,4 +40,5 @@ export async function createPdfGivenTexFile(log: Logger, filename: string, useBu
   if (fs.existsSync(built_log)) {
     await copyFile(built_log, outputLogFile);
   }
+  return outputPdfFile;
 }

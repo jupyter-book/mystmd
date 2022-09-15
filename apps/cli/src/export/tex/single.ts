@@ -28,14 +28,17 @@ import {
   ifTemplateLoadOptions,
   throwIfTemplateButNoJtex,
 } from './template';
-import type { TexExportOptions } from './types';
+import type { ExportWithOutput, TexExportOptions } from './types';
 import { ifTemplateRunJtex } from './utils';
+
+export const DEFAULT_TEX_FILENAME = 'main.tex';
 
 export async function singleArticleToTex(
   session: ISession,
   versionId: VersionId,
   opts: TexExportOptions,
 ) {
+  if (!opts.filename) opts.filename = DEFAULT_TEX_FILENAME;
   throwIfTemplateButNoJtex(opts);
   const { tagged } = await ifTemplateFetchTaggedBlocks(session, opts);
   const templateOptions = ifTemplateLoadOptions(opts);
@@ -106,33 +109,36 @@ export function extractPart(
   return partContent;
 }
 
-export async function getFileContent(session: ISession, file: string, filename: string) {
+export async function getFileContent(session: ISession, file: string, output: string) {
   await loadFile(session, file);
   // Collect bib files - mysttotex will need those, not 'references'
   await transformMdast(session, {
     file,
-    imageWriteFolder: path.join(path.dirname(filename), 'images'),
+    imageWriteFolder: path.join(path.dirname(output), 'images'),
     imageAltOutputFolder: 'images',
   });
   return selectFile(session, file);
 }
 
-export async function localArticleToTexRaw(session: ISession, file: string, filename: string) {
-  const { mdast, frontmatter } = await getFileContent(session, file, filename);
+export async function localArticleToTexRaw(session: ISession, file: string, output: string) {
+  const { mdast, frontmatter } = await getFileContent(session, file, output);
   const result = mdastToTex(mdast, frontmatter);
-  session.log.info(`🖋  Writing tex to ${filename}`);
+  session.log.info(`🖋  Writing tex to ${output}`);
   // TODO: add imports and macros?
-  writeFileToFolder(filename, result.value);
+  writeFileToFolder(output, result.value);
 }
 
 export async function localArticleToTexTemplated(
   session: ISession,
   file: string,
-  filename: string,
-  templateOptions: Export,
+  templateOptions: ExportWithOutput,
   templatePath?: string,
 ) {
-  const { frontmatter, mdast, references } = await getFileContent(session, file, filename);
+  const { frontmatter, mdast, references } = await getFileContent(
+    session,
+    file,
+    templateOptions.output,
+  );
   const jtex = new JTex(session, {
     template: templateOptions.template || undefined,
     path: templatePath,
@@ -157,10 +163,10 @@ export async function localArticleToTexTemplated(
   // This will need opts eventually --v
   const result = mdastToTex(mdast, frontmatter);
   // Fill in template
-  session.log.info(`🖋  Writing templated tex to ${filename}`);
+  session.log.info(`🖋  Writing templated tex to ${templateOptions.output}`);
   jtex.render({
     contentOrPath: result.value,
-    outputPath: filename,
+    outputPath: templateOptions.output,
     frontmatter,
     parts,
     options: templateOptions,
@@ -169,53 +175,82 @@ export async function localArticleToTexTemplated(
   });
 }
 
-export async function localArticleToTex(session: ISession, file: string, opts: TexExportOptions) {
+export async function collectExportOptions(
+  session: ISession,
+  file: string,
+  format: ExportFormats,
+  defaultOutput: string,
+  opts: TexExportOptions,
+) {
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
-  const { filename, disableTemplate, template, templatePath } = opts;
+  const { filename, disableTemplate, templatePath } = opts;
+  let { template } = opts;
   if (disableTemplate && (opts.template || opts.templatePath)) {
     throw new Error(
       'Conflicting tex export options: disableTemplate requested but a template was provided',
     );
   }
-  let texExports: Export[] =
-    rawFrontmatter?.exports?.filter((exp: Export) => exp.format === ExportFormats.tex) || [];
+  let exportOptions: Export[] =
+    rawFrontmatter?.exports?.filter((exp: Export) => exp.format === format) || [];
   // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
   if (filename || template || templatePath || disableTemplate != null) {
-    const firstTexExport = texExports.length ? texExports[0] : { format: ExportFormats.tex };
-    texExports = [firstTexExport];
+    exportOptions = [exportOptions.length ? exportOptions[0] : { format }];
   }
-  if (texExports.length === 0) {
-    throw new Error(`No tex export options defined in frontmatter of ${file}`);
+  if (exportOptions.length === 0) {
+    throw new Error(`No ${format} export options defined in frontmatter of ${file}`);
   }
-  for (let index = 0; index < texExports.length; index++) {
-    const templateOptions = texExports[index];
+  return exportOptions.map((exp) => {
     let output: string;
     if (filename) {
       output = filename;
-    } else if (templateOptions.output) {
+    } else if (exp.output) {
       // output path from file frontmatter needs resolution relative to working directory
-      output = path.resolve(path.dirname(file), templateOptions.output);
+      output = path.resolve(path.dirname(file), exp.output);
     } else {
-      output = 'main.tex';
+      output = defaultOutput;
     }
     if (!path.extname(output)) {
-      output = path.join(output, 'main.tex');
+      output = path.join(output, defaultOutput);
     }
-    assertEndsInExtension(output, 'tex');
-    if (template) {
-      templateOptions.template = template;
-    } else if (templateOptions.template) {
+    assertEndsInExtension(output, format);
+    if (disableTemplate) {
+      template = null;
+    } else if (!template && exp.template) {
       // template path from file frontmatter needs resolution relative to working directory
-      const resolvedTemplatePath = path.resolve(path.dirname(file), templateOptions.template);
+      const resolvedTemplatePath = path.resolve(path.dirname(file), exp.template);
       if (fs.existsSync(resolvedTemplatePath)) {
-        templateOptions.template = resolvedTemplatePath;
+        template = resolvedTemplatePath;
+      } else {
+        template = exp.template;
       }
     }
-    if (disableTemplate) templateOptions.template = null;
-    if (templateOptions.template === null) {
-      await localArticleToTexRaw(session, file, output);
-    } else {
-      await localArticleToTexTemplated(session, file, output, templateOptions, opts.templatePath);
-    }
+    return { ...exp, output, template };
+  });
+}
+
+export async function runTexExport(
+  session: ISession,
+  file: string,
+  exportOptions: ExportWithOutput,
+  templatePath?: string,
+) {
+  if (exportOptions.template === null) {
+    await localArticleToTexRaw(session, file, exportOptions.output);
+  } else {
+    await localArticleToTexTemplated(session, file, exportOptions, templatePath);
+  }
+}
+
+export async function localArticleToTex(session: ISession, file: string, opts: TexExportOptions) {
+  const exportOptionsList = await collectExportOptions(
+    session,
+    file,
+    ExportFormats.tex,
+    DEFAULT_TEX_FILENAME,
+    opts,
+  );
+  // Just a normal loop so these output in serial in the CLI
+  for (let index = 0; index < exportOptionsList.length; index++) {
+    await runTexExport(session, file, exportOptionsList[index], opts.templatePath);
   }
 }

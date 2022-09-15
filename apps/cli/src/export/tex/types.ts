@@ -1,8 +1,10 @@
+import type { Export } from '@curvenote/frontmatter';
+
 export interface TexExportOptions {
   filename: string;
   multiple?: boolean;
   images?: string;
-  template?: string;
+  template?: string | null;
   templatePath?: string;
   disableTemplate?: boolean;
   options?: string;
@@ -11,3 +13,7 @@ export interface TexExportOptions {
   converter?: 'inkscape' | 'imagemagick';
   templateOptions?: Record<string, any>;
 }
+
+export type ExportWithOutput = Export & {
+  output: string;
+};
