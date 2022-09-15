@@ -377,7 +377,11 @@ export function validateExport(input: any, opts: ValidationOptions) {
   });
   if (format === undefined) return undefined;
   const output: Export = { ...value, format };
-  if (defined(value.template)) {
+  if (value.template === null) {
+    // It is possible for the template to explicitly be null.
+    // This use no template (rather than default template).
+    output.template = null;
+  } else if (defined(value.template)) {
     output.template = validateString(value.template, incrementOptions('template', opts));
   }
   if (defined(value.output)) {

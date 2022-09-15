@@ -72,7 +72,7 @@ function makeTexExportCLI(program: Command) {
     .alias('tex')
     .description('Export a tex file from a Curvenote link')
     .argument('<article>', 'A link to the Curvenote article (e.g. OXA Link or API link)')
-    .argument('[output]', 'The document filename to export to', 'main.tex')
+    .argument('[output]', 'The document filename to export to', '')
     .addOption(makeImageOption())
     .addOption(makeDisableTemplateOption())
     .addOption(makeTemplateOption())

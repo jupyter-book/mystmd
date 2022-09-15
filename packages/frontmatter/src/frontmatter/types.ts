@@ -88,6 +88,8 @@ export enum ExportFormats {
 
 export type Export = {
   format: ExportFormats;
+  template?: string | null;
+  output?: string;
 } & Record<string, any>;
 
 export type SiteFrontmatter = {
