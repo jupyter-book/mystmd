@@ -3,13 +3,15 @@ import path from 'path';
 import type { TemplatePartDefinition, ExpandedImports } from 'jtex';
 import JTex, { mergeExpandedImports } from 'jtex';
 import type { Root } from 'mdast';
-import type { GenericNode } from 'mystjs';
 import { selectAll, unified } from 'mystjs';
 import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
 import type { VersionId } from '@curvenote/blocks';
 import type { Export, PageFrontmatter } from '@curvenote/frontmatter';
 import { ExportFormats } from '@curvenote/frontmatter';
+import { remove } from 'unist-util-remove';
+import { copyNode } from 'myst-utils';
+import type { Block } from 'myst-spec';
 import type { ISession } from '../../session/types';
 import {
   getRawFrontmatterFromFile,
@@ -70,17 +72,21 @@ export function mdastToTex(mdast: Root, frontmatter: PageFrontmatter) {
   return tex.result as LatexResult;
 }
 
-export function taggedBlocksFromMdast(mdast: Root, tag: string) {
-  const taggedBlocks = selectAll('block', mdast).filter((block) => {
+/**
+ * Extracts the node(s) based on part (string) or tags (string[]).
+ */
+function blockPartsFromMdast(mdast: Root, part: string) {
+  const blockParts = selectAll('block', mdast).filter((block) => {
+    if (!block.data?.tags && !block.data?.part) return false;
+    if (block.data?.part === part) return true;
     try {
-      if (!block.data?.tags) return false;
-      return (block.data.tags as any).includes(tag);
+      return (block.data.tags as any).includes(part);
     } catch {
       return false;
     }
   });
-  if (taggedBlocks.length === 0) return undefined;
-  return taggedBlocks as GenericNode[];
+  if (blockParts.length === 0) return undefined;
+  return blockParts as Block[];
 }
 
 export function extractPart(
@@ -88,14 +94,16 @@ export function extractPart(
   partDefinition: TemplatePartDefinition,
   frontmatter: PageFrontmatter,
 ): LatexResult | undefined {
-  const taggedBlocks = taggedBlocksFromMdast(mdast, partDefinition.id);
-  if (!taggedBlocks) return undefined;
-  const taggedMdast = { type: 'root', children: taggedBlocks } as Root;
-  const taggedContent = mdastToTex(taggedMdast, frontmatter);
-  taggedBlocks.forEach((block) => {
-    block.children = [];
+  const blockParts = blockPartsFromMdast(mdast, partDefinition.id);
+  if (!blockParts) return undefined;
+  const taggedMdast = { type: 'root', children: copyNode(blockParts) } as unknown as Root;
+  const partContent = mdastToTex(taggedMdast, frontmatter);
+  // Remove the blockparts from the main document
+  blockParts.forEach((block) => {
+    (block as any).type = '__delete__';
   });
-  return taggedContent;
+  remove(mdast, '__delete__');
+  return partContent;
 }
 
 export async function getFileContent(session: ISession, file: string, filename: string) {
