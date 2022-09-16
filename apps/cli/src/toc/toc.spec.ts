@@ -1,28 +1,27 @@
-import { vol } from 'memfs';
+import memfs from 'memfs';
 import { Session } from '../session';
 import { projectFromPath } from './fromPath';
 import { pagesFromToc } from './fromToc';
 import { tocFromProject } from './toToc';
 import { findProjectsOnPath } from './utils';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-jest.mock('fs', () => require('memfs').fs);
+jest.mock('fs', () => memfs.fs);
 
-beforeEach(() => vol.reset());
+beforeEach(() => memfs.vol.reset());
 
 const session = new Session();
 
 describe('site section generation', () => {
   it('empty', async () => {
-    vol.fromJSON({});
+    memfs.vol.fromJSON({});
     expect(() => projectFromPath(session, '.')).toThrow();
   });
   it('invalid index', async () => {
-    vol.fromJSON({ 'readme.md': '' });
+    memfs.vol.fromJSON({ 'readme.md': '' });
     expect(() => projectFromPath(session, '.', 'index.md')).toThrow();
   });
   it('readme.md only', async () => {
-    vol.fromJSON({ 'readme.md': '' });
+    memfs.vol.fromJSON({ 'readme.md': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
@@ -31,7 +30,7 @@ describe('site section generation', () => {
     });
   });
   it('README.md only', async () => {
-    vol.fromJSON({ 'README.md': '' });
+    memfs.vol.fromJSON({ 'README.md': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'README.md',
       path: '.',
@@ -40,7 +39,7 @@ describe('site section generation', () => {
     });
   });
   it('README.md and index.md', async () => {
-    vol.fromJSON({ 'README.md': '', 'index.md': '' });
+    memfs.vol.fromJSON({ 'README.md': '', 'index.md': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'index.md',
       path: '.',
@@ -49,7 +48,7 @@ describe('site section generation', () => {
     });
   });
   it('index.md only', async () => {
-    vol.fromJSON({ 'index.md': '' });
+    memfs.vol.fromJSON({ 'index.md': '' });
     expect(projectFromPath(session, '.', 'index.md')).toEqual({
       file: 'index.md',
       path: '.',
@@ -58,7 +57,7 @@ describe('site section generation', () => {
     });
   });
   it('folder/subfolder/index.md only', async () => {
-    vol.fromJSON({ 'folder/subfolder/index.md': '' });
+    memfs.vol.fromJSON({ 'folder/subfolder/index.md': '' });
     expect(projectFromPath(session, '.', 'folder/subfolder/index.md')).toEqual({
       file: 'folder/subfolder/index.md',
       path: '.',
@@ -67,7 +66,7 @@ describe('site section generation', () => {
     });
   });
   it('flat folder', async () => {
-    vol.fromJSON({ 'readme.md': '', 'page.md': '', 'notebook.ipynb': '' });
+    memfs.vol.fromJSON({ 'readme.md': '', 'page.md': '', 'notebook.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
@@ -87,7 +86,7 @@ describe('site section generation', () => {
     });
   });
   it('single folder', async () => {
-    vol.fromJSON({ 'readme.md': '', 'folder/page.md': '', 'folder/notebook.ipynb': '' });
+    memfs.vol.fromJSON({ 'readme.md': '', 'folder/page.md': '', 'folder/notebook.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
@@ -111,7 +110,7 @@ describe('site section generation', () => {
     });
   });
   it('nested folders', async () => {
-    vol.fromJSON({
+    memfs.vol.fromJSON({
       'readme.md': '',
       'folder1/01_MySecond_folder-ok/folder3/01_notebook.ipynb': '',
       'folder1/01_MySecond_folder-ok/folder3/02_page.md': '',
@@ -147,7 +146,7 @@ describe('site section generation', () => {
     });
   });
   it('files before folders', async () => {
-    vol.fromJSON({ 'readme.md': '', 'zfile.md': '', 'afolder/page.md': '' });
+    memfs.vol.fromJSON({ 'readme.md': '', 'zfile.md': '', 'afolder/page.md': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
@@ -171,7 +170,7 @@ describe('site section generation', () => {
     });
   });
   it('specify index & folder', async () => {
-    vol.fromJSON({
+    memfs.vol.fromJSON({
       'ignore.md': '',
       'folder1/page1.md': '',
       'folder1/folder2/readme.md': '',
@@ -210,7 +209,7 @@ describe('site section generation', () => {
     });
   });
   it('first md file as index', async () => {
-    vol.fromJSON({ 'folder/page.md': '', 'folder/notebook.ipynb': '' });
+    memfs.vol.fromJSON({ 'folder/page.md': '', 'folder/notebook.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'folder/page.md',
       path: '.',
@@ -229,7 +228,7 @@ describe('site section generation', () => {
     });
   });
   it('other md picked over default notebook', async () => {
-    vol.fromJSON({ 'page.md': '', 'index.ipynb': '' });
+    memfs.vol.fromJSON({ 'page.md': '', 'index.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'page.md',
       path: '.',
@@ -244,7 +243,7 @@ describe('site section generation', () => {
     });
   });
   it('index notebook picked over other notebook', async () => {
-    vol.fromJSON({ 'aaa.ipynb': '', 'index.ipynb': '' });
+    memfs.vol.fromJSON({ 'aaa.ipynb': '', 'index.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'index.ipynb',
       path: '.',
@@ -259,7 +258,7 @@ describe('site section generation', () => {
     });
   });
   it('first notebook as index', async () => {
-    vol.fromJSON({ 'folder/page.docx': '', 'folder/notebook.ipynb': '' });
+    memfs.vol.fromJSON({ 'folder/page.docx': '', 'folder/notebook.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'folder/notebook.ipynb',
       path: '.',
@@ -268,7 +267,7 @@ describe('site section generation', () => {
     });
   });
   it('stop traversing at curvenote.yml', async () => {
-    vol.fromJSON({
+    memfs.vol.fromJSON({
       'readme.md': '',
       'folder/page.md': '',
       'folder/notebook.ipynb': '',
@@ -298,7 +297,7 @@ describe('site section generation', () => {
     });
   });
   it('do not stop traversing at root curvenote.yml', async () => {
-    vol.fromJSON({
+    memfs.vol.fromJSON({
       'curvenote.yml': '',
       'readme.md': '',
       'folder/page.md': '',
@@ -546,7 +545,7 @@ project: {}
 
 describe('findProjectPaths', () => {
   it('site curvenote.ymls', async () => {
-    vol.fromJSON({
+    memfs.vol.fromJSON({
       'curvenote.yml': SITE_CONFIG,
       'readme.md': '',
       'folder/page.md': '',
@@ -557,7 +556,7 @@ describe('findProjectPaths', () => {
     expect(findProjectsOnPath(session, '.')).toEqual([]);
   });
   it('project curvenote.ymls', async () => {
-    vol.fromJSON({
+    memfs.vol.fromJSON({
       'curvenote.yml': PROJECT_CONFIG,
       'readme.md': '',
       'folder/page.md': '',
@@ -582,7 +581,7 @@ chapters:
 
 describe('pagesFromToc', () => {
   it('pages from toc', async () => {
-    vol.fromJSON({
+    memfs.vol.fromJSON({
       '_toc.yml': TOC_FILE,
       'index.md': '',
       'a.md': '',
@@ -598,7 +597,7 @@ describe('pagesFromToc', () => {
     ]);
   });
   it('pages from toc, with extra files', async () => {
-    vol.fromJSON({
+    memfs.vol.fromJSON({
       '_toc.yml': TOC_FILE,
       'index.md': '',
       'a.md': '',
@@ -616,7 +615,7 @@ describe('pagesFromToc', () => {
     ]);
   });
   it('pages from toc, nested', async () => {
-    vol.fromJSON({
+    memfs.vol.fromJSON({
       'readme.md': '',
       'x.md': '',
       'section/y.md': '',
@@ -646,7 +645,7 @@ describe('pagesFromToc', () => {
     });
   });
   it('pages from bad toc', async () => {
-    vol.fromJSON({
+    memfs.vol.fromJSON({
       'readme.md': '',
       'x.md': '',
       'section/y.md': '',
