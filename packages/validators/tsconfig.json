@@ -4,7 +4,7 @@
     // module is overridden from the build:esm/build:cjs scripts
     "module": "es2015",
     "jsx": "react-jsx",
-    "lib": ["es2020"],
+    "lib": ["DOM", "es2020"],
     "esModuleInterop": true,
     "noImplicitAny": true,
     "strict": true,
