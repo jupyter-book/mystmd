@@ -60,7 +60,8 @@ export async function localArticleToPdf(session: ISession, file: string, opts: T
     const tempFolder = createTempFolder();
     const texExportOptions = texExportOptionsFromPdf(pdfExportOptions, tempFolder);
     await runTexExport(session, file, texExportOptions, opts.templatePath);
-    const tempPdf = await createPdfGivenTexFile(session.log, texExportOptions.output, false);
+    session.log.info(`🖨  Rendering pdf to ${pdfExportOptions.output}`);
     fs.copyFileSync(tempPdf, pdfExportOptions.output);
+    session.log.debug(`Copied PDF file to ${pdfExportOptions.output}`);
   }
 }

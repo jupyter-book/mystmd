@@ -20,19 +20,21 @@ export async function createPdfGivenTexFile(log: Logger, filename: string, useBu
   const buildPath = path.resolve(useBuildFolder ? path.join(outputPath, BUILD_FOLDER) : outputPath);
   const CMD = `latexmk -f -xelatex -synctex=1 -interaction=batchmode -file-line-error -latexoption="-shell-escape" ${tex_filename} &> ${tex_log_filename}`;
   try {
-    log.debug(`Building LaTeX: logging output to ${tex_log_filename}`);
+    session.log.debug(`Building LaTeX in directory: ${buildPath}`);
+    session.log.debug(`Logging output to: ${tex_log_filename}`);
+    session.log.debug(`Running command:\n> ${CMD}`);
     await exec(CMD, { cwd: buildPath });
-    log.debug(`Done building LaTeX.`);
+    session.log.debug(`Done building LaTeX.`);
   } catch (err) {
-    log.error(`Error while invoking mklatex: ${err}`);
+    session.log.error(`Error while invoking mklatex: ${err}`);
   }
 
   const built_pdf = path.join(buildPath, pdf_filename);
   if (fs.existsSync(built_pdf)) {
     await copyFile(built_pdf, outputPdfFile);
-    log.debug(`Copied PDF file to ${outputPdfFile}`);
+    session.log.debug(`Copied PDF file to ${outputPdfFile}`);
   } else {
-    log.error(`Could not find ${built_pdf} as expected, pdf export failed`);
+    session.log.error(`Could not find ${built_pdf} as expected, pdf export failed`);
     throw Error(`Could not find ${built_pdf} as expected, pdf export failed`);
   }
 
