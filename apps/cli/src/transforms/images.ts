@@ -7,7 +7,7 @@ import fetch from 'node-fetch';
 import path from 'path';
 import type { VersionId } from '@curvenote/blocks';
 import { oxaLinkToId } from '@curvenote/blocks';
-import type { PageFrontmatter } from '@curvenote/frontmatter';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import { WebFileObject } from '../web/files';
 import { convertImageToWebp } from '../export/utils/imagemagick';
 import type { ISession } from '../session/types';

@@ -1,4 +1,4 @@
-import type { Author, PageFrontmatter } from '@curvenote/frontmatter';
+import type { Author, PageFrontmatter } from 'myst-frontmatter';
 import type { RendererAuthor, RendererDoc, ValueAndIndex } from './types';
 
 const ALPHA = 'ABCDEFGHIJKLMNOPQURSUVWXYZ';

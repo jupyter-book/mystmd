@@ -1,4 +1,4 @@
-import type { ProjectFrontmatter } from '@curvenote/frontmatter';
+import type { ProjectFrontmatter } from 'myst-frontmatter';
 import type { SiteAnalytics, SiteAction, SiteNavItem } from '../config/types';
 
 // Types for local Project

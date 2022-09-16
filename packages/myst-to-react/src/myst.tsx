@@ -4,7 +4,7 @@ import type { LatexResult } from 'myst-to-tex'; // Only import the type!!
 import type { VFileMessage } from 'vfile-message';
 import yaml from 'js-yaml';
 import type { References } from '@curvenote/site-common';
-import type { PageFrontmatter } from '@curvenote/frontmatter';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import type { NodeRenderer } from './types';
 import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';

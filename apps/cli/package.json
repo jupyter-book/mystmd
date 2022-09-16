@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@curvenote/blocks": "*",
-    "@curvenote/frontmatter": "*",
+    "myst-frontmatter": "*",
     "@curvenote/nbtx": "^0.1.11",
     "@curvenote/schema": "0.12.17",
     "@curvenote/site-common": "*",

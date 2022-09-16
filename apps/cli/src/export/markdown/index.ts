@@ -4,7 +4,7 @@ import YAML from 'js-yaml';
 import fetch from 'node-fetch';
 import type { VersionId, Blocks } from '@curvenote/blocks';
 import { KINDS, oxaLink } from '@curvenote/blocks';
-import { fillPageFrontmatter } from '@curvenote/frontmatter';
+import { fillPageFrontmatter } from 'myst-frontmatter';
 import { createId, toMyst } from '@curvenote/schema';
 import { prepareToWrite } from '../../frontmatter';
 import {

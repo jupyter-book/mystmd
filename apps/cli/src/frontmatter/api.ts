@@ -1,12 +1,12 @@
 import type { Block, Project } from '@curvenote/blocks';
 import { oxaLink } from '@curvenote/blocks';
-import type { Author, PageFrontmatter, ProjectFrontmatter } from '@curvenote/frontmatter';
+import type { Author, PageFrontmatter, ProjectFrontmatter } from 'myst-frontmatter';
 import {
   PAGE_FRONTMATTER_KEYS,
   PROJECT_FRONTMATTER_KEYS,
   validatePageFrontmatterKeys,
   validateProjectFrontmatterKeys,
-} from '@curvenote/frontmatter';
+} from 'myst-frontmatter';
 import type { ValidationOptions } from '@curvenote/validators';
 import { filterKeys } from '@curvenote/validators';
 import { dirname, join } from 'path';

@@ -57,7 +57,7 @@
     "npm": ">=6"
   },
   "dependencies": {
-    "@curvenote/frontmatter": "^0.0.1",
+    "myst-frontmatter": "^0.0.1",
     "@curvenote/validators": "^0.0.1",
     "chalk": "^4.1.2",
     "commander": "^8.3.0",

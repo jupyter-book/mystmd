@@ -6,7 +6,7 @@ import fs from 'fs';
 import { join } from 'path';
 import type { ISession } from '../types';
 import type { ValidationOptions } from '@curvenote/validators';
-import { PAGE_FRONTMATTER_KEYS } from '@curvenote/frontmatter';
+import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { RENDERER_DOC_KEYS } from '../types';
 import { validateTemplateYml } from '../validators';
 

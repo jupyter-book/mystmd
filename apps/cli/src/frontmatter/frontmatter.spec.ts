@@ -1,6 +1,6 @@
 import type { Block, Project } from '@curvenote/blocks';
 import { CitationStyles, KINDS, ProjectVisibility } from '@curvenote/blocks';
-import type { PageFrontmatter, ProjectFrontmatter } from '@curvenote/frontmatter';
+import type { PageFrontmatter, ProjectFrontmatter } from 'myst-frontmatter';
 import { prepareToWrite } from '.';
 import { Session } from '../session';
 import { pageFrontmatterFromDTO, projectFrontmatterFromDTO, saveAffiliations } from './api';

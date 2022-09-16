@@ -1,4 +1,4 @@
-import { validateAuthor } from '@curvenote/frontmatter';
+import { validateAuthor } from 'myst-frontmatter';
 import type { ValidationOptions } from '@curvenote/validators';
 import { defined, incrementOptions, validateDate, validateList } from '@curvenote/validators';
 

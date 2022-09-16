@@ -3,7 +3,7 @@ import {
   SITE_FRONTMATTER_KEYS,
   validateProjectFrontmatterKeys,
   validateSiteFrontmatterKeys,
-} from '@curvenote/frontmatter';
+} from 'myst-frontmatter';
 import type { ValidationOptions } from '@curvenote/validators';
 import {
   defined,

@@ -1,12 +1,12 @@
 import type { Root } from 'mdast';
 import { getFrontmatter } from 'myst-transforms';
-import type { Licenses, PageFrontmatter } from '@curvenote/frontmatter';
+import type { Licenses, PageFrontmatter } from 'myst-frontmatter';
 import {
   fillPageFrontmatter,
   licensesToString,
   unnestKernelSpec,
   validatePageFrontmatter,
-} from '@curvenote/frontmatter';
+} from 'myst-frontmatter';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
 

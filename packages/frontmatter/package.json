@@ -1,8 +1,8 @@
 {
-  "name": "@curvenote/frontmatter",
+  "name": "myst-frontmatter",
   "version": "0.0.1",
   "license": "MIT",
-  "description": "Curvenote frontmatter types and validation",
+  "description": "Frontmatter types and validation for the mystjs ecosystem",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "homepage": "https://github.com/curvenote/curvenote#readme",
   "main": "./src/index.ts",

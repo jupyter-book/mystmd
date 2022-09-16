@@ -1,7 +1,7 @@
 import path from 'path';
 import type { VersionId } from '@curvenote/blocks';
 import { KINDS, convertToBlockId } from '@curvenote/blocks';
-import { fillPageFrontmatter } from '@curvenote/frontmatter';
+import { fillPageFrontmatter } from 'myst-frontmatter';
 import {
   saveAffiliations,
   pageFrontmatterFromDTO,

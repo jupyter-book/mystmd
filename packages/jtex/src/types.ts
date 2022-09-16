@@ -1,5 +1,5 @@
-import type { Author, Licenses, PageFrontmatter } from '@curvenote/frontmatter';
-import { PAGE_FRONTMATTER_KEYS } from '@curvenote/frontmatter';
+import type { Author, Licenses, PageFrontmatter } from 'myst-frontmatter';
+import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 
 export type Logger = Pick<typeof console, 'debug' | 'info' | 'warn' | 'error'>;
 

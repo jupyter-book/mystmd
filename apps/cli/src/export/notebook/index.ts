@@ -1,7 +1,7 @@
 import yaml from 'js-yaml';
 import type { Blocks, VersionId } from '@curvenote/blocks';
 import { KINDS } from '@curvenote/blocks';
-import { fillPageFrontmatter } from '@curvenote/frontmatter';
+import { fillPageFrontmatter } from 'myst-frontmatter';
 import { prepareToWrite } from '../../frontmatter';
 import {
   pageFrontmatterFromDTOAndThumbnail,

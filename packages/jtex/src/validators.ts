@@ -7,7 +7,7 @@ import {
   validateGithubUrl,
   validateLicenses,
   validatePageFrontmatter,
-} from '@curvenote/frontmatter';
+} from 'myst-frontmatter';
 import {
   defined,
   incrementOptions,

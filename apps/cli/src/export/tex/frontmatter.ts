@@ -1,5 +1,5 @@
 import YAML from 'js-yaml';
-import type { PageFrontmatter } from '@curvenote/frontmatter';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import { toTex } from '@curvenote/schema';
 import { prepareToWrite } from '../../frontmatter';
 import { getEditorState } from '../utils/getEditorState';

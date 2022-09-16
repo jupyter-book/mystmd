@@ -1,7 +1,7 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import type { KINDS } from '@curvenote/blocks';
 import type { References as SiteReferences } from '@curvenote/site-common';
-import type { PageFrontmatter } from '@curvenote/frontmatter';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Root } from 'mdast';
 
 export type { Citations, Footnotes } from '@curvenote/site-common';

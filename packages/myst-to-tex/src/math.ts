@@ -1,4 +1,4 @@
-import type { PageFrontmatter } from '@curvenote/frontmatter';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Handler, ITexSerializer } from './types';
 
 function addMacrosToState(value: string, state: ITexSerializer) {

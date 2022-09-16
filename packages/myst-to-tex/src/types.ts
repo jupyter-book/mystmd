@@ -1,4 +1,4 @@
-import type { PageFrontmatter } from '@curvenote/frontmatter';
+import type { PageFrontmatter } from 'myst-frontmatter';
 
 export const DEFAULT_IMAGE_WIDTH = 0.7;
 export const DEFAULT_PAGE_WIDTH_PIXELS = 800;
