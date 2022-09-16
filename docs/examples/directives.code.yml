@@ -107,7 +107,7 @@ cases:
         return 5
       </code></pre>
 
-  - title: Code-block directive cannot spcify linenos without showing them
+  - title: Code-block directive shows line numbers without explicit linenos flag
     mdast:
       type: root
       children:
@@ -122,6 +122,8 @@ cases:
           children:
             - type: code
               lang: python
+              showLineNumbers: true
+              startingLineNumber: 2
               value: |-
                 def five():
                   return 5
