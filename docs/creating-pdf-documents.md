@@ -3,7 +3,7 @@ title: Scientific PDFs
 description: Export to over 400 journal templates from a MyST Markdown file, which uses LaTeX and can create print-ready, multi-column, professional PDF documents.
 ---
 
-You can render your MyST documents as print-ready scientific papers, by converting to $\LaTeX$ and redering to over 400 journal templates already available. Alternatively, you can also render your documents as Beamer presentations or as [Microsoft Word](./creating-word-documents.md) to share with other collaborators.
+You can render your MyST documents as print-ready scientific papers, by converting to $\LaTeX$ and render to over 400 journal templates already available. Alternatively, you can also render your documents as Beamer presentations or as [Microsoft Word](./creating-word-documents.md) to share with other collaborators.
 
 ```{figure} ./images/pdf-exports.png
 :name: fig-export-to-pdf
@@ -75,6 +75,8 @@ To include the $\LaTeX$ source code as well as the included images, change the `
 See the official documentation for installation instructions for $\LaTeX$ at:
 
 - <https://www.latex-project.org/get/>
+
+Ensure that you download a full distribution with appropriate libraries installed.
 
 % Probably a note in the future about running this remotely?
 

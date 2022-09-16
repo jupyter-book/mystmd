@@ -1,5 +1,5 @@
 ---
-title: Syntax Overview
+title: MyST Syntax Overview
 description: MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown.
 ---
 
@@ -8,6 +8,20 @@ MyST (Markedly Structured Text) is designed to create publication-quality docume
 > MyST is designed to harness the extensibility and community of RST and bring these super-powers into Markdown.
 
 MyST is a superset of [CommonMark](./commonmark.md) (the standard form of Markdown) and allows you to directly create “directives” and “roles” as extension points in the language. `directives` are block-level extension points, like [callout panels](./admonitions.md), [tabs](./cards-and-tabs.md), [figures](./figures.md) or [embedded charts](./interactive-notebooks.ipynb); and roles are inline extension points, for components like [cross-references](./cross-references.md), [external references](./external-references.md), [citations](./citations.md), or [inline math](./math.md).
+
+## Frontmatter
+
+To add meta information to your document, you can add frontmatter that includes a `title`, `description`, `thumbnail` and any `authors` or scientific data like a `doi`.
+To include frontmatter, add it at the top of your document as YAML, for example:
+
+```yaml
+---
+title: MyST Syntax Overview
+description: MyST is designed to create publication-quality documents written entirely in Markdown.
+---
+```
+
+To learn about all the fields that you can add, see [](./frontmatter.md).
 
 ## Directives & Roles
 
@@ -35,35 +49,40 @@ My directive content.
 
 2\) **directive options** - a collection of flags or key/value pairs that come just underneath `{directivename}`.
 
-There are two ways to write directive options
+There are two ways to write directive options, as `:key: value` or as a YAML block.
 
-`````{list-table}
-* - 2a) Options as `:key: val` pairs.\
-    Great for a few options.
-  - 2b) Options as `key: val` pairs enclosed by `---` lines.\
-    This is parsed as YAML, and easier for listing many options.
-* - ````markdown
-    ```{directivename}
-    :key1: metadata1
-    :key2: metadata2
+``````{tab-set}
+`````{tab-item} Key value pairs
+Options can be included as `:key: val` pairs, which is the default way to include options.
+````markdown
+```{directivename}
+:key1: metadata1
+:key2: metadata2
 
-    My directive content.
-    ```
-    ````
-  - ````markdown
-    ```{directivename}
-    ---
-    key1: metadata1
-    key2: metadata2
-    ---
-
-    My directive content.
-    ```
-    ````
+My directive content.
+```
+````
 `````
+`````{tab-item} YAML
+Options can also be included as `key: val` pairs enclosed by `---` lines, similar to document frontmatter.
+This is parsed as YAML, and may be easier for listing many options.
+
+
+````markdown
+```{directivename}
+---
+key1: metadata1
+key2: metadata2
+---
+
+My directive content.
+```
+````
+`````
+``````
 
 ```{tip}
-Remember, specifying directive keywords with `:key:` or `---` will make no difference. We recommend using `---` if you have many keywords you wish to specify, or if some values will span multiple lines. Use the `:key: val` syntax as a shorthand for just one or two keywords.
+Specifying directive keywords with `:key:` or `---` will make no difference. Use the `:key: val` syntax as a shorthand for just one or two keywords. Use the `---` syntax if you have many keywords you wish to specify, or if some values will span multiple lines.
 ```
 
 Try editing the following `{figure}` directive, you can center the figure with an `:align: center` option!

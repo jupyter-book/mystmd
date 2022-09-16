@@ -156,8 +156,8 @@ my_math
 ```
 ````
 
-To reference equations you can use a markdown link with the target, for example:
-`[](#cross)`. either the `eq` role or the `numref` role.
+To reference equations you can use a markdown link with the target, for example:\
+`[](#cross)` will create: [](#cross)
 
 `````{note}
 :class: dropdown
@@ -180,7 +180,7 @@ w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
 - Reference using `eq`: {eq}`my_label`
 - Reference using `numref`: {numref}`my_label`
 - Reference using `%s` `numref`: {numref}`Eq. %s <my_label>`
-- Reference using `{number}` `numref`: {numref}`Equation {number} <my_label>`
+- Reference using `{number}` in `numref`: {numref}`Equation {number} <my_label>`
 ````
 
 ```{warning}
@@ -225,7 +225,7 @@ The residual is the predicted data for the model, $\dpred{m}$, minus the observe
 The `math` macros are parsed as `yaml` in the frontmatter and can easily be shared or inherited through project to page frontmatter. These are also inserted into any $\LaTeX$ outputs for creating professional PDF documents.
 
 ```{important}
-When using the yaml syntax for math, use **single quotes** around the strings. The single quote yaml syntax means you do not have to text-escape the strings, otherwise backslashes `\f`, `\n`, `\b`, `\r`, `\t` and other symbols have to be escaped which is difficult to remember and leads to all sorts of strange errors.
+When using the YAML syntax for the `math` macros, use **single quotes** around the strings. The single quote yaml syntax means you do not have to text-escape the strings, otherwise backslashes `\f`, `\n`, `\b`, `\r`, `\t` and other symbols have to be escaped which is difficult to remember and leads to all sorts of strange errors.
 ```
 
 The `key` is the command that you are defining, in the demo above `\dobs` or `\dpred`, the command should include the `\`. The value of the entry should be the macro definition, if the definition contains `#1` then there will be one required argument for the macro that should be supplied in braces when you use it (e.g. `\dpred{m}`). The macros can be nested as in the example where `\dobs{\mref}` uses two macros.

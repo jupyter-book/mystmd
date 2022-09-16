@@ -13,7 +13,7 @@ The initial use case driving the development and design of MyST has been [Jupyte
 
 MyST enables rich content generation and is a powerful textual format for scientific and technical communication with potential for broad adoption in modern publishing workflows. In 2022, the Executable Books team started work to document the specification behind the markup language, called [myst-spec](https://github.com/executablebooks/myst-spec), this work has enabled other tools and implementations in the scientific ecosystem to build on MyST (e.g. [scientific authoring tools](https://curvenote.com/for/writing), and [documentation systems](https://blog.readthedocs.com/jupyter-book-read-the-docs/)).
 
-The `mystjs` ecosystem was developed as a collaboration between [Curvenote], [2i2c] and the [ExecutableBooks] team. The goal of the project is to enable the same rich content and authoring experiences that Sphinx allows for software documentation, with a focus on web-first technologies (Javascript), interactivity, accessbility, scientific references (e.g. DOIs and other persistent IDs), and professional PDF outputs.
+The `mystjs` ecosystem was developed as a collaboration between [Curvenote], [2i2c] and the [ExecutableBooks] team. The initial version of `mystjs` was originally release by [Curvenote] as the [Curvenote CLI](https://curvenote.com/docs/cli) under the MIT license, and later transferred to the [ExecutableBooks] team. The goal of the project is to enable the same rich content and authoring experiences that Sphinx allows for software documentation, with a focus on web-first technologies (Javascript), interactivity, accessbility, scientific references (e.g. DOIs and other persistent IDs), and professional PDF outputs.
 
 ## How do Jupyter Book and `mystjs` relate?
 
@@ -29,8 +29,8 @@ The packages in the `mystjs` ecosystem also help power web-native extensions, su
 
 Yes! There **is** overlap in functionality for creating websites, however, you can also use `mystjs` with your JupyterBook content to:
 
-- Create a professional PDF
-- Export to Microsoft Word
+- Create a [professional PDF](./creating-pdf-documents.md)
+- Export to [Microsoft Word](./creating-word-documents.md)
 - Create a presentation
 - Write in JupyterLab, using [JupyterLab-myst]
 

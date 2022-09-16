@@ -25,9 +25,9 @@ Providing your DOIs as full links has the advantage that on other rendering plat
 
 +++
 
-## Including BibTex
+## Including BibTeX
 
-A standard way of including references for $\LaTeX$ is using <wiki:bibtex>, you can include a `*.bib` file or files in the same directory as your content directory for the project. These will provide the reference keys for that project.
+A standard way of including references for $\LaTeX$ is using <wiki:BibTeX>, you can include a `*.bib` file or files in the same directory as your content directory for the project. These will provide the reference keys for that project.
 
 To create a citation in Markdown, use either a parenthetical or textual citation:
 
