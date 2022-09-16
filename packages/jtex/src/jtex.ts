@@ -5,6 +5,7 @@ import nunjucks from 'nunjucks';
 import type { ValidationOptions } from 'simple-validators';
 import { curvenoteDef } from './definitions';
 import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
+import { pdfExportCommand } from './export';
 import { extendJtexFrontmatter } from './frontmatter';
 import { renderImports } from './imports';
 import type { ExpandedImports, ISession, Renderer, TemplateYml } from './types';
@@ -234,6 +235,11 @@ class JTex {
 
   freeform(template: string, data: Record<string, any>) {
     return this.env.renderString(template, data);
+  }
+
+  pdfExportCommand(texFile: string, logFile: string) {
+    const templateYml = this.getValidatedTemplateYml();
+    return pdfExportCommand(texFile, logFile, templateYml.build?.engine);
   }
 }
 

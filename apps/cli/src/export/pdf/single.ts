@@ -7,7 +7,7 @@ import { createTempFolder } from '../../utils';
 import { singleArticleToTex } from '../tex';
 import { collectExportOptions, runTexExport } from '../tex/single';
 import type { ExportWithOutput, TexExportOptions } from '../tex/types';
-import { createPdfGivenTexFile } from './create';
+import { createPdfGivenTexFile, createPdfGivenTexExport } from './create';
 
 export const DEFAULT_PDF_FILENAME = 'main.pdf';
 
@@ -61,6 +61,12 @@ export async function localArticleToPdf(session: ISession, file: string, opts: T
     const texExportOptions = texExportOptionsFromPdf(pdfExportOptions, tempFolder);
     await runTexExport(session, file, texExportOptions, opts.templatePath);
     session.log.info(`🖨  Rendering pdf to ${pdfExportOptions.output}`);
+    const tempPdf = await createPdfGivenTexExport(
+      session,
+      texExportOptions,
+      false,
+      opts.templatePath,
+    );
     fs.copyFileSync(tempPdf, pdfExportOptions.output);
     session.log.debug(`Copied PDF file to ${pdfExportOptions.output}`);
   }
