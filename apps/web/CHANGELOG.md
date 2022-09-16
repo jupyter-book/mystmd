@@ -11,7 +11,7 @@
 - Updated dependencies [619328f]
 - Updated dependencies [619328f]
 - Updated dependencies [619328f]
-  - myst-util-to-react@0.1.12
+  - myst-to-react@0.1.12
 
 ## 0.0.7
 
@@ -21,7 +21,7 @@
 - Updated dependencies [58adf87]
 - Updated dependencies [9ae455e]
   - @curvenote/blocks@1.5.14
-  - myst-util-to-react@0.1.11
+  - myst-to-react@0.1.11
   - @curvenote/site@0.0.10
   - @curvenote/site-common@0.0.10
   - @curvenote/ui-providers@0.0.10
@@ -33,7 +33,7 @@
 - 3d68483: Update to mystjs 0.0.13
 - 5cf656c: Update language around curvespace --> website
 - Updated dependencies [3d68483]
-  - myst-util-to-react@0.1.8
+  - myst-to-react@0.1.8
   - @curvenote/site@0.0.8
   - @curvenote/site-common@0.0.8
   - @curvenote/ui-providers@0.0.8
@@ -48,7 +48,7 @@
 - Updated dependencies [01f73de]
 - Updated dependencies [3f8249c]
 - Updated dependencies [bc337d0]
-  - myst-util-to-react@0.1.6
+  - myst-to-react@0.1.6
   - @curvenote/site@0.0.7
   - @curvenote/ui-providers@0.0.7
   - @curvenote/site-common@0.0.7
@@ -62,7 +62,7 @@
 - Updated dependencies [1b23694]
   - @curvenote/blocks@1.5.9
   - @curvenote/icons@0.0.2
-  - myst-util-to-react@0.1.5
+  - myst-to-react@0.1.5
   - @curvenote/site@0.0.5
   - @curvenote/site-common@0.0.5
   - @curvenote/ui-providers@0.0.5
@@ -77,7 +77,7 @@
 - Updated dependencies [3fe3e21]
   - @curvenote/site@0.0.3
   - @curvenote/site-common@0.0.3
-  - myst-util-to-react@0.1.4
+  - myst-to-react@0.1.4
   - @curvenote/ui-providers@0.0.3
 
 ## 0.0.2
@@ -86,7 +86,7 @@
 
 - 45e7cb6: Introduce `thumbnailOptimized` using webp and create images that have a srcset in the web output.
 - Updated dependencies [45e7cb6]
-  - myst-util-to-react@0.1.2
+  - myst-to-react@0.1.2
   - @curvenote/site-common@0.0.2
   - @curvenote/site@0.0.2
   - @curvenote/ui-providers@0.0.2

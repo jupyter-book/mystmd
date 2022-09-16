@@ -1,7 +1,7 @@
 ---
 'curvenote': patch
 '@curvespace/default': patch
-'myst-util-to-react': patch
+'myst-to-react': patch
 ---
 
 Add mermaid diagrams

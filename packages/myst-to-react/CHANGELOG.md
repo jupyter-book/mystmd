@@ -1,4 +1,4 @@
-# myst-util-to-react
+# myst-to-react
 
 ## 0.1.13
 
