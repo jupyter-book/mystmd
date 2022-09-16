@@ -26,7 +26,7 @@
   - myst-transforms@0.0.4
   - jtex@0.0.2
   - myst-to-tex@0.0.3
-  - myst-utils@0.0.2
+  - myst-common@0.0.2
   - @curvenote/site-common@0.0.13
 
 ## 0.6.21

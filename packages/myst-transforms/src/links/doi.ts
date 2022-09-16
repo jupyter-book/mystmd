@@ -1,4 +1,4 @@
-import { fileError } from 'myst-utils';
+import { fileError } from 'myst-common';
 import { validate, normalize } from 'doi-utils';
 import type { VFile } from 'vfile';
 import type { Link, LinkTransformer } from './types';

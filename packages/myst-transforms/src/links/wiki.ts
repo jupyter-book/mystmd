@@ -1,4 +1,4 @@
-import { fileError, fileWarn } from 'myst-utils';
+import { fileError, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { Link, LinkTransformer } from './types';
 import { updateLinkTextIfEmpty, withoutHttp } from './utils';

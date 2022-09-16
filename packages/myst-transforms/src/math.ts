@@ -4,7 +4,7 @@ import katex from 'katex';
 import type { Root } from 'mdast';
 import type { Math, InlineMath, Node } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
-import { fileWarn, normalizeLabel } from 'myst-utils';
+import { fileWarn, normalizeLabel } from 'myst-common';
 
 const TRANSFORM_NAME = 'myst-transforms:math';
 

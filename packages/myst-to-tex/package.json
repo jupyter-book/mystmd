@@ -48,7 +48,7 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "myst-utils": "*",
+    "myst-common": "*",
     "vfile-reporter": "^7.0.4"
   },
   "devDependencies": {

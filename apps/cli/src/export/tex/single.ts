@@ -10,7 +10,7 @@ import type { VersionId } from '@curvenote/blocks';
 import type { Export, PageFrontmatter } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
 import { remove } from 'unist-util-remove';
-import { copyNode } from 'myst-utils';
+import { copyNode } from 'myst-common';
 import type { Block } from 'myst-spec';
 import type { ISession } from '../../session/types';
 import {

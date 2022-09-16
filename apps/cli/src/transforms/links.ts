@@ -6,7 +6,7 @@ import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
 import type { LinkTransformer, Link } from 'myst-transforms';
-import { fileWarn, fileError } from 'myst-utils';
+import { fileWarn, fileError } from 'myst-common';
 import type { VFile } from 'vfile';
 import { oxaLink, oxaLinkToId } from '@curvenote/blocks';
 import type { ISession } from '../session/types';

@@ -27,7 +27,7 @@ file.messages;
 You can also use `vfile-reporter` to pretty print the messages for the console.
 
 ```typescript
-import { fileWarn } from 'myst-utils';
+import { fileWarn } from 'myst-common';
 
 fileWarn(file, 'Replacing \\begin{eqnarray} with \\begin{align*}', {
   node,

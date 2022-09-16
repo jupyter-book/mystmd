@@ -2,7 +2,7 @@ import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import type { Node } from 'myst-spec';
 import { map } from 'unist-util-map';
-import { createId } from 'myst-utils';
+import { createId } from 'myst-common';
 
 function addKeys(node: Node) {
   if ((node as any).key) return;

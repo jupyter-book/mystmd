@@ -1,5 +1,5 @@
 {
-  "name": "myst-utils",
+  "name": "myst-common",
   "type": "module",
   "version": "0.0.2",
   "main": "./dist/esm/index.js",

@@ -13,7 +13,7 @@
 - 631ee7c: Create intersphinx package
 - 5460169: Add intersphinx interoperability (read) as well as markdown links syntax for referencing.
 - Updated dependencies [2b85858]
-  - myst-utils@0.0.2
+  - myst-common@0.0.2
 
 ## 0.0.3
 

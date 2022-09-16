@@ -1,4 +1,4 @@
-import { fileWarn, fileError } from 'myst-utils';
+import { fileWarn, fileError } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { Inventory } from 'intersphinx';
 import type { Link, LinkTransformer } from './types';

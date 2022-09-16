@@ -1,4 +1,4 @@
-# myst-utils
+# myst-common
 
 ## 0.0.2
 

@@ -1,7 +1,7 @@
 import type { Root, Parent } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import { fileError, toText } from 'myst-utils';
+import { fileError, toText } from 'myst-common';
 import { captionHandler, containerHandler } from './container';
 import { renderNodeToLatex } from './tables';
 import type {

@@ -31,7 +31,7 @@
     "katex": "^0.15.2",
     "intersphinx": "*",
     "myst-spec": "^0.0.4",
-    "myst-utils": "*",
+    "myst-common": "*",
     "unified": "^10.0.0",
     "unist-util-select": "^4.0.1",
     "vfile": "^5.0.0",

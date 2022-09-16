@@ -8,7 +8,7 @@ import fetch from 'node-fetch';
 import type { Logger } from '../logging';
 import type { Root } from 'mdast';
 import { tic } from '../utils';
-import { toText } from 'myst-utils';
+import { toText } from 'myst-common';
 import type { Cite } from './citations';
 import type { SingleCitationRenderer } from './types';
 

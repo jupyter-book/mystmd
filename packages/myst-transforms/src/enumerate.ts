@@ -5,7 +5,7 @@ import type { Container, CrossReference, Heading, Link, Math, Paragraph } from '
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import { createHtmlId, fileWarn, normalizeLabel, setTextAsChild, copyNode } from 'myst-utils';
+import { createHtmlId, fileWarn, normalizeLabel, setTextAsChild, copyNode } from 'myst-common';
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
 

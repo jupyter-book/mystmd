@@ -3,7 +3,7 @@ import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import type { Block, Node, Parent } from 'myst-spec';
 import { select, selectAll } from 'unist-util-select';
-import { fileError } from 'myst-utils';
+import { fileError } from 'myst-common';
 
 export function blockNestingTransform(mdast: Root) {
   if (!select('block', mdast)) {
