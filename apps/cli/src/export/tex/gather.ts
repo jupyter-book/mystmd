@@ -82,10 +82,10 @@ export async function gatherAndWriteArticleContent(
     property: 'jtex',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: "${message}`);
+      session.log.error(`Validation error: ${message}`);
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: "${message}`);
+      session.log.warn(`Validation: ${message}`);
     },
   });
 

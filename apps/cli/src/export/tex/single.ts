@@ -8,7 +8,7 @@ import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
 import type { VersionId } from '@curvenote/blocks';
 import type { Export, PageFrontmatter } from 'myst-frontmatter';
-import { ExportFormats } from 'myst-frontmatter';
+import { validateExport, ExportFormats } from 'myst-frontmatter';
 import { remove } from 'unist-util-remove';
 import { copyNode } from 'myst-common';
 import type { Block } from 'myst-spec';
@@ -182,7 +182,6 @@ export async function collectExportOptions(
   defaultOutput: string,
   opts: TexExportOptions,
 ) {
-  const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
   const { filename, disableTemplate, templatePath } = opts;
   let { template } = opts;
   if (disableTemplate && (opts.template || opts.templatePath)) {
@@ -190,14 +189,31 @@ export async function collectExportOptions(
       'Conflicting tex export options: disableTemplate requested but a template was provided',
     );
   }
+  const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
   let exportOptions: Export[] =
-    rawFrontmatter?.exports?.filter((exp: Export) => exp.format === format) || [];
+    rawFrontmatter?.exports
+      ?.filter((exp: any) => exp?.format === format)
+      .map((exp: any, ind: number) =>
+        validateExport(exp, {
+          property: `exports.${ind}`,
+          messages: {},
+          errorLogFn: (msg) => session.log.error(msg),
+          warningLogFn: (msg) => session.log.warn(msg),
+        }),
+      )
+      .filter((exp: Export | undefined) => exp) || [];
   // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
   if (filename || template || templatePath || disableTemplate != null) {
     exportOptions = [exportOptions.length ? exportOptions[0] : { format }];
   }
   if (exportOptions.length === 0) {
     throw new Error(`No ${format} export options defined in frontmatter of ${file}`);
+  } else {
+    session.log.info(
+      `🔍 Performing ${exportOptions.length} export${
+        exportOptions.length === 1 ? '' : 's'
+      }:\n  - ${exportOptions.map((exp) => exp.output).join('\n  - ')}`,
+    );
   }
   return exportOptions.map((exp) => {
     let output: string;

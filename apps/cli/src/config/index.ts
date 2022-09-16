@@ -37,10 +37,10 @@ function readConfig(session: PartialSession, path: string) {
     property: 'config',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: "${message}`);
+      session.log.error(`Validation error: ${message}`);
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: "${message}`);
+      session.log.warn(`Validation: ${message}`);
     },
   };
   const conf = validateObject(yaml.load(fs.readFileSync(file, 'utf-8')), opts);
@@ -91,10 +91,10 @@ function validateSiteConfigAndSave(
     property: 'site',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: "${message}`);
+      session.log.error(`Validation error: ${message}`);
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: "${message}`);
+      session.log.warn(`Validation: ${message}`);
     },
   });
   if (!siteConfig) {
@@ -115,10 +115,10 @@ function validateProjectConfigAndSave(
     property: 'project',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: "${message}`);
+      session.log.error(`Validation error: ${message}`);
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: "${message}`);
+      session.log.warn(`Validation: ${message}`);
     },
   });
   if (!projectConfig) {
