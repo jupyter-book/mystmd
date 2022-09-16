@@ -29,15 +29,16 @@ const Headings = ({ headings, activeId, highlight }: Props) => (
         key={heading.id}
         className={classNames('border-l-2', {
           'text-blue-600': heading.id === activeId,
-          'border-l-gray-300 dark:border-l-gray-50': heading.id !== activeId,
-          'border-l-blue-500 dark:border-l-blue-500': heading.id === activeId,
+          'border-l-gray-300 dark:border-l-gray-50 hover:border-l-blue-500':
+            heading.id !== activeId,
+          'border-l-blue-500': heading.id === activeId,
           'bg-blue-50 dark:bg-slate-800': heading.id === activeId,
         })}
       >
         <a
-          className={classNames('block p-1 pl-2', {
+          className={classNames('block p-1 pl-2 text-slate-800 dark:text-slate-100', {
             'text-blue-600 dark:text-white font-semibold': heading.id === activeId,
-            'hover:text-slate-800 dark:hover:text-slate-100 pr-2': heading.id !== activeId,
+            'pr-2': heading.id !== activeId,
             'pl-3': heading.level === 2,
             'pl-4': heading.level === 3,
             'pl-5': heading.level === 4,
