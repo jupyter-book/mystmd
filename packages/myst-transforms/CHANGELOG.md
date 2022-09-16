@@ -1,5 +1,20 @@
 # myst-transforms
 
+## 0.0.4
+
+### Patch Changes
+
+- 327c19c: Introduce new link transforms for internal and external protocols including dois, rrids, wiki, and myst.
+- 6b4c188: Introduce blockMetadataTransform that puts the metadata for a block on the data field.
+- f6ad6c9: Improve wiki links to use language and links from the url if supplied.
+- 2f6e43a: Add blockquote attribution to add sources for quotes
+- f6ad6c9: Improve error mesasges for numbering references. Including numbering equations by their {name} == id, rather than by "Equation".
+- f6ad6c9: Imporve error messages for unlinked references that start with `#`
+- 631ee7c: Create intersphinx package
+- 5460169: Add intersphinx interoperability (read) as well as markdown links syntax for referencing.
+- Updated dependencies [2b85858]
+  - myst-utils@0.0.2
+
 ## 0.0.3
 
 ### Patch Changes

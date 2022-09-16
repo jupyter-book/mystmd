@@ -1,5 +1,13 @@
 # myst-to-tex
 
+## 0.0.3
+
+### Patch Changes
+
+- edf10cd: Handle breaks in latex
+- Updated dependencies [2b85858]
+  - myst-utils@0.0.2
+
 ## 0.0.2
 
 ### Patch Changes

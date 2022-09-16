@@ -1,5 +1,23 @@
 # @curvespace/default
 
+## 0.0.9
+
+### Patch Changes
+
+- 327c19c: Introduce new link transforms for internal and external protocols including dois, rrids, wiki, and myst.
+- f6ad6c9: Reduce margin top/bottom on dd > p css.
+- de062e5: Add mermaid diagrams
+- Updated dependencies [327c19c]
+- Updated dependencies [0dd8b4c]
+- Updated dependencies [abe8ac0]
+- Updated dependencies [de062e5]
+- Updated dependencies [edf10cd]
+- Updated dependencies [edf10cd]
+  - myst-to-react@0.1.14
+  - @curvenote/site@0.0.13
+  - @curvenote/site-common@0.0.13
+  - @curvenote/ui-providers@0.0.13
+
 ## 0.0.8
 
 ### Patch Changes

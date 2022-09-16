@@ -1,6 +1,6 @@
 {
   "name": "jtex",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Tool for rendering LaTeX documents from jinja-style templates",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

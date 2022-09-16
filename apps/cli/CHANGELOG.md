@@ -1,5 +1,34 @@
 # curvenote
 
+## 0.6.22
+
+### Patch Changes
+
+- 327c19c: Introduce new link transforms for internal and external protocols including dois, rrids, wiki, and myst.
+- de062e5: Add mermaid diagrams
+- edf10cd: Introduce delete role for strikeout text
+- a431f10: Explicitly set writeFolder for image copying during mdast transformation
+- edf10cd: Add dropdown class to admonitions
+- 631ee7c: Create intersphinx package
+- 5460169: Add intersphinx interoperability (read) as well as markdown links syntax for referencing.
+- 327c19c: Deprecate rrid and wiki roles in favor of link syntax
+- Updated dependencies [327c19c]
+- Updated dependencies [6b4c188]
+- Updated dependencies [a431f10]
+- Updated dependencies [f6ad6c9]
+- Updated dependencies [2f6e43a]
+- Updated dependencies [f6ad6c9]
+- Updated dependencies [edf10cd]
+- Updated dependencies [f6ad6c9]
+- Updated dependencies [631ee7c]
+- Updated dependencies [5460169]
+- Updated dependencies [2b85858]
+  - myst-transforms@0.0.4
+  - jtex@0.0.2
+  - myst-to-tex@0.0.3
+  - myst-utils@0.0.2
+  - @curvenote/site-common@0.0.13
+
 ## 0.6.21
 
 ### Patch Changes
