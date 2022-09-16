@@ -1,5 +1,5 @@
 import { validate } from 'doi-utils';
-import type { ValidationOptions } from '@curvenote/validators';
+import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
   incrementOptions,
@@ -17,7 +17,7 @@ import {
   validateUrl,
   validationError,
   validationWarning,
-} from '@curvenote/validators';
+} from 'simple-validators';
 import { validateLicenses } from '../licenses/validators';
 import { CreditRoles, ExportFormats } from './types';
 import type {

@@ -1,6 +1,6 @@
 import { validateAuthor } from 'myst-frontmatter';
-import type { ValidationOptions } from '@curvenote/validators';
-import { defined, incrementOptions, validateDate, validateList } from '@curvenote/validators';
+import type { ValidationOptions } from 'simple-validators';
+import { defined, incrementOptions, validateDate, validateList } from 'simple-validators';
 
 /**
  * Validate Export Config

@@ -1,13 +1,8 @@
 import fs from 'fs';
 import { join } from 'path';
 import yaml from 'js-yaml';
-import type { ValidationOptions } from '@curvenote/validators';
-import {
-  incrementOptions,
-  validateKeys,
-  validateObject,
-  validationError,
-} from '@curvenote/validators';
+import type { ValidationOptions } from 'simple-validators';
+import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
 import { prepareToWrite } from '../frontmatter';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';

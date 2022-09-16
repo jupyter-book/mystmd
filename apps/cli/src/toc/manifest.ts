@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { extname, join, sep } from 'path';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
-import { filterKeys } from '@curvenote/validators';
+import { filterKeys } from 'simple-validators';
 import type { SiteProject, SiteAction, SiteAnalytics } from '../config/types';
 import { CURVENOTE_YML } from '../config/types';
 import type { ISession } from '../session/types';

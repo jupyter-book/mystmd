@@ -1,4 +1,4 @@
-import { getDate } from '@curvenote/validators';
+import { getDate } from 'simple-validators';
 import type { JsonObject, BaseLinks } from './types';
 import type { BlockId } from './blocks/types';
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { getDate } from '@curvenote/validators';
+import { getDate } from 'simple-validators';
 import type { JsonObject } from '../types';
 import type { VersionId, BlockId, Block, BasePartialVersion, FormatTypes } from './types';
 import { KINDS, ContentFormatTypes } from './types';

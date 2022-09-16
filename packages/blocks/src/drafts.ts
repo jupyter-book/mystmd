@@ -1,4 +1,4 @@
-import { getDate } from '@curvenote/validators';
+import { getDate } from 'simple-validators';
 import type { JsonObject, BaseLinks } from './types';
 import type { KINDS, ALL_PARTIAL_BLOCKS_INTERNAL, DraftId, BasePartialVersion } from './blocks';
 import { blocks, partialVersionFromDTO } from './blocks';

@@ -1,4 +1,4 @@
-import type { ValidationOptions } from '@curvenote/validators';
+import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
   getDate,
@@ -12,7 +12,7 @@ import {
   validateList,
   validateBoolean,
   validationError,
-} from '@curvenote/validators';
+} from 'simple-validators';
 import type { ProjectId } from './projects';
 import type { BaseLinks, JsonObject } from './types';
 

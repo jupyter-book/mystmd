@@ -1,4 +1,4 @@
-import { getDate } from '@curvenote/validators';
+import { getDate } from 'simple-validators';
 import type { JsonObject, BaseLinks } from './types';
 
 export enum UserKINDS {

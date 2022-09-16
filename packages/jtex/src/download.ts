@@ -3,7 +3,7 @@ import fs, { createReadStream, createWriteStream, mkdirSync } from 'fs';
 import fetch from 'node-fetch';
 import unzipper from 'unzipper';
 import { join, parse } from 'path';
-import { validateUrl } from '@curvenote/validators';
+import { validateUrl } from 'simple-validators';
 import type { ISession, TemplateResponse } from './types';
 
 export const TEMPLATE_FILENAME = 'template.tex';

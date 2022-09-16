@@ -22,8 +22,8 @@ import {
   validateString,
   validateUrl,
   validationError,
-} from '@curvenote/validators';
-import type { ValidationOptions } from '@curvenote/validators';
+} from 'simple-validators';
+import type { ValidationOptions } from 'simple-validators';
 import type {
   TemplateDocDefinition,
   TemplateOptionDefinition,

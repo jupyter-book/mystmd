@@ -1,4 +1,4 @@
-import { getDate } from '@curvenote/validators';
+import { getDate } from 'simple-validators';
 import type { LaunchpadStatus, PubsubMessageAttributes } from './launchpad';
 import type { BaseLinks, JsonObject } from './types';
 

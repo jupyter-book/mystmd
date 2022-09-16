@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "myst-frontmatter": "^0.0.1",
-    "@curvenote/validators": "^0.0.1",
+    "simple-validators": "^0.0.1",
     "chalk": "^4.1.2",
     "commander": "^8.3.0",
     "crypto": "^1.0.1",

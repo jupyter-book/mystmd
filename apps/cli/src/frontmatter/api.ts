@@ -7,8 +7,8 @@ import {
   validatePageFrontmatterKeys,
   validateProjectFrontmatterKeys,
 } from 'myst-frontmatter';
-import type { ValidationOptions } from '@curvenote/validators';
-import { filterKeys } from '@curvenote/validators';
+import type { ValidationOptions } from 'simple-validators';
+import { filterKeys } from 'simple-validators';
 import { dirname, join } from 'path';
 import { affiliations } from '../store/local';
 import { selectAffiliation } from '../store/selectors';

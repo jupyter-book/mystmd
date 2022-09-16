@@ -4,7 +4,7 @@ import {
   validateProjectFrontmatterKeys,
   validateSiteFrontmatterKeys,
 } from 'myst-frontmatter';
-import type { ValidationOptions } from '@curvenote/validators';
+import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
   incrementOptions,
@@ -15,7 +15,7 @@ import {
   validateUrl,
   validateList,
   validateBoolean,
-} from '@curvenote/validators';
+} from 'simple-validators';
 import type {
   ProjectConfig,
   SiteAction,

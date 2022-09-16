@@ -1,11 +1,11 @@
-import type { ValidationOptions } from '@curvenote/validators';
+import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
   incrementOptions,
   validateObjectKeys,
   validateString,
   validationError,
-} from '@curvenote/validators';
+} from 'simple-validators';
 import LICENSES from './licenses';
 import type { License, Licenses } from './types';
 

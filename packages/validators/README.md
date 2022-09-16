@@ -1,4 +1,4 @@
-# @curvenote/validators
+# simple-validators
 
 Schema validation functions and error reporting framework
 
@@ -19,7 +19,7 @@ import {
   validateString,
   validationError,
   ValidationOptions,
-} from '@curvenote/validators';
+} from 'simple-validators';
 
 // Define typescript type
 export type Author = {

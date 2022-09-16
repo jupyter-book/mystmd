@@ -1,4 +1,4 @@
-import type { ValidationOptions } from '@curvenote/validators';
+import type { ValidationOptions } from 'simple-validators';
 import { licensesToString, validateLicense, validateLicenses } from './validators';
 
 const TEST_LICENSE = {

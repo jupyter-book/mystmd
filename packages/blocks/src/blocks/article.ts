@@ -1,4 +1,4 @@
-import { getDate } from '@curvenote/validators';
+import { getDate } from 'simple-validators';
 import type { JsonObject } from '../types';
 import type { KINDS, ChildId, BlockChildDict, BaseVersion } from './types';
 import { ArticleFormatTypes } from './types';

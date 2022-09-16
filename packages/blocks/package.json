@@ -38,7 +38,7 @@
     "url": "https://github.com/curvenote/curvenote/issues"
   },
   "dependencies": {
-    "@curvenote/validators": "^0.0.1"
+    "simple-validators": "^0.0.1"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

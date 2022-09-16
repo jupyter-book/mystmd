@@ -2,7 +2,7 @@ import fs from 'fs';
 import { extname, basename, join, dirname } from 'path';
 import yaml from 'js-yaml';
 import nunjucks from 'nunjucks';
-import type { ValidationOptions } from '@curvenote/validators';
+import type { ValidationOptions } from 'simple-validators';
 import { curvenoteDef } from './definitions';
 import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
 import { extendJtexFrontmatter } from './frontmatter';

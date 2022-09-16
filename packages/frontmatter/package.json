@@ -37,7 +37,7 @@
     "url": "https://github.com/curvenote/curvenote/issues"
   },
   "dependencies": {
-    "@curvenote/validators": "^0.0.1",
+    "simple-validators": "^0.0.1",
     "doi-utils": "^1.0.4"
   },
   "devDependencies": {
