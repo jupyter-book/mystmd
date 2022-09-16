@@ -61,6 +61,7 @@ export const PAGE_FRONTMATTER_KEYS = [
   'jupytext',
   'tags',
   'thumbnail',
+  'thumbnailOptimized',
 ].concat(PROJECT_FRONTMATTER_KEYS);
 
 // These keys only exist on the project.
@@ -580,6 +581,10 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
     output.thumbnail = null;
   } else if (defined(value.thumbnail)) {
     output.thumbnail = validateString(value.thumbnail, incrementOptions('thumbnail', opts));
+  }
+  if (defined(value.thumbnailOptimized)) {
+    // No validation, this is expected to be set programatically
+    output.thumbnailOptimized = value.thumbnailOptimized;
   }
   return output;
 }
