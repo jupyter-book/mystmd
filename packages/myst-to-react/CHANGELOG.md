@@ -1,5 +1,16 @@
 # myst-to-react
 
+## 0.1.15
+
+### Patch Changes
+
+- The package myst-utils was renamed to myst-common, we missed registering this by 7 hours. Super annoying, but it needs a bump across all packages.
+- Updated dependencies
+  - @curvenote/blocks@1.5.15
+  - myst-to-tex@0.0.4
+  - myst-transforms@0.0.5
+  - @curvenote/ui-providers@0.0.14
+
 ## 0.1.14
 
 ### Patch Changes

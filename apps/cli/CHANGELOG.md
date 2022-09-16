@@ -1,5 +1,22 @@
 # curvenote
 
+## 0.6.23
+
+### Patch Changes
+
+- The package myst-utils was renamed to myst-common, we missed registering this by 7 hours. Super annoying, but it needs a bump across all packages.
+- Updated dependencies
+  - @curvenote/blocks@1.5.15
+  - citation-js-utils@0.0.10
+  - myst-frontmatter@0.0.2
+  - intersphinx@0.0.2
+  - jtex@0.0.3
+  - myst-to-tex@0.0.4
+  - myst-transforms@0.0.5
+  - myst-common@0.0.3
+  - @curvenote/site-common@0.0.14
+  - simple-validators@0.0.2
+
 ## 0.6.22
 
 ### Patch Changes

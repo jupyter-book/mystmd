@@ -1,5 +1,13 @@
 # @curvenote/site-common
 
+## 0.0.14
+
+### Patch Changes
+
+- The package myst-utils was renamed to myst-common, we missed registering this by 7 hours. Super annoying, but it needs a bump across all packages.
+- Updated dependencies
+  - @curvenote/blocks@1.5.15
+
 ## 0.0.13
 
 ## 0.0.12

@@ -1,5 +1,14 @@
 # myst-transforms
 
+## 0.0.5
+
+### Patch Changes
+
+- The package myst-utils was renamed to myst-common, we missed registering this by 7 hours. Super annoying, but it needs a bump across all packages.
+- Updated dependencies
+  - intersphinx@0.0.2
+  - myst-common@0.0.3
+
 ## 0.0.4
 
 ### Patch Changes
