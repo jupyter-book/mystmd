@@ -16,9 +16,7 @@
       "import": "./dist/esm/index.js"
     }
   },
-  "bin": {
-    "jtex": "./dist/jtex.js"
-  },
+  "bin": "./dist/jtex.js",
   "scripts": {
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "clean": "rimraf dist _build",
@@ -57,15 +55,15 @@
     "npm": ">=6"
   },
   "dependencies": {
-    "myst-frontmatter": "^0.0.1",
-    "simple-validators": "^0.0.1",
     "chalk": "^4.1.2",
     "commander": "^8.3.0",
     "crypto": "^1.0.1",
     "js-yaml": "^4.1.0",
+    "myst-frontmatter": "^0.0.1",
     "node-fetch": "^2.6.7",
     "nunjucks": "^3.2.3",
     "pretty-hrtime": "^1.0.3",
+    "simple-validators": "^0.0.1",
     "unzipper": "^0.10.11"
   },
   "devDependencies": {

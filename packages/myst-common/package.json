@@ -26,9 +26,9 @@
     "build": "npm-run-all -l clean -p build:esm declarations"
   },
   "dependencies": {
-    "nanoid": "^4.0.0",
     "mdast": "^3.0.0",
     "myst-spec": "^0.0.4",
+    "nanoid": "^4.0.0",
     "unist-util-map": "^3.0.0",
     "vfile": "^5.0.0",
     "vfile-message": "^3.0.0"
