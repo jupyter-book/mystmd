@@ -7,7 +7,6 @@
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "unpkg": "dist/index.umd.min.js",
   "types": "dist/types/index.d.ts",
   "files": [
     "src",
@@ -15,7 +14,7 @@
   ],
   "exports": {
     ".": {
-      "require": "./dist/index.umd.js",
+      "require": "./dist/cjs/index.js",
       "import": "./dist/esm/index.js"
     }
   },
