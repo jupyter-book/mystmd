@@ -1,11 +1,10 @@
 import type { Store } from 'redux';
-import type { JsonObject } from '@curvenote/blocks';
 import type { Logger } from '../logging';
 import type { RootState } from '../store';
 
 export type Tokens = Partial<Record<'user' | 'session', string>>;
 
-export type Response<T extends JsonObject = JsonObject> = Promise<{
+export type Response<T extends Record<string, any> = any> = Promise<{
   ok: boolean;
   status: number;
   json: T;
@@ -22,11 +21,14 @@ export interface ISession {
 
   reload(): void;
 
-  get<T extends JsonObject = JsonObject>(url: string, query?: Record<string, string>): Response<T>;
+  get<T extends Record<string, any> = any>(
+    url: string,
+    query?: Record<string, string>,
+  ): Response<T>;
 
-  post<T extends JsonObject = JsonObject>(url: string, data: JsonObject): Response<T>;
+  post<T extends Record<string, any> = any>(url: string, data: unknown): Response<T>;
 
-  patch<T extends JsonObject = JsonObject>(url: string, data: JsonObject): Response<T>;
+  patch<T extends Record<string, any> = any>(url: string, data: unknown): Response<T>;
 
   log: Logger;
 }

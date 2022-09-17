@@ -1,7 +1,7 @@
 {
-  "name": "prosemirror-docx",
-  "version": "0.1.1",
-  "description": "Export from a prosemirror document to Microsoft word",
+  "name": "myst-to-docx",
+  "version": "0.0.1",
+  "description": "Export from a MyST Markdown document to Microsoft Word (*.docx)",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
   "main": "dist/cjs/index.js",
@@ -11,10 +11,9 @@
     "dist"
   ],
   "keywords": [
-    "prosemirror",
+    "myst-plugin",
     "docx",
     "word",
-    "writing",
     "export"
   ],
   "repository": {
@@ -27,55 +26,31 @@
   "homepage": "https://github.com/curvenote/prosemirror-docx",
   "scripts": {
     "clean": "rimraf dist",
-    "build:cjs": "tsc --project ./src/tsconfig.json",
-    "build:esm": "tsc --project ./src/tsconfig.json --module ES2020 --outDir ./dist/esm",
-    "declarations": "tsc  --project ./src/tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
+    "build:cjs": "tsc --project ./tsconfig.json",
+    "build:esm": "tsc --project ./tsconfig.json --module ES2020 --outDir ./dist/esm",
+    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
     "build": "npm-run-all -l clean -p build:cjs build:esm declarations",
-    "build:watch": "tsc -w -p .",
-    "prepublishOnly": "yarn build",
+    "prepublishOnly": "npm run build",
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "test:clear": "jest --clearCache",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.json",
-    "lint:format": "prettier --check \"src/**/*.ts\"",
-    "lint:format:fix": "prettier --write \"src/**/*.ts\""
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js",
+    "lint:format": "prettier --check \"src/**/*.ts\""
   },
   "dependencies": {
     "buffer-image-size": "^0.6.4",
     "docx": "^7.3.0",
-    "prosemirror-model": "^1.18.1"
+    "myst-frontmatter": "*"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-optional-chaining": "^7.18.6",
     "@curvenote/schema": "0.12.16",
-    "@types/jest": "^28.1.3",
-    "@types/markdown-it": "^12.2.3",
-    "@typescript-eslint/eslint-plugin": "^5.30.0",
-    "@typescript-eslint/parser": "^5.30.0",
-    "date-fns": "^2.28.0",
+    "@types/jest": "^28.1.8",
+    "@types/mocha": "^9.1.1",
     "eslint": "^8.18.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-typescript": "^17.0.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-config-react-app": "^7.0.1",
-    "eslint-import-resolver-typescript": "^3.1.1",
-    "eslint-plugin-flowtype": "^8.0.3",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jest": "^26.5.3",
-    "eslint-plugin-json": "^3.1.0",
-    "eslint-plugin-jsx-a11y": "^6.6.0",
-    "eslint-plugin-no-only-tests": "^2.6.0",
-    "eslint-plugin-no-skip-tests": "^1.1.0",
-    "eslint-plugin-prettier": "^4.1.0",
-    "eslint-plugin-react": "^7.30.1",
     "jest": "^28.1.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
-    "prosemirror-schema-basic": "^1.2.0",
-    "prosemirror-test-builder": "^1.1.0",
     "rimraf": "^3.0.2",
-    "ts-jest": "^28.0.5",
+    "ts-jest": "^28.0.7",
     "typescript": "^4.7.4"
   }
 }

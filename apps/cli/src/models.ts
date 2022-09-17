@@ -10,7 +10,6 @@ import type {
   ProjectId,
   BlockId,
   VersionId,
-  JsonObject,
   FormatTypes,
   TemplateSpec,
 } from '@curvenote/blocks';
@@ -43,7 +42,7 @@ class BaseTransfer<
 
   $data?: DTO;
 
-  $fromDTO: (id: ID, json: JsonObject) => DTO = () => {
+  $fromDTO: (id: ID, json: Record<string, any>) => DTO = () => {
     throw new Error('Must be set in base class');
   };
 
@@ -177,7 +176,7 @@ export class Version<T extends ALL_BLOCKS = ALL_BLOCKS> extends BaseTransfer<
 > {
   modelKind = 'Version';
 
-  $fromDTO = versionFromDTO as (versionId: VersionId, json: JsonObject) => T;
+  $fromDTO = versionFromDTO as (versionId: VersionId, json: Record<string, any>) => T;
 
   $createUrl = () => versionIdToURL(this.id);
 
@@ -190,7 +189,8 @@ export class Template extends BaseTransfer<string, TemplateSpec & { id: string }
   modelKind = 'Template';
 
   // TODO better unpacking and defaults on the dto contents
-  $fromDTO = (id: string, json: JsonObject) => ({ id, ...json } as TemplateSpec & { id: string });
+  $fromDTO = (id: string, json: Record<string, any>) =>
+    ({ id, ...json } as TemplateSpec & { id: string });
 
   $createUrl = () => `/templates/${this.id}`;
 
