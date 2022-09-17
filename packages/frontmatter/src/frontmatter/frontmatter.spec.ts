@@ -373,12 +373,13 @@ describe('fillPageFrontmatter', () => {
   it('page frontmatter returns self', async () => {
     expect(fillPageFrontmatter(TEST_PAGE_FRONTMATTER, {})).toEqual(TEST_PAGE_FRONTMATTER);
   });
-  it('project frontmatter returns self without title/description/name', async () => {
+  it('project frontmatter returns self without title/description/name/etc', async () => {
     const result = { ...TEST_PROJECT_FRONTMATTER };
     delete result.title;
     delete result.description;
     delete result.name;
     delete result.oxa;
+    delete result.exports;
     expect(fillPageFrontmatter({}, TEST_PROJECT_FRONTMATTER)).toEqual(result);
   });
   it('page and project math are combined', async () => {

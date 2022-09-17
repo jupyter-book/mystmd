@@ -83,7 +83,6 @@ export const USE_PROJECT_FALLBACK = [
   'biblio',
   'numbering',
   'keywords',
-  'exports',
 ];
 
 const AUTHOR_KEYS = [
