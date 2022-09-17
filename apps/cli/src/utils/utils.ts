@@ -12,6 +12,7 @@ import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import type { WarningKind } from '../store/build';
 import { warnings } from '../store/build';
+import { configFileExists, loadConfigOrThrow, readConfig } from 'src/config';
 
 export const BUILD_FOLDER = '_build';
 export const THUMBNAILS_FOLDER = 'thumbnails';
@@ -210,4 +211,34 @@ export function tic() {
     return f ? f.replace('%s', time) : time;
   }
   return toc;
+}
+
+export function findProject(session: ISession, dir: string): string | undefined {
+  dir = path.resolve(dir);
+  if (configFileExists(dir)) {
+    const { project } = readConfig(session, dir);
+    if (project) {
+      loadConfigOrThrow(session, dir);
+      return dir;
+    }
+  }
+  if (path.dirname(dir) === dir) {
+    return undefined;
+  }
+  return findProject(session, path.dirname(dir));
+}
+
+export function findSite(session: ISession, dir: string): string | undefined {
+  dir = path.resolve(dir);
+  if (configFileExists(dir)) {
+    const { site } = readConfig(session, dir);
+    if (site) {
+      loadConfigOrThrow(session, dir);
+      return dir;
+    }
+  }
+  if (path.dirname(dir) === dir) {
+    return undefined;
+  }
+  return findProject(session, path.dirname(dir));
 }

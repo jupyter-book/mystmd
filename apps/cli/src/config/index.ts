@@ -25,11 +25,11 @@ function configFile(path: string) {
   return join(path, CURVENOTE_YML);
 }
 
-function configFileExists(path: string) {
+export function configFileExists(path: string) {
   return fs.existsSync(configFile(path));
 }
 
-function readConfig(session: PartialSession, path: string) {
+export function readConfig(session: PartialSession, path: string) {
   if (!configFileExists(path)) throw Error(`Cannot find ${CURVENOTE_YML} in ${path}`);
   const file = configFile(path);
   const opts: ValidationOptions = {

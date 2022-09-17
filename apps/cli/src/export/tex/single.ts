@@ -19,7 +19,7 @@ import {
   selectFile,
   transformMdast,
 } from '../../store/local/actions';
-import { writeFileToFolder } from '../../utils';
+import { findProject, writeFileToFolder } from '../../utils';
 import { assertEndsInExtension, makeBuildPaths } from '../utils';
 import { writeBibtex } from '../utils/writeBibtex';
 import { gatherAndWriteArticleContent } from './gather';
@@ -30,7 +30,6 @@ import {
 } from './template';
 import type { ExportWithOutput, TexExportOptions } from './types';
 import { ifTemplateRunJtex } from './utils';
-import { format } from 'prettier';
 
 export const DEFAULT_TEX_FILENAME = 'main.tex';
 
@@ -117,6 +116,7 @@ export async function getFileContent(session: ISession, file: string, output: st
     file,
     imageWriteFolder: path.join(path.dirname(output), 'images'),
     imageAltOutputFolder: 'images',
+    projectPath: findProject(session, path.dirname(file)),
   });
   return selectFile(session, file);
 }
