@@ -372,6 +372,7 @@ export function validateExport(input: any, opts: ValidationOptions) {
     { ...opts, suppressWarnings: true },
   );
   if (value.format === undefined) return undefined;
+  if (value.format === 'tex+pdf') value.format = 'pdf+tex';
   const format = validateEnum<ExportFormats>(value.format, {
     ...incrementOptions('format', opts),
     enum: ExportFormats,

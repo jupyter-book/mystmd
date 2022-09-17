@@ -236,6 +236,12 @@ describe('validateExport', () => {
   it('format only passes', async () => {
     expect(validateExport({ format: 'pdf' }, opts)).toEqual({ format: 'pdf' });
   });
+  it('pdf+tex passes', async () => {
+    expect(validateExport({ format: 'pdf+tex' }, opts)).toEqual({ format: 'pdf+tex' });
+  });
+  it('tex+pdf passes', async () => {
+    expect(validateExport({ format: 'tex+pdf' }, opts)).toEqual({ format: 'pdf+tex' });
+  });
   it('invalid format errors passes', async () => {
     expect(validateExport({ format: 'str' }, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);

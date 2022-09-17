@@ -30,6 +30,7 @@ import {
 } from './template';
 import type { ExportWithOutput, TexExportOptions } from './types';
 import { ifTemplateRunJtex } from './utils';
+import { format } from 'prettier';
 
 export const DEFAULT_TEX_FILENAME = 'main.tex';
 
@@ -178,7 +179,8 @@ export async function localArticleToTexTemplated(
 export async function collectExportOptions(
   session: ISession,
   file: string,
-  format: ExportFormats,
+  extension: string,
+  formats: ExportFormats[],
   defaultOutput: string,
   opts: TexExportOptions,
 ) {
@@ -192,7 +194,7 @@ export async function collectExportOptions(
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
   let exportOptions: Export[] =
     rawFrontmatter?.exports
-      ?.filter((exp: any) => exp?.format === format)
+      ?.filter((exp: any) => formats.includes(exp?.format))
       .map((exp: any, ind: number) =>
         validateExport(exp, {
           property: `exports.${ind}`,
@@ -204,18 +206,20 @@ export async function collectExportOptions(
       .filter((exp: Export | undefined) => exp) || [];
   // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
   if (filename || template || templatePath || disableTemplate != null) {
-    exportOptions = [exportOptions.length ? exportOptions[0] : { format }];
+    if (exportOptions.length) {
+      exportOptions = [exportOptions[0]];
+    } else if (formats.length) {
+      exportOptions = [{ format: formats[0] }];
+    } else {
+      exportOptions = [];
+    }
   }
   if (exportOptions.length === 0) {
-    throw new Error(`No ${format} export options defined in frontmatter of ${file}`);
-  } else {
-    session.log.info(
-      `🔍 Performing ${exportOptions.length} export${
-        exportOptions.length === 1 ? '' : 's'
-      }:\n  - ${exportOptions.map((exp) => exp.output).join('\n  - ')}`,
+    throw new Error(
+      `No export options of format ${formats.join(',')} defined in frontmatter of ${file}`,
     );
   }
-  return exportOptions.map((exp) => {
+  const resolvedExportOptions: ExportWithOutput[] = exportOptions.map((exp) => {
     let output: string;
     if (filename) {
       output = filename;
@@ -228,7 +232,7 @@ export async function collectExportOptions(
     if (!path.extname(output)) {
       output = path.join(output, defaultOutput);
     }
-    assertEndsInExtension(output, format);
+    assertEndsInExtension(output, extension);
     if (disableTemplate) {
       template = null;
     } else if (!template && exp.template) {
@@ -242,6 +246,10 @@ export async function collectExportOptions(
     }
     return { ...exp, output, template };
   });
+  resolvedExportOptions.forEach((exp) => {
+    session.log.info(`🔍 Performing export: ${exp.output}`);
+  });
+  return resolvedExportOptions;
 }
 
 export async function runTexExport(
@@ -261,7 +269,8 @@ export async function localArticleToTex(session: ISession, file: string, opts: T
   const exportOptionsList = await collectExportOptions(
     session,
     file,
-    ExportFormats.tex,
+    'tex',
+    [ExportFormats.tex],
     DEFAULT_TEX_FILENAME,
     opts,
   );

@@ -2,30 +2,16 @@ import fs from 'fs';
 import path from 'path';
 import util from 'util';
 import JTex, { pdfExportCommand } from 'jtex';
-import { ExportFormats } from '@curvenote/frontmatter';
 import type { Logger } from '../../logging';
-import { Session } from '../../session';
 import type { ISession } from '../../session/types';
-import { BUILD_FOLDER } from '../../utils';
+import { BUILD_FOLDER, createTempFolder } from '../../utils';
 import type { ExportWithOutput } from '../tex/types';
 import { exec } from '../utils';
 
 const copyFile = util.promisify(fs.copyFile);
 
+// TODO: Migrate usage of this function to createPdfGivenTexExport
 export async function createPdfGivenTexFile(log: Logger, filename: string, useBuildFolder = true) {
-  return createPdfGivenTexExport(
-    new Session(undefined, { logger: log }),
-    { format: ExportFormats.tex, output: filename },
-    useBuildFolder,
-  );
-}
-export async function createPdfGivenTexExport(
-  session: ISession,
-  exportOptions: ExportWithOutput,
-  useBuildFolder: boolean,
-  templatePath?: string,
-) {
-  const { output: filename, template } = exportOptions;
   const basename = path.basename(filename, path.extname(filename));
   const tex_filename = `${basename}.tex`;
   const pdf_filename = `${basename}.pdf`;
@@ -36,30 +22,21 @@ export async function createPdfGivenTexExport(
   const outputLogFile = path.join(outputPath, log_filename);
 
   const buildPath = path.resolve(useBuildFolder ? path.join(outputPath, BUILD_FOLDER) : outputPath);
-
-  let buildCommand: string;
-  if (!template && !templatePath) {
-    buildCommand = pdfExportCommand(tex_filename, tex_log_filename);
-  } else {
-    const jtex = new JTex(session, { template: template || undefined, path: templatePath });
-    buildCommand = jtex.pdfExportCommand(tex_filename, tex_log_filename);
-  }
+  const CMD = `latexmk -f -xelatex -synctex=1 -interaction=batchmode -file-line-error -latexoption="-shell-escape" ${tex_filename} &> ${tex_log_filename}`;
   try {
-    session.log.debug(`Building LaTeX in directory: ${buildPath}`);
-    session.log.debug(`Logging output to: ${tex_log_filename}`);
-    session.log.debug(`Running command:\n> ${buildCommand}`);
-    await exec(buildCommand, { cwd: buildPath });
-    session.log.debug(`Done building LaTeX.`);
+    log.debug(`Building LaTeX: logging output to ${tex_log_filename}`);
+    await exec(CMD, { cwd: buildPath });
+    log.debug(`Done building LaTeX.`);
   } catch (err) {
-    session.log.error(`Error while invoking mklatex: ${err}`);
+    log.error(`Error while invoking mklatex: ${err}`);
   }
 
   const built_pdf = path.join(buildPath, pdf_filename);
   if (fs.existsSync(built_pdf)) {
     await copyFile(built_pdf, outputPdfFile);
-    session.log.debug(`Copied PDF file to ${outputPdfFile}`);
+    log.debug(`Copied PDF file to ${outputPdfFile}`);
   } else {
-    session.log.error(`Could not find ${built_pdf} as expected, pdf export failed`);
+    log.error(`Could not find ${built_pdf} as expected, pdf export failed`);
     throw Error(`Could not find ${built_pdf} as expected, pdf export failed`);
   }
 
@@ -67,5 +44,97 @@ export async function createPdfGivenTexExport(
   if (fs.existsSync(built_log)) {
     await copyFile(built_log, outputLogFile);
   }
-  return outputPdfFile;
+}
+
+function copyContents(srcFolder: string, destFolder: string) {
+  fs.readdirSync(srcFolder).forEach((item) => {
+    const srcItemPath = path.join(srcFolder, item);
+    const destItemPath = path.join(destFolder, item);
+    if (fs.lstatSync(srcItemPath).isDirectory()) {
+      fs.mkdirSync(destItemPath);
+      copyContents(srcItemPath, destItemPath);
+    } else {
+      fs.copyFileSync(srcItemPath, destItemPath);
+    }
+  });
+}
+
+export async function createPdfGivenTexExport(
+  session: ISession,
+  texExportOptions: ExportWithOutput,
+  pdfOutput: string,
+  templatePath?: string,
+  copyLogs?: boolean,
+) {
+  const { output: texOutput, template } = texExportOptions;
+
+  const buildPath = createTempFolder();
+  const texFile = path.basename(texOutput);
+  const texBuild = path.join(buildPath, texFile);
+  copyContents(path.dirname(texOutput), buildPath);
+
+  if (!fs.existsSync(texBuild)) {
+    session.log.error(`Could not find tex file: ${texOutput}`);
+    throw Error(`pdf export failed`);
+  }
+
+  const pdfBasename = path.basename(pdfOutput, path.extname(pdfOutput));
+  const pdfFile = `${pdfBasename}.pdf`;
+  const pdfBuild = path.join(buildPath, pdfFile);
+
+  const logFile = `${pdfBasename}.log`;
+  const texLogFile = `${pdfBasename}.shell.log`;
+  // Temporary log file locations
+  const logBuild = path.join(buildPath, logFile);
+  const texLogBuild = path.join(buildPath, texLogFile);
+  // Log file location saved alongside pdf
+  const logOutput = path.join(path.dirname(pdfOutput), logFile);
+  const texLogOutput = path.join(path.dirname(pdfOutput), texLogFile);
+
+  let buildCommand: string;
+  if (!template && !templatePath) {
+    buildCommand = pdfExportCommand(texFile, texLogFile);
+  } else {
+    const jtex = new JTex(session, { template: template || undefined, path: templatePath });
+    buildCommand = jtex.pdfExportCommand(texFile, texLogFile);
+  }
+  try {
+    session.log.debug(`Building LaTeX in directory: ${buildPath}`);
+    session.log.debug(`Running command:\n> ${buildCommand}`);
+    await exec(buildCommand, { cwd: buildPath });
+    session.log.debug(`Done building LaTeX.`);
+  } catch (err) {
+    session.log.error(`Error while invoking mklatex: ${err}`);
+  }
+
+  const pdfBuildExists = fs.existsSync(pdfBuild);
+  const logBuildExists = fs.existsSync(logBuild);
+  const texLogBuildExists = fs.existsSync(texLogBuild);
+
+  if (
+    (pdfBuildExists || logBuildExists || texLogBuildExists) &&
+    !fs.existsSync(path.dirname(pdfOutput))
+  ) {
+    fs.mkdirSync(path.dirname(pdfOutput), { recursive: true });
+  }
+
+  if (pdfBuildExists) {
+    await copyFile(pdfBuild, pdfOutput);
+    session.log.debug(`Copied PDF file to ${pdfOutput}`);
+  } else {
+    session.log.error(`Could not find ${pdfBuild} as expected`);
+  }
+
+  if (logBuildExists && copyLogs) {
+    session.log.debug(`Copying log file: ${logOutput}`);
+    await copyFile(logBuild, logOutput);
+  }
+
+  if (texLogBuildExists && copyLogs) {
+    session.log.debug(`Copying log file: ${texLogOutput}`);
+    await copyFile(texLogBuild, texLogOutput);
+  }
+  if (!fs.existsSync(pdfOutput)) {
+    throw Error(`pdf export failed`);
+  }
 }

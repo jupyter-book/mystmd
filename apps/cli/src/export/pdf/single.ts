@@ -35,13 +35,13 @@ export async function singleArticleToPdf(
   return article;
 }
 
-export function texExportOptionsFromPdf(pdfExp: ExportWithOutput, tempFolder?: string) {
+export function texExportOptionsFromPdf(pdfExp: ExportWithOutput, keepTex?: boolean) {
   const outputTexFile = path.basename(pdfExp.output, path.extname(pdfExp.output)) + '.tex';
   let output: string;
-  if (tempFolder) {
-    output = path.join(tempFolder, outputTexFile);
-  } else {
+  if (keepTex) {
     output = path.join(path.dirname(pdfExp.output), outputTexFile);
+  } else {
+    output = path.join(createTempFolder(), outputTexFile);
   }
   return { ...pdfExp, format: ExportFormats.tex, output };
 }
@@ -50,24 +50,25 @@ export async function localArticleToPdf(session: ISession, file: string, opts: T
   const pdfExportOptionsList = await collectExportOptions(
     session,
     file,
-    ExportFormats.pdf,
+    'pdf',
+    [ExportFormats.pdf, ExportFormats.pdftex],
     DEFAULT_PDF_FILENAME,
     opts,
   );
   // Just a normal loop so these output in serial in the CLI
   for (let index = 0; index < pdfExportOptionsList.length; index++) {
     const pdfExportOptions = pdfExportOptionsList[index];
-    const tempFolder = createTempFolder();
-    const texExportOptions = texExportOptionsFromPdf(pdfExportOptions, tempFolder);
+    const { format, output } = pdfExportOptions;
+    const keepTexAndLogs = format === ExportFormats.pdftex;
+    const texExportOptions = texExportOptionsFromPdf(pdfExportOptions, keepTexAndLogs);
     await runTexExport(session, file, texExportOptions, opts.templatePath);
-    session.log.info(`🖨  Rendering pdf to ${pdfExportOptions.output}`);
-    const tempPdf = await createPdfGivenTexExport(
+    session.log.info(`🖨  Rendering pdf to ${output}`);
+    await createPdfGivenTexExport(
       session,
       texExportOptions,
-      false,
+      output,
       opts.templatePath,
+      keepTexAndLogs,
     );
-    fs.copyFileSync(tempPdf, pdfExportOptions.output);
-    session.log.debug(`Copied PDF file to ${pdfExportOptions.output}`);
   }
 }
