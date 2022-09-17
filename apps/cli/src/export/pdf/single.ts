@@ -39,7 +39,7 @@ export function texExportOptionsFromPdf(pdfExp: ExportWithOutput, keepTex?: bool
   const outputTexFile = path.basename(pdfExp.output, path.extname(pdfExp.output)) + '.tex';
   let output: string;
   if (keepTex) {
-    output = path.join(path.dirname(pdfExp.output), outputTexFile);
+    output = path.join(path.dirname(pdfExp.output), 'tex', outputTexFile);
   } else {
     output = path.join(createTempFolder(), outputTexFile);
   }

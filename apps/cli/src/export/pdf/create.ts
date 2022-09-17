@@ -88,8 +88,8 @@ export async function createPdfGivenTexExport(
   const logBuild = path.join(buildPath, logFile);
   const texLogBuild = path.join(buildPath, texLogFile);
   // Log file location saved alongside pdf
-  const logOutput = path.join(path.dirname(pdfOutput), logFile);
-  const texLogOutput = path.join(path.dirname(pdfOutput), texLogFile);
+  const logOutput = path.join(path.dirname(pdfOutput), 'logs', logFile);
+  const texLogOutput = path.join(path.dirname(pdfOutput), 'logs', texLogFile);
 
   let buildCommand: string;
   if (!template && !templatePath) {
@@ -111,11 +111,12 @@ export async function createPdfGivenTexExport(
   const logBuildExists = fs.existsSync(logBuild);
   const texLogBuildExists = fs.existsSync(texLogBuild);
 
-  if (
-    (pdfBuildExists || logBuildExists || texLogBuildExists) &&
-    !fs.existsSync(path.dirname(pdfOutput))
-  ) {
+  if (pdfBuildExists && !fs.existsSync(path.dirname(pdfOutput))) {
     fs.mkdirSync(path.dirname(pdfOutput), { recursive: true });
+  }
+
+  if ((logBuildExists || texLogBuildExists) && !fs.existsSync(path.dirname(logOutput))) {
+    fs.mkdirSync(path.dirname(logOutput), { recursive: true });
   }
 
   if (pdfBuildExists) {
