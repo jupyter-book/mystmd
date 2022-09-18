@@ -3,7 +3,7 @@ import path from 'path';
 import type { VersionId } from '@curvenote/blocks';
 import { ExportFormats } from '@curvenote/frontmatter';
 import type { ISession } from '../../session/types';
-import { createTempFolder } from '../../utils';
+import { createTempFolder, findProject } from '../../utils';
 import { singleArticleToTex } from '../tex';
 import { collectExportOptions, runTexExport } from '../tex/single';
 import type { ExportWithOutput, TexExportOptions } from '../tex/types';
@@ -47,12 +47,14 @@ export function texExportOptionsFromPdf(pdfExp: ExportWithOutput, keepTex?: bool
 }
 
 export async function localArticleToPdf(session: ISession, file: string, opts: TexExportOptions) {
+  const projectPath = findProject(session, path.dirname(file));
   const pdfExportOptionsList = await collectExportOptions(
     session,
     file,
     'pdf',
     [ExportFormats.pdf, ExportFormats.pdftex],
     DEFAULT_PDF_FILENAME,
+    projectPath,
     opts,
   );
   // Just a normal loop so these output in serial in the CLI

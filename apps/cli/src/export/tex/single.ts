@@ -19,8 +19,10 @@ import {
   selectFile,
   transformMdast,
 } from '../../store/local/actions';
+import { selectPageSlug } from '../../store/selectors';
+import { createSlug } from '../../toc/utils';
 import { findProject, writeFileToFolder } from '../../utils';
-import { assertEndsInExtension, makeBuildPaths } from '../utils';
+import { makeBuildPaths } from '../utils';
 import { writeBibtex } from '../utils/writeBibtex';
 import { gatherAndWriteArticleContent } from './gather';
 import {
@@ -109,20 +111,30 @@ export function extractPart(
   return partContent;
 }
 
-export async function getFileContent(session: ISession, file: string, output: string) {
+export async function getFileContent(
+  session: ISession,
+  file: string,
+  output: string,
+  projectPath?: string,
+) {
   await loadFile(session, file);
   // Collect bib files - mysttotex will need those, not 'references'
   await transformMdast(session, {
     file,
     imageWriteFolder: path.join(path.dirname(output), 'images'),
     imageAltOutputFolder: 'images',
-    projectPath: findProject(session, path.dirname(file)),
+    projectPath,
   });
   return selectFile(session, file);
 }
 
-export async function localArticleToTexRaw(session: ISession, file: string, output: string) {
-  const { mdast, frontmatter } = await getFileContent(session, file, output);
+export async function localArticleToTexRaw(
+  session: ISession,
+  file: string,
+  output: string,
+  projectPath?: string,
+) {
+  const { mdast, frontmatter } = await getFileContent(session, file, output, projectPath);
   const result = mdastToTex(mdast, frontmatter);
   session.log.info(`🖋  Writing tex to ${output}`);
   // TODO: add imports and macros?
@@ -134,11 +146,13 @@ export async function localArticleToTexTemplated(
   file: string,
   templateOptions: ExportWithOutput,
   templatePath?: string,
+  projectPath?: string,
 ) {
   const { frontmatter, mdast, references } = await getFileContent(
     session,
     file,
     templateOptions.output,
+    projectPath,
   );
   const jtex = new JTex(session, {
     template: templateOptions.template || undefined,
@@ -176,12 +190,32 @@ export async function localArticleToTexTemplated(
   });
 }
 
+/**
+ * Get default folder for saving export. Folder will be created on export.
+ *
+ * The default folder is:
+ * <root>/_build/curvenote/exports/<slug>/
+ *
+ * If the file is part of a project, the root is the project folder;
+ * if not, the root is the file folder.
+ */
+function getDefaultExportFolder(session: ISession, file: string, projectPath?: string) {
+  const { name, dir } = path.parse(file);
+  const slugFromProject = projectPath
+    ? selectPageSlug(session.store.getState(), projectPath, file)
+    : undefined;
+  const slug = slugFromProject || createSlug(name);
+  const buildSubpath = path.join('_build', 'curvenote', 'exports', slug);
+  return path.join(projectPath || dir, buildSubpath);
+}
+
 export async function collectExportOptions(
   session: ISession,
   file: string,
   extension: string,
   formats: ExportFormats[],
-  defaultOutput: string,
+  defaultOutputFilename: string,
+  projectPath: string | undefined,
   opts: TexExportOptions,
 ) {
   const { filename, disableTemplate, templatePath } = opts;
@@ -262,25 +296,28 @@ export async function runTexExport(
   file: string,
   exportOptions: ExportWithOutput,
   templatePath?: string,
+  projectPath?: string,
 ) {
   if (exportOptions.template === null) {
-    await localArticleToTexRaw(session, file, exportOptions.output);
+    await localArticleToTexRaw(session, file, exportOptions.output, projectPath);
   } else {
-    await localArticleToTexTemplated(session, file, exportOptions, templatePath);
+    await localArticleToTexTemplated(session, file, exportOptions, templatePath, projectPath);
   }
 }
 
 export async function localArticleToTex(session: ISession, file: string, opts: TexExportOptions) {
+  const projectPath = findProject(session, path.dirname(file));
   const exportOptionsList = await collectExportOptions(
     session,
     file,
     'tex',
     [ExportFormats.tex],
     DEFAULT_TEX_FILENAME,
+    projectPath,
     opts,
   );
   // Just a normal loop so these output in serial in the CLI
   for (let index = 0; index < exportOptionsList.length; index++) {
-    await runTexExport(session, file, exportOptionsList[index], opts.templatePath);
+    await runTexExport(session, file, exportOptionsList[index], opts.templatePath, projectPath);
   }
 }
