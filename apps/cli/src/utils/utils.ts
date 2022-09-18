@@ -227,18 +227,3 @@ export function findProject(session: ISession, dir: string): string | undefined 
   }
   return findProject(session, path.dirname(dir));
 }
-
-export function findSite(session: ISession, dir: string): string | undefined {
-  dir = path.resolve(dir);
-  if (configFileExists(dir)) {
-    const { site } = readConfig(session, dir);
-    if (site) {
-      loadConfigOrThrow(session, dir);
-      return dir;
-    }
-  }
-  if (path.dirname(dir) === dir) {
-    return undefined;
-  }
-  return findProject(session, path.dirname(dir));
-}
