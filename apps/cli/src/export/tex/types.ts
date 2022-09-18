@@ -1,4 +1,4 @@
-import type { Export } from '@curvenote/frontmatter';
+import type { Export } from 'myst-frontmatter';
 
 export interface TexExportOptions {
   filename: string;

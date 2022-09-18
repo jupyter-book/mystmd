@@ -1,7 +1,6 @@
-import fs from 'fs';
 import path from 'path';
+import { ExportFormats } from 'myst-frontmatter';
 import type { VersionId } from '@curvenote/blocks';
-import { ExportFormats } from '@curvenote/frontmatter';
 import type { ISession } from '../../session/types';
 import { createTempFolder, findProject } from '../../utils';
 import { singleArticleToTex } from '../tex';
