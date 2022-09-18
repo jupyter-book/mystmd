@@ -115,25 +115,25 @@ export async function createPdfGivenTexExport(
     fs.mkdirSync(path.dirname(pdfOutput), { recursive: true });
   }
 
-  if ((logBuildExists || texLogBuildExists) && !fs.existsSync(path.dirname(logOutput))) {
-    fs.mkdirSync(path.dirname(logOutput), { recursive: true });
-  }
-
   if (pdfBuildExists) {
     await copyFile(pdfBuild, pdfOutput);
     session.log.debug(`Copied PDF file to ${pdfOutput}`);
   } else {
     session.log.error(`Could not find ${pdfBuild} as expected`);
   }
+  if (copyLogs) {
+    if ((logBuildExists || texLogBuildExists) && !fs.existsSync(path.dirname(logOutput))) {
+      fs.mkdirSync(path.dirname(logOutput), { recursive: true });
+    }
+    if (logBuildExists) {
+      session.log.debug(`Copying log file: ${logOutput}`);
+      await copyFile(logBuild, logOutput);
+    }
 
-  if (logBuildExists && copyLogs) {
-    session.log.debug(`Copying log file: ${logOutput}`);
-    await copyFile(logBuild, logOutput);
-  }
-
-  if (texLogBuildExists && copyLogs) {
-    session.log.debug(`Copying log file: ${texLogOutput}`);
-    await copyFile(texLogBuild, texLogOutput);
+    if (texLogBuildExists) {
+      session.log.debug(`Copying log file: ${texLogOutput}`);
+      await copyFile(texLogBuild, texLogOutput);
+    }
   }
   if (!fs.existsSync(pdfOutput)) {
     throw Error(`pdf export failed`);

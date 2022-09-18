@@ -205,7 +205,7 @@ export async function collectExportOptions(
       )
       .filter((exp: Export | undefined) => exp) || [];
   // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
-  if (filename || template || templatePath || disableTemplate != null) {
+  if (filename || template || templatePath || disableTemplate) {
     if (exportOptions.length) {
       exportOptions = [exportOptions[0]];
     } else if (formats.length) {
@@ -214,38 +214,43 @@ export async function collectExportOptions(
       exportOptions = [];
     }
   }
+  const resolvedExportOptions: ExportWithOutput[] = exportOptions
+    .map((exp): ExportWithOutput | undefined => {
+      let output: string;
+      if (filename) {
+        output = filename;
+      } else if (exp.output) {
+        // output path from file frontmatter needs resolution relative to working directory
+        output = path.resolve(path.dirname(file), exp.output);
+      } else {
+        output = getDefaultExportFolder(session, file, projectPath);
+      }
+      if (!path.extname(output)) {
+        output = path.join(output, defaultOutputFilename);
+      }
+      if (!output.endsWith(`.${extension}`)) {
+        session.log.error(`The filename must end with '.${extension}': "${output}"`);
+        return undefined;
+      }
+      if (disableTemplate) {
+        template = null;
+      } else if (!template && exp.template) {
+        // template path from file frontmatter needs resolution relative to working directory
+        const resolvedTemplatePath = path.resolve(path.dirname(file), exp.template);
+        if (fs.existsSync(resolvedTemplatePath)) {
+          template = resolvedTemplatePath;
+        } else {
+          template = exp.template;
+        }
+      }
+      return { ...exp, output, template };
+    })
+    .filter((exp): exp is ExportWithOutput => Boolean(exp));
   if (exportOptions.length === 0) {
     throw new Error(
       `No export options of format ${formats.join(',')} defined in frontmatter of ${file}`,
     );
   }
-  const resolvedExportOptions: ExportWithOutput[] = exportOptions.map((exp) => {
-    let output: string;
-    if (filename) {
-      output = filename;
-    } else if (exp.output) {
-      // output path from file frontmatter needs resolution relative to working directory
-      output = path.resolve(path.dirname(file), exp.output);
-    } else {
-      output = defaultOutput;
-    }
-    if (!path.extname(output)) {
-      output = path.join(output, defaultOutput);
-    }
-    assertEndsInExtension(output, extension);
-    if (disableTemplate) {
-      template = null;
-    } else if (!template && exp.template) {
-      // template path from file frontmatter needs resolution relative to working directory
-      const resolvedTemplatePath = path.resolve(path.dirname(file), exp.template);
-      if (fs.existsSync(resolvedTemplatePath)) {
-        template = resolvedTemplatePath;
-      } else {
-        template = exp.template;
-      }
-    }
-    return { ...exp, output, template };
-  });
   resolvedExportOptions.forEach((exp) => {
     session.log.info(`🔍 Performing export: ${exp.output}`);
   });
