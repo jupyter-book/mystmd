@@ -1,42 +1,44 @@
-# `prosemirror-docx`
+# `myst-to-docx`
 
-[![prosemirror-docx on npm](https://img.shields.io/npm/v/prosemirror-docx.svg)](https://www.npmjs.com/package/prosemirror-docx)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/prosemirror-docx/blob/master/LICENSE)
-![CI](https://github.com/curvenote/prosemirror-docx/workflows/CI/badge.svg)
+[![myst-to-docx on npm](https://img.shields.io/npm/v/myst-to-docx.svg)](https://www.npmjs.com/package/myst-to-docx)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/curvenote/blob/main/LICENSE)
+![CI](https://github.com/curvenote/myst-to-docx/workflows/CI/badge.svg)
 
-Export a [prosemirror](https://prosemirror.net/) document to a Microsoft Word file, using [docx](https://docx.js.org/).
-
-![image](https://user-images.githubusercontent.com/913249/134953610-886047eb-2a21-4929-9a53-9a29d8f6184f.png)
+Export a MyST document to a Microsoft Word file, using [docx](https://docx.js.org/).
 
 ## Overview
 
-`prosemirror-docx` has a similar structure to [prosemirror-markdown](https://github.com/prosemirror/prosemirror-markdown), with a `DocxSerializerState` object that you write to as you walk the document. It is a light wrapper around https://docx.js.org/, which actually does the export. Currently `prosemirror-docx` is write only (i.e. can export to, but can’t read from `*.docx`), and has most of the basic nodes covered (see below).
+`myst-to-docx` has a `DocxSerializer` object that you write to as you walk the MyST document. It is a light wrapper around <https://docx.js.org/>, which actually does the export. `myst-to-docx` is write only (i.e. can export to, but can’t read from `*.docx`), and has all standard MyST nodes covered (see below).
 
-[Curvenote](https://curvenote.com) uses this to export from [@curvenote/editor](https://github.com/curvenote/editor) to word docs, but this library currently only has dependence on `docx`, `prosemirror-model` and `buffer-image-size` - and similar to `prosemirror-markdown`, the serialization schema can be edited externally (see `Extended usage` below).
+`myst-to-docx` can be used in the browser or in node. This library currently only has dependence on `docx`, `myst-frontmatter` and `buffer-image-size` - and the serialization handlers can be edited externally (see `Extended Usage` below).
 
-## Basic usage
+The AST should be transformed through `myst-transforms` to ensure that all nodes are enumerated.
 
-```ts
-import { defaultDocxSerializer, writeDocx } from 'prosemirror-docx';
-import { EditorState } from 'prosemirror-state';
-import { writeFileSync } from 'fs'; // Or some other way to write a file
+## Basic usage in browser
 
-// Set up your prosemirror state/document as you normally do
-const state = EditorState.create({ schema: mySchema });
+```typescript
+import { unified } from 'unified';
+import { mystToDocx, fetchImagesAsBuffers, DocxResult } from 'myst-to-docx';
 
-// If there are images, we will need to preload the buffers
-const opts = {
-  getImageBuffer(src: string) {
-    return anImageBuffer;
-  },
-};
+const opts = await fetchImagesAsBuffers(tree);
+const file = unified().use(mystToDocx, opts).stringify(tree);
+const blob = await (file.result as DocxResult);
+```
 
-// Create a doc in memory, and then write it to disk
-const wordDocument = defaultDocxSerializer.serialize(state.doc, opts);
+## Basic usage in node
 
-await writeDocx(wordDocument, (buffer) => {
-  writeFileSync('HelloWorld.docx', buffer);
-});
+```typescript
+import { unified } from 'unified';
+import { mystToDocx, DocxResult } from 'myst-to-docx';
+
+const file = unified()
+  .use(mystToDocx, {
+    getImageBuffer(url) {
+      return fs.readFileSync(url).buffer;
+    };
+  })
+  .stringify(tree);
+const blob = await (file.result as DocxResult);
 ```
 
 ## Extended usage
@@ -44,7 +46,7 @@ await writeDocx(wordDocument, (buffer) => {
 Instead of using the `defaultDocxSerializer` you can override or provide cusome serializers.
 
 ```ts
-import { DocxSerializer, defaultNodes, defaultMarks } from 'prosemirror-docx';
+import { DocxSerializer, defaultNodes, defaultMarks } from 'myst-to-docx';
 
 const nodeSerializer = {
   ...defaultNodes,
@@ -59,45 +61,47 @@ export const myDocxSerializer = new DocxSerializer(nodeSerializer, defaultMarks)
 
 The `state` is the `DocxSerializerState` and has helper methods to interact with `docx`.
 
-## Supported Nodes
+## Supported Block Nodes
 
 - text
+- link
 - paragraph
 - heading (levels)
-  - TODO: Support numbering of headings
+  - Including numbering of headings
 - blockquote
-- code_block
+- code
   - TODO: No styles supported
-- horizontal_rule
-- hard_break
-- ordered_list
-- unordered_list
-- list_item
+- thematicBreak
+- break
+- list
+- listItem
 - image
 - math
-- equations (numbered & unnumbered)
+  - Including numbering
+- inlineMath
+- crossReference
+- abbreviation
+- block
+- definitionList
+- definitionTerm
+- definitionDescription
+- container
+- caption
+- captionNumber
 - tables
 
-Planned:
+## Supported Style Nodes
 
-- Internal References (e.g. see Table 1)
-
-## Supported Marks
-
-- em
+- emphasis
 - strong
-- link
-  - Note: this is actually treated as a node in docx, so ignored as a prosemirror mark, but supported.
-- code
+- inlineCode
 - subscript
 - superscript
-- strikethrough
+- delete (strikethrough)
 - underline
 - smallcaps
-- allcaps
 
 ## Resources
 
-- [Prosemirror Docs](https://prosemirror.net/docs/)
 - [docx](https://docx.js.org/)
-- [prosemirror-markdown](https://github.com/ProseMirror/prosemirror-markdown) - similar implementation for markdown!
+- [myst-spec](https://github.com/executablebooks/myst-spec)
