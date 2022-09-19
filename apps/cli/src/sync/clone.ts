@@ -2,8 +2,9 @@ import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
 import { join } from 'path';
+import type { PartialSiteConfig } from '@curvenote/blocks';
 import { loadConfigOrThrow, writeConfigs } from '../config';
-import type { ProjectConfig, SiteConfig, SiteProject } from '../config/types';
+import type { ProjectConfig } from '../config/types';
 import { projectIdFromLink } from '../export';
 import { LogLevel } from '../logging';
 import type { Project } from '../models';
@@ -27,7 +28,7 @@ type Options = {
 export async function interactiveCloneQuestions(
   session: ISession,
   opts?: Options,
-): Promise<{ siteProject: SiteProject; projectConfig: ProjectConfig }> {
+): Promise<{ siteProject: { path: string; slug: string }; projectConfig: ProjectConfig }> {
   // This is an interactive clone
   let project: Project | undefined;
   if (opts?.remote) {
@@ -97,10 +98,13 @@ export async function clone(session: ISession, remote?: string, path?: string, o
     );
     writeConfigs(session, '.', { siteConfig: newSiteConfig });
   } else if (siteConfig) {
-    const newSiteConfig: SiteConfig = {
+    const newSiteConfig: PartialSiteConfig = {
       ...siteConfig,
-      nav: [...siteConfig.nav, { title: projectConfig.title || '', url: `/${siteProject.slug}` }],
-      projects: [...siteConfig.projects, siteProject],
+      nav: [
+        ...(siteConfig?.nav || []),
+        { title: projectConfig.title || '', url: `/${siteProject.slug}` },
+      ],
+      projects: [...(siteConfig?.projects || []), siteProject],
     };
     writeConfigs(session, '.', { siteConfig: newSiteConfig });
   }

@@ -37,12 +37,12 @@ export function loadAllConfigs(session: Pick<ISession, 'log' | 'store'>) {
     session.log.debug(`Failed to find or load configs from "./${CURVENOTE_YML}"`);
   }
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
-  if (!siteConfig) return;
+  if (!siteConfig?.projects) return;
   siteConfig.projects
     .filter((project) => project.path !== '.') // already loaded
     .forEach((project) => {
       try {
-        loadConfigOrThrow(session, project.path);
+        if (project.path) loadConfigOrThrow(session, project.path);
       } catch (error) {
         // TODO: what error?
         session.log.debug(

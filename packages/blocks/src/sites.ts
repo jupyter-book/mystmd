@@ -13,6 +13,8 @@ import {
   validateBoolean,
   validationError,
 } from 'simple-validators';
+import type { SiteFrontmatter } from 'myst-frontmatter';
+import { SITE_FRONTMATTER_KEYS, validateSiteFrontmatterKeys } from 'myst-frontmatter';
 import type { ProjectId } from './projects';
 import type { BaseLinks, JsonObject } from './types';
 
@@ -85,39 +87,34 @@ export interface SiteAnalytics {
 export interface SiteDesign {
   hide_authors?: boolean;
 }
+
 export const SITE_CONFIG_KEYS = {
   optional: [
-    'domains',
-    'title',
-    'description',
-    'venue',
     'projects',
     'nav',
     'actions',
+    'domains',
     'twitter',
     'logo',
     'logo_text',
     'favicon',
     'analytics',
     'design',
-  ],
+  ].concat(SITE_FRONTMATTER_KEYS),
 };
 
-export interface PartialSiteConfig {
-  title?: string | null;
-  description?: string | null;
-  venue?: Venue | null;
-  projects?: SiteProject[] | null;
-  nav?: (SiteNavPage | SiteNavFolder)[] | null;
-  actions?: SiteAction[] | null;
-  domains?: string[] | null;
-  twitter?: string | null;
-  logo?: string | null;
-  logo_text?: string | null;
-  favicon?: string | null;
-  analytics?: SiteAnalytics | null;
-  design?: SiteDesign | null;
-}
+export type PartialSiteConfig = SiteFrontmatter & {
+  projects?: SiteProject[];
+  nav?: (SiteNavPage | SiteNavFolder)[];
+  actions?: SiteAction[];
+  domains?: string[];
+  twitter?: string;
+  logo?: string;
+  logo_text?: string;
+  favicon?: string;
+  analytics?: SiteAnalytics;
+  design?: SiteDesign;
+};
 
 export interface SiteConfigLinks extends BaseLinks {
   project: string;
@@ -198,24 +195,6 @@ export function validateDomain(input: any, opts: ValidationOptions) {
   return validateSubdomain(lowerCase as string, opts);
 }
 
-/**
- * Validate Venue object against the schema
- *
- * If 'value' is a string, venue will be coerced to object { title: value }
- */
-export function validateVenue(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: ['title', 'url'] }, opts);
-  if (value === undefined) return undefined;
-  const output: Venue = {};
-  if (defined(value.title)) {
-    output.title = validateString(value.title, incrementOptions('title', opts));
-  }
-  if (defined(value.url)) {
-    output.url = validateUrl(value.url, incrementOptions('url', opts));
-  }
-  return output;
-}
-
 export function validateSiteProject(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(
     input,
@@ -242,17 +221,16 @@ export function validateSiteNavItem(
   input: any,
   opts: ValidationOptions,
 ): SiteNavPage | SiteNavFolder | undefined {
-  let value = validateObject(input, opts);
-  if (value === undefined) return undefined;
-  if (defined(value.children)) {
+  if (validateObject(input, opts) === undefined) return undefined;
+  if (defined(input.children)) {
     // validate as SiteNavFolder
-    value = validateKeys(value, { required: ['title', 'children'] }, opts);
+    const value = validateKeys(input, { required: ['title', 'children'] }, opts);
     if (value === undefined) return undefined;
     const title = validateString(value.title, incrementOptions('title', opts));
     const children = validateList(
       value.children,
       incrementOptions('children', opts),
-      (child, index) => {
+      (child: any, index: number) => {
         return validateSiteNavItem(child, incrementOptions(`children.${index}`, opts));
       },
     );
@@ -260,7 +238,7 @@ export function validateSiteNavItem(
     return { title, children } as SiteNavFolder;
   }
   // validate as SiteNavItem
-  value = validateKeys(value, { required: ['title', 'url'] }, opts);
+  const value = validateKeys(input, { required: ['title', 'url'] }, opts);
   if (value === undefined) return undefined;
   const title = validateString(value.title, incrementOptions('title', opts));
   const url = validateString(value.url, {
@@ -316,16 +294,7 @@ export function validateSiteConfigKeys(
   value: Record<string, any>,
   opts: ValidationOptions,
 ): PartialSiteConfig {
-  const output: PartialSiteConfig = {};
-  if (defined(value.title)) {
-    output.title = validateString(value.title, incrementOptions('title', opts));
-  }
-  if (defined(value.description)) {
-    output.description = validateString(value.description, incrementOptions('description', opts));
-  }
-  if (defined(value.venue)) {
-    output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
-  }
+  const output: PartialSiteConfig = validateSiteFrontmatterKeys(value, opts);
   if (defined(value.projects)) {
     output.projects = validateList(
       value.projects,
@@ -369,7 +338,7 @@ export function validateSiteConfigKeys(
     output.logo = validateString(value.logo, incrementOptions('logo', opts));
   }
   if (defined(value.logo_text)) {
-    output.logo_text = validateString(value.logo_text, incrementOptions('logoText', opts));
+    output.logo_text = validateString(value.logo_text, incrementOptions('logo_text', opts));
   }
   if (defined(value.favicon)) {
     output.favicon = validateString(value.favicon, incrementOptions('favicon', opts));

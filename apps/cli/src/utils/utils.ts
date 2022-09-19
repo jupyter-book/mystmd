@@ -27,18 +27,16 @@ export function resolvePath(optionalPath: string | undefined, filename: string) 
   return path.join('.', filename);
 }
 
-export function repoPath(session: ISession): string {
-  const config = selectors.selectLocalSiteConfig(session.store.getState());
-  const buildPath = config?.buildPath || BUILD_FOLDER;
-  return path.resolve(path.join('.', buildPath, 'curvenote'));
+export function repoPath(): string {
+  return path.resolve(path.join('.', BUILD_FOLDER, 'curvenote'));
 }
 
 export function webPackageJsonPath(session: ISession): string {
-  return path.join(repoPath(session), 'apps', 'web', 'package.json');
+  return path.join(repoPath(), 'apps', 'web', 'package.json');
 }
 
 export function serverPath(session: ISession): string {
-  return path.join(repoPath(session), 'apps', 'web');
+  return path.join(repoPath(), 'apps', 'web');
 }
 
 export function publicPath(session: ISession): string {
@@ -50,11 +48,11 @@ export function staticPath(session: ISession): string {
 }
 
 export function buildPathExists(session: ISession): boolean {
-  return fs.existsSync(repoPath(session));
+  return fs.existsSync(repoPath());
 }
 
 export function ensureBuildFolderExists(session: ISession): void {
-  if (!buildPathExists(session)) fs.mkdirSync(repoPath(session), { recursive: true });
+  if (!buildPathExists(session)) fs.mkdirSync(repoPath(), { recursive: true });
 }
 
 /**

@@ -1,7 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
+import type { PartialSiteConfig } from '@curvenote/blocks';
 import { combineReducers } from 'redux';
-import type { ProjectConfig, SiteConfig } from '../../config/types';
+import type { ProjectConfig } from '../../config/types';
 import type { LocalProject } from '../../toc/types';
 
 export const projects = createSlice({
@@ -30,7 +31,7 @@ export const config = createSlice({
   name: 'config',
   initialState: { rawConfigs: {}, projects: {} } as {
     rawConfigs: Record<string, Record<string, any>>;
-    site?: SiteConfig;
+    site?: PartialSiteConfig;
     projects: Record<string, ProjectConfig>;
   },
   reducers: {
@@ -38,7 +39,7 @@ export const config = createSlice({
       const { path, ...payload } = action.payload;
       state.rawConfigs[path] = payload;
     },
-    receiveSite(state, action: PayloadAction<SiteConfig>) {
+    receiveSite(state, action: PayloadAction<PartialSiteConfig>) {
       state.site = action.payload;
     },
     receiveProject(state, action: PayloadAction<ProjectConfig & { path: string }>) {

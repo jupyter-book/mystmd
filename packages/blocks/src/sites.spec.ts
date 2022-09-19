@@ -9,7 +9,6 @@ import {
   validateSiteConfig,
   validateSiteDesign,
   validateSiteNavItem,
-  validateVenue,
   validateSiteProject,
 } from './sites';
 
@@ -69,26 +68,6 @@ describe('validateDomain', () => {
     expect(validateDomain('vanilla-CAPITAL.curve.space', opts)).toBe('vanilla-capital.curve.space');
     expect(validateDomain('vanilla-prj--.curve.space', opts)).toBe(undefined);
     expect(validateDomain('', opts)).toEqual(undefined);
-  });
-});
-
-describe('validateVenue', () => {
-  it('empty object returns self', async () => {
-    expect(validateVenue({}, opts)).toEqual({});
-  });
-  it('object with title/url returns self', async () => {
-    const venue = {
-      title: 'test',
-      url: 'http://example.com',
-    };
-    expect(validateVenue(venue, opts)).toEqual(venue);
-  });
-  it('invalid keys ignored', async () => {
-    expect(validateVenue({ title: 'test', extra: '' }, opts)).toEqual({ title: 'test' });
-  });
-  it('string is invalid', async () => {
-    expect(validateVenue('test', opts)).toEqual(undefined);
-    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 

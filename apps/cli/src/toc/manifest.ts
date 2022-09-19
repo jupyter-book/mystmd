@@ -2,7 +2,7 @@ import fs from 'fs';
 import { extname, join, sep } from 'path';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { filterKeys } from 'simple-validators';
-import type { SiteProject, SiteAction, SiteAnalytics } from '../config/types';
+import type { SiteProject, SiteAction, SiteAnalytics } from '@curvenote/blocks';
 import { CURVENOTE_YML } from '../config/types';
 import type { ISession } from '../session/types';
 import type { RootState } from '../store';
@@ -27,6 +27,7 @@ export function localToManifestProject(
   state: RootState,
   siteProj: SiteProject,
 ): ManifestProject | null {
+  if (!siteProj.path) return null;
   const projConfig = selectors.selectLocalProjectConfig(state, siteProj.path);
   const proj = selectors.selectLocalProject(state, siteProj.path);
   if (!proj || !projConfig) return null;
@@ -160,22 +161,22 @@ export function getSiteManifest(session: ISession): SiteManifest {
   const state = session.store.getState();
   const siteConfig = selectors.selectLocalSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
-  siteConfig.projects.forEach((siteProj) => {
+  siteConfig.projects?.forEach((siteProj) => {
     const proj = localToManifestProject(state, siteProj);
     if (!proj) return;
     siteProjects.push(proj);
   });
-  const { title, twitter, logo, logoText, nav } = siteConfig;
-  const actions = siteConfig.actions.map((action) => getSiteManifestAction(session, action));
+  const { title, twitter, logo, logo_text, nav } = siteConfig;
+  const actions = siteConfig.actions?.map((action) => getSiteManifestAction(session, action));
   const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
   const manifest: SiteManifest = {
     ...siteFrontmatter,
     title: title || '',
     twitter,
     logo: getLogoPaths(session, logo, { silent: true })?.url,
-    logoText,
-    nav,
-    actions,
+    logo_text,
+    nav: nav || [],
+    actions: actions || [],
     projects: siteProjects,
     analytics: getSiteManifestAnalytics(session, siteConfig.analytics),
   };

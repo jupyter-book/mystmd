@@ -3,6 +3,7 @@ import { join } from 'path';
 import yaml from 'js-yaml';
 import type { ValidationOptions } from 'simple-validators';
 import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
+import { validateSiteConfig } from '@curvenote/blocks';
 import { prepareToWrite } from '../frontmatter';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
@@ -10,7 +11,7 @@ import { config } from '../store/local';
 import { writeFileToFolder } from '../utils';
 import type { Config } from './types';
 import { CURVENOTE_YML, VERSION } from './types';
-import { validateProjectConfig, validateSiteConfig } from './validators';
+import { validateProjectConfig } from './validators';
 
 function emptyConfig(): Config {
   return {

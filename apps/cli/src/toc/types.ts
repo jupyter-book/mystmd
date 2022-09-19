@@ -1,5 +1,5 @@
 import type { ProjectFrontmatter } from 'myst-frontmatter';
-import type { SiteAnalytics, SiteAction, SiteNavItem } from '../config/types';
+import type { SiteAnalytics, SiteAction, SiteNavPage, SiteNavFolder } from '@curvenote/blocks';
 
 // Types for local Project
 //
@@ -59,8 +59,8 @@ export type SiteManifest = {
   title: string;
   twitter?: string;
   logo?: string;
-  logoText?: string;
-  nav: SiteNavItem[];
+  logo_text?: string;
+  nav: (SiteNavPage | SiteNavFolder)[];
   actions: SiteAction[];
   projects: ManifestProject[];
   analytics?: SiteAnalytics;

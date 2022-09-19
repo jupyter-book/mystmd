@@ -1,6 +1,6 @@
 import chokidar from 'chokidar';
 import { join, extname } from 'path';
-import type { SiteProject } from '../config/types';
+import type { SiteProject } from '@curvenote/blocks';
 import { CURVENOTE_YML } from '../config/types';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
@@ -31,6 +31,10 @@ function fileProcessor(session: ISession, siteProject: SiteProject) {
       await processSite(session, { reloadConfigs: true });
       return;
     }
+    if (!siteProject.path) {
+      session.log.warn(`⚠️ No local project path for file: ${file}`);
+      return;
+    }
     const pageSlug = selectors.selectPageSlug(session.store.getState(), siteProject.path, file);
     if (!pageSlug) {
       session.log.warn(`⚠️ File is not in project: ${file}`);
@@ -49,17 +53,20 @@ function fileProcessor(session: ISession, siteProject: SiteProject) {
 
 export function watchContent(session: ISession) {
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
-  if (!siteConfig) return;
+  if (!siteConfig?.projects) return;
+  const localProjects = siteConfig.projects.filter(
+    (proj): proj is { slug: string; path: string } => {
+      return Boolean(proj.path);
+    },
+  );
   // For each project watch the full content folder
-  siteConfig.projects.forEach((proj) => {
+  localProjects.forEach((proj) => {
     const ignored =
       proj.path === '.'
         ? [
             // If in the root, ignore the YML and all other projects
             CURVENOTE_YML,
-            ...siteConfig.projects
-              .filter(({ path }) => path !== '.')
-              .map(({ path }) => join(path, '*')),
+            ...localProjects.filter(({ path }) => path !== '.').map(({ path }) => join(path, '*')),
           ]
         : [];
     chokidar

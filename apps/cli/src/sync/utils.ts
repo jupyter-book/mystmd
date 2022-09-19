@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import path from 'path';
-import type { ProjectConfig, SiteConfig, SiteProject } from '../config/types';
+import type { PartialSiteConfig, SiteProject } from '@curvenote/blocks';
+import type { ProjectConfig } from '../config/types';
 import { docLinks } from '../docs';
 import { projectIdFromLink } from '../export';
 import { Project, RemoteSiteConfig } from '../models';
@@ -13,12 +14,12 @@ export function projectLogString(project: Project) {
 
 export const INIT_LOGO_PATH = path.join('public', 'logo.svg');
 
-export function getDefaultSiteConfig(title?: string): SiteConfig {
+export function getDefaultSiteConfig(title?: string): PartialSiteConfig {
   return {
     title: title || 'My Curve Space',
     domains: [],
     logo: INIT_LOGO_PATH,
-    logoText: title || 'My Curve Space',
+    logo_text: title || 'My Curve Space',
     nav: [],
     actions: [{ title: 'Learn More', url: docLinks.web }],
     projects: [],
@@ -29,18 +30,18 @@ export async function getDefaultSiteConfigFromRemote(
   session: ISession,
   projectId: string,
   siteProject: SiteProject,
-): Promise<SiteConfig> {
+): Promise<PartialSiteConfig> {
   const project = await new Project(session, projectId).get();
   const remoteSiteConfig = await new RemoteSiteConfig(session, project.id).get();
   const siteConfig = getDefaultSiteConfig();
   siteConfig.title = project.data.title;
-  siteConfig.logoText = project.data.title;
+  siteConfig.logo_text = project.data.title;
   if (remoteSiteConfig.data.domains) siteConfig.domains = remoteSiteConfig.data.domains;
   // Add an entry to the nav if it doesn't exist (i.e. empty list is fine)
   if (!remoteSiteConfig.data.nav) {
     siteConfig.nav = [{ title: project.data.title || '', url: `/${siteProject.slug}` }];
   }
-  siteConfig.projects = [...siteConfig.projects, siteProject];
+  siteConfig.projects = [...(siteConfig.projects || []), siteProject];
   return siteConfig;
 }
 

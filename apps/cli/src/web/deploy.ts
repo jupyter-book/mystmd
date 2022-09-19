@@ -43,7 +43,7 @@ function listConfig(session: ISession): FromTo[] {
     });
   }
   // Load all static action resources
-  siteConfig.actions.forEach((action) => {
+  siteConfig.actions?.forEach((action) => {
     if (!action.static) return;
     // String leading slash
     const names = action.url.split('/').filter((s) => s);
@@ -213,19 +213,21 @@ export async function promoteContent(session: ISession, cdnKey: string) {
   if (!siteConfig) throw new Error('🧐 No site config found.');
   const toc = tic();
   const errorDomains: string[] = [];
-  const sites = (
-    await Promise.all(
-      siteConfig.domains.map(async (domain) => {
-        const resp = await session.post<DnsRouter>('/routers', {
-          cdn: cdnKey,
-          domain,
-        });
-        if (resp.ok) return resp.json;
-        errorDomains.push(`https://${domain}`);
-        return null;
-      }),
-    )
-  ).filter((s): s is DnsRouter => !!s);
+  const sites = siteConfig.domains
+    ? (
+        await Promise.all(
+          siteConfig.domains.map(async (domain) => {
+            const resp = await session.post<DnsRouter>('/routers', {
+              cdn: cdnKey,
+              domain,
+            });
+            if (resp.ok) return resp.json;
+            errorDomains.push(`https://${domain}`);
+            return null;
+          }),
+        )
+      ).filter((s): s is DnsRouter => !!s)
+    : [];
 
   const allSites = sites.map((s) => `https://${s.id}`).join('\n  - ');
   if (allSites.length > 0) {
