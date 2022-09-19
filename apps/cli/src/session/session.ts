@@ -1,7 +1,6 @@
 import fetch from 'node-fetch';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
-import type { JsonObject } from '@curvenote/blocks';
 import { loadConfigOrThrow } from '../config';
 import { CURVENOTE_YML } from '../config/types';
 import type { Logger } from '../logging';
@@ -94,7 +93,10 @@ export class Session implements ISession {
     loadAllConfigs({ log: this.$logger, store: this.store });
   }
 
-  async get<T>(url: string, query?: Record<string, string>): Response<T> {
+  async get<T extends Record<string, any>>(
+    url: string,
+    query?: Record<string, string>,
+  ): Response<T> {
     const withBase = url.startsWith(this.API_URL) ? url : `${this.API_URL}${url}`;
     const fullUrl = withQuery(withBase, query);
     const headers = await getHeaders(this.log, this.$tokens);
@@ -115,11 +117,15 @@ export class Session implements ISession {
     };
   }
 
-  async patch<T>(url: string, data: JsonObject) {
+  async patch<T extends Record<string, any>>(url: string, data: Record<string, any>) {
     return this.post<T>(url, data, 'patch');
   }
 
-  async post<T>(url: string, data: JsonObject, method: 'post' | 'patch' = 'post'): Response<T> {
+  async post<T extends Record<string, any>>(
+    url: string,
+    data: Record<string, any>,
+    method: 'post' | 'patch' = 'post',
+  ): Response<T> {
     if (url.startsWith(this.API_URL)) url = url.replace(this.API_URL, '');
     const headers = await getHeaders(this.log, this.$tokens);
     this.log.debug(`${method.toUpperCase()} ${url}`);

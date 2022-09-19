@@ -31,7 +31,7 @@ strikethrough
 
 underline
 : Use the `u` or `underline` role, for example, `` {u}`text` `` yeilds {u}`text`
-: Note, using this can often be confused with a link and usage of underlines isn't recommended, consider using strong or emphasis instead.
+: Note, using this can often be confused with a link and usage of underlines [isn't recommended](https://practicaltypography.com/underlining.html), consider using strong or emphasis instead.
 
 smallcaps
 : Use the `sc` or `smallcaps` role, for example, `` {sc}`MyST` `` yeilds {sc}`MyST`

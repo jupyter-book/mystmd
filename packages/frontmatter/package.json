@@ -5,15 +5,18 @@
   "description": "Frontmatter types and validation for the mystjs ecosystem",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "homepage": "https://github.com/curvenote/curvenote#readme",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
-  "directories": {
-    "src": "src"
-  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
   "files": [
-    "src",
     "dist"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -22,16 +25,16 @@
     "url": "git+https://github.com/curvenote/curvenote.git"
   },
   "scripts": {
-    "prepublishOnly": "npm run compile",
-    "build": "npm run clean && tsc",
-    "compile": "npm run clean && tsc -p .",
-    "dev": "tsc -w --preserveWatchOutput -p .",
     "clean": "rimraf dist",
+    "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist/esm",
+    "build:cjs": "tsc --project ./tsconfig.json --module commonjs --outDir dist/cjs",
+    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
+    "prepublishOnly": "npm run build",
+    "build": "npm-run-all -l clean -p build:cjs build:esm declarations",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.js",
     "lint:format": "npx prettier --check \"src/**/*.ts\"",
     "test": "jest",
-    "test:watch": "jest --watchAll",
-    "test:clear": "jest --clearCache"
+    "test:watch": "jest --watchAll"
   },
   "bugs": {
     "url": "https://github.com/curvenote/curvenote/issues"

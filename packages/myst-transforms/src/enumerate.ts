@@ -9,7 +9,8 @@ import { createHtmlId, fileWarn, normalizeLabel, setTextAsChild, copyNode } from
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
 
-type ResolvableCrossReference = CrossReference & {
+type ResolvableCrossReference = Omit<CrossReference, 'kind'> & {
+  kind?: TargetKind | string;
   enumerator?: string;
   template?: string;
   resolved?: boolean;
@@ -230,7 +231,8 @@ export class ReferenceState implements IReferenceState {
     if (
       possibleIncorrectNode.type === 'crossReference' ||
       possibleIncorrectNode.type === 'cite' ||
-      possibleIncorrectNode.type === 'footnoteDefinition'
+      possibleIncorrectNode.type === 'footnoteDefinition' ||
+      possibleIncorrectNode.type === 'footnoteReference'
     ) {
       // Explicitly filter out crossReferences, citations, and footnoteDefinition
       // These are not targets, but do have an "identifier" property
@@ -308,6 +310,8 @@ export class ReferenceState implements IReferenceState {
       this.warnNodeTargetNotFound(node);
       return;
     }
+    // Put the kind on the node so we can use that later
+    node.kind = target.kind;
     const noNodeChildren = !node.children?.length;
     if (target.kind === TargetKind.heading) {
       const numberHeading = shouldEnumerate(
