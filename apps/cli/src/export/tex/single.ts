@@ -218,8 +218,7 @@ export async function collectExportOptions(
   projectPath: string | undefined,
   opts: TexExportOptions,
 ) {
-  const { filename, disableTemplate, templatePath } = opts;
-  let { template } = opts;
+  const { filename, disableTemplate, templatePath, template } = opts;
   if (disableTemplate && (opts.template || opts.templatePath)) {
     throw new Error(
       'Conflicting tex export options: disableTemplate requested but a template was provided',
@@ -266,18 +265,19 @@ export async function collectExportOptions(
         session.log.error(`The filename must end with '.${extension}': "${output}"`);
         return undefined;
       }
+      const resolvedOptions: { output: string; template?: string | null } = { output };
       if (disableTemplate) {
-        template = null;
+        resolvedOptions.template = null;
       } else if (!template && exp.template) {
         // template path from file frontmatter needs resolution relative to working directory
         const resolvedTemplatePath = path.resolve(path.dirname(file), exp.template);
         if (fs.existsSync(resolvedTemplatePath)) {
-          template = resolvedTemplatePath;
+          resolvedOptions.template = resolvedTemplatePath;
         } else {
-          template = exp.template;
+          resolvedOptions.template = exp.template;
         }
       }
-      return { ...exp, output, template };
+      return { ...exp, ...resolvedOptions };
     })
     .filter((exp): exp is ExportWithOutput => Boolean(exp));
   if (exportOptions.length === 0) {
