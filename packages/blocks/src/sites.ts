@@ -195,6 +195,18 @@ export function validateDomain(input: any, opts: ValidationOptions) {
   return validateSubdomain(lowerCase as string, opts);
 }
 
+function validateUrlOrPath(input: any, opts: ValidationOptions) {
+  const value = validateString(input, opts);
+  if (!defined(value)) return undefined;
+  // Validate simple relative path in project
+  if (value.match('^(/[a-zA-Z0-9._-]+){1,2}$')) return value;
+  const urlValue = validateUrl(value, { ...opts, suppressErrors: true });
+  if (!urlValue) {
+    return validationError(`invalid URL or relative path: ${value}`, opts);
+  }
+  return urlValue;
+}
+
 export function validateSiteProject(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(
     input,
@@ -241,10 +253,7 @@ export function validateSiteNavItem(
   const value = validateKeys(input, { required: ['title', 'url'] }, opts);
   if (value === undefined) return undefined;
   const title = validateString(value.title, incrementOptions('title', opts));
-  const url = validateString(value.url, {
-    ...incrementOptions('url', opts),
-    regex: '^(/[a-zA-Z0-9._-]+){1,2}$',
-  });
+  const url = validateUrlOrPath(value.url, incrementOptions('url', opts));
   if (title === undefined || !url) return undefined;
   return { title, url } as SiteNavPage;
 }
@@ -260,7 +269,7 @@ export function validateSiteAction(input: any, opts: ValidationOptions) {
   if (defined(value.static)) {
     value.static = validateBoolean(value.static, incrementOptions('static', opts));
   }
-  const actionUrlValidator = value.static ? validateString : validateUrl;
+  const actionUrlValidator = value.static ? validateString : validateUrlOrPath;
   const url = actionUrlValidator(value.url, incrementOptions('url', opts));
   if (title === undefined || !url) return undefined;
   return value as SiteAction;

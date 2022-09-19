@@ -123,11 +123,10 @@ describe('validateSiteNavItem', () => {
     expect(validateSiteNavItem({ title: 'my-folder', url: '/a/a/a' }, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
-  it('invalid full url errors', async () => {
+  it('full url returns self', async () => {
     expect(
       validateSiteNavItem({ title: 'my-folder', url: 'https://example.com/a/a' }, opts),
-    ).toEqual(undefined);
-    expect(opts.messages.errors?.length).toEqual(1);
+    ).toEqual({ title: 'my-folder', url: 'https://example.com/a/a' });
   });
 });
 
@@ -145,8 +144,14 @@ describe('validateSiteAction', () => {
     expect(validateSiteAction(siteAction, opts)).toEqual(siteAction);
   });
   it('invalid url errors', async () => {
-    expect(validateSiteAction({ title: 'example', url: '/a' }, opts)).toEqual(undefined);
+    expect(validateSiteAction({ title: 'example', url: '/a/b/c/d' }, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('valid path returns self', async () => {
+    expect(validateSiteAction({ title: 'example', url: '/a/b' }, opts)).toEqual({
+      title: 'example',
+      url: '/a/b',
+    });
   });
 });
 
@@ -202,7 +207,7 @@ describe('validateSiteConfig', () => {
         {
           projects: [{ path: 'my-proj', slug: '/my/proj' }],
           nav: [{ title: 'cool folder', children: 'a' }],
-          actions: [{ title: 'Go To Example', url: '/my/proj', static: false }],
+          actions: [{ title: 'Go To Example', url: 'bad_url', static: false }],
           domains: ['example.com'],
         },
         opts,
