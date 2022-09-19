@@ -4,6 +4,7 @@ import type { LatexResult } from 'myst-to-tex'; // Only import the type!!
 import type { VFileMessage } from 'vfile-message';
 import yaml from 'js-yaml';
 import type { References } from '@curvenote/site-common';
+import type { DocxResult } from 'myst-to-docx';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { NodeRenderer } from './types';
 import React, { useEffect, useRef, useState } from 'react';
@@ -15,9 +16,29 @@ import { CopyIcon } from './components/CopyIcon';
 import { CodeBlock } from './code';
 import { ReferencesProvider } from '@curvenote/ui-providers';
 
+function downloadBlob(filename: string, blob: Blob) {
+  const a = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  a.href = url;
+  a.download = filename;
+  a.click();
+}
+
+async function saveDocxFile(filename: string, mdast: any) {
+  const { unified } = await import('unified');
+  const { mystToDocx, fetchImagesAsBuffers } = await import('myst-to-docx');
+  const opts = await fetchImagesAsBuffers(mdast);
+  const docxBlob = await (unified()
+    .use(mystToDocx, opts)
+    .stringify(mdast as any).result as DocxResult);
+  downloadBlob(filename, docxBlob as Blob);
+}
+
 async function parse(text: string, defaultFrontmatter?: PageFrontmatter) {
   // Ensure that any imports from myst are async and scoped to this function
-  const { MyST, unified, visit } = await import('mystjs');
+  const { visit } = await import('unist-util-visit');
+  const { unified } = await import('unified');
+  const { MyST } = await import('mystjs');
   const {
     mathPlugin,
     footnotesPlugin,
@@ -144,6 +165,17 @@ export function MySTRenderer({ value, numbering }: { value: string; numbering: a
               {show}
             </button>
           ))}
+          <button
+            className={classnames(
+              'px-2',
+              'bg-white hover:bg-slate-200 dark:bg-slate-500 dark:hover:bg-slate-700',
+            )}
+            title={`Download Micorsoft Word`}
+            aria-label={`Download Micorsoft Word`}
+            onClick={() => saveDocxFile('demo.docx', references.article)}
+          >
+            DOCX
+          </button>
         </div>
         {previewType === 'DEMO' && (
           <ReferencesProvider references={references}>{content}</ReferencesProvider>

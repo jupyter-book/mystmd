@@ -1,23 +1,8 @@
 import type { VFile } from 'vfile';
 import type { Node, Parent } from 'myst-spec';
+import { fileError } from 'myst-common';
 import type { IParagraphOptions, IRunOptions, ParagraphChild, ITableCellOptions } from 'docx';
-import {
-  Paragraph,
-  TextRun,
-  MathRun,
-  Math,
-  TabStopType,
-  TabStopPosition,
-  SequentialIdentifier,
-  Bookmark,
-  Table,
-  TableRow,
-  TableCell,
-  InternalHyperlink,
-  SimpleField,
-  FootnoteReferenceRun,
-} from 'docx';
-import { createShortId } from './utils';
+import { Paragraph, TextRun, Table, TableRow, TableCell, FootnoteReferenceRun } from 'docx';
 import type {
   Handler,
   IDocxSerializer,
@@ -27,6 +12,7 @@ import type {
   Options,
   StateData,
 } from './types';
+import { defaultHandlers } from './schema';
 
 // This is duplicated from @curvenote/schema
 export type AlignOptions = 'left' | 'center' | 'right';
@@ -38,20 +24,6 @@ export type IMathOpts = {
 };
 
 const MAX_IMAGE_WIDTH = 600;
-
-function createReferenceBookmark(
-  id: string,
-  kind: 'Equation' | 'Figure' | 'Table',
-  before?: string,
-  after?: string,
-) {
-  const textBefore = before ? [new TextRun(before)] : [];
-  const textAfter = after ? [new TextRun(after)] : [];
-  return new Bookmark({
-    id,
-    children: [...textBefore, new SequentialIdentifier(kind), ...textAfter],
-  });
-}
 
 export class DocxSerializer implements IDocxSerializer {
   file: VFile;
@@ -80,26 +52,31 @@ export class DocxSerializer implements IDocxSerializer {
   constructor(file: VFile, options: Options) {
     this.file = file;
     this.data = {};
-    this.handlers = options.handlers ?? {};
+    this.handlers = options.handlers ?? defaultHandlers;
     this.options = options ?? {};
     this.children = [];
     this.numbering = [];
   }
 
-  renderContent(parent: Parent | Node, opts?: IParagraphOptions) {
+  renderContent(parent: Parent | Node, paragraphOpts?: IParagraphOptions, runOpts?: IRunOptions) {
     if ('children' in parent) {
       parent.children.forEach((node) => {
-        if (opts) this.addParagraphOptions(opts);
+        if (paragraphOpts) this.addParagraphOptions(paragraphOpts);
+        if (runOpts) this.addRunOptions(runOpts);
         this.render(node, parent);
       });
     } else {
+      if (paragraphOpts) this.addParagraphOptions(paragraphOpts);
+      if (runOpts) this.addRunOptions(runOpts);
       this.render(parent);
     }
   }
 
   render(node: Node, parent?: Parent) {
-    if (!this.handlers[node.type])
-      throw new Error(`Token type \`${node.type}\` not supported by docx renderer`);
+    if (!this.handlers[node.type]) {
+      fileError(this.file, `Node of type "${node.type}" is not supported by docx renderer`);
+      return;
+    }
     this.handlers[node.type](this, node, parent);
   }
 
@@ -115,35 +92,6 @@ export class DocxSerializer implements IDocxSerializer {
     if (!text) return;
     this.current.push(new TextRun({ text, ...this.nextRunOpts, ...opts }));
     delete this.nextRunOpts;
-  }
-
-  math(latex: string, opts: IMathOpts = { inline: true }) {
-    if (opts.inline || !opts.numbered) {
-      this.current.push(new Math({ children: [new MathRun(latex)] }));
-      return;
-    }
-    const id = opts.id ?? createShortId();
-    this.current = [
-      new TextRun('\t'),
-      new Math({
-        children: [new MathRun(latex)],
-      }),
-      new TextRun('\t('),
-      createReferenceBookmark(id, 'Equation'),
-      new TextRun(')'),
-    ];
-    this.addParagraphOptions({
-      tabStops: [
-        {
-          type: TabStopType.CENTER,
-          position: TabStopPosition.MAX / 2,
-        },
-        {
-          type: TabStopType.RIGHT,
-          position: TabStopPosition.MAX,
-        },
-      ],
-    });
   }
 
   table(node: Parent) {
@@ -182,10 +130,6 @@ export class DocxSerializer implements IDocxSerializer {
     this.children = actualChildren;
   }
 
-  captionLabel(id: string, kind: 'Figure' | 'Table', { suffix } = { suffix: ': ' }) {
-    this.current.push(...[createReferenceBookmark(id, kind, `${kind} `), new TextRun(suffix)]);
-  }
-
   $footnoteCounter = 0;
 
   footnote(node: Node) {
@@ -203,7 +147,11 @@ export class DocxSerializer implements IDocxSerializer {
     this.current.push(new FootnoteReferenceRun(this.$footnoteCounter));
   }
 
-  closeBlock(node: Node, props?: IParagraphOptions) {
+  closeBlock(props?: IParagraphOptions, force = false) {
+    if (this.current.length === 0 && !props && !force) {
+      delete this.nextParentParagraphOpts;
+      return;
+    }
     const paragraph = new Paragraph({
       children: this.current,
       ...this.nextParentParagraphOpts,
@@ -214,13 +162,8 @@ export class DocxSerializer implements IDocxSerializer {
     this.children.push(paragraph);
   }
 
-  createReference(id: string, before?: string, after?: string) {
-    const children: ParagraphChild[] = [];
-    if (before) children.push(new TextRun(before));
-    children.push(new SimpleField(`REF ${id} \\h`));
-    if (after) children.push(new TextRun(after));
-    const ref = new InternalHyperlink({ anchor: id, children });
-    this.current.push(ref);
+  blankLine(props?: IParagraphOptions) {
+    this.closeBlock(props, true);
   }
 }
 

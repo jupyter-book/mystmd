@@ -11,7 +11,11 @@ export const plugin: Plugin<[Options], Root, VFile> = function (opts) {
     const state = new DocxSerializer(file, opts);
     state.renderContent(node);
     const doc = createDocFromState(state);
-    file.result = Packer.toBuffer(doc);
+    if (typeof document === 'undefined') {
+      file.result = Packer.toBuffer(doc);
+    } else {
+      file.result = Packer.toBlob(doc);
+    }
     return file;
   };
   return (node: Root) => {
