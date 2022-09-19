@@ -16,6 +16,10 @@ The AST should be transformed through `myst-transforms` to ensure that all nodes
 
 ## Basic usage in browser
 
+The utility `fetchImagesAsBuffers` walks the AST and downloads images into buffers to be used by docx, it also figures out the size and returns an object with `getImageBuffer` and `getImageDimensions`, which need to be passed to the options. If your images are more complex (e.g. they are mermaid diagrams, or Jupyter Outputs), you will need to do more complex preprocessing to create these two functions.
+
+A `Blob` is returned, which can be downloaded client side.
+
 ```typescript
 import { unified } from 'unified';
 import { mystToDocx, fetchImagesAsBuffers, DocxResult } from 'myst-to-docx';
@@ -26,6 +30,8 @@ const blob = await (file.result as DocxResult);
 ```
 
 ## Basic usage in node
+
+In node, the image dimensions are discovered using a node-only package, and don't need to be provided. The result of the conversion in node is a `Buffer` as the `file.result`, which can be saved to disk.
 
 ```typescript
 import { unified } from 'unified';
@@ -38,7 +44,7 @@ const file = unified()
     };
   })
   .stringify(tree);
-const blob = await (file.result as DocxResult);
+const buffer = await (file.result as DocxResult);
 ```
 
 ## Extended usage
