@@ -59,7 +59,7 @@ function NavItem({ item }: { item: SiteNavItem }) {
               {({ active }) => (
                 <NavLink
                   prefetch="intent"
-                  to={action.url}
+                  to={action.url || ''}
                   className={({ isActive }) =>
                     classNames('block px-4 py-2 text-sm text-gray-700', {
                       'bg-gray-100': active,
@@ -172,22 +172,35 @@ function useLoading() {
   return { showLoading, isLoading: transitionState === 'loading' };
 }
 
-function HomeLink({ logo, logoText, name }: { logo?: string; logoText?: string; name?: string }) {
-  const nothingSet = !logo && !logoText;
+function HomeLink({
+  logo,
+  logo_text,
+  logoText,
+  name,
+}: {
+  logo?: string;
+  logo_text?: string;
+  logoText?: string;
+  name?: string;
+}) {
+  const resolvedLogoText = logo_text || logoText;
+  const nothingSet = !logo && !resolvedLogoText;
   return (
     <Link
       className="flex items-center text-white w-fit ml-3 md:ml-5 xl:ml-7"
       to="/"
       prefetch="intent"
     >
-      {logo && <img src={logo} className="h-9 mr-3" alt={logoText || name} height="2.25rem"></img>}
+      {logo && (
+        <img src={logo} className="h-9 mr-3" alt={resolvedLogoText || name} height="2.25rem"></img>
+      )}
       {nothingSet && <CurvenoteLogo className="mr-3" fill="#FFF" size={30} />}
       <span
         className={classNames('text-md sm:text-xl tracking-tight sm:mr-5', {
-          'sr-only': !(logoText || nothingSet),
+          'sr-only': !(resolvedLogoText || nothingSet),
         })}
       >
-        {logoText || 'Curvenote'}
+        {resolvedLogoText || 'Curvenote'}
       </span>
     </Link>
   );
@@ -196,7 +209,7 @@ function HomeLink({ logo, logoText, name }: { logo?: string; logoText?: string; 
 export function TopNav() {
   const [open, setOpen] = useNavOpen();
   const config = useSiteManifest();
-  const { logo, logoText, actions, title, nav } = config ?? {};
+  const { logo, logo_text, logoText, actions, title, nav } = config ?? {};
   const { isLoading, showLoading } = useLoading();
   return (
     <div className="bg-stone-700 p-3 md:px-8 fixed w-screen top-0 z-30 h-[60px]">
@@ -213,7 +226,7 @@ export function TopNav() {
               <MenuIcon className="fill-current h-8 w-8 p-1" />
             </button>
           </div>
-          <HomeLink name={title} logo={logo} logoText={logoText} />
+          <HomeLink name={title} logo={logo} logoText={logo_text || logoText} />
         </div>
         <div className="flex-grow flex items-center w-auto">
           <NavItems nav={nav} />

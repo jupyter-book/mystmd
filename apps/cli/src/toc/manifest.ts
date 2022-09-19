@@ -3,17 +3,17 @@ import { extname, join, sep } from 'path';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { filterKeys } from 'simple-validators';
 import type { SiteProject, SiteAction, SiteAnalytics } from '@curvenote/blocks';
-import { CURVENOTE_YML } from '../config/types';
-import type { ISession } from '../session/types';
-import type { RootState } from '../store';
-import { selectors } from '../store';
-import { addWarningForFile, publicPath, warnOnUnrecognizedKeys } from '../utils';
 import type {
   SiteManifest,
   ManifestProject,
   ManifestProjectPage,
   ManifestProjectFolder,
-} from './types';
+} from '@curvenote/site-common';
+import { CURVENOTE_YML } from '../config/types';
+import type { ISession } from '../session/types';
+import type { RootState } from '../store';
+import { selectors } from '../store';
+import { addWarningForFile, publicPath, warnOnUnrecognizedKeys } from '../utils';
 
 /**
  * Convert local project representation to site manifest project
@@ -64,6 +64,7 @@ export function localToManifestProject(
   const projFrontmatter = filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS);
   return {
     ...projFrontmatter,
+    bibliography: projFrontmatter.bibliography || [],
     title: projectTitle || 'Untitled',
     slug: siteProj.slug,
     index,

@@ -12,6 +12,7 @@ import {
   validateList,
   validateBoolean,
   validationError,
+  validationWarning,
 } from 'simple-validators';
 import type { SiteFrontmatter } from 'myst-frontmatter';
 import { SITE_FRONTMATTER_KEYS, validateSiteFrontmatterKeys } from 'myst-frontmatter';
@@ -68,10 +69,12 @@ export interface SiteProject {
 export interface SiteNavPage {
   title: string;
   url: string;
+  internal?: boolean;
 }
 
 export interface SiteNavFolder {
   title: string;
+  url?: string;
   children: (SiteNavPage | SiteNavFolder)[];
 }
 
@@ -97,6 +100,7 @@ export const SITE_CONFIG_KEYS = {
     'twitter',
     'logo',
     'logo_text',
+    'logoText',
     'favicon',
     'analytics',
     'design',
@@ -348,6 +352,9 @@ export function validateSiteConfigKeys(
   }
   if (defined(value.logo_text)) {
     output.logo_text = validateString(value.logo_text, incrementOptions('logo_text', opts));
+  } else if (defined(value.logoText)) {
+    validationWarning('logoText is deprecated, please use logo_text', opts);
+    output.logo_text = validateString(value.logoText, incrementOptions('logoText', opts));
   }
   if (defined(value.favicon)) {
     output.favicon = validateString(value.favicon, incrementOptions('favicon', opts));
