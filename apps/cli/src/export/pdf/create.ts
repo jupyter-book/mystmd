@@ -99,12 +99,12 @@ export async function createPdfGivenTexExport(
     buildCommand = jtex.pdfExportCommand(texFile, texLogFile);
   }
   try {
-    session.log.debug(`Building LaTeX in directory: ${buildPath}`);
+    session.log.info(`🖨  Rendering pdf to ${pdfBuild}`);
     session.log.debug(`Running command:\n> ${buildCommand}`);
     await exec(buildCommand, { cwd: buildPath });
     session.log.debug(`Done building LaTeX.`);
   } catch (err) {
-    session.log.error(`Error while invoking mklatex: ${err}`);
+    session.log.error(`Error while invoking mklatex - logs available at: ${buildPath}\n${err}`);
   }
 
   const pdfBuildExists = fs.existsSync(pdfBuild);
@@ -116,6 +116,7 @@ export async function createPdfGivenTexExport(
   }
 
   if (pdfBuildExists) {
+    session.log.info(`🧬 Copying pdf to ${pdfOutput}`);
     await copyFile(pdfBuild, pdfOutput);
     session.log.debug(`Copied PDF file to ${pdfOutput}`);
   } else {

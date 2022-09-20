@@ -63,7 +63,6 @@ export async function localArticleToPdf(session: ISession, file: string, opts: T
     const keepTexAndLogs = format === ExportFormats.pdftex;
     const texExportOptions = texExportOptionsFromPdf(pdfExportOptions, keepTexAndLogs);
     await runTexExport(session, file, texExportOptions, opts.templatePath, projectPath);
-    session.log.info(`🖨  Rendering pdf to ${output}`);
     await createPdfGivenTexExport(
       session,
       texExportOptions,

@@ -6,6 +6,7 @@ import type { Root } from 'mdast';
 import { selectAll, unified } from 'mystjs';
 import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
+import type { ValidationOptions } from 'simple-validators';
 import type { VersionId } from '@curvenote/blocks';
 import type { Export, PageFrontmatter } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
@@ -225,14 +226,13 @@ export async function collectExportOptions(
     );
   }
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
+  const exportErrorMessages: ValidationOptions['messages'] = {};
   let exportOptions: Export[] =
     rawFrontmatter?.exports
       ?.map((exp: any, ind: number) => {
         return validateExport(exp, {
           property: `exports.${ind}`,
-          messages: {},
-          errorLogFn: (msg) => session.log.error(msg),
-          warningLogFn: (msg) => session.log.warn(msg),
+          messages: exportErrorMessages,
         });
       })
       .filter((exp: Export | undefined) => exp && formats.includes(exp?.format)) || [];
@@ -281,7 +281,11 @@ export async function collectExportOptions(
     .filter((exp): exp is ExportWithOutput => Boolean(exp));
   if (exportOptions.length === 0) {
     throw new Error(
-      `No export options of format ${formats.join(',')} defined in frontmatter of ${file}`,
+      `No export options of format ${formats.join(', ')} defined in frontmatter of ${file}${
+        exportErrorMessages.errors?.length
+          ? '\nPossible causes:\n- ' + exportErrorMessages.errors.map((e) => e.message).join('\n- ')
+          : ''
+      }`,
     );
   }
   resolvedExportOptions.forEach((exp) => {
