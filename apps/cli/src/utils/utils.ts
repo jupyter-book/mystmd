@@ -148,7 +148,7 @@ export function writeFileToFolder(
 }
 
 export function computeHash(content: string) {
-  return createHash('sha256').update(content).digest('hex');
+  return createHash('md5').update(content).digest('hex');
 }
 
 /**
@@ -157,7 +157,8 @@ export function computeHash(content: string) {
  * If hashed file already exists, this does nothing
  */
 export function hashAndCopyStaticFile(session: ISession, file: string, writeFolder: string) {
-  const fileHash = `${computeHash(file)}${path.extname(file)}`;
+  const { name, ext } = path.parse(file);
+  const fileHash = `${name.slice(0, 20)}-${computeHash(fs.readFileSync(file).toString())}${ext}`;
   const destination = path.join(writeFolder, fileHash);
   if (fs.existsSync(destination)) {
     session.log.debug(`Cached file found for: ${file}`);
