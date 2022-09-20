@@ -195,19 +195,29 @@ export async function localArticleToTexTemplated(
  * Get default folder for saving export. Folder will be created on export.
  *
  * The default folder is:
- * <root>/_build/curvenote/exports/<slug>/
+ * <root>/_build/exports/
  *
  * If the file is part of a project, the root is the project folder;
  * if not, the root is the file folder.
  */
 function getDefaultExportFolder(session: ISession, file: string, projectPath?: string) {
-  const { name, dir } = path.parse(file);
+  const { dir } = path.parse(file);
+  const buildSubpath = path.join('_build', 'exports');
+  return path.join(projectPath || dir, buildSubpath);
+}
+
+/**
+ * Get default filename for saving export.
+ *
+ * This uses the project slug if available, or creates a new slug from the filename otherwise.
+ */
+function getDefaultExportFilename(session: ISession, file: string, projectPath?: string) {
+  const { name } = path.parse(file);
   const slugFromProject = projectPath
     ? selectPageSlug(session.store.getState(), projectPath, file)
     : undefined;
   const slug = slugFromProject || createSlug(name);
-  const buildSubpath = path.join('_build', 'curvenote', 'exports', slug);
-  return path.join(projectPath || dir, buildSubpath);
+  return slug;
 }
 
 export async function collectExportOptions(
@@ -215,7 +225,6 @@ export async function collectExportOptions(
   file: string,
   extension: string,
   formats: ExportFormats[],
-  defaultOutputFilename: string,
   projectPath: string | undefined,
   opts: TexExportOptions,
 ) {
@@ -258,7 +267,8 @@ export async function collectExportOptions(
         output = getDefaultExportFolder(session, file, projectPath);
       }
       if (!path.extname(output)) {
-        output = path.join(output, defaultOutputFilename);
+        const slug = getDefaultExportFilename(session, file, projectPath);
+        output = path.join(output, `${slug}.${extension}`);
       }
       if (!output.endsWith(`.${extension}`)) {
         session.log.error(`The filename must end with '.${extension}': "${output}"`);
@@ -278,7 +288,17 @@ export async function collectExportOptions(
       }
       return { ...exp, ...resolvedOptions };
     })
-    .filter((exp): exp is ExportWithOutput => Boolean(exp));
+    .filter((exp): exp is ExportWithOutput => Boolean(exp))
+    .map((exp, ind, arr) => {
+      // Make identical export output values unique
+      const nMatch = (a: ExportWithOutput[]) => a.filter((e) => e.output === exp.output).length;
+      if (nMatch(arr) === 1) return { ...exp };
+      const { dir, name, ext } = path.parse(exp.output);
+      return {
+        ...exp,
+        output: path.join(dir, `${name}_${nMatch(arr.slice(0, ind))}${ext}`),
+      };
+    });
   if (exportOptions.length === 0) {
     throw new Error(
       `No export options of format ${formats.join(', ')} defined in frontmatter of ${file}${
@@ -315,7 +335,6 @@ export async function localArticleToTex(session: ISession, file: string, opts: T
     file,
     'tex',
     [ExportFormats.tex],
-    DEFAULT_TEX_FILENAME,
     projectPath,
     opts,
   );

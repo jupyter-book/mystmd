@@ -88,8 +88,8 @@ export async function createPdfGivenTexExport(
   const logBuild = path.join(buildPath, logFile);
   const texLogBuild = path.join(buildPath, texLogFile);
   // Log file location saved alongside pdf
-  const logOutput = path.join(path.dirname(pdfOutput), 'logs', logFile);
-  const texLogOutput = path.join(path.dirname(pdfOutput), 'logs', texLogFile);
+  const logOutput = path.join(path.dirname(pdfOutput), `${pdfBasename}_logs`, logFile);
+  const texLogOutput = path.join(path.dirname(pdfOutput), `${pdfBasename}_logs`, texLogFile);
 
   let buildCommand: string;
   if (!template && !templatePath) {

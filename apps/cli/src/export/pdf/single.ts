@@ -35,10 +35,11 @@ export async function singleArticleToPdf(
 }
 
 export function texExportOptionsFromPdf(pdfExp: ExportWithOutput, keepTex?: boolean) {
-  const outputTexFile = path.basename(pdfExp.output, path.extname(pdfExp.output)) + '.tex';
+  const basename = path.basename(pdfExp.output, path.extname(pdfExp.output));
+  const outputTexFile = `${basename}.tex`;
   let output: string;
   if (keepTex) {
-    output = path.join(path.dirname(pdfExp.output), 'tex', outputTexFile);
+    output = path.join(path.dirname(pdfExp.output), `${basename}_tex`, outputTexFile);
   } else {
     output = path.join(createTempFolder(), outputTexFile);
   }
@@ -52,7 +53,6 @@ export async function localArticleToPdf(session: ISession, file: string, opts: T
     file,
     'pdf',
     [ExportFormats.pdf, ExportFormats.pdftex],
-    DEFAULT_PDF_FILENAME,
     projectPath,
     opts,
   );
