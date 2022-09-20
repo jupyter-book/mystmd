@@ -242,10 +242,6 @@ describe('validateSiteConfig', () => {
   it('empty config returns self', async () => {
     expect(validateSiteConfig({}, opts)).toEqual({});
   });
-  it('logoText is backwards compatible', async () => {
-    expect(validateSiteConfig({ logoText: 'test' }, opts)).toEqual({ logo_text: 'test' });
-    expect(opts.messages.warnings?.length).toEqual(1);
-  });
   it('domains are coerced, deduplicated', async () => {
     expect(
       validateSiteConfig(

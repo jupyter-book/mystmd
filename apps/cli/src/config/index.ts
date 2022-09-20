@@ -73,6 +73,11 @@ function readConfig(session: PartialSession, path: string) {
     const { frontmatter, ...rest } = conf.project;
     conf.project = { ...frontmatter, ...rest };
   }
+  if (conf.site?.logoText) {
+    session.log.warn(`logoText is deprecated, please use logo_text in "${file}#site"`, opts);
+    const { logoText, ...rest } = conf.site;
+    conf.site = { logo_text: logoText, ...rest };
+  }
   return conf;
 }
 
