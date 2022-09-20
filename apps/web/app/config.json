@@ -16,7 +16,7 @@
     { "title": "Sign Up", "url": "https://curvenote.com/signup/" }
   ],
   "logo": "/logo.svg",
-  "logoText": "Curvenote",
+  "logo_text": "Curvenote",
   "projects": [
     {
       "slug": "demo",

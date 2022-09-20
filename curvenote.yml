@@ -33,4 +33,4 @@ site:
     - js.myst.tools
   twitter: executablebooks
   logo: docs/public/logo.svg
-  logoText: ''
+  logo_text: ''

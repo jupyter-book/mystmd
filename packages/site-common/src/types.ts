@@ -97,6 +97,7 @@ export type SiteManifest = {
   title: string;
   twitter?: string;
   logo?: string;
+  /** @deprecated */
   logoText?: string;
   logo_text?: string;
   nav: SiteNavItem[];

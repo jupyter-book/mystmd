@@ -172,35 +172,22 @@ function useLoading() {
   return { showLoading, isLoading: transitionState === 'loading' };
 }
 
-function HomeLink({
-  logo,
-  logo_text,
-  logoText,
-  name,
-}: {
-  logo?: string;
-  logo_text?: string;
-  logoText?: string;
-  name?: string;
-}) {
-  const resolvedLogoText = logo_text || logoText;
-  const nothingSet = !logo && !resolvedLogoText;
+function HomeLink({ logo, logoText, name }: { logo?: string; logoText?: string; name?: string }) {
+  const nothingSet = !logo && !logoText;
   return (
     <Link
       className="flex items-center text-white w-fit ml-3 md:ml-5 xl:ml-7"
       to="/"
       prefetch="intent"
     >
-      {logo && (
-        <img src={logo} className="h-9 mr-3" alt={resolvedLogoText || name} height="2.25rem"></img>
-      )}
+      {logo && <img src={logo} className="h-9 mr-3" alt={logoText || name} height="2.25rem"></img>}
       {nothingSet && <CurvenoteLogo className="mr-3" fill="#FFF" size={30} />}
       <span
         className={classNames('text-md sm:text-xl tracking-tight sm:mr-5', {
-          'sr-only': !(resolvedLogoText || nothingSet),
+          'sr-only': !(logoText || nothingSet),
         })}
       >
-        {resolvedLogoText || 'Curvenote'}
+        {logoText || 'Curvenote'}
       </span>
     </Link>
   );
