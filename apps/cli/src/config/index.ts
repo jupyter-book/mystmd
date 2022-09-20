@@ -74,7 +74,7 @@ export function readConfig(session: PartialSession, path: string) {
     conf.project = { ...frontmatter, ...rest };
   }
   if (conf.site?.logoText) {
-    session.log.warn(`logoText is deprecated, please use logo_text in "${file}#site"`, opts);
+    session.log.warn(`logoText is deprecated, please use logo_text in "${file}#site"`);
     const { logoText, ...rest } = conf.site;
     conf.site = { logo_text: logoText, ...rest };
   }

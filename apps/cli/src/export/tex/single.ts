@@ -148,6 +148,7 @@ export async function localArticleToTexTemplated(
   templateOptions: ExportWithOutput,
   templatePath?: string,
   projectPath?: string,
+  force?: boolean,
 ) {
   const { frontmatter, mdast, references } = await getFileContent(
     session,
@@ -188,6 +189,7 @@ export async function localArticleToTexTemplated(
     options: templateOptions,
     sourceFile: file,
     imports: mergeExpandedImports(collectedImports, result),
+    force,
   });
 }
 
@@ -324,7 +326,14 @@ export async function runTexExport(
   if (exportOptions.template === null) {
     await localArticleToTexRaw(session, file, exportOptions.output, projectPath);
   } else {
-    await localArticleToTexTemplated(session, file, exportOptions, templatePath, projectPath);
+    await localArticleToTexTemplated(
+      session,
+      file,
+      exportOptions,
+      templatePath,
+      projectPath,
+      clean,
+    );
   }
 }
 
@@ -340,7 +349,7 @@ export async function localArticleToTex(session: ISession, file: string, opts: T
   );
   await Promise.all(
     exportOptionsList.map(async (exportOptions) => {
-      await runTexExport(session, file, exportOptions, opts.templatePath, projectPath);
+      await runTexExport(session, file, exportOptions, opts.templatePath, projectPath, opts.clean);
     }),
   );
 }

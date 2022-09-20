@@ -9,6 +9,7 @@ import {
   oxaLinkToPdf,
   pathToWord,
 } from '../export';
+import { makeCleanOption } from './options';
 import { clirun } from './utils';
 
 function makeImageOption() {
@@ -80,6 +81,7 @@ function makeTexExportCLI(program: Command) {
     .addOption(makeDisableTemplateOption())
     .addOption(makeTemplateOption())
     .addOption(makeTemplatePathOption())
+    .addOption(makeCleanOption())
     .addOption(makeTemplateOptionsOption())
     .addOption(makeConverterOption())
     .action(clirun(oxaLinkToArticleTex, { program }));
@@ -97,6 +99,7 @@ function makePdfExportCLI(program: Command) {
     .addOption(makeDisableTemplateOption())
     .addOption(makeTemplateOption())
     .addOption(makeTemplatePathOption())
+    .addOption(makeCleanOption())
     .addOption(makeTemplateOptionsOption())
     .addOption(makeConverterOption())
     .action(clirun(oxaLinkToPdf, { program }));

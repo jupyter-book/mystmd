@@ -7,6 +7,7 @@ import type { ISession } from '../../session/types';
 import { BUILD_FOLDER, createTempFolder } from '../../utils';
 import type { ExportWithOutput } from '../tex/types';
 import { exec } from '../utils';
+import { cleanOutput } from '../tex/single';
 
 const copyFile = util.promisify(fs.copyFile);
 
@@ -65,7 +66,9 @@ export async function createPdfGivenTexExport(
   pdfOutput: string,
   templatePath?: string,
   copyLogs?: boolean,
+  clean?: boolean,
 ) {
+  if (clean) cleanOutput(session, pdfOutput);
   const { output: texOutput, template } = texExportOptions;
 
   const buildPath = createTempFolder();
@@ -88,8 +91,10 @@ export async function createPdfGivenTexExport(
   const logBuild = path.join(buildPath, logFile);
   const texLogBuild = path.join(buildPath, texLogFile);
   // Log file location saved alongside pdf
-  const logOutput = path.join(path.dirname(pdfOutput), `${pdfBasename}_logs`, logFile);
-  const texLogOutput = path.join(path.dirname(pdfOutput), `${pdfBasename}_logs`, texLogFile);
+  const logOutputFolder = path.join(path.dirname(pdfOutput), `${pdfBasename}_logs`);
+  const logOutput = path.join(logOutputFolder, logFile);
+  const texLogOutput = path.join(logOutputFolder, texLogFile);
+  if (clean) cleanOutput(session, logOutputFolder);
 
   let buildCommand: string;
   if (!template && !templatePath) {

@@ -4,7 +4,7 @@ import type { VersionId } from '@curvenote/blocks';
 import type { ISession } from '../../session/types';
 import { createTempFolder, findProject } from '../../utils';
 import { singleArticleToTex } from '../tex';
-import { collectExportOptions, runTexExport } from '../tex/single';
+import { cleanOutput, collectExportOptions, runTexExport } from '../tex/single';
 import type { ExportWithOutput, TexExportOptions } from '../tex/types';
 import { createPdfGivenTexFile, createPdfGivenTexExport } from './create';
 
@@ -34,12 +34,19 @@ export async function singleArticleToPdf(
   return article;
 }
 
-export function texExportOptionsFromPdf(pdfExp: ExportWithOutput, keepTex?: boolean) {
+export function texExportOptionsFromPdf(
+  session: ISession,
+  pdfExp: ExportWithOutput,
+  keepTex?: boolean,
+  clean?: boolean,
+) {
   const basename = path.basename(pdfExp.output, path.extname(pdfExp.output));
   const outputTexFile = `${basename}.tex`;
   let output: string;
   if (keepTex) {
-    output = path.join(path.dirname(pdfExp.output), `${basename}_tex`, outputTexFile);
+    const texOutputFolder = path.join(path.dirname(pdfExp.output), `${basename}_tex`);
+    if (clean) cleanOutput(session, texOutputFolder);
+    output = path.join(texOutputFolder, outputTexFile);
   } else {
     output = path.join(createTempFolder(), outputTexFile);
   }

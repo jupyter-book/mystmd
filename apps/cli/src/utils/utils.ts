@@ -10,7 +10,6 @@ import type { JsonObject, VersionId } from '@curvenote/blocks';
 import { configFileExists, loadConfigOrThrow, readConfig } from '../config';
 import type { Logger } from '../logging';
 import type { ISession } from '../session/types';
-import { selectors } from '../store';
 import type { WarningKind } from '../store/build';
 import { warnings } from '../store/build';
 

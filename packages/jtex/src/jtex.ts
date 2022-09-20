@@ -175,6 +175,7 @@ class JTex {
     options: any;
     sourceFile?: string;
     imports?: string | ExpandedImports;
+    force?: boolean;
   }) {
     if (!fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
       throw new Error(
@@ -205,7 +206,7 @@ class JTex {
     const rendered = this.env.render(TEMPLATE_FILENAME, renderer);
     const outputDirectory = dirname(opts.outputPath);
     ensureDirectoryExists(outputDirectory);
-    this.copyTemplateFiles(dirname(opts.outputPath));
+    this.copyTemplateFiles(dirname(opts.outputPath), { force: opts.force });
     fs.writeFileSync(opts.outputPath, `% Created with jtex v.${version}\n${rendered}`);
     fs.writeFileSync(join(outputDirectory, 'curvenote.def'), curvenoteDef);
   }

@@ -12,6 +12,7 @@ export interface TexExportOptions {
   texIsIntermediate?: boolean;
   converter?: 'inkscape' | 'imagemagick';
   templateOptions?: Record<string, any>;
+  clean?: boolean;
 }
 
 export type ExportWithOutput = Export & {
