@@ -158,7 +158,11 @@ export function computeHash(content: string) {
  */
 export function hashAndCopyStaticFile(session: ISession, file: string, writeFolder: string) {
   const { name, ext } = path.parse(file);
-  const fileHash = `${name.slice(0, 20)}-${computeHash(fs.readFileSync(file).toString())}${ext}`;
+  const fd = fs.openSync(file, 'r');
+  const { mtime, size } = fs.fstatSync(fd);
+  fs.closeSync(fd);
+  const hash = computeHash(`${mtime.toString()}${size.toString()}`);
+  const fileHash = `${name.slice(0, 20)}-${hash}${ext}`;
   const destination = path.join(writeFolder, fileHash);
   if (fs.existsSync(destination)) {
     session.log.debug(`Cached file found for: ${file}`);
