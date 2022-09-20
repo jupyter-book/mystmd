@@ -1,4 +1,4 @@
-import type { PartialSiteConfig } from '@curvenote/blocks';
+import type { SiteConfig } from '@curvenote/blocks';
 import type { ProjectConfig } from '../../config/types';
 import type { LocalProject, LocalProjectPage } from '../../toc/types';
 
@@ -16,7 +16,7 @@ export function selectAffiliation(state: RootState, id: string): string | undefi
   return state.local.affiliations[id];
 }
 
-export function selectLocalSiteConfig(state: RootState): PartialSiteConfig | undefined {
+export function selectLocalSiteConfig(state: RootState): SiteConfig | undefined {
   return state.local.config.site;
 }
 

@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
 import { join } from 'path';
-import type { PartialSiteConfig } from '@curvenote/blocks';
+import type { SiteConfig } from '@curvenote/blocks';
 import { loadConfigOrThrow, writeConfigs } from '../config';
 import type { ProjectConfig } from '../config/types';
 import { projectIdFromLink } from '../export';
@@ -98,7 +98,7 @@ export async function clone(session: ISession, remote?: string, path?: string, o
     );
     writeConfigs(session, '.', { siteConfig: newSiteConfig });
   } else if (siteConfig) {
-    const newSiteConfig: PartialSiteConfig = {
+    const newSiteConfig: SiteConfig = {
       ...siteConfig,
       nav: [
         ...(siteConfig?.nav || []),

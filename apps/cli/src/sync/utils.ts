@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import path from 'path';
-import type { PartialSiteConfig, SiteProject } from '@curvenote/blocks';
+import type { SiteConfig, SiteProject } from '@curvenote/blocks';
 import type { ProjectConfig } from '../config/types';
 import { docLinks } from '../docs';
 import { projectIdFromLink } from '../export';
@@ -14,7 +14,7 @@ export function projectLogString(project: Project) {
 
 export const INIT_LOGO_PATH = path.join('public', 'logo.svg');
 
-export function getDefaultSiteConfig(title?: string): PartialSiteConfig {
+export function getDefaultSiteConfig(title?: string): SiteConfig {
   return {
     title: title || 'My Curve Space',
     domains: [],
@@ -30,7 +30,7 @@ export async function getDefaultSiteConfigFromRemote(
   session: ISession,
   projectId: string,
   siteProject: SiteProject,
-): Promise<PartialSiteConfig> {
+): Promise<SiteConfig> {
   const project = await new Project(session, projectId).get();
   const remoteSiteConfig = await new RemoteSiteConfig(session, project.id).get();
   const siteConfig = getDefaultSiteConfig();

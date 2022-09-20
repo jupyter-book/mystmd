@@ -105,7 +105,7 @@ export const SITE_CONFIG_KEYS = {
   ].concat(SITE_FRONTMATTER_KEYS),
 };
 
-export type PartialSiteConfig = SiteFrontmatter & {
+export type SiteConfig = SiteFrontmatter & {
   projects?: SiteProject[];
   nav?: (SiteNavPage | SiteNavFolder)[];
   actions?: SiteAction[];
@@ -123,12 +123,12 @@ export interface SiteConfigLinks extends BaseLinks {
   publish: string;
 }
 
-export interface SiteConfig extends PartialSiteConfig {
+export type SiteConfigDBO = { [P in keyof SiteConfig]: SiteConfig[P] | null } & {
   id: ProjectId;
   date_created: Date;
   date_modified: Date;
   links: SiteConfigLinks;
-}
+};
 
 const CURVE_SPACE = /^(?:(?:https?:)?\/\/)?([a-z0-9_]{3,20})(?:-([a-z0-9_]{1,30}))?\.curve\.space$/;
 
@@ -304,8 +304,8 @@ export function validateSiteAnalytics(input: any, opts: ValidationOptions) {
 export function validateSiteConfigKeys(
   value: Record<string, any>,
   opts: ValidationOptions,
-): PartialSiteConfig {
-  const output: PartialSiteConfig = validateSiteFrontmatterKeys(value, opts);
+): SiteConfig {
+  const output: SiteConfig = validateSiteFrontmatterKeys(value, opts);
   if (defined(value.projects)) {
     output.projects = validateList(
       value.projects,
@@ -372,7 +372,7 @@ export function validateSiteConfig(input: any, opts: ValidationOptions) {
   return validateSiteConfigKeys(value, opts);
 }
 
-export function siteConfigFromDTO(id: ProjectId, json: JsonObject): SiteConfig {
+export function siteConfigFromDTO(id: ProjectId, json: JsonObject): SiteConfigDBO {
   const validationOptions: ValidationOptions = {
     property: 'site',
     messages: {},
