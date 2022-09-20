@@ -13,6 +13,8 @@ import {
   validateBoolean,
   validationError,
 } from 'simple-validators';
+import type { SiteFrontmatter } from 'myst-frontmatter';
+import { SITE_FRONTMATTER_KEYS, validateSiteFrontmatterKeys } from 'myst-frontmatter';
 import type { ProjectId } from './projects';
 import type { BaseLinks, JsonObject } from './types';
 
@@ -66,10 +68,12 @@ export interface SiteProject {
 export interface SiteNavPage {
   title: string;
   url: string;
+  internal?: boolean;
 }
 
 export interface SiteNavFolder {
   title: string;
+  url?: string;
   children: (SiteNavPage | SiteNavFolder)[];
 }
 
@@ -85,51 +89,46 @@ export interface SiteAnalytics {
 export interface SiteDesign {
   hide_authors?: boolean;
 }
+
 export const SITE_CONFIG_KEYS = {
   optional: [
-    'domains',
-    'title',
-    'description',
-    'venue',
     'projects',
     'nav',
     'actions',
+    'domains',
     'twitter',
     'logo',
     'logo_text',
     'favicon',
     'analytics',
     'design',
-  ],
+  ].concat(SITE_FRONTMATTER_KEYS),
 };
 
-export interface PartialSiteConfig {
-  title?: string | null;
-  description?: string | null;
-  venue?: Venue | null;
-  projects?: SiteProject[] | null;
-  nav?: (SiteNavPage | SiteNavFolder)[] | null;
-  actions?: SiteAction[] | null;
-  domains?: string[] | null;
-  twitter?: string | null;
-  logo?: string | null;
-  logo_text?: string | null;
-  favicon?: string | null;
-  analytics?: SiteAnalytics | null;
-  design?: SiteDesign | null;
-}
+export type SiteConfig = SiteFrontmatter & {
+  projects?: SiteProject[];
+  nav?: (SiteNavPage | SiteNavFolder)[];
+  actions?: SiteAction[];
+  domains?: string[];
+  twitter?: string;
+  logo?: string;
+  logo_text?: string;
+  favicon?: string;
+  analytics?: SiteAnalytics;
+  design?: SiteDesign;
+};
 
 export interface SiteConfigLinks extends BaseLinks {
   project: string;
   publish: string;
 }
 
-export interface SiteConfig extends PartialSiteConfig {
+export type SiteConfigDBO = { [P in keyof SiteConfig]: SiteConfig[P] | null } & {
   id: ProjectId;
   date_created: Date;
   date_modified: Date;
   links: SiteConfigLinks;
-}
+};
 
 const CURVE_SPACE = /^(?:(?:https?:)?\/\/)?([a-z0-9_]{3,20})(?:-([a-z0-9_]{1,30}))?\.curve\.space$/;
 
@@ -198,22 +197,16 @@ export function validateDomain(input: any, opts: ValidationOptions) {
   return validateSubdomain(lowerCase as string, opts);
 }
 
-/**
- * Validate Venue object against the schema
- *
- * If 'value' is a string, venue will be coerced to object { title: value }
- */
-export function validateVenue(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: ['title', 'url'] }, opts);
-  if (value === undefined) return undefined;
-  const output: Venue = {};
-  if (defined(value.title)) {
-    output.title = validateString(value.title, incrementOptions('title', opts));
+function validateUrlOrPath(input: any, opts: ValidationOptions) {
+  const value = validateString(input, opts);
+  if (!defined(value)) return undefined;
+  // Validate simple relative path in project
+  if (value.match('^(/[a-zA-Z0-9._-]+){1,2}$')) return value;
+  const urlValue = validateUrl(value, { ...opts, suppressErrors: true });
+  if (!urlValue) {
+    return validationError(`invalid URL or relative path: ${value}`, opts);
   }
-  if (defined(value.url)) {
-    output.url = validateUrl(value.url, incrementOptions('url', opts));
-  }
-  return output;
+  return urlValue;
 }
 
 export function validateSiteProject(input: any, opts: ValidationOptions) {
@@ -242,17 +235,16 @@ export function validateSiteNavItem(
   input: any,
   opts: ValidationOptions,
 ): SiteNavPage | SiteNavFolder | undefined {
-  let value = validateObject(input, opts);
-  if (value === undefined) return undefined;
-  if (defined(value.children)) {
+  if (validateObject(input, opts) === undefined) return undefined;
+  if (defined(input.children)) {
     // validate as SiteNavFolder
-    value = validateKeys(value, { required: ['title', 'children'] }, opts);
+    const value = validateKeys(input, { required: ['title', 'children'] }, opts);
     if (value === undefined) return undefined;
     const title = validateString(value.title, incrementOptions('title', opts));
     const children = validateList(
       value.children,
       incrementOptions('children', opts),
-      (child, index) => {
+      (child: any, index: number) => {
         return validateSiteNavItem(child, incrementOptions(`children.${index}`, opts));
       },
     );
@@ -260,13 +252,10 @@ export function validateSiteNavItem(
     return { title, children } as SiteNavFolder;
   }
   // validate as SiteNavItem
-  value = validateKeys(value, { required: ['title', 'url'] }, opts);
+  const value = validateKeys(input, { required: ['title', 'url'] }, opts);
   if (value === undefined) return undefined;
   const title = validateString(value.title, incrementOptions('title', opts));
-  const url = validateString(value.url, {
-    ...incrementOptions('url', opts),
-    regex: '^(/[a-zA-Z0-9._-]+){1,2}$',
-  });
+  const url = validateUrlOrPath(value.url, incrementOptions('url', opts));
   if (title === undefined || !url) return undefined;
   return { title, url } as SiteNavPage;
 }
@@ -282,7 +271,7 @@ export function validateSiteAction(input: any, opts: ValidationOptions) {
   if (defined(value.static)) {
     value.static = validateBoolean(value.static, incrementOptions('static', opts));
   }
-  const actionUrlValidator = value.static ? validateString : validateUrl;
+  const actionUrlValidator = value.static ? validateString : validateUrlOrPath;
   const url = actionUrlValidator(value.url, incrementOptions('url', opts));
   if (title === undefined || !url) return undefined;
   return value as SiteAction;
@@ -315,17 +304,8 @@ export function validateSiteAnalytics(input: any, opts: ValidationOptions) {
 export function validateSiteConfigKeys(
   value: Record<string, any>,
   opts: ValidationOptions,
-): PartialSiteConfig {
-  const output: PartialSiteConfig = {};
-  if (defined(value.title)) {
-    output.title = validateString(value.title, incrementOptions('title', opts));
-  }
-  if (defined(value.description)) {
-    output.description = validateString(value.description, incrementOptions('description', opts));
-  }
-  if (defined(value.venue)) {
-    output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
-  }
+): SiteConfig {
+  const output: SiteConfig = validateSiteFrontmatterKeys(value, opts);
   if (defined(value.projects)) {
     output.projects = validateList(
       value.projects,
@@ -369,7 +349,7 @@ export function validateSiteConfigKeys(
     output.logo = validateString(value.logo, incrementOptions('logo', opts));
   }
   if (defined(value.logo_text)) {
-    output.logo_text = validateString(value.logo_text, incrementOptions('logoText', opts));
+    output.logo_text = validateString(value.logo_text, incrementOptions('logo_text', opts));
   }
   if (defined(value.favicon)) {
     output.favicon = validateString(value.favicon, incrementOptions('favicon', opts));
@@ -392,7 +372,7 @@ export function validateSiteConfig(input: any, opts: ValidationOptions) {
   return validateSiteConfigKeys(value, opts);
 }
 
-export function siteConfigFromDTO(id: ProjectId, json: JsonObject): SiteConfig {
+export function siteConfigFromDTO(id: ProjectId, json: JsonObject): SiteConfigDBO {
   const validationOptions: ValidationOptions = {
     property: 'site',
     messages: {},

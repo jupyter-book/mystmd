@@ -1,7 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
+import type { SiteConfig } from '@curvenote/blocks';
 import { combineReducers } from 'redux';
-import type { ProjectConfig, SiteConfig } from '../../config/types';
+import type { ProjectConfig } from '../../config/types';
 import type { LocalProject } from '../../toc/types';
 
 export const projects = createSlice({

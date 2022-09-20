@@ -4,7 +4,7 @@ site:
   domains:
     - smoke.curve.space
   logo: public/logo.svg
-  logoText: Curvenote
+  logo_text: Curvenote
   twitter: curvenote
   projects:
     - path: content/smoke

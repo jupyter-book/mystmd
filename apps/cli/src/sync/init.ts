@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
 import { basename, join, resolve } from 'path';
+import type { SiteNavPage } from '@curvenote/blocks';
 import { writeConfigs } from '../config';
 import { CURVENOTE_YML } from '../config/types';
 import { docLinks, LOGO } from '../docs';
@@ -105,7 +106,7 @@ export async function init(session: ISession, opts: Options) {
   }
   let projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), '.');
   let pullComplete = false;
-  let title = projectConfig?.title || siteConfig.title;
+  let title = projectConfig?.title || siteConfig.title || undefined;
   if (content === 'folder') {
     if (projectConfigPaths.length) {
       const pathListString = projectConfigPaths
@@ -154,14 +155,22 @@ export async function init(session: ISession, opts: Options) {
   session.log.info(`📓 Creating site config`);
   me = await me;
   siteConfig.title = title;
-  siteConfig.logoText = title;
-  siteConfig.nav = siteConfig.projects.map((proj) => {
-    const projConf = selectors.selectLocalProjectConfig(state, proj.path);
-    return {
-      title: projConf?.title || proj.slug,
-      url: `/${proj.slug}`,
-    };
-  });
+  siteConfig.logo_text = title;
+  siteConfig.nav = siteConfig.projects
+    .map((proj) => {
+      if (proj.path) {
+        const projConf = selectors.selectLocalProjectConfig(state, proj.path);
+        return {
+          title: projConf?.title || proj.slug,
+          url: `/${proj.slug}`,
+        };
+      } else if (proj.remote) {
+        return { title: proj.slug, url: proj.remote };
+      } else {
+        return undefined;
+      }
+    })
+    .filter((proj): proj is SiteNavPage => Boolean(proj));
   if (me) {
     const { username, twitter } = me.data;
     siteConfig.domains = opts.domain

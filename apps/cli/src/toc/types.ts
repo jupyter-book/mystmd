@@ -1,5 +1,5 @@
 import type { ProjectFrontmatter } from 'myst-frontmatter';
-import type { SiteAnalytics, SiteAction, SiteNavItem } from '../config/types';
+import type { SiteAnalytics, SiteAction, SiteNavPage, SiteNavFolder } from '@curvenote/blocks';
 
 // Types for local Project
 //
@@ -27,41 +27,4 @@ export type LocalProject = {
   index: string;
   bibliography: string[];
   pages: (LocalProjectPage | LocalProjectFolder)[];
-};
-
-// Manifest shipped with site content
-//
-// Combines info from config, local project.
-// Removes local path info
-
-export type ManifestProjectFolder = {
-  title: string;
-  level: PageLevels;
-};
-
-export type ManifestProjectPage = {
-  slug: string;
-  description: string;
-  date: string;
-  thumbnail: string;
-  thumbnailOptimized?: string;
-  tags: string[];
-} & ManifestProjectFolder;
-
-export type ManifestProject = ProjectFrontmatter & {
-  slug: string;
-  index: string;
-  title: string;
-  pages: (ManifestProjectPage | ManifestProjectFolder)[];
-};
-
-export type SiteManifest = {
-  title: string;
-  twitter?: string;
-  logo?: string;
-  logoText?: string;
-  nav: SiteNavItem[];
-  actions: SiteAction[];
-  projects: ManifestProject[];
-  analytics?: SiteAnalytics;
 };

@@ -22,13 +22,13 @@ export { buildSite, deployContentToCdn };
 
 export async function clean(session: ISession): Promise<void> {
   if (!buildPathExists(session)) {
-    session.log.debug(`web.clean: ${repoPath(session)} not found.`);
+    session.log.debug(`web.clean: ${repoPath()} not found.`);
     return;
   }
   const toc = tic();
-  session.log.info(`🗑  Removing ${repoPath(session)}`);
-  fs.rmSync(repoPath(session), { recursive: true, force: true });
-  session.log.debug(toc(`Removed ${repoPath(session)} in %s`));
+  session.log.info(`🗑  Removing ${repoPath()}`);
+  fs.rmSync(repoPath(), { recursive: true, force: true });
+  session.log.debug(toc(`Removed ${repoPath()} in %s`));
 }
 
 export async function clone(session: ISession, opts: Options): Promise<void> {
@@ -37,7 +37,7 @@ export async function clone(session: ISession, opts: Options): Promise<void> {
   if (branch !== 'main') {
     session.log.warn(`👷 Warning, using a branch: ${branch}`);
   }
-  const repo = repoPath(session);
+  const repo = repoPath();
   await makeExecutable(
     `git clone --recursive --depth 1 --branch ${branch} https://github.com/curvenote/curvenote.git ${repo}`,
     getGitLogger(session),
@@ -53,9 +53,9 @@ export async function install(session: ISession): Promise<void> {
     session.log.error('Curvenote is not cloned. Do you need to run: \n\ncurvenote web clone');
     return;
   }
-  await makeExecutable('npm install', getNpmLogger(session), { cwd: repoPath(session) })();
+  await makeExecutable('npm install', getNpmLogger(session), { cwd: repoPath() })();
   session.log.info(toc('📦 Installed web libraries in %s'));
-  await makeExecutable('npm run build:web', getNpmLogger(session), { cwd: repoPath(session) })();
+  await makeExecutable('npm run build:web', getNpmLogger(session), { cwd: repoPath() })();
   session.log.info(toc('🛠  Built dependencies in %s'));
 }
 

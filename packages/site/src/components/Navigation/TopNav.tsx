@@ -59,7 +59,7 @@ function NavItem({ item }: { item: SiteNavItem }) {
               {({ active }) => (
                 <NavLink
                   prefetch="intent"
-                  to={action.url}
+                  to={action.url || ''}
                   className={({ isActive }) =>
                     classNames('block px-4 py-2 text-sm text-gray-700', {
                       'bg-gray-100': active,
@@ -196,7 +196,7 @@ function HomeLink({ logo, logoText, name }: { logo?: string; logoText?: string; 
 export function TopNav() {
   const [open, setOpen] = useNavOpen();
   const config = useSiteManifest();
-  const { logo, logoText, actions, title, nav } = config ?? {};
+  const { logo, logo_text, logoText, actions, title, nav } = config ?? {};
   const { isLoading, showLoading } = useLoading();
   return (
     <div className="bg-stone-700 p-3 md:px-8 fixed w-screen top-0 z-30 h-[60px]">
@@ -213,7 +213,7 @@ export function TopNav() {
               <MenuIcon className="fill-current h-8 w-8 p-1" />
             </button>
           </div>
-          <HomeLink name={title} logo={logo} logoText={logoText} />
+          <HomeLink name={title} logo={logo} logoText={logo_text || logoText} />
         </div>
         <div className="flex-grow flex items-center w-auto">
           <NavItems nav={nav} />

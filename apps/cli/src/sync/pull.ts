@@ -65,11 +65,16 @@ export async function pullProjects(
   const siteConfig = selectors.selectLocalSiteConfig(state);
   if (!siteConfig) throw Error('Cannot pull projects: no site config');
   const limit = pLimit(1);
-  await Promise.all(
-    siteConfig.projects.map(async (proj) => {
-      return limit(async () => pullProject(session, proj.path, opts));
-    }),
-  );
+  if (siteConfig.projects) {
+    const projectsToPull: { path: string }[] = siteConfig.projects.filter(
+      (proj): proj is { slug: string; path: string } => Boolean(proj.path),
+    );
+    await Promise.all(
+      projectsToPull?.map(async (proj) => {
+        return limit(async () => pullProject(session, proj.path, opts));
+      }),
+    );
+  }
 }
 
 export async function pullDocument(session: ISession, file: string) {
@@ -115,8 +120,8 @@ export async function pull(session: ISession, path?: string, opts?: SyncCiHelper
   // Site config is loaded on session init
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   if (path === '.' && siteConfig) {
-    const numProjects = siteConfig.projects.length;
-    if (numProjects === 0) throw new Error('Your site configuration has no projects');
+    const numProjects = siteConfig.projects?.length;
+    if (!numProjects) throw new Error('Your site configuration has no projects');
     const plural = numProjects > 1 ? 's' : '';
     await confirmOrExit(
       `Pulling will overwrite all content in ${numProjects} project${plural}. Are you sure?`,

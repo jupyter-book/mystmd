@@ -27,8 +27,8 @@ import {
 import { dirname, extname, join } from 'path';
 import chalk from 'chalk';
 import fetch from 'node-fetch';
+import type { SiteProject } from '@curvenote/blocks';
 import { KINDS } from '@curvenote/blocks';
-import type { SiteProject } from '../../config/types';
 import { getPageFrontmatter } from '../../frontmatter';
 import type { Root } from 'mdast';
 import { parseMyst } from '../../myst';
@@ -508,6 +508,11 @@ export async function processProject(
   const toc = tic();
   const { log } = session;
   const { watchMode, writeToc, writeFiles = true } = opts || {};
+  if (!siteProject.path) {
+    log.error(`No local path for site project: ${siteProject.slug}`);
+    if (siteProject.remote) log.error(`Remote path not supported: ${siteProject.slug}`);
+    throw Error('Unable to process project');
+  }
   const { project, pages } = loadProject(session, siteProject.path, writeFiles && writeToc);
   if (!watchMode) {
     await Promise.all([
@@ -564,7 +569,7 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
   if (opts?.reloadConfigs) loadAllConfigs(session);
   const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
   session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
-  if (!siteConfig?.projects.length) return false;
+  if (!siteConfig?.projects?.length) return false;
   const projects = await Promise.all(
     siteConfig.projects.map((siteProject) => processProject(session, siteProject, opts)),
   );
@@ -600,7 +605,7 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
     await writeSiteManifest(session);
     // Copy all assets
     copyLogo(session, siteConfig.logo);
-    siteConfig.actions.forEach((action) => {
+    siteConfig.actions?.forEach((action) => {
       copyActionResource(session, action);
     });
   }

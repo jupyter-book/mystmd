@@ -1,4 +1,5 @@
-import type { ProjectConfig, SiteConfig } from '../../config/types';
+import type { SiteConfig } from '@curvenote/blocks';
+import type { ProjectConfig } from '../../config/types';
 import type { LocalProject, LocalProjectPage } from '../../toc/types';
 
 import type { RootState } from '../reducers';
