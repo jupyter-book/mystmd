@@ -319,8 +319,9 @@ export async function localArticleToTex(session: ISession, file: string, opts: T
     projectPath,
     opts,
   );
-  // Just a normal loop so these output in serial in the CLI
-  for (let index = 0; index < exportOptionsList.length; index++) {
-    await runTexExport(session, file, exportOptionsList[index], opts.templatePath, projectPath);
-  }
+  await Promise.all(
+    exportOptionsList.map(async (exportOptions) => {
+      await runTexExport(session, file, exportOptions, opts.templatePath, projectPath);
+    }),
+  );
 }

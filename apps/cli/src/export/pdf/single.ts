@@ -56,19 +56,19 @@ export async function localArticleToPdf(session: ISession, file: string, opts: T
     projectPath,
     opts,
   );
-  // Just a normal loop so these output in serial in the CLI
-  for (let index = 0; index < pdfExportOptionsList.length; index++) {
-    const pdfExportOptions = pdfExportOptionsList[index];
-    const { format, output } = pdfExportOptions;
-    const keepTexAndLogs = format === ExportFormats.pdftex;
-    const texExportOptions = texExportOptionsFromPdf(pdfExportOptions, keepTexAndLogs);
-    await runTexExport(session, file, texExportOptions, opts.templatePath, projectPath);
-    await createPdfGivenTexExport(
-      session,
-      texExportOptions,
-      output,
-      opts.templatePath,
-      keepTexAndLogs,
-    );
-  }
+  await Promise.all(
+    pdfExportOptionsList.map(async (exportOptions) => {
+      const { format, output } = exportOptions;
+      const keepTexAndLogs = format === ExportFormats.pdftex;
+      const texExportOptions = texExportOptionsFromPdf(exportOptions, keepTexAndLogs);
+      await runTexExport(session, file, texExportOptions, opts.templatePath, projectPath);
+      await createPdfGivenTexExport(
+        session,
+        texExportOptions,
+        output,
+        opts.templatePath,
+        keepTexAndLogs,
+      );
+    }),
+  );
 }
