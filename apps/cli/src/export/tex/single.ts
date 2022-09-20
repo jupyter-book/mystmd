@@ -227,16 +227,15 @@ export async function collectExportOptions(
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
   let exportOptions: Export[] =
     rawFrontmatter?.exports
-      ?.filter((exp: any) => formats.includes(exp?.format))
-      .map((exp: any, ind: number) =>
-        validateExport(exp, {
+      ?.map((exp: any, ind: number) => {
+        return validateExport(exp, {
           property: `exports.${ind}`,
           messages: {},
           errorLogFn: (msg) => session.log.error(msg),
           warningLogFn: (msg) => session.log.warn(msg),
-        }),
-      )
-      .filter((exp: Export | undefined) => exp) || [];
+        });
+      })
+      .filter((exp: Export | undefined) => exp && formats.includes(exp?.format)) || [];
   // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
   if (filename || template || templatePath || disableTemplate) {
     if (exportOptions.length) {
