@@ -346,6 +346,16 @@ const TabSet: IDirective = {
   hast: (h, node) => h(node, 'div', { class: 'margin' }),
 };
 
+function getColumns(columnString: string, defaultColumns = [1, 2, 2, 3]) {
+  const columns = (columnString ?? '1 2 2 3')
+    .split(/\s/)
+    .map((s) => Number(s.trim()))
+    .filter((n) => !Number.isNaN(n))
+    .map((n) => Math.min(Math.max(Math.floor(n), 1), 12)); // Integer between 1 and 12
+  if (columns.length === 0 || columns.length > 4) return defaultColumns;
+  return columns;
+}
+
 const Grid: IDirective = {
   myst: class Grid extends Directive {
     public required_arguments = 0;
@@ -357,8 +367,14 @@ const Grid: IDirective = {
     public has_content = true;
 
     public option_spec = {
+      // https://sphinx-design.readthedocs.io/en/furo-theme/grids.html#grid-options
       'class-container': directiveOptions.class_option,
+      'class-row': directiveOptions.class_option,
       gutter: directiveOptions.unchanged,
+      margin: directiveOptions.unchanged,
+      padding: directiveOptions.unchanged,
+      reverse: directiveOptions.unchanged,
+      outline: directiveOptions.unchanged,
     };
 
     run(data: IDirectiveData<keyof Grid['option_spec']>) {
@@ -368,7 +384,7 @@ const Grid: IDirective = {
         map: data.map,
         block: true,
         meta: {
-          column: data.args[0] ?? '1 1 2 3',
+          columns: data.args[0] ?? '1 2 2 3',
         },
       });
       newTokens.push(adToken);
@@ -382,7 +398,7 @@ const Grid: IDirective = {
     type: 'grid',
     getAttrs(t) {
       return {
-        class: t.meta.class,
+        columns: getColumns(t.meta.columns),
       };
     },
   },
@@ -523,7 +539,16 @@ const Dropdown: IDirective = {
     public has_content = true;
 
     public option_spec = {
+      // https://sphinx-design.readthedocs.io/en/furo-theme/dropdowns.html
       open: directiveOptions.flag,
+      color: directiveOptions.unchanged,
+      icon: directiveOptions.unchanged,
+      animate: directiveOptions.unchanged,
+      margin: directiveOptions.unchanged,
+      name: directiveOptions.unchanged,
+      'class-container': directiveOptions.unchanged,
+      'class-title': directiveOptions.unchanged,
+      'class-body': directiveOptions.unchanged,
     };
 
     run(data: IDirectiveData<keyof Dropdown['option_spec']>) {
@@ -565,7 +590,7 @@ const Dropdown: IDirective = {
     getAttrs(t) {
       return {
         // This is so silly. Flags are 'null'?
-        open: t.meta.open === null || undefined, // Only add true, otherwise undefined.
+        link: t.meta.open === null || undefined, // Only add true, otherwise undefined.
       };
     },
   },
@@ -583,7 +608,32 @@ const Card: IDirective = {
     public has_content = true;
 
     public option_spec = {
+      // https://sphinx-design.readthedocs.io/en/furo-theme/cards.html#card-options
+      width: directiveOptions.unchanged,
+      margin: directiveOptions.unchanged,
+      padding: directiveOptions.unchanged,
+      'text-align': directiveOptions.unchanged,
+      'img-top': directiveOptions.unchanged,
+      'img-background': directiveOptions.unchanged,
+      'img-bottom': directiveOptions.unchanged,
       link: directiveOptions.unchanged,
+      // This should be removed, it is picked up just as any other link that can also be a reference
+      'link-type': directiveOptions.unchanged,
+      'link-alt': directiveOptions.unchanged,
+      // This should just be a class that is recognized (similar to dropdown)
+      shadow: directiveOptions.unchanged,
+      'class-card': directiveOptions.unchanged,
+      // I feel like all of these should *not* be included.
+      // Instead us a css selector on `class`: for example, `.card.my-class > header { customCss: prop; }`
+      'class-header': directiveOptions.unchanged,
+      'class-body': directiveOptions.unchanged,
+      'class-title': directiveOptions.unchanged,
+      'class-footer': directiveOptions.unchanged,
+      'class-img-top': directiveOptions.unchanged,
+      'class-img-bottom': directiveOptions.unchanged,
+      // https://sphinx-design.readthedocs.io/en/furo-theme/grids.html#grid-item-card-options
+      columns: directiveOptions.unchanged,
+      'class-item': directiveOptions.unchanged, // This seems the same as `class-card`?
     };
 
     run(data: IDirectiveData<keyof Card['option_spec']>) {
@@ -644,8 +694,7 @@ const Card: IDirective = {
     type: 'card',
     getAttrs(t) {
       return {
-        // This is so silly. Flags are 'null'?
-        open: t.meta.open === null || undefined, // Only add true, otherwise undefined.
+        url: t.meta.link || undefined,
       };
     },
   },

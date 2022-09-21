@@ -1,12 +1,9 @@
 {
   "kind": "Article",
-  "file": "content/index.md",
-  "sha256": "423197395b4ff5d811672f11ce9c06a27e170a6add2066e1b23fb3a5df320927",
-  "slug": "index",
-  "frontmatter": {
-    "title": "myst.tools",
-    "description": "Community-driven tools for the future of technical communication and publication. MyST makes markdown more extensible and powerful to support an ecosystem of tools for computational narratives, technical documentation, and open scientific communication."
-  },
+  "file": "content/team.md",
+  "sha256": "2975f32ccf695ddde29aa4fce80831f2d9841e134ab04fa1a6bf85f61f0b549a",
+  "slug": "team",
+  "frontmatter": { "title": "Dropdowns, Grids and Cards" },
   "mdast": {
     "type": "root",
     "children": [
@@ -15,313 +12,106 @@
         "children": [
           {
             "type": "heading",
-            "depth": 1,
-            "children": [
-              {
-                "type": "text",
-                "value": "Community-driven tools for the future of technical communication and publication",
-                "key": "zdzbJh4X8E"
-              }
-            ],
-            "identifier": "community-driven-tools-for-the-future-of-technical-communication-and-publication",
-            "label": "Community-driven tools for the future of technical communication and publication",
-            "html_id": "community-driven-tools-for-the-future-of-technical-communication-and-publication",
-            "implicit": true,
-            "key": "TcGLzwAyXz"
-          },
-          {
-            "type": "heading",
-            "depth": 2,
-            "children": [
-              {
-                "type": "text",
-                "value": "MyST extends Markdown for technical and scientific communication",
-                "key": "THIpc90z0o"
-              }
-            ],
-            "identifier": "myst-extends-markdown-for-technical-and-scientific-communication",
-            "label": "MyST extends Markdown for technical and scientific communication",
-            "html_id": "myst-extends-markdown-for-technical-and-scientific-communication",
-            "implicit": true,
-            "key": "mqA87yPYYP"
-          },
-          {
-            "type": "myst",
-            "value": "MyST makes <wiki:Markdown> more _extensible_ & **powerful** to support an ecosystem of tools for computational narratives, technical documentation, and open scientific communication.\n\n:::{important}\n# Our Values\nWe believe in a community-driven approach of open-source tools that are composable and extensible.\n:::\n",
-            "numbering": {},
-            "key": "ORamWZ7k38"
-          },
-          {
-            "type": "heading",
             "depth": 3,
-            "children": [{ "type": "text", "value": "The MyST Ecosystem", "key": "JPmOtLcF7b" }],
-            "identifier": "the-myst-ecosystem",
-            "label": "The MyST Ecosystem",
-            "html_id": "the-myst-ecosystem",
+            "children": [{ "type": "text", "value": "Dropdowns", "key": "MrLfYNzLYv" }],
+            "identifier": "dropdowns",
+            "label": "Dropdowns",
+            "html_id": "dropdowns",
             "implicit": true,
-            "key": "S3O8sNkyUx"
-          },
-          {
-            "type": "table",
-            "children": [
-              {
-                "type": "tableRow",
-                "children": [
-                  {
-                    "type": "tableCell",
-                    "children": [{ "type": "text", "value": "Jupyter", "key": "UJf4oiGmIq" }],
-                    "key": "gtFS1MwRAj"
-                  },
-                  {
-                    "type": "tableCell",
-                    "children": [{ "type": "text", "value": "VSCode", "key": "a6Ec73kuVe" }],
-                    "key": "iDEbIvZbKJ"
-                  },
-                  {
-                    "type": "tableCell",
-                    "children": [{ "type": "text", "value": "Python", "key": "PhSrmXyKYx" }],
-                    "key": "BTsp1S07c3"
-                  },
-                  {
-                    "type": "tableCell",
-                    "children": [{ "type": "text", "value": "Javascript", "key": "Wcf1qGR5V4" }],
-                    "key": "gtpJdc5Ni0"
-                  },
-                  {
-                    "type": "tableCell",
-                    "children": [{ "type": "text", "value": "Sphinx", "key": "sqatlInj7U" }],
-                    "key": "hw6vCWsRqC"
-                  },
-                  {
-                    "type": "tableCell",
-                    "children": [{ "type": "text", "value": "LaTeX", "key": "EvFtrhBOaO" }],
-                    "key": "MEZHOhZLZo"
-                  },
-                  {
-                    "type": "tableCell",
-                    "children": [
-                      { "type": "text", "value": "Microsoft Word", "key": "Z51WjHTOrh" }
-                    ],
-                    "key": "pRyR1NM6qP"
-                  }
-                ],
-                "key": "CMFgcz8z9I"
-              }
-            ],
-            "key": "PoChrMb3ta"
-          },
-          {
-            "type": "heading",
-            "depth": 3,
-            "children": [{ "type": "text", "value": "Create Online Books", "key": "isM0mJZoVt" }],
-            "identifier": "create-online-books",
-            "label": "Create Online Books",
-            "html_id": "create-online-books",
-            "implicit": true,
-            "key": "YoGkYd5OF3"
+            "key": "JFUC6WVENa"
           },
           {
             "type": "paragraph",
             "children": [
               {
                 "type": "text",
-                "value": "Jupyter Book uses MyST markdown to create online books and tutorials from computational content.",
-                "key": "M2hkY7pF5m"
+                "value": "Dropdowns can be used to toggle, usually non-essential, content and show it only when a user clicks on the header panel.",
+                "key": "CYoColaE3o"
               }
             ],
-            "key": "VWvjClS4cU"
+            "key": "iA9MdvvZWP"
           },
           {
-            "type": "grid",
+            "type": "paragraph",
             "children": [
               {
-                "type": "card",
-                "children": [
-                  {
-                    "type": "header",
-                    "children": [
-                      {
-                        "type": "paragraph",
-                        "children": [
-                          { "type": "text", "value": "Text content ✏️", "key": "vkcwezcrlP" }
-                        ],
-                        "key": "fppTP6ScW1"
-                      }
-                    ],
-                    "key": "ZKSzYjmC6X"
-                  },
-                  { "type": "cardTitle", "children": [], "key": "OYs5x8mHcI" },
-                  {
-                    "type": "paragraph",
-                    "children": [
-                      {
-                        "type": "text",
-                        "value": "Structure books with text files and Jupyter Notebooks with minimal configuration.",
-                        "key": "VVfAfiYOjE"
-                      }
-                    ],
-                    "key": "HtTBTZhGwJ"
-                  }
-                ],
-                "key": "XYAOZ9pfMJ"
-              },
-              {
-                "type": "card",
-                "children": [
-                  {
-                    "type": "header",
-                    "children": [
-                      {
-                        "type": "paragraph",
-                        "children": [
-                          { "type": "text", "value": "MyST Markdown ✨", "key": "ZUACBNwpf2" }
-                        ],
-                        "key": "DSDdeQa6XB"
-                      }
-                    ],
-                    "key": "UuCSK0NcEI"
-                  },
-                  { "type": "cardTitle", "children": [], "key": "okVQET5A4E" },
-                  {
-                    "type": "paragraph",
-                    "children": [
-                      {
-                        "type": "text",
-                        "value": "Write MyST Markdown to create enriched documents with publication-quality features.",
-                        "key": "E8xtQmQhmj"
-                      }
-                    ],
-                    "key": "zzXBOY7q5p"
-                  }
-                ],
-                "key": "Y6vtHjac2v"
-              },
-              {
-                "type": "card",
-                "children": [
-                  {
-                    "type": "header",
-                    "children": [
-                      {
-                        "type": "paragraph",
-                        "children": [
-                          { "type": "text", "value": "Executable content 🔁", "key": "lRqUMQyAJF" }
-                        ],
-                        "key": "JsGrOYp57Z"
-                      }
-                    ],
-                    "key": "DVlL7smhW5"
-                  },
-                  { "type": "cardTitle", "children": [], "key": "zHUaa4MoPM" },
-                  {
-                    "type": "paragraph",
-                    "children": [
-                      {
-                        "type": "text",
-                        "value": "Execute notebook cells, store results, and insert outputs across pages.",
-                        "key": "YNEsRh6CCH"
-                      }
-                    ],
-                    "key": "DBBaKz2pQf"
-                  }
-                ],
-                "key": "M7B0rvUtD5"
-              },
-              {
-                "type": "card",
-                "children": [
-                  {
-                    "type": "header",
-                    "children": [
-                      {
-                        "type": "paragraph",
-                        "children": [
-                          { "type": "text", "value": "Live environments 🚀", "key": "aUJUbIcvKX" }
-                        ],
-                        "key": "dfAeK48eVb"
-                      }
-                    ],
-                    "key": "XxxbEUPvwy"
-                  },
-                  { "type": "cardTitle", "children": [], "key": "Rp53b2Nqgi" },
-                  {
-                    "type": "paragraph",
-                    "children": [
-                      {
-                        "type": "text",
-                        "value": "Connect your book with Binder, JupyterHub, and other live environments",
-                        "key": "Wp14eClK2i"
-                      }
-                    ],
-                    "key": "hokUlLhDyV"
-                  }
-                ],
-                "key": "CPrWoznXko"
-              },
-              {
-                "type": "card",
-                "children": [
-                  {
-                    "type": "header",
-                    "children": [
-                      {
-                        "type": "paragraph",
-                        "children": [
-                          { "type": "text", "value": "Build and publish 🎁", "key": "cIRRAkS6Ur" }
-                        ],
-                        "key": "sUyE9BVfrP"
-                      }
-                    ],
-                    "key": "qTKzKD20kR"
-                  },
-                  { "type": "cardTitle", "children": [], "key": "XJB8GwoMgB" },
-                  {
-                    "type": "paragraph",
-                    "children": [
-                      {
-                        "type": "text",
-                        "value": "Share your built books via web services and hosted websites.",
-                        "key": "jOrWVLiePk"
-                      }
-                    ],
-                    "key": "DFJ30iFp42"
-                  }
-                ],
-                "key": "jTaWKAFZp0"
-              },
-              {
-                "type": "card",
-                "children": [
-                  {
-                    "type": "header",
-                    "children": [
-                      {
-                        "type": "paragraph",
-                        "children": [
-                          { "type": "text", "value": "UI components ⚡", "key": "vKU5seAWyr" }
-                        ],
-                        "key": "y7UWnVMGOQ"
-                      }
-                    ],
-                    "key": "olNCIf7E7g"
-                  },
-                  { "type": "cardTitle", "children": [], "key": "Jh5YGlyQu5" },
-                  {
-                    "type": "paragraph",
-                    "children": [
-                      {
-                        "type": "text",
-                        "value": "Create interactive and web-native components and services.",
-                        "key": "lTDgu7FMH5"
-                      }
-                    ],
-                    "key": "tRTFv4eMCa"
-                  }
-                ],
-                "key": "KgBaBsVSPE"
+                "type": "text",
+                "value": "The dropdown can have a title, as the directive argument, and the open option can be used to initialise the dropdown in the open state.",
+                "key": "wMwJJaXM8u"
               }
             ],
-            "key": "qj1zOvMr0L"
+            "key": "EsVSJD4kfu"
+          },
+          {
+            "type": "details",
+            "children": [
+              { "type": "summary", "children": [], "key": "RO7gz9JK5q" },
+              {
+                "type": "paragraph",
+                "children": [{ "type": "text", "value": "Dropdown content", "key": "bAFB9TUKV1" }],
+                "key": "SXhhsAxgKm"
+              }
+            ],
+            "key": "M1SLwMKIVr"
+          },
+          {
+            "type": "details",
+            "children": [
+              {
+                "type": "summary",
+                "children": [{ "type": "text", "value": "Dropdown title", "key": "pK15XRkMD8" }],
+                "key": "npGf1NZWsh"
+              },
+              {
+                "type": "paragraph",
+                "children": [{ "type": "text", "value": "Dropdown content", "key": "tt8CdGdk9P" }],
+                "key": "fcj7r8b7es"
+              }
+            ],
+            "key": "GdcuLE8oi5"
+          },
+          {
+            "type": "details",
+            "link": true,
+            "children": [
+              {
+                "type": "summary",
+                "children": [{ "type": "text", "value": "Open dropdown", "key": "Gef65Os3tH" }],
+                "key": "dW0iv8Su24"
+              },
+              {
+                "type": "paragraph",
+                "children": [{ "type": "text", "value": "Dropdown content", "key": "XWWDPXyjXg" }],
+                "key": "z7lUkQCzVT"
+              }
+            ],
+            "key": "D0Dh91aNyT"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Cards", "key": "kNQaTFaRAM" }],
+            "identifier": "cards",
+            "label": "Cards",
+            "html_id": "cards",
+            "implicit": true,
+            "key": "hVWI8UvwEB"
+          },
+          {
+            "type": "card",
+            "children": [
+              {
+                "type": "cardTitle",
+                "children": [{ "type": "text", "value": "Card Title", "key": "ZxQFCf6Khp" }],
+                "key": "UBmsY3qgxf"
+              },
+              {
+                "type": "paragraph",
+                "children": [{ "type": "text", "value": "Card content", "key": "qLmYhfOc4R" }],
+                "key": "IwfiEYkae0"
+              }
+            ],
+            "key": "TvXeBigul4"
           },
           {
             "type": "card",
@@ -331,53 +121,191 @@
                 "children": [
                   {
                     "type": "paragraph",
-                    "children": [
-                      { "type": "text", "value": "Text content ✏️", "key": "Yawc1hidi9" }
-                    ],
-                    "key": "AaVXMwvINK"
+                    "children": [{ "type": "text", "value": "Header", "key": "tSOZ0aCNR5" }],
+                    "key": "PWUsgTfhAH"
                   }
                 ],
-                "key": "mEMFoH2lcP"
+                "key": "wqpb5KLhpX"
               },
               {
                 "type": "cardTitle",
-                "children": [{ "type": "text", "value": "Card Title", "key": "vJX6yQH4XX" }],
-                "key": "CJxQ1iUBt2"
+                "children": [{ "type": "text", "value": "Card Title", "key": "BoIcxFSUcq" }],
+                "key": "TTJq5LYStU"
               },
               {
                 "type": "paragraph",
-                "children": [
-                  {
-                    "type": "text",
-                    "value": "Structure books with text files and Jupyter Notebooks with minimal configuration.",
-                    "key": "a9k1D1qDW9"
-                  }
-                ],
-                "key": "f58V5Ajlkm"
+                "children": [{ "type": "text", "value": "Card content", "key": "TR3kgEZbQv" }],
+                "key": "ecujT6lioX"
               },
               {
                 "type": "footer",
                 "children": [
                   {
                     "type": "paragraph",
-                    "children": [{ "type": "text", "value": "Footer", "key": "ytCSWeJiD5" }],
-                    "key": "K73c2Tcupg"
+                    "children": [{ "type": "text", "value": "Footer", "key": "cvsw8NZC8j" }],
+                    "key": "kPlgWVM9eg"
                   }
                 ],
-                "key": "jDszGf6OXt"
+                "key": "i6UoXC3B8J"
               }
             ],
-            "key": "Kqrw2y0L6E"
+            "key": "jIXPe6u8nm"
+          },
+          {
+            "type": "card",
+            "url": "https://example.com",
+            "children": [
+              {
+                "type": "cardTitle",
+                "children": [
+                  { "type": "text", "value": "Clickable Card (external)", "key": "JZtUIL5bhU" }
+                ],
+                "key": "nsCIJO5wwY"
+              },
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "The entire card can be clicked to navigate to ",
+                    "key": "w4YOXahdD1"
+                  },
+                  {
+                    "type": "link",
+                    "url": "https://example.com",
+                    "children": [
+                      { "type": "text", "value": "https://example.com", "key": "xEcz4lvXmG" }
+                    ],
+                    "urlSource": "https://example.com",
+                    "key": "FqBJq0yntw"
+                  },
+                  { "type": "text", "value": ".", "key": "cbfWul4uyk" }
+                ],
+                "key": "IJ0kSNQT8X"
+              }
+            ],
+            "key": "TrVN3L7yxt"
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "children": [{ "type": "text", "value": "Grids", "key": "syWw2iiIzG" }],
+            "identifier": "grids",
+            "label": "Grids",
+            "html_id": "grids",
+            "implicit": true,
+            "key": "tS9GQ1ijcs"
+          },
+          {
+            "type": "grid",
+            "columns": [1, 2, 3, 3],
+            "children": [
+              {
+                "type": "card",
+                "url": "basics/organize",
+                "children": [
+                  {
+                    "type": "header",
+                    "children": [
+                      {
+                        "type": "paragraph",
+                        "children": [
+                          { "type": "text", "value": "Text content ✏️", "key": "St6l9ifEI2" }
+                        ],
+                        "key": "iEoZjDqbBF"
+                      }
+                    ],
+                    "key": "e7LKyQch8s"
+                  },
+                  { "type": "cardTitle", "children": [], "key": "uNSSiQv2IM" },
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Structure books with text files and Jupyter Notebooks with minimal configuration.",
+                        "key": "dLfS6VdiXS"
+                      }
+                    ],
+                    "key": "OvxbyGQQYB"
+                  }
+                ],
+                "key": "Gt01jT0X7H"
+              },
+              {
+                "type": "card",
+                "url": "content/myst",
+                "children": [
+                  {
+                    "type": "header",
+                    "children": [
+                      {
+                        "type": "paragraph",
+                        "children": [
+                          { "type": "text", "value": "MyST Markdown ✨", "key": "CBCDEQpi1I" }
+                        ],
+                        "key": "r4luoJ6SzY"
+                      }
+                    ],
+                    "key": "u7cV8C6T08"
+                  },
+                  { "type": "cardTitle", "children": [], "key": "rcn2QKtMGA" },
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Write MyST Markdown to create enriched documents with publication-quality features.",
+                        "key": "gJvH5BMPXu"
+                      }
+                    ],
+                    "key": "oOeTx6PkGv"
+                  }
+                ],
+                "key": "tbg6r6fmEo"
+              },
+              {
+                "type": "card",
+                "url": "content/executable/index",
+                "children": [
+                  {
+                    "type": "header",
+                    "children": [
+                      {
+                        "type": "paragraph",
+                        "children": [
+                          { "type": "text", "value": "Executable content 🔁", "key": "gdtBkPq9KB" }
+                        ],
+                        "key": "dYjP2YhTZU"
+                      }
+                    ],
+                    "key": "JBOIjG5n1D"
+                  },
+                  { "type": "cardTitle", "children": [], "key": "I6XcFBdDx4" },
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Execute notebook cells, store results, and insert outputs across pages.",
+                        "key": "dzEQy9OHde"
+                      }
+                    ],
+                    "key": "iO2CzeFrn0"
+                  }
+                ],
+                "key": "NMOdj9EpLk"
+              }
+            ],
+            "key": "C5t9PXmzsS"
           }
         ],
-        "key": "QjVv6jpv3b"
+        "key": "ZV8lrlm28o"
       }
     ],
-    "key": "INdugnjLOb"
+    "key": "Z8DWYmpYy7"
   },
   "references": { "cite": { "order": [], "data": {} }, "footnotes": {} },
-  "footer": {
-    "navigation": { "next": { "title": "team", "url": "/overview/team", "group": "Content" } }
-  },
-  "domain": "http://localhost:3000"
+  "footer": { "navigation": { "prev": { "title": "MyST", "url": "/overview", "group": "MyST" } } },
+  "domain": "http://localhost:3002"
 }

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 type CardSpec = {
   type: 'card';
-  open?: boolean;
+  url?: string;
 };
 type CardTitleSpec = {
   type: 'cardTitle';
@@ -67,15 +67,16 @@ function getParts(children: React.ReactNode): Parts {
   return parts;
 }
 
-function Card({ children }: { children: React.ReactNode }) {
+function Card({ children, url }: { children: React.ReactNode; url?: string }) {
   const parts = getParts(children);
-  const link = true;
+  const link = !!url;
   const sharedStyle =
     'rounded-md shadow dark:shadow-neutral-800 overflow-hidden border border-gray-100 dark:border-gray-800';
   if (link) {
+    // TODO: internal links
     return (
       <a
-        href="#"
+        href={url}
         className={classNames(
           sharedStyle,
           'block font-normal no-underline cursor-pointer group',
@@ -98,7 +99,11 @@ function Card({ children }: { children: React.ReactNode }) {
 }
 
 export const CardRenderer: NodeRenderer<CardSpec> = (node, children) => {
-  return <Card key={node.key}>{children}</Card>;
+  return (
+    <Card key={node.key} url={node.url}>
+      {children}
+    </Card>
+  );
 };
 
 const CARD_RENDERERS = {
