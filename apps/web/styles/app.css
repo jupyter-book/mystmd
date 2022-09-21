@@ -116,6 +116,17 @@ figure.code > div {
   margin: 0;
 }
 
+details > summary {
+  list-style: none;
+}
+details > summary::marker, /* Latest Chrome, Edge, Firefox */
+details > summary::-webkit-details-marker /* Safari */ {
+  display: none;
+}
+details[open] > summary svg {
+  transform: rotate(90deg) translateX(-5px) translateY(-5px);
+}
+
 .smallcaps {
   font-variant: small-caps;
 }

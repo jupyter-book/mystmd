@@ -19,7 +19,7 @@ parts:
       - file: citations
       - file: blocks
       - file: diagrams
-      - file: cards-and-tabs
+      - file: dropdowns-cards-and-tabs
       - file: tasks
   - caption: Executable Content
     chapters:

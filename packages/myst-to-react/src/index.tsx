@@ -3,6 +3,9 @@ import type { GenericParent } from 'mystjs';
 import { mystToReact } from './convertToReact';
 import BASIC_RENDERERS from './basic';
 import ADMONITION_RENDERERS from './admonitions';
+import DROPDOWN_RENDERERS from './dropdown';
+import CARD_RENDERERS from './card';
+import GRID_RENDERERS from './grid';
 import CITE_RENDERERS from './cite';
 import FOOTNOTE_RENDERERS from './footnotes';
 import CODE_RENDERERS from './code';
@@ -41,6 +44,9 @@ export const DEFAULT_RENDERERS: Record<string, NodeRenderer> = {
   ...CROSS_REFERENCE_RENDERERS,
   ...MYST_RENDERERS,
   ...MERMAID_RENDERERS,
+  ...DROPDOWN_RENDERERS,
+  ...CARD_RENDERERS,
+  ...GRID_RENDERERS,
   ...EXT_RENDERERS,
 };
 

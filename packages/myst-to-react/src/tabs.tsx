@@ -19,12 +19,13 @@ export const TabSetRenderer: NodeRenderer = (node, children) => {
     onClick(items[0]?.sync || items[0]?.key);
   }, []);
   return (
-    <div className="">
+    <div key={node.key} className="">
       <div className="flex flex-row border-b border-b-gray-100 overflow-x-auto">
         {items.map((item) => {
           const key = item.sync || item.key;
           return (
             <div
+              key={item.key}
               className={classNames('flex-none px-3 py-1 font-semibold cursor-pointer', {
                 'text-blue-600 border-b-2 border-b-blue-600 dark:border-b-white dark:text-white':
                   active[key],
@@ -47,7 +48,11 @@ export const TabSetRenderer: NodeRenderer = (node, children) => {
 
 export const TabItemRenderer: NodeRenderer<TabItem> = (node, children) => {
   const open = useIsTabOpen(node.sync || node.key);
-  return <div className={classNames({ hidden: !open })}>{children}</div>;
+  return (
+    <div key={node.key} className={classNames({ hidden: !open })}>
+      {children}
+    </div>
+  );
 };
 
 const TAB_RENDERERS: Record<string, NodeRenderer> = {
