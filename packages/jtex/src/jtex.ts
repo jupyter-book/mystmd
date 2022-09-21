@@ -5,6 +5,7 @@ import nunjucks from 'nunjucks';
 import type { ValidationOptions } from 'simple-validators';
 import { curvenoteDef } from './definitions';
 import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
+import { pdfExportCommand } from './export';
 import { extendJtexFrontmatter } from './frontmatter';
 import { renderImports } from './imports';
 import type { ExpandedImports, ISession, Renderer, TemplateYml } from './types';
@@ -174,6 +175,7 @@ class JTex {
     options: any;
     sourceFile?: string;
     imports?: string | ExpandedImports;
+    force?: boolean;
   }) {
     if (!fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
       throw new Error(
@@ -204,7 +206,7 @@ class JTex {
     const rendered = this.env.render(TEMPLATE_FILENAME, renderer);
     const outputDirectory = dirname(opts.outputPath);
     ensureDirectoryExists(outputDirectory);
-    this.copyTemplateFiles(dirname(opts.outputPath));
+    this.copyTemplateFiles(dirname(opts.outputPath), { force: opts.force });
     fs.writeFileSync(opts.outputPath, `% Created with jtex v.${version}\n${rendered}`);
     fs.writeFileSync(join(outputDirectory, 'curvenote.def'), curvenoteDef);
   }
@@ -234,6 +236,11 @@ class JTex {
 
   freeform(template: string, data: Record<string, any>) {
     return this.env.renderString(template, data);
+  }
+
+  pdfExportCommand(texFile: string, logFile: string) {
+    const templateYml = this.getValidatedTemplateYml();
+    return pdfExportCommand(texFile, logFile, templateYml.build?.engine);
   }
 }
 

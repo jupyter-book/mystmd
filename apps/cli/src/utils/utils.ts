@@ -7,11 +7,14 @@ import inquirer from 'inquirer';
 import path from 'path';
 import prettyHrtime from 'pretty-hrtime';
 import type { JsonObject, VersionId } from '@curvenote/blocks';
+import { configFileExists, loadConfigOrThrow } from '../config';
 import type { Logger } from '../logging';
 import type { ISession } from '../session/types';
-import { selectors } from '../store';
 import type { WarningKind } from '../store/build';
 import { warnings } from '../store/build';
+import { combineProjectCitationRenderers, loadFile } from '../store/local/actions';
+import { selectLocalProjectConfig } from '../store/selectors';
+import { loadProjectFromDisk } from '../toc';
 
 export const BUILD_FOLDER = '_build';
 export const THUMBNAILS_FOLDER = 'thumbnails';
@@ -147,7 +150,7 @@ export function writeFileToFolder(
 }
 
 export function computeHash(content: string) {
-  return createHash('sha256').update(content).digest('hex');
+  return createHash('md5').update(content).digest('hex');
 }
 
 /**
@@ -156,7 +159,12 @@ export function computeHash(content: string) {
  * If hashed file already exists, this does nothing
  */
 export function hashAndCopyStaticFile(session: ISession, file: string, writeFolder: string) {
-  const fileHash = `${computeHash(file)}${path.extname(file)}`;
+  const { name, ext } = path.parse(file);
+  const fd = fs.openSync(file, 'r');
+  const { mtime, size } = fs.fstatSync(fd);
+  fs.closeSync(fd);
+  const hash = computeHash(`${mtime.toString()}${size.toString()}`);
+  const fileHash = `${name.slice(0, 20)}-${hash}${ext}`;
   const destination = path.join(writeFolder, fileHash);
   if (fs.existsSync(destination)) {
     session.log.debug(`Cached file found for: ${file}`);
@@ -210,4 +218,27 @@ export function tic() {
     return f ? f.replace('%s', time) : time;
   }
   return toc;
+}
+
+export async function findProjectAndLoad(
+  session: ISession,
+  dir: string,
+): Promise<string | undefined> {
+  dir = path.resolve(dir);
+  if (configFileExists(dir)) {
+    loadConfigOrThrow(session, dir);
+    const project = selectLocalProjectConfig(session.store.getState(), dir);
+    if (project) {
+      const { bibliography } = loadProjectFromDisk(session, dir);
+      if (bibliography) {
+        await Promise.all(bibliography.map((p: string) => loadFile(session, p, '.bib')));
+        combineProjectCitationRenderers(session, dir);
+      }
+      return dir;
+    }
+  }
+  if (path.dirname(dir) === dir) {
+    return undefined;
+  }
+  return findProjectAndLoad(session, path.dirname(dir));
 }

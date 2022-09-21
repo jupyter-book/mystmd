@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { extname, join, parse, basename } from 'path';
-import { title2name as createSlug } from '@curvenote/blocks';
+import { title2name } from '@curvenote/blocks';
 import { loadConfigOrThrow } from '../config';
 import { CURVENOTE_YML } from '../config/types';
 import type { ISession } from '../session';
@@ -38,19 +38,6 @@ export function removeExtension(file: string): string {
   return file;
 }
 
-export function createTitle(s: string): string {
-  return (
-    s
-      // https://stackoverflow.com/questions/18379254/regex-to-split-camel-case
-      .split(/([A-Z][a-z0-9]+)|_|-/)
-      .filter((e) => e)
-      .join(' ')
-      .trim()
-      // Now make it into title case (simple, but good enough)
-      .replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()))
-  );
-}
-
 function removeLeadingEnumeration(s: string): string {
   if (s.match(/^([12][0-9]{3})([^0-9])?/)) {
     // Starts with what looks like a year
@@ -65,10 +52,27 @@ function removeLeadingEnumeration(s: string): string {
   return removed;
 }
 
+export function createSlug(s: string): string {
+  return title2name(removeLeadingEnumeration(s));
+}
+
+export function createTitle(s: string): string {
+  return (
+    removeLeadingEnumeration(s)
+      // https://stackoverflow.com/questions/18379254/regex-to-split-camel-case
+      .split(/([A-Z][a-z0-9]+)|_|-/)
+      .filter((e) => e)
+      .join(' ')
+      .trim()
+      // Now make it into title case (simple, but good enough)
+      .replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()))
+  );
+}
+
 export function fileInfo(file: string, pageSlugs: PageSlugs): { slug: string; title: string } {
   const { name } = parse(file);
-  let slug = createSlug(removeLeadingEnumeration(name));
-  const title = createTitle(removeLeadingEnumeration(name));
+  let slug = createSlug(name);
+  const title = createTitle(name);
   if (pageSlugs[slug]) {
     pageSlugs[slug] += 1;
     slug = `${slug}-${pageSlugs[slug] - 1}`;

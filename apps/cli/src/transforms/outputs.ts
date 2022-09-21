@@ -11,7 +11,7 @@ import { createWebFileObjectFactory } from '../web/files';
 export async function transformOutputs(session: ISession, mdast: Root, kind: KINDS) {
   const outputs = selectAll('output', mdast) as GenericNode[];
 
-  if (outputs && kind === KINDS.Article) {
+  if (outputs.length && kind === KINDS.Article) {
     const fileFactory = createWebFileObjectFactory(session.log, publicPath(session), '_static', {
       useHash: true,
     });

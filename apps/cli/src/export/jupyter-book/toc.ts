@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { join } from 'path';
+import { join, parse } from 'path';
 import YAML from 'js-yaml';
 import type { Blocks } from '@curvenote/blocks';
 import { NavListItemKindEnum } from '@curvenote/blocks';
@@ -246,9 +246,10 @@ export function readTOC(log: Logger, opts?: Options): TOC {
 
 export function validateTOC(session: ISession, path: string): boolean {
   const filename = tocFile(path);
+  const { dir, base } = parse(filename);
   if (!fs.existsSync(filename)) return false;
   try {
-    readTOC(silentLogger(), { filename });
+    readTOC(silentLogger(), { filename: base, path: dir });
     return true;
   } catch (error) {
     const { message } = error as unknown as Error;

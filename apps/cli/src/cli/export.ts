@@ -9,6 +9,7 @@ import {
   oxaLinkToPdf,
   pathToWord,
 } from '../export';
+import { makeCleanOption } from './options';
 import { clirun } from './utils';
 
 function makeImageOption() {
@@ -70,13 +71,17 @@ function makeMarkdownExportCLI(program: Command) {
 function makeTexExportCLI(program: Command) {
   const command = new Command('latex')
     .alias('tex')
-    .description('Export a tex file from a Curvenote link')
-    .argument('<article>', 'A link to the Curvenote article (e.g. OXA Link or API link)')
+    .description('Export a tex file from a local markdown/notebook file or a Curvenote link')
+    .argument(
+      '<article>',
+      'A local file or link to the Curvenote article (e.g. OXA Link or API link)',
+    )
     .argument('[output]', 'The document filename to export to', '')
     .addOption(makeImageOption())
     .addOption(makeDisableTemplateOption())
     .addOption(makeTemplateOption())
     .addOption(makeTemplatePathOption())
+    .addOption(makeCleanOption())
     .addOption(makeTemplateOptionsOption())
     .addOption(makeConverterOption())
     .action(clirun(oxaLinkToArticleTex, { program }));
@@ -85,10 +90,16 @@ function makeTexExportCLI(program: Command) {
 
 function makePdfExportCLI(program: Command) {
   const command = new Command('pdf')
-    .description('Export a pdf file from a Curvenote link')
-    .argument('<article>', 'A link to the Curvenote article (e.g. OXA Link or API link)')
-    .argument('[output]', 'The document filename to export to', 'main.pdf')
+    .description('Export a pdf file from a local markdown/notebook file or a Curvenote link')
+    .argument(
+      '<article>',
+      'A local file or link to the Curvenote article (e.g. OXA Link or API link)',
+    )
+    .argument('[output]', 'The document filename to export to', '')
+    .addOption(makeDisableTemplateOption())
     .addOption(makeTemplateOption())
+    .addOption(makeTemplatePathOption())
+    .addOption(makeCleanOption())
     .addOption(makeTemplateOptionsOption())
     .addOption(makeConverterOption())
     .action(clirun(oxaLinkToPdf, { program }));

@@ -114,10 +114,10 @@ export async function multipleArticleToTex(
     property: 'job',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: "${message}`);
+      session.log.error(`Validation error: ${message}`);
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: "${message}`);
+      session.log.warn(`Validation: ${message}`);
     },
   });
   const projectFrontmatter = projectFrontmatterFromDTO(session, project.data, {
@@ -147,10 +147,10 @@ export async function multipleArticleToTex(
     property: 'jtex',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: "${message}`);
+      session.log.error(`Validation error: ${message}`);
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: "${message}`);
+      session.log.warn(`Validation: ${message}`);
     },
   });
 

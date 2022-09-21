@@ -1,5 +1,4 @@
 import fs from 'fs';
-import os from 'os';
 import path from 'path';
 import { oxaLink } from '@curvenote/blocks';
 import { toTex } from '@curvenote/schema';
@@ -9,10 +8,6 @@ import { makeExecutable } from '../utils/exec';
 import { localizationOptions } from '../utils/localizationOptions';
 import type { ArticleState, ArticleStateChild } from '../utils/walkArticle';
 import type { TexExportOptions } from './types';
-
-export function createTempFolder() {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'curvenote'));
-}
 
 export function convertAndLocalizeChild(
   session: ISession,

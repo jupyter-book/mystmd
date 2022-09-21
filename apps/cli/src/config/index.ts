@@ -25,11 +25,11 @@ function configFile(path: string) {
   return join(path, CURVENOTE_YML);
 }
 
-function configFileExists(path: string) {
+export function configFileExists(path: string) {
   return fs.existsSync(configFile(path));
 }
 
-function readConfig(session: PartialSession, path: string) {
+export function readConfig(session: PartialSession, path: string) {
   if (!configFileExists(path)) throw Error(`Cannot find ${CURVENOTE_YML} in ${path}`);
   const file = configFile(path);
   const opts: ValidationOptions = {
@@ -37,10 +37,10 @@ function readConfig(session: PartialSession, path: string) {
     property: 'config',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: "${message}`);
+      session.log.error(`Validation error: ${message}`);
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: "${message}`);
+      session.log.warn(`Validation: ${message}`);
     },
   };
   const conf = validateObject(yaml.load(fs.readFileSync(file, 'utf-8')), opts);
@@ -74,7 +74,7 @@ function readConfig(session: PartialSession, path: string) {
     conf.project = { ...frontmatter, ...rest };
   }
   if (conf.site?.logoText) {
-    session.log.warn(`logoText is deprecated, please use logo_text in "${file}#site"`, opts);
+    session.log.warn(`logoText is deprecated, please use logo_text in "${file}#site"`);
     const { logoText, ...rest } = conf.site;
     conf.site = { logo_text: logoText, ...rest };
   }
@@ -91,10 +91,10 @@ function validateSiteConfigAndSave(
     property: 'site',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: "${message}`);
+      session.log.error(`Validation error: ${message}`);
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: "${message}`);
+      session.log.warn(`Validation: ${message}`);
     },
   });
   if (!siteConfig) {
@@ -115,10 +115,10 @@ function validateProjectConfigAndSave(
     property: 'project',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: "${message}`);
+      session.log.error(`Validation error: ${message}`);
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: "${message}`);
+      session.log.warn(`Validation: ${message}`);
     },
   });
   if (!projectConfig) {

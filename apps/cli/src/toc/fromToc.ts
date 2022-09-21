@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { join } from 'path';
+import { join, parse } from 'path';
 import type { JupyterBookChapter } from '../export/jupyter-book/toc';
 import { readTOC, tocFile } from '../export/jupyter-book/toc';
 import type { ISession } from '../session/types';
@@ -47,7 +47,8 @@ export function projectFromToc(
   if (!fs.existsSync(filename)) {
     throw new Error(`Could not find TOC "${filename}". Please create a '_toc.yml'.`);
   }
-  const toc = readTOC(session.log, { filename });
+  const { dir, base } = parse(filename);
+  const toc = readTOC(session.log, { filename: base, path: dir });
   const pageSlugs: PageSlugs = {};
   const indexFile = resolveExtension(join(path, toc.root));
   if (!indexFile) {

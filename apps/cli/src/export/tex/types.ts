@@ -1,8 +1,10 @@
+import type { Export } from 'myst-frontmatter';
+
 export interface TexExportOptions {
   filename: string;
   multiple?: boolean;
   images?: string;
-  template?: string;
+  template?: string | null;
   templatePath?: string;
   disableTemplate?: boolean;
   options?: string;
@@ -10,4 +12,9 @@ export interface TexExportOptions {
   texIsIntermediate?: boolean;
   converter?: 'inkscape' | 'imagemagick';
   templateOptions?: Record<string, any>;
+  clean?: boolean;
 }
+
+export type ExportWithOutput = Export & {
+  output: string;
+};
