@@ -2,7 +2,6 @@ import React from 'react';
 import type { NodeRenderer } from './types';
 import { ChevronRightIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
-// import { AdmonitionKind } from 'mystjs';
 
 type DropdownSpec = {
   type: 'details';
