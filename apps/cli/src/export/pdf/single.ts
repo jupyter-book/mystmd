@@ -4,7 +4,12 @@ import type { VersionId } from '@curvenote/blocks';
 import type { ISession } from '../../session/types';
 import { createTempFolder, findProject } from '../../utils';
 import { singleArticleToTex } from '../tex';
-import { cleanOutput, collectExportOptions, runTexExport } from '../tex/single';
+import {
+  cleanOutput,
+  collectExportOptions,
+  resolveAndLogErrors,
+  runTexExport,
+} from '../tex/single';
 import type { ExportWithOutput, TexExportOptions } from '../tex/types';
 import { createPdfGivenTexFile, createPdfGivenTexExport } from './create';
 
@@ -63,19 +68,35 @@ export async function localArticleToPdf(session: ISession, file: string, opts: T
     projectPath,
     opts,
   );
-  await Promise.all(
-    pdfExportOptionsList.map(async (exportOptions) => {
-      const { format, output } = exportOptions;
-      const keepTexAndLogs = format === ExportFormats.pdftex;
-      const texExportOptions = texExportOptionsFromPdf(exportOptions, keepTexAndLogs);
-      await runTexExport(session, file, texExportOptions, opts.templatePath, projectPath);
-      await createPdfGivenTexExport(
-        session,
-        texExportOptions,
-        output,
-        opts.templatePath,
-        keepTexAndLogs,
-      );
-    }),
+  await resolveAndLogErrors(
+    session,
+    pdfExportOptionsList
+      .map(async (exportOptions) => {
+        const { format, output } = exportOptions;
+        const keepTexAndLogs = format === ExportFormats.pdftex;
+        const texExportOptions = texExportOptionsFromPdf(
+          session,
+          exportOptions,
+          keepTexAndLogs,
+          opts.clean,
+        );
+        await runTexExport(
+          session,
+          file,
+          texExportOptions,
+          opts.templatePath,
+          projectPath,
+          opts.clean,
+        );
+        await createPdfGivenTexExport(
+          session,
+          texExportOptions,
+          output,
+          opts.templatePath,
+          keepTexAndLogs,
+          opts.clean,
+        );
+      })
+      .map((p) => p.catch((e) => e)),
   );
 }

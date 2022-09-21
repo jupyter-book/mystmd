@@ -316,13 +316,22 @@ export async function collectExportOptions(
   return resolvedExportOptions;
 }
 
+export function cleanOutput(session: ISession, output: string) {
+  if (fs.existsSync(output)) {
+    session.log.info(`🧹 Cleaning old output at ${output}`);
+    fs.rmSync(output, { recursive: true });
+  }
+}
+
 export async function runTexExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
   templatePath?: string,
   projectPath?: string,
+  clean?: boolean,
 ) {
+  if (clean) cleanOutput(session, exportOptions.output);
   if (exportOptions.template === null) {
     await localArticleToTexRaw(session, file, exportOptions.output, projectPath);
   } else {
@@ -337,6 +346,15 @@ export async function runTexExport(
   }
 }
 
+export async function resolveAndLogErrors(session: ISession, promises: Promise<any>[]) {
+  const errors = await Promise.all(promises.map((p) => p.catch((e) => e)));
+  errors
+    .filter((e) => e instanceof Error)
+    .forEach((e) => {
+      session.log.error(e);
+    });
+}
+
 export async function localArticleToTex(session: ISession, file: string, opts: TexExportOptions) {
   const projectPath = findProject(session, path.dirname(file));
   const exportOptionsList = await collectExportOptions(
@@ -347,7 +365,8 @@ export async function localArticleToTex(session: ISession, file: string, opts: T
     projectPath,
     opts,
   );
-  await Promise.all(
+  await resolveAndLogErrors(
+    session,
     exportOptionsList.map(async (exportOptions) => {
       await runTexExport(session, file, exportOptions, opts.templatePath, projectPath, opts.clean);
     }),
