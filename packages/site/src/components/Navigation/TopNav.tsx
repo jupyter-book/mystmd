@@ -12,12 +12,47 @@ import ChevronDownIcon from '@heroicons/react/solid/ChevronDownIcon';
 
 export const DEFAULT_NAV_HEIGHT = 60;
 
+function ExternalOrInternalLink({
+  to,
+  className,
+  children,
+  nav,
+  prefetch = 'intent',
+}: {
+  to: string;
+  className?: string | ((props: { isActive: boolean }) => string);
+  children: React.ReactNode;
+  nav?: boolean;
+  prefetch?: 'intent' | 'render' | 'none';
+}) {
+  const staticClass = typeof className === 'function' ? className({ isActive: false }) : className;
+  if (to.startsWith('http')) {
+    return (
+      <a href={to} target="_blank" rel="noopener noreferrer" className={staticClass}>
+        {children}
+      </a>
+    );
+  }
+  if (nav) {
+    return (
+      <NavLink prefetch={prefetch} to={to} className={className}>
+        {children}
+      </NavLink>
+    );
+  }
+  return (
+    <Link prefetch={prefetch} to={to} className={staticClass}>
+      {children}
+    </Link>
+  );
+}
+
 function NavItem({ item }: { item: SiteNavItem }) {
   if (!('children' in item)) {
     return (
       <div className="relative grow-0 inline-block mx-2">
-        <NavLink
-          prefetch="intent"
+        <ExternalOrInternalLink
+          nav
           to={item.url}
           className={({ isActive }) =>
             classNames(
@@ -29,7 +64,7 @@ function NavItem({ item }: { item: SiteNavItem }) {
           }
         >
           {item.title}
-        </NavLink>
+        </ExternalOrInternalLink>
       </div>
     );
   }
@@ -56,15 +91,26 @@ function NavItem({ item }: { item: SiteNavItem }) {
         <Menu.Items className="origin-top-left absolute left-4 mt-2 w-48 rounded-sm shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
           {item.children?.map((action) => (
             <Menu.Item key={action.url}>
-              {({ active }) => (
+              {/* This is really ugly, BUT, the action needs to be defined HERE or the click away doesn't work for some reason */}
+              {action.url?.startsWith('http') ? (
+                <a
+                  href={action.url || ''}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {action.title}
+                </a>
+              ) : (
                 <NavLink
-                  prefetch="intent"
                   to={action.url || ''}
                   className={({ isActive }) =>
-                    classNames('block px-4 py-2 text-sm text-gray-700', {
-                      'bg-gray-100': active,
-                      'text-black font-bold': isActive,
-                    })
+                    classNames(
+                      'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black',
+                      {
+                        'text-black font-bold': isActive,
+                      },
+                    )
                   }
                 >
                   {action.title}
@@ -224,15 +270,13 @@ export function TopNav() {
           </div>
           <div className="hidden sm:block">
             {actions?.map((action, index) => (
-              <a
+              <ExternalOrInternalLink
                 key={action.url || index}
                 className="inline-block text-md px-4 py-2 mx-1 leading-none border rounded text-white border-white hover:border-transparent hover:text-stone-500 hover:bg-white mt-0"
-                href={action.url}
-                target={action.url?.startsWith('http') || action.static ? '_blank' : undefined}
-                rel="noreferrer"
+                to={action.url}
               >
                 {action.title}
-              </a>
+              </ExternalOrInternalLink>
             ))}
           </div>
         </div>

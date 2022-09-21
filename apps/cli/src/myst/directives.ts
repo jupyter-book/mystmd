@@ -1,6 +1,38 @@
 import yaml from 'js-yaml';
 import type { IDirectiveData, IDirective, Token } from 'mystjs';
-import { Directive, directiveOptions } from 'mystjs';
+import { Directive, directiveOptions, directivesDefault } from 'mystjs';
+
+// We are overriding image so we can use height here
+const Image: IDirective = {
+  myst: directivesDefault.image,
+  mdast: {
+    type: 'image',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(token) {
+      const alt = token.attrGet('alt') || token.children?.reduce((i, t) => i + t?.content, '');
+      const align = 'center';
+      return {
+        url: token.attrGet('src'),
+        alt: alt || undefined,
+        title: token.attrGet('title') || undefined,
+        class: undefined,
+        width: token.attrGet('width') || undefined,
+        height: token.attrGet('height') || undefined,
+        align,
+      };
+    },
+  },
+  hast: (h, node) =>
+    h(node, 'img', {
+      src: node.url,
+      alt: node.alt,
+      title: node.title,
+      // class,
+      height: node.height,
+      width: node.width,
+    }),
+};
 
 const RVar: IDirective = {
   myst: class RVariable extends Directive {
@@ -750,6 +782,7 @@ const Header: IDirective = {
 };
 
 export const directives = {
+  image: Image,
   'r:var': RVar,
   mdast: Mdast,
   include: Include,

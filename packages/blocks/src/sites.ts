@@ -13,8 +13,12 @@ import {
   validateBoolean,
   validationError,
 } from 'simple-validators';
-import type { SiteFrontmatter } from 'myst-frontmatter';
-import { SITE_FRONTMATTER_KEYS, validateSiteFrontmatterKeys } from 'myst-frontmatter';
+import type { SiteFrontmatter, SiteDesign } from 'myst-frontmatter';
+import {
+  SITE_FRONTMATTER_KEYS,
+  validateSiteFrontmatterKeys,
+  validateSiteDesign,
+} from 'myst-frontmatter';
 import type { ProjectId } from './projects';
 import type { BaseLinks, JsonObject } from './types';
 
@@ -84,10 +88,6 @@ export interface SiteAction extends SiteNavPage {
 export interface SiteAnalytics {
   google?: string;
   plausible?: string;
-}
-
-export interface SiteDesign {
-  hide_authors?: boolean;
 }
 
 export const SITE_CONFIG_KEYS = {
@@ -275,18 +275,6 @@ export function validateSiteAction(input: any, opts: ValidationOptions) {
   const url = actionUrlValidator(value.url, incrementOptions('url', opts));
   if (title === undefined || !url) return undefined;
   return value as SiteAction;
-}
-
-export function validateSiteDesign(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: ['hide_authors'] }, opts);
-  if (value === undefined) return undefined;
-  if (defined(value.hide_authors)) {
-    value.hide_authors = validateBoolean(
-      value.hide_authors,
-      incrementOptions('hide_authors', opts),
-    );
-  }
-  return value as SiteDesign;
 }
 
 export function validateSiteAnalytics(input: any, opts: ValidationOptions) {

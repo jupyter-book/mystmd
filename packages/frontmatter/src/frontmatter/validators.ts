@@ -32,6 +32,7 @@ import type {
   SiteFrontmatter,
   TextRepresentation,
   Venue,
+  SiteDesign,
 } from './types';
 
 export const SITE_FRONTMATTER_KEYS = ['title', 'description', 'venue', 'keywords'];
@@ -53,6 +54,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'bibliography',
   'math',
   'exports',
+  'design',
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = [
   'subtitle',
@@ -112,6 +114,13 @@ const NUMBERING_KEYS = [
   'heading_6',
 ];
 const KERNELSPEC_KEYS = ['name', 'language', 'display_name', 'argv', 'env'];
+const SITE_DESIGN_KEYS = [
+  'hide_authors',
+  'hide_toc',
+  'hide_outline',
+  'hide_title_block',
+  'hide_footer_links',
+];
 const TEXT_REPRESENTATION_KEYS = ['extension', 'format_name', 'format_version', 'jupytext_version'];
 const JUPYTEXT_KEYS = ['formats', 'text_representation'];
 export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output', 'id', 'name'];
@@ -143,6 +152,24 @@ export function validateVenue(input: any, opts: ValidationOptions) {
     output.url = validateUrl(value.url, incrementOptions('url', opts));
   }
   return output;
+}
+
+export function validateSiteDesign(input: any, opts: ValidationOptions): SiteDesign | undefined {
+  const value = validateObjectKeys(input, { optional: SITE_DESIGN_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const design: SiteDesign = {};
+
+  const validateBooleanOption = (key: keyof SiteDesign) => {
+    if (defined(value[key])) {
+      design[key] = validateBoolean(value[key], incrementOptions(key, opts));
+    }
+  };
+
+  // All boolean options at the moment
+  SITE_DESIGN_KEYS.filter((k) => k.startsWith('hide_')).forEach((k) => {
+    validateBooleanOption(k as keyof SiteDesign);
+  });
+  return design;
 }
 
 /**
@@ -544,6 +571,13 @@ export function validateProjectFrontmatterKeys(
           })
           .filter((exists) => !!exists) as [string, { url: string }][],
       );
+    }
+  }
+  if (defined(value.design)) {
+    const designOpts = incrementOptions('design', opts);
+    const design = validateObject(value.design, designOpts);
+    if (design) {
+      output.design = validateSiteDesign(design, designOpts);
     }
   }
   return output;

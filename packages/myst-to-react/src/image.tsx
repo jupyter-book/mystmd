@@ -1,6 +1,27 @@
 import type { Alignment } from '@curvenote/blocks';
-import type { Image as ImageNode } from 'myst-spec';
+import type { Image as ImageNodeSpec } from 'myst-spec';
 import type { NodeRenderer } from './types';
+
+type ImageNode = ImageNodeSpec & { height?: string };
+
+function getStyleValue(width?: number | string): string | number | undefined {
+  if (typeof width === 'number' && Number.isNaN(width)) {
+    // If it is nan, return undefined.
+    return undefined;
+  }
+  if (typeof width === 'string') {
+    if (width.endsWith('%')) {
+      return width;
+    } else if (width.endsWith('px')) {
+      return Number(width.replace('px', ''));
+    } else if (!Number.isNaN(Number(width))) {
+      return Number(width);
+    }
+    console.log(`Unknown width ${width} in getImageWidth`);
+    return undefined;
+  }
+  return width;
+}
 
 function alignToMargin(align: string) {
   switch (align) {
@@ -22,18 +43,21 @@ function Picture({
   align = 'center',
   alt,
   width,
+  height,
 }: {
   src: string;
   srcOptimized?: string;
   urlSource?: string;
   alt?: string;
   width?: string;
+  height?: string;
   align?: Alignment;
 }) {
   const image = (
     <img
       style={{
-        width: width || undefined,
+        width: getStyleValue(width),
+        height: getStyleValue(height),
         ...alignToMargin(align),
       }}
       src={src}
@@ -58,6 +82,7 @@ export const Image: NodeRenderer<ImageNode> = (node) => {
       srcOptimized={(node as any).urlOptimized}
       alt={node.alt || node.title}
       width={node.width || undefined}
+      height={node.height || undefined}
       align={node.align}
       // Note that sourceUrl is for backwards compatibility
       urlSource={(node as any).urlSource || (node as any).sourceUrl}

@@ -1,4 +1,4 @@
-import { useNavOpen } from '@curvenote/ui-providers';
+import { useHideDesignElement, useNavOpen } from '@curvenote/ui-providers';
 import { TableOfContents } from './TableOfContents';
 
 export function Navigation({
@@ -15,6 +15,8 @@ export function Navigation({
   height?: number;
 }) {
   const [open, setOpen] = useNavOpen();
+  const [hiddenToc] = useHideDesignElement('hide_toc');
+  if (hiddenToc) return <>{children}</>;
   return (
     <>
       {open && (

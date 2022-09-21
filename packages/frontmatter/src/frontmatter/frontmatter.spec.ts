@@ -19,6 +19,7 @@ import {
   validateNumbering,
   validatePageFrontmatter,
   validateProjectFrontmatter,
+  validateSiteDesign,
   validateSiteFrontmatter,
   validateVenue,
 } from './validators';
@@ -189,6 +190,18 @@ describe('validateBiblio', () => {
   });
   it('full object returns self', async () => {
     expect(validateBiblio(TEST_BIBLIO, opts)).toEqual(TEST_BIBLIO);
+  });
+});
+
+describe('validateSiteDesign', () => {
+  it('empty object returns self', async () => {
+    expect(validateSiteDesign({}, opts)).toEqual({});
+  });
+  it('valid site design returns self', async () => {
+    const siteDesign = {
+      hide_authors: true,
+    };
+    expect(validateSiteDesign(siteDesign, opts)).toEqual(siteDesign);
   });
 });
 
