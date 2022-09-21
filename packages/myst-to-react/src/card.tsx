@@ -80,9 +80,11 @@ function ExternalOrInternalLink({
   children: React.ReactNode;
 }) {
   if (to.startsWith('http')) {
-    <a href={to} className={className} target="_blank" rel="noopener noreferrer">
-      {children}
-    </a>;
+    return (
+      <a href={to} className={className} target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    );
   }
   return (
     <Link to={to} className={className} prefetch={prefetch}>
