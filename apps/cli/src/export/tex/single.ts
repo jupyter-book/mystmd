@@ -22,7 +22,7 @@ import {
 } from '../../store/local/actions';
 import { selectPageSlug } from '../../store/selectors';
 import { createSlug } from '../../toc/utils';
-import { findProject, writeFileToFolder } from '../../utils';
+import { findProjectAndLoad, writeFileToFolder } from '../../utils';
 import { makeBuildPaths } from '../utils';
 import { writeBibtex } from '../utils/writeBibtex';
 import { gatherAndWriteArticleContent } from './gather';
@@ -356,7 +356,7 @@ export async function resolveAndLogErrors(session: ISession, promises: Promise<a
 }
 
 export async function localArticleToTex(session: ISession, file: string, opts: TexExportOptions) {
-  const projectPath = findProject(session, path.dirname(file));
+  const projectPath = await findProjectAndLoad(session, path.dirname(file));
   const exportOptionsList = await collectExportOptions(
     session,
     file,

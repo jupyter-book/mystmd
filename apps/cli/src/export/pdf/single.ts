@@ -2,7 +2,7 @@ import path from 'path';
 import { ExportFormats } from 'myst-frontmatter';
 import type { VersionId } from '@curvenote/blocks';
 import type { ISession } from '../../session/types';
-import { createTempFolder, findProject } from '../../utils';
+import { createTempFolder, findProjectAndLoad } from '../../utils';
 import { singleArticleToTex } from '../tex';
 import {
   cleanOutput,
@@ -59,7 +59,7 @@ export function texExportOptionsFromPdf(
 }
 
 export async function localArticleToPdf(session: ISession, file: string, opts: TexExportOptions) {
-  const projectPath = findProject(session, path.dirname(file));
+  const projectPath = await findProjectAndLoad(session, path.dirname(file));
   const pdfExportOptionsList = await collectExportOptions(
     session,
     file,

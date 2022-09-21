@@ -12,7 +12,7 @@ import { Block, MyUser, Project, User, Version } from '../../models';
 import type { ISession } from '../../session/types';
 import { loadFile, selectFile, transformMdast } from '../../store/local/actions';
 import type { References } from '../../transforms/types';
-import { createTempFolder, findProject } from '../../utils';
+import { createTempFolder, findProjectAndLoad } from '../../utils';
 import { assertEndsInExtension } from '../utils/assertions';
 import { exportFromPath } from '../utils/exportWrapper';
 import { getChildren } from '../utils/getChildren';
@@ -50,7 +50,7 @@ export async function localArticleToWord(
   await transformMdast(session, {
     file,
     imageWriteFolder: createTempFolder(),
-    projectPath: findProject(session, path.dirname(file)),
+    projectPath: await findProjectAndLoad(session, path.dirname(file)),
   });
   const { frontmatter, mdast, references } = selectFile(session, file);
   const consolidatedChildren = selectAll('block', mdast).reduce((newChildren, block) => {

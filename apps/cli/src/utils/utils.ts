@@ -7,11 +7,14 @@ import inquirer from 'inquirer';
 import path from 'path';
 import prettyHrtime from 'pretty-hrtime';
 import type { JsonObject, VersionId } from '@curvenote/blocks';
-import { configFileExists, loadConfigOrThrow, readConfig } from '../config';
+import { configFileExists, loadConfigOrThrow } from '../config';
 import type { Logger } from '../logging';
 import type { ISession } from '../session/types';
 import type { WarningKind } from '../store/build';
 import { warnings } from '../store/build';
+import { combineProjectCitationRenderers, loadFile } from '../store/local/actions';
+import { selectLocalProjectConfig } from '../store/selectors';
+import { loadProjectFromDisk } from '../toc';
 
 export const BUILD_FOLDER = '_build';
 export const THUMBNAILS_FOLDER = 'thumbnails';
@@ -217,17 +220,25 @@ export function tic() {
   return toc;
 }
 
-export function findProject(session: ISession, dir: string): string | undefined {
+export async function findProjectAndLoad(
+  session: ISession,
+  dir: string,
+): Promise<string | undefined> {
   dir = path.resolve(dir);
   if (configFileExists(dir)) {
-    const { project } = readConfig(session, dir);
+    loadConfigOrThrow(session, dir);
+    const project = selectLocalProjectConfig(session.store.getState(), dir);
     if (project) {
-      loadConfigOrThrow(session, dir);
+      const { bibliography } = loadProjectFromDisk(session, dir);
+      if (bibliography) {
+        await Promise.all(bibliography.map((p: string) => loadFile(session, p, '.bib')));
+        combineProjectCitationRenderers(session, dir);
+      }
       return dir;
     }
   }
   if (path.dirname(dir) === dir) {
     return undefined;
   }
-  return findProject(session, path.dirname(dir));
+  return findProjectAndLoad(session, path.dirname(dir));
 }
