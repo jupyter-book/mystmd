@@ -8,11 +8,6 @@
   "files": [
     "dist"
   ],
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js"
-    }
-  },
   "license": "MIT",
   "scripts": {
     "clean": "rimraf dist",
