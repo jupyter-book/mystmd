@@ -264,6 +264,19 @@ const htmlHandlers = {
   },
 };
 
+export async function bibFilesInDir(session: ISession, dir: string, load = true) {
+  const bibFiles = await Promise.all(
+    fs.readdirSync(dir).map(async (f) => {
+      if (extname(f).toLowerCase() === '.bib') {
+        const bibFile = join(dir, f);
+        if (load) await loadFile(session, bibFile);
+        return bibFile;
+      }
+    }),
+  );
+  return bibFiles.filter((f): f is string => Boolean(f));
+}
+
 export async function transformMdast(
   session: ISession,
   {
@@ -329,16 +342,8 @@ export async function transformMdast(
   if (projectPath) {
     rendererFiles.unshift(projectPath);
   } else {
-    const fileDirectory = dirname(file);
-    await Promise.all(
-      fs.readdirSync(fileDirectory).map(async (f) => {
-        if (extname(f).toLowerCase() === '.bib') {
-          const bibFile = join(fileDirectory, f);
-          await loadFile(session, bibFile);
-          rendererFiles.push(bibFile);
-        }
-      }),
-    );
+    const localFiles = (await bibFilesInDir(session, dirname(file))) || [];
+    rendererFiles.push(...localFiles);
   }
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
@@ -666,4 +671,9 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
     inv.write(filename);
   }
   return true;
+}
+
+export function bibtexSomething(session: ISession, path: string) {
+  const cache = castSession(session);
+  console.log(cache.$externalReferences);
 }

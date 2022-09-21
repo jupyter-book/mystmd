@@ -15,12 +15,13 @@ import { copyNode } from 'myst-common';
 import type { Block } from 'myst-spec';
 import type { ISession } from '../../session/types';
 import {
+  bibFilesInDir,
   getRawFrontmatterFromFile,
   loadFile,
   selectFile,
   transformMdast,
 } from '../../store/local/actions';
-import { selectPageSlug } from '../../store/selectors';
+import { selectLocalProject, selectPageSlug } from '../../store/selectors';
 import { createSlug } from '../../toc/utils';
 import { findProjectAndLoad, writeFileToFolder } from '../../utils';
 import { makeBuildPaths } from '../utils';
@@ -142,6 +143,15 @@ export async function localArticleToTexRaw(
   writeFileToFolder(output, result.value);
 }
 
+function concatinateFiles(files: string[], output: string) {
+  const fd = fs.openSync(output, 'w');
+  files.forEach((file) => {
+    fs.writeSync(fd, fs.readFileSync(file));
+    fs.writeSync(fd, '\n');
+  });
+  fs.closeSync(fd);
+}
+
 export async function localArticleToTexTemplated(
   session: ISession,
   file: string,
@@ -156,6 +166,15 @@ export async function localArticleToTexTemplated(
     templateOptions.output,
     projectPath,
   );
+  let bibFiles: string[];
+  if (projectPath) {
+    const { bibliography } = selectLocalProject(session.store.getState(), projectPath) || {};
+    bibFiles = bibliography || [];
+  } else {
+    bibFiles = (await bibFilesInDir(session, path.dirname(file), false)) || [];
+  }
+  concatinateFiles(bibFiles, path.join(path.dirname(templateOptions.output), 'main.bib'));
+
   const jtex = new JTex(session, {
     template: templateOptions.template || undefined,
     path: templatePath,
