@@ -131,7 +131,7 @@ export function MySTRenderer({ value, numbering }: { value: string; numbering: a
   }, [text]);
 
   return (
-    <figure className="relative shadow-lg rounded overflow-hidden">
+    <figure className="relative shadow-lg rounded">
       <div className="absolute right-0 p-1">
         <CopyIcon text={text} />
       </div>

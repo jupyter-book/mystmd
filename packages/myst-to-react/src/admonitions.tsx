@@ -120,7 +120,7 @@ function Admonition({
   return (
     <aside
       className={classNames(
-        'admonition rounded-md my-4 border-l-4 shadow-md dark:shadow-2xl dark:shadow-neutral-900 overflow-hidden',
+        'admonition rounded-md my-4 border-l-4 shadow-md dark:shadow-2xl dark:shadow-neutral-900',
         {
           'border-blue-500': color === 'blue',
           'border-green-600': color === 'green',
