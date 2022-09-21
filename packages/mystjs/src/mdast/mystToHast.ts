@@ -16,6 +16,7 @@ const image: Handler = (h, node) =>
     alt: node.alt,
     title: node.title,
     class: classNames(node.align ? `align-${node.align}` : '', node.class) || undefined,
+    height: node.height,
     width: node.width,
   });
 const caption: Handler = (h, node) => h(node, 'figcaption', all(h, node));

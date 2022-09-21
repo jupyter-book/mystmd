@@ -211,6 +211,7 @@ const defaultMdast: Record<string, Spec> = {
         title: token.attrGet('title') || undefined,
         class: getClassName(token, [ALIGN_CLASS]),
         width: token.attrGet('width') || undefined,
+        height: token.attrGet('height') || undefined,
         align,
       };
     },
