@@ -346,6 +346,49 @@ const TabSet: IDirective = {
   hast: (h, node) => h(node, 'div', { class: 'margin' }),
 };
 
+const Grid: IDirective = {
+  myst: class Grid extends Directive {
+    public required_arguments = 0;
+
+    public optional_arguments = 1;
+
+    public final_argument_whitespace = true;
+
+    public has_content = true;
+
+    public option_spec = {
+      'class-container': directiveOptions.class_option,
+      gutter: directiveOptions.unchanged,
+    };
+
+    run(data: IDirectiveData<keyof Grid['option_spec']>) {
+      const newTokens: Token[] = [];
+      // we create an overall container, then individual containers for the title and body
+      const adToken = this.createToken('grid_open', 'div', 1, {
+        map: data.map,
+        block: true,
+        meta: {
+          column: data.args[0] ?? '1 1 2 3',
+        },
+      });
+      newTokens.push(adToken);
+      const bodyTokens = this.nestedParse(data.body, data.bodyMap[0]);
+      newTokens.push(...bodyTokens);
+      newTokens.push(this.createToken('grid_close', 'div', -1, { block: true }));
+      return newTokens;
+    }
+  },
+  mdast: {
+    type: 'grid',
+    getAttrs(t) {
+      return {
+        class: t.meta.class,
+      };
+    },
+  },
+  hast: (h, node) => h(node, 'div'),
+};
+
 const TabItem: IDirective = {
   myst: class TabItem extends Directive {
     public required_arguments = 1;
@@ -469,6 +512,194 @@ const Mermaid: IDirective = {
   hast: (h, node) => h(node, 'div', { class: 'margin' }),
 };
 
+const Dropdown: IDirective = {
+  myst: class Dropdown extends Directive {
+    public required_arguments = 0;
+
+    public optional_arguments = 1;
+
+    public final_argument_whitespace = true;
+
+    public has_content = true;
+
+    public option_spec = {
+      open: directiveOptions.flag,
+    };
+
+    run(data: IDirectiveData<keyof Dropdown['option_spec']>) {
+      const newTokens: Token[] = [];
+
+      // we create an overall container, then individual containers for the title and body
+      const adToken = this.createToken('dropdown_open', 'details', 1, {
+        map: data.map,
+        block: true,
+      });
+      newTokens.push(adToken);
+
+      const tokenTitle = this.createToken('summary_open', 'summary', 1);
+      newTokens.push(tokenTitle);
+
+      // we want the title to be parsed as Markdown during the inline phase
+      const title = data.args[0] || '';
+      newTokens.push(
+        this.createToken('inline', '', 0, {
+          map: [data.map[0], data.map[0]],
+          content: title,
+          children: [],
+        }),
+      );
+
+      newTokens.push(this.createToken('summary_close', 'summary', -1, { block: true }));
+
+      // run a recursive parse on the content of the admonition upto this stage
+      const bodyTokens = this.nestedParse(data.body, data.bodyMap[0]);
+      newTokens.push(...bodyTokens);
+
+      newTokens.push(this.createToken('dropdown_close', 'details', -1, { block: true }));
+
+      return newTokens;
+    }
+  },
+  mdast: {
+    type: 'details',
+    getAttrs(t) {
+      return {
+        // This is so silly. Flags are 'null'?
+        open: t.meta.open === null || undefined, // Only add true, otherwise undefined.
+      };
+    },
+  },
+  hast: (h, node) => h(node, 'details'),
+};
+
+const Card: IDirective = {
+  myst: class Card extends Directive {
+    public required_arguments = 0;
+
+    public optional_arguments = 1;
+
+    public final_argument_whitespace = true;
+
+    public has_content = true;
+
+    public option_spec = {
+      link: directiveOptions.unchanged,
+    };
+
+    run(data: IDirectiveData<keyof Card['option_spec']>) {
+      const newTokens: Token[] = [];
+
+      // we create an overall container, then individual containers for the title and body
+      const adToken = this.createToken('card_open', 'div', 1, {
+        map: data.map,
+        block: true,
+      });
+      newTokens.push(adToken);
+
+      const headerSplit = '\n^^^\n';
+      const footerSplit = '\n+++\n';
+      let { body } = data;
+      if (body.includes(headerSplit)) {
+        const [header, ...rest] = body.split(headerSplit);
+        body = rest.join(headerSplit);
+        newTokens.push(this.createToken('header_open', 'header', 1, { block: true }));
+        const headerTokens = this.nestedParse(header, data.bodyMap[0]);
+        newTokens.push(...headerTokens);
+        newTokens.push(this.createToken('header_close', 'header', -1, { block: true }));
+      }
+
+      const tokenTitle = this.createToken('card_title_open', 'div', 1);
+      newTokens.push(tokenTitle);
+      // we want the title to be parsed as Markdown during the inline phase
+      const title = data.args[0] || '';
+      newTokens.push(
+        this.createToken('inline', '', 0, {
+          map: [data.map[0], data.map[0]],
+          content: title,
+          children: [],
+        }),
+      );
+      newTokens.push(this.createToken('card_title_close', 'div', -1, { block: true }));
+
+      if (body.includes(footerSplit)) {
+        const [content, ...below] = body.split(footerSplit);
+        const footer = below.join(footerSplit);
+        const bodyTokens = this.nestedParse(content, data.bodyMap[0]);
+        newTokens.push(...bodyTokens);
+        // Now parse the footer
+        newTokens.push(this.createToken('footer_open', 'footer', 1, { block: true }));
+        const footerTokens = this.nestedParse(footer, data.bodyMap[0]);
+        newTokens.push(...footerTokens);
+        newTokens.push(this.createToken('footer_close', 'footer', -1, { block: true }));
+      } else {
+        // run a recursive parse on the content of the admonition upto this stage
+        const bodyTokens = this.nestedParse(body, data.bodyMap[0]);
+        newTokens.push(...bodyTokens);
+      }
+      newTokens.push(this.createToken('card_close', 'div', -1, { block: true }));
+      return newTokens;
+    }
+  },
+  mdast: {
+    type: 'card',
+    getAttrs(t) {
+      return {
+        // This is so silly. Flags are 'null'?
+        open: t.meta.open === null || undefined, // Only add true, otherwise undefined.
+      };
+    },
+  },
+  hast: (h, node) => h(node, 'details'),
+};
+
+// The extension is forcing us to add this as a full thing, we are just putting `false` in "myst".
+const Summary: IDirective = {
+  myst: false as any,
+  mdast: {
+    type: 'summary',
+    getAttrs() {
+      return {};
+    },
+  },
+  hast: (h, node) => h(node, 'summary'),
+};
+
+// The extension is forcing us to add this as a full thing, we are just putting `false` in "myst".
+const CardTitle: IDirective = {
+  myst: false as any,
+  mdast: {
+    type: 'cardTitle',
+    getAttrs() {
+      return {};
+    },
+  },
+  hast: (h, node) => h(node, 'div'),
+};
+
+// The extension is forcing us to add this as a full thing, we are just putting `false` in "myst".
+const Footer: IDirective = {
+  myst: false as any,
+  mdast: {
+    type: 'footer',
+    getAttrs() {
+      return {};
+    },
+  },
+  hast: (h, node) => h(node, 'footer'),
+};
+
+// The extension is forcing us to add this as a full thing, we are just putting `false` in "myst".
+const Header: IDirective = {
+  myst: false as any,
+  mdast: {
+    type: 'header',
+    getAttrs() {
+      return {};
+    },
+  },
+  hast: (h, node) => h(node, 'header'),
+};
+
 export const directives = {
   'r:var': RVar,
   mdast: Mdast,
@@ -485,4 +716,12 @@ export const directives = {
   tabItem: TabItem,
   myst: MystDemo,
   mermaid: Mermaid,
+  dropdown: Dropdown,
+  summary: Summary,
+  card: Card,
+  card_title: CardTitle,
+  footer: Footer,
+  header: Header,
+  grid: Grid,
+  'grid-item-card': Card,
 };
