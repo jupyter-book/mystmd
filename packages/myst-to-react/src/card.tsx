@@ -1,6 +1,7 @@
 import React from 'react';
 import type { NodeRenderer } from './types';
 import classNames from 'classnames';
+import { Link } from '@remix-run/react';
 // import { AdmonitionKind } from 'mystjs';
 
 type CardSpec = {
@@ -67,16 +68,38 @@ function getParts(children: React.ReactNode): Parts {
   return parts;
 }
 
+function ExternalOrInternalLink({
+  to,
+  className,
+  prefetch = 'intent',
+  children,
+}: {
+  to: string;
+  className?: string;
+  prefetch?: 'intent' | 'render' | 'none';
+  children: React.ReactNode;
+}) {
+  if (to.startsWith('http')) {
+    <a href={to} className={className} target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>;
+  }
+  return (
+    <Link to={to} className={className} prefetch={prefetch}>
+      {children}
+    </Link>
+  );
+}
+
 function Card({ children, url }: { children: React.ReactNode; url?: string }) {
   const parts = getParts(children);
   const link = !!url;
   const sharedStyle =
-    'rounded-md shadow dark:shadow-neutral-800 overflow-hidden border border-gray-100 dark:border-gray-800';
+    'rounded-md shadow dark:shadow-neutral-800 overflow-hidden border border-gray-100 dark:border-gray-800 flex flex-col';
   if (link) {
-    // TODO: internal links
     return (
-      <a
-        href={url}
+      <ExternalOrInternalLink
+        to={url}
         className={classNames(
           sharedStyle,
           'block font-normal no-underline cursor-pointer group',
@@ -84,15 +107,15 @@ function Card({ children, url }: { children: React.ReactNode; url?: string }) {
         )}
       >
         {parts.header}
-        <div className="py-2 px-4">{parts.body}</div>
+        <div className="py-2 px-4 flex-grow">{parts.body}</div>
         {parts.footer}
-      </a>
+      </ExternalOrInternalLink>
     );
   }
   return (
     <div className={sharedStyle}>
       {parts.header}
-      <div className="py-2 px-4">{parts.body}</div>
+      <div className="py-2 px-4 flex-grow">{parts.body}</div>
       {parts.footer}
     </div>
   );
