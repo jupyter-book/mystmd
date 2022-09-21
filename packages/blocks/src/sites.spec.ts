@@ -7,7 +7,6 @@ import {
   validateDomain,
   validateSiteAnalytics,
   validateSiteConfig,
-  validateSiteDesign,
   validateSiteNavItem,
   validateSiteProject,
 } from './sites';
@@ -152,18 +151,6 @@ describe('validateSiteAction', () => {
       title: 'example',
       url: '/a/b',
     });
-  });
-});
-
-describe('validateSiteDesign', () => {
-  it('empty object returns self', async () => {
-    expect(validateSiteDesign({}, opts)).toEqual({});
-  });
-  it('valid site design returns self', async () => {
-    const siteDesign = {
-      hide_authors: true,
-    };
-    expect(validateSiteDesign(siteDesign, opts)).toEqual(siteDesign);
   });
 });
 
