@@ -39,7 +39,7 @@
   "dependencies": {
     "buffer-image-size": "^0.6.4",
     "docx": "^7.3.0",
-    "myst-common": "workspace:*",
+    "myst-common": "*",
     "myst-frontmatter": "*"
   },
   "devDependencies": {
