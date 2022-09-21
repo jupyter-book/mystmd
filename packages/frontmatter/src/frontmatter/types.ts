@@ -93,11 +93,20 @@ export type Export = {
   output?: string;
 } & Record<string, any>;
 
+export type SiteDesign = {
+  hide_authors?: boolean;
+  hide_toc?: boolean;
+  hide_title_block?: boolean;
+  hide_outline?: boolean;
+  hide_footer_links?: boolean;
+};
+
 export type SiteFrontmatter = {
   title?: string;
   description?: string;
   venue?: Venue;
   keywords?: string[];
+  design?: SiteDesign;
 };
 
 export type ProjectFrontmatter = SiteFrontmatter & {
@@ -124,7 +133,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   exports?: Export[];
 };
 
-export type PageFrontmatter = Omit<ProjectFrontmatter, 'intersphinx'> & {
+export type PageFrontmatter = Omit<ProjectFrontmatter, 'references'> & {
   subtitle?: string;
   short_title?: string;
   kernelspec?: KernelSpec;

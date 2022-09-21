@@ -12,9 +12,11 @@
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\""
   },
   "dependencies": {
-    "@curvenote/site-common": "*"
+    "@curvenote/site-common": "*",
+    "lodash.isequal": "^4.5.0"
   },
   "devDependencies": {
+    "@types/lodash.isequal": "^4.5.6",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "eslint": "^8.21.0",

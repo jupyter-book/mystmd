@@ -12,7 +12,7 @@ export const meta: MetaFunction = (args) => {
     url: args.location.pathname,
     title: `${data.frontmatter.title} - ${config?.title}`,
     description: data.frontmatter.description,
-    image: data.frontmatter.thumbnailOptimized || data.frontmatter.thumbnail,
+    image: (data.frontmatter.thumbnailOptimized || data.frontmatter.thumbnail) ?? undefined,
   });
 };
 

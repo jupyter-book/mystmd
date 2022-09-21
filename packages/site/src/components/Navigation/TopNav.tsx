@@ -27,7 +27,6 @@ function ExternalOrInternalLink({
 }) {
   const staticClass = typeof className === 'function' ? className({ isActive: false }) : className;
   if (to.startsWith('http')) {
-    console.log({ className, staticClass });
     return (
       <a href={to} target="_blank" rel="noopener noreferrer" className={staticClass}>
         {children}
