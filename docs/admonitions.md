@@ -151,11 +151,11 @@ My custom admonition that has a `tip` class applied!
 
 Note that if you provide conflicting class names, the first one in the {ref}`list above <admonitions-list>` will be used.
 
-## Dropdown
+(admonition-dropdown)=
 
-You can also hide the body of your admonition blocks so that users must click the header to reveal the contents. This is helpful if you’d like to include some text that isn’t immediately visible to the user.
+## Admonition Dropdown
 
-To turn an admonition into a dropdown, add the `dropdown` class to them.
+You can also hide the body of your admonition blocks so that users must click the header to reveal the contents. This is helpful if you’d like to include some text that isn’t immediately visible to the user. To turn an admonition into a dropdown, add the `dropdown` class to them.
 
 ````{myst}
 ```{note}
