@@ -13,7 +13,7 @@ site:
     - path: packages/jtex/docs
       slug: jtex
   nav:
-    - title: MyST JS
+    - title: Guide & Overview
       url: /guide
     - title: Packages
       children:
