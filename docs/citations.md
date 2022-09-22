@@ -1,6 +1,7 @@
 ---
 title: Citations and bibliography
 description: Add academic citations to your documents easily, have hover-references and an automatically created bibliography.
+thumbnail: ./thumbnails/citations.png
 ---
 
 Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a markdown link to a [DOI](wiki:Digital_object_identifier); and (2) by adding a bibtex file, which can be exported from any reference manager, and adding a `cite` role to your content.

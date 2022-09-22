@@ -1,6 +1,7 @@
 ---
 title: External references
 description: External references dynamically include content into your MyST projects, from Wikipedia, intersphinx, DOIs, RRIDs, and any other MyST projects. Allowing your documents to be rich, interactive and automatically kept up to date.
+thumbnail: ./thumbnails/external-references.png
 ---
 
 MyST allows you to connect your <wiki:documents> to external [linked](wiki:Hyperlink) content like <wiki:Wikipedia>, which allow for [hover](wiki:Hovercraft)-references with external content.

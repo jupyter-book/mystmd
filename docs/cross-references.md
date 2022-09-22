@@ -1,6 +1,7 @@
 ---
 title: Cross-references
 description: Create numbered cross-references to labeled content (e.g. a figure, document, or table) and automatically generates links with hover previews.
+thumbnail: ./thumbnails/cross-references.png
 numbering:
   heading_1: true
   heading_2: true
