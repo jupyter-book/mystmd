@@ -104,6 +104,7 @@ export async function mdastToWord(mdast: Root) {
       getImageBuffer(image: string) {
         return fs.readFileSync(image).buffer as any;
       },
+      crossReferences: true,
     })
     .stringify(mdast as any);
   return (await (file.result as DocxResult)) as Buffer;
