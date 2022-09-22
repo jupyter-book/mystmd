@@ -5,9 +5,9 @@ import JTex, { pdfExportCommand } from 'jtex';
 import type { Logger } from '../../logging';
 import type { ISession } from '../../session/types';
 import { BUILD_FOLDER, createTempFolder } from '../../utils';
-import type { ExportWithOutput } from '../tex/types';
+import type { ExportWithOutput } from '../types';
 import { exec } from '../utils';
-import { cleanOutput } from '../tex/single';
+import { cleanOutput } from '../utils/cleanOutput';
 
 const copyFile = util.promisify(fs.copyFile);
 

@@ -24,7 +24,12 @@ import {
 import { selectLocalProject, selectPageSlug } from '../../store/selectors';
 import { createSlug } from '../../toc/utils';
 import { findProjectAndLoad, writeFileToFolder } from '../../utils';
+import type { ExportWithOutput } from '../types';
 import { makeBuildPaths } from '../utils';
+import { cleanOutput } from '../utils/cleanOutput';
+import { getDefaultExportFilename, getDefaultExportFolder } from '../utils/defaultNames';
+import { getFileContent } from '../utils/getFileContent';
+import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
 import { writeBibtex } from '../utils/writeBibtex';
 import { gatherAndWriteArticleContent } from './gather';
 import {
@@ -32,7 +37,7 @@ import {
   ifTemplateLoadOptions,
   throwIfTemplateButNoJtex,
 } from './template';
-import type { ExportWithOutput, TexExportOptions } from './types';
+import type { TexExportOptions } from './types';
 import { ifTemplateRunJtex } from './utils';
 
 export const DEFAULT_TEX_FILENAME = 'main.tex';
@@ -112,23 +117,6 @@ export function extractPart(
   });
   remove(mdast, '__delete__');
   return partContent;
-}
-
-export async function getFileContent(
-  session: ISession,
-  file: string,
-  output: string,
-  projectPath?: string,
-) {
-  await loadFile(session, file);
-  // Collect bib files - mysttotex will need those, not 'references'
-  await transformMdast(session, {
-    file,
-    imageWriteFolder: path.join(path.dirname(output), 'images'),
-    imageAltOutputFolder: 'images',
-    projectPath,
-  });
-  return selectFile(session, file);
 }
 
 export async function localArticleToTexRaw(
@@ -214,36 +202,7 @@ export async function localArticleToTexTemplated(
   });
 }
 
-/**
- * Get default folder for saving export. Folder will be created on export.
- *
- * The default folder is:
- * <root>/_build/exports/
- *
- * If the file is part of a project, the root is the project folder;
- * if not, the root is the file folder.
- */
-function getDefaultExportFolder(session: ISession, file: string, projectPath?: string) {
-  const { dir } = path.parse(file);
-  const buildSubpath = path.join('_build', 'exports');
-  return path.join(projectPath || dir, buildSubpath);
-}
-
-/**
- * Get default filename for saving export.
- *
- * This uses the project slug if available, or creates a new slug from the filename otherwise.
- */
-function getDefaultExportFilename(session: ISession, file: string, projectPath?: string) {
-  const { name } = path.parse(file);
-  const slugFromProject = projectPath
-    ? selectPageSlug(session.store.getState(), projectPath, file)
-    : undefined;
-  const slug = slugFromProject || createSlug(name);
-  return slug;
-}
-
-export async function collectExportOptions(
+export async function collectTexExportOptions(
   session: ISession,
   file: string,
   extension: string,
@@ -337,13 +296,6 @@ export async function collectExportOptions(
   return resolvedExportOptions;
 }
 
-export function cleanOutput(session: ISession, output: string) {
-  if (fs.existsSync(output)) {
-    session.log.info(`🧹 Cleaning old output at ${output}`);
-    fs.rmSync(output, { recursive: true });
-  }
-}
-
 export async function runTexExport(
   session: ISession,
   file: string,
@@ -367,18 +319,9 @@ export async function runTexExport(
   }
 }
 
-export async function resolveAndLogErrors(session: ISession, promises: Promise<any>[]) {
-  const errors = await Promise.all(promises.map((p) => p.catch((e) => e)));
-  errors
-    .filter((e) => e instanceof Error)
-    .forEach((e) => {
-      session.log.error(e);
-    });
-}
-
 export async function localArticleToTex(session: ISession, file: string, opts: TexExportOptions) {
   const projectPath = await findProjectAndLoad(session, path.dirname(file));
-  const exportOptionsList = await collectExportOptions(
+  const exportOptionsList = await collectTexExportOptions(
     session,
     file,
     'tex',

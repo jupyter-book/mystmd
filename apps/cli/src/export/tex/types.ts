@@ -1,5 +1,3 @@
-import type { Export } from 'myst-frontmatter';
-
 export interface TexExportOptions {
   filename: string;
   multiple?: boolean;
@@ -14,7 +12,3 @@ export interface TexExportOptions {
   templateOptions?: Record<string, any>;
   clean?: boolean;
 }
-
-export type ExportWithOutput = Export & {
-  output: string;
-};

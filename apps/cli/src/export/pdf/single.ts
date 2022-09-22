@@ -4,14 +4,12 @@ import type { VersionId } from '@curvenote/blocks';
 import type { ISession } from '../../session/types';
 import { createTempFolder, findProjectAndLoad } from '../../utils';
 import { singleArticleToTex } from '../tex';
-import {
-  cleanOutput,
-  collectExportOptions,
-  resolveAndLogErrors,
-  runTexExport,
-} from '../tex/single';
-import type { ExportWithOutput, TexExportOptions } from '../tex/types';
+import { collectTexExportOptions, runTexExport } from '../tex/single';
+import type { TexExportOptions } from '../tex/types';
+import type { ExportWithOutput } from '../types';
+import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
 import { createPdfGivenTexFile, createPdfGivenTexExport } from './create';
+import { cleanOutput } from '../utils/cleanOutput';
 
 export const DEFAULT_PDF_FILENAME = 'main.pdf';
 
@@ -60,7 +58,7 @@ export function texExportOptionsFromPdf(
 
 export async function localArticleToPdf(session: ISession, file: string, opts: TexExportOptions) {
   const projectPath = await findProjectAndLoad(session, path.dirname(file));
-  const pdfExportOptionsList = await collectExportOptions(
+  const pdfExportOptionsList = await collectTexExportOptions(
     session,
     file,
     'pdf',
