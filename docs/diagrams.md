@@ -1,6 +1,7 @@
 ---
 title: Diagrams
 description: Include simple programatic mermaid diagrams in your documents.
+thumbnail: ./thumbnails/diagrams.png
 ---
 
 It is possible to add [mermaid diagrams](https://mermaid-js.github.io/mermaid) using the `{mermaid}` directive, for example:

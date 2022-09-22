@@ -1,6 +1,7 @@
 ---
 title: Typography
 description: How to add everything from headers, inline code, to bold, italic and underline.
+thumbnail: ./thumbnails/typography.png
 ---
 
 ## Headings

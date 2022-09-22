@@ -1,6 +1,7 @@
 ---
 title: Images and figures
 description: MyST Markdown allows you to create images and figures in your documents, including cross-referencing content throughout your pages.
+thumbnail: ./thumbnails/figures.png
 ---
 
 MyST Markdown can be used to include images and figures in your documents as well as referencing those images easily throughout your website, article or paper.

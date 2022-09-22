@@ -1,6 +1,7 @@
 ---
 title: Callouts (admonitions)
 description: Callout blocks or admonitions, like "notes" or "hints" are outlined or shaded areas of a document to bring attention to particular information.
+thumbnail: ./thumbnails/admonitions.png
 ---
 
 To highlight a particular block of text that exists slightly apart from the narrative of your page you can use a number of directive kinds like `{note}` or `{warning}`.
@@ -172,3 +173,10 @@ You can use the `dropdown` class in conjunction with `{admonition}` directives t
 This is initially hidden!
 ```
 ````
+
+```{seealso}
+:class: dropdown
+
+# Use "Dropdowns" for simple styles
+You can also use a `{dropdown}` directive, which provides a more compact writing experience and is simpler in the displayed style. See [](#dropdowns) for more information.
+```
