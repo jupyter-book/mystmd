@@ -6,6 +6,7 @@ import type { References } from './types';
 
 describe('Test footnotes plugin', () => {
   test('Pulls out references for footnotes', () => {
+    const file = new VFile();
     const node = {
       type: 'footnoteDefinition',
       identifier: 'x',
@@ -13,7 +14,7 @@ describe('Test footnotes plugin', () => {
     } as FootnoteDefinition;
     const mdast = { children: [node] } as any;
     const references: Pick<References, 'footnotes'> = { footnotes: {} };
-    footnotesTransform(mdast, { references });
+    footnotesTransform(mdast, file, { references });
     expect((node as any).key).toBeTruthy();
     expect((references.footnotes?.['x'] as any).children[0].children[0].value).toBe('test');
   });

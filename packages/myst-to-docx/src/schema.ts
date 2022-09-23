@@ -1,8 +1,28 @@
 import type { VFile } from 'vfile';
+import type { ITableCellOptions, IParagraphOptions } from 'docx';
+import {
+  FootnoteReferenceRun,
+  TabStopPosition,
+  TabStopType,
+  TextRun,
+  AlignmentType,
+  BorderStyle,
+  convertInchesToTwip,
+  ExternalHyperlink,
+  HeadingLevel,
+  ImageRun,
+  ShadingType,
+  Math,
+  MathRun,
+  TableRow,
+  Table,
+  TableCell,
+  Paragraph,
+} from 'docx';
 import type {
   Parent,
   Heading,
-  Paragraph,
+  Paragraph as ParagraphNode,
   Text,
   Emphasis,
   Strong,
@@ -24,24 +44,17 @@ import type {
   CrossReference,
   Container,
   Caption,
+  Table as TableNode,
+  TableCell as SpecTableCellNode,
 } from 'myst-spec';
-import type { IParagraphOptions } from 'docx';
+import type { Handler, Mutable } from './types';
 import {
-  TabStopPosition,
-  TabStopType,
-  TextRun,
-  AlignmentType,
-  BorderStyle,
-  convertInchesToTwip,
-  ExternalHyperlink,
-  HeadingLevel,
-  ImageRun,
-  ShadingType,
-  Math,
-  MathRun,
-} from 'docx';
-import type { Handler } from './types';
-import { createReference, createReferenceBookmark, createShortId, getImageWidth } from './utils';
+  createReference,
+  createReferenceBookmark,
+  createShortId,
+  getImageWidth,
+  MAX_DOCX_IMAGE_WIDTH,
+} from './utils';
 import { createNumbering } from './numbering';
 import sizeOf from 'buffer-image-size';
 import { fileError } from 'myst-common';
@@ -50,22 +63,22 @@ const text: Handler<Text> = (state, node) => {
   state.text(node.value ?? '');
 };
 
-const paragraph: Handler<Paragraph> = (state, node) => {
-  state.renderContent(node);
+const paragraph: Handler<ParagraphNode> = (state, node) => {
+  state.renderChildren(node);
   state.closeBlock();
 };
 
 const block: Handler<Block> = (state, node) => {
-  state.renderContent(node);
+  state.renderChildren(node as Parent);
 };
 
 const heading: Handler<Heading> = (state, node) => {
-  if (!state.options.crossReferences && node.enumerator) {
+  if (!state.options.useFieldsForCrossReferences && node.enumerator) {
     state.text(`${node.enumerator}\t`);
   } else {
     // some way to number the headings?
   }
-  state.renderContent(node);
+  state.renderChildren(node);
   const headingLevel = [
     HeadingLevel.HEADING_1,
     HeadingLevel.HEADING_2,
@@ -79,41 +92,41 @@ const heading: Handler<Heading> = (state, node) => {
 
 const emphasis: Handler<Emphasis> = (state, node) => {
   state.addRunOptions({ italics: true });
-  state.renderContent(node);
+  state.renderChildren(node);
 };
 
 const strong: Handler<Strong> = (state, node) => {
   state.addRunOptions({ bold: true });
-  state.renderContent(node);
+  state.renderChildren(node);
 };
 
 const list: Handler<List> = (state, node) => {
   const style = node.ordered ? 'numbered' : 'bullets';
-  if (!state.currentNumbering) {
+  if (!state.data.currentNumbering) {
     const nextId = createShortId();
     state.numbering.push(createNumbering(nextId, style));
-    state.currentNumbering = { reference: nextId, level: 0 };
+    state.data.currentNumbering = { reference: nextId, level: 0 };
   } else {
-    const { reference, level } = state.currentNumbering;
-    state.currentNumbering = { reference, level: level + 1 };
+    const { reference, level } = state.data.currentNumbering;
+    state.data.currentNumbering = { reference, level: level + 1 };
   }
-  state.renderContent(node);
-  if (state.currentNumbering.level === 0) {
-    delete state.currentNumbering;
+  state.renderChildren(node);
+  if (state.data.currentNumbering.level === 0) {
+    delete state.data.currentNumbering;
   } else {
-    const { reference, level } = state.currentNumbering;
-    state.currentNumbering = { reference, level: level - 1 };
+    const { reference, level } = state.data.currentNumbering;
+    state.data.currentNumbering = { reference, level: level - 1 };
   }
 };
 
 const listItem: Handler<ListItem> = (state, node, parent) => {
-  if (!state.currentNumbering) throw new Error('Trying to create a list item without a list?');
+  if (!state.data.currentNumbering) throw new Error('Trying to create a list item without a list?');
   if (state.current.length > 0) {
     // This is a list within a list
     state.closeBlock();
   }
-  state.addParagraphOptions({ numbering: state.currentNumbering });
-  state.renderContent(node);
+  state.addParagraphOptions({ numbering: state.data.currentNumbering });
+  state.renderChildren(node);
   if (parent.type !== 'paragraph') {
     state.closeBlock();
   }
@@ -124,7 +137,7 @@ const link: Handler<Link> = (state, node) => {
   const stack = state.current;
   state.addRunOptions({ style: 'Hyperlink' });
   state.current = [];
-  state.renderContent(node);
+  state.renderChildren(node);
   const hyperlink = new ExternalHyperlink({
     link: node.url,
     children: state.current,
@@ -158,17 +171,17 @@ const thematicBreak: Handler<ThematicBreak> = (state) => {
 
 const abbreviation: Handler<Abbreviation> = (state, node) => {
   // TODO: handle abbreviation title
-  state.renderContent(node);
+  state.renderChildren(node);
 };
 
 const subscript: Handler<Subscript> = (state, node) => {
   state.addRunOptions({ subScript: true });
-  state.renderContent(node);
+  state.renderChildren(node);
 };
 
 const superscript: Handler<Superscript> = (state, node) => {
   state.addRunOptions({ superScript: true });
-  state.renderContent(node);
+  state.renderChildren(node);
 };
 
 type Delete = Parent & { type: 'delete' };
@@ -177,7 +190,7 @@ type Smallcaps = Parent & { type: 'smallcaps' };
 type DefinitionList = Parent & { type: 'definitionList' };
 type DefinitionTerm = Parent & { type: 'definitionTerm' };
 type DefinitionDescription = Parent & { type: 'definitionDescription' };
-type CaptionNumber = {
+type CaptionNumber = Parent & {
   type: 'captionNumber';
   kind: string;
   label: string;
@@ -185,24 +198,35 @@ type CaptionNumber = {
   html_id: string;
   enumerator: string;
 };
+type FootnoteReference = {
+  type: 'footnoteReference';
+  identifier: string;
+  number?: number;
+};
+type FootnoteDefinition = Parent & {
+  type: 'footnoteReference';
+  identifier: string;
+  number?: number;
+};
+type TableCellNode = SpecTableCellNode & { colspan?: number; rowspan?: number; width?: number };
 
 const _delete: Handler<Delete> = (state, node) => {
   state.addRunOptions({ strike: true });
-  state.renderContent(node);
+  state.renderChildren(node);
 };
 
 const underline: Handler<Underline> = (state, node) => {
   state.addRunOptions({ underline: {} });
-  state.renderContent(node);
+  state.renderChildren(node);
 };
 
 const smallcaps: Handler<Smallcaps> = (state, node) => {
   state.addRunOptions({ smallCaps: true });
-  state.renderContent(node);
+  state.renderChildren(node);
 };
 
 const blockquote: Handler<Blockquote> = (state, node) => {
-  state.renderContent(node, { style: 'IntenseQuote' });
+  state.renderChildren(node, { style: 'IntenseQuote' });
 };
 
 const code: Handler<Code> = (state, node) => {
@@ -271,12 +295,12 @@ const definitionStyle: IParagraphOptions = {
 };
 const definitionList: Handler<DefinitionList> = (state, node) => {
   state.blankLine();
-  state.renderContent(node, definitionStyle);
+  state.renderChildren(node, definitionStyle);
   state.closeBlock();
   state.blankLine();
 };
 const definitionTerm: Handler<DefinitionTerm> = (state, node) => {
-  state.renderContent(node, {
+  state.renderChildren(node, {
     ...definitionStyle,
     shading: {
       type: ShadingType.SOLID,
@@ -288,7 +312,7 @@ const definitionTerm: Handler<DefinitionTerm> = (state, node) => {
 };
 const definitionDescription: Handler<DefinitionDescription> = (state, node) => {
   state.text('\t');
-  state.renderContent(node, definitionStyle);
+  state.renderChildren(node, definitionStyle);
   state.closeBlock();
 };
 
@@ -307,7 +331,7 @@ const math: Handler<MathNode> = (state, node) => {
     }),
   ];
   // Add the number at the end of the field
-  if (node.enumerator && node.identifier && state.options.crossReferences) {
+  if (node.enumerator && node.identifier && state.options.useFieldsForCrossReferences) {
     state.current.push(
       new TextRun('\t('),
       createReferenceBookmark(node.identifier, 'Equation'),
@@ -332,15 +356,15 @@ const math: Handler<MathNode> = (state, node) => {
 };
 
 const crossReference: Handler<CrossReference> = (state, node) => {
-  if (state.options.crossReferences && node.identifier) {
+  if (state.options.useFieldsForCrossReferences && node.identifier) {
     state.current.push(createReference(node.identifier));
   } else {
-    state.renderContent(node);
+    state.renderChildren(node as Parent);
   }
 };
 
 const container: Handler<Container> = (state, node) => {
-  state.renderContent(node);
+  state.renderChildren(node);
 };
 
 type WordCaptionKind = 'Equation' | 'Figure' | 'Table';
@@ -363,18 +387,79 @@ function figCaptionToWordCaption(file: VFile, kind: string): WordCaptionKind {
 }
 
 const captionNumber: Handler<CaptionNumber> = (state, node) => {
-  if (state.options.crossReferences) {
+  if (state.options.useFieldsForCrossReferences) {
     const bookmarkKind = figCaptionToWordCaption(state.file, node.kind);
     state.current.push(
       createReferenceBookmark(node.identifier, bookmarkKind, `${bookmarkKind} `, ': '),
     );
   } else {
-    state.renderContent(node, undefined, { bold: true });
+    state.renderChildren(node as Parent, undefined, { bold: true });
     state.text(' ');
   }
 };
+
 const caption: Handler<Caption> = (state, node) => {
-  state.renderContent(node, { style: 'Caption' });
+  state.renderChildren(node, { style: 'Caption' });
+};
+
+function getFootnoteNumber(node: FootnoteReference | FootnoteDefinition): number {
+  return node.number ?? Number(node.identifier);
+}
+
+const footnoteDefinition: Handler<FootnoteDefinition> = (state, node) => {
+  const { children, current } = state;
+  const number = getFootnoteNumber(node);
+  // Delete everything and work with the footnote definition as children
+  state.children = [];
+  state.current = [];
+  state.renderChildren(node as Parent);
+  // TODO: a problem here if there are numberings or images
+  state.footnotes[number] = { children: state.children as Paragraph[] };
+  // Put the children back, and continue
+  state.children = children;
+  state.current = current;
+};
+const footnoteReference: Handler<FootnoteReference> = (state, node) => {
+  const number = getFootnoteNumber(node);
+  state.current.push(new FootnoteReferenceRun(number));
+};
+
+const table: Handler<TableNode> = (state, node) => {
+  const actualChildren = state.children;
+  const rows: TableRow[] = [];
+  const imageWidth =
+    state.data.maxImageWidth ?? state.options.maxImageWidth ?? MAX_DOCX_IMAGE_WIDTH;
+  (node.children as Parent[]).forEach(({ children }) => {
+    const rowContent = children as TableCellNode[];
+    const cells: TableCell[] = [];
+    // Check if all cells are headers in this row
+    let tableHeader = true;
+    rowContent.forEach((cell) => {
+      if (cell.header) {
+        tableHeader = false;
+      }
+    });
+    // This scales images inside of tables
+    state.data.maxImageWidth = imageWidth / rowContent.length;
+    rowContent.forEach((cell) => {
+      state.children = [];
+      state.renderChildren(cell);
+      state.closeBlock();
+      const tableCellOpts: Mutable<ITableCellOptions> = { children: state.children };
+      const colspan = cell.colspan ?? 1;
+      const rowspan = cell.rowspan ?? 1;
+      if (colspan > 1) tableCellOpts.columnSpan = colspan;
+      if (rowspan > 1) tableCellOpts.rowSpan = rowspan;
+      cells.push(new TableCell(tableCellOpts));
+    });
+    rows.push(new TableRow({ children: cells, tableHeader }));
+  });
+  state.data.maxImageWidth = imageWidth;
+  const tableNode = new Table({ rows });
+  actualChildren.push(tableNode);
+  // If there are multiple tables, this seperates them
+  actualChildren.push(new Paragraph(''));
+  state.children = actualChildren;
 };
 
 export const defaultHandlers = {
@@ -408,7 +493,7 @@ export const defaultHandlers = {
   container,
   caption,
   captionNumber,
-  // table(state, node) {
-  //   state.table(node);
-  // },
+  footnoteReference,
+  footnoteDefinition,
+  table,
 };

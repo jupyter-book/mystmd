@@ -9,7 +9,7 @@ import { createDocFromState } from './utils';
 export const plugin: Plugin<[Options], Root, VFile> = function (opts) {
   this.Compiler = (node, file) => {
     const state = new DocxSerializer(file, opts);
-    state.renderContent(node);
+    state.renderChildren(node);
     const doc = createDocFromState(state);
     if (typeof document === 'undefined') {
       file.result = Packer.toBuffer(doc);

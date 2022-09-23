@@ -62,7 +62,7 @@ export function getLatexFromNode(node: ProsemirrorNode): string {
 const DEFAULT_IMAGE_WIDTH = 70;
 const DEFAULT_PAGE_WIDTH_PIXELS = 800;
 // The docx width is about the page width of 8.5x11
-const MAX_DOCX_IMAGE_WIDTH = 600;
+export const MAX_DOCX_IMAGE_WIDTH = 600;
 
 export function getImageWidth(width?: number | string, maxWidth = MAX_DOCX_IMAGE_WIDTH): number {
   if (typeof width === 'number' && Number.isNaN(width)) {

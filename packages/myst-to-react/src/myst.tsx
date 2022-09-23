@@ -24,13 +24,17 @@ function downloadBlob(filename: string, blob: Blob) {
   a.click();
 }
 
-async function saveDocxFile(filename: string, mdast: any) {
+async function saveDocxFile(filename: string, mdast: any, footnotes?: any) {
   const { unified } = await import('unified');
   const { mystToDocx, fetchImagesAsBuffers } = await import('myst-to-docx');
-  const opts = await fetchImagesAsBuffers(mdast);
+  // Clone the tree
+  const tree = JSON.parse(JSON.stringify(mdast));
+  // Put the footnotes back in
+  if (footnotes) tree.children.push(...Object.values(footnotes));
+  const opts = await fetchImagesAsBuffers(tree);
   const docxBlob = await (unified()
     .use(mystToDocx, opts)
-    .stringify(mdast as any).result as DocxResult);
+    .stringify(tree as any).result as DocxResult);
   downloadBlob(filename, docxBlob as Blob);
 }
 
@@ -172,7 +176,7 @@ export function MySTRenderer({ value, numbering }: { value: string; numbering: a
             )}
             title={`Download Micorsoft Word`}
             aria-label={`Download Micorsoft Word`}
-            onClick={() => saveDocxFile('demo.docx', references.article)}
+            onClick={() => saveDocxFile('demo.docx', references.article, references.footnotes)}
           >
             DOCX
           </button>

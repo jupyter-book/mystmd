@@ -18,7 +18,7 @@ export const FootnoteReference: NodeRenderer = (node) => {
       card={<FootnoteDefinition identifier={node.identifier as string} />}
       as="span"
     >
-      <sup>[{node.identifier}]</sup>
+      <sup>[{node.number ?? node.identifier}]</sup>
     </ClickPopover>
   );
 };
