@@ -1,17 +1,9 @@
 import type { VFile } from 'vfile';
 import type { Node, Parent } from 'myst-spec';
 import { fileError, fileWarn } from 'myst-common';
-import type { IParagraphOptions, IRunOptions, ParagraphChild, ITableCellOptions } from 'docx';
-import { Paragraph, TextRun, Table, TableRow, TableCell } from 'docx';
-import type {
-  Handler,
-  IDocxSerializer,
-  IFootnotes,
-  INumbering,
-  Mutable,
-  Options,
-  StateData,
-} from './types';
+import type { IParagraphOptions, IRunOptions, ParagraphChild, Table } from 'docx';
+import { Paragraph, TextRun } from 'docx';
+import type { Handler, IDocxSerializer, IFootnotes, INumbering, Options, StateData } from './types';
 import { defaultHandlers } from './schema';
 
 // This is duplicated from @curvenote/schema
@@ -22,8 +14,6 @@ export type IMathOpts = {
   id?: string | null;
   numbered?: boolean;
 };
-
-const MAX_IMAGE_WIDTH = 600;
 
 export class DocxSerializer implements IDocxSerializer {
   file: VFile;
@@ -84,42 +74,6 @@ export class DocxSerializer implements IDocxSerializer {
     if (!text) return;
     this.current.push(new TextRun({ text, ...this.data.nextRunOpts, ...opts }));
     delete this.data.nextRunOpts;
-  }
-
-  table(node: Parent) {
-    const actualChildren = this.children;
-    const rows: TableRow[] = [];
-    const imageWidth = this.data.maxImageWidth ?? this.options.maxImageWidth ?? MAX_IMAGE_WIDTH;
-    (node.children as Parent[]).forEach(({ children }) => {
-      const rowContent = children as Parent[];
-      const cells: TableCell[] = [];
-      // Check if all cells are headers in this row
-      let tableHeader = true;
-      rowContent.forEach((cell) => {
-        if (cell.type !== 'table_header') {
-          tableHeader = false;
-        }
-      });
-      // This scales images inside of tables
-      this.data.maxImageWidth = imageWidth / rowContent.length;
-      rowContent.forEach((cell) => {
-        this.children = [];
-        this.renderChildren(cell);
-        const tableCellOpts: Mutable<ITableCellOptions> = { children: this.children };
-        const colspan = (cell as any).colspan ?? 1;
-        const rowspan = (cell as any).rowspan ?? 1;
-        if (colspan > 1) tableCellOpts.columnSpan = colspan;
-        if (rowspan > 1) tableCellOpts.rowSpan = rowspan;
-        cells.push(new TableCell(tableCellOpts));
-      });
-      rows.push(new TableRow({ children: cells, tableHeader }));
-    });
-    this.data.maxImageWidth = imageWidth;
-    const table = new Table({ rows });
-    actualChildren.push(table);
-    // If there are multiple tables, this seperates them
-    actualChildren.push(new Paragraph(''));
-    this.children = actualChildren;
   }
 
   closeBlock(props?: IParagraphOptions, force = false) {

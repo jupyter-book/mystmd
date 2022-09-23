@@ -1,4 +1,5 @@
 import type { VFile } from 'vfile';
+import type { ITableCellOptions, IParagraphOptions } from 'docx';
 import {
   FootnoteReferenceRun,
   TabStopPosition,
@@ -13,6 +14,10 @@ import {
   ShadingType,
   Math,
   MathRun,
+  TableRow,
+  Table,
+  TableCell,
+  Paragraph,
 } from 'docx';
 import type {
   Parent,
@@ -39,10 +44,17 @@ import type {
   CrossReference,
   Container,
   Caption,
+  Table as TableNode,
+  TableCell as SpecTableCellNode,
 } from 'myst-spec';
-import type { IParagraphOptions, Paragraph } from 'docx';
-import type { Handler } from './types';
-import { createReference, createReferenceBookmark, createShortId, getImageWidth } from './utils';
+import type { Handler, Mutable } from './types';
+import {
+  createReference,
+  createReferenceBookmark,
+  createShortId,
+  getImageWidth,
+  MAX_DOCX_IMAGE_WIDTH,
+} from './utils';
 import { createNumbering } from './numbering';
 import sizeOf from 'buffer-image-size';
 import { fileError } from 'myst-common';
@@ -196,6 +208,7 @@ type FootnoteDefinition = Parent & {
   identifier: string;
   number?: number;
 };
+type TableCellNode = SpecTableCellNode & { colspan?: number; rowspan?: number; width?: number };
 
 const _delete: Handler<Delete> = (state, node) => {
   state.addRunOptions({ strike: true });
@@ -411,6 +424,44 @@ const footnoteReference: Handler<FootnoteReference> = (state, node) => {
   state.current.push(new FootnoteReferenceRun(number));
 };
 
+const table: Handler<TableNode> = (state, node) => {
+  const actualChildren = state.children;
+  const rows: TableRow[] = [];
+  const imageWidth =
+    state.data.maxImageWidth ?? state.options.maxImageWidth ?? MAX_DOCX_IMAGE_WIDTH;
+  (node.children as Parent[]).forEach(({ children }) => {
+    const rowContent = children as TableCellNode[];
+    const cells: TableCell[] = [];
+    // Check if all cells are headers in this row
+    let tableHeader = true;
+    rowContent.forEach((cell) => {
+      if (cell.header) {
+        tableHeader = false;
+      }
+    });
+    // This scales images inside of tables
+    state.data.maxImageWidth = imageWidth / rowContent.length;
+    rowContent.forEach((cell) => {
+      state.children = [];
+      state.renderChildren(cell);
+      state.closeBlock();
+      const tableCellOpts: Mutable<ITableCellOptions> = { children: state.children };
+      const colspan = cell.colspan ?? 1;
+      const rowspan = cell.rowspan ?? 1;
+      if (colspan > 1) tableCellOpts.columnSpan = colspan;
+      if (rowspan > 1) tableCellOpts.rowSpan = rowspan;
+      cells.push(new TableCell(tableCellOpts));
+    });
+    rows.push(new TableRow({ children: cells, tableHeader }));
+  });
+  state.data.maxImageWidth = imageWidth;
+  const tableNode = new Table({ rows });
+  actualChildren.push(tableNode);
+  // If there are multiple tables, this seperates them
+  actualChildren.push(new Paragraph(''));
+  state.children = actualChildren;
+};
+
 export const defaultHandlers = {
   text,
   paragraph,
@@ -444,7 +495,5 @@ export const defaultHandlers = {
   captionNumber,
   footnoteReference,
   footnoteDefinition,
-  // table(state, node) {
-  //   state.table(node);
-  // },
+  table,
 };
