@@ -2,7 +2,7 @@ import type { VFile } from 'vfile';
 import type { Node, Parent } from 'myst-spec';
 import { fileError, fileWarn } from 'myst-common';
 import type { IParagraphOptions, IRunOptions, ParagraphChild, ITableCellOptions } from 'docx';
-import { Paragraph, TextRun, Table, TableRow, TableCell, FootnoteReferenceRun } from 'docx';
+import { Paragraph, TextRun, Table, TableRow, TableCell } from 'docx';
 import type {
   Handler,
   IDocxSerializer,
@@ -40,14 +40,7 @@ export class DocxSerializer implements IDocxSerializer {
 
   footnotes: IFootnotes = {};
 
-  nextRunOpts?: IRunOptions;
-
   current: ParagraphChild[] = [];
-
-  // Optionally add options
-  nextParentParagraphOpts?: IParagraphOptions;
-
-  currentNumbering?: { reference: string; level: number };
 
   constructor(file: VFile, options: Options) {
     this.file = file;
@@ -56,6 +49,14 @@ export class DocxSerializer implements IDocxSerializer {
     this.options = options ?? {};
     this.children = [];
     this.numbering = [];
+  }
+
+  render(node: Node, parent?: Parent) {
+    if (!this.handlers[node.type]) {
+      fileError(this.file, `Node of type "${node.type}" is not supported by docx renderer`);
+      return;
+    }
+    this.handlers[node.type](this, node, parent);
   }
 
   renderChildren(parent: Parent, paragraphOpts?: IParagraphOptions, runOpts?: IRunOptions) {
@@ -71,26 +72,18 @@ export class DocxSerializer implements IDocxSerializer {
     });
   }
 
-  render(node: Node, parent?: Parent) {
-    if (!this.handlers[node.type]) {
-      fileError(this.file, `Node of type "${node.type}" is not supported by docx renderer`);
-      return;
-    }
-    this.handlers[node.type](this, node, parent);
-  }
-
   addParagraphOptions(opts: IParagraphOptions) {
-    this.nextParentParagraphOpts = { ...this.nextParentParagraphOpts, ...opts };
+    this.data.nextParagraphOpts = { ...this.data?.nextParagraphOpts, ...opts };
   }
 
   addRunOptions(opts: IRunOptions) {
-    this.nextRunOpts = { ...this.nextRunOpts, ...opts };
+    this.data.nextRunOpts = { ...this.data.nextRunOpts, ...opts };
   }
 
   text(text: string | null | undefined, opts?: IRunOptions) {
     if (!text) return;
-    this.current.push(new TextRun({ text, ...this.nextRunOpts, ...opts }));
-    delete this.nextRunOpts;
+    this.current.push(new TextRun({ text, ...this.data.nextRunOpts, ...opts }));
+    delete this.data.nextRunOpts;
   }
 
   table(node: Parent) {
@@ -129,35 +122,18 @@ export class DocxSerializer implements IDocxSerializer {
     this.children = actualChildren;
   }
 
-  $footnoteCounter = 0;
-
-  footnote(node: Node) {
-    const { current, nextRunOpts } = this;
-    // Delete everything and work with the footnote inline on the current
-    this.current = [];
-    delete this.nextRunOpts;
-    this.$footnoteCounter += 1;
-    this.renderChildren(node as Parent);
-    this.footnotes[this.$footnoteCounter] = {
-      children: [new Paragraph({ children: this.current })],
-    };
-    this.current = current;
-    this.nextRunOpts = nextRunOpts;
-    this.current.push(new FootnoteReferenceRun(this.$footnoteCounter));
-  }
-
   closeBlock(props?: IParagraphOptions, force = false) {
     if (this.current.length === 0 && !props && !force) {
-      delete this.nextParentParagraphOpts;
+      delete this.data.nextParagraphOpts;
       return;
     }
     const paragraph = new Paragraph({
       children: this.current,
-      ...this.nextParentParagraphOpts,
+      ...this.data.nextParagraphOpts,
       ...props,
     });
     this.current = [];
-    delete this.nextParentParagraphOpts;
+    delete this.data.nextParagraphOpts;
     this.children.push(paragraph);
   }
 
@@ -165,25 +141,3 @@ export class DocxSerializer implements IDocxSerializer {
     this.closeBlock(props, true);
   }
 }
-
-// export class DocxSerializer {
-
-//   file: VFile;
-
-//   handlers: NodeSerializer;
-
-//   marks: MarkSerializer;
-
-//   constructor(file: VFile, nodes: NodeSerializer, marks: MarkSerializer) {
-//     this.file = file;
-//     this.nodes = nodes;
-//     this.marks = marks;
-//   }
-
-//   serialize(content: Node, options: Options) {
-//     const state = new DocxSerializerState(this.nodes, this.marks, options);
-//     state.renderContent(content);
-//     const doc = createDocFromState(state);
-//     return doc;
-//   }
-// }

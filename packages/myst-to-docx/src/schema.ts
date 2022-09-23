@@ -1,8 +1,23 @@
 import type { VFile } from 'vfile';
+import {
+  FootnoteReferenceRun,
+  TabStopPosition,
+  TabStopType,
+  TextRun,
+  AlignmentType,
+  BorderStyle,
+  convertInchesToTwip,
+  ExternalHyperlink,
+  HeadingLevel,
+  ImageRun,
+  ShadingType,
+  Math,
+  MathRun,
+} from 'docx';
 import type {
   Parent,
   Heading,
-  Paragraph,
+  Paragraph as ParagraphNode,
   Text,
   Emphasis,
   Strong,
@@ -25,21 +40,7 @@ import type {
   Container,
   Caption,
 } from 'myst-spec';
-import type { IParagraphOptions } from 'docx';
-import {
-  TabStopPosition,
-  TabStopType,
-  TextRun,
-  AlignmentType,
-  BorderStyle,
-  convertInchesToTwip,
-  ExternalHyperlink,
-  HeadingLevel,
-  ImageRun,
-  ShadingType,
-  Math,
-  MathRun,
-} from 'docx';
+import type { IParagraphOptions, Paragraph } from 'docx';
 import type { Handler } from './types';
 import { createReference, createReferenceBookmark, createShortId, getImageWidth } from './utils';
 import { createNumbering } from './numbering';
@@ -50,7 +51,7 @@ const text: Handler<Text> = (state, node) => {
   state.text(node.value ?? '');
 };
 
-const paragraph: Handler<Paragraph> = (state, node) => {
+const paragraph: Handler<ParagraphNode> = (state, node) => {
   state.renderChildren(node);
   state.closeBlock();
 };
@@ -89,30 +90,30 @@ const strong: Handler<Strong> = (state, node) => {
 
 const list: Handler<List> = (state, node) => {
   const style = node.ordered ? 'numbered' : 'bullets';
-  if (!state.currentNumbering) {
+  if (!state.data.currentNumbering) {
     const nextId = createShortId();
     state.numbering.push(createNumbering(nextId, style));
-    state.currentNumbering = { reference: nextId, level: 0 };
+    state.data.currentNumbering = { reference: nextId, level: 0 };
   } else {
-    const { reference, level } = state.currentNumbering;
-    state.currentNumbering = { reference, level: level + 1 };
+    const { reference, level } = state.data.currentNumbering;
+    state.data.currentNumbering = { reference, level: level + 1 };
   }
   state.renderChildren(node);
-  if (state.currentNumbering.level === 0) {
-    delete state.currentNumbering;
+  if (state.data.currentNumbering.level === 0) {
+    delete state.data.currentNumbering;
   } else {
-    const { reference, level } = state.currentNumbering;
-    state.currentNumbering = { reference, level: level - 1 };
+    const { reference, level } = state.data.currentNumbering;
+    state.data.currentNumbering = { reference, level: level - 1 };
   }
 };
 
 const listItem: Handler<ListItem> = (state, node, parent) => {
-  if (!state.currentNumbering) throw new Error('Trying to create a list item without a list?');
+  if (!state.data.currentNumbering) throw new Error('Trying to create a list item without a list?');
   if (state.current.length > 0) {
     // This is a list within a list
     state.closeBlock();
   }
-  state.addParagraphOptions({ numbering: state.currentNumbering });
+  state.addParagraphOptions({ numbering: state.data.currentNumbering });
   state.renderChildren(node);
   if (parent.type !== 'paragraph') {
     state.closeBlock();
@@ -184,6 +185,16 @@ type CaptionNumber = Parent & {
   identifier: string;
   html_id: string;
   enumerator: string;
+};
+type FootnoteReference = {
+  type: 'footnoteReference';
+  identifier: string;
+  number?: number;
+};
+type FootnoteDefinition = Parent & {
+  type: 'footnoteReference';
+  identifier: string;
+  number?: number;
 };
 
 const _delete: Handler<Delete> = (state, node) => {
@@ -373,8 +384,31 @@ const captionNumber: Handler<CaptionNumber> = (state, node) => {
     state.text(' ');
   }
 };
+
 const caption: Handler<Caption> = (state, node) => {
   state.renderChildren(node, { style: 'Caption' });
+};
+
+function getFootnoteNumber(node: FootnoteReference | FootnoteDefinition): number {
+  return node.number ?? Number(node.identifier);
+}
+
+const footnoteDefinition: Handler<FootnoteDefinition> = (state, node) => {
+  const { children, current } = state;
+  const number = getFootnoteNumber(node);
+  // Delete everything and work with the footnote definition as children
+  state.children = [];
+  state.current = [];
+  state.renderChildren(node as Parent);
+  // TODO: a problem here if there are numberings or images
+  state.footnotes[number] = { children: state.children as Paragraph[] };
+  // Put the children back, and continue
+  state.children = children;
+  state.current = current;
+};
+const footnoteReference: Handler<FootnoteReference> = (state, node) => {
+  const number = getFootnoteNumber(node);
+  state.current.push(new FootnoteReferenceRun(number));
 };
 
 export const defaultHandlers = {
@@ -408,6 +442,8 @@ export const defaultHandlers = {
   container,
   caption,
   captionNumber,
+  footnoteReference,
+  footnoteDefinition,
   // table(state, node) {
   //   state.table(node);
   // },

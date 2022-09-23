@@ -13,6 +13,9 @@ import type { IPropertiesOptions } from 'docx/build/file/core-properties';
 
 export type StateData = {
   maxImageWidth?: number;
+  nextParagraphOpts?: IParagraphOptions;
+  nextRunOpts?: IRunOptions;
+  currentNumbering?: { reference: string; level: number };
 };
 
 export type MathPlugins = Required<PageFrontmatter>['math'];
@@ -25,7 +28,6 @@ export interface IDocxSerializer<D extends Record<string, any> = StateData> {
   children: (Paragraph | Table)[];
   numbering: INumbering[];
   footnotes: IFootnotes;
-  currentNumbering?: { reference: string; level: number };
   text: (text: string | null | undefined, opts?: IRunOptions) => void;
   renderChildren: (
     parent: Parent,
