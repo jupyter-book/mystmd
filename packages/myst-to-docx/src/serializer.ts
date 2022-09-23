@@ -1,6 +1,6 @@
 import type { VFile } from 'vfile';
 import type { Node, Parent } from 'myst-spec';
-import { fileError } from 'myst-common';
+import { fileError, fileWarn } from 'myst-common';
 import type { IParagraphOptions, IRunOptions, ParagraphChild, ITableCellOptions } from 'docx';
 import { Paragraph, TextRun, Table, TableRow, TableCell, FootnoteReferenceRun } from 'docx';
 import type {
@@ -58,18 +58,17 @@ export class DocxSerializer implements IDocxSerializer {
     this.numbering = [];
   }
 
-  renderContent(parent: Parent | Node, paragraphOpts?: IParagraphOptions, runOpts?: IRunOptions) {
-    if ('children' in parent) {
-      parent.children.forEach((node) => {
-        if (paragraphOpts) this.addParagraphOptions(paragraphOpts);
-        if (runOpts) this.addRunOptions(runOpts);
-        this.render(node, parent);
-      });
-    } else {
+  renderChildren(parent: Parent, paragraphOpts?: IParagraphOptions, runOpts?: IRunOptions) {
+    if (!('children' in parent)) {
+      const node = parent as Node;
+      fileWarn(this.file, `Excpected children for node of type ${node.type}`, { node });
+      return;
+    }
+    parent.children.forEach((node) => {
       if (paragraphOpts) this.addParagraphOptions(paragraphOpts);
       if (runOpts) this.addRunOptions(runOpts);
-      this.render(parent);
-    }
+      this.render(node, parent);
+    });
   }
 
   render(node: Node, parent?: Parent) {
@@ -112,7 +111,7 @@ export class DocxSerializer implements IDocxSerializer {
       this.data.maxImageWidth = imageWidth / rowContent.length;
       rowContent.forEach((cell) => {
         this.children = [];
-        this.renderContent(cell);
+        this.renderChildren(cell);
         const tableCellOpts: Mutable<ITableCellOptions> = { children: this.children };
         const colspan = (cell as any).colspan ?? 1;
         const rowspan = (cell as any).rowspan ?? 1;
@@ -138,7 +137,7 @@ export class DocxSerializer implements IDocxSerializer {
     this.current = [];
     delete this.nextRunOpts;
     this.$footnoteCounter += 1;
-    this.renderContent(node as Parent);
+    this.renderChildren(node as Parent);
     this.footnotes[this.$footnoteCounter] = {
       children: [new Paragraph({ children: this.current })],
     };
