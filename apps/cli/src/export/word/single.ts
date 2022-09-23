@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { Root } from 'mdast';
+import type { Root, Content } from 'mdast';
 import { unified } from 'mystjs';
 import type { DocxResult } from 'myst-to-docx';
 import { mystToDocx } from 'myst-to-docx';
@@ -15,6 +15,7 @@ import { getDefaultExportFilename, getDefaultExportFolder } from '../utils/defau
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
 import { cleanOutput } from '../utils/cleanOutput';
 import { getFileContent } from '../utils/getFileContent';
+import { createArticleTitle } from './titles';
 
 export type WordExportOptions = {
   filename: string;
@@ -119,7 +120,10 @@ export async function runWordExport(
 ) {
   const { output } = exportOptions;
   if (clean) cleanOutput(session, output);
-  const { mdast } = await getFileContent(session, file, output, projectPath, false);
+  const { mdast, frontmatter } = await getFileContent(session, file, output, projectPath, false);
+  mdast.children.unshift(
+    ...(createArticleTitle(frontmatter.title, frontmatter.authors) as Content[]),
+  );
   const result = await mdastToWord(mdast);
   session.log.info(`🖋  Writing docx to ${output}`);
   // TODO: add imports and macros?
