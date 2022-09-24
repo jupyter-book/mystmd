@@ -8,8 +8,8 @@ description: MyST (Markedly Structured Text) is designed to create publication-q
 ## Goals
 
 - `mystjs` is a Javascript implementation for MyST markdown
-- Parse MyST into a standardized [AST](wiki:Abstract_Syntax_Tree), based on mdast ([see the MyST Spec](https://spec.myst.tools))
-- Translate MyST/mdast into:
+- Parse MyST into a standardized [AST](wiki:Abstract_Syntax_Tree), that follows [the MyST Spec](https://spec.myst.tools)
+- Translate MyST into:
   - HTML for static websites
   - React for interactive websites
   - PDFs and $\LaTeX$ documents, with [specific templates for over 400 journals](./creating-pdf-documents.md)
@@ -23,7 +23,7 @@ description: MyST (Markedly Structured Text) is designed to create publication-q
 flowchart LR
   A[Jupyter Notebook] --> C
   B[MyST Markdown] --> C
-  C(mystjs) --> D{MDAST}
+  C(mystjs) --> D{AST}
   D --> E[LaTeX]
   E --> F[PDF]
   D --> G[Word]

@@ -5,7 +5,7 @@ description: Conventions that are in place across all transformations.
 
 The convention used for all `myst-transforms` is to modify the tree in place and export two functions for `transforms` and `plugins` the plugins are `unifiedjs` plugins that can be chained together, for example, `unified().use(myPlugin, opts).use(myOtherPlugin)`. These plugins are generally very light wrappers around transforms which are the funcitonal analogues of the plugin. The `transforms` are called on a `tree`, for example, `myTransform(tree, opts)`.
 
-In all cases transformations are completed in place on the mdast tree.
+In all cases transformations are completed in place on the AST.
 
 ## Error Reporting
 
@@ -18,7 +18,7 @@ const file = new VFile();
 
 unified()
   .use(mathPlugin, { macros: {} }) // Add the plugin with any options
-  .run(tree, file); // Run the mdast through the set of plugins
+  .run(tree, file); // Run the AST through the set of plugins
 
 // Check for errors in the messages:
 file.messages;

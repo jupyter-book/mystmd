@@ -9,7 +9,7 @@ description: myst-to-tex is library for converting MyST documents to LaTeX.
 
 **Goals**
 
-- Convert from `myst-spec` mdast documents into $\LaTeX$ markup
+- Convert from `myst-spec` AST documents into $\LaTeX$ markup
 - Work with [jtex](../../jtex/docs/index.md) to template documents
 - Work as a `unifiedjs` plugin and in the `mystjs` ecosystem
 
@@ -27,7 +27,7 @@ npm install myst-to-tex
 
 ## Simple example
 
-Below we construct a mdast tree using `unist-builder`, use the `mystToTex`
+Below we construct a AST tree using `unist-builder`, use the `mystToTex`
 plugin in a `unified` pipeline and `stringify` the document into a $\LaTeX$ file.
 
 ```typescript
@@ -35,7 +35,7 @@ import { unified } from 'unified';
 import { u } from 'unist-builder';
 import mystToTex from 'myst-to-tex';
 
-// Create a mdast document, or parse using mystjs
+// Create a AST document, or parse using mystjs
 const tree = u(
   'root',
   u('paragraph', [

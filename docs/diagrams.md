@@ -11,7 +11,7 @@ It is possible to add [mermaid diagrams](https://mermaid-js.github.io/mermaid) u
 flowchart LR
   A[Jupyter Notebook] --> C
   B[MyST Markdown] --> C
-  C(mystjs) --> D{MDAST}
+  C(mystjs) --> D{AST}
   D --> E[LaTeX] --> F[PDF]
   D --> G[Word]
   D --> H[React]
@@ -25,7 +25,7 @@ Will show:
 flowchart LR
   A[Jupyter Notebook] --> C
   B[MyST Markdown] --> C
-  C(mystjs) --> D{MDAST}
+  C(mystjs) --> D{AST}
   D --> E[LaTeX] --> F[PDF]
   D --> G[Word]
   D --> H[React]

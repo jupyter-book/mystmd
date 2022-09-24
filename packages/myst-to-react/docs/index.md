@@ -9,7 +9,7 @@ description: myst-to-react is library for converting MyST documents to React.
 
 **Goals**
 
-- Convert from `myst-spec` mdast documents into React
+- Convert from `myst-spec` AST documents into React
 - Opinionated user interface, but extensible to overwrite components
 
 **Not Goals**

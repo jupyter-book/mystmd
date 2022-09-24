@@ -9,7 +9,7 @@ description: myst-transforms is library for converting MyST documents to LaTeX.
 
 ## Overview
 
-These transforms take mdast from `mystjs` and turn it into usable forms, enforce document structure, or provide other utilities.
+These transforms take AST from `mystjs` and turn it into usable forms, enforce document structure, or provide other utilities.
 
 These utilities are available on npm:
 
@@ -25,7 +25,7 @@ import { mathPlugin } from 'myst-transforms';
 
 unified()
   .use(mathPlugin, { macros: {} }) // Add the plugin with any options
-  .run(tree); // Run the mdast through the set of plugins
+  .run(tree); // Run the AST through the set of plugins
 
-// The mdast tree has now been modified in place.
+// The AST has now been modified in place.
 ```

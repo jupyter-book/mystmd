@@ -30,7 +30,7 @@
 
 - b63638b: Allow admonition headers to be optionally set by bold text or a heading
 - b63638b: Handle equation environment duplicates
-- b63638b: Pull out frontmatter mdast parsing into myst-transforms
+- b63638b: Pull out frontmatter AST parsing into myst-transforms
 - b63638b: Improve math parsing and split out label and equation parsing into different transform
 
 ## 0.0.2

@@ -3,7 +3,7 @@ title: Overview
 description: List of transforms included in the myst-transforms package.
 ---
 
-These transforms take MDAST from `mystjs` and turn it into usable forms, enforce document structure, or provide other utilities.
+These transforms take AST from `mystjs` and turn it into usable forms, enforce document structure, or provide other utilities.
 
 These utilities are available on npm:
 
@@ -19,9 +19,9 @@ import { mathPlugin } from 'myst-transforms';
 
 unified()
   .use(mathPlugin, { macros: {} }) // Add the plugin with any options
-  .run(tree); // Run the mdast through the set of plugins
+  .run(tree); // Run the AST through the set of plugins
 
-// The mdast tree has now been modified in place.
+// The AST has now been modified in place.
 ```
 
 ## List of Transforms
@@ -44,7 +44,7 @@ Code
 : Ensure that `python` as a language is replaced from `IPython3` or other kernal-like language specifiers.
 
 CodeBlock
-: Codeblocks can live inside of figures, have captions and be references. Transformation ensures that this information isn't lost from the original parsing of mdast.
+: Codeblocks can live inside of figures, have captions and be references. Transformation ensures that this information isn't lost from the original parsing of AST.
 : Note: this should move into the parser in the future.
 
 Footnotes
@@ -67,7 +67,7 @@ Math
 : Use KaTeX to create and provide errors/warnings about math rendering.
 
 Math Label
-: Parse latex to strip \label and simple equation environments from math, and put this in mdast directly.
+: Parse latex to strip \label and simple equation environments from math, and put this in AST directly.
 
 MyST Cleanup
 : A few utilities for lifting children and getting rid of some information about the parsed document from MyST. For example, the `mystDirective` and `mystRole` wrapper nodes are removed.

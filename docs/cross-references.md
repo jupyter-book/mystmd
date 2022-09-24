@@ -21,7 +21,7 @@ See [](./citations.md) to cite scholarly work and create bibliographies.
 
 Targets are custom anchors that you can refer to elsewhere, for example, a figure, section, table, program, or proof. To be referenceable, they must have a `label`/`identifier` pair [in the AST](myst:spec#association). These can be created by setting the `label` option in many directives. For example, to label and reference a figure, use the following syntax:
 
-% TODO: fix equation label redundancy here would nice to be able to simplfy the onboarding (just use label, same as tex and mdast)
+% TODO: fix equation label redundancy here would nice to be able to simplfy the onboarding (just use label, same as tex and ast)
 
 ````{myst}
 ```{figure} https://source.unsplash.com/random/500x200/?mountain

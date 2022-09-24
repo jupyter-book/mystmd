@@ -24,7 +24,7 @@
 - 327c19c: Introduce new link transforms for internal and external protocols including dois, rrids, wiki, and myst.
 - de062e5: Add mermaid diagrams
 - edf10cd: Introduce delete role for strikeout text
-- a431f10: Explicitly set writeFolder for image copying during mdast transformation
+- a431f10: Explicitly set writeFolder for image copying during AST transformation
 - edf10cd: Add dropdown class to admonitions
 - 631ee7c: Create intersphinx package
 - 5460169: Add intersphinx interoperability (read) as well as markdown links syntax for referencing.

@@ -51,7 +51,7 @@ The rendering process for scientific PDFs uses $\LaTeX$ and makes use of the [`j
 flowchart LR
   A[Jupyter Notebook] --> C
   B[MyST Markdown] --> C
-  C(mystjs) --> D{MDAST}
+  C(mystjs) --> D{AST}
   D --> E[jtex] --> G[LaTeX]
   D --> F[myst-to-tex] --> G
   G --> H[PDF]

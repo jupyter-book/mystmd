@@ -14,7 +14,7 @@ The `mystjs` site existing, modern web-frameworks including [Remix](https://remi
     - Pre-cache remaining assets.
     - Lazy load other routes and non-critical assets.
 
-As an example, try hovering over the navigation on this page (potentially with your network development tools open!), the entire page will be fetched based on your intent (i.e. hovering over the link for a moment). This includes downloading any assets for additional styling on the upcoming page. Note that many assets are shared between pages, and only the actual content is fetched (i.e. the MDAST tree and page metadata), not the full HTML page, which again makes for smaller network payloads and speed for browsing! Content is also cached if you re-visit a page.
+As an example, try hovering over the navigation on this page (potentially with your network development tools open!), the entire page will be fetched based on your intent (i.e. hovering over the link for a moment). This includes downloading any assets for additional styling on the upcoming page. Note that many assets are shared between pages, and only the actual content is fetched (i.e. the AST and page metadata), not the full HTML page, which again makes for smaller network payloads and speed for browsing! Content is also cached if you re-visit a page.
 
 When working locally in authoring content `mystjs` is designed to have as hot-reloads, can rebuild/rerender the site in <150ms, and has scroll-restoration so you don't loose your place. The speed of `mystjs` can dramatically improve the authoring experience as it allows you to preview changes rapidly.
 

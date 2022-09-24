@@ -5,7 +5,7 @@ description: MyST Markdown is a superset of CommonMark Markdown, and fully suppo
 
 This page provides an overview of the types of block and inline markup features supported by CommonMark and MyST, with pointers to additional content of interest. For full details on all the nuance of these features, please look at the [CommonMark Spec documentation](https://spec.commonmark.org/).
 
-MyST (Markedly Structured Text) was designed to make it easier to create publishable computational documents written with Markdown notation. It is a superset of [CommonMark Markdown](https://commonmark.org/) and draws heavy inspiration from <wiki:ReStructuredText> and <wiki:pandoc>. In addition to CommonMark, MyST also implements and extends [mdast](https://github.com/syntax-tree/mdast), which is a standard abstract syntax tree for Markdown. `mdast` is part of the [unifiedjs](https://unifiedjs.com) community and has [many utilities](https://unifiedjs.com/explore/keyword/mdast/) for exporting and transforming your content.
+MyST (Markedly Structured Text) was designed to make it easier to create publishable computational documents written with Markdown notation. It is a superset of [CommonMark Markdown](https://commonmark.org/) and draws heavy inspiration from <wiki:ReStructuredText> and <wiki:pandoc>. In addition to CommonMark, MyST also implements and extends [unist](https://github.com/syntax-tree/unist) and [mdast](https://github.com/syntax-tree/mdast), which are standard abstract syntax trees for Markdown. `unist` is part of the [unifiedjs](https://unifiedjs.com) community and has [many utilities](https://unifiedjs.com/explore) for analyzing, exporting and transforming your content.
 
 ## Block Markup
 

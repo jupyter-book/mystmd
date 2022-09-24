@@ -20,7 +20,7 @@ MyST supports referencing rich content in a growing number of formats, including
 ## Referencing external MyST projects
 
 When using the HTML renderer for MyST, an API is provided for the deployed site.
-This provides pre-parsed, structured content as {term}`mdast` that can be included and rendered in a tooltip.
+This provides pre-parsed, structured content as an AST that can be included and rendered in a tooltip.
 
 ```{tip}
 Try adding `.json` at the end of the URL on this page. The data is structured and provides authors, license information,

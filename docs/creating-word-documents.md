@@ -79,7 +79,7 @@ The rendering process for word documents uses the [`myst-to-docx`](myst:myst-to-
 flowchart LR
   A[Jupyter Notebook] --> C
   B[MyST Markdown] --> C
-  C(mystjs) --> D{MDAST}
+  C(mystjs) --> D{AST}
   D --> E[myst-to-docx]
   E --> G[docx]
 ```
