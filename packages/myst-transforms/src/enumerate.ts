@@ -14,6 +14,10 @@ type ResolvableCrossReference = Omit<CrossReference, 'kind'> & {
   enumerator?: string;
   template?: string;
   resolved?: boolean;
+  // If the cross reference is remote, then it will have a URL attached
+  // This URl should be able to lookup the content
+  remote?: boolean;
+  url?: string;
 };
 
 export enum TargetKind {
@@ -404,8 +408,8 @@ export class MultiPageReferenceState implements IReferenceState {
     }
     pageXRefs?.state.resolveReferenceContent(node);
     if (node.resolved && pageXRefs?.file !== this.filePath) {
-      (node as any).remote = true;
-      (node as any).url = pageXRefs.url;
+      node.remote = true;
+      node.url = pageXRefs.url || undefined;
     }
   }
 }
