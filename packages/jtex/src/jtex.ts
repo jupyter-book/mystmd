@@ -136,7 +136,12 @@ class JTex {
     return validatedParts;
   }
 
-  validateDoc(frontmatter: any, options: Record<string, any>, file?: string) {
+  validateDoc(
+    frontmatter: any,
+    options: Record<string, any>,
+    bibliography?: string[],
+    file?: string,
+  ) {
     const templateYml = this.getValidatedTemplateYml();
     const opts: ValidationOptions = {
       file,
@@ -145,6 +150,7 @@ class JTex {
       errorLogFn: errorLogger(this.session),
       warningLogFn: warningLogger(this.session),
     };
+    if (bibliography) frontmatter.bibliography = bibliography;
     const validatedDoc = validateTemplateDoc(frontmatter, templateYml?.doc || [], options, opts);
     if (validatedDoc === undefined) {
       throw new Error(`Unable to read frontmatter${file ? ' from ' : ''}${file}`);
@@ -173,6 +179,7 @@ class JTex {
     frontmatter: any;
     parts: any;
     options: any;
+    bibliography?: string[];
     sourceFile?: string;
     imports?: string | ExpandedImports;
     force?: boolean;
@@ -194,7 +201,12 @@ class JTex {
     }
     const options = this.validateOptions(opts.options, opts.sourceFile);
     const parts = this.validateParts(opts.parts, options, opts.sourceFile);
-    const docFrontmatter = this.validateDoc(opts.frontmatter, options, opts.sourceFile);
+    const docFrontmatter = this.validateDoc(
+      opts.frontmatter,
+      options,
+      opts.bibliography,
+      opts.sourceFile,
+    );
     const doc = extendJtexFrontmatter(docFrontmatter);
     const renderer: Renderer = {
       CONTENT: content,

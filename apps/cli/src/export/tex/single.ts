@@ -36,6 +36,7 @@ import type { ExportWithOutput, TexExportOptions } from './types';
 import { ifTemplateRunJtex } from './utils';
 
 export const DEFAULT_TEX_FILENAME = 'main.tex';
+export const DEFAULT_BIB_FILENAME = 'main.bib';
 
 export async function singleArticleToTex(
   session: ISession,
@@ -62,7 +63,7 @@ export async function singleArticleToTex(
   );
 
   session.log.debug('Writing bib file...');
-  await writeBibtex(session, article.references, 'main.bib', {
+  await writeBibtex(session, article.references, DEFAULT_BIB_FILENAME, {
     path: buildPath,
     alwaysWriteFile: true,
   });
@@ -173,7 +174,7 @@ export async function localArticleToTexTemplated(
   } else {
     bibFiles = (await bibFilesInDir(session, path.dirname(file), false)) || [];
   }
-  concatenateFiles(bibFiles, path.join(path.dirname(templateOptions.output), 'main.bib'));
+  concatenateFiles(bibFiles, path.join(path.dirname(templateOptions.output), DEFAULT_BIB_FILENAME));
 
   const jtex = new JTex(session, {
     template: templateOptions.template || undefined,
@@ -206,6 +207,7 @@ export async function localArticleToTexTemplated(
     frontmatter,
     parts,
     options: templateOptions,
+    bibliography: [DEFAULT_BIB_FILENAME],
     sourceFile: file,
     imports: mergeExpandedImports(collectedImports, result),
     force,
