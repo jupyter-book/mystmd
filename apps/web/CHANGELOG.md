@@ -1,5 +1,22 @@
 # @curvespace/default
 
+## 0.0.11
+
+### Patch Changes
+
+- edbdfff: Load objects.inv
+- 7f11596: Deduplicate SiteConfig, SiteManifest types/validation
+- Updated dependencies [c268ff6]
+- Updated dependencies [b96c7a4]
+- Updated dependencies [438cb2d]
+- Updated dependencies [7f11596]
+- Updated dependencies [b69bf21]
+  - myst-to-react@0.1.16
+  - @curvenote/blocks@1.5.15
+  - @curvenote/site@0.0.15
+  - @curvenote/site-common@0.0.15
+  - @curvenote/ui-providers@0.0.15
+
 ## 0.0.10
 
 ### Patch Changes

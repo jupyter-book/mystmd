@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 0.0.6
+
+### Patch Changes
+
+- a8e68ec: Enumerate only update the template if new
+- b96c7a4: Create number references for footnotes that skip reserved numbers, still look up on identifier
+- Updated dependencies [9b1fa05]
+- Updated dependencies [9b1fa05]
+  - intersphinx@0.0.2
+
 ## 0.0.5
 
 ### Patch Changes

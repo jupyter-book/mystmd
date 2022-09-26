@@ -1,5 +1,20 @@
 # @curvenote/site
 
+## 0.0.15
+
+### Patch Changes
+
+- 7f11596: Deduplicate SiteConfig, SiteManifest types/validation
+- b69bf21: Allow top navigation to have external links
+- Updated dependencies [c268ff6]
+- Updated dependencies [b96c7a4]
+- Updated dependencies [438cb2d]
+- Updated dependencies [7f11596]
+  - myst-to-react@0.1.16
+  - @curvenote/blocks@1.5.15
+  - @curvenote/site-common@0.0.15
+  - @curvenote/ui-providers@0.0.15
+
 ## 0.0.14
 
 ### Patch Changes

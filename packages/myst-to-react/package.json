@@ -1,6 +1,6 @@
 {
   "name": "myst-to-react",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "main": "./src/index.tsx",
   "types": "./src/index.tsx",
   "files": [

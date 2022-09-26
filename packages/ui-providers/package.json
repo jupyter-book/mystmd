@@ -1,6 +1,6 @@
 {
   "name": "@curvenote/ui-providers",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "main": "./src/index.tsx",
   "types": "./src/index.tsx",
   "files": [

@@ -1,5 +1,23 @@
 # myst-to-react
 
+## 0.1.16
+
+### Patch Changes
+
+- c268ff6: Footnotes in docx
+- b96c7a4: Create number references for footnotes that skip reserved numbers, still look up on identifier
+- 438cb2d: Images and cards improved handling including height prop
+- Updated dependencies [286e24d]
+- Updated dependencies [a8e68ec]
+- Updated dependencies [c268ff6]
+- Updated dependencies [b96c7a4]
+- Updated dependencies [6c0d639]
+- Updated dependencies [7f11596]
+  - myst-to-docx@0.0.2
+  - myst-transforms@0.0.6
+  - @curvenote/blocks@1.5.15
+  - @curvenote/ui-providers@0.0.15
+
 ## 0.1.15
 
 ### Patch Changes

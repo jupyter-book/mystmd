@@ -1,5 +1,25 @@
 # curvenote
 
+## 0.6.24
+
+### Patch Changes
+
+- 9f29922: Write intersphinx objects.inv on site build
+- 438cb2d: Images and cards improved handling including height prop
+- 7f11596: Deduplicate SiteConfig, SiteManifest types/validation
+- ff79e9f: Pass construct and pass bib file directly to jtex
+- Updated dependencies [a8e68ec]
+- Updated dependencies [9b1fa05]
+- Updated dependencies [b96c7a4]
+- Updated dependencies [7f11596]
+- Updated dependencies [ff79e9f]
+- Updated dependencies [9b1fa05]
+  - myst-transforms@0.0.6
+  - intersphinx@0.0.2
+  - @curvenote/blocks@1.5.15
+  - @curvenote/site-common@0.0.15
+  - jtex@0.0.3
+
 ## 0.6.23
 
 ### Patch Changes

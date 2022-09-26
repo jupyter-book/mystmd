@@ -1,5 +1,13 @@
 # @curvenote/site-common
 
+## 0.0.15
+
+### Patch Changes
+
+- 7f11596: Deduplicate SiteConfig, SiteManifest types/validation
+- Updated dependencies [7f11596]
+  - @curvenote/blocks@1.5.15
+
 ## 0.0.14
 
 ### Patch Changes

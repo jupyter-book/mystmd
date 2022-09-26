@@ -1,6 +1,6 @@
 {
   "name": "@curvespace/default",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Curvenote site for previewing MyST markdown",
   "license": "MIT",
   "sideEffects": false,
