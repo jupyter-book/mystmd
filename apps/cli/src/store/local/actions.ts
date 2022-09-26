@@ -68,7 +68,7 @@ import { processNotebook } from './notebook';
 import { watch } from './reducers';
 import { warnings } from '../build';
 import { selectFileWarnings } from '../build/selectors';
-import { Inventory } from 'intersphinx';
+import { Inventory, Domains } from 'intersphinx';
 import { OxaTransformer, StaticFileTransformer } from '../../transforms/links';
 import type { Node } from 'myst-spec';
 import { toText } from 'myst-common';
@@ -472,7 +472,7 @@ export function addProjectReferencesToObjectsInv(
   pageReferenceStates.forEach((page) => {
     const { title } = selectors.selectFileInfo(session.store.getState(), page.file);
     inv.setEntry({
-      type: 'std:doc',
+      type: Domains.stdDoc,
       name: (page.url as string).replace(/^\//, ''),
       location: page.url as string,
       display: title ?? '',
@@ -483,7 +483,7 @@ export function addProjectReferencesToObjectsInv(
         return;
       }
       inv.setEntry({
-        type: 'std:label',
+        type: Domains.stdLabel,
         name,
         location: `${page.url}#${(target.node as any).html_id ?? target.node.identifier}`,
         display: getReferenceTitleAsText(target.node),

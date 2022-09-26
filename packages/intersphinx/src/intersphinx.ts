@@ -1,6 +1,7 @@
 import fs from 'fs';
 import zlib from 'zlib';
 import fetch from 'node-fetch';
+import type { Domains } from './types';
 
 /**
  * Very simple function to test if the link starts with an HTTP(S?)
@@ -143,7 +144,7 @@ export class Inventory {
     this._loaded = true;
   }
 
-  setEntry(entry: { type: string; name: string; location: string; display?: string }) {
+  setEntry(entry: { type: Domains | string; name: string; location: string; display?: string }) {
     if (!this.data[entry.type]) this.data[entry.type] = {};
     // TODO: strip off the base URL if that is put in
     let resolvedLocation = entry.location;

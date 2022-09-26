@@ -45,9 +45,11 @@ const entry = inv.getEntry({ name: 'zipapp-specifying-the-interpreter' });
 ## Write an invintory
 
 ```typescript
+import { Inventory, Domains } from 'intersphinx';
+
 const inv = new Inventory({ project: 'Python', version: '3.7' });
 inv.setEntry({
-  type: 'std:label',
+  type: Domains.stdLabel,
   name: 'zipapp-specifying-the-interpreter',
   location: 'library/zipapp.html#specifying-the-interpreter',
   display: 'Specifying the Interpreter',
