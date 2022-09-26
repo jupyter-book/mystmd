@@ -1,11 +1,9 @@
+import type { ISession as BaseISession } from 'myst-cli-utils';
 import type { Author, Licenses, PageFrontmatter } from 'myst-frontmatter';
 import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 
-export type Logger = Pick<typeof console, 'debug' | 'info' | 'warn' | 'error'>;
-
-export interface ISession {
+export interface ISession extends BaseISession {
   API_URL: string;
-  log: Logger;
 }
 
 export type ExpandedImports = { imports: string[]; commands: string[] };

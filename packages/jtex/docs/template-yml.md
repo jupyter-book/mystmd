@@ -51,7 +51,7 @@ The `tags` field is often used for searching and finding templates, some common 
 
 ## Template Options
 
-The options of the templates are available as `options.parameter` in the template, and are added in as `[- option.parameter -]` in the `template.tex`.
+The options of the templates are available as `options.parameter` in the template, and are added in as `[- options.parameter -]` in the `template.tex`.
 Options are defined under the `options` dictionary and look like:
 
 ```yaml

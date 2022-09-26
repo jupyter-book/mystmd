@@ -62,7 +62,7 @@ The following table lists the available frontmatter fields, a brief description 
 
 ```{list-table} A list of available frontmatter fields and their behaviour across projects and pages
 :header-rows: 1
-:name: wmDcYPnNQf
+:name: table-of-frontmatter
 
 * - field
   - description
@@ -216,7 +216,8 @@ String values for licenses should be a valid “Identifier” string from the [S
 
 ```{list-table}
 :header-rows: 1
-:name: ovrQAe267C
+:name: table-common-licenses
+
 * - Common Content Licenses
   - Common Code Licenses
 

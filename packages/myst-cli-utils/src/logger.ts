@@ -10,21 +10,21 @@ export enum LogLevel {
   trace = 10,
 }
 
-export function getLevel(logger: Logger, level: LogLevel): Logger['info'] {
-  switch (level) {
-    case LogLevel.trace:
-    case LogLevel.debug:
-      return logger.debug;
-    case LogLevel.info:
-      return logger.info;
-    case LogLevel.warn:
-      return logger.warn;
-    case LogLevel.error:
-    case LogLevel.fatal:
-      return logger.error;
-    default:
-      throw new Error(`Level "${level}" not defined.`);
-  }
+export function silentLogger(): Logger {
+  return {
+    debug() {
+      // pass
+    },
+    info() {
+      // pass
+    },
+    warn() {
+      // pass
+    },
+    error() {
+      // pass
+    },
+  };
 }
 
 export function chalkLogger(level: LogLevel): Logger {

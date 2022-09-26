@@ -9,6 +9,9 @@ import { getFooterLinks, getProject, responseNoArticle, responseNoSite } from '@
 // This is executed in the API directory
 const contentFolder = path.join(__dirname, '..', 'app', 'content');
 
+// Static directory
+const staticFolder = path.join(__dirname, '..', 'public', '_static');
+
 export function getConfig(): SiteManifest {
   return configJson as unknown as SiteManifest;
 }
@@ -105,4 +108,11 @@ export async function getPage(
   if (!loader) throw responseNoArticle();
   const footer = getFooterLinks(config, folderName, slug);
   return { ...loader, footer, domain: getDomainFromRequest(request) };
+}
+
+export function getObjectsInv(): Buffer | undefined {
+  const filename = path.join(staticFolder, 'objects.inv');
+  if (!fs.existsSync(filename)) return;
+  const contents = fs.readFileSync(filename);
+  return contents;
 }

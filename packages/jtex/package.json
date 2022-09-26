@@ -59,6 +59,7 @@
     "commander": "^8.3.0",
     "crypto": "^1.0.1",
     "js-yaml": "^4.1.0",
+    "myst-cli-utils": "^0.0.1",
     "myst-frontmatter": "^0.0.1",
     "node-fetch": "^2.6.7",
     "nunjucks": "^3.2.3",

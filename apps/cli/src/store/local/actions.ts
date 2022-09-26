@@ -31,6 +31,7 @@ import type { SiteProject } from '@curvenote/blocks';
 import { KINDS } from '@curvenote/blocks';
 import { getPageFrontmatter } from '../../frontmatter';
 import type { Root } from 'mdast';
+import { select } from 'unist-util-select';
 import { parseMyst } from '../../myst';
 import type { ISession } from '../../session/types';
 import { loadAllConfigs } from '../../session';
@@ -67,8 +68,10 @@ import { processNotebook } from './notebook';
 import { watch } from './reducers';
 import { warnings } from '../build';
 import { selectFileWarnings } from '../build/selectors';
-import { Inventory } from 'intersphinx';
+import { Inventory, Domains } from 'intersphinx';
 import { OxaTransformer, StaticFileTransformer } from '../../transforms/links';
+import type { Node } from 'myst-spec';
+import { toText } from 'myst-common';
 
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
@@ -448,6 +451,48 @@ export async function writeSiteManifest(session: ISession) {
   writeFileToFolder(configPath, JSON.stringify(siteManifest));
 }
 
+/**
+ * Returns the heading title or the caption as text
+ */
+function getReferenceTitleAsText(targetNode: Node): string | undefined {
+  if (targetNode.type === 'heading') {
+    return toText(targetNode);
+  }
+  const caption = select('caption > paragraph', targetNode);
+  if (caption) return toText(caption);
+}
+
+export function addProjectReferencesToObjectsInv(
+  session: ISession,
+  inv: Inventory,
+  opts: { projectPath: string },
+) {
+  const { pages } = loadProject(session, opts.projectPath);
+  const pageReferenceStates = selectPageReferenceStates(session, pages);
+  pageReferenceStates.forEach((page) => {
+    const { title } = selectors.selectFileInfo(session.store.getState(), page.file);
+    inv.setEntry({
+      type: Domains.stdDoc,
+      name: (page.url as string).replace(/^\//, ''),
+      location: page.url as string,
+      display: title ?? '',
+    });
+    Object.entries(page.state.targets).forEach(([name, target]) => {
+      if ((target.node as any).implicit) {
+        // Don't include implicit references
+        return;
+      }
+      inv.setEntry({
+        type: Domains.stdLabel,
+        name,
+        location: `${page.url}#${(target.node as any).html_id ?? target.node.identifier}`,
+        display: getReferenceTitleAsText(target.node),
+      });
+    });
+  });
+  return inv;
+}
+
 function loadProject(session: ISession, projectPath: string, writeToc = false) {
   const project = loadProjectFromDisk(session, projectPath, {
     writeToc,
@@ -608,6 +653,17 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
     siteConfig.actions?.forEach((action) => {
       copyActionResource(session, action);
     });
+    // Write the objects.inv
+    const inv = new Inventory({
+      project: siteConfig.title,
+      // TODO: allow a version on the project?!
+      version: String((siteConfig as any)?.version ?? '1'),
+    });
+    siteConfig.projects.forEach((project) => {
+      addProjectReferencesToObjectsInv(session, inv, { projectPath: project.path as string });
+    });
+    const filename = join(staticPath(session), 'objects.inv');
+    inv.write(filename);
   }
   return true;
 }

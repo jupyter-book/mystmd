@@ -1,6 +1,3 @@
-import type { ProjectFrontmatter } from 'myst-frontmatter';
-import type { SiteAnalytics, SiteAction, SiteNavPage, SiteNavFolder } from '@curvenote/blocks';
-
 // Types for local Project
 //
 // Files are local paths relative to the current directory.

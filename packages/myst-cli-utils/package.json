@@ -1,8 +1,8 @@
 {
-  "name": "intersphinx",
+  "name": "myst-cli-utils",
   "version": "0.0.1",
   "license": "MIT",
-  "description": "Read and write intersphinx objects.inv files",
+  "description": "Utils for logging, error messages and session management",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/curvenote/curvenote#readme",
   "main": "./dist/cjs/index.js",
@@ -24,46 +24,30 @@
     "type": "git",
     "url": "git+https://github.com/curvenote/curvenote.git"
   },
-  "bin": "./dist/intersphinx.js",
   "scripts": {
-    "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "clean": "rimraf dist",
-    "unlink": "npm uninstall -g intersphinx;",
-    "link": "npm run unlink; npm link;",
-    "dev": "npm run link && esbuild src/cli/index.ts --bundle --outfile=dist/intersphinx.js --platform=node --watch",
-    "lint": "npm run copy:version && eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.js",
-    "lint:format": "npm run copy:version && npx prettier --check \"src/**/*.ts\"",
-    "test": "npm run copy:version && jest",
-    "test:watch": "npm run copy:version && jest --watchAll",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.js",
+    "lint:format": "npx prettier --check \"src/**/*.ts\"",
     "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --project ./tsconfig.json --module commonjs --outDir dist/cjs",
     "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
     "prepublishOnly": "npm run build",
-    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/intersphinx.js --platform=node",
-    "build": "npm-run-all -l clean copy:version -p build:cjs build:esm build:cli declarations"
+    "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
   },
   "bugs": {
     "url": "https://github.com/curvenote/curvenote/issues"
   },
   "dependencies": {
     "chalk": "^4.1.2",
-    "commander": "^8.3.0",
-    "js-yaml": "^4.1.0",
-    "myst-cli-utils": "^0.0.1"
+    "pretty-hrtime": "^1.0.3"
   },
   "devDependencies": {
-    "@types/jest": "^28.1.6",
-    "esbuild": "^0.14.53",
+    "@types/node": "^18.7.7",
     "eslint": "^8.21.0",
     "eslint-config-curvenote": "*",
-    "jest": "28.1.3",
-    "jest-extended": "^3.0.1",
-    "jest-fixtures": "^0.6.0",
-    "jest-to-match-shape-of": "^1.3.2",
     "npm-run-all": "^4.1.5",
     "prettier": "latest",
     "rimraf": "^3.0.2",
-    "ts-jest": "^28.0.7",
     "typescript": "^4.6.3"
   }
 }

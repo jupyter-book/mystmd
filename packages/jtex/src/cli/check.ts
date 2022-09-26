@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import { Command } from 'commander';
 import yaml from 'js-yaml';
-import { clirun } from './utils';
 import fs from 'fs';
 import { join } from 'path';
 import type { ISession } from '../types';
@@ -9,6 +8,8 @@ import type { ValidationOptions } from 'simple-validators';
 import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { RENDERER_DOC_KEYS } from '../types';
 import { validateTemplateYml } from '../validators';
+import { clirun } from 'myst-cli-utils';
+import { getSession } from '../session';
 
 type Variables = Record<
   'options' | 'doc' | 'parts' | 'packages' | 'global',
@@ -254,7 +255,7 @@ function makeCheckCLI(program: Command) {
   const command = new Command('check')
     .description('Check that a template passes validation')
     .argument('[path]', 'Path to the template directory')
-    .action(clirun(checkTemplate, { program }));
+    .action(clirun(checkTemplate, { program, getSession }));
   return command;
 }
 
@@ -262,7 +263,7 @@ function makeListPackagesCLI(program: Command) {
   const command = new Command('parse')
     .description('Parse jtex variables and packages defined in a template')
     .argument('<path>', 'A latex file to check')
-    .action(clirun(listVariablesTemplate, { program }));
+    .action(clirun(listVariablesTemplate, { program, getSession }));
   return command;
 }
 
