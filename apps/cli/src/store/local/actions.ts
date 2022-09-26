@@ -672,8 +672,3 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
   }
   return true;
 }
-
-export function bibtexSomething(session: ISession, path: string) {
-  const cache = castSession(session);
-  console.log(cache.$externalReferences);
-}
