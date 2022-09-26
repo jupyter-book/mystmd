@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { clirun } from './utils';
+import { clirun, tic } from 'myst-cli-utils';
 import type { ISession } from '../types';
 import {
   downloadAndUnzipTemplate,
@@ -8,7 +8,7 @@ import {
   resolveInputs,
 } from '../download';
 import chalk from 'chalk';
-import { tic } from '../utils';
+import { getSession } from '../session';
 
 export async function downloadTemplateCLI(session: ISession, template: string, path: string) {
   const { templatePath, templateUrl } = resolveInputs(session, { template, path });
@@ -67,7 +67,7 @@ function makeDownloadCLI(program: Command) {
     .description('Download a public template to a path')
     .argument('<template>', 'The template URL or name')
     .argument('<path>', 'A folder to download and unzip the template to')
-    .action(clirun(downloadTemplateCLI, { program }));
+    .action(clirun(downloadTemplateCLI, { program, getSession }));
   return command;
 }
 
@@ -79,7 +79,7 @@ function makeListCLI(program: Command) {
       '--tag <tag>',
       'Any tags to filter the list by multiple tags can be joined with a comma.',
     )
-    .action(clirun(listTemplatesCLI, { program }));
+    .action(clirun(listTemplatesCLI, { program, getSession }));
   return command;
 }
 
