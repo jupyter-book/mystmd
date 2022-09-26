@@ -150,8 +150,11 @@ class JTex {
       errorLogFn: errorLogger(this.session),
       warningLogFn: warningLogger(this.session),
     };
-    if (bibliography) frontmatter.bibliography = bibliography;
-    const validatedDoc = validateTemplateDoc(frontmatter, templateYml?.doc || [], options, opts);
+    const bibFrontmatter = {
+      ...frontmatter,
+      bibliography: bibliography ?? frontmatter.bibliography,
+    };
+    const validatedDoc = validateTemplateDoc(bibFrontmatter, templateYml?.doc || [], options, opts);
     if (validatedDoc === undefined) {
       throw new Error(`Unable to read frontmatter${file ? ' from ' : ''}${file}`);
     }
