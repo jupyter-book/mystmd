@@ -89,7 +89,7 @@ target
 
 As with any link, the text can be overridden using markdown link syntax `[text](myst:...)`.
 
-```{tip}
+````{tip}
 :class: dropdown
 # How to find the intersphinx target?
 
@@ -98,8 +98,20 @@ The HTML IDs that are part of the documentation are not always the targets that 
 Look for the `(target)=` syntax or `:label:` or `:name:` on a directive.
 
 MyST will warn you in the console if your target is not found.
-In the future, we aim to provide some utilities to search these easily in `mystjs`!
+
+You can also use the [intersphinx](https://www.npmjs.com/package/intersphinx) package, for example, `list`, or `parse` an intersphinx inventory:
+
+```bash
+>> intersphinx list https://docs.python.org/3.7 --domain std:doc --includes abc --limit 5
+
+std:doc Abstract Base Classes (library/abc)
+  https://docs.python.org/3.7/library/abc.html
+std:doc Abstract Base Classes for Containers (library/collections.abc)
+  https://docs.python.org/3.7/library/collections.abc.html
 ```
+
+Use the target in the parenthesis, which would be `myst:python#library/abc` above.
+````
 
 ## Wikipedia Links
 
@@ -147,7 +159,7 @@ Wikipedia links, like `https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)` w
 
 ## Linking DOIs
 
-It is possible to include DOIs as external content, and they are also added as citations to your project and show up in the references section at the bottom of a document. See [](./citations.md) for more details, specifically [](#doi-links), which explains linking DOIs with the `<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)` to create a citation.
+It is possible to include DOIs as external content, and they are also added as citations to your project and show up in the references section at the bottom of a document. See [](./citations.md) for more details, specifically [](#doi-links), which explains linking DOIs with the `<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)` to create a citation, for example (<doi:10.5281/zenodo.6476040>).
 
 ## Research Resource Identifiers
 
