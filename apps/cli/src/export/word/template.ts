@@ -31,7 +31,7 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
   const docxState = new DocxSerializerState(nodes, marks, getDefaultSerializerOptions(buffers));
 
   // Add the title
-  docxState.renderContent(await createArticleTitle(title, authors));
+  // docxState.renderContent(await createArticleTitle(title, authors));
   // Then render each block
   article.children.forEach(({ state }) => {
     if (!state) return;
@@ -42,9 +42,9 @@ export async function defaultTemplate(data: LoadedArticle): Promise<Document> {
   const referencesDocStates = Object.values(article.references)
     .map(({ state }) => state?.doc)
     .filter((docState): docState is Node => !!docState);
-  if (referencesDocStates.length > 0) {
-    docxState.renderContent(createReferenceTitle());
-  }
+  // if (referencesDocStates.length > 0) {
+  //   docxState.renderContent(createReferenceTitle());
+  // }
   referencesDocStates.forEach((docState) => {
     docxState.renderContent(docState);
   });

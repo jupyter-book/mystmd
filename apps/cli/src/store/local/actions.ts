@@ -498,7 +498,7 @@ export function addProjectReferencesToObjectsInv(
   return inv;
 }
 
-function loadProject(session: ISession, projectPath: string, writeToc = false) {
+export function loadProject(session: ISession, projectPath: string, writeToc = false) {
   const project = loadProjectFromDisk(session, projectPath, {
     writeToc,
   });
@@ -510,7 +510,7 @@ function loadProject(session: ISession, projectPath: string, writeToc = false) {
   return { project, pages };
 }
 
-function selectPageReferenceStates(session: ISession, pages: { file: string }[]) {
+export function selectPageReferenceStates(session: ISession, pages: { file: string }[]) {
   const cache = castSession(session);
   const pageReferenceStates: PageReferenceStates = pages
     .map((page) => ({

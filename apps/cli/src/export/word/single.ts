@@ -1,15 +1,14 @@
 import fs from 'fs';
 import path from 'path';
-import type { Root, Content } from 'mdast';
-import { unified } from 'mystjs';
-import type { DocxResult } from 'myst-to-docx';
-import { mystToDocx } from 'myst-to-docx';
+import type { Content } from 'mdast';
+import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import type { ValidationOptions } from 'simple-validators';
 import type { Export } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
+import { VFile } from 'vfile';
 import type { ISession } from '../../session/types';
 import { getRawFrontmatterFromFile } from '../../store/local/actions';
-import { findProjectAndLoad, writeFileToFolder } from '../../utils';
+import { createTempFolder, findProjectAndLoad, writeFileToFolder } from '../../utils';
 import type { ExportWithOutput } from '../types';
 import { getDefaultExportFilename, getDefaultExportFolder } from '../utils/defaultNames';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
@@ -99,18 +98,6 @@ export async function collectWordExportOptions(
   return resolvedExportOptions;
 }
 
-export async function mdastToWord(mdast: Root) {
-  const file = unified()
-    .use(mystToDocx, {
-      getImageBuffer(image: string) {
-        return fs.readFileSync(image).buffer as any;
-      },
-      crossReferences: true,
-    })
-    .stringify(mdast as any);
-  return (await (file.result as DocxResult)) as Buffer;
-}
-
 export async function runWordExport(
   session: ISession,
   file: string,
@@ -120,14 +107,27 @@ export async function runWordExport(
 ) {
   const { output } = exportOptions;
   if (clean) cleanOutput(session, output);
-  const { mdast, frontmatter } = await getFileContent(session, file, output, projectPath, false);
-  mdast.children.unshift(
-    ...(createArticleTitle(frontmatter.title, frontmatter.authors) as Content[]),
+  const { mdast, frontmatter } = await getFileContent(
+    session,
+    file,
+    createTempFolder(),
+    projectPath,
   );
-  const result = await mdastToWord(mdast);
+  const frontmatterNodes = createArticleTitle(frontmatter.title, frontmatter.authors) as Content[];
+  const vfile = new VFile();
+  const serializer = new DocxSerializer(vfile, {
+    getImageBuffer(image: string) {
+      return fs.readFileSync(image).buffer as any;
+    },
+    crossReferences: true,
+  });
+  frontmatterNodes.forEach((node) => {
+    serializer.render(node);
+  });
+  serializer.render(mdast);
+  const doc = createDocFromState(serializer);
   session.log.info(`🖋  Writing docx to ${output}`);
-  // TODO: add imports and macros?
-  writeFileToFolder(output, result);
+  writeDocx(doc, (buffer) => writeFileToFolder(output, buffer));
 }
 
 export async function localArticleToWord(session: ISession, file: string, opts: WordExportOptions) {

@@ -1,21 +1,30 @@
-import path from 'path';
 import type { ISession } from '../../session/types';
-import { loadFile, selectFile, transformMdast } from '../../store/local/actions';
+import {
+  postProcessMdast,
+  loadFile,
+  loadProject,
+  selectFile,
+  selectPageReferenceStates,
+  transformMdast,
+} from '../../store/local/actions';
 
 export async function getFileContent(
   session: ISession,
   file: string,
-  output: string,
+  imageWriteFolder: string,
   projectPath?: string,
-  useAltOutputFolder = true,
+  imageAltOutputFolder?: string,
 ) {
   await loadFile(session, file);
   // Collect bib files - mysttotex will need those, not 'references'
   await transformMdast(session, {
     file,
-    imageWriteFolder: path.join(path.dirname(output), 'images'),
-    imageAltOutputFolder: useAltOutputFolder ? 'images' : undefined,
+    imageWriteFolder: imageWriteFolder,
+    imageAltOutputFolder: imageAltOutputFolder ?? undefined,
     projectPath,
   });
+  const { pages } = projectPath ? loadProject(session, projectPath) : { pages: [{ file }] };
+  const pageReferenceStates = selectPageReferenceStates(session, pages);
+  await postProcessMdast(session, { file, pageReferenceStates });
   return selectFile(session, file);
 }

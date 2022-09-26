@@ -125,7 +125,13 @@ export async function localArticleToTexRaw(
   output: string,
   projectPath?: string,
 ) {
-  const { mdast, frontmatter } = await getFileContent(session, file, output, projectPath);
+  const { mdast, frontmatter } = await getFileContent(
+    session,
+    file,
+    path.join(path.dirname(output), 'images'),
+    projectPath,
+    'images',
+  );
   const result = mdastToTex(mdast, frontmatter);
   session.log.info(`🖋  Writing tex to ${output}`);
   // TODO: add imports and macros?
@@ -152,8 +158,9 @@ export async function localArticleToTexTemplated(
   const { frontmatter, mdast, references } = await getFileContent(
     session,
     file,
-    templateOptions.output,
+    path.join(path.dirname(templateOptions.output), 'images'),
     projectPath,
+    'images',
   );
   let bibFiles: string[];
   if (projectPath) {
