@@ -143,7 +143,7 @@ export async function localArticleToTexRaw(
   writeFileToFolder(output, result.value);
 }
 
-function concatinateFiles(files: string[], output: string) {
+function concatenateFiles(files: string[], output: string) {
   const fd = fs.openSync(output, 'w');
   files.forEach((file) => {
     fs.writeSync(fd, fs.readFileSync(file));
@@ -173,7 +173,7 @@ export async function localArticleToTexTemplated(
   } else {
     bibFiles = (await bibFilesInDir(session, path.dirname(file), false)) || [];
   }
-  concatinateFiles(bibFiles, path.join(path.dirname(templateOptions.output), 'main.bib'));
+  concatenateFiles(bibFiles, path.join(path.dirname(templateOptions.output), 'main.bib'));
 
   const jtex = new JTex(session, {
     template: templateOptions.template || undefined,

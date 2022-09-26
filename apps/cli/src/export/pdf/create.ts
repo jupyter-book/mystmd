@@ -109,7 +109,11 @@ export async function createPdfGivenTexExport(
     await exec(buildCommand, { cwd: buildPath });
     session.log.debug(`Done building LaTeX.`);
   } catch (err) {
-    session.log.error(`Error while invoking mklatex - logs available at: ${buildPath}\n${err}`);
+    session.log.error(
+      `Error while invoking mklatex - logs available at: ${
+        copyLogs ? logOutputFolder : buildPath
+      }\n${err}`,
+    );
   }
 
   const pdfBuildExists = fs.existsSync(pdfBuild);
