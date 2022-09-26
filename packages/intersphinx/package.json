@@ -24,23 +24,36 @@
     "type": "git",
     "url": "git+https://github.com/curvenote/curvenote.git"
   },
+  "bin": "./dist/intersphinx.js",
   "scripts": {
+    "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.js",
-    "lint:format": "npx prettier --check \"src/**/*.ts\"",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
+    "unlink": "npm uninstall -g intersphinx;",
+    "link": "npm run unlink; npm link;",
+    "dev": "npm run link && esbuild src/cli/index.ts --bundle --outfile=dist/intersphinx.js --platform=node --watch",
+    "lint": "npm run copy:version && eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.js",
+    "lint:format": "npm run copy:version && npx prettier --check \"src/**/*.ts\"",
+    "test": "npm run copy:version && jest",
+    "test:watch": "npm run copy:version && jest --watchAll",
     "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --project ./tsconfig.json --module commonjs --outDir dist/cjs",
     "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
     "prepublishOnly": "npm run build",
-    "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/intersphinx.js --platform=node",
+    "build": "npm-run-all -l clean copy:version -p build:cjs build:esm build:cli declarations"
   },
   "bugs": {
     "url": "https://github.com/curvenote/curvenote/issues"
   },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^8.3.0",
+    "js-yaml": "^4.1.0",
+    "myst-cli-utils": "^0.0.1"
+  },
   "devDependencies": {
     "@types/jest": "^28.1.6",
+    "esbuild": "^0.14.53",
     "eslint": "^8.21.0",
     "eslint-config-curvenote": "*",
     "jest": "28.1.3",

@@ -15,6 +15,10 @@ type InventoryData = Record<string, Record<string, InventoryItem>>;
 
 const DEFAULT_INV_NAME = 'objects.inv';
 
+function escape(string?: string): string {
+  return string?.replace(/\s+/g, ' ') ?? '';
+}
+
 export class Inventory {
   path?: string;
 
@@ -47,21 +51,35 @@ export class Inventory {
     this.data = {};
   }
 
+  /**
+   * See https://github.com/sphinx-doc/sphinx/blob/5e9550c78e3421dd7dcab037021d996841178f67/sphinx/util/inventory.py#L154
+   */
   write(path: string) {
     const header = [
       `# Sphinx inventory version 2`,
-      `# Project: ${this.project}`,
-      `# Version: ${this.version}`,
+      `# Project: ${escape(this.project)}`,
+      `# Version: ${escape(this.version)}`,
       `# The remainder of this file is compressed using zlib.`,
     ].join('\n');
 
-    // https://github.com/sphinx-doc/sphinx/blob/5e9550c78e3421dd7dcab037021d996841178f67/sphinx/util/inventory.py#L154
-    const data = zlib.deflateSync(
-      [
-        'start:install std:label -1 start/overview.html#start-install Install Jupyter Book\n', // needs trailing new line
-        'my-fig-ref std:label -1 content/references.html#$ My figure title.\n', // needs trailing new line
-      ].join(''),
-    );
+    // Data is of the form:
+    //                          | [ priority ]
+    // [   name    ] [ domain ] | [         location              ] [    displayname   ]
+    // start:install std:label -1 start/overview.html#start-install Install Jupyter Book\n
+    //
+    // Note: every objects.inv entry needs a trailing new line, including the last one.
+    const priority = -1;
+    const references = Object.entries(this.data)
+      .map(([domainName, domain]) => {
+        return Object.entries(domain).map(([name, { display, location }]) => {
+          // We could also shorten the location with a '$' here and be valid
+          return `${name} ${domainName} ${priority} ${location} ${display || '-'}\n`;
+        });
+      })
+      .flat()
+      .join('');
+
+    const data = zlib.deflateSync(references);
     fs.writeFileSync(path, `${header}\r\n${data.toString('binary')}`, { encoding: 'binary' });
   }
 
@@ -74,7 +92,9 @@ export class Inventory {
       throw new Error('Inventory path must be specified to load an object');
     }
     if (isUrl(this.path)) {
-      const url = `${this.path}/${this.invName || DEFAULT_INV_NAME}`;
+      const url = this.path.endsWith('.inv')
+        ? this.path
+        : `${this.path}/${this.invName || DEFAULT_INV_NAME}`;
       const res = await fetch(url);
       if (!res.ok) {
         throw new Error(
@@ -123,19 +143,26 @@ export class Inventory {
     this._loaded = true;
   }
 
-  setEntry(entry: { type: string; name: string; location: string; display: string }) {
+  setEntry(entry: { type: string; name: string; location: string; display?: string }) {
     if (!this.data[entry.type]) this.data[entry.type] = {};
+    // TODO: strip off the base URL if that is put in
     let resolvedLocation = entry.location;
-    if (entry.location.endsWith('$')) {
-      resolvedLocation =
-        entry.location.slice(0, -1) + entry.name.toLowerCase().replace(/\s+/g, '-');
+    if (resolvedLocation.startsWith('/')) {
+      resolvedLocation = resolvedLocation.slice(1);
     }
-    const resolvedDisplay = entry.display.trim() === '-' ? undefined : entry.display.trim();
+    if (resolvedLocation.endsWith('$')) {
+      // Maybe move this to the parse function only?
+      resolvedLocation =
+        resolvedLocation.slice(0, -1) + entry.name.toLowerCase().replace(/\s+/g, '-');
+    }
+    const resolvedDisplay =
+      !entry.display || entry.display.trim() === '-' ? undefined : entry.display.trim();
     this.data[entry.type][entry.name] = { location: resolvedLocation, display: resolvedDisplay };
   }
 
   getEntry(opts: { type?: string; name: string }): Entry | undefined {
     if (!opts.type) {
+      // Search through all types, and return the first match to the reference
       const type = Object.keys(this.data).find((t) => !!this.data[t][opts.name]);
       if (!type) return undefined;
       return this.getEntry({ type, name: opts.name });

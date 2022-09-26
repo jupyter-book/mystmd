@@ -1,8 +1,33 @@
 # intersphinx
 
-Read and write intersphinx `objects.inv` from node.
+Read and write intersphinx `objects.inv` from node or the command line.
 
-## Reading an invintory
+To use from the command line, use the `-g` to create a global install.
+
+```
+npm install -g intersphinx
+```
+
+## From the command line
+
+Commands available:
+
+`parse`: download or unpack a local file into a json or yaml file.
+
+```bash
+intersphinx parse https://docs.python.org/3.7 output.yml
+```
+
+`list`: list the contents of an objects.inv
+
+```bash
+intersphinx list https://docs.python.org/3.7 --summary
+intersphinx list https://docs.python.org/3.7 --domain std
+intersphinx list https://docs.python.org/3.7 --domain std:doc --includes abc
+intersphinx list https://docs.python.org/3.7 --domain std:doc --includes abc --limit 5
+```
+
+## Reading an invintory in Node
 
 ```typescript
 import { Inventory } from 'intersphinx';
