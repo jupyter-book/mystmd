@@ -1,4 +1,4 @@
-import type { INumberingOptions, ISectionOptions, ParagraphChild } from 'docx';
+import type { Footer, INumberingOptions, ISectionOptions, ParagraphChild } from 'docx';
 import {
   InternalHyperlink,
   SimpleField,
@@ -20,11 +20,14 @@ export function createShortId() {
   return Math.random().toString(36).substr(2, 9);
 }
 
-export function createDocFromState(state: {
-  numbering: INumberingOptions['config'];
-  children: ISectionOptions['children'];
-  footnotes?: IFootnotes;
-}) {
+export function createDocFromState(
+  state: {
+    numbering: INumberingOptions['config'];
+    children: ISectionOptions['children'];
+    footnotes?: IFootnotes;
+  },
+  footer?: Footer,
+) {
   const doc = new Document({
     footnotes: state.footnotes,
     numbering: {
@@ -36,6 +39,7 @@ export function createDocFromState(state: {
           type: SectionType.CONTINUOUS,
         },
         children: state.children,
+        footers: footer ? { default: footer } : undefined,
       },
     ],
   });

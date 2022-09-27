@@ -16,6 +16,7 @@ import { cleanOutput } from '../utils/cleanOutput';
 import { getFileContent } from '../utils/getFileContent';
 import { createArticleTitle } from './titles';
 import { selectAll } from 'mystjs';
+import { createCurvenoteFooter } from './footers';
 
 export type WordExportOptions = {
   filename: string;
@@ -129,7 +130,7 @@ export async function runWordExport(
   Object.values(references.footnotes).forEach((footnote) => {
     serializer.render(footnote);
   });
-  const doc = createDocFromState(serializer);
+  const doc = createDocFromState(serializer, createCurvenoteFooter());
   session.log.info(`🖋  Writing docx to ${output}`);
   writeDocx(doc, (buffer) => writeFileToFolder(output, buffer));
 }
