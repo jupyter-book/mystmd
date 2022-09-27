@@ -462,6 +462,23 @@ const table: Handler<TableNode> = (state, node) => {
   state.children = actualChildren;
 };
 
+const cite: Handler<{ type: 'cite' } & Parent> = (state, node) => {
+  state.renderChildren(node);
+};
+
+const citeGroup: Handler<{ type: 'citeGroup'; kind: string } & Parent> = (state, node) => {
+  if (node.kind === 'narrative') {
+    state.renderChildren(node);
+  } else {
+    state.text('(');
+    node.children.forEach((child, ind) => {
+      state.render(child);
+      if (ind < node.children.length - 1) state.text(';');
+    });
+    state.text(')');
+  }
+};
+
 export const defaultHandlers = {
   text,
   paragraph,
@@ -496,4 +513,6 @@ export const defaultHandlers = {
   footnoteReference,
   footnoteDefinition,
   table,
+  cite,
+  citeGroup,
 };

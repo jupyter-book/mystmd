@@ -16,7 +16,8 @@ import { cleanOutput } from '../utils/cleanOutput';
 import { getFileContent } from '../utils/getFileContent';
 import { createCurvenoteFooter } from './footers';
 import DEFAULT_STYLE from './simpleStyles';
-import { createArticleTitle } from './titles';
+import { createArticleTitle, createReferenceTitle } from './titles';
+import { htmlTransform } from 'myst-transforms';
 
 export type WordExportOptions = {
   filename: string;
@@ -131,6 +132,17 @@ export async function runWordExport(
     serializer.render(node);
   });
   serializer.renderChildren(mdast);
+  const referencesDocStates = Object.values(references.cite.data)
+    .map(({ html }) => html)
+    .sort((a, b) => a.localeCompare(b))
+    .map((html) => {
+      return { type: 'html', value: html };
+    });
+  if (referencesDocStates.length > 0) {
+    serializer.render(createReferenceTitle());
+    const referencesRoot = htmlTransform({ type: 'root', children: referencesDocStates as any });
+    serializer.renderChildren(referencesRoot);
+  }
   Object.values(references.footnotes).forEach((footnote) => {
     serializer.render(footnote);
   });
