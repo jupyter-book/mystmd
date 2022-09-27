@@ -4,7 +4,7 @@ import type { Handler, ITexSerializer } from './types';
 function addMacrosToState(value: string, state: ITexSerializer) {
   if (!state.options.math) return;
   Object.entries(state.options.math).forEach(([k, v]) => {
-    if (value.includes(k)) state.mathPlugins[k] = v;
+    if (value.includes(k)) state.data.mathPlugins[k] = v;
   });
 }
 
@@ -19,6 +19,7 @@ export function createMathCommands(plugins: PageFrontmatter['math']): string[] {
 
 const math: Handler = (node, state) => {
   const { label, enumerated } = node;
+  state.usePackages('amsmath');
   addMacrosToState(node.value, state);
   if (state.data.isInTable) {
     state.write('\\(\\displaystyle ');
@@ -39,6 +40,7 @@ const math: Handler = (node, state) => {
 };
 
 const inlineMath: Handler = (node, state) => {
+  state.usePackages('amsmath');
   addMacrosToState(node.value, state);
   state.write('$');
   state.text(node.value, true);

@@ -4,14 +4,7 @@ import type { VFile } from 'vfile';
 import { fileError, toText } from 'myst-common';
 import { captionHandler, containerHandler } from './container';
 import { renderNodeToLatex } from './tables';
-import type {
-  Handler,
-  ITexSerializer,
-  LatexResult,
-  MathPlugins,
-  Options,
-  StateData,
-} from './types';
+import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types';
 import { getLatexImageWidth, stringToLatexMath, stringToLatexText } from './utils';
 import MATH_HANDLERS, { createMathCommands } from './math';
 
@@ -131,6 +124,7 @@ const handlers: Record<string, Handler> = {
   },
   delete(node, state) {
     // \usepackage[normalem]{ulem}
+    state.usePackages('ulem');
     state.renderInlineEnvironment(node, 'sout');
   },
   break(node, state) {
@@ -143,6 +137,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, true);
   },
   link(node, state) {
+    state.usePackages('url', 'hyperref');
     const href = state.options.localizeLink?.(node.url) ?? node.url;
     if (node.children[0]?.value === href) {
       // URL is the same
@@ -162,6 +157,7 @@ const handlers: Record<string, Handler> = {
   },
   table: renderNodeToLatex,
   image(node, state) {
+    state.usePackages('graphicx');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width: nodeWidth, url: nodeSrc, align } = node;
     const src = state.options.localizeImageSrc?.(nodeSrc) || nodeSrc;
@@ -217,19 +213,23 @@ class TexSerializer implements ITexSerializer {
   data: StateData;
   options: Options;
   handlers: Record<string, Handler>;
-  mathPlugins: MathPlugins;
 
   constructor(file: VFile, opts?: Options) {
     file.result = '';
     this.file = file;
     this.options = opts ?? {};
-    this.data = {};
+    this.data = { mathPlugins: {}, imports: new Set() };
     this.handlers = opts?.handlers ?? handlers;
-    this.mathPlugins = {}; // initialize empty!
   }
 
   get out(): string {
     return this.file.result as string;
+  }
+
+  usePackages(...packageNames: string[]) {
+    packageNames.forEach((p) => {
+      this.data.imports.add(p);
+    });
   }
 
   write(value: string) {
@@ -296,14 +296,18 @@ class TexSerializer implements ITexSerializer {
   }
 }
 
+function createImportCommands(commands: Set<string>) {
+  return [...commands].sort().map((c) => `\\usepackage{${c}}`);
+}
+
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
   this.Compiler = (node, file) => {
     const state = new TexSerializer(file, opts ?? { handlers });
     state.renderChildren(node);
     const tex = (file.result as string).trim();
     const result: LatexResult = {
-      imports: [],
-      commands: [...createMathCommands(state.mathPlugins)],
+      imports: createImportCommands(state.data.imports),
+      commands: createMathCommands(state.data.mathPlugins),
       value: tex,
     };
     file.result = result;

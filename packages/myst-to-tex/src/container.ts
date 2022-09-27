@@ -83,7 +83,7 @@ export const containerHandler: Handler = (node, state) => {
   let before: string | undefined;
   let after: string | undefined;
   if (node.landscape) {
-    // requires pdflscape package to be loaded
+    state.usePackages('pdflscape');
     before = '\\begin{landscape}';
     after = '\\end{landscape}';
   }
@@ -93,6 +93,7 @@ export const containerHandler: Handler = (node, state) => {
   // and then back to multi column, if we were in multicolumn mode
   // Q: we can know if we are in a two column mode from the template we are using, but how is this made available at this level?
   const command = containsTable && multipage ? 'longtable' : nodeToCommand(node);
+  if (command === 'longtable') state.usePackages('longtable');
   const commandOpts = containsTable && tableInfo ? tableInfo.columnSpec : undefined;
   const bracketOpts = containsTable ? undefined : nodeToLaTeXOptions(node);
   if (before) state.write(before);

@@ -28,12 +28,14 @@ export type StateData = {
   nextCaptionNumbered?: boolean;
   nextHeadingIsFrameTitle?: boolean;
   nextCaptionId?: string;
+  mathPlugins: Required<PageFrontmatter>['math'];
+  imports: Set<string>;
 };
 
 export interface ITexSerializer<D extends Record<string, any> = StateData> {
   data: D;
   options: Options;
-  mathPlugins: Required<PageFrontmatter>['math'];
+  usePackages: (...packageNames: string[]) => void;
   write: (value: string) => void;
   text: (value: string, mathMode?: boolean) => void;
   trimEnd: () => void;

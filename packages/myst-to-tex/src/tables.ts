@@ -96,6 +96,7 @@ function renderTableCell(
  * convert prosemirror table node into latex table
  */
 export function renderNodeToLatex(node: Table, state: ITexSerializer) {
+  state.usePackages('booktabs');
   const { widths, columnSpec, numColumns } = getColumnWidths(node);
   if (!numColumns) {
     throw new Error('invalid table format, no columns');
