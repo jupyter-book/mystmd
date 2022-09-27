@@ -15,6 +15,7 @@ import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
 import { cleanOutput } from '../utils/cleanOutput';
 import { getFileContent } from '../utils/getFileContent';
 import { createArticleTitle } from './titles';
+import { selectAll } from 'mystjs';
 
 export type WordExportOptions = {
   filename: string;
@@ -107,7 +108,7 @@ export async function runWordExport(
 ) {
   const { output } = exportOptions;
   if (clean) cleanOutput(session, output);
-  const { mdast, frontmatter } = await getFileContent(
+  const { mdast, frontmatter, references } = await getFileContent(
     session,
     file,
     createTempFolder(),
@@ -119,12 +120,15 @@ export async function runWordExport(
     getImageBuffer(image: string) {
       return fs.readFileSync(image).buffer as any;
     },
-    crossReferences: true,
+    useFieldsForCrossReferences: true,
   });
   frontmatterNodes.forEach((node) => {
     serializer.render(node);
   });
-  serializer.render(mdast);
+  serializer.renderChildren(mdast);
+  Object.values(references.footnotes).forEach((footnote) => {
+    serializer.render(footnote);
+  });
   const doc = createDocFromState(serializer);
   session.log.info(`🖋  Writing docx to ${output}`);
   writeDocx(doc, (buffer) => writeFileToFolder(output, buffer));

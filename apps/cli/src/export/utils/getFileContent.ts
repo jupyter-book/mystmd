@@ -1,12 +1,5 @@
 import type { ISession } from '../../session/types';
-import {
-  postProcessMdast,
-  loadFile,
-  loadProject,
-  selectFile,
-  selectPageReferenceStates,
-  transformMdast,
-} from '../../store/local/actions';
+import { postProcessMdast, loadFile, selectFile, transformMdast } from '../../store/local/actions';
 
 export async function getFileContent(
   session: ISession,
@@ -23,8 +16,6 @@ export async function getFileContent(
     imageAltOutputFolder: imageAltOutputFolder ?? undefined,
     projectPath,
   });
-  const { pages } = projectPath ? loadProject(session, projectPath) : { pages: [{ file }] };
-  const pageReferenceStates = selectPageReferenceStates(session, pages);
-  await postProcessMdast(session, { file, pageReferenceStates });
+  await postProcessMdast(session, { file });
   return selectFile(session, file);
 }
