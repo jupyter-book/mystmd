@@ -124,7 +124,7 @@ export async function runWordExport(
       getImageBuffer(image: string) {
         return fs.readFileSync(image).buffer as any;
       },
-      useFieldsForCrossReferences: true,
+      useFieldsForCrossReferences: false,
     },
     frontmatter,
   );

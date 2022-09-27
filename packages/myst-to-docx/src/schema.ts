@@ -466,7 +466,10 @@ const cite: Handler<{ type: 'cite' } & Parent> = (state, node) => {
   state.renderChildren(node);
 };
 
-const citeGroup: Handler<{ type: 'citeGroup'; kind: string } & Parent> = (state, node) => {
+const citeGroup: Handler<{ type: 'citeGroup'; kind: 'narrative' | 'parenthetical' } & Parent> = (
+  state,
+  node,
+) => {
   if (node.kind === 'narrative') {
     state.renderChildren(node);
   } else {
