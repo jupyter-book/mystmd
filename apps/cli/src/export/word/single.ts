@@ -8,7 +8,12 @@ import { validateExport, ExportFormats } from 'myst-frontmatter';
 import { VFile } from 'vfile';
 import type { ISession } from '../../session/types';
 import { getRawFrontmatterFromFile } from '../../store/local/actions';
-import { createTempFolder, findProjectAndLoad, writeFileToFolder } from '../../utils';
+import {
+  createTempFolder,
+  findProjectAndLoad,
+  logMessagesFromVFile,
+  writeFileToFolder,
+} from '../../utils';
 import type { ExportWithOutput } from '../types';
 import { getDefaultExportFilename, getDefaultExportFolder } from '../utils/defaultNames';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
@@ -118,11 +123,12 @@ export async function runWordExport(
   );
   const frontmatterNodes = createArticleTitle(frontmatter.title, frontmatter.authors) as Content[];
   const vfile = new VFile();
+  vfile.path = output;
   const serializer = new DocxSerializer(
     vfile,
     {
       getImageBuffer(image: string) {
-        return fs.readFileSync(image).buffer as any;
+        return Buffer.from(fs.readFileSync(image).buffer);
       },
       useFieldsForCrossReferences: false,
     },
@@ -147,6 +153,7 @@ export async function runWordExport(
     serializer.render(footnote);
   });
   const doc = createDocFromState(serializer, createCurvenoteFooter(), DEFAULT_STYLE);
+  logMessagesFromVFile(session, vfile);
   session.log.info(`🖋  Writing docx to ${output}`);
   writeDocx(doc, (buffer) => writeFileToFolder(output, buffer));
 }

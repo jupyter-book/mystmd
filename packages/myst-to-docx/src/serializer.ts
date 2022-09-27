@@ -47,7 +47,10 @@ export class DocxSerializer implements IDocxSerializer {
 
   render(node: Node, parent?: Parent) {
     if (!this.handlers[node.type]) {
-      fileError(this.file, `Node of type "${node.type}" is not supported by docx renderer`);
+      fileError(this.file, `Node of type "${node.type}" is not supported by docx renderer`, {
+        node,
+        source: 'myst-to-docx:render',
+      });
       return;
     }
     this.handlers[node.type](this, node, parent);

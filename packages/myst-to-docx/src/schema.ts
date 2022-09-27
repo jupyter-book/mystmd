@@ -242,14 +242,14 @@ const code: Handler<Code> = (state, node) => {
   });
 };
 
-function getAspect(buffer: Buffer, size?: { width: number; height: number }): number {
+function getAspect(buffer: Buffer, size?: { width: number; height: number }): number | undefined {
   if (size) return size.height / size.width;
   try {
     // This does not run client side
     const dimensions = sizeOf(buffer);
     return dimensions.height / dimensions.width;
   } catch (error) {
-    return 1;
+    return undefined;
   }
 }
 
@@ -258,12 +258,19 @@ const image: Handler<Image> = (state, node) => {
   const dimensions = state.options.getImageDimensions?.(node.url);
   const width = getImageWidth(node.width, state.data.maxImageWidth ?? state.options.maxImageWidth);
   const aspect = getAspect(buffer, dimensions);
+  if (!aspect) {
+    fileError(state.file, `Error with checking image aspect ratio for "${node.url}".`, {
+      node,
+      source: 'myst-to-docx:image',
+      note: 'Either provide dimensions of the image with "getImageDimensions" or ensure that the result is a Buffer.',
+    });
+  }
   state.current.push(
     new ImageRun({
       data: buffer,
       transformation: {
         width,
-        height: width * aspect,
+        height: width * (aspect ?? 1),
       },
     }),
   );
@@ -476,10 +483,23 @@ const citeGroup: Handler<{ type: 'citeGroup'; kind: 'narrative' | 'parenthetical
     state.text('(');
     node.children.forEach((child, ind) => {
       state.render(child);
-      if (ind < node.children.length - 1) state.text(';');
+      if (ind < node.children.length - 1) state.text('; ');
     });
     state.text(')');
   }
+};
+
+const mystComment: Handler<{ type: 'mystComment' } & Parent> = () => {
+  // Do nothing!
+  return;
+};
+
+const mystDirective: Handler<{ type: 'mystDirective' } & Parent> = (state, node) => {
+  state.renderChildren(node);
+};
+
+const mystRole: Handler<{ type: 'mystRole' } & Parent> = (state, node) => {
+  state.renderChildren(node);
 };
 
 export const defaultHandlers = {
@@ -504,6 +524,9 @@ export const defaultHandlers = {
   code,
   image,
   block,
+  mystComment,
+  mystDirective,
+  mystRole,
   definitionList,
   definitionTerm,
   definitionDescription,

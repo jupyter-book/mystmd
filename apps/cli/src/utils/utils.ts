@@ -114,16 +114,17 @@ export function addWarningForFile(
   message: string,
   kind: WarningKind = 'warn',
 ) {
+  const prefix = file ? `${file}: ` : '';
   switch (kind) {
     case 'info':
-      session.log.info(`ℹ️ ${file}: ${message}`);
+      session.log.info(`ℹ️ ${prefix}${message}`);
       break;
     case 'error':
-      session.log.error(`⛔️ ${file}: ${message}`);
+      session.log.error(`⛔️ ${prefix}${message}`);
       break;
     case 'warn':
     default:
-      session.log.warn(`⚠️  ${file}: ${message}`);
+      session.log.warn(`⚠️  ${prefix}${message}`);
       break;
   }
   if (file) {
