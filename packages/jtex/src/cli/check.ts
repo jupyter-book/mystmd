@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 import yaml from 'js-yaml';
 import fs from 'fs';
-import { join } from 'path';
+import { join, sep, extname } from 'path';
 import type { ISession } from '../types';
 import type { ValidationOptions } from 'simple-validators';
 import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
@@ -44,6 +44,18 @@ function matchOpts(line: string, lineNumber: number, variables: Variables) {
 
 function lineNumbersToString(lineNumbers: number[]): string {
   return `line${lineNumbers.length > 1 ? 's' : ''} ${lineNumbers.join(', ')}`;
+}
+
+function findDuplicates<T extends string | number>(list: T[]): T[] {
+  const duplicates: T[] = [];
+  list.reduce((s, e) => {
+    if (s.has(e)) {
+      duplicates.push(e);
+    }
+    s.add(e);
+    return s;
+  }, new Set<T>());
+  return duplicates;
 }
 
 function extractVariablesFromTemplate(template: string) {
@@ -102,7 +114,7 @@ function printWarnings(
   return true;
 }
 
-export function checkTemplate(session: ISession, path: string) {
+export function checkTemplate(session: ISession, path: string, opts?: { fix?: boolean }) {
   const templateDir = path || '.';
   if (!fs.statSync(templateDir).isDirectory()) {
     throw new Error('The template path must be a directory.');
@@ -122,12 +134,40 @@ export function checkTemplate(session: ISession, path: string) {
   }
 
   const messages: Required<ValidationOptions['messages']> = { warnings: [], errors: [] };
+
+  if (configYaml.jtex !== 'v1') {
+    messages.errors.push({
+      property: 'jtex',
+      message: 'The template.yml must have a "jtex: v1" version.',
+    });
+    configYaml = { jtex: 'v1', ...configYaml };
+  }
+
   const validated = validateTemplateYml(configYaml, { property: '', messages, templateDir });
 
-  const configWarnings = printWarnings(session, 'template.yml', messages);
   if (!validated) {
+    printWarnings(session, 'template.yml', messages);
     throw new Error('Could not validate template.yml');
   }
+  // These are not strictly required, but should be included
+  ['title', 'description', 'version', 'license', 'thumbnail'].forEach((p) => {
+    if (validated[p as keyof typeof validated]) return;
+    messages.warnings.push({
+      property: p,
+      message: `The template.yml should include "${p}"`,
+    });
+  });
+  // Check that the thumbnail exists if listed
+  if (validated.thumbnail && !fs.existsSync(join(templateDir, validated.thumbnail))) {
+    messages.warnings.push({
+      property: 'thumbnail',
+      message: `The thumbnail "${validated.thumbnail}" does not exist`,
+    });
+  }
+
+  // Log all the config warnings for the template.yml
+  const configWarnings = printWarnings(session, 'template.yml', messages);
+
   // Validate global
   if (!variables.global.IMPORTS) {
     messages.errors?.push({
@@ -164,7 +204,7 @@ export function checkTemplate(session: ISession, path: string) {
     });
   }
 
-  // Validate non-frontmatter options
+  // Validate options
   const options = validated.options?.map((p) => p.id) ?? [];
   const usedOpts: string[] = [];
   Object.entries(variables.options).forEach(([optKey, lineNumbers]) => {
@@ -187,8 +227,9 @@ export function checkTemplate(session: ISession, path: string) {
     });
   }
 
-  // Validate non-frontmatter options
+  // Validate doc
   const doc = validated.doc?.map((p) => p.id) ?? [];
+  const extraDocOptions: { id: string }[] = [];
   Object.entries(variables.doc).forEach(([optKey, lineNumbers]) => {
     if (!doc.includes(optKey) && PAGE_FRONTMATTER_KEYS.includes(optKey)) {
       messages.errors.push({
@@ -197,6 +238,7 @@ export function checkTemplate(session: ISession, path: string) {
           lineNumbers,
         )}`,
       });
+      extraDocOptions.push({ id: optKey });
       return;
     }
     if (!RENDERER_DOC_KEYS.includes(optKey)) {
@@ -209,20 +251,102 @@ export function checkTemplate(session: ISession, path: string) {
       return;
     }
   });
-  Object.entries(variables.packages).forEach(([packageName, lineNumbers]) => {
-    if (lineNumbers.length > 1) {
-      messages.warnings.push({
-        property: 'packages',
-        message: `The package "${packageName}" is imported ${
-          lineNumbers.length
-        } times on ${lineNumbersToString(lineNumbers)}`,
-      });
-      return;
-    }
-  });
+
+  // Validate packages
+  if (!validated.packages || validated.packages.length === 0) {
+    messages.errors.push({
+      property: 'packages',
+      message: 'The packages should be included with a list of all packages used in the template',
+    });
+  }
+
+  const allPackages = new Set(validated.packages);
+  const fixedPackages = new Set(validated.packages);
+  if (validated.packages && allPackages.size !== validated.packages?.length) {
+    const duplicates = findDuplicates(validated.packages);
+    messages.errors.push({
+      property: 'packages',
+      message: `There are duplicate packages listed: "${duplicates.join(', ')}"`,
+    });
+  }
   const templateWarnings = printWarnings(session, 'template.tex', messages);
 
-  if (configWarnings || templateWarnings) {
+  const knownFileTypes = new Set(['.cls', '.def', '.sty']);
+  const maybeExtraFiles = fs.readdirSync(templateDir).filter((f) => knownFileTypes.has(extname(f)));
+  const fixedFiles = [];
+  if (
+    !validated.files ||
+    validated.files.length === 0 ||
+    validated.files.indexOf('template.tex') === -1
+  ) {
+    // Validate files
+    messages.errors.push({
+      property: 'files',
+      message: 'The files array must be a list with at least the "template.tex" in it.',
+    });
+    fixedFiles.push('template.tex', ...maybeExtraFiles);
+  }
+  const packageErrors =
+    validated.files
+      ?.map((file, i) => {
+        if (file.split(sep).length > 1) {
+          messages.errors.push({
+            property: `files.${i}`,
+            message: `The file "${file}" must be in the same directory as the main template.`,
+          });
+        }
+        let packages;
+        if (!fs.existsSync(file)) return true;
+        const fileContents = fs.readFileSync(join(templateDir, file)).toString();
+        switch (extname(file)) {
+          case '.cls':
+          case '.tex':
+          case '.def':
+          case '.sty':
+            packages = extractVariablesFromTemplate(fileContents).packages;
+            break;
+          default:
+            break;
+        }
+        if (!packages) {
+          return printWarnings(session, file, messages);
+        }
+        // Validate packages
+        Object.entries(packages).forEach(([packageName, lineNumbers]) => {
+          const lnos = lineNumbersToString(lineNumbers);
+          if (lineNumbers.length > 1) {
+            session.log.debug(
+              `The package "${packageName}" is imported ${lineNumbers.length} times on ${lnos} in ${file}`,
+            );
+          }
+          if (!allPackages.has(packageName)) {
+            messages.warnings.push({
+              property: `files.${i}.packages`,
+              message: `The file "${file}" includes "${packageName}" on ${lnos}, but that is not listed in the packages.`,
+            });
+          }
+          fixedPackages.add(packageName);
+        });
+        return printWarnings(session, file, messages);
+      })
+      ?.reduce((a, b) => a || b, false) ?? true;
+
+  const fileWarnings = printWarnings(session, 'template.tex', messages);
+
+  if (opts?.fix) {
+    configYaml.jtex = 'v1';
+    if (!configYaml.doc) {
+      configYaml.doc = extraDocOptions;
+    } else {
+      configYaml.doc.push(...extraDocOptions);
+    }
+    if (!configYaml.files || configYaml.files?.length === 0) {
+      configYaml.files = fixedFiles;
+    }
+    configYaml.packages = [...fixedPackages].sort();
+    fs.writeFileSync(templateYmlPath, yaml.dump(configYaml));
+  }
+  if (configWarnings || templateWarnings || packageErrors || fileWarnings) {
     throw new Error('jtex found warnings or errors in validating your template.');
   }
 }
@@ -255,6 +379,7 @@ function makeCheckCLI(program: Command) {
   const command = new Command('check')
     .description('Check that a template passes validation')
     .argument('[path]', 'Path to the template directory')
+    .option('--fix', 'Attempt to fix the template.yml by adding document options or packages.')
     .action(clirun(checkTemplate, { program, getSession }));
   return command;
 }
