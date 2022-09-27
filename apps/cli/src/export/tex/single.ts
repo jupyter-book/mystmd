@@ -247,6 +247,7 @@ export async function collectTexExportOptions(
   const resolvedExportOptions: ExportWithOutput[] = exportOptions
     .map((exp): ExportWithOutput | undefined => {
       let output: string;
+      const basename = getDefaultExportFilename(session, file, projectPath);
       if (filename) {
         output = filename;
       } else if (exp.output) {
@@ -254,10 +255,11 @@ export async function collectTexExportOptions(
         output = path.resolve(path.dirname(file), exp.output);
       } else {
         output = getDefaultExportFolder(session, file, projectPath);
+        // Special case for tex with multiple file outputs
+        if (extension === 'tex') output = path.join(output, `${basename}_tex`);
       }
       if (!path.extname(output)) {
-        const slug = getDefaultExportFilename(session, file, projectPath);
-        output = path.join(output, `${slug}.${extension}`);
+        output = path.join(output, `${basename}.${extension}`);
       }
       if (!output.endsWith(`.${extension}`)) {
         session.log.error(`The filename must end with '.${extension}': "${output}"`);

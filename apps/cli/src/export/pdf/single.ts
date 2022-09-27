@@ -47,7 +47,7 @@ export function texExportOptionsFromPdf(
   const outputTexFile = `${basename}.tex`;
   let output: string;
   if (keepTex) {
-    const texOutputFolder = path.join(path.dirname(pdfExp.output), `${basename}_tex`);
+    const texOutputFolder = path.join(path.dirname(pdfExp.output), `${basename}_pdf_tex`);
     if (clean) cleanOutput(session, texOutputFolder);
     output = path.join(texOutputFolder, outputTexFile);
   } else {
