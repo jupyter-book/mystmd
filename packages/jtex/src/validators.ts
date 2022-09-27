@@ -297,7 +297,15 @@ export function validateTemplatePartDefinition(input: any, opts: ValidationOptio
   const value = validateObjectKeys(
     input,
     {
-      optional: ['description', 'required', 'plain', 'max_chars', 'max_words', 'condition'],
+      optional: [
+        'title',
+        'description',
+        'required',
+        'plain',
+        'max_chars',
+        'max_words',
+        'condition',
+      ],
       required: ['id'],
     },
     opts,
@@ -306,6 +314,9 @@ export function validateTemplatePartDefinition(input: any, opts: ValidationOptio
   const id = validateString(value.id, incrementOptions('id', opts));
   if (id === undefined) return undefined;
   const output: TemplatePartDefinition = { id };
+  if (defined(value.title)) {
+    output.title = validateString(value.title, incrementOptions('title', opts));
+  }
   if (defined(value.description)) {
     output.description = validateString(value.description, incrementOptions('description', opts));
   }

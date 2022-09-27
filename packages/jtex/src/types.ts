@@ -10,6 +10,7 @@ export type ExpandedImports = { imports: string[]; commands: string[] };
 
 export type TemplatePartDefinition = {
   id: string;
+  title?: string;
   description?: string;
   required?: boolean;
   plain?: boolean;
