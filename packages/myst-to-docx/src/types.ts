@@ -29,6 +29,7 @@ export interface IDocxSerializer<D extends Record<string, any> = StateData> {
   numbering: INumbering[];
   footnotes: IFootnotes;
   text: (text: string | null | undefined, opts?: IRunOptions) => void;
+  render: (node: Node, parent?: Parent) => void;
   renderChildren: (
     parent: Parent,
     paragraphOpts?: IParagraphOptions,

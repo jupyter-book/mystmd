@@ -80,6 +80,7 @@
     "myst-common": "*",
     "myst-frontmatter": "*",
     "myst-spec": "^0.0.4",
+    "myst-to-docx": "*",
     "myst-to-tex": "*",
     "myst-transforms": "*",
     "mystjs": "^0.0.13",

@@ -1,6 +1,7 @@
 import type { VFile } from 'vfile';
 import type { Node, Parent } from 'myst-spec';
 import { fileError, fileWarn } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import type { IParagraphOptions, IRunOptions, ParagraphChild, Table } from 'docx';
 import { Paragraph, TextRun } from 'docx';
 import type { Handler, IDocxSerializer, IFootnotes, INumbering, Options, StateData } from './types';
@@ -32,18 +33,24 @@ export class DocxSerializer implements IDocxSerializer {
 
   current: ParagraphChild[] = [];
 
-  constructor(file: VFile, options: Options) {
+  frontmatter: PageFrontmatter = {};
+
+  constructor(file: VFile, options: Options, frontmatter?: PageFrontmatter) {
     this.file = file;
     this.data = {};
     this.handlers = options.handlers ?? defaultHandlers;
     this.options = options ?? {};
     this.children = [];
     this.numbering = [];
+    this.frontmatter = frontmatter ?? {};
   }
 
   render(node: Node, parent?: Parent) {
     if (!this.handlers[node.type]) {
-      fileError(this.file, `Node of type "${node.type}" is not supported by docx renderer`);
+      fileError(this.file, `Node of type "${node.type}" is not supported by docx renderer`, {
+        node,
+        source: 'myst-to-docx:render',
+      });
       return;
     }
     this.handlers[node.type](this, node, parent);

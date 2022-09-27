@@ -46,6 +46,8 @@ import type {
   Caption,
   Table as TableNode,
   TableCell as SpecTableCellNode,
+  Admonition,
+  AdmonitionTitle,
 } from 'myst-spec';
 import type { Handler, Mutable } from './types';
 import {
@@ -242,14 +244,14 @@ const code: Handler<Code> = (state, node) => {
   });
 };
 
-function getAspect(buffer: Buffer, size?: { width: number; height: number }): number {
+function getAspect(buffer: Buffer, size?: { width: number; height: number }): number | undefined {
   if (size) return size.height / size.width;
   try {
     // This does not run client side
     const dimensions = sizeOf(buffer);
     return dimensions.height / dimensions.width;
   } catch (error) {
-    return 1;
+    return undefined;
   }
 }
 
@@ -258,12 +260,19 @@ const image: Handler<Image> = (state, node) => {
   const dimensions = state.options.getImageDimensions?.(node.url);
   const width = getImageWidth(node.width, state.data.maxImageWidth ?? state.options.maxImageWidth);
   const aspect = getAspect(buffer, dimensions);
+  if (!aspect) {
+    fileError(state.file, `Error with checking image aspect ratio for "${node.url}".`, {
+      node,
+      source: 'myst-to-docx:image',
+      note: 'Either provide dimensions of the image with "getImageDimensions" or ensure that the result is a Buffer.',
+    });
+  }
   state.current.push(
     new ImageRun({
       data: buffer,
       transformation: {
         width,
-        height: width * aspect,
+        height: width * (aspect ?? 1),
       },
     }),
   );
@@ -284,6 +293,37 @@ const image: Handler<Image> = (state, node) => {
   state.closeBlock();
 };
 
+const admonitionStyle: IParagraphOptions = {
+  border: {
+    left: {
+      style: BorderStyle.DOUBLE,
+      color: '5D85D0',
+    },
+  },
+  indent: { left: convertInchesToTwip(0.2), right: convertInchesToTwip(0.2) },
+};
+const admonition: Handler<Admonition> = (state, node) => {
+  state.blankLine();
+  state.renderChildren(node as Parent, admonitionStyle);
+  state.closeBlock();
+  state.blankLine();
+};
+
+const admonitionTitle: Handler<AdmonitionTitle> = (state, node) => {
+  state.renderChildren(
+    node,
+    {
+      ...admonitionStyle,
+      shading: {
+        type: ShadingType.SOLID,
+        color: '5D85D0',
+      },
+    },
+    { bold: true, color: 'FFFFFF' },
+  );
+  state.closeBlock();
+};
+
 const definitionStyle: IParagraphOptions = {
   border: {
     left: {
@@ -294,7 +334,6 @@ const definitionStyle: IParagraphOptions = {
   indent: { left: convertInchesToTwip(0.2), right: convertInchesToTwip(0.2) },
 };
 const definitionList: Handler<DefinitionList> = (state, node) => {
-  state.blankLine();
   state.renderChildren(node, definitionStyle);
   state.closeBlock();
   state.blankLine();
@@ -305,7 +344,6 @@ const definitionTerm: Handler<DefinitionTerm> = (state, node) => {
     shading: {
       type: ShadingType.SOLID,
       color: 'D2D3D2',
-      fill: 'D2D3D2',
     },
   });
   state.closeBlock();
@@ -462,6 +500,39 @@ const table: Handler<TableNode> = (state, node) => {
   state.children = actualChildren;
 };
 
+const cite: Handler<{ type: 'cite' } & Parent> = (state, node) => {
+  state.renderChildren(node);
+};
+
+const citeGroup: Handler<{ type: 'citeGroup'; kind: 'narrative' | 'parenthetical' } & Parent> = (
+  state,
+  node,
+) => {
+  if (node.kind === 'narrative') {
+    state.renderChildren(node);
+  } else {
+    state.text('(');
+    node.children.forEach((child, ind) => {
+      state.render(child);
+      if (ind < node.children.length - 1) state.text('; ');
+    });
+    state.text(')');
+  }
+};
+
+const mystComment: Handler<{ type: 'mystComment' } & Parent> = () => {
+  // Do nothing!
+  return;
+};
+
+const mystDirective: Handler<{ type: 'mystDirective' } & Parent> = (state, node) => {
+  state.renderChildren(node);
+};
+
+const mystRole: Handler<{ type: 'mystRole' } & Parent> = (state, node) => {
+  state.renderChildren(node);
+};
+
 export const defaultHandlers = {
   text,
   paragraph,
@@ -484,6 +555,11 @@ export const defaultHandlers = {
   code,
   image,
   block,
+  mystComment,
+  mystDirective,
+  mystRole,
+  admonition,
+  admonitionTitle,
   definitionList,
   definitionTerm,
   definitionDescription,
@@ -496,4 +572,6 @@ export const defaultHandlers = {
   footnoteReference,
   footnoteDefinition,
   table,
+  cite,
+  citeGroup,
 };

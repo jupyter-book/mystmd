@@ -69,7 +69,7 @@ export function getInlineCitation(c: Cite, kind: InlineCite) {
   if (authors.length > 2) {
     return [
       { type: 'text', value: `${authors[0].family} ` },
-      { type: 'emphasis', value: 'et al.' },
+      { type: 'emphasis', children: [{ type: 'text', value: 'et al.' }] },
       { type: 'text', value: `${yearPart}` },
     ];
   }

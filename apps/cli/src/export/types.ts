@@ -1,3 +1,4 @@
+import type { Export } from 'myst-frontmatter';
 import type { ExportableFormatTypes } from '@curvenote/blocks';
 
 export interface ExportConfig {
@@ -22,3 +23,7 @@ export interface ExportConfig {
     }[];
   } & Record<string, any>;
 }
+
+export type ExportWithOutput = Export & {
+  output: string;
+};

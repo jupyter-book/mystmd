@@ -1,4 +1,4 @@
-import type { INumberingOptions, ISectionOptions, ParagraphChild } from 'docx';
+import type { Footer, INumberingOptions, ISectionOptions, ParagraphChild } from 'docx';
 import {
   InternalHyperlink,
   SimpleField,
@@ -12,20 +12,30 @@ import {
 import { Buffer } from 'buffer'; // Important for frontend development!
 import type { Root } from 'mdast';
 import type { Image as MdastImage } from 'myst-spec';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Node as ProsemirrorNode } from 'prosemirror-model';
-import type { IFootnotes, Options } from './types';
 import { selectAll } from 'unist-util-select';
+import type { IFootnotes, Options } from './types';
 
 export function createShortId() {
   return Math.random().toString(36).substr(2, 9);
 }
 
-export function createDocFromState(state: {
-  numbering: INumberingOptions['config'];
-  children: ISectionOptions['children'];
-  footnotes?: IFootnotes;
-}) {
+export function createDocFromState(
+  state: {
+    numbering: INumberingOptions['config'];
+    children: ISectionOptions['children'];
+    frontmatter: PageFrontmatter;
+    footnotes?: IFootnotes;
+  },
+  footer?: Footer,
+  styles?: string,
+) {
+  const { title, description, keywords } = state.frontmatter;
   const doc = new Document({
+    title,
+    description,
+    keywords: keywords?.join(', '),
     footnotes: state.footnotes,
     numbering: {
       config: state.numbering,
@@ -36,8 +46,10 @@ export function createDocFromState(state: {
           type: SectionType.CONTINUOUS,
         },
         children: state.children,
+        footers: footer ? { default: footer } : undefined,
       },
     ],
+    externalStyles: styles,
   });
   return doc;
 }

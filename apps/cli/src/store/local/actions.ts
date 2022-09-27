@@ -406,25 +406,27 @@ export async function postProcessMdast(
   }: {
     file: string;
     checkLinks?: boolean;
-    pageReferenceStates: PageReferenceStates;
+    pageReferenceStates?: PageReferenceStates;
   },
 ) {
   const toc = tic();
   const { log } = session;
   const cache = castSession(session);
   const mdastPost = selectFile(session, file);
-  const projectState = new MultiPageReferenceState(pageReferenceStates, file);
+  const fileState = cache.$internalReferences[file];
+  const state = pageReferenceStates
+    ? new MultiPageReferenceState(pageReferenceStates, file)
+    : fileState;
   // NOTE: This is doing things in place, we should potentially make this a different state?
   const transformers = [
     new OxaTransformer(session), // This links any oxa links to their file if they exist
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
-  linksTransform(mdastPost.mdast, projectState.file as VFile, { transformers });
-  const state = cache.$internalReferences[file];
-  resolveReferencesTransform(mdastPost.mdast, projectState.file as VFile, { state: projectState });
+  linksTransform(mdastPost.mdast, state.file as VFile, { transformers });
+  resolveReferencesTransform(mdastPost.mdast, state.file as VFile, { state });
   // Ensure there are keys on every node
   keysTransform(mdastPost.mdast);
-  logMessagesFromVFile(session, state.file);
+  logMessagesFromVFile(session, fileState.file);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
   if (checkLinks) await checkLinksTransform(session, file, mdastPost.mdast);
 }
@@ -498,7 +500,7 @@ export function addProjectReferencesToObjectsInv(
   return inv;
 }
 
-function loadProject(session: ISession, projectPath: string, writeToc = false) {
+export function loadProject(session: ISession, projectPath: string, writeToc = false) {
   const project = loadProjectFromDisk(session, projectPath, {
     writeToc,
   });
@@ -510,7 +512,7 @@ function loadProject(session: ISession, projectPath: string, writeToc = false) {
   return { project, pages };
 }
 
-function selectPageReferenceStates(session: ISession, pages: { file: string }[]) {
+export function selectPageReferenceStates(session: ISession, pages: { file: string }[]) {
   const cache = castSession(session);
   const pageReferenceStates: PageReferenceStates = pages
     .map((page) => ({

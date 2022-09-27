@@ -1,29 +1,31 @@
-import type { Node } from 'prosemirror-model';
-import { schemas } from '@curvenote/schema';
+import type { Heading } from 'myst-spec';
 import type { Author } from '@curvenote/blocks';
 
-export async function createArticleTitle(blockTitle: string, authors: Partial<Author>[]) {
-  const schema = schemas.getSchema('full');
-  const header = schema.nodes.heading.createAndFill({ level: 1 }, schema.text(blockTitle)) as Node;
+export function createArticleTitle(blockTitle?: string, authors?: Partial<Author>[]) {
+  const headings: Heading[] = [];
+  if (blockTitle) {
+    headings.push({
+      type: 'heading',
+      depth: 1,
+      children: [{ type: 'text', value: blockTitle }],
+    });
+  }
   // TODO: actually do a subtitle
   const authorNames = !authors ? undefined : authors.map((v) => v.name || 'Unknown Author');
   if (authorNames && authorNames.length) {
-    const subtitle = schema.nodes.heading.createAndFill(
-      { level: 4 },
-      schema.text(authorNames.join(', ')),
-    ) as Node;
-    return schema.nodes.doc.createAndFill({}, [header, subtitle]) as Node;
+    headings.push({
+      type: 'heading',
+      depth: 4,
+      children: [{ type: 'text', value: authorNames.join(', ') }],
+    });
   }
-
-  return schema.nodes.doc.createAndFill({}, [header]) as Node;
+  return headings;
 }
 
-export function createReferenceTitle() {
-  const schema = schemas.getSchema('full');
-  const header = schema.nodes.heading.createAndFill(
-    { level: 2 },
-    schema.text('References'),
-  ) as Node;
-  const doc = schema.nodes.doc.createAndFill({}, [header]) as Node;
-  return doc;
+export function createReferenceTitle(): Heading {
+  return {
+    type: 'heading',
+    depth: 2,
+    children: [{ type: 'text', value: 'References' }],
+  };
 }

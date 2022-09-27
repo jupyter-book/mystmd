@@ -5,9 +5,9 @@ import JTex, { pdfExportCommand } from 'jtex';
 import type { Logger } from '../../logging';
 import type { ISession } from '../../session/types';
 import { BUILD_FOLDER, createTempFolder } from '../../utils';
-import type { ExportWithOutput } from '../tex/types';
+import type { ExportWithOutput } from '../types';
 import { exec } from '../utils';
-import { cleanOutput } from '../tex/single';
+import { cleanOutput } from '../utils/cleanOutput';
 
 const copyFile = util.promisify(fs.copyFile);
 
@@ -91,7 +91,7 @@ export async function createPdfGivenTexExport(
   const logBuild = path.join(buildPath, logFile);
   const texLogBuild = path.join(buildPath, texLogFile);
   // Log file location saved alongside pdf
-  const logOutputFolder = path.join(path.dirname(pdfOutput), `${pdfBasename}_logs`);
+  const logOutputFolder = path.join(path.dirname(pdfOutput), `${pdfBasename}_pdf_logs`);
   const logOutput = path.join(logOutputFolder, logFile);
   const texLogOutput = path.join(logOutputFolder, texLogFile);
   if (clean) cleanOutput(session, logOutputFolder);
