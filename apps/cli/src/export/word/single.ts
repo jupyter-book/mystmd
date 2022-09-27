@@ -14,9 +14,9 @@ import { getDefaultExportFilename, getDefaultExportFolder } from '../utils/defau
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
 import { cleanOutput } from '../utils/cleanOutput';
 import { getFileContent } from '../utils/getFileContent';
-import { createArticleTitle } from './titles';
-import { selectAll } from 'mystjs';
 import { createCurvenoteFooter } from './footers';
+import DEFAULT_STYLE from './simpleStyles';
+import { createArticleTitle } from './titles';
 
 export type WordExportOptions = {
   filename: string;
@@ -117,12 +117,16 @@ export async function runWordExport(
   );
   const frontmatterNodes = createArticleTitle(frontmatter.title, frontmatter.authors) as Content[];
   const vfile = new VFile();
-  const serializer = new DocxSerializer(vfile, {
-    getImageBuffer(image: string) {
-      return fs.readFileSync(image).buffer as any;
+  const serializer = new DocxSerializer(
+    vfile,
+    {
+      getImageBuffer(image: string) {
+        return fs.readFileSync(image).buffer as any;
+      },
+      useFieldsForCrossReferences: true,
     },
-    useFieldsForCrossReferences: true,
-  });
+    frontmatter,
+  );
   frontmatterNodes.forEach((node) => {
     serializer.render(node);
   });
@@ -130,7 +134,7 @@ export async function runWordExport(
   Object.values(references.footnotes).forEach((footnote) => {
     serializer.render(footnote);
   });
-  const doc = createDocFromState(serializer, createCurvenoteFooter());
+  const doc = createDocFromState(serializer, createCurvenoteFooter(), DEFAULT_STYLE);
   session.log.info(`🖋  Writing docx to ${output}`);
   writeDocx(doc, (buffer) => writeFileToFolder(output, buffer));
 }
