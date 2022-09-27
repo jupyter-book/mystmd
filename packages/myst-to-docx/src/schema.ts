@@ -46,6 +46,8 @@ import type {
   Caption,
   Table as TableNode,
   TableCell as SpecTableCellNode,
+  Admonition,
+  AdmonitionTitle,
 } from 'myst-spec';
 import type { Handler, Mutable } from './types';
 import {
@@ -291,6 +293,37 @@ const image: Handler<Image> = (state, node) => {
   state.closeBlock();
 };
 
+const admonitionStyle: IParagraphOptions = {
+  border: {
+    left: {
+      style: BorderStyle.DOUBLE,
+      color: '5D85D0',
+    },
+  },
+  indent: { left: convertInchesToTwip(0.2), right: convertInchesToTwip(0.2) },
+};
+const admonition: Handler<Admonition> = (state, node) => {
+  state.blankLine();
+  state.renderChildren(node as Parent, admonitionStyle);
+  state.closeBlock();
+  state.blankLine();
+};
+
+const admonitionTitle: Handler<AdmonitionTitle> = (state, node) => {
+  state.renderChildren(
+    node,
+    {
+      ...admonitionStyle,
+      shading: {
+        type: ShadingType.SOLID,
+        color: '5D85D0',
+      },
+    },
+    { bold: true, color: 'FFFFFF' },
+  );
+  state.closeBlock();
+};
+
 const definitionStyle: IParagraphOptions = {
   border: {
     left: {
@@ -301,7 +334,6 @@ const definitionStyle: IParagraphOptions = {
   indent: { left: convertInchesToTwip(0.2), right: convertInchesToTwip(0.2) },
 };
 const definitionList: Handler<DefinitionList> = (state, node) => {
-  state.blankLine();
   state.renderChildren(node, definitionStyle);
   state.closeBlock();
   state.blankLine();
@@ -312,7 +344,6 @@ const definitionTerm: Handler<DefinitionTerm> = (state, node) => {
     shading: {
       type: ShadingType.SOLID,
       color: 'D2D3D2',
-      fill: 'D2D3D2',
     },
   });
   state.closeBlock();
@@ -527,6 +558,8 @@ export const defaultHandlers = {
   mystComment,
   mystDirective,
   mystRole,
+  admonition,
+  admonitionTitle,
   definitionList,
   definitionTerm,
   definitionDescription,
