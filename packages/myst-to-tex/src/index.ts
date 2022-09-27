@@ -200,6 +200,7 @@ const handlers: Record<string, Handler> = {
     state.write('}');
   },
   cite(node, state, parent) {
+    state.usePackages('natbib');
     if (parent.type === 'citeGroup') {
       state.write(node.label);
     } else {
