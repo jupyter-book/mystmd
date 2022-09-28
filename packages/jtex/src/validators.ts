@@ -28,6 +28,7 @@ import type {
   TemplateDocDefinition,
   TemplateOptionDefinition,
   TemplatePartDefinition,
+  TemplateStyles,
   TemplateYml,
 } from './types';
 import { TemplateOptionTypes } from './types';
@@ -346,6 +347,25 @@ export function validateTemplatePartDefinition(input: any, opts: ValidationOptio
   return output;
 }
 
+export function validateTemplateStyle(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, { optional: ['citation', 'bibliography'] }, opts);
+  if (value === undefined) return undefined;
+  const output: TemplateStyles = {};
+  if (defined(value.citation)) {
+    output.citation = validateChoice(value.citation, {
+      ...incrementOptions('citation', opts),
+      choices: ['numerical-only'],
+    });
+  }
+  if (defined(value.bibliography)) {
+    output.bibliography = validateChoice(value.bibliography, {
+      ...incrementOptions('bibliography', opts),
+      choices: ['natbib', 'biblatex'],
+    });
+  }
+  return output;
+}
+
 export function validateTemplateYml(
   input: any,
   opts: ValidationOptions & { templateDir?: string },
@@ -365,7 +385,7 @@ export function validateTemplateYml(
         'github',
         'thumbnail',
         'build',
-        'schema',
+        'style',
         'parts',
         'doc',
         'options',
@@ -420,8 +440,8 @@ export function validateTemplateYml(
   if (defined(value.build)) {
     output.build = validateObject(value.build, incrementOptions('build', opts));
   }
-  if (defined(value.schema)) {
-    output.schema = validateObject(value.schema, incrementOptions('schema', opts));
+  if (defined(value.style)) {
+    output.style = validateTemplateStyle(value.style, incrementOptions('style', opts));
   }
   if (defined(value.parts)) {
     output.parts = validateList(value.parts, incrementOptions('parts', opts), (val, ind) => {

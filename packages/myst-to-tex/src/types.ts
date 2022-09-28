@@ -17,9 +17,8 @@ export type Options = {
   handlers?: Record<string, Handler>;
   beamer?: boolean;
   math?: MathPlugins;
-  localizeId?: (src: string) => string;
-  localizeLink?: (src: string) => string;
-  localizeImageSrc?: (src: string) => string;
+  bibliography?: 'natbib' | 'biblatex';
+  citestyle?: 'numerical-only';
 };
 
 export type StateData = {

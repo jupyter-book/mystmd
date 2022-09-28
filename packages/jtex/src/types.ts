@@ -46,6 +46,11 @@ export type TemplateOptionDefinition = TemplateDocDefinition & {
   max_chars?: number;
 };
 
+export type TemplateStyles = {
+  citation?: 'numerical-only';
+  bibliography?: 'natbib' | 'biblatex';
+};
+
 export type TemplateYml = {
   jtex: 'v1';
   title?: string;
@@ -57,8 +62,8 @@ export type TemplateYml = {
   source?: string;
   github?: string;
   thumbnail?: string;
-  build?: Record<string, any>;
-  schema?: Record<string, any>;
+  build?: { engine?: string };
+  style?: TemplateStyles;
   parts?: TemplatePartDefinition[];
   doc?: TemplateDocDefinition[];
   options?: TemplateOptionDefinition[];

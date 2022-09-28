@@ -138,7 +138,7 @@ const handlers: Record<string, Handler> = {
   },
   link(node, state) {
     state.usePackages('url', 'hyperref');
-    const href = state.options.localizeLink?.(node.url) ?? node.url;
+    const href = node.url;
     if (node.children[0]?.value === href) {
       // URL is the same
       state.write(`\\url{${href}}`);
@@ -160,7 +160,7 @@ const handlers: Record<string, Handler> = {
     state.usePackages('graphicx');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width: nodeWidth, url: nodeSrc, align } = node;
-    const src = state.options.localizeImageSrc?.(nodeSrc) || nodeSrc;
+    const src = nodeSrc;
     const width = getLatexImageWidth(nodeWidth);
     //   let align = 'center';
     //   switch (nodeAlign?.toLowerCase()) {
@@ -190,19 +190,31 @@ const handlers: Record<string, Handler> = {
   crossReference(node, state) {
     // Look up reference and add the text
     const text = (node.template ?? toText(node))?.replace(/\s/g, '~') || '%s';
-    const id = state.options.localizeId?.(node.label) || node.label;
+    const id = node.label;
     state.write(text.replace(/%s/g, `\\ref{${id}}`));
   },
   citeGroup(node, state) {
-    const tp = node.kind === 'narrative' ? 't' : 'p';
-    state.write(`\\cite${tp}{`);
+    if (state.options.citestyle === 'numerical-only') {
+      state.write('\\cite{');
+    } else if (state.options.bibliography === 'biblatex') {
+      const command = node.kind === 'narrative' ? 'textcite' : 'parencite';
+      state.write(`\\${command}{`);
+    } else {
+      const tp = node.kind === 'narrative' ? 't' : 'p';
+      state.write(`\\cite${tp}{`);
+    }
     state.renderChildren(node, true, ', ');
     state.write('}');
   },
   cite(node, state, parent) {
-    state.usePackages('natbib');
+    if (!state.options.bibliography) {
+      state.usePackages('natbib');
+      // Don't include biblatex in the package list
+    }
     if (parent.type === 'citeGroup') {
       state.write(node.label);
+    } else if (state.options.bibliography === 'biblatex') {
+      state.write(`\\textcite{${node.label}}`);
     } else {
       state.write(`\\cite{${node.label}}`);
     }

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { TemplatePartDefinition, ExpandedImports } from 'jtex';
+import type { TemplatePartDefinition, ExpandedImports, TemplateYml } from 'jtex';
 import JTex, { mergeExpandedImports } from 'jtex';
 import type { Root } from 'mdast';
 import { selectAll, unified } from 'mystjs';
@@ -14,15 +14,8 @@ import { remove } from 'unist-util-remove';
 import { copyNode } from 'myst-common';
 import type { Block } from 'myst-spec';
 import type { ISession } from '../../session/types';
-import {
-  bibFilesInDir,
-  getRawFrontmatterFromFile,
-  loadFile,
-  selectFile,
-  transformMdast,
-} from '../../store/local/actions';
-import { selectLocalProject, selectPageSlug } from '../../store/selectors';
-import { createSlug } from '../../toc/utils';
+import { bibFilesInDir, getRawFrontmatterFromFile } from '../../store/local/actions';
+import { selectLocalProject } from '../../store/selectors';
 import { findProjectAndLoad, writeFileToFolder } from '../../utils';
 import type { ExportWithOutput } from '../types';
 import { makeBuildPaths } from '../utils';
@@ -78,8 +71,12 @@ export async function singleArticleToTex(
   return article;
 }
 
-export function mdastToTex(mdast: Root, frontmatter: PageFrontmatter) {
-  const pipe = unified().use(mystToTex, { math: frontmatter?.math });
+function mdastToTex(mdast: Root, frontmatter: PageFrontmatter, templateYml: TemplateYml | null) {
+  const pipe = unified().use(mystToTex, {
+    math: frontmatter?.math,
+    citestyle: templateYml?.style?.citation,
+    bibliography: templateYml?.style?.bibliography,
+  });
   const result = pipe.runSync(mdast as any);
   const tex = pipe.stringify(result);
   return tex.result as LatexResult;
@@ -106,11 +103,12 @@ export function extractPart(
   mdast: Root,
   partDefinition: TemplatePartDefinition,
   frontmatter: PageFrontmatter,
+  templateYml: TemplateYml,
 ): LatexResult | undefined {
   const blockParts = blockPartsFromMdast(mdast, partDefinition.id);
   if (!blockParts) return undefined;
   const taggedMdast = { type: 'root', children: copyNode(blockParts) } as unknown as Root;
-  const partContent = mdastToTex(taggedMdast, frontmatter);
+  const partContent = mdastToTex(taggedMdast, frontmatter, templateYml);
   // Remove the blockparts from the main document
   blockParts.forEach((block) => {
     (block as any).type = '__delete__';
@@ -132,7 +130,7 @@ export async function localArticleToTexRaw(
     projectPath,
     'images',
   );
-  const result = mdastToTex(mdast, frontmatter);
+  const result = mdastToTex(mdast, frontmatter, null);
   session.log.info(`🖋  Writing tex to ${output}`);
   // TODO: add imports and macros?
   writeFileToFolder(output, result.value);
@@ -155,7 +153,7 @@ export async function localArticleToTexTemplated(
   projectPath?: string,
   force?: boolean,
 ) {
-  const { frontmatter, mdast, references } = await getFileContent(
+  const { frontmatter, mdast } = await getFileContent(
     session,
     file,
     path.join(path.dirname(templateOptions.output), 'images'),
@@ -182,7 +180,7 @@ export async function localArticleToTexTemplated(
   const parts: Record<string, string> = {};
   let collectedImports: ExpandedImports = { imports: [], commands: [] };
   partDefinitions.forEach((def) => {
-    const result = extractPart(mdast, def, frontmatter);
+    const result = extractPart(mdast, def, frontmatter, templateYml);
     if (result != null) {
       collectedImports = mergeExpandedImports(collectedImports, result);
       parts[def.id] = result?.value ?? '';
@@ -193,7 +191,7 @@ export async function localArticleToTexTemplated(
   // Need to load up template yaml - returned from jtex, with 'parts' dict
   // This probably means we need to store tags alongside oxa link for blocks
   // This will need opts eventually --v
-  const result = mdastToTex(mdast, frontmatter);
+  const result = mdastToTex(mdast, frontmatter, templateYml);
   // Fill in template
   session.log.info(`🖋  Writing templated tex to ${templateOptions.output}`);
   jtex.render({

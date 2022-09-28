@@ -150,13 +150,18 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
     throw new Error('Could not validate template.yml');
   }
   // These are not strictly required, but should be included
-  ['title', 'description', 'version', 'license', 'thumbnail'].forEach((p) => {
+  ['title', 'description', 'version', 'thumbnail'].forEach((p) => {
     if (validated[p as keyof typeof validated]) return;
     messages.warnings.push({
       property: p,
       message: `The template.yml should include "${p}"`,
     });
   });
+  if (!validated.license) {
+    session.log.info(
+      'The template.yml should include a valid license. See https://spdx.org/licenses/ for valid keys.',
+    );
+  }
   // Check that the thumbnail exists if listed
   if (validated.thumbnail && !fs.existsSync(join(templateDir, validated.thumbnail))) {
     messages.warnings.push({
@@ -271,7 +276,7 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
   }
   const templateWarnings = printWarnings(session, 'template.tex', messages);
 
-  const knownFileTypes = new Set(['.cls', '.def', '.sty']);
+  const knownFileTypes = new Set(['.cls', '.def', '.sty', '.bst']);
   const maybeExtraFiles = fs.readdirSync(templateDir).filter((f) => knownFileTypes.has(extname(f)));
   const fixedFiles = [];
   if (
