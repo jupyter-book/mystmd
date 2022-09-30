@@ -131,6 +131,7 @@ export async function localArticleToTexTemplated(
   const jtex = new JTex(session, {
     template: templateOptions.template || undefined,
     path: templatePath,
+    rootDir: projectPath || path.dirname(file),
   });
   await jtex.ensureTemplateExistsOnPath();
   const templateYml = jtex.getValidatedTemplateYml();
@@ -225,7 +226,9 @@ export async function collectTexExportOptions(
       const resolvedOptions: { output: string; template?: string | null } = { output };
       if (disableTemplate) {
         resolvedOptions.template = null;
-      } else if (!template && exp.template) {
+      } else if (template) {
+        resolvedOptions.template = template;
+      } else if (exp.template) {
         // template path from file frontmatter needs resolution relative to working directory
         const resolvedTemplatePath = path.resolve(path.dirname(file), exp.template);
         if (fs.existsSync(resolvedTemplatePath)) {

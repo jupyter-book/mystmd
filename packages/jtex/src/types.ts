@@ -54,17 +54,18 @@ export type TemplateStyles = {
   bibliography?: 'natbib' | 'biblatex';
 };
 
-export type TemplateYml = {
-  jtex: 'v1';
+type TemplateYmlListPartial = {
   title?: string;
   description?: string;
   version?: string;
   authors?: Author[];
   license?: Licenses;
   tags?: string[];
-  source?: string;
+};
+
+type TemplateYmlPartial = {
+  jtex: 'v1';
   github?: string;
-  thumbnail?: string;
   build?: { engine?: string };
   style?: TemplateStyles;
   parts?: TemplatePartDefinition[];
@@ -73,6 +74,40 @@ export type TemplateYml = {
   packages?: string[];
   files?: string[];
 };
+
+type TemplateYmlIdLinks = {
+  id: string;
+  links: {
+    self: string;
+    download: string;
+    thumbnail: string;
+    source?: string;
+  };
+};
+
+/**
+ * Type template.yml files are directly validated against
+ */
+export type TemplateYml = TemplateYmlPartial &
+  TemplateYmlListPartial & {
+    source?: string;
+    thumbnail?: string;
+  };
+
+/**
+ * Type for /template/tex API list response
+ */
+export type TemplateYmlListResponse = {
+  items: (TemplateYmlListPartial &
+    TemplateYmlIdLinks & {
+      kind: string;
+    })[];
+};
+
+/**
+ * Type for /template/tex/org/name API response
+ */
+export type TemplateYmlResponse = TemplateYmlPartial & TemplateYmlListPartial & TemplateYmlIdLinks;
 
 export type ValueAndIndex = {
   value: any;
@@ -108,14 +143,4 @@ export type Renderer = {
   options: Record<string, any>;
   parts: Record<string, string>;
   IMPORTS?: string;
-};
-
-export type TemplateResponse = {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  links: {
-    self: string;
-  };
 };
