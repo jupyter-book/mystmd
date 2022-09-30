@@ -7,8 +7,8 @@ export type Handler = (node: any, state: ITexSerializer, parent: any) => void;
 
 export type LatexResult = {
   value: string;
-  imports?: string[];
-  commands?: string[];
+  imports: string[];
+  commands: Record<string, string>;
 };
 
 export type MathPlugins = Required<PageFrontmatter>['math'];

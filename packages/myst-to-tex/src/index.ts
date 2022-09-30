@@ -6,7 +6,7 @@ import { captionHandler, containerHandler } from './container';
 import { renderNodeToLatex } from './tables';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types';
 import { getLatexImageWidth, stringToLatexMath, stringToLatexText } from './utils';
-import MATH_HANDLERS, { createMathCommands } from './math';
+import MATH_HANDLERS from './math';
 
 export type { LatexResult } from './types';
 
@@ -309,18 +309,14 @@ class TexSerializer implements ITexSerializer {
   }
 }
 
-function createImportCommands(commands: Set<string>) {
-  return [...commands].sort().map((c) => `\\usepackage{${c}}`);
-}
-
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
   this.Compiler = (node, file) => {
     const state = new TexSerializer(file, opts ?? { handlers });
     state.renderChildren(node);
     const tex = (file.result as string).trim();
     const result: LatexResult = {
-      imports: createImportCommands(state.data.imports),
-      commands: createMathCommands(state.data.mathPlugins),
+      imports: [...state.data.imports],
+      commands: state.data.mathPlugins,
       value: tex,
     };
     file.result = result;

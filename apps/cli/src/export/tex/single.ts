@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import type { TemplatePartDefinition, ExpandedImports, TemplateYml } from 'jtex';
-import JTex, { mergeExpandedImports } from 'jtex';
+import type { TemplatePartDefinition, TemplateImports, TemplateYml } from 'jtex';
+import JTex, { mergeTemplateImports } from 'jtex';
 import type { Root } from 'mdast';
 import { selectAll, unified } from 'mystjs';
 import mystToTex from 'myst-to-tex';
@@ -178,11 +178,11 @@ export async function localArticleToTexTemplated(
 
   const partDefinitions = templateYml?.parts || [];
   const parts: Record<string, string> = {};
-  let collectedImports: ExpandedImports = { imports: [], commands: [] };
+  let collectedImports: TemplateImports = { imports: [], commands: {} };
   partDefinitions.forEach((def) => {
     const result = extractPart(mdast, def, frontmatter, templateYml);
     if (result != null) {
-      collectedImports = mergeExpandedImports(collectedImports, result);
+      collectedImports = mergeTemplateImports(collectedImports, result);
       parts[def.id] = result?.value ?? '';
     }
   });
@@ -202,8 +202,9 @@ export async function localArticleToTexTemplated(
     options: templateOptions,
     bibliography: [DEFAULT_BIB_FILENAME],
     sourceFile: file,
-    imports: mergeExpandedImports(collectedImports, result),
+    imports: mergeTemplateImports(collectedImports, result),
     force,
+    packages: templateYml.packages,
   });
 }
 

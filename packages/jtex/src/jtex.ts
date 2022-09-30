@@ -8,7 +8,7 @@ import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './do
 import { pdfExportCommand } from './export';
 import { extendJtexFrontmatter } from './frontmatter';
 import { renderImports } from './imports';
-import type { ExpandedImports, ISession, Renderer, TemplateYml } from './types';
+import type { TemplateImports, ISession, Renderer, TemplateYml } from './types';
 import { ensureDirectoryExists, errorLogger, warningLogger } from './utils';
 import {
   validateTemplateDoc,
@@ -184,8 +184,9 @@ class JTex {
     options: any;
     bibliography?: string[];
     sourceFile?: string;
-    imports?: string | ExpandedImports;
+    imports?: string | TemplateImports;
     force?: boolean;
+    packages?: string[];
   }) {
     if (!fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
       throw new Error(
@@ -216,7 +217,7 @@ class JTex {
       doc,
       parts,
       options,
-      IMPORTS: renderImports(opts.imports),
+      IMPORTS: renderImports(opts.imports, opts?.packages),
     };
     const rendered = this.env.render(TEMPLATE_FILENAME, renderer);
     const outputDirectory = dirname(opts.outputPath);
