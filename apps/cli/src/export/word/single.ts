@@ -5,6 +5,7 @@ import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import type { ValidationOptions } from 'simple-validators';
 import type { Export } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
+import { htmlTransform } from 'myst-transforms';
 import { VFile } from 'vfile';
 import type { ISession } from '../../session/types';
 import { getRawFrontmatterFromFile } from '../../store/local/actions';
@@ -22,7 +23,6 @@ import { getFileContent } from '../utils/getFileContent';
 import { createCurvenoteFooter } from './footers';
 import DEFAULT_STYLE from './simpleStyles';
 import { createArticleTitle, createReferenceTitle } from './titles';
-import { htmlTransform } from 'myst-transforms';
 
 export type WordExportOptions = {
   filename: string;

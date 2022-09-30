@@ -1,41 +1,13 @@
 import path from 'path';
 import { ExportFormats } from 'myst-frontmatter';
-import type { VersionId } from '@curvenote/blocks';
 import type { ISession } from '../../session/types';
 import { createTempFolder, findProjectAndLoad } from '../../utils';
-import { singleArticleToTex } from '../tex';
 import { collectTexExportOptions, runTexExport } from '../tex/single';
 import type { TexExportOptions } from '../tex/types';
 import type { ExportWithOutput } from '../types';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
-import { createPdfGivenTexFile, createPdfGivenTexExport } from './create';
+import { createPdfGivenTexExport } from './create';
 import { cleanOutput } from '../utils/cleanOutput';
-
-export const DEFAULT_PDF_FILENAME = 'main.pdf';
-
-export async function singleArticleToPdf(
-  session: ISession,
-  versionId: VersionId,
-  opts: TexExportOptions,
-) {
-  if (!opts.filename) opts.filename = DEFAULT_PDF_FILENAME;
-  const outputPath = path.dirname(opts.filename);
-  const basename = path.basename(opts.filename, path.extname(opts.filename));
-  const tex_filename = `${basename}.tex`;
-  const targetTexFilename = path.join(outputPath, tex_filename);
-
-  const article = await singleArticleToTex(session, versionId, {
-    ...opts,
-    filename: targetTexFilename,
-    template: opts.template ?? 'public/default',
-    useBuildFolder: true,
-    texIsIntermediate: true,
-  });
-
-  await createPdfGivenTexFile(session.log, targetTexFilename);
-
-  return article;
-}
 
 export function texExportOptionsFromPdf(
   session: ISession,

@@ -7,7 +7,6 @@ import { selectAll, unified } from 'mystjs';
 import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
 import type { ValidationOptions } from 'simple-validators';
-import type { VersionId } from '@curvenote/blocks';
 import type { Export, PageFrontmatter } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
 import { remove } from 'unist-util-remove';
@@ -18,60 +17,19 @@ import { bibFilesInDir, getRawFrontmatterFromFile } from '../../store/local/acti
 import { selectLocalProject } from '../../store/selectors';
 import { findProjectAndLoad, writeFileToFolder } from '../../utils';
 import type { ExportWithOutput } from '../types';
-import { makeBuildPaths } from '../utils';
 import { cleanOutput } from '../utils/cleanOutput';
 import { getDefaultExportFilename, getDefaultExportFolder } from '../utils/defaultNames';
 import { getFileContent } from '../utils/getFileContent';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
-import { writeBibtex } from '../utils/writeBibtex';
-import { gatherAndWriteArticleContent } from './gather';
-import {
-  ifTemplateFetchTaggedBlocks,
-  ifTemplateLoadOptions,
-  throwIfTemplateButNoJtex,
-} from './template';
 import type { TexExportOptions } from './types';
-import { ifTemplateRunJtex } from './utils';
 
-export const DEFAULT_TEX_FILENAME = 'main.tex';
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 
-export async function singleArticleToTex(
-  session: ISession,
-  versionId: VersionId,
-  opts: TexExportOptions,
+export function mdastToTex(
+  mdast: Root,
+  frontmatter: PageFrontmatter,
+  templateYml: TemplateYml | null,
 ) {
-  if (!opts.filename) opts.filename = DEFAULT_TEX_FILENAME;
-  throwIfTemplateButNoJtex(opts);
-  const { tagged } = await ifTemplateFetchTaggedBlocks(session, opts);
-  const templateOptions = ifTemplateLoadOptions(opts);
-
-  const { buildPath } = makeBuildPaths(session.log, opts);
-
-  session.log.debug('Starting articleToTex...');
-  session.log.debug(`With Options: ${JSON.stringify(opts)}`);
-
-  const { article, filename } = await gatherAndWriteArticleContent(
-    session,
-    versionId,
-    opts,
-    tagged,
-    templateOptions,
-    buildPath,
-  );
-
-  session.log.debug('Writing bib file...');
-  await writeBibtex(session, article.references, DEFAULT_BIB_FILENAME, {
-    path: buildPath,
-    alwaysWriteFile: true,
-  });
-
-  await ifTemplateRunJtex(filename, session.log, opts);
-
-  return article;
-}
-
-function mdastToTex(mdast: Root, frontmatter: PageFrontmatter, templateYml: TemplateYml | null) {
   const pipe = unified().use(mystToTex, {
     math: frontmatter?.math,
     citestyle: templateYml?.style?.citation,
