@@ -305,7 +305,6 @@ export async function localArticleToTex(
   opts: TexExportOptions,
   templateOptions?: Record<string, any>,
 ) {
-  console.log(templateOptions);
   const projectPath = await findProjectAndLoad(session, path.dirname(file));
   const exportOptionsList = (
     await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
