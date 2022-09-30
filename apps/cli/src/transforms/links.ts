@@ -131,23 +131,28 @@ export class OxaTransformer implements LinkTransformer {
     const oxa = oxaLinkToId(urlSource);
     const key = oxaLink(oxa, false) as string;
     const info = selectors.selectOxaLinkInformation(this.session.store.getState(), key);
-    if (!info) {
+    const externalOxaUrl = oxa ? oxaLink(this.session.SITE_URL, oxa.block) : null;
+    if (info) {
+      const url = info?.url;
+      if (url && url !== link.url) {
+        // the `internal` flag is picked up in the link renderer (prefetch!)
+        link.internal = true;
+        link.url = url;
+        // TODO: Link blocks!
+        // if (link.type === 'linkBlock') {
+        //   // Any values already present on the block override link info
+        //   link.title = link.title || info?.title || undefined;
+        //   if (!link.children || link.children.length === 0) {
+        //     link.children = [{ type: 'text', value: info?.description || '' }];
+        //   }
+        //   link.thumbnail = link.thumbnail || info?.thumbnail;
+        // }
+      }
+    } else if (externalOxaUrl) {
+      fileWarn(file, `Replacing oxa link with external url: ${externalOxaUrl}`, { node: link });
+      link.url = externalOxaUrl;
+    } else {
       fileWarn(file, `Information for link not found: ${key}`, { node: link });
-    }
-    const url = info?.url;
-    if (url && url !== link.url) {
-      // the `internal` flag is picked up in the link renderer (prefetch!)
-      link.internal = true;
-      link.url = url;
-      // TODO: Link blocks!
-      // if (link.type === 'linkBlock') {
-      //   // Any values already present on the block override link info
-      //   link.title = link.title || info?.title || undefined;
-      //   if (!link.children || link.children.length === 0) {
-      //     link.children = [{ type: 'text', value: info?.description || '' }];
-      //   }
-      //   link.thumbnail = link.thumbnail || info?.thumbnail;
-      // }
     }
     return true;
   }
