@@ -10,12 +10,12 @@ import {
 import chalk from 'chalk';
 import { getSession } from '../session';
 
-export async function downloadTemplateCLI(session: ISession, template: string, path: string) {
-  const { templatePath, templateUrl } = resolveInputs(session, { template, path });
+export async function downloadTemplateCLI(session: ISession, template: string, path?: string) {
+  const { templatePath, templateUrl } = resolveInputs(session, { template });
   if (!templateUrl) {
     throw new Error(`Unresolved template URL for "${template}"`);
   }
-  await downloadAndUnzipTemplate(session, { templatePath, templateUrl });
+  await downloadAndUnzipTemplate(session, { templatePath: path || templatePath, templateUrl });
 }
 
 export async function listTemplatesCLI(session: ISession, name?: string, opts?: { tag?: string }) {

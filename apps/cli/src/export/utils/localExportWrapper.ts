@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { join } from 'path';
-import { createTempFolder } from 'src/utils';
 import type { ISession } from '../../session/types';
+import { createTempFolder } from '../../utils';
 import { oxaLinkToMarkdown } from '../markdown';
 import { getDefaultExportFolder } from './defaultNames';
 import type { ArticleState } from './walkArticle';

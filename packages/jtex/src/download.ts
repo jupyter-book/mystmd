@@ -103,7 +103,7 @@ export async function downloadAndUnzipTemplate(
   opts: { templatePath: string; templateUrl: string },
 ) {
   const { templatePath, templateUrl } = opts;
-  session.log.debug(`Fetching template information from ${templateUrl}`);
+  session.log.info(`🐕 Fetching template information from ${templateUrl}`);
   const resLink = await fetch(templateUrl);
   if (!resLink.ok) {
     throw new Error(
@@ -134,7 +134,7 @@ export async function downloadAndUnzipTemplate(
     .pipe(unzipper.Extract({ path: templatePath }))
     .promise();
   unnestTemplate(templatePath);
-  session.log.debug(`Unzipped template to path ${templatePath}`);
+  session.log.info(`💾 Saved template to path ${templatePath}`);
 }
 
 export async function fetchPublicTemplate(session: ISession, name: string) {
