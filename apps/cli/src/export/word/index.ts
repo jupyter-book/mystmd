@@ -5,7 +5,7 @@ import { KINDS, ReferenceFormatTypes } from '@curvenote/blocks';
 import { Block, Project, User, Version } from '../../models';
 import type { ISession } from '../../session/types';
 import { assertEndsInExtension } from '../utils/assertions';
-import { exportFromPath } from '../utils/exportWrapper';
+import { localExportWrapper } from '../utils/localExportWrapper';
 import { getChildren } from '../utils/getChildren';
 import { loadImagesToBuffers, walkArticle } from '../utils/walkArticle';
 import { defaultTemplate } from './template';
@@ -62,4 +62,4 @@ export async function oxaArticleToWord(
   return article;
 }
 
-export const pathToWord = exportFromPath(oxaArticleToWord, localArticleToWord);
+export const pathToWord = localExportWrapper(localArticleToWord);

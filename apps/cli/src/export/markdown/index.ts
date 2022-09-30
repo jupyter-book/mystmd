@@ -15,7 +15,7 @@ import {
 import { Block, Project, Version } from '../../models';
 import type { ISession } from '../../session/types';
 import { resolvePath, writeFileToFolder } from '../../utils';
-import { exportFromPath } from '../utils/exportWrapper';
+import { remoteExportWrapper } from '../utils/remoteExportWrapper';
 import { getChildren } from '../utils/getChildren';
 import { localizationOptions } from '../utils/localizationOptions';
 import { walkArticle } from '../utils/walkArticle';
@@ -156,4 +156,4 @@ export async function articleToMarkdown(
   return article;
 }
 
-export const oxaLinkToMarkdown = exportFromPath(articleToMarkdown);
+export const oxaLinkToMarkdown = remoteExportWrapper(articleToMarkdown);

@@ -1,7 +1,7 @@
 import type { ProjectId, Blocks } from '@curvenote/blocks';
 import { Project } from '../../models';
 import type { ISession } from '../../session/types';
-import { exportFromProjectLink } from '../utils/exportWrapper';
+import { exportFromProjectLink } from '../utils/remoteExportWrapper';
 import { getBlockAndLatestVersion } from '../utils/getLatest';
 import type { ExportAllOptions } from './exportAll';
 import { exportAll } from './exportAll';

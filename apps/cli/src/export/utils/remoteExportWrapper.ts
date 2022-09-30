@@ -1,30 +1,22 @@
 import type { ProjectId, VersionId } from '@curvenote/blocks';
 import { oxaLinkToId } from '@curvenote/blocks';
-import fs from 'fs';
 import { Block } from '../../models';
 import type { ISession } from '../../session/types';
 import { getBlockAndLatestVersion } from './getLatest';
 import type { ArticleState } from './walkArticle';
 
-export const exportFromPath =
+export const remoteExportWrapper =
   (
     exportRemoteArticle: (
       session: ISession,
       id: VersionId,
       opts: { filename: string },
     ) => Promise<ArticleState | void>,
-    exportLocalArticle?: (
-      session: ISession,
-      path: string,
-      opts: { filename: string },
-    ) => Promise<ArticleState | void>,
   ) =>
   async (session: ISession, path: string, filename: string, opts?: Record<string, string>) => {
     const id = oxaLinkToId(path);
-    if (exportLocalArticle && fs.existsSync(path)) {
-      await exportLocalArticle(session, path, { filename, ...opts });
-    } else if (!id) {
-      throw new Error(`Unknown article ID or local file: ${path}`);
+    if (!id) {
+      throw new Error(`Unknown article: ${path}`);
     } else if ('version' in id.block) {
       // Ensure that we actually get a correct ID, and then use the version supplied
       const block = await new Block(session, id.block).get();

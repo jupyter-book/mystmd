@@ -92,16 +92,23 @@ export async function collectWordExportOptions(
       };
     });
   if (exportOptions.length === 0) {
-    throw new Error(
-      `No export options of format ${formats.join(', ')} defined in frontmatter of ${file}${
-        exportErrorMessages.errors?.length
-          ? '\nPossible causes:\n- ' + exportErrorMessages.errors.map((e) => e.message).join('\n- ')
-          : ''
-      }`,
-    );
+    if (exportErrorMessages.errors?.length) {
+      throw new Error(
+        `Invalid export options of format ${formats.join(', ')} defined in frontmatter of ${file}${
+          exportErrorMessages.errors?.length
+            ? '\nPossible causes:\n- ' +
+              exportErrorMessages.errors.map((e) => e.message).join('\n- ')
+            : ''
+        }`,
+      );
+    } else {
+      throw new Error(
+        `Unable to export to format ${formats.join(', ')}; do you need to specify an output file?`,
+      );
+    }
   }
   resolvedExportOptions.forEach((exp) => {
-    session.log.info(`🔍 Performing export: ${exp.output}`);
+    session.log.info(`📬 Performing export: ${exp.output}`);
   });
   return resolvedExportOptions;
 }
