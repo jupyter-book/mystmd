@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import type { Logger } from 'myst-cli-utils';
 import { BUILD_FOLDER } from '../../utils';
-import type { TexExportOptions } from '../tex/types';
+import type { TexExportOptionsExpanded } from '../tex/types';
 
-export function makeBuildPaths(log: Logger, opts: TexExportOptions) {
+export function makeBuildPaths(log: Logger, opts: TexExportOptionsExpanded) {
   const outputPath = path.dirname(opts.filename);
   const outputFilename = path.basename(opts.filename);
   const buildPath =

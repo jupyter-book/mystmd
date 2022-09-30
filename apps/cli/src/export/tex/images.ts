@@ -3,13 +3,13 @@ import * as imagemagick from '../utils/imagemagick';
 import * as inkscape from '../utils/inkscape';
 import type { ArticleState } from '../utils/walkArticle';
 import { writeImagesToFiles } from '../utils/writeImagesToFiles';
-import type { TexExportOptions } from './types';
+import type { TexExportOptionsExpanded } from './types';
 import { filterFilenamesByExtension, processImages } from './utils';
 
 export async function localizeAndProcessImages(
   session: ISession,
   article: ArticleState,
-  opts: TexExportOptions,
+  opts: TexExportOptionsExpanded,
   buildPath: string,
 ): Promise<Record<string, string>> {
   session.log.debug('Start localizing images..');

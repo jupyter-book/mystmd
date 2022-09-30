@@ -11,7 +11,7 @@ import { makeBuildPaths } from '../utils/makeBuildPaths';
 import type { ArticleState, ArticleStateReference } from '../utils/walkArticle';
 import { writeBibtex } from '../utils/writeBibtex';
 import { validateExportConfigKeys, validateJtexFrontmatterKeys } from '../validators';
-import type { TexExportOptions } from './types';
+import type { TexExportOptionsExpanded } from './types';
 import type { LatexFrontmatter } from './frontmatter';
 import { stringifyFrontmatter, buildJtexSection, escapeLatex } from './frontmatter';
 import { gatherAndWriteArticleContent } from './gather';
@@ -35,9 +35,9 @@ export async function multipleArticleToTex(
   project: Project,
   job: ExportConfig,
   configPath: string,
-  opts: Partial<TexExportOptions> = {},
+  opts: Partial<TexExportOptionsExpanded> = {},
 ) {
-  const options: TexExportOptions = {
+  const options: TexExportOptionsExpanded = {
     ...opts,
     filename: path.join(configPath, job.folder, job.filename ?? 'main.tex'),
     multiple: true,

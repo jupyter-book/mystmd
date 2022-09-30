@@ -7,7 +7,7 @@ import { toTex } from '@curvenote/schema';
 import type { ISession } from '../../session/types';
 import { localizationOptions } from '../utils/localizationOptions';
 import type { ArticleState, ArticleStateChild } from '../utils/walkArticle';
-import type { TexExportOptions } from './types';
+import type { TexExportOptionsExpanded } from './types';
 
 export function convertAndLocalizeChild(
   session: ISession,
@@ -85,7 +85,7 @@ export async function processImages(
 export async function ifTemplateRunJtex(
   contentTexFile: string,
   log: Logger,
-  opts: TexExportOptions,
+  opts: TexExportOptionsExpanded,
 ) {
   // run templating
   if (opts.template || opts.templatePath) {

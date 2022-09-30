@@ -4,9 +4,9 @@ import { sync as which } from 'which';
 import YAML from 'js-yaml';
 import { Template } from '../../models';
 import type { ISession } from '../../session/types';
-import type { TexExportOptions } from './types';
+import type { TexExportOptionsExpanded } from './types';
 
-export function throwIfTemplateButNoJtex(opts: TexExportOptions) {
+export function throwIfTemplateButNoJtex(opts: TexExportOptionsExpanded) {
   if ((opts.template || opts.templatePath) && !which('jtex', { nothrow: true })) {
     throw new Error(
       'A template option was specified but the `jtex` command was not found on the path.\nTry `pip install jtex`!',
@@ -17,7 +17,7 @@ export function throwIfTemplateButNoJtex(opts: TexExportOptions) {
 // TODO: Move to jtex
 export async function ifTemplateFetchTaggedBlocks(
   session: ISession,
-  opts: TexExportOptions,
+  opts: TexExportOptionsExpanded,
 ): Promise<{ tagged: string[] }> {
   let tagged: string[] = [];
   if (opts.template) {
@@ -46,7 +46,7 @@ export async function ifTemplateFetchTaggedBlocks(
   return { tagged };
 }
 
-export function ifTemplateLoadOptions(opts: TexExportOptions): Record<string, any> {
+export function ifTemplateLoadOptions(opts: TexExportOptionsExpanded): Record<string, any> {
   if (opts.options) {
     if (!fs.existsSync(opts.options)) {
       throw new Error(`The template options file specified was not found: ${opts.options}`);
