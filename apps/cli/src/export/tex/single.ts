@@ -192,15 +192,13 @@ export async function collectTexExportOptions(
         });
       })
       .filter((exp: Export | undefined) => exp && formats.includes(exp?.format)) || [];
+  // If no export options are provided in frontmatter, instantiate default options
+  if (exportOptions.length === 0 && formats.length) {
+    exportOptions = [{ format: formats[0] }];
+  }
   // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
   if (filename || template || templatePath || disableTemplate) {
-    if (exportOptions.length) {
-      exportOptions = [exportOptions[0]];
-    } else if (formats.length) {
-      exportOptions = [{ format: formats[0] }];
-    } else {
-      exportOptions = [];
-    }
+    exportOptions = exportOptions.slice(0, 1);
   }
   const resolvedExportOptions: ExportWithOutput[] = exportOptions
     .map((exp): ExportWithOutput | undefined => {
@@ -250,18 +248,13 @@ export async function collectTexExportOptions(
       };
     });
   if (exportOptions.length === 0) {
-    if (exportErrorMessages.errors?.length) {
-      throw new Error(
-        `Invalid export options of format ${formats.join(', ')} defined in frontmatter of ${file}${
-          exportErrorMessages.errors?.length
-            ? '\nPossible causes:\n- ' +
-              exportErrorMessages.errors.map((e) => e.message).join('\n- ')
-            : ''
-        }`,
-      );
-    } else {
-      throw new Error(`Unable to export; do you need to specify an output file?`);
-    }
+    throw new Error(
+      `No valid export options of format ${formats.join(', ')} found${
+        exportErrorMessages.errors?.length
+          ? '\nPossible causes:\n- ' + exportErrorMessages.errors.map((e) => e.message).join('\n- ')
+          : ''
+      }`,
+    );
   }
   resolvedExportOptions.forEach((exp) => {
     session.log.info(`📬 Performing export: ${exp.output}`);

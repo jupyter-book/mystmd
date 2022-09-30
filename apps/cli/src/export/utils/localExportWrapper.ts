@@ -3,6 +3,7 @@ import { join } from 'path';
 import { createTempFolder } from 'src/utils';
 import type { ISession } from '../../session/types';
 import { oxaLinkToMarkdown } from '../markdown';
+import { getDefaultExportFolder } from './defaultNames';
 import type { ArticleState } from './walkArticle';
 
 export const localExportWrapper =
@@ -24,6 +25,7 @@ export const localExportWrapper =
       const localFolder = createTempFolder();
       localPath = join(localFolder, localFilename);
       await oxaLinkToMarkdown(session, path, localFilename, { path: localFolder });
+      if (!filename) filename = getDefaultExportFolder(session, localPath, '.', 'tex');
     }
     await exportLocalArticle(session, localPath, { filename, ...opts });
   };
