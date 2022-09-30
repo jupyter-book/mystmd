@@ -66,6 +66,7 @@ export async function localArticleToPdf(
           output,
           keepTexAndLogs,
           opts.clean,
+          projectPath || path.dirname(file),
         );
       })
       .map((p) => p.catch((e) => e)),
