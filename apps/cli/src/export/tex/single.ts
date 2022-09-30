@@ -299,16 +299,19 @@ async function runTexZipExport(
   zip.writeZip(zipOutput);
 }
 
-export async function localArticleToTex(session: ISession, file: string, opts: TexExportOptions) {
+export async function localArticleToTex(
+  session: ISession,
+  file: string,
+  opts: TexExportOptions,
+  templateOptions?: Record<string, any>,
+) {
+  console.log(templateOptions);
   const projectPath = await findProjectAndLoad(session, path.dirname(file));
-  const exportOptionsList = await collectTexExportOptions(
-    session,
-    file,
-    'tex',
-    [ExportFormats.tex],
-    projectPath,
-    opts,
-  );
+  const exportOptionsList = (
+    await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
+  ).map((exportOptions) => {
+    return { ...exportOptions, ...templateOptions };
+  });
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {

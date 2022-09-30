@@ -28,16 +28,25 @@ export function texExportOptionsFromPdf(
   return { ...pdfExp, format: ExportFormats.tex, output };
 }
 
-export async function localArticleToPdf(session: ISession, file: string, opts: TexExportOptions) {
+export async function localArticleToPdf(
+  session: ISession,
+  file: string,
+  opts: TexExportOptions,
+  templateOptions?: ExportWithOutput,
+) {
   const projectPath = await findProjectAndLoad(session, path.dirname(file));
-  const pdfExportOptionsList = await collectTexExportOptions(
-    session,
-    file,
-    'pdf',
-    [ExportFormats.pdf, ExportFormats.pdftex],
-    projectPath,
-    opts,
-  );
+  const pdfExportOptionsList = (
+    await collectTexExportOptions(
+      session,
+      file,
+      'pdf',
+      [ExportFormats.pdf, ExportFormats.pdftex],
+      projectPath,
+      opts,
+    )
+  ).map((exportOptions) => {
+    return { ...exportOptions, ...templateOptions };
+  });
   await resolveAndLogErrors(
     session,
     pdfExportOptionsList

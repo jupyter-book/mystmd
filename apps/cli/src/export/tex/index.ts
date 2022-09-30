@@ -3,4 +3,4 @@ import { localArticleToTex } from './single';
 
 export { multipleArticleToTex } from './multiple';
 
-export const oxaLinkToArticleTex = localExportWrapper(localArticleToTex);
+export const oxaLinkToTex = localExportWrapper(localArticleToTex);

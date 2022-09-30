@@ -156,16 +156,18 @@ export async function runWordExport(
   writeDocx(doc, (buffer) => writeFileToFolder(output, buffer));
 }
 
-export async function localArticleToWord(session: ISession, file: string, opts: WordExportOptions) {
+export async function localArticleToWord(
+  session: ISession,
+  file: string,
+  opts: WordExportOptions,
+  templateOptions?: ExportWithOutput,
+) {
   const projectPath = await findProjectAndLoad(session, path.dirname(file));
-  const exportOptionsList = await collectWordExportOptions(
-    session,
-    file,
-    'docx',
-    [ExportFormats.docx],
-    projectPath,
-    opts,
-  );
+  const exportOptionsList = (
+    await collectWordExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
+  ).map((exportOptions) => {
+    return { ...exportOptions, ...templateOptions };
+  });
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {

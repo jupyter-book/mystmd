@@ -2,7 +2,7 @@ import { Command, Option } from 'commander';
 import {
   buildPdfOnly,
   exportContent,
-  oxaLinkToArticleTex,
+  oxaLinkToTex,
   oxaLinkToJupyterBook,
   oxaLinkToMarkdown,
   oxaLinkToNotebook,
@@ -50,7 +50,7 @@ function makeWordExportCLI(program: Command) {
     .argument('<article>', 'A link to the Curvenote article (e.g. OXA Link or API link)')
     .argument('[output]', 'The document filename to export to', '')
     .addOption(makeCleanOption())
-    .action(clirun(pathToWord, { program }));
+    .action(clirun(pathToWord, { program }, 3));
   return command;
 }
 
@@ -81,7 +81,7 @@ function makeTexExportCLI(program: Command) {
     .addOption(makeZipOption())
     .addOption(makeTemplateOptionsOption())
     .addOption(makeConverterOption())
-    .action(clirun(oxaLinkToArticleTex, { program }));
+    .action(clirun(oxaLinkToTex, { program }, 3));
   return command;
 }
 
@@ -98,7 +98,7 @@ function makePdfExportCLI(program: Command) {
     .addOption(makeCleanOption())
     .addOption(makeTemplateOptionsOption())
     .addOption(makeConverterOption())
-    .action(clirun(oxaLinkToPdf, { program }));
+    .action(clirun(oxaLinkToPdf, { program }, 3));
   return command;
 }
 
