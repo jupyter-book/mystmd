@@ -108,7 +108,6 @@ export async function localArticleToTexTemplated(
   session: ISession,
   file: string,
   templateOptions: ExportWithOutput,
-  templatePath?: string,
   projectPath?: string,
   force?: boolean,
 ) {
@@ -130,7 +129,6 @@ export async function localArticleToTexTemplated(
 
   const jtex = new JTex(session, {
     template: templateOptions.template || undefined,
-    path: templatePath,
     rootDir: projectPath || path.dirname(file),
   });
   await jtex.ensureTemplateExistsOnPath();
@@ -176,8 +174,8 @@ export async function collectTexExportOptions(
   projectPath: string | undefined,
   opts: TexExportOptions,
 ) {
-  const { filename, disableTemplate, templatePath, template, zip } = opts;
-  if (disableTemplate && (opts.template || opts.templatePath)) {
+  const { filename, disableTemplate, template, zip } = opts;
+  if (disableTemplate && template) {
     throw new Error(
       'Conflicting tex export options: disableTemplate requested but a template was provided',
     );
@@ -198,7 +196,7 @@ export async function collectTexExportOptions(
     exportOptions = [{ format: formats[0] }];
   }
   // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
-  if (filename || template || templatePath || disableTemplate) {
+  if (filename || template || disableTemplate) {
     exportOptions = exportOptions.slice(0, 1);
   }
   const resolvedExportOptions: ExportWithOutput[] = exportOptions
@@ -269,7 +267,6 @@ export async function runTexExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  templatePath?: string,
   projectPath?: string,
   clean?: boolean,
 ) {
@@ -277,14 +274,7 @@ export async function runTexExport(
   if (exportOptions.template === null) {
     await localArticleToTexRaw(session, file, exportOptions.output, projectPath);
   } else {
-    await localArticleToTexTemplated(
-      session,
-      file,
-      exportOptions,
-      templatePath,
-      projectPath,
-      clean,
-    );
+    await localArticleToTexTemplated(session, file, exportOptions, projectPath, clean);
   }
 }
 
@@ -292,7 +282,6 @@ async function runTexZipExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  templatePath?: string,
   projectPath?: string,
   clean?: boolean,
 ) {
@@ -303,7 +292,7 @@ async function runTexZipExport(
     texFolder,
     `${path.basename(zipOutput, path.extname(zipOutput))}.tex`,
   );
-  await runTexExport(session, file, exportOptions, templatePath, projectPath);
+  await runTexExport(session, file, exportOptions, projectPath);
   session.log.info(`🤐 Zipping tex outputs to ${zipOutput}`);
   const zip = new AdmZip();
   zip.addLocalFolder(texFolder);
@@ -324,23 +313,9 @@ export async function localArticleToTex(session: ISession, file: string, opts: T
     session,
     exportOptionsList.map(async (exportOptions) => {
       if (path.extname(exportOptions.output) === '.zip') {
-        await runTexZipExport(
-          session,
-          file,
-          exportOptions,
-          opts.templatePath,
-          projectPath,
-          opts.clean,
-        );
+        await runTexZipExport(session, file, exportOptions, projectPath, opts.clean);
       } else {
-        await runTexExport(
-          session,
-          file,
-          exportOptions,
-          opts.templatePath,
-          projectPath,
-          opts.clean,
-        );
+        await runTexExport(session, file, exportOptions, projectPath, opts.clean);
       }
     }),
   );

@@ -39,7 +39,7 @@ class JTex {
    * template may be downloaded, or the name of a Curvenote template. Path is the
    * local path where the downloaded template will be saved.
    */
-  constructor(session: ISession, opts?: { template?: string; path?: string; rootDir?: string }) {
+  constructor(session: ISession, opts?: { template?: string; rootDir?: string }) {
     this.session = getSession(session.log);
     const { templatePath, templateUrl } = resolveInputs(this.session, opts || {});
     this.templatePath = templatePath;

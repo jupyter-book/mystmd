@@ -50,19 +50,11 @@ export async function localArticleToPdf(session: ISession, file: string, opts: T
           keepTexAndLogs,
           opts.clean,
         );
-        await runTexExport(
-          session,
-          file,
-          texExportOptions,
-          opts.templatePath,
-          projectPath,
-          opts.clean,
-        );
+        await runTexExport(session, file, texExportOptions, projectPath, opts.clean);
         await createPdfGivenTexExport(
           session,
           texExportOptions,
           output,
-          opts.templatePath,
           keepTexAndLogs,
           opts.clean,
         );

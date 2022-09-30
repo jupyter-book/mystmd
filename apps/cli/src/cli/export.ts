@@ -29,10 +29,6 @@ function makeTemplateOption() {
   return new Option('-t, --template <name>', 'Specify a template to apply during export');
 }
 
-function makeTemplatePathOption() {
-  return new Option('--template-path <name>', 'Specify a path to templates folder');
-}
-
 function makeTemplateOptionsOption() {
   return new Option(
     '-o, --options <name>',
@@ -81,7 +77,6 @@ function makeTexExportCLI(program: Command) {
     .addOption(makeImageOption())
     .addOption(makeDisableTemplateOption())
     .addOption(makeTemplateOption())
-    .addOption(makeTemplatePathOption())
     .addOption(makeCleanOption())
     .addOption(makeZipOption())
     .addOption(makeTemplateOptionsOption())
@@ -100,7 +95,6 @@ function makePdfExportCLI(program: Command) {
     .argument('[output]', 'The document filename to export to', '')
     .addOption(makeDisableTemplateOption())
     .addOption(makeTemplateOption())
-    .addOption(makeTemplatePathOption())
     .addOption(makeCleanOption())
     .addOption(makeTemplateOptionsOption())
     .addOption(makeConverterOption())

@@ -43,10 +43,7 @@ function defaultPath(template: string, hash: boolean, rootDir?: string) {
 /**
  * Resolve template/path inputs to local path and remote url (if necessary)
  */
-export function resolveInputs(
-  session: ISession,
-  opts: { template?: string; path?: string; rootDir?: string },
-) {
+export function resolveInputs(session: ISession, opts: { template?: string; rootDir?: string }) {
   let templateUrl: string | undefined;
   let templatePath: string | undefined;
   // Handle case where template already exists locally
@@ -60,38 +57,20 @@ export function resolveInputs(
       }
     }
     if (templatePath) {
-      if (opts.path && templatePath !== opts.path) {
-        session.log.warn(
-          `Existing template path will be used: ${templatePath}\nIgnoring alternative path: ${opts.path}`,
-        );
-      }
-      return { templatePath, templateUrl };
-    }
-  }
-  if (opts.path && fs.existsSync(opts.path)) {
-    const { base, dir } = parse(opts.path);
-    if (base === TEMPLATE_FILENAME) {
-      templatePath = dir;
-    } else if (fs.lstatSync(opts.path).isDirectory()) {
-      if (fs.existsSync(join(opts.path, TEMPLATE_FILENAME))) {
-        templatePath = opts.path;
-      }
-    }
-    if (templatePath) {
       return { templatePath, templateUrl };
     }
   }
   // Handle case where template is a download URL
   templateUrl = validateUrl(opts.template, { messages: {}, suppressErrors: true, property: '' });
   if (templateUrl) {
-    templatePath = opts.path ? opts.path : defaultPath(templateUrl, true, opts.rootDir);
+    templatePath = defaultPath(templateUrl, true, opts.rootDir);
     return { templatePath, templateUrl };
   }
   // Handle case where template is a name
   const templateNormalized = normalizeTemplateName(opts.template || 'curvenote');
   if (templateNormalized) {
     templateUrl = defaultUrl(session, templateNormalized);
-    templatePath = opts.path ? opts.path : defaultPath(templateNormalized, false, opts.rootDir);
+    templatePath = defaultPath(templateNormalized, false, opts.rootDir);
     return { templatePath, templateUrl };
   }
   throw new Error(`Unable to resolve template from: ${opts.template}`);
