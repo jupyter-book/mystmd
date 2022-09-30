@@ -1,4 +1,4 @@
-import type { Logger } from './types';
+import type { ISession, Logger } from './types';
 import chalk from 'chalk';
 
 export enum LogLevel {
@@ -46,4 +46,51 @@ export function chalkLogger(level: LogLevel): Logger {
       console.error(chalk.red(...args));
     },
   };
+}
+
+type LoggerDE = Pick<Logger, 'debug' | 'error'>;
+
+export function createGitLogger(session: ISession): LoggerDE {
+  const logger = {
+    debug(data: string) {
+      const line = data.trim();
+      if (!line) return;
+      session.log.debug(data);
+    },
+    error(data: string) {
+      const line = data.trim();
+      if (!line) return;
+      if (line.startsWith('Cloning into') || line.startsWith('Submodule')) {
+        session.log.debug(line);
+        return;
+      }
+      session.log.error(data);
+    },
+  };
+  return logger;
+}
+
+export function createNpmLogger(session: ISession): LoggerDE {
+  const logger = {
+    debug(data: string) {
+      const line = data.trim();
+      if (!line) return;
+      session.log.debug(data);
+    },
+    error(data: string) {
+      const line = data.trim();
+      if (!line) return;
+      if (
+        line.includes('deprecated') ||
+        line.includes('package is no longer supported') ||
+        line === 'npm' ||
+        line.includes('WARN')
+      ) {
+        session.log.debug(line);
+        return;
+      }
+      session.log.error(data);
+    },
+  };
+  return logger;
 }
