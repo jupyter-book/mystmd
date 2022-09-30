@@ -160,7 +160,7 @@ export async function localArticleToWord(
   session: ISession,
   file: string,
   opts: WordExportOptions,
-  templateOptions?: ExportWithOutput,
+  templateOptions?: Record<string, any>,
 ) {
   const projectPath = await findProjectAndLoad(session, path.dirname(file));
   const exportOptionsList = (
