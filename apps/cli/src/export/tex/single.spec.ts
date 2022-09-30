@@ -8,6 +8,7 @@ describe('extractPart', () => {
         { type: 'root', children: [{ type: 'text', value: 'untagged content' }] },
         { id: 'test_tag', required: true },
         {},
+        { jtex: 'v1' },
       ),
     ).toEqual(undefined);
   });
@@ -32,7 +33,7 @@ describe('extractPart', () => {
         },
       ],
     };
-    expect(extractPart(tree, { id: 'test_tag' }, {})).toEqual({
+    expect(extractPart(tree, { id: 'test_tag' }, {}, { jtex: 'v1' })).toEqual({
       value: 'tagged content\n\nalso tagged content',
       imports: [],
       commands: [],
@@ -59,7 +60,9 @@ describe('extractPart', () => {
         },
       ],
     };
-    expect(extractPart(tree, { id: 'test_tag', max_chars: 1000, max_words: 100 }, {})).toEqual({
+    expect(
+      extractPart(tree, { id: 'test_tag', max_chars: 1000, max_words: 100 }, {}, { jtex: 'v1' }),
+    ).toEqual({
       value: 'tagged content',
       imports: [],
       commands: [],
@@ -76,7 +79,7 @@ describe('extractPart', () => {
         },
       ],
     };
-    expect(extractPart(tree, { id: 'test_tag', max_chars: 5 }, {})).toEqual({
+    expect(extractPart(tree, { id: 'test_tag', max_chars: 5 }, {}, { jtex: 'v1' })).toEqual({
       value: 'tagged content',
       imports: [],
       commands: [],
@@ -93,7 +96,7 @@ describe('extractPart', () => {
         },
       ],
     };
-    expect(extractPart(tree, { id: 'test_tag', max_words: 1 }, {})).toEqual({
+    expect(extractPart(tree, { id: 'test_tag', max_words: 1 }, {}, { jtex: 'v1' })).toEqual({
       value: 'tagged content',
       imports: [],
       commands: [],
