@@ -2,11 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import util from 'util';
 import JTex, { pdfExportCommand } from 'jtex';
-import type { Logger } from '../../logging';
+import type { Logger } from 'myst-cli-utils';
+import { exec } from 'myst-cli-utils';
 import type { ISession } from '../../session/types';
 import { BUILD_FOLDER, createTempFolder } from '../../utils';
 import type { ExportWithOutput } from '../types';
-import { exec } from '../utils';
 import { cleanOutput } from '../utils/cleanOutput';
 
 const copyFile = util.promisify(fs.copyFile);

@@ -1,55 +1,26 @@
 import chalk from 'chalk';
-import type { ISession } from '../session/types';
-import type { Logger } from './index';
+import type { Logger, LoggerDE } from 'myst-cli-utils';
+import { LogLevel } from 'myst-cli-utils';
+import type { ISession } from './session/types';
 
-type LoggerDE = Pick<Logger, 'debug' | 'error'>;
-
-export function getGitLogger(session: ISession): LoggerDE {
-  const logger = {
-    debug(data: string) {
-      const line = data.trim();
-      if (!line) return;
-      session.log.debug(data);
-    },
-    error(data: string) {
-      const line = data.trim();
-      if (!line) return;
-      if (line.startsWith('Cloning into') || line.startsWith('Submodule')) {
-        session.log.debug(line);
-        return;
-      }
-      session.log.error(data);
-    },
-  };
-  return logger;
+export function getLevel(logger: Logger, level: LogLevel): Logger['info'] {
+  switch (level) {
+    case LogLevel.trace:
+    case LogLevel.debug:
+      return logger.debug;
+    case LogLevel.info:
+      return logger.info;
+    case LogLevel.warn:
+      return logger.warn;
+    case LogLevel.error:
+    case LogLevel.fatal:
+      return logger.error;
+    default:
+      throw new Error(`Level "${level}" not defined.`);
+  }
 }
 
-export function getNpmLogger(session: ISession): LoggerDE {
-  const logger = {
-    debug(data: string) {
-      const line = data.trim();
-      if (!line) return;
-      session.log.debug(data);
-    },
-    error(data: string) {
-      const line = data.trim();
-      if (!line) return;
-      if (
-        line.includes('deprecated') ||
-        line.includes('package is no longer supported') ||
-        line === 'npm' ||
-        line.includes('WARN')
-      ) {
-        session.log.debug(line);
-        return;
-      }
-      session.log.error(data);
-    },
-  };
-  return logger;
-}
-
-export function getServerLogger(session: ISession): LoggerDE {
+export function createServerLogger(session: ISession): LoggerDE {
   const logger = {
     debug(data: string) {
       const line = data.trim();

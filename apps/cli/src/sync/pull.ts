@@ -1,10 +1,11 @@
 import fs from 'fs';
 import pLimit from 'p-limit';
 import { join, dirname, basename, extname } from 'path';
+import { LogLevel } from 'myst-cli-utils';
 import { projectFrontmatterFromDTO, saveAffiliations } from '../frontmatter/api';
 import { loadConfigOrThrow, writeConfigs } from '../config';
 import { oxaLinkToMarkdown, oxaLinkToNotebook, projectToJupyterBook } from '../export';
-import { LogLevel, getLevel } from '../logging';
+import { getLevel } from '../logging';
 import { Project } from '../models';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';

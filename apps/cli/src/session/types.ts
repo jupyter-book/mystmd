@@ -1,5 +1,5 @@
 import type { Store } from 'redux';
-import type { Logger } from '../logging';
+import type { Logger } from 'myst-cli-utils';
 import type { RootState } from '../store';
 
 export type Tokens = Partial<Record<'user' | 'session', string>>;

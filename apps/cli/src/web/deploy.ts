@@ -11,7 +11,7 @@ import type {
   SiteUploadRequest,
   SiteUploadResponse,
 } from '@curvenote/blocks';
-import type { Logger } from '../logging';
+import type { Logger } from 'myst-cli-utils';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import { publicPath, serverPath, tic } from '../utils';

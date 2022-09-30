@@ -5,7 +5,7 @@ import type { Link } from 'myst-spec';
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
 import fetch from 'node-fetch';
-import type { Logger } from '../logging';
+import type { Logger } from 'myst-cli-utils';
 import type { Root } from 'mdast';
 import { tic } from '../utils';
 import { toText } from 'myst-common';

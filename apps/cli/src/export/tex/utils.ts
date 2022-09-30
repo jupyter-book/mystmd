@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
+import type { Logger } from 'myst-cli-utils';
+import { makeExecutable } from 'myst-cli-utils';
 import { oxaLink } from '@curvenote/blocks';
 import { toTex } from '@curvenote/schema';
-import type { Logger } from '../../logging';
 import type { ISession } from '../../session/types';
-import { makeExecutable } from '../utils/exec';
 import { localizationOptions } from '../utils/localizationOptions';
 import type { ArticleState, ArticleStateChild } from '../utils/walkArticle';
 import type { TexExportOptions } from './types';

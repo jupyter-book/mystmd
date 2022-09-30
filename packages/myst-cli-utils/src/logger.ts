@@ -1,4 +1,4 @@
-import type { ISession, Logger } from './types';
+import type { ISession, Logger, LoggerDE } from './types';
 import chalk from 'chalk';
 
 export enum LogLevel {
@@ -8,6 +8,27 @@ export enum LogLevel {
   info = 30,
   debug = 20,
   trace = 10,
+}
+
+export function basicLogger(level: LogLevel): Logger {
+  return {
+    debug(...args: any) {
+      if (level > LogLevel.debug) return;
+      console.debug(...args);
+    },
+    info(...args: any) {
+      if (level > LogLevel.info) return;
+      console.log(...args);
+    },
+    warn(...args: any) {
+      if (level > LogLevel.warn) return;
+      console.warn(...args);
+    },
+    error(...args: any) {
+      if (level > LogLevel.error) return;
+      console.error(...args);
+    },
+  };
 }
 
 export function silentLogger(): Logger {
@@ -47,8 +68,6 @@ export function chalkLogger(level: LogLevel): Logger {
     },
   };
 }
-
-type LoggerDE = Pick<Logger, 'debug' | 'error'>;
 
 export function createGitLogger(session: ISession): LoggerDE {
   const logger = {

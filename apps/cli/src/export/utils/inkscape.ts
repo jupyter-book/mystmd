@@ -1,7 +1,7 @@
 import { sync as which } from 'which';
 import path from 'path';
-import type { Logger } from '../../logging';
-import { makeExecutable } from './exec';
+import type { Logger } from 'myst-cli-utils';
+import { makeExecutable } from 'myst-cli-utils';
 
 export function isInkscapeAvailable() {
   return which('inkscape', { nothrow: true });

@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import fetch from 'node-fetch';
+import type { Logger } from 'myst-cli-utils';
 import type { Blocks } from '@curvenote/blocks';
-import type { Logger } from '../../logging';
 import type { Version } from '../../models';
 import { Block } from '../../models';
 import { getImageSrc } from './getImageSrc';

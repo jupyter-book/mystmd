@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { Logger } from '../../logging';
+import type { Logger } from 'myst-cli-utils';
 import { BUILD_FOLDER } from '../../utils';
 import type { TexExportOptions } from '../tex/types';
 

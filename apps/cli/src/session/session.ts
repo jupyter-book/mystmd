@@ -1,15 +1,15 @@
 import fetch from 'node-fetch';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
+import type { Logger } from 'myst-cli-utils';
+import { LogLevel, basicLogger } from 'myst-cli-utils';
 import { loadConfigOrThrow } from '../config';
 import { CURVENOTE_YML } from '../config/types';
-import type { Logger } from '../logging';
-import { basicLogger, LogLevel } from '../logging';
 import type { RootState } from '../store';
 import { rootReducer, selectors } from '../store';
+import { checkForClientVersionRejection } from '../utils';
 import { getHeaders, setSessionOrUserToken } from './tokens';
 import type { ISession, Response, Tokens } from './types';
-import { checkForClientVersionRejection } from '../utils';
 
 const DEFAULT_API_URL = 'https://api.curvenote.com';
 const DEFAULT_SITE_URL = 'https://curvenote.com';

@@ -2,7 +2,7 @@ import type { CitationRenderer } from 'citation-js-utils';
 import { InlineCite } from 'citation-js-utils';
 import type { StaticPhrasingContent, Parent } from 'myst-spec';
 import { selectAll } from 'mystjs';
-import type { Logger } from '../logging';
+import type { Logger } from 'myst-cli-utils';
 import type { Root } from 'mdast';
 import type { References } from './types';
 

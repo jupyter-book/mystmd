@@ -1,8 +1,8 @@
 import { sync as which } from 'which';
 import fs from 'fs';
 import path from 'path';
-import type { Logger } from '../../logging';
-import { makeExecutable } from './exec';
+import { makeExecutable } from 'myst-cli-utils';
+import type { Logger } from 'myst-cli-utils';
 import type { ISession } from '../../session';
 import { tic } from '../../utils';
 

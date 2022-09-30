@@ -1,6 +1,6 @@
 import fs from 'fs';
-import { makeExecutable } from '../export/utils';
-import { getGitLogger, getNpmLogger, getServerLogger } from '../logging/custom';
+import { createGitLogger, createNpmLogger, makeExecutable } from 'myst-cli-utils';
+import { createServerLogger } from '../logging';
 import { MyUser } from '../models';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
@@ -40,7 +40,7 @@ export async function clone(session: ISession, opts: Options): Promise<void> {
   const repo = repoPath();
   await makeExecutable(
     `git clone --recursive --depth 1 --branch ${branch} https://github.com/curvenote/curvenote.git ${repo}`,
-    getGitLogger(session),
+    createGitLogger(session),
   )();
   session.log.debug('Cleaning out any git information from build folder.');
   cleanBuiltFiles(session, false);
@@ -53,9 +53,9 @@ export async function install(session: ISession): Promise<void> {
     session.log.error('Curvenote is not cloned. Do you need to run: \n\ncurvenote web clone');
     return;
   }
-  await makeExecutable('npm install', getNpmLogger(session), { cwd: repoPath() })();
+  await makeExecutable('npm install', createNpmLogger(session), { cwd: repoPath() })();
   session.log.info(toc('📦 Installed web libraries in %s'));
-  await makeExecutable('npm run build:web', getNpmLogger(session), { cwd: repoPath() })();
+  await makeExecutable('npm run build:web', createNpmLogger(session), { cwd: repoPath() })();
   session.log.info(toc('🛠  Built dependencies in %s'));
 }
 
@@ -97,7 +97,9 @@ export async function startServer(session: ISession, opts: Options): Promise<voi
   await build(session, opts, false);
   sparkles(session, 'Starting Curvenote');
   watchContent(session);
-  await makeExecutable('npm run serve', getServerLogger(session), { cwd: serverPath(session) })();
+  await makeExecutable('npm run serve', createServerLogger(session), {
+    cwd: serverPath(session),
+  })();
 }
 
 export async function deploy(session: ISession, opts: Omit<Options, 'clean'>): Promise<void> {

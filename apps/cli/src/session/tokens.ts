@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import { XClientName } from '@curvenote/blocks';
-import type { Logger } from '../logging';
+import type { Logger } from 'myst-cli-utils';
 import CLIENT_VERSION from '../version';
 import type { Tokens } from './types';
 

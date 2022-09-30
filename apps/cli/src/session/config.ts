@@ -2,9 +2,9 @@ import chalk from 'chalk';
 import * as fs from 'fs';
 import inquirer from 'inquirer';
 import path from 'path';
+import type { Logger } from 'myst-cli-utils';
+import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import { MyUser } from '../models';
-import type { Logger } from '../logging';
-import { chalkLogger, LogLevel } from '../logging';
 import { actionLinks } from '../docs';
 import { Session } from './session';
 
