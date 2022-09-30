@@ -12,10 +12,11 @@ import { validateExport, ExportFormats } from 'myst-frontmatter';
 import { remove } from 'unist-util-remove';
 import { copyNode } from 'myst-common';
 import type { Block } from 'myst-spec';
+import AdmZip from 'adm-zip';
 import type { ISession } from '../../session/types';
 import { bibFilesInDir, getRawFrontmatterFromFile } from '../../store/local/actions';
 import { selectLocalProject } from '../../store/selectors';
-import { findProjectAndLoad, writeFileToFolder } from '../../utils';
+import { createTempFolder, findProjectAndLoad, writeFileToFolder } from '../../utils';
 import type { ExportWithOutput } from '../types';
 import { cleanOutput } from '../utils/cleanOutput';
 import { getDefaultExportFilename, getDefaultExportFolder } from '../utils/defaultNames';
@@ -174,7 +175,7 @@ export async function collectTexExportOptions(
   projectPath: string | undefined,
   opts: TexExportOptions,
 ) {
-  const { filename, disableTemplate, templatePath, template } = opts;
+  const { filename, disableTemplate, templatePath, template, zip } = opts;
   if (disableTemplate && (opts.template || opts.templatePath)) {
     throw new Error(
       'Conflicting tex export options: disableTemplate requested but a template was provided',
@@ -203,6 +204,9 @@ export async function collectTexExportOptions(
   }
   const resolvedExportOptions: ExportWithOutput[] = exportOptions
     .map((exp): ExportWithOutput | undefined => {
+      const rawOutput = filename || exp.output || '';
+      const useZip = extension === 'tex' && (zip || path.extname(rawOutput) === '.zip');
+      const expExtension = useZip ? 'zip' : extension;
       let output: string;
       const basename = getDefaultExportFilename(session, file, projectPath);
       if (filename) {
@@ -211,15 +215,13 @@ export async function collectTexExportOptions(
         // output path from file frontmatter needs resolution relative to working directory
         output = path.resolve(path.dirname(file), exp.output);
       } else {
-        output = getDefaultExportFolder(session, file, projectPath);
-        // Special case for tex with multiple file outputs
-        if (extension === 'tex') output = path.join(output, `${basename}_tex`);
+        output = getDefaultExportFolder(session, file, projectPath, 'tex');
       }
       if (!path.extname(output)) {
-        output = path.join(output, `${basename}.${extension}`);
+        output = path.join(output, `${basename}.${expExtension}`);
       }
-      if (!output.endsWith(`.${extension}`)) {
-        session.log.error(`The filename must end with '.${extension}': "${output}"`);
+      if (!output.endsWith(`.${expExtension}`)) {
+        session.log.error(`The filename must end with '.${expExtension}': "${output}"`);
         return undefined;
       }
       const resolvedOptions: { output: string; template?: string | null } = { output };
@@ -290,6 +292,28 @@ export async function runTexExport(
   }
 }
 
+async function runTexZipExport(
+  session: ISession,
+  file: string,
+  exportOptions: ExportWithOutput,
+  templatePath?: string,
+  projectPath?: string,
+  clean?: boolean,
+) {
+  if (clean) cleanOutput(session, exportOptions.output);
+  const zipOutput = exportOptions.output;
+  const texFolder = createTempFolder();
+  exportOptions.output = path.join(
+    texFolder,
+    `${path.basename(zipOutput, path.extname(zipOutput))}.tex`,
+  );
+  await runTexExport(session, file, exportOptions, templatePath, projectPath);
+  session.log.info(`🤐 Zipping tex outputs to ${zipOutput}`);
+  const zip = new AdmZip();
+  zip.addLocalFolder(texFolder);
+  zip.writeZip(zipOutput);
+}
+
 export async function localArticleToTex(session: ISession, file: string, opts: TexExportOptions) {
   const projectPath = await findProjectAndLoad(session, path.dirname(file));
   const exportOptionsList = await collectTexExportOptions(
@@ -303,7 +327,25 @@ export async function localArticleToTex(session: ISession, file: string, opts: T
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runTexExport(session, file, exportOptions, opts.templatePath, projectPath, opts.clean);
+      if (path.extname(exportOptions.output) === '.zip') {
+        await runTexZipExport(
+          session,
+          file,
+          exportOptions,
+          opts.templatePath,
+          projectPath,
+          opts.clean,
+        );
+      } else {
+        await runTexExport(
+          session,
+          file,
+          exportOptions,
+          opts.templatePath,
+          projectPath,
+          opts.clean,
+        );
+      }
     }),
   );
 }

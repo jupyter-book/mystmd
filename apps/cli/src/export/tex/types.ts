@@ -11,4 +11,5 @@ export interface TexExportOptions {
   converter?: 'inkscape' | 'imagemagick';
   templateOptions?: Record<string, any>;
   clean?: boolean;
+  zip?: boolean;
 }

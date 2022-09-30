@@ -20,6 +20,11 @@ export function makeBranchOption() {
 export function makeCleanOption() {
   return new Option('-c, --clean', 'Remove content so that it is rebuilt fresh').default(false);
 }
+
+export function makeZipOption() {
+  return new Option('--zip', 'Zip tex ouput folder').default(false);
+}
+
 export function makeForceOption() {
   return new Option('-f, --force', 'Remove the build directory and re-install').default(false);
 }
