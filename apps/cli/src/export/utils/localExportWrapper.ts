@@ -28,7 +28,7 @@ export const localExportWrapper =
       session.log.info(`🔍 Found local file to export: ${path}`);
       localPath = path;
     } else {
-      session.log.info(`🌍 Attempting to download: ${path}`);
+      session.log.info(`🌍 Downloading: ${path}`);
       const localFilename = 'output.md';
       const localFolder = createTempFolder();
       localPath = join(localFolder, localFilename);
