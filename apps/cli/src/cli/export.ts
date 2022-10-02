@@ -2,14 +2,14 @@ import { Command, Option } from 'commander';
 import {
   buildPdfOnly,
   exportContent,
-  oxaLinkToArticleTex,
+  oxaLinkToTex,
   oxaLinkToJupyterBook,
   oxaLinkToMarkdown,
   oxaLinkToNotebook,
   oxaLinkToPdf,
   pathToWord,
 } from '../export';
-import { makeCleanOption } from './options';
+import { makeCleanOption, makeZipOption } from './options';
 import { clirun } from './utils';
 
 function makeImageOption() {
@@ -27,10 +27,6 @@ function makeDisableTemplateOption() {
 
 function makeTemplateOption() {
   return new Option('-t, --template <name>', 'Specify a template to apply during export');
-}
-
-function makeTemplatePathOption() {
-  return new Option('--template-path <name>', 'Specify a path to templates folder');
 }
 
 function makeTemplateOptionsOption() {
@@ -54,7 +50,7 @@ function makeWordExportCLI(program: Command) {
     .argument('<article>', 'A link to the Curvenote article (e.g. OXA Link or API link)')
     .argument('[output]', 'The document filename to export to', '')
     .addOption(makeCleanOption())
-    .action(clirun(pathToWord, { program }));
+    .action(clirun(pathToWord, { program }, 3));
   return command;
 }
 
@@ -81,11 +77,11 @@ function makeTexExportCLI(program: Command) {
     .addOption(makeImageOption())
     .addOption(makeDisableTemplateOption())
     .addOption(makeTemplateOption())
-    .addOption(makeTemplatePathOption())
     .addOption(makeCleanOption())
+    .addOption(makeZipOption())
     .addOption(makeTemplateOptionsOption())
     .addOption(makeConverterOption())
-    .action(clirun(oxaLinkToArticleTex, { program }));
+    .action(clirun(oxaLinkToTex, { program }, 3));
   return command;
 }
 
@@ -99,11 +95,10 @@ function makePdfExportCLI(program: Command) {
     .argument('[output]', 'The document filename to export to', '')
     .addOption(makeDisableTemplateOption())
     .addOption(makeTemplateOption())
-    .addOption(makeTemplatePathOption())
     .addOption(makeCleanOption())
     .addOption(makeTemplateOptionsOption())
     .addOption(makeConverterOption())
-    .action(clirun(oxaLinkToPdf, { program }));
+    .action(clirun(oxaLinkToPdf, { program }, 3));
   return command;
 }
 

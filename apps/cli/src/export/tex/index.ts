@@ -1,7 +1,7 @@
-import { exportFromPath } from '../utils';
-import { localArticleToTex, singleArticleToTex } from './single';
+import { ExportFormats } from 'myst-frontmatter';
+import { localExportWrapper } from '../utils/localExportWrapper';
+import { localArticleToTex } from './single';
 
 export { multipleArticleToTex } from './multiple';
-export { singleArticleToTex } from './single';
 
-export const oxaLinkToArticleTex = exportFromPath(singleArticleToTex, localArticleToTex);
+export const oxaLinkToTex = localExportWrapper(localArticleToTex, ExportFormats.tex);

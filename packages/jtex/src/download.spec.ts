@@ -8,8 +8,8 @@ describe('resolveInputs', () => {
   beforeEach(() => memfs.vol.reset());
   it('default path and url fill correctly', async () => {
     expect(resolveInputs(new Session(), {})).toEqual({
-      templatePath: '_build/templates/public/default',
-      templateUrl: 'https://api.curvenote.com/templates/tex/public/default/download',
+      templatePath: '_build/templates/myst/curvenote',
+      templateUrl: 'https://api.myst.tools/templates/tex/myst/curvenote',
     });
   });
   it('template as path to template file exists', async () => {
@@ -26,20 +26,6 @@ describe('resolveInputs', () => {
       templateUrl: undefined,
     });
   });
-  it('path to template folder exists', async () => {
-    memfs.vol.fromJSON({ 'templates/template.tex': '' });
-    expect(resolveInputs(new Session(), { path: 'templates' })).toEqual({
-      templatePath: 'templates',
-      templateUrl: undefined,
-    });
-  });
-  it('path exists without template', async () => {
-    memfs.vol.fromJSON({ 'templates/other.tex': '' });
-    expect(resolveInputs(new Session(), { path: 'templates' })).toEqual({
-      templatePath: 'templates',
-      templateUrl: 'https://api.curvenote.com/templates/tex/public/default/download',
-    });
-  });
   it('template url is respected', async () => {
     memfs.vol.fromJSON({ 'templates/other.tex': '' });
     expect(resolveInputs(new Session(), { template: 'https://example.com' })).toEqual({
@@ -51,13 +37,13 @@ describe('resolveInputs', () => {
   it('non-default template is respected', async () => {
     expect(resolveInputs(new Session(), { template: 'private/journal' })).toEqual({
       templatePath: '_build/templates/private/journal',
-      templateUrl: 'https://api.curvenote.com/templates/tex/private/journal/download',
+      templateUrl: 'https://api.myst.tools/templates/tex/private/journal',
     });
   });
   it('template name is prefixed with public', async () => {
     expect(resolveInputs(new Session(), { template: 'journal' })).toEqual({
-      templatePath: '_build/templates/public/journal',
-      templateUrl: 'https://api.curvenote.com/templates/tex/public/journal/download',
+      templatePath: '_build/templates/myst/journal',
+      templateUrl: 'https://api.myst.tools/templates/tex/myst/journal',
     });
   });
   it('invalid template errors', async () => {

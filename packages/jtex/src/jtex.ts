@@ -8,6 +8,7 @@ import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './do
 import { pdfExportCommand } from './export';
 import { extendJtexFrontmatter } from './frontmatter';
 import { renderImports } from './imports';
+import { getSession } from './session';
 import type { TemplateImports, ISession, Renderer, TemplateYml } from './types';
 import { ensureDirectoryExists, errorLogger, warningLogger } from './utils';
 import {
@@ -38,9 +39,9 @@ class JTex {
    * template may be downloaded, or the name of a Curvenote template. Path is the
    * local path where the downloaded template will be saved.
    */
-  constructor(session: ISession, opts?: { template?: string; path?: string }) {
-    this.session = session;
-    const { templatePath, templateUrl } = resolveInputs(session, opts || {});
+  constructor(session: ISession, opts?: { template?: string; rootDir?: string }) {
+    this.session = getSession(session.log);
+    const { templatePath, templateUrl } = resolveInputs(this.session, opts || {});
     this.templatePath = templatePath;
     this.templateUrl = templateUrl;
     this.env = nunjucks
@@ -163,7 +164,7 @@ class JTex {
 
   async ensureTemplateExistsOnPath(force?: boolean) {
     if (!force && fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
-      this.session.log.debug(`Template found at path: ${this.templatePath}`);
+      this.session.log.info(`🔍 Template found at path: ${this.templatePath}`);
     } else if (!this.templateUrl) {
       throw new Error(
         `No template on path and no download URL to fetch from: ${this.templatePath}`,

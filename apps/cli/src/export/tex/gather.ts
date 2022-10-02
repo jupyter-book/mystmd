@@ -16,13 +16,13 @@ import { validateJtexFrontmatterKeys } from '../validators';
 import type { LatexFrontmatter } from './frontmatter';
 import { buildJtexSection, escapeLatex, stringifyFrontmatter } from './frontmatter';
 import { localizeAndProcessImages } from './images';
-import type { TexExportOptions } from './types';
+import type { TexExportOptionsExpanded } from './types';
 import { convertAndLocalizeChild, writeBlocksToFile, writeTaggedContent } from './utils';
 
 export async function gatherAndWriteArticleContent(
   session: ISession,
   versionId: VersionId,
-  opts: TexExportOptions,
+  opts: TexExportOptionsExpanded,
   tagged: string[],
   templateOptions: Record<string, any>,
   buildPath: string,

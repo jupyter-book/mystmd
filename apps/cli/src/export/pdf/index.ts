@@ -1,8 +1,8 @@
-import { exportFromPath } from '../utils/exportWrapper';
-import { localArticleToPdf, singleArticleToPdf } from './single';
+import { ExportFormats } from 'myst-frontmatter';
+import { localExportWrapper } from '../utils/localExportWrapper';
+import { localArticleToPdf } from './single';
 
-export { singleArticleToPdf } from './single';
 export { multipleArticleToPdf } from './multiple';
 export { buildPdfOnly } from './build';
 
-export const oxaLinkToPdf = exportFromPath(singleArticleToPdf, localArticleToPdf);
+export const oxaLinkToPdf = localExportWrapper(localArticleToPdf, ExportFormats.pdf);

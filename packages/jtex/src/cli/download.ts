@@ -10,12 +10,12 @@ import {
 import chalk from 'chalk';
 import { getSession } from '../session';
 
-export async function downloadTemplateCLI(session: ISession, template: string, path: string) {
-  const { templatePath, templateUrl } = resolveInputs(session, { template, path });
+export async function downloadTemplateCLI(session: ISession, template: string, path?: string) {
+  const { templatePath, templateUrl } = resolveInputs(session, { template });
   if (!templateUrl) {
     throw new Error(`Unresolved template URL for "${template}"`);
   }
-  await downloadAndUnzipTemplate(session, { templatePath, templateUrl });
+  await downloadAndUnzipTemplate(session, { templatePath: path || templatePath, templateUrl });
 }
 
 export async function listTemplatesCLI(session: ISession, name?: string, opts?: { tag?: string }) {
@@ -24,17 +24,19 @@ export async function listTemplatesCLI(session: ISession, name?: string, opts?: 
     const template = await fetchPublicTemplate(session, name);
     session.log.debug(toc(`Found ${template.id} template in %s`));
     session.log.info(
-      `${chalk.bold.yellowBright(template.title.padEnd(25))}${chalk.bold.blueBright(
-        template.id.replace(/^public\//, ''),
+      `${chalk.bold.yellowBright((template.title ?? '').padEnd(25))}${chalk.bold.blueBright(
+        template.id.replace(/^tex\//, '').replace(/^myst\//, ''),
       )}\nID: ${chalk.dim(template.id)}\nVersion: ${chalk.dim(
         template.version,
-      )}\nAuthor: ${chalk.dim(template.author.name)}\nDescription: ${chalk.dim(
-        template.description,
-      )}\nTags: ${chalk.dim(template.tags.join(', '))}`,
+      )}\nAuthors: ${chalk.dim(
+        template.authors?.map((a) => a.name).join(', '),
+      )}\nDescription: ${chalk.dim(template.description)}\nTags: ${chalk.dim(
+        template.tags?.join(', '),
+      )}`,
     );
     return;
   }
-  const templates = await listPublicTemplates(session, name);
+  const templates = await listPublicTemplates(session);
   let filtered = templates;
   if (opts?.tag) {
     const tags = opts.tag.split(',').map((t) => t.trim());
@@ -53,10 +55,10 @@ export async function listTemplatesCLI(session: ISession, name?: string, opts?: 
   );
   filtered.forEach((template) => {
     session.log.info(
-      `\n${chalk.bold.yellowBright(template.title.padEnd(25))}${chalk.bold.blueBright(
-        template.id.replace(/^public\//, ''),
+      `\n${chalk.bold.yellowBright((template.title ?? '').padEnd(25))}${chalk.bold.blueBright(
+        template.id.replace(/^tex\//, '').replace(/^myst\//, ''),
       )}\nDescription: ${chalk.dim(template.description)}\nTags: ${chalk.dim(
-        template.tags.join(', '),
+        template.tags?.join(', '),
       )}`,
     );
   });

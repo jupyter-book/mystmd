@@ -130,6 +130,7 @@ export function clirun(
     requireSiteConfig?: boolean;
     hideNoTokenWarning?: boolean;
   },
+  nArgs?: number,
 ) {
   return async (...args: any[]) => {
     const opts = cli.program.opts() as SessionOpts;
@@ -154,7 +155,7 @@ export function clirun(
       process.exit(1);
     }
     try {
-      await func(useSession, ...args);
+      await func(useSession, ...args.slice(0, nArgs));
     } catch (error) {
       if (opts.debug) {
         useSession.log.debug(`\n\n${(error as Error)?.stack}\n\n`);

@@ -1,41 +1,13 @@
 import path from 'path';
 import { ExportFormats } from 'myst-frontmatter';
-import type { VersionId } from '@curvenote/blocks';
 import type { ISession } from '../../session/types';
 import { createTempFolder, findProjectAndLoad } from '../../utils';
-import { singleArticleToTex } from '../tex';
 import { collectTexExportOptions, runTexExport } from '../tex/single';
 import type { TexExportOptions } from '../tex/types';
 import type { ExportWithOutput } from '../types';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
-import { createPdfGivenTexFile, createPdfGivenTexExport } from './create';
+import { createPdfGivenTexExport } from './create';
 import { cleanOutput } from '../utils/cleanOutput';
-
-export const DEFAULT_PDF_FILENAME = 'main.pdf';
-
-export async function singleArticleToPdf(
-  session: ISession,
-  versionId: VersionId,
-  opts: TexExportOptions,
-) {
-  if (!opts.filename) opts.filename = DEFAULT_PDF_FILENAME;
-  const outputPath = path.dirname(opts.filename);
-  const basename = path.basename(opts.filename, path.extname(opts.filename));
-  const tex_filename = `${basename}.tex`;
-  const targetTexFilename = path.join(outputPath, tex_filename);
-
-  const article = await singleArticleToTex(session, versionId, {
-    ...opts,
-    filename: targetTexFilename,
-    template: opts.template ?? 'public/default',
-    useBuildFolder: true,
-    texIsIntermediate: true,
-  });
-
-  await createPdfGivenTexFile(session.log, targetTexFilename);
-
-  return article;
-}
 
 export function texExportOptionsFromPdf(
   session: ISession,
@@ -56,16 +28,25 @@ export function texExportOptionsFromPdf(
   return { ...pdfExp, format: ExportFormats.tex, output };
 }
 
-export async function localArticleToPdf(session: ISession, file: string, opts: TexExportOptions) {
+export async function localArticleToPdf(
+  session: ISession,
+  file: string,
+  opts: TexExportOptions,
+  templateOptions?: Record<string, any>,
+) {
   const projectPath = await findProjectAndLoad(session, path.dirname(file));
-  const pdfExportOptionsList = await collectTexExportOptions(
-    session,
-    file,
-    'pdf',
-    [ExportFormats.pdf, ExportFormats.pdftex],
-    projectPath,
-    opts,
-  );
+  const pdfExportOptionsList = (
+    await collectTexExportOptions(
+      session,
+      file,
+      'pdf',
+      [ExportFormats.pdf, ExportFormats.pdftex],
+      projectPath,
+      opts,
+    )
+  ).map((exportOptions) => {
+    return { ...exportOptions, ...templateOptions };
+  });
   await resolveAndLogErrors(
     session,
     pdfExportOptionsList
@@ -78,21 +59,14 @@ export async function localArticleToPdf(session: ISession, file: string, opts: T
           keepTexAndLogs,
           opts.clean,
         );
-        await runTexExport(
-          session,
-          file,
-          texExportOptions,
-          opts.templatePath,
-          projectPath,
-          opts.clean,
-        );
+        await runTexExport(session, file, texExportOptions, projectPath, opts.clean);
         await createPdfGivenTexExport(
           session,
           texExportOptions,
           output,
-          opts.templatePath,
           keepTexAndLogs,
           opts.clean,
+          projectPath || path.dirname(file),
         );
       })
       .map((p) => p.catch((e) => e)),

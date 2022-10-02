@@ -7,71 +7,30 @@ import { selectAll, unified } from 'mystjs';
 import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
 import type { ValidationOptions } from 'simple-validators';
-import type { VersionId } from '@curvenote/blocks';
 import type { Export, PageFrontmatter } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
 import { remove } from 'unist-util-remove';
 import { copyNode } from 'myst-common';
 import type { Block } from 'myst-spec';
+import AdmZip from 'adm-zip';
 import type { ISession } from '../../session/types';
 import { bibFilesInDir, getRawFrontmatterFromFile } from '../../store/local/actions';
 import { selectLocalProject } from '../../store/selectors';
-import { findProjectAndLoad, writeFileToFolder } from '../../utils';
+import { createTempFolder, findProjectAndLoad, writeFileToFolder } from '../../utils';
 import type { ExportWithOutput } from '../types';
-import { makeBuildPaths } from '../utils';
 import { cleanOutput } from '../utils/cleanOutput';
 import { getDefaultExportFilename, getDefaultExportFolder } from '../utils/defaultNames';
 import { getFileContent } from '../utils/getFileContent';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
-import { writeBibtex } from '../utils/writeBibtex';
-import { gatherAndWriteArticleContent } from './gather';
-import {
-  ifTemplateFetchTaggedBlocks,
-  ifTemplateLoadOptions,
-  throwIfTemplateButNoJtex,
-} from './template';
 import type { TexExportOptions } from './types';
-import { ifTemplateRunJtex } from './utils';
 
-export const DEFAULT_TEX_FILENAME = 'main.tex';
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 
-export async function singleArticleToTex(
-  session: ISession,
-  versionId: VersionId,
-  opts: TexExportOptions,
+export function mdastToTex(
+  mdast: Root,
+  frontmatter: PageFrontmatter,
+  templateYml: TemplateYml | null,
 ) {
-  if (!opts.filename) opts.filename = DEFAULT_TEX_FILENAME;
-  throwIfTemplateButNoJtex(opts);
-  const { tagged } = await ifTemplateFetchTaggedBlocks(session, opts);
-  const templateOptions = ifTemplateLoadOptions(opts);
-
-  const { buildPath } = makeBuildPaths(session.log, opts);
-
-  session.log.debug('Starting articleToTex...');
-  session.log.debug(`With Options: ${JSON.stringify(opts)}`);
-
-  const { article, filename } = await gatherAndWriteArticleContent(
-    session,
-    versionId,
-    opts,
-    tagged,
-    templateOptions,
-    buildPath,
-  );
-
-  session.log.debug('Writing bib file...');
-  await writeBibtex(session, article.references, DEFAULT_BIB_FILENAME, {
-    path: buildPath,
-    alwaysWriteFile: true,
-  });
-
-  await ifTemplateRunJtex(filename, session.log, opts);
-
-  return article;
-}
-
-function mdastToTex(mdast: Root, frontmatter: PageFrontmatter, templateYml: TemplateYml | null) {
   const pipe = unified().use(mystToTex, {
     math: frontmatter?.math,
     citestyle: templateYml?.style?.citation,
@@ -149,7 +108,6 @@ export async function localArticleToTexTemplated(
   session: ISession,
   file: string,
   templateOptions: ExportWithOutput,
-  templatePath?: string,
   projectPath?: string,
   force?: boolean,
 ) {
@@ -171,7 +129,7 @@ export async function localArticleToTexTemplated(
 
   const jtex = new JTex(session, {
     template: templateOptions.template || undefined,
-    path: templatePath,
+    rootDir: projectPath || path.dirname(file),
   });
   await jtex.ensureTemplateExistsOnPath();
   const templateYml = jtex.getValidatedTemplateYml();
@@ -216,8 +174,8 @@ export async function collectTexExportOptions(
   projectPath: string | undefined,
   opts: TexExportOptions,
 ) {
-  const { filename, disableTemplate, templatePath, template } = opts;
-  if (disableTemplate && (opts.template || opts.templatePath)) {
+  const { filename, disableTemplate, template, zip } = opts;
+  if (disableTemplate && template) {
     throw new Error(
       'Conflicting tex export options: disableTemplate requested but a template was provided',
     );
@@ -233,18 +191,19 @@ export async function collectTexExportOptions(
         });
       })
       .filter((exp: Export | undefined) => exp && formats.includes(exp?.format)) || [];
+  // If no export options are provided in frontmatter, instantiate default options
+  if (exportOptions.length === 0 && formats.length) {
+    exportOptions = [{ format: formats[0] }];
+  }
   // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
-  if (filename || template || templatePath || disableTemplate) {
-    if (exportOptions.length) {
-      exportOptions = [exportOptions[0]];
-    } else if (formats.length) {
-      exportOptions = [{ format: formats[0] }];
-    } else {
-      exportOptions = [];
-    }
+  if (filename || template || disableTemplate) {
+    exportOptions = exportOptions.slice(0, 1);
   }
   const resolvedExportOptions: ExportWithOutput[] = exportOptions
     .map((exp): ExportWithOutput | undefined => {
+      const rawOutput = filename || exp.output || '';
+      const useZip = extension === 'tex' && (zip || path.extname(rawOutput) === '.zip');
+      const expExtension = useZip ? 'zip' : extension;
       let output: string;
       const basename = getDefaultExportFilename(session, file, projectPath);
       if (filename) {
@@ -253,21 +212,26 @@ export async function collectTexExportOptions(
         // output path from file frontmatter needs resolution relative to working directory
         output = path.resolve(path.dirname(file), exp.output);
       } else {
-        output = getDefaultExportFolder(session, file, projectPath);
-        // Special case for tex with multiple file outputs
-        if (extension === 'tex') output = path.join(output, `${basename}_tex`);
+        output = getDefaultExportFolder(
+          session,
+          file,
+          projectPath,
+          formats.includes(ExportFormats.tex) ? 'tex' : undefined,
+        );
       }
       if (!path.extname(output)) {
-        output = path.join(output, `${basename}.${extension}`);
+        output = path.join(output, `${basename}.${expExtension}`);
       }
-      if (!output.endsWith(`.${extension}`)) {
-        session.log.error(`The filename must end with '.${extension}': "${output}"`);
+      if (!output.endsWith(`.${expExtension}`)) {
+        session.log.error(`The filename must end with '.${expExtension}': "${output}"`);
         return undefined;
       }
       const resolvedOptions: { output: string; template?: string | null } = { output };
       if (disableTemplate) {
         resolvedOptions.template = null;
-      } else if (!template && exp.template) {
+      } else if (template) {
+        resolvedOptions.template = template;
+      } else if (exp.template) {
         // template path from file frontmatter needs resolution relative to working directory
         const resolvedTemplatePath = path.resolve(path.dirname(file), exp.template);
         if (fs.existsSync(resolvedTemplatePath)) {
@@ -291,7 +255,7 @@ export async function collectTexExportOptions(
     });
   if (exportOptions.length === 0) {
     throw new Error(
-      `No export options of format ${formats.join(', ')} defined in frontmatter of ${file}${
+      `No valid export options of format ${formats.join(', ')} found${
         exportErrorMessages.errors?.length
           ? '\nPossible causes:\n- ' + exportErrorMessages.errors.map((e) => e.message).join('\n- ')
           : ''
@@ -299,7 +263,7 @@ export async function collectTexExportOptions(
     );
   }
   resolvedExportOptions.forEach((exp) => {
-    session.log.info(`🔍 Performing export: ${exp.output}`);
+    session.log.info(`📬 Performing export: ${exp.output}`);
   });
   return resolvedExportOptions;
 }
@@ -308,7 +272,6 @@ export async function runTexExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  templatePath?: string,
   projectPath?: string,
   clean?: boolean,
 ) {
@@ -316,31 +279,51 @@ export async function runTexExport(
   if (exportOptions.template === null) {
     await localArticleToTexRaw(session, file, exportOptions.output, projectPath);
   } else {
-    await localArticleToTexTemplated(
-      session,
-      file,
-      exportOptions,
-      templatePath,
-      projectPath,
-      clean,
-    );
+    await localArticleToTexTemplated(session, file, exportOptions, projectPath, clean);
   }
 }
 
-export async function localArticleToTex(session: ISession, file: string, opts: TexExportOptions) {
-  const projectPath = await findProjectAndLoad(session, path.dirname(file));
-  const exportOptionsList = await collectTexExportOptions(
-    session,
-    file,
-    'tex',
-    [ExportFormats.tex],
-    projectPath,
-    opts,
+async function runTexZipExport(
+  session: ISession,
+  file: string,
+  exportOptions: ExportWithOutput,
+  projectPath?: string,
+  clean?: boolean,
+) {
+  if (clean) cleanOutput(session, exportOptions.output);
+  const zipOutput = exportOptions.output;
+  const texFolder = createTempFolder();
+  exportOptions.output = path.join(
+    texFolder,
+    `${path.basename(zipOutput, path.extname(zipOutput))}.tex`,
   );
+  await runTexExport(session, file, exportOptions, projectPath);
+  session.log.info(`🤐 Zipping tex outputs to ${zipOutput}`);
+  const zip = new AdmZip();
+  zip.addLocalFolder(texFolder);
+  zip.writeZip(zipOutput);
+}
+
+export async function localArticleToTex(
+  session: ISession,
+  file: string,
+  opts: TexExportOptions,
+  templateOptions?: Record<string, any>,
+) {
+  const projectPath = await findProjectAndLoad(session, path.dirname(file));
+  const exportOptionsList = (
+    await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
+  ).map((exportOptions) => {
+    return { ...exportOptions, ...templateOptions };
+  });
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runTexExport(session, file, exportOptions, opts.templatePath, projectPath, opts.clean);
+      if (path.extname(exportOptions.output) === '.zip') {
+        await runTexZipExport(session, file, exportOptions, projectPath, opts.clean);
+      } else {
+        await runTexExport(session, file, exportOptions, projectPath, opts.clean);
+      }
     }),
   );
 }

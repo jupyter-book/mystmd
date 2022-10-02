@@ -5,6 +5,7 @@ import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import type { ValidationOptions } from 'simple-validators';
 import type { Export } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
+import { htmlTransform } from 'myst-transforms';
 import { VFile } from 'vfile';
 import type { ISession } from '../../session/types';
 import { getRawFrontmatterFromFile } from '../../store/local/actions';
@@ -22,7 +23,6 @@ import { getFileContent } from '../utils/getFileContent';
 import { createCurvenoteFooter } from './footers';
 import DEFAULT_STYLE from './simpleStyles';
 import { createArticleTitle, createReferenceTitle } from './titles';
-import { htmlTransform } from 'myst-transforms';
 
 export type WordExportOptions = {
   filename: string;
@@ -49,15 +49,13 @@ export async function collectWordExportOptions(
         });
       })
       .filter((exp: Export | undefined) => exp && formats.includes(exp?.format)) || [];
-  // If any arguments are provided on the CLI, only do a single export using the first available frontmatter docx options
+  // If no export options are provided in frontmatter, instantiate default options
+  if (exportOptions.length === 0 && formats.length) {
+    exportOptions = [{ format: formats[0] }];
+  }
+  // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
   if (filename) {
-    if (exportOptions.length) {
-      exportOptions = [exportOptions[0]];
-    } else if (formats.length) {
-      exportOptions = [{ format: formats[0] }];
-    } else {
-      exportOptions = [];
-    }
+    exportOptions = exportOptions.slice(0, 1);
   }
   const resolvedExportOptions: ExportWithOutput[] = exportOptions
     .map((exp): ExportWithOutput | undefined => {
@@ -93,7 +91,7 @@ export async function collectWordExportOptions(
     });
   if (exportOptions.length === 0) {
     throw new Error(
-      `No export options of format ${formats.join(', ')} defined in frontmatter of ${file}${
+      `No valid export options of format ${formats.join(', ')} found${
         exportErrorMessages.errors?.length
           ? '\nPossible causes:\n- ' + exportErrorMessages.errors.map((e) => e.message).join('\n- ')
           : ''
@@ -101,7 +99,7 @@ export async function collectWordExportOptions(
     );
   }
   resolvedExportOptions.forEach((exp) => {
-    session.log.info(`🔍 Performing export: ${exp.output}`);
+    session.log.info(`📬 Performing export: ${exp.output}`);
   });
   return resolvedExportOptions;
 }
@@ -158,16 +156,18 @@ export async function runWordExport(
   writeDocx(doc, (buffer) => writeFileToFolder(output, buffer));
 }
 
-export async function localArticleToWord(session: ISession, file: string, opts: WordExportOptions) {
+export async function localArticleToWord(
+  session: ISession,
+  file: string,
+  opts: WordExportOptions,
+  templateOptions?: Record<string, any>,
+) {
   const projectPath = await findProjectAndLoad(session, path.dirname(file));
-  const exportOptionsList = await collectWordExportOptions(
-    session,
-    file,
-    'docx',
-    [ExportFormats.docx],
-    projectPath,
-    opts,
-  );
+  const exportOptionsList = (
+    await collectWordExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
+  ).map((exportOptions) => {
+    return { ...exportOptions, ...templateOptions };
+  });
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {

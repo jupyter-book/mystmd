@@ -1,4 +1,5 @@
-export * from './exportWrapper';
+export * from './localExportWrapper';
+export * from './remoteExportWrapper';
 export * from './walkArticle';
 export * from './getImageSrc';
 export * from './writeImagesToFiles';

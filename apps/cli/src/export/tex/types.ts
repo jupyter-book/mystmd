@@ -1,14 +1,18 @@
-export interface TexExportOptions {
+export type TexExportOptions = {
   filename: string;
-  multiple?: boolean;
-  images?: string;
   template?: string | null;
-  templatePath?: string;
   disableTemplate?: boolean;
+  templateOptions?: Record<string, any>;
+  clean?: boolean;
+  zip?: boolean;
+};
+
+export type TexExportOptionsExpanded = TexExportOptions & {
+  multiple?: boolean;
+  templatePath?: string;
   options?: string;
   useBuildFolder?: boolean;
   texIsIntermediate?: boolean;
   converter?: 'inkscape' | 'imagemagick';
-  templateOptions?: Record<string, any>;
-  clean?: boolean;
-}
+  images?: string;
+};
