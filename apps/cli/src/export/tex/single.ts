@@ -212,7 +212,12 @@ export async function collectTexExportOptions(
         // output path from file frontmatter needs resolution relative to working directory
         output = path.resolve(path.dirname(file), exp.output);
       } else {
-        output = getDefaultExportFolder(session, file, projectPath, 'tex');
+        output = getDefaultExportFolder(
+          session,
+          file,
+          projectPath,
+          formats.includes(ExportFormats.tex) ? 'tex' : undefined,
+        );
       }
       if (!path.extname(output)) {
         output = path.join(output, `${basename}.${expExtension}`);

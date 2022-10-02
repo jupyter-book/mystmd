@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { ExportFormats } from 'myst-frontmatter';
 import { join } from 'path';
 import type { ISession } from '../../session/types';
 import { createTempFolder } from '../../utils';
@@ -13,6 +14,7 @@ export const localExportWrapper =
       opts: T & { filename: string },
       templateOptions?: Record<string, any>,
     ) => Promise<void>,
+    outputFormat: ExportFormats,
   ) =>
   async (
     session: ISession,
@@ -31,7 +33,13 @@ export const localExportWrapper =
       const localFolder = createTempFolder();
       localPath = join(localFolder, localFilename);
       await oxaLinkToMarkdown(session, path, localFilename, { path: localFolder });
-      if (!filename) filename = getDefaultExportFolder(session, localPath, '.', 'tex');
+      if (!filename)
+        filename = getDefaultExportFolder(
+          session,
+          localPath,
+          '.',
+          outputFormat === ExportFormats.tex ? 'tex' : undefined,
+        );
     }
     await exportLocalArticle(session, localPath, { filename, ...opts }, templateOptions);
   };

@@ -30,7 +30,7 @@ export function getDefaultExportFolder(
   session: ISession,
   file: string,
   projectPath?: string,
-  ext?: string,
+  ext?: 'tex',
 ) {
   const subpaths = [projectPath || path.parse(file).dir, '_build', 'exports'];
   // Extra folder for tex export content
