@@ -1,5 +1,20 @@
 # curvenote
 
+## 0.7.0
+
+### Minor Changes
+
+- Major improvements to export functionality for tex, pdf, and word.
+
+### Patch Changes
+
+- Updated dependencies [4d560d1]
+- Updated dependencies [4d560d1]
+- Updated dependencies [c1f9051]
+  - jtex@0.0.4
+  - myst-to-tex@0.0.5
+  - citation-js-utils@0.0.10
+
 ## 0.6.24
 
 ### Patch Changes

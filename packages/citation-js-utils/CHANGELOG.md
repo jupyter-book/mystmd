@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 0.0.10
+
+### Patch Changes
+
+- c1f9051: emphasis mdast has children
+
 ## 0.0.9
 
 ### Patch Changes

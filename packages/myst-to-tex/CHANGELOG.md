@@ -1,5 +1,11 @@
 # myst-to-tex
 
+## 0.0.5
+
+### Patch Changes
+
+- 4d560d1: Export packages from myst-to-tex
+
 ## 0.0.4
 
 ### Patch Changes

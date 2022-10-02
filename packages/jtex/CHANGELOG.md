@@ -1,5 +1,12 @@
 # jtex
 
+## 0.0.4
+
+### Patch Changes
+
+- 4d560d1: Export packages from myst-to-tex
+- 4d560d1: Introduce jtex check --fix, that allows you to automatically add packagaes and doc options to a template.
+
 ## 0.0.3
 
 ### Patch Changes
