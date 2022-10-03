@@ -73,6 +73,8 @@ import { OxaTransformer, StaticFileTransformer } from '../../transforms/links';
 import type { Node } from 'myst-spec';
 import { toText } from 'myst-common';
 
+const LINKS_SELECTOR = 'link,card,linkBlock';
+
 type ISessionWithCache = ISession & {
   $citationRenderers: Record<string, CitationRenderer>; // keyed on path
   $doiRenderers: Record<string, SingleCitationRenderer>; // keyed on doi
@@ -334,7 +336,7 @@ export async function transformMdast(
     new DOITransformer(), // This also is picked up in the next transform
     new MystTransformer(intersphinx),
   ];
-  linksTransform(mdast, vfile, { transformers });
+  linksTransform(mdast, vfile, { transformers, selector: LINKS_SELECTOR });
 
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
@@ -422,7 +424,10 @@ export async function postProcessMdast(
     new OxaTransformer(session), // This links any oxa links to their file if they exist
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
-  linksTransform(mdastPost.mdast, state.file as VFile, { transformers });
+  linksTransform(mdastPost.mdast, state.file as VFile, {
+    transformers,
+    selector: LINKS_SELECTOR,
+  });
   resolveReferencesTransform(mdastPost.mdast, state.file as VFile, { state });
   // Ensure there are keys on every node
   keysTransform(mdastPost.mdast);

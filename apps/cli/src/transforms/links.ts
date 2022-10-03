@@ -212,7 +212,7 @@ export async function checkLinksTransform(
   file: string,
   mdast: Root,
 ): Promise<string[]> {
-  const linkNodes = selectAll('link,linkBlock', mdast) as GenericNode[];
+  const linkNodes = selectAll('link,linkBlock,card', mdast) as GenericNode[];
   const linkUrls = linkNodes
     .filter((link) => !(link.internal || link.static))
     .map((link) => link.url as string);

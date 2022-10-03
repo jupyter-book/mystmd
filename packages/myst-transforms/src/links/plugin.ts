@@ -6,10 +6,11 @@ import type { Link, LinkTransformer } from './types';
 
 type Options = {
   transformers: LinkTransformer[];
+  selector?: string;
 };
 
 export function linksTransform(mdast: Root, file: VFile, opts: Options): void {
-  const linkNodes = selectAll('link', mdast) as Link[];
+  const linkNodes = selectAll(opts.selector ?? 'link,card', mdast) as Link[];
   linkNodes.forEach((link) => {
     if (!link.urlSource) link.urlSource = link.url;
     const transform = opts.transformers.find((t) => t.test(link.urlSource));
