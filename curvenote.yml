@@ -1,6 +1,6 @@
 version: 1
 site:
-  title: MyST JS
+  title: MyST Markdown
   projects:
     - path: docs
       slug: guide
