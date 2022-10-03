@@ -206,13 +206,13 @@ const BASIC_RENDERERS: BasicNodeRenderers = {
     let strongChildren: React.ReactNode = children;
     if (Array.isArray(children)) {
       const allowedStrongTypes = new Set(['emphasis']);
-      strongChildren = children.map((child) => {
-        if (typeof child === 'string') return <strong>{child}</strong>;
-        if (allowedStrongTypes.has(child?.type)) return <strong>{child}</strong>;
+      strongChildren = children.map((child, i) => {
+        if (typeof child === 'string') return <strong key={node.key + i}>{child}</strong>;
+        if (allowedStrongTypes.has(child?.type)) return <strong key={node.key + i}>{child}</strong>;
         return child;
       });
     } else if (typeof children === 'string') {
-      strongChildren = <strong>{children}</strong>;
+      strongChildren = <strong key={node.key + '0'}>{children}</strong>;
     }
     return <dt key={node.key}>{strongChildren}</dt>;
   },
