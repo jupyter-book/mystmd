@@ -10,6 +10,8 @@ that can be directly used in $\LaTeX$ without any translation.
 This is also completed with author and affiliation information, and the document model includes `index` and `letter`,
 which help by making it easy to have, Author{sup}`a`, defined in $\LaTeX$ with `[- author.letter -]`.
 
+(template-variables)=
+
 ## Template Variables
 
 The following global variables can be used when rendering the template:
@@ -23,7 +25,7 @@ The following global variables can be used when rendering the template:
 : These should be included in the head of your template with `[- IMPORTS -]`
 
 `doc`
-: The `title`, `date`, `authors` and other information in [](#document-properties) are on this object
+: The frontmatter information like `title`, `date`, `authors` and other [](#document-properties) are on this object
 
 `options`
 : The options for your template as defined in your `template.yml` options.
