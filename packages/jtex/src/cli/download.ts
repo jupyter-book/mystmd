@@ -26,13 +26,27 @@ export async function listTemplatesCLI(session: ISession, name?: string, opts?: 
     session.log.info(
       `${chalk.bold.yellowBright((template.title ?? '').padEnd(25))}${chalk.bold.blueBright(
         template.id.replace(/^tex\//, '').replace(/^myst\//, ''),
-      )}\nID: ${chalk.dim(template.id)}\nVersion: ${chalk.dim(
-        template.version,
-      )}\nAuthors: ${chalk.dim(
-        template.authors?.map((a) => a.name).join(', '),
-      )}\nDescription: ${chalk.dim(template.description)}\nTags: ${chalk.dim(
-        template.tags?.join(', '),
       )}`,
+    );
+    session.log.info(`ID: ${chalk.dim(template.id)}\nVersion: ${chalk.dim(template.version)}`);
+    session.log.info(`Authors: ${chalk.dim(template.authors?.map((a) => a.name).join(', '))}`);
+    session.log.info(`Description: ${chalk.dim(template.description)}`);
+    session.log.info(`Tags: ${chalk.dim(template.tags?.join(', '))}`);
+    session.log.info(chalk.bold.blueBright(`\nParts:`));
+    template.parts?.map((p) =>
+      session.log.info(
+        `${chalk.cyan(p.id)}${p.required ? chalk.dim(' (required)') : ''} - ${p.description
+          ?.trim()
+          .replace(/\n/g, '\n\t')}`,
+      ),
+    );
+    session.log.info(chalk.bold.blueBright(`\nOptions:`));
+    template.options?.map((p) =>
+      session.log.info(
+        `${chalk.cyan(p.id)} (${p.type})${
+          p.required ? chalk.dim(' (required)') : ''
+        } - ${p.description?.trim().replace(/\n/g, '\n\t')}`,
+      ),
     );
     return;
   }
