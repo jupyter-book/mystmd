@@ -121,7 +121,7 @@ export async function getData(
       node.urlOptimized = withCDN(id, node.urlOptimized);
     }
   });
-  const links = selectAll('link,linkBlock', data.mdast) as GenericNode[];
+  const links = selectAll('link,linkBlock,card', data.mdast) as GenericNode[];
   const staticLinks = links.filter((node) => node.static);
   staticLinks.forEach((node) => {
     // These are static links to thinks like PDFs or other referenced files

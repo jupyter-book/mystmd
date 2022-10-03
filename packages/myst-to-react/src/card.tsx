@@ -7,6 +7,7 @@ import { Link } from '@remix-run/react';
 type CardSpec = {
   type: 'card';
   url?: string;
+  static?: boolean;
 };
 type CardTitleSpec = {
   type: 'cardTitle';
@@ -71,15 +72,17 @@ function getParts(children: React.ReactNode): Parts {
 function ExternalOrInternalLink({
   to,
   className,
+  isStatic,
   prefetch = 'intent',
   children,
 }: {
   to: string;
   className?: string;
+  isStatic?: boolean;
   prefetch?: 'intent' | 'render' | 'none';
   children: React.ReactNode;
 }) {
-  if (to.startsWith('http')) {
+  if (to.startsWith('http') || isStatic) {
     return (
       <a href={to} className={className} target="_blank" rel="noopener noreferrer">
         {children}
@@ -93,7 +96,15 @@ function ExternalOrInternalLink({
   );
 }
 
-function Card({ children, url }: { children: React.ReactNode; url?: string }) {
+function Card({
+  children,
+  url,
+  isStatic,
+}: {
+  children: React.ReactNode;
+  url?: string;
+  isStatic?: boolean;
+}) {
   const parts = getParts(children);
   const link = !!url;
   const sharedStyle =
@@ -102,6 +113,7 @@ function Card({ children, url }: { children: React.ReactNode; url?: string }) {
     return (
       <ExternalOrInternalLink
         to={url}
+        isStatic={isStatic}
         className={classNames(
           sharedStyle,
           'block font-normal no-underline cursor-pointer group',
@@ -125,7 +137,7 @@ function Card({ children, url }: { children: React.ReactNode; url?: string }) {
 
 export const CardRenderer: NodeRenderer<CardSpec> = (node, children) => {
   return (
-    <Card key={node.key} url={node.url}>
+    <Card key={node.key} url={node.url} isStatic={node.static || false}>
       {children}
     </Card>
   );
