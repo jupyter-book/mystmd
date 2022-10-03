@@ -690,18 +690,20 @@ const Card: IDirective = {
         newTokens.push(this.createToken('header_close', 'header', -1, { block: true }));
       }
 
-      const tokenTitle = this.createToken('card_title_open', 'div', 1);
-      newTokens.push(tokenTitle);
       // we want the title to be parsed as Markdown during the inline phase
       const title = data.args[0] || '';
-      newTokens.push(
-        this.createToken('inline', '', 0, {
-          map: [data.map[0], data.map[0]],
-          content: title,
-          children: [],
-        }),
-      );
-      newTokens.push(this.createToken('card_title_close', 'div', -1, { block: true }));
+      if (title) {
+        const tokenTitle = this.createToken('card_title_open', 'div', 1);
+        newTokens.push(tokenTitle);
+        newTokens.push(
+          this.createToken('inline', '', 0, {
+            map: [data.map[0], data.map[0]],
+            content: title,
+            children: [],
+          }),
+        );
+        newTokens.push(this.createToken('card_title_close', 'div', -1, { block: true }));
+      }
 
       if (body.includes(footerSplit)) {
         const [content, ...below] = body.split(footerSplit);
