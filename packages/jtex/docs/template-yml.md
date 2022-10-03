@@ -3,15 +3,15 @@ title: Template.yml
 description: Every jtex template defines a template.yml to define the options and parts available as well as metadata about the authorship and license of the template.
 ---
 
-Every template defines a `template.yml` to define the options the template exposes and metadata of the authorship and license of the template.
+Every template defines a `template.yml` to define the `options`, `parts` and `doc` properties the template exposes and metadata of the authorship and license of the template.
 
 (template-metadata)=
 
 ## Template Metadata
 
-The `metadata` section of the `template.yml` defines the information about the template, including who made and contributed it, the license, any tags for the template and links to the source repositories.
+The `template.yml` defines information about the template, including who made and contributed it, the license, any tags for the template and links to the source repositories.
 
-This information is meant for listing and searching templates in a user interface or in the command line.
+This information is meant for listing and searching templates in a user interface or in the command line using `jtex list`.
 The following metadata fields should be included for the template to be attributed correctly.
 
 ```yaml
@@ -20,16 +20,12 @@ title: Title of the Template
 description: Template description, describing where it is used
 version: 1.0.0
 license: CC-BY-4.0
-author:
-  name: Journal 42
-  github: github_handle
-  twitter: twitter_handle
-  affiliation: Big Science
-contributor:
-  name: Contributor Name
-  github: github_handle
-  twitter: twitter_handle
-  affiliation: Optional
+authors:
+  - name: Journal 42
+    github: github_handle
+    twitter: twitter_handle
+    affiliations:
+      - Big Science
 tags:
   - two-column
 source: https://github.com/my_organization/template
@@ -97,6 +93,22 @@ max_chars (number)
 default
 : The default value if not provided
 
+(template-doc)=
+
+## Template Document
+
+The template `doc` lists the [frontmatter](../../../docs/frontmatter.md) options that are required for or used by the template. These can have a `required` field (boolean) as well as an optional `description`.
+
+```yaml
+doc:
+  - id: title
+    required: true
+  - id: keywords
+    description: >
+      Include from three to ten pertinent keywords specific to the article; yet
+      reasonably common within the subject discipline.
+```
+
 (template-parts)=
 
 ## Template Parts
@@ -145,9 +157,9 @@ max_words (number)
 Including parts in your template should always be added in an if-block. For example:
 
 ```latex
-[# if tagged.acknowledgments #]
+[# if parts.acknowledgments #]
 \section*{Acknowledgments}
-[-tagged.acknowledgments-]
+[-parts.acknowledgments-]
 [# endif #]
 ```
 
@@ -183,3 +195,58 @@ condition
 
     value
     : The value, that when met, this option is triggered on
+
+(template-files)=
+
+## Template Files
+
+The files are the flat list of files that are required by the template, the first entry should always be `template.tex`.
+Common options to include are any `*.sty` files or images required by the template.
+
+```yaml
+files:
+  - template.tex
+  - style.sty
+  - citation.bst
+  - custom.def
+  - logo.png
+```
+
+These files, and only these files, will be copied in when using the template in `myst`.
+
+(template-packages)=
+
+## Template Packages
+
+The template packages are a list of all the used $\LaTeX$ packages that are already imported by the template.
+This is important for some processors to know, for example `myst-to-tex`, which will only add additional imports that are not included in this list.
+
+To create this list, add the `files` first and then run `jtex check --fix` this will add a list of all the automatically found packages in your templates dependencies.
+
+```yaml
+packages:
+  - amsmath
+  - amssymb
+  - amsthm
+  - natbib
+```
+
+## Check your `template.yml`
+
+```bash
+npm install -g jtex
+```
+
+Navigate into your template directory and run `jtex check`, this will print any warnings or errors encountered.
+
+````{important}
+# Automatically fix your `template.yml`
+
+You can fix your `template.yml` automatically using:
+
+```bash
+jtex check --fix
+```
+
+This will add fields like packages, files, and a `jtex` version, as well as any used, but unnamed `doc` properties.
+````

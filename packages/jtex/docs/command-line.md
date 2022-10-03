@@ -3,11 +3,15 @@ title: Command Line
 description: jtex can be used on the command line, as well as a package.
 ---
 
-`jtex` can be used as a package as well as a command-line interface. It is most common that you will be using `jtex` as a component of the `myst` ecosystem, however, if you are contributing or building your own template locally, there are a number of tools that can help you validate and build your `template.yml`.
+`jtex` can be used as a package as well as a command-line interface. It is most common that you will be using `jtex` as a component of the `myst` ecosystem, however, if you are contributing or building your own template locally, there are a number of tools that can help you validate and build your `template.yml`. To install the command line tools use:
+
+```bash
+npm install -g jtex
+```
 
 ## Rendering
 
-To render a template, you need to have the [template directory](./components.md) defined, as well as `content.tex` and a `frontmatter.yml`.
+To render a template, you need to have the template directory defined, as well as `content.tex` and a `frontmatter.yml`.
 
 ```bash
 jtex render content.tex output/folder --frontmatter ./frontmatter.yml --template my/template/folder
@@ -20,7 +24,7 @@ jtex render content.tex output/folder --frontmatter ./frontmatter.yml --template
 ```bash
 jtex check arxiv_two_column
 > template.yml
->   [tagged.0] 'tagged.0' extra key ignored: chars
+>   [parts.0] 'parts.0' extra key ignored: chars
 > template.tex
 >   [options] The following options were not referenced in the template: "show_date"
 >   [options] The template.yml does not include "watermark" but it is referenced in template.tex on line 57
