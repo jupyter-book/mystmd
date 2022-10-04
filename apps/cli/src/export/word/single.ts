@@ -21,10 +21,12 @@ import DEFAULT_STYLE from './simpleStyles';
 import { createArticleTitle, createReferenceTitle } from './titles';
 import type { Root } from 'myst-spec';
 import type { RendererData } from 'src/transforms/types';
+import type { File } from 'docx';
 
 export type WordExportOptions = {
   filename: string;
   clean?: boolean;
+  renderer?: (data: RendererData, vfile: VFile, opts: Record<string, any>) => File;
 };
 
 export async function collectWordExportOptions(
@@ -35,7 +37,7 @@ export async function collectWordExportOptions(
   projectPath: string | undefined,
   opts: WordExportOptions,
 ) {
-  const { filename } = opts;
+  const { filename, renderer } = opts;
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
   const exportErrorMessages: ValidationOptions['messages'] = {};
   let exportOptions: Export[] =
@@ -74,7 +76,7 @@ export async function collectWordExportOptions(
         session.log.error(`The filename must end with '.${extension}': "${output}"`);
         return undefined;
       }
-      return { ...exp, output };
+      return { ...exp, output, renderer };
     })
     .filter((exp): exp is ExportWithOutput => Boolean(exp))
     .map((exp, ind, arr) => {
@@ -142,13 +144,13 @@ export async function runWordExport(
   exportOptions: ExportWithOutput,
   projectPath?: string,
   clean?: boolean,
-  renderer = defaultWordRenderer,
 ) {
   const { output } = exportOptions;
   if (clean) cleanOutput(session, output);
   const data = await getFileContent(session, file, createTempFolder(), projectPath);
   const vfile = new VFile();
   vfile.path = output;
+  const renderer = exportOptions.renderer ?? defaultWordRenderer;
   const doc = renderer(data, vfile, exportOptions);
   logMessagesFromVFile(session, vfile);
   session.log.info(`🖋  Writing docx to ${output}`);

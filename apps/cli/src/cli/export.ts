@@ -7,7 +7,7 @@ import {
   oxaLinkToMarkdown,
   oxaLinkToNotebook,
   oxaLinkToPdf,
-  pathToWord,
+  oxaLinkToWord,
 } from '../export';
 import { makeCleanOption, makeZipOption } from './options';
 import { clirun } from './utils';
@@ -50,7 +50,7 @@ function makeWordExportCLI(program: Command) {
     .argument('<article>', 'A link to the Curvenote article (e.g. OXA Link or API link)')
     .argument('[output]', 'The document filename to export to', '')
     .addOption(makeCleanOption())
-    .action(clirun(pathToWord, { program }, 3));
+    .action(clirun(oxaLinkToWord, { program }, 3));
   return command;
 }
 
