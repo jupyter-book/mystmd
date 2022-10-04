@@ -3,7 +3,7 @@ import path from 'path';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import type { ValidationOptions } from 'simple-validators';
-import type { Export } from 'myst-frontmatter';
+import type { Export, PageFrontmatter } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
 import { htmlTransform } from 'myst-transforms';
 import { VFile } from 'vfile';
@@ -19,6 +19,8 @@ import { getFileContent } from '../utils/getFileContent';
 import { createCurvenoteFooter } from './footers';
 import DEFAULT_STYLE from './simpleStyles';
 import { createArticleTitle, createReferenceTitle } from './titles';
+import type { Root } from 'myst-spec';
+import type { RendererData } from 'src/transforms/types';
 
 export type WordExportOptions = {
   filename: string;
@@ -100,24 +102,9 @@ export async function collectWordExportOptions(
   return resolvedExportOptions;
 }
 
-export async function runWordExport(
-  session: ISession,
-  file: string,
-  exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-) {
-  const { output } = exportOptions;
-  if (clean) cleanOutput(session, output);
-  const { mdast, frontmatter, references } = await getFileContent(
-    session,
-    file,
-    createTempFolder(),
-    projectPath,
-  );
+function defaultWordRenderer(data: RendererData, vfile: VFile, opts: Record<string, any>) {
+  const { mdast, frontmatter, references } = data;
   const frontmatterNodes = createArticleTitle(frontmatter.title, frontmatter.authors) as Content[];
-  const vfile = new VFile();
-  vfile.path = output;
   const serializer = new DocxSerializer(
     vfile,
     {
@@ -146,7 +133,23 @@ export async function runWordExport(
   Object.values(references.footnotes).forEach((footnote) => {
     serializer.render(footnote);
   });
-  const doc = createDocFromState(serializer, createCurvenoteFooter(), DEFAULT_STYLE);
+  return createDocFromState(serializer, createCurvenoteFooter(), DEFAULT_STYLE);
+}
+
+export async function runWordExport(
+  session: ISession,
+  file: string,
+  exportOptions: ExportWithOutput,
+  projectPath?: string,
+  clean?: boolean,
+  renderer = defaultWordRenderer,
+) {
+  const { output } = exportOptions;
+  if (clean) cleanOutput(session, output);
+  const data = await getFileContent(session, file, createTempFolder(), projectPath);
+  const vfile = new VFile();
+  vfile.path = output;
+  const doc = renderer(data, vfile, exportOptions);
   logMessagesFromVFile(session, vfile);
   session.log.info(`🖋  Writing docx to ${output}`);
   writeDocx(doc, (buffer) => writeFileToFolder(output, buffer));
