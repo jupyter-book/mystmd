@@ -23,7 +23,7 @@ The current toolchain used by [JupyterBook] is based on [Sphinx], which is an op
 
 The packages in the `mystjs` ecosystem also help power web-native extensions, such as [JupyterLab-myst], which renders MyST markup directly in JupyterLab.
 
-`mystjs` can render [JupyterBook] content, however, it can not work with custom extensions or themes developed for Sphinx. As `mystjs` continues to improve, we will ensure smooth paths for content authors to choose between these different rendering engines.
+`mystjs` can render [JupyterBook] content, however, it cannot work with custom extensions or themes developed for Sphinx. As `mystjs` continues to improve, we will ensure smooth paths for content authors to choose between these different rendering engines.
 
 ## Can I use JupyterBook and `mystjs` together?
 
@@ -34,7 +34,7 @@ Yes! There **is** overlap in functionality for creating websites, however, you c
 - Create a presentation
 - Write in JupyterLab, using [JupyterLab-myst]
 
-If you want, you can also try a `mystjs` website to view your JupyterBook. `mystjs` provides improved interactivity around cross-linking content, performance, and accessibility improvements.
+If you want, you can also try a `mystjs` website to view your JupyterBook (try the [online tool provided by Curvenote](https://try.curvenote.com), to test with your JupyterBook). `mystjs` provides improved interactivity around [cross-linking content](./cross-references.md), [performance and accessibility](./accessibility-and-performance.md) improvements.
 
 JupyterBook and `mystjs` both use the MyST markup language for content and read Jupyter Notebooks, and we ensure that your content can be read equally by both renderers. However, no custom Sphinx extensions that you may have added to your JupyterBooks will work. If you find something that doesn't work with `mystjs` from your JupyterBook content, please [let us know on GitHub](https://github.com/executablebooks/mystjs/issues) and we will try to support it!
 

@@ -15,7 +15,7 @@ myst templates list --format tex
 
 These will show you the list of community templates available, which are also possible to access through the MyST API, at https://api.myst.tools.
 
-## Add your Template
+## List your Template
 
 This guide outlines how to help your templates be discovered and used by the community, if you haven't yet created a template, see [](./create-a-latex-template.md) for more information.
 
@@ -36,7 +36,7 @@ templates:
 
 Add your template to this list, and open a pull-request, (or use the GitHub interface to edit the file directly on the page).
 
-Once a PR is opened, the MyST team will take a look and test out your template, and may give you some suggestions.
+Once a PR is opened, the MyST team will take a look and test out your template, and may give you some suggestions beyond what `myst check` can tell you.
 
 ## Donate your Template
 

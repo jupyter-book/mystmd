@@ -37,7 +37,7 @@ Currently cross-project links aren't fully implemented, check back soon!
 
 MyST can integrate directly with other Sphinx documentation, which is used in many Python projects including the [standard library](https://docs.python.org/).
 
-In your project configuration, include the `intersphinx` object with named links out to the documentation that you will reference in the project. For example, in the demonstration below we will load the Python 3.7 documentation and JupyterBook docs, both of which use sphinx and expose cross references through an `objects.inv` file.
+In your project configuration, include the `references` object with named links out to the Sphinx or MyST documentation that you will reference in the project. For example, in the demonstration below we will load the Python 3.7 documentation and JupyterBook docs, both of which use sphinx and expose cross references through an `objects.inv` file.
 
 (intersphinx-config)=
 
