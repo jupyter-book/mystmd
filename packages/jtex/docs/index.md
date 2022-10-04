@@ -5,7 +5,43 @@ description: jtex is a command line tool and library for rendering LaTeX documen
 
 `jtex` is a command line tool (CLI) for rendering $\LaTeX$ documents from Jinja-style templates. This package uses [nunjucks](https://mozilla.github.io/nunjucks/) (a port of Jinja) as the template engine with a modified environment and syntax that plays well with $\LaTeX$'s markup.
 
-**Goals**
+::::{grid} 1 1 2 3
+
+:::{card}
+:link: ./create-a-latex-template.md
+
+**Create a Template** 🆕
+^^^
+Learn how to create a $\LaTeX$ template for a scientific journal article or Beamer presentation using `jtex` and MyST Markdown.
+:::
+
+:::{card}
+:link: https://github.com/myst-templates
+
+**Browse Templates** 🚀
+^^^
+Our $\LaTeX$ templates are curated by the MyST community and include templates to render over 400 journals!
+:::
+
+:::{card}
+:link: ./command-line.md
+
+**Command Line Interface** ✨
+^^^
+Use `jtex` to list templates, quickly render content, or fix your `template.yml`, or parse your $\LaTeX$ files for used packages.
+:::
+::::
+
+```{important}
+:class: dropdown
+# Looking for Templates?
+
+MyST Templates are available in the [myst-templates organization](https://github.com/myst-templates) on GitHub. You can also see all listed community tempaltes using `jtex list`, or browse the [api](https://api.myst.tools/templates/tex) if you are into JSON.
+
+To create your own template see [](./create-a-latex-template.md).
+```
+
+## Project Goals
 
 - Provide a data-driven templating markup for $\LaTeX$
 - Provide validation of templates and supplied options when rendering a template
@@ -15,7 +51,7 @@ description: jtex is a command line tool and library for rendering LaTeX documen
 
 **Not Goals**
 
-- Translation to $\LaTeX$, instead see `myst-to-tex` or [using pandoc](pandoc-comparison.md)
+- Translation of MyST to $\LaTeX$, instead see `myst-to-tex` or [using pandoc with `jtex`](pandoc-comparison.md)
 
 ## Installation
 

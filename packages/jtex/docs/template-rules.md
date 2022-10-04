@@ -59,6 +59,8 @@ are, for example, `join`, `title`, or `trim`.
 \keywords{Keyword1, keyword2}
 ```
 
+(controlling-whitespace)=
+
 ## Controlling Whitespace
 
 Jinja allows you to strip all leading or trailing whitespace by adding a minus sign (-) to the start or end block or a variable.

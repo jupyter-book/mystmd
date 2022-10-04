@@ -20,7 +20,7 @@ You can also export your MyST documents as print-ready [scientific papers](./cre
 
 ## Exporting to Word
 
-To create a new `word` export type for your MyST document, in your document frontmatter, add an `exports` list:
+To create a new `docx` export type for your MyST document, in your document frontmatter, add an `exports` list:
 
 (export-frontmatter-word)=
 
@@ -28,7 +28,7 @@ To create a new `word` export type for your MyST document, in your document fron
 ---
 title: My Document
 exports:
-  - format: word
+  - format: docx
     output: exports/my-document.docx
 ---
 ```
@@ -39,7 +39,7 @@ To build the exports, use the `myst build` command, which will work with your [p
 myst build my-document.md
 ```
 
-Based on the `output` field in the export list in the [frontmatter](#export-frontmatter-pdf), the PDF and a log file will be written to `exports/my-document.docx`.
+Based on the `output` field in the export list in the [frontmatter](#export-frontmatter-word), the PDF and a log file will be written to `exports/my-document.docx`.
 
 ````{warning}
 :class: dropdown
@@ -62,7 +62,7 @@ Currently MyST export does not fully create math in Word's format, instead, $\La
 1. Select any equation and open the equation toolbar
 2. Click `LaTeX`
 3. In the conver dropdown, select "All - Professional"
-4. Click convert.
+4. Click convert
 
 ```{figure} ./images/convert-word-equations.png
 :name: convert-word-equations
