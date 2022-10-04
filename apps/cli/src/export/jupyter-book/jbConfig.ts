@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { ISession } from '../../session/types';
-import { writeFileToFolder } from '../../utils';
+import { writeFileToFolder } from 'myst-cli-utils';
 
 export interface Options {
   path?: string;

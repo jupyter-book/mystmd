@@ -136,7 +136,18 @@ export function createTempFolder() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'curvenote'));
 }
 
-/** Writes a file ensuring that the directory exists */
+/**
+ * Writes a file ensuring that the directory exists
+ *
+ * Use:
+ * ```typescript
+ * import { writeFileToFolder } from 'myst-cli-utils';
+ *
+ * const path = resolvePath(opts.path, opts.filename);
+ * writeFileToFolder(resolvePath(opts.path, opts.filename), data)
+ * ```
+ * @deprecated
+ */
 export function writeFileToFolder(
   filename: string | { path?: string; filename: string },
   data: string | NodeJS.ArrayBufferView,

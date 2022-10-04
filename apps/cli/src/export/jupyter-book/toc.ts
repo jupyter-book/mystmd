@@ -2,13 +2,12 @@ import fs from 'fs';
 import { join, parse } from 'path';
 import YAML from 'js-yaml';
 import type { Logger } from 'myst-cli-utils';
-import { silentLogger } from 'myst-cli-utils';
+import { silentLogger, writeFileToFolder } from 'myst-cli-utils';
 import type { Blocks } from '@curvenote/blocks';
 import { NavListItemKindEnum } from '@curvenote/blocks';
 import type { Version } from '../../models';
 import { Block } from '../../models';
 import type { ISession } from '../../session/types';
-import { writeFileToFolder } from '../../utils';
 
 export const tocFile = (filename: string): string => join(filename, '_toc.yml');
 

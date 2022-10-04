@@ -54,8 +54,8 @@ import type {
 import { loadProjectFromDisk } from '../../toc';
 import { copyActionResource, copyLogo, getSiteManifest } from '../../toc/manifest';
 import type { LocalProject, LocalProjectPage } from '../../toc/types';
+import { writeFileToFolder } from 'myst-cli-utils';
 import {
-  writeFileToFolder,
   serverPath,
   staticPath,
   tic,

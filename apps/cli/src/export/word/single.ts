@@ -9,12 +9,8 @@ import { htmlTransform } from 'myst-transforms';
 import { VFile } from 'vfile';
 import type { ISession } from '../../session/types';
 import { getRawFrontmatterFromFile } from '../../store/local/actions';
-import {
-  createTempFolder,
-  findProjectAndLoad,
-  logMessagesFromVFile,
-  writeFileToFolder,
-} from '../../utils';
+import { writeFileToFolder } from 'myst-cli-utils';
+import { createTempFolder, findProjectAndLoad, logMessagesFromVFile } from '../../utils';
 import type { ExportWithOutput } from '../types';
 import { getDefaultExportFilename, getDefaultExportFolder } from '../utils/defaultNames';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';

@@ -1,5 +1,6 @@
 import type { ISession } from '../../session/types';
-import { resolvePath, writeFileToFolder } from '../../utils';
+import { writeFileToFolder } from 'myst-cli-utils';
+import { resolvePath } from '../../utils';
 import type { ArticleState } from './walkArticle';
 
 type Options = {
