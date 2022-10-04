@@ -5,7 +5,6 @@ import { LogLevel, tic } from 'myst-cli-utils';
 import { projectFrontmatterFromDTO, saveAffiliations } from '../frontmatter/api';
 import { loadConfigOrThrow, writeConfigs } from '../config';
 import { oxaLinkToMarkdown, oxaLinkToNotebook, projectToJupyterBook } from '../export';
-import { getLevel } from '../logging';
 import { Project } from '../models';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
@@ -30,7 +29,6 @@ export async function pullProject(
   const projectConfig = selectors.selectLocalProjectConfig(state, path);
   if (!projectConfig) throw Error(`Cannot pull project from ${path}: no project config`);
   if (!projectConfig.remote) throw Error(`Cannot pull project from ${path}: no remote project url`);
-  const log = getLevel(session.log, opts?.level ?? LogLevel.debug);
   const project = await new Project(session, projectConfig.remote).get();
   saveAffiliations(session, project.data);
   const newFrontmatter = projectFrontmatterFromDTO(session, project.data);
@@ -39,7 +37,12 @@ export async function pullProject(
   );
   writeConfigs(session, path);
   const toc = tic();
-  log(`📥 Pulling ${projectLogString(project)} into ${path}`);
+  const pullMsg = `📥 Pulling ${projectLogString(project)} into ${path}`;
+  if (opts?.level === LogLevel.info) {
+    session.log.info(pullMsg);
+  } else {
+    session.log.debug(pullMsg);
+  }
   await projectToJupyterBook(session, project.id, {
     ci: opts?.ci,
     path,

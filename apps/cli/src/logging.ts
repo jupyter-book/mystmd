@@ -1,24 +1,6 @@
 import chalk from 'chalk';
-import type { Logger, LoggerDE } from 'myst-cli-utils';
-import { LogLevel } from 'myst-cli-utils';
+import type { LoggerDE } from 'myst-cli-utils';
 import type { ISession } from './session/types';
-
-export function getLevel(logger: Logger, level: LogLevel): Logger['info'] {
-  switch (level) {
-    case LogLevel.trace:
-    case LogLevel.debug:
-      return logger.debug;
-    case LogLevel.info:
-      return logger.info;
-    case LogLevel.warn:
-      return logger.warn;
-    case LogLevel.error:
-    case LogLevel.fatal:
-      return logger.error;
-    default:
-      throw new Error(`Level "${level}" not defined.`);
-  }
-}
 
 export function createServerLogger(session: ISession): LoggerDE {
   const logger = {
