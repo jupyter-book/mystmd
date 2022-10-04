@@ -25,7 +25,12 @@ import type { File } from 'docx';
 export type WordExportOptions = {
   filename: string;
   clean?: boolean;
-  renderer?: (data: RendererData, vfile: VFile, opts: Record<string, any>) => File;
+  renderer?: (
+    session: ISession,
+    data: RendererData,
+    vfile: VFile,
+    opts: Record<string, any>,
+  ) => File;
 };
 
 export async function collectWordExportOptions(
@@ -103,7 +108,12 @@ export async function collectWordExportOptions(
   return resolvedExportOptions;
 }
 
-function defaultWordRenderer(data: RendererData, vfile: VFile, opts: Record<string, any>) {
+function defaultWordRenderer(
+  session: ISession,
+  data: RendererData,
+  vfile: VFile,
+  opts: Record<string, any>,
+) {
   const { mdast, frontmatter, references } = data;
   const frontmatterNodes = createArticleTitle(frontmatter.title, frontmatter.authors) as Content[];
   const serializer = new DocxSerializer(
@@ -150,7 +160,7 @@ export async function runWordExport(
   const vfile = new VFile();
   vfile.path = output;
   const renderer = exportOptions.renderer ?? defaultWordRenderer;
-  const doc = renderer(data, vfile, exportOptions);
+  const doc = renderer(session, data, vfile, exportOptions);
   logMessagesFromVFile(session, vfile);
   session.log.info(`🖋  Writing docx to ${output}`);
   writeDocx(doc, (buffer) => writeFileToFolder(output, buffer));
