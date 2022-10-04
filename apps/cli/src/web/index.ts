@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { createGitLogger, createNpmLogger, makeExecutable } from 'myst-cli-utils';
+import { createGitLogger, createNpmLogger, makeExecutable, tic } from 'myst-cli-utils';
 import { createServerLogger } from '../logging';
 import { MyUser } from '../models';
 import type { ISession } from '../session/types';
@@ -8,7 +8,6 @@ import {
   confirmOrExit,
   ensureBuildFolderExists,
   buildPathExists,
-  tic,
   repoPath,
   serverPath,
   warnOnHostEnvironmentVariable,

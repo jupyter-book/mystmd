@@ -5,7 +5,6 @@ import type { VFile } from 'vfile';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import path from 'path';
-import prettyHrtime from 'pretty-hrtime';
 import type { Logger } from 'myst-cli-utils';
 import type { JsonObject, VersionId } from '@curvenote/blocks';
 import { configFileExists, loadConfigOrThrow } from '../config';
@@ -220,16 +219,6 @@ export async function confirmOrExit(message: string, opts?: { yes?: boolean }) {
   if (!question.confirm) {
     throw new Error('Exiting');
   }
-}
-
-export function tic() {
-  let start = process.hrtime();
-  function toc(f = '') {
-    const time = prettyHrtime(process.hrtime(start));
-    start = process.hrtime();
-    return f ? f.replace('%s', time) : time;
-  }
-  return toc;
 }
 
 export async function findProjectAndLoad(

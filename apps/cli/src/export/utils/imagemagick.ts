@@ -1,10 +1,9 @@
 import { sync as which } from 'which';
 import fs from 'fs';
 import path from 'path';
-import { makeExecutable } from 'myst-cli-utils';
+import { makeExecutable, tic } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
 import type { ISession } from '../../session';
-import { tic } from '../../utils';
 
 export function isWebpAvailable() {
   return which('cwebp', { nothrow: true });

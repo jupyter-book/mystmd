@@ -54,11 +54,10 @@ import type {
 import { loadProjectFromDisk } from '../../toc';
 import { copyActionResource, copyLogo, getSiteManifest } from '../../toc/manifest';
 import type { LocalProject, LocalProjectPage } from '../../toc/types';
-import { writeFileToFolder } from 'myst-cli-utils';
+import { writeFileToFolder, tic } from 'myst-cli-utils';
 import {
   serverPath,
   staticPath,
-  tic,
   addWarningForFile,
   isUrl,
   logMessagesFromVFile,

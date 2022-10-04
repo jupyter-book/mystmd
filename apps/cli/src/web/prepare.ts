@@ -1,7 +1,8 @@
 import fs from 'fs';
 import { join } from 'path';
 import type { ISession } from '../session/types';
-import { publicPath, serverPath, tic } from '../utils';
+import { tic } from 'myst-cli-utils';
+import { publicPath, serverPath } from '../utils';
 import { processSite } from '../store/local/actions';
 
 export type Options = {

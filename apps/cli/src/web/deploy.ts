@@ -11,10 +11,11 @@ import type {
   SiteUploadRequest,
   SiteUploadResponse,
 } from '@curvenote/blocks';
+import { tic } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
-import { publicPath, serverPath, tic } from '../utils';
+import { publicPath, serverPath } from '../utils';
 import { getLogoPaths } from '../toc/manifest';
 
 type FromTo = {

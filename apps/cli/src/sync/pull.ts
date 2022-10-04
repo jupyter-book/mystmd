@@ -1,7 +1,7 @@
 import fs from 'fs';
 import pLimit from 'p-limit';
 import { join, dirname, basename, extname } from 'path';
-import { LogLevel } from 'myst-cli-utils';
+import { LogLevel, tic } from 'myst-cli-utils';
 import { projectFrontmatterFromDTO, saveAffiliations } from '../frontmatter/api';
 import { loadConfigOrThrow, writeConfigs } from '../config';
 import { oxaLinkToMarkdown, oxaLinkToNotebook, projectToJupyterBook } from '../export';
@@ -11,7 +11,7 @@ import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import { config } from '../store/local';
 import { isDirectory } from '../toc/utils';
-import { confirmOrExit, tic } from '../utils';
+import { confirmOrExit } from '../utils';
 import { processOption, projectLogString } from './utils';
 import { getRawFrontmatterFromFile } from '../store/local/actions';
 import type { SyncCiHelperOptions } from './types';
