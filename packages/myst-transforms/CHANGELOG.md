@@ -1,5 +1,11 @@
 # myst-transforms
 
+## 0.0.7
+
+### Patch Changes
+
+- 7808157: Allow linkTransform to have a selector to look up the links
+
 ## 0.0.6
 
 ### Patch Changes

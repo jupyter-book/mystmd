@@ -1,5 +1,15 @@
 # curvenote
 
+## 0.7.1
+
+### Patch Changes
+
+- d999beb: Update card directive to not include title if not provided
+- Updated dependencies [7808157]
+- Updated dependencies [6c2ea00]
+  - myst-transforms@0.0.7
+  - jtex@0.0.5
+
 ## 0.7.0
 
 ### Minor Changes

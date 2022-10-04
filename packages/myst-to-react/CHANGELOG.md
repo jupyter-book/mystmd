@@ -1,5 +1,14 @@
 # myst-to-react
 
+## 0.1.17
+
+### Patch Changes
+
+- b31b74b: Cards handle internal links
+- 991b2be: Improve the definition lists to be strong in only certain cases
+- Updated dependencies [7808157]
+  - myst-transforms@0.0.7
+
 ## 0.1.16
 
 ### Patch Changes

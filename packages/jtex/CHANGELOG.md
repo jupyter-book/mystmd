@@ -1,5 +1,11 @@
 # jtex
 
+## 0.0.5
+
+### Patch Changes
+
+- 6c2ea00: Improve the listing template to include parts and options
+
 ## 0.0.4
 
 ### Patch Changes
