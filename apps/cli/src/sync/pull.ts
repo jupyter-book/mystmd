@@ -15,6 +15,14 @@ import { processOption, projectLogString } from './utils';
 import { getRawFrontmatterFromFile } from '../store/local/actions';
 import type { SyncCiHelperOptions } from './types';
 
+function logWithLevel(session: ISession, msg: string, level?: LogLevel) {
+  if (level === LogLevel.info) {
+    session.log.info(msg);
+  } else {
+    session.log.debug(msg);
+  }
+}
+
 /**
  * Pull content for a project on a path
  *
@@ -37,12 +45,7 @@ export async function pullProject(
   );
   writeConfigs(session, path);
   const toc = tic();
-  const pullMsg = `📥 Pulling ${projectLogString(project)} into ${path}`;
-  if (opts?.level === LogLevel.info) {
-    session.log.info(pullMsg);
-  } else {
-    session.log.debug(pullMsg);
-  }
+  logWithLevel(session, `📥 Pulling ${projectLogString(project)} into ${path}`, opts?.level);
   await projectToJupyterBook(session, project.id, {
     ci: opts?.ci,
     path,
@@ -53,7 +56,9 @@ export async function pullProject(
     // Project frontmatter is kept sepatare in project config, above
     ignoreProjectFrontmatter: true,
   });
-  if (fs.existsSync(join(path, '_toc.yml'))) log(toc(`🚀 Pulled ${path} in %s`));
+  if (fs.existsSync(join(path, '_toc.yml'))) {
+    logWithLevel(session, toc(`🚀 Pulled ${path} in %s`), opts?.level);
+  }
 }
 
 /**
