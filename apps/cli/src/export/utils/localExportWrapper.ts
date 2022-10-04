@@ -7,11 +7,11 @@ import { oxaLinkToMarkdown } from '../markdown';
 import { getDefaultExportFolder } from './defaultNames';
 
 export const localExportWrapper =
-  <T extends Record<string, any>>(
+  (
     exportLocalArticle: (
       session: ISession,
       path: string,
-      opts: T & { filename: string },
+      opts: { filename: string } & Record<string, any>,
       templateOptions?: Record<string, any>,
     ) => Promise<void>,
     outputFormat: ExportFormats,
@@ -20,7 +20,7 @@ export const localExportWrapper =
     session: ISession,
     path: string,
     filename: string,
-    opts: T,
+    opts: Record<string, any>,
     templateOptions?: Record<string, any>,
   ) => {
     let localPath: string;
