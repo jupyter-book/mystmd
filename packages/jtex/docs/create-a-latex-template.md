@@ -77,18 +77,18 @@ The next thing that we will do is start to change our `template.tex` into an act
 These objects include:
 
 `[-IMPORTS-]` and `[-CONTENT-]`
-: the main parts of your template for imports at the top, and the main content of your document
+: The main parts of your template for imports at the top, and the main content of your document
 
 `doc` object
-: holds structured frontmatter information, for example `[-doc.title-]`
-: see [](#document-properties)
+: Holds structured frontmatter information, for example `[-doc.title-]`
+: See [](#document-properties)
 
 `options` object
-: holds custom data defined by this template, for example `[-options.my_custom_opt-]` with `parts` and `doc`
+: Holds custom data defined by this template, for example `[-options.my_custom_opt-]`
 
 `parts` object
-: holds custom parts of the document, for example `[-parts.abstract-]`
-: see [](#template-parts)
+: Holds custom "parts" of the document like an abstract, for example `[-parts.abstract-]`
+: See [](#template-parts)
 
 ### Start with the title
 
