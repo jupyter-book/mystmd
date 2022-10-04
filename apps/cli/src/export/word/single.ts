@@ -3,7 +3,7 @@ import path from 'path';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import type { ValidationOptions } from 'simple-validators';
-import type { Export, PageFrontmatter } from 'myst-frontmatter';
+import type { Export } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
 import { htmlTransform } from 'myst-transforms';
 import { VFile } from 'vfile';
@@ -19,7 +19,6 @@ import { getFileContent } from '../utils/getFileContent';
 import { createCurvenoteFooter } from './footers';
 import DEFAULT_STYLE from './simpleStyles';
 import { createArticleTitle, createReferenceTitle } from './titles';
-import type { Root } from 'myst-spec';
 import type { RendererData } from 'src/transforms/types';
 import type { File } from 'docx';
 
