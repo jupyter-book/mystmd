@@ -449,8 +449,7 @@ export function writeFile(
 ) {
   const toc = tic();
   const mdastPost = selectFile(session, file);
-  const id = join(projectSlug, pageSlug);
-  const jsonFilename = join(serverPath(session), 'app', 'content', `${id}.json`);
+  const jsonFilename = join(serverPath(session), 'app', 'content', projectSlug, `${pageSlug}.json`);
   writeFileToFolder(jsonFilename, JSON.stringify(mdastPost));
   session.log.debug(toc(`Wrote "${file}" in %s`));
 }
