@@ -19,7 +19,9 @@ jtex render content.tex output/folder --frontmatter ./frontmatter.yml --template
 
 ## Building Templates
 
-### `jtex check [folder]`
+### `jtex check [folder] [--fix]`
+
+Without a `folder`, it will use the current directory. You can use the `--fix` argument to automatically add `packages` and known arguments to your `template.yml`.
 
 ```bash
 jtex check arxiv_two_column
