@@ -97,6 +97,7 @@ export async function localArticleToTexRaw(
 }
 
 function concatenateFiles(files: string[], output: string) {
+  if (!fs.existsSync(output)) fs.mkdirSync(path.dirname(output), { recursive: true });
   const fd = fs.openSync(output, 'w');
   files.forEach((file) => {
     fs.writeSync(fd, fs.readFileSync(file));
