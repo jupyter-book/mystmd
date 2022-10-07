@@ -13,6 +13,10 @@ npm install -g jtex
 
 To render a template, you need to have the template directory defined, as well as `content.tex` and a `frontmatter.yml`.
 
+```{danger}
+This is currently not yet implemented in `jtex`.
+```
+
 ```bash
 jtex render content.tex output/folder --frontmatter ./frontmatter.yml --template my/template/folder
 ```
