@@ -61,6 +61,22 @@ const handlers: Record<string, Handler> = {
   blockquote(node, state) {
     state.renderEnvironment(node, 'quote');
   },
+  definitionList(node, state) {
+    state.write('\\begin{description}\n');
+    state.renderChildren(node, true);
+    state.ensureNewLine();
+    state.write('\\end{description}');
+    state.closeBlock(node);
+  },
+  definitionTerm(node, state) {
+    state.ensureNewLine();
+    state.write('\\item[');
+    state.renderChildren(node, true);
+    state.write('] ');
+  },
+  definitionDescription(node, state) {
+    state.renderChildren(node, true);
+  },
   code(node, state) {
     state.write('\\begin{verbatim}\n');
     state.text(node.value, true);
