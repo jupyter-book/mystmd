@@ -9,6 +9,7 @@
   "module": "dist/esm/index.js",
   "unpkg": "dist/index.umd.min.js",
   "types": "dist/types/index.d.ts",
+  "type": "module",
   "files": [
     "src",
     "dist"
@@ -16,7 +17,7 @@
   "exports": {
     ".": {
       "require": "./dist/index.umd.js",
-      "import": "./dist/esm/index.js"
+      "import": "./dist/index.esm.js"
     }
   },
   "keywords": [
