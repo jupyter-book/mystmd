@@ -259,6 +259,12 @@ jtex check --fix
 
 This will overwrite your `template.yml` with all packages found and there should be very few issues found automatically by `jtex check`.
 
+```{figure} ./images/jtex-check-fix.png
+:width: 100%
+
+Using `jtex check --fix` will fix as many errors as possible with your `template.yml`!
+```
+
 ## Build with content
 
 Your template should now be in a place where it can be used to render content. For this we will use the `myst` command line tool.
