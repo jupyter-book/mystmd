@@ -3,7 +3,6 @@ import { extname, basename, join, dirname } from 'path';
 import yaml from 'js-yaml';
 import nunjucks from 'nunjucks';
 import type { ValidationOptions } from 'simple-validators';
-import { curvenoteDef } from './definitions';
 import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
 import { pdfExportCommand } from './export';
 import { extendJtexFrontmatter } from './frontmatter';
@@ -225,7 +224,6 @@ class JTex {
     ensureDirectoryExists(outputDirectory);
     this.copyTemplateFiles(dirname(opts.outputPath), { force: opts.force });
     fs.writeFileSync(opts.outputPath, `% Created with jtex v.${version}\n${rendered}`);
-    fs.writeFileSync(join(outputDirectory, 'curvenote.def'), curvenoteDef);
   }
 
   copyTemplateFiles(outputDir: string, opts?: { force?: boolean }) {

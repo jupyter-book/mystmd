@@ -95,26 +95,28 @@ function extractVariablesFromTemplate(template: string) {
   return variables;
 }
 
-function printWarnings(
+function clearAndPrintWarnings(
   session: ISession,
   name: string,
   messages: Required<ValidationOptions['messages']>,
+  printWarnings = true,
 ) {
   if (messages.errors.length === 0 && messages.warnings.length === 0) return false;
-  session.log.info(`${name}`);
-
-  messages.warnings?.forEach((e) => {
-    session.log.warn(`  [${e.property}] ${e.message}`);
-  });
-  messages.errors?.forEach((e) => {
-    session.log.error(`  [${e.property}] ${e.message}`);
-  });
+  if (printWarnings) {
+    session.log.info(`${name}`);
+    messages.warnings?.forEach((e) => {
+      session.log.warn(`  [${e.property}] ${e.message}`);
+    });
+    messages.errors?.forEach((e) => {
+      session.log.error(`  [${e.property}] ${e.message}`);
+    });
+  }
   messages.warnings = [];
   messages.errors = [];
   return true;
 }
 
-export function checkTemplate(session: ISession, path: string, opts?: { fix?: boolean }) {
+export function checkTemplate(session: ISession, path: string, opts?: { fix?: boolean }): void {
   const templateDir = path || '.';
   if (!fs.statSync(templateDir).isDirectory()) {
     throw new Error('The template path must be a directory.');
@@ -133,6 +135,7 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
     throw new Error('Could not load template.yml as YAML');
   }
 
+  const printWarnings = !(opts?.fix ?? false);
   const messages: Required<ValidationOptions['messages']> = { warnings: [], errors: [] };
 
   if (configYaml.jtex !== 'v1') {
@@ -146,7 +149,7 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
   const validated = validateTemplateYml(configYaml, { property: '', messages, templateDir });
 
   if (!validated) {
-    printWarnings(session, 'template.yml', messages);
+    clearAndPrintWarnings(session, 'template.yml', messages, printWarnings);
     throw new Error('Could not validate template.yml');
   }
   // These are not strictly required, but should be included
@@ -171,7 +174,7 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
   }
 
   // Log all the config warnings for the template.yml
-  const configWarnings = printWarnings(session, 'template.yml', messages);
+  const configWarnings = clearAndPrintWarnings(session, 'template.yml', messages, printWarnings);
 
   // Validate global
   if (!variables.global.IMPORTS) {
@@ -274,7 +277,7 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
       message: `There are duplicate packages listed: "${duplicates.join(', ')}"`,
     });
   }
-  const templateWarnings = printWarnings(session, 'template.tex', messages);
+  const templateWarnings = clearAndPrintWarnings(session, 'template.tex', messages, printWarnings);
 
   const knownFileTypes = new Set(['.cls', '.def', '.sty', '.bst']);
   const maybeExtraFiles = fs.readdirSync(templateDir).filter((f) => knownFileTypes.has(extname(f)));
@@ -314,7 +317,7 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
             break;
         }
         if (!packages) {
-          return printWarnings(session, file, messages);
+          return clearAndPrintWarnings(session, file, messages, printWarnings);
         }
         // Validate packages
         Object.entries(packages).forEach(([packageName, lineNumbers]) => {
@@ -332,11 +335,9 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
           }
           fixedPackages.add(packageName);
         });
-        return printWarnings(session, file, messages);
+        return clearAndPrintWarnings(session, file, messages, printWarnings);
       })
       ?.reduce((a, b) => a || b, false) ?? true;
-
-  const fileWarnings = printWarnings(session, 'template.tex', messages);
 
   if (opts?.fix) {
     configYaml.jtex = 'v1';
@@ -350,9 +351,14 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
     }
     configYaml.packages = [...fixedPackages].sort();
     fs.writeFileSync(templateYmlPath, yaml.dump(configYaml));
-  }
-  if (configWarnings || templateWarnings || packageErrors || fileWarnings) {
-    throw new Error('jtex found warnings or errors in validating your template.');
+    // Run the config again, without the known errors.
+    return checkTemplate(session, path, { ...opts, fix: false });
+  } else {
+    const fileWarnings = clearAndPrintWarnings(session, 'template.tex', messages, printWarnings);
+    if (configWarnings || templateWarnings || packageErrors || fileWarnings) {
+      throw new Error('jtex found warnings or errors in validating your template.');
+    }
+    session.log.info(chalk.greenBright('jtex template validation passed, nice work! ✅ 🚀'));
   }
 }
 

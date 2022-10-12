@@ -16,10 +16,14 @@ async function getDoiOrgBibtex(log: Logger, doi: string): Promise<string | null>
   if (!validate(normalize(doi))) return null;
   const toc = tic();
   log.debug('Fetching DOI information from doi.org');
-  const response = await fetch(`https://doi.org/${normalize(doi)}`, {
+  const url = `https://doi.org/${normalize(doi)}`;
+  const response = await fetch(url, {
     headers: [['Accept', 'application/x-bibtex']],
+  }).catch(() => {
+    log.debug(`Request to ${url} failed.`);
+    return null;
   });
-  if (!response.ok) {
+  if (!response || !response.ok) {
     log.debug(`doi.org fetch failed for ${doi}}`);
     return null;
   }

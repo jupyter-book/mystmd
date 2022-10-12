@@ -7,6 +7,14 @@ thumbnail: ./thumbnails/create-a-latex-template.png
 A `jtex` template contains everything necessary to create a $\LaTeX$ document, including a `template.yml`, the main `template.tex`, and any associated files such as classes (`*.cls`), definitions (`*.def`), or images (`*.png`).
 These $\LaTeX$ templates are data-driven, in that they record all of the options in a `template.yml` which you create as you are working through moving your $\LaTeX$ document to a `jtex` template.
 
+````{note}
+:class: dropdown
+# See the video tutorial 📺
+```{iframe} https://www.youtube.com/embed/-oD6jlM23wY
+:width: 100%
+```
+````
+
 To get started you will need to install `jtex` and, for convienience, [cookiecutter](https://github.com/cookiecutter/cookiecutter) which allows you to get up and started in a new repository fast!
 
 ```bash
@@ -90,7 +98,7 @@ These objects include:
 : Holds custom "parts" of the document like an abstract, for example `[-parts.abstract-]`
 : See [](#template-parts)
 
-### Start with the title
+### Start with the title & abstract
 
 Your $\LaTeX$ document probably has a title like `\title{Some title}`. Change this to:
 
@@ -101,9 +109,7 @@ Your $\LaTeX$ document probably has a title like `\title{Some title}`. Change th
 The structure of the template variables is a customized Jinja environment that allows you to put variables
 starting with `[-` and ending with `-]`. See [](./template-rules.md) for more information.
 
-### Start with the title
-
-Your template might also have an abstract in it, if so we will define this as a "part" or our document.
+Your template might also have an **abstract** in it, if so we will define this as a "part" or our document.
 
 ```latex
 [# if parts.abstract #]
@@ -253,6 +259,12 @@ jtex check --fix
 
 This will overwrite your `template.yml` with all packages found and there should be very few issues found automatically by `jtex check`.
 
+```{figure} ./images/jtex-check-fix.png
+:width: 100%
+
+Using `jtex check --fix` will fix as many errors as possible with your `template.yml`!
+```
+
 ## Build with content
 
 Your template should now be in a place where it can be used to render content. For this we will use the `myst` command line tool.
@@ -293,6 +305,10 @@ Other content!
 ```
 
 You can now render your document with:
+
+```{danger}
+This is currently exposed as `myst export tex my-document.md`, and will be updated to `myst build` in the future.
+```
 
 ```bash
 myst build my-document.md
