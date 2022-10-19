@@ -45,7 +45,14 @@ export class Inventory {
     if (opts?.version) this.version = opts?.version;
     if (opts?.path && isUrl(opts?.path)) {
       this.path = opts?.path.replace(/\/$/, ''); // Remove any trailing slash
-      this.invName = opts?.invName || DEFAULT_INV_NAME;
+      if (this.path.endsWith('.inv') && !opts?.invName) {
+        // If the URL includes ".inv" use it, but do not include it in the path
+        const parts = this.path.split('/');
+        this.invName = parts.pop() as string;
+        this.path = parts.join('/');
+      } else {
+        this.invName = opts?.invName || DEFAULT_INV_NAME;
+      }
     } else if (opts?.path) {
       this.path = opts?.path; // Local path
     }
@@ -93,9 +100,7 @@ export class Inventory {
       throw new Error('Inventory path must be specified to load an object');
     }
     if (isUrl(this.path)) {
-      const url = this.path.endsWith('.inv')
-        ? this.path
-        : `${this.path}/${this.invName || DEFAULT_INV_NAME}`;
+      const url = `${this.path}/${this.invName}`;
       const res = await fetch(url);
       if (!res.ok) {
         throw new Error(
