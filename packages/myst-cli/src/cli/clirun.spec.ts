@@ -42,13 +42,11 @@ describe('clirun', () => {
   //   // jest.mock('./check');
   //   // const mockCheckNodeVersion = check.checkNodeVersion as jest.Mock;
   //   // mockCheckNodeVersion.mockImplementation(async () => {
-  //   //   console.log('hi');
   //   //   return false;
   //   // });
 
   //   // const mock = jest.mock('./check.ts', () => ({
   //   //   checkNodeVersion: jest.fn().mockImplementation(async () => {
-  //   //     console.log('hi');
   //   //     return false;
   //   //   }),
   //   // }));
@@ -58,12 +56,10 @@ describe('clirun', () => {
   //   //   return false;
   //   // });
   //   //   .mockImplementation(async () => {
-  //   //     console.log('lkdjslkfjdlskjdlksjf');
   //   //     return false;
   //   //   });
 
   //   // mockCheckNodeVersion.mockImplementation(async () => {
-  //   //   console.log('lkdjslkfjdlskjdlksjf');
   //   //   return false;
   //   // });
   //   try {

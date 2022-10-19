@@ -36,9 +36,7 @@ function withQuery(url: string, query: Record<string, string> = {}) {
 
 export function loadAllConfigs(session: ISession) {
   try {
-    console.log('a');
     loadConfigAndValidateOrThrow(session, '.');
-    console.log('b');
     session.log.debug('Loaded configs from current directory');
   } catch (error) {
     // TODO: what error?
@@ -76,7 +74,6 @@ export class Session implements ISession {
   }
 
   constructor(token?: string, opts: SessionOptions = {}) {
-    console.log('c');
     this.buildFolder = BUILD_FOLDER;
     this.configFiles = CONFIG_FILES;
     this.$logger = opts.logger ?? basicLogger(LogLevel.info);
@@ -87,11 +84,8 @@ export class Session implements ISession {
       this.log.warn(`Connecting to API at: "${this.API_URL}".`);
     }
     this.store = createStore(rootReducer);
-    console.log('d');
     findCurrentProjectAndLoad(this, '.');
-    console.log('e');
     findCurrentSiteAndLoad(this, '.');
-    console.log('f');
   }
 
   setToken(token?: string) {

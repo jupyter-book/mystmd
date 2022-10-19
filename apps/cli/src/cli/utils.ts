@@ -122,17 +122,13 @@ export function clirun(
     const useSession = cli.anonymous
       ? anonSession(opts)
       : getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
-    console.log('h');
     const versions = await getNodeVersion(useSession);
     logVersions(useSession, versions);
-    console.log('i');
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
     const state = useSession.store.getState();
     // TODO: These should no longer need '.', but instead selectCurrent*Config
-    console.log('j');
     const siteConfig = selectors.selectLocalSiteConfig(state, '.');
-    console.log('k');
     if (cli.requireSiteConfig && !siteConfig) {
       const projectConfig = selectors.selectLocalProjectConfig(state, '.');
       let message: string;

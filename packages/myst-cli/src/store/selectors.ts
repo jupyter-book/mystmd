@@ -11,7 +11,6 @@ export function selectAffiliation(state: RootState, id: string): string | undefi
 }
 
 export function selectLocalSiteConfig(state: RootState, path: string) {
-  console.log('m');
   return state.local.config.sites[path];
 }
 
