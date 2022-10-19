@@ -1,10 +1,5 @@
-import type {
-  KINDS,
-  SiteAnalytics,
-  SiteAction,
-  SiteNavPage,
-  SiteNavFolder,
-} from '@curvenote/blocks';
+import type { KINDS } from '@curvenote/blocks';
+import type { SiteAnalytics, SiteAction, SiteNavPage, SiteNavFolder } from 'myst-config';
 import type { PageFrontmatter, ProjectFrontmatter } from 'myst-frontmatter';
 import type { Root } from 'mdast';
 import type { FootnoteDefinition } from 'myst-spec';

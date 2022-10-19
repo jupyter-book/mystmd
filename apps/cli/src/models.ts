@@ -4,7 +4,7 @@ import type {
   User as UserDTO,
   Team as TeamDTO,
   Project as ProjectDTO,
-  SiteConfigDBO as SiteConfigDTO,
+  SiteConfigDTO,
   Block as BlockDTO,
   ALL_BLOCKS,
   ProjectId,
@@ -72,7 +72,8 @@ class BaseTransfer<
 
   async get(query?: GetOptions) {
     const url = this.$createUrl();
-    const fromSession = this.$selector?.(this.session.store.getState(), this.id);
+    const state = this.session.store.getState() as RootState;
+    const fromSession = this.$selector?.(state, this.id);
     if (fromSession) {
       this.session.log.debug(`Loading ${this.modelKind} from cache: "${url}"`);
       this.data = fromSession;

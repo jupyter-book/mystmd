@@ -1,10 +1,9 @@
 import fs from 'fs';
+import { createTempFolder, getDefaultExportFolder } from 'myst-cli';
 import { ExportFormats } from 'myst-frontmatter';
 import { join } from 'path';
 import type { ISession } from '../../session/types';
-import { createTempFolder } from '../../utils';
 import { oxaLinkToMarkdown } from '../markdown';
-import { getDefaultExportFolder } from './defaultNames';
 
 export const localExportWrapper =
   (

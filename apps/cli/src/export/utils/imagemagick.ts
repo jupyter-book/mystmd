@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { makeExecutable, tic } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
-import type { ISession } from '../../session';
+import type { ISession } from '../../session/types';
 
 export function isWebpAvailable() {
   return which('cwebp', { nothrow: true });

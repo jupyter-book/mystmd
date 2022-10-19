@@ -5,7 +5,7 @@ import type {
   User as UserDTO,
   Team as TeamDTO,
   Project as ProjectDTO,
-  SiteConfigDBO as SiteConfigDTO,
+  SiteConfigDTO,
   Block as BlockDTO,
   Draft as DraftDTO,
   ALL_BLOCKS,

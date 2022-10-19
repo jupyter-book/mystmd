@@ -1,6 +1,6 @@
 import { ExportFormats } from 'myst-frontmatter';
+import { localArticleToTex } from 'myst-cli';
 import { localExportWrapper } from '../utils/localExportWrapper';
-import { localArticleToTex } from './single';
 
 export { multipleArticleToTex } from './multiple';
 

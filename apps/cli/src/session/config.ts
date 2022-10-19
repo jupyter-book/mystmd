@@ -56,6 +56,7 @@ export async function setToken(log: Logger, token?: string) {
 }
 
 export function deleteToken(logger: Logger = chalkLogger(LogLevel.info)) {
+  console.log('g');
   const configPath = getConfigPath();
   const env = process.env.CURVENOTE_TOKEN;
   if (env) {

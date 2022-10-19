@@ -1,18 +1,24 @@
 import fetch from 'node-fetch';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
+import {
+  findCurrentProjectAndLoad,
+  findCurrentSiteAndLoad,
+  loadConfigAndValidateOrThrow,
+  selectors,
+} from 'myst-cli';
 import type { Logger } from 'myst-cli-utils';
 import { LogLevel, basicLogger } from 'myst-cli-utils';
-import { loadConfigOrThrow } from '../config';
-import { CURVENOTE_YML } from '../config/types';
 import type { RootState } from '../store';
-import { rootReducer, selectors } from '../store';
+import { rootReducer } from '../store';
 import { checkForClientVersionRejection } from '../utils';
 import { getHeaders, setSessionOrUserToken } from './tokens';
 import type { ISession, Response, Tokens } from './types';
 
 const DEFAULT_API_URL = 'https://api.curvenote.com';
 const DEFAULT_SITE_URL = 'https://curvenote.com';
+const CONFIG_FILES = ['curvenote.yml', 'myst.yml'];
+const BUILD_FOLDER = '_build';
 
 export type SessionOptions = {
   apiUrl?: string;
@@ -28,39 +34,37 @@ function withQuery(url: string, query: Record<string, string> = {}) {
   return url.indexOf('?') === -1 ? `${url}?${params}` : `${url}&${params}`;
 }
 
-export function loadAllConfigs(session: Pick<ISession, 'log' | 'store'>) {
+export function loadAllConfigs(session: ISession) {
   try {
-    loadConfigOrThrow(session, '.');
-    session.log.debug(`Loaded configs from "./${CURVENOTE_YML}"`);
+    console.log('a');
+    loadConfigAndValidateOrThrow(session, '.');
+    console.log('b');
+    session.log.debug('Loaded configs from current directory');
   } catch (error) {
     // TODO: what error?
-    session.log.debug(`Failed to find or load configs from "./${CURVENOTE_YML}"`);
+    session.log.debug('Failed to find or load configs in current directory');
   }
-  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), '.');
   if (!siteConfig?.projects) return;
   siteConfig.projects
     .filter((project) => project.path !== '.') // already loaded
     .forEach((project) => {
       try {
-        if (project.path) loadConfigOrThrow(session, project.path);
+        if (project.path) loadConfigAndValidateOrThrow(session, project.path);
       } catch (error) {
         // TODO: what error?
-        session.log.debug(
-          `Failed to find or load project config from "${project.path}/${CURVENOTE_YML}"`,
-        );
+        session.log.debug(`Failed to find or load project config from "${project.path}"`);
       }
     });
 }
 
 export class Session implements ISession {
   API_URL: string;
-
   SITE_URL: string;
-
+  buildFolder: string;
+  configFiles: string[];
   $tokens: Tokens = {};
-
   store: Store<RootState>;
-
   $logger: Logger;
 
   get log(): Logger {
@@ -72,6 +76,9 @@ export class Session implements ISession {
   }
 
   constructor(token?: string, opts: SessionOptions = {}) {
+    console.log('c');
+    this.buildFolder = BUILD_FOLDER;
+    this.configFiles = CONFIG_FILES;
     this.$logger = opts.logger ?? basicLogger(LogLevel.info);
     const url = this.setToken(token);
     this.API_URL = opts.apiUrl ?? url ?? DEFAULT_API_URL;
@@ -80,7 +87,11 @@ export class Session implements ISession {
       this.log.warn(`Connecting to API at: "${this.API_URL}".`);
     }
     this.store = createStore(rootReducer);
-    loadAllConfigs({ log: this.$logger, store: this.store });
+    console.log('d');
+    findCurrentProjectAndLoad(this, '.');
+    console.log('e');
+    findCurrentSiteAndLoad(this, '.');
+    console.log('f');
   }
 
   setToken(token?: string) {
@@ -90,7 +101,7 @@ export class Session implements ISession {
   }
 
   reload() {
-    loadAllConfigs({ log: this.$logger, store: this.store });
+    loadAllConfigs(this);
   }
 
   async get<T extends Record<string, any>>(

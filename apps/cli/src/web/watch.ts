@@ -1,11 +1,13 @@
 import chokidar from 'chokidar';
 import { join, extname } from 'path';
-import type { SiteProject } from '@curvenote/blocks';
-import { CURVENOTE_YML } from '../config/types';
+import { selectors } from 'myst-cli';
+import type { SiteProject } from 'myst-config';
 import type { ISession } from '../session/types';
-import { selectors } from '../store';
 import { changeFile, fastProcessFile, processSite } from '../store/local/actions';
 import { BUILD_FOLDER } from '../utils';
+
+// TODO: watch the actual configs based on session...
+const CURVENOTE_YML = 'curvenote.yml';
 
 function watchConfigAndPublic(session: ISession) {
   return chokidar
@@ -52,7 +54,7 @@ function fileProcessor(session: ISession, siteProject: SiteProject) {
 }
 
 export function watchContent(session: ISession) {
-  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig?.projects) return;
   const localProjects = siteConfig.projects.filter(
     (proj): proj is { slug: string; path: string } => {

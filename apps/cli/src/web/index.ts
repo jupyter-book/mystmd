@@ -1,9 +1,9 @@
 import fs from 'fs';
+import { selectors } from 'myst-cli';
 import { createGitLogger, createNpmLogger, makeExecutable, tic } from 'myst-cli-utils';
 import { createServerLogger } from '../logging';
 import { MyUser } from '../models';
 import type { ISession } from '../session/types';
-import { selectors } from '../store';
 import {
   confirmOrExit,
   ensureBuildFolderExists,
@@ -109,7 +109,7 @@ export async function deploy(session: ISession, opts: Omit<Options, 'clean'>): P
   }
   const me = await new MyUser(session).get();
   // Do a bit of prework to ensure that the domains exists in the config file
-  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig) {
     throw new Error('🧐 No site config found.');
   }

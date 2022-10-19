@@ -3,16 +3,19 @@ import pLimit from 'p-limit';
 import { join, dirname, basename, extname } from 'path';
 import { LogLevel, tic } from 'myst-cli-utils';
 import { projectFrontmatterFromDTO, saveAffiliations } from '../frontmatter/api';
-import { loadConfigOrThrow, writeConfigs } from '../config';
+import {
+  config,
+  getRawFrontmatterFromFile,
+  isDirectory,
+  loadConfigAndValidateOrThrow,
+  selectors,
+  writeConfigs,
+} from 'myst-cli';
 import { oxaLinkToMarkdown, oxaLinkToNotebook, projectToJupyterBook } from '../export';
 import { Project } from '../models';
 import type { ISession } from '../session/types';
-import { selectors } from '../store';
-import { config } from '../store/local';
-import { isDirectory } from '../toc/utils';
 import { confirmOrExit } from '../utils';
 import { processOption, projectLogString } from './utils';
-import { getRawFrontmatterFromFile } from '../store/local/actions';
 import type { SyncCiHelperOptions } from './types';
 
 function logWithLevel(session: ISession, msg: string, level?: LogLevel) {
@@ -41,7 +44,7 @@ export async function pullProject(
   saveAffiliations(session, project.data);
   const newFrontmatter = projectFrontmatterFromDTO(session, project.data);
   session.store.dispatch(
-    config.actions.receiveProject({ path, ...projectConfig, ...newFrontmatter }),
+    config.actions.receiveProjectConfig({ path, ...projectConfig, ...newFrontmatter }),
   );
   writeConfigs(session, path);
   const toc = tic();
@@ -71,7 +74,7 @@ export async function pullProjects(
   opts: { level?: LogLevel; yes?: boolean; ci?: boolean },
 ) {
   const state = session.store.getState();
-  const siteConfig = selectors.selectLocalSiteConfig(state);
+  const siteConfig = selectors.selectCurrentSiteConfig(state);
   if (!siteConfig) throw Error('Cannot pull projects: no site config');
   const limit = pLimit(1);
   if (siteConfig.projects) {
@@ -127,7 +130,7 @@ export async function pull(session: ISession, path?: string, opts?: SyncCiHelper
     return;
   }
   // Site config is loaded on session init
-  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (path === '.' && siteConfig) {
     const numProjects = siteConfig.projects?.length;
     if (!numProjects) throw new Error('Your site configuration has no projects');
@@ -138,7 +141,7 @@ export async function pull(session: ISession, path?: string, opts?: SyncCiHelper
     );
     await pullProjects(session, { level: LogLevel.info, ...opts });
   } else {
-    loadConfigOrThrow(session, path);
+    loadConfigAndValidateOrThrow(session, path);
     await confirmOrExit(
       `Pulling will overwrite all content in ${
         path === '.' ? 'current directory' : path

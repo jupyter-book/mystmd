@@ -2,6 +2,9 @@ import { createHash } from 'crypto';
 import cliProgress from 'cli-progress';
 import fs from 'fs';
 import mime from 'mime-types';
+import { selectors } from 'myst-cli';
+import { tic } from 'myst-cli-utils';
+import type { Logger } from 'myst-cli-utils';
 import fetch from 'node-fetch';
 import path from 'path';
 import pLimit from 'p-limit';
@@ -11,12 +14,9 @@ import type {
   SiteUploadRequest,
   SiteUploadResponse,
 } from '@curvenote/blocks';
-import { tic } from 'myst-cli-utils';
-import type { Logger } from 'myst-cli-utils';
 import type { ISession } from '../session/types';
-import { selectors } from '../store';
 import { publicPath, serverPath } from '../utils';
-import { getLogoPaths } from '../toc/manifest';
+import { getLogoPaths } from '../site/manifest';
 
 type FromTo = {
   from: string;
@@ -24,7 +24,7 @@ type FromTo = {
 };
 
 function listConfig(session: ISession): FromTo[] {
-  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig) throw new Error('🧐 No site config found.');
   const paths: FromTo[] = [];
   paths.push({
@@ -210,7 +210,7 @@ export async function deployContentToCdn(session: ISession, opts?: { ci?: boolea
 }
 
 export async function promoteContent(session: ISession, cdnKey: string) {
-  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig) throw new Error('🧐 No site config found.');
   const toc = tic();
   const errorDomains: string[] = [];

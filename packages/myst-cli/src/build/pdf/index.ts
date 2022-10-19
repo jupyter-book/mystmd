@@ -1,0 +1,1 @@
+export { localArticleToPdf } from './single';

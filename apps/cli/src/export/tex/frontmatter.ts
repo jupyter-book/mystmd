@@ -1,7 +1,7 @@
 import YAML from 'js-yaml';
+import { prepareToWrite } from 'myst-cli';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { toTex } from '@curvenote/schema';
-import { prepareToWrite } from '../../frontmatter';
 import { getEditorState } from '../utils/getEditorState';
 
 export interface JtexOutputConfig {

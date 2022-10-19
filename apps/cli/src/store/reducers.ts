@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
+import { localReducer } from 'myst-cli';
 import { apiReducer } from './api/reducers';
-import { localReducer } from './local/reducers';
-import { buildReducer } from './build/reducers';
+import { oxalink } from './oxa/reducers';
 
 export const rootReducer = combineReducers({
   api: apiReducer,
   local: localReducer,
-  build: buildReducer,
+  oxalink: oxalink.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

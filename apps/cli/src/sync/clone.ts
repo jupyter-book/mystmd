@@ -2,14 +2,12 @@ import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
 import { join } from 'path';
+import { loadConfigAndValidateOrThrow, selectors, writeConfigs } from 'myst-cli';
 import { LogLevel } from 'myst-cli-utils';
-import type { SiteConfig } from '@curvenote/blocks';
-import { loadConfigOrThrow, writeConfigs } from '../config';
-import type { ProjectConfig } from '../config/types';
+import type { ProjectConfig, SiteConfig } from 'myst-config';
 import { projectIdFromLink } from '../export';
 import type { Project } from '../models';
 import type { ISession } from '../session/types';
-import { selectors } from '../store';
 import { pullProject } from './pull';
 import questions from './questions';
 import type { SyncCiHelperOptions } from './types';
@@ -53,7 +51,7 @@ export async function interactiveCloneQuestions(
   }
   try {
     // Throw if project doesn't exist - that's what we want!
-    loadConfigOrThrow(session, path);
+    loadConfigAndValidateOrThrow(session, path);
     if (!selectors.selectLocalProjectConfig(session.store.getState(), path)) throw Error();
   } catch {
     // Project config does not exist; good!
@@ -79,7 +77,7 @@ export async function interactiveCloneQuestions(
 export async function clone(session: ISession, remote?: string, path?: string, opts?: Options) {
   const processedOpts = processOption(opts);
   // Site config is loaded on session init
-  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig) {
     session.log.debug('Site config not found');
   }

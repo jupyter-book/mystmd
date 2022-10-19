@@ -1,12 +1,11 @@
 import fs from 'fs';
 import chalk from 'chalk';
-import check from 'check-node-version';
+import type check from 'check-node-version';
 import type { Command } from 'commander';
+import { getNodeVersion, selectors } from 'myst-cli';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
-import { CURVENOTE_YML } from '../config/types';
 import { Session, getToken } from '../session';
 import type { ISession } from '../session/types';
-import { selectors } from '../store';
 import CurvenoteVersion from '../version';
 import { webPackageJsonPath } from '../utils';
 import { docLinks } from '../docs';
@@ -26,20 +25,6 @@ ${chalk.bold.blue(docLinks.installNode)}
 `;
 
 type VersionResults = Parameters<Parameters<typeof check>[1]>[1];
-
-async function getNodeVersion(session: ISession): Promise<VersionResults | null> {
-  const result = new Promise<VersionResults | null>((resolve) => {
-    check({ node: '>= 14.0.0', npm: '>=7' }, (error, results) => {
-      if (error) {
-        session.log.error(error);
-        resolve(null);
-        return;
-      }
-      resolve(results);
-    });
-  });
-  return result;
-}
 
 function logVersions(session: ISession, result: VersionResults | null, debug = true) {
   const versions: string[][] = [];
@@ -137,19 +122,26 @@ export function clirun(
     const useSession = cli.anonymous
       ? anonSession(opts)
       : getSession({ ...opts, hideNoTokenWarning: cli.hideNoTokenWarning });
+    console.log('h');
     const versions = await getNodeVersion(useSession);
     logVersions(useSession, versions);
+    console.log('i');
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
     const state = useSession.store.getState();
-    const siteConfig = selectors.selectLocalSiteConfig(state);
+    // TODO: These should no longer need '.', but instead selectCurrent*Config
+    console.log('j');
+    const siteConfig = selectors.selectLocalSiteConfig(state, '.');
+    console.log('k');
     if (cli.requireSiteConfig && !siteConfig) {
-      const projectConfig = selectors.selectLocalProject(state, '.');
+      const projectConfig = selectors.selectLocalProjectConfig(state, '.');
       let message: string;
       if (projectConfig) {
-        message = `No "site" config found in ${CURVENOTE_YML}`;
+        message = `No "site" config found in ${projectConfig.file}`;
       } else {
-        message = `You must be in a directory with a ${CURVENOTE_YML}`;
+        message = `You must be in a directory with a config file: ${useSession.configFiles.join(
+          ', ',
+        )}`;
       }
       useSession.log.error(`${message}\n\nDo you need to run: ${chalk.bold('curvenote init')}`);
       process.exit(1);

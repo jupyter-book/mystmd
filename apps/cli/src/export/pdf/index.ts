@@ -1,6 +1,6 @@
 import { ExportFormats } from 'myst-frontmatter';
+import { localArticleToPdf } from 'myst-cli';
 import { localExportWrapper } from '../utils/localExportWrapper';
-import { localArticleToPdf } from './single';
 
 export { multipleArticleToPdf } from './multiple';
 export { buildPdfOnly } from './build';

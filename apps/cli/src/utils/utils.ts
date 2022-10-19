@@ -1,27 +1,12 @@
-import { createHash } from 'crypto';
 import fs from 'fs';
-import os from 'os';
-import type { VFile } from 'vfile';
-import chalk from 'chalk';
 import inquirer from 'inquirer';
 import path from 'path';
 import type { Logger } from 'myst-cli-utils';
 import type { JsonObject, VersionId } from '@curvenote/blocks';
-import { configFileExists, loadConfigOrThrow } from '../config';
 import type { ISession } from '../session/types';
-import type { WarningKind } from '../store/build';
-import { warnings } from '../store/build';
-import { combineProjectCitationRenderers, loadFile } from '../store/local/actions';
-import { selectLocalProjectConfig } from '../store/selectors';
-import { loadProjectFromDisk } from '../toc';
 
 export const BUILD_FOLDER = '_build';
 export const THUMBNAILS_FOLDER = 'thumbnails';
-
-export function shouldIgnoreFile(file: string) {
-  const ignore = ['node_modules', BUILD_FOLDER];
-  return file.startsWith('.') || ignore.includes(file);
-}
 
 export function resolvePath(optionalPath: string | undefined, filename: string) {
   if (optionalPath) return path.join(optionalPath, filename);
@@ -57,29 +42,6 @@ export function ensureBuildFolderExists(session: ISession): void {
   if (!buildPathExists(session)) fs.mkdirSync(repoPath(), { recursive: true });
 }
 
-/**
- * Log a message if there are extra keys in an object that are not expected.
- *
- * @param log Logging object
- * @param object object with maybe extra keys
- * @param start string for the logging message
- * @param allowed optional allowed keys
- * @returns void
- */
-export function warnOnUnrecognizedKeys(
-  log: Logger,
-  object: Record<string, any>,
-  start: string,
-  allowed?: Set<string>,
-) {
-  const extraKeys = allowed
-    ? Object.keys(object).filter((k) => !allowed.has(k))
-    : Object.keys(object);
-  if (extraKeys.length === 0) return;
-  const plural = extraKeys.length > 1 ? 's' : '';
-  log.warn(`${start} Did not recognize key${plural}: "${extraKeys.join('", "')}".`);
-}
-
 export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHost?: boolean }) {
   if (process.env.HOST && process.env.HOST !== 'localhost') {
     if (opts?.keepHost) {
@@ -93,46 +55,6 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHo
       process.env.HOST = 'localhost';
     }
   }
-}
-
-export function logMessagesFromVFile(session: ISession, file?: VFile): void {
-  if (!file) return;
-  file.messages.forEach((message) => {
-    const kind: WarningKind =
-      message.fatal === null ? 'info' : message.fatal === false ? 'warn' : 'error';
-    const note = message.note ? `\n\n${chalk.dim(message.note)}` : '';
-    const url = message.url ? `\n\nSee also: ${chalk.bold(message.url)}` : '';
-    addWarningForFile(session, file.path, `${message.message}${note}${url}`, kind);
-  });
-  file.messages = [];
-}
-
-export function addWarningForFile(
-  session: ISession,
-  file: string | undefined | null,
-  message: string,
-  kind: WarningKind = 'warn',
-) {
-  const prefix = file ? `${file}: ` : '';
-  switch (kind) {
-    case 'info':
-      session.log.info(`ℹ️ ${prefix}${message}`);
-      break;
-    case 'error':
-      session.log.error(`⛔️ ${prefix}${message}`);
-      break;
-    case 'warn':
-    default:
-      session.log.warn(`⚠️  ${prefix}${message}`);
-      break;
-  }
-  if (file) {
-    session.store.dispatch(warnings.actions.addWarning({ file, message, kind }));
-  }
-}
-
-export function createTempFolder() {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'curvenote'));
 }
 
 /**
@@ -160,42 +82,6 @@ export function writeFileToFolder(
   }
 }
 
-export function computeHash(content: string) {
-  return createHash('md5').update(content).digest('hex');
-}
-
-/**
- * Copy an existing file to writeFolder and name it based on hashed filename
- *
- * If hashed file already exists, this does nothing
- */
-export function hashAndCopyStaticFile(session: ISession, file: string, writeFolder: string) {
-  const { name, ext } = path.parse(file);
-  const fd = fs.openSync(file, 'r');
-  const { mtime, size } = fs.fstatSync(fd);
-  fs.closeSync(fd);
-  const hash = computeHash(`${mtime.toString()}${size.toString()}`);
-  const fileHash = `${name.slice(0, 20)}-${hash}${ext}`;
-  const destination = path.join(writeFolder, fileHash);
-  if (fs.existsSync(destination)) {
-    session.log.debug(`Cached file found for: ${file}`);
-  } else {
-    try {
-      if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
-      fs.copyFileSync(file, destination);
-      session.log.debug(`File successfully copied: ${file}`);
-    } catch {
-      session.log.error(`Error copying file: ${file}`);
-      return undefined;
-    }
-  }
-  return fileHash;
-}
-
-export function isUrl(url: string): boolean {
-  return !!url.toLowerCase().match(/^https?:\/\//);
-}
-
 export function versionIdToURL(versionId: VersionId) {
   return `/blocks/${versionId.project}/${versionId.block}/versions/${versionId.version}`;
 }
@@ -219,27 +105,4 @@ export async function confirmOrExit(message: string, opts?: { yes?: boolean }) {
   if (!question.confirm) {
     throw new Error('Exiting');
   }
-}
-
-export async function findProjectAndLoad(
-  session: ISession,
-  dir: string,
-): Promise<string | undefined> {
-  dir = path.resolve(dir);
-  if (configFileExists(dir)) {
-    loadConfigOrThrow(session, dir);
-    const project = selectLocalProjectConfig(session.store.getState(), dir);
-    if (project) {
-      const { bibliography } = loadProjectFromDisk(session, dir);
-      if (bibliography) {
-        await Promise.all(bibliography.map((p: string) => loadFile(session, p, '.bib')));
-        combineProjectCitationRenderers(session, dir);
-      }
-      return dir;
-    }
-  }
-  if (path.dirname(dir) === dir) {
-    return undefined;
-  }
-  return findProjectAndLoad(session, path.dirname(dir));
 }
