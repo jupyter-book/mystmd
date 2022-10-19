@@ -35,7 +35,7 @@ import type {
   SiteDesign,
 } from './types';
 
-export const SITE_FRONTMATTER_KEYS = ['title', 'description', 'venue', 'keywords'];
+export const SITE_FRONTMATTER_KEYS = ['title', 'description', 'venue', 'keywords', 'design'];
 export const PROJECT_FRONTMATTER_KEYS = [
   'authors',
   'date',
@@ -54,7 +54,6 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'bibliography',
   'math',
   'exports',
-  'design',
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = [
   'subtitle',
@@ -452,6 +451,13 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
       },
     );
   }
+  if (defined(value.design)) {
+    const designOpts = incrementOptions('design', opts);
+    const design = validateObject(value.design, designOpts);
+    if (design) {
+      output.design = validateSiteDesign(design, designOpts);
+    }
+  }
   return output;
 }
 
@@ -571,13 +577,6 @@ export function validateProjectFrontmatterKeys(
           })
           .filter((exists) => !!exists) as [string, { url: string }][],
       );
-    }
-  }
-  if (defined(value.design)) {
-    const designOpts = incrementOptions('design', opts);
-    const design = validateObject(value.design, designOpts);
-    if (design) {
-      output.design = validateSiteDesign(design, designOpts);
     }
   }
   return output;
