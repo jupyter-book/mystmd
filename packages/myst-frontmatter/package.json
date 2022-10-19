@@ -1,6 +1,6 @@
 {
   "name": "myst-frontmatter",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "description": "Frontmatter types and validation for the mystjs ecosystem",
   "author": "Franklin Koch <franklin@curvenote.com>",

@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "myst-config": "^0.0.1",
-    "myst-frontmatter": "^0.0.1",
+    "myst-frontmatter": "^0.0.2",
     "simple-validators": "^0.0.1"
   },
   "devDependencies": {
