@@ -79,7 +79,11 @@ export function createGitLogger(session: ISession): LoggerDE {
     error(data: string) {
       const line = data.trim();
       if (!line) return;
-      if (line.startsWith('Cloning into') || line.startsWith('Submodule')) {
+      if (
+        line.includes('Cloning into') ||
+        line.includes('Submodule') ||
+        line.includes('From https://github.com')
+      ) {
         session.log.debug(line);
         return;
       }
@@ -102,6 +106,7 @@ export function createNpmLogger(session: ISession): LoggerDE {
       if (
         line.includes('deprecated') ||
         line.includes('package is no longer supported') ||
+        line.includes('do not need this installed') ||
         line === 'npm' ||
         line.includes('WARN')
       ) {

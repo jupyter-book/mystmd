@@ -54,7 +54,7 @@ export function changeFile(session: ISession, path: string, eventType: string) {
 // }
 
 export async function writeSiteManifest(session: ISession) {
-  const configPath = join(session.serverPath(), 'app', 'config.json');
+  const configPath = join(session.sitePath(), 'config.json');
   session.log.info('⚙️  Writing site config.json');
   const siteManifest = getSiteManifest(session);
   writeFileToFolder(configPath, JSON.stringify(siteManifest));
@@ -132,13 +132,7 @@ export function writeFile(
 ) {
   const toc = tic();
   const mdastPost = selectFile(session, file);
-  const jsonFilename = join(
-    session.serverPath(),
-    'app',
-    'content',
-    projectSlug,
-    `${pageSlug}.json`,
-  );
+  const jsonFilename = join(session.contentPath(), projectSlug, `${pageSlug}.json`);
   writeFileToFolder(jsonFilename, JSON.stringify(mdastPost));
   session.log.debug(toc(`Wrote "${file}" in %s`));
 }
@@ -288,7 +282,7 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
     siteConfig.projects.forEach((project) => {
       addProjectReferencesToObjectsInv(session, inv, { projectPath: project.path as string });
     });
-    const filename = join(session.staticPath(), 'objects.inv');
+    const filename = join(session.sitePath(), 'objects.inv');
     inv.write(filename);
   }
   return true;

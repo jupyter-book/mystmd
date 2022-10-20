@@ -15,71 +15,31 @@ import type {
   SiteUploadResponse,
 } from '@curvenote/blocks';
 import type { ISession } from '../session/types';
-import { getLogoPaths } from '../site/manifest';
 
 type FromTo = {
   from: string;
   to: string;
 };
 
-function listConfig(session: ISession): FromTo[] {
-  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  if (!siteConfig) throw new Error('🧐 No site config found.');
-  const paths: FromTo[] = [];
-  paths.push({
-    from: path.join(session.serverPath(), 'app', 'config.json'),
-    to: 'config.json',
+function listFolderContents(session: ISession, from: string, to = ''): FromTo[] {
+  const directory = fs.readdirSync(from);
+  const files: string[] = [];
+  const folders: string[] = [];
+  directory.forEach((f) => {
+    if (fs.statSync(path.join(from, f)).isDirectory()) {
+      folders.push(f);
+    } else {
+      files.push(f);
+    }
   });
-  // Ensure that we can access the logo
-  const logo = getLogoPaths(session, siteConfig.logo, { silent: true });
-  if (logo) {
-    paths.push({ from: logo.public, to: `public${logo.url}` });
-  }
-  if (siteConfig.favicon) {
-    const favicon = path.basename(siteConfig.favicon);
-    paths.push({
-      from: path.join(session.serverPath(), 'public', favicon),
-      to: `public/${favicon}`,
-    });
-  }
-  // Load all static action resources
-  siteConfig.actions?.forEach((action) => {
-    if (!action.static) return;
-    // String leading slash
-    const names = action.url.split('/').filter((s) => s);
-    paths.push({
-      from: path.join(session.serverPath(), 'public', ...names),
-      to: `public/${names.join('/')}`,
-    });
-  });
-  return paths;
-}
-
-function listContentFolders(session: ISession): FromTo[] {
-  const contentFolder = path.join(session.serverPath(), 'app', 'content');
-  const folders = fs.readdirSync(contentFolder);
-  const fromTo = folders.map((folderName) => {
-    const basePath = path.join(contentFolder, folderName);
-    const files = fs.readdirSync(basePath);
-    return files.map((f) => ({
-      from: path.join(basePath, f),
-      to: `content/${folderName}/${f}`,
-    }));
-  });
-  return fromTo.flat();
-}
-
-function listPublic(session: ISession): FromTo[] {
-  const staticFolder = path.join(session.publicPath(), '_static');
-  if (!fs.existsSync(staticFolder)) return [];
-  const assets = fs.readdirSync(staticFolder);
-  const fromTo = assets.map((assetName) => {
-    return {
-      from: path.join(staticFolder, assetName),
-      to: `public/_static/${assetName}`,
-    };
-  });
-  return fromTo.flat();
+  const outputFiles: FromTo[] = files.map((f) => ({
+    from: path.join(from, f),
+    to: to ? `${to}/${f}` : f,
+  }));
+  const outputFolders: FromTo[] = folders
+    .map((f) => listFolderContents(session, path.join(from, f), to ? `${to}/${f}` : f))
+    .flat();
+  return [...outputFiles, ...outputFolders];
 }
 
 async function prepareFileForUpload(from: string, to: string): Promise<FileInfo> {
@@ -135,10 +95,7 @@ async function uploadFile(log: Logger, upload: FileUpload) {
 }
 
 export async function deployContentToCdn(session: ISession, opts?: { ci?: boolean }) {
-  const configFiles = listConfig(session);
-  const contentFiles = listContentFolders(session);
-  const imagesFiles = listPublic(session);
-  const filesToUpload = [...configFiles, ...imagesFiles, ...contentFiles];
+  const filesToUpload = listFolderContents(session, session.sitePath());
   session.log.info(`🔬 Preparing to upload ${filesToUpload.length} files`);
 
   const files = await Promise.all(

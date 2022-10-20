@@ -131,19 +131,23 @@ export class Session implements ISession {
   }
 
   repoPath(): string {
-    return path.join(this.buildPath(), 'curvenote');
-  }
-
-  serverPath(): string {
-    return path.join(this.repoPath(), 'apps', 'web');
+    return path.join(this.buildPath(), 'theme');
   }
 
   webPackageJsonPath(): string {
-    return path.join(this.serverPath(), 'package.json');
+    return path.join(this.repoPath(), 'package.json');
+  }
+
+  sitePath(): string {
+    return path.join(this.buildPath(), 'site');
+  }
+
+  contentPath(): string {
+    return path.join(this.sitePath(), 'content');
   }
 
   publicPath(): string {
-    return path.join(this.serverPath(), 'public');
+    return path.join(this.sitePath(), 'public');
   }
 
   staticPath(): string {

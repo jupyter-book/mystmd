@@ -14,6 +14,10 @@ export function resolvePath(optionalPath: string | undefined, filename: string) 
   return path.join('.', filename);
 }
 
+export function sitePathExists(session: ISession): boolean {
+  return fs.existsSync(session.sitePath());
+}
+
 export function buildPathExists(session: ISession): boolean {
   return fs.existsSync(session.repoPath());
 }

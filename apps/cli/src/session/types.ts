@@ -26,7 +26,9 @@ export type ISession = IMystSession & {
 
   repoPath(): string;
 
-  serverPath(): string;
+  sitePath(): string;
+
+  contentPath(): string;
 
   webPackageJsonPath(): string;
 };

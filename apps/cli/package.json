@@ -60,8 +60,10 @@
     "chokidar": "^3.5.3",
     "cli-progress": "^3.10.0",
     "commander": "^8.3.0",
+    "cors": "^2.8.5",
     "date-fns": "^2.25.0",
     "html-entities": "^2.3.2",
+    "http": "^0.0.1-security",
     "inquirer": "^8.2.2",
     "intersphinx": "*",
     "js-yaml": "^4.1.0",
@@ -83,7 +85,8 @@
     "redux": "^4.1.2",
     "simple-validators": "*",
     "vfile": "^5.0.0",
-    "which": "^2.0.2"
+    "which": "^2.0.2",
+    "ws": "^8.9.0"
   },
   "overrides": {
     "prosemirror-tables": "^1.1.1"
@@ -93,6 +96,8 @@
     "@types/adm-zip": "^0.5.0",
     "@types/cli-progress": "^3.9.2",
     "@types/copyfiles": "^2.4.1",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.14",
     "@types/inquirer": "^8.2.1",
     "@types/jest": "^28.1.4",
     "@types/js-yaml": "^4.0.5",
@@ -106,6 +111,7 @@
     "@types/node-fetch": "^2.5.12",
     "@types/pretty-hrtime": "^1.0.1",
     "@types/which": "^2.0.1",
+    "@types/ws": "^8.5.3",
     "concurrently": "^7.2.2",
     "esbuild": "^0.14.53",
     "eslint": "^8.21.0",
