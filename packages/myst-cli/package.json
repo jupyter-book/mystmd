@@ -71,6 +71,7 @@
     "mime-types": "^2.1.35",
     "myst-cli-utils": "^0.0.4",
     "myst-common": "^0.0.3",
+    "myst-config": "^0.0.1",
     "myst-frontmatter": "^0.0.2",
     "myst-spec": "^0.0.4",
     "myst-to-docx": "^0.0.2",

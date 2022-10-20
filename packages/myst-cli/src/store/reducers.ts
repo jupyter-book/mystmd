@@ -1,3 +1,4 @@
+import { resolve } from 'path';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import type { ProjectConfig, SiteConfig } from 'myst-config';
@@ -10,7 +11,7 @@ export const projects = createSlice({
   initialState: {} as Record<string, LocalProject>,
   reducers: {
     receive(state, action: PayloadAction<LocalProject>) {
-      state[action.payload.path] = action.payload;
+      state[resolve(action.payload.path)] = action.payload;
     },
   },
 });
@@ -38,28 +39,28 @@ export const config = createSlice({
   },
   reducers: {
     receiveCurrentProjectPath(state, action: PayloadAction<{ path: string }>) {
-      state.currentProjectPath = action.payload.path;
+      state.currentProjectPath = resolve(action.payload.path);
     },
     receiveCurrentSitePath(state, action: PayloadAction<{ path: string }>) {
-      state.currentSitePath = action.payload.path;
+      state.currentSitePath = resolve(action.payload.path);
     },
     receiveRawConfig(
       state,
       action: PayloadAction<Record<string, any> & { path: string; file: string }>,
     ) {
       const { path, ...payload } = action.payload;
-      state.rawConfigs[path] = payload;
+      state.rawConfigs[resolve(path)] = payload;
     },
     receiveSiteConfig(state, action: PayloadAction<SiteConfig & { path: string; file: string }>) {
       const { path, ...payload } = action.payload;
-      state.sites[path] = payload;
+      state.sites[resolve(path)] = payload;
     },
     receiveProjectConfig(
       state,
       action: PayloadAction<ProjectConfig & { path: string; file: string }>,
     ) {
       const { path, ...payload } = action.payload;
-      state.projects[path] = payload;
+      state.projects[resolve(path)] = payload;
     },
   },
 });
@@ -81,7 +82,7 @@ export const watch = createSlice({
   reducers: {
     markFileChanged(state, action: PayloadAction<{ path: string; sha256?: string }>) {
       const { path, sha256 = null } = action.payload;
-      state.files[path] = { ...state.files[path], sha256 };
+      state.files[resolve(path)] = { ...state.files[resolve(path)], sha256 };
     },
     updateFileInfo(
       state,
@@ -99,14 +100,15 @@ export const watch = createSlice({
     ) {
       const { path, sha256, title, description, date, thumbnail, thumbnailOptimized, tags, url } =
         action.payload;
-      if (title) state.files[path].title = title;
-      if (description) state.files[path].description = description;
-      if (date) state.files[path].date = date;
-      if (thumbnail) state.files[path].thumbnail = thumbnail;
-      if (thumbnailOptimized) state.files[path].thumbnailOptimized = thumbnailOptimized;
-      if (tags) state.files[path].tags = [...tags];
-      if (sha256) state.files[path].sha256 = sha256;
-      if (url) state.files[path].url = url;
+      const resolvedPath = resolve(path);
+      if (title) state.files[resolvedPath].title = title;
+      if (description) state.files[resolvedPath].description = description;
+      if (date) state.files[resolvedPath].date = date;
+      if (thumbnail) state.files[resolvedPath].thumbnail = thumbnail;
+      if (thumbnailOptimized) state.files[resolvedPath].thumbnailOptimized = thumbnailOptimized;
+      if (tags) state.files[resolvedPath].tags = [...tags];
+      if (sha256) state.files[resolvedPath].sha256 = sha256;
+      if (url) state.files[resolvedPath].url = url;
     },
   },
 });

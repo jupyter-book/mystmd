@@ -1,9 +1,10 @@
+import { resolve } from 'path';
 import type { LocalProject, LocalProjectPage } from '../project/types';
 import type { RootState } from './reducers';
 import type { BuildWarning, ExternalLinkResult } from './types';
 
 export function selectLocalProject(state: RootState, path: string): LocalProject | undefined {
-  return state.local.projects[path];
+  return state.local.projects[resolve(path)];
 }
 
 export function selectAffiliation(state: RootState, id: string): string | undefined {
@@ -11,7 +12,7 @@ export function selectAffiliation(state: RootState, id: string): string | undefi
 }
 
 export function selectLocalSiteConfig(state: RootState, path: string) {
-  return state.local.config.sites[path];
+  return state.local.config.sites[resolve(path)];
 }
 
 export function selectCurrentSiteConfig(state: RootState) {
@@ -19,7 +20,7 @@ export function selectCurrentSiteConfig(state: RootState) {
 }
 
 export function selectLocalProjectConfig(state: RootState, path: string) {
-  return state.local.config.projects[path];
+  return state.local.config.projects[resolve(path)];
 }
 
 export function selectCurrentProjectConfig(state: RootState) {
@@ -30,12 +31,12 @@ export function selectLocalRawConfig(
   state: RootState,
   path: string,
 ): Record<string, any> | undefined {
-  return state.local.config.rawConfigs[path];
+  return state.local.config.rawConfigs[resolve(path)];
 }
 
 export function selectFileInfo(state: RootState, path: string) {
   const { title, description, date, thumbnail, thumbnailOptimized, tags, sha256, url } =
-    state.local.watch.files[path] ?? {};
+    state.local.watch.files[resolve(path)] ?? {};
   return { title, description, date, thumbnail, thumbnailOptimized, tags, sha256, url };
 }
 
