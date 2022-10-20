@@ -17,6 +17,7 @@ import { remove } from 'unist-util-remove';
 import { findCurrentProjectAndLoad } from '../../config';
 import { getRawFrontmatterFromFile } from '../../frontmatter';
 import { bibFilesInDir } from '../../process';
+import { loadProjectAndBibliography } from '../../project';
 import type { ISession } from '../../session/types';
 import { selectLocalProject } from '../../store/selectors';
 import { createTempFolder } from '../../utils';
@@ -318,6 +319,7 @@ export async function localArticleToTex(
   templateOptions?: Record<string, any>,
 ) {
   const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
+  if (projectPath) loadProjectAndBibliography(session, projectPath);
   const exportOptionsList = (
     await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
   ).map((exportOptions) => {

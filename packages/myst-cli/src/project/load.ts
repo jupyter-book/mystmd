@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import fs from 'fs';
 import { join } from 'path';
 import { loadConfigAndValidateOrThrow } from '../config';
+import { loadFile, combineProjectCitationRenderers } from '../process';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import { projects } from '../store/reducers';
@@ -84,6 +85,14 @@ export function loadProjectFromDisk(
   const project: LocalProject = { ...newProject, bibliography };
   session.store.dispatch(projects.actions.receive(project));
   return project;
+}
+
+export async function loadProjectAndBibliography(session: ISession, path: string) {
+  const { bibliography } = loadProjectFromDisk(session, path);
+  if (bibliography) {
+    await Promise.all(bibliography.map((p: string) => loadFile(session, p, '.bib')));
+    combineProjectCitationRenderers(session, path);
+  }
 }
 
 export function findProjectsOnPath(session: ISession, path: string) {

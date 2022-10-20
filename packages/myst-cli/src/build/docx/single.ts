@@ -11,7 +11,9 @@ import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config';
 import { getRawFrontmatterFromFile } from '../../frontmatter';
+import { loadProjectAndBibliography } from '../../project';
 import type { ISession } from '../../session/types';
+import type { RendererData } from '../../transforms/types';
 import { createTempFolder, logMessagesFromVFile } from '../../utils';
 import type { ExportWithOutput } from '../types';
 import {
@@ -24,7 +26,6 @@ import {
 import { createCurvenoteFooter } from './footers';
 import DEFAULT_STYLE from './simpleStyles';
 import { createArticleTitle, createReferenceTitle } from './titles';
-import type { RendererData } from '../../transforms/types';
 
 export type WordExportOptions = {
   filename: string;
@@ -177,6 +178,7 @@ export async function localArticleToWord(
   templateOptions?: Record<string, any>,
 ) {
   const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
+  if (projectPath) loadProjectAndBibliography(session, projectPath);
   const exportOptionsList = (
     await collectWordExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
   ).map((exportOptions) => {

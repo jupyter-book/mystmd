@@ -34,28 +34,6 @@ function withQuery(url: string, query: Record<string, string> = {}) {
   return url.indexOf('?') === -1 ? `${url}?${params}` : `${url}&${params}`;
 }
 
-export function loadAllConfigs(session: ISession) {
-  try {
-    loadConfigAndValidateOrThrow(session, '.');
-    session.log.debug('Loaded configs from current directory');
-  } catch (error) {
-    // TODO: what error?
-    session.log.debug('Failed to find or load configs in current directory');
-  }
-  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), '.');
-  if (!siteConfig?.projects) return;
-  siteConfig.projects
-    .filter((project) => project.path !== '.') // already loaded
-    .forEach((project) => {
-      try {
-        if (project.path) loadConfigAndValidateOrThrow(session, project.path);
-      } catch (error) {
-        // TODO: what error?
-        session.log.debug(`Failed to find or load project config from "${project.path}"`);
-      }
-    });
-}
-
 export class Session implements ISession {
   API_URL: string;
   SITE_URL: string;
@@ -92,10 +70,6 @@ export class Session implements ISession {
     const { tokens, url } = setSessionOrUserToken(this.log, token);
     this.$tokens = tokens;
     return url;
-  }
-
-  reload() {
-    loadAllConfigs(this);
   }
 
   async get<T extends Record<string, any>>(

@@ -7,8 +7,6 @@ import { validateProjectConfig, validateSiteConfig } from 'myst-config';
 import type { ValidationOptions } from 'simple-validators';
 import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
 import { prepareToWrite } from './frontmatter';
-import { loadFile, combineProjectCitationRenderers } from './process';
-import { loadProjectFromDisk } from './project';
 import type { ISession } from './session/types';
 import { selectors } from './store';
 import { config } from './store/reducers';
@@ -189,7 +187,7 @@ export function writeConfigs(
   const file = configFromPath(session, path) || defaultConfigFile(session, path);
   // Get site config to save
   if (siteConfig) validateSiteConfigAndSave(session, path, file, siteConfig);
-  siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
   // Get project config to save
   if (projectConfig) validateProjectConfigAndSave(session, path, file, projectConfig);
   projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
@@ -234,11 +232,6 @@ export async function findCurrentProjectAndLoad(
     const project = selectors.selectLocalProjectConfig(session.store.getState(), path);
     if (project) {
       session.store.dispatch(config.actions.receiveCurrentProjectPath({ path: path }));
-      const { bibliography } = loadProjectFromDisk(session, path);
-      if (bibliography) {
-        await Promise.all(bibliography.map((p: string) => loadFile(session, p, '.bib')));
-        combineProjectCitationRenderers(session, path);
-      }
       return path;
     }
   }
@@ -264,5 +257,20 @@ export async function findCurrentSiteAndLoad(
   if (dirname(path) === path) {
     return undefined;
   }
-  return findCurrentProjectAndLoad(session, dirname(path));
+  return findCurrentSiteAndLoad(session, dirname(path));
+}
+
+export function loadAllConfigsForCurrentSite(session: ISession) {
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  if (!siteConfig?.projects) return;
+  siteConfig.projects
+    .filter((project) => project.path !== '.') // already loaded
+    .forEach((project) => {
+      try {
+        if (project.path) loadConfigAndValidateOrThrow(session, project.path);
+      } catch (error) {
+        // TODO: what error?
+        session.log.debug(`Failed to find or load project config from "${project.path}"`);
+      }
+    });
 }

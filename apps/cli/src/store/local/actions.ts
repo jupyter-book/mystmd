@@ -6,6 +6,7 @@ import type { LocalProject, LocalProjectPage, PageReferenceStates } from 'myst-c
 import {
   castSession,
   combineProjectCitationRenderers,
+  loadAllConfigsForCurrentSite,
   loadFile,
   loadIntersphinx,
   loadProjectFromDisk,
@@ -21,12 +22,10 @@ import type { SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
 import { select } from 'unist-util-select';
 import type { ISession } from '../../session/types';
-import { loadAllConfigs } from '../../session';
 import { copyActionResource, copyLogo, getSiteManifest } from '../../site/manifest';
 import { serverPath, staticPath } from '../../utils';
 
 type ProcessOptions = {
-  reloadConfigs?: boolean;
   watchMode?: boolean;
   writeToc?: boolean;
   writeFiles?: boolean;
@@ -233,7 +232,7 @@ export async function processProject(
 }
 
 export async function processSite(session: ISession, opts?: ProcessOptions): Promise<boolean> {
-  if (opts?.reloadConfigs) loadAllConfigs(session);
+  loadAllConfigsForCurrentSite(session);
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
   if (!siteConfig?.projects?.length) return false;

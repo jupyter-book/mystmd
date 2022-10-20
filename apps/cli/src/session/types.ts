@@ -14,7 +14,6 @@ export type ISession = IMystSession & {
   SITE_URL: string;
   store: Store<RootState>;
   isAnon: boolean;
-  reload(): void;
 
   get<T extends Record<string, any> = any>(
     url: string,

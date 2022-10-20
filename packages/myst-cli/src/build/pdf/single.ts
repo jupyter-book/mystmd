@@ -1,14 +1,14 @@
 import path from 'path';
 import { ExportFormats } from 'myst-frontmatter';
 import { findCurrentProjectAndLoad } from '../../config';
+import { loadProjectAndBibliography } from '../../project';
 import type { ISession } from '../../session/types';
 import { createTempFolder } from '../../utils';
 import { collectTexExportOptions, runTexExport } from '../tex/single';
 import type { TexExportOptions } from '../tex/types';
 import type { ExportWithOutput } from '../types';
-import { resolveAndLogErrors } from '../utils/resolveAndLogErrors';
+import { resolveAndLogErrors, cleanOutput } from '../utils';
 import { createPdfGivenTexExport } from './create';
-import { cleanOutput } from '../utils/cleanOutput';
 
 export function texExportOptionsFromPdf(
   session: ISession,
@@ -36,6 +36,7 @@ export async function localArticleToPdf(
   templateOptions?: Record<string, any>,
 ) {
   const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
+  if (projectPath) loadProjectAndBibliography(session, projectPath);
   const pdfExportOptionsList = (
     await collectTexExportOptions(
       session,
