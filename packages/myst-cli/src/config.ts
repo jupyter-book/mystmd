@@ -263,14 +263,12 @@ export async function findCurrentSiteAndLoad(
 export function loadAllConfigsForCurrentSite(session: ISession) {
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig?.projects) return;
-  siteConfig.projects
-    .filter((project) => project.path !== '.') // already loaded
-    .forEach((project) => {
-      try {
-        if (project.path) loadConfigAndValidateOrThrow(session, project.path);
-      } catch (error) {
-        // TODO: what error?
-        session.log.debug(`Failed to find or load project config from "${project.path}"`);
-      }
-    });
+  siteConfig.projects.forEach((project) => {
+    try {
+      if (project.path) loadConfigAndValidateOrThrow(session, project.path);
+    } catch (error) {
+      // TODO: what error?
+      session.log.debug(`Failed to find or load project config from "${project.path}"`);
+    }
+  });
 }

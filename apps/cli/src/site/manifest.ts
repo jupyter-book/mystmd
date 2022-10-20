@@ -70,11 +70,6 @@ export function localToManifestProject(
   };
 }
 
-function publicPath() {
-  // TODO: Not this...
-  return join('_build', 'apps', 'web', 'public');
-}
-
 export function getLogoPaths(
   session: ISession,
   logoName?: string | null,
@@ -99,7 +94,7 @@ export function getLogoPaths(
     return null;
   }
   const logo = `logo${extname(logoName)}`;
-  return { path: logoName, public: join(publicPath(), logo), url: `/${logo}` };
+  return { path: logoName, public: join(session.publicPath(), logo), url: `/${logo}` };
 }
 
 function getManifestActionPaths(session: ISession, filePath: string) {
@@ -112,7 +107,7 @@ function getManifestActionPaths(session: ISession, filePath: string) {
   // Get rid of the first public path if present
   const parts = filePath.split(sep).filter((s, i) => i > 0 || s !== 'public');
   const webUrl = parts.join('/'); // this is not sep! (web url!)
-  return { path: filePath, public: join(publicPath(), ...parts), url: `/${webUrl}` };
+  return { path: filePath, public: join(session.publicPath(), ...parts), url: `/${webUrl}` };
 }
 
 function getSiteManifestAction(session: ISession, action: SiteAction): SiteAction {

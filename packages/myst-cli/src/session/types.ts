@@ -9,10 +9,13 @@ import type { PreRendererData, RendererData, SingleCitationRenderer } from '../t
 
 export type ISession = {
   API_URL: string;
-  buildFolder: string;
   configFiles: string[];
   store: Store<RootState>;
   log: Logger;
+
+  buildPath(): string;
+  publicPath(): string;
+  staticPath(): string;
 };
 
 export type ISessionWithCache = ISession & {

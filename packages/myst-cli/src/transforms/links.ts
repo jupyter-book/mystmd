@@ -25,11 +25,6 @@ const skippedDomains = [
   'en.wikipedia.org',
 ];
 
-function staticPath() {
-  // TODO: Not this...
-  return path.join('_build', 'apps', 'web', 'public', '_static');
-}
-
 async function checkLink(session: ISession, url: string): Promise<ExternalLinkResult> {
   const cached = selectors.selectLinkStatus(session.store.getState(), url);
   if (cached) return cached;
@@ -193,7 +188,7 @@ export class StaticFileTransformer implements LinkTransformer {
       link.internal = true;
     } else {
       // Copy relative file to static folder and replace with absolute link
-      const copiedFile = hashAndCopyStaticFile(this.session, linkFile, staticPath());
+      const copiedFile = hashAndCopyStaticFile(this.session, linkFile, this.session.staticPath());
       if (!copiedFile) {
         fileError(file, `Error copying file ${urlSource}`, {
           node: link,

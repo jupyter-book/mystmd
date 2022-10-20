@@ -11,11 +11,6 @@ import type { ISession } from '../session/types';
 import { createWebFileObjectFactory } from '../utils';
 import { parseMyst } from './myst';
 
-function publicPath() {
-  // TODO: Not this...
-  return path.join('_build', 'apps', 'web', 'public');
-}
-
 function asString(source?: string | string[]): string {
   return (Array.isArray(source) ? source.join('') : source) || '';
 }
@@ -37,7 +32,7 @@ export async function processNotebook(
   const language = notebook.language ?? notebook.metadata?.kernelspec.language ?? 'python';
   log.debug(`Processing Notebook: "${file}"`);
 
-  const fileFactory = createWebFileObjectFactory(log, publicPath(), '_static', {
+  const fileFactory = createWebFileObjectFactory(log, session.publicPath(), '_static', {
     useHash: true,
   });
 

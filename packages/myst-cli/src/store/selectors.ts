@@ -19,12 +19,20 @@ export function selectCurrentSiteConfig(state: RootState) {
   return state.local.config.sites[state.local.config.currentSitePath];
 }
 
+export function selectCurrentSitePath(state: RootState) {
+  return state.local.config.currentSitePath;
+}
+
 export function selectLocalProjectConfig(state: RootState, path: string) {
   return state.local.config.projects[resolve(path)];
 }
 
 export function selectCurrentProjectConfig(state: RootState) {
   return state.local.config.projects[state.local.config.currentProjectPath];
+}
+
+export function selectCurrentProjectPath(state: RootState) {
+  return state.local.config.currentProjectPath;
 }
 
 export function selectLocalRawConfig(

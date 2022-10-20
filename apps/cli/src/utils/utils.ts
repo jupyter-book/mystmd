@@ -14,32 +14,12 @@ export function resolvePath(optionalPath: string | undefined, filename: string) 
   return path.join('.', filename);
 }
 
-export function repoPath(): string {
-  return path.resolve(path.join('.', BUILD_FOLDER, 'curvenote'));
-}
-
-export function webPackageJsonPath(session: ISession): string {
-  return path.join(repoPath(), 'apps', 'web', 'package.json');
-}
-
-export function serverPath(session: ISession): string {
-  return path.join(repoPath(), 'apps', 'web');
-}
-
-export function publicPath(session: ISession): string {
-  return path.join(serverPath(session), 'public');
-}
-
-export function staticPath(session: ISession): string {
-  return path.join(publicPath(session), '_static');
-}
-
 export function buildPathExists(session: ISession): boolean {
-  return fs.existsSync(repoPath());
+  return fs.existsSync(session.repoPath());
 }
 
 export function ensureBuildFolderExists(session: ISession): void {
-  if (!buildPathExists(session)) fs.mkdirSync(repoPath(), { recursive: true });
+  if (!buildPathExists(session)) fs.mkdirSync(session.repoPath(), { recursive: true });
 }
 
 export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHost?: boolean }) {

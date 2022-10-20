@@ -15,7 +15,6 @@ import type {
   SiteUploadResponse,
 } from '@curvenote/blocks';
 import type { ISession } from '../session/types';
-import { publicPath, serverPath } from '../utils';
 import { getLogoPaths } from '../site/manifest';
 
 type FromTo = {
@@ -28,7 +27,7 @@ function listConfig(session: ISession): FromTo[] {
   if (!siteConfig) throw new Error('🧐 No site config found.');
   const paths: FromTo[] = [];
   paths.push({
-    from: path.join(serverPath(session), 'app', 'config.json'),
+    from: path.join(session.serverPath(), 'app', 'config.json'),
     to: 'config.json',
   });
   // Ensure that we can access the logo
@@ -39,7 +38,7 @@ function listConfig(session: ISession): FromTo[] {
   if (siteConfig.favicon) {
     const favicon = path.basename(siteConfig.favicon);
     paths.push({
-      from: path.join(serverPath(session), 'public', favicon),
+      from: path.join(session.serverPath(), 'public', favicon),
       to: `public/${favicon}`,
     });
   }
@@ -49,7 +48,7 @@ function listConfig(session: ISession): FromTo[] {
     // String leading slash
     const names = action.url.split('/').filter((s) => s);
     paths.push({
-      from: path.join(serverPath(session), 'public', ...names),
+      from: path.join(session.serverPath(), 'public', ...names),
       to: `public/${names.join('/')}`,
     });
   });
@@ -57,7 +56,7 @@ function listConfig(session: ISession): FromTo[] {
 }
 
 function listContentFolders(session: ISession): FromTo[] {
-  const contentFolder = path.join(serverPath(session), 'app', 'content');
+  const contentFolder = path.join(session.serverPath(), 'app', 'content');
   const folders = fs.readdirSync(contentFolder);
   const fromTo = folders.map((folderName) => {
     const basePath = path.join(contentFolder, folderName);
@@ -71,7 +70,7 @@ function listContentFolders(session: ISession): FromTo[] {
 }
 
 function listPublic(session: ISession): FromTo[] {
-  const staticFolder = path.join(publicPath(session), '_static');
+  const staticFolder = path.join(session.publicPath(), '_static');
   if (!fs.existsSync(staticFolder)) return [];
   const assets = fs.readdirSync(staticFolder);
   const fromTo = assets.map((assetName) => {

@@ -23,7 +23,6 @@ import type { Node } from 'myst-spec';
 import { select } from 'unist-util-select';
 import type { ISession } from '../../session/types';
 import { copyActionResource, copyLogo, getSiteManifest } from '../../site/manifest';
-import { serverPath, staticPath } from '../../utils';
 
 type ProcessOptions = {
   watchMode?: boolean;
@@ -55,7 +54,7 @@ export function changeFile(session: ISession, path: string, eventType: string) {
 // }
 
 export async function writeSiteManifest(session: ISession) {
-  const configPath = join(serverPath(session), 'app', 'config.json');
+  const configPath = join(session.serverPath(), 'app', 'config.json');
   session.log.info('⚙️  Writing site config.json');
   const siteManifest = getSiteManifest(session);
   writeFileToFolder(configPath, JSON.stringify(siteManifest));
@@ -133,7 +132,13 @@ export function writeFile(
 ) {
   const toc = tic();
   const mdastPost = selectFile(session, file);
-  const jsonFilename = join(serverPath(session), 'app', 'content', projectSlug, `${pageSlug}.json`);
+  const jsonFilename = join(
+    session.serverPath(),
+    'app',
+    'content',
+    projectSlug,
+    `${pageSlug}.json`,
+  );
   writeFileToFolder(jsonFilename, JSON.stringify(mdastPost));
   session.log.debug(toc(`Wrote "${file}" in %s`));
 }
@@ -151,7 +156,7 @@ export async function fastProcessFile(
   await loadFile(session, file);
   await transformMdast(session, {
     file,
-    imageWriteFolder: staticPath(session),
+    imageWriteFolder: session.staticPath(),
     imageAltOutputFolder: '/_static/',
     projectPath,
     projectSlug,
@@ -197,7 +202,7 @@ export async function processProject(
     pages.map((page) =>
       transformMdast(session, {
         file: page.file,
-        imageWriteFolder: staticPath(session),
+        imageWriteFolder: session.staticPath(),
         imageAltOutputFolder: '/_static/',
         projectPath: project.path,
         projectSlug: siteProject.slug,
@@ -283,7 +288,7 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
     siteConfig.projects.forEach((project) => {
       addProjectReferencesToObjectsInv(session, inv, { projectPath: project.path as string });
     });
-    const filename = join(staticPath(session), 'objects.inv');
+    const filename = join(session.staticPath(), 'objects.inv');
     inv.write(filename);
   }
   return true;

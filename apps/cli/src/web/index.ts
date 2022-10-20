@@ -8,8 +8,6 @@ import {
   confirmOrExit,
   ensureBuildFolderExists,
   buildPathExists,
-  repoPath,
-  serverPath,
   warnOnHostEnvironmentVariable,
 } from '../utils';
 import { deployContentToCdn, promoteContent } from './deploy';
@@ -21,13 +19,13 @@ export { buildSite, deployContentToCdn };
 
 export async function clean(session: ISession): Promise<void> {
   if (!buildPathExists(session)) {
-    session.log.debug(`web.clean: ${repoPath()} not found.`);
+    session.log.debug(`web.clean: ${session.repoPath()} not found.`);
     return;
   }
   const toc = tic();
-  session.log.info(`🗑  Removing ${repoPath()}`);
-  fs.rmSync(repoPath(), { recursive: true, force: true });
-  session.log.debug(toc(`Removed ${repoPath()} in %s`));
+  session.log.info(`🗑  Removing ${session.repoPath()}`);
+  fs.rmSync(session.repoPath(), { recursive: true, force: true });
+  session.log.debug(toc(`Removed ${session.repoPath()} in %s`));
 }
 
 export async function clone(session: ISession, opts: Options): Promise<void> {
@@ -36,7 +34,7 @@ export async function clone(session: ISession, opts: Options): Promise<void> {
   if (branch !== 'main') {
     session.log.warn(`👷 Warning, using a branch: ${branch}`);
   }
-  const repo = repoPath();
+  const repo = session.repoPath();
   await makeExecutable(
     `git clone --recursive --depth 1 --branch ${branch} https://github.com/curvenote/curvenote.git ${repo}`,
     createGitLogger(session),
@@ -52,9 +50,11 @@ export async function install(session: ISession): Promise<void> {
     session.log.error('Curvenote is not cloned. Do you need to run: \n\ncurvenote web clone');
     return;
   }
-  await makeExecutable('npm install', createNpmLogger(session), { cwd: repoPath() })();
+  await makeExecutable('npm install', createNpmLogger(session), { cwd: session.repoPath() })();
   session.log.info(toc('📦 Installed web libraries in %s'));
-  await makeExecutable('npm run build:web', createNpmLogger(session), { cwd: repoPath() })();
+  await makeExecutable('npm run build:web', createNpmLogger(session), {
+    cwd: session.repoPath(),
+  })();
   session.log.info(toc('🛠  Built dependencies in %s'));
 }
 
@@ -97,7 +97,7 @@ export async function startServer(session: ISession, opts: Options): Promise<voi
   sparkles(session, 'Starting Curvenote');
   watchContent(session);
   await makeExecutable('npm run serve', createServerLogger(session), {
-    cwd: serverPath(session),
+    cwd: session.serverPath(),
   })();
 }
 

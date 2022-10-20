@@ -7,7 +7,6 @@ import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import { Session, getToken } from '../session';
 import type { ISession } from '../session/types';
 import CurvenoteVersion from '../version';
-import { webPackageJsonPath } from '../utils';
 import { docLinks } from '../docs';
 
 const INSTALL_NODE_MESSAGE = `
@@ -38,7 +37,7 @@ function logVersions(session: ISession, result: VersionResults | null, debug = t
   });
   versions.push(['curvenote', CurvenoteVersion]);
   try {
-    const packageJson = JSON.parse(fs.readFileSync(webPackageJsonPath(session)).toString()) as {
+    const packageJson = JSON.parse(fs.readFileSync(session.webPackageJsonPath()).toString()) as {
       name: string;
       version: string;
     };

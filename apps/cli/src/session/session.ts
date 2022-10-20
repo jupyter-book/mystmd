@@ -1,12 +1,8 @@
+import path from 'path';
 import fetch from 'node-fetch';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
-import {
-  findCurrentProjectAndLoad,
-  findCurrentSiteAndLoad,
-  loadConfigAndValidateOrThrow,
-  selectors,
-} from 'myst-cli';
+import { findCurrentProjectAndLoad, findCurrentSiteAndLoad, selectors } from 'myst-cli';
 import type { Logger } from 'myst-cli-utils';
 import { LogLevel, basicLogger } from 'myst-cli-utils';
 import type { RootState } from '../store';
@@ -18,7 +14,6 @@ import type { ISession, Response, Tokens } from './types';
 const DEFAULT_API_URL = 'https://api.curvenote.com';
 const DEFAULT_SITE_URL = 'https://curvenote.com';
 const CONFIG_FILES = ['curvenote.yml', 'myst.yml'];
-const BUILD_FOLDER = '_build';
 
 export type SessionOptions = {
   apiUrl?: string;
@@ -37,7 +32,6 @@ function withQuery(url: string, query: Record<string, string> = {}) {
 export class Session implements ISession {
   API_URL: string;
   SITE_URL: string;
-  buildFolder: string;
   configFiles: string[];
   $tokens: Tokens = {};
   store: Store<RootState>;
@@ -52,7 +46,6 @@ export class Session implements ISession {
   }
 
   constructor(token?: string, opts: SessionOptions = {}) {
-    this.buildFolder = BUILD_FOLDER;
     this.configFiles = CONFIG_FILES;
     this.$logger = opts.logger ?? basicLogger(LogLevel.info);
     const url = this.setToken(token);
@@ -127,5 +120,33 @@ export class Session implements ISession {
       status: response.status,
       json,
     };
+  }
+
+  buildPath(): string {
+    const state = this.store.getState();
+    const sitePath = selectors.selectCurrentSitePath(state);
+    const projectPath = selectors.selectCurrentProjectPath(state);
+    const root = sitePath ?? projectPath ?? '.';
+    return path.resolve(path.join(root, '_build'));
+  }
+
+  repoPath(): string {
+    return path.join(this.buildPath(), 'curvenote');
+  }
+
+  serverPath(): string {
+    return path.join(this.repoPath(), 'apps', 'web');
+  }
+
+  webPackageJsonPath(): string {
+    return path.join(this.serverPath(), 'package.json');
+  }
+
+  publicPath(): string {
+    return path.join(this.serverPath(), 'public');
+  }
+
+  staticPath(): string {
+    return path.join(this.publicPath(), '_static');
   }
 }
