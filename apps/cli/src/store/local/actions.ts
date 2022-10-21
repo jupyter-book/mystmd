@@ -23,6 +23,8 @@ import type { Node } from 'myst-spec';
 import { select } from 'unist-util-select';
 import type { ISession } from '../../session/types';
 import { copyActionResource, copyLogo, getSiteManifest } from '../../site/manifest';
+import { oxalink } from '../../store/oxa';
+import { OxaTransformer } from '../../transforms';
 
 type ProcessOptions = {
   watchMode?: boolean;
@@ -40,18 +42,24 @@ export function changeFile(session: ISession, path: string, eventType: string) {
   delete cache.$citationRenderers[path];
 }
 
-// export async function transformMdast(...) {
-//   ...
-//   if (frontmatter.oxa) {
-//     store.dispatch(
-//       watch.actions.updateLinkInfo({
-//         path: file,
-//         oxa: frontmatter.oxa,
-//         url: `/${projectSlug}/${pageSlug}`,
-//       }),
-//     );
-//   }
-// }
+export async function transformMdastAndUpdateOxaLink(
+  session: ISession,
+  opts: Parameters<typeof transformMdast>[1],
+) {
+  await transformMdast(session, opts);
+  const cache = castSession(session);
+  const mdastPost = cache.$mdast[opts.file].post;
+  const oxa = mdastPost?.frontmatter.oxa;
+  if (oxa) {
+    session.store.dispatch(
+      oxalink.actions.updateLinkInfo({
+        path: opts.file,
+        oxa: oxa,
+        url: `/${opts.projectSlug}/${mdastPost.slug}`,
+      }),
+    );
+  }
+}
 
 export async function writeSiteManifest(session: ISession) {
   const configPath = join(session.serverPath(), 'app', 'config.json');
@@ -154,7 +162,7 @@ export async function fastProcessFile(
 ) {
   const toc = tic();
   await loadFile(session, file);
-  await transformMdast(session, {
+  await transformMdastAndUpdateOxaLink(session, {
     file,
     imageWriteFolder: session.staticPath(),
     imageAltOutputFolder: '/_static/',
@@ -165,7 +173,11 @@ export async function fastProcessFile(
   });
   const { pages } = loadProject(session, projectPath);
   const pageReferenceStates = selectPageReferenceStates(session, pages);
-  await postProcessMdast(session, { file, pageReferenceStates });
+  await postProcessMdast(session, {
+    file,
+    pageReferenceStates,
+    extraLinkTransformers: [new OxaTransformer(session)],
+  });
   writeFile(session, { file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session);
@@ -200,7 +212,7 @@ export async function processProject(
   // Transform all pages
   await Promise.all(
     pages.map((page) =>
-      transformMdast(session, {
+      transformMdastAndUpdateOxaLink(session, {
         file: page.file,
         imageWriteFolder: session.staticPath(),
         imageAltOutputFolder: '/_static/',
@@ -219,6 +231,7 @@ export async function processProject(
         file: page.file,
         checkLinks: opts?.checkLinks || opts?.strict,
         pageReferenceStates,
+        extraLinkTransformers: [new OxaTransformer(session)],
       }),
     ),
   );

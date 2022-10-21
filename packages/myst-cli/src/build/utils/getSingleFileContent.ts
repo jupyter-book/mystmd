@@ -1,12 +1,20 @@
+import type { LinkTransformer } from 'myst-transforms';
 import type { ISession } from '../../session/types';
 import { loadFile, selectFile, postProcessMdast, transformMdast } from '../../process';
 
-export async function getFileContent(
+export async function getSingleFileContent(
   session: ISession,
   file: string,
   imageWriteFolder: string,
-  projectPath?: string,
-  imageAltOutputFolder?: string,
+  {
+    projectPath,
+    imageAltOutputFolder,
+    extraLinkTransformers,
+  }: {
+    projectPath?: string;
+    imageAltOutputFolder?: string;
+    extraLinkTransformers?: LinkTransformer[];
+  },
 ) {
   await loadFile(session, file);
   // Collect bib files - mysttotex will need those, not 'references'
@@ -16,6 +24,6 @@ export async function getFileContent(
     imageAltOutputFolder: imageAltOutputFolder ?? undefined,
     projectPath,
   });
-  await postProcessMdast(session, { file });
+  await postProcessMdast(session, { file, extraLinkTransformers });
   return selectFile(session, file);
 }

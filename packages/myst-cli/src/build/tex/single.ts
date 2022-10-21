@@ -12,6 +12,7 @@ import { validateExport, ExportFormats } from 'myst-frontmatter';
 import type { Block } from 'myst-spec';
 import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
+import type { LinkTransformer } from 'myst-transforms';
 import type { ValidationOptions } from 'simple-validators';
 import { remove } from 'unist-util-remove';
 import { findCurrentProjectAndLoad } from '../../config';
@@ -26,7 +27,7 @@ import {
   cleanOutput,
   getDefaultExportFilename,
   getDefaultExportFolder,
-  getFileContent,
+  getSingleFileContent,
   resolveAndLogErrors,
 } from '../utils';
 import type { TexExportOptions } from './types';
@@ -88,13 +89,17 @@ export async function localArticleToTexRaw(
   file: string,
   output: string,
   projectPath?: string,
+  extraLinkTransformers?: LinkTransformer[],
 ) {
-  const { mdast, frontmatter } = await getFileContent(
+  const { mdast, frontmatter } = await getSingleFileContent(
     session,
     file,
     path.join(path.dirname(output), 'images'),
-    projectPath,
-    'images',
+    {
+      projectPath,
+      imageAltOutputFolder: 'images',
+      extraLinkTransformers,
+    },
   );
   const result = mdastToTex(mdast, frontmatter, null);
   session.log.info(`🖋  Writing tex to ${output}`);
@@ -118,13 +123,17 @@ export async function localArticleToTexTemplated(
   templateOptions: ExportWithOutput,
   projectPath?: string,
   force?: boolean,
+  extraLinkTransformers?: LinkTransformer[],
 ) {
-  const { frontmatter, mdast } = await getFileContent(
+  const { frontmatter, mdast } = await getSingleFileContent(
     session,
     file,
     path.join(path.dirname(templateOptions.output), 'images'),
-    projectPath,
-    'images',
+    {
+      projectPath,
+      imageAltOutputFolder: 'images',
+      extraLinkTransformers,
+    },
   );
   let bibFiles: string[];
   if (projectPath) {
@@ -282,12 +291,26 @@ export async function runTexExport(
   exportOptions: ExportWithOutput,
   projectPath?: string,
   clean?: boolean,
+  extraLinkTransformers?: LinkTransformer[],
 ) {
   if (clean) cleanOutput(session, exportOptions.output);
   if (exportOptions.template === null) {
-    await localArticleToTexRaw(session, file, exportOptions.output, projectPath);
+    await localArticleToTexRaw(
+      session,
+      file,
+      exportOptions.output,
+      projectPath,
+      extraLinkTransformers,
+    );
   } else {
-    await localArticleToTexTemplated(session, file, exportOptions, projectPath, clean);
+    await localArticleToTexTemplated(
+      session,
+      file,
+      exportOptions,
+      projectPath,
+      clean,
+      extraLinkTransformers,
+    );
   }
 }
 
@@ -297,6 +320,7 @@ async function runTexZipExport(
   exportOptions: ExportWithOutput,
   projectPath?: string,
   clean?: boolean,
+  extraLinkTransformers?: LinkTransformer[],
 ) {
   if (clean) cleanOutput(session, exportOptions.output);
   const zipOutput = exportOptions.output;
@@ -305,7 +329,7 @@ async function runTexZipExport(
     texFolder,
     `${path.basename(zipOutput, path.extname(zipOutput))}.tex`,
   );
-  await runTexExport(session, file, exportOptions, projectPath);
+  await runTexExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
   session.log.info(`🤐 Zipping tex outputs to ${zipOutput}`);
   const zip = new AdmZip();
   zip.addLocalFolder(texFolder);
@@ -317,6 +341,7 @@ export async function localArticleToTex(
   file: string,
   opts: TexExportOptions,
   templateOptions?: Record<string, any>,
+  extraLinkTransformers?: LinkTransformer[],
 ) {
   const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) loadProjectAndBibliography(session, projectPath);
@@ -329,9 +354,23 @@ export async function localArticleToTex(
     session,
     exportOptionsList.map(async (exportOptions) => {
       if (path.extname(exportOptions.output) === '.zip') {
-        await runTexZipExport(session, file, exportOptions, projectPath, opts.clean);
+        await runTexZipExport(
+          session,
+          file,
+          exportOptions,
+          projectPath,
+          opts.clean,
+          extraLinkTransformers,
+        );
       } else {
-        await runTexExport(session, file, exportOptions, projectPath, opts.clean);
+        await runTexExport(
+          session,
+          file,
+          exportOptions,
+          projectPath,
+          opts.clean,
+          extraLinkTransformers,
+        );
       }
     }),
   );

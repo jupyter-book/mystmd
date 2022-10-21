@@ -1,4 +1,4 @@
 export * from './cleanOutput';
 export * from './defaultNames';
-export * from './getFileContent';
+export * from './getSingleFileContent';
 export * from './resolveAndLogErrors';

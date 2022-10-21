@@ -1,7 +1,9 @@
 import fs from 'fs';
 import { createTempFolder, getDefaultExportFolder } from 'myst-cli';
 import { ExportFormats } from 'myst-frontmatter';
+import type { LinkTransformer } from 'myst-transforms';
 import { join } from 'path';
+import { OxaTransformer } from '../../transforms';
 import type { ISession } from '../../session/types';
 import { oxaLinkToMarkdown } from '../markdown';
 
@@ -12,6 +14,7 @@ export const localExportWrapper =
       path: string,
       opts: { filename: string } & Record<string, any>,
       templateOptions?: Record<string, any>,
+      extraLinkTransformers?: LinkTransformer[],
     ) => Promise<void>,
     outputFormat: ExportFormats,
   ) =>
@@ -40,5 +43,7 @@ export const localExportWrapper =
           outputFormat === ExportFormats.tex ? 'tex' : undefined,
         );
     }
-    await exportLocalArticle(session, localPath, { filename, ...opts }, templateOptions);
+    await exportLocalArticle(session, localPath, { filename, ...opts }, templateOptions, [
+      new OxaTransformer(session),
+    ]);
   };

@@ -6,6 +6,7 @@ import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { Export } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
+import type { LinkTransformer } from 'myst-transforms';
 import { htmlTransform } from 'myst-transforms';
 import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
@@ -21,7 +22,7 @@ import {
   getDefaultExportFolder,
   resolveAndLogErrors,
   cleanOutput,
-  getFileContent,
+  getSingleFileContent,
 } from '../utils';
 import { createCurvenoteFooter } from './footers';
 import DEFAULT_STYLE from './simpleStyles';
@@ -158,10 +159,14 @@ export async function runWordExport(
   exportOptions: ExportWithOutput,
   projectPath?: string,
   clean?: boolean,
+  extraLinkTransformers?: LinkTransformer[],
 ) {
   const { output } = exportOptions;
   if (clean) cleanOutput(session, output);
-  const data = await getFileContent(session, file, createTempFolder(), projectPath);
+  const data = await getSingleFileContent(session, file, createTempFolder(), {
+    projectPath,
+    extraLinkTransformers,
+  });
   const vfile = new VFile();
   vfile.path = output;
   const renderer = exportOptions.renderer ?? defaultWordRenderer;
@@ -176,6 +181,7 @@ export async function localArticleToWord(
   file: string,
   opts: WordExportOptions,
   templateOptions?: Record<string, any>,
+  extraLinkTransformers?: LinkTransformer[],
 ) {
   const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) loadProjectAndBibliography(session, projectPath);
@@ -187,7 +193,14 @@ export async function localArticleToWord(
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runWordExport(session, file, exportOptions, projectPath, opts.clean);
+      await runWordExport(
+        session,
+        file,
+        exportOptions,
+        projectPath,
+        opts.clean,
+        extraLinkTransformers,
+      );
     }),
   );
 }
