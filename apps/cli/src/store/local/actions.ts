@@ -6,7 +6,7 @@ import type { LocalProject, LocalProjectPage, PageReferenceStates } from 'myst-c
 import {
   castSession,
   combineProjectCitationRenderers,
-  loadAllConfigsForCurrentSite,
+  reloadAllConfigsForCurrentSite,
   loadFile,
   loadIntersphinx,
   loadProjectFromDisk,
@@ -252,7 +252,7 @@ export async function processProject(
 }
 
 export async function processSite(session: ISession, opts?: ProcessOptions): Promise<boolean> {
-  loadAllConfigsForCurrentSite(session);
+  reloadAllConfigsForCurrentSite(session);
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
   if (!siteConfig?.projects?.length) return false;

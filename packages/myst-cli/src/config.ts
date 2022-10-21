@@ -260,7 +260,10 @@ export async function findCurrentSiteAndLoad(
   return findCurrentSiteAndLoad(session, dirname(path));
 }
 
-export function loadAllConfigsForCurrentSite(session: ISession) {
+export function reloadAllConfigsForCurrentSite(session: ISession) {
+  const sitePath = selectors.selectCurrentSitePath(session.store.getState());
+  if (!sitePath) throw Error('Cannot reload site configs - no current site loaded');
+  loadConfigAndValidateOrThrow(session, sitePath);
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig?.projects) return;
   siteConfig.projects
@@ -268,10 +271,7 @@ export function loadAllConfigsForCurrentSite(session: ISession) {
       return Boolean(project.path);
     })
     .forEach((project) => {
-      const resolvedPath = resolve(
-        selectors.selectCurrentSitePath(session.store.getState()) ?? '.',
-        project.path,
-      );
+      const resolvedPath = resolve(sitePath, project.path);
       try {
         loadConfigAndValidateOrThrow(session, resolvedPath);
       } catch (error) {

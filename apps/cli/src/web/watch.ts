@@ -7,6 +7,7 @@ import { changeFile, fastProcessFile, processSite } from '../store/local/actions
 import { BUILD_FOLDER } from '../utils';
 
 // TODO: watch the actual configs based on session...
+// TODO: allow this to work from other paths
 const CURVENOTE_YML = 'curvenote.yml';
 
 function watchConfigAndPublic(session: ISession) {
