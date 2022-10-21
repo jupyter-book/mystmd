@@ -7,3 +7,4 @@ export * from './session';
 export * from './store';
 export * from './transforms';
 export * from './utils';
+export { default as version } from './version';

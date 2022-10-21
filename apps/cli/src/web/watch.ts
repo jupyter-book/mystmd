@@ -10,7 +10,7 @@ import { BUILD_FOLDER } from '../utils';
 // TODO: allow this to work from other paths
 const CURVENOTE_YML = 'curvenote.yml';
 
-function watchConfigAndPublic(session: ISession) {
+function watchConfigAndPublic(session: ISession, triggerReload: () => void) {
   return chokidar
     .watch([CURVENOTE_YML, 'public'], {
       ignoreInitial: true,
@@ -20,18 +20,20 @@ function watchConfigAndPublic(session: ISession) {
       session.log.debug(`File modified: "${filename}" (${eventType})`);
       session.log.info('💥 Triggered full site rebuild');
       await processSite(session);
+      triggerReload();
     });
 }
 
 const KNOWN_FAST_BUILDS = new Set(['.ipynb', '.md']);
 
-function fileProcessor(session: ISession, siteProject: SiteProject) {
+function fileProcessor(session: ISession, siteProject: SiteProject, triggerReload: () => void) {
   return async (eventType: string, file: string) => {
     if (file.startsWith(BUILD_FOLDER) || file.startsWith('.')) return;
     changeFile(session, file, eventType);
     if (!KNOWN_FAST_BUILDS.has(extname(file))) {
       session.log.info('💥 Triggered full site rebuild');
       await processSite(session);
+      triggerReload();
       return;
     }
     if (!siteProject.path) {
@@ -49,12 +51,13 @@ function fileProcessor(session: ISession, siteProject: SiteProject) {
       projectSlug: siteProject.slug,
       pageSlug,
     });
+    triggerReload();
     // TODO: process full site silently and update if there are any
     // await processSite(session, true);
   };
 }
 
-export function watchContent(session: ISession) {
+export function watchContent(session: ISession, triggerReload: () => void) {
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig?.projects) return;
   const localProjects = siteConfig.projects.filter(
@@ -78,8 +81,8 @@ export function watchContent(session: ISession) {
         ignored: ['public', '_build/**', '.git/**', ...ignored],
         awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
       })
-      .on('all', fileProcessor(session, proj));
+      .on('all', fileProcessor(session, proj, triggerReload));
   });
   // Watch the curvenote.yml
-  watchConfigAndPublic(session);
+  watchConfigAndPublic(session, triggerReload);
 }

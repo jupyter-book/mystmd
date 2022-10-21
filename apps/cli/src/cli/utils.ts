@@ -2,7 +2,7 @@ import fs from 'fs';
 import chalk from 'chalk';
 import type check from 'check-node-version';
 import type { Command } from 'commander';
-import { getNodeVersion, selectors } from 'myst-cli';
+import { getNodeVersion, selectors, version as mystCliVersion } from 'myst-cli';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import { Session, getToken } from '../session';
 import type { ISession } from '../session/types';
@@ -35,13 +35,17 @@ function logVersions(session: ISession, result: VersionResults | null, debug = t
       p.isSatisfied ? '✅' : '⚠️',
     ]);
   });
+  versions.push(['myst-cli', mystCliVersion]);
   versions.push(['curvenote', CurvenoteVersion]);
   try {
+    // TODO: Improve this to tell you more about themes
     const packageJson = JSON.parse(fs.readFileSync(session.webPackageJsonPath()).toString()) as {
       name: string;
       version: string;
     };
-    versions.push([packageJson.name, packageJson.version]);
+    if (packageJson.name && packageJson.version) {
+      versions.push([packageJson.name, packageJson.version]);
+    }
   } catch (error) {
     // pass
   }
