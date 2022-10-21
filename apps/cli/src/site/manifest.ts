@@ -23,11 +23,11 @@ import type { RootState } from '../store';
  */
 export function localToManifestProject(
   state: RootState,
-  siteProj: SiteProject,
+  projectPath: string,
+  projectSlug: string,
 ): ManifestProject | null {
-  if (!siteProj.path) return null;
-  const projConfig = selectors.selectLocalProjectConfig(state, siteProj.path);
-  const proj = selectors.selectLocalProject(state, siteProj.path);
+  const projConfig = selectors.selectLocalProjectConfig(state, projectPath);
+  const proj = selectors.selectLocalProject(state, projectPath);
   if (!proj || !projConfig) return null;
   // Update all of the page title to the frontmatter title
   const { index } = proj;
@@ -64,7 +64,7 @@ export function localToManifestProject(
     ...projFrontmatter,
     bibliography: projFrontmatter.bibliography || [],
     title: projectTitle || 'Untitled',
-    slug: siteProj.slug,
+    slug: projectSlug,
     index,
     pages,
   };
@@ -157,7 +157,9 @@ export function getSiteManifest(session: ISession): SiteManifest {
   const siteConfig = selectors.selectCurrentSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
   siteConfig.projects?.forEach((siteProj) => {
-    const proj = localToManifestProject(state, siteProj);
+    if (!siteProj.path) return;
+    const sitePath = selectors.selectCurrentSitePath(state) ?? '.';
+    const proj = localToManifestProject(state, join(sitePath, siteProj.path), siteProj.slug);
     if (!proj) return;
     siteProjects.push(proj);
   });

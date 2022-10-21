@@ -102,7 +102,9 @@ export async function init(session: ISession, opts: Options) {
     const response = await inquirer.prompt([questions.content({ folderIsEmpty })]);
     content = response.content;
   }
-  let projectConfig: ProjectConfig = selectors.selectCurrentProjectConfig(session.store.getState());
+  let projectConfig: ProjectConfig | undefined = selectors.selectCurrentProjectConfig(
+    session.store.getState(),
+  );
   let pullComplete = false;
   let title = projectConfig?.title || siteConfig.title || undefined;
   if (content === 'folder') {

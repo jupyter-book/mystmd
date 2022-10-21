@@ -1,5 +1,5 @@
 import yaml from 'js-yaml';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import type { LocalProject, LocalProjectPage, PageReferenceStates } from 'myst-cli';
@@ -196,15 +196,17 @@ export async function processProject(
     if (siteProject.remote) log.error(`Remote path not supported: ${siteProject.slug}`);
     throw Error('Unable to process project');
   }
-  const { project, pages } = loadProject(session, siteProject.path, writeFiles && writeToc);
+  const sitePath = selectors.selectCurrentSitePath(session.store.getState()) ?? '.';
+  const projectPath = resolve(sitePath, siteProject.path);
+  const { project, pages } = loadProject(session, projectPath, writeFiles && writeToc);
   if (!watchMode) {
     await Promise.all([
       // Load all citations (.bib)
-      ...project.bibliography.map((path) => loadFile(session, path, '.bib')),
+      ...project.bibliography.map((path) => loadFile(session, resolve(projectPath, path), '.bib')),
       // Load all content (.md and .ipynb)
-      ...pages.map((page) => loadFile(session, page.file)),
+      ...pages.map((page) => loadFile(session, resolve(projectPath, page.file))),
       // Load up all the intersphinx references
-      loadIntersphinx(session, { projectPath: siteProject.path }) as Promise<any>,
+      loadIntersphinx(session, { projectPath }) as Promise<any>,
     ]);
   }
   // Consolidate all citations onto single project citation renderer
@@ -287,6 +289,7 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
   }
   if (opts?.writeFiles ?? true) {
     await writeSiteManifest(session);
+    // TODO: This stuff still requires you to be in site root...
     // Copy all assets
     copyLogo(session, siteConfig.logo);
     siteConfig.actions?.forEach((action) => {
@@ -298,8 +301,12 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
       // TODO: allow a version on the project?!
       version: String((siteConfig as any)?.version ?? '1'),
     });
+    const sitePath = selectors.selectCurrentSitePath(session.store.getState()) ?? '.';
     siteConfig.projects.forEach((project) => {
-      addProjectReferencesToObjectsInv(session, inv, { projectPath: project.path as string });
+      if (!project.path) return;
+      addProjectReferencesToObjectsInv(session, inv, {
+        projectPath: join(sitePath, project.path) as string,
+      });
     });
     const filename = join(session.staticPath(), 'objects.inv');
     inv.write(filename);

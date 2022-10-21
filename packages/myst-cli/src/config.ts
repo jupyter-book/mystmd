@@ -2,7 +2,7 @@ import fs from 'fs';
 import { dirname, join, resolve } from 'path';
 import yaml from 'js-yaml';
 import { writeFileToFolder } from 'myst-cli-utils';
-import type { Config } from 'myst-config';
+import type { Config, SiteProject } from 'myst-config';
 import { validateProjectConfig, validateSiteConfig } from 'myst-config';
 import type { ValidationOptions } from 'simple-validators';
 import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
@@ -263,12 +263,20 @@ export async function findCurrentSiteAndLoad(
 export function loadAllConfigsForCurrentSite(session: ISession) {
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig?.projects) return;
-  siteConfig.projects.forEach((project) => {
-    try {
-      if (project.path) loadConfigAndValidateOrThrow(session, project.path);
-    } catch (error) {
-      // TODO: what error?
-      session.log.debug(`Failed to find or load project config from "${project.path}"`);
-    }
-  });
+  siteConfig.projects
+    .filter((project): project is SiteProject & { path: string } => {
+      return Boolean(project.path);
+    })
+    .forEach((project) => {
+      const resolvedPath = resolve(
+        selectors.selectCurrentSitePath(session.store.getState()) ?? '.',
+        project.path,
+      );
+      try {
+        loadConfigAndValidateOrThrow(session, resolvedPath);
+      } catch (error) {
+        // TODO: what error?
+        session.log.debug(`Failed to find or load project config from "${resolvedPath}"`);
+      }
+    });
 }

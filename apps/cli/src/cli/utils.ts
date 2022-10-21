@@ -126,10 +126,9 @@ export function clirun(
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
     const state = useSession.store.getState();
-    // TODO: These should no longer need '.', but instead selectCurrent*Config
-    const siteConfig = selectors.selectLocalSiteConfig(state, '.');
+    const siteConfig = selectors.selectCurrentSiteConfig(state);
     if (cli.requireSiteConfig && !siteConfig) {
-      const projectConfig = selectors.selectLocalProjectConfig(state, '.');
+      const projectConfig = selectors.selectCurrentProjectConfig(state);
       let message: string;
       if (projectConfig) {
         message = `No "site" config found in ${selectors.selectCurrentProjectFile(state)}`;

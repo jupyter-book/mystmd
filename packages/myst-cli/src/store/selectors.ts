@@ -16,7 +16,8 @@ export function selectLocalSiteConfig(state: RootState, path: string) {
 }
 
 export function selectCurrentSiteConfig(state: RootState) {
-  return state.local.config.sites[state.local.config.currentSitePath];
+  if (!state.local.config.currentSitePath) return undefined;
+  return state.local.config.sites[resolve(state.local.config.currentSitePath)];
 }
 
 export function selectCurrentSitePath(state: RootState) {
@@ -24,6 +25,7 @@ export function selectCurrentSitePath(state: RootState) {
 }
 
 export function selectCurrentSiteFile(state: RootState) {
+  if (!state.local.config.currentSitePath) return undefined;
   return state.local.config.filenames[resolve(state.local.config.currentSitePath)];
 }
 
@@ -32,7 +34,8 @@ export function selectLocalProjectConfig(state: RootState, path: string) {
 }
 
 export function selectCurrentProjectConfig(state: RootState) {
-  return state.local.config.projects[state.local.config.currentProjectPath];
+  if (!state.local.config.currentProjectPath) return undefined;
+  return state.local.config.projects[resolve(state.local.config.currentProjectPath)];
 }
 
 export function selectCurrentProjectPath(state: RootState) {
@@ -40,6 +43,7 @@ export function selectCurrentProjectPath(state: RootState) {
 }
 
 export function selectCurrentProjectFile(state: RootState) {
+  if (!state.local.config.currentProjectPath) return undefined;
   return state.local.config.filenames[resolve(state.local.config.currentProjectPath)];
 }
 

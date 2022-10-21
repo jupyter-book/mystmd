@@ -31,8 +31,8 @@ export const affiliations = createSlice({
 export const config = createSlice({
   name: 'config',
   initialState: { rawConfigs: {}, projects: {}, sites: {}, filenames: {} } as {
-    currentProjectPath: string;
-    currentSitePath: string;
+    currentProjectPath: string | undefined;
+    currentSitePath: string | undefined;
     rawConfigs: Record<string, Record<string, any>>;
     projects: Record<string, ProjectConfig>;
     sites: Record<string, SiteConfig>;
