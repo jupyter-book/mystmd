@@ -1,4 +1,3 @@
-import path from 'path';
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
 import type { CellOutput } from '@curvenote/blocks';

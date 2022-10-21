@@ -1,4 +1,3 @@
-import path from 'path';
 import type { Root } from 'mdast';
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
