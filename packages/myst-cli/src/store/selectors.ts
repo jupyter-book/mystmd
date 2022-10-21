@@ -23,6 +23,10 @@ export function selectCurrentSitePath(state: RootState) {
   return state.local.config.currentSitePath;
 }
 
+export function selectCurrentSiteFile(state: RootState) {
+  return state.local.config.filenames[resolve(state.local.config.currentSitePath)];
+}
+
 export function selectLocalProjectConfig(state: RootState, path: string) {
   return state.local.config.projects[resolve(path)];
 }
@@ -33,6 +37,10 @@ export function selectCurrentProjectConfig(state: RootState) {
 
 export function selectCurrentProjectPath(state: RootState) {
   return state.local.config.currentProjectPath;
+}
+
+export function selectCurrentProjectFile(state: RootState) {
+  return state.local.config.filenames[resolve(state.local.config.currentProjectPath)];
 }
 
 export function selectLocalRawConfig(

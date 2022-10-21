@@ -132,7 +132,7 @@ export function clirun(
       const projectConfig = selectors.selectLocalProjectConfig(state, '.');
       let message: string;
       if (projectConfig) {
-        message = `No "site" config found in ${projectConfig.file}`;
+        message = `No "site" config found in ${selectors.selectCurrentProjectFile(state)}`;
       } else {
         message = `You must be in a directory with a config file: ${useSession.configFiles.join(
           ', ',

@@ -109,7 +109,7 @@ function validateSiteConfigAndSave(
     throw Error(`Please address invalid site config${errorSuffix}`);
   }
   // TODO: Use real path as argument to this function...
-  session.store.dispatch(config.actions.receiveSiteConfig({ path, file, ...siteConfig }));
+  session.store.dispatch(config.actions.receiveSiteConfig({ path, ...siteConfig }));
 }
 
 function validateProjectConfigAndSave(
@@ -133,7 +133,7 @@ function validateProjectConfigAndSave(
     const errorSuffix = file ? ` in ${file}` : '';
     throw Error(`Please address invalid project config${errorSuffix}`);
   }
-  session.store.dispatch(config.actions.receiveProjectConfig({ path, file, ...projectConfig }));
+  session.store.dispatch(config.actions.receiveProjectConfig({ path, ...projectConfig }));
 }
 
 /**

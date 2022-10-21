@@ -30,12 +30,13 @@ export const affiliations = createSlice({
 
 export const config = createSlice({
   name: 'config',
-  initialState: { rawConfigs: {}, projects: {}, sites: {} } as {
+  initialState: { rawConfigs: {}, projects: {}, sites: {}, filenames: {} } as {
     currentProjectPath: string;
     currentSitePath: string;
     rawConfigs: Record<string, Record<string, any>>;
-    projects: Record<string, ProjectConfig & { file: string }>;
-    sites: Record<string, SiteConfig & { file: string }>;
+    projects: Record<string, ProjectConfig>;
+    sites: Record<string, SiteConfig>;
+    filenames: Record<string, string>;
   },
   reducers: {
     receiveCurrentProjectPath(state, action: PayloadAction<{ path: string }>) {
@@ -48,17 +49,15 @@ export const config = createSlice({
       state,
       action: PayloadAction<Record<string, any> & { path: string; file: string }>,
     ) {
-      const { path, ...payload } = action.payload;
+      const { path, file, ...payload } = action.payload;
       state.rawConfigs[resolve(path)] = payload;
+      state.filenames[resolve(path)] = file;
     },
-    receiveSiteConfig(state, action: PayloadAction<SiteConfig & { path: string; file: string }>) {
+    receiveSiteConfig(state, action: PayloadAction<SiteConfig & { path: string }>) {
       const { path, ...payload } = action.payload;
       state.sites[resolve(path)] = payload;
     },
-    receiveProjectConfig(
-      state,
-      action: PayloadAction<ProjectConfig & { path: string; file: string }>,
-    ) {
+    receiveProjectConfig(state, action: PayloadAction<ProjectConfig & { path: string }>) {
       const { path, ...payload } = action.payload;
       state.projects[resolve(path)] = payload;
     },
