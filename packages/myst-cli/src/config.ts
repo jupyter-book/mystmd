@@ -122,21 +122,22 @@ function resolveSiteConfigPaths(
   siteConfig: SiteConfig,
   resolutionFn: (session: ISession, basePath: string, path: string) => string,
 ) {
+  const resolvedFields: SiteConfig = {};
   if (siteConfig.projects) {
-    siteConfig.projects = siteConfig.projects.map((proj) => {
+    resolvedFields.projects = siteConfig.projects.map((proj) => {
       if (proj.path) {
-        proj.path = resolutionFn(session, path, proj.path);
+        return { ...proj, path: resolutionFn(session, path, proj.path) };
       }
       return proj;
     });
   }
   if (siteConfig.logo) {
-    siteConfig.logo = resolutionFn(session, path, siteConfig.logo);
+    resolvedFields.logo = resolutionFn(session, path, siteConfig.logo);
   }
   if (siteConfig.favicon) {
-    siteConfig.favicon = resolutionFn(session, path, siteConfig.favicon);
+    resolvedFields.favicon = resolutionFn(session, path, siteConfig.favicon);
   }
-  return siteConfig;
+  return { ...siteConfig, ...resolvedFields };
 }
 
 function resolveProjectConfigPaths(
@@ -145,20 +146,21 @@ function resolveProjectConfigPaths(
   projectConfig: ProjectConfig,
   resolutionFn: (session: ISession, basePath: string, path: string) => string,
 ) {
+  const resolvedFields: ProjectConfig = {};
   if (projectConfig.bibliography) {
-    projectConfig.bibliography = projectConfig.bibliography.map((file) => {
+    resolvedFields.bibliography = projectConfig.bibliography.map((file) => {
       return resolutionFn(session, path, file);
     });
   }
   if (projectConfig.index) {
-    projectConfig.index = resolutionFn(session, path, projectConfig.index);
+    resolvedFields.index = resolutionFn(session, path, projectConfig.index);
   }
   if (projectConfig.exclude) {
-    projectConfig.exclude = projectConfig.exclude.map((file) => {
+    resolvedFields.exclude = projectConfig.exclude.map((file) => {
       return resolutionFn(session, path, file);
     });
   }
-  return projectConfig;
+  return { ...projectConfig, ...resolvedFields };
 }
 
 function validateSiteConfigAndSave(
