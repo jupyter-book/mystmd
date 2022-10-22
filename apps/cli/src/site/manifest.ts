@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { extname, join, sep } from 'path';
 import { addWarningForFile, selectors } from 'myst-cli';
-import type { SiteProject, SiteAction, SiteAnalytics } from 'myst-config';
+import type { SiteAction, SiteAnalytics } from 'myst-config';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { filterKeys } from 'simple-validators';
 import type {

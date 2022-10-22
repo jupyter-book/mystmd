@@ -24,7 +24,7 @@ import { select } from 'unist-util-select';
 import type { ISession } from '../../session/types';
 import { copyActionResource, copyLogo, getSiteManifest } from '../../site/manifest';
 import { oxalink } from '../../store/oxa';
-import { OxaTransformer } from '../../transforms';
+import { OxaTransformer, transformWebp } from '../../transforms';
 
 type ProcessOptions = {
   watchMode?: boolean;
@@ -46,8 +46,21 @@ export async function transformMdastAndUpdateOxaLink(
   session: ISession,
   opts: Parameters<typeof transformMdast>[1],
 ) {
+  const { file, imageWriteFolder } = opts;
   await transformMdast(session, opts);
   const cache = castSession(session);
+  const postData = cache.$mdast[opts.file].post;
+  if (!postData) throw new Error(`Expected mdast to be processed and transformed for ${file}`);
+  const { mdast, frontmatter } = postData;
+  await transformWebp(session, mdast, frontmatter, imageWriteFolder);
+  session.store.dispatch(
+    watch.actions.updateFileInfo({
+      path: file,
+      thumbnailOptimized: frontmatter.thumbnailOptimized,
+    }),
+  );
+  cache.$mdast[file].post = { ...postData, mdast, frontmatter };
+
   const mdastPost = cache.$mdast[opts.file].post;
   const oxa = mdastPost?.frontmatter.oxa;
   if (oxa) {

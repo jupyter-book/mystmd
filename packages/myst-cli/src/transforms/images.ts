@@ -86,32 +86,11 @@ export async function saveImageInStaticFolder(
   urlSource: string,
   sourceFile: string,
   writeFolder: string,
-  opts?: { webp?: boolean; altOutputFolder?: string },
-): Promise<{ urlSource: string; url: string; webp?: string } | null> {
-  // const oxa = oxaLinkToId(urlSource);
+  opts?: { altOutputFolder?: string },
+): Promise<{ urlSource: string; url: string } | null> {
   const sourceFileFolder = path.dirname(sourceFile);
   const imageLocalFile = path.join(sourceFileFolder, urlSource);
   let file: string | undefined;
-  // if (oxa) {
-  //   // If oxa, get the download url
-  //   const versionId = oxa?.block as VersionId;
-  //   if (!versionId?.version) return null;
-  //   const url = versionIdToURL(versionId);
-  //   session.log.debug(`Fetching image version: ${url}`);
-  //   const { ok, json } = await session.get(url);
-  //   const downloadUrl = json.links?.download;
-  //   if (!ok || !downloadUrl) {
-  //     const message = `Error fetching image version: ${url}`;
-  //     addWarningForFile(session, sourceFile, message, 'error');
-  //     return null;
-  //   }
-  //   file = await downloadAndSaveImage(
-  //     session,
-  //     downloadUrl,
-  //     `${versionId.block}.${versionId.version}`,
-  //     writeFolder,
-  //   );
-  // } else if (isUrl(urlSource)) {
   if (isUrl(urlSource)) {
     // If not oxa, download the URL directly and save it to a file with a hashed name
     file = await downloadAndSaveImage(session, urlSource, computeHash(urlSource), writeFolder);
@@ -134,20 +113,9 @@ export async function saveImageInStaticFolder(
     addWarningForFile(session, sourceFile, message, 'error');
     return null;
   }
-  let webp: string | undefined;
-  // if (opts?.webp && file) {
-  //   try {
-  //     const result = await convertImageToWebp(session, path.join(writeFolder, file));
-  //     if (result) webp = resolveOutputPath(result, writeFolder, opts.altOutputFolder);
-  //   } catch (error) {
-  //     session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-  //     const message = `Large image ${imageLocalFile} (${(error as any).message})`;
-  //     addWarningForFile(session, sourceFile, message, 'warn');
-  //   }
-  // }
   // Update mdast with new file name
   const url = resolveOutputPath(file as string, writeFolder, opts?.altOutputFolder);
-  return { urlSource, url, webp };
+  return { urlSource, url };
 }
 
 export async function transformImages(
@@ -166,16 +134,14 @@ export async function transformImages(
         file,
         writeFolder,
         {
-          webp: true,
           altOutputFolder: opts?.altOutputFolder,
         },
       );
       if (result) {
         // Update mdast with new file name
-        const { urlSource, url, webp } = result;
+        const { urlSource, url } = result;
         image.urlSource = urlSource;
         image.url = url;
-        image.urlOptimized = webp;
       }
     }),
   );
@@ -208,13 +174,11 @@ export async function transformThumbnail(
   if (!thumbnail) return;
   session.log.debug(`${file}#frontmatter.thumbnail Saving thumbnail in static folder.`);
   const result = await saveImageInStaticFolder(session, thumbnail, file, writeFolder, {
-    webp: true,
     altOutputFolder: opts?.altOutputFolder,
   });
   if (result) {
     // Update frontmatter with new file name
-    const { url, webp } = result;
+    const { url } = result;
     frontmatter.thumbnail = url;
-    frontmatter.thumbnailOptimized = webp;
   }
 }

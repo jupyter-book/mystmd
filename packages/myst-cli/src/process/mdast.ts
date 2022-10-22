@@ -158,15 +158,6 @@ export async function transformMdast(
       url: `/${projectSlug}/${pageSlug}`,
     }),
   );
-  // if (frontmatter.oxa) {
-  //   store.dispatch(
-  //     watch.actions.updateLinkInfo({
-  //       path: file,
-  //       oxa: frontmatter.oxa,
-  //       url: `/${projectSlug}/${pageSlug}`,
-  //     }),
-  //   );
-  // }
   const data: RendererData = {
     kind: frontmatter.kernelspec || frontmatter.jupytext ? KINDS.Notebook : kind,
     file,
@@ -206,7 +197,6 @@ export async function postProcessMdast(
   // NOTE: This is doing things in place, we should potentially make this a different state?
   const transformers = [
     ...(extraLinkTransformers || []),
-    // new OxaTransformer(session), // This links any oxa links to their file if they exist
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
   linksTransform(mdastPost.mdast, state.file as VFile, {

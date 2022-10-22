@@ -87,7 +87,7 @@ export async function convertImageToWebp(
     session.log.debug(
       `Image "${image}" is too large (${inMB} MB) to convert to webp (build will be slow).`,
     );
-    throw new Error(`${inMB} MB`);
+    return null;
   }
 
   const dirname = path.dirname(image);

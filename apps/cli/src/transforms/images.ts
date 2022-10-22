@@ -1,43 +1,45 @@
-// TODO: Resurrect support for oxa images and webp.
+import fs from 'fs';
+import type { Root } from 'mdast';
+import type { GenericNode } from 'mystjs';
+import { selectAll } from 'mystjs';
+import path from 'path';
+import type { PageFrontmatter } from 'myst-frontmatter';
+import type { ISession } from '../session/types';
+import { convertImageToWebp } from '../export/utils/imagemagick';
 
-// export async function saveImageInStaticFolder(...) {
-//   const oxa = oxaLinkToId(urlSource);
-//   const sourceFileFolder = path.dirname(sourceFile);
-//   const imageLocalFile = path.join(sourceFileFolder, urlSource);
-//   let file: string | undefined;
-//   if (oxa) {
-//     // If oxa, get the download url
-//     const versionId = oxa?.block as VersionId;
-//     if (!versionId?.version) return null;
-//     const url = versionIdToURL(versionId);
-//     session.log.debug(`Fetching image version: ${url}`);
-//     const { ok, json } = await session.get(url);
-//     const downloadUrl = json.links?.download;
-//     if (!ok || !downloadUrl) {
-//       const message = `Error fetching image version: ${url}`;
-//       addWarningForFile(session, sourceFile, message, 'error');
-//       return null;
-//     }
-//     file = await downloadAndSaveImage(
-//       session,
-//       downloadUrl,
-//       `${versionId.block}.${versionId.version}`,
-//       writeFolder,
-//     );
-//   } else if (isUrl(urlSource)) {
-//     ...
-//   }
+export async function transformWebp(
+  session: ISession,
+  mdast: Root,
+  frontmatter: PageFrontmatter,
+  writeFolder: string,
+) {
+  const convertedToWebp: Record<string, string> = {};
+  await Promise.all(
+    fs.readdirSync(writeFolder).map(async (file) => {
+      try {
+        const result = await convertImageToWebp(session, path.join(writeFolder, file));
+        if (result) convertedToWebp[file] = result;
+      } catch (error) {
+        session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+      }
+    }),
+  );
 
-//   let webp: string | undefined;
-//   if (opts?.webp && file) {
-//     try {
-//       const result = await convertImageToWebp(session, path.join(writeFolder, file));
-//       if (result) webp = resolveOutputPath(result, writeFolder, opts.altOutputFolder);
-//     } catch (error) {
-//       session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-//       const message = `Large image ${imageLocalFile} (${(error as any).message})`;
-//       addWarningForFile(session, sourceFile, message, 'warn');
-//     }
-//   }
-//   ...
-// }
+  const images = selectAll('image', mdast) as GenericNode[];
+  images.forEach((image) => {
+    if (image.url) {
+      Object.entries(convertedToWebp).forEach(([original, webp]) => {
+        if (image.url.endsWith(original)) {
+          image.urlOptimized = image.url.replace(original, webp);
+        }
+      });
+    }
+  });
+  if (frontmatter.thumbnail) {
+    Object.entries(convertedToWebp).forEach(([original, webp]) => {
+      if (frontmatter.thumbnail?.endsWith(original)) {
+        frontmatter.thumbnailOptimized = frontmatter.thumbnail.replace(original, webp);
+      }
+    });
+  }
+}
