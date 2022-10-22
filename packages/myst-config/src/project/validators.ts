@@ -16,7 +16,6 @@ const PROJECT_CONFIG_KEYS = {
 function validateProjectConfigKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: ProjectConfig = validateProjectFrontmatterKeys(value, opts);
   if (defined(value.remote)) {
-    // TODO: Validate as oxa? Or curvenote url...?
     output.remote = validateString(value.remote, incrementOptions('remote', opts));
   }
   if (defined(value.index)) {

@@ -158,8 +158,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
   if (!siteConfig) throw Error('no site config defined');
   siteConfig.projects?.forEach((siteProj) => {
     if (!siteProj.path) return;
-    const sitePath = selectors.selectCurrentSitePath(state) ?? '.';
-    const proj = localToManifestProject(state, join(sitePath, siteProj.path), siteProj.slug);
+    const proj = localToManifestProject(state, siteProj.path, siteProj.slug);
     if (!proj) return;
     siteProjects.push(proj);
   });

@@ -1,5 +1,5 @@
 import yaml from 'js-yaml';
-import { join, resolve } from 'path';
+import { join } from 'path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import type { LocalProject, LocalProjectPage, PageReferenceStates } from 'myst-cli';
@@ -203,17 +203,15 @@ export async function processProject(
     if (siteProject.remote) log.error(`Remote path not supported: ${siteProject.slug}`);
     throw Error('Unable to process project');
   }
-  const sitePath = selectors.selectCurrentSitePath(session.store.getState()) ?? '.';
-  const projectPath = resolve(sitePath, siteProject.path);
-  const { project, pages } = loadProject(session, projectPath, writeFiles && writeToc);
+  const { project, pages } = loadProject(session, siteProject.path, writeFiles && writeToc);
   if (!watchMode) {
     await Promise.all([
       // Load all citations (.bib)
-      ...project.bibliography.map((path) => loadFile(session, resolve(projectPath, path), '.bib')),
+      ...project.bibliography.map((path) => loadFile(session, path, '.bib')),
       // Load all content (.md and .ipynb)
-      ...pages.map((page) => loadFile(session, resolve(projectPath, page.file))),
+      ...pages.map((page) => loadFile(session, page.file)),
       // Load up all the intersphinx references
-      loadIntersphinx(session, { projectPath }) as Promise<any>,
+      loadIntersphinx(session, { projectPath: siteProject.path }) as Promise<any>,
     ]);
   }
   // Consolidate all citations onto single project citation renderer
@@ -308,11 +306,10 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
       // TODO: allow a version on the project?!
       version: String((siteConfig as any)?.version ?? '1'),
     });
-    const sitePath = selectors.selectCurrentSitePath(session.store.getState()) ?? '.';
     siteConfig.projects.forEach((project) => {
       if (!project.path) return;
       addProjectReferencesToObjectsInv(session, inv, {
-        projectPath: join(sitePath, project.path) as string,
+        projectPath: project.path,
       });
     });
     const filename = join(session.sitePath(), 'objects.inv');

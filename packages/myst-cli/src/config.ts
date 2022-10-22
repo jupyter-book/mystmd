@@ -1,8 +1,8 @@
 import fs from 'fs';
-import { dirname, join, resolve } from 'path';
+import { dirname, join, relative, resolve } from 'path';
 import yaml from 'js-yaml';
 import { writeFileToFolder } from 'myst-cli-utils';
-import type { Config, SiteProject } from 'myst-config';
+import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
 import { validateProjectConfig, validateSiteConfig } from 'myst-config';
 import type { ValidationOptions } from 'simple-validators';
 import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
@@ -87,13 +87,87 @@ export function readConfig(session: ISession, file: string) {
   return conf;
 }
 
+function resolveToAbsolute(session: ISession, basePath: string, relativePath: string) {
+  let message: string;
+  try {
+    const absPath = resolve(join(basePath, relativePath));
+    if (fs.existsSync(absPath)) {
+      return absPath;
+    }
+    message = `Does not exist as local path: ${absPath}`;
+  } catch {
+    message = `Unable to resovle as local path: ${relativePath}`;
+  }
+  session.log.debug(message);
+  return relativePath;
+}
+
+function resolveToRelative(session: ISession, basePath: string, absPath: string) {
+  let message: string;
+  try {
+    if (fs.existsSync(absPath)) {
+      return relative(basePath, absPath);
+    }
+    message = `Does not exist as local path: ${absPath}`;
+  } catch {
+    message = `Unable to resovle as relative path: ${absPath}`;
+  }
+  session.log.debug(message);
+  return absPath;
+}
+
+function resolveSiteConfigPaths(
+  session: ISession,
+  path: string,
+  siteConfig: SiteConfig,
+  resolutionFn: (session: ISession, basePath: string, path: string) => string,
+) {
+  if (siteConfig.projects) {
+    siteConfig.projects = siteConfig.projects.map((proj) => {
+      if (proj.path) {
+        proj.path = resolutionFn(session, path, proj.path);
+      }
+      return proj;
+    });
+  }
+  if (siteConfig.logo) {
+    siteConfig.logo = resolutionFn(session, path, siteConfig.logo);
+  }
+  if (siteConfig.favicon) {
+    siteConfig.favicon = resolutionFn(session, path, siteConfig.favicon);
+  }
+  return siteConfig;
+}
+
+function resolveProjectConfigPaths(
+  session: ISession,
+  path: string,
+  projectConfig: ProjectConfig,
+  resolutionFn: (session: ISession, basePath: string, path: string) => string,
+) {
+  if (projectConfig.bibliography) {
+    projectConfig.bibliography = projectConfig.bibliography.map((file) => {
+      return resolutionFn(session, path, file);
+    });
+  }
+  if (projectConfig.index) {
+    projectConfig.index = resolutionFn(session, path, projectConfig.index);
+  }
+  if (projectConfig.exclude) {
+    projectConfig.exclude = projectConfig.exclude.map((file) => {
+      return resolutionFn(session, path, file);
+    });
+  }
+  return projectConfig;
+}
+
 function validateSiteConfigAndSave(
   session: ISession,
   path: string,
   file: string,
   rawSiteConfig: Record<string, any>,
 ) {
-  const siteConfig = validateSiteConfig(rawSiteConfig, {
+  let siteConfig = validateSiteConfig(rawSiteConfig, {
     file,
     property: 'site',
     messages: {},
@@ -108,7 +182,7 @@ function validateSiteConfigAndSave(
     const errorSuffix = file ? ` in ${file}` : '';
     throw Error(`Please address invalid site config${errorSuffix}`);
   }
-  // TODO: Use real path as argument to this function...
+  siteConfig = resolveSiteConfigPaths(session, path, siteConfig, resolveToAbsolute);
   session.store.dispatch(config.actions.receiveSiteConfig({ path, ...siteConfig }));
 }
 
@@ -118,7 +192,7 @@ function validateProjectConfigAndSave(
   file: string,
   rawProjectConfig: Record<string, any>,
 ) {
-  const projectConfig = validateProjectConfig(rawProjectConfig, {
+  let projectConfig = validateProjectConfig(rawProjectConfig, {
     file,
     property: 'project',
     messages: {},
@@ -133,6 +207,7 @@ function validateProjectConfigAndSave(
     const errorSuffix = file ? ` in ${file}` : '';
     throw Error(`Please address invalid project config${errorSuffix}`);
   }
+  projectConfig = resolveProjectConfigPaths(session, path, projectConfig, resolveToAbsolute);
   session.store.dispatch(config.actions.receiveProjectConfig({ path, ...projectConfig }));
 }
 
@@ -188,11 +263,15 @@ export function writeConfigs(
   // Get site config to save
   if (siteConfig) validateSiteConfigAndSave(session, path, file, siteConfig);
   siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
+  if (siteConfig) {
+    siteConfig = resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative);
+  }
   // Get project config to save
   if (projectConfig) validateProjectConfigAndSave(session, path, file, projectConfig);
   projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
   if (projectConfig) {
     projectConfig = prepareToWrite(projectConfig);
+    projectConfig = resolveProjectConfigPaths(session, path, projectConfig, resolveToRelative);
   }
   // Return early if nothing new to save
   if (!siteConfig && !projectConfig) {
@@ -271,12 +350,11 @@ export function reloadAllConfigsForCurrentSite(session: ISession) {
       return Boolean(project.path);
     })
     .forEach((project) => {
-      const resolvedPath = resolve(sitePath, project.path);
       try {
-        loadConfigAndValidateOrThrow(session, resolvedPath);
+        loadConfigAndValidateOrThrow(session, project.path);
       } catch (error) {
         // TODO: what error?
-        session.log.debug(`Failed to find or load project config from "${resolvedPath}"`);
+        session.log.debug(`Failed to find or load project config from "${project.path}"`);
       }
     });
 }

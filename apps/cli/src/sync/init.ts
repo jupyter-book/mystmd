@@ -76,7 +76,7 @@ ${docLinks.overview}
 export async function init(session: ISession, opts: Options) {
   if (!opts.yes) session.log.info(await WELCOME(session));
   if (opts.domain) session.log.info(`Using custom domain ${opts.domain}`);
-  let path = '.';
+  let path = resolve('.');
   // Initialize config - error if it exists
   if (selectors.selectLocalSiteConfig(session.store.getState(), path)) {
     throw Error(
@@ -85,7 +85,7 @@ export async function init(session: ISession, opts: Options) {
       )} or ${chalk.bold('curvenote start')}?`,
     );
   }
-  const folderName = basename(resolve(path));
+  const folderName = basename(path);
   const siteConfig = getDefaultSiteConfig(folderName);
 
   // Load the user now, and wait for it below!
