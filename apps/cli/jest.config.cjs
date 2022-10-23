@@ -10,6 +10,7 @@ module.exports = {
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|xml)$':
       '<rootDir>/apps/cli/tests/__mocks__/fileMock.js',
     mystjs: '<rootDir>/node_modules/mystjs/dist/index.umd.js',
+    '#(.*)': '<rootDir>/node_modules/$1', // https://github.com/chalk/chalk/issues/532
   },
   globals: {
     'ts-jest': {
@@ -19,7 +20,7 @@ module.exports = {
   verbose: true,
   testEnvironment: 'node',
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/(?!(vfile|vfile-message|unified|bail|trough|zwitch|unist-|hast-|rehype-|mdast-|trim-|web-namespaces))',
+    '<rootDir>/node_modules/(?!(vfile|vfile-message|unified|bail|trough|zwitch|unist-|hast-|rehype-|mdast-|trim-|web-namespaces|fetch-blob|formdata-polyfill))',
   ],
   testPathIgnorePatterns: ['/node_modules/', '/.yalc/', '/dist/'],
 };

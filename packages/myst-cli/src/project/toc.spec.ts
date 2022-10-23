@@ -266,13 +266,13 @@ describe('site section generation', () => {
       pages: [],
     });
   });
-  it('stop traversing at curvenote.yml', async () => {
+  it('stop traversing at myst.yml', async () => {
     memfs.vol.fromJSON({
       'readme.md': '',
       'folder/page.md': '',
       'folder/notebook.ipynb': '',
       'folder/newproj/page.md': '',
-      'folder/newproj/curvenote.yml': '',
+      'folder/newproj/myst.yml': '',
     });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
@@ -296,14 +296,14 @@ describe('site section generation', () => {
       ],
     });
   });
-  it('do not stop traversing at root curvenote.yml', async () => {
+  it('do not stop traversing at root myst.yml', async () => {
     memfs.vol.fromJSON({
-      'curvenote.yml': '',
+      'myst.yml': '',
       'readme.md': '',
       'folder/page.md': '',
       'folder/notebook.ipynb': '',
       'folder/newproj/page.md': '',
-      'folder/newproj/curvenote.yml': '',
+      'folder/newproj/myst.yml': '',
     });
     expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
@@ -544,25 +544,25 @@ project: {}
 `;
 
 describe('findProjectPaths', () => {
-  it('site curvenote.ymls', async () => {
+  it('site myst.ymls', async () => {
     memfs.vol.fromJSON({
-      'curvenote.yml': SITE_CONFIG,
+      'myst.yml': SITE_CONFIG,
       'readme.md': '',
       'folder/page.md': '',
       'folder/notebook.ipynb': '',
       'folder/newproj/page.md': '',
-      'folder/newproj/curvenote.yml': SITE_CONFIG,
+      'folder/newproj/myst.yml': SITE_CONFIG,
     });
     expect(findProjectsOnPath(session, '.')).toEqual([]);
   });
-  it('project curvenote.ymls', async () => {
+  it('project myst.ymls', async () => {
     memfs.vol.fromJSON({
-      'curvenote.yml': PROJECT_CONFIG,
+      'myst.yml': PROJECT_CONFIG,
       'readme.md': '',
       'folder/page.md': '',
       'folder/notebook.ipynb': '',
       'folder/newproj/page.md': '',
-      'folder/newproj/curvenote.yml': PROJECT_CONFIG,
+      'folder/newproj/myst.yml': PROJECT_CONFIG,
     });
     expect(findProjectsOnPath(session, '.')).toEqual(['.', 'folder/newproj']);
   });
