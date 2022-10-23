@@ -22,6 +22,8 @@ import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';
 import getPort from 'get-port';
 import { nanoid } from 'nanoid';
+import chalk from 'chalk';
+import version from '../version';
 
 export { buildSite, deployContentToCdn };
 
@@ -94,7 +96,7 @@ export async function build(
   opts: Options,
   showSparkles = true,
 ): Promise<boolean> {
-  if (!opts.ci) await cloneCurvenote(session, opts);
+  if (!(opts.ci || opts.headless)) await cloneCurvenote(session, opts);
   if (showSparkles) sparkles(session, 'Building Curvenote');
   // Build the files in the content folder and process them
   return buildSite(session, opts);
@@ -104,13 +106,21 @@ export async function build(
  * Creates a content server and a websocket that can reload and log messages to the client.
  */
 export async function startContentServer(session: ISession) {
+  const port = await getPort({ port: getPort.makeRange(3100, 3200) });
   const app = express();
   app.use(cors());
+  app.get('/', (req, res) => {
+    res.json({
+      version,
+      links: {
+        site: `http://localhost:${port}/config.json`,
+      },
+    });
+  });
   app.use('/', express.static(session.publicPath()));
   app.use('/content', express.static(session.contentPath()));
   app.use('/config.json', express.static(join(session.sitePath(), 'config.json')));
   app.use('/objects.inv', express.static(join(session.sitePath(), 'objects.inv')));
-  const port = await getPort({ port: getPort.makeRange(3100, 3200) });
   const server = app.listen(port, () => {
     session.log.debug(`Content server listening on port ${port}`);
   });
@@ -156,10 +166,17 @@ export async function startServer(session: ISession, opts: Options): Promise<voi
   sparkles(session, 'Starting Curvenote');
   const server = await startContentServer(session);
   watchContent(session, server.reload);
-  await makeExecutable('npm run start', createServerLogger(session), {
-    cwd: session.repoPath(),
-    env: { ...process.env, CONTENT_CDN_PORT: String(server.port) },
-  })();
+  if (opts.headless) {
+    const local = chalk.green(`http://localhost:${server.port}`);
+    session.log.info(
+      `\n🔌 Content server started on port ${server.port}!🥳 🎉\n\n\n\t👉  ${local}  👈\n\n`,
+    );
+  } else {
+    await makeExecutable('npm run start', createServerLogger(session), {
+      cwd: session.repoPath(),
+      env: { ...process.env, CONTENT_CDN_PORT: String(server.port) },
+    })();
+  }
 }
 
 export async function deploy(session: ISession, opts: Omit<Options, 'clean'>): Promise<void> {
