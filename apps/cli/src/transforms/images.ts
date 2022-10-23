@@ -13,33 +13,33 @@ export async function transformWebp(
   frontmatter: PageFrontmatter,
   writeFolder: string,
 ) {
-  const convertedToWebp: Record<string, string> = {};
+  const writeFolderContents = fs.readdirSync(writeFolder);
+  const images = selectAll('image', mdast) as GenericNode[];
   await Promise.all(
-    fs.readdirSync(writeFolder).map(async (file) => {
+    images.map(async (image) => {
+      if (!image.url) return;
+      const fileMatch = writeFolderContents.find((file) => image.url.endsWith(file));
+      if (!fileMatch) return;
       try {
-        const result = await convertImageToWebp(session, path.join(writeFolder, file));
-        if (result) convertedToWebp[file] = result;
+        const result = await convertImageToWebp(session, path.join(writeFolder, fileMatch));
+        if (result) image.urlOptimized = image.url.replace(fileMatch, result);
       } catch (error) {
         session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
       }
     }),
   );
 
-  const images = selectAll('image', mdast) as GenericNode[];
-  images.forEach((image) => {
-    if (image.url) {
-      Object.entries(convertedToWebp).forEach(([original, webp]) => {
-        if (image.url.endsWith(original)) {
-          image.urlOptimized = image.url.replace(original, webp);
-        }
-      });
-    }
-  });
   if (frontmatter.thumbnail) {
-    Object.entries(convertedToWebp).forEach(([original, webp]) => {
-      if (frontmatter.thumbnail?.endsWith(original)) {
-        frontmatter.thumbnailOptimized = frontmatter.thumbnail.replace(original, webp);
+    const fileMatch = writeFolderContents.find((file) => frontmatter.thumbnail?.endsWith(file));
+    if (fileMatch) {
+      try {
+        const result = await convertImageToWebp(session, path.join(writeFolder, fileMatch));
+        if (result) {
+          frontmatter.thumbnailOptimized = frontmatter.thumbnail.replace(fileMatch, result);
+        }
+      } catch (error) {
+        session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
       }
-    });
+    }
   }
 }
