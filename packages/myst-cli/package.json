@@ -70,7 +70,7 @@
     "mdast": "^3.0.0",
     "mime-types": "^2.1.35",
     "myst-cli-utils": "^0.0.4",
-    "myst-common": "^0.0.3",
+    "myst-common": "^0.0.4",
     "myst-config": "^0.0.1",
     "myst-frontmatter": "^0.0.2",
     "myst-spec": "^0.0.4",
