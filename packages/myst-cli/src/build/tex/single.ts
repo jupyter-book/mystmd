@@ -344,7 +344,7 @@ export async function localArticleToTex(
   extraLinkTransformers?: LinkTransformer[],
 ) {
   const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) loadProjectAndBibliography(session, projectPath);
+  if (projectPath) await loadProjectAndBibliography(session, projectPath);
   const exportOptionsList = (
     await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
   ).map((exportOptions) => {

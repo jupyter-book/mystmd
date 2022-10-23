@@ -184,7 +184,7 @@ export async function localArticleToWord(
   extraLinkTransformers?: LinkTransformer[],
 ) {
   const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) loadProjectAndBibliography(session, projectPath);
+  if (projectPath) await loadProjectAndBibliography(session, projectPath);
   const exportOptionsList = (
     await collectWordExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
   ).map((exportOptions) => {

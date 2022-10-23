@@ -36,7 +36,7 @@ export async function localArticleToPdf(
   templateOptions?: Record<string, any>,
 ) {
   const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) loadProjectAndBibliography(session, projectPath);
+  if (projectPath) await loadProjectAndBibliography(session, projectPath);
   const pdfExportOptionsList = (
     await collectTexExportOptions(
       session,
