@@ -11,6 +11,7 @@ import {
   makeStrictOption,
   makeCheckLinksOption,
   makeKeepHostOption,
+  makeHeadlessOption,
 } from './options';
 
 function makeCurvenoteCleanCLI(program: Command) {
@@ -42,6 +43,7 @@ function makeCurvenoteStartCLI(program: Command) {
     .addOption(makeForceOption())
     .addOption(makeBranchOption())
     .addOption(makeKeepHostOption())
+    .addOption(makeHeadlessOption())
     .action(clirun(web.startServer, { program, requireSiteConfig: true }));
   return command;
 }

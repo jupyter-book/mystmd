@@ -78,7 +78,7 @@ export function watchContent(session: ISession, triggerReload: () => void) {
     chokidar
       .watch(proj.path, {
         ignoreInitial: true,
-        ignored: ['public', '_build/**', '.git/**', ...ignored],
+        ignored: ['public', '**/_build/**', '**/.git/**', ...ignored],
         awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
       })
       .on('all', fileProcessor(session, proj, triggerReload));

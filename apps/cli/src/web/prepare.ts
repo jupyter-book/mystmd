@@ -7,6 +7,7 @@ export type Options = {
   clean?: boolean;
   force?: boolean;
   strict?: boolean;
+  headless?: boolean;
   checkLinks?: boolean;
   branch?: string;
   ci?: boolean;

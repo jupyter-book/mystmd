@@ -21,6 +21,13 @@ export function makeCleanOption() {
   return new Option('-c, --clean', 'Remove content so that it is rebuilt fresh').default(false);
 }
 
+export function makeHeadlessOption() {
+  return new Option(
+    '--headless',
+    'Run the server in headless mode, with only the content server started',
+  ).default(false);
+}
+
 export function makeZipOption() {
   return new Option('--zip', 'Zip tex ouput folder').default(false);
 }

@@ -4,17 +4,14 @@ import path from 'path';
 import type { TemplatePartDefinition, TemplateImports, TemplateYml } from 'jtex';
 import JTex, { mergeTemplateImports } from 'jtex';
 import type { Root } from 'mdast';
-import { selectAll, unified } from 'mystjs';
 import { writeFileToFolder } from 'myst-cli-utils';
-import { copyNode } from 'myst-common';
+import { extractPart } from 'myst-common';
 import type { Export, PageFrontmatter } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
-import type { Block } from 'myst-spec';
 import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
 import type { ValidationOptions } from 'simple-validators';
-import { remove } from 'unist-util-remove';
 import { findCurrentProjectAndLoad } from '../../config';
 import { getRawFrontmatterFromFile } from '../../frontmatter';
 import { bibFilesInDir } from '../../process';
@@ -31,6 +28,7 @@ import {
   resolveAndLogErrors,
 } from '../utils';
 import type { TexExportOptions } from './types';
+import { unified } from 'unified';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 
@@ -49,38 +47,15 @@ export function mdastToTex(
   return tex.result as LatexResult;
 }
 
-/**
- * Extracts the node(s) based on part (string) or tags (string[]).
- */
-function blockPartsFromMdast(mdast: Root, part: string) {
-  const blockParts = selectAll('block', mdast).filter((block) => {
-    if (!block.data?.tags && !block.data?.part) return false;
-    if (block.data?.part === part) return true;
-    try {
-      return (block.data.tags as any).includes(part);
-    } catch {
-      return false;
-    }
-  });
-  if (blockParts.length === 0) return undefined;
-  return blockParts as Block[];
-}
-
-export function extractPart(
+export function extractTexPart(
   mdast: Root,
   partDefinition: TemplatePartDefinition,
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml,
 ): LatexResult | undefined {
-  const blockParts = blockPartsFromMdast(mdast, partDefinition.id);
-  if (!blockParts) return undefined;
-  const taggedMdast = { type: 'root', children: copyNode(blockParts) } as unknown as Root;
-  const partContent = mdastToTex(taggedMdast, frontmatter, templateYml);
-  // Remove the blockparts from the main document
-  blockParts.forEach((block) => {
-    (block as any).type = '__delete__';
-  });
-  remove(mdast, '__delete__');
+  const part = extractPart(mdast, partDefinition.id);
+  if (!part) return undefined;
+  const partContent = mdastToTex(part, frontmatter, templateYml);
   return partContent;
 }
 
@@ -155,7 +130,7 @@ export async function localArticleToTexTemplated(
   const parts: Record<string, string> = {};
   let collectedImports: TemplateImports = { imports: [], commands: {} };
   partDefinitions.forEach((def) => {
-    const result = extractPart(mdast, def, frontmatter, templateYml);
+    const result = extractTexPart(mdast, def, frontmatter, templateYml);
     if (result != null) {
       collectedImports = mergeTemplateImports(collectedImports, result);
       parts[def.id] = result?.value ?? '';
