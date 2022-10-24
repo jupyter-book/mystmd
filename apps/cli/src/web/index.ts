@@ -20,7 +20,7 @@ import express from 'express';
 import cors from 'cors';
 import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';
-import getPort from 'get-port';
+import getPort, { portNumbers } from 'get-port';
 import { nanoid } from 'nanoid';
 import chalk from 'chalk';
 import version from '../version';
@@ -106,7 +106,7 @@ export async function build(
  * Creates a content server and a websocket that can reload and log messages to the client.
  */
 export async function startContentServer(session: ISession) {
-  const port = await getPort({ port: getPort.makeRange(3100, 3200) });
+  const port = await getPort({ port: portNumbers(3100, 3200) });
   const app = express();
   app.use(cors());
   app.get('/', (req, res) => {

@@ -20,7 +20,7 @@ module.exports = {
   verbose: true,
   testEnvironment: 'node',
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/(?!(vfile|vfile-message|unified|bail|trough|zwitch|unist-|hast-|rehype-|mdast-|trim-|web-namespaces|fetch-blob|formdata-polyfill))',
+    '<rootDir>/node_modules/(?!(vfile|vfile-message|unified|bail|trough|zwitch|unist-|hast-|rehype-|mdast-|trim-|web-namespaces|fetch-blob|formdata-polyfill|property-information|space-separated-tokens|comma-separated-tokens|get-port))',
   ],
   testPathIgnorePatterns: ['/node_modules/', '/.yalc/', '/dist/'],
 };
