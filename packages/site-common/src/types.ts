@@ -1,21 +1,7 @@
-import type { KINDS } from '@curvenote/blocks';
 import type { SiteAnalytics, SiteAction, SiteNavPage, SiteNavFolder } from 'myst-config';
-import type { PageFrontmatter, ProjectFrontmatter } from 'myst-frontmatter';
+import type { ProjectFrontmatter } from 'myst-frontmatter';
 import type { Root } from 'mdast';
 import type { FootnoteDefinition } from 'myst-spec';
-
-export enum Theme {
-  light = 'light',
-  dark = 'dark',
-}
-
-export type Heading = {
-  slug?: string;
-  path?: string;
-  title: string;
-  level: number | 'index';
-  group?: string;
-};
 
 export type Citations = {
   order: string[];
@@ -28,36 +14,6 @@ export type References = {
   cite?: Citations;
   footnotes?: Footnotes;
   article?: Root;
-};
-
-export type NavigationLink = {
-  group?: string;
-  title: string;
-  url: string;
-};
-
-export type FooterLinks = {
-  navigation?: {
-    prev?: NavigationLink;
-    next?: NavigationLink;
-  };
-};
-
-export type DocumentLoader = {
-  theme: Theme;
-  config?: SiteManifest;
-};
-
-export type PageLoader = {
-  kind: KINDS;
-  file: string;
-  sha256: string;
-  slug: string;
-  domain: string; // This is written in at render time in the site
-  frontmatter: PageFrontmatter;
-  mdast: Root;
-  references: References;
-  footer?: FooterLinks;
 };
 
 export type SiteNavItem = SiteNavPage | SiteNavFolder;

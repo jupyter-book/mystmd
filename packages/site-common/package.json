@@ -12,11 +12,11 @@
     "lint": "eslint src/**/*.ts*",
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\""
   },
-  "dependencies": {
-    "myst-config": "^0.0.2"
-  },
   "peerDependencies": {
-    "@curvenote/blocks": "*"
+    "mdast": "*",
+    "myst-config": "^0.0.2",
+    "myst-frontmatter": "*",
+    "myst-spec": "*"
   },
   "devDependencies": {
     "eslint": "^8.21.0",
