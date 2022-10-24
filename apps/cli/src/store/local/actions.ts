@@ -97,7 +97,8 @@ export function addProjectReferencesToObjectsInv(
   inv: Inventory,
   opts: { projectPath: string },
 ) {
-  const { pages } = loadProject(session, opts.projectPath);
+  const proj = selectors.selectLocalProject(session.store.getState(), opts.projectPath);
+  const pages = proj ? filterPages(proj) : loadProject(session, opts.projectPath).pages;
   const pageReferenceStates = selectPageReferenceStates(session, pages);
   pageReferenceStates.forEach((page) => {
     const { title } = selectors.selectFileInfo(session.store.getState(), page.file);
@@ -123,15 +124,20 @@ export function addProjectReferencesToObjectsInv(
   return inv;
 }
 
+function filterPages(project: LocalProject) {
+  const pages: LocalProjectPage[] = [
+    { file: project.file, slug: project.index, level: 1 },
+    ...project.pages.filter((page): page is LocalProjectPage => 'file' in page),
+  ];
+  return pages;
+}
+
 export function loadProject(session: ISession, projectPath: string, writeToc = false) {
   const project = loadProjectFromDisk(session, projectPath, {
     writeToc,
   });
   // Load the citations first, or else they are loaded in each call below
-  const pages = [
-    { file: project.file, slug: project.index },
-    ...project.pages.filter((page): page is LocalProjectPage => 'file' in page),
-  ];
+  const pages = filterPages(project);
   return { project, pages };
 }
 

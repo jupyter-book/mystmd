@@ -225,6 +225,10 @@ export function loadConfigAndValidateOrThrow(session: ISession, path: string) {
     return;
   }
   const conf = readConfig(session, file);
+  const existingConf = selectors.selectLocalRawConfig(session.store.getState(), path);
+  if (existingConf && JSON.stringify(conf) === JSON.stringify(existingConf)) {
+    return;
+  }
   session.store.dispatch(config.actions.receiveRawConfig({ path, file, ...conf }));
   const { site, project } = conf;
   if (site) {
