@@ -1,6 +1,6 @@
 {
   "name": "myst-cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Command line tools for MyST",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "license": "MIT",
@@ -55,7 +55,7 @@
   "dependencies": {
     "@curvenote/blocks": "^1.5.16",
     "@curvenote/nbtx": "^0.1.11",
-    "@curvenote/site-common": "^0.0.16",
+    "@curvenote/site-common": "^0.0.17",
     "@reduxjs/toolkit": "^1.7.2",
     "adm-zip": "^0.5.9",
     "chalk": "^5.1.2",

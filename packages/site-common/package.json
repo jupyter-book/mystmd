@@ -1,6 +1,6 @@
 {
   "name": "@curvenote/site-common",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "files": [
@@ -11,6 +11,9 @@
   "scripts": {
     "lint": "eslint src/**/*.ts*",
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\""
+  },
+  "dependencies": {
+    "myst-config": "^0.0.2"
   },
   "peerDependencies": {
     "@curvenote/blocks": "*"

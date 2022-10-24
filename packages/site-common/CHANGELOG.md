@@ -1,5 +1,11 @@
 # @curvenote/site-common
 
+## 0.0.17
+
+### Patch Changes
+
+- Add myst-config as a dependency
+
 ## 0.0.16
 
 ### Patch Changes

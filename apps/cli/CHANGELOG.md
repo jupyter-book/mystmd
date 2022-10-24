@@ -1,5 +1,13 @@
 # curvenote
 
+## 0.8.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @curvenote/site-common@0.0.17
+  - myst-cli@0.0.3
+
 ## 0.8.0
 
 ### Minor Changes
