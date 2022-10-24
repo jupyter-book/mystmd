@@ -1,5 +1,13 @@
 # @curvenote/blocks
 
+## 1.5.16
+
+### Patch Changes
+
+- e3a2d05: Move site and project config to new myst-config package
+- Updated dependencies [e3a2d05]
+  - myst-config@0.0.2
+
 ## 1.5.15
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "myst-templates",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "API types and scripts for downloading MyST Tempaltes",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/myst-templates",

@@ -1,5 +1,11 @@
 # myst-to-tex
 
+## 0.0.6
+
+### Patch Changes
+
+- a662904: Add definition lists to latex
+
 ## 0.0.5
 
 ### Patch Changes

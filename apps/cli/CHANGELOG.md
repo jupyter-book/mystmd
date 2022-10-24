@@ -1,5 +1,29 @@
 # curvenote
 
+## 0.8.0
+
+### Minor Changes
+
+- 9c2be36: Change to an external theme server
+
+### Patch Changes
+
+- 1591111: Allow DOI checking to work offline, and fail with error that is not fatal
+- 004dbcc: Ensure that bibtex folder is always created before write
+- e3a2d05: Split standalone myst cli out of curvenote cli
+- Updated dependencies [dbb283c]
+- Updated dependencies [e3a2d05]
+- Updated dependencies [de034db]
+- Updated dependencies [e3a2d05]
+- Updated dependencies [c9889c0]
+- Updated dependencies [e3a2d05]
+  - jtex@0.0.6
+  - @curvenote/blocks@1.5.16
+  - myst-config@0.0.2
+  - @curvenote/site-common@0.0.16
+  - intersphinx@0.0.3
+  - myst-cli@0.0.2
+
 ## 0.7.1
 
 ### Patch Changes

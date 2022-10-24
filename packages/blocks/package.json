@@ -1,6 +1,6 @@
 {
   "name": "@curvenote/blocks",
-  "version": "1.5.15",
+  "version": "1.5.16",
   "license": "MIT",
   "description": "Schemas for the Curvenote API and data structures",
   "author": "Rowan Cockett <rowan@curvenote.com>",
@@ -38,7 +38,7 @@
     "url": "https://github.com/curvenote/curvenote/issues"
   },
   "dependencies": {
-    "myst-config": "^0.0.1",
+    "myst-config": "^0.0.2",
     "myst-frontmatter": "^0.0.2",
     "simple-validators": "^0.0.1"
   },

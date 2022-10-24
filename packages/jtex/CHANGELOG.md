@@ -1,5 +1,15 @@
 # jtex
 
+## 0.0.6
+
+### Patch Changes
+
+- dbb283c: Improve warnings when checking, and only show the warnings that still remain when `--fix`.
+- de034db: Remove curvenote.def to be written by default
+- e3a2d05: Consume latest myst-frontmatter
+- Updated dependencies [9c2be36]
+  - myst-cli-utils@0.0.5
+
 ## 0.0.5
 
 ### Patch Changes
