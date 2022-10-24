@@ -1,5 +1,12 @@
 # myst-cli
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [68d411e]
+  - @curvenote/site-common@0.0.18
+
 ## 0.0.3
 
 ### Patch Changes

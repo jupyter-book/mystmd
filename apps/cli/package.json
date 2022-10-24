@@ -1,6 +1,6 @@
 {
   "name": "curvenote",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Command line tools for Curvenote",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
@@ -51,7 +51,7 @@
   "dependencies": {
     "@curvenote/blocks": "*",
     "@curvenote/schema": "0.12.17",
-    "@curvenote/site-common": "^0.0.17",
+    "@curvenote/site-common": "^0.0.18",
     "@google-cloud/storage": "^5.18.2",
     "@reduxjs/toolkit": "^1.7.2",
     "bottleneck": "^2.19.5",
