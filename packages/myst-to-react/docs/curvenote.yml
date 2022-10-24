@@ -1,6 +1,0 @@
-version: 1
-project:
-  title: MyST to React
-  github: https://github.com/curvenote/curvenote
-  license: MIT
-  subject: MyST Converters

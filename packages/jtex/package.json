@@ -74,7 +74,7 @@
     "@types/react": "^18.0.15",
     "@types/sanitize-html": "^2.6.2",
     "@types/unzipper": "^0.10.5",
-    "esbuild": "^0.14.53",
+    "esbuild": "^0.15.12",
     "eslint": "^8.21.0",
     "eslint-config-curvenote": "*",
     "jest": "^28.1.3",

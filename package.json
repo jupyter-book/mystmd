@@ -22,11 +22,11 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.23.2",
-    "esbuild": "^0.14.53",
+    "esbuild": "^0.15.12",
     "eslint-config-curvenote": "*",
     "prettier": "latest",
-    "turbo": "latest",
-    "ts-jest": "^28.0.7"
+    "ts-jest": "^28.0.7",
+    "turbo": "latest"
   },
   "engines": {
     "npm": ">=7.0.0",

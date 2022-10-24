@@ -1,1 +1,0 @@
-export { loader } from './$slug';
