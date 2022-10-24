@@ -10,8 +10,6 @@ site:
       slug: myst-transforms
     - path: packages/myst-to-tex/docs
       slug: myst-to-tex
-    - path: packages/myst-to-react/docs
-      slug: myst-to-react
   nav:
     - title: Guide & Overview
       url: /guide
@@ -23,8 +21,6 @@ site:
           url: /myst-transforms
         - title: myst-to-tex
           url: /myst-to-tex
-        - title: myst-to-react
-          url: /myst-to-react
   actions:
     - title: GitHub
       url: https://github.com/executablebooks/mystjs
