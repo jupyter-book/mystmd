@@ -1,5 +1,5 @@
+import type { ISession as IMystSession } from 'myst-cli';
 import type { Store } from 'redux';
-import type { Logger } from 'myst-cli-utils';
 import type { RootState } from '../store';
 
 export type Tokens = Partial<Record<'user' | 'session', string>>;
@@ -10,16 +10,10 @@ export type Response<T extends Record<string, any> = any> = Promise<{
   json: T;
 }>;
 
-export interface ISession {
-  API_URL: string;
-
+export type ISession = IMystSession & {
   SITE_URL: string;
-
   store: Store<RootState>;
-
   isAnon: boolean;
-
-  reload(): void;
 
   get<T extends Record<string, any> = any>(
     url: string,
@@ -30,5 +24,11 @@ export interface ISession {
 
   patch<T extends Record<string, any> = any>(url: string, data: unknown): Response<T>;
 
-  log: Logger;
-}
+  repoPath(): string;
+
+  sitePath(): string;
+
+  contentPath(): string;
+
+  webPackageJsonPath(): string;
+};

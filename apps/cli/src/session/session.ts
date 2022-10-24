@@ -1,18 +1,19 @@
+import path from 'path';
 import fetch from 'node-fetch';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
+import { findCurrentProjectAndLoad, findCurrentSiteAndLoad, selectors } from 'myst-cli';
 import type { Logger } from 'myst-cli-utils';
 import { LogLevel, basicLogger } from 'myst-cli-utils';
-import { loadConfigOrThrow } from '../config';
-import { CURVENOTE_YML } from '../config/types';
 import type { RootState } from '../store';
-import { rootReducer, selectors } from '../store';
+import { rootReducer } from '../store';
 import { checkForClientVersionRejection } from '../utils';
 import { getHeaders, setSessionOrUserToken } from './tokens';
 import type { ISession, Response, Tokens } from './types';
 
 const DEFAULT_API_URL = 'https://api.curvenote.com';
 const DEFAULT_SITE_URL = 'https://curvenote.com';
+const CONFIG_FILES = ['curvenote.yml', 'myst.yml'];
 
 export type SessionOptions = {
   apiUrl?: string;
@@ -28,39 +29,12 @@ function withQuery(url: string, query: Record<string, string> = {}) {
   return url.indexOf('?') === -1 ? `${url}?${params}` : `${url}&${params}`;
 }
 
-export function loadAllConfigs(session: Pick<ISession, 'log' | 'store'>) {
-  try {
-    loadConfigOrThrow(session, '.');
-    session.log.debug(`Loaded configs from "./${CURVENOTE_YML}"`);
-  } catch (error) {
-    // TODO: what error?
-    session.log.debug(`Failed to find or load configs from "./${CURVENOTE_YML}"`);
-  }
-  const siteConfig = selectors.selectLocalSiteConfig(session.store.getState());
-  if (!siteConfig?.projects) return;
-  siteConfig.projects
-    .filter((project) => project.path !== '.') // already loaded
-    .forEach((project) => {
-      try {
-        if (project.path) loadConfigOrThrow(session, project.path);
-      } catch (error) {
-        // TODO: what error?
-        session.log.debug(
-          `Failed to find or load project config from "${project.path}/${CURVENOTE_YML}"`,
-        );
-      }
-    });
-}
-
 export class Session implements ISession {
   API_URL: string;
-
   SITE_URL: string;
-
+  configFiles: string[];
   $tokens: Tokens = {};
-
   store: Store<RootState>;
-
   $logger: Logger;
 
   get log(): Logger {
@@ -72,6 +46,7 @@ export class Session implements ISession {
   }
 
   constructor(token?: string, opts: SessionOptions = {}) {
+    this.configFiles = CONFIG_FILES;
     this.$logger = opts.logger ?? basicLogger(LogLevel.info);
     const url = this.setToken(token);
     this.API_URL = opts.apiUrl ?? url ?? DEFAULT_API_URL;
@@ -80,17 +55,14 @@ export class Session implements ISession {
       this.log.warn(`Connecting to API at: "${this.API_URL}".`);
     }
     this.store = createStore(rootReducer);
-    loadAllConfigs({ log: this.$logger, store: this.store });
+    findCurrentProjectAndLoad(this, '.');
+    findCurrentSiteAndLoad(this, '.');
   }
 
   setToken(token?: string) {
     const { tokens, url } = setSessionOrUserToken(this.log, token);
     this.$tokens = tokens;
     return url;
-  }
-
-  reload() {
-    loadAllConfigs({ log: this.$logger, store: this.store });
   }
 
   async get<T extends Record<string, any>>(
@@ -148,5 +120,37 @@ export class Session implements ISession {
       status: response.status,
       json,
     };
+  }
+
+  buildPath(): string {
+    const state = this.store.getState();
+    const sitePath = selectors.selectCurrentSitePath(state);
+    const projectPath = selectors.selectCurrentProjectPath(state);
+    const root = sitePath ?? projectPath ?? '.';
+    return path.resolve(path.join(root, '_build'));
+  }
+
+  repoPath(): string {
+    return path.join(this.buildPath(), 'theme');
+  }
+
+  webPackageJsonPath(): string {
+    return path.join(this.repoPath(), 'package.json');
+  }
+
+  sitePath(): string {
+    return path.join(this.buildPath(), 'site');
+  }
+
+  contentPath(): string {
+    return path.join(this.sitePath(), 'content');
+  }
+
+  publicPath(): string {
+    return path.join(this.sitePath(), 'public');
+  }
+
+  staticPath(): string {
+    return path.join(this.publicPath(), '_static');
   }
 }

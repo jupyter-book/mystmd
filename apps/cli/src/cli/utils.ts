@@ -1,14 +1,12 @@
 import fs from 'fs';
 import chalk from 'chalk';
-import check from 'check-node-version';
+import type check from 'check-node-version';
 import type { Command } from 'commander';
+import { getNodeVersion, selectors, version as mystCliVersion } from 'myst-cli';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
-import { CURVENOTE_YML } from '../config/types';
 import { Session, getToken } from '../session';
 import type { ISession } from '../session/types';
-import { selectors } from '../store';
 import CurvenoteVersion from '../version';
-import { webPackageJsonPath } from '../utils';
 import { docLinks } from '../docs';
 
 const INSTALL_NODE_MESSAGE = `
@@ -27,20 +25,6 @@ ${chalk.bold.blue(docLinks.installNode)}
 
 type VersionResults = Parameters<Parameters<typeof check>[1]>[1];
 
-async function getNodeVersion(session: ISession): Promise<VersionResults | null> {
-  const result = new Promise<VersionResults | null>((resolve) => {
-    check({ node: '>= 14.0.0', npm: '>=7' }, (error, results) => {
-      if (error) {
-        session.log.error(error);
-        resolve(null);
-        return;
-      }
-      resolve(results);
-    });
-  });
-  return result;
-}
-
 function logVersions(session: ISession, result: VersionResults | null, debug = true) {
   const versions: string[][] = [];
   Object.entries(result?.versions ?? {}).forEach(([name, p]) => {
@@ -51,13 +35,17 @@ function logVersions(session: ISession, result: VersionResults | null, debug = t
       p.isSatisfied ? '✅' : '⚠️',
     ]);
   });
+  versions.push(['myst-cli', mystCliVersion]);
   versions.push(['curvenote', CurvenoteVersion]);
   try {
-    const packageJson = JSON.parse(fs.readFileSync(webPackageJsonPath(session)).toString()) as {
+    // TODO: Improve this to tell you more about themes
+    const packageJson = JSON.parse(fs.readFileSync(session.webPackageJsonPath()).toString()) as {
       name: string;
       version: string;
     };
-    versions.push([packageJson.name, packageJson.version]);
+    if (packageJson.name && packageJson.version) {
+      versions.push([packageJson.name, packageJson.version]);
+    }
   } catch (error) {
     // pass
   }
@@ -142,14 +130,16 @@ export function clirun(
     const versionsInstalled = await checkNodeVersion(useSession);
     if (!versionsInstalled) process.exit(1);
     const state = useSession.store.getState();
-    const siteConfig = selectors.selectLocalSiteConfig(state);
+    const siteConfig = selectors.selectCurrentSiteConfig(state);
     if (cli.requireSiteConfig && !siteConfig) {
-      const projectConfig = selectors.selectLocalProject(state, '.');
+      const projectConfig = selectors.selectCurrentProjectConfig(state);
       let message: string;
       if (projectConfig) {
-        message = `No "site" config found in ${CURVENOTE_YML}`;
+        message = `No "site" config found in ${selectors.selectCurrentProjectFile(state)}`;
       } else {
-        message = `You must be in a directory with a ${CURVENOTE_YML}`;
+        message = `You must be in a directory with a config file: ${useSession.configFiles.join(
+          ', ',
+        )}`;
       }
       useSession.log.error(`${message}\n\nDo you need to run: ${chalk.bold('curvenote init')}`);
       process.exit(1);

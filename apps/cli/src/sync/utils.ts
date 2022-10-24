@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import path from 'path';
-import type { SiteConfig, SiteProject } from '@curvenote/blocks';
-import type { ProjectConfig } from '../config/types';
+import type { ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
 import { docLinks } from '../docs';
 import { projectIdFromLink } from '../export';
 import { Project, RemoteSiteConfig } from '../models';

@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { makeExecutable, tic } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
-import type { ISession } from '../../session';
+import type { ISession } from '../../session/types';
 
 export function isWebpAvailable() {
   return which('cwebp', { nothrow: true });
@@ -87,7 +87,7 @@ export async function convertImageToWebp(
     session.log.debug(
       `Image "${image}" is too large (${inMB} MB) to convert to webp (build will be slow).`,
     );
-    throw new Error(`${inMB} MB`);
+    return null;
   }
 
   const dirname = path.dirname(image);

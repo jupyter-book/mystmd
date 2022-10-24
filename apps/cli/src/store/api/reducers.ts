@@ -5,7 +5,7 @@ import type {
   User as UserDTO,
   Team as TeamDTO,
   Project as ProjectDTO,
-  SiteConfigDBO as SiteConfigDTO,
+  SiteConfigDTO,
   Block as BlockDTO,
   Draft as DraftDTO,
   ALL_BLOCKS,
@@ -14,7 +14,7 @@ import type {
 import { blockIdToString, versionIdToString, draftIdToString } from '@curvenote/blocks';
 
 export const users = createSlice({
-  name: 'users',
+  name: 'usersApi',
   initialState: {} as Record<string, UserDTO>,
   reducers: {
     receive(state, action: PayloadAction<UserDTO>) {
@@ -24,7 +24,7 @@ export const users = createSlice({
 });
 
 export const teams = createSlice({
-  name: 'teams',
+  name: 'teamsApi',
   initialState: {} as Record<string, TeamDTO>,
   reducers: {
     receive(state, action: PayloadAction<TeamDTO>) {
@@ -34,7 +34,7 @@ export const teams = createSlice({
 });
 
 export const projects = createSlice({
-  name: 'projects',
+  name: 'projectsApi',
   initialState: {} as Record<string, ProjectDTO>,
   reducers: {
     receive(state, action: PayloadAction<ProjectDTO>) {
@@ -44,7 +44,7 @@ export const projects = createSlice({
 });
 
 export const siteconfigs = createSlice({
-  name: 'siteconfigs',
+  name: 'siteconfigsApi',
   initialState: {} as Record<string, SiteConfigDTO>,
   reducers: {
     receive(state, action: PayloadAction<SiteConfigDTO>) {
@@ -54,7 +54,7 @@ export const siteconfigs = createSlice({
 });
 
 export const blocks = createSlice({
-  name: 'blocks',
+  name: 'blocksApi',
   initialState: {} as Record<string, BlockDTO>,
   reducers: {
     receive(state, action: PayloadAction<BlockDTO>) {
@@ -65,7 +65,7 @@ export const blocks = createSlice({
 });
 
 export const versions = createSlice({
-  name: 'versions',
+  name: 'versionsApi',
   initialState: {} as Record<string, ALL_BLOCKS>,
   reducers: {
     receive(state, action: PayloadAction<ALL_BLOCKS>) {
@@ -76,7 +76,7 @@ export const versions = createSlice({
 });
 
 export const drafts = createSlice({
-  name: 'drafts',
+  name: 'draftsApi',
   initialState: {} as Record<string, DraftDTO>,
   reducers: {
     receive(state, action: PayloadAction<DraftDTO>) {
@@ -87,7 +87,7 @@ export const drafts = createSlice({
 });
 
 export const templates = createSlice({
-  name: 'templates',
+  name: 'templatesApi',
   initialState: {} as Record<string, TemplateSpec & { id: string }>,
   reducers: {
     receive(state, action: PayloadAction<TemplateSpec & { id: string }>) {

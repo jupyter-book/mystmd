@@ -1,5 +1,6 @@
 import type { Block, Project } from '@curvenote/blocks';
 import { oxaLink } from '@curvenote/blocks';
+import { affiliations, downloadAndSaveImage, selectors } from 'myst-cli';
 import type { Author, PageFrontmatter, ProjectFrontmatter } from 'myst-frontmatter';
 import {
   PAGE_FRONTMATTER_KEYS,
@@ -10,10 +11,7 @@ import {
 import type { ValidationOptions } from 'simple-validators';
 import { filterKeys } from 'simple-validators';
 import { dirname, join } from 'path';
-import { affiliations } from '../store/local';
-import { selectAffiliation } from '../store/selectors';
 import type { ISession } from '../session';
-import { downloadAndSaveImage } from '../transforms/images';
 import { THUMBNAILS_FOLDER } from '../utils';
 
 export function saveAffiliations(session: ISession, project: Project) {
@@ -29,7 +27,7 @@ function resolveAffiliations(session: ISession, author: Author): Author {
   if (!authorAffiliations) return { ...rest };
   const state = session.store.getState();
   const resolvedAffiliations = authorAffiliations
-    .map((id) => selectAffiliation(state, id))
+    .map((id) => selectors.selectAffiliation(state, id))
     .filter((text): text is string => typeof text === 'string');
   return { affiliations: resolvedAffiliations, ...rest };
 }

@@ -2,21 +2,20 @@ import chalk from 'chalk';
 import fs from 'fs';
 import inquirer from 'inquirer';
 import { basename, join, resolve } from 'path';
+import { config, findProjectsOnPath, loadProjectFromDisk, selectors, writeConfigs } from 'myst-cli';
 import { LogLevel, writeFileToFolder } from 'myst-cli-utils';
-import type { SiteNavPage } from '@curvenote/blocks';
-import { writeConfigs } from '../config';
-import { CURVENOTE_YML } from '../config/types';
+import type { SiteNavPage, ProjectConfig } from 'myst-config';
 import { docLinks, LOGO } from '../docs';
 import { MyUser } from '../models';
 import type { ISession } from '../session/types';
-import { selectors } from '../store';
-import { loadProjectFromDisk } from '../toc';
-import { findProjectsOnPath } from '../toc/utils';
 import { startServer } from '../web';
 import { interactiveCloneQuestions } from './clone';
 import { pullProjects } from './pull';
 import questions from './questions';
 import { getDefaultProjectConfig, getDefaultSiteConfig, INIT_LOGO_PATH } from './utils';
+
+// TODO
+const CURVENOTE_YML = 'curvenote.yml';
 
 type Options = {
   branch?: string;
@@ -77,16 +76,16 @@ ${docLinks.overview}
 export async function init(session: ISession, opts: Options) {
   if (!opts.yes) session.log.info(await WELCOME(session));
   if (opts.domain) session.log.info(`Using custom domain ${opts.domain}`);
-  let path = '.';
+  let path = resolve('.');
   // Initialize config - error if it exists
-  if (selectors.selectLocalSiteConfig(session.store.getState())) {
+  if (selectors.selectLocalSiteConfig(session.store.getState(), path)) {
     throw Error(
       `Site config in ${CURVENOTE_YML} config already exists, did you mean to ${chalk.bold(
         'curvenote clone',
       )} or ${chalk.bold('curvenote start')}?`,
     );
   }
-  const folderName = basename(resolve(path));
+  const folderName = basename(path);
   const siteConfig = getDefaultSiteConfig(folderName);
 
   // Load the user now, and wait for it below!
@@ -103,7 +102,9 @@ export async function init(session: ISession, opts: Options) {
     const response = await inquirer.prompt([questions.content({ folderIsEmpty })]);
     content = response.content;
   }
-  let projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), '.');
+  let projectConfig: ProjectConfig | undefined = selectors.selectCurrentProjectConfig(
+    session.store.getState(),
+  );
   let pullComplete = false;
   let title = projectConfig?.title || siteConfig.title || undefined;
   if (content === 'folder') {
@@ -155,7 +156,7 @@ export async function init(session: ISession, opts: Options) {
   me = await me;
   siteConfig.title = title;
   siteConfig.logo_text = title;
-  siteConfig.nav = siteConfig.projects
+  siteConfig.nav = (siteConfig.projects || [])
     .map((proj) => {
       if (proj.path) {
         const projConf = selectors.selectLocalProjectConfig(state, proj.path);
@@ -179,6 +180,7 @@ export async function init(session: ISession, opts: Options) {
   }
   // Save site config to state and write to disk
   writeConfigs(session, '.', { siteConfig });
+  session.store.dispatch(config.actions.receiveCurrentSitePath({ path: '.' }));
 
   const pullOpts = { level: LogLevel.debug };
   let pullProcess: Promise<void> | undefined;

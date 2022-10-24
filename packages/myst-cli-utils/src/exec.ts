@@ -1,4 +1,5 @@
 import util from 'util';
+import type { ExecOptions } from 'child_process';
 import child_process from 'child_process';
 import type { Logger } from './types';
 
@@ -18,7 +19,7 @@ export const exec = util.promisify(execWrapper);
 function makeExecWrapper(
   command: string,
   log: Pick<Logger, 'debug' | 'error'> | null,
-  options?: { cwd?: string },
+  options?: ExecOptions,
 ) {
   return function inner(
     callback?: (error: child_process.ExecException | null, stdout: string, stderr: string) => void,
@@ -33,7 +34,7 @@ function makeExecWrapper(
 export function makeExecutable(
   command: string,
   log: Pick<Logger, 'debug' | 'error'> | null,
-  options?: { cwd?: string },
+  options?: ExecOptions,
 ) {
   return util.promisify(makeExecWrapper(command, log, options));
 }

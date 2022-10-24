@@ -10,5 +10,6 @@ export {
   setTextAsChild,
   copyNode,
 } from './utils';
+export { selectBlockParts, extractPart } from './extractParts';
 
 export type { MessageInfo } from './utils';
