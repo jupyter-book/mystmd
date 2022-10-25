@@ -39,6 +39,7 @@ export function build(session: ISession, opts: BuildOpts) {
     }
   }
   let pages: string[];
+  let projectPath: string | undefined;
   let noDefaultExport = false;
   if (file) {
     pages = [file];
@@ -46,23 +47,38 @@ export function build(session: ISession, opts: BuildOpts) {
     noDefaultExport = true;
     const project = loadProjectFromDisk(session, configPath, { writeToc });
     pages = filterPages(project).map((page) => page.file);
+    projectPath = configPath;
   }
   resolveAndLogErrors(session, [
     ...pages.map(async (page) => {
       if (buildAll || docx) {
-        await localArticleToWord(session, page, { filename: output || '', clean, noDefaultExport });
+        await localArticleToWord(session, page, {
+          filename: output || '',
+          clean,
+          noDefaultExport,
+          projectPath,
+        });
       }
     }),
     ...pages.map(async (page) => {
       if (buildAll || pdf) {
-        await localArticleToPdf(session, page, { filename: output || '', clean, noDefaultExport });
+        await localArticleToPdf(session, page, {
+          filename: output || '',
+          clean,
+          noDefaultExport,
+          projectPath,
+        });
       }
     }),
     ...pages.map(async (page) => {
       if (buildAll || tex) {
-        await localArticleToTex(session, page, { filename: output || '', clean, noDefaultExport });
+        await localArticleToTex(session, page, {
+          filename: output || '',
+          clean,
+          noDefaultExport,
+          projectPath,
+        });
       }
     }),
   ]);
-  return;
 }

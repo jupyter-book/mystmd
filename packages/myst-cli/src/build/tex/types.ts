@@ -6,4 +6,5 @@ export type TexExportOptions = {
   clean?: boolean;
   zip?: boolean;
   noDefaultExport?: boolean;
+  projectPath?: string;
 };

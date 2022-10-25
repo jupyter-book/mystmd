@@ -16,11 +16,11 @@ export function makeDocxOption() {
 }
 
 export function makeFileOption() {
-  return new Option('-f, --file', 'Single file to export').default('');
+  return new Option('-f, --file <file>', 'Single file to export').default('');
 }
 
 export function makeOutputOption() {
-  return new Option('-o, --output', 'Output folder for exports').default('');
+  return new Option('-o, --output <folder>', 'Output folder for exports').default('');
 }
 
 export function makeCleanOption() {
@@ -47,7 +47,7 @@ export function makeWriteConfigFileOption() {
 
 export function makeBuildCLI(program: Command) {
   const command = new Command('build')
-    .description('Build pdf, tex, word, and web exports from MyST files')
+    .description('Build pdf, tex, and word exports from MyST files')
     .addOption(makePdfOption())
     .addOption(makeTexOption())
     .addOption(makeDocxOption())

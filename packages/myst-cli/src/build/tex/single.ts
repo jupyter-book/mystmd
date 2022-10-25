@@ -320,7 +320,8 @@ export async function localArticleToTex(
   templateOptions?: Record<string, any>,
   extraLinkTransformers?: LinkTransformer[],
 ) {
-  const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
+  let { projectPath } = opts;
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectAndBibliography(session, projectPath);
   const exportOptionsList = (
     await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)

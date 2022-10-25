@@ -32,6 +32,7 @@ export type WordExportOptions = {
   filename: string;
   clean?: boolean;
   noDefaultExport?: boolean;
+  projectPath?: string;
   renderer?: (
     session: ISession,
     data: RendererData,
@@ -186,7 +187,8 @@ export async function localArticleToWord(
   templateOptions?: Record<string, any>,
   extraLinkTransformers?: LinkTransformer[],
 ) {
-  const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
+  let { projectPath } = opts;
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectAndBibliography(session, projectPath);
   const exportOptionsList = (
     await collectWordExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
