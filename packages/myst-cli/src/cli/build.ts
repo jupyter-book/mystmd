@@ -38,13 +38,6 @@ export function makeWriteTocOption() {
   ).default(false);
 }
 
-export function makeWriteConfigFileOption() {
-  return new Option(
-    '--write-config',
-    'Generate blank, editable myst.yml file for project if it does not exist',
-  ).default(false);
-}
-
 export function makeBuildCLI(program: Command) {
   const command = new Command('build')
     .description('Build pdf, tex, and word exports from MyST files')

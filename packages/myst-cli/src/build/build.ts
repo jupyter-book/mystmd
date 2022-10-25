@@ -15,7 +15,6 @@ export type BuildOpts = {
   checkLinks?: boolean;
   clean?: boolean;
   writeToc?: boolean;
-  writeConfig?: boolean;
 };
 
 export function noBuildTargets(opts: BuildOpts) {
@@ -25,19 +24,8 @@ export function noBuildTargets(opts: BuildOpts) {
 
 export function build(session: ISession, opts: BuildOpts) {
   const buildAll = noBuildTargets(opts);
-  const { file, output, docx, pdf, tex, clean, writeConfig, writeToc } = opts;
-  let configPath = selectors.selectCurrentProjectPath(session.store.getState());
-  if (configPath && writeConfig) {
-    const configFile = selectors.selectCurrentProjectFile(session.store.getState());
-    session.log.warn(`🚫 Ignoring --writeConfig, found existing project config: ${configFile}`);
-  }
-  if (!configPath) {
-    configPath = '.';
-    if (writeConfig) {
-      // TODO: Write default project config to path '.'
-      // loadConfigAndValidateOrThrow(session, '.')
-    }
-  }
+  const { file, output, docx, pdf, tex, clean, writeToc } = opts;
+  const configPath = selectors.selectCurrentProjectPath(session.store.getState());
   let pages: string[];
   let projectPath: string | undefined;
   let noDefaultExport = false;
@@ -45,7 +33,7 @@ export function build(session: ISession, opts: BuildOpts) {
     pages = [file];
   } else {
     noDefaultExport = true;
-    const project = loadProjectFromDisk(session, configPath, { writeToc });
+    const project = loadProjectFromDisk(session, configPath ?? '.', { writeToc });
     pages = filterPages(project).map((page) => page.file);
     projectPath = configPath;
   }
