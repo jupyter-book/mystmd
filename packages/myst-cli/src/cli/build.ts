@@ -15,8 +15,12 @@ export function makeDocxOption() {
   return new Option('--word, --docx', 'Build Docx output').default(false);
 }
 
-export function makeWebOption() {
-  return new Option('--web', 'Build web outputs').default(false);
+export function makeFileOption() {
+  return new Option('-f, --file', 'Single file to export').default('');
+}
+
+export function makeOutputOption() {
+  return new Option('-o, --output', 'Output folder for exports').default('');
 }
 
 export function makeCleanOption() {
@@ -34,25 +38,23 @@ export function makeWriteTocOption() {
   ).default(false);
 }
 
-export function makeStrictOption() {
-  return new Option('--strict', 'Summarize build warnings and stop on any errors.').default(false);
+export function makeWriteConfigFileOption() {
+  return new Option(
+    '--write-config',
+    'Generate blank, editable myst.yml file for project if it does not exist',
+  ).default(false);
 }
 
 export function makeBuildCLI(program: Command) {
   const command = new Command('build')
     .description('Build pdf, tex, word, and web exports from MyST files')
-    // .argument('[input]', 'Input MyST file, config file, or folder')
-    // .argument(
-    //   '[output]',
-    //   'Output file or folder; may only be used if single input file is specified',
-    // )
     .addOption(makePdfOption())
     .addOption(makeTexOption())
     .addOption(makeDocxOption())
-    .addOption(makeWebOption())
+    .addOption(makeFileOption())
+    .addOption(makeOutputOption())
     .addOption(makeCleanOption())
     .addOption(makeWriteTocOption())
-    .addOption(makeStrictOption())
     .addOption(makeCheckLinksOption())
     .action(clirun(Session, build, program));
   return command;

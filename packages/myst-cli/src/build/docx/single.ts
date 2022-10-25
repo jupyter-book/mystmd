@@ -31,6 +31,7 @@ import { createArticleTitle, createReferenceTitle } from './titles';
 export type WordExportOptions = {
   filename: string;
   clean?: boolean;
+  noDefaultExport?: boolean;
   renderer?: (
     session: ISession,
     data: RendererData,
@@ -49,10 +50,12 @@ export async function collectWordExportOptions(
 ) {
   const { filename, renderer } = opts;
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
+  const rawExports = rawFrontmatter?.exports || [];
+  if (rawExports.length === 0 && opts.noDefaultExport) return [];
   const exportErrorMessages: ValidationOptions['messages'] = {};
   let exportOptions: Export[] =
-    rawFrontmatter?.exports
-      ?.map((exp: any, ind: number) => {
+    rawExports
+      .map((exp: any, ind: number) => {
         return validateExport(exp, {
           property: `exports.${ind}`,
           messages: exportErrorMessages,

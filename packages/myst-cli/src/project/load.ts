@@ -10,13 +10,13 @@ import { getAllBibTexFilesOnPath, isDirectory, isUrl, validateTOC } from '../uti
 import { projectFromPath } from './fromPath';
 import { projectFromToc } from './fromToc';
 import { writeTocFromProject } from './toToc';
-import type { LocalProject } from './types';
+import type { LocalProject, LocalProjectPage } from './types';
 
 /**
  * Load project structure from disk from
  *
  * @param session
- * @param path - root directory of project, relative to current directory; default is '.'
+ * @param path - root directory of project, relative to current directory
  * @param opts - `index`, including path relative to current directory; default is 'index.md'
  *     or 'readme.md' in 'path' directory
  *
@@ -26,7 +26,7 @@ import type { LocalProject } from './types';
  */
 export function loadProjectFromDisk(
   session: ISession,
-  path?: string,
+  path: string,
   opts?: { index?: string; writeToc?: boolean },
 ): LocalProject {
   path = path || '.';
@@ -111,4 +111,12 @@ export function findProjectsOnPath(session: ISession, path: string) {
       projectPaths = projectPaths.concat(findProjectsOnPath(session, dir));
     });
   return projectPaths;
+}
+
+export function filterPages(project: LocalProject) {
+  const pages: LocalProjectPage[] = [
+    { file: project.file, slug: project.index, level: 1 },
+    ...project.pages.filter((page): page is LocalProjectPage => 'file' in page),
+  ];
+  return pages;
 }

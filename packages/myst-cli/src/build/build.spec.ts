@@ -5,12 +5,12 @@ describe('noBuildTargets', () => {
     expect(noBuildTargets({})).toBe(true);
   });
   it('all build targets false in options returns true', async () => {
-    expect(noBuildTargets({ docx: false, pdf: false, tex: false, web: false })).toBe(true);
+    expect(noBuildTargets({ docx: false, pdf: false, tex: false })).toBe(true);
   });
   it('single build target true in options returns false', async () => {
-    expect(noBuildTargets({ docx: true, pdf: false, tex: false, web: false })).toBe(false);
+    expect(noBuildTargets({ docx: true, pdf: false, tex: false })).toBe(false);
   });
   it('all build targets true in options returns false', async () => {
-    expect(noBuildTargets({ docx: true, pdf: true, tex: true, web: true })).toBe(false);
+    expect(noBuildTargets({ docx: true, pdf: true, tex: true })).toBe(false);
   });
 });

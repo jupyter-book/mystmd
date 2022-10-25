@@ -173,10 +173,12 @@ export async function collectTexExportOptions(
     );
   }
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
+  const rawExports = rawFrontmatter?.exports || [];
+  if (rawExports.length === 0 && opts.noDefaultExport) return [];
   const exportErrorMessages: ValidationOptions['messages'] = {};
   let exportOptions: Export[] =
-    rawFrontmatter?.exports
-      ?.map((exp: any, ind: number) => {
+    rawExports
+      .map((exp: any, ind: number) => {
         return validateExport(exp, {
           property: `exports.${ind}`,
           messages: exportErrorMessages,

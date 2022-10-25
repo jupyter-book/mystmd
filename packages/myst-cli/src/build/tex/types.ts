@@ -5,4 +5,5 @@ export type TexExportOptions = {
   templateOptions?: Record<string, any>;
   clean?: boolean;
   zip?: boolean;
+  noDefaultExport?: boolean;
 };
