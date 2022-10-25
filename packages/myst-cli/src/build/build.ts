@@ -40,7 +40,7 @@ export function build(session: ISession, opts: BuildOpts) {
   resolveAndLogErrors(session, [
     ...pages.map(async (page) => {
       if (buildAll || docx) {
-        await localArticleToWord(session, page, {
+        await localArticleToWord(session.clone(), page, {
           filename: output || '',
           clean,
           noDefaultExport,
@@ -50,7 +50,7 @@ export function build(session: ISession, opts: BuildOpts) {
     }),
     ...pages.map(async (page) => {
       if (buildAll || pdf) {
-        await localArticleToPdf(session, page, {
+        await localArticleToPdf(session.clone(), page, {
           filename: output || '',
           clean,
           noDefaultExport,
@@ -60,7 +60,7 @@ export function build(session: ISession, opts: BuildOpts) {
     }),
     ...pages.map(async (page) => {
       if (buildAll || tex) {
-        await localArticleToTex(session, page, {
+        await localArticleToTex(session.clone(), page, {
           filename: output || '',
           clean,
           noDefaultExport,
