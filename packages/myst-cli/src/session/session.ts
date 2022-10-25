@@ -1,7 +1,7 @@
 import path from 'path';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
-import { basicLogger, LogLevel } from 'myst-cli-utils';
+import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
 import { rootReducer, selectors } from '../store';
 import type { RootState } from '../store';
@@ -24,7 +24,7 @@ export class Session implements ISession {
   constructor(opts: { logger?: Logger } = {}) {
     this.API_URL = API_URL;
     this.configFiles = CONFIG_FILES;
-    this.$logger = opts.logger ?? basicLogger(LogLevel.info);
+    this.$logger = opts.logger ?? chalkLogger(LogLevel.info);
     this.store = createStore(rootReducer);
     findCurrentProjectAndLoad(this, '.');
     findCurrentSiteAndLoad(this, '.');

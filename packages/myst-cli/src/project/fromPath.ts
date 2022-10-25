@@ -43,7 +43,7 @@ function projectPagesFromPath(
     .filter((file) => !ignore || !ignore.includes(file))
     .sort();
   if (session.configFiles.filter((file) => contents.includes(join(path, file))).length) {
-    // Stop when we encounter another site/project curvenote config
+    session.log.info(`🔍 Found config file, ignoring subdirectory: ${path}`);
     return [];
   }
   if (contents.includes(join(path, '_toc.yml'))) {
