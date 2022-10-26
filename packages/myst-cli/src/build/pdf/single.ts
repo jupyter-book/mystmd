@@ -5,8 +5,7 @@ import { loadProjectAndBibliography } from '../../project';
 import type { ISession } from '../../session/types';
 import { createTempFolder } from '../../utils';
 import { collectTexExportOptions, runTexExport } from '../tex/single';
-import type { TexExportOptions } from '../tex/types';
-import type { ExportWithOutput } from '../types';
+import type { ExportOptions, ExportWithOutput } from '../types';
 import { resolveAndLogErrors, cleanOutput } from '../utils';
 import { createPdfGivenTexExport } from './create';
 
@@ -32,7 +31,7 @@ export function texExportOptionsFromPdf(
 export async function localArticleToPdf(
   session: ISession,
   file: string,
-  opts: TexExportOptions,
+  opts: ExportOptions,
   templateOptions?: Record<string, any>,
 ) {
   let { projectPath } = opts;
@@ -52,26 +51,24 @@ export async function localArticleToPdf(
   });
   await resolveAndLogErrors(
     session,
-    pdfExportOptionsList
-      .map(async (exportOptions) => {
-        const { format, output } = exportOptions;
-        const keepTexAndLogs = format === ExportFormats.pdftex;
-        const texExportOptions = texExportOptionsFromPdf(
-          session,
-          exportOptions,
-          keepTexAndLogs,
-          opts.clean,
-        );
-        await runTexExport(session, file, texExportOptions, projectPath, opts.clean);
-        await createPdfGivenTexExport(
-          session,
-          texExportOptions,
-          output,
-          keepTexAndLogs,
-          opts.clean,
-          projectPath || path.dirname(file),
-        );
-      })
-      .map((p) => p.catch((e) => e)),
+    pdfExportOptionsList.map(async (exportOptions) => {
+      const { format, output } = exportOptions;
+      const keepTexAndLogs = format === ExportFormats.pdftex;
+      const texExportOptions = texExportOptionsFromPdf(
+        session,
+        exportOptions,
+        keepTexAndLogs,
+        opts.clean,
+      );
+      await runTexExport(session, file, texExportOptions, projectPath, opts.clean);
+      await createPdfGivenTexExport(
+        session,
+        texExportOptions,
+        output,
+        keepTexAndLogs,
+        opts.clean,
+        projectPath || path.dirname(file),
+      );
+    }),
   );
 }

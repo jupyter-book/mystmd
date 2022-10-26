@@ -40,8 +40,7 @@ export async function createPdfGivenTexExport(
   copyContents(path.dirname(texOutput), buildPath);
 
   if (!fs.existsSync(texBuild)) {
-    session.log.error(`Could not find tex file: ${texOutput}`);
-    throw Error(`pdf export failed`);
+    throw Error(`Error exporting: ${pdfOutput}\nCould not find tex file: ${texOutput}`);
   }
 
   const pdfBasename = path.basename(pdfOutput, path.extname(pdfOutput));
@@ -109,6 +108,6 @@ export async function createPdfGivenTexExport(
     }
   }
   if (!fs.existsSync(pdfOutput)) {
-    throw Error(`pdf export failed`);
+    throw Error(`Error exporting: ${pdfOutput}`);
   }
 }

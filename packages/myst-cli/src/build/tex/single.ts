@@ -19,7 +19,7 @@ import { loadProjectAndBibliography } from '../../project';
 import type { ISession } from '../../session/types';
 import { selectLocalProject } from '../../store/selectors';
 import { createTempFolder } from '../../utils';
-import type { ExportWithOutput } from '../types';
+import type { ExportWithOutput, ExportOptions } from '../types';
 import {
   cleanOutput,
   getDefaultExportFilename,
@@ -27,7 +27,6 @@ import {
   getSingleFileContent,
   resolveAndLogErrors,
 } from '../utils';
-import type { TexExportOptions } from './types';
 import { unified } from 'unified';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
@@ -164,7 +163,7 @@ export async function collectTexExportOptions(
   extension: string,
   formats: ExportFormats[],
   projectPath: string | undefined,
-  opts: TexExportOptions,
+  opts: ExportOptions,
 ) {
   const { filename, disableTemplate, template, zip } = opts;
   if (disableTemplate && template) {
@@ -291,7 +290,7 @@ export async function runTexExport(
   }
 }
 
-async function runTexZipExport(
+export async function runTexZipExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
@@ -316,7 +315,7 @@ async function runTexZipExport(
 export async function localArticleToTex(
   session: ISession,
   file: string,
-  opts: TexExportOptions,
+  opts: ExportOptions,
   templateOptions?: Record<string, any>,
   extraLinkTransformers?: LinkTransformer[],
 ) {

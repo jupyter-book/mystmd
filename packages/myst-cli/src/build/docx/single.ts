@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import type { File } from 'docx';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { writeFileToFolder } from 'myst-cli-utils';
@@ -16,7 +15,7 @@ import { loadProjectAndBibliography } from '../../project';
 import type { ISession } from '../../session/types';
 import type { RendererData } from '../../transforms/types';
 import { createTempFolder, logMessagesFromVFile } from '../../utils';
-import type { ExportWithOutput } from '../types';
+import type { ExportOptions, ExportWithOutput } from '../types';
 import {
   getDefaultExportFilename,
   getDefaultExportFolder,
@@ -28,26 +27,13 @@ import { createCurvenoteFooter } from './footers';
 import DEFAULT_STYLE from './simpleStyles';
 import { createArticleTitle, createReferenceTitle } from './titles';
 
-export type WordExportOptions = {
-  filename: string;
-  clean?: boolean;
-  noDefaultExport?: boolean;
-  projectPath?: string;
-  renderer?: (
-    session: ISession,
-    data: RendererData,
-    vfile: VFile,
-    opts: Record<string, any>,
-  ) => File;
-};
-
 export async function collectWordExportOptions(
   session: ISession,
   file: string,
   extension: string,
   formats: ExportFormats[],
   projectPath: string | undefined,
-  opts: WordExportOptions,
+  opts: ExportOptions,
 ) {
   const { filename, renderer } = opts;
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
@@ -183,7 +169,7 @@ export async function runWordExport(
 export async function localArticleToWord(
   session: ISession,
   file: string,
-  opts: WordExportOptions,
+  opts: ExportOptions,
   templateOptions?: Record<string, any>,
   extraLinkTransformers?: LinkTransformer[],
 ) {

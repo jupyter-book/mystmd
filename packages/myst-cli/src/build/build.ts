@@ -1,10 +1,11 @@
+import { ExportFormats } from 'myst-frontmatter';
+import path from 'path';
+import { findCurrentProjectAndLoad } from '../config';
 import { filterPages, loadProjectFromDisk } from '../project';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
-import { localArticleToWord } from './docx';
-import { localArticleToPdf } from './pdf';
-import { localArticleToTex } from './tex';
-import { resolveAndLogErrors } from './utils';
+import { collectExportOptions } from './utils/collectExportOptions';
+import { localArticleExport } from './utils/localArticleExport';
 
 export type BuildOpts = {
   docx?: boolean;
@@ -17,56 +18,42 @@ export type BuildOpts = {
   writeToc?: boolean;
 };
 
-export function noBuildTargets(opts: BuildOpts) {
+export function getExportFormats(opts: BuildOpts) {
   const { docx, pdf, tex } = opts;
-  return !docx && !pdf && !tex;
+  const buildAll = !docx && !pdf && !tex;
+  const formats = [];
+  if (docx || buildAll) formats.push(ExportFormats.docx);
+  if (pdf || buildAll) formats.push(ExportFormats.pdf);
+  if (tex || buildAll) formats.push(ExportFormats.tex);
+  return formats;
 }
 
-export function build(session: ISession, opts: BuildOpts) {
-  const buildAll = noBuildTargets(opts);
-  const { file, output, docx, pdf, tex, clean, writeToc } = opts;
+export async function build(session: ISession, opts: BuildOpts) {
+  const formats = getExportFormats(opts);
+  const { file, output, clean, writeToc } = opts;
+  if (output && !file) {
+    session.log.warn(
+      'Ignoring --output value; this may only be used if --file option is also specified',
+    );
+  }
   const configPath = selectors.selectCurrentProjectPath(session.store.getState());
   let pages: string[];
   let projectPath: string | undefined;
   let noDefaultExport = false;
   if (file) {
     pages = [file];
+    projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   } else {
     noDefaultExport = true;
     const project = loadProjectFromDisk(session, configPath ?? '.', { writeToc });
     pages = filterPages(project).map((page) => page.file);
     projectPath = configPath;
   }
-  resolveAndLogErrors(session, [
-    ...pages.map(async (page) => {
-      if (buildAll || docx) {
-        await localArticleToWord(session.clone(), page, {
-          filename: output || '',
-          clean,
-          noDefaultExport,
-          projectPath,
-        });
-      }
-    }),
-    ...pages.map(async (page) => {
-      if (buildAll || pdf) {
-        await localArticleToPdf(session.clone(), page, {
-          filename: output || '',
-          clean,
-          noDefaultExport,
-          projectPath,
-        });
-      }
-    }),
-    ...pages.map(async (page) => {
-      if (buildAll || tex) {
-        await localArticleToTex(session.clone(), page, {
-          filename: output || '',
-          clean,
-          noDefaultExport,
-          projectPath,
-        });
-      }
-    }),
-  ]);
+  const exportOptionsList = await collectExportOptions(session, pages, formats, {
+    filename: output,
+    clean,
+    noDefaultExport,
+    projectPath,
+  });
+  await localArticleExport(session, exportOptionsList, { clean, projectPath });
 }

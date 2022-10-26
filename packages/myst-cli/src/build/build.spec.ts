@@ -1,16 +1,29 @@
-import { noBuildTargets } from './build';
+import { ExportFormats } from 'myst-frontmatter';
+import { getExportFormats } from './build';
 
-describe('noBuildTargets', () => {
-  it('no build target in options returns true', async () => {
-    expect(noBuildTargets({})).toBe(true);
+describe('getExportFormats', () => {
+  it('no build target in options returns all formats', async () => {
+    expect(getExportFormats({})).toEqual([
+      ExportFormats.docx,
+      ExportFormats.pdf,
+      ExportFormats.tex,
+    ]);
   });
-  it('all build targets false in options returns true', async () => {
-    expect(noBuildTargets({ docx: false, pdf: false, tex: false })).toBe(true);
+  it('all build targets false in options returns all formats', async () => {
+    expect(getExportFormats({ docx: false, pdf: false, tex: false })).toEqual([
+      ExportFormats.docx,
+      ExportFormats.pdf,
+      ExportFormats.tex,
+    ]);
   });
-  it('single build target true in options returns false', async () => {
-    expect(noBuildTargets({ docx: true, pdf: false, tex: false })).toBe(false);
+  it('single build target true in options returns single format', async () => {
+    expect(getExportFormats({ docx: true, pdf: false, tex: false })).toEqual([ExportFormats.docx]);
   });
-  it('all build targets true in options returns false', async () => {
-    expect(noBuildTargets({ docx: true, pdf: true, tex: true })).toBe(false);
+  it('all build targets true in options returns all formats', async () => {
+    expect(getExportFormats({ docx: true, pdf: true, tex: true })).toEqual([
+      ExportFormats.docx,
+      ExportFormats.pdf,
+      ExportFormats.tex,
+    ]);
   });
 });
