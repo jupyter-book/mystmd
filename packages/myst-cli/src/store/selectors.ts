@@ -46,6 +46,9 @@ export function selectCurrentProjectFile(state: RootState) {
   if (!state.local.config.currentProjectPath) return undefined;
   return state.local.config.filenames[resolve(state.local.config.currentProjectPath)];
 }
+export function selectLocalConfigFile(state: RootState, path: string) {
+  return state.local.config.filenames[resolve(path)];
+}
 
 export function selectLocalRawConfig(
   state: RootState,

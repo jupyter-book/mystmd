@@ -61,18 +61,14 @@ export function loadProjectFromDisk(
   const allBibFiles = getAllBibTexFilesOnPath(session, path);
   let bibliography: string[];
   if (projectConfig?.bibliography) {
-    const bibConfigPath = `${join(path ?? '.', session.configFiles[0])}#bibliography`;
-    bibliography = projectConfig.bibliography
-      .map((bib) => {
-        if (isUrl(bib)) return bib;
-        return join(path ?? '.', bib);
-      })
-      .filter((bib) => {
-        if (allBibFiles.includes(bib)) return true;
-        if (isUrl(bib)) return true;
-        session.log.warn(`⚠️  ${bib} not found, loaded from ${bibConfigPath}`);
-        return false;
-      });
+    const projectConfigFile = selectors.selectLocalConfigFile(session.store.getState(), path);
+    const bibConfigPath = `${projectConfigFile}#bibliography`;
+    bibliography = projectConfig.bibliography.filter((bib) => {
+      if (allBibFiles.includes(bib)) return true;
+      if (isUrl(bib)) return true;
+      session.log.warn(`⚠️  ${bib} not found, loaded from ${bibConfigPath}`);
+      return false;
+    });
     allBibFiles.forEach((bib) => {
       if (bibliography.includes(bib)) return;
       session.log.info(
