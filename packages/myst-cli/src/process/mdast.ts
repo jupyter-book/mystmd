@@ -27,6 +27,7 @@ import { watch } from '../store/reducers';
 import type { ISession } from '../session/types';
 import { castSession } from '../session';
 import type { References, RendererData } from '../transforms/types';
+import { KINDS } from '../transforms/types';
 import {
   checkLinksTransform,
   importMdastFromJson,
@@ -40,7 +41,7 @@ import {
 } from '../transforms';
 import { logMessagesFromVFile } from '../utils';
 import { combineCitationRenderers } from './citations';
-import { bibFilesInDir, KINDS, selectFile } from './file';
+import { bibFilesInDir, selectFile } from './file';
 import { loadIntersphinx } from './intersphinx';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';

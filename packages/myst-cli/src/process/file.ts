@@ -8,11 +8,7 @@ import { warnings, watch } from '../store/reducers';
 import { loadCitations } from './citations';
 import { parseMyst } from './myst';
 import { processNotebook } from './notebook';
-
-export enum KINDS {
-  Article = 'Article',
-  Notebook = 'Notebook',
-}
+import { KINDS } from '../transforms/types';
 
 export async function loadFile(
   session: ISession,

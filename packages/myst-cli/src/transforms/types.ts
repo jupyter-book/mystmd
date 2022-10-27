@@ -1,12 +1,24 @@
-import type { CitationRenderer } from 'citation-js-utils';
-import type { KINDS } from '@curvenote/blocks';
-import type { References as SiteReferences } from '@curvenote/site-common';
-import type { PageFrontmatter } from 'myst-frontmatter';
+import type { FootnoteDefinition } from 'myst-spec';
 import type { Root } from 'mdast';
+import type { PageFrontmatter } from 'myst-frontmatter';
+import type { CitationRenderer } from 'citation-js-utils';
 
-export type { Citations, Footnotes } from '@curvenote/site-common';
+export enum KINDS {
+  Article = 'Article',
+  Notebook = 'Notebook',
+}
 
-export type References = Required<Omit<SiteReferences, 'article'>>;
+type Citations = {
+  order: string[];
+  data: Record<string, { html: string; number: number; doi: string | undefined }>;
+};
+
+type Footnotes = Record<string, FootnoteDefinition>;
+
+export type References = {
+  cite: Citations;
+  footnotes: Footnotes;
+};
 
 export type PreRendererData = {
   file: string;
