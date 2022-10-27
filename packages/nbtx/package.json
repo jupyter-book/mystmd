@@ -4,13 +4,10 @@
   "version": "0.1.11",
   "description": "Notebook Tranlators",
   "author": "Steve Purves <steve@curvenote.com>",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "directories": {
-    "src": "src"
-  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
   "files": [
-    "src",
     "dist"
   ],
   "publishConfig": {
@@ -21,16 +18,16 @@
     "url": "git+https://github.com/curvenote/curvenote.git"
   },
   "scripts": {
-    "test": "jest --config=jest.config.js --env=node --detectOpenHandles --forceExit --verbose",
-    "test:dev": "jest --config=jest.config.js --env=node --detectOpenHandles",
-    "test:watch": "jest --config=jest.config.js --watchAll --env=node --detectOpenHandles",
-    "prepublishOnly": "npm run compile",
-    "build": "npm run clean && tsc -p .",
-    "build:watch": "tsc -w -p .",
-    "lint": "eslint \"src/**/*.ts\" -c ./.eslintrc.js",
-    "lint:format": "npx prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
-    "lint:format:fix": "npx prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "clean": "rm -rf dist"
+    "clean": "rimraf dist",
+    "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist/esm",
+    "build:cjs": "tsc --project ./tsconfig.json --module commonjs --outDir dist/cjs",
+    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
+    "prepublishOnly": "npm run build",
+    "build": "npm-run-all -l clean -p build:cjs build:esm declarations",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.js",
+    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "test": "jest",
+    "test:watch": "jest --watchAll"
   },
   "bugs": {
     "url": "https://github.com/curvenote/curvenote/issues"

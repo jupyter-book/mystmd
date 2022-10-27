@@ -1,25 +1,28 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "esModuleInterop": true,
     "target": "es6",
-    "lib": ["es2019", "DOM", "DOM.Iterable"],
+    // module is overridden from the build:esm/build:cjs scripts
+    "module": "es2015",
+    "jsx": "react-jsx",
+    "lib": ["es2020"],
+    "esModuleInterop": true,
     "noImplicitAny": true,
-    "noImplicitThis": false,
-    "experimentalDecorators": true,
     "strict": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "dist",
+    // outDir is overridden from the build:esm/build:cjs scripts
+    "outDir": "dist/types",
     "baseUrl": "src",
     "paths": {
-      "*": ["node_modules/*", "types/*"]
+      "*": ["node_modules/*"]
     },
-    "typeRoots": ["./node_modules/@types"],
+    // Type roots allows it to be included in a yarn workspace
+    "typeRoots": ["./node_modules/@types", "./types", "../../node_modules/@types"],
     "resolveJsonModule": true,
-    "declaration": true,
-    "skipLibCheck": true
+    // Ignore node_modules, etc.
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"],
-  "exclude": []
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
 }
