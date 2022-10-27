@@ -59,6 +59,14 @@ export class Session implements ISession {
     findCurrentSiteAndLoad(this, '.');
   }
 
+  clone() {
+    return new Session(this.$tokens?.session ?? this.$tokens?.user, {
+      logger: this.log,
+      apiUrl: this.API_URL,
+      siteUrl: this.SITE_URL,
+    });
+  }
+
   setToken(token?: string) {
     const { tokens, url } = setSessionOrUserToken(this.log, token);
     this.$tokens = tokens;

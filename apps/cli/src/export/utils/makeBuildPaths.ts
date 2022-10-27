@@ -5,8 +5,8 @@ import { BUILD_FOLDER } from '../../utils';
 import type { TexExportOptionsExpanded } from '../tex/types';
 
 export function makeBuildPaths(log: Logger, opts: TexExportOptionsExpanded) {
-  const outputPath = path.dirname(opts.filename);
-  const outputFilename = path.basename(opts.filename);
+  const outputPath = path.dirname(opts.filename ?? '');
+  const outputFilename = path.basename(opts.filename ?? '');
   const buildPath =
     opts.useBuildFolder ?? (opts.template || opts.templatePath)
       ? path.join(outputPath, BUILD_FOLDER)

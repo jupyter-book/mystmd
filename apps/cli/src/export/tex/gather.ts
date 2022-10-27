@@ -69,7 +69,7 @@ export async function gatherAndWriteArticleContent(
       templateOptions,
       {
         path: opts.texIsIntermediate ?? false ? '.' : '..', // jtex path is always relative to the content file
-        filename: path.basename(opts.filename),
+        filename: path.basename(opts.filename ?? ''),
         copy_images: true,
         single_file: false,
       },
@@ -90,8 +90,8 @@ export async function gatherAndWriteArticleContent(
   });
 
   const filename = opts.multiple
-    ? path.join(buildPath, 'chapters', opts.filename)
-    : path.join(buildPath, path.basename(opts.filename));
+    ? path.join(buildPath, 'chapters', opts.filename ?? '')
+    : path.join(buildPath, path.basename(opts.filename ?? ''));
   session.log.debug(`Writing main body of content to ${filename}`);
   session.log.debug(`Document has ${article.children.length} child blocks`);
   writeBlocksToFile(

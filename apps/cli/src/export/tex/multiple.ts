@@ -134,7 +134,7 @@ export async function multipleArticleToTex(
       templateOptions,
       {
         path: options.texIsIntermediate ?? false ? '.' : '..', // jtex path is always relative to the content file
-        filename: path.basename(options.filename),
+        filename: path.basename(options.filename ?? ''),
         copy_images: true,
         single_file: false,
       },
@@ -164,7 +164,9 @@ export async function multipleArticleToTex(
   }
 
   const mainContentFilename =
-    options.template || options.templatePath ? path.join(buildPath, 'main.tex') : options.filename;
+    options.template || options.templatePath
+      ? path.join(buildPath, 'main.tex')
+      : options.filename ?? '';
   session.log.debug(`Writing main content to ${mainContentFilename}`);
   fs.writeFileSync(mainContentFilename, mainContent);
 

@@ -32,7 +32,7 @@ export const localExportWrapper =
     } else {
       session.log.info(`🌍 Downloading: ${path}`);
       const localFilename = 'output.md';
-      const localFolder = createTempFolder();
+      const localFolder = createTempFolder(session);
       localPath = join(localFolder, localFilename);
       await oxaLinkToMarkdown(session, path, localFilename, { path: localFolder });
       if (!filename)
