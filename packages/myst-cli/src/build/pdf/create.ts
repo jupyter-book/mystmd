@@ -23,6 +23,16 @@ function copyContents(srcFolder: string, destFolder: string) {
   });
 }
 
+export function getLogOutputFolder(pdfOutput: string) {
+  const pdfBasename = path.basename(pdfOutput, path.extname(pdfOutput));
+  return path.join(path.dirname(pdfOutput), `${pdfBasename}_pdf_logs`);
+}
+
+export function getTexOutputFolder(pdfOutput: string) {
+  const pdfBasename = path.basename(pdfOutput, path.extname(pdfOutput));
+  return path.join(path.dirname(pdfOutput), `${pdfBasename}_pdf_tex`);
+}
+
 export async function createPdfGivenTexExport(
   session: ISession,
   texExportOptions: ExportWithOutput,
@@ -34,7 +44,7 @@ export async function createPdfGivenTexExport(
   if (clean) cleanOutput(session, pdfOutput);
   const { output: texOutput, template } = texExportOptions;
 
-  const buildPath = createTempFolder();
+  const buildPath = createTempFolder(session);
   const texFile = path.basename(texOutput);
   const texBuild = path.join(buildPath, texFile);
   copyContents(path.dirname(texOutput), buildPath);
@@ -53,7 +63,7 @@ export async function createPdfGivenTexExport(
   const logBuild = path.join(buildPath, logFile);
   const texLogBuild = path.join(buildPath, texLogFile);
   // Log file location saved alongside pdf
-  const logOutputFolder = path.join(path.dirname(pdfOutput), `${pdfBasename}_pdf_logs`);
+  const logOutputFolder = getLogOutputFolder(pdfOutput);
   const logOutput = path.join(logOutputFolder, logFile);
   const texLogOutput = path.join(logOutputFolder, texLogFile);
   if (clean) cleanOutput(session, logOutputFolder);

@@ -71,9 +71,7 @@ export function loadProjectFromDisk(
     });
     allBibFiles.forEach((bib) => {
       if (bibliography.includes(bib)) return;
-      session.log.info(
-        chalk.dim(`🔍 ${bib} exists, but the file is not referenced in ${bibConfigPath}`),
-      );
+      session.log.debug(`🔍 ${bib} exists, but the file is not referenced in ${bibConfigPath}`);
     });
   } else {
     bibliography = allBibFiles;

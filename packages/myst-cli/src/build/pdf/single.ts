@@ -7,7 +7,7 @@ import { createTempFolder } from '../../utils';
 import { collectTexExportOptions, runTexExport } from '../tex/single';
 import type { ExportOptions, ExportWithOutput } from '../types';
 import { resolveAndLogErrors, cleanOutput } from '../utils';
-import { createPdfGivenTexExport } from './create';
+import { createPdfGivenTexExport, getTexOutputFolder } from './create';
 
 export function texExportOptionsFromPdf(
   session: ISession,
@@ -19,11 +19,11 @@ export function texExportOptionsFromPdf(
   const outputTexFile = `${basename}.tex`;
   let output: string;
   if (keepTex) {
-    const texOutputFolder = path.join(path.dirname(pdfExp.output), `${basename}_pdf_tex`);
+    const texOutputFolder = getTexOutputFolder(pdfExp.output);
     if (clean) cleanOutput(session, texOutputFolder);
     output = path.join(texOutputFolder, outputTexFile);
   } else {
-    output = path.join(createTempFolder(), outputTexFile);
+    output = path.join(createTempFolder(session), outputTexFile);
   }
   return { ...pdfExp, format: ExportFormats.tex, output };
 }
