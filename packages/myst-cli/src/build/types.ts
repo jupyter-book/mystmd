@@ -19,7 +19,7 @@ export type ExportOptions = {
   templateOptions?: Record<string, any>;
   clean?: boolean;
   zip?: boolean;
-  noDefaultExport?: boolean;
+  force?: boolean;
   projectPath?: string;
   renderer?: (
     session: ISession,
