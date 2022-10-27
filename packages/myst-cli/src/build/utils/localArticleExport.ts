@@ -1,5 +1,6 @@
 import path from 'path';
 import { ExportFormats } from 'myst-frontmatter';
+import { findCurrentProjectAndLoad } from '../../config';
 import { loadProjectAndBibliography } from '../../project';
 import type { ISession } from '../../session';
 import type { ExportOptions, ExportWithInputOutput } from '../types';
@@ -21,15 +22,21 @@ export async function localArticleExport(
       const { $file, ...exportOptions } = exportOptionsWithFile;
       const { format, output } = exportOptions;
       const sessionClone = session.clone();
-      if (projectPath) await loadProjectAndBibliography(sessionClone, projectPath);
+      let fileProjectPath = projectPath;
+      if (fileProjectPath) {
+        await loadProjectAndBibliography(sessionClone, fileProjectPath);
+      } else {
+        fileProjectPath = await findCurrentProjectAndLoad(sessionClone, path.dirname($file));
+        if (fileProjectPath) await loadProjectAndBibliography(sessionClone, fileProjectPath);
+      }
       if (format === ExportFormats.tex) {
         if (path.extname(output) === '.zip') {
-          await runTexZipExport(sessionClone, $file, exportOptions, projectPath, clean);
+          await runTexZipExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
         } else {
-          await runTexExport(sessionClone, $file, exportOptions, projectPath, clean);
+          await runTexExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
         }
       } else if (format === ExportFormats.docx) {
-        await runWordExport(sessionClone, $file, exportOptions, projectPath, clean);
+        await runWordExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
       } else {
         const keepTexAndLogs = format === ExportFormats.pdftex;
         const texExportOptions = texExportOptionsFromPdf(
@@ -38,14 +45,14 @@ export async function localArticleExport(
           keepTexAndLogs,
           clean,
         );
-        await runTexExport(sessionClone, $file, texExportOptions, projectPath, clean);
+        await runTexExport(sessionClone, $file, texExportOptions, fileProjectPath, clean);
         await createPdfGivenTexExport(
           sessionClone,
           texExportOptions,
           output,
           keepTexAndLogs,
           clean,
-          projectPath,
+          fileProjectPath,
         );
       }
     }),
