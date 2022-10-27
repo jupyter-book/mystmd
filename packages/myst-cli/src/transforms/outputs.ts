@@ -2,7 +2,7 @@ import type { GenericNode } from 'mystjs';
 import { selectAll } from 'mystjs';
 import type { CellOutput } from '@curvenote/blocks';
 import { KINDS } from '@curvenote/blocks';
-import { minifyCellOutput, walkPaths } from '@curvenote/nbtx';
+import { minifyCellOutput, walkPaths } from 'nbtx';
 import type { Root } from 'mdast';
 import type { ISession } from '../session/types';
 import { createWebFileObjectFactory } from '../utils';
