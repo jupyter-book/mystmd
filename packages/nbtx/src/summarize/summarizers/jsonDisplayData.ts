@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { DisplayData, OutputSummaryEntry } from '@curvenote/blocks';
+import type { DisplayData, OutputSummaryEntry } from '@curvenote/blocks';
 import StringDisplayDataSummarizer from './stringDisplayData';
 
 class JsonDisplayDataSummarizer extends StringDisplayDataSummarizer {

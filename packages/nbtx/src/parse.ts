@@ -1,6 +1,6 @@
-import { Blocks, JupyterNotebook } from '@curvenote/blocks';
+import type { Blocks, JupyterNotebook } from '@curvenote/blocks';
 import { notebookFromJupyter, translateFromJupyter } from './translators';
-import { TranslatedBlockPair } from './types';
+import type { TranslatedBlockPair } from './types';
 
 /**
  * Parses the notebook Json creating a draft/empty notebook block and an array of

@@ -1,8 +1,7 @@
-import {
+import type {
   BlockChild,
   BlockChildDict,
   ChildId,
-  KINDS,
   NotebookCodeBlockChild,
   BlockId,
   VersionId,
@@ -10,8 +9,8 @@ import {
   JupyterNotebook,
   Blocks,
   IooxaMetadata,
-  convertToSrcId,
 } from '@curvenote/blocks';
+import { KINDS, convertToSrcId } from '@curvenote/blocks';
 
 /**
  * @param notebook a Notebook block from the DB
@@ -32,6 +31,7 @@ export function toJupyterNotebook(notebook: Blocks.Notebook): JupyterNotebook {
 }
 
 export function notebookFromJupyter(data: JsonObject): Partial<Blocks.Notebook> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { iooxa, ...metadata } = data.metadata;
   return {
     kind: KINDS.Notebook,

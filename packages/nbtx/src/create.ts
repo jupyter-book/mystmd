@@ -1,4 +1,5 @@
-import { Blocks, JupyterNotebook, KINDS, NotebookCell } from '@curvenote/blocks';
+import type { Blocks, JupyterNotebook, NotebookCell } from '@curvenote/blocks';
+import { KINDS } from '@curvenote/blocks';
 import { translateToJupyter } from './translators';
 
 function isNotNull<T>(arg: T | null): arg is T {

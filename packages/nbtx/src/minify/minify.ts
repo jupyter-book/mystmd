@@ -1,6 +1,6 @@
-import { IOutput, IStream, IError, IDisplayData, IExecuteResult } from '@jupyterlab/nbformat';
-import { IFileObjectFactoryFn } from '../files';
-import { MinifiedOutput, MinifyOptions } from './types';
+import type { IOutput, IStream, IError, IDisplayData, IExecuteResult } from '@jupyterlab/nbformat';
+import type { IFileObjectFactoryFn } from '../files';
+import type { MinifiedOutput, MinifyOptions } from './types';
 import { minifyErrorOutput, minifyStreamOutput } from './text';
 import { minifyMimeOutput } from './mime';
 import { ensureSafePath, isNotNull, MAX_CHARS, TRUNCATED_CHARS_COUNT } from './utils';

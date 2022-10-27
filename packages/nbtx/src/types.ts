@@ -1,4 +1,4 @@
-import { Blocks, JsonObject, PartialBlocks, TARGET } from '@curvenote/blocks';
+import type { Blocks, JsonObject, PartialBlocks, TARGET } from '@curvenote/blocks';
 
 export type AllowedTargets = TARGET.JupyterOutput;
 

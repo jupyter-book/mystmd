@@ -1,13 +1,5 @@
-import {
-  Language,
-  KINDS,
-  TARGET,
-  CodeFormatTypes,
-  ensureString,
-  Blocks,
-  CodeCell,
-  CELL_TYPE,
-} from '@curvenote/blocks';
+import type { Language, Blocks, CodeCell } from '@curvenote/blocks';
+import { KINDS, TARGET, CodeFormatTypes, ensureString, CELL_TYPE } from '@curvenote/blocks';
 import { fromJupyter as outputDataFromJuyter } from './outputData';
 
 export function toJupyter(block: Blocks.Code): CodeCell {
@@ -32,8 +24,8 @@ export function fromJupyter(
   jupyterCell: CodeCell,
   language: Language | undefined,
 ): (Blocks.Code | Blocks.Output)[] {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // preserve any metadata we don't know about
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { iooxa, ...jupyter } = jupyterCell.metadata;
 
   const block: Blocks.Code = {

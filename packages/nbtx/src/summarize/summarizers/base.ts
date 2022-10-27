@@ -1,13 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable import/no-cycle */
-import {
-  CellOutput,
-  KnownCellOutputMimeTypes,
-  OutputSummaryKind,
-  OutputSummaryEntry,
-} from '@curvenote/blocks';
-import { IFileObjectFactoryFn } from '../../files';
-import { SummarizerOptions } from './types';
+import type { CellOutput, KnownCellOutputMimeTypes, OutputSummaryEntry } from '@curvenote/blocks';
+import { OutputSummaryKind } from '@curvenote/blocks';
+import type { IFileObjectFactoryFn } from '../../files';
+import type { SummarizerOptions } from './types';
 
 const NUM_CHARS = 25000;
 const TRUNCATED_CHARS_COUNT = 64;

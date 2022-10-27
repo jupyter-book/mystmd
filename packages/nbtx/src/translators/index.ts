@@ -1,14 +1,12 @@
-import {
-  KINDS,
+import type {
   Language,
   ALL_BLOCKS,
   Blocks,
-  TARGET,
-  CELL_TYPE,
   NotebookCell,
   JupyterNotebook,
   CellOutput,
 } from '@curvenote/blocks';
+import { KINDS, TARGET, CELL_TYPE } from '@curvenote/blocks';
 import * as codeCell from './codeCell';
 import * as markdownCell from './markdownCell';
 import * as rawCell from './rawCell';

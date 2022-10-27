@@ -1,5 +1,5 @@
-import { IOutput } from '@jupyterlab/nbformat';
-import { MinifiedOutput } from './types';
+import type { IOutput } from '@jupyterlab/nbformat';
+import type { MinifiedOutput } from './types';
 
 export function convertToIOutputs(minified: MinifiedOutput[]): IOutput[] {
   return minified.map((m: MinifiedOutput) => {

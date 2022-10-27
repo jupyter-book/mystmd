@@ -1,4 +1,4 @@
-import { IStream, IError, ExecutionCount, OutputMetadata } from '@jupyterlab/nbformat';
+import type { IStream, IError, ExecutionCount, OutputMetadata } from '@jupyterlab/nbformat';
 
 export interface MinifyOptions {
   basepath: string;

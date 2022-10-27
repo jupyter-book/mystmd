@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
-import { TranslatedBlockPair } from './types';
-import { IFileObjectFactoryFn } from './files';
+import type { TranslatedBlockPair } from './types';
+import type { IFileObjectFactoryFn } from './files';
 
 export const uploadOutputs = async (
   fileFactory: IFileObjectFactoryFn,

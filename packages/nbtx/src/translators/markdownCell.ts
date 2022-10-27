@@ -1,13 +1,5 @@
-import {
-  NotebookCell,
-  Blocks,
-  CELL_TYPE,
-  MarkdownCell,
-  KINDS,
-  TARGET,
-  ContentFormatTypes,
-  ensureString,
-} from '@curvenote/blocks';
+import type { NotebookCell, Blocks, MarkdownCell } from '@curvenote/blocks';
+import { CELL_TYPE, KINDS, TARGET, ContentFormatTypes, ensureString } from '@curvenote/blocks';
 
 export function toJupyter(block: Blocks.Content): NotebookCell {
   const { metadata } = block;
@@ -25,6 +17,7 @@ export function toJupyter(block: Blocks.Content): NotebookCell {
 
 // QUESTION should returning content and caller adds the kind
 export function fromJupyter(cell: MarkdownCell): Blocks.Content[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { iooxa, ...jupyter } = cell.metadata;
   return [
     {

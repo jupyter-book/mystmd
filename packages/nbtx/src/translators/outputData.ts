@@ -1,4 +1,5 @@
-import { Blocks, CellOutput, KINDS, OutputFormatTypes, TARGET } from '@curvenote/blocks';
+import type { Blocks, CellOutput } from '@curvenote/blocks';
+import { KINDS, OutputFormatTypes, TARGET } from '@curvenote/blocks';
 
 /**
  * Translate an output block to a jupyter CellOutput array

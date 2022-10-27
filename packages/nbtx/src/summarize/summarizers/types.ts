@@ -1,9 +1,9 @@
 /* eslint-disable import/no-cycle */
-import StringDisplayDataSummarizer from './stringDisplayData';
-import ErrorSummarizer from './error';
-import ImageSummarizer from './image';
-import StreamSummarizer from './stream';
-import SvgSummarizer from './svg';
+import type StringDisplayDataSummarizer from './stringDisplayData';
+import type ErrorSummarizer from './error';
+import type ImageSummarizer from './image';
+import type StreamSummarizer from './stream';
+import type SvgSummarizer from './svg';
 
 export type Summarizer =
   | StringDisplayDataSummarizer

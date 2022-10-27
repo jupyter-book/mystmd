@@ -1,4 +1,4 @@
-# @curvenote/nbtx
+# nbtx
 
 Transform and manipulate Jupyter notebook json files (ipynb), converting these to and from more compact data structures used by Curvenote.
 
@@ -12,5 +12,5 @@ Specific functionality included is:
 Install using `npm` or `yarn`
 
 ```
-npm install @curvenote/nbtx
+npm install nbtx
 ```

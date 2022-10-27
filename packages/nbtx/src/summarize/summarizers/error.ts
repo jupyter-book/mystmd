@@ -1,12 +1,10 @@
 /* eslint-disable import/no-cycle */
+import type { CellOutput, OutputSummaryEntry, Traceback } from '@curvenote/blocks';
 import {
-  CellOutput,
   KnownCellOutputMimeTypes,
   CellOutputType,
   ensureString,
-  OutputSummaryEntry,
   OutputSummaryKind,
-  Traceback,
 } from '@curvenote/blocks';
 import Summarizer from './base';
 

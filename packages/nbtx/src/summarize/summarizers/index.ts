@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
-import { CellOutput, KnownCellOutputMimeTypes, OutputSummaryKind } from '@curvenote/blocks';
+import type { CellOutput } from '@curvenote/blocks';
+import { KnownCellOutputMimeTypes, OutputSummaryKind } from '@curvenote/blocks';
 import ErrorSummarizer from './error';
 import ImageSummarizer from './image';
 import SvgSummarizer from './svg';
@@ -7,8 +8,8 @@ import StreamSummarizer from './stream';
 import Summarizer from './base';
 import StringDisplayDataSummarizer from './stringDisplayData';
 import JsonDisplayDataSummarizer from './jsonDisplayData';
-import { IFileObjectFactoryFn } from '../../files';
-import { SummarizerOptions } from './types';
+import type { IFileObjectFactoryFn } from '../../files';
+import type { SummarizerOptions } from './types';
 
 Summarizer.new = (
   fileFactory: IFileObjectFactoryFn,

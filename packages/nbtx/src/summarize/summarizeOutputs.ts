@@ -1,9 +1,10 @@
-import { CellOutput, CellOutputType, OutputSummaryKind, OutputSummary } from '@curvenote/blocks';
-import { IFileObjectFactoryFn } from '../files';
+import type { CellOutput, OutputSummary } from '@curvenote/blocks';
+import { CellOutputType, OutputSummaryKind } from '@curvenote/blocks';
+import type { IFileObjectFactoryFn } from '../files';
 import { processMultiMimeOutputs as summarizeMultiMimeOutputs } from './multimime';
 import { Summarizer } from './summarizers';
 import { summarizeDisplayDataOrExecuteResult } from './display';
-import { SummarizerOptions } from './summarizers/types';
+import type { SummarizerOptions } from './summarizers/types';
 
 /**
  * Summarize the output of a single cell, serializing to file as appropriate

@@ -1,7 +1,7 @@
-import { IDisplayData, IExecuteResult, MultilineString } from '@jupyterlab/nbformat';
+import type { IDisplayData, IExecuteResult, MultilineString } from '@jupyterlab/nbformat';
 import { ensureString } from '@curvenote/blocks';
-import { IFileObjectFactoryFn } from '../files';
-import { MinifiedMimeBundle, MinifyOptions } from './types';
+import type { IFileObjectFactoryFn } from '../files';
+import type { MinifiedMimeBundle, MinifyOptions } from './types';
 import { ensureSafePath } from './utils';
 
 async function minifyContent(

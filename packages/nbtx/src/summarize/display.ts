@@ -1,16 +1,15 @@
 /* eslint-disable import/no-cycle */
-import {
+import type {
   CellOutput,
-  KnownCellOutputMimeTypes,
   DisplayData,
   ExecuteResult,
-  OutputSummaryKind,
   OutputSummaryEntry,
   OutputSummary,
 } from '@curvenote/blocks';
-import { IFileObjectFactoryFn } from '../files';
+import { KnownCellOutputMimeTypes, OutputSummaryKind } from '@curvenote/blocks';
+import type { IFileObjectFactoryFn } from '../files';
 import { ORDER, Summarizer } from './summarizers';
-import { SummarizerOptions } from './summarizers/types';
+import type { SummarizerOptions } from './summarizers/types';
 
 export const summarizeDisplayDataOrExecuteResult = async (
   fileFactory: IFileObjectFactoryFn,

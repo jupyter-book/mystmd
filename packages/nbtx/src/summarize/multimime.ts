@@ -1,13 +1,11 @@
+import type { CellOutput, DisplayData, ExecuteResult } from '@curvenote/blocks';
 import {
-  CellOutput,
   KnownCellOutputMimeTypes,
   CellOutputType,
-  DisplayData,
   ensureString,
-  ExecuteResult,
   OutputSummaryKind,
 } from '@curvenote/blocks';
-import { IFileObjectFactoryFn } from '../files';
+import type { IFileObjectFactoryFn } from '../files';
 import { MULTI_MIME_OUTPUTS, Summarizer } from './summarizers';
 
 function looksLikePlotlyJsScript(content: string) {

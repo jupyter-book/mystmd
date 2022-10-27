@@ -1,4 +1,4 @@
-import { IMimeBundle, IOutput } from '@jupyterlab/nbformat';
+import type { IMimeBundle, IOutput } from '@jupyterlab/nbformat';
 
 async function requestImageAsBase64String(src: string) {
   const img = new Image();

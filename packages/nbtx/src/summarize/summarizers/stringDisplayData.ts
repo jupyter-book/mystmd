@@ -1,17 +1,16 @@
 /* eslint-disable import/no-cycle */
-import {
+import type {
   CellOutput,
   KnownCellOutputMimeTypes,
-  CellOutputType,
   DisplayData,
-  ensureString,
   ExecuteResult,
   OutputSummaryEntry,
   OutputSummaryKind,
 } from '@curvenote/blocks';
-import { IFileObjectFactoryFn } from '../../files';
+import { CellOutputType, ensureString } from '@curvenote/blocks';
+import type { IFileObjectFactoryFn } from '../../files';
 import Summarizer from './base';
-import { SummarizerOptions } from './types';
+import type { SummarizerOptions } from './types';
 import { stripTypesFromOutputData } from './utils';
 
 class StringDisplayDataSummarizer extends Summarizer {

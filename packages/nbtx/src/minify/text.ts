@@ -1,7 +1,7 @@
-import { IStream, IError } from '@jupyterlab/nbformat';
+import type { IStream, IError } from '@jupyterlab/nbformat';
 import { ensureString } from '@curvenote/blocks';
-import { IFileObjectFactoryFn } from '../files';
-import { MinifiedErrorOutput, MinifiedStreamOutput, MinifyOptions } from './types';
+import type { IFileObjectFactoryFn } from '../files';
+import type { MinifiedErrorOutput, MinifiedStreamOutput, MinifyOptions } from './types';
 
 function ensureStringEnsureNewlines(maybeString: string | string[] | undefined) {
   return typeof maybeString === 'string'
