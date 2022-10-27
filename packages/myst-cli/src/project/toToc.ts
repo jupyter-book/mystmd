@@ -12,7 +12,7 @@ function getRelativeDocumentLink(file: string, path: string) {
 
 const GENERATED_TOC_HEADER = `# Table of Contents
 #
-# Curvenote will respect:
+# Myst will respect:
 # 1. New pages
 #      - file: relative/path/to/page
 # 2. New sections without an associated page
