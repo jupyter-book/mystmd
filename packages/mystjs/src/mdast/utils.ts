@@ -1,4 +1,4 @@
-import { AdmonitionKind, GenericNode } from './types';
+import type { AdmonitionKind, GenericNode } from './types';
 
 export function admonitionKindToTitle(kind: AdmonitionKind) {
   const transform: Record<string, string> = {

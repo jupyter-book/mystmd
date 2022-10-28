@@ -1,10 +1,9 @@
-import MarkdownIt from 'markdown-it';
-import { Directive, IOptions as IDocutilsOptions, Role } from 'markdown-it-docutils';
-import { Options as HastOptions } from 'mdast-util-to-hast';
-import { MathExtensionOptions } from './plugins';
-import { MdastOptions, Spec, TransformOptions } from './mdast';
-import { Options as StringifyOptions } from 'rehype-stringify';
-import { Handler } from 'mdast-util-to-hast';
+import type MarkdownIt from 'markdown-it';
+import type { Directive, IOptions as IDocutilsOptions, Role } from 'markdown-it-docutils';
+import type { Options as HastOptions, Handler } from 'mdast-util-to-hast';
+import type { MathExtensionOptions } from './plugins';
+import type { MdastOptions, Spec, TransformOptions } from './mdast';
+import type { Options as StringifyOptions } from 'rehype-stringify';
 
 export interface IDirective {
   myst: typeof Directive;

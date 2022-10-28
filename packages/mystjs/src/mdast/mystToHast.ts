@@ -1,9 +1,10 @@
-import { Root } from 'mdast';
-import { defaultHandlers, Handler, toHast, all, Options } from 'mdast-util-to-hast';
+import type { Root } from 'mdast';
+import type { Handler, Options } from 'mdast-util-to-hast';
+import { defaultHandlers, toHast, all } from 'mdast-util-to-hast';
 import { u } from 'unist-builder';
 import classNames from 'classnames';
 import { AdmonitionKind } from './types';
-import { Plugin } from 'unified';
+import type { Plugin } from 'unified';
 import type { ElementContent, Properties } from 'hast';
 
 const abbreviation: Handler = (h, node) => h(node, 'abbr', { title: node.title }, all(h, node));
@@ -57,8 +58,8 @@ const captionNumber: Handler = (h, node) => {
 const math: Handler = (h, node) => {
   const attrs = { id: node.identifier || undefined, class: 'math block' };
   if (node.value.indexOf('\n') !== -1) {
-    const math = h(node, 'div', attrs, [u('text', node.value)]);
-    return h(node, 'pre', [math]);
+    const mathHast = h(node, 'div', attrs, [u('text', node.value)]);
+    return h(node, 'pre', [mathHast]);
   }
   return h(node, 'div', attrs, [u('text', node.value.replace(/\r?\n|\r/g, ' '))]);
 };
@@ -144,8 +145,8 @@ const code: Handler = (h, node) => {
     props.id = node.identifier;
   }
   props.className = classNames({ ['language-' + node.lang]: node.lang }, node.class) || undefined;
-  const code = h(node, 'code', props, [u('text', value)]);
-  return h(node.position, 'pre', [code]);
+  const codeHast = h(node, 'code', props, [u('text', value)]);
+  return h(node.position, 'pre', [codeHast]);
 };
 
 export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Root) => {

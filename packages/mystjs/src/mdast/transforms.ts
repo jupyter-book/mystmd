@@ -1,16 +1,21 @@
-import { Root } from 'mdast';
-import { unified, Plugin } from 'unified';
-import rehypeParse, { Options } from 'rehype-parse';
+import type { Root } from 'mdast';
+import type { Plugin } from 'unified';
+import { unified } from 'unified';
+import type { Options } from 'rehype-parse';
+import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
-import { all, H, Handle } from 'hast-util-to-mdast';
+import type { H, Handle } from 'hast-util-to-mdast';
+import { all } from 'hast-util-to-mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAfter } from 'unist-util-find-after';
 import { remove } from 'unist-util-remove';
 import { map } from 'unist-util-map';
-import { Admonition, AdmonitionKind, GenericNode } from './types';
+import type { Admonition, GenericNode } from './types';
+import { AdmonitionKind } from './types';
 import { admonitionKindToTitle, normalizeLabel } from './utils';
-import { EnumeratorOptions, State, enumerateTargets, resolveReferences } from './state';
+import type { EnumeratorOptions, State } from './state';
+import { enumerateTargets, resolveReferences } from './state';
 
 export type TransformOptions = {
   addAdmonitionHeaders?: boolean;
@@ -143,7 +148,9 @@ export function convertHtmlToMdast(tree: Root, opts?: HtmlToMdastOptions) {
     // there is an option to `keepBreaks` which will simply convert `<br />`
     // tags to `break` nodes, without the special hast-util-to-mdast behavior.
     if (otherOptions.keepBreaks) {
-      selectAll('[tagName=br]', hast).forEach((node: GenericNode) => (node.tagName = '_brKeep'));
+      selectAll('[tagName=br]', hast).forEach((n: GenericNode) => {
+        n.tagName = '_brKeep';
+      });
     }
     const mdast = unified().use(rehypeRemark, { handlers }).runSync(hast);
     node.type = 'htmlParsed';
@@ -151,7 +158,9 @@ export function convertHtmlToMdast(tree: Root, opts?: HtmlToMdastOptions) {
     visit(node, (n: GenericNode) => delete n.position);
   });
   liftChildren(tree, 'htmlParsed');
-  selectAll('_break', tree).forEach((node: GenericNode) => (node.type = 'break'));
+  selectAll('_break', tree).forEach((n: GenericNode) => {
+    n.type = 'break';
+  });
   return tree;
 }
 

@@ -1,9 +1,9 @@
-import { Content, Root } from 'mdast';
-import { Heading } from 'myst-spec';
+import type { Content, Root } from 'mdast';
+import type { Heading } from 'myst-spec';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import { GenericNode } from './types';
+import type { GenericNode } from './types';
 import { normalizeLabel, setTextAsChild } from './utils';
 
 export enum TargetKind {
@@ -210,7 +210,7 @@ export const enumerateTargets = (state: State, tree: Root, opts: EnumeratorOptio
 };
 
 export const resolveReferences = (state: State, tree: Root) => {
-  selectAll('link', tree).map((node: GenericNode) => {
+  selectAll('link', tree).forEach((node: GenericNode) => {
     const reference = normalizeLabel(node.url);
     if (reference && reference.identifier in state.targets) {
       node.type = 'crossReference';

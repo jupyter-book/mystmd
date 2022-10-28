@@ -1,5 +1,5 @@
 import MarkdownIt from 'markdown-it';
-import { Root } from 'mdast';
+import type { Root } from 'mdast';
 import type { Plugin } from 'unified';
 import { unified } from 'unified';
 import rehypeStringify from 'rehype-stringify';
@@ -82,12 +82,12 @@ export class MyST {
     const directivesHandlers: Required<AllOptions['docutils']>['directives'] = {};
     const mdastHandlers: Required<AllOptions['mdast']>['handlers'] = {};
     const hastHandlers: Required<AllOptions['hast']>['handlers'] = {};
-    Object.entries(user.roles ?? {}).map(([k, { myst, mdast, hast }]) => {
+    Object.entries(user.roles ?? {}).forEach(([k, { myst, mdast, hast }]) => {
       rolesHandlers[k] = myst;
       mdastHandlers[k] = mdast;
       hastHandlers[mdast.type] = hast;
     });
-    Object.entries(user.directives ?? {}).map(([k, { myst, mdast, hast }]) => {
+    Object.entries(user.directives ?? {}).forEach(([k, { myst, mdast, hast }]) => {
       directivesHandlers[k] = myst;
       mdastHandlers[k] = mdast;
       hastHandlers[mdast.type] = hast;

@@ -1,11 +1,12 @@
 import { MarkdownParseState } from './fromMarkdown';
 import type { Root } from 'mdast';
-import { Spec, Token, Admonition, Container, AdmonitionKind } from './types';
+import type { Spec, Token, Admonition, Container } from './types';
+import { AdmonitionKind } from './types';
 import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
 import { u } from 'unist-builder';
 import he from 'he';
-import { GenericNode } from '.';
+import type { GenericNode } from '.';
 import {
   admonitionKindToTitle,
   normalizeLabel,
@@ -584,7 +585,7 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
       }
       newTree.children.push(lastBlock);
     };
-    (tree as GenericNode).children?.map((node) => {
+    (tree as GenericNode).children?.forEach((node) => {
       if (node.type === 'blockBreak') {
         pushBlock();
         lastBlock = node;
@@ -606,7 +607,7 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
   //       i.e. visit(tree, 'table', (node, index parent) => {...})
   //       https://github.com/microsoft/TypeScript/issues/46900
 
-  selectAll('table', tree).map((node: GenericNode) => {
+  selectAll('table', tree).forEach((node: GenericNode) => {
     const captionChildren = node.children?.filter((n: GenericNode) => n.type === 'caption');
     if (captionChildren?.length) {
       const tableChildren = node.children?.filter((n: GenericNode) => n.type !== 'caption');

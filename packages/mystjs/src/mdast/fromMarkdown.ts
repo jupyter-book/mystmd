@@ -86,7 +86,7 @@ type TokenHandler = (
   index: number,
 ) => void;
 
-function attrs(spec: Spec, token: Token, tokens: Token[], index: number) {
+function getAttrs(spec: Spec, token: Token, tokens: Token[], index: number) {
   const attrs = spec.getAttrs?.(token, tokens, index) || spec.attrs || {};
   if ('type' in attrs) throw new Error('You can not have "type" as attrs.');
   if ('children' in attrs) throw new Error('You can not have "children" as attrs.');
@@ -109,17 +109,17 @@ function getTokenHandlers(specHandlers: Record<string, Spec>) {
             withoutTrailingNewline(tok.content),
             tok,
             spec.type,
-            attrs(spec, tok, tokens, i),
+            getAttrs(spec, tok, tokens, i),
           );
           return;
         }
-        state.openNode(nodeType, tok, attrs(spec, tok, tokens, i), spec.isLeaf);
+        state.openNode(nodeType, tok, getAttrs(spec, tok, tokens, i), spec.isLeaf);
         state.addText(withoutTrailingNewline(tok.content), tok);
         state.closeNode();
       };
     } else {
       handlers[type + '_open'] = (state, tok, tokens, i) =>
-        state.openNode(nodeType, tok, attrs(spec, tok, tokens, i));
+        state.openNode(nodeType, tok, getAttrs(spec, tok, tokens, i));
       handlers[type + '_close'] = (state) => state.closeNode();
     }
   });
