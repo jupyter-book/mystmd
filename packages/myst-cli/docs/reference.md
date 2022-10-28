@@ -1,6 +1,6 @@
-# Myst Init
+# MyST Init
 
-`myst init` initializes a myst project in the current folder by writing an empty `myst.yml` file.
+`myst init` initializes a MyST project in the current folder by writing an empty `myst.yml` file.
 
 ```
 myst init
@@ -12,9 +12,9 @@ You may also write a table of contents file based on markdown/jupyter notebook f
 myst init --writeToc
 ```
 
-# Myst Build
+# MyST Build
 
-`myst build` is used to export pdf, tex, and docx artifacts from myst files.
+`myst build` is used to export pdf, tex, and docx artifacts from MyST files.
 
 From within a [project](#myst-init) you may run this command with no arguments and it will peform all exports defined in the frontmatter of project files:
 
