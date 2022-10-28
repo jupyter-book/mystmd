@@ -34,7 +34,7 @@
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "unlink": "npm uninstall -g myst;",
     "link": "npm run unlink; npm link;",
-    "dev": "npm run link && concurrently \"tsc -w --preserveWatchOutput -p .\" \"esbuild src/cli/index.ts --bundle --outfile=dist/myst.js --platform=node --external:jsdom --external:fsevents --watch\"",
+    "dev": "npm run link && concurrently \"tsc -w --preserveWatchOutput -p .\" \"esbuild src/cli/index.ts --bundle --outfile=dist/myst.js --platform=node --external:fsevents --watch\"",
     "prepublishOnly": "npm run build",
     "test": "npm run copy:version; npm run link; jest",
     "test:watch": "npm run copy:version; npm run link; jest --watchAll",
@@ -44,7 +44,7 @@
     "build:cjs": "esbuild src/*.ts src/**/*.ts src/**/**/*.ts --outdir=dist/cjs --platform=node --format=cjs",
     "build:esm": "esbuild src/*.ts src/**/*.ts src/**/**/*.ts --outdir=dist/esm --platform=node --format=esm",
     "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
-    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/myst.js --platform=node --external:jsdom --external:fsevents",
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/myst.js --platform=node --external:fsevents",
     "build": "npm-run-all -l copy:version clean -p build:cjs build:esm declarations build:cli",
     "build:watch": "npm run copy:version; tsc -w --preserveWatchOutput -p ."
   },
@@ -54,7 +54,6 @@
   },
   "dependencies": {
     "@curvenote/blocks": "^1.5.16",
-    "nbtx": "^0.1.12",
     "@reduxjs/toolkit": "^1.7.2",
     "adm-zip": "^0.5.9",
     "chalk": "^5.1.2",
@@ -80,6 +79,7 @@
     "myst-transforms": "^0.0.7",
     "mystjs": "^0.0.13",
     "nanoid": "^4.0.0",
+    "nbtx": "^0.1.12",
     "node-fetch": "^3.2.10",
     "redux": "^4.2.0",
     "simple-validators": "^0.0.1",
@@ -88,7 +88,10 @@
     "vfile": "^5.3.5"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.0",
+    "@types/inquirer": "^9.0.2",
     "@types/jest": "^28.1.6",
+    "@types/mime-types": "^2.1.1",
     "esbuild": "^0.15.12",
     "eslint": "^8.21.0",
     "eslint-config-curvenote": "*",

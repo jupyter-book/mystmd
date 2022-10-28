@@ -1,13 +1,20 @@
 module.exports = {
-  preset: 'ts-jest/presets/default', // or other ESM presets
-  extensionsToTreatAsEsm: ['.ts'],
+  rootDir: '../../',
+  preset: 'ts-jest/presets/js-with-ts',
+  testMatch: ['<rootDir>/packages/mystjs/**/?(*.)+(spec|test).+(ts|tsx|js)'],
+  transform: {
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+  },
+  testTimeout: 10000,
   globals: {
     'ts-jest': {
-      useESM: true,
+      tsconfig: './tsconfig.test.json',
     },
   },
-  moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
-  },
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', 'docs'],
+  verbose: true,
+  testEnvironment: 'node',
+  transformIgnorePatterns: [
+    '<rootDir>/node_modules/(?!(vfile|formdata-polyfill|chalk|fetch-blob|vfile-message|unified|bail|trough|zwitch|unist-|hast-|html-|rehype-|mdast-|micromark-|trim-|web-namespaces|property-information|space-separated-tokens|comma-separated-tokens|get-port|stringify-entities|character-entities-html4|ccount))',
+  ],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/docs/'],
 };
