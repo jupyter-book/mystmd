@@ -1,0 +1,43 @@
+{
+  "name": "myst-common",
+  "type": "module",
+  "version": "0.0.4",
+  "main": "./dist/esm/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf dist",
+    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest",
+    "test:watch": "node --experimental-vm-modules ../../node_modules/.bin/jest --watchAll",
+    "lint": "eslint \"src/**/*.ts*\" -c ./.eslintrc.cjs",
+    "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\"",
+    "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist/esm",
+    "build:cjs": "tsc --project ./tsconfig.json --module commonjs --outDir dist/cjs",
+    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
+    "build": "npm-run-all -l clean -p build:esm declarations",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "mdast": "^3.0.0",
+    "myst-spec": "^0.0.4",
+    "nanoid": "^4.0.0",
+    "unist-util-map": "^3.0.0",
+    "vfile": "^5.0.0",
+    "vfile-message": "^3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.21.0",
+    "eslint-config-curvenote": "*",
+    "npm-run-all": "^4.1.5",
+    "prettier": "latest",
+    "react": "^17.0.2",
+    "rimraf": "^3.0.2",
+    "tsconfig": "*",
+    "typescript": "latest",
+    "unist-builder": "3.0.0"
+  }
+}

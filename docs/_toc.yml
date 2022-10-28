@@ -1,0 +1,46 @@
+format: jb-book
+root: index
+parts:
+  - caption: Overview
+    chapters:
+      - file: intro
+      - file: project-overview
+  - caption: Authoring
+    chapters:
+      - file: syntax-overview
+      - file: typography
+      - file: admonitions
+      - file: figures
+      - file: math
+      - file: tables
+      - file: code
+      - file: cross-references
+      - file: external-references
+      - file: citations
+      - file: blocks
+      - file: diagrams
+      - file: dropdowns-cards-and-tabs
+      - file: tasks
+  - caption: Executable Content
+    chapters:
+      - file: interactive-notebooks
+  - caption: Websites
+    chapters:
+      - file: website-overview
+      - file: table-of-contents
+      - file: themes-and-extensions
+      - file: seo-and-social
+      - file: accessibility-and-performance
+      - file: search
+      - file: analytics
+      - file: deployment
+      - file: publishing
+  - caption: Documents
+    chapters:
+      - file: creating-pdf-documents
+      - file: creating-word-documents
+  - caption: Reference
+    chapters:
+      - file: background
+      - file: commonmark
+      - file: frontmatter

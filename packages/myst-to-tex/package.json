@@ -1,0 +1,63 @@
+{
+  "name": "myst-to-tex",
+  "version": "0.0.6",
+  "description": "Export from MyST mdast to latex",
+  "author": "Rowan Cockett <rowanc1@gmail.com>",
+  "homepage": "https://github.com/executablebooks/mystjs",
+  "license": "MIT",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    }
+  },
+  "keywords": [
+    "myst-plugin",
+    "tex",
+    "latex"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/executablebooks/mystjs.git"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build;",
+    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest",
+    "test:watch": "node --experimental-vm-modules ../../node_modules/.bin/jest --watchAll",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",
+    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "watch": "tsc -w -p .",
+    "build:esm": "tsc --module es2015   --outDir dist/esm",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
+  },
+  "bugs": {
+    "url": "https://github.com/executablebooks/mystjs/issues"
+  },
+  "dependencies": {
+    "myst-common": "*",
+    "myst-frontmatter": "*",
+    "unist-util-select": "^4.0.0",
+    "vfile-reporter": "^7.0.4"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.6.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^28.0.7",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.3"
+  }
+}

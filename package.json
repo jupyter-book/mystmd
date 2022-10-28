@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "build:web": "turbo run build --filter=@curvespace/default",
+    "dev": "turbo run dev --parallel",
+    "clean": "turbo run clean --parallel && find . -name '.turbo' -type d -prune -exec rm -rf '{}' +",
+    "lint": "turbo run lint",
+    "lint:format": "turbo run lint:format",
+    "test": "turbo run test",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prepublishOnly": "npm run build",
+    "changeset": "changeset",
+    "version": "changeset version && npm install",
+    "publish": "npm run clean && npm run build -- --force && changeset publish && git push --follow-tags"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.23.2",
+    "esbuild": "^0.15.12",
+    "eslint-config-curvenote": "*",
+    "prettier": "latest",
+    "ts-jest": "^28.0.7",
+    "turbo": "latest"
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=14.0.0"
+  },
+  "packageManager": "npm@8.10.0"
+}

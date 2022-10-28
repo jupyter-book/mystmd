@@ -1,0 +1,14 @@
+version: 1
+project:
+  title: MyST Markdown
+  github: https://github.com/executablebooks/mystjs
+  license:
+    code: MIT
+    content: CC-BY-4.0
+  subject: Javascript
+  venue:
+    title: MyST Markdown
+    url: /
+  references:
+    python: https://docs.python.org/3.7/
+    jupyterbook: https://jupyterbook.org/en/stable/

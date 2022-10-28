@@ -1,0 +1,1 @@
+export { localArticleToTex } from './single';
