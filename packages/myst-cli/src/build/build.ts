@@ -43,6 +43,12 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
   const exportLogList = exportOptionsList.map((exportOptions) => {
     return `${path.relative('.', exportOptions.$file)} -> ${exportOptions.output}`;
   });
+  if (exportLogList.length === 0) {
+    session.log.warn(
+      `📭 No exports found. You may need to add an 'exports' field to the frontmatter of the file(s) you wish to export:\n\n---\nexports:\n  - format: tex\n---`,
+    );
+    return;
+  }
   session.log.info(`📬 Performing exports:\n   ${exportLogList.join('\n   ')}`);
   const cont = yes || (await inquirer.prompt([promptContinue()])).cont;
   if (cont) {

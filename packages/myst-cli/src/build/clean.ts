@@ -58,6 +58,10 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
     if (exports) pathsToDelete.push(path.join(session.buildPath(), 'exports'));
   }
   pathsToDelete = [...new Set(pathsToDelete)].sort();
+  if (pathsToDelete.length === 0) {
+    session.log.warn(`🗑 No build artifacts found to clean!`);
+    return;
+  }
   session.log.info(`❌ Deleting all the following paths:\n   ${pathsToDelete.join('\n   ')}`);
   const cont = yes || (await inquirer.prompt([promptContinue()])).cont;
   if (cont) {
