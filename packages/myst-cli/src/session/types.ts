@@ -12,6 +12,7 @@ export type ISession = {
   configFiles: string[];
   store: Store<RootState>;
   log: Logger;
+  clone(): ISession;
 
   buildPath(): string;
   publicPath(): string;

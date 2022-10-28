@@ -5,10 +5,9 @@ import { loadProjectAndBibliography } from '../../project';
 import type { ISession } from '../../session/types';
 import { createTempFolder } from '../../utils';
 import { collectTexExportOptions, runTexExport } from '../tex/single';
-import type { TexExportOptions } from '../tex/types';
-import type { ExportWithOutput } from '../types';
+import type { ExportOptions, ExportWithOutput } from '../types';
 import { resolveAndLogErrors, cleanOutput } from '../utils';
-import { createPdfGivenTexExport } from './create';
+import { createPdfGivenTexExport, getTexOutputFolder } from './create';
 
 export function texExportOptionsFromPdf(
   session: ISession,
@@ -20,11 +19,11 @@ export function texExportOptionsFromPdf(
   const outputTexFile = `${basename}.tex`;
   let output: string;
   if (keepTex) {
-    const texOutputFolder = path.join(path.dirname(pdfExp.output), `${basename}_pdf_tex`);
+    const texOutputFolder = getTexOutputFolder(pdfExp.output);
     if (clean) cleanOutput(session, texOutputFolder);
     output = path.join(texOutputFolder, outputTexFile);
   } else {
-    output = path.join(createTempFolder(), outputTexFile);
+    output = path.join(createTempFolder(session), outputTexFile);
   }
   return { ...pdfExp, format: ExportFormats.tex, output };
 }
@@ -32,10 +31,11 @@ export function texExportOptionsFromPdf(
 export async function localArticleToPdf(
   session: ISession,
   file: string,
-  opts: TexExportOptions,
+  opts: ExportOptions,
   templateOptions?: Record<string, any>,
 ) {
-  const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
+  let { projectPath } = opts;
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectAndBibliography(session, projectPath);
   const pdfExportOptionsList = (
     await collectTexExportOptions(
@@ -51,26 +51,24 @@ export async function localArticleToPdf(
   });
   await resolveAndLogErrors(
     session,
-    pdfExportOptionsList
-      .map(async (exportOptions) => {
-        const { format, output } = exportOptions;
-        const keepTexAndLogs = format === ExportFormats.pdftex;
-        const texExportOptions = texExportOptionsFromPdf(
-          session,
-          exportOptions,
-          keepTexAndLogs,
-          opts.clean,
-        );
-        await runTexExport(session, file, texExportOptions, projectPath, opts.clean);
-        await createPdfGivenTexExport(
-          session,
-          texExportOptions,
-          output,
-          keepTexAndLogs,
-          opts.clean,
-          projectPath || path.dirname(file),
-        );
-      })
-      .map((p) => p.catch((e) => e)),
+    pdfExportOptionsList.map(async (exportOptions) => {
+      const { format, output } = exportOptions;
+      const keepTexAndLogs = format === ExportFormats.pdftex;
+      const texExportOptions = texExportOptionsFromPdf(
+        session,
+        exportOptions,
+        keepTexAndLogs,
+        opts.clean,
+      );
+      await runTexExport(session, file, texExportOptions, projectPath, opts.clean);
+      await createPdfGivenTexExport(
+        session,
+        texExportOptions,
+        output,
+        keepTexAndLogs,
+        opts.clean,
+        projectPath || path.dirname(file),
+      );
+    }),
   );
 }

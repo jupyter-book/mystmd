@@ -19,7 +19,7 @@ import { loadProjectAndBibliography } from '../../project';
 import type { ISession } from '../../session/types';
 import { selectLocalProject } from '../../store/selectors';
 import { createTempFolder } from '../../utils';
-import type { ExportWithOutput } from '../types';
+import type { ExportWithOutput, ExportOptions } from '../types';
 import {
   cleanOutput,
   getDefaultExportFilename,
@@ -27,7 +27,6 @@ import {
   getSingleFileContent,
   resolveAndLogErrors,
 } from '../utils';
-import type { TexExportOptions } from './types';
 import { unified } from 'unified';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
@@ -164,7 +163,7 @@ export async function collectTexExportOptions(
   extension: string,
   formats: ExportFormats[],
   projectPath: string | undefined,
-  opts: TexExportOptions,
+  opts: ExportOptions,
 ) {
   const { filename, disableTemplate, template, zip } = opts;
   if (disableTemplate && template) {
@@ -180,11 +179,17 @@ export async function collectTexExportOptions(
         return validateExport(exp, {
           property: `exports.${ind}`,
           messages: exportErrorMessages,
+          errorLogFn: (message: string) => {
+            session.log.error(`Validation error: ${message}`);
+          },
+          warningLogFn: (message: string) => {
+            session.log.warn(`Validation: ${message}`);
+          },
         });
       })
       .filter((exp: Export | undefined) => exp && formats.includes(exp?.format)) || [];
   // If no export options are provided in frontmatter, instantiate default options
-  if (exportOptions.length === 0 && formats.length) {
+  if (exportOptions.length === 0 && formats.length && opts.force) {
     exportOptions = [{ format: formats[0] }];
   }
   // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
@@ -245,18 +250,6 @@ export async function collectTexExportOptions(
         output: path.join(dir, `${name}_${nMatch(arr.slice(0, ind))}${ext}`),
       };
     });
-  if (exportOptions.length === 0) {
-    throw new Error(
-      `No valid export options of format ${formats.join(', ')} found${
-        exportErrorMessages.errors?.length
-          ? '\nPossible causes:\n- ' + exportErrorMessages.errors.map((e) => e.message).join('\n- ')
-          : ''
-      }`,
-    );
-  }
-  resolvedExportOptions.forEach((exp) => {
-    session.log.info(`📬 Performing export: ${exp.output}`);
-  });
   return resolvedExportOptions;
 }
 
@@ -289,7 +282,7 @@ export async function runTexExport(
   }
 }
 
-async function runTexZipExport(
+export async function runTexZipExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
@@ -299,7 +292,7 @@ async function runTexZipExport(
 ) {
   if (clean) cleanOutput(session, exportOptions.output);
   const zipOutput = exportOptions.output;
-  const texFolder = createTempFolder();
+  const texFolder = createTempFolder(session);
   exportOptions.output = path.join(
     texFolder,
     `${path.basename(zipOutput, path.extname(zipOutput))}.tex`,
@@ -314,11 +307,12 @@ async function runTexZipExport(
 export async function localArticleToTex(
   session: ISession,
   file: string,
-  opts: TexExportOptions,
+  opts: ExportOptions,
   templateOptions?: Record<string, any>,
   extraLinkTransformers?: LinkTransformer[],
 ) {
-  const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
+  let { projectPath } = opts;
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectAndBibliography(session, projectPath);
   const exportOptionsList = (
     await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)

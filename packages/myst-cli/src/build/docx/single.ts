@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import type { File } from 'docx';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { writeFileToFolder } from 'myst-cli-utils';
@@ -16,7 +15,7 @@ import { loadProjectAndBibliography } from '../../project';
 import type { ISession } from '../../session/types';
 import type { RendererData } from '../../transforms/types';
 import { createTempFolder, logMessagesFromVFile } from '../../utils';
-import type { ExportWithOutput } from '../types';
+import type { ExportOptions, ExportWithOutput } from '../types';
 import {
   getDefaultExportFilename,
   getDefaultExportFolder,
@@ -28,24 +27,13 @@ import { createCurvenoteFooter } from './footers';
 import DEFAULT_STYLE from './simpleStyles';
 import { createArticleTitle, createReferenceTitle } from './titles';
 
-export type WordExportOptions = {
-  filename: string;
-  clean?: boolean;
-  renderer?: (
-    session: ISession,
-    data: RendererData,
-    vfile: VFile,
-    opts: Record<string, any>,
-  ) => File;
-};
-
 export async function collectWordExportOptions(
   session: ISession,
   file: string,
   extension: string,
   formats: ExportFormats[],
   projectPath: string | undefined,
-  opts: WordExportOptions,
+  opts: ExportOptions,
 ) {
   const { filename, renderer } = opts;
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
@@ -56,11 +44,17 @@ export async function collectWordExportOptions(
         return validateExport(exp, {
           property: `exports.${ind}`,
           messages: exportErrorMessages,
+          errorLogFn: (message: string) => {
+            session.log.error(`Validation error: ${message}`);
+          },
+          warningLogFn: (message: string) => {
+            session.log.warn(`Validation: ${message}`);
+          },
         });
       })
       .filter((exp: Export | undefined) => exp && formats.includes(exp?.format)) || [];
   // If no export options are provided in frontmatter, instantiate default options
-  if (exportOptions.length === 0 && formats.length) {
+  if (exportOptions.length === 0 && formats.length && opts.force) {
     exportOptions = [{ format: formats[0] }];
   }
   // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
@@ -99,18 +93,6 @@ export async function collectWordExportOptions(
         output: path.join(dir, `${name}_${nMatch(arr.slice(0, ind))}${ext}`),
       };
     });
-  if (exportOptions.length === 0) {
-    throw new Error(
-      `No valid export options of format ${formats.join(', ')} found${
-        exportErrorMessages.errors?.length
-          ? '\nPossible causes:\n- ' + exportErrorMessages.errors.map((e) => e.message).join('\n- ')
-          : ''
-      }`,
-    );
-  }
-  resolvedExportOptions.forEach((exp) => {
-    session.log.info(`📬 Performing export: ${exp.output}`);
-  });
   return resolvedExportOptions;
 }
 
@@ -163,7 +145,7 @@ export async function runWordExport(
 ) {
   const { output } = exportOptions;
   if (clean) cleanOutput(session, output);
-  const data = await getSingleFileContent(session, file, createTempFolder(), {
+  const data = await getSingleFileContent(session, file, createTempFolder(session), {
     projectPath,
     extraLinkTransformers,
   });
@@ -179,11 +161,12 @@ export async function runWordExport(
 export async function localArticleToWord(
   session: ISession,
   file: string,
-  opts: WordExportOptions,
+  opts: ExportOptions,
   templateOptions?: Record<string, any>,
   extraLinkTransformers?: LinkTransformer[],
 ) {
-  const projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
+  let { projectPath } = opts;
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectAndBibliography(session, projectPath);
   const exportOptionsList = (
     await collectWordExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)

@@ -15,6 +15,7 @@ import {
   transformMdast,
   watch,
   selectFile,
+  filterPages,
 } from 'myst-cli';
 import { writeFileToFolder, tic } from 'myst-cli-utils';
 import { toText } from 'myst-common';
@@ -122,14 +123,6 @@ export function addProjectReferencesToObjectsInv(
     });
   });
   return inv;
-}
-
-function filterPages(project: LocalProject) {
-  const pages: LocalProjectPage[] = [
-    { file: project.file, slug: project.index, level: 1 },
-    ...project.pages.filter((page): page is LocalProjectPage => 'file' in page),
-  ];
-  return pages;
 }
 
 export function loadProject(session: ISession, projectPath: string, writeToc = false) {

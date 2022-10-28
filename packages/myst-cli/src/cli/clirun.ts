@@ -2,6 +2,7 @@ import type { Command } from 'commander';
 import type { ISession } from '../session/types';
 import type { Session } from '../session';
 import { checkNodeVersion, getNodeVersion, logVersions } from '../utils';
+import { chalkLogger, LogLevel } from 'myst-cli-utils';
 
 type SessionOpts = {
   debug?: boolean;
@@ -17,7 +18,8 @@ export function clirun(
 ) {
   return async (...args: any[]) => {
     const opts = program.opts() as SessionOpts;
-    const session = new sessionClass();
+    const logger = chalkLogger(opts?.debug ? LogLevel.debug : LogLevel.info);
+    const session = new sessionClass({ logger });
     const versions = await getNodeVersion(session);
     logVersions(session, versions);
     const versionsInstalled = await checkNodeVersion(session);

@@ -1,6 +1,6 @@
-import type { TexExportOptions } from 'myst-cli';
+import type { ExportOptions } from 'myst-cli';
 
-export type TexExportOptionsExpanded = TexExportOptions & {
+export type TexExportOptionsExpanded = ExportOptions & {
   multiple?: boolean;
   templatePath?: string;
   options?: string;
