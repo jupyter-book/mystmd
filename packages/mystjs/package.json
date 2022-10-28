@@ -74,7 +74,7 @@
     "@sinonjs/fake-timers": "^9.1.0",
     "@types/hast": "^2.3.4",
     "@types/he": "^1.1.2",
-    "@types/jest": "^27.4.1",
+    "@types/jest": "^28.1.6",
     "@types/js-yaml": "^4.0.5",
     "@types/markdown-it": "^12.2.3",
     "@types/mdast": "^3.0.10",
