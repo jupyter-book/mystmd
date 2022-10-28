@@ -11,8 +11,8 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf dist",
-    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest",
-    "test:watch": "node --experimental-vm-modules ../../node_modules/.bin/jest --watchAll",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
     "lint": "eslint \"src/**/*.ts*\" -c ./.eslintrc.cjs",
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\"",
     "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist/esm",

@@ -16,8 +16,13 @@
       "*": ["node_modules/*"]
     },
     "lib": ["ES2019", "DOM"],
-    // Type roots allows it to be included in a yarn workspace
-    "typeRoots": ["./node_modules/@types", "./types", "../../node_modules/@types"],
+    // Type roots allows it to be included in a workspace
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types",
+      "../../node_modules/@types",
+      "../../../node_modules/@types"
+    ],
     "resolveJsonModule": true,
     "declaration": false,
     // Ignore node_modules, etc.

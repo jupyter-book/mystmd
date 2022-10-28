@@ -7,8 +7,6 @@ module.exports = {
   },
   testTimeout: 10000,
   moduleNameMapper: {
-    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|xml)$':
-      '<rootDir>/apps/cli/tests/__mocks__/fileMock.js',
     '#(.*)': '<rootDir>/node_modules/$1', // https://github.com/chalk/chalk/issues/532
   },
   globals: {

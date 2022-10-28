@@ -1,7 +1,7 @@
 module.exports = {
   rootDir: '../../',
   preset: 'ts-jest/presets/js-with-ts',
-  testMatch: ['<rootDir>/packages/myst-common/**/?(*.)+(spec|test).+(ts|tsx|js)'],
+  testMatch: ['<rootDir>/packages/myst-transforms/**/?(*.)+(spec|test).+(ts|tsx|js)'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
