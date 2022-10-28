@@ -28,7 +28,11 @@ const SKIP_TESTS = [
   '506', // This is a link issue?
 ];
 
-const directory = '../../node_modules/myst-spec/dist/examples';
+// TODO: import this from myst-spec properly!
+const directory = fs.existsSync('../../node_modules/myst-spec/dist/examples')
+  ? '../../node_modules/myst-spec/dist/examples'
+  : '../../../node_modules/myst-spec/dist/examples';
+
 const files: string[] = fs.readdirSync(directory).filter((name) => name.endsWith('.yml'));
 
 // For prettier printing of test cases
