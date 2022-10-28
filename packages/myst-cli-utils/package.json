@@ -1,0 +1,54 @@
+{
+  "name": "myst-cli-utils",
+  "version": "0.0.5",
+  "license": "MIT",
+  "description": "Utils for logging, error messages and session management",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-cli-utils",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/executablebooks/mystjs.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.js",
+    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist/esm",
+    "build:cjs": "tsc --project ./tsconfig.json --module commonjs --outDir dist/cjs",
+    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
+    "prepublishOnly": "npm run build",
+    "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
+  },
+  "bugs": {
+    "url": "https://github.com/executablebooks/mystjs/issues"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "pretty-hrtime": "^1.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.7",
+    "@types/pretty-hrtime": "^1.0.1",
+    "eslint": "^8.21.0",
+    "eslint-config-curvenote": "*",
+    "npm-run-all": "^4.1.5",
+    "prettier": "latest",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.6.3"
+  }
+}

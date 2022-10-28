@@ -1,0 +1,106 @@
+{
+  "name": "myst-cli",
+  "version": "0.0.5",
+  "description": "Command line tools for MyST",
+  "author": "Franklin Koch <franklin@curvenote.com>",
+  "license": "MIT",
+  "keywords": [
+    "markdown",
+    "latex",
+    "writing-software",
+    "scientific-visualization",
+    "pdf-generation",
+    "science-research"
+  ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/executablebooks/mystjs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/executablebooks/mystjs/issues"
+  },
+  "homepage": "https://github.com/executablebooks/mystjs",
+  "bin": {
+    "myst": "./dist/myst.js"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
+    "unlink": "npm uninstall -g myst;",
+    "link": "npm run unlink; npm link;",
+    "dev": "npm run link && concurrently \"tsc -w --preserveWatchOutput -p .\" \"esbuild src/cli/index.ts --bundle --outfile=dist/myst.js --platform=node --external:fsevents --watch\"",
+    "prepublishOnly": "npm run build",
+    "test": "npm run copy:version; npm run link; jest",
+    "test:watch": "npm run copy:version; npm run link; jest --watchAll",
+    "test:clear": "npm run copy:version; npm run link; jest --clearCache",
+    "lint": "npm run copy:version; eslint \"src/**/*.ts\" -c .eslintrc.js",
+    "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
+    "build:cjs": "esbuild src/*.ts src/**/*.ts src/**/**/*.ts --outdir=dist/cjs --platform=node --format=cjs",
+    "build:esm": "esbuild src/*.ts src/**/*.ts src/**/**/*.ts --outdir=dist/esm --platform=node --format=esm",
+    "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/myst.js --platform=node --external:fsevents",
+    "build": "npm-run-all -l copy:version clean -p build:cjs build:esm declarations build:cli",
+    "build:watch": "npm run copy:version; tsc -w --preserveWatchOutput -p ."
+  },
+  "engines": {
+    "node": ">=16",
+    "npm": ">=6"
+  },
+  "dependencies": {
+    "@curvenote/blocks": "^1.5.16",
+    "@reduxjs/toolkit": "^1.7.2",
+    "adm-zip": "^0.5.9",
+    "chalk": "^5.1.2",
+    "check-node-version": "^4.2.1",
+    "citation-js-utils": "^0.0.10",
+    "commander": "^9.4.1",
+    "crypto": "^1.0.1",
+    "docx": "^7.5.0",
+    "doi-utils": "^1.0.4",
+    "inquirer": "^8.2.2",
+    "intersphinx": "^0.0.3",
+    "js-yaml": "^4.1.0",
+    "jtex": "^0.0.6",
+    "mdast": "^3.0.0",
+    "mime-types": "^2.1.35",
+    "myst-cli-utils": "^0.0.5",
+    "myst-common": "^0.0.4",
+    "myst-config": "^0.0.2",
+    "myst-frontmatter": "^0.0.2",
+    "myst-spec": "^0.0.4",
+    "myst-to-docx": "^0.0.2",
+    "myst-to-tex": "^0.0.6",
+    "myst-transforms": "^0.0.7",
+    "mystjs": "^0.0.13",
+    "nanoid": "^4.0.0",
+    "nbtx": "^0.1.12",
+    "node-fetch": "^3.2.10",
+    "redux": "^4.2.0",
+    "simple-validators": "^0.0.1",
+    "unified": "^10.1.2",
+    "unist-util-remove": "^3.1.0",
+    "vfile": "^5.3.5"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.0",
+    "@types/inquirer": "^9.0.2",
+    "@types/jest": "^28.1.6",
+    "@types/mime-types": "^2.1.1",
+    "concurrently": "^7.5.0",
+    "esbuild": "^0.15.12",
+    "eslint": "^8.21.0",
+    "eslint-config-curvenote": "*",
+    "jest": "^28.1.3",
+    "npm-run-all": "^4.1.5",
+    "prettier": "latest",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^28.0.7",
+    "typescript": "latest"
+  }
+}

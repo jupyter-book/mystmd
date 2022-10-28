@@ -1,31 +1,46 @@
 format: jb-book
 root: index
 parts:
-  - caption: MyST Spec
+  - caption: Overview
     chapters:
-      - file: features/overview
-      - file: features/commonmark
-      - file: features/admonitions
-      - file: features/figures
-      - file: features/tables
-      - file: features/math
-      - file: features/references
-      - file: features/citations
-      - file: features/blocks
-      - file: features/extensions
-        sections:
-          - file: features/basic
-          - file: features/frontmatter
-          - file: features/footnotes
-          - file: features/definitions
-          - file: features/tasks
-  - caption: Using the mystjs Library
+      - file: intro
+      - file: project-overview
+  - caption: Authoring
     chapters:
-      - file: consuming/basic
-      - file: consuming/mdast
-      - file: consuming/advanced
-  - caption: Extending MyST with mystjs
+      - file: syntax-overview
+      - file: typography
+      - file: admonitions
+      - file: figures
+      - file: math
+      - file: tables
+      - file: code
+      - file: cross-references
+      - file: external-references
+      - file: citations
+      - file: blocks
+      - file: diagrams
+      - file: dropdowns-cards-and-tabs
+      - file: tasks
+  - caption: Executable Content
     chapters:
-      - file: extending/roles
-      - file: extending/directives
-      - file: extending/advanced
+      - file: interactive-notebooks
+  - caption: Websites
+    chapters:
+      - file: website-overview
+      - file: table-of-contents
+      - file: themes-and-extensions
+      - file: seo-and-social
+      - file: accessibility-and-performance
+      - file: search
+      - file: analytics
+      - file: deployment
+      - file: publishing
+  - caption: Documents
+    chapters:
+      - file: creating-pdf-documents
+      - file: creating-word-documents
+  - caption: Reference
+    chapters:
+      - file: background
+      - file: commonmark
+      - file: frontmatter

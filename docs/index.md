@@ -1,55 +1,140 @@
-# mystjs
+---
+title: MyST Javascript Tools
+description: MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown.
+---
 
-[![mystjs on npm](https://img.shields.io/npm/v/mystjs.svg)](https://www.npmjs.com/package/mystjs)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/mystjs/blob/master/LICENSE)
-[![CI](https://github.com/executablebooks/mystjs/workflows/CI/badge.svg)](https://github.com/executablebooks/mystjs/actions)
-[![docs](https://github.com/executablebooks/mystjs/workflows/docs/badge.svg)](https://executablebooks.github.io/mystjs)
+`mystjs` is a set of open-source, community-driven tools designed for scientific communication, including a powerful authoring framework that supports blogs, online books, scientific papers, reports and journals articles.
 
-{abbr}`MyST (Markedly Structured Text)` is a flavor of markdown inspired from the Sphinx ecosystem and {abbr}`RST (reStructured Text)`.
-
-Any [CommonMark](https://commonmark.org/) markdown (such as [Jupyter Notebook](https://jupyter.org) markdown) is natively supported by the MyST parser. The goal of MyST _javascript_ parser ([mystjs](https://github.com/executablebooks/mystjs)) is to have overlap with Sphinx ecosystem and {abbr}`RST (reStructured Text)` and provide a flexible parser and renderer that can be used with other content workflows.
-
-```{important}
-For integration with **Sphinx**, use the Python reference implementation for MyST parser, which can be found at:
-
-<https://myst-parser.readthedocs.io/en/latest/>
-
-The following documentation refers only to the Javascript MyST parser.
+```{warning}
+The `mystjs` project is in a pre-alpha state. It is being used to explore a MyST implementation in JavaScript and will change significantly and rapidly. It is being developed by a small team of people on the [Executable Books Project](https://executablebooks.org), and may make rapid decisions without fully public/inclusive discussion. We will continue to update this documentation as the project stabilizes.
 ```
 
-The focus of `mystjs` is on components that are useful in rendering books, papers & reorts. This project is associated with [JupyterBook](https://jupyterbook.org/) and maintained by the [Executable Books Community](https://executablebooks.org/).
+---
 
-## Package Responsibilities
+::::{grid} 1 1 2 3
 
-The `mystjs` package provides a Javascript implementation of the [MyST](https://myst-parser.readthedocs.io) parser, with the many of the standard directives and roles included.
+:::{card}
+:link: ./citations.md
 
-- Parse MyST flavored markdown, which includes directives, roles, and block elements
-- Export a Markdown Abstract Syntax Tree (`mdast`) that is tested against the MyST specification
-- Provide extension point for additional directives and roles to be added
-- Provide a serializer into standard html for all known roles and directives
-  - CSS styling will not be enforced or provided by this repository
-- Provide extension point for cross-referencing between multiple documents
+**Built for Science** 👩‍🔬
+^^^
 
-## Supported Syntax
+Extend Markdown with equations, cross-references, citations, and export to a preprint or rich, interactive website or book.
++++
+MyST for Science »
+:::
 
-- Commonmark Markdown
-- Admonitions (callouts)
-- References and citations
-- Figures, with cross-references
-- Math & equations, with cross-references
-- Common roles and directives that constitute "Core MyST"
+:::{card}
+:link: ./interactive-notebooks.ipynb
 
-## Design Choices and Related Packages
+**Dynamic Documents** 📈
+^^^
 
-The `mystjs` package currently uses `markdown-it` for parsing markdown. This includes packages that are elsewhere in the executablebooks community including:
+Make your pages interactive by connecting to custom JupyterHubs, public Binders or even Python running directly in your browser.
++++
+Bring your pages to life »
+:::
 
-- [markdown-it-docutils](https://github.com/executablebooks/markdown-it-docutils) - directives and roles
-- [markdown-it-dollarmath](https://github.com/executablebooks/markdown-it-dollarmath) - Math extensions to support inline LaTeX math surrounded by `$`
-- [markdown-it-amsmath](https://github.com/executablebooks/markdown-it-amsmath) - Support math that starts with `\begin{equation}`, etc. directly in the content
-- [markdown-it-myst-extras](https://github.com/executablebooks/markdown-it-myst-extras) - block breaks, comments, and other utilities for creating the MyST spec.
+:::{card}
+:link: ./accessibility-and-performance.md
 
-The package also includes community supported markdown-it plugins (e.g. `markdown-it-footnote`, and others as necessary).
+**Fast & Accessible** ⚡️
+^^^
+Publish next-generation articles and books that are beautifully designed, without compromising on accessibility or performance.
++++
+Read about performance »
+:::
 
-```{note}
-`mystjs` may adopt portions of the [unified](https://unifiedjs.com/) ecosystem in the future, but will continue to support basic `markdown-it` parsing as this is required in extending markdown parsers in, for example, [VSCode](https://github.com/executablebooks/myst-vs-code).
+::::
+
+```{seealso}
+:class: dropdown
+# Coming from JupyterBook or Sphinx?
+👋 We are glad you are here! 💚
+
+There are many ways that `mystjs` can be used with JupyterBook and Sphinx. We recommend that you read [background on `mystjs`](./background.md), which goes over how these projects overlap and work together!
+
+TL;DR
+: **Yes**, you can use `mystjs` with your JupyterBook! `mystjs` can create [scientific PDFs](./creating-pdf-documents.md) and can natively read the [`_toc.yml`](./table-of-contents.md) as well as all of your existing MyST Markdown content and [Jupyter Notebooks](./interactive-notebooks.ipynb).
+: **Yes**, `mystjs` is compatible with [intersphinx](#intersphinx) even though it is written in Javascript not Python!
+: JupyterBook and `mystjs` have **overlap** in the ability to create online books like this one. `mystjs` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
+```
+
+---
+
+### Create Scientific Publications
+
+Create interactive scientific publications for the web or export to PDF, LaTeX and Microsoft Word.
+
+::::{grid} 1 1 2 3
+
+:::{card}
+:link: ./creating-pdf-documents.md
+**Create Scientific PDFs** 📄
+^^^
+Create PDF print-ready scientific papers over 400 $\LaTeX$ journal templates.
+
++++
+Create a PDF »
+:::
+
+:::{card}
+:link: ./creating-word-documents.md
+**Create Word Docs** 📃
+^^^
+
+Render your MyST documents as Microsoft Word documents.
++++
+Export to Word »
+:::
+
+:::{card}
+:link: ../packages/jtex/docs/create-a-latex-template.md
+**Flexible Templating** 🧱
+^^^
+Easily create and contribute data-driven templates using $\LaTeX$.
++++
+Create a Template »
+:::
+
+::::
+
+## Project Goals
+
+`mystjs` is part of the [Executable Books](https://executablebooks.org/) organization, and is an open-source, commuity-driven project to improve scientific communication, including integrations into Jupyter Notebooks and computational results.
+
+**Technical Goals**
+
+- `mystjs` is a Javascript parser and command line tool for working with MyST Markdown
+- Parse MyST into a standardized [AST](wiki:Abstract_Syntax_Tree), that follows [the MyST Spec](https://spec.myst.tools)
+- Translate and render MyST into:
+  - HTML for static websites, and modern React for interactive websites (like this website!)
+  - PDFs and $\LaTeX$ documents, with [specific templates for over 400 journals](./creating-pdf-documents.md)
+  - Beamer $\LaTeX$ presentations
+  - Microsoft Word [export](./creating-word-documents.md)
+- Provide functionality for [cross-referencing](./cross-references.md), [external structured links](./external-references.md), and [scientific citations](./citations.md)
+
+**Architecture**
+
+The `mystjs` command line tool can be used to parse MyST Markdown and Jupyter Notebooks into an AST. This data can be saved as JSON, or rendered to a website (like this one!) or any number of formats including PDF, Word, React or HTML.
+
+```{mermaid}
+flowchart LR
+  A[Jupyter Notebook] --> C
+  B[MyST Markdown] --> C
+  C(mystjs) --> D{AST}
+  D --> E[LaTeX]
+  E --> F[PDF]
+  D --> G[Word]
+  D --> H[React]
+  D --> I[HTML]
+```
+
+```{important}
+For integration with **Sphinx**, use the Python implementation for MyST or JupyterBook, which can be found at:
+
+- [MyST Python Parser for Sphinx](https://myst-parser.readthedocs.io/en/latest/)
+- [JupyterBook](https://jupyterbook.org/)
+
+Although many tools in the [MyST Ecosystem](https://myst.tools) follow the same conventions and [specification](https://spec.myst.tools), the following documentation refers only to the **Javascript** MyST CLI.
 ```

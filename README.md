@@ -1,135 +1,94 @@
-# mystjs
+# MyST Javascript Tools
 
-[![mystjs on npm](https://img.shields.io/npm/v/mystjs.svg)](https://www.npmjs.com/package/mystjs)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/mystjs/blob/master/LICENSE)
-[![CI](https://github.com/executablebooks/mystjs/workflows/CI/badge.svg)](https://github.com/executablebooks/mystjs/actions)
-[![docs](https://github.com/executablebooks/mystjs/workflows/docs/badge.svg)](https://executablebooks.github.io/mystjs)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/mystjs/blob/main/LICENSE)
+![CI](https://github.com/executablebooks/mystjs/workflows/CI/badge.svg)
 
-MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown. The main use case driving the development and design of MyST is [JupyterBook](https://jupyterbook.org/), which helps you create educational online textbooks and tutorials with Jupyter Notebooks and narrative content written in MyST. `mystjs` is a javascript parser for MyST markdown that brings these capabilities into a web-native environment.
+`mystjs` is a set of open-source, community-driven tools designed for scientific communication, including a powerful authoring framework that supports blogs, online books, scientific papers, reports and journals articles.
 
-## Goals
+> **Note**
+> The `mystjs` project is in **beta**. It is being used to explore a full MyST implementation in JavaScript and will change significantly and rapidly.
+> The project is being developed by a small team of people on the Executable Books Project, and may make rapid decisions without fully public/inclusive discussion.
+> We will continue to update this documentation as the project stabilizes.
 
-- Provide a Javascript implementation of MyST markdown
-- Parse MyST into a standardized AST, based on [mdast](https://github.com/syntax-tree/mdast).
-- Serialize `mdast` into a default HTML for all known roles and directives
-- Expose an opinionated set of `markdown-it` plugins, to be used in ecosystems that require `markdown-it` (e.g. vscode)
-- Expose extension points in MyST for new roles/directives
-- Provide functionality for cross-referencing that is usually completed by Sphinx (e.g. in the [Python implementation](https://github.com/executablebooks/MyST-Parser))
+## Overview
 
-## Usage
+The `mystjs` project provides a Javascript parser (`mystjs`) and command line tool (`myst-cli`) for working with MyST Markdown projects.
 
-```bash
-npm install mystjs
-```
+- Parse MyST into a standardized AST, that follows the MyST Spec
+- Provides functionality for cross-referencing, external structured links, and scientific citations
+- Translate and render MyST into:
+  - HTML for static websites, and modern React for interactive websites (like this website!)
+  - PDFs and LaTeX documents, with specific templates for over 400 journals
+  - Microsoft Word export
 
-In a node environment:
+See the [docs](https://js.myst.tools).
 
-```javascript
-import { MyST } from 'mystjs';
+## Get Started
 
-const myst = new MyST();
-const html = myst.render('# Hello to the world!');
-
-console.log(html);
->> "<h1>Hello to the world!</h1>"
-```
-
-In a browser:
-
-```html
-<html>
-  <head>
-    <script src="https://unpkg.com/mystjs"></script>
-  </head>
-  <body onload="init();">
-    <div id="output"></div>
-    <script>
-      function init() {
-        const myst = new mystjs.MyST();
-        const html = myst.render('# Hello to the world!');
-        document.getElementById('output').innerHTML = html;
-      }
-    </script>
-  </body>
-</html>
-```
-
-## `mystjs` Features
-
-- CommonMark
-- Admonitions
-- Figures
-- Images
-- Math
-  - role
-  - directive (equations)
-  - dollar math
-  - amsmath
-- Tables
-  - GFM
-  - List Tables
-- References
-  - ref
-  - numref
-  - eq
-  - links
-  - Including numbering (single document)
-- Code Directives
-  - Code
-  - Code blocks
-  - Code cell
-- Blocks
-- Comments
-- Targets
-- HTML:
-  - `sub`
-  - `sup`
-  - `abbr`
-- Definition List
-- Footnotes
-
-Not yet complete:
-
-- div
-- proof
-- margin
-- sidebar
-- colon fence
-- Citations
-- Bibliography
-- Epigraph
-- Glosary
-- Terms
-- Tabs
-- Panels
-- CSV Tables
-- Multi-document
-
-## Developer Install
-
-For installing the package locally, you will need [node](https://nodejs.org/) and [npm](https://docs.npmjs.com/about-npm), both can use a global install on your system.
-
-Once you have `npm` installed globally, navigate into this project folder and install the dependencies:
+The MyST CLI is available through Node and NPM:
 
 ```bash
+npm install -g myst-cli
+myst init
+myst build my-doc.md --tex
+```
+
+# Development
+
+All packages for `mystjs` are included in this repository (a monorepo!).
+
+## What's inside?
+
+`myst-cli` uses [npm](https://www.npmjs.com/) as a package manager. It includes the following packages/apps:
+
+**Packages:**
+
+- `citation-js-utils` utility functions to deal with citations
+- `intersphinx` a command line tool and package for reading and writing o
+- `jtex` a templating library ([see docs](https://js.myst.tools/jtex))
+- `mystjs` a MyST parser, with extensibility
+- `myst-cli` this will provide CLI functionality for `myst build mystdoc.md`
+- `myst-cli-utils` some shared utils between intersphinx, jtex, and myst-cli
+- `myst-common` Some common utilities for working with ASTs
+- `myst-config` Validation and reading of configuration files
+- `myst-frontmater` definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://js.myst.tools/guide/frontmatter))
+- `myst-templates` types and validation for templates (latex, web and word)
+- `myst-to-docx` convert myst documents to word docs!
+- `myst-to-react` create basic, ideally unthemed react components for content only (_coming soon_)
+- `myst-to-tex` convert myst to latex, to be used in combination with jtex to create stand alone latex documents
+- `myst-transforms` a number of transformations for use with myst AST to transform, e.g. links, citations, cross-references, admonitions
+- `simple-validators` validation utilities, that print all sorts of nice warnings
+
+Each package is 100% [TypeScript](https://www.typescriptlang.org/).
+
+### Versioning & Publishing
+
+`mystjs` uses [changesets](https://github.com/changesets/changesets) to document changes to this monorepo, call `npm run changeset` and follow the prompts. Later, `npm run version` will be called and then `npm run publish`.
+
+### Utilities
+
+`mystjs` is built and developed using:
+
+- [TypeScript](https://www.typescriptlang.org/) for static type checking
+- [ESLint](https://eslint.org/) for code linting
+- [Prettier](https://prettier.io) for code formatting
+
+### Build
+
+To build all apps and packages, run the following command:
+
+```
 cd mystjs
-npm install
-npm run start  # Start a development server to play with the library! 🚀
+npm run build
 ```
 
-The scripts for building, testing, and serving the project are in the [package.json](package.json), the main ones to use are
-`npm run test`, `npm run build`, and `npm run start`.
+### Develop
 
-### `npm run build`
+To develop all apps and packages, run the following command:
 
-Builds the library, including compiling the typescript and bundling/minification to create `index.umd.min.js`.
-This outputs to the `dist` folder, and also includes all type definitions (`*.d.ts`).
+```
+cd mystjs
+npm run dev
+```
 
-### `npm run test`
-
-Run the tests, these are mostly based on the [fixtures](fixtures) folder. You can also use `npm run test:watch` to run on any file changes.
-
-### `npm run start`
-
-Starts a server for manually testing and playing with `mystjs`, this uses a in-memory bundle of what would go in the `dist` folder.
-Note that this does not actually build the library!
+This will create a local `myst` CLI interface that you can use to develop and test locally.

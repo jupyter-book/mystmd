@@ -1,0 +1,57 @@
+{
+  "name": "myst-to-docx",
+  "version": "0.0.2",
+  "description": "Export from a MyST Markdown document to Microsoft Word (*.docx)",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "license": "MIT",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "myst-plugin",
+    "docx",
+    "word",
+    "export"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/executablebooks/mystjs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/executablebooks/mystjs/issues"
+  },
+  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build:cjs": "tsc --project ./tsconfig.json",
+    "build:esm": "tsc --project ./tsconfig.json --module ES2020 --outDir ./dist/esm",
+    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
+    "build": "npm-run-all -l clean -p build:cjs build:esm declarations",
+    "prepublishOnly": "npm run build",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js",
+    "lint:format": "prettier --check \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "buffer-image-size": "^0.6.4",
+    "docx": "^7.3.0",
+    "myst-common": "*",
+    "myst-frontmatter": "*"
+  },
+  "devDependencies": {
+    "@curvenote/schema": "0.12.16",
+    "@types/jest": "^28.1.6",
+    "@types/mocha": "^9.1.1",
+    "eslint": "^8.21.0",
+    "jest": "^28.1.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^28.0.7",
+    "typescript": "^4.7.4"
+  }
+}

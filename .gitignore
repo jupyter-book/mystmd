@@ -1,9 +1,36 @@
-dist/
-node_modules/
-docs/_build/*
-coverage/
-.yalc/*
-yalc.lock
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# The following is built for the docs
-docs/_static/myst.min.js
+# dependencies
+node_modules
+.pnp
+.pnp.js
+.ipynb_checkpoints
+
+# testing
+coverage
+
+# next.js
+.next/
+out/
+dist/
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# turbo
+.turbo
+
+_build
