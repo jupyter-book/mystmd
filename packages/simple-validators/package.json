@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "Schema validation functions and error reporting framework",
   "author": "Franklin Koch <franklin@curvenote.com>",
-  "homepage": "https://github.com/curvenote/curvenote#readme",
+  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/simple-validators",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/curvenote.git"
+    "url": "git+https://github.com/executablebooks/mystjs.git"
   },
   "scripts": {
     "dev": "tsc -w --preserveWatchOutput -p .",
@@ -38,7 +38,7 @@
     "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
   },
   "bugs": {
-    "url": "https://github.com/curvenote/curvenote/issues"
+    "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

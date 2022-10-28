@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "API types and scripts for downloading MyST Tempaltes",
   "author": "Rowan Cockett <rowan@curvenote.com>",
-  "homepage": "https://github.com/myst-templates",
+  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-templates",
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/myst-templates/templates.git"
+    "url": "git+https://github.com/executablebooks/mystjs.git"
   },
   "scripts": {
     "clean": "rm -rf dist",

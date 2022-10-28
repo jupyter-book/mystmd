@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "Utils for logging, error messages and session management",
   "author": "Rowan Cockett <rowan@curvenote.com>",
-  "homepage": "https://github.com/curvenote/curvenote#readme",
+  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-cli-utils",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/curvenote.git"
+    "url": "git+https://github.com/executablebooks/mystjs.git"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -35,7 +35,7 @@
     "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
   },
   "bugs": {
-    "url": "https://github.com/curvenote/curvenote/issues"
+    "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
     "chalk": "^4.1.2",

@@ -1,9 +1,5 @@
 # `myst-to-docx`
 
-[![myst-to-docx on npm](https://img.shields.io/npm/v/myst-to-docx.svg)](https://www.npmjs.com/package/myst-to-docx)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/curvenote/curvenote/blob/main/LICENSE)
-![CI](https://github.com/curvenote/myst-to-docx/workflows/CI/badge.svg)
-
 Export a MyST document to a Microsoft Word file, using [docx](https://docx.js.org/).
 
 ## Overview

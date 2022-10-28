@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "Read and write intersphinx objects.inv files",
   "author": "Rowan Cockett <rowan@curvenote.com>",
-  "homepage": "https://github.com/curvenote/curvenote#readme",
+  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/intersphinx",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/curvenote.git"
+    "url": "git+https://github.com/executablebooks/mystjs.git"
   },
   "bin": "./dist/intersphinx.js",
   "scripts": {
@@ -43,7 +43,7 @@
     "build": "npm-run-all -l clean copy:version -p build:cjs build:esm build:cli declarations"
   },
   "bugs": {
-    "url": "https://github.com/curvenote/curvenote/issues"
+    "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
     "chalk": "^4.1.2",

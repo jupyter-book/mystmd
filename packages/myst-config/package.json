@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "Project and site config types and validation for the mystjs ecosystem",
   "author": "Franklin Koch <franklin@curvenote.com>",
-  "homepage": "https://github.com/curvenote/curvenote#readme",
+  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-config",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/curvenote.git"
+    "url": "git+https://github.com/executablebooks/mystjs.git"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -37,7 +37,7 @@
     "test:watch": "jest --watchAll"
   },
   "bugs": {
-    "url": "https://github.com/curvenote/curvenote/issues"
+    "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
     "myst-frontmatter": "^0.0.2",

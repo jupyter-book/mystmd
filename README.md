@@ -1,5 +1,8 @@
 # MyST Javascript Tools
 
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/mystjs/blob/main/LICENSE)
+![CI](https://github.com/executablebooks/mystjs/workflows/CI/badge.svg)
+
 `mystjs` is a set of open-source, community-driven tools designed for scientific communication, including a powerful authoring framework that supports blogs, online books, scientific papers, reports and journals articles.
 
 > **Note**
@@ -12,11 +15,13 @@
 The `mystjs` project provides a Javascript parser (`mystjs`) and command line tool (`myst-cli`) for working with MyST Markdown projects.
 
 - Parse MyST into a standardized AST, that follows the MyST Spec
+- Provides functionality for cross-referencing, external structured links, and scientific citations
 - Translate and render MyST into:
   - HTML for static websites, and modern React for interactive websites (like this website!)
   - PDFs and LaTeX documents, with specific templates for over 400 journals
   - Microsoft Word export
-- Provide functionality for cross-referencing, external structured links, and scientific citations
+
+See the [docs](https://js.myst.tools).
 
 ## Get Started
 
@@ -30,7 +35,7 @@ myst build my-doc.md --tex
 
 # Development
 
-All dependencies for `mystjs` are included in this repository (a monorepo!).
+All packages for `mystjs` are included in this repository (a monorepo!).
 
 ## What's inside?
 

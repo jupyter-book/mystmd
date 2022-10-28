@@ -1,10 +1,5 @@
 # mystjs
 
-[![mystjs on npm](https://img.shields.io/npm/v/mystjs.svg)](https://www.npmjs.com/package/mystjs)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/mystjs/blob/master/LICENSE)
-[![CI](https://github.com/executablebooks/mystjs/workflows/CI/badge.svg)](https://github.com/executablebooks/mystjs/actions)
-[![docs](https://github.com/executablebooks/mystjs/workflows/docs/badge.svg)](https://executablebooks.github.io/mystjs)
-
 MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown. The main use case driving the development and design of MyST is [JupyterBook](https://jupyterbook.org/), which helps you create educational online textbooks and tutorials with Jupyter Notebooks and narrative content written in MyST. `mystjs` is a javascript parser for MyST markdown that brings these capabilities into a web-native environment.
 
 ## Goals

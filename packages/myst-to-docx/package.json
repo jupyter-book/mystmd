@@ -18,12 +18,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/prosemirror-docx.git"
+    "url": "git+https://github.com/executablebooks/mystjs.git"
   },
   "bugs": {
-    "url": "https://github.com/curvenote/prosemirror-docx/issues"
+    "url": "https://github.com/executablebooks/mystjs/issues"
   },
-  "homepage": "https://github.com/curvenote/prosemirror-docx",
+  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst",
   "scripts": {
     "clean": "rimraf dist",
     "build:cjs": "tsc --project ./tsconfig.json",

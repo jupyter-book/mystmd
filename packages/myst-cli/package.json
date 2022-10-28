@@ -20,12 +20,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/curvenote/curvenote.git"
+    "url": "git+https://github.com/executablebooks/mystjs.git"
   },
   "bugs": {
-    "url": "https://github.com/curvenote/curvenote/issues"
+    "url": "https://github.com/executablebooks/mystjs/issues"
   },
-  "homepage": "https://github.com/curvenote/curvenote",
+  "homepage": "https://github.com/executablebooks/mystjs",
   "bin": {
     "myst": "./dist/myst.js"
   },
