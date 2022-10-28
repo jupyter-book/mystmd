@@ -1,4 +1,5 @@
 import fs from 'fs';
+import fetch from 'node-fetch';
 import type { CitationRenderer } from 'citation-js-utils';
 import { getCitations } from 'citation-js-utils';
 import { tic } from 'myst-cli-utils';
