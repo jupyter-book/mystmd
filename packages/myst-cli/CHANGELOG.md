@@ -1,5 +1,15 @@
 # myst-cli
 
+## 0.0.5
+
+### Patch Changes
+
+Initial release of actual cli, including some docs!
+
+- 0e3a511: Move @curvenote/nbtx --> nbtx
+- Updated dependencies [0e3a511]
+  - nbtx@0.1.12
+
 ## 0.0.4
 
 ### Patch Changes
