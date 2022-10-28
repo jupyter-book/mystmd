@@ -131,14 +131,14 @@ export function projectFromPath(
       throw Error(`Index file ${indexFile} has invalid extension; must be ${ext_string}}`);
     if (!fs.existsSync(indexFile)) throw Error(`Index file ${indexFile} not found`);
   }
-  const rootCurvenoteYmls = session.configFiles.map((file) => join(path, file));
+  const rootConfigYamls = session.configFiles.map((file) => join(path, file));
   if (!indexFile) {
     const searchPages = projectPagesFromPath(
       session,
       path,
       1,
       {},
-      { ignore: rootCurvenoteYmls, suppressWarnings: true },
+      { ignore: rootConfigYamls, suppressWarnings: true },
     );
     if (!searchPages.length) {
       throw Error(`No valid files with extensions ${ext_string} found in path "${path}"`);
@@ -149,7 +149,7 @@ export function projectFromPath(
   const pageSlugs: PageSlugs = {};
   const { slug } = fileInfo(indexFile, pageSlugs);
   const pages = projectPagesFromPath(session, path, 1, pageSlugs, {
-    ignore: [indexFile, ...rootCurvenoteYmls],
+    ignore: [indexFile, ...rootConfigYamls],
   });
   return { file: indexFile, index: slug, path, pages };
 }

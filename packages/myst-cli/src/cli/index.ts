@@ -10,6 +10,6 @@ const program = new Command();
 program.addCommand(makeBuildCLI(program));
 program.addCommand(makeInitCLI(program));
 program.addCommand(makeCleanCLI(program));
-program.version(`v${version}`, '-v, --version', 'Print the current version of curvenote');
+program.version(`v${version}`, '-v, --version', 'Print the current version of myst');
 program.option('-d, --debug', 'Log out any errors to the console.');
 program.parse(process.argv);
