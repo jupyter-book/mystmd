@@ -12,6 +12,10 @@ export function makeDocxOption() {
   return new Option('--word, --docx', 'Build Docx output').default(false);
 }
 
+export function makeYesOption() {
+  return new Option('-y, --yes', 'Automatically respond yes to prompts').default(false);
+}
+
 export function promptContinue() {
   return {
     name: 'cont',

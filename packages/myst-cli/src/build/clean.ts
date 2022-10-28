@@ -17,10 +17,11 @@ export type CleanOptions = {
   tex?: boolean;
   temp?: boolean;
   exports?: boolean;
+  yes?: boolean;
 };
 
 export async function clean(session: ISession, files: string[], opts: CleanOptions) {
-  const { temp, exports } = opts;
+  const { temp, exports, yes } = opts;
   const formats = getExportFormats(opts);
   let projectPath: string | undefined;
   if (files.length === 0) {
@@ -58,7 +59,7 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
   }
   pathsToDelete = [...new Set(pathsToDelete)].sort();
   session.log.info(`❌ Deleting all the following paths:\n   ${pathsToDelete.join('\n   ')}`);
-  const { cont } = await inquirer.prompt([promptContinue()]);
+  const cont = yes || (await inquirer.prompt([promptContinue()])).cont;
   if (cont) {
     pathsToDelete.forEach((pathToDelete) => {
       fs.rmSync(pathToDelete, { recursive: true, force: true });

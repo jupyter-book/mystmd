@@ -1,8 +1,8 @@
 import { Command, Option } from 'commander';
-import { clean } from '../build/clean';
+import { clean } from '../build';
 import { Session } from '../session';
 import { clirun } from './clirun';
-import { makeDocxOption, makePdfOption, makeTexOption } from './options';
+import { makeDocxOption, makePdfOption, makeTexOption, makeYesOption } from './options';
 
 export function makeTempOption() {
   return new Option(
@@ -27,6 +27,7 @@ export function makeCleanCLI(program: Command) {
     .addOption(makeDocxOption())
     .addOption(makeTempOption())
     .addOption(makeExportsOption())
+    .addOption(makeYesOption())
     .action(clirun(Session, clean, program));
   return command;
 }

@@ -13,6 +13,7 @@ export type BuildOpts = {
   tex?: boolean;
   force?: boolean;
   checkLinks?: boolean;
+  yes?: boolean;
 };
 
 export function getExportFormats(opts: BuildOpts) {
@@ -26,7 +27,7 @@ export function getExportFormats(opts: BuildOpts) {
 }
 
 export async function build(session: ISession, files: string[], opts: BuildOpts) {
-  const { force } = opts;
+  const { force, yes } = opts;
   const formats = getExportFormats(opts);
   let projectPath: string | undefined;
   if (files.length === 0) {
@@ -43,7 +44,7 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     return `${path.relative('.', exportOptions.$file)} -> ${exportOptions.output}`;
   });
   session.log.info(`📬 Performing exports:\n   ${exportLogList.join('\n   ')}`);
-  const { cont } = await inquirer.prompt([promptContinue()]);
+  const cont = yes || (await inquirer.prompt([promptContinue()])).cont;
   if (cont) {
     await localArticleExport(session, exportOptionsList, { projectPath });
   }

@@ -1,19 +1,8 @@
 import { Command, Option } from 'commander';
-import { build } from '../build/build';
+import { build } from '../build';
 import { Session } from '../session';
 import { clirun } from './clirun';
-
-export function makePdfOption() {
-  return new Option('--pdf', 'Build PDF output').default(false);
-}
-
-export function makeTexOption() {
-  return new Option('--tex', 'Build Tex outputs').default(false);
-}
-
-export function makeDocxOption() {
-  return new Option('--word, --docx', 'Build Docx output').default(false);
-}
+import { makeDocxOption, makePdfOption, makeTexOption, makeYesOption } from './options';
 
 export function makeForceOption() {
   return new Option(
@@ -35,6 +24,7 @@ export function makeBuildCLI(program: Command) {
     .addOption(makeDocxOption())
     .addOption(makeForceOption())
     .addOption(makeCheckLinksOption())
+    .addOption(makeYesOption())
     .action(clirun(Session, build, program));
   return command;
 }
