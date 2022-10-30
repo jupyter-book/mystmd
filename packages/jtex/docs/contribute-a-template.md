@@ -10,7 +10,7 @@ To see all of the community templates use:
 ```bash
 jtex list
 # or
-myst templates list --format tex
+myst templates list --tex
 ```
 
 These will show you the list of community templates available, which are also possible to access through the MyST API, at https://api.myst.tools.

@@ -4,6 +4,9 @@ parts:
   - caption: Overview
     chapters:
       - file: intro
+        sections:
+          - file: installing
+          - file: installing-prerequisites
       - file: project-overview
   - caption: Authoring
     chapters:

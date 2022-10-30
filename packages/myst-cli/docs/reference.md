@@ -1,4 +1,8 @@
-# MyST Init
+---
+title: MyST CLI Reference
+---
+(myst-init)=
+## MyST Init
 
 `myst init` initializes a MyST project in the current folder by writing an empty `myst.yml` file.
 
@@ -12,7 +16,7 @@ You may also write a table of contents file based on markdown/jupyter notebook f
 myst init --writeToc
 ```
 
-# MyST Build
+## MyST Build
 
 `myst build` is used to export pdf, tex, and docx artifacts from MyST files.
 
@@ -40,7 +44,7 @@ To perform exports without defining export frontmatter in the files, you may use
 myst build --force --pdf
 ```
 
-# Myst Clean
+## MyST Clean
 
 `myst clean` is used to clean up temp files and built artifacts. By default it only cleans the files that would be created by the equivalent `myst build` command. For example to clean all exports defined in the frontmatter of project files:
 

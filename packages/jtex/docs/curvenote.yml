@@ -1,22 +1,6 @@
 version: 1
 project:
   title: JTeX
-  github: https://github.com/curvenote/curvenote
+  github: https://github.com/executablebooks/mystjs/tree/main/packages/jtex
   license: MIT
   subject: Jinja LaTeX Templates
-site:
-  title: jtex
-  projects:
-    - path: .
-      slug: docs
-  nav:
-    - title: jtex
-      url: /docs
-  actions:
-    - title: GitHub
-      url: https://github.com/curvenote/curvenote/tree/main/packages/jtex
-  domains:
-    - rowanc1-jtex.curve.space
-  twitter: rowancockett
-  logo: public/logo.svg
-  logo_text: ''

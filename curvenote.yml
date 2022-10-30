@@ -4,6 +4,8 @@ site:
   projects:
     - path: docs
       slug: guide
+    - path: packages/myst-cli/docs
+      slug: myst-cli
     - path: packages/jtex/docs
       slug: jtex
     - path: packages/myst-transforms/docs
@@ -15,6 +17,8 @@ site:
       url: /guide
     - title: Packages
       children:
+        - title: myst-cli
+          url: /myst-cli
         - title: jtex
           url: /jtex
         - title: myst-transforms
