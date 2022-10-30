@@ -6,7 +6,7 @@ description: MyST (Markedly Structured Text) is designed to create publication-q
 `mystjs` is a set of open-source, community-driven tools designed for scientific communication, including a powerful authoring framework that supports blogs, online books, scientific papers, reports and journals articles.
 
 ```{warning}
-The `mystjs` project is in a pre-alpha state. It is being used to explore a MyST implementation in JavaScript and will change significantly and rapidly. It is being developed by a small team of people on the [Executable Books Project](https://executablebooks.org), and may make rapid decisions without fully public/inclusive discussion. We will continue to update this documentation as the project stabilizes.
+The `mystjs` project is in beta. It is being used to explore a MyST implementation in JavaScript and will change significantly and rapidly. It is being developed by a small team of people on the [Executable Books Project](https://executablebooks.org), and may make rapid decisions without fully public/inclusive discussion. We will continue to update this documentation as the project stabilizes.
 ```
 
 ---

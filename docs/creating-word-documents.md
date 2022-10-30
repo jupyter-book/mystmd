@@ -35,12 +35,8 @@ exports:
 
 To build the exports, use the `myst build` command, which will work with your [project structure](./project-overview.md) if it exists and create a document in the output path that you specify.
 
-```{danger}
-This is currently exposed as `myst export docx my-document.md`, and will be updated to `myst build` in the future.
-```
-
 ```bash
-myst build my-document.md
+myst build my-document.md --docx
 ```
 
 Based on the `output` field in the export list in the [frontmatter](#export-frontmatter-word), the PDF and a log file will be written to `exports/my-document.docx`.

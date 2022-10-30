@@ -30,12 +30,8 @@ exports:
 
 To build the exports, use the `myst build` command, which will work with your [project structure](./project-overview.md) if it exists and create a document in the output path that you specify.
 
-```{danger}
-This is currently exposed as `myst export pdf my-document.md`, and will be updated to `myst build` in the future.
-```
-
 ```bash
-myst build my-document.md
+myst build my-document.md --pdf
 ```
 
 Based on the `output` field in the export list in the [frontmatter](#export-frontmatter-pdf), the PDF and a log file will be written to `exports/my-document.pdf` and any associated log files. If the output file is a folder, the document name will be used with a `.pdf` or `.tex` extension, as appropriate. Any necessary auxilary files (e.g. for example `*.png` or `*.bib`) will be added to the base folder (`exports/` above).
@@ -92,10 +88,14 @@ There are currently 422 journals supported[^journals] and it is straghtforward t
 
     This is the total number of _journals_ that can be created from MyST, which is a higher number than the number of _templates_, as some templates support many different journal exports. As we add more templates we will probably switch this number to templates, which is closer to 15, but that doesn't sound as impressive out of the gate. 🚀
 
+```{danger}
+The `myst templates` is not written yet, a similar interface is available through `jtex list`.
+```
+
 To list all of the public tempaltes, use the `myst templates` command:
 
 ```bash
-myst templates --format pdf --tag two-column
+myst templates list --pdf --tag two-column
 
 > arXiv (Two Column)       arxiv_two_column
 > Description: A two column arXiv compatible template

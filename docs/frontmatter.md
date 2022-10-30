@@ -201,7 +201,7 @@ The date field is a string and should conform to a valid Javascript data format.
 - `2021 December 14`
 - `12/14/2021` - `MM/DD/YYYY`
 - `12-14-2021` - `MM-DD-YYYY`
-- `2022/12/14` - `YYYY/MM/14`
+- `2022/12/14` - `YYYY/MM/DD`
 - `2022-12-14` - `YYYY-MM-DD`
 
 Where the latter example in that list are valid [IETF timestamps](https://datatracker.ietf.org/doc/html/rfc2822#page-14)

@@ -1,0 +1,6 @@
+version: 1
+project:
+  title: JTeX
+  github: github: https://github.com/executablebooks/mystjs/tree/main/packages/myst-cli
+  license: MIT
+  subject: Jinja LaTeX Templates

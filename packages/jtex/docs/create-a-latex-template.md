@@ -306,12 +306,8 @@ Other content!
 
 You can now render your document with:
 
-```{danger}
-This is currently exposed as `myst export tex my-document.md`, and will be updated to `myst build` in the future.
-```
-
 ```bash
-myst build my-document.md
+myst build my-document.md --tex
 ```
 
 By default these are put in a `_build` folder. If you want to control that, use the `output:` field in the appropriate export. If you have $\LaTeX$ installed, you can also try changing the format to `pdf` or `pdf+tex` to keep the source files. See [](../../../docs/creating-pdf-documents.md) for more information on using MyST templates for $\LaTeX$.
