@@ -89,7 +89,7 @@ Export to Word »
 :::
 
 :::{card}
-:link: ../packages/jtex/docs/create-a-latex-template.md
+:link: /docs/jtex/create-a-latex-template
 **Flexible Templating** 🧱
 ^^^
 Easily create and contribute data-driven templates using $\LaTeX$.

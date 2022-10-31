@@ -4,3 +4,10 @@ project:
   github: https://github.com/executablebooks/mystjs/tree/main/packages/jtex
   license: MIT
   subject: Jinja LaTeX Templates
+site:
+  title: JTeX
+  projects:
+    - path: .
+      slug: jtex
+  domains:
+    - jtex.myst.tools
