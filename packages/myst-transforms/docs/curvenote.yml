@@ -4,3 +4,10 @@ project:
   github: https://github.com/executablebooks/mystjs/tree/main/packages/myst-transforms
   license: MIT
   subject: MyST Transforms
+site:
+  title: MyST Transforms
+  projects:
+    - path: .
+      slug: myst-transforms
+  domains:
+    - myst-transforms.myst.tools
