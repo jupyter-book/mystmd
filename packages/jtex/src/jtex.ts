@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { extname, basename, join, dirname } from 'path';
 import yaml from 'js-yaml';
+import type { TemplateYml } from 'myst-templates';
 import nunjucks from 'nunjucks';
 import type { ValidationOptions } from 'simple-validators';
 import type { TemplateKinds } from './download';
@@ -9,7 +10,7 @@ import { pdfExportCommand } from './export';
 import { extendJtexFrontmatter } from './frontmatter';
 import { renderImports } from './imports';
 import { getSession } from './session';
-import type { TemplateImports, ISession, Renderer, TemplateYml } from './types';
+import type { TemplateImports, ISession, Renderer } from './types';
 import { ensureDirectoryExists, errorLogger, warningLogger } from './utils';
 import {
   validateTemplateDoc,

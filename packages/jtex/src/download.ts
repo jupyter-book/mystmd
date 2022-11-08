@@ -1,10 +1,11 @@
 import { createHash } from 'crypto';
 import fs, { createReadStream, createWriteStream, mkdirSync } from 'fs';
+import type { TemplateYmlListResponse, TemplateYmlResponse } from 'myst-templates';
 import fetch from 'node-fetch';
 import unzipper from 'unzipper';
 import { join, parse } from 'path';
 import { validateUrl } from 'simple-validators';
-import type { ISession, TemplateYmlListResponse, TemplateYmlResponse } from './types';
+import type { ISession } from './types';
 
 export const TEMPLATE_FILENAME = 'template.tex';
 
