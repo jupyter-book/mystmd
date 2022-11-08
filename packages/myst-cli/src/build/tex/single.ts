@@ -120,7 +120,7 @@ export async function localArticleToTexTemplated(
 
   const jtex = new JTex(session, {
     template: templateOptions.template || undefined,
-    rootDir: projectPath || path.dirname(file),
+    buildDir: session.buildPath(),
   });
   await jtex.ensureTemplateExistsOnPath();
   const templateYml = jtex.getValidatedTemplateYml();

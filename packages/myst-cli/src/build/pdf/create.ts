@@ -39,7 +39,6 @@ export async function createPdfGivenTexExport(
   pdfOutput: string,
   copyLogs?: boolean,
   clean?: boolean,
-  templateRootDir?: string,
 ) {
   if (clean) cleanOutput(session, pdfOutput);
   const { output: texOutput, template } = texExportOptions;
@@ -72,7 +71,10 @@ export async function createPdfGivenTexExport(
   if (!template) {
     buildCommand = pdfExportCommand(texFile, texLogFile);
   } else {
-    const jtex = new JTex(session, { template: template || undefined, rootDir: templateRootDir });
+    const jtex = new JTex(session, {
+      template: template || undefined,
+      buildDir: session.buildPath(),
+    });
     buildCommand = jtex.pdfExportCommand(texFile, texLogFile);
   }
   try {

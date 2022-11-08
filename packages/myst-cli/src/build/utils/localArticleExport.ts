@@ -52,7 +52,6 @@ export async function localArticleExport(
           output,
           keepTexAndLogs,
           clean,
-          fileProjectPath,
         );
       }
     }),
