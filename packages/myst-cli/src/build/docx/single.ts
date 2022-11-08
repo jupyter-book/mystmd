@@ -83,9 +83,12 @@ export async function collectWordExportOptions(
       }
       const resolvedOptions: {
         output: string;
-        renderer: ExportOptions['renderer'];
+        renderer?: ExportOptions['renderer'];
         template?: string | null;
-      } = { output, renderer };
+      } = { output };
+      if (renderer) {
+        resolvedOptions.renderer = renderer;
+      }
       if (template) {
         resolvedOptions.template = template;
       } else if (exp.template) {

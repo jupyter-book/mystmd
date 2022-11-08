@@ -122,7 +122,7 @@ const SITE_DESIGN_KEYS = [
 ];
 const TEXT_REPRESENTATION_KEYS = ['extension', 'format_name', 'format_version', 'jupytext_version'];
 const JUPYTEXT_KEYS = ['formats', 'text_representation'];
-export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output', 'id', 'name'];
+export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output', 'id', 'name', 'renderer'];
 
 const GITHUB_USERNAME_REPO_REGEX = '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$';
 const ORCID_REGEX = '^(http(s)?://orcid.org/)?([0-9]{4}-){3}[0-9]{3}[0-9X]$';
