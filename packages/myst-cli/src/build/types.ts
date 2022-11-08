@@ -1,4 +1,5 @@
 import type { File } from 'docx';
+import type { RendererDoc } from 'jtex';
 import type { Export } from 'myst-frontmatter';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types';
@@ -24,7 +25,9 @@ export type ExportOptions = {
   renderer?: (
     session: ISession,
     data: RendererData,
-    vfile: VFile,
+    doc: RendererDoc,
     opts: Record<string, any>,
+    staticPath: string,
+    vfile: VFile,
   ) => File;
 };

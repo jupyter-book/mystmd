@@ -117,8 +117,9 @@ function defaultWordRenderer(
   session: ISession,
   data: RendererData,
   doc: RendererDoc,
-  vfile: VFile,
   opts: Record<string, any>,
+  staticPath: string,
+  vfile: VFile,
 ) {
   const { mdast, frontmatter, references } = data;
   const frontmatterNodes = createArticleTitle(frontmatter.title, frontmatter.authors) as Content[];
@@ -150,9 +151,10 @@ function defaultWordRenderer(
   Object.values(references.footnotes).forEach((footnote) => {
     serializer.render(footnote);
   });
-  const { logo, styles } = opts;
-  const docfooter = logo ? createFooter(logo) : undefined;
-  const docstyles = styles ? fs.readFileSync(styles).toString() : undefined;
+  const logo = path.join(staticPath, 'logo.png');
+  const docfooter = fs.existsSync(logo) && !opts.hideFooter ? createFooter(logo) : undefined;
+  const styles = path.join(staticPath, 'styles.xml');
+  const docstyles = fs.existsSync(styles) ? fs.readFileSync(styles).toString() : undefined;
   return createDocFromState(serializer, docfooter, docstyles);
 }
 
@@ -178,12 +180,6 @@ export async function runWordExport(
     buildDir: session.buildPath(),
   });
   await jtex.ensureTemplateExistsOnPath();
-  if (!exportOptions.logo) {
-    exportOptions.logo = path.join(path.dirname(jtex.getTemplateYmlPath()), 'logo.png');
-  }
-  if (!exportOptions.styles) {
-    exportOptions.styles = path.join(path.dirname(jtex.getTemplateYmlPath()), 'styles.xml');
-  }
   const { options, doc } = jtex.preRender({
     frontmatter: data.frontmatter,
     parts: [],
@@ -191,7 +187,7 @@ export async function runWordExport(
     sourceFile: file,
   });
   const renderer = exportOptions.renderer ?? defaultWordRenderer;
-  const docx = renderer(session, data, doc, vfile, options);
+  const docx = renderer(session, data, doc, options, jtex.templatePath, vfile);
   logMessagesFromVFile(session, vfile);
   session.log.info(`🖋  Writing docx to ${output}`);
   writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));
