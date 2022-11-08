@@ -8,32 +8,46 @@ import type { ISession, TemplateYmlListResponse, TemplateYmlResponse } from './t
 
 export const TEMPLATE_FILENAME = 'template.tex';
 
+export enum TemplateKinds {
+  tex = 'tex',
+  docx = 'docx',
+}
+
+const DEFAULT_TEMPLATES = {
+  tex: 'tex/myst/curvenote',
+  docx: 'docx/myst/default',
+};
+
 const PARTIAL_TEMPLATE_REGEX = /^[a-zA-Z0-9_-]+$/;
 const TEMPLATE_REGEX = /^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/;
 
-function normalizeTemplateName(template: string) {
+function normalizeTemplateName(opts: { kind?: TemplateKinds; template?: string }) {
+  const { template } = opts;
+  const kind = opts.kind ?? TemplateKinds.tex;
+  if (!template) {
+    return DEFAULT_TEMPLATES[kind];
+  }
   if (template.match(PARTIAL_TEMPLATE_REGEX)) {
-    return `myst/${template}`;
+    return `${kind}/myst/${template}`;
   }
   if (template.match(TEMPLATE_REGEX)) {
-    return template;
+    return `${kind}/${template}`;
   }
   return undefined;
 }
 
-function listingUrl(session: ISession) {
-  return `${session.API_URL}/templates/tex`;
+function listingUrl(session: ISession, kind?: TemplateKinds) {
+  return `${session.API_URL}/templates/${kind ?? TemplateKinds.tex}`;
 }
 
 function defaultUrl(session: ISession, template: string) {
-  return `${session.API_URL}/templates/tex/${template}`;
+  return `${session.API_URL}/templates/${template}`;
 }
 
-function defaultPath(template: string, hash: boolean, rootDir?: string) {
+function defaultPath(template: string, hash: boolean, buildDir?: string) {
   const subdirs: string[] = [];
-  if (rootDir) subdirs.push(rootDir);
+  if (buildDir) subdirs.push(buildDir);
   subdirs.push(
-    '_build',
     'templates',
     hash ? createHash('sha256').update(template).digest('hex') : join(...template.split('/')),
   );
@@ -43,7 +57,10 @@ function defaultPath(template: string, hash: boolean, rootDir?: string) {
 /**
  * Resolve template/path inputs to local path and remote url (if necessary)
  */
-export function resolveInputs(session: ISession, opts: { template?: string; rootDir?: string }) {
+export function resolveInputs(
+  session: ISession,
+  opts: { kind?: TemplateKinds; template?: string; buildDir?: string },
+) {
   let templateUrl: string | undefined;
   let templatePath: string | undefined;
   // Handle case where template already exists locally
@@ -63,14 +80,14 @@ export function resolveInputs(session: ISession, opts: { template?: string; root
   // Handle case where template is a download URL
   templateUrl = validateUrl(opts.template, { messages: {}, suppressErrors: true, property: '' });
   if (templateUrl) {
-    templatePath = defaultPath(templateUrl, true, opts.rootDir);
+    templatePath = defaultPath(templateUrl, true, opts.buildDir);
     return { templatePath, templateUrl };
   }
   // Handle case where template is a name
-  const templateNormalized = normalizeTemplateName(opts.template || 'curvenote');
+  const templateNormalized = normalizeTemplateName(opts);
   if (templateNormalized) {
     templateUrl = defaultUrl(session, templateNormalized);
-    templatePath = defaultPath(templateNormalized, false, opts.rootDir);
+    templatePath = defaultPath(templateNormalized, false, opts.buildDir);
     return { templatePath, templateUrl };
   }
   throw new Error(`Unable to resolve template from: ${opts.template}`);
@@ -137,10 +154,10 @@ export async function downloadAndUnzipTemplate(
   session.log.info(`💾 Saved template to path ${templatePath}`);
 }
 
-export async function fetchPublicTemplate(session: ISession, name: string) {
+export async function fetchPublicTemplate(session: ISession, name: string, kind?: TemplateKinds) {
   const url = listingUrl(session);
   session.log.debug('Fetching template listing information');
-  const templateUrl = `${url}/${normalizeTemplateName(name)}`;
+  const templateUrl = `${url}/${normalizeTemplateName({ template: name, kind })}`;
   const resLink = await fetch(templateUrl);
   if (!resLink.ok) {
     throw new Error(
@@ -152,8 +169,9 @@ export async function fetchPublicTemplate(session: ISession, name: string) {
 
 export async function listPublicTemplates(
   session: ISession,
+  kind?: TemplateKinds,
 ): Promise<TemplateYmlListResponse['items']> {
-  const url = listingUrl(session);
+  const url = listingUrl(session, kind);
   session.log.debug('Fetching template listing information');
   const resLink = await fetch(url);
   if (!resLink.ok) {
