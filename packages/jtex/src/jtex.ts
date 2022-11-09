@@ -9,7 +9,6 @@ import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './do
 import { pdfExportCommand } from './export';
 import { extendJtexFrontmatter } from './frontmatter';
 import { renderImports } from './imports';
-import { getSession } from './session';
 import type { TemplateImports, ISession, Renderer } from './types';
 import { ensureDirectoryExists, errorLogger, warningLogger } from './utils';
 import {
@@ -44,7 +43,7 @@ class JTex {
     session: ISession,
     opts?: { kind?: TemplateKinds; template?: string; buildDir?: string },
   ) {
-    this.session = getSession(session.log);
+    this.session = session;
     const { templatePath, templateUrl } = resolveInputs(this.session, opts || {});
     this.templatePath = templatePath;
     this.templateUrl = templateUrl;
