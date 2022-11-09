@@ -1,13 +1,14 @@
 import AdmZip from 'adm-zip';
 import fs from 'fs';
 import path from 'path';
-import type { TemplatePartDefinition, TemplateImports, TemplateYml } from 'jtex';
+import type { TemplateImports } from 'jtex';
 import JTex, { mergeTemplateImports } from 'jtex';
 import type { Root } from 'mdast';
 import { writeFileToFolder } from 'myst-cli-utils';
 import { extractPart } from 'myst-common';
 import type { Export, PageFrontmatter } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
+import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
@@ -120,7 +121,7 @@ export async function localArticleToTexTemplated(
 
   const jtex = new JTex(session, {
     template: templateOptions.template || undefined,
-    rootDir: projectPath || path.dirname(file),
+    buildDir: session.buildPath(),
   });
   await jtex.ensureTemplateExistsOnPath();
   const templateYml = jtex.getValidatedTemplateYml();

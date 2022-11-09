@@ -4,18 +4,18 @@ import JTex, { downloadAndUnzipTemplate, resolveInputs, Session } from '../src';
 describe('Download Template', () => {
   it('Download default template', async () => {
     const session = new Session();
-    const inputs = resolveInputs(session, { rootDir: '.' });
+    const inputs = resolveInputs(session, { buildDir: '_build' });
     await downloadAndUnzipTemplate(session, {
       templatePath: inputs.templatePath,
       templateUrl: inputs.templateUrl as string,
     });
-    expect(fs.existsSync('_build/templates/myst/curvenote/template.zip')).toBe(true);
-    expect(fs.existsSync('_build/templates/myst/curvenote/template.yml')).toBe(true);
-    expect(fs.existsSync('_build/templates/myst/curvenote/README.md')).toBe(true);
+    expect(fs.existsSync('_build/templates/tex/myst/curvenote/template.zip')).toBe(true);
+    expect(fs.existsSync('_build/templates/tex/myst/curvenote/template.yml')).toBe(true);
+    expect(fs.existsSync('_build/templates/tex/myst/curvenote/README.md')).toBe(true);
   });
   it('Bad template paths to throw', async () => {
     const jtex = new JTex(new Session(), { template: 'not-there' });
-    expect(() => jtex.render({} as any)).toThrow(/does not exist/);
+    expect(() => jtex.preRender({} as any)).toThrow(/does not exist/);
   });
   it('Render out the template', async () => {
     const jtex = new JTex(new Session(), { template: `${__dirname}/example` });

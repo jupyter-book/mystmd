@@ -1,14 +1,16 @@
 import fs from 'fs';
 import { extname, basename, join, dirname } from 'path';
 import yaml from 'js-yaml';
+import type { TemplateYml } from 'myst-templates';
 import nunjucks from 'nunjucks';
 import type { ValidationOptions } from 'simple-validators';
+import type { TemplateKinds } from './download';
 import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
 import { pdfExportCommand } from './export';
 import { extendJtexFrontmatter } from './frontmatter';
 import { renderImports } from './imports';
 import { getSession } from './session';
-import type { TemplateImports, ISession, Renderer, TemplateYml } from './types';
+import type { TemplateImports, ISession, Renderer } from './types';
 import { ensureDirectoryExists, errorLogger, warningLogger } from './utils';
 import {
   validateTemplateDoc,
@@ -38,7 +40,10 @@ class JTex {
    * template may be downloaded, or the name of a Curvenote template. Path is the
    * local path where the downloaded template will be saved.
    */
-  constructor(session: ISession, opts?: { template?: string; rootDir?: string }) {
+  constructor(
+    session: ISession,
+    opts?: { kind?: TemplateKinds; template?: string; buildDir?: string },
+  ) {
     this.session = getSession(session.log);
     const { templatePath, templateUrl } = resolveInputs(this.session, opts || {});
     this.templatePath = templatePath;
@@ -176,6 +181,30 @@ class JTex {
     }
   }
 
+  preRender(opts: {
+    frontmatter: any;
+    parts: any;
+    options: any;
+    bibliography?: string[];
+    sourceFile?: string;
+  }) {
+    if (!fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
+      throw new Error(
+        `The template at "${join(this.templatePath, TEMPLATE_FILENAME)}" does not exist`,
+      );
+    }
+    const options = this.validateOptions(opts.options, opts.sourceFile);
+    const parts = this.validateParts(opts.parts, options, opts.sourceFile);
+    const docFrontmatter = this.validateDoc(
+      opts.frontmatter,
+      options,
+      opts.bibliography,
+      opts.sourceFile,
+    );
+    const doc = extendJtexFrontmatter(docFrontmatter);
+    return { options, parts, doc };
+  }
+
   render(opts: {
     contentOrPath: string;
     outputPath: string;
@@ -188,11 +217,6 @@ class JTex {
     force?: boolean;
     packages?: string[];
   }) {
-    if (!fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
-      throw new Error(
-        `The template at "${join(this.templatePath, TEMPLATE_FILENAME)}" does not exist`,
-      );
-    }
     if (extname(opts.outputPath) !== '.tex') {
       throw new Error(`outputPath must be a ".tex" file, not "${opts.outputPath}"`);
     }
@@ -203,15 +227,7 @@ class JTex {
     } else {
       content = opts.contentOrPath;
     }
-    const options = this.validateOptions(opts.options, opts.sourceFile);
-    const parts = this.validateParts(opts.parts, options, opts.sourceFile);
-    const docFrontmatter = this.validateDoc(
-      opts.frontmatter,
-      options,
-      opts.bibliography,
-      opts.sourceFile,
-    );
-    const doc = extendJtexFrontmatter(docFrontmatter);
+    const { options, parts, doc } = this.preRender(opts);
     const renderer: Renderer = {
       CONTENT: content,
       doc,

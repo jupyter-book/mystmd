@@ -61,14 +61,7 @@ export async function localArticleToPdf(
         opts.clean,
       );
       await runTexExport(session, file, texExportOptions, projectPath, opts.clean);
-      await createPdfGivenTexExport(
-        session,
-        texExportOptions,
-        output,
-        keepTexAndLogs,
-        opts.clean,
-        projectPath || path.dirname(file),
-      );
+      await createPdfGivenTexExport(session, texExportOptions, output, keepTexAndLogs, opts.clean);
     }),
   );
 }

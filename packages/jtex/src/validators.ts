@@ -8,6 +8,14 @@ import {
   validateLicenses,
   validatePageFrontmatter,
 } from 'myst-frontmatter';
+import type {
+  TemplateDocDefinition,
+  TemplateOptionDefinition,
+  TemplatePartDefinition,
+  TemplateStyles,
+  TemplateYml,
+} from 'myst-templates';
+import { TemplateOptionTypes } from 'myst-templates';
 import {
   defined,
   incrementOptions,
@@ -24,14 +32,6 @@ import {
   validationError,
 } from 'simple-validators';
 import type { ValidationOptions } from 'simple-validators';
-import type {
-  TemplateDocDefinition,
-  TemplateOptionDefinition,
-  TemplatePartDefinition,
-  TemplateStyles,
-  TemplateYml,
-} from './types';
-import { TemplateOptionTypes } from './types';
 
 export function validateTemplateOption(
   input: any,

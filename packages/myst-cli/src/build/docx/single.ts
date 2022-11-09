@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import type { RendererDoc } from 'jtex';
+import JTex from 'jtex';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { writeFileToFolder } from 'myst-cli-utils';
@@ -23,8 +25,7 @@ import {
   cleanOutput,
   getSingleFileContent,
 } from '../utils';
-import { createCurvenoteFooter } from './footers';
-import DEFAULT_STYLE from './simpleStyles';
+import { createFooter } from './footers';
 import { createArticleTitle, createReferenceTitle } from './titles';
 
 export async function collectWordExportOptions(
@@ -35,7 +36,7 @@ export async function collectWordExportOptions(
   projectPath: string | undefined,
   opts: ExportOptions,
 ) {
-  const { filename, renderer } = opts;
+  const { template, filename, renderer } = opts;
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
   const exportErrorMessages: ValidationOptions['messages'] = {};
   let exportOptions: Export[] =
@@ -80,7 +81,26 @@ export async function collectWordExportOptions(
         session.log.error(`The filename must end with '.${extension}': "${output}"`);
         return undefined;
       }
-      return { ...exp, output, renderer };
+      const resolvedOptions: {
+        output: string;
+        renderer?: ExportOptions['renderer'];
+        template?: string | null;
+      } = { output };
+      if (renderer) {
+        resolvedOptions.renderer = renderer;
+      }
+      if (template) {
+        resolvedOptions.template = template;
+      } else if (exp.template) {
+        // template path from file frontmatter needs resolution relative to working directory
+        const resolvedTemplatePath = path.resolve(path.dirname(file), exp.template);
+        if (fs.existsSync(resolvedTemplatePath)) {
+          resolvedOptions.template = resolvedTemplatePath;
+        } else {
+          resolvedOptions.template = exp.template;
+        }
+      }
+      return { ...exp, ...resolvedOptions };
     })
     .filter((exp): exp is ExportWithOutput => Boolean(exp))
     .map((exp, ind, arr) => {
@@ -99,8 +119,10 @@ export async function collectWordExportOptions(
 function defaultWordRenderer(
   session: ISession,
   data: RendererData,
-  vfile: VFile,
+  doc: RendererDoc,
   opts: Record<string, any>,
+  staticPath: string,
+  vfile: VFile,
 ) {
   const { mdast, frontmatter, references } = data;
   const frontmatterNodes = createArticleTitle(frontmatter.title, frontmatter.authors) as Content[];
@@ -132,7 +154,11 @@ function defaultWordRenderer(
   Object.values(references.footnotes).forEach((footnote) => {
     serializer.render(footnote);
   });
-  return createDocFromState(serializer, createCurvenoteFooter(), DEFAULT_STYLE);
+  const logo = path.join(staticPath, 'logo.png');
+  const docfooter = fs.existsSync(logo) && !opts.hideFooter ? createFooter(logo) : undefined;
+  const styles = path.join(staticPath, 'styles.xml');
+  const docstyles = fs.existsSync(styles) ? fs.readFileSync(styles).toString() : undefined;
+  return createDocFromState(serializer, docfooter, docstyles);
 }
 
 export async function runWordExport(
@@ -151,11 +177,23 @@ export async function runWordExport(
   });
   const vfile = new VFile();
   vfile.path = output;
+  const jtex = new JTex(session, {
+    kind: 'docx' as any,
+    template: exportOptions.template || undefined,
+    buildDir: session.buildPath(),
+  });
+  await jtex.ensureTemplateExistsOnPath();
+  const { options, doc } = jtex.preRender({
+    frontmatter: data.frontmatter,
+    parts: [],
+    options: exportOptions,
+    sourceFile: file,
+  });
   const renderer = exportOptions.renderer ?? defaultWordRenderer;
-  const doc = renderer(session, data, vfile, exportOptions);
+  const docx = renderer(session, data, doc, options, jtex.templatePath, vfile);
   logMessagesFromVFile(session, vfile);
   session.log.info(`🖋  Writing docx to ${output}`);
-  writeDocx(doc, (buffer) => writeFileToFolder(output, buffer));
+  writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));
 }
 
 export async function localArticleToWord(
