@@ -4,7 +4,6 @@
   "description": "Tool for rendering LaTeX documents from jinja-style templates",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "unpkg": "dist/index.umd.min.js",
   "types": "dist/types/index.d.ts",
   "files": [
     "src",
