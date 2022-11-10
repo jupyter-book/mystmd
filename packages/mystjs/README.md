@@ -117,8 +117,8 @@ The scripts for building, testing, and serving the project are in the [package.j
 
 ### `npm run build`
 
-Builds the library, including compiling the typescript and bundling/minification to create `index.umd.min.js`.
-This outputs to the `dist` folder, and also includes all type definitions (`*.d.ts`).
+Builds the library, including compiling the typescript and bundling/minification to create `index.cjs.js`. Which can be helpful for tooling (e.g. `jest`) that can struggle with esm modules.
+This outputs to the `dist` folder, and also includes all type definitions (`*.d.ts`) in the types folder.
 
 ### `npm run test`
 

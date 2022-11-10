@@ -7,13 +7,13 @@ fix-default-js:
 
 build:
 	cd ..; npm run build
-	cp ../dist/index.umd.min.js _static/myst.min.js
+	cp ../dist/index.cjs.js _static/myst.min.js
 	jupyter-book build .
 	make fix-default-js
 
 build-watch:
 	jupyter-book build .
-	cp ../dist/index.umd.min.js _build/html/_static/myst.min.js
+	cp ../dist/index.cjs.js _build/html/_static/myst.min.js
 	make fix-default-js
 
 watch: clean
