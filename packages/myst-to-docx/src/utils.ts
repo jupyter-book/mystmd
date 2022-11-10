@@ -13,7 +13,6 @@ import { Buffer } from 'buffer'; // Important for frontend development!
 import type { Root } from 'mdast';
 import type { Image as MdastImage } from 'myst-spec';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import type { Node as ProsemirrorNode } from 'prosemirror-model';
 import { selectAll } from 'unist-util-select';
 import type { IFootnotes, Options } from './types';
 
@@ -60,15 +59,6 @@ export async function writeDocx(
 ) {
   const buffer = await Packer.toBuffer(doc);
   return write(buffer);
-}
-
-export function getLatexFromNode(node: ProsemirrorNode): string {
-  let math = '';
-  node.forEach((child) => {
-    if (child.isText) math += child.text;
-    // TODO: improve this as we may have other things in the future
-  });
-  return math;
 }
 
 const DEFAULT_IMAGE_WIDTH = 70;
