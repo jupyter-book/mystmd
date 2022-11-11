@@ -1,6 +1,6 @@
 ---
 title: myst-transforms
-description: myst-transforms is library for converting MyST documents to LaTeX.
+description: myst-transforms contains a number of transformations for MyST ASTs
 ---
 
 [![myst-transforms on npm](https://img.shields.io/npm/v/myst-transforms.svg)](https://www.npmjs.com/package/myst-transforms)

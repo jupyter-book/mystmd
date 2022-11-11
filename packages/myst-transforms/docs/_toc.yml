@@ -3,4 +3,5 @@ root: index
 chapters:
   - file: overview
   - file: conventions
+  - file: links
   - file: enumeration

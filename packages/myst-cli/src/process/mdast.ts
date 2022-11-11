@@ -16,6 +16,7 @@ import {
   linksTransform,
   MystTransformer,
   WikiTransformer,
+  GithubTransformer,
   RRIDTransformer,
   DOITransformer,
 } from 'myst-transforms';
@@ -115,6 +116,7 @@ export async function transformMdast(
   const intersphinx = projectPath ? await loadIntersphinx(session, { projectPath }) : [];
   const transformers = [
     new WikiTransformer(),
+    new GithubTransformer(),
     new RRIDTransformer(),
     new DOITransformer(), // This also is picked up in the next transform
     new MystTransformer(intersphinx),

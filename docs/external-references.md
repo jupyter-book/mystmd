@@ -157,6 +157,22 @@ Wikipedia links, like `https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)` w
 % TODO: Set the default wiki links, or an additional wiki link in references, e.g. to something like https://wiki.seg.org/wiki/Knowledge_tree
 ```
 
+## GitHub Links
+
+MyST can directly integrate with links to GitHub to create hover-card information directly integrated into your MyST documents. For example, a link to the [linkTransforms](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L12-L28) plugin code shows a preview of the code. The code preview works for both mutliple line numbers and higlighting [single lines](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L30), which shows the surrounding ten lines, with the referenced line highlighted. If you reference the [full file](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts) then the first ten lines of the file are shown in the preview.
+
+````{important}
+:class: dropdown
+# Creating GitHub links to code
+GitHub links to code can be generated on the GitHub web application when browsing code and click on the line numbers, then copy the URL. To select multiple lines, click your first line then shift-click to select multiple lines, the URL will be updated to end with `#L4-L6`. The structure of the link should look like:
+
+```
+https://github.com/{{org}}/{{repo}}/blob/{{reference}}/file.py#L12-L28
+```
+
+Any git `reference` will work, however, picking a branch like `main` may mean that your code line numbers will change, instead, you may want to go to navigate to a specific git commit or tag, which will show up in the URL.
+````
+
 ## Linking DOIs
 
 It is possible to include DOIs as external content, and they are also added as citations to your project and show up in the references section at the bottom of a document. See [](./citations.md) for more details, specifically [](#doi-links), which explains linking DOIs with the `<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)` to create a citation, for example (<doi:10.5281/zenodo.6476040>).
