@@ -16,23 +16,23 @@ describe('extractPart', () => {
       children: [
         {
           type: 'block' as any,
-          data: { tags: ['other_tag'] },
-          children: [{ type: 'text', value: 'untagged content' }],
-        },
-        {
-          type: 'block' as any,
           data: { tags: ['test_tag'] },
           children: [{ type: 'text', value: 'tagged content' }],
         },
         {
           type: 'block' as any,
-          data: { tags: ['other_tag', 'test_tag'] },
-          children: [{ type: 'text', value: 'also tagged content' }],
+          data: { parts: ['other_tag'] },
+          children: [{ type: 'text', value: 'other part content' }],
         },
         {
           type: 'block' as any,
-          data: { part: 'test_tag' },
-          children: [{ type: 'text', value: 'a part' }],
+          data: { parts: ['other_tag', 'test_tag'] },
+          children: [{ type: 'text', value: 'multiple parts' }],
+        },
+        {
+          type: 'block' as any,
+          data: { parts: ['test_tag'] },
+          children: [{ type: 'text', value: 'single part' }],
         },
       ],
     };
@@ -41,18 +41,13 @@ describe('extractPart', () => {
       children: [
         {
           type: 'block' as any,
-          data: { tags: ['test_tag'] },
-          children: [{ type: 'text', value: 'tagged content' }],
+          data: { parts: ['other_tag', 'test_tag'] },
+          children: [{ type: 'text', value: 'multiple parts' }],
         },
         {
           type: 'block' as any,
-          data: { tags: ['other_tag', 'test_tag'] },
-          children: [{ type: 'text', value: 'also tagged content' }],
-        },
-        {
-          type: 'block' as any,
-          data: { part: 'test_tag' },
-          children: [{ type: 'text', value: 'a part' }],
+          data: { parts: ['test_tag'] },
+          children: [{ type: 'text', value: 'single part' }],
         },
       ],
     });
@@ -61,8 +56,18 @@ describe('extractPart', () => {
       children: [
         {
           type: 'block' as any,
-          data: { tags: ['other_tag'] },
-          children: [{ type: 'text', value: 'untagged content' }],
+          data: { tags: ['test_tag'] },
+          children: [{ type: 'text', value: 'tagged content' }],
+        },
+        {
+          type: 'block' as any,
+          data: { parts: ['other_tag'] },
+          children: [{ type: 'text', value: 'other part content' }],
+        },
+        {
+          type: 'block' as any,
+          data: { parts: ['other_tag'] },
+          children: [{ type: 'text', value: 'multiple parts' }],
         },
       ],
     });

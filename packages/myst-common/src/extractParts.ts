@@ -9,10 +9,9 @@ import { copyNode } from './utils';
  */
 export function selectBlockParts(tree: Root, part: string) {
   const blockParts = selectAll('block', tree).filter((block) => {
-    if (!block.data?.tags && !block.data?.part) return false;
-    if (block.data?.part === part) return true;
+    const parts = (block.data?.parts as string[]) ?? [];
     try {
-      return (block.data.tags as any).includes(part);
+      return parts.includes(part);
     } catch {
       return false;
     }
@@ -28,9 +27,16 @@ export function extractPart(tree: Root, partId: string): Root | undefined {
   const blockParts = selectBlockParts(tree, partId);
   if (!blockParts) return undefined;
   const partsTree = { type: 'root', children: copyNode(blockParts) } as unknown as Root;
-  // Remove the block parts from the main document
   blockParts.forEach((block) => {
-    (block as any).type = '__delete__';
+    if (!block.data) return;
+    const parts = ((block.data.parts as string[]) ?? []).filter((part) => part !== partId);
+    if (parts.length) {
+      // If block specifies multiple parts, remove partId from block
+      block.data.parts = parts;
+    } else {
+      // If block does not specify other parts, remove block
+      (block as any).type = '__delete__';
+    }
   });
   remove(tree, '__delete__');
   return partsTree;
