@@ -7,17 +7,15 @@ import { copyNode } from './utils';
 /**
  * Selects the block node(s) based on part (string) or tags (string[]).
  */
-export function selectBlockParts(tree: Root, part: string) {
+export function selectBlockParts(tree: Root, part: string): Block[] | undefined {
+  if (!part) {
+    // Prevent an undefined, null or empty part comparison
+    return;
+  }
   const blockParts = selectAll('block', tree).filter((block) => {
-    if (!block.data?.tags && !block.data?.part) return false;
-    if (block.data?.part === part) return true;
-    try {
-      return (block.data.tags as any).includes(part);
-    } catch {
-      return false;
-    }
+    return block.data?.part === part;
   });
-  if (blockParts.length === 0) return undefined;
+  if (blockParts.length === 0) return;
   return blockParts as Block[];
 }
 
