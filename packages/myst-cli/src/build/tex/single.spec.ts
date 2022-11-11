@@ -18,17 +18,17 @@ describe('extractPart', () => {
       children: [
         {
           type: 'block' as any,
-          data: { tags: ['other_tag'] },
+          data: { parts: ['other_tag'] },
           children: [{ type: 'text', value: 'untagged content' }],
         },
         {
           type: 'block' as any,
-          data: { tags: ['test_tag'] },
+          data: { parts: ['test_tag'] },
           children: [{ type: 'text', value: 'tagged content' }],
         },
         {
           type: 'block' as any,
-          data: { tags: ['other_tag', 'test_tag'] },
+          data: { parts: ['other_tag', 'test_tag'] },
           children: [{ type: 'text', value: 'also tagged content' }],
         },
       ],
@@ -43,8 +43,13 @@ describe('extractPart', () => {
       children: [
         {
           type: 'block' as any,
-          data: { tags: ['other_tag'] },
+          data: { parts: ['other_tag'] },
           children: [{ type: 'text', value: 'untagged content' }],
+        },
+        {
+          type: 'block' as any,
+          data: { parts: ['other_tag'] },
+          children: [{ type: 'text', value: 'also tagged content' }],
         },
       ],
     });
@@ -55,7 +60,7 @@ describe('extractPart', () => {
       children: [
         {
           type: 'block' as any,
-          data: { tags: ['test_tag'] },
+          data: { parts: ['test_tag'] },
           children: [{ type: 'text', value: 'tagged content' }],
         },
       ],
@@ -74,7 +79,7 @@ describe('extractPart', () => {
       children: [
         {
           type: 'block' as any,
-          data: { tags: ['test_tag'] },
+          data: { parts: ['test_tag'] },
           children: [{ type: 'text', value: 'tagged content' }],
         },
       ],
@@ -91,7 +96,7 @@ describe('extractPart', () => {
       children: [
         {
           type: 'block' as any,
-          data: { tags: ['test_tag'] },
+          data: { parts: ['test_tag'] },
           children: [{ type: 'text', value: 'tagged content' }],
         },
       ],
