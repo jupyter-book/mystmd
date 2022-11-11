@@ -3,7 +3,7 @@ import { getCitations } from 'citation-js-utils';
 import { validate, normalize } from 'doi-utils';
 import type { Link } from 'myst-spec';
 import type { GenericNode } from 'mystjs';
-import { selectAll } from 'mystjs';
+import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
 import { tic } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';

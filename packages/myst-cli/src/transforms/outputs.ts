@@ -1,5 +1,5 @@
 import type { GenericNode } from 'mystjs';
-import { selectAll } from 'mystjs';
+import { selectAll } from 'unist-util-select';
 import type { CellOutput } from '@curvenote/blocks';
 import { minifyCellOutput, walkPaths } from 'nbtx';
 import type { Root } from 'mdast';

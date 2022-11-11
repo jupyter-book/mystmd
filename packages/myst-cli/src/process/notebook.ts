@@ -1,6 +1,6 @@
 import type { Root } from 'mdast';
 import type { GenericNode } from 'mystjs';
-import { selectAll } from 'mystjs';
+import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
 import type { CellOutput } from '@curvenote/blocks';
 import { ContentFormatTypes, KINDS } from '@curvenote/blocks';
