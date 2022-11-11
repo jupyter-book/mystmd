@@ -106,7 +106,7 @@ myst templates list --pdf --tag two-column
 
 Once you have found a template, you can list detailed information about the parts and options that the template exposes using:
 
-```
+```bash
 myst templates arxiv_two_column
 
 > ID: public/arxiv_two_column

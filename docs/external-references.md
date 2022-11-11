@@ -9,9 +9,10 @@ External references are references to structured content or documents that are o
 MyST supports referencing rich content in a growing number of formats, including:
 
 1. other `mystjs` projects, with rich cross-linking of content
-2. integrating directly with Wikipedia articles to show tooltips,
-3. linking to other Sphinx documentation using intersphinx,
-4. showing structured content from scholarly sources like DOIs or RRIDs.
+1. integrating directly with **Wikipedia** articles to show tooltips,
+1. linking to other **Sphinx** documentation using intersphinx,
+1. link to files on **GitHub** and show inline previews,
+1. showing structured content from scholarly sources like **DOIs** or **RRIDs**.
 
 ```{seealso}
 [](./cross-references.md) for referencing content in your project and [](./citations.md) to cite scholarly work and create bibliographies.
@@ -148,7 +149,7 @@ Note that if the page title has spaces in it, simply replace them with underscor
 :class: dropdown
 # Different languages or wikis
 
-There are many different official and unoffial wikis that use the same [Wikimedia](wiki:Wikimedia_Foundation) technology, including subdomains in various langauges.
+There are many different official and unofficial wikis that use the same [Wikimedia](wiki:Wikimedia_Foundation) technology, including subdomains in various langauges.
 
 Wikipedia links, like `https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)` will work fine out of the box, and point to [](https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)) with the popup still working!
 
@@ -166,12 +167,14 @@ MyST can directly integrate with links to GitHub to create hover-card informatio
 # Creating GitHub links to code
 GitHub links to code can be generated on the GitHub web application when browsing code and click on the line numbers, then copy the URL. To select multiple lines, click your first line then shift-click to select multiple lines, the URL will be updated to end with `#L4-L6`. The structure of the link should look like:
 
-```
-https://github.com/{{org}}/{{repo}}/blob/{{reference}}/file.py#L12-L28
+```text
+https://github.com/{{org}}/{{repo}}/blob/{{reference}}/file.py#L4-L6
 ```
 
 Any git `reference` will work, however, picking a branch like `main` may mean that your code line numbers will change, instead, you may want to go to navigate to a specific git commit or tag, which will show up in the URL.
 ````
+
+% TODO: Add ability to reference issues and PRs with queries for the issue names, and PR information.
 
 ## Linking DOIs
 
