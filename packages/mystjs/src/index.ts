@@ -4,8 +4,32 @@ export * from './mdast';
 export * from './myst';
 export { plugins };
 
-export { unified } from 'unified';
-export { select, selectAll } from 'unist-util-select';
-export { map } from 'unist-util-map';
-export { visit } from 'unist-util-visit';
-export { remove } from 'unist-util-remove';
+import { remove } from 'unist-util-remove';
+import { select, selectAll } from 'unist-util-select';
+
+export {
+  /** @deprecated
+   *
+   * Please use:
+   * ```ts
+   * import { remove } from 'unist-util-remove';
+   * ```
+   */
+  remove,
+  /** @deprecated
+   *
+   * Please use:
+   * ```ts
+   * import { select } from 'unist-util-select';
+   * ```
+   */
+  select,
+  /** @deprecated
+   *
+   * Please use:
+   * ```ts
+   * import { selectAll } from 'unist-util-select';
+   * ```
+   */
+  selectAll,
+};

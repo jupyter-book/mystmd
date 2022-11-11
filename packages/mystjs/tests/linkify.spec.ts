@@ -1,5 +1,6 @@
 import type { Root } from 'mdast';
-import { MyST, visit } from '../src';
+import { visit } from 'unist-util-visit';
+import { MyST } from '../src';
 
 function stripPositions(tree: Root) {
   visit(tree, (node) => {

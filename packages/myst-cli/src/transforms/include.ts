@@ -2,7 +2,7 @@ import fs from 'fs';
 import type { GenericNode } from 'mystjs';
 import type { Root } from 'mdast';
 import { parseMyst } from '../process';
-import { selectAll } from 'mystjs';
+import { selectAll } from 'unist-util-select';
 import { join, dirname } from 'path';
 import type { ISession } from '../session/types';
 

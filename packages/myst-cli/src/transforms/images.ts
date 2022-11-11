@@ -2,7 +2,7 @@ import fs from 'fs';
 import type { Root } from 'mdast';
 import mime from 'mime-types';
 import type { GenericNode } from 'mystjs';
-import { selectAll } from 'mystjs';
+import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
 import path from 'path';
 import type { PageFrontmatter } from 'myst-frontmatter';

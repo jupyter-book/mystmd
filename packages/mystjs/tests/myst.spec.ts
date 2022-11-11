@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
-import { MyST, visit } from '../src';
+import { visit } from 'unist-util-visit';
+import { MyST } from '../src';
 import type { Root } from 'mdast';
 
 type TestFile = {
