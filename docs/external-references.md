@@ -9,9 +9,10 @@ External references are references to structured content or documents that are o
 MyST supports referencing rich content in a growing number of formats, including:
 
 1. other `mystjs` projects, with rich cross-linking of content
-2. integrating directly with Wikipedia articles to show tooltips,
-3. linking to other Sphinx documentation using intersphinx,
-4. showing structured content from scholarly sources like DOIs or RRIDs.
+1. integrating directly with **Wikipedia** articles to show tooltips,
+1. linking to other **Sphinx** documentation using intersphinx,
+1. link to files on **GitHub** and show inline previews,
+1. showing structured content from scholarly sources like **DOIs** or **RRIDs**.
 
 ```{seealso}
 [](./cross-references.md) for referencing content in your project and [](./citations.md) to cite scholarly work and create bibliographies.
@@ -148,7 +149,7 @@ Note that if the page title has spaces in it, simply replace them with underscor
 :class: dropdown
 # Different languages or wikis
 
-There are many different official and unoffial wikis that use the same [Wikimedia](wiki:Wikimedia_Foundation) technology, including subdomains in various langauges.
+There are many different official and unofficial wikis that use the same [Wikimedia](wiki:Wikimedia_Foundation) technology, including subdomains in various langauges.
 
 Wikipedia links, like `https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)` will work fine out of the box, and point to [](https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)) with the popup still working!
 
@@ -156,6 +157,24 @@ Wikipedia links, like `https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)` w
 
 % TODO: Set the default wiki links, or an additional wiki link in references, e.g. to something like https://wiki.seg.org/wiki/Knowledge_tree
 ```
+
+## GitHub Links
+
+MyST can directly integrate with links to GitHub to create hover-card information directly integrated into your MyST documents. For example, a link to the [linkTransforms](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L12-L28) plugin code shows a preview of the code. The code preview works for both mutliple line numbers and higlighting [single lines](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L30), which shows the surrounding ten lines, with the referenced line highlighted. If you reference the [full file](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts) then the first ten lines of the file are shown in the preview.
+
+````{important}
+:class: dropdown
+# Creating GitHub links to code
+GitHub links to code can be generated on the GitHub web application when browsing code and click on the line numbers, then copy the URL. To select multiple lines, click your first line then shift-click to select multiple lines, the URL will be updated to end with `#L4-L6`. The structure of the link should look like:
+
+```text
+https://github.com/{{org}}/{{repo}}/blob/{{reference}}/file.py#L4-L6
+```
+
+Any git `reference` will work, however, picking a branch like `main` may mean that your code line numbers will change, instead, you may want to go to navigate to a specific git commit or tag, which will show up in the URL.
+````
+
+% TODO: Add ability to reference issues and PRs with queries for the issue names, and PR information.
 
 ## Linking DOIs
 
