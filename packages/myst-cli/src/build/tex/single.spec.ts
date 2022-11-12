@@ -23,12 +23,12 @@ describe('extractPart', () => {
         },
         {
           type: 'block' as any,
-          data: { tags: ['test_tag'] },
+          data: { part: 'test_tag' },
           children: [{ type: 'text', value: 'tagged content' }],
         },
         {
           type: 'block' as any,
-          data: { tags: ['other_tag', 'test_tag'] },
+          data: { part: 'test_tag', tags: ['other_tag'] },
           children: [{ type: 'text', value: 'also tagged content' }],
         },
       ],
@@ -55,7 +55,7 @@ describe('extractPart', () => {
       children: [
         {
           type: 'block' as any,
-          data: { tags: ['test_tag'] },
+          data: { part: 'test_tag' },
           children: [{ type: 'text', value: 'tagged content' }],
         },
       ],
@@ -74,7 +74,7 @@ describe('extractPart', () => {
       children: [
         {
           type: 'block' as any,
-          data: { tags: ['test_tag'] },
+          data: { part: 'test_tag' },
           children: [{ type: 'text', value: 'tagged content' }],
         },
       ],
@@ -91,7 +91,7 @@ describe('extractPart', () => {
       children: [
         {
           type: 'block' as any,
-          data: { tags: ['test_tag'] },
+          data: { part: 'test_tag' },
           children: [{ type: 'text', value: 'tagged content' }],
         },
       ],
