@@ -106,7 +106,8 @@ function resolveToRelative(session: ISession, basePath: string, absPath: string)
   let message: string;
   try {
     if (fs.existsSync(absPath)) {
-      return relative(basePath, absPath);
+      // If it is the same path, use a '.'
+      return relative(basePath, absPath) || '.';
     }
     message = `Does not exist as local path: ${absPath}`;
   } catch {
