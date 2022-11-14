@@ -1,5 +1,16 @@
 # myst-to-tex
 
+## 0.0.7
+
+### Patch Changes
+
+- 184ad9f9: Move to https://github.com/executablebooks/mystjs
+- Updated dependencies [184ad9f9]
+- Updated dependencies [615c1441]
+- Updated dependencies [3fba7cb7]
+  - myst-common@0.0.5
+  - myst-frontmatter@0.0.3
+
 ## 0.0.6
 
 ### Patch Changes

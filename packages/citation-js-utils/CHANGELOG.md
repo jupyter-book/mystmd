@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 0.0.11
+
+### Patch Changes
+
+- 184ad9f9: Move to https://github.com/executablebooks/mystjs
+
 ## 0.0.10
 
 ### Patch Changes

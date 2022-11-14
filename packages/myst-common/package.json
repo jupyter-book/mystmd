@@ -1,7 +1,7 @@
 {
   "name": "myst-common",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "./dist/esm/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",

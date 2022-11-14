@@ -1,6 +1,6 @@
 {
   "name": "mystjs",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Markdown parser for MyST markdown in JavaScript",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/mystjs",

@@ -1,5 +1,13 @@
 # intersphinx
 
+## 0.0.4
+
+### Patch Changes
+
+- 184ad9f9: Move to https://github.com/executablebooks/mystjs
+- Updated dependencies [184ad9f9]
+  - myst-cli-utils@0.0.6
+
 ## 0.0.3
 
 ### Patch Changes

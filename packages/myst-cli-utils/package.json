@@ -1,6 +1,6 @@
 {
   "name": "myst-cli-utils",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "MIT",
   "description": "Utils for logging, error messages and session management",
   "author": "Rowan Cockett <rowan@curvenote.com>",

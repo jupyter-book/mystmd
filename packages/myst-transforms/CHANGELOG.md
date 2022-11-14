@@ -1,5 +1,16 @@
 # myst-transforms
 
+## 0.0.8
+
+### Patch Changes
+
+- 17daf15e: Introduce GithubTransformer for file links.
+- 184ad9f9: Move to https://github.com/executablebooks/mystjs
+- Updated dependencies [184ad9f9]
+- Updated dependencies [3fba7cb7]
+  - intersphinx@0.0.4
+  - myst-common@0.0.5
+
 ## 0.0.7
 
 ### Patch Changes

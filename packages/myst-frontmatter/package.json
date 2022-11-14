@@ -1,6 +1,6 @@
 {
   "name": "myst-frontmatter",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "description": "Frontmatter types and validation for the mystjs ecosystem",
   "author": "Franklin Koch <franklin@curvenote.com>",
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "doi-utils": "^1.0.4",
-    "simple-validators": "^0.0.1"
+    "simple-validators": "^0.0.2"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

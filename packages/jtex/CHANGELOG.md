@@ -1,5 +1,24 @@
 # jtex
 
+## 0.0.7
+
+### Patch Changes
+
+- 184ad9f9: Move to https://github.com/executablebooks/mystjs
+- 615c1441: Jtex can now be used to pre-render word templates
+- 615c1441: Sessions are now aware of their build path (making things more consistent)
+  For example, change the template location to the site working directory.
+
+  Word templates now use the myst cli, and jtex
+
+- e3c5f93b: Incorrect session URL used in jtex
+- Updated dependencies [184ad9f9]
+- Updated dependencies [615c1441]
+  - myst-cli-utils@0.0.6
+  - myst-frontmatter@0.0.3
+  - myst-templates@0.0.3
+  - simple-validators@0.0.2
+
 ## 0.0.6
 
 ### Patch Changes

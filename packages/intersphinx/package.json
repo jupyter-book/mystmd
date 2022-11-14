@@ -1,6 +1,6 @@
 {
   "name": "intersphinx",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "description": "Read and write intersphinx objects.inv files",
   "author": "Rowan Cockett <rowan@curvenote.com>",
@@ -49,7 +49,7 @@
     "chalk": "^4.1.2",
     "commander": "^8.3.0",
     "js-yaml": "^4.1.0",
-    "myst-cli-utils": "^0.0.5"
+    "myst-cli-utils": "^0.0.6"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",
