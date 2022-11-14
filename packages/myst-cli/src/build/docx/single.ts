@@ -193,7 +193,7 @@ export async function runWordExport(
   const docx = renderer(session, data, doc, options, jtex.templatePath, vfile);
   logMessagesFromVFile(session, vfile);
   session.log.info(`🖋  Writing docx to ${output}`);
-  writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));
+  await writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));
 }
 
 export async function localArticleToWord(
