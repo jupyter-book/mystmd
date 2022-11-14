@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "unpkg": "dist/index.umd.min.js",
+  "unpkg": "dist/myst.min.js",
   "types": "dist/types/index.d.ts",
   "files": [
     "dist"
@@ -34,7 +34,7 @@
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "build:bundle:cjs": "esbuild src/index.ts --bundle --outfile=dist/index.cjs.js --platform=node",
-    "build:bundle:browser": "esbuild src/index.ts --bundle --outfile=dist/index.umd.min.js --platform=browser --minify",
+    "build:bundle:browser": "esbuild myst.ts --bundle --outfile=dist/myst.min.js --platform=browser --minify",
     "build:esm": "tsc --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",

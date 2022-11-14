@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>MyST Markdown Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       body {
@@ -27,6 +27,7 @@
       }
     </style>
     <link rel="stylesheet" href="myst.css" />
+    <script type="text/javascript" src="dist/myst.min.js"></script>
   </head>
   <body onload="init();">
     <textarea id="input">
@@ -99,21 +100,21 @@ You can see in {eq}`line` that there is math!
     >
     <article id="output"></article>
     <script>
-      let input, output, examples, myst
-      const cache = {}
+      let input, output, examples, myst;
+      const cache = {};
       async function render() {
-        const html = await myst.render(input.value)
-        output.innerHTML = html
-        MathJax.typeset()
+        const html = await myst.render(input.value);
+        output.innerHTML = html;
+        MathJax.typeset();
       }
       function init() {
-        myst = new MyST()
-        input = document.getElementById('input')
-        output = document.getElementById('output')
-        examples = document.getElementById('examples')
-        input.onchange = render
-        input.onkeyup = render
-        render()
+        myst = new MyST();
+        input = document.getElementById('input');
+        output = document.getElementById('output');
+        examples = document.getElementById('examples');
+        input.onchange = render;
+        input.onkeyup = render;
+        render();
       }
       // Setup Mathjax
       MathJax = {
@@ -126,7 +127,7 @@ You can see in {eq}`line` that there is math!
         svg: {
           fontCache: 'global',
         },
-      }
+      };
     </script>
     <script
       type="text/javascript"
