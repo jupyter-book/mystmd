@@ -4,7 +4,14 @@ export { footnotesPlugin, footnotesTransform } from './footnotes';
 export { htmlPlugin, htmlTransform } from './html';
 export { htmlIdsPlugin, htmlIdsTransform } from './htmlIds';
 export { keysPlugin, keysTransform } from './keys';
-export { mathPlugin, mathLabelPlugin, mathTransform, mathLabelTransform } from './math';
+export {
+  mathPlugin,
+  mathLabelPlugin,
+  mathNestingPlugin,
+  mathTransform,
+  mathLabelTransform,
+  mathNestingTransform,
+} from './math';
 export {
   blockNestingPlugin,
   blockNestingTransform,

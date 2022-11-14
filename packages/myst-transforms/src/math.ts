@@ -2,9 +2,10 @@ import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import katex from 'katex';
 import type { Root } from 'mdast';
-import type { Math, InlineMath, Node } from 'myst-spec';
+import type { Math, InlineMath, Node, Paragraph } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
-import { fileWarn, normalizeLabel } from 'myst-common';
+import { modifyChildren } from 'unist-util-modify-children';
+import { copyNode, fileWarn, normalizeLabel } from 'myst-common';
 
 const TRANSFORM_NAME = 'myst-transforms:math';
 
@@ -195,8 +196,57 @@ function renderEquation(file: VFile, node: Math | InlineMath, opts?: Options) {
   }
 }
 
-export function mathLabelTransform(mdast: Root, file: VFile) {
-  const nodes = selectAll('math,inlineMath', mdast) as (Math | InlineMath)[];
+/**
+ * Lift math from paragraphs. All information on the paragraph is copied (e.g. classes)
+ *
+ * ```
+ * [ ..., {paragraph: [child1, math1, child2, child3, math2]}, ... ]
+ * [ ..., {paragraph: [child1]}, math1, {paragraph: [child2, child3]}, math2, ... ]
+ * ```
+ *
+ * @param tree
+ * @param file
+ */
+export function mathNestingTransform(
+  tree: Root,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  file: VFile,
+) {
+  const modify = modifyChildren((node, index, parent) => {
+    if (node.type !== 'paragraph' || selectAll('math', node).length === 0) return;
+    const paragraph = node as Paragraph;
+    const unnested: (Paragraph | Math)[] = [];
+    const { children, ...rest } = paragraph;
+    const createTemplate = (): Paragraph => copyNode({ ...rest, children: [] });
+    let current = createTemplate();
+    const pushContent = () => {
+      if (current.children.length > 0) {
+        unnested.push(current);
+      }
+      current = createTemplate();
+    };
+    children.forEach((child) => {
+      if ((child as any).type === 'math') {
+        const math = child as unknown as Math;
+        pushContent();
+        unnested.push(math);
+      } else {
+        current.children.push(child);
+      }
+    });
+    pushContent();
+    // Replace the current paragraph with the unnested nodes
+    parent.children.splice(index, 1, ...unnested);
+    return index + unnested.length;
+  });
+  const parents = selectAll('*:has(paragraph:has(math))', tree) as Root[];
+  parents.forEach((parent) => {
+    modify(parent as any);
+  });
+}
+
+export function mathLabelTransform(tree: Root, file: VFile) {
+  const nodes = selectAll('math,inlineMath', tree) as (Math | InlineMath)[];
   nodes.forEach((node) => {
     transformMathValue(file, node);
     removeSimpleEquationEnv(file, node);
@@ -204,12 +254,16 @@ export function mathLabelTransform(mdast: Root, file: VFile) {
   });
 }
 
-export function mathTransform(mdast: Root, file: VFile, opts?: Options) {
-  const nodes = selectAll('math,inlineMath', mdast) as (Math | InlineMath)[];
+export function mathTransform(tree: Root, file: VFile, opts?: Options) {
+  const nodes = selectAll('math,inlineMath', tree) as (Math | InlineMath)[];
   nodes.forEach((node) => {
     renderEquation(file, node, opts);
   });
 }
+
+export const mathNestingPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
+  mathNestingTransform(tree, file);
+};
 
 export const mathLabelPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
   mathLabelTransform(tree, file);

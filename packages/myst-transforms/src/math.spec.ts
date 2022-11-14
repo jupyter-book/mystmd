@@ -1,6 +1,6 @@
 import { unified } from 'unified';
 import { VFile } from 'vfile';
-import { mathTransform, mathPlugin } from './math';
+import { mathTransform, mathPlugin, mathNestingTransform } from './math';
 
 const ARRAY_ALIGN = `\\begin{align*}
   L=
@@ -87,5 +87,39 @@ describe('Test math transform as a plugin', () => {
     expect(file.messages.length).toBe(1);
     expect(file.messages[0].message.includes('Undefined control sequence: \\x')).toBe(true);
     expect(file.messages[0].fatal).toBe(true);
+  });
+});
+
+describe('Test math nesting transformation', () => {
+  test('Unnest a single math paragraph', () => {
+    const file = new VFile();
+    const paragraph = {
+      type: 'paragraph',
+      children: [{ type: 'math', value: '' }],
+    } as any;
+    const mdast = { children: [paragraph] } as any;
+    expect(mdast.children[0].type).toBe('paragraph');
+    mathNestingTransform(mdast, file);
+    expect(mdast.children[0].type).toBe('math');
+  });
+  test('Unnest math in paragraph with other content', () => {
+    const file = new VFile();
+    const paragraph = {
+      type: 'paragraph',
+      class: 'importantClass',
+      children: [
+        { type: 'text', value: 'Hello' },
+        { type: 'math', value: '' },
+        { type: 'text', value: 'math!' },
+      ],
+    } as any;
+    const mdast = { type: 'root', children: [{ type: 'block', children: [paragraph] }] } as any;
+    expect(mdast.children[0].children[0].type).toBe('paragraph');
+    mathNestingTransform(mdast, file);
+    expect(mdast.children[0].children[0].type).toBe('paragraph');
+    expect(mdast.children[0].children[0].class).toBe('importantClass');
+    expect(mdast.children[0].children[1].type).toBe('math');
+    expect(mdast.children[0].children[2].type).toBe('paragraph');
+    expect(mdast.children[0].children[2].class).toBe('importantClass');
   });
 });
