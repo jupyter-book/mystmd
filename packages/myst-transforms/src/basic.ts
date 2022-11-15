@@ -9,7 +9,7 @@ import { blockMetadataTransform, blockNestingTransform } from './blocks';
 import { htmlIdsTransform } from './htmlIds';
 import { codeBlockTransform } from './codeBlock';
 import { imageAltTextTransform } from './images';
-import { mathLabelTransform } from './math';
+import { mathLabelTransform, mathNestingTransform } from './math';
 import { blockquoteTransform } from './blockquote';
 
 export function basicTransformations(tree: Root, file: VFile) {
@@ -17,6 +17,7 @@ export function basicTransformations(tree: Root, file: VFile) {
   codeBlockTransform(tree); // TODO: ideally move this to the parser
   // Can happen in mostly any order
   captionParagraphTransform(tree);
+  mathNestingTransform(tree, file);
   mathLabelTransform(tree, file);
   mystTargetsTransform(tree);
   headingLabelTransform(tree);
