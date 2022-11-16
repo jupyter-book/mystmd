@@ -20,6 +20,17 @@ type GithubFileLink = {
 };
 
 /**
+ * The input can be github.com, without the http / https
+ */
+function safeUrlParse(urlSource: string): URL | undefined {
+  try {
+    return new URL(`https://${withoutHttp(urlSource)}`);
+  } catch (error) {
+    return;
+  }
+}
+
+/**
  * This takes a url like:
  *
  *    https://github.com/executablebooks/mystjs/blob/3cdb8ec6/packages/mystjs/src/mdast/state.ts#L32-L36
@@ -29,8 +40,8 @@ type GithubFileLink = {
  *    https://raw.githubusercontent.com/executablebooks/mystjs/3cdb8ec6/packages/mystjs/src/mdast/state.ts
  */
 function parseGithubFile(urlSource: string): undefined | GithubFileLink {
-  const url = new URL(urlSource);
-  if (url.host !== 'github.com') return;
+  const url = safeUrlParse(urlSource);
+  if (url?.host !== 'github.com') return;
   const match = url.pathname.match(/^\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)/);
   if (!match) return;
   const [, org, repo, reference, file] = match;
