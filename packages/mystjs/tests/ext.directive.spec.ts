@@ -1,12 +1,6 @@
-import { Root } from 'mdast';
-import {
-  MyST,
-  Directive,
-  IDirective,
-  directiveOptions,
-  IDirectiveData,
-  GenericNode,
-} from '../src';
+import type { Root } from 'mdast';
+import type { IDirective, IDirectiveData, GenericNode } from '../src';
+import { MyST, Directive, directiveOptions } from '../src';
 
 const custom: IDirective = {
   myst: class Custom extends Directive {
@@ -37,8 +31,7 @@ const custom: IDirective = {
       };
     },
   },
-  hast: (h, node) =>
-    h(node, 'div', { id: node.name }, [{ type: 'text', value: node.value }]),
+  hast: (h, node) => h(node, 'div', { id: node.name }, [{ type: 'text', value: node.value }]),
 };
 
 describe('Extensions', () => {

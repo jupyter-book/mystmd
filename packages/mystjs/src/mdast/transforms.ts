@@ -82,6 +82,7 @@ export function addContainerCaptionNumbers(tree: Root, state: State) {
     });
 }
 
+/** @deprecated  use myst-common */
 export function liftChildren(tree: Root, nodeType: string) {
   map(tree, (node) => {
     const children = (node as GenericNode).children

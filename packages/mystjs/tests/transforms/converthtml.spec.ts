@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
-import { Root } from 'mdast';
+import type { Root } from 'mdast';
 import { convertHtmlToMdast } from '../../src';
 
 type TestFile = {
