@@ -11,6 +11,8 @@ import {
   addWarningForFile,
   computeHash,
   hashAndCopyStaticFile,
+  imagemagick,
+  inkscape,
   isUrl,
 } from '../utils';
 import type { ISession } from '../session/types';
@@ -145,6 +147,89 @@ export async function transformImages(
       }
     }),
   );
+}
+
+type ConversionFn = (session: ISession, svg: string, writeFolder: string) => Promise<string | null>;
+
+export async function transformImageFormats(
+  session: ISession,
+  mdast: Root,
+  file: string,
+  writeFolder: string,
+  opts?: { altOutputFolder?: string },
+) {
+  const images = selectAll('image', mdast) as GenericNode[];
+  const conversionPromises: Promise<void>[] = [];
+
+  const convert = async (image: GenericNode, conversionFn: ConversionFn) => {
+    const inputFile = path.join(writeFolder, path.basename(image.url));
+    const outputFile = await conversionFn(session, inputFile, writeFolder);
+    if (outputFile) {
+      // Update mdast with new file name
+      image.url = resolveOutputPath(outputFile, writeFolder, opts?.altOutputFolder);
+      session.log.debug(`Successfully converted ${inputFile} -> ${image.url}`);
+    } else {
+      session.log.debug(`Failed to convert ${inputFile}`);
+    }
+  };
+
+  const svgImages = images.filter((image) => path.extname(image.url) === '.svg');
+  let svgConversionFn: ConversionFn | undefined;
+  if (svgImages.length) {
+    if (inkscape.isInkscapeAvailable()) {
+      session.log.info(
+        `🌠 Converting ${svgImages.length} SVG image${
+          svgImages.length > 1 ? 's' : ''
+        } to PNG using inkscape`,
+      );
+      svgConversionFn = inkscape.convertSVGToPNG;
+    } else if (imagemagick.isImageMagickAvailable()) {
+      session.log.info(
+        `🌠 Converting ${svgImages.length} SVG image${
+          svgImages.length > 1 ? 's' : ''
+        } to PNG using imagemagick`,
+      );
+      svgConversionFn = imagemagick.convertSVGToPNG;
+    } else {
+      addWarningForFile(
+        session,
+        file,
+        'Cannot convert SVG images, they may not correctly render.\nTo convert these images, you must install imagemagick or inkscape',
+        'error',
+      );
+    }
+    if (svgConversionFn) {
+      conversionPromises.push(
+        ...svgImages.map(async (image) => await convert(image, svgConversionFn as ConversionFn)),
+      );
+    }
+  }
+
+  const gifImages = images.filter((image) => path.extname(image.url) === '.gif');
+  let gifConversionFn: ConversionFn | undefined;
+  if (gifImages.length) {
+    if (imagemagick.isImageMagickAvailable()) {
+      session.log.info(
+        `🌠 Converting ${gifImages.length} GIF image${
+          gifImages.length > 1 ? 's' : ''
+        } to PNG using imagemagick`,
+      );
+      gifConversionFn = imagemagick.extractFirstFrameOfGif;
+    } else {
+      addWarningForFile(
+        session,
+        file,
+        'Cannot convert GIF images, they may not correctly render.\nTo convert these images, you must install imagemagick',
+        'error',
+      );
+    }
+    if (gifConversionFn) {
+      conversionPromises.push(
+        ...gifImages.map(async (image) => await convert(image, gifConversionFn as ConversionFn)),
+      );
+    }
+  }
+  return Promise.all(conversionPromises);
 }
 
 export async function transformThumbnail(

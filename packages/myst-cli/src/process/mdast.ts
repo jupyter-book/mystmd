@@ -37,6 +37,7 @@ import {
   transformOutputs,
   transformCitations,
   transformImages,
+  transformImageFormats,
   transformThumbnail,
   StaticFileTransformer,
 } from '../transforms';
@@ -142,6 +143,10 @@ export async function transformMdast(
     .use(footnotesPlugin, { references }) // Needs to happen nead the end
     .run(mdast, vfile);
   await transformImages(session, mdast, file, imageWriteFolder, {
+    altOutputFolder: imageAltOutputFolder,
+  });
+  // Must happen after transformImages
+  await transformImageFormats(session, mdast, file, imageWriteFolder, {
     altOutputFolder: imageAltOutputFolder,
   });
   // Note, the thumbnail transform must be **after** images, as it may read the images
