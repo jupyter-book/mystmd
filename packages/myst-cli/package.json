@@ -86,7 +86,8 @@
     "simple-validators": "^0.0.2",
     "unified": "^10.1.2",
     "unist-util-remove": "^3.1.0",
-    "vfile": "^5.3.5"
+    "vfile": "^5.3.5",
+    "which": "^2.0.2"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
