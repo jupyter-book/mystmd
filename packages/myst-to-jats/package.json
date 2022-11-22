@@ -1,0 +1,63 @@
+{
+  "name": "myst-to-jats",
+  "version": "0.0.2",
+  "description": "Export from MyST Markdown to JATS",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-to-jats",
+  "license": "MIT",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    }
+  },
+  "keywords": [
+    "myst-plugin",
+    "jats"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/executablebooks/mystjs.git"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build;",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",
+    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "watch": "tsc -w -p .",
+    "build:esm": "tsc --module es2015   --outDir dist/esm",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
+  },
+  "bugs": {
+    "url": "https://github.com/executablebooks/mystjs/issues"
+  },
+  "dependencies": {
+    "myst-spec": "*",
+    "myst-common": "*",
+    "myst-frontmatter": "*",
+    "unist-util-select": "^4.0.0",
+    "vfile-reporter": "^7.0.4",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.6.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^28.0.7",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.3"
+  }
+}

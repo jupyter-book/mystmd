@@ -1,0 +1,493 @@
+cases:
+  - title: Simple Paragraph
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+    jats: <p>text</p>
+  - title: Simple repeated text
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+            - type: text
+              value: ' in a '
+            - type: text
+              value: paragraph
+    jats: <p>text in a paragraph</p>
+  - title: Emphasis
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'text with '
+            - type: emphasis
+              children:
+                - type: text
+                  value: emphasis
+    jats: <p>text with <italic>emphasis</italic></p>
+  - title: Strong
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'text with '
+            - type: strong
+              children:
+                - type: text
+                  value: strong
+    jats: <p>text with <bold>strong</bold></p>
+  - title: Inline Code
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'some '
+            - type: inlineCode
+              value: code
+    jats: <p>some <monospace>code</monospace></p>
+  - title: Subscript
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'text with '
+            - type: subscript
+              children:
+                - type: text
+                  value: subscript
+    jats: <p>text with <sub>subscript</sub></p>
+  - title: Superscript
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'text with '
+            - type: superscript
+              children:
+                - type: text
+                  value: superscript
+    jats: <p>text with <sup>superscript</sup></p>
+  - title: External Links
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: link
+              url: https://myst.tools
+              children:
+                - type: text
+                  value: MyST
+    jats: <p><ext-link ext-link-type="uri" xlink:href="https://myst.tools">MyST</ext-link></p>
+  - title: Smallcaps
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'text with '
+            - type: smallcaps
+              children:
+                - type: text
+                  value: smallcaps
+    jats: <p>text with <sc>smallcaps</sc></p>
+  - title: Admonition
+    tree:
+      type: root
+      children:
+        - type: admonition
+          kind: note
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: Note title
+            - type: paragraph
+              children:
+                - type: text
+                  value: A note!
+    jats: <boxed-text content-type="note"><caption><title>Note title</title></caption><p>A note!</p></boxed-text>
+  - title: Headers to sections
+    tree:
+      type: root
+      children:
+        - type: heading
+          identifier: sec1
+          depth: 1
+          children:
+            - type: text
+              value: a section
+        - type: paragraph
+          children:
+            - type: text
+              value: content
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: Another section
+        - type: paragraph
+          children:
+            - type: text
+              value: section content!
+    jats: <sec id="sec1"><title>a section</title><p>content</p></sec><sec><title>Another section</title><p>section content!</p></sec>
+  - title: Section nesting
+    tree:
+      type: root
+      children:
+        - type: heading
+          identifier: sec1
+          depth: 1
+          children:
+            - type: text
+              value: a section
+        - type: paragraph
+          children:
+            - type: text
+              value: content
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: Another section
+        - type: paragraph
+          children:
+            - type: text
+              value: section content!
+    jats: <sec id="sec1"><title>a section</title><p>content</p><sec><title>Another section</title><p>section content!</p></sec></sec>
+  - title: Inline Math
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This math is a role, '
+            - type: inlineMath
+              value: e=mc^2
+            - type: text
+              value: ', while this math is wrapped in dollar signs, '
+            - type: inlineMath
+              value: Ax=b
+            - type: text
+              value: .
+    jats: <p>This math is a role, <inline-formula><tex-math><![CDATA[e=mc^2]]></tex-math></inline-formula>, while this math is wrapped in dollar signs, <inline-formula><tex-math><![CDATA[Ax=b]]></tex-math></inline-formula>.</p>
+  - title: Display Math (label)
+    tree:
+      type: root
+      children:
+        - type: math
+          identifier: my-equation
+          enumerator: 1
+          value: w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
+    jats: <disp-formula id="my-equation"><label>(1)</label><tex-math><![CDATA[w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}]]></tex-math></disp-formula>
+  - title: Display Math (no label)
+    tree:
+      type: root
+      children:
+        - type: math
+          value: w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
+    jats: <disp-formula><tex-math><![CDATA[w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}]]></tex-math></disp-formula>
+  - title: Display Math (not numbered)
+    tree:
+      type: root
+      children:
+        - type: math
+          identifier: my-equation
+          enumerated: false
+          enumerator: 1
+          value: w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
+    jats: <disp-formula id="my-equation"><tex-math><![CDATA[w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}]]></tex-math></disp-formula>
+  - title: Lists
+    tree:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          spread: false
+          children:
+            - type: listItem
+              spread: true
+              children:
+                - type: text
+                  value: 'Lists can start with '
+                - type: inlineCode
+                  value: '-'
+                - type: text
+                  value: ' or '
+                - type: inlineCode
+                  value: '*'
+                - type: list
+                  ordered: false
+                  spread: false
+                  children:
+                    - type: listItem
+                      spread: true
+                      children:
+                        - type: text
+                          value: My other, nested
+                    - type: listItem
+                      spread: true
+                      children:
+                        - type: text
+                          value: bullet point list!
+        - type: list
+          ordered: true
+          start: 1
+          spread: false
+          children:
+            - type: listItem
+              spread: true
+              children:
+                - type: text
+                  value: My numbered list
+            - type: listItem
+              spread: true
+              children:
+                - type: text
+                  value: has two points
+    jats: <list list-type="bullet"><list-item>Lists can start with <monospace>-</monospace> or <monospace>*</monospace><list list-type="bullet"><list-item>My other, nested</list-item><list-item>bullet point list!</list-item></list></list-item></list><list list-type="ordered"><list-item>My numbered list</list-item><list-item>has two points</list-item></list>
+  - title: Blockquote
+    tree:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: We know what we are, but know not what we may be.
+    jats: <disp-quote><p>We know what we are, but know not what we may be.</p></disp-quote>
+  - title: Blockquote with attribution
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: quote
+          children:
+            - type: blockquote
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: We know what we are, but know not what we may be.
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Hamlet act 4, Scene 5
+    jats: <disp-quote><p>We know what we are, but know not what we may be.</p><attrib>Hamlet act 4, Scene 5</attrib></disp-quote>
+  - title: Definition List
+    tree:
+      type: root
+      children:
+        - type: definitionList
+          children:
+            - type: definitionTerm
+              children:
+                - type: text
+                  value: Term 1
+            - type: definitionDescription
+              children:
+                - type: text
+                  value: Definition
+            - type: definitionTerm
+              children:
+                - type: text
+                  value: Term 2
+            - type: definitionDescription
+              children:
+                - type: text
+                  value: Definition
+    jats: <def-list><def-item><term>Term 1</term><def>Definition</def></def-item><def-item><term>Term 2</term><def>Definition</def></def-item></def-list>
+
+  - title: InlineCode
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some inline '
+            - type: inlineCode
+              value: code
+    jats: <p>Some inline <monospace>code</monospace></p>
+  - title: Code
+    tree:
+      type: root
+      children:
+        - type: code
+          lang: python
+          value: |-
+            import matplotlib.pyplot as plt
+
+            plt.plot([1, 2, 3], [1, 2, 3], 'go-', label='line 1', linewidth=2)
+    jats: |-
+      <code language="python">import matplotlib.pyplot as plt
+
+      plt.plot([1, 2, 3], [1, 2, 3], 'go-', label='line 1', linewidth=2)</code>
+  - title: CrossReference (heading)
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: crossReference
+              kind: heading
+              identifier: my-section
+              children:
+                - type: text
+                  value: content
+    jats: <p><xref ref-type="sec" rid="my-section">content</xref></p>
+  - title: CrossReference (equation)
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: crossReference
+              kind: equation
+              identifier: my-equation
+              children:
+                - type: text
+                  value: content
+    jats: <p><xref ref-type="disp-formula" rid="my-equation">content</xref></p>
+  - title: CrossReference (figure)
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: crossReference
+              kind: figure
+              identifier: my-figure
+              children:
+                - type: text
+                  value: content
+    jats: <p><xref ref-type="fig" rid="my-figure">content</xref></p>
+  - title: CrossReference (table)
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: crossReference
+              kind: table
+              identifier: my-table
+              children:
+                - type: text
+                  value: content
+    jats: <p><xref ref-type="table" rid="my-table">content</xref></p>
+  - title: Image
+    tree:
+      type: root
+      children:
+        - type: image
+          url: image.png
+    jats: <graphic xlink:href="image.png"/>
+  - title: Figure
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: myfigure
+          children:
+            - type: image
+              url: beach.png
+              alt: Random image of the beach or ocean!
+              align: center
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Relaxing at the beach
+    jats: <fig id="myfigure"><alt-text>Random image of the beach or ocean!</alt-text><graphic xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
+  - title: Figure (captionNumber)
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: myfigure
+          children:
+            - type: image
+              url: beach.png
+              alt: Random image of the beach or ocean!
+              align: center
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: captionNumber
+                      kind: figure
+                      value: 'Figure 1:'
+                    - type: text
+                      value: Relaxing at the beach
+    jats: <fig id="myfigure"><label>Figure 1:</label><alt-text>Random image of the beach or ocean!</alt-text><graphic xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
+  - title: Table Container
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          class: myclass
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Caption '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: text
+            - type: table
+              align: center
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Head 1, Column 1
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Head 1, Column 2
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1, Column 1
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Row 1, Column 2
+    jats: <table-wrap id="my-table"><caption><p>Caption <italic>text</italic></p></caption><table><thead><tr><th>Head 1, Column 1</th><th>Head 1, Column 2</th></tr></thead><tbody><tr><td>Row 1, Column 1</td><td>Row 1, Column 2</td></tr></tbody></table></table-wrap>
