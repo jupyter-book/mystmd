@@ -130,6 +130,8 @@ function defaultWordRenderer(
     vfile,
     {
       getImageBuffer(image: string) {
+        // This extra read somehow prevents an error when buffer-image-size tries to get image dimensions...
+        fs.readFileSync(image);
         return Buffer.from(fs.readFileSync(image).buffer);
       },
       useFieldsForCrossReferences: false,
