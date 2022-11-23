@@ -31,6 +31,7 @@ import {
 import { unified } from 'unified';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
+const TEX_IMAGE_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg'];
 
 export function mdastToTex(
   mdast: Root,
@@ -73,6 +74,7 @@ export async function localArticleToTexRaw(
     {
       projectPath,
       imageAltOutputFolder: 'images',
+      imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
     },
   );
@@ -107,6 +109,7 @@ export async function localArticleToTexTemplated(
     {
       projectPath,
       imageAltOutputFolder: 'images',
+      imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
     },
   );

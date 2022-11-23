@@ -9,10 +9,12 @@ export async function getSingleFileContent(
   {
     projectPath,
     imageAltOutputFolder,
+    imageExtensions,
     extraLinkTransformers,
   }: {
     projectPath?: string;
     imageAltOutputFolder?: string;
+    imageExtensions?: string[];
     extraLinkTransformers?: LinkTransformer[];
   },
 ) {
@@ -22,6 +24,7 @@ export async function getSingleFileContent(
     file,
     imageWriteFolder: imageWriteFolder,
     imageAltOutputFolder: imageAltOutputFolder ?? undefined,
+    imageExtensions,
     projectPath,
   });
   await postProcessMdast(session, { file, extraLinkTransformers });

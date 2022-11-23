@@ -37,6 +37,7 @@ import {
   transformOutputs,
   transformCitations,
   transformImages,
+  transformImageFormats,
   transformThumbnail,
   StaticFileTransformer,
 } from '../transforms';
@@ -72,6 +73,7 @@ export async function transformMdast(
     pageSlug,
     projectSlug,
     imageAltOutputFolder,
+    imageExtensions,
     watchMode = false,
   }: {
     file: string;
@@ -80,6 +82,7 @@ export async function transformMdast(
     projectSlug?: string;
     pageSlug?: string;
     imageAltOutputFolder?: string;
+    imageExtensions?: string[];
     watchMode?: boolean;
   },
 ) {
@@ -143,6 +146,11 @@ export async function transformMdast(
     .run(mdast, vfile);
   await transformImages(session, mdast, file, imageWriteFolder, {
     altOutputFolder: imageAltOutputFolder,
+  });
+  // Must happen after transformImages
+  await transformImageFormats(session, mdast, file, imageWriteFolder, {
+    altOutputFolder: imageAltOutputFolder,
+    imageExtensions,
   });
   // Note, the thumbnail transform must be **after** images, as it may read the images
   await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {

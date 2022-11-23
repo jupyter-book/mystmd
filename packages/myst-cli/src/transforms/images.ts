@@ -11,9 +11,13 @@ import {
   addWarningForFile,
   computeHash,
   hashAndCopyStaticFile,
+  imagemagick,
+  inkscape,
   isUrl,
 } from '../utils';
 import type { ISession } from '../session/types';
+
+const DEFAULT_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
 
 function isBase64(data: string) {
   return data.split(';base64,').length === 2;
@@ -145,6 +149,134 @@ export async function transformImages(
       }
     }),
   );
+}
+
+type ConversionFn = (session: ISession, svg: string, writeFolder: string) => Promise<string | null>;
+
+export async function transformImageFormats(
+  session: ISession,
+  mdast: Root,
+  file: string,
+  writeFolder: string,
+  opts?: { altOutputFolder?: string; imageExtensions?: string[] },
+) {
+  const images = selectAll('image', mdast) as GenericNode[];
+  // Ignore all images with supported extension types
+  const validExts = opts?.imageExtensions ?? DEFAULT_IMAGE_EXTENSIONS;
+  const unsupportedImages = images.filter((image) => {
+    return !validExts.includes(path.extname(image.url));
+  });
+  if (unsupportedImages.length === 0) return;
+
+  // Gather unsupported SVG & GIF images that may be converted to supported types
+  const svgImages: GenericNode[] = [];
+  const gifImages: GenericNode[] = [];
+  const unconvertableImages: GenericNode[] = [];
+
+  const allowConvertedSvg = validExts.includes('.png') || validExts.includes('.pdf');
+  const allowConvertedGif = validExts.includes('.png');
+
+  unsupportedImages.forEach((image) => {
+    if (allowConvertedSvg && path.extname(image.url) === '.svg') {
+      svgImages.push(image);
+    } else if (allowConvertedGif && path.extname(image.url) == '.gif') {
+      gifImages.push(image);
+    } else {
+      unconvertableImages.push(image);
+    }
+  });
+
+  const conversionPromises: Promise<void>[] = [];
+  const convert = async (image: GenericNode, conversionFn: ConversionFn) => {
+    const inputFile = path.join(writeFolder, path.basename(image.url));
+    const outputFile = await conversionFn(session, inputFile, writeFolder);
+    if (outputFile) {
+      // Update mdast with new file name
+      image.url = resolveOutputPath(outputFile, writeFolder, opts?.altOutputFolder);
+      session.log.debug(`Successfully converted ${inputFile} -> ${image.url}`);
+    } else {
+      session.log.debug(`Failed to convert ${inputFile}`);
+    }
+  };
+
+  const inkscapeAvailable = inkscape.isInkscapeAvailable();
+  const imagemagickAvailable = imagemagick.isImageMagickAvailable();
+
+  // Convert SVGs
+  let svgConversionFn: ConversionFn | undefined;
+  if (svgImages.length) {
+    // Decide if we convert to PDF or PNG
+    const pngIndex = validExts.indexOf('.png');
+    const pdfIndex = validExts.indexOf('.pdf');
+    const svgToPdf = pdfIndex !== -1 && (pngIndex === -1 || pdfIndex < pngIndex);
+    const svgToPng = !svgToPdf;
+    const logPrefix = `🌠 Converting ${svgImages.length} SVG image${
+      svgImages.length > 1 ? 's' : ''
+    } to`;
+    if (svgToPdf && inkscapeAvailable) {
+      session.log.info(`${logPrefix} PDF using inkscape`);
+      svgConversionFn = inkscape.convertSvgToPdf;
+    } else if (svgToPng && inkscapeAvailable) {
+      session.log.info(`${logPrefix} PNG using inkscape`);
+      svgConversionFn = inkscape.convertSvgToPng;
+    } else if (svgToPng && imagemagickAvailable) {
+      session.log.info(`${logPrefix} PNG using imagemagick`);
+      svgConversionFn = imagemagick.convertSvgToPng;
+    } else {
+      addWarningForFile(
+        session,
+        file,
+        'Cannot convert SVG images, they may not correctly render.\nTo convert these images, you must install imagemagick or inkscape',
+        'error',
+      );
+    }
+    if (svgConversionFn) {
+      conversionPromises.push(
+        ...svgImages.map(async (image) => await convert(image, svgConversionFn as ConversionFn)),
+      );
+    }
+  }
+
+  // Convert GIFs
+  let gifConversionFn: ConversionFn | undefined;
+  if (gifImages.length) {
+    if (imagemagickAvailable) {
+      session.log.info(
+        `🌠 Converting ${gifImages.length} GIF image${
+          gifImages.length > 1 ? 's' : ''
+        } to PNG using imagemagick`,
+      );
+      gifConversionFn = imagemagick.extractFirstFrameOfGif;
+    } else {
+      addWarningForFile(
+        session,
+        file,
+        'Cannot convert GIF images, they may not correctly render.\nTo convert these images, you must install imagemagick',
+        'error',
+      );
+    }
+    if (gifConversionFn) {
+      conversionPromises.push(
+        ...gifImages.map(async (image) => await convert(image, gifConversionFn as ConversionFn)),
+      );
+    }
+  }
+
+  // Warn on unsupported, unconvertable images
+  if (unconvertableImages.length) {
+    const badExts = [
+      ...new Set(unconvertableImages.map((image) => path.extname(image.url) || '<no extension>')),
+    ];
+    addWarningForFile(
+      session,
+      file,
+      `Unsupported image extension${
+        badExts.length > 1 ? 's' : ''
+      } may not correctly render: ${badExts.join(', ')}`,
+      'error',
+    );
+  }
+  return Promise.all(conversionPromises);
 }
 
 export async function transformThumbnail(
