@@ -8,25 +8,35 @@ export function isInkscapeAvailable() {
   return which('inkscape', { nothrow: true });
 }
 
-export async function convertSVGToPNG(session: ISession, svg: string, writeFolder: string) {
+async function convertSvgTo(format: string, session: ISession, svg: string, writeFolder: string) {
   if (!fs.existsSync(svg)) return null;
   const { name, ext } = path.parse(svg);
   if (ext !== '.svg') return null;
-  const pngFile = `${name}.png`;
-  const png = path.join(writeFolder, pngFile);
-  if (fs.existsSync(png)) {
+  const filename = `${name}.${format}`;
+  const output = path.join(writeFolder, filename);
+  if (fs.existsSync(output)) {
     session.log.debug(`Cached file found for converted SVG: ${svg}`);
   } else {
     const convert = makeExecutable(
-      `inkscape ${svg} --export-area-drawing --export-type=png --export-filename=${png}`,
+      `inkscape ${svg} --export-area-drawing --export-type=${format} --export-filename=${output}`,
       session.log,
     );
     try {
       await convert();
     } catch (err) {
-      session.log.error(`Could not convert from SVG to PNG: ${svg} - ${err}`);
+      session.log.error(`Could not convert from SVG to ${format.toUpperCase()}: ${svg} - ${err}`);
       return null;
     }
   }
+  return filename;
+}
+
+export async function convertSvgToPng(session: ISession, svg: string, writeFolder: string) {
+  const pngFile = await convertSvgTo('png', session, svg, writeFolder);
+  return pngFile;
+}
+
+export async function convertSvgToPdf(session: ISession, svg: string, writeFolder: string) {
+  const pngFile = await convertSvgTo('pdf', session, svg, writeFolder);
   return pngFile;
 }

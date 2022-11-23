@@ -28,7 +28,7 @@ export async function extractFirstFrameOfGif(session: ISession, gif: string, wri
   return pngFile;
 }
 
-export async function convertSVGToPNG(session: ISession, svg: string, writeFolder: string) {
+export async function convertSvgToPng(session: ISession, svg: string, writeFolder: string) {
   if (!fs.existsSync(svg)) return null;
   const { name, ext } = path.parse(svg);
   if (ext !== '.svg') return null;

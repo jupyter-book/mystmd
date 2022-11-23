@@ -17,6 +17,8 @@ import {
 } from '../utils';
 import type { ISession } from '../session/types';
 
+const DEFAULT_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
+
 function isBase64(data: string) {
   return data.split(';base64,').length === 2;
 }
@@ -156,11 +158,35 @@ export async function transformImageFormats(
   mdast: Root,
   file: string,
   writeFolder: string,
-  opts?: { altOutputFolder?: string },
+  opts?: { altOutputFolder?: string; imageExtensions?: string[] },
 ) {
   const images = selectAll('image', mdast) as GenericNode[];
-  const conversionPromises: Promise<void>[] = [];
+  // Ignore all images with supported extension types
+  const validExts = opts?.imageExtensions ?? DEFAULT_IMAGE_EXTENSIONS;
+  const unsupportedImages = images.filter((image) => {
+    return !validExts.includes(path.extname(image.url));
+  });
+  if (unsupportedImages.length === 0) return;
 
+  // Gather unsupported SVG & GIF images that may be converted to supported types
+  const svgImages: GenericNode[] = [];
+  const gifImages: GenericNode[] = [];
+  const unconvertableImages: GenericNode[] = [];
+
+  const allowConvertedSvg = validExts.includes('.png') || validExts.includes('.pdf');
+  const allowConvertedGif = validExts.includes('.png');
+
+  unsupportedImages.forEach((image) => {
+    if (allowConvertedSvg && path.extname(image.url) === '.svg') {
+      svgImages.push(image);
+    } else if (allowConvertedGif && path.extname(image.url) == '.gif') {
+      gifImages.push(image);
+    } else {
+      unconvertableImages.push(image);
+    }
+  });
+
+  const conversionPromises: Promise<void>[] = [];
   const convert = async (image: GenericNode, conversionFn: ConversionFn) => {
     const inputFile = path.join(writeFolder, path.basename(image.url));
     const outputFile = await conversionFn(session, inputFile, writeFolder);
@@ -173,23 +199,38 @@ export async function transformImageFormats(
     }
   };
 
-  const svgImages = images.filter((image) => path.extname(image.url) === '.svg');
+  const inkscapeAvailable = inkscape.isInkscapeAvailable();
+  const imagemagickAvailable = imagemagick.isImageMagickAvailable();
+
+  // Convert SVGs
   let svgConversionFn: ConversionFn | undefined;
   if (svgImages.length) {
-    if (inkscape.isInkscapeAvailable()) {
+    // Decide if we convert to PDF or PNG
+    const pngIndex = validExts.indexOf('.png');
+    const pdfIndex = validExts.indexOf('.pdf');
+    const svgToPdf = pdfIndex !== -1 && (pngIndex === -1 || pdfIndex < pngIndex);
+    const svgToPng = !svgToPdf;
+    if (svgToPdf && inkscapeAvailable) {
+      session.log.info(
+        `🌠 Converting ${svgImages.length} SVG image${
+          svgImages.length > 1 ? 's' : ''
+        } to PDF using inkscape`,
+      );
+      svgConversionFn = inkscape.convertSvgToPdf;
+    } else if (svgToPng && inkscapeAvailable) {
       session.log.info(
         `🌠 Converting ${svgImages.length} SVG image${
           svgImages.length > 1 ? 's' : ''
         } to PNG using inkscape`,
       );
-      svgConversionFn = inkscape.convertSVGToPNG;
-    } else if (imagemagick.isImageMagickAvailable()) {
+      svgConversionFn = inkscape.convertSvgToPng;
+    } else if (svgToPng && imagemagickAvailable) {
       session.log.info(
         `🌠 Converting ${svgImages.length} SVG image${
           svgImages.length > 1 ? 's' : ''
         } to PNG using imagemagick`,
       );
-      svgConversionFn = imagemagick.convertSVGToPNG;
+      svgConversionFn = imagemagick.convertSvgToPng;
     } else {
       addWarningForFile(
         session,
@@ -205,10 +246,10 @@ export async function transformImageFormats(
     }
   }
 
-  const gifImages = images.filter((image) => path.extname(image.url) === '.gif');
+  // Convert GIFs
   let gifConversionFn: ConversionFn | undefined;
   if (gifImages.length) {
-    if (imagemagick.isImageMagickAvailable()) {
+    if (imagemagickAvailable) {
       session.log.info(
         `🌠 Converting ${gifImages.length} GIF image${
           gifImages.length > 1 ? 's' : ''
@@ -228,6 +269,21 @@ export async function transformImageFormats(
         ...gifImages.map(async (image) => await convert(image, gifConversionFn as ConversionFn)),
       );
     }
+  }
+
+  // Warn on unsupported, unconvertable images
+  if (unconvertableImages.length) {
+    const badExts = [
+      ...new Set(unconvertableImages.map((image) => path.extname(image.url) || '<no extension>')),
+    ];
+    addWarningForFile(
+      session,
+      file,
+      `Unsupported image extension${
+        badExts.length > 1 ? 's' : ''
+      } may not correctly render: ${badExts.join(', ')}`,
+      'error',
+    );
   }
   return Promise.all(conversionPromises);
 }
