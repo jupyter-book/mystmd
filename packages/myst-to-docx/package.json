@@ -40,6 +40,8 @@
     "buffer-image-size": "^0.6.4",
     "docx": "^7.3.0",
     "myst-common": "*",
+    "myst-spec": "^0.0.4",
+    "myst-spec-ext": "^0.0.1",
     "myst-frontmatter": "*"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 import { u } from 'unist-builder';
-import type { GenericNode, GenericParent, GenericText, Spec, Token } from './types';
+import type { Text } from 'myst-spec';
+import type { GenericNode, GenericParent, Spec, Token } from './types';
 import { withoutTrailingNewline } from './utils';
 
 const UNHIDDEN_TOKENS = new Set([
@@ -50,7 +51,7 @@ export class MarkdownParseState {
       last.value += `${value}`;
       return last;
     }
-    const node: GenericText = { type, ...attrs, value };
+    const node: Text = { type: type as 'text', ...attrs, value };
     top.children?.push(node);
     addPositionsToNode(node, token);
     return node;

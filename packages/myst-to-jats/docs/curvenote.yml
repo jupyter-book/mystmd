@@ -1,0 +1,13 @@
+version: 1
+project:
+  title: MyST to JATS
+  github: https://github.com/executablebooks/mystjs/tree/main/packages/myst-to-jats
+  license: MIT
+  subject: MyST Converters
+site:
+  title: MyST to JATS
+  projects:
+    - path: .
+      slug: myst-to-jats
+  domains:
+    - myst-to-jats.myst.tools

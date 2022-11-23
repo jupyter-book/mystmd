@@ -45,10 +45,21 @@ import type {
   Container,
   Caption,
   Table as TableNode,
-  TableCell as SpecTableCellNode,
   Admonition,
   AdmonitionTitle,
 } from 'myst-spec';
+import type {
+  TableCell as TableCellNode,
+  Delete,
+  Underline,
+  Smallcaps,
+  DefinitionList,
+  DefinitionTerm,
+  DefinitionDescription,
+  CaptionNumber,
+  FootnoteReference,
+  FootnoteDefinition,
+} from 'myst-spec-ext';
 import type { Handler, Mutable } from './types';
 import {
   createReference,
@@ -185,32 +196,6 @@ const superscript: Handler<Superscript> = (state, node) => {
   state.addRunOptions({ superScript: true });
   state.renderChildren(node);
 };
-
-type Delete = Parent & { type: 'delete' };
-type Underline = Parent & { type: 'underline' };
-type Smallcaps = Parent & { type: 'smallcaps' };
-type DefinitionList = Parent & { type: 'definitionList' };
-type DefinitionTerm = Parent & { type: 'definitionTerm' };
-type DefinitionDescription = Parent & { type: 'definitionDescription' };
-type CaptionNumber = Parent & {
-  type: 'captionNumber';
-  kind: string;
-  label: string;
-  identifier: string;
-  html_id: string;
-  enumerator: string;
-};
-type FootnoteReference = {
-  type: 'footnoteReference';
-  identifier: string;
-  number?: number;
-};
-type FootnoteDefinition = Parent & {
-  type: 'footnoteReference';
-  identifier: string;
-  number?: number;
-};
-type TableCellNode = SpecTableCellNode & { colspan?: number; rowspan?: number; width?: number };
 
 const _delete: Handler<Delete> = (state, node) => {
   state.addRunOptions({ strike: true });

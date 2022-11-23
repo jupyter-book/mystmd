@@ -109,7 +109,6 @@ export function liftChildren(tree: Root, nodeType: string) {
  * will add identifier/label to paragraph node, but the node
  * will still not be targetable.
  */
-
 export function propagateTargets(tree: Root) {
   visit(tree, 'mystTarget', (node: GenericNode, index: number) => {
     const nextNode = findAfter(tree, index) as GenericNode;

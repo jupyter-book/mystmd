@@ -13,3 +13,4 @@ export {
 export { selectBlockParts, extractPart } from './extractParts';
 
 export type { MessageInfo } from './utils';
+export type { GenericNode, GenericParent } from './types';
