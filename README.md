@@ -52,9 +52,11 @@ All packages for `mystjs` are included in this repository (a monorepo!).
 - `myst-common` Some common utilities for working with ASTs
 - `myst-config` Validation and reading of configuration files
 - `myst-frontmater` definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://js.myst.tools/guide/frontmatter))
+- `myst-spec-ext` Extensions to `myst-spec` used throughout this repository, before pushing upstream
 - `myst-templates` types and validation for templates (latex, web and word)
 - `myst-to-docx` convert myst documents to word docs!
 - `myst-to-react` create basic, ideally unthemed react components for content only (_coming soon_)
+- `myst-to-jats` convert myst to JATS, for use in scientific archives
 - `myst-to-tex` convert myst to latex, to be used in combination with jtex to create stand alone latex documents
 - `myst-transforms` a number of transformations for use with myst AST to transform, e.g. links, citations, cross-references, admonitions
 - `simple-validators` validation utilities, that print all sorts of nice warnings
