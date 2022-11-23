@@ -210,26 +210,17 @@ export async function transformImageFormats(
     const pdfIndex = validExts.indexOf('.pdf');
     const svgToPdf = pdfIndex !== -1 && (pngIndex === -1 || pdfIndex < pngIndex);
     const svgToPng = !svgToPdf;
+    const logPrefix = `🌠 Converting ${svgImages.length} SVG image${
+      svgImages.length > 1 ? 's' : ''
+    } to`;
     if (svgToPdf && inkscapeAvailable) {
-      session.log.info(
-        `🌠 Converting ${svgImages.length} SVG image${
-          svgImages.length > 1 ? 's' : ''
-        } to PDF using inkscape`,
-      );
+      session.log.info(`${logPrefix} PDF using inkscape`);
       svgConversionFn = inkscape.convertSvgToPdf;
     } else if (svgToPng && inkscapeAvailable) {
-      session.log.info(
-        `🌠 Converting ${svgImages.length} SVG image${
-          svgImages.length > 1 ? 's' : ''
-        } to PNG using inkscape`,
-      );
+      session.log.info(`${logPrefix} PNG using inkscape`);
       svgConversionFn = inkscape.convertSvgToPng;
     } else if (svgToPng && imagemagickAvailable) {
-      session.log.info(
-        `🌠 Converting ${svgImages.length} SVG image${
-          svgImages.length > 1 ? 's' : ''
-        } to PNG using imagemagick`,
-      );
+      session.log.info(`${logPrefix} PNG using imagemagick`);
       svgConversionFn = imagemagick.convertSvgToPng;
     } else {
       addWarningForFile(
