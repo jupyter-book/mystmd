@@ -17,7 +17,9 @@ export async function extractFirstFrameOfGif(session: ISession, gif: string, wri
   if (fs.existsSync(png)) {
     session.log.debug(`Cached file found for extracted GIF: ${gif}`);
   } else {
-    const convert = makeExecutable(`convert ${gif}[0] ${png}`, session.log);
+    const executable = `convert ${gif}[0] ${png}`;
+    session.log.debug(`Executing: ${executable}`);
+    const convert = makeExecutable(executable, session.log);
     try {
       await convert();
     } catch (err) {
