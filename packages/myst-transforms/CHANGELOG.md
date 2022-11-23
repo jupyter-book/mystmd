@@ -1,5 +1,18 @@
 # myst-transforms
 
+## 0.0.9
+
+### Patch Changes
+
+- fced5986: Migrate to myst-spec-ext types to centralize additions to the spec.
+- 0170a2cc: Lift equations out of paragraphs.
+
+  Generally displayed math is **not** inside of a paragraph, the exception is inside bullet lists and tables, or dollar-math that is created without new lines around it. Because these nodes are a div, they are rendered inside of a paragraph, which is not correct HTML. This throws exceptions in React, it works, but causes a client-side re-render, which flickers.
+
+- 3baa63eb: Ensure github url parse is safe without http or https
+- Updated dependencies [73db6da8]
+  - myst-common@0.0.6
+
 ## 0.0.8
 
 ### Patch Changes

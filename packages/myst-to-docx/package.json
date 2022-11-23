@@ -1,6 +1,6 @@
 {
   "name": "myst-to-docx",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Export from a MyST Markdown document to Microsoft Word (*.docx)",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
@@ -41,7 +41,7 @@
     "docx": "^7.3.0",
     "myst-common": "*",
     "myst-spec": "^0.0.4",
-    "myst-spec-ext": "^0.0.1",
+    "myst-spec-ext": "^0.0.2",
     "myst-frontmatter": "*"
   },
   "devDependencies": {

@@ -1,5 +1,11 @@
 # myst-common
 
+## 0.0.6
+
+### Patch Changes
+
+- 73db6da8: Add GenericNode and GenericParent
+
 ## 0.0.5
 
 ### Patch Changes

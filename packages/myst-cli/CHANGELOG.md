@@ -1,5 +1,22 @@
 # myst-cli
 
+## 0.0.7
+
+### Patch Changes
+
+- f3247103: Allow specifying valid imageExtensions to transformMdast
+- 44c508bb: Bug fix: await docx export write to file
+- f0db164a: Transform svg/gif images to png if imagemagick or inkscape are available
+- Updated dependencies [fced5986]
+- Updated dependencies [73db6da8]
+- Updated dependencies [0170a2cc]
+- Updated dependencies [3baa63eb]
+- Updated dependencies [fced5986]
+  - myst-to-docx@0.0.4
+  - myst-transforms@0.0.9
+  - myst-common@0.0.6
+  - mystjs@0.0.15
+
 ## 0.0.6
 
 ### Patch Changes

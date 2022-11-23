@@ -1,5 +1,11 @@
 # mystjs
 
+## 0.0.15
+
+### Patch Changes
+
+- fced5986: Deprecate GenericNode, GenericParent, and liftChildren -- these are now in myst-common.
+
 ## 0.0.14
 
 ### Patch Changes
