@@ -1,12 +1,10 @@
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import type { Parent } from 'myst-spec';
+import type { DefinitionList } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 
-export type DefinitionList = Parent & { type: 'definitionList' };
-export type DefinitionItem = Parent & { type: 'definitionItem' };
-export type DefinitionTerm = Parent & { type: 'definitionTerm' };
-export type DefinitionDescription = Parent & { type: 'definitionDescription' };
+type DefinitionItem = Parent & { type: 'definitionItem' };
 
 export function definitionTransform(mdast: Root) {
   const defList = selectAll('definitionList', mdast) as DefinitionList[];
@@ -26,7 +24,7 @@ export function definitionTransform(mdast: Root) {
       current?.children.push(child);
     });
     pushItem();
-    node.children = children;
+    node.children = children as unknown as DefinitionList['children'];
   });
 }
 

@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "myst-spec": "*",
+    "myst-spec-ext": "^0.0.1",
     "myst-common": "*",
     "myst-frontmatter": "*",
     "unist-util-select": "^4.0.0",

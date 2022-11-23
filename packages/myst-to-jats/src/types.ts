@@ -1,5 +1,5 @@
 import type { PageFrontmatter } from 'myst-frontmatter';
-import type { MessageInfo } from 'myst-common';
+import type { GenericNode, MessageInfo } from 'myst-common';
 
 export type Attributes = Record<string, string | undefined>;
 
@@ -65,12 +65,6 @@ export enum RefType {
   /** Table footnote */
   'table-fn' = 'table-fn',
 }
-
-export type GenericNode = {
-  type: string;
-  value?: string;
-  children?: GenericNode[];
-} & Record<string, any>;
 
 export type Handler = (node: GenericNode, state: IJatsSerializer, parent: any) => void;
 

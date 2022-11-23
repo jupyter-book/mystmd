@@ -1,7 +1,7 @@
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import type { VFile } from 'vfile';
-import type { FootnoteDefinition as FND, FootnoteReference as FNR } from 'myst-spec';
+import type { FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
 import { keysTransform } from './keys';
@@ -10,14 +10,6 @@ import { fileWarn } from 'myst-common';
 
 type Options = {
   references: Pick<References, 'footnotes'>;
-};
-
-type FootnoteDefinition = FND & {
-  number?: number;
-};
-
-type FootnoteReference = FNR & {
-  number?: number;
 };
 
 function nextNumber(current: number, reserved: Set<number>): number {

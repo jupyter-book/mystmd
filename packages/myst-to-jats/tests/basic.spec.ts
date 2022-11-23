@@ -1,5 +1,4 @@
 import { unified } from 'unified';
-import { MyST } from 'mystjs';
 import type { JatsResult } from '../src';
 import mystToJats from '../src';
 import fs from 'fs';
@@ -22,7 +21,7 @@ const file = 'basic.yml';
 const testYaml = fs.readFileSync(path.join(directory, file)).toString();
 const cases = (yaml.load(testYaml) as TestFile).cases;
 
-describe('Basic JATS', () => {
+describe('Basic JATS body', () => {
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))('%s', (_, { tree, jats }) => {
     const pipe = unified().use(mystToJats);
     pipe.runSync(tree as any);
@@ -30,18 +29,3 @@ describe('Basic JATS', () => {
     expect((vfile.result as JatsResult).value).toEqual(jats);
   });
 });
-
-// describe('myst-to-jats', () => {
-//   it('emphasis in paragraph', () => {
-//     const tree = u('root', [
-//       u('paragraph', [
-//         u('text', { value: 'Some ' }),
-//         u('emphasis', [u('text', { value: 'markdown' })]),
-//       ]),
-//     ]);
-//     const pipe = unified().use(mystToJats);
-//     pipe.runSync(tree as any);
-//     const file = pipe.stringify(tree);
-//     expect((file.result as JatsResult).value).toEqual('<p>Some <italic>markdown</italic></p>');
-//   });
-// });

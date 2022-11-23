@@ -2,7 +2,7 @@ import type { Root, Code, CrossReference, TableCell as SpecTableCell } from 'mys
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
-import type { MessageInfo } from 'myst-common';
+import type { MessageInfo, GenericNode } from 'myst-common';
 import { copyNode, fileError } from 'myst-common';
 import type {
   Handler,
@@ -12,7 +12,6 @@ import type {
   StateData,
   Element,
   Attributes,
-  GenericNode,
 } from './types';
 import { RefType } from './types';
 import { basicTransformations } from './transforms';
