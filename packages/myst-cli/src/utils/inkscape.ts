@@ -1,8 +1,29 @@
 import fs from 'fs';
 import path from 'path';
 import { sync as which } from 'which';
+import type { LoggerDE } from 'myst-cli-utils';
 import { makeExecutable } from 'myst-cli-utils';
 import type { ISession } from '../session/types';
+
+function createInkscpapeLogger(session: ISession): LoggerDE {
+  const logger = {
+    debug(data: string) {
+      const line = data.trim();
+      session.log.debug(line);
+    },
+    error(data: string) {
+      const line = data.trim();
+      if (!line) return;
+      // These are non-critical errors that don't need to be in the CLI log
+      if (line.includes('unsupported target') || line.includes('writable cache directories')) {
+        session.log.debug(line);
+        return;
+      }
+      session.log.error(data);
+    },
+  };
+  return logger;
+}
 
 export function isInkscapeAvailable() {
   return which('inkscape', { nothrow: true });
@@ -19,7 +40,7 @@ async function convertSvgTo(format: string, session: ISession, svg: string, writ
   } else {
     const inkscapeCommand = `inkscape ${svg} --export-area-drawing --export-type=${format} --export-filename=${output}`;
     session.log.debug(`Executing: ${inkscapeCommand}`);
-    const convert = makeExecutable(inkscapeCommand, session.log);
+    const convert = makeExecutable(inkscapeCommand, createInkscpapeLogger(session));
     try {
       await convert();
     } catch (err) {
