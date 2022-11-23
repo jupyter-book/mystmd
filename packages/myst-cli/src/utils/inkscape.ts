@@ -18,7 +18,7 @@ async function convertSvgTo(format: string, session: ISession, svg: string, writ
     session.log.debug(`Cached file found for converted SVG: ${svg}`);
   } else {
     const convert = makeExecutable(
-      `inkscape ${svg} --export-area-drawing --export-type=${format} --export-filename=${output}`,
+      `inkscape ${svg} --export-area-drawing --export-${format}=${output}`,
       session.log,
     );
     try {
