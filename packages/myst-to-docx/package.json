@@ -40,9 +40,9 @@
     "buffer-image-size": "^0.6.4",
     "docx": "^7.3.0",
     "myst-common": "*",
+    "myst-frontmatter": "*",
     "myst-spec": "^0.0.4",
-    "myst-spec-ext": "^0.0.2",
-    "myst-frontmatter": "*"
+    "myst-spec-ext": "^0.0.2"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

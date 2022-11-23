@@ -45,10 +45,10 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "myst-spec": "*",
-    "myst-spec-ext": "^0.0.2",
     "myst-common": "*",
     "myst-frontmatter": "*",
+    "myst-spec": "*",
+    "myst-spec-ext": "^0.0.2",
     "unist-util-select": "^4.0.0",
     "vfile-reporter": "^7.0.4",
     "xml-js": "^1.6.11"
