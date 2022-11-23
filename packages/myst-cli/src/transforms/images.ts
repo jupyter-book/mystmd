@@ -1,7 +1,7 @@
 import fs from 'fs';
 import type { Root } from 'mdast';
 import mime from 'mime-types';
-import type { GenericNode } from 'mystjs';
+import type { GenericNode } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
 import path from 'path';
@@ -16,6 +16,7 @@ import {
   isUrl,
 } from '../utils';
 import type { ISession } from '../session/types';
+import chalk from 'chalk';
 
 const DEFAULT_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
 
@@ -209,7 +210,7 @@ export async function transformImageFormats(
     const pngIndex = validExts.indexOf('.png');
     const pdfIndex = validExts.indexOf('.pdf');
     const svgToPdf = pdfIndex !== -1 && (pngIndex === -1 || pdfIndex < pngIndex);
-    const svgToPng = !svgToPdf;
+    const svgToPng = !svgToPdf || !inkscapeAvailable;
     const logPrefix = `🌠 Converting ${svgImages.length} SVG image${
       svgImages.length > 1 ? 's' : ''
     } to`;
@@ -220,13 +221,24 @@ export async function transformImageFormats(
       session.log.info(`${logPrefix} PNG using inkscape`);
       svgConversionFn = inkscape.convertSvgToPng;
     } else if (svgToPng && imagemagickAvailable) {
+      if (svgToPdf) {
+        addWarningForFile(
+          session,
+          file,
+          `To convert SVG images to PDF, you must install inkscape.\n${chalk.dim(
+            'Images converted to PNG as a fallback using imagemagick.',
+          )}`,
+        );
+      }
       session.log.info(`${logPrefix} PNG using imagemagick`);
       svgConversionFn = imagemagick.convertSvgToPng;
     } else {
       addWarningForFile(
         session,
         file,
-        'Cannot convert SVG images, they may not correctly render.\nTo convert these images, you must install imagemagick or inkscape',
+        `Cannot convert SVG images, they may not correctly render.\n${chalk.dim(
+          'To convert these images, you must install imagemagick or inkscape',
+        )}`,
         'error',
       );
     }
