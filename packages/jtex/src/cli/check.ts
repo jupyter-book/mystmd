@@ -294,7 +294,6 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
     });
     fixedFiles.push('template.tex', ...maybeExtraFiles);
   }
-  console.log(validated);
   const packageErrors =
     validated.files
       ?.map((file, i) => {
