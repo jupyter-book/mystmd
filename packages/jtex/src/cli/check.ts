@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 import yaml from 'js-yaml';
 import fs from 'fs';
-import { join, sep, extname } from 'path';
+import { join, extname, resolve } from 'path';
 import type { ISession } from '../types';
 import type { ValidationOptions } from 'simple-validators';
 import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
@@ -294,19 +294,15 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
     });
     fixedFiles.push('template.tex', ...maybeExtraFiles);
   }
+  console.log(validated);
   const packageErrors =
     validated.files
       ?.map((file, i) => {
-        if (file.split(sep).length > 1) {
-          messages.errors.push({
-            property: `files.${i}`,
-            message: `The file "${file}" must be in the same directory as the main template.`,
-          });
-        }
+        const resolvedFile = resolve(templateDir, ...file.split('/'));
         let packages;
-        if (!fs.existsSync(file)) return true;
-        const fileContents = fs.readFileSync(join(templateDir, file)).toString();
-        switch (extname(file)) {
+        if (!fs.existsSync(resolvedFile)) return true;
+        const fileContents = fs.readFileSync(resolvedFile).toString();
+        switch (extname(resolvedFile)) {
           case '.cls':
           case '.tex':
           case '.def':

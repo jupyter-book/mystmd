@@ -200,7 +200,7 @@ condition
 
 ## Template Files
 
-The files are the flat list of files that are required by the template, the first entry should always be `template.tex`.
+The files are a list of unix-style paths to files that are required by the template. The first entry should always be `template.tex`; this must be in the top level folder next to the `template.yml`. All other files may be nested in sub-folders. This list may not include folders or wildcards.
 Common options to include are any `*.sty` files or images required by the template.
 
 ```yaml
@@ -209,7 +209,7 @@ files:
   - style.sty
   - citation.bst
   - custom.def
-  - logo.png
+  - images/logo.png
 ```
 
 These files, and only these files, will be copied in when using the template in `myst`.
