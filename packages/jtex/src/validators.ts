@@ -475,6 +475,8 @@ export function validateTemplateYml(
         const filePath = path.resolve(opts.templateDir, ...file.split('/'));
         if (!fs.existsSync(filePath)) {
           validationError(`file does not exist: ${filePath}`, fileOpts);
+        } else if (fs.lstatSync(filePath).isDirectory()) {
+          validationError(`file must not be directory: ${filePath}`, fileOpts);
         }
       }
       return file;
