@@ -472,9 +472,9 @@ export function validateTemplateYml(
       const fileOpts = incrementOptions(`files.${ind}`, opts);
       const file = validateString(val, fileOpts);
       if (file && opts.templateDir) {
-        const filePath = path.join(opts.templateDir, file);
+        const filePath = path.resolve(opts.templateDir, ...file.split('/'));
         if (!fs.existsSync(filePath)) {
-          validationError(`file does not exist: ${path.join(opts.templateDir, file)}`, fileOpts);
+          validationError(`file does not exist: ${filePath}`, fileOpts);
         }
       }
       return file;

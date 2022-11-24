@@ -11,7 +11,7 @@ describe('Download Template', () => {
     });
     expect(fs.existsSync('_build/templates/tex/myst/curvenote/template.zip')).toBe(true);
     expect(fs.existsSync('_build/templates/tex/myst/curvenote/template.yml')).toBe(true);
-    expect(fs.existsSync('_build/templates/tex/myst/curvenote/README.md')).toBe(true);
+    expect(fs.existsSync('_build/templates/tex/myst/curvenote/template.tex')).toBe(true);
   });
   it('Bad template paths to throw', async () => {
     const jtex = new JTex(new Session(), { template: 'not-there' });

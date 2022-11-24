@@ -1,11 +1,16 @@
 import fs from 'fs';
-import { extname, basename, join, dirname } from 'path';
+import { extname, join, dirname } from 'path';
 import yaml from 'js-yaml';
 import type { TemplateYml } from 'myst-templates';
 import nunjucks from 'nunjucks';
 import type { ValidationOptions } from 'simple-validators';
 import type { TemplateKinds } from './download';
-import { downloadAndUnzipTemplate, resolveInputs, TEMPLATE_FILENAME } from './download';
+import {
+  downloadAndUnzipTemplate,
+  resolveInputs,
+  TEMPLATE_FILENAME,
+  TEMPLATE_YML,
+} from './download';
 import { pdfExportCommand } from './export';
 import { extendJtexFrontmatter } from './frontmatter';
 import { renderImports } from './imports';
@@ -18,11 +23,6 @@ import {
   validateTemplateYml,
 } from './validators';
 import version from './version';
-
-const DO_NOT_COPY = [TEMPLATE_FILENAME, 'thumbnail.png'];
-const DO_NOT_COPY_EXTS = ['.md', '.yml', '.zip'];
-
-const TEMPLATE_YML = 'template.yml';
 
 class JTex {
   session: ISession;
@@ -242,17 +242,11 @@ class JTex {
   }
 
   copyTemplateFiles(outputDir: string, opts?: { force?: boolean }) {
-    const dir = fs
-      .readdirSync(this.templatePath)
-      .map((s) => join(this.templatePath, s))
-      .filter((s) => {
-        if (DO_NOT_COPY.includes(basename(s))) return false;
-        if (DO_NOT_COPY_EXTS.includes(extname(s))) return false;
-        if (fs.lstatSync(s).isDirectory()) return false;
-        return true;
-      });
-    dir.forEach((file) => {
-      const dest = join(outputDir, basename(file));
+    const templateYml = this.getValidatedTemplateYml();
+    templateYml.files?.forEach((file) => {
+      if (file === TEMPLATE_FILENAME) return;
+      const source = join(this.templatePath, ...file.split('/'));
+      const dest = join(outputDir, ...file.split('/'));
       if (fs.existsSync(dest)) {
         if (!opts?.force) {
           this.session.log.debug(`Template files ${file} already exists, not copying.`);
@@ -260,7 +254,8 @@ class JTex {
         }
         fs.rmSync(dest);
       }
-      fs.copyFileSync(file, dest);
+      fs.mkdirSync(dirname(dest), { recursive: true });
+      fs.copyFileSync(source, dest);
     });
   }
 

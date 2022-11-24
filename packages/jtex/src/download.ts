@@ -1,13 +1,15 @@
 import { createHash } from 'crypto';
 import fs, { createReadStream, createWriteStream, mkdirSync } from 'fs';
+import yaml from 'js-yaml';
 import type { TemplateYmlListResponse, TemplateYmlResponse } from 'myst-templates';
 import fetch from 'node-fetch';
 import unzipper from 'unzipper';
-import { join, parse } from 'path';
+import { dirname, join, parse } from 'path';
 import { validateUrl } from 'simple-validators';
 import type { ISession } from './types';
 
 export const TEMPLATE_FILENAME = 'template.tex';
+export const TEMPLATE_YML = 'template.yml';
 
 export enum TemplateKinds {
   tex = 'tex',
@@ -101,16 +103,20 @@ export function resolveInputs(
  */
 function unnestTemplate(path: string) {
   const content = fs.readdirSync(path);
-  if (!content.includes('template.yml')) {
+  if (!content.includes(TEMPLATE_YML)) {
     content.forEach((dir) => {
-      if (fs.existsSync(join(path, dir, 'template.yml'))) {
-        fs.readdirSync(join(path, dir))
-          .filter((file) => {
-            return !fs.lstatSync(join(path, dir, file)).isDirectory();
-          })
-          .forEach((file) => {
-            fs.copyFileSync(join(path, dir, file), join(path, file));
-          });
+      const templateYmlFile = join(path, dir, TEMPLATE_YML);
+      if (fs.existsSync(templateYmlFile)) {
+        fs.copyFileSync(templateYmlFile, join(path, TEMPLATE_YML));
+        const templateYml = yaml.load(fs.readFileSync(templateYmlFile).toString()) as {
+          files?: string[];
+        };
+        templateYml.files?.forEach((file) => {
+          const source = join(path, dir, ...file.split('/'));
+          const dest = join(path, ...file.split('/'));
+          fs.mkdirSync(dirname(dest), { recursive: true });
+          fs.copyFileSync(source, dest);
+        });
       }
     });
   }
