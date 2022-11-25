@@ -1,6 +1,6 @@
 {
   "name": "jtex",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Tool for rendering LaTeX documents from jinja-style templates",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -58,7 +58,7 @@
     "commander": "^8.3.0",
     "crypto": "^1.0.1",
     "js-yaml": "^4.1.0",
-    "myst-cli-utils": "^0.0.6",
+    "myst-cli-utils": "^0.0.7",
     "myst-frontmatter": "^0.0.3",
     "myst-templates": "^0.0.3",
     "node-fetch": "^2.6.7",

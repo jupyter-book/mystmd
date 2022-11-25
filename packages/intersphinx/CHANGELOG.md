@@ -1,5 +1,13 @@
 # intersphinx
 
+## 0.0.5
+
+### Patch Changes
+
+- 8cb44548: Move isUrl utility to myst-cli-utils
+- Updated dependencies [8cb44548]
+  - myst-cli-utils@0.0.7
+
 ## 0.0.4
 
 ### Patch Changes

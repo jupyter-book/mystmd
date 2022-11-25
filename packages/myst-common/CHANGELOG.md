@@ -1,5 +1,11 @@
 # myst-common
 
+## 0.0.7
+
+### Patch Changes
+
+- 97a888c0: Allow toText to take a null
+
 ## 0.0.6
 
 ### Patch Changes

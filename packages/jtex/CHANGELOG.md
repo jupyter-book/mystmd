@@ -1,5 +1,13 @@
 # jtex
 
+## 0.0.8
+
+### Patch Changes
+
+- a6a03837: Allow nested files in template.yml
+- Updated dependencies [8cb44548]
+  - myst-cli-utils@0.0.7
+
 ## 0.0.7
 
 ### Patch Changes

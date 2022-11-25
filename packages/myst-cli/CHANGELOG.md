@@ -1,5 +1,18 @@
 # myst-cli
 
+## 0.0.8
+
+### Patch Changes
+
+- 8cb44548: Move isUrl utility to myst-cli-utils
+- Updated dependencies [97a888c0]
+- Updated dependencies [a6a03837]
+- Updated dependencies [8cb44548]
+  - myst-common@0.0.7
+  - jtex@0.0.8
+  - intersphinx@0.0.5
+  - myst-cli-utils@0.0.7
+
 ## 0.0.7
 
 ### Patch Changes

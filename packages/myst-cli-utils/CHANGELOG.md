@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 0.0.7
+
+### Patch Changes
+
+- 8cb44548: Move isUrl utility to myst-cli-utils
+
 ## 0.0.6
 
 ### Patch Changes
