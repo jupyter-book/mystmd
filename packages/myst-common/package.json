@@ -18,8 +18,7 @@
     "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --project ./tsconfig.json --module commonjs --outDir dist/cjs",
     "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
-    "build": "npm-run-all -l clean -p build:esm declarations",
-    "prepublishOnly": "npm run build"
+    "build": "npm-run-all -l clean -p build:esm declarations"
   },
   "dependencies": {
     "mdast": "^3.0.0",

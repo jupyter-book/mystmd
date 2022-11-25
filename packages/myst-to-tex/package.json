@@ -32,7 +32,6 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run build;",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",

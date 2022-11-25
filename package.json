@@ -12,7 +12,6 @@
     "lint:format": "turbo run lint:format",
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepublishOnly": "npm run build",
     "changeset": "changeset",
     "version": "changeset version && npm install",
     "publish": "npm run clean && npm run build -- --force && changeset publish && git push --follow-tags"

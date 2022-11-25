@@ -23,7 +23,6 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run build;",
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "watch": "tsc -w -p .",

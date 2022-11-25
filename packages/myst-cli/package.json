@@ -35,7 +35,6 @@
     "unlink": "npm uninstall -g myst;",
     "link": "npm run unlink; npm link;",
     "dev": "npm run link && concurrently \"tsc -w --preserveWatchOutput -p .\" \"esbuild src/cli/index.ts --bundle --outfile=dist/myst.js --platform=node --external:fsevents --watch\"",
-    "prepublishOnly": "npm run build",
     "test": "npm run copy:version; npm run link; jest",
     "test:watch": "npm run copy:version; npm run link; jest --watchAll",
     "test:clear": "npm run copy:version; npm run link; jest --clearCache",

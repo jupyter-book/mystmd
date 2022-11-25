@@ -32,7 +32,6 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run build;",
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "build:esm": "tsc --module es2015   --outDir dist/esm",
