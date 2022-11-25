@@ -38,7 +38,7 @@
     "watch": "tsc -w -p .",
     "build:esm": "tsc --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "declarations": "tsc --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
     "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
   },
   "bugs": {

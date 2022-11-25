@@ -28,7 +28,7 @@
     "clean": "rimraf dist",
     "build:cjs": "tsc --project ./tsconfig.json",
     "build:esm": "tsc --project ./tsconfig.json --module ES2020 --outDir ./dist/esm",
-    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
+    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
     "build": "npm-run-all -l clean -p build:cjs build:esm declarations",
     "prepublishOnly": "npm run build",
     "test": "jest",

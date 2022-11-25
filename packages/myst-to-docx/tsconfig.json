@@ -9,7 +9,7 @@
     "preserveSymlinks": true,
     "moduleResolution": "node",
     "lib": ["dom", "es2020"],
-    "sourceMap": true,
+    "sourceMap": false,
     // outDir is overridden from the build:esm/build:cjs scripts
     "outDir": "dist/cjs",
     "baseUrl": ".",

@@ -9,7 +9,7 @@
     "noImplicitAny": true,
     "strict": true,
     "moduleResolution": "node",
-    "sourceMap": true,
+    "sourceMap": false,
     // outDir is overridden from the build:esm/build:cjs scripts
     "outDir": "dist/types",
     "baseUrl": "src",

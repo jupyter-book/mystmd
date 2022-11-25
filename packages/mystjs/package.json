@@ -37,7 +37,7 @@
     "build:bundle:browser": "esbuild myst.ts --bundle --outfile=dist/myst.min.js --platform=browser --minify",
     "build:esm": "tsc --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "declarations": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "declarations": "tsc --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
     "build": "npm-run-all -l clean -p build:cjs build:esm build:bundle:browser build:bundle:cjs declarations"
   },
   "bugs": {

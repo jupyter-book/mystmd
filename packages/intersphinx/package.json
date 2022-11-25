@@ -37,7 +37,7 @@
     "test:watch": "npm run copy:version && jest --watchAll",
     "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --project ./tsconfig.json --module commonjs --outDir dist/cjs",
-    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
+    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
     "prepublishOnly": "npm run build",
     "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/intersphinx.js --platform=node",
     "build": "npm-run-all -l clean copy:version -p build:cjs build:esm build:cli declarations"
