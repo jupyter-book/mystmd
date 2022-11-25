@@ -32,7 +32,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
-    "unlink": "npm uninstall -g myst;",
+    "unlink": "npm uninstall -g myst-cli",
     "link": "npm run unlink; npm link;",
     "dev": "npm run link && concurrently \"tsc -w --preserveWatchOutput -p .\" \"esbuild src/cli/index.ts --bundle --outfile=dist/myst.js --platform=node --external:fsevents --watch\"",
     "test": "npm run copy:version; npm run link; jest",
