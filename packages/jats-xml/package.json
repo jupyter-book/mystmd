@@ -34,7 +34,6 @@
   "scripts": {
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run copy:version && npm run build;",
     "unlink": "npm uninstall -g jats-xml;",
     "link": "npm run unlink; npm link;",
     "dev": "npm run copy:version && npm run link && esbuild src/cli/index.ts --bundle --outfile=dist/jats.js --platform=node --watch",
