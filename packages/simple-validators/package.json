@@ -43,7 +43,7 @@
   "devDependencies": {
     "@types/jest": "^28.1.6",
     "eslint": "^8.21.0",
-    "eslint-config-curvenote": "*",
+    "eslint-config-curvenote": "latest",
     "jest": "28.1.3",
     "jest-extended": "^3.0.1",
     "jest-fixtures": "^0.6.0",
