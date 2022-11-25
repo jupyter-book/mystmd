@@ -4,6 +4,7 @@ import type { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
 import type { MessageInfo, GenericNode } from 'myst-common';
 import { copyNode, fileError } from 'myst-common';
+import { RefType } from 'jats-xml';
 import type {
   Handler,
   IJatsSerializer,
@@ -13,7 +14,6 @@ import type {
   Element,
   Attributes,
 } from './types';
-import { RefType } from './types';
 import { basicTransformations } from './transforms';
 
 export type { JatsResult } from './types';
@@ -285,10 +285,6 @@ class JatsSerializer implements IJatsSerializer {
     this.data = {};
     this.stack = [{ type: 'element', elements: [] }];
     this.handlers = opts?.handlers ?? handlers;
-  }
-
-  get out(): string {
-    return this.file.result as string;
   }
 
   top() {

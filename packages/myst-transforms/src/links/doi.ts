@@ -1,5 +1,5 @@
 import { fileError } from 'myst-common';
-import { validate, normalize } from 'doi-utils';
+import doi from 'doi-utils';
 import type { VFile } from 'vfile';
 import type { Link, LinkTransformer } from './types';
 import { updateLinkTextIfEmpty } from './utils';
@@ -15,22 +15,22 @@ export class DOITransformer implements LinkTransformer {
       // This may not be valid but flag it for the transform
       return true;
     }
-    if (uri && validate(normalize(uri))) return true;
+    if (uri && doi.validate(uri, { strict: true })) return true;
     return false;
   }
 
   transform(link: Link, file: VFile): boolean {
     const urlSource = link.urlSource || link.url;
-    const doi = normalize(urlSource);
-    if (!doi || !validate(doi)) {
+    const doiString = doi.normalize(urlSource);
+    if (!doiString || !doi.validate(doiString)) {
       fileError(file, `DOI is not valid: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
       });
       return false;
     }
-    link.url = `${DOI_ORG}${doi}`;
-    link.data = { doi };
+    link.url = `${DOI_ORG}${doiString}`;
+    link.data = { doi: doiString };
     link.internal = false;
     updateLinkTextIfEmpty(link, '');
     return true;

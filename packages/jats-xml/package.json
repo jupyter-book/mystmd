@@ -1,9 +1,9 @@
 {
-  "name": "myst-to-jats",
+  "name": "jats-xml",
   "version": "0.0.3",
-  "description": "Export from MyST Markdown to JATS",
+  "description": "Types and utilities for working with JATS in Typescript",
   "author": "Rowan Cockett <rowan@curvenote.com>",
-  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-to-jats",
+  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/jats-xml",
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -18,8 +18,8 @@
     }
   },
   "keywords": [
-    "myst-plugin",
-    "jats"
+    "jats",
+    "publishing"
   ],
   "publishConfig": {
     "access": "public"
@@ -28,35 +28,36 @@
     "type": "git",
     "url": "git+https://github.com/executablebooks/mystjs.git"
   },
+  "bin": {
+    "jats": "./dist/jats.js"
+  },
   "scripts": {
+    "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run build;",
-    "test": "jest",
+    "prepublishOnly": "npm run copy:version && npm run build;",
+    "unlink": "npm uninstall -g jats-xml;",
+    "link": "npm run unlink; npm link;",
+    "dev": "npm run copy:version && npm run link && esbuild src/cli/index.ts --bundle --outfile=dist/jats.js --platform=node --watch",
+    "test": "npm run copy:version && jest",
     "test:watch": "jest --watchAll",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",
+    "lint": "npm run copy:version && eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
-    "watch": "tsc -w -p .",
     "build:esm": "tsc --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/jats.js --platform=node",
     "declarations": "tsc --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
-    "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
+    "build": "npm-run-all -l clean copy:version -p build:cjs build:esm declarations build:cli"
   },
   "bugs": {
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "jats-xml": "^0.0.3",
-    "myst-common": "*",
-    "myst-frontmatter": "*",
-    "myst-spec": "*",
-    "myst-spec-ext": "^0.0.2",
-    "unist-util-select": "^4.0.0",
-    "vfile-reporter": "^7.0.4",
-    "xml-js": "^1.6.11"
+    "myst-common": "^0.0.6"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5",
     "prettier": "^2.6.1",
+    "esbuild": "^0.15.12",
     "rimraf": "^3.0.2",
     "ts-jest": "^28.0.7",
     "ts-loader": "^9.2.8",

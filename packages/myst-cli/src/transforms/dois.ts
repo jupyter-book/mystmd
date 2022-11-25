@@ -1,8 +1,8 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import { getCitations } from 'citation-js-utils';
-import { validate, normalize } from 'doi-utils';
+import doi from 'doi-utils';
 import type { Link } from 'myst-spec';
-import type { GenericNode } from 'mystjs';
+import type { GenericNode } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
 import { tic } from 'myst-cli-utils';
@@ -12,11 +12,11 @@ import { toText } from 'myst-common';
 import type { Cite } from './citations';
 import type { SingleCitationRenderer } from './types';
 
-async function getDoiOrgBibtex(log: Logger, doi: string): Promise<string | null> {
-  if (!validate(normalize(doi))) return null;
+async function getDoiOrgBibtex(log: Logger, doiString: string): Promise<string | null> {
+  if (!doi.validate(doi.normalize(doiString))) return null;
   const toc = tic();
   log.debug('Fetching DOI information from doi.org');
-  const url = `https://doi.org/${normalize(doi)}`;
+  const url = `https://doi.org/${doi.normalize(doiString)}`;
   const response = await fetch(url, {
     headers: [['Accept', 'application/x-bibtex']],
   }).catch(() => {
@@ -24,19 +24,19 @@ async function getDoiOrgBibtex(log: Logger, doi: string): Promise<string | null>
     return null;
   });
   if (!response || !response.ok) {
-    log.debug(`doi.org fetch failed for ${doi}}`);
+    log.debug(`doi.org fetch failed for ${doiString}}`);
     return null;
   }
   const bibtex = await response.text();
-  log.debug(toc(`Fetched reference information doi:${normalize(doi)} in %s`));
+  log.debug(toc(`Fetched reference information doi:${doi.normalize(doiString)} in %s`));
   return bibtex;
 }
 
-async function getCitation(log: Logger, doi: string): Promise<SingleCitationRenderer | null> {
-  if (!validate(normalize(doi))) return null;
-  const bibtex = await getDoiOrgBibtex(log, doi);
+async function getCitation(log: Logger, doiString: string): Promise<SingleCitationRenderer | null> {
+  if (!doi.validate(doi.normalize(doiString))) return null;
+  const bibtex = await getDoiOrgBibtex(log, doiString);
   if (!bibtex) {
-    log.warn(`⚠️  Could not find DOI from link: ${doi} as ${normalize(doi)}`);
+    log.warn(`⚠️  Could not find DOI from link: ${doiString} as ${doi.normalize(doiString)}`);
     return null;
   }
   const renderer = await getCitations(bibtex);
@@ -60,12 +60,12 @@ export async function transformLinkedDOIs(
   const citeDois: Cite[] = [];
   selectAll('link', mdast).forEach((node: GenericNode) => {
     const { url } = node as Link;
-    if (!validate(normalize(url))) return;
+    if (!doi.validate(doi.normalize(url))) return;
     linkedDois.push(node as Link);
   });
   selectAll('cite', mdast).forEach((node: GenericNode) => {
     const { label } = node as Cite;
-    if (!validate(normalize(label))) return;
+    if (!doi.validate(doi.normalize(label))) return;
     citeDois.push(node as Cite);
   });
   if (linkedDois.length === 0 && citeDois.length === 0) return renderer;
@@ -81,7 +81,7 @@ export async function transformLinkedDOIs(
       citeNode.type = 'cite';
       citeNode.kind = 'narrative';
       citeNode.label = cite.id;
-      if (validate(normalize(toText(citeNode.children)))) {
+      if (doi.validate(doi.normalize(toText(citeNode.children)))) {
         // If the link text is the DOI, update with a citation in a following pass
         citeNode.children = [];
       }
