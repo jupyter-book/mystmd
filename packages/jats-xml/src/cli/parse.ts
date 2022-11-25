@@ -18,7 +18,11 @@ function hasValidExtension(output: string) {
   return ['.xml', '.jats'].includes(extname(output).toLowerCase());
 }
 
-async function downloadJats(session: ISession, urlOrDoi: string, output: string): Promise<string> {
+async function downloadAndSaveJats(
+  session: ISession,
+  urlOrDoi: string,
+  output: string,
+): Promise<string> {
   if (fs.existsSync(urlOrDoi)) {
     throw new Error(`File "${urlOrDoi}" is local and cannot be downloaded!`);
   }
@@ -45,12 +49,9 @@ async function parseJats(session: ISession, file: string): Promise<Jats> {
     session.log.debug(toc(`Parsed JATS file from disk in %s`));
     return new Jats(data);
   }
-  if (checkdoi.validate(file) || isUrl(file)) {
-    const data = await downloadJatsFromUrl(session, file, DEFAULT_RESOLVERS);
-    session.log.debug(toc(`Downloaded and parsed JATS file in %s`));
-    return new Jats(data);
-  }
-  throw new Error(`Could not find ${file} locally, and it doesn't look like a URL or DOI`);
+  const data = await downloadJatsFromUrl(session, file, DEFAULT_RESOLVERS);
+  session.log.debug(toc(`Downloaded and parsed JATS file in %s`));
+  return new Jats(data);
 }
 
 function formatLongString(data: string, offset = 0, length = 88 - offset): string {
@@ -190,7 +191,7 @@ function makeDownloadCLI(program: Command) {
     .description('Parse a JATS file and provide a summary')
     .argument('<url>', 'The JATS url or a DOI')
     .argument('<output>', 'The JATS url or a DOI')
-    .action(clirun(downloadJats, { program, getSession }));
+    .action(clirun(downloadAndSaveJats, { program, getSession }));
   return command;
 }
 
