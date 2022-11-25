@@ -1,4 +1,4 @@
-import { validate } from 'doi-utils';
+import doi from 'doi-utils';
 import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
@@ -483,10 +483,10 @@ export function validateProjectFrontmatterKeys(
   }
   if (defined(value.doi)) {
     const doiOpts = incrementOptions('doi', opts);
-    const doi = validateString(value.doi, doiOpts);
-    if (doi !== undefined) {
-      if (validate(doi)) {
-        output.doi = doi;
+    const doiString = validateString(value.doi, doiOpts);
+    if (doiString !== undefined) {
+      if (doi.validate(doiString, { strict: true })) {
+        output.doi = doiString;
       } else {
         validationError('must be valid DOI', doiOpts);
       }
