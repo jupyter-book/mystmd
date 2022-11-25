@@ -41,7 +41,7 @@ jats summary /local/article.jats
 
 This will provide a summary, including a list of what the JATS file contains.
 
-![Output of `jats summary`](images/jats-output.png)
+![Output of `jats summary`](/packages/jats-xml/images/jats-output.png)
 
 ## Working in Typescript
 
