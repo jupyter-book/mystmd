@@ -1,12 +1,12 @@
-import chalk from 'chalk';
 import fs from 'fs';
 import { join } from 'path';
+import { isUrl } from 'myst-cli-utils';
 import { loadConfigAndValidateOrThrow } from '../config';
 import { loadFile, combineProjectCitationRenderers } from '../process';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import { projects } from '../store/reducers';
-import { getAllBibTexFilesOnPath, isDirectory, isUrl, validateTOC } from '../utils';
+import { getAllBibTexFilesOnPath, isDirectory, validateTOC } from '../utils';
 import { projectFromPath } from './fromPath';
 import { projectFromToc } from './fromToc';
 import { writeTocFromProject } from './toToc';

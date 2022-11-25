@@ -2,11 +2,11 @@ import fs from 'fs';
 import fetch from 'node-fetch';
 import type { CitationRenderer } from 'citation-js-utils';
 import { getCitations } from 'citation-js-utils';
-import { tic } from 'myst-cli-utils';
+import { tic, isUrl } from 'myst-cli-utils';
 import type { ISession, ISessionWithCache } from '../session/types';
 import { castSession } from '../session';
 import { selectors } from '../store';
-import { addWarningForFile, isUrl } from '../utils';
+import { addWarningForFile } from '../utils';
 
 export async function loadCitations(session: ISession, path: string) {
   const toc = tic();

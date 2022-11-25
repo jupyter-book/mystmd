@@ -2,6 +2,7 @@ import fs from 'fs';
 import type { Root } from 'mdast';
 import mime from 'mime-types';
 import type { GenericNode } from 'myst-common';
+import { isUrl } from 'myst-cli-utils';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
 import path from 'path';
@@ -13,7 +14,6 @@ import {
   hashAndCopyStaticFile,
   imagemagick,
   inkscape,
-  isUrl,
 } from '../utils';
 import type { ISession } from '../session/types';
 import chalk from 'chalk';
