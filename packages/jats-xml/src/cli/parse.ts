@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import fs from 'fs';
 import { extname } from 'path';
 import { clirun, isUrl, tic, writeFileToFolder } from 'myst-cli-utils';
-import checkdoi from 'doi-utils';
+import doi from 'doi-utils';
 import chalk from 'chalk';
 import { getSession } from '../session';
 import type { ISession } from '../types';
@@ -26,7 +26,7 @@ async function downloadAndSaveJats(
   if (fs.existsSync(urlOrDoi)) {
     throw new Error(`File "${urlOrDoi}" is local and cannot be downloaded!`);
   }
-  if (!(checkdoi.validate(urlOrDoi) || isUrl(urlOrDoi))) {
+  if (!(doi.validate(urlOrDoi) || isUrl(urlOrDoi))) {
     throw new Error(`Path must be a URL or DOI, not "${urlOrDoi}"`);
   }
   if (!hasValidExtension(output)) {
@@ -100,7 +100,7 @@ function formatDictionary(
 async function jatsSummaryCLI(session: ISession, file: string) {
   const jats = await parseJats(session, file);
   const summary = {
-    DOI: jats.doi ? checkdoi.buildUrl(jats.doi) : null,
+    DOI: jats.doi ? doi.buildUrl(jats.doi) : null,
     Title: toText(jats.articleTitle)?.replace(/\n/g, ' '),
     Date: formatDate(toDate(jats.publicationDate)),
     Authors: jats.articleAuthors
@@ -145,7 +145,7 @@ async function jatsReferencesCLI(session: ISession, file: string) {
 
   const sorted = jats.references
     .map((ref) => {
-      const doi = findDoi(ref);
+      const doiString = findDoi(ref);
       const title = toText(select(Tags.articleTitle, ref));
       const year = toText(select(Tags.year, ref));
       const surnames = selectAll(Tags.surname, ref);
@@ -159,7 +159,7 @@ async function jatsReferencesCLI(session: ISession, file: string) {
       return {
         Citation: `${short} (${year})`,
         Title: title,
-        DOI: doi ? checkdoi.buildUrl(doi) : null,
+        DOI: doiString ? doi.buildUrl(doiString) : null,
         Count: s.length,
       };
     })

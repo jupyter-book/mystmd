@@ -1,4 +1,4 @@
-import checkdoi from 'doi-utils';
+import doi from 'doi-utils';
 import fetch from 'node-fetch';
 import type { ISession } from './types';
 
@@ -27,12 +27,12 @@ export const plos: Resolver = {
 
 export const joss: Resolver = {
   test(url: string) {
-    return new URL(url).hostname === 'joss.theoj.org';
+    return new URL(url).hostname === 'joss.theoj.org' && doi.validate(url);
   },
   jatsUrl(url: string) {
     // Probably a better way to do this, the joss papers on on github!
-    const doi = new URL(url).pathname.replace('/papers/', '');
-    const [org, jossId] = doi.split('/');
+    const doiString = doi.normalize(url) as string;
+    const [org, jossId] = doiString.split('/');
     const id = jossId.split('.')[1];
     return `https://raw.githubusercontent.com/openjournals/joss-papers/master/joss.${id}/${org}.${jossId}.jats`;
   },
@@ -42,11 +42,11 @@ export const DEFAULT_RESOLVERS: Resolver[] = [elife, plos, joss];
 
 export async function resolveJatsUrlFromDoi(
   session: ISession,
-  doi: string,
+  doiString: string,
   resolvers = DEFAULT_RESOLVERS,
 ): Promise<string> {
-  if (!checkdoi.validate(doi)) throw new Error(`The doi ${doi} is not valid`);
-  const doiUrl = checkdoi.buildUrl(doi) as string;
+  if (!doi.validate(doiString)) throw new Error(`The doi ${doiString} is not valid`);
+  const doiUrl = doi.buildUrl(doiString) as string;
   session.log.debug(`Resolving DOI ${doiUrl}`);
   const resp = await fetch(doiUrl);
   const articleUrl = resp.url;

@@ -1,7 +1,7 @@
 import type { GenericNode, GenericParent } from 'myst-common';
 import { toText } from 'myst-common';
 import type { Element } from 'xml-js';
-import checkdoi from 'doi-utils';
+import doi from 'doi-utils';
 import { select, selectAll } from 'unist-util-select';
 import type { ArticleId } from './types';
 import { Tags } from './types';
@@ -84,7 +84,7 @@ export function findDoi(node: GenericParent): string | null {
   const id = select('[pub-id-type=doi]', node);
   if (id && toText(id)) return toText(id);
   const doiTag = (selectAll(`${Tags.articleId},${Tags.pubId}`, node) as ArticleId[]).find((t) =>
-    checkdoi.validate(toText(t)),
+    doi.validate(toText(t)),
   );
   return toText(doiTag) || null;
 }

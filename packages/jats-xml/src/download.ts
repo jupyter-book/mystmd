@@ -1,4 +1,4 @@
-import checkdoi from 'doi-utils';
+import doi from 'doi-utils';
 import fetch from 'node-fetch';
 import { isUrl } from 'myst-cli-utils';
 import type { ISession } from './types';
@@ -24,7 +24,7 @@ export async function downloadJatsFromUrl(
   urlOrDoi: string,
   resolvers?: Resolver[],
 ): Promise<string> {
-  if (checkdoi.validate(urlOrDoi)) {
+  if (doi.validate(urlOrDoi)) {
     const jatsUrl = await resolveJatsUrlFromDoi(session, urlOrDoi, resolvers);
     const data = await dowloadFromUrl(session, jatsUrl);
     return data;
