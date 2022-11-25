@@ -7,6 +7,7 @@ import type {
   Numbering,
   PageFrontmatter,
   ProjectFrontmatter,
+  SiteFrontmatter,
 } from './types';
 import {
   fillPageFrontmatter,
@@ -19,7 +20,6 @@ import {
   validateNumbering,
   validatePageFrontmatter,
   validateProjectFrontmatter,
-  validateSiteDesign,
   validateSiteFrontmatter,
   validateVenue,
 } from './validators';
@@ -75,9 +75,17 @@ const TEST_JUPYTEXT: Jupytext = {
     jupytext_version: '1.5.2',
   },
 };
+const TEST_SITE_FRONTMATTER: SiteFrontmatter = {
+  title: 'frontmatter',
+  description: 'project frontmatter',
+  venue: { title: 'test' },
+  authors: [{}],
+  github: 'https://github.com/example',
+  keywords: ['example', 'test'],
+};
 const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   title: 'frontmatter',
-  description: 'site frontmatter',
+  description: 'project frontmatter',
   venue: { title: 'test' },
   authors: [{}],
   date: '14 Dec 2021',
@@ -99,7 +107,7 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
 };
 const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   title: 'frontmatter',
-  description: 'site frontmatter',
+  description: 'page frontmatter',
   venue: { title: 'test' },
   authors: [{}],
   name: 'example.md',
@@ -193,18 +201,6 @@ describe('validateBiblio', () => {
   });
 });
 
-describe('validateSiteDesign', () => {
-  it('empty object returns self', async () => {
-    expect(validateSiteDesign({}, opts)).toEqual({});
-  });
-  it('valid site design returns self', async () => {
-    const siteDesign = {
-      hide_authors: true,
-    };
-    expect(validateSiteDesign(siteDesign, opts)).toEqual(siteDesign);
-  });
-});
-
 describe('validateNumbering', () => {
   it('empty object returns self', async () => {
     expect(validateNumbering({}, opts)).toEqual({});
@@ -284,6 +280,9 @@ describe('validateSiteFrontmatter', () => {
   });
   it('empty object returns self', async () => {
     expect(validateSiteFrontmatter({}, opts)).toEqual({});
+  });
+  it('full object returns self', async () => {
+    expect(validateSiteFrontmatter(TEST_SITE_FRONTMATTER, opts)).toEqual(TEST_SITE_FRONTMATTER);
   });
   it('full object returns valid object', async () => {
     expect(
@@ -381,7 +380,7 @@ describe('validatePageFrontmatter', () => {
 
 describe('fillPageFrontmatter', () => {
   it('empty frontmatters return empty', async () => {
-    expect(fillPageFrontmatter({}, {}, {})).toEqual({});
+    expect(fillPageFrontmatter({}, {})).toEqual({});
   });
   it('page frontmatter returns self', async () => {
     expect(fillPageFrontmatter(TEST_PAGE_FRONTMATTER, {})).toEqual(TEST_PAGE_FRONTMATTER);
@@ -408,11 +407,6 @@ describe('fillPageFrontmatter', () => {
       ),
     ).toEqual({
       numbering: { enumerator: '#', heading_1: true, heading_5: true, heading_6: true },
-    });
-  });
-  it('site venue added', async () => {
-    expect(fillPageFrontmatter({}, {}, { venue: { title: 'my venue' } })).toEqual({
-      venue: { title: 'my venue' },
     });
   });
 });

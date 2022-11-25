@@ -12,16 +12,9 @@ import {
   validateBoolean,
   validationError,
 } from 'simple-validators';
-import { validateSiteFrontmatterKeys, validateSiteDesign } from 'myst-frontmatter';
+import { validateSiteFrontmatterKeys } from 'myst-frontmatter';
 import { SITE_CONFIG_KEYS } from './types';
-import type {
-  SiteAction,
-  SiteAnalytics,
-  SiteConfig,
-  SiteNavFolder,
-  SiteNavPage,
-  SiteProject,
-} from './types';
+import type { SiteAction, SiteConfig, SiteNavFolder, SiteNavPage, SiteProject } from './types';
 
 function validateUrlOrPath(input: any, opts: ValidationOptions) {
   const value = validateString(input, opts);
@@ -103,18 +96,6 @@ export function validateSiteAction(input: any, opts: ValidationOptions) {
   return value as SiteAction;
 }
 
-export function validateSiteAnalytics(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: ['google', 'plausible'] }, opts);
-  if (value === undefined) return undefined;
-  if (defined(value.google)) {
-    value.google = validateString(value.google, incrementOptions('google', opts));
-  }
-  if (defined(value.plausible)) {
-    value.plausible = validateString(value.plausible, incrementOptions('plausible', opts));
-  }
-  return value as SiteAnalytics;
-}
-
 export function validateSiteConfigKeys(
   value: Record<string, any>,
   opts: ValidationOptions,
@@ -153,26 +134,11 @@ export function validateSiteConfigKeys(
     );
     if (domains) output.domains = [...new Set(domains)];
   }
-  if (defined(value.twitter)) {
-    output.twitter = validateString(value.twitter, {
-      ...incrementOptions('twitter', opts),
-      regex: /^@?(\w){1,15}$/,
-    });
-  }
-  if (defined(value.logo)) {
-    output.logo = validateString(value.logo, incrementOptions('logo', opts));
-  }
-  if (defined(value.logo_text)) {
-    output.logo_text = validateString(value.logo_text, incrementOptions('logo_text', opts));
-  }
   if (defined(value.favicon)) {
     output.favicon = validateString(value.favicon, incrementOptions('favicon', opts));
   }
-  if (defined(value.analytics)) {
-    output.analytics = validateSiteAnalytics(value.analytics, incrementOptions('analytics', opts));
-  }
-  if (defined(value.design)) {
-    output.design = validateSiteDesign(value.design, incrementOptions('design', opts));
+  if (defined(value.template)) {
+    output.template = validateString(value.template, incrementOptions('template', opts));
   }
   return output;
 }

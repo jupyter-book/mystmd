@@ -23,23 +23,10 @@ export interface SiteAction extends SiteNavPage {
   static?: boolean;
 }
 
-export interface SiteAnalytics {
-  google?: string;
-  plausible?: string;
-}
-
 export const SITE_CONFIG_KEYS = {
-  optional: [
-    'projects',
-    'nav',
-    'actions',
-    'domains',
-    'twitter',
-    'logo',
-    'logo_text',
-    'favicon',
-    'analytics',
-  ].concat(SITE_FRONTMATTER_KEYS),
+  optional: ['projects', 'nav', 'actions', 'domains', 'favicon', 'template'].concat(
+    SITE_FRONTMATTER_KEYS,
+  ),
 };
 
 export type SiteConfig = SiteFrontmatter & {
@@ -47,9 +34,6 @@ export type SiteConfig = SiteFrontmatter & {
   nav?: (SiteNavPage | SiteNavFolder)[];
   actions?: SiteAction[];
   domains?: string[];
-  twitter?: string;
-  logo?: string;
-  logo_text?: string;
   favicon?: string;
-  analytics?: SiteAnalytics;
+  template?: string;
 };

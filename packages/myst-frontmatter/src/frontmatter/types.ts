@@ -93,31 +93,22 @@ export type Export = {
   output?: string;
 } & Record<string, any>;
 
-export type SiteDesign = {
-  hide_authors?: boolean;
-  hide_toc?: boolean;
-  hide_title_block?: boolean;
-  hide_outline?: boolean;
-  hide_footer_links?: boolean;
-};
-
 export type SiteFrontmatter = {
   title?: string;
   description?: string;
+  authors?: Author[];
   venue?: Venue;
+  github?: string;
   keywords?: string[];
-  design?: SiteDesign;
 };
 
 export type ProjectFrontmatter = SiteFrontmatter & {
-  authors?: Author[];
   date?: string;
   name?: string;
   doi?: string;
   arxiv?: string;
   open_access?: boolean;
   license?: Licenses;
-  github?: string;
   binder?: string;
   source?: string;
   subject?: string;
