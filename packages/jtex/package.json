@@ -70,7 +70,6 @@
     "@types/jest": "^28.1.6",
     "@types/node-fetch": "^2.6.2",
     "@types/nunjucks": "^3.2.1",
-    "@types/react": "^18.0.15",
     "@types/sanitize-html": "^2.6.2",
     "@types/unzipper": "^0.10.5",
     "esbuild": "^0.15.12",

@@ -51,7 +51,6 @@
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",
-    "@types/react": "^18.0.15",
     "@types/sanitize-html": "^2.6.2",
     "eslint": "^8.21.0",
     "eslint-config-curvenote": "latest",
