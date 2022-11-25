@@ -34,19 +34,19 @@
   "scripts": {
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run build;",
+    "prepublishOnly": "npm run copy:version && npm run build;",
     "unlink": "npm uninstall -g jats-xml;",
     "link": "npm run unlink; npm link;",
-    "dev": "npm run link && esbuild src/cli/index.ts --bundle --outfile=dist/jats.js --platform=node --watch",
+    "dev": "npm run copy:version && npm run link && esbuild src/cli/index.ts --bundle --outfile=dist/jats.js --platform=node --watch",
     "test": "npm run copy:version && jest",
     "test:watch": "jest --watchAll",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",
+    "lint": "npm run copy:version && eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "build:esm": "tsc --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/jats.js --platform=node",
     "declarations": "tsc --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
-    "build": "npm-run-all -l clean -p copy:version build:cjs build:esm declarations build:cli"
+    "build": "npm-run-all -l clean copy:version -p build:cjs build:esm declarations build:cli"
   },
   "bugs": {
     "url": "https://github.com/executablebooks/mystjs/issues"
