@@ -1,5 +1,11 @@
 # myst-cli
 
+## 0.0.9
+
+### Patch Changes
+
+- Fix modules type that picked up a bad tsconfig
+
 ## 0.0.8
 
 ### Patch Changes
