@@ -9,5 +9,6 @@ export {
 } from './logger';
 export { exec, makeExecutable } from './exec';
 export { clirun, tic } from './utils';
+export { isUrl } from './isUrl';
 export { Session, getSession } from './session';
 export { writeFileToFolder } from './filesystem';

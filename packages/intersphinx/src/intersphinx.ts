@@ -1,14 +1,8 @@
 import fs from 'fs';
 import zlib from 'zlib';
 import fetch from 'node-fetch';
+import { isUrl } from 'myst-cli-utils';
 import type { Domains } from './types';
-
-/**
- * Very simple function to test if the link starts with an HTTP(S?)
- */
-function isUrl(url: string): boolean {
-  return !!url.toLowerCase().match(/^https?:\/\//);
-}
 
 type Entry = { type: string; location: string; display?: string };
 type InventoryItem = { location: string; display?: string };

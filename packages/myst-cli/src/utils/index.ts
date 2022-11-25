@@ -7,7 +7,6 @@ export * from './filterFilenamesByExtension';
 export * from './getAllBibtexFiles';
 export * from './hashAndCopyStaticFile';
 export * from './isDirectory';
-export * from './isUrl';
 export * from './logMessagesFromVFile';
 export * from './nextLevel';
 export * from './removeExtension';
