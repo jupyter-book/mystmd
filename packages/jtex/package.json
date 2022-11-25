@@ -28,7 +28,7 @@
     "test:watch": "npm run copy:version && jest --watchAll",
     "build:esm": "tsc --project ./src/tsconfig.json --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --project ./src/tsconfig.json --module commonjs --outDir dist/cjs",
-    "declarations": "tsc --project ./src/tsconfig.json --declaration --emitDeclarationOnly --outDir dist/types",
+    "declarations": "tsc --project ./src/tsconfig.json --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
     "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/jtex.js --platform=node",
     "build": "npm-run-all -l clean copy:version -p build:cli build:cjs build:esm declarations",
     "prepublishOnly": "npm run build"
