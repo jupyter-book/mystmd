@@ -2,6 +2,7 @@ import doi from 'doi-utils';
 import chalk from 'chalk';
 import fetch from 'node-fetch';
 import { isUrl, tic } from 'myst-cli-utils';
+import { formatPrinciples, highlightFAIR } from 'fair-principles';
 import type { ISession } from './types';
 import type { Resolver } from './resolvers';
 import { resolveJatsUrlFromDoi } from './resolvers';
@@ -22,9 +23,19 @@ async function dowloadFromUrl(session: ISession, jatsUrl: string): Promise<strin
     ],
   });
   if (!resp.ok) {
-    throw new Error(
-      `⛔️ JATS may not be Open Access 😭, you should petition your local representative 🪧\n\nProblem fetching from ${jatsUrl}\n\nSTATUS ${resp.status}: ${resp.statusText}`,
+    session.log.warn(
+      '⛔️ JATS may not be Open Access 😭, you should petition your local representative 🪧',
     );
+    session.log.info(
+      `${chalk.green(`\nThe XML ${chalk.bold('should')} be here:\n\n${jatsUrl}`)}\n`,
+    );
+    const FAIR = highlightFAIR('A', { chalk });
+    session.log.info(
+      `Some publishers aggressively block programmatic access, which isn't ${FAIR}.`,
+    );
+    session.log.debug(formatPrinciples('A*', { chalk }));
+    session.log.info(`${chalk.blue('The link may work in a browser.')}\n`);
+    throw new Error(`STATUS ${resp.status}: ${resp.statusText}`);
   }
   const contentType = resp.headers.get('content-type');
   if (!(contentType?.includes('application/xml') || contentType?.includes('text/plain'))) {
