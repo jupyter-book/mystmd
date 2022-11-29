@@ -20,7 +20,7 @@ import {
   validateNumbering,
   validatePageFrontmatter,
   validateProjectFrontmatter,
-  validateSiteFrontmatter,
+  validateSiteFrontmatterKeys,
   validateVenue,
 } from './validators';
 
@@ -274,19 +274,15 @@ describe('validateExport', () => {
 });
 
 describe('validateSiteFrontmatter', () => {
-  it('invalid type errors', async () => {
-    expect(validateSiteFrontmatter('frontmatter', opts)).toEqual({});
-    expect(opts.messages.errors?.length).toEqual(1);
-  });
   it('empty object returns self', async () => {
-    expect(validateSiteFrontmatter({}, opts)).toEqual({});
+    expect(validateSiteFrontmatterKeys({}, opts)).toEqual({});
   });
   it('full object returns self', async () => {
-    expect(validateSiteFrontmatter(TEST_SITE_FRONTMATTER, opts)).toEqual(TEST_SITE_FRONTMATTER);
+    expect(validateSiteFrontmatterKeys(TEST_SITE_FRONTMATTER, opts)).toEqual(TEST_SITE_FRONTMATTER);
   });
   it('full object returns valid object', async () => {
     expect(
-      validateSiteFrontmatter(
+      validateSiteFrontmatterKeys(
         { title: 'frontmatter', description: 'site frontmatter', venue: 'test', extra: '' },
         opts,
       ),

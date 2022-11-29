@@ -29,6 +29,8 @@ export const SITE_CONFIG_KEYS = {
   ),
 };
 
+export type SiteTemplateOptions = Record<string, any>;
+
 export type SiteConfig = SiteFrontmatter & {
   projects?: SiteProject[];
   nav?: (SiteNavPage | SiteNavFolder)[];
@@ -36,4 +38,4 @@ export type SiteConfig = SiteFrontmatter & {
   domains?: string[];
   favicon?: string;
   template?: string;
-};
+} & SiteTemplateOptions;

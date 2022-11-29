@@ -14,7 +14,14 @@ import {
 } from 'simple-validators';
 import { validateSiteFrontmatterKeys } from 'myst-frontmatter';
 import { SITE_CONFIG_KEYS } from './types';
-import type { SiteAction, SiteConfig, SiteNavFolder, SiteNavPage, SiteProject } from './types';
+import type {
+  SiteAction,
+  SiteConfig,
+  SiteNavFolder,
+  SiteNavPage,
+  SiteProject,
+  SiteTemplateOptions,
+} from './types';
 
 function validateUrlOrPath(input: any, opts: ValidationOptions) {
   const value = validateString(input, opts);
@@ -100,7 +107,7 @@ export function validateSiteConfigKeys(
   value: Record<string, any>,
   opts: ValidationOptions,
 ): SiteConfig {
-  const output: SiteConfig = validateSiteFrontmatterKeys(value, opts);
+  const output: SiteConfig = validateSiteFrontmatterKeys(value, opts) || {};
   if (defined(value.projects)) {
     output.projects = validateList(
       value.projects,
@@ -143,11 +150,39 @@ export function validateSiteConfigKeys(
   return output;
 }
 
+/**
+ * Validate and return common, non-template attributes of SiteConfig
+ */
 export function validateSiteConfig(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(input, SITE_CONFIG_KEYS, {
     ...opts,
     returnInvalidPartial: true,
+    // Template options will appear as extra keys here; no need for warnings.
+    suppressWarnings: true,
   });
   if (value === undefined) return undefined;
   return validateSiteConfigKeys(value, opts);
+}
+
+/**
+ * Return template options from SiteConfig
+ *
+ * These are all the non-predefined attributes. This object must be validated
+ * separately against the site template.yml
+ */
+export function getSiteTemplateOptions(input: any) {
+  const value =
+    validateObject(input, {
+      property: 'template_options',
+      messages: {},
+      suppressWarnings: true,
+      suppressErrors: true,
+    }) || {};
+  const output: SiteTemplateOptions = {};
+  Object.keys(value)
+    .filter((key) => !SITE_CONFIG_KEYS.optional.includes(key))
+    .forEach((key) => {
+      output[key] = value[key];
+    });
+  return output;
 }

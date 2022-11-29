@@ -1,7 +1,6 @@
 import type { ValidationOptions } from 'simple-validators';
 import {
   validateSiteAction,
-  validateSiteAnalytics,
   validateSiteConfig,
   validateSiteNavItem,
   validateSiteProject,
@@ -94,19 +93,6 @@ describe('validateSiteAction', () => {
       title: 'example',
       url: '/a/b',
     });
-  });
-});
-
-describe('validateSiteAnalytics', () => {
-  it('empty object returns self', async () => {
-    expect(validateSiteAnalytics({}, opts)).toEqual({});
-  });
-  it('valid site design returns self', async () => {
-    const siteAnalytics = {
-      google: 'google',
-      plausible: 'plausible',
-    };
-    expect(validateSiteAnalytics(siteAnalytics, opts)).toEqual(siteAnalytics);
   });
 });
 

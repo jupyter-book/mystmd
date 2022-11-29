@@ -594,14 +594,6 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
 }
 
 /**
- * Validate SiteFrontmatter object against the schema
- */
-export function validateSiteFrontmatter(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: SITE_FRONTMATTER_KEYS }, opts) || {};
-  return validateSiteFrontmatterKeys(value, opts) as SiteFrontmatter;
-}
-
-/**
  * Validate ProjectFrontmatter object against the schema
  */
 export function validateProjectFrontmatter(input: any, opts: ValidationOptions) {
