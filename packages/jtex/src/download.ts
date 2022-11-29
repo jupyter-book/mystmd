@@ -7,6 +7,7 @@ import unzipper from 'unzipper';
 import { dirname, join, parse } from 'path';
 import { validateUrl } from 'simple-validators';
 import type { ISession } from './types';
+import { createGitLogger, makeExecutable } from 'myst-cli-utils';
 
 export const TEMPLATE_FILENAME = 'template.tex';
 export const TEMPLATE_YML = 'template.yml';
@@ -14,11 +15,13 @@ export const TEMPLATE_YML = 'template.yml';
 export enum TemplateKinds {
   tex = 'tex',
   docx = 'docx',
+  site = 'site',
 }
 
 const DEFAULT_TEMPLATES = {
   tex: 'tex/myst/curvenote',
   docx: 'docx/myst/default',
+  site: 'site/myst/default',
 };
 
 const PARTIAL_TEMPLATE_REGEX = /^[a-zA-Z0-9_-]+$/;
@@ -47,13 +50,21 @@ function defaultUrl(session: ISession, template: string) {
   return `${session.API_URL}/templates/${template}`;
 }
 
-function defaultPath(template: string, hash: boolean, buildDir?: string) {
+function defaultPath(
+  template: string,
+  hash: boolean,
+  opts: { kind?: TemplateKinds; buildDir?: string },
+) {
+  const { kind, buildDir } = opts;
   const subdirs: string[] = [];
   if (buildDir) subdirs.push(buildDir);
-  subdirs.push(
-    'templates',
-    hash ? createHash('sha256').update(template).digest('hex') : join(...template.split('/')),
-  );
+  subdirs.push('templates');
+  if (hash) {
+    if (kind) subdirs.push(kind);
+    subdirs.push(createHash('sha256').update(template).digest('hex'));
+  } else {
+    subdirs.push(join(...template.split('/')));
+  }
   return join(...subdirs);
 }
 
@@ -83,14 +94,14 @@ export function resolveInputs(
   // Handle case where template is a download URL
   templateUrl = validateUrl(opts.template, { messages: {}, suppressErrors: true, property: '' });
   if (templateUrl) {
-    templatePath = defaultPath(templateUrl, true, opts.buildDir);
+    templatePath = defaultPath(templateUrl, true, opts);
     return { templatePath, templateUrl };
   }
   // Handle case where template is a name
   const templateNormalized = normalizeTemplateName(opts);
   if (templateNormalized) {
     templateUrl = defaultUrl(session, templateNormalized);
-    templatePath = defaultPath(templateNormalized, false, opts.buildDir);
+    templatePath = defaultPath(templateNormalized, false, opts);
     return { templatePath, templateUrl };
   }
   throw new Error(`Unable to resolve template from: ${opts.template}`);
@@ -122,12 +133,28 @@ function unnestTemplate(path: string) {
   }
 }
 
-export async function downloadAndUnzipTemplate(
+export async function downloadTemplate(
   session: ISession,
   opts: { templatePath: string; templateUrl: string },
 ) {
   const { templatePath, templateUrl } = opts;
-  session.log.info(`🐕 Fetching template information from ${templateUrl}`);
+  let downloadUrl: string | undefined;
+  if (templateUrl.endsWith('.zip') || templateUrl.endsWith('.git')) {
+    downloadUrl = templateUrl;
+  } else {
+    downloadUrl = await fetchTemplateDownloadLink(session, opts);
+  }
+  if (downloadUrl.endsWith('.git')) {
+    await cloneTemplate(session, downloadUrl, opts);
+  } else {
+    await downloadAndUnzipTemplate(session, downloadUrl, opts);
+  }
+  session.log.info(`💾 Saved template to path ${templatePath}`);
+}
+
+export async function fetchTemplateDownloadLink(session: ISession, opts: { templateUrl: string }) {
+  const { templateUrl } = opts;
+  session.log.info(`🐕 Fetching template metadata from ${templateUrl}`);
   const resLink = await fetch(templateUrl);
   if (!resLink.ok) {
     throw new Error(
@@ -138,13 +165,25 @@ export async function downloadAndUnzipTemplate(
   if (!links?.download) {
     throw new Error(`Problem with template link "${templateUrl}": No download link in response`);
   }
-  session.log.debug(`Fetching template from ${links.download}`);
-  const res = await fetch(links.download);
+  if (!links.download.endsWith('.zip') && !links.download.endsWith('.git')) {
+    throw new Error(`Problem with template link "${templateUrl}": Download link must zip or git`);
+  }
+  return links.download;
+}
+
+export async function downloadAndUnzipTemplate(
+  session: ISession,
+  downloadUrl: string,
+  opts: { templatePath: string },
+) {
+  session.log.info(`🐕 Fetching template from ${downloadUrl}`);
+  const res = await fetch(downloadUrl);
   if (!res.ok) {
     throw new Error(
-      `Problem downloading template "${templateUrl}": ${res.status} ${res.statusText}`,
+      `Problem downloading template "${downloadUrl}": ${res.status} ${res.statusText}`,
     );
   }
+  const { templatePath } = opts;
   const zipFile = join(templatePath, 'template.zip');
   mkdirSync(templatePath, { recursive: true });
   const fileStream = createWriteStream(zipFile);
@@ -158,7 +197,23 @@ export async function downloadAndUnzipTemplate(
     .pipe(unzipper.Extract({ path: templatePath }))
     .promise();
   unnestTemplate(templatePath);
-  session.log.info(`💾 Saved template to path ${templatePath}`);
+}
+
+export async function cloneTemplate(
+  session: ISession,
+  downloadUrl: string,
+  opts: { templatePath: string; branch?: string },
+) {
+  session.log.info(`🌎 Cloning template from ${downloadUrl}`);
+  const { templatePath } = opts;
+  const branch = opts.branch || 'main';
+  if (branch !== 'main') {
+    session.log.warn(`👷 Warning, using a branch: ${branch}`);
+  }
+  await makeExecutable(
+    `git clone --recursive --depth 1 --branch ${branch} ${downloadUrl} ${templatePath}`,
+    createGitLogger(session),
+  )();
 }
 
 export async function fetchPublicTemplate(session: ISession, name: string, kind?: TemplateKinds) {

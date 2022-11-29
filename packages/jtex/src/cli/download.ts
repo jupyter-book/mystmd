@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import { clirun, tic } from 'myst-cli-utils';
 import type { ISession } from '../types';
 import {
-  downloadAndUnzipTemplate,
+  downloadTemplate,
   fetchPublicTemplate,
   listPublicTemplates,
   resolveInputs,
@@ -15,7 +15,7 @@ export async function downloadTemplateCLI(session: ISession, template: string, p
   if (!templateUrl) {
     throw new Error(`Unresolved template URL for "${template}"`);
   }
-  await downloadAndUnzipTemplate(session, { templatePath: path || templatePath, templateUrl });
+  await downloadTemplate(session, { templatePath: path || templatePath, templateUrl });
 }
 
 export async function listTemplatesCLI(session: ISession, name?: string, opts?: { tag?: string }) {

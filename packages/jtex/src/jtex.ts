@@ -5,12 +5,7 @@ import type { TemplateYml } from 'myst-templates';
 import nunjucks from 'nunjucks';
 import type { ValidationOptions } from 'simple-validators';
 import type { TemplateKinds } from './download';
-import {
-  downloadAndUnzipTemplate,
-  resolveInputs,
-  TEMPLATE_FILENAME,
-  TEMPLATE_YML,
-} from './download';
+import { downloadTemplate, resolveInputs, TEMPLATE_FILENAME, TEMPLATE_YML } from './download';
 import { pdfExportCommand } from './export';
 import { extendJtexFrontmatter } from './frontmatter';
 import { renderImports } from './imports';
@@ -173,7 +168,7 @@ class JTex {
         `No template on path and no download URL to fetch from: ${this.templatePath}`,
       );
     } else {
-      await downloadAndUnzipTemplate(this.session, {
+      await downloadTemplate(this.session, {
         templatePath: this.templatePath,
         templateUrl: this.templateUrl,
       });

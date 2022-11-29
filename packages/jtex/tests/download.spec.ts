@@ -1,11 +1,11 @@
 import fs from 'fs';
-import JTex, { downloadAndUnzipTemplate, resolveInputs, Session } from '../src';
+import JTex, { downloadTemplate, resolveInputs, Session } from '../src';
 
 describe('Download Template', () => {
   it('Download default template', async () => {
     const session = new Session();
     const inputs = resolveInputs(session, { buildDir: '_build' });
-    await downloadAndUnzipTemplate(session, {
+    await downloadTemplate(session, {
       templatePath: inputs.templatePath,
       templateUrl: inputs.templateUrl as string,
     });
