@@ -370,11 +370,18 @@ export function validateTemplateYml(
   input: any,
   opts: ValidationOptions & { templateDir?: string },
 ) {
+  const inputObj = validateObject(input, opts);
+  if (inputObj === undefined) return undefined;
+  if (inputObj?.jtex && !inputObj?.myst) {
+    inputObj.myst = inputObj.jtex;
+  }
   const value = validateObjectKeys(
-    input,
+    inputObj,
     {
-      required: ['jtex'],
+      required: ['myst'],
       optional: [
+        'kind',
+        'jtex',
         'title',
         'description',
         'version',
@@ -396,12 +403,12 @@ export function validateTemplateYml(
     opts,
   );
   if (value === undefined) return undefined;
-  const jtex = validateChoice<'v1'>(value.jtex, {
-    ...incrementOptions('jtex', opts),
+  const myst = validateChoice<'v1'>(value.myst, {
+    ...incrementOptions('myst', opts),
     choices: ['v1'],
   });
-  if (jtex === undefined) return undefined;
-  const output: TemplateYml = { jtex };
+  if (myst === undefined) return undefined;
+  const output: TemplateYml = { myst };
   if (defined(value.title)) {
     output.title = validateString(value.title, incrementOptions('title', opts));
   }

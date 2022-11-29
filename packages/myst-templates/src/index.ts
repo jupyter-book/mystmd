@@ -3,6 +3,7 @@ import type { Author, Licenses } from 'myst-frontmatter';
 export enum TemplateKind {
   tex = 'tex',
   docx = 'docx',
+  site = 'site',
 }
 
 export type TemplatePartDefinition = {
@@ -58,9 +59,11 @@ type TemplateYmlListPartial = {
 };
 
 type TemplateYmlPartial = {
-  jtex: 'v1';
+  jtex?: 'v1';
+  myst?: 'v1';
+  kind?: TemplateKind;
   github?: string;
-  build?: { engine?: string };
+  build?: { engine?: string; install?: string; start?: string };
   style?: TemplateStyles;
   parts?: TemplatePartDefinition[];
   doc?: TemplateDocDefinition[];

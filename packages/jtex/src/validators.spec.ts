@@ -563,12 +563,13 @@ describe('validateTemplateYml', () => {
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('empty object passes', async () => {
-    expect(validateTemplateYml({ jtex: 'v1' }, opts)).toEqual({ jtex: 'v1' });
+    expect(validateTemplateYml({ jtex: 'v1' }, opts)).toEqual({ myst: 'v1' });
   });
   it('minimal object passes', async () => {
     expect(
       validateTemplateYml(
         {
+          myst: 'v1',
           jtex: 'v1',
           title: 'test',
           description: 'test',
@@ -590,7 +591,7 @@ describe('validateTemplateYml', () => {
         opts,
       ),
     ).toEqual({
-      jtex: 'v1',
+      myst: 'v1',
       title: 'test',
       description: 'test',
       version: '1.0.0',
@@ -631,7 +632,7 @@ describe('validateTemplateYml', () => {
         },
         { ...opts, templateDir: '.' },
       ),
-    ).toEqual({ jtex: 'v1', options: [], parts: [], doc: [], files: ['fake.txt'] });
+    ).toEqual({ myst: 'v1', options: [], parts: [], doc: [], files: ['fake.txt'] });
     expect(opts.messages.errors?.length).toEqual(6);
   });
 });
