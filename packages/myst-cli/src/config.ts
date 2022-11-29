@@ -3,7 +3,7 @@ import { dirname, join, relative, resolve } from 'path';
 import yaml from 'js-yaml';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
-import { validateProjectConfig, validateSiteConfig } from 'myst-config';
+import { getSiteTemplateOptions, validateProjectConfig, validateSiteConfig } from 'myst-config';
 import type { ValidationOptions } from 'simple-validators';
 import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
 import { prepareToWrite } from './frontmatter';
@@ -132,9 +132,6 @@ function resolveSiteConfigPaths(
       return proj;
     });
   }
-  if (siteConfig.logo) {
-    resolvedFields.logo = resolutionFn(session, path, siteConfig.logo);
-  }
   if (siteConfig.favicon) {
     resolvedFields.favicon = resolutionFn(session, path, siteConfig.favicon);
   }
@@ -187,6 +184,17 @@ function validateSiteConfigAndSave(
   }
   siteConfig = resolveSiteConfigPaths(session, path, siteConfig, resolveToAbsolute);
   session.store.dispatch(config.actions.receiveSiteConfig({ path, ...siteConfig }));
+
+  let siteTemplateOptions = getSiteTemplateOptions(rawSiteConfig);
+  if (siteTemplateOptions.logo) {
+    siteTemplateOptions = {
+      ...siteTemplateOptions,
+      logo: resolveToAbsolute(session, path, siteTemplateOptions.logo),
+    };
+  }
+  session.store.dispatch(
+    config.actions.receiveSiteTemplateOptions({ path, ...siteTemplateOptions }),
+  );
 }
 
 function validateProjectConfigAndSave(
