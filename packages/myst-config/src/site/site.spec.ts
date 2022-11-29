@@ -103,17 +103,7 @@ describe('validateSiteConfig', () => {
       nav: [{ title: 'cool folder', children: [{ title: 'cool page', url: '/test/cool-page' }] }],
       actions: [{ title: 'Go To Example', url: 'https://example.com', static: false }],
       domains: ['test.curve.space'],
-      twitter: 'test',
-      logo: 'curvenote.png',
-      logo_text: 'test logo',
       favicon: 'curvenote.png',
-      analytics: {
-        google: 'google',
-        plausible: 'plausible',
-      },
-      design: {
-        hide_authors: true,
-      },
     };
     expect(validateSiteConfig(siteConfig, opts)).toEqual(siteConfig);
   });
