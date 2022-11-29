@@ -76,6 +76,13 @@ async function checkIfDoiHasJats(session: ISession, urlOrDoi: string): Promise<s
   }
   const data = (await resp.json()) as { link?: DoiLink[] };
   session.log.debug(toc(`DOI resolved in %s with ${data.link?.length ?? 0} links to content`));
+  if (data.link) {
+    session.log.debug(
+      ['', ...data.link.map((link) => `content-type: ${link['content-type']}, ${link.URL}\n`)].join(
+        '  - ',
+      ),
+    );
+  }
   const fullXml = data.link?.find((link) => link['content-type'] === 'application/xml')?.URL;
   if (fullXml) return fullXml;
   session.log.debug(`Could not find XML in DOI record ${doiUrl}`);
