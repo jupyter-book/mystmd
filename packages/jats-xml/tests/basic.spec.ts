@@ -3,7 +3,7 @@ import { toText } from 'myst-common';
 import { select } from 'unist-util-select';
 import { Jats } from '../src';
 import { Tags } from '../src/types';
-import { formatDate, toDate } from '../src/utils';
+import { authorAndAffiliation, formatDate, toDate } from '../src/utils';
 
 describe('Basic JATS read', () => {
   test('read elife JATS', () => {
@@ -12,9 +12,9 @@ describe('Basic JATS read', () => {
     const jats = new Jats(data);
     expect(jats.doi).toEqual('10.7554/eLife.80919');
     expect(formatDate(toDate(jats.publicationDate))).toEqual('September 26, 2022');
-    expect(jats.body.children.length).toEqual(4);
+    expect(jats.body?.children.length).toEqual(4);
     expect(jats.subArticles.length).toEqual(3);
-    expect(jats.refList.children.length).toEqual(69);
+    expect(jats.refList?.children.length).toEqual(69);
     expect(jats.references.length).toEqual(68); // There is one less, because there is a title!
     expect(jats.references[0].id).toEqual('bib1');
     expect(toText(jats.articleTitle)).toEqual(
@@ -38,11 +38,18 @@ describe('Basic JATS read', () => {
     // Can select based on IDs!
     expect(select('[id=fig1]', jats.body)?.type).toBe('fig');
     // Authors
-    expect(jats.contribGroup.children.length).toBe(18);
+    expect(jats.contribGroup?.children.length).toBe(18);
     expect(jats.articleAuthors.length).toBe(12);
     expect(toText(select(Tags.surname, jats.articleAuthors[0]))).toBe('Lesner');
     expect(toText(select(Tags.surname, jats.articleAuthors[11]))).toBe('Mishra');
-    expect(jats.license['xlink:href']).toBe('http://creativecommons.org/licenses/by/4.0/');
+    const author = authorAndAffiliation(jats.articleAuthors[0], jats.tree);
+    expect(author.name).toBe('Nicholas P Lesner');
+    expect(author.orcid).toBe('0000-0001-9734-8828');
+    expect(author.affiliations?.length).toBe(1);
+    expect(author.affiliations?.[0]).toBe(
+      "Children's Medical Center Research Institute, University of Texas Southwestern Medical Center",
+    );
+    expect(jats.license?.['xlink:href']).toBe('http://creativecommons.org/licenses/by/4.0/');
   });
   test('read plos JATS', () => {
     // https://journals.plos.org/climate/article?id=10.1371/journal.pclm.0000068&type=manuscript
@@ -52,9 +59,9 @@ describe('Basic JATS read', () => {
     const jats = new Jats(data);
     expect(jats.doi).toEqual('10.1371/journal.pclm.0000068');
     expect(formatDate(toDate(jats.publicationDate))).toEqual('September 6, 2022');
-    expect(jats.body.children.length).toEqual(4);
+    expect(jats.body?.children.length).toEqual(4);
     expect(jats.subArticles.length).toEqual(0);
-    expect(jats.refList.children.length).toEqual(147);
+    expect(jats.refList?.children.length).toEqual(147);
     expect(jats.references.length).toEqual(146); // There is one less, because there is a title!
     expect(jats.references[0].id).toEqual('pclm.0000068.ref001');
     expect(toText(jats.articleTitle)).toEqual(
@@ -67,7 +74,7 @@ describe('Basic JATS read', () => {
     expect(jats.abstracts.length).toBe(1);
     expect(jats.keywordGroups.length).toBe(0);
     expect(jats.keywords.length).toBe(0);
-    expect(jats.license['xlink:href']).toBe('http://creativecommons.org/licenses/by/4.0/');
+    expect(jats.license?.['xlink:href']).toBe('http://creativecommons.org/licenses/by/4.0/');
 
     // Authors
     expect(jats.articleAuthors.length).toBe(3);

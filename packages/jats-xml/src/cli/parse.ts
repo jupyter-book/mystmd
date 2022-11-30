@@ -12,7 +12,7 @@ import { toText } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import { downloadJatsFromUrl } from '../download';
 import { DEFAULT_RESOLVERS } from '../resolvers';
-import { findDoi, formatDate, toDate } from '../utils';
+import { findArticleId, formatDate, toDate } from '../utils';
 
 function hasValidExtension(output: string) {
   return ['.xml', '.jats'].includes(extname(output).toLowerCase());
@@ -36,7 +36,7 @@ async function downloadAndSaveJats(
       )} is not a valid extension for JATS, try using ".xml" or ".jats"`,
     );
   }
-  const data = await downloadJatsFromUrl(session, urlOrDoi, DEFAULT_RESOLVERS);
+  const { data } = await downloadJatsFromUrl(session, urlOrDoi, DEFAULT_RESOLVERS);
   writeFileToFolder(output, data);
   return data;
 }
@@ -46,12 +46,12 @@ async function parseJats(session: ISession, file: string): Promise<Jats> {
   if (fs.existsSync(file)) {
     session.log.debug(`Found ${file} locally, parsing`);
     const data = fs.readFileSync(file).toString();
-    session.log.debug(toc(`Parsed JATS file from disk in %s`));
-    return new Jats(data);
+    return new Jats(data, { log: session.log });
   }
-  const data = await downloadJatsFromUrl(session, file, DEFAULT_RESOLVERS);
+  const { source, data } = await downloadJatsFromUrl(session, file, DEFAULT_RESOLVERS);
+  const jats = new Jats(data, { source, log: session.log });
   session.log.debug(toc(`Downloaded and parsed JATS file in %s`));
-  return new Jats(data);
+  return jats;
 }
 
 function formatLongString(data: string, offset = 0, length = 88 - offset): string {
@@ -65,32 +65,35 @@ function formatLongString(data: string, offset = 0, length = 88 - offset): strin
   return out.join(`\n${' '.repeat(offset)}`);
 }
 
-function formatDictionary(
-  dict: Record<
-    string,
-    | { label: (l: string) => string; value: string | string | number | boolean | null | undefined }
-    | string
-    | number
-    | boolean
-    | null
-    | undefined
-  >,
-  opts?: { wrap?: number | false },
-) {
+type SummaryDict = Record<
+  string,
+  | {
+      label?: (l: string) => string;
+      value: string | string | number | boolean | null | undefined;
+      wrap?: boolean;
+    }
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+>;
+
+function formatDictionary(dict: SummaryDict, opts?: { wrap?: boolean }) {
   const maxLabel = Object.keys(dict).reduce((a, b) => Math.max(a, b.length), 0);
   return Object.entries(dict)
     .map(([k, t]) => {
+      if (!t) return null;
+      let wrap = typeof opts?.wrap === 'boolean' ? opts.wrap : true;
       let value = t;
       let color: (l: string) => string = chalk.yellow.bold;
       if (t && typeof t === 'object') {
         if (!t.value) return null;
         color = t.label ?? color;
         value = t.value;
+        wrap = typeof t.wrap === 'boolean' ? t.wrap : wrap;
       }
-      const wrapped =
-        opts?.wrap === false
-          ? String(value)
-          : formatLongString(String(value), maxLabel + 2, opts?.wrap);
+      const wrapped = wrap ? formatLongString(String(value), maxLabel + 2) : String(value);
       return `${color(k)}:${' '.repeat(maxLabel - k.length + 1)}${wrapped}`;
     })
     .filter((o) => !!o)
@@ -99,8 +102,9 @@ function formatDictionary(
 
 async function jatsSummaryCLI(session: ISession, file: string) {
   const jats = await parseJats(session, file);
-  const summary = {
-    DOI: jats.doi ? doi.buildUrl(jats.doi) : null,
+  const summary: SummaryDict = {
+    Source: { value: jats.source, wrap: false },
+    DOI: jats.doi ? { value: doi.buildUrl(jats.doi), wrap: false } : null,
     Title: toText(jats.articleTitle)?.replace(/\n/g, ' '),
     Date: formatDate(toDate(jats.publicationDate)),
     Authors: jats.articleAuthors
@@ -108,36 +112,44 @@ async function jatsSummaryCLI(session: ISession, file: string) {
       .join(', '),
     Abstract: toText(jats.abstract)?.replace(/\n/g, ' '),
     Keywords: jats.keywords.map((k) => toText(k)).join(', '),
-    License: jats.license['xlink:href'],
-    Figures: { label: chalk.blue.bold, value: String(selectAll(Tags.fig, jats.body).length) },
-    Equations: {
+    License: jats.license?.['xlink:href'],
+  };
+  if (jats.body) {
+    summary.Figures = {
+      label: chalk.blue.bold,
+      value: String(selectAll(Tags.fig, jats.body).length),
+    };
+    summary.Equations = {
       label: chalk.blue.bold,
       value: String(selectAll(Tags.dispFormula, jats.body).length),
-    },
-    Tables: {
+    };
+    summary.Tables = {
       label: chalk.blue.bold,
       value: String(selectAll(Tags.table, jats.body).length),
-    },
-    Code: {
+    };
+    summary.Code = {
       label: chalk.blue.bold,
       value: String(selectAll(Tags.code, jats.body).length),
-    },
-    Sections: {
+    };
+    summary.Sections = {
       label: chalk.blue.bold,
       value: String(selectAll(Tags.sec, jats.body).length),
-    },
-    Paragraphs: {
+    };
+    summary.Paragraphs = {
       label: chalk.blue.bold,
       value: String(selectAll(Tags.p, jats.body).length),
-    },
-    Citations: { label: chalk.blue.bold, value: String(jats.references.length) },
-    'Cross-References': {
+    };
+    summary.Citations = { label: chalk.blue.bold, value: String(jats.references.length) };
+    summary['Cross-References'] = {
       label: chalk.blue.bold,
       value: String(selectAll(Tags.xref, jats.body).length),
-    },
-    'Sub Articles': { label: chalk.blue.bold, value: String(jats.subArticles.length) },
-  };
+    };
+    summary['Sub Articles'] = { label: chalk.blue.bold, value: String(jats.subArticles.length) };
+  }
   session.log.info(formatDictionary(summary));
+  if (!jats.body) {
+    session.log.warn('\nThis is a partial JATS record that does not have <body>.');
+  }
 }
 
 async function jatsReferencesCLI(session: ISession, file: string) {
@@ -145,7 +157,7 @@ async function jatsReferencesCLI(session: ISession, file: string) {
 
   const sorted = jats.references
     .map((ref) => {
-      const doiString = findDoi(ref);
+      const doiString = findArticleId(ref, 'doi');
       const title = toText(select(Tags.articleTitle, ref));
       const year = toText(select(Tags.year, ref));
       const surnames = selectAll(Tags.surname, ref);
