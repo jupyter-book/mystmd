@@ -37,6 +37,7 @@ const textOnlyReplacements: Record<string, string> = {
   '™': '\\texttrademark',
   '<': '\\textless',
   '>': '\\textgreater',
+  ' ': '~',
 };
 
 const arrows: Record<string, string> = {
@@ -83,6 +84,7 @@ const mathReplacements: Record<string, string> = {
   '⅑': '\\frac{1}{9}',
   '⅒': '\\frac{1}{10}',
   '±': '\\pm',
+  '×': '\\times',
   Α: 'A',
   α: '\\alpha',
   Β: 'B',
