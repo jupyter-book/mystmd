@@ -52,7 +52,8 @@
   },
   "dependencies": {
     "fair-principles": "^1.0.3",
-    "myst-common": "^0.0.7"
+    "myst-common": "^0.0.7",
+    "myst-frontmatter": "^0.0.3"
   },
   "devDependencies": {
     "esbuild": "^0.15.12",

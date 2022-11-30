@@ -61,7 +61,7 @@
     "commander": "^9.4.1",
     "crypto": "^1.0.1",
     "docx": "^7.5.0",
-    "doi-utils": "^1.0.7",
+    "doi-utils": "^1.0.9",
     "inquirer": "^8.2.2",
     "intersphinx": "^0.0.5",
     "js-yaml": "^4.1.0",
