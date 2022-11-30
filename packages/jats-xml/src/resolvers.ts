@@ -40,7 +40,10 @@ export const joss: Resolver = {
 
 export const DEFAULT_RESOLVERS: Resolver[] = [elife, plos, joss];
 
-export async function resolveJatsUrlFromDoi(
+/**
+ * Use the known custom resolvers to pick where the JATS should be downloaded from.
+ */
+export async function customResolveJatsUrlFromDoi(
   session: ISession,
   doiString: string,
   resolvers = DEFAULT_RESOLVERS,

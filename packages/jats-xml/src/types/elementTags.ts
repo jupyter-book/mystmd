@@ -1531,4 +1531,22 @@ export enum Tags {
    * See: https://jats.nlm.nih.gov/publishing/tag-library/1.3/element/pub-date.html
    */
   'pubDate' = 'pub-date',
+
+  /**
+   * Article Grouping Data
+   *
+   * Not available in articleauthoring!
+   *
+   * See: https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/article-categories.html
+   */
+  'articleCategories' = 'article-categories',
+
+  /**
+   * Journal Title
+   *
+   * Not available in articleauthoring!
+   *
+   * See: https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/journal-title.html
+   */
+  'journalTitle' = 'journal-title',
 }

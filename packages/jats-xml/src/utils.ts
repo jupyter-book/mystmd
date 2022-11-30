@@ -3,14 +3,15 @@ import { toText } from 'myst-common';
 import type { Element } from 'xml-js';
 import doi from 'doi-utils';
 import { select, selectAll } from 'unist-util-select';
-import type { ArticleId } from './types';
+import type { Affiliation, ArticleId, Xref } from './types';
 import { Tags } from './types';
+import type { Author } from 'myst-frontmatter';
 
-export function convertToUnist(node: Element): GenericNode | GenericParent {
+export function convertToUnist(node: Element): GenericNode | GenericParent | undefined {
   switch (node.type) {
     case 'element': {
       const { name, attributes, elements } = node;
-      const children = elements?.map(convertToUnist);
+      const children = elements?.map(convertToUnist).filter((n): n is GenericNode => !!n);
       const next: GenericNode = { type: name ?? 'unknown', ...attributes };
       if (children) next.children = children;
       return next;
@@ -26,6 +27,12 @@ export function convertToUnist(node: Element): GenericNode | GenericParent {
     case 'comment': {
       const { comment } = node;
       return { type: 'comment', value: String(comment) };
+    }
+    case 'instruction': {
+      // For example:
+      // <?properties manuscript?> becomes:
+      // { type: 'instruction', name: 'properties', instruction: 'manuscript' }
+      return undefined;
     }
     default:
       console.log(node);
@@ -80,11 +87,60 @@ export function formatDate(date?: Date) {
   return new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' }).format(date);
 }
 
-export function findDoi(node: GenericParent): string | null {
-  const id = select('[pub-id-type=doi]', node);
+export type PubIdTypes = 'doi' | 'pmc' | 'pmid' | 'publisher-id' | string;
+
+export function findArticleId(
+  node: GenericParent | undefined,
+  pubIdType: PubIdTypes = 'doi',
+): string | undefined {
+  if (!node) return undefined;
+  const id = select(`[pub-id-type=${pubIdType}]`, node);
   if (id && toText(id)) return toText(id);
   const doiTag = (selectAll(`${Tags.articleId},${Tags.pubId}`, node) as ArticleId[]).find((t) =>
     doi.validate(toText(t)),
   );
-  return toText(doiTag) || null;
+  return toText(doiTag) || undefined;
+}
+
+export function authorAndAffiliation(node: GenericParent, article: GenericParent): Author {
+  const author: Author = {
+    name: `${toText(select(Tags.givenNames, node))} ${toText(select(Tags.surname, node))}`,
+  };
+  const orcid = select('[contrib-id-type=orcid]', node);
+  if (orcid) {
+    author.orcid = toText(orcid).replace(/(https?:\/\/)?orcid\.org\//, '');
+  }
+  //
+  /**
+   * For example:
+   *
+   * ```xml
+   * <aff id="aff2">
+   * <label>2</label>
+   * <institution-wrap>
+   * <institution-id institution-id-type="ror">https://ror.org/00t9vx427</institution-id>
+   * <institution>Department of Biochemistry, University of Texas Southwestern Medical Center</institution>
+   * </institution-wrap>
+   * <addr-line>
+   * <named-content content-type="city">Dallas</named-content>
+   * </addr-line>
+   * <country>United States</country>
+   * </aff>
+   * ```
+   */
+  const affiliationRefs = selectAll('xref[ref-type=aff]', node) as Xref[];
+  const affiliations = affiliationRefs.map((xref) =>
+    select(`[id=${xref.rid}]`, article),
+  ) as Affiliation[];
+  const affiliationText = affiliations
+    .map((aff) => {
+      // TODO: handle rors!
+      const ror = select(`[institution-id-type=ror]`, aff);
+      return toText(select('institution', aff));
+    })
+    .filter((t) => !!t);
+  if (affiliationText.length > 0) {
+    author.affiliations = affiliationText;
+  }
+  return author;
 }

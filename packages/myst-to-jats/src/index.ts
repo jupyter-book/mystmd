@@ -27,7 +27,7 @@ function referenceKindToRefType(kind?: string): RefType {
     case 'figure':
       return RefType.fig;
     case 'equation':
-      return RefType['disp-formula'];
+      return RefType.dispFormula;
     case 'table':
       return RefType.table;
     default:
@@ -279,7 +279,6 @@ class JatsSerializer implements IJatsSerializer {
   stack: Element[] = [];
 
   constructor(file: VFile, opts?: Options) {
-    file.result = '';
     this.file = file;
     this.options = opts ?? {};
     this.data = {};

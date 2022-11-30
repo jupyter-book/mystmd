@@ -1,5 +1,6 @@
 import type { GenericParent } from 'myst-common';
 import type { Tags } from './elementTags';
+import type { RefType } from './refType';
 
 export type LinkMixin = {
   'xlink:href'?: string;
@@ -102,4 +103,14 @@ export type KeywordGroup = GenericParent & {
 
 export type Keyword = GenericParent & {
   type: Tags.kwd;
+};
+
+export type Xref = GenericParent & {
+  type: Tags.xref;
+  rid: string;
+  'ref-type'?: RefType;
+};
+
+export type ArticleCategories = GenericParent & {
+  type: Tags.articleCategories;
 };
