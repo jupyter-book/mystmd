@@ -38,8 +38,16 @@ export class Session implements ISession {
     return path.resolve(path.join(root, '_build'));
   }
 
+  sitePath(): string {
+    return path.join(this.buildPath(), 'site');
+  }
+
+  contentPath(): string {
+    return path.join(this.sitePath(), 'content');
+  }
+
   publicPath(): string {
-    return path.join(this.buildPath(), 'public');
+    return path.join(this.sitePath(), 'public');
   }
 
   staticPath(): string {

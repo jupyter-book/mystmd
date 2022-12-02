@@ -17,6 +17,8 @@ import {
 } from '../utils';
 import type { ISession } from '../session/types';
 import chalk from 'chalk';
+import { castSession } from '../session';
+import { watch } from '../store';
 
 const DEFAULT_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
 
@@ -325,4 +327,58 @@ export async function transformThumbnail(
     const { url } = result;
     frontmatter.thumbnail = url;
   }
+}
+
+export async function transformWebp(
+  session: ISession,
+  opts: { file: string; imageWriteFolder: string },
+) {
+  const { file, imageWriteFolder } = opts;
+  const cache = castSession(session);
+  const postData = cache.$mdast[opts.file].post;
+  if (!postData)
+    throw new Error(`webp: Expected mdast to be processed and transformed for ${file}`);
+  const { mdast, frontmatter } = postData;
+  const writeFolderContents = fs.readdirSync(imageWriteFolder);
+  const images = selectAll('image', mdast) as GenericNode[];
+  await Promise.all(
+    images.map(async (image) => {
+      if (!image.url) return;
+      const fileMatch = writeFolderContents.find((file) => image.url.endsWith(file));
+      if (!fileMatch) return;
+      try {
+        const result = await imagemagick.convertImageToWebp(
+          session,
+          path.join(imageWriteFolder, fileMatch),
+        );
+        if (result) image.urlOptimized = image.url.replace(fileMatch, result);
+      } catch (error) {
+        session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+      }
+    }),
+  );
+
+  if (frontmatter.thumbnail) {
+    const fileMatch = writeFolderContents.find((file) => frontmatter.thumbnail?.endsWith(file));
+    if (fileMatch) {
+      try {
+        const result = await imagemagick.convertImageToWebp(
+          session,
+          path.join(imageWriteFolder, fileMatch),
+        );
+        if (result) {
+          frontmatter.thumbnailOptimized = frontmatter.thumbnail.replace(fileMatch, result);
+          session.store.dispatch(
+            watch.actions.updateFileInfo({
+              path: file,
+              thumbnailOptimized: frontmatter.thumbnailOptimized,
+            }),
+          );
+        }
+      } catch (error) {
+        session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+      }
+    }
+  }
+  cache.$mdast[file].post = { ...postData, mdast, frontmatter };
 }
