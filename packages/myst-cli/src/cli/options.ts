@@ -1,19 +1,19 @@
 import { Option } from 'commander';
 
-export function makePdfOption() {
-  return new Option('--pdf', 'Build PDF output').default(false);
+export function makePdfOption(verb: string) {
+  return new Option('--pdf', `${verb} PDF output`).default(false);
 }
 
-export function makeTexOption() {
-  return new Option('--tex', 'Build Tex outputs').default(false);
+export function makeTexOption(verb: string) {
+  return new Option('--tex', `${verb} Tex outputs`).default(false);
 }
 
-export function makeDocxOption() {
-  return new Option('--word, --docx', 'Build Docx output').default(false);
+export function makeDocxOption(verb: string) {
+  return new Option('--word, --docx', `${verb} Docx output`).default(false);
 }
 
-export function makeSiteOption() {
-  return new Option('--site', 'Build MyST site content').default(false);
+export function makeSiteOption(verb: string) {
+  return new Option('--site', `${verb} MyST site content`).default(false);
 }
 
 export function makeBranchOption() {

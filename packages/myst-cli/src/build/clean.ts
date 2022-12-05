@@ -15,13 +15,27 @@ export type CleanOptions = {
   docx?: boolean;
   pdf?: boolean;
   tex?: boolean;
+  site?: boolean;
   temp?: boolean;
   exports?: boolean;
+  templates?: boolean;
+  all?: boolean;
   yes?: boolean;
 };
 
+const ALL_OPTS: CleanOptions = {
+  docx: true,
+  pdf: true,
+  tex: true,
+  site: true,
+  temp: true,
+  exports: true,
+  templates: true,
+};
+
 export async function clean(session: ISession, files: string[], opts: CleanOptions) {
-  const { temp, exports, yes } = opts;
+  if (opts.all) opts = { ...opts, ...ALL_OPTS };
+  const { site, temp, exports, templates, yes } = opts;
   const formats = getExportFormats(opts);
   let projectPath: string | undefined;
   if (files.length === 0) {
@@ -41,7 +55,8 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
       pathsToDelete.push(getTexOutputFolder(exportOptions.output));
     }
   });
-  if (temp || exports) {
+  let buildFolders: string[] = [];
+  if (temp || exports || templates) {
     const projectPaths = projectPath
       ? [projectPath]
       : await Promise.all(
@@ -50,12 +65,20 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
     projectPaths
       .filter((projPath): projPath is string => Boolean(projPath))
       .forEach((projPath) => {
-        const buildPath = path.join(projPath, '_build');
-        if (temp) pathsToDelete.push(path.join(buildPath, 'temp'));
-        if (exports) pathsToDelete.push(path.join(buildPath, 'exports'));
+        buildFolders.push(path.join(projPath, '_build'));
       });
-    if (temp) pathsToDelete.push(path.join(session.buildPath(), 'temp'));
-    if (exports) pathsToDelete.push(path.join(session.buildPath(), 'exports'));
+    buildFolders.push(session.buildPath());
+  }
+  buildFolders = [...new Set(buildFolders)].sort();
+  if (temp || exports || templates) {
+    buildFolders.forEach((folder) => {
+      if (temp) pathsToDelete.push(path.join(folder, 'temp'));
+      if (exports) pathsToDelete.push(path.join(folder, 'exports'));
+      if (templates) pathsToDelete.push(path.join(folder, 'templates'));
+    });
+  }
+  if (site) {
+    pathsToDelete.push(session.sitePath());
   }
   pathsToDelete = [...new Set(pathsToDelete)].sort();
   if (pathsToDelete.length === 0) {
@@ -66,8 +89,14 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
   const cont = yes || (await inquirer.prompt([promptContinue()])).cont;
   if (cont) {
     pathsToDelete.forEach((pathToDelete) => {
-      fs.rmSync(pathToDelete, { recursive: true, force: true });
       session.log.info(`🗑 Deleting: ${pathToDelete}`);
+      fs.rmSync(pathToDelete, { recursive: true, force: true });
+    });
+    buildFolders.forEach((buildFolder) => {
+      if (fs.readdirSync(buildFolder).length === 0) {
+        session.log.debug(`🗑 Deleting empty build folder: ${buildFolder}`);
+        fs.rmSync(buildFolder, { recursive: true, force: true });
+      }
     });
   }
 }
