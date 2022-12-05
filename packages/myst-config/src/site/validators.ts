@@ -17,8 +17,7 @@ import { SITE_CONFIG_KEYS } from './types';
 import type {
   SiteAction,
   SiteConfig,
-  SiteNavFolder,
-  SiteNavPage,
+  SiteNavItem,
   SiteProject,
   SiteTemplateOptions,
 } from './types';
@@ -57,10 +56,7 @@ export function validateSiteProject(input: any, opts: ValidationOptions) {
   return output;
 }
 
-export function validateSiteNavItem(
-  input: any,
-  opts: ValidationOptions,
-): SiteNavPage | SiteNavFolder | undefined {
+export function validateSiteNavItem(input: any, opts: ValidationOptions): SiteNavItem | undefined {
   if (validateObject(input, opts) === undefined) return undefined;
   if (defined(input.children)) {
     // validate as SiteNavFolder
@@ -75,7 +71,7 @@ export function validateSiteNavItem(
       },
     );
     if (title === undefined || !children) return undefined;
-    return { title, children } as SiteNavFolder;
+    return { title, children };
   }
   // validate as SiteNavItem
   const value = validateKeys(input, { required: ['title', 'url'] }, opts);
@@ -83,7 +79,7 @@ export function validateSiteNavItem(
   const title = validateString(value.title, incrementOptions('title', opts));
   const url = validateUrlOrPath(value.url, incrementOptions('url', opts));
   if (title === undefined || !url) return undefined;
-  return { title, url } as SiteNavPage;
+  return { title, url };
 }
 
 export function validateSiteAction(input: any, opts: ValidationOptions) {

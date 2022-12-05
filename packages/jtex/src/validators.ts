@@ -30,6 +30,7 @@ import {
   validateString,
   validateUrl,
   validationError,
+  validationWarning,
 } from 'simple-validators';
 import type { ValidationOptions } from 'simple-validators';
 
@@ -374,6 +375,7 @@ export function validateTemplateYml(
   if (inputObj === undefined) return undefined;
   if (inputObj?.jtex && !inputObj?.myst) {
     inputObj.myst = inputObj.jtex;
+    validationWarning('Template key "jtex: v1" has been replaced with "myst: v1"', opts);
   }
   const value = validateObjectKeys(
     inputObj,

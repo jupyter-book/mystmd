@@ -1,15 +1,8 @@
 import fs from 'fs';
 import { extname, join, sep } from 'path';
-import type { SiteAction } from 'myst-config';
+import type { SiteAction, SiteManifest } from 'myst-config';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { filterKeys } from 'simple-validators';
-import type {
-  SiteAnalytics,
-  SiteManifest,
-  ManifestProject,
-  ManifestProjectPage,
-  ManifestProjectFolder,
-} from '@curvenote/site-common';
 import type { ISession } from '../../session/types';
 import type { RootState } from '../../store';
 import { selectors } from '../../store';
@@ -23,11 +16,7 @@ import { addWarningForFile } from '../../utils';
  * - Removes any local file references
  * - Adds validated frontmatter
  */
-export function localToManifestProject(
-  state: RootState,
-  projectPath: string,
-  projectSlug: string,
-): ManifestProject | null {
+export function localToManifestProject(state: RootState, projectPath: string, projectSlug: string) {
   const projConfig = selectors.selectLocalProjectConfig(state, projectPath);
   const proj = selectors.selectLocalProject(state, projectPath);
   if (!proj || !projConfig) return null;
@@ -35,32 +24,30 @@ export function localToManifestProject(
   const { index } = proj;
   const projectTitle =
     projConfig?.title || selectors.selectFileInfo(state, proj.file).title || proj.index;
-  const pages: ManifestProject['pages'] = proj.pages.map(
-    (page): ManifestProjectFolder | ManifestProjectPage => {
-      if ('file' in page) {
-        const fileInfo = selectors.selectFileInfo(state, page.file);
-        const title = fileInfo.title || page.slug;
-        const description = fileInfo.description ?? '';
-        const thumbnail = fileInfo.thumbnail ?? '';
-        const thumbnailOptimized = fileInfo.thumbnailOptimized ?? '';
-        const date = fileInfo.date ?? '';
-        const tags = fileInfo.tags ?? [];
-        const { slug, level } = page;
-        const projectPage: ManifestProjectPage = {
-          slug,
-          title,
-          description,
-          date,
-          thumbnail,
-          thumbnailOptimized,
-          tags,
-          level,
-        };
-        return projectPage;
-      }
-      return { ...page } as ManifestProjectFolder;
-    },
-  );
+  const pages = proj.pages.map((page) => {
+    if ('file' in page) {
+      const fileInfo = selectors.selectFileInfo(state, page.file);
+      const title = fileInfo.title || page.slug;
+      const description = fileInfo.description ?? '';
+      const thumbnail = fileInfo.thumbnail ?? '';
+      const thumbnailOptimized = fileInfo.thumbnailOptimized ?? '';
+      const date = fileInfo.date ?? '';
+      const tags = fileInfo.tags ?? [];
+      const { slug, level } = page;
+      const projectPage = {
+        slug,
+        title,
+        description,
+        date,
+        thumbnail,
+        thumbnailOptimized,
+        tags,
+        level,
+      };
+      return projectPage;
+    }
+    return { ...page };
+  });
   const projFrontmatter = filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS);
   return {
     ...projFrontmatter,
@@ -171,6 +158,7 @@ export function getSiteManifest(session: ISession): SiteManifest {
   const { twitter, logo, logo_text, analytics } = siteTemplateOptions;
   const manifest: SiteManifest = {
     ...siteFrontmatter,
+    myst: 'v1',
     title: title || '',
     nav: nav || [],
     actions: actions || [],

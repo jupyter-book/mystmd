@@ -59,8 +59,7 @@ type TemplateYmlListPartial = {
 };
 
 type TemplateYmlPartial = {
-  jtex?: 'v1';
-  myst?: 'v1';
+  myst: 'v1';
   kind?: TemplateKind;
   github?: string;
   build?: { engine?: string; install?: string; start?: string };

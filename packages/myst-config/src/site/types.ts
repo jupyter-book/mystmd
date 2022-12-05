@@ -1,4 +1,4 @@
-import type { SiteFrontmatter } from 'myst-frontmatter';
+import type { Export, ProjectFrontmatter, SiteFrontmatter } from 'myst-frontmatter';
 import { SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 
 export interface SiteProject {
@@ -7,19 +7,18 @@ export interface SiteProject {
   path?: string;
 }
 
-export interface SiteNavPage {
+export interface SiteNavItem {
+  title: string;
+  url?: string;
+  internal?: boolean;
+  children?: SiteNavItem[];
+  static?: boolean;
+}
+
+export interface SiteAction {
   title: string;
   url: string;
   internal?: boolean;
-}
-
-export interface SiteNavFolder {
-  title: string;
-  url?: string;
-  children: (SiteNavPage | SiteNavFolder)[];
-}
-
-export interface SiteAction extends SiteNavPage {
   static?: boolean;
 }
 
@@ -33,7 +32,43 @@ export type SiteTemplateOptions = Record<string, any>;
 
 export type SiteConfig = SiteFrontmatter & {
   projects?: SiteProject[];
-  nav?: (SiteNavPage | SiteNavFolder)[];
+  nav?: SiteNavItem[];
+  actions?: SiteAction[];
+  domains?: string[];
+  favicon?: string;
+  template?: string;
+} & SiteTemplateOptions;
+
+type ManifestProjectItem = {
+  title: string;
+  level: number;
+  slug?: string;
+  description?: string;
+  date?: string;
+  thumbnail?: string;
+  thumbnailOptimized?: string;
+  tags?: string[];
+  exports?: Export &
+    {
+      output: string;
+    }[];
+};
+
+type ManifestProject = {
+  slug: string;
+  index: string;
+  title: string;
+  pages: ManifestProjectItem[];
+  thumbnail?: string;
+  thumbnailOptimized?: string;
+  tags?: string[];
+} & ProjectFrontmatter;
+
+export type SiteManifest = SiteFrontmatter & {
+  myst: 'v1';
+  id?: string;
+  projects?: ManifestProject[];
+  nav?: SiteNavItem[];
   actions?: SiteAction[];
   domains?: string[];
   favicon?: string;
