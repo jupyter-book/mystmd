@@ -92,7 +92,7 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHo
 
 export async function startServer(session: ISession, opts: Options): Promise<void> {
   warnOnHostEnvironmentVariable(session, opts);
-  if (!(opts.ci || opts.headless)) await cloneSiteTemplate(session, opts);
+  if (!opts.headless) await cloneSiteTemplate(session);
   await buildSite(session, opts);
   session.log.info('\n\n\t✨✨✨  Starting Server  ✨✨✨\n\n');
   const server = await startContentServer(session);

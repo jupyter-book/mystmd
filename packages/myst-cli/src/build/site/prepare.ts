@@ -6,13 +6,9 @@ import type { LinkTransformer } from 'myst-transforms';
 import type { TransformFn } from '../../process';
 
 export type Options = {
-  clean?: boolean;
-  force?: boolean;
   strict?: boolean;
   headless?: boolean;
   checkLinks?: boolean;
-  branch?: string;
-  ci?: boolean;
   yes?: boolean;
   writeToc?: boolean;
   keepHost?: boolean;
@@ -38,9 +34,7 @@ export function ensureBuildFoldersExist(session: ISession): void {
 }
 
 export async function buildSite(session: ISession, opts: Options) {
-  const { writeToc, force, clean, strict, checkLinks, extraLinkTransformers, extraTransforms } =
-    opts;
-  if (force || clean) cleanSiteContent(session);
+  const { writeToc, strict, checkLinks, extraLinkTransformers, extraTransforms } = opts;
   ensureBuildFoldersExist(session);
   await processSite(session, {
     writeToc,

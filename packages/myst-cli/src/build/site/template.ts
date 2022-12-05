@@ -18,16 +18,8 @@ export async function getJtex(session: ISession) {
   return jtex;
 }
 
-export async function cloneSiteTemplate(session: ISession, opts: Options): Promise<void> {
-  if (opts.ci) return;
+export async function cloneSiteTemplate(session: ISession): Promise<void> {
   const jtex = await getJtex(session);
-  if (opts.force) {
-    fs.rmSync(jtex.templatePath, { recursive: true, force: true });
-  } else if (opts.branch && opts.branch !== 'main') {
-    throw new Error(
-      `Cannot use --branch option without force cloning \n\nTry with options: -f --branch ${opts.branch}`,
-    );
-  }
   if (fs.existsSync(jtex.templatePath)) return;
   await jtex.ensureTemplateExistsOnPath();
   const toc = tic();
