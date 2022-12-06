@@ -8,7 +8,7 @@ import type { SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
 import type { LinkTransformer } from 'myst-transforms';
 import { select } from 'unist-util-select';
-import { copyActionResource, copyLogo, getSiteManifest } from '../build/site/manifest';
+import { getSiteManifest } from '../build/site/manifest';
 import type { ISession } from '../session/types';
 import { transformWebp } from '../transforms';
 import type { PageReferenceStates, TransformFn } from './mdast';
@@ -273,12 +273,6 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
   }
   if (opts?.writeFiles ?? true) {
     await writeSiteManifest(session);
-    // TODO: This stuff still requires you to be in site root...
-    // Copy all assets
-    copyLogo(session, siteConfig.logo);
-    siteConfig.actions?.forEach((action) => {
-      copyActionResource(session, action);
-    });
     // Write the objects.inv
     const inv = new Inventory({
       project: siteConfig.title,

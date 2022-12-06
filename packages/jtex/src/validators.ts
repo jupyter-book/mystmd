@@ -33,6 +33,24 @@ import {
 } from 'simple-validators';
 import type { ValidationOptions } from 'simple-validators';
 
+/** Validate that input is an existing file name
+ *
+ * Resolved relative to the file cached on validation options.
+ * Full resolved path is returned.
+ */
+function validateFile(input: any, opts: ValidationOptions) {
+  const filename = validateString(input, opts);
+  if (!filename) return;
+  let resolvedFile: string;
+  if (opts.file) {
+    resolvedFile = path.resolve(path.dirname(opts.file), filename);
+  } else {
+    resolvedFile = path.resolve(filename);
+  }
+  if (fs.existsSync(resolvedFile)) return resolvedFile;
+  return validationError(`unable to resolve file: ${filename}`, opts);
+}
+
 export function validateTemplateOption(
   input: any,
   optionDefinition: TemplateOptionDefinition,
@@ -46,6 +64,8 @@ export function validateTemplateOption(
       return validateString(input, { ...opts, maxLength: max_chars });
     case TemplateOptionTypes.choice:
       return validateChoice(input, { ...opts, choices: choices || [] });
+    case TemplateOptionTypes.file:
+      return validateFile(input, opts);
     default:
       return validationError(`unknown type on option definition: "${type}"`, opts);
   }

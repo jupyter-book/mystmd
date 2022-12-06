@@ -1,13 +1,13 @@
 import fs from 'fs';
-import { extname, join, sep } from 'path';
-import type { SiteAction, SiteManifest } from 'myst-config';
+import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { filterKeys } from 'simple-validators';
 import type { ISession } from '../../session/types';
 import type { RootState } from '../../store';
 import { selectors } from '../../store';
-import { addWarningForFile } from '../../utils';
+import { hashAndCopyStaticFile } from '../../utils';
 import { getJtex } from './template';
+import { TemplateOptionTypes } from 'myst-templates';
 
 /**
  * Convert local project representation to site manifest project
@@ -60,70 +60,28 @@ export function localToManifestProject(state: RootState, projectPath: string, pr
   };
 }
 
-export function getLogoPaths(
-  session: ISession,
-  logoName?: string | null,
-  opts = { silent: false },
-): { path: string; public: string; url: string } | null {
-  if (!logoName) {
-    session.log.debug('No logo specified, MyST renderer will use default logo');
-    return null;
-  }
-  const origLogoName = logoName;
-  if (!fs.existsSync(logoName)) {
-    // Look in the local public path
-    logoName = join('public', logoName);
-  }
-  if (!fs.existsSync(logoName)) {
-    const message = `Could not find logo at "${origLogoName}". See 'config.site.logo'`;
-    if (opts.silent) {
-      session.log.debug(message);
-    } else {
-      addWarningForFile(session, session.configFiles[0], message);
+async function resolveTemplateFileOptions(session: ISession, options: SiteTemplateOptions) {
+  const jtex = await getJtex(session);
+  const resolvedOptions = { ...options };
+  jtex.getValidatedTemplateYml().options?.forEach((option) => {
+    if (option.type === TemplateOptionTypes.file && options[option.id]) {
+      const fileHash = hashAndCopyStaticFile(session, options[option.id], session.publicPath());
+      resolvedOptions[option.id] = `/${fileHash}`;
     }
-    return null;
-  }
-  const logo = `logo${extname(logoName)}`;
-  return { path: logoName, public: join(session.publicPath(), logo), url: `/${logo}` };
-}
-
-function getManifestActionPaths(session: ISession, filePath: string) {
-  if (!fs.existsSync(filePath)) {
-    // Look in the local public path
-    filePath = join('public', filePath);
-  }
-  if (!fs.existsSync(filePath))
-    throw new Error(`Could not find static resource at "${filePath}". See 'config.site.actions'`);
-  // Get rid of the first public path if present
-  const parts = filePath.split(sep).filter((s, i) => i > 0 || s !== 'public');
-  const webUrl = parts.join('/'); // this is not sep! (web url!)
-  return { path: filePath, public: join(session.publicPath(), ...parts), url: `/${webUrl}` };
+  });
+  return resolvedOptions;
 }
 
 function getSiteManifestAction(session: ISession, action: SiteAction): SiteAction {
   if (!action.static || !action.url) return { ...action };
-  const { url } = getManifestActionPaths(session, action.url);
+  if (!fs.existsSync(action.url))
+    throw new Error(`Could not find static resource at "${action.url}". See 'config.site.actions'`);
+  const fileHash = hashAndCopyStaticFile(session, action.url, session.publicPath());
   return {
     title: action.title,
-    url,
+    url: `/${fileHash}`,
     static: true,
   };
-}
-
-export function copyActionResource(session: ISession, action: SiteAction) {
-  if (!action.static || !action.url) return;
-  const resource = getManifestActionPaths(session, action.url);
-  session.log.debug(
-    `Copying static resource from "${resource.path}" to be available at "${resource.url}"`,
-  );
-  fs.copyFileSync(resource.path, resource.public);
-}
-
-export function copyLogo(session: ISession, logoName?: string | null): string | undefined {
-  const logo = getLogoPaths(session, logoName);
-  if (!logo) return;
-  session.log.debug(`Copying logo from ${logo.path} to ${logo.public}`);
-  fs.copyFileSync(logo.path, logo.public);
 }
 
 /**
@@ -156,9 +114,10 @@ export async function getSiteManifest(session: ISession): Promise<SiteManifest> 
     undefined,
     siteConfigFile,
   );
+  const resolvedOptions = await resolveTemplateFileOptions(session, validatedOptions);
   const manifest: SiteManifest = {
     ...validatedFrontmatter,
-    ...validatedOptions,
+    ...resolvedOptions,
     myst: 'v1',
     nav: nav || [],
     actions: actions || [],

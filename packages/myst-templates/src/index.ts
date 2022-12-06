@@ -24,6 +24,7 @@ export enum TemplateOptionTypes {
   boolean = 'boolean',
   string = 'string',
   choice = 'choice',
+  file = 'file',
 }
 
 export type TemplateDocDefinition = {
