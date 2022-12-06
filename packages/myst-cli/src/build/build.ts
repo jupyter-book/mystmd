@@ -71,6 +71,10 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     session.log.info('🌎 No site configuration found.');
     session.log.debug(`To build a site, first run 'myst init --site'`);
   } else {
-    await buildSite(session, opts);
+    session.log.info(`🌎 Building MyST site`);
+    const cont = yes || (await inquirer.prompt([promptContinue()])).cont;
+    if (cont) {
+      await buildSite(session, opts);
+    }
   }
 }
