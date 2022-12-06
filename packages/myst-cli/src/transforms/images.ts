@@ -336,15 +336,14 @@ export async function transformWebp(
   const { file, imageWriteFolder } = opts;
   const cache = castSession(session);
   const postData = cache.$mdast[opts.file].post;
-  if (!postData)
-    throw new Error(`webp: Expected mdast to be processed and transformed for ${file}`);
+  if (!postData) throw new Error(`Expected mdast to be processed and transformed for ${file}`);
   const { mdast, frontmatter } = postData;
   const writeFolderContents = fs.readdirSync(imageWriteFolder);
   const images = selectAll('image', mdast) as GenericNode[];
   await Promise.all(
     images.map(async (image) => {
       if (!image.url) return;
-      const fileMatch = writeFolderContents.find((file) => image.url.endsWith(file));
+      const fileMatch = writeFolderContents.find((item) => image.url.endsWith(item));
       if (!fileMatch) return;
       try {
         const result = await imagemagick.convertImageToWebp(
@@ -359,7 +358,7 @@ export async function transformWebp(
   );
 
   if (frontmatter.thumbnail) {
-    const fileMatch = writeFolderContents.find((file) => frontmatter.thumbnail?.endsWith(file));
+    const fileMatch = writeFolderContents.find((item) => frontmatter.thumbnail?.endsWith(item));
     if (fileMatch) {
       try {
         const result = await imagemagick.convertImageToWebp(
