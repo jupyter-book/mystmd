@@ -141,9 +141,9 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
   if (configYaml.jtex !== 'v1') {
     messages.errors.push({
       property: 'jtex',
-      message: 'The template.yml must have a "jtex: v1" version.',
+      message: 'The template.yml must have a "myst: v1" version.',
     });
-    configYaml = { jtex: 'v1', ...configYaml };
+    configYaml = { myst: 'v1', ...configYaml };
   }
 
   const validated = validateTemplateYml(configYaml, { property: '', messages, templateDir });

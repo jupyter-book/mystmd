@@ -80,10 +80,10 @@ export function resolveInputs(
   // Handle case where template already exists locally
   if (opts.template && fs.existsSync(opts.template)) {
     const { base, dir } = parse(opts.template);
-    if (base === TEMPLATE_FILENAME) {
+    if (base === TEMPLATE_YML || base === TEMPLATE_FILENAME) {
       templatePath = dir;
     } else if (fs.lstatSync(opts.template).isDirectory()) {
-      if (fs.existsSync(join(opts.template, TEMPLATE_FILENAME))) {
+      if (fs.existsSync(join(opts.template, TEMPLATE_YML))) {
         templatePath = opts.template;
       }
     }

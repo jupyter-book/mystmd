@@ -7,6 +7,7 @@ import type { ISession } from '../../session/types';
 import type { RootState } from '../../store';
 import { selectors } from '../../store';
 import { addWarningForFile } from '../../utils';
+import { getJtex } from './template';
 
 /**
  * Convert local project representation to site manifest project
@@ -109,15 +110,6 @@ function getSiteManifestAction(session: ISession, action: SiteAction): SiteActio
   };
 }
 
-function getSiteManifestAnalytics(analytics?: SiteAnalytics): SiteAnalytics | undefined {
-  if (!analytics) return undefined;
-  const { google, plausible } = analytics;
-  return {
-    google: google || undefined,
-    plausible: plausible || undefined,
-  };
-}
-
 export function copyActionResource(session: ISession, action: SiteAction) {
   if (!action.static || !action.url) return;
   const resource = getManifestActionPaths(session, action.url);
@@ -140,8 +132,8 @@ export function copyLogo(session: ISession, logoName?: string | null): string | 
  * Site manifest acts as the configuration to build the website.
  * It combines local site config and project configs into a single structure.
  */
-export function getSiteManifest(session: ISession): SiteManifest {
-  const siteProjects: ManifestProject[] = [];
+export async function getSiteManifest(session: ISession): Promise<SiteManifest> {
+  const siteProjects: SiteManifest['projects'] = [];
   const state = session.store.getState() as RootState;
   const siteConfig = selectors.selectCurrentSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
@@ -151,22 +143,26 @@ export function getSiteManifest(session: ISession): SiteManifest {
     if (!proj) return;
     siteProjects.push(proj);
   });
-  const { title, nav } = siteConfig;
+  const { nav } = siteConfig;
   const actions = siteConfig.actions?.map((action) => getSiteManifestAction(session, action));
   const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
   const siteTemplateOptions = selectors.selectCurrentSiteTemplateOptions(state) || {};
-  const { twitter, logo, logo_text, analytics } = siteTemplateOptions;
+  const jtex = await getJtex(session);
+  const siteConfigFile = selectors.selectCurrentSiteFile(state);
+  const validatedOptions = jtex.validateOptions(siteTemplateOptions, siteConfigFile);
+  const validatedFrontmatter = jtex.validateDoc(
+    siteFrontmatter,
+    validatedOptions,
+    undefined,
+    siteConfigFile,
+  );
   const manifest: SiteManifest = {
-    ...siteFrontmatter,
+    ...validatedFrontmatter,
+    ...validatedOptions,
     myst: 'v1',
-    title: title || '',
     nav: nav || [],
     actions: actions || [],
     projects: siteProjects,
-    twitter,
-    logo: getLogoPaths(session, logo, { silent: true })?.url,
-    logo_text,
-    analytics: getSiteManifestAnalytics(analytics),
   };
   return manifest;
 }

@@ -161,7 +161,7 @@ class JTex {
   }
 
   async ensureTemplateExistsOnPath(force?: boolean) {
-    if (!force && fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
+    if (!force && fs.existsSync(join(this.templatePath, TEMPLATE_YML))) {
       this.session.log.info(`🔍 Template found at path: ${this.templatePath}`);
     } else if (!this.templateUrl) {
       throw new Error(
@@ -182,10 +182,8 @@ class JTex {
     bibliography?: string[];
     sourceFile?: string;
   }) {
-    if (!fs.existsSync(join(this.templatePath, TEMPLATE_FILENAME))) {
-      throw new Error(
-        `The template at "${join(this.templatePath, TEMPLATE_FILENAME)}" does not exist`,
-      );
+    if (!fs.existsSync(join(this.templatePath, TEMPLATE_YML))) {
+      throw new Error(`The template at "${join(this.templatePath, TEMPLATE_YML)}" does not exist`);
     }
     const options = this.validateOptions(opts.options, opts.sourceFile);
     const parts = this.validateParts(opts.parts, options, opts.sourceFile);
