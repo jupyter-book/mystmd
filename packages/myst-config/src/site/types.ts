@@ -48,10 +48,9 @@ type ManifestProjectItem = {
   thumbnail?: string;
   thumbnailOptimized?: string;
   tags?: string[];
-  exports?: Export &
-    {
-      output: string;
-    }[];
+  exports?: (Export & {
+    output: string;
+  })[];
 };
 
 type ManifestProject = {

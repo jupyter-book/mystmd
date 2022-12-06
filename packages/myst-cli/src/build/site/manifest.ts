@@ -1,13 +1,39 @@
 import fs from 'fs';
+import path from 'path';
 import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config';
-import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import { ExportFormats, PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import { TemplateOptionTypes } from 'myst-templates';
 import { filterKeys } from 'simple-validators';
 import type { ISession } from '../../session/types';
 import type { RootState } from '../../store';
 import { selectors } from '../../store';
 import { hashAndCopyStaticFile } from '../../utils';
+import type { ExportWithOutput } from '../types';
+import { collectExportOptions } from '../utils';
 import { getJtex } from './template';
-import { TemplateOptionTypes } from 'myst-templates';
+
+async function resolvePageExports(session: ISession, file: string, projectPath: string) {
+  const exports = (
+    await collectExportOptions(
+      session,
+      [file],
+      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex],
+      { projectPath },
+    )
+  )
+    .filter((exp) => {
+      return ['.docx', '.pdf', '.zip'].includes(path.extname(exp.output));
+    })
+    .filter((exp) => {
+      return fs.existsSync(exp.output);
+    }) as ExportWithOutput[];
+  exports.forEach((exp) => {
+    const fileHash = hashAndCopyStaticFile(session, exp.output, session.publicPath());
+    exp.output = `/${fileHash}`;
+    delete exp.$file;
+  });
+  return exports;
+}
 
 /**
  * Convert local project representation to site manifest project
@@ -17,38 +43,48 @@ import { TemplateOptionTypes } from 'myst-templates';
  * - Removes any local file references
  * - Adds validated frontmatter
  */
-export function localToManifestProject(state: RootState, projectPath: string, projectSlug: string) {
+export async function localToManifestProject(
+  session: ISession,
+  projectPath: string,
+  projectSlug: string,
+) {
+  const state = session.store.getState();
   const projConfig = selectors.selectLocalProjectConfig(state, projectPath);
   const proj = selectors.selectLocalProject(state, projectPath);
   if (!proj || !projConfig) return null;
   // Update all of the page title to the frontmatter title
-  const { index } = proj;
+  const { index, file } = proj;
+  const indexExports = await resolvePageExports(session, file, projectPath);
   const projectTitle =
     projConfig?.title || selectors.selectFileInfo(state, proj.file).title || proj.index;
-  const pages = proj.pages.map((page) => {
-    if ('file' in page) {
-      const fileInfo = selectors.selectFileInfo(state, page.file);
-      const title = fileInfo.title || page.slug;
-      const description = fileInfo.description ?? '';
-      const thumbnail = fileInfo.thumbnail ?? '';
-      const thumbnailOptimized = fileInfo.thumbnailOptimized ?? '';
-      const date = fileInfo.date ?? '';
-      const tags = fileInfo.tags ?? [];
-      const { slug, level } = page;
-      const projectPage = {
-        slug,
-        title,
-        description,
-        date,
-        thumbnail,
-        thumbnailOptimized,
-        tags,
-        level,
-      };
-      return projectPage;
-    }
-    return { ...page };
-  });
+  const pages = await Promise.all(
+    proj.pages.map(async (page) => {
+      if ('file' in page) {
+        const fileInfo = selectors.selectFileInfo(state, page.file);
+        const title = fileInfo.title || page.slug;
+        const description = fileInfo.description ?? '';
+        const thumbnail = fileInfo.thumbnail ?? '';
+        const thumbnailOptimized = fileInfo.thumbnailOptimized ?? '';
+        const date = fileInfo.date ?? '';
+        const tags = fileInfo.tags ?? [];
+        const { slug, level } = page;
+        const exports = await resolvePageExports(session, page.file, projectPath);
+        const projectPage = {
+          slug,
+          title,
+          description,
+          date,
+          thumbnail,
+          thumbnailOptimized,
+          tags,
+          level,
+          exports,
+        };
+        return projectPage;
+      }
+      return { ...page };
+    }),
+  );
   const projFrontmatter = filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS);
   return {
     ...projFrontmatter,
@@ -56,6 +92,7 @@ export function localToManifestProject(state: RootState, projectPath: string, pr
     title: projectTitle || 'Untitled',
     slug: projectSlug,
     index,
+    exports: indexExports,
     pages,
   };
 }
@@ -72,7 +109,7 @@ async function resolveTemplateFileOptions(session: ISession, options: SiteTempla
   return resolvedOptions;
 }
 
-function getSiteManifestAction(session: ISession, action: SiteAction): SiteAction {
+function resolveSiteManifestAction(session: ISession, action: SiteAction): SiteAction {
   if (!action.static || !action.url) return { ...action };
   if (!fs.existsSync(action.url))
     throw new Error(`Could not find static resource at "${action.url}". See 'config.site.actions'`);
@@ -95,14 +132,16 @@ export async function getSiteManifest(session: ISession): Promise<SiteManifest> 
   const state = session.store.getState() as RootState;
   const siteConfig = selectors.selectCurrentSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
-  siteConfig.projects?.forEach((siteProj) => {
-    if (!siteProj.path) return;
-    const proj = localToManifestProject(state, siteProj.path, siteProj.slug);
-    if (!proj) return;
-    siteProjects.push(proj);
-  });
+  await Promise.all(
+    siteConfig.projects?.map(async (siteProj) => {
+      if (!siteProj.path) return;
+      const proj = await localToManifestProject(session, siteProj.path, siteProj.slug);
+      if (!proj) return;
+      siteProjects.push(proj);
+    }) || [],
+  );
   const { nav } = siteConfig;
-  const actions = siteConfig.actions?.map((action) => getSiteManifestAction(session, action));
+  const actions = siteConfig.actions?.map((action) => resolveSiteManifestAction(session, action));
   const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
   const siteTemplateOptions = selectors.selectCurrentSiteTemplateOptions(state) || {};
   const jtex = await getJtex(session);
