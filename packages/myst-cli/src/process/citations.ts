@@ -8,7 +8,7 @@ import { castSession } from '../session';
 import { selectors } from '../store';
 import { addWarningForFile } from '../utils';
 
-export async function loadCitations(session: ISession, path: string) {
+export async function loadCitations(session: ISession, path: string): Promise<CitationRenderer> {
   const toc = tic();
   let data: string;
   if (isUrl(path)) {

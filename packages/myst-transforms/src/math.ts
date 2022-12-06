@@ -2,10 +2,11 @@ import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import katex from 'katex';
 import type { Root } from 'mdast';
-import type { Math, InlineMath, Node, Paragraph } from 'myst-spec';
+import type { Math, InlineMath, Node } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
-import { modifyChildren } from 'unist-util-modify-children';
-import { copyNode, fileWarn, normalizeLabel } from 'myst-common';
+import type { GenericParent } from 'myst-common';
+import { fileWarn, normalizeLabel } from 'myst-common';
+import { unnestTransform } from './unnest';
 
 const TRANSFORM_NAME = 'myst-transforms:math';
 
@@ -212,37 +213,7 @@ export function mathNestingTransform(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   file: VFile,
 ) {
-  const modify = modifyChildren((node, index, parent) => {
-    if (node.type !== 'paragraph' || selectAll('math', node).length === 0) return;
-    const paragraph = node as Paragraph;
-    const unnested: (Paragraph | Math)[] = [];
-    const { children, ...rest } = paragraph;
-    const createTemplate = (): Paragraph => copyNode({ ...rest, children: [] });
-    let current = createTemplate();
-    const pushContent = () => {
-      if (current.children.length > 0) {
-        unnested.push(current);
-      }
-      current = createTemplate();
-    };
-    children.forEach((child) => {
-      if ((child as any).type === 'math') {
-        const math = child as unknown as Math;
-        pushContent();
-        unnested.push(math);
-      } else {
-        current.children.push(child);
-      }
-    });
-    pushContent();
-    // Replace the current paragraph with the unnested nodes
-    parent.children.splice(index, 1, ...unnested);
-    return index + unnested.length;
-  });
-  const parents = selectAll('*:has(paragraph:has(math))', tree) as Root[];
-  parents.forEach((parent) => {
-    modify(parent as any);
-  });
+  unnestTransform(tree as GenericParent, 'paragraph', 'math');
 }
 
 export function mathLabelTransform(tree: Root, file: VFile) {
