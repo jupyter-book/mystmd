@@ -45,4 +45,7 @@ export {
 // Composite plugins
 export { basicTransformationsPlugin, basicTransformations } from './basic';
 
+// Common transformations
+export { unnestTransform } from './unnest';
+
 export { getFrontmatter } from './frontmatter';
