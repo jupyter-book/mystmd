@@ -12,7 +12,6 @@ import {
   makeStrictOption,
   makeTexOption,
   makeWriteTocOption,
-  makeYesOption,
 } from './options';
 
 export function makeBuildCLI(program: Command) {
@@ -30,7 +29,6 @@ export function makeBuildCLI(program: Command) {
     .addOption(makeStrictOption())
     .addOption(makeForceOption())
     .addOption(makeCheckLinksOption())
-    .addOption(makeYesOption())
     .action(clirun(Session, build, program));
   return command;
 }

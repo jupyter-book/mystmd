@@ -1,7 +1,5 @@
 import path from 'path';
-import inquirer from 'inquirer';
 import { ExportFormats } from 'myst-frontmatter';
-import { promptContinue } from '../cli/options';
 import { filterPages, loadProjectFromDisk } from '../project';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
@@ -15,7 +13,6 @@ export type BuildOpts = {
   tex?: boolean;
   force?: boolean;
   checkLinks?: boolean;
-  yes?: boolean;
 };
 
 export function getExportFormats(opts: BuildOpts) {
@@ -35,7 +32,7 @@ export function exportSite(session: ISession, opts: BuildOpts) {
 }
 
 export async function build(session: ISession, files: string[], opts: BuildOpts) {
-  const { force, yes, site } = opts;
+  const { force, site } = opts;
   const formats = getExportFormats(opts);
   let projectPath: string | undefined;
   if (files.length === 0) {
@@ -60,10 +57,7 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     }
   } else {
     session.log.info(`📬 Performing exports:\n   ${exportLogList.join('\n   ')}`);
-    const cont = yes || (await inquirer.prompt([promptContinue()])).cont;
-    if (cont) {
-      await localArticleExport(session, exportOptionsList, { projectPath });
-    }
+    await localArticleExport(session, exportOptionsList, { projectPath });
   }
   if (!exportSite(session, opts)) return;
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
@@ -72,9 +66,6 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     session.log.debug(`To build a site, first run 'myst init --site'`);
   } else {
     session.log.info(`🌎 Building MyST site`);
-    const cont = yes || (await inquirer.prompt([promptContinue()])).cont;
-    if (cont) {
-      await buildSite(session, opts);
-    }
+    await buildSite(session, opts);
   }
 }
