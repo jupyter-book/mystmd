@@ -44,7 +44,7 @@ export function changeFile(session: ISession, path: string, eventType: string) {
 
 export async function writeSiteManifest(session: ISession) {
   const configPath = join(session.sitePath(), 'config.json');
-  session.log.info('⚙️  Writing site config.json');
+  session.log.debug('Writing site config.json');
   const siteManifest = await getSiteManifest(session);
   writeFileToFolder(configPath, JSON.stringify(siteManifest));
 }

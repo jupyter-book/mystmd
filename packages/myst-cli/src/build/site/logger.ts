@@ -13,7 +13,7 @@ export function createServerLogger(session: ISession): LoggerDE {
         const port = ipAndPort.split(':')[1].replace(/[^0-9]/g, '');
         const local = `http://localhost:${port}`;
         session.log.info(
-          `\n🔌 Server started on port ${port}!🥳 🎉\n\n\n\t👉  ${chalk.green(local)}  👈\n\n`,
+          `\n🔌 Server started on port ${port}!  🥳 🎉\n\n\n\t👉  ${chalk.green(local)}  👈\n\n`,
         );
         return;
       }

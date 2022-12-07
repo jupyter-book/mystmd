@@ -162,7 +162,7 @@ class JTex {
 
   async ensureTemplateExistsOnPath(force?: boolean) {
     if (!force && fs.existsSync(join(this.templatePath, TEMPLATE_YML))) {
-      this.session.log.info(`🔍 Template found: ${this.templatePath}`);
+      this.session.log.debug(`Template found: ${this.templatePath}`);
     } else if (!this.templateUrl) {
       throw new Error(
         `No template on path and no download URL to fetch from: ${this.templatePath}`,

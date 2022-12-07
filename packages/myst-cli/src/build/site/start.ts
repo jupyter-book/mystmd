@@ -95,16 +95,16 @@ export async function startServer(session: ISession, opts: Options): Promise<voi
   const jtex = await getJtex(session);
   if (!opts.headless) await cloneSiteTemplate(session, jtex);
   await buildSite(session, opts);
-  session.log.info('\n\n\t✨✨✨  Starting Server  ✨✨✨\n\n');
   const server = await startContentServer(session);
   const { extraLinkTransformers, extraTransforms } = opts;
   watchContent(session, server.reload, { extraLinkTransformers, extraTransforms });
   if (opts.headless) {
     const local = chalk.green(`http://localhost:${server.port}`);
     session.log.info(
-      `\n🔌 Content server started on port ${server.port}!🥳 🎉\n\n\n\t👉  ${local}  👈\n\n`,
+      `\n🔌 Content server started on port ${server.port}!  🥳 🎉\n\n\n\t👉  ${local}  👈\n\n`,
     );
   } else {
+    session.log.info(`\n\n\t✨✨✨  Starting ${jtex.getValidatedTemplateYml().title}  ✨✨✨\n\n`);
     await makeExecutable(
       jtex.getValidatedTemplateYml().build?.start ?? DEFAULT_START_COMMAND,
       createServerLogger(session),
