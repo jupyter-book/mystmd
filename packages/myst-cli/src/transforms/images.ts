@@ -82,6 +82,8 @@ function resolveOutputPath(file: string, writeFolder: string, altOutputFolder?: 
   if (altOutputFolder == null) {
     return path.join(writeFolder, file);
   }
+  // If the altOutputFolder ends with "/" it is assumed to be a web path, so normal path
+  // separator is ignored.
   if (altOutputFolder.endsWith('/')) {
     return `${altOutputFolder}${file}`;
   }
