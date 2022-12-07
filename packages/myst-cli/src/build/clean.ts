@@ -65,21 +65,21 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
   if (site) {
     pathsToDelete.push(session.sitePath());
   }
-  pathsToDelete = [...new Set(pathsToDelete)].sort();
+  pathsToDelete = [...new Set(pathsToDelete.filter((p) => fs.existsSync(p)))].sort();
   if (pathsToDelete.length === 0) {
-    session.log.warn(`🗑 No build artifacts found to clean!`);
+    session.log.warn(`🗑  No build artifacts found to clean!`);
     return;
   }
-  session.log.info(`❌ Deleting all the following paths:\n   ${pathsToDelete.join('\n   ')}`);
+  session.log.info(`Deleting all the following paths:\n\n  - ${pathsToDelete.join('\n  - ')}\n`);
   const cont = yes || (await inquirer.prompt([promptContinue()])).cont;
   if (cont) {
     pathsToDelete.forEach((pathToDelete) => {
-      session.log.info(`🗑 Deleting: ${pathToDelete}`);
+      session.log.info(`🗑  Deleting: ${pathToDelete}`);
       fs.rmSync(pathToDelete, { recursive: true, force: true });
     });
     buildFolders.forEach((buildFolder) => {
       if (fs.readdirSync(buildFolder).length === 0) {
-        session.log.debug(`🗑 Deleting empty build folder: ${buildFolder}`);
+        session.log.debug(`🗑  Deleting empty build folder: ${buildFolder}`);
         fs.rmSync(buildFolder, { recursive: true, force: true });
       }
     });

@@ -356,7 +356,9 @@ export async function findCurrentSiteAndLoad(
 
 export function reloadAllConfigsForCurrentSite(session: ISession) {
   const sitePath = selectors.selectCurrentSitePath(session.store.getState());
-  if (!sitePath) throw Error('Cannot reload site configs - no current site loaded');
+  if (!sitePath) {
+    throw Error('Cannot (re)load "site" config. No current site in the YML configuration.');
+  }
   loadConfigAndValidateOrThrow(session, sitePath);
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig?.projects) return;

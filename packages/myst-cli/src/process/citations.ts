@@ -26,7 +26,7 @@ export async function loadCitations(session: ISession, path: string): Promise<Ci
   const renderer = await getCitations(data);
   const numCitations = Object.keys(renderer).length;
   const plural = numCitations > 1 ? 's' : '';
-  session.log.info(toc(`🏫 Read ${numCitations} citation${plural} from ${path} in %s.`));
+  session.log.debug(toc(`Read ${numCitations} citation${plural} from ${path} in %s.`));
   return renderer;
 }
 

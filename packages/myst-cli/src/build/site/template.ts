@@ -22,7 +22,7 @@ export async function getJtex(session: ISession) {
 export async function cloneSiteTemplate(session: ISession, jtex: JTex): Promise<void> {
   if (fs.existsSync(join(jtex.templatePath, 'node_modules'))) return;
   const toc = tic();
-  session.log.info('⤵️ Installing web libraries (can take up to 60 s)');
+  session.log.info('⤵️  Installing web libraries (can take up to 60 s)');
   await makeExecutable(
     jtex.getValidatedTemplateYml().build?.install ?? DEFAULT_INSTALL_COMMAND,
     createNpmLogger(session),
