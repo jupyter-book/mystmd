@@ -12,6 +12,7 @@ import { hashAndCopyStaticFile } from '../../utils';
 import type { ExportWithOutput } from '../types';
 import { collectExportOptions } from '../utils';
 import { getJtex } from './template';
+import type JTex from 'jtex';
 
 async function resolvePageExports(session: ISession, file: string, projectPath: string) {
   const exports = (
@@ -102,8 +103,11 @@ export async function localToManifestProject(
   };
 }
 
-async function resolveTemplateFileOptions(session: ISession, options: SiteTemplateOptions) {
-  const jtex = await getJtex(session);
+async function resolveTemplateFileOptions(
+  session: ISession,
+  jtex: JTex,
+  options: SiteTemplateOptions,
+) {
   const resolvedOptions = { ...options };
   jtex.getValidatedTemplateYml().options?.forEach((option) => {
     if (option.type === TemplateOptionTypes.file && options[option.id]) {
@@ -159,7 +163,7 @@ export async function getSiteManifest(session: ISession): Promise<SiteManifest> 
     undefined,
     siteConfigFile,
   );
-  const resolvedOptions = await resolveTemplateFileOptions(session, validatedOptions);
+  const resolvedOptions = await resolveTemplateFileOptions(session, jtex, validatedOptions);
   const manifest: SiteManifest = {
     ...validatedFrontmatter,
     ...resolvedOptions,

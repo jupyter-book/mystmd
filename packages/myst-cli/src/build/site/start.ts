@@ -92,7 +92,8 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHo
 
 export async function startServer(session: ISession, opts: Options): Promise<void> {
   warnOnHostEnvironmentVariable(session, opts);
-  if (!opts.headless) await cloneSiteTemplate(session);
+  const jtex = await getJtex(session);
+  if (!opts.headless) await cloneSiteTemplate(session, jtex);
   await buildSite(session, opts);
   session.log.info('\n\n\t✨✨✨  Starting Server  ✨✨✨\n\n');
   const server = await startContentServer(session);
@@ -104,7 +105,6 @@ export async function startServer(session: ISession, opts: Options): Promise<voi
       `\n🔌 Content server started on port ${server.port}!🥳 🎉\n\n\n\t👉  ${local}  👈\n\n`,
     );
   } else {
-    const jtex = await getJtex(session);
     await makeExecutable(
       jtex.getValidatedTemplateYml().build?.start ?? DEFAULT_START_COMMAND,
       createServerLogger(session),

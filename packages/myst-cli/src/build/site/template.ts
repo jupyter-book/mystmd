@@ -19,8 +19,7 @@ export async function getJtex(session: ISession) {
   return jtex;
 }
 
-export async function cloneSiteTemplate(session: ISession): Promise<void> {
-  const jtex = await getJtex(session);
+export async function cloneSiteTemplate(session: ISession, jtex: JTex): Promise<void> {
   if (fs.existsSync(join(jtex.templatePath, 'node_modules'))) return;
   const toc = tic();
   session.log.info('⤵️ Installing web libraries (can take up to 60 s)');
