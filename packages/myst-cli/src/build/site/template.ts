@@ -15,12 +15,12 @@ export async function getJtex(session: ISession) {
     template: siteConfig?.template ?? DEFAULT_SITE_TEMPLATE,
     buildDir: session.buildPath(),
   });
+  await jtex.ensureTemplateExistsOnPath();
   return jtex;
 }
 
 export async function cloneSiteTemplate(session: ISession): Promise<void> {
   const jtex = await getJtex(session);
-  await jtex.ensureTemplateExistsOnPath();
   if (fs.existsSync(join(jtex.templatePath, 'node_modules'))) return;
   const toc = tic();
   session.log.info('⤵️ Installing web libraries (can take up to 60 s)');
