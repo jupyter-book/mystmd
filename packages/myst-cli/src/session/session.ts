@@ -6,7 +6,11 @@ import type { Logger } from 'myst-cli-utils';
 import { rootReducer, selectors } from '../store';
 import type { RootState } from '../store';
 import type { ISession } from './types';
-import { findCurrentProjectAndLoad, findCurrentSiteAndLoad } from '../config';
+import {
+  findCurrentProjectAndLoad,
+  findCurrentSiteAndLoad,
+  reloadAllConfigsForCurrentSite,
+} from '../config';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.myst.tools';
@@ -28,6 +32,7 @@ export class Session implements ISession {
     this.store = createStore(rootReducer);
     findCurrentProjectAndLoad(this, '.');
     findCurrentSiteAndLoad(this, '.');
+    reloadAllConfigsForCurrentSite(this);
   }
 
   buildPath(): string {
