@@ -19,10 +19,10 @@ export async function localArticleExport(
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptionsWithFile) => {
-      const { $file, ...exportOptions } = exportOptionsWithFile;
+      const { $file, $project, ...exportOptions } = exportOptionsWithFile;
       const { format, output } = exportOptions;
       const sessionClone = session.clone();
-      let fileProjectPath = projectPath;
+      let fileProjectPath = projectPath ?? $project;
       if (fileProjectPath) {
         await loadProjectAndBibliography(sessionClone, fileProjectPath);
       } else {

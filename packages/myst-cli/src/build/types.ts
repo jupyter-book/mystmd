@@ -11,6 +11,7 @@ export type ExportWithOutput = Export & {
 
 export type ExportWithInputOutput = ExportWithOutput & {
   $file: string;
+  $project?: string;
 };
 
 export type ExportOptions = {

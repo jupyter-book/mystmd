@@ -1,15 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';
-import { findCurrentProjectAndLoad } from '../config';
-import { filterPages, loadProjectFromDisk } from '../project';
-import { selectors } from '../store';
-import type { ISession } from '../session';
-import { getExportFormats } from './build';
-import { collectExportOptions } from './utils';
 import { ExportFormats } from 'myst-frontmatter';
-import { getLogOutputFolder, getTexOutputFolder } from './pdf/create';
 import { promptContinue } from '../cli/options';
+import type { ISession } from '../session';
+import { collectAllBuildExportOptions, getProjectPaths } from './build';
+import { getLogOutputFolder, getTexOutputFolder } from './pdf/create';
 
 export type CleanOptions = {
   docx?: boolean;
@@ -36,17 +32,7 @@ const ALL_OPTS: CleanOptions = {
 export async function clean(session: ISession, files: string[], opts: CleanOptions) {
   if (opts.all) opts = { ...opts, ...ALL_OPTS };
   const { site, temp, exports, templates, yes } = opts;
-  const formats = getExportFormats(opts);
-  let projectPath: string | undefined;
-  if (files.length === 0) {
-    const configPath = selectors.selectCurrentProjectPath(session.store.getState());
-    const project = loadProjectFromDisk(session, configPath ?? '.');
-    files = filterPages(project).map((page) => page.file);
-    projectPath = configPath;
-  }
-  const exportOptionsList = await collectExportOptions(session, files, formats, {
-    projectPath,
-  });
+  const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   let pathsToDelete: string[] = [];
   exportOptionsList.forEach((exportOptions) => {
     pathsToDelete.push(exportOptions.output);
@@ -57,11 +43,10 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
   });
   let buildFolders: string[] = [];
   if (temp || exports || templates) {
-    const projectPaths = projectPath
-      ? [projectPath]
-      : await Promise.all(
-          files.map(async (file) => await findCurrentProjectAndLoad(session, path.dirname(file))),
-        );
+    const projectPaths = [
+      ...getProjectPaths(session),
+      ...exportOptionsList.map((exp) => exp.$project),
+    ];
     projectPaths
       .filter((projPath): projPath is string => Boolean(projPath))
       .forEach((projPath) => {

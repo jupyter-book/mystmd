@@ -22,6 +22,8 @@ export async function collectExportOptions(
       if (!projectPath) {
         fileProjectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
         if (fileProjectPath) await loadProjectAndBibliography(session, fileProjectPath);
+      } else {
+        fileProjectPath = projectPath;
       }
       const fileExportOptionsList: ExportWithOutput[] = [];
       if (formats.includes(ExportFormats.docx)) {
@@ -31,7 +33,7 @@ export async function collectExportOptions(
             file,
             'docx',
             [ExportFormats.docx],
-            projectPath ?? fileProjectPath,
+            fileProjectPath,
             opts,
           )),
         );
@@ -43,7 +45,7 @@ export async function collectExportOptions(
             file,
             'pdf',
             [ExportFormats.pdf, ExportFormats.pdftex],
-            projectPath ?? fileProjectPath,
+            fileProjectPath,
             opts,
           )),
         );
@@ -55,14 +57,14 @@ export async function collectExportOptions(
             file,
             'tex',
             [ExportFormats.tex],
-            projectPath ?? fileProjectPath,
+            fileProjectPath,
             opts,
           )),
         );
       }
       exportOptionsList.push(
         ...fileExportOptionsList.map((exportOptions) => {
-          return { ...exportOptions, $file: file };
+          return { ...exportOptions, $file: file, $project: fileProjectPath };
         }),
       );
     }),

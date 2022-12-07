@@ -34,6 +34,7 @@ async function resolvePageExports(session: ISession, file: string, projectPath: 
     exp.filename = path.basename(output);
     exp.url = `/${fileHash}`;
     delete exp.$file;
+    delete exp.$project;
     delete exp.output;
   });
   return exports;
