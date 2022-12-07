@@ -16,7 +16,7 @@ import type { ValidationOptions } from 'simple-validators';
 import { findCurrentProjectAndLoad } from '../../config';
 import { getRawFrontmatterFromFile } from '../../frontmatter';
 import { bibFilesInDir } from '../../process';
-import { loadProjectAndBibliography } from '../../project';
+import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session/types';
 import { selectLocalProject } from '../../store/selectors';
 import { createTempFolder } from '../../utils';
@@ -317,7 +317,7 @@ export async function localArticleToTex(
 ) {
   let { projectPath } = opts;
   if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectAndBibliography(session, projectPath);
+  if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
     await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
   ).map((exportOptions) => {

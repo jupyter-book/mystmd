@@ -42,7 +42,7 @@ export type InitOptions = {
   writeToc?: boolean;
 };
 
-export function init(session: ISession, opts: InitOptions) {
+export async function init(session: ISession, opts: InitOptions) {
   const { project, site, writeToc } = opts;
   loadConfigAndValidateOrThrow(session, '.');
   const state = session.store.getState();
@@ -91,6 +91,6 @@ export function init(session: ISession, opts: InitOptions) {
     fs.writeFileSync(configFile, configData);
   }
   if (writeToc) {
-    loadProjectFromDisk(session, '.', { writeToc });
+    await loadProjectFromDisk(session, '.', { writeToc });
   }
 }

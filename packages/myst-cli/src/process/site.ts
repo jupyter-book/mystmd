@@ -60,13 +60,12 @@ function getReferenceTitleAsText(targetNode: Node): string | undefined {
   if (caption) return toText(caption);
 }
 
-export function addProjectReferencesToObjectsInv(
+export async function addProjectReferencesToObjectsInv(
   session: ISession,
   inv: Inventory,
   opts: { projectPath: string },
 ) {
-  const proj = selectors.selectLocalProject(session.store.getState(), opts.projectPath);
-  const pages = proj ? filterPages(proj) : loadProject(session, opts.projectPath).pages;
+  const { pages } = await loadProject(session, opts.projectPath);
   const pageReferenceStates = selectPageReferenceStates(session, pages);
   pageReferenceStates.forEach((page) => {
     const { title } = selectors.selectFileInfo(session.store.getState(), page.file);
@@ -92,8 +91,8 @@ export function addProjectReferencesToObjectsInv(
   return inv;
 }
 
-export function loadProject(session: ISession, projectPath: string, writeToc = false) {
-  const project = loadProjectFromDisk(session, projectPath, {
+export async function loadProject(session: ISession, projectPath: string, writeToc = false) {
+  const project = await loadProjectFromDisk(session, projectPath, {
     writeToc,
   });
   // Load the citations first, or else they are loaded in each call below
@@ -155,7 +154,7 @@ export async function fastProcessFile(
     watchMode: true,
     extraTransforms: [transformWebp, ...(extraTransforms ?? [])],
   });
-  const { pages } = loadProject(session, projectPath);
+  const { pages } = await loadProject(session, projectPath);
   const pageReferenceStates = selectPageReferenceStates(session, pages);
   await postProcessMdast(session, {
     file,
@@ -180,7 +179,7 @@ export async function processProject(
     if (siteProject.remote) log.error(`Remote path not supported: ${siteProject.slug}`);
     throw Error('Unable to process project');
   }
-  const { project, pages } = loadProject(session, siteProject.path, writeFiles && writeToc);
+  const { project, pages } = await loadProject(session, siteProject.path, writeFiles && writeToc);
   if (!watchMode) {
     await Promise.all([
       // Load all citations (.bib)
@@ -279,12 +278,14 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
       // TODO: allow a version on the project?!
       version: String((siteConfig as any)?.version ?? '1'),
     });
-    siteConfig.projects.forEach((project) => {
-      if (!project.path) return;
-      addProjectReferencesToObjectsInv(session, inv, {
-        projectPath: project.path,
-      });
-    });
+    await Promise.all(
+      siteConfig.projects.map(async (project) => {
+        if (!project.path) return;
+        await addProjectReferencesToObjectsInv(session, inv, {
+          projectPath: project.path,
+        });
+      }),
+    );
     const filename = join(session.sitePath(), 'objects.inv');
     inv.write(filename);
   }

@@ -1,7 +1,7 @@
 import path from 'path';
 import { ExportFormats } from 'myst-frontmatter';
 import { findCurrentProjectAndLoad } from '../../config';
-import { loadProjectAndBibliography } from '../../project';
+import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session';
 import { collectWordExportOptions } from '../docx/single';
 import { collectTexExportOptions } from '../tex/single';
@@ -14,14 +14,14 @@ export async function collectExportOptions(
   opts: ExportOptions,
 ) {
   const { projectPath } = opts;
-  if (projectPath) await loadProjectAndBibliography(session, projectPath);
+  if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList: ExportWithInputOutput[] = [];
   await Promise.all(
     files.map(async (file) => {
       let fileProjectPath: string | undefined;
       if (!projectPath) {
         fileProjectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
-        if (fileProjectPath) await loadProjectAndBibliography(session, fileProjectPath);
+        if (fileProjectPath) await loadProjectFromDisk(session, fileProjectPath);
       } else {
         fileProjectPath = projectPath;
       }

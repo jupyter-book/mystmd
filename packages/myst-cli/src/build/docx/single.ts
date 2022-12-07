@@ -13,7 +13,7 @@ import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config';
 import { getRawFrontmatterFromFile } from '../../frontmatter';
-import { loadProjectAndBibliography } from '../../project';
+import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session/types';
 import type { RendererData } from '../../transforms/types';
 import { createTempFolder, logMessagesFromVFile } from '../../utils';
@@ -207,7 +207,7 @@ export async function localArticleToWord(
 ) {
   let { projectPath } = opts;
   if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectAndBibliography(session, projectPath);
+  if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
     await collectWordExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
   ).map((exportOptions) => {

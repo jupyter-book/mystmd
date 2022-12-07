@@ -61,7 +61,7 @@ export async function collectAllBuildExportOptions(
       await Promise.all(
         projectPaths.map(async (projectPath) => {
           try {
-            const project = loadProjectFromDisk(session, projectPath);
+            const project = await loadProjectFromDisk(session, projectPath);
             files = filterPages(project).map((page) => page.file);
           } catch (err) {
             session.log.debug(`Unable to load any content from project at: ${projectPath}\n${err}`);

@@ -1,7 +1,7 @@
 import path from 'path';
 import { ExportFormats } from 'myst-frontmatter';
 import { findCurrentProjectAndLoad } from '../../config';
-import { loadProjectAndBibliography } from '../../project';
+import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session';
 import type { ExportOptions, ExportWithInputOutput } from '../types';
 import { resolveAndLogErrors } from './resolveAndLogErrors';
@@ -24,10 +24,10 @@ export async function localArticleExport(
       const sessionClone = session.clone();
       let fileProjectPath = projectPath ?? $project;
       if (fileProjectPath) {
-        await loadProjectAndBibliography(sessionClone, fileProjectPath);
+        await loadProjectFromDisk(sessionClone, fileProjectPath);
       } else {
         fileProjectPath = await findCurrentProjectAndLoad(sessionClone, path.dirname($file));
-        if (fileProjectPath) await loadProjectAndBibliography(sessionClone, fileProjectPath);
+        if (fileProjectPath) await loadProjectFromDisk(sessionClone, fileProjectPath);
       }
       if (format === ExportFormats.tex) {
         if (path.extname(output) === '.zip') {
