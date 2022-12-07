@@ -51,8 +51,6 @@ export function init(session: ISession, opts: InitOptions) {
   const existingSiteConfig = selectors.selectLocalSiteConfig(state, '.');
   const existingConfigFile = selectors.selectLocalConfigFile(state, '.');
   if (existingRawConfig) {
-    console.log(existingProjectConfig);
-    console.log(existingSiteConfig);
     // If config file is already present, update it.
     let projectConfig: Record<string, any> | undefined;
     let siteConfig: Record<string, any> | undefined;
@@ -70,8 +68,6 @@ export function init(session: ISession, opts: InitOptions) {
         siteConfig = (yaml.load(SITE_CONFIG) as Record<string, any>).site;
       }
     }
-    console.log(projectConfig);
-    console.log(siteConfig);
     if (siteConfig || projectConfig) {
       session.log.info(`💾 Updating config file: ${existingConfigFile}`);
       writeConfigs(session, '.', { siteConfig, projectConfig });
