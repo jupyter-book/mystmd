@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config';
+import type { Export } from 'myst-frontmatter';
 import { ExportFormats, PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { TemplateOptionTypes } from 'myst-templates';
 import { filterKeys } from 'simple-validators';
@@ -26,11 +27,14 @@ async function resolvePageExports(session: ISession, file: string, projectPath: 
     })
     .filter((exp) => {
       return fs.existsSync(exp.output);
-    }) as ExportWithOutput[];
+    }) as Export[];
   exports.forEach((exp) => {
-    const fileHash = hashAndCopyStaticFile(session, exp.output, session.publicPath());
-    exp.output = `/${fileHash}`;
+    const { output } = exp as ExportWithOutput;
+    const fileHash = hashAndCopyStaticFile(session, output, session.publicPath());
+    exp.filename = path.basename(output);
+    exp.url = `/${fileHash}`;
     delete exp.$file;
+    delete exp.output;
   });
   return exports;
 }
@@ -116,6 +120,7 @@ function resolveSiteManifestAction(session: ISession, action: SiteAction): SiteA
   const fileHash = hashAndCopyStaticFile(session, action.url, session.publicPath());
   return {
     title: action.title,
+    filename: path.basename(action.url),
     url: `/${fileHash}`,
     static: true,
   };

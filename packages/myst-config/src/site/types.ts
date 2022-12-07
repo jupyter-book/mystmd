@@ -18,6 +18,7 @@ export interface SiteNavItem {
 export interface SiteAction {
   title: string;
   url: string;
+  filename?: string;
   internal?: boolean;
   static?: boolean;
 }
@@ -48,9 +49,7 @@ type ManifestProjectItem = {
   thumbnail?: string;
   thumbnailOptimized?: string;
   tags?: string[];
-  exports?: (Export & {
-    output: string;
-  })[];
+  exports?: Export[];
 };
 
 type ManifestProject = {
