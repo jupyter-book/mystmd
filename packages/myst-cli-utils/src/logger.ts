@@ -1,5 +1,6 @@
 import type { ISession, Logger, LoggerDE } from './types';
 import chalk from 'chalk';
+import { sep } from 'path';
 
 export enum LogLevel {
   fatal = 60,
@@ -48,7 +49,17 @@ export function silentLogger(): Logger {
   };
 }
 
-export function chalkLogger(level: LogLevel): Logger {
+function replaceCwd(cwd: string | undefined, args: any[]): any[] {
+  if (!cwd) return args;
+  return args.map((a) => {
+    if (typeof a === 'string') {
+      return a.replace(new RegExp(cwd + sep, 'g'), '');
+    }
+    return a;
+  });
+}
+
+export function chalkLogger(level: LogLevel, cwd?: string): Logger {
   return {
     debug(...args: any) {
       if (level > LogLevel.debug) return;
@@ -56,15 +67,15 @@ export function chalkLogger(level: LogLevel): Logger {
     },
     info(...args: any) {
       if (level > LogLevel.info) return;
-      console.log(chalk.reset(...args));
+      console.log(chalk.reset(...replaceCwd(cwd, args)));
     },
     warn(...args: any) {
       if (level > LogLevel.warn) return;
-      console.warn(chalk.yellow(...args));
+      console.warn(chalk.yellow(...replaceCwd(cwd, args)));
     },
     error(...args: any) {
       if (level > LogLevel.error) return;
-      console.error(chalk.red(...args));
+      console.error(chalk.red(...replaceCwd(cwd, args)));
     },
   };
 }

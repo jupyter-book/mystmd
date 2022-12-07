@@ -28,7 +28,7 @@ export class Session implements ISession {
   constructor(opts: { logger?: Logger } = {}) {
     this.API_URL = API_URL;
     this.configFiles = CONFIG_FILES;
-    this.$logger = opts.logger ?? chalkLogger(LogLevel.info);
+    this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.store = createStore(rootReducer);
     findCurrentProjectAndLoad(this, '.');
     findCurrentSiteAndLoad(this, '.');
