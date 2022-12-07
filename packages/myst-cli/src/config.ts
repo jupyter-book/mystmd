@@ -19,7 +19,7 @@ function emptyConfig(): Config {
   };
 }
 
-function defaultConfigFile(session: ISession, path: string) {
+export function defaultConfigFile(session: ISession, path: string) {
   return join(path, session.configFiles[0]);
 }
 

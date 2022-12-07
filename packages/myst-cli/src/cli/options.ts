@@ -16,6 +16,10 @@ export function makeSiteOption(verb: string) {
   return new Option('--site', `${verb} MyST site content`).default(false);
 }
 
+export function makeProjectOption(verb: string) {
+  return new Option('--project', `${verb} MyST project content`).default(false);
+}
+
 export function makeBranchOption() {
   return new Option(
     '--branch <branch>',
