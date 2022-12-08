@@ -35,7 +35,7 @@ export function exportSite(session: ISession, opts: BuildOpts) {
 export function getProjectPaths(session: ISession) {
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   const projectPaths: string[] = [
-    selectors.selectCurrentProjectPath(session.store.getState()) ?? '.',
+    selectors.selectCurrentProjectPath(session.store.getState()) ?? path.resolve('.'),
     ...(siteConfig?.projects
       ?.map((proj) => proj.path)
       .filter((projectPath): projectPath is string => !!projectPath) ?? []),
