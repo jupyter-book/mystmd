@@ -84,9 +84,9 @@ export async function loadProjectFromDisk(
     bibliography = allBibFiles;
   }
   await Promise.all(bibliography.map((p: string) => loadFile(session, p, '.bib')));
-  combineProjectCitationRenderers(session, path);
   const project: LocalProject = { ...newProject, bibliography };
   session.store.dispatch(projects.actions.receive(project));
+  combineProjectCitationRenderers(session, path);
   return project;
 }
 

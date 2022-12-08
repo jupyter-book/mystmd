@@ -22,12 +22,12 @@ export async function localArticleExport(
       const { $file, $project, ...exportOptions } = exportOptionsWithFile;
       const { format, output } = exportOptions;
       const sessionClone = session.clone();
-      let fileProjectPath = projectPath ?? $project;
+      const fileProjectPath =
+        projectPath ??
+        $project ??
+        (await findCurrentProjectAndLoad(sessionClone, path.dirname($file)));
       if (fileProjectPath) {
         await loadProjectFromDisk(sessionClone, fileProjectPath);
-      } else {
-        fileProjectPath = await findCurrentProjectAndLoad(sessionClone, path.dirname($file));
-        if (fileProjectPath) await loadProjectFromDisk(sessionClone, fileProjectPath);
       }
       if (format === ExportFormats.tex) {
         if (path.extname(output) === '.zip') {
