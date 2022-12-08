@@ -28,9 +28,57 @@ const ALL_OPTS: CleanOptions = {
   exports: true,
   templates: true,
 };
+const DEFAULT_OPTS: CleanOptions = {
+  docx: true,
+  pdf: true,
+  tex: true,
+  site: true,
+  temp: true,
+  exports: true,
+};
+
+function coerceOpts(opts: CleanOptions) {
+  const { docx, pdf, tex, site, temp, exports, templates, all } = opts;
+  if (all) return { ...opts, ...ALL_OPTS };
+  if (!docx && !pdf && !tex && !site && !temp && !exports && !templates) {
+    return { ...opts, ...DEFAULT_OPTS };
+  }
+  return { ...opts };
+}
+
+/**
+ * Returns true if 'item' is a subpath under folder
+ *
+ * e.g. isSubpath('_build/exports/out.pdf', '_build/exports') => true
+ *      isSubpath('_build/exports', '_build/exports/out.pdf') => false
+ *      isSubpath('_build/exports', '_build/exports') => false
+ */
+function isSubpath(item: string, folder: string) {
+  if (item === folder) return false;
+  const itemParts = item.split(path.sep);
+  const folderParts = folder.split(path.sep);
+  let subpath = true;
+  folderParts.forEach((part, index) => {
+    if (itemParts[index] !== part) subpath = false;
+  });
+  return subpath;
+}
+
+function isSubpathOfAny(item: string, folders: string[]) {
+  let subpath = false;
+  folders.forEach((folder) => {
+    if (isSubpath(item, folder)) subpath = true;
+  });
+  return subpath;
+}
+
+function deduplicatePaths(paths: string[]) {
+  const uniquePaths = [...new Set(paths)];
+  return uniquePaths.filter((item) => !isSubpathOfAny(item, [...uniquePaths]));
+}
 
 export async function clean(session: ISession, files: string[], opts: CleanOptions) {
-  if (opts.all) opts = { ...opts, ...ALL_OPTS };
+  opts = coerceOpts(opts);
   const { site, temp, exports, templates, yes } = opts;
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   let pathsToDelete: string[] = [];
@@ -65,7 +113,7 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
   if (site) {
     pathsToDelete.push(session.sitePath());
   }
-  pathsToDelete = [...new Set(pathsToDelete.filter((p) => fs.existsSync(p)))].sort();
+  pathsToDelete = deduplicatePaths(pathsToDelete.filter((p) => fs.existsSync(p))).sort();
   if (pathsToDelete.length === 0) {
     session.log.warn(`🗑  No build artifacts found to clean!`);
     return;
