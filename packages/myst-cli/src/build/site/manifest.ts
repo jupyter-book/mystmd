@@ -57,7 +57,7 @@ export async function localToManifestProject(
   const state = session.store.getState();
   const projConfig = selectors.selectLocalProjectConfig(state, projectPath);
   const proj = selectors.selectLocalProject(state, projectPath);
-  if (!proj || !projConfig) return null;
+  if (!proj) return null;
   // Update all of the page title to the frontmatter title
   const { index, file } = proj;
   const indexExports = await resolvePageExports(session, file, projectPath);
@@ -91,7 +91,7 @@ export async function localToManifestProject(
       return { ...page };
     }),
   );
-  const projFrontmatter = filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS);
+  const projFrontmatter = projConfig ? filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS) : {};
   return {
     ...projFrontmatter,
     bibliography: projFrontmatter.bibliography || [],
