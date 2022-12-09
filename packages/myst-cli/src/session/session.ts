@@ -32,7 +32,9 @@ export class Session implements ISession {
     this.store = createStore(rootReducer);
     findCurrentProjectAndLoad(this, '.');
     findCurrentSiteAndLoad(this, '.');
-    reloadAllConfigsForCurrentSite(this);
+    if (selectors.selectCurrentSitePath(this.store.getState())) {
+      reloadAllConfigsForCurrentSite(this);
+    }
   }
 
   buildPath(): string {

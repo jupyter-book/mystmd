@@ -91,6 +91,7 @@ export async function init(session: ISession, opts: InitOptions) {
     fs.writeFileSync(configFile, configData);
   }
   if (writeToc) {
+    loadConfigAndValidateOrThrow(session, '.');
     await loadProjectFromDisk(session, '.', { writeToc });
   }
 }
