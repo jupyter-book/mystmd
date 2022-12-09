@@ -3,13 +3,11 @@ import { Command } from 'commander';
 import yaml from 'js-yaml';
 import fs from 'fs';
 import { join, extname, resolve } from 'path';
-import type { ISession } from '../types';
-import type { ValidationOptions } from 'simple-validators';
-import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
-import { RENDERER_DOC_KEYS } from '../types';
-import { validateTemplateYml } from '../validators';
 import { clirun } from 'myst-cli-utils';
-import { getSession } from '../session';
+import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import type { ISession } from 'myst-templates';
+import { RENDERER_DOC_KEYS, validateTemplateYml, getSession } from 'myst-templates';
+import type { ValidationOptions } from 'simple-validators';
 
 type Variables = Record<
   'options' | 'doc' | 'parts' | 'packages' | 'global',

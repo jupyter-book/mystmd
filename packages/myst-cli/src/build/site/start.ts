@@ -9,10 +9,10 @@ import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';
 import type { ISession } from '../../session/types';
 import version from '../../version';
-import { cloneSiteTemplate, getJtex } from './template';
 import { createServerLogger } from './logger';
 import type { Options } from './prepare';
 import { buildSite } from './prepare';
+import { cloneSiteTemplate, getMystTemplate } from './template';
 import { watchContent } from './watch';
 
 const DEFAULT_START_COMMAND = 'npm run start';
@@ -92,8 +92,8 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHo
 
 export async function startServer(session: ISession, opts: Options): Promise<void> {
   warnOnHostEnvironmentVariable(session, opts);
-  const jtex = await getJtex(session);
-  if (!opts.headless) await cloneSiteTemplate(session, jtex);
+  const mystTemplate = await getMystTemplate(session);
+  if (!opts.headless) await cloneSiteTemplate(session, mystTemplate);
   await buildSite(session, opts);
   const server = await startContentServer(session);
   const { extraLinkTransformers, extraTransforms } = opts;
@@ -104,12 +104,14 @@ export async function startServer(session: ISession, opts: Options): Promise<voi
       `\n🔌 Content server started on port ${server.port}!  🥳 🎉\n\n\n\t👉  ${local}  👈\n\n`,
     );
   } else {
-    session.log.info(`\n\n\t✨✨✨  Starting ${jtex.getValidatedTemplateYml().title}  ✨✨✨\n\n`);
+    session.log.info(
+      `\n\n\t✨✨✨  Starting ${mystTemplate.getValidatedTemplateYml().title}  ✨✨✨\n\n`,
+    );
     await makeExecutable(
-      jtex.getValidatedTemplateYml().build?.start ?? DEFAULT_START_COMMAND,
+      mystTemplate.getValidatedTemplateYml().build?.start ?? DEFAULT_START_COMMAND,
       createServerLogger(session),
       {
-        cwd: jtex.templatePath,
+        cwd: mystTemplate.templatePath,
         env: { ...process.env, CONTENT_CDN_PORT: String(server.port) },
       },
     )();

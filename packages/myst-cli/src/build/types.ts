@@ -1,6 +1,6 @@
 import type { File } from 'docx';
-import type { RendererDoc } from 'jtex';
 import type { Export } from 'myst-frontmatter';
+import type { RendererDoc } from 'myst-templates';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types';
 import type { RendererData } from '../transforms/types';

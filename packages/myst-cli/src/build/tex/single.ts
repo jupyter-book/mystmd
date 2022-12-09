@@ -2,17 +2,19 @@ import AdmZip from 'adm-zip';
 import fs from 'fs';
 import path from 'path';
 import type { TemplateImports } from 'jtex';
-import JTex, { mergeTemplateImports } from 'jtex';
+import { renderTex, mergeTemplateImports } from 'jtex';
 import type { Root } from 'mdast';
 import { writeFileToFolder } from 'myst-cli-utils';
 import { extractPart } from 'myst-common';
 import type { Export, PageFrontmatter } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
+import MystTemplate from 'myst-templates';
 import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
 import type { ValidationOptions } from 'simple-validators';
+import { unified } from 'unified';
 import { findCurrentProjectAndLoad } from '../../config';
 import { getRawFrontmatterFromFile } from '../../frontmatter';
 import { bibFilesInDir } from '../../process';
@@ -28,7 +30,6 @@ import {
   getSingleFileContent,
   resolveAndLogErrors,
 } from '../utils';
-import { unified } from 'unified';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg'];
@@ -122,12 +123,12 @@ export async function localArticleToTexTemplated(
   }
   concatenateFiles(bibFiles, path.join(path.dirname(templateOptions.output), DEFAULT_BIB_FILENAME));
 
-  const jtex = new JTex(session, {
+  const mystTemplate = new MystTemplate(session, {
     template: templateOptions.template || undefined,
     buildDir: session.buildPath(),
   });
-  await jtex.ensureTemplateExistsOnPath();
-  const templateYml = jtex.getValidatedTemplateYml();
+  await mystTemplate.ensureTemplateExistsOnPath();
+  const templateYml = mystTemplate.getValidatedTemplateYml();
 
   const partDefinitions = templateYml?.parts || [];
   const parts: Record<string, string> = {};
@@ -147,7 +148,7 @@ export async function localArticleToTexTemplated(
   const result = mdastToTex(mdast, frontmatter, templateYml);
   // Fill in template
   session.log.info(`🖋  Writing templated tex to ${templateOptions.output}`);
-  jtex.render({
+  renderTex(mystTemplate, {
     contentOrPath: result.value,
     outputPath: templateOptions.output,
     frontmatter,

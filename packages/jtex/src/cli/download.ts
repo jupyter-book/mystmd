@@ -1,14 +1,14 @@
+import chalk from 'chalk';
 import { Command } from 'commander';
 import { clirun, tic } from 'myst-cli-utils';
-import type { ISession } from '../types';
+import type { ISession } from 'myst-templates';
 import {
   downloadTemplate,
   fetchPublicTemplate,
   listPublicTemplates,
   resolveInputs,
-} from '../download';
-import chalk from 'chalk';
-import { getSession } from '../session';
+  getSession,
+} from 'myst-templates';
 
 export async function downloadTemplateCLI(session: ISession, template: string, path?: string) {
   const { templatePath, templateUrl } = resolveInputs(session, { template });

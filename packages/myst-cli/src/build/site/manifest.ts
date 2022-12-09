@@ -3,6 +3,7 @@ import path from 'path';
 import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config';
 import type { Export } from 'myst-frontmatter';
 import { ExportFormats, PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import type MystTemplate from 'myst-templates';
 import { TemplateOptionTypes } from 'myst-templates';
 import { filterKeys } from 'simple-validators';
 import type { ISession } from '../../session/types';
@@ -11,8 +12,7 @@ import { selectors } from '../../store';
 import { hashAndCopyStaticFile } from '../../utils';
 import type { ExportWithOutput } from '../types';
 import { collectExportOptions } from '../utils';
-import { getJtex } from './template';
-import type JTex from 'jtex';
+import { getMystTemplate } from './template';
 
 async function resolvePageExports(session: ISession, file: string, projectPath: string) {
   const exports = (
@@ -105,11 +105,11 @@ export async function localToManifestProject(
 
 async function resolveTemplateFileOptions(
   session: ISession,
-  jtex: JTex,
+  mystTemplate: MystTemplate,
   options: SiteTemplateOptions,
 ) {
   const resolvedOptions = { ...options };
-  jtex.getValidatedTemplateYml().options?.forEach((option) => {
+  mystTemplate.getValidatedTemplateYml().options?.forEach((option) => {
     if (option.type === TemplateOptionTypes.file && options[option.id]) {
       const fileHash = hashAndCopyStaticFile(session, options[option.id], session.publicPath());
       resolvedOptions[option.id] = `/${fileHash}`;
@@ -154,16 +154,16 @@ export async function getSiteManifest(session: ISession): Promise<SiteManifest> 
   const actions = siteConfig.actions?.map((action) => resolveSiteManifestAction(session, action));
   const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
   const siteTemplateOptions = selectors.selectCurrentSiteTemplateOptions(state) || {};
-  const jtex = await getJtex(session);
+  const mystTemplate = await getMystTemplate(session);
   const siteConfigFile = selectors.selectCurrentSiteFile(state);
-  const validatedOptions = jtex.validateOptions(siteTemplateOptions, siteConfigFile);
-  const validatedFrontmatter = jtex.validateDoc(
+  const validatedOptions = mystTemplate.validateOptions(siteTemplateOptions, siteConfigFile);
+  const validatedFrontmatter = mystTemplate.validateDoc(
     siteFrontmatter,
     validatedOptions,
     undefined,
     siteConfigFile,
   );
-  const resolvedOptions = await resolveTemplateFileOptions(session, jtex, validatedOptions);
+  const resolvedOptions = await resolveTemplateFileOptions(session, mystTemplate, validatedOptions);
   const manifest: SiteManifest = {
     ...validatedFrontmatter,
     ...resolvedOptions,
