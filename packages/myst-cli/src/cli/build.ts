@@ -3,7 +3,6 @@ import { build } from '../build';
 import { Session } from '../session';
 import { clirun } from './clirun';
 import {
-  makeBranchOption,
   makeCheckLinksOption,
   makeDocxOption,
   makeForceOption,
@@ -11,7 +10,6 @@ import {
   makeSiteOption,
   makeStrictOption,
   makeTexOption,
-  makeWriteTocOption,
 } from './options';
 
 export function makeBuildCLI(program: Command) {
@@ -24,11 +22,9 @@ export function makeBuildCLI(program: Command) {
     .addOption(makeTexOption('Build'))
     .addOption(makeDocxOption('Build'))
     .addOption(makeSiteOption('Build'))
-    .addOption(makeBranchOption())
-    .addOption(makeWriteTocOption())
-    .addOption(makeStrictOption())
     .addOption(makeForceOption())
     .addOption(makeCheckLinksOption())
+    .addOption(makeStrictOption())
     .action(clirun(Session, build, program));
   return command;
 }

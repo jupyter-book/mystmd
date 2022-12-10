@@ -20,13 +20,6 @@ export function makeProjectOption(verb: string) {
   return new Option('--project', `${verb} MyST project content`).default(false);
 }
 
-export function makeBranchOption() {
-  return new Option(
-    '--branch <branch>',
-    'Branch to clone from git@github.com:curvenote/curvenote.git',
-  ).default('main');
-}
-
 export function makeStrictOption() {
   return new Option('--strict', 'Summarize build warnings and stop on any errors.').default(false);
 }
