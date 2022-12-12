@@ -783,6 +783,14 @@ const Header: IDirective = {
   hast: (h, node) => h(node, 'header'),
 };
 
+function aliasDirectiveHack(directive: IDirective['myst']): IDirective {
+  return {
+    myst: directive,
+    mdast: { type: '_' },
+    hast: (h, node) => h(node, '_'),
+  };
+}
+
 export const directives = {
   image: Image,
   'r:var': RVar,
@@ -808,4 +816,9 @@ export const directives = {
   header: Header,
   grid: Grid,
   'grid-item-card': Card,
+  '.callout-note': aliasDirectiveHack(directivesDefault.note),
+  '.callout-warning': aliasDirectiveHack(directivesDefault.warning),
+  '.callout-important': aliasDirectiveHack(directivesDefault.important),
+  '.callout-tip': aliasDirectiveHack(directivesDefault.tip),
+  '.callout-caution': aliasDirectiveHack(directivesDefault.caution),
 };
