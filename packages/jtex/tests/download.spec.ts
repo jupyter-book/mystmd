@@ -1,5 +1,6 @@
 import fs from 'fs';
-import JTex, { downloadTemplate, resolveInputs, Session } from '../src';
+import MystTemplate, { downloadTemplate, resolveInputs, Session } from 'myst-templates';
+import { renderTex } from '../src';
 
 describe('Download Template', () => {
   it('Download default template', async () => {
@@ -14,12 +15,12 @@ describe('Download Template', () => {
     expect(fs.existsSync('_build/templates/tex/myst/curvenote/template.tex')).toBe(true);
   });
   it('Bad template paths to throw', async () => {
-    const jtex = new JTex(new Session(), { template: 'not-there' });
-    expect(() => jtex.preRender({} as any)).toThrow(/does not exist/);
+    const jtex = new MystTemplate(new Session(), { template: 'not-there' });
+    expect(() => jtex.prepare({} as any)).toThrow(/does not exist/);
   });
   it('Render out the template', async () => {
-    const jtex = new JTex(new Session(), { template: `${__dirname}/example` });
-    jtex.render({
+    const jtex = new MystTemplate(new Session(), { template: `${__dirname}/example` });
+    renderTex(jtex, {
       contentOrPath: `${__dirname}/test.tex`,
       outputPath: '_build/out/article.tex',
       frontmatter: {
