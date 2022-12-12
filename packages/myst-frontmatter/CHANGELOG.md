@@ -1,5 +1,12 @@
 # myst-frontmatter
 
+## 0.0.4
+
+### Patch Changes
+
+- 5403b5b5: Modify site frontmatter/config for templating - remove some fields, allow arbitrary template options, do not inherit from site frontmatter on page/project
+- 11ff02b4: Update doi-utils to 1.0.9
+
 ## 0.0.3
 
 ### Patch Changes

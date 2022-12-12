@@ -1,5 +1,11 @@
 # myst-common
 
+## 0.0.8
+
+### Patch Changes
+
+- 11ff02b4: Update doi-utils to 1.0.9
+
 ## 0.0.7
 
 ### Patch Changes

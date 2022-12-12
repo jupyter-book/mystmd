@@ -1,5 +1,17 @@
 # myst-to-jats
 
+## 0.0.5
+
+### Patch Changes
+
+- 11ff02b4: Update doi-utils to 1.0.9
+- Updated dependencies [5403b5b5]
+- Updated dependencies [566c9ffe]
+- Updated dependencies [11ff02b4]
+  - myst-frontmatter@0.0.4
+  - jats-xml@0.0.5
+  - myst-common@0.0.8
+
 ## 0.0.4
 
 ### Patch Changes

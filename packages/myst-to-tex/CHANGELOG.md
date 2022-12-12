@@ -1,5 +1,15 @@
 # myst-to-tex
 
+## 0.0.8
+
+### Patch Changes
+
+- 6439be3b: Add additional export conversions (`&nbsp;` and `\$\times# myst-to-tex) to myst-to-tex
+- Updated dependencies [5403b5b5]
+- Updated dependencies [11ff02b4]
+  - myst-frontmatter@0.0.4
+  - myst-common@0.0.8
+
 ## 0.0.7
 
 ### Patch Changes

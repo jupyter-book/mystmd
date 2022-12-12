@@ -1,5 +1,14 @@
 # myst-config
 
+## 0.0.4
+
+### Patch Changes
+
+- 5403b5b5: Modify site frontmatter/config for templating - remove some fields, allow arbitrary template options, do not inherit from site frontmatter on page/project
+- Updated dependencies [5403b5b5]
+- Updated dependencies [11ff02b4]
+  - myst-frontmatter@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

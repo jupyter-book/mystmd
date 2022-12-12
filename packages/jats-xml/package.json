@@ -1,6 +1,6 @@
 {
   "name": "jats-xml",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Types and utilities for working with JATS in Typescript",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/jats-xml",
@@ -52,8 +52,8 @@
   },
   "dependencies": {
     "fair-principles": "^1.0.3",
-    "myst-common": "^0.0.7",
-    "myst-frontmatter": "^0.0.3"
+    "myst-common": "^0.0.8",
+    "myst-frontmatter": "^0.0.4"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

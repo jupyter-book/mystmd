@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 0.0.10
+
+### Patch Changes
+
+- adb6e7fa: Create a `unnestTransform` that generically unnests children elements in a parent. Used for typosgraphy and math nested in a paragraph.
+- 11ff02b4: Update doi-utils to 1.0.9
+- Updated dependencies [11ff02b4]
+  - myst-common@0.0.8
+  - intersphinx@0.0.6
+
 ## 0.0.9
 
 ### Patch Changes

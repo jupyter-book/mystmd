@@ -1,5 +1,34 @@
 # myst-cli
 
+## 0.1.0
+
+### Minor Changes
+
+- d9b7457d: myst-cli now lets you initialize, build, and run myst sites locally
+
+### Patch Changes
+
+- 5403b5b5: Modify site frontmatter/config for templating - remove some fields, allow arbitrary template options, do not inherit from site frontmatter on page/project
+- 48ae3284: Support basic callout admonitions that use the QMD format (e.g. `{.callout-tip}`). More to come in the future!
+- e37dca1d: Add site build/start to myst-cli
+- 11ff02b4: Update doi-utils to 1.0.9
+- Updated dependencies [6439be3b]
+- Updated dependencies [5403b5b5]
+- Updated dependencies [5403b5b5]
+- Updated dependencies [d9b7457d]
+- Updated dependencies [adb6e7fa]
+- Updated dependencies [4e1abca3]
+- Updated dependencies [11ff02b4]
+  - myst-to-tex@0.0.8
+  - myst-config@0.0.4
+  - myst-frontmatter@0.0.4
+  - jtex@0.1.0
+  - myst-templates@0.1.0
+  - myst-transforms@0.0.10
+  - myst-cli-utils@0.0.8
+  - myst-common@0.0.8
+  - intersphinx@0.0.6
+
 ## 0.0.9
 
 ### Patch Changes

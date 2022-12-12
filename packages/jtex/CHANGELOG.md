@@ -1,5 +1,22 @@
 # jtex
 
+## 0.1.0
+
+### Minor Changes
+
+- d9b7457d: Myst template download, validation, preparation is now part of myst-templates; jtex only handles the tex rendering on top of myst-templates
+
+### Patch Changes
+
+- 5403b5b5: Jtex may now clone templates in addition to download/unzip
+- Updated dependencies [5403b5b5]
+- Updated dependencies [d9b7457d]
+- Updated dependencies [4e1abca3]
+- Updated dependencies [11ff02b4]
+  - myst-frontmatter@0.0.4
+  - myst-templates@0.1.0
+  - myst-cli-utils@0.0.8
+
 ## 0.0.8
 
 ### Patch Changes
