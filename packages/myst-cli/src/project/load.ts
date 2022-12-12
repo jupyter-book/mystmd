@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { isUrl } from 'myst-cli-utils';
 import { loadConfigAndValidateOrThrow } from '../config';
 import { loadFile, combineProjectCitationRenderers } from '../process';
@@ -24,13 +24,20 @@ import type { LocalProject, LocalProjectPage } from './types';
  * In this case, index will be ignored in favor of root from '_toc.yml'
  * If '_toc.yml' does not exist, project structure will be built from the local file/foler structure.
  */
-export function loadProjectFromDisk(
+export async function loadProjectFromDisk(
   session: ISession,
   path: string,
   opts?: { index?: string; writeToc?: boolean },
-): LocalProject {
-  path = path || '.';
+): Promise<LocalProject> {
+  path = path || resolve('.');
+  const cachedProject = selectors.selectLocalProject(session.store.getState(), path);
+  if (cachedProject) return cachedProject;
   const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
+  if (!projectConfig) {
+    session.log.warn(
+      `Loading project from path with no config file: ${path}\nConsider running "myst init --project" in that directory`,
+    );
+  }
   let newProject: Omit<LocalProject, 'bibliography'> | undefined;
   let { index, writeToc } = opts || {};
   if (validateTOC(session, path)) {
@@ -76,17 +83,11 @@ export function loadProjectFromDisk(
   } else {
     bibliography = allBibFiles;
   }
+  await Promise.all(bibliography.map((p: string) => loadFile(session, p, '.bib')));
   const project: LocalProject = { ...newProject, bibliography };
   session.store.dispatch(projects.actions.receive(project));
+  combineProjectCitationRenderers(session, path);
   return project;
-}
-
-export async function loadProjectAndBibliography(session: ISession, path: string) {
-  const { bibliography } = loadProjectFromDisk(session, path);
-  if (bibliography) {
-    await Promise.all(bibliography.map((p: string) => loadFile(session, p, '.bib')));
-    combineProjectCitationRenderers(session, path);
-  }
 }
 
 export function findProjectsOnPath(session: ISession, path: string) {

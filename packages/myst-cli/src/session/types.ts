@@ -15,6 +15,8 @@ export type ISession = {
   clone(): ISession;
 
   buildPath(): string;
+  sitePath(): string;
+  contentPath(): string;
   publicPath(): string;
   staticPath(): string;
 };

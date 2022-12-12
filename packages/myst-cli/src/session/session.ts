@@ -6,7 +6,11 @@ import type { Logger } from 'myst-cli-utils';
 import { rootReducer, selectors } from '../store';
 import type { RootState } from '../store';
 import type { ISession } from './types';
-import { findCurrentProjectAndLoad, findCurrentSiteAndLoad } from '../config';
+import {
+  findCurrentProjectAndLoad,
+  findCurrentSiteAndLoad,
+  reloadAllConfigsForCurrentSite,
+} from '../config';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.myst.tools';
@@ -24,10 +28,13 @@ export class Session implements ISession {
   constructor(opts: { logger?: Logger } = {}) {
     this.API_URL = API_URL;
     this.configFiles = CONFIG_FILES;
-    this.$logger = opts.logger ?? chalkLogger(LogLevel.info);
+    this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.store = createStore(rootReducer);
     findCurrentProjectAndLoad(this, '.');
     findCurrentSiteAndLoad(this, '.');
+    if (selectors.selectCurrentSitePath(this.store.getState())) {
+      reloadAllConfigsForCurrentSite(this);
+    }
   }
 
   buildPath(): string {
@@ -38,8 +45,16 @@ export class Session implements ISession {
     return path.resolve(path.join(root, '_build'));
   }
 
+  sitePath(): string {
+    return path.join(this.buildPath(), 'site');
+  }
+
+  contentPath(): string {
+    return path.join(this.sitePath(), 'content');
+  }
+
   publicPath(): string {
-    return path.join(this.buildPath(), 'public');
+    return path.join(this.sitePath(), 'public');
   }
 
   staticPath(): string {

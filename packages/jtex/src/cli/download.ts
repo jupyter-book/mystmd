@@ -1,21 +1,21 @@
+import chalk from 'chalk';
 import { Command } from 'commander';
 import { clirun, tic } from 'myst-cli-utils';
-import type { ISession } from '../types';
+import type { ISession } from 'myst-templates';
 import {
-  downloadAndUnzipTemplate,
+  downloadTemplate,
   fetchPublicTemplate,
   listPublicTemplates,
   resolveInputs,
-} from '../download';
-import chalk from 'chalk';
-import { getSession } from '../session';
+  getSession,
+} from 'myst-templates';
 
 export async function downloadTemplateCLI(session: ISession, template: string, path?: string) {
   const { templatePath, templateUrl } = resolveInputs(session, { template });
   if (!templateUrl) {
     throw new Error(`Unresolved template URL for "${template}"`);
   }
-  await downloadAndUnzipTemplate(session, { templatePath: path || templatePath, templateUrl });
+  await downloadTemplate(session, { templatePath: path || templatePath, templateUrl });
 }
 
 export async function listTemplatesCLI(session: ISession, name?: string, opts?: { tag?: string }) {

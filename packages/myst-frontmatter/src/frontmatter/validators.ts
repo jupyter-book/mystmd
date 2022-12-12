@@ -32,19 +32,23 @@ import type {
   SiteFrontmatter,
   TextRepresentation,
   Venue,
-  SiteDesign,
 } from './types';
 
-export const SITE_FRONTMATTER_KEYS = ['title', 'description', 'venue', 'keywords', 'design'];
-export const PROJECT_FRONTMATTER_KEYS = [
+export const SITE_FRONTMATTER_KEYS = [
+  'title',
+  'description',
   'authors',
+  'venue',
+  'github',
+  'keywords',
+];
+export const PROJECT_FRONTMATTER_KEYS = [
   'date',
   'name',
   'doi',
   'arxiv',
   'open_access',
   'license',
-  'github',
   'binder',
   'source',
   'subject',
@@ -68,7 +72,6 @@ export const PAGE_FRONTMATTER_KEYS = [
 // These keys only exist on the project.
 PROJECT_FRONTMATTER_KEYS.push('references');
 
-export const USE_SITE_FALLBACK = ['venue'];
 export const USE_PROJECT_FALLBACK = [
   'authors',
   'date',
@@ -113,13 +116,6 @@ const NUMBERING_KEYS = [
   'heading_6',
 ];
 const KERNELSPEC_KEYS = ['name', 'language', 'display_name', 'argv', 'env'];
-const SITE_DESIGN_KEYS = [
-  'hide_authors',
-  'hide_toc',
-  'hide_outline',
-  'hide_title_block',
-  'hide_footer_links',
-];
 const TEXT_REPRESENTATION_KEYS = ['extension', 'format_name', 'format_version', 'jupytext_version'];
 const JUPYTEXT_KEYS = ['formats', 'text_representation'];
 export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output', 'id', 'name', 'renderer'];
@@ -151,24 +147,6 @@ export function validateVenue(input: any, opts: ValidationOptions) {
     output.url = validateUrl(value.url, incrementOptions('url', opts));
   }
   return output;
-}
-
-export function validateSiteDesign(input: any, opts: ValidationOptions): SiteDesign | undefined {
-  const value = validateObjectKeys(input, { optional: SITE_DESIGN_KEYS }, opts);
-  if (value === undefined) return undefined;
-  const design: SiteDesign = {};
-
-  const validateBooleanOption = (key: keyof SiteDesign) => {
-    if (defined(value[key])) {
-      design[key] = validateBoolean(value[key], incrementOptions(key, opts));
-    }
-  };
-
-  // All boolean options at the moment
-  SITE_DESIGN_KEYS.filter((k) => k.startsWith('hide_')).forEach((k) => {
-    validateBooleanOption(k as keyof SiteDesign);
-  });
-  return design;
 }
 
 /**
@@ -439,8 +417,20 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.description)) {
     output.description = validateString(value.description, incrementOptions('description', opts));
   }
+  if (defined(value.authors)) {
+    output.authors = validateList(
+      value.authors,
+      incrementOptions('authors', opts),
+      (author, index) => {
+        return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
+      },
+    );
+  }
   if (defined(value.venue)) {
     output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
+  }
+  if (defined(value.github)) {
+    output.github = validateGithubUrl(value.github, incrementOptions('github', opts));
   }
   if (defined(value.keywords)) {
     output.keywords = validateList(
@@ -451,13 +441,6 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
       },
     );
   }
-  if (defined(value.design)) {
-    const designOpts = incrementOptions('design', opts);
-    const design = validateObject(value.design, designOpts);
-    if (design) {
-      output.design = validateSiteDesign(design, designOpts);
-    }
-  }
   return output;
 }
 
@@ -466,15 +449,6 @@ export function validateProjectFrontmatterKeys(
   opts: ValidationOptions,
 ) {
   const output: ProjectFrontmatter = validateSiteFrontmatterKeys(value, opts);
-  if (defined(value.authors)) {
-    output.authors = validateList(
-      value.authors,
-      incrementOptions('authors', opts),
-      (author, index) => {
-        return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
-      },
-    );
-  }
   if (defined(value.date)) {
     output.date = validateDate(value.date, incrementOptions('date', opts));
   }
@@ -503,9 +477,6 @@ export function validateProjectFrontmatterKeys(
   }
   if (defined(value.license)) {
     output.license = validateLicenses(value.license, incrementOptions('license', opts));
-  }
-  if (defined(value.github)) {
-    output.github = validateGithubUrl(value.github, incrementOptions('github', opts));
   }
   if (defined(value.binder)) {
     output.binder = validateUrl(value.binder, incrementOptions('binder', opts));
@@ -623,14 +594,6 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
 }
 
 /**
- * Validate SiteFrontmatter object against the schema
- */
-export function validateSiteFrontmatter(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: SITE_FRONTMATTER_KEYS }, opts) || {};
-  return validateSiteFrontmatterKeys(value, opts) as SiteFrontmatter;
-}
-
-/**
  * Validate ProjectFrontmatter object against the schema
  */
 export function validateProjectFrontmatter(input: any, opts: ValidationOptions) {
@@ -655,11 +618,7 @@ export function validatePageFrontmatter(input: any, opts: ValidationOptions) {
 export function fillPageFrontmatter(
   pageFrontmatter: PageFrontmatter,
   projectFrontmatter: ProjectFrontmatter,
-  siteFrontmatter?: SiteFrontmatter,
 ) {
-  if (siteFrontmatter) {
-    projectFrontmatter = fillMissingKeys(projectFrontmatter, siteFrontmatter, USE_SITE_FALLBACK);
-  }
   const frontmatter = fillMissingKeys(pageFrontmatter, projectFrontmatter, USE_PROJECT_FALLBACK);
 
   // If numbering is an object, combine page and project settings.

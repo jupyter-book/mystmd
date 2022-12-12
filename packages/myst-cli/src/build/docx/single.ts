@@ -1,19 +1,19 @@
 import fs from 'fs';
 import path from 'path';
-import type { RendererDoc } from 'jtex';
-import JTex from 'jtex';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { Export } from 'myst-frontmatter';
 import { validateExport, ExportFormats } from 'myst-frontmatter';
+import type { RendererDoc } from 'myst-templates';
+import MystTemplate from 'myst-templates';
 import type { LinkTransformer } from 'myst-transforms';
 import { htmlTransform } from 'myst-transforms';
 import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config';
 import { getRawFrontmatterFromFile } from '../../frontmatter';
-import { loadProjectAndBibliography } from '../../project';
+import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session/types';
 import type { RendererData } from '../../transforms/types';
 import { createTempFolder, logMessagesFromVFile } from '../../utils';
@@ -179,20 +179,20 @@ export async function runWordExport(
   });
   const vfile = new VFile();
   vfile.path = output;
-  const jtex = new JTex(session, {
+  const mystTemplate = new MystTemplate(session, {
     kind: 'docx' as any,
     template: exportOptions.template || undefined,
     buildDir: session.buildPath(),
   });
-  await jtex.ensureTemplateExistsOnPath();
-  const { options, doc } = jtex.preRender({
+  await mystTemplate.ensureTemplateExistsOnPath();
+  const { options, doc } = mystTemplate.prepare({
     frontmatter: data.frontmatter,
     parts: [],
     options: exportOptions,
     sourceFile: file,
   });
   const renderer = exportOptions.renderer ?? defaultWordRenderer;
-  const docx = renderer(session, data, doc, options, jtex.templatePath, vfile);
+  const docx = renderer(session, data, doc, options, mystTemplate.templatePath, vfile);
   logMessagesFromVFile(session, vfile);
   session.log.info(`🖋  Writing docx to ${output}`);
   await writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));
@@ -207,7 +207,7 @@ export async function localArticleToWord(
 ) {
   let { projectPath } = opts;
   if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectAndBibliography(session, projectPath);
+  if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
     await collectWordExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
   ).map((exportOptions) => {

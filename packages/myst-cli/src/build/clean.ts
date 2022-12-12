@@ -1,38 +1,86 @@
 import fs from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';
-import { findCurrentProjectAndLoad } from '../config';
-import { filterPages, loadProjectFromDisk } from '../project';
-import { selectors } from '../store';
-import type { ISession } from '../session';
-import { getExportFormats } from './build';
-import { collectExportOptions } from './utils';
 import { ExportFormats } from 'myst-frontmatter';
-import { getLogOutputFolder, getTexOutputFolder } from './pdf/create';
 import { promptContinue } from '../cli/options';
+import type { ISession } from '../session';
+import { collectAllBuildExportOptions, getProjectPaths } from './build';
+import { getLogOutputFolder, getTexOutputFolder } from './pdf/create';
 
 export type CleanOptions = {
   docx?: boolean;
   pdf?: boolean;
   tex?: boolean;
+  site?: boolean;
   temp?: boolean;
   exports?: boolean;
+  templates?: boolean;
+  all?: boolean;
   yes?: boolean;
 };
 
-export async function clean(session: ISession, files: string[], opts: CleanOptions) {
-  const { temp, exports, yes } = opts;
-  const formats = getExportFormats(opts);
-  let projectPath: string | undefined;
-  if (files.length === 0) {
-    const configPath = selectors.selectCurrentProjectPath(session.store.getState());
-    const project = loadProjectFromDisk(session, configPath ?? '.');
-    files = filterPages(project).map((page) => page.file);
-    projectPath = configPath;
+const ALL_OPTS: CleanOptions = {
+  docx: true,
+  pdf: true,
+  tex: true,
+  site: true,
+  temp: true,
+  exports: true,
+  templates: true,
+};
+const DEFAULT_OPTS: CleanOptions = {
+  docx: true,
+  pdf: true,
+  tex: true,
+  site: true,
+  temp: true,
+  exports: true,
+};
+
+function coerceOpts(opts: CleanOptions) {
+  const { docx, pdf, tex, site, temp, exports, templates, all } = opts;
+  if (all) return { ...opts, ...ALL_OPTS };
+  if (!docx && !pdf && !tex && !site && !temp && !exports && !templates) {
+    return { ...opts, ...DEFAULT_OPTS };
   }
-  const exportOptionsList = await collectExportOptions(session, files, formats, {
-    projectPath,
+  return { ...opts };
+}
+
+/**
+ * Returns true if 'item' is a subpath under folder
+ *
+ * e.g. isSubpath('_build/exports/out.pdf', '_build/exports') => true
+ *      isSubpath('_build/exports', '_build/exports/out.pdf') => false
+ *      isSubpath('_build/exports', '_build/exports') => false
+ */
+function isSubpath(item: string, folder: string) {
+  if (item === folder) return false;
+  const itemParts = item.split(path.sep);
+  const folderParts = folder.split(path.sep);
+  let subpath = true;
+  folderParts.forEach((part, index) => {
+    if (itemParts[index] !== part) subpath = false;
   });
+  return subpath;
+}
+
+function isSubpathOfAny(item: string, folders: string[]) {
+  let subpath = false;
+  folders.forEach((folder) => {
+    if (isSubpath(item, folder)) subpath = true;
+  });
+  return subpath;
+}
+
+function deduplicatePaths(paths: string[]) {
+  const uniquePaths = [...new Set(paths)];
+  return uniquePaths.filter((item) => !isSubpathOfAny(item, [...uniquePaths]));
+}
+
+export async function clean(session: ISession, files: string[], opts: CleanOptions) {
+  opts = coerceOpts(opts);
+  const { site, temp, exports, templates, yes } = opts;
+  const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   let pathsToDelete: string[] = [];
   exportOptionsList.forEach((exportOptions) => {
     pathsToDelete.push(exportOptions.output);
@@ -41,33 +89,47 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
       pathsToDelete.push(getTexOutputFolder(exportOptions.output));
     }
   });
-  if (temp || exports) {
-    const projectPaths = projectPath
-      ? [projectPath]
-      : await Promise.all(
-          files.map(async (file) => await findCurrentProjectAndLoad(session, path.dirname(file))),
-        );
+  let buildFolders: string[] = [];
+  if (temp || exports || templates) {
+    const projectPaths = [
+      ...getProjectPaths(session),
+      ...exportOptionsList.map((exp) => exp.$project),
+    ];
     projectPaths
       .filter((projPath): projPath is string => Boolean(projPath))
       .forEach((projPath) => {
-        const buildPath = path.join(projPath, '_build');
-        if (temp) pathsToDelete.push(path.join(buildPath, 'temp'));
-        if (exports) pathsToDelete.push(path.join(buildPath, 'exports'));
+        buildFolders.push(path.join(projPath, '_build'));
       });
-    if (temp) pathsToDelete.push(path.join(session.buildPath(), 'temp'));
-    if (exports) pathsToDelete.push(path.join(session.buildPath(), 'exports'));
+    buildFolders.push(session.buildPath());
   }
-  pathsToDelete = [...new Set(pathsToDelete)].sort();
+  buildFolders = [...new Set(buildFolders)].sort();
+  if (temp || exports || templates) {
+    buildFolders.forEach((folder) => {
+      if (temp) pathsToDelete.push(path.join(folder, 'temp'));
+      if (exports) pathsToDelete.push(path.join(folder, 'exports'));
+      if (templates) pathsToDelete.push(path.join(folder, 'templates'));
+    });
+  }
+  if (site) {
+    pathsToDelete.push(session.sitePath());
+  }
+  pathsToDelete = deduplicatePaths(pathsToDelete.filter((p) => fs.existsSync(p))).sort();
   if (pathsToDelete.length === 0) {
-    session.log.warn(`🗑 No build artifacts found to clean!`);
+    session.log.warn(`🗑  No build artifacts found to clean!`);
     return;
   }
-  session.log.info(`❌ Deleting all the following paths:\n   ${pathsToDelete.join('\n   ')}`);
+  session.log.info(`Deleting all the following paths:\n\n  - ${pathsToDelete.join('\n  - ')}\n`);
   const cont = yes || (await inquirer.prompt([promptContinue()])).cont;
   if (cont) {
     pathsToDelete.forEach((pathToDelete) => {
+      session.log.info(`🗑  Deleting: ${pathToDelete}`);
       fs.rmSync(pathToDelete, { recursive: true, force: true });
-      session.log.info(`🗑 Deleting: ${pathToDelete}`);
+    });
+    buildFolders.forEach((buildFolder) => {
+      if (fs.readdirSync(buildFolder).length === 0) {
+        session.log.debug(`🗑  Deleting empty build folder: ${buildFolder}`);
+        fs.rmSync(buildFolder, { recursive: true, force: true });
+      }
     });
   }
 }

@@ -1,30 +1,30 @@
-import { Command, Option } from 'commander';
+import { Command } from 'commander';
 import { build } from '../build';
 import { Session } from '../session';
 import { clirun } from './clirun';
-import { makeDocxOption, makePdfOption, makeTexOption, makeYesOption } from './options';
-
-export function makeForceOption() {
-  return new Option(
-    '--force',
-    'Build outputs for the given format, even if corresponding exports are not defined in file frontmatter',
-  ).default(false);
-}
-
-export function makeCheckLinksOption() {
-  return new Option('--check-links', 'Check all links to websites resolve.').default(false);
-}
+import {
+  makeCheckLinksOption,
+  makeDocxOption,
+  makeForceOption,
+  makePdfOption,
+  makeSiteOption,
+  makeStrictOption,
+  makeTexOption,
+} from './options';
 
 export function makeBuildCLI(program: Command) {
   const command = new Command('build')
-    .description('Build pdf, tex, and word exports from MyST files')
+    .description(
+      'Build pdf, tex, and word exports from MyST files as well as build MyST site content',
+    )
     .argument('[files...]', 'list of files to export')
-    .addOption(makePdfOption())
-    .addOption(makeTexOption())
-    .addOption(makeDocxOption())
+    .addOption(makePdfOption('Build'))
+    .addOption(makeTexOption('Build'))
+    .addOption(makeDocxOption('Build'))
+    .addOption(makeSiteOption('Build'))
     .addOption(makeForceOption())
     .addOption(makeCheckLinksOption())
-    .addOption(makeYesOption())
+    .addOption(makeStrictOption())
     .action(clirun(Session, build, program));
   return command;
 }

@@ -20,6 +20,11 @@ export function selectCurrentSiteConfig(state: RootState) {
   return state.local.config.sites[resolve(state.local.config.currentSitePath)];
 }
 
+export function selectCurrentSiteTemplateOptions(state: RootState) {
+  if (!state.local.config.currentSitePath) return undefined;
+  return state.local.config.siteTemplateOptions[resolve(state.local.config.currentSitePath)];
+}
+
 export function selectCurrentSitePath(state: RootState) {
   return state.local.config.currentSitePath;
 }

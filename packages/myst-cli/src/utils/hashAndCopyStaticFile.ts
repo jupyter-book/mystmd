@@ -13,7 +13,7 @@ export function hashAndCopyStaticFile(session: ISession, file: string, writeFold
   const fd = fs.openSync(file, 'r');
   const { mtime, size } = fs.fstatSync(fd);
   fs.closeSync(fd);
-  const hash = computeHash(`${mtime.toString()}${size.toString()}`);
+  const hash = computeHash(`${file}${mtime.toString()}${size.toString()}`);
   const fileHash = `${name.slice(0, 20)}-${hash}${ext}`;
   const destination = path.join(writeFolder, fileHash);
   if (fs.existsSync(destination)) {

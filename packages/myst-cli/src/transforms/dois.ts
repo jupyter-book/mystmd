@@ -99,7 +99,7 @@ export async function transformLinkedDOIs(
   const after = Object.keys(doiRenderer).length;
   const number = after - before;
   if (number > 0) {
-    log.info(toc(`🪄 Linked ${number} DOI${number > 1 ? 's' : ''} in %s for ${path}`));
+    log.info(toc(`🪄  Linked ${number} DOI${number > 1 ? 's' : ''} in %s for ${path}`));
   }
   return renderer;
 }

@@ -49,7 +49,7 @@ export function getPageFrontmatter(
   const siteFrontmatter = selectors.selectCurrentSiteConfig(state) ?? {};
   const projectFrontmatter = path ? selectors.selectLocalProjectConfig(state, path) ?? {} : {};
 
-  const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter, siteFrontmatter);
+  const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter);
 
   if (siteFrontmatter?.design?.hide_authors) {
     delete frontmatter.authors;

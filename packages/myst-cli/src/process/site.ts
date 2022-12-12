@@ -1,0 +1,293 @@
+import yaml from 'js-yaml';
+import { join } from 'path';
+import chalk from 'chalk';
+import { Inventory, Domains } from 'intersphinx';
+import { writeFileToFolder, tic } from 'myst-cli-utils';
+import { toText } from 'myst-common';
+import type { SiteProject } from 'myst-config';
+import type { Node } from 'myst-spec';
+import type { LinkTransformer } from 'myst-transforms';
+import { select } from 'unist-util-select';
+import { getSiteManifest } from '../build/site/manifest';
+import type { ISession } from '../session/types';
+import { transformWebp } from '../transforms';
+import type { PageReferenceStates, TransformFn } from './mdast';
+import { postProcessMdast, transformMdast } from './mdast';
+import { castSession } from '../session';
+import { watch, selectors } from '../store';
+import type { LocalProject } from '../project';
+import { filterPages, loadProjectFromDisk } from '../project';
+import { selectFile, loadFile } from '../process';
+import { loadIntersphinx } from './intersphinx';
+import { combineProjectCitationRenderers } from './citations';
+import { reloadAllConfigsForCurrentSite } from '../config';
+
+const WEB_IMAGE_EXTENSIONS = ['.webp', '.svg', '.gif', '.png', '.jpg', '.jpeg'];
+
+type ProcessOptions = {
+  watchMode?: boolean;
+  writeToc?: boolean;
+  writeFiles?: boolean;
+  strict?: boolean;
+  checkLinks?: boolean;
+  extraLinkTransformers?: LinkTransformer[];
+  extraTransforms?: TransformFn[];
+};
+
+export function changeFile(session: ISession, path: string, eventType: string) {
+  session.log.debug(`File modified: "${path}" (${eventType})`);
+  const cache = castSession(session);
+  session.store.dispatch(watch.actions.markFileChanged({ path }));
+  delete cache.$mdast[path];
+  delete cache.$citationRenderers[path];
+}
+
+export async function writeSiteManifest(session: ISession) {
+  const configPath = join(session.sitePath(), 'config.json');
+  session.log.debug('Writing site config.json');
+  const siteManifest = await getSiteManifest(session);
+  writeFileToFolder(configPath, JSON.stringify(siteManifest));
+}
+
+/**
+ * Returns the heading title or the caption as text
+ */
+function getReferenceTitleAsText(targetNode: Node): string | undefined {
+  if (targetNode.type === 'heading') {
+    return toText(targetNode);
+  }
+  const caption = select('caption > paragraph', targetNode);
+  if (caption) return toText(caption);
+}
+
+export async function addProjectReferencesToObjectsInv(
+  session: ISession,
+  inv: Inventory,
+  opts: { projectPath: string },
+) {
+  const { pages } = await loadProject(session, opts.projectPath);
+  const pageReferenceStates = selectPageReferenceStates(session, pages);
+  pageReferenceStates.forEach((page) => {
+    const { title } = selectors.selectFileInfo(session.store.getState(), page.file);
+    inv.setEntry({
+      type: Domains.stdDoc,
+      name: (page.url as string).replace(/^\//, ''),
+      location: page.url as string,
+      display: title ?? '',
+    });
+    Object.entries(page.state.targets).forEach(([name, target]) => {
+      if ((target.node as any).implicit) {
+        // Don't include implicit references
+        return;
+      }
+      inv.setEntry({
+        type: Domains.stdLabel,
+        name,
+        location: `${page.url}#${(target.node as any).html_id ?? target.node.identifier}`,
+        display: getReferenceTitleAsText(target.node),
+      });
+    });
+  });
+  return inv;
+}
+
+export async function loadProject(session: ISession, projectPath: string, writeToc = false) {
+  const project = await loadProjectFromDisk(session, projectPath, {
+    writeToc,
+  });
+  // Load the citations first, or else they are loaded in each call below
+  const pages = filterPages(project);
+  return { project, pages };
+}
+
+export function selectPageReferenceStates(session: ISession, pages: { file: string }[]) {
+  const cache = castSession(session);
+  const pageReferenceStates: PageReferenceStates = pages
+    .map((page) => ({
+      state: cache.$internalReferences[page.file],
+      file: page.file,
+      url: selectors.selectFileInfo(session.store.getState(), page.file)?.url ?? null,
+    }))
+    .filter(({ state }) => !!state);
+  return pageReferenceStates;
+}
+
+export function writeFile(
+  session: ISession,
+  { file, pageSlug, projectSlug }: { file: string; projectSlug: string; pageSlug: string },
+) {
+  const toc = tic();
+  const mdastPost = selectFile(session, file);
+  const jsonFilename = join(session.contentPath(), projectSlug, `${pageSlug}.json`);
+  writeFileToFolder(jsonFilename, JSON.stringify(mdastPost));
+  session.log.debug(toc(`Wrote "${file}" in %s`));
+}
+
+export async function fastProcessFile(
+  session: ISession,
+  {
+    file,
+    pageSlug,
+    projectPath,
+    projectSlug,
+    extraLinkTransformers,
+    extraTransforms,
+  }: {
+    file: string;
+    projectPath: string;
+    projectSlug: string;
+    pageSlug: string;
+    extraLinkTransformers?: LinkTransformer[];
+    extraTransforms?: TransformFn[];
+  },
+) {
+  const toc = tic();
+  await loadFile(session, file);
+  await transformMdast(session, {
+    file,
+    imageWriteFolder: session.staticPath(),
+    imageAltOutputFolder: '/_static/',
+    imageExtensions: WEB_IMAGE_EXTENSIONS,
+    projectPath,
+    projectSlug,
+    pageSlug,
+    watchMode: true,
+    extraTransforms: [transformWebp, ...(extraTransforms ?? [])],
+  });
+  const { pages } = await loadProject(session, projectPath);
+  const pageReferenceStates = selectPageReferenceStates(session, pages);
+  await postProcessMdast(session, {
+    file,
+    pageReferenceStates,
+    extraLinkTransformers,
+  });
+  writeFile(session, { file, pageSlug, projectSlug });
+  session.log.info(toc(`📖 Built ${file} in %s.`));
+  await writeSiteManifest(session);
+}
+
+export async function processProject(
+  session: ISession,
+  siteProject: SiteProject,
+  opts?: ProcessOptions,
+): Promise<LocalProject> {
+  const toc = tic();
+  const { log } = session;
+  const { extraLinkTransformers, watchMode, writeToc, writeFiles = true } = opts || {};
+  if (!siteProject.path) {
+    log.error(`No local path for site project: ${siteProject.slug}`);
+    if (siteProject.remote) log.error(`Remote path not supported: ${siteProject.slug}`);
+    throw Error('Unable to process project');
+  }
+  const { project, pages } = await loadProject(session, siteProject.path, writeFiles && writeToc);
+  if (!watchMode) {
+    await Promise.all([
+      // Load all citations (.bib)
+      ...project.bibliography.map((path) => loadFile(session, path, '.bib')),
+      // Load all content (.md and .ipynb)
+      ...pages.map((page) => loadFile(session, page.file)),
+      // Load up all the intersphinx references
+      loadIntersphinx(session, { projectPath: siteProject.path }) as Promise<any>,
+    ]);
+  }
+  // Consolidate all citations onto single project citation renderer
+  combineProjectCitationRenderers(session, siteProject.path);
+  // Transform all pages
+  await Promise.all(
+    pages.map((page) =>
+      transformMdast(session, {
+        file: page.file,
+        imageWriteFolder: session.staticPath(),
+        imageAltOutputFolder: '/_static/',
+        imageExtensions: WEB_IMAGE_EXTENSIONS,
+        projectPath: project.path,
+        projectSlug: siteProject.slug,
+        pageSlug: page.slug,
+        watchMode,
+        extraTransforms: [transformWebp, ...(opts?.extraTransforms ?? [])],
+      }),
+    ),
+  );
+  const pageReferenceStates = selectPageReferenceStates(session, pages);
+  // Handle all cross references
+  await Promise.all(
+    pages.map((page) =>
+      postProcessMdast(session, {
+        file: page.file,
+        checkLinks: opts?.checkLinks || opts?.strict,
+        pageReferenceStates,
+        extraLinkTransformers,
+      }),
+    ),
+  );
+  // Write all pages
+  if (writeFiles) {
+    pages.map((page) =>
+      writeFile(session, {
+        file: page.file,
+        projectSlug: siteProject.slug,
+        pageSlug: page.slug,
+      }),
+    );
+  }
+  log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug} in %s.`));
+  return project;
+}
+
+export async function processSite(session: ISession, opts?: ProcessOptions): Promise<boolean> {
+  reloadAllConfigsForCurrentSite(session);
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
+  if (!siteConfig?.projects?.length) return false;
+  const projects = await Promise.all(
+    siteConfig.projects.map((siteProject) => processProject(session, siteProject, opts)),
+  );
+  if (opts?.strict) {
+    const hasWarnings = projects
+      .map((project) => {
+        return project.pages
+          .map((page) => {
+            if (!('slug' in page)) return [0, 0];
+            const buildWarnings = selectors.selectFileWarnings(session.store.getState(), page.file);
+            if (!buildWarnings || buildWarnings.length === 0) return [0, 0];
+            const resp = buildWarnings
+              .map(({ message, kind }) => chalk[kind === 'error' ? 'red' : 'yellow'](message))
+              .join('\n  - ');
+            session.log.info(`\n${page.file}\n  - ${resp}\n`);
+            return [
+              buildWarnings.filter(({ kind }) => kind === 'error').length,
+              buildWarnings.filter(({ kind }) => kind === 'warn').length,
+            ];
+          })
+          .reduce((a, b) => [a[0] + b[0], a[1] + b[1]], [0, 0]);
+      })
+      .reduce((a, b) => [a[0] + b[0], a[1] + b[1]], [0, 0]);
+    if (hasWarnings[0] > 0) {
+      const pluralE = hasWarnings[0] > 1 ? 's' : '';
+      const pluralW = hasWarnings[1] > 1 ? 's' : '';
+      throw new Error(
+        `Site has ${hasWarnings[0]} error${pluralE} and ${hasWarnings[1]} warning${pluralW}, stopping build.`,
+      );
+    }
+  }
+  if (opts?.writeFiles ?? true) {
+    await writeSiteManifest(session);
+    // Write the objects.inv
+    const inv = new Inventory({
+      project: siteConfig.title,
+      // TODO: allow a version on the project?!
+      version: String((siteConfig as any)?.version ?? '1'),
+    });
+    await Promise.all(
+      siteConfig.projects.map(async (project) => {
+        if (!project.path) return;
+        await addProjectReferencesToObjectsInv(session, inv, {
+          projectPath: project.path,
+        });
+      }),
+    );
+    const filename = join(session.sitePath(), 'objects.inv');
+    inv.write(filename);
+  }
+  return true;
+}

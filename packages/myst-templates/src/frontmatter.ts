@@ -59,7 +59,7 @@ function affiliationsFromAuthors(authors: Author[]): ValueAndIndex[] {
   });
 }
 
-export function extendJtexFrontmatter(frontmatter: PageFrontmatter): RendererDoc {
+export function extendFrontmatter(frontmatter: PageFrontmatter): RendererDoc {
   const datetime = frontmatter.date ? new Date(frontmatter.date) : new Date();
   const affiliations = affiliationsFromAuthors(frontmatter.authors || []);
   const doc: RendererDoc = {

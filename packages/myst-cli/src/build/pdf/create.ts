@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import util from 'util';
-import JTex, { pdfExportCommand } from 'jtex';
+import { pdfExportCommand } from 'jtex';
 import { exec } from 'myst-cli-utils';
+import MystTemplate from 'myst-templates';
 import type { ISession } from '../../session/types';
 import { createTempFolder } from '../../utils';
 import type { ExportWithOutput } from '../types';
@@ -71,11 +72,11 @@ export async function createPdfGivenTexExport(
   if (!template) {
     buildCommand = pdfExportCommand(texFile, texLogFile);
   } else {
-    const jtex = new JTex(session, {
+    const mystTemplate = new MystTemplate(session, {
       template: template || undefined,
       buildDir: session.buildPath(),
     });
-    buildCommand = jtex.pdfExportCommand(texFile, texLogFile);
+    buildCommand = pdfExportCommand(texFile, texLogFile, mystTemplate);
   }
   try {
     session.log.info(`🖨  Rendering pdf to ${pdfBuild}`);

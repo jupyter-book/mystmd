@@ -1,7 +1,7 @@
 import path from 'path';
 import { ExportFormats } from 'myst-frontmatter';
 import { findCurrentProjectAndLoad } from '../../config';
-import { loadProjectAndBibliography } from '../../project';
+import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session';
 import { collectWordExportOptions } from '../docx/single';
 import { collectTexExportOptions } from '../tex/single';
@@ -14,14 +14,16 @@ export async function collectExportOptions(
   opts: ExportOptions,
 ) {
   const { projectPath } = opts;
-  if (projectPath) await loadProjectAndBibliography(session, projectPath);
+  if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList: ExportWithInputOutput[] = [];
   await Promise.all(
     files.map(async (file) => {
       let fileProjectPath: string | undefined;
       if (!projectPath) {
         fileProjectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
-        if (fileProjectPath) await loadProjectAndBibliography(session, fileProjectPath);
+        if (fileProjectPath) await loadProjectFromDisk(session, fileProjectPath);
+      } else {
+        fileProjectPath = projectPath;
       }
       const fileExportOptionsList: ExportWithOutput[] = [];
       if (formats.includes(ExportFormats.docx)) {
@@ -31,7 +33,7 @@ export async function collectExportOptions(
             file,
             'docx',
             [ExportFormats.docx],
-            projectPath ?? fileProjectPath,
+            fileProjectPath,
             opts,
           )),
         );
@@ -43,7 +45,7 @@ export async function collectExportOptions(
             file,
             'pdf',
             [ExportFormats.pdf, ExportFormats.pdftex],
-            projectPath ?? fileProjectPath,
+            fileProjectPath,
             opts,
           )),
         );
@@ -55,14 +57,14 @@ export async function collectExportOptions(
             file,
             'tex',
             [ExportFormats.tex],
-            projectPath ?? fileProjectPath,
+            fileProjectPath,
             opts,
           )),
         );
       }
       exportOptionsList.push(
         ...fileExportOptionsList.map((exportOptions) => {
-          return { ...exportOptions, $file: file };
+          return { ...exportOptions, $file: file, $project: fileProjectPath };
         }),
       );
     }),

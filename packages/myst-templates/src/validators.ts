@@ -8,14 +8,6 @@ import {
   validateLicenses,
   validatePageFrontmatter,
 } from 'myst-frontmatter';
-import type {
-  TemplateDocDefinition,
-  TemplateOptionDefinition,
-  TemplatePartDefinition,
-  TemplateStyles,
-  TemplateYml,
-} from 'myst-templates';
-import { TemplateOptionTypes } from 'myst-templates';
 import {
   defined,
   incrementOptions,
@@ -32,6 +24,32 @@ import {
   validationError,
 } from 'simple-validators';
 import type { ValidationOptions } from 'simple-validators';
+import type {
+  TemplateDocDefinition,
+  TemplateOptionDefinition,
+  TemplatePartDefinition,
+  TemplateStyles,
+  TemplateYml,
+} from './types';
+import { TemplateOptionTypes } from './types';
+
+/** Validate that input is an existing file name
+ *
+ * Resolved relative to the file cached on validation options.
+ * Full resolved path is returned.
+ */
+function validateFile(input: any, opts: ValidationOptions) {
+  const filename = validateString(input, opts);
+  if (!filename) return;
+  let resolvedFile: string;
+  if (opts.file) {
+    resolvedFile = path.resolve(path.dirname(opts.file), filename);
+  } else {
+    resolvedFile = path.resolve(filename);
+  }
+  if (fs.existsSync(resolvedFile)) return resolvedFile;
+  return validationError(`unable to resolve file: ${filename}`, opts);
+}
 
 export function validateTemplateOption(
   input: any,
@@ -46,6 +64,8 @@ export function validateTemplateOption(
       return validateString(input, { ...opts, maxLength: max_chars });
     case TemplateOptionTypes.choice:
       return validateChoice(input, { ...opts, choices: choices || [] });
+    case TemplateOptionTypes.file:
+      return validateFile(input, opts);
     default:
       return validationError(`unknown type on option definition: "${type}"`, opts);
   }
@@ -370,11 +390,18 @@ export function validateTemplateYml(
   input: any,
   opts: ValidationOptions & { templateDir?: string },
 ) {
+  const inputObj = validateObject(input, opts);
+  if (inputObj === undefined) return undefined;
+  if (inputObj?.jtex && !inputObj?.myst) {
+    inputObj.myst = inputObj.jtex;
+  }
   const value = validateObjectKeys(
-    input,
+    inputObj,
     {
-      required: ['jtex'],
+      required: ['myst'],
       optional: [
+        'kind',
+        'jtex',
         'title',
         'description',
         'version',
@@ -396,12 +423,12 @@ export function validateTemplateYml(
     opts,
   );
   if (value === undefined) return undefined;
-  const jtex = validateChoice<'v1'>(value.jtex, {
-    ...incrementOptions('jtex', opts),
+  const myst = validateChoice<'v1'>(value.myst, {
+    ...incrementOptions('myst', opts),
     choices: ['v1'],
   });
-  if (jtex === undefined) return undefined;
-  const output: TemplateYml = { jtex };
+  if (myst === undefined) return undefined;
+  const output: TemplateYml = { myst };
   if (defined(value.title)) {
     output.title = validateString(value.title, incrementOptions('title', opts));
   }

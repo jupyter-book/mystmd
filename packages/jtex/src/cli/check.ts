@@ -3,13 +3,11 @@ import { Command } from 'commander';
 import yaml from 'js-yaml';
 import fs from 'fs';
 import { join, extname, resolve } from 'path';
-import type { ISession } from '../types';
-import type { ValidationOptions } from 'simple-validators';
-import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
-import { RENDERER_DOC_KEYS } from '../types';
-import { validateTemplateYml } from '../validators';
 import { clirun } from 'myst-cli-utils';
-import { getSession } from '../session';
+import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import type { ISession } from 'myst-templates';
+import { RENDERER_DOC_KEYS, validateTemplateYml, getSession } from 'myst-templates';
+import type { ValidationOptions } from 'simple-validators';
 
 type Variables = Record<
   'options' | 'doc' | 'parts' | 'packages' | 'global',
@@ -141,9 +139,9 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
   if (configYaml.jtex !== 'v1') {
     messages.errors.push({
       property: 'jtex',
-      message: 'The template.yml must have a "jtex: v1" version.',
+      message: 'The template.yml must have a "myst: v1" version.',
     });
-    configYaml = { jtex: 'v1', ...configYaml };
+    configYaml = { myst: 'v1', ...configYaml };
   }
 
   const validated = validateTemplateYml(configYaml, { property: '', messages, templateDir });

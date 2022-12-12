@@ -3,7 +3,7 @@ import { dirname, join, relative, resolve } from 'path';
 import yaml from 'js-yaml';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
-import { validateProjectConfig, validateSiteConfig } from 'myst-config';
+import { getSiteTemplateOptions, validateProjectConfig, validateSiteConfig } from 'myst-config';
 import type { ValidationOptions } from 'simple-validators';
 import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
 import { prepareToWrite } from './frontmatter';
@@ -19,7 +19,7 @@ function emptyConfig(): Config {
   };
 }
 
-function defaultConfigFile(session: ISession, path: string) {
+export function defaultConfigFile(session: ISession, path: string) {
   return join(path, session.configFiles[0]);
 }
 
@@ -132,9 +132,6 @@ function resolveSiteConfigPaths(
       return proj;
     });
   }
-  if (siteConfig.logo) {
-    resolvedFields.logo = resolutionFn(session, path, siteConfig.logo);
-  }
   if (siteConfig.favicon) {
     resolvedFields.favicon = resolutionFn(session, path, siteConfig.favicon);
   }
@@ -187,6 +184,17 @@ function validateSiteConfigAndSave(
   }
   siteConfig = resolveSiteConfigPaths(session, path, siteConfig, resolveToAbsolute);
   session.store.dispatch(config.actions.receiveSiteConfig({ path, ...siteConfig }));
+
+  let siteTemplateOptions = getSiteTemplateOptions(rawSiteConfig);
+  if (siteTemplateOptions.logo) {
+    siteTemplateOptions = {
+      ...siteTemplateOptions,
+      logo: resolveToAbsolute(session, path, siteTemplateOptions.logo),
+    };
+  }
+  session.store.dispatch(
+    config.actions.receiveSiteTemplateOptions({ path, ...siteTemplateOptions }),
+  );
 }
 
 function validateProjectConfigAndSave(
@@ -348,7 +356,9 @@ export async function findCurrentSiteAndLoad(
 
 export function reloadAllConfigsForCurrentSite(session: ISession) {
   const sitePath = selectors.selectCurrentSitePath(session.store.getState());
-  if (!sitePath) throw Error('Cannot reload site configs - no current site loaded');
+  if (!sitePath) {
+    throw Error('Cannot (re)load "site" config. No current site in the YML configuration.');
+  }
   loadConfigAndValidateOrThrow(session, sitePath);
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig?.projects) return;

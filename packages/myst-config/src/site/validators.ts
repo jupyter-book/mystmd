@@ -12,15 +12,14 @@ import {
   validateBoolean,
   validationError,
 } from 'simple-validators';
-import { validateSiteFrontmatterKeys, validateSiteDesign } from 'myst-frontmatter';
+import { validateSiteFrontmatterKeys } from 'myst-frontmatter';
 import { SITE_CONFIG_KEYS } from './types';
 import type {
   SiteAction,
-  SiteAnalytics,
   SiteConfig,
-  SiteNavFolder,
-  SiteNavPage,
+  SiteNavItem,
   SiteProject,
+  SiteTemplateOptions,
 } from './types';
 
 function validateUrlOrPath(input: any, opts: ValidationOptions) {
@@ -57,10 +56,7 @@ export function validateSiteProject(input: any, opts: ValidationOptions) {
   return output;
 }
 
-export function validateSiteNavItem(
-  input: any,
-  opts: ValidationOptions,
-): SiteNavPage | SiteNavFolder | undefined {
+export function validateSiteNavItem(input: any, opts: ValidationOptions): SiteNavItem | undefined {
   if (validateObject(input, opts) === undefined) return undefined;
   if (defined(input.children)) {
     // validate as SiteNavFolder
@@ -75,7 +71,7 @@ export function validateSiteNavItem(
       },
     );
     if (title === undefined || !children) return undefined;
-    return { title, children } as SiteNavFolder;
+    return { title, children };
   }
   // validate as SiteNavItem
   const value = validateKeys(input, { required: ['title', 'url'] }, opts);
@@ -83,7 +79,7 @@ export function validateSiteNavItem(
   const title = validateString(value.title, incrementOptions('title', opts));
   const url = validateUrlOrPath(value.url, incrementOptions('url', opts));
   if (title === undefined || !url) return undefined;
-  return { title, url } as SiteNavPage;
+  return { title, url };
 }
 
 export function validateSiteAction(input: any, opts: ValidationOptions) {
@@ -103,23 +99,11 @@ export function validateSiteAction(input: any, opts: ValidationOptions) {
   return value as SiteAction;
 }
 
-export function validateSiteAnalytics(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: ['google', 'plausible'] }, opts);
-  if (value === undefined) return undefined;
-  if (defined(value.google)) {
-    value.google = validateString(value.google, incrementOptions('google', opts));
-  }
-  if (defined(value.plausible)) {
-    value.plausible = validateString(value.plausible, incrementOptions('plausible', opts));
-  }
-  return value as SiteAnalytics;
-}
-
 export function validateSiteConfigKeys(
   value: Record<string, any>,
   opts: ValidationOptions,
 ): SiteConfig {
-  const output: SiteConfig = validateSiteFrontmatterKeys(value, opts);
+  const output: SiteConfig = validateSiteFrontmatterKeys(value, opts) || {};
   if (defined(value.projects)) {
     output.projects = validateList(
       value.projects,
@@ -153,35 +137,48 @@ export function validateSiteConfigKeys(
     );
     if (domains) output.domains = [...new Set(domains)];
   }
-  if (defined(value.twitter)) {
-    output.twitter = validateString(value.twitter, {
-      ...incrementOptions('twitter', opts),
-      regex: /^@?(\w){1,15}$/,
-    });
-  }
-  if (defined(value.logo)) {
-    output.logo = validateString(value.logo, incrementOptions('logo', opts));
-  }
-  if (defined(value.logo_text)) {
-    output.logo_text = validateString(value.logo_text, incrementOptions('logo_text', opts));
-  }
   if (defined(value.favicon)) {
     output.favicon = validateString(value.favicon, incrementOptions('favicon', opts));
   }
-  if (defined(value.analytics)) {
-    output.analytics = validateSiteAnalytics(value.analytics, incrementOptions('analytics', opts));
-  }
-  if (defined(value.design)) {
-    output.design = validateSiteDesign(value.design, incrementOptions('design', opts));
+  if (defined(value.template)) {
+    output.template = validateString(value.template, incrementOptions('template', opts));
   }
   return output;
 }
 
+/**
+ * Validate and return common, non-template attributes of SiteConfig
+ */
 export function validateSiteConfig(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(input, SITE_CONFIG_KEYS, {
     ...opts,
     returnInvalidPartial: true,
+    // Template options will appear as extra keys here; no need for warnings.
+    suppressWarnings: true,
   });
   if (value === undefined) return undefined;
   return validateSiteConfigKeys(value, opts);
+}
+
+/**
+ * Return template options from SiteConfig
+ *
+ * These are all the non-predefined attributes. This object must be validated
+ * separately against the site template.yml
+ */
+export function getSiteTemplateOptions(input: any) {
+  const value =
+    validateObject(input, {
+      property: 'template_options',
+      messages: {},
+      suppressWarnings: true,
+      suppressErrors: true,
+    }) || {};
+  const output: SiteTemplateOptions = {};
+  Object.keys(value)
+    .filter((key) => !SITE_CONFIG_KEYS.optional.includes(key))
+    .forEach((key) => {
+      output[key] = value[key];
+    });
+  return output;
 }

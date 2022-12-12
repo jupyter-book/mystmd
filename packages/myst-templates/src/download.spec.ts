@@ -20,7 +20,7 @@ describe('resolveInputs', () => {
     });
   });
   it('template as path to template folder exists', async () => {
-    memfs.vol.fromJSON({ 'templates/template.tex': '' });
+    memfs.vol.fromJSON({ 'templates/template.yml': '' });
     expect(resolveInputs(new Session(), { template: 'templates' })).toEqual({
       templatePath: 'templates',
       templateUrl: undefined,

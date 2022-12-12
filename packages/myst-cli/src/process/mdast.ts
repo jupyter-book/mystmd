@@ -64,18 +64,14 @@ export type PageReferenceStates = {
   url: string | null;
 }[];
 
+export type TransformFn = (
+  session: ISession,
+  opts: Parameters<typeof transformMdast>[1],
+) => Promise<void>;
+
 export async function transformMdast(
   session: ISession,
-  {
-    file,
-    imageWriteFolder,
-    projectPath,
-    pageSlug,
-    projectSlug,
-    imageAltOutputFolder,
-    imageExtensions,
-    watchMode = false,
-  }: {
+  opts: {
     file: string;
     imageWriteFolder: string;
     projectPath?: string;
@@ -84,8 +80,20 @@ export async function transformMdast(
     imageAltOutputFolder?: string;
     imageExtensions?: string[];
     watchMode?: boolean;
+    extraTransforms?: TransformFn[];
   },
 ) {
+  const {
+    file,
+    imageWriteFolder,
+    projectPath,
+    pageSlug,
+    projectSlug,
+    imageAltOutputFolder,
+    imageExtensions,
+    extraTransforms,
+    watchMode = false,
+  } = opts;
   const toc = tic();
   const { store, log } = session;
   const cache = castSession(session);
@@ -179,6 +187,11 @@ export async function transformMdast(
     references,
   };
   cache.$mdast[file].post = data;
+  if (extraTransforms) {
+    extraTransforms.forEach(async (transform) => {
+      await transform(session, opts);
+    });
+  }
   logMessagesFromVFile(session, vfile);
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
 }
