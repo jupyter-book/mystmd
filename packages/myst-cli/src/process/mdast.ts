@@ -1,6 +1,7 @@
 import path from 'path';
 import type { Root } from 'mdast';
 import { tic } from 'myst-cli-utils';
+import type { References } from 'myst-common';
 import type { LinkTransformer } from 'myst-transforms';
 import {
   basicTransformationsPlugin,
@@ -27,7 +28,7 @@ import { selectors } from '../store';
 import { watch } from '../store/reducers';
 import type { ISession } from '../session/types';
 import { castSession } from '../session';
-import type { References, RendererData } from '../transforms/types';
+import type { RendererData } from '../transforms/types';
 import { KINDS } from '../transforms/types';
 import {
   checkLinksTransform,

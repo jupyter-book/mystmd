@@ -13,4 +13,4 @@ export {
 export { selectBlockParts, extractPart } from './extractParts';
 
 export type { MessageInfo } from './utils';
-export type { GenericNode, GenericParent } from './types';
+export type { GenericNode, GenericParent, Citations, Footnotes, References } from './types';

@@ -1,11 +1,11 @@
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
+import type { References } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
 import { keysTransform } from './keys';
-import type { References } from './types';
 import { fileWarn } from 'myst-common';
 
 type Options = {
