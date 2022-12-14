@@ -12,6 +12,7 @@ import { selectors } from '../../store';
 type TransformOptions = {
   extraLinkTransformers?: LinkTransformer[];
   extraTransforms?: TransformFn[];
+  defaultTemplate?: string;
 };
 
 function watchConfigAndPublic(

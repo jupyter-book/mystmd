@@ -92,12 +92,12 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHo
 
 export async function startServer(session: ISession, opts: Options): Promise<void> {
   warnOnHostEnvironmentVariable(session, opts);
-  const mystTemplate = await getMystTemplate(session);
+  const mystTemplate = await getMystTemplate(session, opts);
   if (!opts.headless) await cloneSiteTemplate(session, mystTemplate);
   await buildSite(session, opts);
   const server = await startContentServer(session);
-  const { extraLinkTransformers, extraTransforms } = opts;
-  watchContent(session, server.reload, { extraLinkTransformers, extraTransforms });
+  const { extraLinkTransformers, extraTransforms, defaultTemplate } = opts;
+  watchContent(session, server.reload, { extraLinkTransformers, extraTransforms, defaultTemplate });
   if (opts.headless) {
     const local = chalk.green(`http://localhost:${server.port}`);
     session.log.info(

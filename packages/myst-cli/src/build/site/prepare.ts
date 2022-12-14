@@ -14,6 +14,7 @@ export type Options = {
   keepHost?: boolean;
   extraLinkTransformers?: LinkTransformer[];
   extraTransforms?: TransformFn[];
+  defaultTemplate?: string;
 };
 
 export function cleanSiteContent(session: ISession, info = true): void {
@@ -34,7 +35,8 @@ export function ensureBuildFoldersExist(session: ISession): void {
 }
 
 export async function buildSite(session: ISession, opts: Options) {
-  const { writeToc, strict, checkLinks, extraLinkTransformers, extraTransforms } = opts;
+  const { writeToc, strict, checkLinks, extraLinkTransformers, extraTransforms, defaultTemplate } =
+    opts;
   ensureBuildFoldersExist(session);
   await processSite(session, {
     writeToc,
@@ -42,5 +44,6 @@ export async function buildSite(session: ISession, opts: Options) {
     checkLinks,
     extraLinkTransformers,
     extraTransforms,
+    defaultTemplate,
   });
 }
