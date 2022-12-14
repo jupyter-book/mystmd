@@ -19,7 +19,7 @@ export async function getMystTemplate(session: ISession, opts?: { defaultTemplat
   return mystTemplate;
 }
 
-export async function cloneSiteTemplate(
+export async function installSiteTemplate(
   session: ISession,
   mystTemplate: MystTemplate,
 ): Promise<void> {

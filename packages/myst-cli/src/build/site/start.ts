@@ -12,7 +12,7 @@ import version from '../../version';
 import { createServerLogger } from './logger';
 import type { Options } from './prepare';
 import { buildSite } from './prepare';
-import { cloneSiteTemplate, getMystTemplate } from './template';
+import { installSiteTemplate, getMystTemplate } from './template';
 import { watchContent } from './watch';
 
 const DEFAULT_START_COMMAND = 'npm run start';
@@ -93,7 +93,7 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHo
 export async function startServer(session: ISession, opts: Options): Promise<void> {
   warnOnHostEnvironmentVariable(session, opts);
   const mystTemplate = await getMystTemplate(session, opts);
-  if (!opts.headless) await cloneSiteTemplate(session, mystTemplate);
+  if (!opts.headless) await installSiteTemplate(session, mystTemplate);
   await buildSite(session, opts);
   const server = await startContentServer(session);
   const { extraLinkTransformers, extraTransforms, defaultTemplate } = opts;
