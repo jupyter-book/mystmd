@@ -95,6 +95,7 @@ export async function addProjectReferencesToObjectsInv(
 export async function loadProject(session: ISession, projectPath: string, writeToc = false) {
   const project = await loadProjectFromDisk(session, projectPath, {
     writeToc,
+    warnOnNoConfig: true,
   });
   // Load the citations first, or else they are loaded in each call below
   const pages = filterPages(project);

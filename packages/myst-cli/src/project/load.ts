@@ -27,13 +27,13 @@ import type { LocalProject, LocalProjectPage } from './types';
 export async function loadProjectFromDisk(
   session: ISession,
   path: string,
-  opts?: { index?: string; writeToc?: boolean },
+  opts?: { index?: string; writeToc?: boolean; warnOnNoConfig?: boolean },
 ): Promise<LocalProject> {
   path = path || resolve('.');
   const cachedProject = selectors.selectLocalProject(session.store.getState(), path);
   if (cachedProject) return cachedProject;
   const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
-  if (!projectConfig) {
+  if (!projectConfig && opts?.warnOnNoConfig) {
     session.log.warn(
       `Loading project from path with no config file: ${path}\nConsider running "myst init --project" in that directory`,
     );
