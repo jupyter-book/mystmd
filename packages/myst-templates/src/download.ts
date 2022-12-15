@@ -20,7 +20,7 @@ export enum TemplateKinds {
 const DEFAULT_TEMPLATES = {
   tex: 'tex/myst/curvenote',
   docx: 'docx/myst/default',
-  site: 'site/myst/default',
+  site: 'site/myst/book-theme',
 };
 
 const PARTIAL_TEMPLATE_REGEX = /^[a-zA-Z0-9_-]+$/;
