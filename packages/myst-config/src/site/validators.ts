@@ -26,7 +26,7 @@ function validateUrlOrPath(input: any, opts: ValidationOptions) {
   const value = validateString(input, opts);
   if (!defined(value)) return undefined;
   // Validate simple relative path in project
-  if (value.match('^(/[a-zA-Z0-9._-]+){1,2}$')) return value;
+  if (value.match('^(/[a-zA-Z0-9._-]+)+$')) return value;
   const urlValue = validateUrl(value, { ...opts, suppressErrors: true });
   if (!urlValue) {
     return validationError(`invalid URL or relative path: ${value}`, opts);

@@ -56,7 +56,7 @@ TL;DR
 
 ---
 
-### Create Scientific Publications
+## Create Scientific Publications
 
 Create interactive scientific publications for the web or export to PDF, LaTeX and Microsoft Word.
 

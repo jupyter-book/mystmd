@@ -61,8 +61,11 @@ describe('validateSiteNavItem', () => {
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid url errors', async () => {
-    expect(validateSiteNavItem({ title: 'my-folder', url: '/a/a/a' }, opts)).toEqual(undefined);
-    expect(opts.messages.errors?.length).toEqual(1);
+    expect(validateSiteNavItem({ title: 'my-folder', url: '/a/a/a' }, opts)).toEqual({
+      title: 'my-folder',
+      url: '/a/a/a',
+    });
+    expect(opts.messages.errors?.length).toEqual(undefined);
   });
   it('full url returns self', async () => {
     expect(
@@ -85,7 +88,14 @@ describe('validateSiteAction', () => {
     expect(validateSiteAction(siteAction, opts)).toEqual(siteAction);
   });
   it('invalid url errors', async () => {
-    expect(validateSiteAction({ title: 'example', url: '/a/b/c/d' }, opts)).toEqual(undefined);
+    expect(validateSiteAction({ title: 'example', url: '/a/b/c/d' }, opts)).toEqual({
+      title: 'example',
+      url: '/a/b/c/d',
+    });
+    expect(opts.messages.errors?.length).toEqual(undefined);
+  });
+  it('invalid url errors', async () => {
+    expect(validateSiteAction({ title: 'example', url: '?something' }, opts)).toBeUndefined();
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('valid path returns self', async () => {
