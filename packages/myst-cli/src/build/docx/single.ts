@@ -142,7 +142,7 @@ function defaultWordRenderer(
     serializer.render(node);
   });
   serializer.renderChildren(mdast);
-  const referencesDocStates = Object.values(references.cite.data)
+  const referencesDocStates = Object.values(references.cite?.data ?? {})
     .map(({ html }) => html)
     .sort((a, b) => a.localeCompare(b))
     .map((html) => {
@@ -153,7 +153,7 @@ function defaultWordRenderer(
     const referencesRoot = htmlTransform({ type: 'root', children: referencesDocStates as any });
     serializer.renderChildren(referencesRoot);
   }
-  Object.values(references.footnotes).forEach((footnote) => {
+  Object.values(references.footnotes ?? {}).forEach((footnote) => {
     serializer.render(footnote);
   });
   const logo = path.join(staticPath, 'logo.png');

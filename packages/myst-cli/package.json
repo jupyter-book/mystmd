@@ -52,7 +52,7 @@
     "npm": ">=6"
   },
   "dependencies": {
-    "@curvenote/blocks": "^1.5.16",
+    "@curvenote/blocks": "^1.5.17",
     "@reduxjs/toolkit": "^1.7.2",
     "adm-zip": "^0.5.9",
     "chalk": "^5.1.2",

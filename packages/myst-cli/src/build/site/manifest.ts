@@ -137,7 +137,10 @@ function resolveSiteManifestAction(session: ISession, action: SiteAction): SiteA
  * Site manifest acts as the configuration to build the website.
  * It combines local site config and project configs into a single structure.
  */
-export async function getSiteManifest(session: ISession): Promise<SiteManifest> {
+export async function getSiteManifest(
+  session: ISession,
+  opts?: { defaultTemplate?: string },
+): Promise<SiteManifest> {
   const siteProjects: SiteManifest['projects'] = [];
   const state = session.store.getState() as RootState;
   const siteConfig = selectors.selectCurrentSiteConfig(state);
@@ -154,7 +157,7 @@ export async function getSiteManifest(session: ISession): Promise<SiteManifest> 
   const actions = siteConfig.actions?.map((action) => resolveSiteManifestAction(session, action));
   const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
   const siteTemplateOptions = selectors.selectCurrentSiteTemplateOptions(state) || {};
-  const mystTemplate = await getMystTemplate(session);
+  const mystTemplate = await getMystTemplate(session, opts);
   const siteConfigFile = selectors.selectCurrentSiteFile(state);
   const validatedOptions = mystTemplate.validateOptions(siteTemplateOptions, siteConfigFile);
   const validatedFrontmatter = mystTemplate.validateDoc(

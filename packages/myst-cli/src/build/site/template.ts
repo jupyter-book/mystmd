@@ -5,21 +5,21 @@ import MystTemplate, { TemplateKinds } from 'myst-templates';
 import type { ISession } from '../../session/types';
 import { selectors } from '../../store';
 
-const DEFAULT_SITE_TEMPLATE = 'https://github.com/curvenote/book-theme.git';
+const DEFAULT_SITE_TEMPLATE = 'book-theme';
 const DEFAULT_INSTALL_COMMAND = 'npm install';
 
-export async function getMystTemplate(session: ISession) {
+export async function getMystTemplate(session: ISession, opts?: { defaultTemplate?: string }) {
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKinds.site,
-    template: siteConfig?.template ?? DEFAULT_SITE_TEMPLATE,
+    template: siteConfig?.template ?? opts?.defaultTemplate ?? DEFAULT_SITE_TEMPLATE,
     buildDir: session.buildPath(),
   });
   await mystTemplate.ensureTemplateExistsOnPath();
   return mystTemplate;
 }
 
-export async function cloneSiteTemplate(
+export async function installSiteTemplate(
   session: ISession,
   mystTemplate: MystTemplate,
 ): Promise<void> {

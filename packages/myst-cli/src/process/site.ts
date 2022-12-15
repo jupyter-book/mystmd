@@ -32,6 +32,7 @@ type ProcessOptions = {
   checkLinks?: boolean;
   extraLinkTransformers?: LinkTransformer[];
   extraTransforms?: TransformFn[];
+  defaultTemplate?: string;
 };
 
 export function changeFile(session: ISession, path: string, eventType: string) {
@@ -42,10 +43,10 @@ export function changeFile(session: ISession, path: string, eventType: string) {
   delete cache.$citationRenderers[path];
 }
 
-export async function writeSiteManifest(session: ISession) {
+export async function writeSiteManifest(session: ISession, opts?: ProcessOptions) {
   const configPath = join(session.sitePath(), 'config.json');
   session.log.debug('Writing site config.json');
-  const siteManifest = await getSiteManifest(session);
+  const siteManifest = await getSiteManifest(session, opts);
   writeFileToFolder(configPath, JSON.stringify(siteManifest));
 }
 
@@ -94,6 +95,7 @@ export async function addProjectReferencesToObjectsInv(
 export async function loadProject(session: ISession, projectPath: string, writeToc = false) {
   const project = await loadProjectFromDisk(session, projectPath, {
     writeToc,
+    warnOnNoConfig: true,
   });
   // Load the citations first, or else they are loaded in each call below
   const pages = filterPages(project);
@@ -132,6 +134,7 @@ export async function fastProcessFile(
     projectSlug,
     extraLinkTransformers,
     extraTransforms,
+    defaultTemplate,
   }: {
     file: string;
     projectPath: string;
@@ -139,6 +142,7 @@ export async function fastProcessFile(
     pageSlug: string;
     extraLinkTransformers?: LinkTransformer[];
     extraTransforms?: TransformFn[];
+    defaultTemplate?: string;
   },
 ) {
   const toc = tic();
@@ -163,7 +167,7 @@ export async function fastProcessFile(
   });
   writeFile(session, { file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
-  await writeSiteManifest(session);
+  await writeSiteManifest(session, { defaultTemplate });
 }
 
 export async function processProject(
@@ -271,7 +275,7 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
     }
   }
   if (opts?.writeFiles ?? true) {
-    await writeSiteManifest(session);
+    await writeSiteManifest(session, opts);
     // Write the objects.inv
     const inv = new Inventory({
       project: siteConfig.title,

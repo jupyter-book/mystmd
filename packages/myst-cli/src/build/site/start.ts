@@ -12,7 +12,7 @@ import version from '../../version';
 import { createServerLogger } from './logger';
 import type { Options } from './prepare';
 import { buildSite } from './prepare';
-import { cloneSiteTemplate, getMystTemplate } from './template';
+import { installSiteTemplate, getMystTemplate } from './template';
 import { watchContent } from './watch';
 
 const DEFAULT_START_COMMAND = 'npm run start';
@@ -92,12 +92,12 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHo
 
 export async function startServer(session: ISession, opts: Options): Promise<void> {
   warnOnHostEnvironmentVariable(session, opts);
-  const mystTemplate = await getMystTemplate(session);
-  if (!opts.headless) await cloneSiteTemplate(session, mystTemplate);
+  const mystTemplate = await getMystTemplate(session, opts);
+  if (!opts.headless) await installSiteTemplate(session, mystTemplate);
   await buildSite(session, opts);
   const server = await startContentServer(session);
-  const { extraLinkTransformers, extraTransforms } = opts;
-  watchContent(session, server.reload, { extraLinkTransformers, extraTransforms });
+  const { extraLinkTransformers, extraTransforms, defaultTemplate } = opts;
+  watchContent(session, server.reload, { extraLinkTransformers, extraTransforms, defaultTemplate });
   if (opts.headless) {
     const local = chalk.green(`http://localhost:${server.port}`);
     session.log.info(

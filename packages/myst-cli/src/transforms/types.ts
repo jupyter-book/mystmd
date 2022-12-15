@@ -1,5 +1,5 @@
-import type { FootnoteDefinition } from 'myst-spec';
 import type { Root } from 'mdast';
+import type { References } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { CitationRenderer } from 'citation-js-utils';
 
@@ -7,18 +7,6 @@ export enum KINDS {
   Article = 'Article',
   Notebook = 'Notebook',
 }
-
-type Citations = {
-  order: string[];
-  data: Record<string, { html: string; number: number; doi: string | undefined }>;
-};
-
-type Footnotes = Record<string, FootnoteDefinition>;
-
-export type References = {
-  cite: Citations;
-  footnotes: Footnotes;
-};
 
 export type PreRendererData = {
   file: string;

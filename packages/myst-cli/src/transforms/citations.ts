@@ -1,10 +1,10 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import { InlineCite } from 'citation-js-utils';
+import type { Logger } from 'myst-cli-utils';
+import type { References } from 'myst-common';
 import type { StaticPhrasingContent, Parent } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
-import type { Logger } from 'myst-cli-utils';
 import type { Root } from 'mdast';
-import type { References } from './types';
 
 export type CiteKind = 'narrative' | 'parenthetical';
 
@@ -27,7 +27,10 @@ function pushCite(
   citeRenderer: CitationRenderer,
   label: string,
 ) {
-  if (!references.cite.data[label]) {
+  if (!references.cite) {
+    references.cite = { order: [], data: {} };
+  }
+  if (!references.cite?.data[label]) {
     references.cite.order.push(label);
   }
   references.cite.data[label] = {
