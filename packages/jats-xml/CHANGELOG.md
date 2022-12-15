@@ -1,5 +1,12 @@
 # jats-xml
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [4e27734b]
+  - myst-common@0.0.9
+
 ## 0.0.5
 
 ### Patch Changes

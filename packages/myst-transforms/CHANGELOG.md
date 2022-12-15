@@ -1,5 +1,13 @@
 # myst-transforms
 
+## 0.0.11
+
+### Patch Changes
+
+- 4e27734b: Citations, Footnotes, and References type consolidated to myst-common
+- Updated dependencies [4e27734b]
+  - myst-common@0.0.9
+
 ## 0.0.10
 
 ### Patch Changes

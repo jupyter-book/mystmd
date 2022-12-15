@@ -1,5 +1,11 @@
 # myst-common
 
+## 0.0.9
+
+### Patch Changes
+
+- 4e27734b: Citations, Footnotes, and References type consolidated to myst-common
+
 ## 0.0.8
 
 ### Patch Changes
