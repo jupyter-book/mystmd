@@ -491,3 +491,15 @@ cases:
                         - type: text
                           value: Row 1, Column 2
     jats: <table-wrap id="my-table"><caption><p>Caption <italic>text</italic></p></caption><table><thead><tr><th>Head 1, Column 1</th><th>Head 1, Column 2</th></tr></thead><tbody><tr><td>Row 1, Column 1</td><td>Row 1, Column 2</td></tr></tbody></table></table-wrap>
+  - title: Break in a paragraph
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Hello '
+            - type: break
+            - type: text
+              value: JATS
+    jats: <p>Hello JATS</p>

@@ -135,7 +135,13 @@ const handlers: Record<string, Handler> = {
   smallcaps(node, state) {
     state.renderInline(node, 'sc');
   },
-  break(node, state) {
+  break(node, state, parent) {
+    if (parent.type === 'paragraph') {
+      state.warn('There are no breaks allowed in paragraphs.', node, 'break', {
+        url: 'https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/break.html',
+      });
+      return;
+    }
     // https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/break.html
     state.addLeaf('break');
   },
