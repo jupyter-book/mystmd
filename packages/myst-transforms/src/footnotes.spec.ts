@@ -1,8 +1,8 @@
+import type { References } from 'myst-common';
 import type { FootnoteDefinition } from 'myst-spec';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
 import { footnotesTransform, footnotesPlugin } from './footnotes';
-import type { References } from './types';
 
 describe('Test footnotes plugin', () => {
   test('Pulls out references for footnotes', () => {
