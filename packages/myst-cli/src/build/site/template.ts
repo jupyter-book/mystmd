@@ -5,7 +5,7 @@ import MystTemplate, { TemplateKinds } from 'myst-templates';
 import type { ISession } from '../../session/types';
 import { selectors } from '../../store';
 
-const DEFAULT_SITE_TEMPLATE = 'https://github.com/curvenote/book-theme.git';
+const DEFAULT_SITE_TEMPLATE = 'book-theme';
 const DEFAULT_INSTALL_COMMAND = 'npm install';
 
 export async function getMystTemplate(session: ISession, opts?: { defaultTemplate?: string }) {
