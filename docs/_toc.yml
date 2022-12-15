@@ -42,6 +42,7 @@ parts:
     chapters:
       - file: creating-pdf-documents
       - file: creating-word-documents
+      - file: creating-jats-xml
   - caption: Reference
     chapters:
       - file: background

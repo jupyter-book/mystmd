@@ -5,12 +5,6 @@ description: MyST (Markedly Structured Text) is designed to create publication-q
 
 `mystjs` is a set of open-source, community-driven tools designed for scientific communication, including a powerful authoring framework that supports blogs, online books, scientific papers, reports and journals articles.
 
-```{warning}
-The `mystjs` project is in beta. It is being used to explore a MyST implementation in JavaScript and will change significantly and rapidly. It is being developed by a small team of people on the [Executable Books Project](https://executablebooks.org), and may make rapid decisions without fully public/inclusive discussion. We will continue to update this documentation as the project stabilizes.
-```
-
----
-
 ::::{grid} 1 1 2 3
 
 :::{card}
@@ -116,18 +110,19 @@ Create a Template »
 
 **Architecture**
 
-The `mystjs` command line tool can be used to parse MyST Markdown and Jupyter Notebooks into an AST. This data can be saved as JSON, or rendered to a website (like this one!) or any number of formats including PDF, Word, React or HTML.
+The `mystjs` command line tool can be used to parse MyST Markdown and Jupyter Notebooks into an AST. This data can be saved as JSON, or rendered to a website (like this one!) or any number of formats including [PDF](./creating-pdf-documents.md), [Word](./creating-word-documents.md), [React](./website-overview.md), HTML or [JATS](./creating-jats-xml.md).
 
 ```{mermaid}
 flowchart LR
   A[Jupyter Notebook] --> C
   B[MyST Markdown] --> C
   C(mystjs) --> D{AST}
-  D --> E[LaTeX]
+  D <--> E[LaTeX]
   E --> F[PDF]
   D --> G[Word]
   D --> H[React]
   D --> I[HTML]
+  D <--> J[JATS]
 ```
 
 ```{important}
