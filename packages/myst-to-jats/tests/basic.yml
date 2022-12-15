@@ -491,3 +491,44 @@ cases:
                         - type: text
                           value: Row 1, Column 2
     jats: <table-wrap id="my-table"><caption><p>Caption <italic>text</italic></p></caption><table><thead><tr><th>Head 1, Column 1</th><th>Head 1, Column 2</th></tr></thead><tbody><tr><td>Row 1, Column 1</td><td>Row 1, Column 2</td></tr></tbody></table></table-wrap>
+  - title: Section without Labels
+    tree:
+      type: root
+      children:
+        - type: heading
+          depth: 3
+          children:
+            - type: text
+              value: Looking at JATS
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Hello JATS'
+    jats: <sec><title>Looking at JATS</title><p>Hello JATS</p></sec>
+  - title: Section with Labels
+    tree:
+      type: root
+      children:
+        - type: heading
+          depth: 3
+          enumerator: 5.3.2
+          children:
+            - type: text
+              value: Looking at JATS
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Hello JATS'
+    jats: <sec><label>5.3.2</label><title>Looking at JATS</title><p>Hello JATS</p></sec>
+  - title: Break in a paragraph
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Hello '
+            - type: break
+            - type: text
+              value: JATS
+    jats: <p>Hello JATS</p>

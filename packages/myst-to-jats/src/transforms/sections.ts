@@ -17,20 +17,22 @@ export function sectionTransform(tree: Root) {
     }
   }
   function newSection(heading: Heading) {
+    const { enumerator, enumerated, ...filtered } = heading;
     if (current && current.depth < heading.depth) {
       // Nest the section
-      const next: Section = { ...heading, type: 'section', children: [] };
+      const next: Section = { ...filtered, type: 'section', children: [] };
       push(next);
       current = next;
-      return;
+      return { enumerator, enumerated };
     }
-    current = { ...heading, type: 'section', children: [] };
+    current = { ...filtered, type: 'section', children: [] };
     children.push(current);
+    return { enumerator, enumerated };
   }
   tree.children.forEach((child) => {
     if (child.type === 'heading') {
-      newSection(child as Heading);
-      push({ type: 'heading', children: child.children });
+      const { enumerator, enumerated } = newSection(child as Heading);
+      push({ type: 'heading', enumerator, enumerated, children: child.children });
     } else {
       push(child);
     }
