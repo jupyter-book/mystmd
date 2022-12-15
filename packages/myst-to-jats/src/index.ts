@@ -35,6 +35,15 @@ function referenceKindToRefType(kind?: string): RefType {
   }
 }
 
+function renderLabel(node: GenericNode, state: IJatsSerializer, template = (s: string) => s) {
+  const { enumerated, enumerator } = node;
+  if (enumerated !== false && enumerator) {
+    state.openNode('label');
+    state.text(template(enumerator));
+    state.closeNode();
+  }
+}
+
 const handlers: Record<string, Handler> = {
   text(node, state) {
     state.text(node.value);
@@ -46,6 +55,7 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'sec');
   },
   heading(node, state) {
+    renderLabel(node, state);
     state.renderInline(node, 'title');
   },
   block(node, state) {
@@ -89,13 +99,8 @@ const handlers: Record<string, Handler> = {
     state.closeNode();
   },
   math(node, state) {
-    const { identifier, enumerated, enumerator } = node;
-    state.openNode('disp-formula', { id: identifier });
-    if (enumerated !== false && enumerator) {
-      state.openNode('label');
-      state.text(`(${enumerator})`);
-      state.closeNode();
-    }
+    state.openNode('disp-formula', { id: node.identifier });
+    renderLabel(node, state, (enumerator) => `(${enumerator})`);
     state.openNode('tex-math');
     state.addLeaf('cdata', { cdata: node.value });
     state.closeNode();
