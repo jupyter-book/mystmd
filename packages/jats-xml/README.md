@@ -26,7 +26,7 @@ Commands available:
 `download`: attempt to find the JATS file and download it locally.
 
 ```bash
-jats download https://docs.python.org/3.7 article.jats
+jats download https://elifesciences.org/articles/81952 article.jats
 ```
 
 Note, currently this just downloads the XML, **not** the associated files.
