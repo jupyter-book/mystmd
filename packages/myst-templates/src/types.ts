@@ -1,4 +1,5 @@
 import type { ISession as BaseISession } from 'myst-cli-utils';
+import type { TemplateKind, TemplateOptionType } from 'myst-common';
 import type { Author, Licenses, PageFrontmatter } from 'myst-frontmatter';
 import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 
@@ -34,12 +35,6 @@ export type RendererDoc = Omit<PageFrontmatter, 'date' | 'authors'> & {
 
 export const RENDERER_DOC_KEYS = ['affiliations'].concat(PAGE_FRONTMATTER_KEYS);
 
-export enum TemplateKind {
-  tex = 'tex',
-  docx = 'docx',
-  site = 'site',
-}
-
 export type TemplatePartDefinition = {
   id: string;
   title?: string;
@@ -54,13 +49,6 @@ export type TemplatePartDefinition = {
   };
 };
 
-export enum TemplateOptionTypes {
-  boolean = 'boolean',
-  string = 'string',
-  choice = 'choice',
-  file = 'file',
-}
-
 export type TemplateDocDefinition = {
   id: string;
   title?: string;
@@ -73,7 +61,7 @@ export type TemplateDocDefinition = {
 };
 
 export type TemplateOptionDefinition = TemplateDocDefinition & {
-  type: TemplateOptionTypes;
+  type: TemplateOptionType;
   default?: any;
   choices?: string[];
   max_chars?: number;

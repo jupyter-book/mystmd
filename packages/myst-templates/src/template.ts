@@ -1,8 +1,8 @@
 import fs from 'fs';
 import { join, dirname } from 'path';
 import yaml from 'js-yaml';
+import type { TemplateKind } from 'myst-common';
 import type { ValidationOptions } from 'simple-validators';
-import type { TemplateKinds } from './download';
 import { downloadTemplate, resolveInputs, TEMPLATE_FILENAME, TEMPLATE_YML } from './download';
 import { extendFrontmatter } from './frontmatter';
 import type { TemplateYml, ISession } from './types';
@@ -30,7 +30,7 @@ class MystTemplate {
    */
   constructor(
     session: ISession,
-    opts?: { kind?: TemplateKinds; template?: string; buildDir?: string },
+    opts?: { kind?: TemplateKind; template?: string; buildDir?: string },
   ) {
     this.session = session;
     const { templatePath, templateUrl } = resolveInputs(this.session, opts || {});
