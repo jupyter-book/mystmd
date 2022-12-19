@@ -125,7 +125,7 @@ export function renderNodeToLatex(node: Table, state: ITexSerializer) {
         state.write(' \\\\');
         state.ensureNewLine();
       }
-      if (!rowContent[0].header) {
+      if (!rowContent[0]?.header) {
         endHeader = true;
       }
     });
@@ -177,7 +177,7 @@ export function renderNodeToLatex(node: Table, state: ITexSerializer) {
     state.write(' \\\\');
     state.ensureNewLine();
     // If the first cell in this row is a table header, make a line
-    if (rowContent[0].header) {
+    if (rowContent[0]?.header) {
       state.write('\\hline');
       state.ensureNewLine();
     }
