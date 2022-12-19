@@ -347,5 +347,6 @@ export async function localArticleToTex(
         );
       }
     }),
+    opts.throwOnFailure,
   );
 }

@@ -225,5 +225,6 @@ export async function localArticleToWord(
         extraLinkTransformers,
       );
     }),
+    opts.throwOnFailure,
   );
 }
