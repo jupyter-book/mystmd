@@ -13,7 +13,7 @@ import { createPdfGivenTexExport } from '../pdf/create';
 export async function localArticleExport(
   session: ISession,
   exportOptionsList: ExportWithInputOutput[],
-  opts: Pick<ExportOptions, 'clean' | 'projectPath'>,
+  opts: Pick<ExportOptions, 'clean' | 'projectPath' | 'throwOnFailure'>,
 ) {
   const { clean, projectPath } = opts;
   await resolveAndLogErrors(
@@ -55,5 +55,6 @@ export async function localArticleExport(
         );
       }
     }),
+    opts.throwOnFailure,
   );
 }
