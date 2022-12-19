@@ -2,6 +2,7 @@ import fs, { createReadStream, createWriteStream, mkdirSync } from 'fs';
 import { dirname, join, parse } from 'path';
 import { createHash } from 'crypto';
 import yaml from 'js-yaml';
+import { TemplateKind } from 'myst-common';
 import { createGitLogger, makeExecutable } from 'myst-cli-utils';
 import fetch from 'node-fetch';
 import { validateUrl } from 'simple-validators';
@@ -10,12 +11,6 @@ import type { TemplateYmlListResponse, TemplateYmlResponse, ISession } from './t
 
 export const TEMPLATE_FILENAME = 'template.tex';
 export const TEMPLATE_YML = 'template.yml';
-
-export enum TemplateKinds {
-  tex = 'tex',
-  docx = 'docx',
-  site = 'site',
-}
 
 const DEFAULT_TEMPLATES = {
   tex: 'tex/myst/curvenote',
@@ -26,9 +21,9 @@ const DEFAULT_TEMPLATES = {
 const PARTIAL_TEMPLATE_REGEX = /^[a-zA-Z0-9_-]+$/;
 const TEMPLATE_REGEX = /^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/;
 
-function normalizeTemplateName(opts: { kind?: TemplateKinds; template?: string }) {
+function normalizeTemplateName(opts: { kind?: TemplateKind; template?: string }) {
   const { template } = opts;
-  const kind = opts.kind ?? TemplateKinds.tex;
+  const kind = opts.kind ?? TemplateKind.tex;
   if (!template) {
     return DEFAULT_TEMPLATES[kind];
   }
@@ -41,8 +36,8 @@ function normalizeTemplateName(opts: { kind?: TemplateKinds; template?: string }
   return undefined;
 }
 
-function listingUrl(session: ISession, kind?: TemplateKinds) {
-  return `${session.API_URL}/templates/${kind ?? TemplateKinds.tex}`;
+function listingUrl(session: ISession, kind?: TemplateKind) {
+  return `${session.API_URL}/templates/${kind ?? TemplateKind.tex}`;
 }
 
 function defaultUrl(session: ISession, template: string) {
@@ -52,7 +47,7 @@ function defaultUrl(session: ISession, template: string) {
 function defaultPath(
   template: string,
   hash: boolean,
-  opts: { kind?: TemplateKinds; buildDir?: string },
+  opts: { kind?: TemplateKind; buildDir?: string },
 ) {
   const { kind, buildDir } = opts;
   const subdirs: string[] = [];
@@ -72,7 +67,7 @@ function defaultPath(
  */
 export function resolveInputs(
   session: ISession,
-  opts: { kind?: TemplateKinds; template?: string; buildDir?: string },
+  opts: { kind?: TemplateKind; template?: string; buildDir?: string },
 ) {
   let templateUrl: string | undefined;
   let templatePath: string | undefined;
@@ -215,7 +210,7 @@ export async function cloneTemplate(
   )();
 }
 
-export async function fetchPublicTemplate(session: ISession, name: string, kind?: TemplateKinds) {
+export async function fetchPublicTemplate(session: ISession, name: string, kind?: TemplateKind) {
   const url = listingUrl(session);
   session.log.debug('Fetching template listing information');
   const templateUrl = `${url}/${normalizeTemplateName({ template: name, kind })}`;
@@ -230,7 +225,7 @@ export async function fetchPublicTemplate(session: ISession, name: string, kind?
 
 export async function listPublicTemplates(
   session: ISession,
-  kind?: TemplateKinds,
+  kind?: TemplateKind,
 ): Promise<TemplateYmlListResponse['items']> {
   const url = listingUrl(session, kind);
   session.log.debug('Fetching template listing information');

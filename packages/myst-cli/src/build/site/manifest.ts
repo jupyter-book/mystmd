@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
+import { TemplateOptionType } from 'myst-common';
 import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config';
 import type { Export } from 'myst-frontmatter';
 import { ExportFormats, PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
-import { TemplateOptionTypes } from 'myst-templates';
 import { filterKeys } from 'simple-validators';
 import type { ISession } from '../../session/types';
 import type { RootState } from '../../store';
@@ -110,7 +110,7 @@ async function resolveTemplateFileOptions(
 ) {
   const resolvedOptions = { ...options };
   mystTemplate.getValidatedTemplateYml().options?.forEach((option) => {
-    if (option.type === TemplateOptionTypes.file && options[option.id]) {
+    if (option.type === TemplateOptionType.file && options[option.id]) {
       const fileHash = hashAndCopyStaticFile(session, options[option.id], session.publicPath());
       resolvedOptions[option.id] = `/${fileHash}`;
     }

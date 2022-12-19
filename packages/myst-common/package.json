@@ -1,9 +1,8 @@
 {
   "name": "myst-common",
-  "type": "module",
   "sideEffects": false,
   "version": "0.0.9",
-  "main": "./dist/esm/index.js",
+  "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "files": [
@@ -19,7 +18,7 @@
     "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist/esm",
     "build:cjs": "tsc --project ./tsconfig.json --module commonjs --outDir dist/cjs",
     "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
-    "build": "npm-run-all -l clean -p build:esm declarations"
+    "build": "npm-run-all -l clean -p build:cjs build:esm declarations"
   },
   "dependencies": {
     "mdast": "^3.0.0",

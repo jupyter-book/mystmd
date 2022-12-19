@@ -49,6 +49,7 @@
     "crypto": "^1.0.1",
     "js-yaml": "^4.1.0",
     "myst-cli-utils": "^0.0.8",
+    "myst-common": "^0.0.9",
     "myst-frontmatter": "^0.0.4",
     "node-fetch": "^2.6.7",
     "pretty-hrtime": "^1.0.3",

@@ -1,7 +1,8 @@
 import fs from 'fs';
 import { join } from 'path';
+import { TemplateKind } from 'myst-common';
 import { createNpmLogger, makeExecutable, tic } from 'myst-cli-utils';
-import MystTemplate, { TemplateKinds } from 'myst-templates';
+import MystTemplate from 'myst-templates';
 import type { ISession } from '../../session/types';
 import { selectors } from '../../store';
 
@@ -11,7 +12,7 @@ const DEFAULT_INSTALL_COMMAND = 'npm install';
 export async function getMystTemplate(session: ISession, opts?: { defaultTemplate?: string }) {
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   const mystTemplate = new MystTemplate(session, {
-    kind: TemplateKinds.site,
+    kind: TemplateKind.site,
     template: siteConfig?.template ?? opts?.defaultTemplate ?? DEFAULT_SITE_TEMPLATE,
     buildDir: session.buildPath(),
   });

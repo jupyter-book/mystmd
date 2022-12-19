@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { TemplateOptionType } from 'myst-common';
 import {
   PAGE_FRONTMATTER_KEYS,
   RESERVED_EXPORT_KEYS,
@@ -31,7 +32,6 @@ import type {
   TemplateStyles,
   TemplateYml,
 } from './types';
-import { TemplateOptionTypes } from './types';
 
 /** Validate that input is an existing file name
  *
@@ -58,13 +58,13 @@ export function validateTemplateOption(
 ) {
   const { type, max_chars, choices } = optionDefinition;
   switch (type) {
-    case TemplateOptionTypes.boolean:
+    case TemplateOptionType.boolean:
       return validateBoolean(input, opts);
-    case TemplateOptionTypes.string:
+    case TemplateOptionType.string:
       return validateString(input, { ...opts, maxLength: max_chars });
-    case TemplateOptionTypes.choice:
+    case TemplateOptionType.choice:
       return validateChoice(input, { ...opts, choices: choices || [] });
-    case TemplateOptionTypes.file:
+    case TemplateOptionType.file:
       return validateFile(input, opts);
     default:
       return validationError(`unknown type on option definition: "${type}"`, opts);
@@ -224,12 +224,12 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
     opts,
   );
   if (value === undefined) return undefined;
-  const optionType = validateEnum<TemplateOptionTypes>(value.type, {
+  const optionType = validateEnum<TemplateOptionType>(value.type, {
     ...incrementOptions('type', opts),
-    enum: TemplateOptionTypes,
+    enum: TemplateOptionType,
   });
   if (optionType === undefined) return undefined;
-  if (optionType === TemplateOptionTypes.choice && !defined(value.choices)) {
+  if (optionType === TemplateOptionType.choice && !defined(value.choices)) {
     return validationError('"choices" must be defined for option type "choice"', opts);
   }
   const idOpts = incrementOptions('id', opts);
