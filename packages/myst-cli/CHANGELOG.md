@@ -1,5 +1,11 @@
 # myst-cli
 
+## 0.1.3
+
+### Patch Changes
+
+- Update jtex dependency
+
 ## 0.1.2
 
 ### Patch Changes
