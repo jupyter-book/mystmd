@@ -1,6 +1,6 @@
 {
   "name": "myst-config",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "license": "MIT",
   "description": "Project and site config types and validation for the mystjs ecosystem",
   "author": "Franklin Koch <franklin@curvenote.com>",

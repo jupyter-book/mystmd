@@ -1,5 +1,13 @@
 # jats-xml
 
+## 0.0.7
+
+### Patch Changes
+
+- 69beba40: Update readme and documentation
+- Updated dependencies [ececeab6]
+  - myst-common@0.0.10
+
 ## 0.0.6
 
 ### Patch Changes

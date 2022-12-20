@@ -1,5 +1,11 @@
 # myst-config
 
+## 0.0.5
+
+### Patch Changes
+
+- 4d41ccc3: Allow a less strict value for relative paths in the navigation
+
 ## 0.0.4
 
 ### Patch Changes

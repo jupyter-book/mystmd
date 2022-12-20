@@ -1,5 +1,19 @@
 # myst-cli
 
+## 0.1.2
+
+### Patch Changes
+
+- ececeab6: Add option to throw error, rather than just log error, when exports fail
+- ececeab6: Move template enums from myst-templates to myst-common
+- Updated dependencies [4d41ccc3]
+- Updated dependencies [ececeab6]
+- Updated dependencies [ececeab6]
+  - myst-config@0.0.5
+  - myst-common@0.0.10
+  - myst-templates@0.1.1
+  - myst-to-tex@0.0.9
+
 ## 0.1.1
 
 ### Patch Changes

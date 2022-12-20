@@ -1,5 +1,11 @@
 # myst-common
 
+## 0.0.10
+
+### Patch Changes
+
+- ececeab6: Move template enums from myst-templates to myst-common
+
 ## 0.0.9
 
 ### Patch Changes

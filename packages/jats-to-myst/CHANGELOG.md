@@ -1,5 +1,14 @@
 # jats-to-myst
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [ececeab6]
+- Updated dependencies [69beba40]
+  - myst-common@0.0.10
+  - jats-xml@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes

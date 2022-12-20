@@ -1,5 +1,13 @@
 # myst-templates
 
+## 0.1.1
+
+### Patch Changes
+
+- ececeab6: Move template enums from myst-templates to myst-common
+- Updated dependencies [ececeab6]
+  - myst-common@0.0.10
+
 ## 0.1.0
 
 ### Minor Changes

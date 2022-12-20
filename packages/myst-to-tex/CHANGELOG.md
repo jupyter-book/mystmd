@@ -1,5 +1,13 @@
 # myst-to-tex
 
+## 0.0.9
+
+### Patch Changes
+
+- ececeab6: Fix bug when table row has no content
+- Updated dependencies [ececeab6]
+  - myst-common@0.0.10
+
 ## 0.0.8
 
 ### Patch Changes
