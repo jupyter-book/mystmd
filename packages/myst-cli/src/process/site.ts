@@ -1,6 +1,6 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
-import { basename, extname, join } from 'path';
+import { basename, extname, join, parse } from 'path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import { writeFileToFolder, tic } from 'myst-cli-utils';
@@ -20,7 +20,7 @@ import { filterPages, loadProjectFromDisk } from '../project';
 import { castSession } from '../session';
 import type { ISession } from '../session/types';
 import { watch, selectors } from '../store';
-import { transformWebp } from '../transforms';
+import { KINDS, transformWebp } from '../transforms';
 import { hashAndCopyStaticFile } from '../utils';
 import { combineProjectCitationRenderers } from './citations';
 import { loadIntersphinx } from './intersphinx';
@@ -119,6 +119,11 @@ export function selectPageReferenceStates(session: ISession, pages: { file: stri
   return pageReferenceStates;
 }
 
+async function resolvePageSource(session: ISession, file: string) {
+  const fileHash = hashAndCopyStaticFile(session, file, session.publicPath());
+  return { format: extname(file).substring(1), filename: basename(file), url: `/${fileHash}` };
+}
+
 async function resolvePageExports(session: ISession, file: string, projectPath: string) {
   const exports = (
     await collectExportOptions(
@@ -157,7 +162,10 @@ export async function writeFile(
 ) {
   const toc = tic();
   const { frontmatter, ...mdastPost } = selectFile(session, file);
-  const exports = await resolvePageExports(session, file, projectPath);
+  const exports = await Promise.all([
+    resolvePageSource(session, file),
+    ...(await resolvePageExports(session, file, projectPath)),
+  ]);
   const frontmatterWithExports = { ...frontmatter, exports };
   const jsonFilename = join(session.contentPath(), projectSlug, `${pageSlug}.json`);
   writeFileToFolder(
