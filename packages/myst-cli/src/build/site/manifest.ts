@@ -2,44 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import { TemplateOptionType } from 'myst-common';
 import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config';
-import type { Export } from 'myst-frontmatter';
-import { ExportFormats, PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
 import { filterKeys } from 'simple-validators';
 import type { ISession } from '../../session/types';
 import type { RootState } from '../../store';
 import { selectors } from '../../store';
 import { hashAndCopyStaticFile } from '../../utils';
-import type { ExportWithOutput } from '../types';
-import { collectExportOptions } from '../utils';
 import { getMystTemplate } from './template';
-
-async function resolvePageExports(session: ISession, file: string, projectPath: string) {
-  const exports = (
-    await collectExportOptions(
-      session,
-      [file],
-      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex],
-      { projectPath },
-    )
-  )
-    .filter((exp) => {
-      return ['.docx', '.pdf', '.zip'].includes(path.extname(exp.output));
-    })
-    .filter((exp) => {
-      return fs.existsSync(exp.output);
-    }) as Export[];
-  exports.forEach((exp) => {
-    const { output } = exp as ExportWithOutput;
-    const fileHash = hashAndCopyStaticFile(session, output, session.publicPath());
-    exp.filename = path.basename(output);
-    exp.url = `/${fileHash}`;
-    delete exp.$file;
-    delete exp.$project;
-    delete exp.output;
-  });
-  return exports;
-}
 
 /**
  * Convert local project representation to site manifest project
@@ -59,8 +29,7 @@ export async function localToManifestProject(
   const proj = selectors.selectLocalProject(state, projectPath);
   if (!proj) return null;
   // Update all of the page title to the frontmatter title
-  const { index, file } = proj;
-  const indexExports = await resolvePageExports(session, file, projectPath);
+  const { index } = proj;
   const projectTitle =
     projConfig?.title || selectors.selectFileInfo(state, proj.file).title || proj.index;
   const pages = await Promise.all(
@@ -74,7 +43,6 @@ export async function localToManifestProject(
         const date = fileInfo.date ?? '';
         const tags = fileInfo.tags ?? [];
         const { slug, level } = page;
-        const exports = await resolvePageExports(session, page.file, projectPath);
         const projectPage = {
           slug,
           title,
@@ -84,7 +52,6 @@ export async function localToManifestProject(
           thumbnailOptimized,
           tags,
           level,
-          exports,
         };
         return projectPage;
       }
@@ -98,7 +65,6 @@ export async function localToManifestProject(
     title: projectTitle || 'Untitled',
     slug: projectSlug,
     index,
-    exports: indexExports,
     pages,
   };
 }
