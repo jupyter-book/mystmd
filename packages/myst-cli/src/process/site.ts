@@ -1,26 +1,31 @@
+import fs from 'fs';
 import yaml from 'js-yaml';
-import { join } from 'path';
+import { basename, extname, join } from 'path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import { writeFileToFolder, tic } from 'myst-cli-utils';
 import { toText } from 'myst-common';
 import type { SiteProject } from 'myst-config';
+import type { Export } from 'myst-frontmatter';
+import { ExportFormats } from 'myst-frontmatter';
 import type { Node } from 'myst-spec';
 import type { LinkTransformer } from 'myst-transforms';
 import { select } from 'unist-util-select';
-import { getSiteManifest } from '../build/site/manifest';
-import type { ISession } from '../session/types';
-import { transformWebp } from '../transforms';
-import type { PageReferenceStates, TransformFn } from './mdast';
-import { postProcessMdast, transformMdast } from './mdast';
-import { castSession } from '../session';
-import { watch, selectors } from '../store';
+import { getSiteManifest, collectExportOptions } from '../build';
+import type { ExportWithOutput } from '../build';
+import { reloadAllConfigsForCurrentSite } from '../config';
+import { selectFile, loadFile } from '../process';
 import type { LocalProject } from '../project';
 import { filterPages, loadProjectFromDisk } from '../project';
-import { selectFile, loadFile } from '../process';
-import { loadIntersphinx } from './intersphinx';
+import { castSession } from '../session';
+import type { ISession } from '../session/types';
+import { watch, selectors } from '../store';
+import { transformWebp } from '../transforms';
+import { hashAndCopyStaticFile } from '../utils';
 import { combineProjectCitationRenderers } from './citations';
-import { reloadAllConfigsForCurrentSite } from '../config';
+import { loadIntersphinx } from './intersphinx';
+import type { PageReferenceStates, TransformFn } from './mdast';
+import { postProcessMdast, transformMdast } from './mdast';
 
 const WEB_IMAGE_EXTENSIONS = ['.webp', '.svg', '.gif', '.png', '.jpg', '.jpeg'];
 
@@ -114,14 +119,54 @@ export function selectPageReferenceStates(session: ISession, pages: { file: stri
   return pageReferenceStates;
 }
 
-export function writeFile(
+async function resolvePageExports(session: ISession, file: string, projectPath: string) {
+  const exports = (
+    await collectExportOptions(
+      session,
+      [file],
+      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex],
+      { projectPath },
+    )
+  )
+    .filter((exp) => {
+      return ['.docx', '.pdf', '.zip'].includes(extname(exp.output));
+    })
+    .filter((exp) => {
+      return fs.existsSync(exp.output);
+    }) as Export[];
+  exports.forEach((exp) => {
+    const { output } = exp as ExportWithOutput;
+    const fileHash = hashAndCopyStaticFile(session, output, session.publicPath());
+    exp.filename = basename(output);
+    exp.url = `/${fileHash}`;
+    delete exp.$file;
+    delete exp.$project;
+    delete exp.output;
+  });
+  return exports;
+}
+
+export async function writeFile(
   session: ISession,
-  { file, pageSlug, projectSlug }: { file: string; projectSlug: string; pageSlug: string },
+  {
+    file,
+    pageSlug,
+    projectSlug,
+    projectPath,
+  }: { file: string; projectSlug: string; pageSlug: string; projectPath: string },
 ) {
   const toc = tic();
-  const mdastPost = selectFile(session, file);
+  const { frontmatter, ...mdastPost } = selectFile(session, file);
+  const exports = await resolvePageExports(session, file, projectPath);
+  const frontmatterWithExports = { ...frontmatter, exports };
   const jsonFilename = join(session.contentPath(), projectSlug, `${pageSlug}.json`);
-  writeFileToFolder(jsonFilename, JSON.stringify(mdastPost));
+  writeFileToFolder(
+    jsonFilename,
+    JSON.stringify({
+      frontmatter: frontmatterWithExports,
+      ...mdastPost,
+    }),
+  );
   session.log.debug(toc(`Wrote "${file}" in %s`));
 }
 
@@ -165,7 +210,7 @@ export async function fastProcessFile(
     pageReferenceStates,
     extraLinkTransformers,
   });
-  writeFile(session, { file, pageSlug, projectSlug });
+  await writeFile(session, { file, pageSlug, projectSlug, projectPath });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session, { defaultTemplate });
 }
@@ -226,12 +271,15 @@ export async function processProject(
   );
   // Write all pages
   if (writeFiles) {
-    pages.map((page) =>
-      writeFile(session, {
-        file: page.file,
-        projectSlug: siteProject.slug,
-        pageSlug: page.slug,
-      }),
+    await Promise.all(
+      pages.map((page) =>
+        writeFile(session, {
+          file: page.file,
+          projectSlug: siteProject.slug,
+          pageSlug: page.slug,
+          projectPath: project.path,
+        }),
+      ),
     );
   }
   log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug} in %s.`));
