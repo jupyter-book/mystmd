@@ -73,6 +73,7 @@ export async function loadFile(
           title: toText(tex.data.frontmatter.title as any),
           short_title: toText(tex.data.frontmatter.short_title as any),
           authors: tex.data.frontmatter.authors,
+          // TODO: affiliations: tex.data.frontmatter.affiliations,
           keywords: tex.data.frontmatter.keywords,
           math: tex.data.macros,
           bibliography: tex.data.bibliography,

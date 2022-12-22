@@ -22,6 +22,7 @@ import { VERBATIM_HANDLERS } from './verbatim';
 import { MISC_HANDLERS } from './misc';
 import { TABLE_HANDLERS } from './tables';
 import { FOOTNOTE_HANDLERS } from './footnotes';
+import type { PageFrontmatter } from 'myst-frontmatter';
 
 const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...BASIC_TEXT_HANDLERS,
@@ -41,6 +42,18 @@ const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...TABLE_HANDLERS,
   ...FOOTNOTE_HANDLERS,
 };
+
+// This currently is needed as we don't support affiliations in the frontmatter.
+function cleanFrontmatter(frontmatter: PageFrontmatter) {
+  frontmatter.authors?.forEach((a) => {
+    a.affiliations = a.affiliations?.map((affil) => {
+      const update = ((frontmatter as any).affiliations as { id: string; name: string }[])?.find(
+        ({ id }) => id === affil,
+      );
+      return update?.name ?? affil;
+    });
+  });
+}
 
 export class TexParser implements ITexParser {
   tex: string;
@@ -83,6 +96,7 @@ export class TexParser implements ITexParser {
       xref.identifier = reference.identifier;
       xref.label = reference.label;
     });
+    cleanFrontmatter(this.data.frontmatter);
     this.ast = stack;
   }
 
