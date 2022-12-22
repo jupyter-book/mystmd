@@ -138,12 +138,12 @@ cases:
             email: ahmad01.shah@gmail.com
             corresponding: true
             affiliations:
-              - '1'
+              - Department of Computer Science, IM|Sciences Peshawar
           - name: Awais Adnan
             email: awaisadnan@gmail.com
             corresponding: true
             affiliations:
-              - '2'
+              - Some Department, Some University
         affiliations:
           - id: '1'
             name: Department of Computer Science, IM|Sciences Peshawar
@@ -157,7 +157,7 @@ cases:
         authors:
           - name: Rowan Cockett
             affiliations:
-              - '1'
+              - Curvenote
         affiliations:
           - id: '1'
             name: Curvenote
