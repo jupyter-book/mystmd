@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { isDirectory } from './isDirectory';
 
-export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb'];
+export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb', '.tex'];
 
 export function isValidFile(file: string): boolean {
   return VALID_FILE_EXTENSIONS.includes(path.extname(file).toLowerCase());

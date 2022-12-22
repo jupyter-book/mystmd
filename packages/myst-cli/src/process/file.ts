@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
 import { tic } from 'myst-cli-utils';
+import { TexParser } from 'tex-to-myst';
 import type { ISession } from '../session/types';
 import { castSession } from '../session';
 import { warnings, watch } from '../store/reducers';
@@ -9,6 +10,10 @@ import { loadCitations } from './citations';
 import { parseMyst } from './myst';
 import { processNotebook } from './notebook';
 import { KINDS } from '../transforms/types';
+import { VFile } from 'vfile';
+import { logMessagesFromVFile } from '../utils';
+import { toText } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
 
 export async function loadFile(
   session: ISession,
@@ -40,6 +45,24 @@ export async function loadFile(
       case '.bib': {
         const renderer = await loadCitations(session, file);
         cache.$citationRenderers[file] = renderer;
+        break;
+      }
+      case '.tex': {
+        const content = fs.readFileSync(file).toString();
+        sha256 = createHash('sha256').update(content).digest('hex');
+        const vfile = new VFile();
+        vfile.path = file;
+        const tex = new TexParser(content, vfile);
+        logMessagesFromVFile(session, vfile);
+        const frontmatter: PageFrontmatter = {
+          title: toText(tex.data.frontmatter.title as any),
+          short_title: toText(tex.data.frontmatter.short_title as any),
+          math: tex.data.macros,
+          bibliography: tex.data.bibliography,
+        };
+        cache.$mdast[file] = {
+          pre: { kind: KINDS.Article, file, mdast: tex.ast as any, frontmatter },
+        };
         break;
       }
       default:

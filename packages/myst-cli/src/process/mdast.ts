@@ -99,12 +99,12 @@ export async function transformMdast(
   const { store, log } = session;
   const cache = castSession(session);
   if (!cache.$mdast[file]) return;
-  const { mdast: mdastPre, kind } = cache.$mdast[file].pre;
+  const { mdast: mdastPre, kind, frontmatter: preFrontmatter } = cache.$mdast[file].pre;
   if (!mdastPre) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
   // Use structuredClone in future (available in node 17)
   const mdast = JSON.parse(JSON.stringify(mdastPre)) as Root;
-  const frontmatter = getPageFrontmatter(session, mdast, file, projectPath);
+  const frontmatter = preFrontmatter ?? getPageFrontmatter(session, mdast, file, projectPath);
   const references: References = {
     cite: { order: [], data: {} },
     footnotes: {},

@@ -36,7 +36,7 @@ function watchConfigAndPublic(
     });
 }
 
-const KNOWN_FAST_BUILDS = new Set(['.ipynb', '.md']);
+const KNOWN_FAST_BUILDS = new Set(['.ipynb', '.md', '.tex']);
 
 function fileProcessor(
   session: ISession,
