@@ -15,6 +15,7 @@ import {
   hashAndCopyStaticFile,
   imagemagick,
   inkscape,
+  KNOWN_IMAGE_EXTENSIONS,
 } from '../utils';
 import type { ISession } from '../session/types';
 import { castSession } from '../session';
@@ -140,9 +141,7 @@ export async function transformImages(
       // Look up the image paths by known extensions if it is not provided
       const imagePath = path.join(path.dirname(file), image.url);
       if (!fs.existsSync(imagePath)) {
-        const extension = ['.png', '.tiff', '.jpg', 'jpeg', '.svg', '.pdf', '.eps'].find((ext) =>
-          fs.existsSync(imagePath + ext),
-        );
+        const extension = KNOWN_IMAGE_EXTENSIONS.find((ext) => fs.existsSync(imagePath + ext));
         if (extension) {
           image.url = image.url + extension;
           image.urlSource = image.url;

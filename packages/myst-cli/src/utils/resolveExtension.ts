@@ -3,6 +3,18 @@ import path from 'path';
 import { isDirectory } from './isDirectory';
 
 export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb', '.tex'];
+export const KNOWN_IMAGE_EXTENSIONS = [
+  '.png',
+  '.tiff',
+  '.jpg',
+  'jpeg',
+  '.gif',
+  '.webp',
+  '.svg',
+  '.pdf',
+  '.eps',
+];
+export const KNOWN_FAST_BUILDS = new Set(['.ipynb', '.md', '.tex']);
 
 export function isValidFile(file: string): boolean {
   return VALID_FILE_EXTENSIONS.includes(path.extname(file).toLowerCase());
