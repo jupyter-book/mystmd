@@ -1,0 +1,17 @@
+title: Frontmatter
+cases:
+  - title: Title
+    tex: '\title[Short title]{This is the $math$ title!}'
+    text: ''
+    data:
+      frontmatter:
+        title:
+          - type: text
+            value: 'This is the '
+          - type: inlineMath
+            value: math
+          - type: text
+            value: ' title!'
+        short_title:
+          - type: text
+            value: 'Short title'

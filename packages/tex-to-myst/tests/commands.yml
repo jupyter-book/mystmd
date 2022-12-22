@@ -1,0 +1,15 @@
+title: New Commands
+cases:
+  - title: new commands, including text
+    tex: |-
+      \newcommand{\angstroms}{\text{\normalfont\AA }}
+      \newcommand{\ii}{{i\mkern1mu}}
+      \newcommand{\f}[2][]{\mathcal{F}_{#1}\left[#2\right]}
+      \newcommand{\FFT}{\mathcal{F}_{\mathbf{r}\to\mathbf{k}}}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
+        '\ii': '{i\mkern1mu}'
+        '\f': '\mathcal{F}_{#1}\left[#2\right]'
+        '\FFT': '\mathcal{F}_{\mathbf{r}\to\mathbf{k}}'

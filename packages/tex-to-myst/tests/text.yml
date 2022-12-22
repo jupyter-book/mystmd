@@ -1,0 +1,95 @@
+title: Basic Commands
+cases:
+  - title: Simple Paragraph
+    tex: text
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+  - title: Strong and Emphasis
+    tex: This text is \textbf{bold \emph{and emphasized}}.
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This text is '
+            - type: strong
+              children:
+                - type: text
+                  value: 'bold '
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: and emphasized
+            - type: text
+              value: '.'
+  - title: Small Caps
+    tex: \textsc{SimPEG}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: smallcaps
+              children:
+                - type: text
+                  value: SimPEG
+  - title: texttt --> inlineCode
+    tex: \texttt{code}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: inlineCode
+              children:
+                - type: text
+                  value: code
+  - title: bf text
+    tex: '{\bf text} not bold'
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: strong
+              children:
+                - type: text
+                  value: text
+            - type: text
+              value: ' not bold'
+  - title: textit --> emphasis
+    tex: \textit{emphasis}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: emphasis
+              children:
+                - type: text
+                  value: emphasis
+  - title: Subscript & Superscript
+    tex: H\textsubscript{2}O, July 4\textsuperscript{th}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: H
+            - type: subscript
+              children:
+                - type: text
+                  value: '2'
+            - type: text
+              value: O, July 4
+            - type: superscript
+              children:
+                - type: text
+                  value: 'th'

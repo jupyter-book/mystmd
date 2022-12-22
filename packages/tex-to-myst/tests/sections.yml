@@ -1,0 +1,86 @@
+title: Sections
+cases:
+  - title: Section
+    tex: \section{Introduction}
+    tree:
+      type: root
+      children:
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: Introduction
+  - title: Subsection
+    tex: \subsection{Introduction}
+    tree:
+      type: root
+      children:
+        - type: heading
+          depth: 3
+          children:
+            - type: text
+              value: Introduction
+  - title: Subsubsection
+    tex: \subsubsection{Introduction}
+    tree:
+      type: root
+      children:
+        - type: heading
+          depth: 4
+          children:
+            - type: text
+              value: Introduction
+  - title: Paragraph
+    tex: \paragraph{Introduction}
+    tree:
+      type: root
+      children:
+        - type: heading
+          depth: 5
+          children:
+            - type: text
+              value: Introduction
+  - title: Subparagraph
+    tex: \subparagraph{Introduction}
+    tree:
+      type: root
+      children:
+        - type: heading
+          depth: 6
+          children:
+            - type: text
+              value: Introduction
+  - title: Starred Section
+    tex: \section*{Introduction}
+    tree:
+      type: root
+      children:
+        - type: heading
+          depth: 2
+          enumerated: false
+          children:
+            - type: text
+              value: Introduction
+  - title: Starred Section
+    tex: \section[Effect on staff turnover]{An analysis of the effect of the revised recruitment policies on staff turnover at divisional headquarters}
+    tree:
+      type: root
+      children:
+        - type: heading
+          depth: 2
+          alt: Effect on staff turnover
+          children:
+            - type: text
+              value: An analysis of the effect of the revised recruitment policies on staff turnover at divisional headquarters
+  - title: Labeled Section
+    tex: \section{Introduction}\label{intro}
+    tree:
+      type: root
+      children:
+        - type: heading
+          depth: 2
+          identifier: intro
+          label: intro
+          children:
+            - type: text
+              value: Introduction

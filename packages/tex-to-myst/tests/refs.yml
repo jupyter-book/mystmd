@@ -1,0 +1,82 @@
+title: Cross References
+cases:
+  - title: pageref
+    tex: See figure~\ref{fig:Test} on page~\pageref{fig:Test}.
+    warnings: 1
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'See figure '
+            - type: crossReference
+              identifier: fig:test
+              label: fig:Test
+            - type: text
+              value: ' on page '
+            - type: crossReference
+              identifier: fig:test
+              label: fig:Test
+            - type: text
+              value: '.'
+  - title: sections
+    tex: >
+      \section{Greetings}
+      \label{sec:greetings}
+
+      Hello!
+
+      \section{Referencing}
+
+      I greeted in section~\ref{sec:greetings}.
+    tree:
+      type: root
+      children:
+        - type: heading
+          depth: 2
+          identifier: sec:greetings
+          label: sec:greetings
+          children:
+            - type: text
+              value: Greetings
+        - type: paragraph
+          children:
+            - type: text
+              value: Hello!
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: Referencing
+        - type: paragraph
+          children:
+            - type: text
+              value: 'I greeted in section '
+            - type: crossReference
+              identifier: sec:greetings
+              label: sec:greetings
+            - type: text
+              value: '.'
+  - title: equations
+    tex: |-
+      \begin{equation} \label{eq:solve}
+      x^2 - 5 x + 6 = 0
+      \end{equation}
+
+      and so we have solved equation~\eqref{eq:solve}
+    tree:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{equation} \label{eq:solve}
+            x^2 - 5 x + 6 = 0
+            \end{equation}
+        - type: paragraph
+          children:
+            - type: text
+              value: 'and so we have solved equation '
+            - type: crossReference
+              label: eq:solve
+              identifier: eq:solve
