@@ -96,9 +96,7 @@ You can label your equation with the standard `\label{my-equation}` that you wou
 The equation cross-referencing and numbering will work with the rest of your content.
 
 ```{warning}
-The label implementation does not yet work for sub-equations and may not work if you have more than one label.
-
-If you are using JupyterBook or Sphinx, the `label` analysis of the source is not yet implemented.
+The label implementation does not yet work for `sub-equations` and may not work if you have more than one label.
 ```
 
 ```{tip}

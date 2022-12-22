@@ -9,6 +9,7 @@ export {
   liftChildren,
   setTextAsChild,
   copyNode,
+  mergeTextNodes,
 } from './utils';
 export { selectBlockParts, extractPart } from './extractParts';
 export { TemplateKind, TemplateOptionType } from './templates';

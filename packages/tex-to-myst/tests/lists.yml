@@ -1,0 +1,176 @@
+title: Lists
+cases:
+  - title: itemize
+    tex: >
+      \begin{itemize}
+        \item first item
+      \end{itemize}
+    tree:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          children:
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: first item
+  - title: enumerate
+    tex: >
+      \begin{enumerate}
+        \item first item
+      \end{enumerate}
+    tree:
+      type: root
+      children:
+        - type: list
+          ordered: true
+          children:
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: first item
+  - title: nested
+    tex: >
+      \begin{enumerate}
+      \item The first item
+      \begin{enumerate}
+      \item Nested item 1
+      \item Nested item 2
+      \end{enumerate}
+      \item The second item
+      \item The third etc \ldots
+      \end{enumerate}
+    tree:
+      type: root
+      children:
+        - type: list
+          ordered: true
+          children:
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: The first item
+                - type: list
+                  ordered: true
+                  children:
+                    - type: listItem
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: Nested item 1
+                    - type: listItem
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: Nested item 2
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: The second item
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: The third etc …
+  - title: description
+    tex: >
+      \begin{description}[align=right]
+        \item [Ant] Or an aunt, in america.
+        \item [Elephant] Not what you should call them.
+      \end{description}
+    tree:
+      type: root
+      children:
+        - type: definitionList
+          children:
+            - type: definitionTerm
+              children:
+                - type: text
+                  value: Ant
+            - type: definitionDescription
+              children:
+                - type: text
+                  value: Or an aunt, in america.
+            - type: definitionTerm
+              children:
+                - type: text
+                  value: Elephant
+            - type: definitionDescription
+              children:
+                - type: text
+                  value: Not what you should call them.
+  - title: labeling
+    tex: >
+      \begin{labeling}{alligator}
+        \item [ant] really busy all the time
+        \item [chimp] likes bananas
+        \item [alligator] very dangerous animal, sharp teeth, long
+      muscular tail and a bit of text that is longer than one
+      line and shows the alignment of text quite nicely
+      \end{labeling}
+    tree:
+      type: root
+      children:
+        - type: definitionList
+          children:
+            - type: definitionTerm
+              children:
+                - type: text
+                  value: ant
+            - type: definitionDescription
+              children:
+                - type: text
+                  value: really busy all the time
+            - type: definitionTerm
+              children:
+                - type: text
+                  value: chimp
+            - type: definitionDescription
+              children:
+                - type: text
+                  value: likes bananas
+            - type: definitionTerm
+              children:
+                - type: text
+                  value: alligator
+            - type: definitionDescription
+              children:
+                - type: text
+                  value: very dangerous animal, sharp teeth, long muscular tail and a bit of text that is longer than one line and shows the alignment of text quite nicely
+  - title: tight lists
+    tex: >
+      \begin{itemize}[noitemsep]
+        \item more work
+        \item more responsibility
+        \item more satisfaction
+      \end{itemize}
+    tree:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          children:
+            - type: listItem
+              children:
+                - type: text
+                  value: more work
+            - type: listItem
+              children:
+                - type: text
+                  value: more responsibility
+            - type: listItem
+              children:
+                - type: text
+                  value: more satisfaction

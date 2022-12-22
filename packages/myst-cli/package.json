@@ -86,6 +86,7 @@
     "node-fetch": "^3.2.10",
     "redux": "^4.2.0",
     "simple-validators": "^0.0.2",
+    "tex-to-myst": "^0.0.1",
     "unified": "^10.1.2",
     "unist-util-remove": "^3.1.0",
     "vfile": "^5.3.5",

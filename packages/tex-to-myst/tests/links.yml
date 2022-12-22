@@ -1,0 +1,57 @@
+title: Links
+cases:
+  - title: url
+    tex: \url{https://www.wikibooks.org}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: link
+              url: https://www.wikibooks.org
+              children:
+                - type: text
+                  value: https://www.wikibooks.org
+  - title: href
+    tex: \href{https://www.wikibooks.org}{Wikibooks home}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: link
+              url: https://www.wikibooks.org
+              children:
+                - type: text
+                  value: Wikibooks home
+  - title: href (styled)
+    tex: \href{https://www.wikibooks.org}{Wikibooks \textbf{home}}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: link
+              url: https://www.wikibooks.org
+              children:
+                - type: text
+                  value: 'Wikibooks '
+                - type: strong
+                  children:
+                    - type: text
+                      value: home
+  - title: hyperref
+    tex: \hyperref[mainlemma]{lemma \ref*{mainlemma}}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: link
+              url: mainlemma
+              children:
+                - type: text
+                  value: 'lemma '
+                - type: crossReference
+                  identifier: mainlemma
+                  label: mainlemma

@@ -10,8 +10,10 @@ export function logMessagesFromVFile(session: ISession, file?: VFile): void {
     const kind: WarningKind =
       message.fatal === null ? 'info' : message.fatal === false ? 'warn' : 'error';
     const note = message.note ? `\n\n${chalk.dim(message.note)}` : '';
-    const url = message.url ? `\n\nSee also: ${chalk.bold(message.url)}` : '';
-    addWarningForFile(session, file.path, `${message.message}${note}${url}`, kind);
+    const url = message.url ? chalk.dim(`\n\nSee also: ${message.url}\n`) : '';
+    addWarningForFile(session, file.path, `${message.message}${note}${url}`, kind, {
+      position: message.position,
+    });
   });
   file.messages = [];
 }

@@ -1,0 +1,118 @@
+title: Equations and math
+cases:
+  - title: equation \[ ... \]
+    tex: |-
+      \[
+      x^2 - 5 x + 6 = 0
+      \]
+    tree:
+      type: root
+      children:
+        - type: math
+          value: |-
+            x^2 - 5 x + 6 = 0
+  - title: double dollar equation
+    tex: |-
+      $$
+      x^2 - 5 x + 6 = 0
+      $$
+    tree:
+      type: root
+      children:
+        - type: math
+          value: |-
+            x^2 - 5 x + 6 = 0
+  - title: labelled equation
+    tex: |-
+      \begin{equation} \label{eq:solve}
+      x^2 - 5 x + 6 = 0
+      \end{equation}
+    tree:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{equation} \label{eq:solve}
+            x^2 - 5 x + 6 = 0
+            \end{equation}
+  - title: inline math
+    tex: |-
+      For example, $\cos (2\theta) = \cos^2 \theta - \sin^2 \theta$.
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'For example, '
+            - type: inlineMath
+              value: \cos (2\theta) = \cos^2 \theta - \sin^2 \theta
+            - type: text
+              value: '.'
+  - title: inline math (alternative style)
+    tex: |-
+      For example, \(\cos (2\theta) = \cos^2 \theta - \sin^2 \theta\).
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'For example, '
+            - type: inlineMath
+              value: \cos (2\theta) = \cos^2 \theta - \sin^2 \theta
+            - type: text
+              value: '.'
+  - title: pmatrix
+    tex: |-
+      \begin{pmatrix}
+        a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+        a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+        \vdots  & \vdots  & \ddots & \vdots  \\
+        a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+      \end{pmatrix}
+    tree:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{pmatrix}
+              a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+              a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+              \vdots  & \vdots  & \ddots & \vdots  \\
+              a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+            \end{pmatrix}
+  - title: pmatrix*
+    tex: |-
+      \begin{pmatrix*}
+        a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+        a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+        \vdots  & \vdots  & \ddots & \vdots  \\
+        a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+      \end{pmatrix*}
+    tree:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{pmatrix*}
+              a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+              a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+              \vdots  & \vdots  & \ddots & \vdots  \\
+              a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+            \end{pmatrix*}
+  - title: align*
+    tex: |-
+      \begin{align*}
+        \nabla \times \vec{e}+\frac{\partial \vec{b}}{\partial t}&=0 \\
+        \nabla \times \vec{h}-\vec{j}&=\vec{s}\_{e}
+      \end{align*}
+    tree:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{align*}
+              \nabla \times \vec{e}+\frac{\partial \vec{b}}{\partial t}&=0 \\
+              \nabla \times \vec{h}-\vec{j}&=\vec{s}\_{e}
+            \end{align*}

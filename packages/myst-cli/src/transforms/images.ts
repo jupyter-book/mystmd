@@ -6,6 +6,7 @@ import { isUrl } from 'myst-cli-utils';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
 import path from 'path';
+import type { VFileMessage } from 'vfile-message';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import {
   WebFileObject,
@@ -14,9 +15,9 @@ import {
   hashAndCopyStaticFile,
   imagemagick,
   inkscape,
+  KNOWN_IMAGE_EXTENSIONS,
 } from '../utils';
 import type { ISession } from '../session/types';
-import chalk from 'chalk';
 import { castSession } from '../session';
 import { watch } from '../store';
 
@@ -95,7 +96,7 @@ export async function saveImageInStaticFolder(
   urlSource: string,
   sourceFile: string,
   writeFolder: string,
-  opts?: { altOutputFolder?: string },
+  opts?: { altOutputFolder?: string; position?: VFileMessage['position'] },
 ): Promise<{ urlSource: string; url: string } | null> {
   const sourceFileFolder = path.dirname(sourceFile);
   const imageLocalFile = path.join(sourceFileFolder, urlSource);
@@ -119,7 +120,7 @@ export async function saveImageInStaticFolder(
     file = fileObject.id;
   } else {
     const message = `Cannot find image "${urlSource}" in ${sourceFileFolder}`;
-    addWarningForFile(session, sourceFile, message, 'error');
+    addWarningForFile(session, sourceFile, message, 'error', { position: opts?.position });
     return null;
   }
   // Update mdast with new file name
@@ -137,6 +138,15 @@ export async function transformImages(
   const images = selectAll('image', mdast) as GenericNode[];
   return Promise.all(
     images.map(async (image) => {
+      // Look up the image paths by known extensions if it is not provided
+      const imagePath = path.join(path.dirname(file), image.url);
+      if (!fs.existsSync(imagePath)) {
+        const extension = KNOWN_IMAGE_EXTENSIONS.find((ext) => fs.existsSync(imagePath + ext));
+        if (extension) {
+          image.url = image.url + extension;
+          image.urlSource = image.url;
+        }
+      }
       const result = await saveImageInStaticFolder(
         session,
         image.urlSource || image.url,
@@ -144,6 +154,7 @@ export async function transformImages(
         writeFolder,
         {
           altOutputFolder: opts?.altOutputFolder,
+          position: image.position,
         },
       );
       if (result) {
@@ -229,9 +240,9 @@ export async function transformImageFormats(
         addWarningForFile(
           session,
           file,
-          `To convert SVG images to PDF, you must install inkscape.\n${chalk.dim(
-            'Images converted to PNG as a fallback using imagemagick.',
-          )}`,
+          'To convert SVG images to PDF, you must install inkscape.',
+          'warn',
+          { note: 'Images converted to PNG as a fallback using imagemagick.' },
         );
       }
       session.log.info(`${logPrefix} PNG using imagemagick`);
@@ -240,10 +251,9 @@ export async function transformImageFormats(
       addWarningForFile(
         session,
         file,
-        `Cannot convert SVG images, they may not correctly render.\n${chalk.dim(
-          'To convert these images, you must install imagemagick or inkscape',
-        )}`,
+        'Cannot convert SVG images, they may not correctly render.',
         'error',
+        { note: 'To convert these images, you must install imagemagick or inkscape' },
       );
     }
     if (svgConversionFn) {
@@ -267,8 +277,9 @@ export async function transformImageFormats(
       addWarningForFile(
         session,
         file,
-        'Cannot convert GIF images, they may not correctly render.\nTo convert these images, you must install imagemagick',
+        'Cannot convert GIF images, they may not correctly render.',
         'error',
+        { note: 'To convert these images, you must install imagemagick' },
       );
     }
     if (gifConversionFn) {
@@ -280,17 +291,16 @@ export async function transformImageFormats(
 
   // Warn on unsupported, unconvertable images
   if (unconvertableImages.length) {
-    const badExts = [
-      ...new Set(unconvertableImages.map((image) => path.extname(image.url) || '<no extension>')),
-    ];
-    addWarningForFile(
-      session,
-      file,
-      `Unsupported image extension${
-        badExts.length > 1 ? 's' : ''
-      } may not correctly render: ${badExts.join(', ')}`,
-      'error',
-    );
+    unconvertableImages.forEach((image) => {
+      const badExt = path.extname(image.url) || '<no extension>';
+      addWarningForFile(
+        session,
+        file,
+        `Unsupported image extension "${badExt}" may not correctly render.`,
+        'error',
+        { position: image.position },
+      );
+    });
   }
   return Promise.all(conversionPromises);
 }

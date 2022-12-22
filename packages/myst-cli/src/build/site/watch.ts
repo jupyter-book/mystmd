@@ -6,6 +6,7 @@ import type { ISession } from '../../session/types';
 import { changeFile, fastProcessFile, processSite } from '../../process/site';
 import type { TransformFn } from '../../process';
 import { selectors } from '../../store';
+import { KNOWN_FAST_BUILDS } from '../../utils/resolveExtension';
 
 // TODO: allow this to work from other paths
 
@@ -35,8 +36,6 @@ function watchConfigAndPublic(
       triggerReload();
     });
 }
-
-const KNOWN_FAST_BUILDS = new Set(['.ipynb', '.md']);
 
 function fileProcessor(
   session: ISession,

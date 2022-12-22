@@ -1,11 +1,6 @@
 import doi from 'doi-utils';
 import fetch from 'node-fetch';
-import type { ISession } from './types';
-
-export interface Resolver {
-  test: (url: string) => boolean;
-  jatsUrl: (url: string) => string;
-}
+import type { ISession, Options, Resolver } from './types';
 
 export const elife: Resolver = {
   test(url: string) {
@@ -46,15 +41,15 @@ export const DEFAULT_RESOLVERS: Resolver[] = [elife, plos, joss];
 export async function customResolveJatsUrlFromDoi(
   session: ISession,
   doiString: string,
-  resolvers = DEFAULT_RESOLVERS,
+  opts: Options = { resolvers: DEFAULT_RESOLVERS },
 ): Promise<string> {
   if (!doi.validate(doiString)) throw new Error(`The doi ${doiString} is not valid`);
   const doiUrl = doi.buildUrl(doiString) as string;
   session.log.debug(`Resolving DOI ${doiUrl}`);
-  const resp = await fetch(doiUrl);
+  const resp = await (opts?.fetcher ?? fetch)(doiUrl);
   const articleUrl = resp.url;
   session.log.debug(`Found resolved URL for DOI at ${articleUrl}`);
-  const resolver = resolvers.find((r) => r.test(articleUrl));
+  const resolver = opts?.resolvers?.find((r) => r.test(articleUrl));
   if (!resolver) throw new Error(`Could not resolve JATS for ${articleUrl}, no resolver matched`);
   const jatsUrl = resolver.jatsUrl(articleUrl);
   return jatsUrl;

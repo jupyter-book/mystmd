@@ -3,8 +3,7 @@ import chalk from 'chalk';
 import fetch from 'node-fetch';
 import { isUrl, tic } from 'myst-cli-utils';
 import { formatPrinciples, highlightFAIR } from 'fair-principles';
-import type { ISession } from './types';
-import type { Resolver } from './resolvers';
+import type { ISession, Options } from './types';
 import { customResolveJatsUrlFromDoi } from './resolvers';
 
 function logAboutJatsFailing(session: ISession, jatsUrls: string[]) {
@@ -20,27 +19,15 @@ function logAboutJatsFailing(session: ISession, jatsUrls: string[]) {
   session.log.info(`${chalk.blue('The link may work in a browser.')}\n`);
 }
 
-async function dowloadFromUrl(session: ISession, jatsUrl: string): Promise<string> {
+async function dowloadFromUrl(session: ISession, jatsUrl: string, opts: Options): Promise<string> {
   const toc = tic();
   session.log.debug(`Fetching JATS from ${jatsUrl}`);
-  const resp = await fetch(jatsUrl, {
-    headers: [
-      ['accept', 'application/xml'],
-      [
-        'user-agent',
-        // A bunch of publishers just show the login screen or quickly block you.
-        // We don't want to DDOS these publishers, they are the _good ones_ for sharing the XML!!
-        // But some block on the second request?!
-        // So we can pretend to be a random browser, I guess. How silly. 🤷‍♂️
-        `Mozilla/5.0 (Macintosh; Intel Mac OS X ${Math.floor(Math.random() * 100)})`,
-      ],
-    ],
-  });
+  const resp = await (opts?.fetcher ?? defaultFetcher)(jatsUrl, 'xml');
   if (!resp.ok) {
     session.log.debug(`JATS failed to download from "${jatsUrl}"`);
     throw new Error(`STATUS ${resp.status}: ${resp.statusText}`);
   }
-  const contentType = resp.headers.get('content-type');
+  const contentType = resp.headers?.get('content-type');
   if (
     !(
       contentType?.includes('application/xml') ||
@@ -66,6 +53,17 @@ type DoiLink = {
   'intended-application': 'text-mining' | 'similarity-checking' | string;
 };
 
+function defaultFetcher(url: string, kind?: 'json' | 'xml') {
+  switch (kind) {
+    case 'json':
+      return fetch(url, { headers: [['Accept', 'application/json']] });
+    case 'xml':
+      return fetch(url, { headers: [['Accept', 'application/xml']] });
+    default:
+      return fetch(url);
+  }
+}
+
 /**
  * There are 5.8M or so DOIs that have a full XML record:
  *
@@ -73,12 +71,16 @@ type DoiLink = {
  *
  * This function tries to find the correct URL for the record.
  */
-async function checkIfDoiHasJats(session: ISession, urlOrDoi: string): Promise<string | undefined> {
+async function checkIfDoiHasJats(
+  session: ISession,
+  urlOrDoi: string,
+  opts: Options,
+): Promise<string | undefined> {
   if (!doi.validate(urlOrDoi)) return;
   const toc = tic();
   const doiUrl = doi.buildUrl(urlOrDoi) as string;
   session.log.debug(`Attempting to resolving full XML from DOI ${doiUrl}`);
-  const resp = await fetch(doiUrl, { headers: [['Accept', 'application/json']] });
+  const resp = await (opts?.fetcher ?? defaultFetcher)(doiUrl, 'json');
   if (!resp.ok) {
     // Silently return -- other functions can try!
     session.log.debug(`DOI failed to resolve: ${doiUrl}`);
@@ -117,17 +119,19 @@ type OpenAlexWork = {
 export async function convertPMID2PMCID(
   session: ISession,
   PMID: string,
+  opts: Options,
 ): Promise<string | undefined> {
   if (PMID.startsWith('https://')) {
     const idPart = new URL(PMID).pathname.slice(1);
     session.log.debug(`Extract ${PMID} to ${idPart}`);
-    return convertPMID2PMCID(session, idPart);
+    return convertPMID2PMCID(session, idPart, opts);
   }
   const toc = tic();
   const converter = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/';
-  const resp = await fetch(`${converter}?tool=jats-xml&format=json&ids=${PMID}`, {
-    headers: [['Accept', 'application/json']],
-  });
+  const resp = await (opts?.fetcher ?? defaultFetcher)(
+    `${converter}?tool=jats-xml&format=json&ids=${PMID}`,
+    'json',
+  );
   if (!resp.ok) {
     // Silently return -- other functions can try!
     session.log.debug(`Failed to convert PubMedID: ${PMID}`);
@@ -147,6 +151,7 @@ function pubMedCentralJats(PMCID: string) {
 export async function checkIfPubMedCentralHasJats(
   session: ISession,
   urlOrDoi: string,
+  opts: Options,
 ): Promise<string | undefined> {
   if (urlOrDoi.match(/^PMC:?([0-9]+)$/)) return pubMedCentralJats(urlOrDoi);
   if (!doi.validate(urlOrDoi)) return;
@@ -154,7 +159,7 @@ export async function checkIfPubMedCentralHasJats(
   const doiUrl = doi.buildUrl(urlOrDoi) as string;
   session.log.debug(`Attempting to resolve PMCID using OpenAlex from ${doiUrl}`);
   const openAlexUrl = `https://api.openalex.org/works/${doiUrl}`;
-  const resp = await fetch(openAlexUrl, { headers: [['Accept', 'application/json']] });
+  const resp = await (opts?.fetcher ?? defaultFetcher)(openAlexUrl, 'json');
   if (!resp.ok) {
     // Silently return -- other functions can try!
     session.log.debug(`Failed to lookup on OpenAlex: ${openAlexUrl}`);
@@ -167,7 +172,7 @@ export async function checkIfPubMedCentralHasJats(
     session.log.debug(
       toc(`OpenAlex resolved ${data?.ids.openalex} in %s. There is no PMCID, but there is a PMID`),
     );
-    PMCID = await convertPMID2PMCID(session, PMID);
+    PMCID = await convertPMID2PMCID(session, PMID, opts);
     if (!PMCID) {
       session.log.debug(toc(`PubMed does not have a record of ${PMID}`));
       return;
@@ -184,12 +189,12 @@ export async function checkIfPubMedCentralHasJats(
 export async function downloadJatsFromUrl(
   session: ISession,
   urlOrDoi: string,
-  resolvers?: Resolver[],
+  opts: Options = {},
 ): Promise<{ source: string; data: string }> {
   const expectedUrls = (
     await Promise.all([
-      checkIfPubMedCentralHasJats(session, urlOrDoi),
-      checkIfDoiHasJats(session, urlOrDoi),
+      checkIfPubMedCentralHasJats(session, urlOrDoi, opts),
+      checkIfDoiHasJats(session, urlOrDoi, opts),
     ])
   ).filter((u): u is string => !!u);
   if (expectedUrls.length > 0) {
@@ -197,7 +202,7 @@ export async function downloadJatsFromUrl(
     for (let index = 0; index < expectedUrls.length; index++) {
       const url = expectedUrls[index];
       try {
-        const data = await dowloadFromUrl(session, url);
+        const data = await dowloadFromUrl(session, url, opts);
         if (data) return { source: url, data };
       } catch (error) {
         session.log.debug((error as Error).message);
@@ -207,15 +212,15 @@ export async function downloadJatsFromUrl(
     logAboutJatsFailing(session, expectedUrls);
   }
   if (doi.validate(urlOrDoi)) {
-    const jatsUrl = await customResolveJatsUrlFromDoi(session, urlOrDoi, resolvers);
-    const data = await dowloadFromUrl(session, jatsUrl);
+    const jatsUrl = await customResolveJatsUrlFromDoi(session, urlOrDoi, opts);
+    const data = await dowloadFromUrl(session, jatsUrl, opts);
     return { source: jatsUrl, data };
   }
   if (isUrl(urlOrDoi)) {
     session.log.debug(
       "No resolver matched, and the URL doesn't look like a DOI. We will attempt to download it directly.",
     );
-    const data = await dowloadFromUrl(session, urlOrDoi);
+    const data = await dowloadFromUrl(session, urlOrDoi, opts);
     return { source: urlOrDoi, data };
   }
   throw new Error(`Could not find ${urlOrDoi} locally, and it doesn't look like a URL or DOI`);

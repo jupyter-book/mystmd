@@ -27,6 +27,7 @@
     "katex": "^0.15.2",
     "myst-common": "*",
     "myst-spec": "^0.0.4",
+    "myst-spec-ext": "^0.0.2",
     "unified": "^10.0.0",
     "unist-util-modify-children": "^3.1.0",
     "unist-util-select": "^4.0.1",

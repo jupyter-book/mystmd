@@ -1,0 +1,132 @@
+title: Citations (Natbib)
+url: https://gking.harvard.edu/files/natnotes2.pdf
+cases:
+  - title: Citations (cite, citet, citep)
+    tex: \cite{one}\citet{two}\citep{three}\citep{four,five}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: one
+              identifier: one
+            - type: cite
+              kind: narrative
+              label: two
+              identifier: two
+            - type: cite
+              kind: parenthetical
+              label: three
+              identifier: three
+            - type: citeGroup
+              kind: parenthetical
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: four
+                  identifier: four
+                - type: cite
+                  kind: parenthetical
+                  label: five
+                  identifier: five
+  - title: Natbib basic commands
+    tex: \citet{jon90}\citet[chap.~2]{jon90}\citep{jon90}\citep[chap.~2]{jon90}\citep[see][]{jon90}\citep[see][chap.~2]{jon90}\citet*{jon90}\citep*{jon90}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              kind: narrative
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: narrative
+              suffix: chap. 2
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: parenthetical
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: parenthetical
+              suffix: chap. 2
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: parenthetical
+              prefix: see
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: parenthetical
+              prefix: see
+              suffix: chap. 2
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: narrative
+              expand: true
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: parenthetical
+              expand: true
+              label: jon90
+              identifier: jon90
+  - title: Partial citations
+    tex: \citeauthor{jon90}\citeauthor*{jon90}\citeyear{jon90}\citeyearpar{jon90}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              kind: narrative
+              partial: author
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: narrative
+              expand: true
+              partial: author
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: narrative
+              partial: year
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: parenthetical
+              partial: year
+              label: jon90
+              identifier: jon90
+  - title: Uppercase citations
+    tex: \Citet{jon90}\Citep{jon90}\Citeauthor{jon90}\Citeauthor*{jon90}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              kind: narrative
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: parenthetical
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: narrative
+              partial: author
+              label: jon90
+              identifier: jon90
+            - type: cite
+              kind: narrative
+              expand: true
+              partial: author
+              label: jon90
+              identifier: jon90

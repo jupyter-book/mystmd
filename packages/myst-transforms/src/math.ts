@@ -5,7 +5,7 @@ import type { Root } from 'mdast';
 import type { Math, InlineMath, Node } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
-import { fileWarn, normalizeLabel } from 'myst-common';
+import { copyNode, fileError, fileWarn, normalizeLabel } from 'myst-common';
 import { unnestTransform } from './unnest';
 
 const TRANSFORM_NAME = 'myst-transforms:math';
@@ -191,7 +191,20 @@ function renderEquation(file: VFile, node: Math | InlineMath, opts?: Options) {
     });
   }
   if (result.error) {
-    fileWarn(file, result.error, { node, note: node.value, source: 'KaTeX', fatal: true });
+    const nodeError = copyNode(node);
+    const match = result.error.match(/position ([0-9]+):/);
+    if (match && nodeError.position) {
+      const offset = Number(match[1]);
+      const lines = node.value.slice(0, offset).split('\n');
+      const newLines = lines.length - 1;
+      nodeError.position.start.line += newLines;
+      if (newLines > 0) {
+        nodeError.position.start.column = lines[newLines].length;
+      } else {
+        nodeError.position.start.column += offset - 1;
+      }
+    }
+    fileError(file, result.error, { node: nodeError, note: node.value, source: 'KaTeX' });
     (node as any).error = true;
     (node as any).message = result.error;
   }

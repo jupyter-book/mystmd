@@ -26,5 +26,5 @@ export type ISessionWithCache = ISession & {
   $doiRenderers: Record<string, SingleCitationRenderer>; // keyed on doi
   $internalReferences: Record<string, ReferenceState>; // keyed on path
   $externalReferences: Record<string, Inventory>; // keyed on id
-  $mdast: Record<string, { pre: PreRendererData; post?: RendererData }>; // keyed on path
+  $mdast: Record<string, { sha256?: string; pre: PreRendererData; post?: RendererData }>; // keyed on path
 };

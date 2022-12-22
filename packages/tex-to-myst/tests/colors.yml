@@ -1,0 +1,181 @@
+title: Colors
+cases:
+  - title: named color (OliveGreen)
+    tex: '{\color{OliveGreen} This text will be olive green} not colored'
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: span
+              style:
+                color: '#3C8031'
+              children:
+                - type: text
+                  value: This text will be olive green
+            - type: text
+              value: ' not colored'
+  - title: named color (red)
+    tex: '{\color{red} This text will be red} not colored'
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: span
+              style:
+                color: red
+              children:
+                - type: text
+                  value: This text will be red
+            - type: text
+              value: ' not colored'
+  - title: named color (red) -- with custom override
+    tex: '\definecolor{red}{rgb}{0.7,0,0}{\color{red} This text will be red} not colored'
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: span
+              style:
+                color: rgb(178, 0, 0)
+              children:
+                - type: text
+                  value: This text will be red
+            - type: text
+              value: ' not colored'
+  - title: colored rgb text
+    tex: '{\color[rgb]{1,0,0} This text will appear red-colored} not colored'
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: span
+              style:
+                color: rgb(255, 0, 0)
+              children:
+                - type: text
+                  value: This text will appear red-colored
+            - type: text
+              value: ' not colored'
+  - title: textcolor
+    tex: '\textcolor[rgb]{1,0,0}{This text will appear red-colored} not colored'
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: span
+              style:
+                color: rgb(255, 0, 0)
+              children:
+                - type: text
+                  value: This text will appear red-colored
+            - type: text
+              value: ' not colored'
+  - title: definecolor
+    tex: \definecolor{linkColor}{rgb}{0.7,0,0}\definecolor{darkred}{rgb}{0.7,0,0}
+    text: ''
+    data:
+      colors:
+        linkColor: rgb(178, 0, 0)
+        darkred: rgb(178, 0, 0)
+  - title: custom colors
+    tex: \definecolor{rustyred}{rgb}{0.7,0,0}\color{rustyred}
+    text: ''
+    data:
+      colors:
+        rustyred: rgb(178, 0, 0)
+  - title: parse named color
+    tex: \color{OliveGreen}
+    text: ''
+  - title: unknown color
+    tex: \color{olivegreen}
+    warnings: 1
+    text: ''
+  - title: gray
+    tex: \color[gray]{1}
+    text: ''
+  - title: gray - bad args (nan)
+    tex: \color[gray]{x}
+    warnings: 1
+    text: ''
+  - title: gray - bad args (too high)
+    tex: \color[gray]{1.1}
+    warnings: 1
+    text: ''
+  - title: gray - bad args (too low)
+    tex: \color[gray]{-1.1}
+    warnings: 1
+    text: ''
+  - title: rgb
+    tex: \color[rgb]{1,0,0}
+    text: ''
+  - title: rgb - bad args (nan)
+    tex: \color[rgb]{x,0,0}
+    warnings: 1
+    text: ''
+  - title: rgb - bad args (not enough)
+    tex: \color[rgb]{1}
+    warnings: 1
+    text: ''
+  - title: rgb - bad args (too many)
+    tex: \color[rgb]{1,1,1,1}
+    warnings: 1
+    text: ''
+  - title: rgb - bad args (too high)
+    tex: \color[rgb]{2,0,0}
+    warnings: 1
+    text: ''
+  - title: rgb - bad args (too low)
+    tex: \color[rgb]{-2,0,0}
+    warnings: 1
+    text: ''
+  - title: RGB
+    tex: \color[RGB]{255,0,0}
+    text: ''
+  - title: RGB - bad args (nan)
+    tex: \color[RGB]{x,0,0}
+    warnings: 1
+    text: ''
+  - title: RGB - bad args (not enough)
+    tex: \color[RGB]{1}
+    warnings: 1
+    text: ''
+  - title: RGB - bad args (too many)
+    tex: \color[RGB]{1,1,1,1}
+    warnings: 1
+    text: ''
+  - title: RGB - bad args (too high)
+    tex: \color[RGB]{256,0,0}
+    warnings: 1
+    text: ''
+  - title: RGB - bad args (too low)
+    tex: \color[RGB]{-256,0,0}
+    warnings: 1
+    text: ''
+  - title: cmky
+    tex: \color[cmky]{1,0,0,0}
+    text: ''
+  - title: cmky - bad args (nan)
+    tex: \color[cmky]{x,1,0,0}
+    warnings: 1
+    text: ''
+  - title: cmky - bad args (too high)
+    tex: \color[cmky]{1.1,0,0,0}
+    warnings: 1
+    text: ''
+  - title: cmky - bad args (too low)
+    tex: \color[cmky]{-1.1,0,0,0}
+    warnings: 1
+    text: ''
+  - title: cmky - bad args (not enough)
+    tex: \color[cmky]{1,0,0}
+    warnings: 1
+    text: ''
+  - title: cmky - bad args (too many)
+    tex: \color[cmky]{1,0,0,0,0}
+    warnings: 1
+    text: ''

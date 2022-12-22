@@ -5,7 +5,7 @@ import { clirun, isUrl, tic, writeFileToFolder } from 'myst-cli-utils';
 import doi from 'doi-utils';
 import chalk from 'chalk';
 import { getSession } from '../session';
-import type { ISession } from '../types';
+import type { ISession, Options } from '../types';
 import { Tags } from '../types';
 import { Jats } from '../jats';
 import { toText } from 'myst-common';
@@ -22,6 +22,7 @@ async function downloadAndSaveJats(
   session: ISession,
   urlOrDoi: string,
   output: string,
+  opts: Options = { resolvers: DEFAULT_RESOLVERS },
 ): Promise<string> {
   if (fs.existsSync(urlOrDoi)) {
     throw new Error(`File "${urlOrDoi}" is local and cannot be downloaded!`);
@@ -36,19 +37,23 @@ async function downloadAndSaveJats(
       )} is not a valid extension for JATS, try using ".xml" or ".jats"`,
     );
   }
-  const { data } = await downloadJatsFromUrl(session, urlOrDoi, DEFAULT_RESOLVERS);
+  const { data } = await downloadJatsFromUrl(session, urlOrDoi, opts);
   writeFileToFolder(output, data);
   return data;
 }
 
-async function parseJats(session: ISession, file: string): Promise<Jats> {
+async function parseJats(
+  session: ISession,
+  file: string,
+  opts: Options = { resolvers: DEFAULT_RESOLVERS },
+): Promise<Jats> {
   const toc = tic();
   if (fs.existsSync(file)) {
     session.log.debug(`Found ${file} locally, parsing`);
     const data = fs.readFileSync(file).toString();
     return new Jats(data, { log: session.log });
   }
-  const { source, data } = await downloadJatsFromUrl(session, file, DEFAULT_RESOLVERS);
+  const { source, data } = await downloadJatsFromUrl(session, file, opts);
   const jats = new Jats(data, { source, log: session.log });
   session.log.debug(toc(`Downloaded and parsed JATS file in %s`));
   return jats;

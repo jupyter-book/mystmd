@@ -8,24 +8,24 @@ import type { ISession } from '../session';
 
 const VERSION_CONFIG = 'version: 1\n';
 const PROJECT_CONFIG = `project:
-  # title: 
+  # title:
   # description:
-  # venue: 
-  # github: 
+  # venue:
+  # github:
   # arxiv:
   # open_access:
-  # license: 
+  # license:
   # doi:
   # date:
   # index:
   # subject:
   keywords: []
   authors: []
-  bibliography: []
+  # bibliography: []
   exclude: []
 `;
 const SITE_CONFIG = `site:
-  # title: 
+  # title:
   projects:
     - slug: my-myst-site
       path: .

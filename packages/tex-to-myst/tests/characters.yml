@@ -1,0 +1,78 @@
+title: Fancy Characters
+url: https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes
+cases:
+  - title: <>
+    tex: \textless\textgreater
+    text: <>
+  - title: ℃
+    tex: \textcelsius\degreeCelsius\celsius
+    text: '℃℃℃'
+  - title: '%${}_¶†‡|–—™¡¿£€#&§\®©'
+    tex: \%\$\{\}\^\_\P\dag\ddag\textbar\textendash\textemdash\texttrademark\textexclamdown\textquestiondown\pounds\euro\#\&\S\textbackslash\textregistered\copyright
+    text: '%${}^_¶†‡|–—™¡¿£€#&§\®©'
+  - title: …
+    tex: \dots
+    text: …
+  - title: ò (grave accent)
+    tex: \`{o}
+    text: ò
+  - title: ó (acute accent)
+    tex: \'{o}
+    text: ó
+  - title: îôŷ (circumflex)
+    tex: \^{i}\^{o}\^{y}\^{I}\^{O}\^{Y}
+    text: îôŷÎÔŶ
+  - title: î (circumflex)
+    tex: \^{\i}
+    text: î
+  - title: öüï (umlaut, trema or dieresis)
+    tex: \"{o}\"{u}\"{\i}
+    text: öüï
+  - title: ő (long Hungarian umlaut, double acute)
+    tex: \H{o}
+    text: ő
+  - title: ~ñÑõÕũŨẽẼĩĨ (tilde)
+    tex: \~{}\~{n}\~{N}\~{o}\~{O}\~{u}\~{U}\~{e}\~{E}\~{i}\~{I}
+    text: ~ñÑõÕũŨẽẼĩĨ
+  - title: ç (cedilla)
+    tex: \c{c}
+    text: ç
+  - title: ą (ogonek)
+    tex: \k{a}
+    text: ą
+  - title: ł (barred l)
+    tex: \l{}
+    text: ł
+  - title: ō (macron accent)
+    tex: \={o}
+    text: ō
+  - title: ō (macron accent)
+    tex: \={o}
+    text: ō
+  - title: ȯ (dot over the letter)
+    tex: \.{o}
+    text: ȯ
+  - title: ụ (dot under the letter)
+    tex: \d{u}
+    text: ụ
+  - title: åÅ (ring over the letter)
+    tex: \r{a}\aa\AA
+    text: ååÅ
+  - title: ŏ (breve over the letter)
+    tex: \u{o}
+    text: ŏ
+  - title: š (caron/háček)
+    tex: \v{s}
+    text: š
+  - title: o͡o ("tie" (inverted u) over the two letters)
+    tex: \t{oo}
+    text: o͡o
+  - title: ø (slashed o)
+    tex: \o{}
+    text: ø
+  - title: ı (dotless i)
+    tex: \i
+    text: ı
+  - title: thin space
+    tex: Thin\,space
+    text: 'Thin space'

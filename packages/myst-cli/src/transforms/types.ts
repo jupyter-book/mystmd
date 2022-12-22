@@ -12,6 +12,7 @@ export type PreRendererData = {
   file: string;
   mdast: Root;
   kind: KINDS;
+  frontmatter?: PageFrontmatter;
 };
 
 export type RendererData = PreRendererData & {
