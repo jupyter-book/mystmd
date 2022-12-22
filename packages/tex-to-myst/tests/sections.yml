@@ -5,11 +5,13 @@ cases:
     tree:
       type: root
       children:
-        - type: heading
-          depth: 2
+        - type: block
           children:
-            - type: text
-              value: Introduction
+            - type: heading
+              depth: 2
+              children:
+                - type: text
+                  value: Introduction
   - title: Subsection
     tex: \subsection{Introduction}
     tree:
@@ -55,32 +57,38 @@ cases:
     tree:
       type: root
       children:
-        - type: heading
-          depth: 2
-          enumerated: false
+        - type: block
           children:
-            - type: text
-              value: Introduction
+            - type: heading
+              depth: 2
+              enumerated: false
+              children:
+                - type: text
+                  value: Introduction
   - title: Starred Section
     tex: \section[Effect on staff turnover]{An analysis of the effect of the revised recruitment policies on staff turnover at divisional headquarters}
     tree:
       type: root
       children:
-        - type: heading
-          depth: 2
-          alt: Effect on staff turnover
+        - type: block
           children:
-            - type: text
-              value: An analysis of the effect of the revised recruitment policies on staff turnover at divisional headquarters
+            - type: heading
+              depth: 2
+              alt: Effect on staff turnover
+              children:
+                - type: text
+                  value: An analysis of the effect of the revised recruitment policies on staff turnover at divisional headquarters
   - title: Labeled Section
     tex: \section{Introduction}\label{intro}
     tree:
       type: root
       children:
-        - type: heading
-          depth: 2
-          identifier: intro
-          label: intro
+        - type: block
           children:
-            - type: text
-              value: Introduction
+            - type: heading
+              depth: 2
+              identifier: intro
+              label: intro
+              children:
+                - type: text
+                  value: Introduction

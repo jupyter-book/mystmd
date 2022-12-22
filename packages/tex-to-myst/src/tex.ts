@@ -10,7 +10,7 @@ function parseArgument(node: GenericNode, next: GenericNode): boolean {
     node.args.push({ type: 'argument', openMark: '{', closeMark: '}', ...rest });
     return true;
   }
-  if (next.type === 'string') {
+  if (next.type === 'string' || next.type === 'whitespace') {
     if (next.content === '*') {
       node.star = true;
       if (node.position && next.position) node.position.end = next.position.end;
@@ -29,12 +29,12 @@ function parseArgument(node: GenericNode, next: GenericNode): boolean {
     if (!lastArg) return false;
     if (!lastArg.closeMark && next.content === ']') {
       lastArg.closeMark = ']';
-      lastArg.position.end = next.position?.end;
+      if (lastArg.position) lastArg.position.end = next.position?.end;
       return true;
     }
     if (!lastArg.closeMark) {
       lastArg.content.push(next);
-      lastArg.position.end = next.position?.end;
+      if (lastArg.position) lastArg.position.end = next.position?.end;
       return true;
     }
   }
@@ -42,15 +42,6 @@ function parseArgument(node: GenericNode, next: GenericNode): boolean {
 }
 
 const macros: Record<string, number> = {
-  // articletype: 1,
-  // author: 1,
-  // affil: 1,
-  // publicationdate: 1,
-  // editor: 1,
-  // curator: 1,
-  // submitteddate: 1,
-  // accepteddate: 1,
-  // citethisas: 2,
   citet: 1,
   citep: 1,
   citeauthor: 1,
@@ -63,9 +54,10 @@ const macros: Record<string, number> = {
   eqref: 1,
   textsubscript: 1,
   textsuperscript: 1,
-  // section: 1,
-  // textbf: 1,
-  // framebox: 1,
+  author: 1,
+  email: 1,
+  affil: 1,
+  affiliation: 1,
   // These are character replacements:
   '`': 1,
   "'": 1,
@@ -87,6 +79,52 @@ const macros: Record<string, number> = {
   u: 1,
   v: 1,
 };
+
+/**
+ * This fixes up some of the rendering that treats '[' as the first argument.
+ *  For example on "author", the first argument is:
+ * ```ts
+ *  const author = {
+ *    type: 'macro',
+ *    content: 'author',
+ *    args: [
+ *      {
+ *        content: '[',
+ *        openMark: '{',
+ *        closeMark: '}',
+ *      },
+ *    ],
+ *  };
+ * ```
+ *
+ * Changes this to:
+ * ```ts
+ *  const author = {
+ *    type: 'macro',
+ *    content: 'author',
+ *    args: [
+ *      {
+ *        openMark: '[',
+ *        closeMark: '',
+ *        content: [],
+ *      },
+ *    ],
+ *  };
+ * ```
+ *
+ * With the next reduce adding the correct arguments, and closing the marks, etc.
+ */
+function patchOpenArgument(args: GenericNode[]) {
+  if (
+    args[0]?.content?.length === 1 &&
+    args[0].content[0].type === 'string' &&
+    args[0].content[0].content?.match(/^\(|\[$/)
+  ) {
+    args[0].openMark = args[0].content[0].content;
+    args[0].closeMark = ''; // Leave this open for parsing in the next round (see above)
+    args[0].content = []; // The content is an empty list
+  }
+}
 
 function walkLatex(node: GenericNode): GenericNode | GenericParent | undefined {
   if (Array.isArray(node.content)) {
@@ -112,6 +150,7 @@ function walkLatex(node: GenericNode): GenericNode | GenericParent | undefined {
     const args = (node.args as GenericParent[])
       .map((n) => walkLatex(n))
       .filter((n): n is GenericNode => !!n);
+    patchOpenArgument(args);
     return { ...node, args };
   }
   return node;

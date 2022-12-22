@@ -15,3 +15,71 @@ cases:
         short_title:
           - type: text
             value: 'Short title'
+  - title: Make title command
+    tex: '\maketitle'
+    text: ''
+    data:
+      maketitle: true
+  - title: Get the author name(s) out
+    tex: '\author{Rowan Cockett}\author{Steve Purves}'
+    text: ''
+    data:
+      frontmatter:
+        authors:
+          - name: Rowan Cockett
+          - name: Steve Purves
+  - title: Overloading author with arguments
+    # putting spaces \/ will catch a different whitespace bug!
+    tex: '\author[1  ,   2][email@example.com]{Rowan Cockett}'
+    text: ''
+    data:
+      frontmatter:
+        authors:
+          - name: Rowan Cockett
+            email: email@example.com
+            corresponding: true
+            affiliations:
+              - '1'
+              - '2'
+  - title: Get the affiliations
+    tex: '\author[1]{Rowan Cockett}\affil[1]{Curvenote}'
+    text: ''
+    data:
+      frontmatter:
+        authors:
+          - name: Rowan Cockett
+            affiliations:
+              - '1'
+        affiliations:
+          - id: '1'
+            name: Curvenote
+  - title: Abstract
+    tex: |-
+      \begin{abstract}
+      The abstract!
+      \end{abstract}
+    tree:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: The abstract!
+  - title: Keywords
+    tex: \keywords{  Circulation model, bond graph;     0D model, CellML, OpenCOR  }
+    text: ''
+    data:
+      frontmatter:
+        keywords:
+          - Circulation model
+          - bond graph
+          - 0D model
+          - CellML
+          - OpenCOR
+  - title: Appendix
+    tex: \appendix
+    text: ''
+    data:
+      appendix: true

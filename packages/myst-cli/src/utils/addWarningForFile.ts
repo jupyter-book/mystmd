@@ -1,3 +1,4 @@
+import type { VFileMessage } from 'vfile-message';
 import type { ISession } from '../session/types';
 import { warnings } from '../store/reducers';
 import type { WarningKind } from '../store/types';
@@ -7,8 +8,12 @@ export function addWarningForFile(
   file: string | undefined | null,
   message: string,
   kind: WarningKind = 'warn',
+  position?: VFileMessage['position'],
 ) {
-  const prefix = file ? `${file}: ` : '';
+  const specific = position?.start.line
+    ? `:${position.start.line}${position.start.column ? `:${position.start.column}` : ''}`
+    : '';
+  const prefix = file ? `${file}${specific} ` : '';
   switch (kind) {
     case 'info':
       session.log.info(`ℹ️ ${prefix}${message}`);

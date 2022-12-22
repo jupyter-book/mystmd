@@ -1,3 +1,4 @@
+import type { VFile } from 'vfile';
 import type { GenericNode, MessageInfo } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 
@@ -15,6 +16,8 @@ export type StateData = {
   listType?: string;
   openGroups: string[];
   ignoreNextWhitespace?: boolean;
+  maketitle?: boolean;
+  appendix?: boolean;
   frontmatter: PageFrontmatter;
 };
 
@@ -25,6 +28,7 @@ export interface ITexParser<D extends Record<string, any> = StateData> {
   data: D;
   options: Options;
   stack: GenericNode[];
+  file: VFile;
   text: (value?: string, escape?: boolean) => void;
   renderChildren: (node: any) => void;
   top: () => GenericNode;
@@ -36,6 +40,8 @@ export interface ITexParser<D extends Record<string, any> = StateData> {
   closeNode: () => GenericNode;
   openParagraph: () => void;
   closeParagraph: () => void;
+  openBlock: () => void;
+  closeBlock: () => void;
   warn: (message: string, node: GenericNode, source?: string, opts?: MessageInfo) => void;
   error: (message: string, node: GenericNode, source?: string, opts?: MessageInfo) => void;
 }

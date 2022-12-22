@@ -17,12 +17,7 @@ type TestCase = {
   text?: string;
   warnings?: number;
   opts?: Record<string, boolean>;
-  data?: {
-    packages?: string[];
-    colors?: Record<string, string>;
-    macros?: Record<string, string>;
-    frontmatter?: PageFrontmatter;
-  };
+  data?: Partial<TexParser['data']>;
 };
 
 const directory = path.join('tests');
@@ -83,6 +78,12 @@ casesList.forEach(({ title, cases }) => {
         }
         if (data?.frontmatter) {
           expect(state.data.frontmatter).toEqual(data.frontmatter);
+        }
+        if (data?.maketitle != null) {
+          expect(state.data.maketitle).toEqual(data.maketitle);
+        }
+        if (data?.appendix != null) {
+          expect(state.data.appendix).toEqual(data.appendix);
         }
       },
     );

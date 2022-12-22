@@ -73,6 +73,10 @@ export async function loadProjectFromDisk(
     bibliography = projectConfig.bibliography.filter((bib) => {
       if (allBibFiles.includes(bib)) return true;
       if (isUrl(bib)) return true;
+      if (fs.existsSync(bib)) {
+        allBibFiles.push(bib);
+        return true;
+      }
       session.log.warn(`⚠️  ${bib} not found, loaded from ${bibConfigPath}`);
       return false;
     });

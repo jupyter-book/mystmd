@@ -1,6 +1,21 @@
 import type { GenericNode } from 'myst-common';
 import { copyNode } from 'myst-common';
 
+export const phrasingTypes = new Set([
+  'paragraph',
+  'heading',
+  'strong',
+  'emphasis',
+  'inlineCode',
+  'subscript',
+  'superscript',
+  'smallcaps',
+  'link',
+  'span',
+]);
+
+export const UNHANDLED_ERROR_TEXT = 'Unhandled TEX conversion';
+
 export function originalValue(original: string, node: Pick<GenericNode, 'position'>): string {
   const from = node.position?.start.offset;
   const to = node.position?.end.offset;
@@ -42,8 +57,9 @@ export function replaceTextValue(value?: string): string {
   }, value);
 }
 
-export function texToText(content?: GenericNode[] | GenericNode | null): string {
+export function texToText(content?: GenericNode[] | GenericNode | string | null): string {
   if (!content) return '';
+  if (typeof content === 'string') return content;
   if (!Array.isArray(content)) return texToText([content]);
   return (content as GenericNode[])
     .map((n) => {

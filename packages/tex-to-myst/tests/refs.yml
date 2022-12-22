@@ -33,31 +33,35 @@ cases:
     tree:
       type: root
       children:
-        - type: heading
-          depth: 2
-          identifier: sec:greetings
-          label: sec:greetings
+        - type: block
           children:
-            - type: text
-              value: Greetings
-        - type: paragraph
-          children:
-            - type: text
-              value: Hello!
-        - type: heading
-          depth: 2
-          children:
-            - type: text
-              value: Referencing
-        - type: paragraph
-          children:
-            - type: text
-              value: 'I greeted in section '
-            - type: crossReference
+            - type: heading
+              depth: 2
               identifier: sec:greetings
               label: sec:greetings
-            - type: text
-              value: '.'
+              children:
+                - type: text
+                  value: Greetings
+            - type: paragraph
+              children:
+                - type: text
+                  value: Hello!
+        - type: block
+          children:
+            - type: heading
+              depth: 2
+              children:
+                - type: text
+                  value: Referencing
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'I greeted in section '
+                - type: crossReference
+                  identifier: sec:greetings
+                  label: sec:greetings
+                - type: text
+                  value: '.'
   - title: equations
     tex: |-
       \begin{equation} \label{eq:solve}

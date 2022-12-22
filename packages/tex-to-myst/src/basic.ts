@@ -1,5 +1,6 @@
 import type { GenericNode } from 'myst-common';
 import type { Handler, ITexParser } from './types';
+import { UNHANDLED_ERROR_TEXT } from './utils';
 
 function closeParagraph(node: GenericNode, state: ITexParser) {
   state.closeParagraph();
@@ -22,8 +23,43 @@ export const BASIC_TEXT_HANDLERS: Record<string, Handler> = {
     }
     addText(state, ' ');
   },
-  // Ignore comments for now
-  comment: closeParagraph,
+  argument(node, state) {
+    // often the contents of a group (e.g. caption)
+    state.renderChildren(node);
+  },
+  group(node, state) {
+    // often the contents of a group (e.g. caption)
+    const prev = state.data.openGroups;
+    state.renderChildren(node);
+    // We want to backout of the groups and close any open nodes that are terminated by this group
+    // For example "{\bf text} not bold"
+    state.data.openGroups.reverse().forEach((kind) => {
+      const topType = state.top().type;
+      if (topType === 'root') return;
+      if (topType === kind) {
+        state.closeNode();
+      }
+    });
+    state.data.openGroups = prev;
+  },
+  env_document(node, state) {
+    state.closeParagraph();
+    let stack: GenericNode;
+    do {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      stack = state.closeNode();
+    } while (state.stack.length);
+    // Remove the unhandled errors
+    state.file.messages = state.file.messages.filter(
+      (m) => !m.message.includes(UNHANDLED_ERROR_TEXT),
+    );
+    state.stack = [{ type: 'root', children: [] }];
+    state.renderChildren(node);
+  },
+  comment: () => {
+    // Ignore comments for now
+  },
+  // Ways to break text...
   macro_newline: closeParagraph,
   parbreak: closeParagraph,
   macro_break: closeParagraph,

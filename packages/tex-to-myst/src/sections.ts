@@ -18,6 +18,8 @@ function addHeading(node: GenericNode, state: ITexParser, depth: number) {
 
 export const SECTION_HANDLERS: Record<string, Handler> = {
   macro_section(node, state) {
+    state.closeBlock();
+    state.openBlock();
     addHeading(node, state, 2);
   },
   macro_subsection(node, state) {

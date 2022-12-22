@@ -11,7 +11,13 @@ export function logMessagesFromVFile(session: ISession, file?: VFile): void {
       message.fatal === null ? 'info' : message.fatal === false ? 'warn' : 'error';
     const note = message.note ? `\n\n${chalk.dim(message.note)}` : '';
     const url = message.url ? `\n\nSee also: ${chalk.bold(message.url)}` : '';
-    addWarningForFile(session, file.path, `${message.message}${note}${url}`, kind);
+    addWarningForFile(
+      session,
+      file.path,
+      `${message.message}${note}${url}`,
+      kind,
+      message.position,
+    );
   });
   file.messages = [];
 }

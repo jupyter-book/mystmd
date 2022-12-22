@@ -12,93 +12,17 @@ import { REF_HANDLERS } from './refs';
 import { MATH_HANDLERS } from './math';
 import { parseLatex } from './tex';
 import type { Handler, ITexParser, Options, StateData } from './types';
-import { replaceTextValue, texToText } from './utils';
+import { phrasingTypes, replaceTextValue, UNHANDLED_ERROR_TEXT } from './utils';
 import { SECTION_HANDLERS } from './sections';
 import { COLOR_HANDLERS } from './colors';
 import { FRONTMATTER_HANDLERS } from './frontmatter';
 import { FIGURE_HANDLERS } from './figures';
 import { selectAll } from 'unist-util-select';
-
-const phrasing = new Set([
-  'paragraph',
-  'heading',
-  'strong',
-  'emphasis',
-  'inlineCode',
-  'subscript',
-  'superscript',
-  'smallcaps',
-  'link',
-  'span',
-]);
+import { VERBATIM_HANDLERS } from './verbatim';
+import { MISC_HANDLERS } from './misc';
 
 const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...BASIC_TEXT_HANDLERS,
-  macro_bibliography(node, state) {
-    state.closeParagraph();
-    // pass, we will auto create a bibliography
-    const files = texToText(node)
-      .split(',')
-      .map((t) => t.trim())
-      .filter((t) => !!t);
-    state.data.bibliography.push(...files);
-  },
-  argument(node, state) {
-    // often the contents of a group (e.g. caption)
-    state.renderChildren(node);
-  },
-  group(node, state) {
-    // often the contents of a group (e.g. caption)
-    const prev = state.data.openGroups;
-    state.renderChildren(node);
-    // We want to backout of the groups and close any open nodes that are terminated by this group
-    // For example "{\bf text} not bold"
-    state.data.openGroups.reverse().forEach((kind) => {
-      const topType = state.top().type;
-      if (topType === 'root') return;
-      if (topType === kind) {
-        state.closeNode();
-      } else {
-        state.error(
-          `Something has probably gone wrong in parsing a group, expecting "${kind}" not "${topType}"`,
-          node,
-        );
-      }
-    });
-    state.data.openGroups = prev;
-  },
-  env_document(node, state) {
-    state.closeParagraph();
-    // let stack: GenericNode;
-    // do {
-    //   stack = state.closeNode();
-    // } while (state.stack.length);
-    // console.log(stack);
-    // state.stack = [{ type: 'root', children: [] }];
-    state.renderChildren(node);
-  },
-  verbatim(node, state) {
-    state.closeParagraph();
-    const lines = node.content?.split('\n');
-    console.log(lines?.[0]);
-    if (lines?.[0].match(/^\[caption\s?=/)) {
-      const caption = lines[0].replace(/^\[caption=\s?/, '').replace(/\s?\]$/, '');
-      const code = lines.slice(1).join('\n');
-      state.pushNode(
-        u('container', { kind: 'code' }, [
-          u('code', { value: code, lang: 'python' }),
-          u('caption', [u('paragraph', [u('text', caption)])]),
-        ]),
-      );
-      return;
-    }
-    state.pushNode(u('code', { value: node.content }));
-  },
-  macro_framebox(node, state) {
-    state.closeParagraph();
-    const last = node.children?.pop();
-    if (last) state.renderChildren(last);
-  },
   ...FRONTMATTER_HANDLERS,
   ...TEXT_MARKS_HANDLERS,
   ...COLOR_HANDLERS,
@@ -110,6 +34,8 @@ const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...CHARACTER_HANDLERS,
   ...SECTION_HANDLERS,
   ...FIGURE_HANDLERS,
+  ...VERBATIM_HANDLERS,
+  ...MISC_HANDLERS,
 };
 
 export class TexParser implements ITexParser {
@@ -141,6 +67,7 @@ export class TexParser implements ITexParser {
     this.handlers = opts?.handlers ?? DEFAULT_HANDLERS;
     this.renderChildren(this.raw);
     this.closeParagraph();
+    this.closeBlock();
     let stack: GenericNode;
     do {
       stack = this.closeNode();
@@ -198,6 +125,7 @@ export class TexParser implements ITexParser {
   }
 
   renderChildren(node: GenericNode) {
+    if (!node) return;
     const children = Array.isArray(node.content) ? node.content : undefined;
     children?.forEach((child) => {
       const kind =
@@ -211,7 +139,7 @@ export class TexParser implements ITexParser {
         handler(child, this, node);
       } else {
         this.unhandled.push(kind);
-        fileError(this.file, `Unhandled TEX conversion for node of "${kind}"`, {
+        fileError(this.file, `${UNHANDLED_ERROR_TEXT} for node of "${kind}"`, {
           node: { type: child.type, kind, position: child.position } as GenericNode,
           source: 'tex-to-myst',
         });
@@ -257,7 +185,7 @@ export class TexParser implements ITexParser {
   }
 
   openParagraph() {
-    const inPhrasing = phrasing.has(this.top().type);
+    const inPhrasing = phrasingTypes.has(this.top().type);
     if (inPhrasing) return;
     this.openNode('paragraph');
   }
@@ -278,6 +206,25 @@ export class TexParser implements ITexParser {
       (top.children?.length === 1 && top.children[0].type === 'text' && !top.children[0].value)
     ) {
       // Prune empty paragraphs
+      this.stack.pop();
+      return;
+    }
+    this.closeNode();
+  }
+
+  openBlock() {
+    this.closeParagraph();
+    const inPhrasing = phrasingTypes.has(this.top().type);
+    if (inPhrasing) return;
+    this.openNode('block');
+  }
+
+  closeBlock() {
+    this.closeParagraph();
+    const top = this.top();
+    if (top?.type !== 'block') return;
+    if (top.children?.length === 0) {
+      // Prune empty blocks
       this.stack.pop();
       return;
     }

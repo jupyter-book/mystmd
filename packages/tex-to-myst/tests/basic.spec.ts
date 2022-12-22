@@ -24,7 +24,6 @@ describe('tex-to-myst', () => {
     const text = '\\cite{something}';
     const file = new VFile();
     const tex = new TexParser(text, file);
-    console.log(tex.raw.content[0].args[1]);
     expect(tex.raw.type).toEqual('root');
   });
 });
