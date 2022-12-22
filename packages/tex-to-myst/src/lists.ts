@@ -24,7 +24,7 @@ export const LIST_HANDLERS: Record<string, Handler> = {
   },
   env_description(node, state) {
     const prev = state.data.listType;
-    state.data.listType = 'defenition';
+    state.data.listType = 'definition';
     state.renderBlock(node, 'definitionList');
     unnestParagraphs(state.top(), 'definitionTerm,definitionDescription');
     state.data.listType = prev;
@@ -50,13 +50,13 @@ export const LIST_HANDLERS: Record<string, Handler> = {
       return l;
     }, [] as GenericNode[]);
     const prev = state.data.listType;
-    state.data.listType = 'defenition';
+    state.data.listType = 'definition';
     state.renderBlock({ type: '', content: items }, 'definitionList');
     unnestParagraphs(state.top(), 'definitionTerm,definitionDescription');
     state.data.listType = prev;
   },
   macro_item(node, state) {
-    if (state.data.listType === 'defenition') {
+    if (state.data.listType === 'definition') {
       const label = node.args[renderInfoIndex(node, 'label')];
       const content = node.args[node.args.length - 1];
       state.renderBlock(label, 'definitionTerm');

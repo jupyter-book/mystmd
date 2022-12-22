@@ -1,0 +1,159 @@
+title: Footnotes
+cases:
+  - title: Basic footnotes
+    tex: Note\footnote{A footnote, with $Ma^T_H$}.
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Note
+            - type: footnoteReference
+              identifier: 'somerandomid'
+              label: 'someRandomId'
+            - type: footnoteDefinition
+              identifier: 'somerandomid'
+              label: 'someRandomId'
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'A footnote, with '
+                    - type: inlineMath
+                      value: Ma^T_H
+            - type: text
+              value: '.'
+  - title: Footnotes with custom numbers
+    tex: |-
+      Auto-generated footnote markers\footnote{This should be 1!}
+      footnotes can use a custom number\footnote[5]{Like 5!}.
+
+      Other footnotes\footnote{Are now back to normal numbering}.
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Auto-generated footnote markers
+            - type: footnoteReference
+              label: someRandomId
+              identifier: somerandomid
+            - type: footnoteDefinition
+              label: someRandomId
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: This should be 1!
+              identifier: somerandomid
+            - type: text
+              value: ' footnotes can use a custom number'
+            - type: footnoteReference
+              label: '5'
+              identifier: '5'
+            - type: footnoteDefinition
+              label: '5'
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Like 5!
+              identifier: '5'
+            - type: text
+              value: '.'
+        - type: paragraph
+          children:
+            - type: text
+              value: Other footnotes
+            - type: footnoteReference
+              label: someRandomId
+              identifier: somerandomid
+            - type: footnoteDefinition
+              label: someRandomId
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Are now back to normal numbering
+              identifier: somerandomid
+            - type: text
+              value: '.'
+  - title: Footnotemarks
+    tex: |-
+      Here is a footnote\footnotemark{} with more text.
+
+      \footnotetext{The footnote comes later.}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Here is a footnote
+            - type: footnoteReference
+              label: someRandomId
+              identifier: somerandomid
+            - type: text
+              value: ' with more text.'
+        - type: footnoteDefinition
+          label: someRandomId
+          identifier: somerandomid
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: The footnote comes later.
+  - title: Footnotetext (no mark, raise warning!)
+    tex: |-
+      \footnotetext{The footnote comes later.}
+    warnings: 1
+    tree:
+      type: root
+      children:
+        - type: footnoteDefinition
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: The footnote comes later.
+  - title: Multiple footnotemarks
+    tex: |-
+      Here is a\footnotemark{} footnote\footnotemark[1]{} with more text.
+
+      \footnotetext[1]{First}
+      \footnotetext{Second}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Here is a
+            - type: footnoteReference
+              label: someRandomId
+              identifier: somerandomid
+            - type: text
+              value: ' footnote'
+            - type: footnoteReference
+              label: '1'
+              identifier: '1'
+            - type: text
+              value: ' with more text.'
+        - type: footnoteDefinition
+          label: '1'
+          identifier: '1'
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: First
+        - type: footnoteDefinition
+          label: someRandomId
+          identifier: somerandomid
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Second

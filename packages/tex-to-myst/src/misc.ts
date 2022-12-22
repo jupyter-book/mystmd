@@ -1,5 +1,5 @@
 import type { Handler } from './types';
-import { texToText } from './utils';
+import { getArguments, texToText } from './utils';
 
 function pass() {
   // pass
@@ -33,10 +33,32 @@ export const MISC_HANDLERS: Record<string, Handler> = {
       last.align = 'center';
     }
   },
+  env_minipage(node, state) {
+    state.closeParagraph();
+    state.renderChildren(node);
+  },
+  macro_mbox(node, state) {
+    const [content] = getArguments(node, 'group');
+    state.renderChildren(content);
+  },
   macro_and(node, state) {
     state.data.andCallback?.();
   },
   macro_noindent: pass,
   macro_acknowledgments: pass,
+  macro_def: pass,
+  macro_arraystretch: pass,
+  // Some size options, not respecting at the moment
+  macro_vspace: pass,
+  macro_hfill: pass,
+  macro_small: pass,
   macro_footnotesize: pass,
+  macro_normalsize: pass,
+  macro_large: pass,
+  macro_Large: pass,
+  macro_LARGE: pass,
+  macro_huge: pass,
+  // These are sometimes used in tables...
+  macro_bgroup: pass,
+  macro_egroup: pass,
 };

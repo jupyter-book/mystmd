@@ -21,6 +21,7 @@ import { selectAll } from 'unist-util-select';
 import { VERBATIM_HANDLERS } from './verbatim';
 import { MISC_HANDLERS } from './misc';
 import { TABLE_HANDLERS } from './tables';
+import { FOOTNOTE_HANDLERS } from './footnotes';
 
 const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...BASIC_TEXT_HANDLERS,
@@ -38,6 +39,7 @@ const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...VERBATIM_HANDLERS,
   ...MISC_HANDLERS,
   ...TABLE_HANDLERS,
+  ...FOOTNOTE_HANDLERS,
 };
 
 export class TexParser implements ITexParser {

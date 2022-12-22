@@ -77,6 +77,7 @@ export function texToText(content?: GenericNode[] | GenericNode | string | null)
 }
 
 function lastNode(node: GenericNode): GenericNode {
+  if (!node) return node;
   if (Array.isArray(node.content)) {
     const last = lastNode(node.content?.[node.content.length - 1]);
     return last;
@@ -100,8 +101,8 @@ function lastNode(node: GenericNode): GenericNode {
 
 export function getPositionExtents(node: GenericNode): GenericNode['position'] {
   const start =
-    node.content?.[0].position?.start ?? node.content?.[0].args?.start ?? node.position?.start;
-  const endGroup = node.content?.[node.content.length - 1].position?.end;
+    node.content?.[0]?.position?.start ?? node.content?.[0]?.args?.start ?? node.position?.start;
+  const endGroup = node.content?.[node.content.length - 1]?.position?.end;
   const last = lastNode(node);
   const endNode = last?.position?.end;
   const end = [endGroup, endNode].sort((a, b) => (b?.offset ?? 0) - (a?.offset ?? 0))[0];

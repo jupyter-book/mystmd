@@ -6,6 +6,7 @@ import { isUrl } from 'myst-cli-utils';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
 import path from 'path';
+import type { VFileMessage } from 'vfile-message';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import {
   WebFileObject,
@@ -94,7 +95,7 @@ export async function saveImageInStaticFolder(
   urlSource: string,
   sourceFile: string,
   writeFolder: string,
-  opts?: { altOutputFolder?: string },
+  opts?: { altOutputFolder?: string; position?: VFileMessage['position'] },
 ): Promise<{ urlSource: string; url: string } | null> {
   const sourceFileFolder = path.dirname(sourceFile);
   const imageLocalFile = path.join(sourceFileFolder, urlSource);
@@ -118,7 +119,7 @@ export async function saveImageInStaticFolder(
     file = fileObject.id;
   } else {
     const message = `Cannot find image "${urlSource}" in ${sourceFileFolder}`;
-    addWarningForFile(session, sourceFile, message, 'error');
+    addWarningForFile(session, sourceFile, message, 'error', { position: opts?.position });
     return null;
   }
   // Update mdast with new file name
@@ -136,6 +137,17 @@ export async function transformImages(
   const images = selectAll('image', mdast) as GenericNode[];
   return Promise.all(
     images.map(async (image) => {
+      // Look up the image paths by known extensions if it is not provided
+      const imagePath = path.join(path.dirname(file), image.url);
+      if (!fs.existsSync(imagePath)) {
+        const extension = ['.png', '.tiff', '.jpg', 'jpeg', '.svg', '.pdf', '.eps'].find((ext) =>
+          fs.existsSync(imagePath + ext),
+        );
+        if (extension) {
+          image.url = image.url + extension;
+          image.urlSource = image.url;
+        }
+      }
       const result = await saveImageInStaticFolder(
         session,
         image.urlSource || image.url,
@@ -143,6 +155,7 @@ export async function transformImages(
         writeFolder,
         {
           altOutputFolder: opts?.altOutputFolder,
+          position: image.position,
         },
       );
       if (result) {

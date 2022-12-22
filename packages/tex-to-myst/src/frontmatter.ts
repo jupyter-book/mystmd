@@ -94,6 +94,16 @@ function addAffiliation(node: GenericNode, state: ITexParser) {
   }
 }
 
+function addKnownMacros(state: ITexParser, name: string) {
+  switch (name) {
+    case 'siunitx':
+      state.data.macros['\\si'] = '\\mathrm{ #1 }';
+      return;
+    default:
+      break;
+  }
+}
+
 const FRONTMATTER_HANDLERS: Record<string, Handler> = {
   macro_usepackage(node, state) {
     state.closeParagraph();
@@ -103,6 +113,7 @@ const FRONTMATTER_HANDLERS: Record<string, Handler> = {
       .filter((p) => !!p);
     packages.forEach((p) => {
       if (state.data.packages.indexOf(p) === -1) {
+        addKnownMacros(state, p);
         state.data.packages.push(p);
         return;
       }

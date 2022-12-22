@@ -62,6 +62,11 @@ const macros: Record<string, number> = {
   affil: 1,
   affiliation: 1,
   framebox: 1,
+  tnote: 1,
+  arraystretch: 1,
+  multirow: 3,
+  subfigure: 2,
+  tabularx: 2,
   // These are character replacements:
   '`': 1,
   "'": 1,
@@ -133,10 +138,27 @@ function patchOpenArgument(args: GenericNode[]) {
 
 function walkLatex(node: GenericNode): GenericNode | GenericParent | undefined {
   if (Array.isArray(node.content)) {
-    const content = (node.content as GenericParent[])
+    let skipRead = false;
+    let skipNextWhitespace = false;
+    let content = (node.content as GenericParent[])
       .map((n) => walkLatex(n))
       .filter((n): n is GenericNode => !!n)
       .reduce((l, n) => {
+        if (n.type === 'macro' && n.content === 'iffalse') {
+          skipRead = true;
+          return l;
+        }
+        if (n.type === 'macro' && n.content === 'fi') {
+          skipRead = false;
+          skipNextWhitespace = true;
+          return l;
+        }
+        if (skipRead) return l;
+        if (skipNextWhitespace && n.type === 'whitespace') {
+          skipNextWhitespace = false;
+          return l;
+        }
+        skipNextWhitespace = false;
         const last = l[l.length - 1];
         if (!last) return [n];
         if (last.type === 'macro' && macros[last.content] != null) {
@@ -159,6 +181,19 @@ function walkLatex(node: GenericNode): GenericNode | GenericParent | undefined {
         }
         return [...l, n];
       }, [] as GenericNode[]);
+
+    // Move known environment arguments from `content` to `args`
+    if (node.type === 'environment' && macros[node.env] != null) {
+      const currentArgs = getArguments(node, 'group').length;
+      const maxArgs = macros[node.env];
+      let used = true;
+      let i = 0;
+      while (currentArgs < maxArgs && used) {
+        used = parseArgument(node, node.content[i]);
+        i += 1;
+      }
+      content = content.slice(i - 1);
+    }
     return { ...node, content };
   }
   if (Array.isArray(node.args)) {

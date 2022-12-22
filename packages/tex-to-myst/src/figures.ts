@@ -10,6 +10,9 @@ const FIGURE_HANDLERS: Record<string, Handler> = {
     state.closeParagraph();
     state.closeNode();
   },
+  env_subfigure(node, state) {
+    state.renderChildren(node);
+  },
   macro_centering(node, state) {
     state.closeParagraph();
     const container = state.top();

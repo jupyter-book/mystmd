@@ -70,3 +70,20 @@ cases:
           children:
             - type: image
               url: figures/wiki-complex.png
+  - title: subfigure
+    tex: |-
+      \begin{figure}
+        \begin{subfigure}[b]{0.49\textwidth}
+          \centering
+          \includegraphics[width=\textwidth]{figures/one.jpg}
+        \end{subfigure}
+      \end{figure}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          children:
+            - type: image
+              url: figures/one.jpg
+          align: center

@@ -98,3 +98,106 @@ cases:
                   children:
                     - type: text
                       value: Figure captions are used to describe the figure and help the reader understand it’s significance.
+  - title: threeparttable
+    tex: |-
+      \begin{table}[hbt!]
+      \caption{Parameter values}\label{table1}
+      \begin{threeparttable}
+      \def\arraystretch{1.5}
+      \begin{tabular}{c|c|c|c|c|c}
+      \toprule
+      Symbol & Name & Value & Unit \\
+      \midrule
+      $\mathrm{T}$ & temperature & $0$ ($273.15$)\tnote{1} & \textdegree $\mathrm{C}$ (\textdegree $\mathrm{K}$) \\
+      \bottomrule
+      \end{tabular}
+      \begin{tablenotes}
+      \item[1] Note this is freezing.
+      \end{tablenotes}
+      \end{threeparttable}
+      \end{table}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: table
+          label: table1
+          identifier: table1
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Parameter values
+            - type: table
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Symbol
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Name
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Value
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: Unit
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: inlineMath
+                          value: \mathrm{T}
+                        - type: text
+                          value: ''
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: temperature
+                    - type: tableCell
+                      children:
+                        - type: inlineMath
+                          value: '0'
+                        - type: text
+                          value: ' ('
+                        - type: inlineMath
+                          value: '273.15'
+                        - type: text
+                          value: )
+                        - type: footnoteReference
+                          label: someRandomId-1
+                          identifier: somerandomid-1
+                        - type: text
+                          value: ''
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: 'º '
+                        - type: inlineMath
+                          value: \mathrm{C}
+                        - type: text
+                          value: ' (º '
+                        - type: inlineMath
+                          value: \mathrm{K}
+                        - type: text
+                          value: )
+            - type: footnoteDefinition
+              label: someRandomId-1
+              identifier: somerandomid-1
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Note this is freezing.
