@@ -8,10 +8,12 @@ export function addWarningForFile(
   file: string | undefined | null,
   message: string,
   kind: WarningKind = 'warn',
-  position?: VFileMessage['position'],
+  opts?: { note?: string; position?: VFileMessage['position'] },
 ) {
-  const specific = position?.start.line
-    ? `:${position.start.line}${position.start.column ? `:${position.start.column}` : ''}`
+  const specific = opts?.position?.start.line
+    ? `:${opts?.position.start.line}${
+        opts?.position.start.column ? `:${opts?.position.start.column}` : ''
+      }`
     : '';
   const prefix = file ? `${file}${specific} ` : '';
   switch (kind) {

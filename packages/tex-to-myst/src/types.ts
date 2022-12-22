@@ -19,6 +19,8 @@ export type StateData = {
   maketitle?: boolean;
   appendix?: boolean;
   frontmatter: PageFrontmatter;
+  /** This is called on `\and` in latex, e.g. in the author block */
+  andCallback?: () => void;
 };
 
 export interface ITexParser<D extends Record<string, any> = StateData> {

@@ -1,5 +1,6 @@
 import type { GenericNode } from 'myst-common';
 import { copyNode } from 'myst-common';
+import { selectAll } from 'unist-util-select';
 
 export const phrasingTypes = new Set([
   'paragraph',
@@ -106,4 +107,26 @@ export function getPositionExtents(node: GenericNode): GenericNode['position'] {
   const end = [endGroup, endNode].sort((a, b) => (b?.offset ?? 0) - (a?.offset ?? 0))[0];
   if (!start || !end) return undefined;
   return { start, end };
+}
+
+export function unnestParagraphs(node: GenericNode, selector: string) {
+  // If the terms and defs are in a single paragraph, unnest them
+  const unnest = selectAll(selector, node) as GenericNode[];
+  unnest.forEach((n) => {
+    if (n.children?.length === 1 && n.children[0].type === 'paragraph') {
+      n.children = n.children[0].children;
+    }
+  });
+}
+
+export function stripPositions(
+  node?: GenericNode | GenericNode[] | string,
+): GenericNode | GenericNode[] | string {
+  if (!node || typeof node === 'string') return node as string;
+  if (Array.isArray(node)) return node.map(stripPositions) as GenericNode[];
+  delete node.position;
+  if (Array.isArray(node.children)) node.children = stripPositions(node.children) as GenericNode[];
+  if (Array.isArray(node.content)) node.content = stripPositions(node.content);
+  if (Array.isArray(node.args)) node.args = stripPositions(node.args);
+  return node;
 }

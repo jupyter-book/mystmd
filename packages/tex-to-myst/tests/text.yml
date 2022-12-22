@@ -9,6 +9,17 @@ cases:
           children:
             - type: text
               value: text
+  - title: Simple Paragraph with quotes and dashes
+    tex: |-
+      ``The expression for the~field --- of view--is\dots''
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: |-
+                “The expression for the field — of view–is…”
   - title: Strong and Emphasis
     tex: This text is \textbf{bold \emph{and emphasized}}.
     tree:
@@ -50,6 +61,30 @@ cases:
               children:
                 - type: text
                   value: code
+  - title: ttfamily
+    tex: which is set in {\ttfamily spie.cls}.
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'which is set in '
+            - type: inlineCode
+              children:
+                - type: text
+                  value: spie.cls
+            - type: text
+              value: '.'
+  - title: verb
+    tex: \verb|\section{}|
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: inlineCode
+              value: \section{}
   - title: bf text
     tex: '{\bf text} not bold'
     tree:

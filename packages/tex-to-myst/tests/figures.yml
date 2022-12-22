@@ -32,3 +32,41 @@ cases:
                           value: link to notebook
                     - type: text
                       value: '.'
+  - title: Figure environment (label in caption)
+    tex: |-
+      \begin{figure}[ht!]
+      \centering
+      \includegraphics[width=0.8\linewidth]{img/Figure 4.png}
+      \caption{  \label{fig:4} Solution of the model.
+      % comment!
+      }
+      \end{figure}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: fig:4
+          label: fig:4
+          align: center
+          children:
+            - type: image
+              url: img/Figure 4.png
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Solution of the model.
+  - title: framebox
+    tex: |-
+      \framebox(400,250){
+      \includegraphics[width=0.7\textwidth]{figures/wiki-complex.png}}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          children:
+            - type: image
+              url: figures/wiki-complex.png

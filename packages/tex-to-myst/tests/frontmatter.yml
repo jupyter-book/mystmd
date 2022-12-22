@@ -12,9 +12,7 @@ cases:
             value: math
           - type: text
             value: ' title!'
-        short_title:
-          - type: text
-            value: 'Short title'
+        short_title: Short title
   - title: Make title command
     tex: '\maketitle'
     text: ''
@@ -41,6 +39,116 @@ cases:
             affiliations:
               - '1'
               - '2'
+  - title: Multiple authors in one
+    tex: \author{Author One \and Author Two}
+    text: ''
+    data:
+      frontmatter:
+        authors:
+          - name: Author One
+          - name: Author Two
+  - title: Multiple authors with breaks
+    tex: '\author{Author One \break \and \\ Author Two \\}'
+    text: ''
+    data:
+      frontmatter:
+        authors:
+          - name: Author One
+          - name: Author Two
+  - title: Multiple authors with emails as inlineCode
+    tex: |-
+      \author{John Doe \\
+        \texttt{john@example.com}
+        \and
+        Jane Doe \\
+        \texttt{jane@example.com}
+      }
+    text: ''
+    data:
+      frontmatter:
+        authors:
+          - name: John Doe
+            email: john@example.com
+            corresponding: true
+          - name: Jane Doe
+            email: jane@example.com
+            corresponding: true
+  - title: Multiple authors with emails as text (breaks or not)
+    tex: \author{User1 \\ user1@mailserver.xx \and User2 user2@mailserver.xx}
+    text: ''
+    data:
+      frontmatter:
+        authors:
+          - name: User1
+            email: user1@mailserver.xx
+            corresponding: true
+          - name: User2
+            email: user2@mailserver.xx
+            corresponding: true
+  - title: Authors with (some) explicit emails
+    tex: |-
+      \author{User Guy}
+      \author{Another Guy}
+      \email{anotherguy@example.com}
+    text: ''
+    data:
+      frontmatter:
+        authors:
+          - name: User Guy
+          - name: Another Guy
+            email: anotherguy@example.com
+            corresponding: true
+  - title: Authors with links (url and as text)
+    tex: |-
+      \author{User1 \\ \href{mailto:me@somewhere.com}{email me!}
+      \and User2 \\ email \href{mailto:notused@somewhere.com}{someone@somewhere.com} }
+    text: ''
+    data:
+      frontmatter:
+        authors:
+          - name: User1
+            email: me@somewhere.com
+            corresponding: true
+          - name: User2  email # This isn't awesome, but it is good enough...
+            email: someone@somewhere.com
+            corresponding: true
+  - title: Authors email in thanks
+    tex: \author{joe doe\thanks{\href{mailto:me@nowhere.org}{me@nowhere.org}}}
+    text: ''
+    data:
+      frontmatter:
+        authors:
+          - name: joe doe
+            email: me@nowhere.org
+            corresponding: true
+  - title: More than one Author with different Affiliations
+    url: https://stackoverflow.com/questions/29913874/adding-author-emails-and-affiliation-on-2nd-second-line-not-as-a-footnote
+    tex: |-
+      \title{More than one Author with different Affiliations}
+      \author[1]{Sadique Ahmad\thanks{ahmad01.shah@gmail.com}}
+      \author[2]{Awais Adnan\thanks{awaisadnan@gmail.com}}
+      \affil[1]{Department of Computer Science, IM|Sciences Peshawar}
+      \affil[2]{Some Department, Some University}
+    text: ''
+    data:
+      frontmatter:
+        title: More than one Author with different Affiliations
+        authors:
+          - name: Sadique Ahmad
+            email: ahmad01.shah@gmail.com
+            corresponding: true
+            affiliations:
+              - '1'
+          - name: Awais Adnan
+            email: awaisadnan@gmail.com
+            corresponding: true
+            affiliations:
+              - '2'
+        affiliations:
+          - id: '1'
+            name: Department of Computer Science, IM|Sciences Peshawar
+          - id: '2'
+            name: Some Department, Some University
   - title: Get the affiliations
     tex: '\author[1]{Rowan Cockett}\affil[1]{Curvenote}'
     text: ''

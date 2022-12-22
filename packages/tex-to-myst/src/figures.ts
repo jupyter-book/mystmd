@@ -2,11 +2,12 @@ import { u } from 'unist-builder';
 import type { Handler } from './types';
 import { getArguments, texToText } from './utils';
 
-export const FIGURE_HANDLERS: Record<string, Handler> = {
+const FIGURE_HANDLERS: Record<string, Handler> = {
   env_figure(node, state) {
     state.closeParagraph();
     state.openNode('container', { kind: 'figure' });
     state.renderChildren(node);
+    state.closeParagraph();
     state.closeNode();
   },
   macro_centering(node, state) {
@@ -33,4 +34,17 @@ export const FIGURE_HANDLERS: Record<string, Handler> = {
     state.closeParagraph();
     state.closeNode();
   },
+  macro_framebox(node, state) {
+    state.closeParagraph();
+    const [children] = getArguments(node, 'group');
+    if (!children) return;
+    state.openNode('container', { kind: 'figure' });
+    state.renderChildren(children);
+    state.closeParagraph();
+    state.closeNode();
+  },
 };
+
+FIGURE_HANDLERS['env_figure*'] = FIGURE_HANDLERS.env_figure;
+
+export { FIGURE_HANDLERS };

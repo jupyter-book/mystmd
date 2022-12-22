@@ -1,18 +1,7 @@
 import type { GenericNode } from 'myst-common';
 import { copyNode } from 'myst-common';
-import { selectAll } from 'unist-util-select';
 import type { Handler } from './types';
-import { renderInfoIndex, texToText } from './utils';
-
-function unnestParagraphs(node: GenericNode, selector: string) {
-  // If the terms and defs are in a single paragraph, unnest them
-  const unnest = selectAll(selector, node) as GenericNode[];
-  unnest.forEach((n) => {
-    if (n.children?.length === 1 && n.children[0].type === 'paragraph') {
-      n.children = n.children[0].children;
-    }
-  });
-}
+import { renderInfoIndex, texToText, unnestParagraphs } from './utils';
 
 export const LIST_HANDLERS: Record<string, Handler> = {
   env_enumerate(node, state) {

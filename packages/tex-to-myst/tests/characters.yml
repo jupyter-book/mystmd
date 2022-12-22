@@ -73,3 +73,6 @@ cases:
   - title: ı (dotless i)
     tex: \i
     text: ı
+  - title: thin space
+    tex: Thin\,space
+    text: 'Thin space'

@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import { toText } from 'myst-common';
-import type { PageFrontmatter } from 'myst-frontmatter';
+import { stripPositions } from '../src/utils';
 
 type TestFile = {
   title: string;
@@ -35,6 +35,7 @@ const files = [
   'commands.yml',
   'figures.yml',
   'frontmatter.yml',
+  'tables.yml',
 ];
 
 const only = ''; // Can set this to a test title
@@ -58,15 +59,16 @@ casesList.forEach(({ title, cases }) => {
         const state = new TexParser(tex, vfile);
         if (only) {
           // This runs in "only" mode
-          console.log(yaml.dump(state.raw), state.ast);
+          console.log(yaml.dump(stripPositions(state.raw)));
+          console.log(yaml.dump(stripPositions(state.ast)));
+        }
+        stripPositions(state.ast);
+        if (vfile.messages.length !== (warnings ?? 0)) {
+          console.log(vfile.messages);
         }
         if (tree) expect(state.ast).toEqual(tree);
         else if (text != null) expect(toText(state.ast)).toEqual(text);
         else throw new Error('Must have at least "tree" or "text" defined.');
-        if (vfile.messages.length !== (warnings ?? 0)) {
-          console.log(vfile.messages);
-        }
-        expect(vfile.messages.length).toBe(warnings ?? 0);
         if (data?.colors) {
           expect(state.data.colors).toEqual(data.colors);
         }
@@ -77,6 +79,8 @@ casesList.forEach(({ title, cases }) => {
           expect(state.data.macros).toEqual(data.macros);
         }
         if (data?.frontmatter) {
+          stripPositions(state.data.frontmatter.title);
+          stripPositions(state.data.frontmatter.short_title);
           expect(state.data.frontmatter).toEqual(data.frontmatter);
         }
         if (data?.maketitle != null) {
@@ -85,6 +89,7 @@ casesList.forEach(({ title, cases }) => {
         if (data?.appendix != null) {
           expect(state.data.appendix).toEqual(data.appendix);
         }
+        expect(vfile.messages.length).toBe(warnings ?? 0);
       },
     );
   });

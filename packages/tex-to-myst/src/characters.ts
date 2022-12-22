@@ -81,6 +81,8 @@ const symbols = {
   textdegree: 'º',
   textasciitilde: '~',
   textvisiblespace: ' ', // Not sure this will work, but close enough
+  ' ': ' ', // this is a single backslash followed by a space
+  ',': ' ', // this is a thin space (https://en.wikipedia.org/wiki/Thin_space) `\,` in latex
 };
 
 const CHARACTER_HANDLERS: Record<string, Handler> = {

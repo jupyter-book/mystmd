@@ -16,19 +16,22 @@ function parseArgument(node: GenericNode, next: GenericNode): boolean {
       if (node.position && next.position) node.position.end = next.position.end;
       return true;
     }
-    if (next.content === '[' && getArguments(node, 'group').length === 0) {
+    if (
+      (next.content === '[' || next.content === '(') &&
+      getArguments(node, 'group').length === 0
+    ) {
       node.args.push({
         type: 'argument',
         content: [],
-        openMark: '[', // will `closeMark` in next pass
+        openMark: next.content, // will `closeMark` in next pass
         position: { start: next.position?.start },
       });
       return true;
     }
     const lastArg = node.args[node.args.length - 1];
     if (!lastArg) return false;
-    if (!lastArg.closeMark && next.content === ']') {
-      lastArg.closeMark = ']';
+    if (!lastArg.closeMark && (next.content === ']' || next.content === ')')) {
+      lastArg.closeMark = next.content;
       if (lastArg.position) lastArg.position.end = next.position?.end;
       return true;
     }
@@ -58,6 +61,7 @@ const macros: Record<string, number> = {
   email: 1,
   affil: 1,
   affiliation: 1,
+  framebox: 1,
   // These are character replacements:
   '`': 1,
   "'": 1,
@@ -115,14 +119,15 @@ const macros: Record<string, number> = {
  * With the next reduce adding the correct arguments, and closing the marks, etc.
  */
 function patchOpenArgument(args: GenericNode[]) {
+  const i = args.length - 1;
   if (
-    args[0]?.content?.length === 1 &&
-    args[0].content[0].type === 'string' &&
-    args[0].content[0].content?.match(/^\(|\[$/)
+    args[i]?.content?.length === 1 &&
+    args[i].content[0].type === 'string' &&
+    args[i].content[0].content?.match(/^\(|\[$/)
   ) {
-    args[0].openMark = args[0].content[0].content;
-    args[0].closeMark = ''; // Leave this open for parsing in the next round (see above)
-    args[0].content = []; // The content is an empty list
+    args[i].openMark = args[i].content[0].content;
+    args[i].closeMark = ''; // Leave this open for parsing in the next round (see above)
+    args[i].content = []; // The content is an empty list
   }
 }
 
@@ -141,6 +146,16 @@ function walkLatex(node: GenericNode): GenericNode | GenericParent | undefined {
             const used = parseArgument(last, n);
             if (used) return l;
           }
+        }
+        // If there are multiple texts in a row, combine some that make special symbols `` or -- or --- or ''
+        if (
+          last.type === 'string' &&
+          n.type === 'string' &&
+          last.content?.match(/`|'|-/) &&
+          n.content?.match(/`|'|-/)
+        ) {
+          last.content += n.content;
+          return l;
         }
         return [...l, n];
       }, [] as GenericNode[]);

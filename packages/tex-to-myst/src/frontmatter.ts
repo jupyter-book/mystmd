@@ -1,15 +1,76 @@
 import type { GenericNode } from 'myst-common';
+import { copyNode, toText, mergeTextNodes } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import { selectAll } from 'unist-util-select';
+import { remove } from 'unist-util-remove';
 import type { Handler, ITexParser } from './types';
 import { getArguments, getPositionExtents, originalValue, texToText } from './utils';
 
-function getContentFromRenderedSpan(node: GenericNode | undefined): string | GenericNode[] {
+function getContentFromRenderedSpan(node: GenericNode | undefined): string | GenericNode {
   if (!node) return '';
-  if (node?.children?.length === 1 && node?.children?.[0].type === 'text') {
-    return node?.children?.[0].value ?? '';
+  const copy = mergeTextNodes(copyNode(node));
+  if (copy?.children?.length === 1 && copy?.children?.[0].type === 'text') {
+    return copy?.children?.[0].value?.trim() ?? '';
   } else {
-    return node?.children ?? '';
+    return copy ?? '';
   }
+}
+
+function childrenOrString(node: GenericNode | string | undefined): string | GenericNode[] {
+  if (!node) return '';
+  if (typeof node === 'string') return node;
+  if (Array.isArray(node)) return node;
+  return node?.children ?? '';
+}
+
+// https://stackoverflow.com/a/46181
+export function validateEmail(email: string) {
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
+
+function extractEmailFromName(author: { name?: GenericNode | string; email?: string }): {
+  name?: GenericNode | string;
+  email?: string;
+} {
+  const { name } = author;
+  if (!author.email && typeof name === 'string') {
+    const matcher =
+      /(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
+    const match = name.match(matcher);
+
+    if (match) {
+      author.email = match[0];
+      author.name = name.replace(matcher, '').trim();
+    } else {
+      author.name = name;
+    }
+  } else {
+    author.name = name;
+  }
+  return author;
+}
+
+function getAuthorOrEmailFromNode(node: GenericNode | string) {
+  if (typeof node === 'string') return extractEmailFromName({ name: node });
+  const copy = copyNode(node);
+  const author: { name?: GenericNode | string; email?: string } = {};
+  (selectAll('inlineCode,link', copy) as GenericNode[]).forEach((n) => {
+    const maybeEmail = toText(n);
+    if (validateEmail(maybeEmail)) {
+      author.email = maybeEmail;
+      n.type = 'remove';
+      return;
+    }
+    if (n.url && validateEmail(n.url.replace(/^mailto:/, ''))) {
+      author.email = n.url.replace(/^mailto:/, '');
+      n.type = 'remove';
+    }
+  });
+  remove(copy, 'remove');
+  author.name = getContentFromRenderedSpan(copy);
+  return extractEmailFromName(author);
 }
 
 function addAffiliation(node: GenericNode, state: ITexParser) {
@@ -27,13 +88,13 @@ function addAffiliation(node: GenericNode, state: ITexParser) {
   if (!affilNumber) {
     const lastAuthor = fm.authors[fm.authors.length - 1];
     if (!lastAuthor.affiliations) lastAuthor.affiliations = [];
-    lastAuthor.affiliations.push(fmAffil.name as any);
+    lastAuthor.affiliations.push(childrenOrString(fmAffil.name) as any);
   } else {
     (fm as any).affiliations.push(fmAffil);
   }
 }
 
-export const FRONTMATTER_HANDLERS: Record<string, Handler> = {
+const FRONTMATTER_HANDLERS: Record<string, Handler> = {
   macro_usepackage(node, state) {
     state.closeParagraph();
     const packages = texToText(getArguments(node, 'group'))
@@ -87,14 +148,18 @@ export const FRONTMATTER_HANDLERS: Record<string, Handler> = {
     state.closeParagraph();
     // instead of closing, we are going to pop it off the stack
     const renderedTitle = state.stack.pop();
-    state.data.frontmatter.title = renderedTitle?.children as any;
+    state.data.frontmatter.title = childrenOrString(
+      getContentFromRenderedSpan(renderedTitle),
+    ) as any;
     if (shortTitleNode) {
       state.openNode('span');
       state.renderChildren(shortTitleNode);
       state.closeParagraph();
       // instead of closing, we are going to pop it off the stack
       const renderedShortTitle = state.stack.pop();
-      state.data.frontmatter.short_title = renderedShortTitle?.children as any;
+      state.data.frontmatter.short_title = childrenOrString(
+        getContentFromRenderedSpan(renderedShortTitle),
+      ) as any;
     }
   },
   macro_author(node, state) {
@@ -104,21 +169,48 @@ export const FRONTMATTER_HANDLERS: Record<string, Handler> = {
     const [affilNode, emailNode] = getArguments(node, 'argument');
     const [author] = getArguments(node, 'group');
     state.openNode('span');
+    state.data.andCallback = () => {
+      // This is called, maybe multiple times if the `\and` is used in the author block.
+      state.closeParagraph();
+      const nextAuthor = state.stack.pop();
+      const andAuthor: Required<PageFrontmatter>['authors'][0] = {};
+      const { name, email } = getAuthorOrEmailFromNode(getContentFromRenderedSpan(nextAuthor));
+      andAuthor.name = childrenOrString(name) as any;
+      if (email) {
+        andAuthor.corresponding = true;
+        andAuthor.email = email;
+      }
+      state.data.frontmatter.authors?.push(andAuthor);
+      state.openNode('span');
+    };
     state.renderChildren(author);
+    delete state.data.andCallback;
     state.closeParagraph();
     const renderedAuthor = state.stack.pop();
     const fmAuthor: Required<PageFrontmatter>['authors'][0] = {};
-    fmAuthor.name = getContentFromRenderedSpan(renderedAuthor) as any;
-    const affilNumber = texToText(affilNode);
-    const email = texToText(emailNode);
-    if (affilNumber) {
-      fmAuthor.affiliations = affilNumber.split(/,|;|&/).map((a) => a.trim());
-    }
+    const { name, email } = getAuthorOrEmailFromNode(getContentFromRenderedSpan(renderedAuthor));
+    fmAuthor.name = childrenOrString(name) as any;
     if (email) {
       fmAuthor.corresponding = true;
       fmAuthor.email = email;
     }
+    const affilNumber = texToText(affilNode);
+    const emailText = texToText(emailNode);
+    if (affilNumber) {
+      fmAuthor.affiliations = affilNumber.split(/,|;|&/).map((a) => a.trim());
+    }
+    if (emailText) {
+      fmAuthor.corresponding = true;
+      fmAuthor.email = emailText;
+    }
     state.data.frontmatter.authors?.push(fmAuthor);
+  },
+  macro_thanks(node, state) {
+    // Just write directly?? This is sometimes the affiliation...
+    const content = getArguments(node, 'group');
+    // Put in a single space, as sometimes the commands don't have spaces
+    state.text(' ');
+    state.renderChildren({ content });
   },
   macro_affil: addAffiliation,
   macro_affiliation: addAffiliation,
@@ -135,7 +227,7 @@ export const FRONTMATTER_HANDLERS: Record<string, Handler> = {
     state.renderChildren(emailNode);
     state.closeParagraph();
     const renderedEmail = state.stack.pop();
-    const email = getContentFromRenderedSpan(renderedEmail);
+    const email = childrenOrString(getContentFromRenderedSpan(renderedEmail));
     if (!lastAuthor) {
       state.warn(
         `Unexpected use of email "${texToText(email)}" without defining authors.`,
@@ -161,3 +253,7 @@ export const FRONTMATTER_HANDLERS: Record<string, Handler> = {
       .filter((k) => !!k);
   },
 };
+
+FRONTMATTER_HANDLERS.macro_Author = FRONTMATTER_HANDLERS.macro_author;
+
+export { FRONTMATTER_HANDLERS };

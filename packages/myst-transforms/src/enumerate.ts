@@ -450,7 +450,7 @@ export function addContainerCaptionNumbersTransform(tree: Root, file: VFile, opt
     .forEach((container: Container) => {
       const enumerator = opts.state.getTarget(container.identifier)?.node.enumerator;
       const para = select('caption > paragraph', container) as Container;
-      if (enumerator && para && (para.children[0].type as string) !== 'captionNumber') {
+      if (enumerator && para && (para.children[0]?.type as string) !== 'captionNumber') {
         const captionNumber = {
           type: 'captionNumber',
           kind: container.kind,

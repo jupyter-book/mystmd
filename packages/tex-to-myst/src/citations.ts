@@ -7,7 +7,7 @@ function createCitation(
   state: ITexParser,
   node: GenericNode,
   kind?: 'parenthetical' | 'narrative',
-  partial?: 'author' | 'year',
+  partial?: 'author' | 'year' | 'number',
 ) {
   state.openParagraph();
   const value = texToText(getArguments(node, 'group'));
@@ -54,6 +54,9 @@ const CITATION_HANDLERS: Record<string, Handler> = {
   },
   macro_citeyearpar(node, state) {
     createCitation(state, node, 'parenthetical', 'year');
+  },
+  macro_citenum(node, state) {
+    createCitation(state, node, 'narrative', 'number');
   },
 };
 

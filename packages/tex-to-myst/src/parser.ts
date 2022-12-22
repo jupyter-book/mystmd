@@ -1,5 +1,5 @@
 import type { GenericNode, MessageInfo } from 'myst-common';
-import { normalizeLabel, fileError } from 'myst-common';
+import { fileWarn, normalizeLabel, fileError } from 'myst-common';
 import { u } from 'unist-builder';
 import type { VFile } from 'vfile';
 import { BASIC_TEXT_HANDLERS } from './basic';
@@ -20,6 +20,7 @@ import { FIGURE_HANDLERS } from './figures';
 import { selectAll } from 'unist-util-select';
 import { VERBATIM_HANDLERS } from './verbatim';
 import { MISC_HANDLERS } from './misc';
+import { TABLE_HANDLERS } from './tables';
 
 const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...BASIC_TEXT_HANDLERS,
@@ -36,6 +37,7 @@ const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...FIGURE_HANDLERS,
   ...VERBATIM_HANDLERS,
   ...MISC_HANDLERS,
+  ...TABLE_HANDLERS,
 };
 
 export class TexParser implements ITexParser {
@@ -47,6 +49,7 @@ export class TexParser implements ITexParser {
   options: Options;
   handlers: Record<string, Handler>;
   stack: GenericNode[] = [];
+  currentPosition: GenericNode['position'];
 
   unhandled: string[] = [];
 
@@ -72,12 +75,9 @@ export class TexParser implements ITexParser {
     do {
       stack = this.closeNode();
     } while (this.stack.length);
-    (selectAll('crossReference,heading,container', stack) as GenericNode[]).forEach((xref) => {
-      const label = xref.label;
-      const reference = normalizeLabel(label);
-      if (!reference) {
-        return;
-      }
+    (selectAll('[label]', stack) as GenericNode[]).forEach((xref) => {
+      const reference = normalizeLabel(xref.label);
+      if (!reference) return;
       xref.identifier = reference.identifier;
       xref.label = reference.label;
     });
@@ -89,7 +89,7 @@ export class TexParser implements ITexParser {
   }
 
   warn(message: string, node: GenericNode, source?: string, opts?: MessageInfo) {
-    fileError(this.file, message, {
+    fileWarn(this.file, message, {
       ...opts,
       node,
       source: source ? `tex-to-myst:${source}` : 'tex-to-myst',
@@ -106,7 +106,10 @@ export class TexParser implements ITexParser {
 
   pushNode(el?: GenericNode) {
     const top = this.top();
-    if (this.stack.length && el && 'children' in top) top.children?.push(el);
+    if (this.stack.length && el && 'children' in top) {
+      if (!el.position) el.position = this.currentPosition;
+      top.children?.push(el);
+    }
   }
 
   text(text?: string, escape = true) {
@@ -119,7 +122,7 @@ export class TexParser implements ITexParser {
       last.value += `${value}`;
       return last;
     }
-    const node = u('text', value);
+    const node = u('text', { position: this.currentPosition }, value);
     top.children?.push(node);
     return node;
   }
@@ -127,6 +130,7 @@ export class TexParser implements ITexParser {
   renderChildren(node: GenericNode) {
     if (!node) return;
     const children = Array.isArray(node.content) ? node.content : undefined;
+    this.currentPosition = node.position ?? this.currentPosition;
     children?.forEach((child) => {
       const kind =
         child.type === 'macro'
@@ -134,6 +138,7 @@ export class TexParser implements ITexParser {
           : child.type === 'environment'
           ? `env_${child.env}`
           : child.type;
+      this.currentPosition = child.position ?? this.currentPosition;
       const handler = this.handlers[kind];
       if (handler) {
         handler(child, this, node);
@@ -149,6 +154,7 @@ export class TexParser implements ITexParser {
 
   renderBlock(node: GenericNode, name: string, attributes?: Record<string, any>) {
     this.closeParagraph();
+    this.currentPosition = node.position ?? this.currentPosition;
     this.openNode(name, { ...attributes });
     if ('content' in node) {
       this.renderChildren(node);
@@ -164,10 +170,13 @@ export class TexParser implements ITexParser {
     this.openParagraph();
     this.openNode(name, { ...attributes });
     if (Array.isArray(node)) {
+      this.currentPosition = node[0]?.position ?? this.currentPosition;
       this.renderChildren({ type: '', content: node });
     } else if ('content' in node) {
+      this.currentPosition = node?.position ?? this.currentPosition;
       this.renderChildren(node);
     } else if ('value' in node && node.value) {
+      this.currentPosition = node?.position ?? this.currentPosition;
       this.text(node.value);
     }
     this.closeNode();
@@ -179,7 +188,7 @@ export class TexParser implements ITexParser {
   }
 
   openNode(name: string, attributes?: Record<string, any>, isLeaf = false) {
-    const node: GenericNode = { type: name, ...attributes };
+    const node: GenericNode = { type: name, position: this.currentPosition, ...attributes };
     if (!isLeaf) node.children = [];
     this.stack.push(node);
   }

@@ -4,6 +4,7 @@ import { map } from 'unist-util-map';
 import { customAlphabet } from 'nanoid';
 import type { Root, PhrasingContent } from 'mdast';
 import type { Node, Parent } from 'myst-spec';
+import type { GenericNode } from './types';
 
 export type MessageInfo = {
   node?: Node;
@@ -21,7 +22,7 @@ function addMessageInfo(message: VFileMessage, info?: MessageInfo) {
 }
 
 export function fileError(file: VFile, message: string | Error, opts?: MessageInfo): VFileMessage {
-  return addMessageInfo(file.message(message, opts?.node, opts?.source), opts);
+  return addMessageInfo(file.message(message, opts?.node, opts?.source), { ...opts, fatal: true });
 }
 
 export function fileWarn(file: VFile, message: string | Error, opts?: MessageInfo): VFileMessage {
@@ -93,6 +94,7 @@ export function toText(content?: Node[] | Node | null): string {
   if (!Array.isArray(content)) return toText([content]);
   return (content as PhrasingContent[])
     .map((n) => {
+      if (!n || typeof n === 'string') return n || '';
       if ('value' in n) return n.value;
       if ('children' in n && n.children) return toText(n.children);
       return '';
@@ -102,4 +104,27 @@ export function toText(content?: Node[] | Node | null): string {
 
 export function copyNode<T extends Node | Node[]>(node: T): T {
   return JSON.parse(JSON.stringify(node));
+}
+
+export function mergeTextNodes(node: GenericNode): GenericNode {
+  const children = node.children?.reduce((c, n) => {
+    if (n?.type !== 'text') {
+      c.push(mergeTextNodes(n));
+      return c;
+    }
+    const last = c[c.length - 1];
+    if (last?.type !== 'text') {
+      c.push(n);
+      return c;
+    }
+    if (n.position?.end) {
+      if (!last.position) last.position = {} as Required<GenericNode>['position'];
+      last.position.end = n.position.end;
+    }
+    if (!last.value) last.value = '';
+    if (n.value) last.value += n.value;
+    return c;
+  }, [] as GenericNode[]);
+  if (children) node.children = children;
+  return node;
 }

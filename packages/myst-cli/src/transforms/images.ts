@@ -16,7 +16,6 @@ import {
   inkscape,
 } from '../utils';
 import type { ISession } from '../session/types';
-import chalk from 'chalk';
 import { castSession } from '../session';
 import { watch } from '../store';
 
@@ -229,9 +228,9 @@ export async function transformImageFormats(
         addWarningForFile(
           session,
           file,
-          `To convert SVG images to PDF, you must install inkscape.\n${chalk.dim(
-            'Images converted to PNG as a fallback using imagemagick.',
-          )}`,
+          'To convert SVG images to PDF, you must install inkscape.',
+          'warn',
+          { note: 'Images converted to PNG as a fallback using imagemagick.' },
         );
       }
       session.log.info(`${logPrefix} PNG using imagemagick`);
@@ -240,10 +239,9 @@ export async function transformImageFormats(
       addWarningForFile(
         session,
         file,
-        `Cannot convert SVG images, they may not correctly render.\n${chalk.dim(
-          'To convert these images, you must install imagemagick or inkscape',
-        )}`,
+        'Cannot convert SVG images, they may not correctly render.',
         'error',
+        { note: 'To convert these images, you must install imagemagick or inkscape' },
       );
     }
     if (svgConversionFn) {
@@ -267,8 +265,9 @@ export async function transformImageFormats(
       addWarningForFile(
         session,
         file,
-        'Cannot convert GIF images, they may not correctly render.\nTo convert these images, you must install imagemagick',
+        'Cannot convert GIF images, they may not correctly render.',
         'error',
+        { note: 'To convert these images, you must install imagemagick' },
       );
     }
     if (gifConversionFn) {
@@ -280,17 +279,16 @@ export async function transformImageFormats(
 
   // Warn on unsupported, unconvertable images
   if (unconvertableImages.length) {
-    const badExts = [
-      ...new Set(unconvertableImages.map((image) => path.extname(image.url) || '<no extension>')),
-    ];
-    addWarningForFile(
-      session,
-      file,
-      `Unsupported image extension${
-        badExts.length > 1 ? 's' : ''
-      } may not correctly render: ${badExts.join(', ')}`,
-      'error',
-    );
+    unconvertableImages.forEach((image) => {
+      const badExt = path.extname(image.url) || '<no extension>';
+      addWarningForFile(
+        session,
+        file,
+        `Unsupported image extension "${badExt}" may not correctly render.`,
+        'error',
+        { position: image.position },
+      );
+    });
   }
   return Promise.all(conversionPromises);
 }

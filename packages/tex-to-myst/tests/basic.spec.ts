@@ -1,6 +1,7 @@
 import { u } from 'unist-builder';
 import { VFile } from 'vfile';
 import { TexParser } from '../src';
+import { stripPositions } from '../src/utils';
 
 describe('tex-to-myst', () => {
   it('Basic latex parsing', () => {
@@ -10,7 +11,7 @@ describe('tex-to-myst', () => {
     expect(tex.raw.type).toEqual('root');
     expect(tex.raw.content.length).toEqual(8);
     expect(tex.raw.position?.start.offset).toEqual(0);
-    expect(tex.ast).toEqual(
+    expect(stripPositions(tex.ast)).toEqual(
       u('root', [
         u('paragraph', [
           u('text', 'This text is '),
