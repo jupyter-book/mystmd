@@ -251,7 +251,7 @@ const FRONTMATTER_HANDLERS: Record<string, Handler> = {
     lastAuthor.email = email as any;
   },
   env_abstract(node, state) {
-    state.openBlock();
+    state.openBlock({ data: { part: 'abstract' } });
     state.renderChildren(node);
     state.closeBlock();
   },

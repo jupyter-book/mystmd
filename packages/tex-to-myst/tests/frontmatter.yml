@@ -170,6 +170,8 @@ cases:
       type: root
       children:
         - type: block
+          data:
+            part: abstract
           children:
             - type: paragraph
               children:
