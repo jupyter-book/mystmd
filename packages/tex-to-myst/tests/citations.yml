@@ -130,3 +130,15 @@ cases:
               partial: author
               label: jon90
               identifier: jon90
+  - title: Nested parent in suffix
+    tex: \citep[Fig.~7(a)]{jon90}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              kind: parenthetical
+              suffix: Fig. 7(a)
+              label: jon90
+              identifier: jon90

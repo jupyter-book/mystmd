@@ -16,8 +16,10 @@ function parseArgument(node: GenericNode, next: GenericNode): boolean {
       if (node.position && next.position) node.position.end = next.position.end;
       return true;
     }
+    const lastArg = node.args[node.args.length - 1];
     if (
-      (next.content === '[' || next.content === '(') &&
+      ((next.content === '[' && (!lastArg || lastArg.openMark === '[')) ||
+        (next.content === '(' && (!lastArg || lastArg.openMark === ')'))) &&
       getArguments(node, 'group').length === 0
     ) {
       node.args.push({
@@ -28,9 +30,12 @@ function parseArgument(node: GenericNode, next: GenericNode): boolean {
       });
       return true;
     }
-    const lastArg = node.args[node.args.length - 1];
     if (!lastArg) return false;
-    if (!lastArg.closeMark && (next.content === ']' || next.content === ')')) {
+    if (
+      !lastArg.closeMark &&
+      ((next.content === ']' && lastArg.openMark === '[') ||
+        (next.content === ')' && lastArg.openMark === '('))
+    ) {
       lastArg.closeMark = next.content;
       if (lastArg.position) lastArg.position.end = next.position?.end;
       return true;
