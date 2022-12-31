@@ -237,11 +237,11 @@ export class TexParser implements ITexParser {
     this.closeNode();
   }
 
-  openBlock() {
+  openBlock(attributes?: Record<string, any>) {
     this.closeParagraph();
     const inPhrasing = phrasingTypes.has(this.top().type);
     if (inPhrasing) return;
-    this.openNode('block');
+    this.openNode('block', attributes);
   }
 
   closeBlock() {

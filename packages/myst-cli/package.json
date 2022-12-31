@@ -57,6 +57,7 @@
     "adm-zip": "^0.5.9",
     "chalk": "^5.1.2",
     "check-node-version": "^4.2.1",
+    "chokidar": "^3.5.3",
     "citation-js-utils": "^0.0.11",
     "commander": "^9.4.1",
     "cors": "^2.8.5",
