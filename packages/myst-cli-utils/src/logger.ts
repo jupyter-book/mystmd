@@ -53,7 +53,7 @@ function replaceCwd(cwd: string | undefined, args: any[]): any[] {
   if (!cwd) return args;
   return args.map((a) => {
     if (typeof a === 'string') {
-      return a.replace(new RegExp(cwd + sep, 'g'), '');
+      return a.replaceAll(cwd + sep, '');
     }
     return a;
   });
