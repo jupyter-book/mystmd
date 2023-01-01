@@ -1,0 +1,34 @@
+title: CRediT roles
+cases:
+  - title: Normalize contributor roles (e.g. english spelling)
+    raw:
+      authors:
+        - name: Just A. Name
+          role: conceptualiSation
+    normalized:
+      authors:
+        - name: Just A. Name
+          roles:
+            - Conceptualization
+  - title: String list
+    raw:
+      authors:
+        - name: Just A. Name
+          roles: conceptualiSation, supervision
+    normalized:
+      authors:
+        - name: Just A. Name
+          roles:
+            - Conceptualization
+            - Supervision
+  - title: Any role, but raise a warning
+    raw:
+      authors:
+        - name: Just A. Name
+          role: Editing
+    normalized:
+      authors:
+        - name: Just A. Name
+          roles:
+            - Editing
+    warnings: 1

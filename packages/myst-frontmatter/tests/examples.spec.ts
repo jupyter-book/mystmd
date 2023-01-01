@@ -18,7 +18,7 @@ type TestCase = {
 };
 
 const directory = path.join('tests');
-const files = ['authors.yml'];
+const files = ['authors.yml', 'credit.yml'];
 
 const only = ''; // Can set this to a test title
 
@@ -43,7 +43,7 @@ casesList.forEach(({ title, cases }) => {
           // This runs in "only" mode
           console.log(raw);
         }
-        if (opts.messages.warnings?.length !== (warnings ?? 0)) {
+        if ((opts.messages.warnings?.length ?? 0) !== (warnings ?? 0)) {
           console.log(opts.messages.warnings);
         }
         expect(result).toEqual(normalized);

@@ -102,6 +102,9 @@ const AUTHOR_KEYS = [
   'github',
   'website',
 ];
+const AUTHOR_ALIASES = {
+  role: 'roles',
+};
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
 const NUMBERING_KEYS = [
   'enumerator',
@@ -162,7 +165,7 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
   if (typeof input === 'string') {
     input = { name: input };
   }
-  const value = validateObjectKeys(input, { optional: AUTHOR_KEYS }, opts);
+  const value = validateObjectKeys(input, { optional: AUTHOR_KEYS, alias: AUTHOR_ALIASES }, opts);
   if (value === undefined) return undefined;
   const output: Author = {};
   if (defined(value.userId)) {
@@ -191,16 +194,20 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
   }
   if (defined(value.roles)) {
     const rolesOpts = incrementOptions('roles', opts);
-    output.roles = validateList(value.roles, rolesOpts, (r) => {
+    let roles = value.roles;
+    if (typeof roles === 'string') {
+      roles = roles.split(/[,;]/);
+    }
+    output.roles = validateList(roles, rolesOpts, (r) => {
       const roleString = validateString(r, rolesOpts);
       if (roleString === undefined) return undefined;
       const role = credit.normalize(roleString);
       if (!role) {
         validationWarning(
-          `unknown value "${role}" - should be a CRediT role - see https://credit.niso.org/`,
+          `unknown value "${roleString}" - should be a CRediT role - see https://credit.niso.org/`,
           rolesOpts,
         );
-        return roleString;
+        return roleString.trim();
       }
       return role;
     });
