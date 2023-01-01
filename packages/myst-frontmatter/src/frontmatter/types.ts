@@ -1,24 +1,7 @@
+import type { CreditRole } from 'credit-roles';
 import type { Licenses } from '../licenses/types';
 
-export enum CreditRoles {
-  // https://credit.niso.org
-  Conceptualization = 'Conceptualization',
-  DataCuration = 'Data curation',
-  FormalAnalysis = 'Formal analysis',
-  FundingAcquisition = 'Funding acquisition',
-  Investigation = 'Investigation',
-  Methodology = 'Methodology',
-  ProjectAdministration = 'Project administration',
-  Resources = 'Resources',
-  Software = 'Software',
-  Supervision = 'Supervision',
-  Validation = 'Validation',
-  Visualization = 'Visualization',
-  WritingOriginalDraft = 'Writing – original draft', // U+2013 hyphen is used in CRT spec
-  WritingReviewEditing = 'Writing – review & editing',
-}
-
-export type AuthorRoles = CreditRoles | string;
+export type AuthorRoles = CreditRole | string;
 
 export interface Author {
   name?: string;

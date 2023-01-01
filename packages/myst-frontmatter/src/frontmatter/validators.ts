@@ -1,4 +1,5 @@
 import doi from 'doi-utils';
+import credit from 'credit-roles';
 import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
@@ -19,7 +20,7 @@ import {
   validationWarning,
 } from 'simple-validators';
 import { validateLicenses } from '../licenses/validators';
-import { CreditRoles, ExportFormats } from './types';
+import { ExportFormats } from './types';
 import type {
   Author,
   Biblio,
@@ -193,14 +194,10 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
     output.roles = validateList(value.roles, rolesOpts, (r) => {
       const roleString = validateString(r, rolesOpts);
       if (roleString === undefined) return undefined;
-      const role = validateEnum<CreditRoles>(roleString, {
-        ...rolesOpts,
-        suppressErrors: true,
-        enum: CreditRoles,
-      });
+      const role = credit.normalize(roleString);
       if (!role) {
         validationWarning(
-          `unknown value "${role}" - should be CRT contributor roles - see https://credit.niso.org/`,
+          `unknown value "${role}" - should be a CRediT role - see https://credit.niso.org/`,
           rolesOpts,
         );
         return roleString;

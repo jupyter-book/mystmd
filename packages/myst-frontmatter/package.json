@@ -40,6 +40,7 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
+    "credit-roles": "^1.0.0",
     "doi-utils": "^1.0.9",
     "simple-validators": "^0.0.2"
   },
