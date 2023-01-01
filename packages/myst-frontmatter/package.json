@@ -42,6 +42,7 @@
   "dependencies": {
     "credit-roles": "^1.0.0",
     "doi-utils": "^1.0.9",
+    "orcid": "^0.0.5",
     "simple-validators": "^0.0.2"
   },
   "devDependencies": {

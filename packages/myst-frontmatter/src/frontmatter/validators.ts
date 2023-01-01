@@ -1,5 +1,6 @@
 import doi from 'doi-utils';
 import credit from 'credit-roles';
+import orcid from 'orcid';
 import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
@@ -130,7 +131,6 @@ const KNOWN_ALIASES = {
 };
 
 const GITHUB_USERNAME_REPO_REGEX = '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$';
-const ORCID_REGEX = '^(http(s)?://orcid.org/)?([0-9]{4}-){3}[0-9]{3}[0-9X]$';
 
 /**
  * Validate Venue object against the schema
@@ -176,10 +176,16 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
     output.name = validateString(value.name, incrementOptions('name', opts));
   }
   if (defined(value.orcid)) {
-    output.orcid = validateString(value.orcid, {
-      ...incrementOptions('orcid', opts),
-      regex: ORCID_REGEX,
-    });
+    const orcidOpts = incrementOptions('orcid', opts);
+    const id = orcid.normalize(value.orcid);
+    if (id) {
+      output.orcid = id;
+    } else {
+      validationError(
+        `OCRID "${value.orcid}" is not valid, try an ID of the form "0000-0000-0000-0000"`,
+        orcidOpts,
+      );
+    }
   }
   if (defined(value.corresponding)) {
     const correspondingOpts = incrementOptions('corresponding', opts);

@@ -27,7 +27,7 @@ import {
 const TEST_AUTHOR: Author = {
   userId: '',
   name: 'test user',
-  orcid: 'https://orcid.org/0000-0000-0000-0000',
+  orcid: '0000-0000-0000-0000',
   corresponding: true,
   email: 'test@example.com',
   roles: ['Software', 'Validation'],
