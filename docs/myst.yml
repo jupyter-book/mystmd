@@ -5,9 +5,7 @@ project:
   license:
     code: MIT
     content: CC-BY-4.0
-  subject: Javascript
-  venue:
-    title: MyST Markdown
+  subject: MyST Markdown
   references:
     python: https://docs.python.org/3.7/
     jupyterbook: https://jupyterbook.org/en/stable/

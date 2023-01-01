@@ -4,14 +4,8 @@ description: Use LaTeX style math in your documents, including references, inlin
 thumbnail: ./thumbnails/math.png
 ---
 
-```{seealso}
-For using JupyterBook, see <myst:jupyterbook#myst-content/math> documentation.
-The implementation below uses $\KaTeX$, and has pre-processing steps to ensure compatibility across $\LaTeX$,
-to pick up on `/label`'s from inside of AMS environments and inclusion on `macros` to define commands in math.
-```
-
 There are several ways to make writing math in your documents as familiar as possible.
-Math can either be (1) inline or (2) displayed as an equation block; which are roles and directives specifically.
+Math can either be (1) inline or (2) displayed as an equation block.
 In addition to the usual MyST syntax, you can also use "dollar math", which is derived from $\LaTeX$
 and surrounds inline math with single dollar signs (`$`), and equation blocks with two dollar signs (`$$`).
 The details of using inline math and equations are below.
@@ -39,9 +33,7 @@ If using $\LaTeX$ as an output, these dollarsigns will also be properly escaped 
 
 ## Equations
 
-You can also include math directives to create an equation block in your document.
-Equations are great for complex or longer equations and can be referenced throughout your document.
-There are three ways to create an equation:
+There are three ways to create an equation block:
 (1) a `math` directive (rather than a role for inline math);
 (2) wrap the equation in two dollar-signs, `$$`; or
 (3) use a `\begin{equation}` statement directly (i.e. using AMS math).
@@ -49,7 +41,7 @@ There are three ways to create an equation:
 ### Math directives
 
 The math directive takes no arugments and the body of the directive is the $\LaTeX$ style math.
-You can have an optional `label` parameter, which will label this equation for later cross-referencing, see {ref}`referencing-equations` below for more on that!
+You can have an optional `label` parameter, which will label this equation for later cross-referencing, see [](#referencing-equations) below for more on that!
 
 ````{myst}
 ```{math}
@@ -79,7 +71,10 @@ $$ Ax=b $$ (one-liner)
 See [](#maxwell) for enlightenment and [](#one-liner) to do things on one line!
 ```
 
-### AMS Math
+
+````{tip}
+:class: dropdown
+# Using AMS Math Environments
 
 In addition to a `math` directive and dollar-math syntax, you can also use AMS math, which is specifically using [AMS Version 2.1](http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/required/amsmath/amsldoc.pdf).
 
@@ -99,9 +94,7 @@ The equation cross-referencing and numbering will work with the rest of your con
 The label implementation does not yet work for `sub-equations` and may not work if you have more than one label.
 ```
 
-```{tip}
-:class: dropdown
-# Supported AMS Environments
+**Supported AMS Environments**
 
 equation
 : basic equation environment, similar to a math directive or dollar-math
@@ -129,15 +122,15 @@ matrix, pmatrix, bmatrix, Bmatrix, vmatrix, Vmatrix
 eqnarray
 : eqnarray is another supported math environment, it is not part of amsmath, and it is better to use
 align or equation+split instead
-```
+````
 
 (referencing-equations)=
 
 ## Referencing Equations
 
-As you have seen above, each of the ways to create equations can also label them and then cross-reference
-these in other parts of your document. For example, the start of this document had [Equation %s](#cross),
-which can be referenced here with a link and inline-preview. There are a few different ways to reference equations, with more details in [](./cross-references.md).
+As you have seen above, any equation can be labelled and cross-referenced in other parts of your document.
+For example, the start of this document had [Equation %s](#cross), which can be referenced here with a link and inline-preview.
+There are a few different ways to reference equations, with more details in [](./cross-references.md).
 
 ### Labelling equations
 
@@ -200,9 +193,9 @@ To change the reference format, you can use the frontmatter under the `xxx` fiel
 
 TODO!
 
-## Adding Macros
+## Math Macros
 
-Macros allow you to create reusable math elements that can simplify the writing of a document.
+Macros allow you to create reusable math components that can simplify the writing of a document.
 These marcos can be defined for a single document through the frontmatter, or shared in project frontmatter.
 These macros are used throughout HTML and $\LaTeX$ exports and are written declaratively so that they can be easily parsed. Macros are the same as `\newcommand` or `\renewcommand` in $\LaTeX$, and use the `math` object in the frontmatter.
 

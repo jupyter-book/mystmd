@@ -12,10 +12,12 @@ flowchart LR
   A[Jupyter Notebook] --> C
   B[MyST Markdown] --> C
   C(mystjs) --> D{AST}
-  D --> E[LaTeX] --> F[PDF]
+  D <--> E[LaTeX]
+  E --> F[PDF]
   D --> G[Word]
   D --> H[React]
   D --> I[HTML]
+  D <--> J[JATS]
 ```
 ````
 
@@ -26,8 +28,10 @@ flowchart LR
   A[Jupyter Notebook] --> C
   B[MyST Markdown] --> C
   C(mystjs) --> D{AST}
-  D --> E[LaTeX] --> F[PDF]
+  D <--> E[LaTeX]
+  E --> F[PDF]
   D --> G[Word]
   D --> H[React]
   D --> I[HTML]
+  D <--> J[JATS]
 ```

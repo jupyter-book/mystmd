@@ -13,7 +13,7 @@ The Table of Contents is the left-hand navigation for your site. It can either b
 By default the table of contents is left implicit, and follows rules laid out in the next section. To make this table of contents _explicit_, you can call:
 
 ```shell
-myst build --write-toc
+myst init --write-toc
 ```
 
 This will create a `_toc.yml` in the current directory, you can read more about the [table of contents format](#toc-format) below.
