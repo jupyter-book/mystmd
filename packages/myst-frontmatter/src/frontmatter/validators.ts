@@ -120,6 +120,11 @@ const TEXT_REPRESENTATION_KEYS = ['extension', 'format_name', 'format_version', 
 const JUPYTEXT_KEYS = ['formats', 'text_representation'];
 export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output', 'id', 'name', 'renderer'];
 
+const KNOWN_ALIASES = {
+  author: 'authors',
+  affiliation: 'affiliations',
+};
+
 const GITHUB_USERNAME_REPO_REGEX = '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$';
 const ORCID_REGEX = '^(http(s)?://orcid.org/)?([0-9]{4}-){3}[0-9]{3}[0-9X]$';
 
@@ -153,6 +158,9 @@ export function validateVenue(input: any, opts: ValidationOptions) {
  * Validate Author object against the schema
  */
 export function validateAuthor(input: any, opts: ValidationOptions) {
+  if (typeof input === 'string') {
+    input = { name: input };
+  }
   const value = validateObjectKeys(input, { optional: AUTHOR_KEYS }, opts);
   if (value === undefined) return undefined;
   const output: Author = {};
@@ -418,13 +426,14 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     output.description = validateString(value.description, incrementOptions('description', opts));
   }
   if (defined(value.authors)) {
-    output.authors = validateList(
-      value.authors,
-      incrementOptions('authors', opts),
-      (author, index) => {
-        return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
-      },
-    );
+    let authors = value.authors;
+    // Turn a string into a list of strings, this will be transformed later
+    if (typeof value.authors === 'string') {
+      authors = [authors];
+    }
+    output.authors = validateList(authors, incrementOptions('authors', opts), (author, index) => {
+      return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
+    });
   }
   if (defined(value.venue)) {
     output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
@@ -597,7 +606,9 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
  * Validate ProjectFrontmatter object against the schema
  */
 export function validateProjectFrontmatter(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: PROJECT_FRONTMATTER_KEYS }, opts) || {};
+  const value =
+    validateObjectKeys(input, { optional: PROJECT_FRONTMATTER_KEYS, alias: KNOWN_ALIASES }, opts) ||
+    {};
   return validateProjectFrontmatterKeys(value, opts);
 }
 
@@ -605,7 +616,9 @@ export function validateProjectFrontmatter(input: any, opts: ValidationOptions) 
  * Validate single PageFrontmatter object against the schema
  */
 export function validatePageFrontmatter(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: PAGE_FRONTMATTER_KEYS }, opts) || {};
+  const value =
+    validateObjectKeys(input, { optional: PAGE_FRONTMATTER_KEYS, alias: KNOWN_ALIASES }, opts) ||
+    {};
   return validatePageFrontmatterKeys(value, opts);
 }
 
