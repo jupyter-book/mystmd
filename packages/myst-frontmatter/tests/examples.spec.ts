@@ -19,7 +19,7 @@ type TestCase = {
 };
 
 const directory = path.join('tests');
-const files = ['authors.yml', 'credit.yml', 'orcid.yml'];
+const files = ['authors.yml', 'credit.yml', 'orcid.yml', 'licenses.yml'];
 
 const only = ''; // Can set this to a test title
 

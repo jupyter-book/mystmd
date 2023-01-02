@@ -43,10 +43,12 @@
     "credit-roles": "^1.0.0",
     "doi-utils": "^1.0.9",
     "orcid": "^0.0.5",
-    "simple-validators": "^0.0.2"
+    "simple-validators": "^0.0.2",
+    "spdx-correct": "^3.1.1"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",
+    "@types/spdx-correct": "^3.1.0",
     "eslint": "^8.21.0",
     "eslint-config-curvenote": "latest",
     "jest": "28.1.3",

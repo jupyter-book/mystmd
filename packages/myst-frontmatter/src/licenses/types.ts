@@ -1,5 +1,5 @@
 export type License = {
-  title: string;
+  name: string;
   url: string;
   id: string;
   free?: boolean;

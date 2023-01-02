@@ -1,15 +1,15 @@
 import type { ValidationOptions } from 'simple-validators';
 import {
+  validationWarning,
   defined,
   incrementOptions,
   validateObjectKeys,
   validateString,
   validationError,
 } from 'simple-validators';
+import correct from 'spdx-correct';
 import LICENSES from './licenses';
 import type { License, Licenses } from './types';
-
-const LICENSE_KEYS = Object.fromEntries(LICENSES.map((l) => [l.id.toUpperCase(), l]));
 
 function createURL(license: Omit<License, 'url'>): string {
   if (license.CC) {
@@ -86,16 +86,21 @@ export function validateLicense(input: any, opts: ValidationOptions): License | 
   }
   const valueUnvalidated = validateString(input, opts);
   if (valueUnvalidated === undefined) return undefined;
-  const value = valueUnvalidated.toUpperCase();
-  if (!LICENSE_KEYS[value]) {
-    const possibleAlts = Object.keys(LICENSE_KEYS).filter((k) => k.includes(value));
-    const alts = possibleAlts.length > 0 ? ` Maybe try:\n- "${possibleAlts.join('"\n- "')}"\n` : '';
+  // Correct expects a non-empty string
+  const value = valueUnvalidated ? correct(valueUnvalidated) : valueUnvalidated;
+  if (!value) {
     return validationError(
-      `invalid value "${value}" - must be a valid license ID, see https://spdx.org/licenses/.${alts}`,
+      `invalid value "${valueUnvalidated}" - must be a valid license ID, see https://spdx.org/licenses/`,
       opts,
     );
   }
-  const spdx = LICENSE_KEYS[value];
+  if (value !== valueUnvalidated) {
+    validationWarning(
+      `The SPDX ID for the license is "${value}". Corrected from "${valueUnvalidated}".`,
+      opts,
+    );
+  }
+  const spdx = { id: value, ...LICENSES[value] };
   const url = createURL(spdx);
   return { ...spdx, url };
 }
