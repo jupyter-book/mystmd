@@ -1,0 +1,29 @@
+title: Authors
+cases:
+  - title: Simple Author Text in List
+    raw:
+      authors:
+        - Just A. Name
+    normalized:
+      authors:
+        - name: Just A. Name
+  - title: Simple Authors String
+    raw:
+      authors: Just A. Name
+    normalized:
+      authors:
+        - name: Just A. Name
+  - title: Use Author rather than author`s`
+    raw:
+      author: Just A. Name
+    normalized:
+      authors:
+        - name: Just A. Name
+  - title: Using both author and author`s` shows a warning
+    raw:
+      author: nope
+      authors: Just A. Name
+    normalized:
+      authors:
+        - name: Just A. Name
+    warnings: 1

@@ -10,7 +10,7 @@ Adding frontmatter ensures that these properties are available to downstream too
 
 ## Where to set frontmatter
 
-Frontmatter can be set in a markdown (`md`) or notebook (`ipynb`) file (described as a “page” below) or in the `project:` section of a `myst.yml` file. When set in a `myst.yml` file, those settings will be applied to all content in that same folder and subfolders (apart from “page only” fields).
+Frontmatter can be set in a markdown (`md`) or notebook (`ipynb`) file (described as a “page” below) or in the `project:` section of a `myst.yml` file. When project frontmatter is set in a `myst.yml` file, those settings will be applied to all content in that project (apart from “page only” fields).
 
 ### In a MyST markdown file
 
@@ -35,12 +35,14 @@ Frontmatter can be added to the first cell of a Jupyter Notebook, that cell shou
 **Note**
 
 Remember to format the contents of the section as valid `yaml` even though when rendered, the cell will not look well formated in your notebook.
-
 ```
 
-### In a markdown-based notebook
+```{note}
+:class: dropdown
+# Using `jupytext` or a Markdown-based notebook?
 
 If your Jupyter Notebook is described as a markdown file (e.g. using [jupytext](https://jupytext.readthedocs.io/en/latest/formats.html), or [MyST](https://jupyterbook.org/en/stable/file-types/myst-notebooks.html)), then this should be included in the frontmatter section as usual in addition to the `jupyter` key that defines the kernel and jupytext metadata.
+```
 
 ### In a `myst.yml` file
 
@@ -142,7 +144,7 @@ Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` o
 
 ## Thumbnail
 
-The thumbnail is used in previews for your site in applications like Twitter, Slack, or any other link preview service. This should, by convention, be included in a `thumbnails` folder next to your content, if you do not want this thumbnail, you can explicitly set it to another image on your local file system or a remote URL to an image. This image will get copied over to your public folder and optimized when you build your project.
+The thumbnail is used in previews for your site in applications like Twitter, Slack, or any other link preview service. This should, by convention, be included in a `thumbnails` folder next to your content. You can also explicitly set this field to any other image on your local file system or a remote URL to an image. This image will get copied over to your public folder and optimized when you build your project.
 
 ```yaml
 thumbnail: thumbnails/myThumbnail.png
@@ -212,7 +214,7 @@ This field can be set to a string value directly or to a License object.
 
 Available fields in the License object are `content` and `code` allowing licenses to be set separately for these two forms of content, as often different subsets of licenses are applicable to each. If you only wish to apply a single license to your page or project use the string form rather than an object.
 
-String values for licenses should be a valid “Identifier” string from the [SPDX License List](https://spdx.org/licenses/). Identifiers for well-known licenses are easily recognizable, but can be more specific than you are used to, for example:
+String values for licenses should be a valid “Identifier” string from the [SPDX License List](https://spdx.org/licenses/). Identifiers for well-known licenses are easily recognizable (e.g. `MIT` or `BSD`) and MyST will attempt to infer the specific identifier if an ambiguous license is specified (e.g. `GPL` will be interpreted as `GPL-3.0+` and a warning raised letting you know of this interpretation). Some commen licenses are:
 
 ```{list-table}
 :header-rows: 1

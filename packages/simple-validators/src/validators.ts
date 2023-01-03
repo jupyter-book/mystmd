@@ -236,17 +236,29 @@ export function validateObject(input: any, opts: ValidationOptions) {
  */
 export function validateKeys(
   input: Record<string, any>,
-  keys: { required?: string[]; optional?: string[] },
+  keys: { required?: string[]; optional?: string[]; alias?: Record<string, string> },
   opts: KeyOptions,
 ) {
   const value: Record<string, any> = {};
   let required = keys.required || [];
+  const aliasKeys = Object.keys(keys.alias ?? {});
   const optional = keys.optional || [];
   const ignored: string[] = [];
   Object.keys(input).forEach((k) => {
     if (required.includes(k) || optional.includes(k)) {
       value[k] = input[k];
       required = required.filter((val) => val !== k);
+    } else if (aliasKeys.includes(k)) {
+      const normalized = keys.alias?.[k] as string;
+      if (input[normalized] === undefined) {
+        value[normalized] = input[k];
+        required = required.filter((val) => val !== normalized);
+      } else {
+        validationWarning(
+          `both "${normalized}" and "${k}" were provided, "${k}" was ignored.`,
+          opts,
+        );
+      }
     } else {
       ignored.push(k);
     }
@@ -274,7 +286,7 @@ export function validateKeys(
  */
 export function validateObjectKeys(
   input: any,
-  keys: { required?: string[]; optional?: string[] },
+  keys: { required?: string[]; optional?: string[]; alias?: Record<string, string> },
   opts: KeyOptions,
 ) {
   const value = validateObject(input, opts);

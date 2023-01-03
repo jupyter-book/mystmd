@@ -1,0 +1,25 @@
+title: Licenses
+cases:
+  - title: Valid License
+    raw:
+      license: CC-BY-4.0
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+  - title: Correct licenses (gpl)
+    raw:
+      license: gpl
+    normalized:
+      license:
+        content:
+          id: GPL-3.0-or-later
+          name: GNU General Public License v3.0 or later
+          url: https://opensource.org/licenses/GPL-3.0-or-later
+          osi: true
+          free: true
+    warnings: 1

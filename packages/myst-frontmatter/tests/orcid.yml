@@ -1,0 +1,29 @@
+title: ORCID
+cases:
+  - title: Valid ORCID
+    raw:
+      authors:
+        - name: Just A. Name
+          orcid: 0000-0000-0000-0000
+    normalized:
+      authors:
+        - name: Just A. Name
+          orcid: 0000-0000-0000-0000
+  - title: Using http
+    raw:
+      authors:
+        - name: Just A. Name
+          orcid: https://orcid.org/0000-0000-0000-000X
+    normalized:
+      authors:
+        - name: Just A. Name
+          orcid: 0000-0000-0000-000X
+  - title: Not a valid ORCID
+    raw:
+      authors:
+        - name: Just A. Name
+          orcid: nope
+    normalized:
+      authors:
+        - name: Just A. Name
+    errors: 1

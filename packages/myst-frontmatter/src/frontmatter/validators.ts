@@ -1,4 +1,6 @@
 import doi from 'doi-utils';
+import credit from 'credit-roles';
+import orcid from 'orcid';
 import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
@@ -19,7 +21,7 @@ import {
   validationWarning,
 } from 'simple-validators';
 import { validateLicenses } from '../licenses/validators';
-import { CreditRoles, ExportFormats } from './types';
+import { ExportFormats } from './types';
 import type {
   Author,
   Biblio,
@@ -101,6 +103,9 @@ const AUTHOR_KEYS = [
   'github',
   'website',
 ];
+const AUTHOR_ALIASES = {
+  role: 'roles',
+};
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
 const NUMBERING_KEYS = [
   'enumerator',
@@ -120,8 +125,12 @@ const TEXT_REPRESENTATION_KEYS = ['extension', 'format_name', 'format_version', 
 const JUPYTEXT_KEYS = ['formats', 'text_representation'];
 export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output', 'id', 'name', 'renderer'];
 
+const KNOWN_ALIASES = {
+  author: 'authors',
+  affiliation: 'affiliations',
+};
+
 const GITHUB_USERNAME_REPO_REGEX = '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$';
-const ORCID_REGEX = '^(http(s)?://orcid.org/)?([0-9]{4}-){3}[0-9]{3}[0-9X]$';
 
 /**
  * Validate Venue object against the schema
@@ -153,7 +162,10 @@ export function validateVenue(input: any, opts: ValidationOptions) {
  * Validate Author object against the schema
  */
 export function validateAuthor(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: AUTHOR_KEYS }, opts);
+  if (typeof input === 'string') {
+    input = { name: input };
+  }
+  const value = validateObjectKeys(input, { optional: AUTHOR_KEYS, alias: AUTHOR_ALIASES }, opts);
   if (value === undefined) return undefined;
   const output: Author = {};
   if (defined(value.userId)) {
@@ -164,10 +176,16 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
     output.name = validateString(value.name, incrementOptions('name', opts));
   }
   if (defined(value.orcid)) {
-    output.orcid = validateString(value.orcid, {
-      ...incrementOptions('orcid', opts),
-      regex: ORCID_REGEX,
-    });
+    const orcidOpts = incrementOptions('orcid', opts);
+    const id = orcid.normalize(value.orcid);
+    if (id) {
+      output.orcid = id;
+    } else {
+      validationError(
+        `OCRID "${value.orcid}" is not valid, try an ID of the form "0000-0000-0000-0000"`,
+        orcidOpts,
+      );
+    }
   }
   if (defined(value.corresponding)) {
     const correspondingOpts = incrementOptions('corresponding', opts);
@@ -182,20 +200,20 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
   }
   if (defined(value.roles)) {
     const rolesOpts = incrementOptions('roles', opts);
-    output.roles = validateList(value.roles, rolesOpts, (r) => {
+    let roles = value.roles;
+    if (typeof roles === 'string') {
+      roles = roles.split(/[,;]/);
+    }
+    output.roles = validateList(roles, rolesOpts, (r) => {
       const roleString = validateString(r, rolesOpts);
       if (roleString === undefined) return undefined;
-      const role = validateEnum<CreditRoles>(roleString, {
-        ...rolesOpts,
-        suppressErrors: true,
-        enum: CreditRoles,
-      });
+      const role = credit.normalize(roleString);
       if (!role) {
         validationWarning(
-          `unknown value "${role}" - should be CRT contributor roles - see https://credit.niso.org/`,
+          `unknown value "${roleString}" - should be a CRediT role - see https://credit.niso.org/`,
           rolesOpts,
         );
-        return roleString;
+        return roleString.trim();
       }
       return role;
     });
@@ -418,13 +436,14 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     output.description = validateString(value.description, incrementOptions('description', opts));
   }
   if (defined(value.authors)) {
-    output.authors = validateList(
-      value.authors,
-      incrementOptions('authors', opts),
-      (author, index) => {
-        return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
-      },
-    );
+    let authors = value.authors;
+    // Turn a string into a list of strings, this will be transformed later
+    if (typeof value.authors === 'string') {
+      authors = [authors];
+    }
+    output.authors = validateList(authors, incrementOptions('authors', opts), (author, index) => {
+      return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
+    });
   }
   if (defined(value.venue)) {
     output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
@@ -597,7 +616,9 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
  * Validate ProjectFrontmatter object against the schema
  */
 export function validateProjectFrontmatter(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: PROJECT_FRONTMATTER_KEYS }, opts) || {};
+  const value =
+    validateObjectKeys(input, { optional: PROJECT_FRONTMATTER_KEYS, alias: KNOWN_ALIASES }, opts) ||
+    {};
   return validateProjectFrontmatterKeys(value, opts);
 }
 
@@ -605,7 +626,9 @@ export function validateProjectFrontmatter(input: any, opts: ValidationOptions) 
  * Validate single PageFrontmatter object against the schema
  */
 export function validatePageFrontmatter(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: PAGE_FRONTMATTER_KEYS }, opts) || {};
+  const value =
+    validateObjectKeys(input, { optional: PAGE_FRONTMATTER_KEYS, alias: KNOWN_ALIASES }, opts) ||
+    {};
   return validatePageFrontmatterKeys(value, opts);
 }
 

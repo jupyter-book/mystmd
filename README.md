@@ -1,4 +1,4 @@
-# MyST Javascript Tools
+# MyST Markdown Tools
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/mystjs/blob/main/LICENSE)
 ![CI](https://github.com/executablebooks/mystjs/workflows/CI/badge.svg)
@@ -12,7 +12,7 @@
 
 ## Overview
 
-The `mystjs` project provides a Javascript parser (`mystjs`) and command line tool (`myst-cli`) for working with MyST Markdown projects.
+The `mystjs` project provides a parser in Javascript (`mystjs`) and command line tool (`myst-cli`) for working with MyST Markdown projects.
 
 - Parse MyST into a standardized AST, that follows the MyST Spec
 - Provides functionality for cross-referencing, external structured links, and scientific citations
@@ -21,7 +21,7 @@ The `mystjs` project provides a Javascript parser (`mystjs`) and command line to
   - PDFs and LaTeX documents, with specific templates for over 400 journals
   - Microsoft Word export
 
-See the [docs](https://js.myst.tools).
+See the [documentation](https://js.myst.tools).
 
 ## Get Started
 
@@ -45,6 +45,8 @@ All packages for `mystjs` are included in this repository (a monorepo!).
 
 - `citation-js-utils` utility functions to deal with citations
 - `intersphinx` a command line tool and package for reading and writing o
+- `jats-to-myst` convert JATS xml to MyST AST
+- `jats-xml` a library for downloading and parsing JATS xml
 - `jtex` a templating library ([see docs](https://js.myst.tools/jtex))
 - `mystjs` a MyST parser, with extensibility
 - `myst-cli` this will provide CLI functionality for `myst build mystdoc.md`
@@ -53,13 +55,14 @@ All packages for `mystjs` are included in this repository (a monorepo!).
 - `myst-config` Validation and reading of configuration files
 - `myst-frontmater` definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://js.myst.tools/guide/frontmatter))
 - `myst-spec-ext` Extensions to `myst-spec` used throughout this repository, before pushing upstream
-- `myst-templates` types and validation for templates (latex, web and word)
-- `myst-to-docx` convert myst documents to word docs!
+- `myst-templates` types and validation for templates (LaTeX, web and word)
+- `myst-to-docx` convert MyST documents to word docs!
 - `myst-to-react` create basic, ideally unthemed react components for content only (_coming soon_)
-- `myst-to-jats` convert myst to JATS, for use in scientific archives
-- `myst-to-tex` convert myst to latex, to be used in combination with jtex to create stand alone latex documents
+- `myst-to-jats` convert MyST to JATS, for use in scientific archives
+- `myst-to-tex` convert MyST to LaTeX, to be used in combination with jtex to create stand alone LaTeX documents
 - `myst-transforms` a number of transformations for use with myst AST to transform, e.g. links, citations, cross-references, admonitions
 - `simple-validators` validation utilities, that print all sorts of nice warnings
+- `tex-to-myst` convert LaTeX to MyST AST
 
 Each package is 100% [TypeScript](https://www.typescriptlang.org/).
 
