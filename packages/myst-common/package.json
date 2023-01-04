@@ -38,7 +38,7 @@
     "react": "^17.0.2",
     "rimraf": "^3.0.2",
     "ts-jest": "^28.0.7",
-    "tsconfig": "*",
+    "tsconfig": "latest",
     "typescript": "latest",
     "unist-builder": "3.0.0"
   }
