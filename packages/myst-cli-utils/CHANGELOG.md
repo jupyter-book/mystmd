@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 0.0.9
+
+### Patch Changes
+
+- 0e38fe7b: Change from a RegExp to replaceAll for windows path replacement
+
 ## 0.0.8
 
 ### Patch Changes

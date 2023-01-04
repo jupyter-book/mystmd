@@ -1,5 +1,12 @@
 # intersphinx
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [0e38fe7b]
+  - myst-cli-utils@0.0.9
+
 ## 0.0.6
 
 ### Patch Changes

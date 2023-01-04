@@ -1,5 +1,16 @@
 # myst-config
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [bfd72456]
+- Updated dependencies [0fa33b10]
+- Updated dependencies [0a87866d]
+- Updated dependencies [6ebaffda]
+  - myst-frontmatter@0.0.5
+  - simple-validators@0.0.3
+
 ## 0.0.5
 
 ### Patch Changes

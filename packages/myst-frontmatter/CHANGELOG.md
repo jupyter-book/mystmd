@@ -1,5 +1,15 @@
 # myst-frontmatter
 
+## 0.0.5
+
+### Patch Changes
+
+- bfd72456: Validate orcid using the `orcid` package
+- 0a87866d: Rely on `credit-roles` package for CRediT role validation
+- 6ebaffda: Allow author and authors in frontmatter, also allow them to be strings.
+- Updated dependencies [0fa33b10]
+  - simple-validators@0.0.3
+
 ## 0.0.4
 
 ### Patch Changes

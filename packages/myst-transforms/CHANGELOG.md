@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 0.0.12
+
+### Patch Changes
+
+- e7330dbb: Add more percise position information for math errors
+- a5daa0d6: formatLinkText so that long URLs are formatted better in html, including breaking on long lines
+- Updated dependencies [e7330dbb]
+  - myst-common@0.0.11
+  - intersphinx@0.0.7
+
 ## 0.0.11
 
 ### Patch Changes

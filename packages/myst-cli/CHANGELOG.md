@@ -1,5 +1,33 @@
 # myst-cli
 
+## 0.1.4
+
+### Patch Changes
+
+- 3178dcda: Improve performance using cached mdast based on file hash
+- 3178dcda: Look to known image extensions if the extension is not specified.
+- 3178dcda: Add known bibtex files if they are explicitly specified.
+- Updated dependencies [bfd72456]
+- Updated dependencies [e7330dbb]
+- Updated dependencies [8b545a0b]
+- Updated dependencies [a79a78c4]
+- Updated dependencies [0fa33b10]
+- Updated dependencies [0a87866d]
+- Updated dependencies [6ebaffda]
+- Updated dependencies [e7330dbb]
+- Updated dependencies [0e38fe7b]
+- Updated dependencies [a5daa0d6]
+  - myst-frontmatter@0.0.5
+  - myst-common@0.0.11
+  - tex-to-myst@0.0.2
+  - simple-validators@0.0.3
+  - myst-transforms@0.0.12
+  - myst-cli-utils@0.0.9
+  - jtex@0.1.2
+  - myst-config@0.0.6
+  - myst-templates@0.1.2
+  - intersphinx@0.0.7
+
 ## 0.1.3
 
 ### Patch Changes

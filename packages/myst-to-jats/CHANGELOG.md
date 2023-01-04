@@ -1,5 +1,18 @@
 # myst-to-jats
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [bfd72456]
+- Updated dependencies [e7330dbb]
+- Updated dependencies [0a87866d]
+- Updated dependencies [6ebaffda]
+- Updated dependencies [3ea5c4a7]
+  - myst-frontmatter@0.0.5
+  - myst-common@0.0.11
+  - jats-xml@0.0.8
+
 ## 0.0.7
 
 ### Patch Changes

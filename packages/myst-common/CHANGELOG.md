@@ -1,5 +1,11 @@
 # myst-common
 
+## 0.0.11
+
+### Patch Changes
+
+- e7330dbb: Add mergeTextNodes as a utility to myst-common
+
 ## 0.0.10
 
 ### Patch Changes

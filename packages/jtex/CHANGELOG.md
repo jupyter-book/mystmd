@@ -1,5 +1,19 @@
 # jtex
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [bfd72456]
+- Updated dependencies [0fa33b10]
+- Updated dependencies [0a87866d]
+- Updated dependencies [6ebaffda]
+- Updated dependencies [0e38fe7b]
+  - myst-frontmatter@0.0.5
+  - simple-validators@0.0.3
+  - myst-cli-utils@0.0.9
+  - myst-templates@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # jats-xml
 
+## 0.0.8
+
+### Patch Changes
+
+- 3ea5c4a7: Improve the options for jats resolvers and fetchers to expose these externally.
+- Updated dependencies [bfd72456]
+- Updated dependencies [e7330dbb]
+- Updated dependencies [0a87866d]
+- Updated dependencies [6ebaffda]
+  - myst-frontmatter@0.0.5
+  - myst-common@0.0.11
+
 ## 0.0.7
 
 ### Patch Changes
