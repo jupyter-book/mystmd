@@ -165,6 +165,7 @@ const handlers: Record<string, Handler> = {
     state.write(`}`);
   },
   admonition(node, state) {
+    state.usePackages('framed');
     state.renderEnvironment(node, 'framed');
   },
   admonitionTitle(node, state) {
