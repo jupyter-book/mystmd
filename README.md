@@ -45,7 +45,6 @@ All packages for `mystjs` are included in this repository (a monorepo!).
 
 - `citation-js-utils` utility functions to deal with citations
 - `jats-to-myst` convert JATS xml to MyST AST
-- `jats-xml` a library for downloading and parsing JATS xml
 - `jtex` a templating library ([see docs](https://js.myst.tools/jtex))
 - `mystjs` a MyST parser, with extensibility
 - `myst-cli` this will provide CLI functionality for `myst build mystdoc.md`
