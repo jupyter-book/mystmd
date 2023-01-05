@@ -44,13 +44,12 @@ All packages for `mystjs` are included in this repository (a monorepo!).
 **Packages:**
 
 - `citation-js-utils` utility functions to deal with citations
-- `intersphinx` a command line tool and package for reading and writing o
 - `jats-to-myst` convert JATS xml to MyST AST
 - `jats-xml` a library for downloading and parsing JATS xml
 - `jtex` a templating library ([see docs](https://js.myst.tools/jtex))
 - `mystjs` a MyST parser, with extensibility
 - `myst-cli` this will provide CLI functionality for `myst build mystdoc.md`
-- `myst-cli-utils` some shared utils between intersphinx, jtex, and myst-cli
+- `myst-cli-utils` some shared utils between jtex, and myst-cli
 - `myst-common` Some common utilities for working with ASTs
 - `myst-config` Validation and reading of configuration files
 - `myst-frontmater` definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://js.myst.tools/guide/frontmatter))
