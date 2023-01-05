@@ -1,5 +1,11 @@
 # myst-common
 
+## 0.0.12
+
+### Patch Changes
+
+- 27388448: Update packages to unstarred versions
+
 ## 0.0.11
 
 ### Patch Changes

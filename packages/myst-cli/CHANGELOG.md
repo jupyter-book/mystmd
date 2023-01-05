@@ -1,5 +1,20 @@
 # myst-cli
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [27388448]
+- Updated dependencies [c97bb569]
+- Updated dependencies [8cdb5842]
+  - myst-common@0.0.12
+  - myst-to-docx@0.0.5
+  - myst-to-tex@0.0.10
+  - myst-transforms@0.0.13
+  - jtex@0.1.3
+  - myst-templates@0.1.3
+  - tex-to-myst@0.0.10
+
 ## 0.1.4
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # myst-to-tex
 
+## 0.0.10
+
+### Patch Changes
+
+- 27388448: Update packages to unstarred versions
+- 8cdb5842: Capture the `framed` environment when creating admonitions
+- Updated dependencies [27388448]
+  - myst-common@0.0.12
+
 ## 0.0.9
 
 ### Patch Changes

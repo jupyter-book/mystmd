@@ -1,5 +1,12 @@
 # jtex
 
+## 0.1.3
+
+### Patch Changes
+
+- c97bb569: Improve the shell output capture for windows
+  - myst-templates@0.1.3
+
 ## 0.1.2
 
 ### Patch Changes

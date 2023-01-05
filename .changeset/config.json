@@ -2,7 +2,10 @@
   "$schema": "https://unpkg.com/@changesets/config@2.0.1/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [["myst-to-jats", "jats-xml", "jats-to-myst"]],
+  "fixed": [
+    ["myst-to-jats", "jats-to-myst"],
+    ["myst-to-tex", "tex-to-myst"]
+  ],
   "linked": [],
   "access": "public",
   "baseBranch": "main",

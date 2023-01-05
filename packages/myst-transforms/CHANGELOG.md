@@ -1,5 +1,14 @@
 # myst-transforms
 
+## 0.0.13
+
+### Patch Changes
+
+- 27388448: Update packages to unstarred versions
+- Updated dependencies [27388448]
+  - myst-common@0.0.12
+  - myst-spec-ext@0.0.3
+
 ## 0.0.12
 
 ### Patch Changes
