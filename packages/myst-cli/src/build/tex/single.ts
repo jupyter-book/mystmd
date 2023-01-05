@@ -74,7 +74,7 @@ export async function localArticleToTexRaw(
     path.join(path.dirname(output), 'images'),
     {
       projectPath,
-      imageAltOutputFolder: 'images',
+      imageAltOutputFolder: 'images/',
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
     },
@@ -109,7 +109,7 @@ export async function localArticleToTexTemplated(
     path.join(path.dirname(templateOptions.output), 'images'),
     {
       projectPath,
-      imageAltOutputFolder: 'images',
+      imageAltOutputFolder: 'images/',
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
     },
