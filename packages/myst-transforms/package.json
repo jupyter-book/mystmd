@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "doi-utils": "^1.0.9",
-    "intersphinx": "^0.0.7",
+    "intersphinx": "^0.0.8",
     "js-yaml": "^4.1.0",
     "katex": "^0.15.2",
     "myst-common": "^0.0.11",

@@ -67,7 +67,7 @@
     "express": "^4.18.2",
     "get-port": "^6.1.2",
     "inquirer": "^8.2.2",
-    "intersphinx": "^0.0.7",
+    "intersphinx": "^0.0.8",
     "js-yaml": "^4.1.0",
     "jtex": "^0.1.2",
     "mdast": "^3.0.0",
