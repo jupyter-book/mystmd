@@ -34,3 +34,14 @@ export type FootnoteReference = FNR & {
 };
 
 export type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
+
+export type TabSet = Parent & {
+  type: 'tabSet';
+};
+
+export type TabItem = Parent & {
+  type: 'tabItem';
+  title: string;
+  sync?: string;
+  selected?: boolean;
+};
