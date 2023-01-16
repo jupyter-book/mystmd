@@ -378,6 +378,47 @@ const TabSet: IDirective = {
   hast: (h, node) => h(node, 'div', { class: 'margin' }),
 };
 
+const TabItem: IDirective = {
+  myst: class TabItem extends Directive {
+    public required_arguments = 1;
+
+    public optional_arguments = 0;
+
+    public final_argument_whitespace = true;
+
+    public has_content = true;
+
+    public option_spec = {
+      sync: directiveOptions.unchanged,
+      selected: directiveOptions.flag,
+    };
+
+    run(data: IDirectiveData<keyof TabItem['option_spec']>) {
+      const newTokens: Token[] = [];
+      const adToken = this.createToken('tabItem_open', 'div', 1, {
+        map: data.map,
+        block: true,
+        meta: { title: data.args[0] },
+      });
+      newTokens.push(adToken);
+      const bodyTokens = this.nestedParse(data.body, data.bodyMap[0]);
+      newTokens.push(...bodyTokens);
+      newTokens.push(this.createToken('tabItem_close', 'div', -1, { block: true }));
+      return newTokens;
+    }
+  },
+  mdast: {
+    type: 'tabItem',
+    getAttrs(t) {
+      return {
+        title: t.meta.title,
+        sync: t.meta.sync,
+      };
+    },
+  },
+  hast: (h, node) => h(node, 'div', { class: 'margin' }),
+};
+
 function getColumns(columnString: string, defaultColumns = [1, 2, 2, 3]) {
   const columns = (columnString ?? '1 2 2 3')
     .split(/\s/)
@@ -435,46 +476,6 @@ const Grid: IDirective = {
     },
   },
   hast: (h, node) => h(node, 'div'),
-};
-
-const TabItem: IDirective = {
-  myst: class TabItem extends Directive {
-    public required_arguments = 1;
-
-    public optional_arguments = 0;
-
-    public final_argument_whitespace = true;
-
-    public has_content = true;
-
-    public option_spec = {
-      sync: directiveOptions.unchanged,
-    };
-
-    run(data: IDirectiveData<keyof TabItem['option_spec']>) {
-      const newTokens: Token[] = [];
-      const adToken = this.createToken('tabItem_open', 'div', 1, {
-        map: data.map,
-        block: true,
-        meta: { title: data.args[0] },
-      });
-      newTokens.push(adToken);
-      const bodyTokens = this.nestedParse(data.body, data.bodyMap[0]);
-      newTokens.push(...bodyTokens);
-      newTokens.push(this.createToken('tabItem_close', 'div', -1, { block: true }));
-      return newTokens;
-    }
-  },
-  mdast: {
-    type: 'tabItem',
-    getAttrs(t) {
-      return {
-        title: t.meta.title,
-        sync: t.meta.sync,
-      };
-    },
-  },
-  hast: (h, node) => h(node, 'div', { class: 'margin' }),
 };
 
 const MystDemo: IDirective = {

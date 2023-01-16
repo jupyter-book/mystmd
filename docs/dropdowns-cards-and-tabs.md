@@ -109,9 +109,11 @@ You can also produce tabbed content. This allows you to display a variety of tab
 `````markdown
 ````{tab-set}
 ```{tab-item} Tab 1
+:sync: tab1
 Tab one
 ```
 ```{tab-item} Tab 2
+:sync: tab2
 Tab two
 ```
 ````
@@ -121,11 +123,11 @@ Creates:
 
 ````{tab-set}
 ```{tab-item} Tab 1
-:sync: t1
+:sync: tab1
 Tab one
 ```
 ```{tab-item} Tab 2
-:sync: t2
+:sync: tab2
 Tab two
 ```
 ````
@@ -134,11 +136,32 @@ If you have multiple tabs with the same name, they will be synced!
 
 ````{tab-set}
 ```{tab-item} Tab 1
-:sync: t1
+:sync: tab1
 Synced content for tab 1
 ```
 ```{tab-item} Tab 2
-:sync: t2
+:sync: tab2
 Synced content for tab 2
 ```
 ````
+
+### `tab-item` reference
+
+**Arguments** _(required: `1`, string)_
+: The `tab-item` requires a single argument that is the title as a string.
+
+    ```{warning}
+    :class: dropdown
+    # Note: the `tab-item` title is not currently not parsed
+
+    The current implementation does not parse the tab title properly, and markup in this field will not be parsed.
+    ```
+
+**Options**
+: No options for the `tab-item` are required
+
+    sync _(optional, string)_
+    : A key that is used to sync the selected tab across multiple tab-sets.
+
+    selected _(flag, no-value)_
+    : a flag indicating whether the tab should be selected by default.
