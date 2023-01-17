@@ -13,7 +13,6 @@ export * from './removeExtension';
 export * from './resolveExtension';
 export * from './shouldIgnoreFile';
 export * from './toc';
-export * from './webFileObject';
 
 export * as imagemagick from './imagemagick';
 export * as inkscape from './inkscape';

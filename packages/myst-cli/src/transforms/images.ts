@@ -8,8 +8,8 @@ import fetch from 'node-fetch';
 import path from 'path';
 import type { VFileMessage } from 'vfile-message';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import { extFromMimeType } from 'nbtx';
 import {
-  WebFileObject,
   addWarningForFile,
   computeHash,
   hashAndCopyStaticFile,
@@ -31,6 +31,33 @@ function getGithubRawUrl(url?: string): string | undefined {
   const GITHUB_BLOB = /^(?:https?:\/\/)?github\.com\/([^/]+)\/([^/]+)\/blob\//;
   if (!url?.match(GITHUB_BLOB)) return undefined;
   return url.replace(GITHUB_BLOB, 'https://raw.githubusercontent.com/$1/$2/');
+}
+
+/**
+ * Write a base64 encoded image to a file.
+ *
+ * @param session: ISession - the session with logging
+ * @param writeFolder: string - the folder
+ * @param data: string - the base64 encoded image data
+ * @param contentType: string | undefined - the mime type of the data, which if supplied will be used as fallback
+ * @returns
+ */
+async function writeBase64(
+  session: ISession,
+  writeFolder: string,
+  data: string,
+  contentType?: string,
+) {
+  const [justData, header] = data.split(';base64,').reverse(); // reverse as sometimes there is no header
+  const ext = extFromMimeType(header?.replace('data:', '') ?? contentType);
+  const hash = computeHash(justData);
+  const file = `${hash}${ext}`;
+  const filePath = path.join(writeFolder, file);
+  session.log.debug(`Writing binary output file ${justData.length} bytes to ${filePath}`);
+  fs.writeFileSync(filePath, justData, {
+    encoding: 'base64',
+  });
+  return file;
 }
 
 export async function downloadAndSaveImage(
@@ -114,10 +141,11 @@ export async function saveImageInStaticFolder(
     }
     if (!file) return null;
   } else if (isBase64(urlSource)) {
-    // Inline base64 images
-    const fileObject = new WebFileObject(session.log, writeFolder, '', true);
-    await fileObject.writeBase64(urlSource);
-    file = fileObject.id;
+    // Handle inline base64 images
+    file = await writeBase64(session, writeFolder, urlSource);
+    // TODO: remove these images from the canonical-url somehow!
+    // We actually want to make the package smaller, so we should remove the sourceUrl from here
+    // This might have to be a transform
   } else {
     const message = `Cannot find image "${urlSource}" in ${sourceFileFolder}`;
     addWarningForFile(session, sourceFile, message, 'error', { position: opts?.position });
