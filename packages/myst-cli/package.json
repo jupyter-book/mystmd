@@ -52,7 +52,6 @@
     "npm": ">=6"
   },
   "dependencies": {
-    "@curvenote/blocks": "^1.5.17",
     "@jupyterlab/nbformat": "3.5.2",
     "@reduxjs/toolkit": "^1.7.2",
     "adm-zip": "^0.5.9",
@@ -84,7 +83,7 @@
     "myst-transforms": "^0.0.13",
     "mystjs": "^0.0.15",
     "nanoid": "^4.0.0",
-    "nbtx": "^0.2.1",
+    "nbtx": "^0.2.2",
     "node-fetch": "^3.2.10",
     "redux": "^4.2.0",
     "simple-validators": "^0.0.3",

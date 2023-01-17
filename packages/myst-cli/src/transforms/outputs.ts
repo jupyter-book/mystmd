@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { GenericNode } from 'mystjs';
+import type { GenericNode } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { IOutput } from '@jupyterlab/nbformat';
 import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
