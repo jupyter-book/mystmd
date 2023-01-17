@@ -2,12 +2,11 @@ import type { Root } from 'mdast';
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
-import type { CellOutput } from '@curvenote/blocks';
-import { ContentFormatTypes, KINDS } from '@curvenote/blocks';
-import type { TranslatedBlockPair, MinifiedOutput } from 'nbtx';
-import { parseNotebook, minifyCellOutput } from 'nbtx';
+import type { MinifiedOutput } from 'nbtx';
+import type { ICell, INotebookContent, IOutput } from '@jupyterlab/nbformat';
+import { CELL_TYPES, minifyCellOutput } from 'nbtx';
+import { castSession } from '../session';
 import type { ISession } from '../session/types';
-import { createWebFileObjectFactory } from '../utils';
 import { parseMyst } from './myst';
 
 function asString(source?: string | string[]): string {
@@ -25,43 +24,36 @@ export async function processNotebook(
   content: string,
 ): Promise<Root> {
   const { log } = session;
-  const { notebook, children } = parseNotebook(JSON.parse(content));
+  const { metadata, cells } = JSON.parse(content) as INotebookContent;
   // notebook will be empty, use generateNotebookChildren, generateNotebookOrder here if we want to populate those
 
-  const language = notebook.language ?? notebook.metadata?.kernelspec.language ?? 'python';
+  const language = metadata?.kernelspec?.language ?? 'python';
   log.debug(`Processing Notebook: "${file}"`);
 
-  const fileFactory = createWebFileObjectFactory(log, session.publicPath(), '_static', {
-    useHash: true,
-  });
+  const cache = castSession(session);
 
   const outputMap: Record<string, MinifiedOutput[]> = {};
 
-  let end = children.length;
-  if (
-    children &&
-    children.length > 1 &&
-    children?.[children.length - 1].content.content.length === 0
-  )
+  let end = cells.length;
+  if (cells && cells.length > 1 && cells?.[cells.length - 1].source.length === 0) {
     end = -1;
+  }
 
-  const items = await children?.slice(0, end).reduce(async (P, item: TranslatedBlockPair) => {
+  const items = await cells?.slice(0, end).reduce(async (P, cell: ICell) => {
     const acc = await P;
-    if (item.content.kind === KINDS.Content) {
-      if (item.content.format === ContentFormatTypes.md)
-        return acc.concat(asString(item.content.content));
-      if (item.content.format === ContentFormatTypes.txt)
-        return acc.concat(`\`\`\`\n${asString(item.content.content)}\n\`\`\``);
+    if (cell.cell_type === CELL_TYPES.markdown) {
+      return acc.concat(asString(cell.source));
     }
-    if (item.content.kind === KINDS.Code) {
-      const code = `\`\`\`${language}\n${asString(item.content.content)}\n\`\`\``;
-      if (item.output && item.output.original) {
+    if (cell.cell_type === CELL_TYPES.raw) {
+      return acc.concat(`\`\`\`\n${asString(cell.source)}\n\`\`\``);
+    }
+    if (cell.cell_type === CELL_TYPES.code) {
+      const code = `\`\`\`${language}\n${asString(cell.source)}\n\`\`\``;
+      if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
         const minified: MinifiedOutput[] = await minifyCellOutput(
-          fileFactory,
-          item.output.original as CellOutput[],
-          { basepath: '' }, // fileFactory takes care of this
+          cell.outputs as IOutput[],
+          cache.$outputs,
         );
-
         const { myst, id } = createOutputDirective();
         outputMap[id] = minified;
 

@@ -34,4 +34,4 @@
 
 ### Patch Changes
 
-- 1b23694: Update typescript and @curvenote/blocks
+- 1b23694: Update typescript

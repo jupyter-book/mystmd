@@ -7,5 +7,6 @@ export function castSession(session: ISession): ISessionWithCache {
   if (!cache.$internalReferences) cache.$internalReferences = {};
   if (!cache.$externalReferences) cache.$externalReferences = {};
   if (!cache.$mdast) cache.$mdast = {};
+  if (!cache.$outputs) cache.$outputs = {};
   return cache;
 }

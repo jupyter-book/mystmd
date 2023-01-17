@@ -1,6 +1,6 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
-import { basename, extname, join, parse } from 'path';
+import { basename, extname, join } from 'path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import { writeFileToFolder, tic } from 'myst-cli-utils';
@@ -20,7 +20,7 @@ import { filterPages, loadProjectFromDisk } from '../project';
 import { castSession } from '../session';
 import type { ISession } from '../session/types';
 import { watch, selectors } from '../store';
-import { KINDS, transformWebp } from '../transforms';
+import { transformWebp } from '../transforms';
 import { hashAndCopyStaticFile } from '../utils';
 import { combineProjectCitationRenderers } from './citations';
 import { loadIntersphinx } from './intersphinx';
