@@ -1,34 +1,46 @@
+import fs from 'fs';
+import path from 'path';
 import type { GenericNode } from 'mystjs';
 import { selectAll } from 'unist-util-select';
-import type { CellOutput } from 'nbtx';
-import { minifyCellOutput, walkPaths } from 'nbtx';
+import type { IOutput } from '@jupyterlab/nbformat';
+import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
 import type { Root } from 'mdast';
+import { castSession } from '../session';
 import type { ISession } from '../session/types';
-import { createWebFileObjectFactory } from '../utils';
 import { KINDS } from './types';
 
 export async function transformOutputs(session: ISession, mdast: Root, kind: KINDS) {
   const outputs = selectAll('output', mdast) as GenericNode[];
-
+  const cache = castSession(session);
   if (outputs.length && kind === KINDS.Article) {
-    const fileFactory = createWebFileObjectFactory(session.log, session.publicPath(), '_static', {
-      useHash: true,
-    });
     await Promise.all(
       outputs.map(async (output) => {
-        output.data = await minifyCellOutput(
-          fileFactory,
-          output.data as CellOutput[],
-          { basepath: '' }, // fileFactory takes care of this
-        );
+        output.data = await minifyCellOutput(output.data as IOutput[], cache.$outputs);
       }),
     );
   }
 
   outputs.forEach((node) => {
-    walkPaths(node.data, (p: string, obj: any) => {
-      obj.path = `/${p}`;
-      obj.content = `/${obj.content}`;
+    walkOutputs(node.data, (hash: string, obj: any) => {
+      if (!cache.$outputs[hash]) return undefined;
+      const [content, { contentType, encoding }] = cache.$outputs[hash];
+      const folder = session.staticPath();
+      const filename = `${hash}${extFromMimeType(contentType)}`;
+      const destination = path.join(folder, filename);
+
+      if (fs.existsSync(destination)) {
+        session.log.debug(`Cached file found for notebook output: ${destination}`);
+      } else {
+        try {
+          if (!fs.existsSync(folder)) fs.mkdirSync(folder, { recursive: true });
+          fs.writeFileSync(destination, content, { encoding: encoding as BufferEncoding });
+          session.log.debug(`Notebook output successfully written: ${destination}`);
+        } catch {
+          session.log.error(`Error writing notebook output: ${destination}`);
+          return undefined;
+        }
+      }
+      obj.path = `/_static/${filename}`;
     });
   });
 }

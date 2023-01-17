@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import type { Logger } from 'myst-cli-utils';
 import { KnownCellOutputMimeTypes } from 'nbtx';
-import type { IFileObject, IFileObjectFactoryFn, Metadata } from 'nbtx';
 import { computeHash } from './computeHash';
 
 enum FileExtension {
@@ -23,7 +22,7 @@ const FileExtensionMap: Record<string, FileExtension> = {
   [KnownCellOutputMimeTypes.AppJson]: FileExtension.json,
 };
 
-export class WebFileObject implements IFileObject {
+export class WebFileObject {
   log: Logger;
 
   publicPath: string;
@@ -87,13 +86,6 @@ export class WebFileObject implements IFileObject {
     });
   }
 
-  setContentType(contentType: string): Promise<Metadata> {
-    this.log.debug('WebFileObject:setContentType', contentType);
-    this.contentType = contentType;
-    if (!FileExtensionMap[contentType]) this.log.warn(`Unknown content type ${contentType}`);
-    return Promise.resolve({ contentType } as Metadata);
-  }
-
   async url() {
     this.log.debug(`WebFileObject:url - file://${this.filePath}`);
     return `file://${this.filePath}`;
@@ -103,22 +95,4 @@ export class WebFileObject implements IFileObject {
     this.log.debug('WebFileObject:exists');
     return new Promise<boolean>((resolve) => fs.exists(this.filePath, (e: boolean) => resolve(e)));
   }
-}
-
-export function createWebFileObjectFactory(
-  log: Logger,
-  publicPath: string,
-  staticPath: string,
-  options: { useHash: boolean },
-): IFileObjectFactoryFn {
-  if (!fs.existsSync(path.join(publicPath, staticPath))) {
-    fs.mkdirSync(path.join(publicPath, staticPath), { recursive: true });
-  }
-  return (filepath: string) =>
-    new WebFileObject(
-      log,
-      publicPath,
-      options.useHash ? staticPath : path.join(staticPath, filepath),
-      options.useHash,
-    );
 }
