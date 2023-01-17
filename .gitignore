@@ -34,3 +34,7 @@ yarn-error.log*
 .turbo
 
 _build
+
+# yalc
+.yalc
+yalc.lock
