@@ -17,7 +17,7 @@ import { selectAll } from 'unist-util-select';
 import type { IFootnotes, Options } from './types';
 
 export function createShortId() {
-  return Math.random().toString(36).substr(2, 9);
+  return Math.random().toString(36).slice(2);
 }
 
 export function createDocFromState(

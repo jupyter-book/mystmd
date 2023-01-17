@@ -8,6 +8,7 @@ import type { Root } from 'mdast';
 import { castSession } from '../session';
 import type { ISession } from '../session/types';
 import { KINDS } from './types';
+import { computeHash } from '../utils/computeHash';
 
 export async function transformOutputs(session: ISession, mdast: Root, kind: KINDS) {
   const outputs = selectAll('output', mdast) as GenericNode[];
@@ -15,7 +16,9 @@ export async function transformOutputs(session: ISession, mdast: Root, kind: KIN
   if (outputs.length && kind === KINDS.Article) {
     await Promise.all(
       outputs.map(async (output) => {
-        output.data = await minifyCellOutput(output.data as IOutput[], cache.$outputs);
+        output.data = await minifyCellOutput(output.data as IOutput[], cache.$outputs, {
+          computeHash,
+        });
       }),
     );
   }
