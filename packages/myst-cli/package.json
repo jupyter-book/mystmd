@@ -84,7 +84,7 @@
     "myst-transforms": "^0.0.13",
     "mystjs": "^0.0.15",
     "nanoid": "^4.0.0",
-    "nbtx": "^0.1.12",
+    "nbtx": "^0.2.1",
     "node-fetch": "^3.2.10",
     "redux": "^4.2.0",
     "simple-validators": "^0.0.3",

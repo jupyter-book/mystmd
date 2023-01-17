@@ -21,11 +21,11 @@ export async function transformOutputs(session: ISession, mdast: Root, kind: KIN
   }
 
   outputs.forEach((node) => {
-    walkOutputs(node.data, (hash: string, obj: any) => {
-      if (!cache.$outputs[hash]) return undefined;
-      const [content, { contentType, encoding }] = cache.$outputs[hash];
+    walkOutputs(node.data, (obj) => {
+      if (!obj.hash || !cache.$outputs[obj.hash]) return undefined;
+      const [content, { contentType, encoding }] = cache.$outputs[obj.hash];
       const folder = session.staticPath();
-      const filename = `${hash}${extFromMimeType(contentType)}`;
+      const filename = `${obj.hash}${extFromMimeType(contentType)}`;
       const destination = path.join(folder, filename);
 
       if (fs.existsSync(destination)) {
