@@ -22,7 +22,10 @@ export { codePlugin, codeTransform } from './code';
 export { codeBlockPlugin, codeBlockTransform } from './codeBlock';
 export { blockquotePlugin, blockquoteTransform } from './blockquote';
 export { imageAltTextPlugin, imageAltTextTransform } from './images';
-export { mystCleanupPlugin, mystCleanupTransform } from './mystCleanup';
+export {
+  liftMystDirectivesAndRolesPlugin,
+  liftMystDirectivesAndRolesTransform,
+} from './liftMystDirectivesAndRoles';
 export * from './links';
 export {
   mystTargetsPlugin,

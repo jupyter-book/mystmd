@@ -1,7 +1,7 @@
 import type { Root } from 'mdast';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import { mystCleanupTransform } from './mystCleanup';
+import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRoles';
 import { mystTargetsTransform, headingLabelTransform } from './targets';
 import { captionParagraphTransform } from './caption';
 import { admonitionHeadersTransform } from './admonitions';
@@ -15,13 +15,17 @@ import { blockquoteTransform } from './blockquote';
 export function basicTransformations(tree: Root, file: VFile) {
   // Must happen first
   codeBlockTransform(tree); // TODO: ideally move this to the parser
-  // Can happen in mostly any order
+  // lifting roles and directives must happen before the mystTarget transformation
+  liftMystDirectivesAndRolesTransform(tree);
+  // Some specifics about the ordering are noted below
   captionParagraphTransform(tree);
   mathNestingTransform(tree, file);
+  // Math labelling should happen before the target-transformation
   mathLabelTransform(tree, file);
+  // Target transformation must happen after lifting the directives, and before the heading labels
   mystTargetsTransform(tree);
+  // Label headings after the targets-transform
   headingLabelTransform(tree);
-  mystCleanupTransform(tree);
   admonitionHeadersTransform(tree);
   htmlIdsTransform(tree);
   blockNestingTransform(tree);

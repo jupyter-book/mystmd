@@ -3,6 +3,7 @@ import type {
   TableCell as SpecTableCell,
   FootnoteReference as FNR,
   FootnoteDefinition as FND,
+  Heading as SpecHeading,
 } from 'myst-spec';
 
 export type Delete = Parent & { type: 'delete' };
@@ -44,4 +45,9 @@ export type TabItem = Parent & {
   title: string;
   sync?: string;
   selected?: boolean;
+};
+
+export type Heading = SpecHeading & {
+  html_id?: string;
+  implicit?: true;
 };
