@@ -8,6 +8,7 @@ import { CELL_TYPES, minifyCellOutput } from 'nbtx';
 import { castSession } from '../session';
 import type { ISession } from '../session/types';
 import { parseMyst } from './myst';
+import { computeHash } from '../utils/computeHash';
 
 function asString(source?: string | string[]): string {
   return (Array.isArray(source) ? source.join('') : source) || '';
@@ -53,6 +54,7 @@ export async function processNotebook(
         const minified: MinifiedOutput[] = await minifyCellOutput(
           cell.outputs as IOutput[],
           cache.$outputs,
+          { computeHash },
         );
         const { myst, id } = createOutputDirective();
         outputMap[id] = minified;
