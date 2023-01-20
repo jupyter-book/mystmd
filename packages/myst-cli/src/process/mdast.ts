@@ -34,6 +34,7 @@ import {
   checkLinksTransform,
   importMdastFromJson,
   includeFilesDirective,
+  liftCodeMetadataToBlock,
   transformLinkedDOIs,
   transformOutputs,
   transformCitations,
@@ -116,6 +117,8 @@ export async function transformMdast(
   // Import additional content from mdast or other files
   importMdastFromJson(session, file, mdast);
   includeFilesDirective(session, file, mdast);
+  // This needs to come before basic transformations since it may add labels to blocks
+  liftCodeMetadataToBlock(session, file, mdast);
 
   await unified()
     .use(basicTransformationsPlugin)

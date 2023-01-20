@@ -19,6 +19,10 @@ function createOutputDirective(): { myst: string; id: string } {
   return { myst: `\`\`\`{output}\n:id: ${id}\n\`\`\``, id };
 }
 
+function blockDivider(cell: ICell) {
+  return `+++ ${JSON.stringify(cell.metadata)}\n\n`;
+}
+
 export async function processNotebook(
   session: ISession,
   file: string,
@@ -43,10 +47,10 @@ export async function processNotebook(
   const items = await cells?.slice(0, end).reduce(async (P, cell: ICell) => {
     const acc = await P;
     if (cell.cell_type === CELL_TYPES.markdown) {
-      return acc.concat(asString(cell.source));
+      return acc.concat(`${blockDivider(cell)}${asString(cell.source)}`);
     }
     if (cell.cell_type === CELL_TYPES.raw) {
-      return acc.concat(`\`\`\`\n${asString(cell.source)}\n\`\`\``);
+      return acc.concat(`${blockDivider(cell)}\`\`\`\n${asString(cell.source)}\n\`\`\``);
     }
     if (cell.cell_type === CELL_TYPES.code) {
       const code = `\`\`\`${language}\n${asString(cell.source)}\n\`\`\``;
@@ -58,15 +62,14 @@ export async function processNotebook(
         );
         const { myst, id } = createOutputDirective();
         outputMap[id] = minified;
-
-        return acc.concat(code).concat([myst]);
+        return acc.concat(`${blockDivider(cell)}${code}\n\n${myst}`);
       }
-      return acc.concat(code);
+      return acc.concat(`${blockDivider(cell)}${code}`);
     }
     return acc;
   }, Promise.resolve([] as string[]));
 
-  const mdast = parseMyst(items.join('\n\n+++\n\n'));
+  const mdast = parseMyst(items.join('\n\n'));
 
   selectAll('output', mdast).forEach((output: GenericNode) => {
     output.data = outputMap[output.id];

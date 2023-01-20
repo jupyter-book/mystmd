@@ -27,9 +27,10 @@ export function basicTransformations(tree: Root, file: VFile) {
   // Label headings after the targets-transform
   headingLabelTransform(tree);
   admonitionHeadersTransform(tree);
-  htmlIdsTransform(tree);
   blockNestingTransform(tree);
+  // Block metadata may contain labels/html_ids
   blockMetadataTransform(tree, file);
+  htmlIdsTransform(tree);
   imageAltTextTransform(tree);
   blockquoteTransform(tree);
 }
