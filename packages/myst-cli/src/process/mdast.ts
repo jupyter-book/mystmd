@@ -32,6 +32,7 @@ import type { RendererData } from '../transforms/types';
 import { KINDS } from '../transforms/types';
 import {
   checkLinksTransform,
+  embedDirective,
   importMdastFromJson,
   includeFilesDirective,
   liftCodeMetadataToBlock,
@@ -234,6 +235,7 @@ export async function postProcessMdast(
     selector: LINKS_SELECTOR,
   });
   resolveReferencesTransform(mdastPost.mdast, state.file as VFile, { state });
+  embedDirective(mdastPost.mdast, state);
   // Ensure there are keys on every node
   keysTransform(mdastPost.mdast);
   logMessagesFromVFile(session, fileState.file);

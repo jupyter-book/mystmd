@@ -736,6 +736,55 @@ const Card: IDirective = {
   hast: (h, node) => h(node, 'details'),
 };
 
+const EmbedOutput: IDirective = {
+  myst: class EmbedOutput extends Directive {
+    public required_arguments = 0;
+
+    public optional_arguments = 0;
+
+    public final_argument_whitespace = false;
+
+    public has_content = false;
+
+    public option_spec = {
+      label: directiveOptions.unchanged,
+      caption: directiveOptions.unchanged,
+      'remove-input': directiveOptions.flag,
+      'remove-output': directiveOptions.flag,
+    };
+
+    run(data: IDirectiveData<keyof EmbedOutput['option_spec']>) {
+      console.log(data);
+      const token = this.createToken('embed', 'div', 0, {
+        content: data.body,
+        map: data.bodyMap,
+        block: true,
+        meta: {
+          label: data.options.label,
+          caption: data.options.caption,
+          'remove-input': data.options['remove-input'] === null,
+          'remove-output': data.options['remove-output'] === null,
+        },
+      });
+      return [token];
+    }
+  },
+  mdast: {
+    type: 'embed',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      return {
+        label: t.meta.label,
+        caption: t.meta.caption,
+        'remove-input': t.meta['remove-input'],
+        'remove-output': t.meta['remove-output'],
+      };
+    },
+  },
+  hast: (h, node) => h(node, 'div'),
+};
+
 // The extension is forcing us to add this as a full thing, we are just putting `false` in "myst".
 const Summary: IDirective = {
   myst: false as any,
@@ -817,6 +866,7 @@ export const directives = {
   header: Header,
   grid: Grid,
   'grid-item-card': Card,
+  embed: EmbedOutput,
   '.callout-note': aliasDirectiveHack(directivesDefault.note),
   '.callout-warning': aliasDirectiveHack(directivesDefault.warning),
   '.callout-important': aliasDirectiveHack(directivesDefault.important),
