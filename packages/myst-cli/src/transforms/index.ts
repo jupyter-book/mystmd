@@ -1,4 +1,5 @@
 export * from './citations';
+export * from './code';
 export * from './dois';
 export * from './images';
 export * from './include';

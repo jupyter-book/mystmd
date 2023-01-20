@@ -3,7 +3,7 @@ import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import type { Block, Node, Parent } from 'myst-spec';
 import { select, selectAll } from 'unist-util-select';
-import { fileError } from 'myst-common';
+import { fileError, normalizeLabel } from 'myst-common';
 
 export function blockNestingTransform(mdast: Root) {
   if (!select('block', mdast)) {
@@ -28,15 +28,29 @@ export const blockNestingPlugin: Plugin<[], Root, Root> = () => (tree) => {
 const TRANSFORM_SOURCE = 'BlockTransform:BlockMetadata';
 
 export function blockMetadataTransform(mdast: Root, file: VFile) {
-  const blocks = selectAll('block', mdast) as Block[];
+  const blocks = selectAll('block', mdast) as any[];
   blocks.forEach((block) => {
-    if (!block.meta) return;
-    try {
-      const data = JSON.parse(block.meta);
-      block.data = data;
-      delete block.meta;
-    } catch (error) {
-      fileError(file, 'Problem parsing JSON for block', { node: block, source: TRANSFORM_SOURCE });
+    if (block.meta) {
+      try {
+        const data = JSON.parse(block.meta);
+        block.data = block.data ? { ...block.data, ...data } : data;
+        delete block.meta;
+      } catch (error) {
+        fileError(file, 'Problem parsing JSON for block', {
+          node: block,
+          source: TRANSFORM_SOURCE,
+        });
+      }
+    }
+    if (typeof block.data?.label === 'string') {
+      const normalized = normalizeLabel(block.data?.label);
+      if (normalized) {
+        // TODO: raise error if the node is already labelled
+        block.identifier = normalized.identifier;
+        block.label = normalized.label;
+        block.html_id = normalized.html_id;
+        delete block.data.label;
+      }
     }
   });
 }
