@@ -29,6 +29,7 @@ export function createServerLogger(session: ISession): LoggerDE {
       if (!line) return;
       // This is a spurious Remix warning https://github.com/remix-run/remix/issues/2677
       if (line.includes('is not listed in your package.json dependencies')) return;
+      if (line.includes('was not found in your node_modules')) return;
       if (line.startsWith('Rebuilding')) {
         session.log.debug(line);
         return;
