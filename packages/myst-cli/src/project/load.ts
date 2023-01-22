@@ -42,6 +42,7 @@ export async function loadProjectFromDisk(
   let { index, writeToc } = opts || {};
   if (validateTOC(session, path)) {
     newProject = projectFromToc(session, path);
+    if (writeToc) session.log.warn('Not writing the table of contents, it already exists!');
     writeToc = false;
   } else {
     const project = selectors.selectLocalProject(session.store.getState(), path);
