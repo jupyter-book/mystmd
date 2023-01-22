@@ -33,15 +33,19 @@ function normalizeTemplateName(opts: { kind?: TemplateKind; template?: string })
   if (template.match(TEMPLATE_REGEX)) {
     return `${kind}/${template}`;
   }
-  return undefined;
+  return template;
+}
+
+function templatesUrl(session: ISession) {
+  return `${session.API_URL}/templates`;
 }
 
 function listingUrl(session: ISession, kind?: TemplateKind) {
-  return `${session.API_URL}/templates/${kind ?? TemplateKind.tex}`;
+  return `${templatesUrl(session)}/${kind ?? TemplateKind.tex}`;
 }
 
 function defaultUrl(session: ISession, template: string) {
-  return `${session.API_URL}/templates/${template}`;
+  return `${templatesUrl(session)}/${template}`;
 }
 
 function defaultPath(
@@ -211,9 +215,9 @@ export async function cloneTemplate(
 }
 
 export async function fetchPublicTemplate(session: ISession, name: string, kind?: TemplateKind) {
-  const url = listingUrl(session);
-  session.log.debug('Fetching template listing information');
+  const url = templatesUrl(session);
   const templateUrl = `${url}/${normalizeTemplateName({ template: name, kind })}`;
+  session.log.debug(`Fetching template listing information from ${templateUrl}`);
   const resLink = await fetch(templateUrl);
   if (!resLink.ok) {
     throw new Error(
