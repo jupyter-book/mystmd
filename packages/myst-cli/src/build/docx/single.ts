@@ -37,7 +37,7 @@ export async function collectWordExportOptions(
 ) {
   const { template, filename, renderer } = opts;
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
-  let exportOptions = getExportListFromRawFrontmatter(session, formats, rawFrontmatter);
+  let exportOptions = getExportListFromRawFrontmatter(session, formats, rawFrontmatter, file);
   // If no export options are provided in frontmatter, instantiate default options
   if (exportOptions.length === 0 && formats.length && opts.force) {
     exportOptions = [{ format: formats[0] }];

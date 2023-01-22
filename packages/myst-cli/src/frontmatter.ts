@@ -78,16 +78,17 @@ export async function getRawFrontmatterFromFile(session: ISession, file: string)
 export function getExportListFromRawFrontmatter(
   session: ISession,
   formats: ExportFormats[],
-  rawFrontmatter?: Record<string, any>,
+  rawFrontmatter: Record<string, any> | undefined,
+  file: string,
 ): Export[] {
   const exportErrorMessages: ValidationOptions = {
     property: 'exports',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: ${message}`);
+      session.log.error(`Validation error for ${file}: ${message}`);
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: ${message}`);
+      session.log.warn(`Validation for ${file}: ${message}`);
     },
   };
   const exports = validateExportsList(
