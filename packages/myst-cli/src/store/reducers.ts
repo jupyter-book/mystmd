@@ -46,6 +46,11 @@ export const config = createSlice({
     filenames: Record<string, string>;
   },
   reducers: {
+    reload(state) {
+      state.rawConfigs = {};
+      state.projects = {};
+      state.sites = {};
+    },
     receiveCurrentProjectPath(state, action: PayloadAction<{ path: string }>) {
       state.currentProjectPath = resolve(action.payload.path);
     },

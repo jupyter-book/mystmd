@@ -18,5 +18,7 @@ export function makeInitCLI(program: Command) {
     .addOption(makeSiteOption('Initialize config for MyST site'))
     .addOption(makeWriteTocOption())
     .action(clirun(Session, init, program));
+  // The default command runs `myst init`
+  program.action(clirun(Session, init, program));
   return command;
 }

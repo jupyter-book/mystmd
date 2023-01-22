@@ -5,6 +5,9 @@ import { defaultConfigFile, loadConfigAndValidateOrThrow, writeConfigs } from '.
 import { loadProjectFromDisk } from '../project';
 import { selectors } from '../store';
 import type { ISession } from '../session';
+import inquirer from 'inquirer';
+import chalk from 'chalk';
+import { startServer } from './site/start';
 
 const VERSION_CONFIG = 'version: 1\n';
 const PROJECT_CONFIG = `project:
@@ -27,7 +30,7 @@ const PROJECT_CONFIG = `project:
 const SITE_CONFIG = `site:
   # title:
   projects:
-    - slug: my-myst-site
+    - slug: myst
       path: .
   nav: []
   actions:
@@ -56,14 +59,14 @@ export async function init(session: ISession, opts: InitOptions) {
     let siteConfig: Record<string, any> | undefined;
     if (project || (!site && !project)) {
       if (existingProjectConfig) {
-        session.log.info(`✋ Project already initialized with config file: ${existingConfigFile}`);
+        session.log.info(`✅ Project already initialized with config file: ${existingConfigFile}`);
       } else {
         projectConfig = (yaml.load(PROJECT_CONFIG) as Record<string, any>).project;
       }
     }
     if (site || (!site && !project)) {
       if (existingSiteConfig) {
-        session.log.info(`✋ Site already initialized with config file: ${existingConfigFile}`);
+        session.log.info(`✅ Site already initialized with config file: ${existingConfigFile}`);
       } else {
         siteConfig = (yaml.load(SITE_CONFIG) as Record<string, any>).site;
       }
@@ -94,4 +97,19 @@ export async function init(session: ISession, opts: InitOptions) {
     loadConfigAndValidateOrThrow(session, '.');
     await loadProjectFromDisk(session, '.', { writeToc });
   }
+  // If we have any options, this command is complete!
+  if (writeToc || project || site) return;
+  const promptStart = await inquirer.prompt([
+    {
+      name: 'start',
+      message: `Would you like to run ${chalk.green('myst start')} now?`,
+      type: 'confirm',
+      default: true,
+    },
+  ]);
+  if (!promptStart.start) {
+    session.log.info(chalk.dim('\nYou can do this later with:'), chalk.bold('myst start'));
+    return;
+  }
+  await startServer(session, {});
 }

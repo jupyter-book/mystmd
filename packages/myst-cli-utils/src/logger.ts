@@ -114,14 +114,15 @@ export function createNpmLogger(session: ISession): LoggerDE {
     error(data: string) {
       const line = data.trim();
       if (!line) return;
+      const lower = line.toLowerCase();
       if (
         // There are a lot of deprecation warnings that we want to hide to myst users
-        line.includes('deprecated') ||
-        line.includes('no longer supported') ||
-        line.includes('do not need') ||
-        line.includes('please use') ||
-        line.includes('functionality') ||
-        line.includes('has been moved') ||
+        lower.includes('deprecated') ||
+        lower.includes('no longer supported') ||
+        lower.includes('do not need') ||
+        lower.includes('please use') ||
+        lower.includes('functionality') ||
+        lower.includes('has been moved') ||
         line === 'npm' ||
         line.includes('WARN')
       ) {

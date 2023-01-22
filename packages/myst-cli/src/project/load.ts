@@ -22,11 +22,11 @@ import type { LocalProject, LocalProjectPage } from './types';
  *
  * If JupyterBook '_toc.yml' exists in path, project structure will be derived from that.
  * In this case, index will be ignored in favor of root from '_toc.yml'
- * If '_toc.yml' does not exist, project structure will be built from the local file/foler structure.
+ * If '_toc.yml' does not exist, project structure will be built from the local file/folder structure.
  */
 export async function loadProjectFromDisk(
   session: ISession,
-  path: string,
+  path?: string,
   opts?: { index?: string; writeToc?: boolean; warnOnNoConfig?: boolean },
 ): Promise<LocalProject> {
   path = path || resolve('.');

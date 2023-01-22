@@ -15,5 +15,5 @@ program.addCommand(makeBuildCLI(program));
 program.addCommand(makeTemplatesCLI(program));
 program.addCommand(makeCleanCLI(program));
 program.version(`v${version}`, '-v, --version', 'Print the current version of myst');
-program.option('-d, --debug', 'Log out any errors to the console.');
+program.option('-d, --debug', 'Log out any errors to the console');
 program.parse(process.argv);
