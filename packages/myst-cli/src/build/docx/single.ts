@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
-import { writeFileToFolder } from 'myst-cli-utils';
+import { tic, writeFileToFolder } from 'myst-cli-utils';
 import { ExportFormats } from 'myst-frontmatter';
 import type { RendererDoc } from 'myst-templates';
 import MystTemplate from 'myst-templates';
@@ -169,6 +169,7 @@ export async function runWordExport(
     buildDir: session.buildPath(),
   });
   await mystTemplate.ensureTemplateExistsOnPath();
+  const toc = tic();
   const { options, doc } = mystTemplate.prepare({
     frontmatter: data.frontmatter,
     parts: [],
@@ -178,8 +179,8 @@ export async function runWordExport(
   const renderer = exportOptions.renderer ?? defaultWordRenderer;
   const docx = renderer(session, data, doc, options, mystTemplate.templatePath, vfile);
   logMessagesFromVFile(session, vfile);
-  session.log.info(`🖋  Writing docx to ${output}`);
   await writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));
+  session.log.info(toc(`📄 Exported DOCX in %s, copying to ${output}`));
 }
 
 export async function localArticleToWord(

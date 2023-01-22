@@ -103,7 +103,7 @@ export async function createPdfGivenTexExport(
   }
 
   if (pdfBuildExists) {
-    session.log.info(toc(`📄 Built PDF in %s, copying to ${pdfOutput}`));
+    session.log.info(toc(`📄 Exported PDF in %s, copying to ${pdfOutput}`));
     await copyFile(pdfBuild, pdfOutput);
     session.log.debug(`Copied PDF file to ${pdfOutput}`);
   } else {

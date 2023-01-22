@@ -4,7 +4,7 @@ import path from 'path';
 import type { TemplateImports } from 'jtex';
 import { renderTex, mergeTemplateImports } from 'jtex';
 import type { Root } from 'mdast';
-import { writeFileToFolder } from 'myst-cli-utils';
+import { tic, writeFileToFolder } from 'myst-cli-utils';
 import { extractPart, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
@@ -78,8 +78,9 @@ export async function localArticleToTexRaw(
       extraLinkTransformers,
     },
   );
+  const toc = tic();
   const result = mdastToTex(mdast, frontmatter, null);
-  session.log.info(`🖋  Writing tex to ${output}`);
+  session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
   // TODO: add imports and macros?
   writeFileToFolder(output, result.value);
 }
@@ -128,6 +129,7 @@ export async function localArticleToTexTemplated(
     buildDir: session.buildPath(),
   });
   await mystTemplate.ensureTemplateExistsOnPath();
+  const toc = tic();
   const templateYml = mystTemplate.getValidatedTemplateYml();
 
   const partDefinitions = templateYml?.parts || [];
@@ -147,7 +149,7 @@ export async function localArticleToTexTemplated(
   // This will need opts eventually --v
   const result = mdastToTex(mdast, frontmatter, templateYml);
   // Fill in template
-  session.log.info(`🖋  Writing templated tex to ${templateOptions.output}`);
+  session.log.info(toc(`📑 Exported TeX in %s, copying to ${templateOptions.output}`));
   renderTex(mystTemplate, {
     contentOrPath: result.value,
     outputPath: templateOptions.output,
