@@ -80,15 +80,17 @@ function deduplicatePaths(paths: string[]) {
 export async function clean(session: ISession, files: string[], opts: CleanOptions) {
   opts = coerceOpts(opts);
   const { site, temp, exports, templates, yes } = opts;
-  const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   let pathsToDelete: string[] = [];
-  exportOptionsList.forEach((exportOptions) => {
-    pathsToDelete.push(exportOptions.output);
-    if (exportOptions.format === ExportFormats.pdftex) {
-      pathsToDelete.push(getLogOutputFolder(exportOptions.output));
-      pathsToDelete.push(getTexOutputFolder(exportOptions.output));
-    }
-  });
+  const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
+  if (exports) {
+    exportOptionsList.forEach((exportOptions) => {
+      pathsToDelete.push(exportOptions.output);
+      if (exportOptions.format === ExportFormats.pdftex) {
+        pathsToDelete.push(getLogOutputFolder(exportOptions.output));
+        pathsToDelete.push(getTexOutputFolder(exportOptions.output));
+      }
+    });
+  }
   let buildFolders: string[] = [];
   if (temp || exports || templates) {
     const projectPaths = [

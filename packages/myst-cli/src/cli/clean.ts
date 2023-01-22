@@ -40,12 +40,12 @@ export function makeAllOption() {
 
 export function makeCleanCLI(program: Command) {
   const command = new Command('clean')
-    .description('Clean built pdf, tex, and word exports and other build artifacts')
+    .description('Remove exports, temp files and installed templates')
     .argument('[files...]', 'list of files to clean corresponding outputs')
-    .addOption(makePdfOption('Clean'))
-    .addOption(makeTexOption('Clean'))
-    .addOption(makeDocxOption('Clean'))
-    .addOption(makeSiteOption('Clean'))
+    .addOption(makePdfOption('Clean PDF output'))
+    .addOption(makeTexOption('Clean LaTeX outputs'))
+    .addOption(makeDocxOption('Clean Docx output'))
+    .addOption(makeSiteOption('Clean MyST site content'))
     .addOption(makeTempOption())
     .addOption(makeExportsOption())
     .addOption(makeTemplatesOption())

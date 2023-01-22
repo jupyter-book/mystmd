@@ -13,9 +13,9 @@ export function makeWriteTocOption() {
 
 export function makeInitCLI(program: Command) {
   const command = new Command('init')
-    .description('Initialize a myst project in the current directory')
-    .addOption(makeProjectOption('Initialize config for'))
-    .addOption(makeSiteOption('Initialize config for'))
+    .description('Initialize a MyST project in the current directory')
+    .addOption(makeProjectOption('Initialize config for MyST project content'))
+    .addOption(makeSiteOption('Initialize config for MyST site'))
     .addOption(makeWriteTocOption())
     .action(clirun(Session, init, program));
   return command;
