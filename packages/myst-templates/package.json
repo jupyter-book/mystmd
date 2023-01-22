@@ -1,7 +1,7 @@
 {
   "name": "myst-templates",
   "version": "0.1.3",
-  "description": "API types and scripts for downloading MyST Tempaltes",
+  "description": "API types and scripts for downloading MyST Templates",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-templates",
   "license": "MIT",
