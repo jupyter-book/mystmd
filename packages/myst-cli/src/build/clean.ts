@@ -117,7 +117,7 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
   }
   pathsToDelete = deduplicatePaths(pathsToDelete.filter((p) => fs.existsSync(p))).sort();
   if (pathsToDelete.length === 0) {
-    session.log.warn(`🗑  No build artifacts found to clean!`);
+    session.log.warn(`🧹 Your folders are already so clean! ✨`);
     return;
   }
   session.log.info(`Deleting all the following paths:\n\n  - ${pathsToDelete.join('\n  - ')}\n`);
@@ -127,9 +127,10 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
       session.log.info(`🗑  Deleting: ${pathToDelete}`);
       fs.rmSync(pathToDelete, { recursive: true, force: true });
     });
+    // Delete any empty build folders
     buildFolders.forEach((buildFolder) => {
-      if (fs.readdirSync(buildFolder).length === 0) {
-        session.log.debug(`🗑  Deleting empty build folder: ${buildFolder}`);
+      if (fs.existsSync(buildFolder) && fs.readdirSync(buildFolder).length === 0) {
+        session.log.debug(`Deleting empty build folder: ${buildFolder}`);
         fs.rmSync(buildFolder, { recursive: true, force: true });
       }
     });
