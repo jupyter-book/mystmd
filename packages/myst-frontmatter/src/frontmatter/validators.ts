@@ -475,13 +475,13 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     output.github = validateGithubUrl(value.github, incrementOptions('github', opts));
   }
   if (defined(value.keywords)) {
-    output.keywords = validateList(
-      value.keywords,
-      incrementOptions('keywords', opts),
-      (word, ind) => {
-        return validateString(word, incrementOptions(`keywords.${ind}`, opts));
-      },
-    );
+    let keywords = value.keywords;
+    if (typeof keywords === 'string') {
+      keywords = keywords.split(/[,;]/).map((k) => k.trim());
+    }
+    output.keywords = validateList(keywords, incrementOptions('keywords', opts), (word, ind) => {
+      return validateString(word, incrementOptions(`keywords.${ind}`, opts));
+    });
   }
   return output;
 }
