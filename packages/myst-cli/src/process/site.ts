@@ -161,7 +161,9 @@ export async function writeFile(
   }: { file: string; projectSlug: string; pageSlug: string; projectPath: string },
 ) {
   const toc = tic();
-  const { frontmatter, ...mdastPost } = selectFile(session, file);
+  const selectedFile = selectFile(session, file);
+  if (!selectedFile) return;
+  const { frontmatter, ...mdastPost } = selectedFile;
   const exports = await Promise.all([
     resolvePageSource(session, file),
     ...(await resolvePageExports(session, file, projectPath)),

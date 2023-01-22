@@ -44,9 +44,15 @@ function fileProcessor(
   opts: TransformOptions,
 ) {
   return async (eventType: string, file: string) => {
-    if (file.startsWith('_build') || file.startsWith('.')) return;
+    if (file.startsWith('_build') || file.startsWith('.') || file.includes('.ipynb_checkpoints')) {
+      session.log.debug(`Ignoring build trigger for ${file} with eventType of "${eventType}"`);
+      return;
+    }
     changeFile(session, file, eventType);
-    if (!KNOWN_FAST_BUILDS.has(extname(file))) {
+    if (KNOWN_FAST_BUILDS.has(extname(file)) && eventType === 'unlink') {
+      session.log.info(`🚮 File ${file} deleted...`);
+    }
+    if (!KNOWN_FAST_BUILDS.has(extname(file)) || eventType === 'unlink') {
       session.log.info('💥 Triggered full site rebuild');
       await processSite(session, opts);
       triggerReload();
