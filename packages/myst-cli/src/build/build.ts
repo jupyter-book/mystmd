@@ -1,4 +1,5 @@
 import path from 'path';
+import chalk from 'chalk';
 import { ExportFormats } from 'myst-frontmatter';
 import { filterPages, loadProjectFromDisk } from '../project';
 import type { ISession } from '../session/types';
@@ -88,9 +89,15 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
   });
   if (exportLogList.length === 0) {
     if (!site) {
-      session.log.info('📭 No file exports found.');
-      session.log.debug(
-        `You may need to add an 'exports' field to the frontmatter of the file(s) you wish to export:\n\n---\nexports:\n  - format: tex\n---`,
+      // Print out the kinds that are filtered
+      const kinds = Object.entries(opts)
+        .filter(([k, v]) => k !== 'force' && k !== 'checkLinks' && k !== 'site' && v)
+        .map(([k]) => k);
+      session.log.info(`📭 No file exports with kind "${kinds.join('", "')}" found.`);
+      session.log.info(
+        chalk.dim(
+          `You may need to add an 'exports' field to the frontmatter of the file(s) you wish to export:\n\n---\nexports:\n  - format: ${kinds[0]}\n---`,
+        ),
       );
     }
   } else {
