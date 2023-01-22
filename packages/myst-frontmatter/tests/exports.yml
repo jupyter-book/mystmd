@@ -61,3 +61,20 @@ cases:
         - format: pdf+tex
           template: arxiv_two_column
           blah: cool
+  - title: Simple export as a string of the format
+    raw:
+      export: pdf
+    normalized:
+      exports:
+        - format: pdf
+  - title: Simple export as a string of the format (plural)
+    raw:
+      exports: pdf
+    normalized:
+      exports:
+        - format: pdf
+  - title: Unknown string for export
+    raw:
+      export: nope
+    normalized: {}
+    errors: 1

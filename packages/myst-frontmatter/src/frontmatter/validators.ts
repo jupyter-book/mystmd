@@ -388,12 +388,28 @@ export function validateJupytext(input: any, opts: ValidationOptions) {
 export function validateExportsList(input: any, opts: ValidationOptions): Export[] | undefined {
   // Allow a single export to be defined as a dict
   if (input === undefined) return undefined;
-  const exports = Array.isArray(input) ? input : [input];
+  let exports: any[];
+  if (Array.isArray(input)) {
+    exports = input;
+  } else if (typeof input === 'string') {
+    const format = validateExportFormat(input, opts);
+    if (!format) return undefined;
+    exports = [{ format }];
+  } else {
+    exports = [input];
+  }
   const output = validateList(exports, incrementOptions('exports', opts), (exp, ind) => {
     return validateExport(exp, incrementOptions(`exports.${ind}`, opts));
   });
   if (!output || output.length === 0) return undefined;
   return output;
+}
+
+function validateExportFormat(input: any, opts: ValidationOptions): ExportFormats | undefined {
+  if (input === undefined) return undefined;
+  if (input === 'tex+pdf') input = 'pdf+tex';
+  const format = validateEnum<ExportFormats>(input, { ...opts, enum: ExportFormats });
+  return format;
 }
 
 export function validateExport(input: any, opts: ValidationOptions): Export | undefined {
@@ -404,12 +420,7 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     { required: ['format'], optional: RESERVED_EXPORT_KEYS },
     { ...opts, suppressWarnings: true },
   );
-  if (value.format === undefined) return undefined;
-  if (value.format === 'tex+pdf') value.format = 'pdf+tex';
-  const format = validateEnum<ExportFormats>(value.format, {
-    ...incrementOptions('format', opts),
-    enum: ExportFormats,
-  });
+  const format = validateExportFormat(value.format, incrementOptions('format', opts));
   if (format === undefined) return undefined;
   const output: Export = { ...value, format };
   if (value.template === null) {
