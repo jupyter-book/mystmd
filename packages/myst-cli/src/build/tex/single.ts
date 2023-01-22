@@ -6,17 +6,16 @@ import { renderTex, mergeTemplateImports } from 'jtex';
 import type { Root } from 'mdast';
 import { writeFileToFolder } from 'myst-cli-utils';
 import { extractPart } from 'myst-common';
-import type { Export, PageFrontmatter } from 'myst-frontmatter';
-import { validateExport, ExportFormats } from 'myst-frontmatter';
+import type { PageFrontmatter } from 'myst-frontmatter';
+import { ExportFormats } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
-import type { ValidationOptions } from 'simple-validators';
 import { unified } from 'unified';
 import { findCurrentProjectAndLoad } from '../../config';
-import { getRawFrontmatterFromFile } from '../../frontmatter';
+import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter';
 import { bibFilesInDir } from '../../process';
 import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session/types';
@@ -177,22 +176,7 @@ export async function collectTexExportOptions(
     );
   }
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
-  const exportErrorMessages: ValidationOptions['messages'] = {};
-  let exportOptions: Export[] =
-    rawFrontmatter?.exports
-      ?.map((exp: any, ind: number) => {
-        return validateExport(exp, {
-          property: `exports.${ind}`,
-          messages: exportErrorMessages,
-          errorLogFn: (message: string) => {
-            session.log.error(`Validation error: ${message}`);
-          },
-          warningLogFn: (message: string) => {
-            session.log.warn(`Validation: ${message}`);
-          },
-        });
-      })
-      .filter((exp: Export | undefined) => exp && formats.includes(exp?.format)) || [];
+  let exportOptions = getExportListFromRawFrontmatter(session, formats, rawFrontmatter);
   // If no export options are provided in frontmatter, instantiate default options
   if (exportOptions.length === 0 && formats.length && opts.force) {
     exportOptions = [{ format: formats[0] }];

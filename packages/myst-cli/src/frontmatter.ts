@@ -1,7 +1,8 @@
 import type { Root } from 'mdast';
 import { getFrontmatter } from 'myst-transforms';
-import type { Licenses, PageFrontmatter } from 'myst-frontmatter';
+import type { Export, ExportFormats, Licenses, PageFrontmatter } from 'myst-frontmatter';
 import {
+  validateExportsList,
   fillPageFrontmatter,
   licensesToString,
   unnestKernelSpec,
@@ -11,6 +12,7 @@ import { castSession } from './session';
 import { loadFile } from './process';
 import type { ISession } from './session/types';
 import { selectors } from './store';
+import type { ValidationOptions } from 'simple-validators';
 
 /**
  * Get page frontmatter from mdast tree and fill in missing info from project frontmatter
@@ -69,4 +71,30 @@ export async function getRawFrontmatterFromFile(session: ISession, file: string)
   if (!result || !result.pre) return undefined;
   const frontmatter = getFrontmatter(result.pre.mdast);
   return frontmatter.frontmatter;
+}
+
+export function getExportListFromRawFrontmatter(
+  session: ISession,
+  formats: ExportFormats[],
+  rawFrontmatter?: Record<string, any>,
+): Export[] {
+  const exportErrorMessages: ValidationOptions = {
+    property: 'exports',
+    messages: {},
+    errorLogFn: (message: string) => {
+      session.log.error(`Validation error: ${message}`);
+    },
+    warningLogFn: (message: string) => {
+      session.log.warn(`Validation: ${message}`);
+    },
+  };
+  const exports = validateExportsList(
+    rawFrontmatter?.exports ?? rawFrontmatter?.export,
+    exportErrorMessages,
+  );
+  if (!exports) return [];
+  const exportOptions: Export[] = exports.filter(
+    (exp: Export | undefined): exp is Export => !!exp && formats.includes(exp.format),
+  );
+  return exportOptions;
 }

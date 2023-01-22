@@ -128,6 +128,7 @@ export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output', 'id', 'name
 const KNOWN_ALIASES = {
   author: 'authors',
   affiliation: 'affiliations',
+  export: 'exports',
 };
 
 const GITHUB_USERNAME_REPO_REGEX = '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$';
@@ -182,7 +183,7 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
       output.orcid = id;
     } else {
       validationError(
-        `OCRID "${value.orcid}" is not valid, try an ID of the form "0000-0000-0000-0000"`,
+        `ORCID "${value.orcid}" is not valid, try an ID of the form "0000-0000-0000-0000"`,
         orcidOpts,
       );
     }
@@ -344,7 +345,7 @@ function validateTextRepresentation(input: any, opts: ValidationOptions) {
     output.format_name = validateString(value.format_name, incrementOptions('format_name', opts));
   }
   if (defined(value.format_version)) {
-    // The format version ocassionally comes as a number in YAML, treat it as a string
+    // The format version occasionally comes as a number in YAML, treat it as a string
     const format_version =
       typeof value.format_version === 'number'
         ? String(value.format_version)
@@ -384,7 +385,18 @@ export function validateJupytext(input: any, opts: ValidationOptions) {
   return output;
 }
 
-export function validateExport(input: any, opts: ValidationOptions) {
+export function validateExportsList(input: any, opts: ValidationOptions): Export[] | undefined {
+  // Allow a single export to be defined as a dict
+  if (input === undefined) return undefined;
+  const exports = Array.isArray(input) ? input : [input];
+  const output = validateList(exports, incrementOptions('exports', opts), (exp, ind) => {
+    return validateExport(exp, incrementOptions(`exports.${ind}`, opts));
+  });
+  if (!output || output.length === 0) return undefined;
+  return output;
+}
+
+export function validateExport(input: any, opts: ValidationOptions): Export | undefined {
   const value = validateObject(input, opts);
   if (value === undefined) return undefined;
   validateKeys(
@@ -549,9 +561,8 @@ export function validateProjectFrontmatterKeys(
     }
   }
   if (defined(value.exports)) {
-    output.exports = validateList(value.exports, incrementOptions('exports', opts), (exp, ind) => {
-      return validateExport(exp, incrementOptions(`exports.${ind}`, opts));
-    });
+    const exports = validateExportsList(value.exports, opts);
+    if (exports) output.exports = exports;
   }
   // This is only for the project, and is not defined on pages
   if (defined(value.references)) {
@@ -606,7 +617,7 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
     output.thumbnail = validateString(value.thumbnail, incrementOptions('thumbnail', opts));
   }
   if (defined(value.thumbnailOptimized)) {
-    // No validation, this is expected to be set programatically
+    // No validation, this is expected to be set programmatically
     output.thumbnailOptimized = value.thumbnailOptimized;
   }
   return output;

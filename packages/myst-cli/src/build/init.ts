@@ -32,7 +32,7 @@ const SITE_CONFIG = `site:
   nav: []
   actions:
     - title: Learn More
-      url: https://www.myst.tools/docs/mystjs
+      url: https://myst.tools/docs/mystjs
   domains: []
 `;
 

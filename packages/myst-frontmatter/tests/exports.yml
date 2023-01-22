@@ -1,0 +1,63 @@
+title: Exports
+cases:
+  - title: Exports list
+    raw:
+      exports:
+        - format: pdf+tex
+          template: arxiv_two_column
+    normalized:
+      exports:
+        - format: pdf+tex
+          template: arxiv_two_column
+  - title: Export list (not plural)
+    raw:
+      export:
+        - format: pdf+tex
+          template: arxiv_two_column
+    normalized:
+      exports:
+        - format: pdf+tex
+          template: arxiv_two_column
+  - title: Malformed list
+    raw:
+      export:
+        - blah: true
+    normalized: {}
+    errors: 1
+  - title: Malformed value (exports)
+    raw:
+      exports: true
+    normalized: {}
+    errors: 1
+  - title: Malformed value (export)
+    raw:
+      export: true
+    normalized: {}
+    errors: 1
+  - title: Export as a single object
+    raw:
+      export:
+        format: pdf+tex
+        template: arxiv_two_column
+    normalized:
+      exports:
+        - format: pdf+tex
+          template: arxiv_two_column
+  - title: Not a format
+    raw:
+      export:
+        format: nope
+        template: arxiv_two_column
+    normalized: {}
+    errors: 1
+  - title: Metadata isn't validated, but is kept
+    raw:
+      export:
+        format: pdf+tex
+        template: arxiv_two_column
+        blah: cool
+    normalized:
+      exports:
+        - format: pdf+tex
+          template: arxiv_two_column
+          blah: cool
