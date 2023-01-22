@@ -7,9 +7,17 @@ import {
   validateString,
   validationError,
 } from 'simple-validators';
-import correct from 'spdx-correct';
+import spdxCorrect from 'spdx-correct';
 import LICENSES from './licenses';
 import type { License, Licenses } from './types';
+
+function correctLicense(license?: string): string | undefined {
+  if (!license) return undefined;
+  const value = spdxCorrect(license);
+  if (value) return value;
+  if (license.toUpperCase() === 'CC-BY') return 'CC-BY-4.0';
+  return undefined;
+}
 
 function createURL(license: Omit<License, 'url'>): string {
   if (license.CC) {
@@ -87,7 +95,7 @@ export function validateLicense(input: any, opts: ValidationOptions): License | 
   const valueUnvalidated = validateString(input, opts);
   if (valueUnvalidated === undefined) return undefined;
   // Correct expects a non-empty string
-  const value = valueUnvalidated ? correct(valueUnvalidated) : valueUnvalidated;
+  const value = correctLicense(valueUnvalidated);
   if (!value) {
     return validationError(
       `invalid value "${valueUnvalidated}" - must be a valid license ID, see https://spdx.org/licenses/`,
