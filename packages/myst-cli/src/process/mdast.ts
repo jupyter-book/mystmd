@@ -170,6 +170,7 @@ export async function transformMdast(
     watch.actions.updateFileInfo({
       path: file,
       title: frontmatter.title,
+      short_title: frontmatter.short_title,
       description: frontmatter.description,
       date: frontmatter.date,
       thumbnail: frontmatter.thumbnail,

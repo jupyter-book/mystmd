@@ -78,6 +78,8 @@ export type Export = {
 
 export type SiteFrontmatter = {
   title?: string;
+  subtitle?: string;
+  short_title?: string;
   description?: string;
   authors?: Author[];
   venue?: Venue;
@@ -108,8 +110,6 @@ export type ProjectFrontmatter = SiteFrontmatter & {
 };
 
 export type PageFrontmatter = Omit<ProjectFrontmatter, 'references'> & {
-  subtitle?: string;
-  short_title?: string;
   kernelspec?: KernelSpec;
   jupytext?: Jupytext;
   tags?: string[];

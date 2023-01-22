@@ -63,9 +63,28 @@ export function selectLocalRawConfig(
 }
 
 export function selectFileInfo(state: RootState, path: string) {
-  const { title, description, date, thumbnail, thumbnailOptimized, tags, sha256, url } =
-    state.local.watch.files[resolve(path)] ?? {};
-  return { title, description, date, thumbnail, thumbnailOptimized, tags, sha256, url };
+  const {
+    title,
+    short_title,
+    description,
+    date,
+    thumbnail,
+    thumbnailOptimized,
+    tags,
+    sha256,
+    url,
+  } = state.local.watch.files[resolve(path)] ?? {};
+  return {
+    title,
+    short_title,
+    description,
+    date,
+    thumbnail,
+    thumbnailOptimized,
+    tags,
+    sha256,
+    url,
+  };
 }
 
 export function selectPageSlug(state: RootState, projectPath: string, path: string) {
