@@ -31,11 +31,11 @@ strikethrough
 : Use the `del` or `strike` role, for example, `` {del}`text` `` yeilds {del}`text`
 
 underline
-: Use the `u` or `underline` role, for example, `` {u}`text` `` yeilds {u}`text`
+: Use the `u` or `underline` role, for example, `` {u}`text` `` yields {u}`text`
 : Note, using this can often be confused with a link and usage of underlines [isn't recommended](https://practicaltypography.com/underlining.html), consider using strong or emphasis instead.
 
 smallcaps
-: Use the `sc` or `smallcaps` role, for example, `` {sc}`MyST` `` yeilds {sc}`MyST`
+: Use the `sc` or `smallcaps` role, for example, `` {sc}`MyST` `` yields {sc}`MyST`
 
 ## Line Breaks
 
@@ -97,17 +97,11 @@ Quotations are controlled with standard Markdown syntax, by inserting a caret (`
 > - Hamlet act 4, Scene 5
 ```
 
+(definition-lists)=
+
 ## Definition Lists
 
-Definition lists are based on the [Pandoc definition list specification](http://johnmacfarlane.net/pandoc/README.html#definition-lists).
-
-> Each term must fit on one line, which may optionally be followed by a blank line, and must be followed by one or more definitions. A definition begins with a colon or tilde, which may be indented one or two spaces.
->
-> A term may have multiple definitions, and each definition may consist of one or more block elements (paragraphs, code blocks, lists, etc.)
->
-> - [Pandoc documentation](https://pandoc.org/MANUAL.html#definition-lists)
-
-Here's an example:
+Definition lists are based on the [Pandoc definition list specification](http://johnmacfarlane.net/pandoc/README.html#definition-lists), starting with the term followed by a colon on the next line. For example:
 
 ```{myst}
 Term 1
@@ -116,6 +110,12 @@ Term 1
 Term 2
 : Definition
 ```
+
+> Each term must fit on one line, which may optionally be followed by a blank line, and must be followed by one or more definitions. A definition begins with a colon or tilde, which may be indented one or two spaces.
+>
+> A term may have multiple definitions, and each definition may consist of one or more block elements (paragraphs, code blocks, lists, etc.)
+>
+> - [Pandoc documentation](https://pandoc.org/MANUAL.html#definition-lists)
 
 ````{tip}
 :class: dropdown
@@ -141,26 +141,24 @@ Term 3
 ```
 ````
 
-% TODO: figure out how to support the footnote numbering.
 (footnotes)=
 
 ## Footnotes
 
-Footnotes use the [pandoc specification](https://pandoc.org/MANUAL.html#footnotes). A footnote is labeled with `[^label]` and can then be any alpha-numeric string (no spaces), which is case-insensitive.
-
-- If the label is an integer, then it will always use that integer for the rendered label (i.e. they are manually numbered).
-- For any other labels, they will be auto-numbered in the order which they are referenced, skipping any manually numbered labels.
-
-All footnote definitions are collected, and displayed at the bottom of the page for print or as hover-notes online.
-Note that un-referenced footnote definitions will not be displayed.
+Footnotes use the [pandoc specification](https://pandoc.org/MANUAL.html#footnotes). A footnote is labeled with `[^label]` and can then be any alpha-numeric string (no spaces), which is case-insensitive. This creates a link to the footnote definition, which is a line that starts with the same `[^label]: ` and then the text of the footnote.
 
 ```{myst}
-- This is a manually-numbered footnote reference.[^3]
-- This is an auto-numbered footnote reference.[^myref]
+- A footnote reference[^myref]
+- Manually-numbered footnote reference[^3]
 
 [^myref]: This is an auto-numbered footnote definition.
 [^3]: This is a manually-numbered footnote definition.
 ```
+
+If the label is an integer, then it will always use that integer for the rendered label (i.e. they are manually numbered). For any other labels, they will be auto-numbered in the order which they are referenced, skipping any manually numbered labels.
+
+All footnote definitions are collected, and displayed at the bottom of the page for print or as hover-notes online.
+Note that un-referenced footnote definitions will not be displayed.
 
 Any preceding text after a footnote definitions, which is indented by four or more spaces, will also be included in the footnote definition.
 

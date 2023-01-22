@@ -66,7 +66,7 @@ Create interactive scientific publications for the web or export to PDF, $\LaTeX
 :link: ./creating-pdf-documents.md
 **Create Scientific PDFs** 📄
 ^^^
-Create PDF print-ready scientific papers over 400 $\LaTeX$ journal templates.
+Create PDF print-ready scientific papers over 400 $\LaTeX$ journal templates or make your own!
 
 +++
 Create a PDF »
@@ -83,12 +83,12 @@ Export to Word »
 :::
 
 :::{card}
-:link: /docs/jtex/create-a-latex-template
-**Flexible Templating** 🧱
+:link: ./quickstart-myst-websites.md
+**Create Websites** 🌎
 ^^^
-Easily create and contribute data-driven templates using $\LaTeX$.
+Turn your markdown documents and notebooks into books, blogs, or lab-group websites.
 +++
-Create a Template »
+Create a Website »
 :::
 
 ::::
