@@ -43,13 +43,13 @@ myst init --write-toc
 
 `myst build` is used to export pdf, tex, and docx artifacts from MyST files, as well as build MyST websites containing all content from MyST project(s).
 
-From within a [project](#myst-init) you may run this command with no arguments and it will peform all exports defined in the frontmatter of project files, as well as build the content for a site, if a `site` config is defined:
+From within a [project](#myst-init) you may run this command with no arguments and it will perform all exports defined in the frontmatter of project files, as well as build the content for a site, if a `site` config is defined:
 
 ```
 myst build
 ```
 
-You may specifiy `--pdf`, `--tex`, and/or `--docx` to only export those types of static files:
+You may specify `--pdf`, `--tex`, and/or `--docx` to only export those types of static files:
 
 ```
 myst build --pdf
@@ -67,7 +67,7 @@ To perform exports without defining export frontmatter in the files, you may use
 myst build --force --pdf
 ```
 
-You may specifiy `--site` if you only wish to build the site content. The first time you build the site, this command will also download the site template to a local build directory:
+You may specify `--site` if you only wish to build the site content. The first time you build the site, this command will also download the site template to a local build directory:
 
 ```
 myst build --site
@@ -129,4 +129,39 @@ There is an `--all` option to delete all files created by MyST. The only differe
 
 ```
 myst clean --all
+```
+
+## MyST Templates
+
+### `myst templates list`
+
+List all known public templates.
+
+You may specify `--site`, `--tex`, and/or `--docx` to only export those types of static files:
+
+```bash
+myst templates list
+> EarthArXiv (Two Column)  eartharxiv_two_column
+>     Description: A two column preprint template for EarthArXiv with the AGU bibstyle
+>     Tags: paper, two-column, geoscience, earthscience, preprint
+>
+> arXiv (Two Column)       arxiv_two_column
+>     Description: A two column arXiv compatible template
+>     Tags: paper, two-column, preprint, arxiv, bioarxiv, eartharxiv
+```
+
+You can also filter by `--tag two-column` or any comma separated tags that will be used to filter the list.
+
+### `myst templates list [template]`
+
+To find the details on a single template use:
+
+```bash
+myst templates list volcanica --tex
+> Volcanica                volcanica
+> ID: public/volcanica
+> Version: 1.0.0
+> Author: Volcanica
+> Description: A template for submissions to the Volcanica journal
+> Tags: paper, journal, two-column, geoscience, earthscience
 ```

@@ -8,8 +8,6 @@ MyST templates curates a community collection of MyST Markdown compatible templa
 To see all of the community templates use:
 
 ```bash
-jtex list
-# or
 myst templates list --tex
 ```
 
@@ -47,6 +45,6 @@ The main advantage of donating your template, is that there will be more people 
 
 ## Thanks!
 
-Once your PR is merged, your template will be listed with `jtex list`, and accessible and discoverable by anyone who uses MyST Markdown!
+Once your PR is merged, your template will be listed with `myst templates list --tex`, and accessible and discoverable by anyone who uses MyST Markdown!
 
 Thanks for your contribution! 💚

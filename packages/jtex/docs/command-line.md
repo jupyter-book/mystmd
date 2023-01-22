@@ -68,34 +68,3 @@ The list is for the purpose of validating the template options, it is not necess
 
 The packages picked up are single lines of `\usepackage{name}` or `\RequirePackage{name}`.
 ```
-
-### `jtex list`
-
-List all known public templates.
-
-```bash
-jtex list
-> EarthArXiv (Two Column)  eartharxiv_two_column
->     Description: A two column preprint template for EarthArXiv with the AGU bibstyle
->     Tags: paper, two-column, geoscience, earthscience, preprint
->
-> arXiv (Two Column)       arxiv_two_column
->     Description: A two column arXiv compatible template
->     Tags: paper, two-column, preprint, arxiv, bioarxiv, eartharxiv
-```
-
-You can also filter by `--tag two-column` or any comma seperated tags that will be used to filter the list.
-
-### `jtex list [template]`
-
-To find the details on a single template use:
-
-```bash
-jtex list volcanica
-> Volcanica                volcanica
-> ID: public/volcanica
-> Version: 1.0.0
-> Author: Volcanica
-> Description: A template for submissions to the Volcanica journal
-> Tags: paper, journal, two-column, geoscience, earthscience
-```
