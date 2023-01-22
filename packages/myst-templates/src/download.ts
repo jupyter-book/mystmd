@@ -157,7 +157,7 @@ export async function downloadTemplate(
 
 export async function fetchTemplateDownloadLink(session: ISession, opts: { templateUrl: string }) {
   const { templateUrl } = opts;
-  session.log.info(`🐕 Fetching template metadata from ${templateUrl}`);
+  session.log.info(`🔍 Querying template metadata from ${templateUrl}`);
   const resLink = await fetch(templateUrl);
   if (!resLink.ok) {
     throw new Error(
