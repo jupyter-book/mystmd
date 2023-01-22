@@ -20,7 +20,7 @@ import type { LocalProject, LocalProjectPage } from './types';
  * @param opts - `index`, including path relative to current directory; default is 'index.md'
  *     or 'readme.md' in 'path' directory
  *
- * If jupyterbook '_toc.yml' exists in path, project structure will be derived from that.
+ * If JupyterBook '_toc.yml' exists in path, project structure will be derived from that.
  * In this case, index will be ignored in favor of root from '_toc.yml'
  * If '_toc.yml' does not exist, project structure will be built from the local file/foler structure.
  */

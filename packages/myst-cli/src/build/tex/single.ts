@@ -5,7 +5,7 @@ import type { TemplateImports } from 'jtex';
 import { renderTex, mergeTemplateImports } from 'jtex';
 import type { Root } from 'mdast';
 import { writeFileToFolder } from 'myst-cli-utils';
-import { extractPart } from 'myst-common';
+import { extractPart, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
@@ -123,6 +123,7 @@ export async function localArticleToTexTemplated(
   concatenateFiles(bibFiles, path.join(path.dirname(templateOptions.output), DEFAULT_BIB_FILENAME));
 
   const mystTemplate = new MystTemplate(session, {
+    kind: TemplateKind.tex,
     template: templateOptions.template || undefined,
     buildDir: session.buildPath(),
   });

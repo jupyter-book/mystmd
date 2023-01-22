@@ -8,6 +8,7 @@ import type { ISession } from '../../session/types';
 import { createTempFolder } from '../../utils';
 import type { ExportWithOutput } from '../types';
 import { cleanOutput } from '../utils/cleanOutput';
+import { TemplateKind } from 'myst-common';
 
 const copyFile = util.promisify(fs.copyFile);
 
@@ -73,6 +74,7 @@ export async function createPdfGivenTexExport(
     buildCommand = pdfExportCommand(texFile, texLogFile);
   } else {
     const mystTemplate = new MystTemplate(session, {
+      kind: TemplateKind.tex,
       template: template || undefined,
       buildDir: session.buildPath(),
     });

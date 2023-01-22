@@ -88,12 +88,14 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     return `${path.relative('.', exportOptions.$file)} -> ${exportOptions.output}`;
   });
   if (exportLogList.length === 0) {
-    if (!site) {
+    if (!(site || performSiteBuild)) {
       // Print out the kinds that are filtered
       const kinds = Object.entries(opts)
         .filter(([k, v]) => k !== 'force' && k !== 'checkLinks' && k !== 'site' && v)
         .map(([k]) => k);
-      session.log.info(`📭 No file exports with kind "${kinds.join('", "')}" found.`);
+      session.log.info(
+        `📭 No file exports${kinds.length > 0 ? ` with kind "${kinds.join('", "')}"` : ''} found.`,
+      );
       session.log.info(
         chalk.dim(
           `You may need to add an 'exports' field to the frontmatter of the file(s) you wish to export:\n\n---\nexports:\n  - format: ${kinds[0]}\n---`,

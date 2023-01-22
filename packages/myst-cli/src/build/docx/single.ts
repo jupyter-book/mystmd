@@ -25,6 +25,7 @@ import {
 } from '../utils';
 import { createFooter } from './footers';
 import { createArticleTitle, createReferenceTitle } from './titles';
+import { TemplateKind } from 'myst-common';
 
 export async function collectWordExportOptions(
   session: ISession,
@@ -163,7 +164,7 @@ export async function runWordExport(
   const vfile = new VFile();
   vfile.path = output;
   const mystTemplate = new MystTemplate(session, {
-    kind: 'docx' as any,
+    kind: TemplateKind.docx,
     template: exportOptions.template || undefined,
     buildDir: session.buildPath(),
   });
