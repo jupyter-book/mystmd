@@ -105,6 +105,7 @@ const AUTHOR_KEYS = [
 ];
 const AUTHOR_ALIASES = {
   role: 'roles',
+  affiliation: 'affiliations',
 };
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
 const NUMBERING_KEYS = [
@@ -128,6 +129,7 @@ export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output', 'id', 'name
 const KNOWN_ALIASES = {
   author: 'authors',
   affiliation: 'affiliations',
+  export: 'exports',
 };
 
 const GITHUB_USERNAME_REPO_REGEX = '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$';
@@ -182,7 +184,7 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
       output.orcid = id;
     } else {
       validationError(
-        `OCRID "${value.orcid}" is not valid, try an ID of the form "0000-0000-0000-0000"`,
+        `ORCID "${value.orcid}" is not valid, try an ID of the form "0000-0000-0000-0000"`,
         orcidOpts,
       );
     }
@@ -220,8 +222,12 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
   }
   if (defined(value.affiliations)) {
     const affiliationsOpts = incrementOptions('affiliations', opts);
-    output.affiliations = validateList(value.affiliations, affiliationsOpts, (aff) => {
-      return validateString(aff, affiliationsOpts);
+    let affiliations = value.affiliations;
+    if (typeof affiliations === 'string') {
+      affiliations = affiliations.split(';');
+    }
+    output.affiliations = validateList(affiliations, affiliationsOpts, (aff) => {
+      return validateString(aff, affiliationsOpts)?.trim();
     });
   }
   if (defined(value.twitter)) {
@@ -344,7 +350,7 @@ function validateTextRepresentation(input: any, opts: ValidationOptions) {
     output.format_name = validateString(value.format_name, incrementOptions('format_name', opts));
   }
   if (defined(value.format_version)) {
-    // The format version ocassionally comes as a number in YAML, treat it as a string
+    // The format version occasionally comes as a number in YAML, treat it as a string
     const format_version =
       typeof value.format_version === 'number'
         ? String(value.format_version)
@@ -384,7 +390,34 @@ export function validateJupytext(input: any, opts: ValidationOptions) {
   return output;
 }
 
-export function validateExport(input: any, opts: ValidationOptions) {
+export function validateExportsList(input: any, opts: ValidationOptions): Export[] | undefined {
+  // Allow a single export to be defined as a dict
+  if (input === undefined) return undefined;
+  let exports: any[];
+  if (Array.isArray(input)) {
+    exports = input;
+  } else if (typeof input === 'string') {
+    const format = validateExportFormat(input, opts);
+    if (!format) return undefined;
+    exports = [{ format }];
+  } else {
+    exports = [input];
+  }
+  const output = validateList(exports, incrementOptions('exports', opts), (exp, ind) => {
+    return validateExport(exp, incrementOptions(`exports.${ind}`, opts));
+  });
+  if (!output || output.length === 0) return undefined;
+  return output;
+}
+
+function validateExportFormat(input: any, opts: ValidationOptions): ExportFormats | undefined {
+  if (input === undefined) return undefined;
+  if (input === 'tex+pdf') input = 'pdf+tex';
+  const format = validateEnum<ExportFormats>(input, { ...opts, enum: ExportFormats });
+  return format;
+}
+
+export function validateExport(input: any, opts: ValidationOptions): Export | undefined {
   const value = validateObject(input, opts);
   if (value === undefined) return undefined;
   validateKeys(
@@ -392,12 +425,7 @@ export function validateExport(input: any, opts: ValidationOptions) {
     { required: ['format'], optional: RESERVED_EXPORT_KEYS },
     { ...opts, suppressWarnings: true },
   );
-  if (value.format === undefined) return undefined;
-  if (value.format === 'tex+pdf') value.format = 'pdf+tex';
-  const format = validateEnum<ExportFormats>(value.format, {
-    ...incrementOptions('format', opts),
-    enum: ExportFormats,
-  });
+  const format = validateExportFormat(value.format, incrementOptions('format', opts));
   if (format === undefined) return undefined;
   const output: Export = { ...value, format };
   if (value.template === null) {
@@ -438,12 +466,18 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.authors)) {
     let authors = value.authors;
     // Turn a string into a list of strings, this will be transformed later
-    if (typeof value.authors === 'string') {
+    if (!Array.isArray(value.authors)) {
       authors = [authors];
     }
     output.authors = validateList(authors, incrementOptions('authors', opts), (author, index) => {
       return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
     });
+    // Ensure there is a corresponding author if an email is provided
+    const corresponding = output.authors?.find((a) => a.corresponding !== undefined);
+    const email = output.authors?.find((a) => a.email);
+    if (!corresponding && email) {
+      email.corresponding = true;
+    }
   }
   if (defined(value.venue)) {
     output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
@@ -452,13 +486,13 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     output.github = validateGithubUrl(value.github, incrementOptions('github', opts));
   }
   if (defined(value.keywords)) {
-    output.keywords = validateList(
-      value.keywords,
-      incrementOptions('keywords', opts),
-      (word, ind) => {
-        return validateString(word, incrementOptions(`keywords.${ind}`, opts));
-      },
-    );
+    let keywords = value.keywords;
+    if (typeof keywords === 'string') {
+      keywords = keywords.split(/[,;]/).map((k) => k.trim());
+    }
+    output.keywords = validateList(keywords, incrementOptions('keywords', opts), (word, ind) => {
+      return validateString(word, incrementOptions(`keywords.${ind}`, opts));
+    });
   }
   return output;
 }
@@ -549,9 +583,8 @@ export function validateProjectFrontmatterKeys(
     }
   }
   if (defined(value.exports)) {
-    output.exports = validateList(value.exports, incrementOptions('exports', opts), (exp, ind) => {
-      return validateExport(exp, incrementOptions(`exports.${ind}`, opts));
-    });
+    const exports = validateExportsList(value.exports, opts);
+    if (exports) output.exports = exports;
   }
   // This is only for the project, and is not defined on pages
   if (defined(value.references)) {
@@ -606,7 +639,7 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
     output.thumbnail = validateString(value.thumbnail, incrementOptions('thumbnail', opts));
   }
   if (defined(value.thumbnailOptimized)) {
-    // No validation, this is expected to be set programatically
+    // No validation, this is expected to be set programmatically
     output.thumbnailOptimized = value.thumbnailOptimized;
   }
   return output;

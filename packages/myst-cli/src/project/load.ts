@@ -20,13 +20,13 @@ import type { LocalProject, LocalProjectPage } from './types';
  * @param opts - `index`, including path relative to current directory; default is 'index.md'
  *     or 'readme.md' in 'path' directory
  *
- * If jupyterbook '_toc.yml' exists in path, project structure will be derived from that.
+ * If JupyterBook '_toc.yml' exists in path, project structure will be derived from that.
  * In this case, index will be ignored in favor of root from '_toc.yml'
- * If '_toc.yml' does not exist, project structure will be built from the local file/foler structure.
+ * If '_toc.yml' does not exist, project structure will be built from the local file/folder structure.
  */
 export async function loadProjectFromDisk(
   session: ISession,
-  path: string,
+  path?: string,
   opts?: { index?: string; writeToc?: boolean; warnOnNoConfig?: boolean },
 ): Promise<LocalProject> {
   path = path || resolve('.');
@@ -42,6 +42,7 @@ export async function loadProjectFromDisk(
   let { index, writeToc } = opts || {};
   if (validateTOC(session, path)) {
     newProject = projectFromToc(session, path);
+    if (writeToc) session.log.warn('Not writing the table of contents, it already exists!');
     writeToc = false;
   } else {
     const project = selectors.selectLocalProject(session.store.getState(), path);

@@ -1,16 +1,14 @@
 format: jb-book
 root: index
 parts:
-  - caption: Overview
+  - caption: Quickstart Guides
     chapters:
-      - file: intro
-        sections:
-          - file: installing
-          - file: installing-prerequisites
-      - file: project-overview
+      - file: quickstart
+      - file: quickstart-myst-documents
+      - file: quickstart-myst-websites
+      - file: quickstart-myst-markdown
   - caption: Authoring
     chapters:
-      - file: syntax-overview
       - file: typography
       - file: admonitions
       - file: figures
@@ -29,7 +27,6 @@ parts:
       - file: interactive-notebooks
   - caption: Websites
     chapters:
-      - file: website-overview
       - file: table-of-contents
       - file: themes-and-extensions
       - file: seo-and-social
@@ -46,5 +43,8 @@ parts:
   - caption: Reference
     chapters:
       - file: background
+      - file: installing
+      - file: installing-prerequisites
       - file: commonmark
+      - file: syntax-overview
       - file: frontmatter

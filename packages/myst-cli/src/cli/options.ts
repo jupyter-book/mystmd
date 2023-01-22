@@ -1,23 +1,27 @@
 import { Option } from 'commander';
 
-export function makePdfOption(verb: string) {
-  return new Option('--pdf', `${verb} PDF output`).default(false);
+export function makePdfOption(description: string) {
+  return new Option('--pdf', description).default(false);
 }
 
-export function makeTexOption(verb: string) {
-  return new Option('--tex', `${verb} Tex outputs`).default(false);
+export function makeTexOption(description: string) {
+  return new Option('--tex', description).default(false);
 }
 
-export function makeDocxOption(verb: string) {
-  return new Option('--word, --docx', `${verb} Docx output`).default(false);
+export function makeDocxOption(description: string) {
+  return new Option('--word, --docx', description).default(false);
 }
 
-export function makeSiteOption(verb: string) {
-  return new Option('--site', `${verb} MyST site content`).default(false);
+export function makeSiteOption(description: string) {
+  return new Option('--site', description).default(false);
 }
 
-export function makeProjectOption(verb: string) {
-  return new Option('--project', `${verb} MyST project content`).default(false);
+export function makeProjectOption(description: string) {
+  return new Option('--project', description).default(false);
+}
+
+export function makeAllOption(description: string) {
+  return new Option('-a, --all', description).default(false);
 }
 
 export function makeStrictOption() {

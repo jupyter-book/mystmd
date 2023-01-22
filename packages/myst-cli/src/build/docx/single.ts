@@ -2,17 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
-import { writeFileToFolder } from 'myst-cli-utils';
-import type { Export } from 'myst-frontmatter';
-import { validateExport, ExportFormats } from 'myst-frontmatter';
+import { tic, writeFileToFolder } from 'myst-cli-utils';
+import { ExportFormats } from 'myst-frontmatter';
 import type { RendererDoc } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import type { LinkTransformer } from 'myst-transforms';
 import { htmlTransform } from 'myst-transforms';
-import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config';
-import { getRawFrontmatterFromFile } from '../../frontmatter';
+import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter';
 import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session/types';
 import type { RendererData } from '../../transforms/types';
@@ -27,6 +25,7 @@ import {
 } from '../utils';
 import { createFooter } from './footers';
 import { createArticleTitle, createReferenceTitle } from './titles';
+import { TemplateKind } from 'myst-common';
 
 export async function collectWordExportOptions(
   session: ISession,
@@ -38,22 +37,7 @@ export async function collectWordExportOptions(
 ) {
   const { template, filename, renderer } = opts;
   const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
-  const exportErrorMessages: ValidationOptions['messages'] = {};
-  let exportOptions: Export[] =
-    rawFrontmatter?.exports
-      ?.map((exp: any, ind: number) => {
-        return validateExport(exp, {
-          property: `exports.${ind}`,
-          messages: exportErrorMessages,
-          errorLogFn: (message: string) => {
-            session.log.error(`Validation error: ${message}`);
-          },
-          warningLogFn: (message: string) => {
-            session.log.warn(`Validation: ${message}`);
-          },
-        });
-      })
-      .filter((exp: Export | undefined) => exp && formats.includes(exp?.format)) || [];
+  let exportOptions = getExportListFromRawFrontmatter(session, formats, rawFrontmatter, file);
   // If no export options are provided in frontmatter, instantiate default options
   if (exportOptions.length === 0 && formats.length && opts.force) {
     exportOptions = [{ format: formats[0] }];
@@ -180,11 +164,12 @@ export async function runWordExport(
   const vfile = new VFile();
   vfile.path = output;
   const mystTemplate = new MystTemplate(session, {
-    kind: 'docx' as any,
+    kind: TemplateKind.docx,
     template: exportOptions.template || undefined,
     buildDir: session.buildPath(),
   });
   await mystTemplate.ensureTemplateExistsOnPath();
+  const toc = tic();
   const { options, doc } = mystTemplate.prepare({
     frontmatter: data.frontmatter,
     parts: [],
@@ -194,8 +179,8 @@ export async function runWordExport(
   const renderer = exportOptions.renderer ?? defaultWordRenderer;
   const docx = renderer(session, data, doc, options, mystTemplate.templatePath, vfile);
   logMessagesFromVFile(session, vfile);
-  session.log.info(`🖋  Writing docx to ${output}`);
   await writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));
+  session.log.info(toc(`📄 Exported DOCX in %s, copying to ${output}`));
 }
 
 export async function localArticleToWord(

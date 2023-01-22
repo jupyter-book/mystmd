@@ -19,7 +19,7 @@ export async function getSingleFileContent(
   },
 ) {
   await loadFile(session, file);
-  // Collect bib files - mysttotex will need those, not 'references'
+  // Collect bib files - myst-to-tex will need those, not 'references'
   await transformMdast(session, {
     file,
     imageWriteFolder: imageWriteFolder,
@@ -28,5 +28,7 @@ export async function getSingleFileContent(
     projectPath,
   });
   await postProcessMdast(session, { file, extraLinkTransformers });
-  return selectFile(session, file);
+  const selectedFile = selectFile(session, file);
+  if (!selectedFile) throw new Error(`Could not load file information for ${file}`);
+  return selectedFile;
 }

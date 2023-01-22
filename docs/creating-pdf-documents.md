@@ -88,11 +88,7 @@ There are currently 422 journals supported[^journals] and it is straghtforward t
 
     This is the total number of _journals_ that can be created from MyST, which is a higher number than the number of _templates_, as some templates support many different journal exports. As we add more templates we will probably switch this number to templates, which is closer to 15, but that doesn't sound as impressive out of the gate. 🚀
 
-```{danger}
-The `myst templates` is not written yet, a similar interface is available through `jtex list`.
-```
-
-To list all of the public tempaltes, use the `myst templates` command:
+To list all of the public templates, use the `myst templates` command:
 
 ```bash
 myst templates list --pdf --tag two-column
@@ -107,7 +103,7 @@ myst templates list --pdf --tag two-column
 Once you have found a template, you can list detailed information about the parts and options that the template exposes using:
 
 ```bash
-myst templates arxiv_two_column
+myst templates list arxiv_two_column --tex
 
 > ID: public/arxiv_two_column
 > Version: 1.0.0

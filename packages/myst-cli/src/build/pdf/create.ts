@@ -2,12 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import util from 'util';
 import { pdfExportCommand } from 'jtex';
-import { exec } from 'myst-cli-utils';
+import { exec, tic } from 'myst-cli-utils';
 import MystTemplate from 'myst-templates';
 import type { ISession } from '../../session/types';
 import { createTempFolder } from '../../utils';
 import type { ExportWithOutput } from '../types';
 import { cleanOutput } from '../utils/cleanOutput';
+import { TemplateKind } from 'myst-common';
 
 const copyFile = util.promisify(fs.copyFile);
 
@@ -73,19 +74,21 @@ export async function createPdfGivenTexExport(
     buildCommand = pdfExportCommand(texFile, texLogFile);
   } else {
     const mystTemplate = new MystTemplate(session, {
+      kind: TemplateKind.tex,
       template: template || undefined,
       buildDir: session.buildPath(),
     });
     buildCommand = pdfExportCommand(texFile, texLogFile, mystTemplate);
   }
+  const toc = tic();
   try {
-    session.log.info(`🖨  Rendering pdf to ${pdfBuild}`);
+    session.log.info(`🖨  Rendering PDF to ${pdfBuild}`);
     session.log.debug(`Running command:\n> ${buildCommand}`);
     await exec(buildCommand, { cwd: buildPath });
     session.log.debug(`Done building LaTeX.`);
   } catch (err) {
     session.log.error(
-      `Error while invoking mklatex - logs available at: ${
+      `Error while invoking latex - logs available at: ${
         copyLogs ? logOutputFolder : buildPath
       }\n${err}`,
     );
@@ -100,7 +103,7 @@ export async function createPdfGivenTexExport(
   }
 
   if (pdfBuildExists) {
-    session.log.info(`🧬 Copying pdf to ${pdfOutput}`);
+    session.log.info(toc(`📄 Exported PDF in %s, copying to ${pdfOutput}`));
     await copyFile(pdfBuild, pdfOutput);
     session.log.debug(`Copied PDF file to ${pdfOutput}`);
   } else {

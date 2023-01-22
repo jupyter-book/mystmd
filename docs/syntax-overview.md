@@ -5,23 +5,7 @@ description: MyST (Markedly Structured Text) is designed to create publication-q
 
 MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [ReStructured Text](https://docutils.sourceforge.io/rst.html) (RST) ecosystems.
 
-> MyST is designed to harness the extensibility and community of RST and bring these super-powers into Markdown.
-
-MyST is a superset of [CommonMark](./commonmark.md) (the standard form of Markdown) and allows you to directly create “directives” and “roles” as extension points in the language. `directives` are block-level extension points, like [callout panels](./admonitions.md), [tabs](./dropdowns-cards-and-tabs.md), [figures](./figures.md) or [embedded charts](./interactive-notebooks.ipynb); and roles are inline extension points, for components like [cross-references](./cross-references.md), [external references](./external-references.md), [citations](./citations.md), or [inline math](./math.md).
-
-## Frontmatter
-
-To add meta information to your document, you can add frontmatter that includes a `title`, `description`, `thumbnail` and any `authors` or scientific data like a `doi`.
-To include frontmatter, add it at the top of your document as YAML, for example:
-
-```yaml
----
-title: MyST Syntax Overview
-description: MyST is designed to create publication-quality documents written entirely in Markdown.
----
-```
-
-To learn about all the fields that you can add, see [](./frontmatter.md).
+MyST is a superset of [CommonMark](./commonmark.md), the standard form of Markdown, and allows you to directly create “directives” and “roles” that extend markdown to support technical and scientific documents. `directives` are block-level extension points, like [callout panels](./admonitions.md), [tabs](./dropdowns-cards-and-tabs.md), [figures](./figures.md) or [embedded charts](./interactive-notebooks.ipynb); and roles are inline extension points, for components like [cross-references](./cross-references.md), [external references](./external-references.md), [citations](./citations.md), or [inline math](./math.md).
 
 ## Directives & Roles
 
@@ -29,23 +13,53 @@ Roles and directives are two of the most powerful parts of MyST. They are kind o
 
 ### Directives
 
-Directives are multi-line containers that include an identifier, arguments, options, and content. Examples include [admonitions](./admonitions.md), [figures](./figures.md), and [equations](./math.md). At its simplest, you can use directives using the following markup:
+Directives are multi-line containers that include an identifier, arguments, options, and content. Examples include [admonitions](./admonitions.md), [figures](./figures.md), and [equations](./math.md). At its simplest, you can use directives using a "fence" (either back-ticks or colons[^colon-or-fence]) and the name of the directive enclosed in braces (`{name}`):
 
-````{myst}
-```{note}
+[^colon-or-fence]: Which fence type, colon or backtick, is up to you, and either will work. The colon-fence has better fallback when the contents of the directive includes markdown in non-MyST renderers (like GitHub). The backtick-fence should be used when the contents of the directive is code-like (e.g. a diagram or math!).
+
+(example-fence)=
+
+``````{tab-set}
+````{tab-item} Colon Fence
+Use a colon fence (`:::`) when the contents of the directive is markdown, such as [callouts](./admonitions.md) this will improve the processing in renderers that do not support MyST:
+
+```{myst}
+
+:::{note}
 Here is a note!
+:::
 ```
 ````
+`````{tab-item} Backtick Fence
+Use a backtick fence (`` ``` ``) when the contents of the directive is code-like, such as [math](./math.md) or a [diagrams](./diagrams.md), this will ensure any sort of auto-formatting will not attempt to reformat these sections:
+````{myst}
+```{math}
+\mathbf{u} \times \mathbf{v}=\left|\begin{array}{ll}u_{2} & u_{3} \\ v_{2} & v_{3}\end{array}\right| \mathbf{i}+\left|\begin{array}{ll}u_{3} & u_{1} \\ v_{3} & v_{1}\end{array}\right| \mathbf{j}+\left|\begin{array}{ll}u_{1} & u_{2} \\ v_{1} & v_{2}\end{array}\right| \mathbf{k}
+```
+````
+`````
+``````
 
 The `{note}` directive above doesn't take any arguments and we didn't add any options. In addition to the directive name and the directive content, directives allow two other configuration points:
 
 1\) **directive arguments** - a list of words that come just after the `{directivename}`.
 
+``````{tab-set}
+````{tab-item} Colon Fence
+```markdown
+:::{directivename} arg1 arg2
+My directive content.
+:::
+```
+````
+`````{tab-item} Backtick Fence
 ````markdown
 ```{directivename} arg1 arg2
 My directive content.
 ```
 ````
+`````
+``````
 
 2\) **directive options** - a collection of flags or key/value pairs that come just underneath `{directivename}`.
 
@@ -85,16 +99,6 @@ My directive content.
 Specifying directive keywords with `:key:` or `---` will make no difference. Use the `:key: val` syntax as a shorthand for just one or two keywords. Use the `---` syntax if you have many keywords you wish to specify, or if some values will span multiple lines.
 ```
 
-Try editing the following `{figure}` directive, you can center the figure with an `:align: center` option!
-
-````{myst}
-```{figure} https://source.unsplash.com/random/400x200?meditation
-:align: right
-
-The picture would look better if it is `:align: center`-ed!
-```
-````
-
 ### Roles
 
 Roles are very similar to directives, but they are written entirely in one line. The syntax of a role is:
@@ -113,32 +117,28 @@ Roles are defined inline, with an identifier and input. There are a number of ro
 Here is an {abc}`unknown role`.
 ```
 
+(nesting-content)=
+
 ## Nesting content blocks in Markdown
 
-If you’d like to nest content blocks inside one another in Markdown (for example, to put a {note} inside of a {margin}), you may do so by adding extra backticks (`) to the outer-most block. This works for literal code blocks as well.
-
-For example, the following syntax:
-
-`````text
-````
-```
-```
-````
-`````
-
-yields
-
-````text
-```
-```
-````
-
-Thus, if you’d like to nest directives inside one another, you can take the same approach. For example, two [admonitions](./admonitions.md) nested in side of eachother:
+If you’d like to nest content blocks inside one another in Markdown (for example, to put a `{note}` inside of a `{margin}`), you may do so by adding extra backticks (`` ` ``)[^colon] to the outer-most block.
+For example, two [admonitions](./admonitions.md) nested in side of eachother:
 
 `````{myst}
 ````{important}
 ```{note}
 Here's my `important`, highly nested note! 🪆
+```
+````
+`````
+
+[^colon]: You can also use this same technique and add colons to the initial directive or fence. See an [example](#example-fence) of when to use each syntax.
+
+This works for literal code blocks as well. For example, to show triple-backticks on this page we are using following syntax:
+
+`````{myst}
+````
+```
 ```
 ````
 `````

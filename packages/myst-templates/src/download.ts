@@ -20,28 +20,37 @@ const DEFAULT_TEMPLATES = {
 
 const PARTIAL_TEMPLATE_REGEX = /^[a-zA-Z0-9_-]+$/;
 const TEMPLATE_REGEX = /^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/;
+const FULL_TEMPLATE_REGEX = /^(site|tex|docx)\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/;
 
 function normalizeTemplateName(opts: { kind?: TemplateKind; template?: string }) {
   const { template } = opts;
-  const kind = opts.kind ?? TemplateKind.tex;
-  if (!template) {
+  const kind = opts.kind;
+  if (!template && kind) {
     return DEFAULT_TEMPLATES[kind];
   }
-  if (template.match(PARTIAL_TEMPLATE_REGEX)) {
+  if (template?.match(PARTIAL_TEMPLATE_REGEX) && kind) {
     return `${kind}/myst/${template}`;
   }
-  if (template.match(TEMPLATE_REGEX)) {
+  if (template?.match(TEMPLATE_REGEX) && kind) {
     return `${kind}/${template}`;
   }
-  return undefined;
+  if (template?.match(FULL_TEMPLATE_REGEX)) {
+    return template;
+  }
+  if (!template || !kind) throw new Error('You must specify a template kind, for example, "--tex"');
+  return template;
+}
+
+function templatesUrl(session: ISession) {
+  return `${session.API_URL}/templates`;
 }
 
 function listingUrl(session: ISession, kind?: TemplateKind) {
-  return `${session.API_URL}/templates/${kind ?? TemplateKind.tex}`;
+  return `${templatesUrl(session)}/${kind ?? TemplateKind.tex}`;
 }
 
 function defaultUrl(session: ISession, template: string) {
-  return `${session.API_URL}/templates/${template}`;
+  return `${templatesUrl(session)}/${template}`;
 }
 
 function defaultPath(
@@ -148,7 +157,7 @@ export async function downloadTemplate(
 
 export async function fetchTemplateDownloadLink(session: ISession, opts: { templateUrl: string }) {
   const { templateUrl } = opts;
-  session.log.info(`🐕 Fetching template metadata from ${templateUrl}`);
+  session.log.info(`🔍 Querying template metadata from ${templateUrl}`);
   const resLink = await fetch(templateUrl);
   if (!resLink.ok) {
     throw new Error(
@@ -211,9 +220,9 @@ export async function cloneTemplate(
 }
 
 export async function fetchPublicTemplate(session: ISession, name: string, kind?: TemplateKind) {
-  const url = listingUrl(session);
-  session.log.debug('Fetching template listing information');
+  const url = templatesUrl(session);
   const templateUrl = `${url}/${normalizeTemplateName({ template: name, kind })}`;
+  session.log.debug(`Fetching template listing information from ${templateUrl}`);
   const resLink = await fetch(templateUrl);
   if (!resLink.ok) {
     throw new Error(
@@ -225,8 +234,11 @@ export async function fetchPublicTemplate(session: ISession, name: string, kind?
 
 export async function listPublicTemplates(
   session: ISession,
-  kind?: TemplateKind,
+  kind?: TemplateKind | TemplateKind[],
 ): Promise<TemplateYmlListResponse['items']> {
+  if (Array.isArray(kind)) {
+    return (await Promise.all(kind.map((k) => listPublicTemplates(session, k)))).flat();
+  }
   const url = listingUrl(session, kind);
   session.log.debug('Fetching template listing information');
   const resLink = await fetch(url);

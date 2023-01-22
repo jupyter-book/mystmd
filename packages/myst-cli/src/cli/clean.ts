@@ -3,6 +3,7 @@ import { clean } from '../build';
 import { Session } from '../session';
 import { clirun } from './clirun';
 import {
+  makeAllOption,
   makeDocxOption,
   makePdfOption,
   makeSiteOption,
@@ -31,25 +32,20 @@ export function makeTemplatesOption() {
   ).default(false);
 }
 
-export function makeAllOption() {
-  return new Option(
-    '-a, --all',
-    'Delete all exports, site content, templates, and temp files created by MyST',
-  ).default(false);
-}
-
 export function makeCleanCLI(program: Command) {
   const command = new Command('clean')
-    .description('Clean built pdf, tex, and word exports and other build artifacts')
+    .description('Remove exports, temp files and installed templates')
     .argument('[files...]', 'list of files to clean corresponding outputs')
-    .addOption(makePdfOption('Clean'))
-    .addOption(makeTexOption('Clean'))
-    .addOption(makeDocxOption('Clean'))
-    .addOption(makeSiteOption('Clean'))
+    .addOption(makePdfOption('Clean PDF output'))
+    .addOption(makeTexOption('Clean LaTeX outputs'))
+    .addOption(makeDocxOption('Clean Docx output'))
+    .addOption(makeSiteOption('Clean MyST site content'))
     .addOption(makeTempOption())
     .addOption(makeExportsOption())
     .addOption(makeTemplatesOption())
-    .addOption(makeAllOption())
+    .addOption(
+      makeAllOption('Delete all exports, site content, templates, and temp files created by MyST'),
+    )
     .addOption(makeYesOption())
     .action(clirun(Session, clean, program));
   return command;

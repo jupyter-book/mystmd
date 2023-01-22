@@ -151,7 +151,7 @@ export async function transformMdast(
   transformCitations(log, mdast, fileCitationRenderer, references, file);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
-    .use(footnotesPlugin, { references }) // Needs to happen nead the end
+    .use(footnotesPlugin, { references }) // Needs to happen near the end
     .run(mdast, vfile);
   await transformImages(session, mdast, file, imageWriteFolder, {
     altOutputFolder: imageAltOutputFolder,
@@ -170,6 +170,7 @@ export async function transformMdast(
     watch.actions.updateFileInfo({
       path: file,
       title: frontmatter.title,
+      short_title: frontmatter.short_title,
       description: frontmatter.description,
       date: frontmatter.date,
       thumbnail: frontmatter.thumbnail,
@@ -215,6 +216,7 @@ export async function postProcessMdast(
   const { log } = session;
   const cache = castSession(session);
   const mdastPost = selectFile(session, file);
+  if (!mdastPost) return;
   const fileState = cache.$internalReferences[file];
   const state = pageReferenceStates
     ? new MultiPageReferenceState(pageReferenceStates, file)

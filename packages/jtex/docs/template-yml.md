@@ -11,7 +11,8 @@ Every template defines a `template.yml` to define the `options`, `parts` and `do
 
 The `template.yml` defines information about the template, including who made and contributed it, the license, any tags for the template and links to the source repositories.
 
-This information is meant for listing and searching templates in a user interface or in the command line using `jtex list`.
+This information is meant for listing and searching templates in a user interface or in the command line using:\
+`myst templates list`\
 The following metadata fields should be included for the template to be attributed correctly.
 
 ```yaml
@@ -188,7 +189,7 @@ options:
 ```
 
 condition
-: Indicate that this option is conditional on other options, for example, a jouranl name.
+: Indicate that this option is conditional on other options, for example, a journal name.
 
     id (string)
     : The identifier that this condition

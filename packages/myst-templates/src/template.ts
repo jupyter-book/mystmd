@@ -148,10 +148,19 @@ class MystTemplate {
         `No template on path and no download URL to fetch from: ${this.templatePath}`,
       );
     } else {
-      await downloadTemplate(this.session, {
-        templatePath: this.templatePath,
-        templateUrl: this.templateUrl,
-      });
+      try {
+        await downloadTemplate(this.session, {
+          templatePath: this.templatePath,
+          templateUrl: this.templateUrl,
+        });
+      } catch (error) {
+        this.session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+        throw new Error(
+          `${
+            (error as Error).message
+          }\n\nTo list valid templates, try the command "myst templates list"`,
+        );
+      }
     }
   }
 

@@ -1,4 +1,5 @@
 import path from 'path';
+import chalk from 'chalk';
 import { ExportFormats } from 'myst-frontmatter';
 import { filterPages, loadProjectFromDisk } from '../project';
 import type { ISession } from '../session/types';
@@ -12,24 +13,30 @@ export type BuildOpts = {
   docx?: boolean;
   pdf?: boolean;
   tex?: boolean;
+  all?: boolean;
   force?: boolean;
   checkLinks?: boolean;
 };
 
-export function getExportFormats(opts: BuildOpts) {
-  const { docx, pdf, tex, force, site } = opts;
-  const buildAll = !force && !docx && !pdf && !tex && !site;
+export function getExportFormats(opts: BuildOpts & { explicit?: boolean }) {
+  const { docx, pdf, tex, all, explicit } = opts;
   const formats = [];
-  if (docx || buildAll) formats.push(ExportFormats.docx);
-  if (pdf || buildAll) formats.push(ExportFormats.pdf);
-  if (tex || buildAll) formats.push(ExportFormats.tex);
+  const any = docx || pdf || tex;
+  const override = all || (!any && explicit);
+  if (docx || override) formats.push(ExportFormats.docx);
+  if (pdf || override) formats.push(ExportFormats.pdf);
+  if (tex || override) formats.push(ExportFormats.tex);
   return formats;
 }
 
 export function exportSite(session: ISession, opts: BuildOpts) {
-  const { docx, pdf, tex, force, site } = opts;
+  const { docx, pdf, tex, force, site, all } = opts;
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  return site || (siteConfig && !force && !docx && !pdf && !tex && !site);
+  return site || all || (siteConfig && !force && !docx && !pdf && !tex && !site);
+}
+
+function uniqueArray<T = any>(array: T[]): T[] {
+  return array.filter((v, i, a) => a.indexOf(v) === i);
 }
 
 export function getProjectPaths(session: ISession) {
@@ -40,7 +47,7 @@ export function getProjectPaths(session: ISession) {
       ?.map((proj) => proj.path)
       .filter((projectPath): projectPath is string => !!projectPath) ?? []),
   ];
-  return projectPaths;
+  return uniqueArray(projectPaths);
 }
 
 export async function collectAllBuildExportOptions(
@@ -49,7 +56,8 @@ export async function collectAllBuildExportOptions(
   opts: BuildOpts,
 ) {
   const { force } = opts;
-  const formats = getExportFormats(opts);
+  const formats = getExportFormats({ ...opts, explicit: files.length > 0 });
+  session.log.debug(`Exporting formats: "${formats.join('", "')}"`);
   let exportOptionsList: ExportWithInputOutput[];
   if (files.length) {
     exportOptionsList = await collectExportOptions(session, files, formats, {
@@ -80,17 +88,25 @@ export async function collectAllBuildExportOptions(
 }
 
 export async function build(session: ISession, files: string[], opts: BuildOpts) {
-  const { site } = opts;
-  const performSiteBuild = files.length === 0 && exportSite(session, opts);
+  const { site, all } = opts;
+  const performSiteBuild = all || (files.length === 0 && exportSite(session, opts));
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   const exportLogList = exportOptionsList.map((exportOptions) => {
     return `${path.relative('.', exportOptions.$file)} -> ${exportOptions.output}`;
   });
   if (exportLogList.length === 0) {
-    if (!site) {
-      session.log.info('📭 No file exports found.');
-      session.log.debug(
-        `You may need to add an 'exports' field to the frontmatter of the file(s) you wish to export:\n\n---\nexports:\n  - format: tex\n---`,
+    if (!(site || performSiteBuild)) {
+      // Print out the kinds that are filtered
+      const kinds = Object.entries(opts)
+        .filter(([k, v]) => k !== 'force' && k !== 'checkLinks' && k !== 'site' && v)
+        .map(([k]) => k);
+      session.log.info(
+        `📭 No file exports${kinds.length > 0 ? ` with kind "${kinds.join('", "')}"` : ''} found.`,
+      );
+      session.log.info(
+        chalk.dim(
+          `You may need to add an 'exports' field to the frontmatter of the file(s) you wish to export:\n\n---\nexports:\n  - format: ${kinds[0]}\n---`,
+        ),
       );
     }
   } else {

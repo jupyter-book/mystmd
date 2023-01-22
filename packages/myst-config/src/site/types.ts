@@ -42,6 +42,7 @@ export type SiteConfig = SiteFrontmatter & {
 
 type ManifestProjectItem = {
   title: string;
+  short_title?: string;
   level: number;
   slug?: string;
   description?: string;

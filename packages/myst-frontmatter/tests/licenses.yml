@@ -11,6 +11,18 @@ cases:
           url: https://creativecommons.org/licenses/by/4.0/
           CC: true
           free: true
+  - title: Correct license (cc-by)
+    raw:
+      license: cc-by
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+    warnings: 1
   - title: Correct licenses (gpl)
     raw:
       license: gpl

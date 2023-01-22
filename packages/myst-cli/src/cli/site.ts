@@ -6,7 +6,7 @@ import { makeKeepHostOption, makeHeadlessOption } from './options';
 
 export function makeStartCLI(program: Command) {
   const command = new Command('start')
-    .description('Start a local project as a web server')
+    .description('Start the current project as a website')
     .addOption(makeKeepHostOption())
     .addOption(makeHeadlessOption())
     .action(clirun(Session, startServer, program));

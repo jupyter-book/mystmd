@@ -37,15 +37,17 @@ export async function localToManifestProject(
       if ('file' in page) {
         const fileInfo = selectors.selectFileInfo(state, page.file);
         const title = fileInfo.title || page.slug;
+        const short_title = fileInfo.short_title ?? undefined;
         const description = fileInfo.description ?? '';
         const thumbnail = fileInfo.thumbnail ?? '';
         const thumbnailOptimized = fileInfo.thumbnailOptimized ?? '';
         const date = fileInfo.date ?? '';
         const tags = fileInfo.tags ?? [];
         const { slug, level } = page;
-        const projectPage = {
+        const projectPage: Required<SiteManifest>['projects'][0]['pages'][0] = {
           slug,
           title,
+          short_title,
           description,
           date,
           thumbnail,

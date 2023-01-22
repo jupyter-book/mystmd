@@ -3,7 +3,7 @@ import type { Store } from 'redux';
 import { createStore } from 'redux';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
-import { rootReducer, selectors } from '../store';
+import { config, rootReducer, selectors } from '../store';
 import type { RootState } from '../store';
 import type { ISession } from './types';
 import {
@@ -30,6 +30,11 @@ export class Session implements ISession {
     this.configFiles = CONFIG_FILES;
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.store = createStore(rootReducer);
+    this.reloadConfigs();
+  }
+
+  reloadConfigs() {
+    this.store.dispatch(config.actions.reload());
     findCurrentProjectAndLoad(this, '.');
     findCurrentSiteAndLoad(this, '.');
     if (selectors.selectCurrentSitePath(this.store.getState())) {

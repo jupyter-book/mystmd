@@ -9,6 +9,7 @@ import { warnings, watch } from '../store/reducers';
 import { loadCitations } from './citations';
 import { parseMyst } from './myst';
 import { processNotebook } from './notebook';
+import type { RendererData } from '../transforms/types';
 import { KINDS } from '../transforms/types';
 import { VFile } from 'vfile';
 import { logMessagesFromVFile } from '../utils';
@@ -112,10 +113,16 @@ export async function bibFilesInDir(session: ISession, dir: string, load = true)
   return bibFiles.filter((f): f is string => Boolean(f));
 }
 
-export function selectFile(session: ISession, file: string) {
+export function selectFile(session: ISession, file: string): RendererData | undefined {
   const cache = castSession(session);
-  if (!cache.$mdast[file]) throw new Error(`Expected mdast to be processed for ${file}`);
+  if (!cache.$mdast[file]) {
+    session.log.error(`Expected mdast to be processed for ${file}`);
+    return undefined;
+  }
   const mdastPost = cache.$mdast[file].post;
-  if (!mdastPost) throw new Error(`Expected mdast to be processed and transformed for ${file}`);
+  if (!mdastPost) {
+    session.log.error(`Expected mdast to be processed and transformed for ${file}`);
+    return undefined;
+  }
   return mdastPost;
 }

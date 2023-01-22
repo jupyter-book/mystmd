@@ -8,11 +8,12 @@ To highlight a particular block of text that exists slightly apart from the narr
 
 For example, try changing the following directive to a `{warning}`:
 
-````{myst}
-```{note}
+```{myst}
+
+:::{note}
 Here is a note, try changing it to a `warning`!
+:::
 ```
-````
 
 The specification calls these kind of directives `admonition`, which are generally used through their named directives, like `{note}` or `{danger}`. Admonitions can have custom classes, icons and hide their children.
 
@@ -35,11 +36,12 @@ There is one general `{admonition}` directive available, and a number of pre-sty
 
 Try changing the directive type of the admonition below:
 
-````{myst}
-```{tip}
+```{myst}
+
+:::{tip}
 Try changing `tip` to `warning`!
+:::
 ```
-````
 
 See below for a demo of each admonition in the default theme.
 
@@ -111,27 +113,34 @@ This is an error admonition
 
 The base `{admonition}` has a single argument, which is the **title**, you can use markdown in here!
 
-````{myst}
-```{admonition} Admonition *title*
+```{myst}
+
+:::{admonition} Admonition *title*
 Here is an admonition!
+:::
 ```
-````
 
 Note that all other admontions have no arguments, and as in other directives with no arguments content added in this spot will be prepended to the content body.
 
 % TODO: This should be improved in MyST, even though it is a constraint of sphinx
 
-`````{danger}
+::::{danger}
+:class: dropdown
+
+# Named admonitions don't have arguments
+
 All named admonitions (e.g. `{note}` or `{tip}`), have **no arguments**. Content on the first line will be prepended to the admonition body.
 
 Best practice is to put your body content on a new line. **This may change in future** to make it easier to create notes with custom titles.
 
-````{myst}
-```{note} Notes require **no** arguments,
+```{myst}
+
+:::{note} Notes require **no** arguments,
 so content will be appended to the body.
+:::
 ```
-````
-`````
+
+::::
 
 ## Options
 
@@ -143,12 +152,13 @@ These classes in the default themes are lowercased without spaces (e.g. `seealso
 You can also add your own class names, and they will be available in HTML.
 To see an example, click the `HTML` tab in the below demo.
 
-````{myst}
-```{admonition} My title
+```{myst}
+
+:::{admonition} My title
 :class: tip
 My custom admonition that has a `tip` class applied!
+:::
 ```
-````
 
 Note that if you provide conflicting class names, the first one in the {ref}`list above <admonitions-list>` will be used.
 
@@ -158,21 +168,23 @@ Note that if you provide conflicting class names, the first one in the {ref}`lis
 
 You can also hide the body of your admonition blocks so that users must click the header to reveal the contents. This is helpful if you’d like to include some text that isn’t immediately visible to the user. To turn an admonition into a dropdown, add the `dropdown` class to them.
 
-````{myst}
-```{note}
+```{myst}
+
+:::{note}
 :class: dropdown
 This is initially hidden!
+:::
 ```
-````
 
 You can use the `dropdown` class in conjunction with `{admonition}` directives to include your own titles and stylings. In the example below, we add both a `tip` and a `dropdown` class.
 
-````{myst}
-```{admonition} Click here!
+```{myst}
+
+:::{admonition} Click here!
 :class: tip dropdown
 This is initially hidden!
+:::
 ```
-````
 
 ```{seealso}
 :class: dropdown

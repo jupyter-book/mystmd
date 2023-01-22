@@ -1,11 +1,12 @@
 import fs from 'fs';
+import { TemplateKind } from 'myst-common';
 import MystTemplate, { downloadTemplate, resolveInputs, Session } from 'myst-templates';
 import { renderTex } from '../src';
 
 describe('Download Template', () => {
   it('Download default template', async () => {
     const session = new Session();
-    const inputs = resolveInputs(session, { buildDir: '_build' });
+    const inputs = resolveInputs(session, { buildDir: '_build', kind: TemplateKind.tex });
     await downloadTemplate(session, {
       templatePath: inputs.templatePath,
       templateUrl: inputs.templateUrl as string,
@@ -15,7 +16,7 @@ describe('Download Template', () => {
     expect(fs.existsSync('_build/templates/tex/myst/curvenote/template.tex')).toBe(true);
   });
   it('Bad template paths to throw', async () => {
-    const jtex = new MystTemplate(new Session(), { template: 'not-there' });
+    const jtex = new MystTemplate(new Session(), { template: 'not-there', kind: TemplateKind.tex });
     expect(() => jtex.prepare({} as any)).toThrow(/does not exist/);
   });
   it('Render out the template', async () => {

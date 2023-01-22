@@ -91,6 +91,8 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHo
 }
 
 export async function startServer(session: ISession, opts: Options): Promise<void> {
+  // Ensure we are on the latest version of the configs
+  session.reloadConfigs();
   warnOnHostEnvironmentVariable(session, opts);
   const mystTemplate = await getMystTemplate(session, opts);
   if (!opts.headless) await installSiteTemplate(session, mystTemplate);

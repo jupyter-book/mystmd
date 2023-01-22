@@ -16,6 +16,7 @@ $$
 \mathbf{u} \times \mathbf{v}=\left|\begin{array}{ll}u_{2} & u_{3} \\ v_{2} & v_{3}\end{array}\right| \mathbf{i}+\left|\begin{array}{ll}u_{3} & u_{1} \\ v_{3} & v_{1}\end{array}\right| \mathbf{j}+\left|\begin{array}{ll}u_{1} & u_{2} \\ v_{1} & v_{2}\end{array}\right| \mathbf{k}
 $$ (cross)
 
+(inline-math)=
 ## Inline Math
 
 There are two ways to write inline math; (1) with a `math` role or (2) by wrapping it in single dollar signs.
@@ -29,7 +30,7 @@ Using a `math` role is much less likely to collide with your writing if it inclu
 
 Ocassionally, dollar signs that you do not intend to wrap math need to be escaped.
 These can be preceded by a backslash, that is `\$2.99`, and the `\` will not be displayed in your output.
-If using $\LaTeX$ as an output, these dollarsigns will also be properly escaped again!
+If using $\LaTeX$ as an output, these dollar-signs will also be properly escaped again!
 
 ## Equations
 
@@ -40,7 +41,7 @@ There are three ways to create an equation block:
 
 ### Math directives
 
-The math directive takes no arugments and the body of the directive is the $\LaTeX$ style math.
+The math directive takes no arguments and the body of the directive is the $\LaTeX$ style math.
 You can have an optional `label` parameter, which will label this equation for later cross-referencing, see [](#referencing-equations) below for more on that!
 
 ````{myst}
@@ -56,7 +57,7 @@ See [](#my-equation) for more information!
 
 You can also create equations by wrapping content with two dollar signs (`$$`).
 In this syntax, you can follow the equation with a label in brackets `(label)`.
-This can be quite convinient if your equations are small, the entire syntax can fit on a single line.
+This can be quite convenient if your equations are small, the entire syntax can fit on a single line.
 
 ```{myst}
 $$
@@ -199,7 +200,7 @@ Macros allow you to create reusable math components that can simplify the writin
 These marcos can be defined for a single document through the frontmatter, or shared in project frontmatter.
 These macros are used throughout HTML and $\LaTeX$ exports and are written declaratively so that they can be easily parsed. Macros are the same as `\newcommand` or `\renewcommand` in $\LaTeX$, and use the `math` object in the frontmatter.
 
-% Note: there must be a space here, or it is interpretted as {myst} options.
+% Note: there must be a space here, or it is interpreted as {myst} options.
 ```{myst}
 
 ---
@@ -222,7 +223,7 @@ When using the YAML syntax for the `math` macros, use **single quotes** around t
 
 The `key` is the command that you are defining, in the demo above `\dobs` or `\dpred`, the command should include the `\`. The value of the entry should be the macro definition, if the definition contains `#1` then there will be one required argument for the macro that should be supplied in braces when you use it (e.g. `\dpred{m}`). The macros can be nested as in the example where `\dobs{\mref}` uses two macros.
 
-In the macro in the example above, `\mathbf{d}_\text{pred}\left( #1 \right)`, the `#1` is the first and only required argument, and is placed inbetween left and right brackets. The numbering for arguments starts at one, and other arguments can be added with `#2`, `#3`, etc. and then input in a command using `\command{arg1}{arg2}`.
+In the macro in the example above, `\mathbf{d}_\text{pred}\left( #1 \right)`, the `#1` is the first and only required argument, and is placed in between left and right brackets. The numbering for arguments starts at one, and other arguments can be added with `#2`, `#3`, etc. and then input in a command using `\command{arg1}{arg2}`.
 
 ```{seealso}
 In the future the information collected in the math macro will expand to include alt text, color, or interaction information (e.g. hover, substitution) to improve accessibility and interactivity.

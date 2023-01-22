@@ -10,18 +10,18 @@ import {
   makeSiteOption,
   makeStrictOption,
   makeTexOption,
+  makeAllOption,
 } from './options';
 
 export function makeBuildCLI(program: Command) {
   const command = new Command('build')
-    .description(
-      'Build pdf, tex, and word exports from MyST files as well as build MyST site content',
-    )
+    .description('Build PDF, LaTeX, Word and website exports from MyST files')
     .argument('[files...]', 'list of files to export')
-    .addOption(makePdfOption('Build'))
-    .addOption(makeTexOption('Build'))
-    .addOption(makeDocxOption('Build'))
-    .addOption(makeSiteOption('Build'))
+    .addOption(makePdfOption('Build PDF output'))
+    .addOption(makeTexOption('Build LaTeX outputs'))
+    .addOption(makeDocxOption('Build Docx output'))
+    .addOption(makeSiteOption('Build MyST site content'))
+    .addOption(makeAllOption('Build all exports'))
     .addOption(makeForceOption())
     .addOption(makeCheckLinksOption())
     .addOption(makeStrictOption())
