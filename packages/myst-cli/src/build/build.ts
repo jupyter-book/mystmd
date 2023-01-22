@@ -18,12 +18,14 @@ export type BuildOpts = {
   checkLinks?: boolean;
 };
 
-export function getExportFormats(opts: BuildOpts) {
-  const { docx, pdf, tex, all } = opts;
+export function getExportFormats(opts: BuildOpts & { explicit?: boolean }) {
+  const { docx, pdf, tex, all, explicit } = opts;
   const formats = [];
-  if (docx || all) formats.push(ExportFormats.docx);
-  if (pdf || all) formats.push(ExportFormats.pdf);
-  if (tex || all) formats.push(ExportFormats.tex);
+  const any = docx || pdf || tex;
+  const override = all || (!any && explicit);
+  if (docx || override) formats.push(ExportFormats.docx);
+  if (pdf || override) formats.push(ExportFormats.pdf);
+  if (tex || override) formats.push(ExportFormats.tex);
   return formats;
 }
 
@@ -54,7 +56,7 @@ export async function collectAllBuildExportOptions(
   opts: BuildOpts,
 ) {
   const { force } = opts;
-  const formats = getExportFormats(opts);
+  const formats = getExportFormats({ ...opts, explicit: files.length > 0 });
   session.log.debug(`Exporting formats: "${formats.join('", "')}"`);
   let exportOptionsList: ExportWithInputOutput[];
   if (files.length) {
