@@ -115,9 +115,13 @@ export function createNpmLogger(session: ISession): LoggerDE {
       const line = data.trim();
       if (!line) return;
       if (
+        // There are a lot of deprecation warnings that we want to hide to myst users
         line.includes('deprecated') ||
-        line.includes('package is no longer supported') ||
-        line.includes('do not need this installed') ||
+        line.includes('no longer supported') ||
+        line.includes('do not need') ||
+        line.includes('please use') ||
+        line.includes('functionality') ||
+        line.includes('has been moved') ||
         line === 'npm' ||
         line.includes('WARN')
       ) {
