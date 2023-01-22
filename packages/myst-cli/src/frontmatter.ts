@@ -13,6 +13,7 @@ import { loadFile } from './process';
 import type { ISession } from './session/types';
 import { selectors } from './store';
 import type { ValidationOptions } from 'simple-validators';
+import { copyNode } from 'myst-common';
 
 /**
  * Get page frontmatter from mdast tree and fill in missing info from project frontmatter
@@ -69,7 +70,8 @@ export async function getRawFrontmatterFromFile(session: ISession, file: string)
   await loadFile(session, file);
   const result = cache.$mdast[file];
   if (!result || !result.pre) return undefined;
-  const frontmatter = getFrontmatter(result.pre.mdast);
+  // Copy the mdast, this is not a processing step!
+  const frontmatter = getFrontmatter(copyNode(result.pre.mdast));
   return frontmatter.frontmatter;
 }
 

@@ -13,24 +13,28 @@ export type BuildOpts = {
   docx?: boolean;
   pdf?: boolean;
   tex?: boolean;
+  all?: boolean;
   force?: boolean;
   checkLinks?: boolean;
 };
 
 export function getExportFormats(opts: BuildOpts) {
-  const { docx, pdf, tex, force, site } = opts;
-  const buildAll = !force && !docx && !pdf && !tex && !site;
+  const { docx, pdf, tex, all } = opts;
   const formats = [];
-  if (docx || buildAll) formats.push(ExportFormats.docx);
-  if (pdf || buildAll) formats.push(ExportFormats.pdf);
-  if (tex || buildAll) formats.push(ExportFormats.tex);
+  if (docx || all) formats.push(ExportFormats.docx);
+  if (pdf || all) formats.push(ExportFormats.pdf);
+  if (tex || all) formats.push(ExportFormats.tex);
   return formats;
 }
 
 export function exportSite(session: ISession, opts: BuildOpts) {
-  const { docx, pdf, tex, force, site } = opts;
+  const { docx, pdf, tex, force, site, all } = opts;
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  return site || (siteConfig && !force && !docx && !pdf && !tex && !site);
+  return site || all || (siteConfig && !force && !docx && !pdf && !tex && !site);
+}
+
+function uniqueArray<T = any>(array: T[]): T[] {
+  return array.filter((v, i, a) => a.indexOf(v) === i);
 }
 
 export function getProjectPaths(session: ISession) {
@@ -41,7 +45,7 @@ export function getProjectPaths(session: ISession) {
       ?.map((proj) => proj.path)
       .filter((projectPath): projectPath is string => !!projectPath) ?? []),
   ];
-  return projectPaths;
+  return uniqueArray(projectPaths);
 }
 
 export async function collectAllBuildExportOptions(
@@ -51,6 +55,7 @@ export async function collectAllBuildExportOptions(
 ) {
   const { force } = opts;
   const formats = getExportFormats(opts);
+  session.log.debug(`Exporting formats: "${formats.join('", "')}"`);
   let exportOptionsList: ExportWithInputOutput[];
   if (files.length) {
     exportOptionsList = await collectExportOptions(session, files, formats, {
@@ -81,8 +86,8 @@ export async function collectAllBuildExportOptions(
 }
 
 export async function build(session: ISession, files: string[], opts: BuildOpts) {
-  const { site } = opts;
-  const performSiteBuild = files.length === 0 && exportSite(session, opts);
+  const { site, all } = opts;
+  const performSiteBuild = all || (files.length === 0 && exportSite(session, opts));
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   const exportLogList = exportOptionsList.map((exportOptions) => {
     return `${path.relative('.', exportOptions.$file)} -> ${exportOptions.output}`;

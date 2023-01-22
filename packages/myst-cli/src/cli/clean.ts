@@ -3,6 +3,7 @@ import { clean } from '../build';
 import { Session } from '../session';
 import { clirun } from './clirun';
 import {
+  makeAllOption,
   makeDocxOption,
   makePdfOption,
   makeSiteOption,
@@ -31,13 +32,6 @@ export function makeTemplatesOption() {
   ).default(false);
 }
 
-export function makeAllOption() {
-  return new Option(
-    '-a, --all',
-    'Delete all exports, site content, templates, and temp files created by MyST',
-  ).default(false);
-}
-
 export function makeCleanCLI(program: Command) {
   const command = new Command('clean')
     .description('Remove exports, temp files and installed templates')
@@ -49,7 +43,9 @@ export function makeCleanCLI(program: Command) {
     .addOption(makeTempOption())
     .addOption(makeExportsOption())
     .addOption(makeTemplatesOption())
-    .addOption(makeAllOption())
+    .addOption(
+      makeAllOption('Delete all exports, site content, templates, and temp files created by MyST'),
+    )
     .addOption(makeYesOption())
     .action(clirun(Session, clean, program));
   return command;

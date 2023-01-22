@@ -10,6 +10,7 @@ import {
   makeSiteOption,
   makeStrictOption,
   makeTexOption,
+  makeAllOption,
 } from './options';
 
 export function makeBuildCLI(program: Command) {
@@ -20,6 +21,7 @@ export function makeBuildCLI(program: Command) {
     .addOption(makeTexOption('Build LaTeX outputs'))
     .addOption(makeDocxOption('Build Docx output'))
     .addOption(makeSiteOption('Build MyST site content'))
+    .addOption(makeAllOption('Build all exports'))
     .addOption(makeForceOption())
     .addOption(makeCheckLinksOption())
     .addOption(makeStrictOption())

@@ -20,6 +20,10 @@ export function makeProjectOption(description: string) {
   return new Option('--project', description).default(false);
 }
 
+export function makeAllOption(description: string) {
+  return new Option('-a, --all', description).default(false);
+}
+
 export function makeStrictOption() {
   return new Option('--strict', 'Summarize build warnings and stop on any errors.').default(false);
 }
