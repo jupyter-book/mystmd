@@ -105,6 +105,7 @@ const AUTHOR_KEYS = [
 ];
 const AUTHOR_ALIASES = {
   role: 'roles',
+  affiliation: 'affiliations',
 };
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
 const NUMBERING_KEYS = [
@@ -221,8 +222,12 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
   }
   if (defined(value.affiliations)) {
     const affiliationsOpts = incrementOptions('affiliations', opts);
-    output.affiliations = validateList(value.affiliations, affiliationsOpts, (aff) => {
-      return validateString(aff, affiliationsOpts);
+    let affiliations = value.affiliations;
+    if (typeof affiliations === 'string') {
+      affiliations = affiliations.split(';');
+    }
+    output.affiliations = validateList(affiliations, affiliationsOpts, (aff) => {
+      return validateString(aff, affiliationsOpts)?.trim();
     });
   }
   if (defined(value.twitter)) {
@@ -461,12 +466,18 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.authors)) {
     let authors = value.authors;
     // Turn a string into a list of strings, this will be transformed later
-    if (typeof value.authors === 'string') {
+    if (!Array.isArray(value.authors)) {
       authors = [authors];
     }
     output.authors = validateList(authors, incrementOptions('authors', opts), (author, index) => {
       return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
     });
+    // Ensure there is a corresponding author if an email is provided
+    const corresponding = output.authors?.find((a) => a.corresponding !== undefined);
+    const email = output.authors?.find((a) => a.email);
+    if (!corresponding && email) {
+      email.corresponding = true;
+    }
   }
   if (defined(value.venue)) {
     output.venue = validateVenue(value.venue, incrementOptions('venue', opts));

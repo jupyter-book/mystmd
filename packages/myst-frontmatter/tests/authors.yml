@@ -27,3 +27,50 @@ cases:
       authors:
         - name: Just A. Name
     warnings: 1
+  - title: Using both author and author`s` shows a warning
+    raw:
+      author:
+        name: Someone
+        affiliation: University; Company
+    normalized:
+      authors:
+        - name: Someone
+          affiliations:
+            - University
+            - Company
+  - title: First email is corresponding
+    raw:
+      author:
+        name: Someone
+        email: example@example.com
+    normalized:
+      authors:
+        - name: Someone
+          email: example@example.com
+          corresponding: true
+  - title: First email is corresponding (unless false)
+    raw:
+      author:
+        name: Someone
+        email: example@example.com
+        corresponding: false
+    normalized:
+      authors:
+        - name: Someone
+          email: example@example.com
+          corresponding: false
+  - title: Respect corresponding flag
+    raw:
+      authors:
+        - name: Someone
+          email: example@example.com
+        - name: Next
+          email: example@example.com
+          corresponding: true
+    normalized:
+      authors:
+        - name: Someone
+          email: example@example.com
+        - name: Next
+          email: example@example.com
+          corresponding: true
