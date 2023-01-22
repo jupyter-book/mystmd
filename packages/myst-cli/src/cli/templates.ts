@@ -36,7 +36,7 @@ function getKind(session: ISession, kinds?: TemplateKinds): TemplateKind[] | und
   const { pdf, tex, docx, site } = kinds;
   if (pdf) session.log.warn('PDF templates are currently using "tex"');
   const flags = {
-    [TemplateKind.tex]: tex ?? pdf ?? false,
+    [TemplateKind.tex]: (tex || pdf) ?? false,
     [TemplateKind.docx]: docx ?? false,
     [TemplateKind.site]: site ?? false,
   };
