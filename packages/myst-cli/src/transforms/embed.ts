@@ -3,7 +3,7 @@ import type { Root } from 'mdast';
 import { filter } from 'unist-util-filter';
 import { selectAll } from 'unist-util-select';
 import type { IReferenceState } from 'myst-transforms';
-import { normalizeLabel } from 'myst-common';
+import { copyNode, normalizeLabel } from 'myst-common';
 
 /**
  * This is the {embed} directive, that embeds nodes from elsewhere in a page.
@@ -15,13 +15,13 @@ export function embedDirective(mdast: Root, state: IReferenceState) {
     if (!normalized) return;
     const target = state.getTarget(normalized.identifier);
     if (!target) return;
-    let newNode = target.node as any;
+    let newNode = copyNode(target.node as any);
     if (node['remove-output']) {
       newNode = filter(newNode, (n: GenericNode) => n.type !== 'output');
     }
     if (node['remove-input']) {
       newNode = filter(newNode, (n: GenericNode) => n.type !== 'code');
     }
-    node.children = [newNode];
+    node.children = newNode ? [newNode] : [];
   });
 }
