@@ -1,4 +1,4 @@
-import type { Root, Parent } from 'myst-spec';
+import type { Root, Parent, Code } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { fileError, toText } from 'myst-common';
@@ -78,9 +78,12 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, true);
   },
   code(node, state) {
-    state.write('\\begin{verbatim}\n');
+    const { lang } = node as Code;
+    state.usePackages('minted');
+    state.write(`\\begin{minted}{${lang}}\n`);
     state.text(node.value, true);
-    state.write('\n\\end{verbatim}');
+    state.ensureNewLine();
+    state.write('\\end{minted}');
     state.closeBlock(node);
   },
   list(node, state) {
