@@ -754,7 +754,6 @@ const EmbedOutput: IDirective = {
     };
 
     run(data: IDirectiveData<keyof EmbedOutput['option_spec']>) {
-      console.log(data);
       const token = this.createToken('embed', 'div', 0, {
         content: data.body,
         map: data.bodyMap,

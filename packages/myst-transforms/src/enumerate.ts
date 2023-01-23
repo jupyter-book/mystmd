@@ -268,7 +268,7 @@ export class ReferenceState implements IReferenceState {
     }
     if (node.identifier) {
       this.targets[node.identifier] = {
-        node: copyNode(node),
+        node,
         kind: kind as TargetKind,
       };
     }
