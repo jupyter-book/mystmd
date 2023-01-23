@@ -1,5 +1,31 @@
 # jtex
 
+## 0.1.4
+
+### Patch Changes
+
+- 21af5ba9: Typo of templates in package!
+- 61aa0d60: Remove dependence on `crypto` package, which is built into node
+- f40f398b: Move template listing to myst rather than jtex
+  Be more explicit about looking for other templates, and allow template listing from local files.
+- Updated dependencies [c27a0587]
+- Updated dependencies [8508c5e8]
+- Updated dependencies [3769a662]
+- Updated dependencies [dfc27de6]
+- Updated dependencies [5436ab41]
+- Updated dependencies [c522e2c5]
+- Updated dependencies [0aff6dc1]
+- Updated dependencies [5436ab41]
+- Updated dependencies [dfc27de6]
+- Updated dependencies [8b779cf7]
+- Updated dependencies [61aa0d60]
+- Updated dependencies [8cb35191]
+- Updated dependencies [770bb8da]
+- Updated dependencies [f40f398b]
+  - myst-frontmatter@0.0.6
+  - myst-templates@0.1.4
+  - myst-cli-utils@0.0.10
+
 ## 0.1.3
 
 ### Patch Changes

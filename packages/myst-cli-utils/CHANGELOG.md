@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 0.0.10
+
+### Patch Changes
+
+- c522e2c5: Improve logging for ignored deprecation warnings
+
 ## 0.0.9
 
 ### Patch Changes

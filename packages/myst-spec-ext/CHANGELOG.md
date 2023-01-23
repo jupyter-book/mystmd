@@ -1,5 +1,12 @@
 # myst-spec-ext
 
+## 0.0.4
+
+### Patch Changes
+
+- f0d2da60: Add tabs to myst-spec-ext
+- 160e954f: Add a Heading node that includes the implicit and html_id properties.
+
 ## 0.0.3
 
 ### Patch Changes

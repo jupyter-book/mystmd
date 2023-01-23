@@ -1,5 +1,17 @@
 # myst-frontmatter
 
+## 0.0.6
+
+### Patch Changes
+
+- c27a0587: Validate cc-by in licenses
+- 3769a662: Validate keywords if given as a CSV string
+- 5436ab41: Add export to an alias of exports
+- 0aff6dc1: Expose short_title on the project pages and allow subtitle on project as well as pages
+- 5436ab41: Add validateExportsList for more shared utilities
+- 8b779cf7: Allow the export to be a single string of an export format
+- 770bb8da: Improve author and affiliation parsing
+
 ## 0.0.5
 
 ### Patch Changes

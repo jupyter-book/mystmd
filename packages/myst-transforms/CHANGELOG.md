@@ -1,5 +1,17 @@
 # myst-transforms
 
+## 0.0.14
+
+### Patch Changes
+
+- 160e954f: Target propagration should happen after `mystDirectives` have been lifted fixed to work for directives.
+
+  Deprecated the `mystCleanup` in favour of a more descriptive name (`liftMystDirectivesAndRoles`) for both the plugin and transform.
+
+- Updated dependencies [f0d2da60]
+- Updated dependencies [160e954f]
+  - myst-spec-ext@0.0.4
+
 ## 0.0.13
 
 ### Patch Changes

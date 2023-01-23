@@ -1,5 +1,52 @@
 # myst-cli
 
+## 0.1.6
+
+### Patch Changes
+
+- 8aa3b42b: Improve warning formatting and information capture for errors
+- 1d823ca7: Remove dependence on @curvenote/blocks, migrate to nbtx 0.2.0
+- a8a93ccb: Catch and mute additional spurious warnings in remix
+- 90027bc0: Improve the ability of start function to recover from errors of changing or deleting files
+- 89673078: Add timing information to word and latex exports
+- 0aff6dc1: Expose short_title on the project pages and allow subtitle on project as well as pages
+- 690626b0: Export a single file by default do everything!
+- 32f0fb5b: Improve logging for exports when nothing is found
+- 09f250a0: Allow myst init to be run simply by typing myst
+- 61aa0d60: Pass in the hashing function to minifying notebooks
+- 61aa0d60: Remove dependence on `crypto` package, which is built into node
+- f40f398b: Move template listing to myst rather than jtex
+  Be more explicit about looking for other templates, and allow template listing from local files.
+- af6f3190: Add a `myst build --all` option
+- ebb8aa2d: Improved error reporting for --write-toc
+- 43f1553c: Improve onboarding of myst init
+- Updated dependencies [61aa0d60]
+- Updated dependencies [c27a0587]
+- Updated dependencies [21af5ba9]
+- Updated dependencies [8508c5e8]
+- Updated dependencies [3769a662]
+- Updated dependencies [dfc27de6]
+- Updated dependencies [5436ab41]
+- Updated dependencies [c522e2c5]
+- Updated dependencies [0aff6dc1]
+- Updated dependencies [5436ab41]
+- Updated dependencies [dfc27de6]
+- Updated dependencies [8b779cf7]
+- Updated dependencies [61aa0d60]
+- Updated dependencies [8cb35191]
+- Updated dependencies [160e954f]
+- Updated dependencies [770bb8da]
+- Updated dependencies [f40f398b]
+  - myst-to-docx@0.0.6
+  - myst-frontmatter@0.0.6
+  - jtex@0.1.4
+  - myst-templates@0.1.4
+  - myst-cli-utils@0.0.10
+  - myst-config@0.0.7
+  - myst-transforms@0.0.14
+  - myst-to-tex@0.0.11
+  - tex-to-myst@0.0.11
+
 ## 0.1.5
 
 ### Patch Changes

@@ -1,5 +1,27 @@
 # myst-templates
 
+## 0.1.4
+
+### Patch Changes
+
+- 8508c5e8: Templates typo in package.json
+- dfc27de6: Improve error messages for missing template
+- dfc27de6: Fix listing URL for myst templates
+- 61aa0d60: Remove dependence on `crypto` package, which is built into node
+- 8cb35191: Improve logging messages
+- f40f398b: Move template listing to myst rather than jtex
+  Be more explicit about looking for other templates, and allow template listing from local files.
+- Updated dependencies [c27a0587]
+- Updated dependencies [3769a662]
+- Updated dependencies [5436ab41]
+- Updated dependencies [c522e2c5]
+- Updated dependencies [0aff6dc1]
+- Updated dependencies [5436ab41]
+- Updated dependencies [8b779cf7]
+- Updated dependencies [770bb8da]
+  - myst-frontmatter@0.0.6
+  - myst-cli-utils@0.0.10
+
 ## 0.1.3
 
 ### Patch Changes
