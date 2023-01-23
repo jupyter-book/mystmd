@@ -13,7 +13,7 @@ export type ISession = {
   configFiles: string[];
   store: Store<RootState>;
   log: Logger;
-  reloadConfigs(): void;
+  reload(): ISession;
   clone(): ISession;
   buildPath(): string;
   sitePath(): string;

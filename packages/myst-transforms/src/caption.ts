@@ -11,7 +11,9 @@ import { visit } from 'unist-util-visit';
 export function captionParagraphTransform(tree: Root) {
   visit(tree, 'caption', (node: Caption) => {
     if (node.children && node.children[0]?.type !== 'paragraph') {
-      node.children = [{ type: 'paragraph', children: node.children as PhrasingContent[] }];
+      node.children = [
+        { type: 'paragraph', children: node.children as PhrasingContent[] },
+      ] as any[];
     }
   });
 }

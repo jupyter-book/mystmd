@@ -30,16 +30,17 @@ export class Session implements ISession {
     this.configFiles = CONFIG_FILES;
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.store = createStore(rootReducer);
-    this.reloadConfigs();
+    this.reload();
   }
 
-  reloadConfigs() {
+  reload() {
     this.store.dispatch(config.actions.reload());
     findCurrentProjectAndLoad(this, '.');
     findCurrentSiteAndLoad(this, '.');
     if (selectors.selectCurrentSitePath(this.store.getState())) {
       reloadAllConfigsForCurrentSite(this);
     }
+    return this;
   }
 
   buildPath(): string {
