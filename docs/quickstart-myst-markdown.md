@@ -12,6 +12,10 @@ description: MyST (Markedly Structured Text) is designed to create publication-q
 The goal of this quickstart is to showcase the most used features of the MyST authoring experience. The MyST syntax can be used in markdown files or markdown cells in Jupyter Notebooks to add figures, tables, equations, cross-references, hover-links and citations.
 :::
 
+:::{tip}
+During this guide, you can make changes and experiment with MyST syntax in the editors included directly on the page.
+:::
+
 ## Overview
 
 MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [ReStructured Text](https://docutils.sourceforge.io/rst.html) (RST) ecosystems and is is a superset of [CommonMark](./commonmark.md).
@@ -43,7 +47,7 @@ See [](./typography.md) to learn in depth about all typographical elements. The 
 
 Directives are multi-line containers that include an identifier, arguments, options, and content. Examples include [admonitions](./admonitions.md), [figures](./figures.md), and [equations](./math.md). At its simplest, you can use directives using a "fence" (either [back-ticks or colons](#example-fence)) and the name of the directive enclosed in braces (`{name}`).
 
-For example, try editing the following `{figure}` directive, you can center the figure with an `:align: center` option!
+For example, try editing the following `{figure}` directive, you can center the figure with an `:align: center` option or change the `colons` for `backticks`.
 
 ```{myst}
 
