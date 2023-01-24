@@ -135,12 +135,12 @@ quickstart/
   └── 🆕 myst.yml
 ```
 
-The additions are:
+Running `myst init` added:
 
 - `myst.yml` - the configuration file for your myst project and site
 - `_build` - the folder containing the processed content and other `site` assets, which are used by the local web server.
 
-The `_build` folder contains your templates (including the site template you installed). When we build a PDF the exported document will show up in the `_build/exports` folder. You can clean up the built files at any time using `myst clean`[^clean-all].
+The `_build` folder also contains your templates (including the site template you installed) and any exports you make (when we build a PDF the exported document will show up in the `_build/exports` folder). You can clean up the built files at any time using `myst clean`[^clean-all].
 
 [^clean-all]:
     By default the `myst clean` command doesn't remove installed templates, however, the function can with a `myst clean --all` or `myst clean --templates`.
@@ -192,9 +192,9 @@ There are two important parts to the `myst.yml`:
 : The project holds metadata about the collection of files, such as authors, affiliations and licenses for all of the files, any of these values can optionally be overridden in a file. To see all of the options see [](./frontmatter.md), which includes which fields can be overridden by files in the project.
 
 `site:`
-: The site holds template information about the website, such as the logo, navigation, site actions and which template to use. The site has a list of projects, in this case the `path: .` looks to the current configuration file for the project, which sill be "mounted" at the `slug:` (i.e. `/myst/`); sites can have multiple projects.
+: The site holds template information about the website, such as the logo, navigation, site actions and which template to use. The site has a list of projects, in this case the `path: .` looks to the current configuration file for the project, which will be "mounted" at the `slug:` (i.e. `/myst/`); sites can have multiple projects.
 
-🛠 In `myst.yml`: Change the **site** "`# title:`" to "`title: Fancy Title 🎩`" and save
+🛠 In `myst.yml`: Change the "`# title:`" comment in **site** to "`title: Fancy Title 🎩`" and save
 
 Saving the `myst.yml` will have triggered a "full site rebuild"[^myst-start] and in about ⚡️ 20ms ⚡️ take a look at the browser tab:
 

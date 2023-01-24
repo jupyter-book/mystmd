@@ -14,9 +14,9 @@ The goal of this quickstart is to get you up and running on your local computer 
 The tutorial will be brief on explaining MyST syntax, we provide an [overview on MyST Markdown](./quickstart-myst-markdown.md) that provides more depth on syntax and pointers to other pages.
 ::::
 
-## Installing the MyST CLI 📦
-
 > 🛠 Throughout the guide, whenever you're supposed to _do_ something you will see a 🛠
+
+## Installing the MyST CLI 📦
 
 :::{card} See MyST Installation Quickstart
 :link: ./quickstart.md
@@ -103,6 +103,16 @@ A tutorial to evolve markdown documents and notebooks into structured data
 **License:** CC-BY
 ```
 
+This will produce a document that looks like:
+
+:::{figure} ./images/frontmatter-before.png
+:width: 80%
+:name: frontmatter-before-pdf
+
+The myst theme for the `01-paper.md` page using inline document and author information.
+:::
+
+
 🛠 In `01-paper.md`: Change the page frontmatter into a yaml block of _data_:
 
 ```yaml
@@ -124,13 +134,13 @@ keywords: myst, markdown, open-science
 ```
 
 In this case, we are also adding additional metadata like an ORCID, as well as ensuring the license is an SPDX compatible code.
-Once these are added, the `book-theme` template can make it look pretty, this can also be customized by other themes, including $\LaTeX$ and Microsoft Word templates!
+Once these are added, the myst theme (in this case the `book-theme` template) can make it look pretty, this can also be customized by other themes, including $\LaTeX$ and Microsoft Word templates!
 
 :::{figure} ./images/frontmatter-after.png
 :width: 80%
 :name: frontmatter-after
 
-The myst theme for the `01-paper.md` page after the frontmatter changes are added. Compare this to what it looked like before in [](#frontmatter-before). The structure of the HTML page has also been improved, including meta tags that are available to search engines and other programmatic indexers.
+The myst theme for the `01-paper.md` page after the frontmatter changes are added. Compare this to what it looked like before in [](#frontmatter-before-pdf). The structure of the HTML page has also been improved, including meta tags that are available to search engines and other programmatic indexers.
 :::
 
 ### Add an abstract block
@@ -153,7 +163,7 @@ You can make other blocks, like `data-availability` or `acknowledgements` or `ke
 
 ### Add a citation
 
-🛠 In `01-paper.md`: find the text citation for Bourne _et al._, 2012, and change it to [](doi:10.4230/DAGMAN.1.1.41)
+🛠 In `01-paper.md`: find the text citation for Bourne _et al._, 2012 (shown in `red` below), and change it to a `doi` based citation, as shown in `green` below:
 
 ```diff
 - ... follow the FORCE11 recommendations (Bourne _et al._, 2012). Specifically:
@@ -164,7 +174,14 @@ You can make other blocks, like `data-availability` or `acknowledgements` or `ke
 3. add data, software, and workflows as first-class research objects.
 ```
 
-🛠 In `01-paper.md`: find the text citation for Head _et al._ (2021), and change it to [](doi:10.1145/3411764.3445648)
+This will result in correct rendering of the citation (such as [](doi:10.4230/DAGMAN.1.1.41)), and automatic insertion into the references section.
+
+
+🛠 In `01-paper.md`: find the text citation for Head _et al._ (2021), and change it to:
+
+```bash
+[](doi:10.1145/3411764.3445648)
+```
 
 If you have replaced both of these citations, you can now safely remove the text-only, poorly formatted references section, as that is now auto generated for you!
 
@@ -183,12 +200,16 @@ See [](./citations.md) for more information about using citations and references
 
 ### Add a figure directive
 
-🛠 In `01-paper.md`: replace the image and paragraph with a figure directive
+🛠 In `01-paper.md`: replace the image and paragraph with a figure directive.
+
+Replace:
 
 ```markdown
 ![](./images/citations.png)
 **Figure 1**: Citations are rendered with a popup directly inline.
 ```
+
+with:
 
 ```markdown
 :::{figure} ./images/citations.png
@@ -256,11 +277,14 @@ flowchart LR
 
 By writing in MyST, you can export directly to these formats.
 Using MyST will also allow you to support interactive, computational media -- things that will **never** make it to the PDF!!
+
+Help support the transition to FAIR[^fair], open science by preferring web-based formats and publishing your own work on the web.
+
 ::::
 
 ### Microsoft Word Documents
 
-🛠 In the `01-paper.md` frontmatter: add `export: docx`
+🛠 In the `01-paper.md` add `export: docx` to the existing frontmatter section:
 
 ```yaml
 ---
@@ -270,10 +294,12 @@ export: docx
 
 🛠 Run `myst build --docx`
 
-The export process will run for any known files with `docx`, an equivalent command for this specific file is:\
-`myst build 01-paper.md`\
-By default, the build command only builds the site content, to build all exports for the project, use:\
-`myst build --all`
+```bash
+myst build --docx
+```
+
+The export process will run for any known files with `docx` specified in the `export` frontmatter. An equivalent command to export only this specific file is: 
+`myst build 01-paper.md`
 
 ```text
 📬 Performing exports:
@@ -285,13 +311,15 @@ By default, the build command only builds the site content, to build all exports
 📄 Exported DOCX in 166 ms, copying to _build/exports/paper.docx
 ```
 
-In this case, the default word template was used, we will see in working with $\LaTeX$ next, how to add additional exports as well as change the template!
+In this case, the default word template was used, resulting in a document formatted like this:
 
 :::{figure} ./images/export-docx.png
 :name: export-docx
 :width: 80%
 Exporting your article to `docx` using `myst export --docx`.
 :::
+
+Next we will see how to change the template as well as how to add additional exports when working with $\LaTeX$ and PDF!
 
 :::{seealso}
 See [](./creating-word-documents.md) to learn about exporting to `*.docx`, for example some intricacies around equations!
@@ -300,7 +328,8 @@ See [](./creating-word-documents.md) to learn about exporting to `*.docx`, for e
 ### Exporting to PDF
 
 To export to PDF, MyST currently requires $\LaTeX$ to be installed. See [](./creating-pdf-documents.md) for more information about how to install $\LaTeX$.
-First, we need to know which template to export to, for this, we will use the `myst templates` command, and for example listing all the two-column, PDF templates.
+
+First, we need to decide which template to export to, for this, we will use the `myst templates` command, and for example list all the two-column, PDF templates available.
 
 🛠 List all two column PDF templates with: `myst templates list --pdf --tag two-column`
 
@@ -314,7 +343,7 @@ Description: A template for submissions to the Volcanica journal
 Tags: paper, journal, two-column, geoscience, earthscience
 ```
 
-🛠 List the specific information needed for a template: `myst templates list volcanica --pdf`
+🛠 Then, list the specific information needed for a template: `myst templates list volcanica --pdf`
 
 ```text
 Volcanica                volcanica
@@ -334,6 +363,8 @@ Options:
 article_type (choice) - Details about different article types...
 ```
 
+In addition basic information on the template, the template's specific "parts" and "options" are shown. Some of these may be marked as `(required)` and be essential for the building the document correctly with the template.
+
 🛠 In `01-paper.md`: replace `export: docx` with a list:
 
 ```yaml
@@ -346,8 +377,9 @@ exports:
 ---
 ```
 
-We have added additional information to the second PDF export, to specify the template as well as add additional information about the `article_type`, which is information we discovered when listing the template above!
-You can now build the PDF with the `myst build` command:
+We have added a second export target for `pdf` and included additional information to specify the template, as well as set the `article_type` option, which is information we discovered when listing the template above! We also saw this template supports a number of "parts" including a required `abstract` part, but as we already added a `abstract` part earlier in this tutorial, we are good to go.
+
+You can now build the exports with the following command:
 
 🛠 Run `myst build 01-paper.md`
 
@@ -363,7 +395,7 @@ You can now build the PDF with the `myst build` command:
 📄 Exported PDF in 9.3 s, copying to _build/exports/paper.pdf
 ```
 
-You can now see your two-column PDF in a submission ready format for the journal. It is very easy to change the template to a different format -- just change the `template:`!
+You can now see your two-column PDF in a submission ready format for the journal (check the `_build/exports` folder). It is very easy to change the template to a different format -- just change the `template:` field in the frontmatter!
 Notice also that the PDF has converted dynamic images to a static alternative (e.g. GIFs are now PNGs).
 
 :::{figure} ./images/export-pdf.png
@@ -409,10 +441,18 @@ Creating a zip file can be helpful when directly submitted to the arXiv or a jou
 
 ## Conclusion 🥳
 
-That's it for this quickstart guide!! In the next tutorial we will have more information about working with Jupyter Notebooks, and sharing outputs and cells between your documents!
-As next steps for working with documents, we recommend looking at:
+That's it for this quickstart guide!!
+
+As next steps for specifically working with documents, we recommend looking at:
 
 :::{card} MyST Markdown Overview
 :link: ./quickstart-myst-markdown.md
 A high-level of all of the syntax available to your for working with the MyST Markdown language.
+:::
+
+To learn more about the specifics of creating MyST websites:
+
+:::{card} MyST Websites
+:link: ./quickstart-myst-websites.md
+Create a website like this one.
 :::
