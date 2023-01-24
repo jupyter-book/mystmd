@@ -748,7 +748,6 @@ const EmbedOutput: IDirective = {
 
     public option_spec = {
       label: directiveOptions.unchanged,
-      caption: directiveOptions.unchanged,
       'remove-input': directiveOptions.flag,
       'remove-output': directiveOptions.flag,
     };
@@ -760,7 +759,6 @@ const EmbedOutput: IDirective = {
         block: true,
         meta: {
           label: data.options.label,
-          caption: data.options.caption,
           'remove-input': data.options['remove-input'] === null,
           'remove-output': data.options['remove-output'] === null,
         },
@@ -775,7 +773,6 @@ const EmbedOutput: IDirective = {
     getAttrs(t) {
       return {
         label: t.meta.label,
-        caption: t.meta.caption,
         'remove-input': t.meta['remove-input'],
         'remove-output': t.meta['remove-output'],
       };

@@ -166,6 +166,14 @@ export async function transformImages(
   const images = selectAll('image', mdast) as GenericNode[];
   return Promise.all(
     images.map(async (image) => {
+      // If image URL starts with #, replace this node with embed node
+      if (image.url.startsWith('#')) {
+        image.type = 'embed';
+        image.label = image.url.substring(1);
+        image['remove-input'] = true;
+        delete image.url;
+        return;
+      }
       // Look up the image paths by known extensions if it is not provided
       const imagePath = path.join(path.dirname(file), image.url);
       if (!fs.existsSync(imagePath)) {
