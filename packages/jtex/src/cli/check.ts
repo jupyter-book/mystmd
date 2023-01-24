@@ -130,13 +130,15 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
   try {
     configYaml = yaml.load(configText) as any;
   } catch (error) {
+    session.log.debug((error as Error).stack);
+    session.log.error((error as Error).message);
     throw new Error('Could not load template.yml as YAML');
   }
 
   const printWarnings = !(opts?.fix ?? false);
   const messages: Required<ValidationOptions['messages']> = { warnings: [], errors: [] };
 
-  if (configYaml.jtex !== 'v1') {
+  if (configYaml.jtex !== 'v1' && configYaml.myst !== 'v1') {
     messages.errors.push({
       property: 'jtex',
       message: 'The template.yml must have a "myst: v1" version.',
