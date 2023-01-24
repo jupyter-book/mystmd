@@ -16,10 +16,9 @@ import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
 import { findCurrentProjectAndLoad } from '../../config';
 import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter';
-import { bibFilesInDir } from '../../process';
 import { loadProjectFromDisk } from '../../project';
+import { castSession } from '../../session';
 import type { ISession } from '../../session/types';
-import { selectLocalProject } from '../../store/selectors';
 import { createTempFolder } from '../../utils';
 import type { ExportWithOutput, ExportOptions } from '../types';
 import {
@@ -29,6 +28,7 @@ import {
   getSingleFileContent,
   resolveAndLogErrors,
 } from '../utils';
+import type { CitationRenderer } from 'citation-js-utils';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg'];
@@ -85,14 +85,22 @@ export async function localArticleToTexRaw(
   writeFileToFolder(output, result.value);
 }
 
-function concatenateFiles(files: string[], output: string) {
+function writeBibtexFromCitationRenderers(session: ISession, output: string) {
+  const cache = castSession(session);
+  const allBibtexContent = Object.values(cache.$citationRenderers)
+    .map((renderers) => {
+      return Object.values(renderers).map((renderer) => {
+        const bibtexContent = (renderer.cite._graph as any[]).find((item) => {
+          return item.type === '@biblatex/text';
+        });
+        return bibtexContent?.data;
+      });
+    })
+    .flat()
+    .filter((item) => !!item);
+  const bibtexContent = [...new Set(allBibtexContent)].join('\n');
   if (!fs.existsSync(output)) fs.mkdirSync(path.dirname(output), { recursive: true });
-  const fd = fs.openSync(output, 'w');
-  files.forEach((file) => {
-    fs.writeSync(fd, fs.readFileSync(file));
-    fs.writeSync(fd, '\n');
-  });
-  fs.closeSync(fd);
+  fs.writeFileSync(output, bibtexContent);
 }
 
 export async function localArticleToTexTemplated(
@@ -114,14 +122,10 @@ export async function localArticleToTexTemplated(
       extraLinkTransformers,
     },
   );
-  let bibFiles: string[];
-  if (projectPath) {
-    const { bibliography } = selectLocalProject(session.store.getState(), projectPath) || {};
-    bibFiles = bibliography || [];
-  } else {
-    bibFiles = (await bibFilesInDir(session, path.dirname(file), false)) || [];
-  }
-  concatenateFiles(bibFiles, path.join(path.dirname(templateOptions.output), DEFAULT_BIB_FILENAME));
+  writeBibtexFromCitationRenderers(
+    session,
+    path.join(path.dirname(templateOptions.output), DEFAULT_BIB_FILENAME),
+  );
 
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKind.tex,
