@@ -90,7 +90,6 @@ function writeBibtexFromCitationRenderers(session: ISession, output: string) {
   const allBibtexContent = Object.values(cache.$citationRenderers)
     .map((renderers) => {
       return Object.values(renderers).map((renderer) => {
-        console.log(renderer.cite._graph);
         const bibtexContent = (renderer.cite._graph as any[]).find((item) => {
           return item.type === '@biblatex/text';
         });
@@ -100,7 +99,6 @@ function writeBibtexFromCitationRenderers(session: ISession, output: string) {
     .flat()
     .filter((item) => !!item);
   const bibtexContent = [...new Set(allBibtexContent)].join('\n');
-  console.log(bibtexContent);
   if (!fs.existsSync(output)) fs.mkdirSync(path.dirname(output), { recursive: true });
   fs.writeFileSync(output, bibtexContent);
 }
