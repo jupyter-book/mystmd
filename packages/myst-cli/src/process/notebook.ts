@@ -44,10 +44,13 @@ export async function processNotebook(
     end = -1;
   }
 
-  const items = await cells?.slice(0, end).reduce(async (P, cell: ICell) => {
+  const items = await cells?.slice(0, end).reduce(async (P, cell: ICell, index) => {
     const acc = await P;
     if (cell.cell_type === CELL_TYPES.markdown) {
-      return acc.concat(`${blockDivider(cell)}${asString(cell.source)}`);
+      const cellContent = asString(cell.source);
+      // If the first cell is a frontmatter block, do not put a block break above it
+      const omitBlockDivider = index === 0 && cellContent.startsWith('---\n');
+      return acc.concat(`${omitBlockDivider ? '' : blockDivider(cell)}${cellContent}`);
     }
     if (cell.cell_type === CELL_TYPES.raw) {
       return acc.concat(`${blockDivider(cell)}\`\`\`\n${asString(cell.source)}\n\`\`\``);
