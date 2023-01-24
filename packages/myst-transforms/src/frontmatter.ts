@@ -2,7 +2,7 @@ import yaml from 'js-yaml';
 import { select } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
 import type { Root } from 'mdast';
-import type { Code, Heading } from 'myst-spec';
+import type { Block, Code, Heading } from 'myst-spec';
 import { toText } from 'myst-common';
 
 type Options = {
@@ -14,8 +14,10 @@ export function getFrontmatter(
   tree: Root,
   opts: Options = { removeYaml: true, removeHeading: true },
 ): { tree: Root; frontmatter: Record<string, any> } {
-  const firstNode = tree.children[0] as Code;
-  const secondNode = tree.children[1] as Heading;
+  const firstParent =
+    (tree.children[0]?.type as any) === 'block' ? (tree.children[0] as any as Block) : tree;
+  const firstNode = firstParent.children?.[0] as Code;
+  const secondNode = firstParent.children?.[1] as Heading;
   let frontmatter: Record<string, any> = {};
   const firstIsYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
   if (firstIsYaml) {
