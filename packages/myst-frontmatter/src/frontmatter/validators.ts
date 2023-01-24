@@ -396,10 +396,6 @@ export function validateExportsList(input: any, opts: ValidationOptions): Export
   let exports: any[];
   if (Array.isArray(input)) {
     exports = input;
-  } else if (typeof input === 'string') {
-    const format = validateExportFormat(input, opts);
-    if (!format) return undefined;
-    exports = [{ format }];
   } else {
     exports = [input];
   }
@@ -418,7 +414,14 @@ function validateExportFormat(input: any, opts: ValidationOptions): ExportFormat
 }
 
 export function validateExport(input: any, opts: ValidationOptions): Export | undefined {
-  const value = validateObject(input, opts);
+  let value;
+  if (typeof input === 'string') {
+    const format = validateExportFormat(input, opts);
+    if (!format) return undefined;
+    value = { format };
+  } else {
+    value = validateObject(input, opts);
+  }
   if (value === undefined) return undefined;
   validateKeys(
     value,

@@ -78,3 +78,12 @@ cases:
       export: nope
     normalized: {}
     errors: 1
+  - title: Handle export strings
+    raw:
+      export:
+        - pdf
+        - docx
+    normalized:
+      exports:
+        - format: pdf
+        - format: docx
