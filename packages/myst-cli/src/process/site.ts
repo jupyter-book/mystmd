@@ -35,6 +35,9 @@ type ProcessOptions = {
   writeFiles?: boolean;
   strict?: boolean;
   checkLinks?: boolean;
+  imageWriteFolder?: string;
+  imageAltOutputFolder?: string;
+  imageExtensions?: string[];
   extraLinkTransformers?: LinkTransformer[];
   extraTransforms?: TransformFn[];
   defaultTemplate?: string;
@@ -227,15 +230,24 @@ export async function fastProcessFile(
 
 export async function processProject(
   session: ISession,
-  siteProject: SiteProject,
+  siteProject: Partial<SiteProject>,
   opts?: ProcessOptions,
 ): Promise<LocalProject> {
   const toc = tic();
   const { log } = session;
-  const { extraLinkTransformers, watchMode, writeToc, writeFiles = true } = opts || {};
+  const {
+    imageWriteFolder,
+    imageAltOutputFolder,
+    imageExtensions,
+    extraLinkTransformers,
+    watchMode,
+    writeToc,
+    writeFiles = true,
+  } = opts || {};
   if (!siteProject.path) {
-    log.error(`No local path for site project: ${siteProject.slug}`);
-    if (siteProject.remote) log.error(`Remote path not supported: ${siteProject.slug}`);
+    const slugSuffix = siteProject.slug ? `: ${siteProject.slug}` : '';
+    log.error(`No local path for site project${slugSuffix}`);
+    if (siteProject.remote) log.error(`Remote path not supported${slugSuffix}`);
     throw Error('Unable to process project');
   }
   const { project, pages } = await loadProject(session, siteProject.path, writeFiles && writeToc);
@@ -251,19 +263,28 @@ export async function processProject(
   }
   // Consolidate all citations onto single project citation renderer
   combineProjectCitationRenderers(session, siteProject.path);
+
+  const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
+  const extraTransforms: TransformFn[] = [];
+  if (usedImageExtensions.includes('.webp')) {
+    extraTransforms.push(transformWebp);
+  }
+  if (opts?.extraTransforms) {
+    extraTransforms.push(...opts.extraTransforms);
+  }
   // Transform all pages
   await Promise.all(
     pages.map((page) =>
       transformMdast(session, {
         file: page.file,
-        imageWriteFolder: session.staticPath(),
-        imageAltOutputFolder: '/_static/',
-        imageExtensions: WEB_IMAGE_EXTENSIONS,
+        imageWriteFolder: imageWriteFolder ?? session.staticPath(),
+        imageAltOutputFolder,
+        imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
         projectPath: project.path,
         projectSlug: siteProject.slug,
         pageSlug: page.slug,
         watchMode,
-        extraTransforms: [transformWebp, ...(opts?.extraTransforms ?? [])],
+        extraTransforms,
       }),
     ),
   );
@@ -281,18 +302,22 @@ export async function processProject(
   );
   // Write all pages
   if (writeFiles) {
-    await Promise.all(
-      pages.map((page) =>
-        writeFile(session, {
-          file: page.file,
-          projectSlug: siteProject.slug,
-          pageSlug: page.slug,
-          projectPath: project.path,
-        }),
-      ),
-    );
+    if (siteProject.slug) {
+      await Promise.all(
+        pages.map((page) =>
+          writeFile(session, {
+            file: page.file,
+            projectSlug: siteProject.slug as string,
+            pageSlug: page.slug,
+            projectPath: project.path,
+          }),
+        ),
+      );
+    } else {
+      log.error(`Cannot write project files without project slug`);
+    }
   }
-  log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug} in %s.`));
+  log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug ?? 'project'} in %s.`));
   return project;
 }
 
@@ -310,7 +335,13 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
   session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
   if (!siteConfig?.projects?.length) return false;
   const projects = await Promise.all(
-    siteConfig.projects.map((siteProject) => processProject(session, siteProject, opts)),
+    siteConfig.projects.map((siteProject) =>
+      processProject(session, siteProject, {
+        ...opts,
+        imageWriteFolder: session.staticPath(),
+        imageAltOutputFolder: '/_static/',
+      }),
+    ),
   );
   if (opts?.strict) {
     const hasWarnings = projects

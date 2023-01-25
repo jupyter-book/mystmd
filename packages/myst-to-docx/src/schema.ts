@@ -505,6 +505,10 @@ const citeGroup: Handler<{ type: 'citeGroup'; kind: 'narrative' | 'parenthetical
   }
 };
 
+const embed: Handler<{ type: 'embed' } & Parent> = (state, node) => {
+  state.renderChildren(node);
+};
+
 const mystComment: Handler<{ type: 'mystComment' } & Parent> = () => {
   // Do nothing!
   return;
@@ -559,4 +563,5 @@ export const defaultHandlers = {
   table,
   cite,
   citeGroup,
+  embed,
 };

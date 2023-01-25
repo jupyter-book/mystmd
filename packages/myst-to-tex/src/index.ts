@@ -236,6 +236,9 @@ const handlers: Record<string, Handler> = {
       state.write(`\\cite{${node.label}}`);
     }
   },
+  embed(node, state) {
+    state.renderChildren(node, true);
+  },
 };
 
 class TexSerializer implements ITexSerializer {

@@ -28,7 +28,6 @@ import {
   getSingleFileContent,
   resolveAndLogErrors,
 } from '../utils';
-import type { CitationRenderer } from 'citation-js-utils';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg'];
