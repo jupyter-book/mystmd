@@ -1,4 +1,5 @@
-import type { Container, Image, Table, Code, Math } from 'myst-spec';
+import type { GenericNode } from 'myst-common';
+import type { Image, Table, Code, Math } from 'myst-spec';
 import { select } from 'unist-util-select';
 import { getColumnWidths } from './tables';
 import type { Handler } from './types';
@@ -26,16 +27,12 @@ function switchKind(node: Image | Table | Code | Math) {
   }
 }
 
-export function determineCaptionKind(
-  node: Container | Image | Table | Code | Math,
-): CaptionKind | null {
-  if (node.type !== 'container') return switchKind(node);
-  const childrenKinds: CaptionKind[] = [];
-  node.children.forEach((n) => {
-    const kind = switchKind(n as any);
-    if (kind) childrenKinds.push(kind);
+export function determineCaptionKind(node: GenericNode): CaptionKind | null {
+  let kind = switchKind(node as any);
+  node.children?.forEach((n) => {
+    if (!kind) kind = determineCaptionKind(n);
   });
-  return childrenKinds[0] ?? null;
+  return kind;
 }
 
 function nodeToCommand(node: Image | Table | Code | Math) {

@@ -27,6 +27,8 @@ import { createFooter } from './footers';
 import { createArticleTitle, createReferenceTitle } from './titles';
 import { TemplateKind } from 'myst-common';
 
+const DOCX_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
+
 export async function collectWordExportOptions(
   session: ISession,
   file: string,
@@ -159,6 +161,7 @@ export async function runWordExport(
   if (clean) cleanOutput(session, output);
   const data = await getSingleFileContent(session, file, createTempFolder(session), {
     projectPath,
+    imageExtensions: DOCX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
   });
   const vfile = new VFile();

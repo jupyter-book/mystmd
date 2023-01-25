@@ -106,7 +106,7 @@ export async function downloadAndSaveImage(
   }
 }
 
-function resolveOutputPath(file: string, writeFolder: string, altOutputFolder?: string) {
+export function resolveOutputPath(file: string, writeFolder: string, altOutputFolder?: string) {
   if (altOutputFolder == null) {
     return path.join(writeFolder, file);
   }

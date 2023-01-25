@@ -151,7 +151,9 @@ export async function transformMdast(
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
   // Kind needs to still be Article here even if jupytext, to handle outputs correctly
-  await transformOutputs(session, mdast, kind);
+  await transformOutputs(session, mdast, kind, imageWriteFolder, {
+    altOutputFolder: imageAltOutputFolder,
+  });
   transformCitations(log, mdast, fileCitationRenderer, references, file);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
