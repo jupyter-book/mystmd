@@ -3,7 +3,7 @@ import { Command } from 'commander';
 import version from '../version';
 import { makeBuildCLI } from './build';
 import { makeCleanCLI } from './clean';
-import { makeInitCLI } from './init';
+import { makeInitCLI, addDefaultCommand } from './init';
 import { makeStartCLI } from './site';
 import { makeTemplatesCLI } from './templates';
 
@@ -16,4 +16,5 @@ program.addCommand(makeTemplatesCLI(program));
 program.addCommand(makeCleanCLI(program));
 program.version(`v${version}`, '-v, --version', 'Print the current version of myst');
 program.option('-d, --debug', 'Log out any errors to the console');
+addDefaultCommand(program);
 program.parse(process.argv);
