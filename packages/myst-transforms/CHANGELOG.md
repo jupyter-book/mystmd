@@ -1,5 +1,11 @@
 # myst-transforms
 
+## 0.0.15
+
+### Patch Changes
+
+- 6da5544f: Embed block content (including notebook cells) based on block or code cell label in metadata
+
 ## 0.0.14
 
 ### Patch Changes

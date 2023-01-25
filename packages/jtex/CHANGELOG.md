@@ -1,5 +1,15 @@
 # jtex
 
+## 0.1.5
+
+### Patch Changes
+
+- a1a4bd82: Allow version to be myst: v1
+- a1a4bd82: Print YAML errors
+- Updated dependencies [e1a2407f]
+  - myst-frontmatter@0.0.7
+  - myst-templates@0.1.5
+
 ## 0.1.4
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # tex-to-myst
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [e1a2407f]
+  - myst-frontmatter@0.0.7
+
 ## 0.0.11
 
 ### Patch Changes

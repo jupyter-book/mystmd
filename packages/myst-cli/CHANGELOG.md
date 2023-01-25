@@ -1,5 +1,26 @@
 # myst-cli
 
+## 0.1.7
+
+### Patch Changes
+
+- 9692b9dc: The `myst init` command currently triggers on any command, this now errors and shows help!
+- 6da5544f: Update figure/image nodes to embed images if given a target instead of a file path / url
+- 6da5544f: Embed block content (including notebook cells) based on block or code cell label in metadata
+- 6da5544f: Fix inline DOIs to update references in tex/pdf export
+- Updated dependencies [a1a4bd82]
+- Updated dependencies [6da5544f]
+- Updated dependencies [a1a4bd82]
+- Updated dependencies [e1a2407f]
+  - jtex@0.1.5
+  - myst-transforms@0.0.15
+  - myst-frontmatter@0.0.7
+  - myst-config@0.0.8
+  - myst-templates@0.1.5
+  - myst-to-docx@0.0.7
+  - myst-to-tex@0.0.12
+  - tex-to-myst@0.0.12
+
 ## 0.1.6
 
 ### Patch Changes

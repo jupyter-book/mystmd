@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 0.0.7
+
+### Patch Changes
+
+- e1a2407f: Allow strings in each export
+
 ## 0.0.6
 
 ### Patch Changes
