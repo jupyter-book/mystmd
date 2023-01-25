@@ -297,7 +297,15 @@ export async function processProject(
 }
 
 export async function processSite(session: ISession, opts?: ProcessOptions): Promise<boolean> {
-  reloadAllConfigsForCurrentSite(session);
+  try {
+    reloadAllConfigsForCurrentSite(session);
+  } catch (error) {
+    session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+    session.log.error(
+      `Could not find configuration files, do you need to run ${chalk.bold('myst init')}?`,
+    );
+    process.exit(1);
+  }
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   session.log.debug(`Site Config:\n\n${yaml.dump(siteConfig)}`);
   if (!siteConfig?.projects?.length) return false;

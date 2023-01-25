@@ -5,7 +5,7 @@ description: MyST is available through Node and npm, install the package with `n
 
 +++
 
-MyST is available through [NodeJS](./installing-prerequisites.md) and the node package manager, `npm`. Node is used by Jupyter as well as many other Python packages so you may already have it installed on your *PATH* and the following command may just work 🤞.
+MyST is available through [NodeJS](./installing-prerequisites.md) and the node package manager, `npm`. Node is used by Jupyter as well as many other Python packages so you may already have it installed on your _PATH_ and the following command may just work 🤞.
 
 🛠️ [Install NodeJS](./installing-prerequisites.md) and run the following command:
 
@@ -13,11 +13,11 @@ MyST is available through [NodeJS](./installing-prerequisites.md) and the node p
 npm install -g myst-cli
 ```
 
-````{important}
+```{important}
 **Note**
 
-If you do not have `npm` installed you can look at our guide for [Installing NodeJS](./installing-prerequisites.md). If you have any challenges installing, please [open an issue here](https://github.com/executablebooks/mystjs/issues).
-````
+If you do not have `npm` installed you can look at our how to guide for [Installing NodeJS](./installing-prerequisites.md). If you have any challenges installing, please [open an issue here](https://github.com/executablebooks/mystjs/issues).
+```
 
 This will install `myst` globally (`-g`) on your system and add a link to the main CLI tool. To see if things worked, try checking the version with:
 
@@ -27,9 +27,9 @@ myst --version
 
 This command should print the current version of the package. If all is good, you can type `myst` again in your terminal and it will list the help with all of the options available to you.
 
-````{note}
+```{note}
 If you have any challenges installing, please [open an issue here](https://github.com/executablebooks/mystjs/issues).
-````
+```
 
 +++
 

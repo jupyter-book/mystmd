@@ -1,7 +1,7 @@
 ---
 title: Installing MyST Command Line Tools
 subtitle: Work locally with MyST documents and notebooks
-subject: MyST Quickstart
+subject: MyST Quickstart Tutorial
 short_title: MyST Install
 description: Get up and running with the MyST (Markedly Structured Text) command line interface. MyST is designed to create publication-quality documents written entirely in Markdown.
 ---
@@ -9,29 +9,29 @@ description: Get up and running with the MyST (Markedly Structured Text) command
 ::::{important}
 **Objective**
 
-The goal of these quickstart guides are to get you up and running on your local computer 👩‍💻:
+The goal of these quickstart tutorials are to get you up and running on your local computer 👩‍💻:
 
 - learn how to write MyST Markdown 🖊
 - export PDF, Word and $\LaTeX$ documents 📑
 - and create a website like this one 🌎
 
-The tutorials will be brief on explaining MyST syntax, we provide an [overview on MyST Markdown](./quickstart-myst-markdown.md) that provides more depth on syntax and pointers to other pages.
+The tutorials will be brief on explaining MyST syntax, but we include an [MyST Markdown Guide](./quickstart-myst-markdown.md) providing more depth on syntax and pointers to other pages.
 
 :::{note}
 :class: dropdown
 **Looking for JupyterBook docs?**
 
-The `myst` CLI is not the same as [JupyterBook](https://jupyterbook.org/), which uses Sphinx as the documentation engine!
+The `myst` CLI is not the same as [JupyterBook](https://jupyterbook.org/), which uses the Sphinx documentation engine!
 You can read about the [history of `mystjs` development](./background.md).
 The content that you build is compatible between tools in the MyST ecosystem, however, this tutorial focuses on the `mystjs` tools and CLI.
 
-The main capability of `mystjs` beyond JupyterBook is export to scientific PDF documents, and you can use the two tools together! 💚
+`mystjs` has capabilities beyond JupyterBook, for example exporting to scientific PDF documents, and you can use the two tools together! 💚
 :::
 ::::
 
 ## Prerequisites
 
-To follow along with this tutorial on your own computer, it is helpful if you have some familiarity with using the command line, as well as using a text editor and/or JuptyerLab.
+To follow along with this quickstart tutorial on your own computer, it is helpful if you have some familiarity with using the command line, as well as using a text editor and/or JupyterLab.
 
 Additionally, you should have these programs installed:
 
@@ -43,9 +43,11 @@ If the node ecosystem is new to you[^conda], see our getting started guides for 
 
 [^conda]: If you have experience in Conda installations, we would _love_ your help to get the MyST install process into a form that most Pythonistas are familiar with!! See [GitHub issue](https://github.com/executablebooks/mystjs/issues/139) 🙏 🐍 🚀
 
-## Installing the MyST CLI 📦
+(lookout-for-tutorial-actions)=
 
-> 🛠 Throughout the guides, whenever you're supposed to _do_ something you will see a 🛠
+> 🛠 Throughout the tutorial, whenever you're supposed to _do_ something you will see a 🛠
+
+## Installing the MyST CLI 📦
 
 The `myst-cli` is a command line interface (CLI) that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites. To get started install `myst-cli`.
 
@@ -67,7 +69,7 @@ If you have any problems, see [installing MyST](./installing.md) and or [open an
 ## Download example content
 
 We provide an example project that includes a few simple markdown files and some Jupyter Notebooks.
-The project is **not** a good example of how to use MyST, it is a project that you will use throughout the tutorials to improve the metadata, add export targets, and create a website!
+In it's initial state, the project is **not** a good example of how to use MyST, but through the course of the tutorials you will correct that by improving the metadata, adding export targets, and creating a website!
 
 🛠 Download the example content[^no-git], and navigate into the folder:
 
@@ -78,18 +80,23 @@ cd mystjs-quickstart
 
 [^no-git]: If you aren't familiar with git, it isn't required for this tutorial, you can download the zip file with the contents from the [quickstart repository](https://github.com/executablebooks/mystjs-quickstart).
 
-## Choose a guide 🚀
+## Go through the tutorials 🚀
 
-You are well on your way to getting started with `myst`, next up, choose what you want to do next!
+You are well on your way to getting started with `myst` the tutorials are written to go through in order, however, you can also jump in
 
-🛠 Click a card below to take you on a `myst`ical journey! 🃏 🎲
+🛠 Choose a quickstart tutorial to go on a `myst`ical journey! 🃏 🎲
+
+:::{card} MyST Websites 🌎
+:link: ./quickstart-myst-websites.md
+Learn the basics of customizing a MyST Website, including sharing frontmatter between pages.
+:::
 
 :::{card} MyST Documents 📑
 :link: ./quickstart-myst-documents.md
 Learn the basics of MyST Markdown, and export to a Word document, PDF, and $\LaTeX$!
 :::
 
-:::{card} MyST Websites 🌎
-:link: ./quickstart-myst-websites.md
-Learn the basics of customizing a MyST Website, including sharing frontmatter between pages.
+:::{card} MyST Markdown Guide 📖
+:link: ./quickstart-myst-markdown.md
+See an overview of MyST Markdown syntax with inline demos and examples.
 :::

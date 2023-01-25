@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { Command, Option } from 'commander';
 import { init } from '../build';
 import { Session } from '../session';
@@ -18,7 +19,19 @@ export function makeInitCLI(program: Command) {
     .addOption(makeSiteOption('Initialize config for MyST site'))
     .addOption(makeWriteTocOption())
     .action(clirun(Session, init, program));
-  // The default command runs `myst init`
-  program.action(clirun(Session, init, program));
   return command;
+}
+
+// The default command runs `myst init` with no arguments
+export function addDefaultCommand(program: Command) {
+  program.action(async (...args: any[]) => {
+    if (program.args.length === 0) return clirun(Session, init, program)(args);
+    console.error(
+      `${chalk.red(`Invalid command: `)}${chalk.bold(program.args.join(' '))}\n\n${chalk.dim(
+        'See --help for a list of available commands.\n',
+      )}`,
+    );
+    console.log(program.helpInformation());
+    process.exit(1);
+  });
 }

@@ -27,9 +27,7 @@ export function clirun(
     try {
       await func(session, ...args.slice(0, nArgs));
     } catch (error) {
-      if (opts.debug) {
-        session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-      }
+      session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
       session.log.error((error as Error).message);
       logVersions(session, versions, false);
       process.exit(1);

@@ -1,11 +1,11 @@
 format: jb-book
 root: index
 parts:
-  - caption: Quickstart Guides
+  - caption: Quickstart Tutorials
     chapters:
       - file: quickstart
-      - file: quickstart-myst-documents
       - file: quickstart-myst-websites
+      - file: quickstart-myst-documents
       - file: quickstart-myst-markdown
   - caption: Authoring
     chapters:
