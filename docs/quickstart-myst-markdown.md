@@ -1,19 +1,19 @@
 ---
 title: Working with MyST Markdown
-subject: MyST Quickstart
+subject: MyST Quickstart Guide
 subtitle: An overview of syntax features
-short_title: MyST Markdown
+short_title: MyST Markdown Guide
 description: MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown.
 ---
 
 :::{important}
 **Objective**
 
-The goal of this quickstart is to showcase the most used features of the MyST authoring experience. The MyST syntax can be used in markdown files or markdown cells in Jupyter Notebooks to add figures, tables, equations, cross-references, hover-links and citations.
+The goal of this quickstart guide is to showcase the most used features of the MyST authoring experience. The MyST syntax can be used in markdown files or markdown cells in Jupyter Notebooks to add figures, tables, equations, cross-references, hover-links and citations.
 :::
 
 :::{tip}
-During this guide, you can make changes and experiment with MyST syntax in the editors included directly on the page.
+During this how to guide, you can make changes and experiment with MyST syntax in the editors included directly on the page.
 :::
 
 ## Overview
@@ -96,12 +96,12 @@ See [](./frontmatter.md) for all options, how to use frontmatter in various tool
 
 ## Links & Cross-References
 
-As you have seen in the links in MyST (e.g. [](./frontmatter.md)), there is information that is pulled forward into your reading context on hover or click. We believe it is important to provide as much possible context when you are reading on elements like links to other pages, cross-references to figures, tables and equations as well as traditional academic citations[^contextual-information]. Additionally, all of these have fallbacks in static PDF or Word documents.
+As you have seen in the links in MyST (e.g. [](./frontmatter.md)), there is information that is pulled forward into your reading context on hover or click. We believe it is important to provide as much possible context when you are reading on elements like links to other pages, cross-references to figures, tables and equations as well as traditional academic citations[^contextual-information] (**👈 click the footnote!**). Additionally, all of these have fallbacks in static PDF or Word documents.
 
 [^contextual-information]:
     For example, in [](doi:10.1145/3411764.3445648) the authors showed you can speed up comprehension of a paper by 26% when showing information in context, rather than requiring researchers to scroll back and forth to find figures and equations.
 
-    Imagine if all of science was ⚡️ 26% faster ⚡️[^3]!!\
+    Imagine if all of science was ⚡️ 26% faster ⚡️[^3]!! (**👈💥**)\
     Designing the user-experience of scientific communication is _really_ important.
 
 [^3]:
@@ -110,9 +110,9 @@ As you have seen in the links in MyST (e.g. [](./frontmatter.md)), there is info
     :::{iframe} https://www.youtube.com/embed/yYcQf-Yq8B0
     :::
 
-    Can't do that in a PDF! [^4]
+    Can't do that in a PDF! [^4] (**👈💥**)
 
-[^4]: I mean, now that you are down the rabbit-hole, we can get you back on track with a demo of [referencing equations](#example-equation-targets), or just click back on the page to get back to where you were!
+[^4]: I mean, now that you are down the rabbit-hole, we can get you back on track with a demo of [referencing equations](#example-equation-targets) (**👈💥**), or just click back on the page to get back to where you were!
 
 To link to a document, for example [](./frontmatter.md), is done through a simple Markdown link `[](./frontmatter.md)`, you can put your own content in between the square brackets, but if you leave it out the link contents will be filled in with the title of the page. If you define the frontmatter on that page (i.e. the description and tooltip), you will also see that information when you hover over the link. This also works for links to Wikipedia (e.g. [Ponyies 🐴](https://en.wikipedia.org/wiki/New_Forest_pony)) as well as Github code (e.g. [](https://github.com/executablebooks/mystjs/blob/main/README.md)).
 

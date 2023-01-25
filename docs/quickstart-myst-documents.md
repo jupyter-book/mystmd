@@ -1,6 +1,6 @@
 ---
 title: Working with MyST Documents
-subject: MyST Quickstart
+subject: MyST Quickstart Tutorial
 subtitle: Export to PDF, Word and LaTeX
 short_title: MyST Documents
 description: Get up and running with the MyST (Markedly Structured Text) command line interface. MyST is designed to create publication-quality documents written entirely in Markdown.
@@ -11,27 +11,17 @@ description: Get up and running with the MyST (Markedly Structured Text) command
 
 The goal of this quickstart is to get you up and running on your local computer 👩‍💻, improve a markdown document to add MyST features, and then export to Microsoft Word 📄 and (if you have LaTeX installed) a scientific PDF template 📜.
 
-The tutorial will be brief on explaining MyST syntax, we provide an [overview on MyST Markdown](./quickstart-myst-markdown.md) that provides more depth on syntax and pointers to other pages.
+The tutorial will be brief on explaining MyST syntax, we provide a [MyST Markdown Guide](./quickstart-myst-markdown.md) that provides more depth on syntax and pointers to other resources.
 ::::
 
-> 🛠 Throughout the guide, whenever you're supposed to _do_ something you will see a 🛠
+![](#lookout-for-tutorial-actions)
 
-## Installing the MyST CLI 📦
+![](#install-myst-dropdown)
 
-:::{card} See MyST Installation Quickstart
-:link: ./quickstart.md
-See the first quickstart guide for installation walk-through and installation prerequisites.
-:::
+:::{tip}
+:class: dropdown
 
-🛠 Install the MyST command line tools:
-
-```bash
-npm install -g myst-cli
-```
-
-If you have any problems, see [installing MyST](./installing.md) and or [open an issue here](https://github.com/executablebooks/mystjs/issues/new?assignees=&labels=bug&template=bug_report.yml). 🐛
-
-## Download example content
+## 🛠 Download quickstart content
 
 We are going to download an example project that includes a few simple markdown files and some Jupyter Notebooks.
 Our goal will be to try out some of the main features of `myst`, improve the structure of the document, learn the basics of MyST Markdown for figures, citations, and cross-references, and export to a Word document, PDF and $\LaTeX$.
@@ -43,42 +33,52 @@ git clone https://github.com/executablebooks/mystjs-quickstart.git
 cd mystjs-quickstart
 ```
 
-## Initialize MyST 🚀
+:::
 
-Next we will create `myst.yml` configuration files that is required to render your project.
+::::{tip}
+:class: dropdown
 
-🛠 Run `myst`
+## 🛠 Create and edit a MyST Website (optional)
 
-The `myst` command is a shortcut for `myst init`, which has a few more options for writing specific parts of the configuration file and a table of contents for your site.
+In the previous tutorial we ran `myst init`, installed the default `book-theme` template for the website, and improved the style of the website.
+
+:::{card} 🛠 Complete the MyST Website tutorial
+:link: ./quickstart-myst-websites.md
+Get up and running on your local computer 👩‍💻, create a local website 🌎, and edit elements of the theme to improve the website style 🎨.
+:::
+
+To start this tutorial directly, when you run `myst` the first time, the install will take a little longer to install the `book-theme`, otherwise you should be good to go!
+::::
+
+## Start MyST 🚀
+
+From the previous tutorial, you should already have created a `myst.yml` configuration file that is required to render your project. If you have not done that tutorial, type `myst` and follow the directions to start the server, otherwise:
+
+🛠 Run `myst start`
+
+If this is the first time you have run `myst start`, the theme will be installed (takes 15-30 seconds), and then bring up a local web-server that shows you a live preview of your documents as you are writing them! every time you save a few milliseconds later the server will update.
 
 ```text
-> myst
+📖 Built README.md in 33 ms.
+📖 Built 01-paper.md in 30 ms.
+📖 Built 02-notebook.ipynb in 6.94 ms.
+📚 Built 3 pages for myst in 76 ms.
 
-Welcome to the MyST CLI!! 🎉 🚀
+      ✨✨✨  Starting Book Theme  ✨✨✨
 
-myst init walks you through creating a myst.yml file.
+⚡️ Compiled in 510ms.
 
-You can use myst to:
+🔌 Server started on port 3000!  🥳 🎉
 
- - create interactive websites from markdown and Jupyter Notebooks 📈
- - build & export professional PDFs and Word documents 📄
-
-Learn more about this CLI and MyST Markdown at: https://myst.tools
-
-💾 Writing new project and site config file: myst.yml
+      👉  http://localhost:3000  👈
 ```
 
-🛠 When prompted, type `No`
+🛠 Open your web browser to `http://localhost:3000`[^open-port]
 
-```bash
-? Would you like to run "myst start" now? No
-```
+[^open-port]: If port `3000` is in use on your machine, an open port will be used instead, follow the link provided in the terminal.
 
-:::{seealso}
-To explore `myst start` see the quickstart guide on [](./quickstart-myst-websites.md)!
-
-In this quickstart guide we will focus on creating printed documents!
-:::
+To fully explore `myst start` see the first quickstart tutorial on [](./quickstart-myst-websites.md).
+In this quickstart tutorial we will focus on creating printed documents! 📑
 
 ## Use MyST Markdown! 🎉
 
@@ -111,7 +111,6 @@ This will produce a document that looks like:
 
 The myst theme for the `01-paper.md` page using inline document and author information.
 :::
-
 
 🛠 In `01-paper.md`: Change the page frontmatter into a yaml block of _data_:
 
@@ -175,7 +174,6 @@ You can make other blocks, like `data-availability` or `acknowledgements` or `ke
 ```
 
 This will result in correct rendering of the citation (such as [](doi:10.4230/DAGMAN.1.1.41)), and automatic insertion into the references section.
-
 
 🛠 In `01-paper.md`: find the text citation for Head _et al._ (2021), and change it to:
 
@@ -298,7 +296,7 @@ export: docx
 myst build --docx
 ```
 
-The export process will run for any known files with `docx` specified in the `export` frontmatter. An equivalent command to export only this specific file is: 
+The export process will run for any known files with `docx` specified in the `export` frontmatter. An equivalent command to export only this specific file is:\
 `myst build 01-paper.md`
 
 ```text
@@ -441,7 +439,7 @@ Creating a zip file can be helpful when directly submitted to the arXiv or a jou
 
 ## Conclusion 🥳
 
-That's it for this quickstart guide!!
+That's it for this quickstart tutorial!!
 
 As next steps for specifically working with documents, we recommend looking at:
 
