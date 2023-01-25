@@ -1,5 +1,16 @@
 # myst-cli
 
+## 0.1.8
+
+### Patch Changes
+
+- 2f268d18: Embeded content from other pages resolves on single page PDF/docx export
+- 2f268d18: Output nodes are reduced to simpler image/code nodes for static PDF/docx exports
+- Updated dependencies [2f268d18]
+  - myst-to-docx@0.0.8
+  - myst-to-tex@0.0.13
+  - tex-to-myst@0.0.13
+
 ## 0.1.7
 
 ### Patch Changes

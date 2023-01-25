@@ -1,5 +1,11 @@
 # myst-to-docx
 
+## 0.0.8
+
+### Patch Changes
+
+- 2f268d18: Embeded content from other pages resolves on single page PDF/docx export
+
 ## 0.0.7
 
 ### Patch Changes
