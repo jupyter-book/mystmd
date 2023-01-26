@@ -1,4 +1,4 @@
-import path from 'path';
+import { resolve } from 'path';
 import type { LinkTransformer } from 'myst-transforms';
 import type { ISession } from '../../session/types';
 import {
@@ -26,10 +26,10 @@ export async function getSingleFileContent(
     extraLinkTransformers?: LinkTransformer[];
   },
 ) {
-  file = path.resolve(file);
+  file = resolve(file);
   await processProject(
     session,
-    { path: projectPath },
+    { path: projectPath ?? resolve('.') },
     {
       writeFiles: false,
       imageWriteFolder,
