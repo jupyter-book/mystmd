@@ -40,7 +40,7 @@ In a browser:
     <div id="output"></div>
     <script>
       function init() {
-        const myst = new mystjs.MyST();
+        const myst = new MyST();
         const html = myst.render('# Hello to the world!');
         document.getElementById('output').innerHTML = html;
       }
