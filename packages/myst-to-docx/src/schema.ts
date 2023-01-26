@@ -509,6 +509,10 @@ const embed: Handler<{ type: 'embed' } & Parent> = (state, node) => {
   state.renderChildren(node);
 };
 
+const include: Handler<{ type: 'include' } & Parent> = (state, node) => {
+  state.renderChildren(node);
+};
+
 const mystComment: Handler<{ type: 'mystComment' } & Parent> = () => {
   // Do nothing!
   return;
@@ -564,4 +568,5 @@ export const defaultHandlers = {
   cite,
   citeGroup,
   embed,
+  include,
 };
