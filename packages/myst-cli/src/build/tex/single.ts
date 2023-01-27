@@ -19,7 +19,7 @@ import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../.
 import { loadProjectFromDisk } from '../../project';
 import { castSession } from '../../session';
 import type { ISession } from '../../session/types';
-import { createTempFolder } from '../../utils';
+import { createTempFolder, logMessagesFromVFile } from '../../utils';
 import type { ExportWithOutput, ExportOptions } from '../types';
 import {
   cleanOutput,
@@ -33,6 +33,7 @@ export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg'];
 
 export function mdastToTex(
+  session: ISession,
   mdast: Root,
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml | null,
@@ -44,10 +45,12 @@ export function mdastToTex(
   });
   const result = pipe.runSync(mdast as any);
   const tex = pipe.stringify(result);
+  logMessagesFromVFile(session, tex);
   return tex.result as LatexResult;
 }
 
 export function extractTexPart(
+  session: ISession,
   mdast: Root,
   partDefinition: TemplatePartDefinition,
   frontmatter: PageFrontmatter,
@@ -55,7 +58,7 @@ export function extractTexPart(
 ): LatexResult | undefined {
   const part = extractPart(mdast, partDefinition.id);
   if (!part) return undefined;
-  const partContent = mdastToTex(part, frontmatter, templateYml);
+  const partContent = mdastToTex(session, part, frontmatter, templateYml);
   return partContent;
 }
 
@@ -78,7 +81,7 @@ export async function localArticleToTexRaw(
     },
   );
   const toc = tic();
-  const result = mdastToTex(mdast, frontmatter, null);
+  const result = mdastToTex(session, mdast, frontmatter, null);
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
   // TODO: add imports and macros?
   writeFileToFolder(output, result.value);
@@ -139,7 +142,7 @@ export async function localArticleToTexTemplated(
   const parts: Record<string, string> = {};
   let collectedImports: TemplateImports = { imports: [], commands: {} };
   partDefinitions.forEach((def) => {
-    const result = extractTexPart(mdast, def, frontmatter, templateYml);
+    const result = extractTexPart(session, mdast, def, frontmatter, templateYml);
     if (result != null) {
       collectedImports = mergeTemplateImports(collectedImports, result);
       parts[def.id] = result?.value ?? '';
@@ -150,7 +153,7 @@ export async function localArticleToTexTemplated(
   // Need to load up template yaml - returned from jtex, with 'parts' dict
   // This probably means we need to store tags alongside oxa link for blocks
   // This will need opts eventually --v
-  const result = mdastToTex(mdast, frontmatter, templateYml);
+  const result = mdastToTex(session, mdast, frontmatter, templateYml);
   // Fill in template
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${templateOptions.output}`));
   renderTex(mystTemplate, {
