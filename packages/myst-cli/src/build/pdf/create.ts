@@ -5,10 +5,11 @@ import { pdfExportCommand } from 'jtex';
 import { exec, tic } from 'myst-cli-utils';
 import MystTemplate from 'myst-templates';
 import type { ISession } from '../../session/types';
-import { createTempFolder } from '../../utils';
+import { createTempFolder, uniqueArray } from '../../utils';
 import type { ExportWithOutput } from '../types';
 import { cleanOutput } from '../utils/cleanOutput';
 import { TemplateKind } from 'myst-common';
+import chalk from 'chalk';
 
 const copyFile = util.promisify(fs.copyFile);
 
@@ -44,6 +45,8 @@ export async function createPdfGivenTexExport(
 ) {
   if (clean) cleanOutput(session, pdfOutput);
   const { output: texOutput, template } = texExportOptions;
+
+  const templateLogString = template ? ` (${template})` : '';
 
   const buildPath = createTempFolder(session);
   const texFile = path.basename(texOutput);
@@ -82,16 +85,38 @@ export async function createPdfGivenTexExport(
   }
   const toc = tic();
   try {
-    session.log.info(`🖨  Rendering PDF to ${pdfBuild}`);
+    session.log.info(`🖨  Rendering PDF ${templateLogString} to ${pdfBuild}`);
     session.log.debug(`Running command:\n> ${buildCommand}`);
     await exec(buildCommand, { cwd: buildPath });
     session.log.debug(`Done building LaTeX.`);
   } catch (err) {
+    session.log.debug((err as Error).stack);
     session.log.error(
-      `Error while invoking latex - logs available at: ${
-        copyLogs ? logOutputFolder : buildPath
-      }\n${err}`,
+      `🛑 LaTeX reported an error building your PDF${templateLogString} for ${texFile}`,
     );
+    session.log.info('\n   Please check your PDF, it may actually be fine? 🤷');
+    session.log.info(
+      chalk.dim(
+        `\n     Console:        ${texLogBuild}\n     Detailed logs:  ${logBuild}\n     Build path:     ${buildPath}\n`,
+      ),
+    );
+    const logs = uniqueArray(
+      fs
+        .readFileSync(texLogBuild)
+        .toString()
+        .split('\n')
+        .filter((line) => line.includes('WARN ') || line.includes('LaTeX Error')),
+      (line) => (line.indexOf('WARN') > -1 ? line.slice(line.indexOf('WARN')) : line),
+    );
+    if (logs.length > 0) {
+      session.log.info(
+        `\n     ${chalk.dim('Preview:')}\n     ${logs
+          .map((line) =>
+            line.includes('LaTeX Error') ? chalk.red(line) : chalk.yellowBright(line),
+          )
+          .join('\n     ')}\n`,
+      );
+    }
   }
 
   const pdfBuildExists = fs.existsSync(pdfBuild);
@@ -103,7 +128,7 @@ export async function createPdfGivenTexExport(
   }
 
   if (pdfBuildExists) {
-    session.log.info(toc(`📄 Exported PDF in %s, copying to ${pdfOutput}`));
+    session.log.info(toc(`📄 Exported PDF ${templateLogString} in %s, copying to ${pdfOutput}`));
     await copyFile(pdfBuild, pdfOutput);
     session.log.debug(`Copied PDF file to ${pdfOutput}`);
   } else {

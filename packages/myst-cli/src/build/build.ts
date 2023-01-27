@@ -7,6 +7,7 @@ import { selectors } from '../store';
 import { collectExportOptions, localArticleExport } from './utils';
 import { buildSite } from './site/prepare';
 import type { ExportWithInputOutput } from './types';
+import { uniqueArray } from '../utils';
 
 export type BuildOpts = {
   site?: boolean;
@@ -33,10 +34,6 @@ export function exportSite(session: ISession, opts: BuildOpts) {
   const { docx, pdf, tex, force, site, all } = opts;
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   return site || all || (siteConfig && !force && !docx && !pdf && !tex && !site);
-}
-
-function uniqueArray<T = any>(array: T[]): T[] {
-  return array.filter((v, i, a) => a.indexOf(v) === i);
 }
 
 export function getProjectPaths(session: ISession) {
