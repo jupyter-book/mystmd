@@ -1,5 +1,17 @@
 # myst-cli
 
+## 0.1.9
+
+### Patch Changes
+
+- 93fcaf3a: Log vfile errors from myst-to-tex pipeline
+- 93fcaf3a: Support `include` node in myst-to-docx and myst-to-tex
+- b8f3ccb2: Improve the logging around latex error messages
+- Updated dependencies [93fcaf3a]
+  - myst-to-docx@0.0.9
+  - myst-to-tex@0.0.14
+  - tex-to-myst@0.0.14
+
 ## 0.1.8
 
 ### Patch Changes

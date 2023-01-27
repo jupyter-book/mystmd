@@ -1,5 +1,11 @@
 # myst-to-tex
 
+## 0.0.14
+
+### Patch Changes
+
+- 93fcaf3a: Support include node in myst-to-docx and myst-to-tex
+
 ## 0.0.13
 
 ### Patch Changes
