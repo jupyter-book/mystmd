@@ -239,6 +239,9 @@ const handlers: Record<string, Handler> = {
   embed(node, state) {
     state.renderChildren(node, true);
   },
+  include(node, state) {
+    state.renderChildren(node, true);
+  },
 };
 
 class TexSerializer implements ITexSerializer {
