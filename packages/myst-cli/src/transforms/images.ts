@@ -223,9 +223,11 @@ export async function transformImageFormats(
   // Gather unsupported SVG & GIF images that may be converted to supported types
   const svgImages: GenericNode[] = [];
   const gifImages: GenericNode[] = [];
+  const pdfImages: GenericNode[] = [];
   const unconvertableImages: GenericNode[] = [];
 
   const allowConvertedSvg = validExts.includes('.png') || validExts.includes('.pdf');
+  const allowConvertedPdf = validExts.includes('.png') || !validExts.includes('.pdf');
   const allowConvertedGif = validExts.includes('.png');
 
   unsupportedImages.forEach((image) => {
@@ -233,6 +235,8 @@ export async function transformImageFormats(
       svgImages.push(image);
     } else if (allowConvertedGif && path.extname(image.url) == '.gif') {
       gifImages.push(image);
+    } else if (allowConvertedPdf && path.extname(image.url) == '.pdf') {
+      pdfImages.push(image);
     } else {
       unconvertableImages.push(image);
     }
@@ -295,6 +299,32 @@ export async function transformImageFormats(
     if (svgConversionFn) {
       conversionPromises.push(
         ...svgImages.map(async (image) => await convert(image, svgConversionFn as ConversionFn)),
+      );
+    }
+  }
+
+  // Convert PDFs
+  let pdfConversionFn: ConversionFn | undefined;
+  if (pdfImages.length) {
+    if (imagemagickAvailable) {
+      session.log.info(
+        `🌠 Converting ${pdfImages.length} PDF image${
+          pdfImages.length > 1 ? 's' : ''
+        } to PNG using imagemagick`,
+      );
+      pdfConversionFn = imagemagick.convertPdfToPng;
+    } else {
+      addWarningForFile(
+        session,
+        file,
+        'Cannot convert PDF images, they may not correctly render.',
+        'error',
+        { note: 'To convert these images, you must install imagemagick' },
+      );
+    }
+    if (pdfConversionFn) {
+      conversionPromises.push(
+        ...pdfImages.map(async (image) => await convert(image, pdfConversionFn as ConversionFn)),
       );
     }
   }

@@ -62,6 +62,28 @@ export async function convertSvgToPng(session: ISession, svg: string, writeFolde
   return pngFile;
 }
 
+export async function convertPdfToPng(session: ISession, pdf: string, writeFolder: string) {
+  if (!fs.existsSync(pdf)) return null;
+  const { name, ext } = path.parse(pdf);
+  if (ext !== '.pdf') return null;
+  const pngFile = `${name}.png`;
+  const png = path.join(writeFolder, pngFile);
+  if (fs.existsSync(png)) {
+    session.log.debug(`Cached file found for converted PDF: ${pdf}`);
+  } else {
+    const executable = `convert -density 600 ${pdf} ${png}`;
+    session.log.debug(`Executing: ${executable}`);
+    const convert = makeExecutable(executable, session.log);
+    try {
+      await convert();
+    } catch (err) {
+      session.log.error(`Could not convert from PDF to PNG: ${pdf} - ${err}`);
+      return null;
+    }
+  }
+  return pngFile;
+}
+
 export async function convertImageToWebp(
   session: ISession,
   image: string,
