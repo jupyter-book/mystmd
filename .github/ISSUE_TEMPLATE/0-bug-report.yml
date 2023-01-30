@@ -1,0 +1,65 @@
+name: MyST Bug Report
+description: Create a bug report for the `mystjs` team
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for taking the time to file a bug report! Please fill out this form as completely as possible.
+  - type: input
+    attributes:
+      label: What version of `mystjs` are you using?
+      description: 'For example: 1.0.0, use `myst -v`'
+    validations:
+      required: true
+  - type: dropdown
+    id: packageManager
+    attributes:
+      multiple: true
+      label: How did you install myst?
+      options:
+        - npm
+        - pnpm
+        - Yarn v1
+        - Yarn v2/v3
+        - pip
+        - conda
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: What operating system are you using?
+      options:
+        - Mac
+        - Windows
+        - Linux
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the Bug
+      description: A clear and concise description of the bug. Screenshots can be very helpful!
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the behavior, please provide clear and concise steps.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: Please ensure the steps you've provided reproduce the issue to the best of your ability.
+  - type: markdown
+    attributes:
+      value: Ideally, contributors should be able to follow the steps provided in order to reproduce the bug.
+  - type: markdown
+    attributes:
+      value: Thank you for helping out the MyST team, these issues are what makes MyST better!!
