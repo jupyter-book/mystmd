@@ -1,0 +1,31 @@
+name: Template Request
+description: Request a new template 📑
+labels: ['template']
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for taking the time to submit a template request! Please fill out this form as completely as possible.
+  - type: dropdown
+    id: template
+    attributes:
+      multiple: true
+      label: What sort of template are you requesting?
+      options:
+        - LaTeX or PDF Template
+        - Microsoft Word Template
+        - Website Template
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the template you'd like to request
+      description: A clear and concise description of what you want and what your use case is.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Existing Template
+      description: Include a URL to an existing template. This is optional, but increases the likelihood that we can help you!
+    validations:
+      required: false

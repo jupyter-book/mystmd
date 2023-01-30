@@ -1,5 +1,5 @@
-name: MyST Bug Report
-description: Create a bug report for the `mystjs` team
+name: Bug Report
+description: Create a bug report 🐛
 labels: ['bug']
 body:
   - type: markdown
@@ -36,10 +36,24 @@ body:
         - Other
     validations:
       required: true
+  - type: dropdown
+    id: project
+    attributes:
+      multiple: true
+      label: Which area is this feature request for?
+      options:
+        - Website User Interface
+        - Command Line Interface
+        - 'Export: LaTeX or PDF'
+        - 'Export: Microsoft Word'
+        - Installation
+        - Other
+    validations:
+      required: true
   - type: textarea
     attributes:
       label: Describe the Bug
-      description: A clear and concise description of the bug. Screenshots can be very helpful!
+      description: A clear and concise description of the bug. Please include screenshots if possible! 📸
     validations:
       required: true
   - type: textarea

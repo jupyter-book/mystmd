@@ -1,5 +1,5 @@
 name: Feature Request
-description: Request a new feature for `mystjs`!
+description: Request a new feature 🪄
 labels: ['story']
 body:
   - type: markdown
@@ -8,14 +8,15 @@ body:
   - type: dropdown
     id: project
     attributes:
-      multiple: false
+      multiple: true
       label: Which area is this feature request for?
       options:
-        - User Interface
-        - Command Line Interface
-        - LaTeX Build
-        - Microsoft Word
-        - MyST Template
+        - Website User Interface
+        - Command Line Tools
+        - LaTeX Export
+        - Microsoft Word Export
+        - Javascript Packages (please list)
+        - Other
     validations:
       required: true
   - type: textarea
