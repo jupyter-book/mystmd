@@ -224,7 +224,33 @@ The site title will control site meta tags, and the browser-tab title, which is 
 To see all of the options see [](./frontmatter.md), which includes which fields can be overridden by files in the project.
 :::
 
----
+:::{note}
+**Separating Project and Site Configurations**
+
+You may use separate the `project` and `site` configurations into multiple `myst.yml` files to configure your website. Each website needs a single `site` configuration at the root level; then any subdirectory with content may have its own `project` configuration with project-specific frontmatter. For example, given a `content` directory with all your markdown and notebooks,you can create a `content/myst.yml` file with project frontmatter:
+
+```yaml
+version: 1
+project:
+  title: ...
+  authors: ...
+  ...
+```
+
+and a root-level `myst.yml` file that references the project in the `content` subfolder:
+
+```yaml
+version: 1
+site:
+  template: book-theme
+  projects:
+    - slug: my-content
+      path: content
+  ...
+```
+
+Doing this will keep the `_build` directory at the root level, but everything else outside of the `content` folder will be ignored.
+:::
 
 More Coming Soon™
 

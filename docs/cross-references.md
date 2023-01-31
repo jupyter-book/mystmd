@@ -183,6 +183,30 @@ See [eq. %s](#my-math-label)!
 % Internal/external links
 % Checking for missing references, link to another place.
 
+(targeting-cells)=
+
+## Notebook Cell Targets
+
+You can label notebook cells using a comment at the top of the cell [similar to quarto](https://myst.tools/docs/mystjs/cross-references):
+
+```python
+#| label: my-cell
+print('hello world')
+```
+
+If may then embed the output of this notebook cell as an image:
+
+```
+![](#my-cell)
+```
+
+or a figure:
+
+````
+```{figure} #my-cell
+```
+````
+
 ## Label Anything
 
 It is possible to label any document node by adding `(my-label)=` before any other block of content. These can be referenced using the `{ref}` role, but by default will not be enumerated, so you cannot use `%s` or `{number}` in the content.

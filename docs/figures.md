@@ -47,3 +47,7 @@ There are two directives that can be used to add additional information about th
 Relaxing at the beach 🏝 🌊 😎
 ```
 ````
+
+```{note}
+You may also embed [notebook cell outputs as images or figures](#targeting-cells).
+```
