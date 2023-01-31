@@ -1,9 +1,9 @@
 import fs from 'fs';
-import path from 'path';
+import { join } from 'path';
 import type { GenericNode } from 'myst-common';
+import stripAnsi from 'strip-ansi';
 import { selectAll } from 'unist-util-select';
 import type { IOutput } from '@jupyterlab/nbformat';
-import type { MinifiedMimePayload } from 'nbtx';
 import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
 import type { Root } from 'mdast';
 import { castSession } from '../session';
@@ -26,6 +26,7 @@ export async function transformOutputs(
       outputs.map(async (output) => {
         output.data = await minifyCellOutput(output.data as IOutput[], cache.$outputs, {
           computeHash,
+          maxCharacters: 0,
         });
       }),
     );
@@ -36,7 +37,7 @@ export async function transformOutputs(
       if (!obj.hash || !cache.$outputs[obj.hash]) return undefined;
       const [content, { contentType, encoding }] = cache.$outputs[obj.hash];
       const filename = `${obj.hash}${extFromMimeType(contentType)}`;
-      const destination = path.join(writeFolder, filename);
+      const destination = join(writeFolder, filename);
 
       if (fs.existsSync(destination)) {
         session.log.debug(`Cached file found for notebook output: ${destination}`);
@@ -62,30 +63,33 @@ export async function transformOutputs(
  * It also only supports minified images (i.e. images cannot be too small) or
  * non-minified text (i.e. text cannot be too large).
  */
-export function reduceOutputs(mdast: Root) {
+export function reduceOutputs(mdast: Root, writeFolder: string) {
   const outputs = selectAll('output', mdast) as GenericNode[];
   outputs.forEach((node) => {
-    let selectedOutput: MinifiedMimePayload | undefined;
-    walkOutputs(node.data, (obj) => {
-      if (selectedOutput || typeof obj.content_type !== 'string') return;
-      if (
-        (obj.content_type.startsWith('image/') && obj.path) ||
-        (obj.content_type.startsWith('text/') && obj.content)
-      ) {
-        selectedOutput = obj as MinifiedMimePayload;
+    let selectedOutput: { content_type: string; path: string; hash: string } | undefined;
+    walkOutputs(node.data, (obj: any) => {
+      if (selectedOutput || !obj.path || !obj.hash) return;
+      if (['error', 'stream'].includes(obj.output_type)) {
+        const { path, hash } = obj;
+        selectedOutput = { content_type: 'text/plain', path, hash };
+      } else if (typeof obj.content_type === 'string') {
+        const { content_type, path, hash } = obj;
+        if (obj.content_type.startsWith('image/') || obj.content_type === 'text/plain') {
+          selectedOutput = { content_type, path, hash };
+        }
       }
     });
-    if (!selectedOutput) return;
-    if (selectedOutput.content_type.startsWith('image/') && selectedOutput.path) {
+    if (selectedOutput?.content_type.startsWith('image/')) {
       node.type = 'image';
       node.url = selectedOutput.path;
       node.urlSource = selectedOutput.path;
       delete node.data;
       delete node.id;
-    }
-    if (selectedOutput.content_type.startsWith('text/') && selectedOutput.content) {
+    } else if (selectedOutput?.content_type === 'text/plain') {
       node.type = 'code';
-      node.value = selectedOutput.content;
+      const filename = `${selectedOutput.hash}${extFromMimeType(selectedOutput.content_type)}`;
+      const content = fs.readFileSync(join(writeFolder, filename), 'utf-8');
+      node.value = stripAnsi(content);
       delete node.data;
       delete node.id;
     }

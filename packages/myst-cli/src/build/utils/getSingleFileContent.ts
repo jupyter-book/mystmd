@@ -54,6 +54,6 @@ export async function getSingleFileContent(
   selectedFile = selectFile(session, file);
   if (!selectedFile) throw new Error(`Could not load file information for ${file}`);
   // Transform output nodes to images / text
-  reduceOutputs(selectedFile.mdast);
+  reduceOutputs(selectedFile.mdast, imageWriteFolder);
   return selectedFile;
 }
