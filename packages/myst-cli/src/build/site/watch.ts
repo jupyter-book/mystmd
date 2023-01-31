@@ -1,5 +1,5 @@
 import chokidar from 'chokidar';
-import { join, extname } from 'path';
+import { join, extname, basename } from 'path';
 import type { SiteProject } from 'myst-config';
 import type { LinkTransformer } from 'myst-transforms';
 import type { ISession } from '../../session/types';
@@ -37,6 +37,15 @@ function watchConfigAndPublic(
     });
 }
 
+function triggerProjectReload(file: string, eventType: string) {
+  // Reload project if toc changes
+  if (basename(file) === '_toc.yml') return true;
+  // Reload project if bib file is added or remvoed
+  if (extname(file) === '.bib' && ['add', 'unlink'].includes(eventType)) return true;
+  // Otherwise do not reload project
+  return false;
+}
+
 function fileProcessor(
   session: ISession,
   siteProject: SiteProject,
@@ -53,8 +62,14 @@ function fileProcessor(
       session.log.info(`🚮 File ${file} deleted...`);
     }
     if (!KNOWN_FAST_BUILDS.has(extname(file)) || eventType === 'unlink') {
-      session.log.info('💥 Triggered full site rebuild');
-      await processSite(session, opts);
+      let reloadProject = false;
+      if (triggerProjectReload(file, eventType)) {
+        session.log.info('💥 Triggered full project load and site rebuild');
+        reloadProject = true;
+      } else {
+        session.log.info('💥 Triggered full site rebuild');
+      }
+      await processSite(session, { reloadProject, ...opts });
       triggerReload();
       return;
     }
