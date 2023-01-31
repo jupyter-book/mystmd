@@ -183,6 +183,49 @@ See [eq. %s](#my-math-label)!
 % Internal/external links
 % Checking for missing references, link to another place.
 
+(targeting-cells)=
+
+## Notebook Cell Targets
+
+:::{warning}
+The following syntax for cross-referencing notebook cells is in `beta` and may change in the future.
+:::
+
+You can label notebook cells using a comment at the top of the cell, using a `#| label:` syntax, or have this added directly in the notebook metadata for the cell.
+
+```python
+#| label: my-cell
+print('hello world')
+```
+
+The cell output or the entire cell can be embedded or referred to using the image or link syntax.
+
+```
+[](#my-cell) - This is a cross-reference to a notebook cell
+![](#my-cell) - This will embed the output of a notebook cell
+```
+
+or as a `figure` directive, where you can then add a caption. If you are referring to that figure in a further cross reference that figure (i.e. not the original cell), give it a new `name`.
+
+````
+```{figure} #my-cell
+:name: fig-my-cell
+```
+````
+
+:::{note}
+
+# Interactive Example
+
+The following example embeds a figure from [](./interactive-notebooks.ipynb), and can be used in cross references [](#fig-altair-horsepower).
+
+```{figure} #altair-horsepower
+:name: fig-altair-horsepower
+This figure has been included from [](./interactive-notebooks.ipynb) and can be referred to in cross-references through a different label.
+```
+
+:::
+
 ## Label Anything
 
 It is possible to label any document node by adding `(my-label)=` before any other block of content. These can be referenced using the `{ref}` role, but by default will not be enumerated, so you cannot use `%s` or `{number}` in the content.
