@@ -78,9 +78,9 @@ export type Export = {
 
 export type SiteFrontmatter = {
   title?: string;
+  description?: string;
   subtitle?: string;
   short_title?: string;
-  description?: string;
   authors?: Author[];
   venue?: Venue;
   github?: string;

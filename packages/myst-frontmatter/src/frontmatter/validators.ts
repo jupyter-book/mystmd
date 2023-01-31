@@ -38,6 +38,8 @@ import type {
 
 export const SITE_FRONTMATTER_KEYS = [
   'title',
+  'subtitle',
+  'short_title',
   'description',
   'authors',
   'venue',
@@ -62,8 +64,6 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'exports',
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = [
-  'subtitle',
-  'short_title',
   'kernelspec',
   'jupytext',
   'tags',
@@ -466,6 +466,15 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.description)) {
     output.description = validateString(value.description, incrementOptions('description', opts));
   }
+  if (defined(value.short_title)) {
+    output.short_title = validateString(value.short_title, {
+      ...incrementOptions('short_title', opts),
+      maxLength: 40,
+    });
+  }
+  if (defined(value.subtitle)) {
+    output.subtitle = validateString(value.subtitle, incrementOptions('subtitle', opts));
+  }
   if (defined(value.authors)) {
     let authors = value.authors;
     // Turn a string into a list of strings, this will be transformed later
@@ -610,15 +619,6 @@ export function validateProjectFrontmatterKeys(
 
 export function validatePageFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: PageFrontmatter = validateProjectFrontmatterKeys(value, opts);
-  if (defined(value.subtitle)) {
-    output.subtitle = validateString(value.subtitle, incrementOptions('subtitle', opts));
-  }
-  if (defined(value.short_title)) {
-    output.short_title = validateString(value.short_title, {
-      ...incrementOptions('short_title', opts),
-      maxLength: 40,
-    });
-  }
   if (defined(value.kernelspec)) {
     output.kernelspec = validateKernelSpec(value.kernelspec, incrementOptions('kernelspec', opts));
   }
