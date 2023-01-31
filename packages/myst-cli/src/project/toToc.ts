@@ -24,7 +24,7 @@ const GENERATED_TOC_HEADER = `# Table of Contents
 #
 # Note: Titles defined on pages here are not recognized.
 #
-# This spec is based on the Jupyterbook table of contents.
+# This spec is based on the JupyterBook table of contents.
 # Learn more at https://jupyterbook.org/customize/toc.html
 
 `;
