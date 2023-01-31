@@ -27,6 +27,7 @@ export async function processNotebook(
   session: ISession,
   file: string,
   content: string,
+  opts?: { minifyMaxCharacters?: number },
 ): Promise<Root> {
   const { log } = session;
   const { metadata, cells } = JSON.parse(content) as INotebookContent;
@@ -61,7 +62,7 @@ export async function processNotebook(
         const minified: MinifiedOutput[] = await minifyCellOutput(
           cell.outputs as IOutput[],
           cache.$outputs,
-          { computeHash, maxCharacters: 0 },
+          { computeHash, maxCharacters: opts?.minifyMaxCharacters },
         );
         const { myst, id } = createOutputDirective();
         outputMap[id] = minified;

@@ -42,6 +42,7 @@ type ProcessOptions = {
   extraTransforms?: TransformFn[];
   defaultTemplate?: string;
   reloadProject?: boolean;
+  minifyMaxCharacters?: number;
 };
 
 export function changeFile(session: ISession, path: string, eventType: string) {
@@ -249,6 +250,7 @@ export async function processProject(
     writeToc,
     writeFiles = true,
     reloadProject,
+    minifyMaxCharacters,
   } = opts || {};
   if (!siteProject.path) {
     const slugSuffix = siteProject.slug ? `: ${siteProject.slug}` : '';
@@ -265,7 +267,7 @@ export async function processProject(
       // Load all citations (.bib)
       ...project.bibliography.map((path) => loadFile(session, path, '.bib')),
       // Load all content (.md and .ipynb)
-      ...pages.map((page) => loadFile(session, page.file)),
+      ...pages.map((page) => loadFile(session, page.file, undefined, { minifyMaxCharacters })),
       // Load up all the intersphinx references
       loadIntersphinx(session, { projectPath: siteProject.path }) as Promise<any>,
     ]);

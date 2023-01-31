@@ -17,7 +17,7 @@ export async function transformOutputs(
   mdast: Root,
   kind: KINDS,
   writeFolder: string,
-  opts?: { altOutputFolder?: string },
+  opts?: { altOutputFolder?: string; minifyMaxCharacters?: number },
 ) {
   const outputs = selectAll('output', mdast) as GenericNode[];
   const cache = castSession(session);
@@ -26,7 +26,7 @@ export async function transformOutputs(
       outputs.map(async (output) => {
         output.data = await minifyCellOutput(output.data as IOutput[], cache.$outputs, {
           computeHash,
-          maxCharacters: 0,
+          maxCharacters: opts?.minifyMaxCharacters,
         });
       }),
     );

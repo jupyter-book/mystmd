@@ -27,6 +27,7 @@ export async function loadFile(
   session: ISession,
   file: string,
   extension?: '.md' | '.ipynb' | '.bib',
+  opts?: { minifyMaxCharacters?: number },
 ) {
   const toc = tic();
   session.store.dispatch(warnings.actions.clearWarnings({ file }));
@@ -50,7 +51,7 @@ export async function loadFile(
         const content = fs.readFileSync(file).toString();
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
-        const mdast = await processNotebook(cache, file, content);
+        const mdast = await processNotebook(cache, file, content, opts);
         cache.$mdast[file] = {
           sha256,
           pre: { kind: KINDS.Notebook, file, mdast },
