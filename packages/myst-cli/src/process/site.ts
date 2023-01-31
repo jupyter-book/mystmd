@@ -41,6 +41,7 @@ type ProcessOptions = {
   extraLinkTransformers?: LinkTransformer[];
   extraTransforms?: TransformFn[];
   defaultTemplate?: string;
+  reloadProject?: boolean;
 };
 
 export function changeFile(session: ISession, path: string, eventType: string) {
@@ -100,10 +101,14 @@ export async function addProjectReferencesToObjectsInv(
   return inv;
 }
 
-export async function loadProject(session: ISession, projectPath: string, writeToc = false) {
+export async function loadProject(
+  session: ISession,
+  projectPath: string,
+  opts?: { writeToc?: boolean; reloadProject?: boolean },
+) {
   const project = await loadProjectFromDisk(session, projectPath, {
-    writeToc,
     warnOnNoConfig: true,
+    ...opts,
   });
   // Load the citations first, or else they are loaded in each call below
   const pages = filterPages(project);
@@ -243,6 +248,7 @@ export async function processProject(
     watchMode,
     writeToc,
     writeFiles = true,
+    reloadProject,
   } = opts || {};
   if (!siteProject.path) {
     const slugSuffix = siteProject.slug ? `: ${siteProject.slug}` : '';
@@ -250,7 +256,10 @@ export async function processProject(
     if (siteProject.remote) log.error(`Remote path not supported${slugSuffix}`);
     throw Error('Unable to process project');
   }
-  const { project, pages } = await loadProject(session, siteProject.path, writeFiles && writeToc);
+  const { project, pages } = await loadProject(session, siteProject.path, {
+    writeToc: writeFiles && writeToc,
+    reloadProject,
+  });
   if (!watchMode) {
     await Promise.all([
       // Load all citations (.bib)

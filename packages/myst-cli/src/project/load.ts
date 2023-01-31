@@ -27,11 +27,13 @@ import type { LocalProject, LocalProjectPage } from './types';
 export async function loadProjectFromDisk(
   session: ISession,
   path?: string,
-  opts?: { index?: string; writeToc?: boolean; warnOnNoConfig?: boolean },
+  opts?: { index?: string; writeToc?: boolean; warnOnNoConfig?: boolean; reloadProject?: boolean },
 ): Promise<LocalProject> {
   path = path || resolve('.');
-  const cachedProject = selectors.selectLocalProject(session.store.getState(), path);
-  if (cachedProject) return cachedProject;
+  if (!opts?.reloadProject) {
+    const cachedProject = selectors.selectLocalProject(session.store.getState(), path);
+    if (cachedProject) return cachedProject;
+  }
   const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
   if (!projectConfig && opts?.warnOnNoConfig) {
     session.log.warn(
