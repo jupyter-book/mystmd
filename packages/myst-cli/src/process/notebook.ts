@@ -61,7 +61,7 @@ export async function processNotebook(
         const minified: MinifiedOutput[] = await minifyCellOutput(
           cell.outputs as IOutput[],
           cache.$outputs,
-          { computeHash },
+          { computeHash, maxCharacters: 0 },
         );
         const { myst, id } = createOutputDirective();
         outputMap[id] = minified;
