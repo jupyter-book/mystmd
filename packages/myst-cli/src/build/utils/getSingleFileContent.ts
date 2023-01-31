@@ -36,11 +36,12 @@ export async function getSingleFileContent(
       imageAltOutputFolder,
       imageExtensions,
       extraLinkTransformers,
+      minifyMaxCharacters: 0,
     },
   );
   let selectedFile = selectFile(session, file);
   if (!selectedFile) {
-    await loadFile(session, file);
+    await loadFile(session, file, undefined, { minifyMaxCharacters: 0 });
     // Collect bib files - myst-to-tex will need those, not 'references'
     await transformMdast(session, {
       file,
@@ -48,6 +49,7 @@ export async function getSingleFileContent(
       imageAltOutputFolder: imageAltOutputFolder ?? undefined,
       imageExtensions,
       projectPath,
+      minifyMaxCharacters: 0,
     });
     await postProcessMdast(session, { file, extraLinkTransformers });
   }

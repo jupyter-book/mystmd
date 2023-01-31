@@ -84,6 +84,7 @@ export async function transformMdast(
     imageExtensions?: string[];
     watchMode?: boolean;
     extraTransforms?: TransformFn[];
+    minifyMaxCharacters?: number;
   },
 ) {
   const {
@@ -96,6 +97,7 @@ export async function transformMdast(
     imageExtensions,
     extraTransforms,
     watchMode = false,
+    minifyMaxCharacters,
   } = opts;
   const toc = tic();
   const { store, log } = session;
@@ -153,6 +155,7 @@ export async function transformMdast(
   // Kind needs to still be Article here even if jupytext, to handle outputs correctly
   await transformOutputs(session, mdast, kind, imageWriteFolder, {
     altOutputFolder: imageAltOutputFolder,
+    minifyMaxCharacters,
   });
   transformCitations(log, mdast, fileCitationRenderer, references, file);
   await unified()
