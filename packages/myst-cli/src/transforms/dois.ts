@@ -70,11 +70,15 @@ export async function transformLinkedDOIs(
   });
   if (linkedDois.length === 0 && citeDois.length === 0) return renderer;
   log.debug(`Found ${linkedDois.length + citeDois.length} DOIs to auto link.`);
-  const before = Object.keys(doiRenderer).length;
+  let number = 0;
   await Promise.all([
     ...linkedDois.map(async (node) => {
-      const cite = doiRenderer[node.url] ?? (await getCitation(log, node.url));
-      if (!cite) return false;
+      let cite: SingleCitationRenderer | null = doiRenderer[node.url];
+      if (!cite) {
+        cite = await getCitation(log, node.url);
+        if (cite) number += 1;
+        else return false;
+      }
       doiRenderer[node.url] = cite;
       renderer[cite.id] = cite.render;
       const citeNode = node as unknown as Cite;
@@ -88,16 +92,18 @@ export async function transformLinkedDOIs(
       return true;
     }),
     ...citeDois.map(async (node) => {
-      const cite = doiRenderer[node.label] ?? (await getCitation(log, node.label));
-      if (!cite) return false;
+      let cite: SingleCitationRenderer | null = doiRenderer[node.label];
+      if (!cite) {
+        cite = await getCitation(log, node.label);
+        if (cite) number += 1;
+        else return false;
+      }
       doiRenderer[node.label] = cite;
       renderer[cite.id] = cite.render;
       node.label = cite.id;
       return true;
     }),
   ]);
-  const after = Object.keys(doiRenderer).length;
-  const number = after - before;
   if (number > 0) {
     log.info(toc(`🪄  Linked ${number} DOI${number > 1 ? 's' : ''} in %s for ${path}`));
   }
