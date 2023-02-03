@@ -1,5 +1,13 @@
 # jats-to-myst
 
+## 0.0.12
+
+### Patch Changes
+
+- b4d5c57e: Bump jats-xml to latest version, removes chalk and download process from the browser components.
+- Updated dependencies [9f9954d2]
+  - myst-frontmatter@0.0.8
+
 ## 0.0.11
 
 ### Patch Changes

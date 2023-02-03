@@ -1,5 +1,22 @@
 # myst-cli
 
+## 0.1.10
+
+### Patch Changes
+
+- dad0d6d0: Support PDF images in web and word export
+- 81d3098e: Modify how doi references are counted to make log messages slightly more correct
+- 81d3098e: Allow file loading to specify maxCharacters to nbtx minification, enabling text output in exports
+- 52f0c028: Reload project on toc/bib file changes during site watch
+- Updated dependencies [9f9954d2]
+  - myst-frontmatter@0.0.8
+  - jtex@0.1.6
+  - myst-config@0.0.9
+  - myst-templates@0.1.6
+  - myst-to-docx@0.0.10
+  - myst-to-tex@0.0.15
+  - tex-to-myst@0.0.15
+
 ## 0.1.9
 
 ### Patch Changes

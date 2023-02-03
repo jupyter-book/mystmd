@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 0.0.8
+
+### Patch Changes
+
+- 9f9954d2: Validate short_title and subtitle on site and project
+
 ## 0.0.7
 
 ### Patch Changes
