@@ -21,7 +21,7 @@ The `mystjs` project provides a parser in Javascript (`mystjs`) and command line
   - PDFs and LaTeX documents, with specific templates for over 400 journals
   - Microsoft Word export
 
-See the [documentation](https://js.myst.tools).
+See the [documentation](https://myst-tools.org/docs/mystjs).
 
 ## Get Started
 
@@ -45,22 +45,27 @@ All packages for `mystjs` are included in this repository (a monorepo!).
 
 - `citation-js-utils` utility functions to deal with citations
 - `jats-to-myst` convert JATS xml to MyST AST
-- `jtex` a templating library ([see docs](https://js.myst.tools/jtex))
+- `jtex` a templating library ([see docs](https://myst-tools.org/docs/jtex))
 - `mystjs` a MyST parser, with extensibility
 - `myst-cli` this will provide CLI functionality for `myst build mystdoc.md`
 - `myst-cli-utils` some shared utils between jtex, and myst-cli
 - `myst-common` Some common utilities for working with ASTs
 - `myst-config` Validation and reading of configuration files
-- `myst-frontmater` definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://js.myst.tools/guide/frontmatter))
+- `myst-frontmater` definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://myst-tools.org/docs/mystjs/frontmatter))
 - `myst-spec-ext` Extensions to `myst-spec` used throughout this repository, before pushing upstream
 - `myst-templates` types and validation for templates (LaTeX, web and word)
 - `myst-to-docx` convert MyST documents to word docs!
-- `myst-to-react` create basic, ideally unthemed react components for content only (_coming soon_)
 - `myst-to-jats` convert MyST to JATS, for use in scientific archives
 - `myst-to-tex` convert MyST to LaTeX, to be used in combination with jtex to create stand alone LaTeX documents
 - `myst-transforms` a number of transformations for use with myst AST to transform, e.g. links, citations, cross-references, admonitions
 - `simple-validators` validation utilities, that print all sorts of nice warnings
 - `tex-to-myst` convert LaTeX to MyST AST
+
+**Extensions:**
+
+- `myst-ext-card`: Card directives
+- `myst-ext-grid`: Grid directives
+- `myst-ext-tabs`: Tab directives
 
 Each package is 100% [TypeScript](https://www.typescriptlang.org/).
 

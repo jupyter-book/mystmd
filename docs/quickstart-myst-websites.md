@@ -71,7 +71,7 @@ You can use myst to:
  - create interactive websites from markdown and Jupyter Notebooks 📈
  - build & export professional PDFs and Word documents 📄
 
-Learn more about this CLI and MyST Markdown at: https://myst.tools
+Learn more about this CLI and MyST Markdown at: https://myst-tools.org
 
 💾 Writing new project and site config file: myst.yml
 ```
@@ -87,7 +87,7 @@ Starting the server requires a theme, this will download the default `book-theme
 The theme will now install using `node` and `npm`, this can take **up to a minute** the first time, and then will be cached in the `_build/templates` directory.
 
 ```text
-🐕 Fetching template metadata from https://api.myst.tools/templates/site/myst/book-theme
+🐕 Fetching template metadata from https://api.myst-tools.org/templates/site/myst/book-theme
 💾 Saved template to path _build/templates/site/myst/book-theme
 ⤵️ Installing web libraries (can take up to 60 s)
 📦 Installed web libraries in 13 s
@@ -174,7 +174,7 @@ The `_build` folder also contains your templates (including the site template yo
 If we open and look inside our `myst.yml` we will see a basic configuration like this:
 
 ```yaml
-# See docs at: https://myst.tools/docs/mystjs/frontmatter
+# See docs at: https://myst-tools.org/docs/mystjs/frontmatter
 version: 1
 project:
   # title:
@@ -193,7 +193,7 @@ site:
   nav: []
   actions:
     - title: Learn More
-      url: https://myst.tools/docs/mystjs
+      url: https://myst-tools.org/docs/mystjs
   domains: []
 ```
 

@@ -100,7 +100,7 @@ Create a Website »
 **Technical Goals**
 
 - `mystjs` is a Javascript parser and command line tool for working with MyST Markdown
-- Parse MyST into a standardized [AST](wiki:Abstract_Syntax_Tree), that follows [the MyST Spec](https://spec.myst.tools)
+- Parse MyST into a standardized [AST](wiki:Abstract_Syntax_Tree), that follows [the MyST Spec](https://myst-tools.org/docs/spec)
 - Translate and render MyST into:
   - HTML for static websites, and modern React for interactive websites (like this website!)
   - PDFs and $\LaTeX$ documents, with [specific templates for over 400 journals](./creating-pdf-documents.md)
@@ -131,5 +131,5 @@ For integration with **Sphinx**, use the Python implementation for MyST or Jupyt
 - [MyST Python Parser for Sphinx](https://myst-parser.readthedocs.io/en/latest/)
 - [JupyterBook](https://jupyterbook.org/)
 
-Although many tools in the [MyST Ecosystem](https://myst.tools) follow the same conventions and [specification](https://spec.myst.tools), the following documentation refers only to the **Javascript** MyST CLI.
+Although many tools in the [MyST Ecosystem](https://myst-tools.org) follow the same conventions and [specification](https://myst-tools.org/docs/spec), the following documentation refers only to the **Javascript** MyST CLI.
 ```

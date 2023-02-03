@@ -11,7 +11,7 @@ To see all of the community templates use:
 myst templates list --tex
 ```
 
-These will show you the list of community templates available, which are also possible to access through the MyST API, at https://api.myst.tools.
+These will show you the list of community templates available, which are also possible to access through the MyST API, at https://api.myst-tools.org.
 
 ## List your Template
 

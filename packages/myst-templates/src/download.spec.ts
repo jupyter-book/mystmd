@@ -9,7 +9,7 @@ describe('resolveInputs', () => {
   it('default path and url fill correctly', async () => {
     expect(resolveInputs(new Session(), {})).toEqual({
       templatePath: 'templates/tex/myst/curvenote',
-      templateUrl: 'https://api.myst.tools/templates/tex/myst/curvenote',
+      templateUrl: 'https://api.myst-tools.org/templates/tex/myst/curvenote',
     });
   });
   it('template as path to template file exists', async () => {
@@ -38,13 +38,13 @@ describe('resolveInputs', () => {
       resolveInputs(new Session(), { template: 'private/journal', buildDir: '_build' }),
     ).toEqual({
       templatePath: '_build/templates/tex/private/journal',
-      templateUrl: 'https://api.myst.tools/templates/tex/private/journal',
+      templateUrl: 'https://api.myst-tools.org/templates/tex/private/journal',
     });
   });
   it('template name is prefixed with public', async () => {
     expect(resolveInputs(new Session(), { template: 'journal' })).toEqual({
       templatePath: 'templates/tex/myst/journal',
-      templateUrl: 'https://api.myst.tools/templates/tex/myst/journal',
+      templateUrl: 'https://api.myst-tools.org/templates/tex/myst/journal',
     });
   });
   it('invalid template errors', async () => {
