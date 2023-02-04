@@ -70,9 +70,9 @@ Card headers and footers are optional. If you don’t include ^^^ or +++ in your
 You can also add a `link` argument to the card, which will allow you to make the entire card clickable.
 
 :::{card} Clickable Card
-:link: http://myst.tools
+:link: https://myst-tools.org
 
-The entire card can be clicked to navigate to `myst.tools`.
+The entire card can be clicked to navigate to `myst-tools.org`.
 :::
 
 ### Grids
