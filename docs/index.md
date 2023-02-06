@@ -14,7 +14,7 @@ There are three components that this documentation and repository aims to formal
 2. the MyST abstract syntax tree (AST), which is the datastructure of a document after it has been parsed, and can be used in transforming and rendering content; and
 3. a set of unittests that can be used to test implementations of MyST (e.g. in Python and Javascript).
 
-## MyST Markup Langauge
+## MyST Markup Language
 
 MyST is a superset of [CommonMark](https://commonmark.org/) (a standard form of Markdown) and allows you to directly create “directives” and “roles” as extension points in the language. These extensions points are influenced by [ReStructured Text (RST)](https://en.wikipedia.org/wiki/ReStructuredText) and [Sphinx](https://www.sphinx-doc.org/) -- pulling on the nomenclature and introducing additional standards where appropriate. `directives` are block-level extension points, like callout panels, tabs, figures or embedded charts; and `roles` are inline extension points, for components like references, citations, or inline math.
 
