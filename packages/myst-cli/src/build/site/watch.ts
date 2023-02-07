@@ -16,11 +16,7 @@ type TransformOptions = {
   defaultTemplate?: string;
 };
 
-function watchConfigAndPublic(
-  session: ISession,
-  triggerReload: () => void,
-  opts: TransformOptions,
-) {
+function watchConfigAndPublic(session: ISession, serverReload: () => void, opts: TransformOptions) {
   const watchFiles = ['public'];
   const siteConfigFile = selectors.selectCurrentSiteFile(session.store.getState());
   if (siteConfigFile) watchFiles.push(siteConfigFile);
@@ -33,15 +29,15 @@ function watchConfigAndPublic(
       session.log.debug(`File modified: "${filename}" (${eventType})`);
       session.log.info('💥 Triggered full site rebuild');
       await processSite(session, opts);
-      triggerReload();
+      serverReload();
     });
 }
 
 function triggerProjectReload(file: string, eventType: string) {
   // Reload project if toc changes
   if (basename(file) === '_toc.yml') return true;
-  // Reload project if bib file is added or remvoed
-  if (extname(file) === '.bib' && ['add', 'unlink'].includes(eventType)) return true;
+  // Reload project if file is added or remvoed
+  if (['add', 'unlink'].includes(eventType)) return true;
   // Otherwise do not reload project
   return false;
 }
@@ -49,7 +45,7 @@ function triggerProjectReload(file: string, eventType: string) {
 function fileProcessor(
   session: ISession,
   siteProject: SiteProject,
-  triggerReload: () => void,
+  serverReload: () => void,
   opts: TransformOptions,
 ) {
   return async (eventType: string, file: string) => {
@@ -61,7 +57,7 @@ function fileProcessor(
     if (KNOWN_FAST_BUILDS.has(extname(file)) && eventType === 'unlink') {
       session.log.info(`🚮 File ${file} deleted...`);
     }
-    if (!KNOWN_FAST_BUILDS.has(extname(file)) || eventType === 'unlink') {
+    if (!KNOWN_FAST_BUILDS.has(extname(file)) || ['add', 'unlink'].includes(eventType)) {
       let reloadProject = false;
       if (triggerProjectReload(file, eventType)) {
         session.log.info('💥 Triggered full project load and site rebuild');
@@ -70,7 +66,7 @@ function fileProcessor(
         session.log.info('💥 Triggered full site rebuild');
       }
       await processSite(session, { reloadProject, ...opts });
-      triggerReload();
+      serverReload();
       return;
     }
     if (!siteProject.path) {
@@ -89,13 +85,13 @@ function fileProcessor(
       pageSlug,
       ...opts,
     });
-    triggerReload();
+    serverReload();
     // TODO: process full site silently and update if there are any
     // await processSite(session, true);
   };
 }
 
-export function watchContent(session: ISession, triggerReload: () => void, opts: TransformOptions) {
+export function watchContent(session: ISession, serverReload: () => void, opts: TransformOptions) {
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig?.projects) return;
 
@@ -118,8 +114,8 @@ export function watchContent(session: ISession, triggerReload: () => void, opts:
         ignored: ['public', '**/_build/**', '**/.git/**', ...ignored],
         awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
       })
-      .on('all', fileProcessor(session, proj, triggerReload, opts));
+      .on('all', fileProcessor(session, proj, serverReload, opts));
   });
   // Watch the myst.yml
-  watchConfigAndPublic(session, triggerReload, opts);
+  watchConfigAndPublic(session, serverReload, opts);
 }
