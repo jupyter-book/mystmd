@@ -136,13 +136,13 @@ export async function transformMdast(
     new WikiTransformer(),
     new GithubTransformer(),
     new RRIDTransformer(),
-    new DOITransformer(), // This also is picked up in the next transform
+    // new DOITransformer(), // This also is picked up in the next transform
     new MystTransformer(intersphinx),
   ];
   linksTransform(mdast, vfile, { transformers, selector: LINKS_SELECTOR });
 
   // Initialize citation renderers for this (non-bib) file
-  cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
+  // cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
   const rendererFiles = [file];
   if (projectPath) {
     rendererFiles.unshift(projectPath);
