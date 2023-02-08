@@ -1,4 +1,9 @@
-export { admonitionHeadersPlugin, admonitionHeadersTransform } from './admonitions';
+export {
+  admonitionHeadersPlugin,
+  admonitionHeadersTransform,
+  admonitionKindToTitle,
+} from './admonitions';
+export { AdmonitionKind } from './types';
 export { captionParagraphPlugin, captionParagraphTransform } from './caption';
 export { footnotesPlugin, footnotesTransform } from './footnotes';
 export { htmlPlugin, htmlTransform } from './html';
