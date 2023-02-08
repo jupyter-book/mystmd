@@ -8,11 +8,11 @@ describe('parses roles', () => {
     expect(tokens.map((t) => t.type)).toEqual(['paragraph_open', 'inline', 'paragraph_close']);
     expect(tokens[1].children?.map((t) => t.type)).toEqual([
       'parsed_role_open',
-      'role_content_open',
+      'role_body_open',
       'paragraph_open',
       'inline',
       'paragraph_close',
-      'role_content_close',
+      'role_body_close',
       'parsed_role_close',
     ]);
     expect(tokens[1].content).toEqual('{abc}`hello`');
@@ -26,11 +26,11 @@ describe('parses roles', () => {
     expect(tokens.map((t) => t.type)).toEqual(['paragraph_open', 'inline', 'paragraph_close']);
     expect(tokens[1].children?.map((t) => t.type)).toEqual([
       'parsed_role_open',
-      'role_content_open',
+      'role_body_open',
       'heading_open',
       'inline',
       'heading_close',
-      'role_content_close',
+      'role_body_close',
       'parsed_role_close',
     ]);
     expect(tokens[1].content).toEqual('{abc}`# hello`');

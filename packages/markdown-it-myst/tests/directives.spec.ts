@@ -77,4 +77,18 @@ describe('parses directives', () => {
     expect(tokens[6].info).toEqual('b');
     expect(tokens[8].content).toEqual('y');
   });
+  it('nested directive parses', () => {
+    const mdit = MarkdownIt().use(plugin);
+    const tokens = mdit.parse('````{abc}\n\n```{xyz}\n```\n\n````', {});
+    expect(tokens.map((t) => t.type)).toEqual([
+      'parsed_directive_open',
+      'directive_body_open',
+      'parsed_directive_open',
+      'parsed_directive_close',
+      'directive_body_close',
+      'parsed_directive_close',
+    ]);
+    expect(tokens[0].info).toEqual('abc');
+    expect(tokens[2].info).toEqual('xyz');
+  });
 });
