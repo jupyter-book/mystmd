@@ -1,10 +1,10 @@
 import type { Content, Root } from 'mdast';
+import type { GenericNode } from 'myst-common';
+import { normalizeLabel, setTextAsChild } from 'myst-common';
 import type { Heading } from 'myst-spec';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import type { GenericNode } from './types';
-import { normalizeLabel, setTextAsChild } from './utils';
 
 export enum TargetKind {
   heading = 'heading',

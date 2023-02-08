@@ -1,4 +1,4 @@
-import { formatTag, toHTML } from './utils';
+import { formatTag, toHTML } from '../src/utils';
 
 describe('Utils', () => {
   it('html formatting is simple', () => {

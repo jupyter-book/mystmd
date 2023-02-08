@@ -3,7 +3,6 @@ import type { Handler, Options } from 'mdast-util-to-hast';
 import { defaultHandlers, toHast, all } from 'mdast-util-to-hast';
 import { u } from 'unist-builder';
 import classNames from 'classnames';
-import { AdmonitionKind } from './types';
 import type { Plugin } from 'unified';
 import type { ElementContent, Properties } from 'hast';
 
@@ -44,7 +43,7 @@ const admonition: Handler = (h, node) =>
       class: classNames({
         [node.class]: node.class, // The custom class is first!!
         admonition: true,
-        [node.kind]: node.kind && node.kind !== AdmonitionKind.admonition,
+        [node.kind]: node.kind && node.kind !== 'admonition',
       }),
     },
     all(h, node),

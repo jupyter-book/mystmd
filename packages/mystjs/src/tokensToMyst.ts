@@ -1,22 +1,15 @@
-import { MarkdownParseState } from './fromMarkdown';
+import type Token from 'markdown-it/lib/token';
+import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown';
 import type { Root } from 'mdast';
-import type { Spec, Token, Admonition, Container } from './types';
-import { AdmonitionKind } from './types';
+import type { Spec } from './types';
 import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
 import { u } from 'unist-builder';
 import he from 'he';
-import type { GenericNode } from '.';
-import {
-  admonitionKindToTitle,
-  normalizeLabel,
-  setTextAsChild,
-  withoutTrailingNewline,
-} from './utils';
-import { selectAll } from 'unist-util-select';
-import { ensureCaptionIsParagraph, liftChildren } from './transforms';
+import type { GenericNode } from 'myst-common';
+import { liftChildren, normalizeLabel, setTextAsChild } from 'myst-common';
 
-export type Options = {
+export type MdastOptions = {
   handlers?: Record<string, Spec>;
   hoistSingleImagesOutofParagraphs?: boolean;
   nestBlocks?: boolean;
@@ -217,22 +210,22 @@ const defaultMdast: Record<string, Spec> = {
       };
     },
   },
-  abbr: {
-    type: 'abbreviation',
-    getAttrs(token) {
-      const value = token.children?.[0]?.content;
-      return {
-        title: token.attrGet('title') ?? undefined,
-        value,
-      };
-    },
-  },
-  sub: {
-    type: 'subscript',
-  },
-  sup: {
-    type: 'superscript',
-  },
+  // abbr: {
+  //   type: 'abbreviation',
+  //   getAttrs(token) {
+  //     const value = token.children?.[0]?.content;
+  //     return {
+  //       title: token.attrGet('title') ?? undefined,
+  //       value,
+  //     };
+  //   },
+  // },
+  // sub: {
+  //   type: 'subscript',
+  // },
+  // sup: {
+  //   type: 'superscript',
+  // },
   dl: {
     type: 'definitionList',
   },
@@ -242,37 +235,37 @@ const defaultMdast: Record<string, Spec> = {
   dd: {
     type: 'definitionDescription',
   },
-  admonition: {
-    type: 'admonition',
-    getAttrs(token) {
-      const kind = token.meta?.kind || undefined;
-      return {
-        kind,
-        class: getClassName(token, [new RegExp(`admonition|${kind}`)]),
-      };
-    },
-  },
-  admonition_title: {
-    type: 'admonitionTitle',
-  },
-  figure: {
-    type: 'container',
-    getAttrs(token): Container {
-      const name = token.meta?.name || undefined;
-      return {
-        kind: 'figure',
-        ...normalizeLabel(name),
-        enumerated: token.meta?.enumerated,
-        class: getClassName(token, [NUMBERED_CLASS]),
-      };
-    },
-  },
-  figure_caption: {
-    type: 'caption',
-  },
-  figure_legend: {
-    type: 'legend',
-  },
+  // admonition: {
+  //   type: 'admonition',
+  //   getAttrs(token) {
+  //     const kind = token.meta?.kind || undefined;
+  //     return {
+  //       kind,
+  //       class: getClassName(token, [new RegExp(`admonition|${kind}`)]),
+  //     };
+  //   },
+  // },
+  // admonition_title: {
+  //   type: 'admonitionTitle',
+  // },
+  // figure: {
+  //   type: 'container',
+  //   getAttrs(token): Container {
+  //     const name = token.meta?.name || undefined;
+  //     return {
+  //       kind: 'figure',
+  //       ...normalizeLabel(name),
+  //       enumerated: token.meta?.enumerated,
+  //       class: getClassName(token, [NUMBERED_CLASS]),
+  //     };
+  //   },
+  // },
+  // figure_caption: {
+  //   type: 'caption',
+  // },
+  // figure_legend: {
+  //   type: 'legend',
+  // },
   table: {
     type: 'table',
     getAttrs(token) {
@@ -286,9 +279,9 @@ const defaultMdast: Record<string, Spec> = {
       };
     },
   },
-  table_caption: {
-    type: 'caption',
-  },
+  // table_caption: {
+  //   type: 'caption',
+  // },
   thead: {
     type: '_lift',
   },
@@ -325,30 +318,30 @@ const defaultMdast: Record<string, Spec> = {
       };
     },
   },
-  math_block: {
-    type: 'math',
-    noCloseToken: true,
-    isText: true,
-    getAttrs(t) {
-      const name = t.info || undefined;
-      return {
-        ...normalizeLabel(name),
-        enumerated: t.meta?.enumerated,
-      };
-    },
-  },
-  math_block_label: {
-    type: 'math',
-    noCloseToken: true,
-    isText: true,
-    getAttrs(t) {
-      const name = t.info || undefined;
-      return {
-        ...normalizeLabel(name),
-        enumerated: t.meta?.enumerated,
-      };
-    },
-  },
+  // math_block: {
+  //   type: 'math',
+  //   noCloseToken: true,
+  //   isText: true,
+  //   getAttrs(t) {
+  //     const name = t.info || undefined;
+  //     return {
+  //       ...normalizeLabel(name),
+  //       enumerated: t.meta?.enumerated,
+  //     };
+  //   },
+  // },
+  // math_block_label: {
+  //   type: 'math',
+  //   noCloseToken: true,
+  //   isText: true,
+  //   getAttrs(t) {
+  //     const name = t.info || undefined;
+  //     return {
+  //       ...normalizeLabel(name),
+  //       enumerated: t.meta?.enumerated,
+  //     };
+  //   },
+  // },
   amsmath: {
     type: 'math',
     noCloseToken: true,
@@ -359,17 +352,17 @@ const defaultMdast: Record<string, Spec> = {
       };
     },
   },
-  ref: {
-    type: 'crossReference',
-    isLeaf: true,
-    getAttrs(t) {
-      return {
-        kind: t.meta?.kind,
-        ...normalizeLabel(t.meta?.label),
-        value: t.meta?.value || undefined,
-      };
-    },
-  },
+  // ref: {
+  //   type: 'crossReference',
+  //   isLeaf: true,
+  //   getAttrs(t) {
+  //     return {
+  //       kind: t.meta?.kind,
+  //       ...normalizeLabel(t.meta?.label),
+  //       value: t.meta?.value || undefined,
+  //     };
+  //   },
+  // },
   footnote_ref: {
     type: 'footnoteReference',
     noCloseToken: true,
@@ -397,37 +390,39 @@ const defaultMdast: Record<string, Spec> = {
       };
     },
   },
-  directive: {
-    type: 'mystDirective',
-    noCloseToken: true,
-    isLeaf: true,
-    getAttrs(t) {
-      return {
-        name: t.info,
-        args: t?.meta?.arg || undefined,
-        value: t.content.trim(),
-      };
-    },
-  },
   parsed_directive: {
     type: 'mystDirective',
     getAttrs(t) {
-      let opts = t.meta?.opts;
-      if (!opts || !Object.keys(opts).length) {
-        opts = undefined;
-      } else {
-        if (opts.class) opts.class = opts.class.join(' ');
-        Object.keys(opts).forEach((k) => {
-          // Handle flags, where option is simply present.
-          // This simple solution is very unlikely to be sufficient long term.
-          if (opts[k] === null) opts[k] = true;
-        });
-      }
       return {
         name: t.info,
-        args: t.meta?.arg || undefined,
-        options: opts,
-        value: t.content.trim() || undefined,
+        args: t.meta?.arg,
+        options: t.meta?.opts,
+        value: t.content,
+      };
+    },
+  },
+  directive_arg: {
+    type: 'mystDirectiveArg',
+    getAttrs(t) {
+      return {
+        value: t.content,
+      };
+    },
+  },
+  directive_option: {
+    type: 'mystDirectiveOption',
+    getAttrs(t) {
+      return {
+        name: t.info,
+        value: t.content,
+      };
+    },
+  },
+  directive_body: {
+    type: 'mystDirectiveBody',
+    getAttrs(t) {
+      return {
+        value: t.content,
       };
     },
   },
@@ -435,22 +430,19 @@ const defaultMdast: Record<string, Spec> = {
     type: 'mystDirectiveError',
     noCloseToken: true,
   },
-  role: {
-    type: 'mystRole',
-    noCloseToken: true,
-    isLeaf: true,
-    getAttrs(t) {
-      return {
-        name: t.meta?.name,
-        value: t.content,
-      };
-    },
-  },
   parsed_role: {
     type: 'mystRole',
     getAttrs(t) {
       return {
-        name: t.meta.name,
+        name: t.info,
+        value: t.content,
+      };
+    },
+  },
+  role_body: {
+    type: 'mystRoleBody',
+    getAttrs(t) {
+      return {
         value: t.content,
       };
     },
@@ -529,7 +521,7 @@ function nestSingleImagesIntoParagraphs(tree: Root) {
   });
 }
 
-const defaultOptions: Options = {
+const defaultOptions: MdastOptions = {
   handlers: defaultMdast,
   hoistSingleImagesOutofParagraphs: true,
   nestBlocks: true,
@@ -556,14 +548,14 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
 
   // Remove unnecessary admonition titles from AST
   // These are up to the serializer to put in
-  visit(tree, 'admonition', (node: Admonition) => {
-    const { kind, children } = node;
-    if (!kind || !children || kind === AdmonitionKind.admonition) return;
-    const expectedTitle = admonitionKindToTitle(kind);
-    const titleNode = children[0];
-    if (titleNode.type === 'admonitionTitle' && titleNode.children?.[0]?.value === expectedTitle)
-      node.children = children.slice(1);
-  });
+  // visit(tree, 'admonition', (node: Admonition) => {
+  //   const { kind, children } = node;
+  //   if (!kind || !children || kind === AdmonitionKind.admonition) return;
+  //   const expectedTitle = admonitionKindToTitle(kind);
+  //   const titleNode = children[0];
+  //   if (titleNode.type === 'admonitionTitle' && titleNode.children?.[0]?.value === expectedTitle)
+  //     node.children = children.slice(1);
+  // });
 
   // Move crossReference text value to children
   visit(tree, 'crossReference', (node: GenericNode) => {
@@ -600,30 +592,30 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
     tree = newTree as Root;
   }
 
-  ensureCaptionIsParagraph(tree);
+  // ensureCaptionIsParagraph(tree);
   // Replace "table node with caption" with "figure node with table and caption"
   // TODO: Clean up when we update to typescript > 4.6.2 and we have access to
   //       parent in visitor function.
   //       i.e. visit(tree, 'table', (node, index parent) => {...})
   //       https://github.com/microsoft/TypeScript/issues/46900
 
-  selectAll('table', tree).forEach((node: GenericNode) => {
-    const captionChildren = node.children?.filter((n: GenericNode) => n.type === 'caption');
-    if (captionChildren?.length) {
-      const tableChildren = node.children?.filter((n: GenericNode) => n.type !== 'caption');
-      const newTableNode: GenericNode = {
-        type: 'table',
-        align: node.align,
-        children: tableChildren,
-      };
-      node.type = 'container';
-      node.kind = 'table';
-      node.children = [...captionChildren, newTableNode];
-      delete node.align;
-    } else {
-      delete node.enumerated;
-    }
-  });
+  // selectAll('table', tree).forEach((node: GenericNode) => {
+  //   const captionChildren = node.children?.filter((n: GenericNode) => n.type === 'caption');
+  //   if (captionChildren?.length) {
+  //     const tableChildren = node.children?.filter((n: GenericNode) => n.type !== 'caption');
+  //     const newTableNode: GenericNode = {
+  //       type: 'table',
+  //       align: node.align,
+  //       children: tableChildren,
+  //     };
+  //     node.type = 'container';
+  //     node.kind = 'table';
+  //     node.children = [...captionChildren, newTableNode];
+  //     delete node.align;
+  //   } else {
+  //     delete node.enumerated;
+  //   }
+  // });
 
   if (opts.hoistSingleImagesOutofParagraphs) {
     hoistSingleImagesOutofParagraphs(tree);

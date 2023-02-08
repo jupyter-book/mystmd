@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import type { Root } from 'mdast';
-import { enumerateTargets, State } from '../../src';
+import { enumerateTargets, State } from '../../src/state';
 
 type TestFile = {
   cases: TestCase[];
