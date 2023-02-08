@@ -9,7 +9,7 @@ type Options = {
   replaceAdmonitionTitles?: boolean;
 };
 
-function admonitionKindToTitle(kind: AdmonitionKind | string) {
+export function admonitionKindToTitle(kind: AdmonitionKind | string) {
   const transform: Record<string, string> = {
     attention: 'Attention',
     caution: 'Caution',
