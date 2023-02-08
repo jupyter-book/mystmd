@@ -1,9 +1,9 @@
 {
-  "name": "mystjs",
+  "name": "myst-parser",
   "version": "0.0.15",
   "description": "Markdown parser for MyST markdown in JavaScript",
   "author": "Rowan Cockett <rowan@curvenote.com>",
-  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/mystjs",
+  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-parser",
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

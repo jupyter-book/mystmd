@@ -15,9 +15,9 @@ You can download the latest package hosted off of npm (e.g. using unpkg) or incl
     <div id="output"></div>
     <script>
       function init() {
-        const myst = MyST()
-        const html = myst.render('# Hello to the world!')
-        document.getElementById('output').innerHTML = html
+        const myst = MyST();
+        const html = myst.render('# Hello to the world!');
+        document.getElementById('output').innerHTML = html;
       }
     </script>
   </body>
@@ -35,10 +35,20 @@ npm install mystjs
 You can now import (or `require`) the library.
 
 ```javascript
-import MyST from 'mystjs';
+import { MyST } from 'myst-parser';
+import { State, transform, mystToHast, formatHtml } from 'myst-to-html';
+import rehypeStringify from 'rehype-stringify';
+import { unified } from 'unified';
 
-const myst = MyST();
-const html = myst.render('# Hello to the world!');
+const myst = new MyST();
+const tree = myst.parse('# Hello to the world!');
+const pipe = unified()
+  .use(transform, new State())
+  .use(mystToHast)
+  .use(formatHtml)
+  .use(rehypeStringify);
+const result = pipe.runSync(tree);
+const html = pipe.stringify(result);
 
 console.log(html);
 >> "<h1>Hello to the world!</h1>"

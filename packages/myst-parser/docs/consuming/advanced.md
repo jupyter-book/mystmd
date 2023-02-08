@@ -26,15 +26,15 @@ There are two ways to use the library, you can use the `MyST` wrapper,
 which creates a `MarkdownIt` tokenizer for you:
 
 ```javascript
-import { MyST } from 'mystjs';
+import { MyST } from 'myst-parser';
 const myst = MyST(); // Can override options here!
-const html = myst.render(myString);
+const mdast = myst.parse(myString);
 ```
 
 Alternatively, you can use this with other packages in a more granular way:
 
 ```javascript
-import { plugins, roles, directives } from 'mystjs';
+import { plugins, roles, directives } from 'myst-parser';
 
 // Somewhere create a markdownit tokenizer:
 const tokenizer = MarkdownIt('commonmark');

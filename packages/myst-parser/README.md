@@ -1,6 +1,6 @@
-# mystjs
+# myst-parser
 
-MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown. The main use case driving the development and design of MyST is [JupyterBook](https://jupyterbook.org/), which helps you create educational online textbooks and tutorials with Jupyter Notebooks and narrative content written in MyST. `mystjs` is a javascript parser for MyST markdown that brings these capabilities into a web-native environment.
+MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown. The main use case driving the development and design of MyST is [JupyterBook](https://jupyterbook.org/), which helps you create educational online textbooks and tutorials with Jupyter Notebooks and narrative content written in MyST. `myst-parser` is a javascript parser for MyST markdown that brings these capabilities into a web-native environment.
 
 ## Goals
 
@@ -14,16 +14,26 @@ MyST (Markedly Structured Text) is designed to create publication-quality docume
 ## Usage
 
 ```bash
-npm install mystjs
+npm install myst-parser
 ```
 
 In a node environment:
 
 ```javascript
-import { MyST } from 'mystjs';
+import { MyST } from 'myst-parser';
+import { State, transform, mystToHast, formatHtml } from 'myst-to-html';
+import rehypeStringify from 'rehype-stringify';
+import { unified } from 'unified';
 
 const myst = new MyST();
-const html = myst.render('# Hello to the world!');
+const tree = myst.parse('# Hello to the world!');
+const pipe = unified()
+  .use(transform, new State())
+  .use(mystToHast)
+  .use(formatHtml)
+  .use(rehypeStringify);
+const result = pipe.runSync(tree);
+const html = pipe.stringify(result);
 
 console.log(html);
 >> "<h1>Hello to the world!</h1>"
@@ -34,14 +44,21 @@ In a browser:
 ```html
 <html>
   <head>
-    <script src="https://unpkg.com/mystjs"></script>
+    <script src="https://unpkg.com/myst-parser"></script>
   </head>
   <body onload="init();">
     <div id="output"></div>
     <script>
       function init() {
         const myst = new MyST();
-        const html = myst.render('# Hello to the world!');
+        const tree = myst.parse('# Hello to the world!');
+        const pipe = unified()
+          .use(transform, new State())
+          .use(mystToHast)
+          .use(formatHtml)
+          .use(rehypeStringify);
+        const result = pipe.runSync(tree);
+        const html = pipe.stringify(result);
         document.getElementById('output').innerHTML = html;
       }
     </script>
@@ -49,7 +66,7 @@ In a browser:
 </html>
 ```
 
-## `mystjs` Features
+## `myst-parser` Features
 
 - CommonMark
 - Admonitions
@@ -107,7 +124,7 @@ For installing the package locally, you will need [node](https://nodejs.org/) an
 Once you have `npm` installed globally, navigate into this project folder and install the dependencies:
 
 ```bash
-cd mystjs
+cd myst-parser
 npm install
 npm run start  # Start a development server to play with the library! 🚀
 ```
@@ -127,5 +144,5 @@ Run the tests, these are mostly based on the [fixtures](fixtures) folder. You ca
 
 ### `npm run start`
 
-Starts a server for manually testing and playing with `mystjs`, this uses a in-memory bundle of what would go in the `dist` folder.
+Starts a server for manually testing and playing with `myst-parser`, this uses a in-memory bundle of what would go in the `dist` folder.
 Note that this does not actually build the library!
