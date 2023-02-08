@@ -1,5 +1,5 @@
-import type { GenericNode } from 'mystjs';
 import type { Root } from 'mdast';
+import type { GenericNode } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import yaml from 'js-yaml';
 import type { ISession } from '../session/types';

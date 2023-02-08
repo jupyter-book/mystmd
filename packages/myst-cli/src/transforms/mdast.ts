@@ -1,5 +1,5 @@
 import fs from 'fs';
-import type { GenericNode } from 'mystjs';
+import type { GenericNode } from 'myst-common';
 import type { Root } from 'mdast';
 import { selectAll } from 'unist-util-select';
 import { join, dirname } from 'path';

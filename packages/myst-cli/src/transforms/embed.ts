@@ -1,8 +1,8 @@
-import type { GenericNode } from 'mystjs';
 import type { Root } from 'mdast';
 import { filter } from 'unist-util-filter';
 import { selectAll } from 'unist-util-select';
 import type { IReferenceState } from 'myst-transforms';
+import type { GenericNode } from 'myst-common';
 import { copyNode, normalizeLabel } from 'myst-common';
 
 /**
