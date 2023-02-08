@@ -4,6 +4,7 @@ import yaml from 'js-yaml';
 import { visit } from 'unist-util-visit';
 import { MyST } from '../src';
 import type { Root } from 'mdast';
+import { renderMdast } from './renderMdast';
 
 type TestFile = {
   cases: TestCase[];
@@ -108,21 +109,17 @@ describe('Testing mdast --> html conversions', () => {
   test.each(htmlCases)('%s', (name, { html, mdast }) => {
     if (html) {
       if (name.includes('cmark_spec_0.30')) {
-        const parser = new MyST({
-          allowDangerousHtml: true,
-          mdast: {
-            hoistSingleImagesOutofParagraphs: false,
-          },
-          extensions: {
-            frontmatter: false, // Frontmatter screws with some tests!
-          },
+        const output = renderMdast(mdast, {
           formatHtml: false,
+          hast: {
+            clobberPrefix: 'm-',
+            allowDangerousHtml: true,
+          },
           stringifyHtml: {
             closeSelfClosing: true,
+            allowDangerousHtml: true,
           },
         });
-
-        const output = parser.renderMdast(mdast);
         const i = html
           .replace(/&gt;/g, '>')
           .replace(/&lt;/g, '&#x3C;')
@@ -138,10 +135,17 @@ describe('Testing mdast --> html conversions', () => {
 
         expect(normalize(o)).toEqual(normalize(i));
       } else {
-        const parser = new MyST({
-          allowDangerousHtml: true,
+        const newHTML = renderMdast(mdast, {
+          formatHtml: true,
+          hast: {
+            clobberPrefix: 'm-',
+            allowDangerousHtml: true,
+          },
+          stringifyHtml: {
+            closeSelfClosing: false,
+            allowDangerousHtml: true,
+          },
         });
-        const newHTML = parser.renderMdast(mdast);
         expect(normalize(newHTML)).toEqual(normalize(html));
       }
     }

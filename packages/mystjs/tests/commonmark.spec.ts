@@ -10,6 +10,7 @@
 import fs from 'fs';
 import path from 'path';
 import { MyST } from '../src';
+import { renderMdast } from './renderMdast';
 
 type Spec = {
   section: string;
@@ -31,9 +32,7 @@ const SKIP_TESTS = new Set([
 ]);
 
 export function loadSpec(name: string): Spec[] {
-  const fixtures = JSON.parse(
-    fs.readFileSync(path.join('tests', 'commonmark', name)).toString(),
-  );
+  const fixtures = JSON.parse(fs.readFileSync(path.join('tests', 'commonmark', name)).toString());
   return fixtures;
 }
 
@@ -80,12 +79,19 @@ describe('Common Mark Spec with unified', () => {
       extensions: {
         frontmatter: false, // Frontmatter screws with some tests!
       },
+    });
+    const tree = myst.parse(markdown);
+    const output = renderMdast(tree, {
       formatHtml: false,
+      hast: {
+        clobberPrefix: 'm-',
+        allowDangerousHtml: false,
+      },
       stringifyHtml: {
         closeSelfClosing: true,
+        allowDangerousHtml: false,
       },
     });
-    const output = myst.render(markdown);
     const i = html
       .replace(/&gt;/g, '>')
       .replace(/&lt;/g, '&#x3C;')
@@ -117,6 +123,5 @@ describe('Common Mark Spec with unified', () => {
 });
 
 describe('Skipped Commonmark Tests', () => {
-  // eslint-disable-next-line jest/no-disabled-tests, jest/expect-expect
   test.skip.each(skipped)('%s', () => null);
 });

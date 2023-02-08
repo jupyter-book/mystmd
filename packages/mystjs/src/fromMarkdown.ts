@@ -1,14 +1,27 @@
+import type Token from 'markdown-it/lib/token';
 import { u } from 'unist-builder';
+import type { GenericNode, GenericParent } from 'myst-common';
 import type { Text } from 'myst-spec';
-import type { GenericNode, GenericParent, Spec, Token } from './types';
-import { withoutTrailingNewline } from './utils';
+import type { Spec } from './types';
 
 const UNHIDDEN_TOKENS = new Set([
   'parsed_directive_open',
   'parsed_directive_close',
+  'directive_arg_open',
+  'directive_arg_close',
+  'directive_option_open',
+  'directive_option_close',
+  'directive_body_open',
+  'directive_body_close',
   'parsed_role_open',
   'parsed_role_close',
+  'role_body_open',
+  'role_body_close',
 ]);
+
+export function withoutTrailingNewline(str: string) {
+  return str[str.length - 1] == '\n' ? str.slice(0, str.length - 1) : str;
+}
 
 function addPositionsToNode(node: GenericNode, token: Token) {
   if (token.map) {

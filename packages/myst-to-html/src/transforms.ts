@@ -10,12 +10,16 @@ import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAfter } from 'unist-util-find-after';
 import { remove } from 'unist-util-remove';
-import { map } from 'unist-util-map';
-import type { Admonition, GenericNode } from './types';
-import { AdmonitionKind } from './types';
-import { admonitionKindToTitle, normalizeLabel } from './utils';
+import { liftChildren, normalizeLabel } from 'myst-common';
+import type { GenericNode } from 'myst-common';
+import { AdmonitionKind, admonitionKindToTitle } from 'myst-transforms';
 import type { EnumeratorOptions, State } from './state';
 import { enumerateTargets, resolveReferences } from './state';
+
+export type Admonition = GenericNode<{
+  kind?: AdmonitionKind;
+  class?: string;
+}>;
 
 export type TransformOptions = {
   addAdmonitionHeaders?: boolean;
@@ -80,20 +84,6 @@ export function addContainerCaptionNumbers(tree: Root, state: State) {
         ];
       }
     });
-}
-
-/** @deprecated  use myst-common */
-export function liftChildren(tree: Root, nodeType: string) {
-  map(tree, (node) => {
-    const children = (node as GenericNode).children
-      ?.map((child) => {
-        if (child.type === nodeType && child.children) return child.children;
-        return child;
-      })
-      ?.flat();
-    if (children !== undefined) (node as GenericNode).children = children;
-    return node;
-  });
 }
 
 /**

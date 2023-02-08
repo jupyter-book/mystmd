@@ -1,11 +1,8 @@
 import MarkdownIt from 'markdown-it';
 import type { Root } from 'mdast';
 import type { Plugin } from 'unified';
-import { unified } from 'unified';
-import rehypeStringify from 'rehype-stringify';
-import { directivesDefault, rolesDefault } from 'markdown-it-docutils';
 import { MARKDOWN_IT_CONFIG } from './config';
-import { formatHtml, mystToHast, tokensToMyst, transform, State } from './mdast';
+import { tokensToMyst } from './tokensToMyst';
 import {
   mathPlugin,
   convertFrontMatter,
@@ -13,25 +10,13 @@ import {
   colonFencePlugin,
   mystBlockPlugin,
   footnotePlugin,
-  docutilsPlugin,
+  mystPlugin,
   deflistPlugin,
   tasklistPlugin,
 } from './plugins';
 import type { AllOptions, Options } from './types';
 
-export type { Options, IRole, IDirective } from './types';
-
-export {
-  directivesDefault,
-  Directive,
-  IDirectiveData,
-  directiveOptions,
-  Role,
-  rolesDefault,
-  IRoleData,
-} from 'markdown-it-docutils';
-
-export const defaultOptions: Omit<AllOptions, 'roles' | 'directives'> = {
+export const defaultOptions: AllOptions = {
   allowDangerousHtml: false,
   markdownit: {},
   extensions: {
@@ -44,21 +29,11 @@ export const defaultOptions: Omit<AllOptions, 'roles' | 'directives'> = {
     tables: true,
     blocks: true,
   },
-  transform: {},
-  docutils: {
-    roles: rolesDefault,
-    directives: directivesDefault,
-  },
   mdast: {},
-  hast: {
-    clobberPrefix: 'm-',
-  },
-  formatHtml: true,
-  stringifyHtml: {},
 };
 
 export class MyST {
-  opts: Omit<AllOptions, 'roles' | 'directives'>;
+  opts: AllOptions;
   tokenizer: MarkdownIt;
 
   constructor(opts: Options = defaultOptions) {
@@ -66,41 +41,17 @@ export class MyST {
     this.tokenizer = this._createTokenizer();
   }
 
-  _parseOptions(user: Options): Omit<AllOptions, 'roles' | 'directives'> {
+  _parseOptions(user: Options): AllOptions {
     const opts = {
       allowDangerousHtml: user.allowDangerousHtml ?? defaultOptions.allowDangerousHtml,
-      transform: { ...defaultOptions.transform, ...user.transform },
       mdast: { ...defaultOptions.mdast, ...user.mdast },
-      hast: { ...defaultOptions.hast, ...user.hast },
-      docutils: { ...defaultOptions.docutils, ...user.docutils },
       markdownit: { ...defaultOptions.markdownit, ...user.markdownit },
       extensions: { ...defaultOptions.extensions, ...user.extensions },
-      formatHtml: user.formatHtml ?? defaultOptions.formatHtml,
-      stringifyHtml: { ...defaultOptions.stringifyHtml, ...user.stringifyHtml },
     };
-    const rolesHandlers: Required<AllOptions['docutils']>['roles'] = {};
-    const directivesHandlers: Required<AllOptions['docutils']>['directives'] = {};
     const mdastHandlers: Required<AllOptions['mdast']>['handlers'] = {};
-    const hastHandlers: Required<AllOptions['hast']>['handlers'] = {};
-    Object.entries(user.roles ?? {}).forEach(([k, { myst, mdast, hast }]) => {
-      rolesHandlers[k] = myst;
-      mdastHandlers[k] = mdast;
-      hastHandlers[mdast.type] = hast;
-    });
-    Object.entries(user.directives ?? {}).forEach(([k, { myst, mdast, hast }]) => {
-      directivesHandlers[k] = myst;
-      mdastHandlers[k] = mdast;
-      hastHandlers[mdast.type] = hast;
-    });
-    opts.docutils.roles = { ...opts.docutils.roles, ...rolesHandlers };
-    opts.docutils.directives = { ...opts.docutils.directives, ...directivesHandlers };
-    opts.hast.handlers = { ...opts.hast.handlers, ...hastHandlers };
     opts.mdast.handlers = { ...opts.mdast.handlers, ...mdastHandlers };
     if (opts.allowDangerousHtml) {
       opts.markdownit.html = true;
-      opts.hast.allowDangerousHtml = true;
-      opts.hast.allowDangerousHtml = true;
-      opts.stringifyHtml.allowDangerousHtml = true;
     }
     return opts;
   }
@@ -113,7 +64,7 @@ export class MyST {
     if (exts.frontmatter) tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
     if (exts.blocks) tokenizer.use(mystBlockPlugin);
     if (exts.footnotes) tokenizer.use(footnotePlugin).disable('footnote_inline'); // not yet implemented in myst-parser
-    tokenizer.use(docutilsPlugin, this.opts.docutils);
+    tokenizer.use(mystPlugin);
     if (exts.math) tokenizer.use(mathPlugin, exts.math);
     if (exts.deflist) tokenizer.use(deflistPlugin);
     if (exts.tasklist) tokenizer.use(tasklistPlugin);
@@ -122,24 +73,6 @@ export class MyST {
 
   parse(content: string) {
     return tokensToMyst(this.tokenizer.parse(content, {}), this.opts.mdast);
-  }
-
-  render(content: string) {
-    const tree = this.parse(content);
-    const html = this.renderMdast(tree);
-    return html;
-  }
-
-  renderMdast(tree: Root) {
-    const state = new State();
-    const pipe = unified()
-      .use(transform, state, this.opts.transform)
-      .use(mystToHast, this.opts.hast)
-      .use(formatHtml, this.opts.formatHtml)
-      .use(rehypeStringify, this.opts.stringifyHtml);
-    const result = pipe.runSync(tree);
-    const html = pipe.stringify(result);
-    return html.trim();
   }
 }
 

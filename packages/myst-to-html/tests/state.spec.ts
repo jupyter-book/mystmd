@@ -1,4 +1,4 @@
-import { formatHeadingEnumerator, incrementHeadingCounts } from '../src/mdast/state';
+import { formatHeadingEnumerator, incrementHeadingCounts } from '../src/state';
 
 describe('Testing heading count', () => {
   test.each([

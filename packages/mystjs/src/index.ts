@@ -1,7 +1,10 @@
 import * as plugins from './plugins';
 
-export * from './mdast';
 export * from './myst';
+export * from './types';
+export * from './fromMarkdown';
+export { tokensToMyst, MdastOptions } from './tokensToMyst';
+
 export { plugins };
 
 import { remove } from 'unist-util-remove';
