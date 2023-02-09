@@ -14,6 +14,8 @@ import {
   deflistPlugin,
   tasklistPlugin,
 } from './plugins';
+import { applyDirectives } from './directives';
+import { applyRoles } from './roles';
 import type { AllOptions } from './types';
 
 type Options = Partial<AllOptions>;
@@ -33,13 +35,17 @@ export const defaultOptions: AllOptions = {
     blocks: true,
   },
   mdast: {},
+  directives: [],
+  roles: [],
 };
 
-function parseOptions(opts?: Options) {
+function parseOptions(opts?: Options): AllOptions {
   const parsedOpts = {
     mdast: { ...defaultOptions.mdast, ...opts?.mdast },
     markdownit: { ...defaultOptions.markdownit, ...opts?.markdownit },
     extensions: { ...defaultOptions.extensions, ...opts?.extensions },
+    directives: [...defaultOptions.directives, ...(opts?.directives ?? [])],
+    roles: [...defaultOptions.roles, ...(opts?.roles ?? [])],
   };
   return parsedOpts;
 }
@@ -64,6 +70,8 @@ export function mystParse(content: string, opts?: Options) {
   const parsedOpts = parseOptions(opts);
   const tokenizer = createTokenizer(parsedOpts);
   const tree = tokensToMyst(tokenizer.parse(content, {}), parsedOpts.mdast);
+  applyDirectives(tree, parsedOpts.directives);
+  applyRoles(tree, parsedOpts.roles);
   return tree;
 }
 
