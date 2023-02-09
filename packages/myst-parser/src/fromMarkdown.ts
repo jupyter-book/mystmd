@@ -2,7 +2,7 @@ import type Token from 'markdown-it/lib/token';
 import { u } from 'unist-builder';
 import type { GenericNode, GenericParent } from 'myst-common';
 import type { Text } from 'myst-spec';
-import type { Spec } from './types';
+import type { TokenHandlerSpec } from './types';
 
 const UNHIDDEN_TOKENS = new Set([
   'parsed_directive_open',
@@ -39,7 +39,7 @@ function addPositionsToNode(node: GenericNode, token: Token) {
 export class MarkdownParseState {
   stack: GenericNode[];
   handlers: Record<string, TokenHandler>;
-  constructor(handlers: Record<string, Spec>) {
+  constructor(handlers: Record<string, TokenHandlerSpec>) {
     this.stack = [u('root', [] as GenericParent[])];
     this.handlers = getTokenHandlers(handlers);
   }
@@ -100,18 +100,18 @@ type TokenHandler = (
   index: number,
 ) => void;
 
-function getAttrs(spec: Spec, token: Token, tokens: Token[], index: number) {
+function getAttrs(spec: TokenHandlerSpec, token: Token, tokens: Token[], index: number) {
   const attrs = spec.getAttrs?.(token, tokens, index) || spec.attrs || {};
   if ('type' in attrs) throw new Error('You can not have "type" as attrs.');
   if ('children' in attrs) throw new Error('You can not have "children" as attrs.');
   return attrs;
 }
 
-function noCloseToken(spec: Spec, type: string) {
+function noCloseToken(spec: TokenHandlerSpec, type: string) {
   return spec.noCloseToken || type == 'code_inline' || type == 'code_block' || type == 'fence';
 }
 
-function getTokenHandlers(specHandlers: Record<string, Spec>) {
+function getTokenHandlers(specHandlers: Record<string, TokenHandlerSpec>) {
   const handlers: Record<string, TokenHandler> = {};
 
   Object.entries(specHandlers).forEach(([type, spec]) => {
