@@ -30,6 +30,12 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
     _brKeep(h: H, node: any) {
       return h(node, '_break');
     },
+    comment(h: any, node: any) {
+      // Prevents HTML comments from showing up as text in web
+      const result = h(node, 'comment');
+      (result as any).value = node.value;
+      return result;
+    },
   },
 };
 
