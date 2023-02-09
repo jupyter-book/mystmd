@@ -35,19 +35,18 @@ npm install mystjs
 You can now import (or `require`) the library.
 
 ```javascript
-import { MyST } from 'myst-parser';
+import { mystParser } from 'myst-parser';
 import { State, transform, mystToHast, formatHtml } from 'myst-to-html';
 import rehypeStringify from 'rehype-stringify';
 import { unified } from 'unified';
 
-const myst = new MyST();
-const tree = myst.parse('# Hello to the world!');
 const pipe = unified()
+  .use(mystParser)
   .use(transform, new State())
   .use(mystToHast)
   .use(formatHtml)
   .use(rehypeStringify);
-const result = pipe.runSync(tree);
+const result = pipe.runSync('# Hello to the world!');
 const html = pipe.stringify(result);
 
 console.log(html);

@@ -13,7 +13,6 @@ export type Spec = {
 };
 
 export type AllOptions = {
-  allowDangerousHtml: boolean;
   markdownit: MarkdownIt.Options;
   extensions: {
     colonFences?: boolean;
@@ -27,5 +26,3 @@ export type AllOptions = {
   };
   mdast: MdastOptions;
 };
-
-export type Options = Partial<AllOptions>;
