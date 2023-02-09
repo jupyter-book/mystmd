@@ -1,16 +1,16 @@
+import he from 'he';
 import type Token from 'markdown-it/lib/token';
-import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown';
 import type { Root } from 'mdast';
-import type { Spec } from './types';
+import type { GenericNode } from 'myst-common';
+import { liftChildren, normalizeLabel, setTextAsChild } from 'myst-common';
 import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
 import { u } from 'unist-builder';
-import he from 'he';
-import type { GenericNode } from 'myst-common';
-import { liftChildren, normalizeLabel, setTextAsChild } from 'myst-common';
+import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown';
+import type { TokenHandlerSpec } from './types';
 
 export type MdastOptions = {
-  handlers?: Record<string, Spec>;
+  handlers?: Record<string, TokenHandlerSpec>;
   hoistSingleImagesOutofParagraphs?: boolean;
   nestBlocks?: boolean;
 };
@@ -71,7 +71,7 @@ function getColAlign(t: Token) {
   }
 }
 
-const defaultMdast: Record<string, Spec> = {
+const defaultMdast: Record<string, TokenHandlerSpec> = {
   heading: {
     type: 'heading',
     getAttrs(token) {
