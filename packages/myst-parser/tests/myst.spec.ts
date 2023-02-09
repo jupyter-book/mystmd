@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import { visit } from 'unist-util-visit';
-import { MyST } from '../src';
 import type { Root } from 'mdast';
+import { mystParse } from '../src';
 import { renderMdast } from './renderMdast';
 
 type TestFile = {
@@ -84,17 +84,20 @@ function stripPositions(tree: Root) {
 describe('Testing myst --> mdast conversions', () => {
   test.each(mystCases)('%s', (_, { myst, mdast }) => {
     if (myst) {
-      const parser = new MyST({
-        mdast: {
-          hoistSingleImagesOutofParagraphs: false,
-          nestBlocks: false,
-        },
-        extensions: {
-          frontmatter: false, // Frontmatter screws with some tests!
-        },
-      });
       const mdastString = yaml.dump(mdast);
-      const newAst = yaml.dump(stripPositions(parser.parse(myst)));
+      const newAst = yaml.dump(
+        stripPositions(
+          mystParse(myst, {
+            mdast: {
+              hoistSingleImagesOutofParagraphs: false,
+              nestBlocks: false,
+            },
+            extensions: {
+              frontmatter: false, // Frontmatter screws with some tests!
+            },
+          }),
+        ),
+      );
       if (newAst.includes('startingLineNumber: 2')) {
         console.log('FIX ME IN 0.0.5');
         console.log(newAst);

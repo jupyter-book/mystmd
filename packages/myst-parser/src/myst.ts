@@ -14,11 +14,14 @@ import {
   deflistPlugin,
   tasklistPlugin,
 } from './plugins';
-import type { AllOptions, Options } from './types';
+import type { AllOptions } from './types';
+
+type Options = Partial<AllOptions>;
 
 export const defaultOptions: AllOptions = {
-  allowDangerousHtml: false,
-  markdownit: {},
+  markdownit: {
+    html: false,
+  },
   extensions: {
     colonFences: true,
     frontmatter: true,
@@ -32,48 +35,36 @@ export const defaultOptions: AllOptions = {
   mdast: {},
 };
 
-export class MyST {
-  opts: AllOptions;
-  tokenizer: MarkdownIt;
+function parseOptions(opts?: Options) {
+  const parsedOpts = {
+    mdast: { ...defaultOptions.mdast, ...opts?.mdast },
+    markdownit: { ...defaultOptions.markdownit, ...opts?.markdownit },
+    extensions: { ...defaultOptions.extensions, ...opts?.extensions },
+  };
+  return parsedOpts;
+}
 
-  constructor(opts: Options = defaultOptions) {
-    this.opts = this._parseOptions(opts);
-    this.tokenizer = this._createTokenizer();
-  }
+export function createTokenizer(opts?: Options) {
+  const parsedOpts = parseOptions(opts);
+  const { extensions, markdownit } = parsedOpts;
+  const tokenizer = MarkdownIt(MARKDOWN_IT_CONFIG as any, markdownit);
+  if (extensions.tables) tokenizer.enable('table');
+  if (extensions.colonFences) tokenizer.use(colonFencePlugin);
+  if (extensions.frontmatter) tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
+  if (extensions.blocks) tokenizer.use(mystBlockPlugin);
+  if (extensions.footnotes) tokenizer.use(footnotePlugin).disable('footnote_inline'); // not yet implemented in myst-parser
+  tokenizer.use(mystPlugin);
+  if (extensions.math) tokenizer.use(mathPlugin, extensions.math);
+  if (extensions.deflist) tokenizer.use(deflistPlugin);
+  if (extensions.tasklist) tokenizer.use(tasklistPlugin);
+  return tokenizer;
+}
 
-  _parseOptions(user: Options): AllOptions {
-    const opts = {
-      allowDangerousHtml: user.allowDangerousHtml ?? defaultOptions.allowDangerousHtml,
-      mdast: { ...defaultOptions.mdast, ...user.mdast },
-      markdownit: { ...defaultOptions.markdownit, ...user.markdownit },
-      extensions: { ...defaultOptions.extensions, ...user.extensions },
-    };
-    const mdastHandlers: Required<AllOptions['mdast']>['handlers'] = {};
-    opts.mdast.handlers = { ...opts.mdast.handlers, ...mdastHandlers };
-    if (opts.allowDangerousHtml) {
-      opts.markdownit.html = true;
-    }
-    return opts;
-  }
-
-  _createTokenizer() {
-    const exts = this.opts.extensions;
-    const tokenizer = MarkdownIt(MARKDOWN_IT_CONFIG as any, this.opts.markdownit);
-    if (exts.tables) tokenizer.enable('table');
-    if (exts.colonFences) tokenizer.use(colonFencePlugin);
-    if (exts.frontmatter) tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
-    if (exts.blocks) tokenizer.use(mystBlockPlugin);
-    if (exts.footnotes) tokenizer.use(footnotePlugin).disable('footnote_inline'); // not yet implemented in myst-parser
-    tokenizer.use(mystPlugin);
-    if (exts.math) tokenizer.use(mathPlugin, exts.math);
-    if (exts.deflist) tokenizer.use(deflistPlugin);
-    if (exts.tasklist) tokenizer.use(tasklistPlugin);
-    return tokenizer;
-  }
-
-  parse(content: string) {
-    return tokensToMyst(this.tokenizer.parse(content, {}), this.opts.mdast);
-  }
+export function mystParse(content: string, opts?: Options) {
+  const parsedOpts = parseOptions(opts);
+  const tokenizer = createTokenizer(parsedOpts);
+  const tree = tokensToMyst(tokenizer.parse(content, {}), parsedOpts.mdast);
+  return tree;
 }
 
 /**
@@ -81,6 +72,6 @@ export class MyST {
  */
 export const mystParser: Plugin<[Options?], string, Root> = function mystParser() {
   this.Parser = (content: string, opts?: Options) => {
-    return new MyST(opts).parse(content);
+    return mystParse(content, opts);
   };
 };

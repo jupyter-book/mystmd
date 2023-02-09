@@ -1,6 +1,6 @@
 import type { Root } from 'mdast';
 import { visit } from 'unist-util-visit';
-import { MyST } from '../src';
+import { mystParse } from '../src';
 
 function stripPositions(tree: Root) {
   visit(tree, (node) => {
@@ -11,10 +11,8 @@ function stripPositions(tree: Root) {
 
 describe('linkify', () => {
   it('linkify in paragraph', () => {
-    const myst = new MyST();
-    const mystLinkify = new MyST({ markdownit: { linkify: true } });
     const content = 'Link in paragraph: example.com';
-    expect(stripPositions(myst.parse(content))).toEqual({
+    expect(stripPositions(mystParse(content))).toEqual({
       type: 'root',
       children: [
         {
@@ -23,7 +21,7 @@ describe('linkify', () => {
         },
       ],
     });
-    expect(stripPositions(mystLinkify.parse(content))).toEqual({
+    expect(stripPositions(mystParse(content, { markdownit: { linkify: true } }))).toEqual({
       type: 'root',
       children: [
         {
@@ -41,10 +39,8 @@ describe('linkify', () => {
     });
   });
   it('linkify in heading', () => {
-    const myst = new MyST();
-    const mystLinkify = new MyST({ markdownit: { linkify: true } });
     const content = '# Link in heading: example.com';
-    expect(stripPositions(myst.parse(content))).toEqual({
+    expect(stripPositions(mystParse(content))).toEqual({
       type: 'root',
       children: [
         {
@@ -54,7 +50,7 @@ describe('linkify', () => {
         },
       ],
     });
-    expect(stripPositions(mystLinkify.parse(content))).toEqual({
+    expect(stripPositions(mystParse(content, { markdownit: { linkify: true } }))).toEqual({
       type: 'root',
       children: [
         {
@@ -73,10 +69,8 @@ describe('linkify', () => {
     });
   });
   it('dont linkify in link', () => {
-    const myst = new MyST();
-    const mystLinkify = new MyST({ markdownit: { linkify: true } });
     const content = 'Link in link: [example.com](https://example.com)';
-    expect(stripPositions(myst.parse(content))).toEqual({
+    expect(stripPositions(mystParse(content))).toEqual({
       type: 'root',
       children: [
         {
@@ -92,7 +86,7 @@ describe('linkify', () => {
         },
       ],
     });
-    expect(stripPositions(mystLinkify.parse(content))).toEqual({
+    expect(stripPositions(mystParse(content, { markdownit: { linkify: true } }))).toEqual({
       type: 'root',
       children: [
         {

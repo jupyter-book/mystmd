@@ -9,7 +9,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { MyST } from '../src';
+import { createTokenizer, mystParse } from '../src';
 import { renderMdast } from './renderMdast';
 
 type Spec = {
@@ -57,13 +57,12 @@ describe('Common Mark Spec with markdown it', () => {
   test.each(cases)('%s', (_, { markdown, html }) => {
     const fixed = fixHtml(html);
     // For the common mark to pass, html parsing needs to be enabled
-    const myst = new MyST({
+    const output = createTokenizer({
       markdownit: { html: true },
       extensions: {
         frontmatter: false, // Frontmatter screws with some tests!
       },
-    });
-    const output = myst.tokenizer.render(markdown);
+    }).render(markdown);
     expect(output).toEqual(fixed);
   });
 });
@@ -71,8 +70,10 @@ describe('Common Mark Spec with markdown it', () => {
 describe('Common Mark Spec with unified', () => {
   test.each(cases)('%s', (_, { example, markdown, html }) => {
     // For the common mark to pass, html parsing needs to be enabled
-    const myst = new MyST({
-      allowDangerousHtml: true,
+    const tree = mystParse(markdown, {
+      markdownit: {
+        html: true,
+      },
       mdast: {
         hoistSingleImagesOutofParagraphs: false,
       },
@@ -80,7 +81,6 @@ describe('Common Mark Spec with unified', () => {
         frontmatter: false, // Frontmatter screws with some tests!
       },
     });
-    const tree = myst.parse(markdown);
     const output = renderMdast(tree, {
       formatHtml: false,
       hast: {
