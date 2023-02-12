@@ -26,7 +26,7 @@ function runDirectives(state: StateCore): boolean {
     if (token.type === 'directive') {
       try {
         const { info, map } = token;
-        const { arg } = token.meta;
+        const arg = token.meta.arg?.trim() || undefined;
         const content = parseDirectiveContent(
           token.content.trim() ? token.content.split(/\r?\n/) : [],
         );
@@ -36,10 +36,11 @@ function runDirectives(state: StateCore): boolean {
           body.shift();
           bodyOffset++;
         }
+        const bodyString = body.join('\n').trim();
         const directiveOpen = new state.Token('parsed_directive_open', '', 1);
         directiveOpen.info = info;
         directiveOpen.hidden = true;
-        directiveOpen.content = body.join('\n');
+        directiveOpen.content = bodyString;
         directiveOpen.map = map;
         directiveOpen.meta = {
           arg,
@@ -47,12 +48,8 @@ function runDirectives(state: StateCore): boolean {
         };
         const startLineNumber = map ? map[0] : 0;
         const argTokens = directiveArgToTokens(arg, startLineNumber, state);
-        const optsTokens = directiveOptionsToTokens(options, startLineNumber + 1, state);
-        const bodyTokens = directiveBodyToTokens(
-          body.join('\n'),
-          startLineNumber + bodyOffset,
-          state,
-        );
+        const optsTokens = directiveOptionsToTokens(options || {}, startLineNumber + 1, state);
+        const bodyTokens = directiveBodyToTokens(bodyString, startLineNumber + bodyOffset, state);
         const directiveClose = new state.Token('parsed_directive_close', '', -1);
         directiveClose.info = info;
         directiveClose.hidden = true;
@@ -97,7 +94,7 @@ function loadOptions(yamlBlock: string) {
 
 function parseDirectiveContent(content: string[]): {
   body: string[];
-  options: Record<string, any>;
+  options?: Record<string, any>;
   bodyOffset: number;
 } {
   let bodyOffset = 1;
@@ -151,11 +148,11 @@ function parseDirectiveContent(content: string[]): {
     }
   }
 
-  return { body: content, options: {}, bodyOffset: 1 };
+  return { body: content, bodyOffset: 1 };
 }
 
 function directiveArgToTokens(arg: string, lineNumber: number, state: StateCore) {
-  return nestedPartToTokens('directive_arg', arg, lineNumber, state);
+  return nestedPartToTokens('directive_arg', arg, lineNumber, state, 'run_directives', true);
 }
 
 function directiveOptionsToTokens(
@@ -166,7 +163,14 @@ function directiveOptionsToTokens(
   const tokens = Object.entries(options).map(([key, value], index) => {
     // lineNumber mapping assumes each option is only one line;
     // not necessarily true for yaml options.
-    const optTokens = nestedPartToTokens('directive_option', `${value}`, lineNumber + index, state);
+    const optTokens = nestedPartToTokens(
+      'directive_option',
+      `${value}`,
+      lineNumber + index,
+      state,
+      'run_directives',
+      true,
+    );
     optTokens[0].info = key;
     optTokens[0].content = value;
     return optTokens;
@@ -175,7 +179,7 @@ function directiveOptionsToTokens(
 }
 
 function directiveBodyToTokens(body: string, lineNumber: number, state: StateCore) {
-  return nestedPartToTokens('directive_body', body, lineNumber, state);
+  return nestedPartToTokens('directive_body', body, lineNumber, state, 'run_directives', false);
 }
 
 export function directivePlugin(md: MarkdownIt): void {

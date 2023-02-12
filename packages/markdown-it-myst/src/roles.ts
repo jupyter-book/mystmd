@@ -97,5 +97,5 @@ function runRoles(state: StateCore): boolean {
 }
 
 function roleContentToTokens(content: string, lineNumber: number, state: StateCore) {
-  return nestedPartToTokens('role_body', content, lineNumber, state);
+  return nestedPartToTokens('role_body', content, lineNumber, state, 'run_roles', true);
 }
