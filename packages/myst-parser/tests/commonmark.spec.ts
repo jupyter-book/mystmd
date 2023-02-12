@@ -85,11 +85,11 @@ describe('Common Mark Spec with unified', () => {
       formatHtml: false,
       hast: {
         clobberPrefix: 'm-',
-        allowDangerousHtml: false,
+        allowDangerousHtml: true,
       },
       stringifyHtml: {
         closeSelfClosing: true,
-        allowDangerousHtml: false,
+        allowDangerousHtml: true,
       },
     });
     const i = html

@@ -368,9 +368,8 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {
-      return {
-        ...normalizeLabel(t?.meta?.label),
-      };
+      const { identifier, label } = normalizeLabel(t?.meta?.label) || {};
+      return { identifier, label };
     },
   },
   footnote_anchor: {
@@ -385,9 +384,8 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   footnote: {
     type: 'footnoteDefinition',
     getAttrs(t) {
-      return {
-        ...normalizeLabel(t?.meta?.label),
-      };
+      const { identifier, label } = normalizeLabel(t?.meta?.label) || {};
+      return { identifier, label };
     },
   },
   parsed_directive: {
@@ -396,8 +394,8 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
       return {
         name: t.info,
         args: t.meta?.arg,
-        options: t.meta?.opts,
-        value: t.content,
+        options: t.meta?.options,
+        value: t.content || undefined,
       };
     },
   },

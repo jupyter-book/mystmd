@@ -54,6 +54,8 @@
     "markdown-it-myst": "0.0.1",
     "markdown-it-myst-extras": "0.2.0",
     "markdown-it-task-lists": "^2.1.1",
+    "myst-directives": "^0.0.1",
+    "myst-roles": "^0.0.1",
     "myst-spec": "^0.0.4",
     "unified": "^10.1.1",
     "unist-builder": "^3.0.0",
