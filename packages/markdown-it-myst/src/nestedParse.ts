@@ -53,19 +53,23 @@ export function nestedPartToTokens(
   part: string,
   lineNumber: number,
   state: StateCore,
+  pluginRuleName: string,
+  inline: boolean,
 ) {
   if (!part) return [];
   const openToken = new state.Token(`${partName}_open`, '', 1);
   openToken.content = part;
   openToken.hidden = true;
-  const nestedTokens = nestedCoreParse(
-    state.md,
-    'run_directives',
-    part,
-    state.env,
-    lineNumber,
-    true,
-  );
+  let nestedTokens = nestedCoreParse(state.md, pluginRuleName, part, state.env, lineNumber, true);
+  if (
+    inline &&
+    nestedTokens.length === 3 &&
+    nestedTokens[0].type === 'paragraph_open' &&
+    nestedTokens[1].type === 'inline' &&
+    nestedTokens[2].type === 'paragraph_close'
+  ) {
+    nestedTokens = [nestedTokens[1]];
+  }
   const closeToken = new state.Token(`${partName}_close`, '', -1);
   closeToken.hidden = true;
   return [openToken, ...nestedTokens, closeToken];

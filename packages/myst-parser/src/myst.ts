@@ -1,5 +1,15 @@
 import MarkdownIt from 'markdown-it';
 import type { Root } from 'mdast';
+import {
+  admonitionDirective,
+  codeBlockDirective,
+  codeDirective,
+  figureDirective,
+  imageDirective,
+  listTableDirective,
+  mathDirective,
+} from 'myst-directives';
+import { abbreviationRole, mathRole, refRole, subscriptRole, superscriptRole } from 'myst-roles';
 import type { Plugin } from 'unified';
 import { MARKDOWN_IT_CONFIG } from './config';
 import { tokensToMyst } from './tokensToMyst';
@@ -22,7 +32,7 @@ type Options = Partial<AllOptions>;
 
 export const defaultOptions: AllOptions = {
   markdownit: {
-    html: false,
+    html: true,
   },
   extensions: {
     colonFences: true,
@@ -35,8 +45,16 @@ export const defaultOptions: AllOptions = {
     blocks: true,
   },
   mdast: {},
-  directives: [],
-  roles: [],
+  directives: [
+    admonitionDirective,
+    codeBlockDirective,
+    codeDirective,
+    figureDirective,
+    imageDirective,
+    listTableDirective,
+    mathDirective,
+  ],
+  roles: [abbreviationRole, mathRole, refRole, subscriptRole, superscriptRole],
 };
 
 function parseOptions(opts?: Options): AllOptions {
