@@ -1,2 +1,3 @@
-import { MyST } from './src/myst';
-globalThis.MyST = MyST;
+import { mystParse, mystParser } from './src/myst';
+globalThis.mystParse = mystParse;
+globalThis.mystParser = mystParser;
