@@ -110,7 +110,7 @@ Create a Website »
 
 **Architecture**
 
-The `mystjs` command line tool can be used to parse MyST Markdown and Jupyter Notebooks into an AST. This data can be saved as JSON, or rendered to a website (like this one!) or any number of formats including [PDF](./creating-pdf-documents.md), [Word](./creating-word-documents.md), [React](./website-overview.md), HTML or [JATS](./creating-jats-xml.md).
+The `mystjs` command line tool can be used to parse MyST Markdown and Jupyter Notebooks into an AST. This data can be saved as JSON, or rendered to a website (like this one!) or any number of formats including [PDF](./creating-pdf-documents.md), [Word](./creating-word-documents.md), [React](./quickstart-myst-websites.md), HTML or [JATS](./creating-jats-xml.md).
 
 ```{mermaid}
 flowchart LR
