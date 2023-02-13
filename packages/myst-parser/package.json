@@ -61,7 +61,8 @@
     "unist-builder": "^3.0.0",
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^4.0.1",
-    "unist-util-visit": "^4.1.0"
+    "unist-util-visit": "^4.1.0",
+    "vfile": "^5.3.7"
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^9.1.0",

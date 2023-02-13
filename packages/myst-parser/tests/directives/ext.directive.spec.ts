@@ -326,16 +326,10 @@ describe('custom directive extensions', () => {
       type: 'root',
       children: [
         {
-          type: 'mystDirective',
+          type: 'mystDirectiveError',
           position: positionFn(0, 4),
           name: 'test',
           value: ':a: x\n:a: y',
-          children: [
-            {
-              type: 'test',
-              value: '',
-            },
-          ],
         },
       ],
     });

@@ -1,6 +1,7 @@
 import type MarkdownIt from 'markdown-it';
 import type Token from 'markdown-it/lib/token';
 import type { DirectiveSpec, RoleSpec } from 'myst-common';
+import type { VFile } from 'vfile';
 import type { MathExtensionOptions } from './plugins';
 import type { MdastOptions } from './tokensToMyst';
 
@@ -14,6 +15,7 @@ export type TokenHandlerSpec = {
 };
 
 export type AllOptions = {
+  vfile: VFile;
   markdownit: MarkdownIt.Options;
   extensions: {
     colonFences?: boolean;

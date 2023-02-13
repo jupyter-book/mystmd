@@ -1,23 +1,32 @@
 import type { Root } from 'mdast';
 import type { GenericNode, ArgDefinition, RoleData, RoleSpec } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
+import { fileError, fileWarn, ParseTypesEnum } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
+import type { VFile } from 'vfile';
 
 type MystRoleNode = GenericNode & {
   name: string;
 };
 
-export function contentFromNode(node: GenericNode, spec: ArgDefinition) {
+export function contentFromNode(
+  node: GenericNode,
+  spec: ArgDefinition,
+  vfile: VFile,
+  description: string,
+) {
   const { children, value } = node;
   if (spec.type === ParseTypesEnum.parsed) {
-    if (spec.required && !children?.length) {
-      console.log(`error: no parsed content for required role`);
+    if (!children?.length) {
+      if (spec.required) {
+        fileError(vfile, `no parsed content for required ${description}`, { node });
+      }
+      return undefined;
     }
-    return children ?? [];
+    return children;
   }
   if (value == null) {
     if (spec.required) {
-      console.log(`error: no content for required role`);
+      fileError(vfile, `no content for required ${description}`, { node });
     }
     return undefined;
   }
@@ -27,7 +36,8 @@ export function contentFromNode(node: GenericNode, spec: ArgDefinition) {
   if (spec.type === ParseTypesEnum.number) {
     const valueAsNumber = Number(value);
     if (isNaN(valueAsNumber)) {
-      console.log(`error: value not number`);
+      const fileFn = spec.required ? fileError : fileWarn;
+      fileFn(vfile, `number not provided for ${description}`, { node });
       return undefined;
     }
     return valueAsNumber;
@@ -37,7 +47,7 @@ export function contentFromNode(node: GenericNode, spec: ArgDefinition) {
   }
 }
 
-export function applyRoles(tree: Root, specs: RoleSpec[]) {
+export function applyRoles(tree: Root, specs: RoleSpec[], vfile: VFile) {
   const specLookup: Record<string, RoleSpec> = {};
   specs.forEach((spec) => {
     const names = [spec.name];
@@ -46,7 +56,7 @@ export function applyRoles(tree: Root, specs: RoleSpec[]) {
     }
     names.forEach((name) => {
       if (specLookup[name]) {
-        console.log(`error: duplicate roles registered with name ${name}`);
+        fileWarn(vfile, `duplicate roles registered with name: ${name}`);
       } else {
         specLookup[name] = spec;
       }
@@ -57,26 +67,35 @@ export function applyRoles(tree: Root, specs: RoleSpec[]) {
     const { name } = node;
     const spec = specLookup[name];
     if (!spec) {
-      console.log(`error: unknown role ${name}`);
+      fileWarn(vfile, `unknown role: ${name}`, { node });
       // We probably want to do something better than just delete the children
       node.children = undefined;
       return;
     }
     const { body, validate, run } = spec;
     let data: RoleData = { name };
+    let validationError = false;
     const bodyNode = select('mystRoleBody', node) as GenericNode;
     if (body) {
       if (body.required && !bodyNode) {
-        console.log(`error: role body required for role ${name}`);
+        fileError(vfile, `required body not provided for role: ${name}`, { node });
+        node.type = 'mystRoleError';
+        node.children = undefined;
+        validationError = true;
       } else {
-        data.body = contentFromNode(bodyNode, body);
+        data.body = contentFromNode(bodyNode, body, vfile, `body of role: ${name}`);
+        if (body.required && data.body == null) {
+          validationError = true;
+        }
       }
     } else if (bodyNode) {
-      console.log(`warning: unexpected content for role ${name}`);
+      fileWarn(vfile, `unexpected body provided for role: ${name}`, { node: bodyNode });
     }
+    if (validationError) return;
     if (validate) {
-      data = validate(data);
+      data = validate(data, vfile);
     }
-    node.children = run(data);
+    if (validationError) return;
+    node.children = run(data, vfile);
   });
 }

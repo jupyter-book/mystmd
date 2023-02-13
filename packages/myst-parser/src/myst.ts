@@ -11,6 +11,7 @@ import {
 } from 'myst-directives';
 import { abbreviationRole, mathRole, refRole, subscriptRole, superscriptRole } from 'myst-roles';
 import type { Plugin } from 'unified';
+import { VFile } from 'vfile';
 import { MARKDOWN_IT_CONFIG } from './config';
 import { tokensToMyst } from './tokensToMyst';
 import {
@@ -30,7 +31,7 @@ import type { AllOptions } from './types';
 
 type Options = Partial<AllOptions>;
 
-export const defaultOptions: AllOptions = {
+export const defaultOptions: Omit<AllOptions, 'vfile'> = {
   markdownit: {
     html: true,
   },
@@ -59,6 +60,7 @@ export const defaultOptions: AllOptions = {
 
 function parseOptions(opts?: Options): AllOptions {
   const parsedOpts = {
+    vfile: opts?.vfile ?? new VFile(),
     mdast: { ...defaultOptions.mdast, ...opts?.mdast },
     markdownit: { ...defaultOptions.markdownit, ...opts?.markdownit },
     extensions: { ...defaultOptions.extensions, ...opts?.extensions },
@@ -88,8 +90,8 @@ export function mystParse(content: string, opts?: Options) {
   const parsedOpts = parseOptions(opts);
   const tokenizer = createTokenizer(parsedOpts);
   const tree = tokensToMyst(tokenizer.parse(content, {}), parsedOpts.mdast);
-  applyDirectives(tree, parsedOpts.directives);
-  applyRoles(tree, parsedOpts.roles);
+  applyDirectives(tree, parsedOpts.directives, parsedOpts.vfile);
+  applyRoles(tree, parsedOpts.roles, parsedOpts.vfile);
   return tree;
 }
 
