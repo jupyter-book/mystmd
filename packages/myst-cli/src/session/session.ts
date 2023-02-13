@@ -13,7 +13,7 @@ import {
 } from '../config';
 
 const CONFIG_FILES = ['myst.yml'];
-const API_URL = 'https://api.myst.tools';
+const API_URL = 'https://api.myst-tools.org';
 
 export class Session implements ISession {
   API_URL: string;
