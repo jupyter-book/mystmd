@@ -1,5 +1,6 @@
 import type { Root } from 'mdast';
 import type { FootnoteDefinition, Node } from 'myst-spec';
+import type { VFile } from 'vfile';
 
 export type GenericNode<T extends Record<string, any> = Record<string, any>> = {
   type: string;
@@ -68,14 +69,14 @@ export type DirectiveSpec = {
   arg?: ArgDefinition;
   options?: Record<string, OptionDefinition>;
   body?: BodyDefinition;
-  validate?: (data: DirectiveData) => DirectiveData;
-  run: (data: DirectiveData) => GenericNode[];
+  validate?: (data: DirectiveData, vfile: VFile) => DirectiveData;
+  run: (data: DirectiveData, vfile: VFile) => GenericNode[];
 };
 
 export type RoleSpec = {
   name: string;
   alias?: string | string[];
   body?: BodyDefinition;
-  validate?: (data: RoleData) => RoleData;
-  run: (data: RoleData) => GenericNode[];
+  validate?: (data: RoleData, vfile: VFile) => RoleData;
+  run: (data: RoleData, vfile: VFile) => GenericNode[];
 };
