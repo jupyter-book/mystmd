@@ -66,7 +66,7 @@ From the previous tutorial, you should already have created a `myst.yml` configu
 
 🛠 Run `myst start`
 
-If this is the first time you have run `myst start`, the theme will be installed (takes 15-30 seconds), and then bring up a local web-server that shows you a live preview of your documents as you are writing them! every time you save a few milliseconds later the server will update.
+If this is the first time you have run `myst start`, the theme will be installed (takes 15-30 seconds), and then bring up a local web-server that shows you a live preview of your documents as you are writing them! Every time you save a few milliseconds later the server will update.
 
 ```text
 📖 Built README.md in 33 ms.
@@ -108,8 +108,8 @@ Unfortunately, this way of including this information is not easily machine-read
 
 A tutorial to evolve markdown documents and notebooks into structured data
 
-**Authors:** Rowan Cockett<sup>1,2</sup> \
-**Affiliations:** <sup>1</sup>Executable Books, <sup>2</sup> Curvenote \
+**Authors:** Rowan Cockett <sup>1,2</sup> \
+**Affiliations:** <sup>1</sup> Executable Books, <sup>2</sup> Curvenote \
 **License:** CC-BY
 ```
 
@@ -373,7 +373,8 @@ article_type (choice) - Details about different article types...
 
 In addition basic information on the template, the template's specific "parts" and "options" are shown. Some of these may be marked as `(required)` and be essential for the building the document correctly with the template.
 
-🛠 In `01-paper.md`: replace `export: docx` with a list:
+🛠 In `01-paper.md` create an exports list with `docx` and `pdf` formats.
+
 
 ```yaml
 ---
@@ -385,7 +386,7 @@ exports:
 ---
 ```
 
-We have added a second export target for `pdf` and included additional information to specify the template, as well as set the `article_type` option, which is information we discovered when listing the template above! We also saw this template supports a number of "parts" including a required `abstract` part, but as we already added a `abstract` part earlier in this tutorial, we are good to go.
+We have added a second export target for `pdf` and included additional information to specify the template, as well as set the `article_type` option, which is information we discovered when listing the template above! We also saw this template supports a number of "parts" including a required `abstract` part, but as we already added an `abstract` part earlier in this tutorial, we are good to go.
 
 You can now build the exports with the following command:
 
