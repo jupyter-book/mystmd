@@ -12,6 +12,12 @@ You can render your MyST documents as print-ready scientific papers, by converti
 Export to over 400 journal templates from a MyST Markdown file, which uses $\LaTeX$ and can create print-ready, multi-column, professional PDF documents.
 ```
 
+(myst-documents-tutorial-card)=
+:::{card} MyST Documents Quickstart Tutorial 📑
+:link: ./quickstart-myst-documents.md
+See the quickstart tutorial for getting started with exporting to Word documents, $\LaTeX$ and PDFs with various templates.
+:::
+
 ## Exporting to PDF
 
 To create a new `pdf` export type for your MyST document, in your document frontmatter, add an `exports` list:
