@@ -56,7 +56,7 @@ From the previous tutorial, you should already have created a `myst.yml` configu
 
 🛠 Run `myst start`
 
-If this is the first time you have run `myst start`, the theme will be installed (takes 15-30 seconds), and then bring up a local web-server that shows you a live preview of your documents as you are writing them! every time you save a few milliseconds later the server will update.
+If this is the first time you have run `myst start`, the theme will be installed (takes 15-30 seconds), and then bring up a local web-server that shows you a live preview of your documents as you are writing them! Every time you save a few milliseconds later the server will update.
 
 ```text
 📖 Built README.md in 33 ms.
@@ -98,8 +98,8 @@ Unfortunately, this way of including this information is not easily machine-read
 
 A tutorial to evolve markdown documents and notebooks into structured data
 
-**Authors:** Rowan Cockett<sup>1,2</sup> \
-**Affiliations:** <sup>1</sup>Executable Books, <sup>2</sup> Curvenote \
+**Authors:** Rowan Cockett <sup>1,2</sup> \
+**Affiliations:** <sup>1</sup> Executable Books, <sup>2</sup> Curvenote \
 **License:** CC-BY
 ```
 
