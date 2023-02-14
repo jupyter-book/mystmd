@@ -363,7 +363,7 @@ article_type (choice) - Details about different article types...
 
 In addition basic information on the template, the template's specific "parts" and "options" are shown. Some of these may be marked as `(required)` and be essential for the building the document correctly with the template.
 
-🛠 In `01-paper.md`: replace `export: docx` with a list:
+🛠 In `01-paper.md`, add pdf to the existing frontmatter section:
 
 ```yaml
 ---
@@ -375,7 +375,7 @@ exports:
 ---
 ```
 
-We have added a second export target for `pdf` and included additional information to specify the template, as well as set the `article_type` option, which is information we discovered when listing the template above! We also saw this template supports a number of "parts" including a required `abstract` part, but as we already added a `abstract` part earlier in this tutorial, we are good to go.
+We have added a second export target for `pdf` and included additional information to specify the template, as well as set the `article_type` option, which is information we discovered when listing the template above! We also saw this template supports a number of "parts" including a required `abstract` part, but as we already added an `abstract` part earlier in this tutorial, we are good to go.
 
 You can now build the exports with the following command:
 
