@@ -3,7 +3,11 @@ title: Beamer Template
 description: jtex can render to beamer templates, and needs an additional flag to indicate some differences in pre-processing in `myst-to-tex`.
 ---
 
-Beamer slides are created in MyST by seperating them out into blocks, denoted by the `+++` markup with optional metadata in JSON.
+```{danger}
+Beamer templating is currently in development, and cannot yet be accessed through the command line tools. Please see [github](https://github.com/executablebooks/mystjs/issues/97) for updates.
+```
+
+Beamer slides are created in MyST by separating them out into blocks, denoted by the `+++` markup with optional metadata in JSON.
 
 ```markdown
 +++ { "outline": true }
