@@ -16,7 +16,17 @@ The tutorial will be brief on explaining MyST syntax, we provide a [MyST Markdow
 
 ![](#lookout-for-tutorial-actions)
 
-![](#install-myst-dropdown)
+````{note}
+:class: dropdown
+# See the video tutorial 📺
+```{iframe} https://www.youtube.com/embed/NxSNVt9XsCI
+:width: 100%
+```
+````
+
+```{embed}
+:label: install-myst-dropdown
+```
 
 :::{tip}
 :class: dropdown

@@ -12,11 +12,7 @@ You can render your MyST documents as Microsoft Word documents.
 Export to a Microsoft Word document to easily share with your colleagues.
 ```
 
-```{seealso}
-# PDF and $\LaTeX$ export
-
-You can also export your MyST documents as print-ready [scientific papers](./creating-pdf-documents.md) which use $\LaTeX$ and render to over [400 journal templates](./creating-pdf-documents.md).
-```
+![](#myst-documents-tutorial-card)
 
 ## Exporting to Word
 
