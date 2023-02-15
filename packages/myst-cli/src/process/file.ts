@@ -40,7 +40,7 @@ export async function loadFile(
         const content = fs.readFileSync(file).toString();
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
-        const mdast = parseMyst(content);
+        const mdast = parseMyst(session, content, file);
         cache.$mdast[file] = {
           sha256,
           pre: { kind: KINDS.Article, file, mdast },
