@@ -4,6 +4,7 @@ import type {
   FootnoteReference as FNR,
   FootnoteDefinition as FND,
   Heading as SpecHeading,
+  Image as SpecImage,
 } from 'myst-spec';
 
 export type Delete = Parent & { type: 'delete' };
@@ -50,4 +51,8 @@ export type TabItem = Parent & {
 export type Heading = SpecHeading & {
   html_id?: string;
   implicit?: true;
+};
+
+export type Image = SpecImage & {
+  height?: string;
 };
