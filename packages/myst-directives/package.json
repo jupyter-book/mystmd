@@ -40,6 +40,7 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
+    "js-yaml": "^4.1.0",
     "myst-common": "^0.0.12"
   },
   "devDependencies": {
