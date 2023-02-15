@@ -1,3 +1,4 @@
+import type { Code, Caption, Container } from 'myst-spec';
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
 import { normalizeLabel, ParseTypesEnum } from 'myst-common';
 
@@ -62,9 +63,9 @@ export const codeBlockDirective: DirectiveSpec = {
     //   type: ParseTypesEnum.boolean,
     //   doc: 'Ignore minor errors on highlighting',
     // },
-    // caption: {
-    //   type: ParseTypesEnum.string,
-    // },
+    caption: {
+      type: ParseTypesEnum.parsed,
+    },
     linenos: {
       type: ParseTypesEnum.boolean,
       doc: 'Add line numbers',
@@ -93,18 +94,46 @@ export const codeBlockDirective: DirectiveSpec = {
       ?.split(',')
       .map((val) => Number(val.trim()))
       .filter((val) => Number.isInteger(val));
-    return [
-      {
-        type: 'code',
-        lang: data.arg,
-        identifier,
-        label,
-        class: data.options?.class,
-        showLineNumbers: data.options?.linenos,
-        startingLineNumber: data.options?.['lineno-start'],
-        emphasizeLines,
-        value: data.body as string | undefined,
-      },
-    ];
+    if (!data.options?.caption) {
+      return [
+        {
+          type: 'code',
+          lang: data.arg,
+          identifier,
+          label,
+          class: data.options?.class,
+          showLineNumbers: data.options?.linenos,
+          startingLineNumber: data.options?.['lineno-start'],
+          emphasizeLines,
+          value: data.body as string,
+        },
+      ];
+    }
+    const caption: Caption = {
+      type: 'caption',
+      children: [
+        {
+          type: 'paragraph',
+          children: data.options.caption as any[],
+        },
+      ],
+    };
+    const code: Code = {
+      type: 'code',
+      lang: data.arg as string,
+      class: data.options?.class as string,
+      showLineNumbers: data.options?.linenos as boolean,
+      startingLineNumber: data.options?.['lineno-start'] as number,
+      emphasizeLines,
+      value: data.body as string,
+    };
+    const container: Container = {
+      type: 'container',
+      kind: 'code' as any,
+      label: code.label,
+      identifier: code.identifier,
+      children: [code as any, caption],
+    };
+    return [container];
   },
 };

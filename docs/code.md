@@ -70,7 +70,7 @@ To add numbers and emphasis to lines, we are following the [sphinx](https://www.
 ````{code-block} md
 :linenos:
 :emphasize-lines: 2,3
-:caption: Emphasize lines inside of a code block.
+:caption: Emphasize lines inside of a `code` block.
 ```{code-block}
 :linenos:
 :emphasize-lines: 2,3
@@ -94,13 +94,6 @@ emphasize-lines (string)
 
 caption (string)
 : Add a caption to the code block.
-
-    ```{warning}
-    :class: dropdown
-    # Note: currently not parsed
-
-    The current implementation does not parse the caption properly, and markup in this field will not be parsed.
-    ```
 
 name (string)
 : The target label for the code-block, can be used by `ref` and `numref` roles.

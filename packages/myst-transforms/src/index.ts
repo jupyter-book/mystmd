@@ -24,7 +24,6 @@ export {
   blockMetadataTransform,
 } from './blocks';
 export { codePlugin, codeTransform } from './code';
-export { codeBlockPlugin, codeBlockTransform } from './codeBlock';
 export { blockquotePlugin, blockquoteTransform } from './blockquote';
 export { imageAltTextPlugin, imageAltTextTransform } from './images';
 export {
