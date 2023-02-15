@@ -200,14 +200,14 @@ print('hello world')
 
 The cell output or the entire cell can be embedded or referred to using the image or link syntax.
 
-```
+```markdown
 [](#my-cell) - This is a cross-reference to a notebook cell
 ![](#my-cell) - This will embed the output of a notebook cell
 ```
 
 or as a `figure` directive, where you can then add a caption. If you are referring to that figure in a further cross reference that figure (i.e. not the original cell), give it a new `name`.
 
-````
+````markdown
 ```{figure} #my-cell
 :name: fig-my-cell
 ```
