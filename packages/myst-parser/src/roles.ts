@@ -34,7 +34,8 @@ export function contentFromNode(
     return undefined;
   }
   if (spec.type === ParseTypesEnum.string) {
-    if (typeof value !== 'string') {
+    // silently transform numbers into strings here
+    if (typeof value !== 'string' && !(value && typeof value === 'number' && !isNaN(value))) {
       fileWarn(vfile, `value is not a string for ${description}`, { node });
     }
     return String(value);
