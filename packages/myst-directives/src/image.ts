@@ -46,7 +46,7 @@ export const imageDirective: DirectiveSpec = {
       {
         type: 'image',
         url: data.arg as string,
-        alt: alt ?? data.body ? toText(data.body as GenericNode[]) : undefined,
+        alt: alt ?? (data.body ? toText(data.body as GenericNode[]) : undefined),
         title,
         class: c,
         height,

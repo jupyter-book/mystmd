@@ -32,9 +32,7 @@
     "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
     "build": "npm-run-all -l clean -p build:cjs build:esm declarations",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.js",
-    "lint:format": "npx prettier --check \"src/**/*.ts\"",
-    "test": "jest",
-    "test:watch": "jest --watchAll"
+    "lint:format": "npx prettier --check \"src/**/*.ts\""
   },
   "bugs": {
     "url": "https://github.com/executablebooks/mystjs/issues"

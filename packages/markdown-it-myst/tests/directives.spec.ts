@@ -15,14 +15,10 @@ describe('parses directives', () => {
     expect(tokens.map((t) => t.type)).toEqual([
       'parsed_directive_open',
       'directive_arg_open',
-      'paragraph_open',
       'inline',
-      'paragraph_close',
       'directive_arg_close',
       'directive_option_open',
-      'paragraph_open',
       'inline',
-      'paragraph_close',
       'directive_option_close',
       'directive_body_open',
       'paragraph_open',
@@ -32,10 +28,10 @@ describe('parses directives', () => {
       'parsed_directive_close',
     ]);
     expect(tokens[0].info).toEqual('abc');
-    expect(tokens[3].content).toEqual('my arg');
-    expect(tokens[6].info).toEqual('label');
-    expect(tokens[8].content).toEqual('my label');
-    expect(tokens[13].content).toEqual('my body');
+    expect(tokens[2].content).toEqual('my arg');
+    expect(tokens[4].info).toEqual('label');
+    expect(tokens[5].content).toEqual('my label');
+    expect(tokens[9].content).toEqual('my body');
   });
   it('opt flag directive parses to true', () => {
     const mdit = MarkdownIt().use(plugin);
@@ -43,16 +39,14 @@ describe('parses directives', () => {
     expect(tokens.map((t) => t.type)).toEqual([
       'parsed_directive_open',
       'directive_option_open',
-      'paragraph_open',
       'inline',
-      'paragraph_close',
       'directive_option_close',
       'parsed_directive_close',
     ]);
     expect(tokens[0].info).toEqual('abc');
     expect(tokens[1].info).toEqual('flag');
     expect(tokens[1].content).toEqual(true);
-    expect(tokens[3].content).toEqual('true');
+    expect(tokens[2].content).toEqual('true');
   });
   it('yaml opts directive parses', () => {
     const mdit = MarkdownIt().use(plugin);
@@ -60,22 +54,18 @@ describe('parses directives', () => {
     expect(tokens.map((t) => t.type)).toEqual([
       'parsed_directive_open',
       'directive_option_open',
-      'paragraph_open',
       'inline',
-      'paragraph_close',
       'directive_option_close',
       'directive_option_open',
-      'paragraph_open',
       'inline',
-      'paragraph_close',
       'directive_option_close',
       'parsed_directive_close',
     ]);
     expect(tokens[0].info).toEqual('abc');
     expect(tokens[1].info).toEqual('a');
-    expect(tokens[3].content).toEqual('x');
-    expect(tokens[6].info).toEqual('b');
-    expect(tokens[8].content).toEqual('y');
+    expect(tokens[2].content).toEqual('x');
+    expect(tokens[4].info).toEqual('b');
+    expect(tokens[5].content).toEqual('y');
   });
   it('nested directive parses', () => {
     const mdit = MarkdownIt().use(plugin);
