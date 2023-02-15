@@ -1,154 +1,189 @@
-import type { IDirectiveData, IDirective, Token } from 'mystjs';
-import { Directive, directiveOptions } from 'mystjs';
+import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import { ParseTypesEnum } from 'myst-common';
 
-const Card: IDirective = {
-  myst: class Card extends Directive {
-    public required_arguments = 0;
-
-    public optional_arguments = 1;
-
-    public final_argument_whitespace = true;
-
-    public has_content = true;
-
-    public option_spec = {
-      // https://sphinx-design.readthedocs.io/en/furo-theme/cards.html#card-options
-      width: directiveOptions.unchanged,
-      margin: directiveOptions.unchanged,
-      padding: directiveOptions.unchanged,
-      'text-align': directiveOptions.unchanged,
-      'img-top': directiveOptions.unchanged,
-      'img-background': directiveOptions.unchanged,
-      'img-bottom': directiveOptions.unchanged,
-      link: directiveOptions.unchanged,
-      // This should be removed, it is picked up just as any other link that can also be a reference
-      'link-type': directiveOptions.unchanged,
-      'link-alt': directiveOptions.unchanged,
-      // This should just be a class that is recognized (similar to dropdown)
-      shadow: directiveOptions.unchanged,
-      'class-card': directiveOptions.unchanged,
-      // I feel like all of these should *not* be included.
-      // Instead us a css selector on `class`: for example, `.card.my-class > header { customCss: prop; }`
-      'class-header': directiveOptions.unchanged,
-      'class-body': directiveOptions.unchanged,
-      'class-title': directiveOptions.unchanged,
-      'class-footer': directiveOptions.unchanged,
-      'class-img-top': directiveOptions.unchanged,
-      'class-img-bottom': directiveOptions.unchanged,
-      // https://sphinx-design.readthedocs.io/en/furo-theme/grids.html#grid-item-card-options
-      columns: directiveOptions.unchanged,
-      'class-item': directiveOptions.unchanged, // This seems the same as `class-card`?
-    };
-
-    run(data: IDirectiveData<keyof Card['option_spec']>) {
-      const newTokens: Token[] = [];
-
-      // we create an overall container, then individual containers for the title and body
-      const adToken = this.createToken('card_open', 'div', 1, {
-        map: data.map,
-        block: true,
-      });
-      newTokens.push(adToken);
-
-      const headerSplit = '\n^^^\n';
-      const footerSplit = '\n+++\n';
-      let { body } = data;
-      if (body.includes(headerSplit)) {
-        const [header, ...rest] = body.split(headerSplit);
-        body = rest.join(headerSplit);
-        newTokens.push(this.createToken('header_open', 'header', 1, { block: true }));
-        const headerTokens = this.nestedParse(header, data.bodyMap[0]);
-        newTokens.push(...headerTokens);
-        newTokens.push(this.createToken('header_close', 'header', -1, { block: true }));
-      }
-
-      // we want the title to be parsed as Markdown during the inline phase
-      const title = data.args[0] || '';
-      if (title) {
-        const tokenTitle = this.createToken('card_title_open', 'div', 1);
-        newTokens.push(tokenTitle);
-        newTokens.push(
-          this.createToken('inline', '', 0, {
-            map: [data.map[0], data.map[0]],
-            content: title,
-            children: [],
-          }),
-        );
-        newTokens.push(this.createToken('card_title_close', 'div', -1, { block: true }));
-      }
-
-      if (body.includes(footerSplit)) {
-        const [content, ...below] = body.split(footerSplit);
-        const footer = below.join(footerSplit);
-        const bodyTokens = this.nestedParse(content, data.bodyMap[0]);
-        newTokens.push(...bodyTokens);
-        // Now parse the footer
-        newTokens.push(this.createToken('footer_open', 'footer', 1, { block: true }));
-        const footerTokens = this.nestedParse(footer, data.bodyMap[0]);
-        newTokens.push(...footerTokens);
-        newTokens.push(this.createToken('footer_close', 'footer', -1, { block: true }));
-      } else {
-        // run a recursive parse on the content of the admonition upto this stage
-        const bodyTokens = this.nestedParse(body, data.bodyMap[0]);
-        newTokens.push(...bodyTokens);
-      }
-      newTokens.push(this.createToken('card_close', 'div', -1, { block: true }));
-      return newTokens;
+export const cardDirective: DirectiveSpec = {
+  name: 'card',
+  alias: 'grid-item-card',
+  arg: {
+    type: ParseTypesEnum.parsed,
+  },
+  options: {
+    link: {
+      type: ParseTypesEnum.string,
+    },
+    header: {
+      type: ParseTypesEnum.parsed,
+    },
+    footer: {
+      type: ParseTypesEnum.parsed,
+    },
+    // // https://sphinx-design.readthedocs.io/en/furo-theme/cards.html#card-options
+    // width
+    // margin
+    // padding
+    // 'text-align'
+    // 'img-top'
+    // 'img-background'
+    // 'img-bottom'
+    // link
+    // // This should be removed, it is picked up just as any other link that can also be a reference
+    // 'link-type'
+    // 'link-alt'
+    // // This should just be a class that is recognized (similar to dropdown)
+    // shadow
+    // 'class-card'
+    // // I feel like all of these should *not* be included.
+    // // Instead us a css selector on `class`: for example, `.card.my-class > header { customCss: prop; }`
+    // 'class-header'
+    // 'class-body'
+    // 'class-title'
+    // 'class-footer'
+    // 'class-img-top'
+    // 'class-img-bottom'
+    // // https://sphinx-design.readthedocs.io/en/furo-theme/grids.html#grid-item-card-options
+    // columns
+    // 'class-item' // This seems the same as `class-card`?
+  },
+  body: {
+    type: ParseTypesEnum.parsed,
+    required: true,
+  },
+  run(data: DirectiveData): GenericNode[] {
+    const { link, header, footer } = data.options || {};
+    let headerChildren: GenericNode[];
+    let bodyChildren: GenericNode[];
+    let footerChildren: GenericNode[];
+    if (header || footer) {
+      headerChildren = header ? [{ type: 'paragraph', children: header as GenericNode[] }] : [];
+      bodyChildren = data.body as GenericNode[];
+      footerChildren = footer ? [{ type: 'paragraph', children: footer as GenericNode[] }] : [];
+    } else {
+      const [beforeHeaderDelim, afterHeaderDelim] = splitChildrenOnDelim(
+        data.body as GenericNode[],
+        '^^^',
+      );
+      headerChildren = afterHeaderDelim.length ? beforeHeaderDelim : [];
+      const nonHeaderChildren = afterHeaderDelim.length ? afterHeaderDelim : beforeHeaderDelim;
+      [bodyChildren, footerChildren] = splitChildrenOnBlockBreak(nonHeaderChildren);
     }
+    const children: GenericNode[] = [];
+    if (headerChildren.length) {
+      children.push({
+        type: 'header',
+        children: headerChildren,
+      });
+    }
+    if (data.arg) {
+      children.push({
+        type: 'cardTitle',
+        children: data.arg as GenericNode[],
+      });
+    }
+    children.push(...bodyChildren);
+    if (footerChildren.length) {
+      children.push({
+        type: 'footer',
+        children: footerChildren,
+      });
+    }
+    return [
+      {
+        type: 'card',
+        url: link as string | undefined,
+        children,
+      },
+    ];
   },
-  mdast: {
-    type: 'card',
-    getAttrs(t) {
-      return {
-        url: t.meta.link || undefined,
-      };
-    },
-  },
-  hast: (h, node) => h(node, 'details'),
 };
 
-// The extension is forcing us to add this as a full thing, we are just putting `false` in "myst".
-const CardTitle: IDirective = {
-  myst: false as any,
-  mdast: {
-    type: 'cardTitle',
-    getAttrs() {
-      return {};
-    },
-  },
-  hast: (h, node) => h(node, 'div'),
-};
+/**
+ * Splits paragraph node into two paragraph nodes based on delimiter string
+ *
+ * The delimiter must be in a text node that is a direct child of the paragraph
+ */
+export function splitParagraphNode(node: GenericNode, delim: string) {
+  const preChildren: GenericNode[] = [];
+  const postChildren: GenericNode[] = [];
+  let post = false;
+  node.children?.forEach((child) => {
+    if (post) {
+      postChildren.push(child);
+      return;
+    }
+    if (child.type !== 'text' || !child.value) {
+      preChildren.push(child);
+      return;
+    }
+    const value = child.value as string;
+    const startDelim = `${delim}\n`;
+    const endDelim = `\n${delim}`;
+    const middleDelim = `\n${delim}\n`;
+    if (value.startsWith(startDelim)) {
+      postChildren.push({ type: 'text', value: value.slice(startDelim.length) });
+      post = true;
+    } else if (value.includes(middleDelim)) {
+      const [before, ...after] = child.value.split(middleDelim);
+      preChildren.push({ type: 'text', value: before });
+      postChildren.push({ type: 'text', value: after.join(middleDelim) });
+      post = true;
+    } else if (value.endsWith(endDelim)) {
+      preChildren.push({ type: 'text', value: value.slice(0, value.length - endDelim.length) });
+      post = true;
+    } else {
+      preChildren.push(child);
+    }
+  });
+  const output: [GenericNode | null, GenericNode | null] = [
+    preChildren.length ? { ...node, children: preChildren } : null,
+    postChildren.length ? { ...node, children: postChildren } : null,
+  ];
+  return output;
+}
 
-// The extension is forcing us to add this as a full thing, we are just putting `false` in "myst".
-const Footer: IDirective = {
-  myst: false as any,
-  mdast: {
-    type: 'footer',
-    getAttrs() {
-      return {};
-    },
-  },
-  hast: (h, node) => h(node, 'footer'),
-};
+function splitChildrenOnDelim(children: GenericNode[], delim: string) {
+  const preChildren: GenericNode[] = [];
+  const postChildren: GenericNode[] = [];
+  let post = false;
+  children.forEach((child) => {
+    if (post) {
+      postChildren.push(child);
+    } else if (child.type !== 'paragraph') {
+      preChildren.push(child);
+    } else {
+      const [before, after] = splitParagraphNode(child, delim);
+      if (before) {
+        preChildren.push(before);
+      }
+      if (after) {
+        postChildren.push(after);
+        post = true;
+      }
+    }
+  });
+  return [preChildren, postChildren];
+}
 
-// The extension is forcing us to add this as a full thing, we are just putting `false` in "myst".
-const Header: IDirective = {
-  myst: false as any,
-  mdast: {
-    type: 'header',
-    getAttrs() {
-      return {};
-    },
-  },
-  hast: (h, node) => h(node, 'header'),
-};
+/**
+ * Splits list of nodes into two lists, before and after the first
+ * instance of a given node type (this node is lost).
+ */
+function splitChildrenOnBlockBreak(children: GenericNode[]) {
+  const preChildren: GenericNode[] = [];
+  const postChildren: GenericNode[] = [];
+  let post = false;
+  children.forEach((child) => {
+    if (post) {
+      postChildren.push(child);
+    } else if (child.type !== 'blockBreak') {
+      preChildren.push(child);
+    } else {
+      post = true;
+    }
+  });
+  return [preChildren, postChildren];
+}
 
-const directives = {
-  card: Card,
-  'grid-item-card': Card,
-  card_title: CardTitle,
-  footer: Footer,
-  header: Header,
-};
-
-export default directives;
+//   const cardTitleHastHandler: Handler = (h, node) => h(node, 'div'),
+//   const footerHastHandler: Handler = (h, node) => h(node, 'footer'),
+//   const headerHastHandler: Handler = (h, node) => h(node, 'header'),
+//   const cardHastHandler: Handler = (h, node) => h(node, 'details'),

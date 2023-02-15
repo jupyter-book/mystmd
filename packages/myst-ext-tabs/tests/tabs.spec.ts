@@ -1,5 +1,5 @@
-import { MyST } from 'mystjs';
-import tabDirectives from 'myst-ext-tabs';
+import { mystParse } from 'myst-parser';
+import { tabDirectives } from 'myst-ext-tabs';
 
 describe('tab directives', () => {
   it.each(['tab-set', 'tabSet'])('empty %s parses', async (name: string) => {
@@ -10,32 +10,33 @@ describe('tab directives', () => {
         {
           type: 'mystDirective',
           name,
+          position: {
+            start: {
+              line: 0,
+              column: 0,
+            },
+            end: {
+              line: 2,
+              column: 0,
+            },
+          },
           children: [
             {
               type: 'tabSet',
               children: [],
-              position: {
-                start: {
-                  line: 0,
-                  column: 0,
-                },
-                end: {
-                  line: 2,
-                  column: 0,
-                },
-              },
             },
           ],
         },
       ],
     };
-    const myst = new MyST({
-      directives: { ...tabDirectives },
+    const output = mystParse(content, {
+      directives: [...tabDirectives],
     });
-    expect(myst.parse(content)).toEqual(expected);
+    console.log(JSON.stringify(output, null, 2));
+    expect(output).toEqual(expected);
   });
   it('tabSet class option parses', async () => {
-    const content = '```{tab-set}\n:class: My Class\n```';
+    const content = '```{tab-set}\n:class: my-class\n```';
     const expected = {
       type: 'root',
       children: [
@@ -43,32 +44,32 @@ describe('tab directives', () => {
           type: 'mystDirective',
           name: 'tab-set',
           options: {
-            class: 'my class',
+            class: 'my-class',
+          },
+          position: {
+            start: {
+              line: 0,
+              column: 0,
+            },
+            end: {
+              line: 3,
+              column: 0,
+            },
           },
           children: [
             {
               type: 'tabSet',
-              class: ['my', 'class'],
+              class: 'my-class',
               children: [],
-              position: {
-                start: {
-                  line: 0,
-                  column: 0,
-                },
-                end: {
-                  line: 3,
-                  column: 0,
-                },
-              },
             },
           ],
         },
       ],
     };
-    const myst = new MyST({
-      directives: { ...tabDirectives },
+    const output = mystParse(content, {
+      directives: [...tabDirectives],
     });
-    expect(myst.parse(content)).toEqual(expected);
+    expect(output).toEqual(expected);
   });
   it.each(['tab-item', 'tabItem'])('%s with title parses', async (name: string) => {
     const content = `\`\`\`{${name}} Tab One\n\`\`\``;
@@ -79,30 +80,30 @@ describe('tab directives', () => {
           type: 'mystDirective',
           name,
           args: 'Tab One',
+          position: {
+            start: {
+              line: 0,
+              column: 0,
+            },
+            end: {
+              line: 2,
+              column: 0,
+            },
+          },
           children: [
             {
               type: 'tabItem',
               title: 'Tab One',
               children: [],
-              position: {
-                start: {
-                  line: 0,
-                  column: 0,
-                },
-                end: {
-                  line: 2,
-                  column: 0,
-                },
-              },
             },
           ],
         },
       ],
     };
-    const myst = new MyST({
-      directives: { ...tabDirectives },
+    const output = mystParse(content, {
+      directives: [...tabDirectives],
     });
-    expect(myst.parse(content)).toEqual(expected);
+    expect(output).toEqual(expected);
   });
   it('tabItem sync and selected options parse', async () => {
     const content = '```{tab-item} Tab One\n:sync: tab1\n:selected:\n```';
@@ -117,6 +118,16 @@ describe('tab directives', () => {
             sync: 'tab1',
             selected: true,
           },
+          position: {
+            start: {
+              line: 0,
+              column: 0,
+            },
+            end: {
+              line: 4,
+              column: 0,
+            },
+          },
           children: [
             {
               type: 'tabItem',
@@ -124,32 +135,22 @@ describe('tab directives', () => {
               sync: 'tab1',
               selected: true,
               children: [],
-              position: {
-                start: {
-                  line: 0,
-                  column: 0,
-                },
-                end: {
-                  line: 4,
-                  column: 0,
-                },
-              },
             },
           ],
         },
       ],
     };
-    const myst = new MyST({
-      directives: { ...tabDirectives },
+    const output = mystParse(content, {
+      directives: [...tabDirectives],
     });
-    expect(myst.parse(content)).toEqual(expected);
+    expect(output).toEqual(expected);
   });
   it('tabItem without title errors', async () => {
     const content = '```{tab-item}\n:sync: tab1\n:selected:\n```';
-    const myst = new MyST({
-      directives: { ...tabDirectives },
+    const output = mystParse(content, {
+      directives: [...tabDirectives],
     });
-    expect(myst.parse(content).children[0].type).toEqual('mystDirectiveError');
+    expect(output.children[0].type).toEqual('mystDirectiveError');
   });
   it('tabSet with tabItem children parses', async () => {
     const content =
@@ -162,6 +163,16 @@ describe('tab directives', () => {
           name: 'tab-set',
           value:
             '```{tab-item} Tab 1\n:sync: tab1\nTab one\n```\n\n```{tab-item} Tab 2\n:sync: tab2\nTab two\n```',
+          position: {
+            start: {
+              line: 0,
+              column: 0,
+            },
+            end: {
+              line: 13,
+              column: 0,
+            },
+          },
           children: [
             {
               type: 'tabSet',
@@ -174,6 +185,16 @@ describe('tab directives', () => {
                     sync: 'tab1',
                   },
                   value: 'Tab one',
+                  position: {
+                    start: {
+                      line: 2,
+                      column: 0,
+                    },
+                    end: {
+                      line: 6,
+                      column: 0,
+                    },
+                  },
                   children: [
                     {
                       type: 'tabItem',
@@ -200,16 +221,6 @@ describe('tab directives', () => {
                           },
                         },
                       ],
-                      position: {
-                        start: {
-                          line: 2,
-                          column: 0,
-                        },
-                        end: {
-                          line: 6,
-                          column: 0,
-                        },
-                      },
                     },
                   ],
                 },
@@ -221,6 +232,16 @@ describe('tab directives', () => {
                     sync: 'tab2',
                   },
                   value: 'Tab two',
+                  position: {
+                    start: {
+                      line: 7,
+                      column: 0,
+                    },
+                    end: {
+                      line: 11,
+                      column: 0,
+                    },
+                  },
                   children: [
                     {
                       type: 'tabItem',
@@ -247,38 +268,18 @@ describe('tab directives', () => {
                           },
                         },
                       ],
-                      position: {
-                        start: {
-                          line: 7,
-                          column: 0,
-                        },
-                        end: {
-                          line: 11,
-                          column: 0,
-                        },
-                      },
                     },
                   ],
                 },
               ],
-              position: {
-                start: {
-                  line: 0,
-                  column: 0,
-                },
-                end: {
-                  line: 13,
-                  column: 0,
-                },
-              },
             },
           ],
         },
       ],
     };
-    const myst = new MyST({
-      directives: { ...tabDirectives },
+    const output = mystParse(content, {
+      directives: [...tabDirectives],
     });
-    expect(myst.parse(content)).toEqual(expected);
+    expect(output).toEqual(expected);
   });
 });
