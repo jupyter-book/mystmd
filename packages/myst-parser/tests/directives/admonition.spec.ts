@@ -80,4 +80,36 @@ describe('admonition directive default', () => {
     };
     expect(mystParse(content)).toEqual(expected);
   });
+  it('admonition directive parses with callout QMD prefix', async () => {
+    const content = '```{.callout-tip} hello\n```';
+    const expected = {
+      type: 'root',
+      children: [
+        {
+          type: 'mystDirective',
+          position: positionFn(0, 2),
+          name: '.callout-tip',
+          args: 'hello',
+          children: [
+            {
+              type: 'admonition',
+              kind: 'tip',
+              children: [
+                {
+                  type: 'paragraph',
+                  children: [
+                    {
+                      type: 'text',
+                      value: 'hello',
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    expect(mystParse(content)).toEqual(expected);
+  });
 });

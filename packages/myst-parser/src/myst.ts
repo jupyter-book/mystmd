@@ -1,15 +1,7 @@
 import MarkdownIt from 'markdown-it';
 import type { Root } from 'mdast';
-import {
-  admonitionDirective,
-  codeBlockDirective,
-  codeDirective,
-  figureDirective,
-  imageDirective,
-  listTableDirective,
-  mathDirective,
-} from 'myst-directives';
-import { abbreviationRole, mathRole, refRole, subscriptRole, superscriptRole } from 'myst-roles';
+import { defaultDirectives } from 'myst-directives';
+import { defaultRoles } from 'myst-roles';
 import type { Plugin } from 'unified';
 import { VFile } from 'vfile';
 import { MARKDOWN_IT_CONFIG } from './config';
@@ -46,16 +38,8 @@ export const defaultOptions: Omit<AllOptions, 'vfile'> = {
     blocks: true,
   },
   mdast: {},
-  directives: [
-    admonitionDirective,
-    codeBlockDirective,
-    codeDirective,
-    figureDirective,
-    imageDirective,
-    listTableDirective,
-    mathDirective,
-  ],
-  roles: [abbreviationRole, mathRole, refRole, subscriptRole, superscriptRole],
+  directives: defaultDirectives,
+  roles: defaultRoles,
 };
 
 function parseOptions(opts?: Options): AllOptions {
