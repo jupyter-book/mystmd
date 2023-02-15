@@ -148,6 +148,19 @@ const code: Handler = (h, node) => {
   return h(node.position, 'pre', [codeHast]);
 };
 
+const iframe: Handler = (h, node) => h(node, 'div', { class: 'iframe' });
+const bibliography: Handler = (h, node) => h(node, 'div', { class: 'bibliography' });
+const details: Handler = (h, node) => h(node, 'details');
+const summary: Handler = (h, node) => h(node, 'summary');
+const embed: Handler = (h, node) => h(node, 'div');
+const include: Handler = (h, node) => h(node, 'div', { file: node.file });
+const linkBlock: Handler = (h, node) => h(node, 'a');
+const margin: Handler = (h, node) => h(node, 'aside', { class: 'margin' });
+const mdast: Handler = (h, node) => h(node, 'div', { id: node.id });
+const mermaid: Handler = (h, node) => h(node, 'div', { class: 'margin' });
+const myst: Handler = (h, node) => h(node, 'div', { class: 'margin' });
+const output: Handler = (h, node) => h(node, 'div', { class: 'output' });
+
 export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Root) => {
   return toHast(tree, {
     ...opts,
@@ -175,6 +188,18 @@ export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Roo
       crossReference,
       code,
       table,
+      iframe,
+      bibliography,
+      details,
+      summary,
+      embed,
+      include,
+      linkBlock,
+      margin,
+      mdast,
+      mermaid,
+      myst,
+      output,
       ...opts?.handlers,
     },
   });
