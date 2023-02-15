@@ -14,6 +14,11 @@ export const admonitionDirective: DirectiveSpec = {
     'seealso',
     'tip',
     'warning',
+    '.callout-note',
+    '.callout-warning',
+    '.callout-important',
+    '.callout-tip',
+    '.callout-caution',
   ],
   arg: {
     type: ParseTypesEnum.parsed,
@@ -43,7 +48,7 @@ export const admonitionDirective: DirectiveSpec = {
     }
     const admonition = {
       type: 'admonition',
-      kind: data.name !== 'admonition' ? data.name : undefined,
+      kind: data.name !== 'admonition' ? data.name.replace('.callout-', '') : undefined,
       class: data.options?.class,
       children,
     };
