@@ -1,6 +1,6 @@
 ---
 title: Dropdowns, Tabs & Cards
-description: Add advanced user-iterface elements to your MyST documents with grids, cards, tabs, and dropdowns.
+description: Add advanced user-interface elements to your MyST documents with grids, cards, tabs, and dropdowns.
 thumbnail: ./thumbnails/dropdowns-cards-and-tabs.png
 ---
 
@@ -35,36 +35,22 @@ To turn an admonition into a dropdown, add the option `:class: dropdown` to them
 ### Cards
 
 Cards provide an easy way for you to content into a standard “header”, “body”, “footer” structure that has a similar alignment and visual style. It is useful for creating galleries or high-visibility collections of links and information.
-
-Cards have four main sections, and uses special characters to separate certain sections:
-
-- A card `title`: The argument given to the directive.
-- A card `header`: Any content that precedes a line with ^^^.
-- A card `footer`: Any content that comes after a line with +++.
-- A card `body`: Any content that comes in between ^^^ and +++.
-
-Here is an example card (note the use of ^^^ and +++ to separate the header, body, and footer):
+For example, a card with a header, title, body, and footer:
 
 ````markdown
-```{card} Card Title
-Header
-^^^
+```{card} Card title
+:header: The _Header_
+:footer: Footer
+
 Card content
-+++
-Footer
 ```
 ````
 
-```{card} Card Title
-Header
-^^^
-Card content
-+++
-Footer
-```
+```{card} Card title
+:header: The _Header_
+:footer: Footer
 
-```{note}
-Card headers and footers are optional. If you don’t include ^^^ or +++ in your card, they will not show up.
+Card content
 ```
 
 You can also add a `link` argument to the card, which will allow you to make the entire card clickable.
@@ -75,29 +61,65 @@ You can also add a `link` argument to the card, which will allow you to make the
 The entire card can be clicked to navigate to `myst-tools.org`.
 :::
 
+````{note} Compatibility with Sphinx design
+:class: dropdown
+
+In the [Sphinx design project](https://sphinx-design.readthedocs.io/en/latest/cards.html) card headers and footers take a special syntax:
+
+- A card `title`: The argument given to the directive.
+- A card `header`: Any content that precedes a line with ^^^.
+- A card `footer`: Any content that comes after a line with +++.
+- A card `body`: Any content that comes in between ^^^ and +++.
+
+This syntax is supported in `mystjs`, for example:
+
+```markdown
+:::{card} Card Title
+Header
+^^^
+Card content
++++
+Footer
+:::
+```
+
+Note that, card headers and footers are optional. If you don’t include ^^^ or +++ in your card, they will not show up.
+````
+
+### `card` reference
+
+**Arguments** _(optional, markdown)_
+: The `card` can take a single argument that is the title as a string.
+
+**Options**
+: No options for the `card` are required
+
+    header _(optional, markdown)_
+    : Styled content at the top of the card
+
+    footer _(optional, markdown)_
+    : Styled content at the bottom of the card
+
 ### Grids
 
 Grids allow you to structure arbitrary chunks of content in a grid-like system. You can also control things like the width of columns, the “gutters” between columns, etc.
 
-To generate a grid, use the ` ```{grid} ` wrapper directive along with ` ```{grid-item-card} ` directives inside. For example:
+To generate a grid, use the ` ```{grid} ` wrapper directive along with ` ```{card} ` directives inside. For example:
 
 ::::{grid} 1 1 2 3
 
-:::{grid-item-card}
-Text content ✏️
-^^^
+:::{card}
+:header: Text content ✏️
 Structure books with text files and Jupyter Notebooks with minimal configuration.
 :::
 
-:::{grid-item-card}
-MyST Markdown ✨
-^^^
+:::{card}
+:header: MyST Markdown ✨
 Write MyST Markdown to create enriched documents with publication-quality features.
 :::
 
-:::{grid-item-card}
-Executable content 🔁
-^^^
+:::{card}
+:header: Executable content 🔁
 Execute notebook cells, store results, and insert outputs across pages.
 :::
 ::::
