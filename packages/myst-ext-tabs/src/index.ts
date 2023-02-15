@@ -28,7 +28,6 @@ export const tabItemDirective: DirectiveSpec = {
   alias: 'tabItem',
   arg: {
     type: ParseTypesEnum.string,
-    required: true,
   },
   options: {
     sync: {
@@ -45,7 +44,7 @@ export const tabItemDirective: DirectiveSpec = {
     return [
       {
         type: 'tabItem',
-        title: data.arg as string,
+        title: data.arg ?? 'Tab Title',
         sync: data.options?.sync,
         selected: data.options?.selected,
         children: (data.body || []) as GenericNode[],
