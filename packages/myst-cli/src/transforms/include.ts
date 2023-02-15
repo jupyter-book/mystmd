@@ -22,7 +22,7 @@ export function includeFilesDirective(session: ISession, filename: string, mdast
       return;
     }
     const content = fs.readFileSync(file).toString();
-    const children = parseMyst(content).children as GenericNode[];
+    const children = parseMyst(session, content, filename).children as GenericNode[];
     node.children = children;
   });
 }
