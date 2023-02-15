@@ -73,7 +73,7 @@ export async function processNotebook(
     return acc;
   }, Promise.resolve([] as string[]));
 
-  const mdast = parseMyst(items.join('\n\n'));
+  const mdast = parseMyst(session, items.join('\n\n'), file);
 
   selectAll('output', mdast).forEach((output: GenericNode) => {
     output.data = outputMap[output.id];
