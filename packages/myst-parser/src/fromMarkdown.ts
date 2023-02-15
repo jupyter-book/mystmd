@@ -34,7 +34,7 @@ function addPositionsToNode(node: GenericNode, token: Token) {
 
 /** MarkdownParseState tracks the context of a running token stream.
  *
- * Loosly based on prosemirror-markdown
+ * Loosely based on prosemirror-markdown
  */
 export class MarkdownParseState {
   stack: GenericNode[];
