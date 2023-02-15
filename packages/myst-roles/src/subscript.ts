@@ -6,6 +6,7 @@ export const subscriptRole: RoleSpec = {
   alias: 'sub',
   body: {
     type: ParseTypesEnum.parsed,
+    required: true,
   },
   run(data: RoleData): GenericNode[] {
     return [{ type: 'subscript', children: data.body as GenericNode[] }];
