@@ -338,6 +338,48 @@ describe('splitParagraphNode', () => {
     };
     expect(splitParagraphNode(input, '^^^')).toEqual([null, after]);
   });
+  it('start delim node splits with extra whitespace', async () => {
+    const input = {
+      type: 'paragraph',
+      children: [
+        {
+          type: 'text',
+          value: '\n^^^\ndef',
+        },
+      ],
+    };
+    const after = {
+      type: 'paragraph',
+      children: [
+        {
+          type: 'text',
+          value: 'def',
+        },
+      ],
+    };
+    expect(splitParagraphNode(input, '^^^')).toEqual([null, after]);
+  });
+  it('end delim node splits with extra whitespace', async () => {
+    const input = {
+      type: 'paragraph',
+      children: [
+        {
+          type: 'text',
+          value: 'abc\n^^^\n\n',
+        },
+      ],
+    };
+    const before = {
+      type: 'paragraph',
+      children: [
+        {
+          type: 'text',
+          value: 'abc',
+        },
+      ],
+    };
+    expect(splitParagraphNode(input, '^^^')).toEqual([before, null]);
+  });
   it('end delim node splits', async () => {
     const input = {
       type: 'paragraph',
@@ -369,11 +411,11 @@ describe('splitParagraphNode', () => {
         },
         {
           type: 'text',
-          value: 'abc\n^^^\ndef',
+          value: 'abc\n^^^\n\ndef',
         },
         {
           type: 'text',
-          value: '456\n^^^\n789',
+          value: '456\n^^^\n\n789',
         },
       ],
     };
@@ -399,7 +441,7 @@ describe('splitParagraphNode', () => {
         },
         {
           type: 'text',
-          value: '456\n^^^\n789',
+          value: '456\n^^^\n\n789',
         },
       ],
     };

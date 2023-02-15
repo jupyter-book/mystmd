@@ -118,16 +118,19 @@ export function splitParagraphNode(node: GenericNode, delim: string) {
     const startDelim = `${delim}\n`;
     const endDelim = `\n${delim}`;
     const middleDelim = `\n${delim}\n`;
-    if (value.startsWith(startDelim)) {
-      postChildren.push({ type: 'text', value: value.slice(startDelim.length) });
+    if (value.trimStart().startsWith(startDelim)) {
+      postChildren.push({ type: 'text', value: value.trimStart().slice(startDelim.length) });
+      post = true;
+    } else if (value.trimEnd().endsWith(endDelim)) {
+      preChildren.push({
+        type: 'text',
+        value: value.trimEnd().slice(0, value.trimEnd().length - endDelim.length),
+      });
       post = true;
     } else if (value.includes(middleDelim)) {
       const [before, ...after] = child.value.split(middleDelim);
-      preChildren.push({ type: 'text', value: before });
-      postChildren.push({ type: 'text', value: after.join(middleDelim) });
-      post = true;
-    } else if (value.endsWith(endDelim)) {
-      preChildren.push({ type: 'text', value: value.slice(0, value.length - endDelim.length) });
+      preChildren.push({ type: 'text', value: before.trimEnd() });
+      postChildren.push({ type: 'text', value: after.join(middleDelim).trimStart() });
       post = true;
     } else {
       preChildren.push(child);
