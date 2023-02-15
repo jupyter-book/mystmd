@@ -375,7 +375,6 @@ In addition basic information on the template, the template's specific "parts" a
 
 🛠 In `01-paper.md` create an exports list with `docx` and `pdf` formats.
 
-
 ```yaml
 ---
 exports:
@@ -402,6 +401,30 @@ You can now build the exports with the following command:
 📑 Exported TeX in 5.11 ms, copying to _build/temp/myst8BVu1k/paper.tex
 🖨 Rendering PDF to _build/temp/mystvUibhD/paper.pdf
 📄 Exported PDF in 9.3 s, copying to _build/exports/paper.pdf
+```
+
+````{warning}
+:class: dropdown
+**Install `imagemagick` to convert GIFs**
+
+Animated images are not well supported by the PDF format, and MyST converts the first frame to a static image.
+To do the conversion you need to [download and install `imagemagick`](https://imagemagick.org/), for example:
+
+```bash
+# on Mac OS
+brew install imagemagick
+# on Ubuntu
+apt install imagemagick
+```
+````
+
+```{warning}
+:class: dropdown
+**Emojis aren't rendered in PDF 😭**
+
+We are tracking [emoji support](https://github.com/executablebooks/mystjs/issues/217), if you think this feature is important and want to help out, we would love your help. 💚 🦺 🪚 🧱 🏗 🚀
+
+In the screenshot below we have removed the 🧙 emoji, which ... also works.
 ```
 
 You can now see your two-column PDF in a submission ready format for the journal (check the `_build/exports` folder). It is very easy to change the template to a different format -- just change the `template:` field in the frontmatter!
