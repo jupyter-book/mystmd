@@ -210,22 +210,6 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
       };
     },
   },
-  // abbr: {
-  //   type: 'abbreviation',
-  //   getAttrs(token) {
-  //     const value = token.children?.[0]?.content;
-  //     return {
-  //       title: token.attrGet('title') ?? undefined,
-  //       value,
-  //     };
-  //   },
-  // },
-  // sub: {
-  //   type: 'subscript',
-  // },
-  // sup: {
-  //   type: 'superscript',
-  // },
   dl: {
     type: 'definitionList',
   },
@@ -235,37 +219,6 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   dd: {
     type: 'definitionDescription',
   },
-  // admonition: {
-  //   type: 'admonition',
-  //   getAttrs(token) {
-  //     const kind = token.meta?.kind || undefined;
-  //     return {
-  //       kind,
-  //       class: getClassName(token, [new RegExp(`admonition|${kind}`)]),
-  //     };
-  //   },
-  // },
-  // admonition_title: {
-  //   type: 'admonitionTitle',
-  // },
-  // figure: {
-  //   type: 'container',
-  //   getAttrs(token): Container {
-  //     const name = token.meta?.name || undefined;
-  //     return {
-  //       kind: 'figure',
-  //       ...normalizeLabel(name),
-  //       enumerated: token.meta?.enumerated,
-  //       class: getClassName(token, [NUMBERED_CLASS]),
-  //     };
-  //   },
-  // },
-  // figure_caption: {
-  //   type: 'caption',
-  // },
-  // figure_legend: {
-  //   type: 'legend',
-  // },
   table: {
     type: 'table',
     getAttrs(token) {
@@ -318,30 +271,30 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
       };
     },
   },
-  // math_block: {
-  //   type: 'math',
-  //   noCloseToken: true,
-  //   isText: true,
-  //   getAttrs(t) {
-  //     const name = t.info || undefined;
-  //     return {
-  //       ...normalizeLabel(name),
-  //       enumerated: t.meta?.enumerated,
-  //     };
-  //   },
-  // },
-  // math_block_label: {
-  //   type: 'math',
-  //   noCloseToken: true,
-  //   isText: true,
-  //   getAttrs(t) {
-  //     const name = t.info || undefined;
-  //     return {
-  //       ...normalizeLabel(name),
-  //       enumerated: t.meta?.enumerated,
-  //     };
-  //   },
-  // },
+  math_block: {
+    type: 'math',
+    noCloseToken: true,
+    isText: true,
+    getAttrs(t) {
+      const name = t.info || undefined;
+      return {
+        ...normalizeLabel(name),
+        enumerated: t.meta?.enumerated,
+      };
+    },
+  },
+  math_block_label: {
+    type: 'math',
+    noCloseToken: true,
+    isText: true,
+    getAttrs(t) {
+      const name = t.info || undefined;
+      return {
+        ...normalizeLabel(name),
+        enumerated: t.meta?.enumerated,
+      };
+    },
+  },
   amsmath: {
     type: 'math',
     noCloseToken: true,
@@ -352,17 +305,6 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
       };
     },
   },
-  // ref: {
-  //   type: 'crossReference',
-  //   isLeaf: true,
-  //   getAttrs(t) {
-  //     return {
-  //       kind: t.meta?.kind,
-  //       ...normalizeLabel(t.meta?.label),
-  //       value: t.meta?.value || undefined,
-  //     };
-  //   },
-  // },
   footnote_ref: {
     type: 'footnoteReference',
     noCloseToken: true,
