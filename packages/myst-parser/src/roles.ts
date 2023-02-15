@@ -16,6 +16,9 @@ export function contentFromNode(
 ) {
   const { children, value } = node;
   if (spec.type === ParseTypesEnum.parsed) {
+    if (typeof value !== 'string') {
+      fileWarn(vfile, `content is parsed from non-string value for ${description}`, { node });
+    }
     if (!children?.length) {
       if (spec.required) {
         fileError(vfile, `no parsed content for required ${description}`, { node });
@@ -31,6 +34,9 @@ export function contentFromNode(
     return undefined;
   }
   if (spec.type === ParseTypesEnum.string) {
+    if (typeof value !== 'string') {
+      fileWarn(vfile, `value is not a string for ${description}`, { node });
+    }
     return String(value);
   }
   if (spec.type === ParseTypesEnum.number) {
@@ -43,6 +49,9 @@ export function contentFromNode(
     return valueAsNumber;
   }
   if (spec.type === ParseTypesEnum.boolean) {
+    if (typeof value !== 'boolean') {
+      fileWarn(vfile, `value is not a boolean for ${description}`, { node });
+    }
     return !!value;
   }
 }

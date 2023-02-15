@@ -60,7 +60,10 @@ export function nestedPartToTokens(
   const openToken = new state.Token(`${partName}_open`, '', 1);
   openToken.content = part;
   openToken.hidden = true;
+  openToken.map = [lineNumber, lineNumber];
   let nestedTokens = nestedCoreParse(state.md, pluginRuleName, part, state.env, lineNumber, true);
+  // Note: This handles the case where inline arguments are parsed independently
+  //       and appear to the parser as paragraphs.
   if (
     inline &&
     nestedTokens.length === 3 &&

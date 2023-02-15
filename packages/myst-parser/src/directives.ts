@@ -1,7 +1,7 @@
 import type { Root } from 'mdast';
 import type { GenericNode, DirectiveData, DirectiveSpec, ParseTypes } from 'myst-common';
 import { fileError, fileWarn } from 'myst-common';
-import { select, selectAll } from 'unist-util-select';
+import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import { contentFromNode } from './roles';
 
@@ -49,7 +49,7 @@ export function applyDirectives(tree: Root, specs: DirectiveSpec[], vfile: VFile
     let data: DirectiveData = { name, options: {} };
     let validationError = false;
     // Handle arg
-    const argNode = select('mystDirectiveArg', node) as GenericNode;
+    const argNode = node.children?.filter((c) => c.type === 'mystDirectiveArg')[0];
     if (argSpec) {
       if (argSpec.required && !argNode) {
         fileError(vfile, `required argument not provided for directive: ${name}`, { node });
@@ -68,7 +68,7 @@ export function applyDirectives(tree: Root, specs: DirectiveSpec[], vfile: VFile
 
     // Handle options
     const options: Record<string, ParseTypes> = {};
-    const optionNodes = selectAll('mystDirectiveOption', node) as GenericNode[];
+    const optionNodes = node.children?.filter((c) => c.type === 'mystDirectiveOption') ?? [];
     const optionNodeLookup: Record<string, GenericNode> = {};
     optionNodes.forEach((optionNode) => {
       if (optionNodeLookup[optionNode.name]) {
@@ -113,7 +113,7 @@ export function applyDirectives(tree: Root, specs: DirectiveSpec[], vfile: VFile
     }
 
     // Handle body
-    const bodyNode = select('mystDirectiveBody', node) as GenericNode;
+    const bodyNode = node.children?.filter((c) => c.type === 'mystDirectiveBody')[0];
     if (bodySpec) {
       if (bodySpec.required && !bodyNode) {
         fileError(vfile, `required body not provided for directive: ${name}`, { node });
