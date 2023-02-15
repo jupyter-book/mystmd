@@ -38,8 +38,9 @@ export const admonitionDirective: DirectiveSpec = {
   run(data: DirectiveData): GenericNode[] {
     const children: GenericNode[] = [];
     if (data.arg) {
+      // TODO: We should potentially raise a compatibility warning here with the python side
       children.push({
-        type: data.body ? 'admonitionTitle' : 'paragraph',
+        type: 'admonitionTitle',
         children: data.arg as GenericNode[],
       });
     }
@@ -48,7 +49,7 @@ export const admonitionDirective: DirectiveSpec = {
     }
     const admonition = {
       type: 'admonition',
-      kind: data.name !== 'admonition' ? data.name.replace('.callout-', '') : undefined,
+      kind: data.name !== 'admonition' ? data.name.replace('.callout-', '') : 'admonition',
       class: data.options?.class,
       children,
     };

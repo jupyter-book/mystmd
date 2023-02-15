@@ -31,7 +31,12 @@ export function admonitionKindToTitle(kind: AdmonitionKind | string) {
 export function admonitionHeadersTransform(tree: Root, opts?: Options) {
   const admonitions = selectAll('admonition', tree) as Admonition[];
   admonitions.forEach((node: Admonition) => {
-    if (!node.kind || (node.kind as string) === AdmonitionKind.admonition) return;
+    if (
+      !node.kind ||
+      (node.kind as string) === AdmonitionKind.admonition ||
+      node.children?.[0]?.type === 'admonitionTitle'
+    )
+      return;
     node.children = [
       {
         type: 'admonitionTitle',
