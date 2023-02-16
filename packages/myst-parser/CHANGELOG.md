@@ -1,4 +1,22 @@
-# mystjs
+# myst-parser
+
+## 0.0.16
+
+### Patch Changes
+
+- 844d29fb: Remove unist exports from myst-parser
+- a22fafa0: Log parse errors with vfile
+- ea89d8b2: Update admonition title to always be the argument.
+- 75b6bcb8: Transform numbers into strings silently
+- a22fafa0: Refactor role/directive implementations to allow declarative definitions. Pull all default roles/directives from mystjs and myst-cli into separate package with new implementation.
+- Updated dependencies [a22fafa0]
+- Updated dependencies [a22fafa0]
+- Updated dependencies [a22fafa0]
+- Updated dependencies [a22fafa0]
+- Updated dependencies [a2a7044b]
+  - markdown-it-myst@0.1.1
+  - myst-directives@0.0.16
+  - myst-roles@0.0.16
 
 ## 0.0.15
 

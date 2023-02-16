@@ -1,5 +1,14 @@
 # myst-transforms
 
+## 0.0.16
+
+### Patch Changes
+
+- ea89d8b2: Update admonition title to always be the argument.
+- a2a7044b: Deprecate codeBlockPlugin for the caption parsing, which now happens in myst-parser and myst-directives
+- Updated dependencies [987c1053]
+  - myst-spec-ext@0.0.5
+
 ## 0.0.15
 
 ### Patch Changes

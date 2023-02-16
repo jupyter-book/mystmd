@@ -1,5 +1,11 @@
 # myst-templates
 
+## 0.1.7
+
+### Patch Changes
+
+- 944ad031: Update myst.tools --> myst-tools.org
+
 ## 0.1.6
 
 ### Patch Changes

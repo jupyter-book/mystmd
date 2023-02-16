@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 0.0.5
+
+### Patch Changes
+
+- 987c1053: Add height to images
+
 ## 0.0.4
 
 ### Patch Changes

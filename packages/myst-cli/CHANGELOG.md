@@ -1,5 +1,33 @@
 # myst-cli
 
+## 0.1.12
+
+### Patch Changes
+
+- a22fafa0: Log parse errors with vfile
+- 944ad031: Update myst.tools --> myst-tools.org
+- ea89d8b2: Update admonition title to always be the argument.
+- a22fafa0: Refactor role/directive implementations to allow declarative definitions. Pull all default roles/directives from mystjs and myst-cli into separate package with new implementation.
+- a2a7044b: Deprecate codeBlockPlugin for the caption parsing, which now happens in myst-parser and myst-directives
+- Updated dependencies [844d29fb]
+- Updated dependencies [a22fafa0]
+- Updated dependencies [944ad031]
+- Updated dependencies [ea89d8b2]
+- Updated dependencies [75b6bcb8]
+- Updated dependencies [a22fafa0]
+- Updated dependencies [a22fafa0]
+- Updated dependencies [a22fafa0]
+- Updated dependencies [a2a7044b]
+  - myst-parser@0.0.16
+  - jtex@0.1.7
+  - myst-templates@0.1.7
+  - myst-transforms@0.0.16
+  - myst-ext-card@0.0.2
+  - myst-ext-grid@0.0.2
+  - myst-ext-reactive@0.0.2
+  - myst-ext-tabs@0.0.2
+  - myst-to-docx@0.0.11
+
 ## 0.1.11
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # myst-to-docx
 
+## 0.0.11
+
+### Patch Changes
+
+- Updated dependencies [987c1053]
+  - myst-spec-ext@0.0.5
+
 ## 0.0.10
 
 ### Patch Changes
