@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { YAMLException } from 'js-yaml';
 import yaml from 'js-yaml';
 import type MarkdownIt from 'markdown-it/lib';
 import type StateCore from 'markdown-it/lib/rules_core/state_core';
 import { nestedPartToTokens } from './nestedParse';
+import { stateError, stateWarn } from './utils';
+
+const COLON_OPTION_REGEX = /:(?<option>.+):(\s+(?<value>.*)){0,1}\s*/;
 
 /** Convert fences identified as directives to `directive` tokens */
 function replaceFences(state: StateCore): boolean {
@@ -29,6 +33,8 @@ function runDirectives(state: StateCore): boolean {
         const arg = token.meta.arg?.trim() || undefined;
         const content = parseDirectiveContent(
           token.content.trim() ? token.content.split(/\r?\n/) : [],
+          info,
+          state,
         );
         const { body, options } = content;
         let { bodyOffset } = content;
@@ -62,6 +68,7 @@ function runDirectives(state: StateCore): boolean {
         ];
         finalTokens.push(...newTokens);
       } catch (err) {
+        stateError(state, `Error parsing "${token.info}" directive: ${(err as Error).message}`);
         const errorToken = new state.Token('directive_error', '', 0);
         errorToken.content = token.content;
         errorToken.info = token.info;
@@ -79,35 +86,26 @@ function runDirectives(state: StateCore): boolean {
   return true;
 }
 
-function loadOptions(yamlBlock: string) {
-  const options = yaml.load(yamlBlock);
-  if (options === null || typeof options !== 'object') {
-    return null;
-  }
-  const output: Record<string, any> = {};
-  Object.entries(options).forEach(([key, value]) => {
-    // If options are given as flags, this coerces them to true
-    output[key] = value !== null ? value : true;
-  });
-  return output;
-}
-
-function parseDirectiveContent(content: string[]): {
+function parseDirectiveContent(
+  content: string[],
+  info: string,
+  state: StateCore,
+): {
   body: string[];
-  options?: Record<string, any>;
   bodyOffset: number;
+  options?: Record<string, any>;
 } {
   let bodyOffset = 1;
   let yamlBlock: string[] | null = null;
   const newContent: string[] = [];
 
-  if (content.length && content[0].trim() === '---') {
+  if (content.length && content[0].trimEnd() === '---') {
     // options contained in YAML block, starting and ending with '---'
     bodyOffset++;
     yamlBlock = [];
     let foundDivider = false;
     for (const line of content.slice(1)) {
-      if (line.trim() === '---') {
+      if (line.trimEnd() === '---') {
         bodyOffset++;
         foundDivider = true;
         continue;
@@ -119,11 +117,22 @@ function parseDirectiveContent(content: string[]): {
         yamlBlock.push(line);
       }
     }
-  } else if (content.length && content[0].startsWith(':')) {
-    yamlBlock = [];
+    try {
+      const options = yaml.load(yamlBlock.join('\n')) as any;
+      if (options && typeof options === 'object') {
+        return { body: newContent, options, bodyOffset };
+      }
+    } catch (err) {
+      stateWarn(
+        state,
+        `Invalid YAML options in "${info}" directive: ${(err as YAMLException).reason}`,
+      );
+    }
+  } else if (content.length && COLON_OPTION_REGEX.exec(content[0])) {
+    const options: Record<string, string | boolean> = {};
     let foundDivider = false;
     for (const line of content) {
-      if (!foundDivider && !line.startsWith(':')) {
+      if (!foundDivider && !COLON_OPTION_REGEX.exec(line)) {
         foundDivider = true;
         newContent.push(line);
         continue;
@@ -131,23 +140,14 @@ function parseDirectiveContent(content: string[]): {
       if (foundDivider) {
         newContent.push(line);
       } else {
+        const match = COLON_OPTION_REGEX.exec(line);
+        const { option, value } = match?.groups ?? {};
+        options[option] = value ?? true;
         bodyOffset++;
-        yamlBlock.push(line.slice(1));
       }
     }
+    return { body: newContent, options, bodyOffset };
   }
-
-  if (yamlBlock !== null) {
-    try {
-      const options = loadOptions(yamlBlock.join('\n'));
-      if (options) {
-        return { body: newContent, options, bodyOffset };
-      }
-    } catch {
-      // If there's an error, no worries; assume the intent is no options.
-    }
-  }
-
   return { body: content, bodyOffset: 1 };
 }
 

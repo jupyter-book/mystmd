@@ -41,7 +41,8 @@
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
-    "markdown-it": "^13.0.1"
+    "markdown-it": "^13.0.1",
+    "vfile": "^5.3.7"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",
