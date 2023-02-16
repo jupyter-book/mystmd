@@ -1,0 +1,73 @@
+title: cite roles
+cases:
+  - title: cite role parses with one citation
+    markdown: '{cite}`Smith_1990`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: cite
+              value: Smith_1990
+              children:
+                - type: cite
+                  label: Smith_1990
+                  identifier: smith_1990
+  - title: cite role parses with multiple citations
+    markdown: '{cite}`Smith_1990, Brown_2000`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: cite
+              value: Smith_1990, Brown_2000
+              children:
+                - type: citeGroup
+                  kind: narrative
+                  children:
+                    - type: cite
+                      label: Smith_1990
+                      identifier: smith_1990
+                    - type: cite
+                      label: Brown_2000
+                      identifier: brown_2000
+  - title: cite:p role parses
+    markdown: '{cite:p}`smith_1990`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: cite:p
+              value: smith_1990
+              children:
+                - type: citeGroup
+                  kind: parenthetical
+                  children:
+                    - type: cite
+                      label: smith_1990
+                      identifier: smith_1990
+  - title: cite:t role parses
+    markdown: '{cite:t}`smith_1990; brown_2000`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: cite:t
+              value: smith_1990; brown_2000
+              children:
+                - type: citeGroup
+                  kind: narrative
+                  children:
+                    - type: cite
+                      label: smith_1990
+                      identifier: smith_1990
+                    - type: cite
+                      label: brown_2000
+                      identifier: brown_2000

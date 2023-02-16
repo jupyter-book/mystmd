@@ -1,0 +1,32 @@
+title: si role
+cases:
+  - title: si role errors
+    markdown: '{si}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: si
+              value: test
+              children:
+                - type: si
+                  error: true
+                  value: test
+
+  - title: si role parses
+    markdown: '{si}`100 <\hertz>`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: si
+              value: 100 <\hertz>
+              children:
+                - type: si
+                  number: '100'
+                  units: \hertz,hertz
+                  value: 100 Hz

@@ -1,0 +1,17 @@
+title: bibliography directive
+cases:
+  - title: bibliography directive parses
+    markdown: |-
+      ```{bibliography}
+      :filter: my-filter
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: bibliography
+          options:
+            filter: my-filter
+          children:
+            - type: bibliography
+              filter: my-filter

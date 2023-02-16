@@ -1,0 +1,65 @@
+title: admonition directives
+cases:
+  - title: admonition parses with arg only
+    markdown: |-
+      ```{admonition} hello
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: admonition
+          args: hello
+          children:
+            - type: admonition
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: hello
+  - title: admonition directive parses with kind/class/arg/body
+    markdown: |-
+      ```{tip} hello
+      :class: warning
+      Here is some advice
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: tip
+          args: hello
+          options:
+            class: warning
+          value: Here is some advice
+          children:
+            - type: admonition
+              kind: tip
+              class: warning
+              children:
+                - type: admonitionTitle
+                  children:
+                    - type: text
+                      value: hello
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Here is some advice
+  - title: admonition directive parses with callout QMD prefix
+    markdown: |-
+      ```{.callout-tip} hello
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: .callout-tip
+          args: hello
+          children:
+            - type: admonition
+              kind: tip
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: hello

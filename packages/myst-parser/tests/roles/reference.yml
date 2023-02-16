@@ -1,0 +1,50 @@
+title: reference roles
+cases:
+  - title: ref role parses
+    markdown: '{ref}`my-ref`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: ref
+              value: my-ref
+              children:
+                - type: crossReference
+                  kind: ref
+                  label: my-ref
+                  identifier: my-ref
+  - title: numref role parses
+    markdown: '{numref}`My Ref %s <my-ref>`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: numref
+              value: My Ref %s <my-ref>
+              children:
+                - type: crossReference
+                  kind: numref
+                  label: my-ref
+                  identifier: my-ref
+                  children:
+                    - type: text
+                      value: My Ref %s
+  - title: eq role parses
+    markdown: '{eq}`my-eq`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: eq
+              value: my-eq
+              children:
+                - type: crossReference
+                  kind: eq
+                  label: my-eq
+                  identifier: my-eq

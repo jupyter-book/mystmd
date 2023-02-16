@@ -1,6 +1,6 @@
 import fs from 'fs';
-import type { GenericNode } from 'mystjs';
 import type { Root } from 'mdast';
+import type { GenericNode } from 'myst-common';
 import { parseMyst } from '../process';
 import { selectAll } from 'unist-util-select';
 import { join, dirname } from 'path';
@@ -22,7 +22,7 @@ export function includeFilesDirective(session: ISession, filename: string, mdast
       return;
     }
     const content = fs.readFileSync(file).toString();
-    const children = parseMyst(content).children as GenericNode[];
+    const children = parseMyst(session, content, filename).children as GenericNode[];
     node.children = children;
   });
 }

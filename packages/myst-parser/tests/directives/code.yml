@@ -1,0 +1,64 @@
+title: code-block directive
+cases:
+  - title: code-block with name parses
+    markdown: |-
+      ```{code-block}
+      :name: addition
+      # here is math
+      1+2
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          options:
+            name: addition
+          value: |-
+            # here is math
+            1+2
+          children:
+            - type: code
+              identifier: addition
+              label: addition
+              value: |-
+                # here is math
+                1+2
+  - title: code-block with name language options parses
+    markdown: |-
+      ```{code-block} python
+      :name: addition
+      :class: my-class
+      :linenos:
+      :lineno-start: 2
+      :emphasize-lines: 3, 4
+      # here is math
+      1+2
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: python
+          options:
+            name: addition
+            class: my-class
+            linenos: true
+            lineno-start: 2
+            emphasize-lines: 3, 4
+          value: |-
+            # here is math
+            1+2
+          children:
+            - type: code
+              lang: python
+              identifier: addition
+              label: addition
+              class: my-class
+              showLineNumbers: true
+              startingLineNumber: 2
+              emphasizeLines: [3, 4]
+              value: |-
+                # here is math
+                1+2

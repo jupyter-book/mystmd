@@ -1,5 +1,5 @@
-import { MyST } from 'mystjs';
-import gridDirectives from 'myst-ext-grid';
+import { mystParse } from 'myst-parser';
+import { gridDirective } from 'myst-ext-grid';
 
 describe('grid directive', () => {
   it('grid directive parses', async () => {
@@ -14,6 +14,16 @@ describe('grid directive', () => {
           args: '1 1 2 3',
           value:
             '```{grid-item-card}\nText content\n^^^\nStructure books with text files and Jupyter Notebooks with minimal configuration.\n```\n\n```{grid-item-card}\nMyST Markdown\n^^^\nWrite MyST Markdown to create enriched documents with publication-quality features.\n```\n\n```{grid-item-card}\nExecutable content\n^^^\nExecute notebook cells, store results, and insert outputs across pages.\n```',
+          position: {
+            end: {
+              column: 0,
+              line: 20,
+            },
+            start: {
+              column: 0,
+              line: 0,
+            },
+          },
           children: [
             {
               type: 'grid',
@@ -68,24 +78,14 @@ describe('grid directive', () => {
                   },
                 },
               ],
-              position: {
-                end: {
-                  column: 0,
-                  line: 20,
-                },
-                start: {
-                  column: 0,
-                  line: 0,
-                },
-              },
             },
           ],
         },
       ],
     };
-    const myst = new MyST({
-      directives: { ...gridDirectives },
+    const output = mystParse(content, {
+      directives: [gridDirective],
     });
-    expect(myst.parse(content)).toEqual(expected);
+    expect(output).toEqual(expected);
   });
 });

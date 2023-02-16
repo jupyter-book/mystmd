@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import pLimit from 'p-limit';
 import fetch from 'node-fetch';
-import type { GenericNode } from 'mystjs';
+import type { GenericNode } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
 import type { LinkTransformer, Link } from 'myst-transforms';

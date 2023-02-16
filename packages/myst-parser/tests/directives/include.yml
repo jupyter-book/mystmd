@@ -1,0 +1,15 @@
+title: include directive
+cases:
+  - title: include directive parses
+    markdown: |-
+      ```{include} my_file.md
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: include
+          args: my_file.md
+          children:
+            - type: include
+              file: my_file.md

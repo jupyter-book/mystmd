@@ -9,7 +9,7 @@ type Options = {
   replaceAdmonitionTitles?: boolean;
 };
 
-function admonitionKindToTitle(kind: AdmonitionKind | string) {
+export function admonitionKindToTitle(kind: AdmonitionKind | string) {
   const transform: Record<string, string> = {
     attention: 'Attention',
     caution: 'Caution',
@@ -31,7 +31,13 @@ function admonitionKindToTitle(kind: AdmonitionKind | string) {
 export function admonitionHeadersTransform(tree: Root, opts?: Options) {
   const admonitions = selectAll('admonition', tree) as Admonition[];
   admonitions.forEach((node: Admonition) => {
-    if (!node.kind || (node.kind as string) === AdmonitionKind.admonition) return;
+    if (
+      !node.kind ||
+      (node.kind as string) === AdmonitionKind.admonition || // This condition is legacy
+      node.children?.[0]?.type === 'admonitionTitle'
+    ) {
+      return;
+    }
     node.children = [
       {
         type: 'admonitionTitle',

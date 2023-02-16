@@ -1,0 +1,22 @@
+title: math directive
+cases:
+  - title: math directive parses
+    markdown: |-
+      ```{math}
+      :label: addition
+      1+2
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: math
+          options:
+            label: addition
+
+          value: 1+2
+          children:
+            - type: math
+              identifier: addition
+              label: addition
+              value: 1+2
