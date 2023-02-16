@@ -1,6 +1,6 @@
 {
   "name": "myst-transforms",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "sideEffects": false,
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -25,7 +25,7 @@
     "intersphinx": "^0.0.8",
     "js-yaml": "^4.1.0",
     "katex": "^0.15.2",
-    "myst-common": "^0.0.12",
+    "myst-common": "^0.0.13",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^0.0.5",
     "unified": "^10.0.0",

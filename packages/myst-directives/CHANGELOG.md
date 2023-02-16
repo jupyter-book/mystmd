@@ -1,5 +1,12 @@
 # myst-directives
 
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies
+  - myst-common@0.0.13
+
 ## 0.0.16
 
 ### Patch Changes

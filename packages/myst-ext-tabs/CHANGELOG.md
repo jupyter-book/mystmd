@@ -1,5 +1,12 @@
 # myst-ext-tabs
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies
+  - myst-common@0.0.13
+
 ## 0.0.2
 
 ### Patch Changes

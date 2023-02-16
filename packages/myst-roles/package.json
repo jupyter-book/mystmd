@@ -1,6 +1,6 @@
 {
   "name": "myst-roles",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "sideEffects": false,
   "license": "MIT",
   "description": "Default role definitions for MyST",
@@ -38,7 +38,7 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "myst-common": "^0.0.12"
+    "myst-common": "^0.0.13"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

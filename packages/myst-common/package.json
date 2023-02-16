@@ -1,7 +1,7 @@
 {
   "name": "myst-common",
   "sideEffects": false,
-  "version": "0.0.12",
+  "version": "0.0.13",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",

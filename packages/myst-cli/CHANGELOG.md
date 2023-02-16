@@ -1,5 +1,22 @@
 # myst-cli
 
+## 0.1.13
+
+### Patch Changes
+
+- Updated dependencies
+  - myst-common@0.0.13
+  - myst-ext-card@0.0.3
+  - myst-ext-grid@0.0.3
+  - myst-ext-reactive@0.0.3
+  - myst-ext-tabs@0.0.3
+  - myst-templates@0.1.8
+  - myst-to-docx@0.0.12
+  - myst-to-tex@0.0.16
+  - myst-transforms@0.0.17
+  - tex-to-myst@0.0.16
+  - myst-parser@0.0.17
+
 ## 0.1.12
 
 ### Patch Changes
