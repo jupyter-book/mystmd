@@ -40,7 +40,8 @@
   "dependencies": {
     "js-yaml": "^4.1.0",
     "myst-common": "^0.0.12",
-    "myst-spec-ext": "^0.0.4"
+    "myst-spec-ext": "^0.0.4",
+    "vfile": "^5.3.7"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",
