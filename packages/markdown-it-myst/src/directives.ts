@@ -6,7 +6,7 @@ import type StateCore from 'markdown-it/lib/rules_core/state_core';
 import { nestedPartToTokens } from './nestedParse';
 import { stateError, stateWarn } from './utils';
 
-const COLON_OPTION_REGEX = /:(?<option>.+):(\s+(?<value>.*)){0,1}\s*/;
+const COLON_OPTION_REGEX = /^:(?<option>\S+?):(\s*(?<value>.*)){0,1}\s*$/;
 
 /** Convert fences identified as directives to `directive` tokens */
 function replaceFences(state: StateCore): boolean {
