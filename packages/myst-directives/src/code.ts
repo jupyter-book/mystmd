@@ -130,8 +130,8 @@ export const codeBlockDirective: DirectiveSpec = {
     const container: Container = {
       type: 'container',
       kind: 'code' as any,
-      label: code.label,
-      identifier: code.identifier,
+      label,
+      identifier,
       children: [code as any, caption],
     };
     return [container];
