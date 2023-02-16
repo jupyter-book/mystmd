@@ -1,6 +1,8 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
 import { ParseTypesEnum } from 'myst-common';
 
+const HEADER_REGEX = /((?<before>[\s\S]*?)\s+){0,1}\^\^\^(\s+(?<after>[\s\S]*)){0,1}/;
+
 export const cardDirective: DirectiveSpec = {
   name: 'card',
   alias: 'grid-item-card',
@@ -60,7 +62,6 @@ export const cardDirective: DirectiveSpec = {
     } else {
       const [beforeHeaderDelim, afterHeaderDelim] = splitChildrenOnDelim(
         data.body as GenericNode[],
-        '^^^',
       );
       headerChildren = afterHeaderDelim.length ? beforeHeaderDelim : [];
       const nonHeaderChildren = afterHeaderDelim.length ? afterHeaderDelim : beforeHeaderDelim;
@@ -101,7 +102,11 @@ export const cardDirective: DirectiveSpec = {
  *
  * The delimiter must be in a text node that is a direct child of the paragraph
  */
-export function splitParagraphNode(node: GenericNode, delim: string) {
+export function splitParagraphNode(node: GenericNode): {
+  before: GenericNode | null;
+  after: GenericNode | null;
+  post: boolean;
+} {
   const preChildren: GenericNode[] = [];
   const postChildren: GenericNode[] = [];
   let post = false;
@@ -115,35 +120,29 @@ export function splitParagraphNode(node: GenericNode, delim: string) {
       return;
     }
     const value = child.value as string;
-    const startDelim = `${delim}\n`;
-    const endDelim = `\n${delim}`;
-    const middleDelim = `\n${delim}\n`;
-    if (value.trimStart().startsWith(startDelim)) {
-      postChildren.push({ type: 'text', value: value.trimStart().slice(startDelim.length) });
-      post = true;
-    } else if (value.trimEnd().endsWith(endDelim)) {
-      preChildren.push({
-        type: 'text',
-        value: value.trimEnd().slice(0, value.trimEnd().length - endDelim.length),
-      });
-      post = true;
-    } else if (value.includes(middleDelim)) {
-      const [before, ...after] = child.value.split(middleDelim);
-      preChildren.push({ type: 'text', value: before.trimEnd() });
-      postChildren.push({ type: 'text', value: after.join(middleDelim).trimStart() });
-      post = true;
-    } else {
+    const match = HEADER_REGEX.exec(value);
+    if (!match) {
       preChildren.push(child);
+      return;
+    }
+    post = true;
+    const { before, after } = match.groups ?? {};
+    if (before) {
+      preChildren.push({ type: 'text', value: before });
+    }
+    if (after) {
+      postChildren.push({ type: 'text', value: after });
     }
   });
-  const output: [GenericNode | null, GenericNode | null] = [
-    preChildren.length ? { ...node, children: preChildren } : null,
-    postChildren.length ? { ...node, children: postChildren } : null,
-  ];
+  const output = {
+    before: preChildren.length ? { ...node, children: preChildren } : null,
+    after: postChildren.length ? { ...node, children: postChildren } : null,
+    post,
+  };
   return output;
 }
 
-function splitChildrenOnDelim(children: GenericNode[], delim: string) {
+function splitChildrenOnDelim(children: GenericNode[]) {
   const preChildren: GenericNode[] = [];
   const postChildren: GenericNode[] = [];
   let post = false;
@@ -153,13 +152,14 @@ function splitChildrenOnDelim(children: GenericNode[], delim: string) {
     } else if (child.type !== 'paragraph') {
       preChildren.push(child);
     } else {
-      const [before, after] = splitParagraphNode(child, delim);
+      const split = splitParagraphNode(child);
+      const { before, after } = split;
+      post = split.post;
       if (before) {
         preChildren.push(before);
       }
       if (after) {
         postChildren.push(after);
-        post = true;
       }
     }
   });
