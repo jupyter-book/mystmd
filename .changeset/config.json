@@ -4,7 +4,8 @@
   "commit": false,
   "fixed": [
     ["myst-to-jats", "jats-to-myst"],
-    ["myst-to-tex", "tex-to-myst"]
+    ["myst-to-tex", "tex-to-myst"],
+    ["myst-parser", "myst-roles", "myst-directives", "myst-to-html"]
   ],
   "linked": [],
   "access": "public",
