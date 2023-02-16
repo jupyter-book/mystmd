@@ -3,7 +3,7 @@ import { reactiveDirective, reactiveRole } from 'myst-ext-reactive';
 
 describe('reactive tests', () => {
   it('r:var directive parses', async () => {
-    const content = '```{r:var}\n:name: "visitors"\n:value: "5"\n:format: ".0f"\n```';
+    const content = '```{r:var}\n:name: visitors\n:value: 5\n:format: .0f\n```';
     const expected = {
       type: 'root',
       children: [
@@ -12,7 +12,7 @@ describe('reactive tests', () => {
           type: 'mystDirective',
           options: {
             name: 'visitors',
-            value: '5',
+            value: 5,
             format: '.0f',
           },
           children: [

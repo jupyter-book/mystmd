@@ -32,7 +32,6 @@ describe('tab directives', () => {
     const output = mystParse(content, {
       directives: [...tabDirectives],
     });
-    console.log(JSON.stringify(output, null, 2));
     expect(output).toEqual(expected);
   });
   it('tabSet class option parses', async () => {

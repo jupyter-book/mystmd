@@ -50,11 +50,11 @@ function runDirectives(state: StateCore): boolean {
         directiveOpen.map = map;
         directiveOpen.meta = {
           arg,
-          options,
+          options: simplifyDirectiveOptions(options),
         };
         const startLineNumber = map ? map[0] : 0;
         const argTokens = directiveArgToTokens(arg, startLineNumber, state);
-        const optsTokens = directiveOptionsToTokens(options || {}, startLineNumber + 1, state);
+        const optsTokens = directiveOptionsToTokens(options || [], startLineNumber + 1, state);
         const bodyTokens = directiveBodyToTokens(bodyString, startLineNumber + bodyOffset, state);
         const directiveClose = new state.Token('parsed_directive_close', '', -1);
         directiveClose.info = info;
@@ -93,7 +93,7 @@ function parseDirectiveContent(
 ): {
   body: string[];
   bodyOffset: number;
-  options?: Record<string, any>;
+  options?: [string, string][];
 } {
   let bodyOffset = 1;
   let yamlBlock: string[] | null = null;
@@ -118,9 +118,9 @@ function parseDirectiveContent(
       }
     }
     try {
-      const options = yaml.load(yamlBlock.join('\n')) as any;
+      const options = yaml.load(yamlBlock.join('\n')) as Record<string, any>;
       if (options && typeof options === 'object') {
-        return { body: newContent, options, bodyOffset };
+        return { body: newContent, options: Object.entries(options), bodyOffset };
       }
     } catch (err) {
       stateWarn(
@@ -129,7 +129,7 @@ function parseDirectiveContent(
       );
     }
   } else if (content.length && COLON_OPTION_REGEX.exec(content[0])) {
-    const options: Record<string, string | boolean> = {};
+    const options: [string, string][] = [];
     let foundDivider = false;
     for (const line of content) {
       if (!foundDivider && !COLON_OPTION_REGEX.exec(line)) {
@@ -142,7 +142,7 @@ function parseDirectiveContent(
       } else {
         const match = COLON_OPTION_REGEX.exec(line);
         const { option, value } = match?.groups ?? {};
-        options[option] = value ?? true;
+        if (option) options.push([option, value ?? 'true']);
         bodyOffset++;
       }
     }
@@ -155,12 +155,31 @@ function directiveArgToTokens(arg: string, lineNumber: number, state: StateCore)
   return nestedPartToTokens('directive_arg', arg, lineNumber, state, 'run_directives', true);
 }
 
+function simplifyDirectiveOptions(options?: [string, string][]) {
+  if (!options) return undefined;
+  const simplified: Record<string, string | boolean | number> = {};
+  options.forEach(([key, val]) => {
+    if (simplified[key] !== undefined) {
+      return;
+    } else if (!isNaN(Number(val))) {
+      simplified[key] = Number(val);
+    } else if (typeof val === 'string' && val.toLowerCase() === 'true') {
+      simplified[key] = true;
+    } else if (typeof val === 'string' && val.toLowerCase() === 'false') {
+      simplified[key] = false;
+    } else {
+      simplified[key] = val;
+    }
+  });
+  return simplified;
+}
+
 function directiveOptionsToTokens(
-  options: Record<string, any>,
+  options: [string, string][],
   lineNumber: number,
   state: StateCore,
 ) {
-  const tokens = Object.entries(options).map(([key, value], index) => {
+  const tokens = options.map(([key, value], index) => {
     // lineNumber mapping assumes each option is only one line;
     // not necessarily true for yaml options.
     const optTokens = nestedPartToTokens(

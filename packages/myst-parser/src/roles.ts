@@ -50,6 +50,10 @@ export function contentFromNode(
     return valueAsNumber;
   }
   if (spec.type === ParseTypesEnum.boolean) {
+    if (typeof value === 'string') {
+      if (value.toLowerCase() === 'false') return false;
+      if (value.toLowerCase() === 'true') return true;
+    }
     if (typeof value !== 'boolean') {
       fileWarn(vfile, `value is not a boolean for ${description}`, { node });
     }

@@ -45,7 +45,7 @@ describe('parses directives', () => {
     ]);
     expect(tokens[0].info).toEqual('abc');
     expect(tokens[1].info).toEqual('flag');
-    expect(tokens[1].content).toEqual(true);
+    expect(tokens[1].content).toEqual('true');
     expect(tokens[2].content).toEqual('true');
   });
   it('yaml opts directive parses', () => {
