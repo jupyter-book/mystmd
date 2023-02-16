@@ -33,10 +33,11 @@ export function admonitionHeadersTransform(tree: Root, opts?: Options) {
   admonitions.forEach((node: Admonition) => {
     if (
       !node.kind ||
-      (node.kind as string) === AdmonitionKind.admonition ||
+      (node.kind as string) === AdmonitionKind.admonition || // This condition is legacy
       node.children?.[0]?.type === 'admonitionTitle'
-    )
+    ) {
       return;
+    }
     node.children = [
       {
         type: 'admonitionTitle',
