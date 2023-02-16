@@ -1,0 +1,28 @@
+title: chemicalFormula role
+cases:
+  - title: chemicalFormula role parses
+    markdown: '{chemicalFormula}`NaCl`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: chemicalFormula
+              value: NaCl
+              children:
+                - type: chemicalFormula
+                  value: NaCl
+  - title: chem role parses
+    markdown: '{chem}`NaCl`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: chem
+              value: NaCl
+              children:
+                - type: chemicalFormula
+                  value: NaCl

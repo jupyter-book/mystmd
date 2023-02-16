@@ -1,0 +1,32 @@
+title: subscript roles
+cases:
+  - title: subscript role parses
+    markdown: '{subscript}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: subscript
+              value: test
+              children:
+                - type: subscript
+                  children:
+                    - type: text
+                      value: test
+  - title: sub role parses
+    markdown: '{sub}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: sub
+              value: test
+              children:
+                - type: subscript
+                  children:
+                    - type: text
+                      value: test

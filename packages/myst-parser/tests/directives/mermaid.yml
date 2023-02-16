@@ -1,0 +1,24 @@
+title: mermaid directive
+cases:
+  - title: mermaid directive parses
+    markdown: |-
+      ```{mermaid}
+      Some good mermaid content
+
+      *Cool!*
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: mermaid
+          value: |-
+            Some good mermaid content
+
+            *Cool!*
+          children:
+            - type: mermaid
+              value: |-
+                Some good mermaid content
+
+                *Cool!*

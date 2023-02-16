@@ -1,0 +1,107 @@
+title: list-table directive
+cases:
+  - title: list-table directive parses
+    markdown: |-
+      ```{list-table} This table is cool
+      ---
+      name: my-table
+      header-rows: 2
+      class: my-class
+      align: right
+      ---
+      - - a
+        - b
+        - c
+      - - 1
+        - 2
+        - 3
+      - - 4
+        - 5
+        - 6
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: list-table
+          args: This table is cool
+          options:
+            name: my-table
+            header-rows: 2
+            class: my-class
+            align: right
+
+          value: |-
+            - - a
+              - b
+              - c
+            - - 1
+              - 2
+              - 3
+            - - 4
+              - 5
+              - 6
+          children:
+            - type: container
+              kind: table
+              identifier: my-table
+              label: my-table
+              class: my-class
+              children:
+                - type: caption
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: This table is cool
+                - type: table
+                  align: right
+                  children:
+                    - type: tableRow
+                      children:
+                        - type: tableCell
+                          header: true
+                          children:
+                            - type: text
+                              value: a
+                        - type: tableCell
+                          header: true
+                          children:
+                            - type: text
+                              value: b
+                        - type: tableCell
+                          header: true
+                          children:
+                            - type: text
+                              value: c
+                    - type: tableRow
+                      children:
+                        - type: tableCell
+                          header: true
+                          children:
+                            - type: text
+                              value: '1'
+                        - type: tableCell
+                          header: true
+                          children:
+                            - type: text
+                              value: '2'
+                        - type: tableCell
+                          header: true
+                          children:
+                            - type: text
+                              value: '3'
+                    - type: tableRow
+                      children:
+                        - type: tableCell
+                          children:
+                            - type: text
+                              value: '4'
+                        - type: tableCell
+                          children:
+                            - type: text
+                              value: '5'
+                        - type: tableCell
+                          children:
+                            - type: text
+                              value: '6'

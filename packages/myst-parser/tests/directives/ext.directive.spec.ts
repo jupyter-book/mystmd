@@ -306,7 +306,7 @@ describe('custom directive extensions', () => {
       ],
     });
   });
-  test('test directive with duplicate option - currently parsed as body', () => {
+  test('test directive with duplicate option', () => {
     const TestDirective: DirectiveSpec = {
       name: 'test',
       options: {
@@ -326,10 +326,18 @@ describe('custom directive extensions', () => {
       type: 'root',
       children: [
         {
-          type: 'mystDirectiveError',
+          type: 'mystDirective',
           position: positionFn(0, 4),
           name: 'test',
-          value: ':a: x\n:a: y',
+          options: {
+            a: 'x',
+          },
+          children: [
+            {
+              type: 'test',
+              value: 'x',
+            },
+          ],
         },
       ],
     });

@@ -1,0 +1,32 @@
+title: smallcaps roles
+cases:
+  - title: smallcaps role parses
+    markdown: '{smallcaps}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: smallcaps
+              value: test
+              children:
+                - type: smallcaps
+                  children:
+                    - type: text
+                      value: test
+  - title: sc role parses
+    markdown: '{sc}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: sc
+              value: test
+              children:
+                - type: smallcaps
+                  children:
+                    - type: text
+                      value: test

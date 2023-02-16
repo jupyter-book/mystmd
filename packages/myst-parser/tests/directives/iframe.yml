@@ -1,0 +1,24 @@
+title: iframe directive
+cases:
+  - title: iframe directive parses
+    markdown: |-
+      ```{iframe} https://www.example.com
+      ---
+      label: example
+      width: 5%
+      ---
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: iframe
+          args: https://www.example.com
+          options:
+            label: example
+            width: 5%
+          children:
+            - type: iframe
+              src: https://www.example.com
+              label: example
+              width: 5%

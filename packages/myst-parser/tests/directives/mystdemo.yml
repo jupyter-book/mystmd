@@ -1,0 +1,33 @@
+title: myst directive
+cases:
+  - title: myst directive parses
+    markdown: |-
+      ```{myst}
+      ---
+      numbering: |-
+        some: yaml?
+      ---
+      Some good myst content
+
+      *Cool!*
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: myst
+          options:
+            numbering: |-
+              some: yaml?
+          value: |-
+            Some good myst content
+
+            *Cool!*
+          children:
+            - type: myst
+              numbering:
+                some: yaml?
+              value: |-
+                Some good myst content
+
+                *Cool!*

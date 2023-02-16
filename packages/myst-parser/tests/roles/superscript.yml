@@ -1,0 +1,32 @@
+title: superscript roles
+cases:
+  - title: superscript role parses
+    markdown: '{superscript}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: superscript
+              value: test
+              children:
+                - type: superscript
+                  children:
+                    - type: text
+                      value: test
+  - title: sup role parses
+    markdown: '{sup}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: sup
+              value: test
+              children:
+                - type: superscript
+                  children:
+                    - type: text
+                      value: test

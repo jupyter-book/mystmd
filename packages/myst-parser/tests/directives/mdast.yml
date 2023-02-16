@@ -1,0 +1,15 @@
+title: mdast directive
+cases:
+  - title: mdast directive parses
+    markdown: |-
+      ```{mdast} abc123
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: mdast
+          args: abc123
+          children:
+            - type: mdast
+              id: abc123
