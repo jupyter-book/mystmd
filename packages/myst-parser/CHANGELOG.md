@@ -1,5 +1,15 @@
 # myst-parser
 
+## 0.0.19
+
+### Patch Changes
+
+- 9105d991: Undefined children still have a key defined. Delete the children if they are null-ish.
+- Updated dependencies [99948cc8]
+  - markdown-it-myst@0.1.3
+  - myst-directives@0.0.19
+  - myst-roles@0.0.19
+
 ## 0.0.18
 
 ### Patch Changes

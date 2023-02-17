@@ -1,5 +1,12 @@
 # myst-ext-card
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [9105d991]
+  - myst-common@0.0.14
+
 ## 0.0.3
 
 ### Patch Changes

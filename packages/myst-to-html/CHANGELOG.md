@@ -1,5 +1,15 @@
 # myst-to-html
 
+## 0.0.19
+
+### Patch Changes
+
+- 64614b84: Add rehype-stringify as a dependency
+- 64614b84: Add mystToHtml utility
+- Updated dependencies [9105d991]
+  - myst-common@0.0.14
+  - myst-transforms@0.0.19
+
 ## 0.0.18
 
 ### Patch Changes

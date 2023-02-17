@@ -1,5 +1,12 @@
 # myst-to-tex
 
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies [9105d991]
+  - myst-common@0.0.14
+
 ## 0.0.16
 
 ### Patch Changes

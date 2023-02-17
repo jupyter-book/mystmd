@@ -1,5 +1,23 @@
 # myst-cli
 
+## 0.1.15
+
+### Patch Changes
+
+- a9913fc9: Update image conversion transform to handle EPS images
+- Updated dependencies [9105d991]
+  - myst-common@0.0.14
+  - myst-parser@0.0.19
+  - myst-ext-card@0.0.4
+  - myst-ext-grid@0.0.4
+  - myst-ext-reactive@0.0.4
+  - myst-ext-tabs@0.0.4
+  - myst-templates@0.1.9
+  - myst-to-docx@0.0.14
+  - myst-to-tex@0.0.17
+  - myst-transforms@0.0.19
+  - tex-to-myst@0.0.17
+
 ## 0.1.14
 
 ### Patch Changes

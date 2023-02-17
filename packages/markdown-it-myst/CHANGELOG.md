@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 0.1.3
+
+### Patch Changes
+
+- 99948cc8: Allow whitespace around role name inside brackets
+
 ## 0.1.2
 
 ### Patch Changes

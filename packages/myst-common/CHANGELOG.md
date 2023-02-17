@@ -1,5 +1,11 @@
 # myst-common
 
+## 0.0.14
+
+### Patch Changes
+
+- 9105d991: Undefined children still have a key defined. Delete the children if they are null-ish.
+
 ## 0.0.13
 
 ### Patch Changes
