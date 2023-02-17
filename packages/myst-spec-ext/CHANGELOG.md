@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 0.0.6
+
+### Patch Changes
+
+- e443ad2a: Add icon to Admonition spec
+
 ## 0.0.5
 
 ### Patch Changes

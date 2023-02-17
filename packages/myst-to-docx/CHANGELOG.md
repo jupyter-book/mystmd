@@ -1,5 +1,12 @@
 # myst-to-docx
 
+## 0.0.13
+
+### Patch Changes
+
+- Updated dependencies [e443ad2a]
+  - myst-spec-ext@0.0.6
+
 ## 0.0.12
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # myst-cli
 
+## 0.1.14
+
+### Patch Changes
+
+- 78bb237e: Support github-style admonitions, add the `simple` class
+- 5f506356: Allow directives to have spaces, and trim the name before passing it onto other directives
+- 8381c653: Allow admonitions to hide the icon
+- Updated dependencies [78bb237e]
+- Updated dependencies [a9f5bf70]
+  - myst-transforms@0.0.18
+  - myst-parser@0.0.18
+  - myst-to-docx@0.0.13
+
 ## 0.1.13
 
 ### Patch Changes

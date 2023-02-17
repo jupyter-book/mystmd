@@ -1,5 +1,14 @@
 # myst-directives
 
+## 0.0.18
+
+### Patch Changes
+
+- 8381c653: Allow admonitions to hide the icon
+- c1a8da90: Capture image alignment in figures
+- Updated dependencies [e443ad2a]
+  - myst-spec-ext@0.0.6
+
 ## 0.0.17
 
 ### Patch Changes

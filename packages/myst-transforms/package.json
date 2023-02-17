@@ -1,6 +1,6 @@
 {
   "name": "myst-transforms",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "sideEffects": false,
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -27,7 +27,7 @@
     "katex": "^0.15.2",
     "myst-common": "^0.0.13",
     "myst-spec": "^0.0.4",
-    "myst-spec-ext": "^0.0.5",
+    "myst-spec-ext": "^0.0.6",
     "unified": "^10.0.0",
     "unist-util-modify-children": "^3.1.0",
     "unist-util-select": "^4.0.1",

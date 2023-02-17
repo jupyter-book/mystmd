@@ -1,5 +1,12 @@
 # myst-to-jats
 
+## 0.0.15
+
+### Patch Changes
+
+- Updated dependencies [e443ad2a]
+  - myst-spec-ext@0.0.6
+
 ## 0.0.14
 
 ### Patch Changes

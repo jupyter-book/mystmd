@@ -1,5 +1,14 @@
 # myst-transforms
 
+## 0.0.18
+
+### Patch Changes
+
+- 78bb237e: Support github-style admonitions, add the `simple` class
+- a9f5bf70: Add comment to default html-to-mdast handlers
+- Updated dependencies [e443ad2a]
+  - myst-spec-ext@0.0.6
+
 ## 0.0.17
 
 ### Patch Changes

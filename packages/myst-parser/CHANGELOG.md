@@ -1,5 +1,18 @@
 # myst-parser
 
+## 0.0.18
+
+### Patch Changes
+
+- Updated dependencies [9f8613ef]
+- Updated dependencies [5f506356]
+- Updated dependencies [8381c653]
+- Updated dependencies [c1a8da90]
+- Updated dependencies [d14bb127]
+  - markdown-it-myst@0.1.2
+  - myst-directives@0.0.18
+  - myst-roles@0.0.18
+
 ## 0.0.17
 
 ### Patch Changes
