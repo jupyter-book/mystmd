@@ -68,7 +68,7 @@ You can use bullet points and numbered lists as you would in standard markdown. 
 
 For numbered lists, you can start following lines with any number, meaning they don't have to be in numerical order, and this will not change the rendered output. The exception is the first number, which if it is not `1.` this will change the start number of the list.
 
-### Subscript & Superscript
+## Subscript & Superscript
 
 For inline typography for subscript and superscript formatting, it is best practice to use a text-based representation over resorting to math exponents, i.e. `4$^{th}$`.
 This is required in some journal submissions, and using these roles ensure that the output in HTML and $\LaTeX$ is correct.
