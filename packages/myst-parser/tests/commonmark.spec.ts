@@ -10,7 +10,7 @@
 import fs from 'fs';
 import path from 'path';
 import { createTokenizer, mystParse } from '../src';
-import { renderMdast } from './renderMdast';
+import { mystToHtml } from 'myst-to-html';
 
 type Spec = {
   section: string;
@@ -81,7 +81,7 @@ describe('Common Mark Spec with unified', () => {
         frontmatter: false, // Frontmatter screws with some tests!
       },
     });
-    const output = renderMdast(tree, {
+    const output = mystToHtml(tree, {
       formatHtml: false,
       hast: {
         clobberPrefix: 'm-',
