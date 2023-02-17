@@ -107,6 +107,20 @@ describe('parses directives', () => {
     expect(tokens[1].info).toEqual('key');
     expect(tokens[1].content).toEqual('val:val');
   });
+  it('colon fence is not an option', () => {
+    const mdit = MarkdownIt().use(plugin);
+    const tokens = mdit.parse('```{abc}\n:::{xyz}\n:::\n```', {});
+    expect(tokens.map((t) => t.type)).toEqual([
+      'parsed_directive_open',
+      'directive_body_open',
+      'paragraph_open',
+      'inline',
+      'paragraph_close',
+      'directive_body_close',
+      'parsed_directive_close',
+    ]);
+    expect(tokens[0].info).toEqual('abc');
+  });
   it('yaml opts directive parses', () => {
     const mdit = MarkdownIt().use(plugin);
     const tokens = mdit.parse('```{abc}\n---\na: x\nb: y\n---\n```', {});
