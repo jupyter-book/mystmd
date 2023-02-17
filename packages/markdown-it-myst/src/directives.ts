@@ -142,7 +142,7 @@ function parseDirectiveContent(
       } else {
         const match = COLON_OPTION_REGEX.exec(line);
         const { option, value } = match?.groups ?? {};
-        if (option) options.push([option, value ?? 'true']);
+        if (option) options.push([option, value || 'true']);
         bodyOffset++;
       }
     }
@@ -190,8 +190,10 @@ function directiveOptionsToTokens(
       'run_directives',
       true,
     );
-    optTokens[0].info = key;
-    optTokens[0].content = value;
+    if (optTokens.length) {
+      optTokens[0].info = key;
+      optTokens[0].content = value;
+    }
     return optTokens;
   });
   return tokens.flat();
