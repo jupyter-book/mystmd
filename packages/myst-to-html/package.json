@@ -57,6 +57,7 @@
     "rehype-format": "^4.0.1",
     "rehype-parse": "^8.0.4",
     "rehype-remark": "^9.1.2",
+    "rehype-stringify": "^9.0.3",
     "unified": "^10.1.2",
     "unist-builder": "^3.0.1",
     "unist-util-find-after": "^4.0.0"

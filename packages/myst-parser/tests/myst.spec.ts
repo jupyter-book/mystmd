@@ -4,7 +4,7 @@ import yaml from 'js-yaml';
 import { visit } from 'unist-util-visit';
 import type { Root } from 'mdast';
 import { mystParse } from '../src';
-import { renderMdast } from './renderMdast';
+import { mystToHtml } from 'myst-to-html';
 
 type TestFile = {
   cases: TestCase[];
@@ -112,7 +112,7 @@ describe('Testing mdast --> html conversions', () => {
   test.each(htmlCases)('%s', (name, { html, mdast }) => {
     if (html) {
       if (name.includes('cmark_spec_0.30')) {
-        const output = renderMdast(mdast, {
+        const output = mystToHtml(mdast, {
           formatHtml: false,
           hast: {
             clobberPrefix: 'm-',
@@ -138,7 +138,7 @@ describe('Testing mdast --> html conversions', () => {
 
         expect(normalize(o)).toEqual(normalize(i));
       } else {
-        const newHTML = renderMdast(mdast, {
+        const newHTML = mystToHtml(mdast, {
           formatHtml: true,
           hast: {
             clobberPrefix: 'm-',
