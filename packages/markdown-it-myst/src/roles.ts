@@ -45,11 +45,12 @@ function roleRule(state: StateInline, silent: boolean): boolean {
 // TODO: support role with no value e.g. {role}``
 let _x: RegExp;
 try {
-  _x = new RegExp('^\\{([a-zA-Z_\\-+:]{1,36})\\}(`+)(?!`)(.+?)(?<!`)\\2(?!`)');
+  // This regex must be defined like this or Safari will crash
+  _x = new RegExp('^\\{\\s*([a-zA-Z_\\-+:]{1,36})\\s*\\}(`+)(?!`)(.+?)(?<!`)\\2(?!`)');
 } catch (error) {
   // Safari does not support negative look-behinds
   // This is a slightly down-graded variant, as it does not require a space.
-  _x = /^\{([a-zA-Z_\-+:]{1,36})\}(`+)(?!`)(.+?)\2(?!`)/;
+  _x = /^\{\s*([a-zA-Z_\-+:]{1,36})\s*\}(`+)(?!`)(.+?)\2(?!`)/;
 }
 const ROLE_PATTERN = _x;
 
