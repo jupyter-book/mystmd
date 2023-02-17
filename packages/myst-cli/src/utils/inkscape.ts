@@ -29,34 +29,62 @@ export function isInkscapeAvailable() {
   return which('inkscape', { nothrow: true });
 }
 
-async function convertSvgTo(format: string, session: ISession, svg: string, writeFolder: string) {
-  if (!fs.existsSync(svg)) return null;
-  const { name, ext } = path.parse(svg);
-  if (ext !== '.svg') return null;
-  const filename = `${name}.${format}`;
+async function convert(
+  inputExtension: string,
+  outputExtension: string,
+  session: ISession,
+  input: string,
+  writeFolder: string,
+) {
+  if (!fs.existsSync(input)) return null;
+  const { name, ext } = path.parse(input);
+  if (ext !== inputExtension) return null;
+  const filename = `${name}${outputExtension}`;
   const output = path.join(writeFolder, filename);
+  const inputFormatUpper = inputExtension.slice(1).toUpperCase();
+  const outputFormat = outputExtension.slice(1);
   if (fs.existsSync(output)) {
-    session.log.debug(`Cached file found for converted SVG: ${svg}`);
+    session.log.debug(`Cached file found for converted ${inputFormatUpper}: ${input}`);
   } else {
-    const inkscapeCommand = `inkscape ${svg} --export-area-drawing --export-type=${format} --export-filename=${output}`;
+    const inkscapeCommand = `inkscape ${input} --export-area-drawing --export-type=${outputFormat} --export-filename=${output}`;
     session.log.debug(`Executing: ${inkscapeCommand}`);
-    const convert = makeExecutable(inkscapeCommand, createInkscpapeLogger(session));
+    const exec = makeExecutable(inkscapeCommand, createInkscpapeLogger(session));
     try {
-      await convert();
+      await exec();
     } catch (err) {
-      session.log.error(`Could not convert from SVG to ${format.toUpperCase()}: ${svg} - ${err}`);
+      session.log.error(
+        `Could not convert from ${inputFormatUpper} to ${outputFormat.toUpperCase()}: ${input} - ${err}`,
+      );
       return null;
     }
   }
   return filename;
 }
 
-export async function convertSvgToPng(session: ISession, svg: string, writeFolder: string) {
-  const pngFile = await convertSvgTo('png', session, svg, writeFolder);
-  return pngFile;
+export async function convertSvgToPng(session: ISession, input: string, writeFolder: string) {
+  const output = await convert('.svg', '.png', session, input, writeFolder);
+  return output;
 }
 
-export async function convertSvgToPdf(session: ISession, svg: string, writeFolder: string) {
-  const pngFile = await convertSvgTo('pdf', session, svg, writeFolder);
-  return pngFile;
+export async function convertSvgToPdf(session: ISession, input: string, writeFolder: string) {
+  const output = await convert('.svg', '.pdf', session, input, writeFolder);
+  return output;
 }
+
+// EPS conversion functions do not work from the inkscape cli:
+// See: https://gitlab.com/inkscape/inkscape/-/issues/3524
+
+// export async function convertEpsToPdf(session: ISession, input: string, writeFolder: string) {
+//   const output = await convert('.eps', '.pdf', session, input, writeFolder);
+//   return output;
+// }
+
+// export async function convertEpsToSvg(session: ISession, input: string, writeFolder: string) {
+//   const output = await convert('.eps', '.svg', session, input, writeFolder);
+//   return output;
+// }
+
+// export async function convertEpsToPng(session: ISession, input: string, writeFolder: string) {
+//   const output = await convert('.eps', '.png', session, input, writeFolder);
+//   return output;
+// }

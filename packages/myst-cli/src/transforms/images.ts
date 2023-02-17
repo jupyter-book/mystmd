@@ -224,19 +224,23 @@ export async function transformImageFormats(
   const svgImages: GenericNode[] = [];
   const gifImages: GenericNode[] = [];
   const pdfImages: GenericNode[] = [];
+  const epsImages: GenericNode[] = [];
   const unconvertableImages: GenericNode[] = [];
 
   const allowConvertedSvg = validExts.includes('.png') || validExts.includes('.pdf');
   const allowConvertedPdf = validExts.includes('.png') || !validExts.includes('.pdf');
   const allowConvertedGif = validExts.includes('.png');
+  const allowConvertedEps = validExts.includes('.png'); // || validExts.includes('.pdf') || validExts.includes('.svg'); // inkscape
 
   unsupportedImages.forEach((image) => {
     if (allowConvertedSvg && path.extname(image.url) === '.svg') {
       svgImages.push(image);
-    } else if (allowConvertedGif && path.extname(image.url) == '.gif') {
+    } else if (allowConvertedGif && path.extname(image.url) === '.gif') {
       gifImages.push(image);
-    } else if (allowConvertedPdf && path.extname(image.url) == '.pdf') {
+    } else if (allowConvertedPdf && path.extname(image.url) === '.pdf') {
       pdfImages.push(image);
+    } else if (allowConvertedEps && path.extname(image.url) === '.eps') {
+      epsImages.push(image);
     } else {
       unconvertableImages.push(image);
     }
@@ -351,6 +355,59 @@ export async function transformImageFormats(
     if (gifConversionFn) {
       conversionPromises.push(
         ...gifImages.map(async (image) => await convert(image, gifConversionFn as ConversionFn)),
+      );
+    }
+  }
+
+  // Convert EPSs
+  // Currently the inkscpe CLI has a bug which prevents EPS conversions;
+  // once that is fixed, we may uncomment the rest of this section to
+  // enable better conversions, e.g. EPS -> SVG
+  // https://gitlab.com/inkscape/inkscape/-/issues/3524
+  let epsConversionFn: ConversionFn | undefined;
+  if (epsImages.length) {
+    // Decide if we convert to PDF, SVG, or PNG
+    // const inkscapeOutputExt = validExts.filter((ext) => ['.pdf', '.svg', '.png'].includes(ext))[0];
+    const imagemagickOutputExt = validExts.filter((ext) => ['.png'].includes(ext))[0];
+    const logPrefix = `🌠 Converting ${epsImages.length} EPS image${
+      epsImages.length > 1 ? 's' : ''
+    } to`;
+    // if (inkscapeAvailable && inkscapeOutputExt === '.pdf') {
+    //   session.log.info(`${logPrefix} PDF using inkscape`);
+    //   epsConversionFn = inkscape.convertEpsToPdf;
+    // } else if (inkscapeAvailable && inkscapeOutputExt === '.svg') {
+    //   session.log.info(`${logPrefix} SVG using inkscape`);
+    //   epsConversionFn = inkscape.convertEpsToSvg;
+    // } else if (inkscapeAvailable && inkscapeOutputExt === '.png') {
+    //   session.log.info(`${logPrefix} PNG using inkscape`);
+    //   epsConversionFn = inkscape.convertEpsToPng;
+    // } else
+    if (imagemagickAvailable && imagemagickOutputExt === '.png') {
+      // if (inkscapeOutputExt && inkscapeOutputExt !== '.png') {
+      //   addWarningForFile(
+      //     session,
+      //     file,
+      //     `To convert EPS images to ${inkscapeOutputExt
+      //       .slice(1)
+      //       .toUpperCase()}, you must install inkscape.`,
+      //     'warn',
+      //     { note: 'Images converted to PNG as a fallback using imagemagick.' },
+      //   );
+      // }
+      session.log.info(`${logPrefix} PNG using imagemagick`);
+      epsConversionFn = imagemagick.convertEpsToPng;
+    } else {
+      addWarningForFile(
+        session,
+        file,
+        'Cannot convert EPS images, they may not correctly render.',
+        'error',
+        { note: 'To convert these images, you must install imagemagick' },
+      );
+    }
+    if (epsConversionFn) {
+      conversionPromises.push(
+        ...epsImages.map(async (image) => await convert(image, epsConversionFn as ConversionFn)),
       );
     }
   }
