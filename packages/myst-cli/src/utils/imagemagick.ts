@@ -29,9 +29,9 @@ export async function extractFirstFrameOfGif(session: ISession, gif: string, wri
   } else {
     const executable = `convert ${gif}[0] ${png}`;
     session.log.debug(`Executing: ${executable}`);
-    const convert = makeExecutable(executable, session.log);
+    const exec = makeExecutable(executable, session.log);
     try {
-      await convert();
+      await exec();
     } catch (err) {
       session.log.error(`Could not extract an image from gif: ${gif} - ${err}`);
       return null;
@@ -40,48 +40,51 @@ export async function extractFirstFrameOfGif(session: ISession, gif: string, wri
   return pngFile;
 }
 
-export async function convertSvgToPng(session: ISession, svg: string, writeFolder: string) {
-  if (!fs.existsSync(svg)) return null;
-  const { name, ext } = path.parse(svg);
-  if (ext !== '.svg') return null;
-  const pngFile = `${name}.png`;
-  const png = path.join(writeFolder, pngFile);
-  if (fs.existsSync(png)) {
-    session.log.debug(`Cached file found for converted SVG: ${svg}`);
+async function convert(
+  inputExtension: string,
+  outputExtension: string,
+  session: ISession,
+  input: string,
+  writeFolder: string,
+) {
+  if (!fs.existsSync(input)) return null;
+  const { name, ext } = path.parse(input);
+  if (ext !== inputExtension) return null;
+  const filename = `${name}${outputExtension}`;
+  const output = path.join(writeFolder, filename);
+  const inputFormatUpper = inputExtension.slice(1).toUpperCase();
+  const outputFormatUpper = outputExtension.slice(1).toUpperCase();
+  if (fs.existsSync(output)) {
+    session.log.debug(`Cached file found for converted ${inputFormatUpper}: ${input}`);
   } else {
-    const executable = `convert -density 600 ${svg} ${png}`;
+    const executable = `convert -density 600  -colorspace RGB ${input} ${output}`;
     session.log.debug(`Executing: ${executable}`);
-    const convert = makeExecutable(executable, session.log);
+    const exec = makeExecutable(executable, session.log);
     try {
-      await convert();
+      await exec();
     } catch (err) {
-      session.log.error(`Could not convert from SVG to PNG: ${svg} - ${err}`);
+      session.log.error(
+        `Could not convert from ${inputFormatUpper} to ${outputFormatUpper}: ${input} - ${err}`,
+      );
       return null;
     }
   }
-  return pngFile;
+  return filename;
 }
 
-export async function convertPdfToPng(session: ISession, pdf: string, writeFolder: string) {
-  if (!fs.existsSync(pdf)) return null;
-  const { name, ext } = path.parse(pdf);
-  if (ext !== '.pdf') return null;
-  const pngFile = `${name}.png`;
-  const png = path.join(writeFolder, pngFile);
-  if (fs.existsSync(png)) {
-    session.log.debug(`Cached file found for converted PDF: ${pdf}`);
-  } else {
-    const executable = `convert -density 600 ${pdf} ${png}`;
-    session.log.debug(`Executing: ${executable}`);
-    const convert = makeExecutable(executable, session.log);
-    try {
-      await convert();
-    } catch (err) {
-      session.log.error(`Could not convert from PDF to PNG: ${pdf} - ${err}`);
-      return null;
-    }
-  }
-  return pngFile;
+export async function convertSvgToPng(session: ISession, input: string, writeFolder: string) {
+  const output = await convert('.svg', '.png', session, input, writeFolder);
+  return output;
+}
+
+export async function convertPdfToPng(session: ISession, input: string, writeFolder: string) {
+  const output = await convert('.pdf', '.png', session, input, writeFolder);
+  return output;
+}
+
+export async function convertEpsToPng(session: ISession, input: string, writeFolder: string) {
+  const output = await convert('.eps', '.png', session, input, writeFolder);
+  return output;
 }
 
 export async function convertImageToWebp(
