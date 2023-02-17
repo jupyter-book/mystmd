@@ -5,6 +5,7 @@ import type {
   FootnoteDefinition as FND,
   Heading as SpecHeading,
   Image as SpecImage,
+  Admonition as SpecAdmonition,
 } from 'myst-spec';
 
 export type Delete = Parent & { type: 'delete' };
@@ -55,4 +56,8 @@ export type Heading = SpecHeading & {
 
 export type Image = SpecImage & {
   height?: string;
+};
+
+export type Admonition = SpecAdmonition & {
+  icon?: boolean;
 };

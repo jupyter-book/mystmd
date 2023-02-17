@@ -58,6 +58,7 @@ export const figureDirective: DirectiveSpec = {
       alt: data.options?.alt as string,
       width: data.options?.width as string,
       height: data.options?.height as string,
+      align: data.options?.align as Image['align'],
     };
     const children: GenericNode[] = [img];
     if (data.body) {

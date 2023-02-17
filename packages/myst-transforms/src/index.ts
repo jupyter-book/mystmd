@@ -1,6 +1,8 @@
 export {
   admonitionHeadersPlugin,
   admonitionHeadersTransform,
+  admonitionBlockquotePlugin,
+  admonitionBlockquoteTransform,
   admonitionKindToTitle,
 } from './admonitions';
 export { AdmonitionKind } from './types';

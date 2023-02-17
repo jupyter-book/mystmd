@@ -10,18 +10,12 @@ thumbnail: ./thumbnails/dropdowns-cards-and-tabs.png
 
 Dropdowns can be used to toggle content and show it only when a user clicks on the header panel. These use the standard HTML `<details>` element, meaning they also will work without Javascript. The dropdown can have a title, as the directive argument, and the open option can be used to initialise the dropdown in the open state.
 
-::::{dropdown} Open dropdown to see the syntax!
+```{myst}
+:::{dropdown} Dropdown Title
 :open:
-
-````markdown
-```{dropdown} Dropdown Title
-:open:
-
 Dropdown content
+:::
 ```
-````
-
-::::
 
 ```{seealso}
 :class: dropdown
@@ -37,7 +31,7 @@ To turn an admonition into a dropdown, add the option `:class: dropdown` to them
 Cards provide an easy way for you to content into a standard “header”, “body”, “footer” structure that has a similar alignment and visual style. It is useful for creating galleries or high-visibility collections of links and information.
 For example, a card with a header, title, body, and footer:
 
-````markdown
+````{myst}
 ```{card} Card title
 :header: The _Header_
 :footer: Footer
@@ -45,13 +39,6 @@ For example, a card with a header, title, body, and footer:
 Card content
 ```
 ````
-
-```{card} Card title
-:header: The _Header_
-:footer: Footer
-
-Card content
-```
 
 You can also add a `link` argument to the card, which will allow you to make the entire card clickable.
 
@@ -128,31 +115,18 @@ Execute notebook cells, store results, and insert outputs across pages.
 
 You can also produce tabbed content. This allows you to display a variety of tabbed content blocks that users can click on.
 
-`````markdown
-````{tab-set}
-```{tab-item} Tab 1
+```{myst}
+::::{tab-set}
+:::{tab-item} Tab 1
 :sync: tab1
 Tab one
-```
-```{tab-item} Tab 2
+:::
+:::{tab-item} Tab 2
 :sync: tab2
 Tab two
+:::
+::::
 ```
-````
-`````
-
-Creates:
-
-````{tab-set}
-```{tab-item} Tab 1
-:sync: tab1
-Tab one
-```
-```{tab-item} Tab 2
-:sync: tab2
-Tab two
-```
-````
 
 If you have multiple tabs with the same name, they will be synced!
 

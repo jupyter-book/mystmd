@@ -37,6 +37,10 @@ underline
 smallcaps
 : Use the `sc` or `smallcaps` role, for example, `` {sc}`MyST` `` yields {sc}`MyST`
 
+```{myst}
+In {sc}`MyST`, you {del}`should never` {u}`underline` _text_.
+```
+
 ## Line Breaks
 
 To put a line break, without a paragraph, use a `\` followed by a new line. This corresponds to a `<br>` in HTML and `\\` in $\LaTeX$. For example, here is the [worlds shortest poem](wiki:Lines_on_the_Antiquity_of_Microbes):
@@ -68,15 +72,13 @@ For numbered lists, you can start following lines with any number, meaning they 
 
 For inline typography for subscript and superscript formatting, it is best practice to use a text-based representation over resorting to math exponents, i.e. `4$^{th}$`.
 This is required in some journal submissions, and using these roles ensure that the output in HTML and $\LaTeX$ is correct.
-The two roles for subscript and superscript are `sub` and `sup`, respectively.
+The two roles for subscript and superscript are `sub` and `sup`[^long-names], respectively.
 
 ```{myst}
 H{sub}`2`O, and 4{sup}`th` of July
 ```
 
-```{note}
-These two roles are also accessible through `subscript` and `superscript`.
-```
+[^long-names]: These two roles are also accessible through `subscript` and `superscript`.
 
 % For chemicals you can use the {chem}`H2O`
 

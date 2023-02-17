@@ -4,7 +4,7 @@ import type { VFile } from 'vfile';
 import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRoles';
 import { mystTargetsTransform, headingLabelTransform } from './targets';
 import { captionParagraphTransform } from './caption';
-import { admonitionHeadersTransform } from './admonitions';
+import { admonitionBlockquoteTransform, admonitionHeadersTransform } from './admonitions';
 import { blockMetadataTransform, blockNestingTransform } from './blocks';
 import { htmlIdsTransform } from './htmlIds';
 import { imageAltTextTransform } from './images';
@@ -23,6 +23,7 @@ export function basicTransformations(tree: Root, file: VFile) {
   mystTargetsTransform(tree);
   // Label headings after the targets-transform
   headingLabelTransform(tree);
+  admonitionBlockquoteTransform(tree); // Must be before header transforms
   admonitionHeadersTransform(tree);
   blockNestingTransform(tree);
   // Block metadata may contain labels/html_ids
