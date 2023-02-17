@@ -80,6 +80,9 @@ export function liftChildren(tree: Root, nodeType: string) {
         return child;
       })
       ?.flat();
+    // There are some checks in unist that look like `'children' in node`
+    // all children must be deleted, and not a key on the object
+    if (node && (node as any).children == null) delete (node as any).children;
     if (children !== undefined) (node as Parent).children = children;
     return node;
   });

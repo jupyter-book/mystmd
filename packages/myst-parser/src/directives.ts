@@ -32,7 +32,7 @@ export function applyDirectives(tree: Root, specs: DirectiveSpec[], vfile: VFile
       fileWarn(vfile, `unknown directive: ${name}`, { node });
       // We probably want to do something better than just delete the children and
       // consolidate options back to value, but for now this gets myst-spec tests passing
-      node.children = undefined;
+      delete node.children;
       if (node.options) {
         const optionsString = Object.entries(node.options)
           .map(([key, val]) => {
@@ -54,7 +54,7 @@ export function applyDirectives(tree: Root, specs: DirectiveSpec[], vfile: VFile
       if (argSpec.required && !argNode) {
         fileError(vfile, `required argument not provided for directive: ${name}`, { node });
         node.type = 'mystDirectiveError';
-        node.children = undefined;
+        delete node.children;
         validationError = true;
       } else if (argNode) {
         data.arg = contentFromNode(argNode, argSpec, vfile, `argument of directive: ${name}`);
@@ -86,7 +86,7 @@ export function applyDirectives(tree: Root, specs: DirectiveSpec[], vfile: VFile
           node,
         });
         node.type = 'mystDirectiveError';
-        node.children = undefined;
+        delete node.children;
         validationError = true;
       } else if (optionNode) {
         const content = contentFromNode(
@@ -118,7 +118,7 @@ export function applyDirectives(tree: Root, specs: DirectiveSpec[], vfile: VFile
       if (bodySpec.required && !bodyNode) {
         fileError(vfile, `required body not provided for directive: ${name}`, { node });
         node.type = 'mystDirectiveError';
-        node.children = undefined;
+        delete node.children;
         validationError = true;
       } else if (bodyNode) {
         data.body = contentFromNode(bodyNode, bodySpec, vfile, `body of directive: ${name}`);

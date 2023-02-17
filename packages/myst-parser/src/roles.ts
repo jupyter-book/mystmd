@@ -83,7 +83,7 @@ export function applyRoles(tree: Root, specs: RoleSpec[], vfile: VFile) {
     if (!spec) {
       fileWarn(vfile, `unknown role: ${name}`, { node });
       // We probably want to do something better than just delete the children
-      node.children = undefined;
+      delete node.children;
       return;
     }
     const { body, validate, run } = spec;
@@ -94,7 +94,7 @@ export function applyRoles(tree: Root, specs: RoleSpec[], vfile: VFile) {
       if (body.required && !bodyNode) {
         fileError(vfile, `required body not provided for role: ${name}`, { node });
         node.type = 'mystRoleError';
-        node.children = undefined;
+        delete node.children;
         validationError = true;
       } else {
         data.body = contentFromNode(bodyNode, body, vfile, `body of role: ${name}`);
