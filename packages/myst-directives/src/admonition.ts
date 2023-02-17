@@ -1,3 +1,4 @@
+import type { Admonition } from 'myst-spec-ext';
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
 import { ParseTypesEnum } from 'myst-common';
 
@@ -31,6 +32,10 @@ export const admonitionDirective: DirectiveSpec = {
       type: ParseTypesEnum.string,
       // class_option: list of strings?
     },
+    icon: {
+      type: ParseTypesEnum.boolean,
+      // class_option: list of strings?
+    },
   },
   body: {
     type: ParseTypesEnum.parsed,
@@ -48,12 +53,18 @@ export const admonitionDirective: DirectiveSpec = {
     if (data.body) {
       children.push(...(data.body as GenericNode[]));
     }
-    const admonition = {
+    const admonition: Admonition = {
       type: 'admonition',
-      kind: data.name !== 'admonition' ? data.name.replace('.callout-', '') : undefined,
-      class: data.options?.class,
-      children,
+      kind:
+        data.name !== 'admonition'
+          ? (data.name.replace('.callout-', '') as Admonition['kind'])
+          : undefined,
+      class: data.options?.class as string,
+      children: children as any[],
     };
+    if (data.options?.icon === false) {
+      admonition.icon = false;
+    }
     return [admonition];
   },
 };
