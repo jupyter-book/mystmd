@@ -1,47 +1,35 @@
 ---
-title: Callouts (admonitions)
+title: Callouts
 description: Callout blocks or admonitions, like "notes" or "hints" are outlined or shaded areas of a document to bring attention to particular information.
 thumbnail: ./thumbnails/admonitions.png
 ---
 
-To highlight a particular block of text that exists slightly apart from the narrative of your page you can use a number of directive kinds like `{note}` or `{warning}`.
-
-For example, try changing the following directive to a `{warning}`:
-
-```{myst}
-
-:::{note}
-Here is a note, try changing it to a `warning`!
-:::
-```
-
-The specification calls these kind of directives `admonition`, which are generally used through their named directives, like `{note}` or `{danger}`. Admonitions can have custom classes, icons and hide their children.
-
-(admonitions-list)=
-
-## Available admonitions
-
-There is one general `{admonition}` directive available, and a number of pre-styled admonitions:
-
-- `note`
-- `important`
-- `hint`
-- `seealso`
-- `tip`
-- `attention`
-- `caution`
-- `warning`
-- `danger`
-- `error`
-
-Try changing the directive type of the admonition below:
+Callouts, or "admonitions", highlight a particular block of text that exists slightly apart from the narrative of your page, such as a note or a warning.
+For example, try changing the following example of a `{tip}` admonition to a `{warning}`:
 
 ```{myst}
-
 :::{tip}
 Try changing `tip` to `warning`!
 :::
 ```
+
+In MyST we call these kind of directives admonitions, however, they are almost always used through their _named_ directives, like `{note}` or `{danger}`. Admonitions can be styled as `simple` or as a `dropdown`, and can optionally hide the icon. There are ten kinds[^docutils-admonitions] of admonitions available:
+
+```{list-table} Named admonitions that can be used as directives
+:name: admonitions-list
+* - 🔵 `note`
+  - 🟠 `attention`
+* - 🔵 `important`
+  - 🟠 `caution`
+* - 🟢 `hint`
+  - 🟠 `warning`
+* - 🟢 `seealso`
+  - 🔴 `danger`
+* - 🟢 `tip`
+  - 🔴 `error`
+```
+
+[^docutils-admonitions]: These admonitions are the same as those used in [docutils](https://docutils.sourceforge.io/docs/ref/rst/directives.html#specific-admonitions) and Sphinx.
 
 See below for a demo of each admonition in the default theme.
 
@@ -109,86 +97,90 @@ This is an error admonition
 
 `````
 
-## Admonition arguments
+## Admonition Titles
 
-The base `{admonition}` has a single argument, which is the **title**, you can use markdown in here!
+All admonitions have a single argument, which is the admonition title and can use markdown.
+If a title argument is not supplied the first node is used if it is a `heading` or a paragraph with fully bold text; otherwise the name of the directive is used (e.g. `seealso` becomes `See Also`; `note` becomes `Note`).
 
 ```{myst}
-
-:::{admonition} Admonition *title*
+:::{tip} Admonition _title_
 Here is an admonition!
 :::
 ```
 
-Note that all other admontions have no arguments, and as in other directives with no arguments content added in this spot will be prepended to the content body.
-
-% TODO: This should be improved in MyST, even though it is a constraint of sphinx
-
-::::{danger}
+:::::::{tip} Compatibility with GitHub
 :class: dropdown
-
-# Named admonitions don't have arguments
-
-All named admonitions (e.g. `{note}` or `{tip}`), have **no arguments**. Content on the first line will be prepended to the admonition body.
-
-Best practice is to put your body content on a new line. **This may change in future** to make it easier to create notes with custom titles.
+GitHub markdown transforms blockquotes that start with a bold `Note` or `Warning` into a simple admonition (see [GitHub](https://github.com/community/community/discussions/16925)). MyST also transforms these blockquotes into the appropriate admonitions with a `simple` class.
 
 ```{myst}
+> **Note** This is a note!
+```
 
-:::{note} Notes require **no** arguments,
-so content will be appended to the body.
+:::::::
+
+::::{tip} Compatibility with Pandoc & Quarto
+:class: dropdown
+In Quarto/Pandoc markdown admonitions are styled with special classes like `{.callout-note}` or `{callout-tip}`).
+If you are using JupyterBook or Sphinx documentation, use an `{admonition}` directive with the specific class, for example:
+
+```{myst}
+::: {.callout-tip}
+## Tip with Caption
+This is an example of a callout with a caption.
 :::
 ```
 
 ::::
 
-## Options
-
-**class**
-: CSS classes to add to your admonition, in addition to the default `admonition` class. The custom CSS class will be first.
-
-For example, you can try adding the name of an admonition to apply those styles.
-These classes in the default themes are lowercased without spaces (e.g. `seealso` or `error`).
-You can also add your own class names, and they will be available in HTML.
-To see an example, click the `HTML` tab in the below demo.
+::::{warning} Compatibility with Sphinx
+:class: dropdown
+In Sphinx, all named admonitions (e.g. `{note}` or `{tip}`), have **no arguments**.
+If you place content on the first line it will instead be prepended to the admonition body.
+If you are using JupyterBook or Sphinx documentation, use an `{admonition}` directive with the specific class, for example:
 
 ```{myst}
-
-:::{admonition} My title
-:class: tip
-My custom admonition that has a `tip` class applied!
+:::{admonition} The Title
+:class: hint
+This is the body.
 :::
 ```
 
-Note that if you provide conflicting class names, the first one in the {ref}`list above <admonitions-list>` will be used.
+::::
 
 (admonition-dropdown)=
 
 ## Admonition Dropdown
 
-You can also hide the body of your admonition blocks so that users must click the header to reveal the contents. This is helpful if you’d like to include some text that isn’t immediately visible to the user. To turn an admonition into a dropdown, add the `dropdown` class to them.
+To turn an admonition into a dropdown, add the `dropdown` class to them.
+Dropdown admonitions use the `<details>` HTML element (meaning they also will work without Javascript!),
+and they can be helpful when including text that shouldn't immediately visible to your readers.
 
 ```{myst}
-
-:::{note}
+:::{note} Click Me! 👈
 :class: dropdown
-This is initially hidden!
+👋 This could be a solution to a problem or contain other detailed explanations.
 :::
 ```
 
-You can use the `dropdown` class in conjunction with `{admonition}` directives to include your own titles and stylings. In the example below, we add both a `tip` and a `dropdown` class.
-
-```{myst}
-
-:::{admonition} Click here!
-:class: tip dropdown
-This is initially hidden!
-:::
-```
-
-```{seealso}
+:::{seealso} You can also use a `{dropdown}`
 :class: dropdown
-
-# Use "Dropdowns" for simple styles
 You can also use a `{dropdown}` directive, which provides a more compact writing experience and is simpler in the displayed style. See [](#dropdowns) for more information.
-```
+:::
+
+### Reference
+
+**Arguments** _(markdown)_
+: The `admonition` requires a single argument that is the title, parsed as markdown.
+
+**Options**
+: No options are required
+
+    class _(optional, string)_
+    : CSS classes to add to your admonition. Special classes include:
+      - `dropdown`: turns the admonition into a `<details>` html element
+      - `simple`: an admonition with "simple" styles
+      - the name of an admonition, the first admonition name encountered will be used
+    : Note that if you provide conflicting class names, the first one in the {ref}`list above <admonitions-list>` will be used.
+
+    icon _(optional, boolean)_
+    : setting icon to false will hide the icon
