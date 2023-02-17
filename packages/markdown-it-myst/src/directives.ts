@@ -12,10 +12,10 @@ const COLON_OPTION_REGEX = /^:(?<option>[^:\s]+?):(\s*(?<value>.*)){0,1}\s*$/;
 function replaceFences(state: StateCore): boolean {
   for (const token of state.tokens) {
     if (token.type === 'fence' || token.type === 'colon_fence') {
-      const match = token.info.match(/^\{([^\s}]+)\}\s*(.*)$/);
+      const match = token.info.match(/^\s*\{([^}]+)\}\s*(.*)$/);
       if (match) {
         token.type = 'directive';
-        token.info = match[1];
+        token.info = match[1].trim();
         token.meta = { arg: match[2] };
       }
     }
