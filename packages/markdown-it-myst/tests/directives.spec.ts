@@ -168,4 +168,11 @@ describe('parses directives', () => {
     expect(tokens[0].info).toEqual('abc');
     expect(tokens[2].info).toEqual('xyz');
   });
+  it('directives cannot have spaces', () => {
+    // We may change this in the future, if we add pandoc support
+    const mdit = MarkdownIt().use(plugin);
+    const tokens = mdit.parse('```` { ab c }\n\n``` { xyz }\n```\n\n````', {});
+    expect(tokens.map((t) => t.type)).toEqual(['fence']);
+    expect(tokens[0].info).toEqual(' { ab c }');
+  });
 });
