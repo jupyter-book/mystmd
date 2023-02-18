@@ -41,31 +41,51 @@ All packages for `mystjs` are included in this repository (a monorepo!).
 
 `myst-cli` uses [npm](https://www.npmjs.com/) as a package manager. It includes the following packages/apps:
 
-**Packages:**
+**Core Packages:**
 
-- `citation-js-utils` utility functions to deal with citations
-- `jats-to-myst` convert JATS xml to MyST AST
-- `jtex` a templating library ([see docs](https://myst-tools.org/docs/jtex))
-- `mystjs` a MyST parser, with extensibility
 - `myst-cli` this will provide CLI functionality for `myst build mystdoc.md`
-- `myst-cli-utils` some shared utils between jtex, and myst-cli
-- `myst-common` Some common utilities for working with ASTs
-- `myst-config` Validation and reading of configuration files
+- `jtex` a templating library ([see docs](https://myst-tools.org/docs/jtex))
 - `myst-frontmater` definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://myst-tools.org/docs/mystjs/frontmatter))
-- `myst-spec-ext` Extensions to `myst-spec` used throughout this repository, before pushing upstream
+- `myst-config` Validation and reading of configuration files
 - `myst-templates` types and validation for templates (LaTeX, web and word)
+
+**Markdown Parsing**
+
+- `markdown-it-myst` markdown-it plugin to handle tokenizing roles and directives.
+- `myst-directives` core directives for MyST
+- `myst-roles` core roles for MyST
+- `myst-parser` converts markdown-it token stream to mdast
+
+**Readers**
+
+- `tex-to-myst` convert LaTeX to MyST AST
+- `jats-to-myst` convert JATS xml to MyST AST
+
+**Transformers**
+
+- `myst-transforms` a number of transformations for use with myst AST to transform, e.g. links, citations, cross-references, admonitions
+
+**Export Tools**
+
 - `myst-to-docx` convert MyST documents to word docs!
 - `myst-to-jats` convert MyST to JATS, for use in scientific archives
 - `myst-to-tex` convert MyST to LaTeX, to be used in combination with jtex to create stand alone LaTeX documents
-- `myst-transforms` a number of transformations for use with myst AST to transform, e.g. links, citations, cross-references, admonitions
-- `simple-validators` validation utilities, that print all sorts of nice warnings
-- `tex-to-myst` convert LaTeX to MyST AST
+- `myst-to-html` convert MyST to HTML
 
 **Extensions:**
 
 - `myst-ext-card`: Card directives
 - `myst-ext-grid`: Grid directives
 - `myst-ext-tabs`: Tab directives
+- `myst-ext-reactive`: Reactive directives
+
+**Utilities**
+
+- `myst-common` Some common utilities for working with ASTs
+- `myst-spec-ext` Extensions to `myst-spec` used throughout this repository, before pushing upstream
+- `citation-js-utils` utility functions to deal with citations
+- `myst-cli-utils` some shared utils between jtex, and myst-cli
+- `simple-validators` validation utilities, that print all sorts of nice warnings
 
 Each package is 100% [TypeScript](https://www.typescriptlang.org/).
 
