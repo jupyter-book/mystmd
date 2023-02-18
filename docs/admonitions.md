@@ -120,7 +120,7 @@ GitHub markdown transforms blockquotes that start with a bold `Note` or `Warning
 
 ::::{tip} Compatibility with Pandoc & Quarto
 :class: dropdown
-In Quarto/Pandoc markdown admonitions are styled with special classes like `{.callout-note}` or `{callout-tip}`).
+In Quarto/Pandoc markdown admonitions are styled with special classes like `{.callout-note}` or `{.callout-tip}`).
 If you are using JupyterBook or Sphinx documentation, use an `{admonition}` directive with the specific class, for example:
 
 ```{myst}
