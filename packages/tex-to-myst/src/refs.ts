@@ -28,7 +28,7 @@ export const REF_HANDLERS: Record<string, Handler> = {
   macro_ref(node, state) {
     state.openParagraph();
     const label = texToText(getArguments(node, 'group'));
-    state.pushNode(u('crossReference', { label }));
+    state.pushNode(u('crossReference', { label }, [u('text', '%s')]));
   },
   macro_pageref(node, state) {
     state.openParagraph();

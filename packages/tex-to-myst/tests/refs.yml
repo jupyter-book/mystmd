@@ -13,6 +13,9 @@ cases:
             - type: crossReference
               identifier: fig:test
               label: fig:Test
+              children:
+                - type: text
+                  value: '%s'
             - type: text
               value: ' on page '
             - type: crossReference
@@ -60,6 +63,9 @@ cases:
                 - type: crossReference
                   identifier: sec:greetings
                   label: sec:greetings
+                  children:
+                    - type: text
+                      value: '%s'
                 - type: text
                   value: '.'
   - title: equations

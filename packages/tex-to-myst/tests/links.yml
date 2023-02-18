@@ -55,3 +55,6 @@ cases:
                 - type: crossReference
                   identifier: mainlemma
                   label: mainlemma
+                  children:
+                    - type: text
+                      value: '%s'
