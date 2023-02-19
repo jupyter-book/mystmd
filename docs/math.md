@@ -28,7 +28,7 @@ This math is a role, {math}`e=mc^2`, while this math is wrapped in dollar signs,
 The output of these is the same (which you can see by looking at the AST and $\LaTeX$ outputs in the demo above).
 Using a `math` role is much less likely to collide with your writing if it includes dollars (e.g. \$2.99).
 
-Ocassionally, dollar signs that you do not intend to wrap math need to be escaped.
+Occasionally, dollar signs that you do not intend to wrap math need to be escaped.
 These can be preceded by a backslash, that is `\$2.99`, and the `\` will not be displayed in your output.
 If using $\LaTeX$ as an output, these dollar-signs will also be properly escaped again!
 
@@ -100,7 +100,7 @@ The label implementation does not yet work for `sub-equations` and may not work 
 equation
 : basic equation environment, similar to a math directive or dollar-math
 
-multline
+multiline
 : variation equation, used for equations that don’t fit on a single line
 
 gather

@@ -22,7 +22,7 @@ The real-world deployment of your site will depend on the infrastructure that yo
 
 ## Lighthouse Score
 
-Lighthouse is a tool included in Chrome that measures accessibility, performance, and search engine performance (see [lighthouse on GitHub](https://github.com/GoogleChrome/lighthouse)). Although not perfect, the tool does do a good job at highlighting issues with performace, search engine crawling, and accessibility. These scores indicate the real-world performance of a site as well as can effect search engine rankings.
+Lighthouse is a tool included in Chrome that measures accessibility, performance, and search engine performance (see [lighthouse on GitHub](https://github.com/GoogleChrome/lighthouse)). Although not perfect, the tool does do a good job at highlighting issues with performance, search engine crawling, and accessibility. These scores indicate the real-world performance of a site as well as can effect search engine rankings.
 
 ```{figure} ./images/lighthouse-2022_09_15.png
 :name: lighthouse

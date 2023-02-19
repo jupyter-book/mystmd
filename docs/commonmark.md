@@ -108,7 +108,7 @@ Section 2
 
 ```{seealso}
 Thematic breaks should not be confused with MyST [block syntax](./blocks.md),
-which is used to structurally seperate content.
+which is used to structurally separate content.
 ```
 
 ### Link Definitions
@@ -184,5 +184,5 @@ break
 ```
 
 ```{seealso}
-[](./typography.md) provides other roles for subscript, superscript, abbeviations, and other text formating.
+[](./typography.md) provides other roles for subscript, superscript, abbeviations, and other text formatting.
 ```

@@ -7,7 +7,7 @@ This page discusses high-level questions about the MyST ecosystem, history of `m
 
 ## History of MyST and `mystjs`
 
-MyST (Markedly Structured Text) is a markup language that builds on standard markdown and is designed to create publication-quality documents, books, presentations, and websites written entirely in Markdown. The [ExecutableBooks] team recieved a grant from the [Sloan Foundation](https://sloan.org) to build, enhance, and promote a new path to document creation and publishing for next-generation scientific textbooks and lectures ([Grant #9231](https://sloan.org/grant-detail/9231)).
+MyST (Markedly Structured Text) is a markup language that builds on standard markdown and is designed to create publication-quality documents, books, presentations, and websites written entirely in Markdown. The [ExecutableBooks] team received a grant from the [Sloan Foundation](https://sloan.org) to build, enhance, and promote a new path to document creation and publishing for next-generation scientific textbooks and lectures ([Grant #9231](https://sloan.org/grant-detail/9231)).
 
 The initial use case driving the development and design of MyST has been [JupyterBook], which allows you to create educational online textbooks and tutorials with Jupyter Notebooks and narrative content written in MyST. The extensions and design of MyST is inspired by the [Sphinx] and [ReStructured Text](https://docutils.sourceforge.io/rst.html) (RST) ecosystems. Jupyter Book is considered a [distribution of Sphinx](myst:jupyterbook#explain/sphinx), and builds on the Sphinx and [Docutils] Python packages.
 

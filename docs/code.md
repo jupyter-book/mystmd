@@ -13,7 +13,7 @@ For code execution, see the `{code-cell}` directive in the execution section of 
 ```
 
 You can include code in your documents using the standard markup syntax of ` ```language `,
-where language is the programing language for highlighting.
+where language is the programming language for highlighting.
 
 ````{myst}
 ```python
@@ -65,7 +65,7 @@ numbering:
 
 ## Numbering and Highlighting
 
-To add numbers and emphasis to lines, we are following the [sphinx](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block) `code-block` directive. You can use `linenos` which is a flag, with no value, and `emphasize-lines` with a comma-seperated list of line numbers to emphasize.
+To add numbers and emphasis to lines, we are following the [sphinx](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block) `code-block` directive. You can use `linenos` which is a flag, with no value, and `emphasize-lines` with a comma-separated list of line numbers to emphasize.
 
 ````{code-block} md
 :linenos:
