@@ -29,7 +29,7 @@ There are two directives that can be used to add additional information about th
 ## Image directive
 
 ````{myst}
-```{image} https://source.unsplash.com/random/500x150?sunset
+```{image} https://images.unsplash.com/photo-1564731119111-2debdd39229c?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=150&ixid=MnwxfDB8MXxyYW5kb218MHx8c3Vuc2V0fHx8fHx8MTY3NjgzNDAzNg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500
 :alt: Beautiful Sunset
 :width: 500px
 :align: center
@@ -39,7 +39,7 @@ There are two directives that can be used to add additional information about th
 ## Figure directive
 
 ````{myst}
-```{figure} https://source.unsplash.com/random/400x200?beach,ocean
+```{figure} https://images.unsplash.com/photo-1506477331477-33d5d8b3dc85?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8YmVhY2gsb2NlYW58fHx8fHwxNjc2ODM0MTMy&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=400
 :name: myFigure
 :alt: Random image of the beach or ocean!
 :align: center
