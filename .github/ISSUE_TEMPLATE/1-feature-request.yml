@@ -13,6 +13,7 @@ body:
       options:
         - Website User Interface
         - Command Line Tools
+        - MyST Markdown Syntax
         - LaTeX Export
         - Microsoft Word Export
         - Javascript Packages (please list)
