@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 0.0.9
+
+### Patch Changes
+
+- ccd1d5ee: Update license list from https://spdx.org
+
 ## 0.0.8
 
 ### Patch Changes

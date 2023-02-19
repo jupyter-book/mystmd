@@ -1,5 +1,13 @@
 # tex-to-myst
 
+## 0.0.18
+
+### Patch Changes
+
+- 7a78b7be: Only insert figure number for latex \ref
+- Updated dependencies [ccd1d5ee]
+  - myst-frontmatter@0.0.9
+
 ## 0.0.17
 
 ### Patch Changes

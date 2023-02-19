@@ -1,5 +1,26 @@
 # myst-cli
 
+## 0.1.16
+
+### Patch Changes
+
+- Updated dependencies [f227a9e2]
+- Updated dependencies [c643fa8e]
+- Updated dependencies [f227a9e2]
+- Updated dependencies [f227a9e2]
+- Updated dependencies [7a78b7be]
+- Updated dependencies [f227a9e2]
+- Updated dependencies [ccd1d5ee]
+  - myst-transforms@0.0.20
+  - jtex@0.1.8
+  - tex-to-myst@0.0.18
+  - myst-frontmatter@0.0.9
+  - myst-config@0.0.10
+  - myst-templates@0.1.10
+  - myst-to-docx@0.0.15
+  - myst-to-tex@0.0.18
+  - myst-parser@0.0.20
+
 ## 0.1.15
 
 ### Patch Changes

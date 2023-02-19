@@ -1,5 +1,0 @@
----
-'jtex': patch
----
-
-Update dependency

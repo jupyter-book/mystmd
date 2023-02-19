@@ -1,5 +1,12 @@
 # myst-config
 
+## 0.0.10
+
+### Patch Changes
+
+- Updated dependencies [ccd1d5ee]
+  - myst-frontmatter@0.0.9
+
 ## 0.0.9
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # jats-to-myst
 
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies [f227a9e2]
+- Updated dependencies [f227a9e2]
+- Updated dependencies [f227a9e2]
+- Updated dependencies [f227a9e2]
+- Updated dependencies [ccd1d5ee]
+  - myst-transforms@0.0.20
+  - myst-frontmatter@0.0.9
+
 ## 0.0.16
 
 ### Patch Changes
