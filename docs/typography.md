@@ -28,7 +28,7 @@ Standard inline formatting including bold, italic, code, as well as escaped symb
 ```
 
 strikethrough
-: Use the `del` or `strike` role, for example, `` {del}`text` `` yeilds {del}`text`
+: Use the `del` or `strike` role, for example, `` {del}`text` `` yields {del}`text`
 
 underline
 : Use the `u` or `underline` role, for example, `` {u}`text` `` yields {u}`text`
@@ -147,7 +147,7 @@ Term 3
 
 ## Footnotes
 
-Footnotes use the [pandoc specification](https://pandoc.org/MANUAL.html#footnotes). A footnote is labeled with `[^label]` and can then be any alpha-numeric string (no spaces), which is case-insensitive. This creates a link to the footnote definition, which is a line that starts with the same `[^label]: ` and then the text of the footnote.
+Footnotes use the [pandoc specification](https://pandoc.org/MANUAL.html#footnotes). A footnote is labeled with `[^label]` and can then be any alphanumeric string (no spaces), which is case-insensitive. This creates a link to the footnote definition, which is a line that starts with the same `[^label]: ` and then the text of the footnote.
 
 ```{myst}
 - A footnote reference[^myref]

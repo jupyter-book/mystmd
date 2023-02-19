@@ -122,7 +122,7 @@ Here is an {abc}`unknown role`.
 ## Nesting content blocks in Markdown
 
 If you’d like to nest content blocks inside one another in Markdown (for example, to put a `{note}` inside of a `{margin}`), you may do so by adding extra backticks (`` ` ``)[^colon] to the outer-most block.
-For example, two [admonitions](./admonitions.md) nested in side of eachother:
+For example, two [admonitions](./admonitions.md) nested in side of each other:
 
 `````{myst}
 ````{important}

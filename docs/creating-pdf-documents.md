@@ -40,7 +40,7 @@ To build the exports, use the `myst build` command, which will work with your [p
 myst build my-document.md --pdf
 ```
 
-Based on the `output` field in the export list in the [frontmatter](#export-frontmatter-pdf), the PDF and a log file will be written to `exports/my-document.pdf` and any associated log files. If the output file is a folder, the document name will be used with a `.pdf` or `.tex` extension, as appropriate. Any necessary auxilary files (e.g. for example `*.png` or `*.bib`) will be added to the base folder (`exports/` above).
+Based on the `output` field in the export list in the [frontmatter](#export-frontmatter-pdf), the PDF and a log file will be written to `exports/my-document.pdf` and any associated log files. If the output file is a folder, the document name will be used with a `.pdf` or `.tex` extension, as appropriate. Any necessary auxiliary files (e.g. for example `*.png` or `*.bib`) will be added to the base folder (`exports/` above).
 
 ## Rendering PDFs with $\LaTeX$
 

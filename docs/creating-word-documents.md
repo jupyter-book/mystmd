@@ -57,7 +57,7 @@ Currently MyST export does not fully create math in Word's format, instead, $\La
 
 1. Select any equation and open the equation toolbar
 2. Click `LaTeX`
-3. In the conver dropdown, select "All - Professional"
+3. In the convert dropdown, select "All - Professional"
 4. Click convert
 
 ```{figure} ./images/convert-word-equations.png

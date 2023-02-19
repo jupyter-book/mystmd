@@ -34,7 +34,7 @@ Frontmatter can be added to the first cell of a Jupyter Notebook, that cell shou
 ```{important}
 **Note**
 
-Remember to format the contents of the section as valid `yaml` even though when rendered, the cell will not look well formated in your notebook.
+Remember to format the contents of the section as valid `yaml` even though when rendered, the cell will not look well formatted in your notebook.
 ```
 
 ```{note}
@@ -214,7 +214,7 @@ This field can be set to a string value directly or to a License object.
 
 Available fields in the License object are `content` and `code` allowing licenses to be set separately for these two forms of content, as often different subsets of licenses are applicable to each. If you only wish to apply a single license to your page or project use the string form rather than an object.
 
-String values for licenses should be a valid “Identifier” string from the [SPDX License List](https://spdx.org/licenses/). Identifiers for well-known licenses are easily recognizable (e.g. `MIT` or `BSD`) and MyST will attempt to infer the specific identifier if an ambiguous license is specified (e.g. `GPL` will be interpreted as `GPL-3.0+` and a warning raised letting you know of this interpretation). Some commen licenses are:
+String values for licenses should be a valid “Identifier” string from the [SPDX License List](https://spdx.org/licenses/). Identifiers for well-known licenses are easily recognizable (e.g. `MIT` or `BSD`) and MyST will attempt to infer the specific identifier if an ambiguous license is specified (e.g. `GPL` will be interpreted as `GPL-3.0+` and a warning raised letting you know of this interpretation). Some common licenses are:
 
 ```{list-table}
 :header-rows: 1

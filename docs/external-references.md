@@ -77,7 +77,7 @@ For example, `<myst:python#library/abc>` renders to:\
 and is made of a `protocol`, `project` and `target`.
 
 protocol
-: The protocol for this type of link is `myst:`, and is what selects for cross-project referening.
+: The protocol for this type of link is `myst:`, and is what selects for cross-project referencing.
 
 project
 : the `project` key above is "python" which is defined in your local [project configuration](#intersphinx-config) above.
@@ -136,7 +136,7 @@ To show different text you can use a similar technique to references:\
 
 ```{tip}
 :class: dropdown
-# Finding and formating the page title
+# Finding and formatting the page title
 To find the page title, browse Wikipedia and copy the last part of the URL, for example:\
 `Page_Title` in `https://wikipedia.org/wiki/Page_Title`. If you do not supply text for the link specifically, then the case of the link will be preserved and shown without the underscores.
 
@@ -149,7 +149,7 @@ Note that if the page title has spaces in it, simply replace them with underscor
 :class: dropdown
 # Different languages or wikis
 
-There are many different official and unofficial wikis that use the same [Wikimedia](wiki:Wikimedia_Foundation) technology, including subdomains in various langauges.
+There are many different official and unofficial wikis that use the same [Wikimedia](wiki:Wikimedia_Foundation) technology, including subdomains in various languages.
 
 Wikipedia links, like `https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)` will work fine out of the box, and point to [](https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)) with the popup still working!
 
@@ -160,7 +160,7 @@ Wikipedia links, like `https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)` w
 
 ## GitHub Links
 
-MyST can directly integrate with links to GitHub to create hover-card information directly integrated into your MyST documents. For example, a link to the [linkTransforms](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L12-L28) plugin code shows a preview of the code. The code preview works for both mutliple line numbers and higlighting [single lines](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L30), which shows the surrounding ten lines, with the referenced line highlighted. If you reference the [full file](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts) then the first ten lines of the file are shown in the preview.
+MyST can directly integrate with links to GitHub to create hover-card information directly integrated into your MyST documents. For example, a link to the [linkTransforms](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L12-L28) plugin code shows a preview of the code. The code preview works for both multiple line numbers and highlighting [single lines](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L30), which shows the surrounding ten lines, with the referenced line highlighted. If you reference the [full file](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts) then the first ten lines of the file are shown in the preview.
 
 ````{important}
 :class: dropdown
