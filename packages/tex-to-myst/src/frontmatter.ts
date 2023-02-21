@@ -165,20 +165,30 @@ const FRONTMATTER_HANDLERS: Record<string, Handler> = {
     state.openNode('span');
     state.renderChildren(titleNode);
     state.closeParagraph();
-    // instead of closing, we are going to pop it off the stack
-    const renderedTitle = state.stack.pop();
-    state.data.frontmatter.title = childrenOrString(
-      getContentFromRenderedSpan(renderedTitle),
-    ) as any;
+    if (state.data.frontmatter.title) {
+      state.warn('Multiple titles defined in document', node);
+      state.closeNode();
+    } else {
+      // instead of closing, we are going to pop it off the stack
+      const renderedTitle = state.stack.pop();
+      state.data.frontmatter.title = childrenOrString(
+        getContentFromRenderedSpan(renderedTitle),
+      ) as any;
+    }
     if (shortTitleNode) {
       state.openNode('span');
       state.renderChildren(shortTitleNode);
       state.closeParagraph();
-      // instead of closing, we are going to pop it off the stack
-      const renderedShortTitle = state.stack.pop();
-      state.data.frontmatter.short_title = childrenOrString(
-        getContentFromRenderedSpan(renderedShortTitle),
-      ) as any;
+      if (state.data.frontmatter.title) {
+        state.warn('Multiple short titles defined in document', node);
+        state.closeNode();
+      } else {
+        // instead of closing, we are going to pop it off the stack
+        const renderedShortTitle = state.stack.pop();
+        state.data.frontmatter.short_title = childrenOrString(
+          getContentFromRenderedSpan(renderedShortTitle),
+        ) as any;
+      }
     }
   },
   macro_author(node, state) {
