@@ -106,4 +106,10 @@ export const TABLE_HANDLERS: Record<string, Handler> = {
       state.closeNode();
     });
   },
+  env_adjustbox(node, state) {
+    state.renderChildren(node);
+  },
+  macro_makecell(node, state) {
+    state.renderChildren(node);
+  },
 };
