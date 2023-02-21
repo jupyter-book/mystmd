@@ -179,7 +179,7 @@ const FRONTMATTER_HANDLERS: Record<string, Handler> = {
       state.openNode('span');
       state.renderChildren(shortTitleNode);
       state.closeParagraph();
-      if (state.data.frontmatter.title) {
+      if (state.data.frontmatter.short_title) {
         state.warn('Multiple short titles defined in document', node);
         state.closeNode();
       } else {
