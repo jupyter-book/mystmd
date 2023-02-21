@@ -61,4 +61,7 @@ export const MISC_HANDLERS: Record<string, Handler> = {
   // These are sometimes used in tables...
   macro_bgroup: pass,
   macro_egroup: pass,
+  // Used with adjustbox...
+  macro_textwidth: pass,
+  macro_onecolumn: pass,
 };
