@@ -131,6 +131,14 @@ const FRONTMATTER_HANDLERS: Record<string, Handler> = {
     }
     state.data.macros[name] = macro;
   },
+  macro_renewcommand(node, state) {
+    state.closeParagraph();
+    const [nameNode, macroNode] = getArguments(node, 'group');
+    getPositionExtents(macroNode);
+    const name = originalValue(state.tex, { position: getPositionExtents(nameNode) });
+    const macro = originalValue(state.tex, { position: getPositionExtents(macroNode) });
+    state.data.macros[name] = macro;
+  },
   macro_date(node, state) {
     state.closeParagraph();
     // No action for now
