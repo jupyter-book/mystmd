@@ -112,4 +112,21 @@ export const TABLE_HANDLERS: Record<string, Handler> = {
   macro_makecell(node, state) {
     state.renderChildren(node);
   },
+  macro_multirow(node, state) {
+    // This macro is defined as:
+    //
+    // \multirow[vpos]{nrows}[bigstruts]{width}[vmove]{text}
+    //
+    // We take the first {}-bracket argument as nrows, if it is an integer
+    // and the last argument as content. All other arguments are ignored for now.
+    state.closeParagraph();
+    const nrowArg = node.args[0]?.openMark === '{' ? node.args[0] : node.args[1];
+    const rowspan = Number(nrowArg?.content?.[0]?.content);
+    const currentNode = state.stack[state.stack.length - 1];
+    if (currentNode?.type === 'tableCell' && Number.isInteger(rowspan)) {
+      currentNode.rowspan = rowspan;
+    }
+    state.renderChildren(node.args[node.args.length - 1]);
+    state.closeParagraph();
+  },
 };
