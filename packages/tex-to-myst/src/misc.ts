@@ -64,4 +64,5 @@ export const MISC_HANDLERS: Record<string, Handler> = {
   // Used with adjustbox...
   macro_textwidth: pass,
   macro_onecolumn: pass,
+  macro_linewidth: pass,
 };
