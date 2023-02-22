@@ -201,3 +201,32 @@ cases:
                   children:
                     - type: text
                       value: Note this is freezing.
+  - title: multirow
+    tex: |-
+      \begin{tabular}{l c}
+        a & \multirow{2}{0.4\linewidth}[0cm]{b} \\ c &
+      \end{tabular}
+    tree:
+      type: root
+      children:
+        - type: table
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: text
+                      value: a
+                - type: tableCell
+                  header: true
+                  rowspan: 2
+                  children:
+                    - type: text
+                      value: b
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: c

@@ -18,9 +18,10 @@ function parseArgument(node: GenericNode, next: GenericNode): boolean {
     }
     const lastArg = node.args[node.args.length - 1];
     if (
-      ((next.content === '[' && (!lastArg || lastArg.openMark === '[')) ||
+      (mixed_arg_macros.includes(node.content) && next.content === '[') ||
+      (((next.content === '[' && (!lastArg || lastArg.openMark === '[')) ||
         (next.content === '(' && (!lastArg || lastArg.openMark === ')'))) &&
-      getArguments(node, 'group').length === 0
+        getArguments(node, 'group').length === 0)
     ) {
       node.args.push({
         type: 'argument',
@@ -49,6 +50,7 @@ function parseArgument(node: GenericNode, next: GenericNode): boolean {
   return false;
 }
 
+// Maximum number of arguments for each macro
 const macros: Record<string, number> = {
   citet: 1,
   citep: 1,
@@ -69,7 +71,7 @@ const macros: Record<string, number> = {
   framebox: 1,
   tnote: 1,
   arraystretch: 1,
-  multirow: 3,
+  multirow: 5,
   subfigure: 2,
   tabularx: 2,
   // These are character replacements:
@@ -93,6 +95,10 @@ const macros: Record<string, number> = {
   u: 1,
   v: 1,
 };
+
+// These macros allow a mix of {} and [] arguments, rather than only allowing
+// a single leading [] argument followed by {} arguments.
+const mixed_arg_macros = ['multirow'];
 
 /**
  * This fixes up some of the rendering that treats '[' as the first argument.
