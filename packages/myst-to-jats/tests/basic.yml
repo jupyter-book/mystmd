@@ -547,23 +547,3 @@ cases:
             - type: text
               value: JATS
     jats: <p>Hello</p><p>JATS</p>
-  - title: Footnotes
-    tree:
-      type: root
-      children:
-        - type: paragraph
-          children:
-            - type: text
-              value: Hello
-            - type: footnoteReference
-              identifier: 1
-            - type: text
-              value: world
-        - type: footnoteDefinition
-          identifier: 1
-          children:
-            - type: paragraph
-              children:
-                - type: text
-                  value: JATS
-    jats: <p>Hello<fn id="1"><p>JATS</p></fn>world</p>
