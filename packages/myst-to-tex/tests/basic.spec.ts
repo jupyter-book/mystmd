@@ -31,4 +31,11 @@ describe('myst-to-tex', () => {
     const file = pipe.stringify(tree);
     expect((file.result as LatexResult).value).toEqual("``quote'' $\\frac{1}{2}$");
   });
+  it('comment', () => {
+    const tree = u('root', [u('comment', 'hello\nworld')]);
+    const pipe = unified().use(mystToTex);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree as any);
+    expect((file.result as LatexResult).value).toEqual('% hello\n% world');
+  });
 });
