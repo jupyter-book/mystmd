@@ -230,3 +230,32 @@ cases:
                   children:
                     - type: text
                       value: c
+  - title: multicolumn
+    tex: |-
+      \begin{tabular}{l c}
+        a & b \\ \multicolumn{2}{0.4\linewidth}[0cm]{c} &
+      \end{tabular}
+    tree:
+      type: root
+      children:
+        - type: table
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: text
+                      value: a
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: text
+                      value: b
+            - type: tableRow
+              children:
+                - type: tableCell
+                  colspan: 2
+                  children:
+                    - type: text
+                      value: c

@@ -72,6 +72,7 @@ const macros: Record<string, number> = {
   tnote: 1,
   arraystretch: 1,
   multirow: 5,
+  multicolumn: 3,
   subfigure: 2,
   tabularx: 2,
   // These are character replacements:
