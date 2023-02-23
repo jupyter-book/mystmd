@@ -1,5 +1,6 @@
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { GenericNode, MessageInfo } from 'myst-common';
+import type { FootnoteDefinition } from 'myst-spec-ext';
 
 export type Attributes = Record<string, string | undefined>;
 
@@ -33,6 +34,7 @@ export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   data: D;
   options: Options;
   stack: Element[];
+  footnotes: Record<string, FootnoteDefinition>;
   text: (value?: string) => void;
   renderChildren: (node: any) => void;
   renderInline: (node: GenericNode, name: string, attributes?: Attributes) => void;

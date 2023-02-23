@@ -15,6 +15,8 @@ import type {
   Attributes,
 } from './types';
 import { basicTransformations } from './transforms';
+import type { FootnoteDefinition } from 'myst-spec-ext';
+import { selectAll } from 'unist-util-select';
 
 export type { JatsResult } from './types';
 
@@ -253,6 +255,17 @@ const handlers: Record<string, Handler> = {
     }
     state.renderInline(node, 'xref', attrs);
   },
+  footnoteReference(node, state) {
+    if (!node.identifier) return;
+    const footnote = state.footnotes[node.identifier];
+    if (!footnote) return;
+    state.openNode('fn', { id: node.identifier });
+    state.renderChildren(footnote);
+    state.closeNode();
+  },
+  footnoteDefinition() {
+    // Dealt with in footnoteReference
+  },
   // citeGroup(node, state) {
   //   if (state.options.citestyle === 'numerical-only') {
   //     state.write('\\cite{');
@@ -291,6 +304,7 @@ class JatsSerializer implements IJatsSerializer {
   options: Options;
   handlers: Record<string, Handler>;
   stack: Element[] = [];
+  footnotes: Record<string, FootnoteDefinition>;
 
   constructor(file: VFile, opts?: Options) {
     this.file = file;
@@ -298,6 +312,7 @@ class JatsSerializer implements IJatsSerializer {
     this.data = {};
     this.stack = [{ type: 'element', elements: [] }];
     this.handlers = opts?.handlers ?? handlers;
+    this.footnotes = {};
   }
 
   top() {
@@ -393,6 +408,10 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     const tree = copyNode(node) as any;
     basicTransformations(tree, file);
     const state = new JatsSerializer(file, opts ?? { handlers });
+    const footnotes = selectAll('footnoteDefinition', tree) as FootnoteDefinition[];
+    footnotes.forEach((fd: FootnoteDefinition) => {
+      if (fd.identifier) state.footnotes[fd.identifier] = fd;
+    });
     state.renderChildren(tree);
     while (state.stack.length > 1) state.closeNode();
     const jats = js2xml(state.stack[0], {
