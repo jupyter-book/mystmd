@@ -1,3 +1,4 @@
+import type { References } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 
 export const DEFAULT_IMAGE_WIDTH = 0.7;
@@ -19,6 +20,7 @@ export type Options = {
   math?: MathPlugins;
   bibliography?: 'natbib' | 'biblatex';
   citestyle?: 'numerical-only';
+  references?: References;
 };
 
 export type StateData = {
@@ -34,6 +36,7 @@ export type StateData = {
 export interface ITexSerializer<D extends Record<string, any> = StateData> {
   data: D;
   options: Options;
+  references: References;
   usePackages: (...packageNames: string[]) => void;
   write: (value: string) => void;
   text: (value: string, mathMode?: boolean) => void;

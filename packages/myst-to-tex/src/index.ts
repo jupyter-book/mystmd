@@ -1,6 +1,7 @@
 import type { Root, Parent } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
+import type { References } from 'myst-common';
 import { fileError, toText } from 'myst-common';
 import { captionHandler, containerHandler } from './container';
 import { renderNodeToLatex } from './tables';
@@ -247,6 +248,14 @@ const handlers: Record<string, Handler> = {
   include(node, state) {
     state.renderChildren(node, true);
   },
+  footnoteReference(node, state) {
+    if (!node.identifier) return;
+    const footnote = state.references.footnotes?.[node.identifier];
+    if (!footnote) return;
+    state.write('\\footnote{');
+    state.renderChildren(footnote);
+    state.write('}');
+  },
 };
 
 class TexSerializer implements ITexSerializer {
@@ -254,6 +263,7 @@ class TexSerializer implements ITexSerializer {
   data: StateData;
   options: Options;
   handlers: Record<string, Handler>;
+  references: References;
 
   constructor(file: VFile, opts?: Options) {
     file.result = '';
@@ -261,6 +271,7 @@ class TexSerializer implements ITexSerializer {
     this.options = opts ?? {};
     this.data = { mathPlugins: {}, imports: new Set() };
     this.handlers = opts?.handlers ?? handlers;
+    this.references = opts?.references ?? {};
   }
 
   get out(): string {
