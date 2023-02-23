@@ -224,7 +224,13 @@ export class ReferenceState implements IReferenceState {
       this.numberAll = opts?.numbering;
       this.numbering = {};
     } else {
-      this.numbering = { equation: true, figure: true, table: true, ...opts?.numbering };
+      this.numbering = {
+        equation: true,
+        figure: true,
+        table: true,
+        code: true,
+        ...opts?.numbering,
+      };
     }
     this.targets = {};
     this.file = opts?.file;
