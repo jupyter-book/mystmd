@@ -115,6 +115,9 @@ const handlers: Record<string, Handler> = {
   mystComment() {
     // Do not archive comments
   },
+  comment() {
+    // Do not archive comments
+  },
   strong(node, state) {
     // TODO: potentially add `{ role: 'strong' }`?
     state.renderInline(node, 'bold');
