@@ -59,6 +59,7 @@ import type {
   CaptionNumber,
   FootnoteReference,
   FootnoteDefinition,
+  CiteKind,
 } from 'myst-spec-ext';
 import type { Handler, Mutable } from './types';
 import {
@@ -489,10 +490,7 @@ const cite: Handler<{ type: 'cite' } & Parent> = (state, node) => {
   state.renderChildren(node);
 };
 
-const citeGroup: Handler<{ type: 'citeGroup'; kind: 'narrative' | 'parenthetical' } & Parent> = (
-  state,
-  node,
-) => {
+const citeGroup: Handler<{ type: 'citeGroup'; kind: CiteKind } & Parent> = (state, node) => {
   if (node.kind === 'narrative') {
     state.renderChildren(node);
   } else {

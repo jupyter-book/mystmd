@@ -1,12 +1,13 @@
 import type { Handler, ITexParser } from './types';
 import { u } from 'unist-builder';
 import { getArguments, replaceTextValue, texToText } from './utils';
+import type { CiteKind } from 'myst-spec-ext';
 import type { GenericNode } from 'myst-common';
 
 function createCitation(
   state: ITexParser,
   node: GenericNode,
-  kind?: 'parenthetical' | 'narrative',
+  kind?: CiteKind,
   partial?: 'author' | 'year' | 'number',
 ) {
   state.openParagraph();

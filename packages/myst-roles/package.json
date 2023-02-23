@@ -38,7 +38,8 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "myst-common": "^0.0.14"
+    "myst-common": "^0.0.14",
+    "myst-spec-ext": "^0.0.6"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

@@ -3,24 +3,9 @@ import { InlineCite } from 'citation-js-utils';
 import type { Logger } from 'myst-cli-utils';
 import type { References } from 'myst-common';
 import type { StaticPhrasingContent, Parent } from 'myst-spec';
+import type { Cite, CiteKind, CiteGroup } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { Root } from 'mdast';
-
-export type CiteKind = 'narrative' | 'parenthetical';
-
-export type Cite = {
-  type: 'cite';
-  kind: CiteKind;
-  label: string;
-  children: StaticPhrasingContent[];
-  error?: boolean;
-};
-
-export type CiteGroup = {
-  type: 'citeGroup';
-  kind: CiteKind;
-  children: Cite[];
-};
 
 function pushCite(
   references: Pick<References, 'cite'>,
