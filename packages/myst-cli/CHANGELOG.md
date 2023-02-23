@@ -1,5 +1,28 @@
 # myst-cli
 
+## 0.1.17
+
+### Patch Changes
+
+- 9fcf25a9: Add citation nodes to myst-spec-ext
+- 0859b295: Implement footnotes in myst-to-tex
+- Updated dependencies [4da8eef5]
+- Updated dependencies [452846eb]
+- Updated dependencies [4da8eef5]
+- Updated dependencies [4da8eef5]
+- Updated dependencies [a353dba6]
+- Updated dependencies [9fcf25a9]
+- Updated dependencies [0859b295]
+- Updated dependencies [efe55199]
+- Updated dependencies [452846eb]
+- Updated dependencies [8747eecd]
+  - tex-to-myst@0.0.19
+  - myst-to-docx@0.0.16
+  - myst-to-tex@0.0.19
+  - myst-spec-ext@0.0.7
+  - myst-transforms@0.0.21
+  - myst-parser@0.0.21
+
 ## 0.1.16
 
 ### Patch Changes

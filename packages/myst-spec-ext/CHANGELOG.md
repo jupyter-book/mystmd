@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 0.0.7
+
+### Patch Changes
+
+- 9fcf25a9: Add citation nodes to myst-spec-ext
+
 ## 0.0.6
 
 ### Patch Changes

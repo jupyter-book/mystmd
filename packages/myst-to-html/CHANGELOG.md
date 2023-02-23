@@ -1,5 +1,13 @@
 # myst-to-html
 
+## 0.0.21
+
+### Patch Changes
+
+- a353dba6: Support myst 'comment' node in docx/html/jats
+- Updated dependencies [efe55199]
+  - myst-transforms@0.0.21
+
 ## 0.0.20
 
 ### Patch Changes

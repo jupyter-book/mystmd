@@ -1,5 +1,13 @@
 # myst-transforms
 
+## 0.0.21
+
+### Patch Changes
+
+- efe55199: Turn on code enumeration by default
+- Updated dependencies [9fcf25a9]
+  - myst-spec-ext@0.0.7
+
 ## 0.0.20
 
 ### Patch Changes

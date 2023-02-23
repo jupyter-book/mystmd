@@ -1,5 +1,13 @@
 # myst-to-jats
 
+## 0.0.18
+
+### Patch Changes
+
+- a353dba6: Support myst 'comment' node in docx/html/jats
+- Updated dependencies [9fcf25a9]
+  - myst-spec-ext@0.0.7
+
 ## 0.0.17
 
 ### Patch Changes

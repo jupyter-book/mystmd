@@ -1,5 +1,13 @@
 # myst-roles
 
+## 0.0.21
+
+### Patch Changes
+
+- 9fcf25a9: Add citation nodes to myst-spec-ext
+- Updated dependencies [9fcf25a9]
+  - myst-spec-ext@0.0.7
+
 ## 0.0.20
 
 ## 0.0.19

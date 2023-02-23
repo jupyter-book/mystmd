@@ -1,5 +1,13 @@
 # myst-to-tex
 
+## 0.0.19
+
+### Patch Changes
+
+- a353dba6: Support myst 'comment' node in docx/html/jats
+- 0859b295: Implement footnotes in myst-to-tex
+- 8747eecd: Convert myst 'comment' nodes to latex
+
 ## 0.0.18
 
 ### Patch Changes

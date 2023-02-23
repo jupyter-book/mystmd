@@ -1,5 +1,13 @@
 # myst-parser
 
+## 0.0.21
+
+### Patch Changes
+
+- Updated dependencies [9fcf25a9]
+  - myst-roles@0.0.21
+  - myst-directives@0.0.21
+
 ## 0.0.20
 
 ### Patch Changes

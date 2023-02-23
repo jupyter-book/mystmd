@@ -1,5 +1,18 @@
 # tex-to-myst
 
+## 0.0.19
+
+### Patch Changes
+
+- 4da8eef5: Warn on multiple titles in latex
+- 452846eb: Support multirow macro
+- 4da8eef5: Support latex renewcommand
+- 4da8eef5: Pass on latex commands adjustbox, makecell, textwidth, onecolumn
+- 9fcf25a9: Add citation nodes to myst-spec-ext
+- 452846eb: Implement multicolumn macro
+- Updated dependencies [9fcf25a9]
+  - myst-spec-ext@0.0.7
+
 ## 0.0.18
 
 ### Patch Changes
