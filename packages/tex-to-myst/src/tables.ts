@@ -129,4 +129,18 @@ export const TABLE_HANDLERS: Record<string, Handler> = {
     state.renderChildren(node.args[node.args.length - 1]);
     state.closeParagraph();
   },
+  macro_multicolumn(node, state) {
+    // This macro is defined as:
+    //
+    // \multicolumn{ncols}{cols}{text}
+    state.closeParagraph();
+    const ncolArg = node.args[0];
+    const colspan = Number(ncolArg?.content?.[0]?.content);
+    const currentNode = state.stack[state.stack.length - 1];
+    if (currentNode?.type === 'tableCell' && Number.isInteger(colspan)) {
+      currentNode.colspan = colspan;
+    }
+    state.renderChildren(node.args[node.args.length - 1]);
+    state.closeParagraph();
+  },
 };
