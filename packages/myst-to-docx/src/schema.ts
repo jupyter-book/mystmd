@@ -518,6 +518,11 @@ const mystComment: Handler<{ type: 'mystComment' } & Parent> = () => {
   return;
 };
 
+const comment: Handler<{ type: 'comment' } & Parent> = () => {
+  // Do nothing!
+  return;
+};
+
 const mystDirective: Handler<{ type: 'mystDirective' } & Parent> = (state, node) => {
   state.renderChildren(node);
 };
@@ -549,6 +554,7 @@ export const defaultHandlers = {
   image,
   block,
   mystComment,
+  comment,
   mystDirective,
   mystRole,
   admonition,

@@ -184,6 +184,7 @@ export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Roo
       mystDirective,
       block,
       mystComment,
+      comment: mystComment,
       heading,
       crossReference,
       code,
