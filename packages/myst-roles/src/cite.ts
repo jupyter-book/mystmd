@@ -1,3 +1,4 @@
+import type { CiteKind } from 'myst-spec-ext';
 import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
 import { normalizeLabel, ParseTypesEnum } from 'myst-common';
 
@@ -22,10 +23,11 @@ export const citeRole: RoleSpec = {
     if (data.name === 'cite' && children.length === 1) {
       return children;
     }
+    const kind: CiteKind = data.name === 'cite:p' ? 'parenthetical' : 'narrative';
     return [
       {
         type: 'citeGroup',
-        kind: data.name === 'cite:p' ? 'parenthetical' : 'narrative',
+        kind,
         children,
       },
     ];

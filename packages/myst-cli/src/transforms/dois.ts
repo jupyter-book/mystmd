@@ -9,7 +9,7 @@ import { tic } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
 import type { Root } from 'mdast';
 import { toText } from 'myst-common';
-import type { Cite } from './citations';
+import type { Cite } from 'myst-spec-ext';
 import type { SingleCitationRenderer } from './types';
 
 async function getDoiOrgBibtex(log: Logger, doiString: string): Promise<string | null> {

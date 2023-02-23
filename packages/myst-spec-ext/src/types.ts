@@ -1,5 +1,6 @@
 import type {
   Parent,
+  StaticPhrasingContent,
   TableCell as SpecTableCell,
   FootnoteReference as FNR,
   FootnoteDefinition as FND,
@@ -60,4 +61,20 @@ export type Image = SpecImage & {
 
 export type Admonition = SpecAdmonition & {
   icon?: boolean;
+};
+
+export type CiteKind = 'narrative' | 'parenthetical';
+
+export type Cite = {
+  type: 'cite';
+  kind: CiteKind;
+  label: string;
+  children: StaticPhrasingContent[];
+  error?: boolean;
+};
+
+export type CiteGroup = {
+  type: 'citeGroup';
+  kind: CiteKind;
+  children: Cite[];
 };
