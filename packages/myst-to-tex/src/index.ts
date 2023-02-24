@@ -19,12 +19,12 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
   },
   heading(node, state) {
-    const { depth, label, enumerator } = node;
+    const { depth, label, enumerated } = node;
     if (state.data.nextHeadingIsFrameTitle) {
       state.write('\\frametitle{');
       state.data.nextHeadingIsFrameTitle = false;
     } else {
-      const star = enumerator || state.options.beamer ? '' : '*';
+      const star = enumerated !== false || state.options.beamer ? '' : '*';
       if (depth === 1) state.write(`\\section${star}{`);
       if (depth === 2) state.write(`\\subsection${star}{`);
       if (depth === 3) state.write(`\\subsubsection${star}{`);
@@ -34,7 +34,7 @@ const handlers: Record<string, Handler> = {
     }
     state.renderChildren(node, true);
     state.write('}');
-    if (enumerator && label) {
+    if (enumerated !== false && label) {
       state.write(`\\label{${label}}`);
     }
     state.closeBlock(node);
