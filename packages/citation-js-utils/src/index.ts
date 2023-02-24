@@ -51,7 +51,10 @@ const defaultString: CitationFormatOptions = {
 export function getInlineCitation(c: Cite, kind: InlineCite) {
   const cite = new Cite();
   const data = cite.set(c).data[0];
-  const authors = data.author;
+  let authors = data.author;
+  if (!authors || authors.length === 0) {
+    authors = data.editor;
+  }
   const year = data.issued?.['date-parts']?.[0]?.[0];
   const yearPart = kind === InlineCite.t ? ` (${year})` : `, ${year}`;
 
