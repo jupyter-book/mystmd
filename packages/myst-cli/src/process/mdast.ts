@@ -23,7 +23,7 @@ import {
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
-import { getPageFrontmatter } from '../frontmatter';
+import { getPageFrontmatter, processPageFrontmatter } from '../frontmatter';
 import { selectors } from '../store';
 import { watch } from '../store/reducers';
 import type { ISession } from '../session/types';
@@ -108,7 +108,9 @@ export async function transformMdast(
   log.debug(`Processing "${file}"`);
   // Use structuredClone in future (available in node 17)
   const mdast = JSON.parse(JSON.stringify(mdastPre)) as Root;
-  const frontmatter = preFrontmatter ?? getPageFrontmatter(session, mdast, file, projectPath);
+  const frontmatter = preFrontmatter
+    ? processPageFrontmatter(session, preFrontmatter, projectPath)
+    : getPageFrontmatter(session, mdast, file, projectPath);
   const references: References = {
     cite: { order: [], data: {} },
     footnotes: {},

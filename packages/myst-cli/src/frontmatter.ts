@@ -47,7 +47,15 @@ export function getPageFrontmatter(
       session.log.warn(`Validation: ${message}`);
     },
   });
+  const frontmatter = processPageFrontmatter(session, pageFrontmatter, path);
+  return frontmatter;
+}
 
+export function processPageFrontmatter(
+  session: ISession,
+  pageFrontmatter: PageFrontmatter,
+  path?: string,
+) {
   const state = session.store.getState();
   const siteFrontmatter = selectors.selectCurrentSiteConfig(state) ?? {};
   const projectFrontmatter = path ? selectors.selectLocalProjectConfig(state, path) ?? {} : {};
