@@ -32,11 +32,6 @@ If the language is `ipython` or `IPython3`, etc., it will be dynamically convert
 The above code is not a directive, it is just standard markdown syntax, which cannot add a caption or label. To caption or label blocks of code use the `code-block` directive.
 
 ````{myst}
----
-numbering: | # This has to be a string for now, sillyness in the docutils clone
-  code: true
----
-
 ```{code-block} python
 :name: my-program
 :caption: Creating a TensorMesh using SimPEG
@@ -49,18 +44,6 @@ mesh = TensorMesh([hx, hy])
 ```
 
 In the [](#my-program), we create a mesh for simulation using [SimPEG](https://discretize.simpeg.xyz/).
-````
-
-````{attention}
-:class: dropdown
-# How to turn on code `numbering`
-
-For including the enumeration of programs, for example "Program 1" above, you need to turn numbering on in the document or project using `numbering` in the frontmatter:
-
-```yaml
-numbering:
-  code: true
-```
 ````
 
 ## Numbering and Highlighting
