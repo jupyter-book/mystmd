@@ -8,17 +8,27 @@ cases:
       children:
         - type: paragraph
           children:
-            - type: cite
-              label: one
-              identifier: one
-            - type: cite
+            - type: citeGroup
               kind: narrative
-              label: two
-              identifier: two
-            - type: cite
+              children:
+                - type: cite
+                  kind: narrative
+                  label: one
+                  identifier: one
+            - type: citeGroup
+              kind: narrative
+              children:
+                - type: cite
+                  kind: narrative
+                  label: two
+                  identifier: two
+            - type: citeGroup
               kind: parenthetical
-              label: three
-              identifier: three
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: three
+                  identifier: three
             - type: citeGroup
               kind: parenthetical
               children:
@@ -37,45 +47,69 @@ cases:
       children:
         - type: paragraph
           children:
-            - type: cite
+            - type: citeGroup
               kind: narrative
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: narrative
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: narrative
               suffix: chap. 2
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: narrative
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: parenthetical
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: parenthetical
               suffix: chap. 2
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: parenthetical
               prefix: see
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: parenthetical
               prefix: see
               suffix: chap. 2
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: narrative
               expand: true
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: narrative
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: parenthetical
               expand: true
-              label: jon90
-              identifier: jon90
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: jon90
+                  identifier: jon90
   - title: Partial citations
     tex: \citeauthor{jon90}\citeauthor*{jon90}\citeyear{jon90}\citeyearpar{jon90}
     tree:
@@ -83,27 +117,39 @@ cases:
       children:
         - type: paragraph
           children:
-            - type: cite
+            - type: citeGroup
               kind: narrative
               partial: author
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: narrative
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: narrative
+              partial: author
               expand: true
-              partial: author
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: narrative
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: narrative
               partial: year
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: narrative
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: parenthetical
               partial: year
-              label: jon90
-              identifier: jon90
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: jon90
+                  identifier: jon90
   - title: Uppercase citations
     tex: \Citet{jon90}\Citep{jon90}\Citeauthor{jon90}\Citeauthor*{jon90}
     tree:
@@ -111,25 +157,37 @@ cases:
       children:
         - type: paragraph
           children:
-            - type: cite
+            - type: citeGroup
               kind: narrative
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: narrative
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: parenthetical
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: narrative
               partial: author
-              label: jon90
-              identifier: jon90
-            - type: cite
+              children:
+                - type: cite
+                  kind: narrative
+                  label: jon90
+                  identifier: jon90
+            - type: citeGroup
               kind: narrative
+              partial: author
               expand: true
-              partial: author
-              label: jon90
-              identifier: jon90
+              children:
+                - type: cite
+                  kind: narrative
+                  label: jon90
+                  identifier: jon90
   - title: Nested parent in suffix
     tex: \citep[Fig.~7(a)]{jon90}
     tree:
@@ -137,8 +195,11 @@ cases:
       children:
         - type: paragraph
           children:
-            - type: cite
-              kind: parenthetical
+            - type: citeGroup
               suffix: Fig. 7(a)
-              label: jon90
-              identifier: jon90
+              kind: parenthetical
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: jon90
+                  identifier: jon90
