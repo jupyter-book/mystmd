@@ -13,7 +13,7 @@ function createCitation(
   state.openParagraph();
   const value = texToText(getArguments(node, 'group'));
   const citations = value.split(',').map((l) => l.trim());
-  const isGroup = citations.length > 1;
+  const isGroup = true; // citations.length > 1;
   const type: string = isGroup ? 'citeGroup' : 'cite';
   const cite = u(type) as GenericNode;
   if (kind) cite.kind = kind;
@@ -39,7 +39,7 @@ function createCitation(
 
 const CITATION_HANDLERS: Record<string, Handler> = {
   macro_cite(node, state) {
-    createCitation(state, node);
+    createCitation(state, node, 'narrative');
   },
   macro_citet(node, state) {
     createCitation(state, node, 'narrative');
