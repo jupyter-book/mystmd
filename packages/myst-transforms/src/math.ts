@@ -99,7 +99,8 @@ function replaceEqnarray(file: VFile, value: string, node: Node) {
   });
   return value
     .replace(/\\begin{eqnarray}/g, '\\begin{align*}')
-    .replace(/\\end{eqnarray}/g, '\\end{align*}');
+    .replace(/\\end{eqnarray}/g, '\\end{align*}')
+    .replace(/&=&/g, '&=');
 }
 
 type RenderResult = { html?: string; warnings?: string[]; error?: string };
