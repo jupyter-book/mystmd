@@ -233,7 +233,7 @@ cases:
   - title: multicolumn
     tex: |-
       \begin{tabular}{l c}
-        a & b \\ \multicolumn{2}{0.4\linewidth}[0cm]{c} &
+        a & b \\ \multicolumn{2}{0.4\linewidth}[0cm]{\em c}\\ d & e
       \end{tabular}
     tree:
       type: root
@@ -257,5 +257,17 @@ cases:
                 - type: tableCell
                   colspan: 2
                   children:
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: c
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
                     - type: text
-                      value: c
+                      value: d
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: e
