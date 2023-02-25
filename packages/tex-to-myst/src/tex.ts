@@ -75,6 +75,7 @@ const macros: Record<string, number> = {
   multicolumn: 3,
   subfigure: 2,
   tabularx: 2,
+  supertabular: 1,
   // These are character replacements:
   '`': 1,
   "'": 1,

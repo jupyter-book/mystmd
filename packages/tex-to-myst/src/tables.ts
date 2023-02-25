@@ -56,6 +56,7 @@ export const TABLE_HANDLERS: Record<string, Handler> = {
   },
   env_tabular: createTable,
   env_tabularx: createTable,
+  env_supertabular: createTable,
   env_threeparttable(node, state) {
     state.closeParagraph();
     const envId = createId();
