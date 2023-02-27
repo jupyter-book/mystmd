@@ -87,3 +87,51 @@ cases:
             - type: image
               url: figures/one.jpg
           align: center
+  - title: minipage
+    tex: |-
+      \begin{figure}
+      \centering
+      \begin{minipage}[t]{\dimexpr.5\textwidth-0.2em}
+        \centering
+        \includegraphics[width=\linewidth]{figures/one.jpg}
+        \captionof{figure}{Simulation One}
+        \label{fig1}
+      \end{minipage}\hfill
+      \begin{minipage}[t]{\dimexpr.5\textwidth-0.2em}
+        \centering
+        \includegraphics[width=\linewidth]{figures/two.jpg}
+        \captionof{figure}{Simulation Two}
+        \label{fig2}
+      \end{minipage}
+      \end{figure}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: fig1
+          label: fig1
+          align: center
+          children:
+            - type: image
+              url: figures/one.jpg
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Simulation One
+        - type: container
+          kind: figure
+          identifier: fig2
+          label: fig2
+          align: center
+          children:
+            - type: image
+              url: figures/two.jpg
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Simulation Two
