@@ -77,6 +77,7 @@ const macros: Record<string, number> = {
   tabularx: 2,
   supertabular: 1,
   adjustbox: 1,
+  captionof: 2,
   // These are character replacements:
   '`': 1,
   "'": 1,

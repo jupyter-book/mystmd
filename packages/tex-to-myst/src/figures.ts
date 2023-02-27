@@ -1,6 +1,18 @@
+import type { GenericNode } from 'myst-common';
 import { u } from 'unist-builder';
-import type { Handler } from './types';
+import type { Handler, ITexParser } from './types';
 import { getArguments, texToText } from './utils';
+
+function renderCaption(node: GenericNode, state: ITexParser) {
+  state.closeParagraph();
+  state.openNode('caption');
+  const args = getArguments(node, 'group');
+  const children = args[args.length - 1];
+  state.openParagraph();
+  state.renderChildren(children);
+  state.closeParagraph();
+  state.closeNode();
+}
 
 const FIGURE_HANDLERS: Record<string, Handler> = {
   env_figure(node, state) {
@@ -28,15 +40,8 @@ const FIGURE_HANDLERS: Record<string, Handler> = {
     // TODO: width, placement, etc.
     state.pushNode(u('image', { url }));
   },
-  macro_caption(node, state) {
-    state.closeParagraph();
-    state.openNode('caption');
-    const [children] = getArguments(node, 'group');
-    state.openParagraph();
-    state.renderChildren(children);
-    state.closeParagraph();
-    state.closeNode();
-  },
+  macro_caption: renderCaption,
+  macro_captionof: renderCaption,
   macro_framebox(node, state) {
     state.closeParagraph();
     const [children] = getArguments(node, 'group');
