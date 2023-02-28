@@ -9,10 +9,10 @@ export const REF_HANDLERS: Record<string, Handler> = {
     const label = texToText(node);
     const parent = state.top();
     const last = parent?.children?.slice(-1)[0];
-    if (parent.type === 'container') {
+    if (parent?.type === 'container') {
       parent.label = label;
     } else if (
-      parent.type === 'caption' &&
+      parent?.type === 'caption' &&
       state.stack[state.stack.length - 2].type === 'container'
     ) {
       state.stack[state.stack.length - 2].label = label;
