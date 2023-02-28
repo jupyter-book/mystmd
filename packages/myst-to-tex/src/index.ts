@@ -251,9 +251,16 @@ const handlers: Record<string, Handler> = {
   footnoteReference(node, state) {
     if (!node.identifier) return;
     const footnote = state.references.footnotes?.[node.identifier];
-    if (!footnote) return;
+    if (!footnote) {
+      fileError(state.file, `Unknown footnote identifier "${node.identifier}"`, {
+        node,
+        source: 'myst-to-tex',
+      });
+      return;
+    }
     state.write('\\footnote{');
-    state.renderChildren(footnote);
+    state.renderChildren(footnote, true);
+    state.trimEnd();
     state.write('}');
   },
 };

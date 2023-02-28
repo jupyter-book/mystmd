@@ -58,6 +58,6 @@ describe('myst-to-tex', () => {
     });
     pipe.runSync(tree as any);
     const file = pipe.stringify(tree as any);
-    expect((file.result as LatexResult).value).toEqual('hello\\footnote{tex\n\n}world');
+    expect((file.result as LatexResult).value).toEqual('hello\\footnote{tex}world');
   });
 });
