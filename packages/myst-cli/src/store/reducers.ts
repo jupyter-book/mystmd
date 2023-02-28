@@ -97,8 +97,14 @@ type WatchedFile = {
 
 export const watch = createSlice({
   name: 'watch',
-  initialState: { files: {} } as { files: Record<string, WatchedFile> },
+  initialState: { files: {}, reloading: false } as {
+    files: Record<string, WatchedFile>;
+    reloading: boolean;
+  },
   reducers: {
+    markReloading(state, action: PayloadAction<{ reloading: boolean }>) {
+      state.reloading = action.payload.reloading;
+    },
     markFileChanged(state, action: PayloadAction<{ path: string; sha256?: string }>) {
       const { path, sha256 = null } = action.payload;
       state.files[resolve(path)] = { ...state.files[resolve(path)], sha256 };
