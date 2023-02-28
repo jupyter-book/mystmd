@@ -127,7 +127,7 @@ export const TABLE_HANDLERS: Record<string, Handler> = {
       currentNode.rowspan = rowspan;
     }
     state.renderChildren(node.args[node.args.length - 1]);
-    state.closeNode();
+    state.closeParagraph();
   },
   macro_multicolumn(node, state) {
     // This macro is defined as:
