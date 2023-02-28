@@ -5,7 +5,7 @@ import type { LinkTransformer } from 'myst-transforms';
 import type { ISession } from '../../session/types';
 import { changeFile, fastProcessFile, processSite } from '../../process/site';
 import type { TransformFn } from '../../process';
-import { selectors } from '../../store';
+import { selectors, watch } from '../../store';
 import { KNOWN_FAST_BUILDS } from '../../utils/resolveExtension';
 
 // TODO: allow this to work from other paths
@@ -26,10 +26,15 @@ function watchConfigAndPublic(session: ISession, serverReload: () => void, opts:
       awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
     })
     .on('all', async (eventType: string, filename: string) => {
+      if (selectors.selectReloadingState(session.store.getState())) {
+        return;
+      }
+      session.store.dispatch(watch.actions.markReloading({ reloading: true }));
       session.log.debug(`File modified: "${filename}" (${eventType})`);
       session.log.info('💥 Triggered full site rebuild');
       await processSite(session, opts);
       serverReload();
+      session.store.dispatch(watch.actions.markReloading({ reloading: false }));
     });
 }
 
@@ -49,6 +54,10 @@ function fileProcessor(
   opts: TransformOptions,
 ) {
   return async (eventType: string, file: string) => {
+    if (selectors.selectReloadingState(session.store.getState())) {
+      return;
+    }
+    session.store.dispatch(watch.actions.markReloading({ reloading: true }));
     if (file.startsWith('_build') || file.startsWith('.') || file.includes('.ipynb_checkpoints')) {
       session.log.debug(`Ignoring build trigger for ${file} with eventType of "${eventType}"`);
       return;
@@ -88,6 +97,7 @@ function fileProcessor(
     serverReload();
     // TODO: process full site silently and update if there are any
     // await processSite(session, true);
+    session.store.dispatch(watch.actions.markReloading({ reloading: false }));
   };
 }
 
