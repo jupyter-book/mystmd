@@ -210,7 +210,7 @@ export class TexParser implements ITexParser {
   }
 
   openParagraph() {
-    const inPhrasing = phrasingTypes.has(this.top().type);
+    const inPhrasing = phrasingTypes.has(this.top()?.type);
     if (inPhrasing) return;
     this.openNode('paragraph');
   }
@@ -239,7 +239,7 @@ export class TexParser implements ITexParser {
 
   openBlock(attributes?: Record<string, any>) {
     this.closeParagraph();
-    const inPhrasing = phrasingTypes.has(this.top().type);
+    const inPhrasing = phrasingTypes.has(this.top()?.type);
     if (inPhrasing) return;
     this.openNode('block', attributes);
   }

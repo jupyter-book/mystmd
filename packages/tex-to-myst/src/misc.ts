@@ -36,7 +36,7 @@ export const MISC_HANDLERS: Record<string, Handler> = {
   env_minipage(node, state) {
     state.closeParagraph();
     const top = state.top();
-    if (top.type === 'container' && top.kind === 'figure' && top.children?.length) {
+    if (top?.type === 'container' && top?.kind === 'figure' && top?.children?.length) {
       const topCopy = { ...top, children: [] };
       state.closeNode();
       state.openNode('container', topCopy);
