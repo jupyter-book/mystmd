@@ -1,5 +1,6 @@
 import type { References } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import type { VFile } from 'vfile';
 
 export const DEFAULT_IMAGE_WIDTH = 0.7;
 export const DEFAULT_PAGE_WIDTH_PIXELS = 800;
@@ -34,6 +35,7 @@ export type StateData = {
 };
 
 export interface ITexSerializer<D extends Record<string, any> = StateData> {
+  file: VFile;
   data: D;
   options: Options;
   references: References;
