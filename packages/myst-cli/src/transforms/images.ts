@@ -223,6 +223,7 @@ export async function transformImageFormats(
   // Gather unsupported SVG & GIF images that may be converted to supported types
   const svgImages: GenericNode[] = [];
   const gifImages: GenericNode[] = [];
+  const tiffImages: GenericNode[] = [];
   const pdfImages: GenericNode[] = [];
   const epsImages: GenericNode[] = [];
   const unconvertableImages: GenericNode[] = [];
@@ -230,6 +231,7 @@ export async function transformImageFormats(
   const allowConvertedSvg = validExts.includes('.png') || validExts.includes('.pdf');
   const allowConvertedPdf = validExts.includes('.png') || !validExts.includes('.pdf');
   const allowConvertedGif = validExts.includes('.png');
+  const allowConvertedTiff = validExts.includes('.png');
   const allowConvertedEps = validExts.includes('.png'); // || validExts.includes('.pdf') || validExts.includes('.svg'); // inkscape
 
   unsupportedImages.forEach((image) => {
@@ -237,6 +239,8 @@ export async function transformImageFormats(
       svgImages.push(image);
     } else if (allowConvertedGif && path.extname(image.url) === '.gif') {
       gifImages.push(image);
+    } else if (allowConvertedTiff && path.extname(image.url) === '.tiff') {
+      tiffImages.push(image);
     } else if (allowConvertedPdf && path.extname(image.url) === '.pdf') {
       pdfImages.push(image);
     } else if (allowConvertedEps && path.extname(image.url) === '.eps') {
@@ -360,7 +364,7 @@ export async function transformImageFormats(
   }
 
   // Convert EPSs
-  // Currently the inkscpe CLI has a bug which prevents EPS conversions;
+  // Currently the inkscape CLI has a bug which prevents EPS conversions;
   // once that is fixed, we may uncomment the rest of this section to
   // enable better conversions, e.g. EPS -> SVG
   // https://gitlab.com/inkscape/inkscape/-/issues/3524
@@ -408,6 +412,31 @@ export async function transformImageFormats(
     if (epsConversionFn) {
       conversionPromises.push(
         ...epsImages.map(async (image) => await convert(image, epsConversionFn as ConversionFn)),
+      );
+    }
+  }
+
+  // Convert TIFF images
+  let tiffConversionFn: ConversionFn | undefined;
+  if (tiffImages.length) {
+    const logPrefix = `🌠 Converting ${tiffImages.length} TIFF image${
+      tiffImages.length > 1 ? 's' : ''
+    } to`;
+    if (imagemagickAvailable) {
+      session.log.info(`${logPrefix} PNG using imagemagick`);
+      tiffConversionFn = imagemagick.convertTiffToPng;
+    } else {
+      addWarningForFile(
+        session,
+        file,
+        'Cannot convert TIFF images, they may not correctly render.',
+        'error',
+        { note: 'To convert these images, you must install imagemagick' },
+      );
+    }
+    if (tiffConversionFn) {
+      conversionPromises.push(
+        ...tiffImages.map(async (image) => await convert(image, tiffConversionFn as ConversionFn)),
       );
     }
   }

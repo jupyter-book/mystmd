@@ -16,7 +16,7 @@ export function isGif2webpAvailable() {
   return which('gif2webp', { nothrow: true });
 }
 
-const LARGE_IMAGE = 1024 * 1024;
+const LARGE_IMAGE = 1024 * 1024 * 1.5;
 
 export async function extractFirstFrameOfGif(session: ISession, gif: string, writeFolder: string) {
   if (!fs.existsSync(gif)) return null;
@@ -87,6 +87,11 @@ export async function convertEpsToPng(session: ISession, input: string, writeFol
   return output;
 }
 
+export async function convertTiffToPng(session: ISession, input: string, writeFolder: string) {
+  const output = await convert('.tiff', '.png', session, input, writeFolder);
+  return output;
+}
+
 export async function convertImageToWebp(
   session: ISession,
   image: string,
@@ -105,12 +110,13 @@ export async function convertImageToWebp(
   }
 
   const { size } = fs.statSync(image);
-  if (size > LARGE_IMAGE && imageExt !== '.pdf') {
+  // PDF and TIFF are not image formats that can be used in most web-browsers
+  if (size > LARGE_IMAGE && !(imageExt === '.pdf' || imageExt === '.tiff')) {
     const inMB = (size / (1024 * 1024)).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
-    session.log.debug(
+    session.log.warn(
       `Image "${image}" is too large (${inMB} MB) to convert to webp (build will be slow).`,
     );
     return null;
