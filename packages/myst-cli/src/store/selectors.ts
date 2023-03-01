@@ -63,7 +63,8 @@ export function selectLocalRawConfig(
 }
 
 export function selectReloadingState(state: RootState) {
-  return state.local.watch.reloading;
+  const { reloading, reloadRequested } = state.local.watch;
+  return { reloading, reloadRequested };
 }
 
 export function selectFileInfo(state: RootState, path: string) {

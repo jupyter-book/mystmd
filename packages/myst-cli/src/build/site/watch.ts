@@ -14,6 +14,7 @@ type TransformOptions = {
   extraLinkTransformers?: LinkTransformer[];
   extraTransforms?: TransformFn[];
   defaultTemplate?: string;
+  reloadProject?: boolean;
 };
 
 function watchConfigAndPublic(session: ISession, serverReload: () => void, opts: TransformOptions) {
@@ -25,17 +26,7 @@ function watchConfigAndPublic(session: ISession, serverReload: () => void, opts:
       ignoreInitial: true,
       awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
     })
-    .on('all', async (eventType: string, filename: string) => {
-      if (selectors.selectReloadingState(session.store.getState())) {
-        return;
-      }
-      session.store.dispatch(watch.actions.markReloading({ reloading: true }));
-      session.log.debug(`File modified: "${filename}" (${eventType})`);
-      session.log.info('💥 Triggered full site rebuild');
-      await processSite(session, opts);
-      serverReload();
-      session.store.dispatch(watch.actions.markReloading({ reloading: false }));
-    });
+    .on('all', watchProcessor('processSite', session, null, serverReload, opts));
 }
 
 function triggerProjectReload(file: string, eventType: string) {
@@ -47,57 +38,87 @@ function triggerProjectReload(file: string, eventType: string) {
   return false;
 }
 
-function fileProcessor(
+async function siteProcessor(session: ISession, serverReload: () => void, opts: TransformOptions) {
+  session.log.info('💥 Triggered full site rebuild');
+  await processSite(session, opts);
+  serverReload();
+}
+
+async function fileProcessor(
   session: ISession,
+  file: string,
+  eventType: string,
   siteProject: SiteProject,
   serverReload: () => void,
   opts: TransformOptions,
 ) {
-  return async (eventType: string, file: string) => {
-    if (selectors.selectReloadingState(session.store.getState())) {
-      return;
+  changeFile(session, file, eventType);
+  if (KNOWN_FAST_BUILDS.has(extname(file)) && eventType === 'unlink') {
+    session.log.info(`🚮 File ${file} deleted...`);
+  }
+  if (!KNOWN_FAST_BUILDS.has(extname(file)) || ['add', 'unlink'].includes(eventType)) {
+    let reloadProject = false;
+    if (triggerProjectReload(file, eventType)) {
+      session.log.info('💥 Triggered full project load and site rebuild');
+      reloadProject = true;
+    } else {
+      session.log.info('💥 Triggered full site rebuild');
     }
-    session.store.dispatch(watch.actions.markReloading({ reloading: true }));
+    await processSite(session, { reloadProject, ...opts });
+    serverReload();
+    return;
+  }
+  if (!siteProject.path) {
+    session.log.warn(`⚠️ No local project path for file: ${file}`);
+    return;
+  }
+  const pageSlug = selectors.selectPageSlug(session.store.getState(), siteProject.path, file);
+  if (!pageSlug) {
+    session.log.warn(`⚠️ File is not in project: ${file}`);
+    return;
+  }
+  await fastProcessFile(session, {
+    file,
+    projectPath: siteProject.path,
+    projectSlug: siteProject.slug,
+    pageSlug,
+    ...opts,
+  });
+  serverReload();
+  // TODO: process full site silently and update if there are any
+  // await processSite(session, true);
+}
+
+function watchProcessor(
+  operation: 'processSite' | 'processFile',
+  session: ISession,
+  siteProject: SiteProject | null,
+  serverReload: () => void,
+  opts: TransformOptions,
+) {
+  return async (eventType: string, file: string) => {
     if (file.startsWith('_build') || file.startsWith('.') || file.includes('.ipynb_checkpoints')) {
       session.log.debug(`Ignoring build trigger for ${file} with eventType of "${eventType}"`);
       return;
     }
-    changeFile(session, file, eventType);
-    if (KNOWN_FAST_BUILDS.has(extname(file)) && eventType === 'unlink') {
-      session.log.info(`🚮 File ${file} deleted...`);
-    }
-    if (!KNOWN_FAST_BUILDS.has(extname(file)) || ['add', 'unlink'].includes(eventType)) {
-      let reloadProject = false;
-      if (triggerProjectReload(file, eventType)) {
-        session.log.info('💥 Triggered full project load and site rebuild');
-        reloadProject = true;
-      } else {
-        session.log.info('💥 Triggered full site rebuild');
-      }
-      await processSite(session, { reloadProject, ...opts });
-      serverReload();
+    const { reloading } = selectors.selectReloadingState(session.store.getState());
+    if (reloading) {
+      session.store.dispatch(watch.actions.markReloadRequested(true));
       return;
     }
-    if (!siteProject.path) {
-      session.log.warn(`⚠️ No local project path for file: ${file}`);
-      return;
+    session.store.dispatch(watch.actions.markReloading(true));
+    session.log.debug(`File modified: "${file}" (${eventType})`);
+    if (operation === 'processSite' || !siteProject) {
+      await siteProcessor(session, serverReload, opts);
+    } else {
+      await fileProcessor(session, file, eventType, siteProject, serverReload, opts);
     }
-    const pageSlug = selectors.selectPageSlug(session.store.getState(), siteProject.path, file);
-    if (!pageSlug) {
-      session.log.warn(`⚠️ File is not in project: ${file}`);
-      return;
+    while (selectors.selectReloadingState(session.store.getState()).reloadRequested) {
+      // If reload(s) were requested during previous build, just reload everything once.
+      session.store.dispatch(watch.actions.markReloadRequested(false));
+      await siteProcessor(session, serverReload, { reloadProject: true, ...opts });
     }
-    await fastProcessFile(session, {
-      file,
-      projectPath: siteProject.path,
-      projectSlug: siteProject.slug,
-      pageSlug,
-      ...opts,
-    });
-    serverReload();
-    // TODO: process full site silently and update if there are any
-    // await processSite(session, true);
-    session.store.dispatch(watch.actions.markReloading({ reloading: false }));
+    session.store.dispatch(watch.actions.markReloading(false));
   };
 }
 
@@ -124,7 +145,7 @@ export function watchContent(session: ISession, serverReload: () => void, opts: 
         ignored: ['public', '**/_build/**', '**/.git/**', ...ignored],
         awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
       })
-      .on('all', fileProcessor(session, proj, serverReload, opts));
+      .on('all', watchProcessor('processFile', session, proj, serverReload, opts));
   });
   // Watch the myst.yml
   watchConfigAndPublic(session, serverReload, opts);

@@ -100,10 +100,14 @@ export const watch = createSlice({
   initialState: { files: {}, reloading: false } as {
     files: Record<string, WatchedFile>;
     reloading: boolean;
+    reloadRequested: boolean;
   },
   reducers: {
-    markReloading(state, action: PayloadAction<{ reloading: boolean }>) {
-      state.reloading = action.payload.reloading;
+    markReloading(state, action: PayloadAction<boolean>) {
+      state.reloading = action.payload;
+    },
+    markReloadRequested(state, action: PayloadAction<boolean>) {
+      state.reloadRequested = action.payload;
     },
     markFileChanged(state, action: PayloadAction<{ path: string; sha256?: string }>) {
       const { path, sha256 = null } = action.payload;
