@@ -21,7 +21,7 @@ export function getFrontmatter(
   let frontmatter: Record<string, any> = {};
   const firstIsYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
   if (firstIsYaml) {
-    frontmatter = yaml.load(firstNode.value) as Record<string, any>;
+    frontmatter = (yaml.load(firstNode.value) as Record<string, any>) || {};
     if (opts.removeYaml) (firstNode as any).type = '__delete__';
   }
   const nextNode = firstIsYaml ? secondNode : (firstNode as unknown as Heading);

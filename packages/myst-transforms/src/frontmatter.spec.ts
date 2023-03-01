@@ -78,6 +78,22 @@ describe('getFrontmatter', () => {
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({ title: 'My Title' });
   });
+  it('empty yaml code block does not crash', () => {
+    // This is a block of `---\n---` at the start of a document
+    const input = {
+      type: 'root',
+      children: [
+        {
+          type: 'code',
+          lang: 'yaml',
+          value: '',
+        },
+      ],
+    };
+    const { tree, frontmatter } = getFrontmatter(input as Root);
+    expect(tree).toEqual(input);
+    expect(frontmatter).toEqual({});
+  });
   it('yaml code block creates frontmatter, remove yaml', () => {
     const input = {
       type: 'root',
