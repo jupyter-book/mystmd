@@ -338,7 +338,9 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
   } catch (error) {
     session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
     session.log.error(
-      `Could not find configuration files, do you need to run ${chalk.bold('myst init')}?`,
+      `Error finding or reading configuration files, do you need to run ${chalk.bold(
+        'myst init',
+      )}?`,
     );
     process.exit(1);
   }
