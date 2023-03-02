@@ -58,3 +58,5 @@ export { basicTransformationsPlugin, basicTransformations } from './basic';
 export { unnestTransform } from './unnest';
 
 export { getFrontmatter } from './frontmatter';
+
+export { figureTextTransform } from './figures';
