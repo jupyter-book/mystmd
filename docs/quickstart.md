@@ -66,6 +66,18 @@ npm install -g myst-cli
 
 If you have any problems, see [installing MyST](./installing.md) and or [open an issue here](https://github.com/executablebooks/mystjs/issues/new?assignees=&labels=bug&template=bug_report.yml). 🐛
 
+:::{note}
+:class: dropdown
+**Updating MyST**
+
+There are new releases of the MyST CLI every few weeks, to update to the latest version of `myst`, use:
+
+```shell
+npm update -g myst-cli
+```
+
+:::
+
 ## Download example content
 
 We provide an example project that includes a few simple markdown files and some Jupyter Notebooks.
