@@ -44,8 +44,6 @@ describe('Test figures plugin', () => {
             identifier: 'my-fig',
             label: 'my-fig',
             kind: 'figure',
-            template: '',
-            enumerator: '',
             children: [
               {
                 type: 'text',
@@ -189,6 +187,50 @@ describe('Test figures plugin', () => {
         },
       ],
     };
+    figureTextTransform(tree as Root, file);
+    expect(tree).toEqual(expected);
+  });
+  test('Figure text in an existing crossReference should be unchanged', () => {
+    const file = new VFile();
+    const tree = {
+      type: 'root',
+      children: [
+        {
+          type: 'container',
+          kind: 'figure',
+          identifier: 'my-fig',
+          label: 'my-fig',
+          enumerator: '1',
+          children: [],
+        },
+        {
+          type: 'text',
+          value: 'Hello ',
+        },
+        {
+          type: 'crossReference',
+          identifier: 'my-fig',
+          label: 'my-fig',
+          kind: 'figure',
+          children: [
+            {
+              type: 'emphasis',
+              children: [
+                {
+                  type: 'text',
+                  value: 'Figure 1',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'text',
+          value: ' world',
+        },
+      ],
+    };
+    const expected = JSON.parse(JSON.stringify(tree));
     figureTextTransform(tree as Root, file);
     expect(tree).toEqual(expected);
   });
