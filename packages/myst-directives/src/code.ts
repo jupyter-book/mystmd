@@ -1,6 +1,8 @@
-import type { Code, Caption, Container } from 'myst-spec';
-import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { normalizeLabel, ParseTypesEnum } from 'myst-common';
+import type { Caption, Container } from 'myst-spec';
+import type { Code } from 'myst-spec-ext';
+import yaml from 'js-yaml';
+import type { DirectiveSpec, GenericNode } from 'myst-common';
+import { fileError, fileWarn, normalizeLabel, ParseTypesEnum } from 'myst-common';
 
 export const codeDirective: DirectiveSpec = {
   name: 'code',
@@ -26,7 +28,7 @@ export const codeDirective: DirectiveSpec = {
   body: {
     type: ParseTypesEnum.string,
   },
-  run(data: DirectiveData): GenericNode[] {
+  run(data): GenericNode[] {
     const { label, identifier } = normalizeLabel(data.options?.name as string | undefined) || {};
     const numberLines = data.options?.['number-lines'];
     const showLineNumbers = !!numberLines;
@@ -86,7 +88,7 @@ export const codeBlockDirective: DirectiveSpec = {
   body: {
     type: ParseTypesEnum.string,
   },
-  run(data: DirectiveData): GenericNode[] {
+  run(data): GenericNode[] {
     const { label, identifier } = normalizeLabel(data.options?.name as string | undefined) || {};
     // Validating this should probably happen first
     const emphasizeLinesString = data.options?.['emphasize-lines'] as string | undefined;
@@ -135,5 +137,55 @@ export const codeBlockDirective: DirectiveSpec = {
       children: [code as any, caption],
     };
     return [container];
+  },
+};
+
+export const codeCellDirective: DirectiveSpec = {
+  name: 'code-cell',
+  arg: {
+    type: ParseTypesEnum.string,
+    required: true,
+  },
+  options: {
+    tags: {
+      type: ParseTypesEnum.string,
+    },
+  },
+  body: {
+    type: ParseTypesEnum.string,
+  },
+  run(data, vfile): GenericNode[] {
+    const code: Code = {
+      type: 'code',
+      lang: data.arg as string,
+      executable: true,
+      value: data.body as string,
+    };
+    let tags: string[] | undefined;
+    // TODO: this validation should be done in a different place
+    // For example, specifying that the attribute is YAML,
+    // and providing a custom validation on the option.
+    if (typeof data.options?.tags === 'string') {
+      try {
+        tags = yaml.load(data.options.tags) as string[];
+      } catch (error) {
+        fileError(vfile, 'Could not load tags for code-cell directive', {
+          source: 'code-cell:tags',
+        });
+      }
+    } else if (data.options?.tags && Array.isArray(data.options.tags)) {
+      // if the options are loaded directly as yaml
+      tags = data.options.tags as unknown as string[];
+    }
+    if (tags && Array.isArray(tags) && tags.every((t) => typeof t === 'string')) {
+      if (tags && tags.length > 0) {
+        code.data = { tags: tags.map((t) => t.trim()) };
+      }
+    } else if (tags) {
+      fileWarn(vfile, 'tags in code-cell directive must be a list of strings', {
+        source: 'code-cell:tags',
+      });
+    }
+    return [code];
   },
 };
