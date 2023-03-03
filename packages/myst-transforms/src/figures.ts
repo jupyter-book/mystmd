@@ -26,7 +26,42 @@ const FIGURE_SINGLE_RE = `${FIGURE_SINGLE_PREFIX_RE}${FIGURE_SINGLE_NUMBER_RE}`;
 
 const FIGURE_RE = `${START_RE}((${FIGURE_PLURAL_RE})|(${FIGURE_SINGLE_RE}))`;
 
-// function createFigureCrossReference(figureNumber: string, figureNodes: Container[]) {}
+function figureNodeFromNumber(
+  figureNumber: string,
+  figureNodes: Container[],
+  match: string,
+  file: VFile,
+) {
+  let figureNode = figureNodes.find((n) => n.enumerator === figureNumber);
+  if (figureNode) return figureNode;
+  figureNode = figureNodes.find((n) => n.enumerator === `${Number(figureNumber)}`);
+  if (figureNode) return figureNode;
+  figureNode = figureNodes.find((n) => n.identifier === figureNumber);
+  if (figureNode) return figureNode;
+  fileWarn(file, `Unable to find figure number "${figureNumber}" from text "${match}"`);
+}
+
+function createFigureCrossRef(
+  prefix: string,
+  number: string,
+  figureNodes: Container[],
+  match: string,
+  file: VFile,
+) {
+  const figureNode = figureNodeFromNumber(number, figureNodes, match, file);
+  if (!figureNode) return;
+  const { identifier } = figureNode;
+  const crossReferenceNode = u(
+    'crossReference',
+    {
+      identifier,
+      label: identifier,
+      kind: 'figure',
+    },
+    [u('text', prefix + number)],
+  );
+  return crossReferenceNode;
+}
 
 /**
  * Convert text like "Figure 1" to a figure cross reference
@@ -55,29 +90,62 @@ export function figureTextTransform(tree: Root, file: VFile) {
         if (!start) start = '';
         const { singlePrefix, singleNumber, prefix, firstNumber, middle, secondNumber } = groups;
         if (singlePrefix && singleNumber) {
-          const { identifier } = figureNodes.find((n) => n.enumerator === singleNumber) || {};
-          if (!identifier) {
-            fileWarn(
-              file,
-              `Unable to find figure number "${singleNumber}" from text "${match[0]}"`,
-            );
-            return;
-          }
-          children.push(u('text', node.value.substring(firstIndex, match.index) + start));
-          firstIndex = figureRegex.lastIndex;
-          children.push(
-            u(
-              'crossReference',
-              {
-                identifier,
-                label: identifier,
-                kind: 'figure',
-              },
-              [u('text', singlePrefix + singleNumber)],
-            ),
+          const crossRefNode = createFigureCrossRef(
+            singlePrefix,
+            singleNumber,
+            figureNodes,
+            match[0],
+            file,
           );
+          if (!crossRefNode) continue;
+          children.push(
+            u('text', node.value.substring(firstIndex, match.index) + start),
+            crossRefNode,
+          );
+          firstIndex = figureRegex.lastIndex;
         } else if (prefix && firstNumber && middle && secondNumber) {
-          // TODO: two figures!
+          const firstCrossRefNode = createFigureCrossRef(
+            prefix,
+            firstNumber,
+            figureNodes,
+            match[0],
+            file,
+          );
+          const secondCrossRefNode = createFigureCrossRef(
+            '',
+            secondNumber,
+            figureNodes,
+            match[0],
+            file,
+          );
+          if (firstCrossRefNode && secondCrossRefNode) {
+            children.push(
+              u('text', node.value.substring(firstIndex, match.index) + start),
+              firstCrossRefNode,
+              u('text', middle),
+              secondCrossRefNode,
+            );
+            firstIndex = figureRegex.lastIndex;
+          } else if (firstCrossRefNode) {
+            children.push(
+              u('text', node.value.substring(firstIndex, match.index) + start),
+              firstCrossRefNode,
+            );
+            firstIndex = figureRegex.lastIndex - (middle + secondNumber).length;
+          } else if (secondCrossRefNode) {
+            children.push(
+              u(
+                'text',
+                node.value.substring(firstIndex, match.index) +
+                  start +
+                  prefix +
+                  firstNumber +
+                  middle,
+              ),
+              secondCrossRefNode,
+            );
+            firstIndex = figureRegex.lastIndex;
+          }
         }
       }
       if (!children.length) return;
