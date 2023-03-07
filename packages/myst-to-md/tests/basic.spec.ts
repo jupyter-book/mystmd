@@ -13,13 +13,13 @@ describe('myst-to-md basic features', () => {
         u('text', { value: ' with ' }),
         u('strong', [u('text', 'different')]),
         u('text', { value: ' ' }),
-        u('inlineCode', 'styles'),
+        u('inlineCode', 'style`s'),
       ]),
     );
     const pipe = unified().use(mystToMd);
     pipe.runSync(tree as any);
     const file = pipe.stringify(tree);
-    expect(file.result).toEqual('Some % *markdown* with **different** `styles`');
+    expect(file.result).toEqual('Some % *markdown* with **different** ``style`s``');
   });
   it('headings', () => {
     const tree = u('root', [
@@ -91,6 +91,13 @@ describe('myst-to-md basic features', () => {
     pipe.runSync(tree as any);
     const file = pipe.stringify(tree);
     expect(file.result).toEqual('```\n5+5\nprint("hello world")\n```');
+  });
+  it('code - nested backticks', () => {
+    const tree = u('root', [u('code', '5+5\n````{abc}\n````\nprint("hello world")')]);
+    const pipe = unified().use(mystToMd);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree);
+    expect(file.result).toEqual('`````\n5+5\n````{abc}\n````\nprint("hello world")\n`````');
   });
   it('code - with language', () => {
     const tree = u('root', [u('code', { lang: 'python' }, '5+5\nprint("hello world")')]);
