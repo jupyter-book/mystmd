@@ -119,7 +119,7 @@ describe('myst-to-md roles', () => {
     const pipe = unified().use(mystToMd);
     pipe.runSync(tree as any);
     const file = pipe.stringify(tree);
-    expect(file.result).toEqual('Some % {sc}`nested {sub}``markdown`` content`');
+    expect(file.result).toEqual('Some % {sc}``nested {sub}`markdown` content``');
   });
   it('nested roles requiring trailing space', () => {
     const tree = u(
@@ -132,7 +132,7 @@ describe('myst-to-md roles', () => {
     const pipe = unified().use(mystToMd);
     pipe.runSync(tree as any);
     const file = pipe.stringify(tree);
-    expect(file.result).toEqual('Some % {sc}`{sub}``markdown`` `');
+    expect(file.result).toEqual('Some % {sc}``{sub}`markdown` ``');
   });
   it('nested roles with inline code', () => {
     const tree = u(
@@ -149,7 +149,7 @@ describe('myst-to-md roles', () => {
     const pipe = unified().use(mystToMd);
     pipe.runSync(tree as any);
     const file = pipe.stringify(tree);
-    expect(file.result).toEqual('Some % {abbr}`*md* ``and code`` (markdown)`');
+    expect(file.result).toEqual('Some % {abbr}``*md* `and code` (markdown)``');
   });
   it('nested roles with math', () => {
     const tree = u(
@@ -166,7 +166,44 @@ describe('myst-to-md roles', () => {
     const pipe = unified().use(mystToMd);
     pipe.runSync(tree as any);
     const file = pipe.stringify(tree);
-    expect(file.result).toEqual('Some % {abbr}`*md* {math}``and math`` (markdown)`');
+    expect(file.result).toEqual('Some % {abbr}``*md* {math}`and math` (markdown)``');
+  });
+  it('nested roles with inline backtick', () => {
+    const tree = u(
+      'root',
+      u('paragraph', [
+        u('text', { value: 'Some % ' }),
+        u('abbreviation', { title: 'markdown' }, [
+          u('emphasis', [u('text', 'md')]),
+          u('text', ' '),
+          u('inlineCode', 'co`de'),
+        ]),
+      ]),
+    );
+    const pipe = unified().use(mystToMd);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree);
+    expect(file.result).toEqual('Some % {abbr}```*md* ``co`de`` (markdown)```');
+  });
+  it('nested roles with multiple levels', () => {
+    const tree = u(
+      'root',
+      u('paragraph', [
+        u('text', { value: 'Some % ' }),
+        u('abbreviation', { title: 'markdown' }, [
+          u('underline', [u('subscript', [u('text', 'md')])]),
+          u('text', ' '),
+          u('inlineMath', 'and math'),
+          u('underline', [u('subscript', [u('inlineCode', 'co`de')])]),
+        ]),
+      ]),
+    );
+    const pipe = unified().use(mystToMd);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree);
+    expect(file.result).toEqual(
+      'Some % {abbr}`````{u}``{sub}`md` `` {math}`and math`{u}````{sub}``` ``co`de`` ``` ```` (markdown)`````',
+    );
   });
   it('myst role', () => {
     const tree = u(
