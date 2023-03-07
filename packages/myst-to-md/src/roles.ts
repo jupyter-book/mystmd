@@ -29,8 +29,7 @@ function writePhrasingRole(name: string) {
 /**
  * Inline code handler
  *
- * This extends the default inlineCode handler by incrementing the max role nesting
- * level.
+ * This extends the default inlineCode handler by incrementing the max role nesting level.
  */
 function inlineCode(node: any, _: Parent | undefined, state: NestedState): string {
   const value = defaultHandlers.inlineCode(node, undefined, state);
@@ -45,7 +44,7 @@ function inlineCode(node: any, _: Parent | undefined, state: NestedState): strin
  */
 function writeStaticRole(name: string) {
   return (node: any, _: Parent | undefined, state: NestedState): string => {
-    return `{${name}}${inlineCode(node, undefined, state)}`;
+    return `{${name}}${inlineCode(node, _, state)}`;
   };
 }
 
@@ -54,8 +53,8 @@ function writeStaticRole(name: string) {
  *
  * This uses the role name/value and ignores any children nodes
  */
-function mystRole(node: any, parent: Parent | undefined, state: NestedState): string {
-  return writeStaticRole(node.name)(node, parent, state);
+function mystRole(node: any, _: Parent | undefined, state: NestedState): string {
+  return writeStaticRole(node.name)(node, _, state);
 }
 
 /**
