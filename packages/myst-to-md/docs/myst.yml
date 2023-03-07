@@ -1,0 +1,13 @@
+version: 1
+project:
+  title: MyST to Markdown
+  github: https://github.com/executablebooks/mystjs/tree/main/packages/myst-to-md
+  license: MIT
+  subject: MyST Converters
+site:
+  title: MyST to Markdown
+  projects:
+    - path: .
+      slug: myst-to-md
+  domains:
+    - myst-to-md.myst.tools
