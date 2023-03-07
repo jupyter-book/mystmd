@@ -2,9 +2,28 @@ import type { Handle, Info, State } from 'mdast-util-to-markdown';
 import type { Parent } from 'mdast';
 import { defaultHandlers } from 'mdast-util-to-markdown';
 
-function roleMarkerFromState(state: State) {
-  const nestedRoleCount = state.stack.filter((n) => (n as any) === 'role').length;
-  return '`'.repeat(nestedRoleCount);
+type NestedState = State & {
+  roleLevel?: number;
+  maxRoleLevel?: number;
+};
+
+function incrementNestedLevel(state: NestedState, value?: number) {
+  const inc = value ?? 1;
+  if (!state.roleLevel) state.roleLevel = 0;
+  if (!state.maxRoleLevel) state.maxRoleLevel = 0;
+  state.roleLevel += inc;
+  if (state.roleLevel > state.maxRoleLevel) state.maxRoleLevel = state.roleLevel;
+}
+
+function popNestedLevel(state: NestedState, value?: number) {
+  const dec = value ?? 1;
+  if (!state.roleLevel) state.roleLevel = 0;
+  if (!state.maxRoleLevel) state.maxRoleLevel = 0;
+  const nesting = state.maxRoleLevel - state.roleLevel;
+  state.roleLevel = state.roleLevel - dec;
+  if (state.roleLevel < 0) state.roleLevel = 0;
+  if (!state.roleLevel) delete state.maxRoleLevel;
+  return nesting;
 }
 
 /**
@@ -13,48 +32,41 @@ function roleMarkerFromState(state: State) {
  * This adds multiple backticks in cases where roles are nested
  */
 function writePhrasingRole(name: string) {
-  return (node: any, _: Parent | undefined, state: State, info: Info): string => {
-    const exit = state.enter('role' as any);
-    const marker = roleMarkerFromState(state);
+  return (node: any, _: Parent | undefined, state: NestedState, info: Info): string => {
+    incrementNestedLevel(state);
     const tracker = state.createTracker(info);
-    let value = tracker.move(`{${name}}`);
-    value += tracker.move(marker);
-    value += tracker.move(
-      state.containerPhrasing(node, {
-        before: value,
-        after: marker,
-        ...tracker.current(),
-      }),
-    );
-    if (value.endsWith('`')) value += tracker.move(' ');
-    value += tracker.move(marker);
-    exit();
-    return value;
+    let content = state.containerPhrasing(node, {
+      before: '`',
+      after: '`',
+      ...tracker.current(),
+    });
+    if (content.startsWith('`')) content = ' ' + content;
+    if (content.endsWith('`')) content += ' ';
+    const nesting = popNestedLevel(state);
+    const marker = '`'.repeat(nesting + 1);
+    return tracker.move(`{${name}}${marker}${content}${marker}`);
   };
 }
 
 /**
  * Inline code handler
  *
- * This extends the default inlineCode handler by adding additional surrounding
- * backticks if nested inside role(s)
- *
- * If the inlineCode is nested inside a role, a backtick within the inlineCode
- * will break myst parsing, so we raise an error.
+ * This extends the default inlineCode handler by incrementing the max role nesting
+ * level.
  */
-function inlineCode(node: any, _: Parent | undefined, state: State): string {
-  const marker = roleMarkerFromState(state);
-  if (marker && node.value?.includes('`')) {
-    throw Error();
-  }
-  return `${marker}${defaultHandlers.inlineCode(node, undefined, state)}${marker}`;
+function inlineCode(node: any, _: Parent | undefined, state: NestedState): string {
+  const value = defaultHandlers.inlineCode(node, undefined, state);
+  const increment = value.startsWith('``') && value.endsWith('``') ? 2 : 1;
+  incrementNestedLevel(state, increment);
+  popNestedLevel(state, increment);
+  return value;
 }
 
 /**
  * Handler for any role with a static value, not children
  */
 function writeStaticRole(name: string) {
-  return (node: any, _: Parent | undefined, state: State): string => {
+  return (node: any, _: Parent | undefined, state: NestedState): string => {
     return `{${name}}${inlineCode(node, undefined, state)}`;
   };
 }
@@ -64,7 +76,7 @@ function writeStaticRole(name: string) {
  *
  * This uses the role name/value and ignores any children nodes
  */
-function mystRole(node: any, parent: Parent | undefined, state: State): string {
+function mystRole(node: any, parent: Parent | undefined, state: NestedState): string {
   return writeStaticRole(node.name)(node, parent, state);
 }
 
@@ -74,58 +86,45 @@ function mystRole(node: any, parent: Parent | undefined, state: State): string {
  * This is almost identical to 'writePhrasingRole' except it appends the title
  * before closing the backticks.
  */
-function abbreviation(node: any, _: Parent | undefined, state: State, info: Info): string {
-  const exit = state.enter('role' as any);
-  const marker = roleMarkerFromState(state);
+function abbreviation(node: any, _: Parent | undefined, state: NestedState, info: Info): string {
+  incrementNestedLevel(state);
   const tracker = state.createTracker(info);
-  let value = tracker.move('{abbr}');
-  value += tracker.move(marker);
-  value += tracker.move(
-    state.containerPhrasing(node, {
-      before: value,
-      after: marker,
-      ...tracker.current(),
-    }),
-  );
-  if (node.title) value += tracker.move(` (${node.title})`);
-  if (value.endsWith('`')) value += tracker.move(' ');
-  value += tracker.move(marker);
-  exit();
-  return value;
+  let content = state.containerPhrasing(node, {
+    before: '`',
+    after: '`',
+    ...tracker.current(),
+  });
+  if (node.title) content += ` (${node.title})`;
+  if (content.startsWith('`')) content = ' ' + content;
+  if (content.endsWith('`')) content += ' ';
+  const nesting = popNestedLevel(state);
+  const marker = '`'.repeat(nesting + 1);
+  return tracker.move(`{abbr}${marker}${content}${marker}`);
 }
 
 /**
  * Cite role handler
  */
-function cite(node: any, _: Parent | undefined, state: State, info: Info): string {
-  const exit = state.enter('role' as any);
-  const marker = roleMarkerFromState(state);
+function cite(node: any, _: Parent | undefined, state: NestedState, info: Info): string {
+  incrementNestedLevel(state);
+  popNestedLevel(state);
   const tracker = state.createTracker(info);
-  let value = tracker.move('{cite}');
-  value += tracker.move(marker);
-  value += tracker.move(node.label);
-  value += tracker.move(marker);
-  exit();
-  return value;
+  return tracker.move(`{cite}\`${node.label}\``);
 }
 
 /**
  * Cite group role handler
  */
-function citeGroup(node: any, _: Parent | undefined, state: State, info: Info): string {
-  const exit = state.enter('role' as any);
-  const marker = roleMarkerFromState(state);
+function citeGroup(node: any, _: Parent | undefined, state: NestedState, info: Info): string {
+  incrementNestedLevel(state);
+  popNestedLevel(state);
   const tracker = state.createTracker(info);
-  let value = tracker.move(`{cite${node.kind === 'narrative' ? ':t' : ':p'}}`);
-  value += tracker.move(marker);
+  const name = `cite${node.kind === 'narrative' ? ':t' : ':p'}`;
   const labels = ((node.children ?? []) as { type: string; label: string }[])
     .filter((n) => n.type === 'cite')
     .map((n) => n.label)
     .join(',');
-  value += tracker.move(labels);
-  value += tracker.move(marker);
-  exit();
-  return value;
+  return tracker.move(`{${name}}\`${labels}\``);
 }
 
 export const roleHandlers: Record<string, Handle> = {
