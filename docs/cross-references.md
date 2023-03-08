@@ -171,6 +171,12 @@ See [](#my-math-label) for an equation!
 
 `````{tip}
 # Labelling dollar math
+
+
+````{warning}
+The following syntax for labelling dollar-math equations is in `beta`, as it is not yet described by the [MyST Specification](https://myst-spec.readthedocs.io/en/latest/index.html). As such, it may change in the future.
+````
+
 You can also use the dollar-math label, which is included in after an equation with `$$ (label)`.\
 This can even all be on a single line!
 ````{myst}
@@ -188,7 +194,7 @@ See [eq. %s](#my-math-label)!
 ## Notebook Cell Targets
 
 :::{warning}
-The following syntax for cross-referencing notebook cells is in `beta` and may change in the future.
+The following syntax for cross-referencing notebook cells is in `beta`, as it is not yet described by the [MyST Specification](https://myst-spec.readthedocs.io/en/latest/index.html). As such, it may change in the future.
 :::
 
 You can label notebook cells using a comment at the top of the cell, using a `#| label:` syntax, or have this added directly in the notebook metadata for the cell.
