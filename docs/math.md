@@ -197,7 +197,7 @@ TODO!
 ## Math Macros
 
 Macros allow you to create reusable math components that can simplify the writing of a document.
-These marcos can be defined for a single document through the frontmatter, or shared in project frontmatter.
+These macros can be defined for a single document through the frontmatter, or shared in project frontmatter.
 These macros are used throughout HTML and $\LaTeX$ exports and are written declaratively so that they can be easily parsed. Macros are the same as `\newcommand` or `\renewcommand` in $\LaTeX$, and use the `math` object in the frontmatter.
 
 % Note: there must be a space here, or it is interpreted as {myst} options.
