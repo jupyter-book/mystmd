@@ -168,7 +168,6 @@ e=mc^2
 
 See [](#my-math-label) for an equation!
 ````
-`````
 
 % Internal/external links
 % Checking for missing references, link to another place.
