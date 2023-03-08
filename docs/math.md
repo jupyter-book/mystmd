@@ -56,18 +56,19 @@ See [](#my-equation) for more information!
 ### Dollar math equations
 
 You can also create equations by wrapping content with two dollar signs (`$$`).
-In this syntax, you can follow the equation with a label in brackets `(label)`.
+In this syntax, you can use the `\label{label-name}` command to add a label.
 This can be quite convenient if your equations are small, the entire syntax can fit on a single line.
 
 ```{myst}
 $$
+\label{maxwell}
 \begin{aligned}
 \nabla \times \vec{e}+\frac{\partial \vec{b}}{\partial t}&=0 \\
 \nabla \times \vec{h}-\vec{j}&=\vec{s}\_{e}
 \end{aligned}
-$$ (maxwell)
+$$
 
-$$ Ax=b $$ (one-liner)
+$$ \label{one-liner} Ax=b $$
 
 See [](#maxwell) for enlightenment and [](#one-liner) to do things on one line!
 ```
@@ -137,8 +138,7 @@ There are a few different ways to reference equations, with more details in [](.
 
 The examples above all show how to label an equation in the interactive demos.
 With a directive, you can use the `label` option;
-with dollar-math, follow the closing `$$` with a space and a `(label)`; and
-in AMS math you can use the `\label{}` syntax that is native to $\LaTeX$.
+with dollar-math and AMS math, you can use the `\label{}` syntax that is native to $\LaTeX$.
 
 For example, a directive can be labelled as follows:
 
