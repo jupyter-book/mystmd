@@ -1,0 +1,226 @@
+title: myst-to-md directives
+cases:
+  - title: myst directive
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: abc
+          args: My Directive!
+          value: |-
+            :a: b
+            :c: d
+
+            Markdown
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  valeu: markdown
+    markdown: |-
+      ```{abc} My Directive!
+      :a: b
+      :c: d
+
+      Markdown
+      ```
+  - title: myst directive - no args
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: abc
+          value: |-
+            :a: b
+            :c: d
+
+            Markdown
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      ```{abc}
+      :a: b
+      :c: d
+
+      Markdown
+      ```
+  - title: myst directive - no value
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: abc
+          args: My Directive!
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      ```{abc} My Directive!
+      ```
+  - title: myst directive - no args or value
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: abc
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      ```{abc}
+      ```
+  - title: myst directive - nested code
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: abc
+          args: My Directive!
+          value: |-
+            :a: b
+            :c: d
+
+            ```
+            Markdown
+            ```
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      ````{abc} My Directive!
+      :a: b
+      :c: d
+
+      ```
+      Markdown
+      ```
+      ````
+  - title: math directive - no label
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            5+5
+             ````{abc}
+            ````
+            print("hello world")
+    markdown: |-
+      `````{math}
+      5+5
+       ````{abc}
+      ````
+      print("hello world")
+      `````
+  - title: math directive - label
+    mdast:
+      type: root
+      children:
+        - type: math
+          label: MY-EQN
+          identifier: my-eqn
+          value: |-
+            5+5
+            ````{abc}
+            ````
+            print("hello world")
+    markdown: |-
+      `````{math}
+      :label: MY-EQN
+
+      5+5
+      ````{abc}
+      ````
+      print("hello world")
+      `````
+  - title: embed directive
+    mdast:
+      type: root
+      children:
+        - type: embed
+          label: my-code
+    markdown: |-
+      ```{embed}
+      :label: my-code
+      ```
+  - title: include directive
+    mdast:
+      type: root
+      children:
+        - type: include
+          args: my-file.md
+    markdown: |-
+      ```{include} my-file.md
+      ```
+  - title: code-block directive
+    mdast:
+      type: root
+      children:
+        - type: code
+          label: my-code
+          identifier: my-code
+          showLineNumbers: false
+          value: |-
+            5+5
+            print("hello world")
+    markdown: |-
+      ```{code-block}
+      :name: my-code
+
+      5+5
+      print("hello world")
+      ```
+  - title: code-block directive - all options
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          meta: highlight-line="2"
+          label: my-code
+          identifier: my-code
+          class: my-class
+          showLineNumbers: true
+          startingLineNumber: 2
+          emphasizeLines:
+            - 2
+            - 3
+          value: |-
+            5+5
+            print("hello world")
+             ```
+             ```
+    markdown: |-
+      ````{code-block}
+      :class: my-class
+      :emphasize-lines: 2,3
+      :name: my-code
+      :linenos:
+      :lineno-start: 2
+      :lang: python
+      :meta: highlight-line="2"
+
+      5+5
+      print("hello world")
+       ```
+       ```
+      ````
