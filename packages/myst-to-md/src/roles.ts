@@ -5,28 +5,6 @@ import type { NestedState } from './types';
 import { incrementNestedLevel, popNestedLevel } from './utils';
 
 /**
- * Handler for any role with children nodes
- *
- * This adds multiple backticks in cases where roles are nested
- */
-function writePhrasingRole(name: string) {
-  return (node: any, _: Parent | undefined, state: NestedState, info: Info): string => {
-    incrementNestedLevel('role', state);
-    const tracker = state.createTracker(info);
-    let content = state.containerPhrasing(node, {
-      before: '`',
-      after: '`',
-      ...tracker.current(),
-    });
-    if (content.startsWith('`')) content = ' ' + content;
-    if (content.endsWith('`')) content += ' ';
-    const nesting = popNestedLevel('role', state);
-    const marker = '`'.repeat(nesting + 1);
-    return tracker.move(`{${name}}${marker}${content}${marker}`);
-  };
-}
-
-/**
  * Inline code handler
  *
  * This extends the default inlineCode handler by incrementing the max role nesting level.
@@ -55,6 +33,28 @@ function writeStaticRole(name: string) {
  */
 function mystRole(node: any, _: Parent | undefined, state: NestedState): string {
   return writeStaticRole(node.name)(node, _, state);
+}
+
+/**
+ * Handler for any role with children nodes
+ *
+ * This adds multiple backticks in cases where roles are nested
+ */
+function writePhrasingRole(name: string) {
+  return (node: any, _: Parent | undefined, state: NestedState, info: Info): string => {
+    incrementNestedLevel('role', state);
+    const tracker = state.createTracker(info);
+    let content = state.containerPhrasing(node, {
+      before: '`',
+      after: '`',
+      ...tracker.current(),
+    });
+    if (content.startsWith('`')) content = ' ' + content;
+    if (content.endsWith('`')) content += ' ';
+    const nesting = popNestedLevel('role', state);
+    const marker = '`'.repeat(nesting + 1);
+    return tracker.move(`{${name}}${marker}${content}${marker}`);
+  };
 }
 
 /**
