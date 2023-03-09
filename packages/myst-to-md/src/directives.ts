@@ -9,7 +9,7 @@ import { incrementNestedLevel, popNestedLevel } from './utils';
  *
  * This extends the default code handler by incrementing the max directive nesting level.
  */
-function code(node: any, _: Parent | undefined, state: NestedState, info: Info): string {
+function codeFence(node: any, _: Parent | undefined, state: NestedState, info: Info): string {
   const value = defaultHandlers.code(node, undefined, state, info);
   let inc = 1;
   while (value.startsWith('`'.repeat(inc + 3)) && value.endsWith('`'.repeat(inc + 3))) {
@@ -35,7 +35,7 @@ function writeStaticDirective(
     const args = node.args ? ` ${node.args}` : '';
     const optionsLines = options
       ? (options.keys ?? [])
-          .filter((opt) => node[opt] == null || node[opt] === false)
+          .filter((opt) => node[opt] != null && node[opt] !== false)
           .map((opt) => {
             const optString = `:${options.aliases?.[opt] ? options.aliases[opt] : opt}:`;
             const optValue = options.transforms?.[opt]
@@ -45,7 +45,13 @@ function writeStaticDirective(
             return `${optString} ${optValue}`;
           })
       : [];
-    const valueLines = code(node, _, state, info).split('\n');
+    const nodeCopy = { ...node };
+    // Remove special properties that show up on codeFence first line.
+    // If these are present on a node, they are still rendered as options.
+    delete nodeCopy.meta;
+    delete nodeCopy.lang;
+    const valueLines = codeFence(nodeCopy, _, state, info).split('\n');
+    if (optionsLines.length && valueLines.length > 2) optionsLines.push('');
     const directiveLines = [
       `${valueLines[0]}{${name}}${args}`,
       ...optionsLines,
@@ -64,9 +70,36 @@ function mystDirective(node: any, _: Parent | undefined, state: NestedState, inf
   return writeStaticDirective(node.name)(node, _, state, info);
 }
 
-// Math - static, with label
-
-// code-block
+/**
+ * Override default code handler for code-block directive
+ *
+ * If the code node only has lang, meta, and value, it falls back to
+ * non-directive code fence.
+ */
+function code(node: any, _: Parent | undefined, state: NestedState, info: Info): string {
+  const codeBlockKeys = [
+    'class',
+    'emphasizeLines',
+    'label',
+    'showLineNumbers',
+    'startingLineNumber',
+  ];
+  const nodeCodeBlockKeys = Object.keys(node).filter((k) => codeBlockKeys.includes(k));
+  if (!nodeCodeBlockKeys.length) return codeFence(node, _, state, info);
+  const options = {
+    keys: codeBlockKeys.concat('lang', 'meta'),
+    aliases: {
+      label: 'name',
+      showLineNumbers: 'linenos',
+      startingLineNumber: 'lineno-start',
+      emphasizeLines: 'emphasize-lines',
+    },
+    transforms: {
+      emphasizeLines: (val: number[]) => val.join(','),
+    },
+  };
+  return writeStaticDirective('code-block', options)(node, _, state, info);
+}
 
 // List table
 
@@ -76,11 +109,12 @@ function mystDirective(node: any, _: Parent | undefined, state: NestedState, inf
 
 // Figure
 
-// embed, include
-
 // Dropdowns, mermaid, cards, grids, tabs...
 
 export const directiveHandlers: Record<string, Handle> = {
   code,
+  math: writeStaticDirective('math', { keys: ['label'] }),
+  embed: writeStaticDirective('embed', { keys: ['label'] }),
+  include: writeStaticDirective('include'),
   mystDirective,
 };
