@@ -1,0 +1,280 @@
+title: myst-to-md basic features
+cases:
+  - title: styles in paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+            - type: text
+              value: ' with '
+            - type: strong
+              children:
+                - type: text
+                  value: different
+            - type: text
+              value: ' '
+            - type: inlineCode
+              value: style`s
+    markdown: |-
+      Some % *markdown* with **different** ``style`s``
+  - title: headings
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: first
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+        - type: heading
+          depth: 4
+          children:
+            - type: text
+              value: fourth
+    markdown: |-
+      # first
+
+      Some % *markdown*
+
+      #### fourth
+  - title: thematic break
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Some markdown
+        - type: thematicBreak
+        - type: paragraph
+          children:
+            - type: text
+              value: Some more markdown
+    markdown: |-
+      Some markdown
+
+      ---
+
+      Some more markdown
+  - title: block quote
+    mdast:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'Some % '
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: markdown
+    markdown: |-
+      > Some % *markdown*
+  - title: unordered list
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          children:
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some markdown
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some more markdown
+    markdown: |-
+      *   Some markdown
+
+      *   Some more markdown
+  - title: ordered list
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: true
+          start: 5
+          children:
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some markdown
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some more markdown
+    markdown: |-
+      5.  Some markdown
+
+      6.  Some more markdown
+  - title: html
+    mdast:
+      type: root
+      children:
+        - type: html
+          value: <div>*Not markdown*<\div>
+    markdown: |-
+      <div>*Not markdown*<\div>
+  - title: code - plain
+    mdast:
+      type: root
+      children:
+        - type: code
+          value: |-
+            5+5
+            print("hello world")
+    markdown: |-
+      ```
+      5+5
+      print("hello world")
+      ```
+  - title: code - nested backticks
+    mdast:
+      type: root
+      children:
+        - type: code
+          value: |-
+            5+5
+            ````{abc}
+            ````
+            print("hello world")
+    markdown: |-
+      `````
+      5+5
+      ````{abc}
+      ````
+      print("hello world")
+      `````
+  - title: code - with language
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          value: |-
+            5+5
+            print("hello world")
+    markdown: |-
+      ```python
+      5+5
+      print("hello world")
+      ```
+  - title: code - with metadata
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          meta: highlight-line="2"
+          value: |-
+            5+5
+            print("hello world")
+    markdown: |-
+      ```python highlight-line="2"
+      5+5
+      print("hello world")
+      ```
+  - title: definition
+    mdast:
+      type: root
+      children:
+        - type: definition
+          identifier: my-def
+          label: My-Def
+          url: https://example.com
+          title: Example
+    markdown: |-
+      [My-Def]: https://example.com "Example"
+  - title: break
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Some markdown
+            - type: break
+            - type: text
+              value: Some more markdown
+    markdown: |-
+      Some markdown\
+      Some more markdown
+  - title: link
+    mdast:
+      type: root
+      children:
+        - type: link
+          url: https://example.com
+          title: my link
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      [Some % *markdown*](https://example.com "my link")
+  - title: image
+    mdast:
+      type: root
+      children:
+        - type: image
+          url: https://example.com
+          title: my image
+          alt: Some text
+    markdown: |-
+      ![Some text](https://example.com "my image")
+  - title: link reference
+    mdast:
+      type: root
+      children:
+        - type: linkReference
+          identifier: my-link
+          label: My-Link
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      [Some % *markdown*][My-Link]
+  - title: image reference
+    mdast:
+      type: root
+      children:
+        - type: imageReference
+          identifier: my-image
+          label: My-Image
+          alt: Some text
+    markdown: |-
+      ![Some text][My-Image]
