@@ -167,7 +167,7 @@ cases:
       type: root
       children:
         - type: include
-          args: my-file.md
+          file: my-file.md
     markdown: |-
       ```{include} my-file.md
       ```
@@ -224,3 +224,22 @@ cases:
        ```
        ```
       ````
+  - title: image directive
+    mdast:
+      type: root
+      children:
+        - type: image
+          url: https://example.com
+          width: 500px
+          align: center
+          title: my image
+          alt: Some text
+          class: my-class
+    markdown: |-
+      ```{image} https://example.com
+      :class: my-class
+      :width: 500px
+      :align: center
+      :title: my image
+      :alt: Some text
+      ```

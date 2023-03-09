@@ -26,25 +26,23 @@ function codeFence(node: any, _: Parent | undefined, state: NestedState, info: I
 function writeStaticDirective(
   name: string,
   options?: {
-    keys: string[];
+    argsKey?: string;
+    keys?: string[];
     aliases?: Record<string, string>;
     transforms?: Record<string, (val: any) => string>;
   },
 ) {
   return (node: any, _: Parent | undefined, state: NestedState, info: Info): string => {
-    const args = node.args ? ` ${node.args}` : '';
-    const optionsLines = options
-      ? (options.keys ?? [])
-          .filter((opt) => node[opt] != null && node[opt] !== false)
-          .map((opt) => {
-            const optString = `:${options.aliases?.[opt] ? options.aliases[opt] : opt}:`;
-            const optValue = options.transforms?.[opt]
-              ? options.transforms[opt](node[opt])
-              : node[opt];
-            if (optValue === true) return optString;
-            return `${optString} ${optValue}`;
-          })
-      : [];
+    const { argsKey, keys, aliases, transforms } = options || {};
+    const args = argsKey && node[argsKey] ? ` ${node[argsKey]}` : '';
+    const optionsLines = (keys ?? [])
+      .filter((opt) => node[opt] != null && node[opt] !== false)
+      .map((opt) => {
+        const optString = `:${aliases?.[opt] ? aliases[opt] : opt}:`;
+        const optValue = transforms?.[opt] ? transforms[opt](node[opt]) : node[opt];
+        if (optValue === true) return optString;
+        return `${optString} ${optValue}`;
+      });
     const nodeCopy = { ...node };
     // Remove special properties that show up on codeFence first line.
     // If these are present on a node, they are still rendered as options.
@@ -67,13 +65,13 @@ function writeStaticDirective(
  * This uses the directive name/args/value and ignores any children nodes
  */
 function mystDirective(node: any, _: Parent | undefined, state: NestedState, info: Info): string {
-  return writeStaticDirective(node.name)(node, _, state, info);
+  return writeStaticDirective(node.name, { argsKey: 'args' })(node, _, state, info);
 }
 
 /**
  * Override default code handler for code-block directive
  *
- * If the code node only has lang, meta, and value, it falls back to
+ * If the code node only has lang/meta/value, it falls back to
  * non-directive code fence.
  */
 function code(node: any, _: Parent | undefined, state: NestedState, info: Info): string {
@@ -101,11 +99,26 @@ function code(node: any, _: Parent | undefined, state: NestedState, info: Info):
   return writeStaticDirective('code-block', options)(node, _, state, info);
 }
 
+/**
+ * Override default code handler for image directive
+ *
+ * If the image node only has url/title/alt, it falls back to
+ * non-directive image.
+ */
+function image(node: any, _: Parent | undefined, state: NestedState, info: Info): string {
+  const imageDirectiveKeys = ['class', 'width', 'align'];
+  const nodeImageDirectiveKeys = Object.keys(node).filter((k) => imageDirectiveKeys.includes(k));
+  if (!nodeImageDirectiveKeys.length) return defaultHandlers.image(node, undefined, state, info);
+  const options = {
+    argsKey: 'url',
+    keys: imageDirectiveKeys.concat('title', 'alt'),
+  };
+  return writeStaticDirective('image', options)(node, _, state, info);
+}
+
 // List table
 
 // Admonitions
-
-// Image
 
 // Figure
 
@@ -113,8 +126,9 @@ function code(node: any, _: Parent | undefined, state: NestedState, info: Info):
 
 export const directiveHandlers: Record<string, Handle> = {
   code,
+  image,
   math: writeStaticDirective('math', { keys: ['label'] }),
   embed: writeStaticDirective('embed', { keys: ['label'] }),
-  include: writeStaticDirective('include'),
+  include: writeStaticDirective('include', { argsKey: 'file' }),
   mystDirective,
 };
