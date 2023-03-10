@@ -7,6 +7,7 @@ import type {
   Heading as SpecHeading,
   Image as SpecImage,
   Admonition as SpecAdmonition,
+  Code as SpecCode,
 } from 'myst-spec';
 
 export type Delete = Parent & { type: 'delete' };
@@ -61,6 +62,10 @@ export type Image = SpecImage & {
 
 export type Admonition = SpecAdmonition & {
   icon?: boolean;
+};
+
+export type Code = SpecCode & {
+  executable?: boolean;
 };
 
 export type CiteKind = 'narrative' | 'parenthetical';
