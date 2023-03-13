@@ -1,0 +1,156 @@
+title: myst-to-md references
+cases:
+  - title: labeled paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          label: my-paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+            - type: text
+              value: ' with '
+            - type: strong
+              children:
+                - type: text
+                  value: different
+            - type: text
+              value: ' '
+            - type: inlineCode
+              value: style`s
+    markdown: |-
+      (my-paragraph)=
+      Some % *markdown* with **different** ``style`s``
+  - title: labeled headings
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          label: my-heading
+          children:
+            - type: text
+              value: first
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+        - type: heading
+          depth: 4
+          label: my-subheading
+          children:
+            - type: text
+              value: fourth
+    markdown: |-
+      (my-heading)=
+      # first
+
+      Some % *markdown*
+
+      (my-subheading)=
+      #### fourth
+  - title: labeled quote
+    mdast:
+      type: root
+      children:
+        - type: blockquote
+          label: my-quote
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'Some % '
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: markdown
+    markdown: |-
+      (my-quote)=
+      > Some % *markdown*
+  - title: labeled  list
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          label: my-list
+          children:
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some markdown
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some more markdown
+    markdown: |-
+      (my-list)=
+      *   Some markdown
+
+      *   Some more markdown
+  - title: crossReference
+    mdast:
+      type: root
+      children:
+        - type: crossReference
+          urlSource: '#example'
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      [Some % *markdown*](#example)
+  - title: crossReference - no children
+    mdast:
+      type: root
+      children:
+        - type: crossReference
+          urlSource: '#example'
+    markdown: |-
+      [](#example)
+  - title: crossReference - label only
+    mdast:
+      type: root
+      children:
+        - type: crossReference
+          label: example
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      [Some % *markdown*](#example)
+  - title: crossReference - identifier only
+    mdast:
+      type: root
+      children:
+        - type: crossReference
+          identifier: example
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      [Some % *markdown*](#example)

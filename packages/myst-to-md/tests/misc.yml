@@ -1,0 +1,272 @@
+title: myst-to-md references
+cases:
+  - title: mystComment
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+        - type: mystComment
+          value: and a comment
+    markdown: |-
+      Some % *markdown*
+
+      % and a comment
+  - title: comment
+    mdast:
+      type: root
+      children:
+        - type: comment
+          value: a comment
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      % a comment
+
+      Some % *markdown*
+  - title: block - no meta
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'Some % '
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: markdown
+    markdown: |-
+      +++
+      Some % *markdown*
+  - title: block - with meta
+    mdast:
+      type: root
+      children:
+        - type: block
+          meta: '{"a": "b"}'
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'Some % '
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: markdown
+    markdown: |-
+      +++ {"a": "b"}
+      Some % *markdown*
+  - title: footnote - numbered
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Hi!
+            - type: footnoteReference
+              identifier: 1
+              label: 1
+        - type: footnoteDefinition
+          identifier: 1
+          label: 1
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: small note
+    markdown: |-
+      Hi\![^1]
+
+      [^1]: small note
+  - title: footnote - labeled
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Hi!
+            - type: footnoteReference
+              identifier: note
+              label: note
+        - type: footnoteDefinition
+          identifier: note
+          label: note
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: bigger note
+            - type: paragraph
+              children:
+                - type: text
+                  value: with a couple paragraphs
+    markdown: |-
+      Hi\![^note]
+
+      [^note]: bigger note
+
+          with a couple paragraphs
+  - title: table - gfm
+    mdast:
+      type: root
+      children:
+        - type: table
+          align:
+            - null
+            - left
+            - right
+            - center
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: a
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: b
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: c
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: d
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: e
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: f
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: g
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: h
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: i
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: j
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: k
+    markdown: |-
+      | a | b  |  c |  d  |   |
+      | - | :- | -: | :-: | - |
+      | e | f  |    |     |   |
+      | g | h  |  i |  j  | k |
+  - title: definition list
+    mdast:
+      type: root
+      children:
+        - type: definitionList
+          children:
+            - type: definitionTerm
+              children:
+                - type: text
+                  value: Term 1
+        - type: definitionDescription
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Definition 1
+        - type: definitionTerm
+          children:
+            - type: text
+              value: 'Term 2 with '
+            - type: emphasis
+              children:
+                - type: text
+                  value: inline markup
+        - type: definitionDescription
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Definition 2
+            - type: code
+              lang: python
+              value: some code, part of Definition 2
+            - type: paragraph
+              children:
+                - type: text
+                  value: Third paragraph of definition 2.
+    markdown: |-
+      Term 1
+
+      :   Definition 1
+
+      Term 2 with *inline markup*
+
+      :   Definition 2
+
+          ```python
+          some code, part of Definition 2
+          ```
+
+          Third paragraph of definition 2.
+  - title: definition list - nested
+    mdast:
+      type: root
+      children:
+        - type: definitionList
+          children:
+            - type: definitionTerm
+              children:
+                - type: text
+                  value: Term 1
+        - type: definitionDescription
+          children:
+            - type: definitionList
+              children:
+                - type: definitionTerm
+                  children:
+                    - type: text
+                      value: Term a
+            - type: definitionDescription
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Definition a
+    markdown: |-
+      Term 1
+
+      :   Term a
+
+          :   Definition a
