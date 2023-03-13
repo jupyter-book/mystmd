@@ -1,5 +1,7 @@
 import type { Handle, Info, State } from 'mdast-util-to-markdown';
-import type { Parent } from './types';
+import { fileWarn } from 'myst-common';
+import type { VFile } from 'vfile';
+import type { Parent, Validator } from './types';
 
 function comment(node: any): string {
   return `% ${node.value}`;
@@ -11,12 +13,18 @@ function block(node: any, _: Parent, state: State, info: Info): string {
   return `+++${meta}\n${content}`;
 }
 
-function definitionList(node: any, _: Parent, state: State, info: Info): string {
+function definitionListValidator(node: any, file: VFile) {
   node.children?.forEach((child: any) => {
     if (!['definitionTerm', 'definitionDescription'].includes(child.type)) {
-      throw Error();
+      fileWarn(file, `Unexpected child in definitionList: ${node.type}`, {
+        node,
+        source: 'myst-to-md',
+      });
     }
   });
+}
+
+function definitionList(node: any, _: Parent, state: State, info: Info): string {
   return state.containerFlow(node, info);
 }
 
@@ -41,4 +49,8 @@ export const miscHandlers: Record<string, Handle> = {
   definitionList,
   definitionTerm,
   definitionDescription,
+};
+
+export const miscValidators: Record<string, Validator> = {
+  definitionList: definitionListValidator,
 };

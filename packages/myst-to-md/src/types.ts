@@ -1,4 +1,5 @@
 import type { Handle, State } from 'mdast-util-to-markdown';
+import type { VFile } from 'vfile-reporter/lib';
 
 export type NestedKinds = {
   role: number;
@@ -13,3 +14,5 @@ export type NestedLevels = {
 export type NestedState = State & Partial<NestedLevels>;
 
 export type Parent = Parameters<Handle>[1];
+
+export type Validator = (node: any, file: VFile) => void;
