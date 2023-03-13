@@ -1,8 +1,10 @@
 import type { Handle, Info } from 'mdast-util-to-markdown';
 import { defaultHandlers } from 'mdast-util-to-markdown';
 import type { GenericNode } from 'myst-common';
+import { fileError } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
-import type { NestedState, Parent } from './types';
+import type { VFile } from 'vfile';
+import type { NestedState, Parent, Validator } from './types';
 import { incrementNestedLevel, popNestedLevel } from './utils';
 
 type DirectiveOptions = {
@@ -143,6 +145,19 @@ function writeFlowDirective(name: string, args?: string, options?: DirectiveOpti
   };
 }
 
+function containerValidator(node: any, file: VFile) {
+  const { kind } = node;
+  if (kind === 'figure' && !select('image', node)) {
+    fileError(file, 'Figure container must have image node child', { node, source: 'myst-to-md' });
+  }
+  if (kind === 'table' && !select('table', node)) {
+    fileError(file, 'Table container must have table node child', { node, source: 'myst-to-md' });
+  }
+  if (kind !== 'figure' && kind !== 'table') {
+    fileError(file, `Unknown kind on container node: ${kind}`, { node, source: 'myst-to-md' });
+  }
+}
+
 const FIGURE_OPTS = ['label', 'class', 'width', 'align', 'title', 'alt'];
 const TABLE_KEYS = ['headerRows', 'label', 'class', 'width', 'align'];
 
@@ -155,7 +170,7 @@ function container(node: any, _: Parent, state: NestedState, info: Info): string
   const children = [...(captionNode?.children || []), ...(legendNode?.children || [])];
   if (node.kind === 'figure') {
     const imageNode: GenericNode | null = select('image', node);
-    if (!imageNode) throw Error();
+    if (!imageNode) return '';
     const combinedNode: Record<string, any> = { type: 'container', url: imageNode.url, children };
     FIGURE_OPTS.forEach((key) => {
       const val = node[key] ?? imageNode[key];
@@ -170,7 +185,7 @@ function container(node: any, _: Parent, state: NestedState, info: Info): string
     return writeFlowDirective('figure', args, options)(combinedNode, _, state, info);
   } else if (node.kind === 'table') {
     const tableNode: GenericNode | null = select('table', node);
-    if (!tableNode) throw Error();
+    if (!tableNode) return '';
     let headerRows = 0;
     let inHeader = true;
     const listNodes = selectAll('tableRow', tableNode).map((row) => {
@@ -213,7 +228,7 @@ function container(node: any, _: Parent, state: NestedState, info: Info): string
     };
     return writeFlowDirective('list-table', args, options)(combinedNode, _, state, info);
   }
-  throw Error();
+  return '';
 }
 
 function admonition(node: any, _: Parent, state: NestedState, info: Info): string {
@@ -241,4 +256,8 @@ export const directiveHandlers: Record<string, Handle> = {
   embed: writeStaticDirective('embed', { keys: ['label'] }),
   include: writeStaticDirective('include', { argsKey: 'file' }),
   mystDirective,
+};
+
+export const directiveValidators: Record<string, Validator> = {
+  container: containerValidator,
 };

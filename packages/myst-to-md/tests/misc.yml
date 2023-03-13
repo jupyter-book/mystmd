@@ -270,3 +270,53 @@ cases:
       :   Term a
 
           :   Definition a
+  - title: unknown phrasing passes
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+            - type: text
+              value: ' with '
+            - type: unknownNode
+              children:
+                - type: text
+                  value: different
+            - type: text
+              value: ' '
+            - type: inlineCode
+              value: style`s
+    markdown: |-
+      Some % *markdown* with  ``style`s``
+  - title: styles in paragraph
+    mdast:
+      type: root
+      children:
+        - type: unknownNode
+          value: '??'
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+            - type: text
+              value: ' with '
+            - type: strong
+              children:
+                - type: text
+                  value: different
+            - type: text
+              value: ' '
+            - type: inlineCode
+              value: style`s
+    markdown: |-
+      Some % *markdown* with **different** ``style`s``
