@@ -1,4 +1,4 @@
-import type { State } from 'mdast-util-to-markdown';
+import type { Handle, State } from 'mdast-util-to-markdown';
 
 export type NestedKinds = {
   role: number;
@@ -11,3 +11,5 @@ export type NestedLevels = {
 };
 
 export type NestedState = State & Partial<NestedLevels>;
+
+export type Parent = Parameters<Handle>[1];

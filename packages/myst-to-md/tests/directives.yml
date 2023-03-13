@@ -243,3 +243,313 @@ cases:
       :title: my image
       :alt: Some text
       ```
+  - title: figure directive - no caption/legend
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          class: my-fig-class
+          children:
+            - type: image
+              url: https://example.com
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+    markdown: |-
+      :::{figure} https://example.com
+      :name: My-Fig
+      :class: my-fig-class
+      :width: 500px
+      :align: center
+      :title: my image
+      :alt: Some text
+      :::
+  - title: figure directive - with caption
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          class: my-fig-class
+          children:
+            - type: image
+              url: https://example.com
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Some % '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: markdown
+    markdown: |-
+      :::{figure} https://example.com
+      :name: My-Fig
+      :class: my-fig-class
+      :width: 500px
+      :align: center
+      :title: my image
+      :alt: Some text
+
+      Some % *markdown*
+      :::
+  - title: figure directive - with caption/legend
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          children:
+            - type: image
+              url: https://example.com
+              class: my-img-class
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Some % '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: markdown
+            - type: legend
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Code legend:'
+                - type: code
+                  lang: python
+                  value: |-
+                    print("hello world")
+    markdown: |-
+      :::{figure} https://example.com
+      :name: My-Fig
+      :class: my-img-class
+
+      Some % *markdown*
+
+      Code legend:
+
+      ```python
+      print("hello world")
+      ```
+      :::
+  - title: list-table
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          class: my-class
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: This table is cool
+            - type: table
+              align: right
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: a
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: b
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: c
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: '1'
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: '2'
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: '3'
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: '4'
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: '5'
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: '6'
+    markdown: |-
+      :::{list-table} This table is cool
+      :header-rows: 2
+      :name: my-table
+      :class: my-class
+      :align: right
+
+      *   *   a
+
+          *   b
+
+          *   c
+
+      *   *   1
+
+          *   2
+
+          *   3
+
+      *   *   4
+
+          *   5
+
+          *   6
+      :::
+  - title: admonition - with kind
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: tip
+          children:
+            - type: admonitionTitle
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: tip
+                - type: text
+                  value: ' '
+                - type: mystRole
+                  name: u
+                  value: admonition
+                  children:
+                    - type: underline
+                      children:
+                        - type: text
+                          value: admonition
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is a '
+                - type: inlineCode
+                  value: tip
+    markdown: |-
+      :::{tip} *tip* {u}`admonition`
+      This is a `tip`
+      :::
+  - title: admonition - no kind
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          class: my-class
+          icon: true
+          children:
+            - type: admonitionTitle
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: not tip
+                - type: text
+                  value: ' '
+                - type: mystRole
+                  name: u
+                  value: admonition
+                  children:
+                    - type: underline
+                      children:
+                        - type: text
+                          value: admonition
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is not a '
+                - type: inlineCode
+                  value: tip
+    markdown: |-
+      :::{admonition} *not tip* {u}`admonition`
+      :class: my-class
+      :icon:
+
+      This is not a `tip`
+      :::
+  - title: admonition - no title
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: tip
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is a '
+                - type: inlineCode
+                  value: tip
+    markdown: |-
+      :::{tip}
+      This is a `tip`
+      :::
+  - title: admonition - nested
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: tip
+          children:
+            - type: admonition
+              kind: tip
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'This is a '
+                    - type: inlineCode
+                      value: tip
+    markdown: |-
+      ::::{tip}
+      :::{tip}
+      This is a `tip`
+      :::
+      ::::
