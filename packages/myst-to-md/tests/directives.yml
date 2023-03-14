@@ -553,3 +553,282 @@ cases:
       This is a `tip`
       :::
       ::::
+  - title: mermaid
+    mdast:
+      type: root
+      children:
+        - type: mermaid
+          value: |-
+            flowchart LR
+              A[Jupyter Notebook] --> C
+              B[MyST Markdown] --> C
+              C(mystjs) --> D{AST}
+              D <--> E[LaTeX]
+              E --> F[PDF]
+              D --> G[Word]
+              D --> H[React]
+              D --> I[HTML]
+              D <--> J[JATS]
+    markdown: |-
+      ```{mermaid}
+      flowchart LR
+        A[Jupyter Notebook] --> C
+        B[MyST Markdown] --> C
+        C(mystjs) --> D{AST}
+        D <--> E[LaTeX]
+        E --> F[PDF]
+        D --> G[Word]
+        D --> H[React]
+        D --> I[HTML]
+        D <--> J[JATS]
+      ```
+  - title: dropdown - with summary
+    mdast:
+      type: root
+      children:
+        - type: details
+          open: true
+          children:
+            - type: summary
+              children:
+                - type: text
+                  value: Dropdown Title
+            - type: paragraph
+              children:
+                - type: text
+                  value: Dropdown content
+    markdown: |-
+      :::{dropdown} Dropdown Title
+      :open:
+
+      Dropdown content
+      :::
+  - title: dropdown - no summary
+    mdast:
+      type: root
+      children:
+        - type: details
+          open: true
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Dropdown content
+    markdown: |-
+      :::{dropdown}
+      :open:
+
+      Dropdown content
+      :::
+  - title: card - title/header/footer
+    mdast:
+      type: root
+      children:
+        - type: card
+          url: https://example.com
+          urlSource: https://example.com
+          children:
+            - type: header
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'The '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: Header
+            - type: cardTitle
+              children:
+                - type: text
+                  value: Card title
+            - type: paragraph
+              children:
+                - type: text
+                  value: Card content
+            - type: footer
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Footer
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: with two paragraphs
+    markdown: |-
+      :::{card} Card title
+      ---
+      link: https://example.com
+      header: The *Header*
+      footer: |-
+        Footer
+
+        with two paragraphs
+      ---
+
+      Card content
+      :::
+  - title: card - header/footer only
+    mdast:
+      type: root
+      children:
+        - type: card
+          children:
+            - type: header
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'The '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: Header
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: with two paragraphs
+            - type: paragraph
+              children:
+                - type: text
+                  value: Card content
+            - type: footer
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Footer
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: with two paragraphs
+    markdown: |-
+      :::{card}
+      ---
+      header: |-
+        The *Header*
+
+        with two paragraphs
+      footer: |-
+        Footer
+
+        with two paragraphs
+      ---
+
+      Card content
+      :::
+  - title: card - title only
+    mdast:
+      type: root
+      children:
+        - type: card
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Card content
+            - type: cardTitle
+              children:
+                - type: text
+                  value: 'Card '
+                - type: inlineCode
+                  value: title
+    markdown: |-
+      :::{card} Card `title`
+      Card content
+      :::
+  - title: card - content only
+    mdast:
+      type: root
+      children:
+        - type: card
+          children:
+            - type: admonition
+              kind: tip
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'This is a '
+                    - type: inlineCode
+                      value: tip
+    markdown: |-
+      ::::{card}
+      :::{tip}
+      This is a `tip`
+      :::
+      ::::
+  - title: grid
+    mdast:
+      type: root
+      children:
+        - type: grid
+          columns:
+            - 1
+            - 3
+            - 3
+            - 4
+          children:
+            - type: card
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Card one
+            - type: card
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Card two
+    markdown: |-
+      ::::{grid}
+      :columns: 1 3 3 4
+
+      :::{card}
+      Card one
+      :::
+
+      :::{card}
+      Card two
+      :::
+      ::::
+  - title: tabs
+    mdast:
+      type: root
+      children:
+        - type: tabSet
+          children:
+            - type: tabItem
+              title: Tab 1
+              sync: tab1
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Tab one
+            - type: tabItem
+              title: Tab 2
+              sync: tab2
+              selected: true
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Tab two
+    markdown: |-
+      ::::{tab-set}
+      :::{tab-item} Tab 1
+      :sync: tab1
+
+      Tab one
+      :::
+
+      :::{tab-item} Tab 2
+      :sync: tab2
+      :selected:
+
+      Tab two
+      :::
+      ::::

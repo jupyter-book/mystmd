@@ -1,3 +1,4 @@
+import YAML from 'js-yaml';
 import type { Handle, Info } from 'mdast-util-to-markdown';
 import { defaultHandlers } from 'mdast-util-to-markdown';
 import type { GenericNode } from 'myst-common';
@@ -12,6 +13,7 @@ type DirectiveOptions = {
   keys?: string[];
   aliases?: Record<string, string>;
   transforms?: Record<string, (val: any) => string>;
+  yaml?: boolean;
 };
 
 /**
@@ -29,15 +31,22 @@ function argsFromNode(node: any, options?: DirectiveOptions) {
 }
 
 function optionsFromNode(node: any, options?: DirectiveOptions) {
-  const { keys, aliases, transforms } = options || {};
-  const optionsLines = (keys ?? [])
-    .filter((opt) => node[opt] != null && node[opt] !== false)
-    .map((opt) => {
-      const optString = `:${aliases?.[opt] ? aliases[opt] : opt}:`;
-      const optValue = transforms?.[opt] ? transforms[opt](node[opt]) : node[opt];
-      if (optValue === true) return optString;
-      return `${optString} ${optValue}`;
+  const { keys, aliases, transforms, yaml } = options || {};
+  const opts: Record<string, any> = {};
+  (keys ?? [])
+    .filter((key) => node[key] != null && node[key] !== false)
+    .forEach((key) => {
+      const optString = aliases?.[key] ? aliases[key] : key;
+      const optValue = transforms?.[key] ? transforms[key](node[key]) : node[key];
+      opts[optString] = optValue;
     });
+  if (yaml && Object.keys(opts).length) {
+    return `---\n${YAML.dump(opts)}---`.split('\n');
+  }
+  const optionsLines = Object.entries(opts).map(([key, value]) => {
+    if (value === true) return `:${key}:`;
+    return `:${key}: ${value}`;
+  });
   return optionsLines;
 }
 
@@ -56,7 +65,7 @@ function writeStaticDirective(name: string, options?: DirectiveOptions) {
     const valueLines = defaultHandlers.code(nodeCopy, _, state, info).split('\n');
     if (optionsLines.length && valueLines.length > 2) optionsLines.push('');
     const directiveLines = [
-      `${valueLines[0]}{${name}}${args ? ' ' : ''}${args}`,
+      `${valueLines[0]}{${name}}${args ? ' ' : ''}${args ? args : ''}`,
       ...optionsLines,
       ...valueLines.slice(1),
     ];
@@ -138,7 +147,10 @@ function writeFlowDirective(name: string, args?: string, options?: DirectiveOpti
     const nesting = popNestedLevel('directive', state);
     const marker = directiveChar.repeat(nesting + 3);
     if (optionsLines.length && content) optionsLines.push('');
-    const directiveLines = [`${marker}{${name}}${args ? ' ' : ''}${args}`, ...optionsLines];
+    const directiveLines = [
+      `${marker}{${name}}${args ? ' ' : ''}${args ? args : ''}`,
+      ...optionsLines,
+    ];
     if (content) directiveLines.push(content);
     directiveLines.push(marker);
     return directiveLines.join('\n');
@@ -163,6 +175,9 @@ const TABLE_KEYS = ['headerRows', 'label', 'class', 'width', 'align'];
 
 /**
  * Handler for container nodes
+ *
+ * These may be of kind "figure" with image/caption/legend children or
+ * kind "table" with table/caption children.
  */
 function container(node: any, _: Parent, state: NestedState, info: Info): string {
   const captionNode: GenericNode | null = select('caption', node);
@@ -231,33 +246,109 @@ function container(node: any, _: Parent, state: NestedState, info: Info): string
   return '';
 }
 
+/**
+ * Handler for admonition nodes
+ */
 function admonition(node: any, _: Parent, state: NestedState, info: Info): string {
   const name = node.kind ?? 'admonition';
   const admonitionTitle = select('admonitionTitle', node);
   const args = admonitionTitle ? state.containerPhrasing(admonitionTitle as any, info) : '';
-  const nodeCopyNoTitle = {
+  const nodeCopy = {
     ...node,
     children: node.children.filter((n: GenericNode) => n.type !== 'admonitionTitle'),
   };
   const options = {
     keys: ['class', 'icon'],
   };
-  return writeFlowDirective(name, args, options)(nodeCopyNoTitle, _, state, info);
+  return writeFlowDirective(name, args, options)(nodeCopy, _, state, info);
 }
 
-// Dropdowns, mermaid, cards, grids, tabs...
+/**
+ * Handler for dropdown directive
+ */
+function details(node: any, _: Parent, state: NestedState, info: Info): string {
+  const summary = select('summary', node);
+  const args = summary ? state.containerPhrasing(summary as any, info) : '';
+  const nodeCopy = {
+    ...node,
+    children: node.children.filter((n: GenericNode) => n.type !== 'summary'),
+  };
+  const options = {
+    keys: ['open'],
+  };
+  return writeFlowDirective('dropdown', args, options)(nodeCopy, _, state, info);
+}
+
+function card(node: any, _: Parent, state: NestedState, info: Info): string {
+  const title = select('cardTitle', node);
+  const args = title ? state.containerPhrasing(title as any, info) : '';
+  const header = select('header', node);
+  const footer = select('footer', node);
+  const nodeCopy = {
+    ...node,
+    children: node.children.filter(
+      (n: GenericNode) => !['cardTitle', 'header', 'footer'].includes(n.type),
+    ),
+  };
+  if (header) nodeCopy.header = state.containerFlow(header as any, info);
+  if (footer) nodeCopy.footer = state.containerFlow(footer as any, info);
+  const options = {
+    keys: ['url', 'header', 'footer'],
+    aliases: { url: 'link' },
+    yaml: true,
+  };
+  return writeFlowDirective('card', args, options)(nodeCopy, _, state, info);
+}
+
+function gridValidator(node: any, file: VFile) {
+  node.children?.forEach((child: any) => {
+    if (child.kind !== 'card') {
+      fileError(file, `Unexpected grid node child is not card: ${child.kind}`, {
+        node,
+        source: 'myst-to-md',
+      });
+    }
+  });
+}
+
+function tabSetValidator(node: any, file: VFile) {
+  node.children?.forEach((child: any) => {
+    if (child.kind !== 'tabItem') {
+      fileError(file, `Unexpected tabSet node child is not tabItem: ${child.kind}`, {
+        node,
+        source: 'myst-to-md',
+      });
+    }
+  });
+}
+
+function tabItem(node: any, _: Parent, state: NestedState, info: Info): string {
+  const handler = writeFlowDirective('tab-item', node.title, { keys: ['sync', 'selected'] });
+  return handler(node, _, state, info);
+}
 
 export const directiveHandlers: Record<string, Handle> = {
   code,
   image,
   container,
   admonition,
+  details,
+  card,
+  grid: writeFlowDirective('grid', undefined, {
+    keys: ['columns'],
+    transforms: { columns: (val) => val.join(' ') },
+  }),
+  tabSet: writeFlowDirective('tab-set'),
+  tabItem,
   math: writeStaticDirective('math', { keys: ['label'] }),
   embed: writeStaticDirective('embed', { keys: ['label'] }),
   include: writeStaticDirective('include', { argsKey: 'file' }),
+  mermaid: writeStaticDirective('mermaid'),
   mystDirective,
 };
 
 export const directiveValidators: Record<string, Validator> = {
   container: containerValidator,
+  grid: gridValidator,
+  tabSet: tabSetValidator,
 };
