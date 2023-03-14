@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 0.0.12
+
+### Patch Changes
+
+- 9cc49d1a: Citations fall back to editors after authors
+
 ## 0.0.11
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # myst-to-tex
 
+## 0.0.20
+
+### Patch Changes
+
+- 3abbec6e: Improve footnote whitespace and warnings in myst-to-tex
+- 55d64468: Assume enumerated is default true for "star" check in myst-to-tex
+
 ## 0.0.19
 
 ### Patch Changes

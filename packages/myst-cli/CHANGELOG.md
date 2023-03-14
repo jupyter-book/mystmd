@@ -1,5 +1,32 @@
 # myst-cli
 
+## 0.1.18
+
+### Patch Changes
+
+- 40beee4d: Prevent unwanted repeated site reload
+- a965622a: Fix: project frontmatter is now respected with tex files
+- Updated dependencies [3abbec6e]
+- Updated dependencies [cf7b7004]
+- Updated dependencies [78b30547]
+- Updated dependencies [6713f432]
+- Updated dependencies [6713f432]
+- Updated dependencies [833be5a9]
+- Updated dependencies [70519a00]
+- Updated dependencies [826276dc]
+- Updated dependencies [9cc49d1a]
+- Updated dependencies [794fbc80]
+- Updated dependencies [b4670ec4]
+- Updated dependencies [55d64468]
+- Updated dependencies [82b583ba]
+  - myst-to-tex@0.0.20
+  - tex-to-myst@0.0.20
+  - myst-transforms@0.0.22
+  - myst-spec-ext@0.0.8
+  - citation-js-utils@0.0.12
+  - myst-to-docx@0.0.17
+  - myst-parser@0.0.22
+
 ## 0.1.17
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # tex-to-myst
 
+## 0.0.20
+
+### Patch Changes
+
+- cf7b7004: Fix multirow/multicolumn tex macros to correctly close nodes
+- 6713f432: All citations are groups for correct parenthetical rendering
+- 6713f432: Tex \cite explicitly makes narrative citations
+- 70519a00: Support supertabular tex environment
+- 826276dc: Basic support for multiple minipage figures in a single tex figure
+- b4670ec4: Support tex adjustbox argument
+- 82b583ba: Fix bug with undefined myst node associated with table macros
+- Updated dependencies [833be5a9]
+  - myst-spec-ext@0.0.8
+
 ## 0.0.19
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 0.0.8
+
+### Patch Changes
+
+- 833be5a9: Add `executable` to code
+
 ## 0.0.7
 
 ### Patch Changes

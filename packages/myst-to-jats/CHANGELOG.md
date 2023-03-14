@@ -1,5 +1,12 @@
 # myst-to-jats
 
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies [833be5a9]
+  - myst-spec-ext@0.0.8
+
 ## 0.0.18
 
 ### Patch Changes

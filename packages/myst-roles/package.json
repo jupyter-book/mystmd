@@ -1,6 +1,6 @@
 {
   "name": "myst-roles",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "sideEffects": false,
   "license": "MIT",
   "description": "Default role definitions for MyST",
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "myst-common": "^0.0.14",
-    "myst-spec-ext": "^0.0.7"
+    "myst-spec-ext": "^0.0.8"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

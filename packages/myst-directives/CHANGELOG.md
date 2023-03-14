@@ -1,5 +1,13 @@
 # myst-directives
 
+## 0.0.22
+
+### Patch Changes
+
+- 833be5a9: Initial support for myst notebooks
+- Updated dependencies [833be5a9]
+  - myst-spec-ext@0.0.8
+
 ## 0.0.21
 
 ### Patch Changes

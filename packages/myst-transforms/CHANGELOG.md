@@ -1,5 +1,14 @@
 # myst-transforms
 
+## 0.0.22
+
+### Patch Changes
+
+- 78b30547: Replace &=& with &= when replacing tex eqnarray with align\*
+- 794fbc80: Works with undefined yaml block
+- Updated dependencies [833be5a9]
+  - myst-spec-ext@0.0.8
+
 ## 0.0.21
 
 ### Patch Changes
