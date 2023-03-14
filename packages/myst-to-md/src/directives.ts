@@ -119,7 +119,7 @@ const IMAGE_DIRECTIVE_OPTS = ['class', 'width', 'align'];
 const IMAGE_OPTS = IMAGE_DIRECTIVE_OPTS.concat('title', 'alt');
 
 /**
- * Override default code handler for image directive
+ * Override default image handler for image directive
  *
  * If the image node only has url/title/alt, it falls back to
  * non-directive image.
