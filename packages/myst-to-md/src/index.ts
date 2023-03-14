@@ -9,12 +9,13 @@ import { directiveHandlers, directiveValidators } from './directives';
 import { miscHandlers, miscValidators } from './misc';
 import { referenceHandlers } from './references';
 import { roleHandlers } from './roles';
-import { runValidators, unsupportedHandlers } from './utils';
+import { addFrontmatter, runValidators, unsupportedHandlers } from './utils';
+import type { PageFrontmatter } from 'myst-frontmatter';
 
 const FOOTNOTE_HANDLER_KEYS = ['footnoteDefinition', 'footnoteReference'];
 const TABLE_HANDLER_KEYS = ['table', 'tableRow', 'tableCell'];
 
-const plugin: Plugin<[], Root, VFile> = function () {
+const plugin: Plugin<[PageFrontmatter?], Root, VFile> = function (frontmatter?) {
   this.Compiler = (node, file) => {
     const handlers = {
       ...directiveHandlers,
@@ -40,7 +41,8 @@ const plugin: Plugin<[], Root, VFile> = function () {
     };
     const validators = { ...directiveValidators, ...miscValidators };
     runValidators(node, validators, file);
-    file.result = toMarkdown(node as any, options).trim();
+    const result = toMarkdown(node as any, options).trim();
+    file.result = addFrontmatter(result, frontmatter);
     return file;
   };
 
