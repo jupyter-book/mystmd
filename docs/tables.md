@@ -36,4 +36,8 @@ Cells in a column can be aligned using the `:` character:
 ```
 ````
 
+```{note}
+You may have inline markdown in the table title, but if it includes backticks, you must use a [colon fence](#example-fence).
+```
+
 % TODO: Check that tables show a Table 1: at the start?
