@@ -335,7 +335,7 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
       ?.reduce((a, b) => a || b, false) ?? true;
 
   if (opts?.fix) {
-    configYaml.jtex = 'v1';
+    configYaml.myst = 'v1';
     if (!configYaml.doc) {
       configYaml.doc = extraDocOptions;
     } else {
