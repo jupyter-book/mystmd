@@ -2,21 +2,14 @@ import fs from 'fs';
 import type { Root } from 'mdast';
 import mime from 'mime-types';
 import type { GenericNode } from 'myst-common';
-import { isUrl } from 'myst-cli-utils';
+import { computeHash, hashAndCopyStaticFile, isUrl } from 'myst-cli-utils';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
 import path from 'path';
 import type { VFileMessage } from 'vfile-message';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { extFromMimeType } from 'nbtx';
-import {
-  addWarningForFile,
-  computeHash,
-  hashAndCopyStaticFile,
-  imagemagick,
-  inkscape,
-  KNOWN_IMAGE_EXTENSIONS,
-} from '../utils';
+import { addWarningForFile, imagemagick, inkscape, KNOWN_IMAGE_EXTENSIONS } from '../utils';
 import type { ISession } from '../session/types';
 import { castSession } from '../session';
 import { watch } from '../store';

@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { TemplateOptionType } from 'myst-common';
 import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
@@ -8,7 +9,6 @@ import { filterKeys } from 'simple-validators';
 import type { ISession } from '../../session/types';
 import type { RootState } from '../../store';
 import { selectors } from '../../store';
-import { hashAndCopyStaticFile } from '../../utils';
 import { getMystTemplate } from './template';
 
 /**
@@ -100,7 +100,7 @@ function resolveSiteManifestAction(session: ISession, action: SiteAction): SiteA
 }
 
 /**
- * Build site manifest from local curvenote state
+ * Build site manifest from local redux state
  *
  * Site manifest acts as the configuration to build the website.
  * It combines local site config and project configs into a single structure.

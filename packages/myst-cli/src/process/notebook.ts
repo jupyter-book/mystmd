@@ -1,4 +1,5 @@
 import type { Root } from 'mdast';
+import { computeHash } from 'myst-cli-utils';
 import type { GenericNode } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
@@ -8,7 +9,6 @@ import { CELL_TYPES, minifyCellOutput } from 'nbtx';
 import { castSession } from '../session';
 import type { ISession } from '../session/types';
 import { parseMyst } from './myst';
-import { computeHash } from '../utils/computeHash';
 
 function asString(source?: string | string[]): string {
   return (Array.isArray(source) ? source.join('') : source) || '';

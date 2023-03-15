@@ -7,12 +7,12 @@ import { selectAll } from 'unist-util-select';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
 import type { LinkTransformer, Link } from 'myst-transforms';
 import { fileError } from 'myst-common';
-import { tic } from 'myst-cli-utils';
+import { hashAndCopyStaticFile, tic } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types';
 import { selectors } from '../store';
 import type { Root } from 'mdast';
-import { addWarningForFile, hashAndCopyStaticFile } from '../utils';
+import { addWarningForFile } from '../utils';
 import { links } from '../store/reducers';
 import type { ExternalLinkResult } from '../store/types';
 
