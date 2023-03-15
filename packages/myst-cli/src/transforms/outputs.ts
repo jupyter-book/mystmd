@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { join } from 'path';
+import { computeHash } from 'myst-cli-utils';
 import type { GenericNode } from 'myst-common';
 import stripAnsi from 'strip-ansi';
 import { selectAll } from 'unist-util-select';
@@ -9,7 +10,6 @@ import type { Root } from 'mdast';
 import { castSession } from '../session';
 import type { ISession } from '../session/types';
 import { KINDS } from './types';
-import { computeHash } from '../utils/computeHash';
 import { resolveOutputPath } from './images';
 
 export async function transformOutputs(
