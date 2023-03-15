@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { TemplateOptionType } from 'myst-common';
 import {
   PAGE_FRONTMATTER_KEYS,
@@ -26,6 +27,7 @@ import {
 } from 'simple-validators';
 import type { ValidationOptions } from 'simple-validators';
 import type {
+  ISession,
   TemplateDocDefinition,
   TemplateOptionDefinition,
   TemplatePartDefinition,
@@ -33,12 +35,16 @@ import type {
   TemplateYml,
 } from './types';
 
+export type FileOptions = { copyFolder?: string; relativePathFrom?: string };
+
+export type FileValidationOptions = ValidationOptions & FileOptions;
+
 /** Validate that input is an existing file name
  *
  * Resolved relative to the file cached on validation options.
  * Full resolved path is returned.
  */
-function validateFile(input: any, opts: ValidationOptions) {
+function validateFile(session: ISession, input: any, opts: FileValidationOptions) {
   const filename = validateString(input, opts);
   if (!filename) return;
   let resolvedFile: string;
@@ -47,14 +53,28 @@ function validateFile(input: any, opts: ValidationOptions) {
   } else {
     resolvedFile = path.resolve(filename);
   }
-  if (fs.existsSync(resolvedFile)) return resolvedFile;
-  return validationError(`unable to resolve file: ${filename}`, opts);
+  if (!fs.existsSync(resolvedFile)) {
+    return validationError(`unable to resolve file: ${filename}`, opts);
+  }
+  const { copyFolder, relativePathFrom } = opts;
+  if (copyFolder) {
+    const hashedFile = hashAndCopyStaticFile(session, resolvedFile, copyFolder);
+    if (!hashedFile) {
+      return validationError(`unable to copy file: ${resolvedFile} -> ${copyFolder}`, opts);
+    }
+    resolvedFile = path.join(copyFolder, hashedFile);
+  }
+  if (relativePathFrom) {
+    return path.relative(relativePathFrom, resolvedFile);
+  }
+  return resolvedFile;
 }
 
 export function validateTemplateOption(
+  session: ISession,
   input: any,
   optionDefinition: TemplateOptionDefinition,
-  opts: ValidationOptions,
+  opts: FileValidationOptions,
 ) {
   const { type, max_chars, choices } = optionDefinition;
   switch (type) {
@@ -65,7 +85,7 @@ export function validateTemplateOption(
     case TemplateOptionType.choice:
       return validateChoice(input, { ...opts, choices: choices || [] });
     case TemplateOptionType.file:
-      return validateFile(input, opts);
+      return validateFile(session, input, opts);
     default:
       return validationError(`unknown type on option definition: "${type}"`, opts);
   }
@@ -87,9 +107,10 @@ const conditionMet = (
 };
 
 export function validateTemplateOptions(
+  session: ISession,
   options: any,
   optionDefinitions: TemplateOptionDefinition[],
-  opts: ValidationOptions,
+  opts: FileValidationOptions,
 ) {
   const value = validateObject(options, opts);
   if (value === undefined) return undefined;
@@ -104,10 +125,13 @@ export function validateTemplateOptions(
   validateKeys(value, { optional, required }, { returnInvalidPartial: true, ...opts });
   const output: Record<string, any> = {};
   filteredOptions.forEach((def) => {
-    if (defined(value[def.id])) {
-      output[def.id] = validateTemplateOption(value[def.id], def, incrementOptions(def.id, opts));
-    } else if (def.default) {
-      output[def.id] = def.default;
+    if (defined(value[def.id]) || def.default) {
+      output[def.id] = validateTemplateOption(
+        session,
+        value[def.id] ?? def.default,
+        def,
+        incrementOptions(def.id, opts),
+      );
     }
   });
   return output;
@@ -206,7 +230,11 @@ export function validateTemplateDocDefinition(input: any, opts: ValidationOption
   return output;
 }
 
-export function validateTemplateOptionDefinition(input: any, opts: ValidationOptions) {
+export function validateTemplateOptionDefinition(
+  session: ISession,
+  input: any,
+  opts: ValidationOptions,
+) {
   const value = validateObjectKeys(
     input,
     {
@@ -271,6 +299,7 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
   }
   if (defined(value.default)) {
     output.default = validateTemplateOption(
+      session,
       value.default,
       output,
       incrementOptions('default', opts),
@@ -280,6 +309,7 @@ export function validateTemplateOptionDefinition(input: any, opts: ValidationOpt
 }
 
 export function crossValidateConditions(
+  session: ISession,
   optionDefinitions: TemplateOptionDefinition[],
   partsDefinitions: TemplatePartDefinition[],
   docDefinitions: TemplateDocDefinition[],
@@ -296,11 +326,16 @@ export function crossValidateConditions(
   [...optionDefinitions, ...partsDefinitions, ...docDefinitions].forEach((def) => {
     if (def.condition && optionDefLookup[def.condition.id]) {
       if (defined(def.condition.value)) {
-        const val = validateTemplateOption(def.condition.value, optionDefLookup[def.condition.id], {
-          ...opts,
-          suppressErrors: true,
-          suppressWarnings: true,
-        });
+        const val = validateTemplateOption(
+          session,
+          def.condition.value,
+          optionDefLookup[def.condition.id],
+          {
+            ...opts,
+            suppressErrors: true,
+            suppressWarnings: true,
+          },
+        );
         if (val === undefined) {
           validationError(
             `invalid condition value "${def.condition.value}" for id: ${def.condition.id}`,
@@ -387,6 +422,7 @@ export function validateTemplateStyle(input: any, opts: ValidationOptions) {
 }
 
 export function validateTemplateYml(
+  session: ISession,
   input: any,
   opts: ValidationOptions & { templateDir?: string },
 ) {
@@ -482,7 +518,11 @@ export function validateTemplateYml(
   }
   if (defined(value.options)) {
     output.options = validateList(value.options, incrementOptions('options', opts), (val, ind) => {
-      return validateTemplateOptionDefinition(val, incrementOptions(`options.${ind}`, opts));
+      return validateTemplateOptionDefinition(
+        session,
+        val,
+        incrementOptions(`options.${ind}`, opts),
+      );
     });
   }
   if (defined(value.packages)) {
@@ -509,6 +549,12 @@ export function validateTemplateYml(
       return file;
     });
   }
-  crossValidateConditions(output.options || [], output.parts || [], output.doc || [], opts);
+  crossValidateConditions(
+    session,
+    output.options || [],
+    output.parts || [],
+    output.doc || [],
+    opts,
+  );
   return output;
 }

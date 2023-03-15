@@ -100,11 +100,19 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
       session.log.info(
         `📭 No file exports${kinds.length > 0 ? ` with kind "${kinds.join('", "')}"` : ''} found.`,
       );
-      session.log.info(
-        chalk.dim(
-          `You may need to add an 'exports' field to the frontmatter of the file(s) you wish to export:\n\n---\nexports:\n  - format: ${kinds[0]}\n---`,
-        ),
-      );
+      if (kinds.length) {
+        session.log.info(
+          chalk.dim(
+            `You may need to add an 'exports' field to the frontmatter of the file(s) you wish to export:\n\n---\nexports:\n  - format: ${kinds[0]}\n---`,
+          ),
+        );
+      } else {
+        session.log.info(
+          chalk.dim(
+            'You may need to specify either:\n  - an export format, e.g. `myst build --pdf`\n  - a file to export, e.g. `myst build my-file.md`',
+          ),
+        );
+      }
     }
   } else {
     session.log.info(`📬 Performing exports:\n   ${exportLogList.join('\n   ')}`);

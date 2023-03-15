@@ -146,7 +146,11 @@ export function checkTemplate(session: ISession, path: string, opts?: { fix?: bo
     configYaml = { myst: 'v1', ...configYaml };
   }
 
-  const validated = validateTemplateYml(configYaml, { property: '', messages, templateDir });
+  const validated = validateTemplateYml(session, configYaml, {
+    property: '',
+    messages,
+    templateDir,
+  });
 
   if (!validated) {
     clearAndPrintWarnings(session, 'template.yml', messages, printWarnings);
