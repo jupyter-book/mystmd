@@ -7,6 +7,7 @@ import { downloadTemplate, resolveInputs, TEMPLATE_FILENAME, TEMPLATE_YML } from
 import { extendFrontmatter } from './frontmatter';
 import type { TemplateYml, ISession } from './types';
 import { errorLogger, warningLogger } from './utils';
+import type { FileOptions, FileValidationOptions } from './validators';
 import {
   validateTemplateDoc,
   validateTemplateOptions,
@@ -60,7 +61,7 @@ class MystTemplate {
         errorLogFn: errorLogger(this.session),
         warningLogFn: warningLogger(this.session),
       };
-      const templateYml = validateTemplateYml(this.getTemplateYml(), {
+      const templateYml = validateTemplateYml(this.session, this.getTemplateYml(), {
         ...opts,
         templateDir: this.templatePath,
       });
@@ -73,16 +74,22 @@ class MystTemplate {
     return this.validatedTemplateYml;
   }
 
-  validateOptions(options: any, file?: string) {
+  validateOptions(options: any, file?: string, fileOpts?: FileOptions) {
     const templateYml = this.getValidatedTemplateYml();
-    const opts: ValidationOptions = {
+    const opts: FileValidationOptions = {
       file,
       property: 'options',
       messages: {},
       errorLogFn: errorLogger(this.session),
       warningLogFn: warningLogger(this.session),
+      ...fileOpts,
     };
-    const validatedOptions = validateTemplateOptions(options, templateYml?.options || [], opts);
+    const validatedOptions = validateTemplateOptions(
+      this.session,
+      options,
+      templateYml?.options || [],
+      opts,
+    );
     if (validatedOptions === undefined) {
       // Pass even if there are some validation errors; only error on total failure
       throw new Error(
@@ -169,12 +176,18 @@ class MystTemplate {
     parts: any;
     options: any;
     bibliography?: string[];
+    outputPath?: string;
     sourceFile?: string;
+    filesPath?: string;
   }) {
     if (!fs.existsSync(join(this.templatePath, TEMPLATE_YML))) {
       throw new Error(`The template at "${join(this.templatePath, TEMPLATE_YML)}" does not exist`);
     }
-    const options = this.validateOptions(opts.options, opts.sourceFile);
+    const fileOpts: FileOptions = { copyFolder: opts.filesPath };
+    if (opts.outputPath) {
+      fileOpts.relativePathFrom = dirname(opts.outputPath);
+    }
+    const options = this.validateOptions(opts.options, opts.sourceFile, fileOpts);
     const parts = this.validateParts(opts.parts, options, opts.sourceFile);
     const docFrontmatter = this.validateDoc(
       opts.frontmatter,

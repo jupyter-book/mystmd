@@ -42,6 +42,7 @@ export function renderTex(
     imports?: string | TemplateImports;
     force?: boolean;
     packages?: string[];
+    filesPath?: string;
   },
 ) {
   if (extname(opts.outputPath) !== '.tex') {

@@ -1,4 +1,5 @@
 import type { ValidationOptions } from 'simple-validators';
+import { Session } from './session';
 import {
   crossValidateConditions,
   validateTemplateOption,
@@ -10,27 +11,34 @@ import {
 } from './validators';
 
 let opts: ValidationOptions;
+let session: Session;
 
 beforeEach(() => {
   opts = { property: 'test', messages: {} };
+  session = new Session();
 });
 
 describe('validateTemplateOption', () => {
   it('invalid option type adds error', async () => {
-    expect(validateTemplateOption('', { id: '', type: 'invalid' } as any, opts)).toEqual(undefined);
+    expect(validateTemplateOption(session, '', { id: '', type: 'invalid' } as any, opts)).toEqual(
+      undefined,
+    );
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('string option validates string', async () => {
-    expect(validateTemplateOption('input', { id: '', type: 'string' } as any, opts)).toEqual(
-      'input',
-    );
+    expect(
+      validateTemplateOption(session, 'input', { id: '', type: 'string' } as any, opts),
+    ).toEqual('input');
   });
   it('bool option validates bool', async () => {
-    expect(validateTemplateOption(false, { id: '', type: 'boolean' } as any, opts)).toEqual(false);
+    expect(
+      validateTemplateOption(session, false, { id: '', type: 'boolean' } as any, opts),
+    ).toEqual(false);
   });
   it('choice option validates choice', async () => {
     expect(
       validateTemplateOption(
+        session,
         'a',
         { id: '', type: 'choice', choices: ['a', 'b', 'c'] } as any,
         opts,
@@ -38,20 +46,21 @@ describe('validateTemplateOption', () => {
     ).toEqual('a');
   });
   it('string option errors with invalid string', async () => {
-    expect(validateTemplateOption(false, { id: '', type: 'string' } as any, opts)).toEqual(
+    expect(validateTemplateOption(session, false, { id: '', type: 'string' } as any, opts)).toEqual(
       undefined,
     );
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('bool option errors with invalid bool', async () => {
-    expect(validateTemplateOption('input', { id: '', type: 'boolean' } as any, opts)).toEqual(
-      undefined,
-    );
+    expect(
+      validateTemplateOption(session, 'input', { id: '', type: 'boolean' } as any, opts),
+    ).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('choice option errors with invalid choice', async () => {
     expect(
       validateTemplateOption(
+        session,
         'input',
         { id: '', type: 'choice', choices: ['a', 'b', 'c'] } as any,
         opts,
@@ -63,24 +72,32 @@ describe('validateTemplateOption', () => {
 
 describe('validateTemplateOptions', () => {
   it('no options returns empty object', async () => {
-    expect(validateTemplateOptions({ a: 1, b: 2 }, [], opts)).toEqual({});
+    expect(validateTemplateOptions(session, { a: 1, b: 2 }, [], opts)).toEqual({});
   });
   it('non-object errors', async () => {
-    expect(validateTemplateOptions('' as any, [], opts)).toEqual(undefined);
+    expect(validateTemplateOptions(session, '' as any, [], opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('missing optional property passes', async () => {
-    expect(validateTemplateOptions({}, [{ id: 'key', type: 'string' as any }], opts)).toEqual({});
+    expect(
+      validateTemplateOptions(session, {}, [{ id: 'key', type: 'string' as any }], opts),
+    ).toEqual({});
   });
   it('missing reqired property errors', async () => {
     expect(
-      validateTemplateOptions({}, [{ id: 'key', type: 'string' as any, required: true }], opts),
+      validateTemplateOptions(
+        session,
+        {},
+        [{ id: 'key', type: 'string' as any, required: true }],
+        opts,
+      ),
     ).toEqual({});
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('missing default property fills', async () => {
     expect(
       validateTemplateOptions(
+        session,
         {},
         [{ id: 'key', type: 'string' as any, required: true, default: 'value' }],
 
@@ -91,6 +108,7 @@ describe('validateTemplateOptions', () => {
   it('correct properties pass', async () => {
     expect(
       validateTemplateOptions(
+        session,
         { a: 'value', b: true, c: '1' },
         [
           { id: 'a', type: 'string' as any },
@@ -105,6 +123,7 @@ describe('validateTemplateOptions', () => {
   it('bad properties error', async () => {
     expect(
       validateTemplateOptions(
+        session,
         { a: true, b: 'value', c: '3' },
         [
           { id: 'a', type: 'string' as any },
@@ -120,6 +139,7 @@ describe('validateTemplateOptions', () => {
   it('string validation uses max_chars', async () => {
     expect(
       validateTemplateOptions(
+        session,
         { a: 'a b c' },
         [{ id: 'a', type: 'string' as any, max_chars: 100 }],
 
@@ -130,6 +150,7 @@ describe('validateTemplateOptions', () => {
   it('string validation errors from max_chars', async () => {
     expect(
       validateTemplateOptions(
+        session,
         { a: '1 2 3' },
         [{ id: 'a', type: 'string' as any, max_chars: 2 }],
 
@@ -141,6 +162,7 @@ describe('validateTemplateOptions', () => {
   it('condition from options not met no error', async () => {
     expect(
       validateTemplateOptions(
+        session,
         {},
         [
           { id: 'a', type: 'string' as any, required: true, condition: { id: 'b' } },
@@ -154,6 +176,7 @@ describe('validateTemplateOptions', () => {
   it('condition from options met errors', async () => {
     expect(
       validateTemplateOptions(
+        session,
         { b: 'test' },
         [
           { id: 'a', type: 'string' as any, required: true, condition: { id: 'b' } },
@@ -167,6 +190,7 @@ describe('validateTemplateOptions', () => {
   it('condition value from options not met no error', async () => {
     expect(
       validateTemplateOptions(
+        session,
         { b: 'not test' },
         [
           { id: 'a', type: 'string' as any, required: true, condition: { id: 'b', value: 'test' } },
@@ -180,6 +204,7 @@ describe('validateTemplateOptions', () => {
   it('condition value from options met errors', async () => {
     expect(
       validateTemplateOptions(
+        session,
         { b: 'test' },
         [
           { id: 'a', type: 'string' as any, required: true, condition: { id: 'b', value: 'test' } },
@@ -235,43 +260,48 @@ describe('validateTemplateDoc', () => {
 
 describe('validateTemplateOptionDefinition', () => {
   it('invalid input errors', async () => {
-    expect(validateTemplateOptionDefinition('', opts)).toEqual(undefined);
+    expect(validateTemplateOptionDefinition(session, '', opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('no id errors', async () => {
-    expect(validateTemplateOptionDefinition({ type: 'string' }, opts)).toEqual(undefined);
+    expect(validateTemplateOptionDefinition(session, { type: 'string' }, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('no type errors', async () => {
-    expect(validateTemplateOptionDefinition({ id: 'key' }, opts)).toEqual(undefined);
+    expect(validateTemplateOptionDefinition(session, { id: 'key' }, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('id/type return self', async () => {
-    expect(validateTemplateOptionDefinition({ id: 'key', type: 'string' }, opts)).toEqual({
+    expect(validateTemplateOptionDefinition(session, { id: 'key', type: 'string' }, opts)).toEqual({
       id: 'key',
       type: 'string',
     });
   });
   it('reserved id errors', async () => {
-    expect(validateTemplateOptionDefinition({ id: 'format', type: 'string' }, opts)).toEqual(
-      undefined,
-    );
+    expect(
+      validateTemplateOptionDefinition(session, { id: 'format', type: 'string' }, opts),
+    ).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('choice type errors with no choices', async () => {
-    expect(validateTemplateOptionDefinition({ id: 'key', type: 'choice' }, opts)).toEqual(
+    expect(validateTemplateOptionDefinition(session, { id: 'key', type: 'choice' }, opts)).toEqual(
       undefined,
     );
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('choice type passes with choices', async () => {
     expect(
-      validateTemplateOptionDefinition({ id: 'key', type: 'choice', choices: ['a', 'b'] }, opts),
+      validateTemplateOptionDefinition(
+        session,
+        { id: 'key', type: 'choice', choices: ['a', 'b'] },
+        opts,
+      ),
     ).toEqual({ id: 'key', type: 'choice', choices: ['a', 'b'] });
   });
   it('object with all properties passes', async () => {
     expect(
       validateTemplateOptionDefinition(
+        session,
         {
           id: 'key',
           type: 'choice',
@@ -304,6 +334,7 @@ describe('validateTemplateOptionDefinition', () => {
   it('invalid choices errors', async () => {
     expect(
       validateTemplateOptionDefinition(
+        session,
         {
           id: 'key',
           type: 'choice',
@@ -320,6 +351,7 @@ describe('validateTemplateOptionDefinition', () => {
   it('invalid description errors', async () => {
     expect(
       validateTemplateOptionDefinition(
+        session,
         {
           id: 'key',
           type: 'choice',
@@ -338,6 +370,7 @@ describe('validateTemplateOptionDefinition', () => {
   it('invalid required errors', async () => {
     expect(
       validateTemplateOptionDefinition(
+        session,
         {
           id: 'key',
           type: 'choice',
@@ -356,6 +389,7 @@ describe('validateTemplateOptionDefinition', () => {
   it('invalid default errors', async () => {
     expect(
       validateTemplateOptionDefinition(
+        session,
         {
           id: 'key',
           type: 'choice',
@@ -374,6 +408,7 @@ describe('validateTemplateOptionDefinition', () => {
   it('condition with id passes', async () => {
     expect(
       validateTemplateOptionDefinition(
+        session,
         {
           id: 'key',
           type: 'string',
@@ -394,6 +429,7 @@ describe('validateTemplateOptionDefinition', () => {
   it('invalid condition errors', async () => {
     expect(
       validateTemplateOptionDefinition(
+        session,
         {
           id: 'key',
           type: 'string',
@@ -413,6 +449,7 @@ describe('validateTemplateOptionDefinition', () => {
 describe('crossValidateConditions', () => {
   it('frontmatter condition id fails', async () => {
     crossValidateConditions(
+      session,
       [
         {
           id: 'test',
@@ -430,6 +467,7 @@ describe('crossValidateConditions', () => {
   });
   it('option condition id passes', async () => {
     crossValidateConditions(
+      session,
       [
         {
           id: 'test',
@@ -452,6 +490,7 @@ describe('crossValidateConditions', () => {
   });
   it('unknown conditional id fails', async () => {
     crossValidateConditions(
+      session,
       [
         {
           id: 'test',
@@ -469,6 +508,7 @@ describe('crossValidateConditions', () => {
   });
   it('invalid conditional value fails', async () => {
     crossValidateConditions(
+      session,
       [
         {
           id: 'test',
@@ -491,6 +531,7 @@ describe('crossValidateConditions', () => {
   });
   it('conditional id that matches definition id fails', async () => {
     crossValidateConditions(
+      session,
       [
         {
           id: 'test',
@@ -559,15 +600,16 @@ describe('validateTemplatePartDefinition', () => {
 
 describe('validateTemplateYml', () => {
   it('invalid input errors', async () => {
-    expect(validateTemplateYml('', opts)).toEqual(undefined);
+    expect(validateTemplateYml(session, '', opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('empty object passes', async () => {
-    expect(validateTemplateYml({ jtex: 'v1' }, opts)).toEqual({ myst: 'v1' });
+    expect(validateTemplateYml(session, { jtex: 'v1' }, opts)).toEqual({ myst: 'v1' });
   });
   it('minimal object passes', async () => {
     expect(
       validateTemplateYml(
+        session,
         {
           myst: 'v1',
           jtex: 'v1',
@@ -621,6 +663,7 @@ describe('validateTemplateYml', () => {
   it('invalid properties error', async () => {
     expect(
       validateTemplateYml(
+        session,
         {
           jtex: 'v1',
           build: '',

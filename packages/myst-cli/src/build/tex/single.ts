@@ -76,10 +76,10 @@ export async function localArticleToTexRaw(
   const { mdast, frontmatter, references } = await getSingleFileContent(
     session,
     file,
-    path.join(path.dirname(output), 'images'),
+    path.join(path.dirname(output), 'files'),
     {
       projectPath,
-      imageAltOutputFolder: 'images/',
+      imageAltOutputFolder: 'files/',
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
     },
@@ -117,17 +117,13 @@ export async function localArticleToTexTemplated(
   force?: boolean,
   extraLinkTransformers?: LinkTransformer[],
 ) {
-  const { frontmatter, mdast, references } = await getSingleFileContent(
-    session,
-    file,
-    path.join(path.dirname(templateOptions.output), 'images'),
-    {
-      projectPath,
-      imageAltOutputFolder: 'images/',
-      imageExtensions: TEX_IMAGE_EXTENSIONS,
-      extraLinkTransformers,
-    },
-  );
+  const filesPath = path.join(path.dirname(templateOptions.output), 'files');
+  const { frontmatter, mdast, references } = await getSingleFileContent(session, file, filesPath, {
+    projectPath,
+    imageAltOutputFolder: 'files/',
+    imageExtensions: TEX_IMAGE_EXTENSIONS,
+    extraLinkTransformers,
+  });
   writeBibtexFromCitationRenderers(
     session,
     path.join(path.dirname(templateOptions.output), DEFAULT_BIB_FILENAME),
@@ -171,6 +167,7 @@ export async function localArticleToTexTemplated(
     imports: mergeTemplateImports(collectedImports, result),
     force,
     packages: templateYml.packages,
+    filesPath,
   });
 }
 
