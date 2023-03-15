@@ -37,3 +37,59 @@ cases:
     latex: |-
       % hello
       % world
+  - title: figure directive - no caption/legend
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          class: my-fig-class
+          children:
+            - type: image
+              url: https://example.com
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+    latex: |-
+      \begin{figure}[!htbp]
+      \centering
+      \includegraphics[width=0.625\linewidth]{https://example.com}
+      \end{figure}
+  - title: figure directive - with caption
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          class: my-fig-class
+          children:
+            - type: image
+              url: https://example.com
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Some % '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: markdown
+    latex: |-
+      \begin{figure}[!htbp]
+      \centering
+      \includegraphics[width=0.625\linewidth]{https://example.com}
+      \caption{Some \% \textit{markdown}}
+      \label{My-Fig}
+      \end{figure}

@@ -84,8 +84,8 @@ export const containerHandler: Handler = (node, state) => {
     before = '\\begin{landscape}';
     after = '\\end{landscape}';
   }
-  const { enumerated, identifier, multipage } = node;
-  const localId = identifier ?? undefined;
+  const { enumerated, label, identifier, multipage } = node;
+  const localId = label ?? identifier ?? undefined;
   // TODO for longtable to work with two columns we need to flip out to single column first
   // and then back to multi column, if we were in multicolumn mode
   // Q: we can know if we are in a two column mode from the template we are using, but how is this made available at this level?
