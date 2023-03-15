@@ -1,0 +1,39 @@
+title: myst-to-tex basic features
+cases:
+  - title: emphasis in paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    latex: |-
+      Some \% \textit{markdown}
+  - title: escapes quotes and unicode
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: '“quote” '
+            - type: inlineMath
+              value: '½'
+    latex: |-
+      ``quote'' $\frac{1}{2}$
+  - title: comment
+    mdast:
+      type: root
+      children:
+        - type: comment
+          value: |-
+            hello
+            world
+    latex: |-
+      % hello
+      % world
