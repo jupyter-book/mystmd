@@ -150,7 +150,7 @@ const handlers: Record<string, Handler> = {
     state.renderInlineEnvironment(node, 'sout');
   },
   break(node, state) {
-    state.write('\\\\');
+    state.write('\\newline');
     state.ensureNewLine();
   },
   abbreviation(node, state) {
