@@ -150,6 +150,8 @@ const handlers: Record<string, Handler> = {
     state.renderInlineEnvironment(node, 'sout');
   },
   break(node, state) {
+    // Use \newline instead of `\\` for breaks in LaTeX, it works in all phrasing contexts.
+    // `\\` is used in tables to denote a new 
     state.write('\\newline');
     state.ensureNewLine();
   },
