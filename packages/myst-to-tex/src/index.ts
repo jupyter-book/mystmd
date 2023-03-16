@@ -151,7 +151,7 @@ const handlers: Record<string, Handler> = {
   },
   break(node, state) {
     // Use \newline instead of `\\` for breaks in LaTeX, it works in all phrasing contexts.
-    // `\\` is used in tables to denote a new 
+    // `\\` is used in tables to denote a new row.
     state.write('\\newline');
     state.ensureNewLine();
   },
