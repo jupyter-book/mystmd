@@ -93,3 +93,152 @@ cases:
       \caption{Some \% \textit{markdown}}
       \label{My-Fig}
       \end{figure}
+  - title: list-table
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: table
+          identifier: abc
+          label: ABC
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: My table!
+            - type: table
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Column 1
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Column 2
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Another
+                                - type: break
+                                - type: text
+                                  value: column
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Nice!
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Even another
+                                - type: break
+                                - type: text
+                                  value: column
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Double nice!
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: a
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: b
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: c
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: d
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: e
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: f
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: g
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: h
+    latex: |-
+      \begin{table}
+      \centering
+      \caption{My table!}
+      \label{ABC}
+      \begin{tabular}{p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}}
+      \toprule
+      \textbf{Column 1} & \textbf{Column 2} & \textbf{Another\newline
+      column}
+
+      \textbf{Nice!}
+
+       & \textbf{Even another\newline
+      column}
+
+      \textbf{Double nice!}
+
+       \\
+      \hline
+      a & b & c & d \\
+      e & f & g & h \\
+      \bottomrule
+      \end{tabular}
+      \end{table}
