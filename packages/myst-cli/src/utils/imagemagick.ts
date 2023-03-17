@@ -40,7 +40,7 @@ export async function extractFirstFrameOfGif(session: ISession, gif: string, wri
   return pngFile;
 }
 
-async function convert(
+export async function convert(
   inputExtension: string,
   outputExtension: string,
   session: ISession,
@@ -70,26 +70,6 @@ async function convert(
     }
   }
   return filename;
-}
-
-export async function convertSvgToPng(session: ISession, input: string, writeFolder: string) {
-  const output = await convert('.svg', '.png', session, input, writeFolder);
-  return output;
-}
-
-export async function convertPdfToPng(session: ISession, input: string, writeFolder: string) {
-  const output = await convert('.pdf', '.png', session, input, writeFolder);
-  return output;
-}
-
-export async function convertEpsToPng(session: ISession, input: string, writeFolder: string) {
-  const output = await convert('.eps', '.png', session, input, writeFolder);
-  return output;
-}
-
-export async function convertTiffToPng(session: ISession, input: string, writeFolder: string) {
-  const output = await convert('.tiff', '.png', session, input, writeFolder);
-  return output;
 }
 
 export async function convertImageToWebp(

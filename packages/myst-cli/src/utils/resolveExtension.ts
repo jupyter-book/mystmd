@@ -5,9 +5,10 @@ import { isDirectory } from './isDirectory';
 export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb', '.tex'];
 export const KNOWN_IMAGE_EXTENSIONS = [
   '.png',
+  '.tif',
   '.tiff',
   '.jpg',
-  'jpeg',
+  '.jpeg',
   '.gif',
   '.webp',
   '.svg',
