@@ -167,6 +167,7 @@ export async function transformMdast(
     .run(mdast, vfile);
   await transformImages(session, mdast, file, imageWriteFolder, {
     altOutputFolder: imageAltOutputFolder,
+    imageExtensions,
   });
   // Must happen after transformImages
   await transformImageFormats(session, mdast, file, imageWriteFolder, {
