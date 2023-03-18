@@ -6,7 +6,7 @@ import { fileError, toText } from 'myst-common';
 import { captionHandler, containerHandler } from './container';
 import { renderNodeToLatex } from './tables';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types';
-import { getLatexImageWidth, stringToLatexMath, stringToLatexText } from './utils';
+import { getLatexImageWidth, hrefToLatexText, stringToLatexMath, stringToLatexText } from './utils';
 import MATH_HANDLERS from './math';
 
 export type { LatexResult } from './types';
@@ -165,12 +165,16 @@ const handlers: Record<string, Handler> = {
     const href = node.url;
     if (node.children[0]?.value === href) {
       // URL is the same
-      state.write(`\\url{${href}}`);
+      state.write('\\url{');
+      state.write(hrefToLatexText(href));
+      state.write('}');
       return;
     }
-    state.write(`\\href{${href}}{`);
+    state.write('\\href{');
+    state.write(hrefToLatexText(href));
+    state.write('}{');
     state.renderChildren(node, true);
-    state.write(`}`);
+    state.write('}');
   },
   admonition(node, state) {
     state.usePackages('framed');

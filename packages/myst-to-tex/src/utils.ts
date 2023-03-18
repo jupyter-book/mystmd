@@ -10,7 +10,7 @@ const BACKSLASH_SPACE = '💥🎯BACKSLASHSPACE🎯💥';
 const BACKSLASH = '💥🎯BACKSLASH🎯💥';
 const TILDE = '💥🎯TILDE🎯💥';
 
-const textOnlyReplacements: Record<string, string> = {
+const hrefOnlyReplacements: Record<string, string> = {
   // Not allowed characters
   // Latex escaped characters are: \ & % $ # _ { } ~ ^
   '&': '\\&',
@@ -21,6 +21,10 @@ const textOnlyReplacements: Record<string, string> = {
   '{': '\\{',
   '}': '\\}',
   '^': '\\^',
+};
+
+const textOnlyReplacements: Record<string, string> = {
+  ...hrefOnlyReplacements,
   // quotes
   '’': "'",
   '‘': '`',
@@ -146,6 +150,26 @@ const mathReplacements: Record<string, string> = {
 };
 
 type SimpleTokens = { kind: 'math' | 'text'; text: string };
+
+export function hrefToLatexText(text: string) {
+  const replacedArray: SimpleTokens[] = Array(...(text ?? '')).map((char) => {
+    if (hrefOnlyReplacements[char]) return { kind: 'text', text: hrefOnlyReplacements[char] };
+    return { kind: 'text', text: char };
+  });
+
+  const replaced = replacedArray
+    .reduce((arr, next) => {
+      const prev = arr.slice(-1)[0];
+      if (prev?.kind === next.kind) prev.text += next.text;
+      else arr.push(next);
+      return arr;
+    }, [] as SimpleTokens[])
+    .reduce((s, next) => {
+      return s + next.text;
+    }, '');
+
+  return replaced;
+}
 
 export function stringToLatexText(text: string) {
   const escaped = (text ?? '')
