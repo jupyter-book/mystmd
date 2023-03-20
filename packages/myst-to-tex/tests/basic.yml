@@ -242,3 +242,18 @@ cases:
       \bottomrule
       \end{tabular}
       \end{table}
+  - title: href
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'my link: '
+            - type: link
+              url: https://example.com#^my_example
+              children:
+                - type: text
+                  value: my-example
+    latex: |-
+      my link: \href{https://example.com\#\^my\_example}{my-example}
