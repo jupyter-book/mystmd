@@ -3,7 +3,7 @@ import type { ITexSerializer } from './types';
 
 export const TOTAL_TABLE_WIDTH = 886;
 
-type TableCell = SpecTableCell & { colspan?: number; width?: number };
+type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
 export function renderPColumn(width: number) {
   if (width === 1) return `p{\\dimexpr \\linewidth-2\\tabcolsep}`;
@@ -29,7 +29,7 @@ export function getColumnWidths(node: Table) {
       return [...acc, ...colwidth];
     }, []);
     const nonNulls = maybeWidths.filter((maybeWidth: number) => maybeWidth > 0).length;
-    if (i === 0 || nonNulls >= mostNonNulls) {
+    if (i === 0 || maybeWidths.length > bestMaybeWidths.length || nonNulls > mostNonNulls) {
       mostNonNulls = nonNulls;
       bestMaybeWidths = maybeWidths;
       if (mostNonNulls === maybeWidths.length) {
@@ -79,12 +79,18 @@ function renderTableCell(
     state.write(`\\multicolumn{${colspan}}{${renderPColumn(width)}}{`);
     renderedSpan = colspan;
   }
+  const rowspan = cell.rowspan ?? 1;
+  if (rowspan > 1) {
+    state.usePackages('multirow');
+    state.write(`\\multirow{${rowspan}}{*}{`);
+  }
   if (cell.children.length === 1 && (cell.children[0].type as string) === 'paragraph') {
     // Render simple things inline, otherwise render a block
     state.renderChildren(cell.children[0], true);
   } else {
     state.renderChildren(cell, true);
   }
+  if (rowspan > 1) state.write('}');
   if (colspan > 1) state.write('}');
   if (i < childCount - 1) {
     state.write(' & ');
