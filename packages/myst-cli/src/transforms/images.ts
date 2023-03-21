@@ -153,7 +153,7 @@ export async function transformImages(
   mdast: Root,
   file: string,
   writeFolder: string,
-  opts?: { altOutputFolder?: string },
+  opts?: { altOutputFolder?: string; imageExtensions?: ImageExtensions[] },
 ) {
   const images = selectAll('image', mdast) as GenericNode[];
   return Promise.all(
@@ -167,11 +167,23 @@ export async function transformImages(
         return;
       }
       // Look up the image paths by known extensions if it is not provided
-      const imagePath = path.join(path.dirname(file), image.url);
+      // This also handles wildcard extensions, e.g. 'example.*'
+      const wildcardRegex = /\.\*$/;
+      const imagePath = path.join(path.dirname(file), image.url).replace(wildcardRegex, '');
       if (!fs.existsSync(imagePath)) {
-        const extension = KNOWN_IMAGE_EXTENSIONS.find((ext) => fs.existsSync(imagePath + ext));
+        const sortedExtensions = [
+          // Valid extensions
+          ...(opts?.imageExtensions ?? []),
+          // Convertable extensions
+          ...Object.keys(conversionFnLookup),
+          // All known extensions
+          ...KNOWN_IMAGE_EXTENSIONS,
+        ];
+        const extension = sortedExtensions.find((ext) => fs.existsSync(imagePath + ext));
         if (extension) {
-          image.url = image.url + extension;
+          const replacement = image.url.replace(wildcardRegex, '') + extension;
+          session.log.debug(`Resolving ${image.url} to ${replacement}`);
+          image.url = replacement;
           image.urlSource = image.url;
         }
       }
