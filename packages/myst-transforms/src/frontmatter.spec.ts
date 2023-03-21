@@ -283,43 +283,6 @@ describe('getFrontmatter', () => {
     });
     expect(frontmatter).toEqual({ title: 'My Title' });
   });
-  it('title is extracted from any heading if not in frontmatter', () => {
-    const input = {
-      type: 'root',
-      children: [
-        {
-          type: 'code',
-          lang: 'yaml',
-          value: 'subtitle: My Subtitle',
-        },
-        {
-          type: 'text',
-          value: 'hello',
-        },
-        {
-          type: 'text',
-          value: 'hello',
-        },
-        {
-          type: 'heading',
-          depth: 5,
-          children: [
-            {
-              type: 'text',
-              value: 'Small Title',
-            },
-          ],
-        },
-        {
-          type: 'text',
-          value: 'hello',
-        },
-      ],
-    };
-    const { tree, frontmatter } = getFrontmatter(input as Root, {});
-    expect(tree).toEqual(input);
-    expect(frontmatter).toEqual({ title: 'Small Title', subtitle: 'My Subtitle' });
-  });
   it('yaml code block creates frontmatter, nested in block', () => {
     const input = {
       type: 'root',

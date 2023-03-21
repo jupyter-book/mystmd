@@ -36,13 +36,6 @@ export function getFrontmatter(
       if (opts.removeHeading) (nextNode as any).type = '__delete__';
     }
   }
-  if (!frontmatter.title) {
-    const heading = select('heading', tree) as Heading;
-    if (heading) {
-      frontmatter.title = toText(heading.children);
-      if (opts.removeHeading) (heading as any).type = '__delete__';
-    }
-  }
   if (opts.removeHeading || opts.removeYaml) {
     // Handles deleting the block if it is the only element in the block
     const possibleNull = remove(tree, '__delete__');
