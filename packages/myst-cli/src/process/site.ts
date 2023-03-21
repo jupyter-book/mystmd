@@ -20,13 +20,20 @@ import { filterPages, loadProjectFromDisk } from '../project';
 import { castSession } from '../session';
 import type { ISession } from '../session/types';
 import { watch, selectors } from '../store';
-import { transformWebp } from '../transforms';
+import { ImageExtensions, transformWebp } from '../transforms';
 import { combineProjectCitationRenderers } from './citations';
 import { loadIntersphinx } from './intersphinx';
 import type { PageReferenceStates, TransformFn } from './mdast';
 import { postProcessMdast, transformMdast } from './mdast';
 
-const WEB_IMAGE_EXTENSIONS = ['.webp', '.svg', '.gif', '.png', '.jpg', '.jpeg'];
+const WEB_IMAGE_EXTENSIONS = [
+  ImageExtensions.webp,
+  ImageExtensions.svg,
+  ImageExtensions.gif,
+  ImageExtensions.png,
+  ImageExtensions.jpg,
+  ImageExtensions.jpeg,
+];
 
 type ProcessOptions = {
   watchMode?: boolean;
@@ -36,7 +43,7 @@ type ProcessOptions = {
   checkLinks?: boolean;
   imageWriteFolder?: string;
   imageAltOutputFolder?: string;
-  imageExtensions?: string[];
+  imageExtensions?: ImageExtensions[];
   extraLinkTransformers?: LinkTransformer[];
   extraTransforms?: TransformFn[];
   defaultTemplate?: string;
@@ -276,7 +283,7 @@ export async function processProject(
 
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
   const extraTransforms: TransformFn[] = [];
-  if (usedImageExtensions.includes('.webp')) {
+  if (usedImageExtensions.includes(ImageExtensions.webp)) {
     extraTransforms.push(transformWebp);
   }
   if (opts?.extraTransforms) {

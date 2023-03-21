@@ -20,6 +20,7 @@ import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../.
 import { loadProjectFromDisk } from '../../project';
 import { castSession } from '../../session';
 import type { ISession } from '../../session/types';
+import { ImageExtensions } from '../../transforms';
 import { createTempFolder, logMessagesFromVFile } from '../../utils';
 import type { ExportWithOutput, ExportOptions } from '../types';
 import {
@@ -31,7 +32,12 @@ import {
 } from '../utils';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
-const TEX_IMAGE_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg'];
+const TEX_IMAGE_EXTENSIONS = [
+  ImageExtensions.pdf,
+  ImageExtensions.png,
+  ImageExtensions.jpg,
+  ImageExtensions.jpeg,
+];
 
 export function mdastToTex(
   session: ISession,
