@@ -31,11 +31,10 @@ const pipe = unified()
   .use(mystToHast)
   .use(formatHtml)
   .use(rehypeStringify);
-const result = pipe.runSync('# Hello to the world!');
-const html = pipe.stringify(result);
 
-console.log(html);
->> "<h1>Hello to the world!</h1>"
+const file = pipe.processSync(':::{important}\nHello to the world!\n:::');
+console.log(file.value);
+>> <aside class="admonition important"><p class="admonition-title">Important</p><p>Hello to the world!</p></aside>
 ```
 
 In a browser:
