@@ -5,6 +5,7 @@ import type { GenericNode } from 'myst-common';
 import { liftChildren, normalizeLabel, setTextAsChild } from 'myst-common';
 import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
+import { selectAll } from 'unist-util-select';
 import { u } from 'unist-builder';
 import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown';
 import type { TokenHandlerSpec } from './types';
@@ -113,8 +114,13 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   },
   list_item: {
     type: 'listItem',
-    attrs: {
-      spread: true,
+    getAttrs(t) {
+      const attrs = { spread: true } as Record<string, any>;
+      if (t.attrGet('class') === 'task-list-item') {
+        // This is a temporary property used to clean up the AST in a subsequent pass
+        attrs.__taskList = true;
+      }
+      return attrs;
     },
   },
   em: {
@@ -496,6 +502,21 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
   //   if (titleNode.type === 'admonitionTitle' && titleNode.children?.[0]?.value === expectedTitle)
   //     node.children = children.slice(1);
   // });
+
+  // Change all task lists to checked
+  selectAll('listItem[__taskList=true]', tree).forEach((node: GenericNode) => {
+    delete node.__taskList;
+    const html = node.children?.slice(0, 1);
+    if (html && html[0].type === 'html' && html[0].value?.includes('task-list-item-checkbox')) {
+      node.checked = html[0].value.includes('checked=""');
+      // Remove the inline html
+      node.children?.splice(0, 1);
+      if (node.children?.[0].type === 'text') {
+        // Ensure that the parsing is the same as other text lists, that strip leading whitespace
+        node.children[0].value = (node.children[0].value as string).replace(/^\s/, '');
+      }
+    }
+  });
 
   // Move crossReference text value to children
   visit(tree, 'crossReference', (node: GenericNode) => {
