@@ -8,6 +8,7 @@ import type {
   Image as SpecImage,
   Admonition as SpecAdmonition,
   Code as SpecCode,
+  ListItem as SpecListItem,
 } from 'myst-spec';
 
 export type Delete = Parent & { type: 'delete' };
@@ -66,6 +67,10 @@ export type Admonition = SpecAdmonition & {
 
 export type Code = SpecCode & {
   executable?: boolean;
+};
+
+export type ListItem = SpecListItem & {
+  checked?: boolean;
 };
 
 export type CiteKind = 'narrative' | 'parenthetical';

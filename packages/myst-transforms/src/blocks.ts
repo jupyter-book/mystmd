@@ -1,7 +1,7 @@
 import type { VFile } from 'vfile';
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
-import type { Block, Node, Parent } from 'myst-spec';
+import type { Node, Parent } from 'myst-spec';
 import { select, selectAll } from 'unist-util-select';
 import { fileError, normalizeLabel } from 'myst-common';
 
