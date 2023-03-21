@@ -29,7 +29,7 @@ export function isInkscapeAvailable() {
   return which('inkscape', { nothrow: true });
 }
 
-async function convert(
+export async function convert(
   inputExtension: string,
   outputExtension: string,
   session: ISession,
@@ -59,16 +59,6 @@ async function convert(
     }
   }
   return filename;
-}
-
-export async function convertSvgToPng(session: ISession, input: string, writeFolder: string) {
-  const output = await convert('.svg', '.png', session, input, writeFolder);
-  return output;
-}
-
-export async function convertSvgToPdf(session: ISession, input: string, writeFolder: string) {
-  const output = await convert('.svg', '.pdf', session, input, writeFolder);
-  return output;
 }
 
 // EPS conversion functions do not work from the inkscape cli:

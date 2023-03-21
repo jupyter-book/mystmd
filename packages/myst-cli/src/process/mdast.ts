@@ -30,6 +30,7 @@ import type { ISession } from '../session/types';
 import { castSession } from '../session';
 import type { RendererData } from '../transforms/types';
 import { KINDS } from '../transforms/types';
+import type { ImageExtensions } from '../transforms';
 import {
   checkLinksTransform,
   embedDirective,
@@ -81,7 +82,7 @@ export async function transformMdast(
     projectSlug?: string;
     pageSlug?: string;
     imageAltOutputFolder?: string;
-    imageExtensions?: string[];
+    imageExtensions?: ImageExtensions[];
     watchMode?: boolean;
     extraTransforms?: TransformFn[];
     minifyMaxCharacters?: number;

@@ -13,6 +13,7 @@ import { findCurrentProjectAndLoad } from '../../config';
 import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter';
 import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session/types';
+import { ImageExtensions } from '../../transforms/types';
 import type { RendererData } from '../../transforms/types';
 import { createTempFolder, logMessagesFromVFile } from '../../utils';
 import type { ExportOptions, ExportWithOutput } from '../types';
@@ -27,7 +28,7 @@ import { createFooter } from './footers';
 import { createArticleTitle, createReferenceTitle } from './titles';
 import { TemplateKind } from 'myst-common';
 
-const DOCX_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
+const DOCX_IMAGE_EXTENSIONS = [ImageExtensions.png, ImageExtensions.jpg, ImageExtensions.jpeg];
 
 export async function collectWordExportOptions(
   session: ISession,

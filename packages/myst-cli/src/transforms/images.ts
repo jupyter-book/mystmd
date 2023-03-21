@@ -13,8 +13,7 @@ import { addWarningForFile, imagemagick, inkscape, KNOWN_IMAGE_EXTENSIONS } from
 import type { ISession } from '../session/types';
 import { castSession } from '../session';
 import { watch } from '../store';
-
-const DEFAULT_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
+import { ImageExtensions } from './types';
 
 function isBase64(data: string) {
   return data.split(';base64,').length === 2;
@@ -196,257 +195,254 @@ export async function transformImages(
   );
 }
 
-type ConversionFn = (session: ISession, svg: string, writeFolder: string) => Promise<string | null>;
+const DEFAULT_IMAGE_EXTENSIONS = [ImageExtensions.png, ImageExtensions.jpg, ImageExtensions.jpeg];
 
+type ConversionOpts = {
+  file: string;
+  inkscapeAvailable: boolean;
+  imagemagickAvailable: boolean;
+};
+
+type ConversionFn = (
+  session: ISession,
+  source: string,
+  writeFolder: string,
+  conversionOpts: ConversionOpts,
+) => Promise<string | null>;
+
+/**
+ * Factory function for all simple imagemagick conversions
+ */
+function imagemagickConvert(to: ImageExtensions, from: ImageExtensions) {
+  return async (session: ISession, source: string, writeFolder: string, opts: ConversionOpts) => {
+    const { imagemagickAvailable } = opts;
+    if (imagemagickAvailable) {
+      return imagemagick.convert(to, from, session, source, writeFolder);
+    }
+    return null;
+  };
+}
+
+/**
+ * svg -> pdf using inkscape
+ */
+async function svgToPdf(
+  session: ISession,
+  source: string,
+  writeFolder: string,
+  opts: ConversionOpts,
+) {
+  const { file, inkscapeAvailable, imagemagickAvailable } = opts;
+  if (inkscapeAvailable) {
+    return inkscape.convert(ImageExtensions.svg, ImageExtensions.pdf, session, source, writeFolder);
+  } else if (imagemagickAvailable) {
+    addWarningForFile(
+      session,
+      file,
+      'To convert .svg images to .pdf, you must install inkscape.',
+      'warn',
+      { note: 'Images converted to .png as a fallback using imagemagick.' },
+    );
+  }
+  return null;
+}
+
+/**
+ * svg -> png using inkscape or imagemagick
+ */
+async function svgToPng(
+  session: ISession,
+  source: string,
+  writeFolder: string,
+  opts: ConversionOpts,
+) {
+  const { inkscapeAvailable } = opts;
+  if (inkscapeAvailable) {
+    return inkscape.convert(ImageExtensions.svg, ImageExtensions.png, session, source, writeFolder);
+  }
+  return imagemagickConvert(ImageExtensions.svg, ImageExtensions.png)(
+    session,
+    source,
+    writeFolder,
+    opts,
+  );
+}
+
+/**
+ * gif -> png using imagemagick
+ */
+async function gifToPng(
+  session: ISession,
+  source: string,
+  writeFolder: string,
+  opts: ConversionOpts,
+) {
+  const { imagemagickAvailable } = opts;
+  if (imagemagickAvailable) {
+    return imagemagick.extractFirstFrameOfGif(session, source, writeFolder);
+  }
+  return null;
+}
+
+/**
+ * These are all the available image conversion functions
+ *
+ * Get the function to convert from one extension to another with
+ * conversionFnLookup[from][to]
+ */
+const conversionFnLookup: Record<string, Record<string, ConversionFn>> = {
+  [ImageExtensions.svg]: {
+    [ImageExtensions.pdf]: svgToPdf,
+    [ImageExtensions.png]: svgToPng,
+  },
+  [ImageExtensions.pdf]: {
+    [ImageExtensions.png]: imagemagickConvert(ImageExtensions.pdf, ImageExtensions.png),
+  },
+  [ImageExtensions.gif]: {
+    [ImageExtensions.png]: gifToPng,
+  },
+  [ImageExtensions.eps]: {
+    // Currently the inkscape CLI has a bug which prevents EPS conversions;
+    // once that is fixed, we may uncomment the rest of this section to
+    // enable better conversions, e.g. EPS -> SVG
+    // https://gitlab.com/inkscape/inkscape/-/issues/3524
+    [ImageExtensions.png]: imagemagickConvert(ImageExtensions.eps, ImageExtensions.png),
+  },
+  [ImageExtensions.tiff]: {
+    [ImageExtensions.png]: imagemagickConvert(ImageExtensions.tiff, ImageExtensions.png),
+  },
+  [ImageExtensions.tif]: {
+    [ImageExtensions.png]: imagemagickConvert(ImageExtensions.tif, ImageExtensions.png),
+  },
+};
+
+/**
+ * Returns a list of all available conversion functions from the input extension to valid extensions
+ *
+ * If multiple functions are available, they are ordered based on the order of validExts.
+ * Therefore validExts should have preferred formats first.
+ */
+export function getConversionFns(imageExt: string, validExts: ImageExtensions[]): ConversionFn[] {
+  if (!conversionFnLookup[imageExt]) return [];
+  const conversionFns: ConversionFn[] = [];
+  validExts.forEach((validExt) => {
+    const conversionFn = conversionFnLookup[imageExt][validExt];
+    if (conversionFn) conversionFns.push(conversionFn);
+  });
+  return conversionFns;
+}
+
+/**
+ * Transform to convert all images with known-but-unsupported extensions to supported extensions
+ *
+ * The `imageExtensions` option is a list of supported extensions, ordered by preference.
+ * For example you may use `imageExtensions = ['.svg', '.png']` so the vector svg
+ * format is preferred but fallback png is allowed.
+ *
+ * If an image extension is unknown or if there are no functions to covnert it to
+ * a valid extension, the image will remain unchanged.
+ */
 export async function transformImageFormats(
   session: ISession,
   mdast: Root,
   file: string,
   writeFolder: string,
-  opts?: { altOutputFolder?: string; imageExtensions?: string[] },
+  opts?: { altOutputFolder?: string; imageExtensions?: ImageExtensions[] },
 ) {
   const images = selectAll('image', mdast) as GenericNode[];
   // Ignore all images with supported extension types
   const validExts = opts?.imageExtensions ?? DEFAULT_IMAGE_EXTENSIONS;
-  const unsupportedImages = images.filter((image) => {
-    return !validExts.includes(path.extname(image.url));
-  });
-  if (unsupportedImages.length === 0) return;
 
-  // Gather unsupported SVG & GIF images that may be converted to supported types
-  const svgImages: GenericNode[] = [];
-  const gifImages: GenericNode[] = [];
-  const tiffImages: GenericNode[] = [];
-  const pdfImages: GenericNode[] = [];
-  const epsImages: GenericNode[] = [];
-  const unconvertableImages: GenericNode[] = [];
-
-  const allowConvertedSvg = validExts.includes('.png') || validExts.includes('.pdf');
-  const allowConvertedPdf = validExts.includes('.png') || !validExts.includes('.pdf');
-  const allowConvertedGif = validExts.includes('.png');
-  const allowConvertedTiff = validExts.includes('.png');
-  const allowConvertedEps = validExts.includes('.png'); // || validExts.includes('.pdf') || validExts.includes('.svg'); // inkscape
-
-  unsupportedImages.forEach((image) => {
-    if (allowConvertedSvg && path.extname(image.url) === '.svg') {
-      svgImages.push(image);
-    } else if (allowConvertedGif && path.extname(image.url) === '.gif') {
-      gifImages.push(image);
-    } else if (allowConvertedTiff && path.extname(image.url) === '.tiff') {
-      tiffImages.push(image);
-    } else if (allowConvertedPdf && path.extname(image.url) === '.pdf') {
-      pdfImages.push(image);
-    } else if (allowConvertedEps && path.extname(image.url) === '.eps') {
-      epsImages.push(image);
+  // Build a lookup of {[extension]: [list of images]} for extensions not in validExts
+  const invalidImages: Record<string, GenericNode[]> = {};
+  images.forEach((image) => {
+    const ext = path.extname(image.url);
+    if (validExts.includes(ext as ImageExtensions)) return;
+    if (invalidImages[ext]) {
+      invalidImages[ext].push(image);
     } else {
-      unconvertableImages.push(image);
+      invalidImages[ext] = [image];
     }
   });
+  if (Object.keys(invalidImages).length === 0) return;
 
-  const conversionPromises: Promise<void>[] = [];
-  const convert = async (image: GenericNode, conversionFn: ConversionFn) => {
+  const inkscapeAvailable = !!inkscape.isInkscapeAvailable();
+  const imagemagickAvailable = !!imagemagick.isImageMagickAvailable();
+
+  /**
+   * convert runs the input conversion functions on the image
+   *
+   * These functions are run in order until one succeeds or they all fail.
+   * On success, the image node is updated with the new converted image path.
+   * On failure, an error is reported.
+   */
+  const convert = async (image: GenericNode, conversionFns: ConversionFn[]) => {
     const inputFile = path.join(writeFolder, path.basename(image.url));
-    const outputFile = await conversionFn(session, inputFile, writeFolder);
+    let outputFile: string | null = null;
+    for (const conversionFn of conversionFns) {
+      if (!outputFile) {
+        outputFile = await conversionFn(session, inputFile, writeFolder, {
+          file,
+          inkscapeAvailable,
+          imagemagickAvailable,
+        });
+      }
+    }
     if (outputFile) {
       // Update mdast with new file name
       image.url = resolveOutputPath(outputFile, writeFolder, opts?.altOutputFolder);
       session.log.debug(`Successfully converted ${inputFile} -> ${image.url}`);
     } else {
       session.log.debug(`Failed to convert ${inputFile}`);
+      addWarningForFile(
+        session,
+        file,
+        `Cannot convert image "${path.basename(image.url)}" - may not correctly render.`,
+        'error',
+        {
+          note: 'To convert this image, you must install imagemagick',
+          position: image.position,
+        },
+      );
     }
   };
 
-  const inkscapeAvailable = inkscape.isInkscapeAvailable();
-  const imagemagickAvailable = imagemagick.isImageMagickAvailable();
-
-  // Convert SVGs
-  let svgConversionFn: ConversionFn | undefined;
-  if (svgImages.length) {
-    // Decide if we convert to PDF or PNG
-    const pngIndex = validExts.indexOf('.png');
-    const pdfIndex = validExts.indexOf('.pdf');
-    const svgToPdf = pdfIndex !== -1 && (pngIndex === -1 || pdfIndex < pngIndex);
-    const svgToPng = !svgToPdf || !inkscapeAvailable;
-    const logPrefix = `🌠 Converting ${svgImages.length} SVG image${
-      svgImages.length > 1 ? 's' : ''
-    } to`;
-    if (svgToPdf && inkscapeAvailable) {
-      session.log.info(`${logPrefix} PDF using inkscape`);
-      svgConversionFn = inkscape.convertSvgToPdf;
-    } else if (svgToPng && inkscapeAvailable) {
-      session.log.info(`${logPrefix} PNG using inkscape`);
-      svgConversionFn = inkscape.convertSvgToPng;
-    } else if (svgToPng && imagemagickAvailable) {
-      if (svgToPdf) {
-        addWarningForFile(
-          session,
-          file,
-          'To convert SVG images to PDF, you must install inkscape.',
-          'warn',
-          { note: 'Images converted to PNG as a fallback using imagemagick.' },
-        );
-      }
-      session.log.info(`${logPrefix} PNG using imagemagick`);
-      svgConversionFn = imagemagick.convertSvgToPng;
-    } else {
-      addWarningForFile(
-        session,
-        file,
-        'Cannot convert SVG images, they may not correctly render.',
-        'error',
-        { note: 'To convert these images, you must install imagemagick or inkscape' },
-      );
+  // Collect and flatten all image nodes with their corresponding conversion function
+  const conversionPromises: Promise<void>[] = [];
+  const conversionExts: string[] = [];
+  const unconvertableImages: GenericNode[] = [];
+  Object.entries(invalidImages).forEach(([ext, imageNodes]) => {
+    const conversionFns = getConversionFns(ext, validExts);
+    if (!conversionFns.length) {
+      unconvertableImages.push(...imageNodes);
+      return;
     }
-    if (svgConversionFn) {
-      conversionPromises.push(
-        ...svgImages.map(async (image) => await convert(image, svgConversionFn as ConversionFn)),
-      );
-    }
-  }
-
-  // Convert PDFs
-  let pdfConversionFn: ConversionFn | undefined;
-  if (pdfImages.length) {
-    if (imagemagickAvailable) {
-      session.log.info(
-        `🌠 Converting ${pdfImages.length} PDF image${
-          pdfImages.length > 1 ? 's' : ''
-        } to PNG using imagemagick`,
-      );
-      pdfConversionFn = imagemagick.convertPdfToPng;
-    } else {
-      addWarningForFile(
-        session,
-        file,
-        'Cannot convert PDF images, they may not correctly render.',
-        'error',
-        { note: 'To convert these images, you must install imagemagick' },
-      );
-    }
-    if (pdfConversionFn) {
-      conversionPromises.push(
-        ...pdfImages.map(async (image) => await convert(image, pdfConversionFn as ConversionFn)),
-      );
-    }
-  }
-
-  // Convert GIFs
-  let gifConversionFn: ConversionFn | undefined;
-  if (gifImages.length) {
-    if (imagemagickAvailable) {
-      session.log.info(
-        `🌠 Converting ${gifImages.length} GIF image${
-          gifImages.length > 1 ? 's' : ''
-        } to PNG using imagemagick`,
-      );
-      gifConversionFn = imagemagick.extractFirstFrameOfGif;
-    } else {
-      addWarningForFile(
-        session,
-        file,
-        'Cannot convert GIF images, they may not correctly render.',
-        'error',
-        { note: 'To convert these images, you must install imagemagick' },
-      );
-    }
-    if (gifConversionFn) {
-      conversionPromises.push(
-        ...gifImages.map(async (image) => await convert(image, gifConversionFn as ConversionFn)),
-      );
-    }
-  }
-
-  // Convert EPSs
-  // Currently the inkscape CLI has a bug which prevents EPS conversions;
-  // once that is fixed, we may uncomment the rest of this section to
-  // enable better conversions, e.g. EPS -> SVG
-  // https://gitlab.com/inkscape/inkscape/-/issues/3524
-  let epsConversionFn: ConversionFn | undefined;
-  if (epsImages.length) {
-    // Decide if we convert to PDF, SVG, or PNG
-    // const inkscapeOutputExt = validExts.filter((ext) => ['.pdf', '.svg', '.png'].includes(ext))[0];
-    const imagemagickOutputExt = validExts.filter((ext) => ['.png'].includes(ext))[0];
-    const logPrefix = `🌠 Converting ${epsImages.length} EPS image${
-      epsImages.length > 1 ? 's' : ''
-    } to`;
-    // if (inkscapeAvailable && inkscapeOutputExt === '.pdf') {
-    //   session.log.info(`${logPrefix} PDF using inkscape`);
-    //   epsConversionFn = inkscape.convertEpsToPdf;
-    // } else if (inkscapeAvailable && inkscapeOutputExt === '.svg') {
-    //   session.log.info(`${logPrefix} SVG using inkscape`);
-    //   epsConversionFn = inkscape.convertEpsToSvg;
-    // } else if (inkscapeAvailable && inkscapeOutputExt === '.png') {
-    //   session.log.info(`${logPrefix} PNG using inkscape`);
-    //   epsConversionFn = inkscape.convertEpsToPng;
-    // } else
-    if (imagemagickAvailable && imagemagickOutputExt === '.png') {
-      // if (inkscapeOutputExt && inkscapeOutputExt !== '.png') {
-      //   addWarningForFile(
-      //     session,
-      //     file,
-      //     `To convert EPS images to ${inkscapeOutputExt
-      //       .slice(1)
-      //       .toUpperCase()}, you must install inkscape.`,
-      //     'warn',
-      //     { note: 'Images converted to PNG as a fallback using imagemagick.' },
-      //   );
-      // }
-      session.log.info(`${logPrefix} PNG using imagemagick`);
-      epsConversionFn = imagemagick.convertEpsToPng;
-    } else {
-      addWarningForFile(
-        session,
-        file,
-        'Cannot convert EPS images, they may not correctly render.',
-        'error',
-        { note: 'To convert these images, you must install imagemagick' },
-      );
-    }
-    if (epsConversionFn) {
-      conversionPromises.push(
-        ...epsImages.map(async (image) => await convert(image, epsConversionFn as ConversionFn)),
-      );
-    }
-  }
-
-  // Convert TIFF images
-  let tiffConversionFn: ConversionFn | undefined;
-  if (tiffImages.length) {
-    const logPrefix = `🌠 Converting ${tiffImages.length} TIFF image${
-      tiffImages.length > 1 ? 's' : ''
-    } to`;
-    if (imagemagickAvailable) {
-      session.log.info(`${logPrefix} PNG using imagemagick`);
-      tiffConversionFn = imagemagick.convertTiffToPng;
-    } else {
-      addWarningForFile(
-        session,
-        file,
-        'Cannot convert TIFF images, they may not correctly render.',
-        'error',
-        { note: 'To convert these images, you must install imagemagick' },
-      );
-    }
-    if (tiffConversionFn) {
-      conversionPromises.push(
-        ...tiffImages.map(async (image) => await convert(image, tiffConversionFn as ConversionFn)),
-      );
-    }
-  }
-
-  // Warn on unsupported, unconvertable images
-  if (unconvertableImages.length) {
-    unconvertableImages.forEach((image) => {
-      const badExt = path.extname(image.url) || '<no extension>';
-      addWarningForFile(
-        session,
-        file,
-        `Unsupported image extension "${badExt}" may not correctly render.`,
-        'error',
-        { position: image.position },
-      );
+    conversionExts.push(ext);
+    imageNodes.forEach((node) => {
+      conversionPromises.push(convert(node, conversionFns));
     });
+  });
+  if (conversionPromises.length) {
+    session.log.info(
+      `🌠 Converting ${conversionPromises.length} image${
+        conversionPromises.length > 1 ? 's' : ''
+      } with extension${conversionExts.length > 1 ? 's' : ''} ${conversionExts.join(
+        ', ',
+      )} to supported format${validExts.length > 1 ? 's' : ''} ${validExts.join(', ')}`,
+    );
   }
+  unconvertableImages.forEach((image) => {
+    const badExt = path.extname(image.url) || '<no extension>';
+    addWarningForFile(
+      session,
+      file,
+      `Unsupported image extension "${badExt}" may not correctly render.`,
+      'error',
+      { position: image.position },
+    );
+  });
+
+  // Run the conversions!
   return Promise.all(conversionPromises);
 }
 

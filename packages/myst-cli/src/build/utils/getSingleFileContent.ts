@@ -8,6 +8,7 @@ import {
   transformMdast,
   processProject,
 } from '../../process';
+import type { ImageExtensions } from '../../transforms';
 import { reduceOutputs } from '../../transforms';
 
 export async function getSingleFileContent(
@@ -22,7 +23,7 @@ export async function getSingleFileContent(
   }: {
     projectPath?: string;
     imageAltOutputFolder?: string;
-    imageExtensions?: string[];
+    imageExtensions?: ImageExtensions[];
     extraLinkTransformers?: LinkTransformer[];
   },
 ) {
