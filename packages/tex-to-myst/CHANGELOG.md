@@ -1,5 +1,12 @@
 # tex-to-myst
 
+## 0.0.21
+
+### Patch Changes
+
+- Updated dependencies [45ecdf86]
+  - myst-spec-ext@0.0.9
+
 ## 0.0.20
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 0.0.9
+
+### Patch Changes
+
+- 45ecdf86: Improve parsing of tasklists for mdast
+
 ## 0.0.8
 
 ### Patch Changes

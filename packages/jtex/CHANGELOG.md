@@ -1,5 +1,16 @@
 # jtex
 
+## 0.1.9
+
+### Patch Changes
+
+- d12a6064: Support copying template files during export and writing relative paths; myst-cli uses this for tex exports
+- 3f800fc2: Write only 'myst: v1' not 'jtex: v1' in template.tex on 'jtex check --fix'
+- Updated dependencies [d12a6064]
+- Updated dependencies [d12a6064]
+  - myst-cli-utils@0.0.11
+  - myst-templates@0.1.11
+
 ## 0.1.8
 
 ### Patch Changes

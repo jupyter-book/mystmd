@@ -1,5 +1,12 @@
 # myst-cli-utils
 
+## 0.0.11
+
+### Patch Changes
+
+- d12a6064: Move hash/copy file function from myst-cli to myst-cli-utils
+- d12a6064: Support copying template files during export and writing relative paths; myst-cli uses this for tex exports
+
 ## 0.0.10
 
 ### Patch Changes

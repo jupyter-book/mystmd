@@ -1,5 +1,14 @@
 # myst-templates
 
+## 0.1.11
+
+### Patch Changes
+
+- d12a6064: Support copying template files during export and writing relative paths; myst-cli uses this for tex exports
+- Updated dependencies [d12a6064]
+- Updated dependencies [d12a6064]
+  - myst-cli-utils@0.0.11
+
 ## 0.1.10
 
 ### Patch Changes

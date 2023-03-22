@@ -1,6 +1,6 @@
 {
   "name": "myst-to-tex",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Export from MyST mdast to latex",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-to-tex",

@@ -1,5 +1,32 @@
 # myst-cli
 
+## 0.1.19
+
+### Patch Changes
+
+- d12a6064: Move hash/copy file function from myst-cli to myst-cli-utils
+- d12a6064: Support copying template files during export and writing relative paths; myst-cli uses this for tex exports
+- 8e8d0fa9: Refactor image conversion transform for extensibility and code deduplication
+- b383f68c: Resolve images with wildcard extensions to existing images
+- Updated dependencies [d12a6064]
+- Updated dependencies [762baee5]
+- Updated dependencies [45ecdf86]
+- Updated dependencies [45ecdf86]
+- Updated dependencies [d12a6064]
+- Updated dependencies [5a81cd36]
+- Updated dependencies [44026903]
+- Updated dependencies [3f800fc2]
+- Updated dependencies [5fc02589]
+  - myst-cli-utils@0.0.11
+  - myst-to-tex@0.0.21
+  - myst-parser@0.0.23
+  - myst-spec-ext@0.0.9
+  - jtex@0.1.9
+  - myst-templates@0.1.11
+  - myst-transforms@0.0.23
+  - myst-to-docx@0.0.18
+  - tex-to-myst@0.0.21
+
 ## 0.1.18
 
 ### Patch Changes

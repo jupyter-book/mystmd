@@ -1,5 +1,12 @@
 # myst-to-html
 
+## 0.0.23
+
+### Patch Changes
+
+- Updated dependencies [5fc02589]
+  - myst-transforms@0.0.23
+
 ## 0.0.22
 
 ### Patch Changes

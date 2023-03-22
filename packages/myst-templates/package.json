@@ -1,6 +1,6 @@
 {
   "name": "myst-templates",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "API types and scripts for downloading MyST Templates",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-templates",
@@ -47,7 +47,7 @@
     "chalk": "^4.1.2",
     "commander": "^8.3.0",
     "js-yaml": "^4.1.0",
-    "myst-cli-utils": "^0.0.10",
+    "myst-cli-utils": "^0.0.11",
     "myst-common": "^0.0.14",
     "myst-frontmatter": "^0.0.9",
     "node-fetch": "^2.6.7",

@@ -1,5 +1,13 @@
 # myst-to-tex
 
+## 0.0.21
+
+### Patch Changes
+
+- 762baee5: Use \newline instead of \\ for breaks in latex export
+- 5a81cd36: Use non-normalized label for latex figure
+- 44026903: Escape basic characters in latex href
+
 ## 0.0.20
 
 ### Patch Changes

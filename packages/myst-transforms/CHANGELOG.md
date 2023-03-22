@@ -1,5 +1,13 @@
 # myst-transforms
 
+## 0.0.23
+
+### Patch Changes
+
+- 5fc02589: Stop hoisting deep headings into frontmatter title
+- Updated dependencies [45ecdf86]
+  - myst-spec-ext@0.0.9
+
 ## 0.0.22
 
 ### Patch Changes
