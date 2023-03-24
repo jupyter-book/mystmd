@@ -9,7 +9,9 @@ cases:
               value: text
     jats: |-
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
-        <p>text</p>
+        <body>
+          <p>text</p>
+        </body>
       </article>
   - title: Biblio frontmatter
     tree:
@@ -35,7 +37,9 @@ cases:
             <lpage>20</lpage>
           </article-meta>
         </front>
-        <p>text</p>
+        <body>
+          <p>text</p>
+        </body>
       </article>
   - title: License frontmatter
     tree:
@@ -60,7 +64,9 @@ cases:
             </permissions>
           </article-meta>
         </front>
-        <p>text</p>
+        <body>
+          <p>text</p>
+        </body>
       </article>
   - title: Author frontmatter
     tree:
@@ -107,7 +113,9 @@ cases:
             </contrib>
           </article-meta>
         </front>
-        <p>text</p>
+        <body>
+          <p>text</p>
+        </body>
       </article>
   - title: Footnotes
     tree:
@@ -130,12 +138,15 @@ cases:
               identifier: my-footnote
     jats: |-
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
-        <p>text
-          <xref ref-type="fn" rid="my-footnote"/>
-        </p>
+        <body>
+          <p>text
+            <xref ref-type="fn" rid="my-footnote"/>
+          </p>
+        </body>
         <back>
           <fn-group>
             <fn id="my-footnote">
+              <label>my-footnote</label>
               <p>my footnote</p>
             </fn>
           </fn-group>
@@ -164,10 +175,12 @@ cases:
                       value: Doe, 2000
     jats: |-
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
-        <p>(
-          <xref ref-type="bibr" rid="Smith_2023">Smith, 2023</xref>; 
-          <xref ref-type="bibr" rid="Doe_2000">Doe, 2000</xref>)
-        </p>
+        <body>
+          <p>(
+            <xref ref-type="bibr" rid="Smith_2023">Smith, 2023</xref>; 
+            <xref ref-type="bibr" rid="Doe_2000">Doe, 2000</xref>)
+          </p>
+        </body>
       </article>
   - title: Cite group - narrative
     tree:
@@ -192,10 +205,12 @@ cases:
                       value: Doe, 2000
     jats: |-
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
-        <p>
-          <xref ref-type="bibr" rid="Smith_2023">Smith, 2023</xref>, 
-          <xref ref-type="bibr" rid="Doe_2000">Doe, 2000</xref>
-        </p>
+        <body>
+          <p>
+            <xref ref-type="bibr" rid="Smith_2023">Smith, 2023</xref>, 
+            <xref ref-type="bibr" rid="Doe_2000">Doe, 2000</xref>
+          </p>
+        </body>
       </article>
   - title: Cite
     tree:
@@ -208,7 +223,9 @@ cases:
               identifier: smith_2023
     jats: |-
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
-        <p>
-          <xref ref-type="bibr" rid="Smith_2023"/>
-        </p>
+        <body>
+          <p>
+            <xref ref-type="bibr" rid="Smith_2023"/>
+          </p>
+        </body>
       </article>

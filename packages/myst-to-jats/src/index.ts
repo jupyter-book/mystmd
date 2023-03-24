@@ -271,7 +271,9 @@ const handlers: Record<string, Handler> = {
   },
   footnoteDefinition(node, state) {
     state.openNode('fn', { id: node.identifier });
-    // label -> enumerator
+    state.openNode('label');
+    state.text(node.label);
+    state.closeNode();
     state.renderChildren(node);
     const element = state.stack.pop();
     if (element) state.footnotes.push(element);
@@ -402,7 +404,7 @@ class JatsSerializer implements IJatsSerializer {
     const back = getBack(this.options.bibliography, this.footnotes);
     const elements: Element[] = [];
     if (front) elements.push(front);
-    elements.push(...this.body());
+    elements.push({ type: 'element', name: 'body', elements: this.body() });
     if (back) elements.push(back);
     const article: Element = {
       type: 'element',

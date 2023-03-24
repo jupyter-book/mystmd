@@ -224,5 +224,6 @@ export function getArticleMeta(frontmatter: ProjectFrontmatter): Element[] {
 export function getFront(frontmatter?: ProjectFrontmatter): Element | null {
   if (!frontmatter) return null;
   const elements: Element[] = [...getJournalMeta(frontmatter), ...getArticleMeta(frontmatter)];
+  if (!elements.length) return null;
   return { type: 'element', name: 'front', elements };
 }
