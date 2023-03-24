@@ -1,6 +1,6 @@
 import type { GenericNode, GenericParent } from 'myst-common';
 import { processLatexToAstViaUnified } from '@unified-latex/unified-latex';
-import { getArguments } from './utils';
+import { getArguments, isSpecialSymbol } from './utils';
 
 function parseArgument(node: GenericNode, next: GenericNode): boolean {
   if (!node.args) node.args = [];
@@ -10,7 +10,7 @@ function parseArgument(node: GenericNode, next: GenericNode): boolean {
     node.args.push({ type: 'argument', openMark: '{', closeMark: '}', ...rest });
     return true;
   }
-  if (next.type === 'string' || next.type === 'whitespace') {
+  if (next.type === 'string' || next.type === 'whitespace' || isSpecialSymbol(next)) {
     if (next.content === '*') {
       node.star = true;
       if (node.position && next.position) node.position.end = next.position.end;

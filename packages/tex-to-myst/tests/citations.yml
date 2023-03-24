@@ -110,6 +110,22 @@ cases:
                   kind: parenthetical
                   label: jon90
                   identifier: jon90
+  - title: Suffix with macro
+    # TODO:  \`{o} or other macro in the suffix
+    tex: \citet[  Figures 4 \& 5 ]{jon90}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: narrative
+              suffix: Figures 4 & 5
+              children:
+                - type: cite
+                  kind: narrative
+                  label: jon90
+                  identifier: jon90
   - title: Partial citations
     tex: \citeauthor{jon90}\citeauthor*{jon90}\citeyear{jon90}\citeyearpar{jon90}
     tree:
