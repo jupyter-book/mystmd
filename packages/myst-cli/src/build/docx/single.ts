@@ -27,6 +27,7 @@ import {
 import { createFooter } from './footers';
 import { createArticleTitle, createReferenceTitle } from './titles';
 import { TemplateKind } from 'myst-common';
+import { selectAll } from 'unist-util-select';
 
 const DOCX_IMAGE_EXTENSIONS = [ImageExtensions.png, ImageExtensions.jpg, ImageExtensions.jpeg];
 
@@ -140,7 +141,7 @@ function defaultWordRenderer(
     const referencesRoot = htmlTransform({ type: 'root', children: referencesDocStates as any });
     serializer.renderChildren(referencesRoot);
   }
-  Object.values(references.footnotes ?? {}).forEach((footnote) => {
+  selectAll('footnoteDefinition', mdast).forEach((footnote) => {
     serializer.render(footnote);
   });
   const logo = path.join(staticPath, 'logo.png');

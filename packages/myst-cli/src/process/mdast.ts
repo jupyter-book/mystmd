@@ -114,7 +114,6 @@ export async function transformMdast(
     : getPageFrontmatter(session, mdast, file, projectPath);
   const references: References = {
     cite: { order: [], data: {} },
-    footnotes: {},
   };
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
@@ -163,7 +162,7 @@ export async function transformMdast(
   transformCitations(log, mdast, fileCitationRenderer, references, file);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
-    .use(footnotesPlugin, { references }) // Needs to happen near the end
+    .use(footnotesPlugin) // Needs to happen near the end
     .run(mdast, vfile);
   await transformImages(session, mdast, file, imageWriteFolder, {
     altOutputFolder: imageAltOutputFolder,

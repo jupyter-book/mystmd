@@ -8,6 +8,8 @@ import { renderNodeToLatex } from './tables';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types';
 import { getLatexImageWidth, hrefToLatexText, stringToLatexMath, stringToLatexText } from './utils';
 import MATH_HANDLERS from './math';
+import { selectAll } from 'unist-util-select';
+import type { FootnoteDefinition } from 'myst-spec-ext';
 
 export type { LatexResult } from './types';
 
@@ -256,7 +258,7 @@ const handlers: Record<string, Handler> = {
   },
   footnoteReference(node, state) {
     if (!node.identifier) return;
-    const footnote = state.references.footnotes?.[node.identifier];
+    const footnote = state.footnotes[node.identifier];
     if (!footnote) {
       fileError(state.file, `Unknown footnote identifier "${node.identifier}"`, {
         node,
@@ -277,14 +279,22 @@ class TexSerializer implements ITexSerializer {
   options: Options;
   handlers: Record<string, Handler>;
   references: References;
+  footnotes: Record<string, FootnoteDefinition>;
 
-  constructor(file: VFile, opts?: Options) {
+  constructor(file: VFile, tree: Root, opts?: Options) {
     file.result = '';
     this.file = file;
     this.options = opts ?? {};
     this.data = { mathPlugins: {}, imports: new Set() };
     this.handlers = opts?.handlers ?? handlers;
     this.references = opts?.references ?? {};
+    this.footnotes = Object.fromEntries(
+      selectAll('footnoteDefinition', tree).map((node) => {
+        const fn = node as FootnoteDefinition;
+        return [fn.identifier, fn];
+      }),
+    );
+    this.renderChildren(tree);
   }
 
   get out(): string {
@@ -363,8 +373,7 @@ class TexSerializer implements ITexSerializer {
 
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
   this.Compiler = (node, file) => {
-    const state = new TexSerializer(file, opts ?? { handlers });
-    state.renderChildren(node);
+    const state = new TexSerializer(file, node, opts ?? { handlers });
     const tex = (file.result as string).trim();
     const result: LatexResult = {
       imports: [...state.data.imports],

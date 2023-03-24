@@ -1,16 +1,9 @@
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
-import type { References } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
-import { remove } from 'unist-util-remove';
-import { keysTransform } from './keys';
 import { fileWarn } from 'myst-common';
-
-type Options = {
-  references: Pick<References, 'footnotes'>;
-};
 
 function nextNumber(current: number, reserved: Set<number>): number {
   do {
@@ -21,16 +14,15 @@ function nextNumber(current: number, reserved: Set<number>): number {
 
 const TRANSFORM_SOURCE = 'myst-transforms:footnotes';
 
-export function footnotesTransform(mdast: Root, file: VFile, opts: Options) {
+export function footnotesTransform(mdast: Root, file: VFile) {
   const footnotes = selectAll('footnoteDefinition', mdast) as FootnoteDefinition[];
-  opts.references.footnotes = Object.fromEntries(
+  const footnotesLookup = Object.fromEntries(
     footnotes.map((n) => {
       // Clear out the number
       delete n.number;
-      return [n.identifier, keysTransform(n)];
+      return [n.identifier, n];
     }),
   );
-  remove(mdast, 'footnoteDefinition');
   const references = selectAll('footnoteReference', mdast) as FootnoteReference[];
   const reserved = new Set(
     references.map((r) => Number(r.identifier)).filter((num) => !Number.isNaN(num) && num > 0),
@@ -44,7 +36,7 @@ export function footnotesTransform(mdast: Root, file: VFile, opts: Options) {
       });
       return;
     }
-    const def = opts.references.footnotes?.[node.identifier] as FootnoteDefinition | undefined;
+    const def = footnotesLookup[node.identifier] as FootnoteDefinition | undefined;
     if (!def) {
       fileWarn(file, `No footnoteDefinition found for ${node.identifier}`, {
         node,
@@ -64,6 +56,6 @@ export function footnotesTransform(mdast: Root, file: VFile, opts: Options) {
   });
 }
 
-export const footnotesPlugin: Plugin<[Options], Root, Root> = (opts) => (tree, file) => {
-  footnotesTransform(tree, file, opts);
+export const footnotesPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
+  footnotesTransform(tree, file);
 };

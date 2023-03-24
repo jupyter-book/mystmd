@@ -25,7 +25,6 @@ export type Footnotes = Record<string, FootnoteDefinition>;
 
 export type References = {
   cite?: Citations;
-  footnotes?: Footnotes;
   article?: Root;
 };
 
