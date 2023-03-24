@@ -144,12 +144,12 @@ async function resolvePageExports(session: ISession, file: string, projectPath: 
     await collectExportOptions(
       session,
       [file],
-      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex],
+      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex, ExportFormats.xml],
       { projectPath },
     )
   )
     .filter((exp) => {
-      return ['.docx', '.pdf', '.zip'].includes(extname(exp.output));
+      return ['.docx', '.pdf', '.zip', '.xml'].includes(extname(exp.output));
     })
     .filter((exp) => {
       return fs.existsSync(exp.output);

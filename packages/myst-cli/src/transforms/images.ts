@@ -502,8 +502,9 @@ export async function transformWebp(
   const cache = castSession(session);
   const postData = cache.$mdast[opts.file].post;
   if (!postData) throw new Error(`Expected mdast to be processed and transformed for ${file}`);
-  const { mdast, frontmatter } = postData;
+  if (!fs.existsSync(imageWriteFolder)) return; // No images exist to copy - not necessarily an error
   const writeFolderContents = fs.readdirSync(imageWriteFolder);
+  const { mdast, frontmatter } = postData;
   const images = selectAll('image', mdast) as GenericNode[];
   await Promise.all(
     images.map(async (image) => {

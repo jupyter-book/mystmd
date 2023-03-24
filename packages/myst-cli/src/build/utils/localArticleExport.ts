@@ -7,6 +7,7 @@ import type { ExportOptions, ExportWithInputOutput } from '../types';
 import { resolveAndLogErrors } from './resolveAndLogErrors';
 import { runTexZipExport, runTexExport } from '../tex/single';
 import { runWordExport } from '../docx/single';
+import { runJatsExport } from '../jats/single';
 import { texExportOptionsFromPdf } from '../pdf/single';
 import { createPdfGivenTexExport } from '../pdf/create';
 
@@ -37,6 +38,8 @@ export async function localArticleExport(
         }
       } else if (format === ExportFormats.docx) {
         await runWordExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
+      } else if (format === ExportFormats.xml) {
+        await runJatsExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
       } else {
         const keepTexAndLogs = format === ExportFormats.pdftex;
         const texExportOptions = texExportOptionsFromPdf(

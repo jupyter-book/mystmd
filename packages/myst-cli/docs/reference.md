@@ -41,7 +41,7 @@ myst init --write-toc
 
 ## MyST Build
 
-`myst build` is used to export pdf, tex, and docx artifacts from MyST files, as well as build MyST websites containing all content from MyST project(s).
+`myst build` is used to export pdf, tex, docx, and JATS xml artifacts from MyST files, as well as build MyST websites containing all content from MyST project(s).
 
 From within a [project](#myst-init) you may run this command with no arguments and it will perform all exports defined in the frontmatter of project files, as well as build the content for a site, if a `site` config is defined:
 
@@ -49,7 +49,7 @@ From within a [project](#myst-init) you may run this command with no arguments a
 myst build
 ```
 
-You may specify `--pdf`, `--tex`, and/or `--docx` to only export those types of static files:
+You may specify `--pdf`, `--tex`, `--docx`, and/or `--xml` to only export those types of static files:
 
 ```
 myst build --pdf

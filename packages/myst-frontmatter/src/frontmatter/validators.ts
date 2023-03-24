@@ -409,6 +409,7 @@ export function validateExportsList(input: any, opts: ValidationOptions): Export
 function validateExportFormat(input: any, opts: ValidationOptions): ExportFormats | undefined {
   if (input === undefined) return undefined;
   if (input === 'tex+pdf') input = 'pdf+tex';
+  if (input === 'jats') input = 'xml';
   const format = validateEnum<ExportFormats>(input, { ...opts, enum: ExportFormats });
   return format;
 }
