@@ -1,0 +1,214 @@
+cases:
+  - title: Simple Paragraph
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
+        <p>text</p>
+      </article>
+  - title: Biblio frontmatter
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+    frontmatter:
+      biblio:
+        first_page: 10
+        last_page: 20
+        issue: 2
+        volume: 1
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta>
+            <volume>1</volume>
+            <issue>2</issue>
+            <fpage>10</fpage>
+            <lpage>20</lpage>
+          </article-meta>
+        </front>
+        <p>text</p>
+      </article>
+  - title: License frontmatter
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+    frontmatter:
+      license:
+        content:
+          url: https://creativecommons.org/licenses/by/4.0
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta>
+            <permissions>
+              <license>
+                <ali:license_ref xmlns:ali="http://www.niso.org/schemas/ali/1.0/">https://creativecommons.org/licenses/by/4.0</ali:license_ref>
+              </license>
+            </permissions>
+          </article-meta>
+        </front>
+        <p>text</p>
+      </article>
+  - title: Author frontmatter
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+    frontmatter:
+      authors:
+        - name: Jane Doe
+          corresponding: true
+          orcid: abc-123
+          roles:
+            - credit role 1
+            - credit role 2
+          affiliations:
+            - University One
+            - University Two
+          email: example@example.com
+          website: https://example.com
+        - name: John Doe
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta>
+            <contrib contrib-type="author" corresp="yes">
+              <contrib-id contrib-id-type="orcid">abc-123</contrib-id>
+              <string-name>Jane Doe</string-name>
+              <role vocab="CRediT" vocab-identifier="http://credit.niso.org/" vocab-term="credit role 1">credit role 1</role>
+              <role vocab="CRediT" vocab-identifier="http://credit.niso.org/" vocab-term="credit role 2">credit role 2</role>
+              <aff>
+                <institution>University One</institution>
+              </aff>
+              <aff>
+                <institution>University Two</institution>
+              </aff>
+              <email>example@example.com</email>
+              <ext-link ext-link-type="uri" xlink:href="https://example.com">https://example.com</ext-link>
+            </contrib>
+            <contrib contrib-type="author">
+              <string-name>John Doe</string-name>
+            </contrib>
+          </article-meta>
+        </front>
+        <p>text</p>
+      </article>
+  - title: Footnotes
+    tree:
+      type: root
+      children:
+        - type: footnoteDefinition
+          label: my-footnote
+          identifier: my-footnote
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: my footnote
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+            - type: footnoteReference
+              label: my-footnote
+              identifier: my-footnote
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
+        <p>text
+          <xref ref-type="fn" rid="my-footnote"/>
+        </p>
+        <back>
+          <fn-group>
+            <fn id="my-footnote">
+              <p>my footnote</p>
+            </fn>
+          </fn-group>
+        </back>
+      </article>
+  - title: Cite group - parenthetical
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: parenthetical
+              children:
+                - type: cite
+                  label: Smith_2023
+                  identifier: smith_2023
+                  children:
+                    - type: text
+                      value: Smith, 2023
+                - type: cite
+                  label: Doe_2000
+                  identifier: doe_2000
+                  children:
+                    - type: text
+                      value: Doe, 2000
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
+        <p>(
+          <xref ref-type="bibr" rid="Smith_2023">Smith, 2023</xref>; 
+          <xref ref-type="bibr" rid="Doe_2000">Doe, 2000</xref>)
+        </p>
+      </article>
+  - title: Cite group - narrative
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: narrative
+              children:
+                - type: cite
+                  label: Smith_2023
+                  identifier: smith_2023
+                  children:
+                    - type: text
+                      value: Smith, 2023
+                - type: cite
+                  label: Doe_2000
+                  identifier: doe_2000
+                  children:
+                    - type: text
+                      value: Doe, 2000
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
+        <p>
+          <xref ref-type="bibr" rid="Smith_2023">Smith, 2023</xref>, 
+          <xref ref-type="bibr" rid="Doe_2000">Doe, 2000</xref>
+        </p>
+      </article>
+  - title: Cite
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: Smith_2023
+              identifier: smith_2023
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dtd-version="1.3" xml:lang="en">
+        <p>
+          <xref ref-type="bibr" rid="Smith_2023"/>
+        </p>
+      </article>
