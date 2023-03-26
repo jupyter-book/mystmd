@@ -37,6 +37,14 @@ cases:
     latex: |-
       % hello
       % world
+  - title: comment - empty
+    mdast:
+      type: root
+      children:
+        - type: comment
+          value: null
+    latex: |-
+      %
   - title: figure directive - no caption/legend
     mdast:
       type: root

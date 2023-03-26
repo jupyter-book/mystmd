@@ -116,12 +116,12 @@ const handlers: Record<string, Handler> = {
   },
   mystComment(node, state) {
     state.ensureNewLine();
-    state.write(`% ${node.value.split('\n').join('\n% ')}`);
+    state.write(`% ${node.value?.split('\n').join('\n% ') ?? ''}`);
     state.closeBlock(node);
   },
   comment(node, state) {
     state.ensureNewLine();
-    state.write(`% ${node.value.split('\n').join('\n% ')}`);
+    state.write(`% ${node.value?.split('\n').join('\n% ') ?? ''}`);
     state.closeBlock(node);
   },
   strong(node, state) {
