@@ -427,7 +427,7 @@ class JatsSerializer implements IJatsSerializer {
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
   this.Compiler = (node, file) => {
     const tree = copyNode(node) as any;
-    basicTransformations(tree, file);
+    basicTransformations(tree);
     const state = new JatsSerializer(file, tree, opts ?? { handlers });
     const elements = opts?.fullArticle ? [state.article()] : state.body();
     const jats = js2xml(

@@ -1,12 +1,12 @@
 import type { ProjectFrontmatter } from 'myst-frontmatter';
 import type { Element } from './types';
 
-export function getJournalIds(frontmatter: ProjectFrontmatter): Element[] {
+export function getJournalIds(): Element[] {
   // [{ type: 'element', name: 'journal-id', attributes: {'journal-id-type': ...}, text: ...}]
   return [];
 }
 
-export function getJournalTitleGroup(frontmatter: ProjectFrontmatter): Element[] {
+export function getJournalTitleGroup(): Element[] {
   const elements: Element[] = [];
   // { type: 'element', name: 'journal-title', text: ...}
   // { type: 'element', name: 'journal-subtitle', text: ...}
@@ -15,28 +15,28 @@ export function getJournalTitleGroup(frontmatter: ProjectFrontmatter): Element[]
   return elements.length ? [{ type: 'element', name: 'journal-title-group', elements }] : [];
 }
 
-export function getJournalAffiliations(frontmatter: ProjectFrontmatter): Element[] {
+export function getJournalAffiliations(): Element[] {
   // contrib-group, aff, aff-alternatives
   return [];
 }
 
-export function getJournalISNs(frontmatter: ProjectFrontmatter): Element[] {
+export function getJournalISNs(): Element[] {
   // issn, issn-l, isbn...
   return [];
 }
 
-export function getJournalPublisher(frontmatter: ProjectFrontmatter): Element[] {
+export function getJournalPublisher(): Element[] {
   // publisher name, publisher loc
   return [];
 }
 
-export function getJournalMeta(frontmatter: ProjectFrontmatter): Element[] {
+export function getJournalMeta(): Element[] {
   const elements = [
-    ...getJournalIds(frontmatter),
-    ...getJournalTitleGroup(frontmatter),
-    ...getJournalAffiliations(frontmatter),
-    ...getJournalISNs(frontmatter),
-    ...getJournalPublisher(frontmatter),
+    ...getJournalIds(),
+    ...getJournalTitleGroup(),
+    ...getJournalAffiliations(),
+    ...getJournalISNs(),
+    ...getJournalPublisher(),
     // notes
     // self-url
   ];
@@ -223,7 +223,7 @@ export function getArticleMeta(frontmatter: ProjectFrontmatter): Element[] {
 
 export function getFront(frontmatter?: ProjectFrontmatter): Element | null {
   if (!frontmatter) return null;
-  const elements: Element[] = [...getJournalMeta(frontmatter), ...getArticleMeta(frontmatter)];
+  const elements: Element[] = [...getJournalMeta(), ...getArticleMeta(frontmatter)];
   if (!elements.length) return null;
   return { type: 'element', name: 'front', elements };
 }

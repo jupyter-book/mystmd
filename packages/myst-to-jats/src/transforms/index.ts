@@ -1,6 +1,5 @@
 import type { Root } from 'mdast';
 import type { Plugin } from 'unified';
-import type { VFile } from 'vfile';
 
 import { definitionTransform } from './definitions';
 import { containerTransform } from './containers';
@@ -13,7 +12,7 @@ export { containerTransform, containerPlugin } from './containers';
 export { tableTransform, tablePlugin } from './tables';
 export { sectionTransform, sectionPlugin } from './sections';
 
-export function basicTransformations(tree: Root, file: VFile) {
+export function basicTransformations(tree: Root) {
   definitionTransform(tree);
   containerTransform(tree);
   tableTransform(tree);
@@ -21,6 +20,6 @@ export function basicTransformations(tree: Root, file: VFile) {
   citeGroupTransform(tree);
 }
 
-export const basicTransformationsPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
-  basicTransformations(tree, file);
+export const basicTransformationsPlugin: Plugin<[], Root, Root> = () => (tree) => {
+  basicTransformations(tree);
 };
