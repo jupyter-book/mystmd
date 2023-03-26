@@ -30,7 +30,6 @@ import type { ISession } from '../session/types';
 import { castSession } from '../session';
 import type { RendererData } from '../transforms/types';
 import { KINDS } from '../transforms/types';
-import type { ImageExtensions } from '../transforms';
 import {
   checkLinksTransform,
   embedDirective,
@@ -45,6 +44,7 @@ import {
   transformThumbnail,
   StaticFileTransformer,
 } from '../transforms';
+import type { ImageExtensions } from '../utils';
 import { logMessagesFromVFile } from '../utils';
 import { combineCitationRenderers } from './citations';
 import { bibFilesInDir, selectFile } from './file';

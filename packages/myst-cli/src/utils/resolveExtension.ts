@@ -2,19 +2,20 @@ import fs from 'fs';
 import path from 'path';
 import { isDirectory } from './isDirectory';
 
+export enum ImageExtensions {
+  png = '.png',
+  jpg = '.jpg',
+  jpeg = '.jpeg',
+  svg = '.svg',
+  gif = '.gif',
+  tiff = '.tiff',
+  tif = '.tif',
+  pdf = '.pdf',
+  eps = '.eps',
+  webp = '.webp',
+}
+export const KNOWN_IMAGE_EXTENSIONS = Object.values(ImageExtensions);
 export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb', '.tex'];
-export const KNOWN_IMAGE_EXTENSIONS = [
-  '.png',
-  '.tif',
-  '.tiff',
-  '.jpg',
-  '.jpeg',
-  '.gif',
-  '.webp',
-  '.svg',
-  '.pdf',
-  '.eps',
-];
 export const KNOWN_FAST_BUILDS = new Set(['.ipynb', '.md', '.tex']);
 
 export function isValidFile(file: string): boolean {

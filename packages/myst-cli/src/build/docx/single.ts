@@ -13,9 +13,8 @@ import { findCurrentProjectAndLoad } from '../../config';
 import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter';
 import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session/types';
-import { ImageExtensions } from '../../transforms/types';
 import type { RendererData } from '../../transforms/types';
-import { createTempFolder, logMessagesFromVFile } from '../../utils';
+import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils';
 import type { ExportOptions, ExportWithOutput } from '../types';
 import {
   getDefaultExportFilename,

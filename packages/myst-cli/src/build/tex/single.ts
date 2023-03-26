@@ -20,8 +20,7 @@ import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../.
 import { loadProjectFromDisk } from '../../project';
 import { castSession } from '../../session';
 import type { ISession } from '../../session/types';
-import { ImageExtensions } from '../../transforms';
-import { createTempFolder, logMessagesFromVFile } from '../../utils';
+import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils';
 import type { ExportWithOutput, ExportOptions } from '../types';
 import {
   cleanOutput,

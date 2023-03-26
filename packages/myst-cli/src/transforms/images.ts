@@ -9,11 +9,16 @@ import path from 'path';
 import type { VFileMessage } from 'vfile-message';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { extFromMimeType } from 'nbtx';
-import { addWarningForFile, imagemagick, inkscape, KNOWN_IMAGE_EXTENSIONS } from '../utils';
+import {
+  addWarningForFile,
+  ImageExtensions,
+  imagemagick,
+  inkscape,
+  KNOWN_IMAGE_EXTENSIONS,
+} from '../utils';
 import type { ISession } from '../session/types';
 import { castSession } from '../session';
 import { watch } from '../store';
-import { ImageExtensions } from './types';
 
 function isBase64(data: string) {
   return data.split(';base64,').length === 2;

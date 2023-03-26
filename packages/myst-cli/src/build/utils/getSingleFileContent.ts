@@ -8,8 +8,8 @@ import {
   transformMdast,
   processProject,
 } from '../../process';
-import type { ImageExtensions } from '../../transforms';
 import { reduceOutputs } from '../../transforms';
+import type { ImageExtensions } from '../../utils';
 
 export async function getSingleFileContent(
   session: ISession,
