@@ -123,14 +123,18 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
 
 export function getArticlePermissions(frontmatter: ProjectFrontmatter): Element[] {
   // copyright-statement, -year, -holder
-  // ali:free_to_read
   const text = frontmatter.license?.content?.url ?? frontmatter.license?.code?.url;
+  // Add `<ali:free_to_read />` to the permissions
+  const freeToRead: Element[] = frontmatter.open_access
+    ? [{ type: 'element', name: 'ali:free_to_read' }]
+    : [];
   return text
     ? [
         {
           type: 'element',
           name: 'permissions',
           elements: [
+            ...freeToRead,
             {
               type: 'element',
               name: 'license',
@@ -138,7 +142,6 @@ export function getArticlePermissions(frontmatter: ProjectFrontmatter): Element[
                 {
                   type: 'element',
                   name: 'ali:license_ref',
-                  attributes: { 'xmlns:ali': 'http://www.niso.org/schemas/ali/1.0/' },
                   elements: [{ type: 'text', text }],
                 },
               ],

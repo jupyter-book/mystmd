@@ -395,6 +395,7 @@ class JatsSerializer implements IJatsSerializer {
       'xmlns:mml': 'http://www.w3.org/1998/Math/MathML',
       'xmlns:xlink': 'http://www.w3.org/1999/xlink',
       'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+      'xmlns:ali': 'http://www.niso.org/schemas/ali/1.0/', // Used for the licensing
       'dtd-version': '1.3',
       'xml:lang': 'en',
     };
