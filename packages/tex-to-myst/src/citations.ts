@@ -31,9 +31,10 @@ function createCitation(
     const [prefix, suffix] = args.length === 1 ? [undefined, args[0]] : args;
     const prefixText = texToText(prefix).trim();
     const suffixText = texToText(suffix).trim();
-    const citation = isGroup ? cite.children?.[0] : cite;
-    if (citation && prefixText) citation.prefix = replaceTextValue(prefixText);
-    if (citation && suffixText) citation.suffix = replaceTextValue(suffixText);
+    const first = isGroup && cite.children ? cite.children[0] : cite;
+    const last = isGroup && cite.children ? cite.children[cite.children.length - 1] : cite;
+    if (first && prefixText) first.prefix = replaceTextValue(prefixText);
+    if (last && suffixText) last.suffix = replaceTextValue(suffixText);
   }
   state.pushNode(cite);
 }

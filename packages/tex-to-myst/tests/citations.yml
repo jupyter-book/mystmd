@@ -126,6 +126,28 @@ cases:
                   suffix: Figures 4 & 5
                   label: jon90
                   identifier: jon90
+  - title: Multiple citations with prefix and suffix
+    tex: \citep[c.f.][Figures 1 \& 2]{jon90,tim03}
+    description: natbib uses prefix/suffix for the first and last values
+    # TODO: There are differences in textual citations, where the prefix is on every child
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: parenthetical
+              children:
+                - type: cite
+                  kind: parenthetical
+                  prefix: c.f.
+                  label: jon90
+                  identifier: jon90
+                - type: cite
+                  kind: parenthetical
+                  suffix: Figures 1 & 2
+                  label: tim03
+                  identifier: tim03
   - title: Partial citations
     tex: \citeauthor{jon90}\citeauthor*{jon90}\citeyear{jon90}\citeyearpar{jon90}
     tree:
