@@ -84,7 +84,7 @@
     "myst-spec-ext": "^0.0.9",
     "myst-templates": "^0.1.11",
     "myst-to-docx": "^0.0.18",
-    "myst-to-jats": "^0.0.19",
+    "myst-to-jats": "^0.0.20",
     "myst-to-tex": "^0.0.21",
     "myst-transforms": "^0.0.23",
     "nanoid": "^4.0.0",

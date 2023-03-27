@@ -2,7 +2,7 @@ import path from 'path';
 import type { Root } from 'mdast';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References } from 'myst-common';
-import type { PageFrontmatter } from 'myst-frontmatter';
+import type { ProjectFrontmatter } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
 import mystToJats from 'myst-to-jats';
 import type { LatexResult } from 'myst-to-tex';
@@ -26,11 +26,11 @@ export function mdastToJats(
   session: ISession,
   mdast: Root,
   references: References,
-  frontmatter: PageFrontmatter,
+  frontmatter: ProjectFrontmatter,
 ) {
   const pipe = unified().use(mystToJats, {
     frontmatter,
-    // bibliograpy: citationRenderer - from references?
+    // bibliography: citationRenderer - from references?
     fullArticle: true,
     spaces: 2,
   });
