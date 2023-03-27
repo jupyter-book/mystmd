@@ -81,6 +81,8 @@ export type Cite = {
   label: string;
   children: StaticPhrasingContent[];
   error?: boolean;
+  prefix?: string;
+  suffix?: string;
 };
 
 export type CiteGroup = {

@@ -22,7 +22,7 @@ function addText(state: ITexParser, value?: string) {
 
 // There is probably a better way to explicitly add accents to letters in node.
 // https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes
-const accents = {
+export const LatexAccents = {
   '`': { o: 'ò', O: 'Ò' },
   "'": { o: 'ó', O: 'Ó' },
   '^': { '': '^', o: 'ô', i: 'î', y: 'ŷ', O: 'Ô', I: 'Î', Y: 'Ŷ' },
@@ -44,7 +44,7 @@ const accents = {
 };
 
 // https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Other_symbols
-const symbols = {
+export const LatexSpecialSymbols = {
   '%': '%',
   $: '$',
   '&': '&',
@@ -87,7 +87,7 @@ const symbols = {
 
 const CHARACTER_HANDLERS: Record<string, Handler> = {
   ...Object.fromEntries(
-    Object.entries(accents).map(([macro, translate]): [string, Handler] => {
+    Object.entries(LatexAccents).map(([macro, translate]): [string, Handler] => {
       return [
         `macro_${macro}`,
         (node, state) => {
@@ -97,7 +97,7 @@ const CHARACTER_HANDLERS: Record<string, Handler> = {
     }),
   ),
   ...Object.fromEntries(
-    Object.entries(symbols).map(([macro, text]): [string, Handler] => {
+    Object.entries(LatexSpecialSymbols).map(([macro, text]): [string, Handler] => {
       return [
         `macro_${macro}`,
         (node, state) => {

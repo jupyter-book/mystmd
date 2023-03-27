@@ -1,6 +1,7 @@
 import type { GenericNode } from 'myst-common';
 import { copyNode } from 'myst-common';
 import { selectAll } from 'unist-util-select';
+import { LatexSpecialSymbols } from './characters';
 
 export const phrasingTypes = new Set([
   'paragraph',
@@ -58,6 +59,12 @@ export function replaceTextValue(value?: string): string {
   }, value);
 }
 
+export function isSpecialSymbol(node: GenericNode): boolean {
+  if (node.type !== 'macro') return false;
+  if (node.content in LatexSpecialSymbols) return true;
+  return false;
+}
+
 export function texToText(content?: GenericNode[] | GenericNode | string | null): string {
   if (!content) return '';
   if (typeof content === 'string') return content;
@@ -66,6 +73,9 @@ export function texToText(content?: GenericNode[] | GenericNode | string | null)
     .map((n) => {
       if (n.type === 'whitespace') return ' ';
       if (n.type === 'comment') return '';
+      if (isSpecialSymbol(n)) {
+        return LatexSpecialSymbols[n.content as keyof typeof LatexSpecialSymbols];
+      }
       if (n.children) return texToText(n.children);
       if (Array.isArray(n.content)) return texToText(n.content);
       if (Array.isArray(n.args)) return texToText(n.args);

@@ -48,7 +48,7 @@ const defaultString: CitationFormatOptions = {
   style: CitationJSStyles.apa,
 };
 
-export function getInlineCitation(c: Cite, kind: InlineCite) {
+export function getInlineCitation(c: Cite, kind: InlineCite, opts?: InlineOptions) {
   const cite = new Cite();
   const data = cite.set(c).data[0];
   let authors = data.author;
@@ -56,22 +56,26 @@ export function getInlineCitation(c: Cite, kind: InlineCite) {
     authors = data.editor;
   }
   const year = data.issued?.['date-parts']?.[0]?.[0];
-  const yearPart = kind === InlineCite.t ? ` (${year})` : `, ${year}`;
+  const prefix = opts?.prefix ? `${opts.prefix} ` : '';
+  const suffix = opts?.suffix ? `, ${opts.suffix}` : '';
+  const yearPart = kind === InlineCite.t ? ` (${year}${suffix})` : `, ${year}${suffix}`;
 
   if (!authors || authors.length === 0) {
     const text = data.publisher || data.title;
-    return [{ type: 'text', value: `${text}${yearPart}` }];
+    return [{ type: 'text', value: `${prefix}${text}${yearPart}` }];
   }
 
   if (authors.length === 1) {
-    return [{ type: 'text', value: `${authors[0].family}${yearPart}` }];
+    return [{ type: 'text', value: `${prefix}${authors[0].family}${yearPart}` }];
   }
   if (authors.length === 2) {
-    return [{ type: 'text', value: `${authors[0].family} & ${authors[1].family}${yearPart}` }];
+    return [
+      { type: 'text', value: `${prefix}${authors[0].family} & ${authors[1].family}${yearPart}` },
+    ];
   }
   if (authors.length > 2) {
     return [
-      { type: 'text', value: `${authors[0].family} ` },
+      { type: 'text', value: `${prefix}${authors[0].family} ` },
       { type: 'emphasis', children: [{ type: 'text', value: 'et al.' }] },
       { type: 'text', value: `${yearPart}` },
     ];
@@ -79,11 +83,13 @@ export function getInlineCitation(c: Cite, kind: InlineCite) {
   throw new Error('Unknown number of authors for citation');
 }
 
+export type InlineOptions = { prefix?: string; suffix?: string };
+
 export type CitationRenderer = Record<
   string,
   {
     render: (style?: CitationJSStyles) => string;
-    inline: (kind?: InlineCite) => InlineNode[];
+    inline: (kind?: InlineCite, opts?: InlineOptions) => InlineNode[];
     getDOI: () => string | undefined;
     cite: any;
   }
@@ -114,8 +120,8 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
       return [
         c.id,
         {
-          inline(kind = InlineCite.p) {
-            return getInlineCitation(c, kind);
+          inline(kind = InlineCite.p, opts) {
+            return getInlineCitation(c, kind, opts);
           },
           render(style?: CitationJSStyles) {
             return replaceDoiWithAnchorElement(

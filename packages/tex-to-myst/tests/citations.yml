@@ -56,10 +56,10 @@ cases:
                   identifier: jon90
             - type: citeGroup
               kind: narrative
-              suffix: chap. 2
               children:
                 - type: cite
                   kind: narrative
+                  suffix: chap. 2
                   label: jon90
                   identifier: jon90
             - type: citeGroup
@@ -71,27 +71,27 @@ cases:
                   identifier: jon90
             - type: citeGroup
               kind: parenthetical
-              suffix: chap. 2
               children:
                 - type: cite
                   kind: parenthetical
+                  suffix: chap. 2
                   label: jon90
                   identifier: jon90
             - type: citeGroup
               kind: parenthetical
-              prefix: see
               children:
                 - type: cite
                   kind: parenthetical
+                  prefix: see
                   label: jon90
                   identifier: jon90
             - type: citeGroup
               kind: parenthetical
-              prefix: see
-              suffix: chap. 2
               children:
                 - type: cite
                   kind: parenthetical
+                  prefix: see
+                  suffix: chap. 2
                   label: jon90
                   identifier: jon90
             - type: citeGroup
@@ -110,6 +110,44 @@ cases:
                   kind: parenthetical
                   label: jon90
                   identifier: jon90
+  - title: Suffix with macro
+    # TODO:  \`{o} or other macro in the suffix
+    tex: \citet[  Figures 4 \& 5 ]{jon90}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: narrative
+              children:
+                - type: cite
+                  kind: narrative
+                  suffix: Figures 4 & 5
+                  label: jon90
+                  identifier: jon90
+  - title: Multiple citations with prefix and suffix
+    tex: \citep[c.f.][Figures 1 \& 2]{jon90,tim03}
+    description: natbib uses prefix/suffix for the first and last values
+    # TODO: There are differences in textual citations, where the prefix is on every child
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: parenthetical
+              children:
+                - type: cite
+                  kind: parenthetical
+                  prefix: c.f.
+                  label: jon90
+                  identifier: jon90
+                - type: cite
+                  kind: parenthetical
+                  suffix: Figures 1 & 2
+                  label: tim03
+                  identifier: tim03
   - title: Partial citations
     tex: \citeauthor{jon90}\citeauthor*{jon90}\citeyear{jon90}\citeyearpar{jon90}
     tree:
@@ -196,10 +234,10 @@ cases:
         - type: paragraph
           children:
             - type: citeGroup
-              suffix: Fig. 7(a)
               kind: parenthetical
               children:
                 - type: cite
                   kind: parenthetical
+                  suffix: Fig. 7(a)
                   label: jon90
                   identifier: jon90
