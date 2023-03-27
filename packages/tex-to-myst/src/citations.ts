@@ -17,15 +17,6 @@ function createCitation(
   const type: string = isGroup ? 'citeGroup' : 'cite';
   const cite = u(type) as GenericNode;
   if (kind) cite.kind = kind;
-  const args = getArguments(node, 'argument');
-  if (args.length > 0) {
-    // If there is only one argument, it is the suffix
-    const [prefix, suffix] = args.length === 1 ? [undefined, args[0]] : args;
-    const prefixText = texToText(prefix).trim();
-    const suffixText = texToText(suffix).trim();
-    if (prefixText) cite.prefix = replaceTextValue(prefixText);
-    if (suffixText) cite.suffix = replaceTextValue(suffixText);
-  }
   // Stars expand the authors
   if (node.star) cite.expand = true;
   if (partial) cite.partial = partial;
@@ -33,6 +24,16 @@ function createCitation(
     cite.children = citations.map((label) => u('cite', { kind, label }));
   } else {
     cite.label = citations[0];
+  }
+  const args = getArguments(node, 'argument');
+  if (args.length > 0) {
+    // If there is only one argument, it is the suffix
+    const [prefix, suffix] = args.length === 1 ? [undefined, args[0]] : args;
+    const prefixText = texToText(prefix).trim();
+    const suffixText = texToText(suffix).trim();
+    const citation = isGroup ? cite.children?.[0] : cite;
+    if (citation && prefixText) citation.prefix = replaceTextValue(prefixText);
+    if (citation && suffixText) citation.suffix = replaceTextValue(suffixText);
   }
   state.pushNode(cite);
 }

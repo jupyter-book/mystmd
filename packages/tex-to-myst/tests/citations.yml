@@ -56,10 +56,10 @@ cases:
                   identifier: jon90
             - type: citeGroup
               kind: narrative
-              suffix: chap. 2
               children:
                 - type: cite
                   kind: narrative
+                  suffix: chap. 2
                   label: jon90
                   identifier: jon90
             - type: citeGroup
@@ -71,27 +71,27 @@ cases:
                   identifier: jon90
             - type: citeGroup
               kind: parenthetical
-              suffix: chap. 2
               children:
                 - type: cite
                   kind: parenthetical
+                  suffix: chap. 2
                   label: jon90
                   identifier: jon90
             - type: citeGroup
               kind: parenthetical
-              prefix: see
               children:
                 - type: cite
                   kind: parenthetical
+                  prefix: see
                   label: jon90
                   identifier: jon90
             - type: citeGroup
               kind: parenthetical
-              prefix: see
-              suffix: chap. 2
               children:
                 - type: cite
                   kind: parenthetical
+                  prefix: see
+                  suffix: chap. 2
                   label: jon90
                   identifier: jon90
             - type: citeGroup
@@ -120,10 +120,10 @@ cases:
           children:
             - type: citeGroup
               kind: narrative
-              suffix: Figures 4 & 5
               children:
                 - type: cite
                   kind: narrative
+                  suffix: Figures 4 & 5
                   label: jon90
                   identifier: jon90
   - title: Partial citations
@@ -212,10 +212,10 @@ cases:
         - type: paragraph
           children:
             - type: citeGroup
-              suffix: Fig. 7(a)
               kind: parenthetical
               children:
                 - type: cite
                   kind: parenthetical
+                  suffix: Fig. 7(a)
                   label: jon90
                   identifier: jon90
