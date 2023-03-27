@@ -68,6 +68,7 @@ export enum ExportFormats {
   tex = 'tex',
   pdftex = 'pdf+tex',
   docx = 'docx',
+  xml = 'xml',
 }
 
 export type Export = {

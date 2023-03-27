@@ -1,4 +1,3 @@
-import type { FootnoteDefinition } from 'myst-spec-ext';
 import { unified } from 'unified';
 import { u } from 'unist-builder';
 import type { LatexResult } from '../src';
@@ -13,15 +12,10 @@ describe('myst-to-tex footnotes', () => {
         u('footnoteReference', { identifier: 1 }),
         u('text', 'world'),
       ]),
+      u('footnoteDefinition', { identifier: '1' }, [u('paragraph', [u('text', 'tex')])]),
     ]);
     const pipe = unified().use(mystToTex, {
-      references: {
-        footnotes: {
-          '1': u('footnoteDefinition', { identifier: '1' }, [
-            u('paragraph', [u('text', 'tex')]),
-          ]) as FootnoteDefinition,
-        },
-      },
+      references: {},
     });
     pipe.runSync(tree as any);
     const file = pipe.stringify(tree as any);

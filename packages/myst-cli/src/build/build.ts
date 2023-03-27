@@ -14,26 +14,28 @@ export type BuildOpts = {
   docx?: boolean;
   pdf?: boolean;
   tex?: boolean;
+  xml?: boolean;
   all?: boolean;
   force?: boolean;
   checkLinks?: boolean;
 };
 
 export function getExportFormats(opts: BuildOpts & { explicit?: boolean }) {
-  const { docx, pdf, tex, all, explicit } = opts;
+  const { docx, pdf, tex, xml, all, explicit } = opts;
   const formats = [];
-  const any = docx || pdf || tex;
+  const any = docx || pdf || tex || xml;
   const override = all || (!any && explicit);
   if (docx || override) formats.push(ExportFormats.docx);
   if (pdf || override) formats.push(ExportFormats.pdf);
   if (tex || override) formats.push(ExportFormats.tex);
+  if (xml || override) formats.push(ExportFormats.xml);
   return formats;
 }
 
 export function exportSite(session: ISession, opts: BuildOpts) {
-  const { docx, pdf, tex, force, site, all } = opts;
+  const { docx, pdf, tex, xml, force, site, all } = opts;
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  return site || all || (siteConfig && !force && !docx && !pdf && !tex && !site);
+  return site || all || (siteConfig && !force && !docx && !pdf && !tex && !xml && !site);
 }
 
 export function getProjectPaths(session: ISession) {

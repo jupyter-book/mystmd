@@ -1,10 +1,13 @@
 import type { Root, Code, CrossReference, TableCell as SpecTableCell } from 'myst-spec';
+import type { Cite, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
 import type { MessageInfo, GenericNode } from 'myst-common';
 import { copyNode, fileError } from 'myst-common';
-import { RefType } from 'jats-xml';
+import { Tags, RefType } from 'jats-xml';
+import { getBack } from './backmatter';
+import { getFront } from './frontmatter';
 import type {
   Handler,
   IJatsSerializer,
@@ -253,32 +256,28 @@ const handlers: Record<string, Handler> = {
     }
     state.renderInline(node, 'xref', attrs);
   },
-  // citeGroup(node, state) {
-  //   if (state.options.citestyle === 'numerical-only') {
-  //     state.write('\\cite{');
-  //   } else if (state.options.bibliography === 'biblatex') {
-  //     const command = node.kind === 'narrative' ? 'textcite' : 'parencite';
-  //     state.write(`\\${command}{`);
-  //   } else {
-  //     const tp = node.kind === 'narrative' ? 't' : 'p';
-  //     state.write(`\\cite${tp}{`);
-  //   }
-  //   state.renderChildren(node, true, ', ');
-  //   state.write('}');
-  // },
-  // cite(node, state, parent) {
-  //   if (!state.options.bibliography) {
-  //     state.usePackages('natbib');
-  //     // Don't include biblatex in the package list
-  //   }
-  //   if (parent.type === 'citeGroup') {
-  //     state.write(node.label);
-  //   } else if (state.options.bibliography === 'biblatex') {
-  //     state.write(`\\textcite{${node.label}}`);
-  //   } else {
-  //     state.write(`\\cite{${node.label}}`);
-  //   }
-  // },
+  citeGroup(node, state) {
+    state.renderChildren(node);
+  },
+  cite(node, state) {
+    const { label } = node as Cite;
+    const attrs: Attributes = { 'ref-type': 'bibr', rid: label };
+    state.renderInline(node, 'xref', attrs);
+  },
+  footnoteReference(node, state) {
+    const { identifier } = node as FootnoteReference;
+    const attrs: Attributes = { 'ref-type': 'fn', rid: identifier };
+    state.addLeaf('xref', attrs);
+  },
+  footnoteDefinition(node, state) {
+    state.openNode('fn', { id: node.identifier });
+    state.openNode('label');
+    state.text(node.label);
+    state.closeNode();
+    state.renderChildren(node);
+    const element = state.stack.pop();
+    if (element) state.footnotes.push(element);
+  },
 };
 
 function createText(text: string): Element {
@@ -290,14 +289,18 @@ class JatsSerializer implements IJatsSerializer {
   data: StateData;
   options: Options;
   handlers: Record<string, Handler>;
-  stack: Element[] = [];
+  stack: Element[];
+  footnotes: Element[];
 
-  constructor(file: VFile, opts?: Options) {
+  constructor(file: VFile, tree: Root, opts?: Options) {
     this.file = file;
     this.options = opts ?? {};
     this.data = {};
     this.stack = [{ type: 'element', elements: [] }];
+    this.footnotes = [];
     this.handlers = opts?.handlers ?? handlers;
+    this.renderChildren(tree);
+    while (this.stack.length > 1) this.closeNode();
   }
 
   top() {
@@ -386,22 +389,56 @@ class JatsSerializer implements IJatsSerializer {
     const node = this.stack.pop();
     return this.pushNode(node);
   }
+
+  article(articleType?: string, specificUse?: string) {
+    const attributes: Record<string, string> = {
+      'xmlns:mml': 'http://www.w3.org/1998/Math/MathML',
+      'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+      'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+      'xmlns:ali': 'http://www.niso.org/schemas/ali/1.0/', // Used for the licensing
+      'dtd-version': '1.3',
+      'xml:lang': 'en',
+    };
+    if (articleType) attributes['article-type'] = articleType;
+    if (specificUse) attributes['specific-use'] = specificUse;
+    const front = getFront(this.options.frontmatter);
+    const back = getBack(this.options.bibliography, this.footnotes);
+    const elements: Element[] = [];
+    if (front) elements.push(front);
+    elements.push({ type: 'element', name: 'body', elements: this.body() });
+    if (back) elements.push(back);
+    const article: Element = {
+      type: 'element',
+      name: Tags.article,
+      attributes,
+      elements,
+    };
+    return article;
+  }
+
+  body() {
+    return this.stack[0].elements ?? [];
+  }
+
+  back() {
+    return {};
+  }
 }
 
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
   this.Compiler = (node, file) => {
     const tree = copyNode(node) as any;
-    basicTransformations(tree, file);
-    const state = new JatsSerializer(file, opts ?? { handlers });
-    state.renderChildren(tree);
-    while (state.stack.length > 1) state.closeNode();
-    const jats = js2xml(state.stack[0], {
-      compact: false,
-      spaces: opts?.spaces,
-    });
+    basicTransformations(tree);
+    const state = new JatsSerializer(file, tree, opts ?? { handlers });
+    const elements = opts?.fullArticle ? [state.article()] : state.body();
+    const jats = js2xml(
+      { type: 'element', elements },
+      {
+        compact: false,
+        spaces: opts?.spaces,
+      },
+    );
     const result: JatsResult = {
-      // imports: [...state.data.imports],
-      // commands: state.data.mathPlugins,
       value: jats,
     };
     file.result = result;

@@ -6,6 +6,7 @@ import {
   makeCheckLinksOption,
   makeDocxOption,
   makeForceOption,
+  makeJatsOption,
   makePdfOption,
   makeSiteOption,
   makeStrictOption,
@@ -20,6 +21,7 @@ export function makeBuildCLI(program: Command) {
     .addOption(makePdfOption('Build PDF output'))
     .addOption(makeTexOption('Build LaTeX outputs'))
     .addOption(makeDocxOption('Build Docx output'))
+    .addOption(makeJatsOption('Build JATS xml output'))
     .addOption(makeSiteOption('Build MyST site content'))
     .addOption(makeAllOption('Build all exports'))
     .addOption(makeForceOption())

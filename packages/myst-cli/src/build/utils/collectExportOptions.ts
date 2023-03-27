@@ -4,6 +4,7 @@ import { findCurrentProjectAndLoad } from '../../config';
 import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session';
 import { collectWordExportOptions } from '../docx/single';
+import { collectJatsExportOptions } from '../jats/single';
 import { collectTexExportOptions } from '../tex/single';
 import type { ExportWithOutput, ExportOptions, ExportWithInputOutput } from '../types';
 
@@ -57,6 +58,18 @@ export async function collectExportOptions(
             file,
             'tex',
             [ExportFormats.tex],
+            fileProjectPath,
+            opts,
+          )),
+        );
+      }
+      if (formats.includes(ExportFormats.xml)) {
+        fileExportOptionsList.push(
+          ...(await collectJatsExportOptions(
+            session,
+            file,
+            'xml',
+            [ExportFormats.xml],
             fileProjectPath,
             opts,
           )),

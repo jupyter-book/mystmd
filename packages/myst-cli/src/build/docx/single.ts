@@ -13,9 +13,8 @@ import { findCurrentProjectAndLoad } from '../../config';
 import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter';
 import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session/types';
-import { ImageExtensions } from '../../transforms/types';
 import type { RendererData } from '../../transforms/types';
-import { createTempFolder, logMessagesFromVFile } from '../../utils';
+import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils';
 import type { ExportOptions, ExportWithOutput } from '../types';
 import {
   getDefaultExportFilename,
@@ -27,6 +26,7 @@ import {
 import { createFooter } from './footers';
 import { createArticleTitle, createReferenceTitle } from './titles';
 import { TemplateKind } from 'myst-common';
+import { selectAll } from 'unist-util-select';
 
 const DOCX_IMAGE_EXTENSIONS = [ImageExtensions.png, ImageExtensions.jpg, ImageExtensions.jpeg];
 
@@ -140,7 +140,7 @@ function defaultWordRenderer(
     const referencesRoot = htmlTransform({ type: 'root', children: referencesDocStates as any });
     serializer.renderChildren(referencesRoot);
   }
-  Object.values(references.footnotes ?? {}).forEach((footnote) => {
+  selectAll('footnoteDefinition', mdast).forEach((footnote) => {
     serializer.render(footnote);
   });
   const logo = path.join(staticPath, 'logo.png');

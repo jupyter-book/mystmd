@@ -12,7 +12,7 @@ export { admonitionTransform, admonitionPlugin } from './admonitions';
 
 export function basicTransformations(tree: GenericParent, file: VFile) {
   sectionTransform(tree);
-  typographyTransform(tree, file);
+  typographyTransform(tree);
   admonitionTransform(tree, file);
 }
 

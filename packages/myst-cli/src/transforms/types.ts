@@ -23,16 +23,3 @@ export type RendererData = PreRendererData & {
 };
 
 export type SingleCitationRenderer = { id: string; render: CitationRenderer[''] };
-
-export enum ImageExtensions {
-  png = '.png',
-  jpg = '.jpg',
-  jpeg = '.jpeg',
-  svg = '.svg',
-  gif = '.gif',
-  tiff = '.tiff',
-  tif = '.tif',
-  pdf = '.pdf',
-  eps = '.eps',
-  webp = '.webp',
-}

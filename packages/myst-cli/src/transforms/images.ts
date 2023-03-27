@@ -9,11 +9,16 @@ import path from 'path';
 import type { VFileMessage } from 'vfile-message';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { extFromMimeType } from 'nbtx';
-import { addWarningForFile, imagemagick, inkscape, KNOWN_IMAGE_EXTENSIONS } from '../utils';
+import {
+  addWarningForFile,
+  ImageExtensions,
+  imagemagick,
+  inkscape,
+  KNOWN_IMAGE_EXTENSIONS,
+} from '../utils';
 import type { ISession } from '../session/types';
 import { castSession } from '../session';
 import { watch } from '../store';
-import { ImageExtensions } from './types';
 
 function isBase64(data: string) {
   return data.split(';base64,').length === 2;
@@ -502,8 +507,9 @@ export async function transformWebp(
   const cache = castSession(session);
   const postData = cache.$mdast[opts.file].post;
   if (!postData) throw new Error(`Expected mdast to be processed and transformed for ${file}`);
-  const { mdast, frontmatter } = postData;
+  if (!fs.existsSync(imageWriteFolder)) return; // No images exist to copy - not necessarily an error
   const writeFolderContents = fs.readdirSync(imageWriteFolder);
+  const { mdast, frontmatter } = postData;
   const images = selectAll('image', mdast) as GenericNode[];
   await Promise.all(
     images.map(async (image) => {

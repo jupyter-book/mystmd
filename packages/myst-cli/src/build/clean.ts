@@ -11,6 +11,7 @@ export type CleanOptions = {
   docx?: boolean;
   pdf?: boolean;
   tex?: boolean;
+  xml?: boolean;
   site?: boolean;
   temp?: boolean;
   exports?: boolean;
@@ -23,6 +24,7 @@ const ALL_OPTS: CleanOptions = {
   docx: true,
   pdf: true,
   tex: true,
+  xml: true,
   site: true,
   temp: true,
   exports: true,
@@ -32,15 +34,16 @@ const DEFAULT_OPTS: CleanOptions = {
   docx: true,
   pdf: true,
   tex: true,
+  xml: true,
   site: true,
   temp: true,
   exports: true,
 };
 
 function coerceOpts(opts: CleanOptions) {
-  const { docx, pdf, tex, site, temp, exports, templates, all } = opts;
+  const { docx, pdf, tex, xml, site, temp, exports, templates, all } = opts;
   if (all) return { ...opts, ...ALL_OPTS };
-  if (!docx && !pdf && !tex && !site && !temp && !exports && !templates) {
+  if (!docx && !pdf && !tex && !xml && !site && !temp && !exports && !templates) {
     return { ...opts, ...DEFAULT_OPTS };
   }
   return { ...opts };

@@ -20,7 +20,8 @@ import { filterPages, loadProjectFromDisk } from '../project';
 import { castSession } from '../session';
 import type { ISession } from '../session/types';
 import { watch, selectors } from '../store';
-import { ImageExtensions, transformWebp } from '../transforms';
+import { transformWebp } from '../transforms';
+import { ImageExtensions } from '../utils';
 import { combineProjectCitationRenderers } from './citations';
 import { loadIntersphinx } from './intersphinx';
 import type { PageReferenceStates, TransformFn } from './mdast';
@@ -144,12 +145,12 @@ async function resolvePageExports(session: ISession, file: string, projectPath: 
     await collectExportOptions(
       session,
       [file],
-      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex],
+      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex, ExportFormats.xml],
       { projectPath },
     )
   )
     .filter((exp) => {
-      return ['.docx', '.pdf', '.zip'].includes(extname(exp.output));
+      return ['.docx', '.pdf', '.zip', '.xml'].includes(extname(exp.output));
     })
     .filter((exp) => {
       return fs.existsSync(exp.output);

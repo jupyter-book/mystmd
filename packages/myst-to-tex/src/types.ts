@@ -1,5 +1,6 @@
 import type { References } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import type { FootnoteDefinition } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 
 export const DEFAULT_IMAGE_WIDTH = 0.7;
@@ -39,6 +40,7 @@ export interface ITexSerializer<D extends Record<string, any> = StateData> {
   data: D;
   options: Options;
   references: References;
+  footnotes: Record<string, FootnoteDefinition>;
   usePackages: (...packageNames: string[]) => void;
   write: (value: string) => void;
   text: (value: string, mathMode?: boolean) => void;

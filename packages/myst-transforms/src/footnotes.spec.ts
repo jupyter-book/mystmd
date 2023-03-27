@@ -5,31 +5,56 @@ import { VFile } from 'vfile';
 import { footnotesTransform, footnotesPlugin } from './footnotes';
 
 describe('Test footnotes plugin', () => {
-  test('Pulls out references for footnotes', () => {
+  test('Enumerates footnote definitions', () => {
     const file = new VFile();
-    const node = {
+    const def = {
       type: 'footnoteDefinition',
       identifier: 'x',
       children: [{ type: 'paragraph', children: [{ type: 'text', value: 'test' }] }],
     } as FootnoteDefinition;
-    const mdast = { children: [node] } as any;
-    const references: Pick<References, 'footnotes'> = { footnotes: {} };
-    footnotesTransform(mdast, file, { references });
-    expect((node as any).key).toBeTruthy();
-    expect((references.footnotes?.['x'] as any).children[0].children[0].value).toBe('test');
+    const ref = {
+      type: 'footnoteReference',
+      identifier: 'x',
+    };
+    const mdast = { children: [def, ref] } as any;
+    footnotesTransform(mdast, file);
+    console.log(mdast.children[0]);
+    expect(mdast.children[0].number).toEqual(1);
+    expect(mdast.children[1].number).toEqual(1);
   });
   test('Test basic pipeline', () => {
     const file = new VFile();
-    const node = {
+    const def = {
       type: 'footnoteDefinition',
       identifier: 'x',
       children: [{ type: 'paragraph', children: [{ type: 'text', value: 'test' }] }],
     } as FootnoteDefinition;
-    const mdast = { type: 'root', children: [node] } as any;
-    const references: Pick<References, 'footnotes'> = { footnotes: {} };
-    unified().use(footnotesPlugin, { references }).runSync(mdast, file);
+    const ref = {
+      type: 'footnoteReference',
+      identifier: 'x',
+    };
+    const mdast = { type: 'root', children: [def, ref] } as any;
+    unified().use(footnotesPlugin).runSync(mdast, file);
     expect(file.messages.length).toBe(0);
-    expect((node as any).key).toBeTruthy();
-    expect((references.footnotes?.['x'] as any).children[0].children[0].value).toBe('test');
+    expect(mdast.children[0].number).toEqual(1);
+    expect(mdast.children[1].number).toEqual(1);
+  });
+  test('Test basic pipeline', () => {
+    const file = new VFile();
+    const def = {
+      type: 'footnoteDefinition',
+      identifier: 'x',
+      children: [{ type: 'paragraph', children: [{ type: 'text', value: 'test' }] }],
+      number: 10,
+    } as FootnoteDefinition;
+    const ref = {
+      type: 'footnoteReference',
+      identifier: 'y',
+    };
+    const mdast = { type: 'root', children: [def, ref] } as any;
+    unified().use(footnotesPlugin).runSync(mdast, file);
+    expect(file.messages.length).toBe(1);
+    expect(mdast.children[0].number).toEqual(undefined);
+    expect(mdast.children[1].number).toEqual(undefined);
   });
 });
