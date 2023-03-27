@@ -33,9 +33,10 @@ function addCitationChildren(
 ): boolean {
   const render = renderer[cite.label as string];
   try {
-    const children = render?.inline(
-      kind === 'narrative' ? InlineCite.t : InlineCite.p,
-    ) as StaticPhrasingContent[];
+    const children = render?.inline(kind === 'narrative' ? InlineCite.t : InlineCite.p, {
+      prefix: cite.prefix,
+      suffix: cite.suffix,
+    }) as StaticPhrasingContent[];
     if (children) {
       cite.children = children;
       return true;
