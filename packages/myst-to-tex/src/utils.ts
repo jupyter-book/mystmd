@@ -36,11 +36,13 @@ const textOnlyReplacements: Record<string, string> = {
   '…': '\\dots',
   '–': '--',
   '—': '---',
-  '©': '\\textcopyright',
-  '®': '\\textregistered',
-  '™': '\\texttrademark',
-  '<': '\\textless',
-  '>': '\\textgreater',
+  // Commands gobble fhttps://texfaq.org/FAQ-xspaceollowing space
+  // See: https://texfaq.org/FAQ-xspace
+  '©': '\\textcopyright ',
+  '®': '\\textregistered ',
+  '™': '\\texttrademark ',
+  '<': '\\textless ',
+  '>': '\\textgreater ',
   ' ': '~',
 };
 
