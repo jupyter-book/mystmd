@@ -50,7 +50,7 @@
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^0.0.9",
     "myst-transforms": "^0.0.23",
-    "unist-util-select": "^4.0.0",
+    "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
   },
   "devDependencies": {
