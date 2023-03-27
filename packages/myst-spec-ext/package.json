@@ -1,6 +1,6 @@
 {
   "name": "myst-spec-ext",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Extentions for myst-spec that are used in myst-cli and mystjs",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-spec-ext",

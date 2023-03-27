@@ -1,5 +1,19 @@
 # myst-to-jats
 
+## 0.0.21
+
+### Patch Changes
+
+- c832b38e: myst-to-jats may now build full JATS article with front/back matter
+- Updated dependencies [8b76b444]
+- Updated dependencies [c832b38e]
+- Updated dependencies [0ab667e5]
+- Updated dependencies [c832b38e]
+  - citation-js-utils@0.0.13
+  - myst-frontmatter@0.0.10
+  - myst-spec-ext@0.0.10
+  - myst-common@0.0.15
+
 ## 0.0.20
 
 ### Patch Changes

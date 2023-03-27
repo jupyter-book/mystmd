@@ -1,5 +1,12 @@
 # myst-frontmatter
 
+## 0.0.10
+
+### Patch Changes
+
+- c832b38e: myst-cli may now be used to build JATS xml exports
+- c832b38e: FootnoteDefinitions remain on the mdast tree during processing
+
 ## 0.0.9
 
 ### Patch Changes

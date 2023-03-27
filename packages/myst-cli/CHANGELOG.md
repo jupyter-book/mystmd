@@ -1,5 +1,39 @@
 # myst-cli
 
+## 0.1.20
+
+### Patch Changes
+
+- c832b38e: myst-cli may now be used to build JATS xml exports
+- c832b38e: FootnoteDefinitions remain on the mdast tree during processing
+- 4619f158: Add prefix/suffix to inline citations
+- Updated dependencies [8b76b444]
+- Updated dependencies [c832b38e]
+- Updated dependencies [98c47422]
+- Updated dependencies [d6d41e51]
+- Updated dependencies [e5fb426a]
+- Updated dependencies [0ab667e5]
+- Updated dependencies [c832b38e]
+- Updated dependencies [c832b38e]
+- Updated dependencies [265a8ed4]
+  - citation-js-utils@0.0.13
+  - myst-frontmatter@0.0.10
+  - myst-to-tex@0.0.22
+  - tex-to-myst@0.0.22
+  - myst-spec-ext@0.0.10
+  - myst-common@0.0.15
+  - myst-transforms@0.0.24
+  - myst-to-jats@0.0.21
+  - jtex@0.1.10
+  - myst-config@0.0.11
+  - myst-templates@0.1.12
+  - myst-to-docx@0.0.19
+  - myst-ext-card@0.0.5
+  - myst-ext-grid@0.0.5
+  - myst-ext-reactive@0.0.5
+  - myst-ext-tabs@0.0.5
+  - myst-parser@0.0.24
+
 ## 0.1.19
 
 ### Patch Changes

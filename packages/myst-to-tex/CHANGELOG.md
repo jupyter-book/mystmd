@@ -1,5 +1,19 @@
 # myst-to-tex
 
+## 0.0.22
+
+### Patch Changes
+
+- 98c47422: Fix bug where empty comment errors on myst-to-tex
+- d6d41e51: Copyright symbol must have trailing whitespace, see https://texfaq.org/FAQ-xspace
+- c832b38e: FootnoteDefinitions remain on the mdast tree during processing
+- Updated dependencies [c832b38e]
+- Updated dependencies [0ab667e5]
+- Updated dependencies [c832b38e]
+  - myst-frontmatter@0.0.10
+  - myst-spec-ext@0.0.10
+  - myst-common@0.0.15
+
 ## 0.0.21
 
 ### Patch Changes

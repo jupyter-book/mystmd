@@ -1,5 +1,12 @@
 # myst-ext-reactive
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [c832b38e]
+  - myst-common@0.0.15
+
 ## 0.0.4
 
 ### Patch Changes

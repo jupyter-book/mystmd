@@ -1,6 +1,6 @@
 {
   "name": "myst-frontmatter",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "sideEffects": false,
   "license": "MIT",
   "description": "Frontmatter types and validation for the mystjs ecosystem",

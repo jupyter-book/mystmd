@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 0.0.10
+
+### Patch Changes
+
+- 0ab667e5: Add suffix and prefix to citation extension
+
 ## 0.0.9
 
 ### Patch Changes

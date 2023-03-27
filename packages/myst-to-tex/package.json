@@ -1,6 +1,6 @@
 {
   "name": "myst-to-tex",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "Export from MyST mdast to latex",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-to-tex",
@@ -46,9 +46,9 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "myst-common": "^0.0.14",
-    "myst-frontmatter": "^0.0.9",
-    "myst-spec-ext": "^0.0.9",
+    "myst-common": "^0.0.15",
+    "myst-frontmatter": "^0.0.10",
+    "myst-spec-ext": "^0.0.10",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
   },

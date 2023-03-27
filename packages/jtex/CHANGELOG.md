@@ -1,5 +1,14 @@
 # jtex
 
+## 0.1.10
+
+### Patch Changes
+
+- Updated dependencies [c832b38e]
+- Updated dependencies [c832b38e]
+  - myst-frontmatter@0.0.10
+  - myst-templates@0.1.12
+
 ## 0.1.9
 
 ### Patch Changes

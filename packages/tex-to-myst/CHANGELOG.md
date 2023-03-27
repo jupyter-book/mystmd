@@ -1,5 +1,18 @@
 # tex-to-myst
 
+## 0.0.22
+
+### Patch Changes
+
+- e5fb426a: Allow LaTeX macros in options when parsing arguments
+- 265a8ed4: Ensure suffix/prefix is on the cite node not citeGroup
+- Updated dependencies [c832b38e]
+- Updated dependencies [0ab667e5]
+- Updated dependencies [c832b38e]
+  - myst-frontmatter@0.0.10
+  - myst-spec-ext@0.0.10
+  - myst-common@0.0.15
+
 ## 0.0.21
 
 ### Patch Changes

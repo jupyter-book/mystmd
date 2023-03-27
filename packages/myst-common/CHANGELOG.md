@@ -1,5 +1,11 @@
 # myst-common
 
+## 0.0.15
+
+### Patch Changes
+
+- c832b38e: FootnoteDefinitions remain on the mdast tree during processing
+
 ## 0.0.14
 
 ### Patch Changes

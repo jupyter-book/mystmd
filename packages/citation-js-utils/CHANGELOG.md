@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 0.0.13
+
+### Patch Changes
+
+- 8b76b444: Allow for prefix and suffix for inline citations
+
 ## 0.0.12
 
 ### Patch Changes
