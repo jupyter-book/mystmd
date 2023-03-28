@@ -34,7 +34,7 @@ export type Thebe = {
   kernelOptions?: ThebeKernelOptions;
   savedSessionOptions?: ThebeSavedSessionOptions;
   mathjaxConfig?: string;
-  methjaxUrl?: string;
+  mathjaxUrl?: string;
 };
 
 export type ThebeBinderOptions = {

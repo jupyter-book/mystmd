@@ -8,6 +8,7 @@ import type {
   PageFrontmatter,
   ProjectFrontmatter,
   SiteFrontmatter,
+  Thebe,
 } from './types';
 import {
   fillPageFrontmatter,
@@ -21,6 +22,7 @@ import {
   validatePageFrontmatter,
   validateProjectFrontmatter,
   validateSiteFrontmatterKeys,
+  validateThebe,
   validateVenue,
 } from './validators';
 
@@ -43,6 +45,29 @@ const TEST_BIBLIO: Biblio = {
   first_page: 1,
   last_page: 2,
 };
+
+const TEST_THEBE: Thebe = {
+  useBinder: false,
+  useJupyterLite: false,
+  requestKernel: true,
+  binderOptions: {
+    binderUrl: 'https://my.binder.org/blah',
+    ref: 'HEAD',
+    repo: 'my-repo',
+    repoProvider: 'github',
+  },
+  serverSettings: {
+    baseUrl: 'http://localhost:8888',
+    token: 'test-secret',
+    wsUrl: 'ws://localhost:8888',
+    appendToken: true,
+  },
+  kernelOptions: { kernelName: 'python 3', name: 'python3', path: 'some-path' },
+  savedSessionOptions: { enabled: true, maxAge: 383000, storagePrefix: 'thebe' },
+  mathjaxConfig: 'TeX-AMS_CHTML-full,Safe',
+  mathjaxUrl: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js',
+};
+
 const TEST_NUMBERING: Numbering = {
   enumerator: '',
   figure: true,
@@ -198,6 +223,18 @@ describe('validateBiblio', () => {
   });
   it('full object returns self', async () => {
     expect(validateBiblio(TEST_BIBLIO, opts)).toEqual(TEST_BIBLIO);
+  });
+});
+
+describe('validateThebe', () => {
+  it('empty object returns self', async () => {
+    expect(validateThebe({}, opts)).toEqual({});
+  });
+  it('extra keys removed', async () => {
+    expect(validateThebe({ extra: '' }, opts)).toEqual({});
+  });
+  it('full object returns self', async () => {
+    expect(validateThebe(TEST_THEBE, opts)).toEqual(TEST_THEBE);
   });
 });
 

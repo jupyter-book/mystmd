@@ -116,7 +116,7 @@ const AUTHOR_ALIASES = {
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
 const THEBE_KEYS = [
   'useBinder',
-  'useJuyterLite',
+  'useJupyterLite',
   'requestKernel',
   'binderOptions',
   'serverSettings',
@@ -318,35 +318,56 @@ export function validateBiblio(input: any, opts: ValidationOptions) {
  * https://thebe-core.curve.space/docs-core/a-configuration
  */
 export function validateThebe(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: THEBE_KEYS }, opts);
+  const value: Thebe | undefined = validateObjectKeys(input, { optional: THEBE_KEYS }, opts);
   if (value === undefined) return undefined;
   const output: Thebe = {};
   if (defined(value.useBinder)) {
-    output.useBinder = validateBoolean(output.useBinder, opts);
+    output.useBinder = validateBoolean(value.useBinder, incrementOptions('useBinder', opts));
   }
   if (defined(value.useJupyterLite)) {
-    output.useBinder = validateBoolean(output.useJupyterLite, opts);
+    output.useJupyterLite = validateBoolean(
+      value.useJupyterLite,
+      incrementOptions('useJupyterLite', opts),
+    );
   }
   if (defined(value.requestKernel)) {
-    output.useBinder = validateBoolean(output.requestKernel, opts);
+    output.requestKernel = validateBoolean(
+      value.requestKernel,
+      incrementOptions('requestKernel', opts),
+    );
   }
   if (defined(value.binderOptions)) {
-    output.binderOptions = validateThebeBinderOptions(input, opts);
+    output.binderOptions = validateThebeBinderOptions(
+      value.binderOptions,
+      incrementOptions('binderOptions', opts),
+    );
   }
-  if (defined(value.sercerSettings)) {
-    output.serverSettings = validateThebeServerSettings(input, opts);
+  if (defined(value.serverSettings)) {
+    output.serverSettings = validateThebeServerSettings(
+      value.serverSettings,
+      incrementOptions('serverSettings', opts),
+    );
   }
   if (defined(value.kernelOptions)) {
-    output.kernelOptions = validateThebeKernelOptions(input, opts);
+    output.kernelOptions = validateThebeKernelOptions(
+      value.kernelOptions,
+      incrementOptions('kernelOptions', opts),
+    );
   }
   if (defined(value.savedSessionOptions)) {
-    output.savedSessionOptions = validateThebeSavedSessionOptions(input, opts);
+    output.savedSessionOptions = validateThebeSavedSessionOptions(
+      value.savedSessionOptions,
+      incrementOptions('savedSessionOptions', opts),
+    );
   }
   if (defined(value.mathjaxUrl)) {
-    output.methjaxUrl = validateUrl(value.mathjaxUrl, opts);
+    output.mathjaxUrl = validateUrl(value.mathjaxUrl, incrementOptions('mathjaxUrl', opts));
   }
   if (defined(value.mathjaxConfig)) {
-    output.mathjaxConfig = validateString(value.mathjaxConfig, opts);
+    output.mathjaxConfig = validateString(
+      value.mathjaxConfig,
+      incrementOptions('mathjaxConfig', opts),
+    );
   }
   return output;
 }
