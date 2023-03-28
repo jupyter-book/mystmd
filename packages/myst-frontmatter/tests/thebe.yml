@@ -1,0 +1,53 @@
+title: THEBE
+cases:
+  - title: Valid and Exhaustive Options
+    raw:
+      thebe:
+        useBinder: false
+        useJupyterLite: false
+        requestKernel: true
+        binderOptions:
+          binderUrl: 'https://my.binder.org/blah'
+          ref: 'HEAD'
+          repo: 'my-repo'
+          repoProvider: 'github'
+        serverSettings:
+          baseUrl: http://localhost:8888
+          token: test-secret
+          wsUrl: ws://localhost:8888
+          appendToken: true
+        kernelOptions:
+          kernelName: 'python 3'
+          name: 'python3'
+          path: 'some-path'
+        savedSessionOptions:
+          enabled: true
+          maxAge: 383000
+          storagePrefix: thebe
+        mathjaxConfig: TeX-AMS_CHTML-full,Safe
+        mathjaxUrl: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js
+    normalized:
+      thebe:
+        useBinder: false
+        useJupyterLite: false
+        requestKernel: true
+        binderOptions:
+          binderUrl: 'https://my.binder.org/blah'
+          ref: 'HEAD'
+          repo: 'my-repo'
+          repoProvider: 'github'
+        serverSettings:
+          baseUrl: http://localhost:8888
+          token: test-secret
+          wsUrl: ws://localhost:8888
+          appendToken: true
+        kernelOptions:
+          kernelName: 'python 3'
+          name: 'python3'
+          path: 'some-path'
+        savedSessionOptions:
+          enabled: true
+          maxAge: 383000
+          storagePrefix: thebe
+        mathjaxConfig: TeX-AMS_CHTML-full,Safe
+        mathjaxUrl: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js
