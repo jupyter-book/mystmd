@@ -402,7 +402,7 @@ class JatsSerializer implements IJatsSerializer {
     if (articleType) attributes['article-type'] = articleType;
     if (specificUse) attributes['specific-use'] = specificUse;
     const front = getFront(this.options.frontmatter);
-    const back = getBack(this.options.bibliography, this.footnotes);
+    const back = getBack(this.options.citations, this.footnotes);
     const elements: Element[] = [];
     if (front) elements.push(front);
     elements.push({ type: 'element', name: 'body', elements: this.body() });

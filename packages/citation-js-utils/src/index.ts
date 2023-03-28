@@ -48,9 +48,13 @@ const defaultString: CitationFormatOptions = {
   style: CitationJSStyles.apa,
 };
 
-export function getInlineCitation(c: Cite, kind: InlineCite, opts?: InlineOptions) {
+export function getCiteData(c: Cite) {
   const cite = new Cite();
-  const data = cite.set(c).data[0];
+  return cite.set(c).data[0];
+}
+
+export function getInlineCitation(c: Cite, kind: InlineCite, opts?: InlineOptions) {
+  const data = getCiteData(c);
   let authors = data.author;
   if (!authors || authors.length === 0) {
     authors = data.editor;
