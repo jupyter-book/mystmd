@@ -13,6 +13,52 @@ cases:
           <p>text</p>
         </body>
       </article>
+  - title: Article title
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+    frontmatter:
+      title: Hello title!
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta>
+            <title-group>
+              <article-title>Hello title!</article-title>
+            </title-group>
+          </article-meta>
+        </front>
+        <body>
+          <p>text</p>
+        </body>
+      </article>
+  - title: Article subtitle
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+    frontmatter:
+      subtitle: Hello subtitle!
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta>
+            <title-group>
+              <subtitle>Hello subtitle!</subtitle>
+            </title-group>
+          </article-meta>
+        </front>
+        <body>
+          <p>text</p>
+        </body>
+      </article>
   - title: Biblio frontmatter
     tree:
       type: root
