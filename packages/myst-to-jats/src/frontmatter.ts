@@ -43,6 +43,50 @@ export function getJournalMeta(): Element[] {
   return elements.length ? [{ type: 'element', name: 'journal-meta', elements }] : [];
 }
 
+/**
+ * Add a article `title-group`, for example:
+ *
+ * ```xml
+ * <title-group>
+ *   <article-title>
+ *     Systematic review of day hospital care for elderly people
+ *   </article-title>
+ * </title-group>
+ * ```
+ *
+ * See: https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/article-title.html
+ */
+export function getArticleTitle(frontmatter: ProjectFrontmatter): Element[] {
+  const title = frontmatter?.title;
+  const subtitle = frontmatter?.subtitle;
+  if (!title && !subtitle) return [];
+  const articleTitle: Element[] = title
+    ? [
+        {
+          type: 'element',
+          name: 'article-title',
+          elements: [{ type: 'text', text: title }],
+        },
+      ]
+    : [];
+  const articleSubtitle: Element[] = subtitle
+    ? [
+        {
+          type: 'element',
+          name: 'subtitle',
+          elements: [{ type: 'text', text: subtitle }],
+        },
+      ]
+    : [];
+  return [
+    {
+      type: 'element',
+      name: 'title-group',
+      elements: [...articleTitle, ...articleSubtitle],
+    },
+  ];
+}
+
 export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
   // For now this just uses affiliations directly on each <contrib>, as they are defined in ProjectFrontmatter.
   // This should be changed to deduplicate / improve affiliations in frontmatter.
@@ -190,7 +234,7 @@ export function getArticleMeta(frontmatter: ProjectFrontmatter): Element[] {
     // article-id
     // article-version, article-version-alternatives
     // article-categories
-    // title-group
+    ...getArticleTitle(frontmatter),
     ...getArticleAuthors(frontmatter),
     // author-notes
     // pub-date or pub-date-not-available
