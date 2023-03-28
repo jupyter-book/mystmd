@@ -26,41 +26,41 @@ export type Biblio = {
 };
 
 export type Thebe = {
-  useBinder: boolean;
-  useJupyterLite: boolean;
-  requestkernel: boolean;
-  binderOptions: ThebeBinderOptions;
-  serverSettings: ThebeServerSettings;
-  kernelOptions: ThebeKernelOptions;
-  savedSessionOptions: ThebeSavedSessionOptions;
-  mathjaxConfig: string;
-  methjaxUrl: string;
+  useBinder?: boolean;
+  useJupyterLite?: boolean;
+  requestKernel?: boolean;
+  binderOptions?: ThebeBinderOptions;
+  serverSettings?: ThebeServerSettings;
+  kernelOptions?: ThebeKernelOptions;
+  savedSessionOptions?: ThebeSavedSessionOptions;
+  mathjaxConfig?: string;
+  methjaxUrl?: string;
 };
 
 export type ThebeBinderOptions = {
-  binderUrl: string;
-  ref: string;
-  repo: string;
-  repoProvider: string;
+  binderUrl?: string;
+  ref?: string;
+  repo?: string;
+  repoProvider?: string;
 };
 
 export type ThebeServerSettings = {
-  baseUrl: string;
-  token: string;
-  wsUrl: string;
-  appendToken: boolean;
+  baseUrl?: string;
+  token?: string;
+  wsUrl?: string;
+  appendToken?: boolean;
 };
 
 export type ThebeKernelOptions = {
-  kernelName: string;
-  name: string;
-  path: string;
+  kernelName?: string;
+  name?: string;
+  path?: string;
 };
 
 export type ThebeSavedSessionOptions = {
-  enabled: boolean;
-  maxAge: number;
-  storagePrefix: string;
+  enabled?: boolean;
+  maxAge?: string | number;
+  storagePrefix?: string;
 };
 
 export type Numbering = {
