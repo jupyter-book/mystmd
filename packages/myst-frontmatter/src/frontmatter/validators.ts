@@ -62,6 +62,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'bibliography',
   'math',
   'exports',
+  'thebe',
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = [
   'kernelspec',
@@ -458,6 +459,7 @@ export function validateGithubUrl(value: any, opts: ValidationOptions) {
   });
 }
 
+// TODO extend
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: SiteFrontmatter = {};
   if (defined(value.title)) {
@@ -613,6 +615,13 @@ export function validateProjectFrontmatterKeys(
           .filter((exists) => !!exists) as [string, { url: string }][],
       );
     }
+  }
+
+  if (defined(value.thebe)) {
+    // TODO
+    // fix type
+    // validate properly - check how biblio
+    output.thebe = value.thebe;
   }
   return output;
 }

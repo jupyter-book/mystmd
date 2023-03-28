@@ -60,6 +60,7 @@ export async function localToManifestProject(
       return { ...page };
     }),
   );
+
   const projFrontmatter = projConfig ? filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS) : {};
   return {
     ...projFrontmatter,
@@ -113,6 +114,7 @@ export async function getSiteManifest(
   const state = session.store.getState() as RootState;
   const siteConfig = selectors.selectCurrentSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
+  // TODO HACK!
   await Promise.all(
     siteConfig.projects?.map(async (siteProj) => {
       if (!siteProj.path) return;

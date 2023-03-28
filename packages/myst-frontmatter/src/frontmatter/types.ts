@@ -1,4 +1,5 @@
 import type { CreditRole } from 'credit-roles';
+import { SupportOptionRange } from 'prettier';
 import type { Licenses } from '../licenses/types';
 
 export type AuthorRoles = CreditRole | string;
@@ -22,6 +23,44 @@ export type Biblio = {
   issue?: string | number;
   first_page?: string | number;
   last_page?: string | number;
+};
+
+export type Thebe = {
+  useBinder: boolean;
+  useJupyterLite: boolean;
+  requestkernel: boolean;
+  binderOptions: ThebeBinderOptions;
+  serverSettings: ThebeServerSettings;
+  kernelOptions: ThebeKernelOptions;
+  savedSessionOptions: ThebeSavedSessionOptions;
+  mathjaxConfig: string;
+  methjaxUrl: string;
+};
+
+export type ThebeBinderOptions = {
+  binderUrl: string;
+  ref: string;
+  repo: string;
+  repoProvider: string;
+};
+
+export type ThebeServerSettings = {
+  baseUrl: string;
+  token: string;
+  wsUrl: string;
+  appendToken: boolean;
+};
+
+export type ThebeKernelOptions = {
+  kernelName: string;
+  name: string;
+  path: string;
+};
+
+export type ThebeSavedSessionOptions = {
+  enabled: boolean;
+  maxAge: number;
+  storagePrefix: string;
 };
 
 export type Numbering = {
@@ -87,6 +126,7 @@ export type SiteFrontmatter = {
   keywords?: string[];
 };
 
+// TODO extend
 export type ProjectFrontmatter = SiteFrontmatter & {
   date?: string;
   name?: string;
@@ -107,6 +147,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, string>;
   exports?: Export[];
+  thebe?: Thebe;
 };
 
 export type PageFrontmatter = Omit<ProjectFrontmatter, 'references'> & {
