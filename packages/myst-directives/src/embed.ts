@@ -1,5 +1,5 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
+import { normalizeLabel, ParseTypesEnum } from 'myst-common';
 
 export const embedDirective: DirectiveSpec = {
   name: 'embed',
@@ -16,10 +16,12 @@ export const embedDirective: DirectiveSpec = {
     },
   },
   run(data: DirectiveData): GenericNode[] {
+    const { label, identifier } = normalizeLabel(data.options?.label as string) || {};
     return [
       {
         type: 'embed',
-        label: data.options?.label as string,
+        label,
+        identifier,
         'remove-input': data.options?.['remove-input'],
         'remove-output': data.options?.['remove-output'],
       },

@@ -8,6 +8,11 @@ export enum KINDS {
   Notebook = 'Notebook',
 }
 
+export type Dependency = {
+  url: string;
+  kind?: KINDS;
+};
+
 export type PreRendererData = {
   file: string;
   mdast: Root;
@@ -20,6 +25,7 @@ export type RendererData = PreRendererData & {
   slug?: string;
   frontmatter: PageFrontmatter;
   references: References;
+  dependencies: Dependency[];
 };
 
 export type SingleCitationRenderer = { id: string; render: CitationRenderer[''] };

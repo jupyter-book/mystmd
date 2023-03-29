@@ -179,7 +179,7 @@ export async function writeFile(
   const toc = tic();
   const selectedFile = selectFile(session, file);
   if (!selectedFile) return;
-  const { frontmatter, ...mdastPost } = selectedFile;
+  const { frontmatter, mdast, kind, sha256, slug, references, dependencies } = selectedFile;
   const exports = await Promise.all([
     resolvePageSource(session, file),
     ...(await resolvePageExports(session, file, projectPath)),
@@ -189,8 +189,13 @@ export async function writeFile(
   writeFileToFolder(
     jsonFilename,
     JSON.stringify({
+      kind,
+      sha256,
+      slug,
+      dependencies,
       frontmatter: frontmatterWithExports,
-      ...mdastPost,
+      mdast,
+      references,
     }),
   );
   session.log.debug(toc(`Wrote "${file}" in %s`));
