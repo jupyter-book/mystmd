@@ -1,5 +1,4 @@
 import type { CreditRole } from 'credit-roles';
-import { SupportOptionRange } from 'prettier';
 import type { Licenses } from '../licenses/types';
 
 export type AuthorRoles = CreditRole | string;
