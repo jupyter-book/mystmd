@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { join } from 'path';
 import { computeHash } from 'myst-cli-utils';
+import { SourceFileKind } from 'myst-common';
 import type { GenericNode } from 'myst-common';
 import stripAnsi from 'strip-ansi';
 import { selectAll } from 'unist-util-select';
@@ -9,19 +10,18 @@ import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
 import type { Root } from 'mdast';
 import { castSession } from '../session';
 import type { ISession } from '../session/types';
-import { KINDS } from './types';
 import { resolveOutputPath } from './images';
 
 export async function transformOutputs(
   session: ISession,
   mdast: Root,
-  kind: KINDS,
+  kind: SourceFileKind,
   writeFolder: string,
   opts?: { altOutputFolder?: string; minifyMaxCharacters?: number },
 ) {
   const outputs = selectAll('output', mdast) as GenericNode[];
   const cache = castSession(session);
-  if (outputs.length && kind === KINDS.Article) {
+  if (outputs.length && kind === SourceFileKind.Article) {
     await Promise.all(
       outputs.map(async (output) => {
         output.data = await minifyCellOutput(output.data as IOutput[], cache.$outputs, {

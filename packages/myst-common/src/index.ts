@@ -13,14 +13,14 @@ export {
 } from './utils';
 export { selectBlockParts, extractPart } from './extractParts';
 export { TemplateKind, TemplateOptionType } from './templates';
-export { ParseTypesEnum } from './types';
+export { ParseTypesEnum, SourceFileKind } from './types';
 
 export type { MessageInfo } from './utils';
 export type {
+  Dependency,
   GenericNode,
   GenericParent,
   Citations,
-  Footnotes,
   References,
   ArgDefinition,
   DirectiveData,
