@@ -177,6 +177,8 @@ export async function transformMdast(
   await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
     altOutputFolder: imageAltOutputFolder,
   });
+  // Ensure there are keys on every node early
+  keysTransform(mdast);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   store.dispatch(
     watch.actions.updateFileInfo({
@@ -196,6 +198,7 @@ export async function transformMdast(
     file,
     sha256,
     slug: pageSlug,
+    dependencies: [],
     frontmatter,
     mdast,
     references,
@@ -243,8 +246,8 @@ export async function postProcessMdast(
     selector: LINKS_SELECTOR,
   });
   resolveReferencesTransform(mdastPost.mdast, state.file as VFile, { state });
-  embedDirective(mdastPost.mdast, state);
-  // Ensure there are keys on every node
+  embedDirective(mdastPost.mdast, mdastPost.dependencies, state);
+  // Ensure there are keys on every node after post processing
   keysTransform(mdastPost.mdast);
   logMessagesFromVFile(session, fileState.file);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));

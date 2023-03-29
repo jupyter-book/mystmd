@@ -20,6 +20,7 @@ export type RendererData = PreRendererData & {
   slug?: string;
   frontmatter: PageFrontmatter;
   references: References;
+  dependencies: string[];
 };
 
 export type SingleCitationRenderer = { id: string; render: CitationRenderer[''] };
