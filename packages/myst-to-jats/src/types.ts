@@ -26,7 +26,7 @@ export type Options = {
   spaces?: number;
   fullArticle?: boolean;
   frontmatter?: ProjectFrontmatter;
-  bibliography?: CitationRenderer;
+  citations?: CitationRenderer;
 };
 
 export type StateData = {

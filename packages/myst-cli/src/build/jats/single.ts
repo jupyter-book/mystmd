@@ -1,7 +1,7 @@
 import path from 'path';
+import type { CitationRenderer } from 'citation-js-utils';
 import type { Root } from 'mdast';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import type { References } from 'myst-common';
 import type { ProjectFrontmatter } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
 import mystToJats from 'myst-to-jats';
@@ -10,7 +10,9 @@ import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
 import { findCurrentProjectAndLoad } from '../../config';
 import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter';
+import { combineCitationRenderers } from '../../process';
 import { loadProjectFromDisk } from '../../project';
+import { castSession } from '../../session';
 import type { ISession } from '../../session/types';
 import { KNOWN_IMAGE_EXTENSIONS, logMessagesFromVFile } from '../../utils';
 import type { ExportWithOutput, ExportOptions } from '../types';
@@ -25,12 +27,12 @@ import {
 export function mdastToJats(
   session: ISession,
   mdast: Root,
-  references: References,
+  citations: CitationRenderer,
   frontmatter: ProjectFrontmatter,
 ) {
   const pipe = unified().use(mystToJats, {
     frontmatter,
-    // bibliography: citationRenderer - from references?
+    citations,
     fullArticle: true,
     spaces: 2,
   });
@@ -50,7 +52,7 @@ export async function runJatsExport(
 ) {
   const { output } = exportOptions;
   if (clean) cleanOutput(session, output);
-  const { mdast, frontmatter, references } = await getSingleFileContent(
+  const { mdast, frontmatter } = await getSingleFileContent(
     session,
     file,
     path.join(path.dirname(output), 'files'),
@@ -61,8 +63,10 @@ export async function runJatsExport(
       extraLinkTransformers,
     },
   );
+  const rendererFiles = projectPath ? [projectPath, file] : [file];
+  const citations = combineCitationRenderers(castSession(session), ...rendererFiles);
   const toc = tic();
-  const result = mdastToJats(session, mdast, references, frontmatter);
+  const result = mdastToJats(session, mdast, citations, frontmatter);
   session.log.info(toc(`📑 Exported JATS in %s, copying to ${output}`));
   writeFileToFolder(output, result.value);
 }

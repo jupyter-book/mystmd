@@ -1,0 +1,68 @@
+cases:
+  - title: Full citation
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+    citations:
+      doe_2000:
+        cite:
+          container-title: My Journal
+          author:
+            - given: Jane
+              family: Doe
+            - given: John
+              family: Doe
+          DOI: 10.1000/example.1000
+          type: article-journal
+          id: doe_2000
+          citation-key: doe_2000
+          ISSN: 2000-300X
+          issue: '1'
+          issued:
+            date-parts:
+              - - '2000'
+          page: 83-92
+          title: My Title!
+          volume: '4'
+      example_2020:
+        cite: {}
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+        <body>
+          <p>text</p>
+        </body>
+        <back>
+          <ref-list>
+            <ref id="doe_2000">
+              <element-citation publication-type="journal">
+                <person-group person-group-type="author">
+                  <name>
+                    <surname>Doe</surname>
+                    <given-names>Jane</given-names>
+                  </name>
+                  <name>
+                    <surname>Doe</surname>
+                    <given-names>John</given-names>
+                  </name>
+                </person-group>
+                <article-title>My Title!</article-title>
+                <source>My Journal</source>
+                <year iso-8601-date="2000">2000</year>
+                <pub-id pub-id-type="doi">10.1000/example.1000</pub-id>
+                <volume>4</volume>
+                <issue>1</issue>
+                <fpage>83</fpage>
+                <lpage>92</lpage>
+                <issn>2000-300X</issn>
+              </element-citation>
+            </ref>
+            <ref id="example_2020">
+              <element-citation publication-type="journal"/>
+            </ref>
+          </ref-list>
+        </back>
+      </article>

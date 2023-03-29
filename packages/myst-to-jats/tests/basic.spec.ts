@@ -13,6 +13,7 @@ type TestCase = {
   tree: string;
   jats: string;
   frontmatter?: Record<string, any>;
+  citations?: Record<string, any>;
 };
 
 const directory = path.join('tests');
@@ -38,6 +39,19 @@ describe('JATS full article', () => {
     '%s',
     (_, { tree, jats, frontmatter }) => {
       const pipe = unified().use(mystToJats, { frontmatter, fullArticle: true, spaces: 2 });
+      pipe.runSync(tree as any);
+      const vfile = pipe.stringify(tree as any);
+      expect((vfile.result as JatsResult).value).toEqual(jats);
+    },
+  );
+});
+
+describe('JATS full article with bibliography', () => {
+  const cases = loadCases('citations.yml');
+  test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
+    '%s',
+    (_, { tree, jats, citations }) => {
+      const pipe = unified().use(mystToJats, { citations, fullArticle: true, spaces: 2 });
       pipe.runSync(tree as any);
       const vfile = pipe.stringify(tree as any);
       expect((vfile.result as JatsResult).value).toEqual(jats);
