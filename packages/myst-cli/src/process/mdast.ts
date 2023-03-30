@@ -2,6 +2,7 @@ import path from 'path';
 import type { Root } from 'mdast';
 import { tic } from 'myst-cli-utils';
 import type { References } from 'myst-common';
+import { SourceFileKind } from 'myst-common';
 import type { LinkTransformer } from 'myst-transforms';
 import {
   basicTransformationsPlugin,
@@ -29,7 +30,7 @@ import { watch } from '../store/reducers';
 import type { ISession } from '../session/types';
 import { castSession } from '../session';
 import type { RendererData } from '../transforms/types';
-import { KINDS } from '../transforms/types';
+
 import {
   checkLinksTransform,
   embedDirective,
@@ -192,7 +193,7 @@ export async function transformMdast(
     }),
   );
   const data: RendererData = {
-    kind: frontmatter.kernelspec || frontmatter.jupytext ? KINDS.Notebook : kind,
+    kind: frontmatter.kernelspec || frontmatter.jupytext ? SourceFileKind.Notebook : kind,
     file,
     sha256,
     slug: pageSlug,

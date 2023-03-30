@@ -1,5 +1,5 @@
 import type { Root } from 'mdast';
-import type { FootnoteDefinition, Node } from 'myst-spec';
+import type { Node } from 'myst-spec';
 import type { VFile } from 'vfile';
 
 export type GenericNode<T extends Record<string, any> = Record<string, any>> = {
@@ -21,7 +21,15 @@ export type Citations = {
   data: Record<string, { html: string; number: number; doi: string | undefined }>;
 };
 
-export type Footnotes = Record<string, FootnoteDefinition>;
+export enum SourceFileKind {
+  Article = 'Article',
+  Notebook = 'Notebook',
+}
+
+export type Dependency = {
+  url: string;
+  kind?: SourceFileKind;
+};
 
 export type References = {
   cite?: Citations;

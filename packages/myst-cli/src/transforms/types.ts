@@ -1,22 +1,12 @@
 import type { Root } from 'mdast';
-import type { References } from 'myst-common';
+import type { References, SourceFileKind, Dependency } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { CitationRenderer } from 'citation-js-utils';
-
-export enum KINDS {
-  Article = 'Article',
-  Notebook = 'Notebook',
-}
-
-export type Dependency = {
-  url: string;
-  kind?: KINDS;
-};
 
 export type PreRendererData = {
   file: string;
   mdast: Root;
-  kind: KINDS;
+  kind: SourceFileKind;
   frontmatter?: PageFrontmatter;
 };
 

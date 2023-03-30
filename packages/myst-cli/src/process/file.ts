@@ -3,6 +3,9 @@ import path from 'path';
 import { createHash } from 'crypto';
 import { tic } from 'myst-cli-utils';
 import { TexParser } from 'tex-to-myst';
+import { VFile } from 'vfile';
+import { toText, SourceFileKind } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import type { ISession, ISessionWithCache } from '../session/types';
 import { castSession } from '../session';
 import { warnings, watch } from '../store/reducers';
@@ -10,11 +13,7 @@ import { loadCitations } from './citations';
 import { parseMyst } from './myst';
 import { processNotebook } from './notebook';
 import type { RendererData } from '../transforms/types';
-import { KINDS } from '../transforms/types';
-import { VFile } from 'vfile';
 import { logMessagesFromVFile } from '../utils';
-import { toText } from 'myst-common';
-import type { PageFrontmatter } from 'myst-frontmatter';
 
 function checkCache(cache: ISessionWithCache, content: string, file: string) {
   const sha256 = createHash('sha256').update(content).digest('hex');
@@ -43,7 +42,7 @@ export async function loadFile(
         const mdast = parseMyst(session, content, file);
         cache.$mdast[file] = {
           sha256,
-          pre: { kind: KINDS.Article, file, mdast },
+          pre: { kind: SourceFileKind.Article, file, mdast },
         };
         break;
       }
@@ -54,7 +53,7 @@ export async function loadFile(
         const mdast = await processNotebook(cache, file, content, opts);
         cache.$mdast[file] = {
           sha256,
-          pre: { kind: KINDS.Notebook, file, mdast },
+          pre: { kind: SourceFileKind.Notebook, file, mdast },
         };
         break;
       }
@@ -82,7 +81,7 @@ export async function loadFile(
         };
         cache.$mdast[file] = {
           sha256,
-          pre: { kind: KINDS.Article, file, mdast: tex.ast as any, frontmatter },
+          pre: { kind: SourceFileKind.Article, file, mdast: tex.ast as any, frontmatter },
         };
         break;
       }

@@ -2,11 +2,10 @@ import type { Root } from 'mdast';
 import { filter } from 'unist-util-filter';
 import { selectAll } from 'unist-util-select';
 import type { IReferenceState, MultiPageReferenceState } from 'myst-transforms';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, Dependency } from 'myst-common';
 import { copyNode, normalizeLabel } from 'myst-common';
 import { selectFile } from '../process';
 import type { ISession } from '../session/types';
-import type { Dependency } from './types';
 
 /**
  * This is the {embed} directive, that embeds nodes from elsewhere in a page.
