@@ -58,17 +58,18 @@ export async function processNotebook(
     }
     if (cell.cell_type === CELL_TYPES.code) {
       const code = `\`\`\`{code-cell} ${language}\n${asString(cell.source)}\n\`\`\``;
+      const { myst, id } = createOutputDirective();
       if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
         const minified: MinifiedOutput[] = await minifyCellOutput(
           cell.outputs as IOutput[],
           cache.$outputs,
           { computeHash, maxCharacters: opts?.minifyMaxCharacters },
         );
-        const { myst, id } = createOutputDirective();
         outputMap[id] = minified;
-        return acc.concat(`${blockDivider(cell)}${code}\n\n${myst}`);
+      } else {
+        outputMap[id] = [];
       }
-      return acc.concat(`${blockDivider(cell)}${code}`);
+      return acc.concat(`${blockDivider(cell)}${code}\n\n${myst}`);
     }
     return acc;
   }, Promise.resolve([] as string[]));
