@@ -1,5 +1,12 @@
 # myst-roles
 
+## 0.0.25
+
+### Patch Changes
+
+- Updated dependencies [d28b5e9d]
+  - myst-common@0.0.16
+
 ## 0.0.24
 
 ### Patch Changes

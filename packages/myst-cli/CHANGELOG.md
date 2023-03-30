@@ -1,5 +1,35 @@
 # myst-cli
 
+## 0.1.21
+
+### Patch Changes
+
+- 1670c49a: Do not publish local file paths to site json
+- 624ea081: Add source url / key to embed nodes in mdast
+- 5ba3b13f: Add bibliogrpahy from citations to JATS export backmatter
+- d28b5e9d: Move KINDS --> SourceFileKind and move to myst-common
+- Updated dependencies [c138efed]
+- Updated dependencies [039a49a3]
+- Updated dependencies [5ba3b13f]
+- Updated dependencies [d28b5e9d]
+- Updated dependencies [5ba3b13f]
+  - myst-to-jats@0.0.22
+  - myst-frontmatter@0.0.11
+  - myst-common@0.0.16
+  - citation-js-utils@0.0.14
+  - jtex@0.1.11
+  - myst-config@0.0.12
+  - myst-templates@0.1.13
+  - myst-to-docx@0.0.20
+  - myst-to-tex@0.0.23
+  - tex-to-myst@0.0.23
+  - myst-ext-card@0.0.6
+  - myst-ext-grid@0.0.6
+  - myst-ext-reactive@0.0.6
+  - myst-ext-tabs@0.0.6
+  - myst-transforms@0.0.25
+  - myst-parser@0.0.25
+
 ## 0.1.20
 
 ### Patch Changes

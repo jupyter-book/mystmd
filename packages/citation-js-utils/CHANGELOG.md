@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 0.0.14
+
+### Patch Changes
+
+- 5ba3b13f: Export funciton to return citation data from cite in citation-js-utils
+
 ## 0.0.13
 
 ### Patch Changes

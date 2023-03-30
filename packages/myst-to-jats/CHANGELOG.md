@@ -1,5 +1,18 @@
 # myst-to-jats
 
+## 0.0.22
+
+### Patch Changes
+
+- c138efed: Add subtitle and title to JATS
+- 5ba3b13f: Add bibliogrpahy from citations to JATS export backmatter
+- Updated dependencies [039a49a3]
+- Updated dependencies [d28b5e9d]
+- Updated dependencies [5ba3b13f]
+  - myst-frontmatter@0.0.11
+  - myst-common@0.0.16
+  - citation-js-utils@0.0.14
+
 ## 0.0.21
 
 ### Patch Changes

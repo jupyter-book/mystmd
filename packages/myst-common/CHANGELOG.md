@@ -1,5 +1,11 @@
 # myst-common
 
+## 0.0.16
+
+### Patch Changes
+
+- d28b5e9d: Move KINDS --> SourceFileKind and move to myst-common
+
 ## 0.0.15
 
 ### Patch Changes

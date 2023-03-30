@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 0.0.11
+
+### Patch Changes
+
+- 039a49a3: Added a frontmatter field to hold `thebe` options, this includes a numebr of top level keys and nested options.
+
 ## 0.0.10
 
 ### Patch Changes

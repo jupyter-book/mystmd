@@ -1,6 +1,6 @@
 {
   "name": "myst-to-html",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "Export from MyST mdast to HTML",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-to-html",
@@ -52,8 +52,8 @@
     "mdast": "^3.0.0",
     "mdast-util-find-and-replace": "^2.1.0",
     "mdast-util-to-hast": "^12.3.0",
-    "myst-common": "^0.0.15",
-    "myst-transforms": "^0.0.24",
+    "myst-common": "^0.0.16",
+    "myst-transforms": "^0.0.25",
     "rehype-format": "^4.0.1",
     "rehype-parse": "^8.0.4",
     "rehype-remark": "^9.1.2",
