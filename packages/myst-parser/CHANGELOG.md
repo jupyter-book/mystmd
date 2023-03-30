@@ -1,5 +1,12 @@
 # myst-parser
 
+## 0.0.26
+
+### Patch Changes
+
+- myst-roles@0.0.26
+- myst-directives@0.0.26
+
 ## 0.0.25
 
 ### Patch Changes

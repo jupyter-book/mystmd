@@ -1,5 +1,17 @@
 # myst-cli
 
+## 0.1.22
+
+### Patch Changes
+
+- 2db5e057: Add p-limit to the dependencies
+- Updated dependencies [3a42cd9e]
+- Updated dependencies [8f502f5d]
+  - myst-transforms@0.0.26
+  - citation-js-utils@0.0.15
+  - myst-to-jats@0.0.23
+  - myst-parser@0.0.26
+
 ## 0.1.21
 
 ### Patch Changes

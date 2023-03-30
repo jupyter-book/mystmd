@@ -1,5 +1,11 @@
 # myst-transforms
 
+## 0.0.26
+
+### Patch Changes
+
+- 3a42cd9e: Transform wikipedia links properly, including removing `_` and properly removing `wiki:` in all cases.
+
 ## 0.0.25
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # myst-to-jats
 
+## 0.0.23
+
+### Patch Changes
+
+- 8f502f5d: Improve citation-js types, remove dependency on citation-js in jats export.
+- Updated dependencies [8f502f5d]
+  - citation-js-utils@0.0.15
+
 ## 0.0.22
 
 ### Patch Changes

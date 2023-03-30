@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 0.0.15
+
+### Patch Changes
+
+- 8f502f5d: Improve citation-js types, remove dependency on citation-js in jats export.
+
 ## 0.0.14
 
 ### Patch Changes
