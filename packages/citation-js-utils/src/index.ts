@@ -2,6 +2,26 @@ import type { CitationFormatOptions } from 'citation-js';
 import Cite from 'citation-js';
 import sanitizeHtml from 'sanitize-html';
 
+// This is duplicated in citation-js types, which are not exported
+export type CitationJson = {
+  type?: 'article-journal' | string;
+  id: string;
+  author?: { given: string; family: string }[];
+  issued?: { 'date-parts': number[][] };
+  publisher?: string;
+  title?: string;
+  'citation-key'?: string;
+  'container-title'?: string;
+  abstract?: string;
+  DOI?: string;
+  ISBN?: string;
+  ISSN?: string;
+  issue?: string;
+  keyword?: string;
+  page?: string;
+  volume?: string;
+} & Record<string, any>;
+
 export type InlineNode = {
   type: string;
   value?: string;
@@ -48,13 +68,7 @@ const defaultString: CitationFormatOptions = {
   style: CitationJSStyles.apa,
 };
 
-export function getCiteData(c: Cite) {
-  const cite = new Cite();
-  return cite.set(c).data[0];
-}
-
-export function getInlineCitation(c: Cite, kind: InlineCite, opts?: InlineOptions) {
-  const data = getCiteData(c);
+export function getInlineCitation(data: CitationJson, kind: InlineCite, opts?: InlineOptions) {
   let authors = data.author;
   if (!authors || authors.length === 0) {
     authors = data.editor;
@@ -95,7 +109,7 @@ export type CitationRenderer = Record<
     render: (style?: CitationJSStyles) => string;
     inline: (kind?: InlineCite, opts?: InlineOptions) => InlineNode[];
     getDOI: () => string | undefined;
-    cite: any;
+    cite: CitationJson;
   }
 >;
 
