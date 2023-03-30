@@ -57,7 +57,7 @@ export async function processNotebook(
       return acc.concat(`${blockDivider(cell)}\`\`\`\n${asString(cell.source)}\n\`\`\``);
     }
     if (cell.cell_type === CELL_TYPES.code) {
-      const code = `\`\`\`${language}\n${asString(cell.source)}\n\`\`\``;
+      const code = `\`\`\`{code-cell} ${language}\n${asString(cell.source)}\n\`\`\``;
       const { myst, id } = createOutputDirective();
       if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
         const minified: MinifiedOutput[] = await minifyCellOutput(
