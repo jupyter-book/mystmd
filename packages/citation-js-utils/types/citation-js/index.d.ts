@@ -16,13 +16,24 @@ declare module 'citation-js' {
     lang: 'en-US' | 'fr-FR' | 'es-ES' | 'de-DE' | 'nl-NL';
   };
 
+  // This is duplicated for export in index.ts
   export type CitationJson = {
+    type?: 'article-journal' | string;
     id: string;
     author?: { given: string; family: string }[];
-    issued: { 'date-parts': number[][] };
+    issued?: { 'date-parts': number[][] };
     publisher?: string;
     title?: string;
     'citation-key'?: string;
+    'container-title'?: string;
+    abstract?: string;
+    DOI?: string;
+    ISBN?: string;
+    ISSN?: string;
+    issue?: string;
+    keyword?: string;
+    page?: string;
+    volume?: string;
   } & Record<string, any>;
 
   export class Cite {

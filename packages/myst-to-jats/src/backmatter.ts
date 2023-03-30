@@ -1,13 +1,11 @@
-import type { CitationRenderer } from 'citation-js-utils';
-import { getCiteData } from 'citation-js-utils';
+import type { CitationRenderer, CitationJson } from 'citation-js-utils';
 import type { Element } from './types';
 
-export function citeToJatsRef(key: string, cite: any): Element {
-  const data = getCiteData(cite);
+export function citeToJatsRef(key: string, data: CitationJson): Element {
   const publicationType = !data.type || data.type === 'article-journal' ? 'journal' : data.type;
   const elements: Element[] = [];
   const authors: Element[] | undefined = data.author
-    ?.map((author: { given?: string; family?: string }) => {
+    ?.map((author) => {
       if (!author.given && !author.family) return undefined;
       const authorChildren: Element[] = [];
       if (author.family) {
@@ -31,7 +29,7 @@ export function citeToJatsRef(key: string, cite: any): Element {
       };
       return authorElem;
     })
-    .filter((author: Element | undefined) => !!author);
+    .filter((author: Element | undefined): author is Element => !!author);
   if (authors && authors.length) {
     elements.push({
       type: 'element',
@@ -59,8 +57,8 @@ export function citeToJatsRef(key: string, cite: any): Element {
     elements.push({
       type: 'element',
       name: 'year',
-      attributes: { 'iso-8601-date': year },
-      elements: [{ type: 'text', text: year }],
+      attributes: { 'iso-8601-date': String(year) },
+      elements: [{ type: 'text', text: String(year) }],
     });
   }
   if (data.DOI) {
