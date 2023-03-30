@@ -609,7 +609,6 @@ export function validateGithubUrl(value: any, opts: ValidationOptions) {
   });
 }
 
-// TODO extend
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: SiteFrontmatter = {};
   if (defined(value.title)) {
