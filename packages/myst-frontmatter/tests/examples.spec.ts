@@ -26,6 +26,7 @@ const files = [
   'licenses.yml',
   'exports.yml',
   'keywords.yml',
+  'thebe.yml',
 ];
 
 const only = ''; // Can set this to a test title

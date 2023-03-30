@@ -60,6 +60,7 @@ export async function localToManifestProject(
       return { ...page };
     }),
   );
+
   const projFrontmatter = projConfig ? filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS) : {};
   return {
     ...projFrontmatter,

@@ -34,6 +34,11 @@ import type {
   SiteFrontmatter,
   TextRepresentation,
   Venue,
+  Thebe,
+  ThebeBinderOptions,
+  ThebeKernelOptions,
+  ThebeSavedSessionOptions,
+  ThebeServerSettings,
 } from './types';
 
 export const SITE_FRONTMATTER_KEYS = [
@@ -62,6 +67,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'bibliography',
   'math',
   'exports',
+  'thebe',
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = [
   'kernelspec',
@@ -108,6 +114,21 @@ const AUTHOR_ALIASES = {
   affiliation: 'affiliations',
 };
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
+const THEBE_KEYS = [
+  'useBinder',
+  'useJupyterLite',
+  'requestKernel',
+  'binderOptions',
+  'serverSettings',
+  'kernelOptions',
+  'savedSessionOptions',
+  'mathjaxConfig',
+  'mathjaxUrl',
+];
+const THEBE_BINDER_OPTIONS_KEYS = ['binderUrl', 'ref', 'repo', 'repoProvider'];
+const THEBE_SERVER_SETTINGS_KEYS = ['baseUrl', 'token', 'wsUrl', 'appendToken'];
+const THEBE_KERNEL_OPTIONS_KEYS = ['kernelName', 'name', 'path'];
+const THEBE_SAVED_SESSION_OPTIONS_KEYS = ['enabled', 'maxAge', 'storagePrefix'];
 const NUMBERING_KEYS = [
   'enumerator',
   'figure',
@@ -287,6 +308,136 @@ export function validateBiblio(input: any, opts: ValidationOptions) {
   }
   if (defined(value.last_page)) {
     output.last_page = validateStringOrNumber(value.last_page, incrementOptions('last_page', opts));
+  }
+  return output;
+}
+
+/**
+ * Validate Thebe Object
+ *
+ * https://thebe-core.curve.space/docs-core/a-configuration
+ */
+export function validateThebe(input: any, opts: ValidationOptions) {
+  const value: Thebe | undefined = validateObjectKeys(input, { optional: THEBE_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const output: Thebe = {};
+  if (defined(value.useBinder)) {
+    output.useBinder = validateBoolean(value.useBinder, incrementOptions('useBinder', opts));
+  }
+  if (defined(value.useJupyterLite)) {
+    output.useJupyterLite = validateBoolean(
+      value.useJupyterLite,
+      incrementOptions('useJupyterLite', opts),
+    );
+  }
+  if (defined(value.requestKernel)) {
+    output.requestKernel = validateBoolean(
+      value.requestKernel,
+      incrementOptions('requestKernel', opts),
+    );
+  }
+  if (defined(value.binderOptions)) {
+    output.binderOptions = validateThebeBinderOptions(
+      value.binderOptions,
+      incrementOptions('binderOptions', opts),
+    );
+  }
+  if (defined(value.serverSettings)) {
+    output.serverSettings = validateThebeServerSettings(
+      value.serverSettings,
+      incrementOptions('serverSettings', opts),
+    );
+  }
+  if (defined(value.kernelOptions)) {
+    output.kernelOptions = validateThebeKernelOptions(
+      value.kernelOptions,
+      incrementOptions('kernelOptions', opts),
+    );
+  }
+  if (defined(value.savedSessionOptions)) {
+    output.savedSessionOptions = validateThebeSavedSessionOptions(
+      value.savedSessionOptions,
+      incrementOptions('savedSessionOptions', opts),
+    );
+  }
+  if (defined(value.mathjaxUrl)) {
+    output.mathjaxUrl = validateUrl(value.mathjaxUrl, incrementOptions('mathjaxUrl', opts));
+  }
+  if (defined(value.mathjaxConfig)) {
+    output.mathjaxConfig = validateString(
+      value.mathjaxConfig,
+      incrementOptions('mathjaxConfig', opts),
+    );
+  }
+  return output;
+}
+
+export function validateThebeServerSettings(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, { optional: THEBE_SERVER_SETTINGS_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const output: ThebeServerSettings = {};
+  if (defined(value.baseUrl)) {
+    output.baseUrl = validateUrl(value.baseUrl, opts);
+  }
+  if (defined(value.token)) {
+    output.token = validateString(value.token, opts);
+  }
+  if (defined(value.wsUrl)) {
+    output.wsUrl = validateUrl(value.wsUrl, opts);
+  }
+  if (defined(value.appendToken)) {
+    output.appendToken = validateBoolean(value.appendToken, opts);
+  }
+  return output;
+}
+
+export function validateThebeKernelOptions(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, { optional: THEBE_KERNEL_OPTIONS_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const output: ThebeKernelOptions = {};
+  if (defined(value.kernelName)) {
+    output.kernelName = validateString(value.kernelName, opts);
+  }
+  if (defined(value.name)) {
+    output.name = validateString(value.name, opts);
+  }
+  if (defined(value.path)) {
+    output.path = validateString(value.path, opts);
+  }
+  return output;
+}
+
+export function validateThebeSavedSessionOptions(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, { optional: THEBE_SAVED_SESSION_OPTIONS_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const output: ThebeSavedSessionOptions = {};
+  if (defined(value.enabled)) {
+    output.enabled = validateBoolean(value.enabled, opts);
+  }
+  if (defined(value.maxAge)) {
+    output.maxAge = validateStringOrNumber(value.maxAge, opts);
+  }
+  if (defined(value.storagePrefix)) {
+    output.storagePrefix = validateString(value.storagePrefix, opts);
+  }
+  return output;
+}
+
+export function validateThebeBinderOptions(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, { optional: THEBE_BINDER_OPTIONS_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const output: ThebeBinderOptions = {};
+  if (defined(value.binderUrl)) {
+    output.binderUrl = validateUrl(value.binderUrl, opts);
+  }
+  if (defined(value.ref)) {
+    output.ref = validateString(value.ref, opts);
+  }
+  if (defined(value.repo)) {
+    output.repo = validateString(value.repo, opts);
+  }
+  if (defined(value.repoProvider)) {
+    output.repoProvider = validateString(value.repoProvider, opts);
   }
   return output;
 }
@@ -614,6 +765,10 @@ export function validateProjectFrontmatterKeys(
           .filter((exists) => !!exists) as [string, { url: string }][],
       );
     }
+  }
+
+  if (defined(value.thebe)) {
+    output.thebe = validateThebe(value.thebe, incrementOptions('thebe', opts));
   }
   return output;
 }

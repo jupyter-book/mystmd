@@ -24,6 +24,44 @@ export type Biblio = {
   last_page?: string | number;
 };
 
+export type Thebe = {
+  useBinder?: boolean;
+  useJupyterLite?: boolean;
+  requestKernel?: boolean;
+  binderOptions?: ThebeBinderOptions;
+  serverSettings?: ThebeServerSettings;
+  kernelOptions?: ThebeKernelOptions;
+  savedSessionOptions?: ThebeSavedSessionOptions;
+  mathjaxConfig?: string;
+  mathjaxUrl?: string;
+};
+
+export type ThebeBinderOptions = {
+  binderUrl?: string;
+  ref?: string;
+  repo?: string;
+  repoProvider?: string;
+};
+
+export type ThebeServerSettings = {
+  baseUrl?: string;
+  token?: string;
+  wsUrl?: string;
+  appendToken?: boolean;
+};
+
+export type ThebeKernelOptions = {
+  kernelName?: string;
+  name?: string;
+  path?: string;
+};
+
+export type ThebeSavedSessionOptions = {
+  enabled?: boolean;
+  maxAge?: string | number;
+  storagePrefix?: string;
+};
+
 export type Numbering = {
   enumerator?: string;
   figure?: boolean;
@@ -108,6 +146,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, string>;
   exports?: Export[];
+  thebe?: Thebe;
 };
 
 export type PageFrontmatter = Omit<ProjectFrontmatter, 'references'> & {
