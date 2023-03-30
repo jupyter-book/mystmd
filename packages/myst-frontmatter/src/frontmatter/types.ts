@@ -125,7 +125,6 @@ export type SiteFrontmatter = {
   keywords?: string[];
 };
 
-// TODO extend
 export type ProjectFrontmatter = SiteFrontmatter & {
   date?: string;
   name?: string;
