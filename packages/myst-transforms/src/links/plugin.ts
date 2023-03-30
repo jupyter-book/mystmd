@@ -17,7 +17,8 @@ type Options = {
 function formatLinkText(link: Link) {
   if (link.children?.length !== 1 || link.children[0].type !== 'text') return;
   const url = link.children[0].value;
-  if (url.length < 20 || url.match(/\s/)) return;
+  // Add an exception for wiki transforms links.
+  if (url.length < 20 || url.match(/\s/) || url.startsWith('wiki:')) return;
   // Split the URL into an array to distinguish double slashes from single slashes
   const doubleSlash = url.split('//');
   // Format the strings on either side of double slashes separately

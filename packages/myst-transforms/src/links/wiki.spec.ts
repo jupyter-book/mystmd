@@ -8,15 +8,31 @@ describe('Test WikiTransformer', () => {
     const t = new WikiTransformer();
     const link: Link = {
       type: 'link',
-      url: 'wiki:hello there',
+      url: 'wiki:hello_there_world',
       children: [],
     };
     expect(t.test(link.url)).toBe(true);
     expect(t.transform(link, file)).toBe(true);
-    expect(link.url).toBe('https://en.wikipedia.org/wiki/hello_there');
-    expect(link.children).toEqual([{ type: 'text', value: 'hello there' }]);
+    expect(link.url).toBe('https://en.wikipedia.org/wiki/hello_there_world');
+    expect(link.children).toEqual([{ type: 'text', value: 'hello there world' }]);
     expect(link.data?.wiki).toEqual('https://en.wikipedia.org/');
-    expect(link.data?.page).toEqual('hello_there');
+    expect(link.data?.page).toEqual('hello_there_world');
+  });
+  test('Test with pre populated children', async () => {
+    const file = new VFile();
+    const t = new WikiTransformer();
+    const link: Link = {
+      type: 'link',
+      url: 'wiki:hello_there_world',
+      children: [{ type: 'text', value: 'wiki:hello_there_world' }],
+    };
+    expect(t.test(link.url)).toBe(true);
+    expect(t.transform(link, file)).toBe(true);
+    expect(link.url).toBe('https://en.wikipedia.org/wiki/hello_there_world');
+    // This only works when run via myst-cli
+    // expect(link.children).toEqual([{ type: 'text', value: 'hello there world' }]);
+    expect(link.data?.wiki).toEqual('https://en.wikipedia.org/');
+    expect(link.data?.page).toEqual('hello_there_world');
   });
   test('any wiki link', async () => {
     const file = new VFile();

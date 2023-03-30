@@ -88,7 +88,7 @@ export class WikiTransformer implements LinkTransformer {
       lang: result.lang,
     };
     link.internal = false;
-    const title = page.replace(/_/, ' ');
+    const title = page.replace(/_/g, ' ');
     updateLinkTextIfEmpty(link, title);
     return true;
   }
