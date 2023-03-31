@@ -47,6 +47,7 @@ const TEST_BIBLIO: Biblio = {
 };
 
 const TEST_THEBE: Thebe = {
+  enabled: false,
   useBinder: false,
   useJupyterLite: false,
   requestKernel: true,
@@ -227,14 +228,20 @@ describe('validateBiblio', () => {
 });
 
 describe('validateThebe', () => {
-  it('empty object returns self', async () => {
-    expect(validateThebe({}, opts)).toEqual({});
+  it('empty object returns self with enabled true', async () => {
+    expect(validateThebe({}, opts)).toEqual({ enabled: true });
   });
   it('extra keys removed', async () => {
-    expect(validateThebe({ extra: '' }, opts)).toEqual({});
+    expect(validateThebe({ extra: '' }, opts)).toEqual({ enabled: true });
   });
-  it('full object returns self', async () => {
+  it('full object returns self - enabled false', async () => {
     expect(validateThebe(TEST_THEBE, opts)).toEqual(TEST_THEBE);
+  });
+  it('full object returns self - enabled true', async () => {
+    expect(validateThebe({ ...TEST_THEBE, enabled: true }, opts)).toEqual({
+      ...TEST_THEBE,
+      enabled: true,
+    });
   });
 });
 

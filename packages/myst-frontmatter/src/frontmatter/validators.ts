@@ -115,6 +115,7 @@ const AUTHOR_ALIASES = {
 };
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
 const THEBE_KEYS = [
+  'enabled',
   'useBinder',
   'useJupyterLite',
   'requestKernel',
@@ -321,6 +322,11 @@ export function validateThebe(input: any, opts: ValidationOptions) {
   const value: Thebe | undefined = validateObjectKeys(input, { optional: THEBE_KEYS }, opts);
   if (value === undefined) return undefined;
   const output: Thebe = {};
+  if (defined(value.enabled)) {
+    output.enabled = validateBoolean(value.enabled, incrementOptions('enabled', opts));
+  } else {
+    output.enabled = true;
+  }
   if (defined(value.useBinder)) {
     output.useBinder = validateBoolean(value.useBinder, incrementOptions('useBinder', opts));
   }

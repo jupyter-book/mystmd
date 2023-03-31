@@ -25,6 +25,7 @@ export type Biblio = {
 };
 
 export type Thebe = {
+  enabled?: boolean;
   useBinder?: boolean;
   useJupyterLite?: boolean;
   requestKernel?: boolean;

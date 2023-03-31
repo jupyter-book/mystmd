@@ -28,6 +28,7 @@ cases:
         mathjaxUrl: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js
     normalized:
       thebe:
+        enabled: true
         useBinder: false
         useJupyterLite: false
         requestKernel: true
