@@ -105,6 +105,7 @@ const AUTHOR_KEYS = [
   'email',
   'roles',
   'affiliations',
+  'collaborations',
   'twitter',
   'github',
   'website',
@@ -249,6 +250,16 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
     }
     output.affiliations = validateList(affiliations, affiliationsOpts, (aff) => {
       return validateString(aff, affiliationsOpts)?.trim();
+    });
+  }
+  if (defined(value.collaborations)) {
+    const collaborationsOpts = incrementOptions('collaborations', opts);
+    let collaborations = value.collaborations;
+    if (typeof collaborations === 'string') {
+      collaborations = collaborations.split(';');
+    }
+    output.collaborations = validateList(collaborations, collaborationsOpts, (col) => {
+      return validateString(col, collaborationsOpts)?.trim();
     });
   }
   if (defined(value.twitter)) {

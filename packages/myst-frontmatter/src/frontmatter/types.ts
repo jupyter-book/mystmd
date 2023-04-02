@@ -11,6 +11,7 @@ export interface Author {
   email?: string;
   roles?: AuthorRoles[];
   affiliations?: string[];
+  collaborations?: string[];
   twitter?: string;
   github?: string;
   website?: string;
