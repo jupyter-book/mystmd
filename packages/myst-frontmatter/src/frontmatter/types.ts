@@ -113,6 +113,9 @@ export type Export = {
   format: ExportFormats;
   template?: string | null;
   output?: string;
+  article?: string;
+  /** sub_articles are only for jats xml export */
+  sub_articles?: string[];
 } & Record<string, any>;
 
 export type SiteFrontmatter = {

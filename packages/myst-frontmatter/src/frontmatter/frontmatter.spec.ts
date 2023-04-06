@@ -128,7 +128,20 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   numbering: {},
   math: { a: 'b' },
   keywords: ['example', 'test'],
-  exports: [{ format: 'pdf' as any, template: 'default', output: 'out.tex', a: 1 }],
+  exports: [
+    {
+      format: 'pdf' as any,
+      template: 'default',
+      output: 'out.tex',
+      a: 1,
+      article: 'my-file.md',
+    },
+    {
+      format: 'xml' as any,
+      article: 'my-file.md',
+      sub_articles: ['my-notebook.ipynb'],
+    },
+  ],
 };
 const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   title: 'frontmatter',
