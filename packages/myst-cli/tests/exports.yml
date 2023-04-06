@@ -1,0 +1,7 @@
+cases:
+  - title: Forced JATS export writes to _build directory
+    cwd: basic-md-and-config
+    command: myst build --jats --force index.md
+    outputs:
+      - path: basic-md-and-config/_build/exports/index.xml
+        content: outputs/basic-md-and-config.xml
