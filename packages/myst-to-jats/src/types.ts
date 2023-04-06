@@ -16,10 +16,6 @@ export type Element = {
 
 export type Handler = (node: GenericNode, state: IJatsSerializer, parent: any) => void;
 
-export type JatsResult = {
-  value: string;
-};
-
 export type MathPlugins = Required<PageFrontmatter>['math'];
 
 export type Options = {

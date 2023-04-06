@@ -1,5 +1,4 @@
 import { unified } from 'unified';
-import type { JatsResult } from '../src';
 import mystToJats, { writeJats } from '../src';
 import fs from 'fs';
 import path from 'path';
@@ -35,7 +34,7 @@ describe('Basic JATS body', () => {
     const pipe = unified().use(mystToJats);
     pipe.runSync(tree as any);
     const vfile = pipe.stringify(tree as any);
-    expect((vfile.result as JatsResult).value).toEqual(jats);
+    expect(vfile.result).toEqual(jats);
   });
 });
 
@@ -50,7 +49,7 @@ describe('JATS full article', () => {
       });
       pipe.runSync(tree as any);
       const vfile = pipe.stringify(tree as any);
-      expect((vfile.result as JatsResult).value).toEqual(jats);
+      expect(vfile.result).toEqual(jats);
     },
   );
 });
@@ -66,7 +65,7 @@ describe('JATS full article with bibliography', () => {
       });
       pipe.runSync(tree as any);
       const vfile = pipe.stringify(tree as any);
-      expect((vfile.result as JatsResult).value).toEqual(jats);
+      expect(vfile.result).toEqual(jats);
     },
   );
 });
@@ -85,7 +84,7 @@ describe('JATS multi-article', () => {
           spaces: 2,
         },
       );
-      expect((vfile.result as JatsResult).value).toEqual(jats);
+      expect(vfile.result).toEqual(jats);
     },
   );
 });

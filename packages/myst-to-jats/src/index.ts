@@ -13,7 +13,6 @@ import { getArticleMeta, getFront } from './frontmatter';
 import type {
   Handler,
   IJatsSerializer,
-  JatsResult,
   Options,
   StateData,
   Element,
@@ -22,8 +21,6 @@ import type {
   DocumentOptions,
 } from './types';
 import { basicTransformations } from './transforms';
-
-export type { JatsResult } from './types';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
@@ -475,10 +472,7 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
     compact: false,
     spaces: opts?.spaces,
   });
-  const result: JatsResult = {
-    value: jats,
-  };
-  file.result = result;
+  file.result = jats;
   return file;
 }
 
