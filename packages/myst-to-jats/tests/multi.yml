@@ -1,0 +1,81 @@
+cases:
+  - title: Simple articles
+    articles:
+      - mdast:
+          type: root
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: article 1
+      - mdast:
+          type: root
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: article 2
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+        <body>
+          <sub-article>
+            <body>
+              <p>article 1</p>
+            </body>
+          </sub-article>
+          <sub-article>
+            <body>
+              <p>article 2</p>
+            </body>
+          </sub-article>
+        </body>
+      </article>
+  - title: Simple articles
+    frontmatter:
+      title: Top title
+    articles:
+      - mdast:
+          type: root
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: article 1
+        frontmatter:
+          title: Top title
+      - mdast:
+          type: root
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: article 2
+        frontmatter:
+          title: Different title
+    jats: |-
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta>
+            <title-group>
+              <article-title>Top title</article-title>
+            </title-group>
+          </article-meta>
+        </front>
+        <body>
+          <sub-article>
+            <body>
+              <p>article 1</p>
+            </body>
+          </sub-article>
+          <sub-article>
+            <front-stub>
+              <title-group>
+                <article-title>Different title</article-title>
+              </title-group>
+            </front-stub>
+            <body>
+              <p>article 2</p>
+            </body>
+          </sub-article>
+        </body>
+      </article>

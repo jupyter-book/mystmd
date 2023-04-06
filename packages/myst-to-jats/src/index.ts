@@ -7,7 +7,7 @@ import type { MessageInfo, GenericNode } from 'myst-common';
 import { copyNode, fileError } from 'myst-common';
 import { Tags, RefType } from 'jats-xml';
 import { getBack } from './backmatter';
-import { getFront } from './frontmatter';
+import { getArticleMeta, getFront } from './frontmatter';
 import type {
   Handler,
   IJatsSerializer,
@@ -16,8 +16,11 @@ import type {
   StateData,
   Element,
   Attributes,
+  IJatsDocument,
+  MultiArticleContents,
 } from './types';
 import { basicTransformations } from './transforms';
+import type { PageFrontmatter, ProjectFrontmatter } from 'myst-frontmatter';
 
 export type { JatsResult } from './types';
 
@@ -284,7 +287,37 @@ function createText(text: string): Element {
   return { type: 'text', text };
 }
 
-class JatsSerializer implements IJatsSerializer {
+function articleAttributes(articleType?: string, specificUse?: string) {
+  const attributes: Record<string, string> = {
+    'xmlns:mml': 'http://www.w3.org/1998/Math/MathML',
+    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+    'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+    'xmlns:ali': 'http://www.niso.org/schemas/ali/1.0/', // Used for the licensing
+    'dtd-version': '1.3',
+    'xml:lang': 'en',
+  };
+  if (articleType) attributes['article-type'] = articleType;
+  if (specificUse) attributes['specific-use'] = specificUse;
+  return attributes;
+}
+
+function frontmatterStub(
+  pageFrontmatter?: PageFrontmatter,
+  projectFrontmatter?: ProjectFrontmatter,
+) {
+  const stubFrontmatter: Record<string, any> = {};
+  if (pageFrontmatter) {
+    Object.entries(pageFrontmatter).forEach(([key, value]) => {
+      const projectValue = projectFrontmatter?.[key as keyof ProjectFrontmatter];
+      if (projectValue == null || JSON.stringify(value) !== JSON.stringify(projectValue)) {
+        stubFrontmatter[key] = value;
+      }
+    });
+  }
+  return stubFrontmatter;
+}
+
+class JatsSerializer implements IJatsSerializer, IJatsDocument {
   file: VFile;
   data: StateData;
   options: Options;
@@ -391,58 +424,149 @@ class JatsSerializer implements IJatsSerializer {
   }
 
   article(articleType?: string, specificUse?: string) {
-    const attributes: Record<string, string> = {
-      'xmlns:mml': 'http://www.w3.org/1998/Math/MathML',
-      'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-      'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-      'xmlns:ali': 'http://www.niso.org/schemas/ali/1.0/', // Used for the licensing
-      'dtd-version': '1.3',
-      'xml:lang': 'en',
-    };
-    if (articleType) attributes['article-type'] = articleType;
-    if (specificUse) attributes['specific-use'] = specificUse;
-    const front = getFront(this.options.frontmatter);
-    const back = getBack(this.options.citations, this.footnotes);
     const elements: Element[] = [];
+    const front = this.front();
     if (front) elements.push(front);
-    elements.push({ type: 'element', name: 'body', elements: this.body() });
+    elements.push(this.body());
+    const back = this.back();
     if (back) elements.push(back);
     const article: Element = {
       type: 'element',
       name: Tags.article,
-      attributes,
+      attributes: articleAttributes(articleType, specificUse),
       elements,
     };
     return article;
   }
 
-  body() {
-    return this.stack[0].elements ?? [];
+  front() {
+    return getFront(this.options.frontmatter);
   }
 
   back() {
-    return {};
+    return getBack(this.options.citations, this.footnotes);
   }
+
+  body() {
+    return { type: 'element', name: 'body', elements: this.stack[0].elements ?? [] } as Element;
+  }
+}
+
+export class MultiArticleJatsDocument implements IJatsDocument {
+  file: VFile;
+  options: Options;
+  articles: JatsSerializer[];
+
+  constructor(file: VFile, contents: MultiArticleContents, opts?: Options) {
+    this.file = file;
+    this.options = opts ?? {};
+    this.articles = contents.map((content) => {
+      const { mdast, frontmatter, citations } = content;
+      return new JatsSerializer(file, mdast, {
+        ...this.options,
+        citations,
+        frontmatter: frontmatterStub(frontmatter, opts?.frontmatter),
+      });
+    });
+  }
+
+  article(articleType?: string, specificUse?: string) {
+    const elements: Element[] = [];
+    const front = this.front();
+    if (front) elements.push(front);
+    elements.push(this.body());
+    const back = this.back();
+    if (back) elements.push(back);
+    const article: Element = {
+      type: 'element',
+      name: Tags.article,
+      attributes: articleAttributes(articleType, specificUse),
+      elements,
+    };
+    return article;
+  }
+
+  front() {
+    return getFront(this.options.frontmatter);
+  }
+
+  back() {
+    return null;
+  }
+
+  body() {
+    const elements = this.articles.map((article) => {
+      const subElements: Element[] = [];
+      const frontStubElements = article.options.frontmatter
+        ? getArticleMeta(article.options.frontmatter)
+        : [];
+      if (frontStubElements.length) {
+        subElements.push({
+          type: 'element',
+          name: 'front-stub',
+          elements: frontStubElements[0].elements,
+        });
+      }
+      subElements.push(article.body());
+      const back = article.back();
+      if (back) subElements.push(back);
+      const subArticle: Element = {
+        type: 'element',
+        name: Tags.subArticle,
+        elements: subElements,
+      };
+      return subArticle;
+    });
+    return { type: 'element', name: 'body', elements } as Element;
+  }
+}
+
+function buildJatsDocument(file: VFile, state: IJatsDocument, opts?: Options) {
+  const element = opts?.fullArticle
+    ? { type: 'element', elements: [state.article()] }
+    : state.body();
+  const jats = js2xml(element, {
+    compact: false,
+    spaces: opts?.spaces,
+  });
+  const result: JatsResult = {
+    value: jats,
+  };
+  file.result = result;
+  return file;
+}
+
+export function writeSingleArticleJats(file: VFile, node: Root, opts?: Options) {
+  const tree = copyNode(node) as any;
+  basicTransformations(tree);
+  const state = new JatsSerializer(file, tree, opts ?? { handlers });
+  return buildJatsDocument(file, state, opts);
+}
+
+export function writeMultiArticleJats(file: VFile, contents: MultiArticleContents, opts?: Options) {
+  contents.forEach((content) => {
+    const mdast = copyNode(content.mdast) as any;
+    basicTransformations(mdast);
+    content.mdast = mdast;
+  });
+  const state = new MultiArticleJatsDocument(file, contents, opts ?? { handlers });
+  const element = opts?.fullArticle
+    ? { type: 'element', elements: [state.article()] }
+    : state.body();
+  const jats = js2xml(element, {
+    compact: false,
+    spaces: opts?.spaces,
+  });
+  const result: JatsResult = {
+    value: jats,
+  };
+  file.result = result;
+  return file;
 }
 
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
   this.Compiler = (node, file) => {
-    const tree = copyNode(node) as any;
-    basicTransformations(tree);
-    const state = new JatsSerializer(file, tree, opts ?? { handlers });
-    const elements = opts?.fullArticle ? [state.article()] : state.body();
-    const jats = js2xml(
-      { type: 'element', elements },
-      {
-        compact: false,
-        spaces: opts?.spaces,
-      },
-    );
-    const result: JatsResult = {
-      value: jats,
-    };
-    file.result = result;
-    return file;
+    return writeSingleArticleJats(file, node, opts);
   };
 
   return (node: Root) => {

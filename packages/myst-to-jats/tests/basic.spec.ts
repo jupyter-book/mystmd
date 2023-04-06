@@ -10,7 +10,7 @@ type TestFile = {
 };
 type TestCase = {
   title: string;
-  tree: string;
+  tree: Record<string, any>;
   jats: string;
   frontmatter?: Record<string, any>;
   citations?: Record<string, any>;

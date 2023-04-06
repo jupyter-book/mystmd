@@ -1,5 +1,6 @@
-import type { PageFrontmatter, ProjectFrontmatter } from 'myst-frontmatter';
 import type { GenericNode, MessageInfo } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
+import type { Root } from 'myst-spec';
 import type { CitationRenderer } from 'citation-js-utils';
 
 export type Attributes = Record<string, string | undefined>;
@@ -25,13 +26,19 @@ export type Options = {
   handlers?: Record<string, Handler>;
   spaces?: number;
   fullArticle?: boolean;
-  frontmatter?: ProjectFrontmatter;
+  frontmatter?: PageFrontmatter;
   citations?: CitationRenderer;
 };
 
 export type StateData = {
   isInContainer?: boolean;
 };
+
+export type MultiArticleContents = {
+  mdast: Root;
+  frontmatter: PageFrontmatter;
+  citations: CitationRenderer;
+}[];
 
 export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   data: D;
@@ -46,4 +53,12 @@ export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   closeNode: () => void;
   warn: (message: string, node: GenericNode, source?: string, opts?: MessageInfo) => void;
   error: (message: string, node: GenericNode, source?: string, opts?: MessageInfo) => void;
+}
+
+export interface IJatsDocument {
+  options: Options;
+  article: (articleType?: string, specificUse?: string) => Element;
+  front: () => Element | null;
+  body: () => Element;
+  back: () => Element | null;
 }
