@@ -1,6 +1,13 @@
 cases:
   - title: Simple articles
-    articles:
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+    subArticles:
       - mdast:
           type: root
           children:
@@ -18,40 +25,54 @@ cases:
     jats: |-
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
         <body>
-          <sub-article>
-            <body>
-              <p>article 1</p>
-            </body>
-          </sub-article>
-          <sub-article>
-            <body>
-              <p>article 2</p>
-            </body>
-          </sub-article>
+          <p>text</p>
         </body>
+        <sub-article>
+          <body>
+            <p>article 1</p>
+          </body>
+        </sub-article>
+        <sub-article>
+          <body>
+            <p>article 2</p>
+          </body>
+        </sub-article>
       </article>
-  - title: Simple articles
+  - title: Articles with frontmatter and citations
     frontmatter:
       title: Top title
-    articles:
-      - mdast:
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+    citations:
+      example_2020:
+        cite: {}
+    subArticles:
+      - frontmatter:
+          title: Top title
+        mdast:
           type: root
           children:
             - type: paragraph
               children:
                 - type: text
                   value: article 1
-        frontmatter:
-          title: Top title
-      - mdast:
+        citations:
+          example_2000:
+            cite: {}
+      - frontmatter:
+          title: Different title
+        mdast:
           type: root
           children:
             - type: paragraph
               children:
                 - type: text
                   value: article 2
-        frontmatter:
-          title: Different title
     jats: |-
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
         <front>
@@ -62,20 +83,35 @@ cases:
           </article-meta>
         </front>
         <body>
-          <sub-article>
-            <body>
-              <p>article 1</p>
-            </body>
-          </sub-article>
-          <sub-article>
-            <front-stub>
-              <title-group>
-                <article-title>Different title</article-title>
-              </title-group>
-            </front-stub>
-            <body>
-              <p>article 2</p>
-            </body>
-          </sub-article>
+          <p>text</p>
         </body>
+        <back>
+          <ref-list>
+            <ref id="example_2020">
+              <element-citation publication-type="journal"/>
+            </ref>
+          </ref-list>
+        </back>
+        <sub-article>
+          <body>
+            <p>article 1</p>
+          </body>
+          <back>
+            <ref-list>
+              <ref id="example_2000">
+                <element-citation publication-type="journal"/>
+              </ref>
+            </ref-list>
+          </back>
+        </sub-article>
+        <sub-article>
+          <front-stub>
+            <title-group>
+              <article-title>Different title</article-title>
+            </title-group>
+          </front-stub>
+          <body>
+            <p>article 2</p>
+          </body>
+        </sub-article>
       </article>

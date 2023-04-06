@@ -30,7 +30,7 @@ export function getJournalPublisher(): Element[] {
   return [];
 }
 
-export function getJournalMeta(): Element[] {
+export function getJournalMeta(): Element | null {
   const elements = [
     ...getJournalIds(),
     ...getJournalTitleGroup(),
@@ -40,7 +40,7 @@ export function getJournalMeta(): Element[] {
     // notes
     // self-url
   ];
-  return elements.length ? [{ type: 'element', name: 'journal-meta', elements }] : [];
+  return elements.length ? { type: 'element', name: 'journal-meta', elements } : null;
 }
 
 /**
@@ -229,7 +229,7 @@ export function getArticlePages(frontmatter: ProjectFrontmatter): Element[] {
   return pages;
 }
 
-export function getArticleMeta(frontmatter: ProjectFrontmatter): Element[] {
+export function getArticleMeta(frontmatter: ProjectFrontmatter): Element | null {
   const elements = [
     // article-id
     // article-version, article-version-alternatives
@@ -265,12 +265,16 @@ export function getArticleMeta(frontmatter: ProjectFrontmatter): Element[] {
     // conference
     // counts
   ];
-  return elements.length ? [{ type: 'element', name: 'article-meta', elements }] : [];
+  return elements.length ? { type: 'element', name: 'article-meta', elements } : null;
 }
 
-export function getFront(frontmatter?: ProjectFrontmatter): Element | null {
-  if (!frontmatter) return null;
-  const elements: Element[] = [...getJournalMeta(), ...getArticleMeta(frontmatter)];
-  if (!elements.length) return null;
-  return { type: 'element', name: 'front', elements };
+export function getFront(frontmatter?: ProjectFrontmatter): Element[] {
+  if (!frontmatter) return [];
+  const elements: Element[] = [];
+  const journalMeta = getJournalMeta();
+  if (journalMeta) elements.push(journalMeta);
+  const articleMeta = getArticleMeta(frontmatter);
+  if (articleMeta) elements.push(articleMeta);
+  if (!elements.length) return [];
+  return [{ type: 'element', name: 'front', elements }];
 }

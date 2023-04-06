@@ -24,25 +24,26 @@ export type MathPlugins = Required<PageFrontmatter>['math'];
 
 export type Options = {
   handlers?: Record<string, Handler>;
+};
+
+export type DocumentOptions = Options & {
+  subArticles?: ArticleContent[];
   spaces?: number;
   fullArticle?: boolean;
-  frontmatter?: PageFrontmatter;
-  citations?: CitationRenderer;
 };
 
 export type StateData = {
   isInContainer?: boolean;
 };
 
-export type MultiArticleContents = {
+export type ArticleContent = {
   mdast: Root;
-  frontmatter: PageFrontmatter;
-  citations: CitationRenderer;
-}[];
+  frontmatter?: PageFrontmatter;
+  citations?: CitationRenderer;
+};
 
 export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   data: D;
-  options: Options;
   stack: Element[];
   footnotes: Element[];
   text: (value?: string) => void;
@@ -51,14 +52,7 @@ export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   addLeaf: (name: string, attributes?: Attributes) => void;
   openNode: (name: string, attributes?: Attributes) => void;
   closeNode: () => void;
+  elements: () => Element[];
   warn: (message: string, node: GenericNode, source?: string, opts?: MessageInfo) => void;
   error: (message: string, node: GenericNode, source?: string, opts?: MessageInfo) => void;
-}
-
-export interface IJatsDocument {
-  options: Options;
-  article: (articleType?: string, specificUse?: string) => Element;
-  front: () => Element | null;
-  body: () => Element;
-  back: () => Element | null;
 }

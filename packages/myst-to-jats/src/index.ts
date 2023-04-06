@@ -3,8 +3,10 @@ import type { Cite, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
+import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode } from 'myst-common';
 import { copyNode, fileError } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import { Tags, RefType } from 'jats-xml';
 import { getBack } from './backmatter';
 import { getArticleMeta, getFront } from './frontmatter';
@@ -16,11 +18,10 @@ import type {
   StateData,
   Element,
   Attributes,
-  IJatsDocument,
-  MultiArticleContents,
+  ArticleContent,
+  DocumentOptions,
 } from './types';
 import { basicTransformations } from './transforms';
-import type { PageFrontmatter, ProjectFrontmatter } from 'myst-frontmatter';
 
 export type { JatsResult } from './types';
 
@@ -287,52 +288,22 @@ function createText(text: string): Element {
   return { type: 'text', text };
 }
 
-function articleAttributes(articleType?: string, specificUse?: string) {
-  const attributes: Record<string, string> = {
-    'xmlns:mml': 'http://www.w3.org/1998/Math/MathML',
-    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-    'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-    'xmlns:ali': 'http://www.niso.org/schemas/ali/1.0/', // Used for the licensing
-    'dtd-version': '1.3',
-    'xml:lang': 'en',
-  };
-  if (articleType) attributes['article-type'] = articleType;
-  if (specificUse) attributes['specific-use'] = specificUse;
-  return attributes;
-}
-
-function frontmatterStub(
-  pageFrontmatter?: PageFrontmatter,
-  projectFrontmatter?: ProjectFrontmatter,
-) {
-  const stubFrontmatter: Record<string, any> = {};
-  if (pageFrontmatter) {
-    Object.entries(pageFrontmatter).forEach(([key, value]) => {
-      const projectValue = projectFrontmatter?.[key as keyof ProjectFrontmatter];
-      if (projectValue == null || JSON.stringify(value) !== JSON.stringify(projectValue)) {
-        stubFrontmatter[key] = value;
-      }
-    });
-  }
-  return stubFrontmatter;
-}
-
-class JatsSerializer implements IJatsSerializer, IJatsDocument {
+class JatsSerializer implements IJatsSerializer {
   file: VFile;
   data: StateData;
-  options: Options;
   handlers: Record<string, Handler>;
   stack: Element[];
   footnotes: Element[];
 
-  constructor(file: VFile, tree: Root, opts?: Options) {
+  constructor(file: VFile, mdast: Root, opts?: Options) {
     this.file = file;
-    this.options = opts ?? {};
     this.data = {};
     this.stack = [{ type: 'element', elements: [] }];
     this.footnotes = [];
     this.handlers = opts?.handlers ?? handlers;
-    this.renderChildren(tree);
+    const mdastCopy = copyNode(mdast) as any;
+    basicTransformations(mdastCopy);
+    this.renderChildren(mdastCopy);
     while (this.stack.length > 1) this.closeNode();
   }
 
@@ -423,108 +394,83 @@ class JatsSerializer implements IJatsSerializer, IJatsDocument {
     return this.pushNode(node);
   }
 
-  article(articleType?: string, specificUse?: string) {
-    const elements: Element[] = [];
-    const front = this.front();
-    if (front) elements.push(front);
-    elements.push(this.body());
-    const back = this.back();
-    if (back) elements.push(back);
-    const article: Element = {
-      type: 'element',
-      name: Tags.article,
-      attributes: articleAttributes(articleType, specificUse),
-      elements,
-    };
-    return article;
-  }
-
-  front() {
-    return getFront(this.options.frontmatter);
-  }
-
-  back() {
-    return getBack(this.options.citations, this.footnotes);
-  }
-
-  body() {
-    return { type: 'element', name: 'body', elements: this.stack[0].elements ?? [] } as Element;
+  elements() {
+    return this.stack[0].elements ?? [];
   }
 }
 
-export class MultiArticleJatsDocument implements IJatsDocument {
+export class JatsDocument {
   file: VFile;
-  options: Options;
-  articles: JatsSerializer[];
+  options: DocumentOptions;
+  content: ArticleContent;
 
-  constructor(file: VFile, contents: MultiArticleContents, opts?: Options) {
+  constructor(file: VFile, content: ArticleContent, opts?: DocumentOptions) {
     this.file = file;
     this.options = opts ?? {};
-    this.articles = contents.map((content) => {
-      const { mdast, frontmatter, citations } = content;
-      return new JatsSerializer(file, mdast, {
-        ...this.options,
-        citations,
-        frontmatter: frontmatterStub(frontmatter, opts?.frontmatter),
-      });
-    });
+    this.content = content;
   }
 
   article(articleType?: string, specificUse?: string) {
-    const elements: Element[] = [];
-    const front = this.front();
-    if (front) elements.push(front);
-    elements.push(this.body());
-    const back = this.back();
-    if (back) elements.push(back);
+    const attributes: Record<string, string> = {
+      'xmlns:mml': 'http://www.w3.org/1998/Math/MathML',
+      'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+      'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+      'xmlns:ali': 'http://www.niso.org/schemas/ali/1.0/', // Used for the licensing
+      'dtd-version': '1.3',
+      'xml:lang': 'en',
+    };
+    if (articleType) attributes['article-type'] = articleType;
+    if (specificUse) attributes['specific-use'] = specificUse;
+    const state = new JatsSerializer(this.file, this.content.mdast, this.options);
+    const elements: Element[] = [
+      ...getFront(this.content.frontmatter),
+      this.body(state),
+      ...getBack(this.content.citations, state.footnotes),
+      ...(this.options.subArticles ?? []).map((article) => this.subArticle(article)),
+    ];
     const article: Element = {
       type: 'element',
       name: Tags.article,
-      attributes: articleAttributes(articleType, specificUse),
+      attributes,
       elements,
     };
     return article;
   }
 
-  front() {
-    return getFront(this.options.frontmatter);
+  frontStub(frontmatter?: PageFrontmatter): Element[] {
+    const stubFrontmatter: Record<string, any> = {};
+    if (frontmatter) {
+      Object.entries(frontmatter).forEach(([key, val]) => {
+        const articleVal = this.content.frontmatter?.[key as keyof PageFrontmatter];
+        if (articleVal == null || JSON.stringify(val) !== JSON.stringify(articleVal)) {
+          stubFrontmatter[key] = val;
+        }
+      });
+    }
+    const articleMeta = getArticleMeta(stubFrontmatter);
+    if (!articleMeta) return [];
+    return [{ type: 'element', name: 'front-stub', elements: articleMeta.elements }];
   }
 
-  back() {
-    return null;
+  subArticle(content: ArticleContent): Element {
+    const state = new JatsSerializer(this.file, content.mdast, this.options);
+    const elements: Element[] = [
+      ...this.frontStub(content.frontmatter),
+      { type: 'element', name: 'body', elements: state.elements() },
+      ...getBack(content.citations, state.footnotes),
+    ];
+    return { type: 'element', name: 'sub-article', elements };
   }
 
-  body() {
-    const elements = this.articles.map((article) => {
-      const subElements: Element[] = [];
-      const frontStubElements = article.options.frontmatter
-        ? getArticleMeta(article.options.frontmatter)
-        : [];
-      if (frontStubElements.length) {
-        subElements.push({
-          type: 'element',
-          name: 'front-stub',
-          elements: frontStubElements[0].elements,
-        });
-      }
-      subElements.push(article.body());
-      const back = article.back();
-      if (back) subElements.push(back);
-      const subArticle: Element = {
-        type: 'element',
-        name: Tags.subArticle,
-        elements: subElements,
-      };
-      return subArticle;
-    });
-    return { type: 'element', name: 'body', elements } as Element;
+  body(state?: JatsSerializer) {
+    if (!state) state = new JatsSerializer(this.file, this.content.mdast, this.options);
+    return { type: 'element', name: 'body', elements: state.elements() } as Element;
   }
 }
 
-function buildJatsDocument(file: VFile, state: IJatsDocument, opts?: Options) {
-  const element = opts?.fullArticle
-    ? { type: 'element', elements: [state.article()] }
-    : state.body();
+export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentOptions) {
+  const doc = new JatsDocument(file, content, opts ?? { handlers });
+  const element = opts?.fullArticle ? { type: 'element', elements: [doc.article()] } : doc.body();
   const jats = js2xml(element, {
     compact: false,
     spaces: opts?.spaces,
@@ -536,43 +482,16 @@ function buildJatsDocument(file: VFile, state: IJatsDocument, opts?: Options) {
   return file;
 }
 
-export function writeSingleArticleJats(file: VFile, node: Root, opts?: Options) {
-  const tree = copyNode(node) as any;
-  basicTransformations(tree);
-  const state = new JatsSerializer(file, tree, opts ?? { handlers });
-  return buildJatsDocument(file, state, opts);
-}
+const plugin: Plugin<[PageFrontmatter?, CitationRenderer?, DocumentOptions?], Root, VFile> =
+  function (frontmatter, citations, opts) {
+    this.Compiler = (node, file) => {
+      return writeJats(file, { mdast: node as any, frontmatter, citations }, opts);
+    };
 
-export function writeMultiArticleJats(file: VFile, contents: MultiArticleContents, opts?: Options) {
-  contents.forEach((content) => {
-    const mdast = copyNode(content.mdast) as any;
-    basicTransformations(mdast);
-    content.mdast = mdast;
-  });
-  const state = new MultiArticleJatsDocument(file, contents, opts ?? { handlers });
-  const element = opts?.fullArticle
-    ? { type: 'element', elements: [state.article()] }
-    : state.body();
-  const jats = js2xml(element, {
-    compact: false,
-    spaces: opts?.spaces,
-  });
-  const result: JatsResult = {
-    value: jats,
+    return (node: Root) => {
+      // Preprocess
+      return node;
+    };
   };
-  file.result = result;
-  return file;
-}
-
-const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
-  this.Compiler = (node, file) => {
-    return writeSingleArticleJats(file, node, opts);
-  };
-
-  return (node: Root) => {
-    // Preprocess
-    return node;
-  };
-};
 
 export default plugin;
