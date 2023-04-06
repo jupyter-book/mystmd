@@ -39,7 +39,7 @@ export async function localArticleExport(
       } else if (format === ExportFormats.docx) {
         await runWordExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
       } else if (format === ExportFormats.xml) {
-        await runJatsExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
+        await runJatsExport(sessionClone, exportOptions, fileProjectPath, clean);
       } else {
         const keepTexAndLogs = format === ExportFormats.pdftex;
         const texExportOptions = texExportOptionsFromPdf(

@@ -10,18 +10,16 @@ import type { LinkTransformer } from 'myst-transforms';
 import { htmlTransform } from 'myst-transforms';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config';
-import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter';
 import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session/types';
 import type { RendererData } from '../../transforms/types';
 import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils';
 import type { ExportOptions, ExportWithOutput } from '../types';
 import {
-  getDefaultExportFilename,
-  getDefaultExportFolder,
   resolveAndLogErrors,
   cleanOutput,
-  getSingleFileContent,
+  getFileContent,
+  collectWordExportOptions,
 } from '../utils';
 import { createFooter } from './footers';
 import { createArticleTitle, createReferenceTitle } from './titles';
@@ -29,79 +27,6 @@ import { TemplateKind } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 
 const DOCX_IMAGE_EXTENSIONS = [ImageExtensions.png, ImageExtensions.jpg, ImageExtensions.jpeg];
-
-export async function collectWordExportOptions(
-  session: ISession,
-  file: string,
-  extension: string,
-  formats: ExportFormats[],
-  projectPath: string | undefined,
-  opts: ExportOptions,
-) {
-  const { template, filename, renderer } = opts;
-  const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
-  let exportOptions = getExportListFromRawFrontmatter(session, formats, rawFrontmatter, file);
-  // If no export options are provided in frontmatter, instantiate default options
-  if (exportOptions.length === 0 && formats.length && opts.force) {
-    exportOptions = [{ format: formats[0] }];
-  }
-  // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
-  if (filename) {
-    exportOptions = exportOptions.slice(0, 1);
-  }
-  const resolvedExportOptions: ExportWithOutput[] = exportOptions
-    .map((exp): ExportWithOutput | undefined => {
-      let output: string;
-      if (filename) {
-        output = filename;
-      } else if (exp.output) {
-        // output path from file frontmatter needs resolution relative to working directory
-        output = path.resolve(path.dirname(file), exp.output);
-      } else {
-        output = getDefaultExportFolder(session, file, projectPath);
-      }
-      if (!path.extname(output)) {
-        const slug = getDefaultExportFilename(session, file, projectPath);
-        output = path.join(output, `${slug}.${extension}`);
-      }
-      if (!output.endsWith(`.${extension}`)) {
-        session.log.error(`The filename must end with '.${extension}': "${output}"`);
-        return undefined;
-      }
-      const resolvedOptions: {
-        output: string;
-        renderer?: ExportOptions['renderer'];
-        template?: string | null;
-      } = { output };
-      if (renderer) {
-        resolvedOptions.renderer = renderer;
-      }
-      if (template) {
-        resolvedOptions.template = template;
-      } else if (exp.template) {
-        // template path from file frontmatter needs resolution relative to working directory
-        const resolvedTemplatePath = path.resolve(path.dirname(file), exp.template);
-        if (fs.existsSync(resolvedTemplatePath)) {
-          resolvedOptions.template = resolvedTemplatePath;
-        } else {
-          resolvedOptions.template = exp.template;
-        }
-      }
-      return { ...exp, ...resolvedOptions };
-    })
-    .filter((exp): exp is ExportWithOutput => Boolean(exp))
-    .map((exp, ind, arr) => {
-      // Make identical export output values unique
-      const nMatch = (a: ExportWithOutput[]) => a.filter((e) => e.output === exp.output).length;
-      if (nMatch(arr) === 1) return { ...exp };
-      const { dir, name, ext } = path.parse(exp.output);
-      return {
-        ...exp,
-        output: path.join(dir, `${name}_${nMatch(arr.slice(0, ind))}${ext}`),
-      };
-    });
-  return resolvedExportOptions;
-}
 
 function defaultWordRenderer(
   session: ISession,
@@ -158,15 +83,15 @@ export async function runWordExport(
   clean?: boolean,
   extraLinkTransformers?: LinkTransformer[],
 ) {
-  const { output } = exportOptions;
+  const { output, article } = exportOptions;
   if (clean) cleanOutput(session, output);
-  const data = await getSingleFileContent(session, file, createTempFolder(session), {
+  const vfile = new VFile();
+  vfile.path = output;
+  const [data] = await getFileContent(session, [article], createTempFolder(session), {
     projectPath,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
   });
-  const vfile = new VFile();
-  vfile.path = output;
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKind.docx,
     template: exportOptions.template || undefined,

@@ -16,7 +16,6 @@ import type { LatexResult } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
 import { findCurrentProjectAndLoad } from '../../config';
-import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter';
 import { loadProjectFromDisk } from '../../project';
 import { castSession } from '../../session';
 import type { ISession } from '../../session/types';
@@ -24,9 +23,8 @@ import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../u
 import type { ExportWithOutput, ExportOptions } from '../types';
 import {
   cleanOutput,
-  getDefaultExportFilename,
-  getDefaultExportFolder,
-  getSingleFileContent,
+  collectTexExportOptions,
+  getFileContent,
   resolveAndLogErrors,
 } from '../utils';
 
@@ -73,14 +71,14 @@ export function extractTexPart(
 
 export async function localArticleToTexRaw(
   session: ISession,
-  file: string,
-  output: string,
+  templateOptions: ExportWithOutput,
   projectPath?: string,
   extraLinkTransformers?: LinkTransformer[],
 ) {
-  const { mdast, frontmatter, references } = await getSingleFileContent(
+  const { article, output } = templateOptions;
+  const [{ mdast, frontmatter, references }] = await getFileContent(
     session,
-    file,
+    [article],
     path.join(path.dirname(output), 'files'),
     {
       projectPath,
@@ -123,12 +121,17 @@ export async function localArticleToTexTemplated(
   extraLinkTransformers?: LinkTransformer[],
 ) {
   const filesPath = path.join(path.dirname(templateOptions.output), 'files');
-  const { frontmatter, mdast, references } = await getSingleFileContent(session, file, filesPath, {
-    projectPath,
-    imageAltOutputFolder: 'files/',
-    imageExtensions: TEX_IMAGE_EXTENSIONS,
-    extraLinkTransformers,
-  });
+  const [{ frontmatter, mdast, references }] = await getFileContent(
+    session,
+    [templateOptions.article],
+    filesPath,
+    {
+      projectPath,
+      imageAltOutputFolder: 'files/',
+      imageExtensions: TEX_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+    },
+  );
   writeBibtexFromCitationRenderers(
     session,
     path.join(path.dirname(templateOptions.output), DEFAULT_BIB_FILENAME),
@@ -176,87 +179,6 @@ export async function localArticleToTexTemplated(
   });
 }
 
-export async function collectTexExportOptions(
-  session: ISession,
-  file: string,
-  extension: string,
-  formats: ExportFormats[],
-  projectPath: string | undefined,
-  opts: ExportOptions,
-) {
-  const { filename, disableTemplate, template, zip } = opts;
-  if (disableTemplate && template) {
-    throw new Error(
-      'Conflicting tex export options: disableTemplate requested but a template was provided',
-    );
-  }
-  const rawFrontmatter = await getRawFrontmatterFromFile(session, file);
-  let exportOptions = getExportListFromRawFrontmatter(session, formats, rawFrontmatter, file);
-  // If no export options are provided in frontmatter, instantiate default options
-  if (exportOptions.length === 0 && formats.length && opts.force) {
-    exportOptions = [{ format: formats[0] }];
-  }
-  // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
-  if (filename || template || disableTemplate) {
-    exportOptions = exportOptions.slice(0, 1);
-  }
-  const resolvedExportOptions: ExportWithOutput[] = exportOptions
-    .map((exp): ExportWithOutput | undefined => {
-      const rawOutput = filename || exp.output || '';
-      const useZip = extension === 'tex' && (zip || path.extname(rawOutput) === '.zip');
-      const expExtension = useZip ? 'zip' : extension;
-      let output: string;
-      const basename = getDefaultExportFilename(session, file, projectPath);
-      if (filename) {
-        output = filename;
-      } else if (exp.output) {
-        // output path from file frontmatter needs resolution relative to working directory
-        output = path.resolve(path.dirname(file), exp.output);
-      } else {
-        output = getDefaultExportFolder(
-          session,
-          file,
-          projectPath,
-          formats.includes(ExportFormats.tex) ? 'tex' : undefined,
-        );
-      }
-      if (!path.extname(output)) {
-        output = path.join(output, `${basename}.${expExtension}`);
-      }
-      if (!output.endsWith(`.${expExtension}`)) {
-        session.log.error(`The filename must end with '.${expExtension}': "${output}"`);
-        return undefined;
-      }
-      const resolvedOptions: { output: string; template?: string | null } = { output };
-      if (disableTemplate) {
-        resolvedOptions.template = null;
-      } else if (template) {
-        resolvedOptions.template = template;
-      } else if (exp.template) {
-        // template path from file frontmatter needs resolution relative to working directory
-        const resolvedTemplatePath = path.resolve(path.dirname(file), exp.template);
-        if (fs.existsSync(resolvedTemplatePath)) {
-          resolvedOptions.template = resolvedTemplatePath;
-        } else {
-          resolvedOptions.template = exp.template;
-        }
-      }
-      return { ...exp, ...resolvedOptions };
-    })
-    .filter((exp): exp is ExportWithOutput => Boolean(exp))
-    .map((exp, ind, arr) => {
-      // Make identical export output values unique
-      const nMatch = (a: ExportWithOutput[]) => a.filter((e) => e.output === exp.output).length;
-      if (nMatch(arr) === 1) return { ...exp };
-      const { dir, name, ext } = path.parse(exp.output);
-      return {
-        ...exp,
-        output: path.join(dir, `${name}_${nMatch(arr.slice(0, ind))}${ext}`),
-      };
-    });
-  return resolvedExportOptions;
-}
-
 export async function runTexExport(
   session: ISession,
   file: string,
@@ -267,13 +189,7 @@ export async function runTexExport(
 ) {
   if (clean) cleanOutput(session, exportOptions.output);
   if (exportOptions.template === null) {
-    await localArticleToTexRaw(
-      session,
-      file,
-      exportOptions.output,
-      projectPath,
-      extraLinkTransformers,
-    );
+    await localArticleToTexRaw(session, exportOptions, projectPath, extraLinkTransformers);
   } else {
     await localArticleToTexTemplated(
       session,

@@ -4,9 +4,9 @@ import { findCurrentProjectAndLoad } from '../../config';
 import { loadProjectFromDisk } from '../../project';
 import type { ISession } from '../../session/types';
 import { createTempFolder } from '../../utils';
-import { collectTexExportOptions, runTexExport } from '../tex/single';
+import { runTexExport } from '../tex/single';
 import type { ExportOptions, ExportWithOutput } from '../types';
-import { resolveAndLogErrors, cleanOutput } from '../utils';
+import { collectTexExportOptions, resolveAndLogErrors, cleanOutput } from '../utils';
 import { createPdfGivenTexExport, getTexOutputFolder } from './create';
 
 export function texExportOptionsFromPdf(
