@@ -476,7 +476,15 @@ export class JatsDocument {
 
 export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentOptions) {
   const doc = new JatsDocument(file, content, opts ?? { handlers });
-  const element = opts?.fullArticle ? { type: 'element', elements: [doc.article()] } : doc.body();
+  const element = opts?.fullArticle
+    ? {
+        type: 'element',
+        elements: [doc.article()],
+        declaration: opts?.fullArticle
+          ? { attributes: { version: '1.0', encoding: 'UTF-8' } }
+          : undefined,
+      }
+    : doc.body();
   const jats = js2xml(element, {
     compact: false,
     spaces: opts?.spaces,
