@@ -1,5 +1,22 @@
 # myst-cli
 
+## 0.1.23
+
+### Patch Changes
+
+- ea0c73b5: Add placeholder for end-to-end cli tests
+- c7258e25: Consolidate export options logic and support multiple file exports
+- Updated dependencies [a32e2aa2]
+- Updated dependencies [caf45cd1]
+  - myst-to-jats@0.0.24
+  - myst-frontmatter@0.0.12
+  - jtex@0.1.12
+  - myst-config@0.0.13
+  - myst-templates@0.1.14
+  - myst-to-docx@0.0.21
+  - myst-to-tex@0.0.24
+  - tex-to-myst@0.0.24
+
 ## 0.1.22
 
 ### Patch Changes

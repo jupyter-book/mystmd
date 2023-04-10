@@ -1,5 +1,12 @@
 # myst-to-tex
 
+## 0.0.24
+
+### Patch Changes
+
+- Updated dependencies [caf45cd1]
+  - myst-frontmatter@0.0.12
+
 ## 0.0.23
 
 ### Patch Changes

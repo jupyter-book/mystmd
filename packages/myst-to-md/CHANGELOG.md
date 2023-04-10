@@ -1,5 +1,12 @@
 # myst-to-md
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [caf45cd1]
+  - myst-frontmatter@0.0.12
+
 ## 0.0.4
 
 ### Patch Changes

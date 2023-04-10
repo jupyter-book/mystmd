@@ -1,5 +1,13 @@
 # myst-to-jats
 
+## 0.0.24
+
+### Patch Changes
+
+- a32e2aa2: Add jats multi-article export
+- Updated dependencies [caf45cd1]
+  - myst-frontmatter@0.0.12
+
 ## 0.0.23
 
 ### Patch Changes

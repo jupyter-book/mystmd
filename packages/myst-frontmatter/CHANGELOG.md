@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 0.0.12
+
+### Patch Changes
+
+- caf45cd1: Add article/sub_articles to export frontmatter
+
 ## 0.0.11
 
 ### Patch Changes

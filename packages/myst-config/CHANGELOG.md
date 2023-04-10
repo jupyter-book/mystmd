@@ -1,5 +1,12 @@
 # myst-config
 
+## 0.0.13
+
+### Patch Changes
+
+- Updated dependencies [caf45cd1]
+  - myst-frontmatter@0.0.12
+
 ## 0.0.12
 
 ### Patch Changes
