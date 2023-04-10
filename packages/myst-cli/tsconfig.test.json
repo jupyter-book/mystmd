@@ -1,8 +1,8 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "allowJs": true,
-    "target": "es6",
+    "target": "es6"
   },
   "exclude": []
 }

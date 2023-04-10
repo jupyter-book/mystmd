@@ -42,10 +42,10 @@
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "build:cjs": "esbuild src/*.ts src/**/*.ts src/**/**/*.ts --outdir=dist/cjs --platform=node --format=cjs",
     "build:esm": "esbuild src/*.ts src/**/*.ts src/**/**/*.ts --outdir=dist/esm --platform=node --format=esm",
-    "declarations": "tsc --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
+    "declarations": "tsc --project ./src/tsconfig.json --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
     "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/myst.js --platform=node --external:fsevents",
     "build": "npm-run-all -l copy:version clean -p build:cjs build:esm declarations build:cli",
-    "build:watch": "npm run copy:version; tsc -w --preserveWatchOutput -p ."
+    "build:watch": "npm run copy:version; tsc --project ./src/tsconfig.json -w --preserveWatchOutput -p ."
   },
   "engines": {
     "node": ">=16",
