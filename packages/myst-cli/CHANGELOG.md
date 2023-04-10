@@ -1,5 +1,11 @@
 # myst-cli
 
+## 0.1.24
+
+### Patch Changes
+
+- ac890599: Fix the types in myst-cli
+
 ## 0.1.23
 
 ### Patch Changes
