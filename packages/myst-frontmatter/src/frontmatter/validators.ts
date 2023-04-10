@@ -145,7 +145,16 @@ const NUMBERING_KEYS = [
 const KERNELSPEC_KEYS = ['name', 'language', 'display_name', 'argv', 'env'];
 const TEXT_REPRESENTATION_KEYS = ['extension', 'format_name', 'format_version', 'jupytext_version'];
 const JUPYTEXT_KEYS = ['formats', 'text_representation'];
-export const RESERVED_EXPORT_KEYS = ['format', 'template', 'output', 'id', 'name', 'renderer'];
+export const RESERVED_EXPORT_KEYS = [
+  'format',
+  'template',
+  'output',
+  'id',
+  'name',
+  'renderer',
+  'article',
+  'sub_articles',
+];
 
 const KNOWN_ALIASES = {
   author: 'authors',
@@ -592,6 +601,22 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
   }
   if (defined(value.output)) {
     output.output = validateString(value.output, incrementOptions('output', opts));
+  }
+  if (defined(value.article)) {
+    output.article = validateString(value.article, incrementOptions('article', opts));
+  }
+  if (defined(value.sub_articles)) {
+    if (output.format !== ExportFormats.xml) {
+      validationError("sub_articles are only supported for exports of format 'jats'", opts);
+    } else {
+      output.sub_articles = validateList(
+        value.sub_articles,
+        incrementOptions('sub_articles', opts),
+        (file, ind) => {
+          return validateString(file, incrementOptions(`sub_articles.${ind}`, opts));
+        },
+      );
+    }
   }
   return output;
 }

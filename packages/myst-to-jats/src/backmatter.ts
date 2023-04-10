@@ -137,7 +137,7 @@ export function getFootnotes(footnotes?: Element[]): Element[] {
   return [{ type: 'element', name: 'fn-group', elements: footnotes }];
 }
 
-export function getBack(citations?: CitationRenderer, footnotes?: Element[]): Element | null {
+export function getBack(citations?: CitationRenderer, footnotes?: Element[]): Element[] {
   const elements = [
     ...getRefList(citations),
     ...getFootnotes(footnotes),
@@ -147,6 +147,6 @@ export function getBack(citations?: CitationRenderer, footnotes?: Element[]): El
     // glossary
     // notes
   ];
-  if (!elements.length) return null;
-  return { type: 'element', name: 'back', elements };
+  if (!elements.length) return [];
+  return [{ type: 'element', name: 'back', elements }];
 }

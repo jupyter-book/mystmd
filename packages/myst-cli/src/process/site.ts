@@ -140,13 +140,13 @@ async function resolvePageSource(session: ISession, file: string) {
   return { format: extname(file).substring(1), filename: basename(file), url: `/${fileHash}` };
 }
 
-async function resolvePageExports(session: ISession, file: string, projectPath: string) {
+async function resolvePageExports(session: ISession, file: string) {
   const exports = (
     await collectExportOptions(
       session,
       [file],
       [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex, ExportFormats.xml],
-      { projectPath },
+      {},
     )
   )
     .filter((exp) => {
@@ -169,12 +169,7 @@ async function resolvePageExports(session: ISession, file: string, projectPath: 
 
 export async function writeFile(
   session: ISession,
-  {
-    file,
-    pageSlug,
-    projectSlug,
-    projectPath,
-  }: { file: string; projectSlug: string; pageSlug: string; projectPath: string },
+  { file, pageSlug, projectSlug }: { file: string; projectSlug: string; pageSlug: string },
 ) {
   const toc = tic();
   const selectedFile = selectFile(session, file);
@@ -182,7 +177,7 @@ export async function writeFile(
   const { frontmatter, mdast, kind, sha256, slug, references, dependencies } = selectedFile;
   const exports = await Promise.all([
     resolvePageSource(session, file),
-    ...(await resolvePageExports(session, file, projectPath)),
+    ...(await resolvePageExports(session, file)),
   ]);
   const frontmatterWithExports = { ...frontmatter, exports };
   const jsonFilename = join(session.contentPath(), projectSlug, `${pageSlug}.json`);
@@ -241,7 +236,7 @@ export async function fastProcessFile(
     pageReferenceStates,
     extraLinkTransformers,
   });
-  await writeFile(session, { file, pageSlug, projectSlug, projectPath });
+  await writeFile(session, { file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session, { defaultTemplate });
 }
@@ -332,7 +327,6 @@ export async function processProject(
             file: page.file,
             projectSlug: siteProject.slug as string,
             pageSlug: page.slug,
-            projectPath: project.path,
           }),
         ),
       );

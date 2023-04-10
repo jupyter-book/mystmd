@@ -3,23 +3,24 @@ import type { Cite, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
+import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode } from 'myst-common';
 import { copyNode, fileError } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import { Tags, RefType } from 'jats-xml';
 import { getBack } from './backmatter';
-import { getFront } from './frontmatter';
+import { getArticleMeta, getFront } from './frontmatter';
 import type {
   Handler,
   IJatsSerializer,
-  JatsResult,
   Options,
   StateData,
   Element,
   Attributes,
+  ArticleContent,
+  DocumentOptions,
 } from './types';
 import { basicTransformations } from './transforms';
-
-export type { JatsResult } from './types';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
@@ -287,19 +288,19 @@ function createText(text: string): Element {
 class JatsSerializer implements IJatsSerializer {
   file: VFile;
   data: StateData;
-  options: Options;
   handlers: Record<string, Handler>;
   stack: Element[];
   footnotes: Element[];
 
-  constructor(file: VFile, tree: Root, opts?: Options) {
+  constructor(file: VFile, mdast: Root, opts?: Options) {
     this.file = file;
-    this.options = opts ?? {};
     this.data = {};
     this.stack = [{ type: 'element', elements: [] }];
     this.footnotes = [];
     this.handlers = opts?.handlers ?? handlers;
-    this.renderChildren(tree);
+    const mdastCopy = copyNode(mdast) as any;
+    basicTransformations(mdastCopy);
+    this.renderChildren(mdastCopy);
     while (this.stack.length > 1) this.closeNode();
   }
 
@@ -390,6 +391,22 @@ class JatsSerializer implements IJatsSerializer {
     return this.pushNode(node);
   }
 
+  elements() {
+    return this.stack[0].elements ?? [];
+  }
+}
+
+export class JatsDocument {
+  file: VFile;
+  options: DocumentOptions;
+  content: ArticleContent;
+
+  constructor(file: VFile, content: ArticleContent, opts?: DocumentOptions) {
+    this.file = file;
+    this.options = opts ?? {};
+    this.content = content;
+  }
+
   article(articleType?: string, specificUse?: string) {
     const attributes: Record<string, string> = {
       'xmlns:mml': 'http://www.w3.org/1998/Math/MathML',
@@ -401,12 +418,13 @@ class JatsSerializer implements IJatsSerializer {
     };
     if (articleType) attributes['article-type'] = articleType;
     if (specificUse) attributes['specific-use'] = specificUse;
-    const front = getFront(this.options.frontmatter);
-    const back = getBack(this.options.citations, this.footnotes);
-    const elements: Element[] = [];
-    if (front) elements.push(front);
-    elements.push({ type: 'element', name: 'body', elements: this.body() });
-    if (back) elements.push(back);
+    const state = new JatsSerializer(this.file, this.content.mdast, this.options);
+    const elements: Element[] = [
+      ...getFront(this.content.frontmatter),
+      this.body(state),
+      ...getBack(this.content.citations, state.footnotes),
+      ...(this.options.subArticles ?? []).map((article) => this.subArticle(article)),
+    ];
     const article: Element = {
       type: 'element',
       name: Tags.article,
@@ -416,39 +434,58 @@ class JatsSerializer implements IJatsSerializer {
     return article;
   }
 
-  body() {
-    return this.stack[0].elements ?? [];
+  frontStub(frontmatter?: PageFrontmatter): Element[] {
+    const stubFrontmatter: Record<string, any> = {};
+    if (frontmatter) {
+      Object.entries(frontmatter).forEach(([key, val]) => {
+        const articleVal = this.content.frontmatter?.[key as keyof PageFrontmatter];
+        if (articleVal == null || JSON.stringify(val) !== JSON.stringify(articleVal)) {
+          stubFrontmatter[key] = val;
+        }
+      });
+    }
+    const articleMeta = getArticleMeta(stubFrontmatter);
+    if (!articleMeta) return [];
+    return [{ type: 'element', name: 'front-stub', elements: articleMeta.elements }];
   }
 
-  back() {
-    return {};
+  subArticle(content: ArticleContent): Element {
+    const state = new JatsSerializer(this.file, content.mdast, this.options);
+    const elements: Element[] = [
+      ...this.frontStub(content.frontmatter),
+      { type: 'element', name: 'body', elements: state.elements() },
+      ...getBack(content.citations, state.footnotes),
+    ];
+    return { type: 'element', name: 'sub-article', elements };
+  }
+
+  body(state?: JatsSerializer) {
+    if (!state) state = new JatsSerializer(this.file, this.content.mdast, this.options);
+    return { type: 'element', name: 'body', elements: state.elements() } as Element;
   }
 }
 
-const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
-  this.Compiler = (node, file) => {
-    const tree = copyNode(node) as any;
-    basicTransformations(tree);
-    const state = new JatsSerializer(file, tree, opts ?? { handlers });
-    const elements = opts?.fullArticle ? [state.article()] : state.body();
-    const jats = js2xml(
-      { type: 'element', elements },
-      {
-        compact: false,
-        spaces: opts?.spaces,
-      },
-    );
-    const result: JatsResult = {
-      value: jats,
-    };
-    file.result = result;
-    return file;
-  };
+export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentOptions) {
+  const doc = new JatsDocument(file, content, opts ?? { handlers });
+  const element = opts?.fullArticle ? { type: 'element', elements: [doc.article()] } : doc.body();
+  const jats = js2xml(element, {
+    compact: false,
+    spaces: opts?.spaces,
+  });
+  file.result = jats;
+  return file;
+}
 
-  return (node: Root) => {
-    // Preprocess
-    return node;
+const plugin: Plugin<[PageFrontmatter?, CitationRenderer?, DocumentOptions?], Root, VFile> =
+  function (frontmatter, citations, opts) {
+    this.Compiler = (node, file) => {
+      return writeJats(file, { mdast: node as any, frontmatter, citations }, opts);
+    };
+
+    return (node: Root) => {
+      // Preprocess
+      return node;
+    };
   };
-};
 
 export default plugin;
