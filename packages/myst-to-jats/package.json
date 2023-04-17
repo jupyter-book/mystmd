@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "citation-js-utils": "^0.0.15",
-    "jats-xml": "^0.0.14",
+    "jats-xml": "^0.0.16",
     "myst-common": "^0.0.16",
     "myst-frontmatter": "^0.0.12",
     "myst-spec": "^0.0.4",
