@@ -1,0 +1,89 @@
+title: SI Unit Commands
+url: https://texdoc.org/serve/siunitx/0
+cases:
+  - title: 1 ms
+    tex: \SI{1}{\milli\second}
+    text: 1 ms
+  - title: 1 lx³VT³
+    tex: \SI{1}{\cubic\lux\volt\tesla\cubed}
+    text: 1 lx³ V T³
+  - title: J²lm⁻¹
+    tex: \SI{1}{\joule\squared\per\lumen}
+    text: 1 J² lm⁻¹
+  - title: lx³VT³
+    tex: \SI{1}{\cubic\lux\volt\tesla\cubed}
+    text: 1 lx³ V T³
+  - title: Bq⁻²
+    tex: \SI{1}{\per\square\becquerel}
+    text: 1 Bq⁻²
+  - title: kgms⁻²
+    tex: \SI{1}{\kilo\gram\metre\per\square\second}
+    text: 1 kg m s⁻²
+  - title: m²Gy⁻¹lx³
+    tex: \SI{1}{\metre\squared\per\gray\cubic\lux}
+    text: 1 m² Gy⁻¹ lx³
+  - title: µJ
+    tex: \SI{1}{\uJ}
+    text: 1 µJ
+  - title: MΩ
+    tex: \SI{1}{\Mohm}
+    text: 1 MΩ
+  - title: m⁻³
+    tex: \SI{1}{\per\meter\cubed}
+    text: 1 m⁻³
+  - title: Cmol⁻¹
+    tex: \SI{1}{\coulomb\per\mole}
+    text: 1 C mol⁻¹
+  - title: Jmol⁻¹K
+    tex: \SI{1}{\joule\per\mole\kelvin}
+    text: 1 J mol⁻¹ K
+  - title: kW hour
+    tex: \SI{1}{\kW\hour}
+    text: 1 kW h
+  - title: kWh
+    tex: \SI{1}{\kWh}
+    text: 1 kW h
+  - title: 3.1415°
+    tex: \SI{3.1415}{\degree}
+    text: 3.1415°
+  - title: H⁵
+    tex: \SI{1}{\henry\tothe{5}}
+    text: 1 H⁵
+  - title: H⁻⁵
+    tex: \SI{1}{\per\henry\tothe{5}}
+    text: 1 H⁻⁵
+  - title: rad⁴⋅⁵
+    tex: \SI{1}{\raiseto{4.5}\radian}
+    text: 1 rad⁴⋅⁵
+  # ANGLES
+  - title: 10°
+    tex: \ang{10}
+    text: 10°
+  - title: \ang{4,5}
+    tex: \ang{4,5}
+    text: 4,5°
+    # We explicitly do NOT support this
+    warnings: 1
+  - title: 1°2′3″
+    tex: \ang{1;2;3}
+    text: 1°2′3″
+  - title: 1″
+    tex: \ang{;;1}
+    text: 1″
+  - title: +10°
+    tex: \ang{+10;;}
+    text: 10°
+  - title: 0°1′
+    tex: \ang{-0;1;}
+    text: 0°1′
+  # Literal Units
+  - title: literal units
+    tex: \unit{kg.m/s^2}
+    text: kg m s⁻²
+  # - title: literal units
+  #   tex: \unit{g_{polymer}~mol_{cat}.s^{-1}}
+  #   text: kg m s⁻²
+  # Quantity (same as SI)
+  - title: kg⁻¹
+    tex: \qty[per-mode = symbol]{1.99}{ \per \kilogram }
+    text: 1.99 kg⁻¹

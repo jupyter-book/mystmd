@@ -47,6 +47,7 @@ const files = [
   'frontmatter.yml',
   'tables.yml',
   'footnotes.yml',
+  'siunitx.yml',
 ];
 
 const only = ''; // Can set this to a test title

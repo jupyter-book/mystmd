@@ -90,3 +90,12 @@ export type CiteGroup = {
   kind: CiteKind;
   children: Cite[];
 };
+
+export type SiUnit = {
+  type: 'si';
+  number?: string;
+  unit?: string;
+  units?: string[];
+  alt?: string;
+  value: string;
+};

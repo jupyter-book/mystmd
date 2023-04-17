@@ -22,6 +22,7 @@ import { VERBATIM_HANDLERS } from './verbatim';
 import { MISC_HANDLERS } from './misc';
 import { TABLE_HANDLERS } from './tables';
 import { FOOTNOTE_HANDLERS } from './footnotes';
+import { SIUNITX_HANDLERS } from './siunitx';
 import type { PageFrontmatter } from 'myst-frontmatter';
 
 const DEFAULT_HANDLERS: Record<string, Handler> = {
@@ -41,6 +42,7 @@ const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...MISC_HANDLERS,
   ...TABLE_HANDLERS,
   ...FOOTNOTE_HANDLERS,
+  ...SIUNITX_HANDLERS,
 };
 
 // This currently is needed as we don't support affiliations in the frontmatter.

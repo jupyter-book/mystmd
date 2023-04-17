@@ -1,7 +1,7 @@
 import { u } from 'unist-builder';
 import type { Handler } from './types';
 
-const accents = {
+const marks = {
   textbf: 'strong',
   emph: 'emphasis',
   textit: 'emphasis',
@@ -14,7 +14,7 @@ const accents = {
 
 const TEXT_MARKS_HANDLERS: Record<string, Handler> = {
   ...Object.fromEntries(
-    Object.entries(accents).map(([macro, kind]): [string, Handler] => {
+    Object.entries(marks).map(([macro, kind]): [string, Handler] => {
       return [
         `macro_${macro}`,
         (node, state) => {

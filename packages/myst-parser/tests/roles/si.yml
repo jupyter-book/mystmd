@@ -27,6 +27,8 @@ cases:
               value: 100 <\hertz>
               children:
                 - type: si
+                  alt: hertz
                   number: '100'
-                  units: \hertz,hertz
+                  unit: Hz
+                  units: [hertz]
                   value: 100 Hz

@@ -1,0 +1,14 @@
+cases:
+  - title: Basic Units
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: si
+              units: ['milli', 'meter']
+              number: '1'
+              unit: mm
+              alt: 'millimeter'
+              value: 1 mm
+    jats: <p><named-content content-type="quantity">1 <abbrev content-type="unit" alt="millimeter">mm</abbrev></named-content></p>

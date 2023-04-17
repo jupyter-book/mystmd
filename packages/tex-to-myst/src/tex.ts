@@ -78,6 +78,13 @@ const macros: Record<string, number> = {
   supertabular: 1,
   adjustbox: 1,
   captionof: 2,
+  // SI Units: https://texdoc.org/serve/siunitx/0
+  SI: 2,
+  qty: 2,
+  tothe: 1,
+  raiseto: 1,
+  ang: 1,
+  unit: 1,
   // These are character replacements:
   '`': 1,
   "'": 1,
@@ -222,7 +229,8 @@ function walkLatex(node: GenericNode): GenericNode | GenericParent | undefined {
 }
 
 export function parseLatex(value: string): GenericParent {
-  const raw = processLatexToAstViaUnified().processSync({ value });
-  const tree = raw.result as GenericParent;
-  return walkLatex(tree) as GenericParent;
+  const file = processLatexToAstViaUnified().processSync({ value });
+  const tree = file.result as GenericParent;
+  const transformed = walkLatex(tree) as GenericParent;
+  return transformed;
 }
