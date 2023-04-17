@@ -31,17 +31,18 @@ export enum TargetKind {
 function getDefaultNumberedReferenceLabel(kind: TargetKind | string) {
   switch (kind) {
     case TargetKind.heading:
-      return 'Section %s';
+      return 'Section %s';
     case TargetKind.equation:
       return '(%s)';
     case TargetKind.figure:
-      return 'Figure %s';
+      return 'Figure %s';
     case TargetKind.table:
-      return 'Table %s';
+      return 'Table %s';
     case TargetKind.code:
-      return 'Program %s';
+      return 'Program %s';
     default:
-      return `${kind.slice(0, 1).toUpperCase()}${kind.slice(1)} %s`;
+      // eslint-disable-next-line no-irregular-whitespace
+      return `${kind.slice(0, 1).toUpperCase()}${kind.slice(1)} %s`;
   }
 }
 
