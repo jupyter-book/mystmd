@@ -271,6 +271,16 @@ const handlers: Record<string, Handler> = {
     state.trimEnd();
     state.write('}');
   },
+  si(node, state) {
+    state.usePackages('siunitx');
+    if (node.number == null) {
+      state.write(`\\unit{${node.units?.map((u: string) => `\\${u}`).join('') ?? ''}}`);
+    } else {
+      state.write(
+        `\\qty{${node.number}}{${node.units?.map((u: string) => `\\${u}`).join('') ?? ''}}`,
+      );
+    }
+  },
 };
 
 class TexSerializer implements ITexSerializer {

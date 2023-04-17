@@ -43,7 +43,9 @@ const textOnlyReplacements: Record<string, string> = {
   '™': '\\texttrademark ',
   '<': '\\textless ',
   '>': '\\textgreater ',
+  ' ': '~',
   ' ': '~',
+  ' ': '\\,',
 };
 
 const arrows: Record<string, string> = {

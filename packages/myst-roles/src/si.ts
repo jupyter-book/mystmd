@@ -1,3 +1,4 @@
+import type { SiUnit } from 'myst-spec-ext';
 import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
 import { ParseTypesEnum } from 'myst-common';
 
@@ -9,21 +10,23 @@ export const siRole: RoleSpec = {
   },
   run(data: RoleData): GenericNode[] {
     const value = data.body as string;
-    const match = value.match(/([0-9]+)\s?<([\\a-zA-Z]+)>/);
+    const match = value.match(/([0-9]+)\s?<([\\a-zA-Z\s]+)>/);
     if (!match) {
       return [{ type: 'si', error: true, value }];
     }
-    const [, number, units] = match;
-    const parsed = [...units.matchAll(/\\([a-zA-Z]+)/g)];
-    const translated = parsed.map(([, c]) => UNITS[c] ?? c);
-    return [
-      {
-        type: 'si',
-        number,
-        units: parsed.join(' '),
-        value: `${number} ${translated.join('')}`,
-      },
-    ];
+    const [, number, commands] = match;
+    const parsed = [...commands.matchAll(/\\([a-zA-Z]+)/g)];
+    const units = parsed.filter((c) => !!c).map(([, c]) => c);
+    const translated = units.map((c) => UNITS[c] ?? c);
+    const si: SiUnit = {
+      type: 'si',
+      number,
+      unit: translated.join(''),
+      units,
+      alt: units.join(' '),
+      value: `${number} ${translated.join('')}`,
+    };
+    return [si];
   },
 };
 

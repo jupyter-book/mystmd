@@ -88,3 +88,20 @@ describe('JATS multi-article', () => {
     },
   );
 });
+
+describe('JATS SI units', () => {
+  const cases = loadCases('siunit.yml');
+  test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
+    '%s',
+    (_, { tree, jats, frontmatter, citations }) => {
+      const vfile = writeJats(
+        new VFile(),
+        { mdast: tree as any, frontmatter, citations },
+        {
+          fullArticle: false,
+        },
+      );
+      expect(vfile.result).toEqual(jats);
+    },
+  );
+});

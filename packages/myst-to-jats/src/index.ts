@@ -279,6 +279,15 @@ const handlers: Record<string, Handler> = {
     const element = state.stack.pop();
     if (element) state.footnotes.push(element);
   },
+  si(node, state) {
+    // <named-content content-type="quantity">5 <abbrev content-type="unit" alt="milli meter">mm</abbrev></named-content>
+    state.openNode('named-content', { 'content-type': 'quantity' });
+    state.text(`${node.number} `);
+    state.openNode('abbrev', { 'content-type': 'unit', alt: node.alt });
+    state.text(node.unit);
+    state.closeNode();
+    state.closeNode();
+  },
 };
 
 function createText(text: string): Element {
