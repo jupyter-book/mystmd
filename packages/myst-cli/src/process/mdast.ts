@@ -204,9 +204,11 @@ export async function transformMdast(
   };
   cache.$mdast[file].post = data;
   if (extraTransforms) {
-    extraTransforms.forEach(async (transform) => {
-      await transform(session, opts);
-    });
+    await Promise.all(
+      extraTransforms.map(async (transform) => {
+        await transform(session, opts);
+      }),
+    );
   }
   logMessagesFromVFile(session, vfile);
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
