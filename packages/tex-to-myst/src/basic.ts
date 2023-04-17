@@ -1,6 +1,6 @@
 import type { GenericNode } from 'myst-common';
 import type { Handler, ITexParser } from './types';
-import { UNHANDLED_ERROR_TEXT } from './utils';
+import { UNHANDLED_ERROR_TEXT, isAccent } from './utils';
 
 function closeParagraph(node: GenericNode, state: ITexParser) {
   state.closeParagraph();
@@ -28,6 +28,20 @@ export const BASIC_TEXT_HANDLERS: Record<string, Handler> = {
     state.renderChildren(node);
   },
   group(node, state) {
+    // Some accents can come in as groups
+    if (isAccent(node.content?.[0])) {
+      const accent = { ...node.content[0] };
+      accent.args = [
+        {
+          type: 'argument',
+          openMark: '{',
+          closeMark: '}',
+          content: node.content.slice(1).filter((n: GenericNode) => n.type !== 'whitespace'),
+        },
+      ];
+      state.renderChildren({ type: 'group', content: [accent] });
+      return;
+    }
     // often the contents of a group (e.g. caption)
     const prev = state.data.openGroups;
     state.renderChildren(node);
@@ -67,4 +81,5 @@ export const BASIC_TEXT_HANDLERS: Record<string, Handler> = {
   // newpage isn't really appropriate in a web context
   // We could make this into a block in the future?
   macro_newpage: closeParagraph,
+  macro_FloatBarrier: closeParagraph,
 };
