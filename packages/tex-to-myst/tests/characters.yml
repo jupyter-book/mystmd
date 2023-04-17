@@ -37,6 +37,12 @@ cases:
   - title: ç (cedilla)
     tex: \c{c}
     text: ç
+  - title: ş (cedilla)
+    tex: \c{s}
+    text: ş
+  - title: Şşç (cedilla)
+    tex: '{\c Ssc}'
+    text: Şşç
   - title: ą (ogonek)
     tex: \k{a}
     text: ą
@@ -56,8 +62,8 @@ cases:
     tex: \d{u}
     text: ụ
   - title: åÅ (ring over the letter)
-    tex: \r{a}\aa\AA
-    text: ååÅ
+    tex: \r{a} \aa \AA and as a group {\r aA}
+    text: å å Å and as a group åÅ
   - title: ŏ (breve over the letter)
     tex: \u{o}
     text: ŏ

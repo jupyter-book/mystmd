@@ -2,16 +2,30 @@ import type { Handler, ITexParser } from './types';
 import { getArguments, texToText } from './utils';
 import type { GenericNode } from 'myst-common';
 
+/** https://en.wikipedia.org/wiki/Thin_space */
+export const THIN_SPACE = ' ';
+
+/** https://en.wikipedia.org/wiki/Non-breaking_space#Width_variation */
+export const NARROW_NO_BREAK_SPACE = ' ';
+
 function createText(state: ITexParser, node: GenericNode, translate: Record<string, string>) {
   state.openParagraph();
-  const value = texToText(getArguments(node, 'group'));
-  const converted = translate[value];
-  if (converted) {
-    state.text(converted, false);
+  const values = texToText(getArguments(node, 'group'));
+  // If the exact value is included
+  const exact = translate[values];
+  if (exact) {
+    state.text(exact, false);
     return;
   }
-  state.warn(`Unknown character ${value}`, node, 'tex-to-myst:characters');
-  state.text(converted, false);
+  values.split('').forEach((value) => {
+    const converted = translate[value];
+    if (converted) {
+      state.text(converted, false);
+      return;
+    }
+    state.warn(`Unknown character "${value}"`, node, 'tex-to-myst:characters');
+    state.text(converted, false);
+  });
 }
 
 function addText(state: ITexParser, value?: string) {
@@ -29,7 +43,7 @@ export const LatexAccents = {
   '"': { o: 'ö', u: 'ü', i: 'ï', O: 'Ö', U: 'Ü', I: 'Ï' },
   H: { o: 'ő', O: 'Ő' },
   '~': { '': '~', o: 'õ', n: 'ñ', O: 'Õ', N: 'Ñ', u: 'ũ', U: 'Ũ', e: 'ẽ', E: 'Ẽ', i: 'ĩ', I: 'Ĩ' },
-  c: { c: 'ç', C: 'Ç' },
+  c: { c: 'ç', C: 'Ç', s: 'ş', S: 'Ş' },
   k: { a: 'ą', A: 'Ą' },
   l: { '': 'ł' },
   '=': { o: 'ō', O: 'Ō' },
@@ -82,7 +96,7 @@ export const LatexSpecialSymbols = {
   textasciitilde: '~',
   textvisiblespace: ' ', // Not sure this will work, but close enough
   ' ': ' ', // this is a single backslash followed by a space
-  ',': ' ', // this is a thin space (https://en.wikipedia.org/wiki/Thin_space) `\,` in latex
+  ',': THIN_SPACE, // this is a thin space (https://en.wikipedia.org/wiki/Thin_space) `\,` in latex
 };
 
 const CHARACTER_HANDLERS: Record<string, Handler> = {

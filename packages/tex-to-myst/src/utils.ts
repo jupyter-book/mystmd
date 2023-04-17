@@ -1,7 +1,7 @@
 import type { GenericNode } from 'myst-common';
 import { copyNode } from 'myst-common';
 import { selectAll } from 'unist-util-select';
-import { LatexSpecialSymbols } from './characters';
+import { LatexAccents, LatexSpecialSymbols } from './characters';
 
 export const phrasingTypes = new Set([
   'paragraph',
@@ -59,8 +59,14 @@ export function replaceTextValue(value?: string): string {
   }, value);
 }
 
-export function isSpecialSymbol(node: GenericNode): boolean {
-  if (node.type !== 'macro') return false;
+export function isAccent(node?: GenericNode): boolean {
+  if (node?.type !== 'macro') return false;
+  if (node.content in LatexAccents) return true;
+  return false;
+}
+
+export function isSpecialSymbol(node?: GenericNode): boolean {
+  if (node?.type !== 'macro') return false;
   if (node.content in LatexSpecialSymbols) return true;
   return false;
 }
