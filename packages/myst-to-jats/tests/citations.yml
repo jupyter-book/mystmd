@@ -31,6 +31,7 @@ cases:
       example_2020:
         cite: {}
     jats: |-
+      <?xml version="1.0" encoding="UTF-8"?>
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
         <body>
           <p>text</p>
