@@ -31,7 +31,12 @@ cases:
       example_2020:
         cite: {}
     jats: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta/>
+        </front>
         <body>
           <p>text</p>
         </body>
@@ -39,6 +44,7 @@ cases:
           <ref-list>
             <ref id="doe_2000">
               <element-citation publication-type="journal">
+                <article-title>My Title!</article-title>
                 <person-group person-group-type="author">
                   <name>
                     <surname>Doe</surname>
@@ -49,7 +55,6 @@ cases:
                     <given-names>John</given-names>
                   </name>
                 </person-group>
-                <article-title>My Title!</article-title>
                 <source>My Journal</source>
                 <year iso-8601-date="2000">2000</year>
                 <pub-id pub-id-type="doi">10.1000/example.1000</pub-id>
@@ -61,7 +66,151 @@ cases:
               </element-citation>
             </ref>
             <ref id="example_2020">
-              <element-citation publication-type="journal"/>
+              <element-citation publication-type="journal">
+                <article-title/>
+              </element-citation>
+            </ref>
+          </ref-list>
+        </back>
+      </article>
+  - title: Cite group - parenthetical
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: parenthetical
+              children:
+                - type: cite
+                  label: Smith_2023
+                  identifier: smith_2023
+                  children:
+                    - type: text
+                      value: Smith, 2023
+                - type: cite
+                  label: Doe_2000
+                  identifier: doe_2000
+                  children:
+                    - type: text
+                      value: Doe, 2000
+    citations:
+      Smith_2023:
+        cite: {}
+      Doe_2000:
+        cite: {}
+    jats: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta/>
+        </front>
+        <body>
+          <p>(
+            <xref ref-type="bibr" rid="Smith_2023">Smith, 2023</xref>; 
+            <xref ref-type="bibr" rid="Doe_2000">Doe, 2000</xref>)
+          </p>
+        </body>
+        <back>
+          <ref-list>
+            <ref id="Doe_2000">
+              <element-citation publication-type="journal">
+                <article-title/>
+              </element-citation>
+            </ref>
+            <ref id="Smith_2023">
+              <element-citation publication-type="journal">
+                <article-title/>
+              </element-citation>
+            </ref>
+          </ref-list>
+        </back>
+      </article>
+  - title: Cite group - narrative
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: narrative
+              children:
+                - type: cite
+                  label: Smith_2023
+                  identifier: smith_2023
+                  children:
+                    - type: text
+                      value: Smith, 2023
+                - type: cite
+                  label: Doe_2000
+                  identifier: doe_2000
+                  children:
+                    - type: text
+                      value: Doe, 2000
+    citations:
+      Smith_2023:
+        cite: {}
+      Doe_2000:
+        cite: {}
+    jats: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta/>
+        </front>
+        <body>
+          <p>
+            <xref ref-type="bibr" rid="Smith_2023">Smith, 2023</xref>, 
+            <xref ref-type="bibr" rid="Doe_2000">Doe, 2000</xref>
+          </p>
+        </body>
+        <back>
+          <ref-list>
+            <ref id="Doe_2000">
+              <element-citation publication-type="journal">
+                <article-title/>
+              </element-citation>
+            </ref>
+            <ref id="Smith_2023">
+              <element-citation publication-type="journal">
+                <article-title/>
+              </element-citation>
+            </ref>
+          </ref-list>
+        </back>
+      </article>
+  - title: Cite
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: Smith_2023
+              identifier: smith_2023
+    citations:
+      Smith_2023:
+        cite: {}
+    jats: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta/>
+        </front>
+        <body>
+          <p>
+            <xref ref-type="bibr" rid="Smith_2023"/>
+          </p>
+        </body>
+        <back>
+          <ref-list>
+            <ref id="Smith_2023">
+              <element-citation publication-type="journal">
+                <article-title/>
+              </element-citation>
             </ref>
           </ref-list>
         </back>

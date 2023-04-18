@@ -38,13 +38,6 @@ export function citeToJatsRef(key: string, data: CitationJson): Element {
       elements: authors,
     });
   }
-  if (data.title) {
-    elements.push({
-      type: 'element',
-      name: 'article-title',
-      elements: [{ type: 'text', text: data.title }],
-    });
-  }
   if (data['container-title']) {
     elements.push({
       type: 'element',
@@ -105,6 +98,15 @@ export function citeToJatsRef(key: string, data: CitationJson): Element {
       type: 'element',
       name: 'issn',
       elements: [{ type: 'text', text: data.ISSN }],
+    });
+  }
+  // <element-citation> must have at least one child element to pass validation
+  // This ensures that if the citation is totally empty, it is given an empty title.
+  if (data.title || elements.length === 0) {
+    elements.unshift({
+      type: 'element',
+      name: 'article-title',
+      elements: data.title ? [{ type: 'text', text: data.title }] : [],
     });
   }
   return {

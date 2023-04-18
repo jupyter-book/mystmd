@@ -23,16 +23,23 @@ cases:
                 - type: text
                   value: article 2
     jats: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta/>
+        </front>
         <body>
           <p>text</p>
         </body>
         <sub-article>
+          <front-stub/>
           <body>
             <p>article 1</p>
           </body>
         </sub-article>
         <sub-article>
+          <front-stub/>
           <body>
             <p>article 2</p>
           </body>
@@ -74,6 +81,8 @@ cases:
                 - type: text
                   value: article 2
     jats: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
         <front>
           <article-meta>
@@ -88,18 +97,23 @@ cases:
         <back>
           <ref-list>
             <ref id="example_2020">
-              <element-citation publication-type="journal"/>
+              <element-citation publication-type="journal">
+                <article-title/>
+              </element-citation>
             </ref>
           </ref-list>
         </back>
         <sub-article>
+          <front-stub/>
           <body>
             <p>article 1</p>
           </body>
           <back>
             <ref-list>
               <ref id="example_2000">
-                <element-citation publication-type="journal"/>
+                <element-citation publication-type="journal">
+                  <article-title/>
+                </element-citation>
               </ref>
             </ref-list>
           </back>

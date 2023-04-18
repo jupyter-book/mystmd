@@ -476,7 +476,20 @@ export class JatsDocument {
 
 export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentOptions) {
   const doc = new JatsDocument(file, content, opts ?? { handlers });
-  const element = opts?.fullArticle ? { type: 'element', elements: [doc.article()] } : doc.body();
+  const element = opts?.fullArticle
+    ? {
+        type: 'element',
+        elements: [
+          {
+            type: 'doctype',
+            doctype:
+              'article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd"',
+          },
+          doc.article(),
+        ],
+        declaration: { attributes: { version: '1.0', encoding: 'UTF-8' } },
+      }
+    : doc.body();
   const jats = js2xml(element, {
     compact: false,
     spaces: opts?.spaces,
