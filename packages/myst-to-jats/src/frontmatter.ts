@@ -160,7 +160,7 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
     }
     return { type: 'element', name: 'contrib', attributes, elements };
   });
-  return contribs ? [{ type: 'element', name: 'contrib-group', elements: contribs }] : [];
+  return contribs?.length ? [{ type: 'element', name: 'contrib-group', elements: contribs }] : [];
 }
 
 export function getArticlePermissions(frontmatter: ProjectFrontmatter): Element[] {
