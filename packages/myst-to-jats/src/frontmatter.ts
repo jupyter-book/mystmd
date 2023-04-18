@@ -60,15 +60,13 @@ export function getArticleTitle(frontmatter: ProjectFrontmatter): Element[] {
   const title = frontmatter?.title;
   const subtitle = frontmatter?.subtitle;
   if (!title && !subtitle) return [];
-  const articleTitle: Element[] = title
-    ? [
-        {
-          type: 'element',
-          name: 'article-title',
-          elements: [{ type: 'text', text: title }],
-        },
-      ]
-    : [];
+  const articleTitle: Element[] = [
+    {
+      type: 'element',
+      name: 'article-title',
+      elements: title ? [{ type: 'text', text: title }] : [],
+    },
+  ];
   const articleSubtitle: Element[] = subtitle
     ? [
         {
@@ -162,7 +160,7 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
     }
     return { type: 'element', name: 'contrib', attributes, elements };
   });
-  return contribs ?? [];
+  return contribs ? [{ type: 'element', name: 'contrib-group', elements: contribs }] : [];
 }
 
 export function getArticlePermissions(frontmatter: ProjectFrontmatter): Element[] {
@@ -229,52 +227,57 @@ export function getArticlePages(frontmatter: ProjectFrontmatter): Element[] {
   return pages;
 }
 
-export function getArticleMeta(frontmatter: ProjectFrontmatter): Element | null {
-  const elements = [
-    // article-id
-    // article-version, article-version-alternatives
-    // article-categories
-    ...getArticleTitle(frontmatter),
-    ...getArticleAuthors(frontmatter),
-    // author-notes
-    // pub-date or pub-date-not-available
-    ...getArticleVolume(frontmatter),
-    // volume-id
-    // volume-series
-    ...getArticleIssue(frontmatter),
-    // issue-id
-    // issue-title
-    // issue-title-group
-    // issue-sponsor
-    // issue-part
-    // volume-issue-group
-    // isbn
-    // supplement
-    ...getArticlePages(frontmatter),
-    // email, ext-link, uri, product, supplementary-material
-    // history
-    // pub-history
-    ...getArticlePermissions(frontmatter),
-    // self-uri
-    // related-article, related-object
-    // abstract
-    // trans-abstract
-    // kwd-group
-    // funding-group
-    // support-group
-    // conference
-    // counts
-  ];
-  return elements.length ? { type: 'element', name: 'article-meta', elements } : null;
+export function getArticleMeta(frontmatter?: ProjectFrontmatter): Element {
+  const elements = frontmatter
+    ? [
+        // article-id
+        // article-version, article-version-alternatives
+        // article-categories
+        ...getArticleTitle(frontmatter),
+        ...getArticleAuthors(frontmatter),
+        // author-notes
+        // pub-date or pub-date-not-available
+        ...getArticleVolume(frontmatter),
+        // volume-id
+        // volume-series
+        ...getArticleIssue(frontmatter),
+        // issue-id
+        // issue-title
+        // issue-title-group
+        // issue-sponsor
+        // issue-part
+        // volume-issue-group
+        // isbn
+        // supplement
+        ...getArticlePages(frontmatter),
+        // email, ext-link, uri, product, supplementary-material
+        // history
+        // pub-history
+        ...getArticlePermissions(frontmatter),
+        // self-uri
+        // related-article, related-object
+        // abstract
+        // trans-abstract
+        // kwd-group
+        // funding-group
+        // support-group
+        // conference
+        // counts
+      ]
+    : [];
+  return { type: 'element', name: 'article-meta', elements };
 }
 
+/**
+ * Get <front> JATS element
+ *
+ * This element must be defined in a JATS article and must include <article-meta>
+ */
 export function getFront(frontmatter?: ProjectFrontmatter): Element[] {
-  if (!frontmatter) return [];
   const elements: Element[] = [];
   const journalMeta = getJournalMeta();
   if (journalMeta) elements.push(journalMeta);
   const articleMeta = getArticleMeta(frontmatter);
-  if (articleMeta) elements.push(articleMeta);
-  if (!elements.length) return [];
+  elements.push(articleMeta);
   return [{ type: 'element', name: 'front', elements }];
 }
