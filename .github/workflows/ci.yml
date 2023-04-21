@@ -23,7 +23,7 @@ jobs:
       - run: npm run lint
   test:
     if: github.actor != 'dependabot[bot]'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         node: ['16', '18']
