@@ -25,11 +25,13 @@ export async function getFileContent(
     imageAltOutputFolder,
     imageExtensions,
     extraLinkTransformers,
+    simplifyOutputs,
   }: {
     imageExtensions: ImageExtensions[];
     projectPath?: string;
     imageAltOutputFolder?: string;
     extraLinkTransformers?: LinkTransformer[];
+    simplifyOutputs: boolean;
   },
 ) {
   const toc = tic();
@@ -79,8 +81,10 @@ export async function getFileContent(
       await postProcessMdast(session, { file, extraLinkTransformers, pageReferenceStates });
       const selectedFile = selectFile(session, file);
       if (!selectedFile) throw new Error(`Could not load file information for ${file}`);
-      // Transform output nodes to images / text
-      reduceOutputs(selectedFile.mdast, imageWriteFolder);
+      if (simplifyOutputs) {
+        // Transform output nodes to images / text
+        reduceOutputs(selectedFile.mdast, imageWriteFolder);
+      }
       return selectedFile;
     }),
   );

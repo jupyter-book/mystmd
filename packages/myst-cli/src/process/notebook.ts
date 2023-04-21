@@ -1,5 +1,6 @@
 import type { Root } from 'mdast';
 import { computeHash } from 'myst-cli-utils';
+import { NotebookCell } from 'myst-common';
 import type { GenericNode } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
@@ -19,8 +20,10 @@ function createOutputDirective(): { myst: string; id: string } {
   return { myst: `\`\`\`{output}\n:id: ${id}\n\`\`\``, id };
 }
 
-function blockDivider(cell: ICell) {
-  return `+++ ${JSON.stringify(cell.metadata)}\n\n`;
+function blockDivider(cell: ICell, index: number) {
+  const id = cell.metadata.id ?? `nb-cell-${index}`;
+  const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
+  return `+++ ${JSON.stringify({ id, type, ...cell.metadata })}\n\n`;
 }
 
 export async function processNotebook(
@@ -51,10 +54,10 @@ export async function processNotebook(
       const cellContent = asString(cell.source);
       // If the first cell is a frontmatter block, do not put a block break above it
       const omitBlockDivider = index === 0 && cellContent.startsWith('---\n');
-      return acc.concat(`${omitBlockDivider ? '' : blockDivider(cell)}${cellContent}`);
+      return acc.concat(`${omitBlockDivider ? '' : blockDivider(cell, index)}${cellContent}`);
     }
     if (cell.cell_type === CELL_TYPES.raw) {
-      return acc.concat(`${blockDivider(cell)}\`\`\`\n${asString(cell.source)}\n\`\`\``);
+      return acc.concat(`${blockDivider(cell, index)}\`\`\`\n${asString(cell.source)}\n\`\`\``);
     }
     if (cell.cell_type === CELL_TYPES.code) {
       const code = `\`\`\`{code-cell} ${language}\n${asString(cell.source)}\n\`\`\``;
@@ -69,7 +72,7 @@ export async function processNotebook(
       } else {
         outputMap[id] = [];
       }
-      return acc.concat(`${blockDivider(cell)}${code}\n\n${myst}`);
+      return acc.concat(`${blockDivider(cell, index)}${code}\n\n${myst}`);
     }
     return acc;
   }, Promise.resolve([] as string[]));

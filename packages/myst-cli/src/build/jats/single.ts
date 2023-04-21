@@ -38,6 +38,7 @@ export async function runJatsExport(
         imageAltOutputFolder: 'files/',
         imageExtensions: KNOWN_IMAGE_EXTENSIONS,
         extraLinkTransformers,
+        simplifyOutputs: false,
       },
     )
   ).map((content) => {

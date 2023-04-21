@@ -50,6 +50,7 @@
     "myst-frontmatter": "^0.0.12",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^0.0.10",
+    "nbtx": "^0.2.3",
     "unified": "^10.1.2",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4",

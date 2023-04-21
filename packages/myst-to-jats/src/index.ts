@@ -1,5 +1,5 @@
-import type { Root, Code, CrossReference, TableCell as SpecTableCell } from 'myst-spec';
-import type { Cite, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
+import type { Root, CrossReference, TableCell as SpecTableCell } from 'myst-spec';
+import type { Cite, Code, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
@@ -8,6 +8,7 @@ import type { MessageInfo, GenericNode } from 'myst-common';
 import { copyNode, fileError } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { Tags, RefType } from 'jats-xml';
+import type { MinifiedOutput } from 'nbtx';
 import { getBack } from './backmatter';
 import { getArticleMeta, getFront } from './frontmatter';
 import type {
@@ -21,6 +22,8 @@ import type {
   DocumentOptions,
 } from './types';
 import { basicTransformations } from './transforms';
+import type { Section } from './transforms/sections';
+import { sectionAttrsFromBlock } from './transforms/sections';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
@@ -48,6 +51,61 @@ function renderLabel(node: GenericNode, state: IJatsSerializer, template = (s: s
   }
 }
 
+function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSerializer) {
+  state.openNode('alternatives');
+  if (output.output_type === 'error') {
+    state.openNode('media', {
+      'specific-use': 'error',
+      mimetype: 'text',
+      'mime-subtype': 'plain',
+      'xlink:href': (output as any).path,
+    });
+    state.openNode('caption');
+    state.openNode('title');
+    state.text(output.ename);
+    state.closeNode();
+    state.openNode('p');
+    state.text(output.evalue);
+    state.closeNode();
+    state.closeNode();
+    state.closeNode();
+  } else if (output.output_type === 'stream') {
+    state.addLeaf('media', {
+      'specific-use': 'stream',
+      mimetype: 'text',
+      'mime-subtype': 'plain',
+      'xlink:href': (output as any).path,
+    });
+  } else if (
+    ['display_data', 'execute_result', 'update_display_data'].includes(output.output_type)
+  ) {
+    Object.entries(output.data ?? {}).forEach(([mimeType, value]) => {
+      let leafType: string;
+      let specificUse: string;
+      if (mimeType.startsWith('image/')) {
+        leafType = 'graphic';
+        specificUse = 'print';
+      } else if (mimeType === 'text/html') {
+        leafType = 'media';
+        specificUse = 'web';
+      } else if (mimeType === 'text/plain') {
+        leafType = 'media';
+        specificUse = 'text';
+      } else {
+        leafType = 'media';
+        specificUse = 'original-format';
+      }
+      state.addLeaf(leafType, {
+        'specific-use': specificUse,
+        mimetype: mimeType.split('/')[0],
+        'mime-subtype': mimeType.split('/').slice(1).join('/'),
+        'xlink:href': (value as any).path,
+      });
+    });
+  }
+  state.closeNode();
+}
+
 const handlers: Record<string, Handler> = {
   text(node, state) {
     state.text(node.value);
@@ -56,7 +114,7 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'p');
   },
   section(node, state) {
-    state.renderInline(node, 'sec');
+    state.renderInline(node, 'sec', sectionAttrsFromBlock(node as Section));
   },
   heading(node, state) {
     renderLabel(node, state);
@@ -83,8 +141,11 @@ const handlers: Record<string, Handler> = {
     state.closeNode();
   },
   code(node, state) {
-    const { lang } = node as Code;
-    state.renderInline(node, 'code', { language: lang });
+    const { lang, executable, identifier } = node as Code;
+    const attrs: Attributes = { language: lang };
+    if (executable) attrs.executable = 'yes';
+    if (identifier) attrs.id = identifier;
+    state.renderInline(node, 'code', attrs);
   },
   list(node, state) {
     // https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/list.html
@@ -301,6 +362,17 @@ const handlers: Record<string, Handler> = {
     state.text(node.unit);
     state.closeNode();
     state.closeNode();
+  },
+  output(node, state) {
+    const { identifier, id } = node;
+    const attrs: Attributes = { 'sec-type': 'notebook-output' };
+    const attrId = identifier ?? id;
+    node.data?.forEach((output: any, index: number) => {
+      const idSuffix = node.data.length > 1 ? `-${index}` : '';
+      state.openNode('sec', { ...attrs, id: `${attrId}${idSuffix}` });
+      alternativesFromMinifiedOutput(output, state);
+      state.closeNode();
+    });
   },
 };
 

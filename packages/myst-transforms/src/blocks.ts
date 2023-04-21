@@ -3,7 +3,9 @@ import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import type { Node, Parent } from 'myst-spec';
 import { select, selectAll } from 'unist-util-select';
+import type { GenericNode } from 'myst-common';
 import { fileError, normalizeLabel } from 'myst-common';
+import type { Code } from 'myst-spec-ext';
 
 export function blockNestingTransform(mdast: Root) {
   if (!select('block', mdast)) {
@@ -42,8 +44,9 @@ export function blockMetadataTransform(mdast: Root, file: VFile) {
         });
       }
     }
-    if (typeof block.data?.label === 'string') {
-      const normalized = normalizeLabel(block.data?.label);
+    const label = block.data?.label ?? block.data?.id;
+    if (typeof label === 'string') {
+      const normalized = normalizeLabel(label);
       if (normalized) {
         // TODO: raise error if the node is already labelled
         block.identifier = normalized.identifier;
@@ -51,6 +54,26 @@ export function blockMetadataTransform(mdast: Root, file: VFile) {
         block.html_id = normalized.html_id;
         delete block.data.label;
       }
+    }
+    if (block.identifier) {
+      const codeChildren = selectAll('code', block) as Code[];
+      codeChildren.forEach((child, index) => {
+        if (child.identifier) return;
+        if (codeChildren.length === 1) {
+          child.identifier = `${block.identifier}-code`;
+        } else {
+          child.identifier = `${block.identifier}-code-${index}`;
+        }
+      });
+      const outputChildren = selectAll('output', block) as GenericNode[];
+      outputChildren.forEach((child, index) => {
+        if (child.identifier) return;
+        if (outputChildren.length === 1) {
+          child.identifier = `${block.identifier}-output`;
+        } else {
+          child.identifier = `${block.identifier}-output-${index}`;
+        }
+      });
     }
   });
 }

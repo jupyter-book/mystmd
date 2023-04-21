@@ -125,7 +125,7 @@ cases:
                 - type: text
                   value: A note!
     jats: <boxed-text content-type="note"><caption><title>Note title</title></caption><p>A note!</p></boxed-text>
-  - title: Headers to sections
+  - title: Headings to sections
     tree:
       type: root
       children:
@@ -547,3 +547,56 @@ cases:
             - type: text
               value: JATS
     jats: <p>Hello</p><p>JATS</p>
+  - title: Block removed
+    tree:
+      type: root
+      children:
+        - type: block
+          identifier: a
+          data:
+            type: b
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: text
+    jats: <p>text</p>
+  - title: Notebook blocks to section
+    tree:
+      type: root
+      children:
+        - type: block
+          identifier: a
+          data:
+            type: notebook-content
+          children:
+            - type: heading
+              depth: 1
+              children:
+                - type: text
+                  value: a section
+        - type: block
+          identifier: a
+          data:
+            type: notebook-content
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: text
+    jats: <sec><title>a section</title><p>text</p></sec>
+  - title: Notebook block with code to section
+    tree:
+      type: root
+      children:
+        - type: block
+          identifier: a
+          data:
+            type: notebook-code
+          children:
+            - type: code
+              lang: python
+              executable: true
+              identifier: a-code
+              value: print('hello world')
+    jats: <sec id="a" sec-type="notebook-code"><code id="a-code" language="python" executable="yes">print('hello world')</code></sec>
