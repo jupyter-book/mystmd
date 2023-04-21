@@ -1,6 +1,6 @@
 import { unified } from 'unified';
 import fs from 'fs';
-import { Session, silentLogger } from 'myst-cli-utils';
+import { computeHash, Session, silentLogger } from 'myst-cli-utils';
 import path from 'path';
 import { validateJatsAgainstDtd } from 'jats-xml';
 import yaml from 'js-yaml';
@@ -40,7 +40,7 @@ const testLogger = new Session({
 });
 
 async function writeValidateDelete(data: string) {
-  const testXml = path.join(__dirname, 'test.xml');
+  const testXml = path.join(__dirname, `${computeHash(data)}.xml`);
   fs.writeFileSync(testXml, data);
   const valid = await validateJatsAgainstDtd(testLogger, testXml);
   fs.rmSync(testXml);
