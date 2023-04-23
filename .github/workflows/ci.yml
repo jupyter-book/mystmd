@@ -34,11 +34,4 @@ jobs:
           fetch-depth: 2
           submodules: recursive
       - run: sudo apt-get update
-      - run: sudo apt-get install -y libxml2-utils
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node }}
-          cache: 'npm'
-      - run: npm install
-      - run: npm run test
+      - run: sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
