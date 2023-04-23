@@ -33,7 +33,15 @@ jobs:
         with:
           fetch-depth: 2
           submodules: recursive
-      - run: sudo apt-get update
-      - run: sudo apt-get install docker.io
-      - run: sudo snap install docker
-      - run: npm run test:docker
+      - uses: docker/setup-buildx-action@v2
+      - uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: 'Dockerfile'
+          tags: 'test'
+          load: true
+          push: false
+      - uses: addnab/docker-run-action@v3
+        with:
+          image: test
+          run: npm run test
