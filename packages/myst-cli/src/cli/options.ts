@@ -28,6 +28,10 @@ export function makeAllOption(description: string) {
   return new Option('-a, --all', description).default(false);
 }
 
+export function makeNamedExportOption(description: string) {
+  return new Option('-o, --output <output>', description);
+}
+
 export function makeStrictOption() {
   return new Option('--strict', 'Summarize build warnings and stop on any errors.').default(false);
 }

@@ -17,18 +17,24 @@ export type BuildOpts = {
   xml?: boolean;
   all?: boolean;
   force?: boolean;
+  output?: string;
   checkLinks?: boolean;
 };
 
-export function getExportFormats(opts: BuildOpts & { explicit?: boolean }) {
-  const { docx, pdf, tex, xml, all, explicit } = opts;
+export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
+  const { docx, pdf, tex, xml } = opts;
+  return docx || pdf || tex || xml || false;
+}
+
+export function getExportFormats(opts: BuildOpts & { explicit?: boolean; extension?: string }) {
+  const { docx, pdf, tex, xml, all, explicit, extension } = opts;
   const formats = [];
-  const any = docx || pdf || tex || xml;
-  const override = all || (!any && explicit);
-  if (docx || override) formats.push(ExportFormats.docx);
-  if (pdf || override) formats.push(ExportFormats.pdf);
-  if (tex || override) formats.push(ExportFormats.tex);
-  if (xml || override) formats.push(ExportFormats.xml);
+  const any = hasAnyExplicitExportFormat(opts);
+  const override = all || (!any && explicit && !extension);
+  if (docx || override || extension === '.docx') formats.push(ExportFormats.docx);
+  if (pdf || override || extension === '.pdf') formats.push(ExportFormats.pdf);
+  if (tex || override || extension === '.tex') formats.push(ExportFormats.tex);
+  if (xml || override || extension === '.xml') formats.push(ExportFormats.xml);
   return formats;
 }
 
@@ -54,14 +60,33 @@ export async function collectAllBuildExportOptions(
   files: string[],
   opts: BuildOpts,
 ) {
-  const { force } = opts;
-  const formats = getExportFormats({ ...opts, explicit: files.length > 0 });
+  const { force, output } = opts;
+  if (output && files.length !== 1) {
+    throw new Error('When specifying a named output for export, you must list exactly one file.');
+  }
+  const formats = getExportFormats({
+    ...opts,
+    explicit: files.length > 0,
+    extension: output ? path.extname(output) : undefined,
+  });
+  if (output && formats.length !== 1) {
+    throw new Error(`Unrecognized file extension for output: ${path.extname(output)}`);
+  }
   session.log.debug(`Exporting formats: "${formats.join('", "')}"`);
   let exportOptionsList: ExportWithInputOutput[];
   if (files.length) {
     exportOptionsList = await collectExportOptions(session, files, formats, {
-      force,
+      // If there is an output and file specified, force is implied
+      force: force || !!output || hasAnyExplicitExportFormat(opts),
     });
+    if (output) {
+      if (exportOptionsList.length !== 1) {
+        // This should be caught above
+        throw new Error('Expecting only a single export when using output');
+      }
+      // Override the exports with the command line options
+      exportOptionsList[0].output = path.join(path.resolve('.'), output);
+    }
   } else {
     const projectPaths = getProjectPaths(session);
     exportOptionsList = (
@@ -86,6 +111,12 @@ export async function collectAllBuildExportOptions(
   return exportOptionsList;
 }
 
+function extToKind(ext: string): string {
+  // We promote `jats` in the docs, even though extension is `.xml`
+  if (ext === 'xml') return 'jats';
+  return ext;
+}
+
 export async function build(session: ISession, files: string[], opts: BuildOpts) {
   const { site, all } = opts;
   const performSiteBuild = all || (files.length === 0 && exportSite(session, opts));
@@ -97,15 +128,21 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     if (!(site || performSiteBuild)) {
       // Print out the kinds that are filtered
       const kinds = Object.entries(opts)
-        .filter(([k, v]) => k !== 'force' && k !== 'checkLinks' && k !== 'site' && v)
+        .filter(
+          ([k, v]) => k !== 'force' && k !== 'output' && k !== 'checkLinks' && k !== 'site' && v,
+        )
         .map(([k]) => k);
       session.log.info(
-        `📭 No file exports${kinds.length > 0 ? ` with kind "${kinds.join('", "')}"` : ''} found.`,
+        `📭 No file exports${
+          kinds.length > 0 ? ` with kind "${kinds.map(extToKind).join('", "')}"` : ''
+        } found.`,
       );
       if (kinds.length) {
         session.log.info(
           chalk.dim(
-            `You may need to add an 'exports' field to the frontmatter of the file(s) you wish to export:\n\n---\nexports:\n  - format: ${kinds[0]}\n---`,
+            `You may need to add an 'exports' field to the frontmatter of the file(s) you wish to export:\n\n---\nexports:\n  - format: ${extToKind(
+              kinds[0],
+            )}\n---`,
           ),
         );
       } else {

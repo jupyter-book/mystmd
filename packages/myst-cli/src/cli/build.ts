@@ -12,6 +12,7 @@ import {
   makeStrictOption,
   makeTexOption,
   makeAllOption,
+  makeNamedExportOption,
 } from './options';
 
 export function makeBuildCLI(program: Command) {
@@ -24,6 +25,7 @@ export function makeBuildCLI(program: Command) {
     .addOption(makeJatsOption('Build JATS xml output'))
     .addOption(makeSiteOption('Build MyST site content'))
     .addOption(makeAllOption('Build all exports'))
+    .addOption(makeNamedExportOption('Output file for the export'))
     .addOption(makeForceOption())
     .addOption(makeCheckLinksOption())
     .addOption(makeStrictOption())
