@@ -243,7 +243,6 @@ cases:
             <xref ref-type="fn" rid="my-footnote"/>
           </p>
         </body>
-        break this test
         <back>
           <fn-group>
             <fn id="my-footnote">
