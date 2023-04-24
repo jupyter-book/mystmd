@@ -1,5 +1,5 @@
 import type { Root, Code, CrossReference, TableCell as SpecTableCell } from 'myst-spec';
-import type { Cite, FootnoteReference } from 'myst-spec-ext';
+import type { Cite, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
@@ -78,7 +78,9 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'term');
   },
   definitionDescription(node, state) {
-    state.renderInline(node, 'def');
+    state.openNode('def');
+    state.renderInline(node, 'p');
+    state.closeNode();
   },
   code(node, state) {
     const { lang } = node as Code;
@@ -86,14 +88,23 @@ const handlers: Record<string, Handler> = {
   },
   list(node, state) {
     // https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/list.html
-    state.renderInline(node, 'list', { 'list-type': node.ordered ? 'ordered' : 'bullet' });
+    state.renderInline(node, 'list', { 'list-type': node.ordered ? 'order' : 'bullet' });
   },
   listItem(node, state) {
-    state.renderInline(node, 'list-item');
+    state.openNode('list-item');
+    state.renderInline(node, 'p');
+    state.closeNode();
   },
-  thematicBreak() {
-    // The use of thematic breaks should be restricted to use inside table cells.
-    // https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/hr.html
+  thematicBreak(node, state) {
+    // Don't include the HR
+    state.warn(
+      'The use of thematic breaks should be restricted to use inside table cells.',
+      node,
+      'thematicBreak',
+      {
+        url: 'https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/hr.html',
+      },
+    );
   },
   inlineMath(node, state) {
     state.openNode('inline-formula');
@@ -266,14 +277,17 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'xref', attrs);
   },
   footnoteReference(node, state) {
-    const { identifier } = node as FootnoteReference;
-    const attrs: Attributes = { 'ref-type': 'fn', rid: identifier };
-    state.addLeaf('xref', attrs);
+    const { identifier, enumerator } = node as FootnoteReference;
+    const attrs: Attributes = { 'ref-type': 'fn', rid: `fn-${identifier}` };
+    state.openNode('xref', attrs);
+    state.text(enumerator);
+    state.closeNode();
   },
   footnoteDefinition(node, state) {
-    state.openNode('fn', { id: node.identifier });
+    const { identifier, enumerator } = node as FootnoteDefinition;
+    state.openNode('fn', { id: `fn-${identifier}` });
     state.openNode('label');
-    state.text(node.label);
+    state.text(enumerator);
     state.closeNode();
     state.renderChildren(node);
     const element = state.stack.pop();
