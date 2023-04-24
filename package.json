@@ -10,7 +10,7 @@
     "lint": "turbo run lint",
     "lint:format": "turbo run lint:format",
     "test": "turbo run test",
-    "test:docker": "docker build -t test . && docker run test",
+    "test:docker": "docker build -t test -f Dockerfile.18 .  && docker run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
     "version": "changeset version && npm install",
