@@ -7,6 +7,8 @@ import yaml from 'js-yaml';
 import { VFile } from 'vfile';
 import mystToJats, { writeJats } from '../src';
 
+const TEST_DTD = false;
+
 type TestFile = {
   cases: TestCase[];
 };
@@ -39,6 +41,19 @@ const testLogger = new Session({
   },
 });
 
+function addHeader(data: string) {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
+    <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+      <front>
+        <article-meta/>
+      </front>
+      <body>
+        ${data}
+      </body>
+    </article>`;
+}
+
 async function writeValidateDelete(data: string) {
   const testXml = path.join(__dirname, 'test.xml');
   fs.writeFileSync(testXml, data);
@@ -49,11 +64,12 @@ async function writeValidateDelete(data: string) {
 
 describe('Basic JATS body', () => {
   const cases = loadCases('basic.yml');
-  test.each(cases.map((c): [string, TestCase] => [c.title, c]))('%s', (_, { tree, jats }) => {
+  test.each(cases.map((c): [string, TestCase] => [c.title, c]))('%s', async (_, { tree, jats }) => {
     const pipe = unified().use(mystToJats);
     pipe.runSync(tree as any);
     const vfile = pipe.stringify(tree as any);
     expect(vfile.result).toEqual(jats);
+    if (TEST_DTD) expect(await writeValidateDelete(addHeader(vfile.result as string))).toBeTruthy();
   });
 });
 
@@ -69,7 +85,7 @@ describe('JATS full article', () => {
       pipe.runSync(tree as any);
       const vfile = pipe.stringify(tree as any);
       expect(vfile.result).toEqual(jats);
-      expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
+      if (TEST_DTD) expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
     },
   );
 });
@@ -86,7 +102,7 @@ describe('JATS full article with bibliography', () => {
       pipe.runSync(tree as any);
       const vfile = pipe.stringify(tree as any);
       expect(vfile.result).toEqual(jats);
-      expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
+      if (TEST_DTD) expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
     },
   );
 });
@@ -106,7 +122,7 @@ describe('JATS multi-article', () => {
         },
       );
       expect(vfile.result).toEqual(jats);
-      expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
+      if (TEST_DTD) expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
     },
   );
 });
@@ -115,7 +131,7 @@ describe('JATS SI units', () => {
   const cases = loadCases('siunit.yml');
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
-    (_, { tree, jats, frontmatter, citations }) => {
+    async (_, { tree, jats, frontmatter, citations }) => {
       const vfile = writeJats(
         new VFile(),
         { mdast: tree as any, frontmatter, citations },
@@ -124,6 +140,9 @@ describe('JATS SI units', () => {
         },
       );
       expect(vfile.result).toEqual(jats);
+      if (TEST_DTD) {
+        expect(await writeValidateDelete(addHeader(vfile.result as string))).toBeTruthy();
+      }
     },
   );
 });

@@ -17,5 +17,4 @@ cases:
           children:
             - type: embed
               label: hi
-              identifier: hi
               remove-output: true

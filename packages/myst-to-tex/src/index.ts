@@ -220,7 +220,8 @@ const handlers: Record<string, Handler> = {
   captionNumber: () => undefined,
   crossReference(node, state) {
     // Look up reference and add the text
-    const text = (node.template ?? toText(node))?.replace(/\s/g, '~') || '%s';
+    const usedTemplate = node.template?.includes('%s') ? node.template : undefined;
+    const text = (usedTemplate ?? toText(node))?.replace(/\s/g, '~') || '%s';
     const id = node.label;
     state.write(text.replace(/%s/g, `\\ref{${id}}`));
   },

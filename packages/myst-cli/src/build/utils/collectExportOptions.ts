@@ -39,7 +39,7 @@ async function prepareExportOptions(
   exportOptions.forEach((exp) => {
     // If no files are specified, use the sourceFile for article
     if (!exp.article && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
-      exp.article = sourceFile;
+      exp.article = path.resolve(sourceFile);
     }
     // Also validate that sub_articles exist
     if (exp.sub_articles) {

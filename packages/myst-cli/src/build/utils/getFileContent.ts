@@ -35,12 +35,14 @@ export async function getFileContent(
   const toc = tic();
   files = files.map((file) => resolve(file));
   projectPath = projectPath ?? resolve('.');
-  const { project } = await loadProject(session, projectPath);
+  const { project, pages } = await loadProject(session, projectPath);
+  const projectFiles = pages.map((page) => page.file);
+  const allFiles = [...new Set([...files, ...projectFiles])];
   await Promise.all([
     // Load all citations (.bib)
     ...project.bibliography.map((path) => loadFile(session, path, '.bib')),
     // Load all content (.md and .ipynb)
-    ...files.map((file) => loadFile(session, file, undefined, { minifyMaxCharacters: 0 })),
+    ...allFiles.map((file) => loadFile(session, file, undefined, { minifyMaxCharacters: 0 })),
     // Load up all the intersphinx references
     loadIntersphinx(session, { projectPath }) as Promise<any>,
   ]);
@@ -55,7 +57,7 @@ export async function getFileContent(
   //   extraTransforms.push(...opts.extraTransforms);
   // }
   await Promise.all(
-    files.map(async (file) => {
+    allFiles.map(async (file) => {
       await transformMdast(session, {
         file,
         imageWriteFolder,
@@ -68,7 +70,7 @@ export async function getFileContent(
   );
   const pageReferenceStates = selectPageReferenceStates(
     session,
-    files.map((file) => {
+    allFiles.map((file) => {
       return { file };
     }),
   );
@@ -82,6 +84,12 @@ export async function getFileContent(
       return selectedFile;
     }),
   );
-  session.log.info(toc(`📚 Built ${files.length} pages for export from ${projectPath} in %s.`));
+  session.log.info(
+    toc(
+      `📚 Built ${allFiles.length} pages for export (including ${
+        allFiles.length - files.length
+      } dependencies) from ${projectPath} in %s.`,
+    ),
+  );
   return selectedFiles;
 }
