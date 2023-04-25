@@ -441,6 +441,14 @@ const handlers: Record<string, Handler> = {
     state.closeNode();
     state.closeNode();
   },
+  ['milestone-start'](node, state) {
+    const { type, ...attrs } = node;
+    state.addLeaf(type, attrs);
+  },
+  ['milestone-end'](node, state) {
+    const { type, ...attrs } = node;
+    state.addLeaf(type, attrs);
+  },
 };
 
 function createText(text: string): Element {

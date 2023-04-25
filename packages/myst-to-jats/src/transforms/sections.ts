@@ -1,6 +1,7 @@
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import type { Parent, Heading, Block } from 'myst-spec';
+import type { GenericNode } from 'myst-common';
 import { liftChildren, NotebookCell } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 
@@ -18,9 +19,9 @@ export function sectionAttrsFromBlock(node: { data?: Record<string, any>; identi
   return output;
 }
 
-function blockIsNotebookSection(node: Block) {
+function blockIsNotebookSection(node: Block, secType: NotebookCell) {
   // Markdown blocks will be divided to sections later by headings.
-  return sectionAttrsFromBlock(node)['sec-type'] === NotebookCell.code;
+  return sectionAttrsFromBlock(node)['sec-type'] === secType;
 }
 
 /**
@@ -33,7 +34,17 @@ function blockIsNotebookSection(node: Block) {
  */
 export function sectionTransform(tree: Root) {
   (selectAll('block', tree) as Block[]).forEach((node) => {
-    if (blockIsNotebookSection(node)) (node as any).type = 'section';
+    if (blockIsNotebookSection(node, NotebookCell.code)) (node as any).type = 'section';
+    if (blockIsNotebookSection(node, NotebookCell.content)) {
+      const { id } = sectionAttrsFromBlock(node);
+      (node.children as GenericNode[])?.unshift({
+        type: 'milestone-start',
+        rationale: 'Markdown cell boundary',
+        'specific-use': 'notebook-content',
+        id,
+      });
+      (node.children as GenericNode[])?.push({ type: 'milestone-end', rid: id });
+    }
   });
   liftChildren(tree, 'block'); // this looses part information. TODO: milestones
   const children: Parent[] = [];
