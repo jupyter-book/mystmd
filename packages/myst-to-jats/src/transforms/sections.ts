@@ -46,7 +46,8 @@ export function sectionTransform(tree: Root) {
       (node.children as GenericNode[])?.push({ type: 'milestone-end', rid: id });
     }
   });
-  liftChildren(tree, 'block'); // this looses part information. TODO: milestones
+  // Lifting children looses cell/block structure, however, it is preserved as milestones
+  liftChildren(tree, 'block');
   const children: Parent[] = [];
   let current: Section | undefined = undefined;
   function push(child: any) {
