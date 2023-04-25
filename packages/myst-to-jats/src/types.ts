@@ -36,6 +36,7 @@ export type ArticleContent = {
   mdast: Root;
   frontmatter?: PageFrontmatter;
   citations?: CitationRenderer;
+  slug?: string;
 };
 
 export interface IJatsSerializer<D extends Record<string, any> = StateData> {

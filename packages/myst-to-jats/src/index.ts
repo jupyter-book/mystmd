@@ -513,6 +513,7 @@ export class JatsDocument {
     };
     if (articleType) attributes['article-type'] = articleType;
     if (specificUse) attributes['specific-use'] = specificUse;
+    if (this.content.slug) attributes.id = this.content.slug;
     const state = new JatsSerializer(this.file, this.content.mdast, this.options);
     const elements: Element[] = [
       ...getFront(this.content.frontmatter),
@@ -551,7 +552,9 @@ export class JatsDocument {
       { type: 'element', name: 'body', elements: state.elements() },
       ...getBack(content.citations, state.footnotes),
     ];
-    return { type: 'element', name: 'sub-article', elements };
+    const attributes: Record<string, any> = {};
+    if (content.slug) attributes.id = content.slug;
+    return { type: 'element', name: 'sub-article', elements, attributes };
   }
 
   body(state?: JatsSerializer) {
@@ -584,16 +587,19 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
   return file;
 }
 
-const plugin: Plugin<[PageFrontmatter?, CitationRenderer?, DocumentOptions?], Root, VFile> =
-  function (frontmatter, citations, opts) {
-    this.Compiler = (node, file) => {
-      return writeJats(file, { mdast: node as any, frontmatter, citations }, opts);
-    };
-
-    return (node: Root) => {
-      // Preprocess
-      return node;
-    };
+const plugin: Plugin<
+  [PageFrontmatter?, CitationRenderer?, string?, DocumentOptions?],
+  Root,
+  VFile
+> = function (frontmatter, citations, slug, opts) {
+  this.Compiler = (node, file) => {
+    return writeJats(file, { mdast: node as any, frontmatter, citations, slug }, opts);
   };
+
+  return (node: Root) => {
+    // Preprocess
+    return node;
+  };
+};
 
 export default plugin;

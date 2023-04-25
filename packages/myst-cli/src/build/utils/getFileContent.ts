@@ -60,12 +60,14 @@ export async function getFileContent(
   // }
   await Promise.all(
     allFiles.map(async (file) => {
+      const pageSlug = pages.find((page) => page.file === file)?.slug;
       await transformMdast(session, {
         file,
         imageWriteFolder,
         imageAltOutputFolder,
         imageExtensions,
         projectPath,
+        pageSlug,
         minifyMaxCharacters: 0,
       });
     }),
