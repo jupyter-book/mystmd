@@ -78,7 +78,7 @@ describe('JATS full article', () => {
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
     async (_, { tree, jats, frontmatter, citations }) => {
-      const pipe = unified().use(mystToJats, frontmatter, citations, {
+      const pipe = unified().use(mystToJats, frontmatter, citations, undefined, {
         fullArticle: true,
         spaces: 2,
       });
@@ -95,7 +95,7 @@ describe('JATS full article with bibliography', () => {
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
     async (_, { tree, jats, frontmatter, citations }) => {
-      const pipe = unified().use(mystToJats, frontmatter, citations, {
+      const pipe = unified().use(mystToJats, frontmatter, citations, undefined, {
         fullArticle: true,
         spaces: 2,
       });

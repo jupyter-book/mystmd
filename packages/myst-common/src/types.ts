@@ -26,6 +26,11 @@ export enum SourceFileKind {
   Notebook = 'Notebook',
 }
 
+export enum NotebookCell {
+  content = 'notebook-content',
+  code = 'notebook-code',
+}
+
 export type Dependency = {
   url: string;
   kind?: SourceFileKind;

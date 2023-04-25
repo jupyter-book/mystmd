@@ -1,5 +1,6 @@
-import type { Root, Code, CrossReference, TableCell as SpecTableCell } from 'myst-spec';
-import type { Cite, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
+import path from 'path';
+import type { Root, CrossReference, TableCell as SpecTableCell } from 'myst-spec';
+import type { Cite, Code, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
@@ -8,6 +9,7 @@ import type { MessageInfo, GenericNode } from 'myst-common';
 import { copyNode, fileError } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { Tags, RefType } from 'jats-xml';
+import type { MinifiedOutput } from 'nbtx';
 import { getBack } from './backmatter';
 import { getArticleMeta, getFront } from './frontmatter';
 import type {
@@ -21,6 +23,9 @@ import type {
   DocumentOptions,
 } from './types';
 import { basicTransformations } from './transforms';
+import type { SupplementaryMaterial } from './transforms/containers';
+import type { Section } from './transforms/sections';
+import { sectionAttrsFromBlock } from './transforms/sections';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
@@ -48,6 +53,61 @@ function renderLabel(node: GenericNode, state: IJatsSerializer, template = (s: s
   }
 }
 
+function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSerializer) {
+  state.openNode('alternatives');
+  if (output.output_type === 'error') {
+    state.openNode('media', {
+      'specific-use': 'error',
+      mimetype: 'text',
+      'mime-subtype': 'plain',
+      'xlink:href': (output as any).path,
+    });
+    state.openNode('caption');
+    state.openNode('title');
+    state.text(output.ename);
+    state.closeNode();
+    state.openNode('p');
+    state.text(output.evalue);
+    state.closeNode();
+    state.closeNode();
+    state.closeNode();
+  } else if (output.output_type === 'stream') {
+    state.addLeaf('media', {
+      'specific-use': 'stream',
+      mimetype: 'text',
+      'mime-subtype': 'plain',
+      'xlink:href': (output as any).path,
+    });
+  } else if (
+    ['display_data', 'execute_result', 'update_display_data'].includes(output.output_type)
+  ) {
+    Object.entries(output.data ?? {}).forEach(([mimeType, value]) => {
+      let leafType: string;
+      let specificUse: string;
+      if (mimeType.startsWith('image/')) {
+        leafType = 'graphic';
+        specificUse = 'print';
+      } else if (mimeType === 'text/html') {
+        leafType = 'media';
+        specificUse = 'web';
+      } else if (mimeType === 'text/plain') {
+        leafType = 'media';
+        specificUse = 'text';
+      } else {
+        leafType = 'media';
+        specificUse = 'original-format';
+      }
+      state.addLeaf(leafType, {
+        'specific-use': specificUse,
+        mimetype: mimeType.split('/')[0],
+        'mime-subtype': mimeType.split('/').slice(1).join('/'),
+        'xlink:href': (value as any).path,
+      });
+    });
+  }
+  state.closeNode();
+}
+
 const handlers: Record<string, Handler> = {
   text(node, state) {
     state.text(node.value);
@@ -56,7 +116,7 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'p');
   },
   section(node, state) {
-    state.renderInline(node, 'sec');
+    state.renderInline(node, 'sec', sectionAttrsFromBlock(node as Section));
   },
   heading(node, state) {
     renderLabel(node, state);
@@ -83,8 +143,11 @@ const handlers: Record<string, Handler> = {
     state.closeNode();
   },
   code(node, state) {
-    const { lang } = node as Code;
-    state.renderInline(node, 'code', { language: lang });
+    const { lang, executable, identifier } = node as Code;
+    const attrs: Attributes = { language: lang };
+    if (executable) attrs.executable = 'yes';
+    if (identifier) attrs.id = identifier;
+    state.renderInline(node, 'code', attrs);
   },
   list(node, state) {
     // https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/list.html
@@ -222,8 +285,12 @@ const handlers: Record<string, Handler> = {
       state.text(node.alt);
       state.closeNode();
     }
+    const attrs: Record<string, any> = { mimetype: 'image' };
+    const ext = node.url ? path.extname(node.url).slice(1) : '';
+    if (ext) attrs['mime-subtype'] = ext;
+    attrs['xlink:href'] = node.url;
     // TOOD: identifier?
-    state.addLeaf('graphic', { 'xlink:href': node.url });
+    state.addLeaf('graphic', attrs);
   },
   container(node, state) {
     state.data.isInContainer = true;
@@ -299,6 +366,78 @@ const handlers: Record<string, Handler> = {
     state.text(`${node.number} `);
     state.openNode('abbrev', { 'content-type': 'unit', alt: node.alt });
     state.text(node.unit);
+    state.closeNode();
+    state.closeNode();
+  },
+  output(node, state) {
+    if (state.data.isInContainer) {
+      if (!node.data?.[0]) return;
+      alternativesFromMinifiedOutput(node.data[0], state);
+      return;
+    }
+    const { identifier, id } = node;
+    const attrs: Attributes = { 'sec-type': 'notebook-output' };
+    const attrId = identifier ?? id;
+    node.data?.forEach((output: any, index: number) => {
+      const idSuffix = node.data.length > 1 ? `-${index}` : '';
+      state.openNode('sec', { ...attrs, id: `${attrId}${idSuffix}` });
+      alternativesFromMinifiedOutput(output, state);
+      state.closeNode();
+    });
+  },
+  embed(node, state) {
+    if (state.data.isInContainer) {
+      // embedded figure content is handled in container transform
+      return;
+    }
+    state.renderChildren(node);
+  },
+  supplementaryMaterial(node, state) {
+    const smNode = node as SupplementaryMaterial;
+    state.openNode('p');
+    const smAttrs: Record<string, any> = {};
+    if (smNode.figIdentifier) {
+      smAttrs.id = `${smNode.figIdentifier}-source`;
+    }
+    smAttrs['specific-use'] = 'notebook';
+    state.openNode('supplementary-material', smAttrs);
+    renderLabel(node, state, (s: string) => `Figure ${s} - Notebook.`);
+    state.openNode('caption');
+    state.openNode('title');
+    state.text('Analysis for ');
+    if (smNode.figIdentifier) {
+      state.openNode('xref', { 'ref-type': 'fig', rid: smNode.figIdentifier });
+    }
+    state.text('Figure' + (smNode.enumerator ? ` ${smNode.enumerator}` : ''));
+    if (smNode.figIdentifier) {
+      state.closeNode();
+    }
+    state.text('.');
+    state.closeNode();
+    state.text('See methods');
+    if (smNode.sourceUrl) {
+      const sourceIdentifier = smNode.sourceUrl.split('/')[smNode.sourceUrl.split('/').length - 1];
+      state.text(' in ');
+      state.openNode('xref', {
+        'ref-type': 'custom',
+        'custom-type': 'notebook',
+        rid: sourceIdentifier,
+      });
+      state.text('notebook');
+      state.closeNode();
+    }
+    if (smNode.embedIdentifier) {
+      state.text(' from ');
+      state.openNode('xref', {
+        'ref-type': 'custom',
+        'custom-type': 'notebook-code',
+        rid: smNode.embedIdentifier,
+      });
+      state.text('cell');
+      state.closeNode();
+    }
+    state.text('.');
+    state.closeNode();
     state.closeNode();
     state.closeNode();
   },
@@ -441,6 +580,7 @@ export class JatsDocument {
     };
     if (articleType) attributes['article-type'] = articleType;
     if (specificUse) attributes['specific-use'] = specificUse;
+    if (this.content.slug) attributes.id = this.content.slug;
     const state = new JatsSerializer(this.file, this.content.mdast, this.options);
     const elements: Element[] = [
       ...getFront(this.content.frontmatter),
@@ -479,7 +619,9 @@ export class JatsDocument {
       { type: 'element', name: 'body', elements: state.elements() },
       ...getBack(content.citations, state.footnotes),
     ];
-    return { type: 'element', name: 'sub-article', elements };
+    const attributes: Record<string, any> = {};
+    if (content.slug) attributes.id = content.slug;
+    return { type: 'element', name: 'sub-article', elements, attributes };
   }
 
   body(state?: JatsSerializer) {
@@ -512,16 +654,19 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
   return file;
 }
 
-const plugin: Plugin<[PageFrontmatter?, CitationRenderer?, DocumentOptions?], Root, VFile> =
-  function (frontmatter, citations, opts) {
-    this.Compiler = (node, file) => {
-      return writeJats(file, { mdast: node as any, frontmatter, citations }, opts);
-    };
-
-    return (node: Root) => {
-      // Preprocess
-      return node;
-    };
+const plugin: Plugin<
+  [PageFrontmatter?, CitationRenderer?, string?, DocumentOptions?],
+  Root,
+  VFile
+> = function (frontmatter, citations, slug, opts) {
+  this.Compiler = (node, file) => {
+    return writeJats(file, { mdast: node as any, frontmatter, citations, slug }, opts);
   };
+
+  return (node: Root) => {
+    // Preprocess
+    return node;
+  };
+};
 
 export default plugin;

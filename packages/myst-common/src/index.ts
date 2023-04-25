@@ -13,7 +13,7 @@ export {
 } from './utils';
 export { selectBlockParts, extractPart } from './extractParts';
 export { TemplateKind, TemplateOptionType } from './templates';
-export { ParseTypesEnum, SourceFileKind } from './types';
+export { NotebookCell, ParseTypesEnum, SourceFileKind } from './types';
 
 export type { MessageInfo } from './utils';
 export type {

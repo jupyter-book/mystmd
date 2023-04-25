@@ -85,6 +85,7 @@ export async function localArticleToTexRaw(
       imageAltOutputFolder: 'files/',
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
+      simplifyOutputs: true,
     },
   );
   const toc = tic();
@@ -130,6 +131,7 @@ export async function localArticleToTexTemplated(
       imageAltOutputFolder: 'files/',
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
+      simplifyOutputs: true,
     },
   );
   writeBibtexFromCitationRenderers(

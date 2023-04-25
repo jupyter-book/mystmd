@@ -125,7 +125,7 @@ cases:
                 - type: text
                   value: A note!
     jats: <boxed-text content-type="note"><caption><title>Note title</title></caption><p>A note!</p></boxed-text>
-  - title: Headers to sections
+  - title: Headings to sections
     tree:
       type: root
       children:
@@ -403,7 +403,7 @@ cases:
       children:
         - type: image
           url: image.png
-    jats: <graphic xlink:href="image.png"/>
+    jats: <graphic mimetype="image" mime-subtype="png" xlink:href="image.png"/>
   - title: Figure
     tree:
       type: root
@@ -422,7 +422,7 @@ cases:
                   children:
                     - type: text
                       value: Relaxing at the beach
-    jats: <fig id="myfigure"><alt-text>Random image of the beach or ocean!</alt-text><graphic xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
+    jats: <fig id="myfigure"><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
   - title: Figure (captionNumber)
     tree:
       type: root
@@ -444,7 +444,7 @@ cases:
                       value: 'Figure 1:'
                     - type: text
                       value: Relaxing at the beach
-    jats: <fig id="myfigure"><label>Figure 1:</label><alt-text>Random image of the beach or ocean!</alt-text><graphic xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
+    jats: <fig id="myfigure"><label>Figure 1:</label><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
   - title: Table Container
     tree:
       type: root
@@ -547,3 +547,157 @@ cases:
             - type: text
               value: JATS
     jats: <p>Hello</p><p>JATS</p>
+  - title: Block removed
+    tree:
+      type: root
+      children:
+        - type: block
+          identifier: a
+          data:
+            type: b
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: text
+    jats: <p>text</p>
+  - title: Notebook blocks to section
+    tree:
+      type: root
+      children:
+        - type: block
+          identifier: a
+          data:
+            type: notebook-content
+          children:
+            - type: heading
+              depth: 1
+              children:
+                - type: text
+                  value: a section
+        - type: block
+          identifier: a
+          data:
+            type: notebook-content
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: text
+    jats: <sec><title>a section</title><p>text</p></sec>
+  - title: Notebook block with code to section
+    tree:
+      type: root
+      children:
+        - type: block
+          identifier: a
+          data:
+            type: notebook-code
+          children:
+            - type: code
+              lang: python
+              executable: true
+              identifier: a-code
+              value: print('hello world')
+    jats: <sec id="a" sec-type="notebook-code"><code id="a-code" language="python" executable="yes">print('hello world')</code></sec>
+  - title: Figure with caption and legends
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: myfigure
+          children:
+            - type: image
+              url: beach.png
+              alt: Random image of the beach or ocean!
+              align: center
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: My Caption
+            - type: legend
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: My Legend
+            - type: legend
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Another Legend
+    jats: <fig id="myfigure"><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/><caption><p>My Caption</p><p>My Legend</p><p>Another Legend</p></caption></fig>
+  - title: Figure with embeded output
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: myfigure
+          enumerator: 1
+          children:
+            - type: embed
+              label: nb-cell-0
+              source:
+                url: /myst/nb-0
+                kind: Notebook
+              children:
+                - type: block
+                  data:
+                    id: nb-cell-0
+                    type: notebook-code
+                  identifier: nb-cell-0
+                  label: nb-cell-0
+                  html_id: nb-cell-0
+                  children:
+                    - type: code
+                      lang: python
+                      executable: true
+                      value: print('abc')
+                      identifier: nb-cell-0-code
+                      enumerator: 1
+                      html_id: nb-cell-0-code
+                    - type: output
+                      id: T7FMDqDm8dM2bOT1tKeeM
+                      identifier: nb-cell-0-output
+                      html_id: nb-cell-0-output
+                      data:
+                        - name: stdout
+                          output_type: stream
+                          text: abc\n...
+                          hash: a
+                          path: files/a.txt
+                    - type: output
+                      id: uE4mPgSow0oyo0dvEH9Lc
+                      identifier: nb-cell-1-output
+                      html_id: nb-cell-1-output
+                      data:
+                        - output_type: execute_result
+                          execution_count: 3
+                          metadata: {}
+                          data:
+                            text/plain:
+                              content_type: text/plain
+                              hash: b
+                              path: files/b.txt
+                            text/html:
+                              content_type: text/html
+                              hash: b
+                              path: files/b.html
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: My Caption
+            - type: legend
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: My Legend
+    jats: <fig id="myfigure"><caption><p>My Caption</p><p>My Legend</p><p><supplementary-material id="myfigure-source" specific-use="notebook"><label>Figure 1 - Notebook.</label><caption><title>Analysis for <xref ref-type="fig" rid="myfigure">Figure 1</xref>.</title>See methods in <xref ref-type="custom" custom-type="notebook" rid="nb-0">notebook</xref> from <xref ref-type="custom" custom-type="notebook-code" rid="nb-cell-0">cell</xref>.</caption></supplementary-material></p></caption><alternatives><media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/></alternatives><alternatives><media specific-use="text" mimetype="text" mime-subtype="plain" xlink:href="files/b.txt"/><media specific-use="web" mimetype="text" mime-subtype="html" xlink:href="files/b.html"/></alternatives></fig>

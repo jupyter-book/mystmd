@@ -38,13 +38,14 @@ export async function runJatsExport(
         imageAltOutputFolder: 'files/',
         imageExtensions: KNOWN_IMAGE_EXTENSIONS,
         extraLinkTransformers,
+        simplifyOutputs: false,
       },
     )
   ).map((content) => {
-    const { file, mdast, frontmatter } = content;
+    const { file, mdast, frontmatter, slug } = content;
     const rendererFiles = projectPath ? [projectPath, file] : [file];
     const citations = combineCitationRenderers(castSession(session), ...rendererFiles);
-    return { mdast, frontmatter, citations };
+    return { mdast, frontmatter, citations, slug };
   });
   const [processedArticle, ...processedSubArticles] = processedContents;
   const vfile = new VFile();
