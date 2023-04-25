@@ -403,7 +403,7 @@ cases:
       children:
         - type: image
           url: image.png
-    jats: <graphic xlink:href="image.png"/>
+    jats: <graphic mimetype="image" mime-subtype="png" xlink:href="image.png"/>
   - title: Figure
     tree:
       type: root
@@ -422,7 +422,7 @@ cases:
                   children:
                     - type: text
                       value: Relaxing at the beach
-    jats: <fig id="myfigure"><alt-text>Random image of the beach or ocean!</alt-text><graphic xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
+    jats: <fig id="myfigure"><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
   - title: Figure (captionNumber)
     tree:
       type: root
@@ -444,7 +444,7 @@ cases:
                       value: 'Figure 1:'
                     - type: text
                       value: Relaxing at the beach
-    jats: <fig id="myfigure"><label>Figure 1:</label><alt-text>Random image of the beach or ocean!</alt-text><graphic xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
+    jats: <fig id="myfigure"><label>Figure 1:</label><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
   - title: Table Container
     tree:
       type: root

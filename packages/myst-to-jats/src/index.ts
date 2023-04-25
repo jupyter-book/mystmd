@@ -283,8 +283,12 @@ const handlers: Record<string, Handler> = {
       state.text(node.alt);
       state.closeNode();
     }
+    const attrs: Record<string, any> = { mimetype: 'image' };
+    const ext = node.url ? path.extname(node.url).slice(1) : '';
+    if (ext) attrs['mime-subtype'] = ext;
+    attrs['xlink:href'] = node.url;
     // TOOD: identifier?
-    state.addLeaf('graphic', { 'xlink:href': node.url });
+    state.addLeaf('graphic', attrs);
   },
   container(node, state) {
     state.data.isInContainer = true;
