@@ -219,6 +219,7 @@ cases:
         - type: footnoteDefinition
           label: my-footnote
           identifier: my-footnote
+          enumerator: '1'
           children:
             - type: paragraph
               children:
@@ -231,6 +232,7 @@ cases:
             - type: footnoteReference
               label: my-footnote
               identifier: my-footnote
+              enumerator: '1'
     jats: |-
       <?xml version="1.0" encoding="UTF-8"?>
       <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
@@ -240,13 +242,13 @@ cases:
         </front>
         <body>
           <p>text
-            <xref ref-type="fn" rid="my-footnote"/>
+            <xref ref-type="fn" rid="fn-my-footnote">1</xref>
           </p>
         </body>
         <back>
           <fn-group>
-            <fn id="my-footnote">
-              <label>my-footnote</label>
+            <fn id="fn-my-footnote">
+              <label>1</label>
               <p>my footnote</p>
             </fn>
           </fn-group>

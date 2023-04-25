@@ -32,11 +32,13 @@ export type CaptionNumber = Parent & {
 export type FootnoteDefinition = FND & {
   /** @deprecated this should be enumerator */
   number?: number;
+  enumerator?: string;
 };
 
 export type FootnoteReference = FNR & {
   /** @deprecated this should be enumerator */
   number?: number;
+  enumerator?: string;
 };
 
 export type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };

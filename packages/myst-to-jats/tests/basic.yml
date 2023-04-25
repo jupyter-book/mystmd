@@ -264,7 +264,7 @@ cases:
               children:
                 - type: text
                   value: has two points
-    jats: <list list-type="bullet"><list-item>Lists can start with <monospace>-</monospace> or <monospace>*</monospace><list list-type="bullet"><list-item>My other, nested</list-item><list-item>bullet point list!</list-item></list></list-item></list><list list-type="ordered"><list-item>My numbered list</list-item><list-item>has two points</list-item></list>
+    jats: <list list-type="bullet"><list-item><p>Lists can start with <monospace>-</monospace> or <monospace>*</monospace><list list-type="bullet"><list-item><p>My other, nested</p></list-item><list-item><p>bullet point list!</p></list-item></list></p></list-item></list><list list-type="order"><list-item><p>My numbered list</p></list-item><list-item><p>has two points</p></list-item></list>
   - title: Blockquote
     tree:
       type: root
@@ -318,7 +318,7 @@ cases:
               children:
                 - type: text
                   value: Definition
-    jats: <def-list><def-item><term>Term 1</term><def>Definition</def></def-item><def-item><term>Term 2</term><def>Definition</def></def-item></def-list>
+    jats: <def-list><def-item><term>Term 1</term><def><p>Definition</p></def></def-item><def-item><term>Term 2</term><def><p>Definition</p></def></def-item></def-list>
 
   - title: InlineCode
     tree:

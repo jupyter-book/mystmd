@@ -48,10 +48,14 @@ export function footnotesTransform(mdast: Root, file: VFile) {
     if (!Number.isNaN(identifierNumber) && identifierNumber > 0) {
       def.number = identifierNumber;
       node.number = identifierNumber;
+      def.enumerator = String(identifierNumber);
+      node.enumerator = String(identifierNumber);
     } else {
       footnoteCount = nextNumber(footnoteCount, reserved);
       def.number = footnoteCount;
       node.number = footnoteCount;
+      def.enumerator = String(footnoteCount);
+      node.enumerator = String(footnoteCount);
     }
   });
 }
