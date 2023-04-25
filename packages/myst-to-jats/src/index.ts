@@ -1,3 +1,4 @@
+import path from 'path';
 import type { Root, CrossReference, TableCell as SpecTableCell } from 'myst-spec';
 import type { Cite, Code, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
@@ -22,6 +23,7 @@ import type {
   DocumentOptions,
 } from './types';
 import { basicTransformations } from './transforms';
+import type { SupplementaryMaterial } from './transforms/containers';
 import type { Section } from './transforms/sections';
 import { sectionAttrsFromBlock } from './transforms/sections';
 
@@ -368,6 +370,11 @@ const handlers: Record<string, Handler> = {
     state.closeNode();
   },
   output(node, state) {
+    if (state.data.isInContainer) {
+      if (!node.data?.[0]) return;
+      alternativesFromMinifiedOutput(node.data[0], state);
+      return;
+    }
     const { identifier, id } = node;
     const attrs: Attributes = { 'sec-type': 'notebook-output' };
     const attrId = identifier ?? id;
@@ -377,6 +384,69 @@ const handlers: Record<string, Handler> = {
       alternativesFromMinifiedOutput(output, state);
       state.closeNode();
     });
+  },
+  embed(node, state) {
+    if (state.data.isInContainer) {
+      // embedded figure content is handled in container transform
+      return;
+    }
+    state.renderChildren(node);
+  },
+  supplementaryMaterial(node, state) {
+    const smNode = node as SupplementaryMaterial;
+    state.openNode('p');
+    const smAttrs: Record<string, any> = {};
+    if (smNode.figIdentifier) {
+      smAttrs.id = `${smNode.figIdentifier}-source`;
+    }
+    smAttrs['specific-use'] = 'notebook';
+    state.openNode('supplementary-material', smAttrs);
+    renderLabel(node, state, (s: string) => `Figure ${s} - Notebook.`);
+    state.openNode('caption');
+    state.openNode('title');
+    state.text('Analysis for ');
+    if (smNode.figIdentifier) {
+      state.openNode('xref', { 'ref-type': 'fig', rid: smNode.figIdentifier });
+    }
+    state.text('Figure' + (smNode.enumerator ? ` ${smNode.enumerator}` : ''));
+    if (smNode.figIdentifier) {
+      state.closeNode();
+    }
+    state.text('.');
+    state.closeNode();
+    state.text('See methods');
+    if (smNode.sourceUrl) {
+      const sourceIdentifier = smNode.sourceUrl.split('/')[smNode.sourceUrl.split('/').length - 1];
+      state.text(' in ');
+      state.openNode('xref', {
+        'ref-type': 'custom',
+        'custom-type': 'notebook',
+        rid: sourceIdentifier,
+      });
+      state.text('notebook');
+      state.closeNode();
+    }
+    if (smNode.embedIdentifier) {
+      state.text(' from ');
+      state.openNode('xref', {
+        'ref-type': 'custom',
+        'custom-type': 'notebook-code',
+        rid: smNode.embedIdentifier,
+      });
+      state.text('cell');
+      state.closeNode();
+    }
+    if (smNode.outputIdentifier) {
+      state.addLeaf('xref', {
+        'ref-type': 'custom',
+        'custom-type': 'notebook-output',
+        rid: smNode.outputIdentifier,
+      });
+    }
+    state.text('.');
+    state.closeNode();
+    state.closeNode();
+    state.closeNode();
   },
 };
 
