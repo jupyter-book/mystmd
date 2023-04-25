@@ -671,6 +671,23 @@ cases:
                           text: abc\n...
                           hash: a
                           path: files/a.txt
+                    - type: output
+                      id: uE4mPgSow0oyo0dvEH9Lc
+                      identifier: nb-cell-1-output
+                      html_id: nb-cell-1-output
+                      data:
+                        - output_type: execute_result
+                          execution_count: 3
+                          metadata: {}
+                          data:
+                            text/plain:
+                              content_type: text/plain
+                              hash: b
+                              path: files/b.txt
+                            text/html:
+                              content_type: text/html
+                              hash: b
+                              path: files/b.html
             - type: caption
               children:
                 - type: paragraph
@@ -683,4 +700,4 @@ cases:
                   children:
                     - type: text
                       value: My Legend
-    jats: <fig id="myfigure"><caption><p>My Caption</p><p>My Legend</p><p><supplementary-material id="myfigure-source" specific-use="notebook"><label>Figure 1 - Notebook.</label><caption><title>Analysis for <xref ref-type="fig" rid="myfigure">Figure 1</xref>.</title>See methods in <xref ref-type="custom" custom-type="notebook" rid="nb-0">notebook</xref> from <xref ref-type="custom" custom-type="notebook-code" rid="nb-cell-0">cell</xref><xref ref-type="custom" custom-type="notebook-output" rid="nb-cell-0-output"/>.</caption></supplementary-material></p></caption><alternatives><media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/></alternatives></fig>
+    jats: <fig id="myfigure"><caption><p>My Caption</p><p>My Legend</p><p><supplementary-material id="myfigure-source" specific-use="notebook"><label>Figure 1 - Notebook.</label><caption><title>Analysis for <xref ref-type="fig" rid="myfigure">Figure 1</xref>.</title>See methods in <xref ref-type="custom" custom-type="notebook" rid="nb-0">notebook</xref> from <xref ref-type="custom" custom-type="notebook-code" rid="nb-cell-0">cell</xref>.</caption></supplementary-material></p></caption><alternatives><media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/></alternatives><alternatives><media specific-use="text" mimetype="text" mime-subtype="plain" xlink:href="files/b.txt"/><media specific-use="web" mimetype="text" mime-subtype="html" xlink:href="files/b.html"/></alternatives></fig>

@@ -436,13 +436,6 @@ const handlers: Record<string, Handler> = {
       state.text('cell');
       state.closeNode();
     }
-    if (smNode.outputIdentifier) {
-      state.addLeaf('xref', {
-        'ref-type': 'custom',
-        'custom-type': 'notebook-output',
-        rid: smNode.outputIdentifier,
-      });
-    }
     state.text('.');
     state.closeNode();
     state.closeNode();

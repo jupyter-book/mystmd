@@ -10,7 +10,6 @@ export type SupplementaryMaterial = {
   figIdentifier?: string;
   sourceUrl?: string;
   embedIdentifier?: string;
-  outputIdentifier?: string;
 };
 
 function liftCaptionNumber(container: Container) {
@@ -46,16 +45,15 @@ export function containerTransform(mdast: Root) {
     const embed = select('embed', container);
     if (embed) {
       const embedBlock = select('block', embed);
-      const embedOutput = select('output', embedBlock);
+      const embedOutputs = selectAll('output', embedBlock);
       caption.children.push({
         type: 'supplementaryMaterial',
         enumerator: container.enumerator,
         figIdentifier: container.identifier,
         sourceUrl: (embed as any).source?.url,
         embedIdentifier: (embedBlock as any)?.identifier,
-        outputIdentifier: (embedOutput as any)?.identifier,
       } as SupplementaryMaterial);
-      if (embedOutput) container.children.push(embedOutput as any);
+      if (embedOutputs) container.children.push(...(embedOutputs as any[]));
     }
   });
 }
