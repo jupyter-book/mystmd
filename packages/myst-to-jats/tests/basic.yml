@@ -576,15 +576,15 @@ cases:
                 - type: text
                   value: a section
         - type: block
-          identifier: a
+          identifier: b
           data:
             type: notebook-content
           children:
             - type: paragraph
               children:
                 - type: text
-                  value: text
-    jats: <sec><title>a section</title><p>text</p></sec>
+                  value: paragraph in section
+    jats: <milestone-start rationale="Markdown cell boundary" specific-use="notebook-content" id="a"/><sec><title>a section</title><milestone-end rid="a"/><milestone-start rationale="Markdown cell boundary" specific-use="notebook-content" id="b"/><p>paragraph in section</p><milestone-end rid="b"/></sec>
   - title: Notebook block with code to section
     tree:
       type: root
