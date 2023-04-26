@@ -101,3 +101,11 @@ export type SiUnit = {
   alt?: string;
   value: string;
 };
+
+export type InlineExpression = {
+  type: 'inlineExpression';
+  value: string;
+  identifier?: string;
+  result?: Record<string, any>;
+  children?: StaticPhrasingContent[];
+};

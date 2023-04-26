@@ -26,6 +26,7 @@ import { basicTransformations } from './transforms';
 import type { SupplementaryMaterial } from './transforms/containers';
 import type { Section } from './transforms/sections';
 import { sectionAttrsFromBlock } from './transforms/sections';
+import { inlineExpression } from './inlineExpression';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
@@ -441,6 +442,7 @@ const handlers: Record<string, Handler> = {
     state.closeNode();
     state.closeNode();
   },
+  inlineExpression,
 };
 
 function createText(text: string): Element {
@@ -453,12 +455,14 @@ class JatsSerializer implements IJatsSerializer {
   handlers: Record<string, Handler>;
   stack: Element[];
   footnotes: Element[];
+  expressions: Element[];
 
   constructor(file: VFile, mdast: Root, opts?: Options) {
     this.file = file;
     this.data = {};
     this.stack = [{ type: 'element', elements: [] }];
     this.footnotes = [];
+    this.expressions = [];
     this.handlers = opts?.handlers ?? handlers;
     const mdastCopy = copyNode(mdast) as any;
     basicTransformations(mdastCopy);
@@ -585,7 +589,11 @@ export class JatsDocument {
     const elements: Element[] = [
       ...getFront(this.content.frontmatter),
       this.body(state),
-      ...getBack(this.content.citations, state.footnotes),
+      ...getBack({
+        citations: this.content.citations,
+        footnotes: state.footnotes,
+        expressions: state.expressions,
+      }),
       ...(this.options.subArticles ?? []).map((article) => this.subArticle(article)),
     ];
     const article: Element = {
@@ -617,7 +625,11 @@ export class JatsDocument {
     const elements: Element[] = [
       ...this.frontStub(content.frontmatter),
       { type: 'element', name: 'body', elements: state.elements() },
-      ...getBack(content.citations, state.footnotes),
+      ...getBack({
+        citations: content.citations,
+        footnotes: state.footnotes,
+        expressions: state.expressions,
+      }),
     ];
     const attributes: Record<string, any> = {};
     if (content.slug) attributes.id = content.slug;

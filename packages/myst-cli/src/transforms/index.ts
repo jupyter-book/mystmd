@@ -7,4 +7,5 @@ export * from './include';
 export * from './links';
 export * from './mdast';
 export * from './outputs';
+export * from './inlineExpressions';
 export * from './types';
