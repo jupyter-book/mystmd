@@ -25,41 +25,38 @@ export type Biblio = {
 };
 
 export type Thebe = {
-  useBinder?: boolean;
-  useJupyterLite?: boolean;
-  requestKernel?: boolean;
-  binderOptions?: ThebeBinderOptions;
-  serverSettings?: ThebeServerSettings;
-  kernelOptions?: ThebeKernelOptions;
-  savedSessionOptions?: ThebeSavedSessionOptions;
-  mathjaxConfig?: string;
+  lite?: boolean;
+  binder?: boolean | ThebeBinderOptions;
+  server?: boolean | ThebeServerOptions;
+  kernelName?: string;
+  sessionName?: string;
+  disableSessionSaving?: boolean;
   mathjaxUrl?: string;
+  mathjaxConfig?: string;
+  local?: boolean | ThebeLocalOptions;
 };
+
+export enum BinderProviders {
+  git = 'git',
+  github = 'github',
+  gitlab = 'gitlab',
+}
 
 export type ThebeBinderOptions = {
-  binderUrl?: string;
-  ref?: string;
-  repo?: string;
-  repoProvider?: string;
+  url?: string;
+  ref?: string; // org-name/repo-name
+  repo?: string; // valid git refs only?
+  provider?: BinderProviders;
 };
 
-export type ThebeServerSettings = {
-  baseUrl?: string;
+export type ThebeServerOptions = {
+  url?: string;
   token?: string;
-  wsUrl?: string;
-  appendToken?: boolean;
 };
 
-export type ThebeKernelOptions = {
+export type ThebeLocalOptions = ThebeServerOptions & {
   kernelName?: string;
-  name?: string;
-  path?: string;
-};
-
-export type ThebeSavedSessionOptions = {
-  enabled?: boolean;
-  maxAge?: string | number;
-  storagePrefix?: string;
+  sessionName?: string;
 };
 
 export type Numbering = {
@@ -149,7 +146,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, string>;
   exports?: Export[];
-  thebe?: Thebe;
+  thebe?: boolean | Thebe;
 };
 
 export type PageFrontmatter = Omit<ProjectFrontmatter, 'references'> & {
