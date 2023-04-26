@@ -44,6 +44,7 @@ import {
   transformImageFormats,
   transformThumbnail,
   StaticFileTransformer,
+  inlineExpressionsPlugin,
 } from '../transforms';
 import type { ImageExtensions } from '../utils';
 import { logMessagesFromVFile } from '../utils';
@@ -128,6 +129,7 @@ export async function transformMdast(
 
   await unified()
     .use(basicTransformationsPlugin)
+    .use(inlineExpressionsPlugin) // Happens before math and images!
     .use(htmlPlugin, { htmlHandlers })
     .use(mathPlugin, { macros: frontmatter.math })
     .use(enumerateTargetsPlugin, { state }) // This should be after math

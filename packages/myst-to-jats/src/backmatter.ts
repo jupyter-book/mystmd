@@ -139,10 +139,31 @@ export function getFootnotes(footnotes?: Element[]): Element[] {
   return [{ type: 'element', name: 'fn-group', elements: footnotes }];
 }
 
-export function getBack(citations?: CitationRenderer, footnotes?: Element[]): Element[] {
+export function getExpressions(expressions?: Element[]): Element[] {
+  if (!expressions?.length) return [];
+  return [
+    {
+      type: 'element',
+      name: 'notes',
+      attributes: { 'notes-type': 'expressions' },
+      elements: expressions,
+    },
+  ];
+}
+
+export function getBack({
+  citations,
+  footnotes,
+  expressions,
+}: {
+  citations?: CitationRenderer;
+  footnotes?: Element[];
+  expressions?: Element[];
+}): Element[] {
   const elements = [
     ...getRefList(citations),
     ...getFootnotes(footnotes),
+    ...getExpressions(expressions),
     // ack
     // app-group
     // bio
