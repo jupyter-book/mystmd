@@ -1,5 +1,12 @@
 # myst-to-md
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [8b1f65d9]
+  - myst-frontmatter@0.0.13
+
 ## 0.0.5
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # myst-parser
 
+## 0.0.27
+
+### Patch Changes
+
+- 685bbe58: Add SI Units (see https://texdoc.org/serve/siunitx/0)
+- ff43d9c9: Remove identifier from embed node
+- Updated dependencies [79743342]
+- Updated dependencies [685bbe58]
+- Updated dependencies [ff43d9c9]
+  - myst-roles@0.0.27
+  - myst-directives@0.0.27
+
 ## 0.0.26
 
 ### Patch Changes

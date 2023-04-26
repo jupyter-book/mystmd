@@ -1,5 +1,40 @@
 # myst-cli
 
+## 0.1.25
+
+### Patch Changes
+
+- 01cdd78e: Allow output to be specified from the command line
+- ff43d9c9: Fix crosslinked content for single file exports
+- 79743342: Add inline evaluation role that pulls from user_expressions
+- 84efceb6: Bug where we were not waiting for webp to be built, meaning large images!
+- 01cdd78e: Have command line print jats rather than xml
+- Updated dependencies [0c044516]
+- Updated dependencies [8b1f65d9]
+- Updated dependencies [79743342]
+- Updated dependencies [fb0e9d7e]
+- Updated dependencies [685bbe58]
+- Updated dependencies [cb9c1f6a]
+- Updated dependencies [da8abded]
+- Updated dependencies [d3c120ee]
+- Updated dependencies [ff43d9c9]
+- Updated dependencies [09a34b20]
+- Updated dependencies [3da85094]
+- Updated dependencies [ff43d9c9]
+- Updated dependencies [9a226245]
+- Updated dependencies [da8abded]
+  - myst-to-jats@0.0.25
+  - myst-frontmatter@0.0.13
+  - myst-spec-ext@0.0.11
+  - myst-parser@0.0.27
+  - myst-to-tex@0.0.25
+  - tex-to-myst@0.0.25
+  - myst-transforms@0.0.27
+  - jtex@0.1.13
+  - myst-config@0.0.14
+  - myst-templates@0.1.15
+  - myst-to-docx@0.0.22
+
 ## 0.1.24
 
 ### Patch Changes

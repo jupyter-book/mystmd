@@ -1,5 +1,19 @@
 # tex-to-myst
 
+## 0.0.25
+
+### Patch Changes
+
+- 685bbe58: Add SI Units (see https://texdoc.org/serve/siunitx/0)
+- da8abded: Groups of accented characters are picked up correctly
+- da8abded: Allow characters in groups {\c S} --> Ş
+- Updated dependencies [8b1f65d9]
+- Updated dependencies [79743342]
+- Updated dependencies [685bbe58]
+- Updated dependencies [3da85094]
+  - myst-frontmatter@0.0.13
+  - myst-spec-ext@0.0.11
+
 ## 0.0.24
 
 ### Patch Changes

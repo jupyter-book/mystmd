@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 0.0.13
+
+### Patch Changes
+
+- 8b1f65d9: Update thebe frontmatter options
+
 ## 0.0.12
 
 ### Patch Changes

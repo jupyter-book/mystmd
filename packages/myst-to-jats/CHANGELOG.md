@@ -1,5 +1,23 @@
 # myst-to-jats
 
+## 0.0.25
+
+### Patch Changes
+
+- 0c044516: Improvements for valid JATS
+- 79743342: Add inline evaluation role that pulls from user_expressions
+- fb0e9d7e: Add doctype header to myst-to-jats output
+- 685bbe58: Add SI Units (see https://texdoc.org/serve/siunitx/0)
+- cb9c1f6a: Add declaration to fullArticle JATS export
+- d3c120ee: Update myst-to-jats conversion for DTD compliance
+- 9a226245: Add DTD validation to myst-to-jats tests
+- Updated dependencies [8b1f65d9]
+- Updated dependencies [79743342]
+- Updated dependencies [685bbe58]
+- Updated dependencies [3da85094]
+  - myst-frontmatter@0.0.13
+  - myst-spec-ext@0.0.11
+
 ## 0.0.24
 
 ### Patch Changes

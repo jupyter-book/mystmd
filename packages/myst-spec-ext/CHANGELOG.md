@@ -1,5 +1,13 @@
 # myst-spec-ext
 
+## 0.0.11
+
+### Patch Changes
+
+- 79743342: Add inline evaluation role that pulls from user_expressions
+- 685bbe58: Add SI Units (see https://texdoc.org/serve/siunitx/0)
+- 3da85094: Add `enumerator` to footnote spec and transform (same as deprecated `number`)
+
 ## 0.0.10
 
 ### Patch Changes

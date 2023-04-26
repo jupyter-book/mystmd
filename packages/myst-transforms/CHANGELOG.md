@@ -1,5 +1,16 @@
 # myst-transforms
 
+## 0.0.27
+
+### Patch Changes
+
+- 09a34b20: Ensure that Figure cross-references have no-break-spaces
+- 3da85094: Add `enumerator` to footnote spec and transform (same as deprecated `number`)
+- Updated dependencies [79743342]
+- Updated dependencies [685bbe58]
+- Updated dependencies [3da85094]
+  - myst-spec-ext@0.0.11
+
 ## 0.0.26
 
 ### Patch Changes

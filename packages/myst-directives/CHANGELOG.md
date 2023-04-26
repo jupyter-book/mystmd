@@ -1,5 +1,15 @@
 # myst-directives
 
+## 0.0.27
+
+### Patch Changes
+
+- ff43d9c9: Remove identifier from embed node
+- Updated dependencies [79743342]
+- Updated dependencies [685bbe58]
+- Updated dependencies [3da85094]
+  - myst-spec-ext@0.0.11
+
 ## 0.0.26
 
 ## 0.0.25

@@ -1,5 +1,16 @@
 # myst-roles
 
+## 0.0.27
+
+### Patch Changes
+
+- 79743342: Add inline evaluation role that pulls from user_expressions
+- 685bbe58: Add SI Units (see https://texdoc.org/serve/siunitx/0)
+- Updated dependencies [79743342]
+- Updated dependencies [685bbe58]
+- Updated dependencies [3da85094]
+  - myst-spec-ext@0.0.11
+
 ## 0.0.26
 
 ## 0.0.25
