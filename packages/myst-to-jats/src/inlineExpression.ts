@@ -1,22 +1,21 @@
 import type { InlineExpression } from 'myst-spec-ext';
-import type { Element, Handler, IJatsSerializer } from './types';
-import type { GenericNode } from 'myst-common';
+import type { Element, Handler } from './types';
 
-function renderMimeToJats(state: IJatsSerializer, node: GenericNode): Element[] {
-  const { result } = node as InlineExpression;
-  return Object.entries(result?.data ?? {}).map(([key, value]): Element => {
-    switch (key) {
-      case 'text/plain':
-        return { type: 'text', text: value as string };
-      default:
-        state.error(`Unknown inline render target of type ${key}`, node);
-        return { type: 'text', text: 'Unknown Inline Expression' };
-    }
-  });
-}
+// function renderMimeToJats(state: IJatsSerializer, node: GenericNode): Element[] {
+//   const { result } = node as InlineExpression;
+//   return Object.entries(result?.data ?? {}).map(([key, value]): Element => {
+//     switch (key) {
+//       case 'text/plain':
+//         return { type: 'text', text: value as string };
+//       default:
+//         state.error(`Unknown inline render target of type ${key}`, node);
+//         return { type: 'text', text: 'Unknown Inline Expression' };
+//     }
+//   });
+// }
 
 export const inlineExpression: Handler = (node, state) => {
-  const { identifier, value, result } = node as InlineExpression;
+  const { identifier, value } = node as InlineExpression;
   state.renderInline(node, 'xref', {
     'ref-type': 'custom',
     'custom-type': 'expression',
