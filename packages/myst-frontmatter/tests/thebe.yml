@@ -7,7 +7,7 @@ cases:
         binder:
           url: 'https://my.binder.org/blah'
           ref: 'HEAD'
-          repo: 'my-repo'
+          repo: 'my-org/my-repo'
           provider: 'github'
         server:
           baseUrl: https://my.server.com
@@ -28,7 +28,7 @@ cases:
         binder:
           url: 'https://my.binder.org/blah'
           ref: 'HEAD'
-          repo: 'my-repo'
+          repo: 'my-org/my-repo'
           provider: 'github'
         server:
           baseUrl: https://my.server.com

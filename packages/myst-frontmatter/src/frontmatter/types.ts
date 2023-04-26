@@ -36,15 +36,21 @@ export type Thebe = {
   local?: boolean | ThebeLocalOptions;
 };
 
+export enum BinderProviders {
+  git = 'git',
+  github = 'github',
+  gitlab = 'gitlab',
+}
+
 export type ThebeBinderOptions = {
-  url?: string; // url
+  url?: string;
   ref?: string; // org-name/repo-name
   repo?: string; // valid git refs only?
-  provider?: string; // git, gitlab, github
+  provider?: BinderProviders;
 };
 
 export type ThebeServerOptions = {
-  baseUrl?: string; // url
+  baseUrl?: string;
   token?: string;
 };
 

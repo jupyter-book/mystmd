@@ -21,7 +21,7 @@ import {
   validationWarning,
 } from 'simple-validators';
 import { validateLicenses } from '../licenses/validators';
-import { ExportFormats } from './types';
+import { BinderProviders, ExportFormats } from './types';
 import type {
   Author,
   Biblio,
@@ -404,10 +404,16 @@ export function validateThebeBinderOptions(input: any, opts: ValidationOptions) 
     output.ref = validateString(value.ref, incrementOptions('ref', opts));
   }
   if (defined(value.repo)) {
-    output.repo = validateString(value.repo, incrementOptions('repo', opts));
+    output.repo = validateString(value.repo, {
+      ...incrementOptions('repo', opts),
+      regex: GITHUB_USERNAME_REPO_REGEX,
+    });
   }
   if (defined(value.provider)) {
-    output.provider = validateString(value.provider, incrementOptions('provider', opts));
+    output.provider = validateEnum<BinderProviders>(value.provider, {
+      ...incrementOptions('provider', opts),
+      enum: BinderProviders,
+    });
   }
   return output;
 }

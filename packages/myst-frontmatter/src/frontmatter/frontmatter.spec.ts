@@ -51,8 +51,8 @@ const TEST_THEBE: Thebe = {
   binder: {
     url: 'https://my.binder.org/blah',
     ref: 'HEAD',
-    repo: 'my-repo',
-    provider: 'github',
+    repo: 'my-org/my-repo',
+    provider: 'github' as any,
   },
   server: {
     baseUrl: 'https://my.server.org',
