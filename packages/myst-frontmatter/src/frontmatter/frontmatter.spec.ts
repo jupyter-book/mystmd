@@ -55,7 +55,7 @@ const TEST_THEBE: Thebe = {
     provider: 'github' as any,
   },
   server: {
-    baseUrl: 'https://my.server.org',
+    url: 'https://my.server.org',
     token: 'legit-secret',
   },
   kernelName: 'python3',
@@ -64,7 +64,7 @@ const TEST_THEBE: Thebe = {
   mathjaxConfig: 'TeX-AMS_CHTML-full,Safe',
   mathjaxUrl: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js',
   local: {
-    baseUrl: 'http://localhost:8888',
+    url: 'http://localhost:8888',
     token: 'test-secret',
     kernelName: 'python27',
     sessionName: 'another-path',

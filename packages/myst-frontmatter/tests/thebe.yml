@@ -10,7 +10,7 @@ cases:
           repo: 'my-org/my-repo'
           provider: 'github'
         server:
-          baseUrl: https://my.server.com
+          url: https://my.server.com
           token: test-secret
         kernelName: python3
         sessionName: some-path
@@ -18,7 +18,7 @@ cases:
         mathjaxConfig: TeX-AMS_CHTML-full,Safe
         mathjaxUrl: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js
         local:
-          baseUrl: http://localhost:8888
+          url: http://localhost:8888
           token: local-secret
           kernelName: local-kernel
           sessionName: local-session
@@ -31,7 +31,7 @@ cases:
           repo: 'my-org/my-repo'
           provider: 'github'
         server:
-          baseUrl: https://my.server.com
+          url: https://my.server.com
           token: test-secret
         kernelName: python3
         sessionName: some-path
@@ -39,7 +39,7 @@ cases:
         mathjaxConfig: TeX-AMS_CHTML-full,Safe
         mathjaxUrl: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js
         local:
-          baseUrl: http://localhost:8888
+          url: http://localhost:8888
           token: local-secret
           kernelName: local-kernel
           sessionName: local-session

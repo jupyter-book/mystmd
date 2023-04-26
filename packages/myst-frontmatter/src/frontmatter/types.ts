@@ -50,7 +50,7 @@ export type ThebeBinderOptions = {
 };
 
 export type ThebeServerOptions = {
-  baseUrl?: string;
+  url?: string;
   token?: string;
 };
 

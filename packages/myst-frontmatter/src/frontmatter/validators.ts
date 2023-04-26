@@ -125,8 +125,8 @@ const THEBE_KEYS = [
   'local',
 ];
 const THEBE_BINDER_OPTIONS_KEYS = ['url', 'ref', 'repo', 'provider'];
-const THEBE_SERVER_OPTIONS_KEYS = ['baseUrl', 'token'];
-const THEBE_LOCAL_OPTIONS_KEYS = ['baseUrl', 'token', 'kernelName', 'sessionName'];
+const THEBE_SERVER_OPTIONS_KEYS = ['url', 'token'];
+const THEBE_LOCAL_OPTIONS_KEYS = ['url', 'token', 'kernelName', 'sessionName'];
 const NUMBERING_KEYS = [
   'enumerator',
   'figure',
@@ -422,8 +422,8 @@ export function validateThebeServerOptions(input: any, opts: ValidationOptions) 
   const value = validateObjectKeys(input, { optional: THEBE_SERVER_OPTIONS_KEYS }, opts);
   if (value === undefined) return undefined;
   const output: ThebeServerOptions = {};
-  if (defined(value.baseUrl)) {
-    output.baseUrl = validateUrl(value.baseUrl, incrementOptions('baseUrl', opts));
+  if (defined(value.url)) {
+    output.url = validateUrl(value.url, incrementOptions('url', opts));
   }
   if (defined(value.token)) {
     output.token = validateString(value.token, incrementOptions('token', opts));
@@ -435,8 +435,8 @@ export function validateThebeLocalOptions(input: any, opts: ValidationOptions) {
   const value = validateObjectKeys(input, { optional: THEBE_LOCAL_OPTIONS_KEYS }, opts);
   if (value === undefined) return undefined;
   const output: ThebeLocalOptions = {};
-  if (defined(value.baseUrl)) {
-    output.baseUrl = validateUrl(value.baseUrl, incrementOptions('baseUrl', opts));
+  if (defined(value.url)) {
+    output.url = validateUrl(value.url, incrementOptions('url', opts));
   }
   if (defined(value.token)) {
     output.token = validateString(value.token, incrementOptions('token', opts));
