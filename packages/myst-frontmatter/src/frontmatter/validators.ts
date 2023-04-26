@@ -36,9 +36,8 @@ import type {
   Venue,
   Thebe,
   ThebeBinderOptions,
-  ThebeKernelOptions,
-  ThebeSavedSessionOptions,
-  ThebeServerSettings,
+  ThebeServerOptions,
+  ThebeLocalOptions,
 } from './types';
 
 export const SITE_FRONTMATTER_KEYS = [
@@ -115,20 +114,19 @@ const AUTHOR_ALIASES = {
 };
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
 const THEBE_KEYS = [
-  'useBinder',
-  'useJupyterLite',
-  'requestKernel',
-  'binderOptions',
-  'serverSettings',
-  'kernelOptions',
-  'savedSessionOptions',
-  'mathjaxConfig',
+  'lite',
+  'binder',
+  'server',
+  'kernelName',
+  'sessionName',
+  'disableSessionSaving',
   'mathjaxUrl',
+  'mathjaxConfig',
+  'local',
 ];
-const THEBE_BINDER_OPTIONS_KEYS = ['binderUrl', 'ref', 'repo', 'repoProvider'];
-const THEBE_SERVER_SETTINGS_KEYS = ['baseUrl', 'token', 'wsUrl', 'appendToken'];
-const THEBE_KERNEL_OPTIONS_KEYS = ['kernelName', 'name', 'path'];
-const THEBE_SAVED_SESSION_OPTIONS_KEYS = ['enabled', 'maxAge', 'storagePrefix'];
+const THEBE_BINDER_OPTIONS_KEYS = ['url', 'ref', 'repo', 'provider'];
+const THEBE_SERVER_OPTIONS_KEYS = ['baseUrl', 'token'];
+const THEBE_LOCAL_OPTIONS_KEYS = ['baseUrl', 'token', 'kernelName', 'sessionName'];
 const NUMBERING_KEYS = [
   'enumerator',
   'figure',
@@ -163,6 +161,23 @@ const KNOWN_ALIASES = {
 };
 
 const GITHUB_USERNAME_REPO_REGEX = '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$';
+
+function validateBooleanOrObject<T extends Record<string, any>>(
+  input: any,
+  opts: ValidationOptions,
+  objectValidator: (input: any, opts: ValidationOptions) => T | undefined,
+): boolean | T | undefined {
+  let output: boolean | T | undefined = validateBoolean(input, {
+    ...opts,
+    suppressWarnings: true,
+    suppressErrors: true,
+  });
+  // TODO: could add an error here for validation of a non-bool non-object
+  if (output === undefined) {
+    output = objectValidator(input, opts);
+  }
+  return output;
+}
 
 /**
  * Validate Venue object against the schema
@@ -330,43 +345,33 @@ export function validateThebe(input: any, opts: ValidationOptions) {
   const value: Thebe | undefined = validateObjectKeys(input, { optional: THEBE_KEYS }, opts);
   if (value === undefined) return undefined;
   const output: Thebe = {};
-  if (defined(value.useBinder)) {
-    output.useBinder = validateBoolean(value.useBinder, incrementOptions('useBinder', opts));
+  if (defined(value.lite)) {
+    output.lite = validateBoolean(value.lite, incrementOptions('lite', opts));
   }
-  if (defined(value.useJupyterLite)) {
-    output.useJupyterLite = validateBoolean(
-      value.useJupyterLite,
-      incrementOptions('useJupyterLite', opts),
+  if (defined(value.binder)) {
+    output.binder = validateBooleanOrObject(
+      value.binder,
+      incrementOptions('binder', opts),
+      validateThebeBinderOptions,
     );
   }
-  if (defined(value.requestKernel)) {
-    output.requestKernel = validateBoolean(
-      value.requestKernel,
-      incrementOptions('requestKernel', opts),
+  if (defined(value.server)) {
+    output.server = validateBooleanOrObject(
+      value.server,
+      incrementOptions('server', opts),
+      validateThebeServerOptions,
     );
   }
-  if (defined(value.binderOptions)) {
-    output.binderOptions = validateThebeBinderOptions(
-      value.binderOptions,
-      incrementOptions('binderOptions', opts),
-    );
+  if (defined(value.kernelName)) {
+    output.kernelName = validateString(value.kernelName, incrementOptions('kernelName', opts));
   }
-  if (defined(value.serverSettings)) {
-    output.serverSettings = validateThebeServerSettings(
-      value.serverSettings,
-      incrementOptions('serverSettings', opts),
-    );
+  if (defined(value.sessionName)) {
+    output.sessionName = validateString(value.sessionName, incrementOptions('sessionName', opts));
   }
-  if (defined(value.kernelOptions)) {
-    output.kernelOptions = validateThebeKernelOptions(
-      value.kernelOptions,
-      incrementOptions('kernelOptions', opts),
-    );
-  }
-  if (defined(value.savedSessionOptions)) {
-    output.savedSessionOptions = validateThebeSavedSessionOptions(
-      value.savedSessionOptions,
-      incrementOptions('savedSessionOptions', opts),
+  if (defined(value.disableSessionSaving)) {
+    output.disableSessionSaving = validateBoolean(
+      value.disableSessionSaving,
+      incrementOptions('disableSessionSaving', opts),
     );
   }
   if (defined(value.mathjaxUrl)) {
@@ -378,56 +383,12 @@ export function validateThebe(input: any, opts: ValidationOptions) {
       incrementOptions('mathjaxConfig', opts),
     );
   }
-  return output;
-}
-
-export function validateThebeServerSettings(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: THEBE_SERVER_SETTINGS_KEYS }, opts);
-  if (value === undefined) return undefined;
-  const output: ThebeServerSettings = {};
-  if (defined(value.baseUrl)) {
-    output.baseUrl = validateUrl(value.baseUrl, opts);
-  }
-  if (defined(value.token)) {
-    output.token = validateString(value.token, opts);
-  }
-  if (defined(value.wsUrl)) {
-    output.wsUrl = validateUrl(value.wsUrl, opts);
-  }
-  if (defined(value.appendToken)) {
-    output.appendToken = validateBoolean(value.appendToken, opts);
-  }
-  return output;
-}
-
-export function validateThebeKernelOptions(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: THEBE_KERNEL_OPTIONS_KEYS }, opts);
-  if (value === undefined) return undefined;
-  const output: ThebeKernelOptions = {};
-  if (defined(value.kernelName)) {
-    output.kernelName = validateString(value.kernelName, opts);
-  }
-  if (defined(value.name)) {
-    output.name = validateString(value.name, opts);
-  }
-  if (defined(value.path)) {
-    output.path = validateString(value.path, opts);
-  }
-  return output;
-}
-
-export function validateThebeSavedSessionOptions(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: THEBE_SAVED_SESSION_OPTIONS_KEYS }, opts);
-  if (value === undefined) return undefined;
-  const output: ThebeSavedSessionOptions = {};
-  if (defined(value.enabled)) {
-    output.enabled = validateBoolean(value.enabled, opts);
-  }
-  if (defined(value.maxAge)) {
-    output.maxAge = validateStringOrNumber(value.maxAge, opts);
-  }
-  if (defined(value.storagePrefix)) {
-    output.storagePrefix = validateString(value.storagePrefix, opts);
+  if (defined(value.local)) {
+    output.local = validateBooleanOrObject(
+      value.local,
+      incrementOptions('local', opts),
+      validateThebeLocalOptions,
+    );
   }
   return output;
 }
@@ -436,17 +397,49 @@ export function validateThebeBinderOptions(input: any, opts: ValidationOptions) 
   const value = validateObjectKeys(input, { optional: THEBE_BINDER_OPTIONS_KEYS }, opts);
   if (value === undefined) return undefined;
   const output: ThebeBinderOptions = {};
-  if (defined(value.binderUrl)) {
-    output.binderUrl = validateUrl(value.binderUrl, opts);
+  if (defined(value.url)) {
+    output.url = validateUrl(value.url, incrementOptions('url', opts));
   }
   if (defined(value.ref)) {
-    output.ref = validateString(value.ref, opts);
+    output.ref = validateString(value.ref, incrementOptions('ref', opts));
   }
   if (defined(value.repo)) {
-    output.repo = validateString(value.repo, opts);
+    output.repo = validateString(value.repo, incrementOptions('repo', opts));
   }
-  if (defined(value.repoProvider)) {
-    output.repoProvider = validateString(value.repoProvider, opts);
+  if (defined(value.provider)) {
+    output.provider = validateString(value.provider, incrementOptions('provider', opts));
+  }
+  return output;
+}
+
+export function validateThebeServerOptions(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, { optional: THEBE_SERVER_OPTIONS_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const output: ThebeServerOptions = {};
+  if (defined(value.baseUrl)) {
+    output.baseUrl = validateUrl(value.baseUrl, incrementOptions('baseUrl', opts));
+  }
+  if (defined(value.token)) {
+    output.token = validateString(value.token, incrementOptions('token', opts));
+  }
+  return output;
+}
+
+export function validateThebeLocalOptions(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, { optional: THEBE_LOCAL_OPTIONS_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const output: ThebeLocalOptions = {};
+  if (defined(value.baseUrl)) {
+    output.baseUrl = validateUrl(value.baseUrl, incrementOptions('baseUrl', opts));
+  }
+  if (defined(value.token)) {
+    output.token = validateString(value.token, incrementOptions('token', opts));
+  }
+  if (defined(value.kernelName)) {
+    output.kernelName = validateString(value.kernelName, incrementOptions('kernelName', opts));
+  }
+  if (defined(value.sessionName)) {
+    output.sessionName = validateString(value.sessionName, incrementOptions('sessionName', opts));
   }
   return output;
 }
@@ -746,19 +739,11 @@ export function validateProjectFrontmatterKeys(
     output.oxa = validateString(value.oxa, incrementOptions('oxa', opts));
   }
   if (defined(value.numbering)) {
-    const numberingOpts = incrementOptions('numbering', opts);
-    let numbering: boolean | Numbering | undefined = validateBoolean(value.numbering, {
-      ...numberingOpts,
-      suppressWarnings: true,
-      suppressErrors: true,
-    });
-    // TODO: could add an error here for validation of a non-bool non-object
-    if (numbering === undefined) {
-      numbering = validateNumbering(value.numbering, numberingOpts);
-    }
-    if (numbering !== undefined) {
-      output.numbering = numbering;
-    }
+    output.numbering = validateBooleanOrObject(
+      value.numbering,
+      incrementOptions('numbering', opts),
+      validateNumbering,
+    );
   }
   if (defined(value.math)) {
     const mathOpts = incrementOptions('math', opts);
@@ -793,7 +778,11 @@ export function validateProjectFrontmatterKeys(
   }
 
   if (defined(value.thebe)) {
-    output.thebe = validateThebe(value.thebe, incrementOptions('thebe', opts));
+    output.thebe = validateBooleanOrObject(
+      value.thebe,
+      incrementOptions('thebe', opts),
+      validateThebe,
+    );
   }
   return output;
 }

@@ -47,25 +47,28 @@ const TEST_BIBLIO: Biblio = {
 };
 
 const TEST_THEBE: Thebe = {
-  useBinder: false,
-  useJupyterLite: false,
-  requestKernel: true,
-  binderOptions: {
-    binderUrl: 'https://my.binder.org/blah',
+  lite: false,
+  binder: {
+    url: 'https://my.binder.org/blah',
     ref: 'HEAD',
     repo: 'my-repo',
-    repoProvider: 'github',
+    provider: 'github',
   },
-  serverSettings: {
-    baseUrl: 'http://localhost:8888',
-    token: 'test-secret',
-    wsUrl: 'ws://localhost:8888',
-    appendToken: true,
+  server: {
+    baseUrl: 'https://my.server.org',
+    token: 'legit-secret',
   },
-  kernelOptions: { kernelName: 'python 3', name: 'python3', path: 'some-path' },
-  savedSessionOptions: { enabled: true, maxAge: 383000, storagePrefix: 'thebe' },
+  kernelName: 'python3',
+  sessionName: 'some-path',
+  disableSessionSaving: true,
   mathjaxConfig: 'TeX-AMS_CHTML-full,Safe',
   mathjaxUrl: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js',
+  local: {
+    baseUrl: 'http://localhost:8888',
+    token: 'test-secret',
+    kernelName: 'python27',
+    sessionName: 'another-path',
+  },
 };
 
 const TEST_NUMBERING: Numbering = {
@@ -168,6 +171,7 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   jupytext: {},
   keywords: ['example', 'test'],
   exports: [{ format: 'pdf' as any, template: 'default', output: 'out.tex', a: 1 }],
+  thebe: false,
 };
 
 let opts: ValidationOptions;
