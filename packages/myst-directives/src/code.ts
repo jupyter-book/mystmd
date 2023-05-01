@@ -30,7 +30,7 @@ export const codeDirective: DirectiveSpec = {
   },
   run(data): GenericNode[] {
     const { label, identifier } = normalizeLabel(data.options?.name as string | undefined) || {};
-    const numberLines = data.options?.['number-lines'];
+    const numberLines = data.options?.['number-lines'] as number | undefined;
     const showLineNumbers = !!numberLines;
     const startingLineNumber = numberLines && numberLines > 1 ? numberLines : undefined;
     return [
