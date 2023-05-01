@@ -19,7 +19,6 @@ export type ISession = {
   sitePath(): string;
   contentPath(): string;
   publicPath(): string;
-  staticPath(): string;
 };
 
 export type ISessionWithCache = ISession & {

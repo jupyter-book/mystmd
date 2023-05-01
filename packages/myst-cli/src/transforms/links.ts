@@ -139,7 +139,7 @@ export class StaticFileTransformer implements LinkTransformer {
       link.internal = true;
     } else {
       // Copy relative file to static folder and replace with absolute link
-      const copiedFile = hashAndCopyStaticFile(this.session, linkFile, this.session.staticPath());
+      const copiedFile = hashAndCopyStaticFile(this.session, linkFile, this.session.publicPath());
       if (!copiedFile) {
         fileError(file, `Error copying file ${urlSource}`, {
           node: link,
@@ -147,7 +147,7 @@ export class StaticFileTransformer implements LinkTransformer {
         });
         return false;
       }
-      link.url = `/_static/${copiedFile}`;
+      link.url = `/${copiedFile}`;
       link.static = true;
     }
     updateLinkTextIfEmpty(link, title || path.basename(linkFile));
