@@ -1,5 +1,5 @@
 ---
-title: Dropdowns, Tabs & Cards
+title: Dropdowns, Grids, Tabs & Cards
 description: Add advanced user-interface elements to your MyST documents with grids, cards, tabs, and dropdowns.
 thumbnail: ./thumbnails/dropdowns-cards-and-tabs.png
 ---
@@ -89,10 +89,15 @@ Note that, card headers and footers are optional. If you don’t include ^^^ or 
 
 ### Grids
 
-Grids allow you to structure arbitrary chunks of content in a grid-like system. You can also control things like the width of columns, the “gutters” between columns, etc.
+Grids allow you to structure arbitrary chunks of content in a grid-like system.
 
-To generate a grid, use the ` ```{grid} ` wrapper directive along with ` ```{card} ` directives inside. For example:
+To generate a grid, use the ` ```{grid} ` wrapper directive along with ` ```{card} ` directives inside.
 
+The numbers supplied in the argument are column counts to be used on different screen sizes e.g. `1 1 2 3` corresponding to extra-small (<576px), small (768px), medium (992px) and large screens (>1200px).
+
+For example:
+
+```{myst}
 ::::{grid} 1 1 2 3
 
 :::{card}
@@ -110,6 +115,7 @@ Write MyST Markdown to create enriched documents with publication-quality featur
 Execute notebook cells, store results, and insert outputs across pages.
 :::
 ::::
+```
 
 ## Tabs
 
