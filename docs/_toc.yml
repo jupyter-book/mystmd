@@ -22,20 +22,21 @@ parts:
       - file: blocks
       - file: diagrams
       - file: dropdowns-cards-and-tabs
-      - file: tasks
+      # - file: tasks
   - caption: Executable Content
     chapters:
       - file: interactive-notebooks
+      - file: integrating-jupyter
   - caption: Websites
     chapters:
       - file: table-of-contents
-      - file: themes-and-extensions
+      # - file: themes-and-extensions
       - file: seo-and-social
       - file: accessibility-and-performance
-      - file: search
+      # - file: search
       - file: analytics
-      - file: deployment
-      - file: publishing
+      # - file: deployment
+      # - file: publishing
   - caption: Documents
     chapters:
       - file: creating-pdf-documents
