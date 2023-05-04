@@ -15,12 +15,16 @@ This allows you to do some amazing things with your MyST website like:
 - 🚧 Compute using the in-browser `pyodide` WASM kernel (backed by JupyterLite)
 
 ```{attention}
-Computation in the MyST website base theme is currently limited to pages that represent complete jupyter notebooks. while being able to connect a jupyter based figure or output in any website page to a kernel is still work in progress - but expected very soon. The remainder of the docs below are forward looking, watch for the 🚧 icons on headings what are still work in progress.
+Integrated Jupyter Computation is hot off the press and currently limited to pages that represent complete Jupyter notebooks.
+We are in active development and this feature should be considered `beta` - please help us out [report any issues that you find](https://github.com/executablebooks/mystjs/issues).
+
+While being able to connect a jupyter based figure or output in any website page to a kernel is still work in progress - but expected very soon. The remainder of the docs below are forward looking, watch for the 🚧 icons on headings what are still work in progress.
+
 ```
 
 ## Quick setup options
 
-MyST uses `thebe` for Jupyter connectivity which can be enabled using defualt settings by adding a single key to the project frontmatter in your `myst.yml` file.
+MyST uses `thebe` for Jupyter connectivity which can be enabled using defualt settings by adding a single key (`thebe:true`) to the project frontmatter in your `myst.yml` file.
 
 ```{code} yaml
 :caption: an example myst.yml file with thebe enabled
@@ -108,7 +112,9 @@ This will load the server using the default options, to learn more about how usi
 
 ### Disabling integrated compute
 
-Easily disable integrated compute on your project by either setting `thebe:false` or removing the key altogether. Disable integrated compute on a specific page in your website by adding `thebe:false` to the page frontmatter itself.
+Easily disable integrated compute on your project by either setting `thebe:false` or removing the key alltogether.
+
+Disable integrated compute on a specific page in your website by adding `thebe:false` to the page frontmatter section.
 
 ## Connecting to a Binder
 
@@ -148,7 +154,7 @@ project:
   - default
 * - `repo`
   - required
-  - The repository to use as a base image for your Jupyter server as a `user-or-org-name/reponame` string or a fully qualified url
+  - The repository to use as a base image for your Jupyter server as a `owner/reponame` string or a fully qualified url
   - `executablebooks/thebe-binder-base`
 * - `url`
   - optional
