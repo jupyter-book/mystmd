@@ -243,7 +243,7 @@ project:
 Add the specific list options for custom wheel paths, etc...
 ```
 
-## Local Development Mode
+## 🚧 Local Development Mode
 
 When working on a MyST site using the `myst-cli`, using a local Jupyter server connection makes a lot of sense and speeds up development. The `local` key allows you to enable and configure a local environment without having to change the other (remote) settings in your `myst.yml` file that will be used in your final deployment.
 
