@@ -61,8 +61,7 @@ project:
 ```yaml
 project:
   github: executablebooks/thebe-binder-base
-  thebe:
-    binder: true
+  thebe: true
 ```
 
 When `thebe: true` and the `github` key is present, MyST will attempt to connect to the public `mybinder.org` service using the repository information and a the default `ref: HEAD`. See [](#connecting-to-binder) to point to a different binder service or changing repository details.
@@ -308,7 +307,7 @@ project:
       url: string (url)
       token: string (any)
     kernelName: string (any)
-    sessionSaving: boolean (default: true)
+    disableSessionSaving: boolean (default: false)
     mathjaxUrl: string (url)
     mathjaxConfig: string (any)
     local: undefined(false) | boolean | object
@@ -328,9 +327,9 @@ project:
 * - `kernelName`
   - The name of the kernel to request when stating a session
   - `python`
-* - `sessionSaving`
-  - When `true` any server settings received from `binder` will be cached in local storage. On page refresh or future page load the save session info will be used provided the session is still activate and the max age (86400s) has not been exceeded
-  - `true`
+* - `disableSessionSaving`
+  - When `false` (default) any server settings received from `binder` will be cached in local storage. On page refresh or future page load the save session info will be used provided the session is still activate and the max age (86400s) has not been exceeded
+  - `false`
 * - `mathjaxUrl`
   - Allows the default mathjax bindle loaded by the Juptyer Latex Typesetter to be changed
   - Mathjax 2.7.5 from `cdnjs.cloudflare`[^mathjax]
