@@ -25,6 +25,8 @@ plt.plot([1, 2, 3], [1, 2, 3], 'go-', label='line 1', linewidth=2)
 
 ```{note}
 If the language is `ipython` or `IPython3`, etc., it will be dynamically converted to `python` to ensure that it is highlighted correctly!
+
+A list of language names supported by the  `myst-react` package is here: [HLJS language identifier strings](https://github.com/react-syntax-highlighter/react-syntax-highlighter/blob/master/AVAILABLE_LANGUAGES_HLJS.MD)
 ```
 
 ## Code blocks
