@@ -46,7 +46,7 @@ project:
   thebe: true
 ```
 
-When `thebe:true` and no `github` or `binder` keys are present MyST will try to connect to a server using the default (local settings). To make this work you'll need to [](#start-a-local-jupyter-server) with the correct defaults or [provide alternative the direct connection options](#directly-connecting-to-a-jupyter-server).
+When `thebe:true` and no `github` or `binder` keys are present MyST will try to connect to a server using the default (local settings). To make this work you'll need to [](#start-a-local-jupyter-server) with the correct defaults or [provide alternative direct connection options](#directly-connecting-to-a-jupyter-server).
 
 Note this is equivalent to:
 
@@ -213,9 +213,6 @@ Override the default settings using the following keys:
 * - `token`
   - The token needed to establish a connection
   - `test-secret`
-* - `kernelName`
-  - The name of the kernel to request when stating a session
-  - `python`
 ```
 
 This allows you to connect to local servers on a different port, or across a private network and provide specific tokens to establish the connection, it is also useful in cases where this information is provided dynamically (for example after a JupyterHub server has been provisioned, however this requires additional infrastruture to deploy).
@@ -277,7 +274,9 @@ Further configure the `local` connection using the following options.
 * - `token`
   - The token needed to establish a connection
   - `test-secret`
-
+* - `kernelName`
+  - The name of the kernel to request when stating a session
+  - `python`
 ```
 
 ### Start a local Jupyter server
