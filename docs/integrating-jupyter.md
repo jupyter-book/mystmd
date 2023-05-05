@@ -18,7 +18,7 @@ This allows you to do some amazing things with your MyST website like:
 Integrated Jupyter Computation is hot off the press and currently limited to pages that represent complete Jupyter notebooks.
 We are in active development and this feature should be considered `beta` - please help us out [report any issues that you find](https://github.com/executablebooks/mystjs/issues).
 
-While being able to connect a jupyter based figure or output in any website page to a kernel is still work in progress - but expected very soon. The remainder of the docs below are forward looking, watch for the 🚧 icons on headings what are still work in progress.
+Being able to connect a jupyter-based figure or output in any website page to a kernel is still work in progress - but expected very soon. The remainder of the docs below are forward looking, watch for the 🚧 icons on headings that are still work in progress.
 
 ```
 
@@ -112,7 +112,7 @@ This will load the server using the default options, to learn more about how usi
 
 ### Disabling integrated compute
 
-Easily disable integrated compute on your project by either setting `thebe:false` or removing the key alltogether.
+Easily disable integrated compute on your project by either setting `thebe:false` or removing the key altogether.
 
 Disable integrated compute on a specific page in your website by adding `thebe:false` to the page frontmatter section.
 
