@@ -27,7 +27,6 @@ Being able to connect a jupyter-based figure or output in any website page to a 
 MyST uses `thebe` for Jupyter connectivity which can be enabled using defualt settings by adding a single key (`thebe:true`) to the project frontmatter in your `myst.yml` file.
 
 ```{code} yaml
-:caption: an example myst.yml file with thebe enabled
 version: 1
 project:
     title: Geocomputing
@@ -64,7 +63,7 @@ project:
   thebe: true
 ```
 
-When `thebe: true` and the `github` key is present, MyST will attempt to connect to the public `mybinder.org` service using the repository information and a the default `ref: HEAD`. See [](#connecting-to-binder) to point to a different binder service or changing repository details.
+When `thebe: true` and the `github` key is present, MyST will attempt to connect to the public `mybinder.org` service using the repository information and a the default `ref: HEAD`. See [](#connecting-to-a-binder) to point to a different binder service or changing repository details.
 
 Note this is equivalent to:
 
@@ -101,19 +100,20 @@ project:
 The JupyterLite server and `pyodide` kernels can be activated using:
 
 ```{code} yaml
-:caption: an example myst.yml file with thebe enabled
 project:
     thebe:
         lite: true
 ```
 
-This will load the server using the default options, to learn more about how using JupyterLite can affect site deployment and how environment setup works with pyodide see [](#🚧-integrated-compute-with-pyodide-via-jupyterlite)
+This will load the server using the default options, to learn more about how using JupyterLite can affect site deployment and how environment setup works with pyodide see [](#jupyterlite)
 
 ### Disabling integrated compute
 
 Easily disable integrated compute on your project by either setting `thebe:false` or removing the key altogether.
 
 Disable integrated compute on a specific page in your website by adding `thebe:false` to the page frontmatter section.
+
+(connecting-to-a-binder)=
 
 ## Connecting to a Binder
 
@@ -185,6 +185,8 @@ When a user presses the "launch binder" badge they will connect to a new indepen
 
 ```
 
+(directly-connecting-to-a-jupyter-server)=
+
 ## Directly connecting to a Jupyter server
 
 When a the `thebe.server` key contains a set of options, direct connections to Juypter use the provided (and default) settings, the most minimal form of configuration is:
@@ -224,6 +226,8 @@ If you intend to run a dedicate single user Jupyter server accessible over a net
 
 MyST Websites will work best, be safer and be more robust when backed by Jupyter services such as Binder or JuptyerHub.
 ```
+
+(jupyterlite)=
 
 ## 🚧 Integrated compute with pyodide via JupyterLite
 
@@ -277,6 +281,8 @@ Further configure the `local` connection using the following options.
   - The name of the kernel to request when stating a session
   - `python`
 ```
+
+(start-a-local-jupyter-server)=
 
 ### Start a local Jupyter server
 
