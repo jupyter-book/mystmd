@@ -175,22 +175,22 @@ To properly setup you repository for use with `binder` refer to [The Reproducibl
 
 ```{attention} Be aware of multiple keys
 :class: dropdown
-There are now 2 possible locations for `binder` keys our frontmatter. The first at `project.binder` and the second at`project.thebe.binder`.
+There are two possible locations for `binder` keys the project frontmatter: `project.binder` and `project.thebe.binder`.
 
 The first is used to display a "launch binder" badge on your website, while the second is used to provide `thebe` specific settings for integrated computation.
 
-When a user presses the "launch binder" badge they will connect to a new independent session, not the same session as established by the integrated compute feature.
+When a user presses the "launch binder" badge they will connect to a new independent session, which is not the same session as established by the integrated compute feature.
 ```
 
 (directly-connecting-to-a-jupyter-server)=
 
 ## Directly connecting to a Jupyter server
 
-When a the `thebe.server` key contains a set of options, direct connections to Jupyter use the provided (and default) settings, the most minimal form of configuration is:
+When the `thebe.server` key contains a set of options, direct connections to Jupyter use the provided (and default) settings, the most minimal form of configuration is:
 
 ```{code-block} yaml
 ---
-caption: minimal configuration for connecting to a local server using default settings
+caption: Minimal configuration for connecting to a local server using default settings
 ---
 project:
   thebe:
@@ -232,7 +232,7 @@ The [JupyterLite](https://jupyterlite.readthedocs.io/en/latest/) server and `pyo
 
 ```{code-block} yaml
 ---
-caption: minimal configuration for enabling JupyterLite
+caption: Minimal configuration for enabling JupyterLite
 ---
 project:
   thebe:
@@ -240,7 +240,7 @@ project:
 ```
 
 ```{important} TODO
-Add the specific list options for custom wheel paths, etc...
+Add the specific list options for custom wheel paths, etc.
 ```
 
 ## 🚧 Local Development Mode
@@ -251,7 +251,7 @@ Local development using can be enabled by simply adding the `local` key, which w
 
 ```yaml
 ---
-caption: minimal configuration of a local development connection
+caption: Minimal configuration of a local development connection
 ---
 project:
   github: https://github.com/executablebooks/thebe-binder-base
