@@ -250,9 +250,6 @@ When working on a MyST site using the `myst-cli`, using a local Jupyter server c
 Local development using can be enabled by simply adding the `local` key, which will use default server options.
 
 ```yaml
----
-caption: Minimal configuration of a local development connection
----
 project:
   github: https://github.com/executablebooks/thebe-binder-base
     thebe:
