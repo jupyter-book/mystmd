@@ -19,33 +19,32 @@ Integrated Jupyter Computation is hot off the press and currently limited to pag
 We are in active development and this feature should be considered `beta` - please help us out [report any issues that you find](https://github.com/executablebooks/mystjs/issues).
 
 Being able to connect a jupyter-based figure or output in any website page to a kernel is still work in progress - but expected very soon. The remainder of the docs below are forward looking, watch for the 🚧 icons on headings that are still work in progress.
-
 ```
 
 ## Quick setup options
 
-MyST uses `thebe` for Jupyter connectivity which can be enabled using defualt settings by adding a single key (`thebe:true`) to the project frontmatter in your `myst.yml` file.
+MyST uses `thebe` for Jupyter connectivity which can be enabled using default settings by adding a single key (`thebe: true`) to the project frontmatter in your `myst.yml` file.
 
 ```{code} yaml
 version: 1
 project:
-    title: Geocomputing
-    thebe: true
+  title: Geocomputing
+  thebe: true
 site:
-    template: book-theme
-    title: My Computational Website
+  template: book-theme
+  title: My Computational Website
 ```
 
 When the boolean form of the `thebe` key is used, MyST will try to determine where to connect to from existing `github` and `binder` keys you may have on your project and is intended to allow for easy setup of a few key use cases. To go beyond or override these, you can provide various options in the `thebe` field.
 
-### Case - `thebe:true` and no `github` or `binder` keys are present
+### Case - `thebe: true` and no `github` or `binder` keys are present
 
 ```yaml
 project:
   thebe: true
 ```
 
-When `thebe:true` and no `github` or `binder` keys are present MyST will try to connect to a server using the default (local settings). To make this work you'll need to [](#start-a-local-jupyter-server) with the correct defaults or [provide alternative direct connection options](#directly-connecting-to-a-jupyter-server).
+When `thebe: true` and no `github` or `binder` keys are present MyST will try to connect to a server using the default (local settings). To make this work you'll need to [](#start-a-local-jupyter-server) with the correct defaults or [provide alternative direct connection options](#directly-connecting-to-a-jupyter-server).
 
 Note this is equivalent to:
 
@@ -55,7 +54,7 @@ project:
     server: true
 ```
 
-### Case - `thebe:true` and the `github` key is present
+### Case - `thebe: true` and the `github` key is present
 
 ```yaml
 project:
@@ -74,7 +73,7 @@ project:
     binder: true
 ```
 
-### Case - `thebe:true` and the `binder` key is present
+### Case - `thebe: true` and the `binder` key is present
 
 ```yaml
 project:
@@ -95,29 +94,29 @@ project:
 
 ### 🚧 Case - Using Pyodide & JupyterLite
 
-`thebe` can provide access to the pyodide WASM kernel to enable in-browser computation. This uses in browser Jupyter server components deveoped as part of the [JupyterLite project](https://jupyterlite.readthedocs.io/en/latest/) and will be extended in future to provide for different kernels.
+`thebe` can provide access to the pyodide WASM kernel to enable in-browser computation. This uses in browser Jupyter server components developed as part of the [JupyterLite project](https://jupyterlite.readthedocs.io/en/latest/) and will be extended in future to provide for different kernels.
 
 The JupyterLite server and `pyodide` kernels can be activated using:
 
 ```{code} yaml
 project:
-    thebe:
-        lite: true
+  thebe:
+    lite: true
 ```
 
 This will load the server using the default options, to learn more about how using JupyterLite can affect site deployment and how environment setup works with pyodide see [](#jupyterlite)
 
 ### Disabling integrated compute
 
-Easily disable integrated compute on your project by either setting `thebe:false` or removing the key altogether.
+Easily disable integrated compute on your project by either setting `thebe: false` or removing the key altogether.
 
-Disable integrated compute on a specific page in your website by adding `thebe:false` to the page frontmatter section.
+Disable integrated compute on a specific page in your website by adding `thebe: false` to the page frontmatter section.
 
 (connecting-to-a-binder)=
 
 ## Connecting to a Binder
 
-When a the `thebe.binder` key contains a set of options, binder connections are enabled using the provided and default settings descibed below (`github` and `binder` keys at the `project` level are ignored). The most minimal form of configuration is where repository information is provided.
+When a the `thebe.binder` key contains a set of options, binder connections are enabled using the provided and default settings described below (`github` and `binder` keys at the `project` level are ignored). The most minimal form of configuration is where repository information is provided.
 
 ```{code-block} yaml
 ---
@@ -129,7 +128,7 @@ project:
       repo: executablebooks/thebe-binder-base
 ```
 
-This allows the repository information for integrated compute to be different to that used for the `github` badge on the website, for useful for example if the github badge is pointing to a organisation or other repo.
+This allows the repository information for integrated compute to be different to that used for the `github` badge on the website, for useful for example if the github badge is pointing to a organization or other repo.
 
 ```{code-block} yaml
 ---
@@ -167,7 +166,6 @@ project:
   - optional
   - Tells `thebe` how to form urls for requesting binder services. Can be one of `github`, `gitlab` or `git`.
   - `github`
-
 ```
 
 ```{tip} Use REES for your environment setup
@@ -179,17 +177,16 @@ To properly setup you repository for use with `binder` refer to [The Reproducibl
 :class: dropdown
 There are now 2 possible locations for `binder` keys our frontmatter. The first at `project.binder` and the second at`project.thebe.binder`.
 
-The first is used to display a "launch binder" badge on your website, while the second is used to provide `thebe` specific settings for integated computation.
+The first is used to display a "launch binder" badge on your website, while the second is used to provide `thebe` specific settings for integrated computation.
 
 When a user presses the "launch binder" badge they will connect to a new independent session, not the same session as established by the integrated compute feature.
-
 ```
 
 (directly-connecting-to-a-jupyter-server)=
 
 ## Directly connecting to a Jupyter server
 
-When a the `thebe.server` key contains a set of options, direct connections to Juypter use the provided (and default) settings, the most minimal form of configuration is:
+When a the `thebe.server` key contains a set of options, direct connections to Jupyter use the provided (and default) settings, the most minimal form of configuration is:
 
 ```{code-block} yaml
 ---
@@ -216,7 +213,7 @@ Override the default settings using the following keys:
   - `test-secret`
 ```
 
-This allows you to connect to local servers on a different port, or across a private network and provide specific tokens to establish the connection, it is also useful in cases where this information is provided dynamically (for example after a JupyterHub server has been provisioned, however this requires additional infrastruture to deploy).
+This allows you to connect to local servers on a different port, or across a private network and provide specific tokens to establish the connection, it is also useful in cases where this information is provided dynamically (for example after a JupyterHub server has been provisioned, however this requires additional infrastructure to deploy).
 
 For more on working locally see [](#start-a-local-jupyter-server).
 
@@ -224,7 +221,7 @@ For more on working locally see [](#start-a-local-jupyter-server).
 :class: dropdown
 If you intend to run a dedicate single user Jupyter server accessible over a network please carefully read and follow [the advice provided by the Jupyter server team here](https://jupyter-notebook.readthedocs.io/en/stable/public_server.html).
 
-MyST Websites will work best, be safer and be more robust when backed by Jupyter services such as Binder or JuptyerHub.
+MyST Websites will work best, be safer and be more robust when backed by Jupyter services such as Binder or JupyterHub.
 ```
 
 (jupyterlite)=
@@ -238,8 +235,8 @@ The [JupyterLite](https://jupyterlite.readthedocs.io/en/latest/) server and `pyo
 caption: minimal configuration for enabling JupyterLite
 ---
 project:
-    thebe:
-        lite: true
+  thebe:
+    lite: true
 ```
 
 ```{important} TODO
@@ -259,8 +256,8 @@ caption: minimal configuration of a local development connection
 project:
   github: https://github.com/executablebooks/thebe-binder-base
     thebe:
-        binder: true
-        local: true
+      binder: true
+      local: true
 ```
 
 Further configure the `local` connection using the following options.
@@ -269,7 +266,7 @@ Further configure the `local` connection using the following options.
 :header-rows: 1
 
 * - `key`
-  - desciption
+  - description
   - default
 * - `url`
   - The base url of the Jupyter server you want to connect to
@@ -294,7 +291,7 @@ jupyter lab --NotebookApp.token=test-secret --NotebookApp.allow_origin='*'
 
 The command above is fine for local development and the `token` used should align with that provided in the `project.thebe.token` key.
 
-When starting a local Jupyter server for use with MyST it's also important to understand your computational environment and ensure that the Jupyter instance has access to that with the dependencies it needs to run. This is acheived by following normal best practices for reproducible environment configuration, if you're not familiar with these see [REES](https://repo2docker.readthedocs.io/en/latest/specification.html).
+When starting a local Jupyter server for use with MyST it's also important to understand your computational environment and ensure that the Jupyter instance has access to that with the dependencies it needs to run. This is achieved by following normal best practices for reproducible environment configuration, if you're not familiar with these see [REES](https://repo2docker.readthedocs.io/en/latest/specification.html).
 
 ## Reference
 
@@ -328,7 +325,7 @@ project:
 :header-rows: 1
 
 * - `key`
-  - desciption
+  - description
   - default
 * - `kernelName`
   - The name of the kernel to request when stating a session
