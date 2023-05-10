@@ -15,9 +15,10 @@ type ResolvableCrossReference = Omit<CrossReference, 'kind'> & {
   template?: string;
   resolved?: boolean;
   // If the cross reference is remote, then it will have a URL attached
-  // This URl should be able to lookup the content
+  // This URL should be able to lookup the content; dataUrl is a direct link to structured mdast source data
   remote?: boolean;
   url?: string;
+  dataUrl?: string;
 };
 
 export enum TargetKind {
@@ -368,8 +369,13 @@ export class ReferenceState implements IReferenceState {
   }
 }
 
-type IStateList = { state: IReferenceState; file: string; url: string | null }[];
-type StateAndFile = { state: ReferenceState; file: string; url: string | null };
+type StateAndFile = {
+  state: ReferenceState;
+  file: string;
+  url: string | null;
+  dataUrl: string | null;
+};
+type IStateList = StateAndFile[];
 
 export class MultiPageReferenceState implements IReferenceState {
   file?: VFile; // A copy of the local file for reporting and errors or warnings about the reference linking
@@ -377,19 +383,24 @@ export class MultiPageReferenceState implements IReferenceState {
   fileState: ReferenceState;
   filePath: string;
   url: string;
+  dataUrl: string;
 
   constructor(states: IStateList, filePath: string) {
+    const stateItem = states.filter((v) => v.file === filePath)[0];
     this.states = states as StateAndFile[];
-    this.fileState = states.filter((v) => v.file === filePath)[0]?.state as ReferenceState;
+    this.fileState = stateItem?.state as ReferenceState;
     this.file = this.fileState?.file;
-    this.url = states.filter((v) => v.file === filePath)[0]?.url as string;
+    this.url = stateItem?.url as string;
+    this.dataUrl = stateItem?.dataUrl as string;
     this.filePath = filePath;
   }
 
   resolveStateProvider(identifier?: string, page?: string): StateAndFile | undefined {
     if (!identifier) return undefined;
     const local = this.fileState.getTarget(identifier);
-    if (local) return { state: this.fileState, file: this.filePath, url: this.url };
+    if (local) {
+      return { state: this.fileState, file: this.filePath, url: this.url, dataUrl: this.dataUrl };
+    }
     const pageXRefs = this.states.find(({ state }) => !!state.getTarget(identifier));
     return pageXRefs;
   }
@@ -417,6 +428,7 @@ export class MultiPageReferenceState implements IReferenceState {
     if (node.resolved && pageXRefs?.file !== this.filePath) {
       node.remote = true;
       node.url = pageXRefs.url || undefined;
+      node.dataUrl = pageXRefs.dataUrl || undefined;
     }
   }
 }

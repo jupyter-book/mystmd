@@ -126,11 +126,15 @@ export async function loadProject(
 export function selectPageReferenceStates(session: ISession, pages: { file: string }[]) {
   const cache = castSession(session);
   const pageReferenceStates: PageReferenceStates = pages
-    .map((page) => ({
-      state: cache.$internalReferences[page.file],
-      file: page.file,
-      url: selectors.selectFileInfo(session.store.getState(), page.file)?.url ?? null,
-    }))
+    .map((page) => {
+      const selectedFile = selectors.selectFileInfo(session.store.getState(), page.file);
+      return {
+        state: cache.$internalReferences[page.file],
+        file: page.file,
+        url: selectedFile?.url ?? null,
+        dataUrl: selectedFile?.dataUrl ?? null,
+      };
+    })
     .filter(({ state }) => !!state);
   return pageReferenceStates;
 }
@@ -169,7 +173,7 @@ async function resolvePageExports(session: ISession, file: string) {
 
 export async function writeFile(
   session: ISession,
-  { file, pageSlug, projectSlug }: { file: string; projectSlug: string; pageSlug: string },
+  { file, pageSlug, projectSlug }: { file: string; pageSlug: string; projectSlug?: string },
 ) {
   const toc = tic();
   const selectedFile = selectFile(session, file);
@@ -180,9 +184,11 @@ export async function writeFile(
     ...(await resolvePageExports(session, file)),
   ]);
   const frontmatterWithExports = { ...frontmatter, exports };
-  const jsonFilename = join(session.contentPath(), projectSlug, `${pageSlug}.json`);
+  const jsonFilenameParts = [session.contentPath()];
+  if (projectSlug) jsonFilenameParts.push(projectSlug);
+  jsonFilenameParts.push(`${pageSlug}.json`);
   writeFileToFolder(
-    jsonFilename,
+    join(...jsonFilenameParts),
     JSON.stringify({
       kind,
       sha256,
@@ -208,9 +214,9 @@ export async function fastProcessFile(
     defaultTemplate,
   }: {
     file: string;
-    projectPath: string;
-    projectSlug: string;
     pageSlug: string;
+    projectPath: string;
+    projectSlug?: string;
     extraLinkTransformers?: LinkTransformer[];
     extraTransforms?: TransformFn[];
     defaultTemplate?: string;
@@ -218,6 +224,7 @@ export async function fastProcessFile(
 ) {
   const toc = tic();
   await loadFile(session, file);
+  const { project, pages } = await loadProject(session, projectPath);
   await transformMdast(session, {
     file,
     imageWriteFolder: session.publicPath(),
@@ -228,8 +235,8 @@ export async function fastProcessFile(
     pageSlug,
     watchMode: true,
     extraTransforms: [transformWebp, ...(extraTransforms ?? [])],
+    index: project.index,
   });
-  const { pages } = await loadProject(session, projectPath);
   const pageReferenceStates = selectPageReferenceStates(session, pages);
   await postProcessMdast(session, {
     file,
@@ -303,6 +310,7 @@ export async function processProject(
         pageSlug: page.slug,
         watchMode,
         extraTransforms,
+        index: project.index,
       }),
     ),
   );
@@ -320,19 +328,15 @@ export async function processProject(
   );
   // Write all pages
   if (writeFiles) {
-    if (siteProject.slug) {
-      await Promise.all(
-        pages.map((page) =>
-          writeFile(session, {
-            file: page.file,
-            projectSlug: siteProject.slug as string,
-            pageSlug: page.slug,
-          }),
-        ),
-      );
-    } else {
-      log.error(`Cannot write project files without project slug`);
-    }
+    await Promise.all(
+      pages.map((page) =>
+        writeFile(session, {
+          file: page.file,
+          projectSlug: siteProject.slug as string,
+          pageSlug: page.slug,
+        }),
+      ),
+    );
   }
   log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug ?? 'project'} in %s.`));
   return project;
@@ -394,7 +398,7 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
     await writeSiteManifest(session, opts);
     // Write the objects.inv
     const inv = new Inventory({
-      project: siteConfig.title,
+      project: siteConfig?.title,
       // TODO: allow a version on the project?!
       version: String((siteConfig as any)?.version ?? '1'),
     });

@@ -2,7 +2,7 @@ import type { Export, ProjectFrontmatter, SiteFrontmatter } from 'myst-frontmatt
 import { SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 
 export interface SiteProject {
-  slug: string;
+  slug?: string;
   remote?: string;
   path?: string;
 }
@@ -54,7 +54,7 @@ type ManifestProjectItem = {
 };
 
 type ManifestProject = {
-  slug: string;
+  slug?: string;
   index: string;
   title: string;
   pages: ManifestProjectItem[];

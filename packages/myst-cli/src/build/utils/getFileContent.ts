@@ -69,6 +69,7 @@ export async function getFileContent(
         projectPath,
         pageSlug,
         minifyMaxCharacters: 0,
+        index: project.index,
       });
     }),
   );
