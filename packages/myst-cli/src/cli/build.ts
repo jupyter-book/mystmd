@@ -13,6 +13,7 @@ import {
   makeTexOption,
   makeAllOption,
   makeNamedExportOption,
+  makeHtmlOption,
 } from './options';
 
 export function makeBuildCLI(program: Command) {
@@ -24,6 +25,7 @@ export function makeBuildCLI(program: Command) {
     .addOption(makeDocxOption('Build Docx output'))
     .addOption(makeJatsOption('Build JATS xml output'))
     .addOption(makeSiteOption('Build MyST site content'))
+    .addOption(makeHtmlOption('Build static HTML site content'))
     .addOption(makeAllOption('Build all exports'))
     .addOption(makeNamedExportOption('Output file for the export'))
     .addOption(makeForceOption())

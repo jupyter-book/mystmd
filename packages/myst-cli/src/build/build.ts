@@ -8,6 +8,7 @@ import { collectExportOptions, localArticleExport } from './utils';
 import { buildSite } from './site/prepare';
 import type { ExportWithInputOutput } from './types';
 import { uniqueArray } from '../utils';
+import { buildHtml } from './html';
 
 export type BuildOpts = {
   site?: boolean;
@@ -15,6 +16,7 @@ export type BuildOpts = {
   pdf?: boolean;
   tex?: boolean;
   xml?: boolean;
+  html?: boolean;
   all?: boolean;
   force?: boolean;
   output?: string;
@@ -39,9 +41,9 @@ export function getExportFormats(opts: BuildOpts & { explicit?: boolean; extensi
 }
 
 export function exportSite(session: ISession, opts: BuildOpts) {
-  const { docx, pdf, tex, xml, force, site, all } = opts;
+  const { docx, pdf, tex, xml, force, site, html, all } = opts;
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  return site || all || (siteConfig && !force && !docx && !pdf && !tex && !xml && !site);
+  return site || html || all || (siteConfig && !force && !docx && !pdf && !tex && !xml);
 }
 
 export function getProjectPaths(session: ISession) {
@@ -164,6 +166,10 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     session.log.debug(`To build a site, first run 'myst init --site'`);
   } else {
     session.log.info(`🌎 Building MyST site`);
-    await buildSite(session, opts);
+    if (opts.html) {
+      await buildHtml(session, opts);
+    } else {
+      await buildSite(session, opts);
+    }
   }
 }
