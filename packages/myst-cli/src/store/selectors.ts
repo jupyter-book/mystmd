@@ -1,4 +1,5 @@
 import { resolve } from 'path';
+import type { SiteConfig } from 'myst-config';
 import type { LocalProject, LocalProjectPage } from '../project/types';
 import type { RootState } from './reducers';
 import type { BuildWarning, ExternalLinkResult } from './types';
@@ -15,9 +16,12 @@ export function selectLocalSiteConfig(state: RootState, path: string) {
   return state.local.config.sites[resolve(path)];
 }
 
-export function selectCurrentSiteConfig(state: RootState) {
+export function selectCurrentSiteConfig(state: RootState): SiteConfig | undefined {
   if (!state.local.config.currentSitePath) return undefined;
-  return state.local.config.sites[resolve(state.local.config.currentSitePath)];
+  const config = state.local.config.sites[resolve(state.local.config.currentSitePath)];
+  const path = selectCurrentProjectPath(state);
+  if (config.projects || !path) return config;
+  return { ...config, projects: [{ path }] };
 }
 
 export function selectCurrentSiteTemplateOptions(state: RootState) {

@@ -181,6 +181,7 @@ export async function transformMdast(
     altOutputFolder: imageAltOutputFolder,
   });
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
+  const url = projectSlug ? `/${projectSlug}/${pageSlug}` : `/${pageSlug}`;
   store.dispatch(
     watch.actions.updateFileInfo({
       path: file,
@@ -191,7 +192,7 @@ export async function transformMdast(
       thumbnail: frontmatter.thumbnail,
       thumbnailOptimized: frontmatter.thumbnailOptimized,
       tags: frontmatter.tags,
-      url: `/${projectSlug}/${pageSlug}`,
+      url,
     }),
   );
   const data: RendererData = {

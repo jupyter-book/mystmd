@@ -22,7 +22,7 @@ import { getMystTemplate } from './template';
 export async function localToManifestProject(
   session: ISession,
   projectPath: string,
-  projectSlug: string,
+  projectSlug?: string,
 ) {
   const state = session.store.getState();
   const projConfig = selectors.selectLocalProjectConfig(state, projectPath);

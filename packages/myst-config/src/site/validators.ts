@@ -35,6 +35,9 @@ function validateUrlOrPath(input: any, opts: ValidationOptions) {
 }
 
 export function validateSiteProject(input: any, opts: ValidationOptions) {
+  // While slug is not required on the type, it is required when validating the config
+  // i.e. we may construct a SiteProject dynamically with no slug, but if the user
+  // is explicitly defining a SiteProject, they must provide a slug.
   const value = validateObjectKeys(
     input,
     { required: ['slug'], optional: ['remote', 'path'] },

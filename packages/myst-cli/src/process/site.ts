@@ -169,7 +169,7 @@ async function resolvePageExports(session: ISession, file: string) {
 
 export async function writeFile(
   session: ISession,
-  { file, pageSlug, projectSlug }: { file: string; projectSlug: string; pageSlug: string },
+  { file, pageSlug, projectSlug }: { file: string; pageSlug: string; projectSlug?: string },
 ) {
   const toc = tic();
   const selectedFile = selectFile(session, file);
@@ -180,9 +180,11 @@ export async function writeFile(
     ...(await resolvePageExports(session, file)),
   ]);
   const frontmatterWithExports = { ...frontmatter, exports };
-  const jsonFilename = join(session.contentPath(), projectSlug, `${pageSlug}.json`);
+  const jsonFilenameParts = [session.contentPath()];
+  if (projectSlug) jsonFilenameParts.push(projectSlug);
+  jsonFilenameParts.push(`${pageSlug}.json`);
   writeFileToFolder(
-    jsonFilename,
+    join(...jsonFilenameParts),
     JSON.stringify({
       kind,
       sha256,
@@ -208,9 +210,9 @@ export async function fastProcessFile(
     defaultTemplate,
   }: {
     file: string;
-    projectPath: string;
-    projectSlug: string;
     pageSlug: string;
+    projectPath: string;
+    projectSlug?: string;
     extraLinkTransformers?: LinkTransformer[];
     extraTransforms?: TransformFn[];
     defaultTemplate?: string;
@@ -320,19 +322,15 @@ export async function processProject(
   );
   // Write all pages
   if (writeFiles) {
-    if (siteProject.slug) {
-      await Promise.all(
-        pages.map((page) =>
-          writeFile(session, {
-            file: page.file,
-            projectSlug: siteProject.slug as string,
-            pageSlug: page.slug,
-          }),
-        ),
-      );
-    } else {
-      log.error(`Cannot write project files without project slug`);
-    }
+    await Promise.all(
+      pages.map((page) =>
+        writeFile(session, {
+          file: page.file,
+          projectSlug: siteProject.slug as string,
+          pageSlug: page.slug,
+        }),
+      ),
+    );
   }
   log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug ?? 'project'} in %s.`));
   return project;
@@ -394,7 +392,7 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
     await writeSiteManifest(session, opts);
     // Write the objects.inv
     const inv = new Inventory({
-      project: siteConfig.title,
+      project: siteConfig?.title,
       // TODO: allow a version on the project?!
       version: String((siteConfig as any)?.version ?? '1'),
     });
