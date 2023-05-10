@@ -7,6 +7,7 @@ export type Link = SpecLink & {
   error?: true;
   static?: true;
   protocol?: string;
+  dataUrl?: string;
 };
 
 export interface LinkTransformer {

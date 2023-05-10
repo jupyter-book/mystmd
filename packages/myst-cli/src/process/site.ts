@@ -126,11 +126,15 @@ export async function loadProject(
 export function selectPageReferenceStates(session: ISession, pages: { file: string }[]) {
   const cache = castSession(session);
   const pageReferenceStates: PageReferenceStates = pages
-    .map((page) => ({
-      state: cache.$internalReferences[page.file],
-      file: page.file,
-      url: selectors.selectFileInfo(session.store.getState(), page.file)?.url ?? null,
-    }))
+    .map((page) => {
+      const selectedFile = selectors.selectFileInfo(session.store.getState(), page.file);
+      return {
+        state: cache.$internalReferences[page.file],
+        file: page.file,
+        url: selectedFile?.url ?? null,
+        dataUrl: selectedFile?.dataUrl ?? null,
+      };
+    })
     .filter(({ state }) => !!state);
   return pageReferenceStates;
 }
@@ -220,6 +224,7 @@ export async function fastProcessFile(
 ) {
   const toc = tic();
   await loadFile(session, file);
+  const { project, pages } = await loadProject(session, projectPath);
   await transformMdast(session, {
     file,
     imageWriteFolder: session.publicPath(),
@@ -230,8 +235,8 @@ export async function fastProcessFile(
     pageSlug,
     watchMode: true,
     extraTransforms: [transformWebp, ...(extraTransforms ?? [])],
+    index: project.index,
   });
-  const { pages } = await loadProject(session, projectPath);
   const pageReferenceStates = selectPageReferenceStates(session, pages);
   await postProcessMdast(session, {
     file,
@@ -305,6 +310,7 @@ export async function processProject(
         pageSlug: page.slug,
         watchMode,
         extraTransforms,
+        index: project.index,
       }),
     ),
   );

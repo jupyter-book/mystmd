@@ -68,6 +68,7 @@ export type PageReferenceStates = {
   state: ReferenceState;
   file: string;
   url: string | null;
+  dataUrl: string | null;
 }[];
 
 export type TransformFn = (
@@ -88,6 +89,7 @@ export async function transformMdast(
     watchMode?: boolean;
     extraTransforms?: TransformFn[];
     minifyMaxCharacters?: number;
+    index?: string;
   },
 ) {
   const {
@@ -101,6 +103,7 @@ export async function transformMdast(
     extraTransforms,
     watchMode = false,
     minifyMaxCharacters,
+    index,
   } = opts;
   const toc = tic();
   const { store, log } = session;
@@ -181,7 +184,11 @@ export async function transformMdast(
     altOutputFolder: imageAltOutputFolder,
   });
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
-  const url = projectSlug ? `/${projectSlug}/${pageSlug}` : `/${pageSlug}`;
+  const useSlug = pageSlug !== index;
+  const url = projectSlug
+    ? `/${projectSlug}/${useSlug ? pageSlug : ''}`
+    : `/${useSlug ? pageSlug : ''}`;
+  const dataUrl = projectSlug ? `/${projectSlug}/${pageSlug}.json` : `/${pageSlug}.json`;
   store.dispatch(
     watch.actions.updateFileInfo({
       path: file,
@@ -193,6 +200,7 @@ export async function transformMdast(
       thumbnailOptimized: frontmatter.thumbnailOptimized,
       tags: frontmatter.tags,
       url,
+      dataUrl,
     }),
   );
   const data: RendererData = {

@@ -131,12 +131,14 @@ export class StaticFileTransformer implements LinkTransformer {
       return false;
     }
     const [linkFile, ...target] = linkFileWithTarget.split('#');
-    const { url, title } = selectors.selectFileInfo(this.session.store.getState(), linkFile) || {};
+    const { url, title, dataUrl } =
+      selectors.selectFileInfo(this.session.store.getState(), linkFile) || {};
     if (url != null) {
       // Replace relative file link with resolved site path
       // TODO: lookup the and resolve the hash as well
       link.url = [url, ...(target || [])].join('#');
       link.internal = true;
+      if (dataUrl) link.dataUrl = dataUrl;
     } else {
       // Copy relative file to static folder and replace with absolute link
       const copiedFile = hashAndCopyStaticFile(this.session, linkFile, this.session.publicPath());

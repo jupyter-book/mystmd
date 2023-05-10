@@ -82,6 +82,7 @@ export function selectFileInfo(state: RootState, path: string) {
     tags,
     sha256,
     url,
+    dataUrl,
   } = state.local.watch.files[resolve(path)] ?? {};
   return {
     title,
@@ -93,6 +94,7 @@ export function selectFileInfo(state: RootState, path: string) {
     tags,
     sha256,
     url,
+    dataUrl,
   };
 }
 
