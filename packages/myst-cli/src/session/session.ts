@@ -63,10 +63,6 @@ export class Session implements ISession {
     return path.join(this.sitePath(), 'public');
   }
 
-  staticPath(): string {
-    return path.join(this.publicPath(), '_static');
-  }
-
   clone(): Session {
     return new Session({ logger: this.log });
   }

@@ -30,7 +30,7 @@ export function cleanSiteContent(session: ISession, info = true): void {
 export function ensureBuildFoldersExist(session: ISession): void {
   // This also creates the site directory!
   fs.mkdirSync(session.contentPath(), { recursive: true });
-  fs.mkdirSync(session.staticPath(), { recursive: true });
+  fs.mkdirSync(session.publicPath(), { recursive: true });
   session.log.debug(`Build folders created for site content: ${session.sitePath()}`);
 }
 

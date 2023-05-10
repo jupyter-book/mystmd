@@ -220,8 +220,8 @@ export async function fastProcessFile(
   await loadFile(session, file);
   await transformMdast(session, {
     file,
-    imageWriteFolder: session.staticPath(),
-    imageAltOutputFolder: '/_static/',
+    imageWriteFolder: session.publicPath(),
+    imageAltOutputFolder: '/',
     imageExtensions: WEB_IMAGE_EXTENSIONS,
     projectPath,
     projectSlug,
@@ -295,7 +295,7 @@ export async function processProject(
     pages.map((page) =>
       transformMdast(session, {
         file: page.file,
-        imageWriteFolder: imageWriteFolder ?? session.staticPath(),
+        imageWriteFolder: imageWriteFolder ?? session.publicPath(),
         imageAltOutputFolder,
         imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
         projectPath: project.path,
@@ -357,8 +357,8 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
     siteConfig.projects.map((siteProject) =>
       processProject(session, siteProject, {
         ...opts,
-        imageWriteFolder: session.staticPath(),
-        imageAltOutputFolder: '/_static/',
+        imageWriteFolder: session.publicPath(),
+        imageAltOutputFolder: '/',
       }),
     ),
   );
