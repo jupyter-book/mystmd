@@ -6,14 +6,18 @@ import MystTemplate from 'myst-templates';
 import type { ISession } from '../../session/types';
 import { selectors } from '../../store';
 
-const DEFAULT_SITE_TEMPLATE = 'book-theme';
+const DEFAULT_SINGLE_PROJ_TEMPLATE = 'article-theme';
+const DEFAULT_MULTI_PROJ_TEMPLATE = 'book-theme';
 const DEFAULT_INSTALL_COMMAND = 'npm install';
 
 export async function getMystTemplate(session: ISession, opts?: { defaultTemplate?: string }) {
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKind.site,
-    template: siteConfig?.template ?? opts?.defaultTemplate ?? DEFAULT_SITE_TEMPLATE,
+    template:
+      siteConfig?.template ??
+      opts?.defaultTemplate ??
+      (siteConfig?.projects ? DEFAULT_MULTI_PROJ_TEMPLATE : DEFAULT_SINGLE_PROJ_TEMPLATE),
     buildDir: session.buildPath(),
   });
   await mystTemplate.ensureTemplateExistsOnPath();
