@@ -114,4 +114,7 @@ export async function buildHtml(session: ISession, opts: any) {
 
   // We need to go through and change all links to the right folder
   rewriteAssetsFolder(htmlDir, baseurl);
+
+  // Explicitly close the process as the web server doesn't always stop?
+  process.exit(0);
 }
