@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { sync as which } from 'which';
+import type { LoggerDE } from 'myst-cli-utils';
 import { makeExecutable, tic } from 'myst-cli-utils';
 import type { ISession } from '../session/types';
 
@@ -17,6 +18,28 @@ export function isGif2webpAvailable() {
 }
 
 const LARGE_IMAGE = 1024 * 1024 * 1.5;
+
+function createImagemagikLogger(session: ISession): LoggerDE {
+  const logger = {
+    debug(data: string) {
+      const line = data.trim();
+      if (!line) return;
+      session.log.debug(data);
+    },
+    error(data: string) {
+      const line = data.trim();
+      if (!line) return;
+      const lower = line.toLowerCase();
+      // There are a lot of deprecation warnings that we want to hide to myst users
+      if (lower.includes('tiffwarnings/951')) {
+        session.log.debug(line);
+        return;
+      }
+      session.log.error(data);
+    },
+  };
+  return logger;
+}
 
 export async function extractFirstFrameOfGif(session: ISession, gif: string, writeFolder: string) {
   if (!fs.existsSync(gif)) return null;
@@ -56,10 +79,11 @@ export async function convert(
   const outputFormatUpper = outputExtension.slice(1).toUpperCase();
   if (fs.existsSync(output)) {
     session.log.debug(`Cached file found for converted ${inputFormatUpper}: ${input}`);
+    return filename;
   } else {
-    const executable = `convert -density 600  -colorspace RGB ${input} ${output}`;
+    const executable = `convert -density 600 -colorspace RGB ${input} ${output}`;
     session.log.debug(`Executing: ${executable}`);
-    const exec = makeExecutable(executable, session.log);
+    const exec = makeExecutable(executable, createImagemagikLogger(session));
     try {
       await exec();
     } catch (err) {
@@ -68,8 +92,19 @@ export async function convert(
       );
       return null;
     }
+    if (fs.existsSync(output)) return filename;
+    // Convert occasionally creates a few outputs (e.g. for layers etc.)
+    const maybeNumbered = output.replace(
+      new RegExp(`\\${outputExtension}$`),
+      `-0${outputExtension}`,
+    );
+    if (fs.existsSync(maybeNumbered)) {
+      fs.renameSync(maybeNumbered, output);
+      // TODO: delete the other outputs? (e.g. -1.png, -2.png, etc.)
+      return filename;
+    }
   }
-  return filename;
+  return null;
 }
 
 export async function convertImageToWebp(
