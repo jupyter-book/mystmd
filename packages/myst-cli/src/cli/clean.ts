@@ -5,6 +5,7 @@ import { clirun } from './clirun';
 import {
   makeAllOption,
   makeDocxOption,
+  makeHtmlOption,
   makeJatsOption,
   makePdfOption,
   makeSiteOption,
@@ -42,6 +43,7 @@ export function makeCleanCLI(program: Command) {
     .addOption(makeDocxOption('Clean Docx output'))
     .addOption(makeJatsOption('Build JATS xml output'))
     .addOption(makeSiteOption('Clean MyST site content'))
+    .addOption(makeHtmlOption('Clean static HTML site content'))
     .addOption(makeTempOption())
     .addOption(makeExportsOption())
     .addOption(makeTemplatesOption())

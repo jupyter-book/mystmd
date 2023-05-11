@@ -3,6 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import getPort, { portNumbers } from 'get-port';
 import { makeExecutable } from 'myst-cli-utils';
+import type child_process from 'child_process';
 import { nanoid } from 'nanoid';
 import { join } from 'path';
 import type WebSocket from 'ws';
@@ -72,7 +73,11 @@ export async function startContentServer(session: ISession) {
       wss.emit('connection', websocket, request);
     });
   });
-  return { port, reload, log };
+  const stop = () => {
+    server.close();
+    wss.close();
+  };
+  return { port, reload, log, stop };
 }
 
 export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHost?: boolean }) {
@@ -90,7 +95,16 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHo
   }
 }
 
-export async function startServer(session: ISession, opts: Options): Promise<void> {
+export type AppServer = {
+  port: number;
+  process: child_process.ChildProcess;
+  stop: () => void;
+};
+
+export async function startServer(
+  session: ISession,
+  opts: Options & { buildStatic?: boolean; baseurl?: string },
+): Promise<AppServer | undefined> {
   // Ensure we are on the latest version of the configs
   session.reload();
   warnOnHostEnvironmentVariable(session, opts);
@@ -99,23 +113,50 @@ export async function startServer(session: ISession, opts: Options): Promise<voi
   await buildSite(session, opts);
   const server = await startContentServer(session);
   const { extraLinkTransformers, extraTransforms, defaultTemplate } = opts;
-  watchContent(session, server.reload, { extraLinkTransformers, extraTransforms, defaultTemplate });
+  if (!opts.buildStatic) {
+    watchContent(session, server.reload, {
+      extraLinkTransformers,
+      extraTransforms,
+      defaultTemplate,
+    });
+  }
   if (opts.headless) {
     const local = chalk.green(`http://localhost:${server.port}`);
     session.log.info(
       `\n🔌 Content server started on port ${server.port}!  🥳 🎉\n\n\n\t👉  ${local}  👈\n\n`,
     );
-  } else {
-    session.log.info(
-      `\n\n\t✨✨✨  Starting ${mystTemplate.getValidatedTemplateYml().title}  ✨✨✨\n\n`,
-    );
-    await makeExecutable(
+    return undefined;
+  }
+  session.log.info(
+    `\n\n\t✨✨✨  Starting ${mystTemplate.getValidatedTemplateYml().title}  ✨✨✨\n\n`,
+  );
+  const port = await getPort({ port: portNumbers(3000, 3100) });
+  const appServer = {
+    port,
+  } as AppServer;
+  await new Promise<void>((resolve) => {
+    const start = makeExecutable(
       mystTemplate.getValidatedTemplateYml().build?.start ?? DEFAULT_START_COMMAND,
-      createServerLogger(session),
+      createServerLogger(session, resolve),
       {
         cwd: mystTemplate.templatePath,
-        env: { ...process.env, CONTENT_CDN_PORT: String(server.port) },
+        env: {
+          ...process.env,
+          CONTENT_CDN_PORT: String(server.port),
+          PORT: String(port),
+          MODE: opts.buildStatic ? 'static' : 'app',
+          BASE_URL: opts.baseurl || undefined,
+        },
+        getProcess(process) {
+          appServer.process = process;
+        },
       },
-    )();
-  }
+    );
+    start().catch((e) => session.log.debug(e));
+  });
+  appServer.stop = () => {
+    appServer.process.kill();
+    server.stop();
+  };
+  return appServer;
 }
