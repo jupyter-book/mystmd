@@ -20,6 +20,10 @@ export function makeSiteOption(description: string) {
   return new Option('--site', description).default(false);
 }
 
+export function makeHtmlOption(description: string) {
+  return new Option('--html', description).default(false);
+}
+
 export function makeProjectOption(description: string) {
   return new Option('--project', description).default(false);
 }

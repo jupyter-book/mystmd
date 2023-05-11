@@ -1,5 +1,7 @@
 ---
 title: Cross-references
+subtitle: Link to equations, figures, tables, and so much more!
+date: 2023/12/12
 description: Create numbered cross-references to labeled content (e.g. a figure, document, or table) and automatically generates links with hover previews.
 thumbnail: ./thumbnails/cross-references.png
 numbering:

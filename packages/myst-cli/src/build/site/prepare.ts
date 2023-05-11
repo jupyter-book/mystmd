@@ -6,6 +6,7 @@ import type { LinkTransformer } from 'myst-transforms';
 import type { TransformFn } from '../../process';
 
 export type Options = {
+  html?: boolean;
   strict?: boolean;
   headless?: boolean;
   checkLinks?: boolean;

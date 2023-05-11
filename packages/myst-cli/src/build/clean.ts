@@ -13,6 +13,7 @@ export type CleanOptions = {
   tex?: boolean;
   xml?: boolean;
   site?: boolean;
+  html?: boolean;
   temp?: boolean;
   exports?: boolean;
   templates?: boolean;
@@ -26,6 +27,7 @@ const ALL_OPTS: CleanOptions = {
   tex: true,
   xml: true,
   site: true,
+  html: true,
   temp: true,
   exports: true,
   templates: true,
@@ -36,14 +38,15 @@ const DEFAULT_OPTS: CleanOptions = {
   tex: true,
   xml: true,
   site: true,
+  html: true,
   temp: true,
   exports: true,
 };
 
 function coerceOpts(opts: CleanOptions) {
-  const { docx, pdf, tex, xml, site, temp, exports, templates, all } = opts;
+  const { docx, pdf, tex, xml, site, html, temp, exports, templates, all } = opts;
   if (all) return { ...opts, ...ALL_OPTS };
-  if (!docx && !pdf && !tex && !xml && !site && !temp && !exports && !templates) {
+  if (!docx && !pdf && !tex && !xml && !site && !html && !temp && !exports && !templates) {
     return { ...opts, ...DEFAULT_OPTS };
   }
   return { ...opts };
@@ -82,7 +85,7 @@ function deduplicatePaths(paths: string[]) {
 
 export async function clean(session: ISession, files: string[], opts: CleanOptions) {
   opts = coerceOpts(opts);
-  const { site, temp, exports, templates, yes } = opts;
+  const { site, html, temp, exports, templates, yes } = opts;
   let pathsToDelete: string[] = [];
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   if (exports) {
@@ -95,7 +98,7 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
     });
   }
   let buildFolders: string[] = [];
-  if (temp || exports || templates) {
+  if (temp || exports || templates || html) {
     const projectPaths = [
       ...getProjectPaths(session),
       ...exportOptionsList.map((exp) => exp.$project),
@@ -108,11 +111,12 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
     buildFolders.push(session.buildPath());
   }
   buildFolders = [...new Set(buildFolders)].sort();
-  if (temp || exports || templates) {
+  if (temp || exports || templates || html) {
     buildFolders.forEach((folder) => {
       if (temp) pathsToDelete.push(path.join(folder, 'temp'));
       if (exports) pathsToDelete.push(path.join(folder, 'exports'));
       if (templates) pathsToDelete.push(path.join(folder, 'templates'));
+      if (html) pathsToDelete.push(path.join(folder, 'html'));
     });
   }
   if (site) {
