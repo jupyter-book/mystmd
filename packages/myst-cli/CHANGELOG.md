@@ -1,5 +1,11 @@
 # myst-cli
 
+## 0.1.27
+
+### Patch Changes
+
+- 9f1a9788: Process exit on html build
+
 ## 0.1.26
 
 ### Patch Changes

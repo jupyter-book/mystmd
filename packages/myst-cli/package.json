@@ -1,6 +1,6 @@
 {
   "name": "myst-cli",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "description": "Command line tools for MyST",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "license": "MIT",
