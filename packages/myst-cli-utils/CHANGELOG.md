@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 0.0.12
+
+### Patch Changes
+
+- 7dacd1f0: Allow `getProcess` to be passed to `makeExecWrapper`
+
 ## 0.0.11
 
 ### Patch Changes

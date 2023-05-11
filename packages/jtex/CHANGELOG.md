@@ -1,5 +1,13 @@
 # jtex
 
+## 0.1.14
+
+### Patch Changes
+
+- Updated dependencies [7dacd1f0]
+  - myst-cli-utils@0.0.12
+  - myst-templates@0.1.16
+
 ## 0.1.13
 
 ### Patch Changes

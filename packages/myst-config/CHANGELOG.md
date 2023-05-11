@@ -1,5 +1,11 @@
 # myst-config
 
+## 0.0.15
+
+### Patch Changes
+
+- 96018fec: Enable single project site with no project slug
+
 ## 0.0.14
 
 ### Patch Changes

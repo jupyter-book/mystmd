@@ -1,5 +1,11 @@
 # myst-transforms
 
+## 0.0.28
+
+### Patch Changes
+
+- 96018fec: Link/xref url respects index url, dataUrl is also provided for accessing mdast
+
 ## 0.0.27
 
 ### Patch Changes

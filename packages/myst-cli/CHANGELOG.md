@@ -1,5 +1,26 @@
 # myst-cli
 
+## 0.1.26
+
+### Patch Changes
+
+- 96018fec: Link/xref url respects index url, dataUrl is also provided for accessing mdast
+- 96018fec: Enable single project site with no project slug
+- 7dacd1f0: Allow a static site build option
+- b89b79e9: Improve the imagemagik command for layered EPS export
+- e9c56681: Keep all static site assets in public folder, no \_static
+- 96018fec: Default to article theme for site builds with no explicit projects
+- Updated dependencies [96018fec]
+- Updated dependencies [96018fec]
+- Updated dependencies [7dacd1f0]
+  - myst-transforms@0.0.28
+  - myst-config@0.0.15
+  - myst-cli-utils@0.0.12
+  - jtex@0.1.14
+  - myst-templates@0.1.16
+  - myst-to-jats@0.0.26
+  - myst-parser@0.0.28
+
 ## 0.1.25
 
 ### Patch Changes
