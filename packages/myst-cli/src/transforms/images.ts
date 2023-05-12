@@ -19,6 +19,7 @@ import {
 import type { ISession } from '../session/types';
 import { castSession } from '../session';
 import { watch } from '../store';
+import type { Image } from 'myst-spec-ext';
 
 function isBase64(data: string) {
   return data.split(';base64,').length === 2;
@@ -478,8 +479,8 @@ export async function transformThumbnail(
     return;
   }
   if (!thumbnail) {
-    // The thumbnail isn't found, grab it from the mdast
-    const [image] = selectAll('image', mdast) as GenericNode[];
+    // The thumbnail isn't found, grab it from the mdast, excluding videos
+    const [image] = (selectAll('image', mdast) as Image[]).filter((n) => !n.url.endsWith('.mp4'));
     if (!image) {
       session.log.debug(`${file}#frontmatter.thumbnail is not set, and there are no images.`);
       return;

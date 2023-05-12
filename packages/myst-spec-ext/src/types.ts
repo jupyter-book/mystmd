@@ -60,6 +60,7 @@ export type Heading = SpecHeading & {
 };
 
 export type Image = SpecImage & {
+  urlSource?: string;
   height?: string;
 };
 

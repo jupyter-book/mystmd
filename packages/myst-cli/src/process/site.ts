@@ -34,6 +34,7 @@ const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.png,
   ImageExtensions.jpg,
   ImageExtensions.jpeg,
+  ImageExtensions.mp4,
 ];
 
 type ProcessOptions = {

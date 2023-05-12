@@ -13,6 +13,7 @@ export enum ImageExtensions {
   pdf = '.pdf',
   eps = '.eps',
   webp = '.webp',
+  mp4 = '.mp4', // A moving image!
 }
 export const KNOWN_IMAGE_EXTENSIONS = Object.values(ImageExtensions);
 export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb', '.tex'];
