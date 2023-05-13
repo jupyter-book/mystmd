@@ -114,6 +114,7 @@ The example site in this tutorial only has three pages and by default the `01-pa
 :::{figure} ./images/frontmatter-before.png
 :width: 50%
 :name: frontmatter-before
+:class: framed
 
 The myst theme for the `01-paper.md` page without any changes made.
 :::
@@ -187,9 +188,6 @@ site:
   template: book-theme
   # title:
   # logo:
-  projects:
-    - slug: myst
-      path: .
   nav: []
   actions:
     - title: Learn More
@@ -203,7 +201,7 @@ There are two important parts to the `myst.yml`:
 : The project holds metadata about the collection of files, such as authors, affiliations and licenses for all of the files, any of these values can optionally be overridden in a file. To see all of the options see [](./frontmatter.md), which includes which fields can be overridden by files in the project.
 
 `site:`
-: The site holds template information about the website, such as the logo, navigation, site actions and which template to use. The site has a list of projects, in this case the `path: .` looks to the current configuration file for the project, which will be "mounted" at the `slug:` (i.e. `/myst/`); sites can have multiple projects.
+: The site holds template information about the website, such as the logo, navigation, site actions and which template to use.
 
 🛠 In `myst.yml`: Change the "`# title:`" comment in **site** to "`title: Fancy Title 🎩`" and save
 
@@ -229,7 +227,6 @@ To see all of the options see [](./frontmatter.md), which includes which fields 
 **Separating Project and Site Configurations**
 
 % TODO: move this to a new quickstart that is specific about advanced config.
-
 You may use separate the `project` and `site` configurations into multiple `myst.yml` files to configure your website. Each website needs a single `site` configuration at the root level; then any subdirectory with content may have its own `project` configuration with project-specific frontmatter. For example, given a `content` directory with all your markdown and notebooks,you can create a `content/myst.yml` file with project frontmatter:
 
 ```yaml
@@ -252,7 +249,7 @@ site:
   ...
 ```
 
-Doing this will keep the `_build` directory at the root level, but everything else outside of the `content` folder will be ignored.
+Doing this will keep the `_build` directory at the root level, but everything else outside of the `content` folder will be ignored. If you have a project in the same configuration file it can be accessed with `path: .`. Projects are "mounted" at the `slug:` (i.e. `/my-content/`) above.
 :::
 
 More Coming Soon™

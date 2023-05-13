@@ -118,6 +118,7 @@ This will produce a document that looks like:
 :::{figure} ./images/frontmatter-before.png
 :width: 80%
 :name: frontmatter-before-pdf
+:class: framed
 
 The myst theme for the `01-paper.md` page using inline document and author information.
 :::
@@ -148,6 +149,7 @@ Once these are added, the myst theme (in this case the `book-theme` template) ca
 :::{figure} ./images/frontmatter-after.png
 :width: 80%
 :name: frontmatter-after
+:class: framed
 
 The myst theme for the `01-paper.md` page after the frontmatter changes are added. Compare this to what it looked like before in [](#frontmatter-before-pdf). The structure of the HTML page has also been improved, including meta tags that are available to search engines and other programmatic indexers.
 :::
@@ -199,6 +201,8 @@ This will have created a **References** section at the bottom of the page automa
 
 :::{figure} ./images/references.png
 :name: references
+:class: framed
+
 The references are shown automatically at the bottom of the page, and linked to the correct DOI source!
 :::
 
@@ -246,6 +250,7 @@ The "`Figure 1`" text will be automatically filled in, for example, [](#figure-h
 :::{figure} ./images/figure-hover.gif
 :name: figure-hover
 :width: 60%
+:class: framed
 When you cross-reference content in MyST, they become hover-references, allowing you to stay in context when you are reading.
 Checkout the [phd thesis written in MyST](https://phd.row1.ca), with demos of references to math, figures, tables, code, and equations.
 :::
@@ -339,7 +344,8 @@ To export to PDF, MyST currently requires $\LaTeX$ to be installed. See [](./cre
 
 First, we need to decide which template to export to, for this, we will use the `myst templates` command, and for example list all the two-column, PDF templates available.
 
-🛠 List all two column PDF templates with: `myst templates list --pdf --tag two-column`
+🛠 List all two column PDF templates with:\
+`myst templates list --pdf --tag two-column`
 
 ```text
 arXiv (Two Column)       arxiv_two_column
@@ -351,7 +357,8 @@ Description: A template for submissions to the Volcanica journal
 Tags: paper, journal, two-column, geoscience, earthscience
 ```
 
-🛠 Then, list the specific information needed for a template: `myst templates list volcanica --pdf`
+🛠 Then, list the specific information needed for a template:\
+`myst templates list volcanica --pdf`
 
 ```text
 Volcanica                volcanica
