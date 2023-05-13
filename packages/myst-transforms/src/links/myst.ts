@@ -55,7 +55,7 @@ export class MystTransformer implements LinkTransformer {
     // TODO: add query params in here to pick the domain
     const entry = lookup.getEntry({ name: target });
     if (!entry) {
-      fileWarn(file, `"${urlSource}" not found interspinx ${lookup.id} (${lookup.path})`, {
+      fileWarn(file, `"${urlSource}" not found intersphinx ${lookup.id} (${lookup.path})`, {
         node: link,
         source: TRANSFORM_SOURCE,
       });
