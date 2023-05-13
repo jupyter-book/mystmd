@@ -19,6 +19,7 @@ parts:
       - file: cross-references
       - file: external-references
       - file: citations
+      - file: proof
       - file: blocks
       - file: diagrams
       - file: dropdowns-cards-and-tabs

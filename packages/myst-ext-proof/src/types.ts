@@ -1,0 +1,17 @@
+export enum ProofKind {
+  proof = 'proof',
+  axiom = 'axiom',
+  lemma = 'lemma',
+  definition = 'definition',
+  criterion = 'criterion',
+  remark = 'remark',
+  conjecture = 'conjecture',
+  corollary = 'corollary',
+  algorithm = 'algorithm',
+  example = 'example',
+  property = 'property',
+  observation = 'observation',
+  proposition = 'proposition',
+  assumption = 'assumption',
+  theorem = 'theorem',
+}

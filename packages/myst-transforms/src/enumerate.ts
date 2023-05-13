@@ -41,9 +41,11 @@ function getDefaultNumberedReferenceLabel(kind: TargetKind | string) {
       return 'Table %s';
     case TargetKind.code:
       return 'Program %s';
-    default:
+    default: {
+      const domain = kind.includes(':') ? kind.split(':')[1] : kind;
       // eslint-disable-next-line no-irregular-whitespace
-      return `${kind.slice(0, 1).toUpperCase()}${kind.slice(1)} %s`;
+      return `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)} %s`;
+    }
   }
 }
 
@@ -142,6 +144,7 @@ function fillReferenceEnumerators(
 function kindFromNode(node: TargetNodes): TargetKind | string {
   if (node.type === 'container') return node.kind || TargetKind.figure;
   if (node.type === 'math') return TargetKind.equation;
+  if ((node as any).kind) return `${node.type}:${(node as any).kind}`;
   return node.type;
 }
 
@@ -252,7 +255,12 @@ export class ReferenceState implements IReferenceState {
       return;
     }
     const kind = kindFromNode(node);
-    const numberNode = shouldEnumerate(node, kind, this.numbering, this.numberAll);
+    const numberNode = shouldEnumerate(
+      node,
+      kind,
+      this.numbering,
+      this.numberAll || node.enumerated,
+    );
     let enumerator = null;
     if (node.enumerated !== false && numberNode) {
       enumerator = this.incrementCount(node, kind as TargetKind);
@@ -344,9 +352,15 @@ export class ReferenceState implements IReferenceState {
     } else if (target.kind === TargetKind.equation) {
       fillReferenceEnumerators(this.file, node, '(%s)', target.node.enumerator);
     } else {
-      // By default look into the caption paragraph if it exists
-      const caption = select('caption > paragraph', target.node) as Paragraph | null;
-      const title = caption ? (copyNode(caption)?.children as PhrasingContent[]) : undefined;
+      // By default look into the caption or admonition title if it exists
+      const caption = select('caption', target.node) || select('admonitionTitle', target.node);
+      // Ensure we are getting the first paragraph
+      const captionParagraph = (
+        caption ? select('paragraph', caption) ?? caption : caption
+      ) as Paragraph | null;
+      const title = captionParagraph
+        ? (copyNode(captionParagraph)?.children as PhrasingContent[])
+        : undefined;
       if (title && node.kind === ReferenceKind.ref && noNodeChildren) {
         node.children = title as any;
       }
@@ -435,7 +449,7 @@ export class MultiPageReferenceState implements IReferenceState {
 
 export const enumerateTargetsTransform = (tree: Root, opts: StateOptions) => {
   opts.state.initializeNumberedHeadingDepths(tree);
-  const nodes = selectAll('container,math,heading,[identifier]', tree) as (
+  const nodes = selectAll('container,math,heading,proof,[identifier]', tree) as (
     | TargetNodes
     | IdentifierNodes
   )[];

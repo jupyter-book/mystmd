@@ -5,7 +5,7 @@ const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Reference <ref>'
 
 export const refRole: RoleSpec = {
   name: 'ref',
-  alias: ['eq', 'numref'],
+  alias: ['eq', 'numref', 'prf:ref'],
   body: {
     type: ParseTypesEnum.string,
     required: true,

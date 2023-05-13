@@ -1,5 +1,6 @@
 ---
-title: Dropdowns, Grids, Tabs & Cards
+title: Dropdowns, Grids, Tabs and Cards
+short_title: Grids, Tabs and Cards
 description: Add advanced user-interface elements to your MyST documents with grids, cards, tabs, and dropdowns.
 thumbnail: ./thumbnails/dropdowns-cards-and-tabs.png
 ---
