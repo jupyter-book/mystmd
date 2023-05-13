@@ -22,7 +22,6 @@ parts:
       - file: blocks
       - file: diagrams
       - file: dropdowns-cards-and-tabs
-      # - file: tasks
   - caption: Executable Content
     chapters:
       - file: interactive-notebooks
@@ -35,7 +34,7 @@ parts:
       - file: accessibility-and-performance
       # - file: search
       - file: analytics
-      # - file: deployment
+      - file: deployment
       # - file: publishing
   - caption: Documents
     chapters:

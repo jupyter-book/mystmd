@@ -112,7 +112,15 @@ As you have seen in the links in MyST (e.g. [](./frontmatter.md)), there is info
 
     Can't do that in a PDF! [^4] (**👈💥**)
 
-[^4]: I mean, now that you are down the rabbit-hole, we can get you back on track with a demo of [referencing equations](#example-equation-targets) (**👈💥**), or just click back on the page to get back to where you were!
+[^4]:
+    I mean, now that you are down the rabbit-hole, we can get you back on track with a demo of [referencing equations](#example-equation-targets) (**👈💥**)
+
+    Or maybe you want to explore an [💥 interactive figure 💥](#fig-altair-horsepower).
+
+:::{figure} ./videos/links.mp4
+:class: framed
+Try clicking the footnote above, you can nest information and interactive figures for the interested reader! You can help with reading comprehension by around 26% by providing information when the reader needs it!!
+:::
 
 To link to a document, for example [](./frontmatter.md), is done through a simple Markdown link `[](./frontmatter.md)`, you can put your own content in between the square brackets, but if you leave it out the link contents will be filled in with the title of the page. If you define the frontmatter on that page (i.e. the description and tooltip), you will also see that information when you hover over the link. This also works for links to Wikipedia (e.g. [Ponyies 🐴](https://en.wikipedia.org/wiki/New_Forest_pony)) as well as Github code (e.g. [](https://github.com/executablebooks/mystjs/blob/main/README.md)).
 

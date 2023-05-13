@@ -5,6 +5,7 @@ subject: MyST Quickstart Tutorial
 short_title: MyST in Jupyter
 description: MyST Markdown can be used in JupyterLab with support for all MyST syntax as well as inline execution.
 binder: https://mybinder.org/v2/gh/executablebooks/jupyterlab-myst/main?urlpath=lab
+thumbnail: ./thumbnails/jupyterlab-myst.png
 ---
 
 ::::{important}
@@ -86,9 +87,46 @@ More Coming Soon™
 - showing frontmatter
 - advanced user interface elements like tabs, grids, and cards
 - citations
-- inline computation & variables examples <-- this is _really_ cool
 
 ---
+
+## Inline Expressions
+
+JupyterLab MyST allows you to create and evaluate inline expressions using the `{eval}` role.
+These turn your markdown cells into places that you can quickly evaluate a simple expression, such as:
+
+- The value of the variable `x`: `` {eval}`x` ``
+- Expand a sympy equation `polynomial`: `` {eval}`expand(polynomial)` ``
+
+:::{figure} ./videos/eval-array.mp4
+:class: framed
+
+Use the `` {eval}`x` `` role to evaluate an expression, which can be text, an image, an equation, or even an `ipywidgets` slider.
+:::
+
+:::{tip} Formatting Numbers
+You can use Python `f-strings` to format numbers, `` {eval}`f'{x:.1%}'` ``, will create something like: "64.6%" if `x` is a random number.
+:::
+
+## Working with `ipywidgets`
+
+Most widgets will work directly inline, allowing you to place widgets or controls inside of callouts, these can be linked together as normal.
+
+:::{figure} ./videos/eval-slider.mp4
+:class: framed
+
+Embed interactive `ipywidgets` in your markdown cells.
+:::
+
+## Task Lists
+
+The MyST extension also makes it very easy to edit task lists directly in the rendered view. Then you click a task item, the markdown is automatically updated.
+
+:::{figure} ./videos/tasks.mp4
+:class: framed
+
+Edit task lists with the `jupyterlab-myst` plugin directly in the rendered view.
+:::
 
 ## Conclusion 🥳
 

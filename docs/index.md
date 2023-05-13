@@ -3,14 +3,50 @@ title: MyST Markdown Tools
 description: MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown.
 ---
 
-MyST is an ecosystem of open-source, community-driven tools designed for scientific communication, including a powerful authoring framework that supports blogs, online books, scientific papers, reports and journals articles. Get up and running with MyST with the following **quickstart tutorials**:
+MyST is an ecosystem of open-source, community-driven tools designed to revolutionize scientific communication. Our powerful authoring framework supports blogs, online books, scientific papers, reports and journals articles.
 
 :::{card} Install MyST 👩‍💻
 :link: ./quickstart.md
 Start here to get up and running with the `myst` command-line tools.
 :::
 
-:::{card} Create a website like this one 🌎
+## Cool MyST Features 🪄
+
+We think MyST is really cool, some of the features that we think stand out are highlighted below with links to places in the documentation where you can reproduce them!
+
+---
+
+🪄🐰 **Rabbit-hole links** allow you to get information to your reader as fast as possible, and they can deep-dive all the way to computations, code and interactive figures. You can play with this demo yourself in [](./quickstart-myst-markdown.md).
+
+:::{figure} ./videos/links.mp4
+:class: framed
+:::
+
+🪄📊 **Live graphs** can be embedded directly in your documentation or articles with computation backed by Jupyter or JupyterLite – running locally, on Binder, or directly in your browser. Get up and running with Thebe in [](./integrating-jupyter.md)
+
+:::{figure} ./videos/thebe.mp4
+:class: framed
+:::
+
+🪄🪐 **JupyterLab support** for MyST comes with inline computations, support for `ipywidgets`, matplotlib sparklines, editable task-lists, rich frontmatter, and beautiful typography and other elements like dropdowns, grids and cards. Install [`jupyterlab-myst`](./quickstart-jupyter-lab-myst.md) today!
+
+:::{figure} ./videos/jupyterlab-myst.mp4
+:class: framed
+:::
+
+🪄📜 **Export to PDF** is easy with MyST, and we support hundreds of different journals out of the box, see [myst-templates](https://github.com/myst-templates)! You can also export to Microsoft Word or even JATS, which is used in scientific publishing. See the [](./quickstart-myst-documents.md)!
+
+:::{figure} ./images/myst-build.png
+:class: framed
+:::
+
+---
+
+## Quickstart Tutorials
+
+Get up and running with MyST with the following **quickstart tutorials**:
+
+:::{card} Publish a Website 🌎
 :link: ./quickstart-myst-websites.md
 Learn the basics of customizing a MyST Website, including sharing frontmatter between pages.
 :::
@@ -42,7 +78,7 @@ TL;DR
 
 ## Project Goals
 
-`mystjs` is part of the [Executable Books](https://executablebooks.org/) organization, and is an open-source, community-driven project to improve scientific communication, including integrations into Jupyter Notebooks and computational results.
+MyST is part of the [Executable Books](https://executablebooks.org/) organization, and is an open-source, community-driven project to improve scientific communication, including integrations into Jupyter Notebooks and computational results.
 
 ::::{grid} 1 1 2 3
 

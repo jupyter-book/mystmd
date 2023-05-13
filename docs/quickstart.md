@@ -29,11 +29,20 @@ The content that you build is compatible between tools in the MyST ecosystem, ho
 :::
 ::::
 
-## Prerequisites
-
 To follow along with this quickstart tutorial on your own computer, it is helpful if you have some familiarity with using the command line, as well as using a text editor and/or JupyterLab.
 
-Additionally, you should have these programs installed:
+(lookout-for-tutorial-actions)=
+
+> 🛠 Throughout the tutorial, whenever you're supposed to _do_ something you will see a 🛠
+
+## Installing the MyST CLI 📦
+
+The `myst-cli` is a command line interface (CLI) that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites. To get started install `myst-cli`.
+
+:::{tip} Prerequisites
+:class: dropdown
+
+You should have these programs installed:
 
 - [Node.js](https://nodejs.org) version **>=16.0.0**
 - [Node Package Manager (npm)](https://docs.npmjs.com/about-npm) version **>=7.0.0**
@@ -43,13 +52,7 @@ If the node ecosystem is new to you[^conda], see our getting started guides for 
 
 [^conda]: If you have experience in Conda installations, we would _love_ your help to get the MyST install process into a form that most Pythonistas are familiar with!! See [GitHub issue](https://github.com/executablebooks/mystjs/issues/139) 🙏 🐍 🚀
 
-(lookout-for-tutorial-actions)=
-
-> 🛠 Throughout the tutorial, whenever you're supposed to _do_ something you will see a 🛠
-
-## Installing the MyST CLI 📦
-
-The `myst-cli` is a command line interface (CLI) that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites. To get started install `myst-cli`.
+:::
 
 Check your `node` installation **greater than version 16** (see [Installing NodeJS](./installing-prerequisites.md)):
 
