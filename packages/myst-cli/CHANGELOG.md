@@ -1,5 +1,29 @@
 # myst-cli
 
+## 0.1.28
+
+### Patch Changes
+
+- 78b7232e: Add support for sphinx proofs
+- b2ac9d13: Add videos as mp4 using ![](my-video.mp4)
+- Updated dependencies [78b7232e]
+- Updated dependencies [79e24fd7]
+- Updated dependencies [b2ac9d13]
+  - myst-transforms@0.0.29
+  - myst-common@0.0.17
+  - myst-spec-ext@0.0.12
+  - myst-parser@0.0.29
+  - myst-ext-card@0.0.7
+  - myst-ext-grid@0.0.7
+  - myst-ext-proof@0.0.2
+  - myst-ext-reactive@0.0.7
+  - myst-ext-tabs@0.0.7
+  - myst-templates@0.1.17
+  - myst-to-docx@0.0.23
+  - myst-to-jats@0.0.27
+  - myst-to-tex@0.0.26
+  - tex-to-myst@0.0.26
+
 ## 0.1.27
 
 ### Patch Changes

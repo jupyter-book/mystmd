@@ -1,5 +1,11 @@
 # myst-common
 
+## 0.0.17
+
+### Patch Changes
+
+- 79e24fd7: Add NotebookCell
+
 ## 0.0.16
 
 ### Patch Changes

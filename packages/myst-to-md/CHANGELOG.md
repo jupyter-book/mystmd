@@ -1,5 +1,12 @@
 # myst-to-md
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [79e24fd7]
+  - myst-common@0.0.17
+
 ## 0.0.6
 
 ### Patch Changes

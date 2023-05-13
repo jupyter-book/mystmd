@@ -1,5 +1,15 @@
 # myst-roles
 
+## 0.0.29
+
+### Patch Changes
+
+- 78b7232e: Add support for sphinx proofs
+- Updated dependencies [79e24fd7]
+- Updated dependencies [b2ac9d13]
+  - myst-common@0.0.17
+  - myst-spec-ext@0.0.12
+
 ## 0.0.28
 
 ## 0.0.27
