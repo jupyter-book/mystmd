@@ -35,8 +35,8 @@ My **bold** mountain 🏔🚠.
 Check out [](#my-fig)!!
 ````
 
-```{note}
-There is different syntax for creating [Section/Header targets](#targeting-headers) and ways to [label equations](#targeting-equations) when using dollar math or AMS math.
+```{tip} Using Markdown Links 🔗
+You can use this syntax to also reference [Section/Header targets](#targeting-headers) as well as [label equations](#targeting-equations) when using [dollar math](#dollar-math) or [AMS math](#ams-environments).
 ```
 
 (link-references)=

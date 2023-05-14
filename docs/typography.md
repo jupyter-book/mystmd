@@ -17,7 +17,7 @@ Try changing the number of `#`s to change the `depth`.
 
 An alternative syntax, {ref}`setex-headings`, is also supported for level 1 and 2 headers.
 
-To reference a heading in your text, you can use the `(target)=` syntax, see {ref}`targeting-headers` for more.
+To reference a heading in your text, you can use the `(target)=` syntax, see [{name}](#targeting-headers) for more.
 
 ## Inline Text Formatting
 

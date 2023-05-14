@@ -18,7 +18,7 @@ During this how to guide, you can make changes and experiment with MyST syntax i
 
 ## Overview
 
-MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [ReStructured Text](https://docutils.sourceforge.io/rst.html) (RST) ecosystems and is is a superset of [CommonMark](./commonmark.md).
+{abbr}`MyST (Markedly Structured Text)` is designed to create publication-quality documents written entirely in Markdown. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [ReStructured Text](https://docutils.sourceforge.io/rst.html) (RST) ecosystems and is is a superset of [CommonMark](./commonmark.md).
 
 MyST allows you to directly create “directives” and “roles” that extend markdown to support technical and scientific documents. Directives are block-level extension points, like [callout panels](./admonitions.md), [tabs](./dropdowns-cards-and-tabs.md), [figures](./figures.md) or [embedded charts](./interactive-notebooks.ipynb); and roles are inline extension points, for components like [cross-references](./cross-references.md), [external references](./external-references.md), [citations](./citations.md), or [inline math](./math.md). MyST also supports rich information about linking to other documents in common services (like Wikipedia or a DOI link), these allow for rich-previews of the links as well as easy ways to include citations.
 
@@ -96,7 +96,7 @@ See [](./frontmatter.md) for all options, how to use frontmatter in various tool
 
 ## Links & Cross-References
 
-As you have seen in the links in MyST (e.g. [](./frontmatter.md)), there is information that is pulled forward into your reading context on hover or click. We believe it is important to provide as much possible context when you are reading on elements like links to other pages, cross-references to figures, tables and equations as well as traditional academic citations[^contextual-information] (**👈 click the footnote!**). Additionally, all of these have fallbacks in static PDF or Word documents.
+As you have seen in the links in MyST (e.g. [](./frontmatter.md)), there is information that is pulled forward into your reading context on hover or click. We believe it is important to provide as much possible context when you are reading on elements like links to other pages, cross-references to figures, tables and equations as well as traditional academic citations[^contextual-information] (**👈 see the footnote!**). Additionally, all of these have fallbacks in static PDF or Word documents.
 
 [^contextual-information]:
     For example, in [](doi:10.1145/3411764.3445648) the authors showed you can speed up comprehension of a paper by 26% when showing information in context, rather than requiring researchers to scroll back and forth to find figures and equations.
@@ -161,7 +161,7 @@ See [](./citations.md) for more information about using citations and references
 
 ## What's Next?
 
-We hope the above sections in this overview should have given you a sense of the types of things that MyST can do! Once you write a document in MyST, you can use the command line tools to translate that into a [scientific PDF article](./creating-pdf-documents.md), or a [Word Document](./creating-word-documents.md) or a [website](./website-overview.md) like this site!
+We hope the above sections in this overview should have given you a sense of the types of things that MyST can do! Once you write a document in MyST, you can use the command line tools to translate that into a [scientific PDF article](./creating-pdf-documents.md), or a [Word Document](./creating-word-documents.md) or a [website](./quickstart-myst-websites.md) like this site!
 
 ```{mermaid}
 flowchart LR
