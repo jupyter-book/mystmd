@@ -3,7 +3,7 @@ title: MyST Markdown Tools
 description: MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown.
 ---
 
-MyST is an ecosystem of open-source, community-driven tools designed to revolutionize scientific communication. Our powerful authoring framework supports blogs, online books, scientific papers, reports and journals articles.
+{abbr}`MyST (Markedly Structured Text)` is an ecosystem of open-source, community-driven tools designed to revolutionize scientific communication. Our powerful authoring framework supports blogs, online books, scientific papers, reports and journals articles.
 
 :::{card} Install MyST 👩‍💻
 :link: ./quickstart.md
@@ -12,7 +12,7 @@ Start here to get up and running with the `myst` command-line tools.
 
 ## Cool MyST Features 🪄
 
-We think MyST is really cool, some of the features that we think stand out are highlighted below with links to places in the documentation where you can reproduce them!
+We think {abbr}`MyST (Markedly Structured Text)` is really cool, some of the features that we think stand out are highlighted below with links to places in the documentation where you can reproduce them!
 
 ---
 

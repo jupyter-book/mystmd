@@ -21,7 +21,7 @@ Directives are multi-line containers that include an identifier, arguments, opti
 
 ``````{tab-set}
 ````{tab-item} Colon Fence
-Use a colon fence (`:::`) when the contents of the directive is markdown, such as [callouts](./admonitions.md) this will improve the processing in renderers that do not support MyST:
+Use a colon fence (`:::`) when the contents of the directive is markdown, such as [callouts](./admonitions.md) or  [theorems](./proofs-and-theorems.md) this will improve the processing in renderers that do not support MyST:
 
 ```{myst}
 

@@ -53,6 +53,8 @@ w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
 See [](#my-equation) for more information!
 ````
 
+(dollar-math)=
+
 ### Dollar math equations
 
 You can also create equations by wrapping content with two dollar signs (`$$`).
@@ -96,7 +98,9 @@ The equation cross-referencing and numbering will work with the rest of your con
 The label implementation does not yet work for `sub-equations` and may not work if you have more than one label.
 ```
 
-**Supported AMS Environments**
+(ams-environments)=
+
+## Supported AMS Environments
 
 equation
 : basic equation environment, similar to a math directive or dollar-math
