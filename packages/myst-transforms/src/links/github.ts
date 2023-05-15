@@ -17,6 +17,14 @@ type GithubFileLink = {
   file: string;
   from?: number;
   to?: number;
+  raw: string;
+};
+
+type GithubIssueLink = {
+  kind: 'issue';
+  org: string;
+  repo: string;
+  issue_number: string;
 };
 
 /**
@@ -39,7 +47,7 @@ function safeUrlParse(urlSource: string): URL | undefined {
  *
  *    https://raw.githubusercontent.com/executablebooks/mystjs/3cdb8ec6/packages/mystjs/src/mdast/state.ts
  */
-function parseGithubFile(urlSource: string): undefined | GithubFileLink {
+function parseGithubFile(urlSource: string): undefined | [string, GithubFileLink] {
   const url = safeUrlParse(urlSource);
   if (url?.host !== 'github.com') return;
   const match = url.pathname.match(/^\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)/);
@@ -49,19 +57,42 @@ function parseGithubFile(urlSource: string): undefined | GithubFileLink {
   const [, fromString, toString] = lineNumbers ?? [];
   const from = fromString ? Number(fromString) : undefined;
   const to = toString ? Number(toString) : undefined;
-  return {
-    kind: 'file',
-    org,
-    repo,
-    reference,
+  return [
     file,
-    from,
-    to,
-  };
+    {
+      kind: 'file',
+      org,
+      repo,
+      reference,
+      file,
+      from,
+      to,
+      raw: `https://raw.githubusercontent.com/${org}/${repo}/${reference}/${file}`,
+    },
+  ];
 }
 
-function rawUrl(github: GithubFileLink) {
-  return `https://raw.githubusercontent.com/${github.org}/${github.repo}/${github.reference}/${github.file}`;
+/**
+ * This takes a url like:
+ *
+ *    https://github.com/executablebooks/mystjs/issues/1
+ *
+ */
+function parseGithubIssue(urlSource: string): undefined | [string, GithubIssueLink] {
+  const url = safeUrlParse(urlSource);
+  if (url?.host !== 'github.com') return;
+  const match = url.pathname.match(/^\/([^/]+)\/([^/]+)\/(?:issues|pull)\/([0-9]+)(.+)?/);
+  if (!match) return;
+  const [, org, repo, issue_number] = match;
+  return [
+    `${org}/${repo}#${issue_number}`,
+    {
+      kind: 'issue',
+      org,
+      repo,
+      issue_number,
+    },
+  ];
 }
 
 export class GithubTransformer implements LinkTransformer {
@@ -74,20 +105,18 @@ export class GithubTransformer implements LinkTransformer {
 
   transform(link: Link, file: VFile): boolean {
     const urlSource = link.urlSource || link.url;
-    const github = parseGithubFile(urlSource);
-    if (!github) {
+    const parsed = parseGithubIssue(urlSource) || parseGithubFile(urlSource);
+    if (!parsed) {
       // fileWarn(file, `Found Github url, but couldn't parse it: ${urlSource}`, {
       //   node: link,
       //   source: TRANSFORM_SOURCE,
       // });
       return false;
     }
-    link.data = {
-      ...github,
-      raw: rawUrl(github),
-    };
+    const [defaultText, data] = parsed;
+    link.data = data;
     link.internal = false;
-    updateLinkTextIfEmpty(link, github.file);
+    updateLinkTextIfEmpty(link, defaultText);
     return true;
   }
 }
