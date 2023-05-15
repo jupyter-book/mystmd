@@ -158,7 +158,19 @@ Wikipedia links, like `https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)` w
 % TODO: Set the default wiki links, or an additional wiki link in references, e.g. to something like https://wiki.seg.org/wiki/Knowledge_tree
 ```
 
-## GitHub Links
+## GitHub
+
+### Issues and Pull Requests
+
+MyST can directly link and show preview of GitHub issues and Pull Requests, for example, [#336](https://github.com/executablebooks/mystjs/issues/336) and [#87](https://github.com/executablebooks/myst-theme/pull/87). To enable this, just use a normal link to your
+
+```markdown
+[#87](https://github.com/executablebooks/myst-theme/pull/87)
+```
+
+If you do not include children for the link, then the default text will become `owner/repo#123`.
+
+### Linking to Code
 
 MyST can directly integrate with links to GitHub to create hover-card information directly integrated into your MyST documents. For example, a link to the [linkTransforms](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L12-L28) plugin code shows a preview of the code. The code preview works for both multiple line numbers and highlighting [single lines](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L30), which shows the surrounding ten lines, with the referenced line highlighted. If you reference the [full file](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts) then the first ten lines of the file are shown in the preview.
 

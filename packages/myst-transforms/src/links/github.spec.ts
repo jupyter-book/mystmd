@@ -40,4 +40,41 @@ describe('Test GithubTransformer', () => {
     expect(t.transform(link, file)).toBe(false);
     expect(link.data).toBeUndefined();
   });
+
+  test('Check issue links', () => {
+    const file = new VFile();
+    const t = new GithubTransformer();
+    const url = 'https://github.com/executablebooks/mystjs/issues/1';
+    const link: Link = {
+      type: 'link',
+      url,
+      children: [],
+    };
+    expect(t.test(link.url)).toBe(true);
+    expect(t.transform(link, file)).toBe(true);
+    expect(link.data).toEqual({
+      kind: 'issue',
+      org: 'executablebooks',
+      repo: 'mystjs',
+      issue_number: '1',
+    });
+  });
+  test('Check pull request links', () => {
+    const file = new VFile();
+    const t = new GithubTransformer();
+    const url = 'https://github.com/executablebooks/mystjs/pull/1';
+    const link: Link = {
+      type: 'link',
+      url,
+      children: [],
+    };
+    expect(t.test(link.url)).toBe(true);
+    expect(t.transform(link, file)).toBe(true);
+    expect(link.data).toEqual({
+      kind: 'issue',
+      org: 'executablebooks',
+      repo: 'mystjs',
+      issue_number: '1',
+    });
+  });
 });
