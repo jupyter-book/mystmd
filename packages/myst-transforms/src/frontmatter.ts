@@ -1,19 +1,26 @@
 import yaml from 'js-yaml';
-import { select } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
 import type { Root } from 'mdast';
 import type { Block, Code, Heading } from 'myst-spec';
 import { toText } from 'myst-common';
+import { mystTargetsTransform } from './targets';
 
 type Options = {
   removeYaml?: boolean;
   removeHeading?: boolean;
+  /**
+   * In many existing JupyterBooks, the first node is a label `(heading)=`
+   * The `propagateTargets` option merges the target with the heading
+   * so the title can be picked up by the frontmatter.
+   */
+  propagateTargets?: boolean;
 };
 
 export function getFrontmatter(
   tree: Root,
-  opts: Options = { removeYaml: true, removeHeading: true },
+  opts: Options = { removeYaml: true, removeHeading: true, propagateTargets: true },
 ): { tree: Root; frontmatter: Record<string, any> } {
+  if (opts.propagateTargets) mystTargetsTransform(tree);
   const firstParent =
     (tree.children[0]?.type as any) === 'block' ? (tree.children[0] as any as Block) : tree;
   const firstNode = firstParent.children?.[0] as Code;

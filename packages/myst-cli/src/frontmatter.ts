@@ -34,6 +34,7 @@ export function getPageFrontmatter(
   const { frontmatter: rawPageFrontmatter } = getFrontmatter(tree, {
     removeYaml: removeNode,
     removeHeading: removeNode,
+    propagateTargets: true,
   });
   unnestKernelSpec(rawPageFrontmatter);
   const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, {
