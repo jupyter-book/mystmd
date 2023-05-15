@@ -1,5 +1,12 @@
 # myst-transforms
 
+## 0.0.30
+
+### Patch Changes
+
+- 034ce741: Add pull requests and issues to known github links
+- ce8932e0: Pick up frontmatter title that has a label/target node in front of it.
+
 ## 0.0.29
 
 ### Patch Changes

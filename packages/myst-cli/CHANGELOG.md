@@ -1,5 +1,17 @@
 # myst-cli
 
+## 0.1.29
+
+### Patch Changes
+
+- 034ce741: Add pull requests and issues to known github links
+- ce8932e0: Pick up frontmatter title that has a label/target node in front of it.
+- Updated dependencies [034ce741]
+- Updated dependencies [ce8932e0]
+  - myst-transforms@0.0.30
+  - myst-parser@0.0.30
+  - myst-to-jats@0.0.28
+
 ## 0.1.28
 
 ### Patch Changes

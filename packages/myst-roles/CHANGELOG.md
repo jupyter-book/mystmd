@@ -1,5 +1,11 @@
 # myst-roles
 
+## 0.0.30
+
+### Patch Changes
+
+- 837785a3: Add the {doc} role to look to other documents
+
 ## 0.0.29
 
 ### Patch Changes
