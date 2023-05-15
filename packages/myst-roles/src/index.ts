@@ -4,6 +4,7 @@ import { citeRole } from './cite';
 import { deleteRole } from './delete';
 import { mathRole } from './math';
 import { refRole } from './reference';
+import { docRole } from './doc';
 import { siRole } from './si';
 import { evalRole } from './inlineExpression';
 import { smallcapsRole } from './smallcaps';
@@ -18,6 +19,7 @@ export const defaultRoles = [
   deleteRole,
   mathRole,
   refRole,
+  docRole,
   siRole,
   evalRole,
   smallcapsRole,
@@ -31,6 +33,7 @@ export { citeRole } from './cite';
 export { deleteRole } from './delete';
 export { mathRole } from './math';
 export { refRole } from './reference';
+export { docRole } from './doc';
 export { siRole } from './si';
 export { smallcapsRole } from './smallcaps';
 export { subscriptRole } from './subscript';
