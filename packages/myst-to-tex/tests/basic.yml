@@ -265,3 +265,24 @@ cases:
                   value: my-example
     latex: |-
       my link: \href{https://example.com\#\^my\_example}{my-example}
+  - title: code-block-default
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: python
+          value: |-
+            # here is math
+            1+2
+          children:
+            - type: code
+              lang: python
+              value: |-
+                # here is math
+                1+2
+    latex: |-
+      \begin{verbatim}
+      # here is math
+      1+2
+      \end{verbatim}
