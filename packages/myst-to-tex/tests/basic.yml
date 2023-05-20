@@ -272,12 +272,14 @@ cases:
         - type: mystDirective
           name: code-block
           args: python
+          class: my-class
           value: |-
             # here is math
             1+2
           children:
             - type: code
               lang: python
+              class: my-class
               value: |-
                 # here is math
                 1+2
@@ -286,3 +288,27 @@ cases:
       # here is math
       1+2
       \end{verbatim}
+  - title: code-block-minted
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: python
+          class: minted
+          value: |-
+            # here is math
+            1+2
+          children:
+            - type: code
+              lang: python
+              class: minted
+              value: |-
+                # here is math
+                1+2
+    latex: |-
+      \begin{minted}{python}
+      # here is math
+      1+2
+      \end{minted}
+
