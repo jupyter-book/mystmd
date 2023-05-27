@@ -77,6 +77,7 @@ const macros: Record<string, number> = {
   tabularx: 2,
   supertabular: 1,
   adjustbox: 1,
+  resizebox: 2,
   captionof: 2,
   // SI Units: https://texdoc.org/serve/siunitx/0
   SI: 2,
