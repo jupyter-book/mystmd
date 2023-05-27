@@ -107,6 +107,10 @@ export const TABLE_HANDLERS: Record<string, Handler> = {
       state.closeNode();
     });
   },
+  macro_resizebox(node, state) {
+    const lastArg = getArguments(node, 'group').pop();
+    if (lastArg) state.renderChildren(lastArg);
+  },
   env_adjustbox(node, state) {
     state.renderChildren(node);
   },
