@@ -7,6 +7,37 @@ function addMacrosToState(value: string, state: ITexSerializer) {
   });
 }
 
+type MathPlugins = ITexSerializer['data']['mathPlugins'];
+
+/**
+ * Add any required recursive commands found, for example,
+ * if only `\aMat` was included in the content, but sill requires other commands:
+ *
+ * ```javascript
+ * {
+ *    '\aNrm': "a",
+ *    '\aMat': '[\mathrm{\aNrm}]',
+ * }
+ * ```
+ */
+export function withRecursiveCommands(
+  state: ITexSerializer,
+  plugins = state.data.mathPlugins,
+): MathPlugins {
+  if (!state.options.math) return plugins;
+  const pluginsList = Object.entries(plugins);
+  const addedPlugins: MathPlugins = {};
+  Object.entries(state.options.math).forEach(([k, v]) => {
+    if (plugins[k]) return;
+    pluginsList.forEach(([, value]) => {
+      if (value.includes(k)) addedPlugins[k] = v;
+    });
+  });
+  const newPlugins = { ...addedPlugins, ...plugins };
+  if (Object.keys(addedPlugins).length === 0) return newPlugins;
+  return withRecursiveCommands(state, newPlugins);
+}
+
 const math: Handler = (node, state) => {
   const { label, enumerated } = node;
   state.usePackages('amsmath');
