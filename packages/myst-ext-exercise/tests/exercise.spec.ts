@@ -3,13 +3,16 @@ import { exerciseDirective } from 'myst-ext-exercise';
 
 describe('exercise directive', () => {
   it('exercise directive parses', async () => {
-    const content = '```{exercise} Exercise Title\nExercise content\n```';
+    const content = '```{exercise} Exercise Title\n:label: ex-1\nExercise content\n```';
     const expected = {
       type: 'root',
       children: [
         {
           type: 'mystDirective',
           name: 'exercise',
+          options: {
+            label: 'ex-1',
+          },
           args: 'Exercise Title',
           value: 'Exercise content',
           position: {
@@ -18,7 +21,7 @@ describe('exercise directive', () => {
               column: 0,
             },
             end: {
-              line: 3,
+              line: 4,
               column: 0,
             },
           },
@@ -26,6 +29,8 @@ describe('exercise directive', () => {
             {
               type: 'exercise',
               enumerated: true,
+              identifier: 'ex-1',
+              label: 'ex-1',
               children: [
                 {
                   type: 'admonitionTitle',
@@ -47,11 +52,11 @@ describe('exercise directive', () => {
                   position: {
                     end: {
                       column: 0,
-                      line: 2,
+                      line: 3,
                     },
                     start: {
                       column: 0,
-                      line: 1,
+                      line: 2,
                     },
                   },
                 },
