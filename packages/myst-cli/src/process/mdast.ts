@@ -21,6 +21,7 @@ import {
   GithubTransformer,
   RRIDTransformer,
   DOITransformer,
+  joinGatesPlugin,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
@@ -136,6 +137,7 @@ export async function transformMdast(
     .use(htmlPlugin, { htmlHandlers })
     .use(mathPlugin, { macros: frontmatter.math })
     .use(enumerateTargetsPlugin, { state }) // This should be after math
+    .use(joinGatesPlugin)
     .run(mdast, vfile);
 
   // Run the link transformations that can be done without knowledge of other files
