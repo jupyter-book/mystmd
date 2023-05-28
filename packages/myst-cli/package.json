@@ -77,6 +77,7 @@
     "myst-config": "^0.0.15",
     "myst-ext-card": "^0.0.7",
     "myst-ext-grid": "^0.0.7",
+    "myst-ext-exercise": "^0.0.1",
     "myst-ext-proof": "^0.0.2",
     "myst-ext-reactive": "^0.0.7",
     "myst-ext-tabs": "^0.0.7",

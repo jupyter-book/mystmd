@@ -5,7 +5,15 @@ import type { Container, CrossReference, Heading, Link, Math, Paragraph } from '
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import { createHtmlId, fileWarn, normalizeLabel, setTextAsChild, copyNode } from 'myst-common';
+import type { GenericNode } from 'myst-common';
+import {
+  createHtmlId,
+  fileWarn,
+  normalizeLabel,
+  setTextAsChild,
+  copyNode,
+  liftChildren,
+} from 'myst-common';
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
 
@@ -46,6 +54,20 @@ function getDefaultNumberedReferenceLabel(kind: TargetKind | string) {
       // eslint-disable-next-line no-irregular-whitespace
       return `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)} %s`;
     }
+  }
+}
+
+function getDefaultNamedReferenceLabel(kind: TargetKind | string, hasTitle: boolean) {
+  const domain = kind.includes(':') ? kind.split(':')[1] : kind;
+  const name = `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)}`;
+  switch (kind) {
+    // TODO: These need to be moved to the directive definition in an extension
+    case 'proof':
+    case 'exercise':
+      return hasTitle ? `${name} ({name})` : name;
+    default:
+      if (hasTitle) return '{name}';
+      return name;
   }
 }
 
@@ -366,7 +388,7 @@ export class ReferenceState implements IReferenceState {
       }
       const template = target.node.enumerator
         ? getDefaultNumberedReferenceLabel(target.kind)
-        : '{name}';
+        : getDefaultNamedReferenceLabel(target.kind, !!title);
       fillReferenceEnumerators(this.file, node, template, target.node.enumerator, title);
     }
     node.resolved = true;
@@ -449,7 +471,7 @@ export class MultiPageReferenceState implements IReferenceState {
 
 export const enumerateTargetsTransform = (tree: Root, opts: StateOptions) => {
   opts.state.initializeNumberedHeadingDepths(tree);
-  const nodes = selectAll('container,math,heading,proof,[identifier]', tree) as (
+  const nodes = selectAll('container,math,heading,proof,[identifier],[enumerated=true]', tree) as (
     | TargetNodes
     | IdentifierNodes
   )[];
@@ -548,6 +570,22 @@ export const resolveReferenceLinksTransform = (tree: Root, opts: StateOptions) =
   });
 };
 
+/** Cross references cannot contain links, but should retain their content */
+function unnestCrossReferencesTransform(tree: Root) {
+  const xrefs = selectAll('crossReference', tree) as GenericNode[];
+  xrefs.forEach((xref) => {
+    const children = xref.children as any;
+    if (!children) return;
+    const subtree = { type: 'root', children: copyNode(children) } as any;
+    const nested = select('crossReference,link', subtree);
+    if (!nested) return;
+    liftChildren(subtree, 'link');
+    liftChildren(subtree, 'crossReference');
+    xref.children = subtree.children;
+  });
+  return tree.children as PhrasingContent[];
+}
+
 export const resolveCrossReferencesTransform = (tree: Root, opts: StateOptions) => {
   visit(tree, 'crossReference', (node: CrossReference) => {
     opts.state.resolveReferenceContent(node);
@@ -558,6 +596,7 @@ export const resolveReferencesTransform = (tree: Root, file: VFile, opts: StateO
   resolveReferenceLinksTransform(tree, opts);
   resolveCrossReferencesTransform(tree, opts);
   addContainerCaptionNumbersTransform(tree, file, opts);
+  unnestCrossReferencesTransform(tree);
 };
 
 export const resolveReferencesPlugin: Plugin<[StateOptions], Root, Root> =

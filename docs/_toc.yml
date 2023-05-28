@@ -20,6 +20,7 @@ parts:
       - file: external-references
       - file: citations
       - file: proofs-and-theorems
+      - file: exercises
       - file: blocks
       - file: diagrams
       - file: dropdowns-cards-and-tabs
