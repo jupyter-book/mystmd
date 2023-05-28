@@ -5,7 +5,15 @@ import type { Container, CrossReference, Heading, Link, Math, Paragraph } from '
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import { createHtmlId, fileWarn, normalizeLabel, setTextAsChild, copyNode } from 'myst-common';
+import type { GenericNode } from 'myst-common';
+import {
+  createHtmlId,
+  fileWarn,
+  normalizeLabel,
+  setTextAsChild,
+  copyNode,
+  liftChildren,
+} from 'myst-common';
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
 
@@ -548,6 +556,22 @@ export const resolveReferenceLinksTransform = (tree: Root, opts: StateOptions) =
   });
 };
 
+/** Cross references cannot contain links, but should retain their content */
+function unnestCrossReferencesTransform(tree: Root) {
+  const xrefs = selectAll('crossReference', tree) as GenericNode[];
+  xrefs.forEach((xref) => {
+    const children = xref.children as any;
+    if (!children) return;
+    const subtree = { type: 'root', children: copyNode(children) } as any;
+    const nested = select('crossReference,link', subtree);
+    if (!nested) return;
+    liftChildren(subtree, 'link');
+    liftChildren(subtree, 'crossReference');
+    xref.children = subtree.children;
+  });
+  return tree.children as PhrasingContent[];
+}
+
 export const resolveCrossReferencesTransform = (tree: Root, opts: StateOptions) => {
   visit(tree, 'crossReference', (node: CrossReference) => {
     opts.state.resolveReferenceContent(node);
@@ -558,6 +582,7 @@ export const resolveReferencesTransform = (tree: Root, file: VFile, opts: StateO
   resolveReferenceLinksTransform(tree, opts);
   resolveCrossReferencesTransform(tree, opts);
   addContainerCaptionNumbersTransform(tree, file, opts);
+  unnestCrossReferencesTransform(tree);
 };
 
 export const resolveReferencesPlugin: Plugin<[StateOptions], Root, Root> =
