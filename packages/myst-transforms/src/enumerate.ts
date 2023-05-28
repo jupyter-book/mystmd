@@ -57,6 +57,20 @@ function getDefaultNumberedReferenceLabel(kind: TargetKind | string) {
   }
 }
 
+function getDefaultNamedReferenceLabel(kind: TargetKind | string, hasTitle: boolean) {
+  const domain = kind.includes(':') ? kind.split(':')[1] : kind;
+  const name = `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)}`;
+  switch (kind) {
+    // TODO: These need to be moved to the directive definition in an extension
+    case 'proof':
+    case 'exercise':
+      return hasTitle ? `${name} ({name})` : name;
+    default:
+      if (hasTitle) return '{name}';
+      return name;
+  }
+}
+
 export enum ReferenceKind {
   ref = 'ref',
   numref = 'numref',
@@ -374,7 +388,7 @@ export class ReferenceState implements IReferenceState {
       }
       const template = target.node.enumerator
         ? getDefaultNumberedReferenceLabel(target.kind)
-        : '{name}';
+        : getDefaultNamedReferenceLabel(target.kind, !!title);
       fillReferenceEnumerators(this.file, node, template, target.node.enumerator, title);
     }
     node.resolved = true;
@@ -457,7 +471,7 @@ export class MultiPageReferenceState implements IReferenceState {
 
 export const enumerateTargetsTransform = (tree: Root, opts: StateOptions) => {
   opts.state.initializeNumberedHeadingDepths(tree);
-  const nodes = selectAll('container,math,heading,proof,[identifier]', tree) as (
+  const nodes = selectAll('container,math,heading,proof,[identifier],[enumerated=true]', tree) as (
     | TargetNodes
     | IdentifierNodes
   )[];
