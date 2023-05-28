@@ -1,5 +1,11 @@
 # myst-to-tex
 
+## 0.0.27
+
+### Patch Changes
+
+- 330c0f08: Add check to include any recursive commands within plugins in LaTeX
+
 ## 0.0.26
 
 ### Patch Changes
