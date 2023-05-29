@@ -95,7 +95,9 @@ cases:
         </front>
         <body/>
         <sub-article>
-          <front-stub/>
+          <front-stub>
+            <article-version article-version-type="alt representation">notebook</article-version>
+          </front-stub>
           <body>
             <sec id="nb-cell-0" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
@@ -204,7 +206,9 @@ cases:
           </sec>
         </body>
         <sub-article>
-          <front-stub/>
+          <front-stub>
+            <article-version article-version-type="alt representation">notebook</article-version>
+          </front-stub>
           <body>
             <sec id="nb-cell-0" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>

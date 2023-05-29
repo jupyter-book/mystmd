@@ -598,7 +598,9 @@ export class JatsDocument {
         footnotes: state.footnotes,
         expressions: state.expressions,
       }),
-      ...subArticles.map((article) => this.subArticle(article)),
+      ...subArticles.map((article, ind) =>
+        this.subArticle(article, ind === 0 && this.content.kind === SourceFileKind.Notebook),
+      ),
     ];
     const article: Element = {
       type: 'element',
@@ -609,7 +611,7 @@ export class JatsDocument {
     return article;
   }
 
-  frontStub(frontmatter?: PageFrontmatter): Element[] {
+  frontStub(frontmatter?: PageFrontmatter, notebookRep?: boolean): Element[] {
     const stubFrontmatter: Record<string, any> = {};
     if (frontmatter) {
       Object.entries(frontmatter).forEach(([key, val]) => {
@@ -620,17 +622,25 @@ export class JatsDocument {
       });
     }
     const articleMeta = getArticleMeta(stubFrontmatter);
-    if (!articleMeta) return [];
-    return [{ type: 'element', name: 'front-stub', elements: articleMeta.elements }];
+    const elements = articleMeta?.elements ?? [];
+    if (notebookRep) {
+      elements.push({
+        type: 'element',
+        name: 'article-version',
+        attributes: { 'article-version-type': 'alt representation' },
+        elements: [{ type: 'text', text: 'notebook' }],
+      });
+    }
+    return [{ type: 'element', name: 'front-stub', elements }];
   }
 
-  subArticle(content: ArticleContent): Element {
+  subArticle(content: ArticleContent, notebookRep: boolean): Element {
     const state = new JatsSerializer(this.file, content.mdast, {
       ...this.options,
       isSubArticle: true,
     });
     const elements: Element[] = [
-      ...this.frontStub(content.frontmatter),
+      ...this.frontStub(content.frontmatter, notebookRep),
       { type: 'element', name: 'body', elements: state.elements() },
       ...getBack({
         citations: content.citations,
