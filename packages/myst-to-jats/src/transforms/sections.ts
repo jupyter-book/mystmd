@@ -25,6 +25,10 @@ function blockIsNotebookCode(node: Block) {
   return sectionAttrsFromBlock(node)['sec-type'] === NotebookCell.code;
 }
 
+function blockIsNotebookFigure(node: Block) {
+  return !!node.data?.['fig-cap'];
+}
+
 /**
  * This transform does the following:
  * - For sub-articles:
@@ -45,7 +49,11 @@ export function sectionTransform(tree: Root, opts: Options) {
     return;
   }
   (selectAll('block', tree) as Block[]).forEach((node) => {
-    if (blockIsNotebookCode(node)) (node as any).type = '_remove';
+    if (blockIsNotebookFigure(node)) {
+      (node as any).type = 'section';
+    } else if (blockIsNotebookCode(node)) {
+      (node as any).type = '_remove';
+    }
   });
   remove(tree, '_remove');
   liftChildren(tree, 'block'); // this looses part information. TODO: milestones
