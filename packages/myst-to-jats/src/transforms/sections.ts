@@ -52,10 +52,14 @@ export function sectionTransform(tree: Root, opts: Options) {
     if (blockIsNotebookFigure(node)) {
       (node as any).type = 'section';
     } else if (blockIsNotebookCode(node)) {
-      (node as any).type = '_remove';
+      (node as any).type = '__delete__';
     }
   });
-  remove(tree, '_remove');
+  const removed = remove(tree, '__delete__');
+  if (removed === null) {
+    // remove is unhappy if all children are removed - this forces it through
+    tree.children = [];
+  }
   liftChildren(tree, 'block'); // this looses part information. TODO: milestones
   const children: Parent[] = [];
   let current: Section | undefined = undefined;
