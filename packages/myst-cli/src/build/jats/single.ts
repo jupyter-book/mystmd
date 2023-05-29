@@ -42,17 +42,17 @@ export async function runJatsExport(
       },
     )
   ).map((content) => {
-    const { file, mdast, frontmatter, slug } = content;
+    const { kind, file, mdast, frontmatter, slug } = content;
     const rendererFiles = projectPath ? [projectPath, file] : [file];
     const citations = combineCitationRenderers(castSession(session), ...rendererFiles);
-    return { mdast, frontmatter, citations, slug };
+    return { mdast, kind, frontmatter, citations, slug };
   });
   const [processedArticle, ...processedSubArticles] = processedContents;
   const vfile = new VFile();
   vfile.path = output;
   const jats = writeJats(vfile, processedArticle as any, {
     subArticles: processedSubArticles as any,
-    fullArticle: true,
+    writeFullArticle: true,
     spaces: 2,
   });
   logMessagesFromVFile(session, jats);

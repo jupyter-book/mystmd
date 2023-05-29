@@ -6,7 +6,7 @@ import type { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
 import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode } from 'myst-common';
-import { copyNode, fileError } from 'myst-common';
+import { SourceFileKind, copyNode, fileError } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { Tags, RefType } from 'jats-xml';
 import type { MinifiedOutput } from 'nbtx';
@@ -465,7 +465,7 @@ class JatsSerializer implements IJatsSerializer {
     this.expressions = [];
     this.handlers = opts?.handlers ?? handlers;
     const mdastCopy = copyNode(mdast) as any;
-    basicTransformations(mdastCopy);
+    basicTransformations(mdastCopy, opts ?? {});
     this.renderChildren(mdastCopy);
     while (this.stack.length > 1) this.closeNode();
   }
@@ -586,6 +586,10 @@ export class JatsDocument {
     if (specificUse) attributes['specific-use'] = specificUse;
     if (this.content.slug) attributes.id = this.content.slug;
     const state = new JatsSerializer(this.file, this.content.mdast, this.options);
+    const subArticles = this.options.subArticles ?? [];
+    if (this.content.kind === SourceFileKind.Notebook) {
+      subArticles.unshift(this.content);
+    }
     const elements: Element[] = [
       ...getFront(this.content.frontmatter),
       this.body(state),
@@ -594,7 +598,7 @@ export class JatsDocument {
         footnotes: state.footnotes,
         expressions: state.expressions,
       }),
-      ...(this.options.subArticles ?? []).map((article) => this.subArticle(article)),
+      ...subArticles.map((article) => this.subArticle(article)),
     ];
     const article: Element = {
       type: 'element',
@@ -621,7 +625,10 @@ export class JatsDocument {
   }
 
   subArticle(content: ArticleContent): Element {
-    const state = new JatsSerializer(this.file, content.mdast, this.options);
+    const state = new JatsSerializer(this.file, content.mdast, {
+      ...this.options,
+      isSubArticle: true,
+    });
     const elements: Element[] = [
       ...this.frontStub(content.frontmatter),
       { type: 'element', name: 'body', elements: state.elements() },
@@ -644,7 +651,7 @@ export class JatsDocument {
 
 export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentOptions) {
   const doc = new JatsDocument(file, content, opts ?? { handlers });
-  const element = opts?.fullArticle
+  const element = opts?.writeFullArticle
     ? {
         type: 'element',
         elements: [
@@ -667,12 +674,12 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
 }
 
 const plugin: Plugin<
-  [PageFrontmatter?, CitationRenderer?, string?, DocumentOptions?],
+  [SourceFileKind, PageFrontmatter?, CitationRenderer?, string?, DocumentOptions?],
   Root,
   VFile
-> = function (frontmatter, citations, slug, opts) {
+> = function (kind, frontmatter, citations, slug, opts) {
   this.Compiler = (node, file) => {
-    return writeJats(file, { mdast: node as any, frontmatter, citations, slug }, opts);
+    return writeJats(file, { mdast: node as any, kind, frontmatter, citations, slug }, opts);
   };
 
   return (node: Root) => {
