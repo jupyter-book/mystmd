@@ -1,4 +1,4 @@
-import type { GenericNode, MessageInfo } from 'myst-common';
+import type { GenericNode, MessageInfo, SourceFileKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Root } from 'myst-spec';
 import type { CitationRenderer } from 'citation-js-utils';
@@ -20,12 +20,13 @@ export type MathPlugins = Required<PageFrontmatter>['math'];
 
 export type Options = {
   handlers?: Record<string, Handler>;
+  isSubArticle?: boolean;
 };
 
 export type DocumentOptions = Options & {
   subArticles?: ArticleContent[];
   spaces?: number;
-  fullArticle?: boolean;
+  writeFullArticle?: boolean;
 };
 
 export type StateData = {
@@ -34,6 +35,7 @@ export type StateData = {
 
 export type ArticleContent = {
   mdast: Root;
+  kind: SourceFileKind;
   frontmatter?: PageFrontmatter;
   citations?: CitationRenderer;
   slug?: string;
