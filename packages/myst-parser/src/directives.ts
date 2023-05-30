@@ -29,7 +29,7 @@ export function applyDirectives(tree: Root, specs: DirectiveSpec[], vfile: VFile
     const { name } = node;
     const spec = specLookup[name];
     if (!spec) {
-      fileWarn(vfile, `unknown directive: ${name}`, { node });
+      fileError(vfile, `unknown directive: ${name}`, { node });
       // We probably want to do something better than just delete the children and
       // consolidate options back to value, but for now this gets myst-spec tests passing
       delete node.children;
