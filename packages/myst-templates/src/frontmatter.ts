@@ -17,7 +17,7 @@ function undefinedIfEmpty<T>(array?: T[]): T[] | undefined {
 function addIndicesToAuthors(
   authors: Author[],
   affiliationList: RendererDoc['affiliations'],
-  collaborationList: RendererDoc['collaborations']
+  collaborationList: RendererDoc['collaborations'],
 ): RendererAuthor[] {
   const affiliationLookup: Record<string, ValueAndIndex> = {};
   affiliationList.forEach((affil) => {

@@ -13,7 +13,10 @@ export type ValueAndIndex = {
   letter: string;
 };
 
-export type RendererAuthor = Omit<Author, 'affiliations' | 'collaborations' | 'corresponding' | 'orcid'> & {
+export type RendererAuthor = Omit<
+  Author,
+  'affiliations' | 'collaborations' | 'corresponding' | 'orcid'
+> & {
   affiliations?: ValueAndIndex[];
   collaborations?: ValueAndIndex[];
   corresponding?: ValueAndIndex;
@@ -35,7 +38,7 @@ export type RendererDoc = Omit<PageFrontmatter, 'date' | 'authors'> & {
   collaborations: ValueAndIndex[];
 };
 
-export const RENDERER_DOC_KEYS = ['affiliations','collaborations'].concat(PAGE_FRONTMATTER_KEYS);
+export const RENDERER_DOC_KEYS = ['affiliations', 'collaborations'].concat(PAGE_FRONTMATTER_KEYS);
 
 export type TemplatePartDefinition = {
   id: string;
