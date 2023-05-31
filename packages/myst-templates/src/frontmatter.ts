@@ -17,10 +17,15 @@ function undefinedIfEmpty<T>(array?: T[]): T[] | undefined {
 function addIndicesToAuthors(
   authors: Author[],
   affiliationList: RendererDoc['affiliations'],
+  collaborationList: RendererDoc['collaborations'],
 ): RendererAuthor[] {
   const affiliationLookup: Record<string, ValueAndIndex> = {};
   affiliationList.forEach((affil) => {
     affiliationLookup[affil.value] = affil;
+  });
+  const collaborationLookup: Record<string, ValueAndIndex> = {};
+  collaborationList.forEach((col) => {
+    collaborationLookup[col.value] = col;
   });
   let correspondingIndex = 0;
   return authors.map((auth, index) => {
@@ -39,6 +44,13 @@ function addIndicesToAuthors(
       // Affiliations are explicitly undefined if length === 0
       affiliations = undefined;
     }
+    let collaborations = auth.collaborations?.map((value) => {
+      return { ...collaborationLookup[value] };
+    });
+    if (!collaborations || collaborations.length === 0) {
+      // Affiliations are explicitly undefined if length === 0
+      collaborations = undefined;
+    }
     const [givenName, ...surnameParts] = auth.name?.split(' ') || ['', ''];
     const surname = surnameParts.join(' ');
     return {
@@ -46,6 +58,7 @@ function addIndicesToAuthors(
       ...indexAndLetter(index),
       corresponding,
       affiliations,
+      collaborations,
       given_name: givenName,
       surname,
     };
@@ -59,9 +72,17 @@ function affiliationsFromAuthors(authors: Author[]): ValueAndIndex[] {
   });
 }
 
+function collaborationsFromAuthors(authors: Author[]): ValueAndIndex[] {
+  const allCollaborations = authors.map((auth) => auth.collaborations || []).flat();
+  return [...new Set(allCollaborations)].map((value, index) => {
+    return { value, ...indexAndLetter(index) };
+  });
+}
+
 export function extendFrontmatter(frontmatter: PageFrontmatter): RendererDoc {
   const datetime = frontmatter.date ? new Date(frontmatter.date) : new Date();
   const affiliations = affiliationsFromAuthors(frontmatter.authors || []);
+  const collaborations = collaborationsFromAuthors(frontmatter.authors || []);
   const doc: RendererDoc = {
     ...frontmatter,
     date: {
@@ -69,8 +90,9 @@ export function extendFrontmatter(frontmatter: PageFrontmatter): RendererDoc {
       month: String(datetime.getMonth() + 1),
       year: String(datetime.getFullYear()),
     },
-    authors: addIndicesToAuthors(frontmatter.authors || [], affiliations),
+    authors: addIndicesToAuthors(frontmatter.authors || [], affiliations, collaborations),
     affiliations,
+    collaborations,
     bibliography: undefinedIfEmpty(frontmatter.bibliography),
   };
   return doc;
