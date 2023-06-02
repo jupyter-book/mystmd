@@ -6,7 +6,7 @@ import { fileError, toText } from 'myst-common';
 import { captionHandler, containerHandler } from './container';
 import { renderNodeToLatex } from './tables';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types';
-import { getLatexImageWidth, hrefToLatexText, stringToLatexMath, stringToLatexText } from './utils';
+import { getClasses, getLatexImageWidth, hrefToLatexText, stringToLatexMath, stringToLatexText } from './utils';
 import MATH_HANDLERS from './math';
 import { selectAll } from 'unist-util-select';
 import type { FootnoteDefinition } from 'myst-spec-ext';
@@ -84,7 +84,7 @@ const handlers: Record<string, Handler> = {
     let start = '\\begin{verbatim}\n';
     let end = '\n\\end{verbatim}'
 
-    if (node.class === 'minted' && node.lang !== undefined) {
+    if (getClasses(node.class).includes('minted') && node.lang !== undefined) {
       state.usePackages('minted');
       start = `\\begin{minted}{${node.lang}}\n`
       end = '\n\\end{minted}'

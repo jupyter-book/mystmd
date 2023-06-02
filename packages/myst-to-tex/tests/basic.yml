@@ -302,7 +302,7 @@ cases:
           children:
             - type: code
               lang: python
-              class: minted
+              class: some-class minted
               value: |-
                 # here is math
                 1+2
