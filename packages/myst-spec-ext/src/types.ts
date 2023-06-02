@@ -70,6 +70,7 @@ export type Admonition = SpecAdmonition & {
 
 export type Code = SpecCode & {
   executable?: boolean;
+  visibility?: string;
 };
 
 export type ListItem = SpecListItem & {

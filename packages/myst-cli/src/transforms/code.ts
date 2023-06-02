@@ -1,6 +1,6 @@
 import type { Root } from 'mdast';
 import type { GenericNode } from 'myst-common';
-import { selectAll } from 'unist-util-select';
+import { select, selectAll } from 'unist-util-select';
 import yaml from 'js-yaml';
 import type { ISession } from '../session/types';
 
@@ -81,5 +81,50 @@ export function liftCodeMetadataToBlock(session: ISession, filename: string, mda
     if (blockMetadata) {
       block.data = block.data ? { ...block.data, ...blockMetadata } : blockMetadata;
     }
+  });
+}
+
+/**
+ * Traverse mdast, propagate block tags to code and output
+ */
+export function propagateBlockDataToCode(session: ISession, filename: string, mdast: Root) {
+  const blocks = selectAll('block', mdast) as GenericNode[];
+  blocks.forEach((block) => {
+    if (!block.data || !block.data.tags) return;
+    if (!Array.isArray(block.data.tags)) {
+      session.log.error(`tags in code-cell directive must be a list of strings`);
+    }
+    // only single ('code', 'output') pair?
+    const codeNode = select('code', block) as GenericNode;
+    const outputNode = select('output', block) as GenericNode;
+    block.data.tags.forEach((tag: string) => {
+      switch (tag) {
+        // should we raise when hide and remove both exist?
+        case 'hide-cell':
+          block.visibility = 'hide';
+          break;
+        case 'remove-cell':
+          block.visibility = 'remove';
+          break;
+        case 'hide-input':
+          codeNode.visibility = 'hide';
+          break;
+        case 'remove-input':
+          codeNode.visibility = 'remove';
+          break;
+        case 'hide-output':
+          outputNode.visibility = 'hide';
+          break;
+        case 'remove-output':
+          outputNode.visibility = 'remove';
+          break;
+        default:
+          session.log.warn(`tag '${tag}' is not valid in code-cell tags'`);
+      }
+    });
+    if (!block.visibility) block.visibility = 'show';
+    if (!codeNode.visibility) codeNode.visibility = 'show';
+    if (!outputNode.visibility) outputNode.visibility = 'show';
+    delete block.data.tags;
   });
 }

@@ -1,5 +1,5 @@
 import { Session } from '../session';
-import { liftCodeMetadataToBlock, metadataFromCode } from './code';
+import { liftCodeMetadataToBlock, metadataFromCode, propagateBlockDataToCode } from './code';
 
 describe('metadataFromCode', () => {
   it('empty code returns self', async () => {
@@ -112,5 +112,67 @@ describe('liftCodeMetadataToBlock', () => {
     expect(mdast.children[0].data).toEqual({ key: 'value', label: 'codeBlock' });
     expect(mdast.children[0].children[0].value).toEqual('print("hello world")');
     expect(mdast.children[0].children[1].value).toEqual('print("hello world2")');
+  });
+});
+
+function build_mdast_by_tags(tags: string[]) {
+  const mdast: any = {
+    type: 'root',
+    children: [
+      {
+        type: 'block',
+        children: [
+          {
+            type: 'code',
+          },
+          {
+            type: 'output',
+          },
+        ],
+        data: {
+          tags: tags,
+        },
+      },
+    ],
+  };
+  return mdast;
+}
+
+describe('propagateBlockDataToCode', () => {
+  it('single tag propagation', async () => {
+    for (const action of ['hide', 'remove']) {
+      for (const target of ['cell', 'input', 'output']) {
+        const tag = `${action}-${target}`;
+        const mdast = build_mdast_by_tags([tag]);
+        propagateBlockDataToCode(new Session(), '', mdast);
+        let result = '';
+        switch (target) {
+          case 'cell':
+            result = mdast.children[0].visibility;
+            break;
+          case 'input':
+            result = mdast.children[0].children[0].visibility;
+            break;
+          case 'output':
+            result = mdast.children[0].children[1].visibility;
+            break;
+        }
+        expect(result).toEqual(action);
+      }
+    }
+  });
+  it('multi tags propagation', async () => {
+    for (const action of [`hide`, `remove`]) {
+      const tags = [`${action}-cell`, `${action}-input`, `${action}-output`];
+      const mdast = build_mdast_by_tags(tags);
+      propagateBlockDataToCode(new Session(), '', mdast);
+      for (const node of [
+        mdast.children[0],
+        mdast.children[0].children[0],
+        mdast.children[0].children[1],
+      ]) {
+        expect(node.visibility).toEqual(action);
+      }
+    }
   });
 });
