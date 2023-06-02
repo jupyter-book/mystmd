@@ -295,7 +295,7 @@ cases:
         - type: mystDirective
           name: code-block
           args: python
-          class: minted
+          class: some-class minted
           value: |-
             # here is math
             1+2
