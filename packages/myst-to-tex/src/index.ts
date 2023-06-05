@@ -7,7 +7,8 @@ import { captionHandler, containerHandler } from './container';
 import { renderNodeToLatex } from './tables';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types';
 import { getClasses, getLatexImageWidth, hrefToLatexText, stringToLatexMath, stringToLatexText } from './utils';
-import MATH_HANDLERS from './math';
+import MATH_HANDLERS, { withRecursiveCommands } from './math';
+
 import { selectAll } from 'unist-util-select';
 import type { FootnoteDefinition } from 'myst-spec-ext';
 
@@ -396,7 +397,7 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     const tex = (file.result as string).trim();
     const result: LatexResult = {
       imports: [...state.data.imports],
-      commands: state.data.mathPlugins,
+      commands: withRecursiveCommands(state),
       value: tex,
     };
     file.result = result;

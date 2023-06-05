@@ -1,5 +1,14 @@
 # myst-transforms
 
+## 0.0.31
+
+### Patch Changes
+
+- a7584e27: Add transform for gated directives
+- e98f86a6: Unnest links from cross references
+- 71e91665: Initial support for sphinx-exercise
+- bb019ae9: Add `unist-util-remove` to package dependencies.
+
 ## 0.0.30
 
 ### Patch Changes

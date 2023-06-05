@@ -34,6 +34,7 @@ const TEST_AUTHOR: Author = {
   email: 'test@example.com',
   roles: ['Software', 'Validation'],
   affiliations: ['example university'],
+  collaborations: ['example collaboration'],
   twitter: '@test',
   github: 'test',
   website: 'https://example.com',

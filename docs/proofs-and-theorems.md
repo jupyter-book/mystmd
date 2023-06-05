@@ -42,7 +42,7 @@ The following options for proof directives are supported:
 
 - `label`: text
 
-  A unique identifier for your theorem that you can use to reference it with `{prf:ref}`. Cannot contain spaces or special characters.
+  A unique identifier for your theorem that you can use to reference it with a Markdown link or the `{prf:ref}` role. Cannot contain spaces or special characters.
 
 - `class`: text
 

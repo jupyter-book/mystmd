@@ -1,6 +1,7 @@
 import { unified } from 'unified';
 import fs from 'fs';
 import { Session, silentLogger } from 'myst-cli-utils';
+import { SourceFileKind } from 'myst-common';
 import path from 'path';
 import { validateJatsAgainstDtd } from 'jats-xml';
 import yaml from 'js-yaml';
@@ -65,7 +66,7 @@ async function writeValidateDelete(data: string) {
 describe('Basic JATS body', () => {
   const cases = loadCases('basic.yml');
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))('%s', async (_, { tree, jats }) => {
-    const pipe = unified().use(mystToJats);
+    const pipe = unified().use(mystToJats, SourceFileKind.Article);
     pipe.runSync(tree as any);
     const vfile = pipe.stringify(tree as any);
     expect(vfile.result).toEqual(jats);
@@ -78,10 +79,17 @@ describe('JATS full article', () => {
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
     async (_, { tree, jats, frontmatter, citations }) => {
-      const pipe = unified().use(mystToJats, frontmatter, citations, undefined, {
-        fullArticle: true,
-        spaces: 2,
-      });
+      const pipe = unified().use(
+        mystToJats,
+        SourceFileKind.Article,
+        frontmatter,
+        citations,
+        undefined,
+        {
+          writeFullArticle: true,
+          spaces: 2,
+        },
+      );
       pipe.runSync(tree as any);
       const vfile = pipe.stringify(tree as any);
       expect(vfile.result).toEqual(jats);
@@ -95,10 +103,17 @@ describe('JATS full article with bibliography', () => {
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
     async (_, { tree, jats, frontmatter, citations }) => {
-      const pipe = unified().use(mystToJats, frontmatter, citations, undefined, {
-        fullArticle: true,
-        spaces: 2,
-      });
+      const pipe = unified().use(
+        mystToJats,
+        SourceFileKind.Article,
+        frontmatter,
+        citations,
+        undefined,
+        {
+          writeFullArticle: true,
+          spaces: 2,
+        },
+      );
       pipe.runSync(tree as any);
       const vfile = pipe.stringify(tree as any);
       expect(vfile.result).toEqual(jats);
@@ -114,10 +129,10 @@ describe('JATS multi-article', () => {
     async (_, { tree, jats, frontmatter, citations, subArticles }) => {
       const vfile = writeJats(
         new VFile(),
-        { mdast: tree as any, frontmatter, citations },
+        { mdast: tree as any, kind: SourceFileKind.Article, frontmatter, citations },
         {
           subArticles: subArticles as any,
-          fullArticle: true,
+          writeFullArticle: true,
           spaces: 2,
         },
       );
@@ -134,15 +149,39 @@ describe('JATS SI units', () => {
     async (_, { tree, jats, frontmatter, citations }) => {
       const vfile = writeJats(
         new VFile(),
-        { mdast: tree as any, frontmatter, citations },
+        { mdast: tree as any, kind: SourceFileKind.Article, frontmatter, citations },
         {
-          fullArticle: false,
+          writeFullArticle: false,
         },
       );
       expect(vfile.result).toEqual(jats);
       if (TEST_DTD) {
         expect(await writeValidateDelete(addHeader(vfile.result as string))).toBeTruthy();
       }
+    },
+  );
+});
+
+describe('JATS full notebook', () => {
+  const cases = loadCases('notebooks.yml');
+  test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
+    '%s',
+    async (_, { tree, jats, frontmatter, citations }) => {
+      const pipe = unified().use(
+        mystToJats,
+        SourceFileKind.Notebook,
+        frontmatter,
+        citations,
+        undefined,
+        {
+          writeFullArticle: true,
+          spaces: 2,
+        },
+      );
+      pipe.runSync(tree as any);
+      const vfile = pipe.stringify(tree as any);
+      expect(vfile.result).toEqual(jats);
+      if (TEST_DTD) expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
     },
   );
 });

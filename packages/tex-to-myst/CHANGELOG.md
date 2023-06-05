@@ -1,5 +1,11 @@
 # tex-to-myst
 
+## 0.0.27
+
+### Patch Changes
+
+- 1a8040e4: Add resizebox macro as a pass through
+
 ## 0.0.26
 
 ### Patch Changes

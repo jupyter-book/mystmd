@@ -39,6 +39,7 @@ export {
   headingLabelPlugin,
   headingLabelTransform,
 } from './targets';
+export { joinGatesPlugin, joinGatesTransform } from './joinGates';
 
 // Enumeration
 export type { IReferenceState, NumberingOptions, TargetKind, ReferenceKind } from './enumerate';

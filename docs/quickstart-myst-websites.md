@@ -227,7 +227,7 @@ To see all of the options see [](./frontmatter.md), which includes which fields 
 **Separating Project and Site Configurations**
 
 % TODO: move this to a new quickstart that is specific about advanced config.
-You may use separate the `project` and `site` configurations into multiple `myst.yml` files to configure your website. Each website needs a single `site` configuration at the root level; then any subdirectory with content may have its own `project` configuration with project-specific frontmatter. For example, given a `content` directory with all your markdown and notebooks,you can create a `content/myst.yml` file with project frontmatter:
+You may separate the `project` and `site` configurations into multiple `myst.yml` files to configure your website. Each website needs a single `site` configuration at the root level; then any subdirectory with content may have its own `project` configuration with project-specific frontmatter. For example, given a `content` directory with all your markdown and notebooks,you can create a `content/myst.yml` file with project frontmatter:
 
 ```yaml
 version: 1

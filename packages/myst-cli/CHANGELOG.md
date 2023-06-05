@@ -1,5 +1,24 @@
 # myst-cli
 
+## 0.1.30
+
+### Patch Changes
+
+- a7584e27: Add transform for gated directives
+- 71e91665: Initial support for sphinx-exercise
+- Updated dependencies [a7584e27]
+- Updated dependencies [e98f86a6]
+- Updated dependencies [330c0f08]
+- Updated dependencies [1a8040e4]
+- Updated dependencies [71e91665]
+- Updated dependencies [bb019ae9]
+  - myst-transforms@0.0.31
+  - myst-to-tex@0.0.27
+  - tex-to-myst@0.0.27
+  - myst-ext-exercise@0.0.2
+  - myst-parser@0.0.31
+  - myst-to-jats@0.0.29
+
 ## 0.1.29
 
 ### Patch Changes

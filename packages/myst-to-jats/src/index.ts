@@ -6,7 +6,7 @@ import type { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
 import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode } from 'myst-common';
-import { copyNode, fileError } from 'myst-common';
+import { SourceFileKind, copyNode, fileError } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { Tags, RefType } from 'jats-xml';
 import type { MinifiedOutput } from 'nbtx';
@@ -465,7 +465,7 @@ class JatsSerializer implements IJatsSerializer {
     this.expressions = [];
     this.handlers = opts?.handlers ?? handlers;
     const mdastCopy = copyNode(mdast) as any;
-    basicTransformations(mdastCopy);
+    basicTransformations(mdastCopy, opts ?? {});
     this.renderChildren(mdastCopy);
     while (this.stack.length > 1) this.closeNode();
   }
@@ -586,6 +586,10 @@ export class JatsDocument {
     if (specificUse) attributes['specific-use'] = specificUse;
     if (this.content.slug) attributes.id = this.content.slug;
     const state = new JatsSerializer(this.file, this.content.mdast, this.options);
+    const subArticles = this.options.subArticles ?? [];
+    if (this.content.kind === SourceFileKind.Notebook) {
+      subArticles.unshift(this.content);
+    }
     const elements: Element[] = [
       ...getFront(this.content.frontmatter),
       this.body(state),
@@ -594,7 +598,9 @@ export class JatsDocument {
         footnotes: state.footnotes,
         expressions: state.expressions,
       }),
-      ...(this.options.subArticles ?? []).map((article) => this.subArticle(article)),
+      ...subArticles.map((article, ind) =>
+        this.subArticle(article, ind === 0 && this.content.kind === SourceFileKind.Notebook),
+      ),
     ];
     const article: Element = {
       type: 'element',
@@ -605,7 +611,7 @@ export class JatsDocument {
     return article;
   }
 
-  frontStub(frontmatter?: PageFrontmatter): Element[] {
+  frontStub(frontmatter?: PageFrontmatter, notebookRep?: boolean): Element[] {
     const stubFrontmatter: Record<string, any> = {};
     if (frontmatter) {
       Object.entries(frontmatter).forEach(([key, val]) => {
@@ -616,14 +622,25 @@ export class JatsDocument {
       });
     }
     const articleMeta = getArticleMeta(stubFrontmatter);
-    if (!articleMeta) return [];
-    return [{ type: 'element', name: 'front-stub', elements: articleMeta.elements }];
+    const elements = articleMeta?.elements ?? [];
+    if (notebookRep) {
+      elements.push({
+        type: 'element',
+        name: 'article-version',
+        attributes: { 'article-version-type': 'alt representation' },
+        elements: [{ type: 'text', text: 'notebook' }],
+      });
+    }
+    return [{ type: 'element', name: 'front-stub', elements }];
   }
 
-  subArticle(content: ArticleContent): Element {
-    const state = new JatsSerializer(this.file, content.mdast, this.options);
+  subArticle(content: ArticleContent, notebookRep: boolean): Element {
+    const state = new JatsSerializer(this.file, content.mdast, {
+      ...this.options,
+      isSubArticle: true,
+    });
     const elements: Element[] = [
-      ...this.frontStub(content.frontmatter),
+      ...this.frontStub(content.frontmatter, notebookRep),
       { type: 'element', name: 'body', elements: state.elements() },
       ...getBack({
         citations: content.citations,
@@ -644,7 +661,7 @@ export class JatsDocument {
 
 export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentOptions) {
   const doc = new JatsDocument(file, content, opts ?? { handlers });
-  const element = opts?.fullArticle
+  const element = opts?.writeFullArticle
     ? {
         type: 'element',
         elements: [
@@ -667,12 +684,12 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
 }
 
 const plugin: Plugin<
-  [PageFrontmatter?, CitationRenderer?, string?, DocumentOptions?],
+  [SourceFileKind, PageFrontmatter?, CitationRenderer?, string?, DocumentOptions?],
   Root,
   VFile
-> = function (frontmatter, citations, slug, opts) {
+> = function (kind, frontmatter, citations, slug, opts) {
   this.Compiler = (node, file) => {
-    return writeJats(file, { mdast: node as any, frontmatter, citations, slug }, opts);
+    return writeJats(file, { mdast: node as any, kind, frontmatter, citations, slug }, opts);
   };
 
   return (node: Root) => {

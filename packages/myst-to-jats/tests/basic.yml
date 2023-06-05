@@ -599,7 +599,8 @@ cases:
               executable: true
               identifier: a-code
               value: print('hello world')
-    jats: <sec id="a" sec-type="notebook-code"><code id="a-code" language="python" executable="yes">print('hello world')</code></sec>
+    jats: ''
+    # jats: <sec id="a" sec-type="notebook-code"><code id="a-code" language="python" executable="yes">print('hello world')</code></sec>
   - title: Figure with caption and legends
     tree:
       type: root
