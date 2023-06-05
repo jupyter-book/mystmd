@@ -85,7 +85,12 @@ const handlers: Record<string, Handler> = {
     let start = '\\begin{verbatim}\n';
     let end = '\n\\end{verbatim}'
 
-    if (getClasses(node.class).includes('minted') && node.lang !== undefined) {
+    if (getClasses(node.class).includes('listings') && node.lang !== undefined) {
+      state.usePackages('listings');
+      start = `\\begin{lstlisting}[language=${node.lang}]\n`
+      end = '\n\\end{lstlisting}'
+    }
+    else if (getClasses(node.class).includes('minted') && node.lang !== undefined) {
       state.usePackages('minted');
       start = `\\begin{minted}{${node.lang}}\n`
       end = '\n\\end{minted}'
