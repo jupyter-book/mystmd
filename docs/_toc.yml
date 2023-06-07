@@ -24,6 +24,7 @@ parts:
       - file: blocks
       - file: diagrams
       - file: dropdowns-cards-and-tabs
+      - file: glossaries-and-terms
   - caption: Executable Content
     chapters:
       - file: interactive-notebooks
