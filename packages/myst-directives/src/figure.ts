@@ -62,7 +62,13 @@ export const figureDirective: DirectiveSpec = {
     };
     const children: GenericNode[] = [img];
     if (data.body) {
-      const [caption, ...legend] = data.body as GenericNode[];
+      // TODO: This is probably better as a transform in the future
+      const nodes = data.body as GenericNode[];
+      // Allow multiple images to be added before a caption
+      const firstNonImage = nodes.findIndex(({ type }) => type !== 'image');
+      const images = nodes.slice(0, firstNonImage);
+      children.push(...images);
+      const [caption, ...legend] = nodes.slice(firstNonImage);
       if (caption) {
         children.push({ type: 'caption', children: [caption] });
       }
