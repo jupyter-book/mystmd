@@ -6,9 +6,14 @@ import { fileError, toText } from 'myst-common';
 import { captionHandler, containerHandler } from './container';
 import { renderNodeToLatex } from './tables';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types';
-import { getClasses, getLatexImageWidth, hrefToLatexText, stringToLatexMath, stringToLatexText } from './utils';
+import {
+  getClasses,
+  getLatexImageWidth,
+  hrefToLatexText,
+  stringToLatexMath,
+  stringToLatexText,
+} from './utils';
 import MATH_HANDLERS, { withRecursiveCommands } from './math';
-
 import { selectAll } from 'unist-util-select';
 import type { FootnoteDefinition } from 'myst-spec-ext';
 
@@ -83,17 +88,16 @@ const handlers: Record<string, Handler> = {
   },
   code(node: Code, state) {
     let start = '\\begin{verbatim}\n';
-    let end = '\n\\end{verbatim}'
+    let end = '\n\\end{verbatim}';
 
     if (getClasses(node.class).includes('listings') && node.lang !== undefined) {
       state.usePackages('listings');
-      start = `\\begin{lstlisting}[language=${node.lang}]\n`
-      end = '\n\\end{lstlisting}'
-    }
-    else if (getClasses(node.class).includes('minted') && node.lang !== undefined) {
+      start = `\\begin{lstlisting}[language=${node.lang}]\n`;
+      end = '\n\\end{lstlisting}';
+    } else if (getClasses(node.class).includes('minted') && node.lang !== undefined) {
       state.usePackages('minted');
-      start = `\\begin{minted}{${node.lang}}\n`
-      end = '\n\\end{minted}'
+      start = `\\begin{minted}{${node.lang}}\n`;
+      end = '\n\\end{minted}';
     }
     state.write(start);
     state.text(node.value, true);
