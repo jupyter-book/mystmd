@@ -81,7 +81,7 @@ export function applyRoles(tree: Root, specs: RoleSpec[], vfile: VFile) {
     const { name } = node;
     const spec = specLookup[name];
     if (!spec) {
-      fileWarn(vfile, `unknown role: ${name}`, { node });
+      fileError(vfile, `unknown role: ${name}`, { node });
       // We probably want to do something better than just delete the children
       delete node.children;
       return;
