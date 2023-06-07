@@ -9,6 +9,7 @@ import { imageDirective } from './image';
 import { includeDirective } from './include';
 import { listTableDirective } from './table';
 import { marginDirective } from './margin';
+import { glossaryDirective } from './glossary';
 import { mathDirective } from './math';
 import { mdastDirective } from './mdast';
 import { mermaidDirective } from './mermaid';
@@ -29,6 +30,7 @@ export const defaultDirectives = [
   includeDirective,
   listTableDirective,
   marginDirective,
+  glossaryDirective,
   mathDirective,
   mdastDirective,
   mermaidDirective,

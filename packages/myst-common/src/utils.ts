@@ -48,7 +48,7 @@ export function createId() {
  * @param label A label field can be present.
  *        label is a string value: it works just like title on a link or a
  *        lang on code: character escapes and character references are parsed.
- * @returns { identifier, label }
+ * @returns { identifier, label, html_id }
  */
 export function normalizeLabel(
   label: string | undefined,

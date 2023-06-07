@@ -40,6 +40,7 @@ export {
   headingLabelTransform,
 } from './targets';
 export { joinGatesPlugin, joinGatesTransform } from './joinGates';
+export { glossaryPlugin, glossaryTransform } from './glossary';
 
 // Enumeration
 export type { IReferenceState, NumberingOptions, TargetKind, ReferenceKind } from './enumerate';

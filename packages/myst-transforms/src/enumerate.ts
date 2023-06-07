@@ -27,6 +27,7 @@ type ResolvableCrossReference = Omit<CrossReference, 'kind'> & {
   remote?: boolean;
   url?: string;
   dataUrl?: string;
+  html_id?: string;
 };
 
 export enum TargetKind {
@@ -77,7 +78,7 @@ export enum ReferenceKind {
   eq = 'eq',
 }
 
-type TargetNodes = Container | Math | Heading;
+type TargetNodes = (Container | Math | Heading) & { html_id: string };
 type IdentifierNodes = { type: string; identifier: string };
 
 type Target = {
@@ -375,7 +376,10 @@ export class ReferenceState implements IReferenceState {
       fillReferenceEnumerators(this.file, node, '(%s)', target.node.enumerator);
     } else {
       // By default look into the caption or admonition title if it exists
-      const caption = select('caption', target.node) || select('admonitionTitle', target.node);
+      const caption =
+        select('caption', target.node) ||
+        select('admonitionTitle', target.node) ||
+        select('definitionTerm', target.node);
       // Ensure we are getting the first paragraph
       const captionParagraph = (
         caption ? select('paragraph', caption) ?? caption : caption
@@ -394,6 +398,7 @@ export class ReferenceState implements IReferenceState {
     node.resolved = true;
     // The identifier may have changed in the lookup, but unlikely
     node.identifier = target.node.identifier;
+    node.html_id = target.node.html_id;
   }
 
   warnNodeTargetNotFound(node: ResolvableCrossReference) {

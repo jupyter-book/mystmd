@@ -51,3 +51,4 @@ parts:
       - file: commonmark
       - file: syntax-overview
       - file: frontmatter
+      - file: glossary
