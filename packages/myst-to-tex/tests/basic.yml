@@ -265,3 +265,72 @@ cases:
                   value: my-example
     latex: |-
       my link: \href{https://example.com\#\^my\_example}{my-example}
+  - title: code-block-default
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: python
+          class: my-class
+          value: |-
+            # here is math
+            1+2
+          children:
+            - type: code
+              lang: python
+              class: my-class
+              value: |-
+                # here is math
+                1+2
+    latex: |-
+      \begin{verbatim}
+      # here is math
+      1+2
+      \end{verbatim}
+  - title: code-block-minted
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: python
+          class: some-class minted
+          value: |-
+            # here is math
+            1+2
+          children:
+            - type: code
+              lang: python
+              class: some-class minted
+              value: |-
+                # here is math
+                1+2
+    latex: |-
+      \begin{minted}{python}
+      # here is math
+      1+2
+      \end{minted}
+  - title: code-block-listings
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: python
+          class: some-class listings
+          value: |-
+            # here is math
+            1+2
+          children:
+            - type: code
+              lang: python
+              class: some-class listings
+              value: |-
+                # here is math
+                1+2
+    latex: |-
+      \begin{lstlisting}[language=python]
+      # here is math
+      1+2
+      \end{lstlisting}

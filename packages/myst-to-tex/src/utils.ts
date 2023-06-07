@@ -237,3 +237,12 @@ export function getLatexImageWidth(width?: number | string): string {
   if (lineWidth < 1) lineWidth *= 100;
   return `${lineWidth / 100}\\linewidth`;
 }
+
+export function getClasses(className?: string): string[] {
+  const classes =
+    className
+      ?.split(' ')
+      .map((s) => s.trim().toLowerCase())
+      .filter((s) => !!s) ?? [];
+  return [...new Set(classes)];
+}
