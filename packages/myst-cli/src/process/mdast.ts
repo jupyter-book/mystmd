@@ -22,6 +22,7 @@ import {
   RRIDTransformer,
   DOITransformer,
   joinGatesPlugin,
+  glossaryPlugin,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
@@ -136,6 +137,7 @@ export async function transformMdast(
     .use(inlineExpressionsPlugin) // Happens before math and images!
     .use(htmlPlugin, { htmlHandlers })
     .use(mathPlugin, { macros: frontmatter.math })
+    .use(glossaryPlugin, { state }) // This should be before the enumerate plugins
     .use(enumerateTargetsPlugin, { state }) // This should be after math
     .use(joinGatesPlugin)
     .run(mdast, vfile);
