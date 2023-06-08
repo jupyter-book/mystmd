@@ -8,7 +8,7 @@ import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode } from 'myst-common';
 import { SourceFileKind, copyNode, fileError } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { Tags, RefType } from 'jats-xml';
+import { Tags, RefType } from 'jats-tags';
 import type { MinifiedOutput } from 'nbtx';
 import { getBack } from './backmatter';
 import { getArticleMeta, getFront } from './frontmatter';

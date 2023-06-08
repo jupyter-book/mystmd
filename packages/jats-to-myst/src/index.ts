@@ -8,7 +8,8 @@ import { toText, copyNode, fileError } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import { u } from 'unist-builder';
 import type { Handler, IJatsParser, JatsResult, Options, StateData } from './types';
-import { Jats, RefType } from 'jats-xml';
+import { RefType } from 'jats-tags';
+import { Jats } from 'jats-xml';
 import { keysTransform } from 'myst-transforms';
 import { basicTransformations } from './transforms';
 

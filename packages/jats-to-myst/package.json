@@ -44,7 +44,8 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "jats-xml": "^0.0.16",
+    "jats-tags": "^0.1.0",
+    "jats-xml": "^0.1.0",
     "myst-common": "^0.0.17",
     "myst-frontmatter": "^0.0.13",
     "myst-spec": "^0.0.4",
