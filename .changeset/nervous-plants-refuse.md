@@ -1,6 +1,6 @@
 ---
-'myst-cli': minor
-'myst-spec-ext': minor
+'myst-cli': patch
+'myst-spec-ext': patch
 ---
 
 support jupyter cell meta tags
