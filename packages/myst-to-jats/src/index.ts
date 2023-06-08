@@ -191,9 +191,6 @@ const handlers: Record<string, Handler> = {
   mystDirective(node, state) {
     state.renderChildren(node);
   },
-  mystComment() {
-    // Do not archive comments
-  },
   comment() {
     // Do not archive comments
   },

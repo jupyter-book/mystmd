@@ -45,7 +45,6 @@ function definitionDescription(node: any, _: Parent, state: State, info: Info) {
 export const miscHandlers: Record<string, Handle> = {
   block,
   comment,
-  mystComment: comment,
   definitionList,
   definitionTerm,
   definitionDescription,

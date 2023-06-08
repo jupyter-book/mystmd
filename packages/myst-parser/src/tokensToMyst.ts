@@ -434,7 +434,7 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
     },
   },
   myst_line_comment: {
-    type: 'mystComment',
+    type: 'comment',
     noCloseToken: true,
     isLeaf: true,
     getAttrs(t) {

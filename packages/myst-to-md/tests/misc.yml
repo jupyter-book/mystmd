@@ -1,6 +1,6 @@
 title: myst-to-md references
 cases:
-  - title: mystComment
+  - title: comment
     mdast:
       type: root
       children:
@@ -12,7 +12,7 @@ cases:
               children:
                 - type: text
                   value: markdown
-        - type: mystComment
+        - type: comment
           value: and a comment
     markdown: |-
       Some % *markdown*
