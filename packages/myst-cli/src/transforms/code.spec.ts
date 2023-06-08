@@ -115,7 +115,7 @@ describe('liftCodeMetadataToBlock', () => {
   });
 });
 
-function build_mdast_by_tags(tags: string[]) {
+function build_mdast(tags: string[], has_output: boolean) {
   const mdast: any = {
     type: 'root',
     children: [
@@ -124,9 +124,7 @@ function build_mdast_by_tags(tags: string[]) {
         children: [
           {
             type: 'code',
-          },
-          {
-            type: 'output',
+            executable: true,
           },
         ],
         data: {
@@ -135,43 +133,73 @@ function build_mdast_by_tags(tags: string[]) {
       },
     ],
   };
+  if (has_output) {
+    mdast.children[0].children.push({ type: 'output' });
+  }
   return mdast;
 }
+
+// describe('checkMetaTags', () => {
+//   it('duplicate tag warn', async () => {
+//     const consoleSpy = jest.spyOn(console, 'warn');
+//     for (const action of ['hide', 'remove']) {
+//       for (const target of ['cell', 'input', 'output']) {
+//         const tag = `${action}-${target}`;
+//         const mdast = build_mdast([tag, tag], true);
+//         propagateBlockDataToCode(new Session(), '', mdast);
+//         expect(consoleSpy).toHaveBeenCalledWith(`tag '${tag}' is duplicated`);
+//       }
+//     }
+//     consoleSpy.mockRestore();
+//   });
+// });
 
 describe('propagateBlockDataToCode', () => {
   it('single tag propagation', async () => {
     for (const action of ['hide', 'remove']) {
       for (const target of ['cell', 'input', 'output']) {
-        const tag = `${action}-${target}`;
-        const mdast = build_mdast_by_tags([tag]);
-        propagateBlockDataToCode(new Session(), '', mdast);
-        let result = '';
-        switch (target) {
-          case 'cell':
-            result = mdast.children[0].visibility;
-            break;
-          case 'input':
-            result = mdast.children[0].children[0].visibility;
-            break;
-          case 'output':
-            result = mdast.children[0].children[1].visibility;
-            break;
+        for (const has_output of [true, false]) {
+          const tag = `${action}-${target}`;
+          const mdast = build_mdast([tag], has_output);
+          propagateBlockDataToCode(new Session(), '', mdast);
+          let result = '';
+          const outputNode = mdast.children[0].children[1];
+          switch (target) {
+            case 'cell':
+              result = mdast.children[0].visibility;
+              break;
+            case 'input':
+              result = mdast.children[0].children[0].visibility;
+              break;
+            case 'output':
+              if (!has_output && target == 'output') {
+                expect(outputNode).toEqual(undefined);
+                continue;
+              }
+              result = outputNode.visibility;
+              break;
+          }
+          expect(result).toEqual(action);
         }
-        expect(result).toEqual(action);
       }
     }
   });
   it('multi tags propagation', async () => {
     for (const action of [`hide`, `remove`]) {
-      const tags = [`${action}-cell`, `${action}-input`, `${action}-output`];
-      const mdast = build_mdast_by_tags(tags);
-      propagateBlockDataToCode(new Session(), '', mdast);
-      for (const node of [
-        mdast.children[0],
-        mdast.children[0].children[0],
-        mdast.children[0].children[1],
-      ]) {
-        expect(node.visibility).toEqual(action);
+      for (const has_output of [true, false]) {
+        const tags = [`${action}-cell`, `${action}-input`, `${action}-output`];
+        const mdast = build_mdast(tags, has_output);
+        propagateBlockDataToCode(new Session(), '', mdast);
+        const blockNode = mdast.children[0];
+        const codeNode = mdast.children[0].children[0];
+        const outputNode = mdast.children[0].children[1];
+        expect(blockNode.visibility).toEqual(action);
+        expect(codeNode.visibility).toEqual(action);
+        if (has_output) {
+          expect(outputNode.visibility).toEqual(action);
+        } else {
+          expect(outputNode).toEqual(undefined);
+        }
       }
     }
   });

@@ -84,6 +84,46 @@ export function liftCodeMetadataToBlock(session: ISession, filename: string, mda
   });
 }
 
+function checkMetaTags(session: ISession, tags: string[], filter: boolean): string[] {
+  const metaTagsCounter = new Map();
+  for (const action of ['hide', 'remove']) {
+    for (const target of ['cell', 'input', 'output']) {
+      metaTagsCounter.set(`${action}-${target}`, 0);
+    }
+  }
+  const check = (tag: string) => {
+    const isMetaTag = metaTagsCounter.has(tag);
+    if (isMetaTag) {
+      metaTagsCounter.set(tag, metaTagsCounter.get(tag) + 1);
+    }
+    return !isMetaTag;
+  };
+  if (filter) {
+    tags.splice(0, tags.length, ...tags.filter(check));
+  } else {
+    tags.forEach(check);
+  }
+  const validMetatags = [];
+  metaTagsCounter.forEach((value, key) => {
+    if (value >= 2) {
+      session.log.warn(`tag '${key}' is duplicated`);
+    }
+  });
+  for (const target of ['cell', 'input', 'output']) {
+    const hide = metaTagsCounter.get(`hide-${target}`) > 0;
+    const remove = metaTagsCounter.get(`remove-${target}`) > 0;
+    if (hide && remove) {
+      session.log.warn(`'hide-${target}' and 'remove-${target}' both exist`);
+      validMetatags.push(`remove-${target}`);
+    } else if (hide) {
+      validMetatags.push(`hide-${target}`);
+    } else if (remove) {
+      validMetatags.push(`remove-${target}`);
+    }
+  }
+  return validMetatags;
+}
+
 /**
  * Traverse mdast, propagate block tags to code and output
  */
@@ -94,10 +134,10 @@ export function propagateBlockDataToCode(session: ISession, filename: string, md
     if (!Array.isArray(block.data.tags)) {
       session.log.error(`tags in code-cell directive must be a list of strings`);
     }
-    // only single ('code', 'output') pair?
-    const codeNode = select('code', block) as GenericNode;
-    const outputNode = select('output', block) as GenericNode;
-    block.data.tags.forEach((tag: string) => {
+    const validMetatags = checkMetaTags(session, block.data.tags, true);
+    const codeNode = select('code[executable=true]', block) as GenericNode | null;
+    const outputNode = select('output', block) as GenericNode | null;
+    validMetatags.forEach((tag: string) => {
       switch (tag) {
         // should we raise when hide and remove both exist?
         case 'hide-cell':
@@ -107,24 +147,23 @@ export function propagateBlockDataToCode(session: ISession, filename: string, md
           block.visibility = 'remove';
           break;
         case 'hide-input':
-          codeNode.visibility = 'hide';
+          if (codeNode) codeNode.visibility = 'hide';
           break;
         case 'remove-input':
-          codeNode.visibility = 'remove';
+          if (codeNode) codeNode.visibility = 'remove';
           break;
         case 'hide-output':
-          outputNode.visibility = 'hide';
+          if (outputNode) outputNode.visibility = 'hide';
           break;
         case 'remove-output':
-          outputNode.visibility = 'remove';
+          if (outputNode) outputNode.visibility = 'remove';
           break;
         default:
-          session.log.warn(`tag '${tag}' is not valid in code-cell tags'`);
+          session.log.debug(`tag '${tag}' is not valid in code-cell tags'`);
       }
     });
     if (!block.visibility) block.visibility = 'show';
-    if (!codeNode.visibility) codeNode.visibility = 'show';
-    if (!outputNode.visibility) outputNode.visibility = 'show';
-    delete block.data.tags;
+    if (codeNode && !codeNode.visibility) codeNode.visibility = 'show';
+    if (outputNode && !outputNode.visibility) outputNode.visibility = 'show';
   });
 }
