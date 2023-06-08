@@ -511,11 +511,6 @@ const include: Handler<{ type: 'include' } & Parent> = (state, node) => {
   state.renderChildren(node);
 };
 
-const mystComment: Handler<{ type: 'mystComment' } & Parent> = () => {
-  // Do nothing!
-  return;
-};
-
 const comment: Handler<{ type: 'comment' } & Parent> = () => {
   // Do nothing!
   return;
@@ -551,7 +546,6 @@ export const defaultHandlers = {
   code,
   image,
   block,
-  mystComment,
   comment,
   mystDirective,
   mystRole,

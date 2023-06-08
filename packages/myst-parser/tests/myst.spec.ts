@@ -5,6 +5,7 @@ import { visit } from 'unist-util-visit';
 import type { Root } from 'mdast';
 import { mystParse } from '../src';
 import { mystToHtml } from 'myst-to-html';
+import { selectAll } from 'unist-util-select';
 
 type TestFile = {
   cases: TestCase[];
@@ -81,21 +82,41 @@ function stripPositions(tree: Root) {
   return tree;
 }
 
+function replaceMystCommentNodes(tree: Root) {
+  selectAll('comment', tree).forEach((node) => {
+    // In a future version of the spec, hopefully this is removed
+    // There isn't anything myst-like about the comments
+    node.type = 'mystComment';
+  });
+  return tree;
+}
+
+function replaceCommentNodes(tree: Root) {
+  selectAll('mystComment', tree).forEach((node) => {
+    // In a future version of the spec, hopefully this is removed
+    // There isn't anything myst-like about the comments
+    node.type = 'comment';
+  });
+  return tree;
+}
+
 describe('Testing myst --> mdast conversions', () => {
   test.each(mystCases)('%s', (_, { myst, mdast }) => {
     if (myst) {
       const mdastString = yaml.dump(mdast);
       const newAst = yaml.dump(
-        stripPositions(
-          mystParse(myst, {
-            mdast: {
-              hoistSingleImagesOutofParagraphs: false,
-              nestBlocks: false,
-            },
-            extensions: {
-              frontmatter: false, // Frontmatter screws with some tests!
-            },
-          }),
+        replaceMystCommentNodes(
+          stripPositions(
+            mystParse(myst, {
+              mdast: {
+                hoistSingleImagesOutofParagraphs: false,
+                nestBlocks: false,
+              },
+              extensions: {
+                frontmatter: false, // Frontmatter screws with some tests!
+              },
+            }),
+          ),
         ),
       );
       if (newAst.includes('startingLineNumber: 2')) {
@@ -110,9 +131,10 @@ describe('Testing myst --> mdast conversions', () => {
 
 describe('Testing mdast --> html conversions', () => {
   test.each(htmlCases)('%s', (name, { html, mdast }) => {
+    const modified = replaceCommentNodes(mdast);
     if (html) {
       if (name.includes('cmark_spec_0.30')) {
-        const output = mystToHtml(mdast, {
+        const output = mystToHtml(modified, {
           formatHtml: false,
           hast: {
             clobberPrefix: 'm-',
@@ -138,7 +160,7 @@ describe('Testing mdast --> html conversions', () => {
 
         expect(normalize(o)).toEqual(normalize(i));
       } else {
-        const newHTML = mystToHtml(mdast, {
+        const newHTML = mystToHtml(modified, {
           formatHtml: true,
           hast: {
             clobberPrefix: 'm-',
