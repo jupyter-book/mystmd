@@ -139,20 +139,33 @@ function build_mdast(tags: string[], has_output: boolean) {
   return mdast;
 }
 
-// describe('checkMetaTags', () => {
-//   it('duplicate tag warn', async () => {
-//     const consoleSpy = jest.spyOn(console, 'warn');
-//     for (const action of ['hide', 'remove']) {
-//       for (const target of ['cell', 'input', 'output']) {
-//         const tag = `${action}-${target}`;
-//         const mdast = build_mdast([tag, tag], true);
-//         propagateBlockDataToCode(new Session(), '', mdast);
-//         expect(consoleSpy).toHaveBeenCalledWith(`tag '${tag}' is duplicated`);
-//       }
-//     }
-//     consoleSpy.mockRestore();
-//   });
-// });
+describe('checkMetaTags', () => {
+  it('duplicate tag warn', async () => {
+    const session = new Session();
+    const consoleSpy = jest.spyOn(session.log, 'warn');
+    for (const action of ['hide', 'remove']) {
+      for (const target of ['cell', 'input', 'output']) {
+        const tag = `${action}-${target}`;
+        const mdast = build_mdast([tag, tag], true);
+        propagateBlockDataToCode(session, '', mdast);
+        expect(consoleSpy).toHaveBeenCalledWith(`tag '${tag}' is duplicated`);
+      }
+    }
+    consoleSpy.mockRestore();
+  });
+  it('tag conflict warn', async () => {
+    const session = new Session();
+    const consoleSpy = jest.spyOn(session.log, 'warn');
+    for (const target of ['cell', 'input', 'output']) {
+      const tags = [`hide-${target}`, `remove-${target}`];
+      const mdast = build_mdast(tags, true);
+      propagateBlockDataToCode(session, '', mdast);
+      const message = `'hide-${target}' and 'remove-${target}' both exist`;
+      expect(consoleSpy).toHaveBeenCalledWith(message);
+    }
+    consoleSpy.mockRestore();
+  });
+});
 
 describe('propagateBlockDataToCode', () => {
   it('single tag propagation', async () => {
