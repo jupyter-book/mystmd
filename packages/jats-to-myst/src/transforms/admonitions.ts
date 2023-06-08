@@ -4,7 +4,7 @@ import type { GenericParent } from 'myst-common';
 import { fileWarn } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
-import { Tags } from 'jats-xml';
+import { Tags } from 'jats-tags';
 import type { VFile } from 'vfile';
 
 export type Section = Omit<Heading, 'type'> & { type: 'section' };
