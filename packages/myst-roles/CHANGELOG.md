@@ -1,5 +1,11 @@
 # myst-roles
 
+## 0.0.32
+
+### Patch Changes
+
+- de66ba19: Add glossary and term directives
+
 ## 0.0.31
 
 ## 0.0.30

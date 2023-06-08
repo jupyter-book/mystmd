@@ -1,5 +1,29 @@
 # myst-cli
 
+## 0.1.31
+
+### Patch Changes
+
+- f97d4d50: Add abbreviation frontmatter option to add abbreviations automatically to documents.
+- de66ba19: Add glossary and term directives
+- Updated dependencies [de66ba19]
+- Updated dependencies [97518ca3]
+- Updated dependencies [d068df65]
+- Updated dependencies [f97d4d50]
+- Updated dependencies [e530b082]
+- Updated dependencies [de66ba19]
+- Updated dependencies [83200b5c]
+  - myst-transforms@0.0.32
+  - myst-frontmatter@0.0.14
+  - myst-templates@0.1.18
+  - myst-parser@0.0.32
+  - myst-to-tex@0.0.28
+  - jtex@0.1.15
+  - myst-config@0.0.16
+  - myst-to-docx@0.0.24
+  - myst-to-jats@0.0.30
+  - tex-to-myst@0.0.28
+
 ## 0.1.30
 
 ### Patch Changes

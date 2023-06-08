@@ -1,6 +1,6 @@
 {
   "name": "myst-config",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "license": "MIT",
   "description": "Project and site config types and validation for the mystjs ecosystem",
   "author": "Franklin Koch <franklin@curvenote.com>",
@@ -39,7 +39,7 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "myst-frontmatter": "^0.0.13",
+    "myst-frontmatter": "^0.0.14",
     "simple-validators": "^0.0.3"
   },
   "devDependencies": {

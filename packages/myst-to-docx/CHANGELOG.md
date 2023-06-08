@@ -1,5 +1,13 @@
 # myst-to-docx
 
+## 0.0.24
+
+### Patch Changes
+
+- Updated dependencies [97518ca3]
+- Updated dependencies [f97d4d50]
+  - myst-frontmatter@0.0.14
+
 ## 0.0.23
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "jats-to-myst",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "Read JATS and convert to MyST AST",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/jats-to-myst",
@@ -47,10 +47,10 @@
     "jats-tags": "^0.1.0",
     "jats-xml": "^0.1.0",
     "myst-common": "^0.0.17",
-    "myst-frontmatter": "^0.0.13",
+    "myst-frontmatter": "^0.0.14",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^0.0.12",
-    "myst-transforms": "^0.0.31",
+    "myst-transforms": "^0.0.32",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
   },

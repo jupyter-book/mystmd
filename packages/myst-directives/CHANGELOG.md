@@ -1,5 +1,12 @@
 # myst-directives
 
+## 0.0.32
+
+### Patch Changes
+
+- 69a450dd: Allow for multiple images to be included in a single figure directive
+- de66ba19: Add glossary and term directives
+
 ## 0.0.31
 
 ## 0.0.30

@@ -1,5 +1,16 @@
 # myst-parser
 
+## 0.0.32
+
+### Patch Changes
+
+- d068df65: Change unknown directive from warning to error
+- 83200b5c: Change undefined role to error from warning
+- Updated dependencies [69a450dd]
+- Updated dependencies [de66ba19]
+  - myst-directives@0.0.32
+  - myst-roles@0.0.32
+
 ## 0.0.31
 
 ### Patch Changes

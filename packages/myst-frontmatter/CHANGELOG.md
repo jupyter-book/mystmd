@@ -1,5 +1,12 @@
 # myst-frontmatter
 
+## 0.0.14
+
+### Patch Changes
+
+- 97518ca3: Add collaborations list to myst-frontmatter
+- f97d4d50: Add abbreviation frontmatter option to add abbreviations automatically to documents.
+
 ## 0.0.13
 
 ### Patch Changes

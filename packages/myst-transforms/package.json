@@ -1,6 +1,6 @@
 {
   "name": "myst-transforms",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "sideEffects": false,
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",

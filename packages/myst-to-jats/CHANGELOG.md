@@ -1,5 +1,13 @@
 # myst-to-jats
 
+## 0.0.30
+
+### Patch Changes
+
+- Updated dependencies [97518ca3]
+- Updated dependencies [f97d4d50]
+  - myst-frontmatter@0.0.14
+
 ## 0.0.29
 
 ## 0.0.28
