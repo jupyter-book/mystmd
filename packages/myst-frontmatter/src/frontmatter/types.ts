@@ -146,6 +146,8 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   numbering?: boolean | Numbering;
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, string>;
+  /** Abbreviations used throughout the project */
+  abbreviations?: Record<string, string>;
   exports?: Export[];
   thebe?: boolean | Thebe;
 };

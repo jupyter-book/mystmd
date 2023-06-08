@@ -23,6 +23,7 @@ import {
   DOITransformer,
   joinGatesPlugin,
   glossaryPlugin,
+  abbreviationPlugin,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
@@ -138,6 +139,7 @@ export async function transformMdast(
     .use(htmlPlugin, { htmlHandlers })
     .use(mathPlugin, { macros: frontmatter.math })
     .use(glossaryPlugin, { state }) // This should be before the enumerate plugins
+    .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
     .use(enumerateTargetsPlugin, { state }) // This should be after math
     .use(joinGatesPlugin)
     .run(mdast, vfile);

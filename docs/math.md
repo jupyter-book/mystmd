@@ -198,6 +198,8 @@ To change the reference format, you can use the frontmatter under the `xxx` fiel
 
 TODO!
 
+(math-macros)=
+
 ## Math Macros
 
 Macros allow you to create reusable math components that can simplify the writing of a document.

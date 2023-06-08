@@ -9,6 +9,35 @@ project:
   references:
     python: https://docs.python.org/3.7/
     jupyterbook: https://jupyterbook.org/en/stable/
+  abbreviations:
+    AST: Abstract Syntax Tree
+    DOI: Digital Object Identifier
+    MyST: Markedly Structured Text
+    CLI: Command Line Interface
+    HTML: Hypertext Markup Language
+    PDF: Portable Document Format
+    AMS: American Mathematical Society
+    RRID: Research Resource Identifier
+    CSS: Cascading Style Sheet
+    YAML: Yet Another Markup Language
+    WASM: WebAssembly
+    REES: Reproducible Execution Environment Specification
+    URL: Uniform Resource Locator
+    XML: Extensible Markup Language
+    PID: Persistent Identifier
+    ID: Identifier
+    JATS: Journal Article Tag Suite
+    VoR: Version of Record
+    LTS: Long Term Support
+    POSIX: Portable Operating System Interface
+    RST: reStructuredText
+    SPDX: Software Package Data Exchange
+    API: Application Programming Interface
+    GPU: Graphics Processing Unit
+    TPU: Tensor Processing Unit
+    JSON: JavaScript Object Notation
+    TLA: Three Letter Acronym
+    OA: Open Access
 site:
   title: MyST Markdown Guide
   projects:

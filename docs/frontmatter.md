@@ -31,18 +31,16 @@ authors:
 
 Frontmatter can be added to the first cell of a Jupyter Notebook, that cell should be a Markdown cell and use `---` delimiters as above.
 
-```{important}
-**Note**
+:::{important} Install JupyterLab Myst
+To have properly formatted frontmatter, you can install the `jupyterlab-myst` plugin for Jupyter. See the [quickstart tutorial](./quickstart-jupyter-lab-myst.md).
 
-Remember to format the contents of the section as valid `yaml` even though when rendered, the cell will not look well formatted in your notebook.
-```
+Without the extension installed, remember to format the contents of the section as valid `yaml` even though when rendered, the cell will not look well formatted in your notebook.
+:::
 
-```{note}
+:::{note} Using `jupytext` or a Markdown-based notebook?
 :class: dropdown
-# Using `jupytext` or a Markdown-based notebook?
-
 If your Jupyter Notebook is described as a markdown file (e.g. using [jupytext](https://jupytext.readthedocs.io/en/latest/formats.html), or [MyST](https://jupyterbook.org/en/stable/file-types/myst-notebooks.html)), then this should be included in the frontmatter section as usual in addition to the `jupyter` key that defines the kernel and jupytext metadata.
-```
+:::
 
 ### In a `myst.yml` file
 
@@ -123,13 +121,19 @@ The following table lists the available frontmatter fields, a brief description 
 * - `biblio`
   - a biblio object with various fields
   - page can override project
+* - `math`
+  - a dictionary of math macros (see [](#math-macros))
+  - page can override project
+* - `abbreviations`
+  - a dictionary of abbreviations in the project (see [](#abbreviations))
+  - page can override project
 ```
 
 +++
 
-## Field Behaviour
+## Field Behavior
 
-Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` or a “project”. However, individual frontmatter fields are not uniformly available at both levels, and behaviour of certain fields are different between project and page levels. There are three field behaviours to be aware of:
+Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` or a “project”. However, individual frontmatter fields are not uniformly available at both levels, and behavior of certain fields are different between project and page levels. There are three field behaviors to be aware of:
 
 `page & project`
 : the field is available on both the page & project but they are independent

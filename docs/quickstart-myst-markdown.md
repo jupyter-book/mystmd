@@ -18,7 +18,7 @@ During this how to guide, you can make changes and experiment with MyST syntax i
 
 ## Overview
 
-{abbr}`MyST (Markedly Structured Text)` is designed to create publication-quality documents written entirely in Markdown. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [ReStructured Text](https://docutils.sourceforge.io/rst.html) (RST) ecosystems and is is a superset of [CommonMark](./commonmark.md).
+{abbr}`MyST (Markedly Structured Text)` is designed to create publication-quality documents written entirely in Markdown. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [reStructuredText](https://docutils.sourceforge.io/rst.html) (RST) ecosystems and is is a superset of [CommonMark](./commonmark.md).
 
 MyST allows you to directly create “directives” and “roles” that extend markdown to support technical and scientific documents. Directives are block-level extension points, like [callout panels](./admonitions.md), [tabs](./dropdowns-cards-and-tabs.md), [figures](./figures.md) or [embedded charts](./interactive-notebooks.ipynb); and roles are inline extension points, for components like [cross-references](./cross-references.md), [external references](./external-references.md), [citations](./citations.md), or [inline math](./math.md). MyST also supports rich information about linking to other documents in common services (like Wikipedia or a DOI link), these allow for rich-previews of the links as well as easy ways to include citations.
 
