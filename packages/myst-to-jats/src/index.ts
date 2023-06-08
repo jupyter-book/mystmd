@@ -229,11 +229,9 @@ const handlers: Record<string, Handler> = {
     // https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/break.html
     state.addLeaf('break');
   },
-  // abbreviation(node, state) {
-  //   // TODO: \newacronym{gcd}{GCD}{Greatest Common Divisor}
-  //   // https://www.overleaf.com/learn/latex/glossaries
-  //   state.renderChildren(node, true);
-  // },
+  abbreviation(node, state) {
+    state.renderInline(node, 'abbrev', { alt: node.title });
+  },
   link(node, state) {
     state.renderInline(node, 'ext-link', { 'ext-link-type': 'uri', 'xlink:href': node.url });
   },
