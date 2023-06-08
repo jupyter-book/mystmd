@@ -1,5 +1,10 @@
 import { Session } from '../session';
-import { liftCodeMetadataToBlock, metadataFromCode, propagateBlockDataToCode } from './code';
+import {
+  liftCodeMetadataToBlock,
+  metadataFromCode,
+  propagateBlockDataToCode,
+  checkMetaTags,
+} from './code';
 
 describe('metadataFromCode', () => {
   it('empty code returns self', async () => {
@@ -140,6 +145,66 @@ function build_mdast(tags: string[], has_output: boolean) {
 }
 
 describe('checkMetaTags', () => {
+  it('filter tags', async () => {
+    const tags = ['hide-cell', 'remove-input', 'tag-1', 'tag-2'];
+    for (const filter of [true, false]) {
+      const mdast = build_mdast(tags, true);
+      checkMetaTags(new Session(), tags, filter);
+      const result = mdast.children[0].data.tags;
+      if (filter) {
+        expect(result).toEqual(['tag-1', 'tag-2']);
+      } else {
+        expect(result).toEqual(tags);
+      }
+    }
+  });
+  it('validate tags with duplicate', async () => {
+    for (const action of ['hide', 'remove']) {
+      const tags = [];
+      for (const target of ['cell', 'input', 'output']) {
+        const tag = `${action}-${target}`;
+        tags.push(tag);
+        tags.push(tag);
+      }
+      const validMetatags = checkMetaTags(new Session(), tags, true);
+      const expected = [];
+      for (const target of ['cell', 'input', 'output']) {
+        expected.push(`${action}-${target}`);
+      }
+      expect(validMetatags).toEqual(expected);
+    }
+  });
+  it('validate tags with conflict', async () => {
+    const tags = [];
+    for (const action of ['hide', 'remove']) {
+      for (const target of ['cell', 'input', 'output']) {
+        tags.push(`${action}-${target}`);
+      }
+    }
+    const validMetatags = checkMetaTags(new Session(), tags, true);
+    const expected = [];
+    for (const target of ['cell', 'input', 'output']) {
+      expected.push(`remove-${target}`);
+    }
+    expect(validMetatags).toEqual(expected);
+  });
+  it('validate tags with duplicate, conflict and filter', async () => {
+    for (const filter of [true, false]) {
+      const tags = ['tag-1', 'tag-2'];
+      for (const action of ['hide', 'remove']) {
+        for (const target of ['cell', 'input', 'output']) {
+          tags.push(`${action}-${target}`);
+          tags.push(`${action}-${target}`);
+        }
+      }
+      const validMetatags = checkMetaTags(new Session(), tags, filter);
+      const expected = [];
+      for (const target of ['cell', 'input', 'output']) {
+        expected.push(`remove-${target}`);
+      }
+      expect(validMetatags).toEqual(expected);
+    }
+  });
   it('duplicate tag warn', async () => {
     const session = new Session();
     const consoleSpy = jest.spyOn(session.log, 'warn');

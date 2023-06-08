@@ -84,7 +84,11 @@ export function liftCodeMetadataToBlock(session: ISession, filename: string, mda
   });
 }
 
-function checkMetaTags(session: ISession, tags: string[], filter: boolean): string[] {
+/**
+ * Check duplicated meta tags and conflict meta tags.
+ * Separate the meta tags from tag if filter is true, otherwise just go through and process.
+ */
+export function checkMetaTags(session: ISession, tags: string[], filter: boolean): string[] {
   const metaTagsCounter = new Map();
   for (const action of ['hide', 'remove']) {
     for (const target of ['cell', 'input', 'output']) {
