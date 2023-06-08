@@ -5,12 +5,10 @@ short_title: Glossaries & Terms
 
 To add a glossary to your content, add the `{glossary}` directive with the content as [definition lists](#definition-lists).
 
-```markdown
+```{myst}
 :::{glossary}
-
 MyST
 : An amazing markup language that supports glossaries
-
 :::
 
 You can use {term}`MyST` to create glossaries.
@@ -39,13 +37,20 @@ The label that you use for the term should be in the same case/spacing as it app
 
 To create an abbreviation, you can explicitly do this in your document with an [abbreviation role](#abbr-role), for example, `` {abbr}`HR (Heart Rate)` ``. You can also use the page or project frontmatter:
 
-```yaml
+```{myst}
+
+---
 abbreviations:
-  RHR: Right-hand rule
+  RHR: Resting Heart Rate
   HR: Human Resources
+---
+
+To lower your RHR, try meditating or contact your local HR representative?
 ```
 
-The abbreviations are case-sensitive and will replace all instances in your document with a hover-tooltip and accessibility improvements. Abbreviations in cross-references, code, and links are not replaced. For example, in this project we have a lot of abbreviations defined in our [`myst.yml`](./myst.yml):
+The abbreviations are case-sensitive and will replace all instances[^1] in your document with a hover-tooltip and accessibility improvements. Abbreviations in cross-references, code, and links are not replaced. For example, in this project we have a lot of abbreviations defined in our [`myst.yml`](./myst.yml):
+
+[^1]: Abbreviations must be at least two characters!
 
 > Our OA journal ensures your VoR is JATS XML with a PID (usually a DOI) to ensure LTS.
 >
