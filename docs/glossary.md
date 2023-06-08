@@ -8,7 +8,7 @@ description: Glossary of terms used throughout the MyST ecosystem.
 [CommonMark](https://commonmark.org/)
 : A standard syntax of Markdown that is used across many communities and projects.
 It is the base flavour of Markdown for Jupyter Notebook, and the base flavour
-for {term}`MyST Markdown <MyST>` and Jupyter Book.
+for {term}`MyST Markdown <MyST>` and {term}`Jupyter Book`.
 
 [ExecutableBookProject](https://executablebooks.org)
 : The project and [team](https://compass.executablebooks.org/en/latest/team/index.html) that supports {term}`Jupyter Book` and {term}`MyST Markdown <MyST>` and the tools and packages behind them.

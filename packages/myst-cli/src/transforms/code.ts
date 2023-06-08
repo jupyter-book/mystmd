@@ -9,7 +9,7 @@ const CELL_OPTION_PREFIX = '#| ';
 /**
  * Parse metadata from code block using js-yaml
  *
- * Metadata is defined at the begining of code cells as:
+ * Metadata is defined at the beginning of code cells as:
  *
  * ```python
  * #| key: value

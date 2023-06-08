@@ -65,6 +65,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'numbering',
   'bibliography',
   'math',
+  'abbreviations',
   'exports',
   'thebe',
 ].concat(SITE_FRONTMATTER_KEYS);
@@ -773,6 +774,17 @@ export function validateProjectFrontmatterKeys(
       output.math = filterKeys(math, stringKeys);
     }
   }
+  if (defined(value.abbreviations)) {
+    const abbreviationsOpts = incrementOptions('abbreviations', opts);
+    const abbreviations = validateObject(value.abbreviations, abbreviationsOpts);
+    if (abbreviations) {
+      const stringKeys = Object.keys(abbreviations).filter((key) => {
+        // Filter on non-string values
+        return validateString(abbreviations[key], incrementOptions(key, abbreviationsOpts));
+      });
+      output.abbreviations = filterKeys(abbreviations, stringKeys);
+    }
+  }
   if (defined(value.exports)) {
     const exports = validateExportsList(value.exports, opts);
     if (exports) output.exports = exports;
@@ -883,6 +895,14 @@ export function fillPageFrontmatter(
   // Combine all math macros defined on page and project
   if (projectFrontmatter.math || pageFrontmatter.math) {
     frontmatter.math = { ...(projectFrontmatter.math ?? {}), ...(pageFrontmatter.math ?? {}) };
+  }
+
+  // Combine all abbreviation defined on page and project
+  if (projectFrontmatter.abbreviations || pageFrontmatter.abbreviations) {
+    frontmatter.abbreviations = {
+      ...(projectFrontmatter.abbreviations ?? {}),
+      ...(pageFrontmatter.abbreviations ?? {}),
+    };
   }
 
   return frontmatter;
