@@ -3,9 +3,9 @@ import { extname, dirname } from 'path';
 import type MystTemplate from 'myst-templates';
 import { TEMPLATE_FILENAME } from 'myst-templates';
 import nunjucks from 'nunjucks';
-import { renderImports } from './imports';
-import type { TexRenderer, TemplateImports } from './types';
-import version from './version';
+import { renderImports } from './imports.js';
+import type { TexRenderer, TemplateImports } from './types.js';
+import version from './version.js';
 
 function ensureDirectoryExists(directory: string) {
   if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
