@@ -1,5 +1,18 @@
 # myst-parser
 
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
+### Patch Changes
+
+- Updated dependencies [00c05fe9]
+  - markdown-it-myst@1.0.0
+  - myst-directives@1.0.0
+  - myst-roles@1.0.0
+
 ## 0.0.32
 
 ### Patch Changes

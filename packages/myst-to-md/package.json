@@ -1,6 +1,6 @@
 {
   "name": "myst-to-md",
-  "version": "0.0.8",
+  "version": "1.0.0",
   "description": "Export from MyST mdast to markdown",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-to-md",

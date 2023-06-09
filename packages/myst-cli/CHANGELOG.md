@@ -1,5 +1,34 @@
 # myst-cli
 
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
+### Patch Changes
+
+- Updated dependencies [00c05fe9]
+- Updated dependencies [65efd6d6]
+  - citation-js-utils@1.0.0
+  - myst-ext-exercise@1.0.0
+  - myst-ext-reactive@1.0.0
+  - myst-transforms@1.0.0
+  - myst-cli-utils@2.0.0
+  - myst-ext-proof@1.0.0
+  - myst-templates@1.0.0
+  - myst-ext-card@1.0.0
+  - myst-ext-grid@1.0.0
+  - myst-ext-tabs@1.0.0
+  - myst-spec-ext@1.0.0
+  - myst-to-docx@1.0.0
+  - myst-to-jats@1.0.0
+  - myst-config@1.0.0
+  - myst-parser@1.0.0
+  - myst-to-tex@1.0.0
+  - tex-to-myst@1.0.0
+  - jtex@1.0.0
+
 ## 0.1.31
 
 ### Patch Changes

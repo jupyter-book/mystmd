@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
 ## 0.1.3
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # jats-to-myst
 
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
+### Patch Changes
+
+- Updated dependencies [00c05fe9]
+  - myst-transforms@1.0.0
+  - myst-spec-ext@1.0.0
+
 ## 0.0.30
 
 ### Patch Changes

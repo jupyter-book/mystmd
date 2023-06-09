@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-exercise",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for exercise",
@@ -35,6 +35,6 @@
     "myst-common": "^1.0.0"
   },
   "devDependencies": {
-    "myst-parser": "^0.0.32"
+    "myst-parser": "^1.0.0"
   }
 }

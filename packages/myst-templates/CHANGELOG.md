@@ -1,5 +1,16 @@
 # myst-templates
 
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
+### Patch Changes
+
+- Updated dependencies [00c05fe9]
+  - myst-cli-utils@2.0.0
+
 ## 0.1.18
 
 ### Patch Changes

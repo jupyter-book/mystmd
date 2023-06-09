@@ -1,6 +1,6 @@
 {
   "name": "myst-to-jats",
-  "version": "0.0.30",
+  "version": "1.0.0",
   "description": "Export from MyST Markdown to JATS",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-to-jats",
@@ -35,12 +35,12 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "citation-js-utils": "^0.0.15",
+    "citation-js-utils": "^1.0.0",
     "jats-tags": "^1.0.1",
     "myst-common": "^1.0.0",
     "myst-frontmatter": "^1.0.0",
     "myst-spec": "^0.0.4",
-    "myst-spec-ext": "^0.0.12",
+    "myst-spec-ext": "^1.0.0",
     "nbtx": "^0.2.3",
     "unified": "^10.1.2",
     "unist-util-select": "^4.0.3",
@@ -52,6 +52,6 @@
     "@types/mdast": "^3.0.10",
     "jats-xml": "^1.0.1",
     "js-yaml": "^4.1.0",
-    "myst-cli-utils": "^1.0.0"
+    "myst-cli-utils": "^2.0.0"
   }
 }

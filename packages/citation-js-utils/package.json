@@ -1,6 +1,6 @@
 {
   "name": "citation-js-utils",
-  "version": "0.0.15",
+  "version": "1.0.0",
   "description": "Utilities for citation-js.",
   "type": "module",
   "exports": "./dist/index.js",

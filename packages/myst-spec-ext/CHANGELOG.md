@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
 ## 0.0.12
 
 ### Patch Changes

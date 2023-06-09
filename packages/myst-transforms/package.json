@@ -1,6 +1,6 @@
 {
   "name": "myst-transforms",
-  "version": "0.0.32",
+  "version": "1.0.0",
   "sideEffects": false,
   "type": "module",
   "exports": "./dist/index.js",
@@ -26,7 +26,7 @@
     "mdast-util-find-and-replace": "^2.1.0",
     "myst-common": "^1.0.0",
     "myst-spec": "^0.0.4",
-    "myst-spec-ext": "^0.0.12",
+    "myst-spec-ext": "^1.0.0",
     "rehype-parse": "^8.0.4",
     "rehype-remark": "^9.1.2",
     "unified": "^10.0.0",

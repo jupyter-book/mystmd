@@ -1,5 +1,11 @@
 # myst-to-md
 
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
 ## 0.0.8
 
 ### Patch Changes
