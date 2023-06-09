@@ -19,7 +19,6 @@
     "url": "git+https://github.com/executablebooks/mystjs.git"
   },
   "scripts": {
-    "dev": "tsc -w --preserveWatchOutput -p .",
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npx prettier --check \"src/**/*.ts\"",
