@@ -1,5 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { mystParse } from 'myst-parser';
-import { proofDirective } from 'myst-ext-proof';
+import { proofDirective } from '../src';
 
 describe('proof directive', () => {
   it('proof directive parses', async () => {
