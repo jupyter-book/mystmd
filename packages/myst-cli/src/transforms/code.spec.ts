@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Session } from '../session';
 import {
   liftCodeMetadataToBlock,
@@ -208,7 +208,7 @@ describe('checkMetaTags', () => {
   });
   it('duplicate tag warn', async () => {
     const session = new Session();
-    const consoleSpy = jest.spyOn(session.log, 'warn');
+    const consoleSpy = vi.spyOn(session.log, 'warn');
     for (const action of ['hide', 'remove']) {
       for (const target of ['cell', 'input', 'output']) {
         const tag = `${action}-${target}`;
@@ -221,7 +221,7 @@ describe('checkMetaTags', () => {
   });
   it('tag conflict warn', async () => {
     const session = new Session();
-    const consoleSpy = jest.spyOn(session.log, 'warn');
+    const consoleSpy = vi.spyOn(session.log, 'warn');
     for (const target of ['cell', 'input', 'output']) {
       const tags = [`hide-${target}`, `remove-${target}`];
       const mdast = build_mdast(tags, true);
