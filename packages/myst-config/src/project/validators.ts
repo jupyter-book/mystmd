@@ -7,7 +7,7 @@ import {
   validateString,
   validateList,
 } from 'simple-validators';
-import type { ProjectConfig } from './types';
+import type { ProjectConfig } from './types.js';
 
 const PROJECT_CONFIG_KEYS = {
   optional: ['remote', 'index', 'exclude'].concat(PROJECT_FRONTMATTER_KEYS),

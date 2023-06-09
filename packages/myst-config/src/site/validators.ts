@@ -13,14 +13,14 @@ import {
   validationError,
 } from 'simple-validators';
 import { validateSiteFrontmatterKeys } from 'myst-frontmatter';
-import { SITE_CONFIG_KEYS } from './types';
+import { SITE_CONFIG_KEYS } from './types.js';
 import type {
   SiteAction,
   SiteConfig,
   SiteNavItem,
   SiteProject,
   SiteTemplateOptions,
-} from './types';
+} from './types.js';
 
 function validateUrlOrPath(input: any, opts: ValidationOptions) {
   const value = validateString(input, opts);
