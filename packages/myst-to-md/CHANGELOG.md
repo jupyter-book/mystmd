@@ -1,5 +1,11 @@
 # myst-to-md
 
+## 1.0.1
+
+### Patch Changes
+
+- Previous version on npm
+
 ## 1.0.0
 
 ### Major Changes

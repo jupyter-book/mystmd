@@ -1,5 +1,11 @@
 # myst-cli
 
+## 1.0.1
+
+### Patch Changes
+
+- Updates to myst-directives and myst-to-md
+
 ## 1.0.0
 
 ### Major Changes
