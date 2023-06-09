@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import type { Root } from 'mdast';
 import { getFrontmatter } from './frontmatter';
 

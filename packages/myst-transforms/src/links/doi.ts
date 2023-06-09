@@ -1,8 +1,8 @@
 import { fileError } from 'myst-common';
 import doi from 'doi-utils';
 import type { VFile } from 'vfile';
-import type { Link, LinkTransformer } from './types';
-import { updateLinkTextIfEmpty } from './utils';
+import type { Link, LinkTransformer } from './types.js';
+import { updateLinkTextIfEmpty } from './utils.js';
 
 const DOI_ORG = 'https://doi.org/';
 const TRANSFORM_SOURCE = 'LinkTransform:DOITransformer';

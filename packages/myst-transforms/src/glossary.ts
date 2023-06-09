@@ -1,11 +1,11 @@
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import type { Node } from 'myst-spec';
-import type { IReferenceState } from './enumerate';
 import type { VFile } from 'vfile';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
 import { normalizeLabel, toText, fileError } from 'myst-common';
+import type { IReferenceState } from './enumerate.js';
 
 export type Options = {
   state: IReferenceState;

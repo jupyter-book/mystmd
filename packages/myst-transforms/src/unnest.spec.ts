@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import { unnestTransform } from './unnest';
 
 describe('Test unnesting transformation', () => {

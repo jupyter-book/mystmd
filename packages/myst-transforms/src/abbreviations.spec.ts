@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import { u } from 'unist-builder';
 import { abbreviationTransform } from './abbreviations';
 

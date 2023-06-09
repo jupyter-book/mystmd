@@ -1,7 +1,7 @@
 import { fileError, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
-import type { Link, LinkTransformer } from './types';
-import { updateLinkTextIfEmpty, withoutHttp } from './utils';
+import type { Link, LinkTransformer } from './types.js';
+import { updateLinkTextIfEmpty, withoutHttp } from './utils.js';
 
 const DEFAULT_LANGUAGE = 'en';
 const ANY_WIKIPEDIA_ORG = /^(?:https?:\/\/)?(?:([a-z]+)\.)?wikipedia\.org\/wiki\/(.+)$/;
