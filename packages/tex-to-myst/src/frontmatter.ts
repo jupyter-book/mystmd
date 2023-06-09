@@ -3,8 +3,8 @@ import { copyNode, toText, mergeTextNodes } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { selectAll } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
-import type { Handler, ITexParser } from './types';
-import { getArguments, getPositionExtents, originalValue, texToText } from './utils';
+import type { Handler, ITexParser } from './types.js';
+import { getArguments, getPositionExtents, originalValue, texToText } from './utils.js';
 
 function getContentFromRenderedSpan(node: GenericNode | undefined): string | GenericNode {
   if (!node) return '';

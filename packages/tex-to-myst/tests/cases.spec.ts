@@ -1,3 +1,4 @@
+import { describe, expect, test, vi } from 'vitest';
 import { VFile } from 'vfile';
 import { TexParser } from '../src';
 import fs from 'fs';
@@ -6,14 +7,9 @@ import yaml from 'js-yaml';
 import { toText } from 'myst-common';
 import { stripPositions } from '../src/utils';
 
-jest.mock('myst-common', () => {
-  const originalModule = jest.requireActual('myst-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    createId: jest.fn(() => 'someRandomId'),
-  };
+vi.mock('myst-common', async () => {
+  const actual = (await vi.importActual('myst-common')) as any;
+  return { ...actual, createId: vi.fn(() => 'someRandomId') };
 });
 
 type TestFile = {

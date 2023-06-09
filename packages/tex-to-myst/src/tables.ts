@@ -1,8 +1,8 @@
 import { u } from 'unist-builder';
 import type { GenericNode } from 'myst-common';
 import { createId } from 'myst-common';
-import type { Handler, ITexParser } from './types';
-import { getArguments, texToText, unnestParagraphs } from './utils';
+import type { Handler, ITexParser } from './types.js';
+import { getArguments, texToText, unnestParagraphs } from './utils.js';
 
 function createTable(node: GenericNode, state: ITexParser) {
   state.closeParagraph();

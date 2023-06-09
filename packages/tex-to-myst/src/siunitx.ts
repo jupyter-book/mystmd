@@ -1,10 +1,10 @@
-import { NARROW_NO_BREAK_SPACE } from './characters';
-import type { Handler } from './types';
-import { getArguments, texToText } from './utils';
 import type { GenericNode } from 'myst-common';
 import { fileWarn } from 'myst-common';
 import type { SiUnit } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
+import { NARROW_NO_BREAK_SPACE } from './characters.js';
+import type { Handler } from './types.js';
+import { getArguments, texToText } from './utils.js';
 
 const UNITS: Record<string, string> = {
   ampere: 'A',

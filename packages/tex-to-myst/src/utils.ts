@@ -1,7 +1,7 @@
 import type { GenericNode } from 'myst-common';
 import { copyNode } from 'myst-common';
 import { selectAll } from 'unist-util-select';
-import { LatexAccents, LatexSpecialSymbols } from './characters';
+import { LatexAccents, LatexSpecialSymbols } from './characters.js';
 
 export const phrasingTypes = new Set([
   'paragraph',

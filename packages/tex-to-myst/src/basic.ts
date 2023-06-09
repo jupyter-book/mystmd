@@ -1,6 +1,6 @@
 import type { GenericNode } from 'myst-common';
-import type { Handler, ITexParser } from './types';
-import { UNHANDLED_ERROR_TEXT, isAccent } from './utils';
+import type { Handler, ITexParser } from './types.js';
+import { UNHANDLED_ERROR_TEXT, isAccent } from './utils.js';
 
 function closeParagraph(node: GenericNode, state: ITexParser) {
   state.closeParagraph();

@@ -1,5 +1,5 @@
 import { u } from 'unist-builder';
-import type { Handler } from './types';
+import type { Handler } from './types.js';
 
 const marks = {
   textbf: 'strong',

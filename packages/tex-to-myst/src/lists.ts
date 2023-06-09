@@ -1,7 +1,7 @@
 import type { GenericNode } from 'myst-common';
 import { copyNode } from 'myst-common';
-import type { Handler } from './types';
-import { renderInfoIndex, texToText, unnestParagraphs } from './utils';
+import type { Handler } from './types.js';
+import { renderInfoIndex, texToText, unnestParagraphs } from './utils.js';
 
 export const LIST_HANDLERS: Record<string, Handler> = {
   env_enumerate(node, state) {

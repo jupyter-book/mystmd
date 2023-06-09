@@ -1,7 +1,7 @@
 import { u } from 'unist-builder';
 import { createId } from 'myst-common';
-import type { Handler } from './types';
-import { getArguments, texToText } from './utils';
+import type { Handler } from './types.js';
+import { getArguments, texToText } from './utils.js';
 
 export const FOOTNOTE_HANDLERS: Record<string, Handler> = {
   macro_footnote(node, state) {

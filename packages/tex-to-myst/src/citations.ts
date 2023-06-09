@@ -1,6 +1,6 @@
-import type { Handler, ITexParser } from './types';
+import type { Handler, ITexParser } from './types.js';
 import { u } from 'unist-builder';
-import { getArguments, replaceTextValue, texToText } from './utils';
+import { getArguments, replaceTextValue, texToText } from './utils.js';
 import type { CiteKind } from 'myst-spec-ext';
 import type { GenericNode } from 'myst-common';
 
