@@ -1,5 +1,5 @@
 import type { ProjectFrontmatter } from 'myst-frontmatter';
-import type { Element } from './types';
+import type { Element } from './types.js';
 
 export function getJournalIds(): Element[] {
   // [{ type: 'element', name: 'journal-id', attributes: {'journal-id-type': ...}, text: ...}]

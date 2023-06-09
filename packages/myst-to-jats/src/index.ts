@@ -10,8 +10,8 @@ import { SourceFileKind, copyNode, fileError } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { Tags, RefType } from 'jats-tags';
 import type { MinifiedOutput } from 'nbtx';
-import { getBack } from './backmatter';
-import { getArticleMeta, getFront } from './frontmatter';
+import { getBack } from './backmatter.js';
+import { getArticleMeta, getFront } from './frontmatter.js';
 import type {
   Handler,
   IJatsSerializer,
@@ -21,12 +21,12 @@ import type {
   Attributes,
   ArticleContent,
   DocumentOptions,
-} from './types';
-import { basicTransformations } from './transforms';
-import type { SupplementaryMaterial } from './transforms/containers';
-import type { Section } from './transforms/sections';
-import { sectionAttrsFromBlock } from './transforms/sections';
-import { inlineExpression } from './inlineExpression';
+} from './types.js';
+import { basicTransformations } from './transforms/index.js';
+import type { SupplementaryMaterial } from './transforms/containers.js';
+import type { Section } from './transforms/sections.js';
+import { sectionAttrsFromBlock } from './transforms/sections.js';
+import { inlineExpression } from './inlineExpression.js';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 

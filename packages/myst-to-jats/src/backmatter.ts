@@ -1,5 +1,5 @@
 import type { CitationRenderer, CitationJson } from 'citation-js-utils';
-import type { Element } from './types';
+import type { Element } from './types.js';
 
 export function citeToJatsRef(key: string, data: CitationJson): Element {
   const publicationType = !data.type || data.type === 'article-journal' ? 'journal' : data.type;

@@ -1,5 +1,5 @@
 import type { InlineExpression } from 'myst-spec-ext';
-import type { Element, Handler } from './types';
+import type { Element, Handler } from './types.js';
 
 // function renderMimeToJats(state: IJatsSerializer, node: GenericNode): Element[] {
 //   const { result } = node as InlineExpression;

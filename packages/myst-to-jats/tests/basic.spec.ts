@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import { unified } from 'unified';
 import fs from 'fs';
 import { Session, silentLogger } from 'myst-cli-utils';
