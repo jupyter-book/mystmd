@@ -1,5 +1,5 @@
-export type { ValidationOptions, KeyOptions } from './types';
-export { getDate, formatDate } from './utils';
+export type { ValidationOptions, KeyOptions } from './types.js';
+export { getDate, formatDate } from './utils.js';
 export {
   defined,
   locationSuffix,
@@ -21,4 +21,4 @@ export {
   validateList,
   fillMissingKeys,
   filterKeys,
-} from './validators';
+} from './validators.js';
