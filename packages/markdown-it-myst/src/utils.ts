@@ -1,4 +1,4 @@
-import type StateCore from 'markdown-it/lib/rules_core/state_core';
+import type StateCore from 'markdown-it/lib/rules_core/state_core.js';
 import type { VFile } from 'vfile';
 
 export function stateWarn(state: StateCore, message: string) {
