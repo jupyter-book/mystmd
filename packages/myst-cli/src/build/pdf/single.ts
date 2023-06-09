@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { ExportFormats } from 'myst-frontmatter';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { loadProjectFromDisk } from '../../project/index.js';

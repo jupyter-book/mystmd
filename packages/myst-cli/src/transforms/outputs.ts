@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { join } from 'path';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
 import { SourceFileKind } from 'myst-common';
 import type { GenericNode } from 'myst-common';

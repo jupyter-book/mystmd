@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import type { Root, CrossReference, TableCell as SpecTableCell } from 'myst-spec';
 import type { Cite, Code, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';

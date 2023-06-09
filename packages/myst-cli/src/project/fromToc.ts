@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { join, parse } from 'path';
+import fs from 'node:fs';
+import { join, parse } from 'node:path';
 import type { JupyterBookChapter } from '../utils/index.js';
 import {
   readTOC,

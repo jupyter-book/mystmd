@@ -1,6 +1,6 @@
 import AdmZip from 'adm-zip';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import type { TemplateImports } from 'jtex';
 import { renderTex, mergeTemplateImports } from 'jtex';
 import type { Root } from 'mdast';

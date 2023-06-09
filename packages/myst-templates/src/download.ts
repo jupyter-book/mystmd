@@ -1,6 +1,6 @@
-import fs, { createReadStream, createWriteStream, mkdirSync } from 'fs';
-import { dirname, join, parse } from 'path';
-import { createHash } from 'crypto';
+import fs, { createReadStream, createWriteStream, mkdirSync } from 'node:fs';
+import { dirname, join, parse } from 'node:path';
+import { createHash } from 'node:crypto';
 import yaml from 'js-yaml';
 import { TemplateKind } from 'myst-common';
 import { createGitLogger, makeExecutable } from 'myst-cli-utils';

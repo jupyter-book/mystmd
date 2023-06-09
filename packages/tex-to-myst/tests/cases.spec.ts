@@ -1,8 +1,8 @@
 import { describe, expect, test, vi } from 'vitest';
 import { VFile } from 'vfile';
 import { TexParser } from '../src';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import yaml from 'js-yaml';
 import { toText } from 'myst-common';
 import { stripPositions } from '../src/utils';

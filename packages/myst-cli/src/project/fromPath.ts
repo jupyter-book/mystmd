@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { extname, join } from 'path';
+import fs from 'node:fs';
+import { extname, join } from 'node:path';
 import type { ISession } from '../session/types.js';
 import {
   fileInfo,

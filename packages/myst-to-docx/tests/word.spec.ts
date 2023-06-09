@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import fs from 'fs';
+import fs from 'node:fs';
 import { unified } from 'unified';
 import { defaultHandlers, mystToDocx } from '../src';
 import { u } from 'unist-builder';

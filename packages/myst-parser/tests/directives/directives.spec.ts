@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import yaml from 'js-yaml';
 import { selectAll } from 'unist-util-select';
 import { mystParse } from '../../src';

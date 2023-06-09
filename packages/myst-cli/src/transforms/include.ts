@@ -1,9 +1,9 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import type { Root } from 'mdast';
 import type { GenericNode } from 'myst-common';
 import { parseMyst } from '../process/index.js';
 import { selectAll } from 'unist-util-select';
-import { join, dirname } from 'path';
+import { join, dirname } from 'node:path';
 import type { ISession } from '../session/types.js';
 
 /**

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import fs from 'fs';
+import fs from 'node:fs';
 import { unified } from 'unified';
 import type { LatexResult } from 'myst-to-tex';
 import mystToTex from 'myst-to-tex';

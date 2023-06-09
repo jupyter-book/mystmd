@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import type { ISession } from '../../session/types.js';
 
 export function cleanOutput(session: ISession, output: string) {

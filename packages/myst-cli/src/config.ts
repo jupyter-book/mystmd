@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { dirname, join, relative, resolve } from 'path';
+import fs from 'node:fs';
+import { dirname, join, relative, resolve } from 'node:path';
 import yaml from 'js-yaml';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';

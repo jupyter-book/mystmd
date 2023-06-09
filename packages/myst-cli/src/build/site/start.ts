@@ -5,7 +5,7 @@ import getPort, { portNumbers } from 'get-port';
 import { makeExecutable } from 'myst-cli-utils';
 import type child_process from 'child_process';
 import { nanoid } from 'nanoid';
-import { join } from 'path';
+import { join } from 'node:path';
 import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';
 import type { ISession } from '../../session/types.js';

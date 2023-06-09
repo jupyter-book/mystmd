@@ -1,6 +1,6 @@
 import type { ISession, Logger, LoggerDE } from './types.js';
 import chalk from 'chalk';
-import { sep } from 'path';
+import { sep } from 'node:path';
 
 export enum LogLevel {
   fatal = 60,

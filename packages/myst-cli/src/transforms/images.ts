@@ -1,11 +1,11 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import type { Root } from 'mdast';
 import mime from 'mime-types';
 import type { GenericNode } from 'myst-common';
 import { computeHash, hashAndCopyStaticFile, isUrl } from 'myst-cli-utils';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
-import path from 'path';
+import path from 'node:path';
 import type { VFileMessage } from 'vfile-message';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { extFromMimeType } from 'nbtx';

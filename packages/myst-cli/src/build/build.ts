@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import chalk from 'chalk';
 import { ExportFormats } from 'myst-frontmatter';
 import { filterPages, loadProjectFromDisk } from '../project/index.js';

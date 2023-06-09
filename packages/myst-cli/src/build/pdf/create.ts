@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import util from 'util';
 import { pdfExportCommand } from 'jtex';
 import { exec, tic } from 'myst-cli-utils';

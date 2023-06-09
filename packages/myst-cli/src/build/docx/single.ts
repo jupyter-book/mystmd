@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { tic, writeFileToFolder } from 'myst-cli-utils';

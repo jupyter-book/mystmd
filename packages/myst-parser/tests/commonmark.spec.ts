@@ -8,8 +8,8 @@ import { describe, expect, test } from 'vitest';
  * these.
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { createTokenizer, mystParse } from '../src';
 import { mystToHtml } from 'myst-to-html';
 

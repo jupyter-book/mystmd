@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { join, resolve } from 'path';
+import fs from 'node:fs';
+import { join, resolve } from 'node:path';
 import { isUrl } from 'myst-cli-utils';
 import { loadConfigAndValidateOrThrow } from '../config.js';
 import { loadFile, combineProjectCitationRenderers } from '../process/index.js';

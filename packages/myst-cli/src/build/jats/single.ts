@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
 import { ExportFormats } from 'myst-frontmatter';
 import { writeJats } from 'myst-to-jats';

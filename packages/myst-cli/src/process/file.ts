@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { createHash } from 'crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { tic } from 'myst-cli-utils';
 import { TexParser } from 'tex-to-myst';
 import { VFile } from 'vfile';

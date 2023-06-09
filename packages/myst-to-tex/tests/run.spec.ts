@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import yaml from 'js-yaml';
 import { unified } from 'unified';
 import type { LatexResult } from '../src';

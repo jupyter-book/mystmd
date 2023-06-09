@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import pLimit from 'p-limit';
 import fetch from 'node-fetch';
 import type { GenericNode } from 'myst-common';

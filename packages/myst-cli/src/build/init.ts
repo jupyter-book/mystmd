@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import yaml from 'js-yaml';
 import { defaultConfigFile, loadConfigAndValidateOrThrow, writeConfigs } from '../config.js';
 import { loadProjectFromDisk } from '../project/index.js';

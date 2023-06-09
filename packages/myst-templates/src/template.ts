@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { join, dirname } from 'path';
+import fs from 'node:fs';
+import { join, dirname } from 'node:path';
 import yaml from 'js-yaml';
 import type { TemplateKind } from 'myst-common';
 import type { ValidationOptions } from 'simple-validators';

@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import inquirer from 'inquirer';
 import { ExportFormats } from 'myst-frontmatter';
 import { promptContinue } from '../cli/options.js';

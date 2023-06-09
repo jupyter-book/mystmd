@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import type { SiteConfig } from 'myst-config';
 import type { LocalProject, LocalProjectPage } from '../project/types.js';
 import type { RootState } from './reducers.js';

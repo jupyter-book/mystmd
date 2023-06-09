@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { tic } from 'myst-cli-utils';
 import type { ISession } from '../../session/types.js';
 import { processSite } from '../../process/site.js';

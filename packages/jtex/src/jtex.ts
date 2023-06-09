@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { extname, dirname } from 'path';
+import fs from 'node:fs';
+import { extname, dirname } from 'node:path';
 import type MystTemplate from 'myst-templates';
 import { TEMPLATE_FILENAME } from 'myst-templates';
 import nunjucks from 'nunjucks';

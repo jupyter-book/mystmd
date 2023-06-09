@@ -1,5 +1,5 @@
 import chokidar from 'chokidar';
-import { join, extname, basename } from 'path';
+import { join, extname, basename } from 'node:path';
 import type { SiteProject } from 'myst-config';
 import type { LinkTransformer } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';

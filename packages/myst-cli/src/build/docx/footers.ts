@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { Footer, Paragraph, TextRun, ImageRun, AlignmentType } from 'docx';
 
 export function createFooter(logo: string) {

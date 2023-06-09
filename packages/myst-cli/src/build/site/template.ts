@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { join } from 'path';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import { TemplateKind } from 'myst-common';
 import { createNpmLogger, makeExecutable, tic } from 'myst-cli-utils';
 import MystTemplate from 'myst-templates';

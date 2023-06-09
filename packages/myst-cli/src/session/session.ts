@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';

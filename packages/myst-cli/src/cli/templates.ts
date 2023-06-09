@@ -1,6 +1,6 @@
 import chalk from 'chalk';
-import fs from 'fs';
-import { join } from 'path';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import yaml from 'js-yaml';
 import { Command } from 'commander';
 import { clirun } from './clirun.js';

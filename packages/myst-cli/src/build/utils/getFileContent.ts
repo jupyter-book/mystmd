@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import { tic } from 'myst-cli-utils';
 import type { LinkTransformer } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
