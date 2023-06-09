@@ -1,5 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { mystParse } from 'myst-parser';
-import { reactiveDirective, reactiveRole } from 'myst-ext-reactive';
+import { reactiveDirective, reactiveRole } from '../src';
 
 describe('reactive tests', () => {
   it('r:var directive parses', async () => {

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { formatTag, toHTML } from '../src/utils';
 
 describe('Utils', () => {

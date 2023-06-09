@@ -3,7 +3,7 @@ import { remove } from 'unist-util-remove';
 import type { Root } from 'mdast';
 import type { Block, Code, Heading } from 'myst-spec';
 import { toText } from 'myst-common';
-import { mystTargetsTransform } from './targets';
+import { mystTargetsTransform } from './targets.js';
 
 type Options = {
   removeYaml?: boolean;

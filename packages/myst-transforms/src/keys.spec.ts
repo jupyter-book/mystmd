@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
 import { keysTransform, keysPlugin } from './keys';

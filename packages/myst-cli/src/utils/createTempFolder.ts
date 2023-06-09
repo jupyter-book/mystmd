@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import os from 'os';
-import type { ISession } from '../session';
+import type { ISession } from '../session/index.js';
 
 export function createTempFolder(session?: ISession) {
   if (!session) return fs.mkdtempSync(path.join(os.tmpdir(), 'myst'));

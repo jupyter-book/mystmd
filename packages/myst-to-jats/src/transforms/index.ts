@@ -1,17 +1,17 @@
 import type { Root } from 'mdast';
 import type { Plugin } from 'unified';
 
-import { definitionTransform } from './definitions';
-import { containerTransform } from './containers';
-import { tableTransform } from './tables';
-import { sectionTransform } from './sections';
-import { citeGroupTransform } from './citations';
-import type { Options } from '../types';
+import { definitionTransform } from './definitions.js';
+import { containerTransform } from './containers.js';
+import { tableTransform } from './tables.js';
+import { sectionTransform } from './sections.js';
+import { citeGroupTransform } from './citations.js';
+import type { Options } from '../types.js';
 
-export { definitionTransform, definitionPlugin } from './definitions';
-export { containerTransform, containerPlugin } from './containers';
-export { tableTransform, tablePlugin } from './tables';
-export { sectionTransform, sectionPlugin } from './sections';
+export { definitionTransform, definitionPlugin } from './definitions.js';
+export { containerTransform, containerPlugin } from './containers.js';
+export { tableTransform, tablePlugin } from './tables.js';
+export { sectionTransform, sectionPlugin } from './sections.js';
 
 export function basicTransformations(tree: Root, opts: Options) {
   definitionTransform(tree);

@@ -1,5 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { mystParse } from 'myst-parser';
-import { gridDirective } from 'myst-ext-grid';
+import { gridDirective } from '../src';
 
 describe('grid directive', () => {
   it('grid directive parses', async () => {

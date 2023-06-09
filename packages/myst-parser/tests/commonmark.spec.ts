@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 /**
  * These tests will likely be deprecated in favor of the
  * commonmark tests pulled in from myst-spec in myst.spec.ts
@@ -7,8 +8,8 @@
  * these.
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { createTokenizer, mystParse } from '../src';
 import { mystToHtml } from 'myst-to-html';
 

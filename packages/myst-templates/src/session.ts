@@ -1,6 +1,6 @@
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
-import type { ISession } from './types';
+import type { ISession } from './types.js';
 
 export class Session implements ISession {
   API_URL = 'https://api.myst-tools.org';

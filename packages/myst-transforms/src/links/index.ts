@@ -1,8 +1,8 @@
-export { linksTransform, linksPlugin } from './plugin';
-export { MystTransformer } from './myst';
-export { WikiTransformer } from './wiki';
-export { RRIDTransformer } from './rrid';
-export { DOITransformer } from './doi';
-export { GithubTransformer } from './github';
-export type { LinkTransformer, Link } from './types';
-export { updateLinkTextIfEmpty } from './utils';
+export { linksTransform, linksPlugin } from './plugin.js';
+export { MystTransformer } from './myst.js';
+export { WikiTransformer } from './wiki.js';
+export { RRIDTransformer } from './rrid.js';
+export { DOITransformer } from './doi.js';
+export { GithubTransformer } from './github.js';
+export type { LinkTransformer, Link } from './types.js';
+export { updateLinkTextIfEmpty } from './utils.js';

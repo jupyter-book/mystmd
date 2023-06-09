@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { build } from '../build';
-import { Session } from '../session';
-import { clirun } from './clirun';
+import { build } from '../build/index.js';
+import { Session } from '../session/index.js';
+import { clirun } from './clirun.js';
 import {
   makeCheckLinksOption,
   makeDocxOption,
@@ -14,7 +14,7 @@ import {
   makeAllOption,
   makeNamedExportOption,
   makeHtmlOption,
-} from './options';
+} from './options.js';
 
 export function makeBuildCLI(program: Command) {
   const command = new Command('build')

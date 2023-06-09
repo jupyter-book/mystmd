@@ -2,35 +2,26 @@
   "name": "jtex",
   "version": "0.1.15",
   "description": "Tool for rendering LaTeX documents from jinja-style templates",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/types/index.d.ts",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
-    "src",
     "dist"
   ],
-  "exports": {
-    ".": {
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"
-    }
-  },
-  "bin": "./dist/jtex.js",
+  "bin": "./dist/jtex.cjs",
   "scripts": {
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "clean": "rimraf dist _build",
     "unlink": "npm uninstall -g jtex;",
     "link": "npm run unlink; npm link;",
     "dev": "npm run link && esbuild src/cli/index.ts --bundle --outfile=dist/jtex.js --platform=node --watch",
-    "lint": "npm run copy:version && eslint -c .eslintrc.js src/**/*.ts tests/**/*.ts",
+    "lint": "npm run copy:version && eslint -c .eslintrc.cjs src/**/*.ts tests/**/*.ts",
     "lint:format": "npm run copy:version && prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "test": "npm run copy:version && jest",
-    "test:watch": "npm run copy:version && jest --watchAll",
-    "build:esm": "tsc --project ./src/tsconfig.json --module es2015   --outDir dist/esm",
-    "build:cjs": "tsc --project ./src/tsconfig.json --module commonjs --outDir dist/cjs",
-    "declarations": "tsc --project ./src/tsconfig.json --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
-    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/jtex.js --platform=node",
-    "build": "npm-run-all -l clean copy:version -p build:cli build:cjs build:esm declarations"
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/jtex.cjs --platform=node",
+    "build": "npm-run-all -l clean copy:version -p build:esm build:cli"
   },
   "repository": {
     "type": "git",
@@ -53,33 +44,22 @@
     "npm": ">=6"
   },
   "dependencies": {
-    "chalk": "^4.1.2",
-    "commander": "^8.3.0",
+    "chalk": "^5.2.0",
+    "commander": "^10.0.1",
     "js-yaml": "^4.1.0",
-    "myst-cli-utils": "^0.0.12",
-    "myst-frontmatter": "^0.0.14",
+    "myst-cli-utils": "^1.0.0",
+    "myst-frontmatter": "^1.0.0",
     "myst-templates": "^0.1.18",
-    "node-fetch": "^2.6.7",
-    "nunjucks": "^3.2.3",
+    "node-fetch": "^3.3.1",
+    "nunjucks": "^3.2.4",
     "pretty-hrtime": "^1.0.3",
-    "simple-validators": "^0.0.3",
-    "unzipper": "^0.10.11"
+    "simple-validators": "^1.0.0",
+    "unzipper": "^0.10.14"
   },
   "devDependencies": {
-    "@types/jest": "^28.1.6",
-    "@types/node-fetch": "^2.6.2",
-    "@types/nunjucks": "^3.2.1",
-    "@types/sanitize-html": "^2.6.2",
-    "@types/unzipper": "^0.10.5",
-    "esbuild": "^0.15.12",
-    "eslint": "^8.21.0",
-    "eslint-config-curvenote": "latest",
-    "jest": "^28.1.3",
-    "memfs": "^3.4.7",
-    "npm-run-all": "^4.1.5",
-    "prettier": "latest",
-    "rimraf": "^3.0.2",
-    "ts-jest": "^28.0.7",
-    "typescript": "latest"
+    "@types/nunjucks": "^3.2.2",
+    "@types/sanitize-html": "^2.9.0",
+    "@types/unzipper": "^0.10.6",
+    "memfs": "^3.5.3"
   }
 }

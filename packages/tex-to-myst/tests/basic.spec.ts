@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { u } from 'unist-builder';
 import { VFile } from 'vfile';
 import { TexParser } from '../src';

@@ -1,6 +1,6 @@
-import doi from 'doi-utils';
-import credit from 'credit-roles';
-import orcid from 'orcid';
+import { doi } from 'doi-utils';
+import { credit } from 'credit-roles';
+import { orcid } from 'orcid';
 import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
@@ -20,8 +20,8 @@ import {
   validationError,
   validationWarning,
 } from 'simple-validators';
-import { validateLicenses } from '../licenses/validators';
-import { BinderProviders, ExportFormats } from './types';
+import { validateLicenses } from '../licenses/validators.js';
+import { BinderProviders, ExportFormats } from './types.js';
 import type {
   Author,
   Biblio,
@@ -38,7 +38,7 @@ import type {
   ThebeBinderOptions,
   ThebeServerOptions,
   ThebeLocalOptions,
-} from './types';
+} from './types.js';
 
 export const SITE_FRONTMATTER_KEYS = [
   'title',

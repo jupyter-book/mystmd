@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import { VFile } from 'vfile';
 import type { Link } from './types';
 import { GithubTransformer } from './github';

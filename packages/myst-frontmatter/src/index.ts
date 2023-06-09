@@ -1,2 +1,2 @@
-export * from './frontmatter';
-export * from './licenses';
+export * from './frontmatter/index.js';
+export * from './licenses/index.js';

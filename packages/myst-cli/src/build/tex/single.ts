@@ -1,6 +1,6 @@
 import AdmZip from 'adm-zip';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import type { TemplateImports } from 'jtex';
 import { renderTex, mergeTemplateImports } from 'jtex';
 import type { Root } from 'mdast';
@@ -15,18 +15,18 @@ import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
-import { findCurrentProjectAndLoad } from '../../config';
-import { loadProjectFromDisk } from '../../project';
-import { castSession } from '../../session';
-import type { ISession } from '../../session/types';
-import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils';
-import type { ExportWithOutput, ExportOptions } from '../types';
+import { findCurrentProjectAndLoad } from '../../config.js';
+import { loadProjectFromDisk } from '../../project/index.js';
+import { castSession } from '../../session/index.js';
+import type { ISession } from '../../session/types.js';
+import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils/index.js';
+import type { ExportWithOutput, ExportOptions } from '../types.js';
 import {
   cleanOutput,
   collectTexExportOptions,
   getFileContent,
   resolveAndLogErrors,
-} from '../utils';
+} from '../utils/index.js';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = [

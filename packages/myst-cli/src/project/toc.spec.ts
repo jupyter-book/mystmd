@@ -1,3 +1,4 @@
+import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
 import { Session } from '../session';
 import { projectFromPath } from './fromPath';
@@ -5,7 +6,7 @@ import { pagesFromToc } from './fromToc';
 import { tocFromProject } from './toToc';
 import { findProjectsOnPath } from './load';
 
-jest.mock('fs', () => memfs.fs);
+vi.mock('fs', () => ({ ['default']: memfs.fs }));
 
 beforeEach(() => memfs.vol.reset());
 

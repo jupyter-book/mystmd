@@ -6,7 +6,7 @@ import type { Math, InlineMath, Node } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
 import { copyNode, fileError, fileWarn, normalizeLabel } from 'myst-common';
-import { unnestTransform } from './unnest';
+import { unnestTransform } from './unnest.js';
 
 const TRANSFORM_NAME = 'myst-transforms:math';
 

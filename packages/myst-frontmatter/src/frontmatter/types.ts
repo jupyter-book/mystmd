@@ -1,5 +1,5 @@
 import type { CreditRole } from 'credit-roles';
-import type { Licenses } from '../licenses/types';
+import type { Licenses } from '../licenses/types.js';
 
 export type AuthorRoles = CreditRole | string;
 

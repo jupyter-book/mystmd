@@ -1,6 +1,6 @@
 import type MarkdownIt from 'markdown-it';
 import type { TargetKind } from 'myst-transforms';
-import { toHTML } from './utils';
+import { toHTML } from './utils.js';
 
 type Target = {
   id: string;

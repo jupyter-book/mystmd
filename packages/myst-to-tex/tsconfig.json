@@ -1,34 +1,5 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "compilerOptions": {
-    "target": "es6",
-    // module is overridden from the build:esm/build:cjs scripts
-    "module": "es2020",
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "strict": true,
-    "moduleResolution": "node",
-    "sourceMap": false,
-    // outDir is overridden from the build:esm/build:cjs scripts
-    "outDir": "dist/types",
-    "baseUrl": "src",
-    "paths": {
-      "*": ["node_modules/*"]
-    },
-    "lib": ["ES2019", "DOM"],
-    // Type roots allows it to be included in a workspace
-    "typeRoots": [
-      "./node_modules/@types",
-      "./types",
-      "../../node_modules/@types",
-      "../../../node_modules/@types"
-    ],
-    "resolveJsonModule": true,
-    "declaration": false,
-    // Ignore node_modules, etc.
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "include": ["src/**/*"],
-  "exclude": []
+  "extends": "../tsconfig/base.json",
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules", "src/**/*.spec.ts", "tests"]
 }

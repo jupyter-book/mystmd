@@ -1,22 +1,22 @@
-import path from 'path';
+import path from 'node:path';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
 import { ExportFormats } from 'myst-frontmatter';
 import { writeJats } from 'myst-to-jats';
 import type { LinkTransformer } from 'myst-transforms';
 import { VFile } from 'vfile';
-import { findCurrentProjectAndLoad } from '../../config';
-import { combineCitationRenderers } from '../../process';
-import { loadProjectFromDisk } from '../../project';
-import { castSession } from '../../session';
-import type { ISession } from '../../session/types';
-import { KNOWN_IMAGE_EXTENSIONS, logMessagesFromVFile } from '../../utils';
-import type { ExportWithOutput, ExportOptions } from '../types';
+import { findCurrentProjectAndLoad } from '../../config.js';
+import { combineCitationRenderers } from '../../process/index.js';
+import { loadProjectFromDisk } from '../../project/index.js';
+import { castSession } from '../../session/index.js';
+import type { ISession } from '../../session/types.js';
+import { KNOWN_IMAGE_EXTENSIONS, logMessagesFromVFile } from '../../utils/index.js';
+import type { ExportWithOutput, ExportOptions } from '../types.js';
 import {
   cleanOutput,
   collectJatsExportOptions,
   getFileContent,
   resolveAndLogErrors,
-} from '../utils';
+} from '../utils/index.js';
 
 export async function runJatsExport(
   session: ISession,

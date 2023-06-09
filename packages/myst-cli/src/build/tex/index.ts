@@ -1,1 +1,1 @@
-export { localArticleToTex } from './single';
+export { localArticleToTex } from './single.js';

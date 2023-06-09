@@ -1,5 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { mystParse } from 'myst-parser';
-import { cardDirective, splitParagraphNode } from 'myst-ext-card';
+import { cardDirective, splitParagraphNode } from '../src';
 
 describe('card directive', () => {
   it('card directive parses', async () => {

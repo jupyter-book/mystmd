@@ -1,12 +1,12 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import fetch from 'node-fetch';
 import type { CitationRenderer } from 'citation-js-utils';
 import { getCitations } from 'citation-js-utils';
 import { tic, isUrl } from 'myst-cli-utils';
-import type { ISession, ISessionWithCache } from '../session/types';
-import { castSession } from '../session';
-import { selectors } from '../store';
-import { addWarningForFile } from '../utils';
+import type { ISession, ISessionWithCache } from '../session/types.js';
+import { castSession } from '../session/index.js';
+import { selectors } from '../store/index.js';
+import { addWarningForFile } from '../utils/index.js';
 
 export async function loadCitations(session: ISession, path: string): Promise<CitationRenderer> {
   const toc = tic();

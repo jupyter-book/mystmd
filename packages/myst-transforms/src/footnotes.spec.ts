@@ -1,4 +1,4 @@
-import type { References } from 'myst-common';
+import { describe, expect, test } from 'vitest';
 import type { FootnoteDefinition } from 'myst-spec';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
@@ -18,7 +18,6 @@ describe('Test footnotes plugin', () => {
     };
     const mdast = { children: [def, ref] } as any;
     footnotesTransform(mdast, file);
-    console.log(mdast.children[0]);
     expect(mdast.children[0].number).toEqual(1);
     expect(mdast.children[1].number).toEqual(1);
   });

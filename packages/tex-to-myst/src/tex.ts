@@ -1,6 +1,6 @@
 import type { GenericNode, GenericParent } from 'myst-common';
 import { processLatexToAstViaUnified } from '@unified-latex/unified-latex';
-import { getArguments, isSpecialSymbol } from './utils';
+import { getArguments, isSpecialSymbol } from './utils.js';
 
 function parseArgument(node: GenericNode, next: GenericNode): boolean {
   if (!node.args) node.args = [];

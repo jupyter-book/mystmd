@@ -4,9 +4,9 @@
   "description": "Export from a MyST Markdown document to Microsoft Word (*.docx)",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/types/index.d.ts",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -26,32 +26,20 @@
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst",
   "scripts": {
     "clean": "rimraf dist",
-    "build:cjs": "tsc --project ./tsconfig.json",
-    "build:esm": "tsc --project ./tsconfig.json --module ES2020 --outDir ./dist/esm",
-    "declarations": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
-    "build": "npm-run-all -l clean -p build:cjs build:esm declarations",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js",
-    "lint:format": "prettier --check \"src/**/*.ts\""
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs",
+    "lint:format": "prettier --check \"src/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
+    "build": "npm-run-all -l clean -p build:esm"
   },
   "dependencies": {
     "buffer-image-size": "^0.6.4",
     "docx": "^7.3.0",
-    "myst-common": "^0.0.17",
-    "myst-frontmatter": "^0.0.14",
+    "myst-common": "^1.0.0",
+    "myst-frontmatter": "^1.0.0",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^0.0.12"
   },
-  "devDependencies": {
-    "@types/jest": "^28.1.6",
-    "@types/mocha": "^9.1.1",
-    "eslint": "^8.21.0",
-    "jest": "^28.1.1",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.7.1",
-    "rimraf": "^3.0.2",
-    "ts-jest": "^28.0.7",
-    "typescript": "^4.7.4"
-  }
+  "devDependencies": {}
 }

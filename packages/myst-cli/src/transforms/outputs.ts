@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { join } from 'path';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
 import { SourceFileKind } from 'myst-common';
 import type { GenericNode } from 'myst-common';
@@ -8,9 +8,9 @@ import { selectAll } from 'unist-util-select';
 import type { IOutput } from '@jupyterlab/nbformat';
 import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
 import type { Root } from 'mdast';
-import { castSession } from '../session';
-import type { ISession } from '../session/types';
-import { resolveOutputPath } from './images';
+import { castSession } from '../session/index.js';
+import type { ISession } from '../session/types.js';
+import { resolveOutputPath } from './images.js';
 
 export async function transformOutputs(
   session: ISession,

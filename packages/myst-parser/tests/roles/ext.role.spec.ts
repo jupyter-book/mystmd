@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import type { GenericNode, RoleData, RoleSpec } from 'myst-common';
 import { mystParse } from '../../src';
 import { position } from '../position';

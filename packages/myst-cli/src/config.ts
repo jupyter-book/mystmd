@@ -1,15 +1,15 @@
-import fs from 'fs';
-import { dirname, join, relative, resolve } from 'path';
+import fs from 'node:fs';
+import { dirname, join, relative, resolve } from 'node:path';
 import yaml from 'js-yaml';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
 import { getSiteTemplateOptions, validateProjectConfig, validateSiteConfig } from 'myst-config';
 import type { ValidationOptions } from 'simple-validators';
 import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
-import { prepareToWrite } from './frontmatter';
-import type { ISession } from './session/types';
-import { selectors } from './store';
-import { config } from './store/reducers';
+import { prepareToWrite } from './frontmatter.js';
+import type { ISession } from './session/types.js';
+import { selectors } from './store/index.js';
+import { config } from './store/reducers.js';
 
 const VERSION = 1;
 

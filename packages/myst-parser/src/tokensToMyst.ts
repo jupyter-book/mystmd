@@ -1,5 +1,5 @@
 import he from 'he';
-import type Token from 'markdown-it/lib/token';
+import type Token from 'markdown-it/lib/token.js';
 import type { Root } from 'mdast';
 import type { GenericNode } from 'myst-common';
 import { liftChildren, normalizeLabel, setTextAsChild } from 'myst-common';
@@ -7,8 +7,8 @@ import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import { u } from 'unist-builder';
-import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown';
-import type { TokenHandlerSpec } from './types';
+import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown.js';
+import type { TokenHandlerSpec } from './types.js';
 
 export type MdastOptions = {
   handlers?: Record<string, TokenHandlerSpec>;

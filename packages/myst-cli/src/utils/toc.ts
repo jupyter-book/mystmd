@@ -1,9 +1,9 @@
-import fs from 'fs';
-import { join, parse } from 'path';
+import fs from 'node:fs';
+import { join, parse } from 'node:path';
 import YAML from 'js-yaml';
 import type { Logger } from 'myst-cli-utils';
 import { silentLogger } from 'myst-cli-utils';
-import type { ISession } from '../session/types';
+import type { ISession } from '../session/types.js';
 
 export const TOC_FORMAT = 'jb-book';
 

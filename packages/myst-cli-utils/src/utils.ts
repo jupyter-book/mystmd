@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 import prettyHrtime from 'pretty-hrtime';
-import { chalkLogger, LogLevel } from './logger';
-import type { ISession, Logger } from './types';
+import { chalkLogger, LogLevel } from './logger.js';
+import type { ISession, Logger } from './types.js';
 
 type SessionOpts = {
   debug?: boolean;

@@ -1,6 +1,6 @@
 import type { GenericNode } from 'myst-common';
-import type { Handler, ITexParser } from './types';
-import { getArguments, texToText } from './utils';
+import type { Handler, ITexParser } from './types.js';
+import { getArguments, texToText } from './utils.js';
 
 const colors: Record<string, string> = {
   // Standard html colors:

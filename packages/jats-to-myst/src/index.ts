@@ -1,17 +1,17 @@
 import type { Root } from 'myst-spec';
 import { unified } from 'unified';
-import doi from 'doi-utils';
+import { doi } from 'doi-utils';
 import type { Plugin } from 'unified';
 import { VFile } from 'vfile';
 import type { MessageInfo, GenericNode, GenericParent } from 'myst-common';
 import { toText, copyNode, fileError } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import { u } from 'unist-builder';
-import type { Handler, IJatsParser, JatsResult, Options, StateData } from './types';
 import { RefType } from 'jats-tags';
 import { Jats } from 'jats-xml';
 import { keysTransform } from 'myst-transforms';
-import { basicTransformations } from './transforms';
+import type { Handler, IJatsParser, JatsResult, Options, StateData } from './types.js';
+import { basicTransformations } from './transforms/index.js';
 
 function refTypeToReferenceKind(kind?: RefType): string | undefined {
   switch (kind) {

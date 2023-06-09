@@ -6,7 +6,7 @@ import { licensesToString } from 'myst-frontmatter';
 import type { Root } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import type { NestedKinds, NestedLevels, NestedState, Validator } from './types';
+import type { NestedKinds, NestedLevels, NestedState, Validator } from './types.js';
 
 type Kind = keyof NestedKinds;
 

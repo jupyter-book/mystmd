@@ -1,2 +1,2 @@
-export * from './types';
-export { TexParser } from './parser';
+export * from './types.js';
+export { TexParser } from './parser.js';

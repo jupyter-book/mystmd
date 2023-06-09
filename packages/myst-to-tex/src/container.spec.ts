@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { CaptionKind, determineCaptionKind } from './container';
 
 describe('determineCaptionKind', () => {

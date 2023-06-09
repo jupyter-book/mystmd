@@ -1,10 +1,10 @@
 import type { Root } from 'mdast';
 import rehypeStringify from 'rehype-stringify';
 import { unified } from 'unified';
-import { formatHtml } from './format';
-import { mystToHast } from './schema';
-import { State } from './state';
-import { transform } from './transforms';
+import { formatHtml } from './format.js';
+import { mystToHast } from './schema.js';
+import { State } from './state.js';
+import { transform } from './transforms.js';
 
 export function mystToHtml(
   tree: Root,

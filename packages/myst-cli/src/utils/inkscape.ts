@@ -1,9 +1,9 @@
-import fs from 'fs';
-import path from 'path';
-import { sync as which } from 'which';
+import fs from 'node:fs';
+import path from 'node:path';
+import which from 'which';
 import type { LoggerDE } from 'myst-cli-utils';
 import { makeExecutable } from 'myst-cli-utils';
-import type { ISession } from '../session/types';
+import type { ISession } from '../session/types.js';
 
 function createInkscpapeLogger(session: ISession): LoggerDE {
   const logger = {
@@ -26,7 +26,7 @@ function createInkscpapeLogger(session: ISession): LoggerDE {
 }
 
 export function isInkscapeAvailable() {
-  return which('inkscape', { nothrow: true });
+  return which.sync('inkscape', { nothrow: true });
 }
 
 export async function convert(

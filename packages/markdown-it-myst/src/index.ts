@@ -1,6 +1,6 @@
 import type MarkdownIt from 'markdown-it/lib';
-import { rolePlugin } from './roles';
-import { directivePlugin } from './directives';
+import { rolePlugin } from './roles.js';
+import { directivePlugin } from './directives.js';
 
 export { rolePlugin };
 export { directivePlugin };

@@ -1,13 +1,13 @@
-import fs, { createReadStream, createWriteStream, mkdirSync } from 'fs';
-import { dirname, join, parse } from 'path';
-import { createHash } from 'crypto';
+import fs, { createReadStream, createWriteStream, mkdirSync } from 'node:fs';
+import { dirname, join, parse } from 'node:path';
+import { createHash } from 'node:crypto';
 import yaml from 'js-yaml';
 import { TemplateKind } from 'myst-common';
 import { createGitLogger, makeExecutable } from 'myst-cli-utils';
 import fetch from 'node-fetch';
 import { validateUrl } from 'simple-validators';
 import unzipper from 'unzipper';
-import type { TemplateYmlListResponse, TemplateYmlResponse, ISession } from './types';
+import type { TemplateYmlListResponse, TemplateYmlResponse, ISession } from './types.js';
 
 export const TEMPLATE_FILENAME = 'template.tex';
 export const TEMPLATE_YML = 'template.yml';

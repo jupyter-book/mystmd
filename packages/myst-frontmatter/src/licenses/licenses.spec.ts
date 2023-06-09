@@ -1,3 +1,4 @@
+import { describe, expect, beforeEach, it } from 'vitest';
 import type { ValidationOptions } from 'simple-validators';
 import licenses from './licenses';
 import fetch from 'node-fetch';

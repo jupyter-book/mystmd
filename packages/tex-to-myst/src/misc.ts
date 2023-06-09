@@ -1,5 +1,5 @@
-import type { Handler } from './types';
-import { getArguments, texToText } from './utils';
+import type { Handler } from './types.js';
+import { getArguments, texToText } from './utils.js';
 
 function pass() {
   // pass

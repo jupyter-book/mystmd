@@ -4,13 +4,13 @@ export {
   admonitionBlockquotePlugin,
   admonitionBlockquoteTransform,
   admonitionKindToTitle,
-} from './admonitions';
-export { AdmonitionKind } from './types';
-export { captionParagraphPlugin, captionParagraphTransform } from './caption';
-export { footnotesPlugin, footnotesTransform } from './footnotes';
-export { htmlPlugin, htmlTransform } from './html';
-export { htmlIdsPlugin, htmlIdsTransform } from './htmlIds';
-export { keysPlugin, keysTransform } from './keys';
+} from './admonitions.js';
+export { AdmonitionKind } from './types.js';
+export { captionParagraphPlugin, captionParagraphTransform } from './caption.js';
+export { footnotesPlugin, footnotesTransform } from './footnotes.js';
+export { htmlPlugin, htmlTransform } from './html.js';
+export { htmlIdsPlugin, htmlIdsTransform } from './htmlIds.js';
+export { keysPlugin, keysTransform } from './keys.js';
 export {
   mathPlugin,
   mathLabelPlugin,
@@ -18,33 +18,33 @@ export {
   mathTransform,
   mathLabelTransform,
   mathNestingTransform,
-} from './math';
+} from './math.js';
 export {
   blockNestingPlugin,
   blockNestingTransform,
   blockMetadataPlugin,
   blockMetadataTransform,
-} from './blocks';
-export { codePlugin, codeTransform } from './code';
-export { blockquotePlugin, blockquoteTransform } from './blockquote';
-export { imageAltTextPlugin, imageAltTextTransform } from './images';
+} from './blocks.js';
+export { codePlugin, codeTransform } from './code.js';
+export { blockquotePlugin, blockquoteTransform } from './blockquote.js';
+export { imageAltTextPlugin, imageAltTextTransform } from './images.js';
 export {
   liftMystDirectivesAndRolesPlugin,
   liftMystDirectivesAndRolesTransform,
-} from './liftMystDirectivesAndRoles';
-export * from './links';
+} from './liftMystDirectivesAndRoles.js';
+export * from './links/index.js';
 export {
   mystTargetsPlugin,
   mystTargetsTransform,
   headingLabelPlugin,
   headingLabelTransform,
-} from './targets';
-export { joinGatesPlugin, joinGatesTransform } from './joinGates';
-export { glossaryPlugin, glossaryTransform } from './glossary';
-export { abbreviationPlugin, abbreviationTransform } from './abbreviations';
+} from './targets.js';
+export { joinGatesPlugin, joinGatesTransform } from './joinGates.js';
+export { glossaryPlugin, glossaryTransform } from './glossary.js';
+export { abbreviationPlugin, abbreviationTransform } from './abbreviations.js';
 
 // Enumeration
-export type { IReferenceState, NumberingOptions, TargetKind, ReferenceKind } from './enumerate';
+export type { IReferenceState, NumberingOptions, TargetKind, ReferenceKind } from './enumerate.js';
 export {
   enumerateTargetsTransform,
   enumerateTargetsPlugin,
@@ -52,12 +52,12 @@ export {
   resolveReferencesPlugin,
   ReferenceState,
   MultiPageReferenceState,
-} from './enumerate';
+} from './enumerate.js';
 
 // Composite plugins
-export { basicTransformationsPlugin, basicTransformations } from './basic';
+export { basicTransformationsPlugin, basicTransformations } from './basic.js';
 
 // Common transformations
-export { unnestTransform } from './unnest';
+export { unnestTransform } from './unnest.js';
 
-export { getFrontmatter } from './frontmatter';
+export { getFrontmatter } from './frontmatter.js';

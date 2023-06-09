@@ -2,7 +2,7 @@ import type { Root } from 'mdast';
 import type { GenericNode } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import yaml from 'js-yaml';
-import type { ISession } from '../session/types';
+import type { ISession } from '../session/types.js';
 
 const CELL_OPTION_PREFIX = '#| ';
 

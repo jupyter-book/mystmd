@@ -1,5 +1,5 @@
-import type { KeyOptions, ValidationOptions } from './types';
-import { formatDate } from './utils';
+import type { KeyOptions, ValidationOptions } from './types.js';
+import { formatDate } from './utils.js';
 
 export function defined<T = any>(val: T | null | undefined): val is T {
   return val != null;

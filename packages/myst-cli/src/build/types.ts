@@ -2,8 +2,8 @@ import type { File } from 'docx';
 import type { Export } from 'myst-frontmatter';
 import type { RendererDoc } from 'myst-templates';
 import type { VFile } from 'vfile';
-import type { ISession } from '../session/types';
-import type { RendererData } from '../transforms/types';
+import type { ISession } from '../session/types.js';
+import type { RendererData } from '../transforms/types.js';
 
 export type ExportWithOutput = Export & {
   article: string;

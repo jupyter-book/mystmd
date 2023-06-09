@@ -1,6 +1,6 @@
 import type { GenericNode } from 'myst-common';
-import type { Handler, ITexParser } from './types';
-import { renderInfoIndex, texToText } from './utils';
+import type { Handler, ITexParser } from './types.js';
+import { renderInfoIndex, texToText } from './utils.js';
 
 function addHeading(node: GenericNode, state: ITexParser, depth: number) {
   const attrs: Record<string, any> = { depth };

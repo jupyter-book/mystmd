@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { ExportFormats } from 'myst-frontmatter';
 import { getExportFormats } from './build';
 

@@ -8,8 +8,8 @@ import {
   validationError,
 } from 'simple-validators';
 import spdxCorrect from 'spdx-correct';
-import LICENSES from './licenses';
-import type { License, Licenses } from './types';
+import LICENSES from './licenses.js';
+import type { License, Licenses } from './types.js';
 
 function correctLicense(license?: string): string | undefined {
   if (!license) return undefined;

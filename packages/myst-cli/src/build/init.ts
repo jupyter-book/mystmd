@@ -1,13 +1,13 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import yaml from 'js-yaml';
-import { defaultConfigFile, loadConfigAndValidateOrThrow, writeConfigs } from '../config';
-import { loadProjectFromDisk } from '../project';
-import { selectors } from '../store';
-import type { ISession } from '../session';
+import { defaultConfigFile, loadConfigAndValidateOrThrow, writeConfigs } from '../config.js';
+import { loadProjectFromDisk } from '../project/index.js';
+import { selectors } from '../store/index.js';
+import type { ISession } from '../session/index.js';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-import { startServer } from './site/start';
+import { startServer } from './site/start.js';
 import { makeExecutable } from 'myst-cli-utils';
 
 const VERSION_CONFIG =

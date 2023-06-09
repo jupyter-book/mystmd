@@ -120,3 +120,9 @@ npm run dev
 ```
 
 This will create a local `myst` CLI interface that you can use to develop and test locally.
+
+---
+
+As of v1.0.0 this package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
+
+---

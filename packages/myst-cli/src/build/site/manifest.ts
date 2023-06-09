@@ -1,15 +1,15 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { TemplateOptionType } from 'myst-common';
 import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
 import { filterKeys } from 'simple-validators';
-import type { ISession } from '../../session/types';
-import type { RootState } from '../../store';
-import { selectors } from '../../store';
-import { getMystTemplate } from './template';
+import type { ISession } from '../../session/types.js';
+import type { RootState } from '../../store/index.js';
+import { selectors } from '../../store/index.js';
+import { getMystTemplate } from './template.js';
 
 /**
  * Convert local project representation to site manifest project

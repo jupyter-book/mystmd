@@ -1,3 +1,4 @@
+import { describe, expect, it, beforeEach } from 'vitest';
 import type { ValidationOptions } from 'simple-validators';
 import { Session } from './session';
 import {
@@ -643,7 +644,7 @@ describe('validateTemplateYml', () => {
           free: true,
           id: 'MIT',
           osi: true,
-          title: 'MIT License',
+          name: 'MIT License',
           url: 'https://opensource.org/licenses/MIT',
         },
       },
