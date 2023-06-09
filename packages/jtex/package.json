@@ -21,7 +21,7 @@
     "test:watch": "vitest watch",
     "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
     "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/jtex.cjs --platform=node",
-    "build": "npm-run-all -l clean -p build:esm build:cli"
+    "build": "npm-run-all -l clean copy:version -p build:esm build:cli"
   },
   "repository": {
     "type": "git",

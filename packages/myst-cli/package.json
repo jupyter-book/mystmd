@@ -41,7 +41,7 @@
     "test:watch": "npm run copy:version; npm run link; vitest watch",
     "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
     "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents",
-    "build": "npm-run-all -l copy:version clean -p build:esm build:cli"
+    "build": "npm-run-all -l clean copy:version -p build:esm build:cli"
   },
   "engines": {
     "node": ">=16",
