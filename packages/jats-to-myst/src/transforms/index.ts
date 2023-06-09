@@ -2,13 +2,13 @@ import type { GenericParent } from 'myst-common';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 
-import { sectionTransform } from './sections';
-import { typographyTransform } from './typography';
-import { admonitionTransform } from './admonitions';
+import { sectionTransform } from './sections.js';
+import { typographyTransform } from './typography.js';
+import { admonitionTransform } from './admonitions.js';
 
-export { sectionTransform, sectionPlugin } from './sections';
-export { typographyTransform, typographyPlugin } from './typography';
-export { admonitionTransform, admonitionPlugin } from './admonitions';
+export { sectionTransform, sectionPlugin } from './sections.js';
+export { typographyTransform, typographyPlugin } from './typography.js';
+export { admonitionTransform, admonitionPlugin } from './admonitions.js';
 
 export function basicTransformations(tree: GenericParent, file: VFile) {
   sectionTransform(tree);
