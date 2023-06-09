@@ -1,17 +1,17 @@
-import { abbreviationRole } from './abbreviation';
-import { chemRole } from './chem';
-import { citeRole } from './cite';
-import { deleteRole } from './delete';
-import { mathRole } from './math';
-import { refRole } from './reference';
-import { docRole } from './doc';
-import { termRole } from './term';
-import { siRole } from './si';
-import { evalRole } from './inlineExpression';
-import { smallcapsRole } from './smallcaps';
-import { subscriptRole } from './subscript';
-import { superscriptRole } from './superscript';
-import { underlineRole } from './underline';
+import { abbreviationRole } from './abbreviation.js';
+import { chemRole } from './chem.js';
+import { citeRole } from './cite.js';
+import { deleteRole } from './delete.js';
+import { mathRole } from './math.js';
+import { refRole } from './reference.js';
+import { docRole } from './doc.js';
+import { termRole } from './term.js';
+import { siRole } from './si.js';
+import { evalRole } from './inlineExpression.js';
+import { smallcapsRole } from './smallcaps.js';
+import { subscriptRole } from './subscript.js';
+import { superscriptRole } from './superscript.js';
+import { underlineRole } from './underline.js';
 
 export const defaultRoles = [
   abbreviationRole,
@@ -29,16 +29,16 @@ export const defaultRoles = [
   superscriptRole,
   underlineRole,
 ];
-export { abbreviationRole } from './abbreviation';
-export { chemRole } from './chem';
-export { citeRole } from './cite';
-export { deleteRole } from './delete';
-export { mathRole } from './math';
-export { refRole } from './reference';
-export { docRole } from './doc';
-export { termRole } from './term';
-export { siRole } from './si';
-export { smallcapsRole } from './smallcaps';
-export { subscriptRole } from './subscript';
-export { superscriptRole } from './superscript';
-export { underlineRole } from './underline';
+export { abbreviationRole } from './abbreviation.js';
+export { chemRole } from './chem.js';
+export { citeRole } from './cite.js';
+export { deleteRole } from './delete.js';
+export { mathRole } from './math.js';
+export { refRole } from './reference.js';
+export { docRole } from './doc.js';
+export { termRole } from './term.js';
+export { siRole } from './si.js';
+export { smallcapsRole } from './smallcaps.js';
+export { subscriptRole } from './subscript.js';
+export { superscriptRole } from './superscript.js';
+export { underlineRole } from './underline.js';
