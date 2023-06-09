@@ -1,6 +1,6 @@
-import doi from 'doi-utils';
-import credit from 'credit-roles';
-import orcid from 'orcid';
+import { doi } from 'doi-utils';
+import { credit } from 'credit-roles';
+import { orcid } from 'orcid';
 import type { ValidationOptions } from 'simple-validators';
 import {
   defined,

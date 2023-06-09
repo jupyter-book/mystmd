@@ -1,5 +1,5 @@
 import { fileError } from 'myst-common';
-import doi from 'doi-utils';
+import { doi } from 'doi-utils';
 import type { VFile } from 'vfile';
 import type { Link, LinkTransformer } from './types.js';
 import { updateLinkTextIfEmpty } from './utils.js';

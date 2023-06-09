@@ -19,8 +19,8 @@
     "build": "npm-run-all -l clean -p build:esm"
   },
   "dependencies": {
-    "doi-utils": "^1.0.9",
-    "intersphinx": "^0.0.8",
+    "doi-utils": "^2.0.0",
+    "intersphinx": "^1.0.0",
     "js-yaml": "^4.1.0",
     "katex": "^0.15.2",
     "mdast-util-find-and-replace": "^2.1.0",
