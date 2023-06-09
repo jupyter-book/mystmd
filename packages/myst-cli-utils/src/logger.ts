@@ -1,4 +1,4 @@
-import type { ISession, Logger, LoggerDE } from './types';
+import type { ISession, Logger, LoggerDE } from './types.js';
 import chalk from 'chalk';
 import { sep } from 'path';
 

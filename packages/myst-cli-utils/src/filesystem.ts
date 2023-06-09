@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
-import type { ISession } from './types';
+import type { ISession } from './types.js';
 
 export function computeHash(content: string) {
   return createHash('md5').update(content).digest('hex');

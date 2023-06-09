@@ -1,7 +1,7 @@
 import util from 'util';
 import type { ExecOptions } from 'child_process';
 import child_process from 'child_process';
-import type { Logger } from './types';
+import type { Logger } from './types.js';
 
 function execWrapper(
   command: string,

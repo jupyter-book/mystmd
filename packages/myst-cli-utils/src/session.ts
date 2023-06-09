@@ -1,5 +1,5 @@
-import { chalkLogger, LogLevel } from './logger';
-import type { Logger, ISession } from './types';
+import { chalkLogger, LogLevel } from './logger.js';
+import type { Logger, ISession } from './types.js';
 
 export class Session implements ISession {
   log: Logger;
