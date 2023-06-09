@@ -2,7 +2,7 @@ import type { Root } from 'mdast';
 import type { Block } from 'myst-spec';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
-import { copyNode } from './utils';
+import { copyNode } from './utils.js';
 
 /**
  * Selects the block node(s) based on part (string) or tags (string[]).
