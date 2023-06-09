@@ -3,7 +3,7 @@ import type { GenericNode, DirectiveData, DirectiveSpec, ParseTypes } from 'myst
 import { fileError, fileWarn } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import { contentFromNode } from './roles';
+import { contentFromNode } from './roles.js';
 
 type MystDirectiveNode = GenericNode & {
   name: string;

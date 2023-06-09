@@ -1,9 +1,9 @@
 import type MarkdownIt from 'markdown-it';
-import type Token from 'markdown-it/lib/token';
+import type Token from 'markdown-it/lib/token.js';
 import type { DirectiveSpec, RoleSpec } from 'myst-common';
 import type { VFile } from 'vfile';
-import type { MathExtensionOptions } from './plugins';
-import type { MdastOptions } from './tokensToMyst';
+import type { MathExtensionOptions } from './plugins.js';
+import type { MdastOptions } from './tokensToMyst.js';
 
 export type TokenHandlerSpec = {
   type: string;

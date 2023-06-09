@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 /**
  * These tests will likely be deprecated in favor of the
  * commonmark tests pulled in from myst-spec in myst.spec.ts
