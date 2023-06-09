@@ -3,21 +3,21 @@ import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { References } from 'myst-common';
 import { fileError, toText } from 'myst-common';
-import { captionHandler, containerHandler } from './container';
-import { renderNodeToLatex } from './tables';
-import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types';
+import { captionHandler, containerHandler } from './container.js';
+import { renderNodeToLatex } from './tables.js';
+import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types.js';
 import {
   getClasses,
   getLatexImageWidth,
   hrefToLatexText,
   stringToLatexMath,
   stringToLatexText,
-} from './utils';
-import MATH_HANDLERS, { withRecursiveCommands } from './math';
+} from './utils.js';
+import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { selectAll } from 'unist-util-select';
 import type { FootnoteDefinition } from 'myst-spec-ext';
 
-export type { LatexResult } from './types';
+export type { LatexResult } from './types.js';
 
 const handlers: Record<string, Handler> = {
   text(node, state) {

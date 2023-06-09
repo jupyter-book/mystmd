@@ -1,8 +1,8 @@
 import type { GenericNode } from 'myst-common';
 import type { Image, Table, Code, Math } from 'myst-spec';
 import { select } from 'unist-util-select';
-import { getColumnWidths } from './tables';
-import type { Handler } from './types';
+import { getColumnWidths } from './tables.js';
+import type { Handler } from './types.js';
 
 export enum CaptionKind {
   fig = 'fig',
