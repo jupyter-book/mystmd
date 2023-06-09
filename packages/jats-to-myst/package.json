@@ -24,7 +24,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js --max-warnings 1",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "test": "vitest run",
     "test:watch": "vitest watch",
