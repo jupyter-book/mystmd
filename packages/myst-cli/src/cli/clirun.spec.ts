@@ -1,12 +1,13 @@
+import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import { Command } from 'commander';
 import { Session } from '../session';
 import { clirun } from './clirun';
 
-let mockExit: jest.SpyInstance;
+let mockExit: any;
 
 describe('clirun', () => {
   beforeEach(() => {
-    mockExit = jest.spyOn(process, 'exit');
+    mockExit = vi.spyOn(process, 'exit');
     mockExit.mockImplementation(() => {
       throw new Error();
     });

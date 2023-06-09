@@ -5,8 +5,8 @@ import type { ReferenceState } from 'myst-transforms';
 import type { MinifiedContentCache } from 'nbtx';
 import type { Store } from 'redux';
 
-import type { RootState } from '../store';
-import type { PreRendererData, RendererData, SingleCitationRenderer } from '../transforms/types';
+import type { RootState } from '../store/index.js';
+import type { PreRendererData, RendererData, SingleCitationRenderer } from '../transforms/types.js';
 
 export type ISession = {
   API_URL: string;

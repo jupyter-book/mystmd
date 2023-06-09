@@ -1,4 +1,4 @@
-import type { ISession, ISessionWithCache } from './types';
+import type { ISession, ISessionWithCache } from './types.js';
 
 export function castSession(session: ISession): ISessionWithCache {
   const cache = session as unknown as ISessionWithCache;

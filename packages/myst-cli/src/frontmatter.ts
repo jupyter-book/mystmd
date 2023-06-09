@@ -8,10 +8,10 @@ import {
   unnestKernelSpec,
   validatePageFrontmatter,
 } from 'myst-frontmatter';
-import { castSession } from './session';
-import { loadFile } from './process';
-import type { ISession } from './session/types';
-import { selectors } from './store';
+import { castSession } from './session/index.js';
+import { loadFile } from './process/index.js';
+import type { ISession } from './session/types.js';
+import { selectors } from './store/index.js';
 import type { ValidationOptions } from 'simple-validators';
 import { copyNode } from 'myst-common';
 

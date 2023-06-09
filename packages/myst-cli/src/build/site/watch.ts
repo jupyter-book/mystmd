@@ -2,11 +2,11 @@ import chokidar from 'chokidar';
 import { join, extname, basename } from 'path';
 import type { SiteProject } from 'myst-config';
 import type { LinkTransformer } from 'myst-transforms';
-import type { ISession } from '../../session/types';
-import { changeFile, fastProcessFile, processSite } from '../../process/site';
-import type { TransformFn } from '../../process';
-import { selectors, watch } from '../../store';
-import { KNOWN_FAST_BUILDS } from '../../utils/resolveExtension';
+import type { ISession } from '../../session/types.js';
+import { changeFile, fastProcessFile, processSite } from '../../process/site.js';
+import type { TransformFn } from '../../process/index.js';
+import { selectors, watch } from '../../store/index.js';
+import { KNOWN_FAST_BUILDS } from '../../utils/resolveExtension.js';
 
 // TODO: allow this to work from other paths
 

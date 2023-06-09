@@ -3,7 +3,7 @@ import fs from 'fs';
 import { join } from 'path';
 import yaml from 'js-yaml';
 import { Command } from 'commander';
-import { clirun } from './clirun';
+import { clirun } from './clirun.js';
 import { tic } from 'myst-cli-utils';
 import type { TemplateYmlResponse } from 'myst-templates';
 import {
@@ -13,15 +13,15 @@ import {
   resolveInputs,
   TEMPLATE_YML,
 } from 'myst-templates';
-import type { ISession } from '../session';
-import { Session } from '../session';
+import type { ISession } from '../session/index.js';
+import { Session } from '../session/index.js';
 import {
   makeDocxOption,
   makeForceOption,
   makePdfOption,
   makeSiteOption,
   makeTexOption,
-} from './options';
+} from './options.js';
 import { TemplateKind } from 'myst-common';
 
 type TemplateKinds = { pdf?: boolean; tex?: boolean; docx?: boolean; site?: boolean };

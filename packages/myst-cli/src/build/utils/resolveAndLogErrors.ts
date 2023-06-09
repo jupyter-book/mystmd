@@ -1,4 +1,4 @@
-import type { ISession } from '../../session/types';
+import type { ISession } from '../../session/types.js';
 
 /**
  * Resolve all promises

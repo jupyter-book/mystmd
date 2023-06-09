@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { getMystTemplate, getSiteManifest, startServer } from '../../build';
-import type { ISession } from '../../session';
+import { getMystTemplate, getSiteManifest, startServer } from '../../build/index.js';
+import type { ISession } from '../../session/index.js';
 import { writeFileToFolder } from 'myst-cli-utils';
 import fetch from 'node-fetch';
 

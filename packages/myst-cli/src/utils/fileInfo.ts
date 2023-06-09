@@ -1,5 +1,5 @@
 import path from 'path';
-import type { PageSlugs } from '../project/types';
+import type { PageSlugs } from '../project/types.js';
 
 function input2name(input: string, allowed: RegExp, join: string) {
   let name = `¶${input}`

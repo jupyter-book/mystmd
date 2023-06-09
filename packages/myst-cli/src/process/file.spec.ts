@@ -1,8 +1,9 @@
+import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
 import { Session } from '../session';
 import { loadFile } from './file';
 
-jest.mock('fs', () => memfs.fs);
+vi.mock('fs', () => ({ ['default']: memfs.fs }));
 
 beforeEach(() => memfs.vol.reset());
 

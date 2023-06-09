@@ -6,14 +6,14 @@ import { TexParser } from 'tex-to-myst';
 import { VFile } from 'vfile';
 import { toText, SourceFileKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import type { ISession, ISessionWithCache } from '../session/types';
-import { castSession } from '../session';
-import { warnings, watch } from '../store/reducers';
-import { loadCitations } from './citations';
-import { parseMyst } from './myst';
-import { processNotebook } from './notebook';
-import type { RendererData } from '../transforms/types';
-import { logMessagesFromVFile } from '../utils';
+import type { ISession, ISessionWithCache } from '../session/types.js';
+import { castSession } from '../session/index.js';
+import { warnings, watch } from '../store/reducers.js';
+import { loadCitations } from './citations.js';
+import { parseMyst } from './myst.js';
+import { processNotebook } from './notebook.js';
+import type { RendererData } from '../transforms/types.js';
+import { logMessagesFromVFile } from '../utils/index.js';
 
 function checkCache(cache: ISessionWithCache, content: string, file: string) {
   const sha256 = createHash('sha256').update(content).digest('hex');

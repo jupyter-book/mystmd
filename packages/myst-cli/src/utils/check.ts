@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import check from 'check-node-version';
-import type { ISession } from '../session/types';
-import version from '../version';
-import { docLinks } from '../docs';
+import type { ISession } from '../session/types.js';
+import version from '../version.js';
+import { docLinks } from '../docs.js';
 
 const INSTALL_NODE_MESSAGE = `
 You can download Node here:

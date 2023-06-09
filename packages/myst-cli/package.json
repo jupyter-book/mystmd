@@ -12,9 +12,9 @@
     "pdf-generation",
     "science-research"
   ],
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/types/index.d.ts",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/executablebooks/mystjs",
   "bin": {
-    "myst": "./dist/myst.js"
+    "myst": "./dist/myst.cjs"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -35,17 +35,13 @@
     "unlink": "npm uninstall -g myst-cli",
     "link": "npm run unlink; npm link;",
     "dev": "npm run link && concurrently \"tsc -w --preserveWatchOutput -p .\" \"esbuild src/cli/index.ts --bundle --outfile=dist/myst.js --platform=node --external:fsevents --watch\"",
-    "test": "npm run copy:version; npm run link; jest",
-    "test:watch": "npm run copy:version; npm run link; jest --watchAll",
-    "test:clear": "npm run copy:version; npm run link; jest --clearCache",
     "lint": "npm run copy:version; eslint \"src/**/*.ts\" -c .eslintrc.js",
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
-    "build:cjs": "esbuild src/*.ts src/**/*.ts src/**/**/*.ts --outdir=dist/cjs --platform=node --format=cjs",
-    "build:esm": "esbuild src/*.ts src/**/*.ts src/**/**/*.ts --outdir=dist/esm --platform=node --format=esm",
-    "declarations": "tsc --project ./src/tsconfig.json --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
-    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/myst.js --platform=node --external:fsevents",
-    "build": "npm-run-all -l copy:version clean -p build:cjs build:esm declarations build:cli",
-    "build:watch": "npm run copy:version; tsc --project ./src/tsconfig.json -w --preserveWatchOutput -p ."
+    "test": "npm run copy:version; npm run link; vitest run",
+    "test:watch": "npm run copy:version; npm run link; vitest watch",
+    "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents",
+    "build": "npm-run-all -l copy:version clean -p build:esm build:cli"
   },
   "engines": {
     "node": ">=16",
@@ -62,7 +58,7 @@
     "commander": "^9.4.1",
     "cors": "^2.8.5",
     "docx": "^7.5.0",
-    "doi-utils": "^1.0.9",
+    "doi-utils": "^2.0.0",
     "express": "^4.18.2",
     "fs-extra": "^11.1.1",
     "get-port": "^6.1.2",
@@ -72,8 +68,8 @@
     "jtex": "^0.1.15",
     "mdast": "^3.0.0",
     "mime-types": "^2.1.35",
-    "myst-cli-utils": "^0.0.12",
-    "myst-common": "^0.0.17",
+    "myst-cli-utils": "^1.0.0",
+    "myst-common": "^1.0.0",
     "myst-config": "^0.0.16",
     "myst-ext-card": "^0.0.7",
     "myst-ext-grid": "^0.0.7",
@@ -81,7 +77,7 @@
     "myst-ext-proof": "^0.0.2",
     "myst-ext-reactive": "^0.0.7",
     "myst-ext-tabs": "^0.0.7",
-    "myst-frontmatter": "^0.0.14",
+    "myst-frontmatter": "^1.0.0",
     "myst-parser": "^0.0.32",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^0.0.12",
@@ -92,10 +88,10 @@
     "myst-transforms": "^0.0.32",
     "nanoid": "^4.0.0",
     "nbtx": "^0.2.3",
-    "node-fetch": "^3.2.10",
+    "node-fetch": "^3.3.1",
     "p-limit": "^3.1.0",
     "redux": "^4.2.0",
-    "simple-validators": "^0.0.3",
+    "simple-validators": "^1.0.0",
     "strip-ansi": "^7.0.1",
     "tex-to-myst": "^0.0.28",
     "unified": "^10.1.2",
@@ -112,7 +108,6 @@
     "@types/express": "^4.17.14",
     "@types/fs-extra": "^11.0.1",
     "@types/inquirer": "^9.0.2",
-    "@types/jest": "^28.1.6",
     "@types/mime-types": "^2.1.1",
     "@types/which": "^2.0.1",
     "@types/ws": "^8.5.3",
@@ -120,11 +115,9 @@
     "esbuild": "^0.15.12",
     "eslint": "^8.21.0",
     "eslint-config-curvenote": "latest",
-    "jest": "^28.1.3",
     "npm-run-all": "^4.1.5",
     "prettier": "latest",
     "rimraf": "^3.0.2",
-    "ts-jest": "^28.0.7",
     "typescript": "latest"
   }
 }

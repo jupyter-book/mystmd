@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { join, parse } from 'path';
-import type { JupyterBookChapter } from '../utils';
+import type { JupyterBookChapter } from '../utils/index.js';
 import {
   readTOC,
   tocFile,
@@ -8,15 +8,15 @@ import {
   fileInfo,
   nextLevel,
   resolveExtension,
-} from '../utils';
-import type { ISession } from '../session/types';
+} from '../utils/index.js';
+import type { ISession } from '../session/types.js';
 import type {
   PageLevels,
   LocalProjectFolder,
   LocalProjectPage,
   LocalProject,
   PageSlugs,
-} from './types';
+} from './types.js';
 
 function pagesFromChapters(
   session: ISession,

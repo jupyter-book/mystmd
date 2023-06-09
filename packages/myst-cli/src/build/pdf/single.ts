@@ -1,13 +1,13 @@
 import path from 'path';
 import { ExportFormats } from 'myst-frontmatter';
-import { findCurrentProjectAndLoad } from '../../config';
-import { loadProjectFromDisk } from '../../project';
-import type { ISession } from '../../session/types';
-import { createTempFolder } from '../../utils';
-import { runTexExport } from '../tex/single';
-import type { ExportOptions, ExportWithOutput } from '../types';
-import { collectTexExportOptions, resolveAndLogErrors, cleanOutput } from '../utils';
-import { createPdfGivenTexExport, getTexOutputFolder } from './create';
+import { findCurrentProjectAndLoad } from '../../config.js';
+import { loadProjectFromDisk } from '../../project/index.js';
+import type { ISession } from '../../session/types.js';
+import { createTempFolder } from '../../utils/index.js';
+import { runTexExport } from '../tex/single.js';
+import type { ExportOptions, ExportWithOutput } from '../types.js';
+import { collectTexExportOptions, resolveAndLogErrors, cleanOutput } from '../utils/index.js';
+import { createPdfGivenTexExport, getTexOutputFolder } from './create.js';
 
 export function texExportOptionsFromPdf(
   session: ISession,

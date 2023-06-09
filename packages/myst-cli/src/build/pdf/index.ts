@@ -1,1 +1,1 @@
-export { localArticleToPdf } from './single';
+export { localArticleToPdf } from './single.js';

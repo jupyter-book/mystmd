@@ -1,16 +1,16 @@
 import fs from 'fs';
 import { join, resolve } from 'path';
 import { isUrl } from 'myst-cli-utils';
-import { loadConfigAndValidateOrThrow } from '../config';
-import { loadFile, combineProjectCitationRenderers } from '../process';
-import type { ISession } from '../session/types';
-import { selectors } from '../store';
-import { projects } from '../store/reducers';
-import { getAllBibTexFilesOnPath, isDirectory, validateTOC } from '../utils';
-import { projectFromPath } from './fromPath';
-import { projectFromToc } from './fromToc';
-import { writeTocFromProject } from './toToc';
-import type { LocalProject, LocalProjectPage } from './types';
+import { loadConfigAndValidateOrThrow } from '../config.js';
+import { loadFile, combineProjectCitationRenderers } from '../process/index.js';
+import type { ISession } from '../session/types.js';
+import { selectors } from '../store/index.js';
+import { projects } from '../store/reducers.js';
+import { getAllBibTexFilesOnPath, isDirectory, validateTOC } from '../utils/index.js';
+import { projectFromPath } from './fromPath.js';
+import { projectFromToc } from './fromToc.js';
+import { writeTocFromProject } from './toToc.js';
+import type { LocalProject, LocalProjectPage } from './types.js';
 
 /**
  * Load project structure from disk from

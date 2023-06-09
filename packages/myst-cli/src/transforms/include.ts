@@ -1,10 +1,10 @@
 import fs from 'fs';
 import type { Root } from 'mdast';
 import type { GenericNode } from 'myst-common';
-import { parseMyst } from '../process';
+import { parseMyst } from '../process/index.js';
 import { selectAll } from 'unist-util-select';
 import { join, dirname } from 'path';
-import type { ISession } from '../session/types';
+import type { ISession } from '../session/types.js';
 
 /**
  * This is the {include} directive, that loads from disk.

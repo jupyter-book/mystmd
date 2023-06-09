@@ -15,10 +15,10 @@ import {
   imagemagick,
   inkscape,
   KNOWN_IMAGE_EXTENSIONS,
-} from '../utils';
-import type { ISession } from '../session/types';
-import { castSession } from '../session';
-import { watch } from '../store';
+} from '../utils/index.js';
+import type { ISession } from '../session/types.js';
+import { castSession } from '../session/index.js';
+import { watch } from '../store/index.js';
 import type { Image } from 'myst-spec-ext';
 
 function isBase64(data: string) {

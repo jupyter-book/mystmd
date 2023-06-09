@@ -1,9 +1,9 @@
 import fs from 'fs';
 import { tic } from 'myst-cli-utils';
-import type { ISession } from '../../session/types';
-import { processSite } from '../../process/site';
+import type { ISession } from '../../session/types.js';
+import { processSite } from '../../process/site.js';
 import type { LinkTransformer } from 'myst-transforms';
-import type { TransformFn } from '../../process';
+import type { TransformFn } from '../../process/index.js';
 
 export type Options = {
   html?: boolean;

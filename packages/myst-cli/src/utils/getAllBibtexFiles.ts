@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import type { ISession } from '../session/types';
-import { isDirectory } from './isDirectory';
-import { shouldIgnoreFile } from './shouldIgnoreFile';
+import type { ISession } from '../session/types.js';
+import { isDirectory } from './isDirectory.js';
+import { shouldIgnoreFile } from './shouldIgnoreFile.js';
 
 export function getAllBibTexFilesOnPath(session: ISession, dir: string) {
   let bibFiles: string[] = [];

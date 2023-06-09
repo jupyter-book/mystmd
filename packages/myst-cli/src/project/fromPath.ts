@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { extname, join } from 'path';
-import type { ISession } from '../session/types';
+import type { ISession } from '../session/types.js';
 import {
   fileInfo,
   isDirectory,
@@ -8,15 +8,15 @@ import {
   nextLevel,
   shouldIgnoreFile,
   VALID_FILE_EXTENSIONS,
-} from '../utils';
-import { pagesFromToc } from './fromToc';
+} from '../utils/index.js';
+import { pagesFromToc } from './fromToc.js';
 import type {
   PageLevels,
   LocalProjectFolder,
   LocalProjectPage,
   LocalProject,
   PageSlugs,
-} from './types';
+} from './types.js';
 
 const DEFAULT_INDEX_FILENAMES = ['index', 'readme', 'main'];
 

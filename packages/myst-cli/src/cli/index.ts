@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import version from '../version';
-import { makeBuildCLI } from './build';
-import { makeCleanCLI } from './clean';
-import { makeInitCLI, addDefaultCommand } from './init';
-import { makeStartCLI } from './site';
-import { makeTemplatesCLI } from './templates';
+import version from '../version.js';
+import { makeBuildCLI } from './build.js';
+import { makeCleanCLI } from './clean.js';
+import { makeInitCLI, addDefaultCommand } from './init.js';
+import { makeStartCLI } from './site.js';
+import { makeTemplatesCLI } from './templates.js';
 
 const program = new Command();
 

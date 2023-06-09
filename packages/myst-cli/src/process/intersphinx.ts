@@ -1,8 +1,8 @@
 import { Inventory } from 'intersphinx';
 import { tic, isUrl } from 'myst-cli-utils';
-import type { ISession } from '../session/types';
-import { castSession } from '../session';
-import { selectors } from '../store';
+import type { ISession } from '../session/types.js';
+import { castSession } from '../session/index.js';
+import { selectors } from '../store/index.js';
 
 export async function loadIntersphinx(
   session: ISession,

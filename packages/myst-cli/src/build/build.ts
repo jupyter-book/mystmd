@@ -1,14 +1,14 @@
 import path from 'path';
 import chalk from 'chalk';
 import { ExportFormats } from 'myst-frontmatter';
-import { filterPages, loadProjectFromDisk } from '../project';
-import type { ISession } from '../session/types';
-import { selectors } from '../store';
-import { collectExportOptions, localArticleExport } from './utils';
-import { buildSite } from './site/prepare';
-import type { ExportWithInputOutput } from './types';
-import { uniqueArray } from '../utils';
-import { buildHtml } from './html';
+import { filterPages, loadProjectFromDisk } from '../project/index.js';
+import type { ISession } from '../session/types.js';
+import { selectors } from '../store/index.js';
+import { collectExportOptions, localArticleExport } from './utils/index.js';
+import { buildSite } from './site/prepare.js';
+import type { ExportWithInputOutput } from './types.js';
+import { uniqueArray } from '../utils/index.js';
+import { buildHtml } from './html/index.js';
 
 export type BuildOpts = {
   site?: boolean;

@@ -1,8 +1,8 @@
 import { resolve } from 'path';
 import { tic } from 'myst-cli-utils';
 import type { LinkTransformer } from 'myst-transforms';
-import type { ISession } from '../../session/types';
-import type { TransformFn } from '../../process';
+import type { ISession } from '../../session/types.js';
+import type { TransformFn } from '../../process/index.js';
 import {
   selectPageReferenceStates,
   loadFile,
@@ -12,9 +12,9 @@ import {
   loadProject,
   loadIntersphinx,
   combineProjectCitationRenderers,
-} from '../../process';
-import { reduceOutputs, transformWebp } from '../../transforms';
-import { ImageExtensions } from '../../utils';
+} from '../../process/index.js';
+import { reduceOutputs, transformWebp } from '../../transforms/index.js';
+import { ImageExtensions } from '../../utils/index.js';
 
 export async function getFileContent(
   session: ISession,

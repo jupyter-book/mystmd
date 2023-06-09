@@ -11,21 +11,21 @@ import { ExportFormats } from 'myst-frontmatter';
 import type { Node } from 'myst-spec';
 import type { LinkTransformer } from 'myst-transforms';
 import { select } from 'unist-util-select';
-import { getSiteManifest, collectExportOptions } from '../build';
-import type { ExportWithOutput } from '../build';
-import { reloadAllConfigsForCurrentSite } from '../config';
-import { selectFile, loadFile } from '../process';
-import type { LocalProject } from '../project';
-import { filterPages, loadProjectFromDisk } from '../project';
-import { castSession } from '../session';
-import type { ISession } from '../session/types';
-import { watch, selectors } from '../store';
-import { transformWebp } from '../transforms';
-import { ImageExtensions } from '../utils';
-import { combineProjectCitationRenderers } from './citations';
-import { loadIntersphinx } from './intersphinx';
-import type { PageReferenceStates, TransformFn } from './mdast';
-import { postProcessMdast, transformMdast } from './mdast';
+import { getSiteManifest, collectExportOptions } from '../build/index.js';
+import type { ExportWithOutput } from '../build/index.js';
+import { reloadAllConfigsForCurrentSite } from '../config.js';
+import { selectFile, loadFile } from '../process/index.js';
+import type { LocalProject } from '../project/index.js';
+import { filterPages, loadProjectFromDisk } from '../project/index.js';
+import { castSession } from '../session/index.js';
+import type { ISession } from '../session/types.js';
+import { watch, selectors } from '../store/index.js';
+import { transformWebp } from '../transforms/index.js';
+import { ImageExtensions } from '../utils/index.js';
+import { combineProjectCitationRenderers } from './citations.js';
+import { loadIntersphinx } from './intersphinx.js';
+import type { PageReferenceStates, TransformFn } from './mdast.js';
+import { postProcessMdast, transformMdast } from './mdast.js';
 
 const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.webp,

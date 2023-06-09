@@ -8,9 +8,9 @@ import { selectAll } from 'unist-util-select';
 import type { IOutput } from '@jupyterlab/nbformat';
 import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
 import type { Root } from 'mdast';
-import { castSession } from '../session';
-import type { ISession } from '../session/types';
-import { resolveOutputPath } from './images';
+import { castSession } from '../session/index.js';
+import type { ISession } from '../session/types.js';
+import { resolveOutputPath } from './images.js';
 
 export async function transformOutputs(
   session: ISession,

@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import type { LoggerDE } from 'myst-cli-utils';
-import type { ISession } from '../../session/types';
+import type { ISession } from '../../session/types.js';
 
 export function createServerLogger(session: ISession, ready: () => void): LoggerDE {
   const logger = {

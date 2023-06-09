@@ -7,9 +7,9 @@ import { nanoid } from 'nanoid';
 import type { MinifiedOutput } from 'nbtx';
 import type { ICell, INotebookContent, IOutput } from '@jupyterlab/nbformat';
 import { CELL_TYPES, minifyCellOutput } from 'nbtx';
-import { castSession } from '../session';
-import type { ISession } from '../session/types';
-import { parseMyst } from './myst';
+import { castSession } from '../session/index.js';
+import type { ISession } from '../session/types.js';
+import { parseMyst } from './myst.js';
 
 function asString(source?: string | string[]): string {
   return (Array.isArray(source) ? source.join('') : source) || '';

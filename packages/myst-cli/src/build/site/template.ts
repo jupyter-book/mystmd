@@ -3,8 +3,8 @@ import { join } from 'path';
 import { TemplateKind } from 'myst-common';
 import { createNpmLogger, makeExecutable, tic } from 'myst-cli-utils';
 import MystTemplate from 'myst-templates';
-import type { ISession } from '../../session/types';
-import { selectors } from '../../store';
+import type { ISession } from '../../session/types.js';
+import { selectors } from '../../store/index.js';
 
 const DEFAULT_TEMPLATE = 'book-theme';
 const DEFAULT_INSTALL_COMMAND = 'npm install';
