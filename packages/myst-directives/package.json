@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
-    "myst-common": "^0.0.17",
+    "myst-common": "^1.0.0",
     "myst-spec-ext": "^0.0.12",
     "vfile": "^5.3.7"
   },

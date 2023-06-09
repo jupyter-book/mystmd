@@ -44,23 +44,22 @@
     "npm": ">=6"
   },
   "dependencies": {
-    "chalk": "^4.1.2",
-    "commander": "^8.3.0",
+    "chalk": "^5.2.0",
+    "commander": "^10.0.1",
     "js-yaml": "^4.1.0",
-    "myst-cli-utils": "^0.0.12",
-    "myst-frontmatter": "^0.0.14",
+    "myst-cli-utils": "^1.0.0",
+    "myst-frontmatter": "^1.0.0",
     "myst-templates": "^0.1.18",
-    "node-fetch": "^2.6.7",
-    "nunjucks": "^3.2.3",
+    "node-fetch": "^3.3.1",
+    "nunjucks": "^3.2.4",
     "pretty-hrtime": "^1.0.3",
-    "simple-validators": "^0.0.3",
-    "unzipper": "^0.10.11"
+    "simple-validators": "^1.0.0",
+    "unzipper": "^0.10.14"
   },
   "devDependencies": {
-    "@types/node-fetch": "^2.6.2",
-    "@types/nunjucks": "^3.2.1",
-    "@types/sanitize-html": "^2.6.2",
-    "@types/unzipper": "^0.10.5",
-    "memfs": "^3.4.7"
+    "@types/nunjucks": "^3.2.2",
+    "@types/sanitize-html": "^2.9.0",
+    "@types/unzipper": "^0.10.6",
+    "memfs": "^3.5.3"
   }
 }

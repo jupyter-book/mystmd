@@ -1,6 +1,6 @@
 {
   "name": "myst-cli-utils",
-  "version": "0.0.12",
+  "version": "1.0.0",
   "sideEffects": false,
   "license": "MIT",
   "description": "Utils for logging, error messages and session management",
@@ -32,7 +32,7 @@
     "url": "https://github.com/executablebooks/mystjs/issues"
   },
   "dependencies": {
-    "chalk": "^4.1.2",
+    "chalk": "^5.2.0",
     "pretty-hrtime": "^1.0.3"
   },
   "devDependencies": {

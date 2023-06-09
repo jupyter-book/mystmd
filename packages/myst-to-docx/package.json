@@ -36,8 +36,8 @@
   "dependencies": {
     "buffer-image-size": "^0.6.4",
     "docx": "^7.3.0",
-    "myst-common": "^0.0.17",
-    "myst-frontmatter": "^0.0.14",
+    "myst-common": "^1.0.0",
+    "myst-frontmatter": "^1.0.0",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^0.0.12"
   },

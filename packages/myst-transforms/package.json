@@ -20,11 +20,11 @@
   },
   "dependencies": {
     "doi-utils": "^2.0.0",
-    "intersphinx": "^1.0.0",
+    "intersphinx": "^1.0.2",
     "js-yaml": "^4.1.0",
     "katex": "^0.15.2",
     "mdast-util-find-and-replace": "^2.1.0",
-    "myst-common": "^0.0.17",
+    "myst-common": "^1.0.0",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^0.0.12",
     "rehype-parse": "^8.0.4",
