@@ -204,7 +204,7 @@ export const enumerateTargets = (state: State, tree: Root, opts: EnumeratorOptio
     visit(tree, 'math', (node: GenericNode) => state.addTarget(node));
   }
   if (!opts.disableHeadingEnumeration) {
-    visit(tree, 'heading', (node: GenericNode) => state.addTarget(node as GenericNode));
+    visit(tree, 'heading', (node) => state.addTarget(node as GenericNode));
   }
   return tree;
 };

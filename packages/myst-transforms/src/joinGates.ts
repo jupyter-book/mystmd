@@ -6,7 +6,7 @@ import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 
 export function joinGatesTransform(tree: GenericParent, file: VFile) {
-  map(tree, (node: GenericParent) => {
+  map(tree, (node) => {
     const nodes = (node.children as GenericParent[])?.reduce((children, child) => {
       const [last] = children.slice(-1);
       const [secondLast] = children.slice(-2);

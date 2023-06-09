@@ -4,7 +4,7 @@ import { map } from 'unist-util-map';
 import { customAlphabet } from 'nanoid';
 import type { Root, PhrasingContent } from 'mdast';
 import type { Node, Parent } from 'myst-spec';
-import type { GenericNode } from './types.js';
+import type { GenericNode, GenericParent } from './types.js';
 
 export type MessageInfo = {
   node?: Node;
@@ -73,8 +73,8 @@ export function createHtmlId(identifier?: string): string | undefined {
 }
 
 export function liftChildren(tree: Root, nodeType: string) {
-  map(tree, (node: Parent) => {
-    const children = (node.children as Parent[])
+  map(tree, (node) => {
+    const children = ((node as GenericParent).children as Parent[])
       ?.map((child) => {
         if (child.type === nodeType && child.children) return child.children;
         return child;

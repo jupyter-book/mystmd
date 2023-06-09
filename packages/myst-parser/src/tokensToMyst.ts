@@ -447,7 +447,7 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
 
 function hoistSingleImagesOutofParagraphs(tree: Root) {
   // Hoist up all paragraphs with a single image
-  visit(tree, 'paragraph', (node: GenericNode) => {
+  visit(tree, 'paragraph', (node) => {
     if (!(node.children?.length === 1 && node.children?.[0].type === 'image')) return;
     const child = node.children[0];
     Object.keys(node).forEach((k) => {
