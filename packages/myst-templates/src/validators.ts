@@ -33,7 +33,7 @@ import type {
   TemplatePartDefinition,
   TemplateStyles,
   TemplateYml,
-} from './types';
+} from './types.js';
 
 export type FileOptions = { copyFolder?: string; relativePathFrom?: string };
 

@@ -7,7 +7,7 @@ import { createGitLogger, makeExecutable } from 'myst-cli-utils';
 import fetch from 'node-fetch';
 import { validateUrl } from 'simple-validators';
 import unzipper from 'unzipper';
-import type { TemplateYmlListResponse, TemplateYmlResponse, ISession } from './types';
+import type { TemplateYmlListResponse, TemplateYmlResponse, ISession } from './types.js';
 
 export const TEMPLATE_FILENAME = 'template.tex';
 export const TEMPLATE_YML = 'template.yml';

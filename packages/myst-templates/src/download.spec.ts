@@ -1,20 +1,24 @@
+import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
 import { resolveInputs } from './download';
 import { Session } from './session';
+import { TemplateKind } from 'myst-common';
 
-jest.mock('fs', () => memfs.fs);
+vi.mock('fs', () => ({ ['default']: memfs.fs }));
 
 describe('resolveInputs', () => {
   beforeEach(() => memfs.vol.reset());
   it('default path and url fill correctly', async () => {
-    expect(resolveInputs(new Session(), {})).toEqual({
+    expect(resolveInputs(new Session(), { kind: TemplateKind.tex })).toEqual({
       templatePath: 'templates/tex/myst/curvenote',
       templateUrl: 'https://api.myst-tools.org/templates/tex/myst/curvenote',
     });
   });
   it('template as path to template file exists', async () => {
     memfs.vol.fromJSON({ 'templates/template.tex': '' });
-    expect(resolveInputs(new Session(), { template: 'templates/template.tex' })).toEqual({
+    expect(
+      resolveInputs(new Session(), { kind: TemplateKind.tex, template: 'templates/template.tex' }),
+    ).toEqual({
       templatePath: 'templates',
       templateUrl: undefined,
     });
@@ -35,14 +39,18 @@ describe('resolveInputs', () => {
   });
   it('non-default template is respected', async () => {
     expect(
-      resolveInputs(new Session(), { template: 'private/journal', buildDir: '_build' }),
+      resolveInputs(new Session(), {
+        kind: TemplateKind.tex,
+        template: 'private/journal',
+        buildDir: '_build',
+      }),
     ).toEqual({
       templatePath: '_build/templates/tex/private/journal',
       templateUrl: 'https://api.myst-tools.org/templates/tex/private/journal',
     });
   });
   it('template name is prefixed with public', async () => {
-    expect(resolveInputs(new Session(), { template: 'journal' })).toEqual({
+    expect(resolveInputs(new Session(), { kind: TemplateKind.tex, template: 'journal' })).toEqual({
       templatePath: 'templates/tex/myst/journal',
       templateUrl: 'https://api.myst-tools.org/templates/tex/myst/journal',
     });
