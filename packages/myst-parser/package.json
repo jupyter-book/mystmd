@@ -1,14 +1,14 @@
 {
   "name": "myst-parser",
-  "version": "0.0.31",
+  "version": "1.0.1",
   "description": "Markdown parser for MyST markdown in JavaScript",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-parser",
   "license": "MIT",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "unpkg": "dist/myst.min.js",
-  "types": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
@@ -29,16 +29,13 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.js",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
-    "build:bundle:cjs": "esbuild src/index.ts --bundle --outfile=dist/index.cjs.js --platform=node",
-    "build:bundle:browser": "esbuild myst.ts --bundle --outfile=dist/myst.min.js --platform=browser --minify",
-    "build:esm": "tsc --module es2015   --outDir dist/esm",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "declarations": "tsc --declaration --emitDeclarationOnly --declarationMap --outDir dist/types",
-    "build": "npm-run-all -l clean -p build:cjs build:esm build:bundle:browser build:bundle:cjs declarations"
+    "build:bundle:browser": "esbuild bundle/myst.ts --bundle --outfile=dist/myst.min.js --platform=browser --minify",
+    "build:esm": "tsc --project ./src/tsconfig.json --module es2015 --outDir dist --declaration",
+    "build": "npm-run-all -l clean -p build:esm build:bundle:browser"
   },
   "bugs": {
     "url": "https://github.com/executablebooks/mystjs/issues"
@@ -51,11 +48,11 @@
     "markdown-it-dollarmath": "^0.4.2",
     "markdown-it-footnote": "^3.0.3",
     "markdown-it-front-matter": "^0.2.3",
-    "markdown-it-myst": "0.1.3",
+    "markdown-it-myst": "1.0.0",
     "markdown-it-myst-extras": "0.2.0",
     "markdown-it-task-lists": "^2.1.1",
-    "myst-directives": "^0.0.31",
-    "myst-roles": "^0.0.31",
+    "myst-directives": "^1.0.1",
+    "myst-roles": "^1.0.1",
     "myst-spec": "^0.0.4",
     "unified": "^10.1.1",
     "unist-builder": "^3.0.0",
@@ -68,21 +65,11 @@
     "@sinonjs/fake-timers": "^9.1.0",
     "@types/hast": "^2.3.4",
     "@types/he": "^1.1.2",
-    "@types/jest": "^28.1.6",
     "@types/js-yaml": "^4.0.5",
     "@types/markdown-it": "^12.2.3",
     "@types/mdast": "^3.0.10",
-    "eslint": "^8.21.0",
-    "eslint-config-curvenote": "latest",
-    "jest": "28.1.3",
     "js-yaml": "^4.1.0",
-    "myst-to-html": "^0.0.31",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.6.1",
-    "rehype-stringify": "^9.0.3",
-    "rimraf": "^3.0.2",
-    "ts-jest": "^28.0.7",
-    "ts-loader": "^9.2.8",
-    "typescript": "latest"
+    "myst-to-html": "^1.0.1",
+    "rehype-stringify": "^9.0.3"
   }
 }

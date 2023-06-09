@@ -1,4 +1,4 @@
-import type { TemplateImports } from './types';
+import type { TemplateImports } from './types.js';
 
 const commentLenth = 50;
 

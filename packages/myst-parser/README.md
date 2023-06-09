@@ -132,7 +132,6 @@ The scripts for building, testing, and serving the project are in the [package.j
 ### `npm run build`
 
 Builds the library, including compiling the typescript and bundling/minification to create `myst.min.js` which can be used in the browser directly.
-Additionally, `index.cjs.js` is created which bundles ESM dependencies like `unified`, which can be helpful for tooling (e.g. `jest`) that can struggle with ESM modules.
 This outputs to the `dist` folder, and also includes all type definitions (`*.d.ts`) in the types folder.
 
 ### `npm run test`

@@ -1,5 +1,26 @@
 # myst-to-jats
 
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
+### Patch Changes
+
+- 65efd6d6: Abbreviation for jats
+- Updated dependencies [00c05fe9]
+  - citation-js-utils@1.0.0
+  - myst-spec-ext@1.0.0
+
+## 0.0.30
+
+### Patch Changes
+
+- Updated dependencies [97518ca3]
+- Updated dependencies [f97d4d50]
+  - myst-frontmatter@0.0.14
+
 ## 0.0.29
 
 ## 0.0.28

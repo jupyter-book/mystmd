@@ -1,5 +1,25 @@
 # myst-templates
 
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
+### Patch Changes
+
+- Updated dependencies [00c05fe9]
+  - myst-cli-utils@2.0.0
+
+## 0.1.18
+
+### Patch Changes
+
+- 97518ca3: Add collaborations list to myst-frontmatter
+- Updated dependencies [97518ca3]
+- Updated dependencies [f97d4d50]
+  - myst-frontmatter@0.0.14
+
 ## 0.1.17
 
 ### Patch Changes

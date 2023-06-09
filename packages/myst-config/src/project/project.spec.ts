@@ -1,3 +1,4 @@
+import { describe, expect, it, beforeEach } from 'vitest';
 import type { ValidationOptions } from 'simple-validators';
 import { validateProjectConfig } from './validators';
 

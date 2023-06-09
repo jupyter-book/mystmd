@@ -5,8 +5,8 @@ import type { GenericNode } from 'myst-common';
 import { fileError } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import type { NestedState, Parent, Validator } from './types';
-import { incrementNestedLevel, popNestedLevel } from './utils';
+import type { NestedState, Parent, Validator } from './types.js';
+import { incrementNestedLevel, popNestedLevel } from './utils.js';
 
 type DirectiveOptions = {
   argsKey?: string;

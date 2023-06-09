@@ -1,5 +1,24 @@
 # myst-transforms
 
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
+### Patch Changes
+
+- Updated dependencies [00c05fe9]
+  - myst-spec-ext@1.0.0
+
+## 0.0.32
+
+### Patch Changes
+
+- de66ba19: Include html_id in the enumerator transform for local and remote links
+- f97d4d50: Add abbreviation frontmatter option to add abbreviations automatically to documents.
+- de66ba19: Add glossary and term directives
+
 ## 0.0.31
 
 ### Patch Changes

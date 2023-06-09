@@ -2,7 +2,7 @@ import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import type { Link, LinkTransformer } from './types';
+import type { Link, LinkTransformer } from './types.js';
 
 type Options = {
   transformers: LinkTransformer[];

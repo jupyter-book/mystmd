@@ -1,15 +1,15 @@
 import type { Root } from 'mdast';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRoles';
-import { mystTargetsTransform, headingLabelTransform } from './targets';
-import { captionParagraphTransform } from './caption';
-import { admonitionBlockquoteTransform, admonitionHeadersTransform } from './admonitions';
-import { blockMetadataTransform, blockNestingTransform } from './blocks';
-import { htmlIdsTransform } from './htmlIds';
-import { imageAltTextTransform } from './images';
-import { mathLabelTransform, mathNestingTransform } from './math';
-import { blockquoteTransform } from './blockquote';
+import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRoles.js';
+import { mystTargetsTransform, headingLabelTransform } from './targets.js';
+import { captionParagraphTransform } from './caption.js';
+import { admonitionBlockquoteTransform, admonitionHeadersTransform } from './admonitions.js';
+import { blockMetadataTransform, blockNestingTransform } from './blocks.js';
+import { htmlIdsTransform } from './htmlIds.js';
+import { imageAltTextTransform } from './images.js';
+import { mathLabelTransform, mathNestingTransform } from './math.js';
+import { blockquoteTransform } from './blockquote.js';
 
 export function basicTransformations(tree: Root, file: VFile) {
   // lifting roles and directives must happen before the mystTarget transformation

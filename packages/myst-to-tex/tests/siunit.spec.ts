@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { unified } from 'unified';
 import { u } from 'unist-builder';
 import type { LatexResult } from '../src';

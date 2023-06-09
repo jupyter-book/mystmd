@@ -1,17 +1,23 @@
-import type { Root, Parent } from 'myst-spec';
+import type { Root, Parent, Code } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { References } from 'myst-common';
 import { fileError, toText } from 'myst-common';
-import { captionHandler, containerHandler } from './container';
-import { renderNodeToLatex } from './tables';
-import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types';
-import { getLatexImageWidth, hrefToLatexText, stringToLatexMath, stringToLatexText } from './utils';
-import MATH_HANDLERS, { withRecursiveCommands } from './math';
+import { captionHandler, containerHandler } from './container.js';
+import { renderNodeToLatex } from './tables.js';
+import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types.js';
+import {
+  getClasses,
+  getLatexImageWidth,
+  hrefToLatexText,
+  stringToLatexMath,
+  stringToLatexText,
+} from './utils.js';
+import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { selectAll } from 'unist-util-select';
 import type { FootnoteDefinition } from 'myst-spec-ext';
 
-export type { LatexResult } from './types';
+export type { LatexResult } from './types.js';
 
 const handlers: Record<string, Handler> = {
   text(node, state) {
@@ -80,10 +86,22 @@ const handlers: Record<string, Handler> = {
   definitionDescription(node, state) {
     state.renderChildren(node, true);
   },
-  code(node, state) {
-    state.write('\\begin{verbatim}\n');
+  code(node: Code, state) {
+    let start = '\\begin{verbatim}\n';
+    let end = '\n\\end{verbatim}';
+
+    if (getClasses(node.class).includes('listings') && node.lang !== undefined) {
+      state.usePackages('listings');
+      start = `\\begin{lstlisting}[language=${node.lang}]\n`;
+      end = '\n\\end{lstlisting}';
+    } else if (getClasses(node.class).includes('minted') && node.lang !== undefined) {
+      state.usePackages('minted');
+      start = `\\begin{minted}{${node.lang}}\n`;
+      end = '\n\\end{minted}';
+    }
+    state.write(start);
     state.text(node.value, true);
-    state.write('\n\\end{verbatim}');
+    state.write(end);
     state.closeBlock(node);
   },
   list(node, state) {
@@ -115,11 +133,6 @@ const handlers: Record<string, Handler> = {
   },
   mystDirective(node, state) {
     state.renderChildren(node, false);
-  },
-  mystComment(node, state) {
-    state.ensureNewLine();
-    state.write(`% ${node.value?.split('\n').join('\n% ') ?? ''}`);
-    state.closeBlock(node);
   },
   comment(node, state) {
     state.ensureNewLine();

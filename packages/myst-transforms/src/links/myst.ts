@@ -1,8 +1,8 @@
 import { fileWarn, fileError } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { Inventory } from 'intersphinx';
-import type { Link, LinkTransformer } from './types';
-import { updateLinkTextIfEmpty } from './utils';
+import type { Link, LinkTransformer } from './types.js';
+import { updateLinkTextIfEmpty } from './utils.js';
 
 const TRANSFORM_SOURCE = 'LinkTransform:MystTransformer';
 

@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import pLimit from 'p-limit';
 import fetch from 'node-fetch';
 import type { GenericNode } from 'myst-common';
@@ -9,12 +9,12 @@ import type { LinkTransformer, Link } from 'myst-transforms';
 import { fileError } from 'myst-common';
 import { hashAndCopyStaticFile, tic } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
-import type { ISession } from '../session/types';
-import { selectors } from '../store';
+import type { ISession } from '../session/types.js';
+import { selectors } from '../store/index.js';
 import type { Root } from 'mdast';
-import { addWarningForFile } from '../utils';
-import { links } from '../store/reducers';
-import type { ExternalLinkResult } from '../store/types';
+import { addWarningForFile } from '../utils/index.js';
+import { links } from '../store/reducers.js';
+import type { ExternalLinkResult } from '../store/types.js';
 
 // These limit access from command line tools by default
 const skippedDomains = [

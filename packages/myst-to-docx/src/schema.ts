@@ -61,15 +61,15 @@ import type {
   FootnoteDefinition,
   CiteKind,
 } from 'myst-spec-ext';
-import type { Handler, Mutable } from './types';
+import type { Handler, Mutable } from './types.js';
 import {
   createReference,
   createReferenceBookmark,
   createShortId,
   getImageWidth,
   MAX_DOCX_IMAGE_WIDTH,
-} from './utils';
-import { createNumbering } from './numbering';
+} from './utils.js';
+import { createNumbering } from './numbering.js';
 import sizeOf from 'buffer-image-size';
 import { fileError } from 'myst-common';
 
@@ -511,11 +511,6 @@ const include: Handler<{ type: 'include' } & Parent> = (state, node) => {
   state.renderChildren(node);
 };
 
-const mystComment: Handler<{ type: 'mystComment' } & Parent> = () => {
-  // Do nothing!
-  return;
-};
-
 const comment: Handler<{ type: 'comment' } & Parent> = () => {
   // Do nothing!
   return;
@@ -551,7 +546,6 @@ export const defaultHandlers = {
   code,
   image,
   block,
-  mystComment,
   comment,
   mystDirective,
   mystRole,

@@ -1,13 +1,13 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import util from 'util';
 import { pdfExportCommand } from 'jtex';
 import { exec, tic } from 'myst-cli-utils';
 import MystTemplate from 'myst-templates';
-import type { ISession } from '../../session/types';
-import { createTempFolder, uniqueArray } from '../../utils';
-import type { ExportWithOutput } from '../types';
-import { cleanOutput } from '../utils/cleanOutput';
+import type { ISession } from '../../session/types.js';
+import { createTempFolder, uniqueArray } from '../../utils/index.js';
+import type { ExportWithOutput } from '../types.js';
+import { cleanOutput } from '../utils/cleanOutput.js';
 import { TemplateKind } from 'myst-common';
 import chalk from 'chalk';
 

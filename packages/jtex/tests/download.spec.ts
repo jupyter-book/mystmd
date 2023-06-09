@@ -1,4 +1,5 @@
-import fs from 'fs';
+import { describe, expect, it } from 'vitest';
+import fs from 'node:fs';
 import { TemplateKind } from 'myst-common';
 import MystTemplate, { downloadTemplate, resolveInputs, Session } from 'myst-templates';
 import { renderTex } from '../src';

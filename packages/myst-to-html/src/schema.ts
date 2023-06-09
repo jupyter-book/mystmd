@@ -107,7 +107,7 @@ const mystDirective: Handler = (h, node) => {
 const block: Handler = (h, node) =>
   h(node, 'div', { class: 'block', 'data-block': node.meta }, all(h, node));
 
-const mystComment: Handler = (h, node) => u('comment', node.value);
+const comment: Handler = (h, node) => u('comment', node.value);
 
 const heading: Handler = (h, node) =>
   h(node, `h${node.depth}`, { id: node.identifier || undefined }, all(h, node));
@@ -183,8 +183,7 @@ export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Roo
       mystRole,
       mystDirective,
       block,
-      mystComment,
-      comment: mystComment,
+      comment,
       heading,
       crossReference,
       code,

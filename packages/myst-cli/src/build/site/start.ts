@@ -5,16 +5,16 @@ import getPort, { portNumbers } from 'get-port';
 import { makeExecutable } from 'myst-cli-utils';
 import type child_process from 'child_process';
 import { nanoid } from 'nanoid';
-import { join } from 'path';
+import { join } from 'node:path';
 import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';
-import type { ISession } from '../../session/types';
-import version from '../../version';
-import { createServerLogger } from './logger';
-import type { Options } from './prepare';
-import { buildSite } from './prepare';
-import { installSiteTemplate, getMystTemplate } from './template';
-import { watchContent } from './watch';
+import type { ISession } from '../../session/types.js';
+import version from '../../version.js';
+import { createServerLogger } from './logger.js';
+import type { Options } from './prepare.js';
+import { buildSite } from './prepare.js';
+import { installSiteTemplate, getMystTemplate } from './template.js';
+import { watchContent } from './watch.js';
 
 const DEFAULT_START_COMMAND = 'npm run start';
 

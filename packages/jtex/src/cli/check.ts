@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import { Command } from 'commander';
 import yaml from 'js-yaml';
-import fs from 'fs';
-import { join, extname, resolve } from 'path';
+import fs from 'node:fs';
+import { join, extname, resolve } from 'node:path';
 import { clirun } from 'myst-cli-utils';
 import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import type { ISession } from 'myst-templates';

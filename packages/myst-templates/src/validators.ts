@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { TemplateOptionType } from 'myst-common';
 import {
@@ -33,7 +33,7 @@ import type {
   TemplatePartDefinition,
   TemplateStyles,
   TemplateYml,
-} from './types';
+} from './types.js';
 
 export type FileOptions = { copyFolder?: string; relativePathFrom?: string };
 

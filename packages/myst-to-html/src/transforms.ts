@@ -13,8 +13,8 @@ import { remove } from 'unist-util-remove';
 import { liftChildren, normalizeLabel } from 'myst-common';
 import type { GenericNode } from 'myst-common';
 import { AdmonitionKind, admonitionKindToTitle } from 'myst-transforms';
-import type { EnumeratorOptions, State } from './state';
-import { enumerateTargets, resolveReferences } from './state';
+import type { EnumeratorOptions, State } from './state.js';
+import { enumerateTargets, resolveReferences } from './state.js';
 
 export type Admonition = GenericNode<{
   kind?: AdmonitionKind;

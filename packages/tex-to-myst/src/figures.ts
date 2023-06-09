@@ -1,7 +1,7 @@
 import type { GenericNode } from 'myst-common';
 import { u } from 'unist-builder';
-import type { Handler, ITexParser } from './types';
-import { getArguments, texToText } from './utils';
+import type { Handler, ITexParser } from './types.js';
+import { getArguments, texToText } from './utils.js';
 
 function renderCaption(node: GenericNode, state: ITexParser) {
   state.closeParagraph();

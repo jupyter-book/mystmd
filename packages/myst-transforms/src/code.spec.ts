@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import type { Root } from 'mdast';
 import { VFile } from 'vfile';
 import { codeTransform } from './code';

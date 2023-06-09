@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
-import type { ISession } from '../session/types';
-import type { Session } from '../session';
-import { checkNodeVersion, getNodeVersion, logVersions } from '../utils';
+import type { ISession } from '../session/types.js';
+import type { Session } from '../session/index.js';
+import { checkNodeVersion, getNodeVersion, logVersions } from '../utils/index.js';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
 
 type SessionOpts = {

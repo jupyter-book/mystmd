@@ -1,7 +1,6 @@
-import { fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
-import type { Link, LinkTransformer } from './types';
-import { updateLinkTextIfEmpty, withoutHttp } from './utils';
+import type { Link, LinkTransformer } from './types.js';
+import { updateLinkTextIfEmpty, withoutHttp } from './utils.js';
 
 const RESOLVER = 'https://github.com/';
 const TRANSFORM_SOURCE = 'LinkTransform:Github';

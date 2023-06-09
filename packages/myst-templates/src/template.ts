@@ -1,19 +1,19 @@
-import fs from 'fs';
-import { join, dirname } from 'path';
+import fs from 'node:fs';
+import { join, dirname } from 'node:path';
 import yaml from 'js-yaml';
 import type { TemplateKind } from 'myst-common';
 import type { ValidationOptions } from 'simple-validators';
-import { downloadTemplate, resolveInputs, TEMPLATE_FILENAME, TEMPLATE_YML } from './download';
-import { extendFrontmatter } from './frontmatter';
-import type { TemplateYml, ISession } from './types';
-import { errorLogger, warningLogger } from './utils';
-import type { FileOptions, FileValidationOptions } from './validators';
+import { downloadTemplate, resolveInputs, TEMPLATE_FILENAME, TEMPLATE_YML } from './download.js';
+import { extendFrontmatter } from './frontmatter.js';
+import type { TemplateYml, ISession } from './types.js';
+import { errorLogger, warningLogger } from './utils.js';
+import type { FileOptions, FileValidationOptions } from './validators.js';
 import {
   validateTemplateDoc,
   validateTemplateOptions,
   validateTemplateParts,
   validateTemplateYml,
-} from './validators';
+} from './validators.js';
 
 class MystTemplate {
   session: ISession;

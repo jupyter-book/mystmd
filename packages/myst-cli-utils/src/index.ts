@@ -1,4 +1,4 @@
-export type { Logger, LoggerDE, ISession } from './types';
+export type { Logger, LoggerDE, ISession } from './types.js';
 export {
   LogLevel,
   basicLogger,
@@ -6,9 +6,9 @@ export {
   silentLogger,
   createGitLogger,
   createNpmLogger,
-} from './logger';
-export { exec, makeExecutable } from './exec';
-export { clirun, tic } from './utils';
-export { isUrl } from './isUrl';
-export { Session, getSession } from './session';
-export { computeHash, hashAndCopyStaticFile, writeFileToFolder } from './filesystem';
+} from './logger.js';
+export { exec, makeExecutable } from './exec.js';
+export { clirun, tic } from './utils.js';
+export { isUrl } from './isUrl.js';
+export { Session, getSession } from './session.js';
+export { computeHash, hashAndCopyStaticFile, writeFileToFolder } from './filesystem.js';

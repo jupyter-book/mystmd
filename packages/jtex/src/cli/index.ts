@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import commander from 'commander';
-import version from '../version';
-import { addCheckCLI } from './check';
+import { Command } from 'commander';
+import version from '../version.js';
+import { addCheckCLI } from './check.js';
 
-const program = new commander.Command();
+const program = new Command();
 
 addCheckCLI(program);
 

@@ -1,8 +1,8 @@
-import type Token from 'markdown-it/lib/token';
+import type Token from 'markdown-it/lib/token.js';
 import { u } from 'unist-builder';
 import type { GenericNode, GenericParent } from 'myst-common';
 import type { Text } from 'myst-spec';
-import type { TokenHandlerSpec } from './types';
+import type { TokenHandlerSpec } from './types.js';
 
 const UNHIDDEN_TOKENS = new Set([
   'parsed_directive_open',

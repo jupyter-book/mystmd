@@ -1,5 +1,5 @@
 import type { Table, TableRow, TableCell as SpecTableCell } from 'myst-spec';
-import type { ITexSerializer } from './types';
+import type { ITexSerializer } from './types.js';
 
 export const TOTAL_TABLE_WIDTH = 886;
 

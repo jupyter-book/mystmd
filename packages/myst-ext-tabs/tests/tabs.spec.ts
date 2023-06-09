@@ -1,5 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { mystParse } from 'myst-parser';
-import { tabDirectives } from 'myst-ext-tabs';
+import { tabDirectives } from '../src';
 
 describe('tab directives', () => {
   it.each(['tab-set', 'tabSet'])('empty %s parses', async (name: string) => {

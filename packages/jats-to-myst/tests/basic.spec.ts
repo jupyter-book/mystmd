@@ -1,8 +1,9 @@
+import { describe, expect, test } from 'vitest';
+import fs from 'node:fs';
 import { unified } from 'unified';
-import { jatsToMystTransform } from '../src';
-import fs from 'fs';
 import type { LatexResult } from 'myst-to-tex';
 import mystToTex from 'myst-to-tex';
+import { jatsToMystTransform } from '../src';
 
 function toTex(tree: any) {
   const pipe = unified().use(mystToTex);

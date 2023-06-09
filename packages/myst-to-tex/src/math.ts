@@ -1,4 +1,4 @@
-import type { Handler, ITexSerializer } from './types';
+import type { Handler, ITexSerializer } from './types.js';
 
 function addMacrosToState(value: string, state: ITexSerializer) {
   if (!state.options.math) return;

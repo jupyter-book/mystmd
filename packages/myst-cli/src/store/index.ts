@@ -1,5 +1,5 @@
-import * as selectors from './selectors';
+import * as selectors from './selectors.js';
 
-export * from './reducers';
-export * from './types';
+export * from './reducers.js';
+export * from './types.js';
 export { selectors };

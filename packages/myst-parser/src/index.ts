@@ -1,8 +1,9 @@
-import * as plugins from './plugins';
+import * as plugins from './plugins.js';
 
-export * from './myst';
-export * from './types';
-export * from './fromMarkdown';
-export { tokensToMyst, MdastOptions } from './tokensToMyst';
+export * from './myst.js';
+export * from './types.js';
+export * from './fromMarkdown.js';
+export type { MdastOptions } from './tokensToMyst.js';
+export { tokensToMyst } from './tokensToMyst.js';
 
 export { plugins };

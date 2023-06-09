@@ -10,12 +10,12 @@ export {
   setTextAsChild,
   copyNode,
   mergeTextNodes,
-} from './utils';
-export { selectBlockParts, extractPart } from './extractParts';
-export { TemplateKind, TemplateOptionType } from './templates';
-export { NotebookCell, ParseTypesEnum, SourceFileKind } from './types';
+} from './utils.js';
+export { selectBlockParts, extractPart } from './extractParts.js';
+export { TemplateKind, TemplateOptionType } from './templates.js';
+export { NotebookCell, ParseTypesEnum, SourceFileKind } from './types.js';
 
-export type { MessageInfo } from './utils';
+export type { MessageInfo } from './utils.js';
 export type {
   Dependency,
   GenericNode,
@@ -28,4 +28,4 @@ export type {
   DirectiveSpec,
   RoleSpec,
   ParseTypes,
-} from './types';
+} from './types.js';

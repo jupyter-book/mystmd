@@ -1,14 +1,14 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import type { Export } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
-import { findCurrentProjectAndLoad } from '../../config';
-import { loadProjectFromDisk } from '../../project';
-import type { ISession } from '../../session';
-import { selectors } from '../../store';
-import type { ExportWithOutput, ExportOptions, ExportWithInputOutput } from '../types';
-import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter';
-import { getDefaultExportFilename, getDefaultExportFolder } from './defaultNames';
+import { findCurrentProjectAndLoad } from '../../config.js';
+import { loadProjectFromDisk } from '../../project/index.js';
+import type { ISession } from '../../session/index.js';
+import { selectors } from '../../store/index.js';
+import type { ExportWithOutput, ExportOptions, ExportWithInputOutput } from '../types.js';
+import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter.js';
+import { getDefaultExportFilename, getDefaultExportFolder } from './defaultNames.js';
 
 export const SOURCE_EXTENSIONS = ['.ipynb', '.md', '.tex'];
 

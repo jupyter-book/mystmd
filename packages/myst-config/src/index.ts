@@ -1,8 +1,8 @@
-import type { ProjectConfig } from './project';
-import type { SiteConfig } from './site';
+import type { ProjectConfig } from './project/index.js';
+import type { SiteConfig } from './site/index.js';
 
-export * from './project';
-export * from './site';
+export * from './project/index.js';
+export * from './site/index.js';
 
 export type Config = {
   version: 1;

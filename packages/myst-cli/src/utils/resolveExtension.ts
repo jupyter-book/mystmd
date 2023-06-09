@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { isDirectory } from './isDirectory';
+import fs from 'node:fs';
+import path from 'node:path';
+import { isDirectory } from './isDirectory.js';
 
 export enum ImageExtensions {
   png = '.png',

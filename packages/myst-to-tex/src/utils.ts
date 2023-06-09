@@ -1,4 +1,4 @@
-import { DEFAULT_IMAGE_WIDTH, DEFAULT_PAGE_WIDTH_PIXELS } from './types';
+import { DEFAULT_IMAGE_WIDTH, DEFAULT_PAGE_WIDTH_PIXELS } from './types.js';
 
 /** Removes nobreak and zero-width spaces */
 export function cleanWhitespaceChars(text: string, nbsp = ' '): string {
@@ -156,7 +156,7 @@ const mathReplacements: Record<string, string> = {
 type SimpleTokens = { kind: 'math' | 'text'; text: string };
 
 export function hrefToLatexText(text: string) {
-  const replacedArray: SimpleTokens[] = Array(...(text ?? '')).map((char) => {
+  const replacedArray: SimpleTokens[] = Array.from(text ?? '').map((char) => {
     if (hrefOnlyReplacements[char]) return { kind: 'text', text: hrefOnlyReplacements[char] };
     return { kind: 'text', text: char };
   });
@@ -181,7 +181,7 @@ export function stringToLatexText(text: string) {
     .replace(/\\/g, BACKSLASH)
     .replace(/~/g, TILDE);
 
-  const replacedArray: SimpleTokens[] = Array(...escaped).map((char) => {
+  const replacedArray: SimpleTokens[] = Array.from(escaped).map((char) => {
     if (textReplacements[char]) return { kind: 'text', text: textReplacements[char] };
     if (mathReplacements[char]) return { kind: 'math', text: mathReplacements[char] };
     return { kind: 'text', text: char };
@@ -208,7 +208,7 @@ export function stringToLatexText(text: string) {
 }
 
 export function stringToLatexMath(text: string) {
-  const replaced = Array(...(text ?? '')).reduce((s, char) => {
+  const replaced = Array.from(text ?? '').reduce((s, char) => {
     if (mathReplacements[char]) {
       const space = s.slice(-1) === ' ' ? '' : ' ';
       return `${s}${space}${mathReplacements[char]}`;
@@ -236,4 +236,13 @@ export function getLatexImageWidth(width?: number | string): string {
   let lineWidth = width ?? DEFAULT_IMAGE_WIDTH;
   if (lineWidth < 1) lineWidth *= 100;
   return `${lineWidth / 100}\\linewidth`;
+}
+
+export function getClasses(className?: string): string[] {
+  const classes =
+    className
+      ?.split(' ')
+      .map((s) => s.trim().toLowerCase())
+      .filter((s) => !!s) ?? [];
+  return Array.from(new Set(classes));
 }

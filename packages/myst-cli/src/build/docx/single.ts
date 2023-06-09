@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
@@ -9,20 +9,20 @@ import MystTemplate from 'myst-templates';
 import type { LinkTransformer } from 'myst-transforms';
 import { htmlTransform } from 'myst-transforms';
 import { VFile } from 'vfile';
-import { findCurrentProjectAndLoad } from '../../config';
-import { loadProjectFromDisk } from '../../project';
-import type { ISession } from '../../session/types';
-import type { RendererData } from '../../transforms/types';
-import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils';
-import type { ExportOptions, ExportWithOutput } from '../types';
+import { findCurrentProjectAndLoad } from '../../config.js';
+import { loadProjectFromDisk } from '../../project/index.js';
+import type { ISession } from '../../session/types.js';
+import type { RendererData } from '../../transforms/types.js';
+import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils/index.js';
+import type { ExportOptions, ExportWithOutput } from '../types.js';
 import {
   resolveAndLogErrors,
   cleanOutput,
   getFileContent,
   collectWordExportOptions,
-} from '../utils';
-import { createFooter } from './footers';
-import { createArticleTitle, createReferenceTitle } from './titles';
+} from '../utils/index.js';
+import { createFooter } from './footers.js';
+import { createArticleTitle, createReferenceTitle } from './titles.js';
 import { TemplateKind } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 

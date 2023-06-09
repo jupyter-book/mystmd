@@ -4,8 +4,8 @@ import { defaultDirectives } from 'myst-directives';
 import { defaultRoles } from 'myst-roles';
 import type { Plugin } from 'unified';
 import { VFile } from 'vfile';
-import { MARKDOWN_IT_CONFIG } from './config';
-import { tokensToMyst } from './tokensToMyst';
+import { MARKDOWN_IT_CONFIG } from './config.js';
+import { tokensToMyst } from './tokensToMyst.js';
 import {
   mathPlugin,
   convertFrontMatter,
@@ -16,10 +16,10 @@ import {
   mystPlugin,
   deflistPlugin,
   tasklistPlugin,
-} from './plugins';
-import { applyDirectives } from './directives';
-import { applyRoles } from './roles';
-import type { AllOptions } from './types';
+} from './plugins.js';
+import { applyDirectives } from './directives.js';
+import { applyRoles } from './roles.js';
+import type { AllOptions } from './types.js';
 
 type Options = Partial<AllOptions>;
 

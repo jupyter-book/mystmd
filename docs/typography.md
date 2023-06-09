@@ -91,12 +91,22 @@ H{sub}`2`O, and 4{sup}`th` of July
 
 % For chemicals you can use the {chem}`H2O`
 
+(abbr-role)=
+
 ## Abbreviations
 
 To create an abbreviation, you can use the `abbr` role, in HTML this will ensure that the title of the acronym or abbreviation appears in the title when you hover over the element. In the role, follow the syntax `HR (Heart Rate)` with the abbreviation first followed by the expanded title in parenthesis.
 
 ```{myst}
 Well {abbr}`MyST (Markedly Structured Text)` is cool!
+```
+
+```{seealso} Abbreviations in Frontmatter
+:class: dropdown
+
+You can also set abbreviations in your page or project frontmatter to replace all instances of your abbreviation without writing the role every time!
+
+See [](#abbreviations) for more information.
 ```
 
 ## Quotations

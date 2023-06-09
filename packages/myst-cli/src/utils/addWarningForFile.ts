@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import type { VFileMessage } from 'vfile-message';
-import type { ISession } from '../session/types';
-import { warnings } from '../store/reducers';
-import type { WarningKind } from '../store/types';
+import type { ISession } from '../session/types.js';
+import { warnings } from '../store/reducers.js';
+import type { WarningKind } from '../store/types.js';
 
 export function addWarningForFile(
   session: ISession,

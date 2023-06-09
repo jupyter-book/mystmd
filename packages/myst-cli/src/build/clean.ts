@@ -1,11 +1,11 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import inquirer from 'inquirer';
 import { ExportFormats } from 'myst-frontmatter';
-import { promptContinue } from '../cli/options';
-import type { ISession } from '../session';
-import { collectAllBuildExportOptions, getProjectPaths } from './build';
-import { getLogOutputFolder, getTexOutputFolder } from './pdf/create';
+import { promptContinue } from '../cli/options.js';
+import type { ISession } from '../session/index.js';
+import { collectAllBuildExportOptions, getProjectPaths } from './build.js';
+import { getLogOutputFolder, getTexOutputFolder } from './pdf/create.js';
 
 export type CleanOptions = {
   docx?: boolean;

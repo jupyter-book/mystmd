@@ -4,7 +4,7 @@ import type { Parent, Heading, Block } from 'myst-spec';
 import { liftChildren, NotebookCell } from 'myst-common';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
-import type { Options } from '../types';
+import type { Options } from '../types.js';
 
 export type Section = Omit<Heading, 'type'> & { type: 'section'; meta?: string };
 

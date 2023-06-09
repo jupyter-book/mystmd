@@ -1,1 +1,1 @@
-export { localArticleToWord } from './single';
+export { localArticleToWord } from './single.js';

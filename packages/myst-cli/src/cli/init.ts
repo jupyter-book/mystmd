@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import { Command, Option } from 'commander';
-import { init } from '../build';
-import { Session } from '../session';
-import { clirun } from './clirun';
-import { makeProjectOption, makeSiteOption } from './options';
+import { init } from '../build/index.js';
+import { Session } from '../session/index.js';
+import { clirun } from './clirun.js';
+import { makeProjectOption, makeSiteOption } from './options.js';
 
 export function makeWriteTocOption() {
   return new Option(

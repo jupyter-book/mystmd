@@ -2,14 +2,14 @@ import type { Root } from 'mdast';
 import type { GenericNode } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import yaml from 'js-yaml';
-import type { ISession } from '../session/types';
+import type { ISession } from '../session/types.js';
 
 const CELL_OPTION_PREFIX = '#| ';
 
 /**
  * Parse metadata from code block using js-yaml
  *
- * Metadata is defined at the begining of code cells as:
+ * Metadata is defined at the beginning of code cells as:
  *
  * ```python
  * #| key: value

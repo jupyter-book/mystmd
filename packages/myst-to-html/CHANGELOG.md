@@ -1,5 +1,27 @@
 # myst-to-html
 
+## 1.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
+### Patch Changes
+
+- Updated dependencies [00c05fe9]
+  - myst-transforms@1.0.0
+
+## 0.0.32
+
+### Patch Changes
+
+- Updated dependencies [de66ba19]
+- Updated dependencies [f97d4d50]
+- Updated dependencies [de66ba19]
+  - myst-transforms@0.0.32
+
 ## 0.0.31
 
 ### Patch Changes

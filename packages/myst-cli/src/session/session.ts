@@ -1,16 +1,16 @@
-import path from 'path';
+import path from 'node:path';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
-import { config, rootReducer, selectors } from '../store';
-import type { RootState } from '../store';
-import type { ISession } from './types';
+import { config, rootReducer, selectors } from '../store/index.js';
+import type { RootState } from '../store/index.js';
+import type { ISession } from './types.js';
 import {
   findCurrentProjectAndLoad,
   findCurrentSiteAndLoad,
   reloadAllConfigsForCurrentSite,
-} from '../config';
+} from '../config.js';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.myst-tools.org';

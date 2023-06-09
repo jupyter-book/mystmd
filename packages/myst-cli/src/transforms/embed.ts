@@ -4,8 +4,8 @@ import { selectAll } from 'unist-util-select';
 import type { IReferenceState, MultiPageReferenceState } from 'myst-transforms';
 import type { GenericNode, Dependency } from 'myst-common';
 import { copyNode, normalizeLabel } from 'myst-common';
-import { selectFile } from '../process';
-import type { ISession } from '../session/types';
+import { selectFile } from '../process/index.js';
+import type { ISession } from '../session/types.js';
 
 /**
  * This is the {embed} directive, that embeds nodes from elsewhere in a page.

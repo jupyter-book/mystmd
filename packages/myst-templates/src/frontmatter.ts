@@ -1,5 +1,5 @@
 import type { Author, PageFrontmatter } from 'myst-frontmatter';
-import type { RendererAuthor, RendererDoc, ValueAndIndex } from './types';
+import type { RendererAuthor, RendererDoc, ValueAndIndex } from './types.js';
 
 const ALPHA = 'ABCDEFGHIJKLMNOPQURSUVWXYZ';
 

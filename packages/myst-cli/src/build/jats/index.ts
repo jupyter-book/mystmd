@@ -1,1 +1,1 @@
-export { localArticleToJats } from './single';
+export { localArticleToJats } from './single.js';

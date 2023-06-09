@@ -1,4 +1,4 @@
-import type { ISession } from '../session/types';
+import type { ISession } from '../session/types.js';
 
 export function shouldIgnoreFile(session: ISession, file: string) {
   const ignore = ['node_modules', '_build'];

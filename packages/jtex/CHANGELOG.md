@@ -1,5 +1,26 @@
 # jtex
 
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
+### Patch Changes
+
+- Updated dependencies [00c05fe9]
+  - myst-cli-utils@2.0.0
+  - myst-templates@1.0.0
+
+## 0.1.15
+
+### Patch Changes
+
+- Updated dependencies [97518ca3]
+- Updated dependencies [f97d4d50]
+  - myst-frontmatter@0.0.14
+  - myst-templates@0.1.18
+
 ## 0.1.14
 
 ### Patch Changes

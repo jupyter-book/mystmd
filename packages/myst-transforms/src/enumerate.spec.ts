@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import { formatHeadingEnumerator, incrementHeadingCounts } from './enumerate';
 
 describe('Testing heading count', () => {

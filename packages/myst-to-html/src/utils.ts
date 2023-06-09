@@ -1,4 +1,4 @@
-import { escapeHtml } from 'markdown-it/lib/common/utils';
+import { escapeHtml } from 'markdown-it/lib/common/utils.js';
 
 const HTML_EMPTY_ELEMENTS = new Set([
   'area',

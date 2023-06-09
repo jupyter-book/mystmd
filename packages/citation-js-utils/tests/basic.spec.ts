@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { getCitations, CitationJSStyles } from '../src';
 import { bibtex, TEST_APA_HTML, TEST_VANCOUVER_HTML } from './fixtures';
 

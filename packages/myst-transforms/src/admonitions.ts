@@ -2,8 +2,8 @@ import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
 import type { Admonition, AdmonitionTitle, Blockquote, FlowContent } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
-import { AdmonitionKind } from './types';
 import type { GenericNode } from 'myst-common';
+import { AdmonitionKind } from './types.js';
 
 type Options = {
   /** Replace the admonition title with the first paragraph if it is all bold. */

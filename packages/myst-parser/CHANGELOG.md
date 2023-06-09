@@ -1,5 +1,37 @@
 # myst-parser
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies
+  - myst-directives@1.0.1
+  - myst-roles@1.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 00c05fe9: Migrate to ESM modules
+
+### Patch Changes
+
+- Updated dependencies [00c05fe9]
+  - markdown-it-myst@1.0.0
+  - myst-directives@1.0.0
+  - myst-roles@1.0.0
+
+## 0.0.32
+
+### Patch Changes
+
+- d068df65: Change unknown directive from warning to error
+- 83200b5c: Change undefined role to error from warning
+- Updated dependencies [69a450dd]
+- Updated dependencies [de66ba19]
+  - myst-directives@0.0.32
+  - myst-roles@0.0.32
+
 ## 0.0.31
 
 ### Patch Changes

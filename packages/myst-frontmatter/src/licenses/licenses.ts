@@ -1,4 +1,4 @@
-import type { License } from './types';
+import type { License } from './types.js';
 
 // This file can be updated by:
 // node bin/fetchLicenses.js

@@ -1,6 +1,6 @@
-export { formatHtml } from './format';
-export { addMathRenderers, renderMath } from './renderer';
-export { mystToHast } from './schema';
-export { State } from './state';
-export { transform } from './transforms';
-export { mystToHtml } from './renderMdast';
+export { formatHtml } from './format.js';
+export { addMathRenderers, renderMath } from './renderer.js';
+export { mystToHast } from './schema.js';
+export { State } from './state.js';
+export { transform } from './transforms.js';
+export { mystToHtml } from './renderMdast.js';

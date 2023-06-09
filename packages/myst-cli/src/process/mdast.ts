@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import type { Root } from 'mdast';
 import { tic } from 'myst-cli-utils';
 import type { References } from 'myst-common';
@@ -22,15 +22,17 @@ import {
   RRIDTransformer,
   DOITransformer,
   joinGatesPlugin,
+  glossaryPlugin,
+  abbreviationPlugin,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
-import { getPageFrontmatter, processPageFrontmatter } from '../frontmatter';
-import { selectors } from '../store';
-import { watch } from '../store/reducers';
-import type { ISession } from '../session/types';
-import { castSession } from '../session';
-import type { RendererData } from '../transforms/types';
+import { getPageFrontmatter, processPageFrontmatter } from '../frontmatter.js';
+import { selectors } from '../store/index.js';
+import { watch } from '../store/reducers.js';
+import type { ISession } from '../session/types.js';
+import { castSession } from '../session/index.js';
+import type { RendererData } from '../transforms/types.js';
 
 import {
   checkLinksTransform,
@@ -47,12 +49,12 @@ import {
   StaticFileTransformer,
   inlineExpressionsPlugin,
   propagateBlockDataToCode,
-} from '../transforms';
-import type { ImageExtensions } from '../utils';
-import { logMessagesFromVFile } from '../utils';
-import { combineCitationRenderers } from './citations';
-import { bibFilesInDir, selectFile } from './file';
-import { loadIntersphinx } from './intersphinx';
+} from '../transforms/index.js';
+import type { ImageExtensions } from '../utils/index.js';
+import { logMessagesFromVFile } from '../utils/index.js';
+import { combineCitationRenderers } from './citations.js';
+import { bibFilesInDir, selectFile } from './file.js';
+import { loadIntersphinx } from './intersphinx.js';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
@@ -137,6 +139,8 @@ export async function transformMdast(
     .use(inlineExpressionsPlugin) // Happens before math and images!
     .use(htmlPlugin, { htmlHandlers })
     .use(mathPlugin, { macros: frontmatter.math })
+    .use(glossaryPlugin, { state }) // This should be before the enumerate plugins
+    .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
     .use(enumerateTargetsPlugin, { state }) // This should be after math
     .use(joinGatesPlugin)
     .run(mdast, vfile);

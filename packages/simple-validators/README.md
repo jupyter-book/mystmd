@@ -9,7 +9,7 @@ This package provides basic validation functions for building more complex schem
 ## Usage
 
 ```typescript
-import fs from 'fs';
+import fs from 'node:fs';
 import {
   defined,
   incrementOptions,

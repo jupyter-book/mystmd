@@ -1,4 +1,4 @@
-import type { ISession } from './types';
+import type { ISession } from './types.js';
 
 export function errorLogger(session: ISession) {
   return (message: string) => session.log.error(message);

@@ -1,6 +1,6 @@
 import { u } from 'unist-builder';
-import type { Handler } from './types';
-import { getArguments, texToText } from './utils';
+import type { Handler } from './types.js';
+import { getArguments, texToText } from './utils.js';
 
 // https://en.wikibooks.org/wiki/LaTeX/Hyperlinks
 export const LINK_HANDLERS: Record<string, Handler> = {

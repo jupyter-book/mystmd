@@ -1,10 +1,10 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import type { ProjectConfig, SiteConfig, SiteTemplateOptions } from 'myst-config';
 import { combineReducers } from 'redux';
-import type { BuildWarning, ExternalLinkResult } from './types';
-import type { LocalProject } from '../project/types';
+import type { BuildWarning, ExternalLinkResult } from './types.js';
+import type { LocalProject } from '../project/types.js';
 
 export const projects = createSlice({
   name: 'projects',

@@ -1,6 +1,6 @@
-import doi from 'doi-utils';
-import credit from 'credit-roles';
-import orcid from 'orcid';
+import { doi } from 'doi-utils';
+import { credit } from 'credit-roles';
+import { orcid } from 'orcid';
 import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
@@ -20,8 +20,8 @@ import {
   validationError,
   validationWarning,
 } from 'simple-validators';
-import { validateLicenses } from '../licenses/validators';
-import { BinderProviders, ExportFormats } from './types';
+import { validateLicenses } from '../licenses/validators.js';
+import { BinderProviders, ExportFormats } from './types.js';
 import type {
   Author,
   Biblio,
@@ -38,7 +38,7 @@ import type {
   ThebeBinderOptions,
   ThebeServerOptions,
   ThebeLocalOptions,
-} from './types';
+} from './types.js';
 
 export const SITE_FRONTMATTER_KEYS = [
   'title',
@@ -65,6 +65,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'numbering',
   'bibliography',
   'math',
+  'abbreviations',
   'exports',
   'thebe',
 ].concat(SITE_FRONTMATTER_KEYS);
@@ -773,6 +774,17 @@ export function validateProjectFrontmatterKeys(
       output.math = filterKeys(math, stringKeys);
     }
   }
+  if (defined(value.abbreviations)) {
+    const abbreviationsOpts = incrementOptions('abbreviations', opts);
+    const abbreviations = validateObject(value.abbreviations, abbreviationsOpts);
+    if (abbreviations) {
+      const stringKeys = Object.keys(abbreviations).filter((key) => {
+        // Filter on non-string values
+        return validateString(abbreviations[key], incrementOptions(key, abbreviationsOpts));
+      });
+      output.abbreviations = filterKeys(abbreviations, stringKeys);
+    }
+  }
   if (defined(value.exports)) {
     const exports = validateExportsList(value.exports, opts);
     if (exports) output.exports = exports;
@@ -883,6 +895,14 @@ export function fillPageFrontmatter(
   // Combine all math macros defined on page and project
   if (projectFrontmatter.math || pageFrontmatter.math) {
     frontmatter.math = { ...(projectFrontmatter.math ?? {}), ...(pageFrontmatter.math ?? {}) };
+  }
+
+  // Combine all abbreviation defined on page and project
+  if (projectFrontmatter.abbreviations || pageFrontmatter.abbreviations) {
+    frontmatter.abbreviations = {
+      ...(projectFrontmatter.abbreviations ?? {}),
+      ...(pageFrontmatter.abbreviations ?? {}),
+    };
   }
 
   return frontmatter;

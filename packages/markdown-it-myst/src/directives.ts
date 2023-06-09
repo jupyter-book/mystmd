@@ -2,9 +2,9 @@
 import type { YAMLException } from 'js-yaml';
 import yaml from 'js-yaml';
 import type MarkdownIt from 'markdown-it/lib';
-import type StateCore from 'markdown-it/lib/rules_core/state_core';
-import { nestedPartToTokens } from './nestedParse';
-import { stateError, stateWarn } from './utils';
+import type StateCore from 'markdown-it/lib/rules_core/state_core.js';
+import { nestedPartToTokens } from './nestedParse.js';
+import { stateError, stateWarn } from './utils.js';
 
 const COLON_OPTION_REGEX = /^:(?<option>[^:\s]+?):(\s*(?<value>.*)){0,1}\s*$/;
 

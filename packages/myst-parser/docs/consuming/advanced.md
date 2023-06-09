@@ -91,11 +91,11 @@ These have the format:
 
 ```md
 .
-Testing abbriviations in MyST markdown
+Testing abbreviations in MyST markdown
 .
-This is markdown with {abbr}`MyST (Markedly reStructured Text)`!!
+This is markdown with {abbr}`MyST (Markedly reStructuredText)`!!
 .
 
-<p>This is markdown with <abbr title="Markedly reStructured Text">MyST</abbr>!!</p>
+<p>This is markdown with <abbr title="Markedly reStructuredText">MyST</abbr>!!</p>
 .
 ```

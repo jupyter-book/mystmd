@@ -1,8 +1,8 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import type { SiteConfig } from 'myst-config';
-import type { LocalProject, LocalProjectPage } from '../project/types';
-import type { RootState } from './reducers';
-import type { BuildWarning, ExternalLinkResult } from './types';
+import type { LocalProject, LocalProjectPage } from '../project/types.js';
+import type { RootState } from './reducers.js';
+import type { BuildWarning, ExternalLinkResult } from './types.js';
 
 export function selectLocalProject(state: RootState, path: string): LocalProject | undefined {
   return state.local.projects[resolve(path)];

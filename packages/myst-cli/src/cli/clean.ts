@@ -1,7 +1,7 @@
 import { Command, Option } from 'commander';
-import { clean } from '../build';
-import { Session } from '../session';
-import { clirun } from './clirun';
+import { clean } from '../build/index.js';
+import { Session } from '../session/index.js';
+import { clirun } from './clirun.js';
 import {
   makeAllOption,
   makeDocxOption,
@@ -11,7 +11,7 @@ import {
   makeSiteOption,
   makeTexOption,
   makeYesOption,
-} from './options';
+} from './options.js';
 
 export function makeTempOption() {
   return new Option(
