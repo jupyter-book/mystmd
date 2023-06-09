@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
