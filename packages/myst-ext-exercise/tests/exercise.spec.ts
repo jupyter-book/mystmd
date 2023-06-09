@@ -1,5 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { mystParse } from 'myst-parser';
-import { exerciseDirective } from 'myst-ext-exercise';
+import { exerciseDirective } from '../src';
 
 describe('exercise directive', () => {
   it('exercise directive parses', async () => {

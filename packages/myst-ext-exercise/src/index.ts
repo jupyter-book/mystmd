@@ -1,1 +1,1 @@
-export { exerciseDirective, solutionDirective, exerciseDirectives } from './exercise';
+export { exerciseDirective, solutionDirective, exerciseDirectives } from './exercise.js';
