@@ -1,7 +1,7 @@
 import type { Handle, Info } from 'mdast-util-to-markdown';
 import { defaultHandlers } from 'mdast-util-to-markdown';
-import type { NestedState, Parent } from './types';
-import { incrementNestedLevel, popNestedLevel } from './utils';
+import type { NestedState, Parent } from './types.js';
+import { incrementNestedLevel, popNestedLevel } from './utils.js';
 
 /**
  * Inline code handler

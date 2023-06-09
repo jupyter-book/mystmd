@@ -5,11 +5,11 @@ import { gfmFootnoteToMarkdown } from 'mdast-util-gfm-footnote';
 import { gfmTableToMarkdown } from 'mdast-util-gfm-table';
 import type { Options } from 'mdast-util-to-markdown';
 import { defaultHandlers, toMarkdown } from 'mdast-util-to-markdown';
-import { directiveHandlers, directiveValidators } from './directives';
-import { miscHandlers, miscValidators } from './misc';
-import { referenceHandlers } from './references';
-import { roleHandlers } from './roles';
-import { addFrontmatter, runValidators, unsupportedHandlers } from './utils';
+import { directiveHandlers, directiveValidators } from './directives.js';
+import { miscHandlers, miscValidators } from './misc.js';
+import { referenceHandlers } from './references.js';
+import { roleHandlers } from './roles.js';
+import { addFrontmatter, runValidators, unsupportedHandlers } from './utils.js';
 import type { PageFrontmatter } from 'myst-frontmatter';
 
 const FOOTNOTE_HANDLER_KEYS = ['footnoteDefinition', 'footnoteReference'];

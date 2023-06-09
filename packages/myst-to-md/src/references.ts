@@ -1,6 +1,6 @@
 import type { Handle, Info } from 'mdast-util-to-markdown';
 import { defaultHandlers } from 'mdast-util-to-markdown';
-import type { NestedState, Parent } from './types';
+import type { NestedState, Parent } from './types.js';
 
 function labelWrapper(handler: Handle) {
   return (node: any, _: Parent, state: NestedState, info: Info): string => {

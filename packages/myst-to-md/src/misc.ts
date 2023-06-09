@@ -1,7 +1,7 @@
 import type { Handle, Info, State } from 'mdast-util-to-markdown';
 import { fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
-import type { Parent, Validator } from './types';
+import type { Parent, Validator } from './types.js';
 
 function comment(node: any): string {
   return `% ${node.value}`;
