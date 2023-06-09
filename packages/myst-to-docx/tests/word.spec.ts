@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import fs from 'fs';
 import { unified } from 'unified';
 import { defaultHandlers, mystToDocx } from '../src';

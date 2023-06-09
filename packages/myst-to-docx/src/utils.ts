@@ -14,7 +14,7 @@ import type { Root } from 'mdast';
 import type { Image as MdastImage } from 'myst-spec';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { selectAll } from 'unist-util-select';
-import type { IFootnotes, Options } from './types';
+import type { IFootnotes, Options } from './types.js';
 
 export function createShortId() {
   return Math.random().toString(36).slice(2);

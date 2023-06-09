@@ -61,15 +61,15 @@ import type {
   FootnoteDefinition,
   CiteKind,
 } from 'myst-spec-ext';
-import type { Handler, Mutable } from './types';
+import type { Handler, Mutable } from './types.js';
 import {
   createReference,
   createReferenceBookmark,
   createShortId,
   getImageWidth,
   MAX_DOCX_IMAGE_WIDTH,
-} from './utils';
-import { createNumbering } from './numbering';
+} from './utils.js';
+import { createNumbering } from './numbering.js';
 import sizeOf from 'buffer-image-size';
 import { fileError } from 'myst-common';
 

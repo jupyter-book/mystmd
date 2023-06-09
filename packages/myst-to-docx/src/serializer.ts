@@ -4,8 +4,15 @@ import { fileError, fileWarn } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { IParagraphOptions, IRunOptions, ParagraphChild, Table } from 'docx';
 import { Paragraph, TextRun } from 'docx';
-import type { Handler, IDocxSerializer, IFootnotes, INumbering, Options, StateData } from './types';
-import { defaultHandlers } from './schema';
+import type {
+  Handler,
+  IDocxSerializer,
+  IFootnotes,
+  INumbering,
+  Options,
+  StateData,
+} from './types.js';
+import { defaultHandlers } from './schema.js';
 
 // This is duplicated from @curvenote/schema
 export type AlignOptions = 'left' | 'center' | 'right';
