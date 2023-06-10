@@ -1,5 +1,13 @@
 # myst-cli
 
+## 1.0.2
+
+### Patch Changes
+
+- 072e338e: support jupyter cell meta tags
+- Updated dependencies [072e338e]
+  - myst-spec-ext@1.0.1
+
 ## 1.0.1
 
 ### Patch Changes

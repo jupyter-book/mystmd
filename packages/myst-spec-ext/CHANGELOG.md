@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.0.1
+
+### Patch Changes
+
+- 072e338e: support jupyter cell meta tags
+
 ## 1.0.0
 
 ### Major Changes
