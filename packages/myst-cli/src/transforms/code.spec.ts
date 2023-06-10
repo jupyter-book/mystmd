@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { VFile } from 'vfile';
 import { Session } from '../session';
 import {
   liftCodeMetadataToBlock,
@@ -150,7 +151,8 @@ describe('checkMetaTags', () => {
     const tags = ['hide-cell', 'remove-input', 'tag-1', 'tag-2'];
     for (const filter of [true, false]) {
       const mdast = build_mdast(tags, true);
-      checkMetaTags(new Session(), tags, filter);
+      const vfile = new VFile();
+      checkMetaTags(vfile, {} as any, tags, filter);
       const result = mdast.children[0].data.tags;
       if (filter) {
         expect(result).toEqual(['tag-1', 'tag-2']);
@@ -161,14 +163,14 @@ describe('checkMetaTags', () => {
   });
   it('validate tags with duplicate', async () => {
     for (const action of ['hide', 'remove']) {
-      const tags = [];
+      const tags: string[] = [];
       for (const target of ['cell', 'input', 'output']) {
         const tag = `${action}-${target}`;
         tags.push(tag);
         tags.push(tag);
       }
-      const validMetatags = checkMetaTags(new Session(), tags, true);
-      const expected = [];
+      const validMetatags = checkMetaTags(new VFile(), {} as any, tags, true);
+      const expected: string[] = [];
       for (const target of ['cell', 'input', 'output']) {
         expected.push(`${action}-${target}`);
       }
@@ -176,14 +178,14 @@ describe('checkMetaTags', () => {
     }
   });
   it('validate tags with conflict', async () => {
-    const tags = [];
+    const tags: string[] = [];
     for (const action of ['hide', 'remove']) {
       for (const target of ['cell', 'input', 'output']) {
         tags.push(`${action}-${target}`);
       }
     }
-    const validMetatags = checkMetaTags(new Session(), tags, true);
-    const expected = [];
+    const validMetatags = checkMetaTags(new VFile(), {} as any, tags, true);
+    const expected: string[] = [];
     for (const target of ['cell', 'input', 'output']) {
       expected.push(`remove-${target}`);
     }
@@ -198,8 +200,8 @@ describe('checkMetaTags', () => {
           tags.push(`${action}-${target}`);
         }
       }
-      const validMetatags = checkMetaTags(new Session(), tags, filter);
-      const expected = [];
+      const validMetatags = checkMetaTags(new VFile(), {} as any, tags, filter);
+      const expected: string[] = [];
       for (const target of ['cell', 'input', 'output']) {
         expected.push(`remove-${target}`);
       }
@@ -207,29 +209,25 @@ describe('checkMetaTags', () => {
     }
   });
   it('duplicate tag warn', async () => {
-    const session = new Session();
-    const consoleSpy = vi.spyOn(session.log, 'warn');
     for (const action of ['hide', 'remove']) {
       for (const target of ['cell', 'input', 'output']) {
         const tag = `${action}-${target}`;
         const mdast = build_mdast([tag, tag], true);
-        propagateBlockDataToCode(session, '', mdast);
-        expect(consoleSpy).toHaveBeenCalledWith(`tag '${tag}' is duplicated`);
+        const vfile = new VFile();
+        propagateBlockDataToCode(new Session(), vfile, mdast);
+        expect(vfile.messages[0].message).toBe(`tag '${tag}' is duplicated`);
       }
     }
-    consoleSpy.mockRestore();
   });
   it('tag conflict warn', async () => {
-    const session = new Session();
-    const consoleSpy = vi.spyOn(session.log, 'warn');
     for (const target of ['cell', 'input', 'output']) {
       const tags = [`hide-${target}`, `remove-${target}`];
       const mdast = build_mdast(tags, true);
-      propagateBlockDataToCode(session, '', mdast);
+      const vfile = new VFile();
+      propagateBlockDataToCode(new Session(), vfile, mdast);
       const message = `'hide-${target}' and 'remove-${target}' both exist`;
-      expect(consoleSpy).toHaveBeenCalledWith(message);
+      expect(vfile.messages[0].message).toBe(message);
     }
-    consoleSpy.mockRestore();
   });
 });
 
@@ -240,7 +238,7 @@ describe('propagateBlockDataToCode', () => {
         for (const has_output of [true, false]) {
           const tag = `${action}-${target}`;
           const mdast = build_mdast([tag], has_output);
-          propagateBlockDataToCode(new Session(), '', mdast);
+          propagateBlockDataToCode(new Session(), new VFile(), mdast);
           let result = '';
           const outputNode = mdast.children[0].children[1];
           switch (target) {
@@ -268,7 +266,7 @@ describe('propagateBlockDataToCode', () => {
       for (const has_output of [true, false]) {
         const tags = [`${action}-cell`, `${action}-input`, `${action}-output`];
         const mdast = build_mdast(tags, has_output);
-        propagateBlockDataToCode(new Session(), '', mdast);
+        propagateBlockDataToCode(new Session(), new VFile(), mdast);
         const blockNode = mdast.children[0];
         const codeNode = mdast.children[0].children[0];
         const outputNode = mdast.children[0].children[1];

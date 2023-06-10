@@ -146,7 +146,7 @@ export async function transformMdast(
     .run(mdast, vfile);
 
   // This needs to come after basic transformations since meta tags are added there
-  propagateBlockDataToCode(session, file, mdast);
+  propagateBlockDataToCode(session, vfile, mdast);
 
   // Run the link transformations that can be done without knowledge of other files
   const intersphinx = projectPath ? await loadIntersphinx(session, { projectPath }) : [];

@@ -1,8 +1,10 @@
 import type { Root } from 'mdast';
 import type { GenericNode } from 'myst-common';
+import { fileError, fileWarn } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import yaml from 'js-yaml';
 import type { ISession } from '../session/types.js';
+import type { VFile } from 'vfile';
 
 const CELL_OPTION_PREFIX = '#| ';
 
@@ -88,7 +90,12 @@ export function liftCodeMetadataToBlock(session: ISession, filename: string, mda
  * Check duplicated meta tags and conflict meta tags.
  * Separate the meta tags from tag if filter is true, otherwise just go through and process.
  */
-export function checkMetaTags(session: ISession, tags: string[], filter: boolean): string[] {
+export function checkMetaTags(
+  vfile: VFile,
+  node: GenericNode,
+  tags: string[],
+  filter: boolean,
+): string[] {
   const metaTagsCounter = new Map();
   for (const action of ['hide', 'remove']) {
     for (const target of ['cell', 'input', 'output']) {
@@ -110,14 +117,14 @@ export function checkMetaTags(session: ISession, tags: string[], filter: boolean
   const validMetatags = [];
   metaTagsCounter.forEach((value, key) => {
     if (value >= 2) {
-      session.log.warn(`tag '${key}' is duplicated`);
+      fileWarn(vfile, `tag '${key}' is duplicated`, { node });
     }
   });
   for (const target of ['cell', 'input', 'output']) {
     const hide = metaTagsCounter.get(`hide-${target}`) > 0;
     const remove = metaTagsCounter.get(`remove-${target}`) > 0;
     if (hide && remove) {
-      session.log.warn(`'hide-${target}' and 'remove-${target}' both exist`);
+      fileWarn(vfile, `'hide-${target}' and 'remove-${target}' both exist`, { node });
       validMetatags.push(`remove-${target}`);
     } else if (hide) {
       validMetatags.push(`hide-${target}`);
@@ -131,14 +138,14 @@ export function checkMetaTags(session: ISession, tags: string[], filter: boolean
 /**
  * Traverse mdast, propagate block tags to code and output
  */
-export function propagateBlockDataToCode(session: ISession, filename: string, mdast: Root) {
+export function propagateBlockDataToCode(session: ISession, vfile: VFile, mdast: Root) {
   const blocks = selectAll('block', mdast) as GenericNode[];
   blocks.forEach((block) => {
     if (!block.data || !block.data.tags) return;
     if (!Array.isArray(block.data.tags)) {
-      session.log.error(`tags in code-cell directive must be a list of strings`);
+      fileError(vfile, `tags in code-cell directive must be a list of strings`, { node: block });
     }
-    const validMetatags = checkMetaTags(session, block.data.tags, true);
+    const validMetatags = checkMetaTags(vfile, block, block.data.tags, true);
     const codeNode = select('code[executable=true]', block) as GenericNode | null;
     const outputNode = select('output', block) as GenericNode | null;
     validMetatags.forEach((tag: string) => {
