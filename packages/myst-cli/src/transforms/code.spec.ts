@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
+import { VFile } from 'vfile';
 import { Session } from '../session';
-import { liftCodeMetadataToBlock, metadataFromCode } from './code';
+import {
+  liftCodeMetadataToBlock,
+  metadataFromCode,
+  propagateBlockDataToCode,
+  checkMetaTags,
+} from './code';
 
 describe('metadataFromCode', () => {
   it('empty code returns self', async () => {
@@ -113,5 +119,165 @@ describe('liftCodeMetadataToBlock', () => {
     expect(mdast.children[0].data).toEqual({ key: 'value', label: 'codeBlock' });
     expect(mdast.children[0].children[0].value).toEqual('print("hello world")');
     expect(mdast.children[0].children[1].value).toEqual('print("hello world2")');
+  });
+});
+
+function build_mdast(tags: string[], has_output: boolean) {
+  const mdast: any = {
+    type: 'root',
+    children: [
+      {
+        type: 'block',
+        children: [
+          {
+            type: 'code',
+            executable: true,
+          },
+        ],
+        data: {
+          tags: tags,
+        },
+      },
+    ],
+  };
+  if (has_output) {
+    mdast.children[0].children.push({ type: 'output' });
+  }
+  return mdast;
+}
+
+describe('checkMetaTags', () => {
+  it('filter tags', async () => {
+    const tags = ['hide-cell', 'remove-input', 'tag-1', 'tag-2'];
+    for (const filter of [true, false]) {
+      const mdast = build_mdast(tags, true);
+      const vfile = new VFile();
+      checkMetaTags(vfile, {} as any, tags, filter);
+      const result = mdast.children[0].data.tags;
+      if (filter) {
+        expect(result).toEqual(['tag-1', 'tag-2']);
+      } else {
+        expect(result).toEqual(tags);
+      }
+    }
+  });
+  it('validate tags with duplicate', async () => {
+    for (const action of ['hide', 'remove']) {
+      const tags: string[] = [];
+      for (const target of ['cell', 'input', 'output']) {
+        const tag = `${action}-${target}`;
+        tags.push(tag);
+        tags.push(tag);
+      }
+      const validMetatags = checkMetaTags(new VFile(), {} as any, tags, true);
+      const expected: string[] = [];
+      for (const target of ['cell', 'input', 'output']) {
+        expected.push(`${action}-${target}`);
+      }
+      expect(validMetatags).toEqual(expected);
+    }
+  });
+  it('validate tags with conflict', async () => {
+    const tags: string[] = [];
+    for (const action of ['hide', 'remove']) {
+      for (const target of ['cell', 'input', 'output']) {
+        tags.push(`${action}-${target}`);
+      }
+    }
+    const validMetatags = checkMetaTags(new VFile(), {} as any, tags, true);
+    const expected: string[] = [];
+    for (const target of ['cell', 'input', 'output']) {
+      expected.push(`remove-${target}`);
+    }
+    expect(validMetatags).toEqual(expected);
+  });
+  it('validate tags with duplicate, conflict and filter', async () => {
+    for (const filter of [true, false]) {
+      const tags = ['tag-1', 'tag-2'];
+      for (const action of ['hide', 'remove']) {
+        for (const target of ['cell', 'input', 'output']) {
+          tags.push(`${action}-${target}`);
+          tags.push(`${action}-${target}`);
+        }
+      }
+      const validMetatags = checkMetaTags(new VFile(), {} as any, tags, filter);
+      const expected: string[] = [];
+      for (const target of ['cell', 'input', 'output']) {
+        expected.push(`remove-${target}`);
+      }
+      expect(validMetatags).toEqual(expected);
+    }
+  });
+  it('duplicate tag warn', async () => {
+    for (const action of ['hide', 'remove']) {
+      for (const target of ['cell', 'input', 'output']) {
+        const tag = `${action}-${target}`;
+        const mdast = build_mdast([tag, tag], true);
+        const vfile = new VFile();
+        propagateBlockDataToCode(new Session(), vfile, mdast);
+        expect(vfile.messages[0].message).toBe(`tag '${tag}' is duplicated`);
+      }
+    }
+  });
+  it('tag conflict warn', async () => {
+    for (const target of ['cell', 'input', 'output']) {
+      const tags = [`hide-${target}`, `remove-${target}`];
+      const mdast = build_mdast(tags, true);
+      const vfile = new VFile();
+      propagateBlockDataToCode(new Session(), vfile, mdast);
+      const message = `'hide-${target}' and 'remove-${target}' both exist`;
+      expect(vfile.messages[0].message).toBe(message);
+    }
+  });
+});
+
+describe('propagateBlockDataToCode', () => {
+  it('single tag propagation', async () => {
+    for (const action of ['hide', 'remove']) {
+      for (const target of ['cell', 'input', 'output']) {
+        for (const has_output of [true, false]) {
+          const tag = `${action}-${target}`;
+          const mdast = build_mdast([tag], has_output);
+          propagateBlockDataToCode(new Session(), new VFile(), mdast);
+          let result = '';
+          const outputNode = mdast.children[0].children[1];
+          switch (target) {
+            case 'cell':
+              result = mdast.children[0].visibility;
+              break;
+            case 'input':
+              result = mdast.children[0].children[0].visibility;
+              break;
+            case 'output':
+              if (!has_output && target == 'output') {
+                expect(outputNode).toEqual(undefined);
+                continue;
+              }
+              result = outputNode.visibility;
+              break;
+          }
+          expect(result).toEqual(action);
+        }
+      }
+    }
+  });
+  it('multi tags propagation', async () => {
+    for (const action of [`hide`, `remove`]) {
+      for (const has_output of [true, false]) {
+        const tags = [`${action}-cell`, `${action}-input`, `${action}-output`];
+        const mdast = build_mdast(tags, has_output);
+        propagateBlockDataToCode(new Session(), new VFile(), mdast);
+        const blockNode = mdast.children[0];
+        const codeNode = mdast.children[0].children[0];
+        const outputNode = mdast.children[0].children[1];
+        expect(blockNode.visibility).toEqual(action);
+        expect(codeNode.visibility).toEqual(action);
+        if (has_output) {
+          expect(outputNode.visibility).toEqual(action);
+        } else {
+          expect(outputNode).toEqual(undefined);
+        }
+      }
+    }
   });
 });

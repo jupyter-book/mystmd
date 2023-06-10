@@ -48,6 +48,7 @@ import {
   transformThumbnail,
   StaticFileTransformer,
   inlineExpressionsPlugin,
+  propagateBlockDataToCode,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/index.js';
 import { logMessagesFromVFile } from '../utils/index.js';
@@ -143,6 +144,9 @@ export async function transformMdast(
     .use(enumerateTargetsPlugin, { state }) // This should be after math
     .use(joinGatesPlugin)
     .run(mdast, vfile);
+
+  // This needs to come after basic transformations since meta tags are added there
+  propagateBlockDataToCode(session, vfile, mdast);
 
   // Run the link transformations that can be done without knowledge of other files
   const intersphinx = projectPath ? await loadIntersphinx(session, { projectPath }) : [];
