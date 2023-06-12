@@ -27,7 +27,7 @@ import type { SupplementaryMaterial } from './transforms/containers.js';
 import type { Section } from './transforms/sections.js';
 import { sectionAttrsFromBlock } from './transforms/sections.js';
 import { inlineExpression } from './inlineExpression.js';
-import { notebookArticleSuffix } from './utils.js';
+import { notebookArticleSuffix, slugSuffix } from './utils.js';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
@@ -355,12 +355,18 @@ const handlers: Record<string, Handler> = {
   },
   cite(node, state) {
     const { label } = node as Cite;
-    const attrs: Attributes = { 'ref-type': 'bibr', rid: label };
+    const attrs: Attributes = {
+      'ref-type': 'bibr',
+      rid: `${label}${notebookArticleSuffix(state)}${slugSuffix(state)}`,
+    };
     state.renderInline(node, 'xref', attrs);
   },
   footnoteReference(node, state) {
     const { identifier, enumerator } = node as FootnoteReference;
-    const attrs: Attributes = { 'ref-type': 'fn', rid: `fn-${identifier}` };
+    const attrs: Attributes = {
+      'ref-type': 'fn',
+      rid: `fn-${identifier}${notebookArticleSuffix(state)}`,
+    };
     state.openNode('xref', attrs);
     state.text(enumerator);
     state.closeNode();
@@ -479,6 +485,7 @@ class JatsSerializer implements IJatsSerializer {
     this.file = file;
     this.data = {
       isNotebookArticleRep: opts?.isNotebookArticleRep,
+      slug: opts?.slug,
     };
     this.stack = [{ type: 'element', elements: [] }];
     this.footnotes = [];

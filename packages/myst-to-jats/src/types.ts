@@ -34,6 +34,7 @@ export type DocumentOptions = Options & {
 export type StateData = {
   isInContainer?: boolean;
   isNotebookArticleRep?: boolean;
+  slug?: string;
 };
 
 export type ArticleContent = {

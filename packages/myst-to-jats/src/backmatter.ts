@@ -1,6 +1,6 @@
 import type { CitationRenderer, CitationJson } from 'citation-js-utils';
 import type { Element, IJatsSerializer } from './types.js';
-import { notebookArticleSuffix } from './utils.js';
+import { notebookArticleSuffix, slugSuffix } from './utils.js';
 
 export function citeToJatsRef(state: IJatsSerializer, key: string, data: CitationJson): Element {
   const publicationType = !data.type || data.type === 'article-journal' ? 'journal' : data.type;
@@ -113,7 +113,7 @@ export function citeToJatsRef(state: IJatsSerializer, key: string, data: Citatio
   return {
     type: 'element',
     name: 'ref',
-    attributes: { id: `${key}${notebookArticleSuffix(state)}` },
+    attributes: { id: `${key}${notebookArticleSuffix(state)}${slugSuffix(state)}` },
     elements: [
       {
         type: 'element',
