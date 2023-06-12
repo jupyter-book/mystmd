@@ -33,6 +33,7 @@ export enum NotebookCell {
 
 export type Dependency = {
   url: string;
+  slug?: string;
   kind?: SourceFileKind;
 };
 

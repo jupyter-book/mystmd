@@ -1,7 +1,8 @@
 import type { CitationRenderer, CitationJson } from 'citation-js-utils';
-import type { Element } from './types.js';
+import type { Element, IJatsSerializer } from './types.js';
+import { notebookArticleSuffix } from './utils.js';
 
-export function citeToJatsRef(key: string, data: CitationJson): Element {
+export function citeToJatsRef(state: IJatsSerializer, key: string, data: CitationJson): Element {
   const publicationType = !data.type || data.type === 'article-journal' ? 'journal' : data.type;
   const elements: Element[] = [];
   const authors: Element[] | undefined = data.author
@@ -112,7 +113,7 @@ export function citeToJatsRef(key: string, data: CitationJson): Element {
   return {
     type: 'element',
     name: 'ref',
-    attributes: { id: key },
+    attributes: { id: `${key}${notebookArticleSuffix(state)}` },
     elements: [
       {
         type: 'element',
@@ -124,12 +125,12 @@ export function citeToJatsRef(key: string, data: CitationJson): Element {
   };
 }
 
-export function getRefList(citations?: CitationRenderer): Element[] {
+export function getRefList(state: IJatsSerializer, citations?: CitationRenderer): Element[] {
   if (!citations || !Object.keys(citations).length) return [];
   const elements = Object.keys(citations)
     .sort()
     .map((key) => {
-      return citeToJatsRef(key, citations[key].cite);
+      return citeToJatsRef(state, key, citations[key].cite);
     });
   return [{ type: 'element', name: 'ref-list', elements }];
 }
@@ -151,17 +152,20 @@ export function getExpressions(expressions?: Element[]): Element[] {
   ];
 }
 
-export function getBack({
-  citations,
-  footnotes,
-  expressions,
-}: {
-  citations?: CitationRenderer;
-  footnotes?: Element[];
-  expressions?: Element[];
-}): Element[] {
+export function getBack(
+  state: IJatsSerializer,
+  {
+    citations,
+    footnotes,
+    expressions,
+  }: {
+    citations?: CitationRenderer;
+    footnotes?: Element[];
+    expressions?: Element[];
+  },
+): Element[] {
   const elements = [
-    ...getRefList(citations),
+    ...getRefList(state, citations),
     ...getFootnotes(footnotes),
     ...getExpressions(expressions),
     // ack

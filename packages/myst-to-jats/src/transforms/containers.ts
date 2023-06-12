@@ -9,6 +9,7 @@ export type SupplementaryMaterial = {
   enumerator?: string;
   figIdentifier?: string;
   sourceUrl?: string;
+  sourceSlug?: string;
   embedIdentifier?: string;
 };
 
@@ -42,6 +43,12 @@ export function containerTransform(mdast: Root) {
       caption.children.push(...legendChildren);
       remove(container as any, 'legend');
     }
+    if ((container as any).kind === 'figure') {
+      container.children = [
+        ...container.children.filter((child) => child.type !== 'image'),
+        ...container.children.filter((child) => child.type === 'image'),
+      ];
+    }
     const embed = select('embed', container);
     if (embed) {
       const embedBlock = select('block', embed);
@@ -51,6 +58,7 @@ export function containerTransform(mdast: Root) {
         enumerator: container.enumerator,
         figIdentifier: container.identifier,
         sourceUrl: (embed as any).source?.url,
+        sourceSlug: (embed as any).source?.slug,
         embedIdentifier: (embedBlock as any)?.identifier,
       } as SupplementaryMaterial);
       if (embedOutputs) container.children.push(...(embedOutputs as any[]));

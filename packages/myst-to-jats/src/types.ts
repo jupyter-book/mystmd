@@ -20,7 +20,9 @@ export type MathPlugins = Required<PageFrontmatter>['math'];
 
 export type Options = {
   handlers?: Record<string, Handler>;
+  isNotebookArticleRep?: boolean;
   isSubArticle?: boolean;
+  slug?: string;
 };
 
 export type DocumentOptions = Options & {
@@ -31,6 +33,7 @@ export type DocumentOptions = Options & {
 
 export type StateData = {
   isInContainer?: boolean;
+  isNotebookArticleRep?: boolean;
 };
 
 export type ArticleContent = {
