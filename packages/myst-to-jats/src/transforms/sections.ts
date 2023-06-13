@@ -70,11 +70,10 @@ function headingsToSections(tree: Root | Block, current?: Section) {
 /**
  * This transform does the following:
  * - For sub-articles:
- *    - Blocks are converted directly to sections with no additional transformation.
- *    - This means notebook cell divisions are maintained.
- *    - However, markdown sub-articles do not get divided into sections by header.
+ *    - Blocks are converted to sections so notebook cell divisions are maintained.
+ *    - Within each block, headers are converted to sections.
  * - For main articles:
- *    - Notebook code cell blocks (with meta.type of "notebook-code") are removed.
+ *    - Notebook code cell blocks (with meta.type of "notebook-code") are deleted.
  *    - Remaining blocks are removed, lifting children up a level
  *    - Top-level heading nodes are then used to break the tree into section nodes,
  *      with heading and subsequent nodes as children
