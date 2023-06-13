@@ -136,9 +136,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
   },
   blockquote(node, state) {
-    state.openNode('p');
     state.renderInline(node, 'disp-quote');
-    state.closeNode();
   },
   definitionList(node, state) {
     state.renderInline(node, 'def-list');

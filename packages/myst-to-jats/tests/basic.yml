@@ -275,7 +275,7 @@ cases:
               children:
                 - type: text
                   value: We know what we are, but know not what we may be.
-    jats: <p><disp-quote><p>We know what we are, but know not what we may be.</p></disp-quote></p>
+    jats: <disp-quote><p>We know what we are, but know not what we may be.</p></disp-quote>
   - title: Blockquote with attribution
     tree:
       type: root
@@ -295,7 +295,7 @@ cases:
                   children:
                     - type: text
                       value: Hamlet act 4, Scene 5
-    jats: <p><disp-quote><p>We know what we are, but know not what we may be.</p><attrib>Hamlet act 4, Scene 5</attrib></disp-quote></p>
+    jats: <disp-quote><p>We know what we are, but know not what we may be.</p><attrib>Hamlet act 4, Scene 5</attrib></disp-quote>
   - title: Definition List
     tree:
       type: root
