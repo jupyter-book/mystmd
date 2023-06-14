@@ -196,7 +196,7 @@ cases:
           <article-meta/>
         </front>
         <body>
-          <sec id="sec1">
+          <sec id="sec1-jats-article">
             <title>a section</title>
             <p>content</p>
           </sec>
@@ -219,10 +219,14 @@ cases:
               </sec>
             </sec>
             <sec id="nb-cell-1" sec-type="notebook-content">
-              <title id="sec1">a section</title>
-              <p>content</p>
-              <title>Another section</title>
-              <p>section content!</p>
+              <sec id="sec1">
+                <title>a section</title>
+                <p>content</p>
+              </sec>
+              <sec>
+                <title>Another section</title>
+                <p>section content!</p>
+              </sec>
             </sec>
           </body>
         </sub-article>
@@ -265,9 +269,9 @@ cases:
           <article-meta/>
         </front>
         <body>
-          <sec id="nb-cell-0" sec-type="notebook-code">
-            <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
-            <sec sec-type="notebook-output" id="nb-cell-0-output">
+          <sec id="nb-cell-0-jats-article" sec-type="notebook-code">
+            <code id="nb-cell-0-code-jats-article" language="python" executable="yes">print('abc')</code>
+            <sec sec-type="notebook-output" id="nb-cell-0-output-jats-article">
               <alternatives>
                 <media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/>
               </alternatives>

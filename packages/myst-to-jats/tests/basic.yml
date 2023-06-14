@@ -422,7 +422,7 @@ cases:
                   children:
                     - type: text
                       value: Relaxing at the beach
-    jats: <fig id="myfigure"><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
+    jats: <fig id="myfigure"><caption><p>Relaxing at the beach</p></caption><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/></fig>
   - title: Figure (captionNumber)
     tree:
       type: root
@@ -444,7 +444,7 @@ cases:
                       value: 'Figure 1:'
                     - type: text
                       value: Relaxing at the beach
-    jats: <fig id="myfigure"><label>Figure 1:</label><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/><caption><p>Relaxing at the beach</p></caption></fig>
+    jats: <fig id="myfigure"><label>Figure 1:</label><caption><p>Relaxing at the beach</p></caption><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/></fig>
   - title: Table Container
     tree:
       type: root
@@ -631,7 +631,7 @@ cases:
                   children:
                     - type: text
                       value: Another Legend
-    jats: <fig id="myfigure"><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/><caption><p>My Caption</p><p>My Legend</p><p>Another Legend</p></caption></fig>
+    jats: <fig id="myfigure"><caption><p>My Caption</p><p>My Legend</p><p>Another Legend</p></caption><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/></fig>
   - title: Figure with embeded output
     tree:
       type: root
@@ -701,4 +701,4 @@ cases:
                   children:
                     - type: text
                       value: My Legend
-    jats: <fig id="myfigure"><caption><p>My Caption</p><p>My Legend</p><p><supplementary-material id="myfigure-source" specific-use="notebook"><label>Figure 1 - Notebook.</label><caption><title>Analysis for <xref ref-type="fig" rid="myfigure">Figure 1</xref>.</title>See methods in <xref ref-type="custom" custom-type="notebook" rid="nb-0">notebook</xref> from <xref ref-type="custom" custom-type="notebook-code" rid="nb-cell-0">cell</xref>.</caption></supplementary-material></p></caption><alternatives><media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/></alternatives><alternatives><media specific-use="text" mimetype="text" mime-subtype="plain" xlink:href="files/b.txt"/><media specific-use="web" mimetype="text" mime-subtype="html" xlink:href="files/b.html"/></alternatives></fig>
+    jats: <fig id="myfigure"><caption><p>My Caption</p><p>My Legend</p><p><supplementary-material id="myfigure-source" specific-use="notebook"><label>Figure 1 - Notebook.</label><caption><title>Analysis for <xref ref-type="fig" rid="myfigure">Figure 1</xref>.</title><p>See methods from <xref ref-type="custom" custom-type="notebook-code" rid="nb-cell-0">cell</xref>.</p></caption></supplementary-material></p></caption><alternatives><media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/></alternatives><alternatives><media specific-use="text" mimetype="text" mime-subtype="plain" xlink:href="files/b.txt"/><media specific-use="web" mimetype="text" mime-subtype="html" xlink:href="files/b.html"/></alternatives></fig>

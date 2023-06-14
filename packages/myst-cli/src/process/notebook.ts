@@ -21,7 +21,8 @@ function createOutputDirective(): { myst: string; id: string } {
 }
 
 function blockDivider(cell: ICell, index: number) {
-  const id = cell.metadata.id ?? `nb-cell-${index}`;
+  const id =
+    cell.metadata.id ?? `nb-cell-${index}-${computeHash(JSON.stringify(cell)).substring(0, 10)}`;
   const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
   return `+++ ${JSON.stringify({ id, type, ...cell.metadata })}\n\n`;
 }

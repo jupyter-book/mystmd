@@ -27,8 +27,13 @@ import type { SupplementaryMaterial } from './transforms/containers.js';
 import type { Section } from './transforms/sections.js';
 import { sectionAttrsFromBlock } from './transforms/sections.js';
 import { inlineExpression } from './inlineExpression.js';
+import { notebookArticleSuffix, slugSuffix } from './utils.js';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
+
+function escapeForXML(text: string) {
+  return text.replace(/&(?!amp;)/g, '&amp;').replace(/</g, '&lt;');
+}
 
 function referenceKindToRefType(kind?: string): RefType {
   switch (kind) {
@@ -61,7 +66,7 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
       'specific-use': 'error',
       mimetype: 'text',
       'mime-subtype': 'plain',
-      'xlink:href': (output as any).path,
+      'xlink:href': escapeForXML((output as any).path),
     });
     state.openNode('caption');
     state.openNode('title');
@@ -77,7 +82,7 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
       'specific-use': 'stream',
       mimetype: 'text',
       'mime-subtype': 'plain',
-      'xlink:href': (output as any).path,
+      'xlink:href': escapeForXML((output as any).path),
     });
   } else if (
     ['display_data', 'execute_result', 'update_display_data'].includes(output.output_type)
@@ -102,7 +107,7 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
         'specific-use': specificUse,
         mimetype: mimeType.split('/')[0],
         'mime-subtype': mimeType.split('/').slice(1).join('/'),
-        'xlink:href': (value as any).path,
+        'xlink:href': escapeForXML((value as any).path),
       });
     });
   }
@@ -117,7 +122,11 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'p');
   },
   section(node, state) {
-    state.renderInline(node, 'sec', sectionAttrsFromBlock(node as Section));
+    state.renderInline(
+      node,
+      'sec',
+      sectionAttrsFromBlock(node as Section, notebookArticleSuffix(state)),
+    );
   },
   heading(node, state) {
     renderLabel(node, state);
@@ -147,7 +156,7 @@ const handlers: Record<string, Handler> = {
     const { lang, executable, identifier } = node as Code;
     const attrs: Attributes = { language: lang };
     if (executable) attrs.executable = 'yes';
-    if (identifier) attrs.id = identifier;
+    if (identifier) attrs.id = `${identifier}${notebookArticleSuffix(state)}`;
     state.renderInline(node, 'code', attrs);
   },
   list(node, state) {
@@ -178,7 +187,11 @@ const handlers: Record<string, Handler> = {
     state.closeNode();
   },
   math(node, state) {
-    state.openNode('disp-formula', { id: node.identifier });
+    const dispFormulaAttrs: Attributes = {};
+    if (node.identifier) {
+      dispFormulaAttrs.id = `${node.identifier}${notebookArticleSuffix(state)}`;
+    }
+    state.openNode('disp-formula', dispFormulaAttrs);
     renderLabel(node, state, (enumerator) => `(${enumerator})`);
     state.openNode('tex-math');
     state.addLeaf('cdata', { cdata: node.value });
@@ -233,7 +246,10 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'abbrev', { alt: node.title });
   },
   link(node, state) {
-    state.renderInline(node, 'ext-link', { 'ext-link-type': 'uri', 'xlink:href': node.url });
+    state.renderInline(node, 'ext-link', {
+      'ext-link-type': 'uri',
+      'xlink:href': escapeForXML(node.url),
+    });
   },
   admonition(node, state) {
     // This is `boxed-text`, the content-type is used to differentiate it
@@ -284,7 +300,7 @@ const handlers: Record<string, Handler> = {
     const attrs: Record<string, any> = { mimetype: 'image' };
     const ext = node.url ? path.extname(node.url).slice(1) : '';
     if (ext) attrs['mime-subtype'] = ext;
-    attrs['xlink:href'] = node.url;
+    attrs['xlink:href'] = escapeForXML(node.url);
     // TOOD: identifier?
     state.addLeaf('graphic', attrs);
   },
@@ -320,6 +336,7 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'caption');
   },
   captionNumber(node, state) {
+    delete node.identifier;
     state.renderInline(node, 'label');
   },
   crossReference(node, state) {
@@ -336,19 +353,25 @@ const handlers: Record<string, Handler> = {
   },
   cite(node, state) {
     const { label } = node as Cite;
-    const attrs: Attributes = { 'ref-type': 'bibr', rid: label };
+    const attrs: Attributes = {
+      'ref-type': 'bibr',
+      rid: `${label}${notebookArticleSuffix(state)}${slugSuffix(state)}`,
+    };
     state.renderInline(node, 'xref', attrs);
   },
   footnoteReference(node, state) {
     const { identifier, enumerator } = node as FootnoteReference;
-    const attrs: Attributes = { 'ref-type': 'fn', rid: `fn-${identifier}` };
+    const attrs: Attributes = {
+      'ref-type': 'fn',
+      rid: `fn-${identifier}${notebookArticleSuffix(state)}`,
+    };
     state.openNode('xref', attrs);
     state.text(enumerator);
     state.closeNode();
   },
   footnoteDefinition(node, state) {
     const { identifier, enumerator } = node as FootnoteDefinition;
-    state.openNode('fn', { id: `fn-${identifier}` });
+    state.openNode('fn', { id: `fn-${identifier}${notebookArticleSuffix(state)}` });
     state.openNode('label');
     state.text(enumerator);
     state.closeNode();
@@ -376,7 +399,10 @@ const handlers: Record<string, Handler> = {
     const attrId = identifier ?? id;
     node.data?.forEach((output: any, index: number) => {
       const idSuffix = node.data.length > 1 ? `-${index}` : '';
-      state.openNode('sec', { ...attrs, id: `${attrId}${idSuffix}` });
+      state.openNode('sec', {
+        ...attrs,
+        id: `${attrId}${idSuffix}${notebookArticleSuffix(state)}`,
+      });
       alternativesFromMinifiedOutput(output, state);
       state.closeNode();
     });
@@ -393,7 +419,7 @@ const handlers: Record<string, Handler> = {
     state.openNode('p');
     const smAttrs: Record<string, any> = {};
     if (smNode.figIdentifier) {
-      smAttrs.id = `${smNode.figIdentifier}-source`;
+      smAttrs.id = `${smNode.figIdentifier}-source${notebookArticleSuffix(state)}`;
     }
     smAttrs['specific-use'] = 'notebook';
     state.openNode('supplementary-material', smAttrs);
@@ -410,14 +436,14 @@ const handlers: Record<string, Handler> = {
     }
     state.text('.');
     state.closeNode();
+    state.openNode('p');
     state.text('See methods');
-    if (smNode.sourceUrl) {
-      const sourceIdentifier = smNode.sourceUrl.split('/')[smNode.sourceUrl.split('/').length - 1];
+    if (smNode.sourceSlug) {
       state.text(' in ');
       state.openNode('xref', {
         'ref-type': 'custom',
         'custom-type': 'notebook',
-        rid: sourceIdentifier,
+        rid: smNode.sourceSlug,
       });
       state.text('notebook');
       state.closeNode();
@@ -436,12 +462,13 @@ const handlers: Record<string, Handler> = {
     state.closeNode();
     state.closeNode();
     state.closeNode();
+    state.closeNode();
   },
   inlineExpression,
 };
 
 function createText(text: string): Element {
-  return { type: 'text', text };
+  return { type: 'text', text: escapeForXML(text) };
 }
 
 class JatsSerializer implements IJatsSerializer {
@@ -454,7 +481,10 @@ class JatsSerializer implements IJatsSerializer {
 
   constructor(file: VFile, mdast: Root, opts?: Options) {
     this.file = file;
-    this.data = {};
+    this.data = {
+      isNotebookArticleRep: opts?.isNotebookArticleRep,
+      slug: opts?.slug,
+    };
     this.stack = [{ type: 'element', elements: [] }];
     this.footnotes = [];
     this.expressions = [];
@@ -498,7 +528,7 @@ class JatsSerializer implements IJatsSerializer {
     const last = top.elements?.[top.elements.length - 1];
     if (last?.type === 'text') {
       // The last node is also text, merge it
-      last.text += `${value}`;
+      last.text += `${escapeForXML(value)}`;
       return last;
     }
     const node = createText(value);
@@ -522,7 +552,10 @@ class JatsSerializer implements IJatsSerializer {
 
   renderInline(node: GenericNode, name: string, attributes?: Attributes) {
     this.openNode(name, {
-      id: name !== 'xref' && node.identifier ? node.identifier : undefined,
+      id:
+        name !== 'xref' && node.identifier
+          ? `${node.identifier}${notebookArticleSuffix(this)}`
+          : undefined,
       ...attributes,
     });
     if ('children' in node) {
@@ -579,22 +612,28 @@ export class JatsDocument {
     };
     if (articleType) attributes['article-type'] = articleType;
     if (specificUse) attributes['specific-use'] = specificUse;
-    if (this.content.slug) attributes.id = this.content.slug;
-    const state = new JatsSerializer(this.file, this.content.mdast, this.options);
+    const isNotebookArticleRep = this.content.kind === SourceFileKind.Notebook;
+    if (this.content.slug) {
+      attributes.id = `${this.content.slug}${isNotebookArticleRep ? '-article' : ''}`;
+    }
+    const state = new JatsSerializer(this.file, this.content.mdast, {
+      ...this.options,
+      isNotebookArticleRep,
+    });
     const subArticles = this.options.subArticles ?? [];
-    if (this.content.kind === SourceFileKind.Notebook) {
+    if (isNotebookArticleRep) {
       subArticles.unshift(this.content);
     }
     const elements: Element[] = [
       ...getFront(this.content.frontmatter),
       this.body(state),
-      ...getBack({
+      ...getBack(state, {
         citations: this.content.citations,
         footnotes: state.footnotes,
         expressions: state.expressions,
       }),
       ...subArticles.map((article, ind) =>
-        this.subArticle(article, ind === 0 && this.content.kind === SourceFileKind.Notebook),
+        this.subArticle(article, ind === 0 && isNotebookArticleRep),
       ),
     ];
     const article: Element = {
@@ -632,12 +671,14 @@ export class JatsDocument {
   subArticle(content: ArticleContent, notebookRep: boolean): Element {
     const state = new JatsSerializer(this.file, content.mdast, {
       ...this.options,
+      isNotebookArticleRep: false,
       isSubArticle: true,
+      slug: content.slug,
     });
     const elements: Element[] = [
       ...this.frontStub(content.frontmatter, notebookRep),
       { type: 'element', name: 'body', elements: state.elements() },
-      ...getBack({
+      ...getBack(state, {
         citations: content.citations,
         footnotes: state.footnotes,
         expressions: state.expressions,
