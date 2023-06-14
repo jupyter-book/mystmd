@@ -1,5 +1,12 @@
 # jats-to-myst
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies
+  - myst-common@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

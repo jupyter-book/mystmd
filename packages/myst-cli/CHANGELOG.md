@@ -1,5 +1,15 @@
 # myst-cli
 
+## 1.0.3
+
+### Patch Changes
+
+- Improve JATS export, including de-duplicating IDs.
+- Updated dependencies
+- Updated dependencies
+  - myst-common@1.0.1
+  - myst-to-jats@1.0.1
+
 ## 1.0.2
 
 ### Patch Changes

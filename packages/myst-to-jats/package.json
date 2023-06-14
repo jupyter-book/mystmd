@@ -1,6 +1,6 @@
 {
   "name": "myst-to-jats",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Export from MyST Markdown to JATS",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-to-jats",
@@ -37,7 +37,7 @@
   "dependencies": {
     "citation-js-utils": "^1.0.0",
     "jats-tags": "^1.0.1",
-    "myst-common": "^1.0.0",
+    "myst-common": "^1.0.1",
     "myst-frontmatter": "^1.0.0",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^1.0.0",

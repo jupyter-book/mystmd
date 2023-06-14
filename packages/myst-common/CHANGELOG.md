@@ -1,5 +1,11 @@
 # myst-common
 
+## 1.0.1
+
+### Patch Changes
+
+- Add slug to Dependency type
+
 ## 0.0.17
 
 ### Patch Changes
