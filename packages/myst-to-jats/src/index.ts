@@ -1,4 +1,3 @@
-import path from 'node:path';
 import type { Root, CrossReference, TableCell as SpecTableCell } from 'myst-spec';
 import type { Cite, Code, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
@@ -298,7 +297,7 @@ const handlers: Record<string, Handler> = {
       state.closeNode();
     }
     const attrs: Record<string, any> = { mimetype: 'image' };
-    const ext = node.url ? path.extname(node.url).slice(1) : '';
+    const ext = node.url ? node.url.split('.').slice(-1)?.[0] : '';
     if (ext) attrs['mime-subtype'] = ext;
     attrs['xlink:href'] = escapeForXML(node.url);
     // TOOD: identifier?
