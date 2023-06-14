@@ -1,5 +1,11 @@
 # myst-to-jats
 
+## 1.0.2
+
+### Patch Changes
+
+- d8b97584: Remove `node:path` from jats
+
 ## 1.0.1
 
 ### Patch Changes
