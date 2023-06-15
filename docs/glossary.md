@@ -13,17 +13,17 @@ for {term}`MyST Markdown <MyST>` and {term}`Jupyter Book`.
 [ExecutableBookProject](https://executablebooks.org)
 : The project and [team](https://compass.executablebooks.org/en/latest/team/index.html) that supports {term}`Jupyter Book` and {term}`MyST Markdown <MyST>` and the tools and packages behind them.
 
-[MyST Markdown](https://myst-tools.org)
+[MyST Markdown](https://mystmd.org)
 : A flavour of Markdown that was designed for scientific and technical writing.
 : Sometimes referred to simply as {term}`MyST`.
 
-[MyST](https://myst-tools.org)
+[MyST](https://mystmd.org)
 : MyST can either refer to the _markup syntax_ or the _command-line interface_.
 : **Markup Syntax**: MyST is a flavour of Markdown that was designed for scientific and technical writing.
 MyST is a combination of {term}`CommonMark Markdown <CommonMark>` and extra syntax to support technical writing, such as cross-references, citations, equations and figures. For clarity in this usage, use {term}`MyST Markdown`.
 : **Command-Line Interface**: MyST is a parser and set of command-line tools for creating websites and documents. For clarity in this usage, use {term}`MyST-CLI`.
 
-[MyST-CLI](https://myst-tools.org/docs/mystjs)
+[MyST-CLI](https://mystmd.org/guide)
 : The MyST CLI can be used to create a website, PDF documents, and generally structure and parse a MyST project.
 : Sometimes referred to simply as {term}`MyST`.
 

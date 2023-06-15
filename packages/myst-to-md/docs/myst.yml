@@ -6,8 +6,5 @@ project:
   subject: MyST Converters
 site:
   title: MyST to Markdown
-  projects:
-    - path: .
-      slug: myst-to-md
   domains:
-    - myst-to-md.myst.tools
+    - mystmd-myst_to_md.curve.space

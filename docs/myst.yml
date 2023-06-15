@@ -9,6 +9,8 @@ project:
   references:
     python: https://docs.python.org/3.7/
     jupyterbook: https://jupyterbook.org/en/stable/
+    jtex: https://mystmd.org/jtex/
+    spec: https://mystmd.org/spec/
   abbreviations:
     AST: Abstract Syntax Tree
     DOI: Digital Object Identifier
@@ -40,8 +42,5 @@ project:
     OA: Open Access
 site:
   title: MyST Markdown Guide
-  projects:
-    - path: .
-      slug: mystjs
   domains:
-    - mystjs.myst.tools
+    - mystmd-guide.curve.space

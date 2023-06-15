@@ -91,11 +91,11 @@ cases:
         - type: paragraph
           children:
             - type: link
-              url: https://myst-tools.org
+              url: https://mystmd.org
               children:
                 - type: text
                   value: MyST
-    jats: <p><ext-link ext-link-type="uri" xlink:href="https://myst-tools.org">MyST</ext-link></p>
+    jats: <p><ext-link ext-link-type="uri" xlink:href="https://mystmd.org">MyST</ext-link></p>
   - title: Smallcaps
     tree:
       type: root

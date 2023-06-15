@@ -6,8 +6,5 @@ project:
   subject: Jinja LaTeX Templates
 site:
   title: JTeX
-  projects:
-    - path: .
-      slug: jtex
   domains:
-    - jtex.myst.tools
+    - mystmd-jtex.curve.space
