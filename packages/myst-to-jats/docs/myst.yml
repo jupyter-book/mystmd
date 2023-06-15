@@ -6,8 +6,5 @@ project:
   subject: MyST Converters
 site:
   title: MyST to JATS
-  projects:
-    - path: .
-      slug: myst-to-jats
   domains:
-    - myst-to-jats.myst.tools
+    - mystmd-myst_to_jats.curve.space

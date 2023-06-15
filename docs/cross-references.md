@@ -20,7 +20,7 @@ See [](./citations.md) to cite scholarly work and create bibliographies.
 
 ## Directive Targets
 
-Targets are custom anchors that you can refer to elsewhere, for example, a figure, section, table, program, or proof. To be referenceable, they must have a `label`/`identifier` pair [in the AST](myst:spec#association). These can be created by setting the `label` option in many directives. For example, to label and reference a figure, use the following syntax:
+Targets are custom anchors that you can refer to elsewhere, for example, a figure, section, table, program, or proof. To be referenced, they must have a `label`/`identifier` pair [in the AST](myst:spec#association). These can be created by setting the `label` option in many directives. For example, to label and reference a figure, use the following syntax:
 
 % TODO: fix equation label redundancy here would nice to be able to simplify the onboarding (just use label, same as tex and ast)
 
@@ -178,7 +178,7 @@ See [](#my-math-label) for an equation!
 ## Notebook Cell Targets
 
 :::{warning}
-The following syntax for cross-referencing notebook cells is in `beta`, as it is not yet described by the [MyST Specification](https://myst-tools.org/docs/spec/). As such, it may change in the future.
+The following syntax for cross-referencing notebook cells is in `beta`, as it is not yet described by the [MyST Specification](myst:spec). As such, it may change in the future.
 :::
 
 You can label notebook cells using a comment at the top of the cell, using a `#| label:` syntax, or have this added directly in the notebook metadata for the cell.

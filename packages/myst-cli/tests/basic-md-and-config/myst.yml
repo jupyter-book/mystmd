@@ -1,4 +1,4 @@
-# See docs at: https://myst-tools.org/docs/mystjs/frontmatter
+# See docs at: https://mystmd.org/guide/frontmatter
 version: 1
 project:
   # title:
@@ -11,11 +11,8 @@ site:
   template: book-theme
   # title:
   # logo:
-  projects:
-    - slug: myst
-      path: .
   nav: []
   actions:
     - title: Learn More
-      url: https://myst-tools.org/docs/mystjs
+      url: https://mystmd.org/guide
   domains: []

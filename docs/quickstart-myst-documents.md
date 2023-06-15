@@ -318,7 +318,7 @@ The export process will run for any known files with `docx` specified in the `ex
 📬 Performing exports:
    01-paper.md -> _build/exports/paper.docx
 📖 Built 01-paper.md in 247 ms.
-🔍 Querying template metadata from https://api.myst-tools.org/templates/docx/myst/default
+🔍 Querying template metadata from https://api.mystmd.org/templates/docx/myst/default
 🐕 Fetching template from https://github.com/myst-templates/docx_default/archive/refs/heads/main.zip
 💾 Saved template to path _build/templates/docx/myst/default
 📄 Exported DOCX in 166 ms, copying to _build/exports/paper.docx

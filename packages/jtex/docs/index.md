@@ -36,7 +36,7 @@ Use `jtex` to list templates, quickly render content, or fix your `template.yml`
 :class: dropdown
 # Looking for Templates?
 
-MyST Templates are available in the [myst-templates organization](https://github.com/myst-templates) on GitHub. You can also see all listed community templates using `myst templates list`, or browse the [api](https://api.myst-tools.org/templates/tex) if you are into JSON.
+MyST Templates are available in the [myst-templates organization](https://github.com/myst-templates) on GitHub. You can also see all listed community templates using `myst templates list`, or browse the [api](https://api.mystmd.org/templates/tex) if you are into JSON.
 
 To create your own template see [](./create-a-latex-template.md).
 ```

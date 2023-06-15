@@ -10,8 +10,7 @@ import chalk from 'chalk';
 import { startServer } from './site/start.js';
 import { makeExecutable } from 'myst-cli-utils';
 
-const VERSION_CONFIG =
-  '# See docs at: https://myst-tools.org/docs/mystjs/frontmatter\nversion: 1\n';
+const VERSION_CONFIG = '# See docs at: https://mystmd.org/guide/frontmatter\nversion: 1\n';
 
 function createProjectConfig({ github }: { github?: string } = {}) {
   return `project:
@@ -27,13 +26,10 @@ const SITE_CONFIG = `site:
   template: book-theme
   # title:
   # logo:
-  projects:
-    - slug: myst
-      path: .
   nav: []
   actions:
     - title: Learn More
-      url: https://myst-tools.org/docs/mystjs
+      url: https://mystmd.org/guide
   domains: []
 `;
 
@@ -53,7 +49,7 @@ You can use myst to:
  - create interactive ${chalk.bold.magenta('websites')} from markdown and Jupyter Notebooks 📈
  - ${chalk.bold.magenta('build & export')} professional PDFs and Word documents 📄
 
-Learn more about this CLI and MyST Markdown at: ${chalk.bold('https://myst-tools.org')}
+Learn more about this CLI and MyST Markdown at: ${chalk.bold('https://mystmd.org')}
 
 `;
 

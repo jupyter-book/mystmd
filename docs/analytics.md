@@ -31,7 +31,7 @@ Use the `site.analytics_plausible` configuration, with the contents being the **
 ```yaml
 version: 1
 site:
-  analytics_plausible: myst-tools.org # Domain(s) to track
+  analytics_plausible: mystmd.org # Domain(s) to track
 ```
 
 See [Plausible docs](https://plausible.io/docs/plausible-script) for more information on how to find the domain. Note, you only copy in the contents of: `data-domain="COPY_THIS"`, which can be a comma-separated list for multiple domains.

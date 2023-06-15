@@ -1,3 +1,3 @@
 # myst-cli
 
-See the [docs](https://myst-tools.org/docs/mystjs).
+See the [docs](https://mystmd.org/cli).

@@ -21,7 +21,7 @@ The `mystjs` project provides a parser in Javascript (`mystjs`) and command line
   - PDFs and LaTeX documents, with specific templates for over 400 journals
   - Microsoft Word export
 
-See the [documentation](https://myst-tools.org/docs/mystjs).
+See the [documentation](https://mystmd.org/guide).
 
 ## Get Started
 
@@ -44,8 +44,8 @@ All packages for `mystjs` are included in this repository (a monorepo!).
 **Core Packages:**
 
 - `myst-cli` this will provide CLI functionality for `myst build mystdoc.md`
-- `jtex` a templating library ([see docs](https://myst-tools.org/docs/jtex))
-- `myst-frontmater` definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://myst-tools.org/docs/mystjs/frontmatter))
+- `jtex` a templating library ([see docs](https://mystmd.org/jtex))
+- `myst-frontmater` definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://mystmd.org/guide/frontmatter))
 - `myst-config` Validation and reading of configuration files
 - `myst-templates` types and validation for templates (LaTeX, web and word)
 

@@ -44,9 +44,9 @@ Card content
 You can also add a `link` argument to the card, which will allow you to make the entire card clickable.
 
 :::{card} Clickable Card
-:link: https://myst-tools.org
+:link: https://mystmd.org
 
-The entire card can be clicked to navigate to `myst-tools.org`.
+The entire card can be clicked to navigate to `mystmd.org`.
 :::
 
 ````{note} Compatibility with Sphinx design
