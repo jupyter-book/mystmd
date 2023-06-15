@@ -31,31 +31,30 @@ export class MystTransformer implements LinkTransformer {
       });
       return false;
     }
-    if (!url.hash) {
-      fileError(file, `Must provide a target for "${urlSource}"`, {
-        node: link,
-        note: 'Use the `#` symbol to create a target, for example, <myst:project#my-target>',
-        source: TRANSFORM_SOURCE,
-      });
-      return false;
-    }
-    const target = url.hash.replace(/^#/, '');
-    const lookup = this.intersphinx.find((i) => {
+    const target = url.hash?.replace(/^#/, '') ?? '';
+    const project = this.intersphinx.find((i) => {
       if (url.pathname) return i.id === url.pathname;
       // If the pathname is not specified, check if it has the target
-      return !!i.getEntry({ name: target });
+      if (target) return !!i.getEntry({ name: target });
+      return false;
     });
-    if (!lookup) {
+    if (!project || !project.path) {
       fileWarn(file, `Unknown project "${url.pathname}" for link: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
       });
       return false;
     }
+    if (!url.hash) {
+      link.internal = false;
+      link.url = project.path;
+      updateLinkTextIfEmpty(link, project.id || '(see documentation)');
+      return false;
+    }
     // TODO: add query params in here to pick the domain
-    const entry = lookup.getEntry({ name: target });
+    const entry = project.getEntry({ name: target });
     if (!entry) {
-      fileWarn(file, `"${urlSource}" not found intersphinx ${lookup.id} (${lookup.path})`, {
+      fileWarn(file, `"${urlSource}" not found intersphinx ${project.id} (${project.path})`, {
         node: link,
         source: TRANSFORM_SOURCE,
       });
@@ -63,7 +62,7 @@ export class MystTransformer implements LinkTransformer {
     }
     link.internal = false;
     link.url = entry.location;
-    updateLinkTextIfEmpty(link, entry.display || lookup.id || '(see documentation)');
+    updateLinkTextIfEmpty(link, entry.display || project.id || '(see documentation)');
     return true;
   }
 }
