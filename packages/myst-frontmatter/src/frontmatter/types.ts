@@ -105,6 +105,7 @@ export enum ExportFormats {
   pdftex = 'pdf+tex',
   docx = 'docx',
   xml = 'xml',
+  meca = 'meca',
 }
 
 export type Export = {
@@ -114,6 +115,7 @@ export type Export = {
   article?: string;
   /** sub_articles are only for jats xml export */
   sub_articles?: string[];
+  /** MECA: to, from later */
 } & Record<string, any>;
 
 export type SiteFrontmatter = {
@@ -150,6 +152,8 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   abbreviations?: Record<string, string>;
   exports?: Export[];
   thebe?: boolean | Thebe;
+  requirements?: string[];
+  resources?: string[];
 };
 
 export type PageFrontmatter = Omit<ProjectFrontmatter, 'references'> & {
