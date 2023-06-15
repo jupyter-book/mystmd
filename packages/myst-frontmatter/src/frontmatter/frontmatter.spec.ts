@@ -147,6 +147,8 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
       sub_articles: ['my-notebook.ipynb'],
     },
   ],
+  requirements: ['requirements.txt'],
+  resources: ['my-script.sh'],
 };
 const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   title: 'frontmatter',
@@ -444,6 +446,8 @@ describe('fillPageFrontmatter', () => {
     delete result.name;
     delete result.oxa;
     delete result.exports;
+    delete result.requirements;
+    delete result.resources;
     expect(fillPageFrontmatter({}, TEST_PROJECT_FRONTMATTER)).toEqual(result);
   });
   it('page and project math are combined', async () => {
