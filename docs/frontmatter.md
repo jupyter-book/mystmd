@@ -172,6 +172,8 @@ The `authors` field is a list of `author` objects. Available fields in the autho
   - boolean (true/false) - flags any corresponding authors
 * - `email`
   - a string - email of the author, required if `corresponding` is `true`
+* - `website`
+  - a string - website or homepage of the author
 * - `roles`
   - a list of strings - must be valid [CRT Contributor Roles](https://credit.niso.org/)
 
@@ -193,7 +195,6 @@ The `authors` field is a list of `author` objects. Available fields in the autho
       	  - ACME inc
           - Earth University
     ```
-
 ````
 
 ## Date
