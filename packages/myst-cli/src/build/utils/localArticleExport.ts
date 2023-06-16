@@ -11,6 +11,7 @@ import { runJatsExport } from '../jats/single.js';
 import { texExportOptionsFromPdf } from '../pdf/single.js';
 import { createPdfGivenTexExport } from '../pdf/create.js';
 import { runMecaExport } from '../meca/index.js';
+import { runMdExport } from '../md/index.js';
 
 export async function localArticleExport(
   session: ISession,
@@ -41,6 +42,8 @@ export async function localArticleExport(
         await runWordExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
       } else if (format === ExportFormats.xml) {
         await runJatsExport(sessionClone, exportOptions, fileProjectPath, clean);
+      } else if (format === ExportFormats.md) {
+        await runMdExport(sessionClone, exportOptions, fileProjectPath, clean);
       } else if (format === ExportFormats.meca) {
         await runMecaExport(sessionClone, exportOptions, fileProjectPath, clean);
       } else {

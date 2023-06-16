@@ -105,6 +105,7 @@ export enum ExportFormats {
   pdftex = 'pdf+tex',
   docx = 'docx',
   xml = 'xml',
+  md = 'md',
   meca = 'meca',
 }
 

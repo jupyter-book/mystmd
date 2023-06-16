@@ -9,7 +9,7 @@ import { loadProjectFromDisk } from '../../project/index.js';
 import type { ISession } from '../../session/types.js';
 import { createTempFolder, isDirectory } from '../../utils/index.js';
 import type { ExportWithOutput, ExportOptions } from '../types.js';
-import { cleanOutput, collectJatsExportOptions, resolveAndLogErrors } from '../utils/index.js';
+import { cleanOutput, collectBasicExportOptions, resolveAndLogErrors } from '../utils/index.js';
 import { runJatsExport } from '../jats/single.js';
 import AdmZip from 'adm-zip';
 import { selectors } from '../../store/index.js';
@@ -132,7 +132,7 @@ export async function localProjectToMeca(
   if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
-    await collectJatsExportOptions(session, file, 'zip', [ExportFormats.meca], projectPath, opts)
+    await collectBasicExportOptions(session, file, 'zip', [ExportFormats.meca], projectPath, opts)
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
