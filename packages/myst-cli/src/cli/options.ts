@@ -16,6 +16,10 @@ export function makeJatsOption(description: string) {
   return new Option('--jats, --xml', description).default(false);
 }
 
+export function makeMecaOptions(description: string) {
+  return new Option('--meca', description).default(false);
+}
+
 export function makeSiteOption(description: string) {
   return new Option('--site', description).default(false);
 }

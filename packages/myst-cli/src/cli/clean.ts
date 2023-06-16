@@ -7,6 +7,7 @@ import {
   makeDocxOption,
   makeHtmlOption,
   makeJatsOption,
+  makeMecaOptions,
   makePdfOption,
   makeSiteOption,
   makeTexOption,
@@ -41,7 +42,8 @@ export function makeCleanCLI(program: Command) {
     .addOption(makePdfOption('Clean PDF output'))
     .addOption(makeTexOption('Clean LaTeX outputs'))
     .addOption(makeDocxOption('Clean Docx output'))
-    .addOption(makeJatsOption('Build JATS xml output'))
+    .addOption(makeJatsOption('Clean JATS xml output'))
+    .addOption(makeMecaOptions('Clean MECA zip output'))
     .addOption(makeSiteOption('Clean MyST site content'))
     .addOption(makeHtmlOption('Clean static HTML site content'))
     .addOption(makeTempOption())
