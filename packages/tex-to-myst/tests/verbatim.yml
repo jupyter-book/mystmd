@@ -1,0 +1,64 @@
+title: Verbatim and code
+cases:
+  - title: lstlisting
+    tex: |
+      \begin{lstlisting}[language=python]
+      def f_eps(c, z, v):
+          if c > 0 and c != 0:
+              return rte * np.log(c) + z * f * v * 1.e-6
+          else:
+              print('uy')
+              return rte * np.log(abs(c)) + z * f * v * 1.e-6
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: code
+          lang: python
+          value: |-
+            def f_eps(c, z, v):
+                if c > 0 and c != 0:
+                    return rte * np.log(c) + z * f * v * 1.e-6
+                else:
+                    print('uy')
+                    return rte * np.log(abs(c)) + z * f * v * 1.e-6
+  - title: lstlisting with caption
+    tex: |
+      \begin{lstlisting}[language=python, caption=Hello world]
+      code
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: code
+          children:
+            - type: code
+              lang: python
+              value: code
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Hello world
+  - title: lstlisting with caption -- reversed
+    tex: |
+      \begin{lstlisting}[caption  =   Hello world  , language  =  python]
+      code
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: code
+          children:
+            - type: code
+              lang: python
+              value: code
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Hello world

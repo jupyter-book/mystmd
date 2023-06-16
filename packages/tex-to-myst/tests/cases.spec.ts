@@ -44,6 +44,7 @@ const files = [
   'tables.yml',
   'footnotes.yml',
   'siunitx.yml',
+  'verbatim.yml',
 ];
 
 const only = ''; // Can set this to a test title
@@ -74,8 +75,10 @@ casesList.forEach(({ title, cases }) => {
         if (vfile.messages.length !== (warnings ?? 0)) {
           console.log(vfile.messages);
         }
-        if (tree) expect(state.ast).toEqual(tree);
-        else if (text != null) expect(toText(state.ast)).toEqual(text);
+        if (tree) {
+          if (only) console.log(yaml.dump(state.ast));
+          expect(state.ast).toEqual(tree);
+        } else if (text != null) expect(toText(state.ast)).toEqual(text);
         else throw new Error('Must have at least "tree" or "text" defined.');
         if (data?.colors) {
           expect(state.data.colors).toEqual(data.colors);

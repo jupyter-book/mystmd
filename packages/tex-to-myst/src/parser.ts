@@ -24,6 +24,7 @@ import { MISC_HANDLERS } from './misc.js';
 import { TABLE_HANDLERS } from './tables.js';
 import { FOOTNOTE_HANDLERS } from './footnotes.js';
 import { SIUNITX_HANDLERS } from './siunitx.js';
+import { CHEM_HANDLERS } from './chem.js';
 
 const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...BASIC_TEXT_HANDLERS,
@@ -43,6 +44,7 @@ const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...TABLE_HANDLERS,
   ...FOOTNOTE_HANDLERS,
   ...SIUNITX_HANDLERS,
+  ...CHEM_HANDLERS,
 };
 
 // This currently is needed as we don't support affiliations in the frontmatter.
