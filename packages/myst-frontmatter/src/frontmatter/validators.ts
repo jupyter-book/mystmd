@@ -68,6 +68,8 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'abbreviations',
   'exports',
   'thebe',
+  'requirements',
+  'resources',
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = [
   'kernelspec',
@@ -816,6 +818,8 @@ export function validateProjectFrontmatterKeys(
       validateThebe,
     );
   }
+
+  console.log('REQUIREMENTS', value);
   if (defined(value.requirements)) {
     output.requirements = validateList(
       value.requirements,
