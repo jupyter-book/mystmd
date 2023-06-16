@@ -86,6 +86,8 @@ const macros: Record<string, number> = {
   raiseto: 1,
   ang: 1,
   unit: 1,
+  // Chem
+  ce: 1,
   // These are character replacements:
   '`': 1,
   "'": 1,

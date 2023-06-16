@@ -4,7 +4,7 @@
   "compilerOptions": {
     "composite": false,
     "declaration": false,
-    "declarationMap": false,
+    "declarationMap": true,
     "target": "ES2019",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

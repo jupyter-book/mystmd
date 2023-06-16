@@ -81,5 +81,7 @@ export const BASIC_TEXT_HANDLERS: Record<string, Handler> = {
   // newpage isn't really appropriate in a web context
   // We could make this into a block in the future?
   macro_newpage: closeParagraph,
+  macro_clearpage: closeParagraph,
+  macro_pagebreak: closeParagraph,
   macro_FloatBarrier: closeParagraph,
 };
