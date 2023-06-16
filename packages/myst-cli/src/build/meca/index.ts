@@ -63,13 +63,17 @@ function writeMecaManifest(mecaFolder: string) {
     elements: [
       {
         type: 'doctype',
-        doctype: 'manifest SYSTEM "manifest.dtd"',
+        doctype: 'manifest PUBLIC "-//MECA//DTD Manifest v1.0//en" "MECA_manifest.dtd"',
       },
       {
         type: 'element',
         name: 'manifest',
-        attributes: { version: '1', xmlns: '' },
-        elements: ['Article.xml', ...files].map((file) => {
+        attributes: {
+          version: '1',
+          xmlns: 'https://manuscriptexchange.org/schema/manifest',
+          'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+        },
+        elements: ['article.xml', ...files].map((file) => {
           return {
             type: 'element',
             name: 'item',
@@ -84,7 +88,7 @@ function writeMecaManifest(mecaFolder: string) {
     compact: false,
     spaces: 2,
   });
-  fs.writeFileSync(path.join(mecaFolder, 'Manifest.xml'), jats);
+  fs.writeFileSync(path.join(mecaFolder, 'manifest.xml'), jats);
 }
 
 export async function runMecaExport(
@@ -98,7 +102,7 @@ export async function runMecaExport(
   const { output } = exportOptions;
   if (clean) cleanOutput(session, output);
   const mecaFolder = createTempFolder(session);
-  const jatsOutput = path.join(mecaFolder, 'Article.xml');
+  const jatsOutput = path.join(mecaFolder, 'article.xml');
   await runJatsExport(
     session,
     { ...exportOptions, output: jatsOutput },
