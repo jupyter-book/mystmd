@@ -16,6 +16,7 @@ export type BuildOpts = {
   pdf?: boolean;
   tex?: boolean;
   xml?: boolean;
+  meca?: boolean;
   html?: boolean;
   all?: boolean;
   force?: boolean;
@@ -24,12 +25,12 @@ export type BuildOpts = {
 };
 
 export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
-  const { docx, pdf, tex, xml } = opts;
-  return docx || pdf || tex || xml || false;
+  const { docx, pdf, tex, xml, meca } = opts;
+  return docx || pdf || tex || xml || meca || false;
 }
 
 export function getExportFormats(opts: BuildOpts & { explicit?: boolean; extension?: string }) {
-  const { docx, pdf, tex, xml, all, explicit, extension } = opts;
+  const { docx, pdf, tex, xml, meca, all, explicit, extension } = opts;
   const formats = [];
   const any = hasAnyExplicitExportFormat(opts);
   const override = all || (!any && explicit && !extension);
@@ -37,13 +38,14 @@ export function getExportFormats(opts: BuildOpts & { explicit?: boolean; extensi
   if (pdf || override || extension === '.pdf') formats.push(ExportFormats.pdf);
   if (tex || override || extension === '.tex') formats.push(ExportFormats.tex);
   if (xml || override || extension === '.xml') formats.push(ExportFormats.xml);
+  if (meca || override) formats.push(ExportFormats.meca);
   return formats;
 }
 
 export function exportSite(session: ISession, opts: BuildOpts) {
-  const { docx, pdf, tex, xml, force, site, html, all } = opts;
+  const { docx, pdf, tex, xml, meca, force, site, html, all } = opts;
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  return site || html || all || (siteConfig && !force && !docx && !pdf && !tex && !xml);
+  return site || html || all || (siteConfig && !force && !docx && !pdf && !tex && !xml && !meca);
 }
 
 export function getProjectPaths(session: ISession) {

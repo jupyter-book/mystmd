@@ -304,6 +304,18 @@ export async function collectExportOptions(
           )),
         );
       }
+      if (formats.includes(ExportFormats.meca)) {
+        fileExportOptionsList.push(
+          ...(await collectJatsExportOptions(
+            session,
+            file,
+            'zip',
+            [ExportFormats.meca],
+            fileProjectPath,
+            opts,
+          )),
+        );
+      }
       exportOptionsList.push(
         ...fileExportOptionsList.map((exportOptions) => {
           return { ...exportOptions, $file: file, $project: fileProjectPath };
