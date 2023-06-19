@@ -2,7 +2,7 @@ import YAML from 'js-yaml';
 import type { Handle, Info } from 'mdast-util-to-markdown';
 import { defaultHandlers } from 'mdast-util-to-markdown';
 import type { GenericNode } from 'myst-common';
-import { fileError } from 'myst-common';
+import { toText, fileError } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import type { NestedState, Parent, Validator } from './types.js';
@@ -82,6 +82,15 @@ function mystDirective(node: any, _: Parent, state: NestedState, info: Info): st
   return writeStaticDirective(node.name, { argsKey: 'args' })(node, _, state, info);
 }
 
+const CODE_BLOCK_KEYS = [
+  'class',
+  'emphasizeLines',
+  'label',
+  'showLineNumbers',
+  'startingLineNumber',
+  'caption',
+];
+
 /**
  * Override default code handler for code-block directive
  *
@@ -89,19 +98,13 @@ function mystDirective(node: any, _: Parent, state: NestedState, info: Info): st
  * non-directive code fence.
  */
 function code(node: any, _: Parent, state: NestedState, info: Info): string {
-  const codeBlockKeys = [
-    'class',
-    'emphasizeLines',
-    'label',
-    'showLineNumbers',
-    'startingLineNumber',
-  ];
-  const nodeCodeBlockKeys = Object.keys(node).filter((k) => codeBlockKeys.includes(k));
+  const nodeCodeBlockKeys = Object.keys(node).filter((k) => CODE_BLOCK_KEYS.includes(k));
   if (!nodeCodeBlockKeys.length) {
     return defaultHandlers.code(node, _, state, info);
   }
   const options = {
-    keys: codeBlockKeys.concat('lang', 'meta'),
+    argsKey: 'lang',
+    keys: CODE_BLOCK_KEYS.concat('meta'),
     aliases: {
       label: 'name',
       showLineNumbers: 'linenos',
@@ -165,7 +168,7 @@ function containerValidator(node: any, file: VFile) {
   if (kind === 'table' && !select('table', node)) {
     fileError(file, 'Table container must have table node child', { node, source: 'myst-to-md' });
   }
-  if (kind !== 'figure' && kind !== 'table') {
+  if (kind !== 'figure' && kind !== 'table' && kind !== 'code') {
     fileError(file, `Unknown kind on container node: ${kind}`, { node, source: 'myst-to-md' });
   }
 }
@@ -242,6 +245,17 @@ function container(node: any, _: Parent, state: NestedState, info: Info): string
       },
     };
     return writeFlowDirective('list-table', args, options)(combinedNode, _, state, info);
+  } else if (node.kind === 'code') {
+    const codeNode: GenericNode | null = select('code', node);
+    if (!codeNode) return '';
+    const combinedNode: Record<string, any> = { ...codeNode };
+    CODE_BLOCK_KEYS.forEach((key) => {
+      const val = node[key];
+      if (val) combinedNode[key] = val;
+    });
+    const caption = toText(children);
+    if (caption) combinedNode.caption = caption;
+    return code(combinedNode, _, state, info);
   }
   return '';
 }
