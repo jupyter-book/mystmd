@@ -1,5 +1,5 @@
-const fs = require('fs');
-const fetch = require('node-fetch');
+import fs from 'fs';
+import fetch from 'node-fetch';
 
 (async () => {
   const data = await (await fetch('https://spdx.org/licenses/licenses.json')).json();
