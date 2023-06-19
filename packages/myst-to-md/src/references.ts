@@ -4,7 +4,7 @@ import type { NestedState, Parent } from './types.js';
 
 function labelWrapper(handler: Handle) {
   return (node: any, _: Parent, state: NestedState, info: Info): string => {
-    const prefix = node.label ? `(${node.label})=\n` : '';
+    const prefix = node.identifier ? `(${node.identifier})=\n` : '';
     return `${prefix}${handler(node, _, state, info)}`;
   };
 }
