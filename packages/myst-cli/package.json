@@ -83,6 +83,7 @@
     "myst-spec-ext": "^1.0.1",
     "myst-templates": "^1.0.0",
     "myst-to-docx": "^1.0.0",
+    "myst-to-md": "^1.0.1",
     "myst-to-jats": "^1.0.1",
     "myst-to-tex": "^1.0.0",
     "myst-transforms": "^1.0.0",
