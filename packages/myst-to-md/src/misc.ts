@@ -50,6 +50,7 @@ export const miscHandlers: Record<string, Handle> = {
   definitionList,
   definitionTerm,
   definitionDescription,
+  captionNumber: () => '',
 };
 
 export const miscValidators: Record<string, Validator> = {
