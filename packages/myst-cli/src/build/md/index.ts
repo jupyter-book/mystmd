@@ -32,6 +32,7 @@ export async function runMdExport(
     path.join(path.dirname(output), 'files'),
     {
       projectPath,
+      useExistingImages: true,
       imageAltOutputFolder: 'files/',
       imageExtensions: KNOWN_IMAGE_EXTENSIONS,
       extraLinkTransformers,
