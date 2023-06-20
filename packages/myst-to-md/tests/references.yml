@@ -6,6 +6,7 @@ cases:
       children:
         - type: paragraph
           label: my-paragraph
+          identifier: my-paragraph
           children:
             - type: text
               value: 'Some % '
@@ -33,6 +34,7 @@ cases:
         - type: heading
           depth: 1
           label: my-heading
+          identifier: my-heading
           children:
             - type: text
               value: first
@@ -83,6 +85,7 @@ cases:
         - type: list
           ordered: false
           label: my-list
+          identifier: my-list
           children:
             - type: listItem
               children:

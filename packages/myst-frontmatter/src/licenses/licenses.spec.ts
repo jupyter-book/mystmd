@@ -27,12 +27,13 @@ describe('licenses are upto date with SPDX', () => {
         .sort((a, b) => a.licenseId.localeCompare(b.licenseId))
         .map((l) => [
           l.licenseId,
-          {
-            name: l.name,
-            osi: l.isOsiApproved || undefined,
-            free: l.isFsfLibre || undefined,
-            CC: l.licenseId.startsWith('CC') || undefined,
-          },
+          (() => {
+            const out: any = { name: l.name };
+            if (l.isOsiApproved) out.osi = true;
+            if (l.isFsfLibre) out.free = true;
+            if (l.licenseId.startsWith('CC')) out.CC = true;
+            return out;
+          })(),
         ]),
     );
     expect(licenses).toEqual(onlineLicenses);

@@ -90,6 +90,8 @@ cases:
                     - type: tableCell
                       header: true
                       children:
+                        - type: comment
+                          value: '% tabular useful for creating an array of images'
                         - type: image
                           url: mcr3b.eps
             - type: caption

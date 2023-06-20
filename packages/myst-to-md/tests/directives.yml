@@ -210,13 +210,12 @@ cases:
              ```
              ```
     markdown: |-
-      ````{code-block}
+      ````{code-block} python
       :class: my-class
       :emphasize-lines: 2,3
       :name: my-code
       :linenos:
       :lineno-start: 2
-      :lang: python
       :meta: highlight-line="2"
 
       5+5

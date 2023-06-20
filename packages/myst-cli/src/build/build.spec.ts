@@ -31,7 +31,14 @@ describe('getExportFormats', () => {
   });
   it('single build target true in options and all returns all formats', async () => {
     expect(getExportFormats({ all: true, docx: true, pdf: false, tex: false, xml: false })).toEqual(
-      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex, ExportFormats.xml],
+      [
+        ExportFormats.docx,
+        ExportFormats.pdf,
+        ExportFormats.tex,
+        ExportFormats.xml,
+        ExportFormats.md,
+        ExportFormats.meca,
+      ],
     );
   });
   it('all build targets true in options returns all formats', async () => {
