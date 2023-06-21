@@ -1,7 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
-import { mathTransform, mathPlugin, mathNestingTransform } from './math';
+import { enumerateTargetsTransform, ReferenceState } from './enumerate';
+import { mathTransform, mathPlugin, mathNestingTransform, mathLabelTransform } from './math';
 
 const ARRAY_ALIGN = `\\begin{align*}
   L=
@@ -122,5 +123,27 @@ describe('Test math nesting transformation', () => {
     expect(mdast.children[0].children[1].type).toBe('math');
     expect(mdast.children[0].children[2].type).toBe('paragraph');
     expect(mdast.children[0].children[2].class).toBe('importantClass');
+  });
+  test.only('Math with multiple labels', () => {
+    const file = new VFile();
+    const mathNode = {
+      type: 'math',
+      value: `\\begin{align}
+I_{tot}(\\text{\\footnotesize{HCl-NaV}}) &= I_{SOC}+I_{Ano1}+I_{CaT}+I_{BK}+I_{BNa}+I_{NaV},  \\label{eq:4} \\\\
+I_{tot}(\\text{\\footnotesize{HCl-NSV}}) &= I_{SOC}+I_{Ano1}+I_{CaT}+I_{BK}+I_{BNa}+I_{NSV},\\label{eq:5} \\\\
+I_{tot}(\\text{\\footnotesize{HCl-NSCC}}) &= I_{SOC}+I_{Ano1}+I_{CaT}+I_{BK}+I_{BNa}+I_{NSCC}, \\label{eq:6} \\\\
+I_{tot}(\\text{\\footnotesize{LCl-NaV}}) &= I_{SOC}+I_{Ano1}+I_{CaT}+I_{BK}+I_{BNa}+I_{NaV}+ I_{KV}+I_{KERG}, \\label{eq:7}\\\\
+\\frac {d(Ca_{i})}{d(time)} &= fc*(J_{IPR}-J_{SERCA}+J_{SOC}+J_{CaT}-J_{PMCA}). \\label{eq:8}
+\\end{align}`,
+    } as any;
+    const mdast = { children: [mathNode] } as any;
+    mathLabelTransform(mdast, file);
+    const state = new ReferenceState({ file });
+    enumerateTargetsTransform(mdast, { state });
+    // console.log((state as any).targets);
+    console.log(state.getTarget('eq:5'));
+    expect(file.messages.length).toBe(1);
+    expect(file.messages[0].message.includes('Undefined control sequence: \\x')).toBe(true);
+    expect(file.messages[0].fatal).toBe(true);
   });
 });

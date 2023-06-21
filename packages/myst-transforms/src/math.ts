@@ -31,18 +31,35 @@ function transformMathValue(file: VFile, node: Math | InlineMath) {
   node.value = value;
 }
 
+function getLabels(value: string): string[] {
+  // Pull out all the labels from the latex
+  const LABEL = /\\label\{([^}]+)\}/g;
+  const iter = value.matchAll(LABEL);
+  const labels = [];
+  let next = iter.next();
+  while (next.value) {
+    const label = next.value[1];
+    labels.push(label);
+    next = iter.next();
+  }
+  return labels;
+}
+
+function removeLabels(value: string): string {
+  return value.replace(/\\label\{([^}]+)\}/g, '').trim();
+}
+
 function labelMathNodes(file: VFile, node: Math | InlineMath) {
   const { value } = node;
   if (!value) return;
   // Pull out all the labels from the latex
-  const LABEL = /\\label\{([^}]+)\}/g;
-  const match = LABEL.exec(value);
-  if (!match) return value;
-  const label = match[1];
-  const normalized = normalizeLabel(label);
+  const labels = getLabels(value);
+  if (labels.length === 0) return value;
+  const primaryLabel = labels[0];
+  const normalized = normalizeLabel(primaryLabel);
   if (node.type === 'math' && normalized) {
     if (node.enumerated === false) {
-      fileWarn(file, `Labelling an unnumbered math node with "\\label{${label}}"`, {
+      fileWarn(file, `Labelling an unnumbered math node with "\\label{${primaryLabel}}"`, {
         node,
         source: TRANSFORM_NAME,
       });
@@ -50,13 +67,22 @@ function labelMathNodes(file: VFile, node: Math | InlineMath) {
     node.identifier = normalized.identifier;
     node.label = normalized.label;
     (node as any).html_id = normalized.html_id;
+    console.log({ node });
+    if (labels.length > 1) {
+      console.log(labels);
+      (node as any).enumeratorSize = labels.length;
+      (node as any).identifiers = labels
+        .slice(1)
+        .map((l) => normalizeLabel(l)?.identifier)
+        .filter((id) => !!id);
+    }
   } else if (node.type === 'inlineMath') {
-    fileWarn(file, `Cannot use "\\label{${label}}" in inline math`, {
+    fileWarn(file, `Cannot use "\\label{${primaryLabel}}" in inline math`, {
       node,
       source: TRANSFORM_NAME,
     });
   }
-  node.value = value.replace(LABEL, '').trim();
+  node.value = removeLabels(value);
 }
 
 function removeSimpleEquationEnv(file: VFile, node: Math | InlineMath) {
