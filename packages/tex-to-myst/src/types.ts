@@ -32,6 +32,7 @@ export interface ITexParser<D extends Record<string, any> = StateData> {
   data: D;
   options: Options;
   stack: GenericNode[];
+  currentPosition: GenericNode['position'];
   file: VFile;
   text: (value?: string, escape?: boolean) => void;
   renderChildren: (node: any) => void;

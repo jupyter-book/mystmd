@@ -22,14 +22,16 @@ export async function getFileContent(
   imageWriteFolder: string,
   {
     projectPath,
+    useExistingImages,
     imageAltOutputFolder,
     imageExtensions,
     extraLinkTransformers,
     simplifyOutputs,
   }: {
-    imageExtensions: ImageExtensions[];
     projectPath?: string;
+    useExistingImages?: boolean;
     imageAltOutputFolder?: string;
+    imageExtensions: ImageExtensions[];
     extraLinkTransformers?: LinkTransformer[];
     simplifyOutputs: boolean;
   },
@@ -63,6 +65,7 @@ export async function getFileContent(
       const pageSlug = pages.find((page) => page.file === file)?.slug;
       await transformMdast(session, {
         file,
+        useExistingImages,
         imageWriteFolder,
         imageAltOutputFolder,
         imageExtensions,

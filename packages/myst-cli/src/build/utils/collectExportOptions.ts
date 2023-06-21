@@ -174,7 +174,7 @@ export async function collectTexExportOptions(
   return resolvedExportOptions;
 }
 
-export async function collectJatsExportOptions(
+export async function collectBasicExportOptions(
   session: ISession,
   sourceFile: string,
   extension: string,
@@ -294,11 +294,35 @@ export async function collectExportOptions(
       }
       if (formats.includes(ExportFormats.xml)) {
         fileExportOptionsList.push(
-          ...(await collectJatsExportOptions(
+          ...(await collectBasicExportOptions(
             session,
             file,
             'xml',
             [ExportFormats.xml],
+            fileProjectPath,
+            opts,
+          )),
+        );
+      }
+      if (formats.includes(ExportFormats.md)) {
+        fileExportOptionsList.push(
+          ...(await collectBasicExportOptions(
+            session,
+            file,
+            'md',
+            [ExportFormats.md],
+            fileProjectPath,
+            opts,
+          )),
+        );
+      }
+      if (formats.includes(ExportFormats.meca)) {
+        fileExportOptionsList.push(
+          ...(await collectBasicExportOptions(
+            session,
+            file,
+            'zip',
+            [ExportFormats.meca],
             fileProjectPath,
             opts,
           )),

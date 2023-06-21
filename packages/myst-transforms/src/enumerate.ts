@@ -552,6 +552,10 @@ export const resolveReferenceLinksTransform = (tree: Root, opts: StateOptions) =
           source: TRANSFORM_NAME,
         },
       );
+      const source = (link as any).urlSource;
+      if (source) {
+        (link as any).urlSource = `#${source}`;
+      }
     }
     // Change the link into a cross-reference!
     const xref = link as unknown as CrossReference;

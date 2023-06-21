@@ -12,8 +12,16 @@ export function makeDocxOption(description: string) {
   return new Option('--word, --docx', description).default(false);
 }
 
+export function makeMdOption(description: string) {
+  return new Option('--md', description).default(false);
+}
+
 export function makeJatsOption(description: string) {
   return new Option('--jats, --xml', description).default(false);
+}
+
+export function makeMecaOptions(description: string) {
+  return new Option('--meca', description).default(false);
 }
 
 export function makeSiteOption(description: string) {

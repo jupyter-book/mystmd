@@ -3,8 +3,10 @@ import { fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { Parent, Validator } from './types.js';
 
-function comment(node: any): string {
-  return `% ${node.value}`;
+function comment(node: any, _: Parent, state: State): string {
+  return state.indentLines(node.value, (line: string, _1: any, blank: boolean) => {
+    return (blank ? '' : '% ') + line;
+  });
 }
 
 function block(node: any, _: Parent, state: State, info: Info): string {
@@ -48,6 +50,7 @@ export const miscHandlers: Record<string, Handle> = {
   definitionList,
   definitionTerm,
   definitionDescription,
+  captionNumber: () => '',
 };
 
 export const miscValidators: Record<string, Validator> = {

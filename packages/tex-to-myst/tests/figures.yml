@@ -37,7 +37,7 @@ cases:
       \begin{figure}[ht!]
       \centering
       \includegraphics[width=0.8\linewidth]{img/Figure 4.png}
-      \caption{  \label{fig:4} Solution of the model.
+      \caption{  \label{fig:4}Solution of the model.
       % comment!
       }
       \end{figure}
@@ -58,6 +58,8 @@ cases:
                   children:
                     - type: text
                       value: Solution of the model.
+                - type: comment
+                  value: ' comment!'
   - title: framebox
     tex: |-
       \framebox(400,250){

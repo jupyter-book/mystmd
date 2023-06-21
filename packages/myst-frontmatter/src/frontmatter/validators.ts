@@ -68,6 +68,8 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'abbreviations',
   'exports',
   'thebe',
+  'requirements',
+  'resources',
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = [
   'kernelspec',
@@ -78,7 +80,7 @@ export const PAGE_FRONTMATTER_KEYS = [
 ].concat(PROJECT_FRONTMATTER_KEYS);
 
 // These keys only exist on the project.
-PROJECT_FRONTMATTER_KEYS.push('references');
+PROJECT_FRONTMATTER_KEYS.push('references', 'requirements', 'resources');
 
 export const USE_PROJECT_FALLBACK = [
   'authors',
@@ -617,8 +619,11 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     output.article = validateString(value.article, incrementOptions('article', opts));
   }
   if (defined(value.sub_articles)) {
-    if (output.format !== ExportFormats.xml) {
-      validationError("sub_articles are only supported for exports of format 'jats'", opts);
+    if (output.format !== ExportFormats.xml && output.format !== ExportFormats.meca) {
+      validationError(
+        "sub_articles are only supported for exports of formats 'jats' or 'meca'",
+        opts,
+      );
     } else {
       output.sub_articles = validateList(
         value.sub_articles,
@@ -811,6 +816,25 @@ export function validateProjectFrontmatterKeys(
       value.thebe,
       incrementOptions('thebe', opts),
       validateThebe,
+    );
+  }
+
+  if (defined(value.requirements)) {
+    output.requirements = validateList(
+      value.requirements,
+      incrementOptions('requirements', opts),
+      (req, index) => {
+        return validateString(req, incrementOptions(`requirements.${index}`, opts));
+      },
+    );
+  }
+  if (defined(value.resources)) {
+    output.resources = validateList(
+      value.resources,
+      incrementOptions('resources', opts),
+      (res, index) => {
+        return validateString(res, incrementOptions(`resources.${index}`, opts));
+      },
     );
   }
   return output;

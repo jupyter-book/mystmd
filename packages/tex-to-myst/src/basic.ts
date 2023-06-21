@@ -1,4 +1,5 @@
 import type { GenericNode } from 'myst-common';
+import { u } from 'unist-builder';
 import type { Handler, ITexParser } from './types.js';
 import { UNHANDLED_ERROR_TEXT, isAccent } from './utils.js';
 
@@ -70,8 +71,12 @@ export const BASIC_TEXT_HANDLERS: Record<string, Handler> = {
     state.stack = [{ type: 'root', children: [] }];
     state.renderChildren(node);
   },
-  comment: () => {
-    // Ignore comments for now
+  comment: (node, state) => {
+    // This prevents in-line comments in paragraphs, which is not valid in myst
+    if (state.top().type === 'paragraph') {
+      state.closeNode();
+    }
+    state.pushNode(u('comment', { position: state.currentPosition }, node.content));
   },
   // Ways to break text...
   macro_newline: closeParagraph,

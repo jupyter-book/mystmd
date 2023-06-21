@@ -13,7 +13,7 @@ import { KNOWN_IMAGE_EXTENSIONS, logMessagesFromVFile } from '../../utils/index.
 import type { ExportWithOutput, ExportOptions } from '../types.js';
 import {
   cleanOutput,
-  collectJatsExportOptions,
+  collectBasicExportOptions,
   getFileContent,
   resolveAndLogErrors,
 } from '../utils/index.js';
@@ -71,7 +71,7 @@ export async function localArticleToJats(
   if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
-    await collectJatsExportOptions(session, file, 'xml', [ExportFormats.xml], projectPath, opts)
+    await collectBasicExportOptions(session, file, 'xml', [ExportFormats.xml], projectPath, opts)
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });

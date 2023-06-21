@@ -88,6 +88,7 @@ export async function transformMdast(
     projectPath?: string;
     projectSlug?: string;
     pageSlug?: string;
+    useExistingImages?: boolean;
     imageAltOutputFolder?: string;
     imageExtensions?: ImageExtensions[];
     watchMode?: boolean;
@@ -102,6 +103,7 @@ export async function transformMdast(
     projectPath,
     pageSlug,
     projectSlug,
+    useExistingImages,
     imageAltOutputFolder,
     imageExtensions,
     extraTransforms,
@@ -180,19 +182,21 @@ export async function transformMdast(
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
     .use(footnotesPlugin) // Needs to happen near the end
     .run(mdast, vfile);
-  await transformImages(session, mdast, file, imageWriteFolder, {
-    altOutputFolder: imageAltOutputFolder,
-    imageExtensions,
-  });
-  // Must happen after transformImages
-  await transformImageFormats(session, mdast, file, imageWriteFolder, {
-    altOutputFolder: imageAltOutputFolder,
-    imageExtensions,
-  });
-  // Note, the thumbnail transform must be **after** images, as it may read the images
-  await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
-    altOutputFolder: imageAltOutputFolder,
-  });
+  if (!useExistingImages) {
+    await transformImages(session, mdast, file, imageWriteFolder, {
+      altOutputFolder: imageAltOutputFolder,
+      imageExtensions,
+    });
+    // Must happen after transformImages
+    await transformImageFormats(session, mdast, file, imageWriteFolder, {
+      altOutputFolder: imageAltOutputFolder,
+      imageExtensions,
+    });
+    // Note, the thumbnail transform must be **after** images, as it may read the images
+    await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
+      altOutputFolder: imageAltOutputFolder,
+    });
+  }
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   const useSlug = pageSlug !== index;
   const url = projectSlug
