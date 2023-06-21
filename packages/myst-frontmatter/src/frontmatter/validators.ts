@@ -819,7 +819,6 @@ export function validateProjectFrontmatterKeys(
     );
   }
 
-  console.log('REQUIREMENTS', value);
   if (defined(value.requirements)) {
     output.requirements = validateList(
       value.requirements,
