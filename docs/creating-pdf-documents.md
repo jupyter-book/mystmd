@@ -147,7 +147,7 @@ writing process as easy as possible.
 
 ### Template `options`
 
-Template authors should choose to use [standard frontmatter](./frontmatter.md) properties where possible, however, all templates can also expose custom options through their [](/docs/jtex/template-yml). Include options for the build in the exports list. For example, to turn on `line_numbers` in the template, add the option to the dictionary.
+Template authors should choose to use [standard frontmatter](./frontmatter.md) properties where possible, however, all templates can also expose custom options through their [](/jtex/template-yml). Include options for the build in the exports list. For example, to turn on `line_numbers` in the template, add the option to the dictionary.
 
 ```{code-block} yaml
 :linenos:
@@ -166,7 +166,7 @@ Any unrecognized, or malformed entries will be logged as errors as well as requi
 
 ## Creating a Template
 
-The export list can also point to local templates, for $\LaTeX$ these are built using [`jtex`](/docs/jtex), and you can learn more about how to create a template for: [any $\LaTeX$ document](/docs/jtex/create-a-latex-template) and [Beamer presentations](/docs/jtex/create-a-beamer-template).
+The export list can also point to local templates, for $\LaTeX$ these are built using [`jtex`](/jtex), and you can learn more about how to create a template for: [any $\LaTeX$ document](/jtex/create-a-latex-template) and [Beamer presentations](/jtex/create-a-beamer-template).
 
 To make use of the template locally, validate it using `jtex check` and then point to the template folder in your export:
 
@@ -183,4 +183,4 @@ exports:
 ---
 ```
 
-Please consider [contributing your template](/docs/jtex/contribute-a-template) to the growing list of templates so that other people can benefit and improve your work!
+Please consider [contributing your template](/jtex/contribute-a-template) to the growing list of templates so that other people can benefit and improve your work!

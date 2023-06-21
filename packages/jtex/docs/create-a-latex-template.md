@@ -310,7 +310,7 @@ You can now render your document with:
 myst build my-document.md --tex
 ```
 
-By default these are put in a `_build` folder. If you want to control that, use the `output:` field in the appropriate export. If you have $\LaTeX$ installed, you can also try changing the format to `pdf` or `pdf+tex` to keep the source files. See [](../../../docs/creating-pdf-documents.md) for more information on using MyST templates for $\LaTeX$.
+By default these are put in a `_build` folder. If you want to control that, use the `output:` field in the appropriate export. If you have $\LaTeX$ installed, you can also try changing the format to `pdf` or `pdf+tex` to keep the source files. See [](/guide/creating-pdf-documents) for more information on using MyST templates for $\LaTeX$.
 
 Check that you are happy with the output tex files, and that all of the files are listed and copied over properly. If you build a PDF, save a thumbnail of one of the pages as `thumbnail.png`.
 
