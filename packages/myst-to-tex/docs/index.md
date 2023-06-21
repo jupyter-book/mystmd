@@ -10,7 +10,7 @@ description: myst-to-tex is library for converting MyST documents to LaTeX.
 **Goals**
 
 - Convert from `myst-spec` AST documents into $\LaTeX$ markup
-- Work with [jtex](../../jtex/docs/index.md) to template documents
+- Work with [jtex](myst:jtex) to template documents
 - Work as a `unifiedjs` plugin and in the `mystjs` ecosystem
 
 **Not Goals**
