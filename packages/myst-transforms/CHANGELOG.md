@@ -1,5 +1,12 @@
 # myst-transforms
 
+## 1.0.1
+
+### Patch Changes
+
+- 92fd39df: Allow intersphinx to connect without a target
+- 3b32538b: Track url source when enumerating nodes
+
 ## 1.0.0
 
 ### Major Changes

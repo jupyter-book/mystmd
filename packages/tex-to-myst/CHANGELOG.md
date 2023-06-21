@@ -1,5 +1,15 @@
 # tex-to-myst
 
+## 1.0.1
+
+### Patch Changes
+
+- 6fa7f022: Updates to chemical formulas and verbatim parsing
+- 3b32538b: Add comment node functionality
+- Updated dependencies [2c19d72c]
+- Updated dependencies [3b32538b]
+  - myst-frontmatter@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

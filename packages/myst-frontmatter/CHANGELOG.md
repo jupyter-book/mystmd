@@ -1,5 +1,12 @@
 # myst-frontmatter
 
+## 1.0.1
+
+### Patch Changes
+
+- 2c19d72c: Update licenses to most recent spdx licenses
+- 3b32538b: Add frontmatter for requirements and resources.
+
 ## 0.0.14
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # jtex
 
+## 1.0.1
+
+### Patch Changes
+
+- 0410d194: Move from myst-tools.org --> mystmd.org
+- Updated dependencies [2c19d72c]
+- Updated dependencies [3b32538b]
+- Updated dependencies [0410d194]
+  - myst-frontmatter@1.0.1
+  - myst-templates@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

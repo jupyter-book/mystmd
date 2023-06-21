@@ -1,5 +1,13 @@
 # myst-to-tex
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [2c19d72c]
+- Updated dependencies [3b32538b]
+  - myst-frontmatter@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

@@ -1,5 +1,28 @@
 # myst-cli
 
+## 1.0.4
+
+### Patch Changes
+
+- 3b32538b: Add preliminary MECA export target
+- 3b32538b: Incorporate myst-to-md into CLI, making md an export target
+- 0410d194: Move from myst-tools.org --> mystmd.org
+- Updated dependencies [6fa7f022]
+- Updated dependencies [92fd39df]
+- Updated dependencies [2c19d72c]
+- Updated dependencies [3b32538b]
+- Updated dependencies [3b32538b]
+- Updated dependencies [3b32538b]
+- Updated dependencies [3b32538b]
+- Updated dependencies [0410d194]
+  - tex-to-myst@1.0.1
+  - myst-transforms@1.0.1
+  - myst-frontmatter@1.0.1
+  - myst-to-md@1.0.2
+  - myst-templates@1.0.1
+  - jtex@1.0.1
+  - myst-to-tex@1.0.1
+
 ## 1.0.3
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # myst-to-md
 
+## 1.0.2
+
+### Patch Changes
+
+- 3b32538b: Incorporate myst-to-md into CLI, making md an export target
+- Updated dependencies [2c19d72c]
+- Updated dependencies [3b32538b]
+  - myst-frontmatter@1.0.1
+
 ## 1.0.1
 
 ### Patch Changes
