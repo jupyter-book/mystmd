@@ -117,6 +117,7 @@ export class StaticFileTransformer implements LinkTransformer {
     this.session = session;
     this.filePath = filePath;
   }
+
   test(url?: string) {
     if (!url) return false;
     const linkFileWithTarget = fileFromRelativePath(url, this.filePath);

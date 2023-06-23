@@ -19,6 +19,7 @@ export const downloadRole: RoleSpec = {
         type: 'link',
         url,
         children: modified ? [{ type: 'text', value: modified.trim() }] : undefined,
+        static: true, // Indicate that this should be treated as a static download
       },
     ];
   },
