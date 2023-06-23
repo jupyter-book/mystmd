@@ -76,19 +76,19 @@ Cross-referencing content is accomplished with markdown link syntax (`[text](#ta
     : Link to documents using relative links from the markdown.
   - [](./citations.md)
 * - `[](./_toc.yml)`
-    : Link to static files that will be included in your built website.
+    : Link to static files that will be included in your built website. Similar to the [{download}](#download-role) role.
   - [](./_toc.yml)
 ```
 
 % TODO: absolute links
 
-```{seealso}
+:::{seealso} Using roles for referencing
 :class: dropdown
-# Using roles for referencing
-If is also possible to use specific roles to reference content, including ([ref](#ref-role), [numref](#numref-role), [eq](#eq-role) or [doc](#doc-role)), depending on your use-case.
+
+It is also possible to use specific roles to reference content, including ([ref](#ref-role), [numref](#numref-role), [eq](#eq-role) or [doc](#doc-role)), depending on your use-case.
 
 These roles are supported to have compatibility with Sphinx. However, it is recommended to use markdown link syntax for referencing content, as it is more portable, is more concise, and has improved features such as inline formatting in the text links.
-```
+:::
 
 (targeting-headers)=
 
@@ -233,14 +233,13 @@ Please see [this paragraph](#my-paragraph) and [these points](#my-points).
 
 ## Referencing using Roles
 
-```{warning}
-# Coming from Sphinx?
+:::{warning} Coming from Sphinx?
 The following sections are to support users who are coming from using Sphinx as a parsing engine, which has many different ways to reference and label content.
 
 These ways of referencing content are not recommended, as they have certain drawbacks and are not consistent.
 
 See [{name}](#link-references) for ways to use markdown link, `[](#target)` syntax to reference your content.
-```
+:::
 
 (ref-role)=
 
@@ -263,4 +262,7 @@ eq
 doc
 : The `` {doc}`./my-file.md` `` syntax creates a link to the document, which is equivalent to `[](./my-file.md)`.
 
-% TODO: mystjs - doc role (or just leave unhandled until we can do multi doc)
+(download-role)=
+
+download
+: The `` {download}`./my-file.zip` `` syntax creates a download to a document, which is equivalent to `[](./my-file.zip)`.
