@@ -34,3 +34,8 @@ export type ExportOptions = {
     vfile: VFile,
   ) => File;
 };
+
+export type ExportResults = {
+  logFiles?: string[];
+  tempFolders: string[];
+};

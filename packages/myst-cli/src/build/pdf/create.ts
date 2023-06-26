@@ -6,7 +6,7 @@ import { exec, tic } from 'myst-cli-utils';
 import MystTemplate from 'myst-templates';
 import type { ISession } from '../../session/types.js';
 import { createTempFolder, uniqueArray } from '../../utils/index.js';
-import type { ExportWithOutput } from '../types.js';
+import type { ExportResults, ExportWithOutput } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { TemplateKind } from 'myst-common';
 import chalk from 'chalk';
@@ -42,7 +42,7 @@ export async function createPdfGivenTexExport(
   pdfOutput: string,
   copyLogs?: boolean,
   clean?: boolean,
-) {
+): Promise<ExportResults> {
   if (clean) cleanOutput(session, pdfOutput);
   const { output: texOutput, template } = texExportOptions;
 
@@ -148,7 +148,11 @@ export async function createPdfGivenTexExport(
       await copyFile(texLogBuild, texLogOutput);
     }
   }
+  const logFiles = copyLogs ? [logOutput, texLogOutput] : [logBuild, texLogBuild];
   if (!fs.existsSync(pdfOutput)) {
-    throw Error(`Error exporting: ${pdfOutput}`);
+    const err = Error(`Error exporting: ${pdfOutput}`);
+    (err as any).logFiles = logFiles;
+    throw err;
   }
+  return { logFiles, tempFolders: [buildPath] };
 }

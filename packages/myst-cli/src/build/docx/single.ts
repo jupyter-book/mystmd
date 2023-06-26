@@ -14,7 +14,7 @@ import { loadProjectFromDisk } from '../../project/index.js';
 import type { ISession } from '../../session/types.js';
 import type { RendererData } from '../../transforms/types.js';
 import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils/index.js';
-import type { ExportOptions, ExportWithOutput } from '../types.js';
+import type { ExportOptions, ExportResults, ExportWithOutput } from '../types.js';
 import {
   resolveAndLogErrors,
   cleanOutput,
@@ -82,12 +82,13 @@ export async function runWordExport(
   projectPath?: string,
   clean?: boolean,
   extraLinkTransformers?: LinkTransformer[],
-) {
+): Promise<ExportResults> {
   const { output, article } = exportOptions;
   if (clean) cleanOutput(session, output);
   const vfile = new VFile();
   vfile.path = output;
-  const [data] = await getFileContent(session, [article], createTempFolder(session), {
+  const imageWriteFolder = createTempFolder(session);
+  const [data] = await getFileContent(session, [article], imageWriteFolder, {
     projectPath,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
@@ -111,6 +112,7 @@ export async function runWordExport(
   logMessagesFromVFile(session, vfile);
   await writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));
   session.log.info(toc(`📄 Exported DOCX in %s, copying to ${output}`));
+  return { tempFolders: [imageWriteFolder] };
 }
 
 export async function localArticleToWord(
@@ -119,7 +121,7 @@ export async function localArticleToWord(
   opts: ExportOptions,
   templateOptions?: Record<string, any>,
   extraLinkTransformers?: LinkTransformer[],
-) {
+): Promise<ExportResults> {
   let { projectPath } = opts;
   if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
@@ -128,10 +130,11 @@ export async function localArticleToWord(
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
+  const results: ExportResults = { tempFolders: [] };
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runWordExport(
+      const exportResult = await runWordExport(
         session,
         file,
         exportOptions,
@@ -139,7 +142,9 @@ export async function localArticleToWord(
         opts.clean,
         extraLinkTransformers,
       );
+      results.tempFolders.push(...exportResult.tempFolders);
     }),
     opts.throwOnFailure,
   );
+  return results;
 }
