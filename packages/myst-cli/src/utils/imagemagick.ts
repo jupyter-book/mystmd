@@ -50,7 +50,7 @@ export async function extractFirstFrameOfGif(session: ISession, gif: string, wri
   if (fs.existsSync(png)) {
     session.log.debug(`Cached file found for extracted GIF: ${gif}`);
   } else {
-    const executable = `convert ${gif}[0] ${png}`;
+    const executable = `convert -density 600 -colorspace RGB ${gif}[0] ${png}`;
     session.log.debug(`Executing: ${executable}`);
     const exec = makeExecutable(executable, session.log);
     try {
@@ -159,7 +159,10 @@ export async function convertImageToWebp(
   const convertImg = makeExecutable(`cwebp -q ${quality} "${image}" -o "${webp}"`, debugLogger);
   const convertGif = makeExecutable(`gif2webp -q ${quality} "${image}" -o "${webp}"`, debugLogger);
   // Density has to be BEFORE the PDF
-  const convertPdfPng = makeExecutable(`convert -density 600 ${image} ${png}`, debugLogger);
+  const convertPdfPng = makeExecutable(
+    `convert -density 600 -colorspace RGB ${image} ${png}`,
+    debugLogger,
+  );
   const convertPdfWebP = makeExecutable(`cwebp -q ${quality} "${png}" -o "${webp}"`, debugLogger);
 
   try {
