@@ -5,7 +5,7 @@ import { loadProjectFromDisk } from '../../project/index.js';
 import type { ISession } from '../../session/types.js';
 import { createTempFolder } from '../../utils/index.js';
 import { runTexExport } from '../tex/single.js';
-import type { ExportOptions, ExportWithOutput } from '../types.js';
+import type { ExportOptions, ExportResults, ExportWithOutput } from '../types.js';
 import { collectTexExportOptions, resolveAndLogErrors, cleanOutput } from '../utils/index.js';
 import { createPdfGivenTexExport, getTexOutputFolder } from './create.js';
 
@@ -33,7 +33,7 @@ export async function localArticleToPdf(
   file: string,
   opts: ExportOptions,
   templateOptions?: Record<string, any>,
-) {
+): Promise<ExportResults> {
   let { projectPath } = opts;
   if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
@@ -49,6 +49,7 @@ export async function localArticleToPdf(
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
+  const results: ExportResults = { logFiles: [], tempFolders: [] };
   await resolveAndLogErrors(
     session,
     pdfExportOptionsList.map(async (exportOptions) => {
@@ -60,9 +61,27 @@ export async function localArticleToPdf(
         keepTexAndLogs,
         opts.clean,
       );
-      await runTexExport(session, file, texExportOptions, projectPath, opts.clean);
-      await createPdfGivenTexExport(session, texExportOptions, output, keepTexAndLogs, opts.clean);
+      const texExportResults = await runTexExport(
+        session,
+        file,
+        texExportOptions,
+        projectPath,
+        opts.clean,
+      );
+      const pdfExportResults = await createPdfGivenTexExport(
+        session,
+        texExportOptions,
+        output,
+        keepTexAndLogs,
+        opts.clean,
+      );
+      results.tempFolders.push(...texExportResults.tempFolders, ...pdfExportResults.tempFolders);
+      if (!keepTexAndLogs) {
+        results.tempFolders.push(path.dirname(texExportOptions.output));
+      }
+      results.logFiles?.push(...(pdfExportResults.logFiles ?? []));
     }),
     opts.throwOnFailure,
   );
+  return results;
 }

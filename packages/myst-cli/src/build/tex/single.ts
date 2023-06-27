@@ -20,7 +20,7 @@ import { loadProjectFromDisk } from '../../project/index.js';
 import { castSession } from '../../session/index.js';
 import type { ISession } from '../../session/types.js';
 import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils/index.js';
-import type { ExportWithOutput, ExportOptions } from '../types.js';
+import type { ExportWithOutput, ExportOptions, ExportResults } from '../types.js';
 import {
   cleanOutput,
   collectTexExportOptions,
@@ -74,7 +74,7 @@ export async function localArticleToTexRaw(
   templateOptions: ExportWithOutput,
   projectPath?: string,
   extraLinkTransformers?: LinkTransformer[],
-) {
+): Promise<ExportResults> {
   const { article, output } = templateOptions;
   const [{ mdast, frontmatter, references }] = await getFileContent(
     session,
@@ -93,6 +93,7 @@ export async function localArticleToTexRaw(
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
   // TODO: add imports and macros?
   writeFileToFolder(output, result.value);
+  return { tempFolders: [] };
 }
 
 function writeBibtexFromCitationRenderers(session: ISession, output: string) {
@@ -120,7 +121,7 @@ export async function localArticleToTexTemplated(
   projectPath?: string,
   force?: boolean,
   extraLinkTransformers?: LinkTransformer[],
-) {
+): Promise<ExportResults> {
   const filesPath = path.join(path.dirname(templateOptions.output), 'files');
   const [{ frontmatter, mdast, references }] = await getFileContent(
     session,
@@ -179,6 +180,7 @@ export async function localArticleToTexTemplated(
     packages: templateYml.packages,
     filesPath,
   });
+  return { tempFolders: [] };
 }
 
 export async function runTexExport(
@@ -188,12 +190,13 @@ export async function runTexExport(
   projectPath?: string,
   clean?: boolean,
   extraLinkTransformers?: LinkTransformer[],
-) {
+): Promise<ExportResults> {
   if (clean) cleanOutput(session, exportOptions.output);
+  let result: ExportResults;
   if (exportOptions.template === null) {
-    await localArticleToTexRaw(session, exportOptions, projectPath, extraLinkTransformers);
+    result = await localArticleToTexRaw(session, exportOptions, projectPath, extraLinkTransformers);
   } else {
-    await localArticleToTexTemplated(
+    result = await localArticleToTexTemplated(
       session,
       file,
       exportOptions,
@@ -202,6 +205,7 @@ export async function runTexExport(
       extraLinkTransformers,
     );
   }
+  return result;
 }
 
 export async function runTexZipExport(
@@ -211,7 +215,7 @@ export async function runTexZipExport(
   projectPath?: string,
   clean?: boolean,
   extraLinkTransformers?: LinkTransformer[],
-) {
+): Promise<ExportResults> {
   if (clean) cleanOutput(session, exportOptions.output);
   const zipOutput = exportOptions.output;
   const texFolder = createTempFolder(session);
@@ -224,6 +228,7 @@ export async function runTexZipExport(
   const zip = new AdmZip();
   zip.addLocalFolder(texFolder);
   zip.writeZip(zipOutput);
+  return { tempFolders: [texFolder] };
 }
 
 export async function localArticleToTex(
@@ -232,7 +237,7 @@ export async function localArticleToTex(
   opts: ExportOptions,
   templateOptions?: Record<string, any>,
   extraLinkTransformers?: LinkTransformer[],
-) {
+): Promise<ExportResults> {
   let { projectPath } = opts;
   if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
@@ -241,11 +246,13 @@ export async function localArticleToTex(
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
+  const results: ExportResults = { tempFolders: [] };
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
+      let exportResults: ExportResults;
       if (path.extname(exportOptions.output) === '.zip') {
-        await runTexZipExport(
+        exportResults = await runTexZipExport(
           session,
           file,
           exportOptions,
@@ -254,7 +261,7 @@ export async function localArticleToTex(
           extraLinkTransformers,
         );
       } else {
-        await runTexExport(
+        exportResults = await runTexExport(
           session,
           file,
           exportOptions,
@@ -263,7 +270,9 @@ export async function localArticleToTex(
           extraLinkTransformers,
         );
       }
+      results.tempFolders.push(...exportResults.tempFolders);
     }),
     opts.throwOnFailure,
   );
+  return results;
 }
