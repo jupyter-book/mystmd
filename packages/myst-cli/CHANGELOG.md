@@ -1,5 +1,17 @@
 # myst-cli
 
+## 1.0.5
+
+### Patch Changes
+
+- ab35bd09: Fix options on imagemagick commands
+- ab35bd09: Return all temp folders and log files from export functions
+- 438cdb28: Add download role
+- 714b594f: Propagate identifiers from mystRoles and mystDirectives to their children when lifting
+- Updated dependencies [714b594f]
+  - myst-transforms@1.0.2
+  - myst-parser@1.0.2
+
 ## 1.0.4
 
 ### Patch Changes

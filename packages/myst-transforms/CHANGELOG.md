@@ -1,5 +1,11 @@
 # myst-transforms
 
+## 1.0.2
+
+### Patch Changes
+
+- 714b594f: Propogate identifiers from mystRoles and mystDirectives to their children when lifting
+
 ## 1.0.1
 
 ### Patch Changes

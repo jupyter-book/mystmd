@@ -1,5 +1,11 @@
 # myst-roles
 
+## 1.0.2
+
+### Patch Changes
+
+- 438cdb28: Add download role
+
 ## 1.0.1
 
 ## 1.0.0
