@@ -11,6 +11,8 @@ import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
 import { getMystTemplate } from './template.js';
 
+type ManifestProject = Required<SiteManifest>['projects'][0];
+
 /**
  * Convert local project representation to site manifest project
  *
@@ -21,9 +23,10 @@ import { getMystTemplate } from './template.js';
  */
 export async function localToManifestProject(
   session: ISession,
-  projectPath: string,
+  projectPath?: string,
   projectSlug?: string,
-) {
+): Promise<ManifestProject | null> {
+  if (!projectPath) return null;
   const state = session.store.getState();
   const projConfig = selectors.selectLocalProjectConfig(state, projectPath);
   const proj = selectors.selectLocalProject(state, projectPath);
@@ -110,18 +113,14 @@ export async function getSiteManifest(
   session: ISession,
   opts?: { defaultTemplate?: string },
 ): Promise<SiteManifest> {
-  const siteProjects: SiteManifest['projects'] = [];
   const state = session.store.getState() as RootState;
   const siteConfig = selectors.selectCurrentSiteConfig(state);
   if (!siteConfig) throw Error('no site config defined');
-  await Promise.all(
-    siteConfig.projects?.map(async (siteProj) => {
-      if (!siteProj.path) return;
-      const proj = await localToManifestProject(session, siteProj.path, siteProj.slug);
-      if (!proj) return;
-      siteProjects.push(proj);
-    }) || [],
-  );
+  const siteProjects: ManifestProject[] = (
+    await Promise.all(
+      siteConfig.projects?.map(async (p) => localToManifestProject(session, p.path, p.slug)) ?? [],
+    )
+  ).filter((p): p is ManifestProject => !!p);
   const { nav } = siteConfig;
   const actions = siteConfig.actions?.map((action) => resolveSiteManifestAction(session, action));
   const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
