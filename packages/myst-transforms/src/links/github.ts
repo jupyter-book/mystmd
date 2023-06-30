@@ -40,11 +40,11 @@ function safeUrlParse(urlSource: string): URL | undefined {
 /**
  * This takes a url like:
  *
- *    https://github.com/executablebooks/mystjs/blob/3cdb8ec6/packages/mystjs/src/mdast/state.ts#L32-L36
+ *    https://github.com/executablebooks/mystmd/blob/3cdb8ec6/packages/mystmd/src/mdast/state.ts#L32-L36
  *
  * And creates the raw url information to create a github raw url, like:
  *
- *    https://raw.githubusercontent.com/executablebooks/mystjs/3cdb8ec6/packages/mystjs/src/mdast/state.ts
+ *    https://raw.githubusercontent.com/executablebooks/mystmd/3cdb8ec6/packages/mystmd/src/mdast/state.ts
  */
 function parseGithubFile(urlSource: string): undefined | [string, GithubFileLink] {
   const url = safeUrlParse(urlSource);
@@ -74,7 +74,7 @@ function parseGithubFile(urlSource: string): undefined | [string, GithubFileLink
 /**
  * This takes a url like:
  *
- *    https://github.com/executablebooks/mystjs/issues/1
+ *    https://github.com/executablebooks/mystmd/issues/1
  *
  */
 function parseGithubIssue(urlSource: string): undefined | [string, GithubIssueLink] {

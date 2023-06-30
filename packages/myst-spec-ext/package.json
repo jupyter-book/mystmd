@@ -1,9 +1,9 @@
 {
   "name": "myst-spec-ext",
   "version": "1.0.1",
-  "description": "Extentions for myst-spec that are used in myst-cli and mystjs",
+  "description": "Extensions for myst-spec that are used in mystmd",
   "author": "Rowan Cockett <rowan@curvenote.com>",
-  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-spec-ext",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-spec-ext",
   "license": "MIT",
   "type": "module",
   "exports": "./dist/index.js",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystjs.git"
+    "url": "git+https://github.com/executablebooks/mystmd.git"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -29,7 +29,7 @@
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
-    "url": "https://github.com/executablebooks/mystjs/issues"
+    "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
     "myst-spec": "^0.0.4"

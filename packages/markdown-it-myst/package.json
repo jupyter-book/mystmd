@@ -5,7 +5,7 @@
   "license": "MIT",
   "description": "markdown-it tokenizer for MyST roles and directives",
   "author": "Franklin Koch <franklin@curvenote.com>",
-  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/markdown-it-myst",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/markdown-it-myst",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystjs.git"
+    "url": "git+https://github.com/executablebooks/mystmd.git"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -29,7 +29,7 @@
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
-    "url": "https://github.com/executablebooks/mystjs/issues"
+    "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
     "js-yaml": "^4.1.0",

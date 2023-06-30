@@ -38,3 +38,6 @@ _build
 # yalc
 .yalc
 yalc.lock
+
+
+packages/mystmd/**.cjs

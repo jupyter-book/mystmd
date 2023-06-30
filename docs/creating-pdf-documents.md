@@ -48,16 +48,16 @@ Based on the `output` field in the export list in the [frontmatter](#export-fron
 :class: dropdown
 # PDF exports require $\LaTeX$ to be installed
 
-The default PDF renderer uses $\LaTeX$ to create PDFs, which means that to work locally you will need to [](#install-latex). `mystjs` will warn you if it cannot find a $\LaTeX$ environment, as well as forcing the build process and reporting any errors.
+The default PDF renderer uses $\LaTeX$ to create PDFs, which means that to work locally you will need to [](#install-latex). A warning will occur if MyST cannot find a $\LaTeX$ environment, as well as forcing the build process and reporting any errors.
 ```
 
-The rendering process for scientific PDFs uses $\LaTeX$ and makes use of the [`jtex`](myst:jtex) templating library, to convert to $\LaTeX$ the [`myst-to-tex`](myst:myst-to-tex) packages is used. The libraries work together with `mystjs` for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
+The rendering process for scientific PDFs uses $\LaTeX$ and makes use of the [`jtex`](myst:jtex) templating library, to convert to $\LaTeX$ the [`myst-to-tex`](myst:myst-to-tex) packages is used. The libraries work together for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
 
 ```{mermaid}
 flowchart LR
   A[Jupyter Notebook] --> C
   B[MyST Markdown] --> C
-  C(mystjs) --> D{AST}
+  C(mystmd) --> D{AST}
   D --> E[jtex] --> G[LaTeX]
   D --> F[myst-to-tex] --> G
   G --> H[PDF]
@@ -88,7 +88,7 @@ Ensure that you download a full distribution with appropriate libraries installe
 
 ## Choosing a Template
 
-There are currently 422 journals supported[^journals] and it is straghtforward to add new personal templates, or contribute them back to the community.
+There are currently 422 journals supported[^journals] and it is straight forward to add new personal templates, or contribute them back to the community.
 
 [^journals]: As of September 15, 2022.
 

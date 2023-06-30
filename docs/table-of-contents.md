@@ -91,7 +91,7 @@ parts:
 
 ## Nesting of Files in URLs
 
-You can have any level of nesting in a file-system of your project, however, when it is displayed in the URL in `mystjs`, these nesting will be flattened to have a single “slug” that is contained in the project.
+You can have any level of nesting in a file-system of your project, however, when it is displayed in the URL in `mystmd`, these nesting will be flattened to have a single “slug” that is contained in the project.
 
 - `project/folder2/01_my_article.md` becomes `project/my-article`
 

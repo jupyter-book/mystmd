@@ -68,12 +68,12 @@ See an overview of MyST Markdown syntax with inline demos and examples.
 
 👋 We are glad you are here! 💚
 
-There are many ways that `mystjs` can be used with JupyterBook and Sphinx. We recommend that you read [background on `mystjs`](./background.md), which goes over how these projects overlap and work together!
+There are many ways that `mystmd` can be used with JupyterBook and Sphinx. We recommend that you read [background on `mystmd`](./background.md), which goes over how these projects overlap and work together!
 
 TL;DR
-: **Yes**, you can use `mystjs` with your JupyterBook! `mystjs` can create [scientific PDFs](./creating-pdf-documents.md) and can natively read the [`_toc.yml`](./table-of-contents.md) as well as all of your existing MyST Markdown content and [Jupyter Notebooks](./interactive-notebooks.ipynb).
-: **Yes**, `mystjs` is compatible with [intersphinx](#intersphinx) even though it is written in Javascript not Python!
-: JupyterBook and `mystjs` have **overlap** in the ability to create online books like this one. `mystjs` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
+: **Yes**, you can use `mystmd` with your JupyterBook! `mystmd` can create [scientific PDFs](./creating-pdf-documents.md) and can natively read the [`_toc.yml`](./table-of-contents.md) as well as all of your existing MyST Markdown content and [Jupyter Notebooks](./interactive-notebooks.ipynb).
+: **Yes**, `mystmd` is compatible with [intersphinx](#intersphinx) even though it is written in Javascript not Python!
+: JupyterBook and `mystmd` have **overlap** in the ability to create online books like this one. `mystmd` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
 :::
 
 ## Project Goals
@@ -118,7 +118,7 @@ Read about performance »
 
 **Technical Goals**
 
-- `mystjs` is a Javascript parser and command line tool for working with MyST Markdown
+- `mystmd` is a Javascript parser and command line tool for working with MyST Markdown
 - Parse MyST into a standardized [AST](wiki:Abstract_Syntax_Tree), that follows [the MyST Spec](https://mystmd.org/spec)
 - Translate and render MyST into:
   - Modern [interactive websites](./quickstart-myst-websites.md), using React (like this website!)
@@ -128,13 +128,13 @@ Read about performance »
 
 **Architecture**
 
-The `mystjs` command line tool can be used to parse MyST Markdown and Jupyter Notebooks into an AST. This data can be saved as JSON, or rendered to a website (like this one!) or any number of formats including [PDF & $\LaTeX$](./creating-pdf-documents.md), [Word](./creating-word-documents.md), [React](./quickstart-myst-websites.md), or [JATS](./creating-jats-xml.md).
+The `mystmd` command line tool can be used to parse MyST Markdown and Jupyter Notebooks into an AST. This data can be saved as JSON, or rendered to a website (like this one!) or any number of formats including [PDF & $\LaTeX$](./creating-pdf-documents.md), [Word](./creating-word-documents.md), [React](./quickstart-myst-websites.md), or [JATS](./creating-jats-xml.md).
 
 ```{mermaid}
 flowchart LR
   A[Jupyter Notebook] --> C
   B[MyST Markdown] --> C
-  C(mystjs) --> D{AST}
+  C(mystmd) --> D{AST}
   D <--> E[LaTeX]
   E --> F[PDF]
   D --> G[Word]
@@ -152,5 +152,5 @@ For integration with **Sphinx**, use the Python implementation for MyST or Jupyt
 - [MyST Python Parser for Sphinx](https://myst-parser.readthedocs.io/en/latest/)
 - [JupyterBook](https://jupyterbook.org/)
 
-Although many tools in the [MyST Ecosystem](https://mystmd.org) follow the same conventions and [specification](https://mystmd.org/spec), the following documentation refers only to the **Javascript** MyST CLI.
+Although many tools in the [MyST Ecosystem](https://mystmd.org) follow the same conventions and [specification](https://mystmd.org/spec), the following documentation refers only to the **Javascript** MyST Markdown CLI.
 ```

@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "description": "Read JATS and convert to MyST AST",
   "author": "Rowan Cockett <rowan@curvenote.com>",
-  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/jats-to-myst",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/jats-to-myst",
   "license": "MIT",
   "type": "module",
   "exports": "./dist/index.js",
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystjs.git"
+    "url": "git+https://github.com/executablebooks/mystmd.git"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -32,7 +32,7 @@
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
-    "url": "https://github.com/executablebooks/mystjs/issues"
+    "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
     "doi-utils": "^2.0.0",

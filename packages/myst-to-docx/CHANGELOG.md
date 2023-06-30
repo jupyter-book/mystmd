@@ -190,7 +190,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystjs
+- 184ad9f9: Move to https://github.com/executablebooks/mystmd
 - 0b2298fd: Add admonitions to docx
 - Updated dependencies [184ad9f9]
 - Updated dependencies [615c1441]

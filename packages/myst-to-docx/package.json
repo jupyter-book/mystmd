@@ -18,12 +18,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystjs.git"
+    "url": "git+https://github.com/executablebooks/mystmd.git"
   },
   "bugs": {
-    "url": "https://github.com/executablebooks/mystjs/issues"
+    "url": "https://github.com/executablebooks/mystmd/issues"
   },
-  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst",
   "scripts": {
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs",

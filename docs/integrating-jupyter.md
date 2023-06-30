@@ -16,7 +16,7 @@ This allows you to do some amazing things with your MyST website like:
 
 ```{attention}
 Integrated Jupyter Computation is hot off the press and currently limited to pages that represent complete Jupyter notebooks.
-We are in active development and this feature should be considered `beta` - please help us out [report any issues that you find](https://github.com/executablebooks/mystjs/issues).
+We are in active development and this feature should be considered `beta` - please help us out [report any issues that you find](https://github.com/executablebooks/mystmd/issues).
 
 Being able to connect a jupyter-based figure or output in any website page to a kernel is still work in progress - but expected very soon. The remainder of the docs below are forward looking, watch for the 🚧 icons on headings that are still work in progress.
 ```
@@ -245,7 +245,7 @@ Add the specific list options for custom wheel paths, etc.
 
 ## 🚧 Local Development Mode
 
-When working on a MyST site using the `myst-cli`, using a local Jupyter server connection makes a lot of sense and speeds up development. The `local` key allows you to enable and configure a local environment without having to change the other (remote) settings in your `myst.yml` file that will be used in your final deployment.
+When working on a MyST Site using `mystmd`, using a local Jupyter server connection makes a lot of sense and speeds up development. The `local` key allows you to enable and configure a local environment without having to change the other (remote) settings in your `myst.yml` file that will be used in your final deployment.
 
 Local development using can be enabled by simply adding the `local` key, which will use default server options.
 

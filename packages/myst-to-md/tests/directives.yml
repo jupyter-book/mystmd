@@ -561,7 +561,7 @@ cases:
             flowchart LR
               A[Jupyter Notebook] --> C
               B[MyST Markdown] --> C
-              C(mystjs) --> D{AST}
+              C(mystmd) --> D{AST}
               D <--> E[LaTeX]
               E --> F[PDF]
               D --> G[Word]
@@ -573,7 +573,7 @@ cases:
       flowchart LR
         A[Jupyter Notebook] --> C
         B[MyST Markdown] --> C
-        C(mystjs) --> D{AST}
+        C(mystmd) --> D{AST}
         D <--> E[LaTeX]
         E --> F[PDF]
         D --> G[Word]

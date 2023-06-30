@@ -2,9 +2,9 @@
   "name": "myst-config",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "Project and site config types and validation for the mystjs ecosystem",
+  "description": "Project and site config types and validation for the mystmd ecosystem",
   "author": "Franklin Koch <franklin@curvenote.com>",
-  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-config",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-config",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystjs.git"
+    "url": "git+https://github.com/executablebooks/mystmd.git"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -28,7 +28,7 @@
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
-    "url": "https://github.com/executablebooks/mystjs/issues"
+    "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
     "myst-frontmatter": "^1.0.0",

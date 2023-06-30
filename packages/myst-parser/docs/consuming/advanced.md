@@ -20,7 +20,7 @@ src/
 └── utils.ts
 ```
 
-## Using `mystjs`
+## Using `myst-parser`
 
 There are two ways to use the library, you can use the `MyST` wrapper,
 which creates a `MarkdownIt` tokenizer for you:
@@ -53,7 +53,6 @@ For installing the package locally, you will need [node](https://nodejs.org/) an
 Once you have `npm` installed globally, navigate into this project folder and install the dependencies:
 
 ```bash
-cd mystjs
 npm install
 npm run start  # Start a development server to play with the library! 🚀
 ```
@@ -67,16 +66,16 @@ This outputs to the `dist` folder, and also includes all type definitions (`*.d.
 
 The command `npm run test` runs the tests, these are mostly based on the [fixtures](fixtures) folder. You can also use `npm run test:watch` to run on any file changes.
 
-The command `npm run start` starts a server for manually testing and playing with `mystjs`, this uses a in-memory bundle of what would go in the `dist` folder.
+The command `npm run start` starts a server for manually testing and playing with MyST, this uses a in-memory bundle of what would go in the `dist` folder.
 Note that this does not actually build the library!
 
 ## Typescript
 
-`mystjs` uses Typescript in `strict` mode and `noImplicitAny`. The types are distributed with the package.
+`myst-parser` uses Typescript in `strict` mode and `noImplicitAny`. The types are distributed with the package.
 
 ## Build Targets
 
-The package create a `dist` folder and transpiles all code from Typescript to Javascript.
+The package create a `dist` folder and transpile all code from Typescript to Javascript.
 The main library can run in both the browser and in node, however, another file `myst.ts` is
 used to attached the global `MyST` variable to the `window`. This file `myst.min.js`
 is what should be distributed when using scripts in HTML.

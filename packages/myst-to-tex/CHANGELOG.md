@@ -200,7 +200,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystjs
+- 184ad9f9: Move to https://github.com/executablebooks/mystmd
 - Updated dependencies [184ad9f9]
 - Updated dependencies [615c1441]
 - Updated dependencies [3fba7cb7]

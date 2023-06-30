@@ -7,7 +7,7 @@ body:
       value: Thank you for taking the time to file a bug report! Please fill out this form as completely as possible.
   - type: input
     attributes:
-      label: What version of `mystjs` are you using?
+      label: What version of `mystmd` are you using?
       description: 'For example: 1.0.0, use `myst -v`'
     validations:
       required: true

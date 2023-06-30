@@ -19,12 +19,12 @@ parts:
           - file: features/footnotes
           - file: features/definitions
           - file: features/tasks
-  - caption: Using the mystjs Library
+  - caption: Using the Library
     chapters:
       - file: consuming/basic
       - file: consuming/mdast
       - file: consuming/advanced
-  - caption: Extending MyST with mystjs
+  - caption: Extending MyST
     chapters:
       - file: extending/roles
       - file: extending/directives

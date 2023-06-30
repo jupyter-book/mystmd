@@ -1,49 +1,53 @@
-# MyST Markdown Tools
+# MyST Markdown Command Line Interface, `mystmd`
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/mystjs/blob/main/LICENSE)
-![CI](https://github.com/executablebooks/mystjs/workflows/CI/badge.svg)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/mystmd/blob/main/LICENSE)
+![CI](https://github.com/executablebooks/mystmd/workflows/CI/badge.svg)
 
-`mystjs` is a set of open-source, community-driven tools designed for scientific communication, including a powerful authoring framework that supports blogs, online books, scientific papers, reports and journals articles.
+`mystmd` is a set of open-source, community-driven tools designed for scientific communication, including a powerful authoring framework that supports blogs, online books, scientific papers, reports and journals articles.
 
 > **Note**
-> The `mystjs` project is in **beta**. It is being used to explore a full MyST implementation in JavaScript and will change significantly and rapidly.
+> The `mystmd` project is in **beta**. It is being used to explore a full MyST implementation and will change significantly and rapidly.
 > The project is being developed by a small team of people on the Executable Books Project, and may make rapid decisions without fully public/inclusive discussion.
 > We will continue to update this documentation as the project stabilizes.
 
 ## Overview
 
-The `mystjs` project provides a parser in Javascript (`mystjs`) and command line tool (`myst-cli`) for working with MyST Markdown projects.
+The `mystmd` project provides a command line tool (`mystmd`) for working with MyST Markdown projects.
 
-- Parse MyST into a standardized AST, that follows the MyST Spec
 - Provides functionality for cross-referencing, external structured links, and scientific citations
-- Translate and render MyST into:
+- Translate and render MyST Markdown into:
   - HTML for static websites, and modern React for interactive websites (like this website!)
   - PDFs and LaTeX documents, with specific templates for over 400 journals
   - Microsoft Word export
+- Parse MyST into a standardized AST, that follows the MyST Markdown Spec
 
 See the [documentation](https://mystmd.org/guide).
 
 ## Get Started
 
-The MyST CLI is available through Node and NPM:
+The MyST Markdown CLI is available through Node and NPM:
 
 ```bash
-npm install -g myst-cli
+npm install -g mystmd
 myst init
 myst build my-doc.md --tex
 ```
 
 # Development
 
-All packages for `mystjs` are included in this repository (a monorepo!).
+All packages for `mystmd` are included in this repository (a monorepo!).
 
 ## What's inside?
 
-`myst-cli` uses [npm](https://www.npmjs.com/) as a package manager. It includes the following packages/apps:
+`mystmd` uses [npm](https://www.npmjs.com/) as a package manager. It includes the following packages/apps:
+
+**Command Line Tools:**
+
+- `mystmd` this provides CLI functionality for `myst build mystdoc.md`
 
 **Core Packages:**
 
-- `myst-cli` this will provide CLI functionality for `myst build mystdoc.md`
+- `myst-cli` this is the package that provides CLI functionality for `mystmd`, it does not export the CLI directly
 - `jtex` a templating library ([see docs](https://mystmd.org/jtex))
 - `myst-frontmater` definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://mystmd.org/guide/frontmatter))
 - `myst-config` Validation and reading of configuration files
@@ -87,15 +91,15 @@ All packages for `mystjs` are included in this repository (a monorepo!).
 - `myst-cli-utils` some shared utils between jtex, and myst-cli
 - `simple-validators` validation utilities, that print all sorts of nice warnings
 
-Each package is 100% [TypeScript](https://www.typescriptlang.org/).
+Each package is 100% [TypeScript](https://www.typescriptlang.org/) and [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
 
 ### Versioning & Publishing
 
-`mystjs` uses [changesets](https://github.com/changesets/changesets) to document changes to this monorepo, call `npm run changeset` and follow the prompts. Later, `npm run version` will be called and then `npm run publish`.
+`mystmd` uses [changesets](https://github.com/changesets/changesets) to document changes to this monorepo, call `npm run changeset` and follow the prompts. Later, `npm run version` will be called and then `npm run publish`.
 
 ### Utilities
 
-`mystjs` is built and developed using:
+`mystmd` is built and developed using:
 
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
 - [ESLint](https://eslint.org/) for code linting
@@ -106,20 +110,23 @@ Each package is 100% [TypeScript](https://www.typescriptlang.org/).
 To build all apps and packages, run the following command:
 
 ```
-cd mystjs
+cd mystmd
 npm run build
 ```
 
-### Develop
+## Developing
 
-To develop all apps and packages, run the following command:
+For the [mystmd](https://github.com/executablebooks/mystmd) library on GitHub, `git clone` and you can install the dependencies and then create a local copy of the library with the `npm run dev` command.
 
-```
-cd mystjs
+```shell
+git clone git@github.com:executablebooks/mystmd.git
+cd mystmd
+npm install
+npm run build
 npm run dev
 ```
 
-This will create a local `myst` CLI interface that you can use to develop and test locally.
+This will create a local copy of `myst` for use on the command line and start various web-servers for testing.
 
 ---
 

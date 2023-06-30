@@ -5,7 +5,7 @@ project:
   # description:
   keywords: []
   authors: []
-  github: https://github.com/executablebooks/mystjs
+  github: https://github.com/executablebooks/mystmd
   # bibliography: []
 site:
   template: book-theme

@@ -1,3 +1,3 @@
 # myst-spec-ext
 
-Extension types for mystjs.
+Extension types for mystmd.

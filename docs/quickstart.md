@@ -22,10 +22,10 @@ The tutorials will be brief on explaining MyST syntax, but we include an [MyST M
 **Looking for JupyterBook docs?**
 
 The `myst` CLI is not the same as [JupyterBook](https://jupyterbook.org/), which uses the Sphinx documentation engine!
-You can read about the [history of `mystjs` development](./background.md).
-The content that you build is compatible between tools in the MyST ecosystem, however, this tutorial focuses on the `mystjs` tools and CLI.
+You can read about the [history of `mystmd` development](./background.md).
+The content that you build is compatible between tools in the MyST ecosystem, however, this tutorial focuses on the `mystmd` tools and CLI.
 
-`mystjs` has capabilities beyond JupyterBook, for example exporting to scientific PDF documents, and you can use the two tools together! 💚
+`mystmd` has capabilities beyond JupyterBook, for example exporting to scientific PDF documents, and you can use the two tools together! 💚
 :::
 ::::
 
@@ -35,9 +35,9 @@ To follow along with this quickstart tutorial on your own computer, it is helpfu
 
 > 🛠 Throughout the tutorial, whenever you're supposed to _do_ something you will see a 🛠
 
-## Installing the MyST CLI 📦
+## Installing the MyST Markdown CLI 📦
 
-The `myst-cli` is a command line interface (CLI) that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites. To get started install `myst-cli`.
+`mystmd` is a command line interface (CLI) that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites. To get started, install `mystmd`.
 
 :::{tip} Prerequisites
 :class: dropdown
@@ -50,7 +50,7 @@ You should have these programs installed:
 
 If the node ecosystem is new to you[^conda], see our getting started guides for [installing node](./installing-prerequisites.md).
 
-[^conda]: If you have experience in Conda installations, we would _love_ your help to get the MyST install process into a form that most Pythonistas are familiar with!! See [GitHub issue](https://github.com/executablebooks/mystjs/issues/139) 🙏 🐍 🚀
+[^conda]: If you have experience in Conda installations, we would _love_ your help to get the MyST install process into a form that most Pythonistas are familiar with!! See [GitHub issue](https://github.com/executablebooks/mystmd/issues/139) 🙏 🐍 🚀
 
 :::
 
@@ -64,19 +64,19 @@ node -v
 🛠 Install the MyST command line tools:
 
 ```bash
-npm install -g myst-cli
+npm install -g mystmd
 ```
 
-If you have any problems, see [installing MyST](./installing.md) and or [open an issue here](https://github.com/executablebooks/mystjs/issues/new?assignees=&labels=bug&template=bug_report.yml). 🐛
+If you have any problems, see [installing MyST](./installing.md) and or [open an issue here](https://github.com/executablebooks/mystmd/issues/new?assignees=&labels=bug&template=bug_report.yml). 🐛
 
 :::{note}
 :class: dropdown
 **Updating MyST**
 
-There are new releases of the MyST CLI every few weeks, to update to the latest version of `myst`, use:
+There are new releases of the MyST Markdown CLI every few weeks, to update to the latest version of `myst`, use:
 
 ```shell
-npm update -g myst-cli
+npm update -g mystmd
 ```
 
 :::
@@ -89,11 +89,11 @@ In it's initial state, the project is **not** a good example of how to use MyST,
 🛠 Download the example content[^no-git], and navigate into the folder:
 
 ```bash
-git clone https://github.com/executablebooks/mystjs-quickstart.git
-cd mystjs-quickstart
+git clone https://github.com/executablebooks/mystmd-quickstart.git
+cd mystmd-quickstart
 ```
 
-[^no-git]: If you aren't familiar with git, it isn't required for this tutorial, you can download the zip file with the contents from the [quickstart repository](https://github.com/executablebooks/mystjs-quickstart).
+[^no-git]: If you aren't familiar with git, it isn't required for this tutorial, you can download the zip file with the contents from the [quickstart repository](https://github.com/executablebooks/mystmd-quickstart).
 
 ## Go through the tutorials 🚀
 

@@ -20,12 +20,12 @@ The tutorial will be brief on explaining MyST syntax, we provide a [MyST Markdow
 ::::{tip}
 :class: dropdown
 
-## 🛠 Install the MyST CLI
+## 🛠 Install the MyST Markdown CLI
 
 🛠 Install the MyST command line tools, with `node` **greater than version v16**:
 
 ```bash
-npm install -g myst-cli
+npm install -g mystmd
 ```
 
 :::{card} Need more help? See MyST Installation Quickstart
@@ -40,13 +40,13 @@ See the first quickstart tutorial for installation walk-through and installation
 ## 🛠 Download quickstart content
 
 We are going to download an example project that includes a few simple markdown files and some Jupyter Notebooks.
-Our goal will be to try out some of the main features of `myst` to create a website like this one, improve the structure of the metadata, share it between pages, and improve the website theme.
+Our goal will be to try out some of the main features of `mystmd` to create a website like this one, improve the structure of the metadata, share it between pages, and improve the website theme.
 
 🛠 Download the example content, and navigate into the folder:
 
 ```bash
-git clone https://github.com/executablebooks/mystjs-quickstart.git
-cd mystjs-quickstart
+git clone https://github.com/executablebooks/mystmd-quickstart.git
+cd mystmd-quickstart
 ```
 
 :::
@@ -62,7 +62,7 @@ The `myst` command is a shortcut for `myst init`, which has a few more options f
 ```text
 > myst
 
-Welcome to the MyST CLI!! 🎉 🚀
+Welcome to the MyST Markdown CLI!! 🎉 🚀
 
 myst init walks you through creating a myst.yml file.
 
