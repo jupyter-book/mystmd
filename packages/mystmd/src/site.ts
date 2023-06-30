@@ -1,6 +1,5 @@
 import { Command } from 'commander';
-import { startServer } from '../build/site/start.js';
-import { Session } from '../session/index.js';
+import { Session, startServer } from 'myst-cli';
 import { clirun } from './clirun.js';
 import { makeKeepHostOption, makeHeadlessOption } from './options.js';
 

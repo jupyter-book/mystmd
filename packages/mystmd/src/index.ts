@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import version from '../version.js';
+import version from './version.js';
 import { makeBuildCLI } from './build.js';
 import { makeCleanCLI } from './clean.js';
 import { makeInitCLI, addDefaultCommand } from './init.js';

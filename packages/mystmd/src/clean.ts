@@ -1,6 +1,5 @@
 import { Command, Option } from 'commander';
-import { clean } from '../build/index.js';
-import { Session } from '../session/index.js';
+import { Session, clean } from 'myst-cli';
 import { clirun } from './clirun.js';
 import {
   makeAllOption,
