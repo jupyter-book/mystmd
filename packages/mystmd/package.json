@@ -35,8 +35,8 @@
     "dev": "npm run link && esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --watch",
     "lint": "npm run copy:version; eslint \"src/**/*.ts\" -c .eslintrc.cjs",
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
-    "test": "npm run copy:version; vitest run",
-    "test:watch": "npm run copy:version; vitest watch",
+    "test": "npm run link; npm run copy:version; vitest run",
+    "test:watch": "npm run link; npm run copy:version; vitest watch",
     "build:cli": "esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents",
     "build": "npm-run-all -l clean copy:version -p build:cli"
   },
