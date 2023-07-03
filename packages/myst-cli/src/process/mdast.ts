@@ -61,7 +61,7 @@ const LINKS_SELECTOR = 'link,card,linkBlock';
 const htmlHandlers = {
   comment(h: any, node: any) {
     // Prevents HTML comments from showing up as text in web
-    // TODO: Remove once this is landed in mystjs
+    // TODO: Remove once this is landed in myst-parser
     const result = h(node, 'comment');
     (result as any).value = node.value;
     return result;

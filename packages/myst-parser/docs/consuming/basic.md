@@ -1,6 +1,6 @@
 # Basic Usage
 
-`mystjs` allows you to parse and render MyST in both the browser or in a node environment. The parse creates an abstract syntax tree (AST)
+`myst-parser` allows you to parse and render MyST in both the browser or in a node environment. The parse creates an abstract syntax tree (AST)
 
 ### Using a Browser
 
@@ -29,7 +29,7 @@ If you are building the project on your own, please follow the [](developer) and
 ### Using Node
 
 ```bash
-npm install mystjs
+npm install myst-parser
 ```
 
 You can now import (or `require`) the library.

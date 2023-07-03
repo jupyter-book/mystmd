@@ -10,7 +10,7 @@ description: myst-to-md is library for converting MyST abstract syntax trees to 
 **Goals**
 
 - Convert from `myst-spec` AST documents into markdown
-- Work as a `unifiedjs` plugin and in the `mystjs` ecosystem
+- Work as a `unifiedjs` plugin and in the `mystmd` ecosystem
 
 **Not Goals**
 
@@ -34,7 +34,7 @@ import { unified } from 'unified';
 import { u } from 'unist-builder';
 import mystToMd from 'myst-to-md';
 
-// Create a AST document, or parse using mystjs
+// Create a AST document, or parse using mystmd
 const tree = u(
   'root',
   u('paragraph', [

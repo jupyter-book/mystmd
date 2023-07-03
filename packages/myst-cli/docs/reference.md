@@ -1,5 +1,5 @@
 ---
-title: MyST CLI Reference
+title: MyST Markdown CLI Reference
 ---
 
 (myst-init)=

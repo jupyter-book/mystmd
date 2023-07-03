@@ -76,7 +76,7 @@ jobs:
         with:
           node-version: 18.x
       - name: Install MyST
-        run: npm install -g myst-cli
+        run: npm install -g mystmd
       - name: Build HTML Assets
         run: myst build --html
       - name: Deploy to GitHub Pages

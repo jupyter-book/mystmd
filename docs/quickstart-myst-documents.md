@@ -39,8 +39,8 @@ Our goal will be to try out some of the main features of `myst`, improve the str
 🛠 Download the example content, and navigate into the folder:
 
 ```bash
-git clone https://github.com/executablebooks/mystjs-quickstart.git
-cd mystjs-quickstart
+git clone https://github.com/executablebooks/mystmd-quickstart.git
+cd mystmd-quickstart
 ```
 
 :::
@@ -429,7 +429,7 @@ apt install imagemagick
 :class: dropdown
 **Emojis aren't rendered in PDF 😭**
 
-We are tracking [emoji support](https://github.com/executablebooks/mystjs/issues/217), if you think this feature is important and want to help out, we would love your help. 💚 🦺 🪚 🧱 🏗 🚀
+We are tracking [emoji support](https://github.com/executablebooks/mystmd/issues/217), if you think this feature is important and want to help out, we would love your help. 💚 🦺 🪚 🧱 🏗 🚀
 
 In the screenshot below we have removed the 🧙 emoji, which ... also works.
 ```

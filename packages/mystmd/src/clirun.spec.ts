@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import { Command } from 'commander';
-import { Session } from '../session';
+import { Session } from 'myst-cli';
 import { clirun } from './clirun';
 
 let mockExit: any;

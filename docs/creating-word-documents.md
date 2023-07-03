@@ -69,13 +69,13 @@ To fix equations in Word, use the equation toolbar to select `LaTeX` and from th
 
 ## Rendering Word with `myst-to-docx`
 
-The rendering process for word documents uses the [`myst-to-docx`](myst:myst-to-docx) package. The library works together with `mystjs` for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
+The rendering process for word documents uses the [`myst-to-docx`](myst:myst-to-docx) package. The library works together with `mystmd` for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
 
 ```{mermaid}
 flowchart LR
   A[Jupyter Notebook] --> C
   B[MyST Markdown] --> C
-  C(mystjs) --> D{AST}
+  C(mystmd) --> D{AST}
   D --> E[myst-to-docx]
   E --> G[docx]
 ```

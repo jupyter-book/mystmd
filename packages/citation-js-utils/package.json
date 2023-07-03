@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystjs.git"
+    "url": "git+https://github.com/executablebooks/mystmd.git"
   },
   "keywords": [
     "citation-js"
@@ -27,9 +27,9 @@
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/executablebooks/mystjs/issues"
+    "url": "https://github.com/executablebooks/mystmd/issues"
   },
-  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/citation-js-utils",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/citation-js-utils",
   "engines": {
     "node": ">=12",
     "npm": ">=6"

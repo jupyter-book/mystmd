@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "description": "Export from MyST mdast to HTML",
   "author": "Franklin Koch <franklin@curvenote.com>",
-  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-to-html",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-to-html",
   "license": "MIT",
   "type": "module",
   "exports": "./dist/index.js",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystjs.git"
+    "url": "git+https://github.com/executablebooks/mystmd.git"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -34,7 +34,7 @@
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
-    "url": "https://github.com/executablebooks/mystjs/issues"
+    "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
     "classnames": "^2.3.2",

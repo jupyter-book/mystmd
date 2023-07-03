@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "Schema validation functions and error reporting framework",
   "author": "Franklin Koch <franklin@curvenote.com>",
-  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/simple-validators",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/simple-validators",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystjs.git"
+    "url": "git+https://github.com/executablebooks/mystmd.git"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -28,7 +28,7 @@
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
-    "url": "https://github.com/executablebooks/mystjs/issues"
+    "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "devDependencies": {
     "moment": "^2.29.4"

@@ -24,7 +24,7 @@ MyST is a combination of {term}`CommonMark Markdown <CommonMark>` and extra synt
 : **Command-Line Interface**: MyST is a parser and set of command-line tools for creating websites and documents. For clarity in this usage, use {term}`MyST-CLI`.
 
 [MyST-CLI](https://mystmd.org/guide)
-: The MyST CLI can be used to create a website, PDF documents, and generally structure and parse a MyST project.
+: The MyST Markdown CLI can be used to create a website, PDF documents, and generally structure and parse a MyST project. You can install across various package managers using `mystmd`.
 : Sometimes referred to simply as {term}`MyST`.
 
 [Sphinx](https://www.sphinx-doc.org)

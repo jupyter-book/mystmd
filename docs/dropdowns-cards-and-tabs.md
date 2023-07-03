@@ -59,7 +59,7 @@ In the [Sphinx design project](https://sphinx-design.readthedocs.io/en/latest/ca
 - A card `footer`: Any content that comes after a line with +++.
 - A card `body`: Any content that comes in between ^^^ and +++.
 
-This syntax is supported in `mystjs`, for example:
+This syntax is supported in `mystmd`, for example:
 
 ```markdown
 :::{card} Card Title

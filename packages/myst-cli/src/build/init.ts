@@ -40,7 +40,7 @@ export type InitOptions = {
 };
 
 const WELCOME = () => `
-${chalk.bold.yellowBright.italic('Welcome to the MyST CLI!!')} 🎉 🚀
+${chalk.bold.yellowBright.italic('Welcome to the MyST Markdown CLI!!')} 🎉 🚀
 
 ${chalk.bold.green('myst init')} walks you through creating a ${chalk.bold.blue('myst.yml')} file.
 

@@ -237,7 +237,7 @@
 ### Patch Changes
 
 - 17daf15e: Introduce GithubTransformer for file links.
-- 184ad9f9: Move to https://github.com/executablebooks/mystjs
+- 184ad9f9: Move to https://github.com/executablebooks/mystmd
 - Updated dependencies [184ad9f9]
 - Updated dependencies [3fba7cb7]
   - intersphinx@0.0.4

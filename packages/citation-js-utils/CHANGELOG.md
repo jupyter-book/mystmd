@@ -34,7 +34,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystjs
+- 184ad9f9: Move to https://github.com/executablebooks/mystmd
 
 ## 0.0.10
 

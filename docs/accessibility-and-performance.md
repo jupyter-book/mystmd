@@ -5,7 +5,7 @@ description: MyST sites are designed for mobile and desktop sites, accessibility
 
 ## Performance
 
-The `mystjs` site existing, modern web-frameworks including [Remix](https://remix.run/) and [React](https://reactjs.org/). These tools come out-of-the-box with prefetching for faster navigation, smaller network payloads through modern web-bundlers, image optimization, and partial-page refresh through single-page application. We follow the [PRPL Pattern](https://web.dev/apply-instant-loading-with-prpl/)[^prpl] where possible.
+The MyST Site existing, modern web-frameworks including [Remix](https://remix.run/) and [React](https://reactjs.org/). These tools come out-of-the-box with prefetching for faster navigation, smaller network payloads through modern web-bundlers, image optimization, and partial-page refresh through single-page application. We follow the [PRPL Pattern](https://web.dev/apply-instant-loading-with-prpl/)[^prpl] where possible.
 
 [^prpl]: PRPL is a pattern designed to improve performance of webpages:
 
@@ -16,7 +16,7 @@ The `mystjs` site existing, modern web-frameworks including [Remix](https://remi
 
 As an example, try hovering over the navigation on this page (potentially with your network development tools open!), the entire page will be fetched based on your intent (i.e. hovering over the link for a moment). This includes downloading any assets for additional styling on the upcoming page. Note that many assets are shared between pages, and only the actual content is fetched (i.e. the AST and page metadata), not the full HTML page, which again makes for smaller network payloads and speed for browsing! Content is also cached if you re-visit a page.
 
-When working locally in authoring content `mystjs` is designed to have as hot-reloads, can rebuild/rerender the site in <150ms, and has scroll-restoration so you don't loose your place. The speed of `mystjs` can dramatically improve the authoring experience as it allows you to preview changes rapidly.
+When working locally MyST is designed to rebuild and rerender the site in <150ms, and has scroll-restoration so you don't loose your place. This speed can dramatically improve the authoring experience as it allows you to preview changes rapidly.
 
 The real-world deployment of your site will depend on the infrastructure that you use to serve it. See [deployment](./deployment.md) for more information on options for sharing your site.
 
@@ -29,7 +29,7 @@ Lighthouse is a tool included in Chrome that measures accessibility, performance
 Lighthouse score run Sept 15, 2022 on deployed site using Curvenote's global CDN.
 ```
 
-Some of the performance and accessibility considerations we have taken in `mystjs`:
+Some performance and accessibility considerations:
 
 - Semantic HTML used for articles, asides, figures, nav, and captions, including limited use of generic `div`s and `span`s where we can.
 - Anchor tags for all interactive content, that work when Javascript is _not_ enabled
@@ -60,7 +60,7 @@ Lighthouse score run Sept 15, 2022 on deployed site, the majority of issues are 
 
 ```{warning}
 The performance metrics above are subject to changes over time, and may differ on your computer, network connection and page analyzed.
-We include these metrics on this page because (1) we have put a lot of work into performance and accessibility 🎉 and (2) to let you know that as developers of `mystjs` we care about performance, accessibility, and semantic HTML that can be read by both search engine crawlers and academic indexes.
+We include these metrics on this page because (1) we have put a lot of work into performance and accessibility 🎉 and (2) to let you know that as MyST developers we care about performance, accessibility, and semantic HTML that can be read by both search engine crawlers and academic indexes.
 
-If you find a place where we can improve performance in your site, please [open an issue](https://github.com/executablebooks/mystjs/issues).
+If you find a place where we can improve performance in your site, please [open an issue](https://github.com/executablebooks/mystmd/issues).
 ```

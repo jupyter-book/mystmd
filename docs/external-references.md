@@ -1,14 +1,14 @@
 ---
 title: External references
-description: External references dynamically include content into your MyST projects, from Wikipedia, intersphinx, DOIs, RRIDs, and any other MyST projects. Allowing your documents to be rich, interactive and automatically kept up to date.
+description: External references dynamically include content into your MyST Markdown projects, from Wikipedia, intersphinx, DOIs, RRIDs, and any other MyST projects. Allowing your documents to be rich, interactive and automatically kept up to date.
 thumbnail: ./thumbnails/external-references.png
 ---
 
-MyST allows you to connect your <wiki:documents> to external [linked](wiki:Hyperlink) content like <wiki:Wikipedia>, which allow for [hover](wiki:Hovercraft)-references with external content.
+MyST Markdown allows you to connect your <wiki:documents> to external [linked](wiki:Hyperlink) content like <wiki:Wikipedia>, which allow for [hover](wiki:Hovercraft)-references with external content.
 External references are references to structured content or documents that are outside of your project.
 MyST supports referencing rich content in a growing number of formats, including:
 
-1. other `mystjs` projects, with rich cross-linking of content
+1. other `mystmd` projects, with rich cross-linking of content
 1. integrating directly with **Wikipedia** articles to show tooltips,
 1. linking to other **Sphinx** documentation using intersphinx,
 1. link to files on **GitHub** and show inline previews,
@@ -116,7 +116,7 @@ Use the target in the parenthesis, which would be `myst:python#library/abc` abov
 
 ## Wikipedia Links
 
-MyST can directly integrate with <wiki:Wikipedia> to create hover-card information directly integrated into your myst documents. The syntax follows standard markdown links, under the `wiki:` protocol followed by the page title[^1]. As with any other link, you can either follow a `[text](wiki:Page_Title)` or `<wiki:Page_Title>`, which if no text is provided for the links will be replaced with the page title.
+MyST Markdown can directly integrate with <wiki:Wikipedia> to create hover-card information directly integrated into your myst documents. The syntax follows standard markdown links, under the `wiki:` protocol followed by the page title[^1]. As with any other link, you can either follow a `[text](wiki:Page_Title)` or `<wiki:Page_Title>`, which if no text is provided for the links will be replaced with the page title.
 
 [^1]: Replace any spaces in the page title with underscores.
 
@@ -162,7 +162,7 @@ Wikipedia links, like `https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)` w
 
 ### Issues and Pull Requests
 
-MyST can directly link and show preview of GitHub issues and Pull Requests, for example, [#336](https://github.com/executablebooks/mystjs/issues/336) and [#87](https://github.com/executablebooks/myst-theme/pull/87). To enable this, just use a normal link to your
+MyST Markdown can directly link and show preview of GitHub issues and Pull Requests, for example, [#336](https://github.com/executablebooks/mystmd/issues/336) and [#87](https://github.com/executablebooks/myst-theme/pull/87). To enable this, just use a normal link to your
 
 ```markdown
 [#87](https://github.com/executablebooks/myst-theme/pull/87)
@@ -172,7 +172,7 @@ If you do not include children for the link, then the default text will become `
 
 ### Linking to Code
 
-MyST can directly integrate with links to GitHub to create hover-card information directly integrated into your MyST documents. For example, a link to the [linkTransforms](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L12-L28) plugin code shows a preview of the code. The code preview works for both multiple line numbers and highlighting [single lines](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L30), which shows the surrounding ten lines, with the referenced line highlighted. If you reference the [full file](https://github.com/executablebooks/mystjs/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts) then the first ten lines of the file are shown in the preview.
+MyST Markdown can directly integrate with links to GitHub to create hover-card information directly integrated into your MyST documents. For example, a link to the [linkTransforms](https://github.com/executablebooks/mystmd/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L12-L28) plugin code shows a preview of the code. The code preview works for both multiple line numbers and highlighting [single lines](https://github.com/executablebooks/mystmd/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L30), which shows the surrounding ten lines, with the referenced line highlighted. If you reference the [full file](https://github.com/executablebooks/mystmd/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts) then the first ten lines of the file are shown in the preview.
 
 ````{important}
 :class: dropdown
@@ -196,7 +196,7 @@ It is possible to include DOIs as external content, and they are also added as c
 
 {abbr}`RRID (Research Resource Identifiers)`s are persistent, unique identifiers for referencing a research resource, such as an antibody, plasmid, organism, or scientific tool. These are helpful for ensuring reproducibility and exact communication in scientific studies. See the [RRID website](https://scicrunch.org/resources) for more information.
 
-MyST allows you to directly integrate with the RRID database to pull information and validate the links are correct as you are writing documents. The metadata is passed to subsequent systems (e.g. PDF documents, compatible journals and preprint servers) and helps keep your science reproducible.
+MyST Markdown allows you to directly integrate with the RRID database to pull information and validate the links are correct as you are writing documents. The metadata is passed to subsequent systems (e.g. PDF documents, compatible journals and preprint servers) and helps keep your science reproducible.
 
 To create an RRID link, use the `rrid:` protocol followed by the resource identifier, for example:
 

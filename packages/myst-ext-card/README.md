@@ -1,3 +1,3 @@
 # myst-ext-card
 
-`mystjs` extension for `card` directive
+`mystmd` extension for `card` directive

@@ -1,7 +1,7 @@
 version: 1
 project:
   title: MyST Markdown
-  github: https://github.com/executablebooks/mystjs
+  github: https://github.com/executablebooks/mystmd
   license:
     code: MIT
     content: CC-BY-4.0

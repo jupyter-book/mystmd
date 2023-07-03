@@ -1,3 +1,3 @@
 # myst-ext-grid
 
-`mystjs` extension for `grid` directive
+`mystmd` extension for `grid` directive

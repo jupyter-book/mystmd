@@ -760,7 +760,7 @@
 
 - 17daf15e: Introduce GithubTransformer for file links.
 - 88666aee: Deprecate unified exports from `mystjs`
-- 184ad9f9: Move to https://github.com/executablebooks/mystjs
+- 184ad9f9: Move to https://github.com/executablebooks/mystmd
 - cfb1307b: Relative paths in config should be '.' not ''
 - 615c1441: Sessions are now aware of their build path (making things more consistent)
   For example, change the template location to the site working directory.

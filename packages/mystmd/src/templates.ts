@@ -13,8 +13,8 @@ import {
   resolveInputs,
   TEMPLATE_YML,
 } from 'myst-templates';
-import type { ISession } from '../session/index.js';
-import { Session } from '../session/index.js';
+import type { ISession } from 'myst-cli';
+import { Session } from 'myst-cli';
 import {
   makeDocxOption,
   makeForceOption,
@@ -106,10 +106,14 @@ export async function listTemplatesCLI(
         template.id.replace(/^(tex|site|docx)\//, '').replace(/^myst\//, ''),
       )}`,
     );
-    session.log.info(`ID: ${chalk.dim(template.id)}\nVersion: ${chalk.dim(template.version)}`);
-    session.log.info(`Authors: ${chalk.dim(template.authors?.map((a) => a.name).join(', '))}`);
-    session.log.info(`Description: ${chalk.dim(template.description)}`);
-    session.log.info(`Tags: ${chalk.dim(template.tags?.join(', '))}`);
+    session.log.info(
+      `ID: ${chalk.dim(template.id)}\nVersion: ${chalk.dim(template.version ?? '')}`,
+    );
+    session.log.info(
+      `Authors: ${chalk.dim(template.authors?.map((a) => a.name).join(', ') ?? '')}`,
+    );
+    session.log.info(`Description: ${chalk.dim(template.description ?? '')}`);
+    session.log.info(`Tags: ${chalk.dim(template.tags?.join(', ') ?? '')}`);
     session.log.info(chalk.bold.blueBright(`\nParts:`));
     template.parts?.map((p) =>
       session.log.info(
@@ -157,8 +161,8 @@ export async function listTemplatesCLI(
     session.log.info(
       `\n${chalk.bold.green((template.title ?? '').padEnd(25))}${chalk.bold.blueBright(
         template.id.replace(/^tex\//, '').replace(/^myst\//, ''),
-      )}\nDescription: ${chalk.dim(template.description)}\nTags: ${chalk.dim(
-        template.tags?.join(', '),
+      )}\nDescription: ${chalk.dim(template.description ?? '')}\nTags: ${chalk.dim(
+        template.tags?.join(', ') ?? '',
       )}`,
     );
   });

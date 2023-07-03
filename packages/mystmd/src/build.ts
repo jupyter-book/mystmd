@@ -1,6 +1,5 @@
 import { Command } from 'commander';
-import { build } from '../build/index.js';
-import { Session } from '../session/index.js';
+import { build, Session } from 'myst-cli';
 import { clirun } from './clirun.js';
 import {
   makeCheckLinksOption,

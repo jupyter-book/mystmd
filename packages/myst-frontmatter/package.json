@@ -3,9 +3,9 @@
   "version": "1.0.1",
   "sideEffects": false,
   "license": "MIT",
-  "description": "Frontmatter types and validation for the mystjs ecosystem",
+  "description": "Frontmatter types and validation for the mystmd ecosystem",
   "author": "Franklin Koch <franklin@curvenote.com>",
-  "homepage": "https://github.com/executablebooks/mystjs/tree/main/packages/myst-frontmatter",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-frontmatter",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystjs.git"
+    "url": "git+https://github.com/executablebooks/mystmd.git"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -29,7 +29,7 @@
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
-    "url": "https://github.com/executablebooks/mystjs/issues"
+    "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
     "credit-roles": "^2.0.0",

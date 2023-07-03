@@ -5,7 +5,8 @@
   "fixed": [
     ["myst-to-jats", "jats-to-myst"],
     ["myst-to-tex", "tex-to-myst"],
-    ["myst-parser", "myst-roles", "myst-directives", "myst-to-html"]
+    ["myst-parser", "myst-roles", "myst-directives", "myst-to-html"],
+    ["mystmd", "myst-cli"]
   ],
   "linked": [],
   "access": "public",

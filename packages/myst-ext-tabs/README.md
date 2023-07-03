@@ -1,3 +1,3 @@
 # myst-ext-tabs
 
-`mystjs` extension for `tab-set` and `tab-item` directives
+`mystmd` extension for `tab-set` and `tab-item` directives

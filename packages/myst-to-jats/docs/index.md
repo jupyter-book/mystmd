@@ -33,7 +33,7 @@ import { unified } from 'unified';
 import { u } from 'unist-builder';
 import mystToJats from 'myst-to-jats';
 
-// Create a AST document, or parse using mystjs
+// Create a AST document, or parse using mystmd
 const tree = u(
   'root',
   u('paragraph', [

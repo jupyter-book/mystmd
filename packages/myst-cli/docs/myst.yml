@@ -1,10 +1,10 @@
 version: 1
 project:
   title: MyST Markdown CLI
-  github: https://github.com/executablebooks/mystjs/tree/main/packages/myst-cli
+  github: https://github.com/executablebooks/mystmd/tree/main/packages/myst-cli
   license: MIT
-  subject: MyST CLI
+  subject: MyST Markdown CLI
 site:
-  title: MyST CLI
+  title: MyST Markdown CLI
   domains:
     - mystmd-cli.curve.space

@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import { Command, Option } from 'commander';
-import { init } from '../build/index.js';
-import { Session } from '../session/index.js';
+import { Session, init } from 'myst-cli';
 import { clirun } from './clirun.js';
 import { makeProjectOption, makeSiteOption } from './options.js';
 

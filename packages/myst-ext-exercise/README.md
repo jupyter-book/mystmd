@@ -1,3 +1,3 @@
 # myst-ext-exercise
 
-`mystjs` extension for `exercise` directive
+`mystmd` extension for `exercise` directive

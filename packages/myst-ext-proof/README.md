@@ -1,3 +1,3 @@
 # myst-ext-proof
 
-`mystjs` extension for `proof` directive
+`mystmd` extension for `proof` directive
