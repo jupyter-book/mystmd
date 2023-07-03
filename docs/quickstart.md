@@ -69,6 +69,16 @@ npm install -g mystmd
 
 If you have any problems, see [installing MyST](./installing.md) and or [open an issue here](https://github.com/executablebooks/mystmd/issues/new?assignees=&labels=bug&template=bug_report.yml). 🐛
 
+:::{danger} Note: `myst-cli` is deprecated
+:class: dropdown
+In July 2023, we renamed the package to `mystmd` from `myst-cli`. Installing `myst-cli` will no longer create a `myst` command from your terminal. You can uninstall `myst-cli` using:
+
+```bash
+npm uninstall -g myst-cli
+```
+
+:::
+
 :::{note}
 :class: dropdown
 **Updating MyST**
