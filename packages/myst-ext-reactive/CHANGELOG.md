@@ -1,5 +1,13 @@
 # myst-ext-reactive
 
+## 1.0.1
+
+### Patch Changes
+
+- b0a2a34b: Move repositories from mystjs --> mystmd
+- Updated dependencies [b0a2a34b]
+  - myst-common@1.0.2
+
 ## 1.0.0
 
 ### Major Changes

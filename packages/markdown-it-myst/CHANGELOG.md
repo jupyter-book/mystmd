@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.1
+
+### Patch Changes
+
+- b0a2a34b: Move repositories from mystjs --> mystmd
+
 ## 1.0.0
 
 ### Major Changes

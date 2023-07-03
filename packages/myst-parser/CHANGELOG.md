@@ -1,5 +1,15 @@
 # myst-parser
 
+## 1.0.3
+
+### Patch Changes
+
+- b0a2a34b: Move repositories from mystjs --> mystmd
+- Updated dependencies [b0a2a34b]
+  - markdown-it-myst@1.0.1
+  - myst-directives@1.0.3
+  - myst-roles@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

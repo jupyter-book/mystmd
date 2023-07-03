@@ -1,5 +1,40 @@
 # myst-cli
 
+## 1.1.0
+
+### Minor Changes
+
+The CLI is no longer exported directly from this package. Use `mystmd`.
+
+### Patch Changes
+
+- b0a2a34b: Move repositories from mystjs --> mystmd
+- d33fd7a9: Add `myst init --gh-pages` to add the GitHub Action
+- e3e03011: Fix race condition in project selection when writing to config
+- Updated dependencies [b0a2a34b]
+  - citation-js-utils@1.0.1
+  - myst-ext-exercise@1.0.1
+  - myst-ext-reactive@1.0.1
+  - simple-validators@1.0.1
+  - myst-frontmatter@1.0.2
+  - myst-transforms@1.0.3
+  - myst-cli-utils@2.0.1
+  - myst-ext-proof@1.0.1
+  - myst-templates@1.0.2
+  - myst-ext-card@1.0.1
+  - myst-ext-grid@1.0.1
+  - myst-ext-tabs@1.0.1
+  - myst-spec-ext@1.0.2
+  - myst-to-docx@1.0.1
+  - myst-to-jats@1.0.3
+  - myst-common@1.0.2
+  - myst-config@1.0.1
+  - myst-parser@1.0.3
+  - myst-to-tex@1.0.2
+  - tex-to-myst@1.0.2
+  - myst-to-md@1.0.3
+  - jtex@1.0.2
+
 ## 1.0.5
 
 ### Patch Changes

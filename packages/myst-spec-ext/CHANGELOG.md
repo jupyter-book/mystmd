@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.0.2
+
+### Patch Changes
+
+- b0a2a34b: Move repositories from mystjs --> mystmd
+
 ## 1.0.1
 
 ### Patch Changes

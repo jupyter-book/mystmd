@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-tabs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for tab-set and tab-item directive",
@@ -32,9 +32,9 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.0.0"
+    "myst-common": "^1.0.2"
   },
   "devDependencies": {
-    "myst-parser": "^1.0.1"
+    "myst-parser": "^1.0.3"
   }
 }

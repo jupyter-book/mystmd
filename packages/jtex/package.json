@@ -1,6 +1,6 @@
 {
   "name": "jtex",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Tool for rendering LaTeX documents from jinja-style templates",
   "type": "module",
   "exports": "./dist/index.js",
@@ -47,13 +47,13 @@
     "chalk": "^5.2.0",
     "commander": "^10.0.1",
     "js-yaml": "^4.1.0",
-    "myst-cli-utils": "^2.0.0",
-    "myst-frontmatter": "^1.0.1",
-    "myst-templates": "^1.0.1",
+    "myst-cli-utils": "^2.0.1",
+    "myst-frontmatter": "^1.0.2",
+    "myst-templates": "^1.0.2",
     "node-fetch": "^3.3.1",
     "nunjucks": "^3.2.4",
     "pretty-hrtime": "^1.0.3",
-    "simple-validators": "^1.0.0",
+    "simple-validators": "^1.0.1",
     "unzipper": "^0.10.14"
   },
   "devDependencies": {
