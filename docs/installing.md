@@ -14,10 +14,6 @@ The MyST Markdown Command Line Interface (CLI) is available through [NodeJS](./i
 npm install -g mystmd
 ```
 
-:::{danger} Do not use `myst-cli`!
-In July 2023, we renamed the package and website to `mystmd` from `myst-cli`. Installing `myst-cli` will no longer create a `myst` command from your terminal.
-:::
-
 ```{important} Installing Node
 
 If you do not have `npm` installed you can look at our how to guide for [Installing NodeJS](./installing-prerequisites.md). If you have any challenges installing, please [open an issue here](https://github.com/executablebooks/mystmd/issues).
