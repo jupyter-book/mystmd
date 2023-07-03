@@ -60,6 +60,11 @@ async function prepareExportOptions(
   const filteredExportOptions = exportOptions
     .map((exp) => {
       if (!exp.article) {
+        if (exp.format === ExportFormats.meca) {
+          // MECA exports don't necessarily need to specify an article.
+          // But it does help locate those other exports if you want!
+          return exp;
+        }
         session.log.error(`Invalid export - no 'article' in source: ${sourceFile}`);
         return undefined;
       }
