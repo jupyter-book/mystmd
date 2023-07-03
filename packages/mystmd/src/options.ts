@@ -55,6 +55,13 @@ export function makeWriteTocOption() {
   ).default(false);
 }
 
+export function makeGithubActionOption() {
+  return new Option(
+    '--gh-pages',
+    'Creates a GitHub action that will deploy your site to GitHub pages',
+  ).default(false);
+}
+
 export function makeForceOption() {
   return new Option(
     '--force',

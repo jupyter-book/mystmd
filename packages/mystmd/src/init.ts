@@ -1,15 +1,13 @@
 import chalk from 'chalk';
-import { Command, Option } from 'commander';
+import { Command } from 'commander';
 import { Session, init } from 'myst-cli';
 import { clirun } from './clirun.js';
-import { makeProjectOption, makeSiteOption } from './options.js';
-
-export function makeWriteTocOption() {
-  return new Option(
-    '--write-toc',
-    'Generate editable _toc.yml file for project if it does not exist',
-  ).default(false);
-}
+import {
+  makeGithubActionOption,
+  makeProjectOption,
+  makeSiteOption,
+  makeWriteTocOption,
+} from './options.js';
 
 export function makeInitCLI(program: Command) {
   const command = new Command('init')
@@ -17,6 +15,7 @@ export function makeInitCLI(program: Command) {
     .addOption(makeProjectOption('Initialize config for MyST project content'))
     .addOption(makeSiteOption('Initialize config for MyST site'))
     .addOption(makeWriteTocOption())
+    .addOption(makeGithubActionOption())
     .action(clirun(Session, init, program));
   return command;
 }

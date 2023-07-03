@@ -8,7 +8,7 @@ import type { ISession } from '../session/index.js';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { startServer } from './site/start.js';
-import { makeExecutable } from 'myst-cli-utils';
+import { getGithubUrl, githubPagesAction } from './gh-pages/index.js';
 
 const VERSION_CONFIG = '# See docs at: https://mystmd.org/guide/frontmatter\nversion: 1\n';
 
@@ -37,6 +37,7 @@ export type InitOptions = {
   project?: boolean;
   site?: boolean;
   writeToc?: boolean;
+  ghPages?: boolean;
 };
 
 const WELCOME = () => `
@@ -53,18 +54,11 @@ Learn more about this CLI and MyST Markdown at: ${chalk.bold('https://mystmd.org
 
 `;
 
-async function getGithubUrl() {
-  try {
-    const gitUrl = await makeExecutable('git config --get remote.origin.url', null)();
-    if (!gitUrl.includes('github.com')) return undefined;
-    return gitUrl.replace('git@github.com:', 'https://github.com/').replace('.git', '').trim();
-  } catch (error) {
-    return undefined;
-  }
-}
-
 export async function init(session: ISession, opts: InitOptions) {
-  const { project, site, writeToc } = opts;
+  const { project, site, writeToc, ghPages } = opts;
+
+  if (ghPages) return githubPagesAction(session);
+
   if (!project && !site && !writeToc) {
     session.log.info(WELCOME());
   }
