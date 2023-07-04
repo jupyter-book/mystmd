@@ -19,7 +19,7 @@ This guide outlines how to help your templates be discovered and used by the com
 
 Your template can stay in your GitHub organization:
 
-1. add a `myst-template` tag to your GitHub repository
+1. add a `myst-template` topic to your GitHub repository ([See GitHub docs](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics#adding-topics-to-your-repository))
 2. for the [templates](https://github.com/myst-templates/templates) repository and add your template information to the list
 
 The `data` folder in <https://github.com/myst-templates/templates> has a list of templates:
