@@ -36,9 +36,11 @@ export function embedDirective(
     if (!url) return;
     const source: Dependency = { url };
     if (file) {
-      const { kind, slug } = selectFile(session, file) ?? {};
+      const { kind, slug, frontmatter } = selectFile(session, file) ?? {};
       if (kind) source.kind = kind;
       if (slug) source.slug = slug;
+      if (frontmatter?.title) source.title = frontmatter.title;
+      if (frontmatter?.short_title) source.short_title = frontmatter.short_title;
     }
     node.source = source;
     if (!dependencies.map((dep) => dep.url).includes(url)) dependencies.push(source);

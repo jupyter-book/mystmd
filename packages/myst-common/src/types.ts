@@ -35,6 +35,8 @@ export type Dependency = {
   url: string;
   slug?: string;
   kind?: SourceFileKind;
+  title?: string;
+  short_title?: string;
 };
 
 export type References = {
