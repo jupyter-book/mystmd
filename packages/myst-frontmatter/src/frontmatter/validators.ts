@@ -619,11 +619,8 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     output.article = validateString(value.article, incrementOptions('article', opts));
   }
   if (defined(value.sub_articles)) {
-    if (output.format !== ExportFormats.xml && output.format !== ExportFormats.meca) {
-      validationError(
-        "sub_articles are only supported for exports of formats 'jats' or 'meca'",
-        opts,
-      );
+    if (output.format !== ExportFormats.xml) {
+      validationError("sub_articles are only supported for exports of format 'jats'", opts);
     } else {
       output.sub_articles = validateList(
         value.sub_articles,

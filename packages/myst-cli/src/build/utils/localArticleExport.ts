@@ -13,13 +13,13 @@ import { createPdfGivenTexExport } from '../pdf/create.js';
 import { runMecaExport } from '../meca/index.js';
 import { runMdExport } from '../md/index.js';
 
-export async function localArticleExport(
+async function _localArticleExport(
   session: ISession,
   exportOptionsList: ExportWithInputOutput[],
   opts: Pick<ExportOptions, 'clean' | 'projectPath' | 'throwOnFailure'>,
 ) {
   const { clean, projectPath } = opts;
-  await resolveAndLogErrors(
+  const errors = await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptionsWithFile) => {
       const { $file, $project, ...exportOptions } = exportOptionsWithFile;
@@ -66,4 +66,24 @@ export async function localArticleExport(
     }),
     opts.throwOnFailure,
   );
+  return errors;
+}
+
+export async function localArticleExport(
+  session: ISession,
+  exportOptionsList: ExportWithInputOutput[],
+  opts: Pick<ExportOptions, 'clean' | 'projectPath' | 'throwOnFailure'>,
+) {
+  // We must perform other exports before MECA, since MECA includes the others
+  const errors = await _localArticleExport(
+    session,
+    exportOptionsList.filter((expOpts) => expOpts.format !== ExportFormats.meca),
+    { ...opts, throwOnFailure: false },
+  );
+  await _localArticleExport(
+    session,
+    exportOptionsList.filter((expOpts) => expOpts.format === ExportFormats.meca),
+    opts,
+  );
+  if (opts.throwOnFailure && errors.length) throw errors[0];
 }

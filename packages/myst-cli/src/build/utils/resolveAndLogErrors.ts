@@ -16,4 +16,5 @@ export async function resolveAndLogErrors(
     session.log.error(e);
   });
   if (throwOnFailure && errors.length > 0) throw errors[0];
+  return errors;
 }
