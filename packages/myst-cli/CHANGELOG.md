@@ -1,5 +1,16 @@
 # myst-cli
 
+## 1.1.1
+
+### Patch Changes
+
+- 18c513bb: Improve MECA export structure and contents for validation with meca js library
+- 4df753a9: Add title and short_title to source dependency
+- Updated dependencies [18c513bb]
+- Updated dependencies [4df753a9]
+  - myst-frontmatter@1.0.3
+  - myst-common@1.0.3
+
 ## 1.1.0
 
 ### Minor Changes

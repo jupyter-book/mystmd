@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.0.3
+
+### Patch Changes
+
+- 18c513bb: Improve MECA export structure and contents for validation with meca js library
+
 ## 1.0.2
 
 ### Patch Changes

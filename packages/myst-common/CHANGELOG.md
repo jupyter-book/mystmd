@@ -1,5 +1,11 @@
 # myst-common
 
+## 1.0.3
+
+### Patch Changes
+
+- 4df753a9: Add title and short_title to source dependency
+
 ## 1.0.2
 
 ### Patch Changes
