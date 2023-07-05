@@ -8,7 +8,7 @@ assignees: ''
 
 <!-- A clear and concise description. Thanks for your contribution! -->
 
-<!-- Plase include the version you are using by typing `myst -v` -->
+<!-- Please include the version you are using by typing `myst -v` -->
 
 ## Description
 
