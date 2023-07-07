@@ -89,6 +89,13 @@ There are new releases of the MyST Markdown CLI every few weeks, to update to th
 npm update -g mystmd
 ```
 
+To get the latest templates, clean your templates directory with:
+
+```shell
+myst clean --templates
+```
+
+This will remove the `_build/templates` directory, which will be re-downloaded with the latest templates when you run `myst start` or `myst build`.
 :::
 
 ## Download example content
