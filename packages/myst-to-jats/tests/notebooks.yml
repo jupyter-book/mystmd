@@ -99,7 +99,7 @@ cases:
             <article-version article-version-type="alt representation">notebook</article-version>
           </front-stub>
           <body>
-            <sec id="nb-cell-0" sec-type="notebook-code">
+            <sec id="sec-1" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
               <sec sec-type="notebook-output" id="nb-cell-0-output">
                 <alternatives>
@@ -107,7 +107,7 @@ cases:
                 </alternatives>
               </sec>
             </sec>
-            <sec id="nb-cell-1" sec-type="notebook-code">
+            <sec id="sec-2" sec-type="notebook-code">
               <code id="nb-cell-1-code" language="python" executable="yes">'abc'</code>
               <sec sec-type="notebook-output" id="nb-cell-1-output">
                 <alternatives>
@@ -116,7 +116,7 @@ cases:
                 </alternatives>
               </sec>
             </sec>
-            <sec id="nb-cell-2" sec-type="notebook-code">
+            <sec id="sec-3" sec-type="notebook-code">
               <code id="nb-cell-2-code" language="python" executable="yes">a</code>
               <sec sec-type="notebook-output" id="nb-cell-2-output">
                 <alternatives>
@@ -196,11 +196,11 @@ cases:
           <article-meta/>
         </front>
         <body>
-          <sec id="sec1-jats-article">
+          <sec id="sec-1">
             <title>a section</title>
             <p>content</p>
           </sec>
-          <sec>
+          <sec id="sec-2">
             <title>Another section</title>
             <p>section content!</p>
           </sec>
@@ -210,7 +210,7 @@ cases:
             <article-version article-version-type="alt representation">notebook</article-version>
           </front-stub>
           <body>
-            <sec id="nb-cell-0" sec-type="notebook-code">
+            <sec id="sec-3" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
               <sec sec-type="notebook-output" id="nb-cell-0-output">
                 <alternatives>
@@ -218,12 +218,12 @@ cases:
                 </alternatives>
               </sec>
             </sec>
-            <sec id="nb-cell-1" sec-type="notebook-content">
-              <sec id="sec1">
+            <sec id="sec-4" sec-type="notebook-content">
+              <sec id="sec-5">
                 <title>a section</title>
                 <p>content</p>
               </sec>
-              <sec>
+              <sec id="sec-6">
                 <title>Another section</title>
                 <p>section content!</p>
               </sec>
@@ -269,9 +269,9 @@ cases:
           <article-meta/>
         </front>
         <body>
-          <sec id="nb-cell-0-jats-article" sec-type="notebook-code">
-            <code id="nb-cell-0-code-jats-article" language="python" executable="yes">print('abc')</code>
-            <sec sec-type="notebook-output" id="nb-cell-0-output-jats-article">
+          <sec id="sec-1" sec-type="notebook-code">
+            <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
+            <sec sec-type="notebook-output" id="nb-cell-0-output">
               <alternatives>
                 <media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/>
               </alternatives>
@@ -283,7 +283,7 @@ cases:
             <article-version article-version-type="alt representation">notebook</article-version>
           </front-stub>
           <body>
-            <sec id="nb-cell-0" sec-type="notebook-code">
+            <sec id="sec-2" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
               <sec sec-type="notebook-output" id="nb-cell-0-output">
                 <alternatives>

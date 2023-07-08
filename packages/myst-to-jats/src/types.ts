@@ -47,9 +47,11 @@ export type ArticleContent = {
 
 export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   data: D;
+  mdast: Root;
   stack: Element[];
   footnotes: Element[];
   expressions: Element[];
+  render: () => void;
   text: (value?: string) => void;
   renderChildren: (node: any) => void;
   renderInline: (node: GenericNode, name: string, attributes?: Attributes) => void;

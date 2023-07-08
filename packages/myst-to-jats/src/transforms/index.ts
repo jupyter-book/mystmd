@@ -12,6 +12,7 @@ export { definitionTransform, definitionPlugin } from './definitions.js';
 export { containerTransform, containerPlugin } from './containers.js';
 export { tableTransform, tablePlugin } from './tables.js';
 export { sectionTransform, sectionPlugin } from './sections.js';
+export { referenceTargetTransform, referenceResolutionTransform } from './references.js';
 
 export function basicTransformations(tree: Root, opts: Options) {
   definitionTransform(tree);
