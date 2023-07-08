@@ -121,11 +121,7 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'p');
   },
   section(node, state) {
-    state.renderInline(
-      node,
-      'sec',
-      sectionAttrsFromBlock(node as Section, notebookArticleSuffix(state)),
-    );
+    state.renderInline(node, 'sec', sectionAttrsFromBlock(node as Section));
   },
   heading(node, state) {
     renderLabel(node, state);
@@ -155,7 +151,7 @@ const handlers: Record<string, Handler> = {
     const { lang, executable, identifier } = node as Code;
     const attrs: Attributes = { language: lang };
     if (executable) attrs.executable = 'yes';
-    if (identifier) attrs.id = `${identifier}${notebookArticleSuffix(state)}`;
+    if (identifier) attrs.id = identifier;
     state.renderInline(node, 'code', attrs);
   },
   list(node, state) {
@@ -188,7 +184,7 @@ const handlers: Record<string, Handler> = {
   math(node, state) {
     const dispFormulaAttrs: Attributes = {};
     if (node.identifier) {
-      dispFormulaAttrs.id = `${node.identifier}${notebookArticleSuffix(state)}`;
+      dispFormulaAttrs.id = node.identifier;
     }
     state.openNode('disp-formula', dispFormulaAttrs);
     renderLabel(node, state, (enumerator) => `(${enumerator})`);
@@ -354,7 +350,7 @@ const handlers: Record<string, Handler> = {
     const { label } = node as Cite;
     const attrs: Attributes = {
       'ref-type': 'bibr',
-      rid: `${label}${notebookArticleSuffix(state)}${slugSuffix(state)}`,
+      rid: label,
     };
     state.renderInline(node, 'xref', attrs);
   },
@@ -362,7 +358,7 @@ const handlers: Record<string, Handler> = {
     const { identifier, enumerator } = node as FootnoteReference;
     const attrs: Attributes = {
       'ref-type': 'fn',
-      rid: `fn-${identifier}${notebookArticleSuffix(state)}`,
+      rid: identifier,
     };
     state.openNode('xref', attrs);
     state.text(enumerator);
@@ -370,7 +366,7 @@ const handlers: Record<string, Handler> = {
   },
   footnoteDefinition(node, state) {
     const { identifier, enumerator } = node as FootnoteDefinition;
-    state.openNode('fn', { id: `fn-${identifier}${notebookArticleSuffix(state)}` });
+    state.openNode('fn', { id: identifier });
     state.openNode('label');
     state.text(enumerator);
     state.closeNode();
@@ -393,14 +389,12 @@ const handlers: Record<string, Handler> = {
       alternativesFromMinifiedOutput(node.data[0], state);
       return;
     }
-    const { identifier, id } = node;
+    const { identifier } = node;
     const attrs: Attributes = { 'sec-type': 'notebook-output' };
-    const attrId = identifier ?? id;
-    node.data?.forEach((output: any, index: number) => {
-      const idSuffix = node.data.length > 1 ? `-${index}` : '';
+    node.data?.forEach((output: any) => {
       state.openNode('sec', {
         ...attrs,
-        id: `${attrId}${idSuffix}${notebookArticleSuffix(state)}`,
+        id: identifier,
       });
       alternativesFromMinifiedOutput(output, state);
       state.closeNode();
@@ -418,7 +412,7 @@ const handlers: Record<string, Handler> = {
     state.openNode('p');
     const smAttrs: Record<string, any> = {};
     if (smNode.figIdentifier) {
-      smAttrs.id = `${smNode.figIdentifier}-source${notebookArticleSuffix(state)}`;
+      smAttrs.id = `${smNode.figIdentifier}-source`;
     }
     smAttrs['specific-use'] = 'notebook';
     state.openNode('supplementary-material', smAttrs);
@@ -551,10 +545,7 @@ class JatsSerializer implements IJatsSerializer {
 
   renderInline(node: GenericNode, name: string, attributes?: Attributes) {
     this.openNode(name, {
-      id:
-        name !== 'xref' && node.identifier
-          ? `${node.identifier}${notebookArticleSuffix(this)}`
-          : undefined,
+      id: name !== 'xref' && node.identifier ? node.identifier : undefined,
       ...attributes,
     });
     if ('children' in node) {

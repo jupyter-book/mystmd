@@ -8,10 +8,7 @@ import type { Options } from '../types.js';
 
 export type Section = Omit<Heading, 'type'> & { type: 'section'; meta?: string };
 
-export function sectionAttrsFromBlock(
-  node: { data?: Record<string, any>; identifier?: string },
-  idSuffix?: string,
-) {
+export function sectionAttrsFromBlock(node: { data?: Record<string, any>; identifier?: string }) {
   const output: { 'sec-type'?: string; id?: string } = {};
   if (node.data) {
     const blockType = node.data.type;
@@ -19,7 +16,7 @@ export function sectionAttrsFromBlock(
       output['sec-type'] = blockType;
     }
   }
-  if (node.identifier) output.id = `${node.identifier}${idSuffix ?? ''}`;
+  if (node.identifier) output.id = node.identifier;
   return output;
 }
 
