@@ -6,7 +6,9 @@ import type { ISession } from 'myst-cli-utils';
 import { makeExecutable, writeFileToFolder } from 'myst-cli-utils';
 
 function createGithubPagesAction({ defaultBranch = 'main' }: { defaultBranch?: string }) {
-  return `name: MyST GitHub Pages Deploy
+  return `# This file was created automatically with \`myst init --gh-pages\` 🪄 💚
+
+name: MyST GitHub Pages Deploy
 on:
   push:
     # Runs on pushes targeting the default branch
