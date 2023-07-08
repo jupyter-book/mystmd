@@ -37,8 +37,8 @@
   "dependencies": {
     "citation-js-utils": "^1.0.1",
     "jats-tags": "^1.0.1",
-    "myst-common": "^1.0.2",
-    "myst-frontmatter": "^1.0.2",
+    "myst-common": "^1.0.3",
+    "myst-frontmatter": "^1.0.3",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^1.0.2",
     "nbtx": "^0.2.3",
@@ -50,7 +50,7 @@
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",
     "@types/mdast": "^3.0.10",
-    "jats-xml": "^1.0.1",
+    "jats-xml": "^1.0.3",
     "js-yaml": "^4.1.0",
     "myst-cli-utils": "^2.0.1"
   }
