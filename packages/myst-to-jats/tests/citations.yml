@@ -42,7 +42,7 @@ cases:
         </body>
         <back>
           <ref-list>
-            <ref id="doe_2000">
+            <ref id="ref-1">
               <element-citation publication-type="journal">
                 <article-title>My Title!</article-title>
                 <person-group person-group-type="author">
@@ -65,7 +65,7 @@ cases:
                 <issn>2000-300X</issn>
               </element-citation>
             </ref>
-            <ref id="example_2020">
+            <ref id="ref-2">
               <element-citation publication-type="journal">
                 <article-title/>
               </element-citation>
@@ -108,18 +108,18 @@ cases:
         </front>
         <body>
           <p>(
-            <xref ref-type="bibr" rid="Smith_2023">Smith, 2023</xref>; 
-            <xref ref-type="bibr" rid="Doe_2000">Doe, 2000</xref>)
+            <xref ref-type="bibr" rid="ref-1">Smith, 2023</xref>; 
+            <xref ref-type="bibr" rid="ref-2">Doe, 2000</xref>)
           </p>
         </body>
         <back>
           <ref-list>
-            <ref id="Doe_2000">
+            <ref id="ref-1">
               <element-citation publication-type="journal">
                 <article-title/>
               </element-citation>
             </ref>
-            <ref id="Smith_2023">
+            <ref id="ref-2">
               <element-citation publication-type="journal">
                 <article-title/>
               </element-citation>
@@ -162,18 +162,18 @@ cases:
         </front>
         <body>
           <p>
-            <xref ref-type="bibr" rid="Smith_2023">Smith, 2023</xref>, 
-            <xref ref-type="bibr" rid="Doe_2000">Doe, 2000</xref>
+            <xref ref-type="bibr" rid="ref-1">Smith, 2023</xref>, 
+            <xref ref-type="bibr" rid="ref-2">Doe, 2000</xref>
           </p>
         </body>
         <back>
           <ref-list>
-            <ref id="Doe_2000">
+            <ref id="ref-1">
               <element-citation publication-type="journal">
                 <article-title/>
               </element-citation>
             </ref>
-            <ref id="Smith_2023">
+            <ref id="ref-2">
               <element-citation publication-type="journal">
                 <article-title/>
               </element-citation>
@@ -202,12 +202,12 @@ cases:
         </front>
         <body>
           <p>
-            <xref ref-type="bibr" rid="Smith_2023"/>
+            <xref ref-type="bibr" rid="ref-1"/>
           </p>
         </body>
         <back>
           <ref-list>
-            <ref id="Smith_2023">
+            <ref id="ref-1">
               <element-citation publication-type="journal">
                 <article-title/>
               </element-citation>

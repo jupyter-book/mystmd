@@ -96,7 +96,7 @@ cases:
         </body>
         <back>
           <ref-list>
-            <ref id="example_2020">
+            <ref id="ref-1">
               <element-citation publication-type="journal">
                 <article-title/>
               </element-citation>
@@ -110,7 +110,7 @@ cases:
           </body>
           <back>
             <ref-list>
-              <ref id="example_2000">
+              <ref id="ref-2">
                 <element-citation publication-type="journal">
                   <article-title/>
                 </element-citation>
