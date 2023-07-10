@@ -43,12 +43,6 @@ export function containerTransform(mdast: Root) {
       caption.children.push(...legendChildren);
       remove(container as any, 'legend');
     }
-    if ((container as any).kind === 'figure') {
-      container.children = [
-        ...container.children.filter((child) => child.type !== 'image'),
-        ...container.children.filter((child) => child.type === 'image'),
-      ];
-    }
     const embed = select('embed', container);
     if (embed) {
       const embedBlock = select('block', embed);
@@ -62,6 +56,15 @@ export function containerTransform(mdast: Root) {
         embedIdentifier: (embedBlock as any)?.identifier,
       } as SupplementaryMaterial);
       if (embedOutputs) container.children.push(...(embedOutputs as any[]));
+    }
+    if (caption.children?.length && !select('caption', container)) {
+      container.children.push(caption);
+    }
+    if ((container as any).kind === 'figure') {
+      container.children = [
+        ...container.children.filter((child) => child.type !== 'image'),
+        ...container.children.filter((child) => child.type === 'image'),
+      ];
     }
   });
 }

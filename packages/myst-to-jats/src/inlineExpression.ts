@@ -1,6 +1,5 @@
 import type { InlineExpression } from 'myst-spec-ext';
 import type { Element, Handler } from './types.js';
-import { notebookArticleSuffix } from './utils.js';
 
 // function renderMimeToJats(state: IJatsSerializer, node: GenericNode): Element[] {
 //   const { result } = node as InlineExpression;
@@ -25,7 +24,7 @@ export const inlineExpression: Handler = (node, state) => {
   const element = {
     type: 'element',
     name: 'sec',
-    attributes: { id: `${identifier}${notebookArticleSuffix(state)}`, 'sec-type': 'expression' },
+    attributes: { id: identifier, 'sec-type': 'expression' },
     elements: [
       {
         type: 'element',

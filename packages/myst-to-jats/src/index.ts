@@ -21,12 +21,16 @@ import type {
   ArticleContent,
   DocumentOptions,
 } from './types.js';
-import { basicTransformations } from './transforms/index.js';
+import {
+  basicTransformations,
+  referenceResolutionTransform,
+  referenceTargetTransform,
+} from './transforms/index.js';
 import type { SupplementaryMaterial } from './transforms/containers.js';
+import type { IdInventory } from './transforms/references.js';
 import type { Section } from './transforms/sections.js';
 import { sectionAttrsFromBlock } from './transforms/sections.js';
 import { inlineExpression } from './inlineExpression.js';
-import { notebookArticleSuffix, slugSuffix } from './utils.js';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
@@ -121,11 +125,7 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'p');
   },
   section(node, state) {
-    state.renderInline(
-      node,
-      'sec',
-      sectionAttrsFromBlock(node as Section, notebookArticleSuffix(state)),
-    );
+    state.renderInline(node, 'sec', sectionAttrsFromBlock(node as Section));
   },
   heading(node, state) {
     renderLabel(node, state);
@@ -155,7 +155,7 @@ const handlers: Record<string, Handler> = {
     const { lang, executable, identifier } = node as Code;
     const attrs: Attributes = { language: lang };
     if (executable) attrs.executable = 'yes';
-    if (identifier) attrs.id = `${identifier}${notebookArticleSuffix(state)}`;
+    if (identifier) attrs.id = identifier;
     state.renderInline(node, 'code', attrs);
   },
   list(node, state) {
@@ -188,7 +188,7 @@ const handlers: Record<string, Handler> = {
   math(node, state) {
     const dispFormulaAttrs: Attributes = {};
     if (node.identifier) {
-      dispFormulaAttrs.id = `${node.identifier}${notebookArticleSuffix(state)}`;
+      dispFormulaAttrs.id = node.identifier;
     }
     state.openNode('disp-formula', dispFormulaAttrs);
     renderLabel(node, state, (enumerator) => `(${enumerator})`);
@@ -354,7 +354,7 @@ const handlers: Record<string, Handler> = {
     const { label } = node as Cite;
     const attrs: Attributes = {
       'ref-type': 'bibr',
-      rid: `${label}${notebookArticleSuffix(state)}${slugSuffix(state)}`,
+      rid: label,
     };
     state.renderInline(node, 'xref', attrs);
   },
@@ -362,7 +362,7 @@ const handlers: Record<string, Handler> = {
     const { identifier, enumerator } = node as FootnoteReference;
     const attrs: Attributes = {
       'ref-type': 'fn',
-      rid: `fn-${identifier}${notebookArticleSuffix(state)}`,
+      rid: identifier,
     };
     state.openNode('xref', attrs);
     state.text(enumerator);
@@ -370,7 +370,7 @@ const handlers: Record<string, Handler> = {
   },
   footnoteDefinition(node, state) {
     const { identifier, enumerator } = node as FootnoteDefinition;
-    state.openNode('fn', { id: `fn-${identifier}${notebookArticleSuffix(state)}` });
+    state.openNode('fn', { id: identifier });
     state.openNode('label');
     state.text(enumerator);
     state.closeNode();
@@ -393,14 +393,12 @@ const handlers: Record<string, Handler> = {
       alternativesFromMinifiedOutput(node.data[0], state);
       return;
     }
-    const { identifier, id } = node;
+    const { identifier } = node;
     const attrs: Attributes = { 'sec-type': 'notebook-output' };
-    const attrId = identifier ?? id;
-    node.data?.forEach((output: any, index: number) => {
-      const idSuffix = node.data.length > 1 ? `-${index}` : '';
+    node.data?.forEach((output: any) => {
       state.openNode('sec', {
         ...attrs,
-        id: `${attrId}${idSuffix}${notebookArticleSuffix(state)}`,
+        id: identifier,
       });
       alternativesFromMinifiedOutput(output, state);
       state.closeNode();
@@ -418,7 +416,7 @@ const handlers: Record<string, Handler> = {
     state.openNode('p');
     const smAttrs: Record<string, any> = {};
     if (smNode.figIdentifier) {
-      smAttrs.id = `${smNode.figIdentifier}-source${notebookArticleSuffix(state)}`;
+      smAttrs.id = `${smNode.figIdentifier}-source`;
     }
     smAttrs['specific-use'] = 'notebook';
     state.openNode('supplementary-material', smAttrs);
@@ -474,6 +472,7 @@ class JatsSerializer implements IJatsSerializer {
   file: VFile;
   data: StateData;
   handlers: Record<string, Handler>;
+  mdast: Root;
   stack: Element[];
   footnotes: Element[];
   expressions: Element[];
@@ -488,9 +487,12 @@ class JatsSerializer implements IJatsSerializer {
     this.footnotes = [];
     this.expressions = [];
     this.handlers = opts?.handlers ?? handlers;
-    const mdastCopy = copyNode(mdast) as any;
-    basicTransformations(mdastCopy, opts ?? {});
-    this.renderChildren(mdastCopy);
+    this.mdast = copyNode(mdast);
+    basicTransformations(this.mdast as any, opts ?? {});
+  }
+
+  render() {
+    this.renderChildren(this.mdast);
     while (this.stack.length > 1) this.closeNode();
   }
 
@@ -551,10 +553,7 @@ class JatsSerializer implements IJatsSerializer {
 
   renderInline(node: GenericNode, name: string, attributes?: Attributes) {
     this.openNode(name, {
-      id:
-        name !== 'xref' && node.identifier
-          ? `${node.identifier}${notebookArticleSuffix(this)}`
-          : undefined,
+      id: name !== 'xref' && node.identifier ? node.identifier : undefined,
       ...attributes,
     });
     if ('children' in node) {
@@ -615,25 +614,42 @@ export class JatsDocument {
     if (this.content.slug) {
       attributes.id = `${this.content.slug}${isNotebookArticleRep ? '-article' : ''}`;
     }
-    const state = new JatsSerializer(this.file, this.content.mdast, {
+    const articleState = new JatsSerializer(this.file, this.content.mdast, {
       ...this.options,
       isNotebookArticleRep,
     });
+    const inventory: IdInventory = {};
+    referenceTargetTransform(articleState.mdast as any, inventory, this.content.citations);
     const subArticles = this.options.subArticles ?? [];
     if (isNotebookArticleRep) {
-      subArticles.unshift(this.content);
+      subArticles.unshift({
+        mdast: copyNode(this.content.mdast),
+        kind: this.content.kind,
+        frontmatter: this.content.frontmatter,
+        slug: this.content.slug,
+        // No citations here - don't want duplicates in the jats
+      });
     }
+    const subArticleStates = subArticles.map((article) => {
+      const subArticleState = this.subArticleState(article);
+      referenceTargetTransform(subArticleState.mdast as any, inventory, article.citations);
+      return subArticleState;
+    });
+    [articleState, ...subArticleStates].forEach((state) => {
+      referenceResolutionTransform(state.mdast as any, inventory);
+      state.render();
+    });
     const elements: Element[] = [
       ...getFront(this.content.frontmatter),
-      this.body(state),
-      ...getBack(state, {
+      this.body(articleState),
+      ...getBack(articleState, {
         citations: this.content.citations,
-        footnotes: state.footnotes,
-        expressions: state.expressions,
+        footnotes: articleState.footnotes,
+        expressions: articleState.expressions,
       }),
-      ...subArticles.map((article, ind) =>
-        this.subArticle(article, ind === 0 && isNotebookArticleRep),
-      ),
+      ...subArticleStates.map((state, ind) => {
+        return this.subArticle(state, subArticles[ind], ind === 0 && isNotebookArticleRep);
+      }),
     ];
     const article: Element = {
       type: 'element',
@@ -667,13 +683,16 @@ export class JatsDocument {
     return [{ type: 'element', name: 'front-stub', elements }];
   }
 
-  subArticle(content: ArticleContent, notebookRep: boolean): Element {
-    const state = new JatsSerializer(this.file, content.mdast, {
+  subArticleState(content: ArticleContent): IJatsSerializer {
+    return new JatsSerializer(this.file, content.mdast, {
       ...this.options,
       isNotebookArticleRep: false,
       isSubArticle: true,
       slug: content.slug,
     });
+  }
+
+  subArticle(state: IJatsSerializer, content: ArticleContent, notebookRep: boolean): Element {
     const elements: Element[] = [
       ...this.frontStub(content.frontmatter, notebookRep),
       { type: 'element', name: 'body', elements: state.elements() },
@@ -689,7 +708,10 @@ export class JatsDocument {
   }
 
   body(state?: JatsSerializer) {
-    if (!state) state = new JatsSerializer(this.file, this.content.mdast, this.options);
+    if (!state) {
+      state = new JatsSerializer(this.file, this.content.mdast, this.options);
+      state.render();
+    }
     return { type: 'element', name: 'body', elements: state.elements() } as Element;
   }
 }

@@ -24,7 +24,7 @@
     "js-yaml": "^4.1.0",
     "katex": "^0.15.2",
     "mdast-util-find-and-replace": "^2.1.0",
-    "myst-common": "^1.0.2",
+    "myst-common": "^1.0.3",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^1.0.2",
     "rehype-parse": "^8.0.4",
