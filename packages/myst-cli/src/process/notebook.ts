@@ -20,11 +20,9 @@ function createOutputDirective(): { myst: string; id: string } {
   return { myst: `\`\`\`{output}\n:id: ${id}\n\`\`\``, id };
 }
 
-function blockDivider(cell: ICell, index: number) {
-  const id =
-    cell.metadata.id ?? `nb-cell-${index}-${computeHash(JSON.stringify(cell)).substring(0, 10)}`;
+function blockDivider(cell: ICell) {
   const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
-  return `+++ ${JSON.stringify({ id, type, ...cell.metadata })}\n\n`;
+  return `+++ ${JSON.stringify({ type, ...cell.metadata })}\n\n`;
 }
 
 export async function processNotebook(
@@ -55,10 +53,10 @@ export async function processNotebook(
       const cellContent = asString(cell.source);
       // If the first cell is a frontmatter block, do not put a block break above it
       const omitBlockDivider = index === 0 && cellContent.startsWith('---\n');
-      return acc.concat(`${omitBlockDivider ? '' : blockDivider(cell, index)}${cellContent}`);
+      return acc.concat(`${omitBlockDivider ? '' : blockDivider(cell)}${cellContent}`);
     }
     if (cell.cell_type === CELL_TYPES.raw) {
-      return acc.concat(`${blockDivider(cell, index)}\`\`\`\n${asString(cell.source)}\n\`\`\``);
+      return acc.concat(`${blockDivider(cell)}\`\`\`\n${asString(cell.source)}\n\`\`\``);
     }
     if (cell.cell_type === CELL_TYPES.code) {
       const code = `\`\`\`{code-cell} ${language}\n${asString(cell.source)}\n\`\`\``;
@@ -73,7 +71,7 @@ export async function processNotebook(
       } else {
         outputMap[id] = [];
       }
-      return acc.concat(`${blockDivider(cell, index)}${code}\n\n${myst}`);
+      return acc.concat(`${blockDivider(cell)}${code}\n\n${myst}`);
     }
     return acc;
   }, Promise.resolve([] as string[]));
