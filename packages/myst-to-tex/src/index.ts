@@ -16,6 +16,7 @@ import {
 import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { selectAll } from 'unist-util-select';
 import type { FootnoteDefinition } from 'myst-spec-ext';
+import { transformLegends } from './legends.js';
 
 export type { LatexResult } from './types.js';
 
@@ -397,6 +398,7 @@ class TexSerializer implements ITexSerializer {
 
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
   this.Compiler = (node, file) => {
+    transformLegends(node);
     const state = new TexSerializer(file, node, opts ?? { handlers });
     const tex = (file.result as string).trim();
     const result: LatexResult = {

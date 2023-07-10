@@ -123,7 +123,11 @@ export const captionHandler: Handler = (node, state) => {
   }
   state.ensureNewLine(true);
   const { nextCaptionNumbered: numbered, nextCaptionId: id } = state.data;
-  const command = numbered === false ? 'caption*' : 'caption';
+  // The square brackets here hold the "listoffigures" alternative figure description.
+  // This field is present because multi-paragraph captions will fail without
+  // this single paragraph alternative. For now, since we do not use "listoffigures"
+  // the square brackets are simply left empty. See https://tex.stackexchange.com/a/48313
+  const command = numbered === false ? 'caption[]*' : 'caption[]';
   const after = numbered && id ? `\\label{${id}}` : '';
   state.renderInlineEnvironment(node, command, { after });
 };

@@ -4,6 +4,7 @@ import { computeHash } from 'myst-cli-utils';
 import { SourceFileKind } from 'myst-common';
 import type { GenericNode } from 'myst-common';
 import stripAnsi from 'strip-ansi';
+import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { IOutput } from '@jupyterlab/nbformat';
 import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
@@ -66,6 +67,10 @@ export async function transformOutputs(
 export function reduceOutputs(mdast: Root, writeFolder: string) {
   const outputs = selectAll('output', mdast) as GenericNode[];
   outputs.forEach((node) => {
+    if (!node.data?.length) {
+      node.type = '__delete__';
+      return;
+    }
     let selectedOutput: { content_type: string; path: string; hash: string } | undefined;
     walkOutputs(node.data, (obj: any) => {
       if (selectedOutput || !obj.path || !obj.hash) return;
@@ -94,4 +99,5 @@ export function reduceOutputs(mdast: Root, writeFolder: string) {
       delete node.id;
     }
   });
+  remove(mdast, '__delete__');
 }

@@ -98,7 +98,7 @@ cases:
       \begin{figure}[!htbp]
       \centering
       \includegraphics[width=0.625\linewidth]{https://example.com}
-      \caption{Some \% \textit{markdown}}
+      \caption[]{Some \% \textit{markdown}}
       \label{My-Fig}
       \end{figure}
   - title: list-table
@@ -229,7 +229,7 @@ cases:
     latex: |-
       \begin{table}
       \centering
-      \caption{My table!}
+      \caption[]{My table!}
       \label{ABC}
       \begin{tabular}{p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}}
       \toprule
