@@ -1,5 +1,11 @@
 # myst-to-tex
 
+## 1.0.3
+
+### Patch Changes
+
+- 1320ad98: Clean up tex errors associated with legends and empty outputs
+
 ## 1.0.2
 
 ### Patch Changes

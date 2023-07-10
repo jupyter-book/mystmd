@@ -1,5 +1,11 @@
 # myst-to-jats
 
+## 1.0.4
+
+### Patch Changes
+
+- 1320ad98: Consolidate id deduplication/simplification for JATS to isolated myst-to-jats transforms
+
 ## 1.0.3
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # myst-cli
 
+## 1.1.2
+
+### Patch Changes
+
+- 1320ad98: Clean up tex errors associated with legends and empty outputs
+- 1320ad98: Consolidate id deduplication/simplification for JATS to isolated myst-to-jats transforms
+- 62da9929: Add note to top of github actions
+- Updated dependencies [1320ad98]
+- Updated dependencies [1320ad98]
+  - myst-to-tex@1.0.3
+  - myst-to-jats@1.0.4
+  - tex-to-myst@1.0.3
+
 ## 1.1.1
 
 ### Patch Changes
