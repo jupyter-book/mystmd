@@ -145,12 +145,18 @@ async function resolvePageSource(session: ISession, file: string) {
   return { format: extname(file).substring(1), filename: basename(file), url: `/${fileHash}` };
 }
 
-async function resolvePageExports(session: ISession, file: string) {
+export async function resolvePageExports(session: ISession, file: string) {
   const exports = (
     await collectExportOptions(
       session,
       [file],
-      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex, ExportFormats.xml],
+      [
+        ExportFormats.docx,
+        ExportFormats.pdf,
+        ExportFormats.tex,
+        ExportFormats.xml,
+        ExportFormats.meca,
+      ],
       {},
     )
   )
