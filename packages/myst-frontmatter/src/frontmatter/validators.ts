@@ -45,6 +45,8 @@ export const SITE_FRONTMATTER_KEYS = [
   'subtitle',
   'short_title',
   'description',
+  'banner',
+  'bannerOptimized',
   'authors',
   'venue',
   'github',
@@ -77,6 +79,8 @@ export const PAGE_FRONTMATTER_KEYS = [
   'tags',
   'thumbnail',
   'thumbnailOptimized',
+  'banner',
+  'bannerOptimized',
 ].concat(PROJECT_FRONTMATTER_KEYS);
 
 // These keys only exist on the project.
@@ -665,6 +669,17 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.subtitle)) {
     output.subtitle = validateString(value.subtitle, incrementOptions('subtitle', opts));
   }
+  if (value.banner === null) {
+    // It is possible for the banner to explicitly be null.
+    // This means not to look to the images in a page.
+    output.banner = null;
+  } else if (defined(value.banner)) {
+    output.banner = validateString(value.banner, incrementOptions('banner', opts));
+  }
+  if (defined(value.bannerOptimized)) {
+    // No validation, this is expected to be set programmatically
+    output.bannerOptimized = value.bannerOptimized;
+  }
   if (defined(value.authors)) {
     let authors = value.authors;
     // Turn a string into a list of strings, this will be transformed later
@@ -864,6 +879,17 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.thumbnailOptimized)) {
     // No validation, this is expected to be set programmatically
     output.thumbnailOptimized = value.thumbnailOptimized;
+  }
+  if (value.banner === null) {
+    // It is possible for the banner to explicitly be null.
+    // This means not to look to the images in a page.
+    output.banner = null;
+  } else if (defined(value.banner)) {
+    output.banner = validateString(value.banner, incrementOptions('banner', opts));
+  }
+  if (defined(value.bannerOptimized)) {
+    // No validation, this is expected to be set programmatically
+    output.bannerOptimized = value.bannerOptimized;
   }
   return output;
 }

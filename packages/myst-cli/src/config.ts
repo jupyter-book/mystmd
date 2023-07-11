@@ -96,7 +96,7 @@ function resolveToAbsolute(session: ISession, basePath: string, relativePath: st
     }
     message = `Does not exist as local path: ${absPath}`;
   } catch {
-    message = `Unable to resovle as local path: ${relativePath}`;
+    message = `Unable to resolve as local path: ${relativePath}`;
   }
   session.log.debug(message);
   return relativePath;
@@ -111,7 +111,7 @@ function resolveToRelative(session: ISession, basePath: string, absPath: string)
     }
     message = `Does not exist as local path: ${absPath}`;
   } catch {
-    message = `Unable to resovle as relative path: ${absPath}`;
+    message = `Unable to resolve as relative path: ${absPath}`;
   }
   session.log.debug(message);
   return absPath;

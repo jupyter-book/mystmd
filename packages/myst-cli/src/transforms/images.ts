@@ -500,6 +500,40 @@ export async function transformThumbnail(
   }
 }
 
+export async function transformBanner(
+  session: ISession,
+  file: string,
+  frontmatter: PageFrontmatter,
+  writeFolder: string,
+  opts?: { altOutputFolder?: string },
+): Promise<{ url: string; urlOptimized?: string } | undefined> {
+  const banner = frontmatter.banner;
+  // If the thumbnail is explicitly null, don't add an image
+  if (banner === null || !banner) {
+    session.log.debug(`${file}#frontmatter.banner is explicitly null, not searching content.`);
+    return;
+  }
+  session.log.debug(`${file}#frontmatter.banner Saving banner in static folder.`);
+  const result = await saveImageInStaticFolder(session, banner, file, writeFolder, {
+    altOutputFolder: opts?.altOutputFolder,
+  });
+  if (!result) return;
+  // Update frontmatter with new file name
+  const { url } = result;
+  frontmatter.banner = url;
+  const fileMatch = path.basename(result.url);
+  const optimized = await imagemagick.convertImageToWebp(
+    session,
+    path.join(writeFolder, fileMatch),
+  );
+  if (optimized) {
+    const urlOptimized = url.replace(fileMatch, optimized);
+    frontmatter.bannerOptimized = urlOptimized;
+    return { url, urlOptimized };
+  }
+  return { url };
+}
+
 export async function transformWebp(
   session: ISession,
   opts: { file: string; imageWriteFolder: string },
@@ -529,27 +563,32 @@ export async function transformWebp(
     }),
   );
 
-  if (frontmatter.thumbnail) {
-    const fileMatch = writeFolderContents.find((item) => frontmatter.thumbnail?.endsWith(item));
-    if (fileMatch) {
-      try {
-        const result = await imagemagick.convertImageToWebp(
-          session,
-          path.join(imageWriteFolder, fileMatch),
-        );
-        if (result) {
-          frontmatter.thumbnailOptimized = frontmatter.thumbnail.replace(fileMatch, result);
-          session.store.dispatch(
-            watch.actions.updateFileInfo({
-              path: file,
-              thumbnailOptimized: frontmatter.thumbnailOptimized,
-            }),
-          );
+  await Promise.all(
+    (['thumbnail', 'banner'] as const).map(async (attr) => {
+      const attrOptimized = `${attr}Optimized` as 'thumbnailOptimized' | 'bannerOptimized';
+      if (frontmatter[attr]) {
+        const fileMatch = writeFolderContents.find((item) => frontmatter[attr]?.endsWith(item));
+        if (fileMatch) {
+          try {
+            const result = await imagemagick.convertImageToWebp(
+              session,
+              path.join(imageWriteFolder, fileMatch),
+            );
+            if (result) {
+              frontmatter[attrOptimized] = frontmatter[attr]?.replace(fileMatch, result);
+              session.store.dispatch(
+                watch.actions.updateFileInfo({
+                  path: file,
+                  [attrOptimized]: frontmatter[attrOptimized],
+                }),
+              );
+            }
+          } catch (error) {
+            session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+          }
         }
-      } catch (error) {
-        session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
       }
-    }
-  }
+    }),
+  );
   cache.$mdast[file].post = { ...postData, mdast, frontmatter };
 }
