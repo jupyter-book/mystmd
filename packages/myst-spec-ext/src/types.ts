@@ -62,6 +62,7 @@ export type Heading = SpecHeading & {
 export type Image = SpecImage & {
   urlSource?: string;
   height?: string;
+  placeholder?: boolean;
 };
 
 export type Admonition = SpecAdmonition & {
