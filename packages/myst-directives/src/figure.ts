@@ -47,19 +47,37 @@ export const figureDirective: DirectiveSpec = {
     //   type: ParseTypesEnum.string,
     //   // class_option: list of strings?
     // },
+    'remove-input': {
+      type: ParseTypesEnum.boolean,
+    },
+    'remove-output': {
+      type: ParseTypesEnum.boolean,
+    },
   },
   body: {
     type: ParseTypesEnum.parsed,
   },
   run(data: DirectiveData): GenericNode[] {
-    const img: Image = {
-      type: 'image',
-      url: data.arg as string,
-      alt: data.options?.alt as string,
-      width: data.options?.width as string,
-      height: data.options?.height as string,
-      align: data.options?.align as Image['align'],
-    };
+    const url = data.arg as string;
+    let img: GenericNode;
+    // If figure arg starts with #, use embed node. Otherwise use image node.
+    if (url.startsWith('#')) {
+      img = {
+        type: 'embed',
+        label: url.substring(1),
+        'remove-input': data.options?.['remove-input'] ?? true,
+        'remove-output': data.options?.['remove-output'] ?? false,
+      };
+    } else {
+      img = {
+        type: 'image',
+        url: data.arg as string,
+        alt: data.options?.alt as string,
+        width: data.options?.width as string,
+        height: data.options?.height as string,
+        align: data.options?.align as Image['align'],
+      };
+    }
     const children: GenericNode[] = [img];
     if (data.body) {
       // TODO: This is probably better as a transform in the future
