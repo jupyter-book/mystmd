@@ -150,7 +150,13 @@ export async function resolvePageExports(session: ISession, file: string) {
     await collectExportOptions(
       session,
       [file],
-      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex, ExportFormats.xml],
+      [
+        ExportFormats.docx,
+        ExportFormats.pdf,
+        ExportFormats.tex,
+        ExportFormats.xml,
+        ExportFormats.meca,
+      ],
       {},
     )
   )
