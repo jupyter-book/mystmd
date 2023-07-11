@@ -6,6 +6,7 @@ import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config'
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
 import { filterKeys } from 'simple-validators';
+import { resolvePageExports } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
 import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
@@ -71,6 +72,12 @@ export async function localToManifestProject(
   );
 
   const projFrontmatter = projConfig ? filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS) : {};
+  const projConfigFile = selectors.selectLocalConfigFile(state, projectPath);
+  const exports = (await resolvePageExports(session, projConfigFile)).map(
+    ({ format, filename, url }) => {
+      return { format, filename, url };
+    },
+  );
   const banner = await transformBanner(
     session,
     path.join(projectPath, 'myst.yml'),
@@ -82,6 +89,7 @@ export async function localToManifestProject(
     ...projFrontmatter,
     banner: banner?.url,
     bannerOptimized: banner?.urlOptimized,
+    exports,
     bibliography: projFrontmatter.bibliography || [],
     title: projectTitle || 'Untitled',
     slug: projectSlug,
