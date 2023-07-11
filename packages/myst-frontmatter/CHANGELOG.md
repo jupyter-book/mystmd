@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.0.4
+
+### Patch Changes
+
+- ed0d571d: Add banner and bannerOptimized
+
 ## 1.0.3
 
 ### Patch Changes

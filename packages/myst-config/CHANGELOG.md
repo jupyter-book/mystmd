@@ -1,5 +1,13 @@
 # myst-config
 
+## 1.0.2
+
+### Patch Changes
+
+- ed0d571d: Add banner and bannerOptimized
+- Updated dependencies [ed0d571d]
+  - myst-frontmatter@1.0.4
+
 ## 1.0.1
 
 ### Patch Changes

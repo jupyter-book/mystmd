@@ -1,5 +1,15 @@
 # myst-cli
 
+## 1.1.3
+
+### Patch Changes
+
+- ed0d571d: Add banner and bannerOptimized
+- 2e66fe2c: Add URLs to project-level exports in site config
+- Updated dependencies [ed0d571d]
+  - myst-frontmatter@1.0.4
+  - myst-config@1.0.2
+
 ## 1.1.2
 
 ### Patch Changes
