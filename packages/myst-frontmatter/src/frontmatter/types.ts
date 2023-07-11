@@ -124,6 +124,8 @@ export type SiteFrontmatter = {
   description?: string;
   subtitle?: string;
   short_title?: string;
+  banner?: string | null;
+  bannerOptimized?: string;
   authors?: Author[];
   venue?: Venue;
   github?: string;
@@ -163,4 +165,6 @@ export type PageFrontmatter = Omit<ProjectFrontmatter, 'references'> & {
   tags?: string[];
   thumbnail?: string | null;
   thumbnailOptimized?: string;
+  banner?: string | null;
+  bannerOptimized?: string;
 };

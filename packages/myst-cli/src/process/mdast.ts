@@ -49,6 +49,7 @@ import {
   StaticFileTransformer,
   inlineExpressionsPlugin,
   propagateBlockDataToCode,
+  transformBanner,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/index.js';
 import { logMessagesFromVFile } from '../utils/index.js';
@@ -196,6 +197,9 @@ export async function transformMdast(
     await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,
     });
+    await transformBanner(session, file, frontmatter, imageWriteFolder, {
+      altOutputFolder: imageAltOutputFolder,
+    });
   }
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   const useSlug = pageSlug !== index;
@@ -212,6 +216,8 @@ export async function transformMdast(
       date: frontmatter.date,
       thumbnail: frontmatter.thumbnail,
       thumbnailOptimized: frontmatter.thumbnailOptimized,
+      banner: frontmatter.banner,
+      bannerOptimized: frontmatter.bannerOptimized,
       tags: frontmatter.tags,
       url,
       dataUrl,

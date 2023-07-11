@@ -47,8 +47,10 @@ type ManifestProjectItem = {
   slug?: string;
   description?: string;
   date?: string;
-  thumbnail?: string;
+  thumbnail?: string | null;
   thumbnailOptimized?: string;
+  banner?: string | null;
+  bannerOptimized?: string;
   tags?: string[];
   exports?: Export[];
 };
@@ -58,8 +60,10 @@ type ManifestProject = {
   index: string;
   title: string;
   pages: ManifestProjectItem[];
-  thumbnail?: string;
+  thumbnail?: string | null;
   thumbnailOptimized?: string;
+  banner?: string | null;
+  bannerOptimized?: string;
   tags?: string[];
 } & ProjectFrontmatter;
 

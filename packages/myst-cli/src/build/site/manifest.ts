@@ -10,6 +10,7 @@ import type { ISession } from '../../session/types.js';
 import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
 import { getMystTemplate } from './template.js';
+import { transformBanner } from '../../transforms/images.js';
 
 type ManifestProject = Required<SiteManifest>['projects'][0];
 
@@ -20,6 +21,7 @@ type ManifestProject = Required<SiteManifest>['projects'][0];
  * - Adds projectSlug (which locally comes from site config)
  * - Removes any local file references
  * - Adds validated frontmatter
+ * - Writes and transforms banner and thumbnail images
  */
 export async function localToManifestProject(
   session: ISession,
@@ -44,6 +46,8 @@ export async function localToManifestProject(
         const description = fileInfo.description ?? '';
         const thumbnail = fileInfo.thumbnail ?? '';
         const thumbnailOptimized = fileInfo.thumbnailOptimized ?? '';
+        const banner = fileInfo.banner ?? '';
+        const bannerOptimized = fileInfo.bannerOptimized ?? '';
         const date = fileInfo.date ?? '';
         const tags = fileInfo.tags ?? [];
         const { slug, level } = page;
@@ -55,6 +59,8 @@ export async function localToManifestProject(
           date,
           thumbnail,
           thumbnailOptimized,
+          banner,
+          bannerOptimized,
           tags,
           level,
         };
@@ -65,8 +71,17 @@ export async function localToManifestProject(
   );
 
   const projFrontmatter = projConfig ? filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS) : {};
+  const banner = await transformBanner(
+    session,
+    path.join(projectPath, 'myst.yml'),
+    projFrontmatter,
+    session.publicPath(),
+    { altOutputFolder: '/' },
+  );
   return {
     ...projFrontmatter,
+    banner: banner?.url,
+    bannerOptimized: banner?.urlOptimized,
     bibliography: projFrontmatter.bibliography || [],
     title: projectTitle || 'Untitled',
     slug: projectSlug,
