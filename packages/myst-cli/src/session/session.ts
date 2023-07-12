@@ -11,15 +11,51 @@ import {
   findCurrentSiteAndLoad,
   reloadAllConfigsForCurrentSite,
 } from '../config.js';
+import latestVersion from 'latest-version';
+import boxen from 'boxen';
+import chalk from 'chalk';
+import version from '../version.js';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
+
+export function logUpdateAvailable({
+  current,
+  latest,
+  upgradeCommand,
+  twitter,
+}: {
+  current: string;
+  latest: string;
+  upgradeCommand: string;
+  twitter: string;
+}) {
+  return boxen(
+    `Update available! ${chalk.dim(`v${current}`)} ≫ ${chalk.green.bold(
+      `v${latest}`,
+    )}\n\nRun \`${chalk.cyanBright.bold(
+      upgradeCommand,
+    )}\` to update.\n\nFollow ${chalk.yellowBright(
+      `@${twitter}`,
+    )} for updates!\nhttps://twitter.com/${twitter}`,
+    {
+      padding: 1,
+      margin: 1,
+      borderColor: 'green',
+      borderStyle: 'round',
+      textAlignment: 'center',
+    },
+  );
+}
 
 export class Session implements ISession {
   API_URL: string;
   configFiles: string[];
   store: Store<RootState>;
   $logger: Logger;
+
+  _shownUpgrade = false;
+  _latestVersion?: string;
 
   get log(): Logger {
     return this.$logger;
@@ -31,6 +67,25 @@ export class Session implements ISession {
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.store = createStore(rootReducer);
     this.reload();
+    // Allow the latest version to be loaded
+    latestVersion('mystmd')
+      .then((latest) => {
+        this._latestVersion = latest;
+      })
+      .catch(() => null);
+  }
+
+  showUpgradeNotice() {
+    if (this._shownUpgrade || !this._latestVersion || version === this._latestVersion) return;
+    this.log.info(
+      logUpdateAvailable({
+        current: version,
+        latest: this._latestVersion,
+        upgradeCommand: 'npm i -g mystmd@latest',
+        twitter: 'MystMarkdown',
+      }),
+    );
+    this._shownUpgrade = true;
   }
 
   reload() {

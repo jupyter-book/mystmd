@@ -31,5 +31,6 @@ export function clirun(
       logVersions(session, versions, false);
       process.exit(1);
     }
+    session.showUpgradeNotice?.();
   };
 }

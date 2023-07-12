@@ -19,6 +19,7 @@ export type ISession = {
   sitePath(): string;
   contentPath(): string;
   publicPath(): string;
+  showUpgradeNotice(): void;
 };
 
 export type ISessionWithCache = ISession & {
