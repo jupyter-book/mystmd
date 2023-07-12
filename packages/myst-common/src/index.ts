@@ -13,11 +13,10 @@ export {
 } from './utils.js';
 export { selectBlockParts, extractPart } from './extractParts.js';
 export { TemplateKind, TemplateOptionType } from './templates.js';
-export { NotebookCell, ParseTypesEnum, SourceFileKind } from './types.js';
+export { NotebookCell, ParseTypesEnum } from './types.js';
 
 export type { MessageInfo } from './utils.js';
 export type {
-  Dependency,
   GenericNode,
   GenericParent,
   Citations,

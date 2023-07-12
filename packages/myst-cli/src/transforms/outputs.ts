@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { join } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
-import { SourceFileKind } from 'myst-common';
+import { SourceFileKind } from 'myst-spec-ext';
 import type { GenericNode } from 'myst-common';
 import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';

@@ -2,7 +2,7 @@ import path from 'node:path';
 import type { Root } from 'mdast';
 import { tic } from 'myst-cli-utils';
 import type { References } from 'myst-common';
-import { SourceFileKind } from 'myst-common';
+import { SourceFileKind } from 'myst-spec-ext';
 import type { LinkTransformer } from 'myst-transforms';
 import {
   basicTransformationsPlugin,

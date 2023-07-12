@@ -1,5 +1,6 @@
-import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import type { DirectiveSpec, DirectiveData } from 'myst-common';
 import { fileError, fileWarn, normalizeLabel, ParseTypesEnum } from 'myst-common';
+import type { Embed } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 
 export const embedDirective: DirectiveSpec = {
@@ -32,17 +33,18 @@ export const embedDirective: DirectiveSpec = {
     }
     return validatedData;
   },
-  run(data: DirectiveData): GenericNode[] {
+  run(data: DirectiveData): Embed[] {
     if (!data.arg) return [];
     const argString = data.arg as string;
     const arg = argString.startsWith('#') ? argString.substring(1) : argString;
     const { label } = normalizeLabel(arg) || {};
+    if (!label) return [];
     return [
       {
         type: 'embed',
         label,
-        'remove-input': data.options?.['remove-input'],
-        'remove-output': data.options?.['remove-output'],
+        'remove-input': !!data.options?.['remove-input'],
+        'remove-output': !!data.options?.['remove-output'],
       },
     ];
   },

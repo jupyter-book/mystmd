@@ -21,23 +21,10 @@ export type Citations = {
   data: Record<string, { html: string; number: number; doi: string | undefined }>;
 };
 
-export enum SourceFileKind {
-  Article = 'Article',
-  Notebook = 'Notebook',
-}
-
 export enum NotebookCell {
   content = 'notebook-content',
   code = 'notebook-code',
 }
-
-export type Dependency = {
-  url: string;
-  slug?: string;
-  kind?: SourceFileKind;
-  title?: string;
-  short_title?: string;
-};
 
 export type References = {
   cite?: Citations;

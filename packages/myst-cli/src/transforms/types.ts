@@ -1,6 +1,7 @@
 import type { Root } from 'mdast';
-import type { References, SourceFileKind, Dependency } from 'myst-common';
+import type { References } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import type { SourceFileKind, Dependency } from 'myst-spec-ext';
 import type { CitationRenderer } from 'citation-js-utils';
 
 export type PreRendererData = {
