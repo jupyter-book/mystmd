@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import 'core-js/actual'; // This adds backwards compatible functionality for various CLIs
 import { Command } from 'commander';
 import version from './version.js';
 import { makeBuildCLI } from './build.js';

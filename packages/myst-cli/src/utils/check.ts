@@ -22,7 +22,7 @@ type VersionResults = Parameters<Parameters<typeof check>[1]>[1];
 
 export async function getNodeVersion(session: ISession): Promise<VersionResults | null> {
   const result = new Promise<VersionResults | null>((resolve) => {
-    check({ node: '>= 14.0.0', npm: '>=7' }, (error, results) => {
+    check({ node: '>= 16.0.0', npm: '>=7' }, (error, results) => {
       if (error) {
         session.log.error(error);
         resolve(null);
@@ -35,22 +35,21 @@ export async function getNodeVersion(session: ISession): Promise<VersionResults 
 }
 
 export function logVersions(session: ISession, result: VersionResults | null, debug = true) {
-  const versions: string[][] = [];
+  const versions: [boolean | undefined, ...string[]][] = [];
   Object.entries(result?.versions ?? {}).forEach(([name, p]) => {
     versions.push([
+      p.isSatisfied,
       name,
       p.version ? `${p.version}` : 'Package Not Found',
       `Required: ${p.wanted?.raw || ''}`,
-      p.isSatisfied ? '✅' : '⚠️',
     ]);
   });
-  versions.push(['myst', version]);
+  versions.push([undefined, 'myst', version]);
   const versionString = versions
-    .map(
-      ([n, v, r, c]) =>
-        `\n - ${n.padEnd(25, ' ')}${v.padStart(10, ' ').padEnd(15, ' ')}${r?.padEnd(25) ?? ''}${
-          c ?? ''
-        }`,
+    .map(([good, n, v, r]) =>
+      chalk[good === true ? 'green' : good === false ? 'red' : 'dim'](
+        `\n - ${n.padEnd(25, ' ')}${v.padStart(10, ' ').padEnd(15, ' ')}${r?.padEnd(25) ?? ''}`,
+      ),
     )
     .join('');
   session.log[debug ? 'debug' : 'info'](`\n\nMyst CLI Versions:${versionString}\n\n`);
