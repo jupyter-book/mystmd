@@ -10,6 +10,8 @@ import type { ExportResults, ExportWithOutput } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { TemplateKind } from 'myst-common';
 import chalk from 'chalk';
+import { isLatexmkAvailable } from './utils.js';
+import { docLinks } from '../../docs.js';
 
 const copyFile = util.promisify(fs.copyFile);
 
@@ -46,7 +48,7 @@ export async function createPdfGivenTexExport(
   if (clean) cleanOutput(session, pdfOutput);
   const { output: texOutput, template } = texExportOptions;
 
-  const templateLogString = template ? ` (${template})` : '';
+  const templateLogString = `(${template ?? 'default'})`;
 
   const buildPath = createTempFolder(session);
   const texFile = path.basename(texOutput);
@@ -72,6 +74,12 @@ export async function createPdfGivenTexExport(
   const texLogOutput = path.join(logOutputFolder, texLogFile);
   if (clean) cleanOutput(session, logOutputFolder);
 
+  if (!isLatexmkAvailable()) {
+    session.log.error(
+      `⚠️  The "latexmk" command is not available. See documentation on installing LaTeX:\n\n${docLinks.installLatex}`,
+    );
+  }
+
   let buildCommand: string;
   if (!template) {
     buildCommand = pdfExportCommand(texFile, texLogFile);
@@ -84,6 +92,7 @@ export async function createPdfGivenTexExport(
     buildCommand = pdfExportCommand(texFile, texLogFile, mystTemplate);
   }
   const toc = tic();
+  let buildError = false;
   try {
     session.log.info(`🖨  Rendering PDF ${templateLogString} to ${pdfBuild}`);
     session.log.debug(`Running command:\n> ${buildCommand}`);
@@ -92,31 +101,52 @@ export async function createPdfGivenTexExport(
   } catch (err) {
     session.log.debug((err as Error).stack);
     session.log.error(
-      `🛑 LaTeX reported an error building your PDF${templateLogString} for ${texFile}`,
+      `🛑 LaTeX reported an error building your PDF ${templateLogString} for ${texFile}`,
     );
-    session.log.info('\n   Please check your PDF, it may actually be fine? 🤷');
+    buildError = true;
+  }
+
+  const logs = uniqueArray(
+    fs
+      .readFileSync(logBuild)
+      .toString()
+      .split('\n')
+      .filter(
+        (line) =>
+          line.includes('WARN ') || line.includes('LaTeX Error') || line.includes('LaTeX Warning'),
+      ),
+    (line) => (line.indexOf('WARN') > -1 ? line.slice(line.indexOf('WARN')) : line),
+  ).filter((line) => !line.includes('Unused global option')); // Remove the trivial errors
+
+  const packageErrors = logs
+    .map((line) => (line.includes('LaTeX Error') ? line.match(/`(.*)\.sty'/)?.[1] : undefined))
+    .filter((sty) => !!sty)
+    .map((p) => `${p}.sty`);
+  session.log.debug(`Unknown style files: "${packageErrors.join('", "')}"`);
+  // Here we could search for packages and install:
+  // const packages = await Promise.all(
+  //   packageErrors.map((sty) => searchForPackage(session, sty, { cwd: buildPath })),
+  // );
+  if (logs.length > 0) {
+    if (buildError) {
+      if (fs.existsSync(pdfBuild)) {
+        session.log.info('\n   Please check your PDF, it may actually be fine? 🤷');
+      } else {
+        session.log.info('\n   The PDF did not compile, here are the logs:');
+      }
+    } else {
+      session.log.info(`\n   LaTeX ${chalk.green('succeeded')} with warnings:`);
+    }
     session.log.info(
       chalk.dim(
         `\n     Console:        ${texLogBuild}\n     Detailed logs:  ${logBuild}\n     Build path:     ${buildPath}\n`,
       ),
     );
-    const logs = uniqueArray(
-      fs
-        .readFileSync(texLogBuild)
-        .toString()
-        .split('\n')
-        .filter((line) => line.includes('WARN ') || line.includes('LaTeX Error')),
-      (line) => (line.indexOf('WARN') > -1 ? line.slice(line.indexOf('WARN')) : line),
+    session.log.info(
+      `\n     ${chalk.dim('Preview:')}\n     ${logs
+        .map((line) => (line.includes('LaTeX Error') ? chalk.red(line) : chalk.yellowBright(line)))
+        .join('\n     ')}\n`,
     );
-    if (logs.length > 0) {
-      session.log.info(
-        `\n     ${chalk.dim('Preview:')}\n     ${logs
-          .map((line) =>
-            line.includes('LaTeX Error') ? chalk.red(line) : chalk.yellowBright(line),
-          )
-          .join('\n     ')}\n`,
-      );
-    }
   }
 
   const pdfBuildExists = fs.existsSync(pdfBuild);
