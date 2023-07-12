@@ -16,7 +16,7 @@ export function createServerLogger(session: ISession, ready: () => void): Logger
         session.log.info(
           `\n🔌 Server started on port ${port}!  🥳 🎉\n\n\n\t👉  ${chalk.green(local)}  👈\n\n`,
         );
-        (session as any).showUpgradeNotice?.();
+        session.showUpgradeNotice?.();
         return;
       }
       session.log.info(
