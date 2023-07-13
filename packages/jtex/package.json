@@ -44,6 +44,7 @@
     "npm": ">=6"
   },
   "dependencies": {
+    "adm-zip": "^0.5.10",
     "chalk": "^5.2.0",
     "commander": "^10.0.1",
     "js-yaml": "^4.1.0",
@@ -53,13 +54,12 @@
     "node-fetch": "^3.3.1",
     "nunjucks": "^3.2.4",
     "pretty-hrtime": "^1.0.3",
-    "simple-validators": "^1.0.1",
-    "unzipper": "^0.10.14"
+    "simple-validators": "^1.0.1"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.0",
     "@types/nunjucks": "^3.2.2",
     "@types/sanitize-html": "^2.9.0",
-    "@types/unzipper": "^0.10.6",
     "memfs": "^3.5.3"
   }
 }

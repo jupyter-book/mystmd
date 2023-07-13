@@ -45,13 +45,11 @@
     "myst-frontmatter": "^1.0.3",
     "node-fetch": "^3.3.1",
     "pretty-hrtime": "^1.0.3",
-    "simple-validators": "^1.0.1",
-    "unzipper": "^0.10.14"
+    "simple-validators": "^1.0.1"
   },
   "devDependencies": {
     "@types/nunjucks": "^3.2.2",
     "@types/sanitize-html": "^2.9.0",
-    "@types/unzipper": "^0.10.6",
     "memfs": "^3.5.3"
   }
 }
