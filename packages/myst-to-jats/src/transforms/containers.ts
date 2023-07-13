@@ -62,8 +62,8 @@ export function containerTransform(mdast: Root) {
     }
     if ((container as any).kind === 'figure') {
       container.children = [
-        ...container.children.filter((child) => child.type !== 'image'),
-        ...container.children.filter((child) => child.type === 'image'),
+        ...container.children.filter((child) => child.type.startsWith('caption')),
+        ...container.children.filter((child) => !child.type.startsWith('caption')),
       ];
     }
   });

@@ -398,10 +398,10 @@ const handlers: Record<string, Handler> = {
     }
     const { identifier } = node;
     const attrs: Attributes = { 'sec-type': 'notebook-output' };
-    node.data?.forEach((output: any) => {
+    node.data?.forEach((output: any, index: number) => {
       state.openNode('sec', {
         ...attrs,
-        id: identifier,
+        id: identifier ? `${identifier}-${index}` : undefined,
       });
       alternativesFromMinifiedOutput(output, state);
       state.closeNode();
