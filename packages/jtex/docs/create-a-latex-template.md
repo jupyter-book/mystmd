@@ -7,9 +7,8 @@ thumbnail: ./thumbnails/create-a-latex-template.png
 A `jtex` template contains everything necessary to create a $\LaTeX$ document, including a `template.yml`, the main `template.tex`, and any associated files such as classes (`*.cls`), definitions (`*.def`), or images (`*.png`).
 These $\LaTeX$ templates are data-driven, in that they record all of the options in a `template.yml` which you create as you are working through moving your $\LaTeX$ document to a `jtex` template.
 
-````{note}
+````{note} See the video tutorial 📺
 :class: dropdown
-# See the video tutorial 📺
 ```{iframe} https://www.youtube.com/embed/-oD6jlM23wY
 :width: 100%
 ```

@@ -16,9 +16,8 @@ The tutorial will be brief on explaining MyST syntax, we provide a [MyST Markdow
 
 ![](#lookout-for-tutorial-actions)
 
-````{note}
+````{note} See the video tutorial 📺
 :class: dropdown
-# See the video tutorial 📺
 ```{iframe} https://www.youtube.com/embed/NxSNVt9XsCI
 :width: 100%
 ```

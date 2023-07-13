@@ -17,9 +17,8 @@ For this tutorial we are assuming some familiarity with [JupyterLab](https://jup
 
 ![](#lookout-for-tutorial-actions)
 
-````{note}
+````{note} See the video tutorial 📺
 :class: dropdown
-# See the video tutorial 📺
 ```{iframe} https://www.youtube.com/embed/F3st8X0L1Ys
 :width: 100%
 ```
