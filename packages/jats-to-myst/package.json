@@ -1,6 +1,6 @@
 {
   "name": "jats-to-myst",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Read JATS and convert to MyST AST",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/jats-to-myst",

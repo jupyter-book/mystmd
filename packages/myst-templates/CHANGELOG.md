@@ -1,5 +1,12 @@
 # myst-templates
 
+## 1.0.3
+
+### Patch Changes
+
+- 016c55e7: Download and unzip site templates, do not clone
+- 016c55e7: Use adm-zip to unzip templates, not unzipper
+
 ## 1.0.2
 
 ### Patch Changes

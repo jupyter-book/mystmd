@@ -1,5 +1,12 @@
 # mystmd
 
+## 1.1.4
+
+### Patch Changes
+
+- 6a4f57b5: Notify about upgrades in the CLI
+- 56872ae1: We are supporting LTS branches of node. This adds an additional check for >=16.
+
 ## 1.1.3
 
 ## 1.1.2

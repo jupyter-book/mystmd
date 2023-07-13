@@ -1,5 +1,18 @@
 # myst-cli
 
+## 1.1.4
+
+### Patch Changes
+
+- f5915127: Improve latex logging errors
+- 6a4f57b5: Notify about upgrades in the CLI
+- 56872ae1: We are supporting LTS branches of node. This adds an additional check for >=16.
+- Updated dependencies [016c55e7]
+- Updated dependencies [016c55e7]
+  - myst-templates@1.0.3
+  - jtex@1.0.3
+  - myst-to-jats@1.0.5
+
 ## 1.1.3
 
 ### Patch Changes

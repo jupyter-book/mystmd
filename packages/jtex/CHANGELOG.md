@@ -1,5 +1,14 @@
 # jtex
 
+## 1.0.3
+
+### Patch Changes
+
+- 016c55e7: Use adm-zip to unzip templates, not unzipper
+- Updated dependencies [016c55e7]
+- Updated dependencies [016c55e7]
+  - myst-templates@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes
