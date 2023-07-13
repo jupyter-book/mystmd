@@ -20,5 +20,6 @@ cases:
           children:
             - type: iframe
               src: https://www.example.com
+              identifier: example
               label: example
               width: 5%
