@@ -20,5 +20,35 @@ cases:
           children:
             - type: iframe
               src: https://www.example.com
+              identifier: example
               label: example
               width: 5%
+  - title: iframe with caption
+    markdown: |-
+      ```{iframe} https://www.example.com
+      :label: example
+      Hello caption!
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: iframe
+          args: https://www.example.com
+          options:
+            label: example
+          value: Hello caption!
+          children:
+            - type: container
+              kind: figure
+              identifier: example
+              label: example
+              children:
+                - type: iframe
+                  src: https://www.example.com
+                - type: caption
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Hello caption!

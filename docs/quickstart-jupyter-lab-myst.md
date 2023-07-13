@@ -4,12 +4,10 @@ subtitle: MyST has full support in Jupyter
 subject: MyST Quickstart Tutorial
 short_title: MyST in Jupyter
 description: MyST Markdown can be used in JupyterLab with support for all MyST syntax as well as inline execution.
-binder: https://mybinder.org/v2/gh/executablebooks/jupyterlab-myst/main?urlpath=lab
 thumbnail: ./thumbnails/jupyterlab-myst.png
 ---
 
-::::{important}
-**Objective**
+::::{important} Objective
 
 The goal of this quickstart is to get you up and running in [JupyterLab](https://jupyter.org), explore inline execution 📈, and working together with other MyST tools.
 
@@ -17,6 +15,13 @@ For this tutorial we are assuming some familiarity with [JupyterLab](https://jup
 ::::
 
 ![](#lookout-for-tutorial-actions)
+
+````{note} See the video tutorial 📺
+:class: dropdown
+```{iframe} https://www.youtube.com/embed/F3st8X0L1Ys
+:width: 100%
+```
+````
 
 :::{tip} 🛠 Install JupyterLab Locally
 :class: dropdown

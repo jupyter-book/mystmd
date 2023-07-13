@@ -7,15 +7,14 @@ thumbnail: ./thumbnails/create-a-latex-template.png
 A `jtex` template contains everything necessary to create a $\LaTeX$ document, including a `template.yml`, the main `template.tex`, and any associated files such as classes (`*.cls`), definitions (`*.def`), or images (`*.png`).
 These $\LaTeX$ templates are data-driven, in that they record all of the options in a `template.yml` which you create as you are working through moving your $\LaTeX$ document to a `jtex` template.
 
-````{note}
+````{note} See the video tutorial 📺
 :class: dropdown
-# See the video tutorial 📺
 ```{iframe} https://www.youtube.com/embed/-oD6jlM23wY
 :width: 100%
 ```
 ````
 
-To get started you will need to install `jtex` and, for convienience, [cookiecutter](https://github.com/cookiecutter/cookiecutter) which allows you to get up and started in a new repository fast!
+To get started you will need to install `jtex` and, for convenience, [cookiecutter](https://github.com/cookiecutter/cookiecutter) which allows you to get up and started in a new repository fast!
 
 ```bash
 npm install -g jtex
@@ -161,7 +160,7 @@ doc:
 # Improve the Data
 Often the templates that journals provide include a lot of specific information about number of characters (`max_char`) or number of words (`max_words`), you can create these fields so the will be checked when you render your template.
 
-Other helpful information can also be included in this template `description`, for example about data availability or how to structure your ackowledgements `part`.
+Other helpful information can also be included in this template `description`, for example about data availability or how to structure your acknowledgements `part`.
 ```
 
 Try running `jtex check` again, and some of the errors will be fixed!

@@ -6,8 +6,7 @@ short_title: MyST Documents
 description: Get up and running with the MyST (Markedly Structured Text) command line interface. MyST is designed to create publication-quality documents written entirely in Markdown.
 ---
 
-::::{important}
-**Objective**
+::::{important} Objective
 
 The goal of this quickstart is to get you up and running on your local computer 👩‍💻, improve a markdown document to add MyST features, and then export to Microsoft Word 📄 and (if you have LaTeX installed) a scientific PDF template 📜.
 
@@ -16,9 +15,8 @@ The tutorial will be brief on explaining MyST syntax, we provide a [MyST Markdow
 
 ![](#lookout-for-tutorial-actions)
 
-````{note}
+````{note} See the video tutorial 📺
 :class: dropdown
-# See the video tutorial 📺
 ```{iframe} https://www.youtube.com/embed/NxSNVt9XsCI
 :width: 100%
 ```

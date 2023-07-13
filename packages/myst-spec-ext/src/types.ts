@@ -64,6 +64,16 @@ export type Image = SpecImage & {
   height?: string;
 };
 
+export type Iframe = {
+  type: 'iframe';
+  label?: string;
+  identifier?: string;
+  src: string;
+  width?: string;
+  align?: Image['align'];
+  class?: Image['class'];
+};
+
 export type Admonition = SpecAdmonition & {
   icon?: boolean;
 };

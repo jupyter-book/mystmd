@@ -1,5 +1,6 @@
 ---
-title: Images and figures
+title: Images, figures & videos
+short_title: Images and videos
 description: MyST Markdown allows you to create images and figures in your documents, including cross-referencing content throughout your pages.
 thumbnail: ./thumbnails/figures.png
 ---
@@ -14,9 +15,9 @@ The simplest way to create an image is to use the standard Markdown syntax:
 ![alt](link 'title')
 ```
 
-You can explore a {ref}`demo of images <md:image>` in the discussion of [](./commonmark.md) features of MyST.
+You can explore a [demo of images](#md:image) in the discussion of [](./commonmark.md) features of MyST.
 
-Using standard markdow to create an image will render across all output formats (HTML, TeX, Word, PDF, etc). However, this markdown syntax is limited in the configuration that can be applied beyond `alt` text and an optional `title`. For example, the image width, alignment or a figure caption cannot be set with this syntax.
+Using standard markdown to create an image will render across all output formats (HTML, TeX, Word, PDF, etc). However, this markdown syntax is limited in the configuration that can be applied beyond `alt` text and an optional `title`. For example, the image width, alignment or a figure caption cannot be set with this syntax.
 
 There are two directives that can be used to add additional information about the layout and metadata associated with an image.
 
@@ -25,6 +26,8 @@ There are two directives that can be used to add additional information about th
 
 **figure**
 : The `figure` directive can contain a figure caption and allows you to cross-reference this in other parts of your document.
+
+(image-directive)=
 
 ## Image directive
 
@@ -35,6 +38,8 @@ There are two directives that can be used to add additional information about th
 :align: center
 ```
 ````
+
+(figure-directive)=
 
 ## Figure directive
 
@@ -108,13 +113,13 @@ An `.eps` image is not supported by web-browsers or Microsoft Word. The images a
 ````
 `````
 
-### Image Translations
+### Image Transformers
 
 There are formats that are not supported by web-browsers but are common in scientific writing like `.tiff`, `.pdf` and `.eps` for site builds, these are converted to `.svg` or `.png` as appropriate and available. For export to $\LaTeX$, PDF or Microsoft Word, the files are converted to an appropriate format that the export can handle (e.g. $\LaTeX$ can work directly with `.pdf` images). For animated images, `.gif`, the first frame is extracted for static exports.
 
 :::{tip} Installing Image Converters
 :class: dropdown
-The image translations and optimizations requires you to have the following packages installed:
+The image transforms and optimizations requires you to have the following packages installed:
 
 - [imagemagik](https://imagemagick.org/) for conversion between raster formats
 - [inkscape](https://inkscape.org/) for conversion between some vector formats
@@ -131,3 +136,44 @@ If you have manually converted your images or have different images for differen
 ```
 
 For example, when exporting to $\LaTeX$ the best format is a `.pdf` if it is available; in a web export, a `.webp` or `.svg` will be chosen before a `.png`. In all cases, if an appropriate format is not available the image will be translated.
+
+## Videos
+
+To embed a video you can either use a video platforms embed script or directly embed an `mp4` video file. For example, the
+
+```markdown
+:::{figure} ./videos/links.mp4
+An embedded video with a caption!
+:::
+
+or
+
+![](./videos/links.mp4)
+```
+
+Will copy the video to your static files and embed a video in your HTML output.
+
+:::{figure} ./videos/links.mp4
+An embedded video with a caption!
+:::
+
+These videos can also be used in the [image](#image-directive) or even in simple [Markdown image](#md:image).
+
+:::{note} Videos are not currently transformed
+:class: dropdown
+The videos are not currently converted to static images when you export to PDF or Word.
+If you want to help out with this feature, please get in touch!
+:::
+
+## YouTube Videos
+
+If your video is on a platform like YouTube or Vimeo, you can use the `{iframe}` directive that takes the URL of the video.
+
+```{myst}
+:::{iframe} https://www.youtube.com/embed/F3st8X0L1Ys
+:width: 100%
+Get up and running with MyST in Jupyter!
+:::
+```
+
+You can find this URL when clicking share > embed on various platforms. You can also give the `{iframe}` directive `width` and a `caption`.

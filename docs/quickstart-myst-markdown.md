@@ -6,8 +6,7 @@ short_title: MyST Markdown Guide
 description: MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown.
 ---
 
-:::{important}
-**Objective**
+:::{important} Objective
 
 The goal of this quickstart guide is to showcase the most used features of the MyST authoring experience. The MyST syntax can be used in markdown files or markdown cells in Jupyter Notebooks to add figures, tables, equations, cross-references, hover-links and citations.
 :::
