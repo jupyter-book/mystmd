@@ -6,8 +6,7 @@ short_title: MyST Install
 description: Get up and running with the MyST (Markedly Structured Text) command line interface. MyST is designed to create publication-quality documents written entirely in Markdown.
 ---
 
-::::{important}
-**Objective**
+::::{important} Objective
 
 The goal of these quickstart tutorials are to get you up and running on your local computer 👩‍💻:
 

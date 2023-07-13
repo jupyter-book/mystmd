@@ -7,8 +7,7 @@ description: MyST Markdown can be used in JupyterLab with support for all MyST s
 thumbnail: ./thumbnails/jupyterlab-myst.png
 ---
 
-::::{important}
-**Objective**
+::::{important} Objective
 
 The goal of this quickstart is to get you up and running in [JupyterLab](https://jupyter.org), explore inline execution 📈, and working together with other MyST tools.
 

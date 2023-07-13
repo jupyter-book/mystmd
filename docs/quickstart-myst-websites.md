@@ -6,8 +6,7 @@ short_title: MyST Websites
 description: A MyST project is collection of MyST markdown files and jupyter notebooks with a configuration file called "myst.yml".
 ---
 
-::::{important}
-**Objective**
+::::{important} Objective
 
 The goal of this quickstart is to get you up and running on your local computer 👩‍💻, create a local website 🌎, and edit elements of the theme to improve the website style 🎨.
 
