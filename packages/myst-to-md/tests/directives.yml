@@ -351,6 +351,53 @@ cases:
       print("hello world")
       ```
       :::
+  - title: figure directive - with placeholder image
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          class: my-fig-class
+          children:
+            - type: image
+              url: https://example.com
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+            - type: image
+              url: images/example.png
+              placeholder: true
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Some % '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: markdown
+    markdown: |-
+      :::{figure} https://example.com
+      :name: My-Fig
+      :class: my-fig-class
+      :width: 500px
+      :align: center
+      :title: my image
+      :alt: Some text
+      :placeholder: images/example.png
+
+      Some % *markdown*
+      :::
   - title: list-table
     mdast:
       type: root

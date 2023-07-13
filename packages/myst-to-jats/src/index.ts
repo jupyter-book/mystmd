@@ -401,7 +401,7 @@ const handlers: Record<string, Handler> = {
     node.data?.forEach((output: any, index: number) => {
       state.openNode('sec', {
         ...attrs,
-        id: identifier ? `${identifier}-${index}` : undefined,
+        id: identifier && !state.data.isNotebookArticleRep ? `${identifier}-${index}` : undefined,
       });
       alternativesFromMinifiedOutput(output, state);
       state.closeNode();
