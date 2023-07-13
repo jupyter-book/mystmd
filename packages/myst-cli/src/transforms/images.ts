@@ -173,8 +173,6 @@ export async function transformImages(
         delete image.url;
         return;
       }
-      delete image['remove-input'];
-      delete image['remove-output'];
       // Look up the image paths by known extensions if it is not provided
       // This also handles wildcard extensions, e.g. 'example.*'
       const wildcardRegex = /\.\*$/;

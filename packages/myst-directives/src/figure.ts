@@ -70,7 +70,7 @@ export const figureDirective: DirectiveSpec = {
       height: data.options?.height as string,
       align: data.options?.align as Image['align'],
       // These will pass through if the node is converted to an embed node in the image transform
-      'remove-input': data.options?.['remove-input'] ?? true,
+      'remove-input': data.options?.['remove-input'],
       'remove-output': data.options?.['remove-output'],
     });
     if (data.options?.placeholder) {

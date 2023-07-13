@@ -2,8 +2,7 @@ title: embed directive
 cases:
   - title: embed directive parses
     markdown: |-
-      ```{embed}
-      :label: hi
+      ```{embed} #hi
       :remove-output:
       ```
     mdast:
@@ -11,10 +10,11 @@ cases:
       children:
         - type: mystDirective
           name: embed
+          args: '#hi'
           options:
-            label: hi
             remove-output: true
           children:
             - type: embed
-              label: hi
               remove-output: true
+              source:
+                label: hi
