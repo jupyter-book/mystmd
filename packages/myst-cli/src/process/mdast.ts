@@ -50,6 +50,8 @@ import {
   inlineExpressionsPlugin,
   propagateBlockDataToCode,
   transformBanner,
+  reduceOutputs,
+  transformPlaceholderImages,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/index.js';
 import { logMessagesFromVFile } from '../utils/index.js';
@@ -89,9 +91,7 @@ export async function transformMdast(
     projectPath?: string;
     projectSlug?: string;
     pageSlug?: string;
-    useExistingImages?: boolean;
     imageAltOutputFolder?: string;
-    imageExtensions?: ImageExtensions[];
     watchMode?: boolean;
     extraTransforms?: TransformFn[];
     minifyMaxCharacters?: number;
@@ -104,9 +104,7 @@ export async function transformMdast(
     projectPath,
     pageSlug,
     projectSlug,
-    useExistingImages,
     imageAltOutputFolder,
-    imageExtensions,
     extraTransforms,
     watchMode = false,
     minifyMaxCharacters,
@@ -183,24 +181,7 @@ export async function transformMdast(
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
     .use(footnotesPlugin) // Needs to happen near the end
     .run(mdast, vfile);
-  if (!useExistingImages) {
-    await transformImages(session, mdast, file, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      imageExtensions,
-    });
-    // Must happen after transformImages
-    await transformImageFormats(session, mdast, file, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      imageExtensions,
-    });
-    // Note, the thumbnail transform must be **after** images, as it may read the images
-    await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-    });
-    await transformBanner(session, file, frontmatter, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-    });
-  }
+
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   const useSlug = pageSlug !== index;
   const url = projectSlug
@@ -252,11 +233,21 @@ export async function postProcessMdast(
     checkLinks,
     pageReferenceStates,
     extraLinkTransformers,
+    simplifyOutputs,
+    imageWriteFolder,
+    useExistingImages,
+    imageAltOutputFolder,
+    imageExtensions,
   }: {
     file: string;
     checkLinks?: boolean;
     pageReferenceStates?: PageReferenceStates;
     extraLinkTransformers?: LinkTransformer[];
+    simplifyOutputs?: boolean;
+    imageWriteFolder: string;
+    useExistingImages?: boolean;
+    imageAltOutputFolder?: string;
+    imageExtensions?: ImageExtensions[];
   },
 ) {
   const toc = tic();
@@ -264,6 +255,7 @@ export async function postProcessMdast(
   const cache = castSession(session);
   const mdastPost = selectFile(session, file);
   if (!mdastPost) return;
+  const { mdast, dependencies, frontmatter } = mdastPost;
   const fileState = cache.$internalReferences[file];
   const state = pageReferenceStates
     ? new MultiPageReferenceState(pageReferenceStates, file)
@@ -273,14 +265,39 @@ export async function postProcessMdast(
     ...(extraLinkTransformers || []),
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
-  linksTransform(mdastPost.mdast, state.file as VFile, {
+  linksTransform(mdast, state.file as VFile, {
     transformers,
     selector: LINKS_SELECTOR,
   });
-  resolveReferencesTransform(mdastPost.mdast, state.file as VFile, { state });
-  embedDirective(session, mdastPost.mdast, mdastPost.dependencies, state);
+  resolveReferencesTransform(mdast, state.file as VFile, { state });
+  embedDirective(session, mdast, dependencies, state);
+  if (simplifyOutputs) {
+    // Transform output nodes to images / text
+    reduceOutputs(mdast, imageWriteFolder);
+  }
+  if (!useExistingImages) {
+    await transformImages(session, mdast, file, imageWriteFolder, {
+      altOutputFolder: imageAltOutputFolder,
+      imageExtensions,
+    });
+    // Must happen after transformImages
+    await transformImageFormats(session, mdast, file, imageWriteFolder, {
+      altOutputFolder: imageAltOutputFolder,
+      imageExtensions,
+    });
+    // Note, the thumbnail transform must be **after** images, as it may read the images
+    await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
+      altOutputFolder: imageAltOutputFolder,
+    });
+    await transformBanner(session, file, frontmatter, imageWriteFolder, {
+      altOutputFolder: imageAltOutputFolder,
+    });
+  }
+  if (simplifyOutputs) {
+    transformPlaceholderImages(mdast, { imageExtensions });
+  }
   // Ensure there are keys on every node after post processing
-  keysTransform(mdastPost.mdast);
+  keysTransform(mdast);
   logMessagesFromVFile(session, fileState.file);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
   if (checkLinks) await checkLinksTransform(session, file, mdastPost.mdast);

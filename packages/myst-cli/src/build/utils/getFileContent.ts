@@ -13,7 +13,7 @@ import {
   loadIntersphinx,
   combineProjectCitationRenderers,
 } from '../../process/index.js';
-import { reduceOutputs, transformWebp } from '../../transforms/index.js';
+import { transformWebp } from '../../transforms/index.js';
 import { ImageExtensions } from '../../utils/index.js';
 
 export async function getFileContent(
@@ -65,10 +65,8 @@ export async function getFileContent(
       const pageSlug = pages.find((page) => page.file === file)?.slug;
       await transformMdast(session, {
         file,
-        useExistingImages,
         imageWriteFolder,
         imageAltOutputFolder,
-        imageExtensions,
         projectPath,
         pageSlug,
         minifyMaxCharacters: 0,
@@ -84,13 +82,18 @@ export async function getFileContent(
   );
   const selectedFiles = await Promise.all(
     files.map(async (file) => {
-      await postProcessMdast(session, { file, extraLinkTransformers, pageReferenceStates });
+      await postProcessMdast(session, {
+        file,
+        extraLinkTransformers,
+        pageReferenceStates,
+        simplifyOutputs,
+        imageWriteFolder,
+        useExistingImages,
+        imageAltOutputFolder,
+        imageExtensions,
+      });
       const selectedFile = selectFile(session, file);
       if (!selectedFile) throw new Error(`Could not load file information for ${file}`);
-      if (simplifyOutputs) {
-        // Transform output nodes to images / text
-        reduceOutputs(selectedFile.mdast, imageWriteFolder);
-      }
       return selectedFile;
     }),
   );
