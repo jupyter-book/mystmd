@@ -92,7 +92,7 @@ export async function runWordExport(
     projectPath,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
-    simplifyOutputs: true,
+    simplifyFigures: true,
   });
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKind.docx,

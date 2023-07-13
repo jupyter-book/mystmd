@@ -26,14 +26,14 @@ export async function getFileContent(
     imageAltOutputFolder,
     imageExtensions,
     extraLinkTransformers,
-    simplifyOutputs,
+    simplifyFigures,
   }: {
     projectPath?: string;
     useExistingImages?: boolean;
     imageAltOutputFolder?: string;
     imageExtensions: ImageExtensions[];
     extraLinkTransformers?: LinkTransformer[];
-    simplifyOutputs: boolean;
+    simplifyFigures: boolean;
   },
 ) {
   const toc = tic();
@@ -65,12 +65,15 @@ export async function getFileContent(
       const pageSlug = pages.find((page) => page.file === file)?.slug;
       await transformMdast(session, {
         file,
+        useExistingImages,
         imageWriteFolder,
         imageAltOutputFolder,
+        imageExtensions,
         projectPath,
         pageSlug,
         minifyMaxCharacters: 0,
         index: project.index,
+        simplifyFigures,
       });
     }),
   );
@@ -86,10 +89,7 @@ export async function getFileContent(
         file,
         extraLinkTransformers,
         pageReferenceStates,
-        simplifyOutputs,
-        imageWriteFolder,
-        useExistingImages,
-        imageAltOutputFolder,
+        simplifyFigures,
         imageExtensions,
       });
       const selectedFile = selectFile(session, file);
