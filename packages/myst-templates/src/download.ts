@@ -4,7 +4,6 @@ import { createHash } from 'node:crypto';
 import AdmZip from 'adm-zip';
 import yaml from 'js-yaml';
 import { TemplateKind } from 'myst-common';
-import { createGitLogger, makeExecutable } from 'myst-cli-utils';
 import fetch from 'node-fetch';
 import { validateUrl } from 'simple-validators';
 import type { TemplateYmlListResponse, TemplateYmlResponse, ISession } from './types.js';
@@ -138,7 +137,7 @@ function unnestTemplate(path: string) {
 
 export async function downloadTemplate(
   session: ISession,
-  opts: { templatePath: string; templateUrl: string },
+  opts: { templatePath: string; templateUrl: string; branch?: string },
 ) {
   const { templatePath, templateUrl } = opts;
   let downloadUrl: string | undefined;
@@ -148,10 +147,14 @@ export async function downloadTemplate(
     downloadUrl = await fetchTemplateDownloadLink(session, opts);
   }
   if (downloadUrl.endsWith('.git')) {
-    await cloneTemplate(session, downloadUrl, opts);
-  } else {
-    await downloadAndUnzipTemplate(session, downloadUrl, opts);
+    const branch = opts.branch || 'main';
+    if (branch !== 'main') {
+      session.log.warn(`👷 Warning, using a branch: ${branch}`);
+    }
+    const urlBase = downloadUrl.substring(0, downloadUrl.length - 4);
+    downloadUrl = `${urlBase}/archive/refs/heads/${branch}.zip`;
   }
+  await downloadAndUnzipTemplate(session, downloadUrl, opts);
   session.log.info(`💾 Saved template to path ${templatePath}`);
 }
 
@@ -200,23 +203,6 @@ export async function downloadAndUnzipTemplate(
   const zip = new AdmZip(zipFile);
   zip.extractAllTo(templatePath);
   unnestTemplate(templatePath);
-}
-
-export async function cloneTemplate(
-  session: ISession,
-  downloadUrl: string,
-  opts: { templatePath: string; branch?: string },
-) {
-  session.log.info(`🌎 Cloning template from ${downloadUrl}`);
-  const { templatePath } = opts;
-  const branch = opts.branch || 'main';
-  if (branch !== 'main') {
-    session.log.warn(`👷 Warning, using a branch: ${branch}`);
-  }
-  await makeExecutable(
-    `git clone --recursive --depth 1 --branch ${branch} ${downloadUrl} ${templatePath}`,
-    createGitLogger(session),
-  )();
 }
 
 export async function fetchPublicTemplate(session: ISession, name: string, kind?: TemplateKind) {
