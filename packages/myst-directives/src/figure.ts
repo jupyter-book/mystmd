@@ -69,7 +69,7 @@ export const figureDirective: DirectiveSpec = {
         type: 'embed',
         label: url.substring(1),
         'remove-input': data.options?.['remove-input'] ?? true,
-        'remove-output': data.options?.['remove-output'] ?? false,
+        'remove-output': data.options?.['remove-output'],
       });
     } else {
       children.push({

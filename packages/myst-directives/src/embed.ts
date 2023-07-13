@@ -43,8 +43,8 @@ export const embedDirective: DirectiveSpec = {
       {
         type: 'embed',
         label,
-        'remove-input': !!data.options?.['remove-input'],
-        'remove-output': !!data.options?.['remove-output'],
+        'remove-input': data.options?.['remove-input'] as boolean | undefined,
+        'remove-output': data.options?.['remove-output'] as boolean | undefined,
       },
     ];
   },

@@ -134,8 +134,8 @@ export type Dependency = {
 export type Embed = {
   type: 'embed';
   label: string;
-  'remove-input': boolean;
-  'remove-output': boolean;
+  'remove-input'?: boolean;
+  'remove-output'?: boolean;
   source?: Dependency;
   children?: (FlowContent | ListContent | PhrasingContent)[];
 };
