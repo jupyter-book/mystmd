@@ -14,7 +14,7 @@ These $\LaTeX$ templates are data-driven, in that they record all of the options
 ```
 ````
 
-To get started you will need to install `jtex` and, for convienience, [cookiecutter](https://github.com/cookiecutter/cookiecutter) which allows you to get up and started in a new repository fast!
+To get started you will need to install `jtex` and, for convenience, [cookiecutter](https://github.com/cookiecutter/cookiecutter) which allows you to get up and started in a new repository fast!
 
 ```bash
 npm install -g jtex
