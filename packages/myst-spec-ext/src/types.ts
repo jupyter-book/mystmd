@@ -123,7 +123,7 @@ export enum SourceFileKind {
 }
 
 export type Dependency = {
-  url: string;
+  url?: string;
   slug?: string;
   kind?: SourceFileKind;
   title?: string;
@@ -133,7 +133,6 @@ export type Dependency = {
 
 export type Embed = {
   type: 'embed';
-  label: string;
   'remove-input'?: boolean;
   'remove-output'?: boolean;
   source?: Dependency;

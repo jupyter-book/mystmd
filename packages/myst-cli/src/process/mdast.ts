@@ -36,7 +36,7 @@ import type { RendererData } from '../transforms/types.js';
 
 import {
   checkLinksTransform,
-  embedDirective,
+  embedTransform,
   importMdastFromJson,
   includeFilesDirective,
   liftCodeMetadataToBlock,
@@ -291,8 +291,9 @@ export async function postProcessMdast(
     selector: LINKS_SELECTOR,
   });
   resolveReferencesTransform(mdast, state.file as VFile, { state });
-  embedDirective(session, mdast, dependencies, state);
+  embedTransform(session, mdast, dependencies, state);
   if (simplifyFigures) {
+    // This must happen after embedded content is resolved so all children are present on figures
     transformPlaceholderImages(mdast, { imageExtensions });
   }
   // Ensure there are keys on every node after post processing

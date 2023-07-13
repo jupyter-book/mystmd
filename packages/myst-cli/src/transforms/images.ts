@@ -168,11 +168,13 @@ export async function transformImages(
       // If image URL starts with #, replace this node with embed node
       if (image.url.startsWith('#')) {
         image.type = 'embed';
-        image.label = image.url.substring(1);
-        image['remove-input'] = true;
+        image.source = { label: image.url.substring(1) };
+        image['remove-input'] = image['remove-input'] ?? true;
         delete image.url;
         return;
       }
+      delete image['remove-input'];
+      delete image['remove-output'];
       // Look up the image paths by known extensions if it is not provided
       // This also handles wildcard extensions, e.g. 'example.*'
       const wildcardRegex = /\.\*$/;
@@ -623,7 +625,7 @@ export function transformPlaceholderImages(
     .filter((container: GenericNode) => container.kind === 'figure')
     .forEach((figure: GenericNode) => {
       const validContent = figure.children?.filter((child) => {
-        return child.type === 'code' || (isValidImageNode(child, validExts) && !child.placeholder);
+        return isValidImageNode(child, validExts) && !child.placeholder;
       });
       const placeholders = figure.children?.filter((child) => {
         return isValidImageNode(child, validExts) && child.placeholder;

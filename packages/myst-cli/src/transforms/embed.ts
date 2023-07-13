@@ -11,7 +11,7 @@ import type { ISession } from '../session/types.js';
 /**
  * This is the {embed} directive, that embeds nodes from elsewhere in a page.
  */
-export function embedDirective(
+export function embedTransform(
   session: ISession,
   mdast: Root,
   dependencies: Dependency[],
@@ -19,7 +19,7 @@ export function embedDirective(
 ) {
   const embedNodes = selectAll('embed', mdast) as Embed[];
   embedNodes.forEach((node) => {
-    const normalized = normalizeLabel(node.label);
+    const normalized = normalizeLabel(node.source?.label);
     if (!normalized) return;
     const target = state.getTarget(normalized.identifier);
     if (!target) return;
@@ -46,7 +46,7 @@ export function embedDirective(
     if (!multiState.states) return;
     const { url, file } = multiState.resolveStateProvider(normalized.identifier) ?? {};
     if (!url) return;
-    const source: Dependency = { url };
+    const source: Dependency = { url, label: node.source?.label };
     if (file) {
       const { kind, slug, frontmatter } = selectFile(session, file) ?? {};
       if (kind) source.kind = kind;
@@ -63,7 +63,7 @@ export function embedDirective(
   containerNodes.forEach((node: GenericNode) => {
     const containerEmbeds = node.children?.filter((child: GenericNode) => child.type === 'embed');
     if (containerEmbeds?.length === 1) {
-      node.source = { ...containerEmbeds[0].source, label: containerEmbeds[0].label };
+      node.source = { ...containerEmbeds[0].source };
       containerEmbeds[0].type = '_lift';
     }
   });
