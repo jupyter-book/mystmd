@@ -302,7 +302,9 @@ const handlers: Record<string, Handler> = {
     if (ext) attrs['mime-subtype'] = ext;
     attrs['xlink:href'] = escapeForXML(node.url);
     // TOOD: identifier?
+    if (node.placeholder) state.openNode('alternatives');
     state.addLeaf('graphic', attrs);
+    if (node.placeholder) state.closeNode();
   },
   container(node, state) {
     state.data.isInContainer = true;

@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { unified } from 'unified';
 import fs from 'node:fs';
 import { Session, silentLogger } from 'myst-cli-utils';
-import { SourceFileKind } from 'myst-common';
+import { SourceFileKind } from 'myst-spec-ext';
 import path from 'node:path';
 import { validateJatsAgainstDtd } from 'jats-xml';
 import yaml from 'js-yaml';
