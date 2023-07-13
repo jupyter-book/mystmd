@@ -68,7 +68,7 @@ export type Iframe = {
   type: 'iframe';
   label?: string;
   identifier?: string;
-  src?: string;
+  src: string;
   width?: string;
   align?: Image['align'];
   class?: Image['class'];
