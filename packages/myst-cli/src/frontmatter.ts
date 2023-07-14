@@ -8,12 +8,14 @@ import {
   unnestKernelSpec,
   validatePageFrontmatter,
 } from 'myst-frontmatter';
+import { copyNode } from 'myst-common';
+import type { ValidationOptions } from 'simple-validators';
+import { VFile } from 'vfile';
 import { castSession } from './session/index.js';
 import { loadFile } from './process/index.js';
 import type { ISession } from './session/types.js';
 import { selectors } from './store/index.js';
-import type { ValidationOptions } from 'simple-validators';
-import { copyNode } from 'myst-common';
+import { logMessagesFromVFile } from './index.js';
 
 /**
  * Get page frontmatter from mdast tree and fill in missing info from project frontmatter
@@ -31,11 +33,14 @@ export function getPageFrontmatter(
   path?: string,
   removeNode = true,
 ): PageFrontmatter {
-  const { frontmatter: rawPageFrontmatter } = getFrontmatter(tree, {
+  const vfile = new VFile();
+  vfile.path = file;
+  const { frontmatter: rawPageFrontmatter } = getFrontmatter(vfile, tree, {
     removeYaml: removeNode,
     removeHeading: removeNode,
     propagateTargets: true,
   });
+  logMessagesFromVFile(session, vfile);
   unnestKernelSpec(rawPageFrontmatter);
   const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, {
     property: 'frontmatter',
@@ -79,8 +84,11 @@ export async function getRawFrontmatterFromFile(session: ISession, file: string)
   await loadFile(session, file);
   const result = cache.$mdast[file];
   if (!result || !result.pre) return undefined;
+  const vfile = new VFile();
+  vfile.path = file;
   // Copy the mdast, this is not a processing step!
-  const frontmatter = getFrontmatter(copyNode(result.pre.mdast));
+  const frontmatter = getFrontmatter(vfile, copyNode(result.pre.mdast));
+  logMessagesFromVFile(session, vfile);
   return frontmatter.frontmatter;
 }
 

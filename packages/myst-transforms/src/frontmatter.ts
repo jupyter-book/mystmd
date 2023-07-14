@@ -2,7 +2,8 @@ import yaml from 'js-yaml';
 import { remove } from 'unist-util-remove';
 import type { Root } from 'mdast';
 import type { Block, Code, Heading } from 'myst-spec';
-import { toText } from 'myst-common';
+import { fileError, toText } from 'myst-common';
+import { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
 
 type Options = {
@@ -17,6 +18,7 @@ type Options = {
 };
 
 export function getFrontmatter(
+  file: VFile,
   tree: Root,
   opts: Options = { removeYaml: true, removeHeading: true, propagateTargets: true },
 ): { tree: Root; frontmatter: Record<string, any> } {
@@ -28,8 +30,12 @@ export function getFrontmatter(
   let frontmatter: Record<string, any> = {};
   const firstIsYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
   if (firstIsYaml) {
-    frontmatter = (yaml.load(firstNode.value) as Record<string, any>) || {};
-    if (opts.removeYaml) (firstNode as any).type = '__delete__';
+    try {
+      frontmatter = (yaml.load(firstNode.value) as Record<string, any>) || {};
+      if (opts.removeYaml) (firstNode as any).type = '__delete__';
+    } catch {
+      fileError(file, 'Invalid yaml in first cell of notebook');
+    }
   }
   const nextNode = firstIsYaml ? secondNode : (firstNode as unknown as Heading);
   const nextNodeIsHeading = nextNode?.type === 'heading' && nextNode.depth === 1;
