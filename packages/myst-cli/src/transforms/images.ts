@@ -3,11 +3,13 @@ import type { Root } from 'mdast';
 import mime from 'mime-types';
 import type { GenericNode } from 'myst-common';
 import { computeHash, hashAndCopyStaticFile, isUrl } from 'myst-cli-utils';
+import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
 import path from 'node:path';
 import type { VFileMessage } from 'vfile-message';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import type { Image } from 'myst-spec-ext';
 import { extFromMimeType } from 'nbtx';
 import {
   addWarningForFile,
@@ -19,7 +21,6 @@ import {
 import type { ISession } from '../session/types.js';
 import { castSession } from '../session/index.js';
 import { watch } from '../store/index.js';
-import type { Image } from 'myst-spec-ext';
 
 function isBase64(data: string) {
   return data.split(';base64,').length === 2;
@@ -167,8 +168,8 @@ export async function transformImages(
       // If image URL starts with #, replace this node with embed node
       if (image.url.startsWith('#')) {
         image.type = 'embed';
-        image.label = image.url.substring(1);
-        image['remove-input'] = true;
+        image.source = { label: image.url.substring(1) };
+        image['remove-input'] = image['remove-input'] ?? true;
         delete image.url;
         return;
       }
@@ -591,4 +592,51 @@ export async function transformWebp(
     }),
   );
   cache.$mdast[file].post = { ...postData, mdast, frontmatter };
+}
+
+function isValidImageNode(node: GenericNode, validExts: ImageExtensions[]) {
+  return (
+    node.type === 'image' &&
+    node.url &&
+    validExts.includes(path.extname(node.url) as ImageExtensions)
+  );
+}
+
+/**
+ * Handle placeholder image nodes in figures.
+ *
+ * This reduces figures to a single representation; it should only be used for static contexts
+ * where you do not need to persist the multiple figure representations.
+ *
+ * If there is a valid image or code node in the figure, the placeholder image is removed.
+ * If there is no other valid image or code node, the placeholder image is promoted to normal image.
+ *
+ * Elsewhere in the mdast tree, placeholder images are just left as-is; currently the only way to
+ * author a placeholder image is using a figure directive.
+ */
+export function transformPlaceholderImages(
+  mdast: Root,
+  opts?: { imageExtensions?: ImageExtensions[] },
+) {
+  const validExts = opts?.imageExtensions ?? DEFAULT_IMAGE_EXTENSIONS;
+  selectAll('container', mdast)
+    .filter((container: GenericNode) => container.kind === 'figure')
+    .forEach((figure: GenericNode) => {
+      const validContent = figure.children?.filter((child) => {
+        return isValidImageNode(child, validExts) && !child.placeholder;
+      });
+      const placeholders = figure.children?.filter((child) => {
+        return isValidImageNode(child, validExts) && child.placeholder;
+      });
+      if (validContent?.length) {
+        placeholders?.forEach((node) => {
+          node.type = '__remove__';
+        });
+      } else {
+        placeholders?.forEach((node) => {
+          node.placeholder = false;
+        });
+      }
+    });
+  remove(mdast, '__remove__');
 }

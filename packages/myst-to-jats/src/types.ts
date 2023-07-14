@@ -1,6 +1,7 @@
-import type { GenericNode, MessageInfo, SourceFileKind } from 'myst-common';
+import type { GenericNode, MessageInfo } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Root } from 'myst-spec';
+import type { SourceFileKind } from 'myst-spec-ext';
 import type { CitationRenderer } from 'citation-js-utils';
 
 export type Attributes = Record<string, string | undefined>;

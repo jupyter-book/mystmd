@@ -36,7 +36,7 @@ export async function runMdExport(
       imageAltOutputFolder: 'files/',
       imageExtensions: KNOWN_IMAGE_EXTENSIONS,
       extraLinkTransformers,
-      simplifyOutputs: false,
+      simplifyFigures: false,
     },
   );
   const vfile = new VFile();

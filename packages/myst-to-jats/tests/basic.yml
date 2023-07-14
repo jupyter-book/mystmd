@@ -404,6 +404,14 @@ cases:
         - type: image
           url: image.png
     jats: <graphic mimetype="image" mime-subtype="png" xlink:href="image.png"/>
+  - title: Image
+    tree:
+      type: root
+      children:
+        - type: image
+          url: image.png
+          placeholder: true
+    jats: <alternatives><graphic mimetype="image" mime-subtype="png" xlink:href="image.png"/></alternatives>
   - title: Figure
     tree:
       type: root

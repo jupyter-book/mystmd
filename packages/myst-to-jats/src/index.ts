@@ -5,8 +5,9 @@ import type { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
 import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode } from 'myst-common';
-import { SourceFileKind, copyNode, fileError } from 'myst-common';
+import { copyNode, fileError } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import { SourceFileKind } from 'myst-spec-ext';
 import { Tags, RefType } from 'jats-tags';
 import type { MinifiedOutput } from 'nbtx';
 import { getBack } from './backmatter.js';
@@ -301,7 +302,9 @@ const handlers: Record<string, Handler> = {
     if (ext) attrs['mime-subtype'] = ext;
     attrs['xlink:href'] = escapeForXML(node.url);
     // TOOD: identifier?
+    if (node.placeholder) state.openNode('alternatives');
     state.addLeaf('graphic', attrs);
+    if (node.placeholder) state.closeNode();
   },
   container(node, state) {
     state.data.isInContainer = true;
@@ -395,10 +398,10 @@ const handlers: Record<string, Handler> = {
     }
     const { identifier } = node;
     const attrs: Attributes = { 'sec-type': 'notebook-output' };
-    node.data?.forEach((output: any) => {
+    node.data?.forEach((output: any, index: number) => {
       state.openNode('sec', {
         ...attrs,
-        id: identifier,
+        id: identifier && !state.data.isNotebookArticleRep ? `${identifier}-${index}` : undefined,
       });
       alternativesFromMinifiedOutput(output, state);
       state.closeNode();

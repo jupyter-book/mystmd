@@ -1,6 +1,9 @@
 import type {
   Parent,
   StaticPhrasingContent,
+  FlowContent,
+  ListContent,
+  PhrasingContent,
   TableCell as SpecTableCell,
   FootnoteReference as FNR,
   FootnoteDefinition as FND,
@@ -9,6 +12,7 @@ import type {
   Admonition as SpecAdmonition,
   Code as SpecCode,
   ListItem as SpecListItem,
+  Container as SpecContainer,
 } from 'myst-spec';
 
 export type Delete = Parent & { type: 'delete' };
@@ -62,6 +66,7 @@ export type Heading = SpecHeading & {
 export type Image = SpecImage & {
   urlSource?: string;
   height?: string;
+  placeholder?: boolean;
 };
 
 export type Iframe = {
@@ -120,4 +125,30 @@ export type InlineExpression = {
   identifier?: string;
   result?: Record<string, any>;
   children?: StaticPhrasingContent[];
+};
+
+export enum SourceFileKind {
+  Article = 'Article',
+  Notebook = 'Notebook',
+}
+
+export type Dependency = {
+  url?: string;
+  slug?: string;
+  kind?: SourceFileKind;
+  title?: string;
+  short_title?: string;
+  label?: string;
+};
+
+export type Embed = {
+  type: 'embed';
+  'remove-input'?: boolean;
+  'remove-output'?: boolean;
+  source?: Dependency;
+  children?: (FlowContent | ListContent | PhrasingContent)[];
+};
+
+export type Container = SpecContainer & {
+  source?: Dependency;
 };

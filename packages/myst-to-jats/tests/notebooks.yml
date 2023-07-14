@@ -101,7 +101,7 @@ cases:
           <body>
             <sec id="sec-1" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
-              <sec sec-type="notebook-output" id="nb-cell-0-output">
+              <sec sec-type="notebook-output" id="nb-cell-0-output-0">
                 <alternatives>
                   <media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/>
                 </alternatives>
@@ -109,7 +109,7 @@ cases:
             </sec>
             <sec id="sec-2" sec-type="notebook-code">
               <code id="nb-cell-1-code" language="python" executable="yes">'abc'</code>
-              <sec sec-type="notebook-output" id="nb-cell-1-output">
+              <sec sec-type="notebook-output" id="nb-cell-1-output-0">
                 <alternatives>
                   <media specific-use="text" mimetype="text" mime-subtype="plain" xlink:href="files/b.txt"/>
                   <media specific-use="web" mimetype="text" mime-subtype="html" xlink:href="files/b.html"/>
@@ -118,7 +118,7 @@ cases:
             </sec>
             <sec id="sec-3" sec-type="notebook-code">
               <code id="nb-cell-2-code" language="python" executable="yes">a</code>
-              <sec sec-type="notebook-output" id="nb-cell-2-output">
+              <sec sec-type="notebook-output" id="nb-cell-2-output-0">
                 <alternatives>
                   <media specific-use="error" mimetype="text" mime-subtype="plain" xlink:href="files/c.txt">
                     <caption>
@@ -212,7 +212,7 @@ cases:
           <body>
             <sec id="sec-3" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
-              <sec sec-type="notebook-output" id="nb-cell-0-output">
+              <sec sec-type="notebook-output" id="nb-cell-0-output-0">
                 <alternatives>
                   <media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/>
                 </alternatives>
@@ -271,7 +271,7 @@ cases:
         <body>
           <sec id="sec-1" sec-type="notebook-code">
             <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
-            <sec sec-type="notebook-output" id="nb-cell-0-output">
+            <sec sec-type="notebook-output">
               <alternatives>
                 <media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/>
               </alternatives>
@@ -285,7 +285,7 @@ cases:
           <body>
             <sec id="sec-2" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
-              <sec sec-type="notebook-output" id="nb-cell-0-output">
+              <sec sec-type="notebook-output" id="nb-cell-0-output-0">
                 <alternatives>
                   <media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/>
                 </alternatives>

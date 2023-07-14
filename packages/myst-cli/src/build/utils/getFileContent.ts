@@ -13,7 +13,7 @@ import {
   loadIntersphinx,
   combineProjectCitationRenderers,
 } from '../../process/index.js';
-import { reduceOutputs, transformWebp } from '../../transforms/index.js';
+import { transformWebp } from '../../transforms/index.js';
 import { ImageExtensions } from '../../utils/index.js';
 
 export async function getFileContent(
@@ -26,14 +26,14 @@ export async function getFileContent(
     imageAltOutputFolder,
     imageExtensions,
     extraLinkTransformers,
-    simplifyOutputs,
+    simplifyFigures,
   }: {
     projectPath?: string;
     useExistingImages?: boolean;
     imageAltOutputFolder?: string;
     imageExtensions: ImageExtensions[];
     extraLinkTransformers?: LinkTransformer[];
-    simplifyOutputs: boolean;
+    simplifyFigures: boolean;
   },
 ) {
   const toc = tic();
@@ -73,6 +73,7 @@ export async function getFileContent(
         pageSlug,
         minifyMaxCharacters: 0,
         index: project.index,
+        simplifyFigures,
       });
     }),
   );
@@ -84,13 +85,15 @@ export async function getFileContent(
   );
   const selectedFiles = await Promise.all(
     files.map(async (file) => {
-      await postProcessMdast(session, { file, extraLinkTransformers, pageReferenceStates });
+      await postProcessMdast(session, {
+        file,
+        extraLinkTransformers,
+        pageReferenceStates,
+        simplifyFigures,
+        imageExtensions,
+      });
       const selectedFile = selectFile(session, file);
       if (!selectedFile) throw new Error(`Could not load file information for ${file}`);
-      if (simplifyOutputs) {
-        // Transform output nodes to images / text
-        reduceOutputs(selectedFile.mdast, imageWriteFolder);
-      }
       return selectedFile;
     }),
   );

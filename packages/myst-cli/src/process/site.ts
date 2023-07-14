@@ -249,6 +249,7 @@ export async function fastProcessFile(
     file,
     pageReferenceStates,
     extraLinkTransformers,
+    imageExtensions: WEB_IMAGE_EXTENSIONS,
   });
   await writeFile(session, { file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
@@ -311,7 +312,7 @@ export async function processProject(
         file: page.file,
         imageWriteFolder: imageWriteFolder ?? session.publicPath(),
         imageAltOutputFolder,
-        imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
+        imageExtensions: usedImageExtensions,
         projectPath: project.path,
         projectSlug: siteProject.slug,
         pageSlug: page.slug,
@@ -330,6 +331,7 @@ export async function processProject(
         checkLinks: opts?.checkLinks || opts?.strict,
         pageReferenceStates,
         extraLinkTransformers,
+        imageExtensions: usedImageExtensions,
       }),
     ),
   );

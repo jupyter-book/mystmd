@@ -65,7 +65,11 @@ async function prepareExportOptions(
           // But it does help locate those other exports if you want!
           return exp;
         }
-        session.log.error(`Invalid export - no 'article' in source: ${sourceFile}`);
+        if (!opts.force) {
+          // You cannot "--force" project exports with no article. This is expected
+          // and needs no error message.
+          session.log.error(`Invalid export - no 'article' in source: ${sourceFile}`);
+        }
         return undefined;
       }
       const resolvedFile = path.resolve(path.dirname(sourceFile), exp.article);

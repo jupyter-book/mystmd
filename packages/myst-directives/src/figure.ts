@@ -47,20 +47,43 @@ export const figureDirective: DirectiveSpec = {
     //   type: ParseTypesEnum.string,
     //   // class_option: list of strings?
     // },
+    'remove-input': {
+      type: ParseTypesEnum.boolean,
+    },
+    'remove-output': {
+      type: ParseTypesEnum.boolean,
+    },
+    placeholder: {
+      type: ParseTypesEnum.string,
+    },
   },
   body: {
     type: ParseTypesEnum.parsed,
   },
   run(data: DirectiveData): GenericNode[] {
-    const img: Image = {
+    const children: GenericNode[] = [];
+    children.push({
       type: 'image',
       url: data.arg as string,
       alt: data.options?.alt as string,
       width: data.options?.width as string,
       height: data.options?.height as string,
       align: data.options?.align as Image['align'],
-    };
-    const children: GenericNode[] = [img];
+      // These will pass through if the node is converted to an embed node in the image transform
+      'remove-input': data.options?.['remove-input'],
+      'remove-output': data.options?.['remove-output'],
+    });
+    if (data.options?.placeholder) {
+      children.push({
+        type: 'image',
+        placeholder: true,
+        url: data.options.placeholder as string,
+        alt: data.options?.alt as string,
+        width: data.options?.width as string,
+        height: data.options?.height as string,
+        align: data.options?.align as Image['align'],
+      });
+    }
     if (data.body) {
       // TODO: This is probably better as a transform in the future
       const nodes = data.body as GenericNode[];

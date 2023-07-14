@@ -2,7 +2,7 @@ import path from 'node:path';
 import type { Root } from 'mdast';
 import { tic } from 'myst-cli-utils';
 import type { References } from 'myst-common';
-import { SourceFileKind } from 'myst-common';
+import { SourceFileKind } from 'myst-spec-ext';
 import type { LinkTransformer } from 'myst-transforms';
 import {
   basicTransformationsPlugin,
@@ -36,7 +36,7 @@ import type { RendererData } from '../transforms/types.js';
 
 import {
   checkLinksTransform,
-  embedDirective,
+  embedTransform,
   importMdastFromJson,
   includeFilesDirective,
   liftCodeMetadataToBlock,
@@ -50,6 +50,8 @@ import {
   inlineExpressionsPlugin,
   propagateBlockDataToCode,
   transformBanner,
+  reduceOutputs,
+  transformPlaceholderImages,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/index.js';
 import { logMessagesFromVFile } from '../utils/index.js';
@@ -96,6 +98,7 @@ export async function transformMdast(
     extraTransforms?: TransformFn[];
     minifyMaxCharacters?: number;
     index?: string;
+    simplifyFigures?: boolean;
   },
 ) {
   const {
@@ -111,6 +114,7 @@ export async function transformMdast(
     watchMode = false,
     minifyMaxCharacters,
     index,
+    simplifyFigures,
   } = opts;
   const toc = tic();
   const { store, log } = session;
@@ -183,6 +187,10 @@ export async function transformMdast(
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
     .use(footnotesPlugin) // Needs to happen near the end
     .run(mdast, vfile);
+  if (simplifyFigures) {
+    // Transform output nodes to images / text
+    reduceOutputs(mdast, imageWriteFolder);
+  }
   if (!useExistingImages) {
     await transformImages(session, mdast, file, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,
@@ -252,11 +260,15 @@ export async function postProcessMdast(
     checkLinks,
     pageReferenceStates,
     extraLinkTransformers,
+    simplifyFigures,
+    imageExtensions,
   }: {
     file: string;
     checkLinks?: boolean;
     pageReferenceStates?: PageReferenceStates;
     extraLinkTransformers?: LinkTransformer[];
+    simplifyFigures?: boolean;
+    imageExtensions?: ImageExtensions[];
   },
 ) {
   const toc = tic();
@@ -264,6 +276,7 @@ export async function postProcessMdast(
   const cache = castSession(session);
   const mdastPost = selectFile(session, file);
   if (!mdastPost) return;
+  const { mdast, dependencies } = mdastPost;
   const fileState = cache.$internalReferences[file];
   const state = pageReferenceStates
     ? new MultiPageReferenceState(pageReferenceStates, file)
@@ -273,14 +286,18 @@ export async function postProcessMdast(
     ...(extraLinkTransformers || []),
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
-  linksTransform(mdastPost.mdast, state.file as VFile, {
+  linksTransform(mdast, state.file as VFile, {
     transformers,
     selector: LINKS_SELECTOR,
   });
-  resolveReferencesTransform(mdastPost.mdast, state.file as VFile, { state });
-  embedDirective(session, mdastPost.mdast, mdastPost.dependencies, state);
+  resolveReferencesTransform(mdast, state.file as VFile, { state });
+  embedTransform(session, mdast, dependencies, state);
+  if (simplifyFigures) {
+    // This must happen after embedded content is resolved so all children are present on figures
+    transformPlaceholderImages(mdast, { imageExtensions });
+  }
   // Ensure there are keys on every node after post processing
-  keysTransform(mdastPost.mdast);
+  keysTransform(mdast);
   logMessagesFromVFile(session, fileState.file);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
   if (checkLinks) await checkLinksTransform(session, file, mdastPost.mdast);

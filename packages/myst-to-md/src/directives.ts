@@ -173,7 +173,7 @@ function containerValidator(node: any, file: VFile) {
   }
 }
 
-const FIGURE_OPTS = ['label', 'class', 'width', 'align', 'title', 'alt'];
+const FIGURE_OPTS = ['label', 'class', 'width', 'align', 'title', 'alt', 'placeholder'];
 const TABLE_KEYS = ['headerRows', 'label', 'class', 'width', 'align'];
 
 /**
@@ -187,13 +187,19 @@ function container(node: any, _: Parent, state: NestedState, info: Info): string
   const legendNode: GenericNode | null = select('legend', node);
   const children = [...(captionNode?.children || []), ...(legendNode?.children || [])];
   if (node.kind === 'figure') {
-    const imageNode: GenericNode | null = select('image', node);
-    if (!imageNode) return '';
-    const combinedNode: Record<string, any> = { type: 'container', url: imageNode.url, children };
+    const imageNodes: GenericNode[] = selectAll('image', node);
+    const imageNode = imageNodes.find((img) => !img.placeholder);
+    const placeholderNode = imageNodes.find((img) => img.placeholder);
+    const url = imageNode?.urlSource ?? imageNode?.url ?? `#${node.source.label}`;
+    if (!url) return '';
+    const combinedNode: Record<string, any> = { type: 'container', url, children };
     FIGURE_OPTS.forEach((key) => {
-      const val = node[key] ?? imageNode[key];
+      const val = node[key] ?? imageNode?.[key];
       if (val) combinedNode[key] = val;
     });
+    if (placeholderNode) {
+      combinedNode['placeholder'] = placeholderNode.urlSource ?? placeholderNode.url;
+    }
     const options = {
       argsKey: 'url',
       keys: FIGURE_OPTS,
@@ -355,7 +361,7 @@ export const directiveHandlers: Record<string, Handle> = {
   tabSet: writeFlowDirective('tab-set'),
   tabItem,
   math: writeStaticDirective('math', { keys: ['label'] }),
-  embed: writeStaticDirective('embed', { keys: ['label'] }),
+  embed: writeStaticDirective('embed', { argsKey: 'label' }),
   include: writeStaticDirective('include', { argsKey: 'file' }),
   mermaid: writeStaticDirective('mermaid'),
   mystDirective,
