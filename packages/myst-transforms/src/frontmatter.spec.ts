@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Root } from 'mdast';
+import { VFile } from 'vfile';
 import { getFrontmatter } from './frontmatter';
 
 describe('getFrontmatter', () => {
@@ -8,7 +9,7 @@ describe('getFrontmatter', () => {
       type: 'root',
       children: [],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, {});
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {});
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({});
   });
@@ -22,7 +23,7 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, {});
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {});
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({});
   });
@@ -41,7 +42,7 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, {});
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {});
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({});
   });
@@ -56,7 +57,7 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, {});
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {});
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({});
   });
@@ -75,7 +76,7 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, {});
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {});
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({ title: 'My Title' });
   });
@@ -91,7 +92,7 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root);
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root);
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({});
   });
@@ -110,7 +111,7 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, { removeYaml: true });
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, { removeYaml: true });
     expect(tree).toEqual({
       type: 'root',
       children: [
@@ -133,7 +134,7 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, { removeYaml: true });
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, { removeYaml: true });
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({ title: 'My Title' });
   });
@@ -157,7 +158,7 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, {});
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {});
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({ title: 'Heading Title' });
   });
@@ -181,7 +182,9 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, { removeHeading: true });
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {
+      removeHeading: true,
+    });
     expect(tree).toEqual({
       type: 'root',
       children: [
@@ -209,7 +212,9 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, { removeHeading: true });
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {
+      removeHeading: true,
+    });
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({ title: 'Heading Title' });
   });
@@ -238,7 +243,9 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, { removeHeading: true });
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {
+      removeHeading: true,
+    });
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({ title: 'My Title' });
   });
@@ -267,7 +274,9 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, { removeHeading: true });
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {
+      removeHeading: true,
+    });
     expect(tree).toEqual({
       type: 'root',
       children: [
@@ -300,7 +309,7 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, {});
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {});
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({ title: 'My Title' });
   });
@@ -320,7 +329,7 @@ describe('getFrontmatter', () => {
         },
       ],
     };
-    const { tree, frontmatter } = getFrontmatter(input as Root, {});
+    const { tree, frontmatter } = getFrontmatter(new VFile(), input as Root, {});
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({ title: 'My Title' });
   });

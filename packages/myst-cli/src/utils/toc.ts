@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import { join, parse } from 'node:path';
-import YAML from 'js-yaml';
+import yaml from 'js-yaml';
 import type { Logger } from 'myst-cli-utils';
 import { silentLogger } from 'myst-cli-utils';
 import type { ISession } from '../session/types.js';
@@ -52,7 +52,7 @@ function upgradeOldJupyterBookToc(oldToc: any[]) {
 
 export function readTOC(log: Logger, opts?: TocOptions): TOC {
   const filename = join(opts?.path || '.', opts?.filename || '_toc.yml');
-  const toc = YAML.load(fs.readFileSync(filename).toString()) as any;
+  const toc = yaml.load(fs.readFileSync(filename).toString()) as any;
   if (Array.isArray(toc)) {
     try {
       const old = upgradeOldJupyterBookToc(toc);
