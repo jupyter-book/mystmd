@@ -648,55 +648,45 @@ cases:
           kind: figure
           identifier: myfigure
           enumerator: 1
+          source:
+            label: nb-cell-0
+            url: /myst/nb-0
+            kind: Notebook
           children:
-            - type: embed
-              label: nb-cell-0
-              source:
-                url: /myst/nb-0
-                kind: Notebook
-              children:
-                - type: block
+            - type: code
+              lang: python
+              executable: true
+              value: print('abc')
+              identifier: nb-cell-0-code
+              enumerator: 1
+              html_id: nb-cell-0-code
+            - type: output
+              id: T7FMDqDm8dM2bOT1tKeeM
+              identifier: nb-cell-0-output
+              html_id: nb-cell-0-output
+              data:
+                - name: stdout
+                  output_type: stream
+                  text: abc\n...
+                  hash: a
+                  path: files/a.txt
+            - type: output
+              id: uE4mPgSow0oyo0dvEH9Lc
+              identifier: nb-cell-1-output
+              html_id: nb-cell-1-output
+              data:
+                - output_type: execute_result
+                  execution_count: 3
+                  metadata: {}
                   data:
-                    id: nb-cell-0
-                    type: notebook-code
-                  identifier: nb-cell-0
-                  label: nb-cell-0
-                  html_id: nb-cell-0
-                  children:
-                    - type: code
-                      lang: python
-                      executable: true
-                      value: print('abc')
-                      identifier: nb-cell-0-code
-                      enumerator: 1
-                      html_id: nb-cell-0-code
-                    - type: output
-                      id: T7FMDqDm8dM2bOT1tKeeM
-                      identifier: nb-cell-0-output
-                      html_id: nb-cell-0-output
-                      data:
-                        - name: stdout
-                          output_type: stream
-                          text: abc\n...
-                          hash: a
-                          path: files/a.txt
-                    - type: output
-                      id: uE4mPgSow0oyo0dvEH9Lc
-                      identifier: nb-cell-1-output
-                      html_id: nb-cell-1-output
-                      data:
-                        - output_type: execute_result
-                          execution_count: 3
-                          metadata: {}
-                          data:
-                            text/plain:
-                              content_type: text/plain
-                              hash: b
-                              path: files/b.txt
-                            text/html:
-                              content_type: text/html
-                              hash: b
-                              path: files/b.html
+                    text/plain:
+                      content_type: text/plain
+                      hash: b
+                      path: files/b.txt
+                    text/html:
+                      content_type: text/html
+                      hash: b
+                      path: files/b.html
             - type: caption
               children:
                 - type: paragraph
@@ -709,4 +699,4 @@ cases:
                   children:
                     - type: text
                       value: My Legend
-    jats: <fig id="myfigure"><caption><p>My Caption</p><p>My Legend</p><p><supplementary-material id="myfigure-source" specific-use="notebook"><label>Figure 1 - Notebook.</label><caption><title>Analysis for <xref ref-type="fig" rid="myfigure">Figure 1</xref>.</title><p>See methods from <xref ref-type="custom" custom-type="notebook-code" rid="nb-cell-0">cell</xref>.</p></caption></supplementary-material></p></caption><alternatives><media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/></alternatives><alternatives><media specific-use="text" mimetype="text" mime-subtype="plain" xlink:href="files/b.txt"/><media specific-use="web" mimetype="text" mime-subtype="html" xlink:href="files/b.html"/></alternatives></fig>
+    jats: <fig id="myfigure"><caption><p>My Caption</p><p>My Legend</p><p><supplementary-material id="myfigure-source" specific-use="notebook"><label>Figure 1 - Notebook.</label><caption><title>Analysis for <xref ref-type="fig" rid="myfigure">Figure 1</xref>.</title><p>See methods from <xref ref-type="custom" custom-type="notebook-code" rid="nb-cell-0">cell</xref>.</p></caption></supplementary-material></p></caption><code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code><alternatives><media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/></alternatives><alternatives><media specific-use="text" mimetype="text" mime-subtype="plain" xlink:href="files/b.txt"/><media specific-use="web" mimetype="text" mime-subtype="html" xlink:href="files/b.html"/></alternatives></fig>
