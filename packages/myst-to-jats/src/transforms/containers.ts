@@ -1,8 +1,10 @@
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
-import type { Container, Blockquote, Legend, Caption, FlowContent } from 'myst-spec';
+import type { Blockquote, Legend, Caption, FlowContent } from 'myst-spec';
+import type { Container } from 'myst-spec-ext';
 import { select, selectAll } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
+import { normalizeLabel } from 'myst-common';
 
 export type SupplementaryMaterial = {
   type: 'supplementaryMaterial';
@@ -43,19 +45,16 @@ export function containerTransform(mdast: Root) {
       caption.children.push(...legendChildren);
       remove(container as any, 'legend');
     }
-    const embed = select('embed', container);
-    if (embed) {
-      const embedBlock = select('block', embed);
-      const embedOutputs = selectAll('output', embedBlock);
+    const { identifier } = normalizeLabel(container.source?.label) ?? {};
+    if (identifier && container.source) {
       caption.children.push({
         type: 'supplementaryMaterial',
         enumerator: container.enumerator,
         figIdentifier: container.identifier,
-        sourceUrl: (embed as any).source?.url,
-        sourceSlug: (embed as any).source?.slug,
-        embedIdentifier: (embedBlock as any)?.identifier,
+        sourceUrl: container.source.url,
+        sourceSlug: container.source.slug,
+        embedIdentifier: identifier,
       } as SupplementaryMaterial);
-      if (embedOutputs) container.children.push(...(embedOutputs as any[]));
     }
     if (caption.children?.length && !select('caption', container)) {
       container.children.push(caption);
