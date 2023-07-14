@@ -28,6 +28,7 @@ parts:
   - caption: Executable Content
     chapters:
       - file: interactive-notebooks
+      - file: reuse-jupyter-outputs
       - file: integrating-jupyter
   - caption: Websites
     chapters:

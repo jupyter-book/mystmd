@@ -177,10 +177,6 @@ See [](#my-math-label) for an equation!
 
 ## Notebook Cell Targets
 
-:::{warning}
-The following syntax for cross-referencing notebook cells is in `beta`, as it is not yet described by the [MyST Specification](myst:spec). As such, it may change in the future.
-:::
-
 You can label notebook cells using a comment at the top of the cell, using a `#| label:` syntax, or have this added directly in the notebook metadata for the cell.
 
 ```python
@@ -197,15 +193,18 @@ The cell output or the entire cell can be embedded or referred to using the imag
 
 or as a `figure` directive, where you can then add a caption. If you are referring to that figure in a further cross reference that figure (i.e. not the original cell), give it a new `name`.
 
-````markdown
-```{figure} #my-cell
+```markdown
+:::{figure} #my-cell
 :name: fig-my-cell
+:::
 ```
-````
 
-:::{note}
+:::{card} ♻️ See Also: Reusing Jupyter Outputs
+:link: ./reuse-jupyter-outputs.md
+See more about reusing Jupyter outputs in figures, adding placeholders, and other options.
+:::
 
-# Interactive Example
+:::{note} Interactive Example
 
 The following example embeds a figure from [](./interactive-notebooks.ipynb), and can be used in cross references [](#fig-altair-horsepower).
 
