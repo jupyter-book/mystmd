@@ -47,34 +47,37 @@ export async function processNotebook(
     end = -1;
   }
 
-  const items = await cells?.slice(0, end).reduce(async (P, cell: ICell, index) => {
-    const acc = await P;
-    if (cell.cell_type === CELL_TYPES.markdown) {
-      const cellContent = asString(cell.source);
-      // If the first cell is a frontmatter block, do not put a block break above it
-      const omitBlockDivider = index === 0 && cellContent.startsWith('---\n');
-      return acc.concat(`${omitBlockDivider ? '' : blockDivider(cell)}${cellContent}`);
-    }
-    if (cell.cell_type === CELL_TYPES.raw) {
-      return acc.concat(`${blockDivider(cell)}\`\`\`\n${asString(cell.source)}\n\`\`\``);
-    }
-    if (cell.cell_type === CELL_TYPES.code) {
-      const code = `\`\`\`{code-cell} ${language}\n${asString(cell.source)}\n\`\`\``;
-      const { myst, id } = createOutputDirective();
-      if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
-        const minified: MinifiedOutput[] = await minifyCellOutput(
-          cell.outputs as IOutput[],
-          cache.$outputs,
-          { computeHash, maxCharacters: opts?.minifyMaxCharacters },
-        );
-        outputMap[id] = minified;
-      } else {
-        outputMap[id] = [];
+  const items = await cells?.slice(0, end).reduce(
+    async (P, cell: ICell, index) => {
+      const acc = await P;
+      if (cell.cell_type === CELL_TYPES.markdown) {
+        const cellContent = asString(cell.source);
+        // If the first cell is a frontmatter block, do not put a block break above it
+        const omitBlockDivider = index === 0 && cellContent.startsWith('---\n');
+        return acc.concat(`${omitBlockDivider ? '' : blockDivider(cell)}${cellContent}`);
       }
-      return acc.concat(`${blockDivider(cell)}${code}\n\n${myst}`);
-    }
-    return acc;
-  }, Promise.resolve([] as string[]));
+      if (cell.cell_type === CELL_TYPES.raw) {
+        return acc.concat(`${blockDivider(cell)}\`\`\`\n${asString(cell.source)}\n\`\`\``);
+      }
+      if (cell.cell_type === CELL_TYPES.code) {
+        const code = `\`\`\`{code-cell} ${language}\n${asString(cell.source)}\n\`\`\``;
+        const { myst, id } = createOutputDirective();
+        if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
+          const minified: MinifiedOutput[] = await minifyCellOutput(
+            cell.outputs as IOutput[],
+            cache.$outputs,
+            { computeHash, maxCharacters: opts?.minifyMaxCharacters },
+          );
+          outputMap[id] = minified;
+        } else {
+          outputMap[id] = [];
+        }
+        return acc.concat(`${blockDivider(cell)}${code}\n\n${myst}`);
+      }
+      return acc;
+    },
+    Promise.resolve([] as string[]),
+  );
 
   const mdast = parseMyst(session, items.join('\n\n'), file);
 
