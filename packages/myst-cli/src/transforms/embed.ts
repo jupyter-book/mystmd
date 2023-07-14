@@ -30,9 +30,10 @@ export function embedTransform(
     if (newNode && node['remove-input']) {
       newNode = filter(newNode, (n: GenericNode) => n.type !== 'code');
     }
-    selectAll('[identifier],[label]', newNode).forEach((idNode: GenericNode) => {
+    selectAll('[identifier],[label],[html_id]', newNode).forEach((idNode: GenericNode) => {
       delete idNode.identifier;
       delete idNode.label;
+      delete idNode.html_id;
     });
     if (!newNode) {
       node.children = [];
