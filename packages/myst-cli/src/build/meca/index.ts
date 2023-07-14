@@ -128,15 +128,17 @@ async function copyFilesFromConfig(
       entries.map(async ({ itemType, entry }) => {
         const resolvedEntry = [...projectPath.split(path.sep), entry].join('/');
         const matches = await glob(resolvedEntry);
-        matches.forEach((match) => {
-          const destination = copyFileMaintainPath(
-            session,
-            match,
-            projectPath,
-            bundleFolder(mecaFolder),
-          );
-          addManifestItem(manifestItems, itemType, mecaFolder, destination);
-        });
+        matches
+          .filter((match) => !isDirectory(match))
+          .forEach((match) => {
+            const destination = copyFileMaintainPath(
+              session,
+              match,
+              projectPath,
+              bundleFolder(mecaFolder),
+            );
+            addManifestItem(manifestItems, itemType, mecaFolder, destination);
+          });
       }),
     );
   }
