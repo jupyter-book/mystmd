@@ -1,7 +1,7 @@
 ---
 title: Working with MyST Documents
 subject: MyST Quickstart Tutorial
-subtitle: Export to PDF, Word and LaTeX
+subtitle: Export to Markdown, PDF, Word and LaTeX
 short_title: MyST Documents
 description: Get up and running with the MyST (Markedly Structured Text) command line interface. MyST is designed to create publication-quality documents written entirely in Markdown.
 ---
@@ -475,6 +475,39 @@ You should see these two additional lines:
 
 Without specifying the `output:` location, this will copy the unzipped contents into the `_build/exports` folder along with all other exports.
 Creating a zip file can be helpful when directly submitted to the arXiv or a journal!
+
+### Exporting to Markdown
+
+🛠 In `01-paper.md` create an exports list with `docx`, `pdf` and `md` formats.
+
+```yaml
+---
+exports:
+  - format: docx
+  - format: pdf
+    template: volcanica
+    article_type: Report
+  - format: md
+---
+```
+
+You can now build the exports with the following command:
+
+🛠 Run `myst build 01-paper.md`
+
+```text
+📬 Performing exports:
+   01-paper.md -> _build/exports/paper.docx
+   01-paper.md -> _build/exports/paper.pdf
+   01-paper.md -> _build/exports/paper.md
+🌠 Converting 3 GIF images to PNG using imagemagick
+📖 Built 01-paper.md in 257 ms.
+📄 Exported DOCX in 205 ms, copying to _build/exports/paper.docx
+📑 Exported TeX in 5.11 ms, copying to _build/temp/myst8BVu1k/paper.tex
+🖨 Rendering PDF to _build/temp/mystvUibhD/paper.pdf
+📄 Exported PDF in 9.3 s, copying to _build/exports/paper.pdf
+📄 Exported MD in 205 ms, copying to _build/exports/paper.md
+```
 
 ## Conclusion 🥳
 
