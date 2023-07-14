@@ -361,7 +361,7 @@ export const directiveHandlers: Record<string, Handle> = {
   tabSet: writeFlowDirective('tab-set'),
   tabItem,
   math: writeStaticDirective('math', { keys: ['label'] }),
-  embed: writeStaticDirective('embed', { keys: ['label'] }),
+  embed: writeStaticDirective('embed', { argsKey: 'label' }),
   include: writeStaticDirective('include', { argsKey: 'file' }),
   mermaid: writeStaticDirective('mermaid'),
   mystDirective,

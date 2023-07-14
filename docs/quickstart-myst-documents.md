@@ -24,8 +24,8 @@ The tutorial will be brief on explaining MyST syntax, we provide a [MyST Markdow
 ```
 ````
 
-```{embed}
-:label: install-myst-dropdown
+```{embed} install-myst-dropdown
+
 ```
 
 :::{tip}

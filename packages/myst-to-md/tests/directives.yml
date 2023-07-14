@@ -159,8 +159,7 @@ cases:
         - type: embed
           label: my-code
     markdown: |-
-      ```{embed}
-      :label: my-code
+      ```{embed} my-code
       ```
   - title: include directive
     mdast:
