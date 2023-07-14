@@ -3,7 +3,7 @@ import { remove } from 'unist-util-remove';
 import type { Root } from 'mdast';
 import type { Block, Code, Heading } from 'myst-spec';
 import { fileError, toText } from 'myst-common';
-import { VFile } from 'vfile';
+import type { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
 
 type Options = {
