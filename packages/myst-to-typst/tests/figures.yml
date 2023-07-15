@@ -1,0 +1,48 @@
+title: myst-to-typst figures
+cases:
+  - title: image
+    mdast:
+      type: root
+      children:
+        - type: image
+          url: molecular.jpg
+          width: 500px
+    typst: |-
+      #image("molecular.jpg", width: 62.5%)
+  - title: figure directive - no caption/legend
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          label: glacier
+          children:
+            - type: image
+              url: glacier.jpg
+              width: 500px
+    typst: |-
+      #figure(
+        image("glacier.jpg", width: 62.5%),
+      ) <glacier>
+  - title: figure directive - with caption
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          label: glacier
+          children:
+            - type: image
+              url: glacier.jpg
+              width: 500px
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: A curious figure.
+    typst: |-
+      #figure(
+        image("glacier.jpg", width: 62.5%),
+        caption: [A curious figure.],
+      ) <glacier>

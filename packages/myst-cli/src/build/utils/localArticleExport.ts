@@ -12,6 +12,7 @@ import { texExportOptionsFromPdf } from '../pdf/single.js';
 import { createPdfGivenTexExport } from '../pdf/create.js';
 import { runMecaExport } from '../meca/index.js';
 import { runMdExport } from '../md/index.js';
+import { runTypstExport, runTypstZipExport } from '../typst/single.js';
 
 async function _localArticleExport(
   session: ISession,
@@ -37,6 +38,12 @@ async function _localArticleExport(
           await runTexZipExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
         } else {
           await runTexExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
+        }
+      } else if (format === ExportFormats.typst) {
+        if (path.extname(output) === '.zip') {
+          await runTypstZipExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
+        } else {
+          await runTypstExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
         }
       } else if (format === ExportFormats.docx) {
         await runWordExport(sessionClone, $file, exportOptions, fileProjectPath, clean);

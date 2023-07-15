@@ -102,6 +102,7 @@ export type KernelSpec = {
 export enum ExportFormats {
   pdf = 'pdf',
   tex = 'tex',
+  typst = 'typst',
   pdftex = 'pdf+tex',
   docx = 'docx',
   xml = 'xml',

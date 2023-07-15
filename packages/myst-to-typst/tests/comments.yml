@@ -1,0 +1,23 @@
+title: myst-to-typst comments
+cases:
+  - title: comments
+    mdast:
+      type: root
+      children:
+        - type: comment
+          value: |-
+            hello
+            world
+    typst: |-
+      /*
+      hello
+      world
+      */
+  - title: comment - empty
+    mdast:
+      type: root
+      children:
+        - type: comment
+          value: null
+    typst: |-
+      //

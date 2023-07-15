@@ -1,0 +1,25 @@
+title: myst-to-typst code
+cases:
+  - title: code-block-default
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: python
+          class: my-class
+          value: |-
+            # here is math
+            1+2
+          children:
+            - type: code
+              lang: python
+              class: my-class
+              value: |-
+                # here is math
+                1+2
+    typst: |-
+      ```python
+      # here is math
+      1+2
+      ```

@@ -83,6 +83,7 @@
     "myst-to-jats": "^1.0.6",
     "myst-to-md": "^1.0.4",
     "myst-to-tex": "^1.0.3",
+    "myst-to-typst": "^0.0.1",
     "myst-transforms": "^1.0.4",
     "nanoid": "^4.0.0",
     "nbtx": "^0.2.3",

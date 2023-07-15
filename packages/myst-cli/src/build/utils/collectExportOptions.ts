@@ -119,7 +119,11 @@ function getOutput(
       session,
       sourceFile,
       projectPath,
-      formats.includes(ExportFormats.tex) ? 'tex' : undefined,
+      formats.includes(ExportFormats.tex)
+        ? 'tex'
+        : formats.includes(ExportFormats.typst)
+        ? 'typ'
+        : undefined,
     );
   }
   if (!path.extname(output)) {
@@ -151,7 +155,8 @@ export async function collectTexExportOptions(
   const resolvedExportOptions: ExportWithOutput[] = filterAndMakeUnique(
     exportOptions.map((exp): ExportWithOutput | undefined => {
       const rawOutput = filename || exp.output || '';
-      const useZip = extension === 'tex' && (zip || path.extname(rawOutput) === '.zip');
+      const useZip =
+        (extension === 'tex' || extension === 'typ') && (zip || path.extname(rawOutput) === '.zip');
       const expExtension = useZip ? 'zip' : extension;
       const output = getOutput(
         session,
@@ -296,6 +301,18 @@ export async function collectExportOptions(
             file,
             'tex',
             [ExportFormats.tex],
+            fileProjectPath,
+            opts,
+          )),
+        );
+      }
+      if (formats.includes(ExportFormats.typst)) {
+        fileExportOptionsList.push(
+          ...(await collectTexExportOptions(
+            session,
+            file,
+            'typ',
+            [ExportFormats.typst],
             fileProjectPath,
             opts,
           )),

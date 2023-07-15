@@ -1,0 +1,25 @@
+title: myst-to-typst comments
+cases:
+  - title: comments
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: A footnote reference
+            - type: footnoteReference
+              identifier: myref
+              label: myref
+            - type: text
+              value: ' with more text!'
+        - type: footnoteDefinition
+          identifier: myref
+          label: myref
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Footnote definition!
+    typst: |-
+      A footnote reference#footnote[Footnote definition!] with more text!
