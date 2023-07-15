@@ -83,6 +83,7 @@ async function copyFilesFromConfig(
         const resolvedEntry = [...projectPath.split(path.sep), entry].join('/');
         const matches = await glob(resolvedEntry);
         matches
+          .map((match) => match.split('/').join(path.sep))
           .filter((match) => !isDirectory(match))
           .forEach((match) => {
             const destination = copyFileMaintainPath(
