@@ -1,5 +1,20 @@
 # myst-directives
 
+## 1.0.4
+
+### Patch Changes
+
+- 7b72b097: Embed directive takes label target as arg not option
+- f44ee18d: Add caption to iframe
+- 7b72b097: Figure directive takes remove-output/input options for notebook figures
+- 7b72b097: Add placeholder to figure directive options and image node spec
+- 7b72b097: New Embed and Container node type in myst-spec-ext
+- Updated dependencies [7b72b097]
+- Updated dependencies [7b72b097]
+- Updated dependencies [f44ee18d]
+  - myst-spec-ext@1.0.3
+  - myst-common@1.0.4
+
 ## 1.0.3
 
 ### Patch Changes

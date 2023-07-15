@@ -1,5 +1,13 @@
 # myst-spec-ext
 
+## 1.0.3
+
+### Patch Changes
+
+- 7b72b097: Add placeholder to figure directive options and image node spec
+- 7b72b097: New Embed and Container node type in myst-spec-ext
+- f44ee18d: Add iframe directive to spec
+
 ## 1.0.2
 
 ### Patch Changes

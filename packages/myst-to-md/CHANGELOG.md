@@ -1,5 +1,13 @@
 # myst-to-md
 
+## 1.0.4
+
+### Patch Changes
+
+- 7b72b097: Support placeholder images in figures
+- Updated dependencies [7b72b097]
+  - myst-common@1.0.4
+
 ## 1.0.3
 
 ### Patch Changes

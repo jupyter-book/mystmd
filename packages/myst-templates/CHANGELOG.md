@@ -1,5 +1,15 @@
 # myst-templates
 
+## 1.0.4
+
+### Patch Changes
+
+- a4c3cdd7: Use glob to validate and copy template files
+- Updated dependencies [7b72b097]
+- Updated dependencies [a4c3cdd7]
+  - myst-common@1.0.4
+  - myst-cli-utils@2.0.2
+
 ## 1.0.3
 
 ### Patch Changes

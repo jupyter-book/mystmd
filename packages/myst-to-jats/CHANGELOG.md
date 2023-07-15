@@ -1,5 +1,18 @@
 # myst-to-jats
 
+## 1.0.6
+
+### Patch Changes
+
+- 7b72b097: New Embed and Container node type in myst-spec-ext
+- 5f4770ab: Fix supplementary material in jats export for simpler embed figure structure
+- 7b72b097: Support placeholder images in figures
+- Updated dependencies [7b72b097]
+- Updated dependencies [7b72b097]
+- Updated dependencies [f44ee18d]
+  - myst-spec-ext@1.0.3
+  - myst-common@1.0.4
+
 ## 1.0.5
 
 ## 1.0.4

@@ -1,5 +1,32 @@
 # myst-cli
 
+## 1.1.5
+
+### Patch Changes
+
+- 1a191c89: Log errors instead of throwing on page frontmatter yaml load
+- 7b72b097: Flatten blocks on embed nodes and embed nodes on container nodes
+- 7b72b097: New Embed and Container node type in myst-spec-ext
+- 28eed244: Do not log errors on copying folders in meca bundle
+- 7b72b097: Add transform to replace figures with placeholders
+- a4c3cdd7: Move isDirectory and copyFile functions from myst-cli to myst-cli-utils
+- Updated dependencies [1a191c89]
+- Updated dependencies [a4c3cdd7]
+- Updated dependencies [7b72b097]
+- Updated dependencies [7b72b097]
+- Updated dependencies [f44ee18d]
+- Updated dependencies [5f4770ab]
+- Updated dependencies [a4c3cdd7]
+- Updated dependencies [7b72b097]
+  - myst-transforms@1.0.4
+  - myst-templates@1.0.4
+  - myst-spec-ext@1.0.3
+  - myst-to-jats@1.0.6
+  - myst-common@1.0.4
+  - myst-cli-utils@2.0.2
+  - myst-to-md@1.0.4
+  - myst-parser@1.0.4
+
 ## 1.1.4
 
 ### Patch Changes

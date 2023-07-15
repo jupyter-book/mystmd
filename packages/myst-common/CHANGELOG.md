@@ -1,5 +1,11 @@
 # myst-common
 
+## 1.0.4
+
+### Patch Changes
+
+- 7b72b097: New Embed and Container node type in myst-spec-ext
+
 ## 1.0.3
 
 ### Patch Changes

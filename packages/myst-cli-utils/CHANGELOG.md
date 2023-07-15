@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.2
+
+### Patch Changes
+
+- a4c3cdd7: Move isDirectory and copyFile functions from myst-cli to myst-cli-utils
+
 ## 2.0.1
 
 ### Patch Changes
