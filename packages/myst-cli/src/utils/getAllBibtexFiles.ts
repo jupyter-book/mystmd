@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { isDirectory } from 'myst-cli-utils';
 import type { ISession } from '../session/types.js';
-import { isDirectory } from './isDirectory.js';
 import { shouldIgnoreFile } from './shouldIgnoreFile.js';
 
 export function getAllBibTexFilesOnPath(session: ISession, dir: string) {

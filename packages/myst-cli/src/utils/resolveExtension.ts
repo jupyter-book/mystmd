@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { isDirectory } from './isDirectory.js';
+import { isDirectory } from 'myst-cli-utils';
 
 export enum ImageExtensions {
   png = '.png',

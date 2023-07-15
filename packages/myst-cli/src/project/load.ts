@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import { join, resolve } from 'node:path';
-import { isUrl } from 'myst-cli-utils';
+import { isDirectory, isUrl } from 'myst-cli-utils';
 import { loadConfigAndValidateOrThrow } from '../config.js';
 import { loadFile, combineProjectCitationRenderers } from '../process/index.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { projects } from '../store/reducers.js';
-import { getAllBibTexFilesOnPath, isDirectory, validateTOC } from '../utils/index.js';
+import { getAllBibTexFilesOnPath, validateTOC } from '../utils/index.js';
 import { projectFromPath } from './fromPath.js';
 import { projectFromToc } from './fromToc.js';
 import { writeTocFromProject } from './toToc.js';
