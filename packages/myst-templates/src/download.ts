@@ -1,8 +1,10 @@
 import fs, { createWriteStream, mkdirSync } from 'node:fs';
-import { dirname, join, parse } from 'node:path';
+import { join, parse, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 import AdmZip from 'adm-zip';
+import { glob } from 'glob';
 import yaml from 'js-yaml';
+import { copyFileMaintainPath, isDirectory } from 'myst-cli-utils';
 import { TemplateKind } from 'myst-common';
 import fetch from 'node-fetch';
 import { validateUrl } from 'simple-validators';
@@ -114,24 +116,35 @@ export function resolveInputs(
  *
  * It finds the template yml and moves that and all adjacent files back up to 'path'
  */
-function unnestTemplate(path: string) {
+async function unnestTemplate(session: ISession, path: string) {
   const content = fs.readdirSync(path);
-  if (!content.includes(TEMPLATE_YML)) {
-    content.forEach((dir) => {
-      const templateYmlFile = join(path, dir, TEMPLATE_YML);
-      if (fs.existsSync(templateYmlFile)) {
-        fs.copyFileSync(templateYmlFile, join(path, TEMPLATE_YML));
-        const templateYml = yaml.load(fs.readFileSync(templateYmlFile).toString()) as {
-          files?: string[];
-        };
-        templateYml.files?.forEach((file) => {
-          const source = join(path, dir, ...file.split('/'));
-          const dest = join(path, ...file.split('/'));
-          fs.mkdirSync(dirname(dest), { recursive: true });
-          fs.copyFileSync(source, dest);
-        });
-      }
-    });
+  if (content.includes(TEMPLATE_YML)) return;
+  let nestedPath: string | undefined;
+  content.forEach((dir) => {
+    const templateYmlFile = join(path, dir, TEMPLATE_YML);
+    if (!nestedPath && fs.existsSync(templateYmlFile)) {
+      nestedPath = join(path, dir);
+    }
+  });
+  if (!nestedPath) return;
+  const templateYmlFile = join(nestedPath, TEMPLATE_YML);
+  fs.copyFileSync(templateYmlFile, join(path, TEMPLATE_YML));
+  const templateYml = yaml.load(fs.readFileSync(templateYmlFile).toString()) as {
+    files?: string[];
+  };
+  if (templateYml.files?.length) {
+    await Promise.all(
+      templateYml.files.map(async (file) => {
+        const resolvedEntry = [...(nestedPath as string).split(sep), file].join('/');
+        const matches = await glob(resolvedEntry);
+        matches
+          .map((match) => match.split('/').join(sep))
+          .filter((match) => !isDirectory(match))
+          .forEach((match) => {
+            copyFileMaintainPath(session, match, nestedPath as string, path);
+          });
+      }),
+    );
   }
 }
 
@@ -202,7 +215,7 @@ export async function downloadAndUnzipTemplate(
 
   const zip = new AdmZip(zipFile);
   zip.extractAllTo(templatePath);
-  unnestTemplate(templatePath);
+  await unnestTemplate(session, templatePath);
 }
 
 export async function fetchPublicTemplate(session: ISession, name: string, kind?: TemplateKind) {

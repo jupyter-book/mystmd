@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { hashAndCopyStaticFile } from 'myst-cli-utils';
+import { globSync } from 'glob';
+import { hashAndCopyStaticFile, isDirectory } from 'myst-cli-utils';
 import { TemplateOptionType } from 'myst-common';
 import {
   PAGE_FRONTMATTER_KEYS,
@@ -539,10 +540,12 @@ export function validateTemplateYml(
       const fileOpts = incrementOptions(`files.${ind}`, opts);
       const file = validateString(val, fileOpts);
       if (file && opts.templateDir) {
-        const filePath = path.resolve(opts.templateDir, ...file.split('/'));
-        if (!fs.existsSync(filePath)) {
+        const filePath = [...opts.templateDir.split(path.sep), file].join('/');
+        const matches = globSync(filePath).map((match) => match.split('/').join(path.sep));
+        const files = matches.filter((match) => !isDirectory(match));
+        if (!matches.length) {
           validationError(`file does not exist: ${filePath}`, fileOpts);
-        } else if (fs.lstatSync(filePath).isDirectory()) {
+        } else if (!files.length) {
           validationError(`file must not be directory: ${filePath}`, fileOpts);
         }
       }
