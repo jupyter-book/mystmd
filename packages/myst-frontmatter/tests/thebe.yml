@@ -1,8 +1,9 @@
-title: THEBE
+title: Jupyter & Thebe Options
+frontmatter: 'project'
 cases:
   - title: Valid and Exhaustive Options
     raw:
-      thebe:
+      jupyter:
         lite: false
         binder:
           url: 'https://my.binder.org/blah'
@@ -43,3 +44,15 @@ cases:
           token: local-secret
           kernelName: local-kernel
           sessionName: local-session
+  - title: jupyter lite
+    raw:
+      jupyter: 'lite'
+    normalized:
+      thebe:
+        lite: true
+  - title: jupyter server
+    raw:
+      jupyter: 'server'
+    normalized:
+      thebe:
+        server: true

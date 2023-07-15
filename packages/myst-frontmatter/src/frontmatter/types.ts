@@ -27,14 +27,14 @@ export type Biblio = {
 
 export type Thebe = {
   lite?: boolean;
-  binder?: boolean | ThebeBinderOptions;
-  server?: boolean | ThebeServerOptions;
+  binder?: boolean | BinderHubOptions;
+  server?: boolean | JupyterServerOptions;
   kernelName?: string;
   sessionName?: string;
   disableSessionSaving?: boolean;
   mathjaxUrl?: string;
   mathjaxConfig?: string;
-  local?: boolean | ThebeLocalOptions;
+  local?: boolean | JupyterLocalOptions;
 };
 
 export enum BinderProviders {
@@ -43,19 +43,19 @@ export enum BinderProviders {
   gitlab = 'gitlab',
 }
 
-export type ThebeBinderOptions = {
+export type BinderHubOptions = {
   url?: string;
   ref?: string; // org-name/repo-name
   repo?: string; // valid git refs only?
   provider?: BinderProviders;
 };
 
-export type ThebeServerOptions = {
+export type JupyterServerOptions = {
   url?: string;
   token?: string;
 };
 
-export type ThebeLocalOptions = ThebeServerOptions & {
+export type JupyterLocalOptions = JupyterServerOptions & {
   kernelName?: string;
   sessionName?: string;
 };
@@ -154,7 +154,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   /** Abbreviations used throughout the project */
   abbreviations?: Record<string, string>;
   exports?: Export[];
-  thebe?: boolean | Thebe;
+  thebe?: Thebe;
   requirements?: string[];
   resources?: string[];
 };
