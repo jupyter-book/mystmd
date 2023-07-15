@@ -3,7 +3,7 @@ import path from 'node:path';
 import AdmZip from 'adm-zip';
 import { glob } from 'glob';
 import mime from 'mime-types';
-import { tic } from 'myst-cli-utils';
+import { copyFileMaintainPath, copyFileToFolder, isDirectory, tic } from 'myst-cli-utils';
 import { ExportFormats } from 'myst-frontmatter';
 import type { LinkTransformer } from 'myst-transforms';
 import { selectAll } from 'unist-util-select';
@@ -15,7 +15,7 @@ import { loadProjectFromDisk, writeTocFromProject } from '../../project/index.js
 import { castSession } from '../../session/index.js';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
-import { createTempFolder, isDirectory } from '../../utils/index.js';
+import { createTempFolder } from '../../utils/index.js';
 import { runJatsExport } from '../jats/single.js';
 import type { ExportWithOutput, ExportOptions } from '../types.js';
 import {
@@ -30,52 +30,6 @@ type ManifestItem = {
   itemType: string;
   mediaType: string;
 };
-
-/**
- * Copy "file" maintaining original relative path to "from" directory with final "to" directory
- *
- * If "file" is not inside "from" folder, the file is not copied.
- */
-function copyFileMaintainPath(session: ISession, file: string, from: string, to: string) {
-  // File must be inside "from" folder
-  if (!path.resolve(path.relative(from, file)).startsWith(path.resolve(from))) {
-    session.log.error(`Cannot include files outside project root in meca bundle: ${file}`);
-    return undefined;
-  }
-  const destination = path.resolve(to, path.relative(from, file));
-  const destinationFolder = path.dirname(destination);
-  try {
-    if (!fs.existsSync(destinationFolder)) fs.mkdirSync(destinationFolder, { recursive: true });
-    fs.copyFileSync(file, destination);
-    session.log.debug(`File successfully copied: ${file}`);
-    return destination;
-  } catch {
-    session.log.error(`Error copying file: ${file}`);
-    return undefined;
-  }
-}
-
-/**
- * Copy "file" to "to" directory.
- *
- * If a file already exists with the basename of "file" inside "to" directory, it is not copied.
- */
-function copyFileToFolder(session: ISession, file: string, to: string) {
-  const destination = path.join(to, path.basename(file));
-  if (fs.existsSync(destination)) {
-    session.log.error(`File already exists with name: ${path.basename(file)}`);
-  }
-  const destinationFolder = path.dirname(destination);
-  try {
-    if (!fs.existsSync(destinationFolder)) fs.mkdirSync(destinationFolder, { recursive: true });
-    fs.copyFileSync(file, destination);
-    session.log.debug(`File successfully copied: ${file}`);
-    return destination;
-  } catch {
-    session.log.error(`Error copying file: ${file}`);
-    return undefined;
-  }
-}
 
 function mediaTypeFromFile(file: string) {
   const mediaType = mime.lookup(file);

@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import { extname, join } from 'node:path';
+import { isDirectory } from 'myst-cli-utils';
 import type { ISession } from '../session/types.js';
 import {
   fileInfo,
-  isDirectory,
   isValidFile,
   nextLevel,
   shouldIgnoreFile,

@@ -11,4 +11,11 @@ export { exec, makeExecutable } from './exec.js';
 export { clirun, tic } from './utils.js';
 export { isUrl } from './isUrl.js';
 export { Session, getSession } from './session.js';
-export { computeHash, hashAndCopyStaticFile, writeFileToFolder } from './filesystem.js';
+export {
+  computeHash,
+  copyFileMaintainPath,
+  copyFileToFolder,
+  hashAndCopyStaticFile,
+  isDirectory,
+  writeFileToFolder,
+} from './filesystem.js';

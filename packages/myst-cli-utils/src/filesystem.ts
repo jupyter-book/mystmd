@@ -7,6 +7,10 @@ export function computeHash(content: string) {
   return createHash('md5').update(content).digest('hex');
 }
 
+export function isDirectory(file: string): boolean {
+  return fs.lstatSync(file).isDirectory();
+}
+
 /** Writes a file ensuring that the directory exists */
 export function writeFileToFolder(
   filename: string,
@@ -43,4 +47,50 @@ export function hashAndCopyStaticFile(session: ISession, file: string, writeFold
     }
   }
   return fileHash;
+}
+
+/**
+ * Copy "file" maintaining original relative path to "from" directory with final "to" directory
+ *
+ * If "file" is not inside "from" folder, the file is not copied.
+ */
+export function copyFileMaintainPath(session: ISession, file: string, from: string, to: string) {
+  // File must be inside "from" folder
+  if (!path.resolve(file).startsWith(path.resolve(from))) {
+    session.log.error(`Cannot include files outside of 'from' directory: ${file}\n\n`);
+    return undefined;
+  }
+  const destination = path.resolve(to, path.relative(from, file));
+  const destinationFolder = path.dirname(destination);
+  try {
+    if (!fs.existsSync(destinationFolder)) fs.mkdirSync(destinationFolder, { recursive: true });
+    fs.copyFileSync(file, destination);
+    session.log.debug(`File successfully copied: ${file}`);
+    return destination;
+  } catch {
+    session.log.error(`Error copying file: ${file}`);
+    return undefined;
+  }
+}
+
+/**
+ * Copy "file" to "to" directory.
+ *
+ * If a file already exists with the basename of "file" inside "to" directory, it is not copied.
+ */
+export function copyFileToFolder(session: ISession, file: string, to: string) {
+  const destination = path.join(to, path.basename(file));
+  if (fs.existsSync(destination)) {
+    session.log.error(`File already exists with name: ${path.basename(file)}`);
+  }
+  const destinationFolder = path.dirname(destination);
+  try {
+    if (!fs.existsSync(destinationFolder)) fs.mkdirSync(destinationFolder, { recursive: true });
+    fs.copyFileSync(file, destination);
+    session.log.debug(`File successfully copied: ${file}`);
+    return destination;
+  } catch {
+    session.log.error(`Error copying file: ${file}`);
+    return undefined;
+  }
 }
