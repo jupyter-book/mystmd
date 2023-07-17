@@ -20,6 +20,7 @@ const hrefOnlyReplacements: Record<string, string> = {
   $: '\\$',
   '#': '\\#',
   _: '\\_',
+  '*': '\\*',
   '{': '\\{',
   '}': '\\}',
   '[': '\\[',
