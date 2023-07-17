@@ -169,6 +169,18 @@ cases:
               value: '.'
     typst: |-
       This is #underline[important].
+  - title: smallcaps
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: smallcaps
+              children:
+                - type: text
+                  value: 'SimPEG'
+    typst: |-
+      #smallcaps[SimPEG]
   - title: escapes quotes
     mdast:
       type: root
