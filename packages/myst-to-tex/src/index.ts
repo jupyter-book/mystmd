@@ -286,6 +286,9 @@ const handlers: Record<string, Handler> = {
     state.trimEnd();
     state.write('}');
   },
+  footnoteDefinition() {
+    // Nothing!
+  },
   si(node, state) {
     state.usePackages('siunitx');
     if (node.number == null) {
