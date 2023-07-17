@@ -1,4 +1,3 @@
-import type { References } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { FootnoteDefinition } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
