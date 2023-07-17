@@ -3,6 +3,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [
+    ["myst-common", "myst-config", "myst-frontmatter", "myst-spec-ext"],
     ["myst-to-jats", "jats-to-myst"],
     ["myst-to-tex", "tex-to-myst"],
     ["myst-parser", "myst-roles", "myst-directives", "myst-to-html"],
