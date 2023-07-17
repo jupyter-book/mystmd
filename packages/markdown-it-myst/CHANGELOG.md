@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.2
+
+### Patch Changes
+
+- Updates to internal dependencies
+
 ## 1.0.1
 
 ### Patch Changes

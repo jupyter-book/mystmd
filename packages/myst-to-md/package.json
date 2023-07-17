@@ -1,6 +1,6 @@
 {
   "name": "myst-to-md",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Export from MyST mdast to markdown",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-to-md",
@@ -39,8 +39,8 @@
     "mdast-util-gfm-footnote": "^1.0.2",
     "mdast-util-gfm-table": "^1.0.7",
     "mdast-util-to-markdown": "^1.5.0",
-    "myst-common": "^1.0.4",
-    "myst-frontmatter": "^1.0.3",
+    "myst-common": "^1.1.0",
+    "myst-frontmatter": "^1.1.0",
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7",
     "vfile-reporter": "^7.0.4"

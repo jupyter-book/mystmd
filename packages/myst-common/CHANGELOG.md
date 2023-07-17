@@ -1,5 +1,15 @@
 # myst-common
 
+## 1.1.0
+
+### Minor Changes
+
+- 44ff6917: Rearrange package imports and fix versions
+
+### Patch Changes
+
+- Updates to internal dependencies
+
 ## 1.0.4
 
 ### Patch Changes

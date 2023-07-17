@@ -1,5 +1,14 @@
 # myst-ext-exercise
 
+## 1.0.2
+
+### Patch Changes
+
+- Updates to internal dependencies
+- Updated dependencies [44ff6917]
+- Updated dependencies
+  - myst-common@1.1.0
+
 ## 1.0.1
 
 ### Patch Changes

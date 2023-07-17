@@ -1,5 +1,17 @@
 # jtex
 
+## 1.0.4
+
+### Patch Changes
+
+- Updates to internal dependencies
+- Updated dependencies [44ff6917]
+- Updated dependencies [44ff6917]
+- Updated dependencies
+  - myst-frontmatter@1.1.0
+  - myst-cli-utils@2.0.3
+  - myst-templates@1.0.5
+
 ## 1.0.3
 
 ### Patch Changes

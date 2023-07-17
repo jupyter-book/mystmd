@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.6
+
+### Patch Changes
+
+- Updates to internal dependencies
+
 ## 1.1.5
 
 ## 1.1.4

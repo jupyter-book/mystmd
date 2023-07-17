@@ -1,5 +1,18 @@
 # myst-to-tex
 
+## 1.0.4
+
+### Patch Changes
+
+- d67d5f7a: Do nothing on footnoteDefinition for latex
+- Updates to internal dependencies
+- Updated dependencies [44ff6917]
+- Updated dependencies [44ff6917]
+- Updated dependencies
+  - myst-common@1.1.0
+  - myst-frontmatter@1.1.0
+  - myst-spec-ext@1.1.0
+
 ## 1.0.3
 
 ### Patch Changes

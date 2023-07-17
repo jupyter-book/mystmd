@@ -1,6 +1,6 @@
 {
   "name": "myst-config",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "license": "MIT",
   "description": "Project and site config types and validation for the mystmd ecosystem",
   "author": "Franklin Koch <franklin@curvenote.com>",
@@ -31,7 +31,7 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
-    "myst-frontmatter": "^1.0.4",
+    "myst-frontmatter": "^1.1.0",
     "simple-validators": "^1.0.1"
   },
   "devDependencies": {

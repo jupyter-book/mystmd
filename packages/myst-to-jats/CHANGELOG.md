@@ -1,5 +1,17 @@
 # myst-to-jats
 
+## 1.0.7
+
+### Patch Changes
+
+- Updates to internal dependencies
+- Updated dependencies [44ff6917]
+- Updated dependencies [44ff6917]
+- Updated dependencies
+  - myst-common@1.1.0
+  - myst-frontmatter@1.1.0
+  - myst-spec-ext@1.1.0
+
 ## 1.0.6
 
 ### Patch Changes

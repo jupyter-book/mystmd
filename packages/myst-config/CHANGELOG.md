@@ -1,5 +1,20 @@
 # myst-config
 
+## 1.1.0
+
+### Minor Changes
+
+- 44ff6917: Rearrange package imports and fix versions
+
+### Patch Changes
+
+- 44ff6917: Add jupyter alias in frontmatter for thebe
+- Updates to internal dependencies
+- Updated dependencies [44ff6917]
+- Updated dependencies [44ff6917]
+- Updated dependencies
+  - myst-frontmatter@1.1.0
+
 ## 1.0.2
 
 ### Patch Changes

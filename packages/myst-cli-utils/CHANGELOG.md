@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.3
+
+### Patch Changes
+
+- Updates to internal dependencies
+
 ## 2.0.2
 
 ### Patch Changes

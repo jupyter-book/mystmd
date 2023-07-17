@@ -1,5 +1,36 @@
 # myst-cli
 
+## 1.1.6
+
+### Patch Changes
+
+- Updates to internal dependencies
+- Updated dependencies [d67d5f7a]
+- Updated dependencies [44ff6917]
+- Updated dependencies [44ff6917]
+- Updated dependencies
+- Updated dependencies [50fddc70]
+  - myst-to-tex@1.0.4
+  - myst-common@1.1.0
+  - myst-config@1.1.0
+  - myst-frontmatter@1.1.0
+  - myst-spec-ext@1.1.0
+  - jtex@1.0.4
+  - myst-cli-utils@2.0.3
+  - myst-ext-card@1.0.2
+  - myst-ext-exercise@1.0.2
+  - myst-ext-grid@1.0.2
+  - myst-ext-proof@1.0.2
+  - myst-ext-reactive@1.0.2
+  - myst-ext-tabs@1.0.2
+  - myst-parser@1.0.5
+  - myst-templates@1.0.5
+  - myst-to-docx@1.0.2
+  - myst-to-jats@1.0.7
+  - myst-to-md@1.0.5
+  - myst-transforms@1.0.5
+  - tex-to-myst@1.0.4
+
 ## 1.1.5
 
 ### Patch Changes

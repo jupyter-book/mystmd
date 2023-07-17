@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-card",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for card directive",
@@ -32,9 +32,9 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.0.3"
+    "myst-common": "^1.1.0"
   },
   "devDependencies": {
-    "myst-parser": "^1.0.3"
+    "myst-parser": "^1.0.5"
   }
 }
