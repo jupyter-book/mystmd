@@ -1,0 +1,27 @@
+title: myst-to-typst admonitions
+cases:
+  - title: important admonition
+    mdast:
+      type: root
+      children:
+        - type: list
+          children:
+            - type: listItem
+              children:
+                - type: text
+                  value: This is a list
+                - type: list
+                  ordered: true
+                  children:
+                    - type: listItem
+                      children:
+                        - type: text
+                          value: My other, nested
+                    - type: listItem
+                      children:
+                        - type: text
+                          value: bullet point list!
+    typst: |-
+      - This is a list
+        + My other, nested
+        + bullet point list!

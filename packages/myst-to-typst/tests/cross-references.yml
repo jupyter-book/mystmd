@@ -1,0 +1,24 @@
+title: myst-to-typst sections
+cases:
+  - title: sections
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          identifier: section-one
+          children:
+            - type: text
+              value: My Heading
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Please see '
+            - type: crossReference
+              identifier: section-one
+            - type: text
+              value: ' for more information!'
+    typst: |-
+      = My Heading <section-one>
+
+      Please see @section-one for more information!
