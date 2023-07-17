@@ -161,6 +161,9 @@ const handlers: Record<string, Handler> = {
   underline(node, state) {
     state.renderInlineEnvironment(node, 'underline');
   },
+  smallcaps(node, state) {
+    state.renderInlineEnvironment(node, 'smallcaps');
+  },
   inlineCode(node, state) {
     state.write('`');
     state.text(node.value, false);

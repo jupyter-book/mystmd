@@ -169,6 +169,18 @@ cases:
               value: '.'
     typst: |-
       This is #underline[important].
+  - title: smallcaps
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: smallcaps
+              children:
+                - type: text
+                  value: 'SimPEG'
+    typst: |-
+      #smallcaps[SimPEG]
   - title: escapes quotes
     mdast:
       type: root
@@ -216,3 +228,12 @@ cases:
             - type: text
               value: 'This is a tilde: ~ and backslash \\ cool!'
     typst: 'This is a tilde: #sym.tilde and backslash \\\\ cool!'
+  - title: escaped *
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: '*escaped symbols*'
+    typst: '\*escaped symbols\*'

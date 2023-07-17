@@ -21,3 +21,11 @@ cases:
           value: null
     typst: |-
       //
+  - title: comment-like text
+    mdast:
+      type: root
+      children:
+        - type: text
+          value: 'When there is // comment-like text'
+    typst: |-
+      When there is \/\/ comment-like text

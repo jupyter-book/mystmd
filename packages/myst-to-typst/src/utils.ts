@@ -10,6 +10,7 @@ export function cleanWhitespaceChars(text: string, nbsp = ' '): string {
 // Funky placeholders (unlikely to be written ...?!)
 const BACKSLASH_SPACE = 'xxxxBACKSLASHSPACExxxx';
 const BACKSLASH = 'xxxxBACKSLASHxxxx';
+const COMMENT = 'xxxxCOMMENTxxxx';
 const TILDE = 'xxxxTILDExxxx';
 
 const hrefOnlyReplacements: Record<string, string> = {
@@ -20,6 +21,7 @@ const hrefOnlyReplacements: Record<string, string> = {
   $: '\\$',
   '#': '\\#',
   _: '\\_',
+  '*': '\\*',
   '{': '\\{',
   '}': '\\}',
   '[': '\\[',
@@ -190,6 +192,7 @@ export function stringToLatexText(text: string) {
   const escaped = (text ?? '')
     .replace(/\\ /g, BACKSLASH_SPACE)
     .replace(/\\/g, BACKSLASH)
+    .replace(/\/\//g, COMMENT)
     .replace(/~/g, TILDE);
 
   const replacedArray: SimpleTokens[] = Array.from(escaped).map((char) => {
@@ -214,6 +217,7 @@ export function stringToLatexText(text: string) {
   const final = replaced
     .replace(new RegExp(BACKSLASH_SPACE, 'g'), '\\\\ ')
     .replace(new RegExp(BACKSLASH, 'g'), '\\\\')
+    .replace(new RegExp(COMMENT, 'g'), '\\/\\/')
     .replace(new RegExp(TILDE, 'g'), '#sym.tilde');
   return cleanWhitespaceChars(final, '~');
 }
