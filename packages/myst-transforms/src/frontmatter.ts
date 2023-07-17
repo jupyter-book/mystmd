@@ -33,8 +33,8 @@ export function getFrontmatter(
     try {
       frontmatter = (yaml.load(firstNode.value) as Record<string, any>) || {};
       if (opts.removeYaml) (firstNode as any).type = '__delete__';
-    } catch {
-      fileError(file, 'Invalid yaml in first cell of notebook');
+    } catch (err) {
+      fileError(file, 'Invalid yaml in first cell of notebook', { note: (err as Error).message });
     }
   }
   const nextNode = firstIsYaml ? secondNode : (firstNode as unknown as Heading);
