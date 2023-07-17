@@ -2,11 +2,12 @@ import { describe, expect, test } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import { validatePageFrontmatter } from '../src';
+import { validatePageFrontmatter, validateProjectFrontmatter } from '../src';
 import type { ValidationOptions } from 'simple-validators';
 
 type TestFile = {
   title: string;
+  frontmatter?: 'project' | 'page';
   cases: TestCase[];
 };
 
@@ -40,7 +41,7 @@ const casesList = files
     return tests;
   });
 
-casesList.forEach(({ title, cases }) => {
+casesList.forEach(({ title, frontmatter, cases }) => {
   describe(title, () => {
     const casesToUse = cases.filter((c) => !only || c.title === only);
     if (casesToUse.length === 0) return;
@@ -48,7 +49,9 @@ casesList.forEach(({ title, cases }) => {
       '%s',
       (_, { raw, normalized, warnings, errors }) => {
         const opts: ValidationOptions = { property: '', messages: {} };
-        const result = validatePageFrontmatter(raw, opts);
+        const validator =
+          frontmatter === 'project' ? validateProjectFrontmatter : validatePageFrontmatter;
+        const result = validator(raw, opts);
         if (only) {
           // This runs in "only" mode
           console.log(raw);

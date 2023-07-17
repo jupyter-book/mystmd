@@ -11,6 +11,12 @@ import type { ProjectConfig } from './types.js';
 
 const PROJECT_CONFIG_KEYS = {
   optional: ['remote', 'index', 'exclude'].concat(PROJECT_FRONTMATTER_KEYS),
+  alias: {
+    jupyter: 'thebe',
+    author: 'authors',
+    affiliation: 'affiliations',
+    export: 'exports',
+  },
 };
 
 function validateProjectConfigKeys(value: Record<string, any>, opts: ValidationOptions) {

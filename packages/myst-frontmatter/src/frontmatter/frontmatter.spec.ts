@@ -150,6 +150,7 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   requirements: ['requirements.txt'],
   resources: ['my-script.sh'],
 };
+
 const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   title: 'frontmatter',
   description: 'page frontmatter',
@@ -175,7 +176,6 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   jupytext: {},
   keywords: ['example', 'test'],
   exports: [{ format: 'pdf' as any, template: 'default', output: 'out.tex', a: 1 }],
-  thebe: false,
 };
 
 let opts: ValidationOptions;
@@ -420,7 +420,7 @@ describe('validatePageFrontmatter', () => {
     });
     expect(opts.messages.warnings).toEqual(undefined);
   });
-  it('valid jupyter.kernelspec with extra key wawrns', async () => {
+  it('valid jupyter.kernelspec with extra key warns', async () => {
     const frontmatter = {
       jupyter: { kernelspec: TEST_KERNELSPEC, extra: true },
     };

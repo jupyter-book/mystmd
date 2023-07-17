@@ -35,9 +35,9 @@ import type {
   TextRepresentation,
   Venue,
   Thebe,
-  ThebeBinderOptions,
-  ThebeServerOptions,
-  ThebeLocalOptions,
+  BinderHubOptions,
+  JupyterServerOptions,
+  JupyterLocalOptions,
 } from './types.js';
 
 export const SITE_FRONTMATTER_KEYS = [
@@ -69,9 +69,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'math',
   'abbreviations',
   'exports',
-  'thebe',
-  'requirements',
-  'resources',
+  // Do not add any project specific keys here!
 ].concat(SITE_FRONTMATTER_KEYS);
 export const PAGE_FRONTMATTER_KEYS = [
   'kernelspec',
@@ -84,7 +82,7 @@ export const PAGE_FRONTMATTER_KEYS = [
 ].concat(PROJECT_FRONTMATTER_KEYS);
 
 // These keys only exist on the project.
-PROJECT_FRONTMATTER_KEYS.push('references', 'requirements', 'resources');
+PROJECT_FRONTMATTER_KEYS.push('references', 'requirements', 'resources', 'thebe');
 
 export const USE_PROJECT_FALLBACK = [
   'authors',
@@ -132,9 +130,9 @@ const THEBE_KEYS = [
   'mathjaxConfig',
   'local',
 ];
-const THEBE_BINDER_OPTIONS_KEYS = ['url', 'ref', 'repo', 'provider'];
-const THEBE_SERVER_OPTIONS_KEYS = ['url', 'token'];
-const THEBE_LOCAL_OPTIONS_KEYS = ['url', 'token', 'kernelName', 'sessionName'];
+const BINDER_HUB_OPTIONS_KEYS = ['url', 'ref', 'repo', 'provider'];
+const JUPYTER_SERVER_OPTIONS_KEYS = ['url', 'token'];
+const JUPYTER_LOCAL_OPTIONS_KEYS = ['url', 'token', 'kernelName', 'sessionName'];
 const NUMBERING_KEYS = [
   'enumerator',
   'figure',
@@ -162,10 +160,15 @@ export const RESERVED_EXPORT_KEYS = [
   'sub_articles',
 ];
 
-const KNOWN_ALIASES = {
+const KNOWN_PAGE_ALIASES = {
   author: 'authors',
   affiliation: 'affiliations',
   export: 'exports',
+};
+const KNOWN_PROJECT_ALIASES = {
+  ...KNOWN_PAGE_ALIASES,
+  // This must also be updated in myst-config
+  jupyter: 'thebe',
 };
 
 const GITHUB_USERNAME_REPO_REGEX = '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$';
@@ -355,11 +358,16 @@ export function validateBiblio(input: any, opts: ValidationOptions) {
 }
 
 /**
- * Validate Thebe Object
+ * Validate Thebe options
  *
  * https://thebe-core.curve.space/docs-core/a-configuration
  */
-export function validateThebe(input: any, opts: ValidationOptions) {
+export function validateThebe(input: any, opts: ValidationOptions): Thebe | undefined {
+  if (input === false) return undefined;
+  if (input === true || input === 'server') return { server: true };
+  if (input === 'lite') return { lite: true };
+  if (input === 'binder') return { binder: true };
+
   const value: Thebe | undefined = validateObjectKeys(input, { optional: THEBE_KEYS }, opts);
   if (value === undefined) return undefined;
   const output: Thebe = {};
@@ -370,14 +378,14 @@ export function validateThebe(input: any, opts: ValidationOptions) {
     output.binder = validateBooleanOrObject(
       value.binder,
       incrementOptions('binder', opts),
-      validateThebeBinderOptions,
+      validateBinderHubOptions,
     );
   }
   if (defined(value.server)) {
     output.server = validateBooleanOrObject(
       value.server,
       incrementOptions('server', opts),
-      validateThebeServerOptions,
+      validateJupyterServerOptions,
     );
   }
   if (defined(value.kernelName)) {
@@ -405,16 +413,16 @@ export function validateThebe(input: any, opts: ValidationOptions) {
     output.local = validateBooleanOrObject(
       value.local,
       incrementOptions('local', opts),
-      validateThebeLocalOptions,
+      validateJupyterLocalOptions,
     );
   }
   return output;
 }
 
-export function validateThebeBinderOptions(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: THEBE_BINDER_OPTIONS_KEYS }, opts);
+export function validateBinderHubOptions(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, { optional: BINDER_HUB_OPTIONS_KEYS }, opts);
   if (value === undefined) return undefined;
-  const output: ThebeBinderOptions = {};
+  const output: BinderHubOptions = {};
   if (defined(value.url)) {
     output.url = validateUrl(value.url, incrementOptions('url', opts));
   }
@@ -436,10 +444,10 @@ export function validateThebeBinderOptions(input: any, opts: ValidationOptions) 
   return output;
 }
 
-export function validateThebeServerOptions(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: THEBE_SERVER_OPTIONS_KEYS }, opts);
+export function validateJupyterServerOptions(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, { optional: JUPYTER_SERVER_OPTIONS_KEYS }, opts);
   if (value === undefined) return undefined;
-  const output: ThebeServerOptions = {};
+  const output: JupyterServerOptions = {};
   if (defined(value.url)) {
     output.url = validateUrl(value.url, incrementOptions('url', opts));
   }
@@ -449,10 +457,10 @@ export function validateThebeServerOptions(input: any, opts: ValidationOptions) 
   return output;
 }
 
-export function validateThebeLocalOptions(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: THEBE_LOCAL_OPTIONS_KEYS }, opts);
+export function validateJupyterLocalOptions(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, { optional: JUPYTER_LOCAL_OPTIONS_KEYS }, opts);
   if (value === undefined) return undefined;
-  const output: ThebeLocalOptions = {};
+  const output: JupyterLocalOptions = {};
   if (defined(value.url)) {
     output.url = validateUrl(value.url, incrementOptions('url', opts));
   }
@@ -714,11 +722,12 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
   return output;
 }
 
-export function validateProjectFrontmatterKeys(
+export function validateSharedProjectFrontmatterKeys(
   value: Record<string, any>,
   opts: ValidationOptions,
 ) {
-  const output: ProjectFrontmatter = validateSiteFrontmatterKeys(value, opts);
+  const output: Omit<ProjectFrontmatter, 'thebe' | 'resources' | 'requirements' | 'references'> =
+    validateSiteFrontmatterKeys(value, opts);
   if (defined(value.date)) {
     output.date = validateDate(value.date, incrementOptions('date', opts));
   }
@@ -806,6 +815,14 @@ export function validateProjectFrontmatterKeys(
     const exports = validateExportsList(value.exports, opts);
     if (exports) output.exports = exports;
   }
+  return output;
+}
+
+export function validateProjectFrontmatterKeys(
+  value: Record<string, any>,
+  opts: ValidationOptions,
+) {
+  const output: ProjectFrontmatter = validateSharedProjectFrontmatterKeys(value, opts);
   // This is only for the project, and is not defined on pages
   if (defined(value.references)) {
     const referencesOpts = incrementOptions('references', opts);
@@ -824,11 +841,8 @@ export function validateProjectFrontmatterKeys(
   }
 
   if (defined(value.thebe)) {
-    output.thebe = validateBooleanOrObject(
-      value.thebe,
-      incrementOptions('thebe', opts),
-      validateThebe,
-    );
+    const result = validateThebe(value.thebe, incrementOptions('thebe', opts));
+    if (result) output.thebe = result;
   }
 
   if (defined(value.requirements)) {
@@ -853,7 +867,7 @@ export function validateProjectFrontmatterKeys(
 }
 
 export function validatePageFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
-  const output: PageFrontmatter = validateProjectFrontmatterKeys(value, opts);
+  const output: PageFrontmatter = validateSharedProjectFrontmatterKeys(value, opts);
   if (defined(value.kernelspec)) {
     output.kernelspec = validateKernelSpec(value.kernelspec, incrementOptions('kernelspec', opts));
   }
@@ -899,8 +913,11 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
  */
 export function validateProjectFrontmatter(input: any, opts: ValidationOptions) {
   const value =
-    validateObjectKeys(input, { optional: PROJECT_FRONTMATTER_KEYS, alias: KNOWN_ALIASES }, opts) ||
-    {};
+    validateObjectKeys(
+      input,
+      { optional: PROJECT_FRONTMATTER_KEYS, alias: KNOWN_PROJECT_ALIASES },
+      opts,
+    ) || {};
   return validateProjectFrontmatterKeys(value, opts);
 }
 
@@ -909,8 +926,11 @@ export function validateProjectFrontmatter(input: any, opts: ValidationOptions) 
  */
 export function validatePageFrontmatter(input: any, opts: ValidationOptions) {
   const value =
-    validateObjectKeys(input, { optional: PAGE_FRONTMATTER_KEYS, alias: KNOWN_ALIASES }, opts) ||
-    {};
+    validateObjectKeys(
+      input,
+      { optional: PAGE_FRONTMATTER_KEYS, alias: KNOWN_PAGE_ALIASES },
+      opts,
+    ) || {};
   return validatePageFrontmatterKeys(value, opts);
 }
 
