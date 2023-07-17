@@ -1,0 +1,47 @@
+{
+  "name": "myst-to-typst",
+  "version": "0.0.1",
+  "description": "Export from MyST mdast to Typst",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-to-tex",
+  "license": "MIT",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "keywords": [
+    "myst-plugin",
+    "latex",
+    "typst"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/executablebooks/mystmd.git"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
+    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
+    "build": "npm-run-all -l clean -p build:esm"
+  },
+  "bugs": {
+    "url": "https://github.com/executablebooks/mystmd/issues"
+  },
+  "dependencies": {
+    "myst-common": "^1.0.2",
+    "myst-frontmatter": "^1.0.2",
+    "myst-spec-ext": "^1.0.2",
+    "tex-to-typst": "^0.0.2",
+    "unist-util-select": "^4.0.3",
+    "vfile-reporter": "^7.0.4"
+  }
+}

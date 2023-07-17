@@ -1,0 +1,218 @@
+title: myst-to-typst basic features
+cases:
+  - title: text in paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+            - type: text
+              value: ' and '
+            - type: strong
+              children:
+                - type: text
+                  value: strong
+            - type: text
+              value: ' and '
+            - type: inlineCode
+              value: inlineCode
+            - type: text
+              value: ' and '
+            - type: link
+              url: https://example.com
+              children:
+                - type: text
+                  value: a link!
+            - type: text
+              value: ' and not a # comment'
+    typst: |-
+      Some _markdown_ and *strong* and `inlineCode` and #link("https://example.com")[a link!] and not a \# comment
+  - title: strong
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: strong
+              children:
+                - type: text
+                  value: 'strong'
+            - type: text
+              value: '.'
+    typst: |-
+      This is *strong*.
+  - title: strong with children
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is a '
+            - type: strong
+              children:
+                - type: text
+                  value: 'strong '
+                - type: link
+                  url: https://example.com
+                  children:
+                    - type: text
+                      value: link
+            - type: text
+              value: '.'
+    typst: |-
+      This is a #strong[strong #link("https://example.com")[link]].
+  - title: emphasis
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: emphasis
+              children:
+                - type: text
+                  value: 'emphasis'
+            - type: text
+              value: '.'
+    typst: |-
+      This is _emphasis_.
+  - title: emphasis with children
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is a '
+            - type: emphasis
+              children:
+                - type: text
+                  value: 'emphasis '
+                - type: link
+                  url: https://example.com
+                  children:
+                    - type: text
+                      value: link
+            - type: text
+              value: '.'
+    typst: |-
+      This is a #emph[emphasis #link("https://example.com")[link]].
+  - title: subscript
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Revenue'
+            - type: subscript
+              children:
+                - type: text
+                  value: 'yearly'
+    typst: |-
+      Revenue#sub[yearly]
+  - title: superscript
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: '1'
+            - type: superscript
+              children:
+                - type: text
+                  value: 'st'
+            - type: text
+              value: ' try!'
+    typst: |-
+      1#super[st] try!
+  - title: strike
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: delete
+              children:
+                - type: text
+                  value: 'not'
+            - type: text
+              value: ' relevant.'
+    typst: |-
+      This is #strike[not] relevant.
+  - title: underline
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: underline
+              children:
+                - type: text
+                  value: 'important'
+            - type: text
+              value: '.'
+    typst: |-
+      This is #underline[important].
+  - title: escapes quotes
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: '“quote”'
+    typst: |-
+      "quote"
+  - title: escapes dollar sign
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: I got an ice cream for $1.50!
+    typst: |-
+      I got an ice cream for \$1.50!
+  - title: line break
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Fleas
+            - type: break
+            - type: text
+              value: Adam
+            - type: break
+            - type: text
+              value: Had 'em.
+    typst: |-
+      Fleas \
+      Adam \
+      Had 'em.
+  - title: escape tilde and backslash
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is a tilde: ~ and backslash \\ cool!'
+    typst: 'This is a tilde: #sym.tilde and backslash \\\\ cool!'

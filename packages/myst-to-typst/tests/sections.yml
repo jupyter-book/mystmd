@@ -1,0 +1,25 @@
+title: myst-to-typst sections
+cases:
+  - title: sections
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 4
+          children:
+            - type: text
+              value: My Heading
+    typst: |-
+      ==== My Heading
+  - title: sections
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          identifier: section-one
+          children:
+            - type: text
+              value: My Heading
+    typst: |-
+      = My Heading <section-one>

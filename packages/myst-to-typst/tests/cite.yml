@@ -1,0 +1,26 @@
+title: myst-to-typst links
+cases:
+  - title: cite single
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: cockett2015
+    typst: |-
+      @cockett2015
+  - title: cite multiple
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              children:
+                - type: cite
+                  label: cockett2015
+                - type: cite
+                  label: jon85
+    typst: |-
+      #cite("cockett2015", "jon85")
