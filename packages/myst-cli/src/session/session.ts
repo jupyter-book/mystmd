@@ -23,21 +23,23 @@ export function logUpdateAvailable({
   current,
   latest,
   upgradeCommand,
+  pypiUpgradeCommand,
   twitter,
 }: {
   current: string;
   latest: string;
   upgradeCommand: string;
+  pypiUpgradeCommand?: string;
   twitter: string;
 }) {
   return boxen(
     `Update available! ${chalk.dim(`v${current}`)} ≫ ${chalk.green.bold(
       `v${latest}`,
-    )}\n\nRun \`${chalk.cyanBright.bold(
-      upgradeCommand,
-    )}\` to update.\n\nFollow ${chalk.yellowBright(
-      `@${twitter}`,
-    )} for updates!\nhttps://twitter.com/${twitter}`,
+    )}\n\nRun \`${chalk.cyanBright.bold(upgradeCommand)}\` to update.\n\n${
+      pypiUpgradeCommand
+        ? `(Or if using PyPI, \`${chalk.cyanBright.bold(pypiUpgradeCommand)}\`) \n\n`
+        : ``
+    }Follow ${chalk.yellowBright(`@${twitter}`)} for updates!\nhttps://twitter.com/${twitter}`,
     {
       padding: 1,
       margin: 1,
@@ -82,6 +84,7 @@ export class Session implements ISession {
         current: version,
         latest: this._latestVersion,
         upgradeCommand: 'npm i -g mystmd@latest',
+        pypiUpgradeCommand: 'pip install -U mystmd',
         twitter: 'MystMarkdown',
       }),
     );
