@@ -11,7 +11,7 @@ import type { ISession } from '../../session/types.js';
 import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
 import { getMystTemplate } from './template.js';
-import { transformBanner } from '../../transforms/images.js';
+import { transformBanner, transformThumbnail } from '../../transforms/images.js';
 
 type ManifestProject = Required<SiteManifest>['projects'][0];
 
@@ -85,11 +85,19 @@ export async function localToManifestProject(
     session.publicPath(),
     { altOutputFolder: '/' },
   );
+  const thumbnail = await transformThumbnail(
+    session,
+    null,
+    path.join(projectPath, 'myst.yml'),
+    projFrontmatter,
+    session.publicPath(),
+    { altOutputFolder: '/' },
+  );
   return {
     ...projFrontmatter,
     // TODO: a null in the project frontmatter should not fall back to index page
-    thumbnail: projFrontmatter.thumbnail || projectFileInfo.thumbnail,
-    thumbnailOptimized: projFrontmatter.thumbnailOptimized || projectFileInfo.thumbnailOptimized,
+    thumbnail: thumbnail?.url || projectFileInfo.thumbnail,
+    thumbnailOptimized: thumbnail?.urlOptimized || projectFileInfo.thumbnailOptimized || undefined,
     banner: banner?.url || projectFileInfo.banner,
     bannerOptimized: banner?.urlOptimized || projectFileInfo.bannerOptimized || undefined,
     exports,
