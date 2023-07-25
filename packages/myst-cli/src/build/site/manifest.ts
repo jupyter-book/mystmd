@@ -36,8 +36,8 @@ export async function localToManifestProject(
   if (!proj) return null;
   // Update all of the page title to the frontmatter title
   const { index } = proj;
-  const projectTitle =
-    projConfig?.title || selectors.selectFileInfo(state, proj.file).title || proj.index;
+  const projectFileInfo = selectors.selectFileInfo(state, proj.file);
+  const projectTitle = projConfig?.title || projectFileInfo.title || proj.index;
   const pages = await Promise.all(
     proj.pages.map(async (page) => {
       if ('file' in page) {
@@ -87,8 +87,11 @@ export async function localToManifestProject(
   );
   return {
     ...projFrontmatter,
-    banner: banner?.url,
-    bannerOptimized: banner?.urlOptimized,
+    // TODO: a null in the project frontmatter should not fall back to index page
+    thumbnail: projFrontmatter.thumbnail || projectFileInfo.thumbnail,
+    thumbnailOptimized: projFrontmatter.thumbnailOptimized || projectFileInfo.thumbnailOptimized,
+    banner: banner?.url || projectFileInfo.banner,
+    bannerOptimized: banner?.urlOptimized || projectFileInfo.bannerOptimized || undefined,
     exports,
     bibliography: projFrontmatter.bibliography || [],
     title: projectTitle || 'Untitled',

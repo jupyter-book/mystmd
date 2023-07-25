@@ -504,7 +504,7 @@ export async function transformThumbnail(
 export async function transformBanner(
   session: ISession,
   file: string,
-  frontmatter: PageFrontmatter,
+  frontmatter: { banner?: string | null; bannerOptimized?: string },
   writeFolder: string,
   opts?: { altOutputFolder?: string },
 ): Promise<{ url: string; urlOptimized?: string } | undefined> {
