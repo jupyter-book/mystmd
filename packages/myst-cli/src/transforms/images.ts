@@ -467,19 +467,19 @@ export async function transformImageFormats(
 
 export async function transformThumbnail(
   session: ISession,
-  mdast: Root,
+  mdast: Root | null,
   file: string,
   frontmatter: PageFrontmatter,
   writeFolder: string,
   opts?: { altOutputFolder?: string },
-) {
+): Promise<{ url: string; urlOptimized?: string } | undefined> {
   let thumbnail = frontmatter.thumbnail;
   // If the thumbnail is explicitly null, don't add an image
   if (thumbnail === null) {
     session.log.debug(`${file}#frontmatter.thumbnail is explicitly null, not searching content.`);
     return;
   }
-  if (!thumbnail) {
+  if (!thumbnail && mdast) {
     // The thumbnail isn't found, grab it from the mdast, excluding videos
     const [image] = (selectAll('image', mdast) as Image[]).filter((n) => !n.url.endsWith('.mp4'));
     if (!image) {
@@ -494,17 +494,27 @@ export async function transformThumbnail(
   const result = await saveImageInStaticFolder(session, thumbnail, file, writeFolder, {
     altOutputFolder: opts?.altOutputFolder,
   });
-  if (result) {
-    // Update frontmatter with new file name
-    const { url } = result;
-    frontmatter.thumbnail = url;
+  if (!result) return;
+  // Update frontmatter with new file name
+  const { url } = result;
+  frontmatter.thumbnail = url;
+  const fileMatch = path.basename(result.url);
+  const optimized = await imagemagick.convertImageToWebp(
+    session,
+    path.join(writeFolder, fileMatch),
+  );
+  if (optimized) {
+    const urlOptimized = url.replace(fileMatch, optimized);
+    frontmatter.thumbnailOptimized = urlOptimized;
+    return { url, urlOptimized };
   }
+  return { url };
 }
 
 export async function transformBanner(
   session: ISession,
   file: string,
-  frontmatter: PageFrontmatter,
+  frontmatter: { banner?: string | null; bannerOptimized?: string },
   writeFolder: string,
   opts?: { altOutputFolder?: string },
 ): Promise<{ url: string; urlOptimized?: string } | undefined> {

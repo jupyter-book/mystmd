@@ -11,7 +11,7 @@ import type { ISession } from '../../session/types.js';
 import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
 import { getMystTemplate } from './template.js';
-import { transformBanner } from '../../transforms/images.js';
+import { transformBanner, transformThumbnail } from '../../transforms/images.js';
 
 type ManifestProject = Required<SiteManifest>['projects'][0];
 
@@ -36,8 +36,8 @@ export async function localToManifestProject(
   if (!proj) return null;
   // Update all of the page title to the frontmatter title
   const { index } = proj;
-  const projectTitle =
-    projConfig?.title || selectors.selectFileInfo(state, proj.file).title || proj.index;
+  const projectFileInfo = selectors.selectFileInfo(state, proj.file);
+  const projectTitle = projConfig?.title || projectFileInfo.title || proj.index;
   const pages = await Promise.all(
     proj.pages.map(async (page) => {
       if ('file' in page) {
@@ -85,10 +85,21 @@ export async function localToManifestProject(
     session.publicPath(),
     { altOutputFolder: '/' },
   );
+  const thumbnail = await transformThumbnail(
+    session,
+    null,
+    path.join(projectPath, 'myst.yml'),
+    projFrontmatter,
+    session.publicPath(),
+    { altOutputFolder: '/' },
+  );
   return {
     ...projFrontmatter,
-    banner: banner?.url,
-    bannerOptimized: banner?.urlOptimized,
+    // TODO: a null in the project frontmatter should not fall back to index page
+    thumbnail: thumbnail?.url || projectFileInfo.thumbnail,
+    thumbnailOptimized: thumbnail?.urlOptimized || projectFileInfo.thumbnailOptimized || undefined,
+    banner: banner?.url || projectFileInfo.banner,
+    bannerOptimized: banner?.urlOptimized || projectFileInfo.bannerOptimized || undefined,
     exports,
     bibliography: projFrontmatter.bibliography || [],
     title: projectTitle || 'Untitled',

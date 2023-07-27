@@ -45,6 +45,8 @@ export const SITE_FRONTMATTER_KEYS = [
   'subtitle',
   'short_title',
   'description',
+  'thumbnail',
+  'thumbnailOptimized',
   'banner',
   'bannerOptimized',
   'authors',
@@ -71,15 +73,10 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'exports',
   // Do not add any project specific keys here!
 ].concat(SITE_FRONTMATTER_KEYS);
-export const PAGE_FRONTMATTER_KEYS = [
-  'kernelspec',
-  'jupytext',
-  'tags',
-  'thumbnail',
-  'thumbnailOptimized',
-  'banner',
-  'bannerOptimized',
-].concat(PROJECT_FRONTMATTER_KEYS);
+
+export const PAGE_FRONTMATTER_KEYS = ['kernelspec', 'jupytext', 'tags'].concat(
+  PROJECT_FRONTMATTER_KEYS,
+);
 
 // These keys only exist on the project.
 PROJECT_FRONTMATTER_KEYS.push('references', 'requirements', 'resources', 'thebe');
@@ -815,6 +812,28 @@ export function validateSharedProjectFrontmatterKeys(
     const exports = validateExportsList(value.exports, opts);
     if (exports) output.exports = exports;
   }
+  if (value.thumbnail === null) {
+    // It is possible for the thumbnail to explicitly be null.
+    // This means not to look to the images in a page.
+    output.thumbnail = null;
+  } else if (defined(value.thumbnail)) {
+    output.thumbnail = validateString(value.thumbnail, incrementOptions('thumbnail', opts));
+  }
+  if (defined(value.thumbnailOptimized)) {
+    // No validation, this is expected to be set programmatically
+    output.thumbnailOptimized = value.thumbnailOptimized;
+  }
+  if (value.banner === null) {
+    // It is possible for the banner to explicitly be null.
+    // This means not to look to the images in a page.
+    output.banner = null;
+  } else if (defined(value.banner)) {
+    output.banner = validateString(value.banner, incrementOptions('banner', opts));
+  }
+  if (defined(value.bannerOptimized)) {
+    // No validation, this is expected to be set programmatically
+    output.bannerOptimized = value.bannerOptimized;
+  }
   return output;
 }
 
@@ -882,28 +901,6 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
         return validateString(file, incrementOptions(`tags.${index}`, opts));
       },
     );
-  }
-  if (value.thumbnail === null) {
-    // It is possible for the thumbnail to explicitly be null.
-    // This means not to look to the images in a page.
-    output.thumbnail = null;
-  } else if (defined(value.thumbnail)) {
-    output.thumbnail = validateString(value.thumbnail, incrementOptions('thumbnail', opts));
-  }
-  if (defined(value.thumbnailOptimized)) {
-    // No validation, this is expected to be set programmatically
-    output.thumbnailOptimized = value.thumbnailOptimized;
-  }
-  if (value.banner === null) {
-    // It is possible for the banner to explicitly be null.
-    // This means not to look to the images in a page.
-    output.banner = null;
-  } else if (defined(value.banner)) {
-    output.banner = validateString(value.banner, incrementOptions('banner', opts));
-  }
-  if (defined(value.bannerOptimized)) {
-    // No validation, this is expected to be set programmatically
-    output.bannerOptimized = value.bannerOptimized;
   }
   return output;
 }

@@ -124,6 +124,8 @@ export type SiteFrontmatter = {
   description?: string;
   subtitle?: string;
   short_title?: string;
+  thumbnail?: string | null;
+  thumbnailOptimized?: string;
   banner?: string | null;
   bannerOptimized?: string;
   authors?: Author[];
@@ -163,8 +165,4 @@ export type PageFrontmatter = Omit<ProjectFrontmatter, 'references'> & {
   kernelspec?: KernelSpec;
   jupytext?: Jupytext;
   tags?: string[];
-  thumbnail?: string | null;
-  thumbnailOptimized?: string;
-  banner?: string | null;
-  bannerOptimized?: string;
 };
