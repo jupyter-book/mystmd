@@ -189,7 +189,7 @@ cases:
               value: Ax=b
             - type: text
               value: .
-    jats: <p>This math is a role, <inline-formula><tex-math><![CDATA[e=mc^2]]></tex-math></inline-formula>, while this math is wrapped in dollar signs, <inline-formula><tex-math><![CDATA[Ax=b]]></tex-math></inline-formula>.</p>
+    jats: <p>This math is a role, <inline-formula><mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:semantics><mml:mrow><mml:mi>e</mml:mi><mml:mo>=</mml:mo><mml:mi>m</mml:mi><mml:msup><mml:mi>c</mml:mi><mml:mn>2</mml:mn></mml:msup></mml:mrow><mml:annotation encoding="application/x-tex">e=mc^2</mml:annotation></mml:semantics></mml:math></inline-formula>, while this math is wrapped in dollar signs, <inline-formula><mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:semantics><mml:mrow><mml:mi>A</mml:mi><mml:mi>x</mml:mi><mml:mo>=</mml:mo><mml:mi>b</mml:mi></mml:mrow><mml:annotation encoding="application/x-tex">Ax=b</mml:annotation></mml:semantics></mml:math></inline-formula>.</p>
   - title: Display Math (label)
     tree:
       type: root
@@ -198,14 +198,14 @@ cases:
           identifier: my-equation
           enumerator: 1
           value: w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
-    jats: <disp-formula id="my-equation"><label>(1)</label><tex-math><![CDATA[w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}]]></tex-math></disp-formula>
+    jats: <disp-formula id="my-equation"><label>(1)</label><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:semantics><mml:mrow><mml:msub><mml:mi>w</mml:mi><mml:mrow><mml:mi>t</mml:mi><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mo stretchy="false">(</mml:mo><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:msub><mml:mi>r</mml:mi><mml:mrow><mml:mi>t</mml:mi><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mi>s</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>w</mml:mi><mml:mi>t</mml:mi></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>+</mml:mo><mml:msub><mml:mi>y</mml:mi><mml:mrow><mml:mi>t</mml:mi><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub></mml:mrow><mml:annotation encoding="application/x-tex">w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}</mml:annotation></mml:semantics></mml:math></disp-formula>
   - title: Display Math (no label)
     tree:
       type: root
       children:
         - type: math
           value: w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
-    jats: <disp-formula><tex-math><![CDATA[w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}]]></tex-math></disp-formula>
+    jats: <disp-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:semantics><mml:mrow><mml:msub><mml:mi>w</mml:mi><mml:mrow><mml:mi>t</mml:mi><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mo stretchy="false">(</mml:mo><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:msub><mml:mi>r</mml:mi><mml:mrow><mml:mi>t</mml:mi><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mi>s</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>w</mml:mi><mml:mi>t</mml:mi></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>+</mml:mo><mml:msub><mml:mi>y</mml:mi><mml:mrow><mml:mi>t</mml:mi><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub></mml:mrow><mml:annotation encoding="application/x-tex">w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}</mml:annotation></mml:semantics></mml:math></disp-formula>
   - title: Display Math (not numbered)
     tree:
       type: root
@@ -215,7 +215,7 @@ cases:
           enumerated: false
           enumerator: 1
           value: w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
-    jats: <disp-formula id="my-equation"><tex-math><![CDATA[w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}]]></tex-math></disp-formula>
+    jats: <disp-formula id="my-equation"><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:semantics><mml:mrow><mml:msub><mml:mi>w</mml:mi><mml:mrow><mml:mi>t</mml:mi><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mo stretchy="false">(</mml:mo><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:msub><mml:mi>r</mml:mi><mml:mrow><mml:mi>t</mml:mi><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mi>s</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>w</mml:mi><mml:mi>t</mml:mi></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>+</mml:mo><mml:msub><mml:mi>y</mml:mi><mml:mrow><mml:mi>t</mml:mi><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub></mml:mrow><mml:annotation encoding="application/x-tex">w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}</mml:annotation></mml:semantics></mml:math></disp-formula>
   - title: Lists
     tree:
       type: root

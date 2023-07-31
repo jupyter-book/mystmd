@@ -2,7 +2,8 @@ import type { Root, CrossReference, TableCell as SpecTableCell } from 'myst-spec
 import type { Cite, Code, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import { js2xml } from 'xml-js';
+import { js2xml, xml2js } from 'xml-js';
+import katex from 'katex';
 import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode } from 'myst-common';
 import { copyNode, fileError } from 'myst-common';
@@ -118,6 +119,27 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
   state.closeNode();
 }
 
+function mathToMml(math?: string, inline?: boolean) {
+  const katexXml = katex.renderToString(math, { output: 'mathml', throwOnError: false });
+  const katexJs = xml2js(katexXml, { compact: false }) as Element;
+  const spanElement = katexJs.elements?.[0];
+  const mathElement = spanElement?.elements?.[0];
+  if (!mathElement) return;
+  if (inline) mathElement.attributes = { ...mathElement.attributes, display: 'inline' };
+  if (mathElement.attributes?.xmlns) {
+    mathElement.attributes['xmlns:mml'] = mathElement.attributes.xmlns;
+    delete mathElement.attributes.xmlns;
+  }
+  function addMml(el?: Element) {
+    if (el?.name) el.name = `mml:${el.name}`;
+    el?.elements?.forEach((child: Element) => {
+      addMml(child);
+    });
+  }
+  addMml(mathElement);
+  return mathElement;
+}
+
 const handlers: Record<string, Handler> = {
   text(node, state) {
     state.text(node.value);
@@ -181,9 +203,7 @@ const handlers: Record<string, Handler> = {
   },
   inlineMath(node, state) {
     state.openNode('inline-formula');
-    state.openNode('tex-math');
-    state.addLeaf('cdata', { cdata: node.value });
-    state.closeNode();
+    state.pushNode(mathToMml(node.value, true));
     state.closeNode();
   },
   math(node, state) {
@@ -193,9 +213,7 @@ const handlers: Record<string, Handler> = {
     }
     state.openNode('disp-formula', dispFormulaAttrs);
     renderLabel(node, state, (enumerator) => `(${enumerator})`);
-    state.openNode('tex-math');
-    state.addLeaf('cdata', { cdata: node.value });
-    state.closeNode();
+    state.pushNode(mathToMml(node.value));
     state.closeNode();
   },
   mystRole(node, state) {

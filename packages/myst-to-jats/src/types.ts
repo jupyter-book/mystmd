@@ -56,6 +56,7 @@ export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   text: (value?: string) => void;
   renderChildren: (node: any) => void;
   renderInline: (node: GenericNode, name: string, attributes?: Attributes) => void;
+  pushNode: (el?: Element) => void;
   addLeaf: (name: string, attributes?: Attributes) => void;
   openNode: (name: string, attributes?: Attributes) => void;
   closeNode: () => void;
