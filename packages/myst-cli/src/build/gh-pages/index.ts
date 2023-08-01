@@ -5,7 +5,15 @@ import chalk from 'chalk';
 import type { ISession } from 'myst-cli-utils';
 import { makeExecutable, writeFileToFolder } from 'myst-cli-utils';
 
-function createGithubPagesAction({ defaultBranch = 'main' }: { defaultBranch?: string }) {
+function createGithubPagesAction({
+  defaultBranch = 'main',
+  username = 'username',
+  isGithubIO,
+}: {
+  username?: string;
+  defaultBranch?: string;
+  isGithubIO?: boolean;
+}) {
   return `# This file was created automatically with \`myst init --gh-pages\` 🪄 💚
 
 name: MyST GitHub Pages Deploy
@@ -14,7 +22,11 @@ on:
     # Runs on pushes targeting the default branch
     branches: [${defaultBranch}]
 env:
-  BASE_URL: /\${{ github.event.repository.name }}
+  ${
+    isGithubIO
+      ? `BASE_URL: '' # Not required for '${username}.github.io' domain. Other repos will need to set this!`
+      : 'BASE_URL: /${{ github.event.repository.name }}'
+  }
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -59,8 +71,8 @@ export async function getGithubUrl() {
     if (!gitUrl.includes('github.com')) return undefined;
     return gitUrl
       .replace('git@github.com:', 'https://github.com/')
-      .replace(/\.git$/, '')
-      .trim();
+      .trim()
+      .replace(/\.git$/, '');
   } catch (error) {
     return undefined;
   }
@@ -126,10 +138,14 @@ export async function githubPagesAction(session: ISession) {
       },
     },
   ]);
-  const action = createGithubPagesAction({ defaultBranch: prompt.branch });
+  const [repo, org] = githubUrl ? githubUrl.split('/').reverse() : [];
+  const action = createGithubPagesAction({
+    isGithubIO: githubUrl?.endsWith('.github.io'),
+    username: org,
+    defaultBranch: prompt.branch,
+  });
   const filename = path.join('.github', 'workflows', prompt.name);
   writeFileToFolder(filename, action);
-  const [repo, org] = githubUrl ? githubUrl.split('/').reverse() : [];
   const githubPagesUrl = githubUrl ? `https://${org}.github.io/${repo}` : undefined;
   session.log.info(
     `
