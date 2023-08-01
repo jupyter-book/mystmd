@@ -47,6 +47,11 @@ describe('extractPart', () => {
         },
         {
           type: 'block' as any,
+          data: { part: 'test_part', tags: ['other_tag'] },
+          children: [{ type: 'text', value: 'also tagged content' }],
+        },
+        {
+          type: 'block' as any,
           data: { part: 'test_part' },
           children: [{ type: 'text', value: 'a part' }],
         },
@@ -60,10 +65,36 @@ describe('extractPart', () => {
           data: { part: 'other_tag' },
           children: [{ type: 'text', value: 'untagged content' }],
         },
+      ],
+    });
+  });
+  it('extract tagged part', async () => {
+    expect(
+      extractPart(
+        {
+          type: 'root',
+          children: [
+            {
+              type: 'block' as any,
+              data: { tags: ['tagged_part'] },
+              children: [{ type: 'text', value: 'untagged content' }],
+            },
+            {
+              type: 'block' as any,
+              data: { tags: ['other_tag', 'test_part'] },
+              children: [{ type: 'text', value: 'also tagged content' }],
+            },
+          ],
+        },
+        'tagged_part',
+      ),
+    ).toEqual({
+      type: 'root',
+      children: [
         {
           type: 'block' as any,
-          data: { tags: ['other_tag', 'test_part'] },
-          children: [{ type: 'text', value: 'also tagged content' }],
+          data: { part: 'tagged_part' },
+          children: [{ type: 'text', value: 'untagged content' }],
         },
       ],
     });
