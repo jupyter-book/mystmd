@@ -1,5 +1,11 @@
 # myst-common
 
+## 1.1.1
+
+### Patch Changes
+
+- ac650f5d: Extract tagged parts
+
 ## 1.1.0
 
 ### Minor Changes

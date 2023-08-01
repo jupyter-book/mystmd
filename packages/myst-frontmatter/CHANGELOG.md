@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.1
+
+### Patch Changes
+
+- 8f687eba: Allow thumbnail to be set on project or site
+
 ## 1.1.0
 
 ### Minor Changes

@@ -1,5 +1,18 @@
 # myst-cli
 
+## 1.1.7
+
+### Patch Changes
+
+- 8f687eba: Expose thumbnail on project if set on the index page
+- 8f687eba: Allow thumbnail to be set on project or site
+- Updated dependencies [ac650f5d]
+- Updated dependencies [8f687eba]
+  - myst-common@1.1.1
+  - myst-frontmatter@1.1.1
+  - myst-config@1.1.1
+  - myst-spec-ext@1.1.1
+
 ## 1.1.6
 
 ### Patch Changes
