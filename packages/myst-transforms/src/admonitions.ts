@@ -10,7 +10,7 @@ type Options = {
   replaceAdmonitionTitles?: boolean;
 };
 
-const githubAdmonitionKinds = ['note', 'warning'];
+const githubAdmonitionKinds = ['note', 'important', 'warning'];
 
 export function admonitionKindToTitle(kind: AdmonitionKind | string) {
   const transform: Record<string, string> = {
@@ -70,34 +70,65 @@ export function admonitionHeadersTransform(tree: Root, opts?: Options) {
   });
 }
 
+function transformGitHubBoldTitle(node: GenericNode): boolean {
+  if (
+    !node.children ||
+    node.children?.[0]?.type !== 'paragraph' ||
+    node.children[0].children?.[0]?.type !== 'strong'
+  ) {
+    return false;
+  }
+  const strong = node.children[0].children[0];
+  if (strong.children?.[0].type !== 'text') return false;
+  const kind = strong.children[0].value?.trim().toLowerCase() ?? '';
+  if (!githubAdmonitionKinds.includes(kind)) return false;
+  node.type = 'admonition';
+  node.kind = kind;
+  node.class = node.class ? node.class + ' simple' : 'simple';
+  node.children[0].children.splice(0, 1); // Get rid of the strong node
+  node.children = [
+    {
+      type: 'admonitionTitle',
+      children: [{ type: 'text', value: admonitionKindToTitle(node.kind) }],
+    },
+    ...node.children,
+  ];
+  return true;
+}
+
+function transformGitHubBracketedAdmonition(node: GenericNode): boolean {
+  if (!node.children || node.children?.[0]?.type !== 'paragraph') return false;
+  const firstNode = node.children[0]?.children?.[0];
+  if (firstNode?.type !== 'text') return false;
+  const match = firstNode.value?.trim().match(/^\[!([A-Za-z]+)\]/);
+  if (!match) return false;
+  const [, kind] = match;
+  if (!githubAdmonitionKinds.includes(kind.toLowerCase())) return false;
+  node.type = 'admonition';
+  node.kind = kind.toLowerCase();
+  node.class = node.class ? node.class + ' simple' : 'simple';
+  firstNode.value = firstNode.value?.replace(/^\[!([A-Za-z]+)\](?:[\s]*)/, '');
+  node.children = [
+    {
+      type: 'admonitionTitle',
+      children: [{ type: 'text', value: admonitionKindToTitle(node.kind) }],
+    },
+    ...node.children,
+  ];
+  return true;
+}
+
 /**
  * Visit all blockquote notes and add headers if necessary, support GitHub style admonitions
  */
 export function admonitionBlockquoteTransform(tree: Root) {
   const blockquote = selectAll('blockquote', tree) as Blockquote[];
   blockquote.forEach((node: GenericNode) => {
-    if (
-      !node.children ||
-      node.children?.[0]?.type !== 'paragraph' ||
-      node.children[0].children?.[0]?.type !== 'strong'
-    ) {
-      return;
-    }
-    const strong = node.children[0].children[0];
-    if (strong.children?.[0].type !== 'text') return;
-    const kind = strong.children[0].value?.trim().toLowerCase() ?? '';
-    if (!githubAdmonitionKinds.includes(kind)) return;
-    node.type = 'admonition';
-    node.kind = kind;
-    node.class = node.class ? node.class + ' simple' : 'simple';
-    node.children[0].children.splice(0, 1); // Get rid of the strong node
-    node.children = [
-      {
-        type: 'admonitionTitle',
-        children: [{ type: 'text', value: admonitionKindToTitle(node.kind) }],
-      },
-      ...node.children,
-    ];
+    // Loop through the various flavours of blockquote admonitions and return early if already transformed
+    [transformGitHubBracketedAdmonition, transformGitHubBoldTitle].reduce(
+      (complete, fn) => complete || fn(node),
+      false,
+    );
   });
 }
 
