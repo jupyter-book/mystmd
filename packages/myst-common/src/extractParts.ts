@@ -13,7 +13,10 @@ export function selectBlockParts(tree: Root, part: string): Block[] | undefined 
     return;
   }
   const blockParts = selectAll('block', tree).filter((block) => {
-    return block.data?.part === part;
+    return (
+      block.data?.part === part ||
+      (block.data?.tags && Array.isArray(block.data.tags) && block.data.tags.includes(part))
+    );
   });
   if (blockParts.length === 0) return;
   return blockParts as Block[];
@@ -22,10 +25,22 @@ export function selectBlockParts(tree: Root, part: string): Block[] | undefined 
 /**
  * Returns a copy of the block parts and removes them from the tree.
  */
-export function extractPart(tree: Root, partId: string): Root | undefined {
-  const blockParts = selectBlockParts(tree, partId);
+export function extractPart(tree: Root, part: string): Root | undefined {
+  const blockParts = selectBlockParts(tree, part);
   if (!blockParts) return undefined;
-  const partsTree = { type: 'root', children: copyNode(blockParts) } as unknown as Root;
+  const children = copyNode(blockParts).map((block) => {
+    // Ensure the block always has the `part` defined, as it might be in the tags
+    block.data ??= {};
+    block.data.part = part;
+    if (block.data.tags && Array.isArray(block.data.tags) && block.data.tags.includes(part)) {
+      block.data.tags = block.data.tags.filter((tag) => tag !== part) as string[];
+      if ((block.data.tags as string[]).length === 0) {
+        delete block.data.tags;
+      }
+    }
+    return block;
+  });
+  const partsTree = { type: 'root', children } as unknown as Root;
   // Remove the block parts from the main document
   blockParts.forEach((block) => {
     (block as any).type = '__delete__';
