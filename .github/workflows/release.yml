@@ -1,6 +1,9 @@
 name: Release
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -28,7 +31,7 @@ jobs:
         run: npm run build
       - name: Run tests
         run: npm run test
-      - name: Version bump and publish to npm
+      - name: Version bump and create pull request OR publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
@@ -41,5 +44,6 @@ jobs:
       - name: Publish to PyPI
         if: steps.changesets.outputs.published == 'true'
         run: |
+          pip install twine
           cd packages/mystmd-py
           bash scripts/pypi-deploy.sh
