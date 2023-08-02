@@ -2,7 +2,7 @@ import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import katex from 'katex';
 import type { Root } from 'mdast';
-import type { Math, InlineMath, Node } from 'myst-spec';
+import type { Math, InlineMath, Node, Code } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
 import { copyNode, fileError, fileWarn, normalizeLabel } from 'myst-common';
@@ -239,12 +239,25 @@ export function mathLabelTransform(tree: Root, file: VFile) {
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function mathCodeBlockTransform(tree: Root, file: VFile) {
+  const nodes = selectAll('code[lang="math"]', tree) as Code[];
+  nodes.forEach((node) => {
+    (node as unknown as Math).type = 'math';
+    delete node.lang;
+  });
+}
+
 export function mathTransform(tree: Root, file: VFile, opts?: Options) {
   const nodes = selectAll('math,inlineMath', tree) as (Math | InlineMath)[];
   nodes.forEach((node) => {
     renderEquation(file, node, opts);
   });
 }
+
+export const mathCodeBlockPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
+  mathCodeBlockTransform(tree, file);
+};
 
 export const mathNestingPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
   mathNestingTransform(tree, file);

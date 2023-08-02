@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
-import { mathTransform, mathPlugin, mathNestingTransform } from './math';
+import { mathTransform, mathPlugin, mathNestingTransform, mathCodeBlockTransform } from './math';
 
 const ARRAY_ALIGN = `\\begin{align*}
   L=
@@ -122,5 +122,16 @@ describe('Test math nesting transformation', () => {
     expect(mdast.children[0].children[1].type).toBe('math');
     expect(mdast.children[0].children[2].type).toBe('paragraph');
     expect(mdast.children[0].children[2].class).toBe('importantClass');
+  });
+});
+
+describe('Test math code block transformation', () => {
+  test('Block paragraph', () => {
+    const file = new VFile();
+    const mdast = { children: [{ type: 'code', lang: 'math', value: 'Ax = b' }] } as any;
+    mathCodeBlockTransform(mdast, file);
+    expect(mdast.children[0].type).toBe('math');
+    expect(mdast.children[0].lang).toBeUndefined();
+    expect(mdast.children[0].value).toBe('Ax = b');
   });
 });
