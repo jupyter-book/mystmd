@@ -37,6 +37,7 @@
   "dependencies": {
     "citation-js-utils": "^1.0.1",
     "jats-tags": "^1.0.1",
+    "katex": "^0.15.2",
     "myst-common": "^1.1.0",
     "myst-frontmatter": "^1.1.0",
     "myst-spec": "^0.0.4",
@@ -49,6 +50,7 @@
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",
+    "@types/katex": "^0.14.0",
     "@types/mdast": "^3.0.10",
     "jats-xml": "^1.0.3",
     "js-yaml": "^4.1.0",
