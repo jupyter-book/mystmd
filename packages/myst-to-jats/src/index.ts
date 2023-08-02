@@ -126,17 +126,16 @@ function mathToMml(math?: string, inline?: boolean) {
   const mathElement = spanElement?.elements?.[0];
   if (!mathElement) return;
   if (inline) mathElement.attributes = { ...mathElement.attributes, display: 'inline' };
-  if (mathElement.attributes?.xmlns) {
-    mathElement.attributes['xmlns:mml'] = mathElement.attributes.xmlns;
-    delete mathElement.attributes.xmlns;
-  }
-  function addMml(el?: Element) {
+  delete mathElement.attributes?.xmlns;
+  function addMmlAndRemoveAnnotation(el?: Element) {
     if (el?.name) el.name = `mml:${el.name}`;
-    el?.elements?.forEach((child: Element) => {
-      addMml(child);
+    if (!el?.elements) return;
+    el.elements = el.elements.filter((child: Element) => child.name !== 'annotation');
+    el.elements.forEach((child: Element) => {
+      addMmlAndRemoveAnnotation(child);
     });
   }
-  addMml(mathElement);
+  addMmlAndRemoveAnnotation(mathElement);
   return mathElement;
 }
 
@@ -203,7 +202,12 @@ const handlers: Record<string, Handler> = {
   },
   inlineMath(node, state) {
     state.openNode('inline-formula');
+    state.openNode('alternatives');
     state.pushNode(mathToMml(node.value, true));
+    state.openNode('tex-math');
+    state.addLeaf('cdata', { cdata: node.value });
+    state.closeNode();
+    state.closeNode();
     state.closeNode();
   },
   math(node, state) {
@@ -213,7 +217,12 @@ const handlers: Record<string, Handler> = {
     }
     state.openNode('disp-formula', dispFormulaAttrs);
     renderLabel(node, state, (enumerator) => `(${enumerator})`);
+    state.openNode('alternatives');
     state.pushNode(mathToMml(node.value));
+    state.openNode('tex-math');
+    state.addLeaf('cdata', { cdata: node.value });
+    state.closeNode();
+    state.closeNode();
     state.closeNode();
   },
   mystRole(node, state) {
