@@ -2,4 +2,3 @@ src/version.ts
 *.egg-info
 dist
 mystmd_py/myst.cjs
-README.md
