@@ -13,7 +13,7 @@
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
-    "version": "changeset version && npm install",
+    "version": "changeset version && npm install && cd packages/mystmd-py && bash scripts/bump-version.sh",
     "publish": "npm run clean && npm run build -- --force && changeset publish && git push --follow-tags"
   },
   "devDependencies": {
