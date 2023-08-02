@@ -1,6 +1,6 @@
 {
   "name": "myst-cli",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "Command line tools for MyST",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "license": "MIT",
@@ -80,7 +80,7 @@
     "myst-spec-ext": "^1.1.1",
     "myst-templates": "^1.0.5",
     "myst-to-docx": "^1.0.2",
-    "myst-to-jats": "^1.0.7",
+    "myst-to-jats": "^1.0.8",
     "myst-to-md": "^1.0.5",
     "myst-to-tex": "^1.0.4",
     "myst-transforms": "^1.0.6",

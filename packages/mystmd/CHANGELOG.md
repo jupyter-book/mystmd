@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.9
+
+### Patch Changes
+
+- eb32ae98: Add mathml to the exported JATS.
+
 ## 1.1.8
 
 ## 1.1.7
