@@ -1,5 +1,14 @@
 # myst-cli
 
+## 1.1.8
+
+### Patch Changes
+
+- 915b9bc0: Update github.io domains to not have a BASE_PATH set in the actions
+- e725666c: Fix github url for .github.io domains
+- Updated dependencies [5dd77afe]
+  - myst-transforms@1.0.6
+
 ## 1.1.7
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # myst-transforms
 
+## 1.0.6
+
+### Patch Changes
+
+- 5dd77afe: Expand to allow for new github admonitions [!NOTE] in a blockquote
+
 ## 1.0.5
 
 ### Patch Changes

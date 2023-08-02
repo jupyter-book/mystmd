@@ -1,6 +1,6 @@
 {
   "name": "myst-cli",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "Command line tools for MyST",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "license": "MIT",
@@ -83,7 +83,7 @@
     "myst-to-jats": "^1.0.7",
     "myst-to-md": "^1.0.5",
     "myst-to-tex": "^1.0.4",
-    "myst-transforms": "^1.0.5",
+    "myst-transforms": "^1.0.6",
     "nanoid": "^4.0.0",
     "nbtx": "^0.2.3",
     "node-fetch": "^3.3.1",
