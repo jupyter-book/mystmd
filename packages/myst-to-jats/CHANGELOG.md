@@ -1,5 +1,11 @@
 # myst-to-jats
 
+## 1.0.8
+
+### Patch Changes
+
+- eb32ae98: Add mathml to the exported JATS.
+
 ## 1.0.7
 
 ### Patch Changes

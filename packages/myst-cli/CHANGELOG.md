@@ -1,5 +1,13 @@
 # myst-cli
 
+## 1.1.9
+
+### Patch Changes
+
+- eb32ae98: Add mathml to the exported JATS.
+- Updated dependencies [eb32ae98]
+  - myst-to-jats@1.0.8
+
 ## 1.1.8
 
 ### Patch Changes
