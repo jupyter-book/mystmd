@@ -14,7 +14,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
     "version": "changeset version && npm install && cd packages/mystmd-py && bash scripts/bump-version.sh",
-    "publish": "npm run clean && npm run build -- --force && changeset publish && git push --follow-tags"
+    "publish": "npm run clean && npm run build -- --force && changeset publish && git push --follow-tags",
+    "publish:ci": "npm run build && changeset publish && git push --follow-tags"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.1",
