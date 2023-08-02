@@ -152,7 +152,7 @@ Furthermore, `numref` can take in three additional placeholders for more customi
 3. _{name}_ by the exercise title.[^note]
 
 For example,\
-`` {numref}`My custom {number} and {name}` <my-exercise-label>``.
+`` {numref}`My custom {number} and {name} <my-exercise-label>` ``.
 
 [^note]: If the exercise directive does not have a title, the `label` will be used instead.
 
