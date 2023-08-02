@@ -18,6 +18,8 @@ import version from '../version.js';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
+const NPM_COMMAND = 'npm i -g mystmd@latest';
+const PIP_COMMAND = 'pip install -U mystmd';
 
 export function logUpdateAvailable({
   current,
@@ -81,7 +83,7 @@ export class Session implements ISession {
       logUpdateAvailable({
         current: version,
         latest: this._latestVersion,
-        upgradeCommand: 'npm i -g mystmd@latest',
+        upgradeCommand: process.env.MYST_LANG === 'PYTHON' ? PIP_COMMAND : NPM_COMMAND,
         twitter: 'MystMarkdown',
       }),
     );

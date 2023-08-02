@@ -1,3 +1,4 @@
+import os
 import pathlib
 import shutil
 import subprocess
@@ -35,6 +36,7 @@ def main():
         [node, PATH_TO_BIN_JS, *sys.argv[1:]],
         stdin=sys.stdin,
         stdout=sys.stdout,
+        env={**os.environ, "MYST_LANG": "PYTHON"},
     )
     sys.exit(myst_proc.wait())
 
