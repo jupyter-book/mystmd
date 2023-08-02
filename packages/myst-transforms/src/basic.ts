@@ -8,7 +8,7 @@ import { admonitionBlockquoteTransform, admonitionHeadersTransform } from './adm
 import { blockMetadataTransform, blockNestingTransform } from './blocks.js';
 import { htmlIdsTransform } from './htmlIds.js';
 import { imageAltTextTransform } from './images.js';
-import { mathLabelTransform, mathNestingTransform } from './math.js';
+import { mathCodeBlockTransform, mathLabelTransform, mathNestingTransform } from './math.js';
 import { blockquoteTransform } from './blockquote.js';
 
 export function basicTransformations(tree: Root, file: VFile) {
@@ -16,6 +16,7 @@ export function basicTransformations(tree: Root, file: VFile) {
   liftMystDirectivesAndRolesTransform(tree);
   // Some specifics about the ordering are noted below
   captionParagraphTransform(tree);
+  mathCodeBlockTransform(tree, file);
   mathNestingTransform(tree, file);
   // Math labelling should happen before the target-transformation
   mathLabelTransform(tree, file);
