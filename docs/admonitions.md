@@ -110,10 +110,23 @@ Here is an admonition!
 
 :::::::{tip} Compatibility with GitHub
 :class: dropdown
-GitHub markdown transforms blockquotes that start with a bold `Note` or `Warning` into a simple admonition (see [GitHub](https://github.com/community/community/discussions/16925)). MyST also transforms these blockquotes into the appropriate admonitions with a `simple` class.
+GitHub markdown transforms blockquotes that start with a bold `Note` or text with `[!NOTE]` into a simple admonition (see [GitHub](https://github.com/community/community/discussions/16925)). This syntax only works for `note`, `important` or `warning`. MyST transforms these blockquotes into the appropriate admonitions with a `simple` class.
 
 ```{myst}
-> **Note** This is a note!
+> [!NOTE]
+> Highlights information that users should take into account, even when skimming.
+
+> [!IMPORTANT]
+> Crucial information necessary for users to succeed.
+
+> [!WARNING]
+> Critical content demanding immediate user attention due to potential risks.
+
+> **Note**
+> This is a note
+
+> **Warning**
+> This is a warning
 ```
 
 :::::::
