@@ -20,3 +20,7 @@ flowchart LR
   D <--> J[JATS]
 ```
 ````
+
+:::{note}
+Both GitHub and JupyterLab ([#101](https://github.com/jupyter/enhancement-proposals/pull/101)) support the translation of a code-block ` ```mermaid ` to a mermaid diagram directly, this can also be used by default in MyST.
+:::
