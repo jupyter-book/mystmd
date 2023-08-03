@@ -8,15 +8,16 @@ import { admonitionBlockquoteTransform, admonitionHeadersTransform } from './adm
 import { blockMetadataTransform, blockNestingTransform } from './blocks.js';
 import { htmlIdsTransform } from './htmlIds.js';
 import { imageAltTextTransform } from './images.js';
-import { mathCodeBlockTransform, mathLabelTransform, mathNestingTransform } from './math.js';
+import { mathLabelTransform, mathNestingTransform } from './math.js';
 import { blockquoteTransform } from './blockquote.js';
+import { codeBlockToDirectiveTransform } from './code.js';
 
 export function basicTransformations(tree: Root, file: VFile) {
   // lifting roles and directives must happen before the mystTarget transformation
   liftMystDirectivesAndRolesTransform(tree);
   // Some specifics about the ordering are noted below
   captionParagraphTransform(tree);
-  mathCodeBlockTransform(tree, file);
+  codeBlockToDirectiveTransform(tree, file, { translate: ['math', 'mermaid'] });
   mathNestingTransform(tree, file);
   // Math labelling should happen before the target-transformation
   mathLabelTransform(tree, file);
