@@ -65,49 +65,39 @@ cases:
     opts:
       abbreviations_ftl: true
       abbreviations: 
-        IL: Insertion Loss
-        MD: Modulation Depth
-        AI: Artificial Intelligence
-        ML: Machine Learning
-        CMT: Coupled Mode Theory
-        MMI: Multi Mode Interferrometer
+        MyST: Markedly Structured Text
     before:
       type: root
       children:
         - type: text
-          value: Testing IL vs MD maybe we can get it to work with MD
+          value: 'Testing MyST does it render out long? Does MyST now?'
         - type: text
-          value: or maybe with IL?
+          value: 'or maybe now: MyST?'
     after:
       type: root
       children:
         - type: text
           value: 'Testing '
         - type: abbreviation
-          title: Insertion Loss
+          title: Markedly Structured Text
           children:
             - type: text
-              value: Insertion Loss (IL)
+              value: Markedly Structured Text (MyST)
         - type: text
-          value: ' vs '
+          value: ' does it render out long? Does '
         - type: abbreviation
-          title: Modulation Depth
+          title: Markedly Structured Text
           children:
             - type: text
-              value: Modulation Depth (MD)
+              value: MyST
         - type: text
-          value: ' maybe we can get it to work with '
-        - type: abbreviation
-          title: Modulation Depth
-          children:
-            - type: text
-              value: MD
+          value: ' now?'
         - type: text
-          value: 'or maybe with '
+          value: 'or maybe now: '
         - type: abbreviation
-          title: Insertion Loss
+          title: Markedly Structured Text
           children:
           - type: text
-            value: IL
+            value: MyST
         - type: text
           value: '?'
