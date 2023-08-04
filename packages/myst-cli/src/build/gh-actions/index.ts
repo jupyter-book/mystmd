@@ -65,6 +65,33 @@ jobs:
 `;
 }
 
+function createGithubCurvenoteAction({ defaultBranch = 'main' }: { defaultBranch?: string }) {
+  return `# This file was created automatically with \`myst init --gh-curvenote\` 🪄 💚
+
+name: Curvenote Deploy
+on:
+  push:
+    # Runs on pushes targeting the default branch
+    branches: [${defaultBranch}]
+permissions:
+  # Sets permissions of the GITHUB_TOKEN to allow read of private repos
+  contents: read
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy 🚀
+        uses: curvenote/action-myst-publish@v1
+        env:
+          CURVENOTE_TOKEN: \${{ secrets.CURVENOTE_TOKEN }}
+`;
+}
+
 export async function getGithubUrl() {
   try {
     const gitUrl = await makeExecutable('git config --get remote.origin.url', null)();
@@ -96,7 +123,7 @@ async function checkAtGitRoot(): Promise<boolean> {
   }
 }
 
-export async function githubPagesAction(session: ISession) {
+async function prelimGitChecks(session: ISession): Promise<string | undefined> {
   const inGitRepo = await checkFolderIsGit();
   if (!inGitRepo) {
     session.log.info(
@@ -119,25 +146,34 @@ export async function githubPagesAction(session: ISession) {
   if (!githubUrl) {
     session.log.warn(`Could not read the GitHub URL from your git repository.`);
   }
+  return githubUrl;
+}
+
+type Prompt = { branch: string; name: string };
+
+const workflowQuestions = [
+  {
+    name: 'branch',
+    message: `What branch would you like to deploy from?`,
+    default: 'main',
+  },
+  {
+    name: 'name',
+    message: `What would you like to call the action?`,
+    default: 'deploy.yml',
+    validate(input: string) {
+      if (!input.endsWith('.yml')) return 'The GitHub Action name must end in `.yml`';
+      const exists = fs.existsSync(path.join('.github', 'workflows', input));
+      if (exists) return 'The workflow file already exists, please choose another name.';
+      return true;
+    },
+  },
+];
+
+export async function githubPagesAction(session: ISession) {
+  const githubUrl = await prelimGitChecks(session);
   session.log.info(`📝 Creating a GitHub Action to deploy your MyST Site\n`);
-  const prompt = await inquirer.prompt([
-    {
-      name: 'branch',
-      message: `What branch would you like to deploy from?`,
-      default: 'main',
-    },
-    {
-      name: 'name',
-      message: `What would you like to call the action?`,
-      default: 'deploy.yml',
-      validate(input: string) {
-        if (!input.endsWith('.yml')) return 'The GitHub Action name must end in `.yml`';
-        const exists = fs.existsSync(path.join('.github', 'workflows', input));
-        if (exists) return 'The workflow file already exists, please choose another name.';
-        return true;
-      },
-    },
-  ]);
+  const prompt = await inquirer.prompt<Prompt>(workflowQuestions);
   const [repo, org] = githubUrl ? githubUrl.split('/').reverse() : [];
   const action = createGithubPagesAction({
     isGithubIO: githubUrl?.endsWith('.github.io'),
@@ -166,6 +202,47 @@ ${filename}
         : 'on your https://{{ organization }}.github.io/{{ repo }} domain'
     }
 7. 🎉 Celebrate and tell us about your site on Twitter or Mastodon! 🐦 🐘
- `,
+`,
+  );
+}
+
+export async function githubCurvenoteAction(session: ISession) {
+  const githubUrl = await prelimGitChecks(session);
+  session.log.info(`📝 Creating a GitHub Action to deploy your site to Curvenote\n`);
+  const prompt = await inquirer.prompt<Prompt>(workflowQuestions);
+  const action = createGithubCurvenoteAction({ defaultBranch: prompt.branch });
+  const filename = path.join('.github', 'workflows', prompt.name);
+  writeFileToFolder(filename, action);
+  session.log.info(
+    `
+🎉 GitHub Action is configured:
+
+${filename}
+
+✅ ${chalk.bold.green('Next Steps')}
+
+1. Ensure you have a domain set in your site configuration
+
+    site:
+      domains:
+        - username.curve.space
+
+2. Create a new Curvenote API token
+
+    https://curvenote.com/profile?settings=true&tab=profile-api
+
+3. Navigate to your GitHub settings for action secrets${
+      githubUrl ? `\n\n    ${githubUrl}/settings/secrets/actions\n` : ''
+    }
+4. Add a new repository secret
+
+    Name: ${chalk.blue.bold('CURVENOTE_TOKEN')}
+    Secret: Your Curvenote API Token
+
+5. Push these changes (and/or merge to ${prompt.branch})
+6. Look for a new action to start${githubUrl ? `\n\n    ${githubUrl}/actions\n` : ''}
+7. Once the action completes, your site should be deployed
+8. 🎉 Celebrate and tell us about your site on Twitter or Mastodon! 🐦 🐘
+`,
   );
 }

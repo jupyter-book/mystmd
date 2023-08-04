@@ -8,7 +8,7 @@ import type { ISession } from '../session/index.js';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { startServer } from './site/start.js';
-import { getGithubUrl, githubPagesAction } from './gh-pages/index.js';
+import { getGithubUrl, githubCurvenoteAction, githubPagesAction } from './gh-actions/index.js';
 
 const VERSION_CONFIG = '# See docs at: https://mystmd.org/guide/frontmatter\nversion: 1\n';
 
@@ -38,6 +38,7 @@ export type InitOptions = {
   site?: boolean;
   writeToc?: boolean;
   ghPages?: boolean;
+  ghCurvenote?: boolean;
 };
 
 const WELCOME = () => `
@@ -55,9 +56,10 @@ Learn more about this CLI and MyST Markdown at: ${chalk.bold('https://mystmd.org
 `;
 
 export async function init(session: ISession, opts: InitOptions) {
-  const { project, site, writeToc, ghPages } = opts;
+  const { project, site, writeToc, ghPages, ghCurvenote } = opts;
 
   if (ghPages) return githubPagesAction(session);
+  if (ghCurvenote) return githubCurvenoteAction(session);
 
   if (!project && !site && !writeToc) {
     session.log.info(WELCOME());

@@ -152,7 +152,13 @@ You can then deploy the site using:
 curvenote deploy
 ```
 
-:::{tip} Using GitHub Actions
+You can also deploy from a GitHub action, which will build your site and then deploy it to Curvenote.
+
+🛠 In the root of your git repository run `myst init --gh-curvenote`
+
+The command will ask you questions about which branch to deploy from (e.g. `main`) and the name of the GitHub Action (e.g. `deploy.yml`). It will then create a GitHub Action[^actions] that will run next time you push your code to the main branch you specified. Ensure that you including setting up your `CURVENOTE_TOKEN` which can be created from your Curvenote profile.
+
+:::{tip} Full GitHub Actions
 :class: dropdown
 
 You can use GitHub actions to build and deploy your site automatically when you merge new documents, for example.
@@ -167,13 +173,16 @@ on:
     branches:
       - main
 permissions:
+  contents: read
   pull-requests: write
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy 🚀
-        uses: curvenote/action-myst-publish
+        uses: curvenote/action-myst-publish@v1
+        env:
+          CURVENOTE_TOKEN: ${{ secrets.CURVENOTE_TOKEN }}
 ```
 
 :::
