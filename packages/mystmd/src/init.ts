@@ -3,10 +3,11 @@ import { Command } from 'commander';
 import { Session, init } from 'myst-cli';
 import { clirun } from './clirun.js';
 import {
-  makeGithubActionOption,
   makeProjectOption,
   makeSiteOption,
   makeWriteTocOption,
+  makeGithubPagesOption,
+  makeGithubCurvenoteOption,
 } from './options.js';
 
 export function makeInitCLI(program: Command) {
@@ -15,7 +16,8 @@ export function makeInitCLI(program: Command) {
     .addOption(makeProjectOption('Initialize config for MyST project content'))
     .addOption(makeSiteOption('Initialize config for MyST site'))
     .addOption(makeWriteTocOption())
-    .addOption(makeGithubActionOption())
+    .addOption(makeGithubPagesOption())
+    .addOption(makeGithubCurvenoteOption())
     .action(clirun(Session, init, program));
   return command;
 }

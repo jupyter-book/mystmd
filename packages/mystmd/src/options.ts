@@ -55,10 +55,17 @@ export function makeWriteTocOption() {
   ).default(false);
 }
 
-export function makeGithubActionOption() {
+export function makeGithubPagesOption() {
   return new Option(
     '--gh-pages',
     'Creates a GitHub action that will deploy your site to GitHub pages',
+  ).default(false);
+}
+
+export function makeGithubCurvenoteOption() {
+  return new Option(
+    '--gh-curvenote',
+    'Creates a GitHub action that will deploy your site to Curvenote',
   ).default(false);
 }
 
