@@ -1,5 +1,5 @@
 import type { Plugin } from 'unified';
-import type { Root, StaticPhrasingContent } from 'mdast';
+import type { Root, StaticPhrasingContent, Text } from 'mdast';
 import { toText } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { Abbreviation } from 'myst-spec';
@@ -9,6 +9,7 @@ import { findAndReplace } from 'mdast-util-find-and-replace';
 
 type Options = {
   abbreviations?: Record<string, string>;
+  abbreviations_ftl?: Boolean;
 };
 
 // We will not replace abbreviation text inside of these nodes
@@ -44,6 +45,17 @@ export function abbreviationTransform(mdast: Root, opts?: Options) {
     if (title) node.title = title;
   });
   replaceText(mdast, opts);
+
+  if (opts.abbreviations_ftl) {
+    const new_abbreviations = selectAll('abbreviation', mdast) as Abbreviation[];
+    let explained = new Set();
+    new_abbreviations.forEach((node) => {
+      if (explained.has(node.title)) return;
+      explained.add(node.title)
+      let short = node.children[0] as unknown as Text;
+      short.value = `${node.title} (${short.value})`;
+    });
+  }
 }
 
 export const abbreviationPlugin: Plugin<[Options], Root, Root> = (opts) => (tree) => {

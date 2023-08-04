@@ -1,0 +1,113 @@
+cases:
+  - title: simple abbreviation replacement
+    opts:
+      abbreviations: 
+        MyST: Markedly Structured Text
+    before:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: link
+                  children: 
+                    - type: text
+                      value: Link with MyST in it
+                - type: text
+                  value: This is about MyST Markdown
+    after:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: link
+                  children: 
+                    - type: text
+                      value: Link with MyST in it
+                - type: text
+                  value: 'This is about '
+                - type: abbreviation
+                  title: Markedly Structured Text
+                  children:
+                    - type: text
+                      value: MyST
+                - type: text
+                  value: ' Markdown'
+  - title: Abbreviation in heading
+    opts:
+      abbreviations: 
+        MyST: Markedly Structured Text
+    before:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: Testing MyST
+    after:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: 'Testing '
+            - type: abbreviation
+              title: Markedly Structured Text
+              children:
+                - type: text
+                  value: MyST
+  - title: Abbreviation first time long
+    opts:
+      abbreviations_ftl: true
+      abbreviations: 
+        IL: Insertion Loss
+        MD: Modulation Depth
+        AI: Artificial Intelligence
+        ML: Machine Learning
+        CMT: Coupled Mode Theory
+        MMI: Multi Mode Interferrometer
+    before:
+      type: root
+      children:
+        - type: text
+          value: Testing IL vs MD maybe we can get it to work with MD
+        - type: text
+          value: or maybe with IL?
+    after:
+      type: root
+      children:
+        - type: text
+          value: 'Testing '
+        - type: abbreviation
+          title: Insertion Loss
+          children:
+            - type: text
+              value: Insertion Loss (IL)
+        - type: text
+          value: ' vs '
+        - type: abbreviation
+          title: Modulation Depth
+          children:
+            - type: text
+              value: Modulation Depth (MD)
+        - type: text
+          value: ' maybe we can get it to work with '
+        - type: abbreviation
+          title: Modulation Depth
+          children:
+            - type: text
+              value: MD
+        - type: text
+          value: 'or maybe with '
+        - type: abbreviation
+          title: Insertion Loss
+          children:
+          - type: text
+            value: IL
+        - type: text
+          value: '?'
