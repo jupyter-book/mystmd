@@ -1,0 +1,103 @@
+cases:
+  - title: simple abbreviation replacement
+    opts:
+      abbreviations:
+        MyST: Markedly Structured Text
+    before:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: link
+                  children:
+                    - type: text
+                      value: Link with MyST in it
+                - type: text
+                  value: This is about MyST Markdown
+    after:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: link
+                  children:
+                    - type: text
+                      value: Link with MyST in it
+                - type: text
+                  value: 'This is about '
+                - type: abbreviation
+                  title: Markedly Structured Text
+                  children:
+                    - type: text
+                      value: MyST
+                - type: text
+                  value: ' Markdown'
+  - title: Abbreviation in heading
+    opts:
+      abbreviations:
+        MyST: Markedly Structured Text
+    before:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: Testing MyST
+    after:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: 'Testing '
+            - type: abbreviation
+              title: Markedly Structured Text
+              children:
+                - type: text
+                  value: MyST
+  - title: Abbreviation first time long
+    opts:
+      firstTimeLong: true
+      abbreviations:
+        MyST: Markedly Structured Text
+    before:
+      type: root
+      children:
+        - type: text
+          value: 'Testing MyST does it render out long? Does MyST now?'
+        - type: text
+          value: 'or maybe now: MyST?'
+    after:
+      type: root
+      children:
+        - type: text
+          value: 'Testing '
+        - type: abbreviation
+          title: Markedly Structured Text
+          children:
+            - type: text
+              value: Markedly Structured Text (MyST)
+        - type: text
+          value: ' does it render out long? Does '
+        - type: abbreviation
+          title: Markedly Structured Text
+          children:
+            - type: text
+              value: MyST
+        - type: text
+          value: ' now?'
+        - type: text
+          value: 'or maybe now: '
+        - type: abbreviation
+          title: Markedly Structured Text
+          children:
+            - type: text
+              value: MyST
+        - type: text
+          value: '?'

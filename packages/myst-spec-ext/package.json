@@ -22,7 +22,7 @@
     "url": "git+https://github.com/executablebooks/mystmd.git"
   },
   "scripts": {
-    "clean": "rm -rf dist",
+    "clean": "rimraf dist",
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
