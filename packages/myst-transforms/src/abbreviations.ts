@@ -8,8 +8,14 @@ import type { FindAndReplaceSchema, RegExpMatchObject } from 'mdast-util-find-an
 import { findAndReplace } from 'mdast-util-find-and-replace';
 
 type Options = {
+  /** An object of abbreviations { "TLA": "Three Letter Acronym" } */
   abbreviations?: Record<string, string>;
-  abbreviations_ftl?: Boolean;
+  /**
+   * Expand the abbreviation the first time it is encountered,
+   *
+   * i.e. `TLA` --> `Three Letter Acronym (TLA)`
+   */
+  firstTimeLong?: boolean;
 };
 
 // We will not replace abbreviation text inside of these nodes
@@ -46,13 +52,13 @@ export function abbreviationTransform(mdast: Root, opts?: Options) {
   });
   replaceText(mdast, opts);
 
-  if (opts.abbreviations_ftl) {
+  if (opts.firstTimeLong) {
     const new_abbreviations = selectAll('abbreviation', mdast) as Abbreviation[];
-    let explained = new Set();
+    const explained = new Set();
     new_abbreviations.forEach((node) => {
       if (explained.has(node.title)) return;
-      explained.add(node.title)
-      let short = node.children[0] as unknown as Text;
+      explained.add(node.title);
+      const short = node.children[0] as unknown as Text;
       short.value = `${node.title} (${short.value})`;
     });
   }

@@ -1,7 +1,7 @@
 cases:
   - title: simple abbreviation replacement
     opts:
-      abbreviations: 
+      abbreviations:
         MyST: Markedly Structured Text
     before:
       type: root
@@ -11,7 +11,7 @@ cases:
             - type: paragraph
               children:
                 - type: link
-                  children: 
+                  children:
                     - type: text
                       value: Link with MyST in it
                 - type: text
@@ -24,7 +24,7 @@ cases:
             - type: paragraph
               children:
                 - type: link
-                  children: 
+                  children:
                     - type: text
                       value: Link with MyST in it
                 - type: text
@@ -38,7 +38,7 @@ cases:
                   value: ' Markdown'
   - title: Abbreviation in heading
     opts:
-      abbreviations: 
+      abbreviations:
         MyST: Markedly Structured Text
     before:
       type: root
@@ -63,8 +63,8 @@ cases:
                   value: MyST
   - title: Abbreviation first time long
     opts:
-      abbreviations_ftl: true
-      abbreviations: 
+      firstTimeLong: true
+      abbreviations:
         MyST: Markedly Structured Text
     before:
       type: root
@@ -97,7 +97,7 @@ cases:
         - type: abbreviation
           title: Markedly Structured Text
           children:
-          - type: text
-            value: MyST
+            - type: text
+              value: MyST
         - type: text
           value: '?'
