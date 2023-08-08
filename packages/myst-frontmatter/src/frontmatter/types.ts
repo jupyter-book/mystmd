@@ -1,21 +1,56 @@
 import type { CreditRole } from 'credit-roles';
 import type { Licenses } from '../licenses/types.js';
 
+export interface Affiliation {
+  id?: string;
+  address?: string;
+  city?: string;
+  state?: string; // or region
+  postal_code?: string;
+  country?: string;
+  name?: string; // by default required but if only institution is provided, it's ok
+  institution?: string;
+  department?: string;
+  collaboration?: boolean;
+  isni?: string;
+  ringgold?: number;
+  ror?: string;
+  url?: string;
+  email?: string;
+  phone?: string;
+  fax?: string;
+}
+
 export type AuthorRoles = CreditRole | string;
 
 export interface Author {
-  name?: string;
+  id?: string;
+  name?: string; // or Name object?
   userId?: string;
   orcid?: string;
   corresponding?: boolean;
+  equal_contributor?: boolean;
+  deceased?: boolean;
   email?: string;
   roles?: AuthorRoles[];
   affiliations?: string[];
-  collaborations?: string[];
   twitter?: string;
   github?: string;
-  website?: string;
+  url?: string;
+  note?: string;
+  phone?: string;
+  fax?: string;
 }
+
+/**
+ * Object to hold items referenced in multiple parts of frontmatter
+ *
+ * These will be normalized to the top level and replaced with ids elsewhere
+ */
+export type ReferenceStash = {
+  affiliations?: Affiliation[];
+  authors?: Author[];
+};
 
 export type Biblio = {
   // https://docs.openalex.org/about-the-data/work#biblio
@@ -129,6 +164,7 @@ export type SiteFrontmatter = {
   banner?: string | null;
   bannerOptimized?: string;
   authors?: Author[];
+  affiliations?: Affiliation[];
   venue?: Venue;
   github?: string;
   keywords?: string[];

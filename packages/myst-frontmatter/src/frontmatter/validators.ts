@@ -19,6 +19,7 @@ import {
   validateUrl,
   validationError,
   validationWarning,
+  validateNumber,
 } from 'simple-validators';
 import { validateLicenses } from '../licenses/validators.js';
 import { BinderProviders, ExportFormats } from './types.js';
@@ -38,7 +39,10 @@ import type {
   BinderHubOptions,
   JupyterServerOptions,
   JupyterLocalOptions,
+  ReferenceStash,
+  Affiliation,
 } from './types.js';
+import { createHash } from 'node:crypto';
 
 export const SITE_FRONTMATTER_KEYS = [
   'title',
@@ -53,6 +57,7 @@ export const SITE_FRONTMATTER_KEYS = [
   'venue',
   'github',
   'keywords',
+  'affiliations',
 ];
 export const PROJECT_FRONTMATTER_KEYS = [
   'date',
@@ -98,22 +103,49 @@ export const USE_PROJECT_FALLBACK = [
   'keywords',
 ];
 
+const AFFILIATION_KEYS = [
+  'id',
+  'address',
+  'city',
+  'state',
+  'postal_code',
+  'country',
+  'name',
+  'institution',
+  'department',
+  'collaboration',
+  'isni',
+  'ringgold',
+  'ror',
+  'url',
+  'email',
+  'phone',
+  'fax',
+];
+
 const AUTHOR_KEYS = [
+  'id',
   'userId',
   'name',
   'orcid',
   'corresponding',
+  'equal_contributor',
+  'deceased',
   'email',
   'roles',
   'affiliations',
   'collaborations',
   'twitter',
   'github',
-  'website',
+  'url',
+  'note',
+  'phone',
+  'fax',
 ];
 const AUTHOR_ALIASES = {
   role: 'roles',
   affiliation: 'affiliations',
+  website: 'url',
 };
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
 const THEBE_KEYS = [
@@ -188,6 +220,59 @@ function validateBooleanOrObject<T extends Record<string, any>>(
 }
 
 /**
+ * Update stash of authors/affiliations based on input value
+ *
+ * Input may be:
+ *   - string name
+ *   - string id
+ *   - object with out id
+ *   - object with id
+ *
+ * This function will normalize all of the above to an id and if a corresponding
+ * object does not yet exist in the stash, it will be added. The id is returned.
+ *
+ * This function will warn if two objects are explicitly defined with the same id.
+ */
+export function validateAndStashObject<T extends { id?: string; name?: string }>(
+  input: any,
+  stash: ReferenceStash,
+  kind: keyof ReferenceStash,
+  validateFn: (v: any, o: ValidationOptions) => T | undefined,
+  opts: ValidationOptions,
+) {
+  const lookup: Record<string, T> = {};
+  stash[kind]?.forEach((item) => {
+    if (item.id) lookup[item.id] = item as T;
+  });
+  if (typeof input === 'string' && Object.keys(lookup).includes(input)) {
+    // Handle case where input is id and object already exists
+    return input;
+  }
+  const value = validateFn(input, opts);
+  if (!value) return;
+  let warnOnDuplicate = true;
+  if (!value.id) {
+    // If object is defined without an id, generate a unique id
+    value.id = createHash('md5')
+      .update(JSON.stringify(Object.entries(value).sort()))
+      .digest('hex');
+    warnOnDuplicate = false;
+  }
+  if (!Object.keys(lookup).includes(value.id)) {
+    // Handle case of new id - add stash value
+    lookup[value.id] = value;
+  } else if (Object.keys(lookup[value.id]).length === 2 && lookup[value.id].name === value.id) {
+    // Handle case of existing placeholder { id: value, name: value } - replace stash value
+    lookup[value.id] = value;
+  } else if (warnOnDuplicate) {
+    // Warn on duplicate id - lose new object
+    validationWarning(`duplicate id for ${kind} found in frontmatter: ${value.id}`, opts);
+  }
+  stash[kind] = Object.values(lookup);
+  return value.id;
+}
+
+/**
  * Validate Venue object against the schema
  *
  * If 'value' is a string, venue will be coerced to object { title: value }
@@ -214,21 +299,101 @@ export function validateVenue(input: any, opts: ValidationOptions) {
 }
 
 /**
+ * Validate Affiliation object against the schema
+ */
+export function validateAffiliation(input: any, opts: ValidationOptions) {
+  if (typeof input === 'string') {
+    input = { id: input, name: input };
+  }
+  const value = validateObjectKeys(input, { optional: AFFILIATION_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const output: Affiliation = {};
+  if (defined(value.id)) {
+    output.id = validateString(value.id, incrementOptions('id', opts));
+  }
+  if (defined(value.name)) {
+    output.name = validateString(value.name, incrementOptions('name', opts));
+  }
+  if (defined(value.institution)) {
+    output.institution = validateString(value.institution, incrementOptions('institution', opts));
+  }
+  if (!output.name && !output.institution) {
+    validationWarning('affiliation should include name or institution', opts);
+  }
+  if (defined(value.department)) {
+    output.department = validateString(value.department, incrementOptions('department', opts));
+  }
+  if (defined(value.address)) {
+    output.address = validateString(value.address, incrementOptions('address', opts));
+  }
+  if (defined(value.city)) {
+    output.city = validateString(value.city, incrementOptions('city', opts));
+  }
+  if (defined(value.state)) {
+    output.state = validateString(value.state, incrementOptions('state', opts));
+  }
+  if (defined(value.postal_code)) {
+    output.postal_code = validateString(value.postal_code, incrementOptions('postal_code', opts));
+  }
+  if (defined(value.country)) {
+    output.country = validateString(value.country, incrementOptions('country', opts));
+  }
+  // Both ISNI and ROR validation should occur similar to orcid (maybe in that same lib?)
+  if (defined(value.isni)) {
+    output.isni = validateString(value.isni, incrementOptions('isni', opts));
+  }
+  if (defined(value.ror)) {
+    output.ror = validateString(value.ror, incrementOptions('ror', opts));
+  }
+  if (defined(value.ringgold)) {
+    output.ringgold = validateNumber(value.ringgold, {
+      min: 1000,
+      max: 999999,
+      ...incrementOptions('ringgold', opts),
+    });
+  }
+  if (defined(value.collaboration)) {
+    output.collaboration = validateBoolean(
+      value.collaboration,
+      incrementOptions('collaboration', opts),
+    );
+  }
+  if (defined(value.email)) {
+    output.email = validateEmail(value.email, incrementOptions('email', opts));
+  }
+  if (defined(value.url)) {
+    output.url = validateUrl(value.url, incrementOptions('url', opts));
+  }
+  if (defined(value.phone)) {
+    output.phone = validateString(value.phone, incrementOptions('phone', opts));
+  }
+  if (defined(value.fax)) {
+    output.fax = validateString(value.fax, incrementOptions('fax', opts));
+  }
+  return output;
+}
+
+/**
  * Validate Author object against the schema
  */
-export function validateAuthor(input: any, opts: ValidationOptions) {
+export function validateAuthor(input: any, stash: ReferenceStash, opts: ValidationOptions) {
   if (typeof input === 'string') {
-    input = { name: input };
+    input = { id: input, name: input };
   }
   const value = validateObjectKeys(input, { optional: AUTHOR_KEYS, alias: AUTHOR_ALIASES }, opts);
   if (value === undefined) return undefined;
   const output: Author = {};
+  if (defined(value.id)) {
+    output.id = validateString(value.id, incrementOptions('id', opts));
+  }
   if (defined(value.userId)) {
     // TODO: Better userId validation - length? regex?
     output.userId = validateString(value.userId, incrementOptions('userId', opts));
   }
   if (defined(value.name)) {
     output.name = validateString(value.name, incrementOptions('name', opts));
+  } else {
+    validationWarning('author should include name', opts);
   }
   if (defined(value.orcid)) {
     const orcidOpts = incrementOptions('orcid', opts);
@@ -249,6 +414,15 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
       validationError(`must include email for corresponding author`, correspondingOpts);
       output.corresponding = false;
     }
+  }
+  if (defined(value.equal_contributor)) {
+    output.equal_contributor = validateBoolean(
+      value.equal_contributor,
+      incrementOptions('equal_contributor', opts),
+    );
+  }
+  if (defined(value.deceased)) {
+    output.deceased = validateBoolean(value.deceased, incrementOptions('deceased', opts));
   }
   if (defined(value.email)) {
     output.email = validateEmail(value.email, incrementOptions('email', opts));
@@ -273,24 +447,26 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
       return role;
     });
   }
+  if (defined(value.collaborations)) {
+    validationError(
+      'collaborations must be defined in frontmatter as affiliations with "collaboration: true"',
+      incrementOptions('collaborations', opts),
+    );
+  }
   if (defined(value.affiliations)) {
     const affiliationsOpts = incrementOptions('affiliations', opts);
     let affiliations = value.affiliations;
     if (typeof affiliations === 'string') {
-      affiliations = affiliations.split(';');
+      affiliations = affiliations.split(';').map((aff) => aff.trim());
     }
     output.affiliations = validateList(affiliations, affiliationsOpts, (aff) => {
-      return validateString(aff, affiliationsOpts)?.trim();
-    });
-  }
-  if (defined(value.collaborations)) {
-    const collaborationsOpts = incrementOptions('collaborations', opts);
-    let collaborations = value.collaborations;
-    if (typeof collaborations === 'string') {
-      collaborations = collaborations.split(';');
-    }
-    output.collaborations = validateList(collaborations, collaborationsOpts, (col) => {
-      return validateString(col, collaborationsOpts)?.trim();
+      return validateAndStashObject(
+        aff,
+        stash,
+        'affiliations',
+        validateAffiliation,
+        affiliationsOpts,
+      );
     });
   }
   if (defined(value.twitter)) {
@@ -299,8 +475,17 @@ export function validateAuthor(input: any, opts: ValidationOptions) {
   if (defined(value.github)) {
     output.github = validateString(value.github, incrementOptions('github', opts));
   }
-  if (defined(value.website)) {
-    output.website = validateUrl(value.website, incrementOptions('website', opts));
+  if (defined(value.url)) {
+    output.url = validateUrl(value.url, incrementOptions('url', opts));
+  }
+  if (defined(value.phone)) {
+    output.phone = validateString(value.phone, incrementOptions('phone', opts));
+  }
+  if (defined(value.fax)) {
+    output.fax = validateString(value.fax, incrementOptions('fax', opts));
+  }
+  if (defined(value.note)) {
+    output.note = validateString(value.note, incrementOptions('note', opts));
   }
   return output;
 }
@@ -685,6 +870,23 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     // No validation, this is expected to be set programmatically
     output.bannerOptimized = value.bannerOptimized;
   }
+  const stash: ReferenceStash = {};
+  if (defined(value.affiliations)) {
+    const affiliationsOpts = incrementOptions('affiliations', opts);
+    let affiliations = value.affiliations;
+    if (typeof affiliations === 'string') {
+      affiliations = affiliations.split(';').map((aff) => aff.trim());
+    }
+    validateList(affiliations, affiliationsOpts, (aff) => {
+      return validateAndStashObject(
+        aff,
+        stash,
+        'affiliations',
+        validateAffiliation,
+        affiliationsOpts,
+      );
+    });
+  }
   if (defined(value.authors)) {
     let authors = value.authors;
     // Turn a string into a list of strings, this will be transformed later
@@ -692,7 +894,7 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
       authors = [authors];
     }
     output.authors = validateList(authors, incrementOptions('authors', opts), (author, index) => {
-      return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
+      return validateAuthor(author, stash, incrementOptions(`authors.${index}`, opts));
     });
     // Ensure there is a corresponding author if an email is provided
     const corresponding = output.authors?.find((a) => a.corresponding !== undefined);
@@ -715,6 +917,9 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     output.keywords = validateList(keywords, incrementOptions('keywords', opts), (word, ind) => {
       return validateString(word, incrementOptions(`keywords.${ind}`, opts));
     });
+  }
+  if (stash.affiliations) {
+    output.affiliations = stash.affiliations;
   }
   return output;
 }
@@ -940,6 +1145,7 @@ export function validatePageFrontmatter(input: any, opts: ValidationOptions) {
 export function fillPageFrontmatter(
   pageFrontmatter: PageFrontmatter,
   projectFrontmatter: ProjectFrontmatter,
+  opts: ValidationOptions,
 ) {
   const frontmatter = fillMissingKeys(pageFrontmatter, projectFrontmatter, USE_PROJECT_FALLBACK);
 
@@ -967,6 +1173,27 @@ export function fillPageFrontmatter(
       ...(projectFrontmatter.abbreviations ?? {}),
       ...(pageFrontmatter.abbreviations ?? {}),
     };
+  }
+
+  // Combine all affiliations and warn on duplicates
+  if (projectFrontmatter.affiliations && pageFrontmatter.affiliations) {
+    projectFrontmatter.affiliations
+      .filter((projAff) => projAff.id)
+      .map((projAff) => projAff.id)
+      .forEach((affId) => {
+        if (pageFrontmatter.affiliations?.map((pageAff) => pageAff.id).includes(affId)) {
+          validationWarning(
+            `Duplicate affiliation id within project: ${affId}`,
+            incrementOptions('affiliations', opts),
+          );
+        }
+      });
+  }
+  if (projectFrontmatter.affiliations || pageFrontmatter.affiliations) {
+    frontmatter.affiliations = [
+      ...(projectFrontmatter.affiliations || []),
+      ...(pageFrontmatter.affiliations || []),
+    ];
   }
 
   return frontmatter;

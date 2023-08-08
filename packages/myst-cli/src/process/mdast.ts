@@ -125,7 +125,22 @@ export async function transformMdast(
   // Use structuredClone in future (available in node 17)
   const mdast = JSON.parse(JSON.stringify(mdastPre)) as GenericParent;
   const frontmatter = preFrontmatter
-    ? processPageFrontmatter(session, preFrontmatter, projectPath)
+    ? processPageFrontmatter(
+        session,
+        preFrontmatter,
+        {
+          property: 'frontmatter',
+          file,
+          messages: {},
+          errorLogFn: (message: string) => {
+            session.log.error(`Validation error: ${message}`);
+          },
+          warningLogFn: (message: string) => {
+            session.log.warn(`Validation: ${message}`);
+          },
+        },
+        projectPath,
+      )
     : getPageFrontmatter(session, mdast, file, projectPath);
   const references: References = {
     cite: { order: [], data: {} },

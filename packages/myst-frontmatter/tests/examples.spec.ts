@@ -22,6 +22,7 @@ type TestCase = {
 
 const directory = path.join('tests');
 const files = [
+  'affiliations.yml',
   'authors.yml',
   'credit.yml',
   'orcid.yml',
@@ -64,6 +65,9 @@ casesList.forEach(({ title, frontmatter, cases }) => {
           console.log(opts.messages.errors);
         }
         expect(result).toEqual(normalized);
+        if ((opts.messages.warnings?.length ?? 0) !== (warnings ?? 0)) {
+          console.log(opts.messages.warnings);
+        }
         expect(opts.messages.warnings?.length ?? 0).toBe(warnings ?? 0);
         expect(opts.messages.errors?.length ?? 0).toBe(errors ?? 0);
       },
