@@ -3,9 +3,12 @@ import path from 'node:path';
 import { globSync } from 'glob';
 import { hashAndCopyStaticFile, isDirectory } from 'myst-cli-utils';
 import { TemplateOptionType } from 'myst-common';
+import type { ReferenceStash } from 'myst-frontmatter';
 import {
   PAGE_FRONTMATTER_KEYS,
   RESERVED_EXPORT_KEYS,
+  validateAffiliation,
+  validateAndStashObject,
   validateAuthor,
   validateGithubUrl,
   validateLicenses,
@@ -443,6 +446,7 @@ export function validateTemplateYml(
         'description',
         'version',
         'authors',
+        'affiliations',
         'license',
         'tags',
         'source',
@@ -475,12 +479,29 @@ export function validateTemplateYml(
   if (defined(value.version)) {
     output.version = validateString(value.version, incrementOptions('version', opts));
   }
+  const stash: ReferenceStash = {};
+  if (defined(value.affiliations)) {
+    const affiliationsOpts = incrementOptions('affiliations', opts);
+    let affiliations = value.affiliations;
+    if (typeof affiliations === 'string') {
+      affiliations = affiliations.split(';').map((aff) => aff.trim());
+    }
+    validateList(affiliations, affiliationsOpts, (aff) => {
+      return validateAndStashObject(
+        aff,
+        stash,
+        'affiliations',
+        validateAffiliation,
+        affiliationsOpts,
+      );
+    });
+  }
   if (defined(value.authors)) {
     output.authors = validateList(
       value.authors,
       incrementOptions('authors', opts),
       (author, index) => {
-        return validateAuthor(author, incrementOptions(`authors.${index}`, opts));
+        return validateAuthor(author, stash, incrementOptions(`authors.${index}`, opts));
       },
     );
   }
@@ -551,6 +572,9 @@ export function validateTemplateYml(
       }
       return file;
     });
+  }
+  if (stash.affiliations) {
+    output.affiliations = stash.affiliations;
   }
   crossValidateConditions(
     session,
