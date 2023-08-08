@@ -120,7 +120,7 @@ cases:
         - id: univa
           name: University B
     warnings: 1
-  - title: Duplicate affiliation string resolves
+  - title: Duplicate affiliation strings resolve
     raw:
       authors:
         - name: Just A. Name
@@ -140,3 +140,26 @@ cases:
       affiliations:
         - id: University A
           name: University A
+  - title: Duplicate affiliation objects resolve
+    raw:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - name: University A
+              url: https://example.com
+        - name: A. Nother Name
+          affiliations:
+            - url: https://example.com
+              name: University A
+    normalized:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - 31545614934732bb176a5935e68b9a91
+        - name: A. Nother Name
+          affiliations:
+            - 31545614934732bb176a5935e68b9a91
+      affiliations:
+        - id: 31545614934732bb176a5935e68b9a91
+          name: University A
+          url: https://example.com
