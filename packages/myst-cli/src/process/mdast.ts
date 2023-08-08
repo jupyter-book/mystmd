@@ -147,7 +147,7 @@ export async function transformMdast(
     .use(htmlPlugin, { htmlHandlers })
     .use(mathPlugin, { macros: frontmatter.math })
     .use(glossaryPlugin, { state }) // This should be before the enumerate plugins
-    .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
+    .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations, firstTimeLong: frontmatter.firstTimeLong })
     .use(enumerateTargetsPlugin, { state }) // This should be after math
     .use(joinGatesPlugin)
     .run(mdast, vfile);

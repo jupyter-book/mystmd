@@ -70,6 +70,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'bibliography',
   'math',
   'abbreviations',
+  'firstTimeLong',
   'exports',
   // Do not add any project specific keys here!
 ].concat(SITE_FRONTMATTER_KEYS);
@@ -94,6 +95,7 @@ export const USE_PROJECT_FALLBACK = [
   'subject',
   'venue',
   'biblio',
+  'firstTimeLong',
   'numbering',
   'keywords',
 ];
@@ -750,6 +752,9 @@ export function validateSharedProjectFrontmatterKeys(
   }
   if (defined(value.open_access)) {
     output.open_access = validateBoolean(value.open_access, incrementOptions('open_access', opts));
+  }
+  if (defined(value.firstTimeLong)) {
+    output.firstTimeLong = validateBoolean(value.firstTimeLong, incrementOptions('firstTimeLong', opts));
   }
   if (defined(value.license)) {
     output.license = validateLicenses(value.license, incrementOptions('license', opts));
