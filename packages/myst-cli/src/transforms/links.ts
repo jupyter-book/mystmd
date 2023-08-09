@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import pLimit from 'p-limit';
 import fetch from 'node-fetch';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
 import type { LinkTransformer, Link } from 'myst-transforms';
@@ -11,7 +11,6 @@ import { hashAndCopyStaticFile, tic } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
-import type { Root } from 'mdast';
 import { addWarningForFile } from '../utils/index.js';
 import { links } from '../store/reducers.js';
 import type { ExternalLinkResult } from '../store/types.js';
@@ -163,7 +162,7 @@ const limitOutgoingConnections = pLimit(25);
 export async function checkLinksTransform(
   session: ISession,
   file: string,
-  mdast: Root,
+  mdast: GenericParent,
 ): Promise<string[]> {
   const linkNodes = selectAll('link,linkBlock,card', mdast) as GenericNode[];
   const linkUrls = linkNodes

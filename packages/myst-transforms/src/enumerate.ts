@@ -1,11 +1,11 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import type { Root, PhrasingContent } from 'mdast';
 import type { Container, CrossReference, Heading, Link, Math, Paragraph } from 'myst-spec';
+import type { PhrasingContent } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import {
   createHtmlId,
   fileWarn,
@@ -226,7 +226,7 @@ export function formatHeadingEnumerator(counts: (number | null)[], prefix?: stri
 
 export interface IReferenceState {
   file?: VFile;
-  initializeNumberedHeadingDepths: (tree: Root) => void;
+  initializeNumberedHeadingDepths: (tree: GenericParent) => void;
   addTarget: (node: TargetNodes) => void;
   /**
    * If the page is provided, it will only look at that page.
@@ -313,7 +313,7 @@ export class ReferenceState implements IReferenceState {
     }
   }
 
-  initializeNumberedHeadingDepths(tree: Root) {
+  initializeNumberedHeadingDepths(tree: GenericParent) {
     const headings = selectAll('heading', tree).filter(
       (node) => (node as Heading).enumerated !== false,
     );
@@ -450,7 +450,7 @@ export class MultiPageReferenceState implements IReferenceState {
     return this.fileState.addTarget(node);
   }
 
-  initializeNumberedHeadingDepths(tree: Root) {
+  initializeNumberedHeadingDepths(tree: GenericParent) {
     return this.fileState.initializeNumberedHeadingDepths(tree);
   }
 
@@ -474,7 +474,7 @@ export class MultiPageReferenceState implements IReferenceState {
   }
 }
 
-export const enumerateTargetsTransform = (tree: Root, opts: StateOptions) => {
+export const enumerateTargetsTransform = (tree: GenericParent, opts: StateOptions) => {
   opts.state.initializeNumberedHeadingDepths(tree);
   const nodes = selectAll('container,math,heading,proof,[identifier],[enumerated=true]', tree) as (
     | TargetNodes
@@ -486,9 +486,10 @@ export const enumerateTargetsTransform = (tree: Root, opts: StateOptions) => {
   return tree;
 };
 
-export const enumerateTargetsPlugin: Plugin<[StateOptions], Root, Root> = (opts) => (tree) => {
-  enumerateTargetsTransform(tree, opts);
-};
+export const enumerateTargetsPlugin: Plugin<[StateOptions], GenericParent, GenericParent> =
+  (opts) => (tree) => {
+    enumerateTargetsTransform(tree, opts);
+  };
 
 function getCaptionLabel(kind?: string) {
   switch (kind) {
@@ -503,7 +504,11 @@ function getCaptionLabel(kind?: string) {
 }
 
 /** Visit all containers and add captions */
-export function addContainerCaptionNumbersTransform(tree: Root, file: VFile, opts: StateOptions) {
+export function addContainerCaptionNumbersTransform(
+  tree: GenericParent,
+  file: VFile,
+  opts: StateOptions,
+) {
   const containers = selectAll('container', tree) as Container[];
   containers
     .filter((container: Container) => container.enumerator)
@@ -527,7 +532,7 @@ export function addContainerCaptionNumbersTransform(tree: Root, file: VFile, opt
     });
 }
 
-export const resolveReferenceLinksTransform = (tree: Root, opts: StateOptions) => {
+export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateOptions) => {
   selectAll('link', tree).forEach((node) => {
     const link = node as Link;
     const identifier = link.url.replace(/^#/, '');
@@ -580,7 +585,7 @@ export const resolveReferenceLinksTransform = (tree: Root, opts: StateOptions) =
 };
 
 /** Cross references cannot contain links, but should retain their content */
-function unnestCrossReferencesTransform(tree: Root) {
+function unnestCrossReferencesTransform(tree: GenericParent) {
   const xrefs = selectAll('crossReference', tree) as GenericNode[];
   xrefs.forEach((xref) => {
     const children = xref.children as any;
@@ -595,20 +600,24 @@ function unnestCrossReferencesTransform(tree: Root) {
   return tree.children as PhrasingContent[];
 }
 
-export const resolveCrossReferencesTransform = (tree: Root, opts: StateOptions) => {
+export const resolveCrossReferencesTransform = (tree: GenericParent, opts: StateOptions) => {
   visit(tree, 'crossReference', (node: CrossReference) => {
     opts.state.resolveReferenceContent(node);
   });
 };
 
-export const resolveReferencesTransform = (tree: Root, file: VFile, opts: StateOptions) => {
+export const resolveReferencesTransform = (
+  tree: GenericParent,
+  file: VFile,
+  opts: StateOptions,
+) => {
   resolveReferenceLinksTransform(tree, opts);
   resolveCrossReferencesTransform(tree, opts);
   addContainerCaptionNumbersTransform(tree, file, opts);
   unnestCrossReferencesTransform(tree);
 };
 
-export const resolveReferencesPlugin: Plugin<[StateOptions], Root, Root> =
+export const resolveReferencesPlugin: Plugin<[StateOptions], GenericParent, GenericParent> =
   (opts) => (tree, file) => {
     resolveReferencesTransform(tree, file, opts);
   };

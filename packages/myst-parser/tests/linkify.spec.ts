@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import type { Root } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { mystParse } from '../src';
+import type { GenericParent } from 'myst-common';
 
-function stripPositions(tree: Root) {
+function stripPositions(tree: GenericParent) {
   visit(tree, (node) => {
     delete node.position;
   });

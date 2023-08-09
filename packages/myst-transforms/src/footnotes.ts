@@ -1,8 +1,8 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { VFile } from 'vfile';
 import type { FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
+import type { GenericParent } from 'myst-common';
 import { fileWarn } from 'myst-common';
 
 function nextNumber(current: number, reserved: Set<number>): number {
@@ -14,7 +14,7 @@ function nextNumber(current: number, reserved: Set<number>): number {
 
 const TRANSFORM_SOURCE = 'myst-transforms:footnotes';
 
-export function footnotesTransform(mdast: Root, file: VFile) {
+export function footnotesTransform(mdast: GenericParent, file: VFile) {
   const footnotes = selectAll('footnoteDefinition', mdast) as FootnoteDefinition[];
   const footnotesLookup = Object.fromEntries(
     footnotes.map((n) => {
@@ -60,6 +60,6 @@ export function footnotesTransform(mdast: Root, file: VFile) {
   });
 }
 
-export const footnotesPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
+export const footnotesPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree, file) => {
   footnotesTransform(tree, file);
 };

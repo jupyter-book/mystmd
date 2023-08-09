@@ -1,9 +1,9 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { Blockquote, Legend, Caption, FlowContent } from 'myst-spec';
 import type { Container } from 'myst-spec-ext';
 import { select, selectAll } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
+import type { GenericParent } from 'myst-common';
 import { normalizeLabel } from 'myst-common';
 
 export type SupplementaryMaterial = {
@@ -23,7 +23,7 @@ function liftCaptionNumber(container: Container) {
   if (captionNumber) container.children.splice(0, 0, captionNumber);
 }
 
-export function containerTransform(mdast: Root) {
+export function containerTransform(mdast: GenericParent) {
   const figures = selectAll('container', mdast) as Container[];
   figures.forEach((container) => {
     liftCaptionNumber(container);
@@ -68,6 +68,6 @@ export function containerTransform(mdast: Root) {
   });
 }
 
-export const containerPlugin: Plugin<[], Root, Root> = () => (tree) => {
+export const containerPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
   containerTransform(tree);
 };

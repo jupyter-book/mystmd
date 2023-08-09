@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { u } from 'unist-builder';
 import { VFile } from 'vfile';
-import type { Root } from 'mdast';
 import { blockMetadataTransform } from './blocks';
 
 describe('Test blockMetadataTransform', () => {
@@ -11,7 +10,7 @@ describe('Test blockMetadataTransform', () => {
         u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
       ]),
     ]) as any;
-    blockMetadataTransform(mdast as Root, new VFile());
+    blockMetadataTransform(mdast, new VFile());
     expect(mdast).toEqual(
       u('root', [
         u('block', { data: { key: 'value' } }, [
@@ -26,7 +25,7 @@ describe('Test blockMetadataTransform', () => {
         u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
       ]),
     ]) as any;
-    blockMetadataTransform(mdast as Root, new VFile());
+    blockMetadataTransform(mdast, new VFile());
     expect(mdast).toEqual(
       u('root', [
         u('block', { data: { a: 'b', key: 'value' } }, [
@@ -41,7 +40,7 @@ describe('Test blockMetadataTransform', () => {
         u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
       ]),
     ]) as any;
-    blockMetadataTransform(mdast as Root, new VFile());
+    blockMetadataTransform(mdast, new VFile());
     expect(mdast).toEqual(
       u('root', [
         u(
@@ -63,7 +62,7 @@ describe('Test blockMetadataTransform', () => {
         u('code', 'We know what we are, but know not what we may be.'),
       ]),
     ]) as any;
-    blockMetadataTransform(mdast as Root, new VFile());
+    blockMetadataTransform(mdast, new VFile());
     expect(mdast).toEqual(
       u('root', [
         u(
@@ -92,7 +91,7 @@ describe('Test blockMetadataTransform', () => {
         u('output', 'but know not what we may be.'),
       ]),
     ]) as any;
-    blockMetadataTransform(mdast as Root, new VFile());
+    blockMetadataTransform(mdast, new VFile());
     expect(mdast).toEqual(
       u('root', [
         u(

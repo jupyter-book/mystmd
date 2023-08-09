@@ -1,7 +1,7 @@
 import yaml from 'js-yaml';
 import { remove } from 'unist-util-remove';
-import type { Root } from 'mdast';
 import type { Block, Code, Heading } from 'myst-spec';
+import type { GenericParent } from 'myst-common';
 import { fileError, toText } from 'myst-common';
 import type { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
@@ -19,9 +19,9 @@ type Options = {
 
 export function getFrontmatter(
   file: VFile,
-  tree: Root,
+  tree: GenericParent,
   opts: Options = { removeYaml: true, removeHeading: true, propagateTargets: true },
-): { tree: Root; frontmatter: Record<string, any> } {
+): { tree: GenericParent; frontmatter: Record<string, any> } {
   if (opts.propagateTargets) mystTargetsTransform(tree);
   const firstParent =
     (tree.children[0]?.type as any) === 'block' ? (tree.children[0] as any as Block) : tree;

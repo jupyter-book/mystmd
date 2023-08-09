@@ -1,8 +1,8 @@
 import type { Plugin } from 'unified';
-import type { Root, StaticPhrasingContent, Text } from 'mdast';
+import type { GenericParent } from 'myst-common';
 import { toText } from 'myst-common';
 import { selectAll } from 'unist-util-select';
-import type { Abbreviation } from 'myst-spec';
+import type { Abbreviation, StaticPhrasingContent, Text } from 'myst-spec';
 import { u } from 'unist-builder';
 import type { FindAndReplaceSchema, RegExpMatchObject } from 'mdast-util-find-and-replace';
 import { findAndReplace } from 'mdast-util-find-and-replace';
@@ -21,7 +21,7 @@ type Options = {
 // We will not replace abbreviation text inside of these nodes
 const doNotModifyParents = new Set(['link', 'crossReference', 'cite', 'code', 'abbreviation']);
 
-function replaceText(mdast: Root, opts: Options) {
+function replaceText(mdast: GenericParent, opts: Options) {
   if (!opts?.abbreviations || Object.keys(opts.abbreviations).length === 0) return;
   const replacements: FindAndReplaceSchema = Object.fromEntries(
     Object.entries(opts.abbreviations)
@@ -32,16 +32,14 @@ function replaceText(mdast: Root, opts: Options) {
           if (stack.slice(-1)[0].type !== 'text') return false;
           const parent = stack.find((p) => doNotModifyParents.has(p.type));
           if (parent) return false;
-          return u('abbreviation', { title }, [
-            u('text', value),
-          ]) as unknown as StaticPhrasingContent;
+          return u('abbreviation', { title }, [u('text', value)]) as any;
         },
       ]),
   );
-  findAndReplace(mdast, replacements);
+  findAndReplace(mdast as any, replacements);
 }
 
-export function abbreviationTransform(mdast: Root, opts?: Options) {
+export function abbreviationTransform(mdast: GenericParent, opts?: Options) {
   if (!opts?.abbreviations || Object.keys(opts.abbreviations).length === 0) return;
   const abbreviations = selectAll('abbreviation', mdast) as Abbreviation[];
   abbreviations.forEach((node) => {
@@ -64,6 +62,7 @@ export function abbreviationTransform(mdast: Root, opts?: Options) {
   }
 }
 
-export const abbreviationPlugin: Plugin<[Options], Root, Root> = (opts) => (tree) => {
-  abbreviationTransform(tree, opts);
-};
+export const abbreviationPlugin: Plugin<[Options], GenericParent, GenericParent> =
+  (opts) => (tree) => {
+    abbreviationTransform(tree, opts);
+  };

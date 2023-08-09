@@ -1,7 +1,6 @@
 import he from 'he';
 import type Token from 'markdown-it/lib/token.js';
-import type { Root } from 'mdast';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { liftChildren, normalizeLabel, setTextAsChild } from 'myst-common';
 import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
@@ -445,9 +444,9 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   },
 };
 
-function hoistSingleImagesOutofParagraphs(tree: Root) {
+function hoistSingleImagesOutofParagraphs(tree: GenericParent) {
   // Hoist up all paragraphs with a single image
-  visit(tree, 'paragraph', (node) => {
+  visit(tree, 'paragraph', (node: GenericParent) => {
     if (!(node.children?.length === 1 && node.children?.[0].type === 'image')) return;
     const child = node.children[0];
     Object.keys(node).forEach((k) => {
@@ -457,7 +456,7 @@ function hoistSingleImagesOutofParagraphs(tree: Root) {
   });
 }
 
-function nestSingleImagesIntoParagraphs(tree: Root) {
+function nestSingleImagesIntoParagraphs(tree: GenericParent) {
   tree.children = tree.children.map((node) => {
     if (node.type === 'image') {
       return { type: 'paragraph', children: [node] };
@@ -473,7 +472,7 @@ const defaultOptions: MdastOptions = {
   nestBlocks: true,
 };
 
-export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
+export function tokensToMyst(tokens: Token[], options = defaultOptions): GenericParent {
   const opts = {
     ...defaultOptions,
     ...options,
@@ -481,9 +480,9 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
   };
   const state = new MarkdownParseState(opts.handlers);
   state.parseTokens(tokens);
-  let tree: Root;
+  let tree: GenericParent;
   do {
-    tree = state.closeNode() as Root;
+    tree = state.closeNode() as GenericParent;
   } while (state.stack.length);
 
   // Remove all redundant nodes marked for removal
@@ -550,7 +549,7 @@ export function tokensToMyst(tokens: Token[], options = defaultOptions): Root {
       stack.children?.push(node);
     });
     pushBlock();
-    tree = newTree as Root;
+    tree = newTree as GenericParent;
   }
 
   // ensureCaptionIsParagraph(tree);

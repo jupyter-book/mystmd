@@ -1,5 +1,4 @@
-import type { Root } from 'mdast';
-import type { GenericNode, ArgDefinition, RoleData, RoleSpec } from 'myst-common';
+import type { GenericNode, ArgDefinition, RoleData, RoleSpec, GenericParent } from 'myst-common';
 import { fileError, fileWarn, ParseTypesEnum } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
@@ -61,7 +60,7 @@ export function contentFromNode(
   }
 }
 
-export function applyRoles(tree: Root, specs: RoleSpec[], vfile: VFile) {
+export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile) {
   const specLookup: Record<string, RoleSpec> = {};
   specs.forEach((spec) => {
     const names = [spec.name];

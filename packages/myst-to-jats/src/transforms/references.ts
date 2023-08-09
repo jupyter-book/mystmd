@@ -1,6 +1,5 @@
-import type { Root } from 'mdast';
 import { selectAll } from 'unist-util-select';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import type { CitationRenderer } from 'citation-js-utils';
 
 type CountAndLookup = { count: number; lookup: Record<string, string> };
@@ -43,7 +42,7 @@ function updateInventory(
  * footnotes, inlineExpressions, math, and citations.
  */
 export function referenceTargetTransform(
-  mdast: Root,
+  mdast: GenericParent,
   inventory: IdInventory,
   citations?: CitationRenderer,
 ) {
@@ -89,7 +88,7 @@ export function referenceTargetTransform(
 /**
  * Use reference lookup from referenceTargetTransform to update cross references
  */
-export function referenceResolutionTransform(mdast: Root, inventory: IdInventory) {
+export function referenceResolutionTransform(mdast: GenericParent, inventory: IdInventory) {
   const xrefs = selectAll('crossReference', mdast) as GenericNode[];
   const lookup = {
     ...inventory.section?.lookup,

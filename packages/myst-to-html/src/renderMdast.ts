@@ -1,13 +1,13 @@
-import type { Root } from 'mdast';
 import rehypeStringify from 'rehype-stringify';
 import { unified } from 'unified';
 import { formatHtml } from './format.js';
 import { mystToHast } from './schema.js';
 import { State } from './state.js';
 import { transform } from './transforms.js';
+import type { GenericParent } from 'myst-common';
 
 export function mystToHtml(
-  tree: Root,
+  tree: GenericParent,
   opts?: {
     formatHtml?: boolean;
     hast?: {

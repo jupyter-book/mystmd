@@ -1,8 +1,8 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import type { Link, LinkTransformer } from './types.js';
+import type { GenericParent } from 'myst-common';
 
 type Options = {
   transformers: LinkTransformer[];
@@ -36,7 +36,7 @@ function formatLinkText(link: Link) {
   link.children[0].value = formatted;
 }
 
-export function linksTransform(mdast: Root, file: VFile, opts: Options): void {
+export function linksTransform(mdast: GenericParent, file: VFile, opts: Options): void {
   const linkNodes = selectAll(opts.selector ?? 'link,card', mdast) as Link[];
   linkNodes.forEach((link) => {
     formatLinkText(link);
@@ -55,6 +55,7 @@ export function linksTransform(mdast: Root, file: VFile, opts: Options): void {
   });
 }
 
-export const linksPlugin: Plugin<[Options], Root, Root> = (opts) => (tree, file) => {
-  linksTransform(tree, file, opts);
-};
+export const linksPlugin: Plugin<[Options], GenericParent, GenericParent> =
+  (opts) => (tree, file) => {
+    linksTransform(tree, file, opts);
+  };

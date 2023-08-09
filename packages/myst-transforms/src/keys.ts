@@ -1,7 +1,7 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { Node } from 'myst-spec';
 import { map } from 'unist-util-map';
+import type { GenericParent } from 'myst-common';
 import { createId } from 'myst-common';
 
 function addKeys(node: Node) {
@@ -16,10 +16,10 @@ function addKeys(node: Node) {
  * @param mdast
  * @returns
  */
-export function keysTransform<T extends Node | Root>(mdast: T): Root | Node {
+export function keysTransform<T extends Node | GenericParent>(mdast: T): GenericParent | Node {
   return map(mdast as any, addKeys);
 }
 
-export const keysPlugin: Plugin<[], Root, Root> = () => (tree) => {
+export const keysPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
   keysTransform(tree);
 };

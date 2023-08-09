@@ -1,6 +1,5 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { liftChildren } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 
@@ -11,7 +10,7 @@ import { selectAll } from 'unist-util-select';
  *
  * @param tree The tree which is modified in place.
  */
-export function liftMystDirectivesAndRolesTransform(tree: Root) {
+export function liftMystDirectivesAndRolesTransform(tree: GenericParent) {
   const directives = selectAll('mystDirective,mystRole', tree) as GenericNode[];
   directives.forEach((n) => {
     const child = n.children?.[0];
@@ -26,6 +25,7 @@ export function liftMystDirectivesAndRolesTransform(tree: Root) {
   liftChildren(tree, 'mystRole');
 }
 
-export const liftMystDirectivesAndRolesPlugin: Plugin<[], Root, Root> = () => (tree) => {
-  liftMystDirectivesAndRolesTransform(tree);
-};
+export const liftMystDirectivesAndRolesPlugin: Plugin<[], GenericParent, GenericParent> =
+  () => (tree) => {
+    liftMystDirectivesAndRolesTransform(tree);
+  };

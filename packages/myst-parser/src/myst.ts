@@ -1,5 +1,4 @@
 import MarkdownIt from 'markdown-it';
-import type { Root } from 'mdast';
 import { defaultDirectives } from 'myst-directives';
 import { defaultRoles } from 'myst-roles';
 import type { Plugin } from 'unified';
@@ -20,6 +19,7 @@ import {
 import { applyDirectives } from './directives.js';
 import { applyRoles } from './roles.js';
 import type { AllOptions } from './types.js';
+import type { GenericParent } from 'myst-common';
 
 type Options = Partial<AllOptions>;
 
@@ -83,7 +83,7 @@ export function mystParse(content: string, opts?: Options) {
 /**
  * MyST Parser as a Unified Plugin
  */
-export const mystParser: Plugin<[Options?], string, Root> = function mystParser() {
+export const mystParser: Plugin<[Options?], string, GenericParent> = function mystParser() {
   this.Parser = (content: string, opts?: Options) => {
     return mystParse(content, opts);
   };

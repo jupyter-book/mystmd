@@ -1,7 +1,6 @@
 import type { GenericNode, GenericParent } from 'myst-common';
 import { fileWarn, fileError } from 'myst-common';
 import { map } from 'unist-util-map';
-import type { Root } from 'mdast';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 
@@ -47,6 +46,6 @@ export function joinGatesTransform(tree: GenericParent, file: VFile) {
   });
 }
 
-export const joinGatesPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
+export const joinGatesPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree, file) => {
   joinGatesTransform(tree as GenericParent, file);
 };

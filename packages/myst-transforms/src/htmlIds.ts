@@ -1,7 +1,7 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { Node } from 'myst-spec';
 import { map } from 'unist-util-map';
+import type { GenericParent } from 'myst-common';
 
 /**
  * Ensure all HTML ids in the document are unique
@@ -9,7 +9,7 @@ import { map } from 'unist-util-map';
  * @param mdast
  * @returns
  */
-export function htmlIdsTransform<T extends Node | Root>(mdast: T) {
+export function htmlIdsTransform<T extends Node | GenericParent>(mdast: T) {
   const ids = new Set();
   map(mdast as any, (node: Node & { html_id?: string }) => {
     if (!node.html_id) return;
@@ -30,6 +30,6 @@ export function htmlIdsTransform<T extends Node | Root>(mdast: T) {
   });
 }
 
-export const htmlIdsPlugin: Plugin<[], Root, Root> = () => (tree) => {
+export const htmlIdsPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
   htmlIdsTransform(tree);
 };

@@ -1,12 +1,12 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { Parent } from 'myst-spec';
 import type { DefinitionList } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
+import type { GenericParent } from 'myst-common';
 
 type DefinitionItem = Parent & { type: 'definitionItem' };
 
-export function definitionTransform(mdast: Root) {
+export function definitionTransform(mdast: GenericParent) {
   const defList = selectAll('definitionList', mdast) as DefinitionList[];
   defList.forEach((node) => {
     const children: DefinitionItem[] = [];
@@ -28,6 +28,6 @@ export function definitionTransform(mdast: Root) {
   });
 }
 
-export const definitionPlugin: Plugin<[], Root, Root> = () => (tree) => {
+export const definitionPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
   definitionTransform(tree);
 };

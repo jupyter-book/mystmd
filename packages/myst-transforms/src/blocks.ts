@@ -1,13 +1,12 @@
 import type { VFile } from 'vfile';
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { Node, Parent } from 'myst-spec';
 import { select, selectAll } from 'unist-util-select';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { fileError, normalizeLabel } from 'myst-common';
 import type { Code } from 'myst-spec-ext';
 
-export function blockNestingTransform(mdast: Root) {
+export function blockNestingTransform(mdast: GenericParent) {
   if (!select('block', mdast)) {
     const blockNode = { type: 'block', children: mdast.children as Node[] };
     (mdast as Parent).children = [blockNode];
@@ -23,13 +22,13 @@ export function blockNestingTransform(mdast: Root) {
   }
 }
 
-export const blockNestingPlugin: Plugin<[], Root, Root> = () => (tree) => {
+export const blockNestingPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
   blockNestingTransform(tree);
 };
 
 const TRANSFORM_SOURCE = 'BlockTransform:BlockMetadata';
 
-export function blockMetadataTransform(mdast: Root, file: VFile) {
+export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
   const blocks = selectAll('block', mdast) as any[];
   blocks.forEach((block) => {
     if (block.meta) {
@@ -78,6 +77,6 @@ export function blockMetadataTransform(mdast: Root, file: VFile) {
   });
 }
 
-export const blockMetadataPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
+export const blockMetadataPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree, file) => {
   blockMetadataTransform(tree, file);
 };

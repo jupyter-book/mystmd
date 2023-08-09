@@ -1,4 +1,3 @@
-import type { Root } from 'mdast';
 import type { Plugin } from 'unified';
 import { unified } from 'unified';
 import type { Options } from 'rehype-parse';
@@ -11,7 +10,7 @@ import { select, selectAll } from 'unist-util-select';
 import { findAfter } from 'unist-util-find-after';
 import { remove } from 'unist-util-remove';
 import { liftChildren, normalizeLabel } from 'myst-common';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { AdmonitionKind, admonitionKindToTitle } from 'myst-transforms';
 import type { EnumeratorOptions, State } from './state.js';
 import { enumerateTargets, resolveReferences } from './state.js';
@@ -57,7 +56,7 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlToMdastOptions, any> = {
 };
 
 // Visit all admonitions and add headers if necessary
-export function addAdmonitionHeaders(tree: Root) {
+export function addAdmonitionHeaders(tree: GenericParent) {
   visit(tree, 'admonition', (node: Admonition) => {
     if (!node.kind || node.kind === AdmonitionKind.admonition) return;
     node.children = [
@@ -71,7 +70,7 @@ export function addAdmonitionHeaders(tree: Root) {
 }
 
 // Visit all containers and add captions
-export function addContainerCaptionNumbers(tree: Root, state: State) {
+export function addContainerCaptionNumbers(tree: GenericParent, state: State) {
   selectAll('container', tree)
     .filter((container: GenericNode) => container.enumerator !== false)
     .forEach((container: GenericNode) => {
@@ -99,7 +98,7 @@ export function addContainerCaptionNumbers(tree: Root, state: State) {
  * will add identifier/label to paragraph node, but the node
  * will still not be targetable.
  */
-export function propagateTargets(tree: Root) {
+export function propagateTargets(tree: GenericParent) {
   visit(tree, 'mystTarget', (node: GenericNode, index: number) => {
     const nextNode = findAfter(tree, index) as GenericNode;
     const normalized = normalizeLabel(node.label);
@@ -116,7 +115,7 @@ export function propagateTargets(tree: Root) {
  *
  * This function is idempotent!
  */
-export function ensureCaptionIsParagraph(tree: Root) {
+export function ensureCaptionIsParagraph(tree: GenericParent) {
   visit(tree, 'caption', (node: GenericNode) => {
     if (node.children && node.children[0].type !== 'paragraph') {
       node.children = [{ type: 'paragraph', children: node.children }];
@@ -124,7 +123,7 @@ export function ensureCaptionIsParagraph(tree: Root) {
   });
 }
 
-export function convertHtmlToMdast(tree: Root, opts?: HtmlToMdastOptions) {
+export function convertHtmlToMdast(tree: GenericParent, opts?: HtmlToMdastOptions) {
   const handlers = { ...defaultHtmlToMdastOptions.htmlHandlers, ...opts?.htmlHandlers };
   const otherOptions = { ...defaultHtmlToMdastOptions, ...opts };
   const htmlNodes = selectAll('html', tree);
@@ -154,8 +153,8 @@ export function convertHtmlToMdast(tree: Root, opts?: HtmlToMdastOptions) {
   return tree;
 }
 
-export const transform: Plugin<[State, TransformOptions?], string, Root> =
-  (state, o) => (tree: Root) => {
+export const transform: Plugin<[State, TransformOptions?], string, GenericParent> =
+  (state, o) => (tree: GenericParent) => {
     const opts = {
       ...defaultOptions,
       ...o,

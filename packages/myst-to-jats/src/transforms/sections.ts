@@ -1,6 +1,6 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { Parent, Heading, Block } from 'myst-spec';
+import type { GenericParent } from 'myst-common';
 import { liftChildren, NotebookCell } from 'myst-common';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
@@ -29,7 +29,7 @@ function blockIsNotebookFigure(node: Block) {
   return !!node.data?.['fig-cap'];
 }
 
-function headingsToSections(tree: Root | Block, current?: Section) {
+function headingsToSections(tree: GenericParent | Block, current?: Section) {
   const children: Parent[] = [];
   // let current: Section | undefined = undefined;
   function push(child: any) {
@@ -75,7 +75,7 @@ function headingsToSections(tree: Root | Block, current?: Section) {
  *    - Top-level heading nodes are then used to break the tree into section nodes,
  *      with heading and subsequent nodes as children
  */
-export function sectionTransform(tree: Root, opts: Options) {
+export function sectionTransform(tree: GenericParent, opts: Options) {
   if (opts.isSubArticle) {
     (selectAll('block', tree) as Block[]).forEach((node) => {
       (node as any).type = 'section';
@@ -100,6 +100,6 @@ export function sectionTransform(tree: Root, opts: Options) {
   headingsToSections(tree);
 }
 
-export const sectionPlugin: Plugin<[Options], Root, Root> = (opts) => (tree) => {
+export const sectionPlugin: Plugin<[Options], GenericParent, GenericParent> = (opts) => (tree) => {
   sectionTransform(tree, opts);
 };

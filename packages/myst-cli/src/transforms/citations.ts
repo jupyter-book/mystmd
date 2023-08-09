@@ -1,11 +1,10 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import { InlineCite } from 'citation-js-utils';
 import type { Logger } from 'myst-cli-utils';
-import type { References } from 'myst-common';
+import type { GenericParent, References } from 'myst-common';
 import type { StaticPhrasingContent, Parent } from 'myst-spec';
 import type { Cite, CiteKind, CiteGroup } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
-import type { Root } from 'mdast';
 
 function pushCite(
   references: Pick<References, 'cite'>,
@@ -54,7 +53,7 @@ function hasChildren(node: Parent) {
 
 export function transformCitations(
   log: Logger,
-  mdast: Root,
+  mdast: GenericParent,
   renderer: CitationRenderer,
   references: Pick<References, 'cite'>,
   file: string,

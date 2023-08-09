@@ -1,15 +1,14 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { CiteGroup } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 
 /**
  * Add parentheses and separator text to citeGroup nodes as children
  *
  * This allows us to simply render children and get all the correct formatting.
  */
-export function citeGroupTransform(mdast: Root) {
+export function citeGroupTransform(mdast: GenericParent) {
   const citeGroups = selectAll('citeGroup', mdast) as CiteGroup[];
   citeGroups.forEach((node) => {
     // Only run this transform if:
@@ -50,6 +49,6 @@ export function citeGroupTransform(mdast: Root) {
   });
 }
 
-export const citeGroupPlugin: Plugin<[], Root, Root> = () => (tree) => {
+export const citeGroupPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
   citeGroupTransform(tree);
 };

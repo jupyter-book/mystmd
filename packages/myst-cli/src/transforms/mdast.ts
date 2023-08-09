@@ -1,6 +1,5 @@
 import fs from 'node:fs';
-import type { GenericNode } from 'myst-common';
-import type { Root } from 'mdast';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { join, dirname } from 'node:path';
 import type { ISession } from '../session/types.js';
@@ -9,7 +8,7 @@ import type { ISession } from '../session/types.js';
  * This is the {mdast} directive, that loads from disk
  * For example, tables that can't be represented in markdown.
  */
-export function importMdastFromJson(session: ISession, filename: string, mdast: Root) {
+export function importMdastFromJson(session: ISession, filename: string, mdast: GenericParent) {
   const mdastNodes = selectAll('mdast', mdast) as GenericNode[];
   const loadedData: Record<string, GenericNode> = {};
   const dir = dirname(filename);

@@ -1,10 +1,10 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { Container, Paragraph, PhrasingContent, Image } from 'myst-spec';
 import { select, selectAll } from 'unist-util-select';
+import type { GenericParent } from 'myst-common';
 import { toText } from 'myst-common';
 
-export function imageAltTextTransform(tree: Root) {
+export function imageAltTextTransform(tree: GenericParent) {
   const containers = selectAll('container', tree) as Container[];
   containers.forEach((container) => {
     const image = select('image', container) as Image;
@@ -18,6 +18,6 @@ export function imageAltTextTransform(tree: Root) {
   });
 }
 
-export const imageAltTextPlugin: Plugin<[], Root, Root> = () => (tree) => {
+export const imageAltTextPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
   imageAltTextTransform(tree);
 };

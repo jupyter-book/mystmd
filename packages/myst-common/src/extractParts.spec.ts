@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { Root } from 'mdast';
 import { extractPart } from './extractParts';
+import type { GenericParent } from '../dist';
 
 describe('extractPart', () => {
   it('no part returns undefined', async () => {
@@ -12,7 +12,7 @@ describe('extractPart', () => {
     ).toEqual(undefined);
   });
   it('part removed from tree and returned', async () => {
-    const tree: Root = {
+    const tree: GenericParent = {
       type: 'root',
       children: [
         {

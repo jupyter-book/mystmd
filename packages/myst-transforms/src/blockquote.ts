@@ -1,9 +1,9 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { Blockquote, Caption, Container } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
+import type { GenericParent } from 'myst-common';
 
-export function blockquoteTransform(mdast: Root) {
+export function blockquoteTransform(mdast: GenericParent) {
   const quotes = selectAll('blockquote', mdast) as Blockquote[];
   quotes.forEach((node) => {
     if (node.children.length < 2) return;
@@ -21,6 +21,6 @@ export function blockquoteTransform(mdast: Root) {
   });
 }
 
-export const blockquotePlugin: Plugin<[], Root, Root> = () => (tree) => {
+export const blockquotePlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
   blockquoteTransform(tree);
 };

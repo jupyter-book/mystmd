@@ -1,7 +1,6 @@
 import path from 'node:path';
-import type { Root } from 'mdast';
 import { tic } from 'myst-cli-utils';
-import type { References } from 'myst-common';
+import type { GenericParent, References } from 'myst-common';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { LinkTransformer } from 'myst-transforms';
 import {
@@ -124,7 +123,7 @@ export async function transformMdast(
   if (!mdastPre) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
   // Use structuredClone in future (available in node 17)
-  const mdast = JSON.parse(JSON.stringify(mdastPre)) as Root;
+  const mdast = JSON.parse(JSON.stringify(mdastPre)) as GenericParent;
   const frontmatter = preFrontmatter
     ? processPageFrontmatter(session, preFrontmatter, projectPath)
     : getPageFrontmatter(session, mdast, file, projectPath);
