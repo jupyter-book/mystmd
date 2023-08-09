@@ -139,7 +139,7 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   title: 'frontmatter',
   description: 'project frontmatter',
   venue: { title: 'test' },
-  authors: [{}],
+  authors: [{ name: 'John Doe', affiliations: ['univa'] }],
   affiliations: [{ id: 'univa', name: 'University A' }],
   date: '14 Dec 2021',
   name: 'example.md',
@@ -178,7 +178,8 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   title: 'frontmatter',
   description: 'page frontmatter',
   venue: { title: 'test' },
-  authors: [{}],
+  authors: [{ name: 'Jane Doe', affiliations: ['univb'] }],
+  affiliations: [{ id: 'univb', name: 'University B' }],
   name: 'example.md',
   doi: '10.1000/abcd/efg012',
   arxiv: 'https://arxiv.org/example',
@@ -532,18 +533,29 @@ describe('fillPageFrontmatter', () => {
       numbering: { enumerator: '#', heading_1: true, heading_5: true, heading_6: true },
     });
   });
-  it('page and project affiliations are combined', async () => {
+  it('extra project affiliations are not included', async () => {
     expect(
       fillPageFrontmatter(
-        { affiliations: [{ name: 'University A', id: 'univa' }] },
-        { affiliations: [{ name: 'University B', id: 'univb' }] },
+        { authors: [], affiliations: [{ name: 'University A', id: 'univa' }] },
+        { authors: [], affiliations: [{ name: 'University B', id: 'univb' }] },
         opts,
       ),
     ).toEqual({
-      affiliations: [
-        { name: 'University B', id: 'univb' },
-        { name: 'University A', id: 'univa' },
-      ],
+      authors: [],
+      affiliations: [{ name: 'University A', id: 'univa' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('extra page affiliations are not included', async () => {
+    expect(
+      fillPageFrontmatter(
+        { affiliations: [{ name: 'University A', id: 'univa' }] },
+        { authors: [], affiliations: [{ name: 'University B', id: 'univb' }] },
+        opts,
+      ),
+    ).toEqual({
+      authors: [],
+      affiliations: [{ name: 'University B', id: 'univb' }],
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
@@ -555,12 +567,60 @@ describe('fillPageFrontmatter', () => {
         opts,
       ),
     ).toEqual({
-      affiliations: [
-        { name: 'University B', id: 'univa' },
-        { name: 'University A', id: 'univa' },
-      ],
+      affiliations: [{ name: 'University A', id: 'univa' }],
     });
     expect(opts.messages.warnings?.length).toEqual(1);
+  });
+  it('placeholder ids replace correctly from page', async () => {
+    expect(
+      fillPageFrontmatter(
+        { affiliations: [{ name: 'univa', id: 'univa' }] },
+        {
+          affiliations: [
+            { name: 'University A', id: 'univa' },
+            { name: 'University B', id: 'univb' },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      affiliations: [{ name: 'University A', id: 'univa' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('placeholder ids replace correctly from project', async () => {
+    expect(
+      fillPageFrontmatter(
+        { affiliations: [{ name: 'University A', id: 'univa' }] },
+        {
+          affiliations: [
+            { name: 'univa', id: 'univa' },
+            { name: 'University B', id: 'univb' },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      affiliations: [{ name: 'University A', id: 'univa' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('duplicate affiliations do not warn if identical', async () => {
+    expect(
+      fillPageFrontmatter(
+        { affiliations: [{ name: 'University A', id: 'univa' }] },
+        {
+          affiliations: [
+            { name: 'University A', id: 'univa' },
+            { name: 'University B', id: 'univb' },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      affiliations: [{ name: 'University A', id: 'univa' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
   });
 });
 

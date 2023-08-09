@@ -240,6 +240,10 @@ function isStashPlaceholder(object: { id?: string; name?: string }) {
   return Object.keys(object).length === 2 && object.name && object.id && object.name === object.id;
 }
 
+function normalizedString(value: Record<string, any>) {
+  return JSON.stringify(Object.entries(value).sort());
+}
+
 /**
  * Update stash of authors/affiliations based on input value
  *
@@ -275,9 +279,7 @@ export function validateAndStashObject<T extends { id?: string; name?: string }>
   let warnOnDuplicate = !isStashPlaceholder(value);
   if (!value.id) {
     // If object is defined without an id, generate a unique id
-    value.id = createHash('md5')
-      .update(JSON.stringify(Object.entries(value).sort()))
-      .digest('hex');
+    value.id = createHash('md5').update(normalizedString(value)).digest('hex');
     // Do not warn on duplicates for hash ids; any duplicates here are identical
     warnOnDuplicate = false;
   }
@@ -1206,25 +1208,40 @@ export function fillPageFrontmatter(
     };
   }
 
-  // Combine all affiliations and warn on duplicates
-  if (projectFrontmatter.affiliations && pageFrontmatter.affiliations) {
-    projectFrontmatter.affiliations
-      .filter((projAff) => projAff.id)
-      .map((projAff) => projAff.id)
-      .forEach((affId) => {
-        if (pageFrontmatter.affiliations?.map((pageAff) => pageAff.id).includes(affId)) {
-          validationWarning(
-            `Duplicate affiliation id within project: ${affId}`,
-            incrementOptions('affiliations', opts),
-          );
-        }
-      });
+  // Replace affiliation placeholders with extra affiliations available on the project/page
+  let affiliations: Affiliation[] | undefined;
+  let extraAffiliations: Affiliation[] | undefined;
+  // Currently, affiliations are connected only to authors, so we look at
+  // which frontmatter (project or page) has authors defined, and use the
+  // affiliations from there. However, we still use the other affiliations
+  // to fill out any placeholders where affiliations have id only.
+  if (projectFrontmatter.authors && !pageFrontmatter.authors) {
+    affiliations = projectFrontmatter.affiliations;
+    extraAffiliations = pageFrontmatter.affiliations;
+  } else {
+    affiliations = pageFrontmatter.affiliations;
+    extraAffiliations = projectFrontmatter.affiliations;
   }
-  if (projectFrontmatter.affiliations || pageFrontmatter.affiliations) {
-    frontmatter.affiliations = [
-      ...(projectFrontmatter.affiliations || []),
-      ...(pageFrontmatter.affiliations || []),
-    ];
+  if (affiliations) {
+    const projectAffLookup: Record<string, Affiliation> = {};
+    extraAffiliations?.forEach((aff) => {
+      if (aff.id && !isStashPlaceholder(aff)) {
+        projectAffLookup[aff.id] = aff;
+      }
+    });
+    frontmatter.affiliations = affiliations.map((aff) => {
+      if (!aff.id || !projectAffLookup[aff.id]) {
+        return aff;
+      } else if (isStashPlaceholder(aff)) {
+        return projectAffLookup[aff.id];
+      } else if (normalizedString(aff) !== normalizedString(projectAffLookup[aff.id])) {
+        validationWarning(
+          `Duplicate affiliation id within project: ${aff.id}`,
+          incrementOptions('affiliations', opts),
+        );
+      }
+      return aff;
+    });
   }
 
   return frontmatter;
