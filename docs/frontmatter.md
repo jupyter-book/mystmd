@@ -21,7 +21,7 @@ A frontmatter section can be added at the top of any `md` file using `---` delim
 title: My First Article
 date: 2022-05-11
 authors:
-  - name: Jane Bloggs
+  - name: Mason Moniker
     affiliations:
       - University of Europe
 ---
@@ -93,6 +93,9 @@ The following table lists the available frontmatter fields, a brief description 
   - page can override project
 * - `authors`
   - a list of author objects
+  - page can override project
+* - `affiliations`
+  - a list of affiliation objects
   - page can override project
 * - `doi`
   - a valid DOI, either URL or id
@@ -167,34 +170,232 @@ The `authors` field is a list of `author` objects. Available fields in the autho
 * - `name`
   - a string - the author’s full name
 * - `orcid`
-  - a string - a valid ORCID identifier
+  - a string - a valid ORCID identifier with or without the URL
 * - `corresponding`
-  - boolean (true/false) - flags any corresponding authors
+  - boolean (true/false) - flags any corresponding authors, you must include an `email` if true.
 * - `email`
   - a string - email of the author, required if `corresponding` is `true`
-* - `website`
+* - `url`
   - a string - website or homepage of the author
 * - `roles`
-  - a list of strings - must be valid [CRT Contributor Roles](https://credit.niso.org/)
+  - a list of strings - must be valid [CRediT Contributor Roles](https://credit.niso.org/)
 
     ```yaml
     authors:
-      - name: Jane Bloggs
+      - name: Penny Crediton
         roles:
           - Conceptualization
           - Data curation
           - Validation
     ```
+
+    :::{note} CRediT Roles
+    :class: dropdown
+
+    There are 14 official contributor roles that are in the NISO CRediT Role standard.
+    In addition to British english, incorrect case or punctuation, there are also a number of aliases that can be used for various roles.
+
+    | Official CRediT Role                                                                            | Alias               |
+    | ----------------------------------------------------------------------------------------------- | ------------------- |
+    | [Conceptualization](https://credit.niso.org/contributor-roles/conceptualization/)               | `conceptualisation` |
+    | [Data curation](https://credit.niso.org/contributor-roles/data-curation/)                       |                     |
+    | [Formal analysis](https://credit.niso.org/contributor-roles/formal-analysis/)                   | `analysis`          |
+    | [Funding acquisition](https://credit.niso.org/contributor-roles/funding-acquisition/)           |                     |
+    | [Investigation](https://credit.niso.org/contributor-roles/investigation/)                       |                     |
+    | [Methodology](https://credit.niso.org/contributor-roles/methodology/)                           |                     |
+    | [Project administration](https://credit.niso.org/contributor-roles/project-administration/)     | `administration`    |
+    | [Resources](https://credit.niso.org/contributor-roles/resources/)                               |                     |
+    | [Software](https://credit.niso.org/contributor-roles/software/)                                 |                     |
+    | [Supervision](https://credit.niso.org/contributor-roles/supervision/)                           |                     |
+    | [Validation](https://credit.niso.org/contributor-roles/validation/)                             |                     |
+    | [Visualization](https://credit.niso.org/contributor-roles/visualization/)                       | `visualisation`     |
+    | [Writing – original draft](https://credit.niso.org/contributor-roles/writing-original-draft/)   | `writing`           |
+    | [Writing – review & editing](https://credit.niso.org/contributor-roles/writing-review-editing/) | `editing`, `review` |
+
+    :::
 * - `affiliations`
-  - a list of strings - freeform affiliation names, e.g.
+  - a list of strings that identify or create an affiliation or a full `Affiliation` object, for example:
 
     ```yaml
     authors:
-      - name: Jane Bloggs
+      - name: Marissa Myst
         affiliations:
-      	  - ACME inc
-          - Earth University
+          - id: ubc
+            institution: University of British Columbia
+            ror: 03rmrcq20
+            department: Earth, Ocean and Atmospheric Sciences
+      	  - ACME Inc
+      - name: Miles Mysterson
+        affiliation: ubc
     ```
+
+    See [](#affiliations) for more information on how to concisely write affiliations.
+* - `equal_contributor`
+  - a boolean (true/false), indicates that the author is an equal contributor
+* - `deceased`
+  - a boolean (true/false), indicates that the author is an deceased
+* - `twitter`
+  - a twitter username
+* - `github`
+  - a GitHub username
+* - `note`
+  - a string, a freeform field to indicate additional information about the author, for example, acknowledgements or specific correspondence information.
+* - `phone`
+  - a phone number, e.g. `(301) 754-5766`
+* - `fax`
+  - for people who still use these machines, beep, boop, beeeep! 📠🎶
+````
+
+(affiliations)=
+
+## Affiliations
+
+You can create an affiliation directly by adding it to an author, and it can be as simple as a single string.
+
+```yaml
+authors:
+  - name: Marissa Myst
+    affiliation: University of British Columbia
+```
+
+You can also add much more information to any affiliation, such as a ROR, ISNI, or an address. A very complete affiliations list for an author at the University of British Columbia is:
+
+```yaml
+authors:
+  - name: Marissa Myst
+    affiliations:
+      - id: ubc
+        institution: University of British Columbia
+        ror: https://ror.org/03rmrcq20
+        isni: 0000 0001 2288 9830
+        department: Department of Earth, Ocean and Atmospheric Sciences
+        address: 2020 – 2207 Main Mall
+        city: Vancouver
+        region: British Columbia
+        country: Canada
+        postal_code: V6T 1Z4
+        phone: 604 822 2449
+  - name: Miles Mysterson
+    affiliation: ubc
+```
+
+Notice how you can use an `id` to avoid writing this out for every coauthor. Additionally, if the affiliation is a single string and contains a semi-colon `;` it will be treated as a list. The affiliations can also be added to your `project` frontmatter in your `myst.yml` and used across any document in the project.
+
+::::{tab-set}
+:::{tab-item} article.md
+
+```yaml
+---
+title: My Article
+authors:
+  - name: Marissa Myst
+    affiliation: ubc
+  - name: Miles Mysterson
+    affiliations: ubc; stanford
+---
+```
+
+:::
+:::{tab-item} myst.yml
+
+```yaml
+affiliations:
+  - id: ubc
+    institution: University of British Columbia
+    ror: https://ror.org/03rmrcq20
+    isni: 0000 0001 2288 9830
+    department: Department of Earth, Ocean and Atmospheric Sciences
+    address: 2020 – 2207 Main Mall
+    city: Vancouver
+    region: British Columbia
+    country: Canada
+    postal_code: V6T 1Z4
+    phone: 604 822 2449
+  - id: stanford
+    name: ...
+```
+
+:::
+::::
+
+If you use a string that is not recognized as an already defined affiliation in the project or article frontmatter, an affiliation will be created automatically and normalized so that it can be referenced:
+
+::::{tab-set}
+:::{tab-item} Written Frontmatter
+
+```yaml
+authors:
+  - name: Marissa Myst
+    affiliations:
+      - id: ubc
+        institution: University of British Columbia
+        ror: 03rmrcq20
+        department: Earth, Ocean and Atmospheric Sciences
+      - ACME Inc
+  - name: Miles Mysterson
+    affiliation: ubc
+```
+
+:::
+:::{tab-item} Normalized
+
+```yaml
+authors:
+  - name: Marissa Myst
+    affiliations: ['ubc', 'ACME Inc']
+  - name: Miles Mysterson
+    affiliations: ['ubc']
+affiliations:
+  - id: ubc
+    institution: University of British Columbia
+    ror: https://ror.org/03rmrcq20
+    department: Earth, Ocean and Atmospheric Sciences
+  - id: ACME Inc
+    name: ACME Inc
+```
+
+:::
+::::
+
+````{list-table}
+:header-rows: 1
+* - field
+  - description
+* - `id`
+  - a string - a local identifier that can be used to easily reference a repeated affiliation
+* - `name`
+  - a string - the affiliation name. Either `name` or `institution` is required
+* - `institution`
+  - a string - Name of an institution or organization (for example, a university or corporation)
+
+    If your research group has a name, you can use both `name` and `institution`,
+    however, at least one of these is required.
+* - `department`
+  - a string - the affiliation department (e.g. Chemistry 🧪)
+* - `ror`, `isni`, `ringgold`
+  - Identifiers for the affiliation (ROR, ISNI, and Ringgold).
+
+    We suggest using https://ror.org if possible to search for your institution.
+
+    ```yaml
+    affiliations:
+      - name: Boston University
+        ringgold: 1846
+        isni: 0000 0004 1936 7558
+        ror: 05qwgg493
+    ```
+* - `email`
+  - a string - email of the affiliation, required if `corresponding` is `true`
+* - `address`, `address`, `city`, `state`, `postal_code`, and `country`
+  - affiliation address information. In place of `state` you can use `province` or `region`.
+* - `url`
+  - a string - website or homepage of the affiliation (`website` is an alias!)
+* - `phone`
+  - a phone number, e.g. `(301) 754-5766`
+* - `fax`
+  - A fax number for the affiliation
+* - `collaboration`
+  - a boolean - Indicate that this affiliation is a collaboration, for example, `"MyST Contributors"` can be both an affiliation and a listed author. This is used in certain templates as well as in [JATS](https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/collab.html).
 ````
 
 ## Date
