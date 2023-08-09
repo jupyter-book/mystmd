@@ -3,9 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { TemplateImports } from 'jtex';
 import { renderTex, mergeTemplateImports } from 'jtex';
-import type { Root } from 'mdast';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import type { References } from 'myst-common';
+import type { References, GenericParent } from 'myst-common';
 import { extractPart, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
@@ -38,7 +37,7 @@ const TEX_IMAGE_EXTENSIONS = [
 
 export function mdastToTex(
   session: ISession,
-  mdast: Root,
+  mdast: GenericParent,
   references: References,
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml | null,
@@ -57,7 +56,7 @@ export function mdastToTex(
 
 export function extractTexPart(
   session: ISession,
-  mdast: Root,
+  mdast: GenericParent,
   references: References,
   partDefinition: TemplatePartDefinition,
   frontmatter: PageFrontmatter,

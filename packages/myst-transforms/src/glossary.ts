@@ -1,5 +1,4 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { Node } from 'myst-spec';
 import type { VFile } from 'vfile';
 import { selectAll } from 'unist-util-select';
@@ -11,7 +10,11 @@ export type Options = {
   state: IReferenceState;
 };
 
-export function glossaryTransform<T extends Node | Root>(mdast: T, file: VFile, opts: Options) {
+export function glossaryTransform<T extends Node | GenericParent>(
+  mdast: T,
+  file: VFile,
+  opts: Options,
+) {
   const glossaries = selectAll('glossary', mdast) as GenericParent[];
   glossaries.forEach((glossary) => {
     glossary.children.forEach((list) => {
@@ -37,6 +40,7 @@ export function glossaryTransform<T extends Node | Root>(mdast: T, file: VFile, 
   });
 }
 
-export const glossaryPlugin: Plugin<[Options], Root, Root> = (opts) => (tree, file) => {
-  glossaryTransform(tree, file, opts);
-};
+export const glossaryPlugin: Plugin<[Options], GenericParent, GenericParent> =
+  (opts) => (tree, file) => {
+    glossaryTransform(tree, file, opts);
+  };

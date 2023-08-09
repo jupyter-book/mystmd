@@ -1,5 +1,10 @@
-import type { Root } from 'mdast';
-import type { GenericNode, DirectiveData, DirectiveSpec, ParseTypes } from 'myst-common';
+import type {
+  GenericNode,
+  DirectiveData,
+  DirectiveSpec,
+  ParseTypes,
+  GenericParent,
+} from 'myst-common';
 import { fileError, fileWarn } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
@@ -9,7 +14,7 @@ type MystDirectiveNode = GenericNode & {
   name: string;
 };
 
-export function applyDirectives(tree: Root, specs: DirectiveSpec[], vfile: VFile) {
+export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfile: VFile) {
   const specLookup: Record<string, DirectiveSpec> = {};
   specs.forEach((spec) => {
     const names = [spec.name];

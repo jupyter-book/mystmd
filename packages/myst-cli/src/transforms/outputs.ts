@@ -2,20 +2,19 @@ import fs from 'node:fs';
 import { join } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
 import { SourceFileKind } from 'myst-spec-ext';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { IOutput } from '@jupyterlab/nbformat';
 import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
-import type { Root } from 'mdast';
 import { castSession } from '../session/index.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
 
 export async function transformOutputs(
   session: ISession,
-  mdast: Root,
+  mdast: GenericParent,
   kind: SourceFileKind,
   writeFolder: string,
   opts?: { altOutputFolder?: string; minifyMaxCharacters?: number },
@@ -64,7 +63,7 @@ export async function transformOutputs(
  * It also only supports minified images (i.e. images cannot be too small) or
  * non-minified text (i.e. text cannot be too large).
  */
-export function reduceOutputs(mdast: Root, writeFolder: string) {
+export function reduceOutputs(mdast: GenericParent, writeFolder: string) {
   const outputs = selectAll('output', mdast) as GenericNode[];
   outputs.forEach((node) => {
     if (!node.data?.length) {

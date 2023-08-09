@@ -2,8 +2,7 @@ import { describe, expect, test } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import type { Root } from 'mdast';
-import { abbreviationTransform, ReferenceState } from '../src';
+import { abbreviationTransform } from '../src';
 
 type TestFile = {
   cases: TestCase[];
@@ -24,8 +23,7 @@ describe('abbreviate', () => {
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
     (_, { before, after, opts }) => {
-      abbreviationTransform(before as Root, opts);
-      
+      abbreviationTransform(before, opts);
       expect(yaml.dump(before)).toEqual(yaml.dump(after));
     },
   );

@@ -10,11 +10,11 @@ import {
   SectionType,
 } from 'docx';
 import { Buffer } from 'buffer'; // Important for frontend development!
-import type { Root } from 'mdast';
 import type { Image as MdastImage } from 'myst-spec';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { selectAll } from 'unist-util-select';
 import type { IFootnotes, Options } from './types.js';
+import type { GenericParent } from 'myst-common';
 
 export function createShortId() {
   return Math.random().toString(36).slice(2);
@@ -110,7 +110,7 @@ async function getImageDimensions(file: Blob | Buffer): Promise<{ width: number;
  * @returns options for the serializer
  */
 export async function fetchImagesAsBuffers(
-  tree: Root,
+  tree: GenericParent,
 ): Promise<Required<Pick<Options, 'getImageBuffer' | 'getImageDimensions'>>> {
   const images = selectAll('image', tree) as MdastImage[];
   const buffers: Record<string, Buffer> = {};

@@ -2,7 +2,6 @@ import { describe, expect, test } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import type { Root } from 'mdast';
 import { enumerateTargetsTransform, ReferenceState } from '../src';
 
 type TestFile = {
@@ -25,7 +24,7 @@ describe('enumerateTargets', () => {
     '%s',
     (_, { before, after, opts }) => {
       const state = new ReferenceState(opts);
-      const transformed = enumerateTargetsTransform(before as Root, { state });
+      const transformed = enumerateTargetsTransform(before, { state });
       expect(yaml.dump(transformed)).toEqual(yaml.dump(after));
     },
   );

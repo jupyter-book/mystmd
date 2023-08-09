@@ -1,6 +1,5 @@
 import type { Plugin } from 'unified';
 import type { H, Handle } from 'hast-util-to-mdast';
-import type { Root } from 'mdast';
 import type { Parent } from 'myst-spec';
 import { unified } from 'unified';
 import { all } from 'hast-util-to-mdast';
@@ -9,6 +8,7 @@ import { visit } from 'unist-util-visit';
 import type { Options } from 'rehype-parse';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
+import type { GenericParent } from 'myst-common';
 import { liftChildren } from 'myst-common';
 
 export type HtmlTransformOptions = {
@@ -39,7 +39,7 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
   },
 };
 
-export function htmlTransform(tree: Root, opts?: HtmlTransformOptions) {
+export function htmlTransform(tree: GenericParent, opts?: HtmlTransformOptions) {
   const handlers = { ...defaultHtmlToMdastOptions.htmlHandlers, ...opts?.htmlHandlers };
   const otherOptions = { ...defaultHtmlToMdastOptions, ...opts };
   const htmlNodes = selectAll('html', tree) as Parent[];
@@ -69,6 +69,7 @@ export function htmlTransform(tree: Root, opts?: HtmlTransformOptions) {
   return tree;
 }
 
-export const htmlPlugin: Plugin<[HtmlTransformOptions?], Root, Root> = (opts) => (tree) => {
-  htmlTransform(tree, opts);
-};
+export const htmlPlugin: Plugin<[HtmlTransformOptions?], GenericParent, GenericParent> =
+  (opts) => (tree) => {
+    htmlTransform(tree, opts);
+  };

@@ -1,5 +1,4 @@
-import type { Root } from 'mdast';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { fileError, fileWarn } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import yaml from 'js-yaml';
@@ -65,7 +64,7 @@ export function metadataFromCode(
 /**
  * Traverse mdast, remove code cell metadata, and add it to parent block
  */
-export function liftCodeMetadataToBlock(session: ISession, filename: string, mdast: Root) {
+export function liftCodeMetadataToBlock(session: ISession, filename: string, mdast: GenericParent) {
   const blocks = selectAll('block', mdast) as GenericNode[];
   blocks.forEach((block) => {
     const codeNodes = selectAll('code', block) as GenericNode[];
@@ -138,7 +137,7 @@ export function checkMetaTags(
 /**
  * Traverse mdast, propagate block tags to code and output
  */
-export function propagateBlockDataToCode(session: ISession, vfile: VFile, mdast: Root) {
+export function propagateBlockDataToCode(session: ISession, vfile: VFile, mdast: GenericParent) {
   const blocks = selectAll('block', mdast) as GenericNode[];
   blocks.forEach((block) => {
     if (!block.data || !block.data.tags) return;

@@ -3,10 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
 import { visit } from 'unist-util-visit';
-import type { Root } from 'mdast';
 import { mystParse } from '../src';
 import { mystToHtml } from 'myst-to-html';
 import { selectAll } from 'unist-util-select';
+import type { GenericParent } from 'myst-common';
 
 type TestFile = {
   cases: TestCase[];
@@ -15,7 +15,7 @@ type TestCase = {
   title: string;
   description?: string;
   skip?: boolean;
-  mdast: Root;
+  mdast: GenericParent;
   myst?: string;
   html?: string;
 };
@@ -76,14 +76,14 @@ function normalize(html: string) {
   return html.replace(/\n[\s]*/g, '');
 }
 
-function stripPositions(tree: Root) {
+function stripPositions(tree: GenericParent) {
   visit(tree, (node) => {
     delete node.position;
   });
   return tree;
 }
 
-function replaceMystCommentNodes(tree: Root) {
+function replaceMystCommentNodes(tree: GenericParent) {
   selectAll('comment', tree).forEach((node) => {
     // In a future version of the spec, hopefully this is removed
     // There isn't anything myst-like about the comments
@@ -92,7 +92,7 @@ function replaceMystCommentNodes(tree: Root) {
   return tree;
 }
 
-function replaceCommentNodes(tree: Root) {
+function replaceCommentNodes(tree: GenericParent) {
   selectAll('mystComment', tree).forEach((node) => {
     // In a future version of the spec, hopefully this is removed
     // There isn't anything myst-like about the comments

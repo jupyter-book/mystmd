@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { u } from 'unist-builder';
-import type { Root } from 'mdast';
 import { admonitionBlockquoteTransform, admonitionHeadersTransform } from './admonitions';
+import type { GenericParent } from 'myst-common';
 
 describe('Test admonitionBlockquoteTransform', () => {
   test('blockquote bold admonition', async () => {
@@ -13,8 +13,8 @@ describe('Test admonitionBlockquoteTransform', () => {
         ]),
       ]),
     ]);
-    admonitionBlockquoteTransform(mdast as Root);
-    admonitionHeadersTransform(mdast as Root);
+    admonitionBlockquoteTransform(mdast as GenericParent);
+    admonitionHeadersTransform(mdast as GenericParent);
     expect(mdast).toEqual(
       u('root', [
         u('admonition', { kind: 'note', class: 'simple' }, [
@@ -30,8 +30,8 @@ describe('Test admonitionBlockquoteTransform', () => {
         u('paragraph', [u('text', '[!NOTE] We know what we are, but know not what we may be.')]),
       ]),
     ]);
-    admonitionBlockquoteTransform(mdast as Root);
-    admonitionHeadersTransform(mdast as Root);
+    admonitionBlockquoteTransform(mdast as GenericParent);
+    admonitionHeadersTransform(mdast as GenericParent);
     expect(mdast).toEqual(
       u('root', [
         u('admonition', { kind: 'note', class: 'simple' }, [

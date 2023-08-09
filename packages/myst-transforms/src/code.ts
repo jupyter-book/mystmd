@@ -1,17 +1,16 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
-import type { Code } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
+import type { Code } from 'myst-spec';
 
 type Options = {
   lang?: string;
   transformPython?: boolean;
 };
 
-export function codeTransform(mdast: Root, file: VFile, opts?: Options) {
+export function codeTransform(mdast: GenericParent, file: VFile, opts?: Options) {
   const code = selectAll('code', mdast) as Code[];
   code.forEach((node) => {
     if (!node.lang) {
@@ -28,16 +27,17 @@ export function codeTransform(mdast: Root, file: VFile, opts?: Options) {
   });
 }
 
-export const codePlugin: Plugin<[Options?], Root, Root> = (opts) => (tree, file) => {
-  codeTransform(tree, file, opts);
-};
+export const codePlugin: Plugin<[Options?], GenericParent, GenericParent> =
+  (opts) => (tree, file) => {
+    codeTransform(tree, file, opts);
+  };
 
 type CodeBlockTransformOptions = {
   translate: (string | { lang: string; directive?: string })[];
 };
 
 export function codeBlockToDirectiveTransform(
-  tree: Root,
+  tree: GenericParent,
   file: VFile,
   opts?: CodeBlockTransformOptions,
 ) {
@@ -54,7 +54,10 @@ export function codeBlockToDirectiveTransform(
   });
 }
 
-export const codeBlockToDirectivePlugin: Plugin<[CodeBlockTransformOptions?], Root, Root> =
-  (opts) => (tree, file) => {
-    codeBlockToDirectiveTransform(tree, file, opts);
-  };
+export const codeBlockToDirectivePlugin: Plugin<
+  [CodeBlockTransformOptions?],
+  GenericParent,
+  GenericParent
+> = (opts) => (tree, file) => {
+  codeBlockToDirectiveTransform(tree, file, opts);
+};

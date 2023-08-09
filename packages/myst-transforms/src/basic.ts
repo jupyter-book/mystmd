@@ -1,4 +1,3 @@
-import type { Root } from 'mdast';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRoles.js';
@@ -11,8 +10,9 @@ import { imageAltTextTransform } from './images.js';
 import { mathLabelTransform, mathNestingTransform } from './math.js';
 import { blockquoteTransform } from './blockquote.js';
 import { codeBlockToDirectiveTransform } from './code.js';
+import type { GenericParent } from 'myst-common';
 
-export function basicTransformations(tree: Root, file: VFile) {
+export function basicTransformations(tree: GenericParent, file: VFile) {
   // lifting roles and directives must happen before the mystTarget transformation
   liftMystDirectivesAndRolesTransform(tree);
   // Some specifics about the ordering are noted below
@@ -35,6 +35,7 @@ export function basicTransformations(tree: Root, file: VFile) {
   blockquoteTransform(tree);
 }
 
-export const basicTransformationsPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
-  basicTransformations(tree, file);
-};
+export const basicTransformationsPlugin: Plugin<[], GenericParent, GenericParent> =
+  () => (tree, file) => {
+    basicTransformations(tree, file);
+  };

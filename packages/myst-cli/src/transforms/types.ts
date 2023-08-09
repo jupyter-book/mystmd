@@ -1,12 +1,11 @@
-import type { Root } from 'mdast';
-import type { References } from 'myst-common';
+import type { References, GenericParent } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { SourceFileKind, Dependency } from 'myst-spec-ext';
 import type { CitationRenderer } from 'citation-js-utils';
 
 export type PreRendererData = {
   file: string;
-  mdast: Root;
+  mdast: GenericParent;
   kind: SourceFileKind;
   frontmatter?: PageFrontmatter;
 };

@@ -1,8 +1,7 @@
-import type { Root } from 'mdast';
 import { filter } from 'unist-util-filter';
 import { selectAll } from 'unist-util-select';
 import type { IReferenceState, MultiPageReferenceState } from 'myst-transforms';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { copyNode, liftChildren, normalizeLabel } from 'myst-common';
 import type { Dependency, Embed, Container } from 'myst-spec-ext';
 import { selectFile } from '../process/index.js';
@@ -13,7 +12,7 @@ import type { ISession } from '../session/types.js';
  */
 export function embedTransform(
   session: ISession,
-  mdast: Root,
+  mdast: GenericParent,
   dependencies: Dependency[],
   state: IReferenceState,
 ) {

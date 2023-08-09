@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Root } from 'mdast';
+import type { GenericParent } from 'myst-common';
 import { Session } from '../../session';
 import { extractTexPart } from './single';
 
@@ -17,7 +17,7 @@ describe('extractPart', () => {
     ).toEqual(undefined);
   });
   it('tagged part removed from tree and returned', async () => {
-    const tree: Root = {
+    const tree: GenericParent = {
       type: 'root',
       children: [
         {
@@ -56,7 +56,7 @@ describe('extractPart', () => {
     });
   });
   it('tagged part meeting maximums passes', async () => {
-    const tree: Root = {
+    const tree: GenericParent = {
       type: 'root',
       children: [
         {
@@ -82,7 +82,7 @@ describe('extractPart', () => {
     });
   });
   it('exceeding max chars passes', async () => {
-    const tree: Root = {
+    const tree: GenericParent = {
       type: 'root',
       children: [
         {
@@ -101,7 +101,7 @@ describe('extractPart', () => {
     });
   });
   it('exceeding max words passes', async () => {
-    const tree: Root = {
+    const tree: GenericParent = {
       type: 'root',
       children: [
         {

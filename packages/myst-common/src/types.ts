@@ -1,4 +1,3 @@
-import type { Root } from 'mdast';
 import type { Node } from 'myst-spec';
 import type { VFile } from 'vfile';
 
@@ -28,7 +27,7 @@ export enum NotebookCell {
 
 export type References = {
   cite?: Citations;
-  article?: Root;
+  article?: GenericParent;
 };
 
 // Types for defining roles and directives

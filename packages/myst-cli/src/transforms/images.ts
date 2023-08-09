@@ -1,7 +1,6 @@
 import fs from 'node:fs';
-import type { Root } from 'mdast';
 import mime from 'mime-types';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { computeHash, hashAndCopyStaticFile, isUrl } from 'myst-cli-utils';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
@@ -157,7 +156,7 @@ export async function saveImageInStaticFolder(
 
 export async function transformImages(
   session: ISession,
-  mdast: Root,
+  mdast: GenericParent,
   file: string,
   writeFolder: string,
   opts?: { altOutputFolder?: string; imageExtensions?: ImageExtensions[] },
@@ -363,7 +362,7 @@ export function getConversionFns(imageExt: string, validExts: ImageExtensions[])
  */
 export async function transformImageFormats(
   session: ISession,
-  mdast: Root,
+  mdast: GenericParent,
   file: string,
   writeFolder: string,
   opts?: { altOutputFolder?: string; imageExtensions?: ImageExtensions[] },
@@ -467,7 +466,7 @@ export async function transformImageFormats(
 
 export async function transformThumbnail(
   session: ISession,
-  mdast: Root | null,
+  mdast: GenericParent | null,
   file: string,
   frontmatter: PageFrontmatter,
   writeFolder: string,
@@ -625,7 +624,7 @@ function isValidImageNode(node: GenericNode, validExts: ImageExtensions[]) {
  * author a placeholder image is using a figure directive.
  */
 export function transformPlaceholderImages(
-  mdast: Root,
+  mdast: GenericParent,
   opts?: { imageExtensions?: ImageExtensions[] },
 ) {
   const validExts = opts?.imageExtensions ?? DEFAULT_IMAGE_EXTENSIONS;

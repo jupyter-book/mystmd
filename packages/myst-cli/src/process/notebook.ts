@@ -1,7 +1,6 @@
-import type { Root } from 'mdast';
 import { computeHash } from 'myst-cli-utils';
 import { NotebookCell } from 'myst-common';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
 import type { MinifiedOutput } from 'nbtx';
@@ -30,7 +29,7 @@ export async function processNotebook(
   file: string,
   content: string,
   opts?: { minifyMaxCharacters?: number },
-): Promise<Root> {
+): Promise<GenericParent> {
   const { log } = session;
   const { metadata, cells } = JSON.parse(content) as INotebookContent;
   // notebook will be empty, use generateNotebookChildren, generateNotebookOrder here if we want to populate those

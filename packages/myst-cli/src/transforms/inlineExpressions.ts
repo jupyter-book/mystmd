@@ -1,7 +1,6 @@
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { fileWarn, NotebookCell } from 'myst-common';
 import { selectAll } from 'unist-util-select';
-import type { Root } from 'mdast';
 import type { InlineExpression } from 'myst-spec-ext';
 import type { StaticPhrasingContent } from 'myst-spec';
 import type { Plugin } from 'unified';
@@ -67,7 +66,7 @@ function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingCo
   return [];
 }
 
-export function transformInlineExpressions(mdast: Root, file: VFile) {
+export function transformInlineExpressions(mdast: GenericParent, file: VFile) {
   const blocks = selectAll('block', mdast).filter(
     (node) => node.data?.type === NotebookCell.content && node.data?.[metadataSection],
   ) as GenericNode[];
@@ -88,6 +87,7 @@ export function transformInlineExpressions(mdast: Root, file: VFile) {
   });
 }
 
-export const inlineExpressionsPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
-  transformInlineExpressions(tree, file);
-};
+export const inlineExpressionsPlugin: Plugin<[], GenericParent, GenericParent> =
+  () => (tree, file) => {
+    transformInlineExpressions(tree, file);
+  };

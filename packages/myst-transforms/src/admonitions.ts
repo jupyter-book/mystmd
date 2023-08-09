@@ -1,8 +1,7 @@
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
 import type { Admonition, AdmonitionTitle, Blockquote, FlowContent } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { AdmonitionKind } from './types.js';
 
 type Options = {
@@ -31,7 +30,7 @@ export function admonitionKindToTitle(kind: AdmonitionKind | string) {
 /**
  * Visit all admonitions and add headers if necessary
  */
-export function admonitionHeadersTransform(tree: Root, opts?: Options) {
+export function admonitionHeadersTransform(tree: GenericParent, opts?: Options) {
   const admonitions = selectAll('admonition', tree) as Admonition[];
   admonitions.forEach((node: Admonition) => {
     if (
@@ -121,7 +120,7 @@ function transformGitHubBracketedAdmonition(node: GenericNode): boolean {
 /**
  * Visit all blockquote notes and add headers if necessary, support GitHub style admonitions
  */
-export function admonitionBlockquoteTransform(tree: Root) {
+export function admonitionBlockquoteTransform(tree: GenericParent) {
   const blockquote = selectAll('blockquote', tree) as Blockquote[];
   blockquote.forEach((node: GenericNode) => {
     // Loop through the various flavours of blockquote admonitions and return early if already transformed
@@ -132,10 +131,12 @@ export function admonitionBlockquoteTransform(tree: Root) {
   });
 }
 
-export const admonitionHeadersPlugin: Plugin<[Options?], Root, Root> = (opts) => (tree) => {
-  admonitionHeadersTransform(tree, opts);
-};
+export const admonitionHeadersPlugin: Plugin<[Options?], GenericParent, GenericParent> =
+  (opts) => (tree) => {
+    admonitionHeadersTransform(tree, opts);
+  };
 
-export const admonitionBlockquotePlugin: Plugin<[], Root, Root> = () => (tree) => {
-  admonitionBlockquoteTransform(tree);
-};
+export const admonitionBlockquotePlugin: Plugin<[], GenericParent, GenericParent> =
+  () => (tree) => {
+    admonitionBlockquoteTransform(tree);
+  };

@@ -1,8 +1,7 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import katex from 'katex';
-import type { Root } from 'mdast';
-import type { Math, InlineMath, Node, Code } from 'myst-spec';
+import type { Math, InlineMath, Node } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
 import { copyNode, fileError, fileWarn, normalizeLabel } from 'myst-common';
@@ -223,14 +222,14 @@ function renderEquation(file: VFile, node: Math | InlineMath, opts?: Options) {
  * @param file
  */
 export function mathNestingTransform(
-  tree: Root,
+  tree: GenericParent,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   file: VFile,
 ) {
   unnestTransform(tree as GenericParent, 'paragraph', 'math');
 }
 
-export function mathLabelTransform(tree: Root, file: VFile) {
+export function mathLabelTransform(tree: GenericParent, file: VFile) {
   const nodes = selectAll('math,inlineMath', tree) as (Math | InlineMath)[];
   nodes.forEach((node) => {
     transformMathValue(file, node);
@@ -239,21 +238,22 @@ export function mathLabelTransform(tree: Root, file: VFile) {
   });
 }
 
-export function mathTransform(tree: Root, file: VFile, opts?: Options) {
+export function mathTransform(tree: GenericParent, file: VFile, opts?: Options) {
   const nodes = selectAll('math,inlineMath', tree) as (Math | InlineMath)[];
   nodes.forEach((node) => {
     renderEquation(file, node, opts);
   });
 }
 
-export const mathNestingPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
+export const mathNestingPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree, file) => {
   mathNestingTransform(tree, file);
 };
 
-export const mathLabelPlugin: Plugin<[], Root, Root> = () => (tree, file) => {
+export const mathLabelPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree, file) => {
   mathLabelTransform(tree, file);
 };
 
-export const mathPlugin: Plugin<[Options?], Root, Root> = (opts) => (tree, file) => {
-  mathTransform(tree, file, opts);
-};
+export const mathPlugin: Plugin<[Options?], GenericParent, GenericParent> =
+  (opts) => (tree, file) => {
+    mathTransform(tree, file, opts);
+  };

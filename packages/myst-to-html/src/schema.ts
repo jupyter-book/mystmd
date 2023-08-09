@@ -1,10 +1,10 @@
-import type { Root } from 'mdast';
 import type { Handler, Options } from 'mdast-util-to-hast';
 import { defaultHandlers, toHast, all } from 'mdast-util-to-hast';
 import { u } from 'unist-builder';
 import classNames from 'classnames';
 import type { Plugin } from 'unified';
 import type { ElementContent, Properties } from 'hast';
+import type { GenericParent } from 'myst-common';
 
 const abbreviation: Handler = (h, node) => h(node, 'abbr', { title: node.title }, all(h, node));
 
@@ -161,46 +161,47 @@ const mermaid: Handler = (h, node) => h(node, 'div', { class: 'margin' });
 const myst: Handler = (h, node) => h(node, 'div', { class: 'margin' });
 const output: Handler = (h, node) => h(node, 'div', { class: 'output' });
 
-export const mystToHast: Plugin<[Options?], string, Root> = (opts) => (tree: Root) => {
-  return toHast(tree, {
-    ...opts,
-    handlers: {
-      admonition,
-      admonitionTitle,
-      container,
-      image,
-      caption,
-      captionNumber,
-      legend,
-      abbreviation,
-      subscript,
-      superscript,
-      math,
-      inlineMath,
-      definitionList,
-      definitionTerm,
-      definitionDescription,
-      mystRole,
-      mystDirective,
-      block,
-      comment,
-      heading,
-      crossReference,
-      code,
-      table,
-      iframe,
-      bibliography,
-      details,
-      summary,
-      embed,
-      include,
-      linkBlock,
-      margin,
-      mdast,
-      mermaid,
-      myst,
-      output,
-      ...opts?.handlers,
-    },
-  });
-};
+export const mystToHast: Plugin<[Options?], string, GenericParent> =
+  (opts) => (tree: GenericParent) => {
+    return toHast(tree as any, {
+      ...opts,
+      handlers: {
+        admonition,
+        admonitionTitle,
+        container,
+        image,
+        caption,
+        captionNumber,
+        legend,
+        abbreviation,
+        subscript,
+        superscript,
+        math,
+        inlineMath,
+        definitionList,
+        definitionTerm,
+        definitionDescription,
+        mystRole,
+        mystDirective,
+        block,
+        comment,
+        heading,
+        crossReference,
+        code,
+        table,
+        iframe,
+        bibliography,
+        details,
+        summary,
+        embed,
+        include,
+        linkBlock,
+        margin,
+        mdast,
+        mermaid,
+        myst,
+        output,
+        ...opts?.handlers,
+      },
+    });
+  };

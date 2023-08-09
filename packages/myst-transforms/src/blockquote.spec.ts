@@ -1,6 +1,5 @@
 import { describe, expect, test } from 'vitest';
 import { u } from 'unist-builder';
-import type { Root } from 'mdast';
 import { blockquoteTransform } from './blockquote';
 
 describe('Test blockquoteTransform', () => {
@@ -11,7 +10,7 @@ describe('Test blockquoteTransform', () => {
         u('list', { ordered: false }, [u('listItem', [u('text', 'Hamlet act 4, Scene 5')])]),
       ]),
     ]);
-    blockquoteTransform(mdast as Root);
+    blockquoteTransform(mdast);
     expect(mdast).toEqual(
       u('root', [
         u('container', { kind: 'quote' }, [

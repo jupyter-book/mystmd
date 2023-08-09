@@ -1,4 +1,3 @@
-import type { Root } from 'mdast';
 import { getFrontmatter } from 'myst-transforms';
 import type { Export, ExportFormats, Licenses, PageFrontmatter } from 'myst-frontmatter';
 import {
@@ -8,6 +7,7 @@ import {
   unnestKernelSpec,
   validatePageFrontmatter,
 } from 'myst-frontmatter';
+import type { GenericParent } from 'myst-common';
 import { copyNode } from 'myst-common';
 import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
@@ -28,7 +28,7 @@ import { logMessagesFromVFile } from './index.js';
  */
 export function getPageFrontmatter(
   session: ISession,
-  tree: Root,
+  tree: GenericParent,
   file: string,
   path?: string,
   removeNode = true,

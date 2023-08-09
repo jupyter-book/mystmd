@@ -1,5 +1,5 @@
-import type { Root } from 'mdast';
 import type { Block } from 'myst-spec';
+import type { GenericParent } from './types.js';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import { copyNode } from './utils.js';
@@ -7,7 +7,7 @@ import { copyNode } from './utils.js';
 /**
  * Selects the block node(s) based on part (string) or tags (string[]).
  */
-export function selectBlockParts(tree: Root, part: string): Block[] | undefined {
+export function selectBlockParts(tree: GenericParent, part: string): Block[] | undefined {
   if (!part) {
     // Prevent an undefined, null or empty part comparison
     return;
@@ -25,7 +25,7 @@ export function selectBlockParts(tree: Root, part: string): Block[] | undefined 
 /**
  * Returns a copy of the block parts and removes them from the tree.
  */
-export function extractPart(tree: Root, part: string): Root | undefined {
+export function extractPart(tree: GenericParent, part: string): GenericParent | undefined {
   const blockParts = selectBlockParts(tree, part);
   if (!blockParts) return undefined;
   const children = copyNode(blockParts).map((block) => {
@@ -40,7 +40,7 @@ export function extractPart(tree: Root, part: string): Root | undefined {
     }
     return block;
   });
-  const partsTree = { type: 'root', children } as unknown as Root;
+  const partsTree = { type: 'root', children } as GenericParent;
   // Remove the block parts from the main document
   blockParts.forEach((block) => {
     (block as any).type = '__delete__';

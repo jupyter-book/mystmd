@@ -2,10 +2,10 @@ import type { Plugin } from 'unified';
 import { findAfter } from 'unist-util-find-after';
 import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
-import type { Root } from 'mdast';
 import type { Target, Parent } from 'myst-spec';
 import type { Heading } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
+import type { GenericParent } from 'myst-common';
 import { normalizeLabel, toText } from 'myst-common';
 
 /**
@@ -24,7 +24,7 @@ import { normalizeLabel, toText } from 'myst-common';
  * Note, this should happen after `mystDirective`s have been lifted,
  * and other structural changes to the tree that don't preserve labels.
  */
-export function mystTargetsTransform(tree: Root) {
+export function mystTargetsTransform(tree: GenericParent) {
   visit(tree, 'mystTarget', (node: Target, index: number, parent: Parent) => {
     // TODO: have multiple targets and collect the labels
     const nextNode = findAfter(parent, index) as any;
@@ -39,14 +39,14 @@ export function mystTargetsTransform(tree: Root) {
   remove(tree, 'mystTarget');
 }
 
-export const mystTargetsPlugin: Plugin<[], Root, Root> = () => (tree) => {
+export const mystTargetsPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
   mystTargetsTransform(tree);
 };
 
 /**
  * Add implicit labels & identifiers to all headings
  */
-export function headingLabelTransform(tree: Root) {
+export function headingLabelTransform(tree: GenericParent) {
   const headings = selectAll('heading', tree) as Heading[];
   headings.forEach((node) => {
     if (node.label || node.identifier) return;
@@ -63,6 +63,6 @@ export function headingLabelTransform(tree: Root) {
   });
 }
 
-export const headingLabelPlugin: Plugin<[], Root, Root> = () => (tree) => {
+export const headingLabelPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
   headingLabelTransform(tree);
 };

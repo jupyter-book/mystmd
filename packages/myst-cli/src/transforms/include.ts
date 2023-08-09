@@ -1,6 +1,5 @@
 import fs from 'node:fs';
-import type { Root } from 'mdast';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { parseMyst } from '../process/index.js';
 import { selectAll } from 'unist-util-select';
 import { join, dirname } from 'node:path';
@@ -12,7 +11,7 @@ import type { ISession } from '../session/types.js';
  * RST documentation:
  *  - https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment
  */
-export function includeFilesDirective(session: ISession, filename: string, mdast: Root) {
+export function includeFilesDirective(session: ISession, filename: string, mdast: GenericParent) {
   const includeNodes = selectAll('include', mdast) as GenericNode[];
   const dir = dirname(filename);
   includeNodes.forEach((node) => {
