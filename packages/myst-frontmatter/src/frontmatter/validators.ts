@@ -227,6 +227,19 @@ function validateBooleanOrObject<T extends Record<string, any>>(
   return output;
 }
 
+function stashPlaceholder(value: string) {
+  return { id: value, name: value };
+}
+
+/**
+ * Return true if object:
+ *   - has 2 keys and only 2 keys: id and name
+ *   - the values for id and name are the same
+ */
+function isStashPlaceholder(object: { id?: string; name?: string }) {
+  return Object.keys(object).length === 2 && object.name && object.id && object.name === object.id;
+}
+
 /**
  * Update stash of authors/affiliations based on input value
  *
@@ -258,22 +271,20 @@ export function validateAndStashObject<T extends { id?: string; name?: string }>
   }
   const value = validateFn(input, opts);
   if (!value) return;
-  let warnOnDuplicate = true;
+  // Only warn on duplicate if the new object is not a placeholder
+  let warnOnDuplicate = !isStashPlaceholder(value);
   if (!value.id) {
     // If object is defined without an id, generate a unique id
     value.id = createHash('md5')
       .update(JSON.stringify(Object.entries(value).sort()))
       .digest('hex');
+    // Do not warn on duplicates for hash ids; any duplicates here are identical
     warnOnDuplicate = false;
   }
-  if (Object.keys(value).length === 1 && value.id) {
-    // This is a single object with an ID that may be defined later
-    // Only assign if it is not already defined
-    lookup[value.id] ??= value;
-  } else if (!Object.keys(lookup).includes(value.id)) {
+  if (!Object.keys(lookup).includes(value.id)) {
     // Handle case of new id - add stash value
     lookup[value.id] = value;
-  } else if (Object.keys(lookup[value.id]).length === 2 && lookup[value.id].name === value.id) {
+  } else if (isStashPlaceholder(lookup[value.id])) {
     // Handle case of existing placeholder { id: value, name: value } - replace stash value
     lookup[value.id] = value;
   } else if (warnOnDuplicate) {
@@ -315,7 +326,7 @@ export function validateVenue(input: any, opts: ValidationOptions) {
  */
 export function validateAffiliation(input: any, opts: ValidationOptions) {
   if (typeof input === 'string') {
-    input = { id: input, name: input };
+    input = stashPlaceholder(input);
   }
   const value = validateObjectKeys(
     input,
@@ -332,10 +343,6 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
   }
   if (defined(value.institution)) {
     output.institution = validateString(value.institution, incrementOptions('institution', opts));
-  }
-  // It is possible to have an ID only at this point
-  if (!(Object.keys(output).length === 1 && output.id) && !output.name && !output.institution) {
-    validationWarning('affiliation should include name or institution', opts);
   }
   if (defined(value.department)) {
     output.department = validateString(value.department, incrementOptions('department', opts));
@@ -386,6 +393,13 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
   }
   if (defined(value.fax)) {
     output.fax = validateString(value.fax, incrementOptions('fax', opts));
+  }
+  // If affiliation only has an id, give it a matching name; this is equivalent to the case
+  // where a simple string is provided as an affiliation.
+  if (Object.keys(output).length === 1 && output.id) {
+    return stashPlaceholder(output.id);
+  } else if (!output.name && !output.institution) {
+    validationWarning('affiliation should include name or institution', opts);
   }
   return output;
 }
