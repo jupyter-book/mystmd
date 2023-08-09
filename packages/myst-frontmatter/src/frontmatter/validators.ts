@@ -147,6 +147,14 @@ const AUTHOR_ALIASES = {
   affiliation: 'affiliations',
   website: 'url',
 };
+
+const AFFILIATION_ALIASES = {
+  ref: 'id', // Used in QMD to reference an affiliation
+  region: 'state',
+  province: 'state',
+  website: 'url',
+};
+
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
 const THEBE_KEYS = [
   'lite',
@@ -225,7 +233,7 @@ function validateBooleanOrObject<T extends Record<string, any>>(
  * Input may be:
  *   - string name
  *   - string id
- *   - object with out id
+ *   - object without id
  *   - object with id
  *
  * This function will normalize all of the above to an id and if a corresponding
@@ -258,7 +266,11 @@ export function validateAndStashObject<T extends { id?: string; name?: string }>
       .digest('hex');
     warnOnDuplicate = false;
   }
-  if (!Object.keys(lookup).includes(value.id)) {
+  if (Object.keys(value).length === 1 && value.id) {
+    // This is a single object with an ID that may be defined later
+    // Only assign if it is not already defined
+    lookup[value.id] ??= value;
+  } else if (!Object.keys(lookup).includes(value.id)) {
     // Handle case of new id - add stash value
     lookup[value.id] = value;
   } else if (Object.keys(lookup[value.id]).length === 2 && lookup[value.id].name === value.id) {
@@ -305,7 +317,11 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
   if (typeof input === 'string') {
     input = { id: input, name: input };
   }
-  const value = validateObjectKeys(input, { optional: AFFILIATION_KEYS }, opts);
+  const value = validateObjectKeys(
+    input,
+    { optional: AFFILIATION_KEYS, alias: AFFILIATION_ALIASES },
+    opts,
+  );
   if (value === undefined) return undefined;
   const output: Affiliation = {};
   if (defined(value.id)) {
@@ -317,9 +333,10 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
   if (defined(value.institution)) {
     output.institution = validateString(value.institution, incrementOptions('institution', opts));
   }
-  if (!output.name && !output.institution) {
-    validationWarning('affiliation should include name or institution', opts);
-  }
+  // It is possible to have an ID only at this point
+  // if (!output.name && !output.institution) {
+  //   validationWarning('affiliation should include name or institution', opts);
+  // }
   if (defined(value.department)) {
     output.department = validateString(value.department, incrementOptions('department', opts));
   }

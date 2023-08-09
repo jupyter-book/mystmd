@@ -31,7 +31,7 @@ cases:
         - id: University
           name: University
     warnings: 1
-  - title: Warn if affiliation has no name/institution
+  - title: (Don't) Warn if affiliation has no name/institution
     raw:
       affiliation:
         - name: University A
@@ -45,7 +45,56 @@ cases:
           institution: University B
         - id: c0c33da7470923aca89c354685d85750
           email: universityc@example.com
-    warnings: 1
+    # warnings: 1 # We can't do this until we have all the information!
+  - title: Support QMD style affiliations (ref)
+    raw:
+      author:
+        - name: Norah Jones
+          affiliation:
+            - ref: cmu
+            - ref: chicago
+        - name: John Hamm
+          affiliation:
+            - ref: cmu
+      affiliation:
+        - id: cmu
+          name: Carnegie Mellon University
+        - id: chicago
+          name: University of Chicago
+    normalized:
+      authors:
+        - name: Norah Jones
+          affiliations: [cmu, chicago]
+        - name: John Hamm
+          affiliations: [cmu]
+      affiliations:
+        - id: cmu
+          name: Carnegie Mellon University
+        - id: chicago
+          name: University of Chicago
+  - title: Support QMD style affiliations (inline reference)
+    raw:
+      author:
+        - name: Norah Jones
+          affiliation:
+            - id: cmu
+              name: Carnegie Mellon University
+            - id: chicago
+              name: University of Chicago
+        - name: John Hamm
+          affiliation:
+            - ref: cmu
+    normalized:
+      authors:
+        - name: Norah Jones
+          affiliations: [cmu, chicago]
+        - name: John Hamm
+          affiliations: [cmu]
+      affiliations:
+        - id: cmu
+          name: Carnegie Mellon University
+        - id: chicago
+          name: University of Chicago
   - title: Affiliations unpack semicolon-delimited lists
     raw:
       affiliations: University A; University B
