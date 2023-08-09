@@ -281,7 +281,7 @@ describe('validateAuthor', () => {
 describe('validateAffiliation', () => {
   it('empty object returns self', async () => {
     expect(validateAffiliation({}, opts)).toEqual({});
-    expect(opts.messages.warnings?.length).toBeFalsy();
+    expect(opts.messages.warnings?.length).toBe(1);
   });
   it('extra keys removed', async () => {
     expect(validateAffiliation({ extra: '' }, opts)).toEqual({});

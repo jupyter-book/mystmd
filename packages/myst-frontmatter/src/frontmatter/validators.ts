@@ -334,9 +334,9 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
     output.institution = validateString(value.institution, incrementOptions('institution', opts));
   }
   // It is possible to have an ID only at this point
-  // if (!output.name && !output.institution) {
-  //   validationWarning('affiliation should include name or institution', opts);
-  // }
+  if (!(Object.keys(output).length === 1 && output.id) && !output.name && !output.institution) {
+    validationWarning('affiliation should include name or institution', opts);
+  }
   if (defined(value.department)) {
     output.department = validateString(value.department, incrementOptions('department', opts));
   }

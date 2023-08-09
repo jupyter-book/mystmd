@@ -45,7 +45,7 @@ cases:
           institution: University B
         - id: c0c33da7470923aca89c354685d85750
           email: universityc@example.com
-    # warnings: 1 # We can't do this until we have all the information!
+    warnings: 1
   - title: Support QMD style affiliations (ref)
     raw:
       author:
