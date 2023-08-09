@@ -62,7 +62,7 @@ The following table lists the available frontmatter fields, a brief description 
 
 ```{list-table} A list of available frontmatter fields and their behaviour across projects and pages
 :header-rows: 1
-:name: table-of-frontmatter
+:name: table-frontmatter
 
 * - field
   - description
@@ -149,7 +149,7 @@ Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` o
 
 +++
 
-## Thumbnail
+## Thumbnail & Banner
 
 The thumbnail is used in previews for your site in applications like Twitter, Slack, or any other link preview service. This should, by convention, be included in a `thumbnails` folder next to your content. You can also explicitly set this field to any other image on your local file system or a remote URL to an image. This image will get copied over to your public folder and optimized when you build your project.
 
@@ -159,12 +159,24 @@ thumbnail: thumbnails/myThumbnail.png
 
 If you do not specify an image the first image in the content of a page will be selected. If you explicitly do not want an image, set `thumbnail` to `null`.
 
+You can also set a banner image which will show up in certain themes, for example, the `article-theme`:
+
+```yaml
+banner: banner.png
+```
+
+:::{figure} ./images/article-theme.png
+:name: banner-example
+Example of a banner in a site using the `article-theme`.
+:::
+
 ## Authors
 
 The `authors` field is a list of `author` objects. Available fields in the author object are:
 
-````{list-table}
+````{list-table} Frontmatter information for authors
 :header-rows: 1
+:name: table-frontmatter-authors
 * - field
   - description
 * - `name`
@@ -357,8 +369,9 @@ affiliations:
 :::
 ::::
 
-````{list-table}
+````{list-table} Frontmatter information for affiliations
 :header-rows: 1
+:name: table-frontmatter-affiliations
 * - field
   - description
 * - `id`
