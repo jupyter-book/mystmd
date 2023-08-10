@@ -193,7 +193,7 @@ export async function transformMdast(
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
   // Kind needs to still be Article here even if jupytext, to handle outputs correctly
   await transformOutputs(session, mdast, kind, imageWriteFolder, {
-    altOutputFolder: imageAltOutputFolder,
+    altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
     minifyMaxCharacters,
   });
   transformCitations(log, mdast, fileCitationRenderer, references, file);
@@ -203,7 +203,7 @@ export async function transformMdast(
     .run(mdast, vfile);
   if (simplifyFigures) {
     // Transform output nodes to images / text
-    reduceOutputs(mdast, imageWriteFolder);
+    reduceOutputs(mdast, file, imageWriteFolder);
   }
   if (!useExistingImages) {
     await transformImages(session, mdast, file, imageWriteFolder, {
@@ -218,9 +218,11 @@ export async function transformMdast(
     // Note, the thumbnail transform must be **after** images, as it may read the images
     await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,
+      webp: !simplifyFigures,
     });
     await transformBanner(session, file, frontmatter, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,
+      webp: !simplifyFigures,
     });
   }
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
