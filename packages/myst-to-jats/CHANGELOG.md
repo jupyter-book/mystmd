@@ -1,5 +1,18 @@
 # myst-to-jats
 
+## 1.0.9
+
+### Patch Changes
+
+- 24c0aae7: Move from Root in mdast to `GenericParent` to relax types
+- d0ecdd74: Consume affiliations/author frontmatter schema changes
+- Updated dependencies [2696fada]
+- Updated dependencies [24c0aae7]
+- Updated dependencies [d873b941]
+  - myst-frontmatter@1.1.2
+  - myst-common@1.1.2
+  - myst-spec-ext@1.1.2
+
 ## 1.0.8
 
 ### Patch Changes

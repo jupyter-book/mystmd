@@ -1,5 +1,16 @@
 # myst-templates
 
+## 1.0.6
+
+### Patch Changes
+
+- d0ecdd74: Consume affiliations/author frontmatter schema changes
+- Updated dependencies [2696fada]
+- Updated dependencies [24c0aae7]
+- Updated dependencies [d873b941]
+  - myst-frontmatter@1.1.2
+  - myst-common@1.1.2
+
 ## 1.0.5
 
 ### Patch Changes
