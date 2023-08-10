@@ -1,6 +1,6 @@
 import type { ISession as BaseISession } from 'myst-cli-utils';
 import type { TemplateKind, TemplateOptionType } from 'myst-common';
-import type { Author, Licenses, PageFrontmatter } from 'myst-frontmatter';
+import type { Affiliation, Author, Licenses, PageFrontmatter } from 'myst-frontmatter';
 import { PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 
 export interface ISession extends BaseISession {
@@ -27,7 +27,10 @@ export type RendererAuthor = Omit<
   surname: string;
 };
 
-export type RendererDoc = Omit<PageFrontmatter, 'date' | 'authors'> & {
+export type RendererDoc = Omit<
+  PageFrontmatter,
+  'date' | 'authors' | 'affiliations' | 'collaborations'
+> & {
   date: {
     day: string;
     month: string;
@@ -82,6 +85,7 @@ type TemplateYmlListPartial = {
   description?: string;
   version?: string;
   authors?: Author[];
+  affiliations?: Affiliation[];
   license?: Licenses;
   tags?: string[];
 };

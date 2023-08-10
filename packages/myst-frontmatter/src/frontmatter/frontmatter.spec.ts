@@ -1,6 +1,7 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import type { ValidationOptions } from 'simple-validators';
 import type {
+  Affiliation,
   Author,
   Biblio,
   Jupytext,
@@ -14,6 +15,8 @@ import type {
 import {
   fillPageFrontmatter,
   unnestKernelSpec,
+  validateAffiliation,
+  validateAndStashObject,
   validateAuthor,
   validateBiblio,
   validateExport,
@@ -35,10 +38,29 @@ const TEST_AUTHOR: Author = {
   email: 'test@example.com',
   roles: ['Software', 'Validation'],
   affiliations: ['example university'],
-  collaborations: ['example collaboration'],
   twitter: '@test',
   github: 'test',
-  website: 'https://example.com',
+  url: 'https://example.com',
+};
+
+const TEST_AFFILIATION: Affiliation = {
+  id: 'abc123',
+  address: '123 Example St.',
+  city: 'Example town',
+  state: 'EX',
+  postal_code: '00000',
+  country: 'USA',
+  name: 'Example University',
+  institution: 'Example University',
+  department: 'Example department',
+  collaboration: true,
+  isni: '0000000000000000',
+  ringgold: 99999,
+  ror: '0000000000000000',
+  url: 'http://example.com',
+  email: 'example@example.com',
+  phone: '1-800-000-0000',
+  fax: '(800) 000-0001',
 };
 
 const TEST_BIBLIO: Biblio = {
@@ -117,7 +139,8 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   title: 'frontmatter',
   description: 'project frontmatter',
   venue: { title: 'test' },
-  authors: [{}],
+  authors: [{ name: 'John Doe', affiliations: ['univa'] }],
+  affiliations: [{ id: 'univa', name: 'University A' }],
   date: '14 Dec 2021',
   name: 'example.md',
   doi: '10.1000/abcd/efg012',
@@ -155,7 +178,8 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   title: 'frontmatter',
   description: 'page frontmatter',
   venue: { title: 'test' },
-  authors: [{}],
+  authors: [{ name: 'Jane Doe', affiliations: ['univb'] }],
+  affiliations: [{ id: 'univb', name: 'University B' }],
   name: 'example.md',
   doi: '10.1000/abcd/efg012',
   arxiv: 'https://arxiv.org/example',
@@ -205,32 +229,73 @@ describe('validateVenue', () => {
 
 describe('validateAuthor', () => {
   it('empty object returns self', async () => {
-    expect(validateAuthor({}, opts)).toEqual({});
+    expect(validateAuthor({}, {}, opts)).toEqual({});
   });
   it('extra keys removed', async () => {
-    expect(validateAuthor({ extra: '' }, opts)).toEqual({});
+    expect(validateAuthor({ extra: '' }, {}, opts)).toEqual({});
   });
   it('full object returns self', async () => {
-    expect(validateAuthor(TEST_AUTHOR, opts)).toEqual(TEST_AUTHOR);
+    expect(validateAuthor(TEST_AUTHOR, {}, opts)).toEqual(TEST_AUTHOR);
   });
   it('invalid orcid errors', async () => {
-    expect(validateAuthor({ orcid: 'https://exampale.com/example' }, opts)).toEqual({});
+    expect(validateAuthor({ orcid: 'https://exampale.com/example' }, {}, opts)).toEqual({});
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid email errors', async () => {
-    expect(validateAuthor({ email: 'https://example.com' }, opts)).toEqual({});
+    expect(validateAuthor({ email: 'https://example.com' }, {}, opts)).toEqual({});
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('unknown roles warn', async () => {
-    expect(validateAuthor({ roles: ['example'] }, opts)).toEqual({ roles: ['example'] });
+    expect(validateAuthor({ name: 'my name', roles: ['example'] }, {}, opts)).toEqual({
+      name: 'my name',
+      roles: ['example'],
+    });
     expect(opts.messages.warnings?.length).toEqual(1);
   });
   it('invalid roles errors', async () => {
-    expect(validateAuthor({ roles: [1] }, opts)).toEqual({ roles: [] });
+    expect(validateAuthor({ roles: [1] }, {}, opts)).toEqual({ roles: [] });
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('corresponding with no email errors', async () => {
-    expect(validateAuthor({ corresponding: true }, opts)).toEqual({ corresponding: false });
+    expect(validateAuthor({ corresponding: true }, {}, opts)).toEqual({ corresponding: false });
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('website coerces to url', async () => {
+    expect(validateAuthor({ website: 'https://example.com' }, {}, opts)).toEqual({
+      url: 'https://example.com',
+    });
+  });
+  it('collaborations warns', async () => {
+    expect(
+      validateAuthor(
+        {
+          collaborations: ['example collaboration'],
+        },
+        {},
+        opts,
+      ),
+    ).toEqual({});
+    expect(opts.messages.warnings?.length).toEqual(1);
+  });
+});
+
+describe('validateAffiliation', () => {
+  it('empty object returns self', async () => {
+    expect(validateAffiliation({}, opts)).toEqual({});
+    expect(opts.messages.warnings?.length).toBe(1);
+  });
+  it('extra keys removed', async () => {
+    expect(validateAffiliation({ extra: '' }, opts)).toEqual({});
+  });
+  it('object with name does not warn', async () => {
+    expect(validateAffiliation({ name: 'name' }, opts)).toEqual({ name: 'name' });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('full object returns self', async () => {
+    expect(validateAffiliation(TEST_AFFILIATION, opts)).toEqual(TEST_AFFILIATION);
+  });
+  it('invalid ringgold number errors', async () => {
+    expect(validateAffiliation({ name: 'name', ringgold: 1 }, opts)).toEqual({ name: 'name' });
     expect(opts.messages.errors?.length).toEqual(1);
   });
 });
@@ -434,10 +499,10 @@ describe('validatePageFrontmatter', () => {
 
 describe('fillPageFrontmatter', () => {
   it('empty frontmatters return empty', async () => {
-    expect(fillPageFrontmatter({}, {})).toEqual({});
+    expect(fillPageFrontmatter({}, {}, opts)).toEqual({});
   });
   it('page frontmatter returns self', async () => {
-    expect(fillPageFrontmatter(TEST_PAGE_FRONTMATTER, {})).toEqual(TEST_PAGE_FRONTMATTER);
+    expect(fillPageFrontmatter(TEST_PAGE_FRONTMATTER, {}, opts)).toEqual(TEST_PAGE_FRONTMATTER);
   });
   it('project frontmatter returns self without title/description/name/etc', async () => {
     const result = { ...TEST_PROJECT_FRONTMATTER };
@@ -448,10 +513,12 @@ describe('fillPageFrontmatter', () => {
     delete result.exports;
     delete result.requirements;
     delete result.resources;
-    expect(fillPageFrontmatter({}, TEST_PROJECT_FRONTMATTER)).toEqual(result);
+    expect(fillPageFrontmatter({}, TEST_PROJECT_FRONTMATTER, opts)).toEqual(result);
   });
   it('page and project math are combined', async () => {
-    expect(fillPageFrontmatter({ math: { a: 'macro a' } }, { math: { b: 'macro b' } })).toEqual({
+    expect(
+      fillPageFrontmatter({ math: { a: 'macro a' } }, { math: { b: 'macro b' } }, opts),
+    ).toEqual({
       math: { a: 'macro a', b: 'macro b' },
     });
   });
@@ -460,9 +527,202 @@ describe('fillPageFrontmatter', () => {
       fillPageFrontmatter(
         { numbering: { enumerator: '#', heading_5: true, heading_6: true } },
         { numbering: { enumerator: '$', heading_1: true, heading_6: false } },
+        opts,
       ),
     ).toEqual({
       numbering: { enumerator: '#', heading_1: true, heading_5: true, heading_6: true },
     });
+  });
+  it('extra project affiliations are not included', async () => {
+    expect(
+      fillPageFrontmatter(
+        { authors: [], affiliations: [{ name: 'University A', id: 'univa' }] },
+        { authors: [], affiliations: [{ name: 'University B', id: 'univb' }] },
+        opts,
+      ),
+    ).toEqual({
+      authors: [],
+      affiliations: [{ name: 'University A', id: 'univa' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('extra page affiliations are not included', async () => {
+    expect(
+      fillPageFrontmatter(
+        { affiliations: [{ name: 'University A', id: 'univa' }] },
+        { authors: [], affiliations: [{ name: 'University B', id: 'univb' }] },
+        opts,
+      ),
+    ).toEqual({
+      authors: [],
+      affiliations: [{ name: 'University B', id: 'univb' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('page and project duplicate affiliation ids warn', async () => {
+    expect(
+      fillPageFrontmatter(
+        { affiliations: [{ name: 'University A', id: 'univa' }] },
+        { affiliations: [{ name: 'University B', id: 'univa' }] },
+        opts,
+      ),
+    ).toEqual({
+      affiliations: [{ name: 'University A', id: 'univa' }],
+    });
+    expect(opts.messages.warnings?.length).toEqual(1);
+  });
+  it('placeholder ids replace correctly from page', async () => {
+    expect(
+      fillPageFrontmatter(
+        { affiliations: [{ name: 'univa', id: 'univa' }] },
+        {
+          affiliations: [
+            { name: 'University A', id: 'univa' },
+            { name: 'University B', id: 'univb' },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      affiliations: [{ name: 'University A', id: 'univa' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('placeholder ids replace correctly from project', async () => {
+    expect(
+      fillPageFrontmatter(
+        { affiliations: [{ name: 'University A', id: 'univa' }] },
+        {
+          affiliations: [
+            { name: 'univa', id: 'univa' },
+            { name: 'University B', id: 'univb' },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      affiliations: [{ name: 'University A', id: 'univa' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('duplicate affiliations do not warn if identical', async () => {
+    expect(
+      fillPageFrontmatter(
+        { affiliations: [{ name: 'University A', id: 'univa' }] },
+        {
+          affiliations: [
+            { name: 'University A', id: 'univa' },
+            { name: 'University B', id: 'univb' },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      affiliations: [{ name: 'University A', id: 'univa' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+});
+
+describe('validateAndStashObject', () => {
+  it('string creates object and returns itself', async () => {
+    const stash = {};
+    const out = validateAndStashObject(
+      'Just A. Name',
+      stash,
+      'authors',
+      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      opts,
+    );
+    expect(out).toEqual('Just A. Name');
+    expect(stash).toEqual({ authors: [{ id: 'Just A. Name', name: 'Just A. Name' }] });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('string returns itself when in stash', async () => {
+    const stash = { authors: [{ id: 'auth1', name: 'Just A. Name' }] };
+    const out = validateAndStashObject(
+      'auth1',
+      stash,
+      'authors',
+      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      opts,
+    );
+    expect(out).toEqual('auth1');
+    expect(stash).toEqual({ authors: [{ id: 'auth1', name: 'Just A. Name' }] });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('no id creates hashed id', async () => {
+    const stash = {};
+    const out = validateAndStashObject(
+      { name: 'Just A. Name' },
+      stash,
+      'authors',
+      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      opts,
+    );
+    expect(out).toEqual('472b90cf03efe64d27eb5ff708c5aa3d');
+    expect(stash).toEqual({
+      authors: [{ id: '472b90cf03efe64d27eb5ff708c5aa3d', name: 'Just A. Name' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('no id does not warn on duplicate', async () => {
+    const stash = { authors: [{ id: '472b90cf03efe64d27eb5ff708c5aa3d', name: 'Just A. Name' }] };
+    const out = validateAndStashObject(
+      { name: 'Just A. Name' },
+      stash,
+      'authors',
+      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      opts,
+    );
+    expect(out).toEqual('472b90cf03efe64d27eb5ff708c5aa3d');
+    expect(stash).toEqual({
+      authors: [{ id: '472b90cf03efe64d27eb5ff708c5aa3d', name: 'Just A. Name' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('object with id added to stash', async () => {
+    const stash = { authors: [{ id: 'auth1', name: 'Just A. Name' }] };
+    const out = validateAndStashObject(
+      { id: 'auth2', name: 'A. Nother Name' },
+      stash,
+      'authors',
+      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      opts,
+    );
+    expect(out).toEqual('auth2');
+    expect(stash).toEqual({
+      authors: [
+        { id: 'auth1', name: 'Just A. Name' },
+        { id: 'auth2', name: 'A. Nother Name' },
+      ],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('object with id replaces simple object', async () => {
+    const stash = { authors: [{ id: 'auth1', name: 'auth1' }] };
+    const out = validateAndStashObject(
+      { id: 'auth1', name: 'Just A. Name' },
+      stash,
+      'authors',
+      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      opts,
+    );
+    expect(out).toEqual('auth1');
+    expect(stash).toEqual({ authors: [{ id: 'auth1', name: 'Just A. Name' }] });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('object with id warns on duplicate', async () => {
+    const stash = { authors: [{ id: 'auth1', name: 'Just A. Name' }] };
+    const out = validateAndStashObject(
+      { id: 'auth1', name: 'A. Nother Name' },
+      stash,
+      'authors',
+      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      opts,
+    );
+    expect(out).toEqual('auth1');
+    expect(stash).toEqual({ authors: [{ id: 'auth1', name: 'Just A. Name' }] });
+    expect(opts.messages.warnings?.length).toEqual(1);
   });
 });

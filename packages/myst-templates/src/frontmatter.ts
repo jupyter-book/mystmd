@@ -21,11 +21,11 @@ function addIndicesToAuthors(
 ): RendererAuthor[] {
   const affiliationLookup: Record<string, ValueAndIndex> = {};
   affiliationList.forEach((affil) => {
-    affiliationLookup[affil.value] = affil;
+    affiliationLookup[affil.value.id] = affil;
   });
   const collaborationLookup: Record<string, ValueAndIndex> = {};
   collaborationList.forEach((col) => {
-    collaborationLookup[col.value] = col;
+    collaborationLookup[col.value.id] = col;
   });
   let correspondingIndex = 0;
   return authors.map((auth, index) => {
@@ -37,16 +37,20 @@ function addIndicesToAuthors(
       };
       correspondingIndex += 1;
     }
-    let affiliations = auth.affiliations?.map((value) => {
-      return { ...affiliationLookup[value] };
-    });
+    let affiliations = auth.affiliations
+      ?.filter((value) => Object.keys(affiliationLookup).includes(value))
+      .map((value) => {
+        return { ...affiliationLookup[value] };
+      });
     if (!affiliations || affiliations.length === 0) {
       // Affiliations are explicitly undefined if length === 0
       affiliations = undefined;
     }
-    let collaborations = auth.collaborations?.map((value) => {
-      return { ...collaborationLookup[value] };
-    });
+    let collaborations = auth.affiliations
+      ?.filter((value) => Object.keys(collaborationLookup).includes(value))
+      .map((value) => {
+        return { ...collaborationLookup[value] };
+      });
     if (!collaborations || collaborations.length === 0) {
       // Affiliations are explicitly undefined if length === 0
       collaborations = undefined;
@@ -65,24 +69,20 @@ function addIndicesToAuthors(
   });
 }
 
-function affiliationsFromAuthors(authors: Author[]): ValueAndIndex[] {
-  const allAffiliations = authors.map((auth) => auth.affiliations || []).flat();
-  return [...new Set(allAffiliations)].map((value, index) => {
-    return { value, ...indexAndLetter(index) };
-  });
-}
-
-function collaborationsFromAuthors(authors: Author[]): ValueAndIndex[] {
-  const allCollaborations = authors.map((auth) => auth.collaborations || []).flat();
-  return [...new Set(allCollaborations)].map((value, index) => {
-    return { value, ...indexAndLetter(index) };
-  });
-}
-
 export function extendFrontmatter(frontmatter: PageFrontmatter): RendererDoc {
   const datetime = frontmatter.date ? new Date(frontmatter.date) : new Date();
-  const affiliations = affiliationsFromAuthors(frontmatter.authors || []);
-  const collaborations = collaborationsFromAuthors(frontmatter.authors || []);
+  const affiliations =
+    frontmatter.affiliations
+      ?.filter((aff) => aff.id && !aff.collaboration)
+      .map((aff, index) => {
+        return { value: aff, ...indexAndLetter(index) };
+      }) ?? [];
+  const collaborations =
+    frontmatter.affiliations
+      ?.filter((aff) => aff.id && aff.collaboration)
+      .map((aff, index) => {
+        return { value: aff, ...indexAndLetter(index) };
+      }) ?? [];
   const doc: RendererDoc = {
     ...frontmatter,
     date: {

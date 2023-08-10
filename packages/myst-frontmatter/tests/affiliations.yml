@@ -1,0 +1,231 @@
+title: Affiliations
+cases:
+  - title: Simple affiliation text in list
+    raw:
+      affiliations:
+        - University
+    normalized:
+      affiliations:
+        - id: University
+          name: University
+  - title: Simple affiliations string
+    raw:
+      affiliations: University
+    normalized:
+      affiliations:
+        - id: University
+          name: University
+  - title: Use affiliation rather than affiliations`s`
+    raw:
+      affiliation: University
+    normalized:
+      affiliations:
+        - id: University
+          name: University
+  - title: Using both affiliation and affiliation`s` shows a warning
+    raw:
+      affiliation: nope
+      affiliations: University
+    normalized:
+      affiliations:
+        - id: University
+          name: University
+    warnings: 1
+  - title: (Don't) Warn if affiliation has no name/institution
+    raw:
+      affiliation:
+        - name: University A
+        - institution: University B
+        - email: universityc@example.com
+    normalized:
+      affiliations:
+        - id: 45d11546d183a1dd2171d715895defc2
+          name: University A
+        - id: 21431650d40dd2a2699d0e6782fec976
+          institution: University B
+        - id: c0c33da7470923aca89c354685d85750
+          email: universityc@example.com
+    warnings: 1
+  - title: Support QMD style affiliations (ref)
+    raw:
+      author:
+        - name: Norah Jones
+          affiliation:
+            - ref: cmu
+            - ref: chicago
+        - name: John Hamm
+          affiliation:
+            - ref: cmu
+      affiliation:
+        - id: cmu
+          name: Carnegie Mellon University
+        - id: chicago
+          name: University of Chicago
+    normalized:
+      authors:
+        - name: Norah Jones
+          affiliations: [cmu, chicago]
+        - name: John Hamm
+          affiliations: [cmu]
+      affiliations:
+        - id: cmu
+          name: Carnegie Mellon University
+        - id: chicago
+          name: University of Chicago
+  - title: Support QMD style affiliations (inline reference)
+    raw:
+      author:
+        - name: Norah Jones
+          affiliation:
+            - id: cmu
+              name: Carnegie Mellon University
+            - id: chicago
+              name: University of Chicago
+        - name: John Hamm
+          affiliation:
+            - ref: cmu
+    normalized:
+      authors:
+        - name: Norah Jones
+          affiliations: [cmu, chicago]
+        - name: John Hamm
+          affiliations: [cmu]
+      affiliations:
+        - id: cmu
+          name: Carnegie Mellon University
+        - id: chicago
+          name: University of Chicago
+  - title: Affiliations unpack semicolon-delimited lists
+    raw:
+      affiliations: University A; University B
+    normalized:
+      affiliations:
+        - id: University A
+          name: University A
+        - id: University B
+          name: University B
+  - title: Author with reference to existing affiliation
+    raw:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - univa
+      affiliations:
+        - id: univa
+          name: University A
+    normalized:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - univa
+      affiliations:
+        - id: univa
+          name: University A
+  - title: Author with string affiliation resolves to top level
+    raw:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - University A
+    normalized:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - University A
+      affiliations:
+        - id: University A
+          name: University A
+  - title: Author with affiliation object resolves to top level
+    raw:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - id: univa
+              name: University A
+    normalized:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - univa
+      affiliations:
+        - id: univa
+          name: University A
+  - title: Duplicate affiliation ids warn
+    raw:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - id: univa
+              name: University A
+      affiliations:
+        - id: univa
+          name: University B
+    normalized:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - univa
+      affiliations:
+        - id: univa
+          name: University B
+    warnings: 1
+  - title: Duplicate affiliation strings resolve
+    raw:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - University A
+        - name: A. Nother Name
+          affiliations:
+            - University A
+    normalized:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - University A
+        - name: A. Nother Name
+          affiliations:
+            - University A
+      affiliations:
+        - id: University A
+          name: University A
+  - title: Duplicate affiliation objects resolve
+    raw:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - name: University A
+              url: https://example.com
+        - name: A. Nother Name
+          affiliations:
+            - url: https://example.com
+              name: University A
+    normalized:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - 31545614934732bb176a5935e68b9a91
+        - name: A. Nother Name
+          affiliations:
+            - 31545614934732bb176a5935e68b9a91
+      affiliations:
+        - id: 31545614934732bb176a5935e68b9a91
+          name: University A
+          url: https://example.com
+  - title: Author with affiliation object replaces id at top level
+    raw:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - id: univa
+              name: University A
+      affiliations:
+        - univa
+    normalized:
+      authors:
+        - name: Just A. Name
+          affiliations:
+            - univa
+      affiliations:
+        - id: univa
+          name: University A

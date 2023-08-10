@@ -21,6 +21,10 @@ project:
     AMS: American Mathematical Society
     RRID: Research Resource Identifier
     CSS: Cascading Style Sheet
+    CRediT: Contributor Roles Taxonomy
+    ROR: Research Organization Registry
+    ISNI: International Standard Name Identifier
+    NISO: National Information Standards Organization
     YAML: Yet Another Markup Language
     WASM: WebAssembly
     REES: Reproducible Execution Environment Specification

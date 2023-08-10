@@ -32,7 +32,7 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
-    "credit-roles": "^2.0.0",
+    "credit-roles": "^2.1.0",
     "doi-utils": "^2.0.0",
     "orcid": "^1.0.0",
     "simple-validators": "^1.0.1",

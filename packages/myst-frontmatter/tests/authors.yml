@@ -6,28 +6,32 @@ cases:
         - Just A. Name
     normalized:
       authors:
-        - name: Just A. Name
+        - id: Just A. Name
+          name: Just A. Name
   - title: Simple Authors String
     raw:
       authors: Just A. Name
     normalized:
       authors:
-        - name: Just A. Name
+        - id: Just A. Name
+          name: Just A. Name
   - title: Use Author rather than author`s`
     raw:
       author: Just A. Name
     normalized:
       authors:
-        - name: Just A. Name
+        - id: Just A. Name
+          name: Just A. Name
   - title: Using both author and author`s` shows a warning
     raw:
       author: nope
       authors: Just A. Name
     normalized:
       authors:
-        - name: Just A. Name
+        - id: Just A. Name
+          name: Just A. Name
     warnings: 1
-  - title: Using both author and author`s` shows a warning
+  - title: Affiliations unpack semicolon-delimited lists
     raw:
       author:
         name: Someone
@@ -38,6 +42,11 @@ cases:
           affiliations:
             - University
             - Company
+      affiliations:
+        - id: University
+          name: University
+        - id: Company
+          name: Company
   - title: First email is corresponding
     raw:
       author:
@@ -74,3 +83,17 @@ cases:
         - name: Next
           email: example@example.com
           corresponding: true
+  - title: Warn if author has no name
+    raw:
+      authors:
+        - name: Someone
+          email: example@example.com
+        - email: example@example.com
+          corresponding: true
+    normalized:
+      authors:
+        - name: Someone
+          email: example@example.com
+        - email: example@example.com
+          corresponding: true
+    warnings: 1

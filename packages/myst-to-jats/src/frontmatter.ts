@@ -150,12 +150,12 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
         elements: [{ type: 'text', text: author.email }],
       });
     }
-    if (author.website) {
+    if (author.url) {
       elements.push({
         type: 'element',
         name: 'ext-link',
-        attributes: { 'ext-link-type': 'uri', 'xlink:href': author.website },
-        elements: [{ type: 'text', text: author.website }],
+        attributes: { 'ext-link-type': 'uri', 'xlink:href': author.url },
+        elements: [{ type: 'text', text: author.url }],
       });
     }
     return { type: 'element', name: 'contrib', attributes, elements };

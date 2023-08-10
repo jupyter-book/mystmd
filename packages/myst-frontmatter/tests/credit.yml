@@ -21,7 +21,7 @@ cases:
           roles:
             - Conceptualization
             - Supervision
-  - title: Any role, but raise a warning
+  - title: Coerces common actions into full roles
     raw:
       authors:
         - name: Just A. Name
@@ -30,5 +30,15 @@ cases:
       authors:
         - name: Just A. Name
           roles:
-            - Editing
+            - Writing – review & editing
+  - title: Any role, but raise a warning
+    raw:
+      authors:
+        - name: Just A. Name
+          role: Hustling for grants
+    normalized:
+      authors:
+        - name: Just A. Name
+          roles:
+            - Hustling for grants
     warnings: 1

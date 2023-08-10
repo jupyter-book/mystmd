@@ -42,7 +42,7 @@ export function getPageFrontmatter(
   });
   logMessagesFromVFile(session, vfile);
   unnestKernelSpec(rawPageFrontmatter);
-  const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, {
+  const validationOpts = {
     property: 'frontmatter',
     file,
     messages: {},
@@ -52,21 +52,23 @@ export function getPageFrontmatter(
     warningLogFn: (message: string) => {
       session.log.warn(`Validation: ${message}`);
     },
-  });
-  const frontmatter = processPageFrontmatter(session, pageFrontmatter, path);
+  };
+  const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, validationOpts);
+  const frontmatter = processPageFrontmatter(session, pageFrontmatter, validationOpts, path);
   return frontmatter;
 }
 
 export function processPageFrontmatter(
   session: ISession,
   pageFrontmatter: PageFrontmatter,
+  validationOpts: ValidationOptions,
   path?: string,
 ) {
   const state = session.store.getState();
   const siteFrontmatter = selectors.selectCurrentSiteConfig(state) ?? {};
   const projectFrontmatter = path ? selectors.selectLocalProjectConfig(state, path) ?? {} : {};
 
-  const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter);
+  const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter, validationOpts);
 
   if (siteFrontmatter?.design?.hide_authors) {
     delete frontmatter.authors;

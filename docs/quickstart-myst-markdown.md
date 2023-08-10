@@ -83,7 +83,7 @@ title: My First Article
 thumbnail: ./thumbnails/nice-image.png
 date: 2022-05-11
 authors:
-  - name: Jane Bloggs
+  - name: Mason Moniker
     affiliations:
       - University of Europe
 ---

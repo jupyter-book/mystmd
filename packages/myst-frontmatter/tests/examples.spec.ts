@@ -13,6 +13,7 @@ type TestFile = {
 
 type TestCase = {
   title: string;
+  skip: boolean;
   raw: string;
   normalized?: string;
   warnings?: number;
@@ -22,6 +23,7 @@ type TestCase = {
 
 const directory = path.join('tests');
 const files = [
+  'affiliations.yml',
   'authors.yml',
   'credit.yml',
   'orcid.yml',
@@ -43,8 +45,13 @@ const casesList = files
 
 casesList.forEach(({ title, frontmatter, cases }) => {
   describe(title, () => {
-    const casesToUse = cases.filter((c) => !only || c.title === only);
+    const casesToUse = cases.filter((c) => (!only && !c.skip) || (only && c.title === only));
+    const skippedCases = cases.filter((c) => c.skip || (only && c.title !== only));
     if (casesToUse.length === 0) return;
+    if (skippedCases.length > 0) {
+      // Log to test output for visibility
+      test.skip.each(skippedCases.map((c): [string, TestCase] => [c.title, c]))('%s', () => {});
+    }
     test.each(casesToUse.map((c): [string, TestCase] => [c.title, c]))(
       '%s',
       (_, { raw, normalized, warnings, errors }) => {
@@ -64,6 +71,9 @@ casesList.forEach(({ title, frontmatter, cases }) => {
           console.log(opts.messages.errors);
         }
         expect(result).toEqual(normalized);
+        if ((opts.messages.warnings?.length ?? 0) !== (warnings ?? 0)) {
+          console.log(opts.messages.warnings);
+        }
         expect(opts.messages.warnings?.length ?? 0).toBe(warnings ?? 0);
         expect(opts.messages.errors?.length ?? 0).toBe(errors ?? 0);
       },

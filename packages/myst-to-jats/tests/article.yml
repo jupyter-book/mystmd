@@ -179,7 +179,7 @@ cases:
             - University One
             - University Two
           email: example@example.com
-          website: https://example.com
+          url: https://example.com
         - name: John Doe
     jats: |-
       <?xml version="1.0" encoding="UTF-8"?>
