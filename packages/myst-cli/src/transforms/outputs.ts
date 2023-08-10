@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { GenericNode, GenericParent } from 'myst-common';
@@ -63,7 +63,7 @@ export async function transformOutputs(
  * It also only supports minified images (i.e. images cannot be too small) or
  * non-minified text (i.e. text cannot be too large).
  */
-export function reduceOutputs(mdast: GenericParent, writeFolder: string) {
+export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: string) {
   const outputs = selectAll('output', mdast) as GenericNode[];
   outputs.forEach((node) => {
     if (!node.data?.length) {
@@ -85,8 +85,9 @@ export function reduceOutputs(mdast: GenericParent, writeFolder: string) {
     });
     if (selectedOutput?.content_type.startsWith('image/')) {
       node.type = 'image';
-      node.url = selectedOutput.path;
-      node.urlSource = selectedOutput.path;
+      const relativePath = relative(dirname(file), selectedOutput.path);
+      node.url = relativePath;
+      node.urlSource = relativePath;
       delete node.data;
       delete node.id;
     } else if (selectedOutput?.content_type === 'text/plain') {

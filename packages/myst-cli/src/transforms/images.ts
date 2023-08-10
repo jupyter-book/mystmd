@@ -470,7 +470,7 @@ export async function transformThumbnail(
   file: string,
   frontmatter: PageFrontmatter,
   writeFolder: string,
-  opts?: { altOutputFolder?: string },
+  opts?: { altOutputFolder?: string; webp?: boolean },
 ): Promise<{ url: string; urlOptimized?: string } | undefined> {
   let thumbnail = frontmatter.thumbnail;
   // If the thumbnail is explicitly null, don't add an image
@@ -498,14 +498,16 @@ export async function transformThumbnail(
   const { url } = result;
   frontmatter.thumbnail = url;
   const fileMatch = path.basename(result.url);
-  const optimized = await imagemagick.convertImageToWebp(
-    session,
-    path.join(writeFolder, fileMatch),
-  );
-  if (optimized) {
-    const urlOptimized = url.replace(fileMatch, optimized);
-    frontmatter.thumbnailOptimized = urlOptimized;
-    return { url, urlOptimized };
+  if (opts?.webp) {
+    const optimized = await imagemagick.convertImageToWebp(
+      session,
+      path.join(writeFolder, fileMatch),
+    );
+    if (optimized) {
+      const urlOptimized = url.replace(fileMatch, optimized);
+      frontmatter.thumbnailOptimized = urlOptimized;
+      return { url, urlOptimized };
+    }
   }
   return { url };
 }
@@ -515,7 +517,7 @@ export async function transformBanner(
   file: string,
   frontmatter: { banner?: string | null; bannerOptimized?: string },
   writeFolder: string,
-  opts?: { altOutputFolder?: string },
+  opts?: { altOutputFolder?: string; webp?: boolean },
 ): Promise<{ url: string; urlOptimized?: string } | undefined> {
   const banner = frontmatter.banner;
   // If the thumbnail is explicitly null, don't add an image
@@ -532,14 +534,16 @@ export async function transformBanner(
   const { url } = result;
   frontmatter.banner = url;
   const fileMatch = path.basename(result.url);
-  const optimized = await imagemagick.convertImageToWebp(
-    session,
-    path.join(writeFolder, fileMatch),
-  );
-  if (optimized) {
-    const urlOptimized = url.replace(fileMatch, optimized);
-    frontmatter.bannerOptimized = urlOptimized;
-    return { url, urlOptimized };
+  if (opts?.webp) {
+    const optimized = await imagemagick.convertImageToWebp(
+      session,
+      path.join(writeFolder, fileMatch),
+    );
+    if (optimized) {
+      const urlOptimized = url.replace(fileMatch, optimized);
+      frontmatter.bannerOptimized = urlOptimized;
+      return { url, urlOptimized };
+    }
   }
   return { url };
 }
