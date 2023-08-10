@@ -32,6 +32,13 @@ describe('metadataFromCode', () => {
       metadata: { key: 'value', flag: true },
     });
   });
+  it('basic metadata with SPACE between `#` and `|` is parsed', async () => {
+    const value = '# | key: value\n# | flag: true\n\na = 5 + 5\nprint(a)';
+    expect(metadataFromCode(new Session(), '', value)).toEqual({
+      value,
+      metadata: { key: 'value', flag: true },
+    });
+  });
   it('whitespace is ignored around metadata', async () => {
     const value = '\n\n#| key: value\n\n#| flag: true\n\n\na = 5 + 5\nprint(a)';
     expect(metadataFromCode(new Session(), '', value)).toEqual({

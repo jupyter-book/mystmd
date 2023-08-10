@@ -5,7 +5,8 @@ import yaml from 'js-yaml';
 import type { ISession } from '../session/types.js';
 import type { VFile } from 'vfile';
 
-const CELL_OPTION_PREFIX = '#| ';
+// Note: There may be a space in between the "# |", which is introduced by `black` in python.
+const CELL_OPTION_PREFIX = /^#\s?\| /;
 
 /**
  * Parse metadata from code block using js-yaml
@@ -34,8 +35,8 @@ export function metadataFromCode(
   let inHeader = true;
   value.split('\n').forEach((line) => {
     if (inHeader) {
-      if (line.startsWith(CELL_OPTION_PREFIX)) {
-        metaLines.push(line.substring(CELL_OPTION_PREFIX.length));
+      if (line.match(CELL_OPTION_PREFIX)) {
+        metaLines.push(line.replace(CELL_OPTION_PREFIX, ''));
       } else if (line.trim()) {
         inHeader = false;
       }

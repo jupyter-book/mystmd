@@ -15,12 +15,14 @@ A scientific article with two figures created in Jupyter Notebooks. Each figure 
 
 ## Label a Notebook Cell
 
-You can label notebook cells using a comment at the top of the cell, using a `#| label:` syntax, or have this added directly in the notebook metadata for the cell.
+You can label notebook cells using a comment at the top of the cell, using a `#| label:` syntax[^black], or have this added directly in the notebook metadata for the cell.
 
 ```python
 #| label: my-cell
 print('hello world')
 ```
+
+[^black]: If your code formatter changes this to a `# | label:` with an extra space that is fine too! 🎉
 
 ## Cross References
 
