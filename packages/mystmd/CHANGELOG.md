@@ -1,5 +1,15 @@
 # mystmd
 
+## 1.1.10
+
+### Patch Changes
+
+- 24c0aae7: Move from Root in mdast to `GenericParent` to relax types
+- fee1eea5: Translate mermaid and math code blocks by default.
+- f7356fd0: Allow for an extra space between # and | in starting the labeled code cell.
+- 553eca1: Allow for `#| label` to come after an ipython magic.
+- 2960da05: Transform code blocks with `math` language to be math blocks. This is GitHub markdown.
+
 ## 1.1.9
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # myst-parser
 
+## 1.0.6
+
+### Patch Changes
+
+- 24c0aae7: Move from Root in mdast to `GenericParent` to relax types
+  - myst-roles@1.0.6
+  - myst-directives@1.0.6
+
 ## 1.0.5
 
 ### Patch Changes

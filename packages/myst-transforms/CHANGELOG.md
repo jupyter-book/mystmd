@@ -1,5 +1,20 @@
 # myst-transforms
 
+## 1.1.0
+
+### Minor Changes
+
+- 30da1dab: Add `firstTimeLong` option to the abbreviations transform to expand the abbreviation the first time it is encountered.
+
+### Patch Changes
+
+- 24c0aae7: Move from Root in mdast to `GenericParent` to relax types
+- fee1eea5: Translate mermaid and math code blocks by default.
+- 2960da05: Transform code blocks with `math` language to be math blocks. This is GitHub markdown.
+- Updated dependencies [24c0aae7]
+  - myst-common@1.1.2
+  - myst-spec-ext@1.1.2
+
 ## 1.0.6
 
 ### Patch Changes

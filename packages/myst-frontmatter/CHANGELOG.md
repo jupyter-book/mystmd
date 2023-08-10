@@ -1,5 +1,12 @@
 # myst-frontmatter
 
+## 1.1.2
+
+### Patch Changes
+
+- 2696fada: Add rich affiliations to frontmatter
+- d873b941: Upgrade credit-roles for alias support (writing, editing, review, administration, etc.)
+
 ## 1.1.1
 
 ### Patch Changes

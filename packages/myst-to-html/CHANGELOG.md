@@ -1,5 +1,17 @@
 # myst-to-html
 
+## 1.0.6
+
+### Patch Changes
+
+- 24c0aae7: Move from Root in mdast to `GenericParent` to relax types
+- Updated dependencies [24c0aae7]
+- Updated dependencies [fee1eea5]
+- Updated dependencies [30da1dab]
+- Updated dependencies [2960da05]
+  - myst-transforms@1.1.0
+  - myst-common@1.1.2
+
 ## 1.0.5
 
 ### Patch Changes

@@ -1,5 +1,33 @@
 # myst-cli
 
+## 1.1.10
+
+### Patch Changes
+
+- 2696fada: Add rich affiliations to frontmatter
+- 24c0aae7: Move from Root in mdast to `GenericParent` to relax types
+- fee1eea5: Translate mermaid and math code blocks by default.
+- f7356fd0: Allow for an extra space between # and | in starting the labeled code cell.
+- 24dcb725: Adjust notebook output image paths in mdast for pdf/docx exports
+- 553eca1: Allow for `#| label` to come after an ipython magic.
+- 2960da05: Transform code blocks with `math` language to be math blocks. This is GitHub markdown.
+- Updated dependencies [2696fada]
+- Updated dependencies [24c0aae7]
+- Updated dependencies [d873b941]
+- Updated dependencies [fee1eea5]
+- Updated dependencies [d0ecdd74]
+- Updated dependencies [30da1dab]
+- Updated dependencies [2960da05]
+  - myst-frontmatter@1.1.2
+  - myst-transforms@1.1.0
+  - myst-to-docx@1.0.3
+  - myst-to-jats@1.0.9
+  - myst-common@1.1.2
+  - myst-parser@1.0.6
+  - myst-templates@1.0.6
+  - myst-config@1.1.2
+  - myst-spec-ext@1.1.2
+
 ## 1.1.9
 
 ### Patch Changes

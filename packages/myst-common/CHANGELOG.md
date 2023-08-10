@@ -1,5 +1,11 @@
 # myst-common
 
+## 1.1.2
+
+### Patch Changes
+
+- 24c0aae7: Move from Root in mdast to `GenericParent` to relax types
+
 ## 1.1.1
 
 ### Patch Changes
