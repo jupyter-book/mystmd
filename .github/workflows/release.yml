@@ -44,6 +44,6 @@ jobs:
       - name: Publish to PyPI
         if: steps.changesets.outputs.published == 'true'
         run: |
-          pip install twine
+          pip install twine build
           cd packages/mystmd-py
           bash scripts/pypi-deploy.sh
