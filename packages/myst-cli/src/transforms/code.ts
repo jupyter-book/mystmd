@@ -7,6 +7,7 @@ import type { VFile } from 'vfile';
 
 // Note: There may be a space in between the "# |", which is introduced by `black` in python.
 const CELL_OPTION_PREFIX = /^#\s?\| /;
+const IPYTHON_MAGIC = /^%%/;
 
 /**
  * Parse metadata from code block using js-yaml
@@ -32,10 +33,16 @@ export function metadataFromCode(
 ): { value: string; metadata?: Record<string, any> } {
   const metaLines: string[] = [];
   const outputLines: string[] = [];
+  let expectIpython = true;
   let inHeader = true;
   value.split('\n').forEach((line) => {
     if (inHeader) {
-      if (line.match(CELL_OPTION_PREFIX)) {
+      if (expectIpython && line.match(IPYTHON_MAGIC)) {
+        // This is silly logic, but we need to push regardless
+        // not just if we are in the header
+        if (opts?.remove) outputLines.push(line);
+        expectIpython = false;
+      } else if (line.match(CELL_OPTION_PREFIX)) {
         metaLines.push(line.replace(CELL_OPTION_PREFIX, ''));
       } else if (line.trim()) {
         inHeader = false;

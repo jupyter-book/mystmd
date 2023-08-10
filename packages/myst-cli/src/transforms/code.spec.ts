@@ -59,6 +59,20 @@ describe('metadataFromCode', () => {
       value,
     });
   });
+  it('allows for a cell-magic to come first', async () => {
+    const value = '%%time\n#| key: value\n\n#| flag: true\n\n\na = 5 + 5\nprint(a)';
+    expect(metadataFromCode(new Session(), '', value)).toEqual({
+      value,
+      metadata: { key: 'value', flag: true },
+    });
+  });
+  it('allows for a cell-magic to come first, but not in the middle', async () => {
+    const value = '\n\n%%time\n#| key: value\n%%time\n#| flag: true\n\n\na = 5 + 5\nprint(a)';
+    expect(metadataFromCode(new Session(), '', value)).toEqual({
+      value,
+      metadata: { key: 'value' },
+    });
+  });
 });
 
 describe('liftCodeMetadataToBlock', () => {
