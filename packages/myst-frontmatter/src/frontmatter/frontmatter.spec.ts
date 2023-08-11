@@ -658,26 +658,33 @@ describe('validateAndStashObject', () => {
       stash,
       'authors',
       (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
-      opts,
+      { ...opts, file: 'folder/test.file.yml' },
     );
-    expect(out).toEqual('[["name","Just A. Name"]]');
+    expect(out).toEqual('authors-test-file-generated-uid-0');
     expect(stash).toEqual({
-      authors: [{ id: '[["name","Just A. Name"]]', name: 'Just A. Name' }],
+      authors: [{ id: 'authors-test-file-generated-uid-0', name: 'Just A. Name' }],
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
   it('no id does not warn on duplicate', async () => {
-    const stash = { authors: [{ id: '[["name","Just A. Name"]]', name: 'Just A. Name' }] };
+    const stash = {};
+    validateAndStashObject(
+      { name: 'Just A. Name' },
+      stash,
+      'authors',
+      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      { ...opts, file: 'folder\\my_file' },
+    );
     const out = validateAndStashObject(
       { name: 'Just A. Name' },
       stash,
       'authors',
       (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
-      opts,
+      { ...opts, file: 'folder\\my_file' },
     );
-    expect(out).toEqual('[["name","Just A. Name"]]');
+    expect(out).toEqual('authors-my_file-generated-uid-0');
     expect(stash).toEqual({
-      authors: [{ id: '[["name","Just A. Name"]]', name: 'Just A. Name' }],
+      authors: [{ id: 'authors-my_file-generated-uid-0', name: 'Just A. Name' }],
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });

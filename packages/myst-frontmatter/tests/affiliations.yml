@@ -39,11 +39,11 @@ cases:
         - email: universityc@example.com
     normalized:
       affiliations:
-        - id: '[["name","University A"]]'
+        - id: affiliations-generated-uid-0
           name: University A
-        - id: '[["institution","University B"]]'
+        - id: affiliations-generated-uid-1
           institution: University B
-        - id: '[["email","universityc@example.com"]]'
+        - id: affiliations-generated-uid-2
           email: universityc@example.com
     warnings: 1
   - title: Support QMD style affiliations (ref)
@@ -204,12 +204,12 @@ cases:
       authors:
         - name: Just A. Name
           affiliations:
-            - '[["name","University A"],["url","https://example.com"]]'
+            - affiliations-generated-uid-0
         - name: A. Nother Name
           affiliations:
-            - '[["name","University A"],["url","https://example.com"]]'
+            - affiliations-generated-uid-0
       affiliations:
-        - id: '[["name","University A"],["url","https://example.com"]]'
+        - id: affiliations-generated-uid-0
           name: University A
           url: https://example.com
   - title: Author with affiliation object replaces id at top level

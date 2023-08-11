@@ -240,7 +240,25 @@ function isStashPlaceholder(object: { id?: string; name?: string }) {
 }
 
 function normalizedString(value: Record<string, any>) {
-  return JSON.stringify(Object.entries(value).sort());
+  return JSON.stringify(
+    Object.entries(value)
+      .filter(([, val]) => val !== undefined)
+      .sort(),
+  );
+}
+
+function pseudoUniqueId(kind: string, index: number, file?: string) {
+  let suffix = '';
+  if (file) {
+    const fileParts = file.replace('\\', '/').split('/');
+    const nameParts = fileParts[fileParts.length - 1].split('.');
+    if (nameParts.length === 1) {
+      suffix = `-${nameParts[0]}`;
+    } else {
+      suffix = `-${nameParts.slice(0, nameParts.length - 1).join('-')}`;
+    }
+  }
+  return `${kind}${suffix}-generated-uid-${index}`;
 }
 
 /**
@@ -265,8 +283,12 @@ export function validateAndStashObject<T extends { id?: string; name?: string }>
   opts: ValidationOptions,
 ) {
   const lookup: Record<string, T> = {};
+  const lookupNorm2Id: Record<string, string> = {};
   stash[kind]?.forEach((item) => {
-    if (item.id) lookup[item.id] = item as T;
+    if (item.id) {
+      lookup[item.id] = item as T;
+      lookupNorm2Id[normalizedString({ ...item, id: undefined })] = item.id;
+    }
   });
   if (typeof input === 'string' && Object.keys(lookup).includes(input)) {
     // Handle case where input is id and object already exists
@@ -277,10 +299,15 @@ export function validateAndStashObject<T extends { id?: string; name?: string }>
   // Only warn on duplicate if the new object is not a placeholder
   let warnOnDuplicate = !isStashPlaceholder(value);
   if (!value.id) {
-    // If object is defined without an id, generate a unique id
-    value.id = normalizedString(value);
-    // Do not warn on duplicates for hash ids; any duplicates here are identical
-    warnOnDuplicate = false;
+    if (lookupNorm2Id[normalizedString(value)]) {
+      // If object is defined without an id but already exists in the stash, use the existing id
+      value.id = lookupNorm2Id[normalizedString(value)];
+      // Do not warn on duplicates for these; any duplicates here are identical
+      warnOnDuplicate = false;
+    } else {
+      // If object is defined without an id and does not exist in the stash, generate a new id
+      value.id = pseudoUniqueId(kind, stash[kind]?.length ?? 0, opts.file);
+    }
   }
   if (!Object.keys(lookup).includes(value.id)) {
     // Handle case of new id - add stash value
