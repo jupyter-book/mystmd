@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.3
+
+### Patch Changes
+
+- 6655c90: Update generated affiliation ids to not use crypto
+
 ## 1.1.2
 
 ### Patch Changes
