@@ -42,7 +42,6 @@ import type {
   ReferenceStash,
   Affiliation,
 } from './types.js';
-import { createHash } from 'node:crypto';
 
 export const SITE_FRONTMATTER_KEYS = [
   'title',
@@ -279,7 +278,7 @@ export function validateAndStashObject<T extends { id?: string; name?: string }>
   let warnOnDuplicate = !isStashPlaceholder(value);
   if (!value.id) {
     // If object is defined without an id, generate a unique id
-    value.id = createHash('md5').update(normalizedString(value)).digest('hex');
+    value.id = normalizedString(value);
     // Do not warn on duplicates for hash ids; any duplicates here are identical
     warnOnDuplicate = false;
   }

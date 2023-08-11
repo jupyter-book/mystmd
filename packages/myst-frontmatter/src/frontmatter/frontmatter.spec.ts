@@ -660,14 +660,14 @@ describe('validateAndStashObject', () => {
       (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
       opts,
     );
-    expect(out).toEqual('472b90cf03efe64d27eb5ff708c5aa3d');
+    expect(out).toEqual('[["name","Just A. Name"]]');
     expect(stash).toEqual({
-      authors: [{ id: '472b90cf03efe64d27eb5ff708c5aa3d', name: 'Just A. Name' }],
+      authors: [{ id: '[["name","Just A. Name"]]', name: 'Just A. Name' }],
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
   it('no id does not warn on duplicate', async () => {
-    const stash = { authors: [{ id: '472b90cf03efe64d27eb5ff708c5aa3d', name: 'Just A. Name' }] };
+    const stash = { authors: [{ id: '[["name","Just A. Name"]]', name: 'Just A. Name' }] };
     const out = validateAndStashObject(
       { name: 'Just A. Name' },
       stash,
@@ -675,9 +675,9 @@ describe('validateAndStashObject', () => {
       (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
       opts,
     );
-    expect(out).toEqual('472b90cf03efe64d27eb5ff708c5aa3d');
+    expect(out).toEqual('[["name","Just A. Name"]]');
     expect(stash).toEqual({
-      authors: [{ id: '472b90cf03efe64d27eb5ff708c5aa3d', name: 'Just A. Name' }],
+      authors: [{ id: '[["name","Just A. Name"]]', name: 'Just A. Name' }],
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });

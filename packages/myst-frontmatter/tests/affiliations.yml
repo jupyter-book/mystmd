@@ -31,7 +31,7 @@ cases:
         - id: University
           name: University
     warnings: 1
-  - title: (Don't) Warn if affiliation has no name/institution
+  - title: Warn if affiliation has no name/institution
     raw:
       affiliation:
         - name: University A
@@ -39,11 +39,11 @@ cases:
         - email: universityc@example.com
     normalized:
       affiliations:
-        - id: 45d11546d183a1dd2171d715895defc2
+        - id: '[["name","University A"]]'
           name: University A
-        - id: 21431650d40dd2a2699d0e6782fec976
+        - id: '[["institution","University B"]]'
           institution: University B
-        - id: c0c33da7470923aca89c354685d85750
+        - id: '[["email","universityc@example.com"]]'
           email: universityc@example.com
     warnings: 1
   - title: Support QMD style affiliations (ref)
@@ -204,12 +204,12 @@ cases:
       authors:
         - name: Just A. Name
           affiliations:
-            - 31545614934732bb176a5935e68b9a91
+            - '[["name","University A"],["url","https://example.com"]]'
         - name: A. Nother Name
           affiliations:
-            - 31545614934732bb176a5935e68b9a91
+            - '[["name","University A"],["url","https://example.com"]]'
       affiliations:
-        - id: 31545614934732bb176a5935e68b9a91
+        - id: '[["name","University A"],["url","https://example.com"]]'
           name: University A
           url: https://example.com
   - title: Author with affiliation object replaces id at top level
