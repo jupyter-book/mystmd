@@ -51,6 +51,7 @@ import {
   transformBanner,
   reduceOutputs,
   transformPlaceholderImages,
+  transformDeleteBase64UrlSource,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/index.js';
 import { logMessagesFromVFile } from '../utils/index.js';
@@ -225,6 +226,7 @@ export async function transformMdast(
       webp: !simplifyFigures,
     });
   }
+  await transformDeleteBase64UrlSource(mdast);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   const useSlug = pageSlug !== index;
   const url = projectSlug

@@ -143,9 +143,6 @@ export async function saveImageInStaticFolder(
   } else if (isBase64(urlSource)) {
     // Handle inline base64 images
     file = await writeBase64(session, writeFolder, urlSource);
-    // TODO: remove these images from the canonical-url somehow!
-    // We actually want to make the package smaller, so we should remove the sourceUrl from here
-    // This might have to be a transform
   } else {
     const message = `Cannot find image "${urlSource}" in ${sourceFileFolder}`;
     addWarningForFile(session, sourceFile, message, 'error', { position: opts?.position });
@@ -654,4 +651,22 @@ export function transformPlaceholderImages(
       }
     });
   remove(mdast, '__remove__');
+}
+
+/**
+ * Trim base64 values for urlSource when they have been replaced by image urls
+ */
+export async function transformDeleteBase64UrlSource(mdast: GenericParent) {
+  const images = selectAll('image', mdast) as GenericNode[];
+  return Promise.all(
+    images.map(async (image) => {
+      if (image.url && image.urlSource && isBase64(image.urlSource)) {
+        const [prefix, suffix] = (image.urlSource as string).split(BASE64_HEADER_SPLIT);
+        if (suffix.length <= 20) return;
+        image.urlSource = `${prefix}${BASE64_HEADER_SPLIT}${suffix.slice(0, 10)}...${suffix.slice(
+          suffix.length - 10,
+        )}`;
+      }
+    }),
+  );
 }
