@@ -21,8 +21,10 @@ import type { ISession } from '../session/types.js';
 import { castSession } from '../session/index.js';
 import { watch } from '../store/index.js';
 
+export const BASE64_HEADER_SPLIT = ';base64,';
+
 function isBase64(data: string) {
-  return data.split(';base64,').length === 2;
+  return data.split(BASE64_HEADER_SPLIT).length === 2;
 }
 
 function getGithubRawUrl(url?: string): string | undefined {
@@ -46,7 +48,7 @@ async function writeBase64(
   data: string,
   contentType?: string,
 ) {
-  const [justData, header] = data.split(';base64,').reverse(); // reverse as sometimes there is no header
+  const [justData, header] = data.split(BASE64_HEADER_SPLIT).reverse(); // reverse as sometimes there is no header
   const ext = extFromMimeType(header?.replace('data:', '') ?? contentType);
   const hash = computeHash(justData);
   const file = `${hash}${ext}`;
