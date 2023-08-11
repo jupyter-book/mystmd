@@ -38,6 +38,7 @@ jobs:
           version: npm run version
           publish: npm run publish:ci
           commit: 🚀 Release
+          title: 🚀 Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -47,3 +48,6 @@ jobs:
           pip install twine build
           cd packages/mystmd-py
           bash scripts/pypi-deploy.sh
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
