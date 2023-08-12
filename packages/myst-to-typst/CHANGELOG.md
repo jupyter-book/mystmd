@@ -1,5 +1,11 @@
 # myst-to-typst
 
+## 0.0.4
+
+### Patch Changes
+
+- ca4e462: Update math conversion package
+
 ## 0.0.3
 
 ### Patch Changes
