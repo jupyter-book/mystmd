@@ -1,12 +1,14 @@
 import fs from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
+import type { Image } from 'myst-spec-ext';
 import { SourceFileKind } from 'myst-spec-ext';
-import type { GenericNode, GenericParent } from 'myst-common';
+import { liftChildren, type GenericNode, type GenericParent } from 'myst-common';
 import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { IOutput } from '@jupyterlab/nbformat';
+import type { MinifiedOutput } from 'nbtx';
 import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
 import { castSession } from '../session/index.js';
 import type { ISession } from '../session/types.js';
@@ -70,34 +72,46 @@ export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: s
       node.type = '__delete__';
       return;
     }
-    let selectedOutput: { content_type: string; path: string; hash: string } | undefined;
-    walkOutputs(node.data, (obj: any) => {
-      if (selectedOutput || !obj.path || !obj.hash) return;
-      if (['error', 'stream'].includes(obj.output_type)) {
-        const { path, hash } = obj;
-        selectedOutput = { content_type: 'text/plain', path, hash };
-      } else if (typeof obj.content_type === 'string') {
-        const { content_type, path, hash } = obj;
-        if (obj.content_type.startsWith('image/') || obj.content_type === 'text/plain') {
-          selectedOutput = { content_type, path, hash };
+    const selectedOutputs: { content_type: string; path: string; hash: string }[] = [];
+    node.data.forEach((output: MinifiedOutput) => {
+      let selectedOutput: { content_type: string; path: string; hash: string } | undefined;
+      walkOutputs([output], (obj: any) => {
+        if (selectedOutput || !obj.path || !obj.hash) return;
+        if (['error', 'stream'].includes(obj.output_type)) {
+          const { path, hash } = obj;
+          selectedOutput = { content_type: 'text/plain', path, hash };
+        } else if (typeof obj.content_type === 'string') {
+          const { content_type, path, hash } = obj;
+          if (obj.content_type.startsWith('image/') || obj.content_type === 'text/plain') {
+            selectedOutput = { content_type, path, hash };
+          }
         }
-      }
+      });
+      if (selectedOutput) selectedOutputs.push(selectedOutput);
     });
-    if (selectedOutput?.content_type.startsWith('image/')) {
-      node.type = 'image';
-      const relativePath = relative(dirname(file), selectedOutput.path);
-      node.url = relativePath;
-      node.urlSource = relativePath;
-      delete node.data;
-      delete node.id;
-    } else if (selectedOutput?.content_type === 'text/plain') {
-      node.type = 'code';
-      const filename = `${selectedOutput.hash}${extFromMimeType(selectedOutput.content_type)}`;
-      const content = fs.readFileSync(join(writeFolder, filename), 'utf-8');
-      node.value = stripAnsi(content);
-      delete node.data;
-      delete node.id;
-    }
+    const children: (Image | GenericNode)[] = selectedOutputs
+      .map((output): Image | GenericNode | undefined => {
+        if (output?.content_type.startsWith('image/')) {
+          const relativePath = relative(dirname(file), output.path);
+          return {
+            type: 'image',
+            url: relativePath,
+            urlSource: relativePath,
+          };
+        } else if (output?.content_type === 'text/plain') {
+          const filename = `${output.hash}${extFromMimeType(output.content_type)}`;
+          const content = fs.readFileSync(join(writeFolder, filename), 'utf-8');
+          return {
+            type: 'code',
+            value: stripAnsi(content),
+          };
+        }
+        return undefined;
+      })
+      .filter((output): output is Image | GenericNode => !!output);
+    node.type = '__lift__';
+    node.children = children;
   });
   remove(mdast, '__delete__');
+  liftChildren(mdast, '__lift__');
 }
