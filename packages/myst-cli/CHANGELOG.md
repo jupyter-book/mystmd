@@ -1,5 +1,12 @@
 # myst-cli
 
+## 1.1.11
+
+### Patch Changes
+
+- cc8319ad: Handle notebook cell image attachments
+- cc8319ad: Add transform to trim base64 urlSource values
+
 ## 1.1.10
 
 ### Patch Changes
