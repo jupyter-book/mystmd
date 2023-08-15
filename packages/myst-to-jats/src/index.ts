@@ -6,7 +6,7 @@ import { js2xml, xml2js } from 'xml-js';
 import katex from 'katex';
 import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode } from 'myst-common';
-import { copyNode, fileError } from 'myst-common';
+import { copyNode, extractPart, fileError } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import { Tags, RefType } from 'jats-tags';
@@ -518,6 +518,18 @@ class JatsSerializer implements IJatsSerializer {
     this.expressions = [];
     this.handlers = opts?.handlers ?? handlers;
     this.mdast = copyNode(mdast);
+    if (opts?.extractAbstract) {
+      const abstractMdast = extractPart(this.mdast, 'abstract');
+      if (abstractMdast) {
+        const abstractSerializer = new JatsSerializer(this.file, abstractMdast as Root, {
+          isNotebookArticleRep: this.data.isNotebookArticleRep,
+          slug: this.data.slug,
+          handlers: this.handlers,
+        });
+        abstractSerializer.render();
+        this.data.abstract = abstractSerializer.elements();
+      }
+    }
     basicTransformations(this.mdast as any, opts ?? {});
   }
 
@@ -647,6 +659,7 @@ export class JatsDocument {
     const articleState = new JatsSerializer(this.file, this.content.mdast, {
       ...this.options,
       isNotebookArticleRep,
+      extractAbstract: true,
     });
     const inventory: IdInventory = {};
     referenceTargetTransform(articleState.mdast as any, inventory, this.content.citations);
@@ -670,7 +683,7 @@ export class JatsDocument {
       state.render();
     });
     const elements: Element[] = [
-      ...getFront(this.content.frontmatter),
+      ...getFront(this.content.frontmatter, articleState),
       this.body(articleState),
       ...getBack(articleState, {
         citations: this.content.citations,
@@ -690,7 +703,11 @@ export class JatsDocument {
     return article;
   }
 
-  frontStub(frontmatter?: PageFrontmatter, notebookRep?: boolean): Element[] {
+  frontStub(
+    frontmatter?: PageFrontmatter,
+    state?: IJatsSerializer,
+    notebookRep?: boolean,
+  ): Element[] {
     const stubFrontmatter: Record<string, any> = {};
     if (frontmatter) {
       Object.entries(frontmatter).forEach(([key, val]) => {
@@ -700,7 +717,7 @@ export class JatsDocument {
         }
       });
     }
-    const articleMeta = getArticleMeta(stubFrontmatter);
+    const articleMeta = getArticleMeta(stubFrontmatter, state);
     const elements = articleMeta?.elements ?? [];
     if (notebookRep) {
       elements.push({
@@ -719,12 +736,13 @@ export class JatsDocument {
       isNotebookArticleRep: false,
       isSubArticle: true,
       slug: content.slug,
+      extractAbstract: true,
     });
   }
 
   subArticle(state: IJatsSerializer, content: ArticleContent, notebookRep: boolean): Element {
     const elements: Element[] = [
-      ...this.frontStub(content.frontmatter, notebookRep),
+      ...this.frontStub(content.frontmatter, state, notebookRep),
       { type: 'element', name: 'body', elements: state.elements() },
       ...getBack(state, {
         citations: content.citations,
