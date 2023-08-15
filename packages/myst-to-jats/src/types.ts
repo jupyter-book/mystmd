@@ -24,6 +24,7 @@ export type Options = {
   isNotebookArticleRep?: boolean;
   isSubArticle?: boolean;
   slug?: string;
+  extractAbstract?: boolean;
 };
 
 export type DocumentOptions = Options & {
@@ -36,6 +37,7 @@ export type StateData = {
   isInContainer?: boolean;
   isNotebookArticleRep?: boolean;
   slug?: string;
+  abstract?: Element[];
 };
 
 export type ArticleContent = {

@@ -1,5 +1,5 @@
 import type { ProjectFrontmatter } from 'myst-frontmatter';
-import type { Element } from './types.js';
+import type { Element, IJatsSerializer } from './types.js';
 
 export function getJournalIds(): Element[] {
   // [{ type: 'element', name: 'journal-id', attributes: {'journal-id-type': ...}, text: ...}]
@@ -227,44 +227,52 @@ export function getArticlePages(frontmatter: ProjectFrontmatter): Element[] {
   return pages;
 }
 
-export function getArticleMeta(frontmatter?: ProjectFrontmatter): Element {
-  const elements = frontmatter
-    ? [
-        // article-id
-        // article-version, article-version-alternatives
-        // article-categories
-        ...getArticleTitle(frontmatter),
-        ...getArticleAuthors(frontmatter),
-        // author-notes
-        // pub-date or pub-date-not-available
-        ...getArticleVolume(frontmatter),
-        // volume-id
-        // volume-series
-        ...getArticleIssue(frontmatter),
-        // issue-id
-        // issue-title
-        // issue-title-group
-        // issue-sponsor
-        // issue-part
-        // volume-issue-group
-        // isbn
-        // supplement
-        ...getArticlePages(frontmatter),
-        // email, ext-link, uri, product, supplementary-material
-        // history
-        // pub-history
-        ...getArticlePermissions(frontmatter),
-        // self-uri
-        // related-article, related-object
-        // abstract
-        // trans-abstract
-        // kwd-group
-        // funding-group
-        // support-group
-        // conference
-        // counts
-      ]
-    : [];
+export function getAbstract(state: IJatsSerializer): Element[] {
+  if (!state.data.abstract?.length) return [];
+  return [{ type: 'element', name: 'abstract', elements: state.data.abstract }];
+}
+
+export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSerializer): Element {
+  const elements = [];
+  if (frontmatter) {
+    elements.push(
+      // article-id
+      // article-version, article-version-alternatives
+      // article-categories
+      ...getArticleTitle(frontmatter),
+      ...getArticleAuthors(frontmatter),
+      // author-notes
+      // pub-date or pub-date-not-available
+      ...getArticleVolume(frontmatter),
+      // volume-id
+      // volume-series
+      ...getArticleIssue(frontmatter),
+      // issue-id
+      // issue-title
+      // issue-title-group
+      // issue-sponsor
+      // issue-part
+      // volume-issue-group
+      // isbn
+      // supplement
+      ...getArticlePages(frontmatter),
+      // email, ext-link, uri, product, supplementary-material
+      // history
+      // pub-history
+      ...getArticlePermissions(frontmatter),
+      // self-uri
+      // related-article, related-object
+      // trans-abstract
+      // kwd-group
+      // funding-group
+      // support-group
+      // conference
+      // counts
+    );
+  }
+  if (state) {
+    elements.push(...getAbstract(state));
+  }
   return { type: 'element', name: 'article-meta', elements };
 }
 
@@ -273,11 +281,11 @@ export function getArticleMeta(frontmatter?: ProjectFrontmatter): Element {
  *
  * This element must be defined in a JATS article and must include <article-meta>
  */
-export function getFront(frontmatter?: ProjectFrontmatter): Element[] {
+export function getFront(frontmatter?: ProjectFrontmatter, state?: IJatsSerializer): Element[] {
   const elements: Element[] = [];
   const journalMeta = getJournalMeta();
   if (journalMeta) elements.push(journalMeta);
-  const articleMeta = getArticleMeta(frontmatter);
+  const articleMeta = getArticleMeta(frontmatter, state);
   elements.push(articleMeta);
   return [{ type: 'element', name: 'front', elements }];
 }
