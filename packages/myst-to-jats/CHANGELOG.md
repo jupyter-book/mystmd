@@ -1,5 +1,13 @@
 # myst-to-jats
 
+## 1.0.10
+
+### Patch Changes
+
+- 5f1ccfbe: Keep article-id/article-version in correct order for JATS
+- 2111cd0f: Extract abstract part for JATS frontmatter
+- 36fde09: Do not move abstract to frontmatter on raw notebook representation of article in JATS
+
 ## 1.0.9
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "myst-to-jats",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Export from MyST Markdown to JATS",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-to-jats",
