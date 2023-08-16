@@ -673,8 +673,8 @@ export class JatsDocument {
         // No citations here - don't want duplicates in the jats
       });
     }
-    const subArticleStates = subArticles.map((article) => {
-      const subArticleState = this.subArticleState(article);
+    const subArticleStates = subArticles.map((article, ind) => {
+      const subArticleState = this.subArticleState(article, ind === 0 && isNotebookArticleRep);
       referenceTargetTransform(subArticleState.mdast as any, inventory, article.citations);
       return subArticleState;
     });
@@ -736,13 +736,13 @@ export class JatsDocument {
     return [{ type: 'element', name: 'front-stub', elements }];
   }
 
-  subArticleState(content: ArticleContent): IJatsSerializer {
+  subArticleState(content: ArticleContent, notebookRep: boolean): IJatsSerializer {
     return new JatsSerializer(this.file, content.mdast, {
       ...this.options,
       isNotebookArticleRep: false,
       isSubArticle: true,
       slug: content.slug,
-      extractAbstract: true,
+      extractAbstract: !notebookRep,
     });
   }
 
