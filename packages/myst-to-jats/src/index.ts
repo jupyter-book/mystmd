@@ -718,14 +718,20 @@ export class JatsDocument {
       });
     }
     const articleMeta = getArticleMeta(stubFrontmatter, state);
-    const elements = articleMeta?.elements ?? [];
+    let elements = articleMeta?.elements ?? [];
     if (notebookRep) {
-      elements.push({
+      const articleVersion: Element = {
         type: 'element',
         name: 'article-version',
         attributes: { 'article-version-type': 'alt representation' },
         elements: [{ type: 'text', text: 'notebook' }],
-      });
+      };
+      // For valid JATS, article-id must be first if it is present and article-version must be next
+      if (elements[0]?.name === 'article-id') {
+        elements = [elements[0], articleVersion, ...elements.slice(1)];
+      } else {
+        elements.unshift(articleVersion);
+      }
     }
     return [{ type: 'element', name: 'front-stub', elements }];
   }
