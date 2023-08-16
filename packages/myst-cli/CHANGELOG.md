@@ -1,5 +1,15 @@
 # myst-cli
 
+## 1.1.12
+
+### Patch Changes
+
+- 0b2d47c1: Keep multiple outputs when reducing outputs for pdf/docx exports
+- Updated dependencies [5f1ccfbe]
+- Updated dependencies [2111cd0f]
+- Updated dependencies [36fde09]
+  - myst-to-jats@1.0.10
+
 ## 1.1.11
 
 ### Patch Changes
