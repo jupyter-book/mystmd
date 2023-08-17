@@ -1,0 +1,20 @@
+title: myst-to-typst symbols
+cases:
+  - title: Just a rocket
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Just a rocket 🚀
+    typst: 'Just a rocket #emoji.rocket'
+  - title: emoji!
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 🧮🔤🔡🔠🪗⚕
+    typst: '#emoji.abacus #emoji.abc #emoji.abcd #emoji.ABCD #emoji.accordion #emoji.aesculapius'
