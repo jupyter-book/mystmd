@@ -1,5 +1,19 @@
 # myst-cli
 
+## 1.1.13
+
+### Patch Changes
+
+- a5b188ac: Added location field to page data, dependencies and source fields which contains the path to the file relative to the project root. This is primarily used to appropraitely configure a thebe session with the correct notebook path.
+- 55818f50: Add User-Agent to image and link fetches
+- Updated dependencies [a5b188ac]
+- Updated dependencies [2b318aa1]
+  - myst-spec-ext@1.1.4
+  - myst-templates@1.0.7
+  - myst-common@1.1.4
+  - myst-config@1.1.4
+  - myst-frontmatter@1.1.4
+
 ## 1.1.12
 
 ### Patch Changes
