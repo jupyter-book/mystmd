@@ -11,7 +11,7 @@ import { hashAndCopyStaticFile, tic } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
-import { addWarningForFile } from '../utils/index.js';
+import { EXT_REQUEST_HEADERS, addWarningForFile } from '../utils/index.js';
 import { links } from '../store/reducers.js';
 import type { ExternalLinkResult } from '../store/types.js';
 
@@ -45,7 +45,7 @@ async function checkLink(session: ISession, url: string): Promise<ExternalLinkRe
       return link;
     }
     session.log.debug(`Checking that "${url}" exists`);
-    const resp = await fetch(url);
+    const resp = await fetch(url, { headers: EXT_REQUEST_HEADERS });
     link.ok = resp.ok;
     link.status = resp.status;
     link.statusText = resp.statusText;

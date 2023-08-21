@@ -4,6 +4,7 @@ export * from './createTempFolder.js';
 export * from './fileInfo.js';
 export * from './filterFilenamesByExtension.js';
 export * from './getAllBibtexFiles.js';
+export * from './headers.js';
 export * from './logMessagesFromVFile.js';
 export * from './nextLevel.js';
 export * from './removeExtension.js';
