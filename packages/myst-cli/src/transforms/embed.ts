@@ -48,9 +48,10 @@ export function embedTransform(
     if (!url) return;
     const source: Dependency = { url, label: node.source?.label };
     if (file) {
-      const { kind, slug, frontmatter } = selectFile(session, file) ?? {};
+      const { kind, slug, frontmatter, location } = selectFile(session, file) ?? {};
       if (kind) source.kind = kind;
       if (slug) source.slug = slug;
+      if (location) source.location = location;
       if (frontmatter?.title) source.title = frontmatter.title;
       if (frontmatter?.short_title) source.short_title = frontmatter.short_title;
     }

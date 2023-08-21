@@ -120,7 +120,7 @@ export async function transformMdast(
   const { store, log } = session;
   const cache = castSession(session);
   if (!cache.$mdast[file]) return;
-  const { mdast: mdastPre, kind, frontmatter: preFrontmatter } = cache.$mdast[file].pre;
+  const { mdast: mdastPre, kind, frontmatter: preFrontmatter, location } = cache.$mdast[file].pre;
   if (!mdastPre) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
   // Use structuredClone in future (available in node 17)
@@ -252,6 +252,7 @@ export async function transformMdast(
   const data: RendererData = {
     kind: frontmatter.kernelspec || frontmatter.jupytext ? SourceFileKind.Notebook : kind,
     file,
+    location,
     sha256,
     slug: pageSlug,
     dependencies: [],
