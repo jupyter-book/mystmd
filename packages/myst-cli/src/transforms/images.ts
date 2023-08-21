@@ -12,6 +12,7 @@ import type { Image } from 'myst-spec-ext';
 import { extFromMimeType } from 'nbtx';
 import {
   addWarningForFile,
+  EXT_REQUEST_HEADERS,
   ImageExtensions,
   imagemagick,
   inkscape,
@@ -76,7 +77,7 @@ export async function downloadAndSaveImage(
   session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${filePath}`);
   try {
     const github = getGithubRawUrl(url);
-    const res = await fetch(github ?? url);
+    const res = await fetch(github ?? url, { headers: EXT_REQUEST_HEADERS });
     const contentType = res.headers.get('content-type') || '';
     const extension = mime.extension(contentType);
     if (!extension || !contentType) throw new Error('No content-type for image found.');
