@@ -110,7 +110,7 @@ const conditionMet = (
   return true;
 };
 
-export function validateOptionsFunction(reservedKeys: string[]) {
+export function makeValidateOptionsFunction(reservedKeys: string[]) {
   return (
     session: ISession,
     options: any,
@@ -143,7 +143,7 @@ export function validateOptionsFunction(reservedKeys: string[]) {
   };
 }
 
-export const validateTemplateOptions = validateOptionsFunction(RESERVED_EXPORT_KEYS);
+export const validateTemplateOptions = makeValidateOptionsFunction(RESERVED_EXPORT_KEYS);
 
 export function validateTemplateParts(
   parts: any,
