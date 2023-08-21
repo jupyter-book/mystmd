@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.1.4
+
+### Patch Changes
+
+- a5b188ac: Added location field to page data, dependencies and source fields which contains the path to the file relative to the project root. This is primarily used to appropraitely configure a thebe session with the correct notebook path.
+
 ## 1.1.3
 
 ## 1.1.2

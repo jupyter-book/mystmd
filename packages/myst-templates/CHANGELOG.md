@@ -1,5 +1,13 @@
 # myst-templates
 
+## 1.0.7
+
+### Patch Changes
+
+- 2b318aa1: Refactor and export template validation functions
+  - myst-common@1.1.4
+  - myst-frontmatter@1.1.4
+
 ## 1.0.6
 
 ### Patch Changes
