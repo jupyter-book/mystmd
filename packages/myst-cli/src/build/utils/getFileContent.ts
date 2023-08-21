@@ -44,9 +44,11 @@ export async function getFileContent(
   const allFiles = [...new Set([...files, ...projectFiles])];
   await Promise.all([
     // Load all citations (.bib)
-    ...project.bibliography.map((path) => loadFile(session, path, '.bib')),
+    ...project.bibliography.map((path) => loadFile(session, path, projectPath, '.bib')),
     // Load all content (.md and .ipynb)
-    ...allFiles.map((file) => loadFile(session, file, undefined, { minifyMaxCharacters: 0 })),
+    ...allFiles.map((file) =>
+      loadFile(session, file, projectPath, undefined, { minifyMaxCharacters: 0 }),
+    ),
     // Load up all the intersphinx references
     loadIntersphinx(session, { projectPath }) as Promise<any>,
   ]);

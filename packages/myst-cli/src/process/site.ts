@@ -180,12 +180,18 @@ export async function resolvePageExports(session: ISession, file: string) {
 
 export async function writeFile(
   session: ISession,
-  { file, pageSlug, projectSlug }: { file: string; pageSlug: string; projectSlug?: string },
+  {
+    projectPath,
+    file,
+    pageSlug,
+    projectSlug,
+  }: { projectPath: string; file: string; pageSlug: string; projectSlug?: string },
 ) {
   const toc = tic();
   const selectedFile = selectFile(session, file);
   if (!selectedFile) return;
-  const { frontmatter, mdast, kind, sha256, slug, references, dependencies } = selectedFile;
+  const { frontmatter, mdast, kind, sha256, slug, references, dependencies, location } =
+    selectedFile;
   const exports = await Promise.all([
     resolvePageSource(session, file),
     ...(await resolvePageExports(session, file)),
@@ -200,6 +206,7 @@ export async function writeFile(
       kind,
       sha256,
       slug,
+      location,
       dependencies,
       frontmatter: frontmatterWithExports,
       mdast,
@@ -230,7 +237,7 @@ export async function fastProcessFile(
   },
 ) {
   const toc = tic();
-  await loadFile(session, file);
+  await loadFile(session, file, projectPath);
   const { project, pages } = await loadProject(session, projectPath);
   await transformMdast(session, {
     file,
@@ -251,7 +258,8 @@ export async function fastProcessFile(
     extraLinkTransformers,
     imageExtensions: WEB_IMAGE_EXTENSIONS,
   });
-  await writeFile(session, { file, pageSlug, projectSlug });
+
+  await writeFile(session, { projectPath, file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session, { defaultTemplate });
 }
@@ -287,9 +295,11 @@ export async function processProject(
   if (!watchMode) {
     await Promise.all([
       // Load all citations (.bib)
-      ...project.bibliography.map((path) => loadFile(session, path, '.bib')),
+      ...project.bibliography.map((path) => loadFile(session, path, siteProject.path, '.bib')),
       // Load all content (.md and .ipynb)
-      ...pages.map((page) => loadFile(session, page.file, undefined, { minifyMaxCharacters })),
+      ...pages.map((page) =>
+        loadFile(session, page.file, siteProject.path, undefined, { minifyMaxCharacters }),
+      ),
       // Load up all the intersphinx references
       loadIntersphinx(session, { projectPath: siteProject.path }) as Promise<any>,
     ]);
@@ -340,6 +350,7 @@ export async function processProject(
     await Promise.all(
       pages.map((page) =>
         writeFile(session, {
+          projectPath: project.path,
           file: page.file,
           projectSlug: siteProject.slug as string,
           pageSlug: page.slug,

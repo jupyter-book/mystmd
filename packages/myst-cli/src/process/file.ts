@@ -26,6 +26,7 @@ function checkCache(cache: ISessionWithCache, content: string, file: string) {
 export async function loadFile(
   session: ISession,
   file: string,
+  projectPath?: string,
   extension?: '.md' | '.ipynb' | '.bib',
   opts?: { minifyMaxCharacters?: number },
 ) {
@@ -33,6 +34,16 @@ export async function loadFile(
   session.store.dispatch(warnings.actions.clearWarnings({ file }));
   const cache = castSession(session);
   let success = true;
+
+  let location = file;
+  if (projectPath) {
+    try {
+      location = file.split(projectPath)[1];
+    } catch (err: any) {
+      session.log.error('👎 could not determine relative path from project path');
+    }
+  }
+
   try {
     const ext = extension || path.extname(file).toLowerCase();
     switch (ext) {
@@ -43,7 +54,7 @@ export async function loadFile(
         const mdast = parseMyst(session, content, file);
         cache.$mdast[file] = {
           sha256,
-          pre: { kind: SourceFileKind.Article, file, mdast },
+          pre: { kind: SourceFileKind.Article, file, location, mdast },
         };
         break;
       }
@@ -54,7 +65,7 @@ export async function loadFile(
         const mdast = await processNotebook(cache, file, content, opts);
         cache.$mdast[file] = {
           sha256,
-          pre: { kind: SourceFileKind.Notebook, file, mdast },
+          pre: { kind: SourceFileKind.Notebook, file, location, mdast },
         };
         break;
       }
@@ -82,7 +93,13 @@ export async function loadFile(
         };
         cache.$mdast[file] = {
           sha256,
-          pre: { kind: SourceFileKind.Article, file, mdast: tex.ast as any, frontmatter },
+          pre: {
+            kind: SourceFileKind.Article,
+            file,
+            mdast: tex.ast as any,
+            location,
+            frontmatter,
+          },
         };
         break;
       }

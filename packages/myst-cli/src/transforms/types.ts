@@ -5,6 +5,7 @@ import type { CitationRenderer } from 'citation-js-utils';
 
 export type PreRendererData = {
   file: string;
+  location: string;
   mdast: GenericParent;
   kind: SourceFileKind;
   frontmatter?: PageFrontmatter;

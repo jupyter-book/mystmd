@@ -139,6 +139,7 @@ export type Dependency = {
   title?: string;
   short_title?: string;
   label?: string;
+  location?: string;
 };
 
 export type Embed = {
