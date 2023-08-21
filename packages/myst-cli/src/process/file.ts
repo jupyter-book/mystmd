@@ -37,12 +37,10 @@ export async function loadFile(
 
   let location = file;
   if (projectPath) {
-    try {
-      location = file.split(projectPath)[1];
-    } catch (err: any) {
-      session.log.error('👎 could not determine relative path from project path');
-    }
+    location = path.relative(projectPath, file);
   }
+  // ensure forward slashes and not windows backslashes
+  location = location.replaceAll('\\', '/');
 
   try {
     const ext = extension || path.extname(file).toLowerCase();

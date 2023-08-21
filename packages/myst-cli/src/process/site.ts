@@ -180,12 +180,7 @@ export async function resolvePageExports(session: ISession, file: string) {
 
 export async function writeFile(
   session: ISession,
-  {
-    projectPath,
-    file,
-    pageSlug,
-    projectSlug,
-  }: { projectPath: string; file: string; pageSlug: string; projectSlug?: string },
+  { file, pageSlug, projectSlug }: { file: string; pageSlug: string; projectSlug?: string },
 ) {
   const toc = tic();
   const selectedFile = selectFile(session, file);
@@ -259,7 +254,7 @@ export async function fastProcessFile(
     imageExtensions: WEB_IMAGE_EXTENSIONS,
   });
 
-  await writeFile(session, { projectPath, file, pageSlug, projectSlug });
+  await writeFile(session, { file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session, { defaultTemplate });
 }
@@ -350,7 +345,6 @@ export async function processProject(
     await Promise.all(
       pages.map((page) =>
         writeFile(session, {
-          projectPath: project.path,
           file: page.file,
           projectSlug: siteProject.slug as string,
           pageSlug: page.slug,
