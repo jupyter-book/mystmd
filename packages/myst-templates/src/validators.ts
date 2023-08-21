@@ -110,36 +110,40 @@ const conditionMet = (
   return true;
 };
 
-export function validateTemplateOptions(
-  session: ISession,
-  options: any,
-  optionDefinitions: TemplateOptionDefinition[],
-  opts: FileValidationOptions,
-) {
-  const value = validateObject(options, opts);
-  if (value === undefined) return undefined;
-  const filteredOptions = optionDefinitions.filter((def) => {
-    return conditionMet(def, value);
-  });
-  const required = filteredOptions.filter((def) => isRequired(def)).map((def) => def.id);
-  const optional = filteredOptions
-    .filter((def) => !isRequired(def))
-    .map((def) => def.id)
-    .concat(RESERVED_EXPORT_KEYS);
-  validateKeys(value, { optional, required }, { returnInvalidPartial: true, ...opts });
-  const output: Record<string, any> = {};
-  filteredOptions.forEach((def) => {
-    if (defined(value[def.id]) || def.default) {
-      output[def.id] = validateTemplateOption(
-        session,
-        value[def.id] ?? def.default,
-        def,
-        incrementOptions(def.id, opts),
-      );
-    }
-  });
-  return output;
+export function makeValidateOptionsFunction(reservedKeys: string[]) {
+  return (
+    session: ISession,
+    options: any,
+    optionDefinitions: TemplateOptionDefinition[],
+    opts: FileValidationOptions,
+  ) => {
+    const value = validateObject(options, opts);
+    if (value === undefined) return undefined;
+    const filteredOptions = optionDefinitions.filter((def) => {
+      return conditionMet(def, value);
+    });
+    const required = filteredOptions.filter((def) => isRequired(def)).map((def) => def.id);
+    const optional = filteredOptions
+      .filter((def) => !isRequired(def))
+      .map((def) => def.id)
+      .concat(reservedKeys);
+    validateKeys(value, { optional, required }, { returnInvalidPartial: true, ...opts });
+    const output: Record<string, any> = {};
+    filteredOptions.forEach((def) => {
+      if (defined(value[def.id]) || def.default) {
+        output[def.id] = validateTemplateOption(
+          session,
+          value[def.id] ?? def.default,
+          def,
+          incrementOptions(def.id, opts),
+        );
+      }
+    });
+    return output;
+  };
 }
+
+export const validateTemplateOptions = makeValidateOptionsFunction(RESERVED_EXPORT_KEYS);
 
 export function validateTemplateParts(
   parts: any,
