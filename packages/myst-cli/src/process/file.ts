@@ -37,7 +37,7 @@ export async function loadFile(
 
   let location = file;
   if (projectPath) {
-    location = path.relative(projectPath, file);
+    location = `/${path.relative(projectPath, file)}`;
   }
   // ensure forward slashes and not windows backslashes
   location = location.replaceAll('\\', '/');
