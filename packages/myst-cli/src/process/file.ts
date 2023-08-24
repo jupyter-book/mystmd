@@ -131,6 +131,7 @@ export async function bibFilesInDir(session: ISession, dir: string, load = true)
 
 export function selectFile(session: ISession, file: string): RendererData | undefined {
   const cache = castSession(session);
+  file = path.resolve(file);
   if (!cache.$mdast[file]) {
     session.log.error(`Expected mdast to be processed for ${file}`);
     return undefined;
