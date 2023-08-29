@@ -75,13 +75,13 @@ export function extendFrontmatter(frontmatter: PageFrontmatter): RendererDoc {
     frontmatter.affiliations
       ?.filter((aff) => aff.id && !aff.collaboration)
       .map((aff, index) => {
-        return { value: aff, ...indexAndLetter(index) };
+        return { ...aff, value: aff, ...indexAndLetter(index) };
       }) ?? [];
   const collaborations =
     frontmatter.affiliations
       ?.filter((aff) => aff.id && aff.collaboration)
       .map((aff, index) => {
-        return { value: aff, ...indexAndLetter(index) };
+        return { ...aff, value: aff, ...indexAndLetter(index) };
       }) ?? [];
   const doc: RendererDoc = {
     ...frontmatter,
