@@ -1,5 +1,13 @@
 # jtex
 
+## 1.0.5
+
+### Patch Changes
+
+- 18f30dd: Update the shape of affiliations in myst-template doc
+- Updated dependencies [18f30dd]
+  - myst-templates@1.0.8
+
 ## 1.0.4
 
 ### Patch Changes
