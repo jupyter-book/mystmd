@@ -46,6 +46,8 @@ describe('extendFrontmatter', () => {
         letter: 'A',
         affiliations: [
           {
+            id: 'aff1',
+            name: 'univ 1',
             value: {
               id: 'aff1',
               name: 'univ 1',
@@ -54,6 +56,8 @@ describe('extendFrontmatter', () => {
             letter: 'A',
           },
           {
+            id: 'aff2',
+            name: 'univ 2',
             value: {
               id: 'aff2',
               name: 'univ 2',
@@ -64,6 +68,9 @@ describe('extendFrontmatter', () => {
         ],
         collaborations: [
           {
+            id: 'col1',
+            name: 'group 1',
+            collaboration: true,
             value: {
               id: 'col1',
               name: 'group 1',
@@ -82,6 +89,8 @@ describe('extendFrontmatter', () => {
         letter: 'B',
         affiliations: [
           {
+            id: 'aff1',
+            name: 'univ 1',
             value: {
               id: 'aff1',
               name: 'univ 1',
@@ -92,6 +101,9 @@ describe('extendFrontmatter', () => {
         ],
         collaborations: [
           {
+            id: 'col2',
+            name: 'group 2',
+            collaboration: true,
             value: {
               id: 'col2',
               name: 'group 2',
@@ -105,6 +117,8 @@ describe('extendFrontmatter', () => {
     ]);
     expect(doc.affiliations).toEqual([
       {
+        id: 'aff1',
+        name: 'univ 1',
         value: {
           id: 'aff1',
           name: 'univ 1',
@@ -113,6 +127,8 @@ describe('extendFrontmatter', () => {
         letter: 'A',
       },
       {
+        id: 'aff2',
+        name: 'univ 2',
         value: {
           id: 'aff2',
           name: 'univ 2',
@@ -123,6 +139,9 @@ describe('extendFrontmatter', () => {
     ]);
     expect(doc.collaborations).toEqual([
       {
+        id: 'col1',
+        name: 'group 1',
+        collaboration: true,
         value: {
           id: 'col1',
           name: 'group 1',
@@ -132,6 +151,9 @@ describe('extendFrontmatter', () => {
         letter: 'A',
       },
       {
+        id: 'col2',
+        name: 'group 2',
+        collaboration: true,
         value: {
           id: 'col2',
           name: 'group 2',
