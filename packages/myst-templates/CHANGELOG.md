@@ -1,5 +1,11 @@
 # myst-templates
 
+## 1.0.8
+
+### Patch Changes
+
+- 18f30dd: Update the shape of affiliations in myst-template doc
+
 ## 1.0.7
 
 ### Patch Changes

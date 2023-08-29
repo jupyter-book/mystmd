@@ -1,5 +1,15 @@
 # myst-cli
 
+## 1.1.14
+
+### Patch Changes
+
+- bc3e6a3f: checkLink is exported
+- bc3e6a3f: selectFile resolves the input file path
+- Updated dependencies [18f30dd]
+  - myst-templates@1.0.8
+  - jtex@1.0.5
+
 ## 1.1.13
 
 ### Patch Changes
