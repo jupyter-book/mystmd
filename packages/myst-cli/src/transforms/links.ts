@@ -24,7 +24,7 @@ const skippedDomains = [
   'en.wikipedia.org',
 ];
 
-async function checkLink(session: ISession, url: string): Promise<ExternalLinkResult> {
+export async function checkLink(session: ISession, url: string): Promise<ExternalLinkResult> {
   const cached = selectors.selectLinkStatus(session.store.getState(), url);
   if (cached) return cached;
   const link: ExternalLinkResult = {
