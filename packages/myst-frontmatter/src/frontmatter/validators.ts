@@ -672,22 +672,15 @@ export function validateBinderHubOptions(input: any, opts: ValidationOptions) {
       ...incrementOptions('provider', opts),
       regex: /.+/,
     });
-    if (output.provider?.match(/^(git|github|gitlab|gist)$/i)) {
-      if (defined(value.repo)) {
-        output.repo = validateString(value.repo, {
-          ...incrementOptions('repo', opts),
-          regex: GITHUB_USERNAME_REPO_REGEX,
-        });
-      }
-    } else {
-      // otherwise repo can be any value, validate as any non empty string
-      output.repo = validateString(value.repo, {
-        ...incrementOptions('repo', opts),
-        regex: /.+/,
-      });
-    }
+  }
+  if (defined(value.provider) && !output.provider?.match(/^(git|github|gitlab|gist)$/i)) {
+    // repo can be any value, but must be present -> validate as any non empty string
+    output.repo = validateString(value.repo, {
+      ...incrementOptions('repo', opts),
+      regex: /.+/,
+    });
   } else {
-    // assumes a WellKnownRepoProvider defaulting to 'github', validate repo as a git*/gist spec
+    // otherwise repo is optional, but must be a valid GitHub username/repo is defined
     if (defined(value.repo)) {
       output.repo = validateString(value.repo, {
         ...incrementOptions('repo', opts),
@@ -695,7 +688,6 @@ export function validateBinderHubOptions(input: any, opts: ValidationOptions) {
       });
     }
   }
-
   if (defined(value.ref)) {
     output.ref = validateString(value.ref, incrementOptions('ref', opts));
   }
