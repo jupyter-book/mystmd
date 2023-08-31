@@ -680,7 +680,7 @@ export function validateBinderHubOptions(input: any, opts: ValidationOptions) {
         });
       }
     } else {
-      // otherwise provider can be any value, validate as any non empty string
+      // otherwise repo can be any value, validate as any non empty string
       output.repo = validateString(value.repo, {
         ...incrementOptions('repo', opts),
         regex: /.+/,
