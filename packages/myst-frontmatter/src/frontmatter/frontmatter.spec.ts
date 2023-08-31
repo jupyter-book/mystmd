@@ -76,7 +76,7 @@ const TEST_THEBE: Thebe = {
     url: 'https://my.binder.org/blah',
     ref: 'HEAD',
     repo: 'my-org/my-repo',
-    provider: 'github' as any,
+    provider: 'github',
   },
   server: {
     url: 'https://my.server.org',
@@ -321,6 +321,47 @@ describe('validateThebe', () => {
   });
   it('full object returns self', async () => {
     expect(validateThebe(TEST_THEBE, opts)).toEqual(TEST_THEBE);
+  });
+  it('custom provider accepts url as repo value', async () => {
+    const output = validateThebe(
+      {
+        ...TEST_THEBE,
+        binder: {
+          url: 'https://binder.curvenote.com/services/binder/',
+          repo: 'https://curvenote.com/sub/bundle.zip',
+          provider: 'custom',
+        },
+      },
+      opts,
+    );
+    expect(output?.binder).toEqual({
+      url: 'https://binder.curvenote.com/services/binder/',
+      repo: 'https://curvenote.com/sub/bundle.zip',
+      provider: 'custom',
+    });
+  });
+  it('errors if no repo with custom provider', async () => {
+    expect(opts.messages).toEqual({});
+    expect(
+      validateThebe(
+        {
+          ...TEST_THEBE,
+          binder: {
+            url: 'https://binder.curvenote.com/services/binder/',
+            provider: 'custom',
+          },
+        },
+        opts,
+      ),
+    ).toEqual({
+      ...TEST_THEBE,
+      binder: {
+        url: 'https://binder.curvenote.com/services/binder/',
+        provider: 'custom',
+      },
+    });
+    expect(opts.messages.errors?.length).toEqual(1);
+    expect(opts.messages.errors).toEqual({});
   });
 });
 
