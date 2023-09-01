@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'vitest';
-import { reviveHtmlTransform } from './html';
+import { reconstructHtmlTransform } from './html';
 
-describe('Test reviveHtmlTransform', () => {
+describe('Test reconstructHtmlTransform', () => {
   test('tree without html returns self', async () => {
     const mdast = { type: 'root', children: [{ type: 'code', lang: 'geometry', value: 'y=mx+b' }] };
-    reviveHtmlTransform(mdast);
+    reconstructHtmlTransform(mdast);
     expect(mdast).toEqual({
       type: 'root',
       children: [{ type: 'code', lang: 'geometry', value: 'y=mx+b' }],
@@ -12,7 +12,7 @@ describe('Test reviveHtmlTransform', () => {
   });
   test('self-contained html returns self', async () => {
     const mdast = { type: 'root', children: [{ type: 'html', value: '<element/>' }] };
-    reviveHtmlTransform(mdast);
+    reconstructHtmlTransform(mdast);
     expect(mdast).toEqual({
       type: 'root',
       children: [{ type: 'html', value: '<element/>' }],
@@ -26,7 +26,7 @@ describe('Test reviveHtmlTransform', () => {
         { type: 'html', value: '</button>' },
       ],
     };
-    reviveHtmlTransform(mdast);
+    reconstructHtmlTransform(mdast);
     expect(mdast).toEqual({
       type: 'root',
       children: [{ type: 'html', value: '<button></button>' }],
@@ -41,7 +41,7 @@ describe('Test reviveHtmlTransform', () => {
         { type: 'html', value: '</sup>' },
       ],
     };
-    reviveHtmlTransform(mdast);
+    reconstructHtmlTransform(mdast);
     expect(mdast).toEqual({
       type: 'root',
       children: [{ type: 'html', value: '<sup><em>my text</em></sup>' }],
@@ -58,7 +58,7 @@ describe('Test reviveHtmlTransform', () => {
         { type: 'html', value: '</button>' },
       ],
     };
-    reviveHtmlTransform(mdast);
+    reconstructHtmlTransform(mdast);
     expect(mdast).toEqual({
       type: 'root',
       children: [{ type: 'html', value: '<button><i>my text</i></button>' }],
@@ -73,7 +73,7 @@ describe('Test reviveHtmlTransform', () => {
         { type: 'html', value: '</div>' },
       ],
     };
-    reviveHtmlTransform(mdast);
+    reconstructHtmlTransform(mdast);
     expect(mdast).toEqual({
       type: 'root',
       children: [{ type: 'html', value: '<div><p>my text</p></div>' }],
@@ -87,7 +87,7 @@ describe('Test reviveHtmlTransform', () => {
         { type: 'html', value: '<!-- My Comment -->' },
       ],
     };
-    reviveHtmlTransform(mdast);
+    reconstructHtmlTransform(mdast);
     expect(mdast).toEqual({
       type: 'root',
       children: [
@@ -104,7 +104,7 @@ describe('Test reviveHtmlTransform', () => {
         { type: 'paragraph', children: [{ type: 'text', value: 'my text' }] },
       ],
     };
-    reviveHtmlTransform(mdast);
+    reconstructHtmlTransform(mdast);
     expect(mdast).toEqual({
       type: 'root',
       children: [
@@ -121,7 +121,7 @@ describe('Test reviveHtmlTransform', () => {
         { type: 'paragraph', children: [{ type: 'text', value: 'my text' }] },
       ],
     };
-    reviveHtmlTransform(mdast);
+    reconstructHtmlTransform(mdast);
     expect(mdast).toEqual({
       type: 'root',
       children: [
@@ -138,13 +138,28 @@ describe('Test reviveHtmlTransform', () => {
         { type: 'html', value: '</button>' },
       ],
     };
-    reviveHtmlTransform(mdast);
+    reconstructHtmlTransform(mdast);
     expect(mdast).toEqual({
       type: 'root',
       children: [
         { type: 'paragraph', children: [{ type: 'text', value: 'my text' }] },
         { type: 'html', value: '</button>' },
       ],
+    });
+  });
+  test('unsafe html is NOT sanitized', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        { type: 'html', value: '<script>' },
+        { type: 'text', value: 'alert("error")' },
+        { type: 'html', value: '</script>' },
+      ],
+    };
+    reconstructHtmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [{ type: 'html', value: '<script>alert("error")</script>' }],
     });
   });
 });

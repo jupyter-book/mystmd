@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "doi-utils": "^2.0.0",
+    "hast-util-from-html": "^2.0.1",
     "intersphinx": "^1.0.2",
     "js-yaml": "^4.1.0",
     "katex": "^0.15.2",

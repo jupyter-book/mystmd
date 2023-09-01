@@ -4,7 +4,6 @@ import { u } from 'unist-builder';
 import classNames from 'classnames';
 import type { Plugin } from 'unified';
 import type { ElementContent, Properties } from 'hast';
-import { fromHtml } from 'hast-util-from-html';
 import type { GenericParent } from 'myst-common';
 
 const abbreviation: Handler = (h, node) => h(node, 'abbr', { title: node.title }, all(h, node));
@@ -149,10 +148,6 @@ const code: Handler = (h, node) => {
   return h(node.position, 'pre', [codeHast]);
 };
 
-const html: Handler = (h, node) => {
-  return fromHtml(node.value, { fragment: true }).children as ElementContent[];
-};
-
 const iframe: Handler = (h, node) => h(node, 'div', { class: 'iframe' });
 const bibliography: Handler = (h, node) => h(node, 'div', { class: 'bibliography' });
 const details: Handler = (h, node) => h(node, 'details');
@@ -194,7 +189,6 @@ export const mystToHast: Plugin<[Options?], string, GenericParent> =
         crossReference,
         code,
         table,
-        html,
         iframe,
         bibliography,
         details,
