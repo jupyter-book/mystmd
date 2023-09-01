@@ -3,7 +3,7 @@ import type { VFileMessage } from 'vfile-message';
 import { map } from 'unist-util-map';
 import { customAlphabet } from 'nanoid';
 import type { Node, Parent, PhrasingContent } from 'myst-spec';
-import type { GenericNode, GenericParent } from './types.js';
+import type { AdmonitionKind, GenericNode, GenericParent } from './types.js';
 
 export type MessageInfo = {
   node?: Node;
@@ -129,4 +129,20 @@ export function mergeTextNodes(node: GenericNode): GenericNode {
   }, [] as GenericNode[]);
   if (children) node.children = children;
   return node;
+}
+
+export function admonitionKindToTitle(kind: AdmonitionKind | string) {
+  const transform: Record<string, string> = {
+    attention: 'Attention',
+    caution: 'Caution',
+    danger: 'Danger',
+    error: 'Error',
+    important: 'Important',
+    hint: 'Hint',
+    note: 'Note',
+    seealso: 'See Also',
+    tip: 'Tip',
+    warning: 'Warning',
+  };
+  return transform[kind] || `Unknown Admonition "${kind}"`;
 }

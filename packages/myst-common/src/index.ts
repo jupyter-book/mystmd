@@ -1,4 +1,5 @@
 export {
+  admonitionKindToTitle,
   toText,
   fileError,
   fileWarn,
@@ -13,7 +14,7 @@ export {
 } from './utils.js';
 export { selectBlockParts, extractPart } from './extractParts.js';
 export { TemplateKind, TemplateOptionType } from './templates.js';
-export { NotebookCell, ParseTypesEnum } from './types.js';
+export { AdmonitionKind, NotebookCell, ParseTypesEnum, TargetKind } from './types.js';
 
 export type { MessageInfo } from './utils.js';
 export type {
