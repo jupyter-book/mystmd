@@ -39,6 +39,7 @@
   "dependencies": {
     "classnames": "^2.3.2",
     "hast": "^1.0.0",
+    "hast-util-from-html": "^2.0.1",
     "hast-util-to-mdast": "^8.3.1",
     "mdast": "^3.0.0",
     "mdast-util-find-and-replace": "^2.1.0",
