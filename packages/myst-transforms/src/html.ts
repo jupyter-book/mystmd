@@ -8,8 +8,10 @@ import { visit } from 'unist-util-visit';
 import type { Options } from 'rehype-parse';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
-import type { GenericParent } from 'myst-common';
 import { liftChildren } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
+import { mystToHtml } from 'myst-to-html';
+import { remove } from 'unist-util-remove';
 
 export type HtmlTransformOptions = {
   keepBreaks?: boolean;
@@ -66,6 +68,57 @@ export function htmlTransform(tree: GenericParent, opts?: HtmlTransformOptions) 
   selectAll('_break', tree).forEach((node: any) => {
     node.type = 'break';
   });
+  return tree;
+}
+
+function finalizeNode(htmlNodeWithChildren: GenericParent, htmlClosingNode: GenericNode) {
+  const innerHtml = mystToHtml({ type: 'root', children: htmlNodeWithChildren.children });
+  htmlNodeWithChildren.value = `${htmlNodeWithChildren.value?.trim()}${innerHtml}${htmlClosingNode.value?.trim()}`;
+  htmlNodeWithChildren.children.forEach((child: GenericNode) => {
+    child.type = '__delete__';
+  });
+  htmlClosingNode.type = '__delete__';
+  delete (htmlNodeWithChildren as GenericNode).children;
+}
+
+function htmlFutz(tree: GenericParent) {
+  const htmlOpenNodes: GenericParent[] = [];
+  tree.children.forEach((child: GenericNode) => {
+    if (child.type === 'html') {
+      const value = child.value?.trim();
+      if (value?.startsWith('</')) {
+        // Closing node
+        const htmlOpenNode = htmlOpenNodes.pop();
+        if (!htmlOpenNode) {
+          return;
+        }
+        finalizeNode(htmlOpenNode, child);
+        if (htmlOpenNodes.length) {
+          htmlOpenNodes[htmlOpenNodes.length - 1].children.push(htmlOpenNode);
+        }
+      } else if (!value?.endsWith('/>') && !value?.endsWith('-->')) {
+        // Opening node that doesn't close itself
+        child.children = [];
+        htmlOpenNodes.push(child as GenericParent);
+      }
+    } else {
+      if (child.children) {
+        htmlFutz(child as GenericParent);
+      }
+      if (htmlOpenNodes.length) {
+        htmlOpenNodes[htmlOpenNodes.length - 1].children.push(child);
+      }
+    }
+  });
+  // At this point, any htmlOpenNodes are errors; just clean them up.
+  htmlOpenNodes.forEach((node: GenericNode) => {
+    delete node.children;
+  });
+}
+
+export function reviveHtmlTransform(tree: GenericParent) {
+  htmlFutz(tree);
+  remove(tree, '__delete__');
   return tree;
 }
 
