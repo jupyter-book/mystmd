@@ -22,7 +22,7 @@ import {
   validateNumber,
 } from 'simple-validators';
 import { validateLicenses } from '../licenses/validators.js';
-import { BinderProviders, ExportFormats } from './types.js';
+import { ExportFormats } from './types.js';
 import type {
   Author,
   Biblio,
