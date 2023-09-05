@@ -24,10 +24,14 @@ export function embedTransform(
     if (!target) return;
     let newNode = copyNode(target.node as any) as GenericNode | null;
     if (newNode && node['remove-output']) {
-      newNode = filter(newNode, (n: GenericNode) => n.type !== 'output');
+      newNode = filter(newNode, (n: GenericNode) => {
+        return n.type !== 'output' && n.data?.type !== 'output';
+      });
     }
     if (newNode && node['remove-input']) {
-      newNode = filter(newNode, (n: GenericNode) => n.type !== 'code');
+      newNode = filter(newNode, (n: GenericNode) => {
+        return n.type !== 'code' || n.data?.type === 'output';
+      });
     }
     selectAll('[identifier],[label],[html_id]', newNode).forEach((idNode: GenericNode) => {
       delete idNode.identifier;
