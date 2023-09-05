@@ -72,16 +72,13 @@ export type Thebe = {
   local?: boolean | JupyterLocalOptions;
 };
 
-export enum BinderProviders {
-  git = 'git',
-  github = 'github',
-  gitlab = 'gitlab',
-}
+export type WellKnownRepoProviders = 'github' | 'gitlab' | 'git' | 'gist';
+export type BinderProviders = WellKnownRepoProviders | string;
 
 export type BinderHubOptions = {
   url?: string;
-  ref?: string; // org-name/repo-name
-  repo?: string; // valid git refs only?
+  ref?: string; // org-name/repo-name for WellKnownRepoProviders, url for 'meca', otherwise any string
+  repo?: string;
   provider?: BinderProviders;
 };
 

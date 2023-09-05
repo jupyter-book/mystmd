@@ -22,7 +22,7 @@ import {
   validateNumber,
 } from 'simple-validators';
 import { validateLicenses } from '../licenses/validators.js';
-import { BinderProviders, ExportFormats } from './types.js';
+import { ExportFormats } from './types.js';
 import type {
   Author,
   Biblio,
@@ -667,21 +667,31 @@ export function validateBinderHubOptions(input: any, opts: ValidationOptions) {
   if (defined(value.url)) {
     output.url = validateUrl(value.url, incrementOptions('url', opts));
   }
+  if (defined(value.provider)) {
+    output.provider = validateString(value.provider, {
+      ...incrementOptions('provider', opts),
+      regex: /.+/,
+    });
+  }
+  if (defined(value.provider) && !output.provider?.match(/^(git|github|gitlab|gist)$/i)) {
+    // repo can be any value, but must be present -> validate as any non empty string
+    output.repo = validateString(value.repo, {
+      ...incrementOptions('repo', opts),
+      regex: /.+/,
+    });
+  } else {
+    // otherwise repo is optional, but must be a valid GitHub username/repo is defined
+    if (defined(value.repo)) {
+      output.repo = validateString(value.repo, {
+        ...incrementOptions('repo', opts),
+        regex: GITHUB_USERNAME_REPO_REGEX,
+      });
+    }
+  }
   if (defined(value.ref)) {
     output.ref = validateString(value.ref, incrementOptions('ref', opts));
   }
-  if (defined(value.repo)) {
-    output.repo = validateString(value.repo, {
-      ...incrementOptions('repo', opts),
-      regex: GITHUB_USERNAME_REPO_REGEX,
-    });
-  }
-  if (defined(value.provider)) {
-    output.provider = validateEnum<BinderProviders>(value.provider, {
-      ...incrementOptions('provider', opts),
-      enum: BinderProviders,
-    });
-  }
+
   return output;
 }
 
