@@ -32,3 +32,22 @@ cases:
                   unit: Hz
                   units: [hertz]
                   value: 100 Hz
+
+
+  - title: decimal number parses
+    markdown: '{si}`1.345e10 <\hertz>`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: si
+              value: 1.345e10 <\hertz>
+              children:
+                - type: si
+                  alt: hertz
+                  number: '1.345e10'
+                  unit: Hz
+                  units: [hertz]
+                  value: 1.345e10 Hz
