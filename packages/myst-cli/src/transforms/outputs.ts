@@ -95,6 +95,7 @@ export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: s
           const relativePath = relative(dirname(file), output.path);
           return {
             type: 'image',
+            data: { type: 'output' },
             url: relativePath,
             urlSource: relativePath,
           };
@@ -103,6 +104,7 @@ export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: s
           const content = fs.readFileSync(join(writeFolder, filename), 'utf-8');
           return {
             type: 'code',
+            data: { type: 'output' },
             value: stripAnsi(content),
           };
         }
