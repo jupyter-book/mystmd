@@ -1,5 +1,5 @@
 import type MarkdownIt from 'markdown-it';
-import type { TargetKind } from 'myst-transforms';
+import type { TargetKind } from 'myst-common';
 import { toHTML } from './utils.js';
 
 type Target = {

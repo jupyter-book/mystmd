@@ -1,10 +1,11 @@
-import rehypeStringify from 'rehype-stringify';
 import { unified } from 'unified';
+import rehypeStringify from 'rehype-stringify';
+import type { Handlers } from 'mdast-util-to-hast';
+import type { GenericParent } from 'myst-common';
 import { formatHtml } from './format.js';
 import { mystToHast } from './schema.js';
 import { State } from './state.js';
 import { transform } from './transforms.js';
-import type { GenericParent } from 'myst-common';
 
 export function mystToHtml(
   tree: GenericParent,
@@ -13,6 +14,7 @@ export function mystToHtml(
     hast?: {
       clobberPrefix?: 'm-';
       allowDangerousHtml?: boolean;
+      handlers?: Handlers;
     };
     stringifyHtml?: {
       closeSelfClosing?: boolean;

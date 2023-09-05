@@ -81,3 +81,25 @@ export type RoleSpec = {
   validate?: (data: RoleData, vfile: VFile) => RoleData;
   run: (data: RoleData, vfile: VFile) => GenericNode[];
 };
+
+export enum TargetKind {
+  heading = 'heading',
+  equation = 'equation',
+  figure = 'figure',
+  table = 'table',
+  code = 'code',
+}
+
+export enum AdmonitionKind {
+  admonition = 'admonition',
+  attention = 'attention',
+  caution = 'caution',
+  danger = 'danger',
+  error = 'error',
+  important = 'important',
+  hint = 'hint',
+  note = 'note',
+  seealso = 'seealso',
+  tip = 'tip',
+  warning = 'warning',
+}

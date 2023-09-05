@@ -3,12 +3,10 @@ export {
   admonitionHeadersTransform,
   admonitionBlockquotePlugin,
   admonitionBlockquoteTransform,
-  admonitionKindToTitle,
 } from './admonitions.js';
-export { AdmonitionKind } from './types.js';
 export { captionParagraphPlugin, captionParagraphTransform } from './caption.js';
 export { footnotesPlugin, footnotesTransform } from './footnotes.js';
-export { htmlPlugin, htmlTransform } from './html.js';
+export { htmlPlugin, htmlTransform, reconstructHtmlTransform } from './html.js';
 export { htmlIdsPlugin, htmlIdsTransform } from './htmlIds.js';
 export { keysPlugin, keysTransform } from './keys.js';
 export {
@@ -44,7 +42,7 @@ export { glossaryPlugin, glossaryTransform } from './glossary.js';
 export { abbreviationPlugin, abbreviationTransform } from './abbreviations.js';
 
 // Enumeration
-export type { IReferenceState, NumberingOptions, TargetKind, ReferenceKind } from './enumerate.js';
+export type { IReferenceState, NumberingOptions, ReferenceKind } from './enumerate.js';
 export {
   enumerateTargetsTransform,
   enumerateTargetsPlugin,

@@ -50,7 +50,6 @@
   },
   "devDependencies": {
     "@types/nunjucks": "^3.2.2",
-    "@types/sanitize-html": "^2.9.0",
     "memfs": "^3.5.3"
   }
 }

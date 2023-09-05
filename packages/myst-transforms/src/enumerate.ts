@@ -13,6 +13,7 @@ import {
   setTextAsChild,
   copyNode,
   liftChildren,
+  TargetKind,
 } from 'myst-common';
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
@@ -29,14 +30,6 @@ type ResolvableCrossReference = Omit<CrossReference, 'kind'> & {
   dataUrl?: string;
   html_id?: string;
 };
-
-export enum TargetKind {
-  heading = 'heading',
-  equation = 'equation',
-  figure = 'figure',
-  table = 'table',
-  code = 'code',
-}
 
 function getDefaultNumberedReferenceLabel(kind: TargetKind | string) {
   switch (kind) {

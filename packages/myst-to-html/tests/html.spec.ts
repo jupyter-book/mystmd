@@ -11,4 +11,8 @@ describe('mystToHtml', () => {
     const html = mystToHtml(u('root', [u('comment', 'hello world')]) as any);
     expect(html).toBe('<!--hello world-->');
   });
+  it('Html node is empty by default', () => {
+    const html = mystToHtml(u('root', [u('html', '<p>hello world</>')]) as any);
+    expect(html).toBe('');
+  });
 });

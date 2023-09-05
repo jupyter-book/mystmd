@@ -2,7 +2,7 @@ import type { Plugin } from 'unified';
 import type { Admonition, AdmonitionTitle, Blockquote, FlowContent } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { AdmonitionKind } from './types.js';
+import { AdmonitionKind, admonitionKindToTitle } from 'myst-common';
 
 type Options = {
   /** Replace the admonition title with the first paragraph if it is all bold. */
@@ -10,22 +10,6 @@ type Options = {
 };
 
 const githubAdmonitionKinds = ['note', 'important', 'warning'];
-
-export function admonitionKindToTitle(kind: AdmonitionKind | string) {
-  const transform: Record<string, string> = {
-    attention: 'Attention',
-    caution: 'Caution',
-    danger: 'Danger',
-    error: 'Error',
-    important: 'Important',
-    hint: 'Hint',
-    note: 'Note',
-    seealso: 'See Also',
-    tip: 'Tip',
-    warning: 'Warning',
-  };
-  return transform[kind] || `Unknown Admonition "${kind}"`;
-}
 
 /**
  * Visit all admonitions and add headers if necessary

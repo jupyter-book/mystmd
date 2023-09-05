@@ -9,9 +9,8 @@ import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAfter } from 'unist-util-find-after';
 import { remove } from 'unist-util-remove';
-import { liftChildren, normalizeLabel } from 'myst-common';
+import { liftChildren, normalizeLabel, AdmonitionKind, admonitionKindToTitle } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { AdmonitionKind, admonitionKindToTitle } from 'myst-transforms';
 import type { EnumeratorOptions, State } from './state.js';
 import { enumerateTargets, resolveReferences } from './state.js';
 
