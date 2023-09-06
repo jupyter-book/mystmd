@@ -1,5 +1,17 @@
 # myst-transforms
 
+## 1.1.1
+
+### Patch Changes
+
+- 7752cb70: Bump dependency versions
+- 7752cb70: Add html transform that combines related html nodes
+- Updated dependencies [7752cb70]
+- Updated dependencies [7752cb70]
+  - myst-to-html@1.0.7
+  - myst-common@1.1.5
+  - myst-spec-ext@1.1.5
+
 ## 1.1.0
 
 ### Minor Changes

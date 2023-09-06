@@ -1,5 +1,32 @@
 # myst-cli
 
+## 1.1.15
+
+### Patch Changes
+
+- 7feeb49: 🏷 Tag reduced outputs as data.type.output
+- Updated dependencies [7752cb70]
+- Updated dependencies [ba0441a0]
+- Updated dependencies [7752cb70]
+  - myst-ext-exercise@1.0.3
+  - myst-ext-reactive@1.0.3
+  - myst-transforms@1.1.1
+  - myst-ext-proof@1.0.3
+  - myst-ext-card@1.0.3
+  - myst-ext-grid@1.0.3
+  - myst-ext-tabs@1.0.3
+  - myst-to-docx@1.0.4
+  - myst-to-jats@1.0.11
+  - myst-common@1.1.5
+  - myst-to-tex@1.0.5
+  - tex-to-myst@1.0.5
+  - myst-to-md@1.0.6
+  - jtex@1.0.6
+  - myst-frontmatter@1.1.5
+  - myst-config@1.1.5
+  - myst-spec-ext@1.1.5
+  - myst-parser@1.0.7
+
 ## 1.1.14
 
 ### Patch Changes

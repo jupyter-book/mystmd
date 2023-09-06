@@ -1,5 +1,16 @@
 # myst-to-jats
 
+## 1.0.11
+
+### Patch Changes
+
+- 7752cb70: Bump dependency versions
+- Updated dependencies [7752cb70]
+- Updated dependencies [ba0441a0]
+  - myst-common@1.1.5
+  - myst-frontmatter@1.1.5
+  - myst-spec-ext@1.1.5
+
 ## 1.0.10
 
 ### Patch Changes

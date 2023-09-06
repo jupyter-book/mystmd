@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.5
+
+### Patch Changes
+
+- ba0441a0: enable custom binder providers in frontmatter
+
 ## 1.1.4
 
 ## 1.1.3

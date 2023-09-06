@@ -1,5 +1,14 @@
 # myst-to-html
 
+## 1.0.7
+
+### Patch Changes
+
+- 7752cb70: Bump dependency versions
+- 7752cb70: Handle html nodes
+- Updated dependencies [7752cb70]
+  - myst-common@1.1.5
+
 ## 1.0.6
 
 ### Patch Changes
