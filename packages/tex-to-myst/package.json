@@ -1,6 +1,6 @@
 {
   "name": "tex-to-myst",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Read LaTeX and convert to MyST AST",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/tex-to-myst",
@@ -37,9 +37,9 @@
   },
   "dependencies": {
     "@unified-latex/unified-latex": "^1.2.2",
-    "myst-common": "^1.1.4",
-    "myst-frontmatter": "^1.1.4",
-    "myst-spec-ext": "^1.1.4",
+    "myst-common": "^1.1.5",
+    "myst-frontmatter": "^1.1.5",
+    "myst-spec-ext": "^1.1.5",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
   },

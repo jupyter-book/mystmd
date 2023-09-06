@@ -1,5 +1,13 @@
 # jtex
 
+## 1.0.6
+
+### Patch Changes
+
+- 7752cb70: Bump dependency versions
+- Updated dependencies [ba0441a0]
+  - myst-frontmatter@1.1.5
+
 ## 1.0.5
 
 ### Patch Changes

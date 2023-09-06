@@ -1,5 +1,11 @@
 # myst-common
 
+## 1.1.5
+
+### Patch Changes
+
+- 7752cb70: Bump dependency versions
+
 ## 1.1.4
 
 ## 1.1.3

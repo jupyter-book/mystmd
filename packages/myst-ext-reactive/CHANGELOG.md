@@ -1,5 +1,13 @@
 # myst-ext-reactive
 
+## 1.0.3
+
+### Patch Changes
+
+- 7752cb70: Bump dependency versions
+- Updated dependencies [7752cb70]
+  - myst-common@1.1.5
+
 ## 1.0.2
 
 ### Patch Changes
