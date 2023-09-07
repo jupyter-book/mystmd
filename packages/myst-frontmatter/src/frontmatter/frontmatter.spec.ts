@@ -32,7 +32,8 @@ import {
 
 const TEST_AUTHOR: Author = {
   userId: '',
-  name: 'test user',
+  name: 'Test Author',
+  nameParsed: { display: 'Test Author', given: 'Test', family: 'Author' },
   orcid: '0000-0000-0000-0000',
   corresponding: true,
   email: 'test@example.com',
@@ -139,7 +140,13 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   title: 'frontmatter',
   description: 'project frontmatter',
   venue: { title: 'test' },
-  authors: [{ name: 'John Doe', affiliations: ['univa'] }],
+  authors: [
+    {
+      name: 'John Doe',
+      nameParsed: { display: 'John Doe', given: 'John', family: 'Doe' },
+      affiliations: ['univa'],
+    },
+  ],
   affiliations: [{ id: 'univa', name: 'University A' }],
   date: '14 Dec 2021',
   name: 'example.md',
@@ -178,7 +185,13 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   title: 'frontmatter',
   description: 'page frontmatter',
   venue: { title: 'test' },
-  authors: [{ name: 'Jane Doe', affiliations: ['univb'] }],
+  authors: [
+    {
+      name: 'Jane Doe',
+      nameParsed: { display: 'Jane Doe', given: 'Jane', family: 'Doe' },
+      affiliations: ['univb'],
+    },
+  ],
   affiliations: [{ id: 'univb', name: 'University B' }],
   name: 'example.md',
   doi: '10.1000/abcd/efg012',
@@ -248,6 +261,7 @@ describe('validateAuthor', () => {
   it('unknown roles warn', async () => {
     expect(validateAuthor({ name: 'my name', roles: ['example'] }, {}, opts)).toEqual({
       name: 'my name',
+      nameParsed: { display: 'my name', given: 'my', family: 'name' },
       roles: ['example'],
     });
     expect(opts.messages.warnings?.length).toEqual(1);
@@ -676,11 +690,27 @@ describe('validateAndStashObject', () => {
       opts,
     );
     expect(out).toEqual('Just A. Name');
-    expect(stash).toEqual({ authors: [{ id: 'Just A. Name', name: 'Just A. Name' }] });
+    expect(stash).toEqual({
+      authors: [
+        {
+          id: 'Just A. Name',
+          name: 'Just A. Name',
+          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
+    });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
   it('string returns itself when in stash', async () => {
-    const stash = { authors: [{ id: 'auth1', name: 'Just A. Name' }] };
+    const stash = {
+      authors: [
+        {
+          id: 'auth1',
+          name: 'Just A. Name',
+          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
+    };
     const out = validateAndStashObject(
       'auth1',
       stash,
@@ -689,7 +719,15 @@ describe('validateAndStashObject', () => {
       opts,
     );
     expect(out).toEqual('auth1');
-    expect(stash).toEqual({ authors: [{ id: 'auth1', name: 'Just A. Name' }] });
+    expect(stash).toEqual({
+      authors: [
+        {
+          id: 'auth1',
+          name: 'Just A. Name',
+          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
+    });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
   it('no id creates hashed id', async () => {
@@ -703,7 +741,13 @@ describe('validateAndStashObject', () => {
     );
     expect(out).toEqual('authors-test-file-generated-uid-0');
     expect(stash).toEqual({
-      authors: [{ id: 'authors-test-file-generated-uid-0', name: 'Just A. Name' }],
+      authors: [
+        {
+          id: 'authors-test-file-generated-uid-0',
+          name: 'Just A. Name',
+          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
@@ -725,12 +769,26 @@ describe('validateAndStashObject', () => {
     );
     expect(out).toEqual('authors-my_file-generated-uid-0');
     expect(stash).toEqual({
-      authors: [{ id: 'authors-my_file-generated-uid-0', name: 'Just A. Name' }],
+      authors: [
+        {
+          id: 'authors-my_file-generated-uid-0',
+          name: 'Just A. Name',
+          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
   it('object with id added to stash', async () => {
-    const stash = { authors: [{ id: 'auth1', name: 'Just A. Name' }] };
+    const stash = {
+      authors: [
+        {
+          id: 'auth1',
+          name: 'Just A. Name',
+          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
+    };
     const out = validateAndStashObject(
       { id: 'auth2', name: 'A. Nother Name' },
       stash,
@@ -741,36 +799,81 @@ describe('validateAndStashObject', () => {
     expect(out).toEqual('auth2');
     expect(stash).toEqual({
       authors: [
-        { id: 'auth1', name: 'Just A. Name' },
-        { id: 'auth2', name: 'A. Nother Name' },
+        {
+          id: 'auth1',
+          name: 'Just A. Name',
+          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+        {
+          id: 'auth2',
+          name: 'A. Nother Name',
+          nameParsed: { display: 'A. Nother Name', given: 'A. Nother', family: 'Name' },
+        },
       ],
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
   it('object with id replaces simple object', async () => {
-    const stash = { authors: [{ id: 'auth1', name: 'auth1' }] };
+    const stash = {
+      authors: [
+        {
+          id: 'auth1',
+          name: 'auth1',
+        },
+      ],
+    };
     const out = validateAndStashObject(
-      { id: 'auth1', name: 'Just A. Name' },
+      {
+        id: 'auth1',
+        name: 'Just A. Name',
+      },
       stash,
       'authors',
       (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
       opts,
     );
     expect(out).toEqual('auth1');
-    expect(stash).toEqual({ authors: [{ id: 'auth1', name: 'Just A. Name' }] });
+    expect(stash).toEqual({
+      authors: [
+        {
+          id: 'auth1',
+          name: 'Just A. Name',
+          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
+    });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
   it('object with id warns on duplicate', async () => {
-    const stash = { authors: [{ id: 'auth1', name: 'Just A. Name' }] };
+    const stash = {
+      authors: [
+        {
+          id: 'auth1',
+          name: 'Just A. Name',
+          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
+    };
     const out = validateAndStashObject(
-      { id: 'auth1', name: 'A. Nother Name' },
+      {
+        id: 'auth1',
+        name: 'A. Nother Name',
+      },
       stash,
       'authors',
       (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
       opts,
     );
     expect(out).toEqual('auth1');
-    expect(stash).toEqual({ authors: [{ id: 'auth1', name: 'Just A. Name' }] });
+    expect(stash).toEqual({
+      authors: [
+        {
+          id: 'auth1',
+          name: 'Just A. Name',
+          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
+    });
     expect(opts.messages.warnings?.length).toEqual(1);
   });
 });

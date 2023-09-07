@@ -23,9 +23,20 @@ export interface Affiliation {
 
 export type AuthorRoles = CreditRole | string;
 
+export type Name = {
+  display?: string;
+  given?: string;
+  family?: string;
+  particle?: string;
+  suffix?: string;
+};
+
+/**
+ * Au
+ */
 export interface Author {
   id?: string;
-  name?: string; // or Name object?
+  name?: string; // may be set to Name object
   userId?: string;
   orcid?: string;
   corresponding?: boolean;
@@ -40,6 +51,8 @@ export interface Author {
   note?: string;
   phone?: string;
   fax?: string;
+  // Computed property; only 'name' should be set in frontmatter as string or Name object
+  nameParsed?: Name;
 }
 
 /**

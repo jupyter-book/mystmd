@@ -22,6 +22,7 @@ import {
   validateNumber,
 } from 'simple-validators';
 import { validateLicenses } from '../licenses/validators.js';
+import { parseName, renderName } from '../utils/parseName.js';
 import { ExportFormats } from './types.js';
 import type {
   Author,
@@ -41,6 +42,7 @@ import type {
   JupyterLocalOptions,
   ReferenceStash,
   Affiliation,
+  Name,
 } from './types.js';
 
 export const SITE_FRONTMATTER_KEYS = [
@@ -145,6 +147,14 @@ const AUTHOR_ALIASES = {
   role: 'roles',
   affiliation: 'affiliations',
   website: 'url',
+};
+
+const NAME_KEYS = ['display', 'given', 'particle', 'family', 'suffix'];
+const NAME_ALIASES = {
+  surname: 'family',
+  last: 'family',
+  forename: 'given',
+  first: 'given',
 };
 
 const AFFILIATION_ALIASES = {
@@ -433,6 +443,56 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
 }
 
 /**
+ * Validate Name object against the schema
+ */
+export function validateName(input: any, opts: ValidationOptions) {
+  let output: Name;
+  if (typeof input === 'string') {
+    output = parseName(input);
+  } else {
+    const value = validateObjectKeys(input, { optional: NAME_KEYS, alias: NAME_ALIASES }, opts);
+    if (value === undefined) return undefined;
+    output = {};
+    if (defined(value.display)) {
+      output.display = validateString(value.display, incrementOptions('display', opts));
+    }
+    if (defined(value.given)) {
+      output.given = validateString(value.given, incrementOptions('given', opts));
+    }
+    if (defined(value.particle)) {
+      output.particle = validateString(value.particle, incrementOptions('particle', opts));
+    }
+    if (defined(value.family)) {
+      output.family = validateString(value.family, incrementOptions('family', opts));
+    }
+    if (defined(value.suffix)) {
+      output.suffix = validateString(value.suffix, incrementOptions('suffix', opts));
+    }
+    if (Object.keys(output).length === 1 && output.display) {
+      output = { ...output, ...parseName(output.display) };
+    } else if (!output.display) {
+      output.display = renderName(output);
+    }
+  }
+  const warnOnComma = (part: string | undefined, o: ValidationOptions) => {
+    if (part && part.includes(',')) {
+      validationWarning(`unexpected comma in name part: ${part}`, o);
+    }
+  };
+  warnOnComma(output.given, incrementOptions('given', opts));
+  warnOnComma(output.particle, incrementOptions('particle', opts));
+  warnOnComma(output.family, incrementOptions('family', opts));
+  warnOnComma(output.suffix, incrementOptions('suffix', opts));
+  if (!output.family) {
+    validationWarning(`No family name for name '${output.display}'`, opts);
+  }
+  if (!output.given) {
+    validationWarning(`No given name for name '${output.display}'`, opts);
+  }
+  return output;
+}
+
+/**
  * Validate Author object against the schema
  */
 export function validateAuthor(input: any, stash: ReferenceStash, opts: ValidationOptions) {
@@ -450,7 +510,8 @@ export function validateAuthor(input: any, stash: ReferenceStash, opts: Validati
     output.userId = validateString(value.userId, incrementOptions('userId', opts));
   }
   if (defined(value.name)) {
-    output.name = validateString(value.name, incrementOptions('name', opts));
+    output.nameParsed = validateName(value.name, incrementOptions('name', opts));
+    output.name = output.nameParsed?.display;
   } else {
     validationWarning('author should include name', opts);
   }
