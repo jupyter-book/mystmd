@@ -22,7 +22,7 @@ import {
   validateNumber,
 } from 'simple-validators';
 import { validateLicenses } from '../licenses/validators.js';
-import { parseName, renderName } from '../utils/parseName.js';
+import { formatName, parseName } from '../utils/parseName.js';
 import { ExportFormats } from './types.js';
 import type {
   Author,
@@ -149,12 +149,22 @@ const AUTHOR_ALIASES = {
   website: 'url',
 };
 
-const NAME_KEYS = ['display', 'given', 'particle', 'family', 'suffix'];
+const NAME_KEYS = [
+  'literal',
+  'given',
+  'family',
+  'suffix',
+  'non_dropping_particle',
+  'dropping_particle',
+];
 const NAME_ALIASES = {
   surname: 'family',
   last: 'family',
   forename: 'given',
   first: 'given',
+  particle: 'non_dropping_particle',
+  'non-dropping-particle': 'non_dropping_particle',
+  'dropping-particle': 'dropping_particle',
 };
 
 const AFFILIATION_ALIASES = {
@@ -453,14 +463,23 @@ export function validateName(input: any, opts: ValidationOptions) {
     const value = validateObjectKeys(input, { optional: NAME_KEYS, alias: NAME_ALIASES }, opts);
     if (value === undefined) return undefined;
     output = {};
-    if (defined(value.display)) {
-      output.display = validateString(value.display, incrementOptions('display', opts));
+    if (defined(value.literal)) {
+      output.literal = validateString(value.literal, incrementOptions('literal', opts));
     }
     if (defined(value.given)) {
       output.given = validateString(value.given, incrementOptions('given', opts));
     }
-    if (defined(value.particle)) {
-      output.particle = validateString(value.particle, incrementOptions('particle', opts));
+    if (defined(value.non_dropping_particle)) {
+      output.non_dropping_particle = validateString(
+        value.non_dropping_particle,
+        incrementOptions('non_dropping_particle', opts),
+      );
+    }
+    if (defined(value.dropping_particle)) {
+      output.dropping_particle = validateString(
+        value.dropping_particle,
+        incrementOptions('dropping_particle', opts),
+      );
     }
     if (defined(value.family)) {
       output.family = validateString(value.family, incrementOptions('family', opts));
@@ -468,10 +487,10 @@ export function validateName(input: any, opts: ValidationOptions) {
     if (defined(value.suffix)) {
       output.suffix = validateString(value.suffix, incrementOptions('suffix', opts));
     }
-    if (Object.keys(output).length === 1 && output.display) {
-      output = { ...output, ...parseName(output.display) };
-    } else if (!output.display) {
-      output.display = renderName(output);
+    if (Object.keys(output).length === 1 && output.literal) {
+      output = { ...output, ...parseName(output.literal) };
+    } else if (!output.literal) {
+      output.literal = formatName(output);
     }
   }
   const warnOnComma = (part: string | undefined, o: ValidationOptions) => {
@@ -480,14 +499,15 @@ export function validateName(input: any, opts: ValidationOptions) {
     }
   };
   warnOnComma(output.given, incrementOptions('given', opts));
-  warnOnComma(output.particle, incrementOptions('particle', opts));
   warnOnComma(output.family, incrementOptions('family', opts));
+  warnOnComma(output.non_dropping_particle, incrementOptions('non_dropping_particle', opts));
+  warnOnComma(output.dropping_particle, incrementOptions('dropping_particle', opts));
   warnOnComma(output.suffix, incrementOptions('suffix', opts));
   if (!output.family) {
-    validationWarning(`No family name for name '${output.display}'`, opts);
+    validationWarning(`No family name for name '${output.literal}'`, opts);
   }
   if (!output.given) {
-    validationWarning(`No given name for name '${output.display}'`, opts);
+    validationWarning(`No given name for name '${output.literal}'`, opts);
   }
   return output;
 }
@@ -511,7 +531,7 @@ export function validateAuthor(input: any, stash: ReferenceStash, opts: Validati
   }
   if (defined(value.name)) {
     output.nameParsed = validateName(value.name, incrementOptions('name', opts));
-    output.name = output.nameParsed?.display;
+    output.name = output.nameParsed?.literal;
   } else {
     validationWarning('author should include name', opts);
   }

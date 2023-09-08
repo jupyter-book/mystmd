@@ -9,7 +9,7 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
           orcid: 0000-0000-0000-0000
@@ -22,7 +22,7 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
           orcid: 0000-0000-0000-000X
@@ -35,7 +35,7 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
     errors: 1

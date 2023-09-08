@@ -33,7 +33,7 @@ import {
 const TEST_AUTHOR: Author = {
   userId: '',
   name: 'Test Author',
-  nameParsed: { display: 'Test Author', given: 'Test', family: 'Author' },
+  nameParsed: { literal: 'Test Author', given: 'Test', family: 'Author' },
   orcid: '0000-0000-0000-0000',
   corresponding: true,
   email: 'test@example.com',
@@ -143,7 +143,7 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   authors: [
     {
       name: 'John Doe',
-      nameParsed: { display: 'John Doe', given: 'John', family: 'Doe' },
+      nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
       affiliations: ['univa'],
     },
   ],
@@ -188,7 +188,7 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   authors: [
     {
       name: 'Jane Doe',
-      nameParsed: { display: 'Jane Doe', given: 'Jane', family: 'Doe' },
+      nameParsed: { literal: 'Jane Doe', given: 'Jane', family: 'Doe' },
       affiliations: ['univb'],
     },
   ],
@@ -261,7 +261,7 @@ describe('validateAuthor', () => {
   it('unknown roles warn', async () => {
     expect(validateAuthor({ name: 'my name', roles: ['example'] }, {}, opts)).toEqual({
       name: 'my name',
-      nameParsed: { display: 'my name', given: 'my', family: 'name' },
+      nameParsed: { literal: 'my name', given: 'my', family: 'name' },
       roles: ['example'],
     });
     expect(opts.messages.warnings?.length).toEqual(1);
@@ -695,7 +695,7 @@ describe('validateAndStashObject', () => {
         {
           id: 'Just A. Name',
           name: 'Just A. Name',
-          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
       ],
     });
@@ -707,7 +707,7 @@ describe('validateAndStashObject', () => {
         {
           id: 'auth1',
           name: 'Just A. Name',
-          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
       ],
     };
@@ -724,7 +724,7 @@ describe('validateAndStashObject', () => {
         {
           id: 'auth1',
           name: 'Just A. Name',
-          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
       ],
     });
@@ -745,7 +745,7 @@ describe('validateAndStashObject', () => {
         {
           id: 'authors-test-file-generated-uid-0',
           name: 'Just A. Name',
-          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
       ],
     });
@@ -773,7 +773,7 @@ describe('validateAndStashObject', () => {
         {
           id: 'authors-my_file-generated-uid-0',
           name: 'Just A. Name',
-          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
       ],
     });
@@ -785,7 +785,7 @@ describe('validateAndStashObject', () => {
         {
           id: 'auth1',
           name: 'Just A. Name',
-          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
       ],
     };
@@ -802,12 +802,12 @@ describe('validateAndStashObject', () => {
         {
           id: 'auth1',
           name: 'Just A. Name',
-          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
         {
           id: 'auth2',
           name: 'A. Nother Name',
-          nameParsed: { display: 'A. Nother Name', given: 'A. Nother', family: 'Name' },
+          nameParsed: { literal: 'A. Nother Name', given: 'A. Nother', family: 'Name' },
         },
       ],
     });
@@ -838,7 +838,7 @@ describe('validateAndStashObject', () => {
         {
           id: 'auth1',
           name: 'Just A. Name',
-          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
       ],
     });
@@ -850,7 +850,7 @@ describe('validateAndStashObject', () => {
         {
           id: 'auth1',
           name: 'Just A. Name',
-          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
       ],
     };
@@ -870,7 +870,7 @@ describe('validateAndStashObject', () => {
         {
           id: 'auth1',
           name: 'Just A. Name',
-          nameParsed: { display: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
       ],
     });

@@ -9,7 +9,7 @@ cases:
         - id: Just A. Name
           name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
   - title: Simple Authors String
@@ -20,7 +20,7 @@ cases:
         - id: Just A. Name
           name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
   - title: Use Author rather than author`s`
@@ -31,7 +31,7 @@ cases:
         - id: Just A. Name
           name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
   - title: Using both author and author`s` shows a warning
@@ -43,7 +43,7 @@ cases:
         - id: Just A. Name
           name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
     warnings: 1
@@ -56,7 +56,7 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
           affiliations:
@@ -76,7 +76,7 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
           email: example@example.com
@@ -91,7 +91,7 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
           email: example@example.com
@@ -108,13 +108,13 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
           email: example@example.com
         - name: A. Nother Name
           nameParsed:
-            display: A. Nother Name
+            literal: A. Nother Name
             given: A. Nother
             family: Name
           email: example@example.com
@@ -130,7 +130,7 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
           email: example@example.com
@@ -146,7 +146,7 @@ cases:
       authors:
         - name: ', Someone'
           nameParsed:
-            display: ', Someone'
+            literal: ', Someone'
             given: Someone
     warnings: 1
   - title: Warn if author has no given name
@@ -157,43 +157,43 @@ cases:
       authors:
         - name: 'Someone'
           nameParsed:
-            display: 'Someone'
+            literal: 'Someone'
             family: Someone
     warnings: 1
   - title: Parsed name is maintained
     raw:
       authors:
         - name:
-            display: Just A. Name
+            literal: Just A. Name
             given: Little
-            particle: von
+            non_dropping_particle: von
             family: Junior
             suffix: Jr.
     normalized:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Little
-            particle: von
+            non_dropping_particle: von
             family: Junior
             suffix: Jr.
   - title: Name object with lots of commas warns
     raw:
       authors:
         - name:
-            display: Commas, here, are, great,
+            literal: Commas, here, are, great,
             given: Commas,
-            particle: here,
+            non_dropping_particle: here,
             family: are,
             suffix: warnings,
     normalized:
       authors:
         - name: Commas, here, are, great,
           nameParsed:
-            display: Commas, here, are, great,
+            literal: Commas, here, are, great,
             given: Commas,
-            particle: here,
+            non_dropping_particle: here,
             family: are,
             suffix: warnings,
     warnings: 4
@@ -205,7 +205,7 @@ cases:
       authors:
         - name: A, B, C, D
           nameParsed:
-            display: A, B, C, D
+            literal: A, B, C, D
             given: D
             family: A, B
             suffix: C
@@ -214,23 +214,42 @@ cases:
     raw:
       authors:
         - name:
-            display: Just A. Name
+            literal: Just A. Name
     normalized:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
   - title: Display name expands
     raw:
       authors:
         - name:
-            display: Just A. Name
+            literal: Just A. Name
     normalized:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
+  - title: Complex name renders
+    raw:
+      authors:
+        - name:
+            given: A
+            dropping_particle: b
+            non_dropping_particle: c
+            family: D
+            suffix: E
+    normalized:
+      authors:
+        - name: c D, E, A b
+          nameParsed:
+            literal: c D, E, A b
+            given: A
+            dropping_particle: b
+            non_dropping_particle: c
+            family: D
+            suffix: E

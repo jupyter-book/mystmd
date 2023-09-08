@@ -9,7 +9,7 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
           roles:
@@ -23,7 +23,7 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
           roles:
@@ -38,7 +38,7 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
           roles:
@@ -52,7 +52,7 @@ cases:
       authors:
         - name: Just A. Name
           nameParsed:
-            display: Just A. Name
+            literal: Just A. Name
             given: Just A.
             family: Name
           roles:

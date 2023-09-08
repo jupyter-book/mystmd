@@ -24,10 +24,11 @@ export interface Affiliation {
 export type AuthorRoles = CreditRole | string;
 
 export type Name = {
-  display?: string;
+  literal?: string;
   given?: string;
   family?: string;
-  particle?: string;
+  dropping_particle?: string;
+  non_dropping_particle?: string;
   suffix?: string;
 };
 
