@@ -1,0 +1,214 @@
+title: Funding
+cases:
+  - title: Full funding object passes
+    raw:
+      funding:
+        - statement: my statement 1
+          awards:
+            - id: abc-123
+              name: Award
+              description: my award
+              sources:
+                - University A
+              investigators:
+                - John Doe
+              recipients:
+                - John Doe
+        - open_access: my statement 2
+    normalized:
+      funding:
+        - statement: my statement 1
+          awards:
+            - id: abc-123
+              name: Award
+              description: my award
+              sources:
+                - University A
+              investigators:
+                - John Doe
+              recipients:
+                - John Doe
+        - open_access: my statement 2
+      authors:
+        - id: John Doe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            family: Doe
+            given: John
+      affiliations:
+        - id: University A
+          name: University A
+  - title: String coerces to statement
+    raw:
+      funding: my statement
+    normalized:
+      funding:
+        - statement: my statement
+  - title: Funding object coerces to list
+    raw:
+      funding:
+        statement: my statement
+    normalized:
+      funding:
+        - statement: my statement
+  - title: Award object coerces to list
+    raw:
+      funding:
+        statement: my statement
+        award:
+          id: abc-123
+    normalized:
+      funding:
+        - statement: my statement
+          awards:
+            - id: abc-123
+  - title: Source object coerces to list
+    raw:
+      funding:
+        - statement: my statement
+          award:
+            - id: abc-123
+              source: univa
+      affiliations:
+        - id: univa
+          name: University A
+    normalized:
+      funding:
+        - statement: my statement
+          awards:
+            - id: abc-123
+              sources:
+                - univa
+      affiliations:
+        - id: univa
+          name: University A
+  - title: Investigator object coerces to list
+    raw:
+      funding:
+        - statement: my statement
+          award:
+            - id: abc-123
+              investigator: John Doe
+    normalized:
+      funding:
+        - statement: my statement
+          awards:
+            - id: abc-123
+              investigators:
+                - John Doe
+      authors:
+        - id: John Doe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            given: John
+            family: Doe
+  - title: Recipient object coerces to list
+    raw:
+      funding:
+        - statement: my statement
+          award:
+            - id: abc-123
+              recipient: John Doe
+    normalized:
+      funding:
+        - statement: my statement
+          awards:
+            - id: abc-123
+              recipients:
+                - John Doe
+      authors:
+        - id: John Doe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            given: John
+            family: Doe
+  - title: Award fields on funding coerce to object
+    raw:
+      funding:
+        statement: my statement 1
+        id: abc-123
+        name: Award
+        description: my award
+        sources:
+          - University A
+        investigators:
+          - name: John Doe
+        recipients:
+          - name: Jane Doe
+    normalized:
+      funding:
+        - statement: my statement 1
+          awards:
+            - id: abc-123
+              name: Award
+              description: my award
+              sources:
+                - University A
+              recipients:
+                - authors-generated-uid-0
+              investigators:
+                - authors-generated-uid-1
+      affiliations:
+        - id: University A
+          name: University A
+      authors:
+        - id: authors-generated-uid-0
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            given: Jane
+            family: Doe
+        - id: authors-generated-uid-1
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            given: John
+            family: Doe
+  - title: Award fields on funding warn if 'awards' is also present
+    raw:
+      funding:
+        statement: my statement 1
+        source: University B
+        award:
+          id: abc-123
+          name: Award
+          description: my award
+          sources:
+            - University A
+          investigators:
+            - name: John Doe
+          recipients:
+            - name: Jane Doe
+    normalized:
+      funding:
+        - statement: my statement 1
+          awards:
+            - id: abc-123
+              name: Award
+              description: my award
+              sources:
+                - University A
+              recipients:
+                - authors-generated-uid-0
+              investigators:
+                - authors-generated-uid-1
+      affiliations:
+        - id: University A
+          name: University A
+      authors:
+        - id: authors-generated-uid-0
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            given: Jane
+            family: Doe
+        - id: authors-generated-uid-1
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            given: John
+            family: Doe
+    warnings: 1

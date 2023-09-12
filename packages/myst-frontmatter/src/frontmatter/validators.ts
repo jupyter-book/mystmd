@@ -44,6 +44,7 @@ import type {
   Affiliation,
   Name,
 } from './types.js';
+import { validateFunding } from '../funding/validators.js';
 
 export const SITE_FRONTMATTER_KEYS = [
   'title',
@@ -59,6 +60,7 @@ export const SITE_FRONTMATTER_KEYS = [
   'github',
   'keywords',
   'affiliations',
+  'funding',
 ];
 export const PROJECT_FRONTMATTER_KEYS = [
   'date',
@@ -102,6 +104,9 @@ export const USE_PROJECT_FALLBACK = [
   'biblio',
   'numbering',
   'keywords',
+  'funding',
+  'affiliations',
+  'authorsSource',
 ];
 
 const AFFILIATION_KEYS = [
@@ -1043,15 +1048,19 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     if (!Array.isArray(value.authors)) {
       authors = [authors];
     }
-    output.authors = validateList(authors, incrementOptions('authors', opts), (author, index) => {
-      return validateAuthor(author, stash, incrementOptions(`authors.${index}`, opts));
-    });
-    // Ensure there is a corresponding author if an email is provided
-    const corresponding = output.authors?.find((a) => a.corresponding !== undefined);
-    const email = output.authors?.find((a) => a.email);
-    if (!corresponding && email) {
-      email.corresponding = true;
-    }
+    output.authorsSource = validateList(
+      authors,
+      incrementOptions('authors', opts),
+      (recipient, index) => {
+        return validateAndStashObject(
+          recipient,
+          stash,
+          'authors',
+          (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+          incrementOptions(`authors.${index}`, opts),
+        );
+      },
+    );
   }
   if (defined(value.venue)) {
     output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
@@ -1068,7 +1077,22 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
       return validateString(word, incrementOptions(`keywords.${ind}`, opts));
     });
   }
-  if (stash.affiliations) {
+  if (defined(value.funding)) {
+    const funding = Array.isArray(value.funding) ? value.funding : [value.funding];
+    output.funding = validateList(funding, incrementOptions('funding', opts), (fund, index) => {
+      return validateFunding(fund, stash, incrementOptions(`funding.${index}`, opts));
+    });
+  }
+  if (stash.authors?.length) {
+    output.authors = stash.authors;
+    // Ensure there is a corresponding author if an email is provided
+    const corresponding = output.authors?.find((a) => a.corresponding !== undefined);
+    const email = output.authors?.find((a) => a.email);
+    if (!corresponding && email) {
+      email.corresponding = true;
+    }
+  }
+  if (stash.affiliations?.length) {
     output.affiliations = stash.affiliations;
   }
   return output;
@@ -1325,39 +1349,65 @@ export function fillPageFrontmatter(
     };
   }
 
-  // Replace affiliation placeholders with extra affiliations available on the project/page
-  let affiliations: Affiliation[] | undefined;
-  let extraAffiliations: Affiliation[] | undefined;
-  // Currently, affiliations are connected only to authors, so we look at
-  // which frontmatter (project or page) has authors defined, and use the
-  // affiliations from there. However, we still use the other affiliations
-  // to fill out any placeholders where affiliations have id only.
-  if (projectFrontmatter.authors && !pageFrontmatter.authors) {
-    affiliations = projectFrontmatter.affiliations;
-    extraAffiliations = pageFrontmatter.affiliations;
-  } else {
-    affiliations = pageFrontmatter.affiliations;
-    extraAffiliations = projectFrontmatter.affiliations;
-  }
-  if (affiliations) {
-    const projectAffLookup: Record<string, Affiliation> = {};
-    extraAffiliations?.forEach((aff) => {
-      if (aff.id && !isStashPlaceholder(aff)) {
-        projectAffLookup[aff.id] = aff;
+  // Gather all contributors and authors (and affiliations from funding sources)
+  const contributorIds: string[] = [...(frontmatter.authorsSource ?? [])];
+  const affiliationIds: string[] = [];
+  frontmatter.funding?.forEach((fund) => {
+    fund.awards?.forEach((award) => {
+      if (award.investigators) contributorIds.push(...award.investigators);
+      if (award.recipients) contributorIds.push(...award.recipients);
+      if (award.sources) affiliationIds.push(...award.sources);
+    });
+  });
+
+  // Reconstruct author list with only relevant contributors (from above)
+  const authors = [...(pageFrontmatter.authors ?? []), ...(projectFrontmatter.authors ?? [])];
+  if (contributorIds.length && authors.length) {
+    const authorLookup: Record<string, Author> = {};
+    authors.forEach((auth) => {
+      if (!auth.id || isStashPlaceholder(auth)) return;
+      if (!authorLookup[auth.id]) {
+        authorLookup[auth.id] = auth;
+      } else if (normalizedString(auth) !== normalizedString(authorLookup[auth.id])) {
+        validationWarning(
+          `Duplicate author id within project: ${auth.id}`,
+          incrementOptions('authors', opts),
+        );
       }
     });
-    frontmatter.affiliations = affiliations.map((aff) => {
-      if (!aff.id || !projectAffLookup[aff.id]) {
-        return aff;
-      } else if (isStashPlaceholder(aff)) {
-        return projectAffLookup[aff.id];
-      } else if (normalizedString(aff) !== normalizedString(projectAffLookup[aff.id])) {
+    frontmatter.authors = [...new Set(contributorIds)].map((id) => {
+      return authorLookup[id] ?? stashPlaceholder(id);
+    });
+  }
+
+  // Add affiliations from reconstructed author list and explicit page affiliations
+  frontmatter.authors?.forEach((auth) => {
+    if (auth.affiliations) affiliationIds.push(...auth.affiliations);
+  });
+  frontmatter.affiliations?.forEach((aff) => {
+    if (aff.id) affiliationIds.push(aff.id);
+  });
+
+  // Reconstruct affiliation list with only relevant affiliations
+  const affiliations = [
+    ...(pageFrontmatter.affiliations ?? []),
+    ...(projectFrontmatter.affiliations ?? []),
+  ];
+  if (affiliationIds.length && affiliations.length) {
+    const affiliationLookup: Record<string, Affiliation> = {};
+    affiliations.forEach((aff) => {
+      if (!aff.id || isStashPlaceholder(aff)) return;
+      if (!affiliationLookup[aff.id]) {
+        affiliationLookup[aff.id] = aff;
+      } else if (normalizedString(aff) !== normalizedString(affiliationLookup[aff.id])) {
         validationWarning(
           `Duplicate affiliation id within project: ${aff.id}`,
           incrementOptions('affiliations', opts),
         );
       }
-      return aff;
+    });
+    frontmatter.affiliations = [...new Set(affiliationIds)].map((id) => {
+      return affiliationLookup[id] ?? stashPlaceholder(id);
     });
   }
 
