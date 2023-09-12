@@ -1,0 +1,135 @@
+title: Parsing of test name strings
+# From http://maverick.inria.fr/~Xavier.Decoret/resources/xdkbibtex/bibtex_summary.html#names
+cases:
+  - formatted: aa
+    parsed:
+      family: aa
+
+  - formatted: AA
+    alternative:
+      - 'AA, '
+    parsed:
+      family: AA
+
+  - formatted: AA BB
+    alternatives:
+      - " AA \t BB  "
+      - 'BB, , AA '
+    parsed:
+      family: BB
+      given: AA
+
+  - formatted: AA bb
+    alternatives:
+      - bb, AA
+    parsed:
+      family: bb
+      given: AA
+
+  - formatted: AA bb CC
+    alternatives:
+      - bb CC, AA
+    parsed:
+      family: CC
+      given: AA
+      non_dropping_particle: bb
+
+  - formatted: aa bb CC
+    alternatives:
+      - bb CC, aa
+    parsed:
+      family: CC
+      given: aa
+      non_dropping_particle: bb
+
+  - formatted: AA 1B cc dd
+    parsed:
+      family: dd
+      given: AA 1B
+      non_dropping_particle: cc
+
+  - formatted: AA 1b cc dd
+    parsed:
+      family: dd
+      given: AA
+      non_dropping_particle: 1b cc
+
+  - formatted: AA bb CC DD
+    parsed:
+      family: CC DD
+      given: AA
+      non_dropping_particle: bb
+
+  - formatted: AA bb CC dd
+    parsed:
+      family: CC dd
+      given: AA
+      non_dropping_particle: bb
+
+  - formatted: AA bb CC dd EE
+    alternatives:
+      - bb CC dd EE, AA
+    parsed:
+      family: EE
+      given: AA
+      non_dropping_particle: bb CC dd
+
+  - formatted: CC dd EE, AA
+    parsed:
+      family: CC dd EE
+      given: AA
+
+  - formatted: CC dd EE,
+    parsed:
+      family: CC dd EE
+
+  - formatted: bb CC, XX, AA
+    alternatives:
+      - 'bb CC, XX, AA '
+    parsed:
+      family: CC
+      given: AA
+      non_dropping_particle: bb
+      suffix: XX
+
+  - formatted: bb CC, xx, AA
+    parsed:
+      family: CC
+      given: AA
+      non_dropping_particle: bb
+      suffix: xx
+
+  - formatted: bb, , ,, CC, XX, AA
+    parsed:
+      family: ', ,, CC'
+      given: AA
+      non_dropping_particle: bb,
+      suffix: XX
+
+  - formatted: bb CC, AA ee
+    parsed:
+      family: CC
+      given: AA
+      dropping_particle: ee
+      non_dropping_particle: bb
+
+  - formatted: bb CC, xx, AA ee
+    parsed:
+      family: CC
+      given: AA
+      dropping_particle: ee
+      non_dropping_particle: bb
+      suffix: xx
+
+  - formatted: ', AA'
+    alternatives:
+      - ',AA'
+    parsed:
+      given: 'AA'
+
+  - formatted: ', XX, AA'
+    alternatives:
+      - ',XX,AA'
+    parsed:
+      given: AA
+      suffix: XX
