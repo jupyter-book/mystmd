@@ -132,7 +132,14 @@ const TEST_SITE_FRONTMATTER: SiteFrontmatter = {
   title: 'frontmatter',
   description: 'project frontmatter',
   venue: { title: 'test' },
-  authors: [{}],
+  authors: [
+    {
+      id: 'jd',
+      name: 'John Doe',
+      nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+    },
+  ],
+  authorsSource: ['jd'],
   github: 'https://github.com/example',
   keywords: ['example', 'test'],
 };
@@ -142,11 +149,13 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   venue: { title: 'test' },
   authors: [
     {
+      id: 'jd',
       name: 'John Doe',
       nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
       affiliations: ['univa'],
     },
   ],
+  authorsSource: ['jd'],
   affiliations: [{ id: 'univa', name: 'University A' }],
   date: '14 Dec 2021',
   name: 'example.md',
@@ -187,11 +196,13 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   venue: { title: 'test' },
   authors: [
     {
+      id: 'jd',
       name: 'Jane Doe',
       nameParsed: { literal: 'Jane Doe', given: 'Jane', family: 'Doe' },
       affiliations: ['univb'],
     },
   ],
+  authorsSource: ['jd'],
   affiliations: [{ id: 'univb', name: 'University B' }],
   name: 'example.md',
   doi: '10.1000/abcd/efg012',
@@ -610,7 +621,7 @@ describe('fillPageFrontmatter', () => {
       ),
     ).toEqual({
       authors: [],
-      affiliations: [{ name: 'University B', id: 'univb' }],
+      affiliations: [{ name: 'University A', id: 'univa' }],
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
@@ -674,6 +685,201 @@ describe('fillPageFrontmatter', () => {
       ),
     ).toEqual({
       affiliations: [{ name: 'University A', id: 'univa' }],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('authors from page take precedent over project', async () => {
+    expect(
+      fillPageFrontmatter(
+        {
+          authors: [
+            {
+              id: 'jd',
+              name: 'John Doe',
+              nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+            },
+          ],
+          authorsSource: ['jd'],
+        },
+        {
+          authors: [
+            {
+              id: 'jn',
+              name: 'Just A. Name',
+              nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+            },
+          ],
+          authorsSource: ['jn'],
+        },
+        opts,
+      ),
+    ).toEqual({
+      authors: [
+        {
+          id: 'jd',
+          name: 'John Doe',
+          nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+        },
+      ],
+      authorsSource: ['jd'],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('project authors are used if no page authors', async () => {
+    expect(
+      fillPageFrontmatter(
+        {},
+        {
+          authors: [
+            {
+              id: 'jd',
+              name: 'John Doe',
+              nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+            },
+          ],
+          authorsSource: ['jd'],
+        },
+        opts,
+      ),
+    ).toEqual({
+      authors: [
+        {
+          id: 'jd',
+          name: 'John Doe',
+          nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+        },
+      ],
+      authorsSource: ['jd'],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('relevant authors from project are persisted', async () => {
+    expect(
+      fillPageFrontmatter(
+        {
+          authors: [
+            {
+              id: 'jd',
+              name: 'John Doe',
+              nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+            },
+          ],
+          authorsSource: ['jd'],
+        },
+        {
+          authors: [
+            {
+              id: 'jn',
+              name: 'Just A. Name',
+              nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+            },
+          ],
+          authorsSource: ['jn'],
+          funding: [
+            {
+              awards: [
+                {
+                  investigators: ['jn'],
+                },
+              ],
+            },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      authors: [
+        {
+          id: 'jd',
+          name: 'John Doe',
+          nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+        },
+        {
+          id: 'jn',
+          name: 'Just A. Name',
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
+      authorsSource: ['jd'],
+      funding: [
+        {
+          awards: [
+            {
+              investigators: ['jn'],
+            },
+          ],
+        },
+      ],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('relevant authors from project are persisted when referenced in page', async () => {
+    expect(
+      fillPageFrontmatter(
+        {
+          authors: [
+            {
+              id: 'jd',
+              name: 'John Doe',
+              nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+              affiliations: ['univa'],
+            },
+          ],
+          authorsSource: ['jd'],
+          affiliations: [{ id: 'univa', name: 'University A' }],
+          funding: [
+            {
+              awards: [
+                {
+                  investigators: ['jn'],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          authors: [
+            {
+              id: 'jn',
+              name: 'Just A. Name',
+              nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+              affiliations: ['univb'],
+            },
+          ],
+          authorsSource: ['jn'],
+          affiliations: [{ id: 'univb', name: 'University B' }],
+        },
+        opts,
+      ),
+    ).toEqual({
+      authors: [
+        {
+          id: 'jd',
+          name: 'John Doe',
+          nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+          affiliations: ['univa'],
+        },
+        {
+          id: 'jn',
+          name: 'Just A. Name',
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          affiliations: ['univb'],
+        },
+      ],
+      authorsSource: ['jd'],
+      affiliations: [
+        { id: 'univa', name: 'University A' },
+        { id: 'univb', name: 'University B' },
+      ],
+      funding: [
+        {
+          awards: [
+            {
+              investigators: ['jn'],
+            },
+          ],
+        },
+      ],
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });

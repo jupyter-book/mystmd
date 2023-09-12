@@ -1,4 +1,5 @@
 import type { CreditRole } from 'credit-roles';
+import type { Funding } from '../funding/types.js';
 import type { Licenses } from '../licenses/types.js';
 
 export interface Affiliation {
@@ -32,9 +33,6 @@ export type Name = {
   suffix?: string;
 };
 
-/**
- * Au
- */
 export interface Author {
   id?: string;
   name?: string; // may be set to Name object
@@ -179,6 +177,17 @@ export type SiteFrontmatter = {
   venue?: Venue;
   github?: string;
   keywords?: string[];
+  funding?: Funding[];
+  /**
+   * Computed property; holds references to list of original "authors"
+   *
+   * The "authors" field may be augmented with funding recipients/investigators, etc.
+   *
+   * Potentially, we could modify this so the authors list only contains the
+   * original authors, and instead have a new field like contributors that has
+   * all the people referenced anywhere...
+   */
+  authorsSource?: string[];
 };
 
 export type ProjectFrontmatter = SiteFrontmatter & {

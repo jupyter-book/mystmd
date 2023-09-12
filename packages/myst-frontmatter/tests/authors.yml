@@ -12,6 +12,8 @@ cases:
             literal: Just A. Name
             given: Just A.
             family: Name
+      authorsSource:
+        - Just A. Name
   - title: Simple Authors String
     raw:
       authors: Just A. Name
@@ -23,6 +25,8 @@ cases:
             literal: Just A. Name
             given: Just A.
             family: Name
+      authorsSource:
+        - Just A. Name
   - title: Use Author rather than author`s`
     raw:
       author: Just A. Name
@@ -34,6 +38,8 @@ cases:
             literal: Just A. Name
             given: Just A.
             family: Name
+      authorsSource:
+        - Just A. Name
   - title: Using both author and author`s` shows a warning
     raw:
       author: nope
@@ -46,15 +52,19 @@ cases:
             literal: Just A. Name
             given: Just A.
             family: Name
+      authorsSource:
+        - Just A. Name
     warnings: 1
   - title: Affiliations unpack semicolon-delimited lists
     raw:
       author:
+        id: jn
         name: Just A. Name
         affiliation: University; Company
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
@@ -62,6 +72,8 @@ cases:
           affiliations:
             - University
             - Company
+      authorsSource:
+        - jn
       affiliations:
         - id: University
           name: University
@@ -70,72 +82,93 @@ cases:
   - title: First email is corresponding
     raw:
       author:
+        id: jn
         name: Just A. Name
         email: example@example.com
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
             family: Name
           email: example@example.com
           corresponding: true
+      authorsSource:
+        - jn
   - title: First email is corresponding (unless false)
     raw:
       author:
+        id: jn
         name: Just A. Name
         email: example@example.com
         corresponding: false
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
             family: Name
           email: example@example.com
           corresponding: false
+      authorsSource:
+        - jn
   - title: Respect corresponding flag
     raw:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           email: example@example.com
-        - name: A. Nother Name
+        - id: an
+          name: A. Nother Name
           email: example@example.com
           corresponding: true
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
             family: Name
           email: example@example.com
-        - name: A. Nother Name
+        - id: an
+          name: A. Nother Name
           nameParsed:
             literal: A. Nother Name
             given: A. Nother
             family: Name
           email: example@example.com
           corresponding: true
+      authorsSource:
+        - jn
+        - an
   - title: Warn if author has no name
     raw:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           email: example@example.com
         - email: example@example.com
           corresponding: true
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
             family: Name
           email: example@example.com
-        - email: example@example.com
+        - id: authors-generated-uid-1
+          email: example@example.com
           corresponding: true
+      authorsSource:
+        - jn
+        - authors-generated-uid-1
     warnings: 1
   - title: Warn if author has no family name
     raw:
@@ -144,10 +177,13 @@ cases:
             given: Someone
     normalized:
       authors:
-        - name: ', Someone'
+        - id: authors-generated-uid-0
+          name: ', Someone'
           nameParsed:
             literal: ', Someone'
             given: Someone
+      authorsSource:
+        - authors-generated-uid-0
     warnings: 1
   - title: Warn if author has no given name
     raw:
@@ -155,15 +191,19 @@ cases:
         - name: Someone
     normalized:
       authors:
-        - name: 'Someone'
+        - id: authors-generated-uid-0
+          name: 'Someone'
           nameParsed:
             literal: 'Someone'
             family: Someone
+      authorsSource:
+        - authors-generated-uid-0
     warnings: 1
   - title: Parsed name is maintained
     raw:
       authors:
-        - name:
+        - id: jn
+          name:
             literal: Just A. Name
             given: Little
             non_dropping_particle: von
@@ -171,13 +211,16 @@ cases:
             suffix: Jr.
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Little
             non_dropping_particle: von
             family: Junior
             suffix: Jr.
+      authorsSource:
+        - jn
   - title: Name object with lots of commas warns
     raw:
       authors:
@@ -189,13 +232,16 @@ cases:
             suffix: warnings,
     normalized:
       authors:
-        - name: Commas, here, are, great,
+        - id: authors-generated-uid-0
+          name: Commas, here, are, great,
           nameParsed:
             literal: Commas, here, are, great,
             given: Commas,
             non_dropping_particle: here,
             family: are,
             suffix: warnings,
+      authorsSource:
+        - authors-generated-uid-0
     warnings: 4
   - title: Name string with extra comma warns
     raw:
@@ -203,37 +249,48 @@ cases:
         - name: A, B, C, D
     normalized:
       authors:
-        - name: A, B, C, D
+        - id: authors-generated-uid-0
+          name: A, B, C, D
           nameParsed:
             literal: A, B, C, D
             given: D
             family: A, B
             suffix: C
+      authorsSource:
+        - authors-generated-uid-0
     warnings: 1
   - title: Display name expands
     raw:
       authors:
-        - name:
+        - id: jn
+          name:
             literal: Just A. Name
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
             family: Name
+      authorsSource:
+        - jn
   - title: Display name expands
     raw:
       authors:
-        - name:
+        - id: jn
+          name:
             literal: Just A. Name
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
             family: Name
+      authorsSource:
+        - jn
   - title: Complex name renders
     raw:
       authors:
@@ -245,7 +302,8 @@ cases:
             suffix: E
     normalized:
       authors:
-        - name: c D, E, A b
+        - id: authors-generated-uid-0
+          name: c D, E, A b
           nameParsed:
             literal: c D, E, A b
             given: A
@@ -253,3 +311,5 @@ cases:
             non_dropping_particle: c
             family: D
             suffix: E
+      authorsSource:
+        - authors-generated-uid-0

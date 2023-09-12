@@ -26,10 +26,11 @@ const files = [
   'affiliations.yml',
   'authors.yml',
   'credit.yml',
-  'orcid.yml',
-  'licenses.yml',
   'exports.yml',
+  'funding.yml',
   'keywords.yml',
+  'licenses.yml',
+  'orcid.yml',
   'thebe.yml',
 ];
 
