@@ -102,6 +102,47 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
       });
     }
     if (author.corresponding) attributes.corresp = 'yes';
+    if (author.nameParsed && (author.nameParsed?.given || author.nameParsed?.family)) {
+      const { given, family, dropping_particle, non_dropping_particle, suffix } = author.nameParsed;
+      const nameElements: Element[] = [];
+      if (family) {
+        nameElements.push({
+          type: 'element',
+          name: 'surname',
+          elements: [
+            {
+              type: 'text',
+              text: non_dropping_particle ? `${non_dropping_particle} ${family}` : family,
+            },
+          ],
+        });
+      }
+      if (given) {
+        nameElements.push({
+          type: 'element',
+          name: 'given-names',
+          elements: [
+            {
+              type: 'text',
+              text: dropping_particle ? `${given} ${dropping_particle}` : given,
+            },
+          ],
+        });
+      }
+      // Prefix not yet supported by name parsing
+      if (suffix) {
+        nameElements.push({
+          type: 'element',
+          name: 'suffix',
+          elements: [{ type: 'text', text: suffix }],
+        });
+      }
+      elements.push({
+        type: 'element',
+        name: 'name',
+        elements: nameElements,
+      });
+    }
     if (author.name) {
       elements.push({
         type: 'element',
@@ -131,14 +172,8 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
         ...author.affiliations.map((aff): Element => {
           return {
             type: 'element',
-            name: 'aff',
-            elements: [
-              {
-                type: 'element',
-                name: 'institution',
-                elements: [{ type: 'text', text: aff }],
-              },
-            ],
+            name: 'xref',
+            attributes: { 'ref-type': 'aff', rid: aff },
           };
         }),
       );
@@ -161,6 +196,44 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
     return { type: 'element', name: 'contrib', attributes, elements };
   });
   return contribs?.length ? [{ type: 'element', name: 'contrib-group', elements: contribs }] : [];
+}
+
+export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element[] {
+  const affs = frontmatter.affiliations?.map((affiliation): Element => {
+    const elements: Element[] = [];
+    const attributes: Record<string, any> = {};
+    if (affiliation.id) {
+      attributes.id = affiliation.id;
+    }
+    if (affiliation.institution ?? affiliation.name) {
+      elements.push({
+        type: 'element',
+        name: 'institution',
+        elements: [{ type: 'text', text: affiliation.institution ?? affiliation.name }],
+      });
+    }
+    // department
+    // address
+    // city
+    // state
+    // postal_code
+    // country
+    // collaboration
+    // isni
+    // ringgold
+    // ror
+    // url
+    // email
+    // phone
+    // fax
+    return {
+      type: 'element',
+      name: 'aff',
+      attributes,
+      elements: [{ type: 'element', name: 'institution-wrap', elements }],
+    };
+  });
+  return affs ? affs : [];
 }
 
 export function getArticlePermissions(frontmatter: ProjectFrontmatter): Element[] {
@@ -192,6 +265,13 @@ export function getArticlePermissions(frontmatter: ProjectFrontmatter): Element[
         },
       ]
     : [];
+}
+
+export function getKwdGroup(frontmatter: ProjectFrontmatter): Element[] {
+  const kwds = frontmatter.keywords?.map((keyword): Element => {
+    return { type: 'element', name: 'kwd', elements: [{ type: 'text', text: keyword }] };
+  });
+  return kwds ? [{ type: 'element', name: 'kwd-group', elements: kwds }] : [];
 }
 
 export function getArticleVolume(frontmatter: ProjectFrontmatter): Element[] {
@@ -241,6 +321,7 @@ export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSe
       // article-categories
       ...getArticleTitle(frontmatter),
       ...getArticleAuthors(frontmatter),
+      ...getArticleAffiliations(frontmatter),
       // author-notes
       // pub-date or pub-date-not-available
       ...getArticleVolume(frontmatter),
@@ -263,7 +344,7 @@ export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSe
       // self-uri
       // related-article, related-object
       // trans-abstract
-      // kwd-group
+      ...getKwdGroup(frontmatter),
       // funding-group
       // support-group
       // conference

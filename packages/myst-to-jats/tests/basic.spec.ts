@@ -76,31 +76,11 @@ describe('Basic JATS body', () => {
 });
 
 describe('JATS full article', () => {
-  const cases = loadCases('article.yml');
-  test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
-    '%s',
-    async (_, { tree, jats, frontmatter, citations }) => {
-      const pipe = unified().use(
-        mystToJats,
-        SourceFileKind.Article,
-        frontmatter,
-        citations,
-        undefined,
-        {
-          writeFullArticle: true,
-          spaces: 2,
-        },
-      );
-      pipe.runSync(tree as any);
-      const vfile = pipe.stringify(tree as any);
-      expect(vfile.result).toEqual(jats);
-      if (TEST_DTD) expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
-    },
-  );
-});
-
-describe('JATS full article with bibliography', () => {
-  const cases = loadCases('citations.yml');
+  const cases = [
+    ...loadCases('article.yml'),
+    ...loadCases('authors.yml'),
+    ...loadCases('citations.yml'),
+  ];
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
     async (_, { tree, jats, frontmatter, citations }) => {
