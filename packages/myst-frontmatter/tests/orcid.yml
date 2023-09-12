@@ -7,15 +7,13 @@ cases:
           orcid: 0000-0000-0000-0000
     normalized:
       authors:
-        - id: authors-generated-uid-0
+        - id: contributors-generated-uid-0
           name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
             family: Name
           orcid: 0000-0000-0000-0000
-      authorsSource:
-        - authors-generated-uid-0
   - title: Using http
     raw:
       authors:
@@ -23,15 +21,13 @@ cases:
           orcid: https://orcid.org/0000-0000-0000-000X
     normalized:
       authors:
-        - id: authors-generated-uid-0
+        - id: contributors-generated-uid-0
           name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
             family: Name
           orcid: 0000-0000-0000-000X
-      authorsSource:
-        - authors-generated-uid-0
   - title: Not a valid ORCID
     raw:
       authors:
@@ -39,12 +35,10 @@ cases:
           orcid: nope
     normalized:
       authors:
-        - id: authors-generated-uid-0
+        - id: contributors-generated-uid-0
           name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
             family: Name
-      authorsSource:
-        - authors-generated-uid-0
     errors: 1
