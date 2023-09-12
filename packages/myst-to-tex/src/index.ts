@@ -176,6 +176,11 @@ const handlers: Record<string, Handler> = {
     // https://www.overleaf.com/learn/latex/glossaries
     state.renderChildren(node, true);
   },
+  glossary(node, state) {
+    state.usePackages('glossaries');
+    console.log('GLOSSARY', JSON.stringify(node));
+    state.write('stuff');
+  },
   link(node, state) {
     state.usePackages('url', 'hyperref');
     const href = node.url;
