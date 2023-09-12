@@ -25,7 +25,7 @@ import { validateLicenses } from '../licenses/validators.js';
 import { formatName, parseName } from '../utils/parseName.js';
 import { ExportFormats } from './types.js';
 import type {
-  Author,
+  Contributor,
   Biblio,
   Export,
   Jupytext,
@@ -105,8 +105,8 @@ export const USE_PROJECT_FALLBACK = [
   'numbering',
   'keywords',
   'funding',
+  'authors',
   'affiliations',
-  'authorsSource',
 ];
 
 const AFFILIATION_KEYS = [
@@ -129,7 +129,7 @@ const AFFILIATION_KEYS = [
   'fax',
 ];
 
-const AUTHOR_KEYS = [
+const CONTRIBUTOR_KEYS = [
   'id',
   'userId',
   'name',
@@ -148,7 +148,7 @@ const AUTHOR_KEYS = [
   'phone',
   'fax',
 ];
-const AUTHOR_ALIASES = {
+const CONTRIBUTOR_ALIASES = {
   role: 'roles',
   affiliation: 'affiliations',
   website: 'url',
@@ -303,15 +303,15 @@ function pseudoUniqueId(kind: string, index: number, file?: string) {
 export function validateAndStashObject<T extends { id?: string; name?: string }>(
   input: any,
   stash: ReferenceStash,
-  kind: keyof ReferenceStash,
+  kind: 'affiliations' | 'contributors',
   validateFn: (v: any, o: ValidationOptions) => T | undefined,
   opts: ValidationOptions,
 ) {
-  const lookup: Record<string, T> = {};
+  const lookup: Record<string, T & { id: string }> = {};
   const lookupNorm2Id: Record<string, string> = {};
   stash[kind]?.forEach((item) => {
     if (item.id) {
-      lookup[item.id] = item as T;
+      lookup[item.id] = item as T & { id: string };
       lookupNorm2Id[normalizedString({ ...item, id: undefined })] = item.id;
     }
   });
@@ -336,10 +336,10 @@ export function validateAndStashObject<T extends { id?: string; name?: string }>
   }
   if (!Object.keys(lookup).includes(value.id)) {
     // Handle case of new id - add stash value
-    lookup[value.id] = value;
+    lookup[value.id] = value as T & { id: string };
   } else if (isStashPlaceholder(lookup[value.id])) {
     // Handle case of existing placeholder { id: value, name: value } - replace stash value
-    lookup[value.id] = value;
+    lookup[value.id] = value as T & { id: string };
   } else if (warnOnDuplicate) {
     // Warn on duplicate id - lose new object
     validationWarning(`duplicate id for ${kind} found in frontmatter: ${value.id}`, opts);
@@ -518,15 +518,19 @@ export function validateName(input: any, opts: ValidationOptions) {
 }
 
 /**
- * Validate Author object against the schema
+ * Validate Conributor object against the schema
  */
-export function validateAuthor(input: any, stash: ReferenceStash, opts: ValidationOptions) {
+export function validateContributor(input: any, stash: ReferenceStash, opts: ValidationOptions) {
   if (typeof input === 'string') {
     input = { id: input, name: input };
   }
-  const value = validateObjectKeys(input, { optional: AUTHOR_KEYS, alias: AUTHOR_ALIASES }, opts);
+  const value = validateObjectKeys(
+    input,
+    { optional: CONTRIBUTOR_KEYS, alias: CONTRIBUTOR_ALIASES },
+    opts,
+  );
   if (value === undefined) return undefined;
-  const output: Author = {};
+  const output: Contributor = {};
   if (defined(value.id)) {
     output.id = validateString(value.id, incrementOptions('id', opts));
   }
@@ -538,7 +542,7 @@ export function validateAuthor(input: any, stash: ReferenceStash, opts: Validati
     output.nameParsed = validateName(value.name, incrementOptions('name', opts));
     output.name = output.nameParsed?.literal;
   } else {
-    validationWarning('author should include name', opts);
+    validationWarning('contributor should include name', opts);
   }
   if (defined(value.orcid)) {
     const orcidOpts = incrementOptions('orcid', opts);
@@ -1048,15 +1052,15 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     if (!Array.isArray(value.authors)) {
       authors = [authors];
     }
-    output.authorsSource = validateList(
+    stash.authorIds = validateList(
       authors,
       incrementOptions('authors', opts),
       (recipient, index) => {
         return validateAndStashObject(
           recipient,
           stash,
-          'authors',
-          (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+          'contributors',
+          (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
           incrementOptions(`authors.${index}`, opts),
         );
       },
@@ -1083,14 +1087,23 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
       return validateFunding(fund, stash, incrementOptions(`funding.${index}`, opts));
     });
   }
-  if (stash.authors?.length) {
-    output.authors = stash.authors;
+  const stashAuthors = stash.contributors?.filter(
+    (contrib) => stash.authorIds?.includes(contrib.id),
+  );
+  const stashContributors = stash.contributors?.filter(
+    (contrib) => !stash.authorIds?.includes(contrib.id),
+  );
+  if (stashAuthors?.length) {
+    output.authors = stashAuthors;
     // Ensure there is a corresponding author if an email is provided
     const corresponding = output.authors?.find((a) => a.corresponding !== undefined);
     const email = output.authors?.find((a) => a.email);
     if (!corresponding && email) {
       email.corresponding = true;
     }
+  }
+  if (stashContributors?.length) {
+    output.contributors = stashContributors;
   }
   if (stash.affiliations?.length) {
     output.affiliations = stash.affiliations;
@@ -1349,51 +1362,71 @@ export function fillPageFrontmatter(
     };
   }
 
-  // Gather all contributors and authors (and affiliations from funding sources)
-  const contributorIds: string[] = [...(frontmatter.authorsSource ?? [])];
-  const affiliationIds: string[] = [];
+  // Gather all contributors and affiliations from funding sources
+  const contributorIds: Set<string> = new Set();
+  const affiliationIds: Set<string> = new Set();
   frontmatter.funding?.forEach((fund) => {
     fund.awards?.forEach((award) => {
-      if (award.investigators) contributorIds.push(...award.investigators);
-      if (award.recipients) contributorIds.push(...award.recipients);
-      if (award.sources) affiliationIds.push(...award.sources);
+      award.investigators?.forEach((inv) => {
+        contributorIds.add(inv);
+      });
+      award.recipients?.forEach((rec) => {
+        contributorIds.add(rec);
+      });
+      award.sources?.forEach((aff) => {
+        affiliationIds.add(aff);
+      });
     });
   });
 
-  // Reconstruct author list with only relevant contributors (from above)
-  const authors = [...(pageFrontmatter.authors ?? []), ...(projectFrontmatter.authors ?? [])];
-  if (contributorIds.length && authors.length) {
-    const authorLookup: Record<string, Author> = {};
-    authors.forEach((auth) => {
+  if (frontmatter.authors?.length || contributorIds.size) {
+    // Gather all people from page/project authors/contributors
+    const people = [
+      ...(pageFrontmatter.authors ?? []),
+      ...(projectFrontmatter.authors ?? []),
+      ...(pageFrontmatter.contributors ?? []),
+      ...(projectFrontmatter.contributors ?? []),
+    ];
+    const peopleLookup: Record<string, Contributor> = {};
+    people.forEach((auth) => {
       if (!auth.id || isStashPlaceholder(auth)) return;
-      if (!authorLookup[auth.id]) {
-        authorLookup[auth.id] = auth;
-      } else if (normalizedString(auth) !== normalizedString(authorLookup[auth.id])) {
+      if (!peopleLookup[auth.id]) {
+        peopleLookup[auth.id] = auth;
+      } else if (normalizedString(auth) !== normalizedString(peopleLookup[auth.id])) {
         validationWarning(
-          `Duplicate author id within project: ${auth.id}`,
+          `Duplicate contributor id within project: ${auth.id}`,
           incrementOptions('authors', opts),
         );
       }
     });
-    frontmatter.authors = [...new Set(contributorIds)].map((id) => {
-      return authorLookup[id] ?? stashPlaceholder(id);
-    });
+    if (frontmatter.authors?.length) {
+      frontmatter.authors = frontmatter.authors.map((auth) => {
+        if (!auth.id) return auth;
+        return peopleLookup[auth.id] ?? stashPlaceholder(auth.id);
+      });
+    }
+    if (contributorIds.size) {
+      frontmatter.contributors = [...contributorIds].map((id) => {
+        return peopleLookup[id] ?? stashPlaceholder(id);
+      });
+    }
   }
 
-  // Add affiliations from reconstructed author list and explicit page affiliations
-  frontmatter.authors?.forEach((auth) => {
-    if (auth.affiliations) affiliationIds.push(...auth.affiliations);
+  // Add affiliations from reconstructed author/contributor lists and explicit page affiliations
+  [...(frontmatter.authors ?? []), ...(frontmatter.contributors ?? [])].forEach((auth) => {
+    auth.affiliations?.forEach((aff) => {
+      affiliationIds.add(aff);
+    });
   });
   frontmatter.affiliations?.forEach((aff) => {
-    if (aff.id) affiliationIds.push(aff.id);
+    if (aff.id) affiliationIds.add(aff.id);
   });
 
-  // Reconstruct affiliation list with only relevant affiliations
-  const affiliations = [
-    ...(pageFrontmatter.affiliations ?? []),
-    ...(projectFrontmatter.affiliations ?? []),
-  ];
-  if (affiliationIds.length && affiliations.length) {
+  if (affiliationIds.size) {
+    const affiliations = [
+      ...(pageFrontmatter.affiliations ?? []),
+      ...(projectFrontmatter.affiliations ?? []),
+    ];
     const affiliationLookup: Record<string, Affiliation> = {};
     affiliations.forEach((aff) => {
       if (!aff.id || isStashPlaceholder(aff)) return;
@@ -1406,7 +1439,7 @@ export function fillPageFrontmatter(
         );
       }
     });
-    frontmatter.affiliations = [...new Set(affiliationIds)].map((id) => {
+    frontmatter.affiliations = [...affiliationIds].map((id) => {
       return affiliationLookup[id] ?? stashPlaceholder(id);
     });
   }

@@ -10,7 +10,7 @@ import {
 import type { ValidationOptions } from 'simple-validators';
 import type { ReferenceStash } from '../frontmatter/types.js';
 import type { Award, Funding } from './types.js';
-import { validateAffiliation, validateAndStashObject, validateAuthor } from '../index.js';
+import { validateAffiliation, validateAndStashObject, validateContributor } from '../index.js';
 
 const AWARD_KEYS = ['id', 'name', 'description', 'sources', 'recipients', 'investigators'];
 const AWARD_ALIASES = { source: 'sources', recipient: 'recipients', investigator: 'investigators' };
@@ -57,8 +57,8 @@ export function validateAward(input: any, stash: ReferenceStash, opts: Validatio
         return validateAndStashObject(
           recipient,
           stash,
-          'authors',
-          (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+          'contributors',
+          (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
           incrementOptions(`recipients.${index}`, opts),
         );
       },
@@ -75,8 +75,8 @@ export function validateAward(input: any, stash: ReferenceStash, opts: Validatio
         return validateAndStashObject(
           investigator,
           stash,
-          'authors',
-          (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+          'contributors',
+          (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
           incrementOptions(`investigators.${index}`, opts),
         );
       },

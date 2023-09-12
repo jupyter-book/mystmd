@@ -79,9 +79,6 @@ cases:
             given: John
             family: Hamm
           affiliations: [cmu]
-      authorsSource:
-        - nj
-        - jh
       affiliations:
         - id: cmu
           name: Carnegie Mellon University
@@ -117,9 +114,6 @@ cases:
             given: John
             family: Hamm
           affiliations: [cmu]
-      authorsSource:
-        - nj
-        - jh
       affiliations:
         - id: cmu
           name: Carnegie Mellon University
@@ -154,8 +148,6 @@ cases:
             family: Name
           affiliations:
             - univa
-      authorsSource:
-        - jn
       affiliations:
         - id: univa
           name: University A
@@ -176,8 +168,6 @@ cases:
             family: Name
           affiliations:
             - University A
-      authorsSource:
-        - jn
       affiliations:
         - id: University A
           name: University A
@@ -199,8 +189,6 @@ cases:
             family: Name
           affiliations:
             - univa
-      authorsSource:
-        - jn
       affiliations:
         - id: univa
           name: University A
@@ -225,8 +213,6 @@ cases:
             family: Name
           affiliations:
             - univa
-      authorsSource:
-        - jn
       affiliations:
         - id: univa
           name: University B
@@ -260,9 +246,6 @@ cases:
             family: Name
           affiliations:
             - University A
-      authorsSource:
-        - jn
-        - an
       affiliations:
         - id: University A
           name: University A
@@ -297,9 +280,6 @@ cases:
             family: Name
           affiliations:
             - affiliations-generated-uid-0
-      authorsSource:
-        - jn
-        - an
       affiliations:
         - id: affiliations-generated-uid-0
           name: University A
@@ -324,8 +304,6 @@ cases:
             family: Name
           affiliations:
             - univa
-      authorsSource:
-        - jn
       affiliations:
         - id: univa
           name: University A

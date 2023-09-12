@@ -29,7 +29,7 @@ cases:
               recipients:
                 - John Doe
         - open_access: my statement 2
-      authors:
+      contributors:
         - id: John Doe
           name: John Doe
           nameParsed:
@@ -97,7 +97,7 @@ cases:
             - id: abc-123
               investigators:
                 - John Doe
-      authors:
+      contributors:
         - id: John Doe
           name: John Doe
           nameParsed:
@@ -118,7 +118,7 @@ cases:
             - id: abc-123
               recipients:
                 - John Doe
-      authors:
+      contributors:
         - id: John Doe
           name: John Doe
           nameParsed:
@@ -148,20 +148,20 @@ cases:
               sources:
                 - University A
               recipients:
-                - authors-generated-uid-0
+                - contributors-generated-uid-0
               investigators:
-                - authors-generated-uid-1
+                - contributors-generated-uid-1
       affiliations:
         - id: University A
           name: University A
-      authors:
-        - id: authors-generated-uid-0
+      contributors:
+        - id: contributors-generated-uid-0
           name: Jane Doe
           nameParsed:
             literal: Jane Doe
             given: Jane
             family: Doe
-        - id: authors-generated-uid-1
+        - id: contributors-generated-uid-1
           name: John Doe
           nameParsed:
             literal: John Doe
@@ -192,23 +192,61 @@ cases:
               sources:
                 - University A
               recipients:
-                - authors-generated-uid-0
+                - contributors-generated-uid-0
               investigators:
-                - authors-generated-uid-1
+                - contributors-generated-uid-1
       affiliations:
         - id: University A
           name: University A
-      authors:
-        - id: authors-generated-uid-0
+      contributors:
+        - id: contributors-generated-uid-0
           name: Jane Doe
           nameParsed:
             literal: Jane Doe
             given: Jane
             family: Doe
-        - id: authors-generated-uid-1
+        - id: contributors-generated-uid-1
           name: John Doe
           nameParsed:
             literal: John Doe
             given: John
             family: Doe
     warnings: 1
+  - title: Funding contributor and author is persisted in authors
+    raw:
+      funding:
+        - statement: my statement 1
+          awards:
+            - id: abc-123
+              name: Award
+              description: my award
+              sources:
+                - University A
+              investigators:
+                - John Doe
+              recipients:
+                - John Doe
+      author: John Doe
+    normalized:
+      funding:
+        - statement: my statement 1
+          awards:
+            - id: abc-123
+              name: Award
+              description: my award
+              sources:
+                - University A
+              investigators:
+                - John Doe
+              recipients:
+                - John Doe
+      authors:
+        - id: John Doe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            family: Doe
+            given: John
+      affiliations:
+        - id: University A
+          name: University A
