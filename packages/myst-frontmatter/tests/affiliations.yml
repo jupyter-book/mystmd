@@ -42,7 +42,7 @@ cases:
         - id: affiliations-generated-uid-0
           name: University A
         - id: affiliations-generated-uid-1
-          institution: University B
+          name: University B
         - id: affiliations-generated-uid-2
           email: universityc@example.com
     warnings: 1

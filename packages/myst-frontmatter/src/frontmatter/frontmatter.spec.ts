@@ -52,7 +52,6 @@ const TEST_AFFILIATION: Affiliation = {
   postal_code: '00000',
   country: 'USA',
   name: 'Example University',
-  institution: 'Example University',
   department: 'Example department',
   collaboration: true,
   isni: '0000000000000000',

@@ -117,7 +117,6 @@ const AFFILIATION_KEYS = [
   'postal_code',
   'country',
   'name',
-  'institution',
   'department',
   'collaboration',
   'isni',
@@ -177,6 +176,7 @@ const AFFILIATION_ALIASES = {
   region: 'state',
   province: 'state',
   website: 'url',
+  institution: 'name',
 };
 
 const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
@@ -394,9 +394,6 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
   if (defined(value.name)) {
     output.name = validateString(value.name, incrementOptions('name', opts));
   }
-  if (defined(value.institution)) {
-    output.institution = validateString(value.institution, incrementOptions('institution', opts));
-  }
   if (defined(value.department)) {
     output.department = validateString(value.department, incrementOptions('department', opts));
   }
@@ -451,8 +448,8 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
   // where a simple string is provided as an affiliation.
   if (Object.keys(output).length === 1 && output.id) {
     return stashPlaceholder(output.id);
-  } else if (!output.name && !output.institution) {
-    validationWarning('affiliation should include name or institution', opts);
+  } else if (!output.name) {
+    validationWarning('affiliation should include name/institution', opts);
   }
   return output;
 }
