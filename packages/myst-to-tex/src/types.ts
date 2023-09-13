@@ -1,6 +1,6 @@
 import type { References } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import type { FootnoteDefinition } from 'myst-spec-ext';
+import type { DefinitionDescription, DefinitionTerm, FootnoteDefinition } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 
 export const DEFAULT_IMAGE_WIDTH = 0.7;
@@ -8,9 +8,16 @@ export const DEFAULT_PAGE_WIDTH_PIXELS = 800;
 
 export type Handler = (node: any, state: ITexSerializer, parent: any) => void;
 
+export type GlossaryEntry = {
+  key: string;
+  name: string;
+  description: string;
+};
+
 export type LatexResult = {
   value: string;
   imports: string[];
+  glossary: GlossaryEntry[];
   commands: Record<string, string>;
 };
 
@@ -41,6 +48,7 @@ export interface ITexSerializer<D extends Record<string, any> = StateData> {
   options: Options;
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
+  glossary: Record<string, [DefinitionTerm, DefinitionDescription]>;
   usePackages: (...packageNames: string[]) => void;
   write: (value: string) => void;
   text: (value: string, mathMode?: boolean) => void;

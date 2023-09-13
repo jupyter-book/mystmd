@@ -1,7 +1,7 @@
 import type { Root, Parent, Code } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import type { References } from 'myst-common';
+import type { GenericNode, References } from 'myst-common';
 import { fileError, toText } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
 import { renderNodeToLatex } from './tables.js';
@@ -15,10 +15,51 @@ import {
 } from './utils.js';
 import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { selectAll } from 'unist-util-select';
-import type { FootnoteDefinition } from 'myst-spec-ext';
+import type { DefinitionDescription, DefinitionTerm, FootnoteDefinition } from 'myst-spec-ext';
 import { transformLegends } from './legends.js';
 
 export type { LatexResult } from './types.js';
+
+const glossaryReferenceHandler: Handler = (node, state) => {
+  if (!node.identifier) return;
+  const entry = state.glossary[node.identifier];
+  if (!entry) {
+    fileError(state.file, `Unknown glossary entry identifier "${node.identifier}"`, {
+      node,
+      source: 'myst-to-tex',
+    });
+    return;
+  }
+  state.write('\\gls{');
+  state.write(node.identifier);
+  state.write('}');
+};
+
+const createFootnoteDefinitions = (tree: Root) => Object.fromEntries(
+  selectAll('footnoteDefinition', tree).map((node) => {
+    const fn = node as FootnoteDefinition;
+    return [fn.identifier, fn];
+  }),
+);
+
+const createGlossaryDefinitions = (tree: Root) => Object.fromEntries(
+  selectAll('glossary > definitionList > *', tree)
+    .map((node, i, siblings) => {
+      if (node.type !== "definitionTerm") {
+        return [];
+      }
+      const dt = node as GenericNode;
+      if (!dt.identifier) {
+        return [];
+      }
+      const dd = siblings[i + 1];
+      if (dd === undefined || dd.type !== 'definitionDescription') {
+        throw new Error(`Definition term has no associated description`);
+      }
+      return [dt.identifier, [dt, dd]];
+    })
+    .filter((x) => x.length > 0) // remove empty
+);
 
 const handlers: Record<string, Handler> = {
   text(node, state) {
@@ -176,11 +217,6 @@ const handlers: Record<string, Handler> = {
     // https://www.overleaf.com/learn/latex/glossaries
     state.renderChildren(node, true);
   },
-  glossary(node, state) {
-    state.usePackages('glossaries');
-    console.log('GLOSSARY', JSON.stringify(node));
-    state.write('stuff');
-  },
   link(node, state) {
     state.usePackages('url', 'hyperref');
     const href = node.url;
@@ -237,7 +273,11 @@ const handlers: Record<string, Handler> = {
   container: containerHandler,
   caption: captionHandler,
   captionNumber: () => undefined,
-  crossReference(node, state) {
+  crossReference(node, state, parent) {
+    if (node.kind === 'definitionTerm') {
+      glossaryReferenceHandler(node, state, parent);
+      return;
+    }
     // Look up reference and add the text
     const usedTemplate = node.template?.includes('%s') ? node.template : undefined;
     const text = (usedTemplate ?? toText(node))?.replace(/\s/g, '~') || '%s';
@@ -313,6 +353,7 @@ class TexSerializer implements ITexSerializer {
   handlers: Record<string, Handler>;
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
+  glossary: Record<string, [DefinitionTerm, DefinitionDescription]>;
 
   constructor(file: VFile, tree: Root, opts?: Options) {
     file.result = '';
@@ -321,12 +362,9 @@ class TexSerializer implements ITexSerializer {
     this.data = { mathPlugins: {}, imports: new Set() };
     this.handlers = opts?.handlers ?? handlers;
     this.references = opts?.references ?? {};
-    this.footnotes = Object.fromEntries(
-      selectAll('footnoteDefinition', tree).map((node) => {
-        const fn = node as FootnoteDefinition;
-        return [fn.identifier, fn];
-      }),
-    );
+    this.footnotes = createFootnoteDefinitions(tree);
+    // Improve: render definition when encountering terms
+    this.glossary = createGlossaryDefinitions(tree);
     this.renderChildren(tree);
   }
 
@@ -409,8 +447,14 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     transformLegends(node);
     const state = new TexSerializer(file, node, opts ?? { handlers });
     const tex = (file.result as string).trim();
+    const glossaryEntries = Object.keys(state.glossary).map(k => ({
+      key: k,
+      name: (state.glossary[k][0].children[0] as GenericNode).value || '',
+      description: (state.glossary[k][1].children[0] as GenericNode).value || '',
+    }));
     const result: LatexResult = {
       imports: [...state.data.imports],
+      glossary: glossaryEntries,
       commands: withRecursiveCommands(state),
       value: tex,
     };

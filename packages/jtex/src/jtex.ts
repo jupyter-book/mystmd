@@ -3,8 +3,8 @@ import { extname, dirname } from 'node:path';
 import type MystTemplate from 'myst-templates';
 import { TEMPLATE_FILENAME } from 'myst-templates';
 import nunjucks from 'nunjucks';
-import { renderImports } from './imports.js';
-import type { TexRenderer, TemplateImports } from './types.js';
+import { renderGlossary, renderGlossaryImports, renderImports } from './imports.js';
+import type { TexRenderer, TemplateImports, GlossaryDirective } from './types.js';
 import version from './version.js';
 
 function ensureDirectoryExists(directory: string) {
@@ -40,6 +40,7 @@ export function renderTex(
     bibliography?: string[];
     sourceFile?: string;
     imports?: string | TemplateImports;
+    glossary?: GlossaryDirective[];
     force?: boolean;
     packages?: string[];
     filesPath?: string;
@@ -56,12 +57,17 @@ export function renderTex(
     content = opts.contentOrPath;
   }
   const { options, parts, doc } = template.prepare(opts);
+  const allImports = [
+    renderImports(opts.imports, opts.packages),
+    renderGlossaryImports(opts.glossary),
+  ].join('');
+  content += renderGlossary(opts.glossary);
   const renderer: TexRenderer = {
-    CONTENT: content,
+    CONTENT: content, // TODO: Add the print glossary
     doc,
     parts,
     options,
-    IMPORTS: renderImports(opts.imports, opts?.packages),
+    IMPORTS: allImports,
   };
   const env = getDefaultEnv(template);
   const rendered = env.render(TEMPLATE_FILENAME, renderer);
