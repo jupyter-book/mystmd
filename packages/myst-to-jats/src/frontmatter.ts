@@ -86,9 +86,6 @@ export function getArticleTitle(frontmatter: ProjectFrontmatter): Element[] {
 }
 
 export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
-  // For now this just uses affiliations directly on each <contrib>, as they are defined in ProjectFrontmatter.
-  // This should be changed to deduplicate / improve affiliations in frontmatter.
-  // contrib-group, aff, aff-alternatives, x
   const contribs = frontmatter.authors?.map((author): Element => {
     const attributes: Record<string, any> = {};
     const elements: Element[] = [];
@@ -199,38 +196,131 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
 }
 
 export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element[] {
+  console.log(JSON.stringify(frontmatter, null, 2));
   const affs = frontmatter.affiliations?.map((affiliation): Element => {
     const elements: Element[] = [];
     const attributes: Record<string, any> = {};
     if (affiliation.id) {
       attributes.id = affiliation.id;
     }
-    if (affiliation.institution ?? affiliation.name) {
-      elements.push({
+    const instWrapElements: Element[] = [];
+    if (affiliation.name) {
+      instWrapElements.push({
         type: 'element',
         name: 'institution',
-        elements: [{ type: 'text', text: affiliation.institution ?? affiliation.name }],
+        elements: [{ type: 'text', text: affiliation.name }],
       });
     }
-    // department
-    // address
-    // city
-    // state
-    // postal_code
-    // country
-    // collaboration
-    // isni
-    // ringgold
-    // ror
-    // url
-    // email
-    // phone
-    // fax
+    if (affiliation.isni) {
+      instWrapElements.push({
+        type: 'element',
+        name: 'institution-id',
+        attributes: { 'institution-id-type': 'isni' },
+        elements: [{ type: 'text', text: affiliation.isni }],
+      });
+    }
+    if (affiliation.ringgold) {
+      instWrapElements.push({
+        type: 'element',
+        name: 'institution-id',
+        attributes: { 'institution-id-type': 'ringgold' },
+        elements: [{ type: 'text', text: `${affiliation.ringgold}` }],
+      });
+    }
+    if (affiliation.ror) {
+      instWrapElements.push({
+        type: 'element',
+        name: 'institution-id',
+        attributes: { 'institution-id-type': 'ror' },
+        elements: [{ type: 'text', text: affiliation.ror }],
+      });
+    }
+    if (instWrapElements.length) {
+      elements.push({ type: 'element', name: 'institution-wrap', elements: instWrapElements });
+    }
+    if (affiliation.department) {
+      elements.push({
+        type: 'element',
+        name: 'institution-wrap',
+        elements: [
+          {
+            type: 'element',
+            name: 'institution',
+            attributes: { 'content-type': 'dept' },
+            elements: [{ type: 'text', text: affiliation.department }],
+          },
+        ],
+      });
+    }
+    if (affiliation.address) {
+      elements.push({
+        type: 'element',
+        name: 'addr-line',
+        elements: [{ type: 'text', text: affiliation.address }],
+      });
+    }
+    if (affiliation.city) {
+      elements.push({
+        type: 'element',
+        name: 'city',
+        elements: [{ type: 'text', text: affiliation.city }],
+      });
+    }
+    if (affiliation.state) {
+      elements.push({
+        type: 'element',
+        name: 'state',
+        elements: [{ type: 'text', text: affiliation.state }],
+      });
+    }
+    if (affiliation.postal_code) {
+      elements.push({
+        type: 'element',
+        name: 'postal-code',
+        elements: [{ type: 'text', text: affiliation.postal_code }],
+      });
+    }
+    if (affiliation.country) {
+      elements.push({
+        type: 'element',
+        name: 'country',
+        elements: [{ type: 'text', text: affiliation.country }],
+      });
+    }
+    if (affiliation.phone) {
+      elements.push({
+        type: 'element',
+        name: 'phone',
+        elements: [{ type: 'text', text: affiliation.phone }],
+      });
+    }
+    if (affiliation.fax) {
+      elements.push({
+        type: 'element',
+        name: 'fax',
+        elements: [{ type: 'text', text: affiliation.fax }],
+      });
+    }
+    if (affiliation.email) {
+      elements.push({
+        type: 'element',
+        name: 'email',
+        elements: [{ type: 'text', text: affiliation.email }],
+      });
+    }
+    if (affiliation.url) {
+      elements.push({
+        type: 'element',
+        name: 'ext-link',
+        attributes: { 'ext-link-type': 'uri', 'xlink:href': affiliation.url },
+        elements: [{ type: 'text', text: affiliation.url }],
+      });
+    }
     return {
       type: 'element',
       name: 'aff',
       attributes,
-      elements: [{ type: 'element', name: 'institution-wrap', elements }],
+      elements,
     };
   });
   return affs ? affs : [];
@@ -238,6 +328,7 @@ export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element
 
 export function getArticlePermissions(frontmatter: ProjectFrontmatter): Element[] {
   // copyright-statement, -year, -holder
+  if (frontmatter.authors) console.log(JSON.stringify(frontmatter, null, 2));
   const text = frontmatter.license?.content?.url ?? frontmatter.license?.code?.url;
   // Add `<ali:free_to_read />` to the permissions
   const freeToRead: Element[] = frontmatter.open_access
