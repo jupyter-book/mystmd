@@ -26,9 +26,9 @@ There are two ways to use the library, you can use the `MyST` wrapper,
 which creates a `MarkdownIt` tokenizer for you:
 
 ```javascript
-import { MyST } from 'myst-parser';
-const myst = MyST(); // Can override options here!
-const mdast = myst.parse(myString);
+import { mystParse } from 'myst-parser';
+const opts = {}; // Can override options here!
+const mdast = mystParse(myString, opts);
 ```
 
 Alternatively, you can use this with other packages in a more granular way:
