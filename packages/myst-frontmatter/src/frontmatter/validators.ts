@@ -515,7 +515,7 @@ export function validateName(input: any, opts: ValidationOptions) {
 }
 
 /**
- * Validate Conributor object against the schema
+ * Validate Contributor object against the schema
  */
 export function validateContributor(input: any, stash: ReferenceStash, opts: ValidationOptions) {
   if (typeof input === 'string') {
