@@ -89,6 +89,7 @@ describe('JATS full article', () => {
     ...loadCases('article.yml'),
     ...loadCases('authors.yml'),
     ...loadCases('citations.yml'),
+    ...loadCases('funding.yml'),
   ];
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',

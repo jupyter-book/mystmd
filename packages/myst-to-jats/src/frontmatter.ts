@@ -379,6 +379,110 @@ export function getKwdGroup(frontmatter: ProjectFrontmatter): Element[] {
   return kwds ? [{ type: 'element', name: 'kwd-group', elements: kwds }] : [];
 }
 
+export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
+  const fundingGroups = frontmatter.funding?.map((fund): Element => {
+    const elements: Element[] = [];
+    if (fund.awards?.length) {
+      elements.push(
+        ...fund.awards.map((award): Element => {
+          const awardElements: Element[] = [];
+          if (award.sources?.length) {
+            awardElements.push(
+              ...award.sources.map((source): Element => {
+                return {
+                  type: 'element',
+                  name: 'funding-source',
+                  elements: [
+                    {
+                      type: 'element',
+                      name: 'xref',
+                      attributes: { 'ref-type': 'aff', rid: source },
+                    },
+                  ],
+                };
+              }),
+            );
+          }
+          if (award.id) {
+            awardElements.push({
+              type: 'element',
+              name: 'award-id',
+              elements: [{ type: 'text', text: award.id }],
+            });
+          }
+          if (award.name) {
+            awardElements.push({
+              type: 'element',
+              name: 'award-name',
+              elements: [{ type: 'text', text: award.name }],
+            });
+          }
+          if (award.description) {
+            awardElements.push({
+              type: 'element',
+              name: 'award-desc',
+              elements: [{ type: 'text', text: award.description }],
+            });
+          }
+          if (award.recipients?.length) {
+            awardElements.push(
+              ...award.recipients.map((recipient): Element => {
+                return {
+                  type: 'element',
+                  name: 'principal-award-recipient',
+                  elements: [
+                    {
+                      type: 'element',
+                      name: 'xref',
+                      attributes: { 'ref-type': 'contrib', rid: recipient },
+                    },
+                  ],
+                };
+              }),
+            );
+          }
+          if (award.investigators?.length) {
+            awardElements.push(
+              ...award.investigators.map((investigator): Element => {
+                return {
+                  type: 'element',
+                  name: 'principal-investigator',
+                  elements: [
+                    {
+                      type: 'element',
+                      name: 'xref',
+                      attributes: { 'ref-type': 'contrib', rid: investigator },
+                    },
+                  ],
+                };
+              }),
+            );
+          }
+          return { type: 'element', name: 'award-group', elements: awardElements };
+        }),
+      );
+    }
+    if (fund.statement) {
+      elements.push({
+        type: 'element',
+        name: 'funding-statement',
+        elements: [{ type: 'text', text: fund.statement }],
+      });
+    }
+    if (fund.open_access) {
+      elements.push({
+        type: 'element',
+        name: 'open-access',
+        elements: [
+          { type: 'element', name: 'p', elements: [{ type: 'text', text: fund.open_access }] },
+        ],
+      });
+    }
+    return { type: 'element', name: 'funding-group', elements };
+  });
+  return fundingGroups ? fundingGroups : [];
+}
+
 export function getArticleVolume(frontmatter: ProjectFrontmatter): Element[] {
   const text = frontmatter.biblio?.volume;
   return text
@@ -450,7 +554,7 @@ export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSe
       // related-article, related-object
       // trans-abstract
       ...getKwdGroup(frontmatter),
-      // funding-group
+      ...getFundingGroup(frontmatter),
       // support-group
       // conference
       // counts
