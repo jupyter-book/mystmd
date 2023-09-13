@@ -63,7 +63,7 @@ export function renderTex(
   ].join('');
   content += renderGlossary(opts.glossary);
   const renderer: TexRenderer = {
-    CONTENT: content, // TODO: Add the print glossary
+    CONTENT: content,
     doc,
     parts,
     options,
