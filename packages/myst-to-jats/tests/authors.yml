@@ -37,7 +37,7 @@ cases:
         <front>
           <article-meta>
             <contrib-group>
-              <contrib contrib-type="author" corresp="yes">
+              <contrib contrib-type="author" corresp="yes" id="contributors-generated-uid-0">
                 <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
                 <name>
                   <surname>Doe</surname>
@@ -50,7 +50,7 @@ cases:
                 <email>example@example.com</email>
                 <ext-link ext-link-type="uri" xlink:href="https://example.com">https://example.com</ext-link>
               </contrib>
-              <contrib contrib-type="author">
+              <contrib contrib-type="author" id="contributors-generated-uid-1">
                 <name>
                   <surname>Doe</surname>
                   <given-names>John</given-names>

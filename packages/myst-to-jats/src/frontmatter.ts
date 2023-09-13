@@ -1,4 +1,4 @@
-import type { ProjectFrontmatter } from 'myst-frontmatter';
+import type { Contributor, ProjectFrontmatter } from 'myst-frontmatter';
 import type { Element, IJatsSerializer } from './types.js';
 
 export function getJournalIds(): Element[] {
@@ -85,11 +85,16 @@ export function getArticleTitle(frontmatter: ProjectFrontmatter): Element[] {
   ];
 }
 
+/**
+ * Add authors and contributors to contrib-group
+ *
+ * Authors are tagged as contrib-type="author"
+ */
 export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
-  const contribs = frontmatter.authors?.map((author): Element => {
+  const generateContrib = (author: Contributor, type?: string): Element => {
     const attributes: Record<string, any> = {};
     const elements: Element[] = [];
-    attributes['contrib-type'] = 'author';
+    if (type) attributes['contrib-type'] = type;
     if (author.orcid) {
       elements.push({
         type: 'element',
@@ -99,6 +104,7 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
       });
     }
     if (author.corresponding) attributes.corresp = 'yes';
+    if (author.id) attributes.id = author.id;
     if (author.nameParsed && (author.nameParsed?.given || author.nameParsed?.family)) {
       const { given, family, dropping_particle, non_dropping_particle, suffix } = author.nameParsed;
       const nameElements: Element[] = [];
@@ -191,12 +197,20 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
       });
     }
     return { type: 'element', name: 'contrib', attributes, elements };
-  });
+  };
+  const contribs = [
+    ...(frontmatter.authors ?? []).map((author): Element => {
+      return generateContrib(author, 'author');
+    }),
+    ...(frontmatter.contributors ?? []).map((contributor): Element => {
+      return generateContrib(contributor);
+    }),
+  ];
+
   return contribs?.length ? [{ type: 'element', name: 'contrib-group', elements: contribs }] : [];
 }
 
 export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element[] {
-  console.log(JSON.stringify(frontmatter, null, 2));
   const affs = frontmatter.affiliations?.map((affiliation): Element => {
     const elements: Element[] = [];
     const attributes: Record<string, any> = {};
