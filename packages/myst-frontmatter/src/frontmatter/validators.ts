@@ -1084,14 +1084,14 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
       return validateFunding(fund, stash, incrementOptions(`funding.${index}`, opts));
     });
   }
-  const stashAuthors = stash.contributors?.filter(
+  const stashContribAuthors = stash.contributors?.filter(
     (contrib) => stash.authorIds?.includes(contrib.id),
   );
-  const stashContributors = stash.contributors?.filter(
+  const stashContribNonAuthors = stash.contributors?.filter(
     (contrib) => !stash.authorIds?.includes(contrib.id),
   );
-  if (stashAuthors?.length) {
-    output.authors = stashAuthors;
+  if (stashContribAuthors?.length) {
+    output.authors = stashContribAuthors;
     // Ensure there is a corresponding author if an email is provided
     const corresponding = output.authors?.find((a) => a.corresponding !== undefined);
     const email = output.authors?.find((a) => a.email);
@@ -1099,8 +1099,8 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
       email.corresponding = true;
     }
   }
-  if (stashContributors?.length) {
-    output.contributors = stashContributors;
+  if (stashContribNonAuthors?.length) {
+    output.contributors = stashContribNonAuthors;
   }
   if (stash.affiliations?.length) {
     output.affiliations = stash.affiliations;
