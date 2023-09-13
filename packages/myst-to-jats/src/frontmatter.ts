@@ -376,7 +376,7 @@ export function getKwdGroup(frontmatter: ProjectFrontmatter): Element[] {
   const kwds = frontmatter.keywords?.map((keyword): Element => {
     return { type: 'element', name: 'kwd', elements: [{ type: 'text', text: keyword }] };
   });
-  return kwds ? [{ type: 'element', name: 'kwd-group', elements: kwds }] : [];
+  return kwds?.length ? [{ type: 'element', name: 'kwd-group', elements: kwds }] : [];
 }
 
 export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
