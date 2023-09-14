@@ -108,10 +108,18 @@ cases:
                 <award-name>Award</award-name>
                 <award-desc>my test award</award-desc>
                 <principal-award-recipient>
-                  <xref ref-type="contrib" rid="Jane Doe"/>
+                  <name>
+                    <surname>Doe</surname>
+                    <given-names>Jane</given-names>
+                  </name>
+                  <string-name>Jane Doe</string-name>
                 </principal-award-recipient>
                 <principal-investigator>
-                  <xref ref-type="contrib" rid="John Doe"/>
+                  <name>
+                    <surname>Doe</surname>
+                    <given-names>John</given-names>
+                  </name>
+                  <string-name>John Doe</string-name>
                 </principal-investigator>
               </award-group>
               <funding-statement>my funding statement</funding-statement>
@@ -134,6 +142,7 @@ cases:
       authors:
         - id: jd
           name: John Doe
+          orcid: 0000-0000-0000-0000
           affiliations:
             - id: univa
               name: University A
@@ -172,6 +181,7 @@ cases:
           <article-meta>
             <contrib-group>
               <contrib contrib-type="author" id="jd">
+                <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
                 <name>
                   <surname>Doe</surname>
                   <given-names>John</given-names>
@@ -214,13 +224,27 @@ cases:
                 <award-name>Award</award-name>
                 <award-desc>my test award</award-desc>
                 <principal-award-recipient>
-                  <xref ref-type="contrib" rid="contributors-generated-uid-1"/>
+                  <name>
+                    <surname>Doe</surname>
+                    <given-names>Jane</given-names>
+                  </name>
+                  <string-name>Jane Doe</string-name>
                 </principal-award-recipient>
                 <principal-award-recipient>
-                  <xref ref-type="contrib" rid="jd"/>
+                  <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
+                  <name>
+                    <surname>Doe</surname>
+                    <given-names>John</given-names>
+                  </name>
+                  <string-name>John Doe</string-name>
                 </principal-award-recipient>
                 <principal-investigator>
-                  <xref ref-type="contrib" rid="jd"/>
+                  <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
+                  <name>
+                    <surname>Doe</surname>
+                    <given-names>John</given-names>
+                  </name>
+                  <string-name>John Doe</string-name>
                 </principal-investigator>
               </award-group>
               <award-group>
@@ -237,7 +261,12 @@ cases:
                 <award-id>ghi-789</award-id>
                 <award-desc>open access support</award-desc>
                 <principal-investigator>
-                  <xref ref-type="contrib" rid="jd"/>
+                  <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
+                  <name>
+                    <surname>Doe</surname>
+                    <given-names>John</given-names>
+                  </name>
+                  <string-name>John Doe</string-name>
                 </principal-investigator>
               </award-group>
               <open-access>
