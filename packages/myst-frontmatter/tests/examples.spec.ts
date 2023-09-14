@@ -77,6 +77,9 @@ casesList.forEach(({ title, frontmatter, cases }) => {
         }
         expect(opts.messages.warnings?.length ?? 0).toBe(warnings ?? 0);
         expect(opts.messages.errors?.length ?? 0).toBe(errors ?? 0);
+
+        // Test that normalized frontmatter is idempotent
+        expect(validator(normalized, opts)).toEqual(normalized);
       },
     );
   });

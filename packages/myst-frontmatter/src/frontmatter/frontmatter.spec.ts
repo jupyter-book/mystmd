@@ -805,6 +805,64 @@ describe('fillPageFrontmatter', () => {
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
+  it('relevant authors and contributors from project are persisted in place', async () => {
+    expect(
+      fillPageFrontmatter(
+        {},
+        {
+          authors: [
+            {
+              id: 'jd',
+              name: 'John Doe',
+              nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+            },
+          ],
+          contributors: [
+            {
+              id: 'jn',
+              name: 'Just A. Name',
+              nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+            },
+          ],
+          funding: [
+            {
+              awards: [
+                {
+                  investigators: ['jn', 'jd'],
+                },
+              ],
+            },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      authors: [
+        {
+          id: 'jd',
+          name: 'John Doe',
+          nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+        },
+      ],
+      contributors: [
+        {
+          id: 'jn',
+          name: 'Just A. Name',
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
+      funding: [
+        {
+          awards: [
+            {
+              investigators: ['jn', 'jd'],
+            },
+          ],
+        },
+      ],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
   it('relevant authors from project are persisted when referenced in page', async () => {
     expect(
       fillPageFrontmatter(

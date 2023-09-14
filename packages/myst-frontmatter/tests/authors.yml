@@ -277,3 +277,36 @@ cases:
             non_dropping_particle: c
             family: D
             suffix: E
+  - title: Author that defines name and nameParsed still passes
+    raw:
+      authors:
+        - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+  - title: Mismatch between name and nameParsed warns
+    raw:
+      authors:
+        - name: Different Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Different Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+    warnings: 1
