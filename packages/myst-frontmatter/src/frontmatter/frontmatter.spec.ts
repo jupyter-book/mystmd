@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import type { ValidationOptions } from 'simple-validators';
 import type {
   Affiliation,
-  Author,
+  Contributor,
   Biblio,
   Jupytext,
   KernelSpec,
@@ -17,7 +17,7 @@ import {
   unnestKernelSpec,
   validateAffiliation,
   validateAndStashObject,
-  validateAuthor,
+  validateContributor,
   validateBiblio,
   validateExport,
   validateJupytext,
@@ -30,7 +30,7 @@ import {
   validateVenue,
 } from './validators';
 
-const TEST_AUTHOR: Author = {
+const TEST_CONTRIBUTOR: Contributor = {
   userId: '',
   name: 'Test Author',
   nameParsed: { literal: 'Test Author', given: 'Test', family: 'Author' },
@@ -52,7 +52,6 @@ const TEST_AFFILIATION: Affiliation = {
   postal_code: '00000',
   country: 'USA',
   name: 'Example University',
-  institution: 'Example University',
   department: 'Example department',
   collaboration: true,
   isni: '0000000000000000',
@@ -132,7 +131,13 @@ const TEST_SITE_FRONTMATTER: SiteFrontmatter = {
   title: 'frontmatter',
   description: 'project frontmatter',
   venue: { title: 'test' },
-  authors: [{}],
+  authors: [
+    {
+      id: 'jd',
+      name: 'John Doe',
+      nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+    },
+  ],
   github: 'https://github.com/example',
   keywords: ['example', 'test'],
 };
@@ -142,6 +147,7 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   venue: { title: 'test' },
   authors: [
     {
+      id: 'jd',
       name: 'John Doe',
       nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
       affiliations: ['univa'],
@@ -187,6 +193,7 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   venue: { title: 'test' },
   authors: [
     {
+      id: 'jd',
       name: 'Jane Doe',
       nameParsed: { literal: 'Jane Doe', given: 'Jane', family: 'Doe' },
       affiliations: ['univb'],
@@ -240,26 +247,26 @@ describe('validateVenue', () => {
   });
 });
 
-describe('validateAuthor', () => {
+describe('validateContributor', () => {
   it('empty object returns self', async () => {
-    expect(validateAuthor({}, {}, opts)).toEqual({});
+    expect(validateContributor({}, {}, opts)).toEqual({});
   });
   it('extra keys removed', async () => {
-    expect(validateAuthor({ extra: '' }, {}, opts)).toEqual({});
+    expect(validateContributor({ extra: '' }, {}, opts)).toEqual({});
   });
   it('full object returns self', async () => {
-    expect(validateAuthor(TEST_AUTHOR, {}, opts)).toEqual(TEST_AUTHOR);
+    expect(validateContributor(TEST_CONTRIBUTOR, {}, opts)).toEqual(TEST_CONTRIBUTOR);
   });
   it('invalid orcid errors', async () => {
-    expect(validateAuthor({ orcid: 'https://exampale.com/example' }, {}, opts)).toEqual({});
+    expect(validateContributor({ orcid: 'https://exampale.com/example' }, {}, opts)).toEqual({});
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('invalid email errors', async () => {
-    expect(validateAuthor({ email: 'https://example.com' }, {}, opts)).toEqual({});
+    expect(validateContributor({ email: 'https://example.com' }, {}, opts)).toEqual({});
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('unknown roles warn', async () => {
-    expect(validateAuthor({ name: 'my name', roles: ['example'] }, {}, opts)).toEqual({
+    expect(validateContributor({ name: 'my name', roles: ['example'] }, {}, opts)).toEqual({
       name: 'my name',
       nameParsed: { literal: 'my name', given: 'my', family: 'name' },
       roles: ['example'],
@@ -267,21 +274,23 @@ describe('validateAuthor', () => {
     expect(opts.messages.warnings?.length).toEqual(1);
   });
   it('invalid roles errors', async () => {
-    expect(validateAuthor({ roles: [1] }, {}, opts)).toEqual({ roles: [] });
+    expect(validateContributor({ roles: [1] }, {}, opts)).toEqual({ roles: [] });
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('corresponding with no email errors', async () => {
-    expect(validateAuthor({ corresponding: true }, {}, opts)).toEqual({ corresponding: false });
+    expect(validateContributor({ corresponding: true }, {}, opts)).toEqual({
+      corresponding: false,
+    });
     expect(opts.messages.errors?.length).toEqual(1);
   });
   it('website coerces to url', async () => {
-    expect(validateAuthor({ website: 'https://example.com' }, {}, opts)).toEqual({
+    expect(validateContributor({ website: 'https://example.com' }, {}, opts)).toEqual({
       url: 'https://example.com',
     });
   });
   it('collaborations warns', async () => {
     expect(
-      validateAuthor(
+      validateContributor(
         {
           collaborations: ['example collaboration'],
         },
@@ -610,7 +619,7 @@ describe('fillPageFrontmatter', () => {
       ),
     ).toEqual({
       authors: [],
-      affiliations: [{ name: 'University B', id: 'univb' }],
+      affiliations: [{ name: 'University A', id: 'univa' }],
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
@@ -677,6 +686,321 @@ describe('fillPageFrontmatter', () => {
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
+  it('authors from page take precedent over project', async () => {
+    expect(
+      fillPageFrontmatter(
+        {
+          authors: [
+            {
+              id: 'jd',
+              name: 'John Doe',
+              nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+            },
+          ],
+        },
+        {
+          authors: [
+            {
+              id: 'jn',
+              name: 'Just A. Name',
+              nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+            },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      authors: [
+        {
+          id: 'jd',
+          name: 'John Doe',
+          nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+        },
+      ],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('project authors are used if no page authors', async () => {
+    expect(
+      fillPageFrontmatter(
+        {},
+        {
+          authors: [
+            {
+              id: 'jd',
+              name: 'John Doe',
+              nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+            },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      authors: [
+        {
+          id: 'jd',
+          name: 'John Doe',
+          nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+        },
+      ],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('relevant authors from project are persisted', async () => {
+    expect(
+      fillPageFrontmatter(
+        {
+          authors: [
+            {
+              id: 'jd',
+              name: 'John Doe',
+              nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+            },
+          ],
+        },
+        {
+          authors: [
+            {
+              id: 'jn',
+              name: 'Just A. Name',
+              nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+            },
+          ],
+          funding: [
+            {
+              awards: [
+                {
+                  investigators: ['jn'],
+                },
+              ],
+            },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      authors: [
+        {
+          id: 'jd',
+          name: 'John Doe',
+          nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+        },
+      ],
+      contributors: [
+        {
+          id: 'jn',
+          name: 'Just A. Name',
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
+      funding: [
+        {
+          awards: [
+            {
+              investigators: ['jn'],
+            },
+          ],
+        },
+      ],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('relevant authors and contributors from project are persisted in place', async () => {
+    expect(
+      fillPageFrontmatter(
+        {},
+        {
+          authors: [
+            {
+              id: 'jd',
+              name: 'John Doe',
+              nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+            },
+          ],
+          contributors: [
+            {
+              id: 'jn',
+              name: 'Just A. Name',
+              nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+            },
+          ],
+          funding: [
+            {
+              awards: [
+                {
+                  investigators: ['jn', 'jd'],
+                },
+              ],
+            },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      authors: [
+        {
+          id: 'jd',
+          name: 'John Doe',
+          nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+        },
+      ],
+      contributors: [
+        {
+          id: 'jn',
+          name: 'Just A. Name',
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+        },
+      ],
+      funding: [
+        {
+          awards: [
+            {
+              investigators: ['jn', 'jd'],
+            },
+          ],
+        },
+      ],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('relevant authors from project are persisted when referenced in page', async () => {
+    expect(
+      fillPageFrontmatter(
+        {
+          authors: [
+            {
+              id: 'jd',
+              name: 'John Doe',
+              nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+              affiliations: ['univa'],
+            },
+          ],
+          affiliations: [{ id: 'univa', name: 'University A' }],
+          funding: [
+            {
+              awards: [
+                {
+                  investigators: ['jn'],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          authors: [
+            {
+              id: 'jn',
+              name: 'Just A. Name',
+              nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+              affiliations: ['univb'],
+            },
+          ],
+          affiliations: [{ id: 'univb', name: 'University B' }],
+        },
+        opts,
+      ),
+    ).toEqual({
+      authors: [
+        {
+          id: 'jd',
+          name: 'John Doe',
+          nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+          affiliations: ['univa'],
+        },
+      ],
+      contributors: [
+        {
+          id: 'jn',
+          name: 'Just A. Name',
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          affiliations: ['univb'],
+        },
+      ],
+      affiliations: [
+        { id: 'univa', name: 'University A' },
+        { id: 'univb', name: 'University B' },
+      ],
+      funding: [
+        {
+          awards: [
+            {
+              investigators: ['jn'],
+            },
+          ],
+        },
+      ],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
+  it('relevant contributors from project are persisted when referenced in page', async () => {
+    expect(
+      fillPageFrontmatter(
+        {
+          authors: [
+            {
+              id: 'jd',
+              name: 'John Doe',
+              nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+              affiliations: ['univa'],
+            },
+          ],
+          affiliations: [{ id: 'univa', name: 'University A' }],
+          funding: [
+            {
+              awards: [
+                {
+                  investigators: ['jn'],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          contributors: [
+            {
+              id: 'jn',
+              name: 'Just A. Name',
+              nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+              affiliations: ['univb'],
+            },
+          ],
+          affiliations: [{ id: 'univb', name: 'University B' }],
+        },
+        opts,
+      ),
+    ).toEqual({
+      authors: [
+        {
+          id: 'jd',
+          name: 'John Doe',
+          nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+          affiliations: ['univa'],
+        },
+      ],
+      contributors: [
+        {
+          id: 'jn',
+          name: 'Just A. Name',
+          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+          affiliations: ['univb'],
+        },
+      ],
+      affiliations: [
+        { id: 'univa', name: 'University A' },
+        { id: 'univb', name: 'University B' },
+      ],
+      funding: [
+        {
+          awards: [
+            {
+              investigators: ['jn'],
+            },
+          ],
+        },
+      ],
+    });
+    expect(opts.messages.warnings?.length).toBeFalsy();
+  });
 });
 
 describe('validateAndStashObject', () => {
@@ -685,13 +1009,13 @@ describe('validateAndStashObject', () => {
     const out = validateAndStashObject(
       'Just A. Name',
       stash,
-      'authors',
-      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      'contributors',
+      (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
       opts,
     );
     expect(out).toEqual('Just A. Name');
     expect(stash).toEqual({
-      authors: [
+      contributors: [
         {
           id: 'Just A. Name',
           name: 'Just A. Name',
@@ -703,7 +1027,7 @@ describe('validateAndStashObject', () => {
   });
   it('string returns itself when in stash', async () => {
     const stash = {
-      authors: [
+      contributors: [
         {
           id: 'auth1',
           name: 'Just A. Name',
@@ -714,13 +1038,13 @@ describe('validateAndStashObject', () => {
     const out = validateAndStashObject(
       'auth1',
       stash,
-      'authors',
-      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      'contributors',
+      (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
       opts,
     );
     expect(out).toEqual('auth1');
     expect(stash).toEqual({
-      authors: [
+      contributors: [
         {
           id: 'auth1',
           name: 'Just A. Name',
@@ -735,15 +1059,15 @@ describe('validateAndStashObject', () => {
     const out = validateAndStashObject(
       { name: 'Just A. Name' },
       stash,
-      'authors',
-      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      'contributors',
+      (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
       { ...opts, file: 'folder/test.file.yml' },
     );
-    expect(out).toEqual('authors-test-file-generated-uid-0');
+    expect(out).toEqual('contributors-test-file-generated-uid-0');
     expect(stash).toEqual({
-      authors: [
+      contributors: [
         {
-          id: 'authors-test-file-generated-uid-0',
+          id: 'contributors-test-file-generated-uid-0',
           name: 'Just A. Name',
           nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
@@ -756,22 +1080,22 @@ describe('validateAndStashObject', () => {
     validateAndStashObject(
       { name: 'Just A. Name' },
       stash,
-      'authors',
-      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      'contributors',
+      (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
       { ...opts, file: 'folder\\my_file' },
     );
     const out = validateAndStashObject(
       { name: 'Just A. Name' },
       stash,
-      'authors',
-      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      'contributors',
+      (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
       { ...opts, file: 'folder\\my_file' },
     );
-    expect(out).toEqual('authors-my_file-generated-uid-0');
+    expect(out).toEqual('contributors-my_file-generated-uid-0');
     expect(stash).toEqual({
-      authors: [
+      contributors: [
         {
-          id: 'authors-my_file-generated-uid-0',
+          id: 'contributors-my_file-generated-uid-0',
           name: 'Just A. Name',
           nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
         },
@@ -781,7 +1105,7 @@ describe('validateAndStashObject', () => {
   });
   it('object with id added to stash', async () => {
     const stash = {
-      authors: [
+      contributors: [
         {
           id: 'auth1',
           name: 'Just A. Name',
@@ -792,13 +1116,13 @@ describe('validateAndStashObject', () => {
     const out = validateAndStashObject(
       { id: 'auth2', name: 'A. Nother Name' },
       stash,
-      'authors',
-      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      'contributors',
+      (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
       opts,
     );
     expect(out).toEqual('auth2');
     expect(stash).toEqual({
-      authors: [
+      contributors: [
         {
           id: 'auth1',
           name: 'Just A. Name',
@@ -815,7 +1139,7 @@ describe('validateAndStashObject', () => {
   });
   it('object with id replaces simple object', async () => {
     const stash = {
-      authors: [
+      contributors: [
         {
           id: 'auth1',
           name: 'auth1',
@@ -828,13 +1152,13 @@ describe('validateAndStashObject', () => {
         name: 'Just A. Name',
       },
       stash,
-      'authors',
-      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      'contributors',
+      (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
       opts,
     );
     expect(out).toEqual('auth1');
     expect(stash).toEqual({
-      authors: [
+      contributors: [
         {
           id: 'auth1',
           name: 'Just A. Name',
@@ -846,7 +1170,7 @@ describe('validateAndStashObject', () => {
   });
   it('object with id warns on duplicate', async () => {
     const stash = {
-      authors: [
+      contributors: [
         {
           id: 'auth1',
           name: 'Just A. Name',
@@ -860,13 +1184,13 @@ describe('validateAndStashObject', () => {
         name: 'A. Nother Name',
       },
       stash,
-      'authors',
-      (v: any, o: ValidationOptions) => validateAuthor(v, stash, o),
+      'contributors',
+      (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
       opts,
     );
     expect(out).toEqual('auth1');
     expect(stash).toEqual({
-      authors: [
+      contributors: [
         {
           id: 'auth1',
           name: 'Just A. Name',

@@ -1,4 +1,5 @@
 import type { CreditRole } from 'credit-roles';
+import type { Funding } from '../funding/types.js';
 import type { Licenses } from '../licenses/types.js';
 
 export interface Affiliation {
@@ -21,7 +22,7 @@ export interface Affiliation {
   fax?: string;
 }
 
-export type AuthorRoles = CreditRole | string;
+export type ContributorRole = CreditRole | string;
 
 export type Name = {
   literal?: string;
@@ -32,10 +33,7 @@ export type Name = {
   suffix?: string;
 };
 
-/**
- * Au
- */
-export interface Author {
+export interface Contributor {
   id?: string;
   name?: string; // may be set to Name object
   userId?: string;
@@ -44,7 +42,7 @@ export interface Author {
   equal_contributor?: boolean;
   deceased?: boolean;
   email?: string;
-  roles?: AuthorRoles[];
+  roles?: ContributorRole[];
   affiliations?: string[];
   twitter?: string;
   github?: string;
@@ -62,8 +60,10 @@ export interface Author {
  * These will be normalized to the top level and replaced with ids elsewhere
  */
 export type ReferenceStash = {
-  affiliations?: Affiliation[];
-  authors?: Author[];
+  affiliations?: (Affiliation & { id: string })[];
+  contributors?: (Contributor & { id: string })[];
+  // Used to on resolution differentiate authors from other contributors
+  authorIds?: string[];
 };
 
 export type Biblio = {
@@ -174,11 +174,13 @@ export type SiteFrontmatter = {
   thumbnailOptimized?: string;
   banner?: string | null;
   bannerOptimized?: string;
-  authors?: Author[];
+  authors?: Contributor[];
   affiliations?: Affiliation[];
   venue?: Venue;
   github?: string;
   keywords?: string[];
+  funding?: Funding[];
+  contributors?: Contributor[];
 };
 
 export type ProjectFrontmatter = SiteFrontmatter & {

@@ -1,7 +1,7 @@
 import type { Heading } from 'myst-spec';
-import type { Author } from 'myst-frontmatter';
+import type { Contributor } from 'myst-frontmatter';
 
-export function createArticleTitle(blockTitle?: string, authors?: Author[]) {
+export function createArticleTitle(blockTitle?: string, authors?: Contributor[]) {
   const headings: Heading[] = [];
   if (blockTitle) {
     headings.push({

@@ -7,7 +7,8 @@ cases:
           role: conceptualiSation
     normalized:
       authors:
-        - name: Just A. Name
+        - id: contributors-generated-uid-0
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
@@ -21,7 +22,8 @@ cases:
           roles: conceptualiSation, supervision
     normalized:
       authors:
-        - name: Just A. Name
+        - id: contributors-generated-uid-0
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
@@ -36,7 +38,8 @@ cases:
           role: Editing
     normalized:
       authors:
-        - name: Just A. Name
+        - id: contributors-generated-uid-0
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
@@ -50,7 +53,8 @@ cases:
           role: Hustling for grants
     normalized:
       authors:
-        - name: Just A. Name
+        - id: contributors-generated-uid-0
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.

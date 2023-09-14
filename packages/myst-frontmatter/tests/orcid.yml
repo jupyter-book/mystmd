@@ -7,7 +7,8 @@ cases:
           orcid: 0000-0000-0000-0000
     normalized:
       authors:
-        - name: Just A. Name
+        - id: contributors-generated-uid-0
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
@@ -20,7 +21,8 @@ cases:
           orcid: https://orcid.org/0000-0000-0000-000X
     normalized:
       authors:
-        - name: Just A. Name
+        - id: contributors-generated-uid-0
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
@@ -33,7 +35,8 @@ cases:
           orcid: nope
     normalized:
       authors:
-        - name: Just A. Name
+        - id: contributors-generated-uid-0
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.

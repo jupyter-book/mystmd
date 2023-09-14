@@ -50,11 +50,13 @@ cases:
   - title: Affiliations unpack semicolon-delimited lists
     raw:
       author:
+        id: jn
         name: Just A. Name
         affiliation: University; Company
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
@@ -70,11 +72,13 @@ cases:
   - title: First email is corresponding
     raw:
       author:
+        id: jn
         name: Just A. Name
         email: example@example.com
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
@@ -84,12 +88,14 @@ cases:
   - title: First email is corresponding (unless false)
     raw:
       author:
+        id: jn
         name: Just A. Name
         email: example@example.com
         corresponding: false
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
@@ -99,20 +105,24 @@ cases:
   - title: Respect corresponding flag
     raw:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           email: example@example.com
-        - name: A. Nother Name
+        - id: an
+          name: A. Nother Name
           email: example@example.com
           corresponding: true
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
             family: Name
           email: example@example.com
-        - name: A. Nother Name
+        - id: an
+          name: A. Nother Name
           nameParsed:
             literal: A. Nother Name
             given: A. Nother
@@ -122,19 +132,22 @@ cases:
   - title: Warn if author has no name
     raw:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           email: example@example.com
         - email: example@example.com
           corresponding: true
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
             family: Name
           email: example@example.com
-        - email: example@example.com
+        - id: contributors-generated-uid-1
+          email: example@example.com
           corresponding: true
     warnings: 1
   - title: Warn if author has no family name
@@ -144,7 +157,8 @@ cases:
             given: Someone
     normalized:
       authors:
-        - name: ', Someone'
+        - id: contributors-generated-uid-0
+          name: ', Someone'
           nameParsed:
             literal: ', Someone'
             given: Someone
@@ -155,7 +169,8 @@ cases:
         - name: Someone
     normalized:
       authors:
-        - name: 'Someone'
+        - id: contributors-generated-uid-0
+          name: 'Someone'
           nameParsed:
             literal: 'Someone'
             family: Someone
@@ -163,7 +178,8 @@ cases:
   - title: Parsed name is maintained
     raw:
       authors:
-        - name:
+        - id: jn
+          name:
             literal: Just A. Name
             given: Little
             non_dropping_particle: von
@@ -171,7 +187,8 @@ cases:
             suffix: Jr.
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Little
@@ -189,7 +206,8 @@ cases:
             suffix: warnings,
     normalized:
       authors:
-        - name: Commas, here, are, great,
+        - id: contributors-generated-uid-0
+          name: Commas, here, are, great,
           nameParsed:
             literal: Commas, here, are, great,
             given: Commas,
@@ -203,7 +221,8 @@ cases:
         - name: A, B, C, D
     normalized:
       authors:
-        - name: A, B, C, D
+        - id: contributors-generated-uid-0
+          name: A, B, C, D
           nameParsed:
             literal: A, B, C, D
             given: D
@@ -213,11 +232,13 @@ cases:
   - title: Display name expands
     raw:
       authors:
-        - name:
+        - id: jn
+          name:
             literal: Just A. Name
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
@@ -225,11 +246,13 @@ cases:
   - title: Display name expands
     raw:
       authors:
-        - name:
+        - id: jn
+          name:
             literal: Just A. Name
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           nameParsed:
             literal: Just A. Name
             given: Just A.
@@ -245,7 +268,8 @@ cases:
             suffix: E
     normalized:
       authors:
-        - name: c D, E, A b
+        - id: contributors-generated-uid-0
+          name: c D, E, A b
           nameParsed:
             literal: c D, E, A b
             given: A
@@ -253,3 +277,36 @@ cases:
             non_dropping_particle: c
             family: D
             suffix: E
+  - title: Author that defines name and nameParsed still passes
+    raw:
+      authors:
+        - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+  - title: Mismatch between name and nameParsed warns
+    raw:
+      authors:
+        - name: Different Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Different Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+    warnings: 1
