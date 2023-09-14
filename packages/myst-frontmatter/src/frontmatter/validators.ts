@@ -56,6 +56,7 @@ export const SITE_FRONTMATTER_KEYS = [
   'banner',
   'bannerOptimized',
   'authors',
+  'contributors',
   'venue',
   'github',
   'keywords',
@@ -132,6 +133,7 @@ const CONTRIBUTOR_KEYS = [
   'id',
   'userId',
   'name',
+  'nameParsed',
   'orcid',
   'corresponding',
   'equal_contributor',
@@ -223,6 +225,7 @@ export const RESERVED_EXPORT_KEYS = [
 
 const KNOWN_PAGE_ALIASES = {
   author: 'authors',
+  contributor: 'contributors',
   affiliation: 'affiliations',
   export: 'exports',
 };
@@ -535,7 +538,17 @@ export function validateContributor(input: any, stash: ReferenceStash, opts: Val
     // TODO: Better userId validation - length? regex?
     output.userId = validateString(value.userId, incrementOptions('userId', opts));
   }
-  if (defined(value.name)) {
+  if (defined(value.nameParsed)) {
+    // In general, nameParsed should not be included in frontmatter;
+    // authors should provide string or parsed for "name"
+    output.nameParsed = validateName(value.nameParsed, incrementOptions('nameParsed', opts));
+    output.name = value.name
+      ? validateString(value.name, incrementOptions('name', opts))
+      : output.nameParsed?.literal;
+    if (output.name !== output.nameParsed?.literal) {
+      validationWarning(`"name" and "parsedName.literal" should match`, opts);
+    }
+  } else if (defined(value.name)) {
     output.nameParsed = validateName(value.name, incrementOptions('name', opts));
     output.name = output.nameParsed?.literal;
   } else {
@@ -1049,19 +1062,33 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     if (!Array.isArray(value.authors)) {
       authors = [authors];
     }
-    stash.authorIds = validateList(
-      authors,
-      incrementOptions('authors', opts),
-      (recipient, index) => {
-        return validateAndStashObject(
-          recipient,
-          stash,
-          'contributors',
-          (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
-          incrementOptions(`authors.${index}`, opts),
-        );
-      },
-    );
+    stash.authorIds = validateList(authors, incrementOptions('authors', opts), (author, index) => {
+      return validateAndStashObject(
+        author,
+        stash,
+        'contributors',
+        (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
+        incrementOptions(`authors.${index}`, opts),
+      );
+    });
+  }
+  if (defined(value.contributors)) {
+    // In addition to contributors defined here, additional contributors may be defined elsewhere
+    // in the frontmatter (e.g. funding award investigator/recipient). These extra contributors
+    // are combined with this list at the end of validation.
+    let contributors = value.contributors;
+    if (!Array.isArray(value.contributors)) {
+      contributors = [contributors];
+    }
+    validateList(contributors, incrementOptions('contributors', opts), (contributor, index) => {
+      return validateAndStashObject(
+        contributor,
+        stash,
+        'contributors',
+        (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
+        incrementOptions(`contributors.${index}`, opts),
+      );
+    });
   }
   if (defined(value.venue)) {
     output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
@@ -1399,6 +1426,8 @@ export function fillPageFrontmatter(
     if (frontmatter.authors?.length) {
       frontmatter.authors = frontmatter.authors.map((auth) => {
         if (!auth.id) return auth;
+        // If contributors are in final author list, do not add to contributor list
+        contributorIds.delete(auth.id);
         return peopleLookup[auth.id] ?? stashPlaceholder(auth.id);
       });
     }

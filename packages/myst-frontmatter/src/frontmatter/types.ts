@@ -180,7 +180,6 @@ export type SiteFrontmatter = {
   github?: string;
   keywords?: string[];
   funding?: Funding[];
-  /** Computed property for now; holds people referenced from non-author fields, e.g. funding */
   contributors?: Contributor[];
 };
 

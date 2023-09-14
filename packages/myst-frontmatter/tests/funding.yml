@@ -250,3 +250,56 @@ cases:
       affiliations:
         - id: University A
           name: University A
+  - title: Non-funding contributors remain
+    raw:
+      funding:
+        - statement: my statement 1
+          awards:
+            - id: abc-123
+              name: Award
+              description: my award
+              sources:
+                - University A
+              investigators:
+                - John Doe
+              recipients:
+                - Jane Doe
+      author: John Doe
+      contributor: Doe, Jr., John
+    normalized:
+      funding:
+        - statement: my statement 1
+          awards:
+            - id: abc-123
+              name: Award
+              description: my award
+              sources:
+                - University A
+              investigators:
+                - John Doe
+              recipients:
+                - Jane Doe
+      authors:
+        - id: John Doe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            family: Doe
+            given: John
+      contributors:
+        - id: Doe, Jr., John
+          name: Doe, Jr., John
+          nameParsed:
+            literal: Doe, Jr., John
+            family: Doe
+            given: John
+            suffix: Jr.
+        - id: Jane Doe
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            family: Doe
+            given: Jane
+      affiliations:
+        - id: University A
+          name: University A
