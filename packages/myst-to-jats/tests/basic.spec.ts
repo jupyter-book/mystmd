@@ -118,6 +118,9 @@ describe('JATS multi-article', () => {
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
     async (_, { tree, jats, frontmatter, citations, subArticles }) => {
+      subArticles.forEach((subArticle) => {
+        subArticle.frontmatter = validateProjectFrontmatter(subArticle.frontmatter, opts);
+      });
       const vfile = writeJats(
         new VFile(),
         {
