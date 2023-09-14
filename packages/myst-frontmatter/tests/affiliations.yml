@@ -64,8 +64,16 @@ cases:
     normalized:
       authors:
         - name: Norah Jones
+          nameParsed:
+            literal: Norah Jones
+            given: Norah
+            family: Jones
           affiliations: [cmu, chicago]
         - name: John Hamm
+          nameParsed:
+            literal: John Hamm
+            given: John
+            family: Hamm
           affiliations: [cmu]
       affiliations:
         - id: cmu
@@ -87,8 +95,16 @@ cases:
     normalized:
       authors:
         - name: Norah Jones
+          nameParsed:
+            literal: Norah Jones
+            given: Norah
+            family: Jones
           affiliations: [cmu, chicago]
         - name: John Hamm
+          nameParsed:
+            literal: John Hamm
+            given: John
+            family: Hamm
           affiliations: [cmu]
       affiliations:
         - id: cmu
@@ -116,6 +132,10 @@ cases:
     normalized:
       authors:
         - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - univa
       affiliations:
@@ -130,6 +150,10 @@ cases:
     normalized:
       authors:
         - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - University A
       affiliations:
@@ -145,6 +169,10 @@ cases:
     normalized:
       authors:
         - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - univa
       affiliations:
@@ -163,6 +191,10 @@ cases:
     normalized:
       authors:
         - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - univa
       affiliations:
@@ -181,9 +213,17 @@ cases:
     normalized:
       authors:
         - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - University A
         - name: A. Nother Name
+          nameParsed:
+            literal: A. Nother Name
+            given: A. Nother
+            family: Name
           affiliations:
             - University A
       affiliations:
@@ -203,9 +243,17 @@ cases:
     normalized:
       authors:
         - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - affiliations-generated-uid-0
         - name: A. Nother Name
+          nameParsed:
+            literal: A. Nother Name
+            given: A. Nother
+            family: Name
           affiliations:
             - affiliations-generated-uid-0
       affiliations:
@@ -224,6 +272,10 @@ cases:
     normalized:
       authors:
         - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - univa
       affiliations:

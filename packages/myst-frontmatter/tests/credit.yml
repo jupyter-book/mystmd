@@ -8,6 +8,10 @@ cases:
     normalized:
       authors:
         - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           roles:
             - Conceptualization
   - title: String list
@@ -18,6 +22,10 @@ cases:
     normalized:
       authors:
         - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           roles:
             - Conceptualization
             - Supervision
@@ -29,6 +37,10 @@ cases:
     normalized:
       authors:
         - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           roles:
             - Writing – review & editing
   - title: Any role, but raise a warning
@@ -39,6 +51,10 @@ cases:
     normalized:
       authors:
         - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           roles:
             - Hustling for grants
     warnings: 1
