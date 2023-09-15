@@ -100,6 +100,7 @@ export async function transformMdast(
     minifyMaxCharacters?: number;
     index?: string;
     simplifyFigures?: boolean;
+    processThumbnail?: boolean;
   },
 ) {
   const {
@@ -116,6 +117,7 @@ export async function transformMdast(
     minifyMaxCharacters,
     index,
     simplifyFigures,
+    processThumbnail,
   } = opts;
   const toc = tic();
   const { store, log } = session;
@@ -217,15 +219,17 @@ export async function transformMdast(
       altOutputFolder: imageAltOutputFolder,
       imageExtensions,
     });
-    // Note, the thumbnail transform must be **after** images, as it may read the images
-    await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      webp: extraTransforms?.includes(transformWebp),
-    });
-    await transformBanner(session, file, frontmatter, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      webp: extraTransforms?.includes(transformWebp),
-    });
+    if (processThumbnail) {
+      // Note, the thumbnail transform must be **after** images, as it may read the images
+      await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
+        altOutputFolder: imageAltOutputFolder,
+        webp: extraTransforms?.includes(transformWebp),
+      });
+      await transformBanner(session, file, frontmatter, imageWriteFolder, {
+        altOutputFolder: imageAltOutputFolder,
+        webp: extraTransforms?.includes(transformWebp),
+      });
+    }
   }
   await transformDeleteBase64UrlSource(mdast);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;

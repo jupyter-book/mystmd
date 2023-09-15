@@ -245,6 +245,7 @@ export async function fastProcessFile(
     watchMode: true,
     extraTransforms: [transformWebp, ...(extraTransforms ?? [])],
     index: project.index,
+    processThumbnail: true,
   });
   const pageReferenceStates = selectPageReferenceStates(session, pages);
   await postProcessMdast(session, {
@@ -324,6 +325,7 @@ export async function processProject(
         watchMode,
         extraTransforms,
         index: project.index,
+        processThumbnail: true,
       }),
     ),
   );
