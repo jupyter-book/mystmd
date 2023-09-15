@@ -165,7 +165,6 @@ export async function localArticleToTexTemplated(
   // This probably means we need to store tags alongside oxa link for blocks
   // This will need opts eventually --v
   const result = mdastToTex(session, mdast, references, frontmatter, templateYml);
-  console.log("HAS GLOSSARY?", hasGlossary(mdast)); // DBG
   // Fill in template
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${templateOptions.output}`));
   renderTex(mystTemplate, {

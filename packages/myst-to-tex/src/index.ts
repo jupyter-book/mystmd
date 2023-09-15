@@ -217,6 +217,10 @@ const handlers: Record<string, Handler> = {
     // https://www.overleaf.com/learn/latex/glossaries
     state.renderChildren(node, true);
   },
+  glossary() {
+    // Glossary definitions are handled at once when constructing the serializer
+    // Nothing to do here
+  },
   link(node, state) {
     state.usePackages('url', 'hyperref');
     const href = node.url;
