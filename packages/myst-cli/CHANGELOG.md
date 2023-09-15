@@ -1,5 +1,26 @@
 # myst-cli
 
+## 1.1.16
+
+### Patch Changes
+
+- 911d1b1: Consume myst-frontmatter Author -> Contributor type change
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [59b54584]
+  - myst-frontmatter@1.1.6
+  - myst-to-jats@1.0.12
+  - myst-templates@1.0.9
+  - myst-common@1.1.6
+  - myst-config@1.1.6
+  - myst-spec-ext@1.1.6
+
 ## 1.1.15
 
 ### Patch Changes

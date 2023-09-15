@@ -1,5 +1,17 @@
 # myst-templates
 
+## 1.0.9
+
+### Patch Changes
+
+- 911d1b1: Consume myst-frontmatter Author -> Contributor type change
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [59b54584]
+  - myst-frontmatter@1.1.6
+  - myst-common@1.1.6
+
 ## 1.0.8
 
 ### Patch Changes
