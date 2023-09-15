@@ -52,6 +52,7 @@ import {
   reduceOutputs,
   transformPlaceholderImages,
   transformDeleteBase64UrlSource,
+  transformWebp,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/index.js';
 import { logMessagesFromVFile } from '../utils/index.js';
@@ -219,11 +220,11 @@ export async function transformMdast(
     // Note, the thumbnail transform must be **after** images, as it may read the images
     await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,
-      webp: !simplifyFigures,
+      webp: extraTransforms?.includes(transformWebp),
     });
     await transformBanner(session, file, frontmatter, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,
-      webp: !simplifyFigures,
+      webp: extraTransforms?.includes(transformWebp),
     });
   }
   await transformDeleteBase64UrlSource(mdast);
