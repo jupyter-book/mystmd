@@ -2,7 +2,6 @@ import { resolve } from 'node:path';
 import { tic } from 'myst-cli-utils';
 import type { LinkTransformer } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
-import type { TransformFn } from '../../process/index.js';
 import {
   selectPageReferenceStates,
   loadFile,
@@ -13,8 +12,7 @@ import {
   loadIntersphinx,
   combineProjectCitationRenderers,
 } from '../../process/index.js';
-import { transformWebp } from '../../transforms/index.js';
-import { ImageExtensions } from '../../utils/index.js';
+import type { ImageExtensions } from '../../utils/index.js';
 
 export async function getFileContent(
   session: ISession,
@@ -55,13 +53,6 @@ export async function getFileContent(
   // Consolidate all citations onto single project citation renderer
   combineProjectCitationRenderers(session, projectPath);
 
-  const extraTransforms: TransformFn[] = [];
-  if (imageExtensions.includes(ImageExtensions.webp)) {
-    extraTransforms.push(transformWebp);
-  }
-  // if (opts?.extraTransforms) {
-  //   extraTransforms.push(...opts.extraTransforms);
-  // }
   await Promise.all(
     allFiles.map(async (file) => {
       const pageSlug = pages.find((page) => page.file === file)?.slug;
