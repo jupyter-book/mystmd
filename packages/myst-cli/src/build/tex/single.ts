@@ -26,6 +26,7 @@ import {
   getFileContent,
   resolveAndLogErrors,
 } from '../utils/index.js';
+import { select } from 'unist-util-select';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = [
@@ -164,6 +165,7 @@ export async function localArticleToTexTemplated(
   // This probably means we need to store tags alongside oxa link for blocks
   // This will need opts eventually --v
   const result = mdastToTex(session, mdast, references, frontmatter, templateYml);
+  console.log("HAS GLOSSARY?", hasGlossary(mdast)); // DBG
   // Fill in template
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${templateOptions.output}`));
   renderTex(mystTemplate, {
@@ -180,10 +182,10 @@ export async function localArticleToTexTemplated(
     packages: templateYml.packages,
     filesPath,
   });
-  return { tempFolders: [] };
+  return { tempFolders: [], hasGlossaries: hasGlossary(mdast) };
 }
 
-export async function runTexExport(
+export async function runTexExport( // DBG: Must return an info on whether glossaries are present
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
@@ -275,4 +277,9 @@ export async function localArticleToTex(
     opts.throwOnFailure,
   );
   return results;
+}
+
+function hasGlossary(mdast: GenericParent): boolean {
+  const glossary = select('glossary', mdast);
+  return glossary !== null;
 }
