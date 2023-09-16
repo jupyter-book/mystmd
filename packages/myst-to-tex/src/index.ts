@@ -2,7 +2,7 @@ import type { Root, Parent, Code } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode, References } from 'myst-common';
-import { fileError, toText } from 'myst-common';
+import { fileError, toText, label } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
 import { renderNodeToLatex } from './tables.js';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types.js';
@@ -23,10 +23,12 @@ export type { LatexResult } from './types.js';
 const glossaryReferenceHandler: Handler = (node, state) => {
   if (!state.printGlossary) {
     state.renderChildren(node);
+    return;
   }
 
   if (!node.identifier) {
     state.renderChildren(node);
+    return;
   }
 
   const entry = state.glossary[node.identifier];
@@ -49,7 +51,9 @@ const createFootnoteDefinitions = (tree: Root) => Object.fromEntries(
   }),
 );
 
-const createGlossaryDefinitions = (tree: Root) => Object.fromEntries(
+const createGlossaryDefinitions = (
+  tree: Root
+): Record<string, [DefinitionTerm, DefinitionDescription]> => Object.fromEntries(
   selectAll('glossary > definitionList > *', tree)
     .map((node, i, siblings) => {
       if (node.type !== "definitionTerm") {
@@ -357,6 +361,45 @@ const handlers: Record<string, Handler> = {
   },
 };
 
+class TexGlossarySerializer {
+  static COMMENT_LENGTH = 50;
+
+  preambleGlossary: string;
+  printedGlossary: string;
+
+  constructor(glossaryDefinitions: Record<string, [DefinitionTerm, DefinitionDescription]>) {
+    this.printedGlossary = this.renderGlossary();
+    this.preambleGlossary = this.renderGlossaryImports(glossaryDefinitions);
+  }
+
+  private renderGlossary(): string {
+    const block = label('glossary', ['\\printglossaries'], TexGlossarySerializer.COMMENT_LENGTH);
+    const percents = ''.padEnd(TexGlossarySerializer.COMMENT_LENGTH, '%');
+    return `${percents}\n${block}${percents}`;
+  }
+
+  private renderGlossaryImports(directives: Record<string, [DefinitionTerm, DefinitionDescription]>): string {
+    if (!directives) return '';
+    const block = label('glossary', this.createGlossaryDirectives(directives), TexGlossarySerializer.COMMENT_LENGTH);
+    if (!block) return '';
+    const percents = ''.padEnd(TexGlossarySerializer.COMMENT_LENGTH, '%');
+    return `${percents}\n${block}${percents}`;
+  }
+
+  private createGlossaryDirectives(glossaryDefinitions: Record<string, [DefinitionTerm, DefinitionDescription]>): string[] {
+    const directives = Object.keys(glossaryDefinitions).map(k => ({
+      key: k,
+      name: (glossaryDefinitions[k][0].children[0] as GenericNode).value || '',
+      description: (glossaryDefinitions[k][1].children[0] as GenericNode).value || '',
+    }));
+
+    const usepackage = '\\usepackage{glossaries}';
+    const makeglossaries = '\\makeglossaries';
+    const entries = directives.map((entry) => `\\newglossaryentry{${entry.key}}{name=${entry.name},description={${entry.description}}}`);
+    return [usepackage, makeglossaries].concat(entries);
+  }
+}
+
 class TexSerializer implements ITexSerializer {
   file: VFile;
   data: StateData;
@@ -375,7 +418,7 @@ class TexSerializer implements ITexSerializer {
     this.references = opts?.references ?? {};
     this.footnotes = createFootnoteDefinitions(tree);
     // Improve: render definition when encountering terms
-    this.glossary = opts?.printGlossaries ? createGlossaryDefinitions(tree) : [];
+    this.glossary = opts?.printGlossaries ? createGlossaryDefinitions(tree) : {};
     this.renderChildren(tree);
   }
 
@@ -460,16 +503,16 @@ class TexSerializer implements ITexSerializer {
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
   this.Compiler = (node, file) => {
     transformLegends(node);
+
     const state = new TexSerializer(file, node, opts ?? { handlers });
-    const tex = (file.result as string).trim();
-    const glossaryEntries = Object.keys(state.glossary).map(k => ({
-      key: k,
-      name: (state.glossary[k][0].children[0] as GenericNode).value || '',
-      description: (state.glossary[k][1].children[0] as GenericNode).value || '',
-    }));
+    let tex = (file.result as string).trim();
+
+    const glossaryState = new TexGlossarySerializer(state.glossary);
+    tex += opts?.printGlossaries ? ('\n' + glossaryState.printedGlossary) : '';
+
     const result: LatexResult = {
       imports: [...state.data.imports],
-      glossary: glossaryEntries,
+      glossaryPreamble: opts?.printGlossaries ? glossaryState.preambleGlossary : '',
       commands: withRecursiveCommands(state),
       value: tex,
     };

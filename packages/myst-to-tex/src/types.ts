@@ -8,16 +8,10 @@ export const DEFAULT_PAGE_WIDTH_PIXELS = 800;
 
 export type Handler = (node: any, state: ITexSerializer, parent: any) => void;
 
-export type GlossaryEntry = {
-  key: string;
-  name: string;
-  description: string;
-};
-
 export type LatexResult = {
   value: string;
   imports: string[];
-  glossary: GlossaryEntry[];
+  glossaryPreamble: string;
   commands: Record<string, string>;
 };
 

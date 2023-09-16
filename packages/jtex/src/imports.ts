@@ -1,28 +1,13 @@
-import type { GlossaryDirective, TemplateImports } from './types.js';
+import type { TemplateImports } from './types.js';
+import { label } from 'myst-common';
 
 const commentLenth = 50;
-
-function label(title: string, commands: string[]) {
-  if (!commands || commands?.length === 0) return '';
-  const len = (commentLenth - title.length - 4) / 2;
-  const start = ''.padEnd(Math.ceil(len), '%');
-  const end = ''.padEnd(Math.floor(len), '%');
-  const titleBlock = `${start}  ${title}  ${end}\n`;
-  return `${titleBlock}${commands.join('\n')}\n`;
-}
 
 export function createImportCommands(commands: Set<string>, existingPackages?: string[]): string[] {
   const sorted = [...commands].sort();
   const existingSet = new Set(existingPackages);
   const filtered = existingPackages ? sorted.filter((p) => !existingSet.has(p)) : sorted;
   return filtered.map((c) => `\\usepackage{${c}}`);
-}
-
-export function createGlossaryDirectives(directives: GlossaryDirective[]): string[] {
-  const usepackage = '\\usepackage{glossaries}';
-  const makeglossaries = '\\makeglossaries';
-  const entries = directives.map((entry) => `\\newglossaryentry{${entry.key}}{name=${entry.name},description={${entry.description}}}`);
-  return [usepackage, makeglossaries].concat(entries);
 }
 
 export function createMathCommands(plugins: Record<string, string>): string[] {
@@ -34,29 +19,14 @@ export function createMathCommands(plugins: Record<string, string>): string[] {
   });
 }
 
-export function renderGlossaryImports(directives?: GlossaryDirective[]): string {
-  if (!directives) return '';
-  const block = label('glossary', createGlossaryDirectives(directives));
-  if (!block) return '';
-  const percents = ''.padEnd(commentLenth, '%');
-  return `${percents}\n${block}${percents}`;
-}
-
-export function renderGlossary(directives?: GlossaryDirective[]): string {
-  if (!directives) return '';
-  const block = label('glossary', ['\\printglossaries']);
-  const percents = ''.padEnd(commentLenth, '%');
-  return `${percents}\n${block}${percents}`;
-}
-
 export function renderImports(
   templateImports?: string | TemplateImports,
   existingPackages?: string[],
 ): string {
   if (!templateImports || typeof templateImports === 'string') return templateImports || '';
   const packages = new Set(templateImports.imports);
-  const imports = label('imports', createImportCommands(packages, existingPackages));
-  const commands = label('math commands', createMathCommands(templateImports.commands));
+  const imports = label('imports', createImportCommands(packages, existingPackages), commentLenth);
+  const commands = label('math commands', createMathCommands(templateImports.commands), commentLenth);
   const block = `${imports}${commands}`;
   if (!block) return '';
   const percents = ''.padEnd(commentLenth, '%');

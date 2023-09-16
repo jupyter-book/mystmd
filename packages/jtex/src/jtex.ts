@@ -3,8 +3,8 @@ import { extname, dirname } from 'node:path';
 import type MystTemplate from 'myst-templates';
 import { TEMPLATE_FILENAME } from 'myst-templates';
 import nunjucks from 'nunjucks';
-import { renderGlossary, renderGlossaryImports, renderImports } from './imports.js';
-import type { TexRenderer, TemplateImports, GlossaryDirective } from './types.js';
+import { renderImports } from './imports.js';
+import type { TexRenderer, TemplateImports } from './types.js';
 import version from './version.js';
 
 function ensureDirectoryExists(directory: string) {
@@ -40,7 +40,7 @@ export function renderTex(
     bibliography?: string[];
     sourceFile?: string;
     imports?: string | TemplateImports;
-    glossary?: GlossaryDirective[];
+    glossaryPreamble?: string;
     force?: boolean;
     packages?: string[];
     filesPath?: string;
@@ -57,17 +57,15 @@ export function renderTex(
     content = opts.contentOrPath;
   }
   const { options, parts, doc } = template.prepare(opts);
-  const allImports = [
-    renderImports(opts.imports, opts.packages),
-    renderGlossaryImports(opts.glossary),
-  ].join('');
-  content += renderGlossary(opts.glossary);
+  let importsContent = renderImports(opts.imports, opts.packages);
+  // Glossary should always be at the end of the page
+  importsContent += '\n' + opts.glossaryPreamble;
   const renderer: TexRenderer = {
     CONTENT: content,
     doc,
     parts,
     options,
-    IMPORTS: allImports,
+    IMPORTS: importsContent,
   };
   const env = getDefaultEnv(template);
   const rendered = env.render(TEMPLATE_FILENAME, renderer);

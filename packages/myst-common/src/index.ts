@@ -11,6 +11,7 @@ export {
   setTextAsChild,
   copyNode,
   mergeTextNodes,
+  label,
 } from './utils.js';
 export { selectBlockParts, extractPart } from './extractParts.js';
 export { TemplateKind, TemplateOptionType } from './templates.js';
