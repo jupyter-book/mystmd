@@ -21,7 +21,14 @@ import { transformLegends } from './legends.js';
 export type { LatexResult } from './types.js';
 
 const glossaryReferenceHandler: Handler = (node, state) => {
-  if (!node.identifier) return;
+  if (!state.printGlossary) {
+    state.renderChildren(node);
+  }
+
+  if (!node.identifier) {
+    state.renderChildren(node);
+  }
+
   const entry = state.glossary[node.identifier];
   if (!entry) {
     fileError(state.file, `Unknown glossary entry identifier "${node.identifier}"`, {
@@ -368,8 +375,12 @@ class TexSerializer implements ITexSerializer {
     this.references = opts?.references ?? {};
     this.footnotes = createFootnoteDefinitions(tree);
     // Improve: render definition when encountering terms
-    this.glossary = createGlossaryDefinitions(tree);
+    this.glossary = opts?.printGlossaries ? createGlossaryDefinitions(tree) : [];
     this.renderChildren(tree);
+  }
+
+  get printGlossary(): boolean {
+    return this.options.printGlossaries === true;
   }
 
   get out(): string {

@@ -28,6 +28,7 @@ export type Options = {
   beamer?: boolean;
   math?: MathPlugins;
   bibliography?: 'natbib' | 'biblatex';
+  printGlossaries?: boolean;
   citestyle?: 'numerical-only';
   references?: References;
 };
@@ -49,6 +50,7 @@ export interface ITexSerializer<D extends Record<string, any> = StateData> {
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
   glossary: Record<string, [DefinitionTerm, DefinitionDescription]>;
+  get printGlossary(): boolean;
   usePackages: (...packageNames: string[]) => void;
   write: (value: string) => void;
   text: (value: string, mathMode?: boolean) => void;
