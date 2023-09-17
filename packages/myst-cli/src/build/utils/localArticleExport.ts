@@ -18,7 +18,7 @@ async function _localArticleExport(
   exportOptionsList: ExportWithInputOutput[],
   opts: Pick<ExportOptions, 'clean' | 'projectPath' | 'throwOnFailure' | 'glossaries'>,
 ) {
-  const { clean, projectPath, glossaries } = opts;
+  const { clean, projectPath } = opts;
   const errors = await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptionsWithFile) => {
@@ -29,19 +29,37 @@ async function _localArticleExport(
         projectPath ??
         $project ??
         (await findCurrentProjectAndLoad(sessionClone, path.dirname($file)));
-      
+
       let exportResults: ExportResults | undefined;
       if (fileProjectPath) {
         await loadProjectFromDisk(sessionClone, fileProjectPath);
       }
       if (format === ExportFormats.tex) {
         if (path.extname(output) === '.zip') {
-          exportResults = await runTexZipExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
+          exportResults = await runTexZipExport(
+            sessionClone,
+            $file,
+            exportOptions,
+            fileProjectPath,
+            clean,
+          );
         } else {
-          exportResults = await runTexExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
+          exportResults = await runTexExport(
+            sessionClone,
+            $file,
+            exportOptions,
+            fileProjectPath,
+            clean,
+          );
         }
       } else if (format === ExportFormats.docx) {
-        exportResults = await runWordExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
+        exportResults = await runWordExport(
+          sessionClone,
+          $file,
+          exportOptions,
+          fileProjectPath,
+          clean,
+        );
       } else if (format === ExportFormats.xml) {
         await runJatsExport(sessionClone, exportOptions, fileProjectPath, clean);
       } else if (format === ExportFormats.md) {
@@ -56,7 +74,13 @@ async function _localArticleExport(
           keepTexAndLogs,
           clean,
         );
-        exportResults = await runTexExport(sessionClone, $file, texExportOptions, fileProjectPath, clean);
+        exportResults = await runTexExport(
+          sessionClone,
+          $file,
+          texExportOptions,
+          fileProjectPath,
+          clean,
+        );
         await createPdfGivenTexExport(
           sessionClone,
           texExportOptions,

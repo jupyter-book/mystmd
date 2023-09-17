@@ -58,7 +58,7 @@ export function normalizeLabel(
     .trim()
     .toLowerCase();
   const html_id = createHtmlId(identifier) as string;
-  return { identifier, label, html_id };
+  return { identifier, label: label, html_id };
 }
 
 export function createHtmlId(identifier?: string): string | undefined {
@@ -147,7 +147,7 @@ export function admonitionKindToTitle(kind: AdmonitionKind | string) {
   return transform[kind] || `Unknown Admonition "${kind}"`;
 }
 
-export function label(title: string, commands: string[], commentLenth: number) {
+export function writeTexLabelledComment(title: string, commands: string[], commentLenth: number) {
   if (!commands || commands?.length === 0) return '';
   const len = (commentLenth - title.length - 4) / 2;
   const start = ''.padEnd(Math.ceil(len), '%');

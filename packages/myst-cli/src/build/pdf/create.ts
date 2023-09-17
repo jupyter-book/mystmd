@@ -60,7 +60,7 @@ export async function createPdfGivenTexExport(
     logOutput,
     texLogOutput,
   } = ensurePaths(session, texOutput, pdfOutput);
-  
+
   if (clean) cleanOutput(session, logOutputFolder);
 
   const { buildError, toc } = await runCommands(
@@ -156,7 +156,7 @@ export async function createPdfGivenTexExport(
     (err as any).logFiles = logFiles;
     throw err;
   }
-  
+
   return { logFiles, tempFolders: [buildPath] };
 }
 
@@ -208,7 +208,15 @@ async function runCommands(
   glossaries?: boolean,
 ) {
   const toc = tic();
-  let buildError = await runPdfBuildCommand(session, texFile, texLogFile, templateLogString, template, pdfBuild, buildPath);
+  let buildError = await runPdfBuildCommand(
+    session,
+    texFile,
+    texLogFile,
+    templateLogString,
+    template,
+    pdfBuild,
+    buildPath,
+  );
 
   if (buildError || !glossaries) {
     return { buildError, toc };
@@ -221,7 +229,15 @@ async function runCommands(
     return { buildError, toc };
   }
 
-  buildError = await runPdfBuildCommand(session, texFile, texLogFile, templateLogString, template, pdfBuild, buildPath);
+  buildError = await runPdfBuildCommand(
+    session,
+    texFile,
+    texLogFile,
+    templateLogString,
+    template,
+    pdfBuild,
+    buildPath,
+  );
 
   return { buildError, toc };
 }
@@ -270,11 +286,7 @@ async function runPdfBuildCommand(
   return buildError;
 }
 
-async function runGlossariesBuildCommand(
-  session: ISession,
-  texFile: string,
-  buildPath: string,
-) {
+async function runGlossariesBuildCommand(session: ISession, texFile: string, buildPath: string) {
   if (!isMakeglossariesAvailable()) {
     session.log.error(
       `⚠️  The "makeglossaries" command is not available. See documentation on installing LaTeX:\n\n${docLinks.installLatex}`,
@@ -291,9 +303,7 @@ async function runGlossariesBuildCommand(
     session.log.debug(`Done building glossaries.`);
   } catch (err) {
     session.log.debug((err as Error).stack);
-    session.log.error(
-      `🛑 Command makeglossaries reported an error for ${texFile}`,
-    );
+    session.log.error(`🛑 Command makeglossaries reported an error for ${texFile}`);
     buildError = true;
   }
 

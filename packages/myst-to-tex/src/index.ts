@@ -2,7 +2,7 @@ import type { Root, Parent, Code } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode, References } from 'myst-common';
-import { fileError, toText, label } from 'myst-common';
+import { fileError, toText, writeTexLabelledComment } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
 import { renderNodeToLatex } from './tables.js';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types.js';
@@ -44,33 +44,35 @@ const glossaryReferenceHandler: Handler = (node, state) => {
   state.write('}');
 };
 
-const createFootnoteDefinitions = (tree: Root) => Object.fromEntries(
-  selectAll('footnoteDefinition', tree).map((node) => {
-    const fn = node as FootnoteDefinition;
-    return [fn.identifier, fn];
-  }),
-);
+const createFootnoteDefinitions = (tree: Root) =>
+  Object.fromEntries(
+    selectAll('footnoteDefinition', tree).map((node) => {
+      const fn = node as FootnoteDefinition;
+      return [fn.identifier, fn];
+    }),
+  );
 
 const createGlossaryDefinitions = (
-  tree: Root
-): Record<string, [DefinitionTerm, DefinitionDescription]> => Object.fromEntries(
-  selectAll('glossary > definitionList > *', tree)
-    .map((node, i, siblings) => {
-      if (node.type !== "definitionTerm") {
-        return [];
-      }
-      const dt = node as GenericNode;
-      if (!dt.identifier) {
-        return [];
-      }
-      const dd = siblings[i + 1];
-      if (dd === undefined || dd.type !== 'definitionDescription') {
-        throw new Error(`Definition term has no associated description`);
-      }
-      return [dt.identifier, [dt, dd]];
-    })
-    .filter((x) => x.length > 0) // remove empty
-);
+  tree: Root,
+): Record<string, [DefinitionTerm, DefinitionDescription]> =>
+  Object.fromEntries(
+    selectAll('glossary > definitionList > *', tree)
+      .map((node, i, siblings) => {
+        if (node.type !== 'definitionTerm') {
+          return [];
+        }
+        const dt = node as GenericNode;
+        if (!dt.identifier) {
+          return [];
+        }
+        const dd = siblings[i + 1];
+        if (dd === undefined || dd.type !== 'definitionDescription') {
+          throw new Error(`Definition term has no associated description`);
+        }
+        return [dt.identifier, [dt, dd]];
+      })
+      .filter((x) => x.length > 0), // remove empty
+  );
 
 const handlers: Record<string, Handler> = {
   text(node, state) {
@@ -373,21 +375,33 @@ class TexGlossarySerializer {
   }
 
   private renderGlossary(): string {
-    const block = label('glossary', ['\\printglossaries'], TexGlossarySerializer.COMMENT_LENGTH);
+    const block = writeTexLabelledComment(
+      'glossary',
+      ['\\printglossaries'],
+      TexGlossarySerializer.COMMENT_LENGTH,
+    );
     const percents = ''.padEnd(TexGlossarySerializer.COMMENT_LENGTH, '%');
     return `${percents}\n${block}${percents}`;
   }
 
-  private renderGlossaryImports(directives: Record<string, [DefinitionTerm, DefinitionDescription]>): string {
+  private renderGlossaryImports(
+    directives: Record<string, [DefinitionTerm, DefinitionDescription]>,
+  ): string {
     if (!directives) return '';
-    const block = label('glossary', this.createGlossaryDirectives(directives), TexGlossarySerializer.COMMENT_LENGTH);
+    const block = writeTexLabelledComment(
+      'glossary',
+      this.createGlossaryDirectives(directives),
+      TexGlossarySerializer.COMMENT_LENGTH,
+    );
     if (!block) return '';
     const percents = ''.padEnd(TexGlossarySerializer.COMMENT_LENGTH, '%');
     return `${percents}\n${block}${percents}`;
   }
 
-  private createGlossaryDirectives(glossaryDefinitions: Record<string, [DefinitionTerm, DefinitionDescription]>): string[] {
-    const directives = Object.keys(glossaryDefinitions).map(k => ({
+  private createGlossaryDirectives(
+    glossaryDefinitions: Record<string, [DefinitionTerm, DefinitionDescription]>,
+  ): string[] {
+    const directives = Object.keys(glossaryDefinitions).map((k) => ({
       key: k,
       name: (glossaryDefinitions[k][0].children[0] as GenericNode).value || '',
       description: (glossaryDefinitions[k][1].children[0] as GenericNode).value || '',
@@ -395,7 +409,10 @@ class TexGlossarySerializer {
 
     const usepackage = '\\usepackage{glossaries}';
     const makeglossaries = '\\makeglossaries';
-    const entries = directives.map((entry) => `\\newglossaryentry{${entry.key}}{name=${entry.name},description={${entry.description}}}`);
+    const entries = directives.map(
+      (entry) =>
+        `\\newglossaryentry{${entry.key}}{name=${entry.name},description={${entry.description}}}`,
+    );
     return [usepackage, makeglossaries].concat(entries);
   }
 }
@@ -508,7 +525,7 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     let tex = (file.result as string).trim();
 
     const glossaryState = new TexGlossarySerializer(state.glossary);
-    tex += opts?.printGlossaries ? ('\n' + glossaryState.printedGlossary) : '';
+    tex += opts?.printGlossaries ? '\n' + glossaryState.printedGlossary : '';
 
     const result: LatexResult = {
       imports: [...state.data.imports],

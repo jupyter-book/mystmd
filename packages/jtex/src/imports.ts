@@ -1,5 +1,5 @@
 import type { TemplateImports } from './types.js';
-import { label } from 'myst-common';
+import { writeTexLabelledComment } from 'myst-common';
 
 const commentLenth = 50;
 
@@ -25,8 +25,8 @@ export function renderImports(
 ): string {
   if (!templateImports || typeof templateImports === 'string') return templateImports || '';
   const packages = new Set(templateImports.imports);
-  const imports = label('imports', createImportCommands(packages, existingPackages), commentLenth);
-  const commands = label('math commands', createMathCommands(templateImports.commands), commentLenth);
+  const imports = writeTexLabelledComment('imports', createImportCommands(packages, existingPackages), commentLenth);
+  const commands = writeTexLabelledComment('math commands', createMathCommands(templateImports.commands), commentLenth);
   const block = `${imports}${commands}`;
   if (!block) return '';
   const percents = ''.padEnd(commentLenth, '%');
