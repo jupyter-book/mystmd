@@ -44,6 +44,7 @@ export interface ITexSerializer<D extends Record<string, any> = StateData> {
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
   glossary: Record<string, [DefinitionTerm, DefinitionDescription]>;
+  abbreviations: Record<string, [string, string]>;
   get printGlossary(): boolean;
   usePackages: (...packageNames: string[]) => void;
   write: (value: string) => void;

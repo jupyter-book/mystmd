@@ -1,4 +1,4 @@
-import type { Root, Parent, Code } from 'myst-spec';
+import type { Root, Parent, Code, Abbreviation, Text } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode, References } from 'myst-common';
@@ -14,7 +14,7 @@ import {
   stringToLatexText,
 } from './utils.js';
 import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
-import { selectAll } from 'unist-util-select';
+import { select, selectAll } from 'unist-util-select';
 import type { DefinitionDescription, DefinitionTerm, FootnoteDefinition } from 'myst-spec-ext';
 import { transformLegends } from './legends.js';
 
@@ -70,6 +70,28 @@ const createGlossaryDefinitions = (
           throw new Error(`Definition term has no associated description`);
         }
         return [dt.identifier, [dt, dd]];
+      })
+      .filter((x) => x.length > 0), // remove empty
+  );
+
+const createAcronymDefinitions = (
+  tree: Root,
+): Record<string, [string, string]> =>
+  // Abbreviations contain their resolved values, hence there
+  // can be many duplicates which will be collapsed when
+  // creating the dictkionary
+  Object.fromEntries(
+    selectAll('abbreviation', tree)
+      .map((node) => {
+        const a = node as Abbreviation;
+        if (!a.title) {
+          return [];
+        }
+        const t = select('text', node) as Text;
+        if (!t) {
+          return [];
+        }
+        return [t.value.toLowerCase(), [t.value, a.title]]; // key => acronym, expansion
       })
       .filter((x) => x.length > 0), // remove empty
   );
@@ -226,9 +248,27 @@ const handlers: Record<string, Handler> = {
     state.ensureNewLine();
   },
   abbreviation(node, state) {
-    // TODO: \newacronym{gcd}{GCD}{Greatest Common Divisor}
-    // https://www.overleaf.com/learn/latex/glossaries
-    state.renderChildren(node, true);
+    if (!state.printGlossary) {
+      state.renderChildren(node);
+      return;
+    }
+
+    const t = select('text', node) as Text;
+    if (!t) {
+      return [];
+    }
+    const ref = t.value.toLowerCase();
+    const entry = state.abbreviations[ref];
+    if (!entry) {
+      fileError(state.file, `Unknown abbreviation entry identifier "${ref}"`, {
+        node,
+        source: 'myst-to-tex',
+      });
+      return;
+    }
+    state.write('\\acrshort{');
+    state.write(ref);
+    state.write('}');
   },
   glossary() {
     // Glossary definitions are handled at once when constructing the serializer
@@ -363,38 +403,49 @@ const handlers: Record<string, Handler> = {
   },
 };
 
-class TexGlossarySerializer {
+class TexGlossaryAndAcronymSerializer {
   static COMMENT_LENGTH = 50;
 
-  preambleGlossary: string;
-  printedGlossary: string;
+  preamble: string;
+  printedDefinitions: string;
 
-  constructor(glossaryDefinitions: Record<string, [DefinitionTerm, DefinitionDescription]>) {
-    this.printedGlossary = this.renderGlossary();
-    this.preambleGlossary = this.renderGlossaryImports(glossaryDefinitions);
+  constructor(
+    glossaryDefinitions: Record<string, [DefinitionTerm, DefinitionDescription]>,
+    acronymDefinitions: Record<string, [string, string]>
+  ) {
+    this.printedDefinitions = this.renderGlossary();
+    this.preamble = [
+      this.renderCommonImports(),
+      this.renderImports('glossary', this.createGlossaryDirectives(glossaryDefinitions)),
+      this.renderImports('acronyms', this.createAcronymDirectives(acronymDefinitions)),
+    ].join('\n');
   }
 
   private renderGlossary(): string {
     const block = writeTexLabelledComment(
-      'glossary',
+      'acronyms & glossary',
       ['\\printglossaries'],
-      TexGlossarySerializer.COMMENT_LENGTH,
+      TexGlossaryAndAcronymSerializer.COMMENT_LENGTH,
     );
-    const percents = ''.padEnd(TexGlossarySerializer.COMMENT_LENGTH, '%');
+    const percents = ''.padEnd(TexGlossaryAndAcronymSerializer.COMMENT_LENGTH, '%');
     return `${percents}\n${block}${percents}`;
   }
 
-  private renderGlossaryImports(
-    directives: Record<string, [DefinitionTerm, DefinitionDescription]>,
-  ): string {
+  private renderCommonImports(): string {
+    const usepackage = '\\usepackage{glossaries}';
+    const makeglossaries = '\\makeglossaries';
+    return `${usepackage}\n${makeglossaries}`;
+  }
+
+  private renderImports(commentTitle: string, directives: string[]): string {
     if (!directives) return '';
     const block = writeTexLabelledComment(
-      'glossary',
-      this.createGlossaryDirectives(directives),
-      TexGlossarySerializer.COMMENT_LENGTH,
+      commentTitle,
+      directives,
+      TexGlossaryAndAcronymSerializer.COMMENT_LENGTH,
     );
     if (!block) return '';
-    const percents = ''.padEnd(TexGlossarySerializer.COMMENT_LENGTH, '%');
+    const percents = ''.padEnd(TexGlossaryAndAcronymSerializer.COMMENT_LENGTH, '%');
     return `${percents}\n${block}${percents}`;
   }
 
@@ -407,13 +458,25 @@ class TexGlossarySerializer {
       description: (glossaryDefinitions[k][1].children[0] as GenericNode).value || '',
     }));
 
-    const usepackage = '\\usepackage{glossaries}';
-    const makeglossaries = '\\makeglossaries';
-    const entries = directives.map(
+    return directives.map(
       (entry) =>
         `\\newglossaryentry{${entry.key}}{name=${entry.name},description={${entry.description}}}`,
     );
-    return [usepackage, makeglossaries].concat(entries);
+  }
+
+  private createAcronymDirectives(
+    acronymDefinitions: Record<string, [string, string]>
+  ): string[] {
+    const directives = Object.keys(acronymDefinitions).map((k) => ({
+      key: k,
+      acronym: acronymDefinitions[k][0],
+      expansion: acronymDefinitions[k][1],
+    }));
+
+    return directives.map(
+      (entry) =>
+        `\\newacronym{${entry.key}}{${entry.acronym}}{${entry.expansion}}`,
+    );
   }
 }
 
@@ -425,6 +488,7 @@ class TexSerializer implements ITexSerializer {
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
   glossary: Record<string, [DefinitionTerm, DefinitionDescription]>;
+  abbreviations: Record<string, [string, string]>;
 
   constructor(file: VFile, tree: Root, opts?: Options) {
     file.result = '';
@@ -436,6 +500,8 @@ class TexSerializer implements ITexSerializer {
     this.footnotes = createFootnoteDefinitions(tree);
     // Improve: render definition when encountering terms
     this.glossary = opts?.printGlossaries ? createGlossaryDefinitions(tree) : {};
+    // Improve: render definition when encountering terms
+    this.abbreviations = opts?.printGlossaries ? createAcronymDefinitions(tree) : {};
     this.renderChildren(tree);
   }
 
@@ -524,12 +590,12 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     const state = new TexSerializer(file, node, opts ?? { handlers });
     let tex = (file.result as string).trim();
 
-    const glossaryState = new TexGlossarySerializer(state.glossary);
-    tex += opts?.printGlossaries ? '\n' + glossaryState.printedGlossary : '';
+    const glossaryState = new TexGlossaryAndAcronymSerializer(state.glossary, state.abbreviations);
+    tex += opts?.printGlossaries ? '\n' + glossaryState.printedDefinitions : '';
 
     const result: LatexResult = {
       imports: [...state.data.imports],
-      glossaryPreamble: opts?.printGlossaries ? glossaryState.preambleGlossary : '',
+      glossaryPreamble: opts?.printGlossaries ? glossaryState.preamble : '',
       commands: withRecursiveCommands(state),
       value: tex,
     };
