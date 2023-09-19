@@ -37,7 +37,7 @@ import {
   checkLinksTransform,
   embedTransform,
   importMdastFromJson,
-  includeFilesDirective,
+  includeFilesTransform,
   liftCodeMetadataToBlock,
   transformLinkedDOIs,
   transformOutputs,
@@ -155,7 +155,7 @@ export async function transformMdast(
   cache.$internalReferences[file] = state;
   // Import additional content from mdast or other files
   importMdastFromJson(session, file, mdast);
-  includeFilesDirective(session, vfile, file, mdast);
+  includeFilesTransform(session, file, mdast, vfile);
   // This needs to come before basic transformations since it may add labels to blocks
   liftCodeMetadataToBlock(session, file, mdast);
 
