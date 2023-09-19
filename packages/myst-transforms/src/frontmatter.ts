@@ -34,7 +34,10 @@ export function getFrontmatter(
       frontmatter = (yaml.load(firstNode.value) as Record<string, any>) || {};
       if (opts.removeYaml) (firstNode as any).type = '__delete__';
     } catch (err) {
-      fileError(file, 'Invalid YAML frontmatter', { note: (err as Error).message });
+      fileError(file, 'Invalid YAML frontmatter', {
+        note: (err as Error).message,
+        ruleId: 'frontmatter-yaml-valid',
+      });
     }
   }
   const nextNode = firstIsYaml ? secondNode : (firstNode as unknown as Heading);

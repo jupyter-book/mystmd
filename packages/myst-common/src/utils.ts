@@ -11,11 +11,13 @@ export type MessageInfo = {
   source?: string;
   url?: string;
   fatal?: boolean;
+  ruleId?: string;
 };
 
 function addMessageInfo(message: VFileMessage, info?: MessageInfo) {
   if (info?.note) message.note = info?.note;
   if (info?.url) message.url = info?.url;
+  if (info?.ruleId) message.ruleId = info?.ruleId;
   if (info?.fatal) message.fatal = true;
   return message;
 }

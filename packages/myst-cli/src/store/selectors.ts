@@ -119,3 +119,16 @@ export function selectLinkStatus(state: RootState, url: string): ExternalLinkRes
 export function selectFileWarnings(state: RootState, file: string): BuildWarning[] | undefined {
   return state.local.warnings[file];
 }
+
+export function selectFileWarningsByRule(
+  state: RootState,
+  ruleId: string,
+): (BuildWarning & { file: string })[] {
+  const ruleWarnings: (BuildWarning & { file: string })[] = [];
+  Object.entries(state.local.warnings).forEach(([file, warnings]) => {
+    warnings.forEach((warning) => {
+      if (warning.ruleId === ruleId) ruleWarnings.push({ file, ...warning });
+    });
+  });
+  return ruleWarnings;
+}

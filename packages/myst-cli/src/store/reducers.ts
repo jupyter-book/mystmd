@@ -182,8 +182,8 @@ export const warnings = createSlice({
   initialState: {} as Record<string, BuildWarning[]>,
   reducers: {
     addWarning(state, action: PayloadAction<{ file: string } & BuildWarning>) {
-      const { file, message, kind } = action.payload;
-      state[file] = [...(state[file] ?? []), { message, kind }];
+      const { file, message, kind, ruleId } = action.payload;
+      state[file] = [...(state[file] ?? []), { message, kind, ruleId }];
     },
     clearWarnings(state, action: PayloadAction<{ file: string }>) {
       state[action.payload.file] = [];
