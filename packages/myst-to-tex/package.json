@@ -40,6 +40,7 @@
     "myst-common": "^1.1.5",
     "myst-frontmatter": "^1.1.5",
     "myst-spec-ext": "^1.1.5",
+    "myst-ext-proof": "^1.0.3",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
   },

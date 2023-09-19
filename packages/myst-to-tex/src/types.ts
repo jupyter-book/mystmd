@@ -11,6 +11,7 @@ export type Handler = (node: any, state: ITexSerializer, parent: any) => void;
 export type LatexResult = {
   value: string;
   imports: string[];
+  preamble: string[];
   commands: Record<string, string>;
 };
 
@@ -41,6 +42,7 @@ export interface ITexSerializer<D extends Record<string, any> = StateData> {
   options: Options;
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
+  hasProofs: boolean;
   usePackages: (...packageNames: string[]) => void;
   write: (value: string) => void;
   text: (value: string, mathMode?: boolean) => void;

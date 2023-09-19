@@ -1,17 +1,26 @@
-export enum ProofKind {
-  proof = 'proof',
-  axiom = 'axiom',
-  lemma = 'lemma',
-  definition = 'definition',
-  criterion = 'criterion',
-  remark = 'remark',
-  conjecture = 'conjecture',
-  corollary = 'corollary',
-  algorithm = 'algorithm',
-  example = 'example',
-  property = 'property',
-  observation = 'observation',
-  proposition = 'proposition',
-  assumption = 'assumption',
-  theorem = 'theorem',
-}
+import type { Container } from 'myst-spec';
+
+const PROOF_KINDS = [
+  'proof',
+  'axiom',
+  'lemma',
+  'definition',
+  'criterion',
+  'remark',
+  'conjecture',
+  'corollary',
+  'algorithm',
+  'example',
+  'property',
+  'observation',
+  'proposition',
+  'assumption',
+  'theorem'
+] as const;
+type ProofKinds = typeof PROOF_KINDS;
+
+export type ProofKind = ProofKinds[number];
+
+export type ProofContainer = Omit<Container, 'kind'> & {
+  kind: ProofKind;
+};

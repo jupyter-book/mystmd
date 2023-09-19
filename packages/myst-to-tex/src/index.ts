@@ -17,6 +17,7 @@ import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { selectAll } from 'unist-util-select';
 import type { FootnoteDefinition } from 'myst-spec-ext';
 import { transformLegends } from './legends.js';
+import { TexProofSerializer, proofHandler } from './proof.js';
 
 export type { LatexResult } from './types.js';
 
@@ -230,6 +231,7 @@ const handlers: Record<string, Handler> = {
     state.closeBlock(node);
   },
   container: containerHandler,
+  proof: proofHandler,
   caption: captionHandler,
   captionNumber: () => undefined,
   crossReference(node, state) {
@@ -308,6 +310,7 @@ class TexSerializer implements ITexSerializer {
   handlers: Record<string, Handler>;
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
+  hasProofs: boolean;
 
   constructor(file: VFile, tree: Root, opts?: Options) {
     file.result = '';
@@ -322,6 +325,7 @@ class TexSerializer implements ITexSerializer {
         return [fn.identifier, fn];
       }),
     );
+    this.hasProofs = false;
     this.renderChildren(tree);
   }
 
@@ -404,8 +408,13 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     transformLegends(node);
     const state = new TexSerializer(file, node, opts ?? { handlers });
     const tex = (file.result as string).trim();
+    const preamble: string[] = [];
+    if (state.hasProofs) {
+      preamble.push(new TexProofSerializer().preamble);
+    }
     const result: LatexResult = {
       imports: [...state.data.imports],
+      preamble,
       commands: withRecursiveCommands(state),
       value: tex,
     };
