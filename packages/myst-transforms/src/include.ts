@@ -6,8 +6,8 @@ import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 
 export type Options = {
-  loadFile: (filename: string) => string | undefined;
-  parseContent: (filename: string, content: string) => GenericNode[];
+  loadFile: (filename: string) => Promise<string | undefined> | string | undefined;
+  parseContent: (filename: string, content: string) => Promise<GenericNode[]> | GenericNode[];
 };
 
 /**
@@ -16,66 +16,68 @@ export type Options = {
  * RST documentation:
  *  - https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment
  */
-export function includeDirectiveTransform(tree: GenericParent, file: VFile, opts: Options) {
+export async function includeDirectiveTransform(tree: GenericParent, file: VFile, opts: Options) {
   const includeNodes = selectAll('include', tree) as Include[];
-  includeNodes.forEach((node) => {
-    const rawContent = opts.loadFile(node.file);
-    if (rawContent == null) return;
-    const { content, startingLineNumber } = filterIncludedContent(file, node.filter, rawContent);
-    let children: GenericNode[];
-    if (node.literal) {
-      const code: Code = {
-        type: 'code',
-        value: content,
-      };
-      if (node.startingLineNumber === 'match') {
-        // Replace the starting line number if it should match
-        node.startingLineNumber = startingLineNumber;
-      }
-      // Move the code attributes to the code block
-      (
-        [
-          'lang',
-          'emphasizeLines',
-          'showLineNumbers',
-          'startingLineNumber',
-          'label',
-          'identifier',
-        ] as const
-      ).forEach((attr) => {
-        if (!node[attr]) return;
-        code[attr] = node[attr] as any;
-        delete node[attr];
-      });
-      if (!node.caption) {
-        children = [code];
+  await Promise.all(
+    includeNodes.map(async (node) => {
+      const rawContent = await opts.loadFile(node.file);
+      if (rawContent == null) return;
+      const { content, startingLineNumber } = filterIncludedContent(file, node.filter, rawContent);
+      let children: GenericNode[];
+      if (node.literal) {
+        const code: Code = {
+          type: 'code',
+          value: content,
+        };
+        if (node.startingLineNumber === 'match') {
+          // Replace the starting line number if it should match
+          node.startingLineNumber = startingLineNumber;
+        }
+        // Move the code attributes to the code block
+        (
+          [
+            'lang',
+            'emphasizeLines',
+            'showLineNumbers',
+            'startingLineNumber',
+            'label',
+            'identifier',
+          ] as const
+        ).forEach((attr) => {
+          if (!node[attr]) return;
+          code[attr] = node[attr] as any;
+          delete node[attr];
+        });
+        if (!node.caption) {
+          children = [code];
+        } else {
+          const caption: Caption = {
+            type: 'caption',
+            children: [
+              {
+                type: 'paragraph',
+                children: node.caption as any[],
+              },
+            ],
+          };
+          const container: Container = {
+            type: 'container',
+            kind: 'code' as any,
+            // Move the label to the container
+            label: code.label,
+            identifier: code.identifier,
+            children: [code as any, caption],
+          };
+          delete code.label;
+          delete code.identifier;
+          children = [container];
+        }
       } else {
-        const caption: Caption = {
-          type: 'caption',
-          children: [
-            {
-              type: 'paragraph',
-              children: node.caption as any[],
-            },
-          ],
-        };
-        const container: Container = {
-          type: 'container',
-          kind: 'code' as any,
-          // Move the label to the container
-          label: code.label,
-          identifier: code.identifier,
-          children: [code as any, caption],
-        };
-        delete code.label;
-        delete code.identifier;
-        children = [container];
+        children = await opts.parseContent(node.file, content);
       }
-    } else {
-      children = opts.parseContent(node.file, content);
-    }
-    node.children = children as any;
-  });
+      node.children = children as any;
+    }),
+  );
 }
 
 function index(n: number, total: number): [number, number] | null {
