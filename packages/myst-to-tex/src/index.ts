@@ -74,9 +74,7 @@ const createGlossaryDefinitions = (
       .filter((x) => x.length > 0), // remove empty
   );
 
-const createAcronymDefinitions = (
-  tree: Root,
-): Record<string, [string, string]> =>
+const createAcronymDefinitions = (tree: Root): Record<string, [string, string]> =>
   // Abbreviations contain their resolved values, hence there
   // can be many duplicates which will be collapsed when
   // creating the dictkionary
@@ -411,7 +409,7 @@ class TexGlossaryAndAcronymSerializer {
 
   constructor(
     glossaryDefinitions: Record<string, [DefinitionTerm, DefinitionDescription]>,
-    acronymDefinitions: Record<string, [string, string]>
+    acronymDefinitions: Record<string, [string, string]>,
   ) {
     this.printedDefinitions = this.renderGlossary();
     this.preamble = [
@@ -464,9 +462,7 @@ class TexGlossaryAndAcronymSerializer {
     );
   }
 
-  private createAcronymDirectives(
-    acronymDefinitions: Record<string, [string, string]>
-  ): string[] {
+  private createAcronymDirectives(acronymDefinitions: Record<string, [string, string]>): string[] {
     const directives = Object.keys(acronymDefinitions).map((k) => ({
       key: k,
       acronym: acronymDefinitions[k][0],
@@ -474,8 +470,7 @@ class TexGlossaryAndAcronymSerializer {
     }));
 
     return directives.map(
-      (entry) =>
-        `\\newacronym{${entry.key}}{${entry.acronym}}{${entry.expansion}}`,
+      (entry) => `\\newacronym{${entry.key}}{${entry.acronym}}{${entry.expansion}}`,
     );
   }
 }
