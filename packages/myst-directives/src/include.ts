@@ -59,7 +59,7 @@ export const includeDirective: DirectiveSpec = {
     },
     lines: {
       type: ParseTypesEnum.string,
-      doc: 'Specify exactly which lines to include, starting at 1. For example, `1,3,5-10,20-` includes the lines 1, 3, 5 to 10 and lines 20 to the last line.',
+      doc: 'Specify exactly which lines to include from the original file, starting at 1. For example, `1,3,5-10,20-` includes the lines 1, 3, 5 to 10 and lines 20 to the last line of the original file.',
     },
     'lineno-match': {
       type: ParseTypesEnum.boolean,

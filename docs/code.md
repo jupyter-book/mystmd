@@ -117,7 +117,7 @@ creates a snippet that has matching line numbers, and starts at a line including
 ```
 
 :::{note} Auto Reload
-If you are working with the auto-reload (e.g. `myst start`), currently you will need to save the file that includes the code for the contents to update.
+If you are working with the auto-reload (e.g. `myst start`), currently you will need to save the file with the `literalinclude` directive for the contents to update.code for the contents to update.
 :::
 
 ## `include` Reference
@@ -155,7 +155,7 @@ end-before (string)
 : Only the content before the first occurrence of the specified text in the external data file (but after any start-after text) will be included.
 
 lines (string)
-: Specify exactly which lines to include, starting at 1. For example, `1,3,5-10,20-` includes the lines 1, 3, 5 to 10 and lines 20 to the last line.
+: Specify exactly which lines to include from the original file, starting at 1. For example, `1,3,5-10,20-` includes the lines 1, 3, 5 to 10 and lines 20 to the last line of the original file.
 
 lineno-match (boolean)
 : Display the original line numbers, correct only when the selection consists of contiguous lines.

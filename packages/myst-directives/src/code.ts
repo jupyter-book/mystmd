@@ -21,7 +21,7 @@ export function getCodeBlockOptions(
 ): Pick<Code, 'emphasizeLines' | 'showLineNumbers' | 'startingLineNumber'> {
   if (options?.['lineno-start'] != null && options?.['number-lines'] != null) {
     fileWarn(vfile, 'Cannot use both "lineno-start" and "number-lines"', {
-      source: 'code-cell:tags',
+      source: 'code-block:options',
     });
   }
   const emphasizeLines = parseEmphasizeLines(options?.['emphasize-lines'] as string | undefined);
