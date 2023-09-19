@@ -58,7 +58,6 @@ export function renderTex(
   }
   const { options, parts, doc } = template.prepare(opts);
   let importsContent = renderImports(opts.imports, opts.packages);
-  // Glossary should always be at the end of the page
   importsContent += '\n' + opts.glossaryPreamble;
   const renderer: TexRenderer = {
     CONTENT: content,
