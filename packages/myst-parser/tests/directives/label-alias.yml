@@ -1,0 +1,68 @@
+title: label alias tests
+cases:
+  - title: figure label works
+    markdown: |-
+      ```{figure} my_image.png
+      :label: my-fig
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: figure
+          args: my_image.png
+          options:
+            label: my-fig
+          children:
+            - type: container
+              kind: figure
+              identifier: my-fig
+              label: my-fig
+              children:
+                - type: image
+                  url: my_image.png
+  - title: figure name works
+    markdown: |-
+      ```{figure} my_image.png
+      :name: my-fig
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: figure
+          args: my_image.png
+          options:
+            name: my-fig
+          children:
+            - type: container
+              kind: figure
+              identifier: my-fig
+              label: my-fig
+              children:
+                - type: image
+                  url: my_image.png
+  - title: figure name/label warns and takes label
+    warnings: 1
+    markdown: |-
+      ```{figure} my_image.png
+      :label: my-fig
+      :name: not-used
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: figure
+          args: my_image.png
+          options:
+            label: my-fig
+            name: not-used
+          children:
+            - type: container
+              kind: figure
+              identifier: my-fig
+              label: my-fig
+              children:
+                - type: image
+                  url: my_image.png

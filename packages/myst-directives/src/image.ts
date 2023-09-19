@@ -8,8 +8,9 @@ export const imageDirective: DirectiveSpec = {
     required: true,
   },
   options: {
-    // name: {
+    // label: {
     //   type: ParseTypesEnum.string,
+    //   alias: ['name'],
     // },
     class: {
       type: ParseTypesEnum.string,

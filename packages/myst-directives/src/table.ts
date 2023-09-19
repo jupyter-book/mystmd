@@ -8,8 +8,9 @@ export const listTableDirective: DirectiveSpec = {
     type: ParseTypesEnum.parsed,
   },
   options: {
-    name: {
+    label: {
       type: ParseTypesEnum.string,
+      alias: ['name'],
     },
     'header-rows': {
       type: ParseTypesEnum.number,
@@ -92,7 +93,7 @@ export const listTableDirective: DirectiveSpec = {
       }),
     };
     children.push(table);
-    const { label, identifier } = normalizeLabel(data.options?.name as string | undefined) || {};
+    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const container = {
       type: 'container',
       kind: 'table',

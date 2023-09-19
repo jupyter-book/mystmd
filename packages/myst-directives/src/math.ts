@@ -6,6 +6,7 @@ export const mathDirective: DirectiveSpec = {
   options: {
     label: {
       type: ParseTypesEnum.string,
+      alias: ['name'],
     },
   },
   body: {

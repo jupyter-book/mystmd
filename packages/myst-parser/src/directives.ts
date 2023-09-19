@@ -84,8 +84,29 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
         optionNodeLookup[optionNode.name] = optionNode;
       }
     });
+
+    // Deal with each option in the spec
     Object.entries(optionsSpec || {}).forEach(([optionName, optionSpec]) => {
-      const optionNode = optionNodeLookup[optionName];
+      let optionNameUsed = optionName;
+      let optionNode = optionNodeLookup[optionName];
+      // Replace alias options or warn on duplicates
+      optionSpec.alias?.forEach((alias) => {
+        const aliasNode = optionNodeLookup[alias];
+        if (!aliasNode) return;
+        if (!optionNode && aliasNode) {
+          optionNode = aliasNode;
+          optionNameUsed = alias;
+          optionNodeLookup[optionName] = optionNode;
+        } else {
+          fileWarn(
+            vfile,
+            `option "${optionNameUsed}" used instead of "${alias}" for directive: ${name}`,
+            { node },
+          );
+        }
+        delete optionNodeLookup[alias];
+      });
+
       if (optionSpec.required && !optionNode) {
         fileError(vfile, `required option "${optionName}" not provided for directive: ${name}`, {
           node,

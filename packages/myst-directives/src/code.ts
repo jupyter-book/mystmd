@@ -10,8 +10,9 @@ export const codeDirective: DirectiveSpec = {
     type: ParseTypesEnum.string,
   },
   options: {
-    name: {
+    label: {
       type: ParseTypesEnum.string,
+      alias: ['name'],
     },
     class: {
       type: ParseTypesEnum.string,
@@ -29,7 +30,7 @@ export const codeDirective: DirectiveSpec = {
     type: ParseTypesEnum.string,
   },
   run(data): GenericNode[] {
-    const { label, identifier } = normalizeLabel(data.options?.name as string | undefined) || {};
+    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const numberLines = data.options?.['number-lines'] as number | undefined;
     const showLineNumbers = !!numberLines;
     const startingLineNumber = numberLines && numberLines > 1 ? numberLines : undefined;
@@ -54,8 +55,9 @@ export const codeBlockDirective: DirectiveSpec = {
     type: ParseTypesEnum.string,
   },
   options: {
-    name: {
+    label: {
       type: ParseTypesEnum.string,
+      alias: ['name'],
     },
     class: {
       type: ParseTypesEnum.string,
@@ -89,7 +91,7 @@ export const codeBlockDirective: DirectiveSpec = {
     type: ParseTypesEnum.string,
   },
   run(data): GenericNode[] {
-    const { label, identifier } = normalizeLabel(data.options?.name as string | undefined) || {};
+    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     // Validating this should probably happen first
     const emphasizeLinesString = data.options?.['emphasize-lines'] as string | undefined;
     const emphasizeLines = emphasizeLinesString
