@@ -22,12 +22,12 @@ export type { LatexResult } from './types.js';
 
 const glossaryReferenceHandler: Handler = (node, state) => {
   if (!state.printGlossary) {
-    state.renderChildren(node);
+    state.renderChildren(node, true);
     return;
   }
 
   if (!node.identifier) {
-    state.renderChildren(node);
+    state.renderChildren(node, true);
     return;
   }
 
