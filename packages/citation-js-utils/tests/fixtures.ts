@@ -25,9 +25,9 @@ export const FORMATED_CONTENT_VANCOUVER =
 
 // sanitized
 export const TEST_APA_HTML =
-  'Cockett, R., Kang, S., Heagy, L. J., Pidlisecky, A., &amp; Oldenburg, D. W. (2015). SimPEG: An open source framework for simulation and gradient based parameter estimation in geophysical applications. <i>Computers &amp; Geosciences</i>, <i>85</i>, 142–154. <a target="_blank" rel="noreferrer" href="https://doi.org/10.1016/j.cageo.2015.09.015">10.1016/j.cageo.2015.09.015</a>';
+  'Cockett, R., Kang, S., Heagy, L. J., Pidlisecky, A., & Oldenburg, D. W. (2015). SimPEG: An open source framework for simulation and gradient based parameter estimation in geophysical applications. <i>Computers & Geosciences</i>, <i>85</i>, 142–154. <a target="_blank" rel="noreferrer" href="https://doi.org/10.1016/j.cageo.2015.09.015">10.1016/j.cageo.2015.09.015</a>';
 export const TEST_VANCOUVER_HTML =
-  'Cockett R, Kang S, Heagy LJ, Pidlisecky A, Oldenburg DW. SimPEG: An open source framework for simulation and gradient based parameter estimation in geophysical applications. Computers &amp; Geosciences [Internet]. 2015 Dec;85:142–54. Available from: <a target="_blank" rel="noreferrer" href="https://doi.org/10.1016/j.cageo.2015.09.015">10.1016/j.cageo.2015.09.015</a>';
+  'Cockett R, Kang S, Heagy LJ, Pidlisecky A, Oldenburg DW. SimPEG: An open source framework for simulation and gradient based parameter estimation in geophysical applications. Computers & Geosciences [Internet]. 2015 Dec;85:142–54. Available from: <a target="_blank" rel="noreferrer" href="https://doi.org/10.1016/j.cageo.2015.09.015">10.1016/j.cageo.2015.09.015</a>';
 // straight outta citation-js
 export const TEST_DATA_HTML_DIRTY =
   'Cockett, R., Kang, S., Heagy, L. J., Pidlisecky, A., &#38; Oldenburg, D. W. (2015). SimPEG: An open source framework for simulation and gradient based parameter estimation in geophysical applications. <i>Computers &#38; Geosciences</i>, <i>85</i>, 142–154. <a href="https://doi.org/10.1016/j.cageo.2015.09.015" target="_blank">10.1016/j.cageo.2015.09.015</a>';

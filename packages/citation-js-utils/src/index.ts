@@ -39,7 +39,7 @@ export function createSanitizer() {
 function cleanRef(citation: string) {
   const sanitizer = createSanitizer();
   const cleanHtml = sanitizer.cleanCitationHtml(citation).trim();
-  return cleanHtml.replace(/^1\./g, '').replace('&amp;', '&').trim();
+  return cleanHtml.replace(/^1\./g, '').replace(/&amp;/g, '&').trim();
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
