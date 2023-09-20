@@ -1,7 +1,7 @@
 import type { TemplateImports } from './types.js';
 import { writeTexLabelledComment } from 'myst-common';
 
-const commentLenth = 50;
+const commentLength = 50;
 
 export function createImportCommands(commands: Set<string>, existingPackages?: string[]): string[] {
   const sorted = [...commands].sort();
@@ -25,11 +25,11 @@ export function renderImports(
 ): string {
   if (!templateImports || typeof templateImports === 'string') return templateImports || '';
   const packages = new Set(templateImports.imports);
-  const imports = writeTexLabelledComment('imports', createImportCommands(packages, existingPackages), commentLenth);
-  const commands = writeTexLabelledComment('math commands', createMathCommands(templateImports.commands), commentLenth);
+  const imports = writeTexLabelledComment('imports', createImportCommands(packages, existingPackages), commentLength);
+  const commands = writeTexLabelledComment('math commands', createMathCommands(templateImports.commands), commentLength);
   const block = `${imports}${commands}`;
   if (!block) return '';
-  const percents = ''.padEnd(commentLenth, '%');
+  const percents = ''.padEnd(commentLength, '%');
   return `${percents}\n${block}${percents}`;
 }
 

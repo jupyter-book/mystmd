@@ -147,9 +147,9 @@ export function admonitionKindToTitle(kind: AdmonitionKind | string) {
   return transform[kind] || `Unknown Admonition "${kind}"`;
 }
 
-export function writeTexLabelledComment(title: string, commands: string[], commentLenth: number) {
+export function writeTexLabelledComment(title: string, commands: string[], commentLength: number) {
   if (!commands || commands?.length === 0) return '';
-  const len = (commentLenth - title.length - 4) / 2;
+  const len = (commentLength - title.length - 4) / 2;
   const start = ''.padEnd(Math.ceil(len), '%');
   const end = ''.padEnd(Math.floor(len), '%');
   const titleBlock = `${start}  ${title}  ${end}\n`;
