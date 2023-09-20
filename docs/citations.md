@@ -6,8 +6,6 @@ thumbnail: ./thumbnails/citations.png
 
 Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a markdown link to a [DOI](wiki:Digital_object_identifier); and (2) by adding a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
 
-+++
-
 (doi-links)=
 
 ## Simple Referencing with a DOI Link
@@ -24,13 +22,59 @@ which will insert the citation text in the correct format (e.g. adding an italic
 
 Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link. If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
 
-+++
-
 ## Including BibTeX
 
 A standard way of including references for $\LaTeX$ is using <wiki:BibTeX>, you can include a `*.bib` file or files in the same directory as your content directory for the project. These will provide the reference keys for that project.
 
-To create a citation in Markdown, use either a parenthetical or textual citation:
+If you want to explicitly reference which BibTeX files to use, as well as what order to resolve them in, you can use the `bibliography` field in your frontmatter, which is a string array of local or remote files. This will load the files in order specified.
+
+```yaml
+bibliography:
+  - my_references.bib
+  - https://example.com/my/remote/bibtex.bib
+```
+
+The remote BibTeX can be helpful for working with reference managers that support remote links to your references.
+
+## Markdown Citations
+
+You can add citations to any BibTeX entry using the citation key preceded by an `@`, for example, `@author2023`.
+This syntax follows the [pandoc citation syntax](https://pandoc.org/MANUAL.html#citation-syntax). Multiple citations can be grouped together with square brackets, separated with semi-colons. It is also possible to add a prefix or suffix to parenthetical citations, for example, `[e.g. @author2023, chap. 3; @author1995]`. To add a suffix to a narrative citation, follow the citation with the suffix in square brackets, for example, `@author2023 [chap. 3]`. As with a link to a DOI, you can also use the DOI directly instead of the BibTeX key.
+
+```{list-table} Examples of Markdown citations
+:header-rows: 1
+:name: table-pandoc-citations
+* - Markdown
+  - Rendered
+  - Explanation
+* - `@cockett2015`
+  - @cockett2015
+  - Narrative citation
+* - `[@cockett2015]`
+  - [@cockett2015]
+  - Parenthetical citation
+* - `[@cockett2015; @heagy2017]`
+  - [@cockett2015; @heagy2017]
+  - Multiple parenthetical citations
+* - `[-@cockett2015]`
+  - [-@cockett2015]
+  - Show citation year
+* - `[e.g. @cockett2015, pg. 22]`
+  - [e.g. @cockett2015, pg. 22]
+  - Prefix and suffix
+* - `@cockett2015 [pg. 22]`
+  - @cockett2015 [pg. 22]
+  - Suffix for narrative citations
+* - `@10.1093/nar/22.22.4673`
+  - @10.1093/nar/22.22.4673
+  - Citation using a DOI directly
+```
+
+Note that it is also possible to use the `@ref` syntax to link to other cross-references in addition to the link syntax.
+
+## Citation Roles
+
+MyST also provides a number of roles for compatibility with Sphinx and JupyterBook. To create a citation role in Markdown, use either a parenthetical or textual citation:
 
 ```md
 This is a parenthetical citation {cite:p}`cockett2015`.
@@ -47,15 +91,3 @@ This will be a citation: {cite}`10.1093/nar/22.22.4673`.
 ```
 
 This will show as: {cite}`10.1093/nar/22.22.4673`.
-
-## Specifying BibTeX
-
-If you want to explicitly reference which BibTeX files to use, as well as what order to resolve them in, you can use the `bibliography` field in your frontmatter, which is a string array of local or remote files. This will load the files in order specified.
-
-```yaml
-bibliography:
-  - my_references.bib
-  - https://example.com/my/remote/bibtex.bib
-```
-
-The remote BibTeX can be helpful for working with reference managers that support remote links to your references.
