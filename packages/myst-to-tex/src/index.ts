@@ -387,7 +387,7 @@ class TexGlossarySerializer {
   private renderGlossaryImports(
     directives: Record<string, [DefinitionTerm, DefinitionDescription]>,
   ): string {
-    if (!directives) return '';
+    if (!directives || Object.keys(directives).length === 0) return '';
     const block = writeTexLabelledComment(
       'glossary',
       this.createGlossaryDirectives(directives),
