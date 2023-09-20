@@ -43,7 +43,7 @@ describe('reactive tests', () => {
     });
     expect(output).toEqual(expected);
   });
-  it.only('r:dynamic role parses', async () => {
+  it('r:dynamic role parses', async () => {
     const content = '{r:dynamic}`rValue="visitors", rChange="{visitors: value}", value="5"`';
     const expected = {
       type: 'root',
