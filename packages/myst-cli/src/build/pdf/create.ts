@@ -302,7 +302,7 @@ async function runGlossariesBuildCommand(
 
   let buildError = false;
   try {
-    session.log.info(`🔖  Creating glossaries in ${buildPath}`);
+    session.log.info(`🔖 Creating glossaries in ${buildPath}`);
     session.log.debug(`Running command:\n> ${buildCommand}`);
     await exec(buildCommand, { cwd: buildPath });
     session.log.debug(`Done building glossaries.`);
