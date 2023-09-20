@@ -99,9 +99,10 @@ export type Cite = {
   kind: CiteKind;
   label: string;
   children: StaticPhrasingContent[];
-  error?: boolean;
+  error?: boolean | 'not found' | 'rendering error';
   prefix?: string;
   suffix?: string;
+  partial?: 'author' | 'year';
 };
 
 export type CiteGroup = {

@@ -11,15 +11,15 @@ export function addWarningForFile(
   kind: WarningKind = 'warn',
   opts?: { note?: string | null; url?: string | null; position?: VFileMessage['position'] },
 ) {
-  const specific = opts?.position?.start.line
-    ? `:${opts?.position.start.line}${
-        opts?.position.start.column ? `:${opts?.position.start.column}` : ''
-      }`
-    : '';
+  const line = opts?.position?.start.line ? `:${opts?.position.start.line}` : '';
+  const column =
+    opts?.position?.start.column && opts?.position?.start.column > 1
+      ? `:${opts?.position.start.column}`
+      : '';
 
   const note = opts?.note ? `\n   ${chalk.reset.dim(opts.note)}` : '';
   const url = opts?.url ? chalk.reset.dim(`\n   See also: ${opts.url}\n`) : '';
-  const prefix = file ? `${file}${specific} ` : '';
+  const prefix = file ? `${file}${line}${column} ` : '';
   const formatted = `${message}${note}${url}`;
   switch (kind) {
     case 'info':

@@ -23,15 +23,6 @@ export function withoutTrailingNewline(str: string) {
   return str[str.length - 1] == '\n' ? str.slice(0, str.length - 1) : str;
 }
 
-function addPositionsToNode(node: GenericNode, token: Token) {
-  if (token.map) {
-    node.position = {
-      start: { line: token.map[0], column: 0 },
-      end: { line: token.map[1], column: 0 },
-    };
-  }
-}
-
 /** MarkdownParseState tracks the context of a running token stream.
  *
  * Loosely based on prosemirror-markdown
@@ -66,13 +57,13 @@ export class MarkdownParseState {
     }
     const node: Text = { type: type as 'text', ...attrs, value };
     top.children?.push(node);
-    addPositionsToNode(node, token);
+    this.addPositionsToNode(node, token);
     return node;
   }
 
   openNode(type: string, token: Token, attrs: Record<string, any>, isLeaf = false) {
     const node: GenericNode = { type, ...attrs };
-    addPositionsToNode(node, token);
+    this.addPositionsToNode(node, token);
     if (!isLeaf) (node as GenericParent).children = [];
     this.stack.push(node);
   }
@@ -90,6 +81,26 @@ export class MarkdownParseState {
         throw new Error(`Token type ${token.type} not supported by tokensToMyst parser`);
       handler(this, token, tokens, index);
     });
+  }
+
+  _lastPosition: GenericNode['position'];
+
+  addPositionsToNode(node: GenericNode, token: Token) {
+    const col = (token as any).col ?? [0, 0];
+    if (token.map) {
+      node.position = {
+        start: { line: token.map[0] + 1, column: col[0] + 1 },
+        end: { line: token.map[1], column: col[1] + 1 },
+      };
+    } else if (this._lastPosition) {
+      node.position = {
+        start: { line: this._lastPosition.start.line, column: col[0] + 1 },
+        end: { line: this._lastPosition.start.line, column: col[1] + 1 },
+      };
+    }
+    if (node.position) {
+      this._lastPosition = node.position;
+    }
   }
 }
 

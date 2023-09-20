@@ -15,12 +15,12 @@ describe('card directive', () => {
           value: 'Header\n^^^\n\nCard content\n+++\nFooter',
           position: {
             start: {
-              line: 0,
-              column: 0,
+              line: 1,
+              column: 1,
             },
             end: {
               line: 8,
-              column: 0,
+              column: 1,
             },
           },
           children: [
@@ -40,12 +40,12 @@ describe('card directive', () => {
                       ],
                       position: {
                         end: {
-                          column: 0,
+                          column: 1,
                           line: 3,
                         },
                         start: {
-                          column: 0,
-                          line: 1,
+                          column: 1,
+                          line: 2,
                         },
                       },
                     },
@@ -57,6 +57,16 @@ describe('card directive', () => {
                     {
                       type: 'text',
                       value: 'Card Title',
+                      position: {
+                        end: {
+                          column: 1,
+                          line: 1,
+                        },
+                        start: {
+                          column: 1,
+                          line: 1,
+                        },
+                      },
                     },
                   ],
                 },
@@ -66,16 +76,26 @@ describe('card directive', () => {
                     {
                       type: 'text',
                       value: 'Card content',
+                      position: {
+                        end: {
+                          column: 1,
+                          line: 5,
+                        },
+                        start: {
+                          column: 1,
+                          line: 5,
+                        },
+                      },
                     },
                   ],
                   position: {
                     end: {
-                      column: 0,
+                      column: 1,
                       line: 5,
                     },
                     start: {
-                      column: 0,
-                      line: 4,
+                      column: 1,
+                      line: 5,
                     },
                   },
                 },
@@ -88,16 +108,26 @@ describe('card directive', () => {
                         {
                           type: 'text',
                           value: 'Footer',
+                          position: {
+                            end: {
+                              column: 1,
+                              line: 7,
+                            },
+                            start: {
+                              column: 1,
+                              line: 7,
+                            },
+                          },
                         },
                       ],
                       position: {
                         end: {
-                          column: 0,
+                          column: 1,
                           line: 7,
                         },
                         start: {
-                          column: 0,
-                          line: 6,
+                          column: 1,
+                          line: 7,
                         },
                       },
                     },
@@ -132,12 +162,12 @@ describe('card directive', () => {
           value: 'Card\n^^^\ncontent',
           position: {
             start: {
-              line: 0,
-              column: 0,
+              line: 1,
+              column: 1,
             },
             end: {
               line: 8,
-              column: 0,
+              column: 1,
             },
           },
           children: [
@@ -154,6 +184,16 @@ describe('card directive', () => {
                         {
                           type: 'text',
                           value: 'Header',
+                          position: {
+                            end: {
+                              column: 1,
+                              line: 2,
+                            },
+                            start: {
+                              column: 1,
+                              line: 2,
+                            },
+                          },
                         },
                       ],
                     },
@@ -165,6 +205,16 @@ describe('card directive', () => {
                     {
                       type: 'text',
                       value: 'Card Title',
+                      position: {
+                        end: {
+                          column: 1,
+                          line: 1,
+                        },
+                        start: {
+                          column: 1,
+                          line: 1,
+                        },
+                      },
                     },
                   ],
                 },
@@ -174,16 +224,26 @@ describe('card directive', () => {
                     {
                       type: 'text',
                       value: 'Card\n^^^\ncontent',
+                      position: {
+                        end: {
+                          column: 1,
+                          line: 5,
+                        },
+                        start: {
+                          column: 1,
+                          line: 5,
+                        },
+                      },
                     },
                   ],
                   position: {
                     end: {
-                      column: 0,
+                      column: 1,
                       line: 7,
                     },
                     start: {
-                      column: 0,
-                      line: 4,
+                      column: 1,
+                      line: 5,
                     },
                   },
                 },
@@ -196,6 +256,16 @@ describe('card directive', () => {
                         {
                           type: 'text',
                           value: 'Footer',
+                          position: {
+                            end: {
+                              column: 1,
+                              line: 3,
+                            },
+                            start: {
+                              column: 1,
+                              line: 3,
+                            },
+                          },
                         },
                       ],
                     },
@@ -223,12 +293,12 @@ describe('card directive', () => {
           value: 'Card content',
           position: {
             start: {
-              line: 0,
-              column: 0,
+              line: 1,
+              column: 1,
             },
             end: {
               line: 3,
-              column: 0,
+              column: 1,
             },
           },
           children: [
@@ -241,16 +311,26 @@ describe('card directive', () => {
                     {
                       type: 'text',
                       value: 'Card content',
+                      position: {
+                        end: {
+                          column: 1,
+                          line: 2,
+                        },
+                        start: {
+                          column: 1,
+                          line: 2,
+                        },
+                      },
                     },
                   ],
                   position: {
                     end: {
-                      column: 0,
+                      column: 1,
                       line: 2,
                     },
                     start: {
-                      column: 0,
-                      line: 1,
+                      column: 1,
+                      line: 2,
                     },
                   },
                 },

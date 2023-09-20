@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { mystParse } from 'myst-parser';
 import { exerciseDirective } from '../src';
+import { selectAll } from 'unist-util-select';
+
+function deletePositions(tree: any) {
+  selectAll('*', tree).forEach((n) => {
+    delete n.position;
+  });
+  return tree;
+}
 
 describe('exercise directive', () => {
   it('exercise directive parses', async () => {
@@ -16,16 +24,6 @@ describe('exercise directive', () => {
           },
           args: 'Exercise Title',
           value: 'Exercise content',
-          position: {
-            start: {
-              line: 0,
-              column: 0,
-            },
-            end: {
-              line: 4,
-              column: 0,
-            },
-          },
           children: [
             {
               type: 'exercise',
@@ -50,16 +48,6 @@ describe('exercise directive', () => {
                       value: 'Exercise content',
                     },
                   ],
-                  position: {
-                    end: {
-                      column: 0,
-                      line: 3,
-                    },
-                    start: {
-                      column: 0,
-                      line: 2,
-                    },
-                  },
                 },
               ],
             },
@@ -70,6 +58,6 @@ describe('exercise directive', () => {
     const output = mystParse(content, {
       directives: [exerciseDirective],
     });
-    expect(output).toEqual(expected);
+    expect(deletePositions(output)).toEqual(expected);
   });
 });

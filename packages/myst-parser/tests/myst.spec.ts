@@ -115,6 +115,7 @@ describe('Testing myst --> mdast conversions', () => {
               },
               extensions: {
                 frontmatter: false, // Frontmatter screws with some tests!
+                citations: false,
               },
             }),
           ),

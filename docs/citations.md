@@ -4,7 +4,7 @@ description: Add academic citations to your documents easily, have hover-referen
 thumbnail: ./thumbnails/citations.png
 ---
 
-Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a markdown link to a [DOI](wiki:Digital_object_identifier); and (2) by adding a bibtex file, which can be exported from any reference manager, and adding a `cite` role to your content.
+Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a markdown link to a [DOI](wiki:Digital_object_identifier); and (2) by adding a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
 
 +++
 
@@ -48,9 +48,9 @@ This will be a citation: {cite}`10.1093/nar/22.22.4673`.
 
 This will show as: {cite}`10.1093/nar/22.22.4673`.
 
-## Specififying BibTeX
+## Specifying BibTeX
 
-If you want to explicitly reference which bibtex files to use, as well as what order to resolve them in, you can use the `bibliography` field in your frontmatter, which is a string array of local or remote files. This will load the files in order specified.
+If you want to explicitly reference which BibTeX files to use, as well as what order to resolve them in, you can use the `bibliography` field in your frontmatter, which is a string array of local or remote files. This will load the files in order specified.
 
 ```yaml
 bibliography:
@@ -58,4 +58,4 @@ bibliography:
   - https://example.com/my/remote/bibtex.bib
 ```
 
-The remote bibtex can be helpful for working with reference managers that support remote links to your references.
+The remote BibTeX can be helpful for working with reference managers that support remote links to your references.

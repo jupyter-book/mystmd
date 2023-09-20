@@ -185,7 +185,13 @@ export async function transformMdast(
   linksTransform(mdast, vfile, { transformers, selector: LINKS_SELECTOR });
 
   // Initialize citation renderers for this (non-bib) file
-  cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
+  cache.$citationRenderers[file] = await transformLinkedDOIs(
+    log,
+    vfile,
+    mdast,
+    cache.$doiRenderers,
+    file,
+  );
   const rendererFiles = [file];
   if (projectPath) {
     rendererFiles.unshift(projectPath);
@@ -200,7 +206,7 @@ export async function transformMdast(
     altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
     minifyMaxCharacters,
   });
-  transformCitations(log, mdast, fileCitationRenderer, references, file);
+  transformCitations(mdast, fileCitationRenderer, references);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
     .use(footnotesPlugin) // Needs to happen near the end

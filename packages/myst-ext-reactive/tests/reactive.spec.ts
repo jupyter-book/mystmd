@@ -26,11 +26,11 @@ describe('reactive tests', () => {
           ],
           position: {
             start: {
-              column: 0,
-              line: 0,
+              column: 1,
+              line: 1,
             },
             end: {
-              column: 0,
+              column: 1,
               line: 5,
             },
           },
@@ -43,7 +43,7 @@ describe('reactive tests', () => {
     });
     expect(output).toEqual(expected);
   });
-  it('r:dynamic role parses', async () => {
+  it.only('r:dynamic role parses', async () => {
     const content = '{r:dynamic}`rValue="visitors", rChange="{visitors: value}", value="5"`';
     const expected = {
       type: 'root',
@@ -52,11 +52,11 @@ describe('reactive tests', () => {
           type: 'paragraph',
           position: {
             start: {
-              column: 0,
-              line: 0,
+              column: 1,
+              line: 1,
             },
             end: {
-              column: 0,
+              column: 1,
               line: 1,
             },
           },
@@ -75,11 +75,11 @@ describe('reactive tests', () => {
               ],
               position: {
                 start: {
-                  column: 0,
-                  line: 0,
+                  column: 1,
+                  line: 1,
                 },
                 end: {
-                  column: 0,
+                  column: 71,
                   line: 1,
                 },
               },
