@@ -223,7 +223,7 @@ async function runCommands(
   }
 
   // Glossaries require two more commands to be run
-  buildError = await runGlossariesBuildCommand(session, texFile, buildPath);
+  buildError = await runGlossariesBuildCommand(session, texFile, texLogFile, buildPath);
 
   if (buildError) {
     return { buildError, toc };
@@ -286,14 +286,19 @@ async function runPdfBuildCommand(
   return buildError;
 }
 
-async function runGlossariesBuildCommand(session: ISession, texFile: string, buildPath: string) {
+async function runGlossariesBuildCommand(
+  session: ISession,
+  texFile: string,
+  texLogFile: string,
+  buildPath: string,
+) {
   if (!isMakeglossariesAvailable()) {
     session.log.error(
       `⚠️  The "makeglossaries" command is not available. See documentation on installing LaTeX:\n\n${docLinks.installLatex}`,
     );
   }
 
-  const buildCommand = texMakeGlossariesCommand(texFile);
+  const buildCommand = texMakeGlossariesCommand(texFile, texLogFile);
 
   let buildError = false;
   try {
