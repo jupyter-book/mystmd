@@ -15,7 +15,7 @@ import {
 } from './utils.js';
 import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { selectAll } from 'unist-util-select';
-import type { DefinitionDescription, DefinitionTerm, FootnoteDefinition } from 'myst-spec-ext';
+import type { FootnoteDefinition } from 'myst-spec-ext';
 import { transformLegends } from './legends.js';
 
 export type { LatexResult } from './types.js';
@@ -52,9 +52,7 @@ const createFootnoteDefinitions = (tree: Root) =>
     }),
   );
 
-const createGlossaryDefinitions = (
-  tree: Root,
-): Record<string, [DefinitionTerm, DefinitionDescription]> =>
+const createGlossaryDefinitions = (tree: Root): Record<string, [string, string]> =>
   Object.fromEntries(
     selectAll('glossary > definitionList > *', tree)
       .map((node, i, siblings) => {
@@ -69,7 +67,9 @@ const createGlossaryDefinitions = (
         if (dd === undefined || dd.type !== 'definitionDescription') {
           throw new Error(`Definition term has no associated description`);
         }
-        return [dt.identifier, [dt, dd]];
+        const termText = toText(dt);
+        const descriptionText = toText(dd);
+        return [dt.identifier, [termText, descriptionText]];
       })
       .filter((x) => x.length > 0), // remove empty
   );
@@ -369,7 +369,7 @@ class TexGlossarySerializer {
   preambleGlossary: string;
   printedGlossary: string;
 
-  constructor(glossaryDefinitions: Record<string, [DefinitionTerm, DefinitionDescription]>) {
+  constructor(glossaryDefinitions: Record<string, [string, string]>) {
     this.printedGlossary = this.renderGlossary();
     this.preambleGlossary = this.renderGlossaryImports(glossaryDefinitions);
   }
@@ -384,9 +384,7 @@ class TexGlossarySerializer {
     return `${percents}\n${block}${percents}`;
   }
 
-  private renderGlossaryImports(
-    directives: Record<string, [DefinitionTerm, DefinitionDescription]>,
-  ): string {
+  private renderGlossaryImports(directives: Record<string, [string, string]>): string {
     if (!directives || Object.keys(directives).length === 0) return '';
     const block = writeTexLabelledComment(
       'glossary',
@@ -399,12 +397,12 @@ class TexGlossarySerializer {
   }
 
   private createGlossaryDirectives(
-    glossaryDefinitions: Record<string, [DefinitionTerm, DefinitionDescription]>,
+    glossaryDefinitions: Record<string, [string, string]>,
   ): string[] {
     const directives = Object.keys(glossaryDefinitions).map((k) => ({
       key: k,
-      name: (glossaryDefinitions[k][0].children[0] as GenericNode).value || '',
-      description: (glossaryDefinitions[k][1].children[0] as GenericNode).value || '',
+      name: glossaryDefinitions[k][0],
+      description: glossaryDefinitions[k][1],
     }));
 
     const usepackage = '\\usepackage{glossaries}';
@@ -424,7 +422,7 @@ class TexSerializer implements ITexSerializer {
   handlers: Record<string, Handler>;
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
-  glossary: Record<string, [DefinitionTerm, DefinitionDescription]>;
+  glossary: Record<string, [string, string]>;
 
   constructor(file: VFile, tree: Root, opts?: Options) {
     file.result = '';

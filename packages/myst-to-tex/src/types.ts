@@ -1,6 +1,6 @@
 import type { References } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import type { DefinitionDescription, DefinitionTerm, FootnoteDefinition } from 'myst-spec-ext';
+import type { FootnoteDefinition } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 
 export const DEFAULT_IMAGE_WIDTH = 0.7;
@@ -43,7 +43,7 @@ export interface ITexSerializer<D extends Record<string, any> = StateData> {
   options: Options;
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
-  glossary: Record<string, [DefinitionTerm, DefinitionDescription]>;
+  glossary: Record<string, [string, string]>;
   get printGlossary(): boolean;
   usePackages: (...packageNames: string[]) => void;
   write: (value: string) => void;
