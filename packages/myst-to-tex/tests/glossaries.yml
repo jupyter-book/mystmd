@@ -371,3 +371,64 @@ cases:
     latex: |-
       A simple PCA process
     printGlossaries: true
+  - title: part with glossary reference (glossary off)
+    notes: |-
+      The parser will generate this structure when extracting
+      a part (glossary printing off)
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            - part: abstract
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+    latex: |-
+      A simple PCA process
+    printGlossaries: false
+  - title: part with glossary reference (glossary on)
+    notes: |-
+      The parser will generate this structure when extracting
+      a part, and normally the parser will be called with the
+      print-glossary flag off; we have this test case to check
+      the parser is still resilient to the lack of glossary
+      definitions
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            - part: abstract
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+    latex: |-
+      A simple PCA process
+    printGlossaries: on
