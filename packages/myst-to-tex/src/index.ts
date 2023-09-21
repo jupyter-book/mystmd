@@ -37,8 +37,11 @@ const glossaryReferenceHandler: Handler = (node, state) => {
       node,
       source: 'myst-to-tex',
     });
+    const gn = node as GenericNode;
+    state.write(toText(node).trim() || gn.label || '');
     return;
   }
+
   state.write('\\gls{');
   state.write(node.identifier);
   state.write('}');
@@ -295,6 +298,10 @@ const handlers: Record<string, Handler> = {
       glossaryReferenceHandler(node, state, parent);
       return;
     }
+    // Note: if the md doc references a term not defined in the glossary,
+    //       the mdast will not have kind=definitionTerm and the logic
+    //       will follow this branch
+
     // Look up reference and add the text
     const usedTemplate = node.template?.includes('%s') ? node.template : undefined;
     const text = (usedTemplate ?? toText(node))?.replace(/\s/g, '~') || '%s';

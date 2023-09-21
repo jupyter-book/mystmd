@@ -10,31 +10,34 @@ type TestCase = {
   title: string;
   latex: string;
   mdast: Record<string, any>;
+  printGlossaries: boolean;
 };
 
 type TestCases = {
   title: string;
+  latexGlossary: string;
   cases: TestCase[];
 };
 
-const excludedYml = ['glossaries.yml'];
+const includedYml = ['glossaries.yml'];
 
 const casesList: TestCases[] = fs
   .readdirSync(__dirname)
-  .filter((file) => file.endsWith('.yml'))
-  .filter((file) => !excludedYml.includes(file))
+  .filter((file) => includedYml.includes(file))
   .map((file) => {
     const content = fs.readFileSync(path.join(__dirname, file), { encoding: 'utf-8' });
     return yaml.load(content) as TestCases;
   });
 
-casesList.forEach(({ title, cases }) => {
+casesList.forEach(({ title, latexGlossary, cases }) => {
   describe(title, () => {
-    test.each(cases.map((c): [string, TestCase] => [c.title, c]))('%s', (_, { latex, mdast }) => {
-      const pipe = unified().use(mystToTex);
+    test.each(cases.map((c): [string, string, TestCase] => [c.title, latexGlossary, c]))('%s', (_, expectedLatexGlossary, { latex, mdast, printGlossaries }) => {
+      const pipe = unified().use(mystToTex, { printGlossaries });
       pipe.runSync(mdast as any);
       const file = pipe.stringify(mdast as any);
-      expect((file.result as LatexResult).value).toEqual(latex);
+      const printedGlossary = printGlossaries ? `\n${expectedLatexGlossary}` : '';
+      const expectedResult = `${latex}${printedGlossary}`;
+      expect((file.result as LatexResult).value).toEqual(expectedResult);
     });
   });
 });

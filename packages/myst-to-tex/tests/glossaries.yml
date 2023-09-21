@@ -1,0 +1,373 @@
+title: myst-to-tex glossary-related features
+latexGlossary: |-
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%  glossary  %%%%%%%%%%%%%%%%%%%
+  \printglossaries
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+cases:
+  - title: with no glossary refs
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+    latex: |-
+      A simple PCA process
+    printGlossaries: true
+  - title: one gls-ref in paragraph (glossary on)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: PCA
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: PCA
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Principal Component Analysis
+    latex: |-
+      A simple \gls{term-t1} process
+    printGlossaries: true
+  - title: one gls-ref in paragraph (glossary off)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: PCA
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: PCA
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Principal Component Analysis
+    latex: |-
+      A simple PCA process
+    printGlossaries: false
+  - title: two gls-refs in paragraph (glossary on)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process in the context of '
+                - type: crossReference
+                  label: MLR
+                  identifier: term-t2
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'MLR'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: PCA
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: PCA
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Principal Component Analysis
+                    - type: definitionTerm
+                      label: MLR
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: MLR
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Multiple Linear Regression
+    latex: |-
+      A simple \gls{term-t1} process in the context of \gls{term-t2}
+    printGlossaries: true
+  - title: two gls-refs in paragraph (glossary off)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process in the context of '
+                - type: crossReference
+                  label: MLR
+                  identifier: term-t2
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'MLR'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: PCA
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: PCA
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Principal Component Analysis
+                    - type: definitionTerm
+                      label: MLR
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: MLR
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Multiple Linear Regression
+    latex: |-
+      A simple PCA process in the context of MLR
+    printGlossaries: false
+  - title: with unused glossary defs
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: PCA
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: PCA
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Principal Component Analysis
+                    - type: definitionTerm
+                      label: MLR
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: MLR
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Multiple Linear Regression
+    latex: |-
+      A simple \gls{term-t1} process
+    printGlossaries: true
+  - title: with missing glossary def
+    notes: |-
+      The parser will never generate this mdast in case
+      the original md has a ref to an element not present
+      in the glossary
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: MLR
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: MLR
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Multiple Linear Regression
+    latex: |-
+      A simple PCA process
+    printGlossaries: true
+  - title: with missing glossary def and unresolved ref
+    notes: |-
+      The parser will never generate this mdast in case
+      the original md has a ref to an element not present
+      in the glossary
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                - type: text
+                  value: ' process'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: MLR
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: MLR
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Multiple Linear Regression
+    latex: |-
+      A simple PCA process
+    printGlossaries: true
+  - title: with missing glossary def and empty glossary
+    notes: |-
+      The parser will never generate this mdast in case
+      the original md has a ref to an element not present
+      in the glossary
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                - type: text
+                  value: ' process'
+    latex: |-
+      A simple PCA process
+    printGlossaries: true
