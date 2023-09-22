@@ -26,6 +26,7 @@ import {
   getFileContent,
   resolveAndLogErrors,
 } from '../utils/index.js';
+import { select } from 'unist-util-select';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = [
@@ -41,11 +42,13 @@ export function mdastToTex(
   references: References,
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml | null,
+  printGlossaries: boolean,
 ) {
   const pipe = unified().use(mystToTex, {
     math: frontmatter?.math,
     citestyle: templateYml?.style?.citation,
     bibliography: templateYml?.style?.bibliography,
+    printGlossaries,
     references,
   });
   const result = pipe.runSync(mdast as any);
@@ -64,7 +67,8 @@ export function extractTexPart(
 ): LatexResult | undefined {
   const part = extractPart(mdast, partDefinition.id);
   if (!part) return undefined;
-  const partContent = mdastToTex(session, part, references, frontmatter, templateYml);
+  // Do not build glossaries when extracting parts: references cannot be mapped to definitions
+  const partContent = mdastToTex(session, part, references, frontmatter, templateYml, false);
   return partContent;
 }
 
@@ -88,7 +92,7 @@ export async function localArticleToTexRaw(
     },
   );
   const toc = tic();
-  const result = mdastToTex(session, mdast, references, frontmatter, null);
+  const result = mdastToTex(session, mdast, references, frontmatter, null, true);
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
   // TODO: add imports and macros?
   writeFileToFolder(output, result.value);
@@ -163,7 +167,7 @@ export async function localArticleToTexTemplated(
   // Need to load up template yaml - returned from jtex, with 'parts' dict
   // This probably means we need to store tags alongside oxa link for blocks
   // This will need opts eventually --v
-  const result = mdastToTex(session, mdast, references, frontmatter, templateYml);
+  const result = mdastToTex(session, mdast, references, frontmatter, templateYml, true);
   // Fill in template
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${templateOptions.output}`));
   renderTex(mystTemplate, {
@@ -175,14 +179,15 @@ export async function localArticleToTexTemplated(
     bibliography: [DEFAULT_BIB_FILENAME],
     sourceFile: file,
     imports: mergeTemplateImports(collectedImports, result),
+    glossaryPreamble: result.glossaryPreamble,
     force,
     packages: templateYml.packages,
     filesPath,
   });
-  return { tempFolders: [] };
+  return { tempFolders: [], hasGlossaries: hasGlossary(mdast) };
 }
 
-export async function runTexExport(
+export async function runTexExport( // DBG: Must return an info on whether glossaries are present
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
@@ -274,4 +279,9 @@ export async function localArticleToTex(
     opts.throwOnFailure,
   );
   return results;
+}
+
+function hasGlossary(mdast: GenericParent): boolean {
+  const glossary = select('glossary', mdast);
+  return glossary !== null;
 }

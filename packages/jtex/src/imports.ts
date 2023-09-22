@@ -1,17 +1,9 @@
 import type { TemplateImports } from './types.js';
+import { writeTexLabelledComment } from 'myst-common';
 
-const commentLenth = 50;
+const commentLength = 50;
 
-function label(title: string, commands: string[]) {
-  if (!commands || commands?.length === 0) return '';
-  const len = (commentLenth - title.length - 4) / 2;
-  const start = ''.padEnd(Math.ceil(len), '%');
-  const end = ''.padEnd(Math.floor(len), '%');
-  const titleBlock = `${start}  ${title}  ${end}\n`;
-  return `${titleBlock}${commands.join('\n')}\n`;
-}
-
-export function createImportCommands(commands: Set<string>, existingPackages?: string[]) {
+export function createImportCommands(commands: Set<string>, existingPackages?: string[]): string[] {
   const sorted = [...commands].sort();
   const existingSet = new Set(existingPackages);
   const filtered = existingPackages ? sorted.filter((p) => !existingSet.has(p)) : sorted;
@@ -33,11 +25,19 @@ export function renderImports(
 ): string {
   if (!templateImports || typeof templateImports === 'string') return templateImports || '';
   const packages = new Set(templateImports.imports);
-  const imports = label('imports', createImportCommands(packages, existingPackages));
-  const commands = label('math commands', createMathCommands(templateImports.commands));
+  const imports = writeTexLabelledComment(
+    'imports',
+    createImportCommands(packages, existingPackages),
+    commentLength,
+  );
+  const commands = writeTexLabelledComment(
+    'math commands',
+    createMathCommands(templateImports.commands),
+    commentLength,
+  );
   const block = `${imports}${commands}`;
   if (!block) return '';
-  const percents = ''.padEnd(commentLenth, '%');
+  const percents = ''.padEnd(commentLength, '%');
   return `${percents}\n${block}${percents}`;
 }
 

@@ -51,6 +51,7 @@
     "myst-cli-utils": "^2.0.3",
     "myst-frontmatter": "^1.1.5",
     "myst-templates": "^1.0.8",
+    "myst-common": "^1.1.5",
     "node-fetch": "^3.3.1",
     "nunjucks": "^3.2.4",
     "pretty-hrtime": "^1.0.3",
