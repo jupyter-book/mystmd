@@ -42,7 +42,7 @@ describe('extractPart', () => {
         value: 'tagged content\n\nalso tagged content',
         imports: [],
         commands: {},
-        glossaryPreamble: "",
+        glossaryPreamble: '',
       },
     );
     expect(tree).toEqual({
@@ -80,7 +80,7 @@ describe('extractPart', () => {
       value: 'tagged content',
       imports: [],
       commands: {},
-      glossaryPreamble: "",
+      glossaryPreamble: '',
     });
   });
   it('exceeding max chars passes', async () => {
@@ -100,7 +100,7 @@ describe('extractPart', () => {
       value: 'tagged content',
       imports: [],
       commands: {},
-      glossaryPreamble: "",
+      glossaryPreamble: '',
     });
   });
   it('exceeding max words passes', async () => {
@@ -120,7 +120,7 @@ describe('extractPart', () => {
       value: 'tagged content',
       imports: [],
       commands: {},
-      glossaryPreamble: "",
+      glossaryPreamble: '',
     });
   });
 });
