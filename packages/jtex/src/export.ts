@@ -1,7 +1,11 @@
 import path from 'node:path';
 import type MystTemplate from 'myst-templates';
 
-export function pdfExportCommand(texFile: string, logFile: string, template?: MystTemplate): string {
+export function pdfExportCommand(
+  texFile: string,
+  logFile: string,
+  template?: MystTemplate,
+): string {
   const templateYml = template?.getValidatedTemplateYml();
   const engine = templateYml?.build?.engine ?? '-xelatex';
   const baseCommand = `latexmk -f ${engine} -synctex=1 -interaction=batchmode -file-line-error -latexoption="-shell-escape" ${texFile}`;

@@ -25,8 +25,16 @@ export function renderImports(
 ): string {
   if (!templateImports || typeof templateImports === 'string') return templateImports || '';
   const packages = new Set(templateImports.imports);
-  const imports = writeTexLabelledComment('imports', createImportCommands(packages, existingPackages), commentLength);
-  const commands = writeTexLabelledComment('math commands', createMathCommands(templateImports.commands), commentLength);
+  const imports = writeTexLabelledComment(
+    'imports',
+    createImportCommands(packages, existingPackages),
+    commentLength,
+  );
+  const commands = writeTexLabelledComment(
+    'math commands',
+    createMathCommands(templateImports.commands),
+    commentLength,
+  );
   const block = `${imports}${commands}`;
   if (!block) return '';
   const percents = ''.padEnd(commentLength, '%');
