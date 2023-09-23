@@ -49,7 +49,9 @@ export type ArgDefinition = {
 
 type BodyDefinition = ArgDefinition;
 
-type OptionDefinition = ArgDefinition;
+type OptionDefinition = ArgDefinition & {
+  alias?: string[];
+};
 
 export type DirectiveData = {
   name: string;

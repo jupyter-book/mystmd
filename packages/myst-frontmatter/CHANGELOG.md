@@ -1,5 +1,14 @@
 # myst-frontmatter
 
+## 1.1.6
+
+### Patch Changes
+
+- 911d1b1: Make institution an alias of name on Affiliation type rather than allowing both
+- 911d1b1: Separate contributors from authors on processed frontmatter
+- 911d1b1: Add funding to frontmatter
+- 59b54584: Support parsed author names and parse string names
+
 ## 1.1.5
 
 ### Patch Changes

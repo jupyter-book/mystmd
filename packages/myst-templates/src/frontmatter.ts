@@ -1,4 +1,4 @@
-import type { Author, PageFrontmatter } from 'myst-frontmatter';
+import type { Contributor, PageFrontmatter } from 'myst-frontmatter';
 import type { RendererAuthor, RendererDoc, ValueAndIndex } from './types.js';
 
 const ALPHA = 'ABCDEFGHIJKLMNOPQURSUVWXYZ';
@@ -15,7 +15,7 @@ function undefinedIfEmpty<T>(array?: T[]): T[] | undefined {
 }
 
 function addIndicesToAuthors(
-  authors: Author[],
+  authors: Contributor[],
   affiliationList: RendererDoc['affiliations'],
   collaborationList: RendererDoc['collaborations'],
 ): RendererAuthor[] {

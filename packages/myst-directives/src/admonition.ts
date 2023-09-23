@@ -25,8 +25,9 @@ export const admonitionDirective: DirectiveSpec = {
     type: ParseTypesEnum.parsed,
   },
   options: {
-    // name: {
+    // label: {
     //   type: ParseTypesEnum.string,
+    //   alias: ['name'],
     // },
     class: {
       type: ParseTypesEnum.string,

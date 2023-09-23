@@ -42,18 +42,20 @@ cases:
         - id: affiliations-generated-uid-0
           name: University A
         - id: affiliations-generated-uid-1
-          institution: University B
+          name: University B
         - id: affiliations-generated-uid-2
           email: universityc@example.com
     warnings: 1
   - title: Support QMD style affiliations (ref)
     raw:
       author:
-        - name: Norah Jones
+        - id: nj
+          name: Norah Jones
           affiliation:
             - ref: cmu
             - ref: chicago
-        - name: John Hamm
+        - id: jh
+          name: John Hamm
           affiliation:
             - ref: cmu
       affiliation:
@@ -63,9 +65,19 @@ cases:
           name: University of Chicago
     normalized:
       authors:
-        - name: Norah Jones
+        - id: nj
+          name: Norah Jones
+          nameParsed:
+            literal: Norah Jones
+            given: Norah
+            family: Jones
           affiliations: [cmu, chicago]
-        - name: John Hamm
+        - id: jh
+          name: John Hamm
+          nameParsed:
+            literal: John Hamm
+            given: John
+            family: Hamm
           affiliations: [cmu]
       affiliations:
         - id: cmu
@@ -75,20 +87,32 @@ cases:
   - title: Support QMD style affiliations (inline reference)
     raw:
       author:
-        - name: Norah Jones
+        - id: nj
+          name: Norah Jones
           affiliation:
             - id: cmu
               name: Carnegie Mellon University
             - id: chicago
               name: University of Chicago
-        - name: John Hamm
+        - id: jh
+          name: John Hamm
           affiliation:
             - ref: cmu
     normalized:
       authors:
-        - name: Norah Jones
+        - id: nj
+          name: Norah Jones
+          nameParsed:
+            literal: Norah Jones
+            given: Norah
+            family: Jones
           affiliations: [cmu, chicago]
-        - name: John Hamm
+        - id: jh
+          name: John Hamm
+          nameParsed:
+            literal: John Hamm
+            given: John
+            family: Hamm
           affiliations: [cmu]
       affiliations:
         - id: cmu
@@ -107,7 +131,8 @@ cases:
   - title: Author with reference to existing affiliation
     raw:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           affiliations:
             - univa
       affiliations:
@@ -115,7 +140,12 @@ cases:
           name: University A
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - univa
       affiliations:
@@ -124,12 +154,18 @@ cases:
   - title: Author with string affiliation resolves to top level
     raw:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           affiliations:
             - University A
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - University A
       affiliations:
@@ -138,13 +174,19 @@ cases:
   - title: Author with affiliation object resolves to top level
     raw:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           affiliations:
             - id: univa
               name: University A
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - univa
       affiliations:
@@ -153,7 +195,8 @@ cases:
   - title: Duplicate affiliation ids warn
     raw:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           affiliations:
             - id: univa
               name: University A
@@ -162,7 +205,12 @@ cases:
           name: University B
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - univa
       affiliations:
@@ -172,18 +220,30 @@ cases:
   - title: Duplicate affiliation strings resolve
     raw:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           affiliations:
             - University A
-        - name: A. Nother Name
+        - id: an
+          name: A. Nother Name
           affiliations:
             - University A
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - University A
-        - name: A. Nother Name
+        - id: an
+          name: A. Nother Name
+          nameParsed:
+            literal: A. Nother Name
+            given: A. Nother
+            family: Name
           affiliations:
             - University A
       affiliations:
@@ -192,20 +252,32 @@ cases:
   - title: Duplicate affiliation objects resolve
     raw:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           affiliations:
             - name: University A
               url: https://example.com
-        - name: A. Nother Name
+        - id: an
+          name: A. Nother Name
           affiliations:
             - url: https://example.com
               name: University A
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - affiliations-generated-uid-0
-        - name: A. Nother Name
+        - id: an
+          name: A. Nother Name
+          nameParsed:
+            literal: A. Nother Name
+            given: A. Nother
+            family: Name
           affiliations:
             - affiliations-generated-uid-0
       affiliations:
@@ -215,7 +287,8 @@ cases:
   - title: Author with affiliation object replaces id at top level
     raw:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
           affiliations:
             - id: univa
               name: University A
@@ -223,7 +296,12 @@ cases:
         - univa
     normalized:
       authors:
-        - name: Just A. Name
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - univa
       affiliations:

@@ -8,6 +8,10 @@ cases:
       authors:
         - id: Just A. Name
           name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
   - title: Simple Authors String
     raw:
       authors: Just A. Name
@@ -15,6 +19,10 @@ cases:
       authors:
         - id: Just A. Name
           name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
   - title: Use Author rather than author`s`
     raw:
       author: Just A. Name
@@ -22,6 +30,10 @@ cases:
       authors:
         - id: Just A. Name
           name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
   - title: Using both author and author`s` shows a warning
     raw:
       author: nope
@@ -30,15 +42,25 @@ cases:
       authors:
         - id: Just A. Name
           name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
     warnings: 1
   - title: Affiliations unpack semicolon-delimited lists
     raw:
       author:
-        name: Someone
+        id: jn
+        name: Just A. Name
         affiliation: University; Company
     normalized:
       authors:
-        - name: Someone
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           affiliations:
             - University
             - Company
@@ -50,50 +72,241 @@ cases:
   - title: First email is corresponding
     raw:
       author:
-        name: Someone
+        id: jn
+        name: Just A. Name
         email: example@example.com
     normalized:
       authors:
-        - name: Someone
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           email: example@example.com
           corresponding: true
   - title: First email is corresponding (unless false)
     raw:
       author:
-        name: Someone
+        id: jn
+        name: Just A. Name
         email: example@example.com
         corresponding: false
     normalized:
       authors:
-        - name: Someone
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           email: example@example.com
           corresponding: false
   - title: Respect corresponding flag
     raw:
       authors:
-        - name: Someone
+        - id: jn
+          name: Just A. Name
           email: example@example.com
-        - name: Next
+        - id: an
+          name: A. Nother Name
           email: example@example.com
           corresponding: true
     normalized:
       authors:
-        - name: Someone
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           email: example@example.com
-        - name: Next
+        - id: an
+          name: A. Nother Name
+          nameParsed:
+            literal: A. Nother Name
+            given: A. Nother
+            family: Name
           email: example@example.com
           corresponding: true
   - title: Warn if author has no name
     raw:
       authors:
-        - name: Someone
+        - id: jn
+          name: Just A. Name
           email: example@example.com
         - email: example@example.com
           corresponding: true
     normalized:
       authors:
-        - name: Someone
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           email: example@example.com
-        - email: example@example.com
+        - id: contributors-generated-uid-1
+          email: example@example.com
           corresponding: true
+    warnings: 1
+  - title: Warn if author has no family name
+    raw:
+      authors:
+        - name:
+            given: Someone
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: ', Someone'
+          nameParsed:
+            literal: ', Someone'
+            given: Someone
+    warnings: 1
+  - title: Warn if author has no given name
+    raw:
+      authors:
+        - name: Someone
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: 'Someone'
+          nameParsed:
+            literal: 'Someone'
+            family: Someone
+    warnings: 1
+  - title: Parsed name is maintained
+    raw:
+      authors:
+        - id: jn
+          name:
+            literal: Just A. Name
+            given: Little
+            non_dropping_particle: von
+            family: Junior
+            suffix: Jr.
+    normalized:
+      authors:
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Little
+            non_dropping_particle: von
+            family: Junior
+            suffix: Jr.
+  - title: Name object with lots of commas warns
+    raw:
+      authors:
+        - name:
+            literal: Commas, here, are, great,
+            given: Commas,
+            non_dropping_particle: here,
+            family: are,
+            suffix: warnings,
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Commas, here, are, great,
+          nameParsed:
+            literal: Commas, here, are, great,
+            given: Commas,
+            non_dropping_particle: here,
+            family: are,
+            suffix: warnings,
+    warnings: 4
+  - title: Name string with extra comma warns
+    raw:
+      authors:
+        - name: A, B, C, D
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: A, B, C, D
+          nameParsed:
+            literal: A, B, C, D
+            given: D
+            family: A, B
+            suffix: C
+    warnings: 1
+  - title: Display name expands
+    raw:
+      authors:
+        - id: jn
+          name:
+            literal: Just A. Name
+    normalized:
+      authors:
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+  - title: Display name expands
+    raw:
+      authors:
+        - id: jn
+          name:
+            literal: Just A. Name
+    normalized:
+      authors:
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+  - title: Complex name renders
+    raw:
+      authors:
+        - name:
+            given: A
+            dropping_particle: b
+            non_dropping_particle: c
+            family: D
+            suffix: E
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: c D, E, A b
+          nameParsed:
+            literal: c D, E, A b
+            given: A
+            dropping_particle: b
+            non_dropping_particle: c
+            family: D
+            suffix: E
+  - title: Author that defines name and nameParsed still passes
+    raw:
+      authors:
+        - name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+  - title: Mismatch between name and nameParsed warns
+    raw:
+      authors:
+        - name: Different Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Different Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
     warnings: 1

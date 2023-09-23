@@ -1,5 +1,21 @@
 # myst-to-jats
 
+## 1.0.12
+
+### Patch Changes
+
+- 911d1b1: Consume keywords in jats
+- 911d1b1: Consume parsed name in jats
+- 911d1b1: Support funding in jats export
+- 911d1b1: Consume full structured affiliations in jats
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [59b54584]
+  - myst-frontmatter@1.1.6
+  - myst-common@1.1.6
+  - myst-spec-ext@1.1.6
+
 ## 1.0.11
 
 ### Patch Changes

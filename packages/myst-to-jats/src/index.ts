@@ -7,8 +7,9 @@ import katex from 'katex';
 import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode } from 'myst-common';
 import { copyNode, extractPart, fileError } from 'myst-common';
-import type { PageFrontmatter } from 'myst-frontmatter';
+import type { PageFrontmatter, Contributor } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
+import type { Affiliation } from 'jats-tags';
 import { Tags, RefType } from 'jats-tags';
 import type { MinifiedOutput } from 'nbtx';
 import { getBack } from './backmatter.js';
@@ -712,7 +713,23 @@ export class JatsDocument {
     if (frontmatter) {
       Object.entries(frontmatter).forEach(([key, val]) => {
         const articleVal = this.content.frontmatter?.[key as keyof PageFrontmatter];
-        if (articleVal == null || JSON.stringify(val) !== JSON.stringify(articleVal)) {
+        // for authors/contributors/affiliations, remove any from stub that are already on articleVal
+        if (['affiliations', 'authors', 'contributors'].includes(key)) {
+          const existingItems =
+            key === 'affiliations'
+              ? ((this.content.frontmatter?.affiliations ?? []) as Affiliation[])
+              : ([
+                  ...(this.content.frontmatter?.authors ?? []),
+                  ...(this.content.frontmatter?.contributors ?? []),
+                ] as Contributor[]);
+          const existingIds = existingItems.map((item) => item.id).filter(Boolean);
+          const filteredVal = (val as { id: string }[]).filter(
+            (item) => !existingIds.includes(item.id),
+          );
+          if (filteredVal.length) {
+            stubFrontmatter[key] = filteredVal;
+          }
+        } else if (articleVal == null || JSON.stringify(val) !== JSON.stringify(articleVal)) {
           stubFrontmatter[key] = val;
         }
       });

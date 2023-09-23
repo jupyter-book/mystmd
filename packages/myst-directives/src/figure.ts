@@ -9,8 +9,9 @@ export const figureDirective: DirectiveSpec = {
     required: true,
   },
   options: {
-    name: {
+    label: {
       type: ParseTypesEnum.string,
+      alias: ['name'],
     },
     class: {
       type: ParseTypesEnum.string,
@@ -99,7 +100,7 @@ export const figureDirective: DirectiveSpec = {
         children.push({ type: 'legend', children: legend });
       }
     }
-    const { label, identifier } = normalizeLabel(data.options?.name as string | undefined) || {};
+    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const container = {
       type: 'container',
       kind: 'figure',

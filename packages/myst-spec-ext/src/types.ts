@@ -150,6 +150,32 @@ export type Embed = {
   children?: (FlowContent | ListContent | PhrasingContent)[];
 };
 
+type IncludeFilter = {
+  startAfter?: string;
+  startAt?: string;
+  endBefore?: string;
+  endAt?: string;
+  /** Lines start at 1 and can be negative (-1 is the last line). For example, [1, 3, [10]] will select lines 1, 3 and 10 until the end. */
+  lines?: (number | [number, number?])[];
+};
+
+export type Include = {
+  type: 'include';
+  file: string;
+  literal?: boolean;
+  filter?: IncludeFilter;
+  lang?: string;
+  showLineNumbers?: boolean;
+  /** The `match` will be removed in a transform */
+  startingLineNumber?: number | 'match';
+  emphasizeLines?: number[];
+  identifier?: string;
+  label?: string;
+  children?: (FlowContent | ListContent | PhrasingContent)[];
+  /** `caption` is temporary, and is used before a transform */
+  caption?: (FlowContent | ListContent | PhrasingContent)[];
+};
+
 export type Container = SpecContainer & {
   source?: Dependency;
 };

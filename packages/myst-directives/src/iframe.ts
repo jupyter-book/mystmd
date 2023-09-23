@@ -9,15 +9,13 @@ export const iframeDirective: DirectiveSpec = {
     required: true,
   },
   options: {
-    name: {
+    label: {
       type: ParseTypesEnum.string,
+      alias: ['name'],
     },
     class: {
       type: ParseTypesEnum.string,
       // class_option: list of strings?
-    },
-    label: {
-      type: ParseTypesEnum.string,
     },
     width: {
       type: ParseTypesEnum.string,
