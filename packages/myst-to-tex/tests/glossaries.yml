@@ -472,3 +472,185 @@ cases:
     latex: |-
       This is a RV with a distribution
     printGlossaries: false
+  - title: with one abbreviation and one gls-ref next to each other
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'These are '
+                - type: crossReference
+                  label: IID
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'IID'
+                - type: text
+                  value: ' '
+                - type: abbreviation
+                  title: Random Variable
+                  children:
+                    - type: text
+                      value: 'RV'
+                - type: text
+                  value: 's we consider'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: IID
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: IID
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Independent and Identically Distributed
+    latex: |-
+      These are \gls{term-t1} \acrshort{rv}s we consider
+    printGlossaries: true
+  - title: with one gls-ref and one abbreviation next to each other
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'These '
+                - type: abbreviation
+                  title: Random Variable
+                  children:
+                    - type: text
+                      value: 'RV'
+                - type: text
+                  value: 's are '
+                - type: crossReference
+                  label: IID
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'IID'
+                - type: text
+                  value: ' by hypothesis'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: IID
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: IID
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Independent and Identically Distributed
+    latex: |-
+      These \acrshort{rv}s are \gls{term-t1} by hypothesis
+    printGlossaries: true
+  - title: with gls-refs and abbreviations
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'The concept of '
+                - type: crossReference
+                  label: IID
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'IID'
+                - type: text
+                  value: ' '
+                - type: abbreviation
+                  title: Random Variable
+                  children:
+                    - type: text
+                      value: 'RV'
+                - type: text
+                  value: 's is key to understanding '
+                - type: crossReference
+                  label: RP
+                  identifier: term-t2
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'RP'
+                - type: text
+                  value: ', and '
+                - type: crossReference
+                  label: TCMC
+                  identifier: term-t3
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'TCMC'
+                - type: text
+                  value: ' in the context of '
+                - type: abbreviation
+                  title: Queueing Theory
+                  children:
+                    - type: text
+                      value: 'QT'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: IID
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: IID
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Independent and Identically Distributed
+                    - type: definitionTerm
+                      label: RP
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: RP
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Renewal Process
+                    - type: definitionTerm
+                      label: TCMC
+                      identifier: term-t3
+                      children:
+                        - type: text
+                          value: TCMC
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Time Continuous Markov Chains
+    latex: |-
+      The concept of \gls{term-t1} \acrshort{rv}s is key to understanding \gls{term-t2}, and \gls{term-t3} in the context of \acrshort{qt}
+    printGlossaries: true
