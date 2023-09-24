@@ -1,7 +1,7 @@
 title: myst-to-tex glossary-related features
 latexGlossary: |-
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %%%%%%%%%%%%%%%%%%%  glossary  %%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%  acronyms & glossary  %%%%%%%%%%%%%
   \printglossaries
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 cases:
@@ -432,3 +432,43 @@ cases:
     latex: |-
       A simple PCA process
     printGlossaries: on
+  - title: with abbreviations (glossary on)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is a '
+                - type: abbreviation
+                  title: Random Variable
+                  children:
+                    - type: text
+                      value: 'RV'
+                - type: text
+                  value: ' with a distribution'
+    latex: |-
+      This is a \acrshort{rv} with a distribution
+    printGlossaries: true
+  - title: with abbreviations (glossary off)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is a '
+                - type: abbreviation
+                  title: Random Variable
+                  children:
+                    - type: text
+                      value: 'RV'
+                - type: text
+                  value: ' with a distribution'
+    latex: |-
+      This is a RV with a distribution
+    printGlossaries: false

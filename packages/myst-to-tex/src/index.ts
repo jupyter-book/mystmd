@@ -78,9 +78,9 @@ const createGlossaryDefinitions = (tree: Root): Record<string, [string, string]>
   );
 
 const createAcronymDefinitions = (tree: Root): Record<string, [string, string]> =>
-  // Abbreviations contain their resolved values, hence there
-  // can be many duplicates which will be collapsed when
-  // creating the dictkionary
+  // Note: Abbreviations contain their resolved values, hence there
+  //       can be many duplicates which will be collapsed when
+  //       creating the dictionary
   Object.fromEntries(
     selectAll('abbreviation', tree)
       .map((node) => {
@@ -250,7 +250,7 @@ const handlers: Record<string, Handler> = {
   },
   abbreviation(node, state) {
     if (!state.printGlossary) {
-      state.renderChildren(node);
+      state.renderChildren(node, true);
       return;
     }
 
@@ -429,7 +429,7 @@ class TexGlossaryAndAcronymSerializer {
   private renderGlossary(): string {
     const block = writeTexLabelledComment(
       'acronyms & glossary',
-      ['\\printglossaries'],
+      ['\\printglossaries'], // Will print both glossary and abbreviations
       TexGlossaryAndAcronymSerializer.COMMENT_LENGTH,
     );
     const percents = ''.padEnd(TexGlossaryAndAcronymSerializer.COMMENT_LENGTH, '%');
