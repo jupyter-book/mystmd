@@ -11,7 +11,7 @@ export type Handler = (node: any, state: ITexSerializer, parent: any) => void;
 export type LatexResult = {
   value: string;
   imports: string[];
-  glossaryPreamble: string;
+  preamble: string;
   commands: Record<string, string>;
 };
 

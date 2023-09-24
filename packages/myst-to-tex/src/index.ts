@@ -600,7 +600,7 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
 
     const result: LatexResult = {
       imports: [...state.data.imports],
-      glossaryPreamble: opts?.printGlossaries ? glossaryState.preamble : '',
+      preamble: opts?.printGlossaries ? glossaryState.preamble : '',
       commands: withRecursiveCommands(state),
       value: tex,
     };

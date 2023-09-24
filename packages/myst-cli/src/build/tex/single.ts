@@ -179,7 +179,7 @@ export async function localArticleToTexTemplated(
     bibliography: [DEFAULT_BIB_FILENAME],
     sourceFile: file,
     imports: mergeTemplateImports(collectedImports, result),
-    preamble: result.glossaryPreamble,
+    preamble: result.preamble,
     force,
     packages: templateYml.packages,
     filesPath,
