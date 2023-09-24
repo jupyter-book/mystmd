@@ -472,9 +472,7 @@ class TexGlossaryAndAcronymSerializer {
     return [usepackage, makeglossaries].concat(entries);
   }
 
-  private createAcronymDirectives(
-    acronymDefinitions: Record<string, [string, string]>
-  ): string[] {
+  private createAcronymDirectives(acronymDefinitions: Record<string, [string, string]>): string[] {
     const directives = Object.keys(acronymDefinitions).map((k) => ({
       key: k,
       acronym: acronymDefinitions[k][0],
