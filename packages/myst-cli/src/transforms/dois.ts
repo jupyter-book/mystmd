@@ -11,6 +11,7 @@ import { fileWarn, toText } from 'myst-common';
 import type { Cite } from 'myst-spec-ext';
 import type { SingleCitationRenderer } from './types.js';
 import type { VFile } from 'vfile';
+import { RuleId } from 'myst-common';
 
 async function getDoiOrgBibtex(log: Logger, doiString: string): Promise<string | null> {
   if (!doi.validate(doi.normalize(doiString))) return null;
@@ -43,6 +44,7 @@ async function getCitation(
   if (!bibtex) {
     fileWarn(vfile, `Could not find DOI from link: ${doiString} as ${doi.normalize(doiString)}`, {
       node,
+      ruleId: RuleId.doiLinkValid,
     });
     return null;
   }

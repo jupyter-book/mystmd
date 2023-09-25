@@ -596,6 +596,7 @@ export const resolveUnlinkedCitations = (tree: GenericParent, opts: StateOptions
       fileWarn(opts.state.file, `Could not link citation with label "${cite.label}".`, {
         node,
         source: TRANSFORM_NAME,
+        ruleId: RuleId.referenceTargetResolves,
       });
       return;
     }
