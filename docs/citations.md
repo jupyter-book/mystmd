@@ -70,8 +70,6 @@ This syntax follows the [pandoc citation syntax](https://pandoc.org/MANUAL.html#
   - Citation using a DOI directly
 ```
 
-Note that it is also possible to use the `@ref` syntax to link to other cross-references in addition to the link syntax.
-
 ## Citation Roles
 
 MyST also provides a number of roles for compatibility with Sphinx and JupyterBook. To create a citation role in Markdown, use either a parenthetical or textual citation:
