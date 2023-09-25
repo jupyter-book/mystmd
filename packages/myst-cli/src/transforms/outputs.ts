@@ -3,10 +3,12 @@ import { dirname, join, relative } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
 import type { Image } from 'myst-spec-ext';
 import { SourceFileKind } from 'myst-spec-ext';
-import { liftChildren, type GenericNode, type GenericParent } from 'myst-common';
+import { liftChildren, fileError, RuleId } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
+import type { VFile } from 'vfile';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { MinifiedOutput } from 'nbtx';
 import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
@@ -19,7 +21,7 @@ export async function transformOutputs(
   mdast: GenericParent,
   kind: SourceFileKind,
   writeFolder: string,
-  opts?: { altOutputFolder?: string; minifyMaxCharacters?: number },
+  opts?: { altOutputFolder?: string; minifyMaxCharacters?: number; vfile?: VFile },
 ) {
   const outputs = selectAll('output', mdast) as GenericNode[];
   const cache = castSession(session);
@@ -49,7 +51,12 @@ export async function transformOutputs(
           fs.writeFileSync(destination, content, { encoding: encoding as BufferEncoding });
           session.log.debug(`Notebook output successfully written: ${destination}`);
         } catch {
-          session.log.error(`Error writing notebook output: ${destination}`);
+          if (opts?.vfile) {
+            fileError(opts.vfile, `Error writing notebook output: ${destination}`, {
+              node,
+              ruleId: RuleId.notebookOutputCopied,
+            });
+          }
           return undefined;
         }
       }

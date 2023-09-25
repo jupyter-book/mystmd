@@ -1,4 +1,4 @@
-import { fileError } from 'myst-common';
+import { RuleId, fileError } from 'myst-common';
 import { doi } from 'doi-utils';
 import type { VFile } from 'vfile';
 import type { Link, LinkTransformer } from './types.js';
@@ -26,6 +26,7 @@ export class DOITransformer implements LinkTransformer {
       fileError(file, `DOI is not valid: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
+        ruleId: RuleId.doiLinkValid,
       });
       return false;
     }

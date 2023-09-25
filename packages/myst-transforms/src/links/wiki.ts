@@ -1,4 +1,4 @@
-import { fileError, fileWarn } from 'myst-common';
+import { RuleId, fileError, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { Link, LinkTransformer } from './types.js';
 import { updateLinkTextIfEmpty, withoutHttp } from './utils.js';
@@ -57,6 +57,7 @@ export class WikiTransformer implements LinkTransformer {
         node: link,
         note: 'Replace spaces with underscores',
         source: TRANSFORM_SOURCE,
+        ruleId: RuleId.wikipediaLinkValid,
       });
       return false;
     }
@@ -66,6 +67,7 @@ export class WikiTransformer implements LinkTransformer {
         node: link,
         note: 'Replace spaces with underscores',
         source: TRANSFORM_SOURCE,
+        ruleId: RuleId.wikipediaLinkValid,
       });
     }
     if (page.match(/\//)) {
@@ -73,6 +75,7 @@ export class WikiTransformer implements LinkTransformer {
         node: link,
         note: 'Only point to the final page name, do not include any other parts of the Wikipedia URL.',
         source: TRANSFORM_SOURCE,
+        ruleId: RuleId.wikipediaLinkValid,
       });
       return false;
     }

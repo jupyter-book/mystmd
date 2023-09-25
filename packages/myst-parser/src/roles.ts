@@ -1,5 +1,5 @@
 import type { GenericNode, ArgDefinition, RoleData, RoleSpec, GenericParent } from 'myst-common';
-import { fileError, fileWarn, ParseTypesEnum } from 'myst-common';
+import { RuleId, fileError, fileWarn, ParseTypesEnum } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 
@@ -12,15 +12,19 @@ export function contentFromNode(
   spec: ArgDefinition,
   vfile: VFile,
   description: string,
+  ruleId: RuleId,
 ) {
   const { children, value } = node;
   if (spec.type === ParseTypesEnum.parsed) {
     if (typeof value !== 'string') {
-      fileWarn(vfile, `content is parsed from non-string value for ${description}`, { node });
+      fileWarn(vfile, `content is parsed from non-string value for ${description}`, {
+        node,
+        ruleId,
+      });
     }
     if (!children?.length) {
       if (spec.required) {
-        fileError(vfile, `no parsed content for required ${description}`, { node });
+        fileError(vfile, `no parsed content for required ${description}`, { node, ruleId });
       }
       return undefined;
     }
@@ -28,14 +32,14 @@ export function contentFromNode(
   }
   if (value == null) {
     if (spec.required) {
-      fileError(vfile, `no content for required ${description}`, { node });
+      fileError(vfile, `no content for required ${description}`, { node, ruleId });
     }
     return undefined;
   }
   if (spec.type === ParseTypesEnum.string) {
     // silently transform numbers into strings here
     if (typeof value !== 'string' && !(value && typeof value === 'number' && !isNaN(value))) {
-      fileWarn(vfile, `value is not a string for ${description}`, { node });
+      fileWarn(vfile, `value is not a string for ${description}`, { node, ruleId });
     }
     return String(value);
   }
@@ -43,7 +47,7 @@ export function contentFromNode(
     const valueAsNumber = Number(value);
     if (isNaN(valueAsNumber)) {
       const fileFn = spec.required ? fileError : fileWarn;
-      fileFn(vfile, `number not provided for ${description}`, { node });
+      fileFn(vfile, `number not provided for ${description}`, { node, ruleId });
       return undefined;
     }
     return valueAsNumber;
@@ -54,7 +58,7 @@ export function contentFromNode(
       if (value.toLowerCase() === 'true') return true;
     }
     if (typeof value !== 'boolean') {
-      fileWarn(vfile, `value is not a boolean for ${description}`, { node });
+      fileWarn(vfile, `value is not a boolean for ${description}`, { node, ruleId });
     }
     return !!value;
   }
@@ -69,7 +73,9 @@ export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile)
     }
     names.forEach((name) => {
       if (specLookup[name]) {
-        fileWarn(vfile, `duplicate roles registered with name: ${name}`);
+        fileWarn(vfile, `duplicate roles registered with name: ${name}`, {
+          ruleId: RuleId.roleRegistered,
+        });
       } else {
         specLookup[name] = spec;
       }
@@ -80,7 +86,7 @@ export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile)
     const { name } = node;
     const spec = specLookup[name];
     if (!spec) {
-      fileError(vfile, `unknown role: ${name}`, { node });
+      fileError(vfile, `unknown role: ${name}`, { node, ruleId: RuleId.roleKnown });
       // We probably want to do something better than just delete the children
       delete node.children;
       return;
@@ -91,24 +97,35 @@ export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile)
     const bodyNode = select('mystRoleBody', node) as GenericNode;
     if (body) {
       if (body.required && !bodyNode) {
-        fileError(vfile, `required body not provided for role: ${name}`, { node });
+        fileError(vfile, `required body not provided for role: ${name}`, {
+          node,
+          ruleId: RuleId.roleBodyCorrect,
+        });
         node.type = 'mystRoleError';
         delete node.children;
         validationError = true;
       } else {
-        data.body = contentFromNode(bodyNode, body, vfile, `body of role: ${name}`);
+        data.body = contentFromNode(
+          bodyNode,
+          body,
+          vfile,
+          `body of role: ${name}`,
+          RuleId.roleBodyCorrect,
+        );
         if (body.required && data.body == null) {
           validationError = true;
         }
       }
     } else if (bodyNode) {
-      fileWarn(vfile, `unexpected body provided for role: ${name}`, { node: bodyNode });
+      fileWarn(vfile, `unexpected body provided for role: ${name}`, {
+        node: bodyNode,
+        ruleId: RuleId.roleBodyCorrect,
+      });
     }
     if (validationError) return;
     if (validate) {
       data = validate(data, vfile);
     }
-    if (validationError) return;
     node.children = run(data, vfile);
   });
 }

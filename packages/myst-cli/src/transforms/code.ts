@@ -1,9 +1,9 @@
 import type { GenericNode, GenericParent } from 'myst-common';
-import { fileError, fileWarn } from 'myst-common';
+import { RuleId, fileError, fileWarn } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import yaml from 'js-yaml';
-import type { ISession } from '../session/types.js';
 import type { VFile } from 'vfile';
+import type { ISession } from '../session/types.js';
 
 // Note: There may be a space in between the "# |", which is introduced by `black` in python.
 const CELL_OPTION_PREFIX = /^#\s?\| /;
@@ -27,7 +27,7 @@ const IPYTHON_MAGIC = /^%%/;
  */
 export function metadataFromCode(
   session: ISession,
-  filename: string,
+  file: VFile,
   value: string,
   opts?: { remove?: boolean },
 ): { value: string; metadata?: Record<string, any> } {
@@ -57,7 +57,7 @@ export function metadataFromCode(
     try {
       metadata = yaml.load(metaLines.join('\n')) as Record<string, any>;
     } catch {
-      session.log.error(`Invalid code cell metadata in ${filename}`);
+      fileError(file, `Invalid code cell metadata`, { ruleId: RuleId.codeMetadataLoads });
     }
   }
   if (!metadata) {
@@ -72,16 +72,19 @@ export function metadataFromCode(
 /**
  * Traverse mdast, remove code cell metadata, and add it to parent block
  */
-export function liftCodeMetadataToBlock(session: ISession, filename: string, mdast: GenericParent) {
+export function liftCodeMetadataToBlock(session: ISession, file: VFile, mdast: GenericParent) {
   const blocks = selectAll('block', mdast) as GenericNode[];
   blocks.forEach((block) => {
     const codeNodes = selectAll('code', block) as GenericNode[];
     let blockMetadata: Record<string, any> | undefined;
     codeNodes.forEach((node) => {
       if (!node.value) return;
-      const { metadata, value } = metadataFromCode(session, filename, node.value, { remove: true });
+      const { metadata, value } = metadataFromCode(session, file, node.value, { remove: true });
       if (blockMetadata && metadata) {
-        session.log.warn(`Multiple code blocks with metadata found in ${filename}`);
+        fileWarn(file, `Multiple code blocks with metadata found in ${file.path}`, {
+          node,
+          ruleId: RuleId.codeMetadataLifted,
+        });
       } else {
         blockMetadata = metadata;
       }
@@ -124,14 +127,17 @@ export function checkMetaTags(
   const validMetatags = [];
   metaTagsCounter.forEach((value, key) => {
     if (value >= 2) {
-      fileWarn(vfile, `tag '${key}' is duplicated`, { node });
+      fileWarn(vfile, `tag '${key}' is duplicated`, { node, ruleId: RuleId.codeMetatagsValid });
     }
   });
   for (const target of ['cell', 'input', 'output']) {
     const hide = metaTagsCounter.get(`hide-${target}`) > 0;
     const remove = metaTagsCounter.get(`remove-${target}`) > 0;
     if (hide && remove) {
-      fileWarn(vfile, `'hide-${target}' and 'remove-${target}' both exist`, { node });
+      fileWarn(vfile, `'hide-${target}' and 'remove-${target}' both exist`, {
+        node,
+        ruleId: RuleId.codeMetatagsValid,
+      });
       validMetatags.push(`remove-${target}`);
     } else if (hide) {
       validMetatags.push(`hide-${target}`);
@@ -150,7 +156,10 @@ export function propagateBlockDataToCode(session: ISession, vfile: VFile, mdast:
   blocks.forEach((block) => {
     if (!block.data || !block.data.tags) return;
     if (!Array.isArray(block.data.tags)) {
-      fileError(vfile, `tags in code-cell directive must be a list of strings`, { node: block });
+      fileError(vfile, `tags in code-cell directive must be a list of strings`, {
+        node: block,
+        ruleId: RuleId.codeMetatagsValid,
+      });
     }
     const validMetatags = checkMetaTags(vfile, block, block.data.tags, true);
     const codeNode = select('code[executable=true]', block) as GenericNode | null;

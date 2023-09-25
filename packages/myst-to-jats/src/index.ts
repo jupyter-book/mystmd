@@ -6,7 +6,7 @@ import { js2xml, xml2js } from 'xml-js';
 import katex from 'katex';
 import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode } from 'myst-common';
-import { copyNode, extractPart, fileError } from 'myst-common';
+import { RuleId, copyNode, extractPart, fileError } from 'myst-common';
 import type { PageFrontmatter, Contributor } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { Affiliation } from 'jats-tags';
@@ -548,6 +548,7 @@ class JatsSerializer implements IJatsSerializer {
       ...opts,
       node,
       source: source ? `myst-to-jats:${source}` : 'myst-to-jats',
+      ruleId: RuleId.jatsRenders,
     });
   }
 
@@ -556,6 +557,7 @@ class JatsSerializer implements IJatsSerializer {
       ...opts,
       node,
       source: source ? `myst-to-jats:${source}` : 'myst-to-jats',
+      ruleId: RuleId.jatsRenders,
     });
   }
 

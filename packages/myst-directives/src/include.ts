@@ -1,5 +1,5 @@
 import type { DirectiveSpec } from 'myst-common';
-import { ParseTypesEnum, fileWarn, normalizeLabel } from 'myst-common';
+import { ParseTypesEnum, RuleId, fileWarn, normalizeLabel } from 'myst-common';
 import { CODE_DIRECTIVE_OPTIONS, getCodeBlockOptions } from './code.js';
 import type { Include } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
@@ -136,7 +136,9 @@ export function parseLinesString(vfile: VFile, linesString: string | undefined):
       const line = l.trim();
       const match = line.match(/^([0-9]+)(?:\s*(-)\s*([0-9]+)?)?$/);
       if (!match) {
-        fileWarn(vfile, `Unknown lines match "${line}"`);
+        fileWarn(vfile, `Unknown lines match "${line}"`, {
+          ruleId: RuleId.directiveOptionsCorrect,
+        });
         return undefined;
       }
       const [, first, dash, last] = match;
@@ -163,6 +165,7 @@ function ensureOnlyOneOf(
   if (intersection.size > 1) {
     fileWarn(vfile, `Conflicting options for directive: ["${[...intersection].join('", "')}"]`, {
       note: `Choose a single option out of ["${[...exclusive].join('", "')}"]`,
+      ruleId: RuleId.directiveOptionsCorrect,
     });
   }
 }

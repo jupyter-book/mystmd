@@ -2,7 +2,7 @@ import yaml from 'js-yaml';
 import { remove } from 'unist-util-remove';
 import type { Block, Code, Heading } from 'myst-spec';
 import type { GenericParent } from 'myst-common';
-import { fileError, toText } from 'myst-common';
+import { RuleId, fileError, toText } from 'myst-common';
 import type { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
 
@@ -36,7 +36,7 @@ export function getFrontmatter(
     } catch (err) {
       fileError(file, 'Invalid YAML frontmatter', {
         note: (err as Error).message,
-        ruleId: 'frontmatter-yaml-valid',
+        ruleId: RuleId.frontmatterIsYaml,
       });
     }
   }

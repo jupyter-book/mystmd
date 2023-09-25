@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { tic } from 'myst-cli-utils';
 import { TexParser } from 'tex-to-myst';
 import { VFile } from 'vfile';
-import { toText } from 'myst-common';
+import { RuleId, toText } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { ISession, ISessionWithCache } from '../session/types.js';
@@ -14,7 +14,7 @@ import { loadCitations } from './citations.js';
 import { parseMyst } from './myst.js';
 import { processNotebook } from './notebook.js';
 import type { RendererData } from '../transforms/types.js';
-import { logMessagesFromVFile } from '../utils/index.js';
+import { addWarningForFile, logMessagesFromVFile } from '../utils/index.js';
 
 function checkCache(cache: ISessionWithCache, content: string, file: string) {
   const sha256 = createHash('sha256').update(content).digest('hex');
@@ -102,7 +102,9 @@ export async function loadFile(
         break;
       }
       default:
-        session.log.error(`Unrecognized extension ${file}`);
+        addWarningForFile(session, file, 'Unrecognized extension', 'error', {
+          ruleId: RuleId.mystFileLoads,
+        });
         session.log.info(
           `"${file}": Please rerun the build with "-c" to ensure the built files are cleared.`,
         );
@@ -110,7 +112,9 @@ export async function loadFile(
     }
   } catch (error) {
     session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-    session.log.error(`Error reading file ${file}: ${error}`);
+    addWarningForFile(session, file, `Error reading file: ${error}`, 'error', {
+      ruleId: RuleId.mystFileLoads,
+    });
     success = false;
   }
   if (success) session.log.debug(toc(`loadFile: loaded ${file} in %s.`));
@@ -133,12 +137,16 @@ export function selectFile(session: ISession, file: string): RendererData | unde
   const cache = castSession(session);
   file = path.resolve(file);
   if (!cache.$mdast[file]) {
-    session.log.error(`Expected mdast to be processed for ${file}`);
+    addWarningForFile(session, file, `Expected mdast to be processed`, 'error', {
+      ruleId: RuleId.selectedFileIsProcessed,
+    });
     return undefined;
   }
   const mdastPost = cache.$mdast[file].post;
   if (!mdastPost) {
-    session.log.error(`Expected mdast to be processed and transformed for ${file}`);
+    addWarningForFile(session, file, `Expected mdast to be processed and transformed`, 'error', {
+      ruleId: RuleId.selectedFileIsProcessed,
+    });
     return undefined;
   }
   return mdastPost;

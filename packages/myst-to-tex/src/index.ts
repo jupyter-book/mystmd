@@ -2,7 +2,7 @@ import type { Root, Parent, Code } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode, References } from 'myst-common';
-import { fileError, toText, writeTexLabelledComment } from 'myst-common';
+import { RuleId, fileError, toText, writeTexLabelledComment } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
 import { renderNodeToLatex } from './tables.js';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types.js';
@@ -347,6 +347,7 @@ const handlers: Record<string, Handler> = {
       fileError(state.file, `Unknown footnote identifier "${node.identifier}"`, {
         node,
         source: 'myst-to-tex',
+        ruleId: RuleId.texRenders,
       });
       return;
     }
@@ -487,6 +488,7 @@ class TexSerializer implements ITexSerializer {
         fileError(this.file, `Unhandled LaTeX conversion for node of "${child.type}"`, {
           node: child,
           source: 'myst-to-tex',
+          ruleId: RuleId.texRenders,
         });
       }
       if (delim && index + 1 < numChildren) this.write(delim);

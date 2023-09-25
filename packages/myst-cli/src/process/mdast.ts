@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
 import type { GenericParent, References } from 'myst-common';
+import { fileError, fileWarn, RuleId } from 'myst-common';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { LinkTransformer } from 'myst-transforms';
 import {
@@ -126,6 +127,8 @@ export async function transformMdast(
   const { mdast: mdastPre, kind, frontmatter: preFrontmatter, location } = cache.$mdast[file].pre;
   if (!mdastPre) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
+  const vfile = new VFile(); // Collect errors on this file
+  vfile.path = file;
   // Use structuredClone in future (available in node 17)
   const mdast = JSON.parse(JSON.stringify(mdastPre)) as GenericParent;
   const frontmatter = preFrontmatter
@@ -137,10 +140,10 @@ export async function transformMdast(
           file,
           messages: {},
           errorLogFn: (message: string) => {
-            session.log.error(`Validation error: ${message}`);
+            fileError(vfile, message, { ruleId: RuleId.validPageFrontmatter });
           },
           warningLogFn: (message: string) => {
-            session.log.warn(`Validation: ${message}`);
+            fileWarn(vfile, message, { ruleId: RuleId.validPageFrontmatter });
           },
         },
         projectPath,
@@ -149,15 +152,13 @@ export async function transformMdast(
   const references: References = {
     cite: { order: [], data: {} },
   };
-  const vfile = new VFile(); // Collect errors on this file
-  vfile.path = file;
   const state = new ReferenceState({ numbering: frontmatter.numbering, file: vfile });
   cache.$internalReferences[file] = state;
   // Import additional content from mdast or other files
   importMdastFromJson(session, file, mdast);
   includeFilesTransform(session, file, mdast, vfile);
   // This needs to come before basic transformations since it may add labels to blocks
-  liftCodeMetadataToBlock(session, file, mdast);
+  liftCodeMetadataToBlock(session, vfile, mdast);
 
   await unified()
     .use(basicTransformationsPlugin)
@@ -205,6 +206,7 @@ export async function transformMdast(
   await transformOutputs(session, mdast, kind, imageWriteFolder, {
     altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
     minifyMaxCharacters,
+    vfile,
   });
   transformCitations(mdast, fileCitationRenderer, references);
   await unified()

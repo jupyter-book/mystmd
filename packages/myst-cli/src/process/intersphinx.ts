@@ -1,5 +1,8 @@
 import { Inventory } from 'intersphinx';
 import { tic, isUrl } from 'myst-cli-utils';
+import { RuleId, fileError } from 'myst-common';
+import { VFile } from 'vfile';
+import { logMessagesFromVFile } from '../index.js';
 import type { ISession } from '../session/types.js';
 import { castSession } from '../session/index.js';
 import { selectors } from '../store/index.js';
@@ -8,17 +11,19 @@ export async function loadIntersphinx(
   session: ISession,
   opts: { projectPath: string; force?: boolean },
 ): Promise<Inventory[]> {
-  const projectConfig = selectors.selectLocalProjectConfig(
-    session.store.getState(),
-    opts.projectPath,
-  );
+  const state = session.store.getState();
+  const projectConfig = selectors.selectLocalProjectConfig(state, opts.projectPath);
+  const vfile = new VFile();
+  vfile.path = selectors.selectLocalConfigFile(state, opts.projectPath);
   const cache = castSession(session);
   // A bit confusing here, references is the frontmatter, but those are `externalReferences`
   if (!projectConfig?.references) return [];
   const references = Object.entries(projectConfig.references)
     .filter(([key, object]) => {
       if (isUrl(object.url)) return true;
-      session.log.error(`⚠️  ${key} references is not a valid url: "${object.url}"`);
+      fileError(vfile, `${key} references is not a valid url: "${object.url}"`, {
+        ruleId: RuleId.intersphinxReferencesResolve,
+      });
       return false;
     })
     .map(([key, object]) => {
@@ -36,7 +41,9 @@ export async function loadIntersphinx(
         await loader.load();
       } catch (error) {
         session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-        session.log.error(`Problem fetching references entry: ${loader.id} (${loader.path})`);
+        fileError(vfile, `Problem fetching references entry: ${loader.id} (${loader.path})`, {
+          ruleId: RuleId.intersphinxReferencesResolve,
+        });
         return null;
       }
       session.log.info(
@@ -44,5 +51,6 @@ export async function loadIntersphinx(
       );
     }),
   );
+  logMessagesFromVFile(session, vfile);
   return references;
 }

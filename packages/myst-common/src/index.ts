@@ -14,6 +14,7 @@ export {
   writeTexLabelledComment,
 } from './utils.js';
 export { selectBlockParts, extractPart } from './extractParts.js';
+export { RuleId } from './ruleids.js';
 export { TemplateKind, TemplateOptionType } from './templates.js';
 export { AdmonitionKind, NotebookCell, ParseTypesEnum, TargetKind } from './types.js';
 

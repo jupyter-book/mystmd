@@ -1,6 +1,6 @@
 import type { VFile } from 'vfile';
 import type { Node, Parent } from 'myst-spec';
-import { fileError, fileWarn } from 'myst-common';
+import { RuleId, fileError, fileWarn } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { IParagraphOptions, IRunOptions, ParagraphChild, Table } from 'docx';
 import { Paragraph, TextRun } from 'docx';
@@ -57,6 +57,7 @@ export class DocxSerializer implements IDocxSerializer {
       fileError(this.file, `Node of type "${node.type}" is not supported by docx renderer`, {
         node,
         source: 'myst-to-docx:render',
+        ruleId: RuleId.docxRenders,
       });
       return;
     }
@@ -66,7 +67,10 @@ export class DocxSerializer implements IDocxSerializer {
   renderChildren(parent: Parent, paragraphOpts?: IParagraphOptions, runOpts?: IRunOptions) {
     if (!('children' in parent)) {
       const node = parent as Node;
-      fileWarn(this.file, `Excpected children for node of type ${node.type}`, { node });
+      fileWarn(this.file, `Expected children for node of type ${node.type}`, {
+        node,
+        ruleId: RuleId.docxRenders,
+      });
       return;
     }
     parent.children.forEach((node) => {

@@ -6,7 +6,7 @@ import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
 import type { LinkTransformer, Link } from 'myst-transforms';
-import { fileError } from 'myst-common';
+import { RuleId, fileError } from 'myst-common';
 import { hashAndCopyStaticFile, tic } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
@@ -141,14 +141,19 @@ export class StaticFileTransformer implements LinkTransformer {
       if (dataUrl) link.dataUrl = dataUrl;
     } else {
       // Copy relative file to static folder and replace with absolute link
-      const copiedFile = hashAndCopyStaticFile(this.session, linkFile, this.session.publicPath());
-      if (!copiedFile) {
-        fileError(file, `Error copying file ${urlSource}`, {
-          node: link,
-          source: 'StaticFileTransformer',
-        });
-        return false;
-      }
+      const copiedFile = hashAndCopyStaticFile(
+        this.session,
+        linkFile,
+        this.session.publicPath(),
+        (m: string) => {
+          fileError(file, m, {
+            node: link,
+            source: 'StaticFileTransformer',
+            ruleId: RuleId.staticFileCopied,
+          });
+        },
+      );
+      if (!copiedFile) return false;
       link.url = `/${copiedFile}`;
       link.static = true;
     }
@@ -164,25 +169,28 @@ export async function checkLinksTransform(
   file: string,
   mdast: GenericParent,
 ): Promise<string[]> {
-  const linkNodes = selectAll('link,linkBlock,card', mdast) as GenericNode[];
-  const linkUrls = linkNodes
-    .filter((link) => !(link.internal || link.static))
-    .map((link) => link.url as string);
-  if (linkUrls.length === 0) return linkUrls;
+  const linkNodes = (selectAll('link,linkBlock,card', mdast) as GenericNode[]).filter(
+    (link) => !(link.internal || link.static),
+  );
+  if (linkNodes.length === 0) return [];
   const toc = tic();
-  const plural = linkUrls.length > 1 ? 's' : '';
-  session.log.info(`🔗 Checking ${linkUrls.length} link${plural} in ${file}`);
+  const plural = linkNodes.length > 1 ? 's' : '';
+  session.log.info(`🔗 Checking ${linkNodes.length} link${plural} in ${file}`);
   const linkResults = await Promise.all(
-    linkUrls.map(async (url) =>
+    linkNodes.map(async (link) =>
       limitOutgoingConnections(async () => {
+        const { position, url } = link;
         const check = await checkLink(session, url);
         if (check.ok || check.skipped) return url as string;
         const status = check.status ? ` (${check.status}, ${check.statusText})` : '';
-        addWarningForFile(session, file, `Link for "${url}" did not resolve.${status}`, 'error');
+        addWarningForFile(session, file, `Link for "${url}" did not resolve.${status}`, 'error', {
+          position,
+          ruleId: RuleId.linkResolves,
+        });
         return url as string;
       }),
     ),
   );
-  session.log.info(toc(`🔗 Checked ${linkUrls.length} link${plural} in ${file} in %s`));
+  session.log.info(toc(`🔗 Checked ${linkNodes.length} link${plural} in ${file} in %s`));
   return linkResults;
 }

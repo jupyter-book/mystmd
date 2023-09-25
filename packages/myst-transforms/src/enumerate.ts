@@ -15,6 +15,7 @@ import {
   copyNode,
   liftChildren,
   TargetKind,
+  RuleId,
 } from 'myst-common';
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
@@ -153,6 +154,7 @@ function fillReferenceEnumerators(
         node,
         note: 'The node was filled in with "??" as the number.',
         source: TRANSFORM_NAME,
+        ruleId: RuleId.referenceTemplateFills,
       },
     );
   }
@@ -295,6 +297,7 @@ export class ReferenceState implements IReferenceState {
         {
           node,
           source: TRANSFORM_NAME,
+          ruleId: RuleId.identifierIsUnique,
         },
       );
       return;
@@ -400,6 +403,7 @@ export class ReferenceState implements IReferenceState {
     fileWarn(this.file, `Cross reference target was not found: ${node.identifier}`, {
       node,
       source: TRANSFORM_NAME,
+      ruleId: RuleId.referenceTargetResolves,
     });
   }
 }
@@ -538,6 +542,7 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateO
       fileWarn(opts.state.file, `No target for internal reference "${link.url}" was found.`, {
         node,
         source: TRANSFORM_NAME,
+        ruleId: RuleId.referenceTargetResolves,
       });
       return;
     }
@@ -549,6 +554,7 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateO
           node,
           note: 'The link target should be of the form `[](#target)`, including the `#` sign.\nThis may be deprecated in the future.',
           source: TRANSFORM_NAME,
+          ruleId: RuleId.referenceSyntaxValid,
         },
       );
       const source = (link as any).urlSource;
@@ -572,6 +578,7 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateO
           node,
           note: 'Explicit references do not break when you update the title to a section, they are preferred over using the implicit HTML ID created for headers.',
           source: TRANSFORM_NAME,
+          ruleId: RuleId.referenceTargetExplicit,
         },
       );
     }

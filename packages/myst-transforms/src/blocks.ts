@@ -3,7 +3,7 @@ import type { Plugin } from 'unified';
 import type { Node, Parent } from 'myst-spec';
 import { select, selectAll } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { fileError, normalizeLabel } from 'myst-common';
+import { RuleId, fileError, normalizeLabel } from 'myst-common';
 import type { Code } from 'myst-spec-ext';
 
 export function blockNestingTransform(mdast: GenericParent) {
@@ -40,6 +40,7 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
         fileError(file, 'Problem parsing JSON for block', {
           node: block,
           source: TRANSFORM_SOURCE,
+          ruleId: RuleId.blockMetadataLoads,
         });
       }
     }
