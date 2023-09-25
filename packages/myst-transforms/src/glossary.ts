@@ -3,7 +3,7 @@ import type { Node } from 'myst-spec';
 import type { VFile } from 'vfile';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
-import { normalizeLabel, toText, fileError } from 'myst-common';
+import { normalizeLabel, toText, fileError, RuleId } from 'myst-common';
 import type { IReferenceState } from './enumerate.js';
 
 export type Options = {
@@ -24,6 +24,7 @@ export function glossaryTransform<T extends Node | GenericParent>(
           'Unexpected node as a child of a glossary, expected only `definitionList` children',
           {
             node: list,
+            ruleId: RuleId.glossaryUsesDefinitionList,
           },
         );
         return;

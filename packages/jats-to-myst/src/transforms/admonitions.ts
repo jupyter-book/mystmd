@@ -1,7 +1,7 @@
 import type { Plugin } from 'unified';
 import type { Heading } from 'myst-spec';
 import type { GenericParent } from 'myst-common';
-import { fileWarn } from 'myst-common';
+import { RuleId, fileWarn } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
 import { Tags } from 'jats-tags';
@@ -14,7 +14,7 @@ export function admonitionTransform(tree: GenericParent, file: VFile) {
   captions.forEach((caption) => {
     const title = select(Tags.title, caption) as GenericParent;
     if (!title) {
-      fileWarn(file, '', { node: caption });
+      fileWarn(file, '', { node: caption, ruleId: RuleId.jatsParses });
       return;
     }
     caption.type = 'admonitionTitle';

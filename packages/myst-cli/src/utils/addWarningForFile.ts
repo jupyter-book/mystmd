@@ -9,7 +9,12 @@ export function addWarningForFile(
   file: string | undefined | null,
   message: string,
   kind: WarningKind = 'warn',
-  opts?: { note?: string | null; url?: string | null; position?: VFileMessage['position'] },
+  opts?: {
+    note?: string | null;
+    url?: string | null;
+    position?: VFileMessage['position'];
+    ruleId?: string | null;
+  },
 ) {
   const line = opts?.position?.start.line ? `:${opts?.position.start.line}` : '';
   const column =
@@ -42,6 +47,7 @@ export function addWarningForFile(
         url: opts?.url,
         note: opts?.note,
         position: opts?.position,
+        ruleId: opts?.ruleId,
       }),
     );
   }

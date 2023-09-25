@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { ExportFormats } from 'myst-frontmatter';
 import type { ISession } from '../session/index.js';
@@ -150,7 +151,7 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
   }
   pathsToDelete = deduplicatePaths(pathsToDelete.filter((p) => fs.existsSync(p))).sort();
   if (pathsToDelete.length === 0) {
-    session.log.warn(`🧹 Your folders are already so clean! ✨`);
+    session.log.info(chalk.yellow(`🧹 Your folders are already so clean! ✨`));
     return;
   }
   session.log.info(`Deleting all the following paths:\n\n  - ${pathsToDelete.join('\n  - ')}\n`);

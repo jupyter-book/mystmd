@@ -11,64 +11,64 @@ import {
 describe('metadataFromCode', () => {
   it('empty code returns self', async () => {
     const value = '';
-    expect(metadataFromCode(new Session(), '', value)).toEqual({ value });
+    expect(metadataFromCode(new Session(), new VFile(''), value)).toEqual({ value });
   });
   it('normal code returns self', async () => {
     const value = 'a = 5 + 5\nprint(a)';
-    expect(metadataFromCode(new Session(), '', value)).toEqual({ value });
+    expect(metadataFromCode(new Session(), new VFile(''), value)).toEqual({ value });
   });
   it('starting newlines are persisted without metadata', async () => {
     const value = '\n\n\na = 5 + 5\nprint(a)';
-    expect(metadataFromCode(new Session(), '', value)).toEqual({ value });
+    expect(metadataFromCode(new Session(), new VFile(''), value)).toEqual({ value });
   });
   it('starting comments are persisted', async () => {
     const value = '\n# comment\n\na = 5 + 5\nprint(a)';
-    expect(metadataFromCode(new Session(), '', value)).toEqual({ value });
+    expect(metadataFromCode(new Session(), new VFile(''), value)).toEqual({ value });
   });
   it('basic metadata is parsed', async () => {
     const value = '#| key: value\n#| flag: true\n\na = 5 + 5\nprint(a)';
-    expect(metadataFromCode(new Session(), '', value)).toEqual({
+    expect(metadataFromCode(new Session(), new VFile(''), value)).toEqual({
       value,
       metadata: { key: 'value', flag: true },
     });
   });
   it('basic metadata with SPACE between `#` and `|` is parsed', async () => {
     const value = '# | key: value\n# | flag: true\n\na = 5 + 5\nprint(a)';
-    expect(metadataFromCode(new Session(), '', value)).toEqual({
+    expect(metadataFromCode(new Session(), new VFile(''), value)).toEqual({
       value,
       metadata: { key: 'value', flag: true },
     });
   });
   it('whitespace is ignored around metadata', async () => {
     const value = '\n\n#| key: value\n\n#| flag: true\n\n\na = 5 + 5\nprint(a)';
-    expect(metadataFromCode(new Session(), '', value)).toEqual({
+    expect(metadataFromCode(new Session(), new VFile(''), value)).toEqual({
       value,
       metadata: { key: 'value', flag: true },
     });
   });
   it('whitespace is removed around metadata', async () => {
     const value = '\n\n#| key: value\n\n#| flag: true\n\n\na = 5 + 5\nprint(a)';
-    expect(metadataFromCode(new Session(), '', value, { remove: true })).toEqual({
+    expect(metadataFromCode(new Session(), new VFile(''), value, { remove: true })).toEqual({
       value: 'a = 5 + 5\nprint(a)',
       metadata: { key: 'value', flag: true },
     });
   });
   it('invalid metadata is passed and not removed', async () => {
     const value = '\n\n#| invalid\n\n#|   yaml...:\n\n\na = 5 + 5\nprint(a)';
-    expect(metadataFromCode(new Session(), '', value, { remove: true })).toEqual({
+    expect(metadataFromCode(new Session(), new VFile(''), value, { remove: true })).toEqual({
       value,
     });
   });
   it('allows for a cell-magic to come first', async () => {
     const value = '%%time\n#| key: value\n\n#| flag: true\n\n\na = 5 + 5\nprint(a)';
-    expect(metadataFromCode(new Session(), '', value)).toEqual({
+    expect(metadataFromCode(new Session(), new VFile(''), value)).toEqual({
       value,
       metadata: { key: 'value', flag: true },
     });
   });
   it('allows for a cell-magic to come first, but not in the middle', async () => {
     const value = '\n\n%%time\n#| key: value\n%%time\n#| flag: true\n\n\na = 5 + 5\nprint(a)';
-    expect(metadataFromCode(new Session(), '', value)).toEqual({
+    expect(metadataFromCode(new Session(), new VFile(''), value)).toEqual({
       value,
       metadata: { key: 'value' },
     });
@@ -92,7 +92,7 @@ describe('liftCodeMetadataToBlock', () => {
         },
       ],
     };
-    liftCodeMetadataToBlock(new Session(), '', mdast);
+    liftCodeMetadataToBlock(new Session(), new VFile(''), mdast);
     expect(mdast.children[0].data).toEqual({ key: 'value' });
     expect(mdast.children[0].children[0].value).toEqual('print("hello world")');
   });
@@ -112,7 +112,7 @@ describe('liftCodeMetadataToBlock', () => {
         },
       ],
     };
-    liftCodeMetadataToBlock(new Session(), '', mdast);
+    liftCodeMetadataToBlock(new Session(), new VFile(''), mdast);
     expect(mdast.children[0].data).toEqual({ key: 'value', label: 'codeBlock' });
     expect(mdast.children[0].children[0].value).toEqual('print("hello world")');
   });
@@ -136,7 +136,7 @@ describe('liftCodeMetadataToBlock', () => {
         },
       ],
     };
-    liftCodeMetadataToBlock(new Session(), '', mdast);
+    liftCodeMetadataToBlock(new Session(), new VFile(''), mdast);
     expect(mdast.children[0].data).toEqual({ key: 'value', label: 'codeBlock' });
     expect(mdast.children[0].children[0].value).toEqual('print("hello world")');
     expect(mdast.children[0].children[1].value).toEqual('print("hello world2")');

@@ -5,7 +5,7 @@ import type {
   ParseTypes,
   GenericParent,
 } from 'myst-common';
-import { fileError, fileWarn } from 'myst-common';
+import { RuleId, fileError, fileWarn } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import { contentFromNode } from './roles.js';
@@ -23,7 +23,9 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
     }
     names.forEach((name) => {
       if (specLookup[name]) {
-        fileWarn(vfile, `duplicate directives registered with name: ${name}`);
+        fileWarn(vfile, `duplicate directives registered with name: ${name}`, {
+          ruleId: RuleId.directiveRegistered,
+        });
       } else {
         specLookup[name] = spec;
       }
@@ -34,7 +36,7 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
     const { name } = node;
     const spec = specLookup[name];
     if (!spec) {
-      fileError(vfile, `unknown directive: ${name}`, { node });
+      fileError(vfile, `unknown directive: ${name}`, { node, ruleId: RuleId.directiveKnown });
       // We probably want to do something better than just delete the children and
       // consolidate options back to value, but for now this gets myst-spec tests passing
       delete node.children;
@@ -57,18 +59,30 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
     const argNode = node.children?.filter((c) => c.type === 'mystDirectiveArg')[0];
     if (argSpec) {
       if (argSpec.required && !argNode) {
-        fileError(vfile, `required argument not provided for directive: ${name}`, { node });
+        fileError(vfile, `required argument not provided for directive: ${name}`, {
+          node,
+          ruleId: RuleId.directiveArgumentCorrect,
+        });
         node.type = 'mystDirectiveError';
         delete node.children;
         validationError = true;
       } else if (argNode) {
-        data.arg = contentFromNode(argNode, argSpec, vfile, `argument of directive: ${name}`);
+        data.arg = contentFromNode(
+          argNode,
+          argSpec,
+          vfile,
+          `argument of directive: ${name}`,
+          RuleId.directiveArgumentCorrect,
+        );
         if (argSpec.required && data.arg == null) {
           validationError = true;
         }
       }
     } else if (argNode) {
-      fileWarn(vfile, `unexpected argument provided for directive: ${name}`, { node: argNode });
+      fileWarn(vfile, `unexpected argument provided for directive: ${name}`, {
+        node: argNode,
+        ruleId: RuleId.directiveArgumentCorrect,
+      });
     }
 
     // Handle options
@@ -79,6 +93,7 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
       if (optionNodeLookup[optionNode.name]) {
         fileWarn(vfile, `duplicate option "${optionNode.name}" declared for directive: ${name}`, {
           node: optionNode,
+          ruleId: RuleId.directiveOptionsCorrect,
         });
       } else {
         optionNodeLookup[optionNode.name] = optionNode;
@@ -101,7 +116,7 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
           fileWarn(
             vfile,
             `option "${optionNameUsed}" used instead of "${alias}" for directive: ${name}`,
-            { node },
+            { node, ruleId: RuleId.directiveOptionsCorrect },
           );
         }
         delete optionNodeLookup[alias];
@@ -110,6 +125,7 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
       if (optionSpec.required && !optionNode) {
         fileError(vfile, `required option "${optionName}" not provided for directive: ${name}`, {
           node,
+          ruleId: RuleId.directiveOptionsCorrect,
         });
         node.type = 'mystDirectiveError';
         delete node.children;
@@ -120,6 +136,7 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
           optionSpec,
           vfile,
           `option "${optionName}" of directive: ${name}`,
+          RuleId.directiveOptionsCorrect,
         );
         if (content != null) {
           options[optionName] = content;
@@ -132,6 +149,7 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
     Object.values(optionNodeLookup).forEach((optionNode) => {
       fileWarn(vfile, `unexpected option "${optionNode.name}" provided for directive: ${name}`, {
         node: optionNode,
+        ruleId: RuleId.directiveOptionsCorrect,
       });
     });
     if (Object.keys(options).length) {
@@ -142,24 +160,35 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
     const bodyNode = node.children?.filter((c) => c.type === 'mystDirectiveBody')[0];
     if (bodySpec) {
       if (bodySpec.required && !bodyNode) {
-        fileError(vfile, `required body not provided for directive: ${name}`, { node });
+        fileError(vfile, `required body not provided for directive: ${name}`, {
+          node,
+          ruleId: RuleId.directiveBodyCorrect,
+        });
         node.type = 'mystDirectiveError';
         delete node.children;
         validationError = true;
       } else if (bodyNode) {
-        data.body = contentFromNode(bodyNode, bodySpec, vfile, `body of directive: ${name}`);
+        data.body = contentFromNode(
+          bodyNode,
+          bodySpec,
+          vfile,
+          `body of directive: ${name}`,
+          RuleId.directiveBodyCorrect,
+        );
         if (bodySpec.required && data.body == null) {
           validationError = true;
         }
       }
     } else if (bodyNode) {
-      fileWarn(vfile, `unexpected body provided for directive: ${name}`, { node: bodyNode });
+      fileWarn(vfile, `unexpected body provided for directive: ${name}`, {
+        node: bodyNode,
+        ruleId: RuleId.directiveBodyCorrect,
+      });
     }
     if (validationError) return;
     if (validate) {
       data = validate(data, vfile);
     }
-    if (validationError) return;
     node.children = run(data, vfile);
   });
 }

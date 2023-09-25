@@ -1,21 +1,25 @@
 import type { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
+import type { Position } from 'unist';
 import { map } from 'unist-util-map';
 import { customAlphabet } from 'nanoid';
 import type { Node, Parent, PhrasingContent } from 'myst-spec';
+import type { RuleId } from './ruleids.js';
 import type { AdmonitionKind, GenericNode, GenericParent } from './types.js';
 
 export type MessageInfo = {
-  node?: Node;
+  node?: Node | Position;
   note?: string;
   source?: string;
   url?: string;
   fatal?: boolean;
+  ruleId?: RuleId | string;
 };
 
 function addMessageInfo(message: VFileMessage, info?: MessageInfo) {
-  if (info?.note) message.note = info?.note;
-  if (info?.url) message.url = info?.url;
+  if (info?.note) message.note = info.note;
+  if (info?.url) message.url = info.url;
+  if (info?.ruleId) message.ruleId = info.ruleId as string;
   if (info?.fatal) message.fatal = true;
   return message;
 }

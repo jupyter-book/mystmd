@@ -26,7 +26,12 @@ export function writeFileToFolder(
  *
  * If hashed file already exists, this does nothing
  */
-export function hashAndCopyStaticFile(session: ISession, file: string, writeFolder: string) {
+export function hashAndCopyStaticFile(
+  session: ISession,
+  file: string,
+  writeFolder: string,
+  errorLogFn?: (m: string) => void,
+) {
   const { name, ext } = path.parse(file);
   const fd = fs.openSync(file, 'r');
   const { mtime, size } = fs.fstatSync(fd);
@@ -42,7 +47,8 @@ export function hashAndCopyStaticFile(session: ISession, file: string, writeFold
       fs.copyFileSync(file, destination);
       session.log.debug(`File successfully copied: ${file}`);
     } catch {
-      session.log.error(`Error copying file: ${file}`);
+      const message = `Error copying file to ${writeFolder}`;
+      errorLogFn ? errorLogFn(message) : session.log.error(message);
       return undefined;
     }
   }
@@ -54,10 +60,17 @@ export function hashAndCopyStaticFile(session: ISession, file: string, writeFold
  *
  * If "file" is not inside "from" folder, the file is not copied.
  */
-export function copyFileMaintainPath(session: ISession, file: string, from: string, to: string) {
+export function copyFileMaintainPath(
+  session: ISession,
+  file: string,
+  from: string,
+  to: string,
+  errorLogFn?: (m: string) => void,
+) {
   // File must be inside "from" folder
   if (!path.resolve(file).startsWith(path.resolve(from))) {
-    session.log.error(`Cannot include files outside of 'from' directory: ${file}\n\n`);
+    const message = `Cannot include files outside of 'from' directory: ${file}\n\n`;
+    errorLogFn ? errorLogFn(message) : session.log.error(message);
     return undefined;
   }
   const destination = path.resolve(to, path.relative(from, file));
@@ -68,7 +81,8 @@ export function copyFileMaintainPath(session: ISession, file: string, from: stri
     session.log.debug(`File successfully copied: ${file}`);
     return destination;
   } catch {
-    session.log.error(`Error copying file: ${file}`);
+    const message = `Error copying file to: ${to}`;
+    errorLogFn ? errorLogFn(message) : session.log.error(message);
     return undefined;
   }
 }
@@ -78,10 +92,16 @@ export function copyFileMaintainPath(session: ISession, file: string, from: stri
  *
  * If a file already exists with the basename of "file" inside "to" directory, it is not copied.
  */
-export function copyFileToFolder(session: ISession, file: string, to: string) {
+export function copyFileToFolder(
+  session: ISession,
+  file: string,
+  to: string,
+  errorLogFn?: (m: string) => void,
+) {
   const destination = path.join(to, path.basename(file));
   if (fs.existsSync(destination)) {
-    session.log.error(`File already exists with name: ${path.basename(file)}`);
+    const message = `File already exists with name: ${path.basename(file)}`;
+    errorLogFn ? errorLogFn(message) : session.log.error(message);
   }
   const destinationFolder = path.dirname(destination);
   try {
@@ -90,7 +110,8 @@ export function copyFileToFolder(session: ISession, file: string, to: string) {
     session.log.debug(`File successfully copied: ${file}`);
     return destination;
   } catch {
-    session.log.error(`Error copying file: ${file}`);
+    const message = `Error copying file to: ${to}`;
+    errorLogFn ? errorLogFn(message) : session.log.error(message);
     return undefined;
   }
 }

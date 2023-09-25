@@ -8,7 +8,7 @@ import {
   validatePageFrontmatter,
 } from 'myst-frontmatter';
 import type { GenericParent } from 'myst-common';
-import { copyNode } from 'myst-common';
+import { copyNode, fileError, fileWarn, RuleId } from 'myst-common';
 import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
 import { castSession } from './session/index.js';
@@ -40,21 +40,21 @@ export function getPageFrontmatter(
     removeHeading: removeNode,
     propagateTargets: true,
   });
-  logMessagesFromVFile(session, vfile);
   unnestKernelSpec(rawPageFrontmatter);
   const validationOpts = {
     property: 'frontmatter',
     file,
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: ${message}`);
+      fileError(vfile, message, { ruleId: RuleId.validPageFrontmatter });
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: ${message}`);
+      fileWarn(vfile, message, { ruleId: RuleId.validPageFrontmatter });
     },
   };
   const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, validationOpts);
   const frontmatter = processPageFrontmatter(session, pageFrontmatter, validationOpts, path);
+  logMessagesFromVFile(session, vfile);
   return frontmatter;
 }
 
@@ -100,20 +100,23 @@ export function getExportListFromRawFrontmatter(
   rawFrontmatter: Record<string, any> | undefined,
   file: string,
 ): Export[] {
+  const vfile = new VFile();
+  vfile.path = file;
   const exportErrorMessages: ValidationOptions = {
     property: 'exports',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error for ${file}: ${message}`);
+      fileError(vfile, message, { ruleId: RuleId.validFrontmatterExportList });
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation for ${file}: ${message}`);
+      fileWarn(vfile, message, { ruleId: RuleId.validFrontmatterExportList });
     },
   };
   const exports = validateExportsList(
     rawFrontmatter?.exports ?? rawFrontmatter?.export,
     exportErrorMessages,
   );
+  logMessagesFromVFile(session, vfile);
   if (!exports) return [];
   const exportOptions: Export[] = exports.filter(
     (exp: Export | undefined): exp is Export => !!exp && formats.includes(exp.format),

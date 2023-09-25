@@ -1,5 +1,5 @@
 import type { GenericNode, GenericParent } from 'myst-common';
-import { fileWarn, fileError } from 'myst-common';
+import { fileWarn, fileError, RuleId } from 'myst-common';
 import { map } from 'unist-util-map';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
@@ -19,7 +19,7 @@ export function joinGatesTransform(tree: GenericParent, file: VFile) {
           fileWarn(
             file,
             `Gate close ("${child.type}") does not match opening gate (${child.gate}).`,
-            { node },
+            { node, ruleId: RuleId.gatedNodesJoin },
           );
         }
         // Clean up the gate logic
@@ -39,6 +39,7 @@ export function joinGatesTransform(tree: GenericParent, file: VFile) {
     if (last?.gate === 'start') {
       fileError(file, `Gated node is not closed, expected a {${last.type}-end} directive.`, {
         node,
+        ruleId: RuleId.gatedNodesJoin,
       });
     }
     if (nodes !== undefined) (node as GenericParent).children = nodes;

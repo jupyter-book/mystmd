@@ -1,5 +1,5 @@
 import { computeHash } from 'myst-cli-utils';
-import { NotebookCell } from 'myst-common';
+import { NotebookCell, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
@@ -12,6 +12,8 @@ import type {
   IOutput,
 } from '@jupyterlab/nbformat';
 import { CELL_TYPES, minifyCellOutput } from 'nbtx';
+import { VFile } from 'vfile';
+import { logMessagesFromVFile } from '../index.js';
 import { castSession } from '../session/index.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
@@ -42,6 +44,8 @@ function replaceAttachmentsTransform(
   attachments: IAttachments,
   file: string,
 ) {
+  const vfile = new VFile();
+  vfile.path = file;
   const imageNodes = selectAll('image', mdast);
   imageNodes.forEach((image: GenericNode) => {
     if (!image.url) return;
@@ -52,16 +56,21 @@ function replaceAttachmentsTransform(
       const mimeType = attachment[0];
       const attachmentVal = asString(attachment[1] as string | string[]);
       if (!attachmentVal) {
-        session.log.warn(`Unrecognized attachment name in ${file}: ${attachmentKey}`);
+        fileWarn(vfile, `Unrecognized attachment name in ${file}: ${attachmentKey}`, {
+          ruleId: RuleId.notebookAttachmentsResolve,
+        });
       } else if (attachmentVal.includes(BASE64_HEADER_SPLIT)) {
         image.url = attachmentVal;
       } else {
         image.url = `data:${mimeType}${BASE64_HEADER_SPLIT}${attachmentVal}`;
       }
     } catch {
-      session.log.warn(`Unable to resolve attachment in ${file}: ${attachmentKey}`);
+      fileWarn(vfile, `Unable to resolve attachment in ${file}: ${attachmentKey}`, {
+        ruleId: RuleId.notebookAttachmentsResolve,
+      });
     }
   });
+  logMessagesFromVFile(session, vfile);
 }
 
 export async function processNotebook(

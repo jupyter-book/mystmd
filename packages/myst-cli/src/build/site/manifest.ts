@@ -1,11 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
-import { TemplateOptionType } from 'myst-common';
+import { RuleId, TemplateOptionType } from 'myst-common';
 import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
 import { filterKeys } from 'simple-validators';
+import { addWarningForFile } from '../../index.js';
 import { resolvePageExports } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
 import type { RootState } from '../../store/index.js';
@@ -117,7 +118,16 @@ async function resolveTemplateFileOptions(
   const resolvedOptions = { ...options };
   mystTemplate.getValidatedTemplateYml().options?.forEach((option) => {
     if (option.type === TemplateOptionType.file && options[option.id]) {
-      const fileHash = hashAndCopyStaticFile(session, options[option.id], session.publicPath());
+      const fileHash = hashAndCopyStaticFile(
+        session,
+        options[option.id],
+        session.publicPath(),
+        (m: string) => {
+          addWarningForFile(session, options[option.id], m, 'error', {
+            ruleId: RuleId.templateFileCopied,
+          });
+        },
+      );
       resolvedOptions[option.id] = `/${fileHash}`;
     }
   });
@@ -128,7 +138,11 @@ function resolveSiteManifestAction(session: ISession, action: SiteAction): SiteA
   if (!action.static || !action.url) return { ...action };
   if (!fs.existsSync(action.url))
     throw new Error(`Could not find static resource at "${action.url}". See 'config.site.actions'`);
-  const fileHash = hashAndCopyStaticFile(session, action.url, session.publicPath());
+  const fileHash = hashAndCopyStaticFile(session, action.url, session.publicPath(), (m: string) => {
+    addWarningForFile(session, action.url, m, 'error', {
+      ruleId: RuleId.staticActionFileCopied,
+    });
+  });
   return {
     title: action.title,
     filename: path.basename(action.url),

@@ -1,7 +1,7 @@
 import type { Plugin } from 'unified';
 import { selectAll } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { fileWarn } from 'myst-common';
+import { RuleId, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { Code } from 'myst-spec';
 
@@ -15,7 +15,10 @@ export function codeTransform(mdast: GenericParent, file: VFile, opts?: Options)
   code.forEach((node) => {
     if (!node.lang) {
       if (!opts?.lang) {
-        fileWarn(file, 'Language is not defined for code block', { node });
+        fileWarn(file, 'Language is not defined for code block', {
+          node,
+          ruleId: RuleId.codeLangDefined,
+        });
         return;
       }
       node.lang = opts?.lang;

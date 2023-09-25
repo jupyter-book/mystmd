@@ -2,7 +2,7 @@ import type { Caption, Container } from 'myst-spec';
 import type { Code } from 'myst-spec-ext';
 import yaml from 'js-yaml';
 import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
-import { fileError, fileWarn, normalizeLabel, ParseTypesEnum } from 'myst-common';
+import { fileError, fileWarn, normalizeLabel, ParseTypesEnum, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 
 function parseEmphasizeLines(emphasizeLinesString?: string | undefined): number[] | undefined {
@@ -22,6 +22,7 @@ export function getCodeBlockOptions(
   if (options?.['lineno-start'] != null && options?.['number-lines'] != null) {
     fileWarn(vfile, 'Cannot use both "lineno-start" and "number-lines"', {
       source: 'code-block:options',
+      ruleId: RuleId.directiveOptionsCorrect,
     });
   }
   const emphasizeLines = parseEmphasizeLines(options?.['emphasize-lines'] as string | undefined);
@@ -161,6 +162,7 @@ export const codeCellDirective: DirectiveSpec = {
       } catch (error) {
         fileError(vfile, 'Could not load tags for code-cell directive', {
           source: 'code-cell:tags',
+          ruleId: RuleId.directiveOptionsCorrect,
         });
       }
     } else if (data.options?.tags && Array.isArray(data.options.tags)) {
@@ -174,6 +176,7 @@ export const codeCellDirective: DirectiveSpec = {
     } else if (tags) {
       fileWarn(vfile, 'tags in code-cell directive must be a list of strings', {
         source: 'code-cell:tags',
+        ruleId: RuleId.directiveOptionsCorrect,
       });
     }
     return [code];
