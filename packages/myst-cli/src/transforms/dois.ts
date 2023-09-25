@@ -7,9 +7,10 @@ import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
 import { tic } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
-import { toText } from 'myst-common';
+import { fileWarn, toText } from 'myst-common';
 import type { Cite } from 'myst-spec-ext';
 import type { SingleCitationRenderer } from './types.js';
+import type { VFile } from 'vfile';
 
 async function getDoiOrgBibtex(log: Logger, doiString: string): Promise<string | null> {
   if (!doi.validate(doi.normalize(doiString))) return null;
@@ -31,11 +32,18 @@ async function getDoiOrgBibtex(log: Logger, doiString: string): Promise<string |
   return bibtex;
 }
 
-async function getCitation(log: Logger, doiString: string): Promise<SingleCitationRenderer | null> {
+async function getCitation(
+  log: Logger,
+  vfile: VFile,
+  doiString: string,
+  node: GenericNode,
+): Promise<SingleCitationRenderer | null> {
   if (!doi.validate(doi.normalize(doiString))) return null;
   const bibtex = await getDoiOrgBibtex(log, doiString);
   if (!bibtex) {
-    log.warn(`⚠️  Could not find DOI from link: ${doiString} as ${doi.normalize(doiString)}`);
+    fileWarn(vfile, `Could not find DOI from link: ${doiString} as ${doi.normalize(doiString)}`, {
+      node,
+    });
     return null;
   }
   const renderer = await getCitations(bibtex);
@@ -49,6 +57,7 @@ async function getCitation(log: Logger, doiString: string): Promise<SingleCitati
  */
 export async function transformLinkedDOIs(
   log: Logger,
+  vfile: VFile,
   mdast: GenericParent,
   doiRenderer: Record<string, SingleCitationRenderer>,
   path: string,
@@ -74,7 +83,7 @@ export async function transformLinkedDOIs(
     ...linkedDois.map(async (node) => {
       let cite: SingleCitationRenderer | null = doiRenderer[node.url];
       if (!cite) {
-        cite = await getCitation(log, node.url);
+        cite = await getCitation(log, vfile, node.url, node);
         if (cite) number += 1;
         else return false;
       }
@@ -93,7 +102,7 @@ export async function transformLinkedDOIs(
     ...citeDois.map(async (node) => {
       let cite: SingleCitationRenderer | null = doiRenderer[node.label];
       if (!cite) {
-        cite = await getCitation(log, node.label);
+        cite = await getCitation(log, vfile, node.label, node);
         if (cite) number += 1;
         else return false;
       }

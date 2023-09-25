@@ -26,11 +26,11 @@ describe('reactive tests', () => {
           ],
           position: {
             start: {
-              column: 0,
-              line: 0,
+              column: 1,
+              line: 1,
             },
             end: {
-              column: 0,
+              column: 1,
               line: 5,
             },
           },
@@ -52,11 +52,11 @@ describe('reactive tests', () => {
           type: 'paragraph',
           position: {
             start: {
-              column: 0,
-              line: 0,
+              column: 1,
+              line: 1,
             },
             end: {
-              column: 0,
+              column: 1,
               line: 1,
             },
           },
@@ -75,11 +75,11 @@ describe('reactive tests', () => {
               ],
               position: {
                 start: {
-                  column: 0,
-                  line: 0,
+                  column: 1,
+                  line: 1,
                 },
                 end: {
-                  column: 0,
+                  column: 71,
                   line: 1,
                 },
               },

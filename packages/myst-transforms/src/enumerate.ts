@@ -1,6 +1,7 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { Container, CrossReference, Heading, Link, Math, Paragraph } from 'myst-spec';
+import type { Cite } from 'myst-spec-ext';
 import type { PhrasingContent } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
@@ -577,6 +578,29 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateO
   });
 };
 
+export const resolveUnlinkedCitations = (tree: GenericParent, opts: StateOptions) => {
+  selectAll('cite', tree).forEach((node) => {
+    const cite = node as Cite;
+    if (!cite.error) return;
+    const reference = normalizeLabel(cite.label);
+    const target = opts.state.getTarget(cite.label) ?? opts.state.getTarget(reference?.identifier);
+    if (!target || !reference) {
+      if (!opts.state.file) return;
+      fileWarn(opts.state.file, `Could not link citation with label "${cite.label}".`, {
+        node,
+        source: TRANSFORM_NAME,
+      });
+      return;
+    }
+    // Change the cite into a cross-reference!
+    const xref = cite as unknown as CrossReference;
+    xref.type = 'crossReference';
+    xref.identifier = reference.identifier;
+    xref.label = reference.label;
+    delete cite.error;
+  });
+};
+
 /** Cross references cannot contain links, but should retain their content */
 function unnestCrossReferencesTransform(tree: GenericParent) {
   const xrefs = selectAll('crossReference', tree) as GenericNode[];
@@ -605,6 +629,7 @@ export const resolveReferencesTransform = (
   opts: StateOptions,
 ) => {
   resolveReferenceLinksTransform(tree, opts);
+  resolveUnlinkedCitations(tree, opts);
   resolveCrossReferencesTransform(tree, opts);
   addContainerCaptionNumbersTransform(tree, file, opts);
   unnestCrossReferencesTransform(tree);

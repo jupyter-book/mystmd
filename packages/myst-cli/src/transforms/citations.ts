@@ -1,9 +1,8 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import { InlineCite } from 'citation-js-utils';
-import type { Logger } from 'myst-cli-utils';
 import type { GenericParent, References } from 'myst-common';
 import type { StaticPhrasingContent, Parent } from 'myst-spec';
-import type { Cite, CiteKind, CiteGroup } from 'myst-spec-ext';
+import type { Cite } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 
 function pushCite(
@@ -25,26 +24,26 @@ function pushCite(
   };
 }
 
-function addCitationChildren(
-  cite: Cite,
-  renderer: CitationRenderer,
-  kind: CiteKind = 'parenthetical',
-): boolean {
+function addCitationChildren(cite: Cite, renderer: CitationRenderer): boolean {
   const render = renderer[cite.label as string];
+  if (!render) {
+    cite.error = 'not found';
+    return false;
+  }
+  let children: StaticPhrasingContent[];
   try {
-    const children = render?.inline(kind === 'narrative' ? InlineCite.t : InlineCite.p, {
+    children = render.inline(cite.kind === 'narrative' ? InlineCite.t : InlineCite.p, {
       prefix: cite.prefix,
       suffix: cite.suffix,
+      partial: cite.partial,
     }) as StaticPhrasingContent[];
-    if (children) {
-      cite.children = children;
-      return true;
-    }
   } catch (error) {
-    // pass
+    cite.error = 'rendering error';
+    return false;
   }
-  cite.error = true;
-  return false;
+  if (!hasChildren(cite)) cite.children = children;
+  delete cite.error;
+  return true;
 }
 
 function hasChildren(node: Parent) {
@@ -52,28 +51,15 @@ function hasChildren(node: Parent) {
 }
 
 export function transformCitations(
-  log: Logger,
   mdast: GenericParent,
   renderer: CitationRenderer,
   references: Pick<References, 'cite'>,
-  file: string,
 ) {
-  // TODO: this can be simplified if typescript doesn't die on the parent
-  const citeGroups = selectAll('citeGroup', mdast) as CiteGroup[];
-  citeGroups.forEach((node) => {
-    const kind = node.kind;
-    node.children?.forEach((cite) => {
-      addCitationChildren(cite, renderer, kind);
-    });
-  });
   const citations = selectAll('cite', mdast) as Cite[];
   citations.forEach((cite) => {
     const citeLabel = cite.label as string;
     // push cites in order of appearance in the document
-    pushCite(references, renderer, citeLabel);
-    if (hasChildren(cite)) return;
-    // These are picked up as they are *not* cite groups
     const success = addCitationChildren(cite, renderer);
-    if (!success) log.error(`⚠️  Could not find citation: ${cite.label} in ${file}`);
+    if (success) pushCite(references, renderer, citeLabel);
   });
 }

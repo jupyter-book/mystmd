@@ -39,7 +39,7 @@ export function createSanitizer() {
 function cleanRef(citation: string) {
   const sanitizer = createSanitizer();
   const cleanHtml = sanitizer.cleanCitationHtml(citation).trim();
-  return cleanHtml.replace(/^1\./g, '').trim();
+  return cleanHtml.replace(/^1\./g, '').replace(/&amp;/g, '&').trim();
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -76,7 +76,13 @@ export function getInlineCitation(data: CitationJson, kind: InlineCite, opts?: I
   const year = data.issued?.['date-parts']?.[0]?.[0];
   const prefix = opts?.prefix ? `${opts.prefix} ` : '';
   const suffix = opts?.suffix ? `, ${opts.suffix}` : '';
-  const yearPart = kind === InlineCite.t ? ` (${year}${suffix})` : `, ${year}${suffix}`;
+  let yearPart = kind === InlineCite.t ? ` (${year}${suffix})` : `, ${year}${suffix}`;
+
+  if (opts?.partial === 'author') yearPart = '';
+  if (opts?.partial === 'year') {
+    const onlyYear = kind === InlineCite.t ? `(${year}${suffix})` : `${year}${suffix}`;
+    return [{ type: 'text', value: onlyYear }];
+  }
 
   if (!authors || authors.length === 0) {
     const text = data.publisher || data.title;
@@ -101,7 +107,7 @@ export function getInlineCitation(data: CitationJson, kind: InlineCite, opts?: I
   throw new Error('Unknown number of authors for citation');
 }
 
-export type InlineOptions = { prefix?: string; suffix?: string };
+export type InlineOptions = { prefix?: string; suffix?: string; partial?: 'author' | 'year' };
 
 export type CitationRenderer = Record<
   string,

@@ -1,22 +1,27 @@
 export const position = {
   end: {
-    column: 0,
+    column: 1,
     line: 1,
   },
   start: {
-    column: 0,
-    line: 0,
+    column: 1,
+    line: 1,
   },
 };
 
-export const positionFn = (start: number, end: number) => {
+export const positionFn = (
+  start: number,
+  end: number,
+  colStart: number = 1,
+  colEnd: number = 1,
+) => {
   return {
     end: {
-      column: 0,
+      column: colEnd,
       line: end,
     },
     start: {
-      column: 0,
+      column: colStart,
       line: start,
     },
   };

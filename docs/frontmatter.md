@@ -173,6 +173,8 @@ banner: banner.png
 Example of a banner in a site using the `article-theme`.
 :::
 
+(authors)=
+
 ## Authors
 
 The `authors` field is a list of `author` objects. Available fields in the author object are:
