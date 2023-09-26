@@ -1,11 +1,10 @@
 import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 export const chemRole: RoleSpec = {
   name: 'chemicalFormula',
   alias: ['chem'],
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   run(data: RoleData): GenericNode[] {

@@ -1,5 +1,5 @@
 import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
-import { normalizeLabel, ParseTypesEnum } from 'myst-common';
+import { normalizeLabel } from 'myst-common';
 
 const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Reference <ref>'
 
@@ -7,7 +7,7 @@ export const refRole: RoleSpec = {
   name: 'ref',
   alias: ['eq', 'numref', 'prf:ref'],
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   run(data: RoleData): GenericNode[] {

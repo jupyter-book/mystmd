@@ -1,28 +1,28 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { createId, normalizeLabel, ParseTypesEnum } from 'myst-common';
+import { createId, normalizeLabel } from 'myst-common';
 
 export const exerciseDirective: DirectiveSpec = {
   name: 'exercise',
   alias: ['exercise-start'],
   arg: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
   },
   options: {
     label: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
     class: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
     nonumber: {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
     },
     hidden: {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
     },
   },
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
   },
   run(data: DirectiveData): GenericNode[] {
     const children: GenericNode[] = [];
@@ -60,22 +60,22 @@ export const solutionDirective: DirectiveSpec = {
   name: 'solution',
   alias: ['solution-start'],
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   options: {
     label: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
     class: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
     hidden: {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
     },
   },
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
   },
   run(data: DirectiveData): GenericNode[] {
     const children: GenericNode[] = [];

@@ -99,7 +99,8 @@ export type Cite = {
   type: 'cite';
   kind: CiteKind;
   label: string;
-  children: StaticPhrasingContent[];
+  identifier?: string;
+  children?: StaticPhrasingContent[];
   error?: boolean | 'not found' | 'rendering error';
   prefix?: string;
   suffix?: string;

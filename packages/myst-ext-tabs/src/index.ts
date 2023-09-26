@@ -1,16 +1,15 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 export const tabSetDirective: DirectiveSpec = {
   name: 'tab-set',
-  alias: ['tabSet'],
+  alias: ['tabSet', 'tab'],
   options: {
     class: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
   },
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
   },
   run(data: DirectiveData): GenericNode[] {
     return [
@@ -27,18 +26,18 @@ export const tabItemDirective: DirectiveSpec = {
   name: 'tab-item',
   alias: ['tabItem'],
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
   },
   options: {
     sync: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
     selected: {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
     },
   },
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
   },
   run(data: DirectiveData): GenericNode[] {
     return [

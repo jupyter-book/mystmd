@@ -1,5 +1,5 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { normalizeLabel, ParseTypesEnum } from 'myst-common';
+import { normalizeLabel } from 'myst-common';
 
 export const proofDirective: DirectiveSpec = {
   name: 'proof',
@@ -21,21 +21,21 @@ export const proofDirective: DirectiveSpec = {
     'prf:assumption',
   ],
   arg: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
   },
   options: {
     label: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
     class: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
     nonumber: {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
     },
   },
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
     required: true,
   },
   run(data: DirectiveData): GenericNode[] {

@@ -1,12 +1,11 @@
 import type { RoleSpec } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Download <file.zip>'
 
 export const downloadRole: RoleSpec = {
   name: 'download',
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   run(data) {

@@ -1,6 +1,5 @@
 import type { Admonition } from 'myst-spec-ext';
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 export const admonitionDirective: DirectiveSpec = {
   name: 'admonition',
@@ -23,7 +22,7 @@ export const admonitionDirective: DirectiveSpec = {
     '.callout-caution',
   ],
   arg: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
     doc: 'The optional title of the admonition, if not supplied the admonition kind will be used.\n\nNote that the argument parsing is different from Sphinx, which does not allow named admonitions to have custom titles.',
   },
   options: {
@@ -46,7 +45,7 @@ export const admonitionDirective: DirectiveSpec = {
     },
   },
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
     doc: 'The body of the admonition. If there is no title and the body starts with bold text or a heading, that content will be used as the admonition title.',
   },
   run(data: DirectiveData): GenericNode[] {

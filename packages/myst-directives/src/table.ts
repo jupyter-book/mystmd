@@ -1,44 +1,44 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { fileError, normalizeLabel, ParseTypesEnum, RuleId } from 'myst-common';
+import { fileError, normalizeLabel, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 
 export const listTableDirective: DirectiveSpec = {
   name: 'list-table',
   arg: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
   },
   options: {
     label: {
-      type: ParseTypesEnum.string,
+      type: String,
       alias: ['name'],
     },
     'header-rows': {
-      type: ParseTypesEnum.number,
+      type: Number,
       // nonnegative int
     },
     // 'stub-columns': {
-    //   type: ParseTypesEnum.number,
+    //   type: Number,
     //   // nonnegative int
     // },
     // width: {
-    //   type: ParseTypesEnum.string,
+    //   type: String,
     //   // length_or_percentage_or_unitless,
     // },
     // widths: {
-    //   type: ParseTypesEnum.string,
+    //   type: String,
     //   // TODO use correct widths option validator
     // },
     class: {
-      type: ParseTypesEnum.string,
+      type: String,
       // class_option: list of strings?
     },
     align: {
-      type: ParseTypesEnum.string,
+      type: String,
       // choice(['left', 'center', 'right'])
     },
   },
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
     required: true,
   },
   validate(data: DirectiveData, vfile: VFile) {
