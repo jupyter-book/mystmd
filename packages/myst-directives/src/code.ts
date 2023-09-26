@@ -18,7 +18,8 @@ function parseEmphasizeLines(emphasizeLinesString?: string | undefined): number[
 export function getCodeBlockOptions(
   options: DirectiveData['options'],
   vfile: VFile,
-): Pick<Code, 'emphasizeLines' | 'showLineNumbers' | 'startingLineNumber'> {
+  defaultFilename?: string,
+): Pick<Code, 'emphasizeLines' | 'showLineNumbers' | 'startingLineNumber' | 'filename'> {
   if (options?.['lineno-start'] != null && options?.['number-lines'] != null) {
     fileWarn(vfile, 'Cannot use both "lineno-start" and "number-lines"', {
       source: 'code-block:options',
@@ -39,16 +40,24 @@ export function getCodeBlockOptions(
   } else if (startingLineNumber == null || startingLineNumber <= 1) {
     startingLineNumber = undefined;
   }
+  let filename = options?.['filename'] as string | undefined;
+  if (filename?.toLowerCase() === 'false') {
+    filename = undefined;
+  } else if (!filename && defaultFilename) {
+    filename = defaultFilename;
+  }
   return {
     emphasizeLines,
     showLineNumbers,
     startingLineNumber,
+    filename,
   };
 }
 
 export const CODE_DIRECTIVE_OPTIONS: DirectiveSpec['options'] = {
   caption: {
     type: 'myst',
+    doc: 'A parsed caption for the code block.',
   },
   linenos: {
     type: Boolean,
@@ -66,6 +75,10 @@ export const CODE_DIRECTIVE_OPTIONS: DirectiveSpec['options'] = {
     type: String,
     doc: 'Emphasize particular lines (comma-separated numbers), e.g. "3,5"',
   },
+  filename: {
+    type: String,
+    doc: 'Show the filename in addition to the rendered code. The `include` directive will use the filename by default, to turn off this default set the filename to `false`.',
+  },
   // dedent: {
   //   type: Number,
   //   doc: 'Strip indentation characters from the code block',
@@ -78,9 +91,11 @@ export const CODE_DIRECTIVE_OPTIONS: DirectiveSpec['options'] = {
 
 export const codeDirective: DirectiveSpec = {
   name: 'code',
+  doc: 'A code-block environment with a language as the argument, and options for highlighting, showing line numbers, and an optional filename.',
   alias: ['code-block', 'sourcecode'],
   arg: {
     type: String,
+    doc: 'Code language, for example `python` or `typescript`',
   },
   options: {
     label: {
@@ -95,6 +110,7 @@ export const codeDirective: DirectiveSpec = {
   },
   body: {
     type: String,
+    doc: 'The raw code to display for the code block.',
   },
   run(data, vfile): GenericNode[] {
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};

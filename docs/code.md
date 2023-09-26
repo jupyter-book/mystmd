@@ -9,7 +9,7 @@ numbering:
 ```{warning}
 The code blocks on this page are for **presentation** of code only, they are not executed.
 
-For code execution, see the `{code-cell}` directive in the execution section of the documentation.
+For code execution, see the {myst:directive}`code-cell` directive in the execution section of the documentation.
 ```
 
 You can include code in your documents using the standard markup syntax of ` ```language `,
@@ -31,10 +31,10 @@ A list of language names supported by the  `myst-react` package is here: [HLJS l
 
 ## Code blocks
 
-The above code is not a directive, it is just standard markdown syntax, which cannot add a caption or label. To caption or label blocks of code use the `code-block` directive.
+The above code is not a directive, it is just standard markdown syntax, which cannot add a {myst:directive}`code.caption` or {myst:directive}`code.label`. To caption or label blocks of code use the {myst:directive}`code` directive.
 
 ````{myst}
-```{code-block} python
+```{code} python
 :name: my-program
 :caption: Creating a TensorMesh using SimPEG
 from discretize import TensorMesh
@@ -50,47 +50,37 @@ In the [](#my-program), we create a mesh for simulation using [SimPEG](https://d
 
 ## Numbering and Highlighting
 
-To add numbers and emphasis to lines, we are following the [sphinx](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block) `code-block` directive. You can use `linenos` which is a flag, with no value, and `emphasize-lines` with a comma-separated list of line numbers to emphasize.
+To add numbers and emphasis to lines use the {myst:directive}`code` directive. You can use {myst:directive}`code.linenos` which is a flag, with no value, and {myst:directive}`code.emphasize-lines` with a comma-separated list of line numbers to emphasize.
 
-````{code-block} md
+````{code} md
 :linenos:
 :emphasize-lines: 2,3
 :caption: Emphasize lines inside of a `code` block.
-```{code-block}
+```{code}
 :linenos:
 :emphasize-lines: 2,3
 ...
 ````
 
-You can also set the start number using the `lineno-start` directive, and all emphasized lines will be relative to that number.
+You can also set the start number using the {myst:directive}`code.lineno-start` directive, and all emphasized lines will be relative to that number.
 
-## `code-block` reference
-
-linenos (no value)
-: Show line numbers for the code block
-
-lineno-start (number)
-: Set the first line number of the code block. If present, `linenos` option is also automatically activated.
-: Default line numbering starts at `1`.
-
-emphasize-lines (string)
-: Emphasize lines of the code block, for example, `1, 2` highlights the first and second lines.
-: The line number counting starts at `lineno-start`, which is by default `1`.
-
-caption (string)
-: Add a caption to the code block.
-
-name (string)
-: The target label for the code-block, can be used by `ref` and `numref` roles.
-
-```{note} Alternative implementations
+```{tip} Docutils and Sphinx Compatibility
 :class: dropdown
 
-The parser also supports the `docutils` implementation (see [docutils documentation](https://docutils.sourceforge.io/docs/ref/rst/directives.html#code)) of a `{code}` directive, which only supports the `number-lines` option.
+For full compatibility with Sphinx we suggest using `{code-block}` directive, which is an alias of the {myst:directive}`code` directive. The MyST implementation supports both the Sphinx [`{code-block} directive`](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block) as well as the `docutils` [{code} directive](https://docutils.sourceforge.io/docs/ref/rst/directives.html#code) implementation, which only supports the `number-lines` option.
 
-It is recommended to use the more fully featured `code-block` directive documented above, or a simple markdown code block.
+You can use either `code` or `code-block` directive documented above or even a normal markdown code block.
+All implementations in MyST are resolved to the same `code` type in the abstract syntax tree.
+```
 
-All implementations are resolved to the same `code` type in the abstract syntax tree.
+## Showing a Filename
+
+Adding a {myst:directive}`code.filename` option will show the name of the file at the top of the code block. For example, `myst.yml` in the following example:
+
+```{code} yaml
+:filename: myst.yml
+project:
+  title: Showing Filenames in code-blocks
 ```
 
 ## Including Files
