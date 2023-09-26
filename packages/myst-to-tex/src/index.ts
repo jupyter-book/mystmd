@@ -1,4 +1,4 @@
-import type { Root, Parent, Code, Abbreviation, Text } from 'myst-spec';
+import type { Root, Parent, Code, Abbreviation } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode, References } from 'myst-common';
@@ -14,7 +14,7 @@ import {
   stringToLatexText,
 } from './utils.js';
 import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
-import { select, selectAll } from 'unist-util-select';
+import { selectAll } from 'unist-util-select';
 import type { FootnoteDefinition } from 'myst-spec-ext';
 import { transformLegends } from './legends.js';
 
@@ -258,7 +258,7 @@ const handlers: Record<string, Handler> = {
     if (!acronymText) {
       return [];
     }
-    
+
     const ref = createAcronymRef(acronymText);
     const entry = state.abbreviations[ref];
     if (!entry) {
