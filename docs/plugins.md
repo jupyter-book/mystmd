@@ -5,7 +5,7 @@ description: Plugins provide powerful ways to extend and customize MyST
 
 Plugins provide powerful ways to extend and customize MyST by adding directives and roles or specific transformations on the AST that can download or augment your articles and documentation. These plugins also support custom rendering and transformation pipelines for various export targets including React, HTML, LaTeX, and Microsoft Word.
 
-:::{danger} Plugins are incomplete in Beta
+:::{danger} Plugins are incomplete and in Beta
 The interfaces and packaging for the plugins may change substantially in the future.\
 **Expect changes!!**
 
