@@ -77,6 +77,8 @@ const createGlossaryDefinitions = (tree: Root): Record<string, [string, string]>
       .filter((x) => x.length > 0), // remove empty
   );
 
+const createAcronymRef = (input: string): string => input.trim().toLowerCase();
+
 const createAcronymDefinitions = (tree: Root): Record<string, [string, string]> =>
   // Note: Abbreviations contain their resolved values, hence there
   //       can be many duplicates which will be collapsed when
@@ -85,14 +87,12 @@ const createAcronymDefinitions = (tree: Root): Record<string, [string, string]> 
     selectAll('abbreviation', tree)
       .map((node) => {
         const a = node as Abbreviation;
-        if (!a.title) {
+        const acronymText = toText(a);
+        if (!acronymText || !a.title) {
           return [];
         }
-        const t = select('text', node) as Text;
-        if (!t) {
-          return [];
-        }
-        return [t.value.toLowerCase(), [t.value, a.title]]; // key => acronym, expansion
+        const key = createAcronymRef(acronymText);
+        return [key, [acronymText, a.title]]; // key => acronym, expansion
       })
       .filter((x) => x.length > 0), // remove empty
   );
@@ -254,11 +254,12 @@ const handlers: Record<string, Handler> = {
       return;
     }
 
-    const t = select('text', node) as Text;
-    if (!t) {
+    const acronymText = toText(node);
+    if (!acronymText) {
       return [];
     }
-    const ref = t.value.toLowerCase();
+    
+    const ref = createAcronymRef(acronymText);
     const entry = state.abbreviations[ref];
     if (!entry) {
       fileError(state.file, `Unknown abbreviation entry identifier "${ref}"`, {
