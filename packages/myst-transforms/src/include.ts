@@ -1,4 +1,5 @@
-import { fileWarn, type GenericNode, type GenericParent } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
+import { fileWarn, RuleId } from 'myst-common';
 import type { Code, Container, Include } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { Caption } from 'myst-spec';
@@ -101,7 +102,9 @@ export function filterIncludedContent(
       if (typeof f === 'number') {
         const ind = index(f, lines.length);
         if (!ind) {
-          fileWarn(vfile, 'Invalid line number "0", indexing starts at 1');
+          fileWarn(vfile, 'Invalid line number "0", indexing starts at 1', {
+            ruleId: RuleId.includeContentFilters,
+          });
           return [];
         }
         if (!startingLineNumber) startingLineNumber = ind[0] + 1;
@@ -110,13 +113,17 @@ export function filterIncludedContent(
       const ind0 = index(f[0], lines.length);
       const ind1 = index(f[1] ?? lines.length, lines.length);
       if (!ind0 || !ind1) {
-        fileWarn(vfile, 'Invalid line number "0", indexing starts at 1');
+        fileWarn(vfile, 'Invalid line number "0", indexing starts at 1', {
+          ruleId: RuleId.includeContentFilters,
+        });
         return [];
       }
       if (!startingLineNumber) startingLineNumber = ind0[0] + 1;
       const slice = lines.slice(ind0[0], ind1[1]);
       if (slice.length === 0) {
-        fileWarn(vfile, `Unexpected lines, from "${f[0]}" to "${f[1] ?? ''}"`);
+        fileWarn(vfile, `Unexpected lines, from "${f[0]}" to "${f[1] ?? ''}"`, {
+          ruleId: RuleId.includeContentFilters,
+        });
       }
       return slice;
     });
@@ -134,6 +141,7 @@ export function filterIncludedContent(
     fileWarn(
       vfile,
       `Could not find starting line including "${filter.startAt || filter.startAfter}"`,
+      { ruleId: RuleId.includeContentFilters },
     );
     startLine = 0;
   }
@@ -149,7 +157,9 @@ export function filterIncludedContent(
           )
       : lines.length;
   if (endLine === -1) {
-    fileWarn(vfile, `Could not find ending line including "${filter.endAt || filter.endBefore}"`);
+    fileWarn(vfile, `Could not find ending line including "${filter.endAt || filter.endBefore}"`, {
+      ruleId: RuleId.includeContentFilters,
+    });
     endLine = lines.length;
   } else if (filter.endAt || filter.endBefore) {
     endLine += startLine;

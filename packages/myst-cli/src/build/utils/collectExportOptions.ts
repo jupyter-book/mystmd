@@ -1,8 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { RuleId, fileError } from 'myst-common';
 import type { Export } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
+import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
+import { addWarningForFile, logMessagesFromVFile } from '../../index.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import type { ISession } from '../../session/index.js';
 import { selectors } from '../../store/index.js';
@@ -20,6 +23,8 @@ async function prepareExportOptions(
   opts: ExportOptions,
 ) {
   const { disableTemplate, filename, template } = opts;
+  const vfile = new VFile();
+  vfile.path = sourceFile;
   let rawFrontmatter: Record<string, any> | undefined;
   const state = session.store.getState();
   if (projectPath && sourceFile === selectors.selectLocalConfigFile(state, projectPath)) {
@@ -47,7 +52,9 @@ async function prepareExportOptions(
         .map((file: string) => {
           const resolvedFile = path.resolve(path.dirname(sourceFile), file);
           if (!fs.existsSync(resolvedFile)) {
-            session.log.error(`Invalid export sub_article '${file}' in source: ${sourceFile}`);
+            fileError(vfile, `Invalid export sub_article '${file}' in source: ${sourceFile}`, {
+              ruleId: RuleId.exportArticleExists,
+            });
             return undefined;
           } else {
             return resolvedFile;
@@ -68,19 +75,24 @@ async function prepareExportOptions(
         if (!opts.force) {
           // You cannot "--force" project exports with no article. This is expected
           // and needs no error message.
-          session.log.error(`Invalid export - no 'article' in source: ${sourceFile}`);
+          fileError(vfile, `Invalid export - no 'article' in source: ${sourceFile}`, {
+            ruleId: RuleId.exportArticleExists,
+          });
         }
         return undefined;
       }
       const resolvedFile = path.resolve(path.dirname(sourceFile), exp.article);
       if (!fs.existsSync(resolvedFile)) {
-        session.log.error(`Invalid export article '${exp.article}' in source: ${sourceFile}`);
+        fileError(vfile, `Invalid export article '${exp.article}' in source: ${sourceFile}`, {
+          ruleId: RuleId.exportArticleExists,
+        });
         return undefined;
       }
       exp.article = resolvedFile;
       return exp;
     })
     .filter((exp) => !!exp);
+  logMessagesFromVFile(session, vfile);
   return filteredExportOptions as (Export & { article: string })[];
 }
 
@@ -127,7 +139,13 @@ function getOutput(
     output = path.join(output, `${basename}.${extension}`);
   }
   if (!output.endsWith(`.${extension}`)) {
-    session.log.error(`The filename must end with '.${extension}': "${output}"`);
+    addWarningForFile(
+      session,
+      sourceFile,
+      `The filename must end with '.${extension}': "${output}"`,
+      'error',
+      { ruleId: RuleId.exportExtensionCorrect },
+    );
     return undefined;
   }
   return output;

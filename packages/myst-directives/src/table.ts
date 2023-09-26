@@ -1,5 +1,5 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { fileError, normalizeLabel, ParseTypesEnum } from 'myst-common';
+import { fileError, normalizeLabel, ParseTypesEnum, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 
 export const listTableDirective: DirectiveSpec = {
@@ -45,7 +45,9 @@ export const listTableDirective: DirectiveSpec = {
     const validatedData = { ...data };
     const parsedBody = data.body as GenericNode[];
     if (parsedBody.length !== 1 || parsedBody[0].type !== 'list') {
-      fileError(vfile, 'list-table directive must have one list as body');
+      fileError(vfile, 'list-table directive must have one list as body', {
+        ruleId: RuleId.directiveBodyCorrect,
+      });
       validatedData.body = [];
     } else {
       parsedBody[0].children?.forEach((listItem) => {
@@ -55,7 +57,9 @@ export const listTableDirective: DirectiveSpec = {
           listItem.children?.length !== 1 ||
           listItem.children[0]?.type !== 'list'
         ) {
-          fileError(vfile, 'list-table directive must have a list of lists');
+          fileError(vfile, 'list-table directive must have a list of lists', {
+            ruleId: RuleId.directiveBodyCorrect,
+          });
           validatedData.body = [];
         }
       });

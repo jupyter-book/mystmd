@@ -1,9 +1,9 @@
 import type MarkdownIt from 'markdown-it/lib';
 import { rolePlugin } from './roles.js';
 import { directivePlugin } from './directives.js';
+import { citationsPlugin } from './citations.js';
 
-export { rolePlugin };
-export { directivePlugin };
+export { rolePlugin, directivePlugin, citationsPlugin };
 
 /**
  * A markdown-it plugin for parsing MyST roles and directives to structured data

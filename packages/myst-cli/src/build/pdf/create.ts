@@ -1,15 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import util from 'util';
+import chalk from 'chalk';
 import { pdfExportCommand, texMakeGlossariesCommand } from 'jtex';
 import { exec, tic } from 'myst-cli-utils';
+import { RuleId, TemplateKind, fileError } from 'myst-common';
 import MystTemplate from 'myst-templates';
+import { VFile } from 'vfile';
 import type { ISession } from '../../session/types.js';
-import { createTempFolder, uniqueArray } from '../../utils/index.js';
+import { createTempFolder, logMessagesFromVFile, uniqueArray } from '../../utils/index.js';
 import type { ExportResults, ExportWithOutput } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
-import { TemplateKind } from 'myst-common';
-import chalk from 'chalk';
 import { isLatexmkAvailable, isMakeglossariesAvailable } from './utils.js';
 import { docLinks } from '../../docs.js';
 
@@ -47,6 +48,8 @@ export async function createPdfGivenTexExport(
   glossaries?: boolean,
 ): Promise<ExportResults> {
   if (clean) cleanOutput(session, pdfOutput);
+  const vfile = new VFile();
+  vfile.path = pdfOutput;
   const { output: texOutput, template } = texExportOptions;
   const templateLogString = `(${template ?? 'default'})`;
   const {
@@ -71,6 +74,7 @@ export async function createPdfGivenTexExport(
     templateLogString,
     pdfBuild,
     buildPath,
+    vfile,
     glossaries,
   );
 
@@ -132,7 +136,7 @@ export async function createPdfGivenTexExport(
     await copyFile(pdfBuild, pdfOutput);
     session.log.debug(`Copied PDF file to ${pdfOutput}`);
   } else {
-    session.log.error(`Could not find ${pdfBuild} as expected`);
+    fileError(vfile, `Could not find ${pdfBuild} as expected`, { ruleId: RuleId.pdfBuilds });
   }
 
   if (copyLogs) {
@@ -149,7 +153,7 @@ export async function createPdfGivenTexExport(
       await copyFile(texLogBuild, texLogOutput);
     }
   }
-
+  logMessagesFromVFile(session, vfile);
   const logFiles = copyLogs ? [logOutput, texLogOutput] : [logBuild, texLogBuild];
   if (!fs.existsSync(pdfOutput)) {
     const err = Error(`Error exporting: ${pdfOutput}`);
@@ -205,6 +209,7 @@ async function runCommands(
   templateLogString: string,
   pdfBuild: string,
   buildPath: string,
+  vfile: VFile,
   glossaries?: boolean,
 ) {
   const toc = tic();
@@ -216,6 +221,7 @@ async function runCommands(
     template,
     pdfBuild,
     buildPath,
+    vfile,
   );
 
   if (buildError || !glossaries) {
@@ -237,6 +243,7 @@ async function runCommands(
     template,
     pdfBuild,
     buildPath,
+    vfile,
   );
 
   return { buildError, toc };
@@ -250,10 +257,13 @@ async function runPdfBuildCommand(
   template: string | null | undefined,
   pdfBuild: string,
   buildPath: string,
+  vfile: VFile,
 ) {
   if (!isLatexmkAvailable()) {
-    session.log.error(
+    fileError(
+      vfile,
       `⚠️  The "latexmk" command is not available. See documentation on installing LaTeX:\n\n${docLinks.installLatex}`,
+      { ruleId: RuleId.pdfBuildCommandsAvailable },
     );
   }
 
@@ -277,8 +287,10 @@ async function runPdfBuildCommand(
     session.log.debug(`Done building LaTeX.`);
   } catch (err) {
     session.log.debug((err as Error).stack);
-    session.log.error(
-      `🛑 LaTeX reported an error building your PDF ${templateLogString} for ${texFile}`,
+    fileError(
+      vfile,
+      `LaTeX reported an error building your PDF ${templateLogString} for ${texFile}`,
+      { ruleId: RuleId.pdfBuildsWithoutErrors },
     );
     buildError = true;
   }

@@ -4,9 +4,11 @@ import AdmZip from 'adm-zip';
 import { glob } from 'glob';
 import mime from 'mime-types';
 import { copyFileMaintainPath, copyFileToFolder, isDirectory, tic } from 'myst-cli-utils';
+import { RuleId, fileError, fileWarn } from 'myst-common';
 import { ExportFormats } from 'myst-frontmatter';
 import type { LinkTransformer } from 'myst-transforms';
 import { selectAll } from 'unist-util-select';
+import { VFile } from 'vfile';
 import { js2xml } from 'xml-js';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { loadFile } from '../../process/index.js';
@@ -15,7 +17,7 @@ import { loadProjectFromDisk, writeTocFromProject } from '../../project/index.js
 import { castSession } from '../../session/index.js';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
-import { createTempFolder } from '../../utils/index.js';
+import { createTempFolder, logMessagesFromVFile } from '../../utils/index.js';
 import { runJatsExport } from '../jats/single.js';
 import type { ExportWithOutput, ExportOptions } from '../types.js';
 import {
@@ -67,6 +69,7 @@ async function copyFilesFromConfig(
   projectPath: string,
   mecaFolder: string,
   manifestItems: ManifestItem[],
+  errorLogFn: (m: string) => void,
 ) {
   const projConfig = selectors.selectLocalProjectConfig(session.store.getState(), projectPath);
   const entries: { itemType: string; entry: string }[] = [
@@ -91,6 +94,7 @@ async function copyFilesFromConfig(
               match,
               projectPath,
               bundleFolder(mecaFolder),
+              errorLogFn,
             );
             addManifestItem(manifestItems, itemType, mecaFolder, destination);
           });
@@ -108,6 +112,7 @@ async function copyDependentFiles(
   projectPath: string,
   mecaFolder: string,
   manifestItems: ManifestItem[],
+  errorLogFn: (m: string) => void,
 ) {
   const cache = castSession(session);
   if (!cache.$mdast[sourceFile]) {
@@ -127,7 +132,13 @@ async function copyDependentFiles(
     .map((file) => path.resolve(path.dirname(sourceFile), file))
     .filter((file) => fs.existsSync(file));
   filesToCopy.forEach((file) => {
-    const dependency = copyFileMaintainPath(session, file, projectPath, bundleFolder(mecaFolder));
+    const dependency = copyFileMaintainPath(
+      session,
+      file,
+      projectPath,
+      bundleFolder(mecaFolder),
+      errorLogFn,
+    );
     addManifestItem(manifestItems, 'article-source', mecaFolder, dependency);
   });
 }
@@ -188,6 +199,11 @@ export async function runMecaExport(
 ) {
   const toc = tic();
   const { output, article } = exportOptions;
+  const vfile = new VFile();
+  vfile.path = output;
+  const fileCopyErrorLogFn = (m: string) => {
+    fileError(vfile, m, { ruleId: RuleId.mecaFilesCopied });
+  };
   if (clean) cleanOutput(session, output);
   const mecaFolder = createTempFolder(session);
   const manifestItems: ManifestItem[] = [];
@@ -222,20 +238,30 @@ export async function runMecaExport(
       });
     }
   } else if (jatsExports.length === 0) {
-    session.log.warn(`No JATS export found for inclusion with MECA bundle`);
+    fileWarn(vfile, `No JATS export found for inclusion with MECA bundle`, {
+      ruleId: RuleId.mecaIncludesJats,
+    });
   } else if (jatsExports.length > 1) {
-    session.log.warn(
+    fileWarn(
+      vfile,
       `Multiple JATS exports found for inclusion with MECA bundle\nConventionally, MECA should only have one JATS article`,
+      {
+        ruleId: RuleId.mecaIncludesJats,
+      },
     );
   }
   // Copy any existing JATS exports (and dependent files)
   jatsExports.forEach(({ output: jatsOutput }) => {
     if (!fs.existsSync(jatsOutput)) {
-      session.log.warn(
+      fileWarn(
+        vfile,
         `Other exports must be built prior to building MECA bundle\nTo resolve this, run: myst build --all`,
+        {
+          ruleId: RuleId.mecaExportsBuilt,
+        },
       );
     }
-    const jatsDest = copyFileToFolder(session, jatsOutput, mecaFolder);
+    const jatsDest = copyFileToFolder(session, jatsOutput, mecaFolder, fileCopyErrorLogFn);
     if (jatsDest) {
       addManifestItem(manifestItems, 'article-metadata', mecaFolder, jatsDest);
     }
@@ -243,7 +269,12 @@ export async function runMecaExport(
     if (fs.existsSync(jatsFiles)) {
       fs.readdirSync(jatsFiles).forEach((file) => {
         const sourceFile = path.join(jatsFiles, file);
-        const fileDest = copyFileToFolder(session, sourceFile, path.join(mecaFolder, 'files'));
+        const fileDest = copyFileToFolder(
+          session,
+          sourceFile,
+          path.join(mecaFolder, 'files'),
+          fileCopyErrorLogFn,
+        );
         addManifestItem(manifestItems, 'article-supporting-file', mecaFolder, fileDest);
       });
     }
@@ -259,11 +290,20 @@ export async function runMecaExport(
   );
   manuscriptExports.forEach(({ output: manuscriptOutput }) => {
     if (!fs.existsSync(manuscriptOutput)) {
-      session.log.warn(
+      fileWarn(
+        vfile,
         `Other exports must be built prior to building MECA bundle\nTo resolve this, run: myst build --all`,
+        {
+          ruleId: RuleId.mecaExportsBuilt,
+        },
       );
     }
-    const manuscriptDest = copyFileToFolder(session, manuscriptOutput, mecaFolder);
+    const manuscriptDest = copyFileToFolder(
+      session,
+      manuscriptOutput,
+      mecaFolder,
+      fileCopyErrorLogFn,
+    );
     addManifestItem(manifestItems, 'manuscript', mecaFolder, manuscriptDest);
   });
   const project = projectPath
@@ -277,13 +317,14 @@ export async function runMecaExport(
       selectors.selectLocalConfigFile(session.store.getState(), projectPath),
       projectPath,
       bundle,
+      fileCopyErrorLogFn,
     );
     addManifestItem(manifestItems, 'article-source', mecaFolder, configDest);
     // Copy requirements and resources
-    await copyFilesFromConfig(session, projectPath, mecaFolder, manifestItems);
+    await copyFilesFromConfig(session, projectPath, mecaFolder, manifestItems, fileCopyErrorLogFn);
     // Copy table of contents or write one if it does not exist
     if (fs.existsSync(path.join(projectPath, '_toc.yml'))) {
-      copyFileToFolder(session, path.join(projectPath, '_toc.yml'), bundle);
+      copyFileToFolder(session, path.join(projectPath, '_toc.yml'), bundle, fileCopyErrorLogFn);
     } else {
       writeTocFromProject(project, bundle);
     }
@@ -304,13 +345,26 @@ export async function runMecaExport(
     ];
     await Promise.all(
       projectPages.map(async ({ page, itemType }) => {
-        const pageDest = copyFileMaintainPath(session, page, projectPath, bundle);
+        const pageDest = copyFileMaintainPath(
+          session,
+          page,
+          projectPath,
+          bundle,
+          fileCopyErrorLogFn,
+        );
         addManifestItem(manifestItems, itemType, mecaFolder, pageDest);
-        await copyDependentFiles(session, page, projectPath, mecaFolder, manifestItems);
+        await copyDependentFiles(
+          session,
+          page,
+          projectPath,
+          mecaFolder,
+          manifestItems,
+          fileCopyErrorLogFn,
+        );
       }),
     );
   } else if (article) {
-    const articleDest = copyFileToFolder(session, article, bundle);
+    const articleDest = copyFileToFolder(session, article, bundle, fileCopyErrorLogFn);
     addManifestItem(manifestItems, 'article-source', mecaFolder, articleDest);
   }
   if (fs.existsSync(bundle)) {
@@ -326,6 +380,7 @@ export async function runMecaExport(
   const zip = new AdmZip();
   zip.addLocalFolder(mecaFolder);
   zip.writeZip(output);
+  logMessagesFromVFile(session, vfile);
   session.log.info(toc(`🤐 MECA output copied and zipped to ${output} in %s`));
 }
 

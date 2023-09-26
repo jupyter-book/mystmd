@@ -15,6 +15,7 @@ import {
   mystPlugin,
   deflistPlugin,
   tasklistPlugin,
+  citationsPlugin,
 } from './plugins.js';
 import { applyDirectives } from './directives.js';
 import { applyRoles } from './roles.js';
@@ -32,6 +33,7 @@ export const defaultOptions: Omit<AllOptions, 'vfile'> = {
     frontmatter: true,
     math: true,
     footnotes: true,
+    citations: true,
     deflist: true,
     tasklist: true,
     tables: true,
@@ -63,6 +65,7 @@ export function createTokenizer(opts?: Options) {
   if (extensions.frontmatter) tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
   if (extensions.blocks) tokenizer.use(mystBlockPlugin);
   if (extensions.footnotes) tokenizer.use(footnotePlugin).disable('footnote_inline'); // not yet implemented in myst-parser
+  if (extensions.citations) tokenizer.use(citationsPlugin);
   tokenizer.use(mystPlugin);
   if (extensions.math) tokenizer.use(mathPlugin, extensions.math);
   if (extensions.deflist) tokenizer.use(deflistPlugin);

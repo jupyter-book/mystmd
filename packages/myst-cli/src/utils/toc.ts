@@ -3,7 +3,9 @@ import { join, parse } from 'node:path';
 import yaml from 'js-yaml';
 import type { Logger } from 'myst-cli-utils';
 import { silentLogger } from 'myst-cli-utils';
+import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
+import { addWarningForFile } from './addWarningForFile.js';
 
 export const TOC_FORMAT = 'jb-book';
 
@@ -83,8 +85,12 @@ export function validateTOC(session: ISession, path: string): boolean {
     return true;
   } catch (error) {
     const { message } = error as unknown as Error;
-    session.log.error(
-      `The Table of Contents (ToC) file "${filename}" did not pass validation:\n - ${message}\n - An implicit ToC will be used instead\n`,
+    addWarningForFile(
+      session,
+      filename,
+      `Table of Contents (ToC) file did not pass validation:\n - ${message}\n - An implicit ToC will be used instead\n`,
+      'error',
+      { ruleId: RuleId.validTocStructure },
     );
     return false;
   }

@@ -2,7 +2,7 @@ import YAML from 'js-yaml';
 import type { Handle, Info } from 'mdast-util-to-markdown';
 import { defaultHandlers } from 'mdast-util-to-markdown';
 import type { GenericNode } from 'myst-common';
-import { toText, fileError } from 'myst-common';
+import { toText, fileError, RuleId } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import type { NestedState, Parent, Validator } from './types.js';
@@ -163,13 +163,25 @@ function writeFlowDirective(name: string, args?: string, options?: DirectiveOpti
 function containerValidator(node: any, file: VFile) {
   const { kind } = node;
   if (kind === 'figure' && !select('image', node)) {
-    fileError(file, 'Figure container must have image node child', { node, source: 'myst-to-md' });
+    fileError(file, 'Figure container must have image node child', {
+      node,
+      source: 'myst-to-md',
+      ruleId: RuleId.mdRenders,
+    });
   }
   if (kind === 'table' && !select('table', node)) {
-    fileError(file, 'Table container must have table node child', { node, source: 'myst-to-md' });
+    fileError(file, 'Table container must have table node child', {
+      node,
+      source: 'myst-to-md',
+      ruleId: RuleId.mdRenders,
+    });
   }
   if (kind !== 'figure' && kind !== 'table' && kind !== 'code') {
-    fileError(file, `Unknown kind on container node: ${kind}`, { node, source: 'myst-to-md' });
+    fileError(file, `Unknown kind on container node: ${kind}`, {
+      node,
+      source: 'myst-to-md',
+      ruleId: RuleId.mdRenders,
+    });
   }
 }
 
@@ -326,6 +338,7 @@ function gridValidator(node: any, file: VFile) {
       fileError(file, `Unexpected grid node child is not card: ${child.kind}`, {
         node,
         source: 'myst-to-md',
+        ruleId: RuleId.mdRenders,
       });
     }
   });
@@ -337,6 +350,7 @@ function tabSetValidator(node: any, file: VFile) {
       fileError(file, `Unexpected tabSet node child is not tabItem: ${child.kind}`, {
         node,
         source: 'myst-to-md',
+        ruleId: RuleId.mdRenders,
       });
     }
   });

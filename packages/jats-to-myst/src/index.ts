@@ -4,7 +4,7 @@ import { doi } from 'doi-utils';
 import type { Plugin } from 'unified';
 import { VFile } from 'vfile';
 import type { MessageInfo, GenericNode, GenericParent } from 'myst-common';
-import { toText, copyNode, fileError } from 'myst-common';
+import { toText, copyNode, fileError, RuleId } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import { u } from 'unist-builder';
 import { RefType } from 'jats-tags';
@@ -376,6 +376,7 @@ export class JatsParser implements IJatsParser {
       ...opts,
       node,
       source: source ? `jats-to-myst:${source}` : 'jats-to-myst',
+      ruleId: RuleId.jatsParses,
     });
   }
 
@@ -384,6 +385,7 @@ export class JatsParser implements IJatsParser {
       ...opts,
       node,
       source: source ? `jats-to-myst:${source}` : 'jats-to-myst',
+      ruleId: RuleId.jatsParses,
     });
   }
 
@@ -417,6 +419,7 @@ export class JatsParser implements IJatsParser {
         this.unhandled.push(child.type);
         fileError(this.file, `Unhandled JATS conversion for node of "${child.type}"`, {
           source: 'myst-to-jats',
+          ruleId: RuleId.jatsParses,
         });
       }
     });

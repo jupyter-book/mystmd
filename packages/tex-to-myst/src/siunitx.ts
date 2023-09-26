@@ -1,5 +1,5 @@
 import type { GenericNode } from 'myst-common';
-import { fileWarn } from 'myst-common';
+import { RuleId, fileWarn } from 'myst-common';
 import type { SiUnit } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 import { NARROW_NO_BREAK_SPACE } from './characters.js';
@@ -248,7 +248,10 @@ function createSiUnitNode(
       // Attempt to deal with strings, e.g. "kg.m/s^2"
       // TODO: this is pretty incomplete, especially the custom "_"
       if (n.type === 'group') {
-        fileWarn(file, 'SI Units do not currently parse groups.', { node });
+        fileWarn(file, 'SI Units do not currently parse groups.', {
+          node,
+          ruleId: RuleId.texParses,
+        });
         return n;
       }
       if (n.type !== 'string') return n;
@@ -283,7 +286,7 @@ function createSiUnitNode(
       if (UNITS[cmd]) return { unit: UNITS[cmd] };
       if (PREFIXES[cmd]) return { prefix: PREFIXES[cmd] };
       if (POWERS[cmd]) return { power: POWERS[cmd] };
-      fileWarn(file, `Unknown SI unit: "${cmd}"`, { node });
+      fileWarn(file, `Unknown SI unit: "${cmd}"`, { node, ruleId: RuleId.texParses });
       return { unit: cmd };
     })
     .reduce((items: Unit[], next: { unit: string } | { prefix: string } | { power: Power }) => {
@@ -354,7 +357,10 @@ const SIUNITX_HANDLERS: Record<string, Handler> = {
         if (!n) return '';
         const num = Number(n);
         if (!isNaN(num)) return `${num}`;
-        fileWarn(state.file, `Unexpected number for angle: "${n}".`, { node });
+        fileWarn(state.file, `Unexpected number for angle: "${n}".`, {
+          node,
+          ruleId: RuleId.texParses,
+        });
         return n;
       });
     const angular_units = ['degree', 'arcminute', 'arcsecond'];

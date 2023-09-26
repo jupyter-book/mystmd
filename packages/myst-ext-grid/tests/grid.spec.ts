@@ -17,12 +17,12 @@ describe('grid directive', () => {
             '```{grid-item-card}\nText content\n^^^\nStructure books with text files and Jupyter Notebooks with minimal configuration.\n```\n\n```{grid-item-card}\nMyST Markdown\n^^^\nWrite MyST Markdown to create enriched documents with publication-quality features.\n```\n\n```{grid-item-card}\nExecutable content\n^^^\nExecute notebook cells, store results, and insert outputs across pages.\n```',
           position: {
             end: {
-              column: 0,
+              column: 1,
               line: 20,
             },
             start: {
-              column: 0,
-              line: 0,
+              column: 1,
+              line: 1,
             },
           },
           children: [
@@ -37,12 +37,12 @@ describe('grid directive', () => {
                     'Text content\n^^^\nStructure books with text files and Jupyter Notebooks with minimal configuration.',
                   position: {
                     end: {
-                      column: 0,
+                      column: 1,
                       line: 7,
                     },
                     start: {
-                      column: 0,
-                      line: 2,
+                      column: 1,
+                      line: 3,
                     },
                   },
                 },
@@ -53,12 +53,12 @@ describe('grid directive', () => {
                     'MyST Markdown\n^^^\nWrite MyST Markdown to create enriched documents with publication-quality features.',
                   position: {
                     end: {
-                      column: 0,
+                      column: 1,
                       line: 13,
                     },
                     start: {
-                      column: 0,
-                      line: 8,
+                      column: 1,
+                      line: 9,
                     },
                   },
                 },
@@ -69,12 +69,12 @@ describe('grid directive', () => {
                     'Executable content\n^^^\nExecute notebook cells, store results, and insert outputs across pages.',
                   position: {
                     end: {
-                      column: 0,
+                      column: 1,
                       line: 19,
                     },
                     start: {
-                      column: 0,
-                      line: 14,
+                      column: 1,
+                      line: 15,
                     },
                   },
                 },

@@ -22,6 +22,7 @@ export type AllOptions = {
     frontmatter?: boolean;
     math?: boolean | MathExtensionOptions;
     footnotes?: boolean;
+    citations?: boolean;
     deflist?: boolean;
     tasklist?: boolean;
     tables?: boolean;

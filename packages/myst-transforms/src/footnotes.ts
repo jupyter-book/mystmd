@@ -3,7 +3,7 @@ import type { VFile } from 'vfile';
 import type { FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
-import { fileWarn } from 'myst-common';
+import { RuleId, fileWarn } from 'myst-common';
 
 function nextNumber(current: number, reserved: Set<number>): number {
   do {
@@ -33,6 +33,7 @@ export function footnotesTransform(mdast: GenericParent, file: VFile) {
       fileWarn(file, 'FootnoteReference does not have an identifier', {
         node,
         source: TRANSFORM_SOURCE,
+        ruleId: RuleId.footnoteReferencesDefinition,
       });
       return;
     }
@@ -41,6 +42,7 @@ export function footnotesTransform(mdast: GenericParent, file: VFile) {
       fileWarn(file, `No footnoteDefinition found for ${node.identifier}`, {
         node,
         source: TRANSFORM_SOURCE,
+        ruleId: RuleId.footnoteReferencesDefinition,
       });
       return;
     }

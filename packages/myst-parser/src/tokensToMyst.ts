@@ -335,6 +335,29 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
       return { identifier, label };
     },
   },
+  cite: {
+    type: 'cite',
+    noCloseToken: true,
+    isLeaf: true,
+    getAttrs(t) {
+      const { identifier, label } = normalizeLabel(t?.meta?.label) || {};
+      return {
+        identifier,
+        label,
+        kind: t.meta.kind,
+        partial: t.meta.partial, // author or year
+        // TODO: can use the parsed version in the future
+        prefix: t.meta.prefix?.[0].content,
+        suffix: t.meta.suffix?.[0].content,
+      };
+    },
+  },
+  cite_group: {
+    type: 'citeGroup',
+    getAttrs(t) {
+      return { kind: t.meta.kind };
+    },
+  },
   parsed_directive: {
     type: 'mystDirective',
     getAttrs(t) {

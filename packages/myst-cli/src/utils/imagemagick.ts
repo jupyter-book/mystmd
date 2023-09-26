@@ -3,7 +3,9 @@ import path from 'node:path';
 import which from 'which';
 import type { LoggerDE } from 'myst-cli-utils';
 import { makeExecutable, tic } from 'myst-cli-utils';
+import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
+import { addWarningForFile } from './addWarningForFile.js';
 
 export function isImageMagickAvailable() {
   return which.sync('convert', { nothrow: true });
@@ -56,7 +58,15 @@ export async function extractFirstFrameOfGif(session: ISession, gif: string, wri
     try {
       await exec();
     } catch (err) {
-      session.log.error(`Could not extract an image from gif: ${gif} - ${err}`);
+      addWarningForFile(
+        session,
+        gif,
+        `Could not extract an image from gif: ${gif} - ${err}`,
+        'error',
+        {
+          ruleId: RuleId.imageFormatConverts,
+        },
+      );
       return null;
     }
   }
@@ -87,8 +97,14 @@ export async function convert(
     try {
       await exec();
     } catch (err) {
-      session.log.error(
+      addWarningForFile(
+        session,
+        input,
         `Could not convert from ${inputFormatUpper} to ${outputFormatUpper}: ${input} - ${err}`,
+        'error',
+        {
+          ruleId: RuleId.imageFormatConverts,
+        },
       );
       return null;
     }
@@ -114,6 +130,7 @@ export async function convertImageToWebp(
   overwrite = false,
 ): Promise<string | null> {
   if (!fs.existsSync(image)) {
+    // If the image does not exist, it will be caught elsewhere prior to webp conversion
     session.log.debug(`Image does not exist: "${image}"`);
     return null;
   }
@@ -131,8 +148,12 @@ export async function convertImageToWebp(
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
-    session.log.warn(
-      `Image "${image}" is too large (${inMB} MB) to convert to webp (build will be slow).`,
+    addWarningForFile(
+      session,
+      image,
+      `Image is too large (${inMB} MB) to convert to webp (build will be slow).`,
+      'warn',
+      { ruleId: RuleId.imageFormatOptimizes },
     );
     return null;
   }
@@ -167,19 +188,47 @@ export async function convertImageToWebp(
 
   try {
     if (path.extname(image) === '.pdf') {
-      if (!isImageMagickAvailable()) return null;
+      if (!isImageMagickAvailable() && !isWebpAvailable()) {
+        addWarningForFile(
+          session,
+          image,
+          `Could not convert from image ${image} to webp:\nimagemagick and cwebp are required\n`,
+          'warn',
+          { ruleId: RuleId.imageFormatOptimizes },
+        );
+        return null;
+      }
       await convertPdfPng();
-      if (!isWebpAvailable()) return null;
       await convertPdfWebP();
     } else if (path.extname(image) === '.gif') {
-      if (!isGif2webpAvailable()) return null;
+      if (!isGif2webpAvailable()) {
+        addWarningForFile(
+          session,
+          image,
+          `Could not convert from image ${image} to webp:\ngif2webp is required\n`,
+          'warn',
+          { ruleId: RuleId.imageFormatOptimizes },
+        );
+        return null;
+      }
       await convertGif();
     } else {
-      if (!isWebpAvailable()) return null;
+      if (!isWebpAvailable()) {
+        addWarningForFile(
+          session,
+          image,
+          `Could not convert from image ${image} to webp:\ncwebp is required\n`,
+          'warn',
+          { ruleId: RuleId.imageFormatOptimizes },
+        );
+        return null;
+      }
       await convertImg();
     }
   } catch (err) {
-    session.log.error(`Could not convert from image ${image} to webp:\n${err}\n`);
+    addWarningForFile(session, image, `Could not convert to webp:\n${err}\n`, 'warn', {
+      ruleId: RuleId.imageFormatOptimizes,
+    });
     return null;
   }
   session.log.debug(toc(`Optimized image for web in %s`));

@@ -4,7 +4,7 @@ import { basename, extname, join } from 'node:path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
-import { toText } from 'myst-common';
+import { RuleId, toText } from 'myst-common';
 import type { SiteProject } from 'myst-config';
 import type { Export } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
@@ -21,7 +21,7 @@ import { castSession } from '../session/index.js';
 import type { ISession } from '../session/types.js';
 import { watch, selectors } from '../store/index.js';
 import { transformWebp } from '../transforms/index.js';
-import { ImageExtensions } from '../utils/index.js';
+import { ImageExtensions, addWarningForFile } from '../utils/index.js';
 import { combineProjectCitationRenderers } from './citations.js';
 import { loadIntersphinx } from './intersphinx.js';
 import type { PageReferenceStates, TransformFn } from './mdast.js';
@@ -141,7 +141,11 @@ export function selectPageReferenceStates(session: ISession, pages: { file: stri
 }
 
 async function resolvePageSource(session: ISession, file: string) {
-  const fileHash = hashAndCopyStaticFile(session, file, session.publicPath());
+  const fileHash = hashAndCopyStaticFile(session, file, session.publicPath(), (m: string) => {
+    addWarningForFile(session, file, m, 'error', {
+      ruleId: RuleId.sourceFileCopied,
+    });
+  });
   return { format: extname(file).substring(1), filename: basename(file), url: `/${fileHash}` };
 }
 
@@ -168,7 +172,11 @@ export async function resolvePageExports(session: ISession, file: string) {
     }) as Export[];
   exports.forEach((exp) => {
     const { output } = exp as ExportWithOutput;
-    const fileHash = hashAndCopyStaticFile(session, output, session.publicPath());
+    const fileHash = hashAndCopyStaticFile(session, output, session.publicPath(), (m: string) => {
+      addWarningForFile(session, file, m, 'error', {
+        ruleId: RuleId.exportFileCopied,
+      });
+    });
     exp.filename = basename(output);
     exp.url = `/${fileHash}`;
     delete exp.$file;

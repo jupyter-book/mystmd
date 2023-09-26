@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import type { CitationRenderer } from 'citation-js-utils';
 import { getCitations } from 'citation-js-utils';
 import { tic, isUrl } from 'myst-cli-utils';
+import { RuleId } from 'myst-common';
 import type { ISession, ISessionWithCache } from '../session/types.js';
 import { castSession } from '../session/index.js';
 import { selectors } from '../store/index.js';
@@ -36,7 +37,9 @@ export function combineCitationRenderers(cache: ISessionWithCache, ...files: str
     const renderer = cache.$citationRenderers[file] ?? {};
     Object.keys(renderer).forEach((key) => {
       if (combined[key]) {
-        addWarningForFile(cache, file, `Duplicate citation with id: ${key}`);
+        addWarningForFile(cache, file, `Duplicate citation with id: ${key}`, 'warn', {
+          ruleId: RuleId.citationIsUnique,
+        });
       }
       combined[key] = renderer[key];
     });

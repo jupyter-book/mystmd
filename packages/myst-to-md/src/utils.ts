@@ -1,6 +1,6 @@
 import YAML from 'js-yaml';
 import type { Handle } from 'mdast-util-to-markdown';
-import { fileError } from 'myst-common';
+import { RuleId, fileError } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { licensesToString } from 'myst-frontmatter';
 import type { Root } from 'myst-spec';
@@ -46,7 +46,11 @@ export function unsupportedHandlers(tree: Root, supported: string[], file: VFile
     const { type } = node;
     if (supported.includes(type)) return;
     handlers[type] = (n: any): string => {
-      fileError(file, `Unsupported node type: ${type}`, { node: n, source: 'myst-to-md' });
+      fileError(file, `Unsupported node type: ${type}`, {
+        node: n,
+        source: 'myst-to-md',
+        ruleId: RuleId.mdRenders,
+      });
       return '';
     };
   });

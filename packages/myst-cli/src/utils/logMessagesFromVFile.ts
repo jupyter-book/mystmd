@@ -12,6 +12,7 @@ export function logMessagesFromVFile(session: ISession, file?: VFile): void {
       position: message.position,
       note: message.note,
       url: message.url,
+      ruleId: message.ruleId,
     });
   });
   file.messages = [];
