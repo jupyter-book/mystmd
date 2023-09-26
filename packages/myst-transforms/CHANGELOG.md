@@ -1,5 +1,31 @@
 # myst-transforms
 
+## 1.1.2
+
+### Patch Changes
+
+- b74fb3c1: Add ruleId to file warnings in redux store
+- 392ba779: Move includeDirective transform to myst-transforms and make it generic for use in JupyterLab
+- b74fb3c1: Add ruleIds to all errors/warnings across myst-cli
+- 757f1fe4: Search for unmatched citations and use them as cross references or warn.
+- 60cf9a53: Add filename to codeblock and include directives
+- Updated dependencies [d35e02bc]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [ed7b430f]
+- Updated dependencies [4183c05c]
+- Updated dependencies [392ba779]
+- Updated dependencies [757f1fe4]
+- Updated dependencies [239ae762]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [86c78957]
+- Updated dependencies [60cf9a53]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [99659250]
+  - myst-common@1.1.7
+  - myst-spec-ext@1.1.7
+  - myst-to-html@1.0.8
+
 ## 1.1.1
 
 ### Patch Changes

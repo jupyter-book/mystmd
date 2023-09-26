@@ -1,5 +1,35 @@
 # myst-directives
 
+## 1.0.8
+
+### Patch Changes
+
+- ed7b430f: Allow alias field for directive options.
+- 392ba779: Move includeDirective transform to myst-transforms and make it generic for use in JupyterLab
+- d35e02bc: Move from ParseTypesEnum to String/Number/Boolean in many cases.
+- 392ba779: Remove the codeBlockDirective, this is now the same as the `codeDirective`.
+- b74fb3c1: Add ruleIds to all errors/warnings across myst-cli
+- ed7b430f: All instances of `name` options in directives can also use `label`. (e.g. in a figure or equation).
+- 392ba779: Add `literalinclude` directive
+- 4183c05c: Document images and figure and iframe directives
+- 60cf9a53: Add filename to codeblock and include directives
+- d35e02bc: Improve documentation for admonition and include
+- Updated dependencies [d35e02bc]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [ed7b430f]
+- Updated dependencies [4183c05c]
+- Updated dependencies [392ba779]
+- Updated dependencies [757f1fe4]
+- Updated dependencies [239ae762]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [86c78957]
+- Updated dependencies [60cf9a53]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [99659250]
+  - myst-common@1.1.7
+  - myst-spec-ext@1.1.7
+
 ## 1.0.7
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # myst-common
 
+## 1.1.7
+
+### Patch Changes
+
+- d35e02bc: Export `BodyDefinition` and `OptionDefinition`.
+- b74fb3c1: Add ruleId to file warnings in redux store
+- ed7b430f: Allow alias field for directive options.
+- 239ae762: Add `pluginLoads` ruleId
+- b74fb3c1: Add ruleIds to all errors/warnings across myst-cli
+- 86c78957: Add MySTPlugin to common exported types
+- d35e02bc: Only allow `alias` to be a string list, which simplifies the downstream implementations
+- d35e02bc: Allow for `ParseTypesEnum` to also be a `Number`, `String` or `Boolean` object or `"myst"` for parsed content.
+- 99659250: Added support for glossaries and TEX/PDF export. Now it is possible to render glossaries in TeX and PDF documents.
+
 ## 1.1.6
 
 ## 1.1.5
