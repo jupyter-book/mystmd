@@ -12,6 +12,7 @@ cases:
               value: Smith_1990
               children:
                 - type: cite
+                  kind: narrative
                   label: Smith_1990
                   identifier: smith_1990
   - title: cite role parses with multiple citations
@@ -30,8 +31,10 @@ cases:
                   children:
                     - type: cite
                       label: Smith_1990
+                      kind: narrative
                       identifier: smith_1990
                     - type: cite
+                      kind: narrative
                       label: Brown_2000
                       identifier: brown_2000
   - title: cite:p role parses
@@ -49,6 +52,7 @@ cases:
                   kind: parenthetical
                   children:
                     - type: cite
+                      kind: parenthetical
                       label: smith_1990
                       identifier: smith_1990
   - title: cite:t role parses
@@ -66,8 +70,10 @@ cases:
                   kind: narrative
                   children:
                     - type: cite
+                      kind: narrative
                       label: smith_1990
                       identifier: smith_1990
                     - type: cite
+                      kind: narrative
                       label: brown_2000
                       identifier: brown_2000
