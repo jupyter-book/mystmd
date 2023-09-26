@@ -352,7 +352,7 @@ describe('custom directive extensions', () => {
   test('test directive alias string', () => {
     const TestDirective: DirectiveSpec = {
       name: 'test',
-      alias: 'abc',
+      alias: ['abc'],
       body: {
         type: 'string' as any,
       },

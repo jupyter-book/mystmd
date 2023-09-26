@@ -172,6 +172,13 @@ function resolveProjectConfigPaths(
       return resolutionFn(session, path, file);
     });
   }
+  if (projectConfig.plugins) {
+    resolvedFields.plugins = projectConfig.plugins.map((file) => {
+      const resolved = resolutionFn(session, path, file);
+      if (fs.existsSync(resolved)) return resolved;
+      return file;
+    });
+  }
   return { ...projectConfig, ...resolvedFields };
 }
 

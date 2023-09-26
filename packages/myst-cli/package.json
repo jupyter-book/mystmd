@@ -34,7 +34,7 @@
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "test": "npm run copy:version; vitest run",
     "test:watch": "npm run copy:version; vitest watch",
-    "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
+    "build:esm": "tsc --project ./tsconfig.json --module esnext --outDir dist --declaration",
     "build": "npm-run-all -l clean copy:version -p build:esm"
   },
   "engines": {

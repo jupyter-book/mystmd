@@ -15,7 +15,7 @@ export function contentFromNode(
   ruleId: RuleId,
 ) {
   const { children, value } = node;
-  if (spec.type === ParseTypesEnum.parsed) {
+  if (spec.type === ParseTypesEnum.parsed || spec.type === 'myst') {
     if (typeof value !== 'string') {
       fileWarn(vfile, `content is parsed from non-string value for ${description}`, {
         node,
@@ -36,14 +36,14 @@ export function contentFromNode(
     }
     return undefined;
   }
-  if (spec.type === ParseTypesEnum.string) {
+  if (spec.type === ParseTypesEnum.string || spec.type === String) {
     // silently transform numbers into strings here
     if (typeof value !== 'string' && !(value && typeof value === 'number' && !isNaN(value))) {
       fileWarn(vfile, `value is not a string for ${description}`, { node, ruleId });
     }
     return String(value);
   }
-  if (spec.type === ParseTypesEnum.number) {
+  if (spec.type === ParseTypesEnum.number || spec.type === Number) {
     const valueAsNumber = Number(value);
     if (isNaN(valueAsNumber)) {
       const fileFn = spec.required ? fileError : fileWarn;
@@ -52,7 +52,7 @@ export function contentFromNode(
     }
     return valueAsNumber;
   }
-  if (spec.type === ParseTypesEnum.boolean) {
+  if (spec.type === ParseTypesEnum.boolean || spec.type === Boolean) {
     if (typeof value === 'string') {
       if (value.toLowerCase() === 'false') return false;
       if (value.toLowerCase() === 'true') return true;

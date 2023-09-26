@@ -3,7 +3,7 @@ import { ParseTypesEnum } from 'myst-common';
 
 export const chemRole: RoleSpec = {
   name: 'chemicalFormula',
-  alias: 'chem',
+  alias: ['chem'],
   body: {
     type: ParseTypesEnum.string,
     required: true,

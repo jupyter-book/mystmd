@@ -7,6 +7,12 @@ import type { Store } from 'redux';
 
 import type { RootState } from '../store/index.js';
 import type { PreRendererData, RendererData, SingleCitationRenderer } from '../transforms/types.js';
+import type { DirectiveSpec, RoleSpec } from 'myst-common';
+
+export type MystPlugins = {
+  directives: DirectiveSpec[];
+  roles: RoleSpec[];
+};
 
 export type ISession = {
   API_URL: string;
@@ -20,6 +26,8 @@ export type ISession = {
   contentPath(): string;
   publicPath(): string;
   showUpgradeNotice(): void;
+  plugins: MystPlugins | undefined;
+  loadPlugins(): Promise<MystPlugins>;
 };
 
 export type ISessionWithCache = ISession & {

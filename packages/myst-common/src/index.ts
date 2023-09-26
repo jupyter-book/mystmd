@@ -25,6 +25,8 @@ export type {
   Citations,
   References,
   ArgDefinition,
+  BodyDefinition,
+  OptionDefinition,
   DirectiveData,
   RoleData,
   DirectiveSpec,

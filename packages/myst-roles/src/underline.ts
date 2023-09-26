@@ -3,7 +3,7 @@ import { ParseTypesEnum } from 'myst-common';
 
 export const underlineRole: RoleSpec = {
   name: 'underline',
-  alias: 'u',
+  alias: ['u'],
   body: {
     type: ParseTypesEnum.parsed,
     required: true,

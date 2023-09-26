@@ -126,6 +126,7 @@ function extToKind(ext: string): string {
 }
 
 export async function build(session: ISession, files: string[], opts: BuildOpts) {
+  await session.loadPlugins();
   const { site, all } = opts;
   const performSiteBuild = all || (files.length === 0 && exportSite(session, opts));
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);

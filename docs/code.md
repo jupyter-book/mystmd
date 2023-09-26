@@ -95,7 +95,7 @@ All implementations are resolved to the same `code` type in the abstract syntax 
 
 ## Including Files
 
-If your code is in a separate file you can use the `literalinclude` directive (or the `include` directive with the `literal` flag).
+If your code is in a separate file you can use the {myst:directive}`literalinclude` directive (or the {myst:directive}`include` directive with the {myst:directive}`include.literal` flag).
 This directive is helpful for showing code snippets without duplicating your content.
 
 For example, a `literalinclude` of a snippet of the `myst.yml` such as:
@@ -117,45 +117,15 @@ creates a snippet that has matching line numbers, and starts at a line including
 ```
 
 :::{note} Auto Reload
-If you are working with the auto-reload (e.g. `myst start`), currently you will need to save the file with the `literalinclude` directive for the contents to update.code for the contents to update.
+If you are working with the auto-reload (e.g. `myst start`), currently you will need to save the file with the {myst:directive}`literalinclude` directive for the contents to update.code for the contents to update.
 :::
 
-## `include` Reference
+The argument of an include directive is the file path ({myst:directive}`docs <include.arg>`), which is relative to the file from which it was referenced.
+By default the file will be parsed using MyST, you can also set the file to be {myst:directive}`include.literal`, which will show as a code-block; this is the same as using the {myst:directive}`literalinclude` directive.
 
-The argument of an include directive is the file path, relative to the file from which it was referenced.
-By default the file will be parsed using MyST, you can also set the file to be `literal`, which will show as a code-block; this is the same as using the `literalinclude` directive.
-If in literal mode, the directive also accepts all of the options from the `code-block` (e.g. `:linenos:`).
+If in {myst:directive}`include.literal` mode, the directive also accepts all of the options from the `code-block` (e.g. {myst:directive}`include.linenos`).
+To select a portion of the file to be shown using the {myst:directive}`include.start-at`/{myst:directive}`include.start-after` selectors with the {myst:directive}`include.end-before`/{myst:directive}`include.end-at`, which use a snippet of included text.
 
-To select a portion of the file to be shown using the `start-at`/`start-after` selectors with the `end-before`/`end-at`, which use a snippet of included text.
-Alternatively, you can explicitly select the lines (e.g. `1,3,5-10,20-`) or the `start-line`/`end-line` (which is zero based for compatibility with Sphinx).
+Alternatively, you can explicitly select the lines (e.g. `1,3,5-10,20-`) or the {myst:directive}`include.start-line`/{myst:directive}`include.end-line` (which is zero based for compatibility with Sphinx).
 
-literal (boolean)
-: Flag the include block as literal, and show the contents as a code block. This can also be set automatically by setting the `language` or using the `literalinclude` directive.
-
-lang (string)
-: The language of the code to be highlighted as. If set, this automatically changes an `include` into a `literalinclude`.
-: You can alias this as `language` or `code`
-
-start-line (number)
-: Only the content starting from this line will be included. The first line has index 0 and negative values count from the end.
-
-start-at (string)
-: Only the content after and including the first occurrence of the specified text in the external data file will be included.
-
-start-after (string)
-: Only the content after the first occurrence of the specified text in the external data file will be included.
-
-end-line (number)
-: Only the content up to (but excluding) this line will be included.
-
-end-at (string)
-: Only the content up to and including the first occurrence of the specified text in the external data file (but after any start-after text) will be included.
-
-end-before (string)
-: Only the content before the first occurrence of the specified text in the external data file (but after any start-after text) will be included.
-
-lines (string)
-: Specify exactly which lines to include from the original file, starting at 1. For example, `1,3,5-10,20-` includes the lines 1, 3, 5 to 10 and lines 20 to the last line of the original file.
-
-lineno-match (boolean)
-: Display the original line numbers, correct only when the selection consists of contiguous lines.
+The include directive is based on [RST](https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment) and [Sphinx](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-literalinclude).

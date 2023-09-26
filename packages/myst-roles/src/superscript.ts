@@ -3,7 +3,7 @@ import { ParseTypesEnum } from 'myst-common';
 
 export const superscriptRole: RoleSpec = {
   name: 'superscript',
-  alias: 'sup',
+  alias: ['sup'],
   body: {
     type: ParseTypesEnum.parsed,
     required: true,

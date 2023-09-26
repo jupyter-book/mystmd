@@ -3,7 +3,7 @@ import { ParseTypesEnum } from 'myst-common';
 
 export const smallcapsRole: RoleSpec = {
   name: 'smallcaps',
-  alias: 'sc',
+  alias: ['sc'],
   body: {
     type: ParseTypesEnum.parsed,
     required: true,

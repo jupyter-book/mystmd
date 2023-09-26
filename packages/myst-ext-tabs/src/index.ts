@@ -3,7 +3,7 @@ import { ParseTypesEnum } from 'myst-common';
 
 export const tabSetDirective: DirectiveSpec = {
   name: 'tab-set',
-  alias: 'tabSet',
+  alias: ['tabSet'],
   options: {
     class: {
       type: ParseTypesEnum.string,
@@ -25,7 +25,7 @@ export const tabSetDirective: DirectiveSpec = {
 
 export const tabItemDirective: DirectiveSpec = {
   name: 'tab-item',
-  alias: 'tabItem',
+  alias: ['tabItem'],
   arg: {
     type: ParseTypesEnum.string,
   },

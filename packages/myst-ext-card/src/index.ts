@@ -5,7 +5,7 @@ const HEADER_REGEX = /((?<before>[\s\S]*?)\s+){0,1}\^\^\^(\s+(?<after>[\s\S]*)){
 
 export const cardDirective: DirectiveSpec = {
   name: 'card',
-  alias: 'grid-item-card',
+  alias: ['grid-item-card'],
   arg: {
     type: ParseTypesEnum.parsed,
   },

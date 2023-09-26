@@ -2,7 +2,7 @@ import type { Caption, Container } from 'myst-spec';
 import type { Code } from 'myst-spec-ext';
 import yaml from 'js-yaml';
 import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
-import { fileError, fileWarn, normalizeLabel, ParseTypesEnum, RuleId } from 'myst-common';
+import { fileError, fileWarn, normalizeLabel, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 
 function parseEmphasizeLines(emphasizeLinesString?: string | undefined): number[] | undefined {
@@ -48,30 +48,30 @@ export function getCodeBlockOptions(
 
 export const CODE_DIRECTIVE_OPTIONS: DirectiveSpec['options'] = {
   caption: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
   },
   linenos: {
-    type: ParseTypesEnum.boolean,
+    type: Boolean,
     doc: 'Show line numbers',
   },
   'lineno-start': {
-    type: ParseTypesEnum.number,
+    type: Number,
     doc: 'Start line numbering from a particular value, default is 1. If present, line numbering is activated.',
   },
   'number-lines': {
-    type: ParseTypesEnum.number,
+    type: Number,
     doc: 'Alternative for "lineno-start", turns on line numbering and can be an integer that is the start of the line numbering.',
   },
   'emphasize-lines': {
-    type: ParseTypesEnum.string,
+    type: String,
     doc: 'Emphasize particular lines (comma-separated numbers), e.g. "3,5"',
   },
   // dedent: {
-  //   type: ParseTypesEnum.number,
+  //   type: Number,
   //   doc: 'Strip indentation characters from the code block',
   // },
   // force: {
-  //   type: ParseTypesEnum.boolean,
+  //   type: Boolean,
   //   doc: 'Ignore minor errors on highlighting',
   // },
 };
@@ -80,21 +80,21 @@ export const codeDirective: DirectiveSpec = {
   name: 'code',
   alias: ['code-block', 'sourcecode'],
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
   },
   options: {
     label: {
-      type: ParseTypesEnum.string,
+      type: String,
       alias: ['name'],
     },
     class: {
-      type: ParseTypesEnum.string,
+      type: String,
       // class_option: list of strings?
     },
     ...CODE_DIRECTIVE_OPTIONS,
   },
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
   },
   run(data, vfile): GenericNode[] {
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
@@ -134,16 +134,16 @@ export const codeDirective: DirectiveSpec = {
 export const codeCellDirective: DirectiveSpec = {
   name: 'code-cell',
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   options: {
     tags: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
   },
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
   },
   run(data, vfile): GenericNode[] {
     const code: Code = {
