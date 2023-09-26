@@ -104,8 +104,13 @@ export class Session implements ISession {
 
   plugins: MystPlugin | undefined;
 
+  _pluginPromise: Promise<MystPlugin> | undefined;
+
   async loadPlugins() {
-    this.plugins = await loadPlugins(this);
+    // Early return if a promise has already been initiated
+    if (this._pluginPromise) return this._pluginPromise;
+    this._pluginPromise = loadPlugins(this);
+    this.plugins = await this._pluginPromise;
     return this.plugins;
   }
 
