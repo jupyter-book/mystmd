@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import type { ISession } from './session/types.js';
 import { selectCurrentProjectConfig } from './store/selectors.js';
-import type { MystPlugin } from 'myst-common';
+import { RuleId, type MystPlugin } from 'myst-common';
+import { addWarningForFile } from './utils/addWarningForFile.js';
 
 export async function loadPlugins(session: ISession): Promise<MystPlugin> {
   const config = selectCurrentProjectConfig(session.store.getState());
@@ -17,14 +18,25 @@ export async function loadPlugins(session: ISession): Promise<MystPlugin> {
   const modules = await Promise.all(
     config?.plugins?.map(async (filename) => {
       if (!fs.statSync(filename).isFile || !filename.endsWith('.mjs')) {
-        session.log.error(`Unknown plugin ${filename}, it must be an mjs file`);
+        addWarningForFile(
+          session,
+          filename,
+          `Unknown plugin "${filename}", it must be an mjs file`,
+          'error',
+          {
+            ruleId: RuleId.pluginLoads,
+          },
+        );
+        return null;
       }
       let module: any;
       try {
         module = await import(filename);
       } catch (error) {
         session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-        session.log.error(`Error reading plugin ${filename}: ${error}`);
+        addWarningForFile(session, filename, `Error reading plugin: ${error}`, 'error', {
+          ruleId: RuleId.pluginLoads,
+        });
         return null;
       }
       return { filename, module };

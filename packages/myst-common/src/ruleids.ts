@@ -92,4 +92,6 @@ export enum RuleId {
   sourceFileCopied = 'source-file-copied',
   templateFileCopied = 'template-file-copied',
   staticActionFileCopied = 'static-action-file-copied',
+  // Plugins
+  pluginLoads = 'plugin-loads',
 }

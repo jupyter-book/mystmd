@@ -28,7 +28,7 @@ roles
 :class: dropdown
 transforms
 : These plugins transform the document source while it is rendered.
-: For example, add metadata or transform a link to an DOI.
+: For example, add metadata or transform a link to a DOI.
 
 renderers
 : These plugins add handlers for various nodes when exporting to a specific format.
