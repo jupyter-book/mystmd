@@ -37,7 +37,7 @@ export type TOC = {
 
 export const tocFile = (filename: string): string => join(filename, '_toc.yml');
 
-// See https://executablebooks.org/en/latest/updates/2021-06-18-update-toc.html
+// See https://executablebooks.org/en/latest/blog/2021-06-18-update-toc/
 function upgradeOldJupyterBookToc(oldToc: any[]) {
   // TODO: numbering is ignored
   const [root, ...parts] = oldToc;
@@ -59,12 +59,12 @@ export function readTOC(log: Logger, opts?: TocOptions): TOC {
     try {
       const old = upgradeOldJupyterBookToc(toc);
       log.warn(
-        `${filename} is out of date: see https://executablebooks.org/en/latest/updates/2021-06-18-update-toc.html`,
+        `${filename} is out of date: see https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
       );
       return old;
     } catch (error) {
       throw new Error(
-        `Could not upgrade toc, please see: https://executablebooks.org/en/latest/updates/2021-06-18-update-toc.html`,
+        `Could not upgrade toc, please see: https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
       );
     }
   }
