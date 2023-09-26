@@ -420,7 +420,7 @@ class TexGlossaryAndAcronymSerializer {
   ) {
     this.printedDefinitions = this.renderGlossary();
     this.preamble = [
-      this.renderCommonImports(),
+      this.renderCommonImports(Object.keys(acronymDefinitions).keys.length > 0),
       this.renderImports('glossary', this.createGlossaryDirectives(glossaryDefinitions)),
       this.renderImports('acronyms', this.createAcronymDirectives(acronymDefinitions)),
     ].join('\n');
@@ -436,8 +436,10 @@ class TexGlossaryAndAcronymSerializer {
     return `${percents}\n${block}${percents}`;
   }
 
-  private renderCommonImports(): string {
-    const usepackage = '\\usepackage{glossaries}';
+  private renderCommonImports(withAcronym?: boolean): string {
+    const usepackage = withAcronym
+      ? '\\usepackage[acronym]{glossaries}'
+      : '\\usepackage{glossaries}';
     const makeglossaries = '\\makeglossaries';
     return `${usepackage}\n${makeglossaries}`;
   }
