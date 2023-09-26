@@ -13,7 +13,7 @@ Try changing `tip` to `warning`!
 :::
 ```
 
-In MyST we call these kind of directives admonitions, however, they are almost always used through their _named_ directives, like `{note}` or `{danger}`. Admonitions can be styled as `simple` or as a `dropdown`, and can optionally hide the icon. There are ten kinds[^docutils-admonitions] of admonitions available:
+In MyST we call these kind of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like `{note}` or `{danger}`. Admonitions can be styled as `simple` or as a `dropdown`, and can optionally hide the icon using the {myst:directive}`admonition.class` option. There are ten kinds[^docutils-admonitions] of admonitions available:
 
 ```{list-table} Named admonitions that can be used as directives
 :name: admonitions-list
@@ -99,8 +99,8 @@ This is an error admonition
 
 ## Admonition Titles
 
-All admonitions have a single argument, which is the admonition title and can use markdown.
-If a title argument is not supplied the first node is used if it is a `heading` or a paragraph with fully bold text; otherwise the name of the directive is used (e.g. `seealso` becomes `See Also`; `note` becomes `Note`).
+All admonitions have a single argument ({myst:directive}`docs <admonition.arg>`), which is the admonition title and can use markdown.
+If a title argument is not supplied the first node of the {myst:directive}`admonition.body` is used if it is a `heading` or a paragraph with fully bold text; otherwise the name of the directive is used (e.g. `seealso` becomes `See Also`; `note` becomes `Note`).
 
 ```{myst}
 :::{tip} Admonition _title_
@@ -110,7 +110,7 @@ Here is an admonition!
 
 :::::::{tip} Compatibility with GitHub
 :class: dropdown
-GitHub markdown transforms blockquotes that start with a bold `Note` or text with `[!NOTE]` into a simple admonition (see [GitHub](https://github.com/community/community/discussions/16925)). This syntax only works for `note`, `important` or `warning`. MyST transforms these blockquotes into the appropriate admonitions with a `simple` class.
+GitHub markdown transforms blockquotes that start with a bold `Note` or text with `[!NOTE]` into a simple admonition (see [GitHub](https://github.com/community/community/discussions/16925)). This syntax only works for `note`, `important` or `warning`. MyST transforms these blockquotes into the appropriate admonitions with a `simple` {myst:directive}`admonition.class`.
 
 ```{myst}
 > [!NOTE]
@@ -164,7 +164,7 @@ This is the body.
 
 ## Admonition Dropdown
 
-To turn an admonition into a dropdown, add the `dropdown` class to them.
+To turn an admonition into a dropdown, add the `dropdown` {myst:directive}`admonition.class` to them.
 Dropdown admonitions use the `<details>` HTML element (meaning they also will work without Javascript!),
 and they can be helpful when including text that shouldn't immediately visible to your readers.
 
@@ -177,23 +177,5 @@ and they can be helpful when including text that shouldn't immediately visible t
 
 :::{seealso} You can also use a `{dropdown}`
 :class: dropdown
-You can also use a `{dropdown}` directive, which provides a more compact writing experience and is simpler in the displayed style. See [](#dropdowns) for more information.
+You can also use a {myst:directive}`dropdown` directive, which provides a more compact writing experience and is simpler in the displayed style. See [](#dropdowns) for more information.
 :::
-
-### Reference
-
-**Arguments** _(markdown)_
-: The `admonition` requires a single argument that is the title, parsed as markdown.
-
-**Options**
-: No options are required
-
-    class _(optional, string)_
-    : CSS classes to add to your admonition. Special classes include:
-      - `dropdown`: turns the admonition into a `<details>` html element
-      - `simple`: an admonition with "simple" styles
-      - the name of an admonition, the first admonition name encountered will be used
-    : Note that if you provide conflicting class names, the first one in the {ref}`list above <admonitions-list>` will be used.
-
-    icon _(optional, boolean)_
-    : setting icon to false will hide the icon

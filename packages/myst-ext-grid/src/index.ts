@@ -1,10 +1,9 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 export const gridDirective: DirectiveSpec = {
   name: 'grid',
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
   },
   // options:
   // // https://sphinx-design.readthedocs.io/en/furo-theme/grids.html#grid-options
@@ -16,7 +15,7 @@ export const gridDirective: DirectiveSpec = {
   // reverse
   // outline
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
     required: true,
   },
   run(data: DirectiveData): GenericNode[] {

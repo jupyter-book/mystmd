@@ -1,11 +1,10 @@
 import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 export const underlineRole: RoleSpec = {
   name: 'underline',
-  alias: 'u',
+  alias: ['u'],
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
     required: true,
   },
   run(data: RoleData): GenericNode[] {

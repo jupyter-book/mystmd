@@ -10,7 +10,7 @@ import {
 import type { ProjectConfig } from './types.js';
 
 const PROJECT_CONFIG_KEYS = {
-  optional: ['remote', 'index', 'exclude'].concat(PROJECT_FRONTMATTER_KEYS),
+  optional: ['remote', 'index', 'exclude', 'plugins'].concat(PROJECT_FRONTMATTER_KEYS),
   alias: {
     jupyter: 'thebe',
     author: 'authors',
@@ -34,6 +34,15 @@ function validateProjectConfigKeys(value: Record<string, any>, opts: ValidationO
       incrementOptions('exclude', opts),
       (file, index: number) => {
         return validateString(file, incrementOptions(`exclude.${index}`, opts));
+      },
+    );
+  }
+  if (defined(value.plugins)) {
+    output.plugins = validateList(
+      value.plugins,
+      incrementOptions('plugins', opts),
+      (file, index: number) => {
+        return validateString(file, incrementOptions(`plugins.${index}`, opts));
       },
     );
   }

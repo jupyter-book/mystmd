@@ -25,9 +25,12 @@ export type {
   Citations,
   References,
   ArgDefinition,
+  BodyDefinition,
+  OptionDefinition,
   DirectiveData,
   RoleData,
   DirectiveSpec,
   RoleSpec,
   ParseTypes,
+  MystPlugin,
 } from './types.js';

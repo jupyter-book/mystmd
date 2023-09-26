@@ -1,14 +1,13 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 export const dropdownDirective: DirectiveSpec = {
   name: 'dropdown',
   arg: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
   },
   options: {
     open: {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
     },
     // Legacy options we may want to implement:
     // color
@@ -21,7 +20,7 @@ export const dropdownDirective: DirectiveSpec = {
     // 'class-body'
   },
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
     required: true,
   },
   run(data: DirectiveData): GenericNode[] {

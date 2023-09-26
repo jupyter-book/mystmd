@@ -15,6 +15,8 @@ import latestVersion from 'latest-version';
 import boxen from 'boxen';
 import chalk from 'chalk';
 import version from '../version.js';
+import { loadPlugins } from '../plugins.js';
+import type { MystPlugin } from 'myst-common';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
@@ -98,6 +100,18 @@ export class Session implements ISession {
       reloadAllConfigsForCurrentSite(this);
     }
     return this;
+  }
+
+  plugins: MystPlugin | undefined;
+
+  _pluginPromise: Promise<MystPlugin> | undefined;
+
+  async loadPlugins() {
+    // Early return if a promise has already been initiated
+    if (this._pluginPromise) return this._pluginPromise;
+    this._pluginPromise = loadPlugins(this);
+    this.plugins = await this._pluginPromise;
+    return this.plugins;
   }
 
   buildPath(): string {

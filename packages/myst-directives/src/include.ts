@@ -1,5 +1,5 @@
 import type { DirectiveSpec } from 'myst-common';
-import { ParseTypesEnum, RuleId, fileWarn, normalizeLabel } from 'myst-common';
+import { RuleId, fileWarn, normalizeLabel } from 'myst-common';
 import { CODE_DIRECTIVE_OPTIONS, getCodeBlockOptions } from './code.js';
 import type { Include } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
@@ -14,55 +14,57 @@ import type { VFile } from 'vfile';
 export const includeDirective: DirectiveSpec = {
   name: 'include',
   alias: ['literalinclude'],
+  doc: 'Allows you to include the source or parsed version of a separate file into your document tree.',
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
+    doc: 'The file path, which is relative to the file from which it was referenced.',
     required: true,
   },
   options: {
     label: {
-      type: ParseTypesEnum.string,
+      type: String,
       alias: ['name'],
     },
     literal: {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
       doc: 'Flag the include block as literal, and show the contents as a code block. This can also be set automatically by setting the `language` or using the `literalinclude` directive.',
     },
     lang: {
-      type: ParseTypesEnum.string,
+      type: String,
       doc: 'The language of the code to be highlighted as. If set, this automatically changes an `include` into a `literalinclude`.',
       alias: ['language', 'code'],
     },
     ...CODE_DIRECTIVE_OPTIONS,
     'start-line': {
-      type: ParseTypesEnum.number,
+      type: Number,
       doc: 'Only the content starting from this line will be included. The first line has index 0 and negative values count from the end.',
     },
     'start-at': {
-      type: ParseTypesEnum.string,
+      type: String,
       doc: 'Only the content after and including the first occurrence of the specified text in the external data file will be included.',
     },
     'start-after': {
-      type: ParseTypesEnum.string,
+      type: String,
       doc: 'Only the content after the first occurrence of the specified text in the external data file will be included.',
     },
     'end-line': {
-      type: ParseTypesEnum.number,
+      type: Number,
       doc: 'Only the content up to (but excluding) this line will be included.',
     },
     'end-at': {
-      type: ParseTypesEnum.string,
+      type: String,
       doc: 'Only the content up to and including the first occurrence of the specified text in the external data file (but after any start-after text) will be included.',
     },
     'end-before': {
-      type: ParseTypesEnum.string,
+      type: String,
       doc: 'Only the content before the first occurrence of the specified text in the external data file (but after any start-after text) will be included.',
     },
     lines: {
-      type: ParseTypesEnum.string,
+      type: String,
       doc: 'Specify exactly which lines to include from the original file, starting at 1. For example, `1,3,5-10,20-` includes the lines 1, 3, 5 to 10 and lines 20 to the last line of the original file.',
     },
     'lineno-match': {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
       doc: 'Display the original line numbers, correct only when the selection consists of contiguous lines.',
     },
   },
@@ -84,7 +86,12 @@ export const includeDirective: DirectiveSpec = {
       ];
     }
     const lang = (data.options?.lang as string) ?? extToLanguage(file.split('.').pop());
-    const opts = getCodeBlockOptions(data.options, vfile);
+    const opts = getCodeBlockOptions(
+      data.options,
+      vfile,
+      // Set the filename in the literal include by default
+      file.split(/\/|\\/).pop(),
+    );
     const filter: Include['filter'] = {};
     ensureOnlyOneOf(vfile, data.options, ['start-at', 'start-line', 'start-after', 'lines']);
     ensureOnlyOneOf(vfile, data.options, ['end-at', 'end-line', 'end-before', 'lines']);
@@ -175,6 +182,7 @@ function extToLanguage(ext?: string): string | undefined {
     {
       ts: 'typescript',
       js: 'javascript',
+      mjs: 'javascript',
       tex: 'latex',
       py: 'python',
       md: 'markdown',

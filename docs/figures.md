@@ -17,15 +17,15 @@ The simplest way to create an image is to use the standard Markdown syntax:
 
 You can explore a [demo of images](#md:image) in the discussion of [](./commonmark.md) features of MyST.
 
-Using standard markdown to create an image will render across all output formats (HTML, TeX, Word, PDF, etc). However, this markdown syntax is limited in the configuration that can be applied beyond `alt` text and an optional `title`. For example, the image width, alignment or a figure caption cannot be set with this syntax.
+Using standard markdown to create an image will render across all output formats (HTML, TeX, Word, PDF, etc). However, this markdown syntax is limited in the configuration that can be applied beyond `alt` text and an optional `title`.
 
-There are two directives that can be used to add additional information about the layout and metadata associated with an image.
+There are two directives that can be used to add additional information about the layout and metadata associated with an image. For example, {myst:directive}`image.width`, {myst:directive}`alignment <image.align>` or a {myst:directive}`figure caption <figure.caption>`.
 
 **image**
-: The `image` directive allows you to customize width, alignment, and other classes to add to the image
+: The {myst:directive}`image` directive allows you to customize {myst:directive}`image.width`, {myst:directive}`alignment <image.align>`, and other {myst:directive}`classes <image.class>` to add to the image
 
 **figure**
-: The `figure` directive can contain a figure caption and allows you to cross-reference this in other parts of your document.
+: The {myst:directive}`figure` directive can contain a {myst:directive}`figure caption <figure.body>` and allows you to cross-reference this in other parts of your document.
 
 (image-directive)=
 
@@ -167,7 +167,7 @@ If you want to help out with this feature, please get in touch!
 
 ## YouTube Videos
 
-If your video is on a platform like YouTube or Vimeo, you can use the `{iframe}` directive that takes the URL of the video.
+If your video is on a platform like YouTube or Vimeo, you can use the {myst:directive}`iframe` directive that takes the URL of the video.
 
 ```{myst}
 :::{iframe} https://www.youtube.com/embed/F3st8X0L1Ys
@@ -176,4 +176,4 @@ Get up and running with MyST in Jupyter!
 :::
 ```
 
-You can find this URL when clicking share > embed on various platforms. You can also give the `{iframe}` directive `width` and a `caption`.
+You can find this URL when clicking share > embed on various platforms. You can also give the {myst:directive}`iframe` directive {myst:directive}`iframe.width` and a {myst:directive}`caption <iframe.body>`.

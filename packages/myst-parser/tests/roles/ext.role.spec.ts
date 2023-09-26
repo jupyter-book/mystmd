@@ -90,7 +90,7 @@ describe('custom role extensions', () => {
   test('test role alias string', () => {
     const TestRole: RoleSpec = {
       name: 'test',
-      alias: 'abc',
+      alias: ['abc'],
       body: {
         type: 'string' as any,
       },

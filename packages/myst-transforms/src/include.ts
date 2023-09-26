@@ -43,6 +43,7 @@ export async function includeDirectiveTransform(tree: GenericParent, file: VFile
             'startingLineNumber',
             'label',
             'identifier',
+            'filename',
           ] as const
         ).forEach((attr) => {
           if (!node[attr]) return;

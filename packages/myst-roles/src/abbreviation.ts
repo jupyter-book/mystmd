@@ -1,13 +1,12 @@
 import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 const ABBR_PATTERN = /^(.+?)\(([^()]+)\)$/; // e.g. 'CSS (Cascading Style Sheets)'
 
 export const abbreviationRole: RoleSpec = {
   name: 'abbreviation',
-  alias: 'abbr',
+  alias: ['abbr'],
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   run(data: RoleData): GenericNode[] {

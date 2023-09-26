@@ -85,6 +85,7 @@ export type Admonition = SpecAdmonition & {
 
 export type Code = SpecCode & {
   executable?: boolean;
+  filename?: string;
   visibility?: 'show' | 'hide' | 'remove';
 };
 
@@ -98,7 +99,8 @@ export type Cite = {
   type: 'cite';
   kind: CiteKind;
   label: string;
-  children: StaticPhrasingContent[];
+  identifier?: string;
+  children?: StaticPhrasingContent[];
   error?: boolean | 'not found' | 'rendering error';
   prefix?: string;
   suffix?: string;
@@ -170,6 +172,7 @@ export type Include = {
   /** The `match` will be removed in a transform */
   startingLineNumber?: number | 'match';
   emphasizeLines?: number[];
+  filename?: string;
   identifier?: string;
   label?: string;
   children?: (FlowContent | ListContent | PhrasingContent)[];

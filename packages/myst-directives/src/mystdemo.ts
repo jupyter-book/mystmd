@@ -1,16 +1,15 @@
 import yaml from 'js-yaml';
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 export const mystdemoDirective: DirectiveSpec = {
   name: 'myst',
   options: {
     numbering: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
   },
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   run(data: DirectiveData): GenericNode[] {

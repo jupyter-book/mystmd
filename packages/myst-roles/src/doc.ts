@@ -1,12 +1,12 @@
 import type { RoleSpec } from 'myst-common';
-import { fileWarn, ParseTypesEnum, RuleId } from 'myst-common';
+import { fileWarn, RuleId } from 'myst-common';
 
 const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Document <doc>'
 
 export const docRole: RoleSpec = {
   name: 'doc',
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   run(data, vfile) {

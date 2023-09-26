@@ -7,6 +7,7 @@ import type { Store } from 'redux';
 
 import type { RootState } from '../store/index.js';
 import type { PreRendererData, RendererData, SingleCitationRenderer } from '../transforms/types.js';
+import type { MystPlugin } from 'myst-common';
 
 export type ISession = {
   API_URL: string;
@@ -20,6 +21,8 @@ export type ISession = {
   contentPath(): string;
   publicPath(): string;
   showUpgradeNotice(): void;
+  plugins: MystPlugin | undefined;
+  loadPlugins(): Promise<MystPlugin>;
 };
 
 export type ISessionWithCache = ISession & {

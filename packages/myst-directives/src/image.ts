@@ -1,44 +1,50 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { toText, ParseTypesEnum } from 'myst-common';
+import { toText } from 'myst-common';
 
 export const imageDirective: DirectiveSpec = {
   name: 'image',
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
+    doc: 'The filename of an image (e.g. `my-fig.png`).',
     required: true,
   },
   options: {
     // label: {
-    //   type: ParseTypesEnum.string,
+    //   type: String,
     //   alias: ['name'],
     // },
     class: {
-      type: ParseTypesEnum.string,
+      type: String,
       // class_option: list of strings?
     },
     height: {
-      type: ParseTypesEnum.string,
-      // length_or_unitless,
+      type: String,
+      doc: 'The image height, in CSS units, for example `4em` or `300px`.',
+      alias: ['h'],
     },
     width: {
-      type: ParseTypesEnum.string,
-      // length_or_percentage_or_unitless,
+      type: String,
+      alias: ['w'],
+      doc: 'The image width, in CSS units, for example `50%` or `300px`.',
     },
     alt: {
-      type: ParseTypesEnum.string,
+      type: String,
+      doc: 'Alternative text for the image',
     },
     // scale: {
-    //   type: ParseTypesEnum.number,
+    //   type: Number,
     // },
     // target: {
-    //   type: ParseTypesEnum.string,
+    //   type: String,
     // },
     align: {
-      type: ParseTypesEnum.string,
+      type: String,
       // choice(["left", "center", "right", "top", "middle", "bottom"])
+      doc: 'The alignment of the image. Choose one of `left`, `center` or `right`',
     },
     title: {
-      type: ParseTypesEnum.string,
+      type: String,
+      doc: 'Title text for the image',
     },
   },
   run(data: DirectiveData): GenericNode[] {

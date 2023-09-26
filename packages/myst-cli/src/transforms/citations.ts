@@ -1,7 +1,7 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import { InlineCite } from 'citation-js-utils';
-import type { GenericParent, References } from 'myst-common';
-import type { StaticPhrasingContent, Parent } from 'myst-spec';
+import type { GenericNode, GenericParent, References } from 'myst-common';
+import type { StaticPhrasingContent } from 'myst-spec';
 import type { Cite } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 
@@ -46,7 +46,7 @@ function addCitationChildren(cite: Cite, renderer: CitationRenderer): boolean {
   return true;
 }
 
-function hasChildren(node: Parent) {
+function hasChildren(node: GenericNode) {
   return node.children && node.children.length > 0;
 }
 

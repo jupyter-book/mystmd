@@ -1,19 +1,19 @@
 import type { DirectiveSpec, DirectiveData } from 'myst-common';
-import { normalizeLabel, ParseTypesEnum } from 'myst-common';
+import { normalizeLabel } from 'myst-common';
 import type { Embed } from 'myst-spec-ext';
 
 export const embedDirective: DirectiveSpec = {
   name: 'embed',
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   options: {
     'remove-input': {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
     },
     'remove-output': {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
     },
   },
   run(data: DirectiveData): Embed[] {
