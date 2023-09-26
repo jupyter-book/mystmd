@@ -2,7 +2,7 @@ import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
 
 export const tabSetDirective: DirectiveSpec = {
   name: 'tab-set',
-  alias: ['tabSet', 'tab'],
+  alias: ['tabSet'],
   options: {
     class: {
       type: String,
@@ -24,7 +24,7 @@ export const tabSetDirective: DirectiveSpec = {
 
 export const tabItemDirective: DirectiveSpec = {
   name: 'tab-item',
-  alias: ['tabItem'],
+  alias: ['tabItem', 'tab'], // TODO: A transform is necessary for stray `tab`s
   arg: {
     type: String,
   },
