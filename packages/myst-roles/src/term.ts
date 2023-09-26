@@ -6,7 +6,7 @@ const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Term <term>'
 export const termRole: RoleSpec = {
   name: 'term',
   body: {
-    type: 'myst',
+    type: String,
     required: true,
   },
   run(data, vfile) {
