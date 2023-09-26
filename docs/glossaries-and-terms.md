@@ -16,10 +16,22 @@ You can use {term}`MyST` to create glossaries.
 
 The glossary can be in a different page, as long as it is parsed by your project. See an [example glossary](./glossary.md).
 
-:::{warning} Compatibility with {term}`Sphinx`
-The glossary is very similar to {term}`reStructuredText` glossary, but uses [definition lists](#definition-lists) instead of indentation to indicate the terms.
+:::{warning} Compatibility with {term}`Sphinx` and {term}`reStructuredText`
+:class: dropdown
+The glossary is very similar to the [reStructuredText glossary](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#glossary), but uses [definition lists](#definition-lists) instead of indentation to indicate the terms[^drawback]. For working with glossaries in Sphinx, you can use the following syntax:
 
-Note that this has a challenge of not being able to have two terms for the same definition.
+````markdown
+```{glossary}
+Term one
+  An indented explanation of term 1
+
+A second term
+  An indented explanation of term 2
+```
+````
+
+[^drawback]: Note that this has a challenge of not being able to have two terms for the same definition.
+
 :::
 
 ## Referencing a Term
