@@ -465,13 +465,11 @@ class TexGlossaryAndAcronymSerializer {
       description: glossaryDefinitions[k][1],
     }));
 
-    const usepackage = '\\usepackage{glossaries}';
-    const makeglossaries = '\\makeglossaries';
     const entries = directives.map(
       (entry) =>
         `\\newglossaryentry{${entry.key}}{name=${entry.name},description={${entry.description}}}`,
     );
-    return [usepackage, makeglossaries].concat(entries);
+    return entries;
   }
 
   private createAcronymDirectives(acronymDefinitions: Record<string, [string, string]>): string[] {
