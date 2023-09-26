@@ -1,5 +1,12 @@
 # citation-js-utils
 
+## 1.0.2
+
+### Patch Changes
+
+- 757f1fe4: Replace &amp; with & in rendered html
+- 757f1fe4: Support partial author or year
+
 ## 1.0.1
 
 ### Patch Changes

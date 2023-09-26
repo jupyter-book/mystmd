@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.4
+
+### Patch Changes
+
+- b74fb3c1: Add ruleIds to all errors/warnings across myst-cli
+
 ## 2.0.3
 
 ### Patch Changes

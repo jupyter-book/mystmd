@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.3
+
+### Patch Changes
+
+- 757f1fe4: Add column information to citations and roles
+
 ## 1.0.2
 
 ### Patch Changes

@@ -1,5 +1,30 @@
 # myst-to-jats
 
+## 1.0.13
+
+### Patch Changes
+
+- b74fb3c1: Add ruleIds to all errors/warnings across myst-cli
+- Updated dependencies [d35e02bc]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [ed7b430f]
+- Updated dependencies [4183c05c]
+- Updated dependencies [392ba779]
+- Updated dependencies [757f1fe4]
+- Updated dependencies [239ae762]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [86c78957]
+- Updated dependencies [757f1fe4]
+- Updated dependencies [60cf9a53]
+- Updated dependencies [757f1fe4]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [99659250]
+  - myst-common@1.1.7
+  - myst-spec-ext@1.1.7
+  - citation-js-utils@1.0.2
+  - myst-frontmatter@1.1.7
+
 ## 1.0.12
 
 ### Patch Changes

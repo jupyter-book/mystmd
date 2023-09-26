@@ -1,5 +1,64 @@
 # myst-cli
 
+## 1.1.17
+
+### Patch Changes
+
+- b74fb3c1: Add ruleId to file warnings in redux store
+- 2743af51: Only process thumbnails for site builds not static exports
+- b74fb3c1: Add ruleIds to all errors/warnings across myst-cli
+- 2743af51: Eliminate some extra unwanted webp transforms
+- ed7b430f: All instances of `name` options in directives can also use `label`. (e.g. in a figure or equation).
+- 05132869: Update link to blog post about TOC changes <https://executablebooks.org/en/latest/blog/2021-06-18-update-toc/>
+- 86c78957: Add MySTPlugin to common exported types
+- 392ba779: Add `literalinclude` directive
+- 757f1fe4: Do not add unknown citations to the bibliography.
+- d35e02bc: Support for loading plugins in the session
+- 99659250: Added support for glossaries and TEX/PDF export. Now it is possible to render glossaries in TeX and PDF documents.
+- Updated dependencies [d35e02bc]
+- Updated dependencies [4183c05c]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [ed7b430f]
+- Updated dependencies [392ba779]
+- Updated dependencies [4183c05c]
+- Updated dependencies [757f1fe4]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [392ba779]
+- Updated dependencies [757f1fe4]
+- Updated dependencies [239ae762]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [ed7b430f]
+- Updated dependencies [86c78957]
+- Updated dependencies [757f1fe4]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [757f1fe4]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [60cf9a53]
+- Updated dependencies [757f1fe4]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [99659250]
+  - myst-common@1.1.7
+  - myst-ext-exercise@1.0.4
+  - myst-ext-reactive@1.0.4
+  - myst-ext-proof@1.0.4
+  - myst-ext-card@1.0.4
+  - myst-ext-grid@1.0.4
+  - myst-ext-tabs@1.0.4
+  - myst-transforms@1.1.2
+  - myst-parser@1.0.8
+  - myst-spec-ext@1.1.7
+  - myst-cli-utils@2.0.4
+  - myst-to-docx@1.0.5
+  - myst-to-jats@1.0.13
+  - myst-to-tex@1.0.6
+  - tex-to-myst@1.0.6
+  - myst-to-md@1.0.7
+  - citation-js-utils@1.0.2
+  - myst-config@1.1.7
+  - jtex@1.0.7
+  - myst-frontmatter@1.1.7
+
 ## 1.1.16
 
 ### Patch Changes

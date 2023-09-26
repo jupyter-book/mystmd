@@ -1,5 +1,14 @@
 # myst-spec-ext
 
+## 1.1.7
+
+### Patch Changes
+
+- 4183c05c: Improve the citation node
+- 392ba779: Add `include` node, that implements the `literalinclude` directive
+- 757f1fe4: Add partial to Cite node to allow for year or author only.
+- 60cf9a53: Add filename to codeblock and include directives
+
 ## 1.1.6
 
 ## 1.1.5
