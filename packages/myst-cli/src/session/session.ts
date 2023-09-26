@@ -5,7 +5,7 @@ import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
 import { config, rootReducer, selectors } from '../store/index.js';
 import type { RootState } from '../store/index.js';
-import type { ISession, MystPlugins } from './types.js';
+import type { ISession } from './types.js';
 import {
   findCurrentProjectAndLoad,
   findCurrentSiteAndLoad,
@@ -16,6 +16,7 @@ import boxen from 'boxen';
 import chalk from 'chalk';
 import version from '../version.js';
 import { loadPlugins } from '../plugins.js';
+import type { MystPlugin } from 'myst-common';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
@@ -101,7 +102,7 @@ export class Session implements ISession {
     return this;
   }
 
-  plugins: MystPlugins | undefined;
+  plugins: MystPlugin | undefined;
 
   async loadPlugins() {
     this.plugins = await loadPlugins(this);

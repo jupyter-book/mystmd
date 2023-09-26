@@ -32,4 +32,5 @@ export type {
   DirectiveSpec,
   RoleSpec,
   ParseTypes,
+  MystPlugin,
 } from './types.js';

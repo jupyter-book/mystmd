@@ -84,6 +84,14 @@ export type RoleSpec = {
   run: (data: RoleData, vfile: VFile) => GenericNode[];
 };
 
+/**
+ * Create MyST plugins that export this from a file,
+ * or combine multiple plugins to a single object.  */
+export type MystPlugin = {
+  directives: DirectiveSpec[];
+  roles: RoleSpec[];
+};
+
 export enum TargetKind {
   heading = 'heading',
   equation = 'equation',

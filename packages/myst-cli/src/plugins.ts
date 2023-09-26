@@ -1,17 +1,12 @@
 import fs from 'node:fs';
 import type { ISession } from './session/types.js';
 import { selectCurrentProjectConfig } from './store/selectors.js';
-import type { DirectiveSpec, RoleSpec } from 'myst-common';
+import type { MystPlugin } from 'myst-common';
 
-type MystPlugins = {
-  directives: DirectiveSpec[];
-  roles: RoleSpec[];
-};
-
-export async function loadPlugins(session: ISession): Promise<MystPlugins> {
+export async function loadPlugins(session: ISession): Promise<MystPlugin> {
   const config = selectCurrentProjectConfig(session.store.getState());
 
-  const plugins: MystPlugins = {
+  const plugins: MystPlugin = {
     directives: [],
     roles: [],
   };
