@@ -36,6 +36,7 @@ const glossaryReferenceHandler: Handler = (node, state) => {
     fileError(state.file, `Unknown glossary entry identifier "${node.identifier}"`, {
       node,
       source: 'myst-to-tex',
+      ruleId: RuleId.texRenders,
     });
     const gn = node as GenericNode;
     state.write(toText(node).trim() || gn.label || '');
@@ -265,6 +266,7 @@ const handlers: Record<string, Handler> = {
       fileError(state.file, `Unknown abbreviation entry identifier "${ref}"`, {
         node,
         source: 'myst-to-tex',
+        ruleId: RuleId.texRenders,
       });
       return;
     }
