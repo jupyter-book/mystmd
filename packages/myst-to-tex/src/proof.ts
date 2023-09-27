@@ -1,4 +1,5 @@
-import { GenericNode, fileError, writeTexLabelledComment } from 'myst-common';
+import { fileError, writeTexLabelledComment } from 'myst-common';
+import type { GenericNode } from 'myst-common';
 import type { Text } from 'myst-spec';
 import type { ProofContainer, ProofKind } from 'myst-ext-proof';
 import { select } from 'unist-util-select';

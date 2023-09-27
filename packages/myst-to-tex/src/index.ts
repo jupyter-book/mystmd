@@ -609,7 +609,7 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
       preamble.push(new TexProofSerializer().preamble);
     }
     preamble.push(opts?.printGlossaries ? glossaryState.preamble : '');
-    
+
     let tex = (file.result as string).trim();
     tex += opts?.printGlossaries ? '\n' + glossaryState.printedDefinitions : '';
 

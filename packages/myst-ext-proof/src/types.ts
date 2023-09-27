@@ -15,7 +15,7 @@ const PROOF_KINDS = [
   'observation',
   'proposition',
   'assumption',
-  'theorem'
+  'theorem',
 ] as const;
 type ProofKinds = typeof PROOF_KINDS;
 
