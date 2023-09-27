@@ -1,5 +1,20 @@
 # myst-cli
 
+## 1.1.18
+
+### Patch Changes
+
+- e846cf4: Add support for abbreviations in LaTeX (acronyms)
+- 7741cb0e: Export loadPlugins function
+- Updated dependencies [e846cf4]
+  - myst-common@1.1.8
+  - myst-to-tex@1.0.7
+  - jtex@1.0.8
+  - myst-config@1.1.8
+  - myst-frontmatter@1.1.8
+  - myst-spec-ext@1.1.8
+  - tex-to-myst@1.0.7
+
 ## 1.1.17
 
 ### Patch Changes

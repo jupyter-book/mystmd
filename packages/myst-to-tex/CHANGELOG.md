@@ -1,5 +1,15 @@
 # myst-to-tex
 
+## 1.0.7
+
+### Patch Changes
+
+- e846cf4: Add support for abbreviations in LaTeX (acronyms)
+- Updated dependencies [e846cf4]
+  - myst-common@1.1.8
+  - myst-frontmatter@1.1.8
+  - myst-spec-ext@1.1.8
+
 ## 1.0.6
 
 ### Patch Changes
