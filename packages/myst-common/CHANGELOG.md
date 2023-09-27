@@ -1,5 +1,11 @@
 # myst-common
 
+## 1.1.8
+
+### Patch Changes
+
+- e846cf4: Add support for abbreviations in LaTeX (acronyms)
+
 ## 1.1.7
 
 ### Patch Changes
