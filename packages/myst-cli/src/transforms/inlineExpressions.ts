@@ -1,5 +1,5 @@
 import type { GenericNode, GenericParent } from 'myst-common';
-import { fileWarn, NotebookCell } from 'myst-common';
+import { fileWarn, NotebookCell, RuleId } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { InlineExpression } from 'myst-spec-ext';
 import type { StaticPhrasingContent } from 'myst-spec';
@@ -61,7 +61,10 @@ function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingCo
     if (result.data['text/plain']) {
       return [{ type: 'text', value: result.data['text/plain'] }];
     }
-    fileWarn(file, 'Unrecognized mime bundle for inline content', { node });
+    fileWarn(file, 'Unrecognized mime bundle for inline content', {
+      node,
+      ruleId: RuleId.inlineExpressionRenders,
+    });
   }
   return [];
 }

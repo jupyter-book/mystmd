@@ -3,7 +3,7 @@ import { ExportFormats } from 'myst-frontmatter';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import type { ISession } from '../../session/index.js';
-import type { ExportOptions, ExportWithInputOutput } from '../types.js';
+import type { ExportOptions, ExportResults, ExportWithInputOutput } from '../types.js';
 import { resolveAndLogErrors } from './resolveAndLogErrors.js';
 import { runTexZipExport, runTexExport } from '../tex/single.js';
 import { runWordExport } from '../docx/single.js';
@@ -16,7 +16,7 @@ import { runMdExport } from '../md/index.js';
 async function _localArticleExport(
   session: ISession,
   exportOptionsList: ExportWithInputOutput[],
-  opts: Pick<ExportOptions, 'clean' | 'projectPath' | 'throwOnFailure'>,
+  opts: Pick<ExportOptions, 'clean' | 'projectPath' | 'throwOnFailure' | 'glossaries'>,
 ) {
   const { clean, projectPath } = opts;
   const errors = await resolveAndLogErrors(
@@ -29,17 +29,37 @@ async function _localArticleExport(
         projectPath ??
         $project ??
         (await findCurrentProjectAndLoad(sessionClone, path.dirname($file)));
+
+      let exportResults: ExportResults | undefined;
       if (fileProjectPath) {
         await loadProjectFromDisk(sessionClone, fileProjectPath);
       }
       if (format === ExportFormats.tex) {
         if (path.extname(output) === '.zip') {
-          await runTexZipExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
+          exportResults = await runTexZipExport(
+            sessionClone,
+            $file,
+            exportOptions,
+            fileProjectPath,
+            clean,
+          );
         } else {
-          await runTexExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
+          exportResults = await runTexExport(
+            sessionClone,
+            $file,
+            exportOptions,
+            fileProjectPath,
+            clean,
+          );
         }
       } else if (format === ExportFormats.docx) {
-        await runWordExport(sessionClone, $file, exportOptions, fileProjectPath, clean);
+        exportResults = await runWordExport(
+          sessionClone,
+          $file,
+          exportOptions,
+          fileProjectPath,
+          clean,
+        );
       } else if (format === ExportFormats.xml) {
         await runJatsExport(sessionClone, exportOptions, fileProjectPath, clean);
       } else if (format === ExportFormats.md) {
@@ -54,13 +74,20 @@ async function _localArticleExport(
           keepTexAndLogs,
           clean,
         );
-        await runTexExport(sessionClone, $file, texExportOptions, fileProjectPath, clean);
+        exportResults = await runTexExport(
+          sessionClone,
+          $file,
+          texExportOptions,
+          fileProjectPath,
+          clean,
+        );
         await createPdfGivenTexExport(
           sessionClone,
           texExportOptions,
           output,
           keepTexAndLogs,
           clean,
+          exportResults.hasGlossaries,
         );
       }
     }),

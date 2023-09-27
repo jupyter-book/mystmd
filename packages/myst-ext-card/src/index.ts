@@ -1,23 +1,22 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 const HEADER_REGEX = /((?<before>[\s\S]*?)\s+){0,1}\^\^\^(\s+(?<after>[\s\S]*)){0,1}/;
 
 export const cardDirective: DirectiveSpec = {
   name: 'card',
-  alias: 'grid-item-card',
+  alias: ['grid-item-card'],
   arg: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
   },
   options: {
     link: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
     header: {
-      type: ParseTypesEnum.parsed,
+      type: 'myst',
     },
     footer: {
-      type: ParseTypesEnum.parsed,
+      type: 'myst',
     },
     // // https://sphinx-design.readthedocs.io/en/furo-theme/cards.html#card-options
     // width
@@ -47,7 +46,7 @@ export const cardDirective: DirectiveSpec = {
     // 'class-item' // This seems the same as `class-card`?
   },
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
     required: true,
   },
   run(data: DirectiveData): GenericNode[] {

@@ -9,7 +9,7 @@ import {
   RESERVED_EXPORT_KEYS,
   validateAffiliation,
   validateAndStashObject,
-  validateAuthor,
+  validateContributor,
   validateGithubUrl,
   validateLicenses,
   validatePageFrontmatter,
@@ -505,7 +505,7 @@ export function validateTemplateYml(
       value.authors,
       incrementOptions('authors', opts),
       (author, index) => {
-        return validateAuthor(author, stash, incrementOptions(`authors.${index}`, opts));
+        return validateContributor(author, stash, incrementOptions(`authors.${index}`, opts));
       },
     );
   }

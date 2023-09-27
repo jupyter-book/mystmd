@@ -19,6 +19,7 @@ import {
   TableCell,
   Paragraph,
 } from 'docx';
+import { RuleId, fileError } from 'myst-common';
 import type {
   Parent,
   Heading,
@@ -71,7 +72,6 @@ import {
 } from './utils.js';
 import { createNumbering } from './numbering.js';
 import sizeOf from 'buffer-image-size';
-import { fileError } from 'myst-common';
 
 const text: Handler<Text> = (state, node) => {
   state.text(node.value ?? '');
@@ -251,6 +251,7 @@ const image: Handler<Image> = (state, node) => {
       node,
       source: 'myst-to-docx:image',
       note: 'Either provide dimensions of the image with "getImageDimensions" or ensure that the result is a Buffer.',
+      ruleId: RuleId.docxRenders,
     });
   }
   state.current.push(
@@ -405,7 +406,9 @@ function figCaptionToWordCaption(file: VFile, kind: string): WordCaptionKind {
       // This is a hack, I don't think word knows about other things!
       return 'Figure';
     default:
-      fileError(file, `Unknown figure caption of kind ${kind}`);
+      fileError(file, `Unknown figure caption of kind ${kind}`, {
+        ruleId: RuleId.docxRenders,
+      });
       return 'Figure';
   }
 }

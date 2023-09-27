@@ -1,21 +1,25 @@
 import type { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
+import type { Position } from 'unist';
 import { map } from 'unist-util-map';
 import { customAlphabet } from 'nanoid';
 import type { Node, Parent, PhrasingContent } from 'myst-spec';
+import type { RuleId } from './ruleids.js';
 import type { AdmonitionKind, GenericNode, GenericParent } from './types.js';
 
 export type MessageInfo = {
-  node?: Node;
+  node?: Node | Position;
   note?: string;
   source?: string;
   url?: string;
   fatal?: boolean;
+  ruleId?: RuleId | string;
 };
 
 function addMessageInfo(message: VFileMessage, info?: MessageInfo) {
-  if (info?.note) message.note = info?.note;
-  if (info?.url) message.url = info?.url;
+  if (info?.note) message.note = info.note;
+  if (info?.url) message.url = info.url;
+  if (info?.ruleId) message.ruleId = info.ruleId as string;
   if (info?.fatal) message.fatal = true;
   return message;
 }
@@ -58,7 +62,7 @@ export function normalizeLabel(
     .trim()
     .toLowerCase();
   const html_id = createHtmlId(identifier) as string;
-  return { identifier, label, html_id };
+  return { identifier, label: label, html_id };
 }
 
 export function createHtmlId(identifier?: string): string | undefined {
@@ -91,6 +95,13 @@ export function setTextAsChild(node: Partial<Parent>, text: string) {
   node.children = [{ type: 'text', value: text } as Node];
 }
 
+/**
+ * Renders a textual representation of one or more nodes
+ * by concatenating all children that have a text representation.
+ * @param content The node or nodes to provide as input.
+ * @returns A string. An empty string is returned in case no
+ * textual representation could be extracted.
+ */
 export function toText(content?: Node[] | Node | null): string {
   if (!content) return '';
   if (!Array.isArray(content)) return toText([content]);
@@ -147,9 +158,9 @@ export function admonitionKindToTitle(kind: AdmonitionKind | string) {
   return transform[kind] || `Unknown Admonition "${kind}"`;
 }
 
-export function writeTexLabelledComment(title: string, commands: string[], commentLenth: number) {
+export function writeTexLabelledComment(title: string, commands: string[], commentLength: number) {
   if (!commands || commands?.length === 0) return '';
-  const len = (commentLenth - title.length - 4) / 2;
+  const len = (commentLength - title.length - 4) / 2;
   const start = ''.padEnd(Math.ceil(len), '%');
   const end = ''.padEnd(Math.floor(len), '%');
   const titleBlock = `${start}  ${title}  ${end}\n`;

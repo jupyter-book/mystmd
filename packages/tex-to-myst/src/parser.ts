@@ -1,5 +1,5 @@
 import type { GenericNode, MessageInfo } from 'myst-common';
-import { fileWarn, normalizeLabel, fileError } from 'myst-common';
+import { fileWarn, normalizeLabel, fileError, RuleId } from 'myst-common';
 import { u } from 'unist-builder';
 import type { VFile } from 'vfile';
 import { selectAll } from 'unist-util-select';
@@ -113,6 +113,7 @@ export class TexParser implements ITexParser {
       ...opts,
       node,
       source: source ? `tex-to-myst:${source}` : 'tex-to-myst',
+      ruleId: RuleId.texParses,
     });
   }
 
@@ -121,6 +122,7 @@ export class TexParser implements ITexParser {
       ...opts,
       node,
       source: source ? `tex-to-myst:${source}` : 'tex-to-myst',
+      ruleId: RuleId.texParses,
     });
   }
 
@@ -167,6 +169,7 @@ export class TexParser implements ITexParser {
         fileError(this.file, `${UNHANDLED_ERROR_TEXT} for node of "${kind}"`, {
           node: { type: child.type, kind, position: child.position } as GenericNode,
           source: 'tex-to-myst',
+          ruleId: RuleId.texParses,
         });
       }
     });

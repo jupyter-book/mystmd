@@ -1,4 +1,5 @@
 import type { CreditRole } from 'credit-roles';
+import type { Funding } from '../funding/types.js';
 import type { Licenses } from '../licenses/types.js';
 
 export interface Affiliation {
@@ -21,18 +22,27 @@ export interface Affiliation {
   fax?: string;
 }
 
-export type AuthorRoles = CreditRole | string;
+export type ContributorRole = CreditRole | string;
 
-export interface Author {
+export type Name = {
+  literal?: string;
+  given?: string;
+  family?: string;
+  dropping_particle?: string;
+  non_dropping_particle?: string;
+  suffix?: string;
+};
+
+export interface Contributor {
   id?: string;
-  name?: string; // or Name object?
+  name?: string; // may be set to Name object
   userId?: string;
   orcid?: string;
   corresponding?: boolean;
   equal_contributor?: boolean;
   deceased?: boolean;
   email?: string;
-  roles?: AuthorRoles[];
+  roles?: ContributorRole[];
   affiliations?: string[];
   twitter?: string;
   github?: string;
@@ -40,6 +50,8 @@ export interface Author {
   note?: string;
   phone?: string;
   fax?: string;
+  // Computed property; only 'name' should be set in frontmatter as string or Name object
+  nameParsed?: Name;
 }
 
 /**
@@ -48,8 +60,10 @@ export interface Author {
  * These will be normalized to the top level and replaced with ids elsewhere
  */
 export type ReferenceStash = {
-  affiliations?: Affiliation[];
-  authors?: Author[];
+  affiliations?: (Affiliation & { id: string })[];
+  contributors?: (Contributor & { id: string })[];
+  // Used to on resolution differentiate authors from other contributors
+  authorIds?: string[];
 };
 
 export type Biblio = {
@@ -160,11 +174,13 @@ export type SiteFrontmatter = {
   thumbnailOptimized?: string;
   banner?: string | null;
   bannerOptimized?: string;
-  authors?: Author[];
+  authors?: Contributor[];
   affiliations?: Affiliation[];
   venue?: Venue;
   github?: string;
   keywords?: string[];
+  funding?: Funding[];
+  contributors?: Contributor[];
 };
 
 export type ProjectFrontmatter = SiteFrontmatter & {

@@ -45,6 +45,9 @@ parts:
       - file: creating-pdf-documents
       - file: creating-word-documents
       - file: creating-jats-xml
+  - caption: Extensions
+    chapters:
+      - file: plugins
   - caption: Reference
     chapters:
       - file: background
@@ -52,5 +55,6 @@ parts:
       - file: installing-prerequisites
       - file: commonmark
       - file: syntax-overview
+      - file: directives
       - file: frontmatter
       - file: glossary

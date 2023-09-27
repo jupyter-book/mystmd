@@ -58,7 +58,7 @@ export function renderTex(
   }
   const { options, parts, doc } = template.prepare(opts);
   let importsContent = renderImports(opts.imports, opts.packages);
-  importsContent += '\n' + (opts.preamble || '');
+  importsContent += opts.preamble ? '\n' + opts.preamble : '';
   const renderer: TexRenderer = {
     CONTENT: content,
     doc,

@@ -1,11 +1,10 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 export const outputDirective: DirectiveSpec = {
   name: 'output',
   options: {
     id: {
-      type: ParseTypesEnum.string,
+      type: String,
       required: true,
     },
   },

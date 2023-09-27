@@ -1,0 +1,656 @@
+title: myst-to-tex glossary-related features
+latexGlossary: |-
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%  acronyms & glossary  %%%%%%%%%%%%%
+  \printglossaries
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+cases:
+  - title: with no glossary refs
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+    latex: |-
+      A simple PCA process
+    printGlossaries: true
+  - title: one gls-ref in paragraph (glossary on)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: PCA
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: PCA
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Principal Component Analysis
+    latex: |-
+      A simple \gls{term-t1} process
+    printGlossaries: true
+  - title: one gls-ref in paragraph (glossary off)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: PCA
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: PCA
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Principal Component Analysis
+    latex: |-
+      A simple PCA process
+    printGlossaries: false
+  - title: two gls-refs in paragraph (glossary on)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process in the context of '
+                - type: crossReference
+                  label: MLR
+                  identifier: term-t2
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'MLR'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: PCA
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: PCA
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Principal Component Analysis
+                    - type: definitionTerm
+                      label: MLR
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: MLR
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Multiple Linear Regression
+    latex: |-
+      A simple \gls{term-t1} process in the context of \gls{term-t2}
+    printGlossaries: true
+  - title: two gls-refs in paragraph (glossary off)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process in the context of '
+                - type: crossReference
+                  label: MLR
+                  identifier: term-t2
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'MLR'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: PCA
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: PCA
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Principal Component Analysis
+                    - type: definitionTerm
+                      label: MLR
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: MLR
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Multiple Linear Regression
+    latex: |-
+      A simple PCA process in the context of MLR
+    printGlossaries: false
+  - title: with unused glossary defs
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: PCA
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: PCA
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Principal Component Analysis
+                    - type: definitionTerm
+                      label: MLR
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: MLR
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Multiple Linear Regression
+    latex: |-
+      A simple \gls{term-t1} process
+    printGlossaries: true
+  - title: with missing glossary def
+    notes: |-
+      The parser will never generate this mdast in case
+      the original md has a ref to an element not present
+      in the glossary
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: MLR
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: MLR
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Multiple Linear Regression
+    latex: |-
+      A simple PCA process
+    printGlossaries: true
+  - title: with missing glossary def and unresolved ref
+    notes: |-
+      The parser will never generate this mdast in case
+      the original md has a ref to an element not present
+      in the glossary
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                - type: text
+                  value: ' process'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: MLR
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: MLR
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Multiple Linear Regression
+    latex: |-
+      A simple PCA process
+    printGlossaries: true
+  - title: with missing glossary def and empty glossary
+    notes: |-
+      The parser will never generate this mdast in case
+      the original md has a ref to an element not present
+      in the glossary
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                - type: text
+                  value: ' process'
+    latex: |-
+      A simple PCA process
+    printGlossaries: true
+  - title: part with glossary reference (glossary off)
+    notes: |-
+      The parser will generate this structure when extracting
+      a part (glossary printing off)
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            - part: abstract
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+    latex: |-
+      A simple PCA process
+    printGlossaries: false
+  - title: part with glossary reference (glossary on)
+    notes: |-
+      The parser will generate this structure when extracting
+      a part, and normally the parser will be called with the
+      print-glossary flag off; we have this test case to check
+      the parser is still resilient to the lack of glossary
+      definitions
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            - part: abstract
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'A simple '
+                - type: crossReference
+                  label: PCA
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'PCA'
+                - type: text
+                  value: ' process'
+    latex: |-
+      A simple PCA process
+    printGlossaries: on
+  - title: with abbreviations (glossary on)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is a '
+                - type: abbreviation
+                  title: Random Variable
+                  children:
+                    - type: text
+                      value: 'RV'
+                - type: text
+                  value: ' with a distribution'
+    latex: |-
+      This is a \acrshort{rv} with a distribution
+    printGlossaries: true
+  - title: with abbreviations (glossary off)
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is a '
+                - type: abbreviation
+                  title: Random Variable
+                  children:
+                    - type: text
+                      value: 'RV'
+                - type: text
+                  value: ' with a distribution'
+    latex: |-
+      This is a RV with a distribution
+    printGlossaries: false
+  - title: with one abbreviation and one gls-ref next to each other
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'These are '
+                - type: crossReference
+                  label: IID
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'IID'
+                - type: text
+                  value: ' '
+                - type: abbreviation
+                  title: Random Variable
+                  children:
+                    - type: text
+                      value: 'RV'
+                - type: text
+                  value: 's we consider'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: IID
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: IID
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Independent and Identically Distributed
+    latex: |-
+      These are \gls{term-t1} \acrshort{rv}s we consider
+    printGlossaries: true
+  - title: with one gls-ref and one abbreviation next to each other
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'These '
+                - type: abbreviation
+                  title: Random Variable
+                  children:
+                    - type: text
+                      value: 'RV'
+                - type: text
+                  value: 's are '
+                - type: crossReference
+                  label: IID
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'IID'
+                - type: text
+                  value: ' by hypothesis'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: IID
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: IID
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Independent and Identically Distributed
+    latex: |-
+      These \acrshort{rv}s are \gls{term-t1} by hypothesis
+    printGlossaries: true
+  - title: with gls-refs and abbreviations
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'The concept of '
+                - type: crossReference
+                  label: IID
+                  identifier: term-t1
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'IID'
+                - type: text
+                  value: ' '
+                - type: abbreviation
+                  title: Random Variable
+                  children:
+                    - type: text
+                      value: 'RV'
+                - type: text
+                  value: 's is key to understanding '
+                - type: crossReference
+                  label: RP
+                  identifier: term-t2
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'RP'
+                - type: text
+                  value: ', and '
+                - type: crossReference
+                  label: TCMC
+                  identifier: term-t3
+                  kind: definitionTerm
+                  template: '{name}'
+                  resolved: true
+                  children:
+                    - type: text
+                      value: 'TCMC'
+                - type: text
+                  value: ' in the context of '
+                - type: abbreviation
+                  title: Queueing Theory
+                  children:
+                    - type: text
+                      value: 'QT'
+            - type: glossary
+              children:
+                - type: definitionList
+                  children:
+                    - type: definitionTerm
+                      label: IID
+                      identifier: term-t1
+                      children:
+                        - type: text
+                          value: IID
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Independent and Identically Distributed
+                    - type: definitionTerm
+                      label: RP
+                      identifier: term-t2
+                      children:
+                        - type: text
+                          value: RP
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Renewal Process
+                    - type: definitionTerm
+                      label: TCMC
+                      identifier: term-t3
+                      children:
+                        - type: text
+                          value: TCMC
+                    - type: definitionDescription
+                      children:
+                        - type: text
+                          value: Time Continuous Markov Chains
+    latex: |-
+      The concept of \gls{term-t1} \acrshort{rv}s is key to understanding \gls{term-t2}, and \gls{term-t3} in the context of \acrshort{qt}
+    printGlossaries: true

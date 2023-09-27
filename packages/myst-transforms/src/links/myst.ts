@@ -1,4 +1,4 @@
-import { fileWarn, fileError } from 'myst-common';
+import { fileWarn, fileError, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { Inventory } from 'intersphinx';
 import type { Link, LinkTransformer } from './types.js';
@@ -28,6 +28,7 @@ export class MystTransformer implements LinkTransformer {
       fileError(file, `Could not parse url for "${urlSource}"`, {
         node: link,
         source: TRANSFORM_SOURCE,
+        ruleId: RuleId.mystLinkValid,
       });
       return false;
     }
@@ -42,6 +43,7 @@ export class MystTransformer implements LinkTransformer {
       fileWarn(file, `Unknown project "${url.pathname}" for link: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
+        ruleId: RuleId.mystLinkValid,
       });
       return false;
     }
@@ -57,6 +59,7 @@ export class MystTransformer implements LinkTransformer {
       fileWarn(file, `"${urlSource}" not found intersphinx ${project.id} (${project.path})`, {
         node: link,
         source: TRANSFORM_SOURCE,
+        ruleId: RuleId.mystLinkValid,
       });
       return false;
     }

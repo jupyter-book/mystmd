@@ -4,7 +4,7 @@ import katex from 'katex';
 import type { Math, InlineMath, Node } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
-import { copyNode, fileError, fileWarn, normalizeLabel } from 'myst-common';
+import { RuleId, copyNode, fileError, fileWarn, normalizeLabel } from 'myst-common';
 import { unnestTransform } from './unnest.js';
 
 const TRANSFORM_NAME = 'myst-transforms:math';
@@ -44,6 +44,7 @@ function labelMathNodes(file: VFile, node: Math | InlineMath) {
       fileWarn(file, `Labelling an unnumbered math node with "\\label{${label}}"`, {
         node,
         source: TRANSFORM_NAME,
+        ruleId: RuleId.mathLabelLifted,
       });
     }
     node.identifier = normalized.identifier;
@@ -53,6 +54,7 @@ function labelMathNodes(file: VFile, node: Math | InlineMath) {
     fileWarn(file, `Cannot use "\\label{${label}}" in inline math`, {
       node,
       source: TRANSFORM_NAME,
+      ruleId: RuleId.mathLabelLifted,
     });
   }
   node.value = value.replace(LABEL, '').trim();
@@ -70,6 +72,7 @@ function removeSimpleEquationEnv(file: VFile, node: Math | InlineMath) {
       node,
       note: value,
       source: TRANSFORM_NAME,
+      ruleId: RuleId.mathEquationEnvRemoved,
     });
     return;
   }
@@ -81,6 +84,7 @@ function removeSimpleEquationEnv(file: VFile, node: Math | InlineMath) {
       node,
       note: value,
       source: TRANSFORM_NAME,
+      ruleId: RuleId.mathEquationEnvRemoved,
     });
     return;
   }
@@ -95,6 +99,7 @@ function replaceEqnarray(file: VFile, value: string, node: Node) {
     note: 'Although the standard eqnarray environment is available in LaTeX, it is better to use align or equation+split instead. Within eqnarray, spacing around signs of relation is not the preferred mathematical spacing, and is inconsistent with that spacing as it appears in other environments.',
     source: TRANSFORM_NAME,
     url: 'http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/required/amsmath/amsldoc.pdf',
+    ruleId: RuleId.mathEqnarrayReplaced,
   });
   return value
     .replace(/\\begin{eqnarray}/g, '\\begin{align*}')
@@ -140,6 +145,7 @@ function tryRender(
         node,
         note: message,
         source: TRANSFORM_NAME,
+        ruleId: RuleId.mathAlignmentAdjusted,
       });
       const next = `\\begin{align*}\n${value}\n\\end{align*}`;
       const result = tryRender(file, node, next, macros);
@@ -150,6 +156,7 @@ function tryRender(
         node,
         note: message,
         source: TRANSFORM_NAME,
+        ruleId: RuleId.mathAlignmentAdjusted,
       });
       const arrayCentering = /\\begin{array}{((?:\*\{[0-9]+\})c)}/g;
       if (value.match(arrayCentering)) {
@@ -174,6 +181,7 @@ function renderEquation(file: VFile, node: Math | InlineMath, opts?: Options) {
       note: node.value,
       source: TRANSFORM_NAME,
       fatal: true,
+      ruleId: RuleId.mathRenders,
     });
     (node as any).error = true;
     (node as any).message = message;
@@ -187,7 +195,12 @@ function renderEquation(file: VFile, node: Math | InlineMath, opts?: Options) {
   }
   if (result.warnings) {
     result.warnings.forEach((message) => {
-      fileWarn(file, message, { node, note: node.value, source: 'KaTeX' });
+      fileWarn(file, message, {
+        node,
+        note: node.value,
+        source: 'KaTeX',
+        ruleId: RuleId.mathRenders,
+      });
     });
   }
   if (result.error) {
@@ -204,7 +217,12 @@ function renderEquation(file: VFile, node: Math | InlineMath, opts?: Options) {
         nodeError.position.start.column += offset - 1;
       }
     }
-    fileError(file, result.error, { node: nodeError, note: node.value, source: 'KaTeX' });
+    fileError(file, result.error, {
+      node: nodeError,
+      note: node.value,
+      source: 'KaTeX',
+      ruleId: RuleId.mathRenders,
+    });
     (node as any).error = true;
     (node as any).message = result.error;
   }

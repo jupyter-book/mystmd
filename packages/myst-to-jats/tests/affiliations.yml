@@ -1,0 +1,65 @@
+cases:
+  - title: Affiliation frontmatter
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
+    frontmatter:
+      affiliations:
+        - id: univa
+          name: University A
+        - id: univb
+          institution: University B
+          department: Department of Science
+          address: 123 Main St.
+          city: NYC
+          state: New York
+          postal_code: '10001'
+          country: USA
+          isni: '0000000000000000'
+          ringgold: 120000
+          ror: https://ror.edu/00abcd000
+          url: https://example.edu
+          email: example@example.edu
+          phone: 123-456-7890
+          fax: 123-456-7891
+    jats: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
+      <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
+        <front>
+          <article-meta>
+            <aff id="univa">
+              <institution-wrap>
+                <institution>University A</institution>
+              </institution-wrap>
+            </aff>
+            <aff id="univb">
+              <institution-wrap>
+                <institution>University B</institution>
+                <institution-id institution-id-type="isni">0000000000000000</institution-id>
+                <institution-id institution-id-type="ringgold">120000</institution-id>
+                <institution-id institution-id-type="ror">https://ror.edu/00abcd000</institution-id>
+              </institution-wrap>
+              <institution-wrap>
+                <institution content-type="dept">Department of Science</institution>
+              </institution-wrap>
+              <addr-line>123 Main St.</addr-line>
+              <city>NYC</city>
+              <state>New York</state>
+              <postal-code>10001</postal-code>
+              <country>USA</country>
+              <phone>123-456-7890</phone>
+              <fax>123-456-7891</fax>
+              <email>example@example.edu</email>
+              <ext-link ext-link-type="uri" xlink:href="https://example.edu">https://example.edu</ext-link>
+            </aff>
+          </article-meta>
+        </front>
+        <body>
+          <p>text</p>
+        </body>
+      </article>

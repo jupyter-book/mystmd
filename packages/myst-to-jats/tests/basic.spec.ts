@@ -1,8 +1,10 @@
-import { describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { unified } from 'unified';
 import fs from 'node:fs';
 import { Session, silentLogger } from 'myst-cli-utils';
+import { validateProjectFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
+import type { ValidationOptions } from 'simple-validators';
 import path from 'node:path';
 import { validateJatsAgainstDtd } from 'jats-xml';
 import yaml from 'js-yaml';
@@ -64,8 +66,14 @@ async function writeValidateDelete(data: string) {
   return valid;
 }
 
+let opts: ValidationOptions;
+
+beforeEach(() => {
+  opts = { property: 'test', messages: {} };
+});
+
 describe('Basic JATS body', () => {
-  const cases = loadCases('basic.yml');
+  const cases = [...loadCases('basic.yml'), ...loadCases('siunit.yml')];
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))('%s', async (_, { tree, jats }) => {
     const pipe = unified().use(mystToJats, SourceFileKind.Article);
     pipe.runSync(tree as any);
@@ -76,38 +84,20 @@ describe('Basic JATS body', () => {
 });
 
 describe('JATS full article', () => {
-  const cases = loadCases('article.yml');
+  const cases = [
+    ...loadCases('affiliations.yml'),
+    ...loadCases('article.yml'),
+    ...loadCases('authors.yml'),
+    ...loadCases('citations.yml'),
+    ...loadCases('funding.yml'),
+  ];
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
     async (_, { tree, jats, frontmatter, citations }) => {
       const pipe = unified().use(
         mystToJats,
         SourceFileKind.Article,
-        frontmatter,
-        citations,
-        undefined,
-        {
-          writeFullArticle: true,
-          spaces: 2,
-        },
-      );
-      pipe.runSync(tree as any);
-      const vfile = pipe.stringify(tree as any);
-      expect(vfile.result).toEqual(jats);
-      if (TEST_DTD) expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
-    },
-  );
-});
-
-describe('JATS full article with bibliography', () => {
-  const cases = loadCases('citations.yml');
-  test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
-    '%s',
-    async (_, { tree, jats, frontmatter, citations }) => {
-      const pipe = unified().use(
-        mystToJats,
-        SourceFileKind.Article,
-        frontmatter,
+        validateProjectFrontmatter(frontmatter, opts),
         citations,
         undefined,
         {
@@ -128,9 +118,17 @@ describe('JATS multi-article', () => {
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
     async (_, { tree, jats, frontmatter, citations, subArticles }) => {
+      subArticles.forEach((subArticle) => {
+        subArticle.frontmatter = validateProjectFrontmatter(subArticle.frontmatter, opts);
+      });
       const vfile = writeJats(
         new VFile(),
-        { mdast: tree as any, kind: SourceFileKind.Article, frontmatter, citations },
+        {
+          mdast: tree as any,
+          kind: SourceFileKind.Article,
+          frontmatter: validateProjectFrontmatter(frontmatter, opts),
+          citations,
+        },
         {
           subArticles: subArticles as any,
           writeFullArticle: true,
@@ -143,26 +141,6 @@ describe('JATS multi-article', () => {
   );
 });
 
-describe('JATS SI units', () => {
-  const cases = loadCases('siunit.yml');
-  test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
-    '%s',
-    async (_, { tree, jats, frontmatter, citations }) => {
-      const vfile = writeJats(
-        new VFile(),
-        { mdast: tree as any, kind: SourceFileKind.Article, frontmatter, citations },
-        {
-          writeFullArticle: false,
-        },
-      );
-      expect(vfile.result).toEqual(jats);
-      if (TEST_DTD) {
-        expect(await writeValidateDelete(addHeader(vfile.result as string))).toBeTruthy();
-      }
-    },
-  );
-});
-
 describe('JATS full notebook', () => {
   const cases = loadCases('notebooks.yml');
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
@@ -171,7 +149,7 @@ describe('JATS full notebook', () => {
       const pipe = unified().use(
         mystToJats,
         SourceFileKind.Notebook,
-        frontmatter,
+        validateProjectFrontmatter(frontmatter, opts),
         citations,
         undefined,
         {

@@ -1,6 +1,7 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { Container, CrossReference, Heading, Link, Math, Paragraph } from 'myst-spec';
+import type { Cite } from 'myst-spec-ext';
 import type { PhrasingContent } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
@@ -14,6 +15,7 @@ import {
   copyNode,
   liftChildren,
   TargetKind,
+  RuleId,
 } from 'myst-common';
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
@@ -152,6 +154,7 @@ function fillReferenceEnumerators(
         node,
         note: 'The node was filled in with "??" as the number.',
         source: TRANSFORM_NAME,
+        ruleId: RuleId.referenceTemplateFills,
       },
     );
   }
@@ -294,6 +297,7 @@ export class ReferenceState implements IReferenceState {
         {
           node,
           source: TRANSFORM_NAME,
+          ruleId: RuleId.identifierIsUnique,
         },
       );
       return;
@@ -399,6 +403,7 @@ export class ReferenceState implements IReferenceState {
     fileWarn(this.file, `Cross reference target was not found: ${node.identifier}`, {
       node,
       source: TRANSFORM_NAME,
+      ruleId: RuleId.referenceTargetResolves,
     });
   }
 }
@@ -537,6 +542,7 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateO
       fileWarn(opts.state.file, `No target for internal reference "${link.url}" was found.`, {
         node,
         source: TRANSFORM_NAME,
+        ruleId: RuleId.referenceTargetResolves,
       });
       return;
     }
@@ -548,6 +554,7 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateO
           node,
           note: 'The link target should be of the form `[](#target)`, including the `#` sign.\nThis may be deprecated in the future.',
           source: TRANSFORM_NAME,
+          ruleId: RuleId.referenceSyntaxValid,
         },
       );
       const source = (link as any).urlSource;
@@ -571,9 +578,34 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateO
           node,
           note: 'Explicit references do not break when you update the title to a section, they are preferred over using the implicit HTML ID created for headers.',
           source: TRANSFORM_NAME,
+          ruleId: RuleId.referenceTargetExplicit,
         },
       );
     }
+  });
+};
+
+export const resolveUnlinkedCitations = (tree: GenericParent, opts: StateOptions) => {
+  selectAll('cite', tree).forEach((node) => {
+    const cite = node as Cite;
+    if (!cite.error) return;
+    const reference = normalizeLabel(cite.label);
+    const target = opts.state.getTarget(cite.label) ?? opts.state.getTarget(reference?.identifier);
+    if (!target || !reference) {
+      if (!opts.state.file) return;
+      fileWarn(opts.state.file, `Could not link citation with label "${cite.label}".`, {
+        node,
+        source: TRANSFORM_NAME,
+        ruleId: RuleId.referenceTargetResolves,
+      });
+      return;
+    }
+    // Change the cite into a cross-reference!
+    const xref = cite as unknown as CrossReference;
+    xref.type = 'crossReference';
+    xref.identifier = reference.identifier;
+    xref.label = reference.label;
+    delete cite.error;
   });
 };
 
@@ -605,6 +637,7 @@ export const resolveReferencesTransform = (
   opts: StateOptions,
 ) => {
   resolveReferenceLinksTransform(tree, opts);
+  resolveUnlinkedCitations(tree, opts);
   resolveCrossReferencesTransform(tree, opts);
   addContainerCaptionNumbersTransform(tree, file, opts);
   unnestCrossReferencesTransform(tree);

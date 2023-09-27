@@ -1,5 +1,5 @@
 cases:
-  - title: Basic Units
+  - title: Basic SI Units
     tree:
       type: root
       children:

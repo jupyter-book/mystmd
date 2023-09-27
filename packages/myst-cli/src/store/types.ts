@@ -16,4 +16,5 @@ export type BuildWarning = {
   note?: string | null;
   url?: string | null;
   position?: VFileMessage['position'];
+  ruleId?: string | null;
 };

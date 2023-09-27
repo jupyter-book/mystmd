@@ -15,12 +15,12 @@ describe('proof directive', () => {
           value: 'Proof content',
           position: {
             start: {
-              line: 0,
-              column: 0,
+              line: 1,
+              column: 1,
             },
             end: {
               line: 3,
-              column: 0,
+              column: 1,
             },
           },
           children: [
@@ -35,6 +35,16 @@ describe('proof directive', () => {
                     {
                       type: 'text',
                       value: 'Proof Title',
+                      position: {
+                        start: {
+                          line: 1,
+                          column: 1,
+                        },
+                        end: {
+                          line: 1,
+                          column: 1,
+                        },
+                      },
                     },
                   ],
                 },
@@ -44,16 +54,26 @@ describe('proof directive', () => {
                     {
                       type: 'text',
                       value: 'Proof content',
+                      position: {
+                        start: {
+                          line: 2,
+                          column: 1,
+                        },
+                        end: {
+                          line: 2,
+                          column: 1,
+                        },
+                      },
                     },
                   ],
                   position: {
                     end: {
-                      column: 0,
+                      column: 1,
                       line: 2,
                     },
                     start: {
-                      column: 0,
-                      line: 1,
+                      column: 1,
+                      line: 2,
                     },
                   },
                 },

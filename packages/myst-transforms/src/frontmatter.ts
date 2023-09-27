@@ -2,7 +2,7 @@ import yaml from 'js-yaml';
 import { remove } from 'unist-util-remove';
 import type { Block, Code, Heading } from 'myst-spec';
 import type { GenericParent } from 'myst-common';
-import { fileError, toText } from 'myst-common';
+import { RuleId, fileError, toText } from 'myst-common';
 import type { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
 
@@ -34,7 +34,10 @@ export function getFrontmatter(
       frontmatter = (yaml.load(firstNode.value) as Record<string, any>) || {};
       if (opts.removeYaml) (firstNode as any).type = '__delete__';
     } catch (err) {
-      fileError(file, 'Invalid YAML frontmatter', { note: (err as Error).message });
+      fileError(file, 'Invalid YAML frontmatter', {
+        note: (err as Error).message,
+        ruleId: RuleId.frontmatterIsYaml,
+      });
     }
   }
   const nextNode = firstIsYaml ? secondNode : (firstNode as unknown as Heading);

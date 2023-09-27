@@ -1,6 +1,6 @@
 import { admonitionDirective } from './admonition.js';
 import { bibliographyDirective } from './bibliography.js';
-import { codeBlockDirective, codeDirective, codeCellDirective } from './code.js';
+import { codeDirective, codeCellDirective } from './code.js';
 import { dropdownDirective } from './dropdown.js';
 import { embedDirective } from './embed.js';
 import { figureDirective } from './figure.js';
@@ -19,9 +19,8 @@ import { outputDirective } from './output.js';
 export const defaultDirectives = [
   admonitionDirective,
   bibliographyDirective,
-  codeBlockDirective,
-  codeCellDirective,
   codeDirective,
+  codeCellDirective,
   dropdownDirective,
   embedDirective,
   figureDirective,
@@ -40,7 +39,7 @@ export const defaultDirectives = [
 
 export { admonitionDirective } from './admonition.js';
 export { bibliographyDirective } from './bibliography.js';
-export { codeBlockDirective, codeDirective } from './code.js';
+export { codeDirective } from './code.js';
 export { dropdownDirective } from './dropdown.js';
 export { embedDirective } from './embed.js';
 export { figureDirective } from './figure.js';

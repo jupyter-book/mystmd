@@ -42,14 +42,16 @@ export enum ParseTypesEnum {
 export type ParseTypes = string | number | boolean | GenericNode[];
 
 export type ArgDefinition = {
-  type: ParseTypesEnum;
+  type: ParseTypesEnum | typeof Boolean | typeof String | typeof Number | 'myst';
   required?: boolean;
   doc?: string;
 };
 
-type BodyDefinition = ArgDefinition;
+export type BodyDefinition = ArgDefinition;
 
-type OptionDefinition = ArgDefinition;
+export type OptionDefinition = ArgDefinition & {
+  alias?: string[];
+};
 
 export type DirectiveData = {
   name: string;
@@ -65,7 +67,7 @@ export type RoleData = {
 
 export type DirectiveSpec = {
   name: string;
-  alias?: string | string[];
+  alias?: string[];
   doc?: string;
   arg?: ArgDefinition;
   options?: Record<string, OptionDefinition>;
@@ -76,10 +78,18 @@ export type DirectiveSpec = {
 
 export type RoleSpec = {
   name: string;
-  alias?: string | string[];
+  alias?: string[];
   body?: BodyDefinition;
   validate?: (data: RoleData, vfile: VFile) => RoleData;
   run: (data: RoleData, vfile: VFile) => GenericNode[];
+};
+
+/**
+ * Create MyST plugins that export this from a file,
+ * or combine multiple plugins to a single object.  */
+export type MystPlugin = {
+  directives: DirectiveSpec[];
+  roles: RoleSpec[];
 };
 
 export enum TargetKind {

@@ -1,5 +1,32 @@
 # jtex
 
+## 1.0.8
+
+### Patch Changes
+
+- e846cf4: Add support for abbreviations in LaTeX (acronyms)
+- Updated dependencies [e846cf4]
+  - myst-common@1.1.8
+  - myst-frontmatter@1.1.8
+
+## 1.0.7
+
+### Patch Changes
+
+- 99659250: Added support for glossaries and TEX/PDF export. Now it is possible to render glossaries in TeX and PDF documents.
+- Updated dependencies [d35e02bc]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [ed7b430f]
+- Updated dependencies [239ae762]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [86c78957]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [99659250]
+  - myst-common@1.1.7
+  - myst-cli-utils@2.0.4
+  - myst-frontmatter@1.1.7
+
 ## 1.0.6
 
 ### Patch Changes

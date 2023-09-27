@@ -1,12 +1,13 @@
 import fs from 'node:fs';
 import { join, resolve } from 'node:path';
 import { isDirectory, isUrl } from 'myst-cli-utils';
+import { RuleId } from 'myst-common';
 import { loadConfigAndValidateOrThrow } from '../config.js';
 import { loadFile, combineProjectCitationRenderers } from '../process/index.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { projects } from '../store/reducers.js';
-import { getAllBibTexFilesOnPath, validateTOC } from '../utils/index.js';
+import { addWarningForFile, getAllBibTexFilesOnPath, validateTOC } from '../utils/index.js';
 import { projectFromPath } from './fromPath.js';
 import { projectFromToc } from './fromToc.js';
 import { writeTocFromProject } from './toToc.js';
@@ -35,13 +36,19 @@ export async function loadProjectFromDisk(
     if (cachedProject) return cachedProject;
   }
   const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
+  const file = join(path, session.configFiles[0]);
   if (!projectConfig && opts?.warnOnNoConfig) {
-    session.log.warn(
+    addWarningForFile(
+      session,
+      file,
       `Loading project from path with no config file: ${path}\nConsider running "myst init --project" in that directory`,
+      'warn',
+      { ruleId: RuleId.projectConfigExists },
     );
   }
   let newProject: Omit<LocalProject, 'bibliography'> | undefined;
   let { index, writeToc } = opts || {};
+  const projectConfigFile = selectors.selectLocalConfigFile(session.store.getState(), path);
   if (validateTOC(session, path)) {
     newProject = projectFromToc(session, path);
     if (writeToc) session.log.warn('Not writing the table of contents, it already exists!');
@@ -65,13 +72,18 @@ export async function loadProjectFromDisk(
       // Re-load from TOC just in case there are subtle differences with resulting project
       newProject = projectFromToc(session, path);
     } catch {
-      session.log.error(`Error writing '_toc.yml' file to ${path}`);
+      addWarningForFile(
+        session,
+        projectConfigFile,
+        `Error writing '_toc.yml' file to ${path}`,
+        'error',
+        { ruleId: RuleId.tocWritten },
+      );
     }
   }
   const allBibFiles = getAllBibTexFilesOnPath(session, path);
   let bibliography: string[];
   if (projectConfig?.bibliography) {
-    const projectConfigFile = selectors.selectLocalConfigFile(session.store.getState(), path);
     const bibConfigPath = `${projectConfigFile}#bibliography`;
     bibliography = projectConfig.bibliography.filter((bib) => {
       if (allBibFiles.includes(bib)) return true;
@@ -80,7 +92,9 @@ export async function loadProjectFromDisk(
         allBibFiles.push(bib);
         return true;
       }
-      session.log.warn(`⚠️  ${bib} not found, loaded from ${bibConfigPath}`);
+      addWarningForFile(session, projectConfigFile, `Bibliography file ${bib} not found`, 'warn', {
+        ruleId: RuleId.bibFileExists,
+      });
       return false;
     });
     allBibFiles.forEach((bib) => {

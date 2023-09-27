@@ -21,6 +21,7 @@ export type ExportOptions = {
   disableTemplate?: boolean;
   templateOptions?: Record<string, any>;
   clean?: boolean;
+  glossaries?: boolean;
   zip?: boolean;
   force?: boolean;
   projectPath?: string;
@@ -38,4 +39,5 @@ export type ExportOptions = {
 export type ExportResults = {
   logFiles?: string[];
   tempFolders: string[];
+  hasGlossaries?: boolean;
 };

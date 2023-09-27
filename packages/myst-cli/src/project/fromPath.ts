@@ -1,8 +1,10 @@
 import fs from 'node:fs';
 import { extname, join } from 'node:path';
 import { isDirectory } from 'myst-cli-utils';
+import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
 import {
+  addWarningForFile,
   fileInfo,
   isValidFile,
   nextLevel,
@@ -52,7 +54,13 @@ function projectPagesFromPath(
       return pagesFromToc(session, path, prevLevel);
     } catch {
       if (!suppressWarnings) {
-        session.log.warn(`Invalid table of contents ignored: ${join(path, '_toc.yml')}`);
+        addWarningForFile(
+          session,
+          join(path, '_toc.yml'),
+          `Invalid table of contents ignored`,
+          'warn',
+          { ruleId: RuleId.validToc },
+        );
       }
     }
   }

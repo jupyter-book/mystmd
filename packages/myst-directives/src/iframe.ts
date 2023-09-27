@@ -1,34 +1,33 @@
 import type { Iframe } from 'myst-spec-ext';
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { ParseTypesEnum, normalizeLabel } from 'myst-common';
+import { normalizeLabel } from 'myst-common';
 
 export const iframeDirective: DirectiveSpec = {
   name: 'iframe',
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
+    doc: 'The URL source (`src`) of the HTML iframe element.',
     required: true,
   },
   options: {
-    name: {
-      type: ParseTypesEnum.string,
+    label: {
+      type: String,
+      alias: ['name'],
     },
     class: {
-      type: ParseTypesEnum.string,
+      type: String,
       // class_option: list of strings?
     },
-    label: {
-      type: ParseTypesEnum.string,
-    },
     width: {
-      type: ParseTypesEnum.string,
-      // length_or_percentage_or_unitless,
+      type: String,
+      doc: 'The iframe width, in CSS units, for example `50%` or `300px`.',
     },
     align: {
-      type: ParseTypesEnum.string,
-      // choice(["left", "center", "right"])
+      type: String,
+      doc: 'The alignment of the iframe in the page. Choose one of `left`, `center` or `right`',
     },
   },
-  body: { type: ParseTypesEnum.parsed },
+  body: { type: 'myst', doc: 'If provided, this will be the iframe caption.' },
   run(data: DirectiveData): GenericNode[] {
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const iframe: Iframe = {

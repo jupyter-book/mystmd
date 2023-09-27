@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import type { GenericNode, RoleData, RoleSpec } from 'myst-common';
 import { mystParse } from '../../src';
-import { position } from '../position';
+import { position, positionFn } from '../position';
 
 describe('custom role extensions', () => {
   test('test role with string body', () => {
@@ -24,7 +24,7 @@ describe('custom role extensions', () => {
           children: [
             {
               type: 'mystRole',
-              position,
+              position: positionFn(1, 1, 1, 12),
               name: 'test',
               value: '_a_',
               children: [
@@ -60,7 +60,7 @@ describe('custom role extensions', () => {
           children: [
             {
               type: 'mystRole',
-              position,
+              position: positionFn(1, 1, 1, 12),
               name: 'test',
               value: '_a_',
               children: [
@@ -73,8 +73,10 @@ describe('custom role extensions', () => {
                         {
                           type: 'text',
                           value: 'a',
+                          position,
                         },
                       ],
+                      position,
                     },
                   ],
                 },
@@ -88,7 +90,7 @@ describe('custom role extensions', () => {
   test('test role alias string', () => {
     const TestRole: RoleSpec = {
       name: 'test',
-      alias: 'abc',
+      alias: ['abc'],
       body: {
         type: 'string' as any,
       },
@@ -106,7 +108,7 @@ describe('custom role extensions', () => {
           children: [
             {
               type: 'mystRole',
-              position,
+              position: positionFn(1, 1, 1, 11),
               name: 'abc',
               value: '_a_',
               children: [
@@ -142,7 +144,7 @@ describe('custom role extensions', () => {
           children: [
             {
               type: 'mystRole',
-              position,
+              position: positionFn(1, 1, 1, 11),
               name: 'def',
               value: '_a_',
               children: [

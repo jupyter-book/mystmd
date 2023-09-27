@@ -1,10 +1,9 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 export const marginDirective: DirectiveSpec = {
   name: 'margin',
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
     required: true,
   },
   run(data: DirectiveData): GenericNode[] {

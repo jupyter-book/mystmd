@@ -2,11 +2,14 @@ import fs from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import yaml from 'js-yaml';
 import { writeFileToFolder } from 'myst-cli-utils';
+import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
 import { getSiteTemplateOptions, validateProjectConfig, validateSiteConfig } from 'myst-config';
 import type { ValidationOptions } from 'simple-validators';
 import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
+import { VFile } from 'vfile';
 import { prepareToWrite } from './frontmatter.js';
+import { addWarningForFile, logMessagesFromVFile } from './index.js';
 import type { ISession } from './session/types.js';
 import { selectors } from './store/index.js';
 import { config } from './store/reducers.js';
@@ -36,17 +39,18 @@ export function configFromPath(session: ISession, path: string) {
   return configs[0];
 }
 
-export function readConfig(session: ISession, file: string) {
+export function readConfig(session: ISession, vfile: VFile) {
+  const file = vfile.path;
   if (!fs.existsSync(file)) throw Error(`Cannot find config file: ${file}`);
   const opts: ValidationOptions = {
     file,
     property: 'config',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: ${message}`);
+      fileError(vfile, message, { ruleId: RuleId.validConfigStructure });
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: ${message}`);
+      fileWarn(vfile, message, { ruleId: RuleId.validConfigStructure });
     },
   };
   const conf = validateObject(yaml.load(fs.readFileSync(file, 'utf-8')), opts);
@@ -63,27 +67,37 @@ export function readConfig(session: ISession, file: string) {
       );
     }
   }
-  if (!conf || opts.messages.errors) throw Error(`Please address invalid config file ${file}`);
+  logMessagesFromVFile(session, vfile);
+  if (!conf || opts.messages.errors) {
+    throw Error(`Please address invalid config file ${file}`);
+  }
   // Keep original config object with extra keys, etc.
   if (conf.site?.frontmatter) {
-    session.log.warn(
+    fileWarn(
+      vfile,
       `Frontmatter fields should be defined directly on site, not nested under "${file}#site.frontmatter"`,
+      { ruleId: RuleId.configHasNoDeprecatedFields },
     );
     const { frontmatter, ...rest } = conf.site;
     conf.site = { ...frontmatter, ...rest };
   }
   if (conf.project?.frontmatter) {
-    session.log.warn(
+    fileWarn(
+      vfile,
       `Frontmatter fields should be defined directly on project, not nested under "${file}#project.frontmatter"`,
+      { ruleId: RuleId.configHasNoDeprecatedFields },
     );
     const { frontmatter, ...rest } = conf.project;
     conf.project = { ...frontmatter, ...rest };
   }
   if (conf.site?.logoText) {
-    session.log.warn(`logoText is deprecated, please use logo_text in "${file}#site"`);
+    fileWarn(vfile, `logoText is deprecated, please use logo_text in "${file}#site"`, {
+      ruleId: RuleId.configHasNoDeprecatedFields,
+    });
     const { logoText, ...rest } = conf.site;
     conf.site = { logo_text: logoText, ...rest };
   }
+  logMessagesFromVFile(session, vfile);
   return conf;
 }
 
@@ -158,28 +172,36 @@ function resolveProjectConfigPaths(
       return resolutionFn(session, path, file);
     });
   }
+  if (projectConfig.plugins) {
+    resolvedFields.plugins = projectConfig.plugins.map((file) => {
+      const resolved = resolutionFn(session, path, file);
+      if (fs.existsSync(resolved)) return resolved;
+      return file;
+    });
+  }
   return { ...projectConfig, ...resolvedFields };
 }
 
 function validateSiteConfigAndSave(
   session: ISession,
   path: string,
-  file: string,
+  vfile: VFile,
   rawSiteConfig: Record<string, any>,
 ) {
   let siteConfig = validateSiteConfig(rawSiteConfig, {
-    file,
+    file: vfile.path,
     property: 'site',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: ${message}`);
+      fileError(vfile, message, { ruleId: RuleId.validSiteConfig });
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: ${message}`);
+      fileWarn(vfile, message, { ruleId: RuleId.validSiteConfig });
     },
   });
+  logMessagesFromVFile(session, vfile);
   if (!siteConfig) {
-    const errorSuffix = file ? ` in ${file}` : '';
+    const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid site config${errorSuffix}`);
   }
   siteConfig = resolveSiteConfigPaths(session, path, siteConfig, resolveToAbsolute);
@@ -200,22 +222,23 @@ function validateSiteConfigAndSave(
 function validateProjectConfigAndSave(
   session: ISession,
   path: string,
-  file: string,
+  vfile: VFile,
   rawProjectConfig: Record<string, any>,
 ) {
   let projectConfig = validateProjectConfig(rawProjectConfig, {
-    file,
+    file: vfile.path,
     property: 'project',
     messages: {},
     errorLogFn: (message: string) => {
-      session.log.error(`Validation error: ${message}`);
+      fileError(vfile, message, { ruleId: RuleId.validProjectConfig });
     },
     warningLogFn: (message: string) => {
-      session.log.warn(`Validation: ${message}`);
+      fileWarn(vfile, message, { ruleId: RuleId.validProjectConfig });
     },
   });
+  logMessagesFromVFile(session, vfile);
   if (!projectConfig) {
-    const errorSuffix = file ? ` in ${file}` : '';
+    const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid project config${errorSuffix}`);
   }
   projectConfig = resolveProjectConfigPaths(session, path, projectConfig, resolveToAbsolute);
@@ -233,7 +256,9 @@ export function loadConfigAndValidateOrThrow(session: ISession, path: string) {
     session.log.debug(`No config loaded from path: ${path}`);
     return;
   }
-  const conf = readConfig(session, file);
+  const vfile = new VFile();
+  vfile.path = file;
+  const conf = readConfig(session, vfile);
   const existingConf = selectors.selectLocalRawConfig(session.store.getState(), path);
   if (existingConf && JSON.stringify(conf) === JSON.stringify(existingConf)) {
     return;
@@ -241,13 +266,13 @@ export function loadConfigAndValidateOrThrow(session: ISession, path: string) {
   session.store.dispatch(config.actions.receiveRawConfig({ path, file, ...conf }));
   const { site, project } = conf;
   if (site) {
-    validateSiteConfigAndSave(session, path, file, site);
+    validateSiteConfigAndSave(session, path, vfile, site);
     session.log.debug(`Loaded site config from ${file}`);
   } else {
     session.log.debug(`No site config in ${file}`);
   }
   if (project) {
-    validateProjectConfigAndSave(session, path, file, project);
+    validateProjectConfigAndSave(session, path, vfile, project);
     session.log.debug(`Loaded project config from ${file}`);
   } else {
     session.log.debug(`No project config defined in ${file}`);
@@ -276,13 +301,15 @@ export function writeConfigs(
   let { siteConfig, projectConfig } = newConfigs || {};
   const file = configFromPath(session, path) || defaultConfigFile(session, path);
   // Get site config to save
-  if (siteConfig) validateSiteConfigAndSave(session, path, file, siteConfig);
+  const vfile = new VFile();
+  vfile.path = file;
+  if (siteConfig) validateSiteConfigAndSave(session, path, vfile, siteConfig);
   siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
   if (siteConfig) {
     siteConfig = resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative);
   }
   // Get project config to save
-  if (projectConfig) validateProjectConfigAndSave(session, path, file, projectConfig);
+  if (projectConfig) validateProjectConfigAndSave(session, path, vfile, projectConfig);
   projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
   if (projectConfig) {
     projectConfig = prepareToWrite(projectConfig);
@@ -296,7 +323,7 @@ export function writeConfigs(
   // Get raw config to override
   let rawConfig = selectors.selectLocalRawConfig(session.store.getState(), path);
   if (!rawConfig && configFromPath(session, path)) {
-    rawConfig = readConfig(session, file);
+    rawConfig = readConfig(session, vfile);
   } else if (!rawConfig) {
     rawConfig = emptyConfig();
   }
@@ -355,9 +382,15 @@ export async function findCurrentSiteAndLoad(
 }
 
 export function reloadAllConfigsForCurrentSite(session: ISession) {
-  const sitePath = selectors.selectCurrentSitePath(session.store.getState());
+  const state = session.store.getState();
+  const sitePath = selectors.selectCurrentSitePath(state);
+  const file =
+    selectors.selectCurrentProjectFile(state) ?? defaultConfigFile(session, resolve('.'));
   if (!sitePath) {
-    throw Error('Cannot (re)load "site" config. No current site in the YML configuration.');
+    const message =
+      'Cannot (re)load site config. No configuration file found with "site" property.';
+    addWarningForFile(session, file, message, 'error', { ruleId: RuleId.siteConfigExists });
+    throw Error(message);
   }
   loadConfigAndValidateOrThrow(session, sitePath);
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());

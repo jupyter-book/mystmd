@@ -1,4 +1,4 @@
-import { fileWarn } from 'myst-common';
+import { RuleId, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { Link, LinkTransformer } from './types.js';
 import { updateLinkTextIfEmpty, withoutHttp } from './utils.js';
@@ -37,6 +37,7 @@ export class RRIDTransformer implements LinkTransformer {
       fileWarn(file, `RRID is not valid: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
+        ruleId: RuleId.rridLinkValid,
       });
       return false;
     }

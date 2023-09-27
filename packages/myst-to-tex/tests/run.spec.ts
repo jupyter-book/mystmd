@@ -17,9 +17,12 @@ type TestCases = {
   cases: TestCase[];
 };
 
+const excludedYml = ['glossaries.yml'];
+
 const casesList: TestCases[] = fs
   .readdirSync(__dirname)
   .filter((file) => file.endsWith('.yml'))
+  .filter((file) => !excludedYml.includes(file))
   .map((file) => {
     const content = fs.readFileSync(path.join(__dirname, file), { encoding: 'utf-8' });
     return yaml.load(content) as TestCases;

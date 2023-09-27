@@ -3,7 +3,9 @@ import { join, parse } from 'node:path';
 import yaml from 'js-yaml';
 import type { Logger } from 'myst-cli-utils';
 import { silentLogger } from 'myst-cli-utils';
+import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
+import { addWarningForFile } from './addWarningForFile.js';
 
 export const TOC_FORMAT = 'jb-book';
 
@@ -35,7 +37,7 @@ export type TOC = {
 
 export const tocFile = (filename: string): string => join(filename, '_toc.yml');
 
-// See https://executablebooks.org/en/latest/updates/2021-06-18-update-toc.html
+// See https://executablebooks.org/en/latest/blog/2021-06-18-update-toc/
 function upgradeOldJupyterBookToc(oldToc: any[]) {
   // TODO: numbering is ignored
   const [root, ...parts] = oldToc;
@@ -57,12 +59,12 @@ export function readTOC(log: Logger, opts?: TocOptions): TOC {
     try {
       const old = upgradeOldJupyterBookToc(toc);
       log.warn(
-        `${filename} is out of date: see https://executablebooks.org/en/latest/updates/2021-06-18-update-toc.html`,
+        `${filename} is out of date: see https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
       );
       return old;
     } catch (error) {
       throw new Error(
-        `Could not upgrade toc, please see: https://executablebooks.org/en/latest/updates/2021-06-18-update-toc.html`,
+        `Could not upgrade toc, please see: https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
       );
     }
   }
@@ -83,8 +85,12 @@ export function validateTOC(session: ISession, path: string): boolean {
     return true;
   } catch (error) {
     const { message } = error as unknown as Error;
-    session.log.error(
-      `The Table of Contents (ToC) file "${filename}" did not pass validation:\n - ${message}\n - An implicit ToC will be used instead\n`,
+    addWarningForFile(
+      session,
+      filename,
+      `Table of Contents (ToC) file did not pass validation:\n - ${message}\n - An implicit ToC will be used instead\n`,
+      'error',
+      { ruleId: RuleId.validTocStructure },
     );
     return false;
   }

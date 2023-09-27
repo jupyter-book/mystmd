@@ -1,50 +1,53 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { fileError, normalizeLabel, ParseTypesEnum } from 'myst-common';
+import { fileError, normalizeLabel, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 
 export const listTableDirective: DirectiveSpec = {
   name: 'list-table',
   arg: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
   },
   options: {
-    name: {
-      type: ParseTypesEnum.string,
+    label: {
+      type: String,
+      alias: ['name'],
     },
     'header-rows': {
-      type: ParseTypesEnum.number,
+      type: Number,
       // nonnegative int
     },
     // 'stub-columns': {
-    //   type: ParseTypesEnum.number,
+    //   type: Number,
     //   // nonnegative int
     // },
     // width: {
-    //   type: ParseTypesEnum.string,
+    //   type: String,
     //   // length_or_percentage_or_unitless,
     // },
     // widths: {
-    //   type: ParseTypesEnum.string,
+    //   type: String,
     //   // TODO use correct widths option validator
     // },
     class: {
-      type: ParseTypesEnum.string,
+      type: String,
       // class_option: list of strings?
     },
     align: {
-      type: ParseTypesEnum.string,
+      type: String,
       // choice(['left', 'center', 'right'])
     },
   },
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
     required: true,
   },
   validate(data: DirectiveData, vfile: VFile) {
     const validatedData = { ...data };
     const parsedBody = data.body as GenericNode[];
     if (parsedBody.length !== 1 || parsedBody[0].type !== 'list') {
-      fileError(vfile, 'list-table directive must have one list as body');
+      fileError(vfile, 'list-table directive must have one list as body', {
+        ruleId: RuleId.directiveBodyCorrect,
+      });
       validatedData.body = [];
     } else {
       parsedBody[0].children?.forEach((listItem) => {
@@ -54,7 +57,9 @@ export const listTableDirective: DirectiveSpec = {
           listItem.children?.length !== 1 ||
           listItem.children[0]?.type !== 'list'
         ) {
-          fileError(vfile, 'list-table directive must have a list of lists');
+          fileError(vfile, 'list-table directive must have a list of lists', {
+            ruleId: RuleId.directiveBodyCorrect,
+          });
           validatedData.body = [];
         }
       });
@@ -92,7 +97,7 @@ export const listTableDirective: DirectiveSpec = {
       }),
     };
     children.push(table);
-    const { label, identifier } = normalizeLabel(data.options?.name as string | undefined) || {};
+    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const container = {
       type: 'container',
       kind: 'table',

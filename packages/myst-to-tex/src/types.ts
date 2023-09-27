@@ -11,7 +11,7 @@ export type Handler = (node: any, state: ITexSerializer, parent: any) => void;
 export type LatexResult = {
   value: string;
   imports: string[];
-  preamble: string[];
+  preamble: string;
   commands: Record<string, string>;
 };
 
@@ -22,6 +22,7 @@ export type Options = {
   beamer?: boolean;
   math?: MathPlugins;
   bibliography?: 'natbib' | 'biblatex';
+  printGlossaries?: boolean;
   citestyle?: 'numerical-only';
   references?: References;
 };
@@ -43,6 +44,9 @@ export interface ITexSerializer<D extends Record<string, any> = StateData> {
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
   hasProofs: boolean;
+  glossary: Record<string, [string, string]>;
+  abbreviations: Record<string, [string, string]>;
+  get printGlossary(): boolean;
   usePackages: (...packageNames: string[]) => void;
   write: (value: string) => void;
   text: (value: string, mathMode?: boolean) => void;

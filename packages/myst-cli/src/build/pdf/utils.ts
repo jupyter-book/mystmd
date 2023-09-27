@@ -6,6 +6,10 @@ export function isLatexmkAvailable() {
   return which.sync('latexmk', { nothrow: true });
 }
 
+export function isMakeglossariesAvailable() {
+  return which.sync('makeglossaries', { nothrow: true });
+}
+
 export function isTlmgrAvailable() {
   return which.sync('tlmgr', { nothrow: true });
 }

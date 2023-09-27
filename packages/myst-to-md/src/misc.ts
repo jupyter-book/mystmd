@@ -1,5 +1,5 @@
 import type { Handle, Info, State } from 'mdast-util-to-markdown';
-import { fileWarn } from 'myst-common';
+import { RuleId, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { Parent, Validator } from './types.js';
 
@@ -21,6 +21,7 @@ function definitionListValidator(node: any, file: VFile) {
       fileWarn(file, `Unexpected child in definitionList: ${node.type}`, {
         node,
         source: 'myst-to-md',
+        ruleId: RuleId.mdRenders,
       });
     }
   });

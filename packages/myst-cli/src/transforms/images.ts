@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import mime from 'mime-types';
 import type { GenericNode, GenericParent } from 'myst-common';
+import { RuleId } from 'myst-common';
 import { computeHash, hashAndCopyStaticFile, isUrl } from 'myst-cli-utils';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
@@ -102,7 +103,13 @@ export async function downloadAndSaveImage(
     return fileName;
   } catch (error) {
     session.log.debug(`\n\n${(error as Error).stack}\n\n`);
-    session.log.error(`Error saving image "${url}": ${(error as Error).message}`);
+    addWarningForFile(
+      session,
+      file,
+      `Error saving image "${url}": ${(error as Error).message}`,
+      'error',
+      { ruleId: RuleId.imageDownloads },
+    );
     return undefined;
   }
 }
@@ -138,7 +145,9 @@ export async function saveImageInStaticFolder(
       // If file is already in write folder, don't hash/copy
       file = path.basename(imageLocalFile);
     } else {
-      file = hashAndCopyStaticFile(session, imageLocalFile, writeFolder);
+      file = hashAndCopyStaticFile(session, imageLocalFile, writeFolder, (m: string) => {
+        addWarningForFile(session, sourceFile, m, 'error', { ruleId: RuleId.imageCopied });
+      });
     }
     if (!file) return null;
   } else if (isBase64(urlSource)) {
@@ -146,7 +155,10 @@ export async function saveImageInStaticFolder(
     file = await writeBase64(session, writeFolder, urlSource);
   } else {
     const message = `Cannot find image "${urlSource}" in ${sourceFileFolder}`;
-    addWarningForFile(session, sourceFile, message, 'error', { position: opts?.position });
+    addWarningForFile(session, sourceFile, message, 'error', {
+      position: opts?.position,
+      ruleId: RuleId.imageExists,
+    });
     return null;
   }
   // Update mdast with new file name
@@ -259,7 +271,10 @@ async function svgToPdf(
       file,
       'To convert .svg images to .pdf, you must install inkscape.',
       'warn',
-      { note: 'Images converted to .png as a fallback using imagemagick.' },
+      {
+        note: 'Images converted to .png as a fallback using imagemagick.',
+        ruleId: RuleId.imageFormatConverts,
+      },
     );
   }
   return null;
@@ -420,6 +435,7 @@ export async function transformImageFormats(
         {
           note: 'To convert this image, you must install imagemagick',
           position: image.position,
+          ruleId: RuleId.imageFormatConverts,
         },
       );
     }
@@ -456,7 +472,7 @@ export async function transformImageFormats(
       file,
       `Unsupported image extension "${badExt}" may not correctly render.`,
       'error',
-      { position: image.position },
+      { position: image.position, ruleId: RuleId.imageFormatConverts },
     );
   });
 

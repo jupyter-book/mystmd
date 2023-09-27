@@ -20,7 +20,7 @@ describe('custom directive extensions', () => {
       children: [
         {
           type: 'mystDirective',
-          position: positionFn(0, 3),
+          position: positionFn(1, 3),
           name: 'test',
           value: '_a_',
           children: [
@@ -49,7 +49,7 @@ describe('custom directive extensions', () => {
       children: [
         {
           type: 'mystDirective',
-          position: positionFn(0, 3),
+          position: positionFn(1, 3),
           name: 'test',
           value: '_a_',
           children: [
@@ -58,13 +58,15 @@ describe('custom directive extensions', () => {
               children: [
                 {
                   type: 'paragraph',
-                  position: positionFn(1, 2),
+                  position: positionFn(2, 2),
                   children: [
                     {
                       type: 'emphasis',
+                      position: positionFn(2, 2),
                       children: [
                         {
                           type: 'text',
+                          position: positionFn(2, 2),
                           value: 'a',
                         },
                       ],
@@ -97,7 +99,7 @@ describe('custom directive extensions', () => {
       children: [
         {
           type: 'mystDirective',
-          position: positionFn(0, 3),
+          position: positionFn(1, 3),
           name: 'test',
           args: 'hello',
           value: '_a_',
@@ -130,7 +132,7 @@ describe('custom directive extensions', () => {
       children: [
         {
           type: 'mystDirective',
-          position: positionFn(0, 3),
+          position: positionFn(1, 3),
           name: 'test',
           args: '_a_',
           value: 'hello',
@@ -140,9 +142,11 @@ describe('custom directive extensions', () => {
               children: [
                 {
                   type: 'emphasis',
+                  position: positionFn(1, 1),
                   children: [
                     {
                       type: 'text',
+                      position: positionFn(1, 1),
                       value: 'a',
                     },
                   ],
@@ -172,7 +176,7 @@ describe('custom directive extensions', () => {
       children: [
         {
           type: 'mystDirective',
-          position: positionFn(0, 3),
+          position: positionFn(1, 3),
           name: 'test',
           options: {
             flag: true,
@@ -207,7 +211,7 @@ describe('custom directive extensions', () => {
       children: [
         {
           type: 'mystDirective',
-          position: positionFn(0, 3),
+          position: positionFn(1, 3),
           name: 'test',
           options: {
             flag: false,
@@ -245,7 +249,7 @@ describe('custom directive extensions', () => {
       children: [
         {
           type: 'mystDirective',
-          position: positionFn(0, 4),
+          position: positionFn(1, 4),
           name: 'test',
           options: {
             something: '_a_',
@@ -257,10 +261,12 @@ describe('custom directive extensions', () => {
               children: [
                 {
                   type: 'emphasis',
+                  position: positionFn(2, 2),
                   children: [
                     {
                       type: 'text',
                       value: 'a',
+                      position: positionFn(2, 2),
                     },
                   ],
                 },
@@ -291,7 +297,7 @@ describe('custom directive extensions', () => {
       children: [
         {
           type: 'mystDirective',
-          position: positionFn(0, 4),
+          position: positionFn(1, 4),
           name: 'test',
           options: {
             a: 'x',
@@ -328,7 +334,7 @@ describe('custom directive extensions', () => {
       children: [
         {
           type: 'mystDirective',
-          position: positionFn(0, 4),
+          position: positionFn(1, 4),
           name: 'test',
           options: {
             a: 'x',
@@ -346,7 +352,7 @@ describe('custom directive extensions', () => {
   test('test directive alias string', () => {
     const TestDirective: DirectiveSpec = {
       name: 'test',
-      alias: 'abc',
+      alias: ['abc'],
       body: {
         type: 'string' as any,
       },
@@ -360,7 +366,7 @@ describe('custom directive extensions', () => {
       children: [
         {
           type: 'mystDirective',
-          position: positionFn(0, 3),
+          position: positionFn(1, 3),
           name: 'abc',
           value: '_a_',
           children: [
@@ -390,7 +396,7 @@ describe('custom directive extensions', () => {
       children: [
         {
           type: 'mystDirective',
-          position: positionFn(0, 3),
+          position: positionFn(1, 3),
           name: 'def',
           value: '_a_',
           children: [

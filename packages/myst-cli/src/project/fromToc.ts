@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import { join, parse } from 'node:path';
+import { RuleId } from 'myst-common';
 import type { JupyterBookChapter } from '../utils/index.js';
 import {
   readTOC,
@@ -8,6 +9,7 @@ import {
   fileInfo,
   nextLevel,
   resolveExtension,
+  addWarningForFile,
 } from '../utils/index.js';
 import type { ISession } from '../session/types.js';
 import type {
@@ -34,7 +36,13 @@ function pagesFromChapters(
       pages.push({ file, level, slug });
     }
     if (!file && chapter.file) {
-      session.log.error(`File from ${tocFile(path)} not found: ${chapter.file}`);
+      addWarningForFile(
+        session,
+        tocFile(path),
+        `Referenced file not found: ${chapter.file}`,
+        'error',
+        { ruleId: RuleId.tocContentsExist },
+      );
     }
     if (!file && chapter.title) {
       pages.push({ level, title: chapter.title });

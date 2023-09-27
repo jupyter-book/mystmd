@@ -1,15 +1,16 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { normalizeLabel, ParseTypesEnum } from 'myst-common';
+import { normalizeLabel } from 'myst-common';
 
 export const mathDirective: DirectiveSpec = {
   name: 'math',
   options: {
     label: {
-      type: ParseTypesEnum.string,
+      type: String,
+      alias: ['name'],
     },
   },
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   run(data: DirectiveData): GenericNode[] {

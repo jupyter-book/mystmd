@@ -1,115 +1,131 @@
 import type { Caption, Container } from 'myst-spec';
 import type { Code } from 'myst-spec-ext';
 import yaml from 'js-yaml';
-import type { DirectiveSpec, GenericNode } from 'myst-common';
-import { fileError, fileWarn, normalizeLabel, ParseTypesEnum } from 'myst-common';
+import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
+import { fileError, fileWarn, normalizeLabel, RuleId } from 'myst-common';
+import type { VFile } from 'vfile';
+
+function parseEmphasizeLines(emphasizeLinesString?: string | undefined): number[] | undefined {
+  if (!emphasizeLinesString) return undefined;
+  const emphasizeLines = emphasizeLinesString
+    ?.split(',')
+    .map((val) => Number(val.trim()))
+    .filter((val) => Number.isInteger(val));
+  return emphasizeLines;
+}
+
+/** This function parses both sphinx and RST code-block options */
+export function getCodeBlockOptions(
+  options: DirectiveData['options'],
+  vfile: VFile,
+  defaultFilename?: string,
+): Pick<Code, 'emphasizeLines' | 'showLineNumbers' | 'startingLineNumber' | 'filename'> {
+  if (options?.['lineno-start'] != null && options?.['number-lines'] != null) {
+    fileWarn(vfile, 'Cannot use both "lineno-start" and "number-lines"', {
+      source: 'code-block:options',
+      ruleId: RuleId.directiveOptionsCorrect,
+    });
+  }
+  const emphasizeLines = parseEmphasizeLines(options?.['emphasize-lines'] as string | undefined);
+  const numberLines = options?.['number-lines'] as number | undefined;
+  // Only include this in mdast if it is `true`
+  const showLineNumbers =
+    options?.linenos || options?.['lineno-start'] || options?.['lineno-match'] || numberLines
+      ? true
+      : undefined;
+  let startingLineNumber: number | undefined =
+    numberLines != null && numberLines > 1 ? numberLines : (options?.['lineno-start'] as number);
+  if (options?.['lineno-match']) {
+    startingLineNumber = 'match' as any;
+  } else if (startingLineNumber == null || startingLineNumber <= 1) {
+    startingLineNumber = undefined;
+  }
+  let filename = options?.['filename'] as string | undefined;
+  if (filename?.toLowerCase() === 'false') {
+    filename = undefined;
+  } else if (!filename && defaultFilename) {
+    filename = defaultFilename;
+  }
+  return {
+    emphasizeLines,
+    showLineNumbers,
+    startingLineNumber,
+    filename,
+  };
+}
+
+export const CODE_DIRECTIVE_OPTIONS: DirectiveSpec['options'] = {
+  caption: {
+    type: 'myst',
+    doc: 'A parsed caption for the code block.',
+  },
+  linenos: {
+    type: Boolean,
+    doc: 'Show line numbers',
+  },
+  'lineno-start': {
+    type: Number,
+    doc: 'Start line numbering from a particular value, default is 1. If present, line numbering is activated.',
+  },
+  'number-lines': {
+    type: Number,
+    doc: 'Alternative for "lineno-start", turns on line numbering and can be an integer that is the start of the line numbering.',
+  },
+  'emphasize-lines': {
+    type: String,
+    doc: 'Emphasize particular lines (comma-separated numbers), e.g. "3,5"',
+  },
+  filename: {
+    type: String,
+    doc: 'Show the filename in addition to the rendered code. The `include` directive will use the filename by default, to turn off this default set the filename to `false`.',
+  },
+  // dedent: {
+  //   type: Number,
+  //   doc: 'Strip indentation characters from the code block',
+  // },
+  // force: {
+  //   type: Boolean,
+  //   doc: 'Ignore minor errors on highlighting',
+  // },
+};
 
 export const codeDirective: DirectiveSpec = {
   name: 'code',
+  doc: 'A code-block environment with a language as the argument, and options for highlighting, showing line numbers, and an optional filename.',
+  alias: ['code-block', 'sourcecode'],
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
+    doc: 'Code language, for example `python` or `typescript`',
   },
   options: {
-    name: {
-      type: ParseTypesEnum.string,
+    label: {
+      type: String,
+      alias: ['name'],
     },
     class: {
-      type: ParseTypesEnum.string,
+      type: String,
       // class_option: list of strings?
     },
-    // force: {
-    //   type: ParseTypesEnum.boolean,
-    //   doc: 'Ignore minor errors on highlighting',
-    // },
-    'number-lines': {
-      type: ParseTypesEnum.number,
-    },
+    ...CODE_DIRECTIVE_OPTIONS,
   },
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
+    doc: 'The raw code to display for the code block.',
   },
-  run(data): GenericNode[] {
-    const { label, identifier } = normalizeLabel(data.options?.name as string | undefined) || {};
-    const numberLines = data.options?.['number-lines'] as number | undefined;
-    const showLineNumbers = !!numberLines;
-    const startingLineNumber = numberLines && numberLines > 1 ? numberLines : undefined;
-    return [
-      {
-        type: 'code',
-        lang: data.arg,
-        identifier,
-        label,
-        class: data.options?.class,
-        showLineNumbers,
-        startingLineNumber,
-        value: data.body as string | undefined,
-      },
-    ];
-  },
-};
-
-export const codeBlockDirective: DirectiveSpec = {
-  name: 'code-block',
-  arg: {
-    type: ParseTypesEnum.string,
-  },
-  options: {
-    name: {
-      type: ParseTypesEnum.string,
-    },
-    class: {
-      type: ParseTypesEnum.string,
-      // class_option: list of strings?
-    },
-    // force: {
-    //   type: ParseTypesEnum.boolean,
-    //   doc: 'Ignore minor errors on highlighting',
-    // },
-    caption: {
-      type: ParseTypesEnum.parsed,
-    },
-    linenos: {
-      type: ParseTypesEnum.boolean,
-      doc: 'Add line numbers',
-    },
-    'lineno-start': {
-      type: ParseTypesEnum.number,
-      doc: 'Start line numbering from a particular value',
-    },
-    // dedent: {
-    //   type: ParseTypesEnum.number,
-    //   doc: 'Strip indentation characters from the code block',
-    // },
-    'emphasize-lines': {
-      type: ParseTypesEnum.string,
-      doc: 'Emphasize particular lines (comma-separated numbers)',
-    },
-  },
-  body: {
-    type: ParseTypesEnum.string,
-  },
-  run(data): GenericNode[] {
-    const { label, identifier } = normalizeLabel(data.options?.name as string | undefined) || {};
-    // Validating this should probably happen first
-    const emphasizeLinesString = data.options?.['emphasize-lines'] as string | undefined;
-    const emphasizeLines = emphasizeLinesString
-      ?.split(',')
-      .map((val) => Number(val.trim()))
-      .filter((val) => Number.isInteger(val));
+  run(data, vfile): GenericNode[] {
+    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
+    const opts = getCodeBlockOptions(data.options, vfile);
+    const code: Code = {
+      type: 'code',
+      lang: data.arg as string,
+      class: data.options?.class as string,
+      ...opts,
+      value: data.body as string,
+    };
     if (!data.options?.caption) {
-      return [
-        {
-          type: 'code',
-          lang: data.arg,
-          identifier,
-          label,
-          class: data.options?.class,
-          showLineNumbers: data.options?.linenos,
-          startingLineNumber: data.options?.['lineno-start'],
-          emphasizeLines,
-          value: data.body as string,
-        },
-      ];
+      code.label = label;
+      code.identifier = identifier;
+      return [code];
     }
     const caption: Caption = {
       type: 'caption',
@@ -119,15 +135,6 @@ export const codeBlockDirective: DirectiveSpec = {
           children: data.options.caption as any[],
         },
       ],
-    };
-    const code: Code = {
-      type: 'code',
-      lang: data.arg as string,
-      class: data.options?.class as string,
-      showLineNumbers: data.options?.linenos as boolean,
-      startingLineNumber: data.options?.['lineno-start'] as number,
-      emphasizeLines,
-      value: data.body as string,
     };
     const container: Container = {
       type: 'container',
@@ -143,16 +150,16 @@ export const codeBlockDirective: DirectiveSpec = {
 export const codeCellDirective: DirectiveSpec = {
   name: 'code-cell',
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   options: {
     tags: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
   },
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
   },
   run(data, vfile): GenericNode[] {
     const code: Code = {
@@ -171,6 +178,7 @@ export const codeCellDirective: DirectiveSpec = {
       } catch (error) {
         fileError(vfile, 'Could not load tags for code-cell directive', {
           source: 'code-cell:tags',
+          ruleId: RuleId.directiveOptionsCorrect,
         });
       }
     } else if (data.options?.tags && Array.isArray(data.options.tags)) {
@@ -184,6 +192,7 @@ export const codeCellDirective: DirectiveSpec = {
     } else if (tags) {
       fileWarn(vfile, 'tags in code-cell directive must be a list of strings', {
         source: 'code-cell:tags',
+        ruleId: RuleId.directiveOptionsCorrect,
       });
     }
     return [code];

@@ -3,7 +3,9 @@ import path from 'node:path';
 import which from 'which';
 import type { LoggerDE } from 'myst-cli-utils';
 import { makeExecutable } from 'myst-cli-utils';
+import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
+import { addWarningForFile } from './addWarningForFile.js';
 
 function createInkscpapeLogger(session: ISession): LoggerDE {
   const logger = {
@@ -52,8 +54,12 @@ export async function convert(
     try {
       await exec();
     } catch (err) {
-      session.log.error(
-        `Could not convert from ${inputFormatUpper} to ${outputFormat.toUpperCase()}: ${input} - ${err}`,
+      addWarningForFile(
+        session,
+        input,
+        `Could not convert from ${inputFormatUpper} to ${outputFormat.toUpperCase()} - ${err}`,
+        'error',
+        { ruleId: RuleId.imageFormatConverts },
       );
       return null;
     }

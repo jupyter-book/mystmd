@@ -7,7 +7,12 @@ cases:
           role: conceptualiSation
     normalized:
       authors:
-        - name: Just A. Name
+        - id: contributors-generated-uid-0
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           roles:
             - Conceptualization
   - title: String list
@@ -17,7 +22,12 @@ cases:
           roles: conceptualiSation, supervision
     normalized:
       authors:
-        - name: Just A. Name
+        - id: contributors-generated-uid-0
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           roles:
             - Conceptualization
             - Supervision
@@ -28,7 +38,12 @@ cases:
           role: Editing
     normalized:
       authors:
-        - name: Just A. Name
+        - id: contributors-generated-uid-0
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           roles:
             - Writing – review & editing
   - title: Any role, but raise a warning
@@ -38,7 +53,12 @@ cases:
           role: Hustling for grants
     normalized:
       authors:
-        - name: Just A. Name
+        - id: contributors-generated-uid-0
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
           roles:
             - Hustling for grants
     warnings: 1

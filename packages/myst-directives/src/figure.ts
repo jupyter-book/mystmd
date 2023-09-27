@@ -1,64 +1,66 @@
 import type { Image } from 'myst-spec-ext';
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { normalizeLabel, ParseTypesEnum } from 'myst-common';
+import { normalizeLabel } from 'myst-common';
 
 export const figureDirective: DirectiveSpec = {
   name: 'figure',
   arg: {
-    type: ParseTypesEnum.string,
+    type: String,
+    doc: 'The filename of an image (e.g. `my-fig.png`), or an ID of a Jupyter Notebook cell (e.g. `#my-cell`).',
     required: true,
   },
   options: {
-    name: {
-      type: ParseTypesEnum.string,
+    label: {
+      type: String,
+      alias: ['name'],
     },
     class: {
-      type: ParseTypesEnum.string,
-      // class_option: list of strings?
+      type: String,
+      alias: ['figclass'],
     },
     height: {
-      type: ParseTypesEnum.string,
-      // length_or_unitless,
+      type: String,
+      doc: 'The figure height, in CSS units, for example `4em` or `300px`.',
+      alias: ['h'],
     },
     width: {
-      type: ParseTypesEnum.string,
+      type: String,
       // TODO: validate that this is a CSS width
-      // length_or_percentage_or_unitless,
+      alias: ['w', 'figwidth'],
+      doc: 'The figure width, in CSS units, for example `50%` or `300px`.',
     },
     alt: {
-      type: ParseTypesEnum.string,
+      type: String,
+      doc: 'Alternative text for the image',
     },
     // scale: {
-    //   type: ParseTypesEnum.number,
+    //   type: Number,
     // },
     // target: {
-    //   type: ParseTypesEnum.string,
+    //   type: String,
     // },
     align: {
-      type: ParseTypesEnum.string,
+      type: String,
+      doc: 'The alignment of the image in the figure. Choose one of `left`, `center` or `right`',
       // TODO: this is not implemented below
       // choice(["left", "center", "right"])
     },
-    // figwidth: {
-    //   type: ParseTypesEnum.string,
-    //   // length_or_percentage_or_unitless_figure
-    // },
-    // figclass: {
-    //   type: ParseTypesEnum.string,
-    //   // class_option: list of strings?
-    // },
     'remove-input': {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
+      doc: 'If the argument is a notebook cell, use this flag to remove the input code from the cell.',
     },
     'remove-output': {
-      type: ParseTypesEnum.boolean,
+      type: Boolean,
+      doc: 'If the argument is a notebook cell, use this flag to remove the output from the cell.',
     },
     placeholder: {
-      type: ParseTypesEnum.string,
+      type: String,
+      doc: 'A placeholder image when using a notebook cell as the figure contents. This will be shown in place of the Jupyter output until an execution environment is attached. It will also be used in static outputs, such as a PDF output.',
     },
   },
   body: {
-    type: ParseTypesEnum.parsed,
+    type: 'myst',
+    doc: 'If provided, this will be the figure caption.',
   },
   run(data: DirectiveData): GenericNode[] {
     const children: GenericNode[] = [];
@@ -99,7 +101,7 @@ export const figureDirective: DirectiveSpec = {
         children.push({ type: 'legend', children: legend });
       }
     }
-    const { label, identifier } = normalizeLabel(data.options?.name as string | undefined) || {};
+    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const container = {
       type: 'container',
       kind: 'figure',

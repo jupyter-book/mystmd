@@ -85,6 +85,7 @@ export type Admonition = SpecAdmonition & {
 
 export type Code = SpecCode & {
   executable?: boolean;
+  filename?: string;
   visibility?: 'show' | 'hide' | 'remove';
 };
 
@@ -98,10 +99,12 @@ export type Cite = {
   type: 'cite';
   kind: CiteKind;
   label: string;
-  children: StaticPhrasingContent[];
-  error?: boolean;
+  identifier?: string;
+  children?: StaticPhrasingContent[];
+  error?: boolean | 'not found' | 'rendering error';
   prefix?: string;
   suffix?: string;
+  partial?: 'author' | 'year';
 };
 
 export type CiteGroup = {
@@ -148,6 +151,33 @@ export type Embed = {
   'remove-output'?: boolean;
   source?: Dependency;
   children?: (FlowContent | ListContent | PhrasingContent)[];
+};
+
+type IncludeFilter = {
+  startAfter?: string;
+  startAt?: string;
+  endBefore?: string;
+  endAt?: string;
+  /** Lines start at 1 and can be negative (-1 is the last line). For example, [1, 3, [10]] will select lines 1, 3 and 10 until the end. */
+  lines?: (number | [number, number?])[];
+};
+
+export type Include = {
+  type: 'include';
+  file: string;
+  literal?: boolean;
+  filter?: IncludeFilter;
+  lang?: string;
+  showLineNumbers?: boolean;
+  /** The `match` will be removed in a transform */
+  startingLineNumber?: number | 'match';
+  emphasizeLines?: number[];
+  filename?: string;
+  identifier?: string;
+  label?: string;
+  children?: (FlowContent | ListContent | PhrasingContent)[];
+  /** `caption` is temporary, and is used before a transform */
+  caption?: (FlowContent | ListContent | PhrasingContent)[];
 };
 
 export type Container = SpecContainer & {

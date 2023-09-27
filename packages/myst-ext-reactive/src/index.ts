@@ -1,11 +1,10 @@
 import type { RoleSpec, RoleData, GenericNode, DirectiveSpec, DirectiveData } from 'myst-common';
-import { ParseTypesEnum } from 'myst-common';
 
 export const reactiveRole: RoleSpec = {
   name: 'r:range',
   alias: ['r:dynamic', 'r:display'],
   body: {
-    type: ParseTypesEnum.string,
+    type: String,
     required: true,
   },
   run(data: RoleData): GenericNode[] {
@@ -32,17 +31,17 @@ export const reactiveDirective: DirectiveSpec = {
   name: 'r:var',
   options: {
     name: {
-      type: ParseTypesEnum.string,
+      type: String,
       required: true,
     },
     value: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
     rValue: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
     format: {
-      type: ParseTypesEnum.string,
+      type: String,
     },
   },
   run(data: DirectiveData): GenericNode[] {

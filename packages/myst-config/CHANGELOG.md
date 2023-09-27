@@ -1,5 +1,28 @@
 # myst-config
 
+## 1.1.8
+
+### Patch Changes
+
+- myst-frontmatter@1.1.8
+
+## 1.1.7
+
+### Patch Changes
+
+- d35e02bc: Allow for plugins in the ProjectConfig
+  - myst-frontmatter@1.1.7
+
+## 1.1.6
+
+### Patch Changes
+
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [911d1b1]
+- Updated dependencies [59b54584]
+  - myst-frontmatter@1.1.6
+
 ## 1.1.5
 
 ### Patch Changes

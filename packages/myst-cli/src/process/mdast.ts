@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
 import type { GenericParent, References } from 'myst-common';
+import { fileError, fileWarn, RuleId } from 'myst-common';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { LinkTransformer } from 'myst-transforms';
 import {
@@ -37,7 +38,7 @@ import {
   checkLinksTransform,
   embedTransform,
   importMdastFromJson,
-  includeFilesDirective,
+  includeFilesTransform,
   liftCodeMetadataToBlock,
   transformLinkedDOIs,
   transformOutputs,
@@ -52,6 +53,7 @@ import {
   reduceOutputs,
   transformPlaceholderImages,
   transformDeleteBase64UrlSource,
+  transformWebp,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/index.js';
 import { logMessagesFromVFile } from '../utils/index.js';
@@ -99,6 +101,7 @@ export async function transformMdast(
     minifyMaxCharacters?: number;
     index?: string;
     simplifyFigures?: boolean;
+    processThumbnail?: boolean;
   },
 ) {
   const {
@@ -115,6 +118,7 @@ export async function transformMdast(
     minifyMaxCharacters,
     index,
     simplifyFigures,
+    processThumbnail,
   } = opts;
   const toc = tic();
   const { store, log } = session;
@@ -123,6 +127,8 @@ export async function transformMdast(
   const { mdast: mdastPre, kind, frontmatter: preFrontmatter, location } = cache.$mdast[file].pre;
   if (!mdastPre) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
+  const vfile = new VFile(); // Collect errors on this file
+  vfile.path = file;
   // Use structuredClone in future (available in node 17)
   const mdast = JSON.parse(JSON.stringify(mdastPre)) as GenericParent;
   const frontmatter = preFrontmatter
@@ -134,10 +140,10 @@ export async function transformMdast(
           file,
           messages: {},
           errorLogFn: (message: string) => {
-            session.log.error(`Validation error: ${message}`);
+            fileError(vfile, message, { ruleId: RuleId.validPageFrontmatter });
           },
           warningLogFn: (message: string) => {
-            session.log.warn(`Validation: ${message}`);
+            fileWarn(vfile, message, { ruleId: RuleId.validPageFrontmatter });
           },
         },
         projectPath,
@@ -146,15 +152,13 @@ export async function transformMdast(
   const references: References = {
     cite: { order: [], data: {} },
   };
-  const vfile = new VFile(); // Collect errors on this file
-  vfile.path = file;
   const state = new ReferenceState({ numbering: frontmatter.numbering, file: vfile });
   cache.$internalReferences[file] = state;
   // Import additional content from mdast or other files
   importMdastFromJson(session, file, mdast);
-  includeFilesDirective(session, file, mdast);
+  includeFilesTransform(session, file, mdast, vfile);
   // This needs to come before basic transformations since it may add labels to blocks
-  liftCodeMetadataToBlock(session, file, mdast);
+  liftCodeMetadataToBlock(session, vfile, mdast);
 
   await unified()
     .use(basicTransformationsPlugin)
@@ -182,7 +186,13 @@ export async function transformMdast(
   linksTransform(mdast, vfile, { transformers, selector: LINKS_SELECTOR });
 
   // Initialize citation renderers for this (non-bib) file
-  cache.$citationRenderers[file] = await transformLinkedDOIs(log, mdast, cache.$doiRenderers, file);
+  cache.$citationRenderers[file] = await transformLinkedDOIs(
+    log,
+    vfile,
+    mdast,
+    cache.$doiRenderers,
+    file,
+  );
   const rendererFiles = [file];
   if (projectPath) {
     rendererFiles.unshift(projectPath);
@@ -196,8 +206,9 @@ export async function transformMdast(
   await transformOutputs(session, mdast, kind, imageWriteFolder, {
     altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
     minifyMaxCharacters,
+    vfile,
   });
-  transformCitations(log, mdast, fileCitationRenderer, references, file);
+  transformCitations(mdast, fileCitationRenderer, references);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
     .use(footnotesPlugin) // Needs to happen near the end
@@ -216,15 +227,17 @@ export async function transformMdast(
       altOutputFolder: imageAltOutputFolder,
       imageExtensions,
     });
-    // Note, the thumbnail transform must be **after** images, as it may read the images
-    await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      webp: !simplifyFigures,
-    });
-    await transformBanner(session, file, frontmatter, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      webp: !simplifyFigures,
-    });
+    if (processThumbnail) {
+      // Note, the thumbnail transform must be **after** images, as it may read the images
+      await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
+        altOutputFolder: imageAltOutputFolder,
+        webp: extraTransforms?.includes(transformWebp),
+      });
+      await transformBanner(session, file, frontmatter, imageWriteFolder, {
+        altOutputFolder: imageAltOutputFolder,
+        webp: extraTransforms?.includes(transformWebp),
+      });
+    }
   }
   await transformDeleteBase64UrlSource(mdast);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;

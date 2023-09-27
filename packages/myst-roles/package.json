@@ -1,6 +1,6 @@
 {
   "name": "myst-roles",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "sideEffects": false,
   "license": "MIT",
   "description": "Default role definitions for MyST",
@@ -30,8 +30,8 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.1.5",
-    "myst-spec-ext": "^1.1.5"
+    "myst-common": "^1.1.7",
+    "myst-spec-ext": "^1.1.7"
   },
   "devDependencies": {}
 }

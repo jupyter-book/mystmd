@@ -1,5 +1,22 @@
 # myst-ext-tabs
 
+## 1.0.4
+
+### Patch Changes
+
+- 4183c05c: Change to use String/Number/Boolean instead of ParsedEnumType
+- d35e02bc: Change from alias as string to alias as a string-list.
+- Updated dependencies [d35e02bc]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [ed7b430f]
+- Updated dependencies [239ae762]
+- Updated dependencies [b74fb3c1]
+- Updated dependencies [86c78957]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [d35e02bc]
+- Updated dependencies [99659250]
+  - myst-common@1.1.7
+
 ## 1.0.3
 
 ### Patch Changes

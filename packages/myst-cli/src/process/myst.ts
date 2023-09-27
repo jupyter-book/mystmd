@@ -22,8 +22,9 @@ export function parseMyst(session: ISession, content: string, file: string): Gen
       proofDirective,
       ...exerciseDirectives,
       ...tabDirectives,
+      ...(session.plugins?.directives ?? []),
     ],
-    roles: [reactiveRole],
+    roles: [reactiveRole, ...(session.plugins?.roles ?? [])],
     vfile,
   });
   logMessagesFromVFile(session, vfile);

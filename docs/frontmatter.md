@@ -109,6 +109,9 @@ The following table lists the available frontmatter fields, a brief description 
 * - `license`
   - a license object or a string
   - page can override project
+* - `funding`
+  - a funding object
+  - page can override project
 * - `github`
   - a valid GitHub URL or `owner/reponame`
   - page can override project
@@ -170,6 +173,8 @@ banner: banner.png
 Example of a banner in a site using the `article-theme`.
 :::
 
+(authors)=
+
 ## Authors
 
 The `authors` field is a list of `author` objects. Available fields in the author object are:
@@ -180,7 +185,7 @@ The `authors` field is a list of `author` objects. Available fields in the autho
 * - field
   - description
 * - `name`
-  - a string - the author’s full name
+  - a string OR CSL-JSON author object - the author’s full name; if a string, this will be parsed automatically. Otherwise, the object may contain `given`, `surname`, `non_dropping_particle`, `dropping_particle`, `suffix`, and full name `literal`
 * - `orcid`
   - a string - a valid ORCID identifier with or without the URL
 * - `corresponding`
@@ -456,6 +461,67 @@ String values for licenses should be a valid “Identifier” string from the [S
 ```
 
 By using the correct SPDX Identifier, your website will automatically use the appropriate icon for the license and link to the license definition.
+
+## Funding
+
+Funding frontmatter is able to contain multiple funding and open access statements, as well as award info.
+
+It may be as simple as a single funding statement:
+
+```yaml
+funding: This work was supported by University.
+```
+
+Funding may also specify award id, name, sources ([affiliation object or reference](#affiliations)), investigators ([contributor objects or references](#authors)), and recipients ([contributor objects or references](#authors)).
+
+```yaml
+authors:
+  - id: auth0
+    name: Jane Doe
+funding:
+  statement: This work was supported by University.
+  id: award-id-000
+  name: My Award
+  sources:
+    - name: University
+  investigators:
+    - name: John Doe
+  recipients:
+    - auth0
+```
+
+Multiple funding objects with multiple awards are also possible:
+
+```yaml
+authors:
+  - id: auth0
+    name: Jane Doe
+funding:
+  - statement: This work was supported by University.
+    awards:
+      - id: award-id-000
+        name: My First Award
+        sources:
+          - name: University
+        investigators:
+          - name: John Doe
+        recipients:
+          - auth0
+      - id: award-id-001
+        name: My Second Award
+        sources:
+          - name: University
+        investigators:
+          - name: John Doe
+        recipients:
+          - auth0
+  - statement: Open access was supported by Consortium.
+    open_access: Users are allowed to reproduce without prior permission
+    awards:
+      - id: open-award-999
+        sources:
+          - name: Consortium
+```
 
 ## Venue
 

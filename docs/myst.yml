@@ -44,6 +44,9 @@ project:
     JSON: JavaScript Object Notation
     TLA: Three Letter Acronym
     OA: Open Access
+  plugins:
+    - directives.mjs
+    - unsplash.mjs
 site:
   title: MyST Markdown Guide
   domains:

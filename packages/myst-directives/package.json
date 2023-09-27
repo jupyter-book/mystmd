@@ -1,6 +1,6 @@
 {
   "name": "myst-directives",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "sideEffects": false,
   "license": "MIT",
   "description": "Default directive definitions for MyST",
@@ -23,6 +23,8 @@
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
     "build": "npm-run-all -l clean -p build:esm"
   },
@@ -31,8 +33,8 @@
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
-    "myst-common": "^1.1.5",
-    "myst-spec-ext": "^1.1.5",
+    "myst-common": "^1.1.7",
+    "myst-spec-ext": "^1.1.7",
     "vfile": "^5.3.7"
   },
   "devDependencies": {}
