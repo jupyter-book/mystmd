@@ -95,6 +95,13 @@ export function setTextAsChild(node: Partial<Parent>, text: string) {
   node.children = [{ type: 'text', value: text } as Node];
 }
 
+/**
+ * Renders a textual representation of one or more nodes
+ * by concatenating all children that have a text representation.
+ * @param content The node or nodes to provide as input.
+ * @returns A string. An empty string is returned in case no
+ * textual representation could be extracted.
+ */
 export function toText(content?: Node[] | Node | null): string {
   if (!content) return '';
   if (!Array.isArray(content)) return toText([content]);

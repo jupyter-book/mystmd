@@ -40,7 +40,7 @@ export function renderTex(
     bibliography?: string[];
     sourceFile?: string;
     imports?: string | TemplateImports;
-    glossaryPreamble?: string;
+    preamble?: string;
     force?: boolean;
     packages?: string[];
     filesPath?: string;
@@ -58,7 +58,7 @@ export function renderTex(
   }
   const { options, parts, doc } = template.prepare(opts);
   let importsContent = renderImports(opts.imports, opts.packages);
-  importsContent += opts.glossaryPreamble ? '\n' + opts.glossaryPreamble : '';
+  importsContent += opts.preamble ? '\n' + opts.preamble : '';
   const renderer: TexRenderer = {
     CONTENT: content,
     doc,

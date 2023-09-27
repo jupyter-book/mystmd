@@ -11,7 +11,7 @@ export type Handler = (node: any, state: ITexSerializer, parent: any) => void;
 export type LatexResult = {
   value: string;
   imports: string[];
-  glossaryPreamble: string;
+  preamble: string;
   commands: Record<string, string>;
 };
 
@@ -44,6 +44,7 @@ export interface ITexSerializer<D extends Record<string, any> = StateData> {
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
   glossary: Record<string, [string, string]>;
+  abbreviations: Record<string, [string, string]>;
   get printGlossary(): boolean;
   usePackages: (...packageNames: string[]) => void;
   write: (value: string) => void;
