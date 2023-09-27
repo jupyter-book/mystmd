@@ -74,7 +74,7 @@ The placeholder will be used in static exports when the output cannot be directl
 
 ### Embed Directive
 
-You can also use the `{embed}` directive, which differs from the `{figure}` as it does not have a caption and the default is to leave the code/input source.
+You can also use the {myst:directive}`embed` directive, which differs from the {myst:directive}`figure` as it does not have a caption and the default is to leave the code/input source.
 
 ````markdown
 ```{embed} #my-notebook-output

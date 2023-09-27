@@ -77,11 +77,13 @@ All implementations in MyST are resolved to the same `code` type in the abstract
 
 Adding a {myst:directive}`code.filename` option will show the name of the file at the top of the code block. For example, `myst.yml` in the following example:
 
+````{myst}
 ```{code} yaml
 :filename: myst.yml
 project:
   title: Showing Filenames in code-blocks
 ```
+````
 
 ## Including Files
 
