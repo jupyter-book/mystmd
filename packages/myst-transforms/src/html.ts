@@ -4,7 +4,7 @@ import { liftChildren } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import type { Parent } from 'myst-spec';
 import { mystToHtml } from 'myst-to-html';
-import type { ElementContent } from 'hast';
+import type { Element } from 'rehype-format';
 import { fromHtml } from 'hast-util-from-html';
 import { all } from 'hast-util-to-mdast';
 import type { H, Handle } from 'hast-util-to-mdast';
@@ -88,7 +88,7 @@ function finalizeNode(htmlOpenNodeWithChildren: GenericParent, htmlCloseNode: Ge
       hast: {
         handlers: {
           html: (h, node) => {
-            return fromHtml(node.value, { fragment: true }).children as ElementContent[];
+            return fromHtml(node.value, { fragment: true }).children as Element[];
           },
         },
       },

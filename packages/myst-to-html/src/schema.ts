@@ -3,8 +3,9 @@ import { defaultHandlers, toHast, all } from 'mdast-util-to-hast';
 import { u } from 'unist-builder';
 import classNames from 'classnames';
 import type { Plugin } from 'unified';
-import type { ElementContent, Properties } from 'hast';
+import type { Properties } from 'hast';
 import type { GenericParent } from 'myst-common';
+import type { Element } from 'rehype-format';
 
 const abbreviation: Handler = (h, node) => h(node, 'abbr', { title: node.title }, all(h, node));
 
@@ -82,13 +83,13 @@ const mystRole: Handler = (h, node) => {
 };
 
 const mystDirective: Handler = (h, node) => {
-  const directiveHeader: ElementContent[] = [
+  const directiveHeader: Element[] = [
     h(node, 'code', { class: 'kind' }, [u('text', `{${node.name}}`)]),
   ];
   if (node.args) {
     directiveHeader.push(h(node, 'code', { class: 'args' }, [u('text', node.args)]));
   }
-  const directiveBody: ElementContent[] = [];
+  const directiveBody: Element[] = [];
   if (node.options) {
     const optionsString = Object.keys(node.options)
       .map((k) => `:${k}: ${node.options[k]}`)
