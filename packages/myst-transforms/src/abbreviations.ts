@@ -2,7 +2,7 @@ import type { Plugin } from 'unified';
 import type { GenericParent } from 'myst-common';
 import { toText } from 'myst-common';
 import { selectAll } from 'unist-util-select';
-import type { Abbreviation, StaticPhrasingContent, Text } from 'myst-spec';
+import type { Abbreviation, Text } from 'myst-spec';
 import { u } from 'unist-builder';
 import type { FindAndReplaceSchema, RegExpMatchObject } from 'mdast-util-find-and-replace';
 import { findAndReplace } from 'mdast-util-find-and-replace';
