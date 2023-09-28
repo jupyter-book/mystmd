@@ -55,7 +55,7 @@ export async function localArticleToMd(
   extraLinkTransformers?: LinkTransformer[],
 ) {
   let { projectPath } = opts;
-  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
+  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
     await collectBasicExportOptions(session, file, 'md', [ExportFormats.md], projectPath, opts)
