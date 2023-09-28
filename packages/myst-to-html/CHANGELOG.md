@@ -1,5 +1,11 @@
 # myst-to-html
 
+## 1.0.9
+
+### Patch Changes
+
+- 9a9b3953: 📦 Update types for hast updates
+
 ## 1.0.8
 
 ### Patch Changes

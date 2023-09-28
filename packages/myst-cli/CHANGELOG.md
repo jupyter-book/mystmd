@@ -1,5 +1,15 @@
 # myst-cli
 
+## 1.1.19
+
+### Patch Changes
+
+- 2ad34da: Fix bug with async project/site loading
+- 7f2a9a56: Update table of contents sorting for numbering (chapter10 is after chapter9)
+- Updated dependencies [9a9b3953]
+  - myst-transforms@1.1.3
+  - myst-parser@1.0.9
+
 ## 1.1.18
 
 ### Patch Changes
