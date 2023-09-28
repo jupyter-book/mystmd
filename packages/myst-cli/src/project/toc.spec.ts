@@ -297,6 +297,36 @@ describe('site section generation', () => {
       ],
     });
   });
+  it('sort by number', async () => {
+    memfs.vol.fromJSON({
+      'readme.md': '',
+      'chapter1.md': '',
+      'chapter2.ipynb': '',
+      'chapter10.ipynb': '',
+    });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'readme.md',
+      path: '.',
+      index: 'readme',
+      pages: [
+        {
+          file: 'chapter1.md',
+          slug: 'chapter1',
+          level: 1,
+        },
+        {
+          file: 'chapter2.ipynb',
+          slug: 'chapter2',
+          level: 1,
+        },
+        {
+          file: 'chapter10.ipynb',
+          slug: 'chapter10',
+          level: 1,
+        },
+      ],
+    });
+  });
   it('do not stop traversing at root myst.yml', async () => {
     memfs.vol.fromJSON({
       'myst.yml': '',
