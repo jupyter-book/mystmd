@@ -1,5 +1,13 @@
 # myst-transforms
 
+## 1.1.3
+
+### Patch Changes
+
+- 9a9b3953: 📦 Update types for hast updates
+- Updated dependencies [9a9b3953]
+  - myst-to-html@1.0.9
+
 ## 1.1.2
 
 ### Patch Changes
