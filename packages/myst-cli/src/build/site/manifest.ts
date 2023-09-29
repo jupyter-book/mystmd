@@ -74,11 +74,11 @@ export async function localToManifestProject(
 
   const projFrontmatter = projConfig ? filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS) : {};
   const projConfigFile = selectors.selectLocalConfigFile(state, projectPath);
-  const exports = (await resolvePageExports(session, projConfigFile)).map(
-    ({ format, filename, url }) => {
-      return { format, filename, url };
-    },
-  );
+  const exports = projConfigFile
+    ? (await resolvePageExports(session, projConfigFile)).map(({ format, filename, url }) => {
+        return { format, filename, url };
+      })
+    : [];
   const banner = await transformBanner(
     session,
     path.join(projectPath, 'myst.yml'),

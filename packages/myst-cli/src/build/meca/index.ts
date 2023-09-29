@@ -73,10 +73,10 @@ async function copyFilesFromConfig(
 ) {
   const projConfig = selectors.selectLocalProjectConfig(session.store.getState(), projectPath);
   const entries: { itemType: string; entry: string }[] = [
-    ...(projConfig.requirements ?? []).map((entry: string) => {
+    ...(projConfig?.requirements ?? []).map((entry: string) => {
       return { itemType: 'article-source-environment', entry };
     }),
-    ...(projConfig.resources ?? []).map((entry: string) => {
+    ...(projConfig?.resources ?? []).map((entry: string) => {
       return { itemType: 'article-source', entry };
     }),
   ];
@@ -312,16 +312,25 @@ export async function runMecaExport(
   const bundle = bundleFolder(mecaFolder);
   if (projectPath && project) {
     // Copy myst.yml
-    const configDest = copyFileMaintainPath(
-      session,
-      selectors.selectLocalConfigFile(session.store.getState(), projectPath),
-      projectPath,
-      bundle,
-      fileCopyErrorLogFn,
-    );
-    addManifestItem(manifestItems, 'article-source', mecaFolder, configDest);
-    // Copy requirements and resources
-    await copyFilesFromConfig(session, projectPath, mecaFolder, manifestItems, fileCopyErrorLogFn);
+    const configFile = selectors.selectLocalConfigFile(session.store.getState(), projectPath);
+    if (configFile) {
+      const configDest = copyFileMaintainPath(
+        session,
+        configFile,
+        projectPath,
+        bundle,
+        fileCopyErrorLogFn,
+      );
+      addManifestItem(manifestItems, 'article-source', mecaFolder, configDest);
+      // Copy requirements and resources
+      await copyFilesFromConfig(
+        session,
+        projectPath,
+        mecaFolder,
+        manifestItems,
+        fileCopyErrorLogFn,
+      );
+    }
     // Copy table of contents or write one if it does not exist
     if (fs.existsSync(path.join(projectPath, '_toc.yml'))) {
       copyFileToFolder(session, path.join(projectPath, '_toc.yml'), bundle, fileCopyErrorLogFn);
