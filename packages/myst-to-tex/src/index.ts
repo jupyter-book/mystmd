@@ -505,7 +505,7 @@ class TexSerializer implements ITexSerializer {
     file.result = '';
     this.file = file;
     this.options = opts ?? {};
-    this.data = { mathPlugins: {}, imports: new Set(), hasProofs: false };
+    this.data = { mathPlugins: {}, imports: new Set() };
     this.handlers = opts?.handlers ?? handlers;
     this.references = opts?.references ?? {};
     this.footnotes = createFootnoteDefinitions(tree);

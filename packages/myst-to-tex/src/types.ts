@@ -33,9 +33,9 @@ export type StateData = {
   nextCaptionNumbered?: boolean;
   nextHeadingIsFrameTitle?: boolean;
   nextCaptionId?: string;
+  hasProofs?: boolean;
   mathPlugins: Required<PageFrontmatter>['math'];
   imports: Set<string>;
-  hasProofs: boolean;
 };
 
 export interface ITexSerializer<D extends Record<string, any> = StateData> {
