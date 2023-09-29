@@ -71,7 +71,7 @@ export const proofHandler: Handler = (node, state) => {
   state.write(env);
   state.write('}');
 
-  state.hasProofs = true;
+  state.data.hasProofs = true;
 };
 
 export class TexProofSerializer {

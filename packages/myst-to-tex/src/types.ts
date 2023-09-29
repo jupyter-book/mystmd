@@ -35,6 +35,7 @@ export type StateData = {
   nextCaptionId?: string;
   mathPlugins: Required<PageFrontmatter>['math'];
   imports: Set<string>;
+  hasProofs: boolean;
 };
 
 export interface ITexSerializer<D extends Record<string, any> = StateData> {
@@ -43,7 +44,6 @@ export interface ITexSerializer<D extends Record<string, any> = StateData> {
   options: Options;
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
-  hasProofs: boolean;
   glossary: Record<string, [string, string]>;
   abbreviations: Record<string, [string, string]>;
   get printGlossary(): boolean;

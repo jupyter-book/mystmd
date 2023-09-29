@@ -498,7 +498,6 @@ class TexSerializer implements ITexSerializer {
   handlers: Record<string, Handler>;
   references: References;
   footnotes: Record<string, FootnoteDefinition>;
-  hasProofs: boolean;
   glossary: Record<string, [string, string]>;
   abbreviations: Record<string, [string, string]>;
 
@@ -506,11 +505,10 @@ class TexSerializer implements ITexSerializer {
     file.result = '';
     this.file = file;
     this.options = opts ?? {};
-    this.data = { mathPlugins: {}, imports: new Set() };
+    this.data = { mathPlugins: {}, imports: new Set(), hasProofs: false };
     this.handlers = opts?.handlers ?? handlers;
     this.references = opts?.references ?? {};
     this.footnotes = createFootnoteDefinitions(tree);
-    this.hasProofs = false;
     // Improve: render definition when encountering terms
     this.glossary = opts?.printGlossaries ? createGlossaryDefinitions(tree) : {};
     // Improve: render definition when encountering terms
@@ -605,7 +603,7 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     const glossaryState = new TexGlossaryAndAcronymSerializer(state.glossary, state.abbreviations);
 
     const preamble: string[] = [];
-    if (state.hasProofs) {
+    if (state.data.hasProofs) {
       preamble.push(new TexProofSerializer().preamble);
     }
     preamble.push(opts?.printGlossaries ? glossaryState.preamble : '');
