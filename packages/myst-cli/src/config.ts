@@ -343,10 +343,7 @@ export function writeConfigs(
   writeFileToFolder(file, yaml.dump(newConfig), 'utf-8');
 }
 
-export async function findCurrentProjectAndLoad(
-  session: ISession,
-  path: string,
-): Promise<string | undefined> {
+export function findCurrentProjectAndLoad(session: ISession, path: string): string | undefined {
   path = resolve(path);
   if (configFromPath(session, path)) {
     loadConfigAndValidateOrThrow(session, path);
@@ -362,10 +359,7 @@ export async function findCurrentProjectAndLoad(
   return findCurrentProjectAndLoad(session, dirname(path));
 }
 
-export async function findCurrentSiteAndLoad(
-  session: ISession,
-  path: string,
-): Promise<string | undefined> {
+export function findCurrentSiteAndLoad(session: ISession, path: string): string | undefined {
   path = resolve(path);
   if (configFromPath(session, path)) {
     loadConfigAndValidateOrThrow(session, path);

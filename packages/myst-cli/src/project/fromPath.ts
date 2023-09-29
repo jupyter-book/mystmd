@@ -27,6 +27,16 @@ type Options = {
   suppressWarnings?: boolean;
 };
 
+/** Sort any folders/files to ensure that `chapter10`, etc., comes after `chapter9` */
+function sortByNumber(a: string, b: string) {
+  // Replace any repeated numbers with padded zeros
+  const regex = /(\d+)/g;
+  const paddedA = a.replace(regex, (match) => match.padStart(10, '0'));
+  const paddedB = b.replace(regex, (match) => match.padStart(10, '0'));
+  // Compare the modified strings
+  return paddedA.localeCompare(paddedB);
+}
+
 /**
  * Recursively traverse path for md/ipynb files
  */
@@ -43,7 +53,7 @@ function projectPagesFromPath(
     .filter((file) => !shouldIgnoreFile(session, file))
     .map((file) => join(path, file))
     .filter((file) => !ignore || !ignore.includes(file))
-    .sort();
+    .sort(sortByNumber);
   if (session.configFiles.filter((file) => contents.includes(join(path, file))).length) {
     session.log.debug(`🔍 Found config file, ignoring subdirectory: ${path}`);
     return [];
@@ -75,6 +85,7 @@ function projectPagesFromPath(
     });
   const folders = contents
     .filter((file) => isDirectory(file))
+    .sort(sortByNumber)
     .map((dir) => {
       const projectFolder: LocalProjectFolder = { title: fileInfo(dir, pageSlugs).title, level };
       const pages = projectPagesFromPath(session, dir, nextLevel(level), pageSlugs, opts);

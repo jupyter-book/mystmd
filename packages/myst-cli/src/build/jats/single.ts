@@ -68,7 +68,7 @@ export async function localArticleToJats(
   extraLinkTransformers?: LinkTransformer[],
 ) {
   let { projectPath } = opts;
-  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
+  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
     await collectBasicExportOptions(session, file, 'xml', [ExportFormats.xml], projectPath, opts)

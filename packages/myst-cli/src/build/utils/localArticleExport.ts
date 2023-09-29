@@ -26,9 +26,7 @@ async function _localArticleExport(
       const { format, output } = exportOptions;
       const sessionClone = session.clone();
       const fileProjectPath =
-        projectPath ??
-        $project ??
-        (await findCurrentProjectAndLoad(sessionClone, path.dirname($file)));
+        projectPath ?? $project ?? findCurrentProjectAndLoad(sessionClone, path.dirname($file));
 
       let exportResults: ExportResults | undefined;
       if (fileProjectPath) {
