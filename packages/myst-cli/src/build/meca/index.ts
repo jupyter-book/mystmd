@@ -279,15 +279,20 @@ export async function runMecaExport(
       });
     }
   });
-  // Copy any existing pdf/docx exports
-  const manuscriptExports = await collectExportOptions(
-    session,
-    article ? [article] : [],
-    [ExportFormats.docx, ExportFormats.pdf],
-    {
-      projectPath,
-    },
-  );
+  // Copy any existing pdf/docx/tex-zip exports
+  const manuscriptExports = (
+    await collectExportOptions(
+      session,
+      article ? [article] : [],
+      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex],
+      {
+        projectPath,
+      },
+    )
+  ).filter((exp) => {
+    // Do not copy unzipped tex exports
+    return exp.format !== ExportFormats.tex || path.extname(exp.output) === '.zip';
+  });
   manuscriptExports.forEach(({ output: manuscriptOutput }) => {
     if (!fs.existsSync(manuscriptOutput)) {
       fileWarn(
