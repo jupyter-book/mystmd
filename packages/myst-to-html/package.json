@@ -30,7 +30,7 @@
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
+    "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
@@ -51,6 +51,5 @@
     "unified": "^10.1.2",
     "unist-builder": "^3.0.1",
     "unist-util-find-after": "^4.0.0"
-  },
-  "devDependencies": {}
+  }
 }
