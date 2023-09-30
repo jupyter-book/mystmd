@@ -5,3 +5,9 @@ cases:
     outputs:
       - path: basic-md-and-config/_build/exports/index.xml
         content: outputs/basic-md-and-config.xml
+  - title: Export with no config works
+    cwd: no-config
+    command: myst build --jats index.md -o _build/index.xml
+    outputs:
+      - path: no-config/_build/index.xml
+        content: outputs/basic-md-and-config.xml

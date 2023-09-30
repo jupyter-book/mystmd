@@ -13,11 +13,12 @@ export async function loadIntersphinx(
 ): Promise<Inventory[]> {
   const state = session.store.getState();
   const projectConfig = selectors.selectLocalProjectConfig(state, opts.projectPath);
-  const vfile = new VFile();
-  vfile.path = selectors.selectLocalConfigFile(state, opts.projectPath);
-  const cache = castSession(session);
+  const configFile = selectors.selectLocalConfigFile(state, opts.projectPath);
   // A bit confusing here, references is the frontmatter, but those are `externalReferences`
-  if (!projectConfig?.references) return [];
+  if (!projectConfig?.references || !configFile) return [];
+  const vfile = new VFile();
+  vfile.path = configFile;
+  const cache = castSession(session);
   const references = Object.entries(projectConfig.references)
     .filter(([key, object]) => {
       if (isUrl(object.url)) return true;
