@@ -9,7 +9,6 @@ import { ExportFormats } from 'myst-frontmatter';
 import type { LinkTransformer } from 'myst-transforms';
 import { selectAll } from 'unist-util-select';
 import { VFile } from 'vfile';
-import { js2xml } from 'xml-js';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { loadFile } from '../../process/index.js';
 import type { LocalProjectPage } from '../../project/index.js';
@@ -26,12 +25,7 @@ import {
   collectExportOptions,
   resolveAndLogErrors,
 } from '../utils/index.js';
-
-type ManifestItem = {
-  href: string;
-  itemType: string;
-  mediaType: string;
-};
+import { createManifestXml, type ManifestItem } from 'meca';
 
 function mediaTypeFromFile(file: string) {
   const mediaType = mime.lookup(file);
@@ -144,44 +138,8 @@ async function copyDependentFiles(
 }
 
 function writeMecaManifest(manifestItems: ManifestItem[], mecaFolder: string) {
-  const element = {
-    type: 'element',
-    elements: [
-      {
-        type: 'doctype',
-        doctype: 'manifest PUBLIC "-//MECA//DTD Manifest v1.0//en" "MECA_manifest.dtd"',
-      },
-      {
-        type: 'element',
-        name: 'manifest',
-        attributes: {
-          'manifest-version': '1',
-          xmlns: 'https://manuscriptexchange.org/schema/manifest',
-          'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-        },
-        elements: manifestItems.map(({ href, itemType, mediaType }) => {
-          return {
-            type: 'element',
-            name: 'item',
-            attributes: { 'item-type': itemType },
-            elements: [
-              {
-                type: 'element',
-                name: 'instance',
-                attributes: { 'xlink:href': href, 'media-type': mediaType },
-              },
-            ],
-          };
-        }),
-      },
-    ],
-    declaration: { attributes: { version: '1.0', encoding: 'UTF-8' } },
-  };
-  const jats = js2xml(element, {
-    compact: false,
-    spaces: 2,
-  });
-  fs.writeFileSync(path.join(mecaFolder, 'manifest.xml'), jats);
+  const manifest = createManifestXml(manifestItems);
+  fs.writeFileSync(path.join(mecaFolder, 'manifest.xml'), manifest);
 }
 
 /**
