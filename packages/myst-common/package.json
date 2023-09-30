@@ -15,7 +15,7 @@
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\"",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "build:esm": "tsc --project ./tsconfig.json --module es2015   --outDir dist --declaration",
+    "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
   "dependencies": {
