@@ -1,13 +1,13 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import type { Inventory } from 'intersphinx';
 import type { Logger } from 'myst-cli-utils';
+import type { MystPlugin, RuleId } from 'myst-common';
 import type { ReferenceState } from 'myst-transforms';
 import type { MinifiedContentCache } from 'nbtx';
 import type { Store } from 'redux';
 
-import type { RootState } from '../store/index.js';
+import type { BuildWarning, RootState } from '../store/index.js';
 import type { PreRendererData, RendererData, SingleCitationRenderer } from '../transforms/types.js';
-import type { MystPlugin } from 'myst-common';
 
 export type ISession = {
   API_URL: string;
@@ -23,6 +23,7 @@ export type ISession = {
   showUpgradeNotice(): void;
   plugins: MystPlugin | undefined;
   loadPlugins(): Promise<MystPlugin>;
+  getAllWarnings(ruleId: RuleId): (BuildWarning & { file: string })[];
 };
 
 export type ISessionWithCache = ISession & {

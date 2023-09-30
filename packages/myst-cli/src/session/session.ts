@@ -4,7 +4,7 @@ import { createStore } from 'redux';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
 import { config, rootReducer, selectors } from '../store/index.js';
-import type { RootState } from '../store/index.js';
+import type { BuildWarning, RootState } from '../store/index.js';
 import type { ISession } from './types.js';
 import {
   findCurrentProjectAndLoad,
@@ -16,7 +16,7 @@ import boxen from 'boxen';
 import chalk from 'chalk';
 import version from '../version.js';
 import { loadPlugins } from '../plugins.js';
-import type { MystPlugin } from 'myst-common';
+import type { MystPlugin, RuleId } from 'myst-common';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
@@ -133,8 +133,27 @@ export class Session implements ISession {
   publicPath(): string {
     return path.join(this.sitePath(), 'public');
   }
+  _clones: ISession[] = [];
 
   clone(): Session {
-    return new Session({ logger: this.log });
+    const cloneSession = new Session({ logger: this.log });
+    this._clones.push(cloneSession);
+    return cloneSession;
+  }
+
+  getAllWarnings(ruleId: RuleId) {
+    const stringWarnings: string[] = [];
+    const warnings: (BuildWarning & { file: string })[] = [];
+    [this, ...this._clones].forEach((session: ISession) => {
+      const sessionWarnings = selectors.selectFileWarningsByRule(session.store.getState(), ruleId);
+      sessionWarnings.forEach((warning) => {
+        const stringWarning = JSON.stringify(Object.entries(warning).sort());
+        if (!stringWarnings.includes(stringWarning)) {
+          stringWarnings.push(stringWarning);
+          warnings.push(warning);
+        }
+      });
+    });
+    return warnings;
   }
 }

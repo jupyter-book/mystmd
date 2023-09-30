@@ -270,7 +270,8 @@ export async function collectExportOptions(
   const sourceFiles = [...files];
   if (projectPath) {
     await loadProjectFromDisk(session, projectPath);
-    sourceFiles.push(selectors.selectLocalConfigFile(session.store.getState(), projectPath));
+    const configFile = selectors.selectLocalConfigFile(session.store.getState(), projectPath);
+    if (configFile) sourceFiles.push(configFile);
   }
   const exportOptionsList: ExportWithInputOutput[] = [];
   await Promise.all(

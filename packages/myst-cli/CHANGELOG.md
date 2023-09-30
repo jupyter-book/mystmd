@@ -1,5 +1,13 @@
 # myst-cli
 
+## 1.1.20
+
+### Patch Changes
+
+- cf23ba6a: Keep track of session clones for error reporting
+- c154629: Add tex-zip to manuscripts included with meca
+- e27bde2d: Fix up undefined types from selectors
+
 ## 1.1.19
 
 ### Patch Changes

@@ -1,5 +1,5 @@
 import { resolve } from 'node:path';
-import type { SiteConfig } from 'myst-config';
+import type { ProjectConfig, SiteConfig } from 'myst-config';
 import type { LocalProject, LocalProjectPage } from '../project/types.js';
 import type { RootState } from './reducers.js';
 import type { BuildWarning, ExternalLinkResult } from './types.js';
@@ -12,7 +12,7 @@ export function selectAffiliation(state: RootState, id: string): string | undefi
   return state.local.affiliations[id];
 }
 
-export function selectLocalSiteConfig(state: RootState, path: string) {
+export function selectLocalSiteConfig(state: RootState, path: string): ProjectConfig | undefined {
   return state.local.config.sites[resolve(path)];
 }
 
@@ -38,7 +38,10 @@ export function selectCurrentSiteFile(state: RootState) {
   return state.local.config.filenames[resolve(state.local.config.currentSitePath)];
 }
 
-export function selectLocalProjectConfig(state: RootState, path: string) {
+export function selectLocalProjectConfig(
+  state: RootState,
+  path: string,
+): ProjectConfig | undefined {
   return state.local.config.projects[resolve(path)];
 }
 
@@ -55,7 +58,7 @@ export function selectCurrentProjectFile(state: RootState) {
   if (!state.local.config.currentProjectPath) return undefined;
   return state.local.config.filenames[resolve(state.local.config.currentProjectPath)];
 }
-export function selectLocalConfigFile(state: RootState, path: string) {
+export function selectLocalConfigFile(state: RootState, path: string): string | undefined {
   return state.local.config.filenames[resolve(path)];
 }
 
