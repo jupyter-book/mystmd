@@ -18,11 +18,6 @@ cases:
         disableSessionSaving: true
         mathjaxConfig: TeX-AMS_CHTML-full,Safe
         mathjaxUrl: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js
-        local:
-          url: http://localhost:8888
-          token: local-secret
-          kernelName: local-kernel
-          sessionName: local-session
     normalized:
       thebe:
         lite: false
@@ -39,20 +34,15 @@ cases:
         disableSessionSaving: true
         mathjaxConfig: TeX-AMS_CHTML-full,Safe
         mathjaxUrl: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js
-        local:
-          url: http://localhost:8888
-          token: local-secret
-          kernelName: local-kernel
-          sessionName: local-session
   - title: jupyter lite
     raw:
       jupyter: 'lite'
     normalized:
       thebe:
         lite: true
-  - title: jupyter server
+  - title: jupyter binder
     raw:
-      jupyter: 'server'
+      jupyter: 'binder'
     normalized:
       thebe:
-        server: true
+        binder: true

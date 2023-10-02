@@ -39,7 +39,6 @@ import type {
   Thebe,
   BinderHubOptions,
   JupyterServerOptions,
-  JupyterLocalOptions,
   ReferenceStash,
   Affiliation,
   Name,
@@ -196,7 +195,6 @@ const THEBE_KEYS = [
 ];
 const BINDER_HUB_OPTIONS_KEYS = ['url', 'ref', 'repo', 'provider'];
 const JUPYTER_SERVER_OPTIONS_KEYS = ['url', 'token'];
-const JUPYTER_LOCAL_OPTIONS_KEYS = ['url', 'token', 'kernelName', 'sessionName'];
 const NUMBERING_KEYS = [
   'enumerator',
   'figure',
@@ -706,9 +704,14 @@ export function validateBiblio(input: any, opts: ValidationOptions) {
  */
 export function validateThebe(input: any, opts: ValidationOptions): Thebe | undefined {
   if (input === false) return undefined;
-  if (input === true || input === 'server') return { server: true };
   if (input === 'lite') return { lite: true };
-  if (input === 'binder') return { binder: true };
+  if (input === true || input === 'binder') return { binder: true };
+  if (typeof input === 'string') {
+    return validationError(
+      `thebe must be a boolean, an object, "lite" or "binder", not a string: ${input}`,
+      opts,
+    );
+  }
 
   const value: Thebe | undefined = validateObjectKeys(input, { optional: THEBE_KEYS }, opts);
   if (value === undefined) return undefined;
@@ -724,11 +727,13 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
     );
   }
   if (defined(value.server)) {
-    output.server = validateBooleanOrObject(
-      value.server,
-      incrementOptions('server', opts),
-      validateJupyterServerOptions,
-    );
+    const serverOpts = incrementOptions('server', opts);
+    const server = validateObject(value.server, serverOpts);
+    if (server) {
+      output.server = validateJupyterServerOptions(server, serverOpts);
+    } else {
+      output.server = server;
+    }
   }
   if (defined(value.kernelName)) {
     output.kernelName = validateString(value.kernelName, incrementOptions('kernelName', opts));
@@ -749,13 +754,6 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
     output.mathjaxConfig = validateString(
       value.mathjaxConfig,
       incrementOptions('mathjaxConfig', opts),
-    );
-  }
-  if (defined(value.local)) {
-    output.local = validateBooleanOrObject(
-      value.local,
-      incrementOptions('local', opts),
-      validateJupyterLocalOptions,
     );
   }
   return output;
@@ -797,7 +795,7 @@ export function validateBinderHubOptions(input: any, opts: ValidationOptions) {
 }
 
 export function validateJupyterServerOptions(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: JUPYTER_SERVER_OPTIONS_KEYS }, opts);
+  const value = validateObjectKeys(input, { required: JUPYTER_SERVER_OPTIONS_KEYS }, opts);
   if (value === undefined) return undefined;
   const output: JupyterServerOptions = {};
   if (defined(value.url)) {
@@ -806,26 +804,7 @@ export function validateJupyterServerOptions(input: any, opts: ValidationOptions
   if (defined(value.token)) {
     output.token = validateString(value.token, incrementOptions('token', opts));
   }
-  return output;
-}
-
-export function validateJupyterLocalOptions(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: JUPYTER_LOCAL_OPTIONS_KEYS }, opts);
-  if (value === undefined) return undefined;
-  const output: JupyterLocalOptions = {};
-  if (defined(value.url)) {
-    output.url = validateUrl(value.url, incrementOptions('url', opts));
-  }
-  if (defined(value.token)) {
-    output.token = validateString(value.token, incrementOptions('token', opts));
-  }
-  if (defined(value.kernelName)) {
-    output.kernelName = validateString(value.kernelName, incrementOptions('kernelName', opts));
-  }
-  if (defined(value.sessionName)) {
-    output.sessionName = validateString(value.sessionName, incrementOptions('sessionName', opts));
-  }
-  return output;
+  return output.url && output.token ? output : undefined;
 }
 
 /**
