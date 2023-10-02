@@ -23,74 +23,98 @@ Being able to connect a jupyter-based figure or output in any website page to a 
 
 ## Quick setup options
 
-MyST uses `thebe` for Jupyter connectivity which can be enabled using default settings by adding a single key (`thebe: true`) to the project frontmatter in your `myst.yml` file.
+MyST uses `thebe` for Jupyter connectivity which can be enabled using default settings by adding a single key `jupyter: true` (or `thebe: true`) to the project frontmatter in your `myst.yml` file.
 
 ```{code} yaml
 version: 1
 project:
   title: Geocomputing
-  thebe: true
+  jupyter: true
 site:
   template: book-theme
   title: My Computational Website
 ```
 
-When the boolean form of the `thebe` key is used, MyST will try to determine where to connect to from existing `github` and `binder` keys you may have on your project and is intended to allow for easy setup of a few key use cases. To go beyond or override these, you can provide various options in the `thebe` field.
+When the field `jupyter: true` is set, MyST will try to determine where to connect to automatically by looking at the `github` field if you supplied one. Otherwise it will use the demo repository at `https://github.com/executablebooks/thebe-binder-base` along with [mybinder.org](https://mybinder.org) to start a juptyer environment.
 
-### Case - `thebe: true` and no `github` or `binder` keys are present
+The intention here is to allow minimal setup to enable a few key use cases. To go beyond or override these, you can provide various options in the `jupyter` field which are documented below.
+
+````{tip} Equivalent Syntax
+:class: dropdown
+The following cases are all equivalent:
 
 ```yaml
 project:
-  thebe: true
+  jupyter: true
 ```
 
-When `thebe: true` and no `github` or `binder` keys are present MyST will try to connect to a binder using the default settings. The default settings will attempt to connect to [mybinder.org](https://mybinder.org) using the [thebe-binder-base](https://github.com/executablebooks/thebe-binder-base) repository for python environment configuration.
-
-Note this is equivalent to:
+```yaml
+project:
+  jupyter: 'binder'
+```
 
 ```yaml
 project:
-  thebe:
+  jupyter:
     binder: true
 ```
 
-### Case - `thebe: true` and the `github` key is present
-
 ```yaml
 project:
-  github: https://github.com/executablebooks/thebe-binder-base
-  thebe: true
+  jupyter:
+    binder:
+      repo: executablebooks/thebe-binder-base # default repo
 ```
 
-When `thebe: true` and the `github` key is present, MyST will attempt to connect to the public `mybinder.org` service using the repository information and a the default `ref: HEAD`. See [](#connecting-to-a-binder) to point to a different binder service or changing repository details.
+```yaml
+project:
+  jupyter:
+    binder:
+      repo: https://github.com/executablebooks/thebe-binder-base # default repo
+```
 
-Note this is equivalent to:
+````
+
+## Jupyter Configuration Options
+
+The following "cases" show different configuration options, aimed at different use cases. Look through these to find one that suits you purpose.
+
+### Case connect to binder with my own repo
+
+_`jupyter: true` and the `github` key is present_
 
 ```yaml
 project:
-  github: https://github.com/executablebooks/thebe-binder-base
-  thebe:
+  github: https://github.com/username/my-myst-article
+  jupyter: 'binder'
+```
+
+When `jupyter: true` and the `github` key is present, MyST will attempt to connect to the public `mybinder.org` service using the repository information and a the default `ref: HEAD`. See [](#connecting-to-a-binder) to point to a different binder service or changing repository details.
+
+````{tip} Equivalent Syntax
+:class: dropdown
+The following cases are all equivalent:
+
+```yaml
+project:
+  github: https://github.com/username/my-myst-article
+  jupyter: 'binder'
+```
+
+```yaml
+project:
+  github: https://github.com/username/my-myst-article
+  jupyter: true
+```
+
+```yaml
+project:
+  github: https://github.com/username/my-myst-article
+  jupyter:
     binder: true
 ```
 
-### Case - `thebe: true` and the `binder` key is present
-
-```yaml
-project:
-  binder: https://mybinder.org/v2/gh/executablebooks/thebe-binder-base/HEAD
-  thebe: true
-```
-
-When `thebe: true` and the `binder` key is present, MyST will use the binder information to establish a connection, the `github` field will be ignored.
-
-Note this is also equivalent to:
-
-```yaml
-project:
-  binder: https://mybinder.org/v2/gh/executablebooks/thebe-binder-base/HEAD
-  thebe:
-    binder: true
-```
+````
 
 ### 🚧 Case - Using Pyodide & JupyterLite
 
@@ -100,17 +124,29 @@ The JupyterLite server and `pyodide` kernels can be activated using:
 
 ```{code} yaml
 project:
-  thebe:
+  jupyter:
     lite: true
 ```
 
 This will load the server using the default options, to learn more about how using JupyterLite can affect site deployment and how environment setup works with pyodide see [](#jupyterlite)
 
+````{tip} Equivalent Syntax
+:class: dropdown
+The following cases are all equivalent:
+
+```{code} yaml
+project:
+  jupyter:
+    lite: true
+```
+
+````
+
 ### Disabling integrated compute
 
-Easily disable integrated compute on your project by either setting `thebe: false` or removing the key altogether.
+Easily disable integrated compute on your project by either setting `jupyter: false` or removing the key altogether.
 
-Disable integrated compute on a specific page in your website by adding `thebe: false` to the page frontmatter section.
+Disable integrated compute on a specific page in your website by adding `jupyter: false` to the page frontmatter section.
 
 (connecting-to-a-binder)=
 
@@ -123,9 +159,9 @@ When a the `thebe.binder` key contains a set of options, binder connections are 
 caption: A minimal `thebe.binder` configuration with the required `repo` field
 ---
 project:
-  thebe:
+  jupyter:
     binder:
-      repo: executablebooks/thebe-binder-base
+      repo: username/my-myst-article
 ```
 
 This allows the repository information for integrated compute to be different to that used for the `github` badge on the website, for useful for example if the github badge is pointing to a organization or other repo.
@@ -135,7 +171,7 @@ This allows the repository information for integrated compute to be different to
 caption: A complete `thebe.binder` configuration
 ---
 project:
-  thebe:
+  jupyter:
     binder:
       url: https://binder.myorganisation.com/services/binder/
       repo: executablebooks/thebe-binder-base
@@ -184,7 +220,7 @@ When a user presses the "launch binder" badge they will connect to a new indepen
 
 (directly-connecting-to-a-jupyter-server)=
 
-## Directly connecting to a Jupyter server
+## Directly connecting to a (local) Jupyter server
 
 The `thebe.server` key is used to provide options for direct connections to Jupyter, use the provided (and default) settings, the most minimal form of configuration is:
 
@@ -193,12 +229,13 @@ The `thebe.server` key is used to provide options for direct connections to Jupy
 caption: A unque connection token must be supplied to connect to a local server
 ---
 project:
-  thebe:
+  jupyter:
     server:
+      url: http://localhost:8888/
       token: <your-secret-token>
 ```
 
-By default, thebe will try to connect to a server on `http://localhost:8888`, to override this specify the url to connect to:
+Both `url` and `token` must be provided to enable a server connection.
 
 ```{list-table}
 :header-rows: 1
@@ -233,7 +270,7 @@ The [JupyterLite](https://jupyterlite.readthedocs.io/en/latest/) server and `pyo
 caption: Minimal configuration for enabling JupyterLite
 ---
 project:
-  thebe:
+  jupyter:
     lite: true
 ```
 
@@ -261,7 +298,7 @@ When starting a local Jupyter server for use with MyST it's also important to un
 
 ```{code-block} yaml
 project:
-  thebe: undefined(false) | boolean | object
+  jupyter: undefined(false) | boolean | object | 'lite' | 'binder'
     lite: boolean
     binder: undefined(false) | boolean | object
       url: string (url)
