@@ -34,6 +34,7 @@ parts:
     chapters:
       - file: table-of-contents
       # - file: themes-and-extensions
+      - file: article-layout
       - file: seo-and-social
       - file: accessibility-and-performance
       # - file: search
