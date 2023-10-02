@@ -44,21 +44,21 @@ project:
   thebe: true
 ```
 
-When `thebe: true` and no `github` or `binder` keys are present MyST will try to connect to a server using the default (local settings). To make this work you'll need to [](#start-a-local-jupyter-server) with the correct defaults or [provide alternative direct connection options](#directly-connecting-to-a-jupyter-server).
+When `thebe: true` and no `github` or `binder` keys are present MyST will try to connect to a binder using the default settings. The default settings will attempt to connect to [mybinder.org](https://mybinder.org) using the [thebe-binder-base](https://github.com/executablebooks/thebe-binder-base) repository for python environment configuration.
 
 Note this is equivalent to:
 
 ```yaml
 project:
   thebe:
-    server: true
+    binder: true
 ```
 
 ### Case - `thebe: true` and the `github` key is present
 
 ```yaml
 project:
-  github: executablebooks/thebe-binder-base
+  github: https://github.com/executablebooks/thebe-binder-base
   thebe: true
 ```
 
@@ -68,7 +68,7 @@ Note this is equivalent to:
 
 ```yaml
 project:
-  github: executablebooks/thebe-binder-base
+  github: https://github.com/executablebooks/thebe-binder-base
   thebe:
     binder: true
 ```
@@ -186,18 +186,19 @@ When a user presses the "launch binder" badge they will connect to a new indepen
 
 ## Directly connecting to a Jupyter server
 
-When the `thebe.server` key contains a set of options, direct connections to Jupyter use the provided (and default) settings, the most minimal form of configuration is:
+The `thebe.server` key is used to provide options for direct connections to Jupyter, use the provided (and default) settings, the most minimal form of configuration is:
 
 ```{code-block} yaml
 ---
-caption: Minimal configuration for connecting to a local server using default settings
+caption: A unque connection token must be supplied to connect to a local server
 ---
 project:
   thebe:
-    server: true
+    server:
+      token: <your-secret-token>
 ```
 
-Override the default settings using the following keys:
+By default, thebe will try to connect to a server on `http://localhost:8888`, to override this specify the url to connect to:
 
 ```{list-table}
 :header-rows: 1
@@ -208,12 +209,9 @@ Override the default settings using the following keys:
 * - `url`
   - The base url of the Jupyter server you want to connect to
   - `http://localhost:8888`
-* - `token`
-  - The token needed to establish a connection
-  - `test-secret`
 ```
 
-This allows you to connect to local servers on a different port, or across a private network and provide specific tokens to establish the connection, it is also useful in cases where this information is provided dynamically (for example after a JupyterHub server has been provisioned, however this requires additional infrastructure to deploy).
+This allows you to connect to local servers on a different port, or across a private network and provide specific tokens to establish the connection, it is also useful in cases where this information is provided dynamically (for example after a JupyterHub server has been provisioned).
 
 For more on working locally see [](#start-a-local-jupyter-server).
 
@@ -221,7 +219,7 @@ For more on working locally see [](#start-a-local-jupyter-server).
 :class: dropdown
 If you intend to run a dedicate single user Jupyter server accessible over a network please carefully read and follow [the advice provided by the Jupyter server team here](https://jupyter-notebook.readthedocs.io/en/stable/public_server.html).
 
-MyST Websites will work best, be safer and be more robust when backed by Jupyter services such as Binder or JupyterHub.
+MyST Websites will work best, be safer and be more robust when backed by Jupyter services such as BinderHub or JupyterHub.
 ```
 
 (jupyterlite)=
@@ -243,50 +241,17 @@ project:
 Add the specific list options for custom wheel paths, etc.
 ```
 
-## 🚧 Local Development Mode
-
-When working on a MyST Site using `mystmd`, using a local Jupyter server connection makes a lot of sense and speeds up development. The `local` key allows you to enable and configure a local environment without having to change the other (remote) settings in your `myst.yml` file that will be used in your final deployment.
-
-Local development using can be enabled by simply adding the `local` key, which will use default server options.
-
-```yaml
-project:
-  github: https://github.com/executablebooks/thebe-binder-base
-    thebe:
-      binder: true
-      local: true
-```
-
-Further configure the `local` connection using the following options.
-
-```{list-table}
-:header-rows: 1
-
-* - `key`
-  - description
-  - default
-* - `url`
-  - The base url of the Jupyter server you want to connect to
-  - `http://localhost:8888`
-* - `token`
-  - The token needed to establish a connection
-  - `test-secret`
-* - `kernelName`
-  - The name of the kernel to request when stating a session
-  - `python`
-```
-
 (start-a-local-jupyter-server)=
 
-### Start a local Jupyter server
+### Start a local Jupyter server for development purposes
 
 In addition to how you might normally start a JupyterLab session, it's necessary to provide two additional command line options, as follows.
 
 ```{code} bash
-jupyter lab --NotebookApp.token=test-secret --NotebookApp.allow_origin='*'
+jupyter lab --NotebookApp.token=<your-secret-token> --NotebookApp.allow_origin='https://localhost:3000'
 ```
 
-The command above is fine for local development and the `token` used should align with that provided in the `project.thebe.token` key.
+The command above is fine for local development. The `token` used should align with that provided in the `project.thebe.token` key and `allow_origin` should allow connections from your myst site preview, usually running on `https://localhost:3000`.
 
 When starting a local Jupyter server for use with MyST it's also important to understand your computational environment and ensure that the Jupyter instance has access to that with the dependencies it needs to run. This is achieved by following normal best practices for reproducible environment configuration, if you're not familiar with these see [REES](https://repo2docker.readthedocs.io/en/latest/specification.html).
 
@@ -303,17 +268,13 @@ project:
       repo: string (org-name/repo-name)
       ref: string (valid git refs only?)
       provider: string (git | gitlab | github)
-    server:  undefined(false) | boolean | object
+    server:  undefined | object
       url: string (url)
       token: string (any)
     kernelName: string (any)
     disableSessionSaving: boolean (default: false)
     mathjaxUrl: string (url)
     mathjaxConfig: string (any)
-    local: undefined(false) | boolean | object
-      url: string (url)
-      token: string (any)
-      kernelName: string (any)
 ```
 
 ### Additional options
