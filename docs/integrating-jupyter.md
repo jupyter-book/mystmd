@@ -246,6 +246,8 @@ Both `url` and `token` must be provided to enable a server connection.
 * - `url`
   - The base url of the Jupyter server you want to connect to
   - `http://localhost:8888`
+* - `token`
+  - The secret token string required by your jupyter server
 ```
 
 This allows you to connect to local servers on a different port, or across a private network and provide specific tokens to establish the connection, it is also useful in cases where this information is provided dynamically (for example after a JupyterHub server has been provisioned).
