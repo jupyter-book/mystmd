@@ -54,6 +54,7 @@ describe('validateThebe', () => {
       url: 'https://binder.curvenote.com/services/binder/',
       repo: 'https://curvenote.com/sub/bundle.zip',
       provider: 'custom',
+      ref: '',
     });
   });
   test('errors if no repo with custom provider', async () => {
@@ -61,19 +62,17 @@ describe('validateThebe', () => {
     expect(
       validateThebe(
         {
-          ...TEST_THEBE,
           binder: {
-            url: 'https://binder.curvenote.com/services/binder/',
             provider: 'custom',
           },
         },
         opts,
       ),
     ).toEqual({
-      ...TEST_THEBE,
       binder: {
-        url: 'https://binder.curvenote.com/services/binder/',
         provider: 'custom',
+        ref: '',
+        url: 'https://mybinder.org/',
       },
     });
     expect(opts.messages.errors?.length).toEqual(1);
@@ -122,5 +121,19 @@ describe('validateThebe', () => {
     });
     expect(opts.messages.errors?.length).toEqual(1);
     expect(opts.messages.errors?.[0].property).toEqual('server');
+  });
+  test('thebe.binder - extra fields wil be stripped', async () => {
+    expect(opts.messages).toEqual({});
+    expect(
+      validateThebe({ binder: { url: 'http://localhost:9090', extra: 'field' } }, opts),
+    ).toEqual({
+      binder: {
+        url: 'http://localhost:9090',
+        repo: 'executablebooks/thebe-binder-base',
+        ref: 'HEAD',
+        provider: 'github',
+      },
+    });
+    expect(opts.messages.errors).toBeUndefined();
   });
 });

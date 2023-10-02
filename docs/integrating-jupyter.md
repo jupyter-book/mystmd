@@ -304,9 +304,9 @@ project:
     lite: boolean
     binder: undefined(false) | boolean | object
       url: string (url)
-      repo: string (org-name/repo-name)
-      ref: string (valid git refs only?)
-      provider: string (git | gitlab | github)
+      provider: string (git | gitlab | github | or custom)
+      repo: string (org-name/repo-name | url | string)
+      ref: string (undefined | string)
     server:  undefined | object
       url: string (url)
       token: string (any)

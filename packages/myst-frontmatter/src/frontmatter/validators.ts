@@ -705,25 +705,35 @@ export function validateBiblio(input: any, opts: ValidationOptions) {
 export function validateThebe(input: any, opts: ValidationOptions): Thebe | undefined {
   if (input === false) return undefined;
   if (input === 'lite') return { lite: true };
-  if (input === true || input === 'binder') return { binder: true };
-  if (typeof input === 'string') {
+  if (typeof input === 'string' && input !== 'binder') {
     return validationError(
       `thebe must be a boolean, an object, "lite" or "binder", not a string: ${input}`,
       opts,
     );
   }
 
-  const value: Thebe | undefined = validateObjectKeys(input, { optional: THEBE_KEYS }, opts);
+  let inputObject: Record<string, any> = input;
+  if (input === true || input === 'binder') {
+    // expand boolean methods to object
+    inputObject = { binder: true };
+  }
+
+  const value: Thebe | undefined = validateObjectKeys(inputObject, { optional: THEBE_KEYS }, opts);
+
   if (value === undefined) return undefined;
   const output: Thebe = {};
   if (defined(value.lite)) {
     output.lite = validateBoolean(value.lite, incrementOptions('lite', opts));
   }
   if (defined(value.binder)) {
-    output.binder = validateBooleanOrObject(
-      value.binder,
+    const isBoolean = validateBoolean(value.binder, {
+      ...incrementOptions('binder', opts),
+      suppressErrors: true,
+      suppressWarnings: true,
+    });
+    output.binder = validateBinderHubOptions(
+      isBoolean ? {} : (value.binder as BinderHubOptions),
       incrementOptions('binder', opts),
-      validateBinderHubOptions,
     );
   }
   if (defined(value.server)) {
@@ -759,36 +769,59 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
   return output;
 }
 
-export function validateBinderHubOptions(input: any, opts: ValidationOptions) {
+export function validateBinderHubOptions(input: BinderHubOptions, opts: ValidationOptions) {
+  // input expected to be resolved to an object at this stage.
+  // missing fields should be replaced by defaults
   const value = validateObjectKeys(input, { optional: BINDER_HUB_OPTIONS_KEYS }, opts);
   if (value === undefined) return undefined;
+
   const output: BinderHubOptions = {};
-  if (defined(value.url)) {
-    output.url = validateUrl(value.url, incrementOptions('url', opts));
-  }
-  if (defined(value.provider)) {
-    output.provider = validateString(value.provider, {
-      ...incrementOptions('provider', opts),
-      regex: /.+/,
-    });
-  }
-  if (defined(value.provider) && !output.provider?.match(/^(git|github|gitlab|gist)$/i)) {
-    // repo can be any value, but must be present -> validate as any non empty string
+
+  output.url = validateUrl(value.url ?? 'https://mybinder.org/', incrementOptions('url', opts));
+
+  // if there  is no provider, set it to github
+  // if there is a provider, validate it as a non empty string
+  output.provider = value.provider
+    ? validateString(value.provider, {
+        ...incrementOptions('provider', opts),
+        regex: /.+/,
+      })
+    : 'github';
+
+  // if our resolved provider is a git-like repo, we should validate repo and ref if
+  // provided, otherwise we supply defaults
+  if (output.provider?.match(/^(git|github|gitlab|gist)$/i)) {
+    // first try to validate repo as a github username/repo string
+    output.repo = value.repo
+      ? validateString(value.repo, {
+          ...incrementOptions('repo', opts),
+          regex: GITHUB_USERNAME_REPO_REGEX,
+          suppressErrors: true,
+          suppressWarnings: true,
+        })
+      : 'executablebooks/thebe-binder-base';
+
+    // then if not, validate as a url and report errors based on url validation
+    // this will encourage use of fully qualified urls
+    if (!output.repo) {
+      output.repo = validateUrl(value.repo, incrementOptions('repo', opts));
+    }
+
+    // validate ref as a string
+    output.ref = value.ref ? validateString(value.ref, incrementOptions('ref', opts)) : 'HEAD';
+  } else {
+    // we are in a custom provider and repo can be any string value, but must be present
+    // -> validate as any non empty string
+    // do not validate ref but ensure that is at least an empty string, to prevent thebe
+    // from setting it to 'HEAD'
+
+    // this ensures a non empty string
     output.repo = validateString(value.repo, {
       ...incrementOptions('repo', opts),
       regex: /.+/,
     });
-  } else {
-    // otherwise repo is optional, but must be a valid GitHub username/repo is defined
-    if (defined(value.repo)) {
-      output.repo = validateString(value.repo, {
-        ...incrementOptions('repo', opts),
-        regex: GITHUB_USERNAME_REPO_REGEX,
-      });
-    }
-  }
-  if (defined(value.ref)) {
-    output.ref = validateString(value.ref, incrementOptions('ref', opts));
+
+    output.ref = value.ref ? validateString(value.ref, incrementOptions('ref', opts)) : '';
   }
 
   return output;
