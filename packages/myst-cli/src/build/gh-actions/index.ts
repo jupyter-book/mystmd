@@ -22,6 +22,10 @@ on:
     # Runs on pushes targeting the default branch
     branches: [${defaultBranch}]
 env:
+  # \`BASE_URL\` determines the website is served from, including CSS & JS assets
+  # You may need to change this to \`${
+    isGithubIO ? 'BASE_URL: /${{ github.event.repository.name }}' : "BASE_URL: ''"
+  }\`
   ${
     isGithubIO
       ? `BASE_URL: '' # Not required for '${username}.github.io' domain. Other repos will need to set this!`

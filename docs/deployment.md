@@ -71,6 +71,10 @@ Navigate to your repository settings, click on Pages and enable GitHub pages. Wh
 
 To trigger action, push your code with the workflow to main.
 
+:::{warning} Custom Domains
+GitHub allow you to host your static content on a custom domain, doing so _may_ require you to change the `BASE_URL` environment variable in the action. If you have unstyled content, try changing the `BASE_URL` to a blank string: `BASE_URL=''`; this serves the build assets from the root of your domain, rather than the default, which is the name or your repository.
+:::
+
 :::{tip} `BASE_URL` environment variable
 :class: dropdown
 The build and site assets are in the `/build` folder, which would point outside of the current repository to a repository called 'build', which probably doesn't exist!
@@ -89,13 +93,18 @@ The base URL is _absolute_ and should not end with a trailing slash. This can be
 
 The GitHub Action to build and deploy your site automatically is:
 
-```yaml
+```{code} yaml
+:filename: deploy.yml
+# This file was created automatically with `myst init --gh-pages` 🪄 💚
+
 name: MyST GitHub Pages Deploy
 on:
   push:
     # Runs on pushes targeting the default branch
     branches: [main]
 env:
+  # `BASE_URL` determines the website is served from, including CSS & JS assets
+  # You may need to change this to `BASE_URL: ''`
   BASE_URL: /${{ github.event.repository.name }}
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
