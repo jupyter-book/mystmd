@@ -86,7 +86,7 @@ describe('validateThebe', () => {
   });
   test('thebe.server must be an object', async () => {
     expect(opts.messages).toEqual({});
-    expect(validateThebe({ server: true }, opts)).toEqual({ server: undefined });
+    expect(validateThebe({ server: true }, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
     expect(opts.messages.errors?.[0].property).toEqual('server');
   });

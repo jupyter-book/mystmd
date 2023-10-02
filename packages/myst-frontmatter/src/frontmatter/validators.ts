@@ -742,7 +742,7 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
     if (server) {
       output.server = validateJupyterServerOptions(server, serverOpts);
     } else {
-      output.server = server;
+      return undefined;
     }
   }
   if (defined(value.kernelName)) {
