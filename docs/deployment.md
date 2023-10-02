@@ -72,7 +72,7 @@ Navigate to your repository settings, click on Pages and enable GitHub pages. Wh
 To trigger action, push your code with the workflow to main.
 
 :::{warning} Custom Domains
-GitHub allow you to host your static content on a custom domain, doing so _may_ require you to change the `BASE_URL` environment variable in the action. If you have unstyled content, try changing the `BASE_URL` to a blank string: `BASE_URL=''`; this serves the build assets from the root of your domain, rather than the default, which is the name or your repository.
+GitHub allow you to host your static content on a custom domain, doing so _may_ require you to change the `BASE_URL` environment variable in the action. If you have unstyled content, try changing the `BASE_URL` to a blank string: `BASE_URL=''` (note the **single quotes**!); this serves the build assets from the root of your domain, rather than the default, which is the name or your repository.
 :::
 
 :::{tip} `BASE_URL` environment variable
