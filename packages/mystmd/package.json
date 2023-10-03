@@ -32,7 +32,7 @@
     "unlink": "npm uninstall -g mystmd",
     "link": "npm run unlink; npm link;",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
-    "dev": "npm run link && esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --watch",
+    "dev": "npm run link && esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents",
     "lint": "npm run copy:version; eslint \"src/**/*.ts\" -c .eslintrc.cjs",
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "test": "npm run link; npm run copy:version; vitest run",

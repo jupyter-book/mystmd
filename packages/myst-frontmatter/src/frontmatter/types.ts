@@ -204,6 +204,7 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   math?: Record<string, string>;
   /** Abbreviations used throughout the project */
   abbreviations?: Record<string, string>;
+  firstTimeLong?: boolean;
   exports?: Export[];
   thebe?: Thebe;
   requirements?: string[];
