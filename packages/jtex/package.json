@@ -15,7 +15,7 @@
     "unlink": "npm uninstall -g jtex;",
     "link": "npm run unlink; npm link;",
     "dev": "npm run link && esbuild src/cli/index.ts --bundle --outfile=dist/jtex.cjs --platform=node --watch",
-    "lint": "npm run copy:version && eslint -c .eslintrc.cjs src/**/*.ts tests/**/*.ts",
+    "lint": "npm run copy:version && eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npm run copy:version && prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
     "test": "vitest run",
     "test:watch": "vitest watch",

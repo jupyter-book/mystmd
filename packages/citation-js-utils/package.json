@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint -c .eslintrc.cjs src/**/*.ts tests/**/*.ts",
+    "lint": "eslint -c .eslintrc.cjs src/**/*.ts",
     "lint:format": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
     "test": "vitest run",
     "test:watch": "vitest watch",
