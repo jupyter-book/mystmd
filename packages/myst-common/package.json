@@ -11,7 +11,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/*.ts*\" -c ./.eslintrc.cjs",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\"",
     "test": "vitest run",
     "test:watch": "vitest watch",
@@ -23,6 +23,8 @@
     "myst-spec": "^0.0.4",
     "nanoid": "^4.0.0",
     "unist-util-map": "^3.0.0",
+    "unist-util-remove": "^3.1.0",
+    "unist-util-select": "^4.0.3",
     "vfile": "^5.0.0",
     "vfile-message": "^3.0.0"
   },

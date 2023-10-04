@@ -39,6 +39,7 @@
     "myst-common": "^1.1.7",
     "myst-frontmatter": "^1.1.7",
     "myst-spec": "^0.0.4",
-    "myst-spec-ext": "^1.1.7"
+    "myst-spec-ext": "^1.1.7",
+    "unist-util-select": "^4.0.3"
   }
 }

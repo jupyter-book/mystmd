@@ -33,7 +33,7 @@
     "link": "npm run unlink; npm link;",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "dev": "npm run link && esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --watch",
-    "lint": "npm run copy:version; eslint \"src/**/*.ts\" -c .eslintrc.cjs",
+    "lint": "npm run copy:version; eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "test": "npm run link; npm run copy:version; vitest run",
     "test:watch": "npm run link; npm run copy:version; vitest watch",
@@ -41,8 +41,10 @@
     "build": "npm-run-all -l clean copy:version -p build:cli"
   },
   "devDependencies": {
+    "chalk": "^5.2.0",
     "commander": "^10.0.1",
     "core-js": "^3.31.1",
+    "js-yaml": "^4.1.0",
     "myst-cli": "^1.1.20"
   }
 }

@@ -30,7 +30,7 @@
     "clean": "rimraf dist",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "dev": "tsc -w -p .",
-    "lint": "npm run copy:version; eslint \"src/**/*.ts\" -c .eslintrc.cjs",
+    "lint": "npm run copy:version; eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "test": "npm run copy:version; vitest run",
     "test:watch": "npm run copy:version; vitest watch",
@@ -44,7 +44,7 @@
   "dependencies": {
     "@jupyterlab/nbformat": "3.5.2",
     "@reduxjs/toolkit": "^1.7.2",
-    "adm-zip": "^0.5.9",
+    "adm-zip": "^0.5.10",
     "boxen": "^7.1.1",
     "chalk": "^5.2.0",
     "check-node-version": "^4.2.1",
