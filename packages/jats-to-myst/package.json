@@ -45,5 +45,8 @@
     "myst-transforms": "^1.1.2",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
+  },
+  "devDependencies": {
+    "myst-to-tex": "^1.0.7"
   }
 }
