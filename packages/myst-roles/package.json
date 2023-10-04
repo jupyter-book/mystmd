@@ -23,7 +23,7 @@
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npx prettier --check \"src/**/*.ts\"",
-    "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
+    "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
@@ -32,6 +32,5 @@
   "dependencies": {
     "myst-common": "^1.1.7",
     "myst-spec-ext": "^1.1.7"
-  },
-  "devDependencies": {}
+  }
 }

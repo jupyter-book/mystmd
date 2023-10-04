@@ -29,12 +29,12 @@
   "scripts": {
     "clean": "rimraf dist",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
-    "dev": "tsc -w --preserveWatchOutput --outDir dist -p .",
+    "dev": "tsc -w -p .",
     "lint": "npm run copy:version; eslint \"src/**/*.ts\" -c .eslintrc.cjs",
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "test": "npm run copy:version; vitest run",
     "test:watch": "npm run copy:version; vitest watch",
-    "build:esm": "tsc --project ./tsconfig.json --module esnext --outDir dist --declaration",
+    "build:esm": "tsc",
     "build": "npm-run-all -l clean copy:version -p build:esm"
   },
   "engines": {
@@ -64,6 +64,7 @@
     "jtex": "^1.0.8",
     "latest-version": "^7.0.0",
     "mdast": "^3.0.0",
+    "meca": "^1.0.6",
     "mime-types": "^2.1.35",
     "myst-cli-utils": "^2.0.4",
     "myst-common": "^1.1.8",

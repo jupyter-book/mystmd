@@ -19,7 +19,7 @@ You can explore a [demo of images](#md:image) in the discussion of [](./commonma
 
 Using standard markdown to create an image will render across all output formats (HTML, TeX, Word, PDF, etc). However, this markdown syntax is limited in the configuration that can be applied beyond `alt` text and an optional `title`.
 
-There are two directives that can be used to add additional information about the layout and metadata associated with an image. For example, {myst:directive}`image.width`, {myst:directive}`alignment <image.align>` or a {myst:directive}`figure caption <figure.caption>`.
+There are two directives that can be used to add additional information about the layout and metadata associated with an image. For example, {myst:directive}`image.width`, {myst:directive}`alignment <image.align>` or a {myst:directive}`figure caption <figure.body>`.
 
 **image**
 : The {myst:directive}`image` directive allows you to customize {myst:directive}`image.width`, {myst:directive}`alignment <image.align>`, and other {myst:directive}`classes <image.class>` to add to the image

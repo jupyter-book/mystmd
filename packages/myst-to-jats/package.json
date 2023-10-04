@@ -28,7 +28,7 @@
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "build:esm": "tsc --project ./tsconfig.json --module es2015 --outDir dist --declaration",
+    "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
@@ -52,7 +52,7 @@
     "@types/js-yaml": "^4.0.5",
     "@types/katex": "^0.14.0",
     "@types/mdast": "^3.0.10",
-    "jats-xml": "^1.0.3",
+    "jats-xml": "^1.0.6",
     "js-yaml": "^4.1.0",
     "myst-cli-utils": "^2.0.4"
   }
