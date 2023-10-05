@@ -164,6 +164,7 @@ export function getBack(
   },
 ): Element[] {
   const elements = [
+    ...(state.data.backSections ?? []),
     ...getRefList(state, citations),
     ...getFootnotes(footnotes),
     ...getExpressions(expressions),

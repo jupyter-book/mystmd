@@ -19,7 +19,7 @@ export type Handler = (node: GenericNode, state: IJatsSerializer, parent: any) =
 
 export type MathPlugins = Required<PageFrontmatter>['math'];
 
-export type AbstractPart = { part: string; type?: string; title?: string };
+export type JatsPart = { part: string | string[]; type?: string; title?: string };
 
 export type Options = {
   handlers?: Record<string, Handler>;
@@ -27,7 +27,8 @@ export type Options = {
   isSubArticle?: boolean;
   slug?: string;
   extractAbstract?: boolean;
-  abstractParts?: AbstractPart[];
+  abstractParts?: JatsPart[];
+  backSections?: JatsPart[];
 };
 
 export type DocumentOptions = Options & {
@@ -41,6 +42,7 @@ export type StateData = {
   isNotebookArticleRep?: boolean;
   slug?: string;
   abstracts?: Element[];
+  backSections?: Element[];
   acknowledgments?: Element;
 };
 

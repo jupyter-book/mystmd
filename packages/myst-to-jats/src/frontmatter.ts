@@ -95,6 +95,12 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
     const attributes: Record<string, any> = {};
     const elements: Element[] = [];
     if (type) attributes['contrib-type'] = type;
+    if (author.id) attributes.id = author.id;
+    if (author.corresponding) attributes.corresp = 'yes';
+    if (author.deceased) attributes['deceased'] = 'yes';
+    if (author.equal_contributor != null) {
+      attributes['equal-contrib'] = author.equal_contributor ? 'yes' : 'no';
+    }
     if (author.orcid) {
       elements.push({
         type: 'element',
@@ -103,8 +109,6 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
         elements: [{ type: 'text', text: author.orcid }],
       });
     }
-    if (author.corresponding) attributes.corresp = 'yes';
-    if (author.id) attributes.id = author.id;
     if (author.nameParsed && (author.nameParsed?.given || author.nameParsed?.family)) {
       const { given, family, dropping_particle, non_dropping_particle, suffix } = author.nameParsed;
       const nameElements: Element[] = [];

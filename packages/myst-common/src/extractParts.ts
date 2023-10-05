@@ -6,17 +6,26 @@ import { copyNode } from './utils.js';
 
 /**
  * Selects the block node(s) based on part (string) or tags (string[]).
+ * If `part` is a string array, any of the parts will be treated equally.
  */
-export function selectBlockParts(tree: GenericParent, part: string): Block[] | undefined {
+export function selectBlockParts(
+  tree: GenericParent,
+  part: string | string[],
+): Block[] | undefined {
   if (!part) {
     // Prevent an undefined, null or empty part comparison
     return;
   }
   const blockParts = selectAll('block', tree).filter((block) => {
-    return (
-      block.data?.part === part ||
-      (block.data?.tags && Array.isArray(block.data.tags) && block.data.tags.includes(part))
-    );
+    const parts = typeof part === 'string' ? [part] : part;
+    return parts
+      .map((p) => {
+        return (
+          block.data?.part === p ||
+          (block.data?.tags && Array.isArray(block.data.tags) && block.data.tags.includes(p))
+        );
+      })
+      .reduce((a, b) => a || b, false);
   });
   if (blockParts.length === 0) return;
   return blockParts as Block[];
@@ -27,7 +36,7 @@ export function selectBlockParts(tree: GenericParent, part: string): Block[] | u
  */
 export function extractPart(
   tree: GenericParent,
-  part: string,
+  part: string | string[],
   opts?: {
     /** Helpful for when we are doing recursions, we don't want to extract the part again. */
     removePartData?: boolean;

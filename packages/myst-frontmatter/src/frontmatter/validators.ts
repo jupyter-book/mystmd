@@ -151,6 +151,7 @@ const CONTRIBUTOR_KEYS = [
 ];
 const CONTRIBUTOR_ALIASES = {
   role: 'roles',
+  'equal-contributor': 'equal_contributor',
   affiliation: 'affiliations',
   website: 'url',
 };

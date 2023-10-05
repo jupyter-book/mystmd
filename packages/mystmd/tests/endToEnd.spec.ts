@@ -17,10 +17,8 @@ type TestCase = {
   }[];
 };
 
-const directory = path.join('tests');
-
 function loadCases(file: string) {
-  const testYaml = fs.readFileSync(path.join(directory, file)).toString();
+  const testYaml = fs.readFileSync(path.join(__dirname, file)).toString();
   return (yaml.load(testYaml) as TestFile).cases;
 }
 

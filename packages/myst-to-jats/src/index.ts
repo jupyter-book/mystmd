@@ -23,7 +23,7 @@ import type {
   Attributes,
   ArticleContent,
   DocumentOptions,
-  AbstractPart,
+  JatsPart,
 } from './types.js';
 import {
   basicTransformations,
@@ -500,38 +500,44 @@ function createText(text: string): Element {
   return { type: 'text', text: escapeForXML(text) };
 }
 
-function renderPart(vfile: VFile, mdast: GenericParent, part: string, opts?: Options) {
+function renderPart(vfile: VFile, mdast: GenericParent, part: string | string[], opts?: Options) {
   const partMdast = extractPart(mdast, part, { removePartData: true });
   if (!partMdast) return undefined;
   const serializer = new JatsSerializer(vfile, partMdast as Root, opts);
   return serializer.render().elements();
 }
 
-function renderAbstract(
-  vfile: VFile,
-  mdast: GenericParent,
-  abstractDef: AbstractPart,
-  opts?: Options,
-) {
-  const elements = renderPart(vfile, mdast, abstractDef.part, opts);
+function renderAbstract(vfile: VFile, mdast: GenericParent, def: JatsPart, opts?: Options) {
+  const elements = renderPart(vfile, mdast, def.part, opts);
   if (!elements) return undefined;
   const abstract: Element = { type: 'element', name: 'abstract', elements };
-  if (abstractDef.title)
+  if (def.title)
     abstract.elements = [
-      { type: 'element', name: 'title', elements: [{ type: 'text', text: abstractDef.title }] },
+      { type: 'element', name: 'title', elements: [{ type: 'text', text: def.title }] },
       ...(abstract.elements as Element[]),
     ];
-  if (abstractDef.type) abstract.attributes = { 'abstract-type': abstractDef.type };
+  if (def.type) abstract.attributes = { 'abstract-type': def.type };
   return abstract;
 }
 
 function renderAcknowledgments(vfile: VFile, mdast: GenericParent, opts?: Options) {
-  const elements =
-    renderPart(vfile, mdast, 'acknowledgments', opts) ||
-    renderPart(vfile, mdast, 'acknowledgements', opts);
+  const elements = renderPart(vfile, mdast, ['acknowledgments', 'acknowledgements'], opts);
   if (!elements) return undefined;
   const acknowledgments: Element = { type: 'element', name: 'ack', elements };
   return acknowledgments;
+}
+
+function renderBackSection(vfile: VFile, mdast: GenericParent, def: JatsPart, opts?: Options) {
+  const elements = renderPart(vfile, mdast, def.part, opts);
+  if (!elements) return undefined;
+  const sec: Element = { type: 'element', name: 'sec', elements };
+  if (def.title)
+    sec.elements = [
+      { type: 'element', name: 'title', elements: [{ type: 'text', text: def.title }] },
+      ...(sec.elements as Element[]),
+    ];
+  if (def.type) sec.attributes = { 'sec-type': def.type };
+  return sec;
 }
 
 class JatsSerializer implements IJatsSerializer {
@@ -557,10 +563,20 @@ class JatsSerializer implements IJatsSerializer {
     if (opts?.extractAbstract) {
       const abstractParts = opts.abstractParts ?? [{ part: 'abstract' }];
       this.data.abstracts = abstractParts
-        .map((abstractDef) => renderAbstract(this.file, this.mdast, abstractDef, opts))
+        .map((def) => renderAbstract(this.file, this.mdast, def, opts))
         .filter((e) => !!e) as Element[];
     }
     this.data.acknowledgments = renderAcknowledgments(this.file, this.mdast, opts);
+    const backSections = opts?.backSections ?? [
+      {
+        part: ['data-availability', 'data_availability', 'availability'],
+        type: 'data-availability',
+        title: 'Data Availability',
+      },
+    ];
+    this.data.backSections = backSections
+      .map((def) => renderBackSection(this.file, this.mdast, def, opts))
+      .filter((e) => !!e) as Element[];
     basicTransformations(this.mdast as any, opts ?? {});
   }
 
