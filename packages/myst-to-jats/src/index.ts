@@ -567,13 +567,7 @@ class JatsSerializer implements IJatsSerializer {
         .filter((e) => !!e) as Element[];
     }
     this.data.acknowledgments = renderAcknowledgments(this.file, this.mdast, opts);
-    const backSections = opts?.backSections ?? [
-      {
-        part: ['data-availability', 'data_availability', 'availability'],
-        type: 'data-availability',
-        title: 'Data Availability',
-      },
-    ];
+    const backSections = opts?.backSections ?? [];
     this.data.backSections = backSections
       .map((def) => renderBackSection(this.file, this.mdast, def, opts))
       .filter((e) => !!e) as Element[];

@@ -63,6 +63,13 @@ export async function runJatsExport(
       },
       { part: 'keypoints', type: 'key-points', title: 'Key Points' },
     ],
+    backSections: [
+      {
+        part: ['data-availability', 'data_availability', 'availability'],
+        type: 'data-availability',
+        title: 'Data Availability',
+      },
+    ],
   });
   logMessagesFromVFile(session, jats);
   session.log.info(toc(`📑 Exported JATS in %s, copying to ${output}`));

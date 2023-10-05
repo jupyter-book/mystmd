@@ -112,6 +112,9 @@ describe('JATS full article', () => {
               title: 'Plain Language Summary',
             },
           ],
+          backSections: [
+            { type: 'data-availability', part: 'data-availability', title: 'Data Availability' },
+          ],
         },
       );
       pipe.runSync(tree as any);
