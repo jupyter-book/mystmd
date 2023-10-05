@@ -5,7 +5,7 @@ import type { VFile } from 'vfile';
 import { js2xml, xml2js } from 'xml-js';
 import katex from 'katex';
 import type { CitationRenderer } from 'citation-js-utils';
-import type { MessageInfo, GenericNode } from 'myst-common';
+import type { MessageInfo, GenericNode, GenericParent } from 'myst-common';
 import { RuleId, copyNode, extractPart, fileError } from 'myst-common';
 import type { PageFrontmatter, Contributor } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -23,6 +23,7 @@ import type {
   Attributes,
   ArticleContent,
   DocumentOptions,
+  AbstractPart,
 } from './types.js';
 import {
   basicTransformations,
@@ -499,6 +500,33 @@ function createText(text: string): Element {
   return { type: 'text', text: escapeForXML(text) };
 }
 
+function serializeAbstract(
+  vfile: VFile,
+  opts: Options,
+  mdast: GenericParent,
+  abstractDef: AbstractPart,
+) {
+  const abstractMdast = extractPart(mdast, abstractDef.part);
+  if (!abstractMdast) return undefined;
+  const abstractSerializer = new JatsSerializer(vfile, abstractMdast as Root, {
+    ...opts,
+    extractAbstract: false, // stops a recursion!
+  });
+  abstractSerializer.render();
+  const abstract: Element = {
+    type: 'element',
+    name: 'abstract',
+    elements: abstractSerializer.elements(),
+  };
+  if (abstractDef.title)
+    abstract.elements = [
+      { type: 'element', name: 'title', elements: [{ type: 'text', text: abstractDef.title }] },
+      ...(abstract.elements as Element[]),
+    ];
+  if (abstractDef.type) abstract.attributes = { 'abstract-type': abstractDef.type };
+  return abstract;
+}
+
 class JatsSerializer implements IJatsSerializer {
   file: VFile;
   data: StateData;
@@ -520,16 +548,10 @@ class JatsSerializer implements IJatsSerializer {
     this.handlers = opts?.handlers ?? handlers;
     this.mdast = copyNode(mdast);
     if (opts?.extractAbstract) {
-      const abstractMdast = extractPart(this.mdast, 'abstract');
-      if (abstractMdast) {
-        const abstractSerializer = new JatsSerializer(this.file, abstractMdast as Root, {
-          isNotebookArticleRep: this.data.isNotebookArticleRep,
-          slug: this.data.slug,
-          handlers: this.handlers,
-        });
-        abstractSerializer.render();
-        this.data.abstract = abstractSerializer.elements();
-      }
+      const abstractParts = opts.abstractParts ?? [{ part: 'abstract' }];
+      this.data.abstracts = abstractParts
+        .map((abstractDef) => serializeAbstract(this.file, opts, this.mdast, abstractDef))
+        .filter((e) => !!e) as Element[];
     }
     basicTransformations(this.mdast as any, opts ?? {});
   }

@@ -103,6 +103,14 @@ describe('JATS full article', () => {
         {
           writeFullArticle: true,
           spaces: 2,
+          abstractParts: [
+            { part: 'abstract' },
+            {
+              part: 'plain-language-summary',
+              type: 'plain-language-summary',
+              title: 'Plain Language Summary',
+            },
+          ],
         },
       );
       pipe.runSync(tree as any);

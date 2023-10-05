@@ -631,11 +631,6 @@ export function getArticlePages(frontmatter: ProjectFrontmatter): Element[] {
   return pages;
 }
 
-export function getAbstract(state: IJatsSerializer): Element[] {
-  if (!state.data.abstract?.length) return [];
-  return [{ type: 'element', name: 'abstract', elements: state.data.abstract }];
-}
-
 export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSerializer): Element {
   const elements = [];
   if (frontmatter) {
@@ -669,8 +664,8 @@ export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSe
       // related-article, related-object
     );
   }
-  if (state) {
-    elements.push(...getAbstract(state));
+  if (state?.data.abstracts && state.data.abstracts.length > 0) {
+    elements.push(...state.data.abstracts);
   }
   if (frontmatter) {
     elements.push(
