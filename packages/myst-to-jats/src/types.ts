@@ -41,6 +41,7 @@ export type StateData = {
   isNotebookArticleRep?: boolean;
   slug?: string;
   abstracts?: Element[];
+  acknowledgments?: Element;
 };
 
 export type ArticleContent = {
@@ -57,7 +58,7 @@ export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   stack: Element[];
   footnotes: Element[];
   expressions: Element[];
-  render: () => void;
+  render: () => IJatsSerializer;
   text: (value?: string) => void;
   renderChildren: (node: any) => void;
   renderInline: (node: GenericNode, name: string, attributes?: Attributes) => void;

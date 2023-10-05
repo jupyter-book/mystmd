@@ -167,7 +167,7 @@ export function getBack(
     ...getRefList(state, citations),
     ...getFootnotes(footnotes),
     ...getExpressions(expressions),
-    // ack
+    ...(state.data.acknowledgments ? [state.data.acknowledgments] : []),
     // app-group
     // bio
     // glossary

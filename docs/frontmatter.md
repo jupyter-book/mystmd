@@ -256,7 +256,7 @@ The `authors` field is a list of `author` objects. Available fields in the autho
 * - `github`
   - a GitHub username
 * - `note`
-  - a string, a freeform field to indicate additional information about the author, for example, acknowledgements or specific correspondence information.
+  - a string, a freeform field to indicate additional information about the author, for example, acknowledgments or specific correspondence information.
 * - `phone`
   - a phone number, e.g. `(301) 754-5766`
 * - `fax`

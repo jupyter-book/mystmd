@@ -500,24 +500,22 @@ function createText(text: string): Element {
   return { type: 'text', text: escapeForXML(text) };
 }
 
-function serializeAbstract(
+function renderPart(vfile: VFile, mdast: GenericParent, part: string, opts?: Options) {
+  const partMdast = extractPart(mdast, part, { removePartData: true });
+  if (!partMdast) return undefined;
+  const serializer = new JatsSerializer(vfile, partMdast as Root, opts);
+  return serializer.render().elements();
+}
+
+function renderAbstract(
   vfile: VFile,
-  opts: Options,
   mdast: GenericParent,
   abstractDef: AbstractPart,
+  opts?: Options,
 ) {
-  const abstractMdast = extractPart(mdast, abstractDef.part);
-  if (!abstractMdast) return undefined;
-  const abstractSerializer = new JatsSerializer(vfile, abstractMdast as Root, {
-    ...opts,
-    extractAbstract: false, // stops a recursion!
-  });
-  abstractSerializer.render();
-  const abstract: Element = {
-    type: 'element',
-    name: 'abstract',
-    elements: abstractSerializer.elements(),
-  };
+  const elements = renderPart(vfile, mdast, abstractDef.part, opts);
+  if (!elements) return undefined;
+  const abstract: Element = { type: 'element', name: 'abstract', elements };
   if (abstractDef.title)
     abstract.elements = [
       { type: 'element', name: 'title', elements: [{ type: 'text', text: abstractDef.title }] },
@@ -525,6 +523,15 @@ function serializeAbstract(
     ];
   if (abstractDef.type) abstract.attributes = { 'abstract-type': abstractDef.type };
   return abstract;
+}
+
+function renderAcknowledgments(vfile: VFile, mdast: GenericParent, opts?: Options) {
+  const elements =
+    renderPart(vfile, mdast, 'acknowledgments', opts) ||
+    renderPart(vfile, mdast, 'acknowledgements', opts);
+  if (!elements) return undefined;
+  const acknowledgments: Element = { type: 'element', name: 'ack', elements };
+  return acknowledgments;
 }
 
 class JatsSerializer implements IJatsSerializer {
@@ -550,15 +557,17 @@ class JatsSerializer implements IJatsSerializer {
     if (opts?.extractAbstract) {
       const abstractParts = opts.abstractParts ?? [{ part: 'abstract' }];
       this.data.abstracts = abstractParts
-        .map((abstractDef) => serializeAbstract(this.file, opts, this.mdast, abstractDef))
+        .map((abstractDef) => renderAbstract(this.file, this.mdast, abstractDef, opts))
         .filter((e) => !!e) as Element[];
     }
+    this.data.acknowledgments = renderAcknowledgments(this.file, this.mdast, opts);
     basicTransformations(this.mdast as any, opts ?? {});
   }
 
   render() {
     this.renderChildren(this.mdast);
     while (this.stack.length > 1) this.closeNode();
+    return this;
   }
 
   top() {

@@ -25,7 +25,14 @@ export function selectBlockParts(tree: GenericParent, part: string): Block[] | u
 /**
  * Returns a copy of the block parts and removes them from the tree.
  */
-export function extractPart(tree: GenericParent, part: string): GenericParent | undefined {
+export function extractPart(
+  tree: GenericParent,
+  part: string,
+  opts?: {
+    /** Helpful for when we are doing recursions, we don't want to extract the part again. */
+    removePartData?: boolean;
+  },
+): GenericParent | undefined {
   const blockParts = selectBlockParts(tree, part);
   if (!blockParts) return undefined;
   const children = copyNode(blockParts).map((block) => {
@@ -38,6 +45,7 @@ export function extractPart(tree: GenericParent, part: string): GenericParent | 
         delete block.data.tags;
       }
     }
+    if (opts?.removePartData) delete block.data.part;
     return block;
   });
   const partsTree = { type: 'root', children } as GenericParent;

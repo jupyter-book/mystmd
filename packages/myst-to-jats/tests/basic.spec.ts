@@ -88,6 +88,7 @@ describe('JATS full article', () => {
     ...loadCases('affiliations.yml'),
     ...loadCases('article.yml'),
     ...loadCases('authors.yml'),
+    ...loadCases('backmatter.yml'),
     ...loadCases('citations.yml'),
     ...loadCases('funding.yml'),
   ];
