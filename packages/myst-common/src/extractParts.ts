@@ -42,14 +42,19 @@ export function extractPart(
     removePartData?: boolean;
   },
 ): GenericParent | undefined {
+  const partStrings = typeof part === 'string' ? [part] : part;
   const blockParts = selectBlockParts(tree, part);
   if (!blockParts) return undefined;
   const children = copyNode(blockParts).map((block) => {
     // Ensure the block always has the `part` defined, as it might be in the tags
     block.data ??= {};
-    block.data.part = part;
-    if (block.data.tags && Array.isArray(block.data.tags) && block.data.tags.includes(part)) {
-      block.data.tags = block.data.tags.filter((tag) => tag !== part) as string[];
+    block.data.part = partStrings[0];
+    if (
+      block.data.tags &&
+      Array.isArray(block.data.tags) &&
+      block.data.tags.reduce((a, t) => a || partStrings.includes(t), false)
+    ) {
+      block.data.tags = block.data.tags.filter((tag) => !partStrings.includes(tag)) as string[];
       if ((block.data.tags as string[]).length === 0) {
         delete block.data.tags;
       }
