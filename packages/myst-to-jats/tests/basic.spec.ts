@@ -88,6 +88,7 @@ describe('JATS full article', () => {
     ...loadCases('affiliations.yml'),
     ...loadCases('article.yml'),
     ...loadCases('authors.yml'),
+    ...loadCases('backmatter.yml'),
     ...loadCases('citations.yml'),
     ...loadCases('funding.yml'),
   ];
@@ -103,6 +104,17 @@ describe('JATS full article', () => {
         {
           writeFullArticle: true,
           spaces: 2,
+          abstractParts: [
+            { part: 'abstract' },
+            {
+              part: 'plain-language-summary',
+              type: 'plain-language-summary',
+              title: 'Plain Language Summary',
+            },
+          ],
+          backSections: [
+            { type: 'data-availability', part: 'data-availability', title: 'Data Availability' },
+          ],
         },
       );
       pipe.runSync(tree as any);

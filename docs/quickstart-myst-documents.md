@@ -168,7 +168,7 @@ We introduce, a set of open-source, community-driven ...
 +++
 ```
 
-You can make other blocks, like `data-availability` or `acknowledgements` or `key-points`, templates will treat these differently and may require specific parts to fully render.
+You can make other blocks, like `data-availability` or `acknowledgments` or `key-points`, templates will treat these differently and may require specific parts to fully render.
 
 ### Add a citation
 

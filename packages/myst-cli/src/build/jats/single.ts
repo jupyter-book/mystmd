@@ -54,6 +54,22 @@ export async function runJatsExport(
     subArticles: processedSubArticles as any,
     writeFullArticle: true,
     spaces: 2,
+    abstractParts: [
+      { part: 'abstract' },
+      {
+        part: 'plain-language-summary',
+        type: 'plain-language-summary',
+        title: 'Plain Language Summary',
+      },
+      { part: 'keypoints', type: 'key-points', title: 'Key Points' },
+    ],
+    backSections: [
+      {
+        part: ['data-availability', 'data_availability', 'availability'],
+        type: 'data-availability',
+        title: 'Data Availability',
+      },
+    ],
   });
   logMessagesFromVFile(session, jats);
   session.log.info(toc(`📑 Exported JATS in %s, copying to ${output}`));

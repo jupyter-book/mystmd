@@ -38,3 +38,5 @@ _build
 # yalc
 .yalc
 yalc.lock
+
+*.docx

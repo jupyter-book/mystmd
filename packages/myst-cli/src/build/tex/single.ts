@@ -163,7 +163,7 @@ export async function localArticleToTexTemplated(
     }
   });
 
-  // prune mdast based on tags, if required by template, eg abstract, acknowledgements
+  // prune mdast based on tags, if required by template, eg abstract, acknowledgments
   // Need to load up template yaml - returned from jtex, with 'parts' dict
   // This probably means we need to store tags alongside oxa link for blocks
   // This will need opts eventually --v

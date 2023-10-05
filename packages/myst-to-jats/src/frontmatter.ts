@@ -95,6 +95,12 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
     const attributes: Record<string, any> = {};
     const elements: Element[] = [];
     if (type) attributes['contrib-type'] = type;
+    if (author.id) attributes.id = author.id;
+    if (author.corresponding) attributes.corresp = 'yes';
+    if (author.deceased) attributes['deceased'] = 'yes';
+    if (author.equal_contributor != null) {
+      attributes['equal-contrib'] = author.equal_contributor ? 'yes' : 'no';
+    }
     if (author.orcid) {
       elements.push({
         type: 'element',
@@ -103,8 +109,6 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
         elements: [{ type: 'text', text: author.orcid }],
       });
     }
-    if (author.corresponding) attributes.corresp = 'yes';
-    if (author.id) attributes.id = author.id;
     if (author.nameParsed && (author.nameParsed?.given || author.nameParsed?.family)) {
       const { given, family, dropping_particle, non_dropping_particle, suffix } = author.nameParsed;
       const nameElements: Element[] = [];
@@ -631,11 +635,6 @@ export function getArticlePages(frontmatter: ProjectFrontmatter): Element[] {
   return pages;
 }
 
-export function getAbstract(state: IJatsSerializer): Element[] {
-  if (!state.data.abstract?.length) return [];
-  return [{ type: 'element', name: 'abstract', elements: state.data.abstract }];
-}
-
 export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSerializer): Element {
   const elements = [];
   if (frontmatter) {
@@ -669,8 +668,8 @@ export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSe
       // related-article, related-object
     );
   }
-  if (state) {
-    elements.push(...getAbstract(state));
+  if (state?.data.abstracts && state.data.abstracts.length > 0) {
+    elements.push(...state.data.abstracts);
   }
   if (frontmatter) {
     elements.push(

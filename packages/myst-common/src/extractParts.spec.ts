@@ -99,4 +99,78 @@ describe('extractPart', () => {
       ],
     });
   });
+  it('extract parts (with lists)', async () => {
+    expect(
+      extractPart(
+        {
+          type: 'root',
+          children: [
+            {
+              type: 'block' as any,
+              data: { tags: ['tagged_part'] },
+              children: [{ type: 'text', value: 'untagged content' }],
+            },
+            {
+              type: 'block' as any,
+              data: { tags: ['other_tag', 'test_part'] },
+              children: [{ type: 'text', value: 'also tagged content' }],
+            },
+          ],
+        },
+        ['test_part', 'tagged_part'],
+        { removePartData: false },
+      ),
+    ).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block' as any,
+          data: { part: 'test_part' }, // We transform it to the first one.
+          children: [{ type: 'text', value: 'untagged content' }],
+        },
+        {
+          type: 'block' as any,
+          data: { part: 'test_part', tags: ['other_tag'] },
+          children: [{ type: 'text', value: 'also tagged content' }],
+        },
+      ],
+    });
+  });
+  it('extract parts (lists, remove)', async () => {
+    expect(
+      extractPart(
+        {
+          type: 'root',
+          children: [
+            {
+              type: 'block' as any,
+              data: { tags: ['tagged_part'] },
+              children: [{ type: 'text', value: 'untagged content' }],
+            },
+            {
+              type: 'block' as any,
+              data: { tags: ['other_tag', 'test_part'] },
+              children: [{ type: 'text', value: 'also tagged content' }],
+            },
+          ],
+        },
+        ['test_part', 'tagged_part'],
+        { removePartData: true },
+      ),
+    ).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block' as any,
+          data: {}, // Removed!
+          children: [{ type: 'text', value: 'untagged content' }],
+        },
+        {
+          type: 'block' as any,
+          data: { tags: ['other_tag'] },
+          children: [{ type: 'text', value: 'also tagged content' }],
+        },
+      ],
+    });
+  });
 });

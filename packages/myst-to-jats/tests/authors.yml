@@ -21,6 +21,8 @@ cases:
           affiliations:
             - univa
           email: example@example.com
+          equal-contributor: false # using the alias!
+          deceased: true
           url: https://example.com
         - name:
             literal: John Doe Jr.
@@ -37,7 +39,7 @@ cases:
         <front>
           <article-meta>
             <contrib-group>
-              <contrib contrib-type="author" corresp="yes" id="contributors-generated-uid-0">
+              <contrib contrib-type="author" id="contributors-generated-uid-0" corresp="yes" deceased="yes" equal-contrib="no">
                 <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
                 <name>
                   <surname>Doe</surname>
