@@ -28,6 +28,7 @@
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "test": "vitest run",
+    "test:bun": "bun test",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"

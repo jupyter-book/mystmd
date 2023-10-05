@@ -18,6 +18,7 @@
     "lint": "npm run copy:version && eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npm run copy:version && prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
     "test": "vitest run",
+    "test:bun": "bun test",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
     "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/jtex.cjs --platform=node",

@@ -30,6 +30,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "test": "vitest run",
+    "test:bun": "bun test",
     "test:watch": "vitest watch",
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",

@@ -11,6 +11,7 @@
     "lint": "turbo run lint",
     "lint:format": "turbo run lint:format",
     "test": "turbo run test",
+    "test:bun": "turbo run test:bun",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
     "version": "changeset version && npm install && cd packages/mystmd-py && bash scripts/bump-version.sh",
