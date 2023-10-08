@@ -25,7 +25,7 @@ export {
 } from './blocks.js';
 export { codePlugin, codeTransform } from './code.js';
 export { blockquotePlugin, blockquoteTransform } from './blockquote.js';
-export { imageAltTextPlugin, imageAltTextTransform } from './images.js';
+export { imageAltTextPlugin, imageAltTextTransform, imageInlineTransform } from './images.js';
 export {
   liftMystDirectivesAndRolesPlugin,
   liftMystDirectivesAndRolesTransform,

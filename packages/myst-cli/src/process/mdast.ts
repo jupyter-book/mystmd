@@ -24,6 +24,7 @@ import {
   joinGatesPlugin,
   glossaryPlugin,
   abbreviationPlugin,
+  imageInlineTransform,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
@@ -239,6 +240,7 @@ export async function transformMdast(
       });
     }
   }
+  imageInlineTransform(mdast);
   await transformDeleteBase64UrlSource(mdast);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   const useSlug = pageSlug !== index;

@@ -67,6 +67,7 @@ export type Image = SpecImage & {
   urlSource?: string;
   height?: string;
   placeholder?: boolean;
+  inline?: boolean;
 };
 
 export type Iframe = {
