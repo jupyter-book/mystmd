@@ -75,7 +75,14 @@ beforeEach(() => {
 describe('Basic JATS body', () => {
   const cases = [...loadCases('basic.yml'), ...loadCases('siunit.yml')];
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))('%s', async (_, { tree, jats }) => {
-    const pipe = unified().use(mystToJats, SourceFileKind.Article);
+    const pipe = unified().use(
+      mystToJats,
+      SourceFileKind.Article,
+      undefined,
+      undefined,
+      undefined,
+      { spaces: 'flat' },
+    );
     pipe.runSync(tree as any);
     const vfile = pipe.stringify(tree as any);
     expect(vfile.result).toEqual(jats);

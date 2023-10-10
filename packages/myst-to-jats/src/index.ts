@@ -848,9 +848,14 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
     : doc.body();
   const jats = js2xml(element, {
     compact: false,
-    spaces: opts?.spaces,
+    spaces: opts?.spaces === 'flat' ? 0 : opts?.spaces || 1,
   });
-  file.result = jats;
+  if (!opts?.spaces) {
+    // either `0` or `''`
+    file.result = jats.replace(/\n(\s*)</g, '\n<');
+  } else {
+    file.result = jats;
+  }
   return file;
 }
 
