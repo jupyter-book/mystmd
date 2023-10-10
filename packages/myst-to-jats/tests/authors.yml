@@ -17,7 +17,7 @@ cases:
           orcid: 0000-0000-0000-0000
           roles:
             - credit role 1
-            - credit role 2
+            - credit role & 2 # Test that "&" is encoded correctly
           affiliations:
             - univa
           email: example@example.com
@@ -47,7 +47,7 @@ cases:
                 </name>
                 <string-name>Jane Doe</string-name>
                 <role vocab="CRediT" vocab-identifier="http://credit.niso.org/" vocab-term="credit role 1">credit role 1</role>
-                <role vocab="CRediT" vocab-identifier="http://credit.niso.org/" vocab-term="credit role 2">credit role 2</role>
+                <role vocab="CRediT" vocab-identifier="http://credit.niso.org/" vocab-term="credit role &amp; 2">credit role &amp; 2</role>
                 <xref ref-type="aff" rid="univa"/>
                 <email>example@example.com</email>
                 <ext-link ext-link-type="uri" xlink:href="https://example.com">https://example.com</ext-link>
