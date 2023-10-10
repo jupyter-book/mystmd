@@ -726,7 +726,7 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
     output.lite = validateBoolean(value.lite, incrementOptions('lite', opts));
   }
   if (defined(value.binder)) {
-    const isBoolean = validateBoolean(value.binder, {
+    const asBoolean = validateBoolean(value.binder, {
       ...incrementOptions('binder', opts),
       suppressErrors: true,
       suppressWarnings: true,
