@@ -57,7 +57,7 @@ export async function runJatsExport(
     abstractParts: [
       { part: 'abstract' },
       {
-        part: 'plain-language-summary',
+        part: ['plain-language-summary', 'plain-language-abstract', 'summary'],
         type: 'plain-language-summary',
         title: 'Plain Language Summary',
       },
