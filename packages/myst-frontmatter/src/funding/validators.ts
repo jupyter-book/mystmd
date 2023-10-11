@@ -28,7 +28,7 @@ export function validateAward(input: any, stash: ReferenceStash, opts: Validatio
   if (value === undefined) return undefined;
   const output: Award = {};
   if (defined(value.id)) {
-    output.id = validateString(value.id, incrementOptions('id', opts));
+    output.id = validateString(value.id, { ...incrementOptions('id', opts), coerceNumber: true });
   }
   if (defined(value.name)) {
     output.name = validateString(value.name, incrementOptions('name', opts));
