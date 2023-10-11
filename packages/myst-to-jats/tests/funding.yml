@@ -102,7 +102,9 @@ cases:
             <funding-group>
               <award-group>
                 <funding-source>
-                  <xref ref-type="aff" rid="University A"/>
+                  <institution-wrap>
+                    <institution>University A</institution>
+                  </institution-wrap>
                 </funding-source>
                 <award-id>abc-123</award-id>
                 <award-name>Award</award-name>
@@ -213,10 +215,14 @@ cases:
             <funding-group>
               <award-group>
                 <funding-source>
-                  <xref ref-type="aff" rid="univa"/>
+                  <institution-wrap>
+                    <institution>University A</institution>
+                  </institution-wrap>
                 </funding-source>
                 <funding-source>
-                  <xref ref-type="aff" rid="univb"/>
+                  <institution-wrap>
+                    <institution>University B</institution>
+                  </institution-wrap>
                 </funding-source>
                 <award-id>abc-123</award-id>
                 <award-name>Award</award-name>
@@ -251,7 +257,9 @@ cases:
             <funding-group>
               <award-group>
                 <funding-source>
-                  <xref ref-type="aff" rid="University C"/>
+                  <institution-wrap>
+                    <institution>University C</institution>
+                  </institution-wrap>
                 </funding-source>
                 <award-id>ghi-789</award-id>
                 <award-desc>open access support</award-desc>

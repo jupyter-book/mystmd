@@ -1,4 +1,4 @@
-import type { Contributor, ProjectFrontmatter } from 'myst-frontmatter';
+import type { Contributor, ProjectFrontmatter, Affiliation } from 'myst-frontmatter';
 import * as credit from 'credit-roles';
 import type { Element, IJatsSerializer } from './types.js';
 
@@ -229,6 +229,60 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
   return contribGroups;
 }
 
+function instWrapElementsFromAffiliation(affiliation: Affiliation): Element[] {
+  const elements: Element[] = [];
+  const instWrapElements: Element[] = [];
+  if (affiliation.name) {
+    instWrapElements.push({
+      type: 'element',
+      name: 'institution',
+      elements: [{ type: 'text', text: affiliation.name }],
+    });
+  }
+  if (affiliation.isni) {
+    instWrapElements.push({
+      type: 'element',
+      name: 'institution-id',
+      attributes: { 'institution-id-type': 'isni' },
+      elements: [{ type: 'text', text: affiliation.isni }],
+    });
+  }
+  if (affiliation.ringgold) {
+    instWrapElements.push({
+      type: 'element',
+      name: 'institution-id',
+      attributes: { 'institution-id-type': 'ringgold' },
+      elements: [{ type: 'text', text: `${affiliation.ringgold}` }],
+    });
+  }
+  if (affiliation.ror) {
+    instWrapElements.push({
+      type: 'element',
+      name: 'institution-id',
+      attributes: { 'institution-id-type': 'ror' },
+      elements: [{ type: 'text', text: affiliation.ror }],
+    });
+  }
+  if (instWrapElements.length) {
+    elements.push({ type: 'element', name: 'institution-wrap', elements: instWrapElements });
+  }
+  if (affiliation.department) {
+    elements.push({
+      type: 'element',
+      name: 'institution-wrap',
+      elements: [
+        {
+          type: 'element',
+          name: 'institution',
+          attributes: { 'content-type': 'dept' },
+          elements: [{ type: 'text', text: affiliation.department }],
+        },
+      ],
+    });
+  }
+  return elements;
+}
+
 export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element[] {
   const affs = frontmatter.affiliations?.map((affiliation): Element => {
     const elements: Element[] = [];
@@ -236,55 +290,7 @@ export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element
     if (affiliation.id) {
       attributes.id = affiliation.id;
     }
-    const instWrapElements: Element[] = [];
-    if (affiliation.name) {
-      instWrapElements.push({
-        type: 'element',
-        name: 'institution',
-        elements: [{ type: 'text', text: affiliation.name }],
-      });
-    }
-    if (affiliation.isni) {
-      instWrapElements.push({
-        type: 'element',
-        name: 'institution-id',
-        attributes: { 'institution-id-type': 'isni' },
-        elements: [{ type: 'text', text: affiliation.isni }],
-      });
-    }
-    if (affiliation.ringgold) {
-      instWrapElements.push({
-        type: 'element',
-        name: 'institution-id',
-        attributes: { 'institution-id-type': 'ringgold' },
-        elements: [{ type: 'text', text: `${affiliation.ringgold}` }],
-      });
-    }
-    if (affiliation.ror) {
-      instWrapElements.push({
-        type: 'element',
-        name: 'institution-id',
-        attributes: { 'institution-id-type': 'ror' },
-        elements: [{ type: 'text', text: affiliation.ror }],
-      });
-    }
-    if (instWrapElements.length) {
-      elements.push({ type: 'element', name: 'institution-wrap', elements: instWrapElements });
-    }
-    if (affiliation.department) {
-      elements.push({
-        type: 'element',
-        name: 'institution-wrap',
-        elements: [
-          {
-            type: 'element',
-            name: 'institution',
-            attributes: { 'content-type': 'dept' },
-            elements: [{ type: 'text', text: affiliation.department }],
-          },
-        ],
-      });
-    }
+    elements.push(...instWrapElementsFromAffiliation(affiliation));
     if (affiliation.address) {
       elements.push({
         type: 'element',
@@ -404,19 +410,18 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
       elements.push(
         ...fund.awards.map((award): Element => {
           const awardElements: Element[] = [];
-          if (award.sources?.length) {
+          const resolvedSources = award.sources
+            ?.map((source) => {
+              return frontmatter.affiliations?.find((aff) => aff.id === source);
+            })
+            .filter((source): source is Affiliation => !!source);
+          if (resolvedSources?.length) {
             awardElements.push(
-              ...award.sources.map((source): Element => {
+              ...resolvedSources.map((source): Element => {
                 return {
                   type: 'element',
                   name: 'funding-source',
-                  elements: [
-                    {
-                      type: 'element',
-                      name: 'xref',
-                      attributes: { 'ref-type': 'aff', rid: source },
-                    },
-                  ],
+                  elements: instWrapElementsFromAffiliation(source),
                 };
               }),
             );
