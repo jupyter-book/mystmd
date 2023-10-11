@@ -73,7 +73,7 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
       'specific-use': 'error',
       mimetype: 'text',
       'mime-subtype': 'plain',
-      'xlink:href': escapeForXML((output as any).path),
+      'xlink:href': (output as any).path,
     });
     state.openNode('caption');
     state.openNode('title');
@@ -89,7 +89,7 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
       'specific-use': 'stream',
       mimetype: 'text',
       'mime-subtype': 'plain',
-      'xlink:href': escapeForXML((output as any).path),
+      'xlink:href': (output as any).path,
     });
   } else if (
     ['display_data', 'execute_result', 'update_display_data'].includes(output.output_type)
@@ -114,7 +114,7 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
         'specific-use': specificUse,
         mimetype: mimeType.split('/')[0],
         'mime-subtype': mimeType.split('/').slice(1).join('/'),
-        'xlink:href': escapeForXML((value as any).path),
+        'xlink:href': (value as any).path,
       });
     });
   }
@@ -277,7 +277,7 @@ const handlers: Record<string, Handler> = {
   link(node, state) {
     state.renderInline(node, 'ext-link', {
       'ext-link-type': 'uri',
-      'xlink:href': escapeForXML(node.url),
+      'xlink:href': node.url,
     });
   },
   admonition(node, state) {
@@ -329,7 +329,7 @@ const handlers: Record<string, Handler> = {
     const attrs: Record<string, any> = { mimetype: 'image' };
     const ext = node.url ? node.url.split('.').slice(-1)?.[0] : '';
     if (ext) attrs['mime-subtype'] = ext;
-    attrs['xlink:href'] = escapeForXML(node.url);
+    attrs['xlink:href'] = node.url;
     // TOOD: identifier?
     if (node.placeholder) state.openNode('alternatives');
     state.addLeaf('graphic', attrs);
@@ -851,6 +851,7 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
     //  No way to write XML with new lines, but no indentation with js2xml.
     // If you use 0 or '', you get a single line.
     spaces: opts?.spaces === 'flat' ? 0 : opts?.spaces || 1,
+    attributeValueFn: escapeForXML,
   });
   if (!opts?.spaces) {
     // either `0` or `''`
