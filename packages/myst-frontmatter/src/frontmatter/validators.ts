@@ -765,6 +765,7 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
       incrementOptions('mathjaxConfig', opts),
     );
   }
+
   return output;
 }
 
@@ -1289,7 +1290,8 @@ export function validateProjectFrontmatterKeys(
 
   if (defined(value.thebe)) {
     const result = validateThebe(value.thebe, incrementOptions('thebe', opts));
-    if (result) output.thebe = result;
+    if (result && Object.keys(result).length > 0) output.thebe = result;
+    else delete output.thebe;
   }
 
   if (defined(value.requirements)) {

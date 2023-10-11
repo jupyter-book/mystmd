@@ -71,6 +71,23 @@ cases:
           ref: 'HEAD'
           repo: 'executablebooks/thebe-binder-base'
           provider: 'github'
+  - title: jupyter.binder = false
+    raw:
+      jupyter:
+        binder: false
+    normalized: {}
+  - title: jupyter.binder = false, with server
+    raw:
+      jupyter:
+        binder: false
+        server:
+          url: https://my.server.com
+          token: test-secret
+    normalized:
+      thebe:
+        server:
+          url: https://my.server.com
+          token: test-secret
   - title: jupyter.binder repo only
     raw:
       jupyter:
