@@ -297,7 +297,7 @@ cases:
           affiliations:
             - id: univa
               name: University A
-              doi: 10.13039/000000
+              doi: https://doi.org/10.13039/000000
               isni: '0000000000000000'
               ringgold: 99999
               ror: '0000000000000000'

@@ -266,14 +266,15 @@ function instWrapElementsFromAffiliation(affiliation: Affiliation): Element[] {
   }
   if (affiliation.doi) {
     const doiAttrs: Record<string, string> = { 'institution-id-type': 'doi' };
-    if (doi.isOpenFunderRegistry(affiliation.doi)) {
+    const funder = doi.isOpenFunderRegistry(affiliation.doi);
+    if (funder) {
       doiAttrs.vocab = 'open-funder-registry';
     }
     instWrapElements.push({
       type: 'element',
       name: 'institution-id',
       attributes: doiAttrs,
-      elements: [{ type: 'text', text: affiliation.doi }],
+      elements: [{ type: 'text', text: doi.normalize(affiliation.doi) }],
     });
   }
   if (instWrapElements.length) {
