@@ -266,7 +266,7 @@ function instWrapElementsFromAffiliation(affiliation: Affiliation): Element[] {
   }
   if (affiliation.doi) {
     const doiAttrs: Record<string, string> = { 'institution-id-type': 'doi' };
-    if (doi.normalize(affiliation.doi)?.startsWith('10.13039')) {
+    if (doi.isOpenFunderRegistry(affiliation.doi)) {
       doiAttrs.vocab = 'open-funder-registry';
     }
     instWrapElements.push({
