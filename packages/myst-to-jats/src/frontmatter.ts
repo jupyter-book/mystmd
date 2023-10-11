@@ -230,7 +230,7 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
   return contribGroups;
 }
 
-function instWrapElementsFromAffiliation(affiliation: Affiliation): Element[] {
+function instWrapElementsFromAffiliation(affiliation: Affiliation, includeDept = true): Element[] {
   const elements: Element[] = [];
   const instWrapElements: Element[] = [];
   if (affiliation.name) {
@@ -280,7 +280,7 @@ function instWrapElementsFromAffiliation(affiliation: Affiliation): Element[] {
   if (instWrapElements.length) {
     elements.push({ type: 'element', name: 'institution-wrap', elements: instWrapElements });
   }
-  if (affiliation.department) {
+  if (includeDept && affiliation.department) {
     elements.push({
       type: 'element',
       name: 'institution-wrap',
@@ -435,7 +435,7 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
                 return {
                   type: 'element',
                   name: 'funding-source',
-                  elements: instWrapElementsFromAffiliation(source),
+                  elements: instWrapElementsFromAffiliation(source, false),
                 };
               }),
             );
