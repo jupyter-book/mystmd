@@ -146,6 +146,7 @@ cases:
           affiliations:
             - id: univa
               name: University A
+              department: Some Department
       affiliations:
         - id: univb
           name: University B
@@ -205,6 +206,9 @@ cases:
             <aff id="univa">
               <institution-wrap>
                 <institution>University A</institution>
+              </institution-wrap>
+              <institution-wrap>
+                <institution content-type="dept">Some Department</institution>
               </institution-wrap>
             </aff>
             <aff id="University C">
