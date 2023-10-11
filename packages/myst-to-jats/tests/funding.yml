@@ -80,18 +80,16 @@ cases:
           <article-meta>
             <contrib-group>
               <contrib contrib-type="author" id="John Doe">
-                <name>
+                <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>John</given-names>
                 </name>
-                <string-name>John Doe</string-name>
               </contrib>
               <contrib id="Jane Doe">
-                <name>
+                <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>Jane</given-names>
                 </name>
-                <string-name>Jane Doe</string-name>
               </contrib>
             </contrib-group>
             <aff id="University A">
@@ -108,18 +106,16 @@ cases:
                 <award-name>Award</award-name>
                 <award-desc>my test award</award-desc>
                 <principal-award-recipient>
-                  <name>
+                  <name name-style="western">
                     <surname>Doe</surname>
                     <given-names>Jane</given-names>
                   </name>
-                  <string-name>Jane Doe</string-name>
                 </principal-award-recipient>
                 <principal-investigator>
-                  <name>
+                  <name name-style="western">
                     <surname>Doe</surname>
                     <given-names>John</given-names>
                   </name>
-                  <string-name>John Doe</string-name>
                 </principal-investigator>
               </award-group>
               <funding-statement>my funding statement</funding-statement>
@@ -182,19 +178,17 @@ cases:
             <contrib-group>
               <contrib contrib-type="author" id="jd">
                 <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
-                <name>
+                <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>John</given-names>
                 </name>
-                <string-name>John Doe</string-name>
                 <xref ref-type="aff" rid="univa"/>
               </contrib>
               <contrib id="contributors-generated-uid-1">
-                <name>
+                <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>Jane</given-names>
                 </name>
-                <string-name>Jane Doe</string-name>
               </contrib>
             </contrib-group>
             <aff id="univb">
@@ -224,27 +218,24 @@ cases:
                 <award-name>Award</award-name>
                 <award-desc>my test award</award-desc>
                 <principal-award-recipient>
-                  <name>
+                  <name name-style="western">
                     <surname>Doe</surname>
                     <given-names>Jane</given-names>
                   </name>
-                  <string-name>Jane Doe</string-name>
                 </principal-award-recipient>
                 <principal-award-recipient>
                   <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
-                  <name>
+                  <name name-style="western">
                     <surname>Doe</surname>
                     <given-names>John</given-names>
                   </name>
-                  <string-name>John Doe</string-name>
                 </principal-award-recipient>
                 <principal-investigator>
                   <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
-                  <name>
+                  <name name-style="western">
                     <surname>Doe</surname>
                     <given-names>John</given-names>
                   </name>
-                  <string-name>John Doe</string-name>
                 </principal-investigator>
               </award-group>
               <award-group>
@@ -262,11 +253,10 @@ cases:
                 <award-desc>open access support</award-desc>
                 <principal-investigator>
                   <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
-                  <name>
+                  <name name-style="western">
                     <surname>Doe</surname>
                     <given-names>John</given-names>
                   </name>
-                  <string-name>John Doe</string-name>
                 </principal-investigator>
               </award-group>
               <open-access>
