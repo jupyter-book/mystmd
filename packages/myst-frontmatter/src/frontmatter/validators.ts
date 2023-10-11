@@ -725,14 +725,9 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
   if (defined(value.lite)) {
     output.lite = validateBoolean(value.lite, incrementOptions('lite', opts));
   }
-  if (defined(value.binder)) {
-    const asBoolean = validateBoolean(value.binder, {
-      ...incrementOptions('binder', opts),
-      suppressErrors: true,
-      suppressWarnings: true,
-    });
+  if (value.binder) {
     output.binder = validateBinderHubOptions(
-      isBoolean ? {} : (value.binder as BinderHubOptions),
+      value.binder === true ? {} : (value.binder as BinderHubOptions),
       incrementOptions('binder', opts),
     );
   }
