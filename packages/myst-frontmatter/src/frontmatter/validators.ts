@@ -728,7 +728,11 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
   if (value.binder) {
     output.binder = validateBinderHubOptions(
       value.binder === true ? {} : (value.binder as BinderHubOptions),
-      incrementOptions('binder', opts),
+      {
+        ...incrementOptions('binder', opts),
+        errorLogFn: (msg) =>
+          validationError(msg.split('object').join('an object or boolean'), opts),
+      },
     );
   }
   if (defined(value.server)) {
