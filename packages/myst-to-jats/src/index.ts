@@ -38,7 +38,7 @@ import { inlineExpression } from './inlineExpression.js';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
-export function escapeForXML(text: string) {
+function escapeForXML(text: string) {
   return text.replace(/&(?!amp;)/g, '&amp;').replace(/</g, '&lt;');
 }
 

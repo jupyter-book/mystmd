@@ -1,6 +1,5 @@
 import type { Contributor, ProjectFrontmatter } from 'myst-frontmatter';
 import type { Element, IJatsSerializer } from './types.js';
-import { escapeForXML } from './index.js';
 
 export function getJournalIds(): Element[] {
   // [{ type: 'element', name: 'journal-id', attributes: {'journal-id-type': ...}, text: ...}]
