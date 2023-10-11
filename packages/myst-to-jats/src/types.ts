@@ -33,7 +33,12 @@ export type Options = {
 
 export type DocumentOptions = Options & {
   subArticles?: ArticleContent[];
-  spaces?: number;
+  /**
+   * When 'flat', the xml will be on a single line (with exception of CDATA),
+   * When `0`, the XML will be on different lines with 0 spaces.
+   * When any other value (e.g. `2` or `\t`) the XML will be indented at the start of the line by that amount.
+   */
+  spaces?: number | 'flat' | '\t';
   writeFullArticle?: boolean;
 };
 
