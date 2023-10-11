@@ -90,7 +90,7 @@ The following table lists the available frontmatter fields, a brief description 
   - page only
 * - `alternatives`
   - alternative URLs and descriptions for the page content (see [](#alternatives))
-  - page only
+  - page & project
 * - `date`
   - a valid date formatted string
   - page can override project
