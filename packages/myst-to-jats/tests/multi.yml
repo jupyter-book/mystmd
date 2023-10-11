@@ -168,28 +168,25 @@ cases:
             </title-group>
             <contrib-group>
               <contrib contrib-type="author" id="Author One">
-                <name>
+                <name name-style="western">
                   <surname>One</surname>
                   <given-names>Author</given-names>
                 </name>
-                <string-name>Author One</string-name>
               </contrib>
               <contrib id="Author Two">
-                <name>
+                <name name-style="western">
                   <surname>Two</surname>
                   <given-names>Author</given-names>
                 </name>
-                <string-name>Author Two</string-name>
               </contrib>
             </contrib-group>
             <funding-group>
               <award-group>
                 <principal-investigator>
-                  <name>
+                  <name name-style="western">
                     <surname>Two</surname>
                     <given-names>Author</given-names>
                   </name>
-                  <string-name>Author Two</string-name>
                 </principal-investigator>
               </award-group>
             </funding-group>
@@ -202,11 +199,10 @@ cases:
           <front-stub>
             <contrib-group>
               <contrib contrib-type="author" id="Author Three">
-                <name>
+                <name name-style="western">
                   <surname>Three</surname>
                   <given-names>Author</given-names>
                 </name>
-                <string-name>Author Three</string-name>
               </contrib>
             </contrib-group>
           </front-stub>

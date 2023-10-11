@@ -147,13 +147,14 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
       elements.push({
         type: 'element',
         name: 'name',
+        attributes: { 'name-style': 'western' },
         elements: nameElements,
       });
-    }
-    if (author.name) {
+    } else if (author.name) {
       elements.push({
         type: 'element',
         name: 'string-name',
+        attributes: { 'name-style': 'western' },
         elements: [{ type: 'text', text: author.name }],
       });
     }
@@ -484,13 +485,14 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
                   recipientElements.push({
                     type: 'element',
                     name: 'name',
+                    attributes: { 'name-style': 'western' },
                     elements: nameElements,
                   });
-                }
-                if (author.name) {
+                } else if (author.name) {
                   recipientElements.push({
                     type: 'element',
                     name: 'string-name',
+                    attributes: { 'name-style': 'western' },
                     elements: [{ type: 'text', text: author.name }],
                   });
                 }
@@ -559,13 +561,14 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
                   investigatorElements.push({
                     type: 'element',
                     name: 'name',
+                    attributes: { 'name-style': 'western' },
                     elements: nameElements,
                   });
-                }
-                if (author.name) {
+                } else if (author.name) {
                   investigatorElements.push({
                     type: 'element',
                     name: 'string-name',
+                    attributes: { 'name-style': 'western' },
                     elements: [{ type: 'text', text: author.name }],
                   });
                 }
