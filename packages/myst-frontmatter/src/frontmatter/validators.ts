@@ -234,7 +234,7 @@ const KNOWN_PAGE_ALIASES = {
   export: 'exports',
   alternative: 'alternatives',
 };
-const KNOWN_PROJECT_ALIASES = {
+export const KNOWN_PROJECT_ALIASES = {
   ...KNOWN_PAGE_ALIASES,
   // This must also be updated in myst-config
   jupyter: 'thebe',

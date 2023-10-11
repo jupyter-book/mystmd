@@ -1,4 +1,8 @@
-import { PROJECT_FRONTMATTER_KEYS, validateProjectFrontmatterKeys } from 'myst-frontmatter';
+import {
+  KNOWN_PROJECT_ALIASES,
+  PROJECT_FRONTMATTER_KEYS,
+  validateProjectFrontmatterKeys,
+} from 'myst-frontmatter';
 import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
@@ -12,10 +16,7 @@ import type { ProjectConfig } from './types.js';
 const PROJECT_CONFIG_KEYS = {
   optional: ['remote', 'index', 'exclude', 'plugins'].concat(PROJECT_FRONTMATTER_KEYS),
   alias: {
-    jupyter: 'thebe',
-    author: 'authors',
-    affiliation: 'affiliations',
-    export: 'exports',
+    ...KNOWN_PROJECT_ALIASES,
   },
 };
 
