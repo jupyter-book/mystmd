@@ -80,10 +80,11 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'math',
   'abbreviations',
   'exports',
+  'alternatives',
   // Do not add any project specific keys here!
 ].concat(SITE_FRONTMATTER_KEYS);
 
-export const PAGE_FRONTMATTER_KEYS = ['kernelspec', 'jupytext', 'tags', 'alternatives'].concat(
+export const PAGE_FRONTMATTER_KEYS = ['kernelspec', 'jupytext', 'tags'].concat(
   PROJECT_FRONTMATTER_KEYS,
 );
 

@@ -214,11 +214,11 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   thebe?: Thebe;
   requirements?: string[];
   resources?: string[];
+  alternatives?: AlternativeUrl[];
 };
 
 export type PageFrontmatter = Omit<ProjectFrontmatter, 'references'> & {
   kernelspec?: KernelSpec;
   jupytext?: Jupytext;
   tags?: string[];
-  alternatives?: AlternativeUrl[];
 };
