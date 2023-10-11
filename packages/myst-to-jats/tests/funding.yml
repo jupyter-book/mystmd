@@ -85,6 +85,8 @@ cases:
                   <given-names>John</given-names>
                 </name>
               </contrib>
+            </contrib-group>
+            <contrib-group>
               <contrib id="Jane Doe">
                 <name name-style="western">
                   <surname>Doe</surname>
@@ -184,6 +186,8 @@ cases:
                 </name>
                 <xref ref-type="aff" rid="univa"/>
               </contrib>
+            </contrib-group>
+            <contrib-group>
               <contrib id="contributors-generated-uid-1">
                 <name name-style="western">
                   <surname>Doe</surname>

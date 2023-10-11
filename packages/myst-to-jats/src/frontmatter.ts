@@ -213,16 +213,20 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
     }
     return { type: 'element', name: 'contrib', attributes, elements };
   };
-  const contribs = [
-    ...(frontmatter.authors ?? []).map((author): Element => {
-      return generateContrib(author, 'author');
-    }),
-    ...(frontmatter.contributors ?? []).map((contributor): Element => {
-      return generateContrib(contributor);
-    }),
-  ];
-
-  return contribs?.length ? [{ type: 'element', name: 'contrib-group', elements: contribs }] : [];
+  const authorContribs = (frontmatter.authors ?? []).map((author): Element => {
+    return generateContrib(author, 'author');
+  });
+  const otherContribs = (frontmatter.contributors ?? []).map((contributor): Element => {
+    return generateContrib(contributor);
+  });
+  const contribGroups: Element[] = [];
+  if (authorContribs.length) {
+    contribGroups.push({ type: 'element', name: 'contrib-group', elements: authorContribs });
+  }
+  if (otherContribs.length) {
+    contribGroups.push({ type: 'element', name: 'contrib-group', elements: otherContribs });
+  }
+  return contribGroups;
 }
 
 export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element[] {
