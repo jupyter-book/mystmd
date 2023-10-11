@@ -16,7 +16,9 @@ cases:
           corresponding: true
           orcid: 0000-0000-0000-0000
           roles:
-            - credit role 1
+            - not a credit role
+            - Conceptualisation # Note the british spelling
+            - Editing # Note the british spelling
             - credit role & 2 # Test that "&" is encoded correctly
           affiliations:
             - univa
@@ -46,8 +48,10 @@ cases:
                   <given-names>Jane</given-names>
                 </name>
                 <string-name>Jane Doe</string-name>
-                <role vocab="CRediT" vocab-identifier="http://credit.niso.org/" vocab-term="credit role 1">credit role 1</role>
-                <role vocab="CRediT" vocab-identifier="http://credit.niso.org/" vocab-term="credit role &amp; 2">credit role &amp; 2</role>
+                <role>not a credit role</role>
+                <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Conceptualization" vocab-term-identifier="https://credit.niso.org/contributor-roles/conceptualization/">Conceptualization</role>
+                <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Writing – review &amp; editing" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-review-editing/">Writing – review &amp; editing</role>
+                <role>credit role &amp; 2</role>
                 <xref ref-type="aff" rid="univa"/>
                 <email>example@example.com</email>
                 <ext-link ext-link-type="uri" xlink:href="https://example.com">https://example.com</ext-link>

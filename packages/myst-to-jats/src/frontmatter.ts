@@ -159,17 +159,20 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
       });
     }
     if (author.roles) {
+      // See https://jats4r.org/credit-taxonomy/
       elements.push(
         ...author.roles.map((role): Element => {
+          const attrs: Record<string, string> = {};
+          if (credit.validate(role)) {
+            attrs.vocab = 'credit';
+            attrs['vocab-identifier'] = credit.CREDIT_URL;
+            attrs['vocab-term'] = credit.normalize(role) as string;
+            attrs['vocab-term-identifier'] = credit.buildUrl(role) as string;
+          }
           return {
             type: 'element',
             name: 'role',
-            attributes: {
-              vocab: 'credit',
-              'vocab-identifier': credit.CREDIT_URL,
-              'vocab-term': role,
-              'vocab-term-identifier': credit.buildUrl(role),
-            },
+            attributes: attrs,
             elements: [{ type: 'text', text: role }],
           };
         }),
