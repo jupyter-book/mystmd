@@ -848,10 +848,17 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
     : doc.body();
   const jats = js2xml(element, {
     compact: false,
-    spaces: opts?.spaces,
+    //  No way to write XML with new lines, but no indentation with js2xml.
+    // If you use 0 or '', you get a single line.
+    spaces: opts?.spaces === 'flat' ? 0 : opts?.spaces || 1,
     attributeValueFn: escapeForXML,
   });
-  file.result = jats;
+  if (!opts?.spaces) {
+    // either `0` or `''`
+    file.result = jats.replace(/\n(\s*)</g, '\n<');
+  } else {
+    file.result = jats;
+  }
   return file;
 }
 

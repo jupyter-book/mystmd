@@ -53,11 +53,11 @@ export async function runJatsExport(
   const jats = writeJats(vfile, processedArticle as any, {
     subArticles: processedSubArticles as any,
     writeFullArticle: true,
-    spaces: 2,
+    spaces: 0,
     abstractParts: [
       { part: 'abstract' },
       {
-        part: 'plain-language-summary',
+        part: ['plain-language-summary', 'plain-language-abstract', 'summary'],
         type: 'plain-language-summary',
         title: 'Plain Language Summary',
       },

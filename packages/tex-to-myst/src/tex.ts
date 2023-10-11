@@ -62,6 +62,7 @@ const macros: Record<string, number> = {
   citeyearpar: 1,
   primarypubs: 2,
   eqref: 1,
+  nameref: 1,
   textsubscript: 1,
   textsuperscript: 1,
   author: 1,
