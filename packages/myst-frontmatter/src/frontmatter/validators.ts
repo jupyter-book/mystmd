@@ -1292,6 +1292,18 @@ export function validateSharedProjectFrontmatterKeys(
     // No validation, this is expected to be set programmatically
     output.bannerOptimized = value.bannerOptimized;
   }
+  if (defined(value.alternatives)) {
+    const alternatives = Array.isArray(value.alternatives)
+      ? value.alternatives
+      : [value.alternatives];
+    output.alternatives = validateList(
+      alternatives,
+      incrementOptions('alternatives', opts),
+      (alt, index) => {
+        return validateAlternativeUrl(alt, incrementOptions(`alternatives.${index}`, opts));
+      },
+    );
+  }
   return output;
 }
 
@@ -1358,18 +1370,6 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
       incrementOptions('tags', opts),
       (file, index: number) => {
         return validateString(file, incrementOptions(`tags.${index}`, opts));
-      },
-    );
-  }
-  if (defined(value.alternatives)) {
-    const alternatives = Array.isArray(value.alternatives)
-      ? value.alternatives
-      : [value.alternatives];
-    output.alternatives = validateList(
-      alternatives,
-      incrementOptions('alternatives', opts),
-      (alt, index) => {
-        return validateAlternativeUrl(alt, incrementOptions(`alternatives.${index}`, opts));
       },
     );
   }
