@@ -1,4 +1,5 @@
 import type { Contributor, ProjectFrontmatter } from 'myst-frontmatter';
+import * as credit from 'credit-roles';
 import type { Element, IJatsSerializer } from './types.js';
 
 export function getJournalIds(): Element[] {
@@ -164,9 +165,10 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
             type: 'element',
             name: 'role',
             attributes: {
-              vocab: 'CRediT',
-              'vocab-identifier': 'http://credit.niso.org/',
+              vocab: 'credit',
+              'vocab-identifier': credit.CREDIT_URL,
               'vocab-term': role,
+              'vocab-term-identifier': credit.buildUrl(role),
             },
             elements: [{ type: 'text', text: role }],
           };
