@@ -90,10 +90,14 @@ export function validateNumber(
  */
 export function validateString(
   input: any,
-  opts: { maxLength?: number; regex?: string | RegExp } & ValidationOptions,
+  opts: { coerceNumber?: boolean; maxLength?: number; regex?: string | RegExp } & ValidationOptions,
 ): string | undefined {
-  if (typeof input !== 'string') return validationError(`must be string`, opts);
   let value = input as string;
+  if (opts.coerceNumber && typeof value === 'number') {
+    if (Number.isNaN(value)) validationWarning('is not a number', opts);
+    value = String(value);
+  }
+  if (typeof value !== 'string') return validationError(`must be string`, opts);
   if (opts.maxLength && value.length > opts.maxLength) {
     return validationError(`must be less than ${opts.maxLength} chars`, opts);
   }
