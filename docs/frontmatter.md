@@ -390,8 +390,8 @@ affiliations:
     however, at least one of these is required.
 * - `department`
   - a string - the affiliation department (e.g. Chemistry 🧪)
-* - `ror`, `isni`, `ringgold`
-  - Identifiers for the affiliation (ROR, ISNI, and Ringgold).
+* - `doi`, `ror`, `isni`, `ringgold`
+  - Identifiers for the affiliation (DOI, ROR, ISNI, and Ringgold).
 
     We suggest using https://ror.org if possible to search for your institution.
 
@@ -401,6 +401,7 @@ affiliations:
         ringgold: 1846
         isni: 0000 0004 1936 7558
         ror: 05qwgg493
+        doi: 10.13039/100018578
     ```
 * - `email`
   - a string - email of the affiliation, required if `corresponding` is `true`
