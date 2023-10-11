@@ -1,0 +1,31 @@
+title: Authors
+frontmatter: page
+cases:
+  - title: alternatives validate
+    raw:
+      alternatives:
+        - url: https://example.com/my-page
+          type: example
+          description: example page
+        - url: https://example.com/my-page.ipynb
+          type: notebook
+    normalized:
+      alternatives:
+        - url: https://example.com/my-page
+          type: example
+          description: example page
+        - url: https://example.com/my-page.ipynb
+          type: notebook
+  - title: alternatives coerce from string to list of objects
+    raw:
+      alternatives: https://example.com/my-page
+    normalized:
+      alternatives:
+        - url: https://example.com/my-page
+  - title: alternative coerces to alternative`s`
+    raw:
+      alternative:
+        url: https://example.com/my-page
+    normalized:
+      alternatives:
+        - url: https://example.com/my-page

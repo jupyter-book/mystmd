@@ -1,4 +1,9 @@
-import type { Contributor, ProjectFrontmatter, Affiliation } from 'myst-frontmatter';
+import type {
+  Contributor,
+  ProjectFrontmatter,
+  Affiliation,
+  PageFrontmatter,
+} from 'myst-frontmatter';
 import * as credit from 'credit-roles';
 import { doi } from 'doi-utils';
 import type { Element, IJatsSerializer } from './types.js';
@@ -571,7 +576,19 @@ export function getArticlePages(frontmatter: ProjectFrontmatter): Element[] {
   return pages;
 }
 
-export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSerializer): Element {
+export function getSelfUri(frontmatter: PageFrontmatter): Element[] {
+  const alternatives = frontmatter.alternatives ?? [];
+  return alternatives.map((alt): Element => {
+    const elements: Element[] = alt.description ? [{ type: 'text', text: alt.description }] : [];
+    const attributes: Record<string, string> = {
+      'xlink:href': alt.url,
+    };
+    if (alt.type) attributes['content-type'] = alt.type;
+    return { type: 'element', name: 'self-uri', attributes, elements };
+  });
+}
+
+export function getArticleMeta(frontmatter?: PageFrontmatter, state?: IJatsSerializer): Element {
   const elements = [];
   if (frontmatter) {
     elements.push(
@@ -600,7 +617,7 @@ export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSe
       // history
       // pub-history
       ...getArticlePermissions(frontmatter),
-      // self-uri
+      ...getSelfUri(frontmatter),
       // related-article, related-object
     );
   }

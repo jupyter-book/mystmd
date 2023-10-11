@@ -23,6 +23,7 @@ type TestCase = {
 
 const files = [
   'affiliations.yml',
+  'alternatives.yml',
   'authors.yml',
   'credit.yml',
   'exports.yml',

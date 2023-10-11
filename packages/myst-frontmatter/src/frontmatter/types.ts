@@ -165,6 +165,12 @@ export type Export = {
   /** MECA: to, from later */
 } & Record<string, any>;
 
+export type AlternativeUrl = {
+  url: string;
+  type?: string;
+  description?: string;
+};
+
 export type SiteFrontmatter = {
   title?: string;
   description?: string;
@@ -214,4 +220,5 @@ export type PageFrontmatter = Omit<ProjectFrontmatter, 'references'> & {
   kernelspec?: KernelSpec;
   jupytext?: Jupytext;
   tags?: string[];
+  alternatives?: AlternativeUrl[];
 };

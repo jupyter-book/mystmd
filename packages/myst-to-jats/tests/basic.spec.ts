@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import { unified } from 'unified';
 import fs from 'node:fs';
 import { Session, silentLogger } from 'myst-cli-utils';
-import { validateProjectFrontmatter } from 'myst-frontmatter';
+import { validatePageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { ValidationOptions } from 'simple-validators';
 import path from 'node:path';
@@ -105,7 +105,7 @@ describe('JATS full article', () => {
       const pipe = unified().use(
         mystToJats,
         SourceFileKind.Article,
-        validateProjectFrontmatter(frontmatter, opts),
+        validatePageFrontmatter(frontmatter, opts),
         citations,
         undefined,
         {
@@ -138,14 +138,14 @@ describe('JATS multi-article', () => {
     '%s',
     async (_, { tree, jats, frontmatter, citations, subArticles }) => {
       subArticles.forEach((subArticle) => {
-        subArticle.frontmatter = validateProjectFrontmatter(subArticle.frontmatter, opts);
+        subArticle.frontmatter = validatePageFrontmatter(subArticle.frontmatter, opts);
       });
       const vfile = writeJats(
         new VFile(),
         {
           mdast: tree as any,
           kind: SourceFileKind.Article,
-          frontmatter: validateProjectFrontmatter(frontmatter, opts),
+          frontmatter: validatePageFrontmatter(frontmatter, opts),
           citations,
         },
         {
@@ -168,7 +168,7 @@ describe('JATS full notebook', () => {
       const pipe = unified().use(
         mystToJats,
         SourceFileKind.Notebook,
-        validateProjectFrontmatter(frontmatter, opts),
+        validatePageFrontmatter(frontmatter, opts),
         citations,
         undefined,
         {

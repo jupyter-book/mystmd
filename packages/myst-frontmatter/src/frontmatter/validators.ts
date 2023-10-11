@@ -42,6 +42,7 @@ import type {
   ReferenceStash,
   Affiliation,
   Name,
+  AlternativeUrl,
 } from './types.js';
 import { validateFunding } from '../funding/validators.js';
 
@@ -82,7 +83,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   // Do not add any project specific keys here!
 ].concat(SITE_FRONTMATTER_KEYS);
 
-export const PAGE_FRONTMATTER_KEYS = ['kernelspec', 'jupytext', 'tags'].concat(
+export const PAGE_FRONTMATTER_KEYS = ['kernelspec', 'jupytext', 'tags', 'alternatives'].concat(
   PROJECT_FRONTMATTER_KEYS,
 );
 
@@ -223,11 +224,14 @@ export const RESERVED_EXPORT_KEYS = [
   'sub_articles',
 ];
 
+const ALTERNATIVE_URL_KEYS = { required: ['url'], optional: ['type', 'description'] };
+
 const KNOWN_PAGE_ALIASES = {
   author: 'authors',
   contributor: 'contributors',
   affiliation: 'affiliations',
   export: 'exports',
+  alternative: 'alternatives',
 };
 const KNOWN_PROJECT_ALIASES = {
   ...KNOWN_PAGE_ALIASES,
@@ -1040,6 +1044,22 @@ export function validateGithubUrl(value: any, opts: ValidationOptions) {
   });
 }
 
+function validateAlternativeUrl(value: any, opts: ValidationOptions) {
+  if (typeof value === 'string') value = { url: value };
+  value = validateObjectKeys(value, ALTERNATIVE_URL_KEYS, opts);
+  if (!value) return undefined;
+  const url = validateUrl(value.url, incrementOptions('url', opts));
+  if (!url) return undefined;
+  const output: AlternativeUrl = { url };
+  if (defined(value.type)) {
+    output.type = validateString(value.type, incrementOptions('type', opts));
+  }
+  if (defined(value.description)) {
+    output.description = validateString(value.description, incrementOptions('description', opts));
+  }
+  return output;
+}
+
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: SiteFrontmatter = {};
   if (defined(value.title)) {
@@ -1337,6 +1357,18 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
       incrementOptions('tags', opts),
       (file, index: number) => {
         return validateString(file, incrementOptions(`tags.${index}`, opts));
+      },
+    );
+  }
+  if (defined(value.alternatives)) {
+    const alternatives = Array.isArray(value.alternatives)
+      ? value.alternatives
+      : [value.alternatives];
+    output.alternatives = validateList(
+      alternatives,
+      incrementOptions('alternatives', opts),
+      (alt, index) => {
+        return validateAlternativeUrl(alt, incrementOptions(`alternatives.${index}`, opts));
       },
     );
   }

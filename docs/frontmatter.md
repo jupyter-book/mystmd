@@ -88,6 +88,9 @@ The following table lists the available frontmatter fields, a brief description 
 * - `subtitle`
   - a string (max 500 chars)
   - page only
+* - `alternatives`
+  - alternative URLs and descriptions for the page content (see [](#alternatives))
+  - page only
 * - `date`
   - a valid date formatted string
   - page can override project
@@ -573,4 +576,23 @@ biblio:
   volume: '2022'
   issue: Winter
   first_page: Inside cover # can be a number or string
+```
+
+## Alternatives
+
+Alternatives are references to other representations of the page content. Each alternative must have a URL; you may also provide `type` (e.g. content info like `ipynb` or publishing info like `preprint`) and a `description`.
+
+You can simply use a URL:
+
+```yaml
+alternative: https://example.com/my-page.ipynb
+```
+
+or a full object:
+
+```yaml
+alternatives: 
+  - url: https://example.com/my-page.ipynb
+    type: ipynb
+    description: executable notebook representation online
 ```
