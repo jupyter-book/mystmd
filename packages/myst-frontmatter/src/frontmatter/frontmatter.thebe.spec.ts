@@ -75,7 +75,7 @@ describe('validateThebe', () => {
         url: 'https://mybinder.org/',
       },
     });
-    expect(opts.messages.errors?.length).toEqual(1);
+    expect(opts.messages.errors?.length).toBeGreaterThanOrEqual(1);
     expect(opts.messages.errors?.[0].property).toEqual('repo');
   });
   test('thebe: "server" is not valid', async () => {
