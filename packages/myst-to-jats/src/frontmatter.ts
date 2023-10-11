@@ -167,7 +167,7 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
             attributes: {
               vocab: 'CRediT',
               'vocab-identifier': 'http://credit.niso.org/',
-              'vocab-term': escapeForXML(role),
+              'vocab-term': role,
             },
             elements: [{ type: 'text', text: role }],
           };
