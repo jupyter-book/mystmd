@@ -130,7 +130,7 @@ name (`string`)
 institution, department, address, city, state, postal_code, country (`string`)
 : Individual parts of an affiliation's address information.
 
-isni, ringgold, ror (`string`)
+doi, isni, ringgold, ror (`string`)
 : Institution unique identifiers.
 
 url, email, phone, fax (`string`)
@@ -143,7 +143,7 @@ letter (`string`)
 : The letter of the affiliation, starting at "A". If there are more letters than 26, they will be repeated ("AA").
 
 value (`Affiliation`)
-: This contains most of the same affiliation fields (name, institution, department, address, city, state, postal_code, country, isni, ringgold, ror, url, email, phone, fax).
+: This contains most of the same affiliation fields (name, institution, department, address, city, state, postal_code, country, doi, isni, ringgold, ror, url, email, phone, fax).
 : This field is deprecated and will be removed when all templates are updated. For new templates, please use the values directly on the affiliation (e.g. `affiliation.name`, not `affiliation.value.name`)
 
 The authors and affiliations are often the most complex part of the template, the following statements can give you some ideas of how to use the above properties.
