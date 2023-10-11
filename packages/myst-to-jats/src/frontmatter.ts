@@ -1,5 +1,6 @@
 import type { Contributor, ProjectFrontmatter, Affiliation } from 'myst-frontmatter';
 import * as credit from 'credit-roles';
+import { doi } from 'doi-utils';
 import type { Element, IJatsSerializer } from './types.js';
 
 export function getJournalIds(): Element[] {
@@ -265,7 +266,7 @@ function instWrapElementsFromAffiliation(affiliation: Affiliation): Element[] {
   }
   if (affiliation.doi) {
     const doiAttrs: Record<string, string> = { 'institution-id-type': 'doi' };
-    if (affiliation.doi.includes('10.13039')) {
+    if (doi.normalize(affiliation.doi)?.startsWith('10.13039')) {
       doiAttrs.vocab = 'open-funder-registry';
     }
     instWrapElements.push({
