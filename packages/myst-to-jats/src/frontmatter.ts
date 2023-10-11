@@ -85,6 +85,58 @@ export function getArticleTitle(frontmatter: ProjectFrontmatter): Element[] {
   ];
 }
 
+function nameElementFromContributor(contrib: Contributor): Element | undefined {
+  if (contrib.nameParsed && (contrib.nameParsed?.given || contrib.nameParsed?.family)) {
+    const { given, family, dropping_particle, non_dropping_particle, suffix } = contrib.nameParsed;
+    const nameElements: Element[] = [];
+    if (family) {
+      nameElements.push({
+        type: 'element',
+        name: 'surname',
+        elements: [
+          {
+            type: 'text',
+            text: non_dropping_particle ? `${non_dropping_particle} ${family}` : family,
+          },
+        ],
+      });
+    }
+    if (given) {
+      nameElements.push({
+        type: 'element',
+        name: 'given-names',
+        elements: [
+          {
+            type: 'text',
+            text: dropping_particle ? `${given} ${dropping_particle}` : given,
+          },
+        ],
+      });
+    }
+    // Prefix not yet supported by name parsing
+    if (suffix) {
+      nameElements.push({
+        type: 'element',
+        name: 'suffix',
+        elements: [{ type: 'text', text: suffix }],
+      });
+    }
+    return {
+      type: 'element',
+      name: 'name',
+      attributes: { 'name-style': 'western' },
+      elements: nameElements,
+    };
+  } else if (contrib.name) {
+    return {
+      type: 'element',
+      name: 'string-name',
+      attributes: { 'name-style': 'western' },
+      elements: [{ type: 'text', text: contrib.name }],
+    };
+  }
+}
+
 /**
  * Add authors and contributors to contrib-group
  *
@@ -109,55 +161,8 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
         elements: [{ type: 'text', text: author.orcid }],
       });
     }
-    if (author.nameParsed && (author.nameParsed?.given || author.nameParsed?.family)) {
-      const { given, family, dropping_particle, non_dropping_particle, suffix } = author.nameParsed;
-      const nameElements: Element[] = [];
-      if (family) {
-        nameElements.push({
-          type: 'element',
-          name: 'surname',
-          elements: [
-            {
-              type: 'text',
-              text: non_dropping_particle ? `${non_dropping_particle} ${family}` : family,
-            },
-          ],
-        });
-      }
-      if (given) {
-        nameElements.push({
-          type: 'element',
-          name: 'given-names',
-          elements: [
-            {
-              type: 'text',
-              text: dropping_particle ? `${given} ${dropping_particle}` : given,
-            },
-          ],
-        });
-      }
-      // Prefix not yet supported by name parsing
-      if (suffix) {
-        nameElements.push({
-          type: 'element',
-          name: 'suffix',
-          elements: [{ type: 'text', text: suffix }],
-        });
-      }
-      elements.push({
-        type: 'element',
-        name: 'name',
-        attributes: { 'name-style': 'western' },
-        elements: nameElements,
-      });
-    } else if (author.name) {
-      elements.push({
-        type: 'element',
-        name: 'string-name',
-        attributes: { 'name-style': 'western' },
-        elements: [{ type: 'text', text: author.name }],
-      });
-    }
+    const name = nameElementFromContributor(author);
+    if (name) elements.push(name);
     if (author.roles) {
       elements.push(
         ...author.roles.map((role): Element => {
@@ -444,58 +449,8 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
                     elements: [{ type: 'text', text: author.orcid }],
                   });
                 }
-                if (author.nameParsed && (author.nameParsed?.given || author.nameParsed?.family)) {
-                  const { given, family, dropping_particle, non_dropping_particle, suffix } =
-                    author.nameParsed;
-                  const nameElements: Element[] = [];
-                  if (family) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'surname',
-                      elements: [
-                        {
-                          type: 'text',
-                          text: non_dropping_particle
-                            ? `${non_dropping_particle} ${family}`
-                            : family,
-                        },
-                      ],
-                    });
-                  }
-                  if (given) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'given-names',
-                      elements: [
-                        {
-                          type: 'text',
-                          text: dropping_particle ? `${given} ${dropping_particle}` : given,
-                        },
-                      ],
-                    });
-                  }
-                  // Prefix not yet supported by name parsing
-                  if (suffix) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'suffix',
-                      elements: [{ type: 'text', text: suffix }],
-                    });
-                  }
-                  recipientElements.push({
-                    type: 'element',
-                    name: 'name',
-                    attributes: { 'name-style': 'western' },
-                    elements: nameElements,
-                  });
-                } else if (author.name) {
-                  recipientElements.push({
-                    type: 'element',
-                    name: 'string-name',
-                    attributes: { 'name-style': 'western' },
-                    elements: [{ type: 'text', text: author.name }],
-                  });
-                }
+                const name = nameElementFromContributor(author);
+                if (name) recipientElements.push(name);
                 return {
                   type: 'element',
                   name: 'principal-award-recipient',
@@ -520,58 +475,8 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
                     elements: [{ type: 'text', text: author.orcid }],
                   });
                 }
-                if (author.nameParsed && (author.nameParsed?.given || author.nameParsed?.family)) {
-                  const { given, family, dropping_particle, non_dropping_particle, suffix } =
-                    author.nameParsed;
-                  const nameElements: Element[] = [];
-                  if (family) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'surname',
-                      elements: [
-                        {
-                          type: 'text',
-                          text: non_dropping_particle
-                            ? `${non_dropping_particle} ${family}`
-                            : family,
-                        },
-                      ],
-                    });
-                  }
-                  if (given) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'given-names',
-                      elements: [
-                        {
-                          type: 'text',
-                          text: dropping_particle ? `${given} ${dropping_particle}` : given,
-                        },
-                      ],
-                    });
-                  }
-                  // Prefix not yet supported by name parsing
-                  if (suffix) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'suffix',
-                      elements: [{ type: 'text', text: suffix }],
-                    });
-                  }
-                  investigatorElements.push({
-                    type: 'element',
-                    name: 'name',
-                    attributes: { 'name-style': 'western' },
-                    elements: nameElements,
-                  });
-                } else if (author.name) {
-                  investigatorElements.push({
-                    type: 'element',
-                    name: 'string-name',
-                    attributes: { 'name-style': 'western' },
-                    elements: [{ type: 'text', text: author.name }],
-                  });
-                }
+                const name = nameElementFromContributor(author);
+                if (name) investigatorElements.push(name);
                 return {
                   type: 'element',
                   name: 'principal-investigator',
