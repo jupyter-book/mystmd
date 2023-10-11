@@ -16,6 +16,7 @@ export interface Affiliation {
   isni?: string;
   ringgold?: number;
   ror?: string;
+  doi?: string;
   url?: string;
   email?: string;
   phone?: string;

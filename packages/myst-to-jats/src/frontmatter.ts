@@ -263,6 +263,18 @@ function instWrapElementsFromAffiliation(affiliation: Affiliation): Element[] {
       elements: [{ type: 'text', text: affiliation.ror }],
     });
   }
+  if (affiliation.doi) {
+    const doiAttrs: Record<string, string> = { 'institution-id-type': 'doi' };
+    if (affiliation.doi.includes('10.13039')) {
+      doiAttrs.vocab = 'open-funder-registry';
+    }
+    instWrapElements.push({
+      type: 'element',
+      name: 'institution-id',
+      attributes: doiAttrs,
+      elements: [{ type: 'text', text: affiliation.doi }],
+    });
+  }
   if (instWrapElements.length) {
     elements.push({ type: 'element', name: 'institution-wrap', elements: instWrapElements });
   }

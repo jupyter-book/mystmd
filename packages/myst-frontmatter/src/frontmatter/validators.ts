@@ -122,6 +122,7 @@ const AFFILIATION_KEYS = [
   'isni',
   'ringgold',
   'ror',
+  'doi',
   'url',
   'email',
   'phone',
@@ -288,6 +289,18 @@ function pseudoUniqueId(kind: string, index: number, file?: string) {
   return `${kind}${suffix}-generated-uid-${index}`;
 }
 
+function validateDoi(value: any, opts: ValidationOptions) {
+  const doiString = validateString(value, opts);
+  if (doiString !== undefined) {
+    if (doi.validate(doiString, { strict: true })) {
+      return doiString;
+    } else {
+      validationError('must be valid DOI', opts);
+    }
+  }
+  return undefined;
+}
+
 /**
  * Update stash of authors/affiliations based on input value
  *
@@ -427,6 +440,9 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
       max: 999999,
       ...incrementOptions('ringgold', opts),
     });
+  }
+  if (defined(value.doi)) {
+    output.doi = validateDoi(value.doi, incrementOptions('doi', opts));
   }
   if (defined(value.collaboration)) {
     output.collaboration = validateBoolean(
@@ -1161,15 +1177,7 @@ export function validateSharedProjectFrontmatterKeys(
     output.name = validateString(value.name, incrementOptions('name', opts));
   }
   if (defined(value.doi)) {
-    const doiOpts = incrementOptions('doi', opts);
-    const doiString = validateString(value.doi, doiOpts);
-    if (doiString !== undefined) {
-      if (doi.validate(doiString, { strict: true })) {
-        output.doi = doiString;
-      } else {
-        validationError('must be valid DOI', doiOpts);
-      }
-    }
+    output.doi = validateDoi(value.doi, incrementOptions('doi', opts));
   }
   if (defined(value.arxiv)) {
     output.arxiv = validateUrl(value.arxiv, {
