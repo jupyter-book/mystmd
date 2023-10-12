@@ -1,0 +1,209 @@
+title: myst-to-tex basic features
+cases:
+  - title: theorem after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before a theorem'
+        - type: proof
+          kind: theorem
+          label: theo-t1
+          identifier: theo-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'Given this, then that.'
+    latex: |-
+      Some text before a theorem
+
+      \begin{theorem}\label{theo-t1}Given this, then that.\end{theorem}
+  - title: theorem ad proof after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before a theorem'
+        - type: proof
+          kind: theorem
+          label: theo-t1
+          identifier: theo-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'Given this, then that.'
+        - type: proof
+          kind: proof
+          label: proof-t1
+          identifier: proof-t1
+          children:
+            - type: text
+              value: 'qed.'
+    latex: |-
+      Some text before a theorem
+
+      \begin{theorem}\label{theo-t1}Given this, then that.\end{theorem}\begin{proof}\label{proof-t1}qed.\end{proof}
+  - title: proposition after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before a proposition'
+        - type: proof
+          kind: proposition
+          label: prop-t1
+          identifier: prop-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'Given this, then that.'
+    latex: |-
+      Some text before a proposition
+
+      \begin{proposition}\label{prop-t1}Given this, then that.\end{proposition}
+  - title: definition after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before a definition'
+        - type: proof
+          kind: definition
+          label: def-t1
+          identifier: def-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'Given this, then that.'
+    latex: |-
+      Some text before a definition
+
+      \begin{definition}\label{def-t1}Given this, then that.\end{definition}
+  - title: example after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before an example'
+        - type: proof
+          kind: example
+          label: ex-t1
+          identifier: ex-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'This is it.'
+    latex: |-
+      Some text before an example
+
+      \begin{example}\label{ex-t1}This is it.\end{example}
+  - title: remark after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before a remark'
+        - type: proof
+          kind: remark
+          label: rem-t1
+          identifier: rem-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'This is it.'
+    latex: |-
+      Some text before a remark
+
+      \begin{remark}\label{rem-t1}This is it.\end{remark}
+  - title: axiom after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before an axiom'
+        - type: proof
+          kind: axiom
+          label: ax-t1
+          identifier: ax-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'This is it.'
+    latex: |-
+      Some text before an axiom
+
+      \begin{axiom}\label{ax-t1}This is it.\end{axiom}
+  - title: conjecture after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before a conjecture'
+        - type: proof
+          kind: conjecture
+          label: conj-t1
+          identifier: conj-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'This is it.'
+    latex: |-
+      Some text before a conjecture
+
+      \begin{conjecture}\label{conj-t1}This is it.\end{conjecture}
+  - title: lemma after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before a lemma'
+        - type: proof
+          kind: lemma
+          label: lem-t1
+          identifier: lem-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'When this, then that.'
+    latex: |-
+      Some text before a lemma
+
+      \begin{lemma}\label{lem-t1}When this, then that.\end{lemma}
+  - title: observation after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before an observation'
+        - type: proof
+          kind: observation
+          label: obs-t1
+          identifier: obs-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'This is it.'
+    latex: |-
+      Some text before an observation
+
+      \begin{observation}\label{obs-t1}This is it.\end{observation}
