@@ -10,7 +10,6 @@ import type {
   PageFrontmatter,
   ProjectFrontmatter,
   SiteFrontmatter,
-  Thebe,
 } from './types';
 import {
   fillPageFrontmatter,
@@ -26,7 +25,6 @@ import {
   validatePageFrontmatter,
   validateProjectFrontmatter,
   validateSiteFrontmatterKeys,
-  validateThebe,
   validateVenue,
 } from './validators';
 
@@ -68,31 +66,6 @@ const TEST_BIBLIO: Biblio = {
   issue: 'example',
   first_page: 1,
   last_page: 2,
-};
-
-const TEST_THEBE: Thebe = {
-  lite: false,
-  binder: {
-    url: 'https://my.binder.org/blah',
-    ref: 'HEAD',
-    repo: 'my-org/my-repo',
-    provider: 'github',
-  },
-  server: {
-    url: 'https://my.server.org',
-    token: 'legit-secret',
-  },
-  kernelName: 'python3',
-  sessionName: 'some-path',
-  disableSessionSaving: true,
-  mathjaxConfig: 'TeX-AMS_CHTML-full,Safe',
-  mathjaxUrl: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js',
-  local: {
-    url: 'http://localhost:8888',
-    token: 'test-secret',
-    kernelName: 'python27',
-    sessionName: 'another-path',
-  },
 };
 
 const TEST_NUMBERING: Numbering = {
@@ -332,59 +305,6 @@ describe('validateBiblio', () => {
   });
   it('full object returns self', async () => {
     expect(validateBiblio(TEST_BIBLIO, opts)).toEqual(TEST_BIBLIO);
-  });
-});
-
-describe('validateThebe', () => {
-  it('empty object returns self', async () => {
-    expect(validateThebe({}, opts)).toEqual({});
-  });
-  it('extra keys removed', async () => {
-    expect(validateThebe({ extra: '' }, opts)).toEqual({});
-  });
-  it('full object returns self', async () => {
-    expect(validateThebe(TEST_THEBE, opts)).toEqual(TEST_THEBE);
-  });
-  it('custom provider accepts url as repo value', async () => {
-    const output = validateThebe(
-      {
-        ...TEST_THEBE,
-        binder: {
-          url: 'https://binder.curvenote.com/services/binder/',
-          repo: 'https://curvenote.com/sub/bundle.zip',
-          provider: 'custom',
-        },
-      },
-      opts,
-    );
-    expect(output?.binder).toEqual({
-      url: 'https://binder.curvenote.com/services/binder/',
-      repo: 'https://curvenote.com/sub/bundle.zip',
-      provider: 'custom',
-    });
-  });
-  it('errors if no repo with custom provider', async () => {
-    expect(opts.messages).toEqual({});
-    expect(
-      validateThebe(
-        {
-          ...TEST_THEBE,
-          binder: {
-            url: 'https://binder.curvenote.com/services/binder/',
-            provider: 'custom',
-          },
-        },
-        opts,
-      ),
-    ).toEqual({
-      ...TEST_THEBE,
-      binder: {
-        url: 'https://binder.curvenote.com/services/binder/',
-        provider: 'custom',
-      },
-    });
-    expect(opts.messages.errors?.length).toEqual(1);
-    expect(opts.messages.errors?.[0].property).toEqual('repo');
   });
 });
 

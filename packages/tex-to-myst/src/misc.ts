@@ -43,6 +43,10 @@ export const MISC_HANDLERS: Record<string, Handler> = {
     }
     state.renderChildren(node);
   },
+  env_adjustwidth(node, state) {
+    state.closeParagraph();
+    state.renderChildren(node);
+  },
   macro_mbox(node, state) {
     const [content] = getArguments(node, 'group');
     state.renderChildren(content);

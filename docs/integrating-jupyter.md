@@ -23,74 +23,98 @@ Being able to connect a jupyter-based figure or output in any website page to a 
 
 ## Quick setup options
 
-MyST uses `thebe` for Jupyter connectivity which can be enabled using default settings by adding a single key (`thebe: true`) to the project frontmatter in your `myst.yml` file.
+MyST uses `thebe` for Jupyter connectivity which can be enabled using default settings by adding a single key `jupyter: true` (or `thebe: true`) to the project frontmatter in your `myst.yml` file.
 
 ```{code} yaml
 version: 1
 project:
   title: Geocomputing
-  thebe: true
+  jupyter: true
 site:
   template: book-theme
   title: My Computational Website
 ```
 
-When the boolean form of the `thebe` key is used, MyST will try to determine where to connect to from existing `github` and `binder` keys you may have on your project and is intended to allow for easy setup of a few key use cases. To go beyond or override these, you can provide various options in the `thebe` field.
+When the field `jupyter: true` is set, MyST will try to determine where to connect to automatically by looking at the `github` field if you supplied one. Otherwise it will use the demo repository at `https://github.com/executablebooks/thebe-binder-base` along with [mybinder.org](https://mybinder.org) to start a juptyer environment.
 
-### Case - `thebe: true` and no `github` or `binder` keys are present
+The intention here is to allow minimal setup to enable a few key use cases. To go beyond or override these, you can provide various options in the `jupyter` field which are documented below.
+
+````{tip} Equivalent Syntax
+:class: dropdown
+The following cases are all equivalent:
 
 ```yaml
 project:
-  thebe: true
+  jupyter: true
 ```
 
-When `thebe: true` and no `github` or `binder` keys are present MyST will try to connect to a server using the default (local settings). To make this work you'll need to [](#start-a-local-jupyter-server) with the correct defaults or [provide alternative direct connection options](#directly-connecting-to-a-jupyter-server).
-
-Note this is equivalent to:
-
 ```yaml
 project:
-  thebe:
-    server: true
+  jupyter: 'binder'
 ```
 
-### Case - `thebe: true` and the `github` key is present
-
 ```yaml
 project:
-  github: executablebooks/thebe-binder-base
-  thebe: true
-```
-
-When `thebe: true` and the `github` key is present, MyST will attempt to connect to the public `mybinder.org` service using the repository information and a the default `ref: HEAD`. See [](#connecting-to-a-binder) to point to a different binder service or changing repository details.
-
-Note this is equivalent to:
-
-```yaml
-project:
-  github: executablebooks/thebe-binder-base
-  thebe:
+  jupyter:
     binder: true
 ```
 
-### Case - `thebe: true` and the `binder` key is present
-
 ```yaml
 project:
-  binder: https://mybinder.org/v2/gh/executablebooks/thebe-binder-base/HEAD
-  thebe: true
+  jupyter:
+    binder:
+      repo: executablebooks/thebe-binder-base # default repo
 ```
 
-When `thebe: true` and the `binder` key is present, MyST will use the binder information to establish a connection, the `github` field will be ignored.
+```yaml
+project:
+  jupyter:
+    binder:
+      repo: https://github.com/executablebooks/thebe-binder-base # default repo
+```
 
-Note this is also equivalent to:
+````
+
+## Jupyter Configuration Options
+
+The following "cases" show different configuration options, aimed at different use cases. Look through these to find one that suits you purpose.
+
+### Case connect to binder with my own repo
+
+_`jupyter: true` and the `github` key is present_
 
 ```yaml
 project:
-  binder: https://mybinder.org/v2/gh/executablebooks/thebe-binder-base/HEAD
-  thebe:
+  github: https://github.com/username/my-myst-article
+  jupyter: 'binder'
+```
+
+When `jupyter: true` and the `github` key is present, MyST will attempt to connect to the public `mybinder.org` service using the repository information and a the default `ref: HEAD`. See [](#connecting-to-a-binder) to point to a different binder service or changing repository details.
+
+````{tip} Equivalent Syntax
+:class: dropdown
+The following cases are all equivalent:
+
+```yaml
+project:
+  github: https://github.com/username/my-myst-article
+  jupyter: 'binder'
+```
+
+```yaml
+project:
+  github: https://github.com/username/my-myst-article
+  jupyter: true
+```
+
+```yaml
+project:
+  github: https://github.com/username/my-myst-article
+  jupyter:
     binder: true
 ```
+
+````
 
 ### 🚧 Case - Using Pyodide & JupyterLite
 
@@ -100,17 +124,29 @@ The JupyterLite server and `pyodide` kernels can be activated using:
 
 ```{code} yaml
 project:
-  thebe:
+  jupyter:
     lite: true
 ```
 
 This will load the server using the default options, to learn more about how using JupyterLite can affect site deployment and how environment setup works with pyodide see [](#jupyterlite)
 
+````{tip} Equivalent Syntax
+:class: dropdown
+The following cases are all equivalent:
+
+```{code} yaml
+project:
+  jupyter:
+    lite: true
+```
+
+````
+
 ### Disabling integrated compute
 
-Easily disable integrated compute on your project by either setting `thebe: false` or removing the key altogether.
+Easily disable integrated compute on your project by either setting `jupyter: false` or removing the key altogether.
 
-Disable integrated compute on a specific page in your website by adding `thebe: false` to the page frontmatter section.
+Disable integrated compute on a specific page in your website by adding `jupyter: false` to the page frontmatter section.
 
 (connecting-to-a-binder)=
 
@@ -123,9 +159,9 @@ When a the `thebe.binder` key contains a set of options, binder connections are 
 caption: A minimal `thebe.binder` configuration with the required `repo` field
 ---
 project:
-  thebe:
+  jupyter:
     binder:
-      repo: executablebooks/thebe-binder-base
+      repo: username/my-myst-article
 ```
 
 This allows the repository information for integrated compute to be different to that used for the `github` badge on the website, for useful for example if the github badge is pointing to a organization or other repo.
@@ -135,7 +171,7 @@ This allows the repository information for integrated compute to be different to
 caption: A complete `thebe.binder` configuration
 ---
 project:
-  thebe:
+  jupyter:
     binder:
       url: https://binder.myorganisation.com/services/binder/
       repo: executablebooks/thebe-binder-base
@@ -184,20 +220,22 @@ When a user presses the "launch binder" badge they will connect to a new indepen
 
 (directly-connecting-to-a-jupyter-server)=
 
-## Directly connecting to a Jupyter server
+## Directly connecting to a (local) Jupyter server
 
-When the `thebe.server` key contains a set of options, direct connections to Jupyter use the provided (and default) settings, the most minimal form of configuration is:
+The `thebe.server` key is used to provide options for direct connections to Jupyter, use the provided (and default) settings, the most minimal form of configuration is:
 
 ```{code-block} yaml
 ---
-caption: Minimal configuration for connecting to a local server using default settings
+caption: A unque connection token must be supplied to connect to a local server
 ---
 project:
-  thebe:
-    server: true
+  jupyter:
+    server:
+      url: http://localhost:8888/
+      token: <your-secret-token>
 ```
 
-Override the default settings using the following keys:
+Both `url` and `token` must be provided to enable a server connection.
 
 ```{list-table}
 :header-rows: 1
@@ -209,11 +247,10 @@ Override the default settings using the following keys:
   - The base url of the Jupyter server you want to connect to
   - `http://localhost:8888`
 * - `token`
-  - The token needed to establish a connection
-  - `test-secret`
+  - The secret token string required by your jupyter server
 ```
 
-This allows you to connect to local servers on a different port, or across a private network and provide specific tokens to establish the connection, it is also useful in cases where this information is provided dynamically (for example after a JupyterHub server has been provisioned, however this requires additional infrastructure to deploy).
+This allows you to connect to local servers on a different port, or across a private network and provide specific tokens to establish the connection, it is also useful in cases where this information is provided dynamically (for example after a JupyterHub server has been provisioned).
 
 For more on working locally see [](#start-a-local-jupyter-server).
 
@@ -221,7 +258,7 @@ For more on working locally see [](#start-a-local-jupyter-server).
 :class: dropdown
 If you intend to run a dedicate single user Jupyter server accessible over a network please carefully read and follow [the advice provided by the Jupyter server team here](https://jupyter-notebook.readthedocs.io/en/stable/public_server.html).
 
-MyST Websites will work best, be safer and be more robust when backed by Jupyter services such as Binder or JupyterHub.
+MyST Websites will work best, be safer and be more robust when backed by Jupyter services such as BinderHub or JupyterHub.
 ```
 
 (jupyterlite)=
@@ -235,7 +272,7 @@ The [JupyterLite](https://jupyterlite.readthedocs.io/en/latest/) server and `pyo
 caption: Minimal configuration for enabling JupyterLite
 ---
 project:
-  thebe:
+  jupyter:
     lite: true
 ```
 
@@ -243,50 +280,17 @@ project:
 Add the specific list options for custom wheel paths, etc.
 ```
 
-## 🚧 Local Development Mode
-
-When working on a MyST Site using `mystmd`, using a local Jupyter server connection makes a lot of sense and speeds up development. The `local` key allows you to enable and configure a local environment without having to change the other (remote) settings in your `myst.yml` file that will be used in your final deployment.
-
-Local development using can be enabled by simply adding the `local` key, which will use default server options.
-
-```yaml
-project:
-  github: https://github.com/executablebooks/thebe-binder-base
-    thebe:
-      binder: true
-      local: true
-```
-
-Further configure the `local` connection using the following options.
-
-```{list-table}
-:header-rows: 1
-
-* - `key`
-  - description
-  - default
-* - `url`
-  - The base url of the Jupyter server you want to connect to
-  - `http://localhost:8888`
-* - `token`
-  - The token needed to establish a connection
-  - `test-secret`
-* - `kernelName`
-  - The name of the kernel to request when stating a session
-  - `python`
-```
-
 (start-a-local-jupyter-server)=
 
-### Start a local Jupyter server
+### Start a local Jupyter server for development purposes
 
 In addition to how you might normally start a JupyterLab session, it's necessary to provide two additional command line options, as follows.
 
 ```{code} bash
-jupyter lab --NotebookApp.token=test-secret --NotebookApp.allow_origin='*'
+jupyter lab --NotebookApp.token=<your-secret-token> --NotebookApp.allow_origin='https://localhost:3000'
 ```
 
-The command above is fine for local development and the `token` used should align with that provided in the `project.thebe.token` key.
+The command above is fine for local development. The `token` used should align with that provided in the `project.thebe.token` key and `allow_origin` should allow connections from your myst site preview, usually running on `https://localhost:3000`.
 
 When starting a local Jupyter server for use with MyST it's also important to understand your computational environment and ensure that the Jupyter instance has access to that with the dependencies it needs to run. This is achieved by following normal best practices for reproducible environment configuration, if you're not familiar with these see [REES](https://repo2docker.readthedocs.io/en/latest/specification.html).
 
@@ -296,24 +300,20 @@ When starting a local Jupyter server for use with MyST it's also important to un
 
 ```{code-block} yaml
 project:
-  thebe: undefined(false) | boolean | object
+  jupyter: undefined(false) | boolean | object | 'lite' | 'binder'
     lite: boolean
     binder: undefined(false) | boolean | object
       url: string (url)
-      repo: string (org-name/repo-name)
-      ref: string (valid git refs only?)
-      provider: string (git | gitlab | github)
-    server:  undefined(false) | boolean | object
+      provider: string (git | gitlab | github | or custom)
+      repo: string (org-name/repo-name | url | string)
+      ref: string (undefined | string)
+    server:  undefined | object
       url: string (url)
       token: string (any)
     kernelName: string (any)
     disableSessionSaving: boolean (default: false)
     mathjaxUrl: string (url)
     mathjaxConfig: string (any)
-    local: undefined(false) | boolean | object
-      url: string (url)
-      token: string (any)
-      kernelName: string (any)
 ```
 
 ### Additional options

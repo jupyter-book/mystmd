@@ -21,7 +21,6 @@ type TestCase = {
   opts?: Record<string, boolean>;
 };
 
-const directory = path.join('tests');
 const files = [
   'affiliations.yml',
   'authors.yml',
@@ -37,7 +36,7 @@ const files = [
 const only = ''; // Can set this to a test title
 
 const casesList = files
-  .map((file) => ({ name: file, data: fs.readFileSync(path.join(directory, file)).toString() }))
+  .map((file) => ({ name: file, data: fs.readFileSync(path.join(__dirname, file)).toString() }))
   .map((file) => {
     const tests = yaml.load(file.data) as TestFile;
     tests.title = tests.title ?? file.name;

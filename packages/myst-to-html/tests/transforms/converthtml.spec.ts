@@ -15,10 +15,9 @@ type TestCase = {
   opts?: Record<string, boolean>;
 };
 
-const directory = path.join('tests', 'transforms');
 const file = 'converthtml.yml';
 
-const testYaml = fs.readFileSync(path.join(directory, file)).toString();
+const testYaml = fs.readFileSync(path.join(__dirname, file)).toString();
 const cases = (yaml.load(testYaml) as TestFile).cases;
 
 describe('convertHtmlToMdast', () => {

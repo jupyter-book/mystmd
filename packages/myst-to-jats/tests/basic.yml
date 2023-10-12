@@ -640,7 +640,7 @@ cases:
                     - type: text
                       value: Another Legend
     jats: <fig id="myfigure"><caption><p>My Caption</p><p>My Legend</p><p>Another Legend</p></caption><alt-text>Random image of the beach or ocean!</alt-text><graphic mimetype="image" mime-subtype="png" xlink:href="beach.png"/></fig>
-  - title: Figure with embeded output
+  - title: Figure with embedded output
     tree:
       type: root
       children:

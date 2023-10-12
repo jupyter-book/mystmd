@@ -19,17 +19,26 @@ export type Handler = (node: GenericNode, state: IJatsSerializer, parent: any) =
 
 export type MathPlugins = Required<PageFrontmatter>['math'];
 
+export type JatsPart = { part: string | string[]; type?: string; title?: string };
+
 export type Options = {
   handlers?: Record<string, Handler>;
   isNotebookArticleRep?: boolean;
   isSubArticle?: boolean;
   slug?: string;
   extractAbstract?: boolean;
+  abstractParts?: JatsPart[];
+  backSections?: JatsPart[];
 };
 
 export type DocumentOptions = Options & {
   subArticles?: ArticleContent[];
-  spaces?: number;
+  /**
+   * When 'flat', the xml will be on a single line (with exception of CDATA),
+   * When `0`, the XML will be on different lines with 0 spaces.
+   * When any other value (e.g. `2` or `\t`) the XML will be indented at the start of the line by that amount.
+   */
+  spaces?: number | 'flat' | '\t';
   writeFullArticle?: boolean;
 };
 
@@ -37,7 +46,9 @@ export type StateData = {
   isInContainer?: boolean;
   isNotebookArticleRep?: boolean;
   slug?: string;
-  abstract?: Element[];
+  abstracts?: Element[];
+  backSections?: Element[];
+  acknowledgments?: Element;
 };
 
 export type ArticleContent = {
@@ -54,7 +65,7 @@ export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   stack: Element[];
   footnotes: Element[];
   expressions: Element[];
-  render: () => void;
+  render: () => IJatsSerializer;
   text: (value?: string) => void;
   renderChildren: (node: any) => void;
   renderInline: (node: GenericNode, name: string, attributes?: Attributes) => void;

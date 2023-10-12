@@ -1,4 +1,6 @@
-import type { Contributor, ProjectFrontmatter } from 'myst-frontmatter';
+import type { Contributor, ProjectFrontmatter, Affiliation } from 'myst-frontmatter';
+import * as credit from 'credit-roles';
+import { doi } from 'doi-utils';
 import type { Element, IJatsSerializer } from './types.js';
 
 export function getJournalIds(): Element[] {
@@ -85,6 +87,58 @@ export function getArticleTitle(frontmatter: ProjectFrontmatter): Element[] {
   ];
 }
 
+function nameElementFromContributor(contrib: Contributor): Element | undefined {
+  if (contrib.nameParsed && (contrib.nameParsed?.given || contrib.nameParsed?.family)) {
+    const { given, family, dropping_particle, non_dropping_particle, suffix } = contrib.nameParsed;
+    const nameElements: Element[] = [];
+    if (family) {
+      nameElements.push({
+        type: 'element',
+        name: 'surname',
+        elements: [
+          {
+            type: 'text',
+            text: non_dropping_particle ? `${non_dropping_particle} ${family}` : family,
+          },
+        ],
+      });
+    }
+    if (given) {
+      nameElements.push({
+        type: 'element',
+        name: 'given-names',
+        elements: [
+          {
+            type: 'text',
+            text: dropping_particle ? `${given} ${dropping_particle}` : given,
+          },
+        ],
+      });
+    }
+    // Prefix not yet supported by name parsing
+    if (suffix) {
+      nameElements.push({
+        type: 'element',
+        name: 'suffix',
+        elements: [{ type: 'text', text: suffix }],
+      });
+    }
+    return {
+      type: 'element',
+      name: 'name',
+      attributes: { 'name-style': 'western' },
+      elements: nameElements,
+    };
+  } else if (contrib.name) {
+    return {
+      type: 'element',
+      name: 'string-name',
+      attributes: { 'name-style': 'western' },
+      elements: [{ type: 'text', text: contrib.name }],
+    };
+  }
+}
+
 /**
  * Add authors and contributors to contrib-group
  *
@@ -95,6 +149,12 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
     const attributes: Record<string, any> = {};
     const elements: Element[] = [];
     if (type) attributes['contrib-type'] = type;
+    if (author.id) attributes.id = author.id;
+    if (author.corresponding) attributes.corresp = 'yes';
+    if (author.deceased) attributes['deceased'] = 'yes';
+    if (author.equal_contributor != null) {
+      attributes['equal-contrib'] = author.equal_contributor ? 'yes' : 'no';
+    }
     if (author.orcid) {
       elements.push({
         type: 'element',
@@ -103,67 +163,23 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
         elements: [{ type: 'text', text: author.orcid }],
       });
     }
-    if (author.corresponding) attributes.corresp = 'yes';
-    if (author.id) attributes.id = author.id;
-    if (author.nameParsed && (author.nameParsed?.given || author.nameParsed?.family)) {
-      const { given, family, dropping_particle, non_dropping_particle, suffix } = author.nameParsed;
-      const nameElements: Element[] = [];
-      if (family) {
-        nameElements.push({
-          type: 'element',
-          name: 'surname',
-          elements: [
-            {
-              type: 'text',
-              text: non_dropping_particle ? `${non_dropping_particle} ${family}` : family,
-            },
-          ],
-        });
-      }
-      if (given) {
-        nameElements.push({
-          type: 'element',
-          name: 'given-names',
-          elements: [
-            {
-              type: 'text',
-              text: dropping_particle ? `${given} ${dropping_particle}` : given,
-            },
-          ],
-        });
-      }
-      // Prefix not yet supported by name parsing
-      if (suffix) {
-        nameElements.push({
-          type: 'element',
-          name: 'suffix',
-          elements: [{ type: 'text', text: suffix }],
-        });
-      }
-      elements.push({
-        type: 'element',
-        name: 'name',
-        elements: nameElements,
-      });
-    }
-    if (author.name) {
-      elements.push({
-        type: 'element',
-        name: 'string-name',
-        elements: [{ type: 'text', text: author.name }],
-      });
-    }
+    const name = nameElementFromContributor(author);
+    if (name) elements.push(name);
     if (author.roles) {
+      // See https://jats4r.org/credit-taxonomy/
       elements.push(
         ...author.roles.map((role): Element => {
+          const attrs: Record<string, string> = {};
+          if (credit.validate(role)) {
+            attrs.vocab = 'credit';
+            attrs['vocab-identifier'] = credit.CREDIT_URL;
+            attrs['vocab-term'] = credit.normalize(role) as string;
+            attrs['vocab-term-identifier'] = credit.buildUrl(role) as string;
+          }
           return {
             type: 'element',
             name: 'role',
-            attributes: {
-              vocab: 'CRediT',
-              'vocab-identifier': 'http://credit.niso.org/',
-              'vocab-term': `${role}`,
-            },
+            attributes: attrs,
             elements: [{ type: 'text', text: role }],
           };
         }),
@@ -198,16 +214,87 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
     }
     return { type: 'element', name: 'contrib', attributes, elements };
   };
-  const contribs = [
-    ...(frontmatter.authors ?? []).map((author): Element => {
-      return generateContrib(author, 'author');
-    }),
-    ...(frontmatter.contributors ?? []).map((contributor): Element => {
-      return generateContrib(contributor);
-    }),
-  ];
+  const authorContribs = (frontmatter.authors ?? []).map((author): Element => {
+    return generateContrib(author, 'author');
+  });
+  const otherContribs = (frontmatter.contributors ?? []).map((contributor): Element => {
+    return generateContrib(contributor);
+  });
+  const contribGroups: Element[] = [];
+  if (authorContribs.length) {
+    contribGroups.push({ type: 'element', name: 'contrib-group', elements: authorContribs });
+  }
+  if (otherContribs.length) {
+    contribGroups.push({ type: 'element', name: 'contrib-group', elements: otherContribs });
+  }
+  return contribGroups;
+}
 
-  return contribs?.length ? [{ type: 'element', name: 'contrib-group', elements: contribs }] : [];
+function instWrapElementsFromAffiliation(affiliation: Affiliation, includeDept = true): Element[] {
+  const elements: Element[] = [];
+  const instWrapElements: Element[] = [];
+  if (affiliation.name) {
+    instWrapElements.push({
+      type: 'element',
+      name: 'institution',
+      elements: [{ type: 'text', text: affiliation.name }],
+    });
+  }
+  if (affiliation.isni) {
+    instWrapElements.push({
+      type: 'element',
+      name: 'institution-id',
+      attributes: { 'institution-id-type': 'isni' },
+      elements: [{ type: 'text', text: affiliation.isni }],
+    });
+  }
+  if (affiliation.ringgold) {
+    instWrapElements.push({
+      type: 'element',
+      name: 'institution-id',
+      attributes: { 'institution-id-type': 'ringgold' },
+      elements: [{ type: 'text', text: `${affiliation.ringgold}` }],
+    });
+  }
+  if (affiliation.ror) {
+    instWrapElements.push({
+      type: 'element',
+      name: 'institution-id',
+      attributes: { 'institution-id-type': 'ror' },
+      elements: [{ type: 'text', text: affiliation.ror }],
+    });
+  }
+  if (affiliation.doi) {
+    const doiAttrs: Record<string, string> = { 'institution-id-type': 'doi' };
+    const funder = doi.isOpenFunderRegistry(affiliation.doi);
+    if (funder) {
+      doiAttrs.vocab = 'open-funder-registry';
+    }
+    instWrapElements.push({
+      type: 'element',
+      name: 'institution-id',
+      attributes: doiAttrs,
+      elements: [{ type: 'text', text: doi.normalize(affiliation.doi) }],
+    });
+  }
+  if (instWrapElements.length) {
+    elements.push({ type: 'element', name: 'institution-wrap', elements: instWrapElements });
+  }
+  if (includeDept && affiliation.department) {
+    elements.push({
+      type: 'element',
+      name: 'institution-wrap',
+      elements: [
+        {
+          type: 'element',
+          name: 'institution',
+          attributes: { 'content-type': 'dept' },
+          elements: [{ type: 'text', text: affiliation.department }],
+        },
+      ],
+    });
+  }
+  return elements;
 }
 
 export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element[] {
@@ -217,55 +304,7 @@ export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element
     if (affiliation.id) {
       attributes.id = affiliation.id;
     }
-    const instWrapElements: Element[] = [];
-    if (affiliation.name) {
-      instWrapElements.push({
-        type: 'element',
-        name: 'institution',
-        elements: [{ type: 'text', text: affiliation.name }],
-      });
-    }
-    if (affiliation.isni) {
-      instWrapElements.push({
-        type: 'element',
-        name: 'institution-id',
-        attributes: { 'institution-id-type': 'isni' },
-        elements: [{ type: 'text', text: affiliation.isni }],
-      });
-    }
-    if (affiliation.ringgold) {
-      instWrapElements.push({
-        type: 'element',
-        name: 'institution-id',
-        attributes: { 'institution-id-type': 'ringgold' },
-        elements: [{ type: 'text', text: `${affiliation.ringgold}` }],
-      });
-    }
-    if (affiliation.ror) {
-      instWrapElements.push({
-        type: 'element',
-        name: 'institution-id',
-        attributes: { 'institution-id-type': 'ror' },
-        elements: [{ type: 'text', text: affiliation.ror }],
-      });
-    }
-    if (instWrapElements.length) {
-      elements.push({ type: 'element', name: 'institution-wrap', elements: instWrapElements });
-    }
-    if (affiliation.department) {
-      elements.push({
-        type: 'element',
-        name: 'institution-wrap',
-        elements: [
-          {
-            type: 'element',
-            name: 'institution',
-            attributes: { 'content-type': 'dept' },
-            elements: [{ type: 'text', text: affiliation.department }],
-          },
-        ],
-      });
-    }
+    elements.push(...instWrapElementsFromAffiliation(affiliation));
     if (affiliation.address) {
       elements.push({
         type: 'element',
@@ -385,19 +424,18 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
       elements.push(
         ...fund.awards.map((award): Element => {
           const awardElements: Element[] = [];
-          if (award.sources?.length) {
+          const resolvedSources = award.sources
+            ?.map((source) => {
+              return frontmatter.affiliations?.find((aff) => aff.id === source);
+            })
+            .filter((source): source is Affiliation => !!source);
+          if (resolvedSources?.length) {
             awardElements.push(
-              ...award.sources.map((source): Element => {
+              ...resolvedSources.map((source): Element => {
                 return {
                   type: 'element',
                   name: 'funding-source',
-                  elements: [
-                    {
-                      type: 'element',
-                      name: 'xref',
-                      attributes: { 'ref-type': 'aff', rid: source },
-                    },
-                  ],
+                  elements: instWrapElementsFromAffiliation(source, false),
                 };
               }),
             );
@@ -439,57 +477,8 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
                     elements: [{ type: 'text', text: author.orcid }],
                   });
                 }
-                if (author.nameParsed && (author.nameParsed?.given || author.nameParsed?.family)) {
-                  const { given, family, dropping_particle, non_dropping_particle, suffix } =
-                    author.nameParsed;
-                  const nameElements: Element[] = [];
-                  if (family) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'surname',
-                      elements: [
-                        {
-                          type: 'text',
-                          text: non_dropping_particle
-                            ? `${non_dropping_particle} ${family}`
-                            : family,
-                        },
-                      ],
-                    });
-                  }
-                  if (given) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'given-names',
-                      elements: [
-                        {
-                          type: 'text',
-                          text: dropping_particle ? `${given} ${dropping_particle}` : given,
-                        },
-                      ],
-                    });
-                  }
-                  // Prefix not yet supported by name parsing
-                  if (suffix) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'suffix',
-                      elements: [{ type: 'text', text: suffix }],
-                    });
-                  }
-                  recipientElements.push({
-                    type: 'element',
-                    name: 'name',
-                    elements: nameElements,
-                  });
-                }
-                if (author.name) {
-                  recipientElements.push({
-                    type: 'element',
-                    name: 'string-name',
-                    elements: [{ type: 'text', text: author.name }],
-                  });
-                }
+                const name = nameElementFromContributor(author);
+                if (name) recipientElements.push(name);
                 return {
                   type: 'element',
                   name: 'principal-award-recipient',
@@ -514,57 +503,8 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
                     elements: [{ type: 'text', text: author.orcid }],
                   });
                 }
-                if (author.nameParsed && (author.nameParsed?.given || author.nameParsed?.family)) {
-                  const { given, family, dropping_particle, non_dropping_particle, suffix } =
-                    author.nameParsed;
-                  const nameElements: Element[] = [];
-                  if (family) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'surname',
-                      elements: [
-                        {
-                          type: 'text',
-                          text: non_dropping_particle
-                            ? `${non_dropping_particle} ${family}`
-                            : family,
-                        },
-                      ],
-                    });
-                  }
-                  if (given) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'given-names',
-                      elements: [
-                        {
-                          type: 'text',
-                          text: dropping_particle ? `${given} ${dropping_particle}` : given,
-                        },
-                      ],
-                    });
-                  }
-                  // Prefix not yet supported by name parsing
-                  if (suffix) {
-                    nameElements.push({
-                      type: 'element',
-                      name: 'suffix',
-                      elements: [{ type: 'text', text: suffix }],
-                    });
-                  }
-                  investigatorElements.push({
-                    type: 'element',
-                    name: 'name',
-                    elements: nameElements,
-                  });
-                }
-                if (author.name) {
-                  investigatorElements.push({
-                    type: 'element',
-                    name: 'string-name',
-                    elements: [{ type: 'text', text: author.name }],
-                  });
-                }
+                const name = nameElementFromContributor(author);
+                if (name) investigatorElements.push(name);
                 return {
                   type: 'element',
                   name: 'principal-investigator',
@@ -631,11 +571,6 @@ export function getArticlePages(frontmatter: ProjectFrontmatter): Element[] {
   return pages;
 }
 
-export function getAbstract(state: IJatsSerializer): Element[] {
-  if (!state.data.abstract?.length) return [];
-  return [{ type: 'element', name: 'abstract', elements: state.data.abstract }];
-}
-
 export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSerializer): Element {
   const elements = [];
   if (frontmatter) {
@@ -669,8 +604,8 @@ export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSe
       // related-article, related-object
     );
   }
-  if (state) {
-    elements.push(...getAbstract(state));
+  if (state?.data.abstracts && state.data.abstracts.length > 0) {
+    elements.push(...state.data.abstracts);
   }
   if (frontmatter) {
     elements.push(

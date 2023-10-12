@@ -5,7 +5,7 @@ import type { VFile } from 'vfile';
 import { js2xml, xml2js } from 'xml-js';
 import katex from 'katex';
 import type { CitationRenderer } from 'citation-js-utils';
-import type { MessageInfo, GenericNode } from 'myst-common';
+import type { MessageInfo, GenericNode, GenericParent } from 'myst-common';
 import { RuleId, copyNode, extractPart, fileError } from 'myst-common';
 import type { PageFrontmatter, Contributor } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -23,6 +23,7 @@ import type {
   Attributes,
   ArticleContent,
   DocumentOptions,
+  JatsPart,
 } from './types.js';
 import {
   basicTransformations,
@@ -72,7 +73,7 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
       'specific-use': 'error',
       mimetype: 'text',
       'mime-subtype': 'plain',
-      'xlink:href': escapeForXML((output as any).path),
+      'xlink:href': (output as any).path,
     });
     state.openNode('caption');
     state.openNode('title');
@@ -88,7 +89,7 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
       'specific-use': 'stream',
       mimetype: 'text',
       'mime-subtype': 'plain',
-      'xlink:href': escapeForXML((output as any).path),
+      'xlink:href': (output as any).path,
     });
   } else if (
     ['display_data', 'execute_result', 'update_display_data'].includes(output.output_type)
@@ -113,7 +114,7 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
         'specific-use': specificUse,
         mimetype: mimeType.split('/')[0],
         'mime-subtype': mimeType.split('/').slice(1).join('/'),
-        'xlink:href': escapeForXML((value as any).path),
+        'xlink:href': (value as any).path,
       });
     });
   }
@@ -276,7 +277,7 @@ const handlers: Record<string, Handler> = {
   link(node, state) {
     state.renderInline(node, 'ext-link', {
       'ext-link-type': 'uri',
-      'xlink:href': escapeForXML(node.url),
+      'xlink:href': node.url,
     });
   },
   admonition(node, state) {
@@ -328,7 +329,7 @@ const handlers: Record<string, Handler> = {
     const attrs: Record<string, any> = { mimetype: 'image' };
     const ext = node.url ? node.url.split('.').slice(-1)?.[0] : '';
     if (ext) attrs['mime-subtype'] = ext;
-    attrs['xlink:href'] = escapeForXML(node.url);
+    attrs['xlink:href'] = node.url;
     // TOOD: identifier?
     if (node.placeholder) state.openNode('alternatives');
     state.addLeaf('graphic', attrs);
@@ -499,6 +500,46 @@ function createText(text: string): Element {
   return { type: 'text', text: escapeForXML(text) };
 }
 
+function renderPart(vfile: VFile, mdast: GenericParent, part: string | string[], opts?: Options) {
+  const partMdast = extractPart(mdast, part, { removePartData: true });
+  if (!partMdast) return undefined;
+  const serializer = new JatsSerializer(vfile, partMdast as Root, opts);
+  return serializer.render().elements();
+}
+
+function renderAbstract(vfile: VFile, mdast: GenericParent, def: JatsPart, opts?: Options) {
+  const elements = renderPart(vfile, mdast, def.part, opts);
+  if (!elements) return undefined;
+  const abstract: Element = { type: 'element', name: 'abstract', elements };
+  if (def.title)
+    abstract.elements = [
+      { type: 'element', name: 'title', elements: [{ type: 'text', text: def.title }] },
+      ...(abstract.elements as Element[]),
+    ];
+  if (def.type) abstract.attributes = { 'abstract-type': def.type };
+  return abstract;
+}
+
+function renderAcknowledgments(vfile: VFile, mdast: GenericParent, opts?: Options) {
+  const elements = renderPart(vfile, mdast, ['acknowledgments', 'acknowledgements'], opts);
+  if (!elements) return undefined;
+  const acknowledgments: Element = { type: 'element', name: 'ack', elements };
+  return acknowledgments;
+}
+
+function renderBackSection(vfile: VFile, mdast: GenericParent, def: JatsPart, opts?: Options) {
+  const elements = renderPart(vfile, mdast, def.part, opts);
+  if (!elements) return undefined;
+  const sec: Element = { type: 'element', name: 'sec', elements };
+  if (def.title)
+    sec.elements = [
+      { type: 'element', name: 'title', elements: [{ type: 'text', text: def.title }] },
+      ...(sec.elements as Element[]),
+    ];
+  if (def.type) sec.attributes = { 'sec-type': def.type };
+  return sec;
+}
+
 class JatsSerializer implements IJatsSerializer {
   file: VFile;
   data: StateData;
@@ -520,23 +561,23 @@ class JatsSerializer implements IJatsSerializer {
     this.handlers = opts?.handlers ?? handlers;
     this.mdast = copyNode(mdast);
     if (opts?.extractAbstract) {
-      const abstractMdast = extractPart(this.mdast, 'abstract');
-      if (abstractMdast) {
-        const abstractSerializer = new JatsSerializer(this.file, abstractMdast as Root, {
-          isNotebookArticleRep: this.data.isNotebookArticleRep,
-          slug: this.data.slug,
-          handlers: this.handlers,
-        });
-        abstractSerializer.render();
-        this.data.abstract = abstractSerializer.elements();
-      }
+      const abstractParts = opts.abstractParts ?? [{ part: 'abstract' }];
+      this.data.abstracts = abstractParts
+        .map((def) => renderAbstract(this.file, this.mdast, def, opts))
+        .filter((e) => !!e) as Element[];
     }
+    this.data.acknowledgments = renderAcknowledgments(this.file, this.mdast, opts);
+    const backSections = opts?.backSections ?? [];
+    this.data.backSections = backSections
+      .map((def) => renderBackSection(this.file, this.mdast, def, opts))
+      .filter((e) => !!e) as Element[];
     basicTransformations(this.mdast as any, opts ?? {});
   }
 
   render() {
     this.renderChildren(this.mdast);
     while (this.stack.length > 1) this.closeNode();
+    return this;
   }
 
   top() {
@@ -807,9 +848,17 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
     : doc.body();
   const jats = js2xml(element, {
     compact: false,
-    spaces: opts?.spaces,
+    //  No way to write XML with new lines, but no indentation with js2xml.
+    // If you use 0 or '', you get a single line.
+    spaces: opts?.spaces === 'flat' ? 0 : opts?.spaces || 1,
+    attributeValueFn: escapeForXML,
   });
-  file.result = jats;
+  if (!opts?.spaces) {
+    // either `0` or `''`
+    file.result = jats.replace(/\n(\s*)</g, '\n<');
+  } else {
+    file.result = jats;
+  }
   return file;
 }
 

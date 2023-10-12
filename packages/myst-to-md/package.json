@@ -36,6 +36,7 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
+    "js-yaml": "^4.1.0",
     "mdast-util-gfm-footnote": "^1.0.2",
     "mdast-util-gfm-table": "^1.0.7",
     "mdast-util-to-markdown": "^1.5.0",

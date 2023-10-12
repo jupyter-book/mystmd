@@ -307,3 +307,25 @@ cases:
       affiliations:
         - id: univa
           name: University A
+  - title: Affiliation with doi passes
+    raw:
+      affiliations:
+        - id: univa
+          name: University A
+          doi: 10.13039/100000879
+    normalized:
+      affiliations:
+        - id: univa
+          name: University A
+          doi: 10.13039/100000879
+  - title: Affiliation with invalid doi fails
+    raw:
+      affiliations:
+        - id: univa
+          name: University A
+          doi: invalid doi
+    normalized:
+      affiliations:
+        - id: univa
+          name: University A
+    errors: 1

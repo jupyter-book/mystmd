@@ -16,6 +16,7 @@ export interface Affiliation {
   isni?: string;
   ringgold?: number;
   ror?: string;
+  doi?: string;
   url?: string;
   email?: string;
   phone?: string;
@@ -77,13 +78,12 @@ export type Biblio = {
 export type Thebe = {
   lite?: boolean;
   binder?: boolean | BinderHubOptions;
-  server?: boolean | JupyterServerOptions;
+  server?: JupyterServerOptions;
   kernelName?: string;
   sessionName?: string;
   disableSessionSaving?: boolean;
   mathjaxUrl?: string;
   mathjaxConfig?: string;
-  local?: boolean | JupyterLocalOptions;
 };
 
 export type WellKnownRepoProviders = 'github' | 'gitlab' | 'git' | 'gist';

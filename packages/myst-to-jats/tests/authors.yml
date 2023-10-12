@@ -16,17 +16,24 @@ cases:
           corresponding: true
           orcid: 0000-0000-0000-0000
           roles:
-            - credit role 1
-            - credit role 2
+            - not a credit role
+            - Conceptualisation # Note the british spelling
+            - Editing # Note the british spelling
+            - credit role & 2 # Test that "&" is encoded correctly
           affiliations:
             - univa
           email: example@example.com
+          equal-contributor: false # using the alias!
+          deceased: true
           url: https://example.com
         - name:
             literal: John Doe Jr.
             given: John
             family: Doe
             suffix: Jr.
+        - name:
+            literal: John Doe III
+            suffix: III
       affiliations:
         - id: univa
           name: University A
@@ -37,26 +44,29 @@ cases:
         <front>
           <article-meta>
             <contrib-group>
-              <contrib contrib-type="author" corresp="yes" id="contributors-generated-uid-0">
+              <contrib contrib-type="author" id="contributors-generated-uid-0" corresp="yes" deceased="yes" equal-contrib="no">
                 <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
-                <name>
+                <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>Jane</given-names>
                 </name>
-                <string-name>Jane Doe</string-name>
-                <role vocab="CRediT" vocab-identifier="http://credit.niso.org/" vocab-term="credit role 1">credit role 1</role>
-                <role vocab="CRediT" vocab-identifier="http://credit.niso.org/" vocab-term="credit role 2">credit role 2</role>
+                <role>not a credit role</role>
+                <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Conceptualization" vocab-term-identifier="https://credit.niso.org/contributor-roles/conceptualization/">Conceptualization</role>
+                <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Writing – review &amp; editing" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-review-editing/">Writing – review &amp; editing</role>
+                <role>credit role &amp; 2</role>
                 <xref ref-type="aff" rid="univa"/>
                 <email>example@example.com</email>
                 <ext-link ext-link-type="uri" xlink:href="https://example.com">https://example.com</ext-link>
               </contrib>
               <contrib contrib-type="author" id="contributors-generated-uid-1">
-                <name>
+                <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>John</given-names>
                   <suffix>Jr.</suffix>
                 </name>
-                <string-name>John Doe Jr.</string-name>
+              </contrib>
+              <contrib contrib-type="author" id="contributors-generated-uid-2">
+                <string-name name-style="western">John Doe III</string-name>
               </contrib>
             </contrib-group>
             <aff id="univa">

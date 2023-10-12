@@ -75,7 +75,14 @@ beforeEach(() => {
 describe('Basic JATS body', () => {
   const cases = [...loadCases('basic.yml'), ...loadCases('siunit.yml')];
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))('%s', async (_, { tree, jats }) => {
-    const pipe = unified().use(mystToJats, SourceFileKind.Article);
+    const pipe = unified().use(
+      mystToJats,
+      SourceFileKind.Article,
+      undefined,
+      undefined,
+      undefined,
+      { spaces: 'flat' },
+    );
     pipe.runSync(tree as any);
     const vfile = pipe.stringify(tree as any);
     expect(vfile.result).toEqual(jats);
@@ -88,6 +95,7 @@ describe('JATS full article', () => {
     ...loadCases('affiliations.yml'),
     ...loadCases('article.yml'),
     ...loadCases('authors.yml'),
+    ...loadCases('backmatter.yml'),
     ...loadCases('citations.yml'),
     ...loadCases('funding.yml'),
   ];
@@ -103,6 +111,17 @@ describe('JATS full article', () => {
         {
           writeFullArticle: true,
           spaces: 2,
+          abstractParts: [
+            { part: 'abstract' },
+            {
+              part: 'plain-language-summary',
+              type: 'plain-language-summary',
+              title: 'Plain Language Summary',
+            },
+          ],
+          backSections: [
+            { type: 'data-availability', part: 'data-availability', title: 'Data Availability' },
+          ],
         },
       );
       pipe.runSync(tree as any);

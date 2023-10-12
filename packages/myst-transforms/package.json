@@ -13,7 +13,7 @@
     "clean": "rimraf dist",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "lint": "eslint \"src/**/*.ts*\" -c ./.eslintrc.cjs",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\"",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
@@ -24,6 +24,7 @@
     "intersphinx": "^1.0.2",
     "js-yaml": "^4.1.0",
     "katex": "^0.15.2",
+    "hast-util-to-mdast": "^8.3.1",
     "mdast-util-find-and-replace": "^2.1.0",
     "myst-common": "^1.1.7",
     "myst-spec": "^0.0.4",
@@ -35,8 +36,10 @@
     "unist-builder": "^3.0.0",
     "unist-util-find-after": "^4.0.0",
     "unist-util-modify-children": "^3.1.0",
+    "unist-util-map": "^3.0.0",
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^4.0.3",
+    "unist-util-visit": "^4.1.0",
     "vfile": "^5.0.0",
     "vfile-message": "^3.1.2"
   },

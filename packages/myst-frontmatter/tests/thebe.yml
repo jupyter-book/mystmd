@@ -18,11 +18,6 @@ cases:
         disableSessionSaving: true
         mathjaxConfig: TeX-AMS_CHTML-full,Safe
         mathjaxUrl: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js
-        local:
-          url: http://localhost:8888
-          token: local-secret
-          kernelName: local-kernel
-          sessionName: local-session
     normalized:
       thebe:
         lite: false
@@ -39,20 +34,94 @@ cases:
         disableSessionSaving: true
         mathjaxConfig: TeX-AMS_CHTML-full,Safe
         mathjaxUrl: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js
-        local:
-          url: http://localhost:8888
-          token: local-secret
-          kernelName: local-kernel
-          sessionName: local-session
   - title: jupyter lite
     raw:
       jupyter: 'lite'
     normalized:
       thebe:
         lite: true
-  - title: jupyter server
+  - title: jupyter true
     raw:
-      jupyter: 'server'
+      jupyter: true
     normalized:
       thebe:
-        server: true
+        binder:
+          url: 'https://mybinder.org/'
+          ref: 'HEAD'
+          repo: 'executablebooks/thebe-binder-base'
+          provider: 'github'
+  - title: jupyter binder
+    raw:
+      jupyter: 'binder'
+    normalized:
+      thebe:
+        binder:
+          url: 'https://mybinder.org/'
+          ref: 'HEAD'
+          repo: 'executablebooks/thebe-binder-base'
+          provider: 'github'
+  - title: jupyter.binder = true
+    raw:
+      jupyter:
+        binder: true
+    normalized:
+      thebe:
+        binder:
+          url: 'https://mybinder.org/'
+          ref: 'HEAD'
+          repo: 'executablebooks/thebe-binder-base'
+          provider: 'github'
+  - title: jupyter.binder = false
+    raw:
+      jupyter:
+        binder: false
+    normalized: {}
+  - title: jupyter.binder = false, with server
+    raw:
+      jupyter:
+        binder: false
+        server:
+          url: https://my.server.com
+          token: test-secret
+    normalized:
+      thebe:
+        server:
+          url: https://my.server.com
+          token: test-secret
+  - title: jupyter.binder repo only
+    raw:
+      jupyter:
+        binder:
+          repo: 'username/my-repo'
+    normalized:
+      thebe:
+        binder:
+          repo: 'username/my-repo'
+          url: 'https://mybinder.org/'
+          ref: 'HEAD'
+          provider: 'github'
+  - title: jupyter.binder repo as url
+    raw:
+      jupyter:
+        binder:
+          repo: 'https://github.com/username/my-repo'
+    normalized:
+      thebe:
+        binder:
+          repo: 'https://github.com/username/my-repo'
+          url: 'https://mybinder.org/'
+          ref: 'HEAD'
+          provider: 'github'
+  - title: jupyter.binder custom (non-git) provider
+    raw:
+      jupyter:
+        binder:
+          provider: 'custom'
+          repo: 'doi:/10292.131k2'
+    normalized:
+      thebe:
+        binder:
+          url: 'https://mybinder.org/'
+          provider: 'custom'
+          repo: 'doi:/10292.131k2'
+          ref: ''

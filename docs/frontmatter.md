@@ -256,7 +256,7 @@ The `authors` field is a list of `author` objects. Available fields in the autho
 * - `github`
   - a GitHub username
 * - `note`
-  - a string, a freeform field to indicate additional information about the author, for example, acknowledgements or specific correspondence information.
+  - a string, a freeform field to indicate additional information about the author, for example, acknowledgments or specific correspondence information.
 * - `phone`
   - a phone number, e.g. `(301) 754-5766`
 * - `fax`
@@ -390,8 +390,8 @@ affiliations:
     however, at least one of these is required.
 * - `department`
   - a string - the affiliation department (e.g. Chemistry 🧪)
-* - `ror`, `isni`, `ringgold`
-  - Identifiers for the affiliation (ROR, ISNI, and Ringgold).
+* - `doi`, `ror`, `isni`, `ringgold`
+  - Identifiers for the affiliation (DOI, ROR, ISNI, and Ringgold).
 
     We suggest using https://ror.org if possible to search for your institution.
 
@@ -401,6 +401,7 @@ affiliations:
         ringgold: 1846
         isni: 0000 0004 1936 7558
         ror: 05qwgg493
+        doi: 10.13039/100018578
     ```
 * - `email`
   - a string - email of the affiliation, required if `corresponding` is `true`

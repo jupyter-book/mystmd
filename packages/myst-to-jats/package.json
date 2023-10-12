@@ -36,6 +36,8 @@
   },
   "dependencies": {
     "citation-js-utils": "^1.0.2",
+    "credit-roles": "^2.1.0",
+    "doi-utils": "^2.0.1",
     "jats-tags": "^1.0.1",
     "katex": "^0.15.2",
     "myst-common": "^1.1.7",
@@ -44,6 +46,7 @@
     "myst-spec-ext": "^1.1.7",
     "nbtx": "^0.2.3",
     "unified": "^10.1.2",
+    "unist-util-remove": "^3.1.0",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4",
     "xml-js": "^1.6.11"

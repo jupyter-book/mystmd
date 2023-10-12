@@ -21,12 +21,13 @@ const CONTAINER_KINDS: (keyof IdInventory)[] = ['figure', 'table', 'code', 'quot
 function updateInventory(
   node: GenericNode,
   key: keyof IdInventory,
-  idPrefix: string,
+  idPrefix: string | ((count: number) => string),
   inventory: IdInventory,
 ) {
   const keyInv = inventory[key] ?? { count: 0, lookup: {} };
   keyInv.count += 1;
-  const newId = `${idPrefix}-${keyInv.count}`;
+  const newId =
+    typeof idPrefix === 'function' ? idPrefix(keyInv.count) : `${idPrefix}-${keyInv.count}`;
   if (node.identifier) {
     keyInv.lookup[node.identifier] = newId;
   }
@@ -72,9 +73,7 @@ export function referenceTargetTransform(
   if (!citations) return;
   const citationIds = Object.keys(citations);
   citationIds.forEach((citationId) => {
-    if (!inventory.cite?.count) {
-      inventory.cite = { count: 0, lookup: {} };
-    }
+    inventory.cite ??= { count: 0, lookup: {} };
     if (!inventory.cite.lookup[citationId]) {
       inventory.cite.count += 1;
       const newId = `ref-${inventory.cite.count}`;

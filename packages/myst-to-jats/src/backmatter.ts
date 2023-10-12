@@ -164,10 +164,11 @@ export function getBack(
   },
 ): Element[] {
   const elements = [
+    ...(state.data.backSections ?? []),
     ...getRefList(state, citations),
     ...getFootnotes(footnotes),
     ...getExpressions(expressions),
-    // ack
+    ...(state.data.acknowledgments ? [state.data.acknowledgments] : []),
     // app-group
     // bio
     // glossary

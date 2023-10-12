@@ -25,6 +25,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'Adobe-Glyph': {
     name: 'Adobe Glyph List License',
   },
+  'Adobe-Utopia': {
+    name: 'Adobe Utopia Font License',
+  },
   ADSL: {
     name: 'Amazon Digital Services License',
   },
@@ -225,6 +228,12 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'BSD 3-Clause Clear License',
     free: true,
   },
+  'BSD-3-Clause-flex': {
+    name: 'BSD 3-Clause Flex variant',
+  },
+  'BSD-3-Clause-HP': {
+    name: 'Hewlett-Packard BSD variant license',
+  },
   'BSD-3-Clause-LBNL': {
     name: 'Lawrence Berkeley National Labs BSD variant license',
     osi: true,
@@ -246,6 +255,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'BSD-3-Clause-Open-MPI': {
     name: 'BSD 3-Clause Open MPI variant',
+  },
+  'BSD-3-Clause-Sun': {
+    name: 'BSD 3-Clause Sun Microsystems',
   },
   'BSD-4-Clause': {
     name: 'BSD 4-Clause "Original" or "Old" License',
@@ -269,11 +281,17 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'BSD-Attribution-HPND-disclaimer': {
     name: 'BSD with Attribution and HPND disclaimer',
   },
+  'BSD-Inferno-Nettverk': {
+    name: 'BSD-Inferno-Nettverk',
+  },
   'BSD-Protection': {
     name: 'BSD Protection License',
   },
   'BSD-Source-Code': {
     name: 'BSD Source Code Attribution',
+  },
+  'BSD-Systemics': {
+    name: 'Systemics BSD variant license',
   },
   'BSL-1.0': {
     name: 'Boost Software License 1.0',
@@ -578,6 +596,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   CFITSIO: {
     name: 'CFITSIO License',
   },
+  'check-cvs': {
+    name: 'check-cvs License',
+  },
   checkmk: {
     name: 'Checkmk License',
   },
@@ -633,6 +654,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'CPOL-1.02': {
     name: 'Code Project Open License 1.02',
   },
+  Cronyx: {
+    name: 'Cronyx License',
+  },
   Crossword: {
     name: 'Crossword License',
   },
@@ -657,6 +681,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'DL-DE-BY-2.0': {
     name: 'Data licence Germany – attribution – version 2.0',
+  },
+  'DL-DE-ZERO-2.0': {
+    name: 'Data licence Germany – zero – version 2.0',
   },
   DOC: {
     name: 'DOC License',
@@ -748,8 +775,14 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'Fair License',
     osi: true,
   },
+  FBM: {
+    name: 'Fuzzy Bitmap License',
+  },
   'FDK-AAC': {
     name: 'Fraunhofer FDK AAC Codec Library',
+  },
+  'Ferguson-Twofish': {
+    name: 'Ferguson Twofish License',
   },
   'Frameworx-1.0': {
     name: 'Frameworx Open License 1.0',
@@ -777,6 +810,12 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   FTL: {
     name: 'Freetype Project License',
     free: true,
+  },
+  Furuseth: {
+    name: 'Furuseth License',
+  },
+  fwlw: {
+    name: 'fwlw License',
   },
   GD: {
     name: 'GD License',
@@ -901,22 +940,46 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'HP-1986': {
     name: 'Hewlett-Packard 1986 License',
   },
+  'HP-1989': {
+    name: 'Hewlett-Packard 1989 License',
+  },
   HPND: {
     name: 'Historical Permission Notice and Disclaimer',
     osi: true,
     free: true,
   },
+  'HPND-DEC': {
+    name: 'Historical Permission Notice and Disclaimer - DEC variant',
+  },
+  'HPND-doc': {
+    name: 'Historical Permission Notice and Disclaimer - documentation variant',
+  },
+  'HPND-doc-sell': {
+    name: 'Historical Permission Notice and Disclaimer - documentation sell variant',
+  },
   'HPND-export-US': {
     name: 'HPND with US Government export control warning',
   },
+  'HPND-export-US-modify': {
+    name: 'HPND with US Government export control warning and modification rqmt',
+  },
   'HPND-Markus-Kuhn': {
     name: 'Historical Permission Notice and Disclaimer - Markus Kuhn variant',
+  },
+  'HPND-Pbmplus': {
+    name: 'Historical Permission Notice and Disclaimer - Pbmplus variant',
+  },
+  'HPND-sell-regexpr': {
+    name: 'Historical Permission Notice and Disclaimer - sell regexpr variant',
   },
   'HPND-sell-variant': {
     name: 'Historical Permission Notice and Disclaimer - sell variant',
   },
   'HPND-sell-variant-MIT-disclaimer': {
     name: 'HPND sell variant with MIT disclaimer',
+  },
+  'HPND-UC': {
+    name: 'Historical Permission Notice and Disclaimer - University of California variant',
   },
   HTMLTIDY: {
     name: 'HTML Tidy License',
@@ -995,6 +1058,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   JSON: {
     name: 'JSON License',
+  },
+  Kastrup: {
+    name: 'Kastrup License',
   },
   Kazlib: {
     name: 'Kazlib License',
@@ -1120,17 +1186,29 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'LaTeX Project Public License v1.3c',
     osi: true,
   },
+  lsof: {
+    name: 'lsof License',
+  },
+  'Lucida-Bitmap-Fonts': {
+    name: 'Lucida Bitmap Fonts License',
+  },
   'LZMA-SDK-9.11-to-9.20': {
     name: 'LZMA SDK License (versions 9.11 to 9.20)',
   },
   'LZMA-SDK-9.22': {
     name: 'LZMA SDK License (versions 9.22 and beyond)',
   },
+  magaz: {
+    name: 'magaz License',
+  },
   MakeIndex: {
     name: 'MakeIndex License',
   },
   'Martin-Birgmeier': {
     name: 'Martin Birgmeier License',
+  },
+  'McPhee-slideshow': {
+    name: 'McPhee Slideshow License',
   },
   metamail: {
     name: 'metamail License',
@@ -1173,15 +1251,24 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'MIT-open-group': {
     name: 'MIT Open Group variant',
   },
+  'MIT-testregex': {
+    name: 'MIT testregex Variant',
+  },
   'MIT-Wu': {
     name: 'MIT Tom Wu Variant',
   },
   MITNFA: {
     name: 'MIT +no-false-attribs license',
   },
+  MMIXware: {
+    name: 'MMIXware License',
+  },
   Motosoto: {
     name: 'Motosoto License',
     osi: true,
+  },
+  'MPEG-SSG': {
+    name: 'MPEG Software Simulation',
   },
   'mpi-permissive': {
     name: 'mpi Permissive License',
@@ -1497,6 +1584,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     osi: true,
     free: true,
   },
+  PADL: {
+    name: 'PADL License',
+  },
   'Parity-6.0.0': {
     name: 'The Parity Public License 6.0.0',
   },
@@ -1517,6 +1607,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   Plexus: {
     name: 'Plexus Classworlds License',
+  },
+  pnmstitch: {
+    name: 'pnmstitch License',
   },
   'PolyForm-Noncommercial-1.0.0': {
     name: 'PolyForm Noncommercial License 1.0.0',
@@ -1544,6 +1637,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'Python-2.0.1': {
     name: 'Python License 2.0.1',
+  },
+  'python-ldap': {
+    name: 'Python ldap License',
   },
   Qhull: {
     name: 'Qhull License',
@@ -1614,6 +1710,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'SGI Free Software License B v2.0',
     free: true,
   },
+  'SGI-OpenGL': {
+    name: 'SGI OpenGL License',
+  },
   SGP4: {
     name: 'SGP4 Permission Notice',
   },
@@ -1635,6 +1734,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'SISSL-1.2': {
     name: 'Sun Industry Standards Source License v1.2',
   },
+  SL: {
+    name: 'SL License',
+  },
   Sleepycat: {
     name: 'Sleepycat License',
     osi: true,
@@ -1653,6 +1755,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   snprintf: {
     name: 'snprintf License',
   },
+  Soundex: {
+    name: 'Soundex License',
+  },
   'Spencer-86': {
     name: 'Spencer License 86',
   },
@@ -1666,6 +1771,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'Sun Public License v1.0',
     osi: true,
     free: true,
+  },
+  'ssh-keyscan': {
+    name: 'ssh-keyscan License',
   },
   'SSH-OpenSSH': {
     name: 'SSH OpenSSH license',
@@ -1684,6 +1792,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   SWL: {
     name: 'Scheme Widget Library (SWL) Software License Agreement',
+  },
+  swrule: {
+    name: 'swrule License',
   },
   Symlinks: {
     name: 'Symlinks License',
@@ -1718,6 +1829,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   TTWL: {
     name: 'Text-Tabs+Wrap License',
   },
+  TTYP0: {
+    name: 'TTYP0 License',
+  },
   'TU-Berlin-1.0': {
     name: 'Technische Universitaet Berlin License 1.0',
   },
@@ -1730,6 +1844,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'UCL-1.0': {
     name: 'Upstream Compatibility License v1.0',
     osi: true,
+  },
+  ulem: {
+    name: 'ulem License',
   },
   'Unicode-DFS-2015': {
     name: 'Unicode License Agreement - Data Files and Software (2015)',
@@ -1753,6 +1870,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'Universal Permissive License v1.0',
     osi: true,
     free: true,
+  },
+  'URT-RLE': {
+    name: 'Utah Raster Toolkit Run Length Encoded License',
   },
   Vim: {
     name: 'Vim License',
@@ -1839,6 +1959,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   Zed: {
     name: 'Zed License',
+  },
+  Zeeff: {
+    name: 'Zeeff License',
   },
   'Zend-2.0': {
     name: 'Zend License v2.0',
