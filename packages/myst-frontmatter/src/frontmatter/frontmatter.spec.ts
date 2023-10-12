@@ -690,7 +690,7 @@ describe('fillPageFrontmatter', () => {
             {
               awards: [
                 {
-                  investigators: ['jn'],
+                  investigators: [{ id: 'jn' }],
                 },
               ],
             },
@@ -706,18 +706,17 @@ describe('fillPageFrontmatter', () => {
           nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
         },
       ],
-      contributors: [
-        {
-          id: 'jn',
-          name: 'Just A. Name',
-          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
-        },
-      ],
       funding: [
         {
           awards: [
             {
-              investigators: ['jn'],
+              investigators: [
+                {
+                  id: 'jn',
+                  name: 'Just A. Name',
+                  nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+                },
+              ],
             },
           ],
         },
@@ -748,7 +747,7 @@ describe('fillPageFrontmatter', () => {
             {
               awards: [
                 {
-                  investigators: ['jn', 'jd'],
+                  investigators: [{ id: 'jn' }, { id: 'jd' }],
                 },
               ],
             },
@@ -775,7 +774,18 @@ describe('fillPageFrontmatter', () => {
         {
           awards: [
             {
-              investigators: ['jn', 'jd'],
+              investigators: [
+                {
+                  id: 'jn',
+                  name: 'Just A. Name',
+                  nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+                },
+                {
+                  id: 'jd',
+                  name: 'John Doe',
+                  nameParsed: { literal: 'John Doe', given: 'John', family: 'Doe' },
+                },
+              ],
             },
           ],
         },
@@ -800,7 +810,7 @@ describe('fillPageFrontmatter', () => {
             {
               awards: [
                 {
-                  investigators: ['jn'],
+                  investigators: [{ id: 'jn' }],
                 },
               ],
             },
@@ -828,23 +838,19 @@ describe('fillPageFrontmatter', () => {
           affiliations: ['univa'],
         },
       ],
-      contributors: [
-        {
-          id: 'jn',
-          name: 'Just A. Name',
-          nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
-          affiliations: ['univb'],
-        },
-      ],
-      affiliations: [
-        { id: 'univa', name: 'University A' },
-        { id: 'univb', name: 'University B' },
-      ],
+      affiliations: [{ id: 'univa', name: 'University A' }],
       funding: [
         {
           awards: [
             {
-              investigators: ['jn'],
+              investigators: [
+                {
+                  id: 'jn',
+                  name: 'Just A. Name',
+                  nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+                  affiliations: ['univb'],
+                },
+              ],
             },
           ],
         },
@@ -869,7 +875,7 @@ describe('fillPageFrontmatter', () => {
             {
               awards: [
                 {
-                  investigators: ['jn'],
+                  investigators: [{ id: 'jn' }],
                 },
               ],
             },
@@ -913,7 +919,14 @@ describe('fillPageFrontmatter', () => {
         {
           awards: [
             {
-              investigators: ['jn'],
+              investigators: [
+                {
+                  id: 'jn',
+                  name: 'Just A. Name',
+                  nameParsed: { literal: 'Just A. Name', given: 'Just A.', family: 'Name' },
+                  affiliations: ['univb'],
+                },
+              ],
             },
           ],
         },

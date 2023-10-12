@@ -86,19 +86,6 @@ cases:
                 </name>
               </contrib>
             </contrib-group>
-            <contrib-group>
-              <contrib id="Jane Doe">
-                <name name-style="western">
-                  <surname>Doe</surname>
-                  <given-names>Jane</given-names>
-                </name>
-              </contrib>
-            </contrib-group>
-            <aff id="University A">
-              <institution-wrap>
-                <institution>University A</institution>
-              </institution-wrap>
-            </aff>
             <funding-group>
               <award-group>
                 <funding-source>
@@ -190,14 +177,6 @@ cases:
                 <xref ref-type="aff" rid="univa"/>
               </contrib>
             </contrib-group>
-            <contrib-group>
-              <contrib id="contributors-generated-uid-1">
-                <name name-style="western">
-                  <surname>Doe</surname>
-                  <given-names>Jane</given-names>
-                </name>
-              </contrib>
-            </contrib-group>
             <aff id="univb">
               <institution-wrap>
                 <institution>University B</institution>
@@ -209,11 +188,6 @@ cases:
               </institution-wrap>
               <institution-wrap>
                 <institution content-type="dept">Some Department</institution>
-              </institution-wrap>
-            </aff>
-            <aff id="University C">
-              <institution-wrap>
-                <institution>University C</institution>
               </institution-wrap>
             </aff>
             <funding-group>

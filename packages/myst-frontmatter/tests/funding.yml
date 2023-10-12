@@ -23,22 +23,23 @@ cases:
               name: Award
               description: my award
               sources:
-                - University A
+                - id: University A
+                  name: University A
               investigators:
-                - John Doe
+                - id: John Doe
+                  name: John Doe
+                  nameParsed:
+                    literal: John Doe
+                    family: Doe
+                    given: John
               recipients:
-                - John Doe
+                - id: John Doe
+                  name: John Doe
+                  nameParsed:
+                    literal: John Doe
+                    family: Doe
+                    given: John
         - open_access: my statement 2
-      contributors:
-        - id: John Doe
-          name: John Doe
-          nameParsed:
-            literal: John Doe
-            family: Doe
-            given: John
-      affiliations:
-        - id: University A
-          name: University A
   - title: String coerces to statement
     raw:
       funding: my statement
@@ -63,7 +64,7 @@ cases:
         - statement: my statement
           awards:
             - id: abc-123
-  - title: Source object coerces to list
+  - title: Source string coerces to list
     raw:
       funding:
         - statement: my statement
@@ -79,7 +80,8 @@ cases:
           awards:
             - id: abc-123
               sources:
-                - univa
+                - id: univa
+                  name: University A
       affiliations:
         - id: univa
           name: University A
@@ -96,14 +98,12 @@ cases:
           awards:
             - id: abc-123
               investigators:
-                - John Doe
-      contributors:
-        - id: John Doe
-          name: John Doe
-          nameParsed:
-            literal: John Doe
-            given: John
-            family: Doe
+                - id: John Doe
+                  name: John Doe
+                  nameParsed:
+                    literal: John Doe
+                    given: John
+                    family: Doe
   - title: Recipient object coerces to list
     raw:
       funding:
@@ -117,14 +117,12 @@ cases:
           awards:
             - id: abc-123
               recipients:
-                - John Doe
-      contributors:
-        - id: John Doe
-          name: John Doe
-          nameParsed:
-            literal: John Doe
-            given: John
-            family: Doe
+                - id: John Doe
+                  name: John Doe
+                  nameParsed:
+                    literal: John Doe
+                    given: John
+                    family: Doe
   - title: Award fields on funding coerce to object
     raw:
       funding:
@@ -146,27 +144,20 @@ cases:
               name: Award
               description: my award
               sources:
-                - University A
+                - id: University A
+                  name: University A
               recipients:
-                - contributors-generated-uid-0
+                - name: Jane Doe
+                  nameParsed:
+                    literal: Jane Doe
+                    given: Jane
+                    family: Doe
               investigators:
-                - contributors-generated-uid-1
-      affiliations:
-        - id: University A
-          name: University A
-      contributors:
-        - id: contributors-generated-uid-0
-          name: Jane Doe
-          nameParsed:
-            literal: Jane Doe
-            given: Jane
-            family: Doe
-        - id: contributors-generated-uid-1
-          name: John Doe
-          nameParsed:
-            literal: John Doe
-            given: John
-            family: Doe
+                - name: John Doe
+                  nameParsed:
+                    literal: John Doe
+                    given: John
+                    family: Doe
   - title: Award fields on funding warn if 'awards' is also present
     raw:
       funding:
@@ -190,27 +181,20 @@ cases:
               name: Award
               description: my award
               sources:
-                - University A
+                - id: University A
+                  name: University A
               recipients:
-                - contributors-generated-uid-0
+                - name: Jane Doe
+                  nameParsed:
+                    literal: Jane Doe
+                    given: Jane
+                    family: Doe
               investigators:
-                - contributors-generated-uid-1
-      affiliations:
-        - id: University A
-          name: University A
-      contributors:
-        - id: contributors-generated-uid-0
-          name: Jane Doe
-          nameParsed:
-            literal: Jane Doe
-            given: Jane
-            family: Doe
-        - id: contributors-generated-uid-1
-          name: John Doe
-          nameParsed:
-            literal: John Doe
-            given: John
-            family: Doe
+                - name: John Doe
+                  nameParsed:
+                    literal: John Doe
+                    given: John
+                    family: Doe
     warnings: 1
   - title: Funding contributor and author is persisted in authors
     raw:
@@ -235,11 +219,22 @@ cases:
               name: Award
               description: my award
               sources:
-                - University A
+                - id: University A
+                  name: University A
               investigators:
-                - John Doe
+                - id: John Doe
+                  name: John Doe
+                  nameParsed:
+                    literal: John Doe
+                    family: Doe
+                    given: John
               recipients:
-                - John Doe
+                - id: John Doe
+                  name: John Doe
+                  nameParsed:
+                    literal: John Doe
+                    family: Doe
+                    given: John
       authors:
         - id: John Doe
           name: John Doe
@@ -247,9 +242,6 @@ cases:
             literal: John Doe
             family: Doe
             given: John
-      affiliations:
-        - id: University A
-          name: University A
   - title: Non-funding contributors remain
     raw:
       funding:
@@ -274,11 +266,22 @@ cases:
               name: Award
               description: my award
               sources:
-                - University A
+                - id: University A
+                  name: University A
               investigators:
-                - John Doe
+                - id: John Doe
+                  name: John Doe
+                  nameParsed:
+                    literal: John Doe
+                    family: Doe
+                    given: John
               recipients:
-                - Jane Doe
+                - id: Jane Doe
+                  name: Jane Doe
+                  nameParsed:
+                    literal: Jane Doe
+                    family: Doe
+                    given: Jane
       authors:
         - id: John Doe
           name: John Doe
@@ -294,12 +297,3 @@ cases:
             family: Doe
             given: John
             suffix: Jr.
-        - id: Jane Doe
-          name: Jane Doe
-          nameParsed:
-            literal: Jane Doe
-            family: Doe
-            given: Jane
-      affiliations:
-        - id: University A
-          name: University A

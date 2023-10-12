@@ -10,7 +10,7 @@ import {
 import type { ValidationOptions } from 'simple-validators';
 import type { ReferenceStash } from '../frontmatter/types.js';
 import type { Award, Funding } from './types.js';
-import { validateAffiliation, validateAndStashObject, validateContributor } from '../index.js';
+import { stashPlaceholder, validateAffiliation, validateContributor } from '../index.js';
 
 const AWARD_KEYS = ['id', 'name', 'description', 'sources', 'recipients', 'investigators'];
 const AWARD_ALIASES = { source: 'sources', recipient: 'recipients', investigator: 'investigators' };
@@ -37,34 +37,53 @@ export function validateAward(input: any, stash: ReferenceStash, opts: Validatio
     output.description = validateString(value.description, incrementOptions('description', opts));
   }
   if (defined(value.sources)) {
+    // Sources may be looked up from affiliations stash, but new sources are not saved.
     const sources = Array.isArray(value.sources) ? value.sources : [value.sources];
     output.sources = validateList(sources, incrementOptions('sources', opts), (source, index) => {
-      return validateAndStashObject(
-        source,
-        stash,
-        'affiliations',
-        validateAffiliation,
-        incrementOptions(`sources.${index}`, opts),
-      );
+      if (typeof source === 'string') {
+        const idMatch = stash.affiliations?.find((aff) => aff.id === source);
+        if (idMatch) return idMatch;
+        source = stashPlaceholder(source);
+      }
+      return validateAffiliation(source, incrementOptions(`sources.${index}`, opts));
     });
   }
   if (defined(value.recipients)) {
+    // Recipients may be looked up from either affiliations or contributors stash,
+    // but new recipients are not saved.
     const recipients = Array.isArray(value.recipients) ? value.recipients : [value.recipients];
     output.recipients = validateList(
       recipients,
       incrementOptions('recipients', opts),
       (recipient, index) => {
-        return validateAndStashObject(
-          recipient,
-          stash,
-          'contributors',
-          (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
-          incrementOptions(`recipients.${index}`, opts),
-        );
+        if (typeof recipient === 'string') {
+          const idMatch =
+            stash.contributors?.find((contrib) => contrib.id === recipient) ??
+            stash.affiliations?.find((aff) => aff.id === recipient);
+          if (idMatch) return idMatch;
+          recipient = stashPlaceholder(recipient);
+        }
+        const suppressedOpts = {
+          ...opts,
+          suppressErrors: true,
+          suppressWarnings: true,
+        };
+        const asContrib = validateContributor(recipient, undefined, suppressedOpts);
+        const asAff = validateAffiliation(recipient, suppressedOpts);
+        const incrementedOpts = incrementOptions(`recipients.${index}`, opts);
+        // Decide if this is an affiliation or a contributor. It is a contributor if:
+        //   - affiliation validation fails
+        //   - affiliation and contributor validation pass, but contributor has more valid keys.
+        //     (this accounts for the addition of `nameParsed` to contributor)
+        if (!asAff || (asContrib && Object.keys(asAff).length < Object.keys(asContrib).length)) {
+          return validateContributor(recipient, undefined, incrementedOpts);
+        }
+        return validateAffiliation(recipient, incrementedOpts);
       },
     );
   }
   if (defined(value.investigators)) {
+    // Investigators may be looked up from affiliations stash, but new investigators are not saved.
     const investigators = Array.isArray(value.investigators)
       ? value.investigators
       : [value.investigators];
@@ -72,11 +91,14 @@ export function validateAward(input: any, stash: ReferenceStash, opts: Validatio
       investigators,
       incrementOptions('investigators', opts),
       (investigator, index) => {
-        return validateAndStashObject(
+        if (typeof investigator === 'string') {
+          const idMatch = stash.contributors?.find((aff) => aff.id === investigator);
+          if (idMatch) return idMatch;
+          investigator = stashPlaceholder(investigator);
+        }
+        return validateContributor(
           investigator,
-          stash,
-          'contributors',
-          (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
+          undefined,
           incrementOptions(`investigators.${index}`, opts),
         );
       },

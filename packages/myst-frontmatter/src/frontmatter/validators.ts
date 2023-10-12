@@ -106,6 +106,7 @@ export const USE_PROJECT_FALLBACK = [
   'keywords',
   'funding',
   'authors',
+  'contributors',
   'affiliations',
 ];
 
@@ -254,7 +255,7 @@ function validateBooleanOrObject<T extends Record<string, any>>(
   return output;
 }
 
-function stashPlaceholder(value: string) {
+export function stashPlaceholder(value: string) {
   return { id: value, name: value };
 }
 
@@ -535,7 +536,11 @@ export function validateName(input: any, opts: ValidationOptions) {
 /**
  * Validate Contributor object against the schema
  */
-export function validateContributor(input: any, stash: ReferenceStash, opts: ValidationOptions) {
+export function validateContributor(
+  input: any,
+  stash: ReferenceStash | undefined,
+  opts: ValidationOptions,
+) {
   if (typeof input === 'string') {
     input = { id: input, name: input };
   }
@@ -628,20 +633,24 @@ export function validateContributor(input: any, stash: ReferenceStash, opts: Val
     );
   }
   if (defined(value.affiliations)) {
-    const affiliationsOpts = incrementOptions('affiliations', opts);
-    let affiliations = value.affiliations;
-    if (typeof affiliations === 'string') {
-      affiliations = affiliations.split(';').map((aff) => aff.trim());
+    if (!stash) {
+      validationWarning('contributor cannot define new affiliations', opts);
+    } else {
+      const affiliationsOpts = incrementOptions('affiliations', opts);
+      let affiliations = value.affiliations;
+      if (typeof affiliations === 'string') {
+        affiliations = affiliations.split(';').map((aff) => aff.trim());
+      }
+      output.affiliations = validateList(affiliations, affiliationsOpts, (aff) => {
+        return validateAndStashObject(
+          aff,
+          stash,
+          'affiliations',
+          validateAffiliation,
+          affiliationsOpts,
+        );
+      });
     }
-    output.affiliations = validateList(affiliations, affiliationsOpts, (aff) => {
-      return validateAndStashObject(
-        aff,
-        stash,
-        'affiliations',
-        validateAffiliation,
-        affiliationsOpts,
-      );
-    });
   }
   if (defined(value.twitter)) {
     output.twitter = validateString(value.twitter, incrementOptions('twitter', opts));
@@ -1408,25 +1417,9 @@ export function fillPageFrontmatter(
     };
   }
 
-  // Gather all contributors and affiliations from funding sources
-  const contributorIds: Set<string> = new Set();
-  const affiliationIds: Set<string> = new Set();
-  frontmatter.funding?.forEach((fund) => {
-    fund.awards?.forEach((award) => {
-      award.investigators?.forEach((inv) => {
-        contributorIds.add(inv);
-      });
-      award.recipients?.forEach((rec) => {
-        contributorIds.add(rec);
-      });
-      award.sources?.forEach((aff) => {
-        affiliationIds.add(aff);
-      });
-    });
-  });
-
-  if (frontmatter.authors?.length || contributorIds.size) {
+  if (frontmatter.authors?.length || frontmatter.contributors?.length) {
     // Gather all people from page/project authors/contributors
+    const contributorIds: Set<string> = new Set();
     const people = [
       ...(pageFrontmatter.authors ?? []),
       ...(projectFrontmatter.authors ?? []),
@@ -1458,19 +1451,30 @@ export function fillPageFrontmatter(
         return peopleLookup[id] ?? stashPlaceholder(id);
       });
     }
+
+    frontmatter.funding?.forEach((fund) => {
+      fund.awards?.forEach((award) => {
+        award.investigators = award.investigators?.map((inv) => {
+          return inv.id && peopleLookup[inv.id] ? peopleLookup[inv.id] : inv;
+        });
+        award.recipients = award.recipients?.map((rec) => {
+          return rec.id && peopleLookup[rec.id] ? peopleLookup[rec.id] : rec;
+        });
+      });
+    });
   }
 
-  // Add affiliations from reconstructed author/contributor lists and explicit page affiliations
-  [...(frontmatter.authors ?? []), ...(frontmatter.contributors ?? [])].forEach((auth) => {
-    auth.affiliations?.forEach((aff) => {
-      affiliationIds.add(aff);
+  if (frontmatter.affiliations?.length) {
+    // Add affiliations from reconstructed author/contributor lists and explicit page affiliations
+    const affiliationIds: Set<string> = new Set();
+    [...(frontmatter.authors ?? []), ...(frontmatter.contributors ?? [])].forEach((auth) => {
+      auth.affiliations?.forEach((aff) => {
+        affiliationIds.add(aff);
+      });
     });
-  });
-  frontmatter.affiliations?.forEach((aff) => {
-    if (aff.id) affiliationIds.add(aff.id);
-  });
-
-  if (affiliationIds.size) {
+    frontmatter.affiliations?.forEach((aff) => {
+      if (aff.id) affiliationIds.add(aff.id);
+    });
     const affiliations = [
       ...(pageFrontmatter.affiliations ?? []),
       ...(projectFrontmatter.affiliations ?? []),
@@ -1489,6 +1493,17 @@ export function fillPageFrontmatter(
     });
     frontmatter.affiliations = [...affiliationIds].map((id) => {
       return affiliationLookup[id] ?? stashPlaceholder(id);
+    });
+
+    frontmatter.funding?.forEach((fund) => {
+      fund.awards?.forEach((award) => {
+        award.sources = award.sources?.map((src) => {
+          return src.id && affiliationLookup[src.id] ? affiliationLookup[src.id] : src;
+        });
+        award.recipients = award.recipients?.map((rec) => {
+          return rec.id && affiliationLookup[rec.id] ? affiliationLookup[rec.id] : rec;
+        });
+      });
     });
   }
 

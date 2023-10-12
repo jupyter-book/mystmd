@@ -424,14 +424,9 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
       elements.push(
         ...fund.awards.map((award): Element => {
           const awardElements: Element[] = [];
-          const resolvedSources = award.sources
-            ?.map((source) => {
-              return frontmatter.affiliations?.find((aff) => aff.id === source);
-            })
-            .filter((source): source is Affiliation => !!source);
-          if (resolvedSources?.length) {
+          if (award.sources?.length) {
             awardElements.push(
-              ...resolvedSources.map((source): Element => {
+              ...award.sources.map((source): Element => {
                 return {
                   type: 'element',
                   name: 'funding-source',
@@ -465,20 +460,25 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
             awardElements.push(
               ...award.recipients.map((recipient): Element => {
                 const recipientElements: Element[] = [];
-                const author: Contributor = [
-                  ...(frontmatter.authors ?? []),
-                  ...(frontmatter.contributors ?? []),
-                ].find((auth) => auth.id === recipient) ?? { name: recipient };
-                if (author.orcid) {
-                  recipientElements.push({
-                    type: 'element',
-                    name: 'contrib-id',
-                    attributes: { 'contrib-id-type': 'orcid' },
-                    elements: [{ type: 'text', text: author.orcid }],
-                  });
+                const recipientAsContrib = recipient as Contributor;
+                if (recipientAsContrib.orcid || recipientAsContrib.nameParsed) {
+                  // Assume recipient is a person
+                  if (recipientAsContrib.orcid) {
+                    recipientElements.push({
+                      type: 'element',
+                      name: 'contrib-id',
+                      attributes: { 'contrib-id-type': 'orcid' },
+                      elements: [{ type: 'text', text: recipientAsContrib.orcid }],
+                    });
+                  }
+                  const name = nameElementFromContributor(recipientAsContrib);
+                  if (name) recipientElements.push(name);
+                } else {
+                  // Assume recipient is an institution
+                  recipientElements.push(
+                    ...instWrapElementsFromAffiliation(recipient as Affiliation, false),
+                  );
                 }
-                const name = nameElementFromContributor(author);
-                if (name) recipientElements.push(name);
                 return {
                   type: 'element',
                   name: 'principal-award-recipient',
@@ -491,19 +491,15 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
             awardElements.push(
               ...award.investigators.map((investigator): Element => {
                 const investigatorElements: Element[] = [];
-                const author: Contributor = [
-                  ...(frontmatter.authors ?? []),
-                  ...(frontmatter.contributors ?? []),
-                ].find((auth) => auth.id === investigator) ?? { name: investigator };
-                if (author.orcid) {
+                if (investigator.orcid) {
                   investigatorElements.push({
                     type: 'element',
                     name: 'contrib-id',
                     attributes: { 'contrib-id-type': 'orcid' },
-                    elements: [{ type: 'text', text: author.orcid }],
+                    elements: [{ type: 'text', text: investigator.orcid }],
                   });
                 }
-                const name = nameElementFromContributor(author);
+                const name = nameElementFromContributor(investigator);
                 if (name) investigatorElements.push(name);
                 return {
                   type: 'element',

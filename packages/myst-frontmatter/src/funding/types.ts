@@ -1,11 +1,13 @@
+import type { Affiliation, Contributor } from '../index.js';
+
 export type Award = {
   id?: string;
   name?: string;
   description?: string;
-  sources?: string[]; // These are affiliation ids
+  sources?: Affiliation[]; // These are affiliation ids
   /** Recipients and investigators are added to author list; these are references */
-  recipients?: string[];
-  investigators?: string[];
+  recipients?: (Contributor | Affiliation)[];
+  investigators?: Contributor[];
 };
 
 export type Funding = {
