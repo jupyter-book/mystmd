@@ -297,3 +297,28 @@ cases:
             family: Doe
             given: John
             suffix: Jr.
+  - title: Affiliation in funding contributor is removed and warns
+    raw:
+      funding:
+        - statement: my statement 1
+          awards:
+            - id: abc-123
+              name: Award
+              description: my award
+              recipients:
+                - name: Jane Doe
+                  affiliation: University A
+    normalized:
+      funding:
+        - statement: my statement 1
+          awards:
+            - id: abc-123
+              name: Award
+              description: my award
+              recipients:
+                - name: Jane Doe
+                  nameParsed:
+                    literal: Jane Doe
+                    family: Doe
+                    given: Jane
+    warnings: 1
