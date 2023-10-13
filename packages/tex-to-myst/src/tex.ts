@@ -72,6 +72,7 @@ const macros: Record<string, number> = {
   affiliation: 1,
   framebox: 1,
   tnote: 1,
+  ['table*']: 1,
   arraystretch: 1,
   multirow: 5,
   multicolumn: 3,
@@ -83,6 +84,7 @@ const macros: Record<string, number> = {
   captionof: 2,
   // SI Units: https://texdoc.org/serve/siunitx/0
   SI: 2,
+  si: 1,
   qty: 2,
   tothe: 1,
   raiseto: 1,

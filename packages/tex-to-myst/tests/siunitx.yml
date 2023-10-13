@@ -87,3 +87,6 @@ cases:
   - title: kg⁻¹
     tex: \qty[per-mode = symbol]{1.99}{ \per \kilogram }
     text: 1.99 kg⁻¹
+  - title: 90 ms
+    tex: 90~\si{\milli \second}
+    text: 90 ms

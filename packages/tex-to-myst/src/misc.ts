@@ -61,6 +61,7 @@ export const MISC_HANDLERS: Record<string, Handler> = {
   // Some size options, not respecting at the moment
   macro_vspace: pass,
   macro_hfill: pass,
+  macro_tiny: pass,
   macro_small: pass,
   macro_footnotesize: pass,
   macro_normalsize: pass,
@@ -75,4 +76,7 @@ export const MISC_HANDLERS: Record<string, Handler> = {
   macro_textwidth: pass,
   macro_onecolumn: pass,
   macro_linewidth: pass,
+  // line numbers
+  macro_linenumbers: pass,
+  macro_nolinenumbers: pass,
 };
