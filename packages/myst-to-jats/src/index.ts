@@ -149,6 +149,9 @@ function mathToMml(math?: string, inline?: boolean) {
   return mathElement;
 }
 
+/**
+ * Remove comments and consolidate to one line
+ */
 function cleanLatex(value?: string): string | undefined {
   if (!value) return;
   return value
