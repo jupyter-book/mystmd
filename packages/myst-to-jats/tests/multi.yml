@@ -167,7 +167,7 @@ cases:
               <article-title>Top title</article-title>
             </title-group>
             <contrib-group>
-              <contrib contrib-type="author" id="Author One">
+              <contrib contrib-type="author">
                 <name name-style="western">
                   <surname>One</surname>
                   <given-names>Author</given-names>
@@ -192,7 +192,7 @@ cases:
         <sub-article>
           <front-stub>
             <contrib-group>
-              <contrib contrib-type="author" id="Author Three">
+              <contrib contrib-type="author">
                 <name name-style="western">
                   <surname>Three</surname>
                   <given-names>Author</given-names>

@@ -38,7 +38,7 @@ cases:
         <front>
           <article-meta>
             <contrib-group>
-              <contrib contrib-type="author" id="contributors-generated-uid-0">
+              <contrib contrib-type="author">
                 <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>John</given-names>
