@@ -121,6 +121,15 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
   state.closeNode();
 }
 
+function addMmlAndRemoveAnnotation(el?: Element) {
+  if (el?.name) el.name = `mml:${el.name}`;
+  if (!el?.elements) return;
+  el.elements = el.elements.filter((child: Element) => child.name !== 'annotation');
+  el.elements.forEach((child: Element) => {
+    addMmlAndRemoveAnnotation(child);
+  });
+}
+
 function mathToMml(math?: string, inline?: boolean) {
   const katexXml = katex.renderToString(math, { output: 'mathml', throwOnError: false });
   const katexJs = xml2js(katexXml, { compact: false }) as Element;
@@ -129,16 +138,27 @@ function mathToMml(math?: string, inline?: boolean) {
   if (!mathElement) return;
   if (inline) mathElement.attributes = { ...mathElement.attributes, display: 'inline' };
   delete mathElement.attributes?.xmlns;
-  function addMmlAndRemoveAnnotation(el?: Element) {
-    if (el?.name) el.name = `mml:${el.name}`;
-    if (!el?.elements) return;
-    el.elements = el.elements.filter((child: Element) => child.name !== 'annotation');
-    el.elements.forEach((child: Element) => {
-      addMmlAndRemoveAnnotation(child);
-    });
-  }
   addMmlAndRemoveAnnotation(mathElement);
+  // Remove the wrapping `<mml:semantics><mml:mrow>` if it is the only element
+  if (mathElement?.elements?.length === 1 && mathElement.elements[0].name === 'mml:semantics') {
+    mathElement.elements = mathElement.elements[0].elements;
+  }
+  if (mathElement?.elements?.length === 1 && mathElement.elements[0].name === 'mml:mrow') {
+    mathElement.elements = mathElement.elements[0].elements;
+  }
   return mathElement;
+}
+
+/**
+ * Remove comments and consolidate to one line
+ */
+function cleanLatex(value?: string): string | undefined {
+  if (!value) return;
+  return value
+    .split('\n')
+    .map((s) => s.replace(/%(.*)/, '').trim())
+    .join(' ')
+    .trim();
 }
 
 const handlers: Record<string, Handler> = {
@@ -203,11 +223,15 @@ const handlers: Record<string, Handler> = {
     );
   },
   inlineMath(node, state) {
-    state.openNode('inline-formula');
+    const inlineFormulaAttrs: Attributes = {};
+    if (node.identifier) {
+      inlineFormulaAttrs.id = node.identifier;
+    }
+    state.openNode('inline-formula', inlineFormulaAttrs);
     state.openNode('alternatives');
     state.pushNode(mathToMml(node.value, true));
     state.openNode('tex-math');
-    state.addLeaf('cdata', { cdata: node.value });
+    state.addLeaf('cdata', { cdata: cleanLatex(node.value) });
     state.closeNode();
     state.closeNode();
     state.closeNode();
@@ -222,7 +246,7 @@ const handlers: Record<string, Handler> = {
     state.openNode('alternatives');
     state.pushNode(mathToMml(node.value));
     state.openNode('tex-math');
-    state.addLeaf('cdata', { cdata: node.value });
+    state.addLeaf('cdata', { cdata: cleanLatex(node.value) });
     state.closeNode();
     state.closeNode();
     state.closeNode();
