@@ -131,7 +131,7 @@ cases:
           name: John Doe
           orcid: 0000-0000-0000-0000
           affiliations:
-            - id: univa
+            - id: aff-1
               name: University A
               department: Some Department
       affiliations:
@@ -144,7 +144,7 @@ cases:
               name: Award
               description: my test award
               sources:
-                - univa
+                - aff-1
                 - univb
               investigators:
                 - jd
@@ -174,10 +174,10 @@ cases:
                   <surname>Doe</surname>
                   <given-names>John</given-names>
                 </name>
-                <xref ref-type="aff" rid="univa"/>
+                <xref ref-type="aff" rid="aff-1"/>
               </contrib>
             </contrib-group>
-            <aff id="univa">
+            <aff id="aff-1">
               <institution-wrap>
                 <institution>University A</institution>
               </institution-wrap>
@@ -268,7 +268,7 @@ cases:
           name: John Doe
           orcid: 0000-0000-0000-0000
           affiliations:
-            - id: univa
+            - id: aff-1
               name: University A
               doi: https://doi.org/10.13039/000000
               isni: '0000000000000000'
@@ -287,7 +287,7 @@ cases:
               name: Award
               description: my test award
               sources:
-                - univa
+                - aff-1
                 - univb
     jats: |-
       <?xml version="1.0" encoding="UTF-8"?>
@@ -302,10 +302,10 @@ cases:
                   <surname>Doe</surname>
                   <given-names>John</given-names>
                 </name>
-                <xref ref-type="aff" rid="univa"/>
+                <xref ref-type="aff" rid="aff-1"/>
               </contrib>
             </contrib-group>
-            <aff id="univa">
+            <aff id="aff-1">
               <institution-wrap>
                 <institution>University A</institution>
                 <institution-id institution-id-type="isni">0000000000000000</institution-id>

@@ -43,16 +43,16 @@ cases:
                   <surname>Doe</surname>
                   <given-names>John</given-names>
                 </name>
-                <xref ref-type="aff" rid="univa"/>
-                <xref ref-type="aff" rid="univb"/>
+                <xref ref-type="aff" rid="aff-1"/>
+                <xref ref-type="aff" rid="aff-2"/>
               </contrib>
             </contrib-group>
-            <aff id="univa">
+            <aff id="aff-1">
               <institution-wrap>
                 <institution>University A</institution>
               </institution-wrap>
             </aff>
-            <aff id="univb">
+            <aff id="aff-2">
               <institution-wrap>
                 <institution>University B</institution>
                 <institution-id institution-id-type="isni">0000000000000000</institution-id>
