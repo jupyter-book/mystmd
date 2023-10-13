@@ -149,7 +149,6 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
     const attributes: Record<string, any> = {};
     const elements: Element[] = [];
     if (type) attributes['contrib-type'] = type;
-    if (author.id) attributes.id = author.id;
     if (author.corresponding) attributes.corresp = 'yes';
     if (author.deceased) attributes['deceased'] = 'yes';
     if (author.equal_contributor != null) {
