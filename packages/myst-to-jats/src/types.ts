@@ -3,6 +3,7 @@ import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Root } from 'myst-spec';
 import type { SourceFileKind } from 'myst-spec-ext';
 import type { CitationRenderer } from 'citation-js-utils';
+import type { SerializationOptions } from 'jats-utils';
 
 export type Attributes = Record<string, string | undefined>;
 
@@ -31,16 +32,11 @@ export type Options = {
   backSections?: JatsPart[];
 };
 
-export type DocumentOptions = Options & {
-  subArticles?: ArticleContent[];
-  /**
-   * When 'flat', the xml will be on a single line (with exception of CDATA),
-   * When `0`, the XML will be on different lines with 0 spaces.
-   * When any other value (e.g. `2` or `\t`) the XML will be indented at the start of the line by that amount.
-   */
-  spaces?: number | 'flat' | '\t';
-  writeFullArticle?: boolean;
-};
+export type DocumentOptions = Options &
+  SerializationOptions & {
+    subArticles?: ArticleContent[];
+    writeFullArticle?: boolean;
+  };
 
 export type StateData = {
   isInContainer?: boolean;
