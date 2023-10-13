@@ -1,13 +1,13 @@
-import type { Root, CrossReference, TableCell as SpecTableCell } from 'myst-spec';
+import type { Root, CrossReference, TableCell as SpecTableCell, Math, InlineMath } from 'myst-spec';
 import type { Cite, Code, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
-import type { VFile } from 'vfile';
+import { VFile } from 'vfile';
 import { xml2js } from 'xml-js';
-import katex from 'katex';
 import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode, GenericParent } from 'myst-common';
 import { RuleId, copyNode, extractPart, fileError } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import { renderEquation } from 'myst-transforms';
 import { SourceFileKind } from 'myst-spec-ext';
 import { Tags, RefType } from 'jats-tags';
 import { serializeJatsXml } from 'jats-utils';
@@ -131,12 +131,15 @@ function addMmlAndRemoveAnnotation(el?: Element) {
   });
 }
 
-function mathToMml(math?: string, inline?: boolean) {
-  const katexXml = katex.renderToString(math, { output: 'mathml', throwOnError: false });
-  const katexJs = xml2js(katexXml, { compact: false }) as Element;
+function mathToMml(node: Math | InlineMath) {
+  const math = copyNode(node);
+  // TODO: add macros
+  renderEquation(new VFile(), math, { mathML: true });
+  const katexJs = xml2js((math as any).html, { compact: false }) as Element;
   const spanElement = katexJs.elements?.[0];
   const mathElement = spanElement?.elements?.[0];
   if (!mathElement) return;
+  const inline = node.type === 'inlineMath';
   if (inline) mathElement.attributes = { ...mathElement.attributes, display: 'inline' };
   delete mathElement.attributes?.xmlns;
   addMmlAndRemoveAnnotation(mathElement);
@@ -230,7 +233,7 @@ const handlers: Record<string, Handler> = {
     }
     state.openNode('inline-formula', inlineFormulaAttrs);
     state.openNode('alternatives');
-    state.pushNode(mathToMml(node.value, true));
+    state.pushNode(mathToMml(node as InlineMath));
     state.openNode('tex-math');
     state.addLeaf('cdata', { cdata: cleanLatex(node.value) });
     state.closeNode();
@@ -245,7 +248,7 @@ const handlers: Record<string, Handler> = {
     state.openNode('disp-formula', dispFormulaAttrs);
     renderLabel(node, state, (enumerator) => `(${enumerator})`);
     state.openNode('alternatives');
-    state.pushNode(mathToMml(node.value));
+    state.pushNode(mathToMml(node as Math));
     state.openNode('tex-math');
     state.addLeaf('cdata', { cdata: cleanLatex(node.value) });
     state.closeNode();
