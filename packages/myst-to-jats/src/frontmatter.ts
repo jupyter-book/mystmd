@@ -294,7 +294,9 @@ function instWrapElementsFromAffiliation(affiliation: Affiliation, includeDept =
 export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element[] {
   if (!frontmatter.affiliations?.length) return [];
   // Only add affiliations from authors, not contributors
-  const affIds = [...new Set(frontmatter.authors?.map((auth) => auth.affiliations ?? []).flat())];
+  const affIds = [
+    ...new Set(frontmatter.authors?.map((auth) => auth.affiliations ?? []).flat() ?? []),
+  ];
   if (!affIds?.length) return [];
   const affs = affIds
     .map((id) => frontmatter.affiliations?.find((aff) => aff.id === id))

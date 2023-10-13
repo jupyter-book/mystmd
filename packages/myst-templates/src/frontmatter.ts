@@ -1,4 +1,4 @@
-import type { Contributor, PageFrontmatter } from 'myst-frontmatter';
+import type { Affiliation, Contributor, PageFrontmatter } from 'myst-frontmatter';
 import type { RendererAuthor, RendererDoc, ValueAndIndex } from './types.js';
 
 const ALPHA = 'ABCDEFGHIJKLMNOPQURSUVWXYZ';
@@ -71,18 +71,22 @@ function addIndicesToAuthors(
 
 export function extendFrontmatter(frontmatter: PageFrontmatter): RendererDoc {
   const datetime = frontmatter.date ? new Date(frontmatter.date) : new Date();
-  const affiliations =
-    frontmatter.affiliations
-      ?.filter((aff) => aff.id && !aff.collaboration)
-      .map((aff, index) => {
-        return { ...aff, value: aff, ...indexAndLetter(index) };
-      }) ?? [];
-  const collaborations =
-    frontmatter.affiliations
-      ?.filter((aff) => aff.id && aff.collaboration)
-      .map((aff, index) => {
-        return { ...aff, value: aff, ...indexAndLetter(index) };
-      }) ?? [];
+  // Only add affiliations from authors, not contributors
+  const affIds = [
+    ...new Set(frontmatter.authors?.map((auth) => auth.affiliations ?? []).flat() ?? []),
+  ];
+  const affiliations = affIds
+    .map((id) => frontmatter.affiliations?.find((aff) => aff.id === id))
+    .filter((aff): aff is Affiliation => !!aff?.id && !aff.collaboration)
+    .map((aff, index) => {
+      return { ...aff, value: aff, ...indexAndLetter(index) };
+    });
+  const collaborations = affIds
+    .map((id) => frontmatter.affiliations?.find((aff) => aff.id === id))
+    .filter((aff): aff is Affiliation => !!aff?.id && !!aff.collaboration)
+    .map((aff, index) => {
+      return { ...aff, value: aff, ...indexAndLetter(index) };
+    });
   const doc: RendererDoc = {
     ...frontmatter,
     date: {
