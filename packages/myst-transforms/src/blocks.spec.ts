@@ -1,9 +1,42 @@
 import { describe, expect, test } from 'vitest';
 import { u } from 'unist-builder';
 import { VFile } from 'vfile';
-import { blockMetadataTransform } from './blocks';
+import { blockMetadataTransform, blockNestingTransform } from './blocks';
 
 describe('Test blockMetadataTransform', () => {
+  test.each([
+    [
+      ['a', 'block', 'b'],
+      ['block>a', 'block', 'block>b'],
+    ],
+    [
+      ['block', 'b'],
+      ['block', 'block>b'],
+    ],
+    [['a', 'b'], ['block>a,b']],
+    [
+      ['block', 'block'],
+      ['block', 'block'],
+    ],
+    [
+      ['a', 'block', 'b', 'c'],
+      ['block>a', 'block', 'block>b,c'],
+    ],
+  ])('nestBlock(%s, %s)}', (a, b) => {
+    const mdast = u(
+      'root',
+      a.map((type) => ({ type })),
+    ) as any;
+    blockNestingTransform(mdast);
+    expect(
+      mdast.children.map(
+        ({ type, children }) =>
+          `${type}${
+            children && children.length > 0 ? '>' + children.map(({ type: t }) => t).join(',') : ''
+          }`,
+      ),
+    ).toEqual(b);
+  });
   test('metadata is parsed and becomes data', async () => {
     const mdast = u('root', [
       u('block', { meta: '{"key": "value"}' }, [

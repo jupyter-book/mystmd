@@ -1,25 +1,32 @@
 import type { VFile } from 'vfile';
 import type { Plugin } from 'unified';
-import type { Node, Parent } from 'myst-spec';
-import { select, selectAll } from 'unist-util-select';
+import type { Node } from 'myst-spec';
+import { selectAll } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { RuleId, fileError, normalizeLabel } from 'myst-common';
 import type { Code } from 'myst-spec-ext';
 
-export function blockNestingTransform(mdast: GenericParent) {
-  if (!select('block', mdast)) {
-    const blockNode = { type: 'block', children: mdast.children as Node[] };
-    (mdast as Parent).children = [blockNode];
+function nestBlock(tree: GenericParent): void {
+  const start = tree.children.findIndex((child) => (child.type as any) !== 'block');
+  if (start === -1) return;
+  const end = tree.children.findIndex((child, i) => (child.type as any) === 'block' && i > start);
+  if (end === -1) {
+    tree.children = [
+      ...tree.children.slice(0, start),
+      { type: 'block', children: tree.children.slice(start) as Node[] },
+    ];
     return;
   }
-  if ((mdast.children[0].type as any) !== 'block') {
-    // There are some blocks, but the first one is not!
-    // Lift the content until the first block into a block
-    const index = mdast.children.findIndex((child) => (child.type as any) === 'block');
-    const firstBlock = { type: 'block', children: mdast.children.slice(0, index) as Node[] };
-    const otherBlocks = mdast.children.slice(index) as Parent[];
-    (mdast as Parent).children = [firstBlock, ...otherBlocks];
-  }
+  tree.children = [
+    ...tree.children.slice(0, start),
+    { type: 'block', children: tree.children.slice(start, end) as Node[] },
+    ...tree.children.slice(end),
+  ];
+  nestBlock(tree);
+}
+
+export function blockNestingTransform(tree: GenericParent) {
+  nestBlock(tree);
 }
 
 export const blockNestingPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
