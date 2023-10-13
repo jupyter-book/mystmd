@@ -61,7 +61,8 @@ export function getJournalMeta(): Element | null {
 export function getArticleTitle(frontmatter: ProjectFrontmatter): Element[] {
   const title = frontmatter?.title;
   const subtitle = frontmatter?.subtitle;
-  if (!title && !subtitle) return [];
+  const short_title = frontmatter?.short_title;
+  if (!title && !subtitle && !short_title) return [];
   const articleTitle: Element[] = [
     {
       type: 'element',
@@ -78,11 +79,21 @@ export function getArticleTitle(frontmatter: ProjectFrontmatter): Element[] {
         },
       ]
     : [];
+  const articleShortTitle: Element[] = short_title
+    ? [
+        {
+          type: 'element',
+          name: 'alt-title',
+          attributes: { 'alt-title-type': 'running-head' },
+          elements: [{ type: 'text', text: short_title }],
+        },
+      ]
+    : [];
   return [
     {
       type: 'element',
       name: 'title-group',
-      elements: [...articleTitle, ...articleSubtitle],
+      elements: [...articleTitle, ...articleSubtitle, ...articleShortTitle],
     },
   ];
 }

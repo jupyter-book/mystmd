@@ -1049,10 +1049,7 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     output.description = validateString(value.description, incrementOptions('description', opts));
   }
   if (defined(value.short_title)) {
-    output.short_title = validateString(value.short_title, {
-      ...incrementOptions('short_title', opts),
-      maxLength: 40,
-    });
+    output.short_title = validateString(value.short_title, incrementOptions('short_title', opts));
   }
   if (defined(value.subtitle)) {
     output.subtitle = validateString(value.subtitle, incrementOptions('subtitle', opts));
