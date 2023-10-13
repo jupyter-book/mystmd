@@ -11,6 +11,7 @@ const TRANSFORM_NAME = 'myst-transforms:math';
 
 type Options = {
   macros?: Record<string, string>;
+  mathML?: boolean;
 };
 
 const replacements = {
@@ -120,18 +121,14 @@ function removeWarnings(result: RenderResult, predicate: (warning: string) => bo
   };
 }
 
-function tryRender(
-  file: VFile,
-  node: Node,
-  value: string,
-  macros: Record<string, any>,
-): RenderResult {
+function tryRender(file: VFile, node: Node, value: string, opts?: Options): RenderResult {
   const displayMode = node.type === 'math';
   const warnings: string[] = [];
   try {
     const html = katex.renderToString(value, {
       displayMode,
-      macros: { ...buildInMacros, ...macros },
+      output: opts?.mathML ? 'mathml' : undefined,
+      macros: { ...buildInMacros, ...opts?.macros },
       strict: (f: string, m: string) => {
         warnings.push(`${f}, ${m}`);
       },
@@ -148,7 +145,7 @@ function tryRender(
         ruleId: RuleId.mathAlignmentAdjusted,
       });
       const next = `\\begin{align*}\n${value}\n\\end{align*}`;
-      const result = tryRender(file, node, next, macros);
+      const result = tryRender(file, node, next, opts);
       if (result.html) return result;
     }
     if (message.includes('Unknown column alignment: *')) {
@@ -161,7 +158,7 @@ function tryRender(
       const arrayCentering = /\\begin{array}{((?:\*\{[0-9]+\})c)}/g;
       if (value.match(arrayCentering)) {
         const next = value.replace(arrayCentering, '\\begin{array}{c}');
-        const result = tryRender(file, node, next, macros);
+        const result = tryRender(file, node, next, opts);
         if (result.html) {
           // We expect, and remove some errors
           return removeWarnings(result, (w) => !w.includes('Too few columns specified'));
@@ -172,7 +169,7 @@ function tryRender(
   }
 }
 
-function renderEquation(file: VFile, node: Math | InlineMath, opts?: Options) {
+export function renderEquation(file: VFile, node: Math | InlineMath, opts?: Options) {
   let value = node.value;
   if (!value) {
     const message = 'No input for math node';
@@ -188,8 +185,7 @@ function renderEquation(file: VFile, node: Math | InlineMath, opts?: Options) {
     return;
   }
   value = replaceEqnarray(file, value, node);
-  const macros = opts?.macros ?? {};
-  const result = tryRender(file, node, value, macros);
+  const result = tryRender(file, node, value, opts);
   if (result.html) {
     (node as any).html = result.html;
   }
