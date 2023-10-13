@@ -2,7 +2,7 @@ import type { Root, CrossReference, TableCell as SpecTableCell } from 'myst-spec
 import type { Cite, Code, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import { js2xml, xml2js } from 'xml-js';
+import { xml2js } from 'xml-js';
 import katex from 'katex';
 import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode, GenericParent } from 'myst-common';
@@ -11,6 +11,7 @@ import type { PageFrontmatter, Contributor } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { Affiliation } from 'jats-tags';
 import { Tags, RefType } from 'jats-tags';
+import { serializeJatsXml } from 'jats-utils';
 import type { MinifiedOutput } from 'nbtx';
 import { getBack } from './backmatter.js';
 import { getArticleMeta, getFront } from './frontmatter.js';
@@ -870,19 +871,8 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
         declaration: { attributes: { version: '1.0', encoding: 'UTF-8' } },
       }
     : doc.body();
-  const jats = js2xml(element, {
-    compact: false,
-    //  No way to write XML with new lines, but no indentation with js2xml.
-    // If you use 0 or '', you get a single line.
-    spaces: opts?.spaces === 'flat' ? 0 : opts?.spaces || 1,
-    attributeValueFn: escapeForXML,
-  });
-  if (!opts?.spaces) {
-    // either `0` or `''`
-    file.result = jats.replace(/\n(\s*)</g, '\n<');
-  } else {
-    file.result = jats;
-  }
+  const xml = serializeJatsXml(element, opts);
+  file.result = xml;
   return file;
 }
 

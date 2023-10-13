@@ -81,7 +81,7 @@ describe('Basic JATS body', () => {
       undefined,
       undefined,
       undefined,
-      { spaces: 'flat' },
+      { format: 'flat' },
     );
     pipe.runSync(tree as any);
     const vfile = pipe.stringify(tree as any);
@@ -110,7 +110,7 @@ describe('JATS full article', () => {
         undefined,
         {
           writeFullArticle: true,
-          spaces: 2,
+          format: 2,
           abstractParts: [
             { part: 'abstract' },
             {
@@ -126,7 +126,7 @@ describe('JATS full article', () => {
       );
       pipe.runSync(tree as any);
       const vfile = pipe.stringify(tree as any);
-      expect(vfile.result).toEqual(jats);
+      expect((vfile.result as string).trim()).toEqual(jats);
       if (TEST_DTD) expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
     },
   );
@@ -151,10 +151,10 @@ describe('JATS multi-article', () => {
         {
           subArticles: subArticles as any,
           writeFullArticle: true,
-          spaces: 2,
+          format: 2,
         },
       );
-      expect(vfile.result).toEqual(jats);
+      expect((vfile.result as string)?.trim()).toEqual(jats);
       if (TEST_DTD) expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
     },
   );
@@ -173,12 +173,12 @@ describe('JATS full notebook', () => {
         undefined,
         {
           writeFullArticle: true,
-          spaces: 2,
+          format: 2,
         },
       );
       pipe.runSync(tree as any);
       const vfile = pipe.stringify(tree as any);
-      expect(vfile.result).toEqual(jats);
+      expect((vfile.result as string).trim()).toEqual(jats);
       if (TEST_DTD) expect(await writeValidateDelete(vfile.result as string)).toBeTruthy();
     },
   );

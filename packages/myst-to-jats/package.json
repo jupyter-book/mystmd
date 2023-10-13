@@ -38,7 +38,8 @@
     "citation-js-utils": "^1.0.2",
     "credit-roles": "^2.1.0",
     "doi-utils": "^2.0.1",
-    "jats-tags": "^1.0.1",
+    "jats-tags": "^1.0.8",
+    "jats-utils": "^1.0.8",
     "katex": "^0.15.2",
     "myst-common": "^1.1.7",
     "myst-frontmatter": "^1.1.7",
@@ -55,7 +56,7 @@
     "@types/js-yaml": "^4.0.5",
     "@types/katex": "^0.14.0",
     "@types/mdast": "^3.0.10",
-    "jats-xml": "^1.0.6",
+    "jats-xml": "^1.0.7",
     "js-yaml": "^4.1.0",
     "myst-cli-utils": "^2.0.4"
   }
