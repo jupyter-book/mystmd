@@ -174,14 +174,6 @@ cases:
                 </name>
               </contrib>
             </contrib-group>
-            <contrib-group>
-              <contrib id="Author Two">
-                <name name-style="western">
-                  <surname>Two</surname>
-                  <given-names>Author</given-names>
-                </name>
-              </contrib>
-            </contrib-group>
             <funding-group>
               <award-group>
                 <principal-investigator>

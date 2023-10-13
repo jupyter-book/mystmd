@@ -217,15 +217,9 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
   const authorContribs = (frontmatter.authors ?? []).map((author): Element => {
     return generateContrib(author, 'author');
   });
-  const otherContribs = (frontmatter.contributors ?? []).map((contributor): Element => {
-    return generateContrib(contributor);
-  });
   const contribGroups: Element[] = [];
   if (authorContribs.length) {
     contribGroups.push({ type: 'element', name: 'contrib-group', elements: authorContribs });
-  }
-  if (otherContribs.length) {
-    contribGroups.push({ type: 'element', name: 'contrib-group', elements: otherContribs });
   }
   return contribGroups;
 }
@@ -298,84 +292,91 @@ function instWrapElementsFromAffiliation(affiliation: Affiliation, includeDept =
 }
 
 export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element[] {
-  const affs = frontmatter.affiliations?.map((affiliation): Element => {
-    const elements: Element[] = [];
-    const attributes: Record<string, any> = {};
-    if (affiliation.id) {
-      attributes.id = affiliation.id;
-    }
-    elements.push(...instWrapElementsFromAffiliation(affiliation));
-    if (affiliation.address) {
-      elements.push({
+  if (!frontmatter.affiliations?.length) return [];
+  // Only add affiliations from authors, not contributors
+  const affIds = [...new Set(frontmatter.authors?.map((auth) => auth.affiliations ?? []).flat())];
+  if (!affIds?.length) return [];
+  const affs = affIds
+    .map((id) => frontmatter.affiliations?.find((aff) => aff.id === id))
+    .filter((aff): aff is Affiliation => !!aff)
+    .map((affiliation): Element => {
+      const elements: Element[] = [];
+      const attributes: Record<string, any> = {};
+      if (affiliation.id) {
+        attributes.id = affiliation.id;
+      }
+      elements.push(...instWrapElementsFromAffiliation(affiliation));
+      if (affiliation.address) {
+        elements.push({
+          type: 'element',
+          name: 'addr-line',
+          elements: [{ type: 'text', text: affiliation.address }],
+        });
+      }
+      if (affiliation.city) {
+        elements.push({
+          type: 'element',
+          name: 'city',
+          elements: [{ type: 'text', text: affiliation.city }],
+        });
+      }
+      if (affiliation.state) {
+        elements.push({
+          type: 'element',
+          name: 'state',
+          elements: [{ type: 'text', text: affiliation.state }],
+        });
+      }
+      if (affiliation.postal_code) {
+        elements.push({
+          type: 'element',
+          name: 'postal-code',
+          elements: [{ type: 'text', text: affiliation.postal_code }],
+        });
+      }
+      if (affiliation.country) {
+        elements.push({
+          type: 'element',
+          name: 'country',
+          elements: [{ type: 'text', text: affiliation.country }],
+        });
+      }
+      if (affiliation.phone) {
+        elements.push({
+          type: 'element',
+          name: 'phone',
+          elements: [{ type: 'text', text: affiliation.phone }],
+        });
+      }
+      if (affiliation.fax) {
+        elements.push({
+          type: 'element',
+          name: 'fax',
+          elements: [{ type: 'text', text: affiliation.fax }],
+        });
+      }
+      if (affiliation.email) {
+        elements.push({
+          type: 'element',
+          name: 'email',
+          elements: [{ type: 'text', text: affiliation.email }],
+        });
+      }
+      if (affiliation.url) {
+        elements.push({
+          type: 'element',
+          name: 'ext-link',
+          attributes: { 'ext-link-type': 'uri', 'xlink:href': affiliation.url },
+          elements: [{ type: 'text', text: affiliation.url }],
+        });
+      }
+      return {
         type: 'element',
-        name: 'addr-line',
-        elements: [{ type: 'text', text: affiliation.address }],
-      });
-    }
-    if (affiliation.city) {
-      elements.push({
-        type: 'element',
-        name: 'city',
-        elements: [{ type: 'text', text: affiliation.city }],
-      });
-    }
-    if (affiliation.state) {
-      elements.push({
-        type: 'element',
-        name: 'state',
-        elements: [{ type: 'text', text: affiliation.state }],
-      });
-    }
-    if (affiliation.postal_code) {
-      elements.push({
-        type: 'element',
-        name: 'postal-code',
-        elements: [{ type: 'text', text: affiliation.postal_code }],
-      });
-    }
-    if (affiliation.country) {
-      elements.push({
-        type: 'element',
-        name: 'country',
-        elements: [{ type: 'text', text: affiliation.country }],
-      });
-    }
-    if (affiliation.phone) {
-      elements.push({
-        type: 'element',
-        name: 'phone',
-        elements: [{ type: 'text', text: affiliation.phone }],
-      });
-    }
-    if (affiliation.fax) {
-      elements.push({
-        type: 'element',
-        name: 'fax',
-        elements: [{ type: 'text', text: affiliation.fax }],
-      });
-    }
-    if (affiliation.email) {
-      elements.push({
-        type: 'element',
-        name: 'email',
-        elements: [{ type: 'text', text: affiliation.email }],
-      });
-    }
-    if (affiliation.url) {
-      elements.push({
-        type: 'element',
-        name: 'ext-link',
-        attributes: { 'ext-link-type': 'uri', 'xlink:href': affiliation.url },
-        elements: [{ type: 'text', text: affiliation.url }],
-      });
-    }
-    return {
-      type: 'element',
-      name: 'aff',
-      attributes,
-      elements,
-    };
-  });
+        name: 'aff',
+        attributes,
+        elements,
+      };
+    });
   return affs ? affs : [];
 }
 
