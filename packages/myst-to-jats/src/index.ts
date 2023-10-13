@@ -7,9 +7,8 @@ import katex from 'katex';
 import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode, GenericParent } from 'myst-common';
 import { RuleId, copyNode, extractPart, fileError } from 'myst-common';
-import type { PageFrontmatter, Contributor } from 'myst-frontmatter';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
-import type { Affiliation } from 'jats-tags';
 import { Tags, RefType } from 'jats-tags';
 import type { MinifiedOutput } from 'nbtx';
 import { getBack } from './backmatter.js';
@@ -31,6 +30,7 @@ import {
   referenceTargetTransform,
 } from './transforms/index.js';
 import type { SupplementaryMaterial } from './transforms/containers.js';
+import { affiliationIdTransform } from './transforms/frontmatter.js';
 import type { IdInventory } from './transforms/references.js';
 import type { Section } from './transforms/sections.js';
 import { sectionAttrsFromBlock } from './transforms/sections.js';
@@ -741,9 +741,15 @@ export class JatsDocument {
         // No citations here - don't want duplicates in the jats
       });
     }
-    const subArticleStates = subArticles.map((article, ind) => {
-      const subArticleState = this.subArticleState(article, ind === 0 && isNotebookArticleRep);
-      referenceTargetTransform(subArticleState.mdast as any, inventory, article.citations);
+    affiliationIdTransform(
+      [this.content.frontmatter, ...subArticles.map((a) => a.frontmatter)].filter(
+        (fm): fm is PageFrontmatter => !!fm,
+      ),
+      'aff',
+    );
+    const subArticleStates = subArticles.map((subArticle, ind) => {
+      const subArticleState = this.subArticleState(subArticle, ind === 0 && isNotebookArticleRep);
+      referenceTargetTransform(subArticleState.mdast as any, inventory, subArticle.citations);
       return subArticleState;
     });
     [articleState, ...subArticleStates].forEach((state) => {
@@ -778,25 +784,10 @@ export class JatsDocument {
   ): Element[] {
     const stubFrontmatter: Record<string, any> = {};
     if (frontmatter) {
+      // Do not duplicate frontmatter fields that are already in the article front
       Object.entries(frontmatter).forEach(([key, val]) => {
         const articleVal = this.content.frontmatter?.[key as keyof PageFrontmatter];
-        // for authors/contributors/affiliations, remove any from stub that are already on articleVal
-        if (['affiliations', 'authors', 'contributors'].includes(key)) {
-          const existingItems =
-            key === 'affiliations'
-              ? ((this.content.frontmatter?.affiliations ?? []) as Affiliation[])
-              : ([
-                  ...(this.content.frontmatter?.authors ?? []),
-                  ...(this.content.frontmatter?.contributors ?? []),
-                ] as Contributor[]);
-          const existingIds = existingItems.map((item) => item.id).filter(Boolean);
-          const filteredVal = (val as { id: string }[]).filter(
-            (item) => !existingIds.includes(item.id),
-          );
-          if (filteredVal.length) {
-            stubFrontmatter[key] = filteredVal;
-          }
-        } else if (articleVal == null || JSON.stringify(val) !== JSON.stringify(articleVal)) {
+        if (articleVal == null || JSON.stringify(val) !== JSON.stringify(articleVal)) {
           stubFrontmatter[key] = val;
         }
       });
@@ -830,14 +821,18 @@ export class JatsDocument {
     });
   }
 
-  subArticle(state: IJatsSerializer, content: ArticleContent, notebookRep: boolean): Element {
+  subArticle(
+    subArticleState: IJatsSerializer,
+    content: ArticleContent,
+    notebookRep: boolean,
+  ): Element {
     const elements: Element[] = [
-      ...this.frontStub(content.frontmatter, state, notebookRep),
-      { type: 'element', name: 'body', elements: state.elements() },
-      ...getBack(state, {
+      ...this.frontStub(content.frontmatter, subArticleState, notebookRep),
+      { type: 'element', name: 'body', elements: subArticleState.elements() },
+      ...getBack(subArticleState, {
         citations: content.citations,
-        footnotes: state.footnotes,
-        expressions: state.expressions,
+        footnotes: subArticleState.footnotes,
+        expressions: subArticleState.expressions,
       }),
     ];
     const attributes: Record<string, any> = {};
