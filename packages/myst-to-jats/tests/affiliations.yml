@@ -8,6 +8,11 @@ cases:
             - type: text
               value: text
     frontmatter:
+      authors:
+        - name: John Doe
+          affiliations:
+            - univa
+            - univb
       affiliations:
         - id: univa
           name: University A
@@ -32,6 +37,16 @@ cases:
       <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ali="http://www.niso.org/schemas/ali/1.0/" dtd-version="1.3" xml:lang="en">
         <front>
           <article-meta>
+            <contrib-group>
+              <contrib contrib-type="author">
+                <name name-style="western">
+                  <surname>Doe</surname>
+                  <given-names>John</given-names>
+                </name>
+                <xref ref-type="aff" rid="univa"/>
+                <xref ref-type="aff" rid="univb"/>
+              </contrib>
+            </contrib-group>
             <aff id="univa">
               <institution-wrap>
                 <institution>University A</institution>
