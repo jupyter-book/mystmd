@@ -65,6 +65,7 @@ const macros: Record<string, number> = {
   nameref: 1,
   textsubscript: 1,
   textsuperscript: 1,
+  adjustwidth: 2,
   author: 1,
   email: 1,
   affil: 1,

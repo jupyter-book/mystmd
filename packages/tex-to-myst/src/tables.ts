@@ -36,7 +36,12 @@ function createTable(node: GenericNode, state: ITexParser) {
     state.openNode('tableRow');
     row.forEach((cell) => {
       state.openNode('tableCell', rowIndex === 0 ? { header: true } : undefined);
-      state.renderChildren({ content: cell });
+      // Ignore ending whitespace "title &" should become "title"
+      trimWhitespace(cell);
+      // Putting things in a group helps with floating `\bf` commands
+      // For example:
+      // `& \bf title &` --> `& {\bf title} &`
+      state.renderChildren({ content: [{ type: 'group', content: cell }] });
       state.closeParagraph();
       unnestParagraphs(state.top(), 'tableCell');
       state.closeNode();
@@ -147,3 +152,12 @@ export const TABLE_HANDLERS: Record<string, Handler> = {
     state.closeNode();
   },
 };
+
+function trimWhitespace(content: GenericNode[]): GenericNode[] {
+  if (content.slice(-1)[0]?.type === 'whitespace') {
+    content.pop();
+    // Recursive
+    return trimWhitespace(content);
+  }
+  return content;
+}
