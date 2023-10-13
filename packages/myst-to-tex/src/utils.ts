@@ -93,6 +93,7 @@ const mathReplacements: Record<string, string> = {
   '⅒': '\\frac{1}{10}',
   '±': '\\pm',
   '×': '\\times',
+  '⋆': '\\star',
   Α: 'A',
   α: '\\alpha',
   Β: 'B',
