@@ -59,6 +59,13 @@ export const TABLE_HANDLERS: Record<string, Handler> = {
     state.closeParagraph();
     state.closeNode();
   },
+  ['env_table*'](node, state) {
+    state.closeParagraph();
+    state.openNode('container', { kind: 'table' });
+    state.renderChildren(node);
+    state.closeParagraph();
+    state.closeNode();
+  },
   env_tabular: createTable,
   env_tabularx: createTable,
   env_supertabular: createTable,

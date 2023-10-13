@@ -17,7 +17,7 @@ const UNITS: Record<string, string> = {
   mole: 'mol',
   second: 's',
   becquerel: 'Bq',
-  degreeCelsius: '°C',
+  degreeCelsius: '℃',
   coulomb: 'C',
   farad: 'F',
   gray: 'Gy',
@@ -54,6 +54,7 @@ const UNITS: Record<string, string> = {
   arcsecond: '″', // second (plane angle) U+2033
   neper: 'Np',
   tonne: 't',
+  celsius: '℃',
 };
 
 // SI prefixes
@@ -324,6 +325,18 @@ const SIUNITX_HANDLERS: Record<string, Handler> = {
       alt,
       units: units.map((n: GenericNode) => n.content),
       value,
+    });
+    return;
+  },
+  macro_si(node, state) {
+    state.openParagraph();
+    const { units, alt, organized } = createSiUnitNode(state.file, node, 0);
+    const translated = organized.map(unitToString).join(NARROW_NO_BREAK_SPACE);
+    state.addLeaf<SiUnit>('si', {
+      unit: translated,
+      alt,
+      units: units.map((n: GenericNode) => n.content),
+      value: translated,
     });
     return;
   },

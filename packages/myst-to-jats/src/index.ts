@@ -438,7 +438,7 @@ const handlers: Record<string, Handler> = {
   si(node, state) {
     // <named-content content-type="quantity">5 <abbrev content-type="unit" alt="milli meter">mm</abbrev></named-content>
     state.openNode('named-content', { 'content-type': 'quantity' });
-    state.text(`${node.number} `);
+    if (node.number != null) state.text(`${node.number} `);
     state.openNode('abbrev', { 'content-type': 'unit', alt: node.alt });
     state.text(node.unit);
     state.closeNode();
