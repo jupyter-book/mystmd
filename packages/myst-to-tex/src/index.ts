@@ -17,6 +17,7 @@ import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { selectAll } from 'unist-util-select';
 import type { FootnoteDefinition } from 'myst-spec-ext';
 import { transformLegends } from './legends.js';
+import { TexProofSerializer, proofHandler } from './proof.js';
 
 export type { LatexResult } from './types.js';
 
@@ -332,6 +333,7 @@ const handlers: Record<string, Handler> = {
     state.closeBlock(node);
   },
   container: containerHandler,
+  proof: proofHandler,
   caption: captionHandler,
   captionNumber: () => undefined,
   crossReference(node, state, parent) {
@@ -598,14 +600,20 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     transformLegends(node);
 
     const state = new TexSerializer(file, node, opts ?? { handlers });
-    let tex = (file.result as string).trim();
-
     const glossaryState = new TexGlossaryAndAcronymSerializer(state.glossary, state.abbreviations);
+
+    const preamble: string[] = [];
+    if (state.data.hasProofs) {
+      preamble.push(new TexProofSerializer().preamble);
+    }
+    preamble.push(opts?.printGlossaries ? glossaryState.preamble : '');
+
+    let tex = (file.result as string).trim();
     tex += opts?.printGlossaries ? '\n' + glossaryState.printedDefinitions : '';
 
     const result: LatexResult = {
       imports: [...state.data.imports],
-      preamble: opts?.printGlossaries ? glossaryState.preamble : '',
+      preamble: preamble.join('\n\n'),
       commands: withRecursiveCommands(state),
       value: tex,
     };

@@ -49,5 +49,8 @@
     "unist-util-remove": "^3.1.0",
     "vfile": "^5.0.0",
     "vfile-reporter": "^7.0.4"
+  },
+  "devDependencies": {
+    "myst-to-tex": "^1.0.7"
   }
 }

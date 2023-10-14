@@ -33,6 +33,7 @@ export type StateData = {
   nextCaptionNumbered?: boolean;
   nextHeadingIsFrameTitle?: boolean;
   nextCaptionId?: string;
+  hasProofs?: boolean;
   mathPlugins: Required<PageFrontmatter>['math'];
   imports: Set<string>;
 };
