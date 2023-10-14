@@ -1,4 +1,4 @@
-import { RuleId, fileError, writeTexLabelledComment } from 'myst-common';
+import { fileError, writeTexLabelledComment, RuleId } from 'myst-common';
 import type { GenericNode } from 'myst-common';
 import type { Text } from 'myst-spec';
 import type { ProofContainer, ProofKind } from 'myst-ext-proof';
