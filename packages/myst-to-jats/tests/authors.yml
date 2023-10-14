@@ -21,7 +21,7 @@ cases:
             - Editing # Note the british spelling
             - credit role & 2 # Test that "&" is encoded correctly
           affiliations:
-            - univa
+            - aff-1
           email: example@example.com
           equal-contributor: false # using the alias!
           deceased: true
@@ -35,7 +35,7 @@ cases:
             literal: John Doe III
             suffix: III
       affiliations:
-        - id: univa
+        - id: aff-1
           name: University A
     jats: |-
       <?xml version="1.0" encoding="UTF-8"?>
@@ -44,7 +44,7 @@ cases:
         <front>
           <article-meta>
             <contrib-group>
-              <contrib contrib-type="author" id="contributors-generated-uid-0" corresp="yes" deceased="yes" equal-contrib="no">
+              <contrib contrib-type="author" corresp="yes" deceased="yes" equal-contrib="no">
                 <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
                 <name name-style="western">
                   <surname>Doe</surname>
@@ -54,22 +54,22 @@ cases:
                 <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Conceptualization" vocab-term-identifier="https://credit.niso.org/contributor-roles/conceptualization/">Conceptualization</role>
                 <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Writing – review &amp; editing" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-review-editing/">Writing – review &amp; editing</role>
                 <role>credit role &amp; 2</role>
-                <xref ref-type="aff" rid="univa"/>
+                <xref ref-type="aff" rid="aff-1"/>
                 <email>example@example.com</email>
                 <ext-link ext-link-type="uri" xlink:href="https://example.com">https://example.com</ext-link>
               </contrib>
-              <contrib contrib-type="author" id="contributors-generated-uid-1">
+              <contrib contrib-type="author">
                 <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>John</given-names>
                   <suffix>Jr.</suffix>
                 </name>
               </contrib>
-              <contrib contrib-type="author" id="contributors-generated-uid-2">
+              <contrib contrib-type="author">
                 <string-name name-style="western">John Doe III</string-name>
               </contrib>
             </contrib-group>
-            <aff id="univa">
+            <aff id="aff-1">
               <institution-wrap>
                 <institution>University A</institution>
               </institution-wrap>

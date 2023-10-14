@@ -1,16 +1,16 @@
-import type { Root, CrossReference, TableCell as SpecTableCell } from 'myst-spec';
+import type { Root, CrossReference, TableCell as SpecTableCell, Math, InlineMath } from 'myst-spec';
 import type { Cite, Code, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
 import type { Plugin } from 'unified';
-import type { VFile } from 'vfile';
-import { js2xml, xml2js } from 'xml-js';
-import katex from 'katex';
+import { VFile } from 'vfile';
+import { xml2js } from 'xml-js';
 import type { CitationRenderer } from 'citation-js-utils';
 import type { MessageInfo, GenericNode, GenericParent } from 'myst-common';
 import { RuleId, copyNode, extractPart, fileError } from 'myst-common';
-import type { PageFrontmatter, Contributor } from 'myst-frontmatter';
+import type { PageFrontmatter } from 'myst-frontmatter';
+import { renderEquation } from 'myst-transforms';
 import { SourceFileKind } from 'myst-spec-ext';
-import type { Affiliation } from 'jats-tags';
 import { Tags, RefType } from 'jats-tags';
+import { serializeJatsXml } from 'jats-utils';
 import type { MinifiedOutput } from 'nbtx';
 import { getBack } from './backmatter.js';
 import { getArticleMeta, getFront } from './frontmatter.js';
@@ -31,6 +31,7 @@ import {
   referenceTargetTransform,
 } from './transforms/index.js';
 import type { SupplementaryMaterial } from './transforms/containers.js';
+import { affiliationIdTransform } from './transforms/frontmatter.js';
 import type { IdInventory } from './transforms/references.js';
 import type { Section } from './transforms/sections.js';
 import { sectionAttrsFromBlock } from './transforms/sections.js';
@@ -121,24 +122,47 @@ function alternativesFromMinifiedOutput(output: MinifiedOutput, state: IJatsSeri
   state.closeNode();
 }
 
-function mathToMml(math?: string, inline?: boolean) {
-  const katexXml = katex.renderToString(math, { output: 'mathml', throwOnError: false });
-  const katexJs = xml2js(katexXml, { compact: false }) as Element;
+function addMmlAndRemoveAnnotation(el?: Element) {
+  if (el?.name) el.name = `mml:${el.name}`;
+  if (!el?.elements) return;
+  el.elements = el.elements.filter((child: Element) => child.name !== 'annotation');
+  el.elements.forEach((child: Element) => {
+    addMmlAndRemoveAnnotation(child);
+  });
+}
+
+function mathToMml(node: Math | InlineMath) {
+  const math = copyNode(node);
+  // TODO: add macros
+  renderEquation(new VFile(), math, { mathML: true });
+  const katexJs = xml2js((math as any).html, { compact: false }) as Element;
   const spanElement = katexJs.elements?.[0];
   const mathElement = spanElement?.elements?.[0];
   if (!mathElement) return;
+  const inline = node.type === 'inlineMath';
   if (inline) mathElement.attributes = { ...mathElement.attributes, display: 'inline' };
   delete mathElement.attributes?.xmlns;
-  function addMmlAndRemoveAnnotation(el?: Element) {
-    if (el?.name) el.name = `mml:${el.name}`;
-    if (!el?.elements) return;
-    el.elements = el.elements.filter((child: Element) => child.name !== 'annotation');
-    el.elements.forEach((child: Element) => {
-      addMmlAndRemoveAnnotation(child);
-    });
-  }
   addMmlAndRemoveAnnotation(mathElement);
+  // Remove the wrapping `<mml:semantics><mml:mrow>` if it is the only element
+  if (mathElement?.elements?.length === 1 && mathElement.elements[0].name === 'mml:semantics') {
+    mathElement.elements = mathElement.elements[0].elements;
+  }
+  if (mathElement?.elements?.length === 1 && mathElement.elements[0].name === 'mml:mrow') {
+    mathElement.elements = mathElement.elements[0].elements;
+  }
   return mathElement;
+}
+
+/**
+ * Remove comments and consolidate to one line
+ */
+function cleanLatex(value?: string): string | undefined {
+  if (!value) return;
+  return value
+    .split('\n')
+    .map((s) => s.replace(/%(.*)/, '').trim())
+    .join(' ')
+    .trim();
 }
 
 const handlers: Record<string, Handler> = {
@@ -203,11 +227,15 @@ const handlers: Record<string, Handler> = {
     );
   },
   inlineMath(node, state) {
-    state.openNode('inline-formula');
+    const inlineFormulaAttrs: Attributes = {};
+    if (node.identifier) {
+      inlineFormulaAttrs.id = node.identifier;
+    }
+    state.openNode('inline-formula', inlineFormulaAttrs);
     state.openNode('alternatives');
-    state.pushNode(mathToMml(node.value, true));
+    state.pushNode(mathToMml(node as InlineMath));
     state.openNode('tex-math');
-    state.addLeaf('cdata', { cdata: node.value });
+    state.addLeaf('cdata', { cdata: cleanLatex(node.value) });
     state.closeNode();
     state.closeNode();
     state.closeNode();
@@ -220,9 +248,9 @@ const handlers: Record<string, Handler> = {
     state.openNode('disp-formula', dispFormulaAttrs);
     renderLabel(node, state, (enumerator) => `(${enumerator})`);
     state.openNode('alternatives');
-    state.pushNode(mathToMml(node.value));
+    state.pushNode(mathToMml(node as Math));
     state.openNode('tex-math');
-    state.addLeaf('cdata', { cdata: node.value });
+    state.addLeaf('cdata', { cdata: cleanLatex(node.value) });
     state.closeNode();
     state.closeNode();
     state.closeNode();
@@ -321,7 +349,7 @@ const handlers: Record<string, Handler> = {
     if (node.url?.startsWith('http')) {
       state.warn(`Image URL is remote (${node.url})`, node, 'image');
     }
-    if (state.data.isInContainer && node.alt) {
+    if (state.data.isInContainer && node.alt && !node.data?.altTextIsAutoGenerated) {
       state.openNode('alt-text');
       state.text(node.alt);
       state.closeNode();
@@ -413,7 +441,7 @@ const handlers: Record<string, Handler> = {
   si(node, state) {
     // <named-content content-type="quantity">5 <abbrev content-type="unit" alt="milli meter">mm</abbrev></named-content>
     state.openNode('named-content', { 'content-type': 'quantity' });
-    state.text(`${node.number} `);
+    if (node.number != null) state.text(`${node.number} `);
     state.openNode('abbrev', { 'content-type': 'unit', alt: node.alt });
     state.text(node.unit);
     state.closeNode();
@@ -717,9 +745,15 @@ export class JatsDocument {
         // No citations here - don't want duplicates in the jats
       });
     }
-    const subArticleStates = subArticles.map((article, ind) => {
-      const subArticleState = this.subArticleState(article, ind === 0 && isNotebookArticleRep);
-      referenceTargetTransform(subArticleState.mdast as any, inventory, article.citations);
+    affiliationIdTransform(
+      [this.content.frontmatter, ...subArticles.map((a) => a.frontmatter)].filter(
+        (fm): fm is PageFrontmatter => !!fm,
+      ),
+      'aff',
+    );
+    const subArticleStates = subArticles.map((subArticle, ind) => {
+      const subArticleState = this.subArticleState(subArticle, ind === 0 && isNotebookArticleRep);
+      referenceTargetTransform(subArticleState.mdast as any, inventory, subArticle.citations);
       return subArticleState;
     });
     [articleState, ...subArticleStates].forEach((state) => {
@@ -754,25 +788,10 @@ export class JatsDocument {
   ): Element[] {
     const stubFrontmatter: Record<string, any> = {};
     if (frontmatter) {
+      // Do not duplicate frontmatter fields that are already in the article front
       Object.entries(frontmatter).forEach(([key, val]) => {
         const articleVal = this.content.frontmatter?.[key as keyof PageFrontmatter];
-        // for authors/contributors/affiliations, remove any from stub that are already on articleVal
-        if (['affiliations', 'authors', 'contributors'].includes(key)) {
-          const existingItems =
-            key === 'affiliations'
-              ? ((this.content.frontmatter?.affiliations ?? []) as Affiliation[])
-              : ([
-                  ...(this.content.frontmatter?.authors ?? []),
-                  ...(this.content.frontmatter?.contributors ?? []),
-                ] as Contributor[]);
-          const existingIds = existingItems.map((item) => item.id).filter(Boolean);
-          const filteredVal = (val as { id: string }[]).filter(
-            (item) => !existingIds.includes(item.id),
-          );
-          if (filteredVal.length) {
-            stubFrontmatter[key] = filteredVal;
-          }
-        } else if (articleVal == null || JSON.stringify(val) !== JSON.stringify(articleVal)) {
+        if (articleVal == null || JSON.stringify(val) !== JSON.stringify(articleVal)) {
           stubFrontmatter[key] = val;
         }
       });
@@ -806,14 +825,18 @@ export class JatsDocument {
     });
   }
 
-  subArticle(state: IJatsSerializer, content: ArticleContent, notebookRep: boolean): Element {
+  subArticle(
+    subArticleState: IJatsSerializer,
+    content: ArticleContent,
+    notebookRep: boolean,
+  ): Element {
     const elements: Element[] = [
-      ...this.frontStub(content.frontmatter, state, notebookRep),
-      { type: 'element', name: 'body', elements: state.elements() },
-      ...getBack(state, {
+      ...this.frontStub(content.frontmatter, subArticleState, notebookRep),
+      { type: 'element', name: 'body', elements: subArticleState.elements() },
+      ...getBack(subArticleState, {
         citations: content.citations,
-        footnotes: state.footnotes,
-        expressions: state.expressions,
+        footnotes: subArticleState.footnotes,
+        expressions: subArticleState.expressions,
       }),
     ];
     const attributes: Record<string, any> = {};
@@ -846,19 +869,8 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
         declaration: { attributes: { version: '1.0', encoding: 'UTF-8' } },
       }
     : doc.body();
-  const jats = js2xml(element, {
-    compact: false,
-    //  No way to write XML with new lines, but no indentation with js2xml.
-    // If you use 0 or '', you get a single line.
-    spaces: opts?.spaces === 'flat' ? 0 : opts?.spaces || 1,
-    attributeValueFn: escapeForXML,
-  });
-  if (!opts?.spaces) {
-    // either `0` or `''`
-    file.result = jats.replace(/\n(\s*)</g, '\n<');
-  } else {
-    file.result = jats;
-  }
+  const xml = serializeJatsXml(element, opts);
+  file.result = xml;
   return file;
 }
 

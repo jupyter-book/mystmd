@@ -79,26 +79,13 @@ cases:
         <front>
           <article-meta>
             <contrib-group>
-              <contrib contrib-type="author" id="John Doe">
+              <contrib contrib-type="author">
                 <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>John</given-names>
                 </name>
               </contrib>
             </contrib-group>
-            <contrib-group>
-              <contrib id="Jane Doe">
-                <name name-style="western">
-                  <surname>Doe</surname>
-                  <given-names>Jane</given-names>
-                </name>
-              </contrib>
-            </contrib-group>
-            <aff id="University A">
-              <institution-wrap>
-                <institution>University A</institution>
-              </institution-wrap>
-            </aff>
             <funding-group>
               <award-group>
                 <funding-source>
@@ -144,7 +131,7 @@ cases:
           name: John Doe
           orcid: 0000-0000-0000-0000
           affiliations:
-            - id: univa
+            - id: aff-1
               name: University A
               department: Some Department
       affiliations:
@@ -157,7 +144,7 @@ cases:
               name: Award
               description: my test award
               sources:
-                - univa
+                - aff-1
                 - univb
               investigators:
                 - jd
@@ -181,39 +168,21 @@ cases:
         <front>
           <article-meta>
             <contrib-group>
-              <contrib contrib-type="author" id="jd">
+              <contrib contrib-type="author">
                 <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
                 <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>John</given-names>
                 </name>
-                <xref ref-type="aff" rid="univa"/>
+                <xref ref-type="aff" rid="aff-1"/>
               </contrib>
             </contrib-group>
-            <contrib-group>
-              <contrib id="contributors-generated-uid-1">
-                <name name-style="western">
-                  <surname>Doe</surname>
-                  <given-names>Jane</given-names>
-                </name>
-              </contrib>
-            </contrib-group>
-            <aff id="univb">
-              <institution-wrap>
-                <institution>University B</institution>
-              </institution-wrap>
-            </aff>
-            <aff id="univa">
+            <aff id="aff-1">
               <institution-wrap>
                 <institution>University A</institution>
               </institution-wrap>
               <institution-wrap>
                 <institution content-type="dept">Some Department</institution>
-              </institution-wrap>
-            </aff>
-            <aff id="University C">
-              <institution-wrap>
-                <institution>University C</institution>
               </institution-wrap>
             </aff>
             <funding-group>
@@ -299,7 +268,7 @@ cases:
           name: John Doe
           orcid: 0000-0000-0000-0000
           affiliations:
-            - id: univa
+            - id: aff-1
               name: University A
               doi: https://doi.org/10.13039/000000
               isni: '0000000000000000'
@@ -318,7 +287,7 @@ cases:
               name: Award
               description: my test award
               sources:
-                - univa
+                - aff-1
                 - univb
     jats: |-
       <?xml version="1.0" encoding="UTF-8"?>
@@ -327,25 +296,16 @@ cases:
         <front>
           <article-meta>
             <contrib-group>
-              <contrib contrib-type="author" id="jd">
+              <contrib contrib-type="author">
                 <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
                 <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>John</given-names>
                 </name>
-                <xref ref-type="aff" rid="univa"/>
+                <xref ref-type="aff" rid="aff-1"/>
               </contrib>
             </contrib-group>
-            <aff id="univb">
-              <institution-wrap>
-                <institution>University B</institution>
-                <institution-id institution-id-type="isni">0000000000000001</institution-id>
-                <institution-id institution-id-type="ringgold">99998</institution-id>
-                <institution-id institution-id-type="ror">0000000000000001</institution-id>
-                <institution-id institution-id-type="doi">10.1000/efg012</institution-id>
-              </institution-wrap>
-            </aff>
-            <aff id="univa">
+            <aff id="aff-1">
               <institution-wrap>
                 <institution>University A</institution>
                 <institution-id institution-id-type="isni">0000000000000000</institution-id>

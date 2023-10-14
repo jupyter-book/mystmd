@@ -46,7 +46,7 @@ export const BASIC_TEXT_HANDLERS: Record<string, Handler> = {
     // often the contents of a group (e.g. caption)
     const prev = state.data.openGroups;
     state.renderChildren(node);
-    // We want to backout of the groups and close any open nodes that are terminated by this group
+    // We want to back out of the groups and close any open nodes that are terminated by this group
     // For example "{\bf text} not bold"
     state.data.openGroups.reverse().forEach((kind) => {
       const topType = state.top().type;

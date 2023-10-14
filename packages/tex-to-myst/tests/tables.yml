@@ -162,8 +162,6 @@ cases:
                       children:
                         - type: inlineMath
                           value: \mathrm{T}
-                        - type: text
-                          value: ''
                     - type: tableCell
                       children:
                         - type: text
@@ -181,8 +179,6 @@ cases:
                         - type: footnoteReference
                           label: someRandomId-1
                           identifier: somerandomid-1
-                        - type: text
-                          value: ''
                     - type: tableCell
                       children:
                         - type: text
@@ -273,3 +269,61 @@ cases:
                   children:
                     - type: text
                       value: e
+  - title: multicolumn - bold description
+    tex: |-
+      \begin{table}[!ht]
+      \begin{adjustwidth}{-2.6in}{0in}
+      \caption{{Parameter values}}
+      \begin{tabular}{|c|c|}
+      \hline
+      \multicolumn{2}{|c|}{Sym.} & \bf Description \\ \hline
+      one & two & three \\
+      \end{tabular}
+      \label{table:modelparams}
+      \end{adjustwidth}
+      \end{table}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: table
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Parameter values
+            - type: table
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      colspan: 2
+                      children:
+                        - type: text
+                          value: Sym.
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: strong
+                          children:
+                            - type: text
+                              value: Description
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: one
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: two
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: three
+          label: table:modelparams
+          identifier: table:modelparams

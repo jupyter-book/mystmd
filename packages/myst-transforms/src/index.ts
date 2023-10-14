@@ -16,6 +16,7 @@ export {
   mathTransform,
   mathLabelTransform,
   mathNestingTransform,
+  renderEquation,
 } from './math.js';
 export {
   blockNestingPlugin,
