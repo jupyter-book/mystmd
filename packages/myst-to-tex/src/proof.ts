@@ -1,4 +1,4 @@
-import { fileError, writeTexLabelledComment } from 'myst-common';
+import { RuleId, fileError, writeTexLabelledComment } from 'myst-common';
 import type { GenericNode } from 'myst-common';
 import type { Text } from 'myst-spec';
 import type { ProofContainer, ProofKind } from 'myst-ext-proof';
@@ -42,6 +42,7 @@ export const proofHandler: Handler = (node, state) => {
     fileError(state.file, `Unhandled LaTeX proof environment "${p.kind}"`, {
       node,
       source: 'myst-to-tex',
+      ruleId: RuleId.texRenders,
     });
     return;
   }
