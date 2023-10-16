@@ -16,6 +16,14 @@ import { castSession } from '../session/index.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
 
+function getFilename(hash: string, contentType: string) {
+  return `${hash}${extFromMimeType(contentType)}`;
+}
+
+function getDestination(hash: string, contentType: string, writeFolder: string) {
+  return join(writeFolder, getFilename(hash, contentType));
+}
+
 export async function transformOutputs(
   session: ISession,
   mdast: GenericParent,
@@ -40,8 +48,8 @@ export async function transformOutputs(
     walkOutputs(node.data, (obj) => {
       if (!obj.hash || !cache.$outputs[obj.hash]) return undefined;
       const [content, { contentType, encoding }] = cache.$outputs[obj.hash];
-      const filename = `${obj.hash}${extFromMimeType(contentType)}`;
-      const destination = join(writeFolder, filename);
+      const filename = getFilename(obj.hash, contentType);
+      const destination = getDestination(obj.hash, contentType, writeFolder);
 
       if (fs.existsSync(destination)) {
         session.log.debug(`Cached file found for notebook output: ${destination}`);
@@ -72,7 +80,12 @@ export async function transformOutputs(
  * It also only supports minified images (i.e. images cannot be too small) or
  * non-minified text (i.e. text cannot be too large).
  */
-export function reduceOutputs(session: ISession, mdast: GenericParent, file: string) {
+export function reduceOutputs(
+  session: ISession,
+  mdast: GenericParent,
+  file: string,
+  writeFolder: string,
+) {
   const outputs = selectAll('output', mdast) as GenericNode[];
   const unusedOutputs: string[] = [];
   outputs.forEach((node) => {
@@ -93,8 +106,8 @@ export function reduceOutputs(session: ISession, mdast: GenericParent, file: str
               selectedOutput = { content_type, path, hash };
             }
           }
-        } else if (path) {
-          unusedOutputs.push(path);
+        } else if (hash && content_type) {
+          unusedOutputs.push(getDestination(hash, content_type, writeFolder));
         }
       });
       if (selectedOutput) selectedOutputs.push(selectedOutput);
@@ -109,9 +122,10 @@ export function reduceOutputs(session: ISession, mdast: GenericParent, file: str
             url: relativePath,
             urlSource: relativePath,
           };
-        } else if (output?.content_type === 'text/plain' && output?.path) {
-          unusedOutputs.push(output.path);
-          const content = fs.readFileSync(output.path, 'utf-8');
+        } else if (output?.content_type === 'text/plain' && output?.hash) {
+          const destination = getDestination(output.hash, output.content_type, writeFolder);
+          unusedOutputs.push(destination);
+          const content = fs.readFileSync(destination, 'utf-8');
           return {
             type: 'code',
             data: { type: 'output' },

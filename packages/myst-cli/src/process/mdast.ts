@@ -215,7 +215,7 @@ export async function transformMdast(
     .run(mdast, vfile);
   if (simplifyFigures) {
     // Transform output nodes to images / text
-    reduceOutputs(session, mdast, file);
+    reduceOutputs(session, mdast, file, imageWriteFolder);
   }
   if (!useExistingImages) {
     await transformImages(session, mdast, file, imageWriteFolder, {

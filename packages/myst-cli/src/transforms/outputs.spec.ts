@@ -29,7 +29,7 @@ describe('reduceOutputs', () => {
       ],
     };
     expect(mdast.children[0].children.length).toEqual(2);
-    reduceOutputs(new Session(), mdast, 'notebook.ipynb');
+    reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
     expect(mdast.children[0].children.length).toEqual(1);
   });
   it('output with complex data is removed', async () => {
@@ -71,7 +71,7 @@ describe('reduceOutputs', () => {
       ],
     };
     expect(mdast.children[0].children.length).toEqual(2);
-    reduceOutputs(new Session(), mdast, 'notebook.ipynb');
+    reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
     expect(mdast.children[0].children.length).toEqual(1);
   });
   it('image output converts to image node', async () => {
@@ -103,7 +103,7 @@ describe('reduceOutputs', () => {
         },
       ],
     };
-    reduceOutputs(new Session(), mdast, 'notebook.ipynb');
+    reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
     expect(mdast.children.length).toEqual(1);
     expect(mdast.children[0].type).toEqual('image');
   });
@@ -176,7 +176,7 @@ describe('reduceOutputs', () => {
         },
       ],
     };
-    reduceOutputs(new Session(), mdast, 'notebook.ipynb');
+    reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
     expect(mdast.children.length).toEqual(3);
     expect(mdast.children[0].type).toEqual('image');
     expect(mdast.children[1].type).toEqual('image');
