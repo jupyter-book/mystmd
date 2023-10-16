@@ -16,6 +16,14 @@ import { castSession } from '../session/index.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
 
+function getFilename(hash: string, contentType: string) {
+  return `${hash}${extFromMimeType(contentType)}`;
+}
+
+function getDestination(hash: string, contentType: string, writeFolder: string) {
+  return join(writeFolder, getFilename(hash, contentType));
+}
+
 export async function transformOutputs(
   session: ISession,
   mdast: GenericParent,
@@ -40,8 +48,8 @@ export async function transformOutputs(
     walkOutputs(node.data, (obj) => {
       if (!obj.hash || !cache.$outputs[obj.hash]) return undefined;
       const [content, { contentType, encoding }] = cache.$outputs[obj.hash];
-      const filename = `${obj.hash}${extFromMimeType(contentType)}`;
-      const destination = join(writeFolder, filename);
+      const filename = getFilename(obj.hash, contentType);
+      const destination = getDestination(obj.hash, contentType, writeFolder);
 
       if (fs.existsSync(destination)) {
         session.log.debug(`Cached file found for notebook output: ${destination}`);
@@ -72,8 +80,14 @@ export async function transformOutputs(
  * It also only supports minified images (i.e. images cannot be too small) or
  * non-minified text (i.e. text cannot be too large).
  */
-export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: string) {
+export function reduceOutputs(
+  session: ISession,
+  mdast: GenericParent,
+  file: string,
+  writeFolder: string,
+) {
   const outputs = selectAll('output', mdast) as GenericNode[];
+  const unusedOutputs: string[] = [];
   outputs.forEach((node) => {
     if (!node.data?.length) {
       node.type = '__delete__';
@@ -83,15 +97,17 @@ export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: s
     node.data.forEach((output: MinifiedOutput) => {
       let selectedOutput: { content_type: string; path: string; hash: string } | undefined;
       walkOutputs([output], (obj: any) => {
-        if (selectedOutput || !obj.path || !obj.hash) return;
-        if (['error', 'stream'].includes(obj.output_type)) {
-          const { path, hash } = obj;
-          selectedOutput = { content_type: 'text/plain', path, hash };
-        } else if (typeof obj.content_type === 'string') {
-          const { content_type, path, hash } = obj;
-          if (obj.content_type.startsWith('image/') || obj.content_type === 'text/plain') {
-            selectedOutput = { content_type, path, hash };
+        const { output_type, content_type, path, hash } = obj;
+        if (!selectedOutput && path && hash) {
+          if (['error', 'stream'].includes(output_type)) {
+            selectedOutput = { content_type: 'text/plain', path, hash };
+          } else if (typeof content_type === 'string') {
+            if (content_type.startsWith('image/') || content_type === 'text/plain') {
+              selectedOutput = { content_type, path, hash };
+            }
           }
+        } else if (hash && content_type) {
+          unusedOutputs.push(getDestination(hash, content_type, writeFolder));
         }
       });
       if (selectedOutput) selectedOutputs.push(selectedOutput);
@@ -106,9 +122,10 @@ export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: s
             url: relativePath,
             urlSource: relativePath,
           };
-        } else if (output?.content_type === 'text/plain') {
-          const filename = `${output.hash}${extFromMimeType(output.content_type)}`;
-          const content = fs.readFileSync(join(writeFolder, filename), 'utf-8');
+        } else if (output?.content_type === 'text/plain' && output?.hash) {
+          const destination = getDestination(output.hash, output.content_type, writeFolder);
+          unusedOutputs.push(destination);
+          const content = fs.readFileSync(destination, 'utf-8');
           return {
             type: 'code',
             data: { type: 'output' },
@@ -123,4 +140,11 @@ export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: s
   });
   remove(mdast, '__delete__');
   liftChildren(mdast, '__lift__');
+
+  unusedOutputs.forEach((out) => {
+    if (fs.existsSync(out)) {
+      session.log.debug(`Removing temporary notebook output file: ${out}`);
+      fs.rmSync(out);
+    }
+  });
 }
