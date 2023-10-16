@@ -33,4 +33,7 @@ export type {
   RoleSpec,
   ParseTypes,
   MystPlugin,
+  PluginOptions,
+  PluginUtils,
+  TransformSpec,
 } from './types.js';

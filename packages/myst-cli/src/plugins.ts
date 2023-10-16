@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import type { ISession } from './session/types.js';
 import { selectCurrentProjectConfig } from './store/selectors.js';
 import { RuleId, type MystPlugin } from 'myst-common';
+import { plural } from 'myst-cli-utils';
 import { addWarningForFile } from './utils/addWarningForFile.js';
 
 export async function loadPlugins(session: ISession): Promise<MystPlugin> {
@@ -10,6 +11,7 @@ export async function loadPlugins(session: ISession): Promise<MystPlugin> {
   const plugins: MystPlugin = {
     directives: [],
     roles: [],
+    transforms: [],
   };
   if (!config?.plugins || config.plugins.length === 0) {
     return plugins;
@@ -42,21 +44,29 @@ export async function loadPlugins(session: ISession): Promise<MystPlugin> {
       return { filename, module };
     }),
   );
-  modules.forEach((plugin) => {
-    if (!plugin) return;
-    const pluginConfig = plugin.module.plugin;
+  modules.forEach((pluginLoader) => {
+    if (!pluginLoader) return;
+    const plugin: MystPlugin = pluginLoader.module.default || pluginLoader.module.plugin;
+    const directives = plugin.directives || pluginLoader.module.directives;
+    const roles = plugin.roles || pluginLoader.module.roles;
+    const transforms = plugin.transforms || pluginLoader.module.transforms;
     session.log.info(
-      `🔌 ${pluginConfig?.name ?? 'Unnamed Plugin'} (${plugin.filename}) loaded: ${
-        plugin.module.directives?.length ?? 0
-      } directive(s), ${plugin.module.roles?.length ?? 0} role(s)`,
+      `🔌 ${plugin?.name ?? 'Unnamed Plugin'} (${pluginLoader.filename}) loaded: ${plural(
+        '%s directive(s)',
+        directives,
+      )}, ${plural('%s role(s)', roles)}, ${plural('%s transform(s)', transforms)}`,
     );
-    if (plugin.module.directives) {
+    if (directives) {
       // TODO: validate each directive
-      plugins.directives.push(...plugin.module.directives);
+      plugins.directives.push(...directives);
     }
-    if (plugin.module.roles) {
+    if (roles) {
       // TODO: validate each role
-      plugins.roles.push(...plugin.module.roles);
+      plugins.roles.push(...roles);
+    }
+    if (transforms) {
+      // TODO: validate each transform
+      plugins.transforms.push(...transforms);
     }
   });
   session.log.debug('Plugins loaded');

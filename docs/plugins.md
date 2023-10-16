@@ -24,11 +24,12 @@ roles
 : Add or overwrite roles, which provide an inline extension point.
 : For example, create a role for showing units, `` {si}`4 kg per meter squared` ``.
 
-:::{warning} Planned - Not Yet Implemented
-:class: dropdown
 transforms
 : These plugins transform the document source while it is rendered.
 : For example, add metadata or transform a link to a DOI.
+
+:::{warning} Planned - Not Yet Implemented
+:class: dropdown
 
 renderers
 : These plugins add handlers for various nodes when exporting to a specific format.
@@ -42,7 +43,6 @@ To create a plugin, you will need a single Javascript file[^esm] that exports on
 [^esm]: The format of the Javascript should be an ECMAScript modules, not CommonJS. This means it uses `import` statements rather than `require()` and is the most modern style of Javascript.
 
 :::{literalinclude} unsplash.mjs
-:filename: unsplash.mjs
 :caption: A plugin to add an `unsplash` directive that includes a beautiful, random picture based on a query string.
 :::
 
@@ -60,7 +60,7 @@ Then start or build your document using `myst start` or `myst build`, and you wi
 ```text
 myst start
 ...
-🔌 Unnamed Plugin (unsplash.mjs) loaded: 1 directive(s), 0 role(s)
+🔌 Unsplash Images (unsplash.mjs) loaded: 1 directive
 ...
 ```
 
