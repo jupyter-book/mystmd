@@ -3,7 +3,7 @@ import yaml from 'js-yaml';
 import { basename, extname, join } from 'node:path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
-import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
+import { writeFileToFolder, tic, hashAndCopyStaticFile, plural } from 'myst-cli-utils';
 import { RuleId, toText } from 'myst-common';
 import type { SiteProject } from 'myst-config';
 import type { Export } from 'myst-frontmatter';
@@ -362,7 +362,9 @@ export async function processProject(
       ),
     );
   }
-  log.info(toc(`📚 Built ${pages.length} pages for ${siteProject.slug ?? 'project'} in %s.`));
+  log.info(
+    toc(`📚 Built ${plural('%s page(s)', pages)} for ${siteProject.slug ?? 'project'} in %s.`),
+  );
   return project;
 }
 

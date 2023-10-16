@@ -22,6 +22,7 @@
     "mdast": "^3.0.0",
     "myst-spec": "^0.0.4",
     "nanoid": "^4.0.0",
+    "unified": "^10.1.2",
     "unist-util-map": "^3.0.0",
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^4.0.3",

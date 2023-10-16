@@ -15,4 +15,6 @@ const unsplashDirective = {
   },
 };
 
-export const directives = [unsplashDirective];
+const plugin = { name: 'Unsplash Images', directives: [unsplashDirective] };
+
+export default plugin;

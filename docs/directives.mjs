@@ -3,12 +3,6 @@ import { mystParse } from 'myst-parser';
 import { defaultDirectives } from 'myst-directives';
 import { fileError } from 'myst-common';
 
-export const plugin = {
-  name: 'MyST Documentation Plugins',
-  author: 'Rowan Cockett',
-  license: 'MIT',
-};
-
 /**
  * @param {import('myst-common').OptionDefinition} option
  */
@@ -150,5 +144,15 @@ const mystDirectiveRole = {
   },
 };
 
-export const directives = [mystDirective];
-export const roles = [mystDirectiveRole];
+/**
+ * @type {import('myst-common').MystPlugin}
+ */
+const plugin = {
+  name: 'MyST Documentation Plugins',
+  author: 'Rowan Cockett',
+  license: 'MIT',
+  directives: [mystDirective],
+  roles: [mystDirectiveRole],
+};
+
+export default plugin;

@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
-import type { GenericParent, References } from 'myst-common';
+import type { GenericParent, PluginUtils, References } from 'myst-common';
 import { fileError, fileWarn, RuleId } from 'myst-common';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { LinkTransformer } from 'myst-transforms';
@@ -60,8 +60,11 @@ import { logMessagesFromVFile } from '../utils/index.js';
 import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
 import { loadIntersphinx } from './intersphinx.js';
+import { select, selectAll } from 'unist-util-select';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
+
+const pluginUtils: PluginUtils = { select, selectAll };
 
 const htmlHandlers = {
   comment(h: any, node: any) {
@@ -160,7 +163,7 @@ export async function transformMdast(
   // This needs to come before basic transformations since it may add labels to blocks
   liftCodeMetadataToBlock(session, vfile, mdast);
 
-  await unified()
+  const pipe = unified()
     .use(basicTransformationsPlugin)
     .use(inlineExpressionsPlugin) // Happens before math and images!
     .use(htmlPlugin, { htmlHandlers })
@@ -168,8 +171,12 @@ export async function transformMdast(
     .use(glossaryPlugin, { state }) // This should be before the enumerate plugins
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
     .use(enumerateTargetsPlugin, { state }) // This should be after math
-    .use(joinGatesPlugin)
-    .run(mdast, vfile);
+    .use(joinGatesPlugin);
+  session.plugins?.transforms.forEach((t) => {
+    if (t.stage !== 'document') return;
+    pipe.use(t.plugin, undefined, pluginUtils);
+  });
+  await pipe.run(mdast, vfile);
 
   // This needs to come after basic transformations since meta tags are added there
   propagateBlockDataToCode(session, vfile, mdast);
@@ -308,6 +315,8 @@ export async function postProcessMdast(
   const cache = castSession(session);
   const mdastPost = selectFile(session, file);
   if (!mdastPost) return;
+  const vfile = new VFile(); // Collect errors on this file
+  vfile.path = file;
   const { mdast, dependencies } = mdastPost;
   const fileState = cache.$internalReferences[file];
   const state = pageReferenceStates
@@ -328,6 +337,13 @@ export async function postProcessMdast(
     // This must happen after embedded content is resolved so all children are present on figures
     transformPlaceholderImages(mdast, { imageExtensions });
   }
+  const pipe = unified();
+  session.plugins?.transforms.forEach((t) => {
+    if (t.stage !== 'project') return;
+    pipe.use(t.plugin, undefined, pluginUtils);
+  });
+  await pipe.run(mdast, vfile);
+
   // Ensure there are keys on every node after post processing
   keysTransform(mdast);
   logMessagesFromVFile(session, fileState.file);
