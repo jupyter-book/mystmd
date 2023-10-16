@@ -72,8 +72,9 @@ export async function transformOutputs(
  * It also only supports minified images (i.e. images cannot be too small) or
  * non-minified text (i.e. text cannot be too large).
  */
-export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: string) {
+export function reduceOutputs(session: ISession, mdast: GenericParent, file: string) {
   const outputs = selectAll('output', mdast) as GenericNode[];
+  const unusedOutputs: string[] = [];
   outputs.forEach((node) => {
     if (!node.data?.length) {
       node.type = '__delete__';
@@ -83,15 +84,17 @@ export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: s
     node.data.forEach((output: MinifiedOutput) => {
       let selectedOutput: { content_type: string; path: string; hash: string } | undefined;
       walkOutputs([output], (obj: any) => {
-        if (selectedOutput || !obj.path || !obj.hash) return;
-        if (['error', 'stream'].includes(obj.output_type)) {
-          const { path, hash } = obj;
-          selectedOutput = { content_type: 'text/plain', path, hash };
-        } else if (typeof obj.content_type === 'string') {
-          const { content_type, path, hash } = obj;
-          if (obj.content_type.startsWith('image/') || obj.content_type === 'text/plain') {
-            selectedOutput = { content_type, path, hash };
+        const { output_type, content_type, path, hash } = obj;
+        if (!selectedOutput && path && hash) {
+          if (['error', 'stream'].includes(output_type)) {
+            selectedOutput = { content_type: 'text/plain', path, hash };
+          } else if (typeof content_type === 'string') {
+            if (content_type.startsWith('image/') || content_type === 'text/plain') {
+              selectedOutput = { content_type, path, hash };
+            }
           }
+        } else if (path) {
+          unusedOutputs.push(path);
         }
       });
       if (selectedOutput) selectedOutputs.push(selectedOutput);
@@ -106,9 +109,9 @@ export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: s
             url: relativePath,
             urlSource: relativePath,
           };
-        } else if (output?.content_type === 'text/plain') {
-          const filename = `${output.hash}${extFromMimeType(output.content_type)}`;
-          const content = fs.readFileSync(join(writeFolder, filename), 'utf-8');
+        } else if (output?.content_type === 'text/plain' && output?.path) {
+          unusedOutputs.push(output.path);
+          const content = fs.readFileSync(output.path, 'utf-8');
           return {
             type: 'code',
             data: { type: 'output' },
@@ -123,4 +126,11 @@ export function reduceOutputs(mdast: GenericParent, file: string, writeFolder: s
   });
   remove(mdast, '__delete__');
   liftChildren(mdast, '__lift__');
+
+  unusedOutputs.forEach((out) => {
+    if (fs.existsSync(out)) {
+      session.log.debug(`Removing temporary notebook output file: ${out}`);
+      fs.rmSync(out);
+    }
+  });
 }
