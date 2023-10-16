@@ -24,6 +24,7 @@ import {
   joinGatesPlugin,
   glossaryPlugin,
   abbreviationPlugin,
+  reconstructHtmlPlugin,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
@@ -164,9 +165,10 @@ export async function transformMdast(
   liftCodeMetadataToBlock(session, vfile, mdast);
 
   const pipe = unified()
+    .use(reconstructHtmlPlugin) // We need to group and link the HTML first
+    .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(basicTransformationsPlugin)
     .use(inlineExpressionsPlugin) // Happens before math and images!
-    .use(htmlPlugin, { htmlHandlers })
     .use(mathPlugin, { macros: frontmatter.math })
     .use(glossaryPlugin, { state }) // This should be before the enumerate plugins
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })

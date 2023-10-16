@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { reconstructHtmlTransform } from './html';
+import { htmlTransform, reconstructHtmlTransform } from './html';
 
 describe('Test reconstructHtmlTransform', () => {
   test('tree without html returns self', async () => {
@@ -160,6 +160,180 @@ describe('Test reconstructHtmlTransform', () => {
     expect(mdast).toEqual({
       type: 'root',
       children: [{ type: 'html', value: '<script>alert("error")</script>' }],
+    });
+  });
+  test('self-closing tags', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'html',
+          value: '<a href="https://mystmd.org">',
+        },
+        {
+          type: 'html',
+          value: '<img src="https://mystmd.org/logo.png"    />',
+        },
+        {
+          type: 'html',
+          value: '<hr>',
+        },
+        {
+          type: 'html',
+          value: '<br>',
+        },
+        { type: 'html', value: '</a>' },
+      ],
+    };
+    reconstructHtmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'html',
+          value:
+            '<a href="https://mystmd.org"><img src="https://mystmd.org/logo.png">\n<hr>\n<br></a>',
+        },
+      ],
+    });
+  });
+  test('figure captions', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'html',
+          value: '<figure>',
+        },
+        {
+          type: 'html',
+          value: '<img src="img.png" class="big" id="my-img">',
+        },
+        {
+          type: 'html',
+          value: '<figcaption>',
+        },
+        {
+          type: 'text',
+          value: 'my caption',
+        },
+        {
+          type: 'html',
+          value: '</figcaption>',
+        },
+        {
+          type: 'html',
+          value: '</figure>',
+        },
+      ],
+    };
+    reconstructHtmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'html',
+          value:
+            '<figure><img src="img.png" class="big" id="my-img">\n<figcaption>my caption</figcaption></figure>',
+        },
+      ],
+    });
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'container',
+          children: [
+            { type: 'image', url: 'img.png', class: 'big', identifier: 'my-img', label: 'my-img' },
+            { type: 'caption', children: [{ type: 'text', value: 'my caption' }] },
+          ],
+        },
+      ],
+    });
+  });
+  test('no paragraph when in a paragraph', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'See ',
+            },
+            {
+              type: 'html',
+              value: '<a href="link.html">',
+            },
+            {
+              type: 'text',
+              value: 'here',
+            },
+            {
+              type: 'html',
+              value: '</a>',
+            },
+            {
+              type: 'text',
+              value: '.',
+            },
+          ],
+        },
+      ],
+    };
+    reconstructHtmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'See ',
+            },
+            {
+              type: 'html',
+              value: '<a href="link.html">here</a>',
+            },
+            {
+              type: 'text',
+              value: '.',
+            },
+          ],
+        },
+      ],
+    });
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'See ',
+            },
+            {
+              type: 'link',
+              url: 'link.html',
+              children: [
+                {
+                  type: 'text',
+                  value: 'here',
+                },
+              ],
+            },
+            {
+              type: 'text',
+              value: '.',
+            },
+          ],
+        },
+      ],
     });
   });
 });

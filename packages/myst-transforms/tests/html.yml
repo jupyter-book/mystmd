@@ -41,7 +41,6 @@ cases:
             - type: image
               url: example.jpg
               title: example
-              alt: ''
   - title: table
     before:
       type: root

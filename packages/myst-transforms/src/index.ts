@@ -6,7 +6,12 @@ export {
 } from './admonitions.js';
 export { captionParagraphPlugin, captionParagraphTransform } from './caption.js';
 export { footnotesPlugin, footnotesTransform } from './footnotes.js';
-export { htmlPlugin, htmlTransform, reconstructHtmlTransform } from './html.js';
+export {
+  htmlPlugin,
+  htmlTransform,
+  reconstructHtmlTransform,
+  reconstructHtmlPlugin,
+} from './html.js';
 export { htmlIdsPlugin, htmlIdsTransform } from './htmlIds.js';
 export { keysPlugin, keysTransform } from './keys.js';
 export {
