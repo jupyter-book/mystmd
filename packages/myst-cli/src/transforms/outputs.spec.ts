@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { reduceOutputs } from './outputs.js';
-import { Session } from '../index.js';
+import { reduceOutputs } from './outputs';
+import { Session } from '../session/session';
 
 describe('reduceOutputs', () => {
   it('output with no data is removed', async () => {
