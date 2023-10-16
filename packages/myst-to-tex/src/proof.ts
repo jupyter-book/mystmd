@@ -28,6 +28,8 @@ function kindToEnvironment(kind: ProofKind): string {
       return 'lemma';
     case 'observation':
       return 'observation';
+    case 'corollary':
+      return 'corollary';
     default:
       return '';
   }
@@ -37,7 +39,7 @@ export const proofHandler: Handler = (node, state) => {
   state.usePackages('amsthm');
 
   const p = node as ProofContainer;
-  const env = kindToEnvironment(p.kind);
+  const env = kindToEnvironment(p.kind ?? 'proof');
   if (!env) {
     fileError(state.file, `Unhandled LaTeX proof environment "${p.kind}"`, {
       node,
