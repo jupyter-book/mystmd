@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import mime from 'mime-types';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { RuleId } from 'myst-common';
-import { computeHash, hashAndCopyStaticFile, isUrl } from 'myst-cli-utils';
+import { computeHash, hashAndCopyStaticFile, isUrl, plural } from 'myst-cli-utils';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
@@ -458,11 +458,13 @@ export async function transformImageFormats(
   });
   if (conversionPromises.length) {
     session.log.info(
-      `🌠 Converting ${conversionPromises.length} image${
-        conversionPromises.length > 1 ? 's' : ''
-      } with extension${conversionExts.length > 1 ? 's' : ''} ${conversionExts.join(
-        ', ',
-      )} to supported format${validExts.length > 1 ? 's' : ''} ${validExts.join(', ')}`,
+      `🌠 Converting ${plural(
+        '%s image(s) with extension(s)',
+        conversionPromises,
+      )} ${conversionExts.join(', ')} to supported ${plural(
+        'format(s)',
+        validExts,
+      )} ${validExts.join(', ')}`,
     );
   }
   unconvertableImages.forEach((image) => {

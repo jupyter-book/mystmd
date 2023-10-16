@@ -7,7 +7,7 @@ import { selectAll } from 'unist-util-select';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
 import type { LinkTransformer, Link } from 'myst-transforms';
 import { RuleId, fileError } from 'myst-common';
-import { hashAndCopyStaticFile, tic } from 'myst-cli-utils';
+import { hashAndCopyStaticFile, plural, tic } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
@@ -174,8 +174,7 @@ export async function checkLinksTransform(
   );
   if (linkNodes.length === 0) return [];
   const toc = tic();
-  const plural = linkNodes.length > 1 ? 's' : '';
-  session.log.info(`🔗 Checking ${linkNodes.length} link${plural} in ${file}`);
+  session.log.info(`🔗 Checking ${plural('%s link(s)', linkNodes)} in ${file}`);
   const linkResults = await Promise.all(
     linkNodes.map(async (link) =>
       limitOutgoingConnections(async () => {
@@ -191,6 +190,6 @@ export async function checkLinksTransform(
       }),
     ),
   );
-  session.log.info(toc(`🔗 Checked ${linkNodes.length} link${plural} in ${file} in %s`));
+  session.log.info(toc(`🔗 Checked ${plural('%s link(s)', linkNodes)} in ${file} in %s`));
   return linkResults;
 }

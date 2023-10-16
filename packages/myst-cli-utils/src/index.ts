@@ -8,7 +8,7 @@ export {
   createNpmLogger,
 } from './logger.js';
 export { exec, makeExecutable } from './exec.js';
-export { clirun, tic } from './utils.js';
+export { clirun, tic, plural } from './utils.js';
 export { isUrl } from './isUrl.js';
 export { Session, getSession } from './session.js';
 export {
