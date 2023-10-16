@@ -1,5 +1,19 @@
 # myst-frontmatter
 
+## 1.1.9
+
+### Patch Changes
+
+- 09db3e25: `jupyter.local` options have been removed
+- 6d0e4e3f: Add equal-contributor as an alias for equal_contributor
+- 651dd773: Add doi as affiliation identifier in frontmatter and jats
+- aecf6164: Remove restriction on short_title length from validation.
+- 3d2fe87e: Allow funding award IDs to be numeric, and then be cast to strings.
+- 3be5a920: Update OSI licenses
+- 09db3e25: is specified, `jupyter.server` must be an object with valid `token` and `url` fields
+- Updated dependencies [3d2fe87e]
+  - simple-validators@1.0.2
+
 ## 1.1.8
 
 ## 1.1.7

@@ -1,5 +1,30 @@
 # jats-to-myst
 
+## 1.0.14
+
+### Patch Changes
+
+- fde21440: Add support for proofs in LaTeX
+- 8b7b5fe6: Update dependencies
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [ddf2a189]
+- Updated dependencies [912e8b54]
+- Updated dependencies [09db3e25]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [651dd773]
+- Updated dependencies [aecf6164]
+- Updated dependencies [fde21440]
+- Updated dependencies [27f48dba]
+- Updated dependencies [3d2fe87e]
+- Updated dependencies [3be5a920]
+- Updated dependencies [09db3e25]
+- Updated dependencies [8b7b5fe6]
+  - myst-common@1.1.9
+  - myst-transforms@1.1.4
+  - myst-frontmatter@1.1.9
+  - myst-spec-ext@1.1.9
+
 ## 1.0.13
 
 ### Patch Changes

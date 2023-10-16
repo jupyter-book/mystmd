@@ -1,5 +1,21 @@
 # myst-transforms
 
+## 1.1.4
+
+### Patch Changes
+
+- ddf2a189: Block nesting updates
+- 912e8b54: Note that alt text is auto generated from the caption.
+- fde21440: Add support for proofs in LaTeX
+- 27f48dba: Improve mathML export
+- 8b7b5fe6: Update dependencies
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [8b7b5fe6]
+  - myst-common@1.1.9
+  - myst-to-html@1.0.10
+  - myst-spec-ext@1.1.9
+
 ## 1.1.3
 
 ### Patch Changes

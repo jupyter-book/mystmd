@@ -1,5 +1,75 @@
 # myst-cli
 
+## 1.1.21
+
+### Patch Changes
+
+- 6d0e4e3f: Allow for multiple types of abstracts in JATS
+- ea86c404: Use updated meca package for writing
+- 6e4977f: Delete temporary output files in reduceOutput transform
+- 93900162: Add 'summary' to the list of known parts for `plain-text-summary` parts
+- abdd546a: Create zero-indent XML by default (newlines, but no indentation)
+- 3261536c: Update the comments in the github action
+- 6d0e4e3f: Add acknowledgements to JATS renderer
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [e240579a]
+- Updated dependencies [aecf6164]
+- Updated dependencies [d25debf3]
+- Updated dependencies [4846745e]
+- Updated dependencies [912e8b54]
+- Updated dependencies [ddf2a189]
+- Updated dependencies [e240579a]
+- Updated dependencies [912e8b54]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [6fa758f8]
+- Updated dependencies [74d48372]
+- Updated dependencies [bb2cd4fb]
+- Updated dependencies [09db3e25]
+- Updated dependencies [651dd773]
+- Updated dependencies [d25debf3]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [51011604]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [d25debf3]
+- Updated dependencies [8fa5f438]
+- Updated dependencies [3d2fe87e]
+- Updated dependencies [651dd773]
+- Updated dependencies [aecf6164]
+- Updated dependencies [d25debf3]
+- Updated dependencies [acffc6fa]
+- Updated dependencies [fde21440]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [27f48dba]
+- Updated dependencies [6fa758f8]
+- Updated dependencies [3d2fe87e]
+- Updated dependencies [9303429b]
+- Updated dependencies [0b090ca8]
+- Updated dependencies [0e7a4895]
+- Updated dependencies [08d3b3c8]
+- Updated dependencies [abdd546a]
+- Updated dependencies [08d3b3c8]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [651dd773]
+- Updated dependencies [3be5a920]
+- Updated dependencies [09db3e25]
+- Updated dependencies [eb6d80be]
+- Updated dependencies [8fa5f438]
+- Updated dependencies [8b7b5fe6]
+  - myst-common@1.1.9
+  - myst-to-jats@1.0.14
+  - myst-templates@1.0.10
+  - myst-transforms@1.1.4
+  - myst-to-tex@1.0.8
+  - tex-to-myst@1.0.8
+  - myst-frontmatter@1.1.9
+  - simple-validators@1.0.2
+  - myst-ext-proof@1.0.5
+  - myst-to-docx@1.0.6
+  - myst-to-md@1.0.8
+  - myst-config@1.1.9
+  - myst-spec-ext@1.1.9
+  - myst-parser@1.0.10
+
 ## 1.1.20
 
 ### Patch Changes
