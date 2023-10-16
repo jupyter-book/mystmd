@@ -6,7 +6,7 @@ import type { GenericNode, GenericParent } from 'myst-common';
 import { fileWarn, toText, RuleId } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
-import { tic } from 'myst-cli-utils';
+import { plural, tic } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
 import type { Cite } from 'myst-spec-ext';
 import type { SingleCitationRenderer } from './types.js';
@@ -78,7 +78,7 @@ export async function transformLinkedDOIs(
     citeDois.push(node as Cite);
   });
   if (linkedDois.length === 0 && citeDois.length === 0) return renderer;
-  log.debug(`Found ${linkedDois.length + citeDois.length} DOIs to auto link.`);
+  log.debug(`Found ${plural('%s DOI(s)', linkedDois.length + citeDois.length)} to auto link.`);
   let number = 0;
   await Promise.all([
     ...linkedDois.map(async (node) => {

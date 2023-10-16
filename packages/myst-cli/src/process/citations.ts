@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import fetch from 'node-fetch';
 import type { CitationRenderer } from 'citation-js-utils';
 import { getCitations } from 'citation-js-utils';
-import { tic, isUrl } from 'myst-cli-utils';
+import { tic, isUrl, plural } from 'myst-cli-utils';
 import { RuleId } from 'myst-common';
 import type { ISession, ISessionWithCache } from '../session/types.js';
 import { castSession } from '../session/index.js';
@@ -25,9 +25,7 @@ export async function loadCitations(session: ISession, path: string): Promise<Ci
     data = fs.readFileSync(path).toString();
   }
   const renderer = await getCitations(data);
-  const numCitations = Object.keys(renderer).length;
-  const plural = numCitations > 1 ? 's' : '';
-  session.log.debug(toc(`Read ${numCitations} citation${plural} from ${path} in %s.`));
+  session.log.debug(toc(`Read ${plural('%s citations(s)', renderer)} from ${path} in %s.`));
   return renderer;
 }
 
