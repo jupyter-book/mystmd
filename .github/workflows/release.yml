@@ -39,6 +39,7 @@ jobs:
           publish: npm run publish:ci
           commit: 🚀 Release
           title: 🚀 Release
+          createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
