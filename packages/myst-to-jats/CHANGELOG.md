@@ -1,5 +1,56 @@
 # myst-to-jats
 
+## 1.0.14
+
+### Patch Changes
+
+- e240579a: Add default name-style="western" to jats names
+- aecf6164: Add alt-title to JATS (as running-head)
+- 4846745e: Add ability to customize ID funciton in myst-to-jats processing
+- 912e8b54: Remove auto generated alt-text in JATS
+- e240579a: Remove string-name element if name element is present
+- 6d0e4e3f: Allow for multiple types of abstracts in JATS
+- 6fa758f8: Improve SI units for JATS export
+- 651dd773: Institution info is explicitly listed under funding in jats
+- d25debf3: JATS only includes authors as top-level contribs
+- d25debf3: Remove contrib id, authors cannot be referenced.
+- 651dd773: Add doi as affiliation identifier in frontmatter and jats
+- d25debf3: JATS only includes author affiliations in aff list
+- acffc6fa: Add vocab-term-identifier to credit role
+- 6d0e4e3f: Render backmatter sections (e.g. data-availability)
+- 27f48dba: Improve mathML export
+- 9303429b: Do not include deparment in funding institution
+- 0b090ca8: Simplify affiliation ids for jats
+- 0e7a4895: Ensure that DOI is normalized for JATS4R
+- 08d3b3c8: Fix credit roles encoding in attributes
+- abdd546a: Create zero-indent XML by default (newlines, but no indentation)
+- 08d3b3c8: Escape all attributes in js2xml for jats
+- 6d0e4e3f: Add acknowledgements to JATS renderer
+- 651dd773: Separate authors and other contributors into different contrib-groups
+- eb6d80be: Improve MathML tagging, removing unnecessay mml:semantics and mml:mrow if there is only a single element.
+
+  Clean up latex in the CDATA output.
+
+- 8b7b5fe6: Update dependencies
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [ddf2a189]
+- Updated dependencies [912e8b54]
+- Updated dependencies [09db3e25]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [651dd773]
+- Updated dependencies [aecf6164]
+- Updated dependencies [fde21440]
+- Updated dependencies [27f48dba]
+- Updated dependencies [3d2fe87e]
+- Updated dependencies [3be5a920]
+- Updated dependencies [09db3e25]
+- Updated dependencies [8b7b5fe6]
+  - myst-common@1.1.9
+  - myst-transforms@1.1.4
+  - myst-frontmatter@1.1.9
+  - myst-spec-ext@1.1.9
+
 ## 1.0.13
 
 ### Patch Changes

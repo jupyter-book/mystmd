@@ -1,5 +1,13 @@
 # myst-common
 
+## 1.1.9
+
+### Patch Changes
+
+- 6d0e4e3f: Add option to remove part data when extracting parts from a document.
+- 6d0e4e3f: Allow for multiple parts to be specified in extraction
+- 8b7b5fe6: Update dependencies
+
 ## 1.1.8
 
 ### Patch Changes

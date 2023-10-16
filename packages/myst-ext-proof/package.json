@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-proof",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for proofs",
@@ -33,9 +33,9 @@
   },
   "dependencies": {
     "myst-spec": "^0.0.4",
-    "myst-common": "^1.1.7"
+    "myst-common": "^1.1.9"
   },
   "devDependencies": {
-    "myst-parser": "^1.0.8"
+    "myst-parser": "^1.0.10"
   }
 }

@@ -1,5 +1,15 @@
 # myst-ext-proof
 
+## 1.0.5
+
+### Patch Changes
+
+- fde21440: Add support for proofs in LaTeX
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [8b7b5fe6]
+  - myst-common@1.1.9
+
 ## 1.0.4
 
 ### Patch Changes

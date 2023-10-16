@@ -1,5 +1,11 @@
 # simple-validators
 
+## 1.0.2
+
+### Patch Changes
+
+- 3d2fe87e: Add coerceNumber to string validation options
+
 ## 1.0.1
 
 ### Patch Changes

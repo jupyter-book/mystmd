@@ -1,5 +1,15 @@
 # myst-to-html
 
+## 1.0.10
+
+### Patch Changes
+
+- 8b7b5fe6: Update dependencies
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [6d0e4e3f]
+- Updated dependencies [8b7b5fe6]
+  - myst-common@1.1.9
+
 ## 1.0.9
 
 ### Patch Changes
