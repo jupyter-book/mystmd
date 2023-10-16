@@ -10,6 +10,7 @@ function comment(node: any, _: Parent, state: State): string {
 }
 
 function block(node: any, _: Parent, state: State, info: Info): string {
+  if (node.visibility === 'remove') return '';
   const meta = node.meta ? ` ${node.meta}` : '';
   const content = state.containerFlow(node, info);
   return `+++${meta}\n${content}`;

@@ -145,6 +145,7 @@ const handlers: Record<string, Handler> = {
       state.write('\\end{frame}\n\n');
       return;
     }
+    if (node.visibility === 'remove') return;
     state.renderChildren(node, false);
   },
   blockquote(node, state) {
