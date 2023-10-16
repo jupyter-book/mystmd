@@ -74,6 +74,7 @@ const handlers: Record<string, Handler> = {
     state.closeBlock(node);
   },
   block(node, state) {
+    if (node.visibility === 'remove') return;
     state.renderChildren(node, false);
   },
   blockquote(node, state) {

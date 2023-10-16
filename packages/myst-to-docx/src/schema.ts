@@ -39,7 +39,6 @@ import type {
   Blockquote,
   Code,
   Image,
-  Block,
   Math as MathNode,
   InlineMath,
   CrossReference,
@@ -61,6 +60,7 @@ import type {
   FootnoteReference,
   FootnoteDefinition,
   CiteKind,
+  Block,
 } from 'myst-spec-ext';
 import type { Handler, Mutable } from './types.js';
 import {
@@ -83,6 +83,7 @@ const paragraph: Handler<ParagraphNode> = (state, node) => {
 };
 
 const block: Handler<Block> = (state, node) => {
+  if (node.visibility === 'remove') return;
   state.renderChildren(node as Parent);
 };
 

@@ -1,4 +1,5 @@
 import type {
+  Block as SpecBlock,
   Parent,
   StaticPhrasingContent,
   FlowContent,
@@ -14,6 +15,8 @@ import type {
   ListItem as SpecListItem,
   Container as SpecContainer,
 } from 'myst-spec';
+
+type Visibility = 'show' | 'hide' | 'remove';
 
 export type Delete = Parent & { type: 'delete' };
 export type Underline = Parent & { type: 'underline' };
@@ -83,10 +86,11 @@ export type Admonition = SpecAdmonition & {
   icon?: boolean;
 };
 
+export type Block = SpecBlock & { visibility?: Visibility };
 export type Code = SpecCode & {
   executable?: boolean;
   filename?: string;
-  visibility?: 'show' | 'hide' | 'remove';
+  visibility?: Visibility;
 };
 
 export type ListItem = SpecListItem & {

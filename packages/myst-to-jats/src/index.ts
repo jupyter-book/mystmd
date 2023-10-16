@@ -180,6 +180,7 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'title');
   },
   block(node, state) {
+    if (node.visibility === 'remove') return;
     state.renderChildren(node);
   },
   blockquote(node, state) {
