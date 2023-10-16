@@ -66,11 +66,17 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
     figcaption(h: H, node: any) {
       return h(node, 'caption', all(h, node));
     },
-    comment(h: any, node: any) {
+    comment(h: H, node: any) {
       // Prevents HTML comments from showing up as text in web
       const result = h(node, 'comment');
       (result as any).value = node.value;
       return result;
+    },
+    sup(h: H, node: any) {
+      return h(node, 'superscript', all(h, node));
+    },
+    sub(h: H, node: any) {
+      return h(node, 'subscript', all(h, node));
     },
   },
 };

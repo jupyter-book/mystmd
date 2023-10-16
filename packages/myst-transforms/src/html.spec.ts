@@ -336,4 +336,87 @@ describe('Test reconstructHtmlTransform', () => {
       ],
     });
   });
+  test('no paragraph when in a paragraph', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'See ',
+            },
+            {
+              type: 'html',
+              value: '<sup>',
+            },
+            {
+              type: 'text',
+              value: '[1]',
+            },
+            {
+              type: 'html',
+              value: '</sup>',
+            },
+            {
+              type: 'text',
+              value: '.',
+            },
+          ],
+        },
+      ],
+    };
+    reconstructHtmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'See ',
+            },
+            {
+              type: 'html',
+              value: '<sup>[1]</sup>',
+            },
+            {
+              type: 'text',
+              value: '.',
+            },
+          ],
+        },
+      ],
+    });
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'See ',
+            },
+            {
+              type: 'superscript',
+              children: [
+                {
+                  type: 'text',
+                  value: '[1]',
+                },
+              ],
+            },
+            {
+              type: 'text',
+              value: '.',
+            },
+          ],
+        },
+      ],
+    });
+  });
 });
