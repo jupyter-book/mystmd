@@ -125,6 +125,9 @@ export function reduceOutputs(
         } else if (output?.content_type === 'text/plain' && output?.hash) {
           const destination = getDestination(output.hash, output.content_type, writeFolder);
           unusedOutputs.push(destination);
+          // Note: Maybe delete this next line
+          // This can be hit when processing multiple notebooks at the same time that have the same code.
+          if (!fs.existsSync(destination)) return undefined;
           const content = fs.readFileSync(destination, 'utf-8');
           return {
             type: 'code',
