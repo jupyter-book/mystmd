@@ -1,6 +1,6 @@
 import { unified } from 'unified';
 import type { Plugin } from 'unified';
-import { liftChildren } from 'myst-common';
+import { liftChildren, normalizeLabel } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import type { Parent } from 'myst-spec';
 import { mystToHtml } from 'myst-to-html';
@@ -20,6 +20,17 @@ export type HtmlTransformOptions = {
   htmlHandlers?: { [x: string]: Handle };
 };
 
+function addClassAndIdentifier(node: GenericNode, attrs: Record<string, string> = {}) {
+  const props = node.properties ?? {};
+  if (props.id) {
+    const normalized = normalizeLabel(props.id);
+    if (normalized?.identifier) attrs.identifier = normalized.identifier;
+    if (normalized?.label) attrs.label = normalized.label;
+  }
+  if (props.className) attrs.class = props.className.join(' ');
+  return attrs;
+}
+
 const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
   keepBreaks: true,
   htmlHandlers: {
@@ -34,11 +45,38 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
     _brKeep(h: H, node: any) {
       return h(node, '_break');
     },
-    comment(h: any, node: any) {
+    a(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      attrs.url = String(node.properties.href || '');
+      if (node.properties.title) attrs.title = node.properties.title;
+      if (node.properties.className) attrs.class = node.properties.className.join(' ');
+      return h(node, 'link', attrs, all(h, node));
+    },
+    img(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      attrs.url = String(node.properties.src || '');
+      if (node.properties.title) attrs.title = node.properties.title;
+      if (node.properties.alt) attrs.alt = node.properties.alt;
+      return h(node, 'image', attrs);
+    },
+    figure(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'container', attrs, all(h, node));
+    },
+    figcaption(h: H, node: any) {
+      return h(node, 'caption', all(h, node));
+    },
+    comment(h: H, node: any) {
       // Prevents HTML comments from showing up as text in web
       const result = h(node, 'comment');
       (result as any).value = node.value;
       return result;
+    },
+    sup(h: H, node: any) {
+      return h(node, 'superscript', all(h, node));
+    },
+    sub(h: H, node: any) {
+      return h(node, 'subscript', all(h, node));
     },
   },
 };
@@ -65,6 +103,12 @@ export function htmlTransform(tree: GenericParent, opts?: HtmlTransformOptions) 
     node.type = 'htmlParsed';
     node.children = mdast.children as Parent[];
     visit(node, (n: any) => delete n.position);
+  });
+  selectAll('paragraph > htmlParsed', tree).forEach((parsed) => {
+    const node = parsed as GenericParent;
+    if (node?.children?.length === 1 && node.children[0].type === 'paragraph') {
+      node.children = node.children[0].children as GenericNode[];
+    }
   });
   liftChildren(tree, 'htmlParsed');
   selectAll('_break', tree).forEach((node: any) => {
@@ -103,17 +147,41 @@ function finalizeNode(htmlOpenNodeWithChildren: GenericParent, htmlCloseNode: Ge
   delete (htmlOpenNodeWithChildren as GenericNode).children;
 }
 
+// https://html.spec.whatwg.org/multipage/syntax.html#elements-2
+const HTML_EMPTY_ELEMENTS = [
+  'area',
+  'base',
+  'br',
+  'col',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'keygen',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr',
+];
+
 function reconstructHtml(tree: GenericParent) {
   const htmlOpenNodes: GenericParent[] = [];
   tree.children.forEach((child: GenericNode) => {
     if (child.type === 'html') {
       const value = child.value?.trim();
-      if (value?.startsWith('</')) {
+      const selfClosing =
+        (value?.startsWith('<') && value?.endsWith('/>')) ||
+        value?.match(new RegExp(`<(${HTML_EMPTY_ELEMENTS.join('|')})([^>]*)?/?>`));
+      if (selfClosing) {
+        if (htmlOpenNodes.length) {
+          htmlOpenNodes[htmlOpenNodes.length - 1].children.push(child);
+        }
+      } else if (value?.startsWith('</')) {
         // In this case, child is a standalone closing html node
         const htmlOpenNode = htmlOpenNodes.pop();
-        if (!htmlOpenNode) {
-          return;
-        }
+        if (!htmlOpenNode) return;
         finalizeNode(htmlOpenNode, child);
         if (htmlOpenNodes.length) {
           htmlOpenNodes[htmlOpenNodes.length - 1].children.push(htmlOpenNode);
@@ -151,6 +219,10 @@ export function reconstructHtmlTransform(tree: GenericParent) {
   remove(tree, '__delete__');
   return tree;
 }
+
+export const reconstructHtmlPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
+  reconstructHtmlTransform(tree);
+};
 
 export const htmlPlugin: Plugin<[HtmlTransformOptions?], GenericParent, GenericParent> =
   (opts) => (tree) => {
