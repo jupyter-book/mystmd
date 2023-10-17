@@ -171,6 +171,6 @@ export function filterIncludedContent(
 }
 
 export const includeDirectivePlugin: Plugin<[Options], GenericParent, GenericParent> =
-  (opts) => (tree, file) => {
-    includeDirectiveTransform(tree as GenericParent, file, opts);
+  (opts) => async (tree, file) => {
+    await includeDirectiveTransform(tree as GenericParent, file, opts);
   };
