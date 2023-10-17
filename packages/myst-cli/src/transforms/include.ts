@@ -7,7 +7,7 @@ import type { VFile } from 'vfile';
 import { parseMyst } from '../process/index.js';
 import type { ISession } from '../session/types.js';
 
-export function includeFilesTransform(
+export async function includeFilesTransform(
   session: ISession,
   baseFile: string,
   tree: GenericParent,
@@ -27,5 +27,5 @@ export function includeFilesTransform(
   const parseContent = (filename: string, content: string) => {
     return parseMyst(session, content, filename).children;
   };
-  includeDirectiveTransform(tree, vfile, { loadFile, parseContent });
+  await includeDirectiveTransform(tree, vfile, { loadFile, parseContent });
 }
