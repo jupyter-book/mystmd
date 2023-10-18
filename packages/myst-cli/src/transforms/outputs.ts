@@ -10,7 +10,7 @@ import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import type { IOutput } from '@jupyterlab/nbformat';
-import type { MinifiedOutput } from 'nbtx';
+import type { MinifiedContent, MinifiedOutput } from 'nbtx';
 import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
 import { castSession } from '../session/index.js';
 import type { ISession } from '../session/types.js';
@@ -20,112 +20,145 @@ function getFilename(hash: string, contentType: string) {
   return `${hash}${extFromMimeType(contentType)}`;
 }
 
-function getDestination(hash: string, contentType: string, writeFolder: string) {
+function getWriteDestination(hash: string, contentType: string, writeFolder: string) {
   return join(writeFolder, getFilename(hash, contentType));
 }
 
-export async function transformOutputs(
+/**
+ * Traverse all output nodes, minify their content, and cache on the session
+ */
+export async function transformOutputsToCache(
   session: ISession,
   mdast: GenericParent,
   kind: SourceFileKind,
+  opts?: { minifyMaxCharacters?: number },
+) {
+  const outputs = selectAll('output', mdast) as GenericNode[];
+  // This happens sooner for notebooks
+  if (!outputs.length || kind !== SourceFileKind.Article) return;
+  const cache = castSession(session);
+  await Promise.all(
+    outputs.map(async (output) => {
+      output.data = await minifyCellOutput(output.data as IOutput[], cache.$outputs, {
+        computeHash,
+        maxCharacters: opts?.minifyMaxCharacters,
+      });
+    }),
+  );
+}
+
+function writeCachedOutputToFile(
+  session: ISession,
+  hash: string,
+  cachedOutput: MinifiedContent,
   writeFolder: string,
-  opts?: { altOutputFolder?: string; minifyMaxCharacters?: number; vfile?: VFile },
+  opts: { vfile?: VFile; node?: GenericNode; altOutputFolder?: string },
+) {
+  const [content, { contentType, encoding }] = cachedOutput;
+  const filename = getFilename(hash, contentType);
+  const destination = getWriteDestination(hash, contentType, writeFolder);
+
+  if (fs.existsSync(destination)) {
+    session.log.debug(`Cached file found for notebook output: ${destination}`);
+  } else {
+    try {
+      if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
+      fs.writeFileSync(destination, content, { encoding: encoding as BufferEncoding });
+      session.log.debug(`Notebook output successfully written: ${destination}`);
+    } catch {
+      if (opts?.vfile) {
+        fileError(opts.vfile, `Error writing notebook output: ${destination}`, {
+          node: opts.node,
+          ruleId: RuleId.notebookOutputCopied,
+        });
+      }
+      return undefined;
+    }
+  }
+  return resolveOutputPath(filename, writeFolder, opts?.altOutputFolder);
+}
+
+/**
+ * Write cached content from output nodes to file
+ */
+export function transformOutputsToFile(
+  session: ISession,
+  mdast: GenericParent,
+  writeFolder: string,
+  opts?: { altOutputFolder?: string; vfile?: VFile },
 ) {
   const outputs = selectAll('output', mdast) as GenericNode[];
   const cache = castSession(session);
-  if (outputs.length && kind === SourceFileKind.Article) {
-    await Promise.all(
-      outputs.map(async (output) => {
-        output.data = await minifyCellOutput(output.data as IOutput[], cache.$outputs, {
-          computeHash,
-          maxCharacters: opts?.minifyMaxCharacters,
-        });
-      }),
-    );
-  }
 
   outputs.forEach((node) => {
     walkOutputs(node.data, (obj) => {
-      if (!obj.hash || !cache.$outputs[obj.hash]) return undefined;
-      const [content, { contentType, encoding }] = cache.$outputs[obj.hash];
-      const filename = getFilename(obj.hash, contentType);
-      const destination = getDestination(obj.hash, contentType, writeFolder);
-
-      if (fs.existsSync(destination)) {
-        session.log.debug(`Cached file found for notebook output: ${destination}`);
-      } else {
-        try {
-          if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
-          fs.writeFileSync(destination, content, { encoding: encoding as BufferEncoding });
-          session.log.debug(`Notebook output successfully written: ${destination}`);
-        } catch {
-          if (opts?.vfile) {
-            fileError(opts.vfile, `Error writing notebook output: ${destination}`, {
-              node,
-              ruleId: RuleId.notebookOutputCopied,
-            });
-          }
-          return undefined;
-        }
-      }
-      obj.path = resolveOutputPath(filename, writeFolder, opts?.altOutputFolder);
+      const { hash } = obj;
+      if (!hash || !cache.$outputs[hash]) return undefined;
+      obj.path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
+        ...opts,
+        node,
+      });
     });
   });
 }
 
 /**
- * Convert output nodes to image or code
+ * Convert output nodes with minified content to image or code
  *
- * Note: this only supports mime payloads, not error or stream outputs.
- * It also only supports minified images (i.e. images cannot be too small) or
- * non-minified text (i.e. text cannot be too large).
+ * This writes outputs of type image to file, modifies outputs of type
+ * text to a code node, and removes other output types.
  */
 export function reduceOutputs(
   session: ISession,
   mdast: GenericParent,
   file: string,
   writeFolder: string,
+  opts?: { altOutputFolder?: string; vfile?: VFile },
 ) {
   const outputs = selectAll('output', mdast) as GenericNode[];
-  const unusedOutputs: string[] = [];
+  const cache = castSession(session);
   outputs.forEach((node) => {
     if (!node.data?.length) {
       node.type = '__delete__';
       return;
     }
-    const selectedOutputs: { content_type: string; path: string; hash: string }[] = [];
+    const selectedOutputs: { content_type: string; hash: string }[] = [];
     node.data.forEach((output: MinifiedOutput) => {
-      let selectedOutput: { content_type: string; path: string; hash: string } | undefined;
+      let selectedOutput: { content_type: string; hash: string } | undefined;
       walkOutputs([output], (obj: any) => {
-        const { output_type, content_type, path, hash } = obj;
-        if (!selectedOutput && path && hash) {
+        const { output_type, content_type, hash } = obj;
+        if (!hash) return undefined;
+        if (!selectedOutput) {
           if (['error', 'stream'].includes(output_type)) {
-            selectedOutput = { content_type: 'text/plain', path, hash };
+            selectedOutput = { content_type: 'text/plain', hash };
           } else if (typeof content_type === 'string') {
             if (content_type.startsWith('image/') || content_type === 'text/plain') {
-              selectedOutput = { content_type, path, hash };
+              selectedOutput = { content_type, hash };
             }
           }
-        } else if (hash && content_type) {
-          unusedOutputs.push(getDestination(hash, content_type, writeFolder));
         }
       });
       if (selectedOutput) selectedOutputs.push(selectedOutput);
     });
     const children: (Image | GenericNode)[] = selectedOutputs
       .map((output): Image | GenericNode | undefined => {
-        if (output?.content_type.startsWith('image/')) {
-          const relativePath = relative(dirname(file), output.path);
+        const { content_type, hash } = output ?? {};
+        if (!hash || !cache.$outputs[hash]) return undefined;
+        if (content_type.startsWith('image/')) {
+          const path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
+            ...opts,
+            node,
+          });
+          if (!path) return undefined;
+          const relativePath = relative(dirname(file), path);
           return {
             type: 'image',
             data: { type: 'output' },
             url: relativePath,
             urlSource: relativePath,
           };
-        } else if (output?.content_type === 'text/plain' && output?.hash) {
-          const destination = getDestination(output.hash, output.content_type, writeFolder);
-          unusedOutputs.push(destination);
-          const content = fs.readFileSync(destination, 'utf-8');
+        } else if (content_type === 'text/plain' && cache.$outputs[hash]) {
+          const [content] = cache.$outputs[hash];
           return {
             type: 'code',
             data: { type: 'output' },
@@ -140,11 +173,4 @@ export function reduceOutputs(
   });
   remove(mdast, '__delete__');
   liftChildren(mdast, '__lift__');
-
-  unusedOutputs.forEach((out) => {
-    if (fs.existsSync(out)) {
-      session.log.debug(`Removing temporary notebook output file: ${out}`);
-      fs.rmSync(out);
-    }
-  });
 }
