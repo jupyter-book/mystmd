@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.5
+
+### Patch Changes
+
+- 5156d39d: Add plural function that pretty prints strings as plural based on a number
+
 ## 2.0.4
 
 ### Patch Changes

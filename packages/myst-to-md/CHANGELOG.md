@@ -1,5 +1,13 @@
 # myst-to-md
 
+## 1.0.9
+
+### Patch Changes
+
+- 5737951e: Remove hidden blocks for rendered outputs.
+  - myst-common@1.1.10
+  - myst-frontmatter@1.1.10
+
 ## 1.0.8
 
 ### Patch Changes

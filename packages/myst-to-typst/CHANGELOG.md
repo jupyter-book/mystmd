@@ -1,5 +1,15 @@
 # myst-to-typst
 
+## 0.0.6
+
+### Patch Changes
+
+- 5737951e: Remove hidden blocks for rendered outputs.
+- Updated dependencies [5737951e]
+  - myst-spec-ext@1.1.10
+  - myst-common@1.1.10
+  - myst-frontmatter@1.1.10
+
 ## 0.0.5
 
 ### Patch Changes

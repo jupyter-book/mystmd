@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.1.10
+
+### Patch Changes
+
+- 5737951e: Add `Block`, and shared visibility attribute
+
 ## 1.1.9
 
 ## 1.1.8
