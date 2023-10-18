@@ -42,7 +42,7 @@ import {
   includeFilesTransform,
   liftCodeMetadataToBlock,
   transformLinkedDOIs,
-  transformOutputs,
+  transformOutputsToCache,
   transformCitations,
   transformImages,
   transformImageFormats,
@@ -55,6 +55,7 @@ import {
   transformPlaceholderImages,
   transformDeleteBase64UrlSource,
   transformWebp,
+  transformOutputsToFile,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/index.js';
 import { logMessagesFromVFile } from '../utils/index.js';
@@ -211,12 +212,7 @@ export async function transformMdast(
   }
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
-  // Kind needs to still be Article here even if jupytext, to handle outputs correctly
-  await transformOutputs(session, mdast, kind, imageWriteFolder, {
-    altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
-    minifyMaxCharacters,
-    vfile,
-  });
+  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
   transformCitations(mdast, fileCitationRenderer, references);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
@@ -224,8 +220,14 @@ export async function transformMdast(
     .run(mdast, vfile);
   if (simplifyFigures) {
     // Transform output nodes to images / text
-    reduceOutputs(session, mdast, file, imageWriteFolder);
+    reduceOutputs(session, mdast, file, imageWriteFolder, {
+      altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
+    });
   }
+  transformOutputsToFile(session, mdast, imageWriteFolder, {
+    altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
+    vfile,
+  });
   if (!useExistingImages) {
     await transformImages(session, mdast, file, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,
