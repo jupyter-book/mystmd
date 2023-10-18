@@ -1,5 +1,29 @@
 # myst-cli
 
+## 1.1.22
+
+### Patch Changes
+
+- 34d4c2bd: Include transform was async, now awaiting it
+- 8bd4ee2e: Improve HTML transforms for grouping and processing
+- ff572f7: Write output content to file later in the transform process
+- Updated dependencies [5737951e]
+- Updated dependencies [5156d39d]
+- Updated dependencies [34d4c2bd]
+- Updated dependencies [8bd4ee2e]
+- Updated dependencies [5737951e]
+  - myst-spec-ext@1.1.10
+  - myst-cli-utils@2.0.5
+  - myst-transforms@1.1.5
+  - myst-to-docx@1.0.7
+  - myst-to-jats@1.0.15
+  - myst-to-md@1.0.9
+  - myst-to-tex@1.0.9
+  - myst-common@1.1.10
+  - myst-config@1.1.10
+  - myst-frontmatter@1.1.10
+  - tex-to-myst@1.0.9
+
 ## 1.1.21
 
 ### Patch Changes

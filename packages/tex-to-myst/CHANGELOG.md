@@ -1,5 +1,14 @@
 # tex-to-myst
 
+## 1.0.9
+
+### Patch Changes
+
+- Updated dependencies [5737951e]
+  - myst-spec-ext@1.1.10
+  - myst-common@1.1.10
+  - myst-frontmatter@1.1.10
+
 ## 1.0.8
 
 ### Patch Changes

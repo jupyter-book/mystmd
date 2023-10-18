@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 1.1.5
+
+### Patch Changes
+
+- 34d4c2bd: Include transform was async, now awaiting it
+- 8bd4ee2e: Improve HTML transforms for grouping and processing
+- Updated dependencies [5737951e]
+  - myst-spec-ext@1.1.10
+  - myst-common@1.1.10
+
 ## 1.1.4
 
 ### Patch Changes
