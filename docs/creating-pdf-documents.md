@@ -184,3 +184,7 @@ exports:
 ```
 
 Please consider [contributing your template](/jtex/contribute-a-template) to the growing list of templates so that other people can benefit and improve your work!
+
+## Excluding Source
+
+If you have a block or notebook cell that you do now want to render to your LaTeX output, add the `no-tex` tag to the cell.
