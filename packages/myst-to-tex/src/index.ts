@@ -146,6 +146,7 @@ const handlers: Record<string, Handler> = {
       return;
     }
     if (node.visibility === 'remove') return;
+    if (node.data?.tags?.includes('no-tex')) return;
     state.renderChildren(node, false);
   },
   blockquote(node, state) {
