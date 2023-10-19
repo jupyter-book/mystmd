@@ -106,11 +106,14 @@ export const containerHandler: Handler = (node, state) => {
   if (!multipage || !containsTable) state.write('\\centering');
   state.ensureNewLine();
   state.data.longFigure = multipage;
+  const lastContainer = state.data.isInContainer;
+  state.data.isInContainer = true;
   state.data.nextCaptionNumbered = enumerated ?? !!localId;
   state.data.nextCaptionId = localId;
   state.renderChildren(node);
   state.trimEnd();
   state.data.longFigure = undefined;
+  state.data.isInContainer = lastContainer;
   state.write(`\n\\end{${command}}`);
   if (after) state.write(after);
   state.closeBlock(node);
