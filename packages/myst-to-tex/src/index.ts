@@ -15,7 +15,7 @@ import {
 } from './utils.js';
 import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { selectAll } from 'unist-util-select';
-import type { FootnoteDefinition } from 'myst-spec-ext';
+import type { FootnoteDefinition, Heading } from 'myst-spec-ext';
 import { transformLegends } from './legends.js';
 import { TexProofSerializer, proofHandler } from './proof.js';
 
@@ -106,7 +106,7 @@ const handlers: Record<string, Handler> = {
   paragraph(node, state) {
     state.renderChildren(node);
   },
-  heading(node, state) {
+  heading(node: Heading, state) {
     const { depth, label, enumerated } = node;
     if (state.data.nextHeadingIsFrameTitle) {
       state.write('\\frametitle{');
@@ -122,7 +122,7 @@ const handlers: Record<string, Handler> = {
     }
     state.renderChildren(node, true);
     state.write('}');
-    if (enumerated !== false && label) {
+    if (enumerated !== false && label && !node.implicit) {
       state.write(`\\label{${label}}`);
     }
     state.closeBlock(node);
