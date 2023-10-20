@@ -26,6 +26,7 @@ export const proofDirective: DirectiveSpec = {
   options: {
     label: {
       type: String,
+      alias: ['name'],
     },
     class: {
       type: String,
