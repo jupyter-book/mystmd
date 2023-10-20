@@ -138,9 +138,7 @@ export async function convertImageToWebp(
     return null;
   }
   const imageExt = path.extname(image).toLowerCase();
-  // A race condition may execute this before the PDF --> PNG conversion is complete
-  // When that is resolved, we can add '.pdf' back into this list:
-  const allowedExtensions = ['.png', '.jpg', '.jpeg', '.tiff', '.gif'];
+  const allowedExtensions = ['.png', '.jpg', '.jpeg', '.tiff', '.gif', '.pdf'];
   if (!allowedExtensions.includes(imageExt)) {
     session.log.debug(`Skipping webp conversion of "${image}"`);
     return null;
@@ -186,7 +184,7 @@ export async function convertImageToWebp(
   const convertGif = makeExecutable(`gif2webp -q ${quality} "${image}" -o "${webp}"`, debugLogger);
   // Density has to be BEFORE the PDF
   const convertPdfPng = makeExecutable(
-    `convert -density 600 -colorspace RGB ${image} ${png}`,
+    `convert -density 600 -colorspace RGB ${image} -trim ${png}`,
     debugLogger,
   );
   const convertPdfWebP = makeExecutable(`cwebp -q ${quality} "${png}" -o "${webp}"`, debugLogger);
