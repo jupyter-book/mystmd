@@ -1,5 +1,5 @@
 import { resolve } from 'node:path';
-import { tic } from 'myst-cli-utils';
+import { plural, tic } from 'myst-cli-utils';
 import type { LinkTransformer } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
 import {
@@ -92,9 +92,10 @@ export async function getFileContent(
   );
   session.log.info(
     toc(
-      `📚 Built ${allFiles.length} pages for export (including ${
-        allFiles.length - files.length
-      } dependencies) from ${projectPath} in %s.`,
+      `📚 Built ${plural('%s page(s)', allFiles)} for export (including ${plural(
+        '%s dependenc(y|ies)',
+        allFiles.length - files.length,
+      )}) from ${projectPath} in %s.`,
     ),
   );
   return selectedFiles;
