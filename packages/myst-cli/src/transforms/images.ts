@@ -243,11 +243,15 @@ type ConversionFn = (
 /**
  * Factory function for all simple imagemagick conversions
  */
-function imagemagickConvert(to: ImageExtensions, from: ImageExtensions) {
+function imagemagickConvert(
+  to: ImageExtensions,
+  from: ImageExtensions,
+  options?: { trim?: boolean },
+) {
   return async (session: ISession, source: string, writeFolder: string, opts: ConversionOpts) => {
     const { imagemagickAvailable } = opts;
     if (imagemagickAvailable) {
-      return imagemagick.convert(to, from, session, source, writeFolder);
+      return imagemagick.convert(to, from, session, source, writeFolder, options);
     }
     return null;
   };
@@ -329,7 +333,9 @@ const conversionFnLookup: Record<string, Record<string, ConversionFn>> = {
     [ImageExtensions.png]: svgToPng,
   },
   [ImageExtensions.pdf]: {
-    [ImageExtensions.png]: imagemagickConvert(ImageExtensions.pdf, ImageExtensions.png),
+    [ImageExtensions.png]: imagemagickConvert(ImageExtensions.pdf, ImageExtensions.png, {
+      trim: true,
+    }),
   },
   [ImageExtensions.gif]: {
     [ImageExtensions.png]: gifToPng,

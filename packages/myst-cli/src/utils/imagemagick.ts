@@ -79,6 +79,7 @@ export async function convert(
   session: ISession,
   input: string,
   writeFolder: string,
+  options?: { trim?: boolean },
 ) {
   if (!fs.existsSync(input)) return null;
   const { name, ext } = path.parse(input);
@@ -91,7 +92,9 @@ export async function convert(
     session.log.debug(`Cached file found for converted ${inputFormatUpper}: ${input}`);
     return filename;
   } else {
-    const executable = `convert -density 600 -colorspace RGB ${input} ${output}`;
+    const executable = `convert -density 600 -colorspace RGB ${input}${
+      options?.trim ? ' -trim' : ''
+    } ${output}`;
     session.log.debug(`Executing: ${executable}`);
     const exec = makeExecutable(executable, createImagemagikLogger(session));
     try {
@@ -135,7 +138,9 @@ export async function convertImageToWebp(
     return null;
   }
   const imageExt = path.extname(image).toLowerCase();
-  const allowedExtensions = ['.png', '.jpg', '.jpeg', '.tiff', '.gif', '.pdf'];
+  // A race condition may execute this before the PDF --> PNG conversion is complete
+  // When that is resolved, we can add '.pdf' back into this list:
+  const allowedExtensions = ['.png', '.jpg', '.jpeg', '.tiff', '.gif'];
   if (!allowedExtensions.includes(imageExt)) {
     session.log.debug(`Skipping webp conversion of "${image}"`);
     return null;
