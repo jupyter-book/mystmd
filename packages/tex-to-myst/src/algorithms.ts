@@ -1,6 +1,8 @@
 import { u } from 'unist-builder';
 import type { GenericNode } from 'myst-common';
 import { normalizeLabel } from 'myst-common';
+import { type Paragraph } from 'myst-spec';
+import { type Line } from 'myst-spec-ext';
 import type { Handler, ITexParser } from './types.js';
 import { getArguments } from './utils.js';
 import { select, selectAll } from 'unist-util-select';
@@ -44,10 +46,11 @@ function finishNestingStatement(node: GenericNode, state: ITexParser, { text }: 
 }
 
 function numberParagraphsAsLines(node: GenericNode) {
-  const paragraphs = selectAll('paragraph', node) as GenericNode[];
+  const paragraphs = selectAll('paragraph', node) as Paragraph[];
   paragraphs.forEach((p, i) => {
-    p.type = 'line';
-    p.enumerator = String(i + 1);
+    const l = p as unknown as Line;
+    l.type = 'line';
+    l.enumerator = String(i + 1);
   });
 }
 

@@ -1,5 +1,50 @@
-import type { Root, CrossReference, TableCell as SpecTableCell, Math, InlineMath } from 'myst-spec';
-import type { Cite, Code, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
+import type {
+  Root,
+  CrossReference,
+  TableCell as SpecTableCell,
+  Math,
+  Text,
+  Paragraph,
+  Blockquote,
+  List,
+  ThematicBreak,
+  Role,
+  Directive,
+  Comment,
+  Strong,
+  Emphasis,
+  Underline,
+  InlineCode,
+  Subscript,
+  Superscript,
+  Abbreviation,
+  Link,
+  AdmonitionTitle,
+  Table,
+  Caption,
+  Break,
+} from 'myst-spec';
+import type {
+  Block,
+  Cite,
+  Code,
+  DefinitionTerm,
+  DefinitionDescription,
+  DefinitionList,
+  FootnoteDefinition,
+  FootnoteReference,
+  Heading,
+  Line,
+  ListItem,
+  InlineMath,
+  Image,
+  Delete,
+  Smallcaps,
+  Admonition,
+  Container,
+  CaptionNumber,
+  CiteGroup,
+} from 'myst-spec-ext';
 import type { Plugin } from 'unified';
 import { VFile } from 'vfile';
 import { xml2js } from 'xml-js';
@@ -36,6 +81,7 @@ import type { IdInventory } from './transforms/references.js';
 import type { Section } from './transforms/sections.js';
 import { sectionAttrsFromBlock } from './transforms/sections.js';
 import { inlineExpression } from './inlineExpression.js';
+import type { DefinitionItem } from './transforms/definitions.js';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
@@ -175,7 +221,65 @@ function capitalize(kind?: string) {
   return kind.slice(0, 1).toUpperCase() + kind.slice(1);
 }
 
-const handlers: Record<string, Handler> = {
+type Handlers = {
+  text: Handler<Text>;
+  paragraph: Handler<Paragraph>;
+  section: Handler<Section>;
+  heading: Handler<Heading>;
+  block: Handler<Block>;
+  blockquote: Handler<Blockquote>;
+  definitionList: Handler<DefinitionList>;
+  definitionItem: Handler<DefinitionItem>;
+  definitionTerm: Handler<DefinitionTerm>;
+  definitionDescription: Handler<DefinitionDescription>;
+  code: Handler<Code>;
+  list: Handler<List>;
+  listItem: Handler<ListItem>;
+  thematicBreak: Handler<ThematicBreak>;
+  inlineMath: Handler<InlineMath>;
+  math: Handler<Math>;
+  mystRole: Handler<Role>;
+  mystDirective: Handler<Directive>;
+  comment: Handler<Comment>;
+  strong: Handler<Strong>;
+  emphasis: Handler<Emphasis>;
+  underline: Handler<Underline>;
+  inlineCode: Handler<InlineCode>;
+  subscript: Handler<Subscript>;
+  superscript: Handler<Superscript>;
+  delete: Handler<Delete>;
+  smallcaps: Handler<Smallcaps>;
+  break: Handler<Break>;
+  abbreviation: Handler<Abbreviation>;
+  link: Handler<Link>;
+  admonition: Handler<Admonition>;
+  admonitionTitle: Handler<AdmonitionTitle>;
+  attrib: Handler<GenericNode>;
+  table: Handler<Table>;
+  tableHead: Handler<GenericNode>;
+  tableBody: Handler<GenericNode>;
+  tableFooter: Handler<GenericNode>;
+  tableRow: Handler<GenericNode>;
+  tableCell: Handler<TableCell>;
+  image: Handler<Image>;
+  container: Handler<Container>;
+  caption: Handler<Caption>;
+  captionNumber: Handler<CaptionNumber>;
+  crossReference: Handler<CrossReference>;
+  citeGroup: Handler<CiteGroup>;
+  cite: Handler<Cite>;
+  footnoteReference: Handler<FootnoteReference>;
+  footnoteDefinition: Handler<FootnoteDefinition>;
+  si: Handler<GenericNode>;
+  proof: Handler<GenericNode>;
+  line: Handler<Line>;
+  output: Handler<GenericNode>;
+  embed: Handler<GenericNode>;
+  supplementaryMaterial: Handler<SupplementaryMaterial>;
+  inlineExpression: Handler<GenericNode>;
+};
+
+const handlers: Handlers = {
   text(node, state) {
     state.text(node.value);
   },
@@ -406,7 +510,7 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'caption');
   },
   captionNumber(node, state) {
-    delete node.identifier;
+    delete (node as any).identifier;
     state.renderInline(node, 'label');
   },
   crossReference(node, state) {

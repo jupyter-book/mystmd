@@ -4,7 +4,7 @@ import type { DefinitionList } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
 
-type DefinitionItem = Parent & { type: 'definitionItem' };
+export type DefinitionItem = Parent & { type: 'definitionItem' };
 
 export function definitionTransform(mdast: GenericParent) {
   const defList = selectAll('definitionList', mdast) as DefinitionList[];

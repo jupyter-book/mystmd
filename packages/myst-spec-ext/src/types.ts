@@ -14,6 +14,7 @@ import type {
   Code as SpecCode,
   ListItem as SpecListItem,
   Container as SpecContainer,
+  InlineMath as SpecInlineMath,
 } from 'myst-spec';
 
 type Visibility = 'show' | 'hide' | 'remove';
@@ -34,6 +35,18 @@ export type CaptionNumber = Parent & {
   identifier: string;
   html_id: string;
   enumerator: string;
+};
+
+/**
+ * Line is, e.g., a line in an algorithm and can be numbered as well as indented.
+ * Otherwise this works the same as a paragraph, ideally with tighter styling.
+ * The Line is used in Algorithms (e.g. when parsing from LaTeX)
+ */
+export type Line = Parent & { type: 'line'; indent?: number; enumerator?: string };
+
+export type InlineMath = SpecInlineMath & {
+  label?: string;
+  identifier?: string;
 };
 
 export type FootnoteDefinition = FND & {
@@ -184,6 +197,7 @@ export type Include = {
   caption?: (FlowContent | ListContent | PhrasingContent)[];
 };
 
-export type Container = SpecContainer & {
+export type Container = Omit<SpecContainer, 'kind'> & {
+  kind?: 'figure' | 'table' | 'quote' | 'code';
   source?: Dependency;
 };
