@@ -14,6 +14,16 @@ function renderCaption(node: GenericNode, state: ITexParser) {
   state.closeNode();
 }
 
+function centering(node: GenericNode, state: ITexParser) {
+  state.closeParagraph();
+  const container = state.top();
+  if (container.type === 'container') {
+    container.align = 'center';
+  } else {
+    state.warn('Unknown use of centering, currently this only works for containers', node);
+  }
+}
+
 const FIGURE_HANDLERS: Record<string, Handler> = {
   env_figure(node, state) {
     state.closeParagraph();
@@ -25,15 +35,8 @@ const FIGURE_HANDLERS: Record<string, Handler> = {
   env_subfigure(node, state) {
     state.renderChildren(node);
   },
-  macro_centering(node, state) {
-    state.closeParagraph();
-    const container = state.top();
-    if (container.type === 'container') {
-      container.align = 'center';
-    } else {
-      state.warn('Unknown use of centering, currently this only works for containers', node);
-    }
-  },
+  env_centering: centering,
+  macro_centering: centering,
   macro_includegraphics(node, state) {
     state.closeParagraph();
     const url = texToText(getArguments(node, 'group'));

@@ -1,0 +1,27 @@
+cases:
+  - title: Proof
+    tree:
+      type: root
+      children:
+        - type: proof
+          kind: algorithm
+          label: alg:cap
+          identifier: alg:cap
+          enumerated: true
+          enumerator: '1'
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: An algorithm with caption
+            - type: line
+              indent: 1
+              enumerator: '1'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: 'Require: '
+                - type: text
+                  value: 'alg'
+    jats: '<statement specific-use="algorithm" id="alg:cap"><label>Algorithm 1</label><title>An algorithm with caption</title><p specific-use="line"><x>1: </x> <bold>Require: </bold>alg</p></statement>'

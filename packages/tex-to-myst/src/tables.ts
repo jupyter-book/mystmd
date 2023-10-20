@@ -11,7 +11,7 @@ function createTable(node: GenericNode, state: ITexParser) {
     cells: [] as GenericNode[][],
     cell: [] as GenericNode[],
   };
-  const IGNORE = new Set(['hline', 'rule', 'midrule', 'toprule', 'bottomrule']);
+  const IGNORE = new Set(['hline', 'rule', 'midrule', 'cmidrule', 'toprule', 'bottomrule']);
   node.content.forEach((n: GenericNode) => {
     if (n.type === 'macro' && IGNORE.has(n.content)) return;
     if (n.type === 'macro' && n.content === '\\') {

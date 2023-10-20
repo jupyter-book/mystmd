@@ -73,7 +73,7 @@ beforeEach(() => {
 });
 
 describe('Basic JATS body', () => {
-  const cases = [...loadCases('basic.yml'), ...loadCases('siunit.yml')];
+  const cases = [...loadCases('basic.yml'), ...loadCases('siunit.yml'), ...loadCases('proof.yml')];
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))('%s', async (_, { tree, jats }) => {
     const pipe = unified().use(
       mystToJats,

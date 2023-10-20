@@ -1,0 +1,476 @@
+title: Algorithms
+cases:
+  - title: algorithmic
+    tex: |
+      \begin{algorithm}[ht]
+          \label{algo1}
+        \caption{$PCP$ algorithm}
+        \begin{algorithmic}[1]
+              \For{($v=1$ to $Lmt$)}
+                  \State Fix $x=n_{su}$
+                  \While{($x\geq 1$)}
+                      \State Fix $k=Rad(1,x)$
+                      \State Available supercomputer is $Su_z$
+                      \State Call $SLg(k,Su_z)$
+                      \State Fix $x--$
+                  \EndWhile
+                \State Determine $Grt_{v}$
+              \EndFor
+            \State Determine $Grt_{ }=\min \limits_{1\leq v\leq Lmt} Grt_{v}$
+        \end{algorithmic}
+      \end{algorithm}
+    tree:
+      type: root
+      children:
+        - type: proof
+          kind: algorithm
+          label: algo1
+          identifier: algo1
+          enumerated: true
+          children:
+            - type: admonitionTitle
+              children:
+                - type: inlineMath
+                  value: PCP
+                - type: text
+                  value: ' algorithm'
+            - type: line
+              indent: 0
+              enumerator: '1'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: for
+                - type: text
+                  value: ' ('
+                - type: inlineMath
+                  value: v=1
+                - type: text
+                  value: ' to '
+                - type: inlineMath
+                  value: Lmt
+                - type: text
+                  value: ') '
+                - type: strong
+                  children:
+                    - type: text
+                      value: do
+            - type: line
+              indent: 1
+              enumerator: '2'
+              children:
+                - type: text
+                  value: 'Fix '
+                - type: inlineMath
+                  value: x=n_{su}
+                - type: text
+                  value: ''
+            - type: line
+              indent: 1
+              enumerator: '3'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: while
+                - type: text
+                  value: ' ('
+                - type: inlineMath
+                  value: x\geq 1
+                - type: text
+                  value: ') '
+                - type: strong
+                  children:
+                    - type: text
+                      value: do
+            - type: line
+              indent: 2
+              enumerator: '4'
+              children:
+                - type: text
+                  value: 'Fix '
+                - type: inlineMath
+                  value: k=Rad(1,x)
+                - type: text
+                  value: ''
+            - type: line
+              indent: 2
+              enumerator: '5'
+              children:
+                - type: text
+                  value: 'Available supercomputer is '
+                - type: inlineMath
+                  value: Su_z
+                - type: text
+                  value: ''
+            - type: line
+              indent: 2
+              enumerator: '6'
+              children:
+                - type: text
+                  value: 'Call '
+                - type: inlineMath
+                  value: SLg(k,Su_z)
+                - type: text
+                  value: ''
+            - type: line
+              indent: 2
+              enumerator: '7'
+              children:
+                - type: text
+                  value: 'Fix '
+                - type: inlineMath
+                  value: x--
+                - type: text
+                  value: ''
+            - type: line
+              indent: 1
+              enumerator: '8'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: end while
+            - type: line
+              indent: 1
+              enumerator: '9'
+              children:
+                - type: text
+                  value: 'Determine '
+                - type: inlineMath
+                  value: Grt_{v}
+                - type: text
+                  value: ''
+            - type: line
+              indent: 0
+              enumerator: '10'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: end for
+            - type: line
+              indent: 0
+              enumerator: '11'
+              children:
+                - type: text
+                  value: 'Determine '
+                - type: inlineMath
+                  value: Grt_{ }=\min \limits_{1\leq v\leq Lmt} Grt_{v}
+  - title: algorithmic - if - nested
+    tex: |
+      \begin{algorithmic}
+      \State $i \gets 10$
+      \If{$i\geq 5$}
+          \State $i \gets i-1$
+      \Else
+          \If{$i\leq 3$}
+              \State $i \gets i+2$
+          \EndIf
+      \EndIf
+      \end{algorithmic}
+    tree:
+      type: root
+      children:
+        - type: proof
+          kind: algorithm
+          children:
+            - type: line
+              indent: 0
+              enumerator: '1'
+              children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: i \gets 10
+                - type: text
+                  value: ''
+            - type: line
+              indent: 0
+              enumerator: '2'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: if
+                - type: text
+                  value: ' '
+                - type: inlineMath
+                  value: i\geq 5
+                - type: text
+                  value: ' '
+                - type: strong
+                  children:
+                    - type: text
+                      value: then
+            - type: line
+              indent: 1
+              enumerator: '3'
+              children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: i \gets i-1
+                - type: text
+                  value: ''
+            - type: line
+              indent: 0
+              enumerator: '4'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: else
+            - type: line
+              indent: 1
+              enumerator: '5'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: if
+                - type: text
+                  value: ' '
+                - type: inlineMath
+                  value: i\leq 3
+                - type: text
+                  value: ' '
+                - type: strong
+                  children:
+                    - type: text
+                      value: then
+            - type: line
+              indent: 2
+              enumerator: '6'
+              children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: i \gets i+2
+                - type: text
+                  value: ''
+            - type: line
+              indent: 1
+              enumerator: '7'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: end if
+            - type: line
+              indent: 0
+              enumerator: '8'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: end if
+  - title: algorithmic - if-else
+    tex: |
+      \begin{algorithm}
+      \caption{An algorithm with caption}\label{alg:cap}
+      \begin{algorithmic}
+      \Require $n \geq 0$
+      \Ensure $y = x^n$
+      \State $y \gets 1$
+      \State $X \gets x$
+      \State $N \gets n$
+      \While{$N \neq 0$}
+      \If{$N$ is even}
+          \State $X \gets X \times X$
+          \State $N \gets \frac{N}{2}$  \Comment{This is a comment}
+      \ElsIf{$N$ is odd}
+          \State $y \gets y \times X$
+          \State $N \gets N - 1$
+      \EndIf
+      \EndWhile
+      \end{algorithmic}
+      \end{algorithm}
+    tree:
+      type: root
+      children:
+        - type: proof
+          kind: algorithm
+          label: alg:cap
+          identifier: alg:cap
+          enumerated: true
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: An algorithm with caption
+            - type: line
+              indent: 0
+              enumerator: '1'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: 'Require: '
+                - type: text
+                  value: ' '
+                - type: inlineMath
+                  value: n \geq 0
+                - type: text
+                  value: ''
+            - type: line
+              indent: 0
+              enumerator: '2'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: 'Ensure: '
+                - type: text
+                  value: ' '
+                - type: inlineMath
+                  value: y = x^n
+                - type: text
+                  value: ''
+            - type: line
+              indent: 0
+              enumerator: '3'
+              children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: y \gets 1
+                - type: text
+                  value: ''
+            - type: line
+              indent: 0
+              enumerator: '4'
+              children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: X \gets x
+                - type: text
+                  value: ''
+            - type: line
+              indent: 0
+              enumerator: '5'
+              children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: N \gets n
+                - type: text
+                  value: ''
+            - type: line
+              indent: 0
+              enumerator: '6'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: while
+                - type: text
+                  value: ' '
+                - type: inlineMath
+                  value: N \neq 0
+                - type: text
+                  value: ' '
+                - type: strong
+                  children:
+                    - type: text
+                      value: do
+            - type: line
+              indent: 1
+              enumerator: '7'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: if
+                - type: text
+                  value: ' '
+                - type: inlineMath
+                  value: 'N'
+                - type: text
+                  value: ' is even '
+                - type: strong
+                  children:
+                    - type: text
+                      value: then
+            - type: line
+              indent: 2
+              enumerator: '8'
+              children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: X \gets X \times X
+                - type: text
+                  value: ''
+            - type: line
+              indent: 2
+              enumerator: '9'
+              children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: N \gets \frac{N}{2}
+                - type: text
+                  value: ' '
+                - type: span
+                  style:
+                    float: right
+                  children:
+                    - type: text
+                      value: 'This is a comment'
+            - type: line
+              indent: 1
+              enumerator: '10'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: else if
+                - type: text
+                  value: ' '
+                - type: inlineMath
+                  value: 'N'
+                - type: text
+                  value: ' is odd '
+                - type: strong
+                  children:
+                    - type: text
+                      value: then
+            - type: line
+              indent: 2
+              enumerator: '11'
+              children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: y \gets y \times X
+                - type: text
+                  value: ''
+            - type: line
+              indent: 2
+              enumerator: '12'
+              children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: N \gets N - 1
+                - type: text
+                  value: ''
+            - type: line
+              indent: 1
+              enumerator: '13'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: end if
+            - type: line
+              indent: 0
+              enumerator: '14'
+              children:
+                - type: strong
+                  children:
+                    - type: text
+                      value: end while

@@ -45,6 +45,7 @@ const files = [
   'footnotes.yml',
   'siunitx.yml',
   'verbatim.yml',
+  'algorithm.yml',
 ];
 
 const only = ''; // Can set this to a test title
@@ -58,9 +59,9 @@ const casesList = files
   });
 
 casesList.forEach(({ title, cases }) => {
+  const casesToUse = cases.filter((c) => !only || c.title === only);
+  if (casesToUse.length === 0) return;
   describe(title, () => {
-    const casesToUse = cases.filter((c) => !only || c.title === only);
-    if (casesToUse.length === 0) return;
     test.each(casesToUse.map((c): [string, TestCase] => [c.title, c]))(
       '%s',
       (_, { tex, tree, text, warnings, data }) => {
@@ -78,7 +79,7 @@ casesList.forEach(({ title, cases }) => {
         if (tree) {
           if (only) console.log(yaml.dump(state.ast));
           expect(state.ast).toEqual(tree);
-        } else if (text != null) expect(toText(state.ast)).toEqual(text);
+        } else if (text != null) expect(toText(state.ast).trim()).toEqual(text);
         else throw new Error('Must have at least "tree" or "text" defined.');
         if (data?.colors) {
           expect(state.data.colors).toEqual(data.colors);
@@ -88,6 +89,9 @@ casesList.forEach(({ title, cases }) => {
         }
         if (data?.macros) {
           expect(state.data.macros).toEqual(data.macros);
+        }
+        if (data?.theorems) {
+          expect(state.data.theorems).toEqual(data.theorems);
         }
         if (data?.frontmatter) {
           stripPositions(state.data.frontmatter.title);

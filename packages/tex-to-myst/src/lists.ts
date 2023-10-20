@@ -67,4 +67,5 @@ export const LIST_HANDLERS: Record<string, Handler> = {
     const content = node.args[node.args.length - 1];
     state.renderBlock(content, 'listItem');
   },
+  macro_itemsep() {},
 };

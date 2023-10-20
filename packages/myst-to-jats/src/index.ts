@@ -44,7 +44,7 @@ function escapeForXML(text: string) {
 }
 
 function referenceKindToRefType(kind?: string): RefType {
-  switch (kind) {
+  switch (kind?.split(':')[0]) {
     case 'heading':
       return RefType.sec;
     case 'figure':
@@ -53,6 +53,8 @@ function referenceKindToRefType(kind?: string): RefType {
       return RefType.dispFormula;
     case 'table':
       return RefType.table;
+    case 'proof':
+      return RefType.statement;
     default:
       return RefType.custom;
   }
@@ -133,10 +135,12 @@ function addMmlAndRemoveAnnotation(el?: Element) {
 
 function mathToMml(node: Math | InlineMath) {
   const math = copyNode(node);
-  // TODO: add macros
+  // TODO: add macros, log errors
   renderEquation(new VFile(), math, { mathML: true });
-  const katexJs = xml2js((math as any).html, { compact: false }) as Element;
-  const spanElement = katexJs.elements?.[0];
+  const katexJs = (math as any).html
+    ? (xml2js((math as any).html, { compact: false }) as Element)
+    : undefined;
+  const spanElement = katexJs?.elements?.[0];
   const mathElement = spanElement?.elements?.[0];
   if (!mathElement) return;
   const inline = node.type === 'inlineMath';
@@ -163,6 +167,12 @@ function cleanLatex(value?: string): string | undefined {
     .map((s) => s.replace(/%(.*)/, '').trim())
     .join(' ')
     .trim();
+}
+
+// TODO: this should be based on some information of the proof, or myst config
+function capitalize(kind?: string) {
+  if (!kind) return '';
+  return kind.slice(0, 1).toUpperCase() + kind.slice(1);
 }
 
 const handlers: Record<string, Handler> = {
@@ -441,11 +451,42 @@ const handlers: Record<string, Handler> = {
   },
   si(node, state) {
     // <named-content content-type="quantity">5 <abbrev content-type="unit" alt="milli meter">mm</abbrev></named-content>
-    state.openNode('named-content', { 'content-type': 'quantity' });
-    if (node.number != null) state.text(`${node.number} `);
+    const hasNumber = node.number != null;
+    if (hasNumber) {
+      state.openNode('named-content', { 'content-type': 'quantity' });
+      state.text(`${node.number} `);
+    }
     state.openNode('abbrev', { 'content-type': 'unit', alt: node.alt });
     state.text(node.unit);
     state.closeNode();
+    if (hasNumber) state.closeNode();
+  },
+  proof(node, state) {
+    state.openNode('statement', { 'specific-use': node.kind, id: node.identifier });
+    const [title, ...rest] = node.children ?? [];
+    const useTitle = title && title.type === 'admonitionTitle';
+    if (node.enumerated) {
+      state.openNode('label');
+      state.text(`${capitalize(node.kind)} ${node.enumerator}`);
+      state.closeNode();
+    }
+    if (useTitle) {
+      state.openNode('title');
+      state.renderChildren(title);
+      state.closeNode();
+    }
+    state.renderChildren(useTitle ? rest : node.children);
+    state.closeNode();
+  },
+  line(node, state) {
+    state.openNode('p', { 'specific-use': 'line' });
+    if (node.enumerator) {
+      state.openNode('x');
+      state.text(`${node.enumerator}: `);
+      state.closeNode();
+    }
+    state.text(Array(node.indent).fill(' ').join(''));
+    state.renderChildren(node);
     state.closeNode();
   },
   output(node, state) {
@@ -652,11 +693,13 @@ class JatsSerializer implements IJatsSerializer {
     return node;
   }
 
-  renderChildren(node: GenericNode) {
-    node.children?.forEach((child) => {
+  renderChildren(node: GenericNode | GenericNode[]) {
+    const parent = Array.isArray(node) ? { children: node } : node;
+    const children = Array.isArray(node) ? node : node.children;
+    children?.forEach((child) => {
       const handler = this.handlers[child.type];
       if (handler) {
-        handler(child, this, node);
+        handler(child, this, parent);
       } else {
         fileError(this.file, `Unhandled JATS conversion for node of "${child.type}"`, {
           node: child,
