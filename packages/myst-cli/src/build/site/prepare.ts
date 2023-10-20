@@ -11,6 +11,8 @@ export type Options = {
   headless?: boolean;
   checkLinks?: boolean;
   yes?: boolean;
+  port?: number;
+  serverPort?: number;
   writeToc?: boolean;
   keepHost?: boolean;
   extraLinkTransformers?: LinkTransformer[];

@@ -21,8 +21,8 @@ const DEFAULT_START_COMMAND = 'npm run start';
 /**
  * Creates a content server and a websocket that can reload and log messages to the client.
  */
-export async function startContentServer(session: ISession) {
-  const port = await getPort({ port: portNumbers(3100, 3200) });
+export async function startContentServer(session: ISession, opts?: { serverPort?: number }) {
+  const port = opts?.serverPort ?? (await getPort({ port: portNumbers(3100, 3200) }));
   const app = express();
   app.use(cors());
   app.get('/', (req, res) => {
@@ -111,7 +111,7 @@ export async function startServer(
   const mystTemplate = await getMystTemplate(session, opts);
   if (!opts.headless) await installSiteTemplate(session, mystTemplate);
   await buildSite(session, opts);
-  const server = await startContentServer(session);
+  const server = await startContentServer(session, opts);
   const { extraLinkTransformers, extraTransforms, defaultTemplate } = opts;
   if (!opts.buildStatic) {
     watchContent(session, server.reload, {
@@ -130,10 +130,8 @@ export async function startServer(
   session.log.info(
     `\n\n\t✨✨✨  Starting ${mystTemplate.getValidatedTemplateYml().title}  ✨✨✨\n\n`,
   );
-  const port = await getPort({ port: portNumbers(3000, 3100) });
-  const appServer = {
-    port,
-  } as AppServer;
+  const port = opts?.port ?? (await getPort({ port: portNumbers(3000, 3100) }));
+  const appServer = { port } as AppServer;
   await new Promise<void>((resolve) => {
     const start = makeExecutable(
       mystTemplate.getValidatedTemplateYml().build?.start ?? DEFAULT_START_COMMAND,

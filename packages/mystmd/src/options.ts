@@ -1,4 +1,10 @@
-import { Option } from 'commander';
+import { InvalidArgumentError, Option } from 'commander';
+
+function parseInt(value: any) {
+  const parsedValue = Number.parseInt(value, 10);
+  if (isNaN(parsedValue)) throw new InvalidArgumentError('Not a number.');
+  return parsedValue;
+}
 
 export function makePdfOption(description: string) {
   return new Option('--pdf', description).default(false);
@@ -92,6 +98,23 @@ export function makeHeadlessOption() {
     '--headless',
     'Run the server in headless mode, with only the content server started',
   ).default(false);
+}
+
+export function makePortOption() {
+  return new Option('--port <port>', 'Run the application server from the specified port number')
+    .argParser(parseInt)
+    .env('PORT')
+    .default(undefined);
+}
+
+export function makeServerPortOption() {
+  return new Option(
+    '--server-port <server-port>',
+    'Run the content server from the specified port number',
+  )
+    .argParser(parseInt)
+    .env('SERVER_PORT')
+    .default(undefined);
 }
 
 export function makeYesOption() {
