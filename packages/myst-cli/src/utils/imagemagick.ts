@@ -79,6 +79,7 @@ export async function convert(
   session: ISession,
   input: string,
   writeFolder: string,
+  options?: { trim?: boolean },
 ) {
   if (!fs.existsSync(input)) return null;
   const { name, ext } = path.parse(input);
@@ -91,7 +92,9 @@ export async function convert(
     session.log.debug(`Cached file found for converted ${inputFormatUpper}: ${input}`);
     return filename;
   } else {
-    const executable = `convert -density 600 -colorspace RGB ${input} ${output}`;
+    const executable = `convert -density 600 -colorspace RGB ${input}${
+      options?.trim ? ' -trim' : ''
+    } ${output}`;
     session.log.debug(`Executing: ${executable}`);
     const exec = makeExecutable(executable, createImagemagikLogger(session));
     try {
@@ -181,7 +184,7 @@ export async function convertImageToWebp(
   const convertGif = makeExecutable(`gif2webp -q ${quality} "${image}" -o "${webp}"`, debugLogger);
   // Density has to be BEFORE the PDF
   const convertPdfPng = makeExecutable(
-    `convert -density 600 -colorspace RGB ${image} ${png}`,
+    `convert -density 600 -colorspace RGB ${image} -trim ${png}`,
     debugLogger,
   );
   const convertPdfWebP = makeExecutable(`cwebp -q ${quality} "${png}" -o "${webp}"`, debugLogger);
