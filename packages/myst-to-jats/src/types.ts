@@ -16,7 +16,7 @@ export type Element = {
   elements?: Element[];
 };
 
-export type Handler = (node: GenericNode, state: IJatsSerializer, parent: any) => void;
+export type Handler<T = any> = (node: T, state: IJatsSerializer, parent: any) => void;
 
 export type MathPlugins = Required<PageFrontmatter>['math'];
 

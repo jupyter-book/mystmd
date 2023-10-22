@@ -79,4 +79,6 @@ export const MISC_HANDLERS: Record<string, Handler> = {
   // line numbers
   macro_linenumbers: pass,
   macro_nolinenumbers: pass,
+  // counters
+  macro_setcounter: pass,
 };

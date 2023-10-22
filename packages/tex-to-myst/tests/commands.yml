@@ -13,3 +13,20 @@ cases:
         '\ii': '{i\mkern1mu}'
         '\f': '\mathcal{F}_{#1}\left[#2\right]'
         '\FFT': '\mathcal{F}_{\mathbf{r}\to\mathbf{k}}'
+  - title: newtheorem
+    tex: |-
+      \newtheorem{proposition}{Proposition}
+      \newtheorem{example}{Example}
+      \newtheorem{proof}{Proof}
+      \newtheorem{theorem}{Theorem}[section]
+      \newtheorem{corollary}{Corollary}[theorem]
+      \newtheorem{lemma}[theorem]{Lemma}
+    text: ''
+    data:
+      theorems:
+        proposition: { label: Proposition }
+        example: { label: Example }
+        proof: { label: Proof }
+        theorem: { label: Theorem, countAfter: section }
+        corollary: { label: Corollary, countAfter: theorem }
+        lemma: { label: Lemma, countWith: theorem }

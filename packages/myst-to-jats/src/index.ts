@@ -1,5 +1,50 @@
-import type { Root, CrossReference, TableCell as SpecTableCell, Math, InlineMath } from 'myst-spec';
-import type { Cite, Code, FootnoteDefinition, FootnoteReference } from 'myst-spec-ext';
+import type {
+  Root,
+  CrossReference,
+  TableCell as SpecTableCell,
+  Math,
+  Text,
+  Paragraph,
+  Blockquote,
+  List,
+  ThematicBreak,
+  Role,
+  Directive,
+  Comment,
+  Strong,
+  Emphasis,
+  Underline,
+  InlineCode,
+  Subscript,
+  Superscript,
+  Abbreviation,
+  Link,
+  AdmonitionTitle,
+  Table,
+  Caption,
+  Break,
+} from 'myst-spec';
+import type {
+  Block,
+  Cite,
+  Code,
+  DefinitionTerm,
+  DefinitionDescription,
+  DefinitionList,
+  FootnoteDefinition,
+  FootnoteReference,
+  Heading,
+  AlgorithmLine,
+  ListItem,
+  InlineMath,
+  Image,
+  Delete,
+  Smallcaps,
+  Admonition,
+  Container,
+  CaptionNumber,
+  CiteGroup,
+} from 'myst-spec-ext';
 import type { Plugin } from 'unified';
 import { VFile } from 'vfile';
 import { xml2js } from 'xml-js';
@@ -36,6 +81,7 @@ import type { IdInventory } from './transforms/references.js';
 import type { Section } from './transforms/sections.js';
 import { sectionAttrsFromBlock } from './transforms/sections.js';
 import { inlineExpression } from './inlineExpression.js';
+import type { DefinitionItem } from './transforms/definitions.js';
 
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
@@ -44,7 +90,7 @@ function escapeForXML(text: string) {
 }
 
 function referenceKindToRefType(kind?: string): RefType {
-  switch (kind) {
+  switch (kind?.split(':')[0]) {
     case 'heading':
       return RefType.sec;
     case 'figure':
@@ -53,6 +99,8 @@ function referenceKindToRefType(kind?: string): RefType {
       return RefType.dispFormula;
     case 'table':
       return RefType.table;
+    case 'proof':
+      return RefType.statement;
     default:
       return RefType.custom;
   }
@@ -133,10 +181,12 @@ function addMmlAndRemoveAnnotation(el?: Element) {
 
 function mathToMml(node: Math | InlineMath) {
   const math = copyNode(node);
-  // TODO: add macros
+  // TODO: add macros, log errors
   renderEquation(new VFile(), math, { mathML: true });
-  const katexJs = xml2js((math as any).html, { compact: false }) as Element;
-  const spanElement = katexJs.elements?.[0];
+  const katexJs = (math as any).html
+    ? (xml2js((math as any).html, { compact: false }) as Element)
+    : undefined;
+  const spanElement = katexJs?.elements?.[0];
   const mathElement = spanElement?.elements?.[0];
   if (!mathElement) return;
   const inline = node.type === 'inlineMath';
@@ -165,7 +215,71 @@ function cleanLatex(value?: string): string | undefined {
     .trim();
 }
 
-const handlers: Record<string, Handler> = {
+// TODO: this should be based on some information of the proof, or myst config
+function capitalize(kind?: string) {
+  if (!kind) return '';
+  return kind.slice(0, 1).toUpperCase() + kind.slice(1);
+}
+
+type Handlers = {
+  text: Handler<Text>;
+  paragraph: Handler<Paragraph>;
+  section: Handler<Section>;
+  heading: Handler<Heading>;
+  block: Handler<Block>;
+  blockquote: Handler<Blockquote>;
+  definitionList: Handler<DefinitionList>;
+  definitionItem: Handler<DefinitionItem>;
+  definitionTerm: Handler<DefinitionTerm>;
+  definitionDescription: Handler<DefinitionDescription>;
+  code: Handler<Code>;
+  list: Handler<List>;
+  listItem: Handler<ListItem>;
+  thematicBreak: Handler<ThematicBreak>;
+  inlineMath: Handler<InlineMath>;
+  math: Handler<Math>;
+  mystRole: Handler<Role>;
+  mystDirective: Handler<Directive>;
+  comment: Handler<Comment>;
+  strong: Handler<Strong>;
+  emphasis: Handler<Emphasis>;
+  underline: Handler<Underline>;
+  inlineCode: Handler<InlineCode>;
+  subscript: Handler<Subscript>;
+  superscript: Handler<Superscript>;
+  delete: Handler<Delete>;
+  smallcaps: Handler<Smallcaps>;
+  break: Handler<Break>;
+  abbreviation: Handler<Abbreviation>;
+  link: Handler<Link>;
+  admonition: Handler<Admonition>;
+  admonitionTitle: Handler<AdmonitionTitle>;
+  attrib: Handler<GenericNode>;
+  table: Handler<Table>;
+  tableHead: Handler<GenericNode>;
+  tableBody: Handler<GenericNode>;
+  tableFooter: Handler<GenericNode>;
+  tableRow: Handler<GenericNode>;
+  tableCell: Handler<TableCell>;
+  image: Handler<Image>;
+  container: Handler<Container>;
+  caption: Handler<Caption>;
+  captionNumber: Handler<CaptionNumber>;
+  crossReference: Handler<CrossReference>;
+  citeGroup: Handler<CiteGroup>;
+  cite: Handler<Cite>;
+  footnoteReference: Handler<FootnoteReference>;
+  footnoteDefinition: Handler<FootnoteDefinition>;
+  si: Handler<GenericNode>;
+  proof: Handler<GenericNode>;
+  algorithmLine: Handler<AlgorithmLine>;
+  output: Handler<GenericNode>;
+  embed: Handler<GenericNode>;
+  supplementaryMaterial: Handler<SupplementaryMaterial>;
+  inlineExpression: Handler<GenericNode>;
+};
+
+const handlers: Handlers = {
   text(node, state) {
     state.text(node.value);
   },
@@ -396,7 +510,7 @@ const handlers: Record<string, Handler> = {
     state.renderInline(node, 'caption');
   },
   captionNumber(node, state) {
-    delete node.identifier;
+    delete (node as any).identifier;
     state.renderInline(node, 'label');
   },
   crossReference(node, state) {
@@ -441,11 +555,42 @@ const handlers: Record<string, Handler> = {
   },
   si(node, state) {
     // <named-content content-type="quantity">5 <abbrev content-type="unit" alt="milli meter">mm</abbrev></named-content>
-    state.openNode('named-content', { 'content-type': 'quantity' });
-    if (node.number != null) state.text(`${node.number} `);
+    const hasNumber = node.number != null;
+    if (hasNumber) {
+      state.openNode('named-content', { 'content-type': 'quantity' });
+      state.text(`${node.number} `);
+    }
     state.openNode('abbrev', { 'content-type': 'unit', alt: node.alt });
     state.text(node.unit);
     state.closeNode();
+    if (hasNumber) state.closeNode();
+  },
+  proof(node, state) {
+    state.openNode('statement', { 'specific-use': node.kind, id: node.identifier });
+    const [title, ...rest] = node.children ?? [];
+    const useTitle = title && title.type === 'admonitionTitle';
+    if (node.enumerated) {
+      state.openNode('label');
+      state.text(`${capitalize(node.kind)} ${node.enumerator}`);
+      state.closeNode();
+    }
+    if (useTitle) {
+      state.openNode('title');
+      state.renderChildren(title);
+      state.closeNode();
+    }
+    state.renderChildren(useTitle ? rest : node.children);
+    state.closeNode();
+  },
+  algorithmLine(node, state) {
+    state.openNode('p', { 'specific-use': 'line' });
+    if (node.enumerator) {
+      state.openNode('x');
+      state.text(`${node.enumerator}: `);
+      state.closeNode();
+    }
+    state.text(Array(node.indent).fill(' ').join(''));
+    state.renderChildren(node);
     state.closeNode();
   },
   output(node, state) {
@@ -652,11 +797,13 @@ class JatsSerializer implements IJatsSerializer {
     return node;
   }
 
-  renderChildren(node: GenericNode) {
-    node.children?.forEach((child) => {
+  renderChildren(node: GenericNode | GenericNode[]) {
+    const parent = Array.isArray(node) ? { children: node } : node;
+    const children = Array.isArray(node) ? node : node.children;
+    children?.forEach((child) => {
       const handler = this.handlers[child.type];
       if (handler) {
-        handler(child, this, node);
+        handler(child, this, parent);
       } else {
         fileError(this.file, `Unhandled JATS conversion for node of "${child.type}"`, {
           node: child,

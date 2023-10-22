@@ -14,6 +14,7 @@ export type IdInventory = {
   quote?: CountAndLookup;
   cite?: CountAndLookup;
   footnote?: CountAndLookup;
+  proof?: CountAndLookup;
 };
 
 const CONTAINER_KINDS: (keyof IdInventory)[] = ['figure', 'table', 'code', 'quote'];
@@ -63,6 +64,10 @@ export function referenceTargetTransform(
   footnotes.forEach((fn) => {
     updateInventory(fn, 'footnote', 'fn', inventory);
   });
+  const proofs = selectAll('proof', mdast) as GenericNode[];
+  proofs.forEach((fn) => {
+    updateInventory(fn, 'proof', 'stm', inventory);
+  });
   const containers = selectAll('container', mdast) as GenericNode[];
   containers.forEach((container) => {
     if (!container.kind || !CONTAINER_KINDS.includes(container.kind as any)) {
@@ -97,6 +102,7 @@ export function referenceResolutionTransform(mdast: GenericParent, inventory: Id
     ...inventory.table?.lookup,
     ...inventory.code?.lookup,
     ...inventory.quote?.lookup,
+    ...inventory.proof?.lookup,
   };
   xrefs.forEach((xref) => {
     if (xref.identifier && lookup[xref.identifier]) {

@@ -25,6 +25,7 @@ import { TABLE_HANDLERS } from './tables.js';
 import { FOOTNOTE_HANDLERS } from './footnotes.js';
 import { SIUNITX_HANDLERS } from './siunitx.js';
 import { CHEM_HANDLERS } from './chem.js';
+import { ALGORITHM_HANDLERS } from './algorithms.js';
 
 const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...BASIC_TEXT_HANDLERS,
@@ -45,6 +46,7 @@ const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...FOOTNOTE_HANDLERS,
   ...SIUNITX_HANDLERS,
   ...CHEM_HANDLERS,
+  ...ALGORITHM_HANDLERS,
 };
 
 // This currently is needed as we don't support affiliations in the frontmatter.
@@ -84,6 +86,8 @@ export class TexParser implements ITexParser {
       colors: {},
       macros: {},
       frontmatter: {},
+      theorems: {},
+      dynamicHandlers: {},
     };
     this.stack = [{ type: 'root', children: [] }];
     this.handlers = opts?.handlers ?? DEFAULT_HANDLERS;
@@ -94,11 +98,11 @@ export class TexParser implements ITexParser {
     do {
       stack = this.closeNode();
     } while (this.stack.length);
-    (selectAll('[label]', stack) as GenericNode[]).forEach((xref) => {
-      const reference = normalizeLabel(xref.label);
+    (selectAll('[label]', stack) as GenericNode[]).forEach((node) => {
+      const reference = normalizeLabel(node.label);
       if (!reference) return;
-      xref.identifier = reference.identifier;
-      xref.label = reference.label;
+      node.identifier = reference.identifier;
+      node.label = reference.label;
     });
     cleanFrontmatter(this.data.frontmatter);
     this.ast = stack;
@@ -161,7 +165,7 @@ export class TexParser implements ITexParser {
           ? `env_${child.env}`
           : child.type;
       this.currentPosition = child.position ?? this.currentPosition;
-      const handler = this.handlers[kind];
+      const handler = this.handlers[kind] ?? this.data.dynamicHandlers[kind];
       if (handler) {
         handler(child, this, node);
       } else {
@@ -216,10 +220,10 @@ export class TexParser implements ITexParser {
     this.stack.push(node);
   }
 
-  openParagraph() {
+  openParagraph(attributes?: Record<string, any>) {
     const inPhrasing = phrasingTypes.has(this.top()?.type);
     if (inPhrasing) return;
-    this.openNode('paragraph');
+    this.openNode('paragraph', attributes);
   }
 
   closeParagraph() {

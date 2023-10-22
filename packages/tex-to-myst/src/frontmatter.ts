@@ -5,6 +5,7 @@ import { selectAll } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
 import type { Handler, ITexParser } from './types.js';
 import { getArguments, getPositionExtents, originalValue, texToText } from './utils.js';
+import { createTheoremHandler } from './algorithms.js';
 
 function getContentFromRenderedSpan(node: GenericNode | undefined): string | GenericNode {
   if (!node) return '';
@@ -280,6 +281,17 @@ const FRONTMATTER_HANDLERS: Record<string, Handler> = {
       .split(/,|;/)
       .map((k) => k.trim())
       .filter((k) => !!k);
+  },
+  macro_newtheorem(node, state) {
+    // https://tex.stackexchange.com/questions/155710/understanding-the-arguments-in-newtheorem-e-g-newtheoremtheoremtheoremsec/155714#155714
+    const [, nameNode, x, labelNode, y] = node.args ?? [];
+    const name = texToText(nameNode);
+    const label = texToText(labelNode);
+    const countWith = texToText(x) || undefined;
+    const countAfter = texToText(y) || undefined;
+    state.data.theorems[name] = { label, countWith, countAfter };
+    // We create a handler now for future nodes
+    state.data.dynamicHandlers[`env_${name}`] = createTheoremHandler(name);
   },
 };
 
