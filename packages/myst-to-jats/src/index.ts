@@ -34,7 +34,7 @@ import type {
   FootnoteDefinition,
   FootnoteReference,
   Heading,
-  Line,
+  AlgorithmLine,
   ListItem,
   InlineMath,
   Image,
@@ -272,7 +272,7 @@ type Handlers = {
   footnoteDefinition: Handler<FootnoteDefinition>;
   si: Handler<GenericNode>;
   proof: Handler<GenericNode>;
-  line: Handler<Line>;
+  algorithmLine: Handler<AlgorithmLine>;
   output: Handler<GenericNode>;
   embed: Handler<GenericNode>;
   supplementaryMaterial: Handler<SupplementaryMaterial>;
@@ -582,7 +582,7 @@ const handlers: Handlers = {
     state.renderChildren(useTitle ? rest : node.children);
     state.closeNode();
   },
-  line(node, state) {
+  algorithmLine(node, state) {
     state.openNode('p', { 'specific-use': 'line' });
     if (node.enumerator) {
       state.openNode('x');

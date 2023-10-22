@@ -38,11 +38,15 @@ export type CaptionNumber = Parent & {
 };
 
 /**
- * Line is, e.g., a line in an algorithm and can be numbered as well as indented.
+ * AlgorithmLine is, e.g., a line in an algorithm and can be numbered as well as indented.
  * Otherwise this works the same as a paragraph, ideally with tighter styling.
  * The Line is used in Algorithms (e.g. when parsing from LaTeX)
  */
-export type Line = Parent & { type: 'line'; indent?: number; enumerator?: string };
+export type AlgorithmLine = Parent & {
+  type: 'algorithmLine';
+  indent?: number;
+  enumerator?: string;
+};
 
 export type InlineMath = SpecInlineMath & {
   label?: string;

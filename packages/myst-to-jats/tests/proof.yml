@@ -14,7 +14,7 @@ cases:
               children:
                 - type: text
                   value: An algorithm with caption
-            - type: line
+            - type: algorithmLine
               indent: 1
               enumerator: '1'
               children:
