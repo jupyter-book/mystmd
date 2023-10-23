@@ -1,7 +1,9 @@
 import type { GenericNode } from 'myst-common';
+import type { Math } from 'myst-spec';
 import { u } from 'unist-builder';
 import type { Handler, ITexParser } from './types.js';
 import { originalValue } from './utils.js';
+import { selectAll } from 'unist-util-select';
 
 function mathBlockAsOriginal(node: GenericNode, state: ITexParser) {
   state.closeParagraph();
@@ -45,4 +47,33 @@ export const MATH_HANDLERS: Record<string, Handler> = {
   'env_vmatrix*': mathBlockAsOriginal,
   env_Vmatrix: mathBlockAsOriginal,
   'env_Vmatrix*': mathBlockAsOriginal,
+  env_subequations(node, state) {
+    state.closeParagraph();
+    state.openNode('mathGroup');
+    state.renderChildren(node);
+    const mathGroup = state.top();
+    transformSubEquations(mathGroup);
+    state.closeNode();
+  },
 };
+
+function transformSubEquations(node: GenericNode) {
+  const mathNodes = selectAll('math', node) as Math[];
+  node.equations = mathNodes.map((math) => math.value);
+  const children = mathNodes
+    .map((math) => {
+      const tex = math.value.trim();
+      if (!tex.match(/^\\begin\{align\*?\}/)) return math;
+      return tex
+        .replace(/^\\begin\{align\*?\}/, '')
+        .replace(/\\end\{align\*?\}$/, '')
+        .split('\\\\')
+        .map((value) => ({
+          ...math,
+          kind: 'subequation',
+          value: `\\begin{align*}${value.trim()}\\end{align*}`,
+        }));
+    })
+    .flat();
+  node.children = children;
+}

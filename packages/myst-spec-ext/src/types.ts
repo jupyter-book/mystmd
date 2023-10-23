@@ -15,6 +15,7 @@ import type {
   ListItem as SpecListItem,
   Container as SpecContainer,
   InlineMath as SpecInlineMath,
+  Math as SpecMath,
 } from 'myst-spec';
 
 type Visibility = 'show' | 'hide' | 'remove';
@@ -51,6 +52,19 @@ export type AlgorithmLine = Parent & {
 export type InlineMath = SpecInlineMath & {
   label?: string;
   identifier?: string;
+};
+
+export type Math = SpecMath & {
+  kind?: 'subequation';
+};
+
+export type MathGroup = {
+  type: 'mathGroup';
+  label?: string;
+  identifier?: string;
+  enumerated?: boolean;
+  enumerator?: string;
+  children: Math[];
 };
 
 export type FootnoteDefinition = FND & {

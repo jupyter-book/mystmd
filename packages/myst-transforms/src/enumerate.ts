@@ -1,7 +1,7 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import type { Container, CrossReference, Heading, Link, Math, Paragraph } from 'myst-spec';
-import type { Cite } from 'myst-spec-ext';
+import type { Container, CrossReference, Heading, Link, Paragraph } from 'myst-spec';
+import type { Cite, Math, MathGroup } from 'myst-spec-ext';
 import type { PhrasingContent } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
@@ -38,6 +38,7 @@ function getDefaultNumberedReferenceLabel(kind: TargetKind | string) {
     case TargetKind.heading:
       return 'Section %s';
     case TargetKind.equation:
+    case TargetKind.subequation:
       return '(%s)';
     case TargetKind.figure:
       return 'Figure %s';
@@ -73,7 +74,7 @@ export enum ReferenceKind {
   eq = 'eq',
 }
 
-type TargetNodes = (Container | Math | Heading) & { html_id: string };
+type TargetNodes = (Container | Math | MathGroup | Heading) & { html_id: string };
 type IdentifierNodes = { type: string; identifier: string };
 
 type Target = {
@@ -83,6 +84,7 @@ type Target = {
 
 type TargetCounts = {
   heading?: (number | null)[];
+  subequation?: [number, number];
 } & Record<string, number>;
 
 export type StateOptions = {
@@ -93,6 +95,7 @@ export type NumberingOptions = {
   enumerator?: string;
   figure?: boolean;
   equation?: boolean;
+  subequation?: boolean;
   table?: boolean;
   code?: boolean;
   heading_1?: boolean;
@@ -162,7 +165,8 @@ function fillReferenceEnumerators(
 
 function kindFromNode(node: TargetNodes): TargetKind | string {
   if (node.type === 'container') return node.kind || TargetKind.figure;
-  if (node.type === 'math') return TargetKind.equation;
+  if (node.type === 'math' && node.kind === 'subequation') return TargetKind.subequation;
+  if (node.type === 'math' || node.type === 'mathGroup') return TargetKind.equation;
   if ((node as any).kind) return `${node.type}:${(node as any).kind}`;
   return node.type;
 }
@@ -250,6 +254,7 @@ export class ReferenceState implements IReferenceState {
     } else {
       this.numbering = {
         equation: true,
+        subequation: true,
         figure: true,
         table: true,
         code: true,
@@ -323,15 +328,31 @@ export class ReferenceState implements IReferenceState {
   incrementCount(node: TargetNodes, kind: TargetKind | string): string {
     if (kind === TargetKind.heading && node.type === 'heading') {
       // Ideally initializeNumberedHeadingDepths is called before incrementing
-      // heading count to do a better job initializng headers based on tree
+      // heading count to do a better job initializing headers based on tree
       if (!this.targetCounts.heading) this.targetCounts.heading = [0, 0, 0, 0, 0, 0];
       this.targetCounts.heading = incrementHeadingCounts(node.depth, this.targetCounts.heading);
       return formatHeadingEnumerator(this.targetCounts.heading, this.numbering.enumerator);
     }
-    if (kind in this.targetCounts) {
-      this.targetCounts[kind] += 1;
-    } else {
-      this.targetCounts[kind] = 1;
+    if (kind === TargetKind.subequation && node.type === 'math') {
+      // This should be reset every time a mathGroup is encountered (see below)
+      this.targetCounts.subequation ??= [this.targetCounts.equation, 0];
+      this.targetCounts.subequation = [
+        this.targetCounts.subequation[0],
+        this.targetCounts.subequation[1] + 1,
+      ];
+      const sub = this.targetCounts.subequation[1];
+      // Will restart counting if there are more than 26 subequations
+      const letter = String.fromCharCode(((sub - 1) % 26) + 'a'.charCodeAt(0));
+      const enumerator = this.targetCounts.subequation[0] + letter;
+      const prefix = this.numbering.enumerator;
+      const out = prefix ? prefix.replace(/%s/g, String(enumerator)) : String(enumerator);
+      return out;
+    }
+    this.targetCounts[kind] ??= 0;
+    this.targetCounts[kind] += 1;
+    if (kind === TargetKind.equation && node.type === 'mathGroup') {
+      // Reset the sub-equation count and number the outer equation
+      this.targetCounts.subequation = [this.targetCounts.equation, 0];
     }
     const enumerator = this.targetCounts[kind];
     const prefix = this.numbering.enumerator;
@@ -474,12 +495,14 @@ export class MultiPageReferenceState implements IReferenceState {
 
 export const enumerateTargetsTransform = (tree: GenericParent, opts: StateOptions) => {
   opts.state.initializeNumberedHeadingDepths(tree);
-  const nodes = selectAll('container,math,heading,proof,[identifier],[enumerated=true]', tree) as (
-    | TargetNodes
-    | IdentifierNodes
-  )[];
-  nodes.forEach((node) => {
-    opts.state.addTarget(node as TargetNodes);
+  visit(tree, (node) => {
+    if (
+      node.identifier ||
+      node.enumerated ||
+      ['container', 'mathGroup', 'math', 'heading', 'proof'].includes(node.type)
+    ) {
+      opts.state.addTarget(node as TargetNodes);
+    }
   });
   return tree;
 };

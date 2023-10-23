@@ -1,7 +1,8 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import katex from 'katex';
-import type { Math, InlineMath, Node } from 'myst-spec';
+import type { InlineMath, Node } from 'myst-spec';
+import type { Math } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
 import { RuleId, copyNode, fileError, fileWarn, normalizeLabel } from 'myst-common';
@@ -249,6 +250,13 @@ export function mathLabelTransform(tree: GenericParent, file: VFile) {
     transformMathValue(file, node);
     removeSimpleEquationEnv(file, node);
     labelMathNodes(file, node);
+  });
+}
+
+export function subequationTransform(tree: GenericParent, file: VFile) {
+  const nodes = selectAll('mathGroup > math', tree) as Math[];
+  nodes.forEach((node) => {
+    node.kind = 'subequation';
   });
 }
 

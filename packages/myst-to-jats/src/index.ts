@@ -38,6 +38,7 @@ import type {
   ListItem,
   InlineMath,
   Image,
+  MathGroup,
   Delete,
   Smallcaps,
   Admonition,
@@ -95,6 +96,7 @@ function referenceKindToRefType(kind?: string): RefType {
       return RefType.sec;
     case 'figure':
       return RefType.fig;
+    case 'subequation':
     case 'equation':
       return RefType.dispFormula;
     case 'table':
@@ -238,6 +240,7 @@ type Handlers = {
   thematicBreak: Handler<ThematicBreak>;
   inlineMath: Handler<InlineMath>;
   math: Handler<Math>;
+  mathGroup: Handler<MathGroup>;
   mystRole: Handler<Role>;
   mystDirective: Handler<Directive>;
   comment: Handler<Comment>;
@@ -372,6 +375,16 @@ const handlers: Handlers = {
     state.addLeaf('cdata', { cdata: cleanLatex(node.value) });
     state.closeNode();
     state.closeNode();
+    state.closeNode();
+  },
+  mathGroup(node, state) {
+    const attrs: Attributes = {};
+    if (node.identifier) {
+      attrs.id = node.identifier;
+    }
+    state.openNode('disp-formula-group', attrs);
+    renderLabel(node, state, (enumerator) => `(${enumerator})`);
+    state.renderChildren(node);
     state.closeNode();
   },
   mystRole(node, state) {
