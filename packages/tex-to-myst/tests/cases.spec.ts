@@ -46,6 +46,7 @@ const files = [
   'siunitx.yml',
   'verbatim.yml',
   'algorithm.yml',
+  'macros.yml',
 ];
 
 const only = ''; // Can set this to a test title
