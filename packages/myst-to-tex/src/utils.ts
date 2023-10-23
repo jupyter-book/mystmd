@@ -154,6 +154,8 @@ const mathReplacements: Record<string, string> = {
   '♾': '\\acidfree',
   '≈': '\\approx',
   '≠': '\\neq',
+  '≥': '\\geq',
+  '≤': '\\leq',
   '•': '\\cdot',
   // '‰': '\\permille',
 };

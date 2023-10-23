@@ -29,12 +29,13 @@ function blockIsNotebookFigure(node: Block) {
   return !!node.data?.['fig-cap'];
 }
 
-function headingsToSections(tree: GenericParent | Block, current?: Section) {
+function headingsToSections(tree: GenericParent | Block) {
+  const stack: Section[] = [];
   const children: Parent[] = [];
-  // let current: Section | undefined = undefined;
   function push(child: any) {
-    if (current) {
-      current.children.push(child);
+    const top = stack[stack.length - 1];
+    if (top) {
+      top.children.push(child);
     } else {
       children.push(child);
     }
@@ -42,15 +43,10 @@ function headingsToSections(tree: GenericParent | Block, current?: Section) {
 
   function newSection(heading: Heading) {
     const { enumerator, enumerated, ...filtered } = heading;
-    if (current && current.depth < heading.depth) {
-      // Nest the section
-      const next: Section = { ...filtered, type: 'section', children: [] };
-      push(next);
-      current = next;
-      return { enumerator, enumerated };
-    }
-    current = { ...filtered, type: 'section', children: [] };
-    children.push(current);
+    const next: Section = { ...filtered, type: 'section', children: [] };
+    while (stack[stack.length - 1] && stack[stack.length - 1].depth >= heading.depth) stack.pop();
+    push(next);
+    stack.push(next);
     return { enumerator, enumerated };
   }
   tree.children?.forEach((child) => {
@@ -75,8 +71,8 @@ function headingsToSections(tree: GenericParent | Block, current?: Section) {
  *    - Top-level heading nodes are then used to break the tree into section nodes,
  *      with heading and subsequent nodes as children
  */
-export function sectionTransform(tree: GenericParent, opts: Options) {
-  if (opts.isSubArticle) {
+export function sectionTransform(tree: GenericParent, opts?: Pick<Options, 'isSubArticle'>) {
+  if (opts?.isSubArticle) {
     (selectAll('block', tree) as Block[]).forEach((node) => {
       (node as any).type = 'section';
       (node as any).depth = 0;
@@ -100,6 +96,10 @@ export function sectionTransform(tree: GenericParent, opts: Options) {
   headingsToSections(tree);
 }
 
-export const sectionPlugin: Plugin<[Options], GenericParent, GenericParent> = (opts) => (tree) => {
+export const sectionPlugin: Plugin<
+  [Pick<Options, 'isSubArticle'>?],
+  GenericParent,
+  GenericParent
+> = (opts) => (tree) => {
   sectionTransform(tree, opts);
 };
