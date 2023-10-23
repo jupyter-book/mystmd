@@ -327,7 +327,11 @@ const handlers: Handlers = {
   },
   listItem(node, state) {
     state.openNode('list-item');
-    state.renderInline(node, 'p');
+    if (node.children?.[0].type === 'paragraph') {
+      state.renderChildren(node);
+    } else {
+      state.renderInline(node, 'p');
+    }
     state.closeNode();
   },
   thematicBreak(node, state) {
