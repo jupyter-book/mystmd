@@ -11,10 +11,18 @@ function createTable(node: GenericNode, state: ITexParser) {
     cells: [] as GenericNode[][],
     cell: [] as GenericNode[],
   };
-  const IGNORE = new Set(['hline', 'rule', 'midrule', 'cmidrule', 'toprule', 'bottomrule']);
+  const IGNORE = new Set([
+    'cline',
+    'hline',
+    'rule',
+    'midrule',
+    'cmidrule',
+    'toprule',
+    'bottomrule',
+  ]);
   node.content.forEach((n: GenericNode) => {
     if (n.type === 'macro' && IGNORE.has(n.content)) return;
-    if (n.type === 'macro' && n.content === '\\') {
+    if (n.type === 'macro' && (n.content === '\\' || n.content === 'tabularnewline')) {
       table.cells.push(table.cell);
       table.rows.push(table.cells);
       table.cell = [];
