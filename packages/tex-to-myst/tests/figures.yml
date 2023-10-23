@@ -32,6 +32,32 @@ cases:
                           value: link to notebook
                     - type: text
                       value: '.'
+  - title: Paragraph after figure should not have a leading space
+    tex: |-
+      \begin{figure}[t!]
+          \includegraphics[width=0.95\textwidth]{fig.jpg}
+          \vspace{0mm}
+      \end{figure}
+      \vspace{3mm}
+      As mentioned above...
+
+      Text
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          children:
+            - type: image
+              url: fig.jpg
+        - type: paragraph
+          children:
+            - type: text
+              value: As mentioned above... # There is a bug that can put a space here with the \vspace
+        - type: paragraph
+          children:
+            - type: text
+              value: Text
   - title: Figure environment (label in caption)
     tex: |-
       \begin{figure}[ht!]

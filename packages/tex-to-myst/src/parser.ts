@@ -229,13 +229,13 @@ export class TexParser implements ITexParser {
   closeParagraph() {
     const top = this.top();
     if (top?.type !== 'paragraph') return;
-    const first = top.children?.slice(0, 1)?.[0];
+    const first = top.children?.[0];
     const last = top.children?.slice(-1)?.[0];
     if (first?.type === 'text') {
-      first.value = first.value?.replace(/^\s/, '') ?? '';
+      first.value = first.value?.replace(/^\s+/, '') ?? '';
     }
     if (last?.type === 'text') {
-      last.value = last.value?.replace(/\s$/, '') ?? '';
+      last.value = last.value?.replace(/\s+$/, '') ?? '';
     }
     if (
       top.children?.length === 0 ||
