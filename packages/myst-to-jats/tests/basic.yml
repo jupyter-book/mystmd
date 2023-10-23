@@ -279,6 +279,20 @@ cases:
                 - type: text
                   value: has two points
     jats: <list list-type="bullet"><list-item><p>Lists can start with <monospace>-</monospace> or <monospace>*</monospace><list list-type="bullet"><list-item><p>My other, nested</p></list-item><list-item><p>bullet point list!</p></list-item></list></p></list-item></list><list list-type="order"><list-item><p>My numbered list</p></list-item><list-item><p>has two points</p></list-item></list>
+  - title: paragraph in list item
+    tree:
+      type: root
+      children:
+        - type: list
+          ordered: true
+          children:
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Lists with paragraphs
+    jats: <list list-type="order"><list-item><p>Lists with paragraphs</p></list-item></list>
   - title: Blockquote
     tree:
       type: root
