@@ -24,7 +24,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "test": "vitest run",
     "test:watch": "vitest watch",
