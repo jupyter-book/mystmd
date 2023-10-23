@@ -6,6 +6,7 @@ import { remove } from 'unist-util-remove';
 import type { Handler, ITexParser } from './types.js';
 import { getArguments, getPositionExtents, originalValue, texToText } from './utils.js';
 import { createTheoremHandler } from './algorithms.js';
+import { createMacroHandler } from './math.js';
 
 function getContentFromRenderedSpan(node: GenericNode | undefined): string | GenericNode {
   if (!node) return '';
@@ -105,6 +106,28 @@ function addKnownMacros(state: ITexParser, name: string) {
   }
 }
 
+function cleanMacro(macro: string) {
+  // Remove any leading and trailing dollars, these aren't used in a math macro context
+  return macro.trim().replace(/(^\$)|(\$$)/g, '');
+}
+
+function newCommand(showWarning: boolean) {
+  return (node: GenericNode, state: ITexParser) => {
+    state.closeParagraph();
+    const [nameNode, macroNode] = getArguments(node, 'group');
+    getPositionExtents(macroNode);
+    const name = originalValue(state.tex, { position: getPositionExtents(nameNode) });
+    const macro = originalValue(state.tex, { position: getPositionExtents(macroNode) });
+    if (state.data.macros[name] && showWarning) {
+      state.warn(`Multiple macros defined with the same value: "${name}": "${macro}"`, node);
+    }
+    state.data.macros[name] = cleanMacro(macro);
+    const macroName = name.replace(/^\\/, '');
+    // TODO: Need to update the parsing based on any arguments defined here
+    state.data.dynamicHandlers[`macro_${macroName}`] = createMacroHandler(name, macroNode);
+  };
+}
+
 const FRONTMATTER_HANDLERS: Record<string, Handler> = {
   macro_usepackage(node, state) {
     state.closeParagraph();
@@ -121,25 +144,8 @@ const FRONTMATTER_HANDLERS: Record<string, Handler> = {
       state.warn(`Multiple packages imported with the same name: "${p}"`, node);
     });
   },
-  macro_newcommand(node, state) {
-    state.closeParagraph();
-    const [nameNode, macroNode] = getArguments(node, 'group');
-    getPositionExtents(macroNode);
-    const name = originalValue(state.tex, { position: getPositionExtents(nameNode) });
-    const macro = originalValue(state.tex, { position: getPositionExtents(macroNode) });
-    if (state.data.macros[name]) {
-      state.warn(`Multiple macros defined with the same value: "${name}": "${macro}"`, node);
-    }
-    state.data.macros[name] = macro;
-  },
-  macro_renewcommand(node, state) {
-    state.closeParagraph();
-    const [nameNode, macroNode] = getArguments(node, 'group');
-    getPositionExtents(macroNode);
-    const name = originalValue(state.tex, { position: getPositionExtents(nameNode) });
-    const macro = originalValue(state.tex, { position: getPositionExtents(macroNode) });
-    state.data.macros[name] = macro;
-  },
+  macro_newcommand: newCommand(true),
+  macro_renewcommand: newCommand(false),
   macro_date(node, state) {
     state.closeParagraph();
     // No action for now

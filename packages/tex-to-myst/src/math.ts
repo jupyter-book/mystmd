@@ -10,6 +10,14 @@ function mathBlockAsOriginal(node: GenericNode, state: ITexParser) {
   state.pushNode(u('math', { value }));
 }
 
+export function createMacroHandler(command: string, macro: GenericNode): Handler {
+  return function (node, state) {
+    // TODO: the node may have arguments in it
+    state.data.ignoreNextWhitespace = true;
+    state.renderChildren(macro);
+  };
+}
+
 // https://en.wikibooks.org/wiki/LaTeX/Labels_and_Cross-referencing
 export const MATH_HANDLERS: Record<string, Handler> = {
   inlinemath(node, state) {
