@@ -119,6 +119,7 @@ export type MystPlugin = {
 export enum TargetKind {
   heading = 'heading',
   equation = 'equation',
+  subequation = 'subequation',
   figure = 'figure',
   table = 'table',
   code = 'code',

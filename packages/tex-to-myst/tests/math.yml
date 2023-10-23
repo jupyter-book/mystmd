@@ -116,3 +116,40 @@ cases:
               \nabla \times \vec{e}+\frac{\partial \vec{b}}{\partial t}&=0 \\
               \nabla \times \vec{h}-\vec{j}&=\vec{s}\_{e}
             \end{align*}
+  - title: subequations
+    tex: |-
+      \begin{subequations} \label{eq:system}
+        \begin{align}
+          x + y & \geq 0  \label{eq:sum} \\
+          x - y & \leq 4 \label{eq:diff}\\
+          x \times y & \geq 1 \label{eq:prod} \\
+          x^y + y^x &\geq 1 \label{eq:exp_sum}
+        \end{align}
+      \end{subequations}
+    tree:
+      type: root
+      children:
+        - type: mathGroup
+          label: eq:system
+          identifier: eq:system
+          equations:
+            - |-
+              \begin{align}
+                  x + y & \geq 0  \label{eq:sum} \\
+                  x - y & \leq 4 \label{eq:diff}\\
+                  x \times y & \geq 1 \label{eq:prod} \\
+                  x^y + y^x &\geq 1 \label{eq:exp_sum}
+                \end{align}
+          children:
+            - type: math
+              value: \begin{align*}x + y & \geq 0  \label{eq:sum}\end{align*}
+              kind: subequation
+            - type: math
+              value: \begin{align*}x - y & \leq 4 \label{eq:diff}\end{align*}
+              kind: subequation
+            - type: math
+              value: \begin{align*}x \times y & \geq 1 \label{eq:prod}\end{align*}
+              kind: subequation
+            - type: math
+              value: \begin{align*}x^y + y^x &\geq 1 \label{eq:exp_sum}\end{align*}
+              kind: subequation

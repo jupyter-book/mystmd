@@ -7,7 +7,7 @@ import { admonitionBlockquoteTransform, admonitionHeadersTransform } from './adm
 import { blockMetadataTransform, blockNestingTransform } from './blocks.js';
 import { htmlIdsTransform } from './htmlIds.js';
 import { imageAltTextTransform } from './images.js';
-import { mathLabelTransform, mathNestingTransform } from './math.js';
+import { mathLabelTransform, mathNestingTransform, subequationTransform } from './math.js';
 import { blockquoteTransform } from './blockquote.js';
 import { codeBlockToDirectiveTransform } from './code.js';
 import type { GenericParent } from 'myst-common';
@@ -21,6 +21,7 @@ export function basicTransformations(tree: GenericParent, file: VFile) {
   mathNestingTransform(tree, file);
   // Math labelling should happen before the target-transformation
   mathLabelTransform(tree, file);
+  subequationTransform(tree, file);
   // Target transformation must happen after lifting the directives, and before the heading labels
   mystTargetsTransform(tree);
   // Label headings after the targets-transform
