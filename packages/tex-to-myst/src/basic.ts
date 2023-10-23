@@ -81,6 +81,7 @@ export const BASIC_TEXT_HANDLERS: Record<string, Handler> = {
   // Ways to break text...
   macro_newline: closeParagraph,
   parbreak: closeParagraph,
+  macro_par: closeParagraph,
   macro_break: closeParagraph,
   ['macro_\\']: closeParagraph,
   // newpage isn't really appropriate in a web context

@@ -35,7 +35,10 @@ const FIGURE_HANDLERS: Record<string, Handler> = {
   env_subfigure(node, state) {
     state.renderChildren(node);
   },
-  env_centering: centering,
+  env_centering(node, state) {
+    centering(node, state);
+    state.renderChildren(node);
+  },
   macro_centering: centering,
   macro_includegraphics(node, state) {
     state.closeParagraph();

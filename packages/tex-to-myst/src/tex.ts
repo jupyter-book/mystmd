@@ -80,9 +80,11 @@ const macros: Record<string, number> = {
   tabularx: 2,
   supertabular: 1,
   cmidrule: 2,
+  cline: 1,
   adjustbox: 1,
   resizebox: 2,
   captionof: 2,
+  itemsep: 1,
   // Algorithms and proofs
   algorithm: 1,
   algorithmic: 1,
