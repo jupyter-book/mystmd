@@ -292,7 +292,10 @@ function createSiUnitNode(
     })
     .reduce((items: Unit[], next: { unit: string } | { prefix: string } | { power: Power }) => {
       const last = items.slice(-1)?.[0];
-      if ('prefix' in next) {
+      if ('prefix' in next && last?.power?.before) {
+        // e.g. \second \per \milli \meter \squared, the "per" needs to move onto the milli
+        return [...items.slice(0, -1), { ...last, prefix: next.prefix }];
+      } else if ('prefix' in next) {
         return [...items, { prefix: next.prefix }];
       }
       if ('unit' in next && last?.unit) {
