@@ -519,12 +519,12 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
                   ...(frontmatter.authors ?? []),
                   ...(frontmatter.contributors ?? []),
                 ].find((auth) => auth.id === recipient) ?? { name: recipient };
-                if (author.orcid) {
+                if (orcid.validate(author.orcid)) {
                   recipientElements.push({
                     type: 'element',
                     name: 'contrib-id',
                     attributes: { 'contrib-id-type': 'orcid' },
-                    elements: [{ type: 'text', text: author.orcid }],
+                    elements: [{ type: 'text', text: orcid.buildUrl(author.orcid) }],
                   });
                 }
                 const name = nameElementFromContributor(author);
@@ -545,12 +545,12 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
                   ...(frontmatter.authors ?? []),
                   ...(frontmatter.contributors ?? []),
                 ].find((auth) => auth.id === investigator) ?? { name: investigator };
-                if (author.orcid) {
+                if (orcid.validate(author.orcid)) {
                   investigatorElements.push({
                     type: 'element',
                     name: 'contrib-id',
                     attributes: { 'contrib-id-type': 'orcid' },
-                    elements: [{ type: 'text', text: author.orcid }],
+                    elements: [{ type: 'text', text: orcid.buildUrl(author.orcid) }],
                   });
                 }
                 const name = nameElementFromContributor(author);

@@ -169,7 +169,7 @@ cases:
           <article-meta>
             <contrib-group>
               <contrib contrib-type="author">
-                <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
+                <contrib-id contrib-id-type="orcid">https://orcid.org/0000-0000-0000-0000</contrib-id>
                 <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>John</given-names>
@@ -207,14 +207,14 @@ cases:
                   </name>
                 </principal-award-recipient>
                 <principal-award-recipient>
-                  <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
+                  <contrib-id contrib-id-type="orcid">https://orcid.org/0000-0000-0000-0000</contrib-id>
                   <name name-style="western">
                     <surname>Doe</surname>
                     <given-names>John</given-names>
                   </name>
                 </principal-award-recipient>
                 <principal-investigator>
-                  <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
+                  <contrib-id contrib-id-type="orcid">https://orcid.org/0000-0000-0000-0000</contrib-id>
                   <name name-style="western">
                     <surname>Doe</surname>
                     <given-names>John</given-names>
@@ -237,7 +237,7 @@ cases:
                 <award-id>ghi-789</award-id>
                 <award-desc>open access support</award-desc>
                 <principal-investigator>
-                  <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
+                  <contrib-id contrib-id-type="orcid">https://orcid.org/0000-0000-0000-0000</contrib-id>
                   <name name-style="western">
                     <surname>Doe</surname>
                     <given-names>John</given-names>
@@ -297,7 +297,7 @@ cases:
           <article-meta>
             <contrib-group>
               <contrib contrib-type="author">
-                <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
+                <contrib-id contrib-id-type="orcid">https://orcid.org/0000-0000-0000-0000</contrib-id>
                 <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>John</given-names>

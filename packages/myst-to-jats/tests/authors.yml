@@ -45,7 +45,7 @@ cases:
           <article-meta>
             <contrib-group>
               <contrib contrib-type="author" corresp="yes" deceased="yes" equal-contrib="no">
-                <contrib-id contrib-id-type="orcid">0000-0000-0000-0000</contrib-id>
+                <contrib-id contrib-id-type="orcid">https://orcid.org/0000-0000-0000-0000</contrib-id>
                 <name name-style="western">
                   <surname>Doe</surname>
                   <given-names>Jane</given-names>
