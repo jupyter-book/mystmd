@@ -252,6 +252,7 @@ type Handlers = {
   superscript: Handler<Superscript>;
   delete: Handler<Delete>;
   smallcaps: Handler<Smallcaps>;
+  span: Handler<GenericNode>;
   break: Handler<Break>;
   abbreviation: Handler<Abbreviation>;
   link: Handler<Link>;
@@ -368,13 +369,14 @@ const handlers: Handlers = {
       dispFormulaAttrs.id = node.identifier;
     }
     state.openNode('disp-formula', dispFormulaAttrs);
-    renderLabel(node, state, (enumerator) => `(${enumerator})`);
     state.openNode('alternatives');
     state.pushNode(mathToMml(node as Math));
     state.openNode('tex-math');
     state.addLeaf('cdata', { cdata: cleanLatex(node.value) });
     state.closeNode();
     state.closeNode();
+    // The label can be anywhere, and many publishers like this at the end (which is closer to reading order)
+    renderLabel(node, state, (enumerator) => `(${enumerator})`);
     state.closeNode();
   },
   mathGroup(node, state) {
@@ -383,6 +385,7 @@ const handlers: Handlers = {
       attrs.id = node.identifier;
     }
     state.openNode('disp-formula-group', attrs);
+    // The disp-formula-group must have the label first
     renderLabel(node, state, (enumerator) => `(${enumerator})`);
     state.renderChildren(node);
     state.closeNode();
@@ -420,6 +423,10 @@ const handlers: Handlers = {
   },
   smallcaps(node, state) {
     state.renderInline(node, 'sc');
+  },
+  span(node, state) {
+    // Basic support for span at the moment
+    state.renderChildren(node);
   },
   break(node, state, parent) {
     if (parent.type === 'paragraph') {
