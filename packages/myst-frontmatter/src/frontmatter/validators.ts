@@ -179,6 +179,7 @@ const AFFILIATION_ALIASES = {
   region: 'state',
   province: 'state',
   zipcode: 'postal_code',
+  zip_code: 'postal_code',
   website: 'url',
   institution: 'name',
 };
