@@ -90,3 +90,6 @@ cases:
   - title: 90 ms
     tex: 90~\si{\milli \second}
     text: 90 ms
+  - title: s mm⁻²
+    tex: \si{\second \per \milli \meter \squared}
+    text: s mm⁻²
