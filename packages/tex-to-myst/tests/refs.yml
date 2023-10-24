@@ -90,3 +90,18 @@ cases:
             - type: crossReference
               label: eq:solve
               identifier: eq:solve
+  - title: space before ~
+    tex: See figure ~\ref{fig:Test}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'See figure '
+            - type: crossReference
+              identifier: fig:test
+              label: fig:Test
+              children:
+                - type: text
+                  value: '%s'
