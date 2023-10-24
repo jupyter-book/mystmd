@@ -178,6 +178,7 @@ const AFFILIATION_ALIASES = {
   ref: 'id', // Used in QMD to reference an affiliation
   region: 'state',
   province: 'state',
+  zipcode: 'postal_code',
   website: 'url',
   institution: 'name',
 };
