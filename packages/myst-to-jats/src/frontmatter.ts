@@ -1,6 +1,7 @@
 import type { Contributor, ProjectFrontmatter, Affiliation } from 'myst-frontmatter';
 import * as credit from 'credit-roles';
 import { doi } from 'doi-utils';
+import { orcid } from 'orcid';
 import type { Element, IJatsSerializer } from './types.js';
 
 export function getJournalIds(): Element[] {
@@ -165,12 +166,12 @@ export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
     if (author.equal_contributor != null) {
       attributes['equal-contrib'] = author.equal_contributor ? 'yes' : 'no';
     }
-    if (author.orcid) {
+    if (orcid.validate(author.orcid)) {
       elements.push({
         type: 'element',
         name: 'contrib-id',
         attributes: { 'contrib-id-type': 'orcid' },
-        elements: [{ type: 'text', text: author.orcid }],
+        elements: [{ type: 'text', text: orcid.buildUrl(author.orcid) }],
       });
     }
     const name = nameElementFromContributor(author);
@@ -393,13 +394,47 @@ export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element
 }
 
 export function getArticlePermissions(frontmatter: ProjectFrontmatter): Element[] {
-  // copyright-statement, -year, -holder
-  const text = frontmatter.license?.content?.url ?? frontmatter.license?.code?.url;
+  // copyright-statement: '© 2023, Authors et al'
+  // copyright-year: '2023'
+  // copyright-holder: 'Authors et al'
+  const isCCBY = frontmatter.license?.content?.id === 'CC-BY-4.0';
+  const licenseUrl = frontmatter.license?.content?.url ?? frontmatter.license?.code?.url;
   // Add `<ali:free_to_read />` to the permissions
   const freeToRead: Element[] = frontmatter.open_access
     ? [{ type: 'element', name: 'ali:free_to_read' }]
     : [];
-  return text
+
+  // TODO: This can be generalized to use `frontmatter.license?.content?.CC` and update the copy in future
+  const licenseP: Element[] = isCCBY
+    ? [
+        {
+          type: 'element',
+          name: 'license-p',
+          elements: [
+            {
+              type: 'text',
+              text: `This ${
+                frontmatter.open_access ? 'is an open access article' : 'article is'
+              } distributed under the terms of the `,
+            },
+            {
+              type: 'element',
+              name: 'ext-link',
+              attributes: {
+                'ext-link-type': 'uri',
+                'xlink:href': 'http://creativecommons.org/licenses/by/4.0/',
+              },
+              elements: [{ type: 'text', text: 'Creative Commons Attribution License' }],
+            },
+            {
+              type: 'text',
+              text: ', which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.',
+            },
+          ],
+        },
+      ]
+    : [];
+  return licenseUrl
     ? [
         {
           type: 'element',
@@ -409,12 +444,14 @@ export function getArticlePermissions(frontmatter: ProjectFrontmatter): Element[
             {
               type: 'element',
               name: 'license',
+              attributes: { 'xlink:href': licenseUrl },
               elements: [
                 {
                   type: 'element',
                   name: 'ali:license_ref',
-                  elements: [{ type: 'text', text }],
+                  elements: [{ type: 'text', text: licenseUrl }],
                 },
+                ...licenseP,
               ],
             },
           ],
@@ -569,26 +606,41 @@ export function getArticlePages(frontmatter: ProjectFrontmatter): Element[] {
   // fpage/lpage, page-range, or elocation-id
   const { first_page, last_page } = frontmatter.biblio ?? {};
   const pages: Element[] = [];
-  if (first_page)
+  if (first_page) {
     pages.push({
       type: 'element',
       name: 'fpage',
       elements: [{ type: 'text', text: `${first_page}` }],
     });
-  if (last_page)
+  }
+  if (last_page) {
     pages.push({
       type: 'element',
       name: 'lpage',
       elements: [{ type: 'text', text: `${last_page}` }],
     });
+  }
   return pages;
+}
+
+export function getArticleIds(frontmatter: ProjectFrontmatter): Element[] {
+  const ids: Element[] = [];
+  if (doi.validate(frontmatter.doi)) {
+    ids.push({
+      type: 'element',
+      name: 'article-id',
+      attributes: { 'pub-id-type': 'doi' },
+      elements: [{ type: 'text', text: doi.normalize(frontmatter.doi) }],
+    });
+  }
+  return ids;
 }
 
 export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSerializer): Element {
   const elements = [];
   if (frontmatter) {
     elements.push(
-      // article-id
+      ...getArticleIds(frontmatter),
       // article-version, article-version-alternatives
       // article-categories
       ...getArticleTitle(frontmatter),
