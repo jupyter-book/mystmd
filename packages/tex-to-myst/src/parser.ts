@@ -144,6 +144,11 @@ export class TexParser implements ITexParser {
     if (!value || !this.stack.length || !('children' in top)) return;
     const last = top.children?.[top.children.length - 1];
     if (last?.type === 'text') {
+      if (last.value && value === ' ') {
+        // trim trailing whitespace and replace with a no-break space
+        last.value = last.value.replace(/\s+$/, '') + ' ';
+        return last;
+      }
       // The last node is also text, merge it
       last.value += `${value}`;
       return last;
