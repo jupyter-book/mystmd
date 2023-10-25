@@ -17,6 +17,7 @@ export function createMacroHandler(command: string, macro: GenericNode): Handler
     // TODO: the node may have arguments in it
     state.data.ignoreNextWhitespace = true;
     state.renderChildren(macro);
+    state.data.ignoreNextWhitespace = false;
   };
 }
 
