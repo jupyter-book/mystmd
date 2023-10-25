@@ -86,6 +86,8 @@ export function validateTemplateOption(
       return validateBoolean(input, opts);
     case TemplateOptionType.string:
       return validateString(input, { ...opts, maxLength: max_chars });
+    case TemplateOptionType.number:
+      return validateNumber(input, { ...opts });
     case TemplateOptionType.choice:
       return validateChoice(input, { ...opts, choices: choices || [] });
     case TemplateOptionType.file:

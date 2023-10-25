@@ -7,6 +7,7 @@ export enum TemplateKind {
 export enum TemplateOptionType {
   boolean = 'boolean',
   string = 'string',
+  number = 'number',
   choice = 'choice',
   file = 'file',
 }
