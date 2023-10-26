@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import { defaultConfigFile, loadConfigAndValidateOrThrow, writeConfigs } from '../config.js';
+import { defaultConfigFile, loadConfig, writeConfigs } from '../config.js';
 import { loadProjectFromDisk } from '../project/index.js';
 import { selectors } from '../store/index.js';
 import type { ISession } from '../session/index.js';
@@ -64,7 +64,7 @@ export async function init(session: ISession, opts: InitOptions) {
   if (!project && !site && !writeToc) {
     session.log.info(WELCOME());
   }
-  loadConfigAndValidateOrThrow(session, '.');
+  loadConfig(session, '.');
   const state = session.store.getState();
   const existingRawConfig = selectors.selectLocalRawConfig(state, '.');
   const existingProjectConfig = selectors.selectLocalProjectConfig(state, '.');
@@ -114,7 +114,7 @@ export async function init(session: ISession, opts: InitOptions) {
     fs.writeFileSync(configFile, configData);
   }
   if (writeToc) {
-    loadConfigAndValidateOrThrow(session, '.');
+    loadConfig(session, '.');
     await loadProjectFromDisk(session, '.', { writeToc });
   }
   // If we have any options, this command is complete!

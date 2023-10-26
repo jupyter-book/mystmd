@@ -65,7 +65,7 @@ export function selectLocalConfigFile(state: RootState, path: string): string | 
 export function selectLocalRawConfig(
   state: RootState,
   path: string,
-): Record<string, any> | undefined {
+): { raw: Record<string, any>; validated: Record<string, any> } | undefined {
   return state.local.config.rawConfigs[resolve(path)];
 }
 

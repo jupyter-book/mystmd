@@ -93,7 +93,6 @@ export class Session implements ISession {
   }
 
   reload() {
-    this.store.dispatch(config.actions.reload());
     findCurrentProjectAndLoad(this, '.');
     findCurrentSiteAndLoad(this, '.');
     if (selectors.selectCurrentSitePath(this.store.getState())) {

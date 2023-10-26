@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { join, resolve } from 'node:path';
 import { isDirectory, isUrl } from 'myst-cli-utils';
 import { RuleId } from 'myst-common';
-import { loadConfigAndValidateOrThrow } from '../config.js';
+import { loadConfig } from '../config.js';
 import { loadFile, combineProjectCitationRenderers } from '../process/index.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
@@ -115,7 +115,7 @@ export function findProjectsOnPath(session: ISession, path: string) {
   let projectPaths: string[] = [];
   const content = fs.readdirSync(path);
   if (session.configFiles.filter((file) => content.includes(file)).length) {
-    loadConfigAndValidateOrThrow(session, path);
+    loadConfig(session, path);
     if (selectors.selectLocalProjectConfig(session.store.getState(), path)) {
       projectPaths.push(path);
     }

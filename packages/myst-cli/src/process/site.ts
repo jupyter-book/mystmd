@@ -373,11 +373,10 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
     reloadAllConfigsForCurrentSite(session);
   } catch (error) {
     session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-    session.log.error(
-      `Error finding or reading configuration files, do you need to run ${chalk.bold(
-        'myst init',
-      )}?`,
-    );
+    const prefix = (error as Error)?.message
+      ? (error as Error).message
+      : 'Error finding or reading configuration files.';
+    session.log.error(`${prefix}\nDo you need to run ${chalk.bold('myst init')}?`);
     process.exit(1);
   }
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
