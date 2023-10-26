@@ -101,7 +101,7 @@ export async function runWordExport(
     errorLogFn: (message: string) => {
       fileError(vfile, message, { ruleId: RuleId.docxRenders });
     },
-    warningLogFn: (message: string)=> {
+    warningLogFn: (message: string) => {
       fileWarn(vfile, message, { ruleId: RuleId.docxRenders });
     },
   });

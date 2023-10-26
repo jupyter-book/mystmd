@@ -3,7 +3,7 @@ import type { Store } from 'redux';
 import { createStore } from 'redux';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
-import { config, rootReducer, selectors } from '../store/index.js';
+import { rootReducer, selectors } from '../store/index.js';
 import type { BuildWarning, RootState } from '../store/index.js';
 import type { ISession } from './types.js';
 import {
