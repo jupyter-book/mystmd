@@ -265,7 +265,7 @@ function validateProjectConfigAndSave(
 ) {
   let projectConfig = validateProjectConfig(rawProjectConfig, {
     file: vfile.path,
-    property: 'config.project',
+    property: 'project',
     messages: {},
     errorLogFn: (message: string) => {
       fileError(vfile, message, { ruleId: RuleId.validProjectConfig });
