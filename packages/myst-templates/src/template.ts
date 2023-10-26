@@ -20,6 +20,8 @@ class MystTemplate {
   templatePath: string;
   templateUrl: string | undefined;
   validatedTemplateYml: TemplateYml | undefined;
+  errorLogFn: (message: string) => void;
+  warningLogFn: (message: string) => void;
 
   /**
    * MystTemplate class for template download / validation / render preparation
@@ -31,12 +33,20 @@ class MystTemplate {
    */
   constructor(
     session: ISession,
-    opts?: { kind?: TemplateKind; template?: string; buildDir?: string },
+    opts?: {
+      kind?: TemplateKind;
+      template?: string;
+      buildDir?: string;
+      errorLogFn?: (message: string) => void;
+      warningLogFn?: (message: string) => void;
+    },
   ) {
     this.session = session;
     const { templatePath, templateUrl } = resolveInputs(this.session, opts || {});
     this.templatePath = templatePath;
     this.templateUrl = templateUrl;
+    this.errorLogFn = opts?.errorLogFn ?? errorLogger(this.session);
+    this.warningLogFn = opts?.warningLogFn ?? warningLogger(this.session);
   }
 
   getTemplateYmlPath() {
@@ -58,8 +68,8 @@ class MystTemplate {
         file: this.getTemplateYmlPath(),
         property: 'template',
         messages: {},
-        errorLogFn: errorLogger(this.session),
-        warningLogFn: warningLogger(this.session),
+        errorLogFn: this.errorLogFn,
+        warningLogFn: this.warningLogFn,
       };
       const templateYml = validateTemplateYml(this.session, this.getTemplateYml(), {
         ...opts,
@@ -80,8 +90,8 @@ class MystTemplate {
       file,
       property: 'options',
       messages: {},
-      errorLogFn: errorLogger(this.session),
-      warningLogFn: warningLogger(this.session),
+      errorLogFn: this.errorLogFn,
+      warningLogFn: this.warningLogFn,
       ...fileOpts,
     };
     const validatedOptions = validateTemplateOptions(
@@ -107,8 +117,8 @@ class MystTemplate {
       file,
       property: 'parts',
       messages: {},
-      errorLogFn: errorLogger(this.session),
-      warningLogFn: warningLogger(this.session),
+      errorLogFn: this.errorLogFn,
+      warningLogFn: this.warningLogFn,
     };
     const validatedParts = validateTemplateParts(parts, templateYml?.parts || [], options, opts);
     if (validatedParts === undefined) {
@@ -133,8 +143,8 @@ class MystTemplate {
       file,
       property: 'frontmatter',
       messages: {},
-      errorLogFn: errorLogger(this.session),
-      warningLogFn: warningLogger(this.session),
+      errorLogFn: this.errorLogFn,
+      warningLogFn: this.warningLogFn,
     };
     const bibFrontmatter = {
       ...frontmatter,

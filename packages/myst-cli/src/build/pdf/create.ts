@@ -4,7 +4,7 @@ import util from 'util';
 import chalk from 'chalk';
 import { pdfExportCommand, texMakeGlossariesCommand } from 'jtex';
 import { exec, tic } from 'myst-cli-utils';
-import { RuleId, TemplateKind, fileError } from 'myst-common';
+import { RuleId, TemplateKind, fileError, fileWarn } from 'myst-common';
 import MystTemplate from 'myst-templates';
 import { VFile } from 'vfile';
 import type { ISession } from '../../session/types.js';
@@ -275,6 +275,12 @@ async function runPdfBuildCommand(
       kind: TemplateKind.tex,
       template: template || undefined,
       buildDir: session.buildPath(),
+      errorLogFn: (message: string) => {
+        fileError(vfile, message, { ruleId: RuleId.pdfBuilds });
+      },
+      warningLogFn: (message: string) => {
+        fileWarn(vfile, message, { ruleId: RuleId.pdfBuilds });
+      },
     });
     buildCommand = pdfExportCommand(texFile, texLogFile, mystTemplate);
   }
