@@ -5,7 +5,7 @@ import type { TemplateImports } from 'jtex';
 import { renderTex, mergeTemplateImports } from 'jtex';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
-import { extractPart, TemplateKind } from 'myst-common';
+import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
@@ -18,7 +18,12 @@ import { findCurrentProjectAndLoad } from '../../config.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import { castSession } from '../../session/index.js';
 import type { ISession } from '../../session/types.js';
-import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils/index.js';
+import {
+  addWarningForFile,
+  createTempFolder,
+  ImageExtensions,
+  logMessagesFromVFile,
+} from '../../utils/index.js';
 import type { ExportWithOutput, ExportOptions, ExportResults } from '../types.js';
 import {
   cleanOutput,
@@ -147,6 +152,16 @@ export async function localArticleToTexTemplated(
     kind: TemplateKind.tex,
     template: templateOptions.template || undefined,
     buildDir: session.buildPath(),
+    errorLogFn: (message: string) => {
+      addWarningForFile(session, file, message, 'error', {
+        ruleId: RuleId.texRenders,
+      });
+    },
+    warningLogFn: (message: string) => {
+      addWarningForFile(session, file, message, 'warn', {
+        ruleId: RuleId.texRenders,
+      });
+    },
   });
   await mystTemplate.ensureTemplateExistsOnPath();
   const toc = tic();

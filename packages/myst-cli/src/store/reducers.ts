@@ -39,18 +39,13 @@ export const config = createSlice({
   } as {
     currentProjectPath: string | undefined;
     currentSitePath: string | undefined;
-    rawConfigs: Record<string, Record<string, any>>;
+    rawConfigs: Record<string, { raw: Record<string, any>; validated: Record<string, any> }>;
     projects: Record<string, ProjectConfig>;
     sites: Record<string, SiteConfig>;
     siteTemplateOptions: Record<string, SiteTemplateOptions>;
     filenames: Record<string, string>;
   },
   reducers: {
-    reload(state) {
-      state.rawConfigs = {};
-      state.projects = {};
-      state.sites = {};
-    },
     receiveCurrentProjectPath(state, action: PayloadAction<{ path: string }>) {
       state.currentProjectPath = resolve(action.payload.path);
     },
@@ -59,7 +54,12 @@ export const config = createSlice({
     },
     receiveRawConfig(
       state,
-      action: PayloadAction<Record<string, any> & { path: string; file: string }>,
+      action: PayloadAction<{
+        raw: Record<string, any>;
+        validated: Record<string, any>;
+        path: string;
+        file: string;
+      }>,
     ) {
       const { path, file, ...payload } = action.payload;
       state.rawConfigs[resolve(path)] = payload;

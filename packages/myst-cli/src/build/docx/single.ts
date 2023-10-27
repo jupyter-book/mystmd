@@ -23,7 +23,7 @@ import {
 } from '../utils/index.js';
 import { createFooter } from './footers.js';
 import { createArticleTitle, createReferenceTitle } from './titles.js';
-import { TemplateKind } from 'myst-common';
+import { fileError, fileWarn, RuleId, TemplateKind } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 
 const DOCX_IMAGE_EXTENSIONS = [ImageExtensions.png, ImageExtensions.jpg, ImageExtensions.jpeg];
@@ -98,6 +98,12 @@ export async function runWordExport(
     kind: TemplateKind.docx,
     template: exportOptions.template || undefined,
     buildDir: session.buildPath(),
+    errorLogFn: (message: string) => {
+      fileError(vfile, message, { ruleId: RuleId.docxRenders });
+    },
+    warningLogFn: (message: string) => {
+      fileWarn(vfile, message, { ruleId: RuleId.docxRenders });
+    },
   });
   await mystTemplate.ensureTemplateExistsOnPath();
   const toc = tic();

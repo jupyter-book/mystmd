@@ -39,9 +39,31 @@ export function configFromPath(session: ISession, path: string) {
   return configs[0];
 }
 
-export function readConfig(session: ISession, vfile: VFile) {
-  const file = vfile.path;
+/**
+ * Load site/project config from local path to redux store
+ *
+ * Errors if config file does not exist or if config file exists but is invalid.
+ */
+export function loadConfig(session: ISession, path: string) {
+  const file = configFromPath(session, path);
+  if (!file) {
+    session.log.debug(`No config loaded from path: ${path}`);
+    return;
+  }
+  const vfile = new VFile();
+  vfile.path = file;
   if (!fs.existsSync(file)) throw Error(`Cannot find config file: ${file}`);
+  let rawConf: Record<string, any>;
+  try {
+    rawConf = yaml.load(fs.readFileSync(file, 'utf-8')) as Record<string, any>;
+  } catch (err) {
+    const suffix = (err as Error).message ? `\n\n${(err as Error).message}` : '';
+    throw Error(`Unable to read config file ${file} as YAML${suffix}`);
+  }
+  const existingConf = selectors.selectLocalRawConfig(session.store.getState(), path);
+  if (existingConf && JSON.stringify(rawConf) === JSON.stringify(existingConf.raw)) {
+    return existingConf.validated;
+  }
   const opts: ValidationOptions = {
     file,
     property: 'config',
@@ -96,6 +118,22 @@ export function readConfig(session: ISession, vfile: VFile) {
     });
     const { logoText, ...rest } = conf.site;
     conf.site = { logo_text: logoText, ...rest };
+  }
+  session.store.dispatch(
+    config.actions.receiveRawConfig({ path, file, raw: rawConf, validated: conf }),
+  );
+  const { site, project } = conf ?? {};
+  if (site) {
+    validateSiteConfigAndSave(session, path, vfile, site);
+    session.log.debug(`Loaded site config from ${file}`);
+  } else {
+    session.log.debug(`No site config in ${file}`);
+  }
+  if (project) {
+    validateProjectConfigAndSave(session, path, vfile, project);
+    session.log.debug(`Loaded project config from ${file}`);
+  } else {
+    session.log.debug(`No project config defined in ${file}`);
   }
   logMessagesFromVFile(session, vfile);
   return conf;
@@ -246,40 +284,6 @@ function validateProjectConfigAndSave(
 }
 
 /**
- * Load site/project config from local path to redux store
- *
- * Errors if config file does not exist or if config file exists but is invalid.
- */
-export function loadConfigAndValidateOrThrow(session: ISession, path: string) {
-  const file = configFromPath(session, path);
-  if (!file) {
-    session.log.debug(`No config loaded from path: ${path}`);
-    return;
-  }
-  const vfile = new VFile();
-  vfile.path = file;
-  const conf = readConfig(session, vfile);
-  const existingConf = selectors.selectLocalRawConfig(session.store.getState(), path);
-  if (existingConf && JSON.stringify(conf) === JSON.stringify(existingConf)) {
-    return;
-  }
-  session.store.dispatch(config.actions.receiveRawConfig({ path, file, ...conf }));
-  const { site, project } = conf;
-  if (site) {
-    validateSiteConfigAndSave(session, path, vfile, site);
-    session.log.debug(`Loaded site config from ${file}`);
-  } else {
-    session.log.debug(`No site config in ${file}`);
-  }
-  if (project) {
-    validateProjectConfigAndSave(session, path, vfile, project);
-    session.log.debug(`Loaded project config from ${file}`);
-  } else {
-    session.log.debug(`No project config defined in ${file}`);
-  }
-}
-
-/**
  * Write site config and config to path, if available
  *
  * If newConfigs are provided, the redux store will be updated with these
@@ -321,12 +325,8 @@ export function writeConfigs(
     return;
   }
   // Get raw config to override
-  let rawConfig = selectors.selectLocalRawConfig(session.store.getState(), path);
-  if (!rawConfig && configFromPath(session, path)) {
-    rawConfig = readConfig(session, vfile);
-  } else if (!rawConfig) {
-    rawConfig = emptyConfig();
-  }
+  const rawConfig = loadConfig(session, path);
+  const validatedRawConfig = rawConfig?.validated ?? emptyConfig();
   let logContent: string;
   if (siteConfig && projectConfig) {
     logContent = 'site and project configs';
@@ -337,16 +337,16 @@ export function writeConfigs(
   }
   session.log.debug(`Writing ${logContent} to ${file}`);
   // Combine site/project configs with
-  const newConfig = { ...rawConfig };
-  if (siteConfig) newConfig.site = { ...rawConfig.site, ...siteConfig };
-  if (projectConfig) newConfig.project = { ...rawConfig.project, ...projectConfig };
+  const newConfig = { ...validatedRawConfig };
+  if (siteConfig) newConfig.site = { ...validatedRawConfig.site, ...siteConfig };
+  if (projectConfig) newConfig.project = { ...validatedRawConfig.project, ...projectConfig };
   writeFileToFolder(file, yaml.dump(newConfig), 'utf-8');
 }
 
 export function findCurrentProjectAndLoad(session: ISession, path: string): string | undefined {
   path = resolve(path);
   if (configFromPath(session, path)) {
-    loadConfigAndValidateOrThrow(session, path);
+    loadConfig(session, path);
     const project = selectors.selectLocalProjectConfig(session.store.getState(), path);
     if (project) {
       session.store.dispatch(config.actions.receiveCurrentProjectPath({ path: path }));
@@ -362,7 +362,7 @@ export function findCurrentProjectAndLoad(session: ISession, path: string): stri
 export function findCurrentSiteAndLoad(session: ISession, path: string): string | undefined {
   path = resolve(path);
   if (configFromPath(session, path)) {
-    loadConfigAndValidateOrThrow(session, path);
+    loadConfig(session, path);
     const site = selectors.selectLocalSiteConfig(session.store.getState(), path);
     if (site) {
       session.store.dispatch(config.actions.receiveCurrentSitePath({ path: path }));
@@ -386,7 +386,7 @@ export function reloadAllConfigsForCurrentSite(session: ISession) {
     addWarningForFile(session, file, message, 'error', { ruleId: RuleId.siteConfigExists });
     throw Error(message);
   }
-  loadConfigAndValidateOrThrow(session, sitePath);
+  loadConfig(session, sitePath);
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   if (!siteConfig?.projects) return;
   siteConfig.projects
@@ -395,7 +395,7 @@ export function reloadAllConfigsForCurrentSite(session: ISession) {
     })
     .forEach((project) => {
       try {
-        loadConfigAndValidateOrThrow(session, project.path);
+        loadConfig(session, project.path);
       } catch (error) {
         // TODO: what error?
         session.log.debug(`Failed to find or load project config from "${project.path}"`);

@@ -8,3 +8,4 @@ export * from './tex/index.js';
 export * from './types.js';
 export * from './utils/index.js';
 export * from './html/index.js';
+export * from './meca/index.js';
