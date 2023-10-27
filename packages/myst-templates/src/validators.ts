@@ -80,14 +80,14 @@ export function validateTemplateOption(
   optionDefinition: TemplateOptionDefinition,
   opts: FileValidationOptions,
 ) {
-  const { type, max_chars, choices } = optionDefinition;
+  const { type, max_chars, min, max, integer, choices } = optionDefinition;
   switch (type) {
     case TemplateOptionType.boolean:
       return validateBoolean(input, opts);
     case TemplateOptionType.string:
       return validateString(input, { ...opts, maxLength: max_chars });
     case TemplateOptionType.number:
-      return validateNumber(input, { ...opts });
+      return validateNumber(input, { ...opts, min, max, integer });
     case TemplateOptionType.choice:
       return validateChoice(input, { ...opts, choices: choices || [] });
     case TemplateOptionType.file:

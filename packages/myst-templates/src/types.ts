@@ -73,6 +73,9 @@ export type TemplateOptionDefinition = TemplateDocDefinition & {
   default?: any;
   choices?: string[];
   max_chars?: number;
+  min?: number;
+  max?: number;
+  integer?: boolean;
 };
 
 export type TemplateStyles = {
