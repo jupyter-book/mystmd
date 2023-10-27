@@ -69,6 +69,65 @@ describe('validateTemplateOption', () => {
     ).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
+  it('number option validates number', async () => {
+    expect(validateTemplateOption(session, -0.5, { id: '', type: 'number' } as any, opts)).toEqual(
+      -0.5,
+    );
+  });
+  it('number option validates string number', async () => {
+    expect(
+      validateTemplateOption(session, '-0.5', { id: '', type: 'number' } as any, opts),
+    ).toEqual(-0.5);
+  });
+  it('number option with min/max/integer validates number', async () => {
+    expect(
+      validateTemplateOption(
+        session,
+        10,
+        { id: '', type: 'number', min: 9, max: 10, integer: true } as any,
+        opts,
+      ),
+    ).toEqual(10);
+  });
+  it('number option errors with < min', async () => {
+    expect(
+      validateTemplateOption(
+        session,
+        8,
+        { id: '', type: 'number', min: 9, max: 10, integer: true } as any,
+        opts,
+      ),
+    ).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('number option errors with > max', async () => {
+    expect(
+      validateTemplateOption(
+        session,
+        11,
+        { id: '', type: 'number', min: 9, max: 10, integer: true } as any,
+        opts,
+      ),
+    ).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('number option errors with non-integer', async () => {
+    expect(
+      validateTemplateOption(
+        session,
+        9.5,
+        { id: '', type: 'number', min: 9, max: 10, integer: true } as any,
+        opts,
+      ),
+    ).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('number option errors with non-number string', async () => {
+    expect(
+      validateTemplateOption(session, 'invalid', { id: '', type: 'number' } as any, opts),
+    ).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
 });
 
 describe('validateTemplateOptions', () => {
