@@ -1,5 +1,30 @@
 # tex-to-myst
 
+## 1.0.10
+
+### Patch Changes
+
+- fb4cb203: Ensure spaces are picked up after macros
+- 3980b6ff: Ensure there is no space before ~
+- 417efdc9: Add `algorithm` and `algorithmic` handlers for latex parsing
+
+  - Figures: Environment centering
+  - newtheorem in frontmatter is parsed
+  - safely ignore `itemsep`, `setcounter`, `cmidrule` for now
+
+- cd674261: Support for cline, itemsep (has arguments), par, env centering bug
+- e3edb2aa: Fix SI unit parsing bug
+- 9010aa81: Parse tex-macros
+- a7f830af: Support for sub-equations, including adding the MathGroup node.
+- b14b3a4a: Leading space in paragraph bug
+- Updated dependencies [417efdc9]
+- Updated dependencies [ebe096b7]
+- Updated dependencies [a7f830af]
+- Updated dependencies [1574ff8]
+  - myst-spec-ext@1.1.11
+  - myst-frontmatter@1.1.11
+  - myst-common@1.1.11
+
 ## 1.0.9
 
 ### Patch Changes

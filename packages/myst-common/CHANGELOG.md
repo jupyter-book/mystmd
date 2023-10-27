@@ -1,5 +1,12 @@
 # myst-common
 
+## 1.1.11
+
+### Patch Changes
+
+- a7f830af: Support for sub-equations, including adding the MathGroup node.
+- 1574ff8: Add number to template options
+
 ## 1.1.10
 
 ## 1.1.9

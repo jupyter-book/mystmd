@@ -1,5 +1,12 @@
 # myst-spec-ext
 
+## 1.1.11
+
+### Patch Changes
+
+- 417efdc9: Add `Line` to myst-spec-ext
+- a7f830af: Support for sub-equations, including adding the MathGroup node.
+
 ## 1.1.10
 
 ### Patch Changes
