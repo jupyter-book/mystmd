@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.23
+
+### Patch Changes
+
+- 2c934d03: Specify port numbers for app and server ports
+
 ## 1.1.22
 
 ## 1.1.21

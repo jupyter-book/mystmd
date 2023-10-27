@@ -1,5 +1,24 @@
 # myst-to-jats
 
+## 1.0.16
+
+### Patch Changes
+
+- 6c34634a: Improve section nesting
+- 953dfe42: Change label to be after math content in JATS, add span support
+- 446f53ad: Fix nesting paragraphs in list items
+- a7f830af: Support for sub-equations, including adding the MathGroup node.
+- 417efdc9: Add statements to JATS, count and number `statements`
+- 95bd7567: Add license and id fields to the JATS frontmatter
+- Updated dependencies [417efdc9]
+- Updated dependencies [ebe096b7]
+- Updated dependencies [a7f830af]
+- Updated dependencies [1574ff8]
+  - myst-spec-ext@1.1.11
+  - myst-frontmatter@1.1.11
+  - myst-transforms@1.1.6
+  - myst-common@1.1.11
+
 ## 1.0.15
 
 ### Patch Changes

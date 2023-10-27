@@ -1,5 +1,52 @@
 # myst-cli
 
+## 1.1.23
+
+### Patch Changes
+
+- f5da6486: Improve logging of MyST Template errors
+- 5ede9051: Trim PDFs when converting to PNG, ensure WEBP conversion does not overwrite
+- 3c5c5a6d: Improve plural function to add `y|ies` endings for words.
+- 2c934d03: Specify port numbers for app and server ports
+- f5da6486: Load raw/site/proj configs in single function with better caching
+- f5da6486: Stop reloading files when getting raw frontmatter
+- f5da6486: Export meca build functions
+- Updated dependencies [fb4cb203]
+- Updated dependencies [6c34634a]
+- Updated dependencies [a8121e53]
+- Updated dependencies [953dfe42]
+- Updated dependencies [1574ff8]
+- Updated dependencies [f5da6486]
+- Updated dependencies [3980b6ff]
+- Updated dependencies [3c5c5a6d]
+- Updated dependencies [417efdc9]
+- Updated dependencies [b211cc59]
+- Updated dependencies [6c34634a]
+- Updated dependencies [cd674261]
+- Updated dependencies [e3edb2aa]
+- Updated dependencies [417efdc9]
+- Updated dependencies [52da08ee]
+- Updated dependencies [ebe096b7]
+- Updated dependencies [446f53ad]
+- Updated dependencies [9010aa81]
+- Updated dependencies [207b2f0f]
+- Updated dependencies [a7f830af]
+- Updated dependencies [1574ff8]
+- Updated dependencies [b14b3a4a]
+- Updated dependencies [417efdc9]
+- Updated dependencies [95bd7567]
+  - tex-to-myst@1.0.10
+  - myst-to-jats@1.0.16
+  - myst-to-tex@1.0.10
+  - myst-templates@1.0.11
+  - myst-cli-utils@2.0.6
+  - myst-spec-ext@1.1.11
+  - myst-frontmatter@1.1.11
+  - myst-ext-proof@1.0.6
+  - myst-transforms@1.1.6
+  - myst-common@1.1.11
+  - myst-config@1.1.11
+
 ## 1.1.22
 
 ### Patch Changes

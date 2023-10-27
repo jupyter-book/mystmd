@@ -1,5 +1,20 @@
 # myst-templates
 
+## 1.0.11
+
+### Patch Changes
+
+- 1574ff8: Add validation options to template number option
+- f5da6486: Improve logging of MyST Template errors
+- 1574ff8: Add number to template options
+- Updated dependencies [3c5c5a6d]
+- Updated dependencies [ebe096b7]
+- Updated dependencies [a7f830af]
+- Updated dependencies [1574ff8]
+  - myst-cli-utils@2.0.6
+  - myst-frontmatter@1.1.11
+  - myst-common@1.1.11
+
 ## 1.0.10
 
 ### Patch Changes

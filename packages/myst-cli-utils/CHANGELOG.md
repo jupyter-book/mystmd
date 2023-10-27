@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.6
+
+### Patch Changes
+
+- 3c5c5a6d: Improve plural function to add `y|ies` endings for words.
+
 ## 2.0.5
 
 ### Patch Changes

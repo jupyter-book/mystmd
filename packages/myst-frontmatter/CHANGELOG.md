@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.11
+
+### Patch Changes
+
+- ebe096b7: Allow specifying zipcode for postal_code
+
 ## 1.1.10
 
 ## 1.1.9
