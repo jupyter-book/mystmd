@@ -12,7 +12,7 @@ export function selectAffiliation(state: RootState, id: string): string | undefi
   return state.local.affiliations[id];
 }
 
-export function selectLocalSiteConfig(state: RootState, path: string): ProjectConfig | undefined {
+export function selectLocalSiteConfig(state: RootState, path: string): SiteConfig | undefined {
   return state.local.config.sites[resolve(path)];
 }
 
