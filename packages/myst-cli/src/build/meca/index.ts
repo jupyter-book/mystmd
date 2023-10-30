@@ -109,10 +109,10 @@ async function copyDependentFiles(
   errorLogFn: (m: string) => void,
 ) {
   const cache = castSession(session);
-  if (!cache.$mdast[sourceFile]) {
+  if (!cache.$getMdast(sourceFile)) {
     await loadFile(session, sourceFile);
   }
-  const pre = cache.$mdast[sourceFile]?.pre;
+  const pre = cache.$getMdast(sourceFile)?.pre;
   if (!pre) return;
   const { mdast, frontmatter } = pre;
   const urlNodes = selectAll('image,link', mdast);
