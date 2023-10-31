@@ -83,8 +83,8 @@ export function prepareToWrite(frontmatter: { license?: Licenses }) {
 
 export async function getRawFrontmatterFromFile(session: ISession, file: string) {
   const cache = castSession(session);
-  if (!cache.$mdast[file]) await loadFile(session, file);
-  const result = cache.$mdast[file];
+  if (!cache.$getMdast(file)) await loadFile(session, file);
+  const result = cache.$getMdast(file);
   if (!result || !result.pre) return undefined;
   const vfile = new VFile();
   vfile.path = file;

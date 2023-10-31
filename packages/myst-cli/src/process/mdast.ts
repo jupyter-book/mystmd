@@ -128,8 +128,13 @@ export async function transformMdast(
   const toc = tic();
   const { store, log } = session;
   const cache = castSession(session);
-  if (!cache.$mdast[file]) return;
-  const { mdast: mdastPre, kind, frontmatter: preFrontmatter, location } = cache.$mdast[file].pre;
+  if (!cache.$getMdast(file)) return;
+  const {
+    mdast: mdastPre,
+    kind,
+    frontmatter: preFrontmatter,
+    location,
+  } = cache.$getMdast(file).pre;
   if (!mdastPre) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
   const vfile = new VFile(); // Collect errors on this file
@@ -284,7 +289,7 @@ export async function transformMdast(
     mdast,
     references,
   };
-  cache.$mdast[file].post = data;
+  cache.$getMdast(file).post = data;
   if (extraTransforms) {
     await Promise.all(
       extraTransforms.map(async (transform) => {

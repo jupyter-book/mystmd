@@ -19,7 +19,8 @@ import { addWarningForFile, logMessagesFromVFile } from '../utils/index.js';
 function checkCache(cache: ISessionWithCache, content: string, file: string) {
   const sha256 = createHash('sha256').update(content).digest('hex');
   cache.store.dispatch(watch.actions.markFileChanged({ path: file, sha256 }));
-  const useCache = cache.$mdast[file]?.pre && cache.$mdast[file].sha256 === sha256;
+  const mdast = cache.$getMdast(file);
+  const useCache = mdast?.pre && mdast.sha256 === sha256;
   return { useCache, sha256 };
 }
 
@@ -51,10 +52,10 @@ export async function loadFile(
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
         const mdast = parseMyst(session, content, file);
-        cache.$mdast[file] = {
+        cache.$setMdast(file, {
           sha256,
           pre: { kind: SourceFileKind.Article, file, location, mdast },
-        };
+        });
         break;
       }
       case '.ipynb': {
@@ -62,10 +63,10 @@ export async function loadFile(
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
         const mdast = await processNotebook(cache, file, content, opts);
-        cache.$mdast[file] = {
+        cache.$setMdast(file, {
           sha256,
           pre: { kind: SourceFileKind.Notebook, file, location, mdast },
-        };
+        });
         break;
       }
       case '.bib': {
@@ -90,7 +91,7 @@ export async function loadFile(
           math: tex.data.macros,
           bibliography: tex.data.bibliography,
         };
-        cache.$mdast[file] = {
+        cache.$setMdast(file, {
           sha256,
           pre: {
             kind: SourceFileKind.Article,
@@ -99,7 +100,7 @@ export async function loadFile(
             location,
             frontmatter,
           },
-        };
+        });
         break;
       }
       default:
@@ -136,14 +137,13 @@ export async function bibFilesInDir(session: ISession, dir: string, load = true)
 
 export function selectFile(session: ISession, file: string): RendererData | undefined {
   const cache = castSession(session);
-  file = path.resolve(file);
-  if (!cache.$mdast[file]) {
+  if (!cache.$getMdast(file)) {
     addWarningForFile(session, file, `Expected mdast to be processed`, 'error', {
       ruleId: RuleId.selectedFileIsProcessed,
     });
     return undefined;
   }
-  const mdastPost = cache.$mdast[file].post;
+  const mdastPost = cache.$getMdast(file).post;
   if (!mdastPost) {
     addWarningForFile(session, file, `Expected mdast to be processed and transformed`, 'error', {
       ruleId: RuleId.selectedFileIsProcessed,
