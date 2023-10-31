@@ -31,6 +31,9 @@ export const listTableDirective: DirectiveSpec = {
     class: {
       type: String,
       // class_option: list of strings?
+      doc: `CSS classes to add to your table. Special classes include:
+
+- \`full-width\`: changes the table environment to cover two columns in LaTeX`,
     },
     align: {
       type: String,

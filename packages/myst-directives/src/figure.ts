@@ -17,6 +17,9 @@ export const figureDirective: DirectiveSpec = {
     class: {
       type: String,
       alias: ['figclass'],
+      doc: `CSS classes to add to your figure. Special classes include:
+
+- \`full-width\`: changes the figure environment to cover two columns in LaTeX`,
     },
     height: {
       type: String,
