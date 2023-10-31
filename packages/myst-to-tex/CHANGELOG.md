@@ -1,5 +1,11 @@
 # myst-to-tex
 
+## 1.0.11
+
+### Patch Changes
+
+- 93b73d2: Add `full-width` to figure and table directives
+
 ## 1.0.10
 
 ### Patch Changes
