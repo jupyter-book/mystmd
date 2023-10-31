@@ -1,5 +1,17 @@
 # myst-cli
 
+## 1.1.24
+
+### Patch Changes
+
+- 33140d21: Fix type in site config selector
+- 5bd2985c: Cache mdast at full file path
+- Updated dependencies [93b73d2]
+  - myst-to-tex@1.0.11
+  - tex-to-myst@1.0.11
+  - myst-parser@1.0.11
+  - myst-transforms@1.1.7
+
 ## 1.1.23
 
 ### Patch Changes
