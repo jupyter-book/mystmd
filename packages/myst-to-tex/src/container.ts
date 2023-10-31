@@ -11,6 +11,15 @@ export enum CaptionKind {
   table = 'table',
 }
 
+function getClasses(className?: string) {
+  const classes =
+    className
+      ?.split(' ')
+      .map((s) => s.trim().toLowerCase())
+      .filter((s) => !!s) ?? [];
+  return [...new Set(classes)];
+}
+
 function switchKind(node: Image | Table | Code | Math) {
   switch (node.type as string) {
     case 'iframe':
@@ -37,11 +46,13 @@ export function determineCaptionKind(node: GenericNode): CaptionKind | null {
 
 function nodeToCommand(node: Image | Table | Code | Math) {
   const kind = determineCaptionKind(node);
+  const classes = getClasses((node as any).class);
+  const fullWidth = classes.includes('full-width') || classes.includes('w-full');
   switch (kind) {
     case CaptionKind.fig:
-      return (node as any).fullpage ? 'figure*' : 'figure';
+      return fullWidth ? 'figure*' : 'figure';
     case CaptionKind.table:
-      return (node as any).fullpage ? 'table*' : 'table';
+      return fullWidth ? 'table*' : 'table';
     case CaptionKind.code:
       // TODO full width code
       return 'code';
