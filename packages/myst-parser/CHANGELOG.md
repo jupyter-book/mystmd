@@ -1,5 +1,15 @@
 # myst-parser
 
+## 1.0.12
+
+### Patch Changes
+
+- Updated dependencies [f71817fe]
+- Updated dependencies [f7c29db6]
+  - myst-roles@1.0.12
+  - markdown-it-myst@1.0.4
+  - myst-directives@1.0.12
+
 ## 1.0.11
 
 ### Patch Changes

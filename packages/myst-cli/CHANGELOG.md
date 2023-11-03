@@ -1,5 +1,13 @@
 # myst-cli
 
+## 1.1.25
+
+### Patch Changes
+
+- 116b1a5: Write images when serializing, not during mdast processing
+  - myst-parser@1.0.12
+  - myst-transforms@1.1.8
+
 ## 1.1.24
 
 ### Patch Changes
