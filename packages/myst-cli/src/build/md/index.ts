@@ -5,6 +5,7 @@ import { writeMd } from 'myst-to-md';
 import type { LinkTransformer } from 'myst-transforms';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
+import { finalizeMdast } from '../../process/index.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import type { ISession } from '../../session/types.js';
 import { KNOWN_IMAGE_EXTENSIONS, logMessagesFromVFile } from '../../utils/index.js';
@@ -26,19 +27,18 @@ export async function runMdExport(
   const toc = tic();
   const { output, article } = exportOptions;
   if (clean) cleanOutput(session, output);
-  const [{ mdast, frontmatter }] = await getFileContent(
-    session,
-    [article],
-    path.join(path.dirname(output), 'files'),
-    {
-      projectPath,
-      useExistingImages: true,
-      imageAltOutputFolder: 'files/',
-      imageExtensions: KNOWN_IMAGE_EXTENSIONS,
-      extraLinkTransformers,
-      simplifyFigures: false,
-    },
-  );
+  const [{ mdast, frontmatter }] = await getFileContent(session, [article], {
+    projectPath,
+    imageExtensions: KNOWN_IMAGE_EXTENSIONS,
+    extraLinkTransformers,
+  });
+  await finalizeMdast(session, mdast, frontmatter, article, {
+    imageWriteFolder: path.join(path.dirname(output), 'files'),
+    imageAltOutputFolder: 'files/',
+    imageExtensions: KNOWN_IMAGE_EXTENSIONS,
+    simplifyFigures: false,
+    useExistingImages: true,
+  });
   const vfile = new VFile();
   vfile.path = output;
   const mdOut = writeMd(vfile, mdast as any, frontmatter);

@@ -20,12 +20,11 @@ import { filterPages, loadProjectFromDisk } from '../project/index.js';
 import { castSession } from '../session/index.js';
 import type { ISession } from '../session/types.js';
 import { watch, selectors } from '../store/index.js';
-import { transformWebp } from '../transforms/index.js';
 import { ImageExtensions, addWarningForFile } from '../utils/index.js';
 import { combineProjectCitationRenderers } from './citations.js';
 import { loadIntersphinx } from './intersphinx.js';
 import type { PageReferenceStates, TransformFn } from './mdast.js';
-import { postProcessMdast, transformMdast } from './mdast.js';
+import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 
 const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.webp,
@@ -244,25 +243,30 @@ export async function fastProcessFile(
   const { project, pages } = await loadProject(session, projectPath);
   await transformMdast(session, {
     file,
-    imageWriteFolder: session.publicPath(),
-    imageAltOutputFolder: '/',
     imageExtensions: WEB_IMAGE_EXTENSIONS,
     projectPath,
     projectSlug,
     pageSlug,
     watchMode: true,
-    extraTransforms: [transformWebp, ...(extraTransforms ?? [])],
+    extraTransforms,
     index: project.index,
-    processThumbnail: true,
   });
   const pageReferenceStates = selectPageReferenceStates(session, pages);
   await postProcessMdast(session, {
     file,
     pageReferenceStates,
     extraLinkTransformers,
-    imageExtensions: WEB_IMAGE_EXTENSIONS,
   });
-
+  const { mdast, frontmatter } = castSession(session).$getMdast(file)?.post ?? {};
+  if (mdast && frontmatter) {
+    await finalizeMdast(session, mdast, frontmatter, file, {
+      imageWriteFolder: session.publicPath(),
+      imageAltOutputFolder: '/',
+      imageExtensions: WEB_IMAGE_EXTENSIONS,
+      optimizeWebp: true,
+      processThumbnail: true,
+    });
+  }
   await writeFile(session, { file, pageSlug, projectSlug });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session, { defaultTemplate });
@@ -312,28 +316,18 @@ export async function processProject(
   combineProjectCitationRenderers(session, siteProject.path);
 
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
-  const extraTransforms: TransformFn[] = [];
-  if (usedImageExtensions.includes(ImageExtensions.webp)) {
-    extraTransforms.push(transformWebp);
-  }
-  if (opts?.extraTransforms) {
-    extraTransforms.push(...opts.extraTransforms);
-  }
   // Transform all pages
   await Promise.all(
     pages.map((page) =>
       transformMdast(session, {
         file: page.file,
-        imageWriteFolder: imageWriteFolder ?? session.publicPath(),
-        imageAltOutputFolder,
         imageExtensions: usedImageExtensions,
         projectPath: project.path,
         projectSlug: siteProject.slug,
         pageSlug: page.slug,
         watchMode,
-        extraTransforms,
+        extraTransforms: opts?.extraTransforms,
         index: project.index,
-        processThumbnail: true,
       }),
     ),
   );
@@ -346,20 +340,29 @@ export async function processProject(
         checkLinks: opts?.checkLinks || opts?.strict,
         pageReferenceStates,
         extraLinkTransformers,
-        imageExtensions: usedImageExtensions,
       }),
     ),
   );
   // Write all pages
   if (writeFiles) {
     await Promise.all(
-      pages.map((page) =>
-        writeFile(session, {
+      pages.map(async (page) => {
+        const { mdast, frontmatter } = castSession(session).$getMdast(page.file)?.post ?? {};
+        if (mdast && frontmatter) {
+          await finalizeMdast(session, mdast, frontmatter, page.file, {
+            imageWriteFolder: imageWriteFolder ?? session.publicPath(),
+            imageAltOutputFolder,
+            imageExtensions: usedImageExtensions,
+            optimizeWebp: true,
+            processThumbnail: true,
+          });
+        }
+        return writeFile(session, {
           file: page.file,
           projectSlug: siteProject.slug as string,
           pageSlug: page.slug,
-        }),
-      ),
+        });
+      }),
     );
   }
   log.info(

@@ -15,6 +15,7 @@ import type { LatexResult } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
 import { findCurrentProjectAndLoad } from '../../config.js';
+import { finalizeMdast } from '../../process/index.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import { castSession } from '../../session/index.js';
 import type { ISession } from '../../session/types.js';
@@ -84,18 +85,18 @@ export async function localArticleToTexRaw(
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
   const { article, output } = templateOptions;
-  const [{ mdast, frontmatter, references }] = await getFileContent(
-    session,
-    [article],
-    path.join(path.dirname(output), 'files'),
-    {
-      projectPath,
-      imageAltOutputFolder: 'files/',
-      imageExtensions: TEX_IMAGE_EXTENSIONS,
-      extraLinkTransformers,
-      simplifyFigures: true,
-    },
-  );
+  const [{ mdast, frontmatter, references }] = await getFileContent(session, [article], {
+    projectPath,
+    imageExtensions: TEX_IMAGE_EXTENSIONS,
+    extraLinkTransformers,
+  });
+
+  await finalizeMdast(session, mdast, frontmatter, article, {
+    imageWriteFolder: path.join(path.dirname(output), 'files'),
+    imageAltOutputFolder: 'files/',
+    imageExtensions: TEX_IMAGE_EXTENSIONS,
+    simplifyFigures: true,
+  });
   const toc = tic();
   const result = mdastToTex(session, mdast, references, frontmatter, null, true);
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
@@ -134,13 +135,10 @@ export async function localArticleToTexTemplated(
   const [{ frontmatter, mdast, references }] = await getFileContent(
     session,
     [templateOptions.article],
-    filesPath,
     {
       projectPath,
-      imageAltOutputFolder: 'files/',
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
-      simplifyFigures: true,
     },
   );
   writeBibtexFromCitationRenderers(
@@ -166,6 +164,13 @@ export async function localArticleToTexTemplated(
   await mystTemplate.ensureTemplateExistsOnPath();
   const toc = tic();
   const templateYml = mystTemplate.getValidatedTemplateYml();
+
+  await finalizeMdast(session, mdast, frontmatter, file, {
+    imageWriteFolder: filesPath,
+    imageAltOutputFolder: 'files/',
+    imageExtensions: TEX_IMAGE_EXTENSIONS,
+    simplifyFigures: true,
+  });
 
   const partDefinitions = templateYml?.parts || [];
   const parts: Record<string, string> = {};
