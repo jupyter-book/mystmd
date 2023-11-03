@@ -78,9 +78,11 @@ MyST also provides a number of roles for compatibility with Sphinx and JupyterBo
 This is a parenthetical citation {cite:p}`cockett2015`.
 You can also use a narrative citation with {cite:t}`cockett2015`.
 You can also use a narrative citation with {cite:p}`cockett2015; heagy2017`.
+You can also add prefix and suffix {cite:p}`{see}cockett2015{fig 1}`.
 ```
 
-This is the difference between: {cite:p}`cockett2015` and {cite:t}`cockett2015`. You can have many citation keys in a single role, by separating them with a `;`, for example: {cite:p}`cockett2015; heagy2017`.
+This is the difference between: {cite:p}`cockett2015` and {cite:t}`cockett2015`. You can have many citation keys in a single role, by separating them with a semicolon, `;`, for example: {cite:p}`cockett2015; heagy2017`.
+Including a prefix or suffix is displayed as {cite:p}`{see}cockett2015{fig 1}`.
 
 You can also include DOIs in citations (`cite`, `cite:t`, and `cite:p`) which will be linked in the same way as a simple markdown link, but will match the reference style of the project.
 
