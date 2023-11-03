@@ -35,7 +35,10 @@ export const citeRole: RoleSpec = {
     const labels = content.split(/[,;]/).map((s) => s.trim());
     const kind: CiteKind =
       data.name.startsWith('cite:p') || data.name.includes('par') ? 'parenthetical' : 'narrative';
-    const children = labels.map((l) => {
+    const children = labels.map((c) => {
+      // {cite:p}`{see}1977:nelson{p. 1166}`
+      const groups = /^(?:\{([^{]*)\})?([^{]*)(?:\{([^{]*)\})?$/;
+      const [, prefix, l, suffix] = c.match(groups) ?? ['', '', c];
       const { label, identifier } = normalizeLabel(l) ?? {};
       const cite: Cite = {
         type: 'cite',
@@ -49,6 +52,8 @@ export const citeRole: RoleSpec = {
       if (data.name.startsWith('cite:author') || data.name.startsWith('cite:cauthor')) {
         cite.partial = 'author';
       }
+      if (prefix) cite.prefix = prefix;
+      if (suffix) cite.suffix = suffix;
       return cite;
     });
     if (data.name === 'cite' && children.length === 1) {
