@@ -5,6 +5,9 @@
  * https://github.com/martinring/markdown-it-citations
  */
 
+// Follows syntax from pandoc:
+// https://pandoc.org/chunkedhtml-demo/8.20-citation-syntax.html
+
 import type { PluginWithOptions } from 'markdown-it';
 import type Token from 'markdown-it/lib/token.js';
 
@@ -22,7 +25,7 @@ export interface Citation {
 export const citationsPlugin: PluginWithOptions = (md) => {
   const regexes = {
     citation: /^([^^-]|[^^].+?)?(-)?@([\w][\w:.#$%&\-+?<>~/]*)(.+)?$/,
-    inText: /^@([\w][\w:.#$%&\-+?<>~/]*)(\s*)(\[)?/,
+    inText: /^@([\w|{][\w:.#$%&\-+?<>~/]*[\w|}])(\s*)(\[)?/,
     allowedBefore: /^[^a-zA-Z.0-9]$/,
   };
 
@@ -37,7 +40,7 @@ export const citationsPlugin: PluginWithOptions = (md) => {
       const match = state.src.slice(state.pos).match(regexes.inText);
       if (match) {
         const citation: Citation = {
-          label: match[1],
+          label: trimBraces(match[1]),
           kind: 'narrative',
         };
         let token: Token | undefined;
@@ -55,7 +58,10 @@ export const citationsPlugin: PluginWithOptions = (md) => {
             const suffix = state.src.slice(suffixStart, suffixEnd);
             citation.suffix = state.md.parseInline(suffix, state.env);
             state.pos += match[0].length + suffixEnd - suffixStart + 1;
-            if (token) token.content = match[0] + suffix + ']';
+            if (token) {
+              token.content = match[0] + suffix + ']';
+              (token as any).col.push(state.pos);
+            }
           } else {
             state.pos += match[0].length - match[2].length - match[3].length;
             if (token) {
@@ -86,7 +92,7 @@ export const citationsPlugin: PluginWithOptions = (md) => {
             const suffix = x[4] ? x[4].trim().replace(/^,[\s]*/, '') : undefined;
             const colEnd = curCol + x[0].length;
             const meta = {
-              label: x[3],
+              label: trimBraces(x[3]),
               kind: 'parenthetical' as CiteKind,
               prefix: x[1]?.trim() ? state.md.parseInline(x[1]?.trim(), state.env) : undefined,
               suffix: suffix ? state.md.parseInline(suffix, state.env) : undefined,
@@ -120,3 +126,7 @@ export const citationsPlugin: PluginWithOptions = (md) => {
     return false;
   });
 };
+
+function trimBraces(label: string): string {
+  return label.replace(/^\{(.*)\}$/, '$1');
+}
