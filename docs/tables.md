@@ -20,6 +20,22 @@ Cells in a column can be aligned using the `:` character:
 
 % TODO: The centering isn't working!?
 
+## Adding a Caption
+
+You can use the {myst:directive}`table` directive to add a caption to a markdown table.
+
+```markdown
+:::{table} Table caption
+:label: table
+:align: center
+
+| foo | bar |
+| --- | --- |
+| baz | bim |
+
+:::
+```
+
 ## List Tables
 
 ````{myst}
@@ -37,7 +53,5 @@ Cells in a column can be aligned using the `:` character:
 ````
 
 ```{note}
-You may have inline markdown in the table title, but if it includes backticks, you must use a [colon fence](#example-fence).
+You may have inline markdown in the table caption, however, if it includes backticks, you must use a [colon fence](#example-fence).
 ```
-
-% TODO: Check that tables show a Table 1: at the start?

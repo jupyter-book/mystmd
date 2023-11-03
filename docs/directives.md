@@ -36,6 +36,9 @@ description: Code and code-blocks can be used to show programming languages.
 :::{myst:directive} include
 :::
 
+:::{myst:directive} table
+:::
+
 :::{myst:directive} list-table
 :::
 
