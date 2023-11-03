@@ -185,3 +185,20 @@ cases:
           - type: text
             content: '.'
       - type: paragraph_close
+  - title: Single character citation
+    md: 'In @a, the authors...'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: 'In '
+          - type: cite
+            content: '@a'
+            col: [3, 5]
+            meta:
+              label: a
+              kind: narrative
+          - type: text
+            content: ', the authors...'
+      - type: paragraph_close

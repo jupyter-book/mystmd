@@ -25,7 +25,7 @@ export interface Citation {
 export const citationsPlugin: PluginWithOptions = (md) => {
   const regexes = {
     citation: /^([^^-]|[^^].+?)?(-)?@([\w][\w:.#$%&\-+?<>~/]*)(.+)?$/,
-    inText: /^@([\w|{][\w:.#$%&\-+?<>~/]*[\w|}])(\s*)(\[)?/,
+    inText: /^@((?:[\w|{][\w:.#$%&\-+?<>~/]*[\w|}])|\w)(\s*)(\[)?/,
     allowedBefore: /^[^a-zA-Z.0-9]$/,
   };
 
