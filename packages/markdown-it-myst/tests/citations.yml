@@ -1,0 +1,204 @@
+title: Citations
+cases:
+  - title: basic in-text citation
+    md: 'In @simpeg2015, the authors...'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: 'In '
+          - type: cite
+            content: '@simpeg2015'
+            col: [3, 14]
+            meta:
+              label: simpeg2015
+              kind: narrative
+          - type: text
+            content: ', the authors...'
+      - type: paragraph_close
+  - title: complex in-text citation
+    md: 'In @simpeg2015 [pg 23], the authors...'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: 'In '
+          - type: cite
+            content: '@simpeg2015 [pg 23]'
+            col: [3, 22]
+            meta:
+              label: simpeg2015
+              kind: narrative
+              suffix:
+                - content: pg 23
+          - type: text
+            content: ', the authors...'
+      - type: paragraph_close
+  - title: basic cite-group
+    md: '...geophysical inversions [@simpeg2015; @heagy2017].'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: '...geophysical inversions '
+          - type: cite_group_open
+            content: '['
+            meta:
+              kind: parenthetical
+          - type: cite
+            content: '@simpeg2015'
+            col: [27, 38]
+            meta:
+              label: simpeg2015
+              kind: parenthetical
+          - type: cite
+            content: '@heagy2017'
+            col: [39, 50]
+            meta:
+              label: heagy2017
+              kind: parenthetical
+          - type: cite_group_close
+            content: ']'
+          - type: text
+            content: '.'
+      - type: paragraph_close
+  - title: complex cite-group
+    md: '...geophysical inversions [@simpeg2015, pg 23; see -@heagy2017].'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: '...geophysical inversions '
+          - type: cite_group_open
+          - type: cite
+            content: '@simpeg2015, pg 23'
+            col: [27, 45]
+            meta:
+              label: simpeg2015
+              kind: parenthetical
+              suffix:
+                - content: pg 23
+          - type: cite
+            content: 'see -@heagy2017'
+            col: [46, 62]
+            meta:
+              label: heagy2017
+              kind: parenthetical
+              partial: year
+              prefix:
+                - content: see
+          - type: cite_group_close
+          - type: text
+            content: '.'
+      - type: paragraph_close
+  - title: Excludes ending punctuation
+    md: '...geophysical inversions @simpeg2015. However,'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: '...geophysical inversions '
+          - type: cite
+            content: '@simpeg2015'
+            col: [26, 37]
+            meta:
+              label: simpeg2015
+          - type: text
+            content: '. However,'
+      - type: paragraph_close
+  - title: Grouped citations
+    md: 'In @{Foo_bar.baz.}. However,'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: 'In '
+          - type: cite
+            content: '@{Foo_bar.baz.}'
+            col: [3, 18]
+            meta:
+              label: 'Foo_bar.baz.'
+          - type: text
+            content: '. However,'
+      - type: paragraph_close
+  - title: DOI gets tagged
+    md: 'In @https://doi.org/10.1190/tle35080703.1, there be pixels'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: 'In '
+          - type: cite
+            content: '@https://doi.org/10.1190/tle35080703.1'
+            col: [3, 41]
+            meta:
+              label: https://doi.org/10.1190/tle35080703.1
+          - type: text
+            content: ', there be pixels'
+      - type: paragraph_close
+  - title: Suffix with markup
+    md: 'Blah blah [see @doe99, pp. 33-35 and *passim*; @smith04, chap. 1].'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: 'Blah blah '
+          - type: cite_group_open
+            content: '['
+            meta:
+              kind: parenthetical
+          - type: cite
+            content: 'see @doe99, pp. 33-35 and *passim*'
+            col: [11, 45]
+            meta:
+              label: doe99
+              kind: parenthetical
+              prefix:
+                - content: see
+              suffix:
+                - type: inline
+                  children:
+                    - type: text
+                      content: 'pp. 33-35 and '
+                    - type: em_open
+                    - type: text
+                      content: passim
+                    - type: em_close
+          - type: cite
+            content: '@smith04, chap. 1'
+            col: [46, 64]
+            meta:
+              label: smith04
+              kind: parenthetical
+              suffix:
+                - content: chap. 1
+          - type: cite_group_close
+            content: ']'
+          - type: text
+            content: '.'
+      - type: paragraph_close
+  - title: Single character citation
+    md: 'In @a, the authors...'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: 'In '
+          - type: cite
+            content: '@a'
+            col: [3, 5]
+            meta:
+              label: a
+              kind: narrative
+          - type: text
+            content: ', the authors...'
+      - type: paragraph_close
