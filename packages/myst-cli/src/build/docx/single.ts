@@ -10,6 +10,7 @@ import type { LinkTransformer } from 'myst-transforms';
 import { htmlTransform } from 'myst-transforms';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
+import { finalizeMdast } from '../../process/index.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import type { ISession } from '../../session/types.js';
 import type { RendererData } from '../../transforms/types.js';
@@ -88,11 +89,10 @@ export async function runWordExport(
   const vfile = new VFile();
   vfile.path = output;
   const imageWriteFolder = createTempFolder(session);
-  const [data] = await getFileContent(session, [article], imageWriteFolder, {
+  const [data] = await getFileContent(session, [article], {
     projectPath,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
-    simplifyFigures: true,
   });
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKind.docx,
@@ -114,6 +114,11 @@ export async function runWordExport(
     sourceFile: file,
   });
   const renderer = exportOptions.renderer ?? defaultWordRenderer;
+  await finalizeMdast(session, data.mdast, data.frontmatter, file, {
+    imageWriteFolder,
+    imageExtensions: DOCX_IMAGE_EXTENSIONS,
+    simplifyFigures: true,
+  });
   const docx = renderer(session, data, doc, options, mystTemplate.templatePath, vfile);
   logMessagesFromVFile(session, vfile);
   await writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));

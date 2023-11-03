@@ -17,21 +17,14 @@ import type { ImageExtensions } from '../../utils/index.js';
 export async function getFileContent(
   session: ISession,
   files: string[],
-  imageWriteFolder: string,
   {
     projectPath,
-    useExistingImages,
-    imageAltOutputFolder,
     imageExtensions,
     extraLinkTransformers,
-    simplifyFigures,
   }: {
     projectPath?: string;
-    useExistingImages?: boolean;
-    imageAltOutputFolder?: string;
     imageExtensions: ImageExtensions[];
     extraLinkTransformers?: LinkTransformer[];
-    simplifyFigures: boolean;
   },
 ) {
   const toc = tic();
@@ -58,15 +51,11 @@ export async function getFileContent(
       const pageSlug = pages.find((page) => page.file === file)?.slug;
       await transformMdast(session, {
         file,
-        useExistingImages,
-        imageWriteFolder,
-        imageAltOutputFolder,
         imageExtensions,
         projectPath,
         pageSlug,
         minifyMaxCharacters: 0,
         index: project.index,
-        simplifyFigures,
       });
     }),
   );
@@ -82,8 +71,6 @@ export async function getFileContent(
         file,
         extraLinkTransformers,
         pageReferenceStates,
-        simplifyFigures,
-        imageExtensions,
       });
       const selectedFile = selectFile(session, file);
       if (!selectedFile) throw new Error(`Could not load file information for ${file}`);

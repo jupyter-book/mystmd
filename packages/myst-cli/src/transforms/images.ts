@@ -166,7 +166,53 @@ export async function saveImageInStaticFolder(
   return { urlSource, url };
 }
 
-export async function transformImages(
+export function transformImagesToEmbed(mdast: GenericParent) {
+  const images = selectAll('image', mdast) as GenericNode[];
+  images.forEach((image) => {
+    // If image URL starts with #, replace this node with embed node
+    if (image.url.startsWith('#')) {
+      image.type = 'embed';
+      image.source = { label: image.url.substring(1) };
+      image['remove-input'] = image['remove-input'] ?? true;
+      delete image.url;
+      return;
+    }
+  });
+}
+
+export function transformImagesWithoutExt(
+  session: ISession,
+  mdast: GenericParent,
+  file: string,
+  opts?: { imageExtensions?: ImageExtensions[] },
+) {
+  const images = selectAll('image', mdast) as GenericNode[];
+  images.forEach((image) => {
+    // Look up the image paths by known extensions if it is not provided
+    // This also handles wildcard extensions, e.g. 'example.*'
+    const wildcardRegex = /\.\*$/;
+    const imagePath = path.join(path.dirname(file), image.url).replace(wildcardRegex, '');
+    if (!fs.existsSync(imagePath)) {
+      const sortedExtensions = [
+        // Valid extensions
+        ...(opts?.imageExtensions ?? []),
+        // Convertable extensions
+        ...Object.keys(conversionFnLookup),
+        // All known extensions
+        ...KNOWN_IMAGE_EXTENSIONS,
+      ];
+      const extension = sortedExtensions.find((ext) => fs.existsSync(imagePath + ext));
+      if (extension) {
+        const replacement = image.url.replace(wildcardRegex, '') + extension;
+        session.log.debug(`Resolving ${image.url} to ${replacement}`);
+        image.url = replacement;
+        image.urlSource = image.url;
+      }
+    }
+  });
+}
+
+export async function transformImagesToDisk(
   session: ISession,
   mdast: GenericParent,
   file: string,
@@ -174,37 +220,8 @@ export async function transformImages(
   opts?: { altOutputFolder?: string; imageExtensions?: ImageExtensions[] },
 ) {
   const images = selectAll('image', mdast) as GenericNode[];
-  return Promise.all(
+  await Promise.all(
     images.map(async (image) => {
-      // If image URL starts with #, replace this node with embed node
-      if (image.url.startsWith('#')) {
-        image.type = 'embed';
-        image.source = { label: image.url.substring(1) };
-        image['remove-input'] = image['remove-input'] ?? true;
-        delete image.url;
-        return;
-      }
-      // Look up the image paths by known extensions if it is not provided
-      // This also handles wildcard extensions, e.g. 'example.*'
-      const wildcardRegex = /\.\*$/;
-      const imagePath = path.join(path.dirname(file), image.url).replace(wildcardRegex, '');
-      if (!fs.existsSync(imagePath)) {
-        const sortedExtensions = [
-          // Valid extensions
-          ...(opts?.imageExtensions ?? []),
-          // Convertable extensions
-          ...Object.keys(conversionFnLookup),
-          // All known extensions
-          ...KNOWN_IMAGE_EXTENSIONS,
-        ];
-        const extension = sortedExtensions.find((ext) => fs.existsSync(imagePath + ext));
-        if (extension) {
-          const replacement = image.url.replace(wildcardRegex, '') + extension;
-          session.log.debug(`Resolving ${image.url} to ${replacement}`);
-          image.url = replacement;
-          image.urlSource = image.url;
-        }
-      }
       const result = await saveImageInStaticFolder(
         session,
         image.urlSource || image.url,

@@ -2,6 +2,7 @@ import path from 'node:path';
 import { tic } from 'myst-cli-utils';
 import type { GenericParent, PluginUtils, References } from 'myst-common';
 import { fileError, fileWarn, RuleId } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { LinkTransformer } from 'myst-transforms';
 import {
@@ -44,7 +45,6 @@ import {
   transformLinkedDOIs,
   transformOutputsToCache,
   transformCitations,
-  transformImages,
   transformImageFormats,
   transformThumbnail,
   StaticFileTransformer,
@@ -56,6 +56,9 @@ import {
   transformDeleteBase64UrlSource,
   transformWebp,
   transformOutputsToFile,
+  transformImagesToEmbed,
+  transformImagesWithoutExt,
+  transformImagesToDisk,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/index.js';
 import { logMessagesFromVFile } from '../utils/index.js';
@@ -94,36 +97,26 @@ export async function transformMdast(
   session: ISession,
   opts: {
     file: string;
-    imageWriteFolder: string;
     projectPath?: string;
     projectSlug?: string;
     pageSlug?: string;
-    useExistingImages?: boolean;
-    imageAltOutputFolder?: string;
     imageExtensions?: ImageExtensions[];
     watchMode?: boolean;
     extraTransforms?: TransformFn[];
     minifyMaxCharacters?: number;
     index?: string;
-    simplifyFigures?: boolean;
-    processThumbnail?: boolean;
   },
 ) {
   const {
     file,
-    imageWriteFolder,
     projectPath,
     pageSlug,
     projectSlug,
-    useExistingImages,
-    imageAltOutputFolder,
     imageExtensions,
     extraTransforms,
     watchMode = false,
     minifyMaxCharacters,
     index,
-    simplifyFigures,
-    processThumbnail,
   } = opts;
   const toc = tic();
   const { store, log } = session;
@@ -223,39 +216,8 @@ export async function transformMdast(
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
     .use(footnotesPlugin) // Needs to happen near the end
     .run(mdast, vfile);
-  if (simplifyFigures) {
-    // Transform output nodes to images / text
-    reduceOutputs(session, mdast, file, imageWriteFolder, {
-      altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
-    });
-  }
-  transformOutputsToFile(session, mdast, imageWriteFolder, {
-    altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
-    vfile,
-  });
-  if (!useExistingImages) {
-    await transformImages(session, mdast, file, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      imageExtensions,
-    });
-    // Must happen after transformImages
-    await transformImageFormats(session, mdast, file, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      imageExtensions,
-    });
-    if (processThumbnail) {
-      // Note, the thumbnail transform must be **after** images, as it may read the images
-      await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
-        altOutputFolder: imageAltOutputFolder,
-        webp: extraTransforms?.includes(transformWebp),
-      });
-      await transformBanner(session, file, frontmatter, imageWriteFolder, {
-        altOutputFolder: imageAltOutputFolder,
-        webp: extraTransforms?.includes(transformWebp),
-      });
-    }
-  }
-  await transformDeleteBase64UrlSource(mdast);
+  transformImagesToEmbed(mdast);
+  transformImagesWithoutExt(session, mdast, file, { imageExtensions });
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   const useSlug = pageSlug !== index;
   const url = projectSlug
@@ -308,15 +270,11 @@ export async function postProcessMdast(
     checkLinks,
     pageReferenceStates,
     extraLinkTransformers,
-    simplifyFigures,
-    imageExtensions,
   }: {
     file: string;
     checkLinks?: boolean;
     pageReferenceStates?: PageReferenceStates;
     extraLinkTransformers?: LinkTransformer[];
-    simplifyFigures?: boolean;
-    imageExtensions?: ImageExtensions[];
   },
 ) {
   const toc = tic();
@@ -342,10 +300,6 @@ export async function postProcessMdast(
   });
   resolveReferencesTransform(mdast, state.file as VFile, { state });
   embedTransform(session, mdast, dependencies, state);
-  if (simplifyFigures) {
-    // This must happen after embedded content is resolved so all children are present on figures
-    transformPlaceholderImages(mdast, { imageExtensions });
-  }
   const pipe = unified();
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'project') return;
@@ -356,6 +310,81 @@ export async function postProcessMdast(
   // Ensure there are keys on every node after post processing
   keysTransform(mdast);
   logMessagesFromVFile(session, fileState.file);
+  logMessagesFromVFile(session, vfile);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
   if (checkLinks) await checkLinksTransform(session, file, mdastPost.mdast);
+}
+
+export async function finalizeMdast(
+  session: ISession,
+  mdast: GenericParent,
+  frontmatter: PageFrontmatter,
+  file: string,
+  {
+    imageWriteFolder,
+    useExistingImages,
+    imageAltOutputFolder,
+    imageExtensions,
+    optimizeWebp,
+    simplifyFigures,
+    processThumbnail,
+  }: {
+    imageWriteFolder: string;
+    useExistingImages?: boolean;
+    imageAltOutputFolder?: string;
+    imageExtensions?: ImageExtensions[];
+    optimizeWebp?: boolean;
+    simplifyFigures?: boolean;
+    processThumbnail?: boolean;
+  },
+) {
+  const vfile = new VFile(); // Collect errors on this file
+  vfile.path = file;
+  if (simplifyFigures) {
+    // Transform output nodes to images / text
+    reduceOutputs(session, mdast, file, imageWriteFolder, {
+      altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
+    });
+  }
+  transformOutputsToFile(session, mdast, imageWriteFolder, {
+    altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
+    vfile,
+  });
+  if (!useExistingImages) {
+    await transformImagesToDisk(session, mdast, file, imageWriteFolder, {
+      altOutputFolder: imageAltOutputFolder,
+      imageExtensions,
+    });
+    // Must happen after transformImages
+    await transformImageFormats(session, mdast, file, imageWriteFolder, {
+      altOutputFolder: imageAltOutputFolder,
+      imageExtensions,
+    });
+    if (optimizeWebp) {
+      await transformWebp(session, { file, imageWriteFolder });
+    }
+    if (processThumbnail) {
+      // Note, the thumbnail transform must be **after** images, as it may read the images
+      await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
+        altOutputFolder: imageAltOutputFolder,
+        webp: optimizeWebp,
+      });
+      await transformBanner(session, file, frontmatter, imageWriteFolder, {
+        altOutputFolder: imageAltOutputFolder,
+        webp: optimizeWebp,
+      });
+    }
+  }
+  await transformDeleteBase64UrlSource(mdast);
+  if (simplifyFigures) {
+    // This must happen after embedded content is resolved so all children are present on figures
+    transformPlaceholderImages(mdast, { imageExtensions });
+  }
+  const cache = castSession(session);
+  const postData = cache.$getMdast(file).post;
+  if (postData) {
+    postData.frontmatter = frontmatter;
+    postData.mdast = mdast;
+  }
+  logMessagesFromVFile(session, vfile);
 }

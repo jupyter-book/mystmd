@@ -5,7 +5,7 @@ import { writeJats } from 'myst-to-jats';
 import type { LinkTransformer } from 'myst-transforms';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
-import { combineCitationRenderers } from '../../process/index.js';
+import { combineCitationRenderers, finalizeMdast } from '../../process/index.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import { castSession } from '../../session/index.js';
 import type { ISession } from '../../session/types.js';
@@ -29,24 +29,27 @@ export async function runJatsExport(
   const { output, article, sub_articles } = exportOptions;
   if (clean) cleanOutput(session, output);
   const processedContents = (
-    await getFileContent(
-      session,
-      [article, ...(sub_articles ?? [])],
-      path.join(path.dirname(output), 'files'),
-      {
-        projectPath,
-        imageAltOutputFolder: 'files/',
-        imageExtensions: KNOWN_IMAGE_EXTENSIONS,
-        extraLinkTransformers,
-        simplifyFigures: false,
-      },
-    )
+    await getFileContent(session, [article, ...(sub_articles ?? [])], {
+      projectPath,
+      imageExtensions: KNOWN_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+    })
   ).map((content) => {
     const { kind, file, mdast, frontmatter, slug } = content;
     const rendererFiles = projectPath ? [projectPath, file] : [file];
     const citations = combineCitationRenderers(castSession(session), ...rendererFiles);
-    return { mdast, kind, frontmatter, citations, slug };
+    return { mdast, kind, frontmatter, citations, slug, file };
   });
+  await Promise.all(
+    processedContents.map(({ mdast, frontmatter, file }) => {
+      return finalizeMdast(session, mdast, frontmatter, file, {
+        imageWriteFolder: path.join(path.dirname(output), 'files'),
+        imageAltOutputFolder: 'files/',
+        imageExtensions: KNOWN_IMAGE_EXTENSIONS,
+        simplifyFigures: false,
+      });
+    }),
+  );
   const [processedArticle, ...processedSubArticles] = processedContents;
   const vfile = new VFile();
   vfile.path = output;
