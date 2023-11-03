@@ -18,6 +18,7 @@ export type AllOptions = {
   vfile: VFile;
   markdownit: MarkdownIt.Options;
   extensions: {
+    smartquotes?: boolean;
     colonFences?: boolean;
     frontmatter?: boolean;
     math?: boolean | MathExtensionOptions;

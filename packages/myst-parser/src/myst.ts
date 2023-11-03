@@ -29,6 +29,7 @@ export const defaultOptions: Omit<AllOptions, 'vfile'> = {
     html: true,
   },
   extensions: {
+    smartquotes: true,
     colonFences: true,
     frontmatter: true,
     math: true,
@@ -59,7 +60,17 @@ function parseOptions(opts?: Options): AllOptions {
 export function createTokenizer(opts?: Options) {
   const parsedOpts = parseOptions(opts);
   const { extensions, markdownit } = parsedOpts;
-  const tokenizer = MarkdownIt(MARKDOWN_IT_CONFIG as any, markdownit);
+  const tokenizer = MarkdownIt(
+    {
+      ...MARKDOWN_IT_CONFIG,
+      options: {
+        ...MARKDOWN_IT_CONFIG.options,
+        typographer: extensions.smartquotes ? true : false,
+      },
+    } as any,
+    markdownit,
+  );
+  if (extensions.smartquotes) tokenizer.enable('smartquotes');
   if (extensions.tables) tokenizer.enable('table');
   if (extensions.colonFences) tokenizer.use(colonFencePlugin);
   if (extensions.frontmatter) tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
