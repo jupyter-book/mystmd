@@ -1,5 +1,11 @@
 # myst-roles
 
+## 1.0.12
+
+### Patch Changes
+
+- f71817fe: Improve citation parsing for prefix and suffix
+
 ## 1.0.11
 
 ## 1.0.10

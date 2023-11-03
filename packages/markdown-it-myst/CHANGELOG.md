@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.4
+
+### Patch Changes
+
+- f7c29db6: Improve citation parsing to exclude trailing punctuation.
+
 ## 1.0.3
 
 ### Patch Changes
