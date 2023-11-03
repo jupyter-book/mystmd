@@ -52,8 +52,8 @@ export const citeRole: RoleSpec = {
       if (data.name.startsWith('cite:author') || data.name.startsWith('cite:cauthor')) {
         cite.partial = 'author';
       }
-      if (prefix) cite.prefix = prefix;
-      if (suffix) cite.suffix = suffix;
+      if (prefix) cite.prefix = prefix.trim();
+      if (suffix) cite.suffix = suffix.trim();
       return cite;
     });
     if (data.name === 'cite' && children.length === 1) {
