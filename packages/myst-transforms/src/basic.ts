@@ -11,6 +11,7 @@ import { mathLabelTransform, mathNestingTransform, subequationTransform } from '
 import { blockquoteTransform } from './blockquote.js';
 import { codeBlockToDirectiveTransform } from './code.js';
 import type { GenericParent } from 'myst-common';
+import { removeUnicodeTransform } from './removeUnicode.js';
 
 export function basicTransformations(tree: GenericParent, file: VFile) {
   // lifting roles and directives must happen before the mystTarget transformation
@@ -34,6 +35,7 @@ export function basicTransformations(tree: GenericParent, file: VFile) {
   htmlIdsTransform(tree);
   imageAltTextTransform(tree);
   blockquoteTransform(tree);
+  removeUnicodeTransform(tree);
 }
 
 export const basicTransformationsPlugin: Plugin<[], GenericParent, GenericParent> =
