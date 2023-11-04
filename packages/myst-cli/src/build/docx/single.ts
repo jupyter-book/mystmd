@@ -114,7 +114,7 @@ export async function runWordExport(
     sourceFile: file,
   });
   const renderer = exportOptions.renderer ?? defaultWordRenderer;
-  await finalizeMdast(session, data.mdast, data.frontmatter, file, {
+  await finalizeMdast(session, data.mdast, data.frontmatter, article, {
     imageWriteFolder,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     simplifyFigures: true,

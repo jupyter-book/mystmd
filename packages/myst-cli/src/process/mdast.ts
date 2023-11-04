@@ -127,8 +127,8 @@ export async function transformMdast(
     kind,
     frontmatter: preFrontmatter,
     location,
-  } = cache.$getMdast(file).pre;
-  if (!mdastPre) throw new Error(`Expected mdast to be parsed for ${file}`);
+  } = cache.$getMdast(file)?.pre ?? {};
+  if (!mdastPre || !kind || !location) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
@@ -251,7 +251,8 @@ export async function transformMdast(
     mdast,
     references,
   };
-  cache.$getMdast(file).post = data;
+  const cachedMdast = cache.$getMdast(file);
+  if (cachedMdast) cachedMdast.post = data;
   if (extraTransforms) {
     await Promise.all(
       extraTransforms.map(async (transform) => {
@@ -381,7 +382,7 @@ export async function finalizeMdast(
     transformPlaceholderImages(mdast, { imageExtensions });
   }
   const cache = castSession(session);
-  const postData = cache.$getMdast(file).post;
+  const postData = cache.$getMdast(file)?.post;
   if (postData) {
     postData.frontmatter = frontmatter;
     postData.mdast = mdast;
