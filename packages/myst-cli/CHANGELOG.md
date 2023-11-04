@@ -1,5 +1,13 @@
 # myst-cli
 
+## 1.1.26
+
+### Patch Changes
+
+- ae59eec: Fixes to file processing
+- Updated dependencies [70748f52]
+  - myst-transforms@1.1.9
+
 ## 1.1.25
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # myst-transforms
 
+## 1.1.9
+
+### Patch Changes
+
+- 70748f52: Remove unicode characters by default
+
 ## 1.1.8
 
 ### Patch Changes
