@@ -131,24 +131,18 @@ export async function localArticleToTexTemplated(
   force?: boolean,
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
-  const filesPath = path.join(path.dirname(templateOptions.output), 'files');
-  const [{ frontmatter, mdast, references }] = await getFileContent(
-    session,
-    [templateOptions.article],
-    {
-      projectPath,
-      imageExtensions: TEX_IMAGE_EXTENSIONS,
-      extraLinkTransformers,
-    },
-  );
-  writeBibtexFromCitationRenderers(
-    session,
-    path.join(path.dirname(templateOptions.output), DEFAULT_BIB_FILENAME),
-  );
+  const { output, article, template } = templateOptions;
+  const filesPath = path.join(path.dirname(output), 'files');
+  const [{ frontmatter, mdast, references }] = await getFileContent(session, [article], {
+    projectPath,
+    imageExtensions: TEX_IMAGE_EXTENSIONS,
+    extraLinkTransformers,
+  });
+  writeBibtexFromCitationRenderers(session, path.join(path.dirname(output), DEFAULT_BIB_FILENAME));
 
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKind.tex,
-    template: templateOptions.template || undefined,
+    template: template || undefined,
     buildDir: session.buildPath(),
     errorLogFn: (message: string) => {
       addWarningForFile(session, file, message, 'error', {
@@ -165,7 +159,7 @@ export async function localArticleToTexTemplated(
   const toc = tic();
   const templateYml = mystTemplate.getValidatedTemplateYml();
 
-  await finalizeMdast(session, mdast, frontmatter, file, {
+  await finalizeMdast(session, mdast, frontmatter, article, {
     imageWriteFolder: filesPath,
     imageAltOutputFolder: 'files/',
     imageExtensions: TEX_IMAGE_EXTENSIONS,
@@ -189,10 +183,10 @@ export async function localArticleToTexTemplated(
   // This will need opts eventually --v
   const result = mdastToTex(session, mdast, references, frontmatter, templateYml, true);
   // Fill in template
-  session.log.info(toc(`📑 Exported TeX in %s, copying to ${templateOptions.output}`));
+  session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
   renderTex(mystTemplate, {
     contentOrPath: result.value,
-    outputPath: templateOptions.output,
+    outputPath: output,
     frontmatter,
     parts,
     options: templateOptions,

@@ -595,7 +595,7 @@ export async function transformWebp(
 ) {
   const { file, imageWriteFolder } = opts;
   const cache = castSession(session);
-  const postData = cache.$getMdast(opts.file).post;
+  const postData = cache.$getMdast(opts.file)?.post;
   if (!postData) throw new Error(`Expected mdast to be processed and transformed for ${file}`);
   if (!fs.existsSync(imageWriteFolder)) return; // No images exist to copy - not necessarily an error
   const writeFolderContents = fs.readdirSync(imageWriteFolder);
@@ -645,7 +645,8 @@ export async function transformWebp(
       }
     }),
   );
-  cache.$getMdast(file).post = { ...postData, mdast, frontmatter };
+  const cachedMdast = cache.$getMdast(file);
+  if (cachedMdast) cachedMdast.post = { ...postData, mdast, frontmatter };
 }
 
 function isValidImageNode(node: GenericNode, validExts: ImageExtensions[]) {

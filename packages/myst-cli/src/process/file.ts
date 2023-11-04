@@ -143,7 +143,7 @@ export function selectFile(session: ISession, file: string): RendererData | unde
     });
     return undefined;
   }
-  const mdastPost = cache.$getMdast(file).post;
+  const mdastPost = cache.$getMdast(file)?.post;
   if (!mdastPost) {
     addWarningForFile(session, file, `Expected mdast to be processed and transformed`, 'error', {
       ruleId: RuleId.selectedFileIsProcessed,

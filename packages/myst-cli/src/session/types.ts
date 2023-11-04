@@ -34,7 +34,9 @@ export type ISessionWithCache = ISession & {
   $mdast: Record<string, { sha256?: string; pre: PreRendererData; post?: RendererData }>; // keyed on path
   $outputs: MinifiedContentCache;
   /** Method to get $mdast value with normalized path */
-  $getMdast(file: string): { sha256?: string; pre: PreRendererData; post?: RendererData };
+  $getMdast(
+    file: string,
+  ): { sha256?: string; pre: PreRendererData; post?: RendererData } | undefined;
   /** Method to set $mdast value with normalized path */
   $setMdast(
     file: string,
