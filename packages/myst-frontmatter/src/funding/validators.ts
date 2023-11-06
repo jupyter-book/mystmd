@@ -8,8 +8,8 @@ import {
   validateString,
 } from 'simple-validators';
 import type { ValidationOptions } from 'simple-validators';
-import type { ReferenceStash } from '../frontmatter/types.js';
 import type { Award, Funding } from './types.js';
+import type { ReferenceStash } from '../index.js';
 import { validateAffiliation, validateAndStashObject, validateContributor } from '../index.js';
 
 const AWARD_KEYS = ['id', 'name', 'description', 'sources', 'recipients', 'investigators'];

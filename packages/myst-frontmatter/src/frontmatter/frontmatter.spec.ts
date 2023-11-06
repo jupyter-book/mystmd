@@ -10,7 +10,7 @@ import type {
   PageFrontmatter,
   ProjectFrontmatter,
   SiteFrontmatter,
-} from './types';
+} from '../index';
 import {
   fillPageFrontmatter,
   unnestKernelSpec,
@@ -26,7 +26,7 @@ import {
   validateProjectFrontmatter,
   validateSiteFrontmatterKeys,
   validateVenue,
-} from './validators';
+} from '../index';
 
 const TEST_CONTRIBUTOR: Contributor = {
   userId: '',

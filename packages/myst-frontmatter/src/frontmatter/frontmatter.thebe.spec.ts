@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import type { Thebe } from './types';
-import { validateThebe } from './validators';
 import type { ValidationOptions } from 'simple-validators';
+import type { Thebe } from '../index';
+import { validateThebe } from '../index';
 
 const TEST_THEBE: Thebe = {
   lite: false,
