@@ -152,6 +152,8 @@ Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` o
 
 +++
 
+(thumbnail-and-banner)=
+
 ## Thumbnail & Banner
 
 The thumbnail is used in previews for your site in applications like Twitter, Slack, or any other link preview service. This should, by convention, be included in a `thumbnails` folder next to your content. You can also explicitly set this field to any other image on your local file system or a remote URL to an image. This image will get copied over to your public folder and optimized when you build your project.

@@ -39,6 +39,7 @@ parts:
       # - file: search
       - file: analytics
       - file: deployment
+      - file: website-themes
       # - file: publishing
   - caption: Documents
     chapters:
