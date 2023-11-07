@@ -22,7 +22,7 @@ import {
 } from '../site/validators.js';
 import { validateThebe } from '../thebe/validators.js';
 import { validateBibliography, validateBooleanOrObject, validateDoi } from '../utils/validators.js';
-import type { ProjectFrontmatter } from './types.js';
+import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
 
 export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'date',
@@ -58,8 +58,7 @@ export function validateProjectAndPageFrontmatterKeys(
   value: Record<string, any>,
   opts: ValidationOptions,
 ) {
-  const output: Omit<ProjectFrontmatter, 'thebe' | 'resources' | 'requirements' | 'references'> =
-    validateSiteFrontmatterKeys(value, opts);
+  const output: ProjectAndPageFrontmatter = validateSiteFrontmatterKeys(value, opts);
   if (defined(value.date)) {
     output.date = validateDate(value.date, incrementOptions('date', opts));
   }

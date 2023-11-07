@@ -1,26 +1,8 @@
-import type { ProjectFrontmatter } from '../project/types.js';
+import type { Jupytext } from '../jupytext/types.js';
+import type { KernelSpec } from '../kernelspec/types.js';
+import type { ProjectAndPageFrontmatter } from '../project/types.js';
 
-export type TextRepresentation = {
-  extension?: string;
-  format_name?: string;
-  format_version?: string;
-  jupytext_version?: string;
-};
-
-export type Jupytext = {
-  formats?: string;
-  text_representation?: TextRepresentation;
-};
-
-export type KernelSpec = {
-  name?: string;
-  language?: string;
-  display_name?: string;
-  argv?: string[];
-  env?: Record<string, any>;
-};
-
-export type PageFrontmatter = Omit<ProjectFrontmatter, 'references'> & {
+export type PageFrontmatter = ProjectAndPageFrontmatter & {
   kernelspec?: KernelSpec;
   jupytext?: Jupytext;
   tags?: string[];

@@ -5,7 +5,7 @@ import type { Numbering } from '../numbering/types.js';
 import type { SiteFrontmatter } from '../site/types.js';
 import type { Thebe } from '../thebe/types.js';
 
-export type ProjectFrontmatter = SiteFrontmatter & {
+export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   date?: string;
   name?: string;
   doi?: string;
@@ -17,8 +17,6 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   subject?: string;
   /** Links to bib files for citations */
   bibliography?: string[];
-  /** Intersphinx and cross-project references */
-  references?: Record<string, { url: string }>;
   biblio?: Biblio;
   oxa?: string;
   numbering?: boolean | Numbering;
@@ -27,7 +25,12 @@ export type ProjectFrontmatter = SiteFrontmatter & {
   /** Abbreviations used throughout the project */
   abbreviations?: Record<string, string>;
   exports?: Export[];
-  thebe?: Thebe;
+};
+
+export type ProjectFrontmatter = ProjectAndPageFrontmatter & {
+  /** Intersphinx and cross-project references */
+  references?: Record<string, { url: string }>;
   requirements?: string[];
   resources?: string[];
+  thebe?: Thebe;
 };
