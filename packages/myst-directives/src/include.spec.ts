@@ -13,7 +13,7 @@ describe('parseLinesString', () => {
     ['1,3,5 10,20-', [1, 3, [20]], 1],
   ])('"%s"', (t, a, w) => {
     const vfile = new VFile();
-    expect(parseLinesString(vfile, t)).toEqual(a);
+    expect(parseLinesString(vfile, {} as any, t)).toEqual(a);
     expect(vfile.messages.length).toEqual(w);
   });
 });

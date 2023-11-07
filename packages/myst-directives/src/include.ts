@@ -1,8 +1,9 @@
-import type { DirectiveSpec } from 'myst-common';
+import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
 import { RuleId, fileWarn, normalizeLabel } from 'myst-common';
 import { CODE_DIRECTIVE_OPTIONS, getCodeBlockOptions } from './code.js';
 import type { Include } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
+import { select } from 'unist-util-select';
 
 /**
  * RST documentation:
@@ -87,20 +88,24 @@ export const includeDirective: DirectiveSpec = {
     }
     const lang = (data.options?.lang as string) ?? extToLanguage(file.split('.').pop());
     const opts = getCodeBlockOptions(
-      data.options,
+      data,
       vfile,
       // Set the filename in the literal include by default
       file.split(/\/|\\/).pop(),
     );
     const filter: Include['filter'] = {};
-    ensureOnlyOneOf(vfile, data.options, ['start-at', 'start-line', 'start-after', 'lines']);
-    ensureOnlyOneOf(vfile, data.options, ['end-at', 'end-line', 'end-before', 'lines']);
+    ensureOnlyOneOf(data, vfile, ['start-at', 'start-line', 'start-after', 'lines']);
+    ensureOnlyOneOf(data, vfile, ['end-at', 'end-line', 'end-before', 'lines']);
     filter.startAt = data.options?.['start-at'] as string;
     filter.startAfter = data.options?.['start-after'] as string;
     filter.endAt = data.options?.['end-at'] as string;
     filter.endBefore = data.options?.['end-before'] as string;
     if (data.options?.lines) {
-      filter.lines = parseLinesString(vfile, data.options?.lines as string);
+      filter.lines = parseLinesString(
+        vfile,
+        select('mystDirectiveOption[name="lines"]', data.node) ?? undefined,
+        data.options?.lines as string,
+      );
     } else {
       const startLine = data.options?.['start-line'] as number;
       const endLine = data.options?.['end-line'] as number;
@@ -135,7 +140,11 @@ export const includeDirective: DirectiveSpec = {
 
 type Lines = Required<Include>['filter']['lines'];
 
-export function parseLinesString(vfile: VFile, linesString: string | undefined): Lines {
+export function parseLinesString(
+  vfile: VFile,
+  node: GenericNode | undefined,
+  linesString: string | undefined,
+): Lines {
   if (!linesString) return undefined;
   return linesString
     .split(',')
@@ -144,6 +153,7 @@ export function parseLinesString(vfile: VFile, linesString: string | undefined):
       const match = line.match(/^([0-9]+)(?:\s*(-)\s*([0-9]+)?)?$/);
       if (!match) {
         fileWarn(vfile, `Unknown lines match "${line}"`, {
+          node,
           ruleId: RuleId.directiveOptionsCorrect,
         });
         return undefined;
@@ -160,17 +170,15 @@ export function parseLinesString(vfile: VFile, linesString: string | undefined):
     .filter((l) => !!l) as Lines;
 }
 
-function ensureOnlyOneOf(
-  vfile: VFile,
-  options: Record<string, any> | undefined,
-  exclusive: string[],
-): void {
+function ensureOnlyOneOf(data: DirectiveData, vfile: VFile, exclusive: string[]): void {
+  const { options, node } = data;
   if (!options) return;
   const set1 = new Set(exclusive);
   const set2 = new Set(Object.keys(options));
   const intersection = new Set([...set1].filter((x) => set2.has(x)));
   if (intersection.size > 1) {
     fileWarn(vfile, `Conflicting options for directive: ["${[...intersection].join('", "')}"]`, {
+      node,
       note: `Choose a single option out of ["${[...exclusive].join('", "')}"]`,
       ruleId: RuleId.directiveOptionsCorrect,
     });

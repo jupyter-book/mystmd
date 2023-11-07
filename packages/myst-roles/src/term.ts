@@ -17,6 +17,7 @@ export const termRole: RoleSpec = {
     if (!identifier) {
       fileWarn(vfile, `Unknown {term} role with body: "${body}"`, {
         source: 'role:term',
+        node: data.node,
         ruleId: RuleId.roleBodyCorrect,
       });
     }

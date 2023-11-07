@@ -7,7 +7,7 @@ import { figureDirective } from './figure.js';
 import { iframeDirective } from './iframe.js';
 import { imageDirective } from './image.js';
 import { includeDirective } from './include.js';
-import { listTableDirective } from './table.js';
+import { tableDirective, listTableDirective } from './table.js';
 import { marginDirective } from './margin.js';
 import { glossaryDirective } from './glossary.js';
 import { mathDirective } from './math.js';
@@ -27,6 +27,7 @@ export const defaultDirectives = [
   iframeDirective,
   imageDirective,
   includeDirective,
+  tableDirective,
   listTableDirective,
   marginDirective,
   glossaryDirective,
@@ -46,7 +47,7 @@ export { figureDirective } from './figure.js';
 export { iframeDirective } from './iframe.js';
 export { imageDirective } from './image.js';
 export { includeDirective } from './include.js';
-export { listTableDirective } from './table.js';
+export { listTableDirective, tableDirective } from './table.js';
 export { marginDirective } from './margin.js';
 export { mathDirective } from './math.js';
 export { mdastDirective } from './mdast.js';

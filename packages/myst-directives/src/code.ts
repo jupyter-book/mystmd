@@ -4,6 +4,7 @@ import yaml from 'js-yaml';
 import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
 import { fileError, fileWarn, normalizeLabel, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
+import { select } from 'unist-util-select';
 
 function parseEmphasizeLines(emphasizeLinesString?: string | undefined): number[] | undefined {
   if (!emphasizeLinesString) return undefined;
@@ -16,12 +17,14 @@ function parseEmphasizeLines(emphasizeLinesString?: string | undefined): number[
 
 /** This function parses both sphinx and RST code-block options */
 export function getCodeBlockOptions(
-  options: DirectiveData['options'],
+  data: DirectiveData,
   vfile: VFile,
   defaultFilename?: string,
 ): Pick<Code, 'emphasizeLines' | 'showLineNumbers' | 'startingLineNumber' | 'filename'> {
+  const { options, node } = data;
   if (options?.['lineno-start'] != null && options?.['number-lines'] != null) {
     fileWarn(vfile, 'Cannot use both "lineno-start" and "number-lines"', {
+      node: select('mystDirectiveOption[name="number-lines"]', node) ?? node,
       source: 'code-block:options',
       ruleId: RuleId.directiveOptionsCorrect,
     });
@@ -114,7 +117,7 @@ export const codeDirective: DirectiveSpec = {
   },
   run(data, vfile): GenericNode[] {
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
-    const opts = getCodeBlockOptions(data.options, vfile);
+    const opts = getCodeBlockOptions(data, vfile);
     const code: Code = {
       type: 'code',
       lang: data.arg as string,
@@ -177,6 +180,7 @@ export const codeCellDirective: DirectiveSpec = {
         tags = yaml.load(data.options.tags) as string[];
       } catch (error) {
         fileError(vfile, 'Could not load tags for code-cell directive', {
+          node: select('mystDirectiveOption[name="tags"]', data.node) ?? data.node,
           source: 'code-cell:tags',
           ruleId: RuleId.directiveOptionsCorrect,
         });
@@ -191,6 +195,7 @@ export const codeCellDirective: DirectiveSpec = {
       }
     } else if (tags) {
       fileWarn(vfile, 'tags in code-cell directive must be a list of strings', {
+        node: select('mystDirectiveOption[name="tags"]', data.node) ?? data.node,
         source: 'code-cell:tags',
         ruleId: RuleId.directiveOptionsCorrect,
       });

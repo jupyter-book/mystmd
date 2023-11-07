@@ -9,6 +9,7 @@ import { RuleId, fileError, fileWarn } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import { contentFromNode } from './roles.js';
+import type { Directive } from 'myst-spec';
 
 type MystDirectiveNode = GenericNode & {
   name: string;
@@ -53,7 +54,7 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
       return;
     }
     const { arg: argSpec, options: optionsSpec, body: bodySpec, validate, run } = spec;
-    let data: DirectiveData = { name, options: {} };
+    let data: DirectiveData = { name, node: node as Directive, options: {} };
     let validationError = false;
     // Handle arg
     const argNode = node.children?.filter((c) => c.type === 'mystDirectiveArg')[0];
