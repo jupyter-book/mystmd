@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { unified } from 'unified';
 import { mystParse } from 'myst-parser';
-import { u } from 'unist-builder';
 import type { LatexResult } from '../src';
 import mystToTex from '../src';
 
