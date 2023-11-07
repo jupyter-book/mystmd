@@ -1,40 +1,33 @@
 ---
 title: Installing NodeJS
-description: The MyST Command Line Interface (CLI) is built on NodeJS, a Javascript runtime that is widely used in many projects including well-known Python projects such as Jupyter Lab. MyST can be installed by the package manager npm.
+description: The MyST Command Line Interface (CLI) is built on NodeJS, a Javascript runtime that is widely used in many projects including well-known Python projects such as Jupyter Lab. MyST can be installed by the package manager npm, PyPI, Conda or Mamba.
 ---
 
-+++
+The MyST Command Line Interface (CLI) is built on [NodeJS](https://nodejs.org/en/about) (`node`), a Javascript runtime that is widely used in many projects including well-known Python projects such as Jupyter Lab. `node` comes with its own package manager called `npm`.
 
-The MyST Command Line Interface (CLI) is built on [NodeJS](https://nodejs.org/en/about/) (`nodejs`), a Javascript runtime that is widely used in many projects including well-known Python projects such as Jupyter Lab. `node` comes with its own package manager called `npm`.
+There are a number of ways to install `node` and you can choose one that is suitable depending on your platform and preferences.
 
-There are a number of ways to install `nodejs` and you can choose one that is suitable depending on your platform and preferences.
+:::{important} Node Versions
 
-````{important}
-**Node Versions**
+MyST currently supports `node` v16, v18 and v20. Note that odd-numbered releases of `node` are not long-lived and you should prefer even-numbered releases when installing (see [Node release schedule](https://nodejs.org/en/about/previous-releases)).
+:::
 
-MyST currently supports `nodejs` v16 and v18. Note that odd-numbered releases of `nodejs` are not long-lived and you should prefer even-numbered releases when installing.
-````
-
-Following any of the install methods below, verify your installation and ensure that `node` and `npm` are available on your system *PATH* by opening a new terminal window or command line prompt and typing:
+Following any of the install methods below, verify your installation and ensure that `node` and `npm` are available on your system _PATH_ by opening a new terminal window or command line prompt and typing:
 
 ```text
 % node -v
-v16.15.0
+v18.16.1
 % npm -v
-v8.5.0
+v9.5.1
 ```
-
-+++
 
 ## Manual Installation (all platforms)
 
-You can download an appropriate installer package for your platform by visiting <https://nodejs.org/>. *LTS* refers to the current *Long Term Support* version of `nodejs` and is the best choice for use with MyST.
+You can download an appropriate installer package for your platform by visiting <https://nodejs.org/>. _LTS_ refers to the current _Long Term Support_ version of `nodejs` and is the best choice for use with MyST.
 
 Download the installer package, and follow instructions to execute the installer for your platform. The installer will automatically add `node` and `npm` to your system PATH.
 
 🛠️ Next, up [Installing MyST](./installing.md)
-
-+++
 
 ## `node` via `conda` / `mamba` (all platforms)
 
@@ -66,8 +59,6 @@ Download the installer package, and follow instructions to execute the installer
 ```
 
 🛠️ Next, up [Installing MyST](./installing.md)
-
-+++
 
 ## `nodeenv` via pip (all platforms)
 
@@ -101,32 +92,28 @@ Read more about `nodeenv` in [their docs](https://ekalinin.github.io/nodeenv/).
 
 🛠️ Next, up [Installing MyST](./installing.md)
 
-+++
-
 ## Node Version Manager - Linux/MacOS (`nvm`)
 
 `nvm` is a convenient way to manage multiple node installations on a POSIX compatible system.
 
-🛠️ Install `nvm` using the install script:
+🛠️ Install `nvm` using the install script ([docs](https://github.com/nvm-sh/nvm#installing-and-updating)):
 
 ```shell
-% curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+% curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
 % nvm -v
-0.39.1
+0.39.5
 ```
 
-💡 Note: on MacOS you can also install via `brew`
+💡 Note: on MacOS you can also install `nvm` via `brew`
 
 🛠️ Next, install an initial (default) version of `node`\:
 
 ```python
-% nvm install 16
-Downloading and installing node v16.15.0...
+% nvm install 18
+Downloading and installing node v18.18.2...
 ...
-Now using node v16.15.0 (npm v8.5.5)
+Now using node v18.18.2 (npm v9.8.1)
 %
 ```
 
 Read more about `nvm` in [their docs](https://github.com/nvm-sh/nvm).
-
-🛠️ Next, up [Installing MyST](./installing.md)

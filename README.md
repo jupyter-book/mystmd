@@ -25,11 +25,29 @@ See the [documentation](https://mystmd.org/guide).
 
 ## Get Started
 
-The MyST Markdown CLI is available through Node and NPM:
+Ensure that you have an updated version of Node installed (<https://nodejs.org/>):
 
 ```bash
+node -v
+>> v20.4.0
+```
+
+The MyST Markdown CLI is available through NPM, PyPI and Conda:
+
+```bash
+# Using npm, yarn, or pnpm
 npm install -g mystmd
+# Or using PyPI
+pip install mystmd
+# Or using Conda / Mamba
+conda install mystmd -c conda-forge
+```
+
+Usage:
+
+```bash
 myst init
+myst start
 myst build my-doc.md --tex
 ```
 
