@@ -129,22 +129,3 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
   }
   return output;
 }
-// function validateDoi(
-//   doi: any,
-//   arg1: {
-//     property: string;
-//     location: string;
-//     messages: {
-//       errors?: { property: string; message: string }[] | undefined;
-//       warnings?: { property: string; message: string }[] | undefined;
-//     };
-//     file?: string | undefined;
-//     suppressWarnings?: boolean | undefined;
-//     suppressErrors?: boolean | undefined;
-//     warningLogFn?: ((message: string) => void) | undefined;
-//     errorLogFn?: ((message: string) => void) | undefined;
-//     escapeFn?: ((s: string) => string) | undefined;
-//   },
-// ): string | undefined {
-//   throw new Error('Function not implemented.');
-// }
