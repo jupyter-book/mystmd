@@ -1,5 +1,4 @@
 import type { Export, ProjectFrontmatter, SiteFrontmatter } from 'myst-frontmatter';
-import { SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 
 export interface SiteProject {
   slug?: string;
@@ -22,12 +21,6 @@ export interface SiteAction {
   internal?: boolean;
   static?: boolean;
 }
-
-export const SITE_CONFIG_KEYS = {
-  optional: ['projects', 'nav', 'actions', 'domains', 'favicon', 'template'].concat(
-    SITE_FRONTMATTER_KEYS,
-  ),
-};
 
 export type SiteTemplateOptions = Record<string, any>;
 

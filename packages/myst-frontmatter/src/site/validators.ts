@@ -27,6 +27,14 @@ export const SITE_FRONTMATTER_KEYS = [
   'funding',
 ];
 
+export const FRONTMATTER_ALIASES = {
+  author: 'authors',
+  contributor: 'contributors',
+  affiliation: 'affiliations',
+  export: 'exports',
+  jupyter: 'thebe',
+};
+
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: SiteFrontmatter = {};
   if (defined(value.title)) {

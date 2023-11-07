@@ -15,8 +15,11 @@ import { validateBiblio } from '../biblio/validators.js';
 import { validateExportsList } from '../exports/validators.js';
 import { validateLicenses } from '../licenses/validators.js';
 import { validateNumbering } from '../numbering/validators.js';
-import { KNOWN_PAGE_ALIASES } from '../page/validators.js';
-import { SITE_FRONTMATTER_KEYS, validateSiteFrontmatterKeys } from '../site/validators.js';
+import {
+  FRONTMATTER_ALIASES,
+  SITE_FRONTMATTER_KEYS,
+  validateSiteFrontmatterKeys,
+} from '../site/validators.js';
 import { validateThebe } from '../thebe/validators.js';
 import { validateBibliography, validateBooleanOrObject, validateDoi } from '../utils/validators.js';
 import type { ProjectFrontmatter } from './types.js';
@@ -42,22 +45,16 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   ...SITE_FRONTMATTER_KEYS,
 ];
 
-// These keys only exist on the project.
 export const PROJECT_FRONTMATTER_KEYS = [
   ...PROJECT_AND_PAGE_FRONTMATTER_KEYS,
+  // These keys only exist on the project
   'references',
   'requirements',
   'resources',
   'thebe',
 ];
 
-const KNOWN_PROJECT_ALIASES = {
-  ...KNOWN_PAGE_ALIASES,
-  // This must also be updated in myst-config
-  jupyter: 'thebe',
-};
-
-export function validateSharedProjectFrontmatterKeys(
+export function validateProjectAndPageFrontmatterKeys(
   value: Record<string, any>,
   opts: ValidationOptions,
 ) {
@@ -171,7 +168,7 @@ export function validateProjectFrontmatterKeys(
   value: Record<string, any>,
   opts: ValidationOptions,
 ) {
-  const output: ProjectFrontmatter = validateSharedProjectFrontmatterKeys(value, opts);
+  const output: ProjectFrontmatter = validateProjectAndPageFrontmatterKeys(value, opts);
   // This is only for the project, and is not defined on pages
   if (defined(value.references)) {
     const referencesOpts = incrementOptions('references', opts);
@@ -223,7 +220,7 @@ export function validateProjectFrontmatter(input: any, opts: ValidationOptions) 
   const value =
     validateObjectKeys(
       input,
-      { optional: PROJECT_FRONTMATTER_KEYS, alias: KNOWN_PROJECT_ALIASES },
+      { optional: PROJECT_FRONTMATTER_KEYS, alias: FRONTMATTER_ALIASES },
       opts,
     ) || {};
   return validateProjectFrontmatterKeys(value, opts);

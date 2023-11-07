@@ -9,12 +9,14 @@ import {
 } from 'simple-validators';
 import {
   PROJECT_AND_PAGE_FRONTMATTER_KEYS,
-  validateSharedProjectFrontmatterKeys,
+  validateProjectAndPageFrontmatterKeys,
 } from '../project/validators.js';
 import type { Jupytext, KernelSpec, PageFrontmatter, TextRepresentation } from './types.js';
+import { FRONTMATTER_ALIASES } from '../index.js';
 
 export const PAGE_FRONTMATTER_KEYS = [
   ...PROJECT_AND_PAGE_FRONTMATTER_KEYS,
+  // These keys only exist on the page
   'kernelspec',
   'jupytext',
   'tags',
@@ -36,20 +38,12 @@ export const USE_PROJECT_FALLBACK = [
   'numbering',
   'keywords',
   'funding',
-  'authors',
   'affiliations',
 ];
 
 const KERNELSPEC_KEYS = ['name', 'language', 'display_name', 'argv', 'env'];
 const TEXT_REPRESENTATION_KEYS = ['extension', 'format_name', 'format_version', 'jupytext_version'];
 const JUPYTEXT_KEYS = ['formats', 'text_representation'];
-
-export const KNOWN_PAGE_ALIASES = {
-  author: 'authors',
-  contributor: 'contributors',
-  affiliation: 'affiliations',
-  export: 'exports',
-};
 
 /**
  * Validate KernelSpec object
@@ -133,7 +127,7 @@ export function validateJupytext(input: any, opts: ValidationOptions) {
 }
 
 export function validatePageFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
-  const output: PageFrontmatter = validateSharedProjectFrontmatterKeys(value, opts);
+  const output: PageFrontmatter = validateProjectAndPageFrontmatterKeys(value, opts);
   if (defined(value.kernelspec)) {
     output.kernelspec = validateKernelSpec(value.kernelspec, incrementOptions('kernelspec', opts));
   }
@@ -159,7 +153,7 @@ export function validatePageFrontmatter(input: any, opts: ValidationOptions) {
   const value =
     validateObjectKeys(
       input,
-      { optional: PAGE_FRONTMATTER_KEYS, alias: KNOWN_PAGE_ALIASES },
+      { optional: PAGE_FRONTMATTER_KEYS, alias: FRONTMATTER_ALIASES },
       opts,
     ) || {};
   return validatePageFrontmatterKeys(value, opts);
