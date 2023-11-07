@@ -66,12 +66,7 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
   }
   if (defined(value.server)) {
     const serverOpts = incrementOptions('server', opts);
-    const server = validateObject(value.server, serverOpts);
-    if (server) {
-      output.server = validateJupyterServerOptions(server, serverOpts);
-    } else {
-      return undefined;
-    }
+    output.server = validateJupyterServerOptions(value.server, serverOpts);
   }
   if (defined(value.kernelName)) {
     output.kernelName = validateString(value.kernelName, incrementOptions('kernelName', opts));

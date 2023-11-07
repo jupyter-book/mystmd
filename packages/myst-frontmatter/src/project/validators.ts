@@ -188,8 +188,11 @@ export function validateProjectFrontmatterKeys(
 
   if (defined(value.thebe)) {
     const result = validateThebe(value.thebe, incrementOptions('thebe', opts));
-    if (result && Object.keys(result).length > 0) output.thebe = result;
-    else delete output.thebe;
+    if (result && Object.values(result).filter((val) => val !== undefined).length > 0) {
+      output.thebe = result;
+    } else {
+      delete output.thebe;
+    }
   }
 
   if (defined(value.requirements)) {
