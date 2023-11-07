@@ -1,5 +1,5 @@
 import type { Plugin } from 'unified';
-import type { Node } from 'myst-spec';
+import type { Node, Directive, Role } from 'myst-spec';
 import type { VFile } from 'vfile';
 
 export type GenericNode<T extends Record<string, any> = Record<string, any>> = {
@@ -56,6 +56,7 @@ export type OptionDefinition = ArgDefinition & {
 
 export type DirectiveData = {
   name: string;
+  node: Directive;
   arg?: ParseTypes;
   options?: Record<string, ParseTypes>;
   body?: ParseTypes;
@@ -63,6 +64,7 @@ export type DirectiveData = {
 
 export type RoleData = {
   name: string;
+  node: Role;
   body?: ParseTypes;
 };
 

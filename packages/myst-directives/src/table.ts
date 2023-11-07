@@ -1,5 +1,6 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
 import { fileError, normalizeLabel, RuleId } from 'myst-common';
+import { select } from 'unist-util-select';
 import type { VFile } from 'vfile';
 
 export const tableDirective: DirectiveSpec = {
@@ -28,12 +29,19 @@ export const tableDirective: DirectiveSpec = {
     type: 'myst',
     required: true,
   },
-  run(data: DirectiveData): GenericNode[] {
+  run(data, vfile): GenericNode[] {
     const children = [];
     if (data.arg) {
       children.push({
         type: 'caption',
         children: [{ type: 'paragraph', children: data.arg as GenericNode[] }],
+      });
+    }
+    const body = data.body as GenericNode[];
+    if (!select('table', { type: 'root', children: body })) {
+      fileError(vfile, 'table directive does not include a markdown table in the body', {
+        node: data.node,
+        ruleId: RuleId.directiveBodyCorrect,
       });
     }
     children.push(...(data.body as GenericNode[]));
@@ -97,6 +105,7 @@ export const listTableDirective: DirectiveSpec = {
     const parsedBody = data.body as GenericNode[];
     if (parsedBody.length !== 1 || parsedBody[0].type !== 'list') {
       fileError(vfile, 'list-table directive must have one list as body', {
+        node: data.node,
         ruleId: RuleId.directiveBodyCorrect,
       });
       validatedData.body = [];
@@ -109,6 +118,7 @@ export const listTableDirective: DirectiveSpec = {
           listItem.children[0]?.type !== 'list'
         ) {
           fileError(vfile, 'list-table directive must have a list of lists', {
+            node: data.node,
             ruleId: RuleId.directiveBodyCorrect,
           });
           validatedData.body = [];

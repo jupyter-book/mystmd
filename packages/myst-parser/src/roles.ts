@@ -1,5 +1,6 @@
 import type { GenericNode, ArgDefinition, RoleData, RoleSpec, GenericParent } from 'myst-common';
 import { RuleId, fileError, fileWarn, ParseTypesEnum } from 'myst-common';
+import type { Role } from 'myst-spec';
 import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 
@@ -92,7 +93,7 @@ export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile)
       return;
     }
     const { body, validate, run } = spec;
-    let data: RoleData = { name };
+    let data: RoleData = { name, node: node as Role };
     let validationError = false;
     const bodyNode = select('mystRoleBody', node) as GenericNode;
     if (body) {
