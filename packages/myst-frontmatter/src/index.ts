@@ -3,6 +3,8 @@ export * from './biblio/index.js';
 export * from './contributors/index.js';
 export * from './exports/index.js';
 export * from './funding/index.js';
+export * from './jupytext/index.js';
+export * from './kernelspec/index.js';
 export * from './licenses/index.js';
 export * from './numbering/index.js';
 export * from './page/index.js';
