@@ -14,7 +14,7 @@ import { VFile } from 'vfile';
 import { castSession } from './session/index.js';
 import { loadFile } from './process/index.js';
 import type { ISession } from './session/types.js';
-import { selectors } from './store/index.js';
+import { selectors, watch } from './store/index.js';
 import { logMessagesFromVFile } from './index.js';
 
 /**
@@ -122,4 +122,29 @@ export function getExportListFromRawFrontmatter(
     (exp: Export | undefined): exp is Export => !!exp && formats.includes(exp.format),
   );
   return exportOptions;
+}
+
+export function updateFileInfoFromFrontmatter(
+  session: ISession,
+  file: string,
+  frontmatter: PageFrontmatter,
+  url?: string,
+  dataUrl?: string,
+) {
+  session.store.dispatch(
+    watch.actions.updateFileInfo({
+      path: file,
+      title: frontmatter.title,
+      short_title: frontmatter.short_title,
+      description: frontmatter.description,
+      date: frontmatter.date,
+      thumbnail: frontmatter.thumbnail,
+      thumbnailOptimized: frontmatter.thumbnailOptimized,
+      banner: frontmatter.banner,
+      bannerOptimized: frontmatter.bannerOptimized,
+      tags: frontmatter.tags,
+      url,
+      dataUrl,
+    }),
+  );
 }

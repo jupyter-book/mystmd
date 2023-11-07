@@ -29,9 +29,12 @@ import {
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
-import { getPageFrontmatter, processPageFrontmatter } from '../frontmatter.js';
+import {
+  getPageFrontmatter,
+  processPageFrontmatter,
+  updateFileInfoFromFrontmatter,
+} from '../frontmatter.js';
 import { selectors } from '../store/index.js';
-import { watch } from '../store/reducers.js';
 import type { ISession } from '../session/types.js';
 import { castSession } from '../session/index.js';
 import type { RendererData } from '../transforms/types.js';
@@ -224,22 +227,7 @@ export async function transformMdast(
     ? `/${projectSlug}/${useSlug ? pageSlug : ''}`
     : `/${useSlug ? pageSlug : ''}`;
   const dataUrl = projectSlug ? `/${projectSlug}/${pageSlug}.json` : `/${pageSlug}.json`;
-  store.dispatch(
-    watch.actions.updateFileInfo({
-      path: file,
-      title: frontmatter.title,
-      short_title: frontmatter.short_title,
-      description: frontmatter.description,
-      date: frontmatter.date,
-      thumbnail: frontmatter.thumbnail,
-      thumbnailOptimized: frontmatter.thumbnailOptimized,
-      banner: frontmatter.banner,
-      bannerOptimized: frontmatter.bannerOptimized,
-      tags: frontmatter.tags,
-      url,
-      dataUrl,
-    }),
-  );
+  updateFileInfoFromFrontmatter(session, file, frontmatter, url, dataUrl);
   const data: RendererData = {
     kind: frontmatter.kernelspec || frontmatter.jupytext ? SourceFileKind.Notebook : kind,
     file,
@@ -386,6 +374,7 @@ export async function finalizeMdast(
   if (postData) {
     postData.frontmatter = frontmatter;
     postData.mdast = mdast;
+    updateFileInfoFromFrontmatter(session, file, frontmatter);
   }
   logMessagesFromVFile(session, vfile);
 }
