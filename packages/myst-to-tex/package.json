@@ -44,5 +44,8 @@
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
+  },
+  "devDependencies": {
+    "myst-parser": "^1.0.12"
   }
 }
