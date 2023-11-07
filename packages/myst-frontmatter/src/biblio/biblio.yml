@@ -1,0 +1,27 @@
+title: Biblio
+cases:
+  - title: empty object returns self
+    raw:
+      biblio: {}
+    normalized:
+      biblio: {}
+  - title: extra keys removed
+    raw:
+      biblio:
+        extra: ''
+    normalized:
+      biblio: {}
+    warnings: 1
+  - title: full object returns self
+    raw:
+      biblio:
+        volume: test
+        issue: example
+        first_page: 1
+        last_page: 2
+    normalized:
+      biblio:
+        volume: test
+        issue: example
+        first_page: 1
+        last_page: 2

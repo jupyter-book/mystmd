@@ -1,0 +1,103 @@
+title: Page
+cases:
+  - title: invalid type errors
+    raw: 'frontmatter'
+    normalized: {}
+    errors: 1
+  - title: empty object returns self
+    raw: {}
+    normalized: {}
+  - title: full object returns self
+    raw:
+      title: frontmatter
+      description: page frontmatter
+      venue:
+        title: test
+      authors:
+        - id: jd
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            given: Jane
+            family: Doe
+          affiliations:
+            - univb
+      affiliations:
+        - id: univb
+          name: University B
+      name: example.md
+      doi: 10.1000/abcd/efg012
+      arxiv: https://arxiv.org/example
+      open_access: true
+      license: {}
+      github: https://github.com/example
+      binder: https://example.com/binder
+      source: https://example.com/source
+      subject: ''
+      biblio: {}
+      oxa: ''
+      numbering: {}
+      math:
+        a: b
+      subtitle: sub
+      short_title: short
+      date: 14 Dec 2021
+      kernelspec: {}
+      jupytext: {}
+      keywords:
+        - example
+        - test
+      exports:
+        - format: pdf
+          template: default
+          output: out.tex
+          a: 1
+    normalized:
+      title: frontmatter
+      description: page frontmatter
+      venue:
+        title: test
+      authors:
+        - id: jd
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            given: Jane
+            family: Doe
+          affiliations:
+            - univb
+      affiliations:
+        - id: univb
+          name: University B
+      name: example.md
+      doi: 10.1000/abcd/efg012
+      arxiv: https://arxiv.org/example
+      open_access: true
+      license: {}
+      github: https://github.com/example
+      binder: https://example.com/binder
+      source: https://example.com/source
+      subject: ''
+      biblio: {}
+      oxa: ''
+      numbering: {}
+      math:
+        a: b
+      subtitle: sub
+      short_title: short
+      date: 14 Dec 2021
+      kernelspec: {}
+      jupytext: {}
+      keywords:
+        - example
+        - test
+      exports:
+        - format: pdf
+          template: default
+          output: out.tex
+          a: 1
+  - title: invalid date errors
+    raw:
+      date: https://example.com
+    normalized: {}
+    errors: 1

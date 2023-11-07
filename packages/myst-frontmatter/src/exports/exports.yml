@@ -87,3 +87,64 @@ cases:
       exports:
         - format: pdf
         - format: docx
+  - title: empty object errors
+    raw:
+      exports:
+        - {}
+    normalized: {}
+    errors: 1
+  - title: tex+pdf coerces to pdf+tex
+    raw:
+      exports:
+        - format: tex+pdf
+    normalized:
+      exports:
+        - format: pdf+tex
+  - title: invalid format errors
+    raw:
+      exports:
+        - format: str
+    normalized: {}
+    errors: 1
+  - title: invalid template errors
+    raw:
+      exports:
+        - format: pdf
+          template: true
+    normalized:
+      exports:
+        - format: pdf
+    errors: 1
+  - title: invalid output errors
+    raw:
+      exports:
+        - format: pdf
+          output: true
+    normalized:
+      exports:
+        - format: pdf
+    errors: 1
+  - title: full object returns self
+    raw:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+    normalized:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+  - title: extra keys are maintained
+    raw:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+          a: 1
+    normalized:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+          a: 1

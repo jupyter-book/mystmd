@@ -2,8 +2,9 @@ import { describe, expect, test } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import { validatePageFrontmatter, validateProjectFrontmatter } from '../src';
 import type { ValidationOptions } from 'simple-validators';
+import { glob } from 'glob';
+import { validatePageFrontmatter, validateProjectFrontmatter } from '../src';
 
 type TestFile = {
   title: string;
@@ -21,22 +22,17 @@ type TestCase = {
   opts?: Record<string, boolean>;
 };
 
-const files = [
-  'affiliations.yml',
-  'authors.yml',
-  'credit.yml',
-  'exports.yml',
-  'funding.yml',
-  'keywords.yml',
-  'licenses.yml',
-  'orcid.yml',
-  'thebe.yml',
-];
+const files = await glob(
+  [path.join(__dirname, '*.yml'), path.join(__dirname, '..', 'src', '**', '*.yml')],
+  {
+    ignore: path.join(__dirname, '..', 'src', 'utils', '*.yml'),
+  },
+);
 
 const only = ''; // Can set this to a test title
 
 const casesList = files
-  .map((file) => ({ name: file, data: fs.readFileSync(path.join(__dirname, file)).toString() }))
+  .map((file) => ({ name: file, data: fs.readFileSync(file).toString() }))
   .map((file) => {
     const tests = yaml.load(file.data) as TestFile;
     tests.title = tests.title ?? file.name;
@@ -71,9 +67,6 @@ casesList.forEach(({ title, frontmatter, cases }) => {
           console.log(opts.messages.errors);
         }
         expect(result).toEqual(normalized);
-        if ((opts.messages.warnings?.length ?? 0) !== (warnings ?? 0)) {
-          console.log(opts.messages.warnings);
-        }
         expect(opts.messages.warnings?.length ?? 0).toBe(warnings ?? 0);
         expect(opts.messages.errors?.length ?? 0).toBe(errors ?? 0);
 

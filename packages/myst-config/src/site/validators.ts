@@ -12,8 +12,11 @@ import {
   validateBoolean,
   validationError,
 } from 'simple-validators';
-import { validateSiteFrontmatterKeys } from 'myst-frontmatter';
-import { SITE_CONFIG_KEYS } from './types.js';
+import {
+  FRONTMATTER_ALIASES,
+  SITE_FRONTMATTER_KEYS,
+  validateSiteFrontmatterKeys,
+} from 'myst-frontmatter';
 import type {
   SiteAction,
   SiteConfig,
@@ -21,6 +24,19 @@ import type {
   SiteProject,
   SiteTemplateOptions,
 } from './types.js';
+
+export const SITE_CONFIG_KEYS = {
+  optional: [
+    ...SITE_FRONTMATTER_KEYS,
+    'projects',
+    'nav',
+    'actions',
+    'domains',
+    'favicon',
+    'template',
+  ],
+  alias: FRONTMATTER_ALIASES,
+};
 
 function validateUrlOrPath(input: any, opts: ValidationOptions) {
   const value = validateString(input, opts);

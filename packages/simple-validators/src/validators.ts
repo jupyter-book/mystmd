@@ -245,8 +245,11 @@ export function validateKeys(
 ) {
   const value: Record<string, any> = {};
   let required = keys.required || [];
-  const aliasKeys = Object.keys(keys.alias ?? {});
   const optional = keys.optional || [];
+  const aliasKeys = Object.entries(keys.alias ?? {})
+    // Remove aliases that do not resolve to valid keys
+    .filter((alias) => required.includes(alias[1]) || optional.includes(alias[1]))
+    .map((alias) => alias[0]);
   const ignored: string[] = [];
   Object.keys(input).forEach((k) => {
     if (required.includes(k) || optional.includes(k)) {
@@ -303,13 +306,17 @@ export function validateObjectKeys(
  */
 export function validateList<T>(
   input: any,
-  opts: ValidationOptions,
+  opts: ValidationOptions & { coerce?: boolean },
   itemValidator: (item: any, index: number) => T | undefined,
 ) {
-  if (!Array.isArray(input)) {
+  let value: any[];
+  if (Array.isArray(input)) {
+    value = input;
+  } else if (opts.coerce) {
+    value = [input];
+  } else {
     return validationError('must be an array', opts);
   }
-  const value = input as any[];
   return value
     .map((item, index) => itemValidator(item, index))
     .filter((item): item is T => item !== undefined);

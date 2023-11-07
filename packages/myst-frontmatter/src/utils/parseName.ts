@@ -1,4 +1,4 @@
-import type { Name } from '../index.js';
+import type { Name } from '../contributors/types.js';
 
 /**
  * Check if the first letter in a word is uppercase

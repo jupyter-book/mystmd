@@ -317,6 +317,15 @@ describe('validateKeys', () => {
     });
     expect(opts.messages.warnings?.length).toEqual(1);
   });
+  it('alias with invalid value warns and is removed', () => {
+    expect(
+      validateKeys({ a: 1, b: 2, c: 3 }, { optional: ['a', 'b'], alias: { c: 'd' } }, opts),
+    ).toEqual({
+      a: 1,
+      b: 2,
+    });
+    expect(opts.messages.warnings?.length).toEqual(1);
+  });
 });
 
 describe('validateList', () => {
@@ -343,6 +352,9 @@ describe('validateList', () => {
   it('invalid string errors', () => {
     expect(validateList('abc', opts, (val) => val)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('coerce validates with string', () => {
+    expect(validateList('abc', { coerce: true, ...opts }, (val) => val)).toEqual(['abc']);
   });
 });
 
