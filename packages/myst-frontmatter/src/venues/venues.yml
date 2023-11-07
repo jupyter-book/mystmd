@@ -1,0 +1,31 @@
+title: Venues
+cases:
+  - title: empty venue returns self
+    raw:
+      venue: {}
+    normalized:
+      venue: {}
+  - title: title/url returns self
+    raw:
+      venue:
+        title: test
+        url: http://example.com
+    normalized:
+      venue:
+        title: test
+        url: http://example.com
+  - title: string returns object with title
+    raw:
+      venue: test
+    normalized:
+      venue:
+        title: test
+  - title: invalid keys ignored
+    raw:
+      venue:
+        title: test
+        extra: ''
+    normalized:
+      venue:
+        title: test
+    warnings: 1

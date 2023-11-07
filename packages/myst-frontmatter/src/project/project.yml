@@ -1,0 +1,143 @@
+title: Project
+frontmatter: project
+cases:
+  - title: invalid type errors
+    raw: frontmatter
+    normalized: {}
+    errors: 1
+  - title: empty object returns self
+    raw: {}
+    normalized: {}
+  - title: full object returns self
+    raw:
+      title: frontmatter
+      description: project frontmatter
+      venue:
+        title: test
+      authors:
+        - id: jd
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            given: John
+            family: Doe
+          affiliations:
+            - univa
+      affiliations:
+        - id: univa
+          name: University A
+      date: 14 Dec 2021
+      name: example.md
+      doi: 10.1000/abcd/efg012
+      arxiv: https://arxiv.org/example
+      open_access: true
+      license: {}
+      github: https://github.com/example
+      binder: https://example.com/binder
+      source: https://example.com/source
+      subject: ''
+      biblio: {}
+      oxa: ''
+      numbering: {}
+      math:
+        a: b
+      keywords:
+        - example
+        - test
+      exports:
+        - format: pdf
+          template: default
+          output: out.tex
+          a: 1
+          article: my-file.md
+        - format: xml
+          article: my-file.md
+          sub_articles:
+            - my-notebook.ipynb
+      requirements:
+        - requirements.txt
+      resources:
+        - my-script.sh
+    normalized:
+      title: frontmatter
+      description: project frontmatter
+      venue:
+        title: test
+      authors:
+        - id: jd
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            given: John
+            family: Doe
+          affiliations:
+            - univa
+      affiliations:
+        - id: univa
+          name: University A
+      date: 14 Dec 2021
+      name: example.md
+      doi: 10.1000/abcd/efg012
+      arxiv: https://arxiv.org/example
+      open_access: true
+      license: {}
+      github: https://github.com/example
+      binder: https://example.com/binder
+      source: https://example.com/source
+      subject: ''
+      biblio: {}
+      oxa: ''
+      numbering: {}
+      math:
+        a: b
+      keywords:
+        - example
+        - test
+      exports:
+        - format: pdf
+          template: default
+          output: out.tex
+          a: 1
+          article: my-file.md
+        - format: xml
+          article: my-file.md
+          sub_articles:
+            - my-notebook.ipynb
+      requirements:
+        - requirements.txt
+      resources:
+        - my-script.sh
+  - title: boolean numbering is valid
+    raw:
+      numbering: 'false'
+    normalized:
+      numbering: false
+  - title: invalid doi errors
+    raw:
+      doi: ''
+    normalized: {}
+    errors: 1
+  - title: github username/repo coerces
+    raw:
+      github: example/repo
+    normalized:
+      github: https://github.com/example/repo
+  - title: invalid github errors
+    raw:
+      github: https://example.com
+    normalized: {}
+    errors: 1
+  - title: invalid arxiv errors
+    raw:
+      arxiv: https://example.com
+    normalized: {}
+    errors: 1
+  - title: invalid math errors
+    raw:
+      math:
+        a: valid
+        b: 0
+    normalized:
+      math:
+        a: valid
+    errors: 1

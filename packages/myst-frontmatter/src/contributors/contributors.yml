@@ -1,0 +1,168 @@
+title: Contributors
+cases:
+  - title: full object returns self
+    raw:
+      contributors:
+        - userId: ''
+          name: Test Author
+          orcid: 0000-0000-0000-0000
+          corresponding: true
+          email: test@example.com
+          roles:
+            - Software
+            - Validation
+          affiliations:
+            - example university
+          twitter: '@test'
+          github: test
+          url: https://example.com
+    normalized:
+      contributors:
+        - userId: ''
+          name: Test Author
+          nameParsed:
+            literal: Test Author
+            given: Test
+            family: Author
+          orcid: 0000-0000-0000-0000
+          corresponding: true
+          email: test@example.com
+          roles:
+            - Software
+            - Validation
+          affiliations:
+            - example university
+          twitter: '@test'
+          github: test
+          url: https://example.com
+          id: contributors-generated-uid-0
+      affiliations:
+        - id: example university
+          name: example university
+  - title: extra keys removed
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          extra: ''
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    warnings: 1
+  - title: invalid orcid errors
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          orcid: https://exampale.com/example
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    errors: 1
+  - title: invalid email errors
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          email: https://exampale.com/example
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    errors: 1
+  - title: unknown roles warn
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          roles:
+            - example
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          roles:
+            - example
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    warnings: 1
+  - title: invalid roles errors
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          roles:
+            - 1
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          roles: []
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    errors: 1
+  - title: corresponding with no email errors
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          corresponding: true
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          corresponding: false
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    errors: 1
+  - title: website coerces to url
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          website: https://example.com
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          url: https://example.com
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+  - title: collaboration errors
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          collaborations:
+            - example collaboration
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    errors: 1

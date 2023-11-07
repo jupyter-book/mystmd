@@ -1,0 +1,41 @@
+title: Numbering
+cases:
+  - title: empty object returns self
+    raw:
+      numbering: {}
+    normalized:
+      numbering: {}
+  - title: extra keys removed
+    raw:
+      numbering:
+        extra: ''
+    normalized:
+      numbering: {}
+    warnings: 1
+  - title: full object returns self
+    raw:
+      numbering:
+        enumerator: ''
+        figure: true
+        equation: true
+        table: true
+        code: true
+        heading_1: true
+        heading_2: true
+        heading_3: true
+        heading_4: true
+        heading_5: true
+        heading_6: true
+    normalized:
+      numbering:
+        enumerator: ''
+        figure: true
+        equation: true
+        table: true
+        code: true
+        heading_1: true
+        heading_2: true
+        heading_3: true
+        heading_4: true
+        heading_5: true
+        heading_6: true

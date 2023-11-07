@@ -329,3 +329,74 @@ cases:
         - id: univa
           name: University A
     errors: 1
+
+  - title: extra keys removed
+    raw:
+      affiliations:
+        - name: University A
+          id: univa
+          extra: ''
+    normalized:
+      affiliations:
+        - name: University A
+          id: univa
+    warnings: 1
+  - title: full object returns self
+    raw:
+      affiliations:
+        - id: abc123
+          address: 123 Example St.
+          city: Example town
+          state: EX
+          postal_code: '00000'
+          country: USA
+          name: Example University
+          department: Example department
+          collaboration: true
+          isni: '0000000000000000'
+          ringgold: 99999
+          ror: '0000000000000000'
+          url: http://example.com
+          email: example@example.com
+          phone: 1-800-000-0000
+          fax: (800) 000-0001
+    normalized:
+      affiliations:
+        - id: abc123
+          address: 123 Example St.
+          city: Example town
+          state: EX
+          postal_code: '00000'
+          country: USA
+          name: Example University
+          department: Example department
+          collaboration: true
+          isni: '0000000000000000'
+          ringgold: 99999
+          ror: '0000000000000000'
+          url: http://example.com
+          email: example@example.com
+          phone: 1-800-000-0000
+          fax: (800) 000-0001
+  - title: invalid ringgold number errors
+    raw:
+      affiliations:
+        - name: University A
+          id: univa
+          ringgold: 1
+    normalized:
+      affiliations:
+        - name: University A
+          id: univa
+    errors: 1
+  - title: numeric postal code coerces to string
+    raw:
+      affiliations:
+        - name: University A
+          id: univa
+          postal_code: 91104
+    normalized:
+      affiliations:
+        - name: University A
+          id: univa
+          postal_code: '91104'
