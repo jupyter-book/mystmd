@@ -24,7 +24,7 @@ export function getCodeBlockOptions(
   const { options, node } = data;
   if (options?.['lineno-start'] != null && options?.['number-lines'] != null) {
     fileWarn(vfile, 'Cannot use both "lineno-start" and "number-lines"', {
-      node: select('mystDirectiveOption[name="number-lines"]', node) ?? undefined,
+      node: select('mystDirectiveOption[name="number-lines"]', node) ?? node,
       source: 'code-block:options',
       ruleId: RuleId.directiveOptionsCorrect,
     });
