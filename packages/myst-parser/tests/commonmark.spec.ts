@@ -63,6 +63,7 @@ describe('Common Mark Spec with markdown it', () => {
       extensions: {
         frontmatter: false, // Frontmatter screws with some tests!
         citations: false,
+        smartquotes: false,
       },
     }).render(markdown);
     expect(output).toEqual(fixed);
@@ -82,6 +83,7 @@ describe('Common Mark Spec with unified', () => {
       extensions: {
         frontmatter: false, // Frontmatter screws with some tests!
         citations: false,
+        smartquotes: false,
       },
     });
     const output = mystToHtml(tree, {
