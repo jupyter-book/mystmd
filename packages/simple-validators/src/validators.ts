@@ -245,8 +245,11 @@ export function validateKeys(
 ) {
   const value: Record<string, any> = {};
   let required = keys.required || [];
-  const aliasKeys = Object.keys(keys.alias ?? {});
   const optional = keys.optional || [];
+  const aliasKeys = Object.entries(keys.alias ?? {})
+    // Remove aliases that do not resolve to valid keys
+    .filter((alias) => required.includes(alias[1]) || optional.includes(alias[1]))
+    .map((alias) => alias[0]);
   const ignored: string[] = [];
   Object.keys(input).forEach((k) => {
     if (required.includes(k) || optional.includes(k)) {

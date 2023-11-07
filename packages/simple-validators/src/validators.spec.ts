@@ -317,6 +317,15 @@ describe('validateKeys', () => {
     });
     expect(opts.messages.warnings?.length).toEqual(1);
   });
+  it('alias with invalid value warns and is removed', () => {
+    expect(
+      validateKeys({ a: 1, b: 2, c: 3 }, { optional: ['a', 'b'], alias: { c: 'd' } }, opts),
+    ).toEqual({
+      a: 1,
+      b: 2,
+    });
+    expect(opts.messages.warnings?.length).toEqual(1);
+  });
 });
 
 describe('validateList', () => {
