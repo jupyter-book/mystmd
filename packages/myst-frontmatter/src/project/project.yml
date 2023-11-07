@@ -141,3 +141,9 @@ cases:
       math:
         a: valid
     errors: 1
+  - title: bibliography string coerces
+    raw:
+      bibliography: article.bib
+    normalized:
+      bibliography:
+        - article.bib

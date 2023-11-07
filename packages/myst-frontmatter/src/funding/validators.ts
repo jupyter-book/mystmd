@@ -37,22 +37,24 @@ export function validateAward(input: any, stash: ReferenceStash, opts: Validatio
     output.description = validateString(value.description, incrementOptions('description', opts));
   }
   if (defined(value.sources)) {
-    const sources = Array.isArray(value.sources) ? value.sources : [value.sources];
-    output.sources = validateList(sources, incrementOptions('sources', opts), (source, index) => {
-      return validateAndStashObject(
-        source,
-        stash,
-        'affiliations',
-        validateAffiliation,
-        incrementOptions(`sources.${index}`, opts),
-      );
-    });
+    output.sources = validateList(
+      value.sources,
+      { coerce: true, ...incrementOptions('sources', opts) },
+      (source, index) => {
+        return validateAndStashObject(
+          source,
+          stash,
+          'affiliations',
+          validateAffiliation,
+          incrementOptions(`sources.${index}`, opts),
+        );
+      },
+    );
   }
   if (defined(value.recipients)) {
-    const recipients = Array.isArray(value.recipients) ? value.recipients : [value.recipients];
     output.recipients = validateList(
-      recipients,
-      incrementOptions('recipients', opts),
+      value.recipients,
+      { coerce: true, ...incrementOptions('recipients', opts) },
       (recipient, index) => {
         return validateAndStashObject(
           recipient,
@@ -65,12 +67,9 @@ export function validateAward(input: any, stash: ReferenceStash, opts: Validatio
     );
   }
   if (defined(value.investigators)) {
-    const investigators = Array.isArray(value.investigators)
-      ? value.investigators
-      : [value.investigators];
     output.investigators = validateList(
-      investigators,
-      incrementOptions('investigators', opts),
+      value.investigators,
+      { coerce: true, ...incrementOptions('investigators', opts) },
       (investigator, index) => {
         return validateAndStashObject(
           investigator,
@@ -143,10 +142,13 @@ export function validateFunding(input: any, stash: ReferenceStash, opts: Validat
     output.open_access = validateString(value.open_access, incrementOptions('open_access', opts));
   }
   if (defined(value.awards)) {
-    const awards = Array.isArray(value.awards) ? value.awards : [value.awards];
-    output.awards = validateList(awards, incrementOptions('awards', opts), (award, index) => {
-      return validateAward(award, stash, incrementOptions(`awards.${index}`, opts));
-    });
+    output.awards = validateList(
+      value.awards,
+      { coerce: true, ...incrementOptions('awards', opts) },
+      (award, index) => {
+        return validateAward(award, stash, incrementOptions(`awards.${index}`, opts));
+      },
+    );
   }
   return output;
 }

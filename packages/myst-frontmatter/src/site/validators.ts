@@ -78,38 +78,37 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     });
   }
   if (defined(value.authors)) {
-    let authors = value.authors;
-    // Turn a string into a list of strings, this will be transformed later
-    if (!Array.isArray(value.authors)) {
-      authors = [authors];
-    }
-    stash.authorIds = validateList(authors, incrementOptions('authors', opts), (author, index) => {
-      return validateAndStashObject(
-        author,
-        stash,
-        'contributors',
-        (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
-        incrementOptions(`authors.${index}`, opts),
-      );
-    });
+    stash.authorIds = validateList(
+      value.authors,
+      { coerce: true, ...incrementOptions('authors', opts) },
+      (author, index) => {
+        return validateAndStashObject(
+          author,
+          stash,
+          'contributors',
+          (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
+          incrementOptions(`authors.${index}`, opts),
+        );
+      },
+    );
   }
   if (defined(value.contributors)) {
     // In addition to contributors defined here, additional contributors may be defined elsewhere
     // in the frontmatter (e.g. funding award investigator/recipient). These extra contributors
     // are combined with this list at the end of validation.
-    let contributors = value.contributors;
-    if (!Array.isArray(value.contributors)) {
-      contributors = [contributors];
-    }
-    validateList(contributors, incrementOptions('contributors', opts), (contributor, index) => {
-      return validateAndStashObject(
-        contributor,
-        stash,
-        'contributors',
-        (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
-        incrementOptions(`contributors.${index}`, opts),
-      );
-    });
+    validateList(
+      value.contributors,
+      { coerce: true, ...incrementOptions('contributors', opts) },
+      (contributor, index) => {
+        return validateAndStashObject(
+          contributor,
+          stash,
+          'contributors',
+          (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
+          incrementOptions(`contributors.${index}`, opts),
+        );
+      },
+    );
   }
   if (defined(value.venue)) {
     output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
@@ -128,9 +127,13 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
   }
   if (defined(value.funding)) {
     const funding = Array.isArray(value.funding) ? value.funding : [value.funding];
-    output.funding = validateList(funding, incrementOptions('funding', opts), (fund, index) => {
-      return validateFunding(fund, stash, incrementOptions(`funding.${index}`, opts));
-    });
+    output.funding = validateList(
+      funding,
+      { coerce: true, ...incrementOptions('funding', opts) },
+      (fund, index) => {
+        return validateFunding(fund, stash, incrementOptions(`funding.${index}`, opts));
+      },
+    );
   }
   const stashContribAuthors = stash.contributors?.filter(
     (contrib) => stash.authorIds?.includes(contrib.id),

@@ -3,7 +3,6 @@ import type { ValidationOptions } from 'simple-validators';
 import {
   incrementOptions,
   validateBoolean,
-  validateList,
   validateString,
   validateUrl,
   validationError,
@@ -58,20 +57,4 @@ export function validateStringOrNumber(input: any, opts: ValidationOptions) {
   if (typeof input === 'string') return validateString(input, opts);
   if (typeof input === 'number') return input;
   return validationError('must be string or number', opts);
-}
-
-export function validateBibliography(input: any, opts: ValidationOptions) {
-  if (typeof input === 'string') {
-    const value = validateString(input, opts);
-    if (value) return [value];
-    return undefined;
-  }
-  if (!Array.isArray(input)) {
-    return validationError('must be string or a list of strings', opts);
-  }
-  return validateList(input, opts, (r) => {
-    const role = validateString(r, opts);
-    if (role === undefined) return undefined;
-    return role;
-  });
 }

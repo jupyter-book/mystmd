@@ -24,17 +24,14 @@ export const RESERVED_EXPORT_KEYS = [
 ];
 
 export function validateExportsList(input: any, opts: ValidationOptions): Export[] | undefined {
-  // Allow a single export to be defined as a dict
   if (input === undefined) return undefined;
-  let exports: any[];
-  if (Array.isArray(input)) {
-    exports = input;
-  } else {
-    exports = [input];
-  }
-  const output = validateList(exports, incrementOptions('exports', opts), (exp, ind) => {
-    return validateExport(exp, incrementOptions(`exports.${ind}`, opts));
-  });
+  const output = validateList(
+    input,
+    { coerce: true, ...incrementOptions('exports', opts) },
+    (exp, ind) => {
+      return validateExport(exp, incrementOptions(`exports.${ind}`, opts));
+    },
+  );
   if (!output || output.length === 0) return undefined;
   return output;
 }

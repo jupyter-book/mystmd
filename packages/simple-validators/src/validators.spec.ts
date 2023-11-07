@@ -353,6 +353,9 @@ describe('validateList', () => {
     expect(validateList('abc', opts, (val) => val)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
+  it('coerce validates with string', () => {
+    expect(validateList('abc', { coerce: true, ...opts }, (val) => val)).toEqual(['abc']);
+  });
 });
 
 describe('fillMissingKeys', () => {

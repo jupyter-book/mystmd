@@ -306,13 +306,17 @@ export function validateObjectKeys(
  */
 export function validateList<T>(
   input: any,
-  opts: ValidationOptions,
+  opts: ValidationOptions & { coerce?: boolean },
   itemValidator: (item: any, index: number) => T | undefined,
 ) {
-  if (!Array.isArray(input)) {
+  let value: any[];
+  if (Array.isArray(input)) {
+    value = input;
+  } else if (opts.coerce) {
+    value = [input];
+  } else {
     return validationError('must be an array', opts);
   }
-  const value = input as any[];
   return value
     .map((item, index) => itemValidator(item, index))
     .filter((item): item is T => item !== undefined);

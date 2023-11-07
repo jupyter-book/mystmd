@@ -21,7 +21,7 @@ import {
   validateSiteFrontmatterKeys,
 } from '../site/validators.js';
 import { validateThebe } from '../thebe/validators.js';
-import { validateBibliography, validateBooleanOrObject, validateDoi } from '../utils/validators.js';
+import { validateBooleanOrObject, validateDoi } from '../utils/validators.js';
 import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
 
 export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
@@ -93,9 +93,12 @@ export function validateProjectAndPageFrontmatterKeys(
     });
   }
   if (defined(value.bibliography)) {
-    output.bibliography = validateBibliography(
+    output.bibliography = validateList(
       value.bibliography,
-      incrementOptions('bibliography', opts),
+      { coerce: true, ...incrementOptions('bibliography', opts) },
+      (req, index) => {
+        return validateString(req, incrementOptions(`bibliography.${index}`, opts));
+      },
     );
   }
   if (defined(value.biblio)) {
