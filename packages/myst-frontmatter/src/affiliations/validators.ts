@@ -77,7 +77,10 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
     output.state = validateString(value.state, incrementOptions('state', opts));
   }
   if (defined(value.postal_code)) {
-    output.postal_code = validateString(value.postal_code, incrementOptions('postal_code', opts));
+    output.postal_code = validateString(value.postal_code, {
+      coerceNumber: true,
+      ...incrementOptions('postal_code', opts),
+    });
   }
   if (defined(value.country)) {
     output.country = validateString(value.country, incrementOptions('country', opts));
