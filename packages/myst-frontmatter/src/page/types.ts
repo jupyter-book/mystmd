@@ -6,4 +6,8 @@ export type PageFrontmatter = ProjectAndPageFrontmatter & {
   kernelspec?: KernelSpec;
   jupytext?: Jupytext;
   tags?: string[];
+  parts?: Record<string, string>;
+  // Known parts - these values are duplicated to 'parts' object on validation
+  abstract?: string;
+  data_availability?: string;
 };

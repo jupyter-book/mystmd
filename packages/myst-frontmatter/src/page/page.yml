@@ -101,3 +101,67 @@ cases:
       date: https://example.com
     normalized: {}
     errors: 1
+  - title: parts validates arbitrary keys
+    raw:
+      parts:
+        example_part: |
+          Just an example part!
+    normalized:
+      parts:
+        example_part: |
+          Just an example part!
+  - title: parts validates known keys
+    raw:
+      parts:
+        abstract: |
+          Just an example part!
+    normalized:
+      parts:
+        abstract: |
+          Just an example part!
+  - title: known part moves to parts
+    raw:
+      abstract: |
+        Just an example part!
+    normalized:
+      parts:
+        abstract: |
+          Just an example part!
+  - title: known part combines with parts
+    raw:
+      abstract: |
+        Just an example part!
+      data_availability: Example
+      parts:
+        example_part: |
+          Another example part!
+    normalized:
+      parts:
+        abstract: |
+          Just an example part!
+        data_availability: Example
+        example_part: |
+          Another example part!
+  - title: duplicate part errors
+    raw:
+      abstract: |
+        Just an example part!
+      parts:
+        abstract: |
+          Another example part!
+    normalized:
+      parts:
+        abstract: |
+          Another example part!
+    errors: 1
+  - title: non-string abstract errors
+    raw:
+      abstract: true
+    normalized: {}
+    errors: 1
+  - title: non-string part errors
+    raw:
+      parts:
+        abstract: true
+    normalized: {}
+    errors: 1
