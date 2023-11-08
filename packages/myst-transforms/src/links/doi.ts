@@ -15,14 +15,14 @@ export class DOITransformer implements LinkTransformer {
       // This may not be valid but flag it for the transform
       return true;
     }
-    if (uri && doi.validate(uri, { strict: true })) return true;
+    if (uri && doi.validate(uri)) return true;
     return false;
   }
 
   transform(link: Link, file: VFile): boolean {
     const urlSource = link.urlSource || link.url;
     const doiString = doi.normalize(urlSource);
-    if (!doiString || !doi.validate(doiString)) {
+    if (!doiString) {
       fileError(file, `DOI is not valid: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
