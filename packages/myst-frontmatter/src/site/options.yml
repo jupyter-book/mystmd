@@ -27,3 +27,19 @@ cases:
       options: ''
     normalized: {}
     errors: 1
+  - title: reserved export keys error
+    raw:
+      options:
+        a: b
+        format: ''
+        template: ''
+        output: ''
+        id: ''
+        name: ''
+        renderer: ''
+        article: ''
+        sub_articles: ''
+    normalized:
+      options:
+        a: b
+    errors: 8

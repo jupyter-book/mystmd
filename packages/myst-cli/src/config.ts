@@ -4,7 +4,7 @@ import yaml from 'js-yaml';
 import { writeFileToFolder } from 'myst-cli-utils';
 import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
-import { getSiteTemplateOptions, validateProjectConfig, validateSiteConfig } from 'myst-config';
+import { validateProjectConfig, validateSiteConfig } from 'myst-config';
 import type { ValidationOptions } from 'simple-validators';
 import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
 import { VFile } from 'vfile';
@@ -245,7 +245,7 @@ function validateSiteConfigAndSave(
   siteConfig = resolveSiteConfigPaths(session, path, siteConfig, resolveToAbsolute);
   session.store.dispatch(config.actions.receiveSiteConfig({ path, ...siteConfig }));
 
-  let siteTemplateOptions = getSiteTemplateOptions(rawSiteConfig);
+  let siteTemplateOptions = siteConfig.options ?? {};
   if (siteTemplateOptions.logo) {
     siteTemplateOptions = {
       ...siteTemplateOptions,

@@ -192,7 +192,7 @@ export async function localArticleToTexTemplated(
     outputPath: output,
     frontmatter,
     parts,
-    options: templateOptions,
+    options: { ...frontmatter.options, ...templateOptions },
     bibliography: [DEFAULT_BIB_FILENAME],
     sourceFile: file,
     imports: mergeTemplateImports(collectedImports, result),

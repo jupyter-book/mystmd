@@ -5,6 +5,7 @@ import {
   validateList,
   validateObject,
   validateString,
+  validationError,
 } from 'simple-validators';
 import { validateAffiliation } from '../affiliations/validators.js';
 import { validateContributor } from '../contributors/validators.js';
@@ -14,6 +15,7 @@ import { validateAndStashObject } from '../utils/referenceStash.js';
 import { validateGithubUrl } from '../utils/validators.js';
 import { validateVenue } from '../venues/validators.js';
 import type { SiteFrontmatter } from './types.js';
+import { RESERVED_EXPORT_KEYS } from '../index.js';
 
 export const SITE_FRONTMATTER_KEYS = [
   'title',
@@ -142,7 +144,17 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     );
   }
   if (defined(value.options)) {
-    output.options = validateObject(value.options, incrementOptions('options', opts));
+    const optionsOptions = incrementOptions('options', opts);
+    const options = validateObject(value.options, optionsOptions);
+    if (options) {
+      Object.entries(options).forEach(([key, val]) => {
+        if (RESERVED_EXPORT_KEYS.includes(key)) {
+          validationError(`options cannot include reserved key ${key}`, optionsOptions);
+        } else {
+          (output.options ??= {})[key] = val;
+        }
+      });
+    }
   }
 
   // Contributor resolution should happen last
