@@ -1,0 +1,29 @@
+title: Options
+cases:
+  - title: arbitrary options validate
+    raw:
+      options:
+        a: b
+        c: d
+    normalized:
+      options:
+        a: b
+        c: d
+  - title: non-string options validate
+    raw:
+      options:
+        a: 1
+        b: true
+        c:
+          - x: y
+    normalized:
+      options:
+        a: 1
+        b: true
+        c:
+          - x: y
+  - title: non-object options errors
+    raw:
+      options: ''
+    normalized: {}
+    errors: 1

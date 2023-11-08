@@ -531,4 +531,20 @@ describe('fillPageFrontmatter', () => {
     });
     expect(opts.messages.warnings?.length).toBeFalsy();
   });
+  it('project options fill page', async () => {
+    expect(fillPageFrontmatter({}, { options: { a: 'b' } }, opts)).toEqual({ options: { a: 'b' } });
+  });
+  it('page options persist', async () => {
+    expect(fillPageFrontmatter({ options: { a: 'b' } }, {}, opts)).toEqual({ options: { a: 'b' } });
+  });
+  it('project and page options combine', async () => {
+    expect(fillPageFrontmatter({ options: { a: 'b' } }, { options: { c: 'd' } }, opts)).toEqual({
+      options: { a: 'b', c: 'd' },
+    });
+  });
+  it('page options override project options', async () => {
+    expect(fillPageFrontmatter({ options: { a: 'b' } }, { options: { a: 'z' } }, opts)).toEqual({
+      options: { a: 'b' },
+    });
+  });
 });

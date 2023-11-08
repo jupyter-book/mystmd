@@ -1,5 +1,11 @@
 import type { ValidationOptions } from 'simple-validators';
-import { defined, incrementOptions, validateList, validateString } from 'simple-validators';
+import {
+  defined,
+  incrementOptions,
+  validateList,
+  validateObject,
+  validateString,
+} from 'simple-validators';
 import { validateAffiliation } from '../affiliations/validators.js';
 import { validateContributor } from '../contributors/validators.js';
 import { validateFunding } from '../funding/validators.js';
@@ -25,6 +31,7 @@ export const SITE_FRONTMATTER_KEYS = [
   'keywords',
   'affiliations',
   'funding',
+  'options',
 ];
 
 export const FRONTMATTER_ALIASES = {
@@ -126,15 +133,19 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     });
   }
   if (defined(value.funding)) {
-    const funding = Array.isArray(value.funding) ? value.funding : [value.funding];
     output.funding = validateList(
-      funding,
+      value.funding,
       { coerce: true, ...incrementOptions('funding', opts) },
       (fund, index) => {
         return validateFunding(fund, stash, incrementOptions(`funding.${index}`, opts));
       },
     );
   }
+  if (defined(value.options)) {
+    output.options = validateObject(value.options, incrementOptions('options', opts));
+  }
+
+  // Contributor resolution should happen last
   const stashContribAuthors = stash.contributors?.filter(
     (contrib) => stash.authorIds?.includes(contrib.id),
   );
