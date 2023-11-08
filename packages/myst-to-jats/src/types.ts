@@ -1,4 +1,4 @@
-import type { GenericNode, MessageInfo } from 'myst-common';
+import type { GenericNode, GenericParent, MessageInfo } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Root } from 'myst-spec';
 import type { SourceFileKind } from 'myst-spec-ext';
@@ -30,6 +30,7 @@ export type Options = {
   extractAbstract?: boolean;
   abstractParts?: JatsPart[];
   backSections?: JatsPart[];
+  mystParseFn?: (content: string) => GenericParent;
 };
 
 export type DocumentOptions = Options &

@@ -5,7 +5,7 @@ import { writeJats } from 'myst-to-jats';
 import type { LinkTransformer } from 'myst-transforms';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
-import { combineCitationRenderers, finalizeMdast } from '../../process/index.js';
+import { combineCitationRenderers, finalizeMdast, parseMyst } from '../../process/index.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import { castSession } from '../../session/index.js';
 import type { ISession } from '../../session/types.js';
@@ -73,6 +73,7 @@ export async function runJatsExport(
         title: 'Data Availability',
       },
     ],
+    mystParseFn: (content) => parseMyst(session, content, article),
   });
   logMessagesFromVFile(session, jats);
   session.log.info(toc(`📑 Exported JATS in %s, copying to ${output}`));

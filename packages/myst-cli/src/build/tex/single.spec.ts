@@ -3,7 +3,7 @@ import type { GenericParent } from 'myst-common';
 import { Session } from '../../session';
 import { extractTexPart } from './single';
 
-describe('extractPart', () => {
+describe('extractTexPart', () => {
   it('no tagged part returns undefined', async () => {
     expect(
       extractTexPart(
@@ -13,6 +13,7 @@ describe('extractPart', () => {
         { id: 'test_tag', required: true },
         {},
         { myst: 'v1' },
+        'file.md',
       ),
     ).toEqual(undefined);
   });
@@ -37,14 +38,14 @@ describe('extractPart', () => {
         },
       ],
     };
-    expect(extractTexPart(new Session(), tree, {}, { id: 'test_tag' }, {}, { myst: 'v1' })).toEqual(
-      {
-        value: 'tagged content\n\nalso tagged content',
-        imports: [],
-        commands: {},
-        preamble: '',
-      },
-    );
+    expect(
+      extractTexPart(new Session(), tree, {}, { id: 'test_tag' }, {}, { myst: 'v1' }, 'file.md'),
+    ).toEqual({
+      value: 'tagged content\n\nalso tagged content',
+      imports: [],
+      commands: {},
+      preamble: '',
+    });
     expect(tree).toEqual({
       type: 'root',
       children: [
@@ -75,6 +76,7 @@ describe('extractPart', () => {
         { id: 'test_tag', max_chars: 1000, max_words: 100 },
         {},
         { myst: 'v1' },
+        'file.md',
       ),
     ).toEqual({
       value: 'tagged content',
@@ -95,7 +97,15 @@ describe('extractPart', () => {
       ],
     };
     expect(
-      extractTexPart(new Session(), tree, {}, { id: 'test_tag', max_chars: 5 }, {}, { myst: 'v1' }),
+      extractTexPart(
+        new Session(),
+        tree,
+        {},
+        { id: 'test_tag', max_chars: 5 },
+        {},
+        { myst: 'v1' },
+        'file.md',
+      ),
     ).toEqual({
       value: 'tagged content',
       imports: [],
@@ -115,7 +125,15 @@ describe('extractPart', () => {
       ],
     };
     expect(
-      extractTexPart(new Session(), tree, {}, { id: 'test_tag', max_words: 1 }, {}, { myst: 'v1' }),
+      extractTexPart(
+        new Session(),
+        tree,
+        {},
+        { id: 'test_tag', max_words: 1 },
+        {},
+        { myst: 'v1' },
+        'file.md',
+      ),
     ).toEqual({
       value: 'tagged content',
       imports: [],

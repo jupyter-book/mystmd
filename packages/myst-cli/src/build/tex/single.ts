@@ -15,7 +15,7 @@ import type { LatexResult } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
 import { findCurrentProjectAndLoad } from '../../config.js';
-import { finalizeMdast } from '../../process/index.js';
+import { finalizeMdast, parseMyst } from '../../process/index.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import { castSession } from '../../session/index.js';
 import type { ISession } from '../../session/types.js';
@@ -70,8 +70,11 @@ export function extractTexPart(
   partDefinition: TemplatePartDefinition,
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml,
+  file: string,
 ): LatexResult | undefined {
-  const part = extractPart(mdast, partDefinition.id);
+  const part = extractPart(mdast, frontmatter, partDefinition.id, {
+    mystParseFn: (content) => parseMyst(session, content, file),
+  });
   if (!part) return undefined;
   // Do not build glossaries when extracting parts: references cannot be mapped to definitions
   const partContent = mdastToTex(session, part, references, frontmatter, templateYml, false);
@@ -170,7 +173,7 @@ export async function localArticleToTexTemplated(
   const parts: Record<string, string> = {};
   let collectedImports: TemplateImports = { imports: [], commands: {} };
   partDefinitions.forEach((def) => {
-    const result = extractTexPart(session, mdast, references, def, frontmatter, templateYml);
+    const result = extractTexPart(session, mdast, references, def, frontmatter, templateYml, file);
     if (result != null) {
       collectedImports = mergeTemplateImports(collectedImports, result);
       parts[def.id] = result?.value ?? '';
