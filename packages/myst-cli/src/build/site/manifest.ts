@@ -6,7 +6,7 @@ import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config'
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
 import { filterKeys } from 'simple-validators';
-import { addWarningForFile } from '../../index.js';
+import { addWarningForFile, version } from '../../index.js';
 import { resolvePageExports } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
 import type { RootState } from '../../store/index.js';
@@ -186,7 +186,7 @@ export async function getSiteManifest(
   const manifest: SiteManifest = {
     ...validatedFrontmatter,
     ...resolvedOptions,
-    myst: 'v1',
+    myst: version,
     nav: nav || [],
     actions: actions || [],
     projects: siteProjects,

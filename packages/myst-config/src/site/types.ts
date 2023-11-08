@@ -61,7 +61,7 @@ type ManifestProject = {
 } & ProjectFrontmatter;
 
 export type SiteManifest = SiteFrontmatter & {
-  myst: 'v1';
+  myst: string;
   id?: string;
   projects?: ManifestProject[];
   nav?: SiteNavItem[];
