@@ -42,6 +42,7 @@ export const FRONTMATTER_ALIASES = {
   affiliation: 'affiliations',
   export: 'exports',
   jupyter: 'thebe',
+  part: 'parts',
 };
 
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
