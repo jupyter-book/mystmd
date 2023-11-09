@@ -38,7 +38,7 @@ export function renderImports(
   const block = `${imports}${commands}`;
   if (!block) return '';
   const percents = ''.padEnd(commentLength, '%');
-  return `${percents}\n${block}${percents}`;
+  return `${percents}\n${block}${percents}\n`;
 }
 
 export function mergeTemplateImports(

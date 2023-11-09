@@ -431,7 +431,9 @@ class TexGlossaryAndAcronymSerializer {
       this.renderCommonImports(Object.keys(acronymDefinitions).keys.length > 0),
       this.renderImports('glossary', this.createGlossaryDirectives(glossaryDefinitions)),
       this.renderImports('acronyms', this.createAcronymDirectives(acronymDefinitions)),
-    ].join('\n');
+    ]
+      .filter((item) => !!item)
+      .join('\n');
   }
 
   private renderGlossary(): string {
@@ -441,7 +443,7 @@ class TexGlossaryAndAcronymSerializer {
       TexGlossaryAndAcronymSerializer.COMMENT_LENGTH,
     );
     const percents = ''.padEnd(TexGlossaryAndAcronymSerializer.COMMENT_LENGTH, '%');
-    return `${percents}\n${block}${percents}`;
+    return `${percents}\n${block}${percents}\n`;
   }
 
   private renderCommonImports(withAcronym?: boolean): string {
@@ -449,19 +451,19 @@ class TexGlossaryAndAcronymSerializer {
       ? '\\usepackage[acronym]{glossaries}'
       : '\\usepackage{glossaries}';
     const makeglossaries = '\\makeglossaries';
-    return `${usepackage}\n${makeglossaries}`;
+    return `${usepackage}\n${makeglossaries}\n`;
   }
 
-  private renderImports(commentTitle: string, directives: string[]): string {
+  private renderImports(commentTitle: string, directives: string[]): string | undefined {
     if (!directives) return '';
     const block = writeTexLabelledComment(
       commentTitle,
       directives,
       TexGlossaryAndAcronymSerializer.COMMENT_LENGTH,
     );
-    if (!block) return '';
+    if (!block) return;
     const percents = ''.padEnd(TexGlossaryAndAcronymSerializer.COMMENT_LENGTH, '%');
-    return `${percents}\n${block}${percents}`;
+    return `${percents}\n${block}${percents}\n`;
   }
 
   private createGlossaryDirectives(
@@ -602,20 +604,24 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     transformLegends(node);
 
     const state = new TexSerializer(file, node, opts ?? { handlers });
-    const glossaryState = new TexGlossaryAndAcronymSerializer(state.glossary, state.abbreviations);
+    let tex = (file.result as string).trim();
 
     const preamble: string[] = [];
     if (state.data.hasProofs) {
       preamble.push(new TexProofSerializer().preamble);
     }
-    preamble.push(opts?.printGlossaries ? glossaryState.preamble : '');
-
-    let tex = (file.result as string).trim();
-    tex += opts?.printGlossaries ? '\n' + glossaryState.printedDefinitions : '';
+    if (opts?.printGlossaries) {
+      const glossaryState = new TexGlossaryAndAcronymSerializer(
+        state.glossary,
+        state.abbreviations,
+      );
+      preamble.push(glossaryState.preamble);
+      tex += '\n' + glossaryState.printedDefinitions;
+    }
 
     const result: LatexResult = {
       imports: [...state.data.imports],
-      preamble: preamble.join('\n\n'),
+      preamble: preamble.join('\n'),
       commands: withRecursiveCommands(state),
       value: tex,
     };

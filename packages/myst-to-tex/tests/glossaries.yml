@@ -1,5 +1,5 @@
 title: myst-to-tex glossary-related features
-latexGlossary: |-
+latexGlossary: |
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%%%%%%  acronyms & glossary  %%%%%%%%%%%%%
   \printglossaries
