@@ -1,5 +1,11 @@
 # myst-common
 
+## 1.1.12
+
+### Patch Changes
+
+- 4534f995: Add directive/role nodes to the DirectiveData and RoleData.
+
 ## 1.1.11
 
 ### Patch Changes

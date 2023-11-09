@@ -1,5 +1,12 @@
 # simple-validators
 
+## 1.0.3
+
+### Patch Changes
+
+- f15ec37b: Move list coercing to simple-validators
+- f15ec37b: Remove aliases that do not resolve to valid keys
+
 ## 1.0.2
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # myst-frontmatter
 
+## 1.1.12
+
+### Patch Changes
+
+- f15ec37b: Postal code may be a number
+- f15ec37b: Move list coercing to simple-validators
+- f15ec37b: Share frontmatter aliases, improve validation naming
+- Updated dependencies [f15ec37b]
+- Updated dependencies [f15ec37b]
+  - simple-validators@1.0.3
+
 ## 1.1.11
 
 ### Patch Changes

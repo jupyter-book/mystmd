@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 1.1.10
+
+### Patch Changes
+
+- c41e576e: Improve parsing of difficult DOIs.
+- Updated dependencies [4534f995]
+  - myst-common@1.1.12
+  - myst-spec-ext@1.1.12
+  - myst-to-html@1.0.13
+
 ## 1.1.9
 
 ### Patch Changes

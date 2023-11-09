@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.27
+
+### Patch Changes
+
+- 4534f995: Add table directive
+
 ## 1.1.26
 
 ## 1.1.25

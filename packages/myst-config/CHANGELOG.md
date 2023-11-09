@@ -1,5 +1,17 @@
 # myst-config
 
+## 1.1.12
+
+### Patch Changes
+
+- f15ec37b: Share frontmatter aliases, improve validation naming
+- Updated dependencies [f15ec37b]
+- Updated dependencies [f15ec37b]
+- Updated dependencies [f15ec37b]
+- Updated dependencies [f15ec37b]
+  - myst-frontmatter@1.1.12
+  - simple-validators@1.0.3
+
 ## 1.1.11
 
 ### Patch Changes

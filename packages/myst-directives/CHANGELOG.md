@@ -1,5 +1,16 @@
 # myst-directives
 
+## 1.0.13
+
+### Patch Changes
+
+- 4534f995: Add table directive
+- 4534f995: Add directive/role nodes to the DirectiveData and RoleData.
+- 4534f995: Improve error messages for directive/role options
+- Updated dependencies [4534f995]
+  - myst-common@1.1.12
+  - myst-spec-ext@1.1.12
+
 ## 1.0.12
 
 ## 1.0.11
