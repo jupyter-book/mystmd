@@ -15,7 +15,7 @@ import type { LatexResult } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
 import { findCurrentProjectAndLoad } from '../../config.js';
-import { finalizeMdast, parseMyst } from '../../process/index.js';
+import { finalizeMdast } from '../../process/index.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import { castSession } from '../../session/index.js';
 import type { ISession } from '../../session/types.js';
