@@ -698,30 +698,17 @@ function createText(text: string): Element {
   return { type: 'text', text: escapeForXML(text) };
 }
 
-function renderPart(
-  vfile: VFile,
-  mdast: GenericParent,
-  frontmatter: PageFrontmatter,
-  part: string | string[],
-  opts?: Options,
-) {
-  const partMdast = extractPart(mdast, frontmatter, part, {
+function renderPart(vfile: VFile, mdast: GenericParent, part: string | string[], opts?: Options) {
+  const partMdast = extractPart(mdast, part, {
     removePartData: true,
-    mystParseFn: opts?.mystParseFn,
   });
   if (!partMdast) return undefined;
-  const serializer = new JatsSerializer(vfile, partMdast as Root, {}, opts);
+  const serializer = new JatsSerializer(vfile, partMdast as Root, opts);
   return serializer.render().elements();
 }
 
-function renderAbstract(
-  vfile: VFile,
-  mdast: GenericParent,
-  frontmatter: PageFrontmatter,
-  def: JatsPart,
-  opts?: Options,
-) {
-  const elements = renderPart(vfile, mdast, frontmatter, def.part, opts);
+function renderAbstract(vfile: VFile, mdast: GenericParent, def: JatsPart, opts?: Options) {
+  const elements = renderPart(vfile, mdast, def.part, opts);
   if (!elements) return undefined;
   const abstract: Element = { type: 'element', name: 'abstract', elements };
   if (def.title)
@@ -733,32 +720,15 @@ function renderAbstract(
   return abstract;
 }
 
-function renderAcknowledgments(
-  vfile: VFile,
-  mdast: GenericParent,
-  frontmatter: PageFrontmatter,
-  opts?: Options,
-) {
-  const elements = renderPart(
-    vfile,
-    mdast,
-    frontmatter,
-    ['acknowledgments', 'acknowledgements'],
-    opts,
-  );
+function renderAcknowledgments(vfile: VFile, mdast: GenericParent, opts?: Options) {
+  const elements = renderPart(vfile, mdast, ['acknowledgments', 'acknowledgements'], opts);
   if (!elements) return undefined;
   const acknowledgments: Element = { type: 'element', name: 'ack', elements };
   return acknowledgments;
 }
 
-function renderBackSection(
-  vfile: VFile,
-  mdast: GenericParent,
-  frontmatter: PageFrontmatter,
-  def: JatsPart,
-  opts?: Options,
-) {
-  const elements = renderPart(vfile, mdast, frontmatter, def.part, opts);
+function renderBackSection(vfile: VFile, mdast: GenericParent, def: JatsPart, opts?: Options) {
+  const elements = renderPart(vfile, mdast, def.part, opts);
   if (!elements) return undefined;
   const sec: Element = { type: 'element', name: 'sec', elements };
   if (def.title)
@@ -775,12 +745,11 @@ class JatsSerializer implements IJatsSerializer {
   data: StateData;
   handlers: Record<string, Handler>;
   mdast: Root;
-  frontmatter: PageFrontmatter;
   stack: Element[];
   footnotes: Element[];
   expressions: Element[];
 
-  constructor(file: VFile, mdast: Root, frontmatter?: PageFrontmatter, opts?: Options) {
+  constructor(file: VFile, mdast: Root, opts?: Options) {
     this.file = file;
     this.data = {
       isNotebookArticleRep: opts?.isNotebookArticleRep,
@@ -791,22 +760,16 @@ class JatsSerializer implements IJatsSerializer {
     this.expressions = [];
     this.handlers = opts?.handlers ?? handlers;
     this.mdast = copyNode(mdast);
-    this.frontmatter = frontmatter ?? {};
     if (opts?.extractAbstract) {
       const abstractParts = opts.abstractParts ?? [{ part: 'abstract' }];
       this.data.abstracts = abstractParts
-        .map((def) => renderAbstract(this.file, this.mdast, this.frontmatter, def, opts))
+        .map((def) => renderAbstract(this.file, this.mdast, def, opts))
         .filter((e) => !!e) as Element[];
     }
-    this.data.acknowledgments = renderAcknowledgments(
-      this.file,
-      this.mdast,
-      this.frontmatter,
-      opts,
-    );
+    this.data.acknowledgments = renderAcknowledgments(this.file, this.mdast, opts);
     const backSections = opts?.backSections ?? [];
     this.data.backSections = backSections
-      .map((def) => renderBackSection(this.file, this.mdast, this.frontmatter, def, opts))
+      .map((def) => renderBackSection(this.file, this.mdast, def, opts))
       .filter((e) => !!e) as Element[];
     basicTransformations(this.mdast as any, opts ?? {});
   }
@@ -939,16 +902,11 @@ export class JatsDocument {
     if (this.content.slug) {
       attributes.id = `${this.content.slug}${isNotebookArticleRep ? '-article' : ''}`;
     }
-    const articleState = new JatsSerializer(
-      this.file,
-      this.content.mdast,
-      this.content.frontmatter,
-      {
-        ...this.options,
-        isNotebookArticleRep,
-        extractAbstract: true,
-      },
-    );
+    const articleState = new JatsSerializer(this.file, this.content.mdast, {
+      ...this.options,
+      isNotebookArticleRep,
+      extractAbstract: true,
+    });
     const inventory: IdInventory = {};
     referenceTargetTransform(articleState.mdast as any, inventory, this.content.citations);
     const subArticles = this.options.subArticles ?? [];
@@ -1032,7 +990,7 @@ export class JatsDocument {
   }
 
   subArticleState(content: ArticleContent, notebookRep: boolean): IJatsSerializer {
-    return new JatsSerializer(this.file, content.mdast, content.frontmatter, {
+    return new JatsSerializer(this.file, content.mdast, {
       ...this.options,
       isNotebookArticleRep: false,
       isSubArticle: true,
@@ -1062,12 +1020,7 @@ export class JatsDocument {
 
   body(state?: JatsSerializer) {
     if (!state) {
-      state = new JatsSerializer(
-        this.file,
-        this.content.mdast,
-        this.content.frontmatter,
-        this.options,
-      );
+      state = new JatsSerializer(this.file, this.content.mdast, this.options);
       state.render();
     }
     return { type: 'element', name: 'body', elements: state.elements() } as Element;

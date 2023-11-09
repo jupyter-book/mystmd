@@ -3,7 +3,6 @@ import type { GenericParent } from './types.js';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import { copyNode } from './utils.js';
-import type { PageFrontmatter } from 'myst-frontmatter';
 
 /**
  * Selects the block node(s) based on part (string) or tags (string[]).
@@ -28,58 +27,19 @@ export function selectBlockParts(tree: GenericParent, part: string | string[]): 
   return blockParts as Block[];
 }
 
-function rawContentToParagraph(content: string): GenericParent {
-  return {
-    type: 'root',
-    children: [
-      {
-        type: 'paragraph',
-        children: [
-          {
-            type: 'text',
-            value: content,
-          },
-        ],
-      },
-    ],
-  };
-}
-
-export function selectFrontmatterParts(
-  frontmatter: PageFrontmatter,
-  part: string | string[],
-  mystParseFn = rawContentToParagraph,
-): Block[] {
-  const parts = typeof part === 'string' ? [part] : part;
-  return parts
-    .map((p) => frontmatter.parts?.[p])
-    .filter((content): content is string => !!content)
-    .map((content) => {
-      const parent = mystParseFn(content);
-      parent.type = 'block';
-      return parent as Block;
-    });
-}
-
 /**
  * Returns a copy of the block parts and removes them from the tree.
  */
 export function extractPart(
   tree: GenericParent,
-  frontmatter: PageFrontmatter,
   part: string | string[],
   opts?: {
     /** Helpful for when we are doing recursions, we don't want to extract the part again. */
     removePartData?: boolean;
-    /** Function for parsing frontmatter myst content */
-    mystParseFn?: (content: string) => GenericParent;
   },
 ): GenericParent | undefined {
   const partStrings = typeof part === 'string' ? [part] : part;
-  const blockParts = [
-    ...selectFrontmatterParts(frontmatter, part, opts?.mystParseFn),
-    ...selectBlockParts(tree, part),
-  ];
+  const blockParts = selectBlockParts(tree, part);
   if (blockParts.length === 0) return undefined;
   const children = copyNode(blockParts).map((block) => {
     // Ensure the block always has the `part` defined, as it might be in the tags

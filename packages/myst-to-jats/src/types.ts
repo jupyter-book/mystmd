@@ -30,7 +30,6 @@ export type Options = {
   extractAbstract?: boolean;
   abstractParts?: JatsPart[];
   backSections?: JatsPart[];
-  mystParseFn?: (content: string) => GenericParent;
 };
 
 export type DocumentOptions = Options &

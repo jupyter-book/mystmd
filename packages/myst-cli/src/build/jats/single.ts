@@ -73,7 +73,6 @@ export async function runJatsExport(
         title: 'Data Availability',
       },
     ],
-    mystParseFn: (content) => parseMyst(session, content, article),
     // if we want to add templating here, we have access to { ...processedArticle.frontmatter.options, ...exportOptions }
   });
   logMessagesFromVFile(session, jats);

@@ -13,7 +13,6 @@ describe('extractTexPart', () => {
         { id: 'test_tag', required: true },
         {},
         { myst: 'v1' },
-        'file.md',
       ),
     ).toEqual(undefined);
   });
@@ -38,14 +37,14 @@ describe('extractTexPart', () => {
         },
       ],
     };
-    expect(
-      extractTexPart(new Session(), tree, {}, { id: 'test_tag' }, {}, { myst: 'v1' }, 'file.md'),
-    ).toEqual({
-      value: 'tagged content\n\nalso tagged content',
-      imports: [],
-      commands: {},
-      preamble: '',
-    });
+    expect(extractTexPart(new Session(), tree, {}, { id: 'test_tag' }, {}, { myst: 'v1' })).toEqual(
+      {
+        value: 'tagged content\n\nalso tagged content',
+        imports: [],
+        commands: {},
+        preamble: '',
+      },
+    );
     expect(tree).toEqual({
       type: 'root',
       children: [
@@ -76,7 +75,6 @@ describe('extractTexPart', () => {
         { id: 'test_tag', max_chars: 1000, max_words: 100 },
         {},
         { myst: 'v1' },
-        'file.md',
       ),
     ).toEqual({
       value: 'tagged content',
@@ -97,15 +95,7 @@ describe('extractTexPart', () => {
       ],
     };
     expect(
-      extractTexPart(
-        new Session(),
-        tree,
-        {},
-        { id: 'test_tag', max_chars: 5 },
-        {},
-        { myst: 'v1' },
-        'file.md',
-      ),
+      extractTexPart(new Session(), tree, {}, { id: 'test_tag', max_chars: 5 }, {}, { myst: 'v1' }),
     ).toEqual({
       value: 'tagged content',
       imports: [],
@@ -125,15 +115,7 @@ describe('extractTexPart', () => {
       ],
     };
     expect(
-      extractTexPart(
-        new Session(),
-        tree,
-        {},
-        { id: 'test_tag', max_words: 1 },
-        {},
-        { myst: 'v1' },
-        'file.md',
-      ),
+      extractTexPart(new Session(), tree, {}, { id: 'test_tag', max_words: 1 }, {}, { myst: 'v1' }),
     ).toEqual({
       value: 'tagged content',
       imports: [],
