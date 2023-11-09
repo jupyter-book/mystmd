@@ -139,7 +139,7 @@ export function loadConfig(session: ISession, path: string) {
   return conf;
 }
 
-function resolveToAbsolute(session: ISession, basePath: string, relativePath: string) {
+export function resolveToAbsolute(session: ISession, basePath: string, relativePath: string) {
   let message: string;
   try {
     const absPath = resolve(join(basePath, relativePath));
@@ -244,17 +244,6 @@ function validateSiteConfigAndSave(
   }
   siteConfig = resolveSiteConfigPaths(session, path, siteConfig, resolveToAbsolute);
   session.store.dispatch(config.actions.receiveSiteConfig({ path, ...siteConfig }));
-
-  let siteTemplateOptions = siteConfig.options ?? {};
-  if (siteTemplateOptions.logo) {
-    siteTemplateOptions = {
-      ...siteTemplateOptions,
-      logo: resolveToAbsolute(session, path, siteTemplateOptions.logo),
-    };
-  }
-  session.store.dispatch(
-    config.actions.receiveSiteTemplateOptions({ path, ...siteTemplateOptions }),
-  );
 }
 
 function validateProjectConfigAndSave(
