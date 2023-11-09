@@ -1,6 +1,6 @@
 {
   "name": "myst-spec-ext",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "Extensions for myst-spec that are used in mystmd",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-spec-ext",

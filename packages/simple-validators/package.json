@@ -1,6 +1,6 @@
 {
   "name": "simple-validators",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "description": "Schema validation functions and error reporting framework",
   "author": "Franklin Koch <franklin@curvenote.com>",

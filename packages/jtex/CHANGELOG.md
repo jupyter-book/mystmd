@@ -1,5 +1,19 @@
 # jtex
 
+## 1.0.9
+
+### Patch Changes
+
+- 01a0625: Tidy newlines in tex output
+- Updated dependencies [f15ec37b]
+- Updated dependencies [4534f995]
+- Updated dependencies [f15ec37b]
+- Updated dependencies [f15ec37b]
+- Updated dependencies [f15ec37b]
+  - myst-frontmatter@1.1.12
+  - myst-common@1.1.12
+  - simple-validators@1.0.3
+
 ## 1.0.8
 
 ### Patch Changes

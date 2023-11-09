@@ -1,5 +1,33 @@
 # myst-cli
 
+## 1.1.27
+
+### Patch Changes
+
+- 4534f995: Add table directive
+- e25f20d9: Enable smartquotes
+- c41e576e: Improve parsing of difficult DOIs.
+- 32bec0dd: Turn off glossaries for raw tex output
+- d5dcd0ac: Write thumbnails/banner back to redux store
+- Updated dependencies [f15ec37b]
+- Updated dependencies [01a0625]
+- Updated dependencies [e25f20d9]
+- Updated dependencies [4534f995]
+- Updated dependencies [c41e576e]
+- Updated dependencies [f15ec37b]
+- Updated dependencies [f15ec37b]
+- Updated dependencies [f15ec37b]
+  - myst-frontmatter@1.1.12
+  - myst-to-tex@1.0.12
+  - jtex@1.0.9
+  - myst-parser@1.0.13
+  - myst-common@1.1.12
+  - myst-transforms@1.1.10
+  - simple-validators@1.0.3
+  - myst-config@1.1.12
+  - myst-spec-ext@1.1.12
+  - tex-to-myst@1.0.12
+
 ## 1.1.26
 
 ### Patch Changes

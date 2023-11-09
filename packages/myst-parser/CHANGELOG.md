@@ -1,5 +1,18 @@
 # myst-parser
 
+## 1.0.13
+
+### Patch Changes
+
+- e25f20d9: Enable smartquotes
+- 4534f995: Add directive/role nodes to the DirectiveData and RoleData.
+- Updated dependencies [4534f995]
+- Updated dependencies [4534f995]
+- Updated dependencies [4534f995]
+  - myst-directives@1.0.13
+  - myst-common@1.1.12
+  - myst-roles@1.0.13
+
 ## 1.0.12
 
 ### Patch Changes

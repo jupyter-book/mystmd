@@ -1,5 +1,17 @@
 # tex-to-myst
 
+## 1.0.12
+
+### Patch Changes
+
+- Updated dependencies [f15ec37b]
+- Updated dependencies [4534f995]
+- Updated dependencies [f15ec37b]
+- Updated dependencies [f15ec37b]
+  - myst-frontmatter@1.1.12
+  - myst-common@1.1.12
+  - myst-spec-ext@1.1.12
+
 ## 1.0.11
 
 ## 1.0.10
