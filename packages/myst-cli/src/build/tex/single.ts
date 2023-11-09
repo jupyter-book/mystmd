@@ -98,7 +98,7 @@ export async function localArticleToTexRaw(
     simplifyFigures: true,
   });
   const toc = tic();
-  const result = mdastToTex(session, mdast, references, frontmatter, null, true);
+  const result = mdastToTex(session, mdast, references, frontmatter, null, false);
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
   // TODO: add imports and macros?
   writeFileToFolder(output, result.value);
