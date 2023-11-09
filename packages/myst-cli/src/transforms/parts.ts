@@ -12,11 +12,12 @@ export function frontmatterPartsTransform(
 ) {
   if (!frontmatter.parts) return;
   const partBlocks = Object.entries(frontmatter.parts).map(([part, content]) => {
-    const data = { part, hidden: true };
+    const data = { part };
     const root = parseMyst(session, content, file);
     return {
       type: 'block',
       data,
+      visibility: 'remove',
       children: root.children,
     } as Block;
   });

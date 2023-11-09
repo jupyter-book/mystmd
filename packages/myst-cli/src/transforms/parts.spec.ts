@@ -48,14 +48,16 @@ describe('frontmatterPartsTransform', () => {
       children: [
         {
           type: 'block',
-          data: { part: 'abstract', hidden: true },
+          data: { part: 'abstract' },
+          visibility: 'remove',
           children: [
             { type: 'paragraph', children: [{ type: 'text', value: 'This is my abstract' }] },
           ],
         },
         {
           type: 'block',
-          data: { part: 'statement', hidden: true },
+          data: { part: 'statement' },
+          visibility: 'remove',
           children: [
             { type: 'paragraph', children: [{ type: 'text', value: 'and this is my statement' }] },
           ],
