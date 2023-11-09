@@ -38,55 +38,103 @@ To follow along with this quickstart tutorial on your own computer, it is helpfu
 
 `mystmd` is a command line interface (CLI) that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites. To get started, install `mystmd`.
 
-:::{tip} Prerequisites
+:::{tip} Prerequisites - Install Node
 :class: dropdown
 
 You should have these programs installed:
 
-- [Node.js](https://nodejs.org) version **>=16.0.0**
+- [Node.js](https://nodejs.org) version **>=18.0.0**
 - [Node Package Manager (npm)](https://docs.npmjs.com/about-npm) version **>=7.0.0**
 - A code and notebook editor ([VSCode](https://code.visualstudio.com/) is great, and we recommend [Jupyter Lab](https://jupyter.org/install) for notebooks)
 
-If the node ecosystem is new to you[^conda], see our getting started guides for [installing node](./installing-prerequisites.md).
-
-[^conda]: If you have experience in Conda installations, we would _love_ your help to get the MyST install process into a form that most Pythonistas are familiar with!! See [GitHub issue](https://github.com/executablebooks/mystmd/issues/139) 🙏 🐍 🚀
-
+If the node ecosystem is new to you, see our getting started guides for [installing node](./installing-prerequisites.md).
 :::
 
-Check your `node` installation **greater than version 16** (see [Installing NodeJS](./installing-prerequisites.md)):
+🛠 Install the MyST command line tools:
+
+(installing-myst-tabs)=
+::::{tab-set}
+:::{tab-item} PyPI
+
+🛠 Install `node` (<https://nodejs.org>), see [Installing NodeJS](./installing-prerequisites.md):
 
 ```bash
 node -v
->> v16.18.1
+>> v20.4.0
 ```
 
-🛠 Install the MyST command line tools:
+🛠 Then install `mystmd`:
+
+```bash
+pip install mystmd
+```
+
+:::
+:::{tab-item} Conda / Mamba
+
+🛠 Install `node` (<https://nodejs.org>), or through conda (see [Installing NodeJS](./installing-prerequisites.md)):
+
+```bash
+# Visit https://nodejs.org or:
+conda install -c conda-forge 'nodejs>=20,<21'
+```
+
+Then install `mystmd`:
+
+```bash
+conda install mystmd -c conda-forge
+```
+
+:::
+:::{tab-item} NPM
+
+🛠 Install `node` (<https://nodejs.org>), see [Installing NodeJS](./installing-prerequisites.md)
+
+```bash
+node -v
+>> v20.4.0
+```
+
+🛠 Install `mystmd` using npm, yarn or pnpm:
 
 ```bash
 npm install -g mystmd
 ```
 
+:::
+::::
+
 If you have any problems, see [installing MyST](./installing.md) and or [open an issue here](https://github.com/executablebooks/mystmd/issues/new?assignees=&labels=bug&template=bug_report.yml). 🐛
 
-:::{danger} Note: `myst-cli` is deprecated
-:class: dropdown
-In July 2023, we renamed the package to `mystmd` from `myst-cli`. Installing `myst-cli` will no longer create a `myst` command from your terminal. You can uninstall `myst-cli` using:
-
-```bash
-npm uninstall -g myst-cli
-```
-
-:::
-
-:::{note}
+:::::{note}
 :class: dropdown
 **Updating MyST**
 
 There are new releases of the MyST Markdown CLI every few weeks, to update to the latest version of `myst`, use:
 
-```shell
+::::{tab-set}
+:::{tab-item} PyPI
+
+```bash
+pip install -U mystmd
+```
+
+:::
+:::{tab-item} Conda / Mamba
+
+```bash
+conda update mystmd -c conda-forge
+```
+
+:::
+:::{tab-item} NPM
+
+```bash
 npm update -g mystmd
 ```
+
+:::
+::::
 
 To get the latest templates, clean your templates directory with:
 
@@ -95,7 +143,8 @@ myst clean --templates
 ```
 
 This will remove the `_build/templates` directory, which will be re-downloaded with the latest templates when you run `myst start` or `myst build`.
-:::
+
+:::::
 
 ## Download example content
 

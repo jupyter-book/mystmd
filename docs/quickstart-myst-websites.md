@@ -21,11 +21,8 @@ The tutorial will be brief on explaining MyST syntax, we provide a [MyST Markdow
 
 ## 🛠 Install the MyST Markdown CLI
 
-🛠 Install the MyST command line tools, with `node` **greater than version v16**:
-
-```bash
-npm install -g mystmd
-```
+:::{embed} #installing-myst-tabs
+:::
 
 :::{card} Need more help? See MyST Installation Quickstart
 :link: ./quickstart.md
