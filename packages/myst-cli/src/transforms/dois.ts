@@ -13,7 +13,7 @@ import type { SingleCitationRenderer } from './types.js';
 import type { VFile } from 'vfile';
 
 async function getDoiOrgBibtex(log: Logger, doiString: string): Promise<string | null> {
-  if (!doi.validate(doi.normalize(doiString))) return null;
+  if (!doi.validate(doiString)) return null;
   const toc = tic();
   log.debug('Fetching DOI information from doi.org');
   const url = `https://doi.org/${doi.normalize(doiString)}`;
@@ -38,7 +38,7 @@ async function getCitation(
   doiString: string,
   node: GenericNode,
 ): Promise<SingleCitationRenderer | null> {
-  if (!doi.validate(doi.normalize(doiString))) return null;
+  if (!doi.validate(doiString)) return null;
   const bibtex = await getDoiOrgBibtex(log, doiString);
   if (!bibtex) {
     fileWarn(vfile, `Could not find DOI from link: ${doiString} as ${doi.normalize(doiString)}`, {
@@ -69,12 +69,12 @@ export async function transformLinkedDOIs(
   const citeDois: Cite[] = [];
   selectAll('link', mdast).forEach((node: GenericNode) => {
     const { url } = node as Link;
-    if (!doi.validate(doi.normalize(url))) return;
+    if (!doi.validate(url)) return;
     linkedDois.push(node as Link);
   });
   selectAll('cite', mdast).forEach((node: GenericNode) => {
     const { label } = node as Cite;
-    if (!doi.validate(doi.normalize(label))) return;
+    if (!doi.validate(label)) return;
     citeDois.push(node as Cite);
   });
   if (linkedDois.length === 0 && citeDois.length === 0) return renderer;
@@ -94,7 +94,7 @@ export async function transformLinkedDOIs(
       citeNode.type = 'cite';
       citeNode.kind = 'narrative';
       citeNode.label = cite.id;
-      if (doi.validate(doi.normalize(toText(citeNode.children)))) {
+      if (doi.validate(toText(citeNode.children))) {
         // If the link text is the DOI, update with a citation in a following pass
         citeNode.children = [];
       }

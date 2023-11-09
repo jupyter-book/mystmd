@@ -22,6 +22,22 @@ which will insert the citation text in the correct format (e.g. adding an italic
 
 Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link. If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
 
+:::{note} Dealing with complex DOIs
+:class: dropdown
+If your DOI does not follow modern standards (e.g. strange characters or contains multiple `/`s), you must include the `https://doi.org` in the URL and may have to URL encode the DOI string to be recognized as a URL in markdown.
+
+For the DOI, `10.1175/1520-0493(1972)100<0081:OTAOSH>2.3.CO;2` there are `<`, `;` and `()` characters that do not work well with markdown URL parsing. There are two options:
+
+1. use the service https://shortdoi.org, which will give you a unique, persistent smaller DOI that will parse correctly, in this case `https://doi.org/cr3qwn` (which becomes https://doi.org/cr3qwn); or
+2. URL encode this to: \
+   `https://doi.org/10.1175%2F1520-0493%281972%29100%3C0081%3AOTAOSH%3E2.3.CO%3B2`, which also becomes https://doi.org/10.1175%2F1520-0493%281972%29100%3C0081%3AOTAOSH%3E2.3.CO%3B2[^brackets].
+
+[^brackets]: In this case we can also optionally encode the brackets as `%28` and `%29`. There aren't too many of these in the wild, so hopefully it isn't too bad!!
+
+For DOIs with multiple slashes in the identifier you also have to use the full https://doi.org URL, for example, `https://doi.org/10.3847/1538-4365/ac5f56` becomes <https://doi.org/10.3847/1538-4365/ac5f56>.
+
+:::
+
 ## Including BibTeX
 
 A standard way of including references for $\LaTeX$ is using <wiki:BibTeX>, you can include a `*.bib` file or files in the same directory as your content directory for the project. These will provide the reference keys for that project.
