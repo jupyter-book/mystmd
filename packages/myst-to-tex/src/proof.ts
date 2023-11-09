@@ -105,6 +105,6 @@ export class TexProofSerializer {
       TexProofSerializer.COMMENT_LENGTH,
     );
     const percents = ''.padEnd(TexProofSerializer.COMMENT_LENGTH, '%');
-    return `${percents}\n${block}${percents}`;
+    return `${percents}\n${block}${percents}\n`;
   }
 }
