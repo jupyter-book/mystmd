@@ -6,7 +6,7 @@ import type { ValidationOptions } from 'simple-validators';
 import { downloadTemplate, resolveInputs, TEMPLATE_FILENAME, TEMPLATE_YML } from './download.js';
 import { extendFrontmatter } from './frontmatter.js';
 import type { TemplateYml, ISession } from './types.js';
-import { errorLogger, warningLogger } from './utils.js';
+import { debugLogger, errorLogger, warningLogger } from './utils.js';
 import type { FileOptions, FileValidationOptions } from './validators.js';
 import {
   validateTemplateDoc,
@@ -22,6 +22,7 @@ class MystTemplate {
   validatedTemplateYml: TemplateYml | undefined;
   errorLogFn: (message: string) => void;
   warningLogFn: (message: string) => void;
+  debugLogFn: (message: string) => void;
 
   /**
    * MystTemplate class for template download / validation / render preparation
@@ -39,6 +40,7 @@ class MystTemplate {
       buildDir?: string;
       errorLogFn?: (message: string) => void;
       warningLogFn?: (message: string) => void;
+      debugLogFn?: (message: string) => void;
     },
   ) {
     this.session = session;
@@ -47,6 +49,7 @@ class MystTemplate {
     this.templateUrl = templateUrl;
     this.errorLogFn = opts?.errorLogFn ?? errorLogger(this.session);
     this.warningLogFn = opts?.warningLogFn ?? warningLogger(this.session);
+    this.debugLogFn = opts?.debugLogFn ?? debugLogger(this.session);
   }
 
   getTemplateYmlPath() {
@@ -91,7 +94,8 @@ class MystTemplate {
       property: 'options',
       messages: {},
       errorLogFn: this.errorLogFn,
-      warningLogFn: this.warningLogFn,
+      // Warnings about extra options are just debug messages
+      warningLogFn: this.debugLogFn,
       ...fileOpts,
     };
     const validatedOptions = validateTemplateOptions(
