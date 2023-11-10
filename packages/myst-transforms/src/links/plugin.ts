@@ -19,6 +19,7 @@ function formatLinkText(link: Link) {
   const url = link.children[0].value;
   // Add an exception for wiki transforms links.
   if (url.length < 20 || url.match(/\s/) || url.startsWith('wiki:')) return;
+  if (url.includes('​')) return;
   // Split the URL into an array to distinguish double slashes from single slashes
   const doubleSlash = url.split('//');
   // Format the strings on either side of double slashes separately
