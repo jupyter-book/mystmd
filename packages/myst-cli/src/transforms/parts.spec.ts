@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { visit } from 'unist-util-visit';
-import { GenericParent } from 'myst-common';
+import type { GenericParent } from 'myst-common';
 import { frontmatterPartsTransform } from './parts';
 import { Session } from '../session/session';
 
@@ -40,7 +40,10 @@ describe('frontmatterPartsTransform', () => {
     const mdast = testMdast();
     const frontmatter = {
       title: 'Abstract and Statement part',
-      parts: { abstract: 'This is my abstract', statement: 'and this is my statement' },
+      parts: {
+        abstract: ['This is my abstract'],
+        statement: ['and this is my statement', 'and a second statement'],
+      },
     };
     frontmatterPartsTransform(new Session(), 'test.md', mdast, frontmatter);
     expect(stripPositions(mdast)).toEqual({
@@ -60,6 +63,14 @@ describe('frontmatterPartsTransform', () => {
           visibility: 'remove',
           children: [
             { type: 'paragraph', children: [{ type: 'text', value: 'and this is my statement' }] },
+          ],
+        },
+        {
+          type: 'block',
+          data: { part: 'statement' },
+          visibility: 'remove',
+          children: [
+            { type: 'paragraph', children: [{ type: 'text', value: 'and a second statement' }] },
           ],
         },
         {

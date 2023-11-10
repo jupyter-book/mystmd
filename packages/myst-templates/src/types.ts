@@ -49,6 +49,9 @@ export type TemplatePartDefinition = {
   description?: string;
   required?: boolean;
   plain?: boolean;
+  /** Expect parts as a list of entries instead of a single concatenated entry */
+  as_list?: boolean;
+  /** If as_list is true, max_chars/max_words will apply to each entry of the list */
   max_chars?: number;
   max_words?: number;
   condition?: {

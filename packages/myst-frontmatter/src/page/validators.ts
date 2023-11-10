@@ -91,9 +91,14 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
   if (parts) {
     const partsEntries = Object.entries(parts)
       .map(([k, v]) => {
-        return [k, validateString(v, incrementOptions(k, partsOptions))];
+        return [
+          k,
+          validateList(v, { coerce: true, ...incrementOptions(k, partsOptions) }, (item, index) => {
+            return validateString(item, incrementOptions(`${k}.${index}`, partsOptions));
+          }),
+        ];
       })
-      .filter((entry): entry is [string, string] => entry[1] != null);
+      .filter((entry): entry is [string, string[]] => !!entry[1]?.length);
     if (partsEntries.length > 0) {
       output.parts = Object.fromEntries(partsEntries);
     }

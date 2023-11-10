@@ -9,6 +9,7 @@ import {
   validateTemplatePartDefinition,
   validateTemplateYml,
   validateTemplateDoc,
+  validateTemplateParts,
 } from './validators';
 
 let opts: ValidationOptions;
@@ -646,7 +647,14 @@ describe('validateTemplatePartDefinition', () => {
   it('valid part definiton passes', async () => {
     expect(
       validateTemplatePartDefinition(
-        { id: 'key', description: 'desc', required: true, plain: false, extra: 'ignored' },
+        {
+          id: 'key',
+          description: 'desc',
+          required: true,
+          plain: false,
+          as_list: true,
+          extra: 'ignored',
+        },
         opts,
       ),
     ).toEqual({
@@ -654,7 +662,147 @@ describe('validateTemplatePartDefinition', () => {
       description: 'desc',
       required: true,
       plain: false,
+      as_list: true,
     });
+  });
+});
+
+describe('validateTemplateParts', () => {
+  it('missing required part errors', async () => {
+    expect(validateTemplateParts({}, [{ id: 'key', required: true }], {}, opts)).toEqual({});
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('missing optional part passes', async () => {
+    expect(validateTemplateParts({}, [{ id: 'key' }], {}, opts)).toEqual({});
+    expect(opts.messages.errors?.length).toBeFalsy();
+  });
+  it('required part with invalid type errors', async () => {
+    expect(validateTemplateParts({ key: true }, [{ id: 'key', required: true }], {}, opts)).toEqual(
+      {},
+    );
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('required part as string passes', async () => {
+    expect(
+      validateTemplateParts({ key: 'part value' }, [{ id: 'key', required: true }], {}, opts),
+    ).toEqual({ key: 'part value' });
+    expect(opts.messages.errors?.length).toBeFalsy();
+  });
+  it('required part as list passes with part as_list', async () => {
+    expect(
+      validateTemplateParts(
+        { key: ['part value'] },
+        [{ id: 'key', required: true, as_list: true }],
+        {},
+        opts,
+      ),
+    ).toEqual({ key: ['part value'] });
+    expect(opts.messages.errors?.length).toBeFalsy();
+  });
+  it('required part as string errors with part as_list', async () => {
+    expect(
+      validateTemplateParts(
+        { key: 'part value' },
+        [{ id: 'key', required: true, as_list: true }],
+        {},
+        opts,
+      ),
+    ).toEqual({});
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('required part as list errors without part as_list', async () => {
+    expect(
+      validateTemplateParts({ key: ['part value'] }, [{ id: 'key', required: true }], {}, opts),
+    ).toEqual({});
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('max_chars applies to string', async () => {
+    expect(
+      validateTemplateParts(
+        { key: 'abc' },
+        [{ id: 'key', required: true, max_chars: 3 }],
+        {},
+        opts,
+      ),
+    ).toEqual({ key: 'abc' });
+    expect(opts.messages.errors?.length).toBeFalsy();
+  });
+  it('max_chars errors on long string', async () => {
+    expect(
+      validateTemplateParts(
+        { key: 'abcdef' },
+        [{ id: 'key', required: true, max_chars: 3 }],
+        {},
+        opts,
+      ),
+    ).toEqual({ key: 'abcdef' });
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('max_chars applies to each item in list', async () => {
+    expect(
+      validateTemplateParts(
+        { key: ['abc', 'def'] },
+        [{ id: 'key', required: true, as_list: true, max_chars: 3 }],
+        {},
+        opts,
+      ),
+    ).toEqual({ key: ['abc', 'def'] });
+    expect(opts.messages.errors?.length).toBeFalsy();
+  });
+  it('max_chars errors if item is long', async () => {
+    expect(
+      validateTemplateParts(
+        { key: ['abcdef'] },
+        [{ id: 'key', required: true, as_list: true, max_chars: 3 }],
+        {},
+        opts,
+      ),
+    ).toEqual({ key: ['abcdef'] });
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('max_words applies to string', async () => {
+    expect(
+      validateTemplateParts(
+        { key: 'abc' },
+        [{ id: 'key', required: true, max_words: 1 }],
+        {},
+        opts,
+      ),
+    ).toEqual({ key: 'abc' });
+    expect(opts.messages.errors?.length).toBeFalsy();
+  });
+  it('max_words errors on long string', async () => {
+    expect(
+      validateTemplateParts(
+        { key: 'abc def' },
+        [{ id: 'key', required: true, max_words: 1 }],
+        {},
+        opts,
+      ),
+    ).toEqual({ key: 'abc def' });
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('max_words applies to each item in list', async () => {
+    expect(
+      validateTemplateParts(
+        { key: ['abc', 'def'] },
+        [{ id: 'key', required: true, as_list: true, max_words: 1 }],
+        {},
+        opts,
+      ),
+    ).toEqual({ key: ['abc', 'def'] });
+    expect(opts.messages.errors?.length).toBeFalsy();
+  });
+  it('max_words errors if item is long', async () => {
+    expect(
+      validateTemplateParts(
+        { key: ['abc def'] },
+        [{ id: 'key', required: true, as_list: true, max_words: 1 }],
+        {},
+        opts,
+      ),
+    ).toEqual({ key: ['abc def'] });
+    expect(opts.messages.errors?.length).toEqual(1);
   });
 });
 

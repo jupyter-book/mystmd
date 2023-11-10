@@ -9,6 +9,6 @@ export type TexRenderer = {
   CONTENT: string;
   doc: RendererDoc;
   options: Record<string, any>;
-  parts: Record<string, string>;
+  parts: Record<string, string | string[]>;
   IMPORTS?: string;
 };
