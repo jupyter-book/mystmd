@@ -183,7 +183,8 @@ project:
 site:
   template: book-theme
   # title:
-  # logo:
+  # options:
+  #   logo: my_logo.png
   nav: []
   actions:
     - title: Learn More
