@@ -70,7 +70,7 @@ export function processPageFrontmatter(
 
   const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter, validationOpts);
 
-  if (siteFrontmatter?.design?.hide_authors) {
+  if (siteFrontmatter?.options?.hide_authors || siteFrontmatter?.options?.design?.hide_authors) {
     delete frontmatter.authors;
   }
   return frontmatter;
