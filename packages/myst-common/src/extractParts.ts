@@ -1,4 +1,4 @@
-import type { Block } from 'myst-spec';
+import type { Block } from 'myst-spec-ext';
 import type { GenericParent } from './types.js';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
@@ -36,6 +36,8 @@ export function extractPart(
   opts?: {
     /** Helpful for when we are doing recursions, we don't want to extract the part again. */
     removePartData?: boolean;
+    /** Ensure that blocks are by default turned to visible */
+    keepVisibility?: boolean;
   },
 ): GenericParent | undefined {
   const partStrings = typeof part === 'string' ? [part] : part;
@@ -56,6 +58,8 @@ export function extractPart(
       }
     }
     if (opts?.removePartData) delete block.data.part;
+    // The default is to remove the visibility on the parts
+    if (!opts?.keepVisibility) delete block.visibility;
     return block;
   });
   const partsTree = { type: 'root', children } as GenericParent;
