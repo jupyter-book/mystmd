@@ -49,6 +49,7 @@ export const FRONTMATTER_ALIASES = {
   plain_language_summary: 'summary',
   quote: 'epigraph',
   lay_summary: 'summary',
+  image: 'thumbnail',
 };
 
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
