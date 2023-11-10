@@ -43,6 +43,12 @@ export const FRONTMATTER_ALIASES = {
   export: 'exports',
   jupyter: 'thebe',
   part: 'parts',
+  ack: 'acknowledgments',
+  acknowledgements: 'acknowledgments',
+  availability: 'data_availability',
+  plain_language_summary: 'summary',
+  quote: 'epigraph',
+  lay_summary: 'summary',
 };
 
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {

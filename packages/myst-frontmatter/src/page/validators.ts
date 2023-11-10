@@ -17,7 +17,15 @@ import { FRONTMATTER_ALIASES } from '../index.js';
 import { validateKernelSpec } from '../kernelspec/validators.js';
 import { validateJupytext } from '../jupytext/validators.js';
 
-const KNOWN_PARTS = ['abstract', 'data_availability'];
+const KNOWN_PARTS = [
+  'abstract',
+  'summary',
+  'keypoints',
+  'dedication',
+  'epigraph',
+  'data_availability',
+  'acknowledgments',
+];
 
 export const PAGE_FRONTMATTER_KEYS = [
   ...PROJECT_AND_PAGE_FRONTMATTER_KEYS,
