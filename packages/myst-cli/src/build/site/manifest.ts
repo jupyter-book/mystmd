@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, TemplateOptionType } from 'myst-common';
-import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config';
+import type { SiteAction, SiteManifest } from 'myst-config';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
 import { filterKeys } from 'simple-validators';
@@ -113,7 +113,7 @@ export async function localToManifestProject(
 async function resolveTemplateFileOptions(
   session: ISession,
   mystTemplate: MystTemplate,
-  options: SiteTemplateOptions,
+  options: Record<string, any>,
 ) {
   const resolvedOptions = { ...options };
   mystTemplate.getValidatedTemplateYml().options?.forEach((option) => {
