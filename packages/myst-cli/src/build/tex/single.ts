@@ -14,6 +14,7 @@ import mystToTex from 'myst-to-tex';
 import type { LatexResult } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
+import { select, selectAll } from 'unist-util-select';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { finalizeMdast } from '../../process/index.js';
 import { loadProjectFromDisk } from '../../project/index.js';
@@ -32,7 +33,6 @@ import {
   getFileContent,
   resolveAndLogErrors,
 } from '../utils/index.js';
-import { select } from 'unist-util-select';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = [
@@ -73,11 +73,20 @@ export function extractTexPart(
 ): LatexResult | LatexResult[] | undefined {
   const part = extractPart(mdast, partDefinition.id);
   if (!part) return undefined;
-  if (partDefinition.as_list) {
-    return part.children.map((block) => {
+  if (!partDefinition.as_list) {
+    // Do not build glossaries when extracting parts: references cannot be mapped to definitions
+    return mdastToTex(session, part, references, frontmatter, templateYml, false);
+  }
+  if (
+    part.children.length === 1 &&
+    part.children[0]?.children?.length === 1 &&
+    part.children[0].children[0].type === 'list'
+  ) {
+    const items = selectAll('listItem', part) as GenericParent[];
+    return items.map((item: GenericParent) => {
       return mdastToTex(
         session,
-        { type: 'root', children: [block] },
+        { type: 'root', children: item.children },
         references,
         frontmatter,
         templateYml,
@@ -85,9 +94,16 @@ export function extractTexPart(
       );
     });
   }
-  // Do not build glossaries when extracting parts: references cannot be mapped to definitions
-  const partContent = mdastToTex(session, part, references, frontmatter, templateYml, false);
-  return partContent;
+  return part.children.map((block) => {
+    return mdastToTex(
+      session,
+      { type: 'root', children: [block] },
+      references,
+      frontmatter,
+      templateYml,
+      false,
+    );
+  });
 }
 
 export async function localArticleToTexRaw(
