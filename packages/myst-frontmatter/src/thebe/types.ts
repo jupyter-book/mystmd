@@ -23,8 +23,3 @@ export type JupyterServerOptions = {
   url?: string;
   token?: string;
 };
-
-export type JupyterLocalOptions = JupyterServerOptions & {
-  kernelName?: string;
-  sessionName?: string;
-};
