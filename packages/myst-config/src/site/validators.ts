@@ -17,13 +17,7 @@ import {
   SITE_FRONTMATTER_KEYS,
   validateSiteFrontmatterKeys,
 } from 'myst-frontmatter';
-import type {
-  SiteAction,
-  SiteConfig,
-  SiteNavItem,
-  SiteProject,
-  SiteTemplateOptions,
-} from './types.js';
+import type { SiteAction, SiteConfig, SiteNavItem, SiteProject } from './types.js';
 
 export const SITE_CONFIG_KEYS = {
   optional: [
@@ -169,35 +163,24 @@ export function validateSiteConfigKeys(
  * Validate and return common, non-template attributes of SiteConfig
  */
 export function validateSiteConfig(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, SITE_CONFIG_KEYS, {
+  const valueAsObject = validateObject(input, opts);
+  if (valueAsObject === undefined) return undefined;
+  const value = validateKeys(valueAsObject, SITE_CONFIG_KEYS, {
     ...opts,
     returnInvalidPartial: true,
     // Template options will appear as extra keys here; no need for warnings.
     suppressWarnings: true,
   });
   if (value === undefined) return undefined;
-  return validateSiteConfigKeys(value, opts);
-}
-
-/**
- * Return template options from SiteConfig
- *
- * These are all the non-predefined attributes. This object must be validated
- * separately against the site template.yml
- */
-export function getSiteTemplateOptions(input: any) {
-  const value =
-    validateObject(input, {
-      property: 'template_options',
-      messages: {},
-      suppressWarnings: true,
-      suppressErrors: true,
-    }) || {};
-  const output: SiteTemplateOptions = {};
-  Object.keys(value)
+  Object.keys(valueAsObject)
     .filter((key) => !SITE_CONFIG_KEYS.optional.includes(key))
     .forEach((key) => {
-      output[key] = value[key];
+      if (value.options?.[key]) {
+        opts.errorLogFn?.(`duplicate value for site option ${key}`);
+      } else {
+        opts.warningLogFn?.(`extra site options should be nested under "options" key: ${key}`);
+        (value.options ??= {})[key] = valueAsObject[key];
+      }
     });
-  return output;
+  return validateSiteConfigKeys(value, opts);
 }

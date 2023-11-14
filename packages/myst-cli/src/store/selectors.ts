@@ -24,11 +24,6 @@ export function selectCurrentSiteConfig(state: RootState): SiteConfig | undefine
   return { ...config, projects: [{ path }] };
 }
 
-export function selectCurrentSiteTemplateOptions(state: RootState) {
-  if (!state.local.config.currentSitePath) return undefined;
-  return state.local.config.siteTemplateOptions[resolve(state.local.config.currentSitePath)];
-}
-
 export function selectCurrentSitePath(state: RootState) {
   return state.local.config.currentSitePath;
 }

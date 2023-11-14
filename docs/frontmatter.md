@@ -133,6 +133,12 @@ The following table lists the available frontmatter fields, a brief description 
 * - `abbreviations`
   - a dictionary of abbreviations in the project (see [](#abbreviations))
   - page can override project
+* - `parts`
+  - a dictionary of arbitrary content parts, not part of the main article, for example `abstract`, `data_availability`
+  - page only
+* - `options`
+  - a dictionary of arbitrary options validated and consumed by templates, for example, during site or PDF build
+  - page can override project
 ```
 
 +++

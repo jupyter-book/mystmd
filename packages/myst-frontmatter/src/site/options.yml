@@ -1,0 +1,45 @@
+title: Options
+cases:
+  - title: arbitrary options validate
+    raw:
+      options:
+        a: b
+        c: d
+    normalized:
+      options:
+        a: b
+        c: d
+  - title: non-string options validate
+    raw:
+      options:
+        a: 1
+        b: true
+        c:
+          - x: y
+    normalized:
+      options:
+        a: 1
+        b: true
+        c:
+          - x: y
+  - title: non-object options errors
+    raw:
+      options: ''
+    normalized: {}
+    errors: 1
+  - title: reserved export keys error
+    raw:
+      options:
+        a: b
+        format: ''
+        template: ''
+        output: ''
+        id: ''
+        name: ''
+        renderer: ''
+        article: ''
+        sub_articles: ''
+    normalized:
+      options:
+        a: b
+    errors: 8

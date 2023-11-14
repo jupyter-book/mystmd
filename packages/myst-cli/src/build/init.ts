@@ -25,7 +25,8 @@ function createProjectConfig({ github }: { github?: string } = {}) {
 const SITE_CONFIG = `site:
   template: book-theme
   # title:
-  # logo:
+  # options:
+  #   logo: site_logo.png
   nav: []
   actions:
     - title: Learn More

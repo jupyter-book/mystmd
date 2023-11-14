@@ -699,7 +699,9 @@ function createText(text: string): Element {
 }
 
 function renderPart(vfile: VFile, mdast: GenericParent, part: string | string[], opts?: Options) {
-  const partMdast = extractPart(mdast, part, { removePartData: true });
+  const partMdast = extractPart(mdast, part, {
+    removePartData: true,
+  });
   if (!partMdast) return undefined;
   const serializer = new JatsSerializer(vfile, partMdast as Root, opts);
   return serializer.render().elements();
@@ -1026,7 +1028,7 @@ export class JatsDocument {
 }
 
 export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentOptions) {
-  const doc = new JatsDocument(file, content, opts ?? { handlers });
+  const doc = new JatsDocument(file, content, opts);
   const element = opts?.writeFullArticle
     ? {
         type: 'element',

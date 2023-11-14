@@ -1,5 +1,12 @@
 import type { ValidationOptions } from 'simple-validators';
-import { defined, incrementOptions, validateList, validateString } from 'simple-validators';
+import {
+  defined,
+  incrementOptions,
+  validateList,
+  validateObject,
+  validateString,
+  validationError,
+} from 'simple-validators';
 import { validateAffiliation } from '../affiliations/validators.js';
 import { validateContributor } from '../contributors/validators.js';
 import { validateFunding } from '../funding/validators.js';
@@ -8,6 +15,7 @@ import { validateAndStashObject } from '../utils/referenceStash.js';
 import { validateGithubUrl } from '../utils/validators.js';
 import { validateVenue } from '../venues/validators.js';
 import type { SiteFrontmatter } from './types.js';
+import { RESERVED_EXPORT_KEYS } from '../index.js';
 
 export const SITE_FRONTMATTER_KEYS = [
   'title',
@@ -25,6 +33,7 @@ export const SITE_FRONTMATTER_KEYS = [
   'keywords',
   'affiliations',
   'funding',
+  'options',
 ];
 
 export const FRONTMATTER_ALIASES = {
@@ -33,6 +42,14 @@ export const FRONTMATTER_ALIASES = {
   affiliation: 'affiliations',
   export: 'exports',
   jupyter: 'thebe',
+  part: 'parts',
+  ack: 'acknowledgments',
+  acknowledgements: 'acknowledgments',
+  availability: 'data_availability',
+  plain_language_summary: 'summary',
+  quote: 'epigraph',
+  lay_summary: 'summary',
+  image: 'thumbnail',
 };
 
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
@@ -126,15 +143,29 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     });
   }
   if (defined(value.funding)) {
-    const funding = Array.isArray(value.funding) ? value.funding : [value.funding];
     output.funding = validateList(
-      funding,
+      value.funding,
       { coerce: true, ...incrementOptions('funding', opts) },
       (fund, index) => {
         return validateFunding(fund, stash, incrementOptions(`funding.${index}`, opts));
       },
     );
   }
+  if (defined(value.options)) {
+    const optionsOptions = incrementOptions('options', opts);
+    const options = validateObject(value.options, optionsOptions);
+    if (options) {
+      Object.entries(options).forEach(([key, val]) => {
+        if (RESERVED_EXPORT_KEYS.includes(key)) {
+          validationError(`options cannot include reserved key ${key}`, optionsOptions);
+        } else {
+          (output.options ??= {})[key] = val;
+        }
+      });
+    }
+  }
+
+  // Contributor resolution should happen last
   const stashContribAuthors = stash.contributors?.filter(
     (contrib) => stash.authorIds?.includes(contrib.id),
   );

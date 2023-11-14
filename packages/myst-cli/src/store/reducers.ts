@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import type { ProjectConfig, SiteConfig, SiteTemplateOptions } from 'myst-config';
+import type { ProjectConfig, SiteConfig } from 'myst-config';
 import { combineReducers } from 'redux';
 import type { BuildWarning, ExternalLinkResult } from './types.js';
 import type { LocalProject } from '../project/types.js';
@@ -34,7 +34,6 @@ export const config = createSlice({
     rawConfigs: {},
     projects: {},
     sites: {},
-    siteTemplateOptions: {},
     filenames: {},
   } as {
     currentProjectPath: string | undefined;
@@ -42,7 +41,6 @@ export const config = createSlice({
     rawConfigs: Record<string, { raw: Record<string, any>; validated: Record<string, any> }>;
     projects: Record<string, ProjectConfig>;
     sites: Record<string, SiteConfig>;
-    siteTemplateOptions: Record<string, SiteTemplateOptions>;
     filenames: Record<string, string>;
   },
   reducers: {
@@ -68,13 +66,6 @@ export const config = createSlice({
     receiveSiteConfig(state, action: PayloadAction<SiteConfig & { path: string }>) {
       const { path, ...payload } = action.payload;
       state.sites[resolve(path)] = payload;
-    },
-    receiveSiteTemplateOptions(
-      state,
-      action: PayloadAction<SiteTemplateOptions & { path: string }>,
-    ) {
-      const { path, ...payload } = action.payload;
-      state.siteTemplateOptions[resolve(path)] = payload;
     },
     receiveProjectConfig(state, action: PayloadAction<ProjectConfig & { path: string }>) {
       const { path, ...payload } = action.payload;

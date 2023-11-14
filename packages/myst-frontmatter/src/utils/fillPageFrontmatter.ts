@@ -48,6 +48,14 @@ export function fillPageFrontmatter(
     };
   }
 
+  // Combine all options defined on page and project
+  if (projectFrontmatter.options || pageFrontmatter.options) {
+    frontmatter.options = {
+      ...(projectFrontmatter.options ?? {}),
+      ...(pageFrontmatter.options ?? {}),
+    };
+  }
+
   // Gather all contributors and affiliations from funding sources
   const contributorIds: Set<string> = new Set();
   const affiliationIds: Set<string> = new Set();

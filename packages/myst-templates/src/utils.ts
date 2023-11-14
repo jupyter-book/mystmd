@@ -7,3 +7,7 @@ export function errorLogger(session: ISession) {
 export function warningLogger(session: ISession) {
   return (message: string) => session.log.warn(message);
 }
+
+export function debugLogger(session: ISession) {
+  return (message: string) => session.log.debug(message);
+}

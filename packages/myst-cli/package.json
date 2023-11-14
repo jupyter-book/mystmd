@@ -111,6 +111,7 @@
     "@types/mime-types": "^2.1.1",
     "@types/which": "^3.0.0",
     "@types/ws": "^8.5.5",
-    "concurrently": "^8.2.0"
+    "concurrently": "^8.2.0",
+    "unist-util-visit": "^5.0.0"
   }
 }

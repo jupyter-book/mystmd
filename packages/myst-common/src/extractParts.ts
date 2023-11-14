@@ -1,4 +1,4 @@
-import type { Block } from 'myst-spec';
+import type { Block } from 'myst-spec-ext';
 import type { GenericParent } from './types.js';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
@@ -8,13 +8,10 @@ import { copyNode } from './utils.js';
  * Selects the block node(s) based on part (string) or tags (string[]).
  * If `part` is a string array, any of the parts will be treated equally.
  */
-export function selectBlockParts(
-  tree: GenericParent,
-  part: string | string[],
-): Block[] | undefined {
+export function selectBlockParts(tree: GenericParent, part: string | string[]): Block[] {
   if (!part) {
     // Prevent an undefined, null or empty part comparison
-    return;
+    return [];
   }
   const blockParts = selectAll('block', tree).filter((block) => {
     const parts = typeof part === 'string' ? [part] : part;
@@ -27,7 +24,6 @@ export function selectBlockParts(
       })
       .reduce((a, b) => a || b, false);
   });
-  if (blockParts.length === 0) return;
   return blockParts as Block[];
 }
 
@@ -40,11 +36,13 @@ export function extractPart(
   opts?: {
     /** Helpful for when we are doing recursions, we don't want to extract the part again. */
     removePartData?: boolean;
+    /** Ensure that blocks are by default turned to visible */
+    keepVisibility?: boolean;
   },
 ): GenericParent | undefined {
   const partStrings = typeof part === 'string' ? [part] : part;
   const blockParts = selectBlockParts(tree, part);
-  if (!blockParts) return undefined;
+  if (blockParts.length === 0) return undefined;
   const children = copyNode(blockParts).map((block) => {
     // Ensure the block always has the `part` defined, as it might be in the tags
     block.data ??= {};
@@ -60,6 +58,8 @@ export function extractPart(
       }
     }
     if (opts?.removePartData) delete block.data.part;
+    // The default is to remove the visibility on the parts
+    if (!opts?.keepVisibility) delete block.visibility;
     return block;
   });
   const partsTree = { type: 'root', children } as GenericParent;

@@ -2,11 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, TemplateOptionType } from 'myst-common';
-import type { SiteAction, SiteManifest, SiteTemplateOptions } from 'myst-config';
+import type { SiteAction, SiteManifest } from 'myst-config';
 import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
 import { filterKeys } from 'simple-validators';
-import { addWarningForFile } from '../../index.js';
+import { addWarningForFile, resolveToAbsolute, version } from '../../index.js';
 import { resolvePageExports } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
 import type { RootState } from '../../store/index.js';
@@ -113,14 +113,18 @@ export async function localToManifestProject(
 async function resolveTemplateFileOptions(
   session: ISession,
   mystTemplate: MystTemplate,
-  options: SiteTemplateOptions,
+  options: Record<string, any>,
 ) {
   const resolvedOptions = { ...options };
   mystTemplate.getValidatedTemplateYml().options?.forEach((option) => {
     if (option.type === TemplateOptionType.file && options[option.id]) {
+      const configPath = selectors.selectCurrentSitePath(session.store.getState());
+      const absPath = configPath
+        ? resolveToAbsolute(session, configPath, options[option.id])
+        : options[option.id];
       const fileHash = hashAndCopyStaticFile(
         session,
-        options[option.id],
+        absPath,
         session.publicPath(),
         (m: string) => {
           addWarningForFile(session, options[option.id], m, 'error', {
@@ -172,10 +176,12 @@ export async function getSiteManifest(
   const { nav } = siteConfig;
   const actions = siteConfig.actions?.map((action) => resolveSiteManifestAction(session, action));
   const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
-  const siteTemplateOptions = selectors.selectCurrentSiteTemplateOptions(state) || {};
   const mystTemplate = await getMystTemplate(session, opts);
   const siteConfigFile = selectors.selectCurrentSiteFile(state);
-  const validatedOptions = mystTemplate.validateOptions(siteTemplateOptions, siteConfigFile);
+  const validatedOptions = mystTemplate.validateOptions(
+    siteFrontmatter.options ?? {},
+    siteConfigFile,
+  );
   const validatedFrontmatter = mystTemplate.validateDoc(
     siteFrontmatter,
     validatedOptions,
@@ -183,10 +189,10 @@ export async function getSiteManifest(
     siteConfigFile,
   );
   const resolvedOptions = await resolveTemplateFileOptions(session, mystTemplate, validatedOptions);
+  validatedFrontmatter.options = resolvedOptions;
   const manifest: SiteManifest = {
     ...validatedFrontmatter,
-    ...resolvedOptions,
-    myst: 'v1',
+    myst: version,
     nav: nav || [],
     actions: actions || [],
     projects: siteProjects,

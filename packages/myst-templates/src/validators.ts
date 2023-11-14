@@ -147,6 +147,25 @@ export function makeValidateOptionsFunction(reservedKeys: string[]) {
 
 export const validateTemplateOptions = makeValidateOptionsFunction(RESERVED_EXPORT_KEYS);
 
+export function validateTemplatePart(
+  part: any,
+  partDefinition: TemplatePartDefinition,
+  opts: ValidationOptions,
+) {
+  const { id, max_chars, max_words } = partDefinition;
+  const partValue = validateString(part, opts);
+  if (max_chars != null && partValue && partValue.length > max_chars) {
+    validationError(
+      `part block "${id}" must be less than or equal to ${max_chars} characters`,
+      opts,
+    );
+  }
+  if (max_words != null && partValue && partValue.split(' ').length > max_words) {
+    validationError(`part block "${id}" must be less than or equal to ${max_words} words`, opts);
+  }
+  return partValue;
+}
+
 export function validateTemplateParts(
   parts: any,
   partsDefinitions: TemplatePartDefinition[],
@@ -162,22 +181,17 @@ export function validateTemplateParts(
     { returnInvalidPartial: true, ...opts },
   );
   if (value === undefined) return undefined;
-  const output: Record<string, string> = {};
+  const output: Record<string, string | string[]> = {};
   filteredParts.forEach((def) => {
-    const { id, max_chars, max_words } = def;
+    const { id, as_list } = def;
     if (defined(value[id])) {
-      const partValue = validateString(value[id], incrementOptions(id, opts));
-      if (max_chars != null && partValue && partValue.length > max_chars) {
-        validationError(
-          `part block "${id}" must be less than or equal to ${max_chars} characters`,
-          opts,
-        );
-      }
-      if (max_words != null && partValue && partValue.split(' ').length > max_words) {
-        validationError(
-          `part block "${id}" must be less than or equal to ${max_words} words`,
-          opts,
-        );
+      let partValue: string | string[] | undefined;
+      if (as_list) {
+        partValue = validateList(value[id], incrementOptions(id, opts), (item, index) => {
+          return validateTemplatePart(item, def, incrementOptions(`${id}.${index}`, opts));
+        });
+      } else {
+        partValue = validateTemplatePart(value[id], def, incrementOptions(id, opts));
       }
       if (partValue !== undefined) output[def.id] = partValue;
     }
@@ -368,6 +382,7 @@ export function validateTemplatePartDefinition(input: any, opts: ValidationOptio
         'description',
         'required',
         'plain',
+        'as_list',
         'max_chars',
         'max_words',
         'condition',
@@ -391,6 +406,9 @@ export function validateTemplatePartDefinition(input: any, opts: ValidationOptio
   }
   if (defined(value.plain)) {
     output.plain = validateBoolean(value.plain, incrementOptions('plain', opts));
+  }
+  if (defined(value.as_list)) {
+    output.as_list = validateBoolean(value.as_list, incrementOptions('as_list', opts));
   }
   if (defined(value.max_chars)) {
     output.max_chars = validateNumber(value.max_chars, {

@@ -69,6 +69,7 @@ import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
 import { loadIntersphinx } from './intersphinx.js';
 import { select, selectAll } from 'unist-util-select';
+import { frontmatterPartsTransform } from '../transforms/parts.js';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
@@ -161,6 +162,7 @@ export async function transformMdast(
   const state = new ReferenceState({ numbering: frontmatter.numbering, file: vfile });
   cache.$internalReferences[file] = state;
   // Import additional content from mdast or other files
+  frontmatterPartsTransform(session, file, mdast, frontmatter);
   importMdastFromJson(session, file, mdast);
   await includeFilesTransform(session, file, mdast, vfile);
   // This needs to come before basic transformations since it may add labels to blocks

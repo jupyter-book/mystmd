@@ -19,4 +19,5 @@ export type SiteFrontmatter = {
   keywords?: string[];
   funding?: Funding[];
   contributors?: Contributor[];
+  options?: Record<string, any>;
 };

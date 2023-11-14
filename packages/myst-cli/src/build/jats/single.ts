@@ -73,6 +73,7 @@ export async function runJatsExport(
         title: 'Data Availability',
       },
     ],
+    // if we want to add templating here, we have access to { ...processedArticle.frontmatter.options, ...exportOptions }
   });
   logMessagesFromVFile(session, jats);
   session.log.info(toc(`📑 Exported JATS in %s, copying to ${output}`));

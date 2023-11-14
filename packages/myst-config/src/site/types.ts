@@ -22,8 +22,6 @@ export interface SiteAction {
   static?: boolean;
 }
 
-export type SiteTemplateOptions = Record<string, any>;
-
 export type SiteConfig = SiteFrontmatter & {
   projects?: SiteProject[];
   nav?: SiteNavItem[];
@@ -31,7 +29,7 @@ export type SiteConfig = SiteFrontmatter & {
   domains?: string[];
   favicon?: string;
   template?: string;
-} & SiteTemplateOptions;
+};
 
 type ManifestProjectItem = {
   title: string;
@@ -61,7 +59,7 @@ type ManifestProject = {
 } & ProjectFrontmatter;
 
 export type SiteManifest = SiteFrontmatter & {
-  myst: 'v1';
+  myst: string;
   id?: string;
   projects?: ManifestProject[];
   nav?: SiteNavItem[];
@@ -69,4 +67,4 @@ export type SiteManifest = SiteFrontmatter & {
   domains?: string[];
   favicon?: string;
   template?: string;
-} & SiteTemplateOptions;
+};

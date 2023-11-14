@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "mdast": "^3.0.0",
+    "myst-frontmatter": "^1.1.11",
     "myst-spec": "^0.0.4",
     "nanoid": "^4.0.0",
     "unified": "^10.1.2",

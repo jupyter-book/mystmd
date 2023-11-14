@@ -5,6 +5,8 @@ import {
   validateList,
   validateObjectKeys,
   validateString,
+  validateObject,
+  validationError,
 } from 'simple-validators';
 import {
   PROJECT_AND_PAGE_FRONTMATTER_KEYS,
@@ -15,12 +17,24 @@ import { FRONTMATTER_ALIASES } from '../index.js';
 import { validateKernelSpec } from '../kernelspec/validators.js';
 import { validateJupytext } from '../jupytext/validators.js';
 
+const KNOWN_PARTS = [
+  'abstract',
+  'summary',
+  'keypoints',
+  'dedication',
+  'epigraph',
+  'data_availability',
+  'acknowledgments',
+];
+
 export const PAGE_FRONTMATTER_KEYS = [
   ...PROJECT_AND_PAGE_FRONTMATTER_KEYS,
   // These keys only exist on the page
   'kernelspec',
   'jupytext',
   'tags',
+  'parts',
+  ...KNOWN_PARTS,
 ];
 
 export const USE_PROJECT_FALLBACK = [
@@ -58,6 +72,36 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
         return validateString(file, incrementOptions(`tags.${index}`, opts));
       },
     );
+  }
+  const partsOptions = incrementOptions('parts', opts);
+  let parts: Record<string, any> | undefined;
+  if (defined(value.parts)) {
+    parts = validateObject(value.parts, partsOptions);
+  }
+  KNOWN_PARTS.forEach((partKey) => {
+    if (defined(value[partKey])) {
+      parts ??= {};
+      if (parts[partKey]) {
+        validationError(`duplicate value for part ${partKey}`, partsOptions);
+      } else {
+        parts[partKey] = value[partKey];
+      }
+    }
+  });
+  if (parts) {
+    const partsEntries = Object.entries(parts)
+      .map(([k, v]) => {
+        return [
+          k,
+          validateList(v, { coerce: true, ...incrementOptions(k, partsOptions) }, (item, index) => {
+            return validateString(item, incrementOptions(`${k}.${index}`, partsOptions));
+          }),
+        ];
+      })
+      .filter((entry): entry is [string, string[]] => !!entry[1]?.length);
+    if (partsEntries.length > 0) {
+      output.parts = Object.fromEntries(partsEntries);
+    }
   }
   return output;
 }
