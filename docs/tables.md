@@ -24,7 +24,7 @@ Cells in a column can be aligned using the `:` character:
 
 You can use the {myst:directive}`table` directive to add a caption to a markdown table.
 
-```markdown
+```{myst}
 :::{table} Table caption
 :label: table
 :align: center
