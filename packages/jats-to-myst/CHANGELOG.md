@@ -1,5 +1,24 @@
 # jats-to-myst
 
+## 1.0.17
+
+### Patch Changes
+
+- Updated dependencies [9410e8d]
+- Updated dependencies [dd8249c5]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [5bc1e96d]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+  - myst-frontmatter@1.1.13
+  - myst-common@1.1.13
+  - myst-transforms@1.1.11
+  - myst-spec-ext@1.1.13
+
 ## 1.0.16
 
 ### Patch Changes

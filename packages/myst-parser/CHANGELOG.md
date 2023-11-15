@@ -1,5 +1,17 @@
 # myst-parser
 
+## 1.0.14
+
+### Patch Changes
+
+- 9410e8d: Fix circular dependencies
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+  - myst-common@1.1.13
+  - myst-roles@1.0.14
+  - myst-directives@1.0.14
+
 ## 1.0.13
 
 ### Patch Changes

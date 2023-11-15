@@ -1,5 +1,26 @@
 # myst-to-jats
 
+## 1.0.17
+
+### Patch Changes
+
+- b127d5e7: Consume frontmatter parts alongside tagged parts
+- b127d5e7: Transform frontmatter parts into blocks in the mdast
+- Updated dependencies [9410e8d]
+- Updated dependencies [dd8249c5]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [5bc1e96d]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+  - myst-frontmatter@1.1.13
+  - myst-common@1.1.13
+  - myst-transforms@1.1.11
+  - myst-spec-ext@1.1.13
+
 ## 1.0.16
 
 ### Patch Changes
