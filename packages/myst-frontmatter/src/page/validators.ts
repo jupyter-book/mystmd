@@ -8,53 +8,11 @@ import {
   validateObject,
   validationError,
 } from 'simple-validators';
-import {
-  PROJECT_AND_PAGE_FRONTMATTER_KEYS,
-  validateProjectAndPageFrontmatterKeys,
-} from '../project/validators.js';
+import { validateProjectAndPageFrontmatterKeys } from '../project/validators.js';
 import type { PageFrontmatter } from './types.js';
-import { FRONTMATTER_ALIASES } from '../index.js';
 import { validateKernelSpec } from '../kernelspec/validators.js';
 import { validateJupytext } from '../jupytext/validators.js';
-
-const KNOWN_PARTS = [
-  'abstract',
-  'summary',
-  'keypoints',
-  'dedication',
-  'epigraph',
-  'data_availability',
-  'acknowledgments',
-];
-
-export const PAGE_FRONTMATTER_KEYS = [
-  ...PROJECT_AND_PAGE_FRONTMATTER_KEYS,
-  // These keys only exist on the page
-  'kernelspec',
-  'jupytext',
-  'tags',
-  'parts',
-  ...KNOWN_PARTS,
-];
-
-export const USE_PROJECT_FALLBACK = [
-  'authors',
-  'date',
-  'doi',
-  'arxiv',
-  'open_access',
-  'license',
-  'github',
-  'binder',
-  'source',
-  'subject',
-  'venue',
-  'biblio',
-  'numbering',
-  'keywords',
-  'funding',
-  'affiliations',
-];
+import { FRONTMATTER_ALIASES, KNOWN_PARTS, PAGE_FRONTMATTER_KEYS } from '../constants.js';
 
 export function validatePageFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: PageFrontmatter = validateProjectAndPageFrontmatterKeys(value, opts);

@@ -3,11 +3,11 @@ import { fillMissingKeys, incrementOptions, validationWarning } from 'simple-val
 import type { Affiliation } from '../affiliations/types.js';
 import type { Contributor } from '../contributors/types.js';
 import { NUMBERING_KEYS } from '../numbering/validators.js';
-import { USE_PROJECT_FALLBACK } from '../page/validators.js';
 import type { PageFrontmatter } from '../page/types.js';
 import type { ProjectFrontmatter } from '../project/types.js';
 import { normalizeJsonToString } from './normalizeString.js';
 import { isStashPlaceholder, stashPlaceholder } from './referenceStash.js';
+import { USE_PROJECT_FALLBACK } from '../constants.js';
 
 /**
  * Fill missing values from page frontmatter object with values from project frontmatter

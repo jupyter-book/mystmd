@@ -3,7 +3,6 @@ import {
   defined,
   incrementOptions,
   validateBoolean,
-  validateObject,
   validateObjectKeys,
   validateString,
   validateUrl,

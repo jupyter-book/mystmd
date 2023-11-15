@@ -15,42 +15,7 @@ import { validateAndStashObject } from '../utils/referenceStash.js';
 import { validateGithubUrl } from '../utils/validators.js';
 import { validateVenue } from '../venues/validators.js';
 import type { SiteFrontmatter } from './types.js';
-import { RESERVED_EXPORT_KEYS } from '../index.js';
-
-export const SITE_FRONTMATTER_KEYS = [
-  'title',
-  'subtitle',
-  'short_title',
-  'description',
-  'thumbnail',
-  'thumbnailOptimized',
-  'banner',
-  'bannerOptimized',
-  'authors',
-  'contributors',
-  'venue',
-  'github',
-  'keywords',
-  'affiliations',
-  'funding',
-  'options',
-];
-
-export const FRONTMATTER_ALIASES = {
-  author: 'authors',
-  contributor: 'contributors',
-  affiliation: 'affiliations',
-  export: 'exports',
-  jupyter: 'thebe',
-  part: 'parts',
-  ack: 'acknowledgments',
-  acknowledgements: 'acknowledgments',
-  availability: 'data_availability',
-  plain_language_summary: 'summary',
-  quote: 'epigraph',
-  lay_summary: 'summary',
-  image: 'thumbnail',
-};
+import { RESERVED_EXPORT_KEYS } from '../exports/index.js';
 
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: SiteFrontmatter = {};
