@@ -1,5 +1,24 @@
 # jtex
 
+## 1.0.10
+
+### Patch Changes
+
+- b127d5e7: Template parts may now specify as_list
+- Updated dependencies [9410e8d]
+- Updated dependencies [dd8249c5]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+  - myst-frontmatter@1.1.13
+  - myst-common@1.1.13
+  - myst-templates@1.0.12
+
 ## 1.0.9
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # myst-common
 
+## 1.1.13
+
+### Patch Changes
+
+- b127d5e7: Consume frontmatter parts alongside tagged parts
+- b127d5e7: Transform frontmatter parts into blocks in the mdast
+- b127d5e7: Ensure the block is visible by default in extractParts
+- Updated dependencies [9410e8d]
+- Updated dependencies [dd8249c5]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+  - myst-frontmatter@1.1.13
+
 ## 1.1.12
 
 ### Patch Changes

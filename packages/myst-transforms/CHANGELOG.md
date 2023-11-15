@@ -1,5 +1,17 @@
 # myst-transforms
 
+## 1.1.11
+
+### Patch Changes
+
+- 5bc1e96d: Link text transform is run twice and should be idempotent
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+  - myst-common@1.1.13
+  - myst-spec-ext@1.1.13
+  - myst-to-html@1.0.14
+
 ## 1.1.10
 
 ### Patch Changes

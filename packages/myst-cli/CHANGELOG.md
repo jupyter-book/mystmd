@@ -1,5 +1,42 @@
 # myst-cli
 
+## 1.1.28
+
+### Patch Changes
+
+- 9410e8d: Fix circular dependencies
+- b127d5e7: Do not duplicate site template options in redux store
+- b127d5e7: Write myst-cli version in site config
+- b127d5e7: Consume frontmatter parts alongside tagged parts
+- b127d5e7: Transform frontmatter parts into blocks in the mdast
+- b127d5e7: Resolve site logo path with other template options of type file
+- b127d5e7: Template parts may now specify as_list
+- b127d5e7: Consume frontmatter options for template/site options
+- b127d5e7: Frontmatter parts each coerce to list
+- Updated dependencies [9410e8d]
+- Updated dependencies [dd8249c5]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [5bc1e96d]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+- Updated dependencies [b127d5e7]
+  - myst-frontmatter@1.1.13
+  - myst-parser@1.0.14
+  - tex-to-myst@1.0.13
+  - myst-config@1.1.13
+  - myst-to-jats@1.0.17
+  - myst-common@1.1.13
+  - myst-templates@1.0.12
+  - jtex@1.0.10
+  - myst-transforms@1.1.11
+  - myst-spec-ext@1.1.13
+  - myst-to-tex@1.0.13
+
 ## 1.1.27
 
 ### Patch Changes

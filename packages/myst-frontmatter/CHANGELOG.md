@@ -1,5 +1,18 @@
 # myst-frontmatter
 
+## 1.1.13
+
+### Patch Changes
+
+- 9410e8d: Fix circular dependencies
+- dd8249c5: Remove JupyterLocalOptions type from myst-frontmatter, we should be using JupyterServerOptions and base Thebe connections.
+- b127d5e7: Consume frontmatter parts alongside tagged parts
+- b127d5e7: Transform frontmatter parts into blocks in the mdast
+- b127d5e7: Consume frontmatter options for template/site options
+- b127d5e7: Add options to site/project/page frontmatter
+- b127d5e7: Add parts to page frontmatter
+- b127d5e7: Frontmatter parts each coerce to list
+
 ## 1.1.12
 
 ### Patch Changes
