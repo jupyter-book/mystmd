@@ -1,18 +1,13 @@
 import { resolve } from 'node:path';
 import { plural, tic } from 'myst-cli-utils';
 import type { LinkTransformer } from 'myst-transforms';
+import { combineProjectCitationRenderers } from '../../process/citations.js';
+import { loadFile, selectFile } from '../../process/file.js';
+import { loadIntersphinx } from '../../process/intersphinx.js';
+import { postProcessMdast, transformMdast } from '../../process/mdast.js';
+import { loadProject, selectPageReferenceStates } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
-import {
-  selectPageReferenceStates,
-  loadFile,
-  selectFile,
-  postProcessMdast,
-  transformMdast,
-  loadProject,
-  loadIntersphinx,
-  combineProjectCitationRenderers,
-} from '../../process/index.js';
-import type { ImageExtensions } from '../../utils/index.js';
+import type { ImageExtensions } from '../../utils/resolveExtension.js';
 
 export async function getFileContent(
   session: ISession,

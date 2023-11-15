@@ -3,14 +3,11 @@ import { extname, join } from 'node:path';
 import { isDirectory } from 'myst-cli-utils';
 import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
-import {
-  addWarningForFile,
-  fileInfo,
-  isValidFile,
-  nextLevel,
-  shouldIgnoreFile,
-  VALID_FILE_EXTENSIONS,
-} from '../utils/index.js';
+import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { fileInfo } from '../utils/fileInfo.js';
+import { nextLevel } from '../utils/nextLevel.js';
+import { VALID_FILE_EXTENSIONS, isValidFile } from '../utils/resolveExtension.js';
+import { shouldIgnoreFile } from '../utils/shouldIgnoreFile.js';
 import { pagesFromToc } from './fromToc.js';
 import type {
   PageLevels,

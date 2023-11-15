@@ -11,9 +11,10 @@ import { hashAndCopyStaticFile, plural, tic } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
-import { EXT_REQUEST_HEADERS, addWarningForFile } from '../utils/index.js';
 import { links } from '../store/reducers.js';
 import type { ExternalLinkResult } from '../store/types.js';
+import { EXT_REQUEST_HEADERS } from '../utils/headers.js';
+import { addWarningForFile } from '../utils/addWarningForFile.js';
 
 // These limit access from command line tools by default
 const skippedDomains = [

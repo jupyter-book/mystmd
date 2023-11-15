@@ -1,7 +1,7 @@
 import path from 'node:path';
 import type { ISession } from '../../session/types.js';
 import { selectPageSlug } from '../../store/selectors.js';
-import { createSlug } from '../../utils/index.js';
+import { createSlug } from '../../utils/fileInfo.js';
 
 /**
  * Get default filename for saving export.

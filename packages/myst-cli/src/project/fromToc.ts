@@ -1,17 +1,13 @@
 import fs from 'node:fs';
 import { join, parse } from 'node:path';
 import { RuleId } from 'myst-common';
-import type { JupyterBookChapter } from '../utils/index.js';
-import {
-  readTOC,
-  tocFile,
-  VALID_FILE_EXTENSIONS,
-  fileInfo,
-  nextLevel,
-  resolveExtension,
-  addWarningForFile,
-} from '../utils/index.js';
 import type { ISession } from '../session/types.js';
+import type { JupyterBookChapter } from '../utils/toc.js';
+import { readTOC, tocFile } from '../utils/toc.js';
+import { VALID_FILE_EXTENSIONS, resolveExtension } from '../utils/resolveExtension.js';
+import { fileInfo } from '../utils/fileInfo.js';
+import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { nextLevel } from '../utils/nextLevel.js';
 import type {
   PageLevels,
   LocalProjectFolder,
