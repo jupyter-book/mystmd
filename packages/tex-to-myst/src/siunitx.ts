@@ -2,9 +2,8 @@ import type { GenericNode } from 'myst-common';
 import { RuleId, fileWarn } from 'myst-common';
 import type { SiUnit } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
-import { NARROW_NO_BREAK_SPACE } from './utils.js';
+import { NARROW_NO_BREAK_SPACE, getArguments, texToText } from './utils.js';
 import type { Handler } from './types.js';
-import { getArguments, texToText } from './utils.js';
 
 const UNITS: Record<string, string> = {
   ampere: 'A',

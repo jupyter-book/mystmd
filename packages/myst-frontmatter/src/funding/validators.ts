@@ -11,7 +11,8 @@ import type { ValidationOptions } from 'simple-validators';
 import type { Award, Funding } from './types.js';
 import { validateAffiliation } from '../affiliations/validators.js';
 import { validateContributor } from '../contributors/validators.js';
-import { ReferenceStash, validateAndStashObject } from '../utils/referenceStash.js';
+import type { ReferenceStash } from '../utils/referenceStash.js';
+import { validateAndStashObject } from '../utils/referenceStash.js';
 
 const AWARD_KEYS = ['id', 'name', 'description', 'sources', 'recipients', 'investigators'];
 const AWARD_ALIASES = { source: 'sources', recipient: 'recipients', investigator: 'investigators' };
