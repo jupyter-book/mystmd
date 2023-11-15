@@ -8,13 +8,14 @@ import { RuleId, toText } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { ISession, ISessionWithCache } from '../session/types.js';
-import { castSession } from '../session/index.js';
+import { castSession } from '../session/cache.js';
 import { warnings, watch } from '../store/reducers.js';
+import type { RendererData } from '../transforms/types.js';
+import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
+import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { loadCitations } from './citations.js';
 import { parseMyst } from './myst.js';
 import { processNotebook } from './notebook.js';
-import type { RendererData } from '../transforms/types.js';
-import { addWarningForFile, logMessagesFromVFile } from '../utils/index.js';
 
 function checkCache(cache: ISessionWithCache, content: string, file: string) {
   const sha256 = createHash('sha256').update(content).digest('hex');

@@ -3,20 +3,22 @@ import type { Store } from 'redux';
 import { createStore } from 'redux';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
-import { rootReducer, selectors } from '../store/index.js';
-import type { BuildWarning, RootState } from '../store/index.js';
-import type { ISession } from './types.js';
+import type { MystPlugin, RuleId } from 'myst-common';
+import latestVersion from 'latest-version';
+import boxen from 'boxen';
+import chalk from 'chalk';
 import {
   findCurrentProjectAndLoad,
   findCurrentSiteAndLoad,
   reloadAllConfigsForCurrentSite,
 } from '../config.js';
-import latestVersion from 'latest-version';
-import boxen from 'boxen';
-import chalk from 'chalk';
-import version from '../version.js';
 import { loadPlugins } from '../plugins.js';
-import type { MystPlugin, RuleId } from 'myst-common';
+import type { BuildWarning } from '../store/index.js';
+import { selectors } from '../store/index.js';
+import type { RootState } from '../store/reducers.js';
+import { rootReducer } from '../store/reducers.js';
+import version from '../version.js';
+import type { ISession } from './types.js';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';

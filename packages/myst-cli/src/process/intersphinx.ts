@@ -2,10 +2,10 @@ import { Inventory } from 'intersphinx';
 import { tic, isUrl } from 'myst-cli-utils';
 import { RuleId, fileError } from 'myst-common';
 import { VFile } from 'vfile';
-import { logMessagesFromVFile } from '../index.js';
+import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
-import { castSession } from '../session/index.js';
 import { selectors } from '../store/index.js';
+import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
 
 export async function loadIntersphinx(
   session: ISession,

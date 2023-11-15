@@ -4,7 +4,7 @@ import { RuleId } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { join, dirname } from 'node:path';
 import type { ISession } from '../session/types.js';
-import { addWarningForFile } from '../index.js';
+import { addWarningForFile } from '../utils/addWarningForFile.js';
 
 /**
  * This is the {mdast} directive, that loads from disk

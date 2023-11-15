@@ -3,7 +3,12 @@ import type Token from 'markdown-it/lib/token.js';
 import type { DirectiveSpec, RoleSpec } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { MathExtensionOptions } from './plugins.js';
-import type { MdastOptions } from './tokensToMyst.js';
+
+export type MdastOptions = {
+  handlers?: Record<string, TokenHandlerSpec>;
+  hoistSingleImagesOutofParagraphs?: boolean;
+  nestBlocks?: boolean;
+};
 
 export type TokenHandlerSpec = {
   type: string;

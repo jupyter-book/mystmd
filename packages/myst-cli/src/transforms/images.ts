@@ -11,17 +11,13 @@ import type { VFileMessage } from 'vfile-message';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Image } from 'myst-spec-ext';
 import { extFromMimeType } from 'nbtx';
-import {
-  addWarningForFile,
-  EXT_REQUEST_HEADERS,
-  ImageExtensions,
-  imagemagick,
-  inkscape,
-  KNOWN_IMAGE_EXTENSIONS,
-} from '../utils/index.js';
 import type { ISession } from '../session/types.js';
-import { castSession } from '../session/index.js';
+import { castSession } from '../session/cache.js';
 import { watch } from '../store/index.js';
+import { EXT_REQUEST_HEADERS } from '../utils/headers.js';
+import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { ImageExtensions, KNOWN_IMAGE_EXTENSIONS } from '../utils/resolveExtension.js';
+import { imagemagick, inkscape } from '../utils/index.js';
 
 export const BASE64_HEADER_SPLIT = ';base64,';
 

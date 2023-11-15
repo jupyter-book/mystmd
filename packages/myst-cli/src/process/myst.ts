@@ -6,8 +6,8 @@ import { exerciseDirectives } from 'myst-ext-exercise';
 import { reactiveDirective, reactiveRole } from 'myst-ext-reactive';
 import { tabDirectives } from 'myst-ext-tabs';
 import { VFile } from 'vfile';
-import type { ISession } from '../session/index.js';
-import { logMessagesFromVFile } from '../utils/index.js';
+import type { ISession } from '../session/types.js';
+import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
 import type { GenericParent } from 'myst-common';
 
 export function parseMyst(session: ISession, content: string, file: string): GenericParent {

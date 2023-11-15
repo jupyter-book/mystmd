@@ -1,6 +1,6 @@
 import type { Block } from 'myst-spec-ext';
-import type { ISession } from '../index.js';
-import { parseMyst } from '../index.js';
+import type { ISession } from '../session/types.js';
+import { parseMyst } from '../process/myst.js';
 import type { GenericParent } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 

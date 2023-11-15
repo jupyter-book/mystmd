@@ -9,23 +9,22 @@ import { ExportFormats } from 'myst-frontmatter';
 import type { LinkTransformer } from 'myst-transforms';
 import { selectAll } from 'unist-util-select';
 import { VFile } from 'vfile';
-import { findCurrentProjectAndLoad } from '../../config.js';
-import { loadFile } from '../../process/index.js';
-import type { LocalProjectPage } from '../../project/index.js';
-import { loadProjectFromDisk, writeTocFromProject } from '../../project/index.js';
-import { castSession } from '../../session/index.js';
-import type { ISession } from '../../session/types.js';
-import { selectors } from '../../store/index.js';
-import { createTempFolder, logMessagesFromVFile } from '../../utils/index.js';
-import { runJatsExport } from '../jats/single.js';
-import type { ExportWithOutput, ExportOptions } from '../types.js';
-import {
-  cleanOutput,
-  collectBasicExportOptions,
-  collectExportOptions,
-  resolveAndLogErrors,
-} from '../utils/index.js';
 import { createManifestXml, type ManifestItem } from 'meca';
+import { findCurrentProjectAndLoad } from '../../config.js';
+import { runJatsExport } from '../jats/single.js';
+import { loadFile } from '../../process/file.js';
+import { loadProjectFromDisk } from '../../project/load.js';
+import { writeTocFromProject } from '../../project/toToc.js';
+import type { LocalProjectPage } from '../../project/types.js';
+import type { ISession } from '../../session/types.js';
+import { castSession } from '../../session/cache.js';
+import { selectors } from '../../store/index.js';
+import { createTempFolder } from '../../utils/createTempFolder.js';
+import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import type { ExportWithOutput, ExportOptions } from '../types.js';
+import { cleanOutput } from '../utils/cleanOutput.js';
+import { collectBasicExportOptions, collectExportOptions } from '../utils/collectExportOptions.js';
+import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 
 function mediaTypeFromFile(file: string) {
   const mediaType = mime.lookup(file);

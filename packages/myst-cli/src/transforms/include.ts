@@ -4,7 +4,7 @@ import type { GenericParent } from 'myst-common';
 import { RuleId, fileError } from 'myst-common';
 import { includeDirectiveTransform } from 'myst-transforms';
 import type { VFile } from 'vfile';
-import { parseMyst } from '../process/index.js';
+import { parseMyst } from '../process/myst.js';
 import type { ISession } from '../session/types.js';
 
 export async function includeFilesTransform(

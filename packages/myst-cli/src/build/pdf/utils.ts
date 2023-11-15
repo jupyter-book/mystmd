@@ -1,6 +1,6 @@
 import { makeExecutable, silentLogger } from 'myst-cli-utils';
 import which from 'which';
-import type { ISession } from '../../index.js';
+import type { ISession } from '../../session/types.js';
 
 export function isLatexmkAvailable() {
   return which.sync('latexmk', { nothrow: true });

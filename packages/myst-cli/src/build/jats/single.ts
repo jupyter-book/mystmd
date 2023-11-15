@@ -5,18 +5,18 @@ import { writeJats } from 'myst-to-jats';
 import type { LinkTransformer } from 'myst-transforms';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
-import { combineCitationRenderers, finalizeMdast } from '../../process/index.js';
-import { loadProjectFromDisk } from '../../project/index.js';
-import { castSession } from '../../session/index.js';
+import { combineCitationRenderers } from '../../process/citations.js';
+import { finalizeMdast } from '../../process/mdast.js';
+import { loadProjectFromDisk } from '../../project/load.js';
+import { castSession } from '../../session/cache.js';
 import type { ISession } from '../../session/types.js';
-import { KNOWN_IMAGE_EXTENSIONS, logMessagesFromVFile } from '../../utils/index.js';
+import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { KNOWN_IMAGE_EXTENSIONS } from '../../utils/resolveExtension.js';
 import type { ExportWithOutput, ExportOptions } from '../types.js';
-import {
-  cleanOutput,
-  collectBasicExportOptions,
-  getFileContent,
-  resolveAndLogErrors,
-} from '../utils/index.js';
+import { cleanOutput } from '../utils/cleanOutput.js';
+import { collectBasicExportOptions } from '../utils/collectExportOptions.js';
+import { getFileContent } from '../utils/getFileContent.js';
+import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 
 export async function runJatsExport(
   session: ISession,

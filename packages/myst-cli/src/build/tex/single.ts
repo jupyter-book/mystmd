@@ -16,23 +16,19 @@ import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
 import { findCurrentProjectAndLoad } from '../../config.js';
-import { finalizeMdast } from '../../process/index.js';
-import { loadProjectFromDisk } from '../../project/index.js';
-import { castSession } from '../../session/index.js';
+import { finalizeMdast } from '../../process/mdast.js';
+import { loadProjectFromDisk } from '../../project/load.js';
+import { castSession } from '../../session/cache.js';
 import type { ISession } from '../../session/types.js';
-import {
-  addWarningForFile,
-  createTempFolder,
-  ImageExtensions,
-  logMessagesFromVFile,
-} from '../../utils/index.js';
+import { ImageExtensions } from '../../utils/resolveExtension.js';
+import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { getFileContent } from '../utils/getFileContent.js';
+import { addWarningForFile } from '../../utils/addWarningForFile.js';
+import { cleanOutput } from '../utils/cleanOutput.js';
+import { createTempFolder } from '../../utils/createTempFolder.js';
 import type { ExportWithOutput, ExportOptions, ExportResults } from '../types.js';
-import {
-  cleanOutput,
-  collectTexExportOptions,
-  getFileContent,
-  resolveAndLogErrors,
-} from '../utils/index.js';
+import { collectTexExportOptions } from '../utils/collectExportOptions.js';
+import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = [

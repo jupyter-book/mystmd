@@ -2,7 +2,7 @@ import type { GenericNode } from 'myst-common';
 import { RuleId, fileWarn } from 'myst-common';
 import type { SiUnit } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
-import { NARROW_NO_BREAK_SPACE } from './characters.js';
+import { NARROW_NO_BREAK_SPACE } from './utils.js';
 import type { Handler } from './types.js';
 import { getArguments, texToText } from './utils.js';
 

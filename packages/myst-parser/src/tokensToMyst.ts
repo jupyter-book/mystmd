@@ -7,13 +7,7 @@ import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import { u } from 'unist-builder';
 import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown.js';
-import type { TokenHandlerSpec } from './types.js';
-
-export type MdastOptions = {
-  handlers?: Record<string, TokenHandlerSpec>;
-  hoistSingleImagesOutofParagraphs?: boolean;
-  nestBlocks?: boolean;
-};
+import type { MdastOptions, TokenHandlerSpec } from './types.js';
 
 const NUMBERED_CLASS = /^numbered$/;
 const ALIGN_CLASS = /(?:(?:align-)|^)(left|right|center)/;
