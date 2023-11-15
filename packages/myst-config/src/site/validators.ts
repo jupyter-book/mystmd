@@ -179,7 +179,7 @@ export function validateSiteConfig(input: any, opts: ValidationOptions) {
         opts.errorLogFn?.(`duplicate value for site option ${key}`);
       } else {
         opts.warningLogFn?.(`extra site options should be nested under "options" key: ${key}`);
-        (value.options ??= {})[key] = valueAsObject[key];
+        value.options = { ...value.options, [key]: valueAsObject[key] };
       }
     });
   return validateSiteConfigKeys(value, opts);
