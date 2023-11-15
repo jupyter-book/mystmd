@@ -9,8 +9,10 @@ import {
 } from 'simple-validators';
 import type { ValidationOptions } from 'simple-validators';
 import type { Award, Funding } from './types.js';
-import type { ReferenceStash } from '../index.js';
-import { validateAffiliation, validateAndStashObject, validateContributor } from '../index.js';
+import { validateAffiliation } from '../affiliations/validators.js';
+import { validateContributor } from '../contributors/validators.js';
+import type { ReferenceStash } from '../utils/referenceStash.js';
+import { validateAndStashObject } from '../utils/referenceStash.js';
 
 const AWARD_KEYS = ['id', 'name', 'description', 'sources', 'recipients', 'investigators'];
 const AWARD_ALIASES = { source: 'sources', recipient: 'recipients', investigator: 'investigators' };

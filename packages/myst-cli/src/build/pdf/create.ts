@@ -7,12 +7,14 @@ import { exec, tic } from 'myst-cli-utils';
 import { RuleId, TemplateKind, fileError, fileWarn } from 'myst-common';
 import MystTemplate from 'myst-templates';
 import { VFile } from 'vfile';
+import { docLinks } from '../../docs.js';
 import type { ISession } from '../../session/types.js';
-import { createTempFolder, logMessagesFromVFile, uniqueArray } from '../../utils/index.js';
 import type { ExportResults, ExportWithOutput } from '../types.js';
+import { uniqueArray } from '../../utils/uniqueArray.js';
+import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { createTempFolder } from '../../utils/createTempFolder.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { isLatexmkAvailable, isMakeglossariesAvailable } from './utils.js';
-import { docLinks } from '../../docs.js';
 
 const copyFile = util.promisify(fs.copyFile);
 

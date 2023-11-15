@@ -3,18 +3,59 @@ import path from 'node:path';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, TemplateOptionType } from 'myst-common';
 import type { SiteAction, SiteManifest } from 'myst-config';
-import { PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import type { Export } from 'myst-frontmatter';
+import { ExportFormats, PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
 import { filterKeys } from 'simple-validators';
-import { addWarningForFile, resolveToAbsolute, version } from '../../index.js';
-import { resolvePageExports } from '../../process/site.js';
+import { resolveToAbsolute } from '../../config.js';
 import type { ISession } from '../../session/types.js';
 import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
-import { getMystTemplate } from './template.js';
 import { transformBanner, transformThumbnail } from '../../transforms/images.js';
+import { addWarningForFile } from '../../utils/addWarningForFile.js';
+import version from '../../version.js';
+import { getMystTemplate } from './template.js';
+import { collectExportOptions } from '../utils/collectExportOptions.js';
+import type { ExportWithOutput } from '../types.js';
 
 type ManifestProject = Required<SiteManifest>['projects'][0];
+
+export async function resolvePageExports(session: ISession, file: string) {
+  const exports = (
+    await collectExportOptions(
+      session,
+      [file],
+      [
+        ExportFormats.docx,
+        ExportFormats.pdf,
+        ExportFormats.tex,
+        ExportFormats.xml,
+        ExportFormats.meca,
+      ],
+      {},
+    )
+  )
+    .filter((exp) => {
+      return ['.docx', '.pdf', '.zip', '.xml'].includes(path.extname(exp.output));
+    })
+    .filter((exp) => {
+      return fs.existsSync(exp.output);
+    }) as Export[];
+  exports.forEach((exp) => {
+    const { output } = exp as ExportWithOutput;
+    const fileHash = hashAndCopyStaticFile(session, output, session.publicPath(), (m: string) => {
+      addWarningForFile(session, file, m, 'error', {
+        ruleId: RuleId.exportFileCopied,
+      });
+    });
+    exp.filename = path.basename(output);
+    exp.url = `/${fileHash}`;
+    delete exp.$file;
+    delete exp.$project;
+    delete exp.output;
+  });
+  return exports;
+}
 
 /**
  * Convert local project representation to site manifest project

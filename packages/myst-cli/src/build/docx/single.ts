@@ -8,24 +8,24 @@ import type { RendererDoc } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import type { LinkTransformer } from 'myst-transforms';
 import { htmlTransform } from 'myst-transforms';
-import { VFile } from 'vfile';
-import { findCurrentProjectAndLoad } from '../../config.js';
-import { finalizeMdast } from '../../process/index.js';
-import { loadProjectFromDisk } from '../../project/index.js';
-import type { ISession } from '../../session/types.js';
-import type { RendererData } from '../../transforms/types.js';
-import { createTempFolder, ImageExtensions, logMessagesFromVFile } from '../../utils/index.js';
-import type { ExportOptions, ExportResults, ExportWithOutput } from '../types.js';
-import {
-  resolveAndLogErrors,
-  cleanOutput,
-  getFileContent,
-  collectWordExportOptions,
-} from '../utils/index.js';
-import { createFooter } from './footers.js';
-import { createArticleTitle, createReferenceTitle } from './titles.js';
 import { fileError, fileWarn, RuleId, TemplateKind } from 'myst-common';
 import { selectAll } from 'unist-util-select';
+import { VFile } from 'vfile';
+import { findCurrentProjectAndLoad } from '../../config.js';
+import { finalizeMdast } from '../../process/mdast.js';
+import { loadProjectFromDisk } from '../../project/load.js';
+import type { ISession } from '../../session/types.js';
+import type { RendererData } from '../../transforms/types.js';
+import { createTempFolder } from '../../utils/createTempFolder.js';
+import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { ImageExtensions } from '../../utils/resolveExtension.js';
+import type { ExportOptions, ExportResults, ExportWithOutput } from '../types.js';
+import { cleanOutput } from '../utils/cleanOutput.js';
+import { collectWordExportOptions } from '../utils/collectExportOptions.js';
+import { getFileContent } from '../utils/getFileContent.js';
+import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
+import { createFooter } from './footers.js';
+import { createArticleTitle, createReferenceTitle } from './titles.js';
 
 const DOCX_IMAGE_EXTENSIONS = [ImageExtensions.png, ImageExtensions.jpg, ImageExtensions.jpeg];
 

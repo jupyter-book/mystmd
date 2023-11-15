@@ -9,10 +9,11 @@ import type { ValidationOptions } from 'simple-validators';
 import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
 import { VFile } from 'vfile';
 import { prepareToWrite } from './frontmatter.js';
-import { addWarningForFile, logMessagesFromVFile } from './index.js';
 import type { ISession } from './session/types.js';
 import { selectors } from './store/index.js';
 import { config } from './store/reducers.js';
+import { logMessagesFromVFile } from './utils/logMessagesFromVFile.js';
+import { addWarningForFile } from './utils/addWarningForFile.js';
 
 const VERSION = 1;
 

@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import yaml from 'js-yaml';
 import { basename, extname, join } from 'node:path';
 import chalk from 'chalk';
@@ -6,22 +5,21 @@ import { Inventory, Domains } from 'intersphinx';
 import { writeFileToFolder, tic, hashAndCopyStaticFile, plural } from 'myst-cli-utils';
 import { RuleId, toText } from 'myst-common';
 import type { SiteProject } from 'myst-config';
-import type { Export } from 'myst-frontmatter';
-import { ExportFormats } from 'myst-frontmatter';
 import type { Node } from 'myst-spec';
 import type { LinkTransformer } from 'myst-transforms';
 import { select } from 'unist-util-select';
-import { getSiteManifest, collectExportOptions } from '../build/index.js';
-import type { ExportWithOutput } from '../build/index.js';
 import { reloadAllConfigsForCurrentSite } from '../config.js';
-import { selectFile, loadFile } from '../process/index.js';
-import type { LocalProject } from '../project/index.js';
-import { filterPages, loadProjectFromDisk } from '../project/index.js';
-import { castSession } from '../session/index.js';
+import { getSiteManifest, resolvePageExports } from '../build/site/manifest.js';
+import { filterPages, loadProjectFromDisk } from '../project/load.js';
+import type { LocalProject } from '../project/types.js';
+import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
-import { watch, selectors } from '../store/index.js';
-import { ImageExtensions, addWarningForFile } from '../utils/index.js';
+import { selectors } from '../store/index.js';
+import { watch } from '../store/reducers.js';
+import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { ImageExtensions } from '../utils/resolveExtension.js';
 import { combineProjectCitationRenderers } from './citations.js';
+import { loadFile, selectFile } from './file.js';
 import { loadIntersphinx } from './intersphinx.js';
 import type { PageReferenceStates, TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
@@ -146,43 +144,6 @@ async function resolvePageSource(session: ISession, file: string) {
     });
   });
   return { format: extname(file).substring(1), filename: basename(file), url: `/${fileHash}` };
-}
-
-export async function resolvePageExports(session: ISession, file: string) {
-  const exports = (
-    await collectExportOptions(
-      session,
-      [file],
-      [
-        ExportFormats.docx,
-        ExportFormats.pdf,
-        ExportFormats.tex,
-        ExportFormats.xml,
-        ExportFormats.meca,
-      ],
-      {},
-    )
-  )
-    .filter((exp) => {
-      return ['.docx', '.pdf', '.zip', '.xml'].includes(extname(exp.output));
-    })
-    .filter((exp) => {
-      return fs.existsSync(exp.output);
-    }) as Export[];
-  exports.forEach((exp) => {
-    const { output } = exp as ExportWithOutput;
-    const fileHash = hashAndCopyStaticFile(session, output, session.publicPath(), (m: string) => {
-      addWarningForFile(session, file, m, 'error', {
-        ruleId: RuleId.exportFileCopied,
-      });
-    });
-    exp.filename = basename(output);
-    exp.url = `/${fileHash}`;
-    delete exp.$file;
-    delete exp.$project;
-    delete exp.output;
-  });
-  return exports;
 }
 
 export async function writeFile(

@@ -11,11 +11,11 @@ import type { GenericParent } from 'myst-common';
 import { copyNode, fileError, fileWarn, RuleId } from 'myst-common';
 import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
-import { castSession } from './session/index.js';
-import { loadFile } from './process/index.js';
 import type { ISession } from './session/types.js';
 import { selectors, watch } from './store/index.js';
-import { logMessagesFromVFile } from './index.js';
+import { logMessagesFromVFile } from './utils/logMessagesFromVFile.js';
+import { castSession } from './session/cache.js';
+import { loadFile } from './process/file.js';
 
 /**
  * Get page frontmatter from mdast tree and fill in missing info from project frontmatter

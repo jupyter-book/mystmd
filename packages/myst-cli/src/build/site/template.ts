@@ -5,7 +5,7 @@ import { createNpmLogger, makeExecutable, tic } from 'myst-cli-utils';
 import MystTemplate from 'myst-templates';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
-import { addWarningForFile } from '../../index.js';
+import { addWarningForFile } from '../../utils/addWarningForFile.js';
 
 const DEFAULT_TEMPLATE = 'book-theme';
 const DEFAULT_INSTALL_COMMAND = 'npm install';

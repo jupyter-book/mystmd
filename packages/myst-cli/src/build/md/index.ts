@@ -5,17 +5,16 @@ import { writeMd } from 'myst-to-md';
 import type { LinkTransformer } from 'myst-transforms';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
-import { finalizeMdast } from '../../process/index.js';
-import { loadProjectFromDisk } from '../../project/index.js';
+import { finalizeMdast } from '../../process/mdast.js';
+import { loadProjectFromDisk } from '../../project/load.js';
 import type { ISession } from '../../session/types.js';
-import { KNOWN_IMAGE_EXTENSIONS, logMessagesFromVFile } from '../../utils/index.js';
+import { collectBasicExportOptions } from '../utils/collectExportOptions.js';
+import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
+import { KNOWN_IMAGE_EXTENSIONS } from '../../utils/resolveExtension.js';
 import type { ExportWithOutput, ExportOptions } from '../types.js';
-import {
-  cleanOutput,
-  collectBasicExportOptions,
-  getFileContent,
-  resolveAndLogErrors,
-} from '../utils/index.js';
+import { cleanOutput } from '../utils/cleanOutput.js';
+import { getFileContent } from '../utils/getFileContent.js';
 
 export async function runMdExport(
   session: ISession,

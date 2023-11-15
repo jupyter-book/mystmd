@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import yaml from 'js-yaml';
 import { join, relative } from 'node:path';
+import { removeExtension } from '../utils/removeExtension.js';
+import type { JupyterBookChapter, TOC } from '../utils/toc.js';
 import type { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types.js';
-import type { JupyterBookChapter, TOC } from '../utils/index.js';
-import { removeExtension } from '../utils/index.js';
 
 function getRelativeDocumentLink(file: string, path: string) {
   if (path === '.') return removeExtension(file);

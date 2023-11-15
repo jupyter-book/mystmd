@@ -3,7 +3,7 @@ import path from 'node:path';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { ExportFormats } from 'myst-frontmatter';
-import type { ISession } from '../session/index.js';
+import type { ISession } from '../session/types.js';
 import { collectAllBuildExportOptions, getProjectPaths } from './build.js';
 import { getLogOutputFolder, getTexOutputFolder } from './pdf/create.js';
 

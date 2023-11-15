@@ -1,9 +1,11 @@
 import fs from 'fs-extra';
 import path from 'node:path';
-import { getMystTemplate, getSiteManifest, startServer } from '../../build/index.js';
-import type { ISession } from '../../session/index.js';
 import { writeFileToFolder } from 'myst-cli-utils';
 import fetch from 'node-fetch';
+import type { ISession } from '../../session/types.js';
+import { getSiteManifest } from '../site/manifest.js';
+import { getMystTemplate } from '../site/template.js';
+import { startServer } from '../site/start.js';
 
 export async function currentSiteRoutes(
   session: ISession,

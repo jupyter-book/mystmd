@@ -15,7 +15,7 @@ import { validateAndStashObject } from '../utils/referenceStash.js';
 import { validateGithubUrl } from '../utils/validators.js';
 import { validateVenue } from '../venues/validators.js';
 import type { SiteFrontmatter } from './types.js';
-import { RESERVED_EXPORT_KEYS } from '../index.js';
+import { RESERVED_EXPORT_KEYS } from '../exports/validators.js';
 
 export const SITE_FRONTMATTER_KEYS = [
   'title',

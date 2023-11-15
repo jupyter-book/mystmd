@@ -4,7 +4,7 @@ import type { SiteProject } from 'myst-config';
 import type { LinkTransformer } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
 import { changeFile, fastProcessFile, processSite } from '../../process/site.js';
-import type { TransformFn } from '../../process/index.js';
+import type { TransformFn } from '../../process/mdast.js';
 import { selectors, watch } from '../../store/index.js';
 import { KNOWN_FAST_BUILDS } from '../../utils/resolveExtension.js';
 

@@ -13,9 +13,9 @@ import {
   validateProjectAndPageFrontmatterKeys,
 } from '../project/validators.js';
 import type { PageFrontmatter } from './types.js';
-import { FRONTMATTER_ALIASES } from '../index.js';
 import { validateKernelSpec } from '../kernelspec/validators.js';
 import { validateJupytext } from '../jupytext/validators.js';
+import { FRONTMATTER_ALIASES } from '../site/validators.js';
 
 const KNOWN_PARTS = [
   'abstract',

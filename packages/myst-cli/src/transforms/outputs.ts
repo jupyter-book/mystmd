@@ -12,7 +12,7 @@ import type { VFile } from 'vfile';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { MinifiedContent, MinifiedOutput } from 'nbtx';
 import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
-import { castSession } from '../session/index.js';
+import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
 

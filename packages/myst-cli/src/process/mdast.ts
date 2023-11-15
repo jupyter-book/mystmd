@@ -28,6 +28,7 @@ import {
   reconstructHtmlPlugin,
 } from 'myst-transforms';
 import { unified } from 'unified';
+import { select, selectAll } from 'unist-util-select';
 import { VFile } from 'vfile';
 import {
   getPageFrontmatter,
@@ -36,7 +37,7 @@ import {
 } from '../frontmatter.js';
 import { selectors } from '../store/index.js';
 import type { ISession } from '../session/types.js';
-import { castSession } from '../session/index.js';
+import { castSession } from '../session/cache.js';
 import type { RendererData } from '../transforms/types.js';
 
 import {
@@ -63,12 +64,11 @@ import {
   transformImagesWithoutExt,
   transformImagesToDisk,
 } from '../transforms/index.js';
-import type { ImageExtensions } from '../utils/index.js';
-import { logMessagesFromVFile } from '../utils/index.js';
+import type { ImageExtensions } from '../utils/resolveExtension.js';
+import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
 import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
 import { loadIntersphinx } from './intersphinx.js';
-import { select, selectAll } from 'unist-util-select';
 import { frontmatterPartsTransform } from '../transforms/parts.js';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';

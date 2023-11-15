@@ -13,8 +13,8 @@ import type {
 } from '@jupyterlab/nbformat';
 import { CELL_TYPES, minifyCellOutput } from 'nbtx';
 import { VFile } from 'vfile';
-import { logMessagesFromVFile } from '../index.js';
-import { castSession } from '../session/index.js';
+import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
+import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';

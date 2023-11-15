@@ -5,9 +5,9 @@ import { getCitations } from 'citation-js-utils';
 import { tic, isUrl, plural } from 'myst-cli-utils';
 import { RuleId } from 'myst-common';
 import type { ISession, ISessionWithCache } from '../session/types.js';
-import { castSession } from '../session/index.js';
+import { castSession } from '../session/cache.js';
 import { selectors } from '../store/index.js';
-import { addWarningForFile } from '../utils/index.js';
+import { addWarningForFile } from '../utils/addWarningForFile.js';
 
 export async function loadCitations(session: ISession, path: string): Promise<CitationRenderer> {
   const toc = tic();
