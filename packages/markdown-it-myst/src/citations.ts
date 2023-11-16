@@ -25,7 +25,8 @@ export interface Citation {
 export const citationsPlugin: PluginWithOptions = (md) => {
   const regexes = {
     citation: /^([^^-]|[^^].+?)?(-)?@([\w][\w:.#$%&\-+?<>~/]*)(.+)?$/,
-    inText: /^@((?:[\w|{][\w:.#$%&\-+?<>~/]*[\w|}])|\w)(\s*)(\[)?/,
+    // Only allow a short [suffix] for in text citations (e.g. 50 characters)
+    inText: /^@((?:[\w|{][\w:.#$%&\-+?<>~/]*[\w|}])|\w)(\s*)(\[([^\]]{1,50})\])?/,
     allowedBefore: /^[^a-zA-Z.0-9]$/,
   };
 
@@ -50,24 +51,14 @@ export const citationsPlugin: PluginWithOptions = (md) => {
           (token as any).col = [state.pos];
         }
         if (match[3]) {
-          // suffix is there
-          const suffixStart = state.pos + match[0].length;
-          const suffixEnd = state.md.helpers.parseLinkLabel(state, suffixStart);
-          const charAfter = state.src.codePointAt(suffixEnd + 1);
-          if (suffixEnd > 0 && charAfter != 0x28 && charAfter != 0x5b /* ( or [ */) {
-            const suffix = state.src.slice(suffixStart, suffixEnd);
-            citation.suffix = state.md.parseInline(suffix, state.env);
-            state.pos += match[0].length + suffixEnd - suffixStart + 1;
-            if (token) {
-              token.content = match[0] + suffix + ']';
-              (token as any).col.push(state.pos);
-            }
-          } else {
-            state.pos += match[0].length - match[2].length - match[3].length;
-            if (token) {
-              token.content = match[0];
-              (token as any).col.push(state.pos);
-            }
+          // The in-text citation is followed by [suffix]
+          // Another way to do this is to use `state.md.helpers.parseLinkLabel(state, suffixStart);`
+          const suffix = match[4];
+          citation.suffix = state.md.parseInline(suffix, state.env);
+          state.pos += match[0].length;
+          if (token) {
+            token.content = match[0];
+            (token as any).col.push(state.pos);
           }
         } else {
           state.pos += match[0].length - match[2].length;
