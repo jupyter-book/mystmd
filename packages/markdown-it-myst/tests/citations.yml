@@ -202,3 +202,28 @@ cases:
           - type: text
             content: ', the authors...'
       - type: paragraph_close
+  - title: Nested labels
+    md: 'These include experimentally produced alkaline magmas from @iacovino2016 [`alkaline.xlsx`], basaltic melt inclusions from Kilauea [@tucker2019] and Gakkel Ridge [@bennett2019 `basalts.xlsx`], basaltic melt inclusions from Cerro Negro volcano, Nicaragua [@roggensack2001 `cerro_negro.xlsx`], and rhyolite melt inclusions from the Taupo Volcanic Center, New Zealand [@myers2019] and a topaz rhyolite from the Rio Grande Rift @mercer2015 [`rhyolites.xlsx`].'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: 'These include experimentally produced alkaline magmas from '
+          - type: cite
+            content: '@iacovino2016 [`alkaline.xlsx`]'
+            meta:
+              label: iacovino2016
+              kind: narrative
+              suffix:
+                - content: '`alkaline.xlsx`'
+          - type: text
+            content: ', basaltic melt inclusions from Kilauea '
+          - type: cite
+            content: '@tucker2019'
+            meta:
+              label: tucker2019
+              kind: parenthetical
+          - type: text
+            content: ' and Gakkel Ridge '
+      - type: paragraph_close
