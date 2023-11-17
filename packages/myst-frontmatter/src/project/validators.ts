@@ -4,7 +4,9 @@ import {
   filterKeys,
   incrementOptions,
   validateBoolean,
+  validateChoice,
   validateDate,
+  validateKeys,
   validateList,
   validateObject,
   validateObjectKeys,
@@ -22,7 +24,17 @@ import {
 } from '../site/validators.js';
 import { validateThebe } from '../thebe/validators.js';
 import { validateBooleanOrObject, validateDoi } from '../utils/validators.js';
-import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
+import type { ProjectAndPageFrontmatter, ProjectFrontmatter, ProjectSettings } from './types.js';
+
+const OUTPUT_REMOVAL_OPTIONS: Required<ProjectSettings>['output_stderr'][] = [
+  'show',
+  'remove',
+  'remove-warn',
+  'remove-error',
+  'warn',
+  'error',
+];
+export const PROJECT_SETTINGS = ['output_stderr', 'output_stdout'];
 
 export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'date',
@@ -41,6 +53,7 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'math',
   'abbreviations',
   'exports',
+  'settings', // We maybe want to move this into site frontmatter in the future
   // Do not add any project specific keys here!
   ...SITE_FRONTMATTER_KEYS,
 ];
@@ -53,6 +66,33 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'resources',
   'thebe',
 ];
+
+export function validateProjectAndPageSettings(
+  value: Record<string, any>,
+  opts: ValidationOptions,
+): ProjectSettings | undefined {
+  const obj = validateObject(value, opts);
+  if (!obj) return undefined;
+  const output: ProjectSettings = {};
+  const settings = validateKeys(obj, { optional: PROJECT_SETTINGS }, opts);
+  if (!settings) return undefined;
+  if (defined(value.output_stderr)) {
+    const output_stderr = validateChoice(value.output_stderr, {
+      ...incrementOptions('output_stderr', opts),
+      choices: OUTPUT_REMOVAL_OPTIONS,
+    });
+    if (output_stderr) output.output_stderr = output_stderr;
+  }
+  if (defined(value.output_stdout)) {
+    const output_stdout = validateChoice(value.output_stdout, {
+      ...incrementOptions('output_stdout', opts),
+      choices: OUTPUT_REMOVAL_OPTIONS,
+    });
+    if (output_stdout) output.output_stdout = output_stdout;
+  }
+  if (Object.keys(output).length === 0) return undefined;
+  return output;
+}
 
 export function validateProjectAndPageFrontmatterKeys(
   value: Record<string, any>,
@@ -162,6 +202,13 @@ export function validateProjectAndPageFrontmatterKeys(
   if (defined(value.bannerOptimized)) {
     // No validation, this is expected to be set programmatically
     output.bannerOptimized = value.bannerOptimized;
+  }
+  if (defined(value.settings)) {
+    const settings = validateProjectAndPageSettings(
+      value.settings,
+      incrementOptions('settings', opts),
+    );
+    if (settings) output.settings = settings;
   }
   return output;
 }

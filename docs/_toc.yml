@@ -58,4 +58,5 @@ parts:
       - file: syntax-overview
       - file: directives
       - file: frontmatter
+      - file: settings
       - file: glossary

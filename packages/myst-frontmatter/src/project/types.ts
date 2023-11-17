@@ -5,6 +5,11 @@ import type { Numbering } from '../numbering/types.js';
 import type { SiteFrontmatter } from '../site/types.js';
 import type { Thebe } from '../thebe/types.js';
 
+export type ProjectSettings = {
+  output_stderr?: 'show' | 'remove' | 'remove-warn' | 'remove-error' | 'warn' | 'error';
+  output_stdout?: 'show' | 'remove' | 'remove-warn' | 'remove-error' | 'warn' | 'error';
+};
+
 export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   date?: string;
   name?: string;
@@ -25,6 +30,7 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   /** Abbreviations used throughout the project */
   abbreviations?: Record<string, string>;
   exports?: Export[];
+  settings?: ProjectSettings;
 };
 
 export type ProjectFrontmatter = ProjectAndPageFrontmatter & {

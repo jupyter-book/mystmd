@@ -56,6 +56,14 @@ export function fillPageFrontmatter(
     };
   }
 
+  // Combine all settings defined on page and project
+  if (projectFrontmatter.settings || pageFrontmatter.settings) {
+    frontmatter.settings = {
+      ...(projectFrontmatter.settings ?? {}),
+      ...(pageFrontmatter.settings ?? {}),
+    };
+  }
+
   // Gather all contributors and affiliations from funding sources
   const contributorIds: Set<string> = new Set();
   const affiliationIds: Set<string> = new Set();

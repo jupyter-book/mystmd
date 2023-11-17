@@ -60,13 +60,13 @@ project:
 
 The following table lists the available frontmatter fields, a brief description and a note on how the field behaves depending on whether it is set on a page or at the project level. Where a field itself is an object with sub-fields, see the relevant description on the page below.
 
-```{list-table} A list of available frontmatter fields and their behaviour across projects and pages
+```{list-table} A list of available frontmatter fields and their behavior across projects and pages
 :header-rows: 1
 :name: table-frontmatter
 
 * - field
   - description
-  - field behaviour
+  - field behavior
 * - `title`
   - a string (max 500 chars)
   - page & project
