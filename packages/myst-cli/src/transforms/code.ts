@@ -1,5 +1,5 @@
 import type { GenericNode, GenericParent } from 'myst-common';
-import { RuleId, fileError, fileWarn } from 'myst-common';
+import { NotebookCellTags, RuleId, fileError, fileWarn } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import yaml from 'js-yaml';
 import type { VFile } from 'vfile';
@@ -167,22 +167,22 @@ export function propagateBlockDataToCode(session: ISession, vfile: VFile, mdast:
     validMetatags.forEach((tag: string) => {
       switch (tag) {
         // should we raise when hide and remove both exist?
-        case 'hide-cell':
+        case NotebookCellTags.hideCell:
           block.visibility = 'hide';
           break;
-        case 'remove-cell':
+        case NotebookCellTags.removeCell:
           block.visibility = 'remove';
           break;
-        case 'hide-input':
+        case NotebookCellTags.hideInput:
           if (codeNode) codeNode.visibility = 'hide';
           break;
-        case 'remove-input':
+        case NotebookCellTags.removeInput:
           if (codeNode) codeNode.visibility = 'remove';
           break;
-        case 'hide-output':
+        case NotebookCellTags.hideOutput:
           if (outputNode) outputNode.visibility = 'hide';
           break;
-        case 'remove-output':
+        case NotebookCellTags.removeOutput:
           if (outputNode) outputNode.visibility = 'remove';
           break;
         default:

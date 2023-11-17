@@ -16,7 +16,13 @@ export {
 export { selectBlockParts, extractPart } from './extractParts.js';
 export { RuleId } from './ruleids.js';
 export { TemplateKind, TemplateOptionType } from './templates.js';
-export { AdmonitionKind, NotebookCell, ParseTypesEnum, TargetKind } from './types.js';
+export {
+  AdmonitionKind,
+  NotebookCell,
+  NotebookCellTags,
+  ParseTypesEnum,
+  TargetKind,
+} from './types.js';
 
 export type { MessageInfo } from './utils.js';
 export type {
