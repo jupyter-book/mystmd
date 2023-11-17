@@ -106,9 +106,10 @@ const defaultParser = (caption: string): GenericParent => {
  */
 export function blockToFigureTransform(
   mdast: GenericParent,
-  { parser = defaultParser }: { parser?: (caption: string) => GenericNode },
+  opts?: { parser?: (caption: string) => GenericNode },
 ) {
   const blocks = selectAll('block', mdast) as any[];
+  const parser = opts?.parser ?? defaultParser;
   blocks.forEach((block) => {
     const caption = block.data?.caption ?? block.data?.['fig-cap'] ?? block.data?.['tbl-cap'];
     if (caption) {
