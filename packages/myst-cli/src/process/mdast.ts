@@ -63,6 +63,7 @@ import {
   transformImagesToEmbed,
   transformImagesWithoutExt,
   transformImagesToDisk,
+  transformFilterOutputStreams,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
@@ -215,6 +216,7 @@ export async function transformMdast(
   }
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
+  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
   transformCitations(mdast, fileCitationRenderer, references);
   await unified()

@@ -26,6 +26,17 @@ export enum NotebookCell {
   code = 'notebook-code',
 }
 
+export enum NotebookCellTags {
+  'removeStderr' = 'remove-stderr',
+  'removeStdout' = 'remove-stdout',
+  'hideCell' = 'hide-cell',
+  'hideInput' = 'hide-input',
+  'hideOutput' = 'hide-output',
+  'removeCell' = 'remove-cell',
+  'removeInput' = 'remove-input',
+  'removeOutput' = 'remove-output',
+}
+
 export type References = {
   cite?: Citations;
   article?: GenericParent;

@@ -3,15 +3,16 @@ import { dirname, join, relative } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
 import type { Image } from 'myst-spec-ext';
 import { SourceFileKind } from 'myst-spec-ext';
-import { liftChildren, fileError, RuleId } from 'myst-common';
+import { liftChildren, fileError, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
+import type { ProjectSettings } from 'myst-frontmatter';
 import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import type { IOutput } from '@jupyterlab/nbformat';
-import type { MinifiedContent, MinifiedOutput } from 'nbtx';
-import { extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
+import type { IOutput, IStream } from '@jupyterlab/nbformat';
+import type { MinifiedContent, MinifiedOutput, MinifiedMimeOutput } from 'nbtx';
+import { ensureString, extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
@@ -45,6 +46,98 @@ export async function transformOutputsToCache(
       });
     }),
   );
+}
+
+export function stringIsMatplotlibOutput(value?: string): boolean {
+  if (!value) return false;
+  // We can add more when we find them...
+  const match =
+    value.match(/<(Figure|Text|matplotlib)(.*)at ([0-9a-z]+)>/) ||
+    value.match(/^<(Figure|Text|AxesSubplot|module)(.*)>$/) ||
+    value.match(/^(Text)\((.*)\)$/);
+  return !!match;
+}
+
+/** Remove warnings and errors from outputs */
+export function transformFilterOutputStreams(
+  mdast: GenericParent,
+  vfile: VFile,
+  {
+    output_stdout: stdout = 'show',
+    output_stderr: stderr = 'show',
+    output_matplotlib_strings: mpl = 'remove-warn',
+  }: Pick<ProjectSettings, 'output_stdout' | 'output_stderr' | 'output_matplotlib_strings'> = {},
+) {
+  const blocks = selectAll('block', mdast) as GenericNode[];
+  blocks.forEach((block) => {
+    const tags: string[] = Array.isArray(block.data?.tags) ? block.data.tags : [];
+    const blockRemoveStderr = tags.includes('remove-stderr');
+    const blockRemoveStdout = tags.includes('remove-stdout');
+    const outputs = selectAll('output', block) as GenericNode[];
+    // There should be only one output in the block
+    outputs.forEach((output) => {
+      output.data = output.data.filter((data: IStream | MinifiedMimeOutput) => {
+        if (stderr !== 'show' && data.output_type === 'stream' && data.name === 'stderr') {
+          const doRemove = stderr.includes('remove') || blockRemoveStderr;
+          const doWarn = stderr.includes('warn');
+          const doError = stderr.includes('error');
+          if (doWarn || doError) {
+            (doError ? fileError : fileWarn)(
+              vfile,
+              doRemove ? 'Removing stderr from outputs' : 'Output contains stderr',
+              {
+                node: output,
+                note: ensureString(data.text),
+              },
+            );
+          }
+          return !doRemove;
+        }
+        if (stdout !== 'show' && data.output_type === 'stream' && data.name === 'stdout') {
+          const doRemove = stdout.includes('remove') || blockRemoveStdout;
+          const doWarn = stdout.includes('warn');
+          const doError = stdout.includes('error');
+          if (doWarn || doError) {
+            (doError ? fileError : fileWarn)(
+              vfile,
+              doRemove ? 'Removing stdout from outputs' : 'Output contains stdout',
+              {
+                node: output,
+                note: ensureString(data.text),
+              },
+            );
+          }
+          return !doRemove;
+        }
+        if (
+          mpl !== 'show' &&
+          data.output_type === 'execute_result' &&
+          Object.keys(data.data).length === 1 &&
+          data.data['text/plain']
+        ) {
+          const content = data.data['text/plain'].content;
+          if (!stringIsMatplotlibOutput(content)) return true;
+          const doRemove = mpl.includes('remove');
+          const doWarn = mpl.includes('warn');
+          const doError = mpl.includes('error');
+          if (doWarn || doError) {
+            (doError ? fileError : fileWarn)(
+              vfile,
+              doRemove
+                ? 'Removing matplotlib string from outputs'
+                : 'Output contains matplotlib string',
+              {
+                node: output,
+                note: `${content}\n   Fix: Put a semicolon on the last line of your cell or add "output_matplotlib_strings: remove" to the project settings.`,
+              },
+            );
+          }
+          return !doRemove;
+        }
+        return true;
+      });
+    });
+  });
 }
 
 function writeCachedOutputToFile(
