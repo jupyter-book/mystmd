@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { u } from 'unist-builder';
 import { VFile } from 'vfile';
-import { blockMetadataTransform, blockNestingTransform } from './blocks';
+import { blockMetadataTransform, blockNestingTransform, blockToFigureTransform } from './blocks';
 
 describe('Test blockMetadataTransform', () => {
   test.each([
@@ -138,6 +138,73 @@ describe('Test blockMetadataTransform', () => {
           [
             u('output', { identifier: 'my_label-output-0' }, 'We know what we are'),
             u('output', { identifier: 'my_label-output-1' }, 'but know not what we may be.'),
+          ],
+        ),
+      ]),
+    );
+  });
+});
+
+describe('Test blockToFigureTransform', () => {
+  test('block metadata is propagated to new figure', async () => {
+    const mdast = u('root', [
+      u(
+        'block',
+        {
+          label: 'my-label',
+          identifier: 'my-label',
+          data: { caption: 'My caption', metadata: '' },
+          attribute: '',
+        },
+        [u('paragraph', [u('text', 'value')])],
+      ),
+    ]) as any;
+    blockToFigureTransform(mdast);
+    expect(mdast).toEqual(
+      u('root', [
+        u(
+          'block',
+          {
+            data: { metadata: '' },
+            attribute: '',
+          },
+          [
+            u('container', { kind: 'figure', label: 'my-label', identifier: 'my-label' }, [
+              u('paragraph', [u('text', 'value')]),
+              u('caption', [u('paragraph', [u('text', 'My caption')])]),
+            ]),
+          ],
+        ),
+      ]),
+    );
+  });
+  test('fig-cap coerces to caption for block-to-figure', async () => {
+    const mdast = u('root', [
+      u(
+        'block',
+        {
+          label: 'my-label',
+          identifier: 'my-label',
+          data: { 'fig-cap': 'My caption', metadata: '' },
+          attribute: '',
+        },
+        [u('paragraph', [u('text', 'value')])],
+      ),
+    ]) as any;
+    blockToFigureTransform(mdast);
+    expect(mdast).toEqual(
+      u('root', [
+        u(
+          'block',
+          {
+            data: { metadata: '' },
+            attribute: '',
+          },
+          [
+            u('container', { kind: 'figure', label: 'my-label', identifier: 'my-label' }, [
+              u('paragraph', [u('text', 'value')]),
+              u('caption', [u('paragraph', [u('text', 'My caption')])]),
+            ]),
           ],
         ),
       ]),

@@ -4,7 +4,7 @@ import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRole
 import { mystTargetsTransform, headingLabelTransform } from './targets.js';
 import { captionParagraphTransform } from './caption.js';
 import { admonitionBlockquoteTransform, admonitionHeadersTransform } from './admonitions.js';
-import { blockMetadataTransform, blockNestingTransform } from './blocks.js';
+import { blockMetadataTransform, blockNestingTransform, blockToFigureTransform } from './blocks.js';
 import { htmlIdsTransform } from './htmlIds.js';
 import { imageAltTextTransform } from './images.js';
 import { mathLabelTransform, mathNestingTransform, subequationTransform } from './math.js';
@@ -32,6 +32,7 @@ export function basicTransformations(tree: GenericParent, file: VFile) {
   blockNestingTransform(tree);
   // Block metadata may contain labels/html_ids
   blockMetadataTransform(tree, file);
+  blockToFigureTransform(tree);
   htmlIdsTransform(tree);
   imageAltTextTransform(tree);
   blockquoteTransform(tree);

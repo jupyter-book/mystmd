@@ -88,3 +88,40 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
 export const blockMetadataPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree, file) => {
   blockMetadataTransform(tree, file);
 };
+
+const defaultCaptionParser = (caption: string): GenericNode => {
+  return {
+    type: 'caption',
+    children: [
+      {
+        type: 'paragraph',
+        children: [{ type: 'text', value: caption }],
+      },
+    ],
+  };
+};
+
+/**
+ * If a block has a caption, nest the content in a figure with that caption
+ */
+export function blockToFigureTransform(mdast: GenericParent, captionParser = defaultCaptionParser) {
+  const blocks = selectAll('block', mdast) as any[];
+  blocks.forEach((block) => {
+    const caption = block.data?.caption ?? block.data?.['fig-cap'];
+    if (caption) {
+      block.children = [
+        {
+          type: 'container',
+          kind: 'figure',
+          label: block.label,
+          identifier: block.identifier,
+          children: [...block.children, captionParser(caption)],
+        },
+      ];
+      delete block.data.caption;
+      delete block.data['fig-cap'];
+      delete block.label;
+      delete block.identifier;
+    }
+  });
+}
