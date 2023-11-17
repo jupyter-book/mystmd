@@ -34,7 +34,7 @@ const OUTPUT_REMOVAL_OPTIONS: Required<ProjectSettings>['output_stderr'][] = [
   'warn',
   'error',
 ];
-export const PROJECT_SETTINGS = ['output_stderr', 'output_stdout'];
+export const PROJECT_SETTINGS = ['output_stderr', 'output_stdout', 'output_matplotlib_strings'];
 
 export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'date',
