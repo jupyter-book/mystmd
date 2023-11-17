@@ -107,12 +107,13 @@ const defaultCaptionParser = (caption: string): GenericNode => {
 export function blockToFigureTransform(mdast: GenericParent, captionParser = defaultCaptionParser) {
   const blocks = selectAll('block', mdast) as any[];
   blocks.forEach((block) => {
-    const caption = block.data?.caption ?? block.data?.['fig-cap'];
+    const caption = block.data?.caption ?? block.data?.['fig-cap'] ?? block.data?.['tbl-cap'];
     if (caption) {
+      const kind = block.data?.kind ?? (block.data?.['tbl-cap'] ? 'table' : 'figure');
       block.children = [
         {
           type: 'container',
-          kind: 'figure',
+          kind,
           label: block.label,
           identifier: block.identifier,
           children: [...block.children, captionParser(caption)],
@@ -120,6 +121,8 @@ export function blockToFigureTransform(mdast: GenericParent, captionParser = def
       ];
       delete block.data.caption;
       delete block.data['fig-cap'];
+      delete block.data['tbl-cap'];
+      delete block.data.kind;
       delete block.label;
       delete block.identifier;
     }

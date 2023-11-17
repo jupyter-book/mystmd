@@ -210,4 +210,68 @@ describe('Test blockToFigureTransform', () => {
       ]),
     );
   });
+  test('tbl-cap coerces to caption for block-to-figure', async () => {
+    const mdast = u('root', [
+      u(
+        'block',
+        {
+          label: 'my-label',
+          identifier: 'my-label',
+          data: { 'tbl-cap': 'My caption', metadata: '' },
+          attribute: '',
+        },
+        [u('paragraph', [u('text', 'value')])],
+      ),
+    ]) as any;
+    blockToFigureTransform(mdast);
+    expect(mdast).toEqual(
+      u('root', [
+        u(
+          'block',
+          {
+            data: { metadata: '' },
+            attribute: '',
+          },
+          [
+            u('container', { kind: 'table', label: 'my-label', identifier: 'my-label' }, [
+              u('paragraph', [u('text', 'value')]),
+              u('caption', [u('paragraph', [u('text', 'My caption')])]),
+            ]),
+          ],
+        ),
+      ]),
+    );
+  });
+  test('block kind is applied to figure block-to-figure', async () => {
+    const mdast = u('root', [
+      u(
+        'block',
+        {
+          label: 'my-label',
+          identifier: 'my-label',
+          data: { 'fig-cap': 'My caption', metadata: '', kind: 'table' },
+          attribute: '',
+        },
+        [u('paragraph', [u('text', 'value')])],
+      ),
+    ]) as any;
+    blockToFigureTransform(mdast);
+    expect(mdast).toEqual(
+      u('root', [
+        u(
+          'block',
+          {
+            data: { metadata: '' },
+            attribute: '',
+          },
+          [
+            u('container', { kind: 'table', label: 'my-label', identifier: 'my-label' }, [
+              u('paragraph', [u('text', 'value')]),
+              u('caption', [u('paragraph', [u('text', 'My caption')])]),
+            ]),
+          ],
+        ),
+      ]),
+    );
+  });
 });
