@@ -90,6 +90,13 @@ export function validateProjectAndPageSettings(
     });
     if (output_stdout) output.output_stdout = output_stdout;
   }
+  if (defined(value.output_matplotlib_strings)) {
+    const output_matplotlib_strings = validateChoice(value.output_matplotlib_strings, {
+      ...incrementOptions('output_matplotlib_strings', opts),
+      choices: OUTPUT_REMOVAL_OPTIONS,
+    });
+    if (output_matplotlib_strings) output.output_matplotlib_strings = output_matplotlib_strings;
+  }
   if (Object.keys(output).length === 0) return undefined;
   return output;
 }

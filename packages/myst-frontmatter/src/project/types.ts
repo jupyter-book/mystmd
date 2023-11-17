@@ -5,9 +5,12 @@ import type { Numbering } from '../numbering/types.js';
 import type { SiteFrontmatter } from '../site/types.js';
 import type { Thebe } from '../thebe/types.js';
 
+type OutputRemovalOptions = 'show' | 'remove' | 'remove-warn' | 'remove-error' | 'warn' | 'error';
+
 export type ProjectSettings = {
-  output_stderr?: 'show' | 'remove' | 'remove-warn' | 'remove-error' | 'warn' | 'error';
-  output_stdout?: 'show' | 'remove' | 'remove-warn' | 'remove-error' | 'warn' | 'error';
+  output_stderr?: OutputRemovalOptions;
+  output_stdout?: OutputRemovalOptions;
+  output_matplotlib_strings?: OutputRemovalOptions;
 };
 
 export type ProjectAndPageFrontmatter = SiteFrontmatter & {

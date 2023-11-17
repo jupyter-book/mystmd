@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { reduceOutputs } from './outputs';
+import { reduceOutputs, stringIsMatplotlibOutput } from './outputs';
 import { Session } from '../session/session';
 
 describe('reduceOutputs', () => {
@@ -183,4 +183,16 @@ describe('reduceOutputs', () => {
   //   expect(mdast.children[1].type).toEqual('image');
   //   expect(mdast.children[2].type).toEqual('image');
   // });
+  it.each([
+    ['<Figure size 720x576 with 1 Axes>', true],
+    ['<matplotlib.legend.Legend at 0x7fb7fc701b90>', true],
+    ["Text(0.5, 0.98, 'Test 1')", true],
+    [
+      '(<Figure size 1224x576 with 1 Axes>,\n<matplotlib.axes._subplots.AxesSubplot at 0x7fd733d23e90>)',
+      true,
+    ],
+    ['Not matplotlib', false],
+  ])('%s', (string, bool) => {
+    expect(stringIsMatplotlibOutput(string)).toBe(bool);
+  });
 });
