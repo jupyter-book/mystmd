@@ -89,9 +89,9 @@ export const blockMetadataPlugin: Plugin<[], GenericParent, GenericParent> = () 
   blockMetadataTransform(tree, file);
 };
 
-const defaultCaptionParser = (caption: string): GenericNode => {
+const defaultParser = (caption: string): GenericParent => {
   return {
-    type: 'caption',
+    type: 'root',
     children: [
       {
         type: 'paragraph',
@@ -104,19 +104,23 @@ const defaultCaptionParser = (caption: string): GenericNode => {
 /**
  * If a block has a caption, nest the content in a figure with that caption
  */
-export function blockToFigureTransform(mdast: GenericParent, captionParser = defaultCaptionParser) {
+export function blockToFigureTransform(
+  mdast: GenericParent,
+  { parser = defaultParser }: { parser?: (caption: string) => GenericNode },
+) {
   const blocks = selectAll('block', mdast) as any[];
   blocks.forEach((block) => {
     const caption = block.data?.caption ?? block.data?.['fig-cap'] ?? block.data?.['tbl-cap'];
     if (caption) {
       const kind = block.data?.kind ?? (block.data?.['tbl-cap'] ? 'table' : 'figure');
+      const parsedCaption = parser(caption);
       block.children = [
         {
           type: 'container',
           kind,
           label: block.label,
           identifier: block.identifier,
-          children: [...block.children, captionParser(caption)],
+          children: [...block.children, { type: 'caption', children: parsedCaption.children }],
         },
       ];
       delete block.data.caption;
