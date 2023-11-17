@@ -77,7 +77,11 @@ export function transformFilterOutputStreams(
     // There should be only one output in the block
     outputs.forEach((output) => {
       output.data = output.data.filter((data: IStream | MinifiedMimeOutput) => {
-        if (stderr !== 'show' && data.output_type === 'stream' && data.name === 'stderr') {
+        if (
+          (stderr !== 'show' || blockRemoveStderr) &&
+          data.output_type === 'stream' &&
+          data.name === 'stderr'
+        ) {
           const doRemove = stderr.includes('remove') || blockRemoveStderr;
           const doWarn = stderr.includes('warn');
           const doError = stderr.includes('error');
@@ -93,7 +97,11 @@ export function transformFilterOutputStreams(
           }
           return !doRemove;
         }
-        if (stdout !== 'show' && data.output_type === 'stream' && data.name === 'stdout') {
+        if (
+          (stdout !== 'show' || blockRemoveStdout) &&
+          data.output_type === 'stream' &&
+          data.name === 'stdout'
+        ) {
           const doRemove = stdout.includes('remove') || blockRemoveStdout;
           const doWarn = stdout.includes('warn');
           const doError = stdout.includes('error');
