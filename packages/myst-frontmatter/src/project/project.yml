@@ -150,23 +150,23 @@ cases:
   - title: settings output_stderr
     raw:
       settings:
-        output_stderr: 'remove'
-        output_stdout: 'warn'
+        output_stderr: remove
+        stdout_output: warn
     errors: 0
     normalized:
       settings:
-        output_stderr: 'remove'
-        output_stdout: 'warn'
+        output_stderr: remove
+        output_stdout: warn
   - title: settings output_stderr bad value
     raw:
       settings:
-        output_stderr: 'ok'
-        output_stdout: 'ok'
+        output_stderr: ok
+        output_stdout: ok
     errors: 2
     normalized: {}
   - title: settings unknown value
     raw:
       settings:
-        what: 'ok'
+        what: ok
     warnings: 1
     normalized: {}

@@ -53,7 +53,7 @@ export function stringIsMatplotlibOutput(value?: string): boolean {
   // We can add more when we find them...
   const match =
     value.match(/<(Figure|Text|matplotlib)(.*)at ([0-9a-z]+)>/) ||
-    value.match(/^<(Figure|Text|AxesSubplot)(.*)>$/) ||
+    value.match(/^<(Figure|Text|AxesSubplot|module)(.*)>$/) ||
     value.match(/^(Text)\((.*)\)$/);
   return !!match;
 }
@@ -68,10 +68,9 @@ export function transformFilterOutputStreams(
     output_matplotlib_strings: mpl = 'remove-warn',
   }: Pick<ProjectSettings, 'output_stdout' | 'output_stderr' | 'output_matplotlib_strings'> = {},
 ) {
-  if (stdout === 'show' && stderr === 'show') return;
   const blocks = selectAll('block', mdast) as GenericNode[];
   blocks.forEach((block) => {
-    const tags: string[] = Array.isArray(block.data.tags) ? block.data.tags : [];
+    const tags: string[] = Array.isArray(block.data?.tags) ? block.data.tags : [];
     const blockRemoveStderr = tags.includes('remove-stderr');
     const blockRemoveStdout = tags.includes('remove-stdout');
     const outputs = selectAll('output', block) as GenericNode[];

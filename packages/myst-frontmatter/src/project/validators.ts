@@ -6,7 +6,6 @@ import {
   validateBoolean,
   validateChoice,
   validateDate,
-  validateKeys,
   validateList,
   validateObject,
   validateObjectKeys,
@@ -35,6 +34,10 @@ const OUTPUT_REMOVAL_OPTIONS: Required<ProjectSettings>['output_stderr'][] = [
   'error',
 ];
 export const PROJECT_SETTINGS = ['output_stderr', 'output_stdout', 'output_matplotlib_strings'];
+export const PROJECT_SETTINGS_ALIAS = {
+  stderr_output: 'output_stderr',
+  stdout_output: 'output_stdout',
+};
 
 export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'date',
@@ -71,27 +74,29 @@ export function validateProjectAndPageSettings(
   value: Record<string, any>,
   opts: ValidationOptions,
 ): ProjectSettings | undefined {
-  const obj = validateObject(value, opts);
-  if (!obj) return undefined;
   const output: ProjectSettings = {};
-  const settings = validateKeys(obj, { optional: PROJECT_SETTINGS }, opts);
+  const settings = validateObjectKeys(
+    value,
+    { optional: PROJECT_SETTINGS, alias: PROJECT_SETTINGS_ALIAS },
+    opts,
+  );
   if (!settings) return undefined;
-  if (defined(value.output_stderr)) {
-    const output_stderr = validateChoice(value.output_stderr, {
+  if (defined(settings.output_stderr)) {
+    const output_stderr = validateChoice(settings.output_stderr, {
       ...incrementOptions('output_stderr', opts),
       choices: OUTPUT_REMOVAL_OPTIONS,
     });
     if (output_stderr) output.output_stderr = output_stderr;
   }
-  if (defined(value.output_stdout)) {
-    const output_stdout = validateChoice(value.output_stdout, {
+  if (defined(settings.output_stdout)) {
+    const output_stdout = validateChoice(settings.output_stdout, {
       ...incrementOptions('output_stdout', opts),
       choices: OUTPUT_REMOVAL_OPTIONS,
     });
     if (output_stdout) output.output_stdout = output_stdout;
   }
-  if (defined(value.output_matplotlib_strings)) {
-    const output_matplotlib_strings = validateChoice(value.output_matplotlib_strings, {
+  if (defined(settings.output_matplotlib_strings)) {
+    const output_matplotlib_strings = validateChoice(settings.output_matplotlib_strings, {
       ...incrementOptions('output_matplotlib_strings', opts),
       choices: OUTPUT_REMOVAL_OPTIONS,
     });
