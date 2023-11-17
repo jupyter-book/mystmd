@@ -114,14 +114,21 @@ export function blockToFigureTransform(
     const caption = block.data?.caption ?? block.data?.['fig-cap'] ?? block.data?.['tbl-cap'];
     if (caption) {
       const kind = block.data?.kind ?? (block.data?.['tbl-cap'] ? 'table' : 'figure');
-      const parsedCaption = parser(caption);
+      const children = [...block.children];
+      const { children: captionChildren } = parser(caption);
+      const parsedCaption = { type: 'caption', children: captionChildren };
+      if (kind === 'table') {
+        children.unshift(parsedCaption);
+      } else {
+        children.push(parsedCaption);
+      }
       block.children = [
         {
           type: 'container',
           kind,
           label: block.label,
           identifier: block.identifier,
-          children: [...block.children, { type: 'caption', children: parsedCaption.children }],
+          children,
         },
       ];
       delete block.data.caption;

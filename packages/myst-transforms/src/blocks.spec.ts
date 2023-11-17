@@ -234,8 +234,8 @@ describe('Test blockToFigureTransform', () => {
           },
           [
             u('container', { kind: 'table', label: 'my-label', identifier: 'my-label' }, [
-              u('paragraph', [u('text', 'value')]),
               u('caption', [u('paragraph', [u('text', 'My caption')])]),
+              u('paragraph', [u('text', 'value')]),
             ]),
           ],
         ),
@@ -266,8 +266,8 @@ describe('Test blockToFigureTransform', () => {
           },
           [
             u('container', { kind: 'table', label: 'my-label', identifier: 'my-label' }, [
-              u('paragraph', [u('text', 'value')]),
               u('caption', [u('paragraph', [u('text', 'My caption')])]),
+              u('paragraph', [u('text', 'value')]),
             ]),
           ],
         ),
