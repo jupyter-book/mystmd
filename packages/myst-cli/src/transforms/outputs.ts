@@ -129,7 +129,7 @@ export function transformFilterOutputStreams(
                 : 'Output contains matplotlib string',
               {
                 node: output,
-                note: `${content}\nYou can suppress this output by putting a semicolon after the final output in your cell.\nTo suppress this warning add "output_matplotlib_strings: remove" to your project:settings`,
+                note: `${content}\n   You can suppress this output by putting a semicolon after the final output in your cell or add "output_matplotlib_strings: remove" to the project settings.`,
               },
             );
           }
