@@ -10,18 +10,15 @@ import type {
   IMimeBundle,
   INotebookContent,
   IOutput,
+  MultilineString,
 } from '@jupyterlab/nbformat';
-import { CELL_TYPES, minifyCellOutput } from 'nbtx';
+import { CELL_TYPES, minifyCellOutput, ensureString } from 'nbtx';
 import { VFile } from 'vfile';
 import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
-
-function asString(source?: string | string[]): string {
-  return (Array.isArray(source) ? source.join('') : source) || '';
-}
 
 function createOutputDirective(): { myst: string; id: string } {
   const id = nanoid();
@@ -54,7 +51,7 @@ function replaceAttachmentsTransform(
     try {
       const attachment = Object.entries(attachments[attachmentKey] as IMimeBundle)[0];
       const mimeType = attachment[0];
-      const attachmentVal = asString(attachment[1] as string | string[]);
+      const attachmentVal = ensureString(attachment[1] as MultilineString);
       if (!attachmentVal) {
         fileWarn(vfile, `Unrecognized attachment name in ${file}: ${attachmentKey}`, {
           ruleId: RuleId.notebookAttachmentsResolve,
@@ -99,7 +96,7 @@ export async function processNotebook(
     async (P, cell: ICell, index) => {
       const acc = await P;
       if (cell.cell_type === CELL_TYPES.markdown) {
-        const cellContent = asString(cell.source);
+        const cellContent = ensureString(cell.source);
         // If the first cell is a frontmatter block, do not put a block break above it
         const omitBlockDivider = index === 0 && cellContent.startsWith('---\n');
         const cellMdast = parseMyst(session, cellContent, file);
@@ -112,12 +109,14 @@ export async function processNotebook(
         return acc.concat(blockParent(cell, cellMdast.children));
       }
       if (cell.cell_type === CELL_TYPES.raw) {
-        const cellContent = `\`\`\`\n${asString(cell.source)}\n\`\`\``;
+        const cellContent = `\`\`\`\n${ensureString(cell.source)}\n\`\`\``;
         const cellMdast = parseMyst(session, cellContent, file);
         return acc.concat(blockParent(cell, cellMdast.children));
       }
       if (cell.cell_type === CELL_TYPES.code) {
-        const cellCodeContent = `\`\`\`{code-cell} ${language}\n${asString(cell.source)}\n\`\`\``;
+        const cellCodeContent = `\`\`\`{code-cell} ${language}\n${ensureString(
+          cell.source,
+        )}\n\`\`\``;
         const cellCodeMdast = parseMyst(session, cellCodeContent, file);
         const { myst, id } = createOutputDirective();
         if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
