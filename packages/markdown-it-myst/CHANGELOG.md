@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.5
+
+### Patch Changes
+
+- c242d9b1: Improve the suffix label parsing for citations
+
 ## 1.0.4
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # myst-transforms
 
+## 1.1.12
+
+### Patch Changes
+
+- adb9121: Pass options to basicTransforms, including myst parser for caption parsing
+- adb9121: Transform blocks with captions to figures
+- Updated dependencies [adb9121]
+- Updated dependencies [d9953976]
+  - myst-common@1.1.14
+  - myst-spec-ext@1.1.14
+  - myst-to-html@1.0.15
+
 ## 1.1.11
 
 ### Patch Changes

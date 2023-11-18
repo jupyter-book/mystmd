@@ -1,5 +1,17 @@
 # myst-parser
 
+## 1.0.15
+
+### Patch Changes
+
+- Updated dependencies [adb9121]
+- Updated dependencies [d9953976]
+- Updated dependencies [c242d9b1]
+  - myst-common@1.1.14
+  - markdown-it-myst@1.0.5
+  - myst-roles@1.0.15
+  - myst-directives@1.0.15
+
 ## 1.0.14
 
 ### Patch Changes

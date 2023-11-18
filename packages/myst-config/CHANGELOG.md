@@ -1,5 +1,15 @@
 # myst-config
 
+## 1.1.14
+
+### Patch Changes
+
+- ac9faabc: The options are immutable and we must clone the object.
+- Updated dependencies [d9953976]
+- Updated dependencies [d9953976]
+- Updated dependencies [d9953976]
+  - myst-frontmatter@1.1.14
+
 ## 1.1.13
 
 ### Patch Changes

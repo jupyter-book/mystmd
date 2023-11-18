@@ -1,5 +1,29 @@
 # myst-cli
 
+## 1.1.29
+
+### Patch Changes
+
+- adb9121: Pass options to basicTransforms, including myst parser for caption parsing
+- adb9121: Tidy up figures referencing other figures
+- 4cb47395: Allow to individually hide stdout/stderr on a cell using a tag
+- d9953976: Add output_matplotlib_strings as a project setting
+- d9953976: Add `output_stderr` and `output_stdout` options to settings
+- Updated dependencies [adb9121]
+- Updated dependencies [ac9faabc]
+- Updated dependencies [adb9121]
+- Updated dependencies [d9953976]
+- Updated dependencies [adb9121]
+- Updated dependencies [d9953976]
+- Updated dependencies [d9953976]
+- Updated dependencies [d9953976]
+  - myst-transforms@1.1.12
+  - myst-config@1.1.14
+  - myst-frontmatter@1.1.14
+  - myst-common@1.1.14
+  - myst-parser@1.0.15
+  - myst-spec-ext@1.1.14
+
 ## 1.1.28
 
 ### Patch Changes
