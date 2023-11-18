@@ -1,7 +1,6 @@
 import type { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
 import type { Position } from 'unist';
-import { map } from 'unist-util-map';
 import { customAlphabet } from 'nanoid';
 import type { Node, Parent, PhrasingContent } from 'myst-spec';
 import type { RuleId } from './ruleids.js';
@@ -75,20 +74,35 @@ export function createHtmlId(identifier?: string): string | undefined {
     .replace(/(?:^[-]+)|(?:[-]+$)/g, ''); // Remove repeated `-`s at the start or the end
 }
 
-export function liftChildren(tree: GenericParent, nodeType: string) {
-  map(tree, (node) => {
-    const children = ((node as GenericParent).children as Parent[])
-      ?.map((child) => {
-        if (child.type === nodeType && child.children) return child.children;
-        return child;
-      })
-      ?.flat();
+/**
+ * Helper function for recursively lifting children
+ */
+function getNodeOrLiftedChildren(
+  node: GenericParent | GenericNode,
+  removeType: string,
+): (GenericParent | GenericNode)[] {
+  if (!node.children) return [node];
+  const children = node.children.map((child) => getNodeOrLiftedChildren(child, removeType)).flat();
+  if (node.type === removeType) {
     // There are some checks in unist that look like `'children' in node`
     // all children must be deleted, and not a key on the object
-    if (node && (node as any).children == null) delete (node as any).children;
-    if (children !== undefined) (node as Parent).children = children;
-    return node;
-  });
+    if (node && node.children == null) delete node.children;
+    return children;
+  }
+  node.children = children;
+  return [node];
+}
+
+/**
+ * Eliminate all parent nodes in `tree` of type `removeType`; children of eliminated nodes are moved up to it's parent
+ *
+ * Nodes of `removeType` will remain if:
+ * - they are the root of `tree`
+ * - their children are undefined
+ */
+export function liftChildren(tree: GenericParent | GenericNode, removeType: string) {
+  if (!tree.children) return;
+  tree.children = tree.children.map((child) => getNodeOrLiftedChildren(child, removeType)).flat();
 }
 
 export function setTextAsChild(node: Partial<Parent>, text: string) {

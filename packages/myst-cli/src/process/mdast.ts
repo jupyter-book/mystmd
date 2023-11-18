@@ -71,6 +71,7 @@ import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
 import { loadIntersphinx } from './intersphinx.js';
 import { frontmatterPartsTransform } from '../transforms/parts.js';
+import { parseMyst } from './myst.js';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
@@ -172,7 +173,9 @@ export async function transformMdast(
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first
     .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
-    .use(basicTransformationsPlugin)
+    .use(basicTransformationsPlugin, {
+      parser: (content: string) => parseMyst(session, content, file),
+    })
     .use(inlineExpressionsPlugin) // Happens before math and images!
     .use(mathPlugin, { macros: frontmatter.math })
     .use(glossaryPlugin, { state }) // This should be before the enumerate plugins

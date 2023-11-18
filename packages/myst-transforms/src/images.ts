@@ -4,6 +4,9 @@ import { select, selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
 import { toText } from 'myst-common';
 
+/**
+ * Generate image alt text from figure caption
+ */
 export function imageAltTextTransform(tree: GenericParent) {
   const containers = selectAll('container', tree) as Container[];
   containers.forEach((container) => {
@@ -11,7 +14,7 @@ export function imageAltTextTransform(tree: GenericParent) {
     if (!image || image.alt) return;
     const para = select('caption > paragraph', container) as Paragraph;
     if (!para) return;
-    // Get rid of the captionNumber
+    // Do not write the captionNumber to image alt text
     const content = para.children?.filter((n) => (n.type as string) !== 'captionNumber');
     if (!content || content.length < 1) return;
     image.alt = toText(content as PhrasingContent[]);

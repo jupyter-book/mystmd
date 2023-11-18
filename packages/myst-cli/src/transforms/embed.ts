@@ -1,4 +1,5 @@
 import { filter } from 'unist-util-filter';
+import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { IReferenceState, MultiPageReferenceState } from 'myst-transforms';
 import type { GenericNode, GenericParent } from 'myst-common';
@@ -70,6 +71,25 @@ export function embedTransform(
     if (containerEmbeds?.length === 1) {
       node.source = { ...containerEmbeds[0].source };
       containerEmbeds[0].type = '_lift';
+      // If the figure's embedded content is _another_ figure, just lift out the children except caption/legend
+      if (
+        containerEmbeds[0].children?.length === 1 &&
+        containerEmbeds[0].children[0].type === 'container'
+      ) {
+        containerEmbeds[0].children[0].type = '_lift';
+        // It would be nice to keep these if there is not another caption defined on 'node' but that leads to
+        // issues with the current figure enumeration resolution, since embedding happens after referencing...
+        remove(containerEmbeds[0].children[0], 'caption');
+        remove(containerEmbeds[0].children[0], 'legend');
+      }
+    }
+  });
+  // If embed node contains a single figure, copy the source info to the figure
+  const remainingEmbedNodes = selectAll('embed', mdast) as Embed[];
+  remainingEmbedNodes.forEach((node: Embed) => {
+    if (node.children?.length === 1 && node.children[0].type === 'container') {
+      (node.children[0] as any).source = { ...node.source };
+      (node as any).type = '_lift';
     }
   });
   liftChildren(mdast, '_lift');

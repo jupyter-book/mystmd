@@ -88,3 +88,55 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
 export const blockMetadataPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree, file) => {
   blockMetadataTransform(tree, file);
 };
+
+const defaultParser = (caption: string): GenericParent => {
+  return {
+    type: 'root',
+    children: [
+      {
+        type: 'paragraph',
+        children: [{ type: 'text', value: caption }],
+      },
+    ],
+  };
+};
+
+/**
+ * If a block has a caption, nest the content in a figure with that caption
+ */
+export function blockToFigureTransform(
+  mdast: GenericParent,
+  opts?: { parser?: (caption: string) => GenericNode },
+) {
+  const blocks = selectAll('block', mdast) as any[];
+  const parser = opts?.parser ?? defaultParser;
+  blocks.forEach((block) => {
+    const caption = block.data?.caption ?? block.data?.['fig-cap'] ?? block.data?.['tbl-cap'];
+    if (caption) {
+      const kind = block.data?.kind ?? (block.data?.['tbl-cap'] ? 'table' : 'figure');
+      const children = [...block.children];
+      const { children: captionChildren } = parser(caption);
+      const parsedCaption = { type: 'caption', children: captionChildren };
+      if (kind === 'table') {
+        children.unshift(parsedCaption);
+      } else {
+        children.push(parsedCaption);
+      }
+      block.children = [
+        {
+          type: 'container',
+          kind,
+          label: block.label,
+          identifier: block.identifier,
+          children,
+        },
+      ];
+      delete block.data.caption;
+      delete block.data['fig-cap'];
+      delete block.data['tbl-cap'];
+      delete block.data.kind;
+      delete block.label;
+      delete block.identifier;
+    }
+  });
+}
