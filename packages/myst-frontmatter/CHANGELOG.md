@@ -1,5 +1,13 @@
 # myst-frontmatter
 
+## 1.1.14
+
+### Patch Changes
+
+- d9953976: Add output_matplotlib_strings as a project setting
+- d9953976: Add settings to page and project
+- d9953976: Add `output_stderr` and `output_stdout` options to settings
+
 ## 1.1.13
 
 ### Patch Changes
