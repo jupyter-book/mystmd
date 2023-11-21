@@ -141,7 +141,9 @@ export const captionHandler: Handler = (node, state) => {
   // This field is present because multi-paragraph captions will fail without
   // this single paragraph alternative. For now, since we do not use "listoffigures"
   // the square brackets are simply left empty. See https://tex.stackexchange.com/a/48313
-  const command = numbered === false ? 'caption[]*' : 'caption[]';
+  // Note: There might be a bug here for multi-paragraph, unnumbered, captions.
+  //       The syntax `caption[]*` and `caption*[]` do not work.
+  const command = numbered === false ? 'caption*' : 'caption[]';
   const after = numbered && id ? `\\label{${id}}` : '';
   state.renderInlineEnvironment(node, command, { after });
 };
