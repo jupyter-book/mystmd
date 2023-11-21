@@ -45,7 +45,3 @@ code_style
     - `"verbatim"` (default): Use the `\begin{verbatim}` environment
     - `"minted"`: Use the `\begin{minted}` environment with the language of the code block used
     - `"listings"`: Use the `\begin{listings}` environment with the language of the code block used
-
-(setting:myst_to_tex:print_glossaries)=
-print_glossaries
-: Add a LaTeX glossary (boolean)
