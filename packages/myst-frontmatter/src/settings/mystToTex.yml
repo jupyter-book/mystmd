@@ -25,13 +25,3 @@ cases:
           code_style: unknown
     errors: 1
     normalized: {}
-  - title: print glossaries
-    raw:
-      settings:
-        mystToTex:
-          print_glossaries: true
-    errors: 0
-    normalized:
-      settings:
-        myst_to_tex:
-          printGlossaries: true

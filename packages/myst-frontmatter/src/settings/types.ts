@@ -2,7 +2,6 @@ type OutputRemovalOptions = 'show' | 'remove' | 'remove-warn' | 'remove-error' |
 
 export type MystToTexSettings = {
   codeStyle?: 'verbatim' | 'minted' | 'listings';
-  printGlossaries?: boolean;
 };
 
 export type ProjectSettings = {

@@ -1,17 +1,10 @@
 import type { ValidationOptions } from 'simple-validators';
-import {
-  defined,
-  incrementOptions,
-  validateBoolean,
-  validateChoice,
-  validateObjectKeys,
-} from 'simple-validators';
+import { defined, incrementOptions, validateChoice, validateObjectKeys } from 'simple-validators';
 import type { MystToTexSettings } from './types.js';
 
-export const MYST_TO_TEX_SETTINGS = ['codeStyle', 'printGlossaries'];
+export const MYST_TO_TEX_SETTINGS = ['codeStyle'];
 export const MYST_TO_TEX_SETTINGS_ALIAS = {
   code_style: 'codeStyle',
-  print_glossaries: 'printGlossaries',
 };
 
 export function validateMystToTexSettings(
@@ -32,13 +25,13 @@ export function validateMystToTexSettings(
     });
     if (codeStyle) output.codeStyle = codeStyle;
   }
-  if (defined(settings.printGlossaries)) {
-    const printGlossaries = validateBoolean(
-      settings.printGlossaries,
-      incrementOptions('printGlossaries', opts),
-    );
-    if (typeof printGlossaries === 'boolean') output.printGlossaries = printGlossaries;
-  }
+  // if (defined(settings.printGlossaries)) {
+  //   const printGlossaries = validateBoolean(
+  //     settings.printGlossaries,
+  //     incrementOptions('printGlossaries', opts),
+  //   );
+  //   if (typeof printGlossaries === 'boolean') output.printGlossaries = printGlossaries;
+  // }
   if (Object.keys(output).length === 0) return undefined;
   return output;
 }

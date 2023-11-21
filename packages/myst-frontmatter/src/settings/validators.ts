@@ -21,6 +21,7 @@ export const PROJECT_SETTINGS_ALIAS = {
   stderr_output: 'output_stderr',
   stdout_output: 'output_stdout',
   mystToTex: 'myst_to_tex',
+  tex: 'myst_to_tex', // The default is the renderer, not the parser
 };
 
 export function validateProjectAndPageSettings(
