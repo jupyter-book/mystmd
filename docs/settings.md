@@ -33,3 +33,15 @@ output_matplotlib_strings
     - `"remove"`: remove all matplotlib strings in outputs
     - `"remove-warn"` (default) or `"remove-error"`: remove all matplotlib strings in outputs, and log a warning or error
     - `"warn"` or "error": log a warning or error if matplotlib strings in outputs
+
+## LaTeX Rendering Settings
+
+Adding an object of `myst_to_tex` to the settings will allow you to control various default parts of how the LaTeX renderer behaves.
+
+(setting:myst_to_tex:code_style)=
+code_style
+: Change the code rendering when writing code.
+
+    - `"verbatim"` (default): Use the `\begin{verbatim}` environment
+    - `"minted"`: Use the `\begin{minted}` environment with the language of the code block used
+    - `"listings"`: Use the `\begin{listings}` environment with the language of the code block used

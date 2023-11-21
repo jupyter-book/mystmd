@@ -307,7 +307,7 @@ cases:
                 # here is math
                 1+2
     latex: |-
-      \begin{minted}{python}
+      \begin{minted}[breaklines]{python}
       # here is math
       1+2
       \end{minted}

@@ -52,6 +52,7 @@ export function mdastToTex(
     bibliography: templateYml?.style?.bibliography,
     printGlossaries,
     references,
+    ...frontmatter.settings?.myst_to_tex,
   });
   const result = pipe.runSync(mdast as any);
   const tex = pipe.stringify(result);

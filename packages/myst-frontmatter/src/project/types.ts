@@ -2,16 +2,9 @@ import type { Biblio } from '../biblio/types.js';
 import type { Export } from '../exports/types.js';
 import type { Licenses } from '../licenses/types.js';
 import type { Numbering } from '../numbering/types.js';
+import type { ProjectSettings } from '../settings/types.js';
 import type { SiteFrontmatter } from '../site/types.js';
 import type { Thebe } from '../thebe/types.js';
-
-type OutputRemovalOptions = 'show' | 'remove' | 'remove-warn' | 'remove-error' | 'warn' | 'error';
-
-export type ProjectSettings = {
-  output_stderr?: OutputRemovalOptions;
-  output_stdout?: OutputRemovalOptions;
-  output_matplotlib_strings?: OutputRemovalOptions;
-};
 
 export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   date?: string;

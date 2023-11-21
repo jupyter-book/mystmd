@@ -172,13 +172,16 @@ const handlers: Record<string, Handler> = {
     let start = '\\begin{verbatim}\n';
     let end = '\n\\end{verbatim}';
 
-    if (getClasses(node.class).includes('listings') && node.lang !== undefined) {
+    if (
+      state.options.codeStyle === 'listings' ||
+      (getClasses(node.class).includes('listings') && node.lang !== undefined)
+    ) {
       state.usePackages('listings');
       start = `\\begin{lstlisting}[language=${node.lang}]\n`;
       end = '\n\\end{lstlisting}';
-    } else if (getClasses(node.class).includes('minted') && node.lang !== undefined) {
+    } else if (state.options.codeStyle === 'minted' || getClasses(node.class).includes('minted')) {
       state.usePackages('minted');
-      start = `\\begin{minted}{${node.lang}}\n`;
+      start = `\\begin{minted}[breaklines]{${node.lang ?? 'text'}}\n`;
       end = '\n\\end{minted}';
     }
     state.write(start);
@@ -309,28 +312,17 @@ const handlers: Record<string, Handler> = {
   image(node, state) {
     state.usePackages('graphicx');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { width: nodeWidth, url: nodeSrc, align } = node;
+    const { width: nodeWidth, url: nodeSrc, align: nodeAlign } = node;
     const src = nodeSrc;
     const width = getLatexImageWidth(nodeWidth);
-    //   let align = 'center';
-    //   switch (nodeAlign?.toLowerCase()) {
-    //     case 'left':
-    //       align = 'flushleft';
-    //       break;
-    //     case 'right':
-    //       align = 'flushright';
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    //   if (!caption) {
-    //     const template = `
-    // \\begin{${align}}
-    //   \\includegraphics[width=${width / 100}\\linewidth]{${src}}
-    // \\end{${align}}\n`;
-    //     state.write(template);
-    //     return;
-    //   }
+    // if (!state.data.isInContainer) {
+    //   const align =
+    //     { left: 'flushleft', right: 'flushright' }[(nodeAlign as string)?.toLowerCase()] ??
+    //     'center';
+    //   state.write(`\\begin{${align}}\n\\includegraphics[width=${width}]{${src}}\n\\end{${align}}`);
+    //   state.closeBlock(node);
+    //   return;
+    // }
     state.write(`\\includegraphics[width=${width}]{${src}}`);
     state.closeBlock(node);
   },

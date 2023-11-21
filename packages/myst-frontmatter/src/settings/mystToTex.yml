@@ -1,0 +1,27 @@
+title: mystToTex
+frontmatter: project
+cases:
+  - title: unknown option
+    raw:
+      settings:
+        mystToTex:
+          unknown: unknown
+    warnings: 1
+    normalized: {}
+  - title: minted code style
+    raw:
+      settings:
+        mystToTex:
+          code_style: minted
+    errors: 0
+    normalized:
+      settings:
+        myst_to_tex:
+          codeStyle: minted
+  - title: unknown code style
+    raw:
+      settings:
+        mystToTex:
+          code_style: unknown
+    errors: 1
+    normalized: {}
