@@ -1,5 +1,5 @@
 import type { References } from 'myst-common';
-import type { PageFrontmatter } from 'myst-frontmatter';
+import type { PageFrontmatter, MystToTexSettings } from 'myst-frontmatter';
 import type { FootnoteDefinition } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 
@@ -17,12 +17,11 @@ export type LatexResult = {
 
 export type MathPlugins = Required<PageFrontmatter>['math'];
 
-export type Options = {
+export type Options = MystToTexSettings & {
   handlers?: Record<string, Handler>;
   beamer?: boolean;
   math?: MathPlugins;
   bibliography?: 'natbib' | 'biblatex';
-  printGlossaries?: boolean;
   citestyle?: 'numerical-only';
   references?: References;
 };

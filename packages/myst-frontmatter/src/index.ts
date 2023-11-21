@@ -8,6 +8,7 @@ export * from './kernelspec/index.js';
 export * from './licenses/index.js';
 export * from './numbering/index.js';
 export * from './page/index.js';
+export * from './settings/index.js';
 export * from './project/index.js';
 export * from './site/index.js';
 export * from './thebe/index.js';
