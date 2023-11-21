@@ -24,6 +24,10 @@ export {
   renderEquation,
 } from './math.js';
 export {
+  inlineMathSimplificationPlugin,
+  inlineMathSimplificationTransform,
+} from './mathSimplifications.js';
+export {
   blockNestingPlugin,
   blockNestingTransform,
   blockMetadataPlugin,

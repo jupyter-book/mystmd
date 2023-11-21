@@ -26,6 +26,7 @@ import {
   glossaryPlugin,
   abbreviationPlugin,
   reconstructHtmlPlugin,
+  inlineMathSimplificationPlugin,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -177,6 +178,7 @@ export async function transformMdast(
       parser: (content: string) => parseMyst(session, content, file),
     })
     .use(inlineExpressionsPlugin) // Happens before math and images!
+    .use(inlineMathSimplificationPlugin)
     .use(mathPlugin, { macros: frontmatter.math })
     .use(glossaryPlugin, { state }) // This should be before the enumerate plugins
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
