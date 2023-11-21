@@ -64,6 +64,14 @@ function getReplacement(symbol: string) {
   return REPLACEMENTS[symbol];
 }
 
+/**
+ * Replaces single symbols symbols:
+ *  - `\pm`
+ *  - `\star`
+ *  - `\alpha`
+ *
+ * Uses the `REPLACEMENTS` list above.
+ */
 function replaceSymbol(node: InlineMath) {
   const match = node.value.match(/^(\\[a-zA-Z]+)$/);
   if (!match) return false;
@@ -105,6 +113,12 @@ function replaceSymbol(node: InlineMath) {
 //   return true;
 // }
 
+/**
+ * Replaces hanging subscript and superscript numbers and symbols:
+ *  - `_2`
+ *  - `_{\alpha}`
+ *  - `^{th}`
+ */
 function replaceDirectSubSuperScripts(node: InlineMath) {
   const match = node.value.match(/^(\^|_)(?:(?:\{(\\?[a-zA-Z0-9+-]+)\})|(\\?[a-zA-Z0-9+-]+))$/);
   if (!match) return false;
@@ -122,6 +136,12 @@ function replaceDirectSubSuperScripts(node: InlineMath) {
   return true;
 }
 
+/**
+ * Replaces subscript and superscript numbers like:
+ *  - `-10^{-4}`
+ *  - `10^3`
+ *  - `4.1_2`
+ */
 function replaceNumberedSubSuperScripts(node: InlineMath) {
   const match = node.value.match(/^([+-]?[\d.]+)(\^|_)(?:(?:\{([+-]?[\d.]+)\})|([+-]?[\d.]+))$/);
   if (!match) return false;
@@ -137,8 +157,14 @@ function replaceNumberedSubSuperScripts(node: InlineMath) {
   return true;
 }
 
+/**
+ * Replaces a simple number:
+ *  - `-10.3`
+ *  - `5`
+ *  - `+30`
+ */
 function replaceNumber(node: InlineMath) {
-  const match = node.value.match(/^(-?[0-9.]+)$/);
+  const match = node.value.match(/^([+-]?[0-9.]+)$/);
   if (!match) return false;
   const text = match[1];
   if (!text) return false;

@@ -6,6 +6,7 @@ describe('Test math transformations', () => {
   test.each([
     ['2.34', u('text', '2.34')],
     ['-2', u('text', '-2')],
+    ['+2', u('text', '+2')],
     ['_2', u('subscript', [u('text', '2')])],
     ['^2', u('superscript', [u('text', '2')])],
     ['_{2}', u('subscript', [u('text', '2')])],
