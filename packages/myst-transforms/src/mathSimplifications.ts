@@ -122,6 +122,21 @@ function replaceDirectSubSuperScripts(node: InlineMath) {
   return true;
 }
 
+function replaceNumberedSubSuperScripts(node: InlineMath) {
+  const match = node.value.match(/^([+-]?[\d.]+)(\^|_)(?:(?:\{([+-]?[\d.]+)\})|([+-]?[\d.]+))$/);
+  if (!match) return false;
+  const first = match[1];
+  const second = match[3] || match[4];
+  const script = match[2] === '^' ? 'superscript' : 'subscript';
+  (node as any).type = 'span';
+  (node as any).children = [
+    { type: 'text', value: first },
+    { type: script, children: [{ type: 'text', value: second }] },
+  ];
+  delete (node as any).value;
+  return true;
+}
+
 function replaceNumber(node: InlineMath) {
   const match = node.value.match(/^(-?[0-9.]+)$/);
   if (!match) return false;
@@ -137,6 +152,7 @@ export function inlineMathSimplificationTransform(mdast: GenericParent) {
   math.forEach((node) => {
     if (replaceSymbol(node)) return;
     if (replaceDirectSubSuperScripts(node)) return;
+    if (replaceNumberedSubSuperScripts(node)) return;
     // if (replaceSubSuperScripts(node, vfile)) return;
     // if (replaceTextCommand(node, vfile)) return;
     if (replaceNumber(node)) return;
