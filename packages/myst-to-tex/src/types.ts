@@ -22,6 +22,7 @@ export type Options = MystToTexSettings & {
   beamer?: boolean;
   math?: MathPlugins;
   bibliography?: 'natbib' | 'biblatex';
+  printGlossaries?: boolean;
   citestyle?: 'numerical-only';
   references?: References;
 };
