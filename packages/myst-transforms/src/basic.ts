@@ -1,5 +1,6 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
+import type { GenericParent } from 'myst-common';
 import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRoles.js';
 import { mystTargetsTransform, headingLabelTransform } from './targets.js';
 import { captionParagraphTransform } from './caption.js';
@@ -10,8 +11,8 @@ import { imageAltTextTransform } from './images.js';
 import { mathLabelTransform, mathNestingTransform, subequationTransform } from './math.js';
 import { blockquoteTransform } from './blockquote.js';
 import { codeBlockToDirectiveTransform } from './code.js';
-import type { GenericParent } from 'myst-common';
 import { removeUnicodeTransform } from './removeUnicode.js';
+import { containerChildrenTransform } from './containers.js';
 
 export function basicTransformations(tree: GenericParent, file: VFile, opts: Record<string, any>) {
   // lifting roles and directives must happen before the mystTarget transformation
@@ -33,6 +34,7 @@ export function basicTransformations(tree: GenericParent, file: VFile, opts: Rec
   // Block metadata may contain labels/html_ids
   blockMetadataTransform(tree, file);
   blockToFigureTransform(tree, opts);
+  containerChildrenTransform(tree, file);
   htmlIdsTransform(tree);
   imageAltTextTransform(tree);
   blockquoteTransform(tree);
