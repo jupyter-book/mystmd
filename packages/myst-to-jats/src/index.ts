@@ -87,7 +87,13 @@ import type { DefinitionItem } from './transforms/definitions.js';
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
 function escapeForXML(text: string) {
-  return text.replace(/&(?!amp;)/g, '&amp;').replace(/</g, '&lt;');
+  return (
+    text
+      .replace(/&(?!amp;)/g, '&amp;')
+      .replace(/</g, '&lt;')
+      // eslint-disable-next-line no-irregular-whitespace
+      .replace(/​/g, '') // Replace no-width spaces, used in links
+  );
 }
 
 function referenceKindToRefType(kind?: string): RefType {
