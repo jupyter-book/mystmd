@@ -315,7 +315,11 @@ const handlers: Handlers = {
   },
   definitionDescription(node, state) {
     state.openNode('def');
-    state.renderInline(node, 'p');
+    if (node.children?.[0].type === 'paragraph') {
+      state.renderChildren(node);
+    } else {
+      state.renderInline(node, 'p');
+    }
     state.closeNode();
   },
   code(node, state) {
@@ -429,8 +433,8 @@ const handlers: Handlers = {
     state.renderChildren(node);
   },
   break(node, state, parent) {
-    if (parent.type === 'paragraph') {
-      state.warn('There are no breaks allowed in paragraphs.', node, 'break', {
+    if (parent.type === 'paragraph' || parent.type === 'listItem') {
+      state.warn(`There are no breaks allowed in ${node.type}s.`, node, 'break', {
         url: 'https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/break.html',
       });
       return;
