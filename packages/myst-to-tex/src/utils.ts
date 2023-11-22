@@ -65,10 +65,48 @@ const symbols: Record<string, string> = {
   '＋': '+', // Full-width Plus
 };
 
+const scripts: Record<string, string> = {
+  '₀': '\\textsubscript{0}',
+  '₁': '\\textsubscript{1}',
+  '₂': '\\textsubscript{2}',
+  '₃': '\\textsubscript{3}',
+  '₄': '\\textsubscript{4}',
+  '₅': '\\textsubscript{5}',
+  '₆': '\\textsubscript{6}',
+  '₇': '\\textsubscript{7}',
+  '₈': '\\textsubscript{8}',
+  '₉': '\\textsubscript{9}',
+  '₊': '\\textsubscript{+}',
+  '₋': '\\textsubscript{-}',
+  '₌': '\\textsubscript{=}',
+  '₍': '\\textsubscript{(}',
+  '₎': '\\textsubscript{)}',
+  ₙ: '\\textsubscript{n}',
+  '⁰': '\\textsuperscript{0}',
+  '¹': '\\textsuperscript{1}',
+  '²': '\\textsuperscript{2}',
+  '³': '\\textsuperscript{3}',
+  '⁴': '\\textsuperscript{4}',
+  '⁵': '\\textsuperscript{5}',
+  '⁶': '\\textsuperscript{6}',
+  '⁷': '\\textsuperscript{7}',
+  '⁸': '\\textsuperscript{8}',
+  '⁹': '\\textsuperscript{9}',
+  '⋅': '\\textsuperscript{.}',
+  '⁺': '\\textsuperscript{.}',
+  '⁻': '\\textsuperscript{-}',
+  '⁼': '\\textsuperscript{=}',
+  '⁽': '\\textsuperscript{(}',
+  '⁾': '\\textsuperscript{)}',
+  ⁿ: '\\textsuperscript{n}',
+  ⁱ: '\\textsuperscript{i}',
+};
+
 const textReplacements: Record<string, string> = {
   ...textOnlyReplacements,
   ...arrows,
   ...symbols,
+  ...scripts,
 };
 
 const mathReplacements: Record<string, string> = {
