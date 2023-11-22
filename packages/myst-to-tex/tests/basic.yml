@@ -334,3 +334,13 @@ cases:
       # here is math
       1+2
       \end{lstlisting}
+  - title: subscripts
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: |-
+      H\textsubscript{2}O-CO\textsubscript{2}
