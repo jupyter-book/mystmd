@@ -4,6 +4,7 @@ import { definitionTransform } from './definitions.js';
 import { containerTransform } from './containers.js';
 import { tableTransform } from './tables.js';
 import { sectionTransform } from './sections.js';
+import { blockTransform } from './blocks.js';
 import { citeGroupTransform } from './citations.js';
 import type { Options } from '../types.js';
 import type { GenericParent } from 'myst-common';
@@ -12,9 +13,11 @@ export { definitionTransform, definitionPlugin } from './definitions.js';
 export { containerTransform, containerPlugin } from './containers.js';
 export { tableTransform, tablePlugin } from './tables.js';
 export { sectionTransform, sectionPlugin } from './sections.js';
+export { blockTransform, blockPlugin } from './blocks.js';
 export { referenceTargetTransform, referenceResolutionTransform } from './references.js';
 
 export function basicTransformations(tree: GenericParent, opts: Options) {
+  blockTransform(tree);
   definitionTransform(tree);
   containerTransform(tree);
   tableTransform(tree);

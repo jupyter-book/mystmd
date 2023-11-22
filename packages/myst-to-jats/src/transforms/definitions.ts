@@ -38,7 +38,9 @@ export function definitionTransform(mdast: GenericParent) {
   const defDescriptions = selectAll('definitionDescription', mdast) as DefinitionDescription[];
   defDescriptions.forEach((node) => {
     const allParagraphs = node.children.reduce((b, n) => b && n.type === 'paragraph', true);
-    if (allParagraphs) return;
+    const oneParagraph = !!node.children.find((n) => n.type === 'paragraph');
+    // If there isn't any paragraph, it is likely text/inline content and we can handle this in the renderer
+    if (allParagraphs || !oneParagraph) return;
     node.children = node.children.map((child) => {
       if (child.type === 'paragraph') return child;
       return { type: 'paragraph', children: [child] };

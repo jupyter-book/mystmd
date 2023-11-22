@@ -87,7 +87,13 @@ import type { DefinitionItem } from './transforms/definitions.js';
 type TableCell = SpecTableCell & { colspan?: number; rowspan?: number; width?: number };
 
 function escapeForXML(text: string) {
-  return text.replace(/&(?!amp;)/g, '&amp;').replace(/</g, '&lt;');
+  return (
+    text
+      .replace(/&(?!amp;)/g, '&amp;')
+      .replace(/</g, '&lt;')
+      // eslint-disable-next-line no-irregular-whitespace
+      .replace(/​/g, '') // Replace no-width spaces, used in links
+  );
 }
 
 function referenceKindToRefType(kind?: string): RefType {
@@ -434,7 +440,7 @@ const handlers: Handlers = {
   },
   break(node, state, parent) {
     if (parent.type === 'paragraph' || parent.type === 'listItem') {
-      state.warn(`There are no breaks allowed in ${node.type}s.`, node, 'break', {
+      state.warn(`There are no breaks allowed in ${parent.type}s.`, node, 'break', {
         url: 'https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/break.html',
       });
       return;
