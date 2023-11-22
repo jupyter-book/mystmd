@@ -84,7 +84,10 @@ export async function runWordExport(
   clean?: boolean,
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
-  const { output, article } = exportOptions;
+  const { output, articles } = exportOptions;
+  // At this point, export options are resolved to contain one-and-only-one article
+  const article = articles[0];
+  if (!article) return { tempFolders: [] };
   if (clean) cleanOutput(session, output);
   const vfile = new VFile();
   vfile.path = output;

@@ -10,8 +10,8 @@ import type { PageFrontmatter } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
-import mystToTex from 'myst-to-tex';
-import type { LatexResult } from 'myst-to-tex';
+import mystToTex, { mergePreambles, generatePreamble } from 'myst-to-tex';
+import type { LatexResult, PreambleData } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -29,6 +29,7 @@ import { createTempFolder } from '../../utils/createTempFolder.js';
 import type { ExportWithOutput, ExportOptions, ExportResults } from '../types.js';
 import { collectTexExportOptions } from '../utils/collectExportOptions.js';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
+import { selectors } from '../../store/index.js';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = [
@@ -109,24 +110,41 @@ export async function localArticleToTexRaw(
   projectPath?: string,
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
-  const { article, output } = templateOptions;
-  const [{ mdast, frontmatter, references }] = await getFileContent(session, [article], {
+  const { articles, output } = templateOptions;
+  const content = await getFileContent(session, articles, {
     projectPath,
     imageExtensions: TEX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
   });
 
-  await finalizeMdast(session, mdast, frontmatter, article, {
-    imageWriteFolder: path.join(path.dirname(output), 'files'),
-    imageAltOutputFolder: 'files/',
-    imageExtensions: TEX_IMAGE_EXTENSIONS,
-    simplifyFigures: true,
-  });
   const toc = tic();
-  const result = mdastToTex(session, mdast, references, frontmatter, null, false);
+  const results = await Promise.all(
+    content.map(async ({ mdast, frontmatter, references }, ind) => {
+      const article = articles[ind];
+      await finalizeMdast(session, mdast, frontmatter, article, {
+        imageWriteFolder: path.join(path.dirname(output), 'files'),
+        imageAltOutputFolder: 'files/',
+        imageExtensions: TEX_IMAGE_EXTENSIONS,
+        simplifyFigures: true,
+      });
+      return mdastToTex(session, mdast, references, frontmatter, null, false);
+    }),
+  );
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
+  if (results.length === 1) {
+    writeFileToFolder(output, results[0].value);
+  } else {
+    const { dir, name, ext } = path.parse(output);
+    const includeFileBases = results.map((result, ind) => {
+      const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
+      const includeFile = path.format({ dir, ext, base });
+      writeFileToFolder(includeFile, result.value);
+      return base;
+    });
+    const includeContent = includeFileBases.map((base) => `\\include{${base}}`).join('\n');
+    writeFileToFolder(output, includeContent);
+  }
   // TODO: add imports and macros?
-  writeFileToFolder(output, result.value);
   return { tempFolders: [] };
 }
 
@@ -156,15 +174,20 @@ export async function localArticleToTexTemplated(
   force?: boolean,
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
-  const { output, article, template } = templateOptions;
+  const { output, articles, template } = templateOptions;
   const filesPath = path.join(path.dirname(output), 'files');
-  const [{ frontmatter, mdast, references }] = await getFileContent(session, [article], {
+  const content = await getFileContent(session, articles, {
     projectPath,
     imageExtensions: TEX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
   });
   writeBibtexFromCitationRenderers(session, path.join(path.dirname(output), DEFAULT_BIB_FILENAME));
 
+  const warningLogFn = (message: string) => {
+    addWarningForFile(session, file, message, 'warn', {
+      ruleId: RuleId.texRenders,
+    });
+  };
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKind.tex,
     template: template || undefined,
@@ -174,62 +197,95 @@ export async function localArticleToTexTemplated(
         ruleId: RuleId.texRenders,
       });
     },
-    warningLogFn: (message: string) => {
-      addWarningForFile(session, file, message, 'warn', {
-        ruleId: RuleId.texRenders,
-      });
-    },
+    warningLogFn,
   });
   await mystTemplate.ensureTemplateExistsOnPath();
   const toc = tic();
   const templateYml = mystTemplate.getValidatedTemplateYml();
-
-  await finalizeMdast(session, mdast, frontmatter, article, {
-    imageWriteFolder: filesPath,
-    imageAltOutputFolder: 'files/',
-    imageExtensions: TEX_IMAGE_EXTENSIONS,
-    simplifyFigures: true,
-  });
-
   const partDefinitions = templateYml?.parts || [];
   const parts: Record<string, string | string[]> = {};
   let collectedImports: TemplateImports = { imports: [], commands: {} };
-  partDefinitions.forEach((def) => {
-    const result = extractTexPart(session, mdast, references, def, frontmatter, templateYml);
-    if (Array.isArray(result)) {
-      // This is the case if def.as_list is true
-      result.forEach((item) => {
-        collectedImports = mergeTemplateImports(collectedImports, item);
+  let preambleData: PreambleData = {
+    hasProofs: false,
+    printGlossaries: false,
+    glossary: {},
+    abbreviations: {},
+  };
+  let hasGlossaries = false;
+  const results = await Promise.all(
+    content.map(async ({ mdast, frontmatter, references }, ind) => {
+      const article = articles[ind];
+      await finalizeMdast(session, mdast, frontmatter, article, {
+        imageWriteFolder: filesPath,
+        imageAltOutputFolder: 'files/',
+        imageExtensions: TEX_IMAGE_EXTENSIONS,
+        simplifyFigures: true,
       });
-      parts[def.id] = result.map(({ value }) => value);
-    } else if (result != null) {
-      collectedImports = mergeTemplateImports(collectedImports, result);
-      parts[def.id] = result?.value ?? '';
-    }
-  });
 
-  // prune mdast based on tags, if required by template, eg abstract, acknowledgments
-  // Need to load up template yaml - returned from jtex, with 'parts' dict
-  // This probably means we need to store tags alongside oxa link for blocks
-  // This will need opts eventually --v
-  const result = mdastToTex(session, mdast, references, frontmatter, templateYml, true);
+      partDefinitions.forEach((def) => {
+        const part = extractTexPart(session, mdast, references, def, frontmatter, templateYml);
+        if (part && parts[def.id]) {
+          addWarningForFile(
+            session,
+            file,
+            `multiple values for part '${def.id}' found; ignoring value from ${article}`,
+            'error',
+            { ruleId: RuleId.texRenders },
+          );
+        } else if (Array.isArray(part)) {
+          // This is the case if def.as_list is true
+          part.forEach((item) => {
+            collectedImports = mergeTemplateImports(collectedImports, item);
+          });
+          parts[def.id] = part.map(({ value }) => value);
+        } else if (part != null) {
+          collectedImports = mergeTemplateImports(collectedImports, part);
+          parts[def.id] = part?.value ?? '';
+        }
+      });
+      const result = mdastToTex(session, mdast, references, frontmatter, templateYml, true);
+      collectedImports = mergeTemplateImports(collectedImports, result);
+      preambleData = mergePreambles(preambleData, result.preamble, warningLogFn);
+      hasGlossaries = hasGlossaries || hasGlossary(mdast);
+      return result;
+    }),
+  );
+
+  let frontmatter: Record<string, any>;
+  let texContent: string;
+  if (results.length === 1) {
+    frontmatter = content[0].frontmatter;
+    texContent = results[0].value;
+  } else {
+    const state = session.store.getState();
+    frontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
+    const { dir, name, ext } = path.parse(output);
+    const includeFileBases = results.map((result, ind) => {
+      const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
+      const includeFile = path.format({ dir, ext, base });
+      writeFileToFolder(includeFile, result.value);
+      return base;
+    });
+    texContent = includeFileBases.map((base) => `\\include{${base}}`).join('\n');
+  }
   // Fill in template
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
+  const { preamble, suffix } = generatePreamble(preambleData);
   renderTex(mystTemplate, {
-    contentOrPath: result.value,
+    contentOrPath: texContent + suffix,
     outputPath: output,
     frontmatter,
     parts,
     options: { ...frontmatter.options, ...templateOptions },
     bibliography: [DEFAULT_BIB_FILENAME],
     sourceFile: file,
-    imports: mergeTemplateImports(collectedImports, result),
-    preamble: result.preamble,
+    imports: collectedImports,
+    preamble,
     force,
     packages: templateYml.packages,
     filesPath,
   });
-  return { tempFolders: [], hasGlossaries: hasGlossary(mdast) };
+  return { tempFolders: [], hasGlossaries };
 }
 
 export async function runTexExport( // DBG: Must return an info on whether glossaries are present

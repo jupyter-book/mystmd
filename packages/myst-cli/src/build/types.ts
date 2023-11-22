@@ -6,7 +6,7 @@ import type { ISession } from '../session/types.js';
 import type { RendererData } from '../transforms/types.js';
 
 export type ExportWithOutput = Export & {
-  article: string;
+  articles: string[];
   output: string;
 };
 
