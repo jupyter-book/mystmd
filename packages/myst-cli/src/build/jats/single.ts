@@ -26,7 +26,10 @@ export async function runJatsExport(
   extraLinkTransformers?: LinkTransformer[],
 ) {
   const toc = tic();
-  const { output, article, sub_articles } = exportOptions;
+  const { output, articles, sub_articles } = exportOptions;
+  // At this point, export options are resolved to contain one-and-only-one article
+  const article = articles[0];
+  if (!article) return { tempFolders: [] };
   if (clean) cleanOutput(session, output);
   const processedContents = (
     await getFileContent(session, [article, ...(sub_articles ?? [])], {

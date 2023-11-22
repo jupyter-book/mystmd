@@ -24,7 +24,10 @@ export async function runMdExport(
   extraLinkTransformers?: LinkTransformer[],
 ) {
   const toc = tic();
-  const { output, article } = exportOptions;
+  const { output, articles } = exportOptions;
+  // At this point, export options are resolved to contain one-and-only-one article
+  const article = articles[0];
+  if (!article) return { tempFolders: [] };
   if (clean) cleanOutput(session, output);
   const [{ mdast, frontmatter }] = await getFileContent(session, [article], {
     projectPath,

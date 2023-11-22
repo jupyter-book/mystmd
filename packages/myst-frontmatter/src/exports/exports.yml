@@ -148,3 +148,111 @@ cases:
           template: default
           output: out.pdf
           a: 1
+  - title: article coerces to articles
+    raw:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+          a: 1
+          article: index.md
+    normalized:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+          a: 1
+          articles:
+            - index.md
+  - title: sub_article coerces to sub_articles
+    raw:
+      exports:
+        - format: jats
+          template: default
+          a: 1
+          sub_article: index.md
+    normalized:
+      exports:
+        - format: xml
+          template: default
+          a: 1
+          sub_articles:
+            - index.md
+  - title: sub_articles not allowed on non-jats
+    raw:
+      exports:
+        - format: pdf
+          template: default
+          a: 1
+          sub_article: index.md
+    normalized:
+      exports:
+        - format: pdf
+          template: default
+          a: 1
+    errors: 1
+  - title: tex/pdf/pdf+tex support multiple articles
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - a.md
+            - b.md
+            - c.md
+        - format: tex
+          articles:
+            - a.md
+            - b.md
+            - c.md
+        - format: pdf+tex
+          articles:
+            - a.md
+            - b.md
+            - c.md
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - a.md
+            - b.md
+            - c.md
+        - format: tex
+          articles:
+            - a.md
+            - b.md
+            - c.md
+        - format: pdf+tex
+          articles:
+            - a.md
+            - b.md
+            - c.md
+  - title: md/docx/jats do not support multiple articles
+    raw:
+      exports:
+        - format: md
+          articles:
+            - a.md
+            - b.md
+            - c.md
+        - format: docx
+          articles:
+            - a.md
+            - b.md
+            - c.md
+        - format: jats
+          articles:
+            - a.md
+            - b.md
+            - c.md
+    normalized:
+      exports:
+        - format: md
+          articles:
+            - a.md
+        - format: docx
+          articles:
+            - a.md
+        - format: xml
+          articles:
+            - a.md
+    errors: 3

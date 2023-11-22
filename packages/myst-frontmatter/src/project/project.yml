@@ -98,9 +98,11 @@ cases:
           template: default
           output: out.tex
           a: 1
-          article: my-file.md
+          articles:
+            - my-file.md
         - format: xml
-          article: my-file.md
+          articles:
+            - my-file.md
           sub_articles:
             - my-notebook.ipynb
       requirements:

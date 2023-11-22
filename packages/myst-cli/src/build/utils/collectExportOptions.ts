@@ -44,8 +44,8 @@ async function prepareExportOptions(
   }
   exportOptions.forEach((exp) => {
     // If no files are specified, use the sourceFile for article
-    if (!exp.article && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
-      exp.article = path.resolve(sourceFile);
+    if (!exp.articles && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
+      exp.articles = [path.resolve(sourceFile)];
     }
     // Also validate that sub_articles exist
     if (exp.sub_articles) {
@@ -67,7 +67,7 @@ async function prepareExportOptions(
   // Remove exports with invalid article values
   const filteredExportOptions = exportOptions
     .map((exp) => {
-      if (!exp.article) {
+      if (!exp.articles?.length) {
         if (exp.format === ExportFormats.meca) {
           // MECA exports don't necessarily need to specify an article.
           // But it does help locate those other exports if you want!
@@ -82,19 +82,22 @@ async function prepareExportOptions(
         }
         return undefined;
       }
-      const resolvedFile = path.resolve(path.dirname(sourceFile), exp.article);
-      if (!fs.existsSync(resolvedFile)) {
-        fileError(vfile, `Invalid export article '${exp.article}' in source: ${sourceFile}`, {
-          ruleId: RuleId.exportArticleExists,
-        });
-        return undefined;
-      }
-      exp.article = resolvedFile;
+      const resolvedFiles = exp.articles?.map((article) => {
+        const resolvedFile = path.resolve(path.dirname(sourceFile), article);
+        if (!fs.existsSync(resolvedFile)) {
+          fileError(vfile, `Invalid export article '${article}' in source: ${sourceFile}`, {
+            ruleId: RuleId.exportArticleExists,
+          });
+          return undefined;
+        }
+        return resolvedFile;
+      });
+      exp.articles = resolvedFiles.filter((file): file is string => !!file);
       return exp;
     })
     .filter((exp) => !!exp);
   logMessagesFromVFile(session, vfile);
-  return filteredExportOptions as (Export & { article: string })[];
+  return filteredExportOptions as (Export & { articles: string[] })[];
 }
 
 function filterAndMakeUnique(exports: (Export | undefined)[]) {
@@ -136,7 +139,11 @@ function getOutput(
     );
   }
   if (!path.extname(output)) {
-    const basename = getDefaultExportFilename(session, exp.article ?? sourceFile, projectPath);
+    const basename = getDefaultExportFilename(
+      session,
+      exp.articles?.[0] ?? sourceFile,
+      projectPath,
+    );
     output = path.join(output, `${basename}.${extension}`);
   }
   if (!output.endsWith(`.${extension}`)) {

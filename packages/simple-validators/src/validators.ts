@@ -268,6 +268,7 @@ export function validateKeys(
       }
     } else {
       ignored.push(k);
+      if (opts.keepExtraKeys) value[k] = input[k];
     }
   });
   if (required.length) {

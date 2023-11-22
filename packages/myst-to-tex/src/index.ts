@@ -2,7 +2,7 @@ import type { Root, Parent, Code, Abbreviation } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode, References } from 'myst-common';
-import { RuleId, fileError, toText, writeTexLabelledComment } from 'myst-common';
+import { RuleId, fileError, toText } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
 import { renderNodeToLatex } from './tables.js';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types.js';
@@ -17,9 +17,10 @@ import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { selectAll } from 'unist-util-select';
 import type { FootnoteDefinition, Heading } from 'myst-spec-ext';
 import { transformLegends } from './legends.js';
-import { TexProofSerializer, proofHandler } from './proof.js';
+import { proofHandler } from './proof.js';
 
-export type { LatexResult } from './types.js';
+export * from './types.js';
+export * from './preamble.js';
 
 const glossaryReferenceHandler: Handler = (node, state) => {
   if (!state.printGlossary) {
@@ -408,85 +409,6 @@ const handlers: Record<string, Handler> = {
   },
 };
 
-class TexGlossaryAndAcronymSerializer {
-  static COMMENT_LENGTH = 50;
-
-  preamble: string;
-  printedDefinitions: string;
-
-  constructor(
-    glossaryDefinitions: Record<string, [string, string]>,
-    acronymDefinitions: Record<string, [string, string]>,
-  ) {
-    this.printedDefinitions = this.renderGlossary();
-    this.preamble = [
-      this.renderCommonImports(Object.keys(acronymDefinitions).keys.length > 0),
-      this.renderImports('glossary', this.createGlossaryDirectives(glossaryDefinitions)),
-      this.renderImports('acronyms', this.createAcronymDirectives(acronymDefinitions)),
-    ]
-      .filter((item) => !!item)
-      .join('\n');
-  }
-
-  private renderGlossary(): string {
-    const block = writeTexLabelledComment(
-      'acronyms & glossary',
-      ['\\printglossaries'], // Will print both glossary and abbreviations
-      TexGlossaryAndAcronymSerializer.COMMENT_LENGTH,
-    );
-    const percents = ''.padEnd(TexGlossaryAndAcronymSerializer.COMMENT_LENGTH, '%');
-    return `${percents}\n${block}${percents}\n`;
-  }
-
-  private renderCommonImports(withAcronym?: boolean): string {
-    const usepackage = withAcronym
-      ? '\\usepackage[acronym]{glossaries}'
-      : '\\usepackage{glossaries}';
-    const makeglossaries = '\\makeglossaries';
-    return `${usepackage}\n${makeglossaries}\n`;
-  }
-
-  private renderImports(commentTitle: string, directives: string[]): string | undefined {
-    if (!directives) return '';
-    const block = writeTexLabelledComment(
-      commentTitle,
-      directives,
-      TexGlossaryAndAcronymSerializer.COMMENT_LENGTH,
-    );
-    if (!block) return;
-    const percents = ''.padEnd(TexGlossaryAndAcronymSerializer.COMMENT_LENGTH, '%');
-    return `${percents}\n${block}${percents}\n`;
-  }
-
-  private createGlossaryDirectives(
-    glossaryDefinitions: Record<string, [string, string]>,
-  ): string[] {
-    const directives = Object.keys(glossaryDefinitions).map((k) => ({
-      key: k,
-      name: glossaryDefinitions[k][0],
-      description: glossaryDefinitions[k][1],
-    }));
-
-    const entries = directives.map(
-      (entry) =>
-        `\\newglossaryentry{${entry.key}}{name=${entry.name},description={${entry.description}}}`,
-    );
-    return entries;
-  }
-
-  private createAcronymDirectives(acronymDefinitions: Record<string, [string, string]>): string[] {
-    const directives = Object.keys(acronymDefinitions).map((k) => ({
-      key: k,
-      acronym: acronymDefinitions[k][0],
-      expansion: acronymDefinitions[k][1],
-    }));
-
-    return directives.map(
-      (entry) => `\\newacronym{${entry.key}}{${entry.acronym}}{${entry.expansion}}`,
-    );
-  }
-}
-
 class TexSerializer implements ITexSerializer {
   file: VFile;
   data: StateData;
@@ -596,24 +518,16 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     transformLegends(node);
 
     const state = new TexSerializer(file, node, opts ?? { handlers });
-    let tex = (file.result as string).trim();
-
-    const preamble: string[] = [];
-    if (state.data.hasProofs) {
-      preamble.push(new TexProofSerializer().preamble);
-    }
-    if (opts?.printGlossaries) {
-      const glossaryState = new TexGlossaryAndAcronymSerializer(
-        state.glossary,
-        state.abbreviations,
-      );
-      preamble.push(glossaryState.preamble);
-      tex += '\n' + glossaryState.printedDefinitions;
-    }
+    const tex = (file.result as string).trim();
 
     const result: LatexResult = {
       imports: [...state.data.imports],
-      preamble: preamble.join('\n'),
+      preamble: {
+        hasProofs: state.data.hasProofs,
+        printGlossaries: opts?.printGlossaries,
+        glossary: state.glossary,
+        abbreviations: state.abbreviations,
+      },
       commands: withRecursiveCommands(state),
       value: tex,
     };

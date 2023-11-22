@@ -42,7 +42,7 @@ describe('extractTexPart', () => {
         value: 'tagged content\n\nalso tagged content',
         imports: [],
         commands: {},
-        preamble: '',
+        preamble: { abbreviations: {}, glossary: {}, printGlossaries: false },
       },
     );
     expect(tree).toEqual({
@@ -80,7 +80,7 @@ describe('extractTexPart', () => {
       value: 'tagged content',
       imports: [],
       commands: {},
-      preamble: '',
+      preamble: { abbreviations: {}, glossary: {}, printGlossaries: false },
     });
   });
   it('exceeding max chars passes', async () => {
@@ -100,7 +100,7 @@ describe('extractTexPart', () => {
       value: 'tagged content',
       imports: [],
       commands: {},
-      preamble: '',
+      preamble: { abbreviations: {}, glossary: {}, printGlossaries: false },
     });
   });
   it('exceeding max words passes', async () => {
@@ -120,7 +120,7 @@ describe('extractTexPart', () => {
       value: 'tagged content',
       imports: [],
       commands: {},
-      preamble: '',
+      preamble: { abbreviations: {}, glossary: {}, printGlossaries: false },
     });
   });
   it('part as_list returns list', async () => {
@@ -153,13 +153,13 @@ describe('extractTexPart', () => {
         value: 'tagged content',
         imports: [],
         commands: {},
-        preamble: '',
+        preamble: { abbreviations: {}, glossary: {}, printGlossaries: false },
       },
       {
         value: 'also tagged content',
         imports: [],
         commands: {},
-        preamble: '',
+        preamble: { abbreviations: {}, glossary: {}, printGlossaries: false },
       },
     ]);
   });
@@ -206,13 +206,13 @@ describe('extractTexPart', () => {
         value: 'tagged content',
         imports: [],
         commands: {},
-        preamble: '',
+        preamble: { abbreviations: {}, glossary: {}, printGlossaries: false },
       },
       {
         value: 'also tagged content',
         imports: [],
         commands: {},
-        preamble: '',
+        preamble: { abbreviations: {}, glossary: {}, printGlossaries: false },
       },
     ]);
   });
@@ -264,7 +264,7 @@ describe('extractTexPart', () => {
           'some other stuff\n\n\\begin{itemize}\n\\item tagged content\n\\item also tagged content\n\\end{itemize}',
         imports: [],
         commands: {},
-        preamble: '',
+        preamble: { abbreviations: {}, glossary: {}, printGlossaries: false },
       },
     ]);
   });
@@ -317,13 +317,13 @@ describe('extractTexPart', () => {
           '\\begin{itemize}\n\\item tagged content\n\\item also tagged content\n\\end{itemize}',
         imports: [],
         commands: {},
-        preamble: '',
+        preamble: { abbreviations: {}, glossary: {}, printGlossaries: false },
       },
       {
         value: 'more tagged content...',
         imports: [],
         commands: {},
-        preamble: '',
+        preamble: { abbreviations: {}, glossary: {}, printGlossaries: false },
       },
     ]);
   });

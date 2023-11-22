@@ -8,10 +8,17 @@ export const DEFAULT_PAGE_WIDTH_PIXELS = 800;
 
 export type Handler = (node: any, state: ITexSerializer, parent: any) => void;
 
+export type PreambleData = {
+  hasProofs?: boolean;
+  printGlossaries?: boolean;
+  glossary: Record<string, [string, string]>;
+  abbreviations: Record<string, [string, string]>;
+};
+
 export type LatexResult = {
   value: string;
   imports: string[];
-  preamble: string;
+  preamble: PreambleData;
   commands: Record<string, string>;
 };
 
