@@ -14,7 +14,11 @@ export function imageAltTextTransform(tree: GenericParent) {
     const images = selectAll('image', container) as Image[];
     images.forEach((image) => {
       if (!image || image.alt) return;
-      const para = select('caption > paragraph', container) as Paragraph;
+      // Only look at direct child captions
+      const para = select(
+        'paragraph',
+        container.children.find((child) => child.type === 'caption'),
+      ) as Paragraph;
       if (!para) return;
       // Do not write the captionNumber to image alt text
       const content = para.children?.filter((n) => (n.type as string) !== 'captionNumber');
