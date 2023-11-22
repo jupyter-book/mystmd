@@ -1,11 +1,18 @@
 import type { Plugin } from 'unified';
 import type { Parent } from 'myst-spec';
-import type { DefinitionList } from 'myst-spec-ext';
+import type { DefinitionDescription, DefinitionList } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
 
 export type DefinitionItem = Parent & { type: 'definitionItem' };
 
+/**
+ * This transforms a flat list of alternating dt/dd into a definitionItem for each term.
+ *  - `defList -> [defTerm, defDescription, defDescription, defTerm, defDescription]`
+ *  - `defList -> [defItem -> [defTerm, defDescription, defDescription], defItem -> [defTerm, defDescription]]`
+ *
+ * It will also ensure that any nested defDescriptions that are not paragraphs are wrapped in paragraphs.
+ */
 export function definitionTransform(mdast: GenericParent) {
   const defList = selectAll('definitionList', mdast) as DefinitionList[];
   defList.forEach((node) => {
@@ -25,6 +32,17 @@ export function definitionTransform(mdast: GenericParent) {
     });
     pushItem();
     node.children = children as unknown as DefinitionList['children'];
+  });
+  // Ensure that the only children of the def node are paragraphs
+  // This is necessary for the JATS spec
+  const defDescriptions = selectAll('definitionDescription', mdast) as DefinitionDescription[];
+  defDescriptions.forEach((node) => {
+    const allParagraphs = node.children.reduce((b, n) => b && n.type === 'paragraph', true);
+    if (allParagraphs) return;
+    node.children = node.children.map((child) => {
+      if (child.type === 'paragraph') return child;
+      return { type: 'paragraph', children: [child] };
+    });
   });
 }
 
