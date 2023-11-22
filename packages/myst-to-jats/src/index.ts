@@ -440,7 +440,7 @@ const handlers: Handlers = {
   },
   break(node, state, parent) {
     if (parent.type === 'paragraph' || parent.type === 'listItem') {
-      state.warn(`There are no breaks allowed in ${node.type}s.`, node, 'break', {
+      state.warn(`There are no breaks allowed in ${parent.type}s.`, node, 'break', {
         url: 'https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/break.html',
       });
       return;
