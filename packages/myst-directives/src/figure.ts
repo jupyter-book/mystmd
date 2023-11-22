@@ -1,5 +1,5 @@
 import type { Image } from 'myst-spec-ext';
-import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import type { DirectiveSpec, GenericNode } from 'myst-common';
 import { normalizeLabel } from 'myst-common';
 
 export const figureDirective: DirectiveSpec = {
@@ -7,7 +7,6 @@ export const figureDirective: DirectiveSpec = {
   arg: {
     type: String,
     doc: 'The filename of an image (e.g. `my-fig.png`), or an ID of a Jupyter Notebook cell (e.g. `#my-cell`).',
-    required: true,
   },
   options: {
     label: {
@@ -65,19 +64,21 @@ export const figureDirective: DirectiveSpec = {
     type: 'myst',
     doc: 'If provided, this will be the figure caption.',
   },
-  run(data: DirectiveData): GenericNode[] {
+  run(data): GenericNode[] {
     const children: GenericNode[] = [];
-    children.push({
-      type: 'image',
-      url: data.arg as string,
-      alt: data.options?.alt as string,
-      width: data.options?.width as string,
-      height: data.options?.height as string,
-      align: data.options?.align as Image['align'],
-      // These will pass through if the node is converted to an embed node in the image transform
-      'remove-input': data.options?.['remove-input'],
-      'remove-output': data.options?.['remove-output'],
-    });
+    if (data.arg) {
+      children.push({
+        type: 'image',
+        url: data.arg as string,
+        alt: data.options?.alt as string,
+        width: data.options?.width as string,
+        height: data.options?.height as string,
+        align: data.options?.align as Image['align'],
+        // These will pass through if the node is converted to an embed node in the image transform
+        'remove-input': data.options?.['remove-input'],
+        'remove-output': data.options?.['remove-output'],
+      });
+    }
     if (data.options?.placeholder) {
       children.push({
         type: 'image',
@@ -90,19 +91,7 @@ export const figureDirective: DirectiveSpec = {
       });
     }
     if (data.body) {
-      // TODO: This is probably better as a transform in the future
-      const nodes = data.body as GenericNode[];
-      // Allow multiple images to be added before a caption
-      const firstNonImage = nodes.findIndex(({ type }) => type !== 'image');
-      const images = nodes.slice(0, firstNonImage);
-      children.push(...images);
-      const [caption, ...legend] = nodes.slice(firstNonImage);
-      if (caption) {
-        children.push({ type: 'caption', children: [caption] });
-      }
-      if (legend.length) {
-        children.push({ type: 'legend', children: legend });
-      }
+      children.push(...(data.body as GenericNode[]));
     }
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const container = {

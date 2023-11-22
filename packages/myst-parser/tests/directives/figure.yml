@@ -58,12 +58,10 @@ cases:
                 - type: image
                   url: my_image.png
                   alt: my image
-                - type: caption
+                - type: paragraph
                   children:
-                    - type: paragraph
-                      children:
-                        - type: text
-                          value: Cool caption!
+                    - type: text
+                      value: Cool caption!
   - title: figure directive parses, caption and legend
     markdown: |-
       ```{figure} my_image.png
@@ -91,19 +89,15 @@ cases:
               children:
                 - type: image
                   url: my_image.png
-                - type: caption
+                - type: paragraph
                   children:
-                    - type: paragraph
-                      children:
-                        - type: text
-                          value: Cool caption!
-                - type: legend
+                    - type: text
+                      value: Cool caption!
+                - type: paragraph
                   children:
-                    - type: paragraph
-                      children:
-                        - type: text
-                          value: More info!!
-                    - type: paragraph
-                      children:
-                        - type: text
-                          value: Wait and more??
+                    - type: text
+                      value: More info!!
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Wait and more??

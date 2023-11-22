@@ -7,6 +7,8 @@ import { mystParse } from '../src';
 import { mystToHtml } from 'myst-to-html';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
+import { containerChildrenTransform } from 'myst-transforms';
+import { VFile } from 'vfile';
 
 type TestFile = {
   cases: TestCase[];
@@ -105,29 +107,34 @@ describe('Testing myst --> mdast conversions', () => {
   test.each(mystCases)('%s', (_, { myst, mdast }) => {
     if (myst) {
       const mdastString = yaml.dump(mdast);
-      const newAst = yaml.dump(
-        replaceMystCommentNodes(
-          stripPositions(
-            mystParse(myst, {
-              mdast: {
-                hoistSingleImagesOutofParagraphs: false,
-                nestBlocks: false,
-              },
-              extensions: {
-                frontmatter: false, // Frontmatter screws with some tests!
-                citations: false,
-                smartquotes: false,
-              },
-            }),
-          ),
+      const newAst = replaceMystCommentNodes(
+        stripPositions(
+          mystParse(myst, {
+            mdast: {
+              hoistSingleImagesOutofParagraphs: false,
+              nestBlocks: false,
+            },
+            extensions: {
+              frontmatter: false, // Frontmatter screws with some tests!
+              citations: false,
+              smartquotes: false,
+            },
+          }),
         ),
       );
-      if (newAst.includes('startingLineNumber: 2')) {
+      // Figure caption/legend creation described in myst-spec has been moved
+      // from figure directive to a basic myst transform.
+      // Run that transform to keep tests consistent.
+      if (myst.includes('{figure}')) {
+        containerChildrenTransform(newAst, new VFile());
+      }
+      const newAstString = yaml.dump(newAst);
+      if (newAstString.includes('startingLineNumber: 2')) {
         console.log('FIX ME IN 0.0.5');
-        console.log(newAst);
+        console.log(newAstString);
         return;
       }
-      expect(newAst).toEqual(mdastString);
+      expect(newAstString).toEqual(mdastString);
     }
   });
 });
