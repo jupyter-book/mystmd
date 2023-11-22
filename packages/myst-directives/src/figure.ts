@@ -62,7 +62,7 @@ export const figureDirective: DirectiveSpec = {
   },
   body: {
     type: 'myst',
-    doc: 'If provided, this will be the figure caption.',
+    doc: 'If an argument is provided to the figure directive, the body will be the figure caption. You may also omit the figure directive argument and provide images in the body of the figure, these will be parsed into sub figures.',
   },
   run(data): GenericNode[] {
     const children: GenericNode[] = [];

@@ -57,6 +57,24 @@ Relaxing at the beach 🏝 🌊 😎
 You may also embed [notebook cell outputs as images or figures](#targeting-cells).
 ```
 
+## Subfigures
+
+Subfigures can be created by omitting the directive argument to figure, and having the body contain one or more images.
+These will be numbered as `Figure 1a` and `Figure 1b`, etc. For example:
+
+```{figure}
+:name: subFigure
+:align: left
+
+![Banff, Canada](https://source.unsplash.com/random/600x225?banff)
+
+![Golden Gate Bridge, San Francisco](https://source.unsplash.com/random/600x225?golden-gate)
+
+We saw some great things on our trips this year to Banff, Canada 🇨🇦 and San Francisco, USA 🌉.
+```
+
+You can also cross-reference either the whole figure [@subFigure], or an individual figure [@subFigure-sub-0] or [@subFigure-sub-1].
+
 ## Supported Image Formats
 
 MyST supports many images formats including `.png`, `.jpg`, `.gif`, `.tiff`, `.svg`, `.pdf`, and `.eps`.
