@@ -268,6 +268,9 @@ export function validateTemplateOptionDefinition(
         'default',
         'required',
         'choices',
+        'min',
+        'max',
+        'integer',
         'max_chars',
         'condition',
       ],
@@ -312,11 +315,42 @@ export function validateTemplateOptionDefinition(
     });
   }
   if (defined(value.max_chars)) {
-    output.max_chars = validateNumber(value.max_chars, {
-      min: 0,
-      integer: true,
-      ...incrementOptions('max_chars', opts),
-    });
+    if (output.type === 'string') {
+      output.max_chars = validateNumber(value.max_chars, {
+        min: 0,
+        integer: true,
+        ...incrementOptions('max_chars', opts),
+      });
+    } else {
+      validationError('type must be "string" to use "max_chars" option', opts);
+    }
+  }
+  if (defined(value.integer)) {
+    if (output.type === 'number') {
+      output.integer = validateBoolean(value.integer, incrementOptions('integer', opts));
+    } else {
+      validationError('type must be "number" to use "integer" option', opts);
+    }
+  }
+  if (defined(value.min)) {
+    if (output.type === 'number') {
+      output.min = validateNumber(value.min, {
+        ...incrementOptions('min', opts),
+        integer: output.integer,
+      });
+    } else {
+      validationError('type must be "number" to use "min" option', opts);
+    }
+  }
+  if (defined(value.max)) {
+    if (output.type === 'number') {
+      output.max = validateNumber(value.max, {
+        ...incrementOptions('max', opts),
+        integer: output.integer,
+      });
+    } else {
+      validationError('type must be "number" to use "max" option', opts);
+    }
   }
   if (defined(value.condition)) {
     output.condition = validateCondition(value.condition, incrementOptions('condition', opts));
