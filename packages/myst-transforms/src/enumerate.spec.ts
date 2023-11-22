@@ -73,4 +73,21 @@ describe('enumeration', () => {
     expect(state.getTarget('h2')?.node.enumerator).toBe('1.1');
     expect(state.getTarget('h3')?.node.enumerator).toBe('2');
   });
+  test('sub-figures', () => {
+    const tree = u('root', [
+      u('container', { identifier: 'fig:1', kind: 'figure' }, [
+        u('container', { identifier: 'fig:1a', kind: 'figure', subcontainer: true }),
+        u('container', { identifier: 'fig:1b', kind: 'figure', subcontainer: true }),
+      ]),
+      u('container', { identifier: 'fig:2', kind: 'figure' }, []),
+    ]);
+    const state = new ReferenceState({ numbering: { enumerator: 'A.%s' } });
+    enumerateTargetsTransform(tree, { state });
+    expect(state.getTarget('fig:1')?.node.enumerator).toBe('A.1');
+    expect(state.getTarget('fig:1a')?.node.enumerator).toBe('a');
+    expect(state.getTarget('fig:1a')?.node.parentEnumerator).toBe('A.1');
+    expect(state.getTarget('fig:1b')?.node.enumerator).toBe('b');
+    expect(state.getTarget('fig:1b')?.node.parentEnumerator).toBe('A.1');
+    expect(state.getTarget('fig:2')?.node.enumerator).toBe('A.2');
+  });
 });

@@ -1,7 +1,7 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import type { Container, CrossReference, Heading, Link, Paragraph } from 'myst-spec';
-import type { Cite, Math, MathGroup } from 'myst-spec-ext';
+import type { CrossReference, Heading, Link, Paragraph } from 'myst-spec';
+import type { Cite, Container, Math, MathGroup } from 'myst-spec-ext';
 import type { PhrasingContent } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
@@ -74,7 +74,11 @@ export enum ReferenceKind {
   eq = 'eq',
 }
 
-type TargetNodes = (Container | Math | MathGroup | Heading) & { html_id: string };
+type TargetNodes = (Container | Math | MathGroup | Heading) & {
+  html_id: string;
+  subcontainer?: boolean;
+  parentEnumerator?: string;
+};
 type IdentifierNodes = { type: string; identifier: string };
 
 type Target = {
@@ -84,8 +88,7 @@ type Target = {
 
 type TargetCounts = {
   heading?: (number | null)[];
-  subequation?: [number, number];
-} & Record<string, number>;
+} & Record<string, { main: number; sub: number }>;
 
 export type StateOptions = {
   state: IReferenceState;
@@ -94,6 +97,7 @@ export type StateOptions = {
 export type NumberingOptions = {
   enumerator?: string;
   figure?: boolean;
+  subfigure?: boolean;
   equation?: boolean;
   subequation?: boolean;
   table?: boolean;
@@ -183,6 +187,7 @@ function shouldEnumerate(
       numbering[`heading_${node.depth}` as keyof Omit<NumberingOptions, 'enumerator'>] ?? false
     );
   }
+  if (node.subcontainer) return numbering.subfigure ?? false;
   return numbering[kind as keyof Omit<NumberingOptions, 'enumerator'>] ?? false;
 }
 
@@ -256,6 +261,7 @@ export class ReferenceState implements IReferenceState {
         equation: true,
         subequation: true,
         figure: true,
+        subfigure: true,
         table: true,
         code: true,
         ...opts?.numbering,
@@ -285,10 +291,8 @@ export class ReferenceState implements IReferenceState {
       this.numbering,
       this.numberAll || node.enumerated,
     );
-    let enumerator = null;
     if (node.enumerated !== false && numberNode) {
-      enumerator = this.incrementCount(node, kind as TargetKind);
-      node.enumerator = enumerator;
+      this.incrementCount(node, kind as TargetKind);
     }
     if (!(node as any).html_id) {
       (node as any).html_id = createHtmlId(node.identifier);
@@ -325,39 +329,50 @@ export class ReferenceState implements IReferenceState {
     );
   }
 
+  /**
+   * Increment target count state for container/equation nodes
+   *
+   * Updates node `enumerator` in place.
+   *
+   * If node is subcontainer/subequation, a sub-count is incremented
+   */
   incrementCount(node: TargetNodes, kind: TargetKind | string): string {
+    let enumerator: string | number;
     if (kind === TargetKind.heading && node.type === 'heading') {
       // Ideally initializeNumberedHeadingDepths is called before incrementing
       // heading count to do a better job initializing headers based on tree
       if (!this.targetCounts.heading) this.targetCounts.heading = [0, 0, 0, 0, 0, 0];
       this.targetCounts.heading = incrementHeadingCounts(node.depth, this.targetCounts.heading);
-      return formatHeadingEnumerator(this.targetCounts.heading, this.numbering.enumerator);
+      enumerator = formatHeadingEnumerator(this.targetCounts.heading, this.numbering.enumerator);
+      node.enumerator = enumerator;
+      return enumerator;
     }
-    if (kind === TargetKind.subequation && node.type === 'math') {
-      // This should be reset every time a mathGroup is encountered (see below)
-      this.targetCounts.subequation ??= [this.targetCounts.equation, 0];
-      this.targetCounts.subequation = [
-        this.targetCounts.subequation[0],
-        this.targetCounts.subequation[1] + 1,
-      ];
-      const sub = this.targetCounts.subequation[1];
-      // Will restart counting if there are more than 26 subequations
-      const letter = String.fromCharCode(((sub - 1) % 26) + 'a'.charCodeAt(0));
-      const enumerator = this.targetCounts.subequation[0] + letter;
+    const resolveEnumerator = (val: any): string => {
       const prefix = this.numbering.enumerator;
-      const out = prefix ? prefix.replace(/%s/g, String(enumerator)) : String(enumerator);
-      return out;
+      return prefix ? prefix.replace(/%s/g, String(val)) : String(val);
+    };
+    const countKind = kind === TargetKind.subequation ? TargetKind.equation : kind;
+    // Ensure target kind is instantiated
+    this.targetCounts[countKind] ??= { main: 0, sub: 0 };
+    if (node.subcontainer || kind === TargetKind.subequation) {
+      this.targetCounts[countKind].sub += 1;
+      // Will restart counting if there are more than 26 subequations/figures
+      const letter = String.fromCharCode(
+        ((this.targetCounts[countKind].sub - 1) % 26) + 'a'.charCodeAt(0),
+      );
+      if (node.subcontainer) {
+        node.parentEnumerator = resolveEnumerator(this.targetCounts[countKind].main);
+        enumerator = letter;
+      } else {
+        enumerator = resolveEnumerator(this.targetCounts[countKind].main + letter);
+      }
+    } else {
+      this.targetCounts[kind].main += 1;
+      this.targetCounts[kind].sub = 0;
+      enumerator = resolveEnumerator(this.targetCounts[kind].main);
     }
-    this.targetCounts[kind] ??= 0;
-    this.targetCounts[kind] += 1;
-    if (kind === TargetKind.equation && node.type === 'mathGroup') {
-      // Reset the sub-equation count and number the outer equation
-      this.targetCounts.subequation = [this.targetCounts.equation, 0];
-    }
-    const enumerator = this.targetCounts[kind];
-    const prefix = this.numbering.enumerator;
-    const out = prefix ? prefix.replace(/%s/g, String(enumerator)) : String(enumerator);
-    return out;
+    node.enumerator = enumerator;
+    return enumerator;
   }
 
   getTarget(identifier?: string): Target | undefined {
@@ -411,7 +426,13 @@ export class ReferenceState implements IReferenceState {
       const template = target.node.enumerator
         ? getDefaultNumberedReferenceLabel(target.kind)
         : getDefaultNamedReferenceLabel(target.kind, !!title);
-      fillReferenceEnumerators(this.file, node, template, target.node.enumerator, title);
+      fillReferenceEnumerators(
+        this.file,
+        node,
+        template,
+        `${target.node.parentEnumerator ?? ''}${target.node.enumerator}`,
+        title,
+      );
     }
     node.resolved = true;
     // The identifier may have changed in the lookup, but unlikely
@@ -512,19 +533,26 @@ export const enumerateTargetsPlugin: Plugin<[StateOptions], GenericParent, Gener
     enumerateTargetsTransform(tree, opts);
   };
 
-function getCaptionLabel(kind?: string) {
+function getCaptionLabel(kind?: string, subcontainer?: boolean) {
+  if (subcontainer) return `(%s)`;
   switch (kind) {
     case 'table':
-      return 'Table %s:';
+      return `Table %s:`;
     case 'code':
-      return 'Program %s:';
+      return `Program %s:`;
     case 'figure':
     default:
-      return 'Figure %s:';
+      return `Figure %s:`;
   }
 }
 
-/** Visit all containers and add captions */
+/** Visit all containers and add captionNumber node to caption paragraph
+ *
+ * Requires container to be enumerated.
+ *
+ * By default, captionNumber is only added if caption already exists.
+ * However, for subcontainers, captionNumber is always added.
+ */
 export function addContainerCaptionNumbersTransform(
   tree: GenericParent,
   file: VFile,
@@ -535,8 +563,18 @@ export function addContainerCaptionNumbersTransform(
     .filter((container: Container) => container.enumerator)
     .forEach((container: Container) => {
       const enumerator = opts.state.getTarget(container.identifier)?.node.enumerator;
-      const para = select('caption > paragraph', container) as Container;
-      if (enumerator && para && (para.children[0]?.type as string) !== 'captionNumber') {
+      if (!enumerator) return;
+      // Only look for direct caption children
+      let para = select(
+        'paragraph',
+        container.children.find((child) => child.type === 'caption'),
+      ) as GenericParent;
+      // Always add subcontainer caption number, even if there is no other caption
+      if (container.subcontainer && !para) {
+        para = { type: 'paragraph', children: [] };
+        container.children.push({ type: 'caption', children: [para] } as GenericNode);
+      }
+      if (para && (para.children[0]?.type as string) !== 'captionNumber') {
         const captionNumber = {
           type: 'captionNumber',
           kind: container.kind,
@@ -545,7 +583,12 @@ export function addContainerCaptionNumbersTransform(
           html_id: (container as any).html_id,
           enumerator,
         };
-        fillReferenceEnumerators(file, captionNumber, getCaptionLabel(container.kind), enumerator);
+        fillReferenceEnumerators(
+          file,
+          captionNumber,
+          getCaptionLabel(container.kind, container.subcontainer),
+          enumerator,
+        );
         // The caption number is in the paragraph, it needs a link to the figure container
         // This is a bit awkward, but necessary for (efficient) rendering
         para.children = [captionNumber as any, ...(para?.children ?? [])];
