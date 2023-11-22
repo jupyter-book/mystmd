@@ -326,6 +326,20 @@ describe('validateKeys', () => {
     });
     expect(opts.messages.warnings?.length).toEqual(1);
   });
+  it('extra keys filtered', () => {
+    expect(
+      validateKeys(
+        { z: 1, b: 2, c: 3 },
+        { required: ['a'], optional: ['b'], alias: { z: 'a' } },
+        { ...opts, keepExtraKeys: true },
+      ),
+    ).toEqual({
+      a: 1,
+      b: 2,
+      c: 3,
+    });
+    expect(opts.messages.warnings?.length).toEqual(1);
+  });
 });
 
 describe('validateList', () => {

@@ -17,4 +17,7 @@ export type ValidationOptions = {
   escapeFn?: (s: string) => string;
 };
 
-export type KeyOptions = ValidationOptions & { returnInvalidPartial?: boolean };
+export type KeyOptions = ValidationOptions & {
+  returnInvalidPartial?: boolean;
+  keepExtraKeys?: boolean;
+};
