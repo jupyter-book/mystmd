@@ -370,7 +370,6 @@ describe('validateTemplateOptionDefinition', () => {
           description: 'desc',
           required: true,
           default: 'a',
-          max_chars: 10,
           condition: {
             id: 'short_title',
             value: 'test',
@@ -385,12 +384,34 @@ describe('validateTemplateOptionDefinition', () => {
       description: 'desc',
       required: true,
       default: 'a',
-      max_chars: 10,
       condition: {
         id: 'short_title',
         value: 'test',
       },
     });
+    expect(opts.messages.errors?.length ?? 0).toEqual(0);
+  });
+  it('object with all properties passes', async () => {
+    expect(
+      validateTemplateOptionDefinition(
+        session,
+        {
+          id: 'key',
+          type: 'string',
+          description: 'desc',
+          required: true,
+          max_chars: 10,
+        },
+        opts,
+      ),
+    ).toEqual({
+      id: 'key',
+      type: 'string',
+      description: 'desc',
+      required: true,
+      max_chars: 10,
+    });
+    expect(opts.messages.errors?.length ?? 0).toEqual(0);
   });
   it('invalid choices errors', async () => {
     expect(
@@ -463,6 +484,105 @@ describe('validateTemplateOptionDefinition', () => {
       id: 'key',
       type: 'choice',
       choices: ['a', 'b'],
+    });
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('basic min / max', async () => {
+    expect(
+      validateTemplateOptionDefinition(
+        session,
+        {
+          id: 'key',
+          type: 'number',
+          min: 1,
+          max: 5,
+          integer: true,
+        },
+        opts,
+      ),
+    ).toEqual({
+      id: 'key',
+      type: 'number',
+      min: 1,
+      max: 5,
+      integer: true,
+    });
+    expect(opts.messages.errors?.length ?? 0).toEqual(0);
+  });
+  it('basic min / max with bad default errors', async () => {
+    expect(
+      validateTemplateOptionDefinition(
+        session,
+        {
+          id: 'key',
+          type: 'number',
+          min: 1,
+          max: 5,
+          integer: true,
+          default: 6,
+        },
+        opts,
+      ),
+    ).toEqual({
+      id: 'key',
+      type: 'number',
+      min: 1,
+      max: 5,
+      integer: true,
+    });
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('min / max flipped', async () => {
+    expect(
+      validateTemplateOptionDefinition(
+        session,
+        {
+          id: 'key',
+          type: 'number',
+          min: 5,
+          max: 1,
+        },
+        opts,
+      ),
+    ).toEqual({
+      id: 'key',
+      type: 'number',
+      min: 1,
+      max: 5,
+    });
+    expect(opts.messages.warnings?.length).toEqual(1);
+  });
+  it('cannot use choices when not a choice', async () => {
+    expect(
+      validateTemplateOptionDefinition(
+        session,
+        {
+          id: 'key',
+          type: 'number',
+          choices: ['a', 'b'],
+        },
+        opts,
+      ),
+    ).toEqual({
+      id: 'key',
+      type: 'number',
+    });
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('cannot use integer on a string type', async () => {
+    expect(
+      validateTemplateOptionDefinition(
+        session,
+        {
+          id: 'key',
+          type: 'string',
+          integer: true,
+        },
+        opts,
+      ),
+    ).toEqual({
+      id: 'key',
+      type: 'string',
     });
     expect(opts.messages.errors?.length).toEqual(1);
   });
@@ -644,7 +764,7 @@ describe('validateTemplatePartDefinition', () => {
     });
     expect(opts.messages.errors?.length).toEqual(1);
   });
-  it('valid part definiton passes', async () => {
+  it('valid part definition passes', async () => {
     expect(
       validateTemplatePartDefinition(
         {
