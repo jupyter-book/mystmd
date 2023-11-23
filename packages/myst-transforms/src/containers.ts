@@ -1,7 +1,8 @@
 import type { Plugin } from 'unified';
 import { plural } from 'myst-cli-utils';
-import { fileError, fileWarn, normalizeLabel, RuleId } from 'myst-common';
+import { fileError, fileWarn, liftChildren, normalizeLabel, RuleId } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
+import { remove } from 'unist-util-remove';
 import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 
@@ -62,6 +63,38 @@ function createSubfigure(node: GenericNode, parent: GenericParent, ind: number):
 }
 
 /**
+ * Lifts images out of paragraph that only contains images and newlines
+ *
+ * This handles the case of:
+ * ```
+ * :::{figure}
+ *
+ * ![](image_a.png)
+ * ![](image_b.png)
+ *
+ * :::
+ * ```
+ * which parses to paragraph with image, newline, image children.
+ */
+function hoistContentOutOfParagraphs(tree: GenericParent) {
+  const paragraphs = selectAll('paragraph', tree) as GenericParent[];
+  paragraphs.forEach((paragraph) => {
+    const unhoistableChildren = paragraph.children.filter((child) => {
+      if (child.type === 'text' && child.value === '\n') return false;
+      if (SUBFIGURE_TYPES.includes(child.type)) return false;
+      return true;
+    });
+    if (unhoistableChildren.length > 0) return;
+    selectAll('text', paragraph).forEach((child) => {
+      child.type = '__delete__';
+    });
+    paragraph.type = '__lift__';
+  });
+  remove(tree, '__delete__');
+  liftChildren(tree, '__lift__');
+}
+
+/**
  * Update container children and add sub-figures
  *
  * - Valid container nodes are ensured to be first children.
@@ -75,6 +108,7 @@ export function containerChildrenTransform(tree: GenericParent, vfile: VFile) {
   const containers = selectAll('container', tree) as GenericParent[];
   // Process in reverse so subfigure processing persists
   containers.reverse().forEach((container) => {
+    hoistContentOutOfParagraphs(container);
     let subfigures: GenericNode[] = [];
     let placeholderImage: GenericNode | undefined;
     let caption: GenericNode | undefined;

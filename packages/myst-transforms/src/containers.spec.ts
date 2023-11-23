@@ -87,4 +87,23 @@ describe('Test containerChildrenTransform', () => {
       ]),
     );
   });
+  test('figure with images on consecutive lines creates subfiures', async () => {
+    const mdast = rootContainer([
+      image(true),
+      u('paragraph', [u('text', 'my caption')]),
+      u('paragraph', [image(), u('text', '\n'), image(), u('text', '\n'), image()]),
+      u('paragraph', [u('text', 'my legend')]),
+    ]);
+    containerChildrenTransform(mdast, new VFile());
+    expect(mdast).toEqual(
+      rootContainer([
+        container([image()]),
+        container([image()]),
+        container([image()]),
+        image(true),
+        caption(),
+        u('legend', [u('paragraph', [u('text', 'my legend')])]),
+      ]),
+    );
+  });
 });
