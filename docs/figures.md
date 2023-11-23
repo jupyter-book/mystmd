@@ -62,7 +62,7 @@ You may also embed [notebook cell outputs as images or figures](#targeting-cells
 Subfigures can be created by omitting the directive argument to figure, and having the body contain one or more images or figures.
 These will be numbered as `Figure 1a` and `Figure 1b`, etc. For example:
 
-```{figure}
+:::{figure}
 :name: subFigure
 :align: left
 
@@ -70,9 +70,25 @@ These will be numbered as `Figure 1a` and `Figure 1b`, etc. For example:
 ![Golden Gate Bridge, San Francisco](https://source.unsplash.com/random/600x225?golden-gate)
 
 We saw some great things on our trips this year to Banff, Canada 🇨🇦 and San Francisco, USA 🌉.
-```
+:::
 
 You can also cross-reference either the whole figure [@subFigure], or an individual subfigure [@subFigure-a] or [@subFigure-b]. Each subfigure is given an implicit reference that matches the figure label with a suffix of their letter, for example, a figure with label `my-figure` the two subfigures can be referred to as `my-figure-a` and `my-figure-b`, respectively. If you provide a [specific label for a subfigure](#label-anything), that label will be used instead of the implicit label.
+
+```{myst}
+:::{figure}
+:name: my-figure
+:align: left
+
+(my-figure-fruit)=
+![Here is some fruit 🍌](https://source.unsplash.com/random/600x100?fruit)
+
+![My beach pics! 🏝](https://source.unsplash.com/random/600x100?beach)
+
+Some pictures of fruit and beaches!
+:::
+
+See [](#my-figure-fruit) for the fruit, and [](#my-figure) to reference both subfigures.
+```
 
 ## Supported Image Formats
 

@@ -1,6 +1,5 @@
 import type { Plugin } from 'unified';
-import { plural } from 'myst-cli-utils';
-import { fileError, fileWarn, liftChildren, normalizeLabel, RuleId } from 'myst-common';
+import { fileError, fileWarn, liftChildren, normalizeLabel, RuleId, plural } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { remove } from 'unist-util-remove';
 import { select, selectAll } from 'unist-util-select';

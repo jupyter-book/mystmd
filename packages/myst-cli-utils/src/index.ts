@@ -9,7 +9,6 @@ export {
 } from './logger.js';
 export { exec, makeExecutable } from './exec.js';
 export { clirun, tic } from './utils.js';
-export { plural } from './plural.js';
 export { isUrl } from './isUrl.js';
 export { Session, getSession } from './session.js';
 export {
