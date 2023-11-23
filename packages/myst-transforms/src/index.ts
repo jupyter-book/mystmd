@@ -51,6 +51,7 @@ export { joinGatesPlugin, joinGatesTransform } from './joinGates.js';
 export { glossaryPlugin, glossaryTransform } from './glossary.js';
 export { abbreviationPlugin, abbreviationTransform } from './abbreviations.js';
 export { includeDirectivePlugin, includeDirectiveTransform } from './include.js';
+export { containerChildrenPlugin, containerChildrenTransform } from './containers.js';
 
 // Enumeration
 export type { IReferenceState, NumberingOptions, ReferenceKind } from './enumerate.js';

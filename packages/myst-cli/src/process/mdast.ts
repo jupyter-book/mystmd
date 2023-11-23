@@ -182,7 +182,7 @@ export async function transformMdast(
     .use(mathPlugin, { macros: frontmatter.math })
     .use(glossaryPlugin, { state }) // This should be before the enumerate plugins
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
-    .use(enumerateTargetsPlugin, { state }) // This should be after math
+    .use(enumerateTargetsPlugin, { state }) // This should be after math/container transforms
     .use(joinGatesPlugin);
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'document') return;

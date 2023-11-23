@@ -26,6 +26,7 @@
     "katex": "^0.15.2",
     "hast-util-to-mdast": "^8.3.1",
     "mdast-util-find-and-replace": "^2.1.0",
+    "myst-cli-utils": "^2.0.6",
     "myst-common": "^1.1.14",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^1.1.14",
