@@ -1,5 +1,6 @@
 import { resolve } from 'node:path';
-import { plural, tic } from 'myst-cli-utils';
+import { plural } from 'myst-common';
+import { tic } from 'myst-cli-utils';
 import type { LinkTransformer } from 'myst-transforms';
 import { combineProjectCitationRenderers } from '../../process/citations.js';
 import { loadFile, selectFile } from '../../process/file.js';

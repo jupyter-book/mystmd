@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 import type { ISession } from './session/types.js';
 import { selectCurrentProjectConfig } from './store/selectors.js';
-import { RuleId, type MystPlugin } from 'myst-common';
-import { plural } from 'myst-cli-utils';
+import { RuleId, plural, type MystPlugin } from 'myst-common';
 import { addWarningForFile } from './utils/addWarningForFile.js';
 
 export async function loadPlugins(session: ISession): Promise<MystPlugin> {

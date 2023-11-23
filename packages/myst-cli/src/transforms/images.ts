@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import mime from 'mime-types';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { RuleId } from 'myst-common';
-import { computeHash, hashAndCopyStaticFile, isUrl, plural } from 'myst-cli-utils';
+import { RuleId, plural } from 'myst-common';
+import { computeHash, hashAndCopyStaticFile, isUrl } from 'myst-cli-utils';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
