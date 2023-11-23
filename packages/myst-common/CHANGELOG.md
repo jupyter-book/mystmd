@@ -1,5 +1,12 @@
 # myst-common
 
+## 1.1.16
+
+### Patch Changes
+
+- 2904931: Move plural function to myst-common
+  - myst-frontmatter@1.1.16
+
 ## 1.1.15
 
 ### Patch Changes
