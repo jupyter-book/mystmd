@@ -614,6 +614,24 @@ export function addContainerCaptionNumbersTransform(
     });
 }
 
+/**
+ * Raise a warning if `target` linked by `node` has an implicit reference
+ */
+function implicitTargetWarning(target: Target, node: GenericNode, opts: StateOptions) {
+  if ((target.node as GenericNode).implicit && opts.state.file) {
+    fileWarn(
+      opts.state.file,
+      `Linking "${target.node.identifier}" to an implicit ${target.kind} reference, best practice is to create an explicit reference.`,
+      {
+        node,
+        note: 'Explicit references do not break when you update the title to a section, they are preferred over using the implicit HTML ID created for headers.',
+        source: TRANSFORM_NAME,
+        ruleId: RuleId.referenceTargetExplicit,
+      },
+    );
+  }
+}
+
 export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateOptions) => {
   selectAll('link', tree).forEach((node) => {
     const link = node as Link;
@@ -653,19 +671,7 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateO
     xref.label = reference.label;
     delete xref.kind; // This will be deprecated, no need to set, and remove if it is there
     delete (xref as any).url;
-    // Raise a warning if linking to an implicit node.
-    if ((target.node as any).implicit && opts.state.file) {
-      fileWarn(
-        opts.state.file,
-        `Linking "${target.node.identifier}" to an implicit ${target.kind} reference, best practice is to create an explicit reference.`,
-        {
-          node,
-          note: 'Explicit references do not break when you update the title to a section, they are preferred over using the implicit HTML ID created for headers.',
-          source: TRANSFORM_NAME,
-          ruleId: RuleId.referenceTargetExplicit,
-        },
-      );
-    }
+    implicitTargetWarning(target, node, opts);
   });
 };
 
@@ -690,6 +696,7 @@ export const resolveUnlinkedCitations = (tree: GenericParent, opts: StateOptions
     xref.identifier = reference.identifier;
     xref.label = reference.label;
     delete cite.error;
+    implicitTargetWarning(target, node, opts);
   });
 };
 
