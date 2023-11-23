@@ -291,7 +291,7 @@ export class ReferenceState implements IReferenceState {
       this.numbering,
       this.numberAll || node.enumerated,
     );
-    if (node.enumerated !== false && numberNode) {
+    if (node.enumerated !== false && numberNode && !node.enumerator) {
       this.incrementCount(node, kind as TargetKind);
     }
     if (!(node as any).html_id) {
@@ -525,6 +525,24 @@ export const enumerateTargetsTransform = (tree: GenericParent, opts: StateOption
       opts.state.addTarget(node as TargetNodes);
     }
   });
+  // Add implicit labels to subfigures without explicit labels
+  // This must happen after initial enumeration, as implicit subfigure labels are dependent on enumerators
+  (selectAll('container', tree) as Container[])
+    .filter((container: Container) => !container.subcontainer)
+    .forEach((parent) => {
+      (selectAll('container[subcontainer]', parent) as Container[]).forEach((sub) => {
+        const parentLabel = parent.label ?? parent.identifier;
+        if (sub.identifier || !parentLabel || !sub.enumerator) return;
+        const { label, identifier } = normalizeLabel(`${parentLabel}-${sub.enumerator}`) ?? {};
+        sub.label = label;
+        sub.identifier = identifier;
+        (sub as any).implicit = true;
+        // This is the second time addTarget is called on this node.
+        // The first time, it was given an enumerator but not added to targets.
+        // This time, it is added to targets since it now has an identifier.
+        opts.state.addTarget(sub as TargetNodes);
+      });
+    });
   return tree;
 };
 

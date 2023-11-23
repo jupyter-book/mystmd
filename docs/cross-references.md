@@ -215,6 +215,8 @@ This figure has been included from [](./interactive-notebooks.ipynb) and can be 
 
 :::
 
+(label-anything)=
+
 ## Label Anything
 
 It is possible to label any document node by adding `(my-label)=` before any other block of content. These can be referenced using the `{ref}` role, but by default will not be enumerated, so you cannot use `%s` or `{number}` in the content.

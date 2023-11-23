@@ -78,6 +78,7 @@ describe('enumeration', () => {
       u('container', { identifier: 'fig:1', kind: 'figure' }, [
         u('container', { identifier: 'fig:1a', kind: 'figure', subcontainer: true }),
         u('container', { identifier: 'fig:1b', kind: 'figure', subcontainer: true }),
+        u('container', { kind: 'figure', subcontainer: true }),
       ]),
       u('container', { identifier: 'fig:2', kind: 'figure' }, []),
     ]);
@@ -88,6 +89,8 @@ describe('enumeration', () => {
     expect(state.getTarget('fig:1a')?.node.parentEnumerator).toBe('A.1');
     expect(state.getTarget('fig:1b')?.node.enumerator).toBe('b');
     expect(state.getTarget('fig:1b')?.node.parentEnumerator).toBe('A.1');
+    expect(state.getTarget('fig:1-c')?.node.enumerator).toBe('c');
+    expect(state.getTarget('fig:1-c')?.node.parentEnumerator).toBe('A.1');
     expect(state.getTarget('fig:2')?.node.enumerator).toBe('A.2');
   });
 });

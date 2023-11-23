@@ -28,7 +28,7 @@ function isPlaceholder(node: GenericNode) {
 }
 
 /** Nest node inside container */
-function createSubfigure(node: GenericNode, parent: GenericParent, ind: number): GenericParent {
+function createSubfigure(node: GenericNode, parent: GenericParent): GenericParent {
   const children = node.type === 'container' && node.children ? node.children : [node];
   if (node.type === 'image' && node.alt) {
     children.push({
@@ -47,8 +47,7 @@ function createSubfigure(node: GenericNode, parent: GenericParent, ind: number):
     });
     delete node.alt;
   }
-  const sourceLabel = node.label ?? (parent.label ? `${parent.label}-sub-${ind}` : undefined);
-  const { label, identifier } = normalizeLabel(sourceLabel) ?? {};
+  const { label, identifier } = normalizeLabel(node.label) ?? {};
   const subfigure = {
     type: 'container',
     kind: node.kind ?? parent.kind ?? 'figure',
@@ -183,7 +182,7 @@ export function containerChildrenTransform(tree: GenericParent, vfile: VFile) {
       );
     }
     if (subfigures.length > 1) {
-      subfigures = subfigures.map((node, index) => createSubfigure(node, container, index));
+      subfigures = subfigures.map((node) => createSubfigure(node, container));
     }
     const children: GenericNode[] = [...subfigures];
     if (placeholderImage) children.push(placeholderImage);

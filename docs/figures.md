@@ -73,7 +73,7 @@ These will be numbered as `Figure 1a` and `Figure 1b`, etc. For example:
 We saw some great things on our trips this year to Banff, Canada 🇨🇦 and San Francisco, USA 🌉.
 ```
 
-You can also cross-reference either the whole figure [@subFigure], or an individual figure [@subFigure-sub-0] or [@subFigure-sub-1].
+You can also cross-reference either the whole figure [@subFigure], or an individual subfigure [@subFigure-a] or [@subFigure-b]. Each subfigure is given an implicit reference that matches the figure label with a suffix of their letter, for example, a figure with label `my-figure` the two subfigures can be referred to as `my-figure-a` and `my-figure-b`, respectively. If you provide a [specific label for a subfigure](#label-anything), that label will be used instead of the implicit label.
 
 ## Supported Image Formats
 
