@@ -59,7 +59,7 @@ You may also embed [notebook cell outputs as images or figures](#targeting-cells
 
 ## Subfigures
 
-Subfigures can be created by omitting the directive argument to figure, and having the body contain one or more images.
+Subfigures can be created by omitting the directive argument to figure, and having the body contain one or more images or figures.
 These will be numbered as `Figure 1a` and `Figure 1b`, etc. For example:
 
 ```{figure}
@@ -67,7 +67,6 @@ These will be numbered as `Figure 1a` and `Figure 1b`, etc. For example:
 :align: left
 
 ![Banff, Canada](https://source.unsplash.com/random/600x225?banff)
-
 ![Golden Gate Bridge, San Francisco](https://source.unsplash.com/random/600x225?golden-gate)
 
 We saw some great things on our trips this year to Banff, Canada 🇨🇦 and San Francisco, USA 🌉.
