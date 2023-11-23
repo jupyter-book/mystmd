@@ -28,6 +28,7 @@ import {
   validateString,
   validateUrl,
   validationError,
+  validationWarning,
 } from 'simple-validators';
 import type { ValidationOptions } from 'simple-validators';
 import type {
@@ -310,9 +311,17 @@ export function validateTemplateOptionDefinition(
     output.required = validateBoolean(value.required, incrementOptions('required', opts));
   }
   if (defined(value.choices)) {
-    output.choices = validateList(value.choices, incrementOptions('choices', opts), (val, ind) => {
-      return validateString(val, incrementOptions(`choices.${ind}`, opts));
-    });
+    if (output.type === 'choice') {
+      output.choices = validateList(
+        value.choices,
+        incrementOptions('choices', opts),
+        (val, ind) => {
+          return validateString(val, incrementOptions(`choices.${ind}`, opts));
+        },
+      );
+    } else {
+      validationError('type must be "choice" to use "choices" option', opts);
+    }
   }
   if (defined(value.max_chars)) {
     if (output.type === 'string') {
@@ -351,6 +360,12 @@ export function validateTemplateOptionDefinition(
     } else {
       validationError('type must be "number" to use "max" option', opts);
     }
+  }
+  if (defined(output.min) && defined(output.max) && output.max < output.min) {
+    validationWarning('"min" and "max" options are flipped', opts);
+    const [min, max] = [output.min, output.max];
+    output.min = max;
+    output.max = min;
   }
   if (defined(value.condition)) {
     output.condition = validateCondition(value.condition, incrementOptions('condition', opts));
