@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.7
+
+### Patch Changes
+
+- 2904931: Move plural function to myst-common
+
 ## 2.0.6
 
 ### Patch Changes

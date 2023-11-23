@@ -1,5 +1,14 @@
 # myst-transforms
 
+## 1.1.14
+
+### Patch Changes
+
+- 2904931: Move plural function to myst-common
+- Updated dependencies [2904931]
+  - myst-common@1.1.16
+  - myst-spec-ext@1.1.16
+
 ## 1.1.13
 
 ### Patch Changes

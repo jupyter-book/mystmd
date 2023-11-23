@@ -1,5 +1,18 @@
 # myst-cli
 
+## 1.1.31
+
+### Patch Changes
+
+- 2904931: Move plural function to myst-common
+- Updated dependencies [2904931]
+  - myst-transforms@1.1.14
+  - myst-cli-utils@2.0.7
+  - myst-common@1.1.16
+  - myst-config@1.1.16
+  - myst-frontmatter@1.1.16
+  - myst-spec-ext@1.1.16
+
 ## 1.1.30
 
 ### Patch Changes
