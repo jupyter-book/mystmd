@@ -1,5 +1,21 @@
 # myst-transforms
 
+## 1.1.13
+
+### Patch Changes
+
+- 81a47ef5: Add enumerator letter to implicit subfigure label
+- 81a47ef5: Add new container transform to create subfigures, captions, legends
+- 81a47ef5: Update enumeration transform for subfigures
+- 81a47ef5: Transform figure image paragraph nesting to support subfigure images on consecutive lines
+- c8a0ea09: Add math simplifications to build, for example, `$\_2# myst-transforms will become a subscript.
+- 81a47ef5: Clean up basic transforms and types for subfigures
+- 81a47ef5: Add implicit target warning for unlinked citation resolution
+- Updated dependencies [81a47ef5]
+  - myst-spec-ext@1.1.15
+  - myst-common@1.1.15
+  - myst-to-html@1.0.16
+
 ## 1.1.12
 
 ### Patch Changes

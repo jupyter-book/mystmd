@@ -1,5 +1,14 @@
 # myst-frontmatter
 
+## 1.1.15
+
+### Patch Changes
+
+- 6693972b: Export article -> articles with coercion and erroring
+- 2dfde615: Introduce mystToTex settings, including minted, listings, or verbatim
+- Updated dependencies [6693972b]
+  - simple-validators@1.0.4
+
 ## 1.1.14
 
 ### Patch Changes

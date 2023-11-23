@@ -1,5 +1,44 @@
 # myst-cli
 
+## 1.1.30
+
+### Patch Changes
+
+- 2dfde615: Introduce mystToTex settings, including minted, listings, or verbatim
+- c8a0ea09: Add math simplifications to build, for example, `$\_2# myst-cli will become a subscript.
+- 6693972b: Consume multiple articles and preamble changes in exports
+- 81a47ef5: Clean up basic transforms and types for subfigures
+- Updated dependencies [6693972b]
+- Updated dependencies [81a47ef5]
+- Updated dependencies [81a47ef5]
+- Updated dependencies [81a47ef5]
+- Updated dependencies [81a47ef5]
+- Updated dependencies [2dfde615]
+- Updated dependencies [6693972b]
+- Updated dependencies [81a47ef5]
+- Updated dependencies [2dfde615]
+- Updated dependencies [c6ac8619]
+- Updated dependencies [edbab804]
+- Updated dependencies [a63bc6a]
+- Updated dependencies [c8a0ea09]
+- Updated dependencies [edbab804]
+- Updated dependencies [6693972b]
+- Updated dependencies [81a47ef5]
+- Updated dependencies [066fe279]
+- Updated dependencies [9ff01e17]
+- Updated dependencies [81a47ef5]
+  - myst-to-tex@1.0.14
+  - myst-transforms@1.1.13
+  - myst-parser@1.0.16
+  - myst-frontmatter@1.1.15
+  - myst-to-jats@1.0.18
+  - myst-templates@1.0.13
+  - simple-validators@1.0.4
+  - myst-spec-ext@1.1.15
+  - myst-common@1.1.15
+  - myst-config@1.1.15
+  - tex-to-myst@1.0.14
+
 ## 1.1.29
 
 ### Patch Changes

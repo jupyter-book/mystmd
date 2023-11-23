@@ -1,5 +1,16 @@
 # myst-parser
 
+## 1.0.16
+
+### Patch Changes
+
+- 81a47ef5: Simplify and relax figure directive
+- Updated dependencies [81a47ef5]
+- Updated dependencies [81a47ef5]
+  - myst-directives@1.0.16
+  - myst-common@1.1.15
+  - myst-roles@1.0.16
+
 ## 1.0.15
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # myst-config
 
+## 1.1.15
+
+### Patch Changes
+
+- Updated dependencies [6693972b]
+- Updated dependencies [2dfde615]
+- Updated dependencies [6693972b]
+  - myst-frontmatter@1.1.15
+  - simple-validators@1.0.4
+
 ## 1.1.14
 
 ### Patch Changes

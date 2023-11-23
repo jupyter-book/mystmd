@@ -1,5 +1,11 @@
 # simple-validators
 
+## 1.0.4
+
+### Patch Changes
+
+- 6693972b: Add option to keep extra keys on validateKeys
+
 ## 1.0.3
 
 ### Patch Changes

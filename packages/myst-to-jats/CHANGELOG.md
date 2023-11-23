@@ -1,5 +1,26 @@
 # myst-to-jats
 
+## 1.0.18
+
+### Patch Changes
+
+- edbab804: Remove outputs that are hidden or removed in jats
+- edbab804: Remove no-width-space in link text for jats output
+- 066fe279: Update definition list handling for JATS spec
+- Updated dependencies [81a47ef5]
+- Updated dependencies [81a47ef5]
+- Updated dependencies [81a47ef5]
+- Updated dependencies [6693972b]
+- Updated dependencies [81a47ef5]
+- Updated dependencies [2dfde615]
+- Updated dependencies [c8a0ea09]
+- Updated dependencies [81a47ef5]
+- Updated dependencies [81a47ef5]
+  - myst-transforms@1.1.13
+  - myst-frontmatter@1.1.15
+  - myst-spec-ext@1.1.15
+  - myst-common@1.1.15
+
 ## 1.0.17
 
 ### Patch Changes

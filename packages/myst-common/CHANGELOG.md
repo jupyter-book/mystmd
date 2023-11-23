@@ -1,5 +1,14 @@
 # myst-common
 
+## 1.1.15
+
+### Patch Changes
+
+- 81a47ef5: Clean up basic transforms and types for subfigures
+- Updated dependencies [6693972b]
+- Updated dependencies [2dfde615]
+  - myst-frontmatter@1.1.15
+
 ## 1.1.14
 
 ### Patch Changes
