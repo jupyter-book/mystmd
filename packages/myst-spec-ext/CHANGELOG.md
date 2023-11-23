@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.1.15
+
+### Patch Changes
+
+- 81a47ef5: Clean up basic transforms and types for subfigures
+
 ## 1.1.14
 
 ## 1.1.13

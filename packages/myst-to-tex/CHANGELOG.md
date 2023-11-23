@@ -1,5 +1,21 @@
 # myst-to-tex
 
+## 1.0.14
+
+### Patch Changes
+
+- 6693972b: Maintain preamble as structured data in myst-to-tex with funcitons to reconstruct later
+- 2dfde615: Add breaklines option to minted output by default
+- 2dfde615: Introduce mystToTex settings, including minted, listings, or verbatim
+- c6ac8619: Add text subscript transforms for latex
+- 9ff01e17: Improve caption handler for unnumbered captions
+- Updated dependencies [6693972b]
+- Updated dependencies [2dfde615]
+- Updated dependencies [81a47ef5]
+  - myst-frontmatter@1.1.15
+  - myst-spec-ext@1.1.15
+  - myst-common@1.1.15
+
 ## 1.0.13
 
 ### Patch Changes

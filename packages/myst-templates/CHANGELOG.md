@@ -1,5 +1,18 @@
 # myst-templates
 
+## 1.0.13
+
+### Patch Changes
+
+- a63bc6a: Allow min/max/integer on number template types
+- Updated dependencies [6693972b]
+- Updated dependencies [2dfde615]
+- Updated dependencies [6693972b]
+- Updated dependencies [81a47ef5]
+  - myst-frontmatter@1.1.15
+  - simple-validators@1.0.4
+  - myst-common@1.1.15
+
 ## 1.0.12
 
 ### Patch Changes
