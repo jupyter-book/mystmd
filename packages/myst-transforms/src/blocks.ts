@@ -3,7 +3,7 @@ import type { Plugin } from 'unified';
 import type { Node } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { RuleId, fileError, normalizeLabel } from 'myst-common';
+import { NotebookCell, RuleId, fileError, normalizeLabel } from 'myst-common';
 import type { Code } from 'myst-spec-ext';
 
 function nestBlock(tree: GenericParent): void {
@@ -114,23 +114,19 @@ export function blockToFigureTransform(
     const caption = block.data?.caption ?? block.data?.['fig-cap'] ?? block.data?.['tbl-cap'];
     if (caption) {
       const kind = block.data?.kind ?? (block.data?.['tbl-cap'] ? 'table' : 'figure');
-      const children = [...block.children];
-      const { children: captionChildren } = parser(caption);
-      const parsedCaption = { type: 'caption', children: captionChildren };
-      if (kind === 'table') {
-        children.unshift(parsedCaption);
-      } else {
-        children.push(parsedCaption);
+      const children = parser(caption).children ?? [];
+      children.push(...block.children);
+      const container: GenericParent = {
+        type: 'container',
+        kind,
+        label: block.label,
+        identifier: block.identifier,
+        children,
+      };
+      if (block.data?.type === NotebookCell.code) {
+        container.noSubcontainers = true;
       }
-      block.children = [
-        {
-          type: 'container',
-          kind,
-          label: block.label,
-          identifier: block.identifier,
-          children,
-        },
-      ];
+      block.children = [container];
       delete block.data.caption;
       delete block.data['fig-cap'];
       delete block.data['tbl-cap'];

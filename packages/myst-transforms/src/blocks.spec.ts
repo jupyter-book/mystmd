@@ -170,8 +170,8 @@ describe('Test blockToFigureTransform', () => {
           },
           [
             u('container', { kind: 'figure', label: 'my-label', identifier: 'my-label' }, [
+              u('paragraph', [u('text', 'My caption')]),
               u('paragraph', [u('text', 'value')]),
-              u('caption', [u('paragraph', [u('text', 'My caption')])]),
             ]),
           ],
         ),
@@ -202,8 +202,8 @@ describe('Test blockToFigureTransform', () => {
           },
           [
             u('container', { kind: 'figure', label: 'my-label', identifier: 'my-label' }, [
+              u('paragraph', [u('text', 'My caption')]),
               u('paragraph', [u('text', 'value')]),
-              u('caption', [u('paragraph', [u('text', 'My caption')])]),
             ]),
           ],
         ),
@@ -234,7 +234,7 @@ describe('Test blockToFigureTransform', () => {
           },
           [
             u('container', { kind: 'table', label: 'my-label', identifier: 'my-label' }, [
-              u('caption', [u('paragraph', [u('text', 'My caption')])]),
+              u('paragraph', [u('text', 'My caption')]),
               u('paragraph', [u('text', 'value')]),
             ]),
           ],
@@ -266,9 +266,42 @@ describe('Test blockToFigureTransform', () => {
           },
           [
             u('container', { kind: 'table', label: 'my-label', identifier: 'my-label' }, [
-              u('caption', [u('paragraph', [u('text', 'My caption')])]),
+              u('paragraph', [u('text', 'My caption')]),
               u('paragraph', [u('text', 'value')]),
             ]),
+          ],
+        ),
+      ]),
+    );
+  });
+  test('block data type notebook-cell results in noSubcontainers', async () => {
+    const mdast = u('root', [
+      u(
+        'block',
+        {
+          label: 'my-label',
+          identifier: 'my-label',
+          data: { 'fig-cap': 'My caption', metadata: '', type: 'notebook-code' },
+          attribute: '',
+        },
+        [u('paragraph', [u('text', 'value')])],
+      ),
+    ]) as any;
+    blockToFigureTransform(mdast);
+    expect(mdast).toEqual(
+      u('root', [
+        u(
+          'block',
+          {
+            data: { metadata: '', type: 'notebook-code' },
+            attribute: '',
+          },
+          [
+            u(
+              'container',
+              { kind: 'figure', label: 'my-label', identifier: 'my-label', noSubcontainers: true },
+              [u('paragraph', [u('text', 'My caption')]), u('paragraph', [u('text', 'value')])],
+            ),
           ],
         ),
       ]),
