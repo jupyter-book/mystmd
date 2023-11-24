@@ -61,7 +61,7 @@ export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   stack: Element[];
   footnotes: Element[];
   expressions: Element[];
-  render: () => IJatsSerializer;
+  render: (ignoreParts?: boolean) => IJatsSerializer;
   text: (value?: string) => void;
   renderChildren: (node: any) => void;
   renderInline: (node: GenericNode, name: string, attributes?: Attributes) => void;
@@ -70,6 +70,6 @@ export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   openNode: (name: string, attributes?: Attributes) => void;
   closeNode: () => void;
   elements: () => Element[];
-  warn: (message: string, node: GenericNode, source?: string, opts?: MessageInfo) => void;
-  error: (message: string, node: GenericNode, source?: string, opts?: MessageInfo) => void;
+  warn: (message: string, node?: GenericNode, source?: string, opts?: MessageInfo) => void;
+  error: (message: string, node?: GenericNode, source?: string, opts?: MessageInfo) => void;
 }
