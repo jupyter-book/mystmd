@@ -5,7 +5,16 @@ import { remove } from 'unist-util-remove';
 import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 
-const SUBFIGURE_TYPES = ['embed', 'block', 'container', 'image', 'iframe', 'table', 'code'];
+const SUBFIGURE_TYPES = [
+  'embed',
+  'block',
+  'container',
+  'image',
+  'iframe',
+  'table',
+  'code',
+  'output',
+];
 
 /** Raise a warning if caption includes content that is expected to be directly on the figure */
 function warnOnCaptionContent(tree: GenericParent, vfile: VFile) {
@@ -180,13 +189,19 @@ export function containerChildrenTransform(tree: GenericParent, vfile: VFile) {
         },
       );
     }
-    if (subfigures.length > 1) {
+    if (subfigures.length > 1 && !container.noSubcontainers) {
       subfigures = subfigures.map((node) => createSubfigure(node, container));
     }
     const children: GenericNode[] = [...subfigures];
     if (placeholderImage) children.push(placeholderImage);
-    if (caption) children.push(caption);
-    if (legend) children.push(legend);
+    // Caption/legend are above tables and below all other figures
+    if (container.kind === 'table') {
+      if (legend) children.unshift(legend);
+      if (caption) children.unshift(caption);
+    } else {
+      if (caption) children.push(caption);
+      if (legend) children.push(legend);
+    }
     container.children = children;
   });
   warnOnCaptionContent(tree, vfile);

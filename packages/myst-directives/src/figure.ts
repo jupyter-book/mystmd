@@ -1,5 +1,5 @@
 import type { Image } from 'myst-spec-ext';
-import type { DirectiveSpec, GenericNode } from 'myst-common';
+import type { DirectiveSpec, GenericNode, GenericParent } from 'myst-common';
 import { normalizeLabel } from 'myst-common';
 
 export const figureDirective: DirectiveSpec = {
@@ -59,6 +59,11 @@ export const figureDirective: DirectiveSpec = {
       type: String,
       doc: 'A placeholder image when using a notebook cell as the figure contents. This will be shown in place of the Jupyter output until an execution environment is attached. It will also be used in static outputs, such as a PDF output.',
     },
+    'no-subfigures': {
+      type: Boolean,
+      doc: 'Disallow implicit subfigure creation from child nodes',
+      alias: ['no-subfig', 'no-subfigure'],
+    },
   },
   body: {
     type: 'myst',
@@ -94,7 +99,7 @@ export const figureDirective: DirectiveSpec = {
       children.push(...(data.body as GenericNode[]));
     }
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
-    const container = {
+    const container: GenericParent = {
       type: 'container',
       kind: 'figure',
       identifier,
@@ -102,6 +107,9 @@ export const figureDirective: DirectiveSpec = {
       class: data.options?.class,
       children,
     };
+    if (data.options?.['no-subfigures']) {
+      container.noSubcontainers = true;
+    }
     return [container];
   },
 };

@@ -219,5 +219,6 @@ export type Container = Omit<SpecContainer, 'kind'> & {
   kind?: 'figure' | 'table' | 'quote' | 'code';
   source?: Dependency;
   subcontainer?: boolean;
+  noSubcontainers?: boolean;
   parentEnumerator?: string;
 };

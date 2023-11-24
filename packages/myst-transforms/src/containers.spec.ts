@@ -106,4 +106,51 @@ describe('Test containerChildrenTransform', () => {
       ]),
     );
   });
+  test('figure with noSubcontainers sorts without creating subcontainers', async () => {
+    const mdast = rootContainer([
+      image(true),
+      image(),
+      u('paragraph', [u('text', 'my caption')]),
+      image(),
+    ]);
+    const fig = mdast.children[0]?.children?.[0];
+    if (fig) fig.noSubcontainers = true;
+    containerChildrenTransform(mdast, new VFile());
+    const result = rootContainer([image(), image(), image(true), caption()]);
+    const resultFig = result.children[0]?.children?.[0];
+    if (resultFig) resultFig.noSubcontainers = true;
+    expect(mdast).toEqual(result);
+  });
+  test('table container puts caption and legend first', async () => {
+    const mdast = rootContainer([
+      image(true),
+      image(),
+      image(),
+      u('paragraph', [u('text', 'my caption')]),
+      u('paragraph', [u('text', 'my legend')]),
+      u('paragraph', [u('text', 'more legend')]),
+    ]);
+    const fig = mdast.children[0]?.children?.[0];
+    if (fig) fig.kind = 'table';
+    containerChildrenTransform(mdast, new VFile());
+    expect(mdast).toEqual(
+      u('root', [
+        u('block', [
+          container(
+            [
+              caption(),
+              u('legend', [
+                u('paragraph', [u('text', 'my legend')]),
+                u('paragraph', [u('text', 'more legend')]),
+              ]),
+              container([image()], 'table'),
+              container([image()], 'table'),
+              image(true),
+            ],
+            'table',
+          ),
+        ]),
+      ]),
+    );
+  });
 });
