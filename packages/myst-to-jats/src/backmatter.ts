@@ -124,13 +124,21 @@ export function citeToJatsRef(state: IJatsSerializer, key: string, data: Citatio
   };
 }
 
-export function getRefList(state: IJatsSerializer, citations?: CitationRenderer): Element[] {
-  if (!citations || !Object.keys(citations).length) return [];
-  const elements = Object.keys(citations)
-    .sort()
+export function getRefList(
+  state: IJatsSerializer,
+  order?: string[],
+  citations?: CitationRenderer,
+): Element[] {
+  if (!order || !citations) return [];
+  const elements = order
     .map((key) => {
+      if (!citations[key]) {
+        state.warn(`unknown citation ${key}`);
+        return undefined;
+      }
       return citeToJatsRef(state, key, citations[key].cite);
-    });
+    })
+    .filter((e): e is Element => !!e);
   return [{ type: 'element', name: 'ref-list', elements }];
 }
 
@@ -157,15 +165,17 @@ export function getBack(
     citations,
     footnotes,
     expressions,
+    referenceOrder,
   }: {
     citations?: CitationRenderer;
     footnotes?: Element[];
     expressions?: Element[];
+    referenceOrder?: string[];
   },
 ): Element[] {
   const elements = [
     ...(state.data.backSections ?? []),
-    ...getRefList(state, citations),
+    ...getRefList(state, referenceOrder, citations),
     ...getFootnotes(footnotes),
     ...getExpressions(expressions),
     ...(state.data.acknowledgments ? [state.data.acknowledgments] : []),

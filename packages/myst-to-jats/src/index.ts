@@ -71,6 +71,7 @@ import type {
   DocumentOptions,
   JatsPart,
 } from './types.js';
+import { ACKNOWLEDGMENT_PARTS, ABSTRACT_PARTS } from './types.js';
 import {
   basicTransformations,
   referenceResolutionTransform,
@@ -565,6 +566,9 @@ const handlers: Handlers = {
       'ref-type': 'bibr',
       rid: label,
     };
+    if (!state.referenceOrder.includes(label)) {
+      state.referenceOrder.push(label);
+    }
     state.renderInline(node, 'xref', attrs);
   },
   footnoteReference(node, state) {
@@ -758,6 +762,7 @@ class JatsSerializer implements IJatsSerializer {
   stack: Element[];
   footnotes: Element[];
   expressions: Element[];
+  referenceOrder: string[];
   opts: Options;
 
   constructor(file: VFile, mdast: Root, opts?: Options) {
@@ -769,6 +774,7 @@ class JatsSerializer implements IJatsSerializer {
     this.stack = [{ type: 'element', elements: [] }];
     this.footnotes = [];
     this.expressions = [];
+    this.referenceOrder = [];
     this.handlers = opts?.handlers ?? handlers;
     this.mdast = copyNode(mdast);
     this.opts = opts ?? {};
@@ -783,16 +789,16 @@ class JatsSerializer implements IJatsSerializer {
           ABSTRACT_PARTS.map((part) => {
             return { part };
           });
-      this.data.abstracts = abstractParts
+        this.data.abstracts = abstractParts
           .map((def) => renderAbstract(this.file, this.mdast, def, this.opts))
-        .filter((e) => !!e) as Element[];
-    }
+          .filter((e) => !!e) as Element[];
+      }
       this.data.acknowledgments = renderAcknowledgments(this.file, this.mdast, this.opts);
       const backSections = this.opts?.backSections ?? [];
-    this.data.backSections = backSections
+      this.data.backSections = backSections
         .map((def) => renderBackSection(this.file, this.mdast, def, this.opts))
-      .filter((e) => !!e) as Element[];
-  }
+        .filter((e) => !!e) as Element[];
+    }
     this.renderChildren(this.mdast);
     while (this.stack.length > 1) this.closeNode();
     return this;
@@ -959,6 +965,7 @@ export class JatsDocument {
         citations: this.content.citations,
         footnotes: articleState.footnotes,
         expressions: articleState.expressions,
+        referenceOrder: articleState.referenceOrder,
       }),
       ...subArticleStates.map((state, ind) => {
         return this.subArticle(state, subArticles[ind], ind === 0 && isNotebookArticleRep);
@@ -1029,6 +1036,7 @@ export class JatsDocument {
         citations: content.citations,
         footnotes: subArticleState.footnotes,
         expressions: subArticleState.expressions,
+        referenceOrder: subArticleState.referenceOrder,
       }),
     ];
     const attributes: Record<string, any> = {};

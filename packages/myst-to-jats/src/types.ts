@@ -22,6 +22,10 @@ export type MathPlugins = Required<PageFrontmatter>['math'];
 
 export type JatsPart = { part: string | string[]; type?: string; title?: string };
 
+export const ACKNOWLEDGMENT_PARTS = ['acknowledgments', 'acknowledgements'];
+
+export const ABSTRACT_PARTS = ['abstract'];
+
 export type Options = {
   handlers?: Record<string, Handler>;
   isNotebookArticleRep?: boolean;
@@ -61,6 +65,7 @@ export interface IJatsSerializer<D extends Record<string, any> = StateData> {
   stack: Element[];
   footnotes: Element[];
   expressions: Element[];
+  referenceOrder: string[];
   render: (ignoreParts?: boolean) => IJatsSerializer;
   text: (value?: string) => void;
   renderChildren: (node: any) => void;
