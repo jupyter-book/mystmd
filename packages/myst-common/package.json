@@ -30,6 +30,7 @@
     "vfile-message": "^3.0.0"
   },
   "devDependencies": {
+    "myst-spec-ext": "^1.1.16",
     "unist-builder": "3.0.0"
   }
 }
