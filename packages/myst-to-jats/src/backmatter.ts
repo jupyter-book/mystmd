@@ -129,16 +129,16 @@ export function getRefList(
   order?: string[],
   citations?: CitationRenderer,
 ): Element[] {
-  if (!order || !citations) return [];
   const elements = order
-    .map((key) => {
-      if (!citations[key]) {
+    ?.map((key) => {
+      if (!citations?.[key]) {
         state.warn(`unknown citation ${key}`);
         return undefined;
       }
       return citeToJatsRef(state, key, citations[key].cite);
     })
     .filter((e): e is Element => !!e);
+  if (!elements?.length) return [];
   return [{ type: 'element', name: 'ref-list', elements }];
 }
 
