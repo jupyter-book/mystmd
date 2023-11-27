@@ -52,7 +52,6 @@ export function validateThebe(
   }
 
   const value: Thebe | undefined = validateObjectKeys(inputObject, { optional: THEBE_KEYS }, opts);
-  console.log('VALIDATE THEBE!!!! in', value);
 
   if (value === undefined) return undefined;
   const output: Thebe = {};
@@ -96,7 +95,6 @@ export function validateThebe(
     );
   }
 
-  console.log('VALIDATE THEBE!!!! out', output);
   return output;
 }
 
