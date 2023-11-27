@@ -25,6 +25,9 @@ export async function includeFilesTransform(
     return fs.readFileSync(fullFile).toString();
   };
   const parseContent = (filename: string, content: string) => {
+    if (filename.toLowerCase().endsWith('.html')) {
+      return [{ type: 'html', value: content }];
+    }
     return parseMyst(session, content, filename).children;
   };
   await includeDirectiveTransform(tree, vfile, { loadFile, parseContent });

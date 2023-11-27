@@ -20,14 +20,37 @@ export type HtmlTransformOptions = {
   htmlHandlers?: { [x: string]: Handle };
 };
 
-function addClassAndIdentifier(node: GenericNode, attrs: Record<string, string> = {}) {
+function convertStylesStringToObject(stringStyles: string) {
+  if (!stringStyles || typeof stringStyles !== 'string') return undefined;
+  return stringStyles.split(';').reduce((acc, style) => {
+    const colonPosition = style.indexOf(':');
+
+    if (colonPosition === -1) return acc;
+
+    const camelCaseProperty = style
+        .slice(0, colonPosition)
+        .trim()
+        .replace(/^-ms-/, 'ms-')
+        .replace(/-./g, (c) => c.slice(1).toUpperCase()),
+      value = style.slice(colonPosition + 1).trim();
+
+    return value ? { ...acc, [camelCaseProperty]: value } : acc;
+  }, {});
+}
+
+function addClassAndIdentifier(
+  node: GenericNode,
+  attrs: Record<string, string | Record<string, string> | number | boolean> = {},
+) {
   const props = node.properties ?? {};
-  if (props.id) {
-    const normalized = normalizeLabel(props.id);
+  if (props.id || props.dataLabel) {
+    const normalized = normalizeLabel(props.id || props.dataLabel);
     if (normalized?.identifier) attrs.identifier = normalized.identifier;
     if (normalized?.label) attrs.label = normalized.label;
   }
   if (props.className) attrs.class = props.className.join(' ');
+  const style = convertStylesStringToObject(node.properties.style);
+  if (style) attrs.style = style;
   return attrs;
 }
 
@@ -35,12 +58,28 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
   keepBreaks: true,
   htmlHandlers: {
     table(h: H, node: any) {
-      return h(node, 'table', all(h, node));
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'table', attrs, all(h, node));
     },
     th(h: H, node: any) {
-      const result = h(node, 'tableCell', all(h, node));
-      (result as any).header = true;
-      return result;
+      const attrs = addClassAndIdentifier(node, { header: true });
+      const rowSpan = Number.parseInt(node.properties.rowSpan, 10);
+      const colSpan = Number.parseInt(node.properties.colSpan, 10);
+      if (Number.isInteger(rowSpan) && rowSpan > 1) attrs.rowspan = rowSpan;
+      if (Number.isInteger(colSpan) && colSpan > 1) attrs.colspan = colSpan;
+      return h(node, 'tableCell', attrs, all(h, node));
+    },
+    tr(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'tableRow', attrs, all(h, node));
+    },
+    td(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      const rowSpan = Number.parseInt(node.properties.rowSpan, 10);
+      const colSpan = Number.parseInt(node.properties.colSpan, 10);
+      if (Number.isInteger(rowSpan) && rowSpan > 1) attrs.rowspan = rowSpan;
+      if (Number.isInteger(colSpan) && colSpan > 1) attrs.colspan = colSpan;
+      return h(node, 'tableCell', attrs, all(h, node));
     },
     _brKeep(h: H, node: any) {
       return h(node, '_break');
@@ -49,7 +88,6 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       const attrs = addClassAndIdentifier(node);
       attrs.url = String(node.properties.href || '');
       if (node.properties.title) attrs.title = node.properties.title;
-      if (node.properties.className) attrs.class = node.properties.className.join(' ');
       return h(node, 'link', attrs, all(h, node));
     },
     img(h: H, node: any) {
@@ -68,15 +106,17 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
     },
     comment(h: H, node: any) {
       // Prevents HTML comments from showing up as text in web
-      const result = h(node, 'comment');
-      (result as any).value = node.value;
-      return result;
+      return h(node, 'comment', node.value);
     },
     sup(h: H, node: any) {
       return h(node, 'superscript', all(h, node));
     },
     sub(h: H, node: any) {
       return h(node, 'subscript', all(h, node));
+    },
+    cite(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      return attrs.label ? h(node, 'cite', attrs, all(h, node)) : all(h, node);
     },
   },
 };

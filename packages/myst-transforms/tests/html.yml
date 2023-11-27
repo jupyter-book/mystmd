@@ -46,10 +46,10 @@ cases:
       type: root
       children:
         - type: html
-          value: <table>
-            <tr>
-            <th>Person 1</th>
-            <th>Person 2</th>
+          value: |-
+            <table>
+            <tr style="background-color: #7ec174; border: 3px solid red" class="mt-0">
+            <th colspan="2">Person 1 and 2</th>
             <th>Person 3</th>
             </tr>
             <tr>
@@ -64,22 +64,22 @@ cases:
         - type: table
           children:
             - type: tableRow
+              class: mt-0
+              style:
+                backgroundColor: '#7ec174'
+                border: 3px solid red
               children:
                 - type: tableCell
+                  header: true
+                  colspan: 2
                   children:
                     - type: text
-                      value: Person 1
-                  header: true
+                      value: Person 1 and 2
                 - type: tableCell
-                  children:
-                    - type: text
-                      value: Person 2
                   header: true
-                - type: tableCell
                   children:
                     - type: text
                       value: Person 3
-                  header: true
             - type: tableRow
               children:
                 - type: tableCell
