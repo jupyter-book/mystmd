@@ -413,7 +413,7 @@ affiliations:
     ```
 * - `email`
   - a string - email of the affiliation, required if `corresponding` is `true`
-* - `address`, `address`, `city`, `state`, `postal_code`, and `country`
+* - `address`, `city`, `state`, `postal_code`, and `country`
   - affiliation address information. In place of `state` you can use `province` or `region`.
 * - `url`
   - a string - website or homepage of the affiliation (`website` is an alias!)
