@@ -71,6 +71,7 @@ import type {
   DocumentOptions,
   JatsPart,
 } from './types.js';
+import { ACKNOWLEDGMENT_PARTS, ABSTRACT_PARTS } from './types.js';
 import {
   basicTransformations,
   referenceResolutionTransform,
@@ -565,6 +566,9 @@ const handlers: Handlers = {
       'ref-type': 'bibr',
       rid: label,
     };
+    if (!state.referenceOrder.includes(label)) {
+      state.referenceOrder.push(label);
+    }
     state.renderInline(node, 'xref', attrs);
   },
   footnoteReference(node, state) {
@@ -714,7 +718,7 @@ function renderPart(vfile: VFile, mdast: GenericParent, part: string | string[],
   });
   if (!partMdast) return undefined;
   const serializer = new JatsSerializer(vfile, partMdast as Root, opts);
-  return serializer.render().elements();
+  return serializer.render(true).elements();
 }
 
 function renderAbstract(vfile: VFile, mdast: GenericParent, def: JatsPart, opts?: Options) {
@@ -731,7 +735,7 @@ function renderAbstract(vfile: VFile, mdast: GenericParent, def: JatsPart, opts?
 }
 
 function renderAcknowledgments(vfile: VFile, mdast: GenericParent, opts?: Options) {
-  const elements = renderPart(vfile, mdast, ['acknowledgments', 'acknowledgements'], opts);
+  const elements = renderPart(vfile, mdast, ACKNOWLEDGMENT_PARTS, opts);
   if (!elements) return undefined;
   const acknowledgments: Element = { type: 'element', name: 'ack', elements };
   return acknowledgments;
@@ -758,6 +762,8 @@ class JatsSerializer implements IJatsSerializer {
   stack: Element[];
   footnotes: Element[];
   expressions: Element[];
+  referenceOrder: string[];
+  opts: Options;
 
   constructor(file: VFile, mdast: Root, opts?: Options) {
     this.file = file;
@@ -768,23 +774,31 @@ class JatsSerializer implements IJatsSerializer {
     this.stack = [{ type: 'element', elements: [] }];
     this.footnotes = [];
     this.expressions = [];
+    this.referenceOrder = [];
     this.handlers = opts?.handlers ?? handlers;
     this.mdast = copyNode(mdast);
-    if (opts?.extractAbstract) {
-      const abstractParts = opts.abstractParts ?? [{ part: 'abstract' }];
-      this.data.abstracts = abstractParts
-        .map((def) => renderAbstract(this.file, this.mdast, def, opts))
-        .filter((e) => !!e) as Element[];
-    }
-    this.data.acknowledgments = renderAcknowledgments(this.file, this.mdast, opts);
-    const backSections = opts?.backSections ?? [];
-    this.data.backSections = backSections
-      .map((def) => renderBackSection(this.file, this.mdast, def, opts))
-      .filter((e) => !!e) as Element[];
+    this.opts = opts ?? {};
     basicTransformations(this.mdast as any, opts ?? {});
   }
 
-  render() {
+  render(ignoreParts?: boolean) {
+    if (!ignoreParts) {
+      if (this.opts?.extractAbstract) {
+        const abstractParts =
+          this.opts.abstractParts ??
+          ABSTRACT_PARTS.map((part) => {
+            return { part };
+          });
+        this.data.abstracts = abstractParts
+          .map((def) => renderAbstract(this.file, this.mdast, def, this.opts))
+          .filter((e) => !!e) as Element[];
+      }
+      this.data.acknowledgments = renderAcknowledgments(this.file, this.mdast, this.opts);
+      const backSections = this.opts?.backSections ?? [];
+      this.data.backSections = backSections
+        .map((def) => renderBackSection(this.file, this.mdast, def, this.opts))
+        .filter((e) => !!e) as Element[];
+    }
     this.renderChildren(this.mdast);
     while (this.stack.length > 1) this.closeNode();
     return this;
@@ -794,7 +808,7 @@ class JatsSerializer implements IJatsSerializer {
     return this.stack[this.stack.length - 1];
   }
 
-  warn(message: string, node: GenericNode, source?: string, opts?: MessageInfo) {
+  warn(message: string, node?: GenericNode, source?: string, opts?: MessageInfo) {
     fileError(this.file, message, {
       ...opts,
       node,
@@ -803,7 +817,7 @@ class JatsSerializer implements IJatsSerializer {
     });
   }
 
-  error(message: string, node: GenericNode, source?: string, opts?: MessageInfo) {
+  error(message: string, node?: GenericNode, source?: string, opts?: MessageInfo) {
     fileError(this.file, message, {
       ...opts,
       node,
@@ -951,6 +965,7 @@ export class JatsDocument {
         citations: this.content.citations,
         footnotes: articleState.footnotes,
         expressions: articleState.expressions,
+        referenceOrder: articleState.referenceOrder,
       }),
       ...subArticleStates.map((state, ind) => {
         return this.subArticle(state, subArticles[ind], ind === 0 && isNotebookArticleRep);
@@ -1021,6 +1036,7 @@ export class JatsDocument {
         citations: content.citations,
         footnotes: subArticleState.footnotes,
         expressions: subArticleState.expressions,
+        referenceOrder: subArticleState.referenceOrder,
       }),
     ];
     const attributes: Record<string, any> = {};

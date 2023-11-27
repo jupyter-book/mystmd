@@ -7,6 +7,21 @@ cases:
           children:
             - type: text
               value: text
+            - type: citeGroup
+              kind: narrative
+              children:
+                - type: cite
+                  label: doe_2000
+                  identifier: doe_2000
+                  children:
+                    - type: text
+                      value: doe, 2000
+                - type: cite
+                  label: example_2020
+                  identifier: example_2020
+                  children:
+                    - type: text
+                      value: example, 2020
     citations:
       doe_2000:
         cite:
@@ -30,6 +45,8 @@ cases:
           volume: '4'
       example_2020:
         cite: {}
+      example_2000:
+        cite: {}
     jats: |-
       <?xml version="1.0" encoding="UTF-8"?>
       <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
@@ -38,7 +55,10 @@ cases:
           <article-meta/>
         </front>
         <body>
-          <p>text</p>
+          <p>text
+            <xref ref-type="bibr" rid="ref-1">doe, 2000</xref>, 
+            <xref ref-type="bibr" rid="ref-2">example, 2020</xref>
+          </p>
         </body>
         <back>
           <ref-list>

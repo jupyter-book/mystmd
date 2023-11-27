@@ -55,6 +55,15 @@ cases:
           children:
             - type: text
               value: text
+            - type: citeGroup
+              kind: narrative
+              children:
+                - type: cite
+                  label: example_2020
+                  identifier: example_2020
+                  children:
+                    - type: text
+                      value: example, 2020
     citations:
       example_2020:
         cite: {}
@@ -68,6 +77,15 @@ cases:
               children:
                 - type: text
                   value: article 1
+                - type: citeGroup
+                  kind: narrative
+                  children:
+                    - type: cite
+                      label: example_2000
+                      identifier: example_2000
+                      children:
+                        - type: text
+                          value: example, 2000
         citations:
           example_2000:
             cite: {}
@@ -92,7 +110,9 @@ cases:
           </article-meta>
         </front>
         <body>
-          <p>text</p>
+          <p>text
+            <xref ref-type="bibr" rid="ref-1">example, 2020</xref>
+          </p>
         </body>
         <back>
           <ref-list>
@@ -106,7 +126,9 @@ cases:
         <sub-article>
           <front-stub/>
           <body>
-            <p>article 1</p>
+            <p>article 1
+              <xref ref-type="bibr" rid="ref-2">example, 2000</xref>
+            </p>
           </body>
           <back>
             <ref-list>
