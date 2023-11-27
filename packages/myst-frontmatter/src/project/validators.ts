@@ -198,7 +198,7 @@ export function validateProjectFrontmatterKeys(
   }
 
   if (defined(value.thebe)) {
-    const result = validateThebe(value.thebe, incrementOptions('thebe', opts));
+    const result = validateThebe(value.thebe, output.github, incrementOptions('thebe', opts));
     if (result && Object.values(result).filter((val) => val !== undefined).length > 0) {
       output.thebe = result;
     } else {

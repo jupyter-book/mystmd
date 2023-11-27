@@ -31,7 +31,11 @@ const JUPYTER_SERVER_OPTIONS_KEYS = ['url', 'token'];
  *
  * https://thebe-core.curve.space/docs-core/a-configuration
  */
-export function validateThebe(input: any, opts: ValidationOptions): Thebe | undefined {
+export function validateThebe(
+  input: any,
+  github: string | undefined,
+  opts: ValidationOptions,
+): Thebe | undefined {
   if (input === false) return undefined;
   if (input === 'lite') return { lite: true };
   if (typeof input === 'string' && input !== 'binder') {
@@ -48,6 +52,7 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
   }
 
   const value: Thebe | undefined = validateObjectKeys(inputObject, { optional: THEBE_KEYS }, opts);
+  console.log('VALIDATE THEBE!!!! in', value);
 
   if (value === undefined) return undefined;
   const output: Thebe = {};
@@ -57,6 +62,7 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
   if (value.binder) {
     output.binder = validateBinderHubOptions(
       value.binder === true ? {} : (value.binder as BinderHubOptions),
+      github,
       {
         ...incrementOptions('binder', opts),
         errorLogFn: (msg) =>
@@ -90,10 +96,15 @@ export function validateThebe(input: any, opts: ValidationOptions): Thebe | unde
     );
   }
 
+  console.log('VALIDATE THEBE!!!! out', output);
   return output;
 }
 
-export function validateBinderHubOptions(input: BinderHubOptions, opts: ValidationOptions) {
+export function validateBinderHubOptions(
+  input: BinderHubOptions,
+  github: string | undefined,
+  opts: ValidationOptions,
+) {
   // input expected to be resolved to an object at this stage.
   // missing fields should be replaced by defaults
   const value = validateObjectKeys(input, { optional: BINDER_HUB_OPTIONS_KEYS }, opts);
@@ -115,6 +126,7 @@ export function validateBinderHubOptions(input: BinderHubOptions, opts: Validati
   // if our resolved provider is a git-like repo, we should validate repo and ref if
   // provided, otherwise we supply defaults
   if (output.provider?.match(/^(git|github|gitlab|gist)$/i)) {
+    const fallbackRepo = github ? github : 'executablebooks/thebe-binder-base';
     // first try to validate repo as a github username/repo string
     output.repo = value.repo
       ? validateString(value.repo, {
@@ -123,7 +135,7 @@ export function validateBinderHubOptions(input: BinderHubOptions, opts: Validati
           suppressErrors: true,
           suppressWarnings: true,
         })
-      : 'executablebooks/thebe-binder-base';
+      : fallbackRepo;
 
     // then if not, validate as a url and report errors based on url validation
     // this will encourage use of fully qualified urls
