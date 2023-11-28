@@ -6,6 +6,7 @@ import type { ISession } from '../../session/index.js';
 import type { ExportOptions, ExportResults, ExportWithInputOutput } from '../types.js';
 import { resolveAndLogErrors } from './resolveAndLogErrors.js';
 import { runTexZipExport, runTexExport } from '../tex/single.js';
+import { runTypstExport, runTypstZipExport } from '../typst.js';
 import { runWordExport } from '../docx/single.js';
 import { runJatsExport } from '../jats/single.js';
 import { texExportOptionsFromPdf } from '../pdf/single.js';
@@ -43,6 +44,24 @@ async function _localArticleExport(
           );
         } else {
           exportResults = await runTexExport(
+            sessionClone,
+            $file,
+            exportOptions,
+            fileProjectPath,
+            clean,
+          );
+        }
+      } else if (format === ExportFormats.typst) {
+        if (path.extname(output) === '.zip') {
+          exportResults = await runTypstZipExport(
+            sessionClone,
+            $file,
+            exportOptions,
+            fileProjectPath,
+            clean,
+          );
+        } else {
+          exportResults = await runTypstExport(
             sessionClone,
             $file,
             exportOptions,

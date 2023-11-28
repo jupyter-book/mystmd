@@ -15,6 +15,7 @@ export const TEMPLATE_YML = 'template.yml';
 
 const DEFAULT_TEMPLATES = {
   tex: 'tex/myst/curvenote',
+  typst: 'typst/myst/default',
   docx: 'docx/myst/default',
   site: 'site/myst/book-theme',
 };

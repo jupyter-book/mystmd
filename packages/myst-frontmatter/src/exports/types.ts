@@ -2,6 +2,7 @@ export enum ExportFormats {
   pdf = 'pdf',
   tex = 'tex',
   pdftex = 'pdf+tex',
+  typst = 'typst',
   docx = 'docx',
   xml = 'xml',
   md = 'md',

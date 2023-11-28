@@ -30,10 +30,11 @@ export function getDefaultExportFolder(
   session: ISession,
   file: string,
   projectPath?: string,
-  ext?: 'tex',
+  ext?: 'tex' | 'typ',
 ) {
   const subpaths = [projectPath || path.parse(file).dir, '_build', 'exports'];
   // Extra folder for tex export content
   if (ext === 'tex') subpaths.push(`${getDefaultExportFilename(session, file, projectPath)}_tex`);
+  if (ext === 'typ') subpaths.push(`${getDefaultExportFilename(session, file, projectPath)}_typst`);
   return path.join(...subpaths);
 }

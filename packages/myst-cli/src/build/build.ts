@@ -16,6 +16,7 @@ export type BuildOpts = {
   docx?: boolean;
   pdf?: boolean;
   tex?: boolean;
+  typst?: boolean;
   xml?: boolean;
   md?: boolean;
   meca?: boolean;
@@ -27,18 +28,19 @@ export type BuildOpts = {
 };
 
 export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
-  const { docx, pdf, tex, xml, md, meca } = opts;
-  return docx || pdf || tex || xml || md || meca || false;
+  const { docx, pdf, tex, typst, xml, md, meca } = opts;
+  return docx || pdf || tex || typst || xml || md || meca || false;
 }
 
 export function getExportFormats(opts: BuildOpts & { explicit?: boolean; extension?: string }) {
-  const { docx, pdf, tex, xml, md, meca, all, explicit, extension } = opts;
+  const { docx, pdf, tex, typst, xml, md, meca, all, explicit, extension } = opts;
   const formats = [];
   const any = hasAnyExplicitExportFormat(opts);
   const override = all || (!any && explicit && !extension);
   if (docx || override || extension === '.docx') formats.push(ExportFormats.docx);
   if (pdf || override || extension === '.pdf') formats.push(ExportFormats.pdf);
   if (tex || override || extension === '.tex') formats.push(ExportFormats.tex);
+  if (typst || override || extension === '.typ') formats.push(ExportFormats.typst);
   if (xml || override || extension === '.xml') formats.push(ExportFormats.xml);
   if (md || override || extension === '.md') formats.push(ExportFormats.md);
   if (meca || override) formats.push(ExportFormats.meca);
@@ -46,11 +48,9 @@ export function getExportFormats(opts: BuildOpts & { explicit?: boolean; extensi
 }
 
 export function exportSite(session: ISession, opts: BuildOpts) {
-  const { docx, pdf, tex, xml, md, meca, force, site, html, all } = opts;
+  const { force, site, html, all } = opts;
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  return (
-    site || html || all || (siteConfig && !force && !docx && !pdf && !tex && !xml && !md && !meca)
-  );
+  return site || html || all || (siteConfig && !force && !hasAnyExplicitExportFormat(opts));
 }
 
 export function getProjectPaths(session: ISession) {

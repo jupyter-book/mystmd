@@ -14,6 +14,10 @@ export function makeTexOption(description: string) {
   return new Option('--tex', description).default(false);
 }
 
+export function makeTypstOption(description: string) {
+  return new Option('--typst', description).default(false);
+}
+
 export function makeDocxOption(description: string) {
   return new Option('--word, --docx', description).default(false);
 }
