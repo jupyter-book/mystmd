@@ -31,7 +31,7 @@ export type SiteConfig = SiteFrontmatter & {
   template?: string;
 };
 
-type ManifestProjectItem = {
+export type ManifestProjectItem = {
   title: string;
   short_title?: string;
   level: number;
@@ -46,7 +46,7 @@ type ManifestProjectItem = {
   exports?: Export[];
 };
 
-type ManifestProject = {
+export type ManifestProject = {
   slug?: string;
   index: string;
   title: string;
