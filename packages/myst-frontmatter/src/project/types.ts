@@ -4,7 +4,7 @@ import type { Licenses } from '../licenses/types.js';
 import type { Numbering } from '../numbering/types.js';
 import type { ProjectSettings } from '../settings/types.js';
 import type { SiteFrontmatter } from '../site/types.js';
-import type { Thebe } from '../thebe/types.js';
+import type { ExpandedThebeFrontmatter } from '../thebe/types.js';
 
 export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   date?: string;
@@ -34,5 +34,5 @@ export type ProjectFrontmatter = ProjectAndPageFrontmatter & {
   references?: Record<string, { url: string }>;
   requirements?: string[];
   resources?: string[];
-  thebe?: Thebe;
+  thebe?: ExpandedThebeFrontmatter;
 };
