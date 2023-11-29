@@ -3,14 +3,19 @@ import {
   defined,
   incrementOptions,
   validateBoolean,
-  validateObject,
   validateObjectKeys,
   validateString,
   validateUrl,
   validationError,
 } from 'simple-validators';
 import { GITHUB_USERNAME_REPO_REGEX } from '../utils/validators.js';
-import type { BinderHubOptions, JupyterServerOptions, Thebe } from './types.js';
+import type {
+  BinderHubOptions,
+  JupyterServerOptions,
+  ExpandedThebeFrontmatter,
+  ThebeFrontmatter,
+  ThebeFrontmatterObject,
+} from './types.js';
 
 const THEBE_KEYS = [
   'lite',
@@ -32,10 +37,10 @@ const JUPYTER_SERVER_OPTIONS_KEYS = ['url', 'token'];
  * https://thebe-core.curve.space/docs-core/a-configuration
  */
 export function validateThebe(
-  input: any,
+  input: ThebeFrontmatter,
   github: string | undefined,
   opts: ValidationOptions,
-): Thebe | undefined {
+): ExpandedThebeFrontmatter | undefined {
   if (input === false) return undefined;
   if (input === 'lite') return { lite: true };
   if (typeof input === 'string' && input !== 'binder') {
@@ -45,16 +50,22 @@ export function validateThebe(
     );
   }
 
-  let inputObject: Record<string, any> = input;
+  let inputObject: ThebeFrontmatterObject;
   if (input === true || input === 'binder') {
     // expand boolean methods to object
     inputObject = { binder: true };
+  } else {
+    inputObject = input;
   }
 
-  const value: Thebe | undefined = validateObjectKeys(inputObject, { optional: THEBE_KEYS }, opts);
+  const value: ThebeFrontmatter | undefined = validateObjectKeys(
+    inputObject,
+    { optional: THEBE_KEYS },
+    opts,
+  );
 
   if (value === undefined) return undefined;
-  const output: Thebe = {};
+  const output: ExpandedThebeFrontmatter = {};
   if (defined(value.lite)) {
     output.lite = validateBoolean(value.lite, incrementOptions('lite', opts));
   }

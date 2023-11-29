@@ -1,4 +1,6 @@
-export type Thebe = {
+export type ThebeFrontmatter = boolean | string | ThebeFrontmatterObject;
+
+export type ThebeFrontmatterObject = {
   lite?: boolean;
   binder?: boolean | BinderHubOptions;
   server?: JupyterServerOptions;
@@ -7,6 +9,11 @@ export type Thebe = {
   disableSessionSaving?: boolean;
   mathjaxUrl?: string;
   mathjaxConfig?: string;
+};
+
+// NOTE: currently a subtle difference but will likely grow with lite options
+export type ExpandedThebeFrontmatter = Omit<ThebeFrontmatterObject, 'binder'> & {
+  binder?: BinderHubOptions;
 };
 
 export type WellKnownRepoProviders = 'github' | 'gitlab' | 'git' | 'gist';
