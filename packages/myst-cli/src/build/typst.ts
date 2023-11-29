@@ -27,6 +27,7 @@ import { createTempFolder } from '../utils/createTempFolder.js';
 import version from '../version.js';
 import { cleanOutput } from './utils/cleanOutput.js';
 import type { ExportWithOutput, ExportOptions, ExportResults } from './types.js';
+import { writeBibtexFromCitationRenderers } from './utils/bibtex.js';
 import { collectTexExportOptions } from './utils/collectExportOptions.js';
 import { resolveAndLogErrors } from './utils/resolveAndLogErrors.js';
 
@@ -147,24 +148,6 @@ export async function localArticleToTypstRaw(
   return { tempFolders: [] };
 }
 
-function writeBibtexFromCitationRenderers(session: ISession, output: string) {
-  const cache = castSession(session);
-  const allBibtexContent = Object.values(cache.$citationRenderers)
-    .map((renderers) => {
-      return Object.values(renderers).map((renderer) => {
-        const bibtexContent = (renderer.cite._graph as any[]).find((item) => {
-          return item.type === '@biblatex/text';
-        });
-        return bibtexContent?.data;
-      });
-    })
-    .flat()
-    .filter((item) => !!item);
-  const bibtexContent = [...new Set(allBibtexContent)].join('\n');
-  if (!fs.existsSync(output)) fs.mkdirSync(path.dirname(output), { recursive: true });
-  fs.writeFileSync(output, bibtexContent);
-}
-
 function merge(
   current?: { macros: string[]; commands: Record<string, string> },
   next?: { macros: string[]; commands: Record<string, string> },
@@ -190,7 +173,11 @@ export async function localArticleToTypstTemplated(
     imageExtensions: TYPST_IMAGE_EXTENSIONS,
     extraLinkTransformers,
   });
-  writeBibtexFromCitationRenderers(session, path.join(path.dirname(output), DEFAULT_BIB_FILENAME));
+  writeBibtexFromCitationRenderers(
+    session,
+    path.join(path.dirname(output), DEFAULT_BIB_FILENAME),
+    content,
+  );
 
   const warningLogFn = (message: string) => {
     addWarningForFile(session, file, message, 'warn', {

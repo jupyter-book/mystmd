@@ -1,5 +1,4 @@
 import AdmZip from 'adm-zip';
-import fs from 'node:fs';
 import path from 'node:path';
 import type { TemplateImports } from 'jtex';
 import { renderTex, mergeTemplateImports } from 'jtex';
@@ -18,8 +17,8 @@ import { select, selectAll } from 'unist-util-select';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { finalizeMdast } from '../../process/mdast.js';
 import { loadProjectFromDisk } from '../../project/load.js';
-import { castSession } from '../../session/cache.js';
 import type { ISession } from '../../session/types.js';
+import { selectors } from '../../store/index.js';
 import { ImageExtensions } from '../../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
 import { getFileContent } from '../utils/getFileContent.js';
@@ -27,9 +26,9 @@ import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
 import type { ExportWithOutput, ExportOptions, ExportResults } from '../types.js';
+import { writeBibtexFromCitationRenderers } from '../utils/bibtex.js';
 import { collectTexExportOptions } from '../utils/collectExportOptions.js';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
-import { selectors } from '../../store/index.js';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = [
@@ -148,24 +147,6 @@ export async function localArticleToTexRaw(
   return { tempFolders: [] };
 }
 
-function writeBibtexFromCitationRenderers(session: ISession, output: string) {
-  const cache = castSession(session);
-  const allBibtexContent = Object.values(cache.$citationRenderers)
-    .map((renderers) => {
-      return Object.values(renderers).map((renderer) => {
-        const bibtexContent = (renderer.cite._graph as any[]).find((item) => {
-          return item.type === '@biblatex/text';
-        });
-        return bibtexContent?.data;
-      });
-    })
-    .flat()
-    .filter((item) => !!item);
-  const bibtexContent = [...new Set(allBibtexContent)].join('\n');
-  if (!fs.existsSync(output)) fs.mkdirSync(path.dirname(output), { recursive: true });
-  fs.writeFileSync(output, bibtexContent);
-}
-
 export async function localArticleToTexTemplated(
   session: ISession,
   file: string,
@@ -181,7 +162,11 @@ export async function localArticleToTexTemplated(
     imageExtensions: TEX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
   });
-  writeBibtexFromCitationRenderers(session, path.join(path.dirname(output), DEFAULT_BIB_FILENAME));
+  writeBibtexFromCitationRenderers(
+    session,
+    path.join(path.dirname(output), DEFAULT_BIB_FILENAME),
+    content,
+  );
 
   const warningLogFn = (message: string) => {
     addWarningForFile(session, file, message, 'warn', {
