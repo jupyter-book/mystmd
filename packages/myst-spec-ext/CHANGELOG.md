@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.1.17
+
+### Patch Changes
+
+- 2403f376: Add no-figures option to figure directive
+
 ## 1.1.16
 
 ## 1.1.15

@@ -1,5 +1,22 @@
 # myst-to-jats
 
+## 1.0.19
+
+### Patch Changes
+
+- 5e6d1d38: Process parts along with content during jats render
+- 5e6d1d38: Only render used, ordered references in jats
+- Updated dependencies [ecc6b812]
+- Updated dependencies [97e6406b]
+- Updated dependencies [7bc50110]
+- Updated dependencies [2403f376]
+- Updated dependencies [2403f376]
+- Updated dependencies [959c0a0]
+  - myst-common@1.1.17
+  - myst-transforms@1.1.15
+  - myst-frontmatter@1.1.17
+  - myst-spec-ext@1.1.17
+
 ## 1.0.18
 
 ### Patch Changes

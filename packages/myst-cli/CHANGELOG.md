@@ -1,5 +1,27 @@
 # myst-cli
 
+## 1.1.32
+
+### Patch Changes
+
+- 97e6406b: Update HTML handlers for table content and citations
+- 5e6d1d38: Return mutable copies from redux selectors
+- Updated dependencies [ecc6b812]
+- Updated dependencies [97e6406b]
+- Updated dependencies [7bc50110]
+- Updated dependencies [5e6d1d38]
+- Updated dependencies [2403f376]
+- Updated dependencies [2403f376]
+- Updated dependencies [959c0a0]
+- Updated dependencies [5e6d1d38]
+  - myst-common@1.1.17
+  - myst-transforms@1.1.15
+  - myst-frontmatter@1.1.17
+  - myst-to-jats@1.0.19
+  - myst-spec-ext@1.1.17
+  - myst-config@1.1.17
+  - myst-parser@1.0.17
+
 ## 1.1.31
 
 ### Patch Changes
