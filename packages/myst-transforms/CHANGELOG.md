@@ -1,5 +1,18 @@
 # myst-transforms
 
+## 1.1.15
+
+### Patch Changes
+
+- 97e6406b: Update HTML handlers for table content and citations
+- 2403f376: Figures created by notebook code are not given subfigures
+- 2403f376: Add no-figures option to figure directive
+- Updated dependencies [ecc6b812]
+- Updated dependencies [2403f376]
+  - myst-common@1.1.17
+  - myst-spec-ext@1.1.17
+  - myst-to-html@1.0.17
+
 ## 1.1.14
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # myst-frontmatter
 
+## 1.1.17
+
+### Patch Changes
+
+- 7bc50110: The `github` field will be used for binder connections when no `repo` is provided in the `thebe`/`jupyter` fields
+- 959c0a0: Changes thebe types to correctly provide the shapes of expanded thebe options after frontmatter validation. Updated the validator to use the types.
+
 ## 1.1.16
 
 ## 1.1.15
