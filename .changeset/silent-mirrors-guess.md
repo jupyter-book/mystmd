@@ -4,4 +4,4 @@
 'myst-transforms': patch
 ---
 
-Allow new numbering options to filter thgouth. Add new kind option to figure directive
+Allow new numbering options to filter through. Add new `kind` option to figure directive
