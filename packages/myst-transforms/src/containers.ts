@@ -194,10 +194,10 @@ export function containerChildrenTransform(tree: GenericParent, vfile: VFile) {
     }
     const children: GenericNode[] = [...subfigures];
     if (placeholderImage) children.push(placeholderImage);
-    // Caption/legend are above tables and below all other figures
+    // Caption is above tables and below all other figures
     if (container.kind === 'table') {
-      if (legend) children.unshift(legend);
       if (caption) children.unshift(caption);
+      if (legend) children.push(legend);
     } else {
       if (caption) children.push(caption);
       if (legend) children.push(legend);
