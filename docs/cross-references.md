@@ -107,9 +107,8 @@ Use `(label)=` before the element that you want to target, then reference conten
 * [](#my-section)
 ```
 
-````{tip}
+:::{tip} How to turn on heading `numbering`
 :class: dropdown
-# How to turn on heading `numbering`
 
 By default headings are not numbered, see [](#header-numbering) for more information. To turn on numbered headers you need to turn numbering on in the document or project using `numbering` in the frontmatter. You can control this for each heading level:
 
@@ -119,8 +118,8 @@ numbering:
   heading_2: true
 ```
 
-These will show up, for example, as `Section 1` and `Section 2.1`.
-````
+These will show up, for example, as `Section 1` and `Section 2.1`. To turn on all heading numbering, use `headings: true`.
+:::
 
 % TODO: We should support pandoc style unnumbered {-} and {.class, #id} syntax
 
@@ -251,7 +250,7 @@ ref
 (numref-role)=
 
 numref
-: The `{numref}` role is exactly the same as the above `{ref}` role, but also allows you to use a `%s` in place of the number, which will get filled in when the content is rendered. For example, `` {numref}`Custom Table %s text <my-table-ref>`. `` will become `Custom Table 3 text`.
+: The `{numref}` role is exactly the same as the above `{ref}` role, but also allows you to use a `%s` in place of the number, which will get filled in when the content is rendered. For example, ``{numref}`Custom Table %s text <my-table-ref>`.`` will become `Custom Table 3 text`.
 
 (eq-role)=
 

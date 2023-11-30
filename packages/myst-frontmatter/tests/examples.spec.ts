@@ -40,10 +40,10 @@ const casesList = files
   });
 
 casesList.forEach(({ title, frontmatter, cases }) => {
+  const casesToUse = cases.filter((c) => (!only && !c.skip) || (only && c.title === only));
+  const skippedCases = cases.filter((c) => c.skip || (only && c.title !== only));
+  if (casesToUse.length === 0) return;
   describe(title, () => {
-    const casesToUse = cases.filter((c) => (!only && !c.skip) || (only && c.title === only));
-    const skippedCases = cases.filter((c) => c.skip || (only && c.title !== only));
-    if (casesToUse.length === 0) return;
     if (skippedCases.length > 0) {
       // Log to test output for visibility
       test.skip.each(skippedCases.map((c): [string, TestCase] => [c.title, c]))('%s', () => {});

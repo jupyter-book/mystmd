@@ -553,15 +553,9 @@ export const enumerateTargetsPlugin: Plugin<[StateOptions], GenericParent, Gener
 
 function getCaptionLabel(kind?: string, subcontainer?: boolean) {
   if (subcontainer) return `(%s)`;
-  switch (kind) {
-    case 'table':
-      return `Table %s:`;
-    case 'code':
-      return `Program %s:`;
-    case 'figure':
-    default:
-      return `Figure %s:`;
-  }
+  if (!kind) return 'Figure %s:';
+  const template = getDefaultNumberedReferenceLabel(kind);
+  return `${template}:`;
 }
 
 /** Visit all containers and add captionNumber node to caption paragraph

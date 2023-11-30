@@ -3,15 +3,25 @@ cases:
   - title: empty object returns self
     raw:
       numbering: {}
-    normalized:
-      numbering: {}
-  - title: extra keys removed
+    normalized: {}
+  - title: invalid object errors
+    raw:
+      numbering: 1
+    normalized: {}
+    errors: 1
+  - title: extra keys are kept
     raw:
       numbering:
-        extra: ''
+        list: true
     normalized:
-      numbering: {}
-    warnings: 1
+      numbering:
+        list: true
+  - title: invalid extras keys are removed
+    raw:
+      numbering:
+        list: 1
+    normalized: {}
+    errors: 1
   - title: full object returns self
     raw:
       numbering:
@@ -36,6 +46,19 @@ cases:
         heading_1: true
         heading_2: true
         heading_3: true
+        heading_4: true
+        heading_5: true
+        heading_6: true
+  - title: headings unpack
+    raw:
+      numbering:
+        sections: true # alias for "headings"
+        h3: false # alias for heading_3
+    normalized:
+      numbering:
+        heading_1: true
+        heading_2: true
+        heading_3: false
         heading_4: true
         heading_5: true
         heading_6: true
