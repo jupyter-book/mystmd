@@ -64,6 +64,10 @@ export const figureDirective: DirectiveSpec = {
       doc: 'Disallow implicit subfigure creation from child nodes',
       alias: ['no-subfig', 'no-subfigure'],
     },
+    kind: {
+      type: String,
+      doc: 'Override the figures "kind", which changes the enumeration to start counting independently for that kind. For example, `kind: "example"`. The default enumeration and referencing will be the capitalized `kind` followed by a number (e.g. "Example 1").',
+    },
   },
   body: {
     type: 'myst',
@@ -101,7 +105,7 @@ export const figureDirective: DirectiveSpec = {
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const container: GenericParent = {
       type: 'container',
-      kind: 'figure',
+      kind: (data.options?.kind as string) || 'figure',
       identifier,
       label,
       class: data.options?.class,

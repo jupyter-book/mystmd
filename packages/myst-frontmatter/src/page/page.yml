@@ -36,7 +36,6 @@ cases:
       subject: ''
       biblio: {}
       oxa: ''
-      numbering: {}
       math:
         a: b
       subtitle: sub
@@ -80,7 +79,6 @@ cases:
       subject: ''
       biblio: {}
       oxa: ''
-      numbering: {}
       math:
         a: b
       subtitle: sub

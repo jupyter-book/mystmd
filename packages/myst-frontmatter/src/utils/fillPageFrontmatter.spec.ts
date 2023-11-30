@@ -28,7 +28,6 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   subject: '',
   biblio: {},
   oxa: '',
-  numbering: {},
   math: { a: 'b' },
   subtitle: 'sub',
   short_title: 'short',
@@ -64,7 +63,6 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   subject: '',
   biblio: {},
   oxa: '',
-  numbering: {},
   math: { a: 'b' },
   keywords: ['example', 'test'],
   exports: [

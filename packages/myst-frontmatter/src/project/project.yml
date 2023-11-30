@@ -38,7 +38,6 @@ cases:
       subject: ''
       biblio: {}
       oxa: ''
-      numbering: {}
       math:
         a: b
       keywords:
@@ -87,7 +86,6 @@ cases:
       subject: ''
       biblio: {}
       oxa: ''
-      numbering: {}
       math:
         a: b
       keywords:
