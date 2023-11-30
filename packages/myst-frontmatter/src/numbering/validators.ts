@@ -3,8 +3,7 @@ import {
   defined,
   incrementOptions,
   validateBoolean,
-  validateKeys,
-  validateObject,
+  validateObjectKeys,
   validateString,
 } from 'simple-validators';
 import type { Numbering } from './types.js';
@@ -34,13 +33,10 @@ export const NUMBERING_ALIAS = {
  * Validate Numbering object
  */
 export function validateNumbering(input: any, opts: ValidationOptions): Numbering | undefined {
-  const obj = validateObject(input, opts);
-  if (obj === undefined) return undefined;
-  const value = validateKeys(
-    obj,
+  const value = validateObjectKeys(
+    input,
     { optional: [...NUMBERING_KEYS, ...NUMBERING_OPTIONS], alias: NUMBERING_ALIAS },
-    // Do not add warnings on this filter process
-    { property: '', messages: { errors: [], warnings: [] }, keepExtraKeys: true },
+    { ...opts, suppressWarnings: true, keepExtraKeys: true },
   );
   if (value === undefined) return undefined;
   const output: Record<string, any> = {};
