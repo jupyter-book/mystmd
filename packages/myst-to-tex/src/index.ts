@@ -407,6 +407,9 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
+  inlineExpression(node, state) {
+    state.renderChildren(node, true);
+  },
 };
 
 class TexSerializer implements ITexSerializer {
