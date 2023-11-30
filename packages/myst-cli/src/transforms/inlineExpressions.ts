@@ -57,8 +57,9 @@ function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingCo
   if (result.status === 'ok') {
     if (result.data['text/latex']) {
       return [{ type: 'inlineMath', value: processLatex(result.data['text/latex']) }];
-    }
-    if (result.data['text/plain']) {
+    } else if (result.data['text/html']) {
+      return [{ type: 'html', value: result.data['text/html'] }];
+    } else if (result.data['text/plain']) {
       return [{ type: 'text', value: result.data['text/plain'] }];
     }
     fileWarn(file, 'Unrecognized mime bundle for inline content', {

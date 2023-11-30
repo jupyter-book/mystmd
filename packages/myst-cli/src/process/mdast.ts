@@ -173,11 +173,11 @@ export async function transformMdast(
 
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first
-    .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(basicTransformationsPlugin, {
       parser: (content: string) => parseMyst(session, content, file),
     })
     .use(inlineExpressionsPlugin) // Happens before math and images!
+    .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(inlineMathSimplificationPlugin)
     .use(mathPlugin, { macros: frontmatter.math })
     .use(glossaryPlugin, { state }) // This should be before the enumerate plugins
