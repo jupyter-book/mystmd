@@ -121,7 +121,7 @@ describe('Test containerChildrenTransform', () => {
     if (resultFig) resultFig.noSubcontainers = true;
     expect(mdast).toEqual(result);
   });
-  test('table container puts caption and legend first', async () => {
+  test('table container puts caption first and legend at end', async () => {
     const mdast = rootContainer([
       image(true),
       image(),
@@ -139,13 +139,13 @@ describe('Test containerChildrenTransform', () => {
           container(
             [
               caption(),
+              container([image()], 'table'),
+              container([image()], 'table'),
+              image(true),
               u('legend', [
                 u('paragraph', [u('text', 'my legend')]),
                 u('paragraph', [u('text', 'more legend')]),
               ]),
-              container([image()], 'table'),
-              container([image()], 'table'),
-              image(true),
             ],
             'table',
           ),
