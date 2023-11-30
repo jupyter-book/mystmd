@@ -528,6 +528,10 @@ const mystRole: Handler<{ type: 'mystRole' } & Parent> = (state, node) => {
   state.renderChildren(node);
 };
 
+const inlineExpression: Handler<{ type: 'inlineExpression' } & Parent> = (state, node) => {
+  state.renderChildren(node);
+};
+
 export const defaultHandlers = {
   text,
   paragraph,
@@ -571,4 +575,5 @@ export const defaultHandlers = {
   citeGroup,
   embed,
   include,
+  inlineExpression,
 };
