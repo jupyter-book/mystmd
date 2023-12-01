@@ -255,7 +255,7 @@ const handlers: Record<string, Handler> = {
   },
   cite(node, state, parent) {
     if (parent.type === 'citeGroup') {
-      state.write(`"${node.label}"`);
+      state.write(`<${node.label}>`);
     } else {
       state.write(`@${node.label}`);
     }
