@@ -1,7 +1,7 @@
 import AdmZip from 'adm-zip';
 import path from 'node:path';
-import type { TemplateImports } from 'jtex';
-import { renderTex, mergeTemplateImports } from 'jtex';
+import type { TexTemplateImports } from 'jtex';
+import { mergeTexTemplateImports, renderTemplate } from 'jtex';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
@@ -162,7 +162,7 @@ export async function localArticleToTexTemplated(
     imageExtensions: TEX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
   });
-  writeBibtexFromCitationRenderers(
+  const bibtexWritten = writeBibtexFromCitationRenderers(
     session,
     path.join(path.dirname(output), DEFAULT_BIB_FILENAME),
     content,
@@ -189,7 +189,7 @@ export async function localArticleToTexTemplated(
   const templateYml = mystTemplate.getValidatedTemplateYml();
   const partDefinitions = templateYml?.parts || [];
   const parts: Record<string, string | string[]> = {};
-  let collectedImports: TemplateImports = { imports: [], commands: {} };
+  let collectedImports: TexTemplateImports = { imports: [], commands: {} };
   let preambleData: PreambleData = {
     hasProofs: false,
     printGlossaries: false,
@@ -220,16 +220,16 @@ export async function localArticleToTexTemplated(
         } else if (Array.isArray(part)) {
           // This is the case if def.as_list is true
           part.forEach((item) => {
-            collectedImports = mergeTemplateImports(collectedImports, item);
+            collectedImports = mergeTexTemplateImports(collectedImports, item);
           });
           parts[def.id] = part.map(({ value }) => value);
         } else if (part != null) {
-          collectedImports = mergeTemplateImports(collectedImports, part);
+          collectedImports = mergeTexTemplateImports(collectedImports, part);
           parts[def.id] = part?.value ?? '';
         }
       });
       const result = mdastToTex(session, mdast, references, frontmatter, templateYml, true);
-      collectedImports = mergeTemplateImports(collectedImports, result);
+      collectedImports = mergeTexTemplateImports(collectedImports, result);
       preambleData = mergePreambles(preambleData, result.preamble, warningLogFn);
       hasGlossaries = hasGlossaries || hasGlossary(mdast);
       return result;
@@ -256,13 +256,13 @@ export async function localArticleToTexTemplated(
   // Fill in template
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
   const { preamble, suffix } = generatePreamble(preambleData);
-  renderTex(mystTemplate, {
+  renderTemplate(mystTemplate, {
     contentOrPath: texContent + suffix,
     outputPath: output,
     frontmatter,
     parts,
     options: { ...frontmatter.options, ...templateOptions },
-    bibliography: [DEFAULT_BIB_FILENAME],
+    bibliography: bibtexWritten ? DEFAULT_BIB_FILENAME : undefined,
     sourceFile: file,
     imports: collectedImports,
     preamble,

@@ -17,6 +17,7 @@ import {
 
 class MystTemplate {
   session: ISession;
+  kind: TemplateKind;
   templatePath: string;
   templateUrl: string | undefined;
   validatedTemplateYml: TemplateYml | undefined;
@@ -34,8 +35,8 @@ class MystTemplate {
    */
   constructor(
     session: ISession,
-    opts?: {
-      kind?: TemplateKind;
+    opts: {
+      kind: TemplateKind;
       template?: string;
       buildDir?: string;
       errorLogFn?: (message: string) => void;
@@ -50,6 +51,7 @@ class MystTemplate {
     this.errorLogFn = opts?.errorLogFn ?? errorLogger(this.session);
     this.warningLogFn = opts?.warningLogFn ?? warningLogger(this.session);
     this.debugLogFn = opts?.debugLogFn ?? debugLogger(this.session);
+    this.kind = opts.kind;
   }
 
   getTemplateYmlPath() {
@@ -189,7 +191,7 @@ class MystTemplate {
     frontmatter: any;
     parts: any;
     options: any;
-    bibliography?: string[];
+    bibliography?: string;
     outputPath?: string;
     sourceFile?: string;
     filesPath?: string;
@@ -206,7 +208,7 @@ class MystTemplate {
     const docFrontmatter = this.validateDoc(
       opts.frontmatter,
       options,
-      opts.bibliography,
+      opts.bibliography ? [opts.bibliography] : [],
       opts.sourceFile,
     );
     const doc = extendFrontmatter(docFrontmatter);

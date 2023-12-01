@@ -28,6 +28,11 @@ export function extractBibtex(key: string, bibtex: string) {
   return bibtex[ind] ? bibtex.substring(start, ind + 1) : undefined;
 }
 
+/**
+ * Write new bibtex file from citation renderer data and reference order
+ *
+ * Returns true if file was written
+ */
 export function writeBibtexFromCitationRenderers(
   session: ISession,
   output: string,
@@ -38,7 +43,7 @@ export function writeBibtexFromCitationRenderers(
       return references.cite?.order ?? [];
     })
     .flat();
-  if (!order.length) return;
+  if (!order.length) return false;
   const cache = castSession(session);
   const citationLookup: Record<string, string> = {};
   Object.values(cache.$citationRenderers).forEach((renderers) => {
@@ -59,6 +64,8 @@ export function writeBibtexFromCitationRenderers(
     }
     addWarningForFile(session, output, `unknown citation ${key}`);
   });
+  if (!bibtexContent.length) return false;
   if (!fs.existsSync(output)) fs.mkdirSync(path.dirname(output), { recursive: true });
   fs.writeFileSync(output, bibtexContent.join('\n'));
+  return true;
 }

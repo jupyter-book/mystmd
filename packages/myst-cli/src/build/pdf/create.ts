@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import util from 'util';
 import chalk from 'chalk';
-import { pdfExportCommand, texMakeGlossariesCommand } from 'jtex';
+import { pdfTexExportCommand, texMakeGlossariesCommand } from 'jtex';
 import { exec, tic } from 'myst-cli-utils';
 import { RuleId, TemplateKind, fileError, fileWarn } from 'myst-common';
 import MystTemplate from 'myst-templates';
@@ -271,7 +271,7 @@ async function runPdfBuildCommand(
 
   let buildCommand: string;
   if (!template) {
-    buildCommand = pdfExportCommand(texFile, texLogFile);
+    buildCommand = pdfTexExportCommand(texFile, texLogFile);
   } else {
     const mystTemplate = new MystTemplate(session, {
       kind: TemplateKind.tex,
@@ -284,7 +284,7 @@ async function runPdfBuildCommand(
         fileWarn(vfile, message, { ruleId: RuleId.pdfBuilds });
       },
     });
-    buildCommand = pdfExportCommand(texFile, texLogFile, mystTemplate);
+    buildCommand = pdfTexExportCommand(texFile, texLogFile, mystTemplate);
   }
 
   let buildError = false;
