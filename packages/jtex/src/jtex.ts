@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import { extname, dirname } from 'node:path';
+import { TemplateKind } from 'myst-common';
 import type MystTemplate from 'myst-templates';
 import { TEMPLATE_FILENAME } from 'myst-templates';
 import nunjucks from 'nunjucks';
-import { renderImports } from './imports.js';
-import type { TexRenderer, TemplateImports } from './types.js';
+import { renderImports } from './render.js';
+import type { TexRenderer, TypstTemplateImports, TexTemplateImports } from './types.js';
 import version from './version.js';
 
 function ensureDirectoryExists(directory: string) {
@@ -29,25 +30,49 @@ function getDefaultEnv(template: MystTemplate) {
   return env;
 }
 
-export function renderTex(
+const KIND_TO_EXT: Record<TemplateKind, string | undefined> = {
+  tex: '.tex',
+  typst: '.typ',
+  docx: undefined,
+  site: undefined,
+};
+
+function commentSymbol(kind: string) {
+  if (kind === TemplateKind.typst) return '//';
+  return '%';
+}
+
+/**
+ * Render a template from content
+ *
+ * Imports contains template-kind-specific import/command values; these are resolved
+ * based on kind.
+ * Preamble is content directly appended to resolved import value.
+ * Packages are existing packages already included as part of the template.
+ */
+export function renderTemplate(
   template: MystTemplate,
   opts: {
     contentOrPath: string;
-    outputPath: string;
+    imports?: TexTemplateImports | TypstTemplateImports;
+    preamble?: string;
+    packages?: string[];
+    force?: boolean;
     frontmatter: any;
     parts: any;
     options: any;
-    bibliography?: string[];
+    bibliography?: string;
+    outputPath: string;
     sourceFile?: string;
-    imports?: string | TemplateImports;
-    preamble?: string;
-    force?: boolean;
-    packages?: string[];
     filesPath?: string;
   },
 ) {
-  if (extname(opts.outputPath) !== '.tex') {
-    throw new Error(`outputPath must be a ".tex" file, not "${opts.outputPath}"`);
+  const ext = KIND_TO_EXT[template.kind];
+  if (!ext) {
+    throw new Error(`Cannot render template of kind: ${template.kind}`);
+  }
+  if (extname(opts.outputPath) !== ext) {
+    throw new Error(`outputPath must be a "${ext}" file, not "${opts.outputPath}"`);
   }
   let content: string;
   if (fs.existsSync(opts.contentOrPath)) {
@@ -57,8 +82,13 @@ export function renderTex(
     content = opts.contentOrPath;
   }
   const { options, parts, doc } = template.prepare(opts);
-  let importsContent = renderImports(opts.imports, opts.packages);
-  importsContent += opts.preamble ? '\n' + opts.preamble : '';
+  const importsContent = renderImports(
+    template.kind,
+    opts.outputPath,
+    opts.imports,
+    opts.packages,
+    opts.preamble,
+  );
   const renderer: TexRenderer = {
     CONTENT: content,
     doc,
@@ -71,5 +101,8 @@ export function renderTex(
   const outputDirectory = dirname(opts.outputPath);
   ensureDirectoryExists(outputDirectory);
   template.copyTemplateFiles(dirname(opts.outputPath), { force: opts.force });
-  fs.writeFileSync(opts.outputPath, `% Created with jtex v.${version}\n${rendered}`);
+  fs.writeFileSync(
+    opts.outputPath,
+    `${commentSymbol(template.kind)} Created with jtex v.${version}\n${rendered}`,
+  );
 }
