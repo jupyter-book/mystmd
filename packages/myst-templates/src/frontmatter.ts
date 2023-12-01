@@ -87,6 +87,10 @@ export function extendFrontmatter(frontmatter: PageFrontmatter): RendererDoc {
     .map((aff, index) => {
       return { ...aff, value: aff, ...indexAndLetter(index) };
     });
+  const bibtex =
+    frontmatter.bibliography?.length === 1 && frontmatter.bibliography[0].endsWith('.bib')
+      ? frontmatter.bibliography[0]
+      : undefined;
   const doc: RendererDoc = {
     ...frontmatter,
     date: {
@@ -98,6 +102,7 @@ export function extendFrontmatter(frontmatter: PageFrontmatter): RendererDoc {
     affiliations,
     collaborations,
     bibliography: undefinedIfEmpty(frontmatter.bibliography),
+    bibtex,
   };
   return doc;
 }
