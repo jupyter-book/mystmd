@@ -1,5 +1,4 @@
 import AdmZip from 'adm-zip';
-import fs from 'node:fs';
 import path from 'node:path';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
@@ -13,10 +12,11 @@ import type { TypstResult } from 'myst-to-typst';
 import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
 import { selectAll } from 'unist-util-select';
+import type { TypstTemplateImports } from 'jtex';
+import { mergeTypstTemplateImports, renderTemplate } from 'jtex';
 import { findCurrentProjectAndLoad } from '../config.js';
 import { finalizeMdast } from '../process/mdast.js';
 import { loadProjectFromDisk } from '../project/load.js';
-import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
@@ -148,16 +148,6 @@ export async function localArticleToTypstRaw(
   return { tempFolders: [] };
 }
 
-function merge(
-  current?: { macros: string[]; commands: Record<string, string> },
-  next?: { macros: string[]; commands: Record<string, string> },
-): { macros: string[]; commands: Record<string, string> } {
-  return {
-    commands: { ...current?.commands, ...next?.commands },
-    macros: [...new Set([...(current?.macros ?? []), ...(next?.macros ?? [])])],
-  };
-}
-
 export async function localArticleToTypstTemplated(
   session: ISession,
   file: string,
@@ -173,7 +163,7 @@ export async function localArticleToTypstTemplated(
     imageExtensions: TYPST_IMAGE_EXTENSIONS,
     extraLinkTransformers,
   });
-  writeBibtexFromCitationRenderers(
+  const bibtexWritten = writeBibtexFromCitationRenderers(
     session,
     path.join(path.dirname(output), DEFAULT_BIB_FILENAME),
     content,
@@ -200,7 +190,7 @@ export async function localArticleToTypstTemplated(
   const templateYml = mystTemplate.getValidatedTemplateYml();
   const partDefinitions = templateYml?.parts || [];
   const parts: Record<string, string | string[]> = {};
-  let collected: { macros: string[]; commands: Record<string, string> } = {
+  let collected: TypstTemplateImports = {
     macros: [],
     commands: {},
   };
@@ -228,16 +218,16 @@ export async function localArticleToTypstTemplated(
         } else if (Array.isArray(part)) {
           // This is the case if def.as_list is true
           part.forEach((item) => {
-            collected = merge(collected, item);
+            collected = mergeTypstTemplateImports(collected, item);
           });
           parts[def.id] = part.map(({ value }) => value);
         } else if (part != null) {
-          collected = merge(collected, part);
+          collected = mergeTypstTemplateImports(collected, part);
           parts[def.id] = part?.value ?? '';
         }
       });
       const result = mdastToTypst(session, mdast, references, frontmatter, templateYml, true);
-      collected = merge(collected, result);
+      collected = mergeTypstTemplateImports(collected, result);
       return result;
     }),
   );
@@ -259,40 +249,22 @@ export async function localArticleToTypstTemplated(
     });
     typstContent = includeFileBases.map((base) => `#include "${base}"`).join('\n');
   }
+  typstContent = `/* Written by MyST v${version} */\n\n${typstContent}`;
   session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));
-  renderTypst(typstContent, collected.macros, collected.commands, output);
+  renderTemplate(mystTemplate, {
+    contentOrPath: typstContent,
+    outputPath: output,
+    frontmatter,
+    parts,
+    options: { ...frontmatter.options, ...templateOptions },
+    bibliography: bibtexWritten ? DEFAULT_BIB_FILENAME : undefined,
+    sourceFile: file,
+    imports: collected,
+    force,
+    packages: templateYml.packages,
+    filesPath,
+  });
   return { tempFolders: [], hasGlossaries };
-}
-
-function renderTypst(
-  content: string,
-  macros: string[],
-  commands: Record<string, string>,
-  output: string,
-) {
-  const importStatements: string[] = [];
-  if (macros.length > 0) {
-    const mystTypst = path.join(path.dirname(output), 'myst.typ');
-    importStatements.push('#import "myst.typ": *');
-    writeFileToFolder(mystTypst, macros.join('\n\n'));
-  }
-  importStatements.push('#set math.equation(numbering: "(1)")');
-  if (Object.keys(commands).length > 0) {
-    importStatements.push('', '/* Math Macros */');
-    Object.entries(commands).forEach(([k, v]) => {
-      // Won't work for math with args
-      importStatements.push(`#let ${k} = $${v.trim()}$`);
-    });
-  }
-  const bib = `
-
-
-#show bibliography: set text(8pt)
-#bibliography("${DEFAULT_BIB_FILENAME}", title: text(10pt)[References], style: "ieee")`;
-  const typst = `/* Written by MyST v${version} */\n\n${importStatements.join(
-    '\n',
-  )}\n\n${content}${bib}`;
-  writeFileToFolder(output, typst);
 }
 
 export async function runTypstExport( // DBG: Must return an info on whether glossaries are present
