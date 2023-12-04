@@ -1,5 +1,20 @@
 # myst-cli
 
+## 1.1.33
+
+### Patch Changes
+
+- 7e8d85e: Consume table changes
+- Updated dependencies [1b4ec507]
+- Updated dependencies [4846c7fa]
+- Updated dependencies [d83e4b6f]
+  - myst-transforms@1.1.16
+  - myst-frontmatter@1.1.18
+  - myst-common@1.1.18
+  - myst-config@1.1.18
+  - myst-spec-ext@1.1.18
+  - myst-parser@1.0.18
+
 ## 1.1.32
 
 ### Patch Changes

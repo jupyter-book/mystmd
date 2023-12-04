@@ -1,5 +1,12 @@
 # myst-frontmatter
 
+## 1.1.18
+
+### Patch Changes
+
+- 4846c7fa: Allow new numbering options to filter through. Add new `kind` option to figure directive
+- d83e4b6f: Simplify error message suppression in numbering
+
 ## 1.1.17
 
 ### Patch Changes

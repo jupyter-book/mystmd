@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 1.1.16
+
+### Patch Changes
+
+- 1b4ec507: Put legend for tables at end by default.
+- 4846c7fa: Allow new numbering options to filter through. Add new `kind` option to figure directive
+  - myst-common@1.1.18
+  - myst-spec-ext@1.1.18
+  - myst-to-html@1.0.18
+
 ## 1.1.15
 
 ### Patch Changes

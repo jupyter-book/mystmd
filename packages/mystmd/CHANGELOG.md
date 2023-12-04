@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.33
+
+### Patch Changes
+
+- 7e8d85e: Consume table changes
+
 ## 1.1.32
 
 ## 1.1.31
