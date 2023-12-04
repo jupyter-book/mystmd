@@ -1,5 +1,13 @@
 # myst-directives
 
+## 1.0.18
+
+### Patch Changes
+
+- 4846c7fa: Allow new numbering options to filter through. Add new `kind` option to figure directive
+  - myst-common@1.1.18
+  - myst-spec-ext@1.1.18
+
 ## 1.0.17
 
 ### Patch Changes
