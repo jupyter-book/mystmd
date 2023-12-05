@@ -61,8 +61,9 @@ export function writeBibtexFromCitationRenderers(
     if (bibtexContent.includes(citationLookup[key])) return;
     if (citationLookup[key]) {
       bibtexContent.push(citationLookup[key]);
+    } else {
+      addWarningForFile(session, output, `unknown citation ${key}`);
     }
-    addWarningForFile(session, output, `unknown citation ${key}`);
   });
   if (!bibtexContent.length) return false;
   if (!fs.existsSync(output)) fs.mkdirSync(path.dirname(output), { recursive: true });
