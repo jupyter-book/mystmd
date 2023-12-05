@@ -32,7 +32,8 @@ export function validateMystToTexSettings(
     if (codeStyle) output.codeStyle = codeStyle;
   }
   if (defined(settings.beamer)) {
-    output.beamer = validateBoolean(settings.beamer, incrementOptions('beamer', opts));
+    const beamer = validateBoolean(settings.beamer, incrementOptions('beamer', opts));
+    if (beamer != null) output.beamer = beamer;
   }
   // if (defined(settings.printGlossaries)) {
   //   const printGlossaries = validateBoolean(

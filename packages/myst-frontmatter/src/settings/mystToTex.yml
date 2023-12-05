@@ -25,3 +25,28 @@ cases:
           code_style: unknown
     errors: 1
     normalized: {}
+  - title: beamer true
+    raw:
+      settings:
+        mystToTex:
+          beamer: true
+    normalized:
+      settings:
+        myst_to_tex:
+          beamer: true
+  - title: beamer false
+    raw:
+      settings:
+        mystToTex:
+          beamer: false
+    normalized:
+      settings:
+        myst_to_tex:
+          beamer: false
+  - title: beamer invalid
+    raw:
+      settings:
+        mystToTex:
+          beamer: invalid
+    errors: 1
+    normalized: {}

@@ -45,3 +45,10 @@ code_style
     - `"verbatim"` (default): Use the `\begin{verbatim}` environment
     - `"minted"`: Use the `\begin{minted}` environment with the language of the code block used
     - `"listings"`: Use the `\begin{listings}` environment with the language of the code block used
+
+(setting:myst_to_tex:beamer)=
+beamer
+: Indicate you are building a beamer presentation.
+
+    - `true`: Add `\begin{frame}` environment for each block, delimited by `+++`, and enable presentation outline with block metadata `+++ {"outline":true}`
+    - `false` (default): No extra `\begin{frame}` environment will be used
