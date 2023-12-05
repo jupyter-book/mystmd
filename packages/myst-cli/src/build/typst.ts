@@ -1,6 +1,7 @@
 import AdmZip from 'adm-zip';
 import path from 'node:path';
-import { tic, writeFileToFolder } from 'myst-cli-utils';
+import which from 'which';
+import { makeExecutable, tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
@@ -38,6 +39,22 @@ const TYPST_IMAGE_EXTENSIONS = [
   ImageExtensions.jpg,
   ImageExtensions.jpeg,
 ];
+
+export function isTypstAvailable() {
+  return which.sync('typst', { nothrow: true });
+}
+
+export async function runTypstExecutable(session: ISession, typstFile: string) {
+  if (!isTypstAvailable()) {
+    session.log.debug('typst CLI must be installed to build PDFs from typst');
+    return;
+  }
+  if (path.extname(typstFile) !== '.typ') {
+    throw new Error(`invalid input file for typst executable: ${typstFile}`);
+  }
+  session.log.debug('Running typst compile');
+  await makeExecutable(`typst compile ${typstFile}`, session.log)();
+}
 
 export function mdastToTypst(
   session: ISession,
@@ -264,6 +281,7 @@ export async function localArticleToTypstTemplated(
     packages: templateYml.packages,
     filesPath,
   });
+  await runTypstExecutable(session, output);
   return { tempFolders: [], hasGlossaries };
 }
 
