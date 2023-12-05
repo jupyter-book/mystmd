@@ -3,7 +3,7 @@ import { join, dirname } from 'node:path';
 import yaml from 'js-yaml';
 import type { TemplateKind } from 'myst-common';
 import type { ValidationOptions } from 'simple-validators';
-import { downloadTemplate, resolveInputs, TEMPLATE_FILENAME, TEMPLATE_YML } from './download.js';
+import { downloadTemplate, KIND_TO_EXT, resolveInputs, TEMPLATE_YML } from './download.js';
 import { extendFrontmatter } from './frontmatter.js';
 import type { TemplateYml, ISession } from './types.js';
 import { debugLogger, errorLogger, warningLogger } from './utils.js';
@@ -14,6 +14,8 @@ import {
   validateTemplateParts,
   validateTemplateYml,
 } from './validators.js';
+
+const TEMPLATE_FILENAME_BASE = 'template';
 
 class MystTemplate {
   session: ISession;
@@ -87,6 +89,11 @@ class MystTemplate {
       this.validatedTemplateYml = templateYml;
     }
     return this.validatedTemplateYml;
+  }
+
+  getTemplateFilename() {
+    const templateYml = this.getValidatedTemplateYml();
+    return templateYml.template ?? `${TEMPLATE_FILENAME_BASE}${KIND_TO_EXT[this.kind]}`;
   }
 
   validateOptions(options: any, file?: string, fileOpts?: FileOptions) {
@@ -218,7 +225,7 @@ class MystTemplate {
   copyTemplateFiles(outputDir: string, opts?: { force?: boolean }) {
     const templateYml = this.getValidatedTemplateYml();
     templateYml.files?.forEach((file) => {
-      if (file === TEMPLATE_FILENAME) return;
+      if (file === this.getTemplateFilename()) return;
       const source = join(this.templatePath, ...file.split('/'));
       const dest = join(outputDir, ...file.split('/'));
       if (fs.existsSync(dest)) {

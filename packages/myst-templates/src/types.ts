@@ -108,6 +108,7 @@ type TemplateYmlPartial = {
   options?: TemplateOptionDefinition[];
   packages?: string[];
   files?: string[];
+  template?: string;
 };
 
 type TemplateYmlIdLinks = {

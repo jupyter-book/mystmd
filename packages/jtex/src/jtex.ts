@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { extname, dirname } from 'node:path';
 import { TemplateKind } from 'myst-common';
 import type MystTemplate from 'myst-templates';
-import { TEMPLATE_FILENAME } from 'myst-templates';
+import { KIND_TO_EXT } from 'myst-templates';
 import nunjucks from 'nunjucks';
 import { renderImports } from './render.js';
 import type { TexRenderer, TypstTemplateImports, TexTemplateImports } from './types.js';
@@ -29,13 +29,6 @@ function getDefaultEnv(template: MystTemplate) {
     .addFilter('len', (array) => array.length);
   return env;
 }
-
-const KIND_TO_EXT: Record<TemplateKind, string | undefined> = {
-  tex: '.tex',
-  typst: '.typ',
-  docx: undefined,
-  site: undefined,
-};
 
 function commentSymbol(kind: string) {
   if (kind === TemplateKind.typst) return '//';
@@ -97,7 +90,7 @@ export function renderTemplate(
     IMPORTS: importsContent,
   };
   const env = getDefaultEnv(template);
-  const rendered = env.render(TEMPLATE_FILENAME, renderer);
+  const rendered = env.render(template.getTemplateFilename(), renderer);
   const outputDirectory = dirname(opts.outputPath);
   ensureDirectoryExists(outputDirectory);
   template.copyTemplateFiles(dirname(opts.outputPath), { force: opts.force });

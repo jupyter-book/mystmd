@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { globSync } from 'glob';
 import { hashAndCopyStaticFile, isDirectory } from 'myst-cli-utils';
-import { TemplateOptionType } from 'myst-common';
+import { TemplateKind, TemplateOptionType } from 'myst-common';
 import type { ReferenceStash } from 'myst-frontmatter';
 import {
   PAGE_FRONTMATTER_KEYS,
@@ -39,6 +39,7 @@ import type {
   TemplateStyles,
   TemplateYml,
 } from './types.js';
+import { KIND_TO_EXT } from './download.js';
 
 export type FileOptions = { copyFolder?: string; relativePathFrom?: string };
 
@@ -532,6 +533,7 @@ export function validateTemplateYml(
         'options',
         'packages',
         'files',
+        'template',
       ],
     },
     opts,
@@ -543,6 +545,12 @@ export function validateTemplateYml(
   });
   if (myst === undefined) return undefined;
   const output: TemplateYml = { myst };
+  if (defined(value.kind)) {
+    output.kind = validateEnum(value.kind, {
+      ...incrementOptions('kind', opts),
+      enum: TemplateKind,
+    });
+  }
   if (defined(value.title)) {
     output.title = validateString(value.title, incrementOptions('title', opts));
   }
@@ -645,6 +653,29 @@ export function validateTemplateYml(
       }
       return file;
     });
+  }
+  if (defined(value.template)) {
+    const templateOpts = incrementOptions('template', opts);
+    const template = validateString(value.template, templateOpts);
+    if (template && output.kind && path.extname(template) !== KIND_TO_EXT[output.kind]) {
+      validationError(
+        `template extension "${path.extname(template)}" must match kind "${
+          KIND_TO_EXT[output.kind]
+        }"`,
+        templateOpts,
+      );
+    }
+    if (template && opts.templateDir) {
+      const templatePath = [...opts.templateDir.split(path.sep), template].join('/');
+      const matches = globSync(templatePath).map((match) => match.split('/').join(path.sep));
+      const files = matches.filter((match) => !isDirectory(match));
+      if (!matches.length) {
+        validationError(`template does not exist: ${templatePath}`, templateOpts);
+      } else if (!files.length) {
+        validationError(`template must not be directory: ${templatePath}`, templateOpts);
+      }
+    }
+    output.template = template;
   }
   if (stash.affiliations) {
     output.affiliations = stash.affiliations;
