@@ -1,8 +1,14 @@
 import type { ValidationOptions } from 'simple-validators';
-import { defined, incrementOptions, validateChoice, validateObjectKeys } from 'simple-validators';
+import {
+  defined,
+  incrementOptions,
+  validateBoolean,
+  validateChoice,
+  validateObjectKeys,
+} from 'simple-validators';
 import type { MystToTexSettings } from './types.js';
 
-export const MYST_TO_TEX_SETTINGS = ['codeStyle'];
+export const MYST_TO_TEX_SETTINGS = ['codeStyle', 'beamer'];
 export const MYST_TO_TEX_SETTINGS_ALIAS = {
   code_style: 'codeStyle',
 };
@@ -24,6 +30,9 @@ export function validateMystToTexSettings(
       choices: ['verbatim', 'minted', 'listings'],
     });
     if (codeStyle) output.codeStyle = codeStyle;
+  }
+  if (defined(settings.beamer)) {
+    output.beamer = validateBoolean(settings.beamer, incrementOptions('beamer', opts));
   }
   // if (defined(settings.printGlossaries)) {
   //   const printGlossaries = validateBoolean(

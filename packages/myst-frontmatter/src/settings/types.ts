@@ -2,6 +2,7 @@ type OutputRemovalOptions = 'show' | 'remove' | 'remove-warn' | 'remove-error' |
 
 export type MystToTexSettings = {
   codeStyle?: 'verbatim' | 'minted' | 'listings';
+  beamer?: boolean;
 };
 
 export type ProjectSettings = {
