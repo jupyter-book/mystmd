@@ -109,7 +109,7 @@ async function copyDependentFiles(
 ) {
   const cache = castSession(session);
   if (!cache.$getMdast(sourceFile)) {
-    await loadFile(session, sourceFile);
+    await loadFile(session, sourceFile, projectPath);
   }
   const pre = cache.$getMdast(sourceFile)?.pre;
   if (!pre) return;

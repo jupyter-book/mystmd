@@ -31,7 +31,7 @@ async function prepareExportOptions(
   if (projectPath && sourceFile === selectors.selectLocalConfigFile(state, projectPath)) {
     rawFrontmatter = selectors.selectLocalProjectConfig(state, projectPath);
   } else {
-    rawFrontmatter = await getRawFrontmatterFromFile(session, sourceFile);
+    rawFrontmatter = await getRawFrontmatterFromFile(session, sourceFile, projectPath);
   }
   let exportOptions = getExportListFromRawFrontmatter(session, formats, rawFrontmatter, sourceFile);
   // If no export options are provided in frontmatter, instantiate default options
