@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.19
+
+### Patch Changes
+
+- a58eddf2: Move beamer option to myst_to_tex settings
+
 ## 1.1.18
 
 ### Patch Changes

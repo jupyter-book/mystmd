@@ -1,5 +1,15 @@
 # myst-to-tex
 
+## 1.0.15
+
+### Patch Changes
+
+- a58eddf2: Move beamer option to myst_to_tex settings
+- Updated dependencies [a58eddf2]
+  - myst-frontmatter@1.1.19
+  - myst-common@1.1.19
+  - myst-spec-ext@1.1.19
+
 ## 1.0.14
 
 ### Patch Changes
