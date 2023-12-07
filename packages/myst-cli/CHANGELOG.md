@@ -1,5 +1,19 @@
 # myst-cli
 
+## 1.1.34
+
+### Patch Changes
+
+- 59e6521: Pass projectPath to loadFile whenever possible
+- 6c9ce6fc: Fix error when article is not defined on meca export
+- Updated dependencies [a58eddf2]
+  - myst-frontmatter@1.1.19
+  - myst-to-tex@1.0.15
+  - myst-common@1.1.19
+  - myst-config@1.1.19
+  - myst-spec-ext@1.1.19
+  - tex-to-myst@1.0.15
+
 ## 1.1.33
 
 ### Patch Changes
