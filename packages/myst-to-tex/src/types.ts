@@ -26,7 +26,6 @@ export type MathPlugins = Required<PageFrontmatter>['math'];
 
 export type Options = MystToTexSettings & {
   handlers?: Record<string, Handler>;
-  beamer?: boolean;
   math?: MathPlugins;
   bibliography?: 'natbib' | 'biblatex';
   printGlossaries?: boolean;
