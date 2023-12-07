@@ -81,9 +81,13 @@ export function prepareToWrite(frontmatter: { license?: Licenses }) {
   return { ...frontmatter, license: licensesToString(frontmatter.license) };
 }
 
-export async function getRawFrontmatterFromFile(session: ISession, file: string) {
+export async function getRawFrontmatterFromFile(
+  session: ISession,
+  file: string,
+  projectPath?: string,
+) {
   const cache = castSession(session);
-  if (!cache.$getMdast(file)) await loadFile(session, file);
+  if (!cache.$getMdast(file)) await loadFile(session, file, projectPath);
   const result = cache.$getMdast(file);
   if (!result || !result.pre) return undefined;
   const vfile = new VFile();
