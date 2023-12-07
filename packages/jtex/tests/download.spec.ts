@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import fs from 'node:fs';
 import { TemplateKind } from 'myst-common';
 import MystTemplate, { downloadTemplate, resolveInputs, Session } from 'myst-templates';
-import { renderTex } from '../src';
+import { renderTemplate } from '../src';
 
 describe(
   'Download Template',
@@ -26,8 +26,11 @@ describe(
       expect(() => jtex.prepare({} as any)).toThrow(/does not exist/);
     });
     it('Render out the template', async () => {
-      const jtex = new MystTemplate(new Session(), { template: `${__dirname}/example` });
-      renderTex(jtex, {
+      const jtex = new MystTemplate(new Session(), {
+        kind: TemplateKind.tex,
+        template: `${__dirname}/example`,
+      });
+      renderTemplate(jtex, {
         contentOrPath: `${__dirname}/test.tex`,
         outputPath: '_build/out/article.tex',
         frontmatter: {

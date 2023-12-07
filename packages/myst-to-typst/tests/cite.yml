@@ -23,4 +23,4 @@ cases:
                 - type: cite
                   label: jon85
     typst: |-
-      #cite("cockett2015", "jon85")
+      #cite(<cockett2015>, <jon85>)
