@@ -157,7 +157,7 @@ export async function runMecaExport(
   const toc = tic();
   const { output, articles } = exportOptions;
   // At this point, export options are resolved to contain zero or one articles
-  const article = articles[0];
+  const article = articles?.[0];
   const vfile = new VFile();
   vfile.path = output;
   const fileCopyErrorLogFn = (m: string) => {
