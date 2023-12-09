@@ -1,5 +1,13 @@
 # myst-common
 
+## 1.1.20
+
+### Patch Changes
+
+- a0044da: Add typst export to CLI
+- Updated dependencies [a0044da]
+  - myst-frontmatter@1.1.20
+
 ## 1.1.19
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # jtex
 
+## 1.0.11
+
+### Patch Changes
+
+- a0044da: Modify jtex to support typst
+- a0044da: Allow myst template to specify template file name
+- Updated dependencies [a0044da]
+- Updated dependencies [a0044da]
+- Updated dependencies [a0044da]
+  - myst-templates@1.0.14
+  - myst-frontmatter@1.1.20
+  - myst-common@1.1.20
+
 ## 1.0.10
 
 ### Patch Changes

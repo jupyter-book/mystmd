@@ -1,5 +1,12 @@
 # myst-config
 
+## 1.1.20
+
+### Patch Changes
+
+- Updated dependencies [a0044da]
+  - myst-frontmatter@1.1.20
+
 ## 1.1.19
 
 ### Patch Changes
