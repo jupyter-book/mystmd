@@ -18,6 +18,7 @@ import { getFileContent } from '../utils/getFileContent.js';
 
 export async function runMdExport(
   session: ISession,
+  sourceFile: string,
   exportOptions: ExportWithOutput,
   projectPath?: string,
   clean?: boolean,
@@ -47,6 +48,7 @@ export async function runMdExport(
   logMessagesFromVFile(session, mdOut);
   session.log.info(toc(`📑 Exported MD in %s, copying to ${output}`));
   writeFileToFolder(output, mdOut.result as string);
+  return { tempFolders: [] };
 }
 
 export async function localArticleToMd(
@@ -67,7 +69,14 @@ export async function localArticleToMd(
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runMdExport(session, exportOptions, projectPath, opts.clean, extraLinkTransformers);
+      await runMdExport(
+        session,
+        file,
+        exportOptions,
+        projectPath,
+        opts.clean,
+        extraLinkTransformers,
+      );
     }),
     opts.throwOnFailure,
   );

@@ -149,6 +149,7 @@ function writeMecaManifest(manifestItems: ManifestItem[], mecaFolder: string) {
  */
 export async function runMecaExport(
   session: ISession,
+  sourceFile: string,
   exportOptions: ExportWithOutput,
   projectPath?: string,
   clean?: boolean,
@@ -179,6 +180,7 @@ export async function runMecaExport(
     const jatsOutput = path.join(mecaFolder, 'article.xml');
     await runJatsExport(
       session,
+      sourceFile,
       { ...exportOptions, output: jatsOutput },
       projectPath,
       clean,
@@ -227,10 +229,10 @@ export async function runMecaExport(
     const jatsFiles = path.join(path.dirname(jatsOutput), 'files');
     if (fs.existsSync(jatsFiles)) {
       fs.readdirSync(jatsFiles).forEach((file) => {
-        const sourceFile = path.join(jatsFiles, file);
+        const src = path.join(jatsFiles, file);
         const fileDest = copyFileToFolder(
           session,
-          sourceFile,
+          src,
           path.join(mecaFolder, 'files'),
           fileCopyErrorLogFn,
         );
@@ -355,6 +357,7 @@ export async function runMecaExport(
   zip.writeZip(output);
   logMessagesFromVFile(session, vfile);
   session.log.info(toc(`🤐 MECA output copied and zipped to ${output} in %s`));
+  return { tempFolders: [] };
 }
 
 export async function localProjectToMeca(
@@ -375,7 +378,14 @@ export async function localProjectToMeca(
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runMecaExport(session, exportOptions, projectPath, opts.clean, extraLinkTransformers);
+      await runMecaExport(
+        session,
+        file,
+        exportOptions,
+        projectPath,
+        opts.clean,
+        extraLinkTransformers,
+      );
     }),
     opts.throwOnFailure,
   );
