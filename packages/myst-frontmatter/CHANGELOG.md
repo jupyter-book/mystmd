@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.20
+
+### Patch Changes
+
+- a0044da: Add typst export to CLI
+
 ## 1.1.19
 
 ### Patch Changes

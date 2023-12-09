@@ -1,5 +1,16 @@
 # myst-to-typst
 
+## 0.0.7
+
+### Patch Changes
+
+- a0044da: Support new typst cite syntax
+- a0044da: Use @ citation syntax for citation groups in typst
+- Updated dependencies [a0044da]
+  - myst-frontmatter@1.1.20
+  - myst-common@1.1.20
+  - myst-spec-ext@1.1.20
+
 ## 0.0.6
 
 ### Patch Changes

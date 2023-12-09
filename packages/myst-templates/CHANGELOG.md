@@ -1,5 +1,16 @@
 # myst-templates
 
+## 1.0.14
+
+### Patch Changes
+
+- a0044da: Add single bibtex entry to template doc
+- a0044da: Add typst export to CLI
+- a0044da: Allow myst template to specify template file name
+- Updated dependencies [a0044da]
+  - myst-frontmatter@1.1.20
+  - myst-common@1.1.20
+
 ## 1.0.13
 
 ### Patch Changes

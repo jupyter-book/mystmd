@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.35
+
+### Patch Changes
+
+- a0044da: Add typst export to CLI
+
 ## 1.1.34
 
 ## 1.1.33

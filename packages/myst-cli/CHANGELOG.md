@@ -1,5 +1,27 @@
 # myst-cli
 
+## 1.1.35
+
+### Patch Changes
+
+- a0044da: Add typst invocation to typst export from cli
+- a0044da: Update typst export to use jtex
+- a0044da: Add typst export to CLI
+- a0044da: Write terser bibtex when exporting
+- Updated dependencies [a0044da]
+- Updated dependencies [a0044da]
+- Updated dependencies [a0044da]
+- Updated dependencies [a0044da]
+- Updated dependencies [a0044da]
+- Updated dependencies [a0044da]
+  - myst-to-typst@0.0.7
+  - myst-templates@1.0.14
+  - jtex@1.0.11
+  - myst-frontmatter@1.1.20
+  - myst-common@1.1.20
+  - myst-config@1.1.20
+  - myst-spec-ext@1.1.20
+
 ## 1.1.34
 
 ### Patch Changes
